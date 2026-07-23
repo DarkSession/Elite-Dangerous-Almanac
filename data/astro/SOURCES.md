@@ -31,6 +31,33 @@ carries machine-readable attribution in an `attribution` object where practical.
   the services. Decimal id64 values remain strings in JSON so every target language
   can parse them without IEEE-754 precision loss.
 
+## Nebulae
+
+- **Files:** `nebulae-real.json` (180 catalogued real-world nebulae and dark
+  regions), `nebulae-procgen.json` (166 procedurally generated nebulae),
+  `nebulae-planetary.json` (5489 planetary nebulae), and
+  `fixtures/astro/nebulae.json`. Split by nebula class so an app that only wants
+  the recognisable named nebulae (~25 KB) never bundles the planetary catalogue
+  (~820 KB); see AGENTS.md §Build.
+- **Source:** the EDAstro nebulae coordinates dataset
+  (`nebulae-coordinates.csv`, columns `Name,System,X,Y,Z,Type,RegionID`),
+  published at [EDAstro](https://edastro.com/mapcharts/) by **CMDR Orvidius**.
+  EDAstro publishes no explicit licence for the file; consult the site's terms
+  before redistributing it. Original observations are community exploration data.
+- **Obtained via:**
+  [canonn-science/canonn-signals](https://github.com/canonn-science/canonn-signals),
+  `src/assets/nebulae.json` (MIT, © 2023 Canonn Research Group), which converts
+  the CSV to JSON verbatim. The
+  records here were checked against both and are identical field-for-field.
+- **Derivation:** records are carried over unchanged (name, catalogued system,
+  galactic X/Y/Z in light-years with Sol at the origin, class, region id), grouped
+  by `type` into one file per class and sorted by name. `regionId` is the galactic
+  codex region id from the source CSV — a column the canonn-signals JSON drops —
+  and all 5835 values were verified to agree with this project's own
+  `findRegionAt` lookup, which the test suite re-checks on every run.
+- **Caveat:** a nebula is a volume, but the dataset records a single point — the
+  position of the system it is catalogued at.
+
 ## Galactic codex regions
 
 - **Files:** `galactic-regions.json` (per-region metadata),

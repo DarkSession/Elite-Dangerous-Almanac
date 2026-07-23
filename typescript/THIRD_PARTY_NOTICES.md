@@ -12,6 +12,14 @@ subject to its respective terms.
 - **Galactic codex regions:** region names, ids, and lookup geometry derive from
   [EliteDangerousRegionMap](https://github.com/klightspeed/EliteDangerousRegionMap)
   by Ben Peddell (klightspeed), MIT.
+- **Nebula catalogues:** the nebula names, catalogued systems, coordinates,
+  classes and region ids come from the EDAstro nebulae coordinates dataset
+  published by CMDR Orvidius at [EDAstro](https://edastro.com/mapcharts/),
+  obtained via
+  [canonn-science/canonn-signals](https://github.com/canonn-science/canonn-signals)
+  (`src/assets/nebulae.json`, MIT, © 2023 Canonn Research Group). EDAstro states
+  no explicit licence for the dataset; consult the site's terms before
+  redistributing it.
 - **Hand-authored sector spheres, named-sector origins, and validation fixtures:**
   factual records compiled and cross-checked against
   [EDSM](https://www.edsm.net) and [Spansh](https://spansh.co.uk). The NGC 2392

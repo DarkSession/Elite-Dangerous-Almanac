@@ -24,9 +24,10 @@ import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
 
 ## Quick start
 
-The `astro` feature area covers Elite Dangerous **procedural naming** and the
-**`id64` system address**. Start with `StarSystem` — one immutable handle that
-composes the lower-level functions:
+The `astro` feature area covers Elite Dangerous **procedural naming**, the
+**`id64` system address**, the **galactic codex regions** and the **nebula
+catalogues**. Start with `StarSystem` — one immutable handle that composes the
+lower-level naming functions:
 
 ```ts
 import { StarSystem } from '@elite-dangerous-almanac/core/astro';
@@ -98,6 +99,11 @@ table is the map:
 | **Hand-authored region** | A named nebula/cluster sector (Pleiades, Coalsack) | `handAuthoredRegionForCoords` / `HAND_AUTHORED_REGIONS` |
 | **Galactic codex region** | One of the 42 codex zones (Inner Orion Spur, …) | `findRegionAt` / `getGalacticRegion` / `GALACTIC_REGIONS` |
 
+None of these is the *nebula catalogue*. A hand-authored region is a named **sector
+volume** the game names systems after (some happen to be nebulae); if you want
+nebulae themselves — where they are and what they're called — see
+[Nebulae](#nebulae) below.
+
 One sample of each:
 
 ```ts
@@ -121,6 +127,52 @@ handAuthoredRegionForCoords({ x: -80.6, y: -146.7, z: -343.3 })?.name; // 'Pleia
 // Galactic codex region — one of the 42 codex zones, by a point on the galactic plane
 findRegionAt({ x: 0, z: 0 })?.name;                       // 'Inner Orion Spur'
 ```
+
+## Nebulae
+
+5835 catalogued nebulae, each with the system it is catalogued at, its galactic
+coordinates and its codex region id. They ship as **one module per class**, so you
+pay only for the catalogue you import (subpaths below are relative to
+`@elite-dangerous-almanac/core`):
+
+| Import | Export | What's in it | Entries | ≈ bundled |
+| --- | --- | --- | --- | --- |
+| `astro/nebulae-real` | `REAL_NEBULAE` | Real-world nebulae and dark regions (Witch Head, Horsehead, Coalsack) | 180 | 19 KB |
+| `astro/nebulae-procgen` | `PROCGEN_NEBULAE` | Procedurally generated nebulae (`Agnairt AA-A h36`) | 166 | 19 KB |
+| `astro/nebulae-planetary` | `PLANETARY_NEBULAE` | Planetary nebulae, at the system each surrounds | 5489 | 645 KB |
+| `astro/nebulae-all` | `ALL_NEBULAE` | All three, concatenated | 5835 | 682 KB |
+
+The query functions live in `astro/nebulae` and hold no data — hand them whichever
+catalogue you imported:
+
+```ts
+import {
+    nearestNebulae,
+    nebulaeWithin,
+    getNebulaByName,
+} from '@elite-dangerous-almanac/core/astro/nebulae';
+import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
+
+nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 3).map((n) => n.name);
+// -> [ 'Pleiades', 'R Cra', 'Lupus Dark Region B' ]   (nearest first)
+
+nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 1)[0].distanceLy;  // -> ≈383.31
+nebulaeWithin({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 400).length;        // -> 1
+getNebulaByName('witch head nebula', REAL_NEBULAE)?.system;           // -> 'Witch Head Sector RY-R b4-0'
+```
+
+Each record carries a `regionId` (1–42), so you can label a nebula's codex region
+with `getGalacticRegion` (~9 KB of region metadata) instead of `findRegionAt`
+(~207 KB lookup grid). Note that the catalogue stores one point per nebula — the
+position of its catalogued system — not the nebula's extent, so `distanceLy` is
+the distance to that system.
+
+> **Not the same as a hand-authored region.** `REAL_NEBULAE` and friends are a
+> *catalogue of nebulae and where they are*. A **hand-authored region** (previous
+> section) is a *named sector volume* the game names systems after — some are
+> nebulae, some are clusters, and the two lists neither match nor line up
+> one-to-one. `StarSystem` has no nebula member for the same reason it has no
+> `galacticRegion` one: a class getter would drag a catalogue into every import.
 
 ## Development
 
@@ -153,6 +205,12 @@ Machine-readable attribution also lives next to each data file
   footprint figures (area, bounds, centroid) are derived by this project and are
   approximate. Original region-boundary research on the
   [Frontier forums](https://forums.frontier.co.uk/threads/determining-the-region-of-a-system.537845/).
+- **Nebula catalogues** (names, catalogued systems, coordinates, classes and
+  region ids) — from the EDAstro nebulae coordinates dataset by **CMDR Orvidius**
+  ([EDAstro](https://edastro.com/mapcharts/)), obtained via
+  [canonn-signals](https://github.com/canonn-science/canonn-signals) by the Canonn
+  Research Group (MIT). EDAstro states no explicit licence for the dataset; check
+  the site's terms before redistributing it.
 - **Hand-authored region spheres, named-region origins, and ground-truth `id64`
   fixtures** — factual records compiled and cross-checked against
   [EDSM](https://www.edsm.net) and [Spansh](https://spansh.co.uk). Detailed

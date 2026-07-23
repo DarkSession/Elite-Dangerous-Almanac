@@ -15,6 +15,10 @@
  * - *hand-authored region* — {@link handAuthoredRegionForCoords} (Pleiades, Coalsack, …).
  * - *galactic codex region* — {@link findRegionAt} (one of the 42 codex zones).
  *
+ * None of those is the **nebula catalogue** — the nebulae themselves, and where
+ * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE} and its sibling
+ * catalogues.
+ *
  * @packageDocumentation
  */
 
@@ -92,6 +96,24 @@ export {
     type RegionLookup,
     type BoxelRegion,
 } from './galactic-region-lookup.js';
+
+// ── Nebulae (where the catalogued nebulae are) ──────────────────────────────
+// Not the same thing as a hand-authored region: these are the nebulae themselves.
+// The query functions hold no data; each catalogue is its own module, so import
+// only the class you need.
+export {
+    nearestNebulae,
+    nebulaeWithin,
+    getNebulaByName,
+    type Nebula,
+    type NebulaType,
+    type NebulaWithDistance,
+} from './nebulae.js';
+
+export { REAL_NEBULAE } from './nebulae-real.js';
+export { PLANETARY_NEBULAE } from './nebulae-planetary.js';
+export { PROCGEN_NEBULAE } from './nebulae-procgen.js';
+export { ALL_NEBULAE } from './nebulae-all.js';
 
 // ── Low-level boxel primitives ──────────────────────────────────────────────
 // Building blocks the encoders use; most consumers never need these directly.
