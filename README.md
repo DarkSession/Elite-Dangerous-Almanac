@@ -174,6 +174,65 @@ the distance to that system.
 > one-to-one. `StarSystem` has no nebula member for the same reason it has no
 > `galacticRegion` one: a class getter would drag a catalogue into every import.
 
+## Permit locks
+
+Which systems a commander cannot jump to without a permit. Nothing in the game's
+data or in any API reports this — even Sol, permit-locked since launch, returns no
+permit flag — so it is a community-maintained list with two halves:
+
+| Import | Export | What's in it | Entries |
+| --- | --- | --- | --- |
+| `astro/permit-locked-systems` | `PERMIT_LOCKED_SYSTEMS` | Individually locked systems, each with its `id64` (Sol, Shinrarta Dezhra, Achenar, …) | 54 |
+| `astro/permit-locked-regions` | `PERMIT_LOCKED_REGIONS` | Whole regions behind one permit (Col 70 Sector, Bleia1, the Cone Sector, …) | 28 |
+| `astro/permit-locks` | `permitLockForSystemName` | Combined exact-system and region-prefix lookup | — |
+
+These modules are the **only** place permit state lives — `HandAuthoredRegion`
+carries no permit flag. Import either leaf to avoid loading the other catalogue;
+`permitLockForSystemName` checks both halves from a name alone and
+tells you which one applied (~2.9 KB bundled):
+
+```ts
+import {
+    permitLockForSystemName,
+    isPermitLockedSystemName,
+    permitLockedSystemForAddress,
+} from '@elite-dangerous-almanac/core/astro/permit-locks';
+
+permitLockForSystemName('sol');                        // { kind: 'system', name: 'Sol', id64: 10477373803n }
+permitLockForSystemName('Col 70 Sector AA-D b17-0');   // { kind: 'region', name: 'Col 70 Sector' }
+permitLockForSystemName('Maia');                       // null
+
+isPermitLockedSystemName('Cone Sector GW-W c1-5');     // true
+
+// A normally parsed journal address is a number; bigint and decimal strings work too
+permitLockedSystemForAddress(event.SystemAddress);     // PermitLockedSystem | null
+```
+
+Region membership comes from the **system name**, since no per-system
+region-permit flag exists anywhere: the game names every system in a region after
+it, so each entry of `PERMIT_LOCKED_REGIONS` is both the region's name and the
+prefix to match. The match is whole-token, so `Col 70 Sector` never catches
+`Col 700 Sector …` and `Horsehead Dark Region` never catches the unlocked
+`Horsehead Sector …`.
+
+**If you have coordinates, prefer them** — resolving a region from a position is
+exact, where matching the start of a name is best-effort:
+
+```ts
+import { handAuthoredRegionForCoords } from '@elite-dangerous-almanac/core/astro/hand-authored-regions';
+import { isPermitLockedRegionName } from '@elite-dangerous-almanac/core/astro/permit-locked-regions';
+
+const region = handAuthoredRegionForCoords(coords);
+const needsPermit = region !== null && isPermitLockedRegionName(region.name);
+```
+
+Both routes read the same 28 names, so they cannot drift; the test suite checks
+they agree on real systems from EDSM.
+
+Scope: systems only. Permit-locked *bodies* in otherwise-open systems (Diso 5 C,
+Lave 2, Sol's Moon and Triton) are deliberately excluded, since a system-level flag
+would be wrong for them.
+
 ## Development
 
 ```bash
@@ -191,8 +250,10 @@ wiki.
 ## Attributions
 
 Much of this data and several algorithms come from the Elite Dangerous community.
-Machine-readable attribution also lives next to each data file
-(`data/astro/SOURCES.md`) and in the doc comment of each ported module.
+The same credit lives next to each data file — as a comment header on the file
+itself, with the long form in `data/astro/SOURCES.md` — and in the doc comment of
+each ported module. (Attribution sits in a comment rather than an `attribution`
+field so it documents the data without being inlined into your bundle.)
 
 - **Procedural sector & system naming** — ported and restructured from the
   [EDTS](https://github.com/Esvandiary/edts) reference algorithm (`pgdata.py`) by
@@ -211,6 +272,13 @@ Machine-readable attribution also lives next to each data file
   [canonn-signals](https://github.com/canonn-science/canonn-signals) by the Canonn
   Research Group (MIT). EDAstro states no explicit licence for the dataset; check
   the site's terms before redistributing it.
+- **Permit-locked systems and regions** — from the community-maintained "Elite
+  Dangerous Permit Database" spreadsheet, obtained via
+  [canonn-signals](https://github.com/canonn-science/canonn-signals) by the Canonn
+  Research Group (MIT). Permit status is published in no game file or API, so the
+  list is hand-maintained and best-effort; the region half is reconciled against
+  this project's hand-authored region spheres and against
+  [EDSM](https://www.edsm.net).
 - **Hand-authored region spheres, named-region origins, and ground-truth `id64`
   fixtures** — factual records compiled and cross-checked against
   [EDSM](https://www.edsm.net) and [Spansh](https://spansh.co.uk). Detailed

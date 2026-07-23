@@ -25,7 +25,7 @@
  */
 
 import type { GalacticCoords } from './coords.js';
-import handAuthoredData from '../../../data/astro/hand-authored-regions.json' with { type: 'json' };
+import handAuthoredData from '../../../data/astro/hand-authored-regions.jsonc' with { type: 'json' };
 
 /** One sphere of a hand-authored region (centre and radius in light-years). */
 export interface HandAuthoredSphere {
@@ -39,14 +39,19 @@ export interface HandAuthoredSphere {
     r: number;
 }
 
-/** A hand-authored named sector: its canonical name, spheres and permit status. */
+/**
+ * A hand-authored named sector: its canonical name and the spheres it occupies.
+ *
+ * @remarks
+ * Whether the region needs a permit is not stored here — 28 of these regions are
+ * permit-locked, and `isPermitLockedRegionName` in `./permit-locks` is the single
+ * place that knows which. Pass {@link HandAuthoredRegion.name} to it.
+ */
 export interface HandAuthoredRegion {
     /** Canonically-cased region name, e.g. `Pleiades Sector`. */
     name: string;
     /** The spheres whose union defines the region's volume. */
     spheres: readonly HandAuthoredSphere[];
-    /** Whether the region sits behind a permit lock. */
-    needsPermit: boolean;
 }
 
 /** All hand-authored regions, sorted smallest-radius-first (overlap priority). */
@@ -71,6 +76,15 @@ export const HAND_AUTHORED_REGIONS: readonly HandAuthoredRegion[] = handAuthored
  * @example
  * ```ts
  * handAuthoredRegionForCoords({ x: -80.6, y: -146.7, z: -343.3 })?.name; // -> 'Pleiades Sector'
+ * ```
+ * @example
+ * Resolving a permit lock from a position — the exact route, since it does not
+ * depend on how the system is named:
+ * ```ts
+ * import { isPermitLockedRegionName } from './permit-locked-regions.js';
+ *
+ * const region = handAuthoredRegionForCoords(coords);
+ * const needsPermit = region !== null && isPermitLockedRegionName(region.name);
  * ```
  */
 export function handAuthoredRegionForCoords(coords: GalacticCoords): HandAuthoredRegion | null {

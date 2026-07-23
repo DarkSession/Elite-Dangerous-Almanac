@@ -4,7 +4,7 @@
  *
  * The region a system belongs to is fixed by its position on a flat ≈49.35 ly
  * (`4096 / 83` ly) grid over the galactic plane. Each region's cells are stored as
- * run-length geometry in `data/astro/galactic-region-cells.json` (kept separate
+ * run-length geometry in `data/astro/galactic-region-cells.jsonc` (kept separate
  * from the lightweight metadata so metadata-only consumers never bundle it); this
  * module rebuilds a per-row lookup index from them. The per-region metadata objects
  * live in `./galactic-region`.
@@ -19,7 +19,7 @@
  * data file's attribution.
  *
  * Algorithm ported from klightspeed's EliteDangerousRegionMap (`RegionMap.js`),
- * MIT © Ben Peddell. See `data/astro/galactic-region-cells.json` for attribution.
+ * MIT © Ben Peddell. See `data/astro/galactic-region-cells.jsonc` for attribution.
  *
  * @packageDocumentation
  */
@@ -27,7 +27,7 @@
 import { getGalacticRegion, type GalacticRegion, type PlanePoint } from './galactic-region.js';
 import { decodeSystemAddress } from './system-address.js';
 import { boxelEdgeLy } from './mass-code.js';
-import cellData from '../../../data/astro/galactic-region-cells.json' with { type: 'json' };
+import cellData from '../../../data/astro/galactic-region-cells.jsonc' with { type: 'json' };
 
 const { projection, regions } = cellData as {
     projection: {

@@ -1,13 +1,24 @@
+/*
+ * Procedurally generated nebulae, catalogued at a nearby system.
+ *
+ * Source:      EDAstro nebulae coordinates (nebulae-coordinates.csv)
+ * Author:      CMDR Orvidius (EDAstro)
+ * URL:         https://edastro.com/mapcharts/
+ * Obtained via: canonn-science/canonn-signals src/assets/nebulae.json
+ *               (MIT, (c) 2023 Canonn Research Group)
+ *               https://github.com/canonn-science/canonn-signals
+ *
+ * EDAstro publishes no explicit licence for the file; consult the site's terms
+ * before redistributing it.
+ *
+ * Nebula positions are galactic light-years with Sol at the origin. `regionId` is
+ * the galactic codex region id (see galactic-regions.jsonc) and is carried from the
+ * upstream CSV; all 5835 values were verified against this project's own region
+ * lookup.
+ *
+ * Full provenance and derivation notes: data/astro/SOURCES.md.
+ */
 {
-  "attribution": {
-    "source": "EDAstro nebulae coordinates (nebulae-coordinates.csv)",
-    "author": "CMDR Orvidius (EDAstro)",
-    "url": "https://edastro.com/mapcharts/",
-    "via": "canonn-science/canonn-signals src/assets/nebulae.json, MIT, (c) 2023 Canonn Research Group",
-    "viaUrl": "https://github.com/canonn-science/canonn-signals",
-    "note": "Nebula positions are galactic light-years with Sol at the origin. `regionId` is the galactic codex region id (see galactic-regions.json) and is carried from the upstream CSV; all 5835 values were verified against this project's own region lookup."
-  },
-  "description": "Procedurally generated nebulae, catalogued at a nearby system.",
   "nebulae": [
     {"name": "Agnairt AA-A h36", "system": "Agnairt TA-U d4-360", "x": -10010.4, "y": -33.7188, "z": 22444.2, "type": "procgen", "regionId": 4},
     {"name": "Agnaix AA-A h41", "system": "Agnaix QD-A d1-46", "x": -14929.7, "y": -451.406, "z": 22111.9, "type": "procgen", "regionId": 16},

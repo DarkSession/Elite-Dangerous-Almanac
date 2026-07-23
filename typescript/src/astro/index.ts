@@ -76,6 +76,24 @@ export {
     type HandAuthoredSphere,
 } from './hand-authored-regions.js';
 
+// ── Permit locks (which systems and regions need a permit) ──────────────────
+// The only place permit state lives: `HandAuthoredRegion` carries no permit flag.
+// From a name use `permitLockForSystemName`; from coordinates, resolve the region
+// with `handAuthoredRegionForCoords` and pass its name to `isPermitLockedRegionName`.
+export {
+    permitLockForSystemName,
+    isPermitLockedSystemName,
+    permitLockedSystemForName,
+    permitLockedSystemForAddress,
+    isPermitLockedRegionName,
+    permitLockedRegionForSystemName,
+    PERMIT_LOCKED_SYSTEMS,
+    PERMIT_LOCKED_REGIONS,
+    type PermitLock,
+    type PermitLockedSystem,
+    type SystemAddressInput,
+} from './permit-locks.js';
+
 // ── Galactic codex regions (the 42 codex zones) ─────────────────────────────
 export {
     GALACTIC_REGIONS,

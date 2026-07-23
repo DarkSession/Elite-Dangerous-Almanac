@@ -13,7 +13,7 @@
  */
 
 import type { Nebula } from './nebulae.js';
-import procgenNebulaeData from '../../../data/astro/nebulae-procgen.json' with { type: 'json' };
+import procgenNebulaeData from '../../../data/astro/nebulae-procgen.jsonc' with { type: 'json' };
 
 /**
  * All 166 procedurally generated nebulae, sorted by name.

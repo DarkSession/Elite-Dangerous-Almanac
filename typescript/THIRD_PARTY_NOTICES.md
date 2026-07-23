@@ -20,6 +20,14 @@ subject to its respective terms.
   (`src/assets/nebulae.json`, MIT, © 2023 Canonn Research Group). EDAstro states
   no explicit licence for the dataset; consult the site's terms before
   redistributing it.
+- **Permit-locked systems and regions:** transcribed from the community-maintained
+  "Elite Dangerous Permit Database" spreadsheet, obtained via
+  [canonn-science/canonn-signals](https://github.com/canonn-science/canonn-signals)
+  (`src/app/data/permit-locked-systems.ts`, MIT, © 2023 Canonn Research Group).
+  Permit status is published in no game file or API, so the list is hand-maintained
+  and best-effort. The system addresses accompanying it are factual records from
+  [Spansh](https://spansh.co.uk), cross-checked against
+  [EDSM](https://www.edsm.net).
 - **Hand-authored sector spheres, named-sector origins, and validation fixtures:**
   factual records compiled and cross-checked against
   [EDSM](https://www.edsm.net) and [Spansh](https://spansh.co.uk). The NGC 2392

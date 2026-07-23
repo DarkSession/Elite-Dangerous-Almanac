@@ -12,7 +12,7 @@
  *
  * The region ids and names come from klightspeed's EliteDangerousRegionMap; the
  * footprint fields are derived from its grayscale region map. See the attribution
- * in `data/astro/galactic-regions.json`.
+ * in `data/astro/galactic-regions.jsonc`.
  *
  * @remarks
  * Region ids are 1–42; id `0` means "outside the mapped region grid" and has no
@@ -21,7 +21,7 @@
  * @packageDocumentation
  */
 
-import regionData from '../../../data/astro/galactic-regions.json' with { type: 'json' };
+import regionData from '../../../data/astro/galactic-regions.jsonc' with { type: 'json' };
 
 /** A 2-D point on the galactic plane (X east/west, Z toward/away from the core), in light-years. */
 export interface PlanePoint {
@@ -82,7 +82,7 @@ export interface GalacticRegion {
  * All 42 galactic regions, ordered by id (index `i` holds region id `i + 1`).
  *
  * @remarks
- * This loads only `galactic-regions.json` (region metadata); the lookup cell grid
+ * This loads only `galactic-regions.jsonc` (region metadata); the lookup cell grid
  * lives in a separate module, so importing this never bundles it.
  *
  * @example

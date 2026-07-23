@@ -14,7 +14,7 @@
  */
 
 import type { Nebula } from './nebulae.js';
-import realNebulaeData from '../../../data/astro/nebulae-real.json' with { type: 'json' };
+import realNebulaeData from '../../../data/astro/nebulae-real.jsonc' with { type: 'json' };
 
 /**
  * All 180 real-world nebulae and dark regions, sorted by name.

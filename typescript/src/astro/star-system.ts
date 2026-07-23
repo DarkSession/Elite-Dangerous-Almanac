@@ -29,7 +29,8 @@ import {
     type DecodedAddress,
 } from './system-address.js';
 import { getNamedRegionOrigin, resolveRegionOrigin } from './named-regions.js';
-import { handAuthoredRegionForCoords, HAND_AUTHORED_REGIONS } from './hand-authored-regions.js';
+import { handAuthoredRegionForCoords } from './hand-authored-regions.js';
+import { isPermitLockedRegionName } from './permit-locked-regions.js';
 import type { GalacticCoords } from './coords.js';
 
 /** Attributes a hand-authored region contributes to a decoded system. */
@@ -66,14 +67,8 @@ function applyHaOverride(
     return {
         parts: { ...parts, regionName: region.name, l1, l2, l3, n1 },
         handAuthored: true,
-        needsPermit: region.needsPermit,
+        needsPermit: isPermitLockedRegionName(region.name),
     };
-}
-
-/** Look up a hand-authored region's permit flag by name (case-insensitive). */
-function permitForRegionName(regionName: string): boolean {
-    const key = regionName.toLowerCase();
-    return HAND_AUTHORED_REGIONS.find((r) => r.name.toLowerCase() === key)?.needsPermit ?? false;
 }
 
 /**
@@ -118,7 +113,16 @@ export class StarSystem {
     /** Whether the system's region is a hand-authored named sector. */
     readonly isHandAuthoredSector: boolean;
 
-    /** Whether the system's region sits behind a permit lock. */
+    /**
+     * Whether the system's **region** sits behind a permit lock (Col 70, Bleia,
+     * the Cone Sector, …).
+     *
+     * @remarks
+     * This is a region-level flag only. Individually permit-locked systems — Sol,
+     * Shinrarta Dezhra, Achenar and 51 others — are not procedurally named, so they
+     * never reach a `StarSystem`; check those with `permitLockForSystemName` from
+     * `./permit-locks`, which covers both kinds of lock from a name alone.
+     */
     readonly needsPermit: boolean;
 
     private constructor(
@@ -162,7 +166,7 @@ export class StarSystem {
             { ...parts, regionName },
             {
                 handAuthored: named,
-                needsPermit: named ? permitForRegionName(regionName) : false,
+                needsPermit: named && isPermitLockedRegionName(regionName),
             },
         );
     }

@@ -20,7 +20,7 @@
  */
 
 import { sectorCoordsFromName } from './sector-name.js';
-import originsData from '../../../data/astro/named-region-origins.json' with { type: 'json' };
+import originsData from '../../../data/astro/named-region-origins.jsonc' with { type: 'json' };
 
 /**
  * A region's origin and extent, in internal units (32 per light-year, measured

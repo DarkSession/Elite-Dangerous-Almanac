@@ -14,7 +14,7 @@
  */
 
 import type { Nebula } from './nebulae.js';
-import planetaryNebulaeData from '../../../data/astro/nebulae-planetary.json' with { type: 'json' };
+import planetaryNebulaeData from '../../../data/astro/nebulae-planetary.jsonc' with { type: 'json' };
 
 /**
  * All 5489 planetary nebulae, sorted by name.

@@ -1,3 +1,18 @@
+/*
+ * Origins and extents of the game's named regions, in Elite Dangerous's internal
+ * coordinate frame (32 units per light-year, measured from the galaxy corner).
+ *
+ * Source: the EDTS reference implementation (pgdata.py) by Alot (Esvandiary),
+ *         based on community reverse-engineering of Elite Dangerous's procedural
+ *         generator. The previously cited GitHub repository is no longer publicly
+ *         available, so its original license could not be independently
+ *         re-confirmed.
+ *
+ * Where a region is defined by a single sphere, its origin and extent are that
+ * sphere's axis-aligned bounds in the internal frame.
+ *
+ * Full provenance and derivation notes: data/astro/SOURCES.md.
+ */
 [
   {
     "name": "Alrai Sector",

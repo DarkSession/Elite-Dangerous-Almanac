@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { StarSystem } from './star-system.js';
 import { handAuthoredRegionForCoords, HAND_AUTHORED_REGIONS } from './hand-authored-regions.js';
 import { getNamedRegionOrigin } from './named-regions.js';
+import { isPermitLockedRegionName } from './permit-locked-regions.js';
 import handAuthoredFixture from '../../../fixtures/astro/hand-authored-regions.json' with { type: 'json' };
 
 for (const s of handAuthoredFixture.systems) {
@@ -76,12 +77,13 @@ test('HAND_AUTHORED_REGIONS is sorted smallest-radius-first (overlap priority)',
     }
 });
 
-test('carries the permit flag for a permit-locked region', () => {
+test('resolves a permit-locked region from coordinates', () => {
     const cone = HAND_AUTHORED_REGIONS.find((r) => r.name === 'Cone Sector');
     assert.ok(cone);
-    assert.equal(cone.needsPermit, true);
     const s = cone.spheres[0]!;
     const hit = handAuthoredRegionForCoords({ x: s.cx, y: s.cy, z: s.cz });
     assert.equal(hit?.name, 'Cone Sector');
-    assert.equal(hit?.needsPermit, true);
+    // The region record itself holds no permit flag — permit-locks.ts owns that.
+    assert.equal(isPermitLockedRegionName(hit!.name), true);
+    assert.equal(isPermitLockedRegionName('Pleiades Sector'), false);
 });

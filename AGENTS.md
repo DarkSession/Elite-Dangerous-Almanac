@@ -20,6 +20,19 @@ The library starts in **TypeScript**, with **Python** (and potentially other lan
 
 When adding features or data, keep them portable: prefer language-neutral formats (e.g. JSON) for static data and fixtures so every implementation can consume them without duplication.
 
+### Data file format: JSONC in `data/`, plain JSON in `fixtures/`
+
+Files in **`data/`** are **JSONC** (`.jsonc`): JSON preceded by a comment header carrying the file's attribution (see §Attribution). Files in **`fixtures/`** stay plain `.json` — they are test-only, never bundled, so there is nothing to keep out of a payload.
+
+Two rules keep `.jsonc` portable, and both are enforced by `typescript/src/astro/data-files.test.ts`:
+
+1. **Comments are the only JSONC extension used.** No trailing commas, no unquoted keys, no single quotes. Strip the comments and what remains must be strict JSON that any language's standard parser accepts — Python's `json`, Go's `encoding/json`, and so on. A trailing comma is portable only in JSON5, which is a different format.
+2. **Attribution lives in the header comment, never in the payload.** No top-level `attribution` or `description` key. Every payload byte is inlined into consumers' bundles; comment bytes are not.
+
+Each implementation strips comments in its own loader — never by generating `.json` copies, which would break `data/`'s single-source-of-truth rule. TypeScript does it in `typescript/scripts/jsonc.mjs`, wired into the test runner (`scripts/register-jsonc.mjs`, via `--import` *after* tsx) and into the build (an esbuild `onLoad` plugin in `tsup.config.ts`), with `src/jsonc.d.ts` typing the import as `unknown` so each consumer casts to its own interface. Python would use the same one-function approach before `json.loads`.
+
+> **Editors reformat `.jsonc`.** Some formatters treat the extension as JSON5 and add trailing commas, silently breaking rule 1. If a data file starts failing to parse, check what your editor did to it before suspecting the loader.
+
 ## Build & Tree-Shaking Requirements
 
 Consumers (community apps, often web-based) must only pay for what they import. Build the library in small pieces and keep everything tree-shakeable:
@@ -30,6 +43,7 @@ Consumers (community apps, often web-based) must only pay for what they import. 
 - **Subpath exports** (`exports` map in `package.json`) per feature area (e.g. `almanac/ships`, `almanac/market`, `almanac/astro`) so consumers can import a slice without touching the root barrel.
 - **Prefer pure functions over stateful classes**; when classes are used, avoid static registries or cross-class coupling that drags unrelated code into the bundle.
 - **Static data is the biggest bundle risk**: never expose one monolithic data import. Split `data/` consumption into per-domain (and where sensible per-entity-group) modules so importing one ship's stats doesn't bundle the whole galaxy.
+- **Nothing in a data payload that isn't data.** Prose a program never reads — attribution, notes, descriptions — is inlined into every consumer's bundle just like the records are. It belongs in the file's comment header (see §Data file format), where it stays next to the data and costs consumers nothing. On the small catalogues this is not a rounding error: `permit-locks` was 20% attribution by weight.
 - **No packing or minification in the library source.** Keep the checked-in source and the shared `data/` / `fixtures/` as normal, readable, well-formatted code and JSON — never hand-minified, pre-bundled, or otherwise compacted. All bundling, minification, tree-shaking, dead-code elimination, and payload compaction belong to the per-language **build/dist step** (e.g. `tsup`/esbuild for TypeScript), never baked into source. This keeps the data reviewable and diff-able, and keeps the shared assets portable across language implementations that each pack differently.
 
 Tree-shakeability is part of feature parity: other language implementations should mirror the same fine-grained module boundaries (e.g. Python subpackages matching the TS subpath exports).
@@ -60,7 +74,7 @@ This is a library, so documentation is a first-class deliverable:
 Much of the static data and many calculations derive from the Elite Dangerous community (e.g. EDCD, EDDN, EDSM, Spansh, forum research, individual authors) as well as third-party libraries. Proper credit is mandatory and must appear in **both** places:
 
 - **In the source code**, next to the thing being attributed. Put the credit where a reader encounters the data or algorithm:
-  - Data files (`data/`): include source/attribution metadata (e.g. a `source`, `attribution`, or `license` field, or a sibling `SOURCES.md`) identifying origin, author, and license/terms.
+  - Data files (`data/`): open the file with a **comment header** giving origin, author, license/terms, and any derivation caveats, then point at the sibling `SOURCES.md` for the long form. Put it in a comment, not in an `attribution` field — see §Data file format for why, and copy the header of any existing `data/astro/*.jsonc` for the shape.
   - Code (calculations, ported algorithms): a doc comment on the function/module citing the original source, author, and license, with a link where possible.
 - **In `README.md`**: maintain a dedicated "Attributions" / "Credits" section listing every external data source, algorithm, and library, with author, link, and license. This is the human-facing summary and must stay in sync with the in-source credits.
 
@@ -71,7 +85,7 @@ Whenever you add or change data, port an algorithm, or introduce a dependency th
 Monorepo with one subfolder per language implementation and shared, language-neutral assets at the top level:
 
 ```
-data/          # shared static data (JSON) — astrophysical, ships, characters, market
+data/          # shared static data (JSONC) — astrophysical, ships, characters, market
 fixtures/      # shared test fixtures (JSON) — every implementation validates against these
 typescript/    # TypeScript library (package.json, src/, tests, typedoc.json)
 python/        # (future) Python library — same features, same fixtures
