@@ -1,0 +1,48 @@
+{
+  "name": "@elite-dangerous-almanac/core",
+  "version": "0.0.1",
+  "description": "Ready-to-go static data and calculations for Elite Dangerous community apps and researchers.",
+  "type": "module",
+  "sideEffects": false,
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./astro": {
+      "types": "./dist/astro/index.d.ts",
+      "import": "./dist/astro/index.js"
+    },
+    "./astro/*": {
+      "types": "./dist/astro/*.d.ts",
+      "import": "./dist/astro/*.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepublishOnly": "npm test && npm run typecheck && npm run build && npm run test:package",
+    "test": "node --experimental-test-coverage --test-coverage-include=\"src/astro/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --test \"src/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "docs": "typedoc",
+    "test:package": "node --test package.test.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "tsup": "^8.5.1",
+    "tsx": "^4.19.2",
+    "typedoc": "^0.28.1",
+    "typedoc-github-wiki-theme": "^2.1.0",
+    "typedoc-plugin-markdown": "^4.4.1",
+    "typescript": "^5.7.2"
+  }
+}

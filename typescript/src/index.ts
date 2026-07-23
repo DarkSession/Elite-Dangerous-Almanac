@@ -1,0 +1,12 @@
+/**
+ * Elite Dangerous Almanac — ready-to-go static data and calculations for
+ * community apps and researchers.
+ *
+ * The root entry point re-exports every feature area. Prefer a subpath import
+ * (e.g. `@elite-dangerous-almanac/core/astro`) so consumers only bundle the slice
+ * they use.
+ *
+ * @packageDocumentation
+ */
+
+export * from './astro/index.js';

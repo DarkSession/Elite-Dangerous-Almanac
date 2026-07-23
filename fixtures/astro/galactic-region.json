@@ -1,0 +1,69 @@
+{
+  "comment": "Ground truth generated from the klightspeed/EliteDangerousRegionMap RegionMap.js algorithm (MIT (c) Ben Peddell). coords[] uses real EDSM coordinates; boxels[] uses documented real id64s. See data/astro/galactic-region-map.json for attribution.",
+  "coords": [
+    {
+      "name": "Sol",
+      "x": 0,
+      "z": 0,
+      "regionId": 18,
+      "region": "Inner Orion Spur"
+    },
+    {
+      "name": "Sagittarius A*",
+      "x": 25.21875,
+      "z": 25899.96875,
+      "regionId": 1,
+      "region": "Galactic Centre"
+    },
+    {
+      "name": "Colonia",
+      "x": -9530.5,
+      "z": 19808.125,
+      "regionId": 9,
+      "region": "Inner Scutum-Centaurus Arm"
+    },
+    {
+      "name": "Beagle Point",
+      "x": -1111.5625,
+      "z": 65269.75,
+      "regionId": 40,
+      "region": "The Abyss"
+    },
+    {
+      "name": "Merope",
+      "x": -78.59375,
+      "z": -340.53125,
+      "regionId": 18,
+      "region": "Inner Orion Spur"
+    }
+  ],
+  "boxels": [
+    {
+      "name": "Sol",
+      "id64": "10477373803",
+      "x": -65,
+      "y": -25,
+      "z": -25,
+      "regionId": 18,
+      "region": "Inner Orion Spur"
+    },
+    {
+      "name": "Sagittarius A*",
+      "id64": "20578934",
+      "x": -65,
+      "y": -25,
+      "z": 25815,
+      "regionId": 1,
+      "region": "Galactic Centre"
+    },
+    {
+      "name": "Beagle Point",
+      "id64": "81973396946",
+      "x": -1145,
+      "y": -145,
+      "z": 65255,
+      "regionId": 40,
+      "region": "The Abyss"
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+# Elite Dangerous Almanac
+
+Ready-to-go static data and calculations for Elite Dangerous community apps and
+researchers. Batteries-included, tree-shakeable, and validated against
+language-neutral fixtures so every language port behaves identically.
+
+The library is a monorepo with one folder per language implementation over shared
+data. **TypeScript** is available today (`typescript/`); Python is planned.
+
+## Install (TypeScript)
+
+```bash
+npm install @elite-dangerous-almanac/core
+```
+
+ESM-only, `"sideEffects": false`. Import the slice you need so bundlers drop the
+rest. Native ESM applications can use leaf subpaths (for example,
+`@elite-dangerous-almanac/core/astro/star-system`) to avoid evaluating unrelated
+data modules:
+
+```ts
+import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
+```
+
+## Quick start
+
+The `astro` feature area covers Elite Dangerous **procedural naming** and the
+**`id64` system address**. Start with `StarSystem` — one immutable handle that
+composes the lower-level functions:
+
+```ts
+import { StarSystem } from '@elite-dangerous-almanac/core/astro';
+
+// Name  ->  id64
+const sys = StarSystem.fromName('Synuefe EN-H d11-96');
+sys?.systemAddress;        // 3309179996515n
+sys?.sectorName;           // 'Synuefe'
+sys?.massCode;             // 'd'
+
+// id64  ->  name
+StarSystem.fromSystemAddress(3309179996515n).name;   // 'Synuefe EN-H d11-96'
+
+// id64 + coordinates  ->  the name the game actually shows
+// (a system inside a hand-authored region renders under that region's name)
+StarSystem.fromSystemAddress(id64, { x, y, z }).name; // e.g. 'Pleiades Sector HR-W d1-79'
+```
+
+**Why `coords`?** An `id64` encodes only the boxel, not the exact position, so on
+its own it can't tell whether a system sits inside a hand-authored region
+(Pleiades, Coalsack, …). Pass the coordinates you already have alongside the
+`id64` — from the player journal, [EDSM](https://www.edsm.net) or
+[Spansh](https://spansh.co.uk), in light-years with Sol at the origin — to get the
+name the game displays. Without them you get the procedural name.
+
+Prefer a single calculation? Skip the class and import the pure function:
+
+```ts
+import {
+    sectorNameFromCoords,
+    decodeSystemAddress,
+    findRegionForBoxel,
+    findRegionAt,
+} from '@elite-dangerous-almanac/core/astro';
+
+sectorNameFromCoords({ x: 39, y: 30, z: 20 });   // 'Blae Eock'
+decodeSystemAddress(3309179996515n);             // { sizeClass, sectorCoords, boxelCode, ... }
+findRegionForBoxel(3309179996515n).region?.name; // 'Inner Orion Spur' (a system's codex region)
+findRegionAt({ x: 0, z: 0 })?.name;              // 'Inner Orion Spur' (codex region at coords)
+```
+
+> **Codex region and bundle size.** `StarSystem` deliberately has no
+> `galacticRegion` member: wiring the region lookup into the facade would pull the
+> ~207 KB region-cell grid into *every* `StarSystem` import (a class getter can't be
+> tree-shaken away when unused). Get a system's region from its address with the
+> standalone `findRegionForBoxel` instead, so only code that needs the grid pays for it.
+
+### Error model
+
+Failures are split by cause so you know what to catch:
+
+| Call | On bad input |
+| --- | --- |
+| `StarSystem.fromName(name)` | returns `null` when the name is malformed |
+| `StarSystem.fromSystemAddress(id64)` / `fromModSystemAddress(id64)` | throws `RangeError` when the address is outside 64 bits or resolves to an unnamed grid slot |
+| `sys.systemAddress` / `sys.modSystemAddress` | throws on access — `Error` (unknown region) or `RangeError` (field out of range) |
+
+Reading `.name`, `.sectorName`, `.massCode`, `.coords` never throws.
+
+## The four kinds of "region"
+
+Elite Dangerous overloads the word *region*. The API keeps them separate — this
+table is the map:
+
+| Concept | What it is | Entry point |
+| --- | --- | --- |
+| **Procedural sector** | The boxel-grid name (`Synuefe`, `Blae Eock`) | `sectorNameFromCoords` / `sectorCoordsFromName` |
+| **Region origin** | A sector's corner, needed to encode a name to an `id64` | `resolveRegionOrigin` |
+| **Hand-authored region** | A named nebula/cluster sector (Pleiades, Coalsack) | `handAuthoredRegionForCoords` / `HAND_AUTHORED_REGIONS` |
+| **Galactic codex region** | One of the 42 codex zones (Inner Orion Spur, …) | `findRegionAt` / `getGalacticRegion` / `GALACTIC_REGIONS` |
+
+One sample of each:
+
+```ts
+import {
+    sectorNameFromCoords,        // procedural sector
+    resolveRegionOrigin,         // region origin
+    handAuthoredRegionForCoords, // hand-authored region
+    findRegionAt,                // galactic codex region
+} from '@elite-dangerous-almanac/core/astro';
+
+// Procedural sector — the boxel-grid name for a grid position
+sectorNameFromCoords({ x: 39, y: 30, z: 20 });            // 'Blae Eock'
+
+// Region origin — a sector's corner in internal units, used to encode an id64
+resolveRegionOrigin('Synuefe');
+// { name: 'Synuefe', x0: 1597440, y0: 1269760, z0: 737280, sizeX: 40960, sizeY: 40960, sizeZ: 40960 }
+
+// Hand-authored region — a named nebula/cluster sector, by galactic coordinates
+handAuthoredRegionForCoords({ x: -80.6, y: -146.7, z: -343.3 })?.name; // 'Pleiades Sector'
+
+// Galactic codex region — one of the 42 codex zones, by a point on the galactic plane
+findRegionAt({ x: 0, z: 0 })?.name;                       // 'Inner Orion Spur'
+```
+
+## Development
+
+```bash
+cd typescript
+npm install
+npm test         # shared fixtures + enforced 80% line/branch/function coverage
+npm run typecheck
+npm run build    # tsup -> dist/ (ESM + d.ts, per-subpath)
+npm run docs     # typedoc -> GitHub Wiki markdown
+```
+
+Full API documentation is generated from source and published to the repository
+wiki.
+
+## Attributions
+
+Much of this data and several algorithms come from the Elite Dangerous community.
+Machine-readable attribution also lives next to each data file
+(`data/astro/SOURCES.md`) and in the doc comment of each ported module.
+
+- **Procedural sector & system naming** — ported and restructured from the
+  [EDTS](https://github.com/Esvandiary/edts) reference algorithm (`pgdata.py`) by
+  Alot (Esvandiary), via the canonn-signals TypeScript port. Original in-game
+  algorithm reverse-engineered by the Elite Dangerous community.
+- **Galactic codex regions** (the 42 regions, lookup grid, and boxel/coordinate
+  region resolution) — from
+  [EliteDangerousRegionMap](https://github.com/klightspeed/EliteDangerousRegionMap)
+  by Ben Peddell ([klightspeed](https://github.com/klightspeed)), MIT. Per-region
+  footprint figures (area, bounds, centroid) are derived by this project and are
+  approximate. Original region-boundary research on the
+  [Frontier forums](https://forums.frontier.co.uk/threads/determining-the-region-of-a-system.537845/).
+- **Hand-authored region spheres, named-region origins, and ground-truth `id64`
+  fixtures** — factual records compiled and cross-checked against
+  [EDSM](https://www.edsm.net) and [Spansh](https://spansh.co.uk). Detailed
+  per-file derivations and source terms are recorded in `data/astro/SOURCES.md`
+  and shipped to npm consumers in `THIRD_PARTY_NOTICES.md`.
+
+If you add or change data, port an algorithm, or add a dependency that warrants
+credit, update both the in-source attribution and this section in the same change.
+
+## License
+
+MIT.

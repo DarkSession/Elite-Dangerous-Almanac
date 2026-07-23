@@ -1,0 +1,17 @@
+{
+  "description": "Real (name, id64, coords) triples from EDSM and Spansh for systems that physically sit inside a hand-authored named sector, so the game renames them. Decoding the id64 WITH coords must reproduce `name`; WITHOUT coords it falls back to the procedural alias in `proceduralName`. Coordinates are galactic light-years, Sol at the origin. id64 values are decimal strings.",
+  "systems": [
+    { "name": "Pleiades Sector HR-W d1-79", "id64": "2724879894859", "coords": { "x": -80.625, "y": -146.65625, "z": -343.25 }, "proceduralName": "Synuefai XU-M d8-79", "needsPermit": false },
+    { "name": "Coalsack Sector IW-V b2-0", "id64": "677397014017", "coords": { "x": 475.375, "y": 33.34375, "z": 227.3125 }, "needsPermit": false },
+    { "name": "California Sector BA-A e6", "id64": "27072119940", "coords": { "x": -319.8125, "y": -216.75, "z": -913.46875 }, "needsPermit": false },
+    { "name": "Witch Head Sector FB-X c1-9", "id64": "2558424486466", "coords": { "x": 381.09375, "y": -383.34375, "z": -729.53125 }, "needsPermit": false },
+    { "name": "Blue planetary Sector RO-Q b5-0", "id64": "731622287601", "coords": { "x": 4516.65625, "y": 419.40625, "z": 2099.875 }, "needsPermit": false },
+    { "name": "NGC 2392 Sector UJ-Q b5-0", "id64": "674176509065", "coords": { "x": 235.90625, "y": 236.125, "z": -719.3125 }, "proceduralName": "Wregoe FN-Y b15-0", "needsPermit": false, "source": "EDSM system API, id 21224" }
+  ],
+  "regionForCoords": [
+    { "coords": { "x": -80.625, "y": -146.65625, "z": -343.25 }, "region": "Pleiades Sector" },
+    { "coords": { "x": 475.375, "y": 33.34375, "z": 227.3125 }, "region": "Coalsack Sector" },
+    { "coords": { "x": 2000, "y": 2000, "z": 40000 }, "region": null },
+    { "coords": { "x": -25000, "y": 0, "z": 8000 }, "region": null }
+  ]
+}
