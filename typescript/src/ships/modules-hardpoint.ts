@@ -3,13 +3,14 @@
  * tools mounted on a hardpoint (lasers, multi-cannons, missile and mine launchers,
  * mining lasers, the various Thargoid/Guardian hardpoints, …).
  *
- * ~25 KB bundled. These are the modules that carry a {@link OutfittingModule.mount}
+ * These are the modules that carry a {@link OutfittingModule.mount}
  * (Fixed / Gimballed / Turreted) and, for launchers, a
  * {@link OutfittingModule.guidance}. The other categories live in
  * `./modules-standard`, `./modules-internal` and `./modules-utility`, so importing
  * this module never bundles them.
  *
- * Data from EDCD FDevIDs (`outfitting.csv`); see `data/ships/SOURCES.md`.
+ * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,
+ * joined on `symbol`; see `data/ships/SOURCES.md`.
  *
  * @packageDocumentation
  */

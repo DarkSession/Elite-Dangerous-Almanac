@@ -1,27 +1,34 @@
 /**
- * The Elite Dangerous ship catalogue — Frontier's shipyard registry of every
- * player-flyable hull, with the lookups an app needs to turn an id, an internal
- * symbol, or a display name into a {@link Ship}.
+ * The Elite Dangerous ship catalogue — every player-flyable hull's **identity, its
+ * stats, and its slot layout in one record**, with the lookups an app needs to turn
+ * an internal symbol or a display name into a {@link Ship}.
  *
  * Unlike the outfitting modules (split into several catalogues by category), there
- * is only one list of ships and it is tiny (48 records, ~3.5 KB bundled), so this
- * module carries both the {@link SHIPS} data and the query functions. Importing a
- * lookup therefore bundles the whole ship list — which is what you wanted anyway.
+ * is only one list of ships and it is tiny (48 records), so this module carries both
+ * the {@link SHIPS} data and the query functions. Importing a lookup therefore
+ * bundles the whole ship list — which is what you wanted anyway.
  *
- * Data from EDCD FDevIDs (`shipyard.csv`); see `data/ships/SOURCES.md`.
+ * Identity from EDCD FDevIDs (`shipyard.csv`); stats and slot layout from
+ * EDCD/coriolis-data, joined on `symbol`; see `data/ships/SOURCES.md`.
  *
  * @packageDocumentation
  */
 
 import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
+import type { CoreSlots, OptionalSlotSpec, BulkheadOption, ShipSlots } from './slots.js';
 
 /**
- * One ship hull in Frontier's shipyard registry.
+ * One ship hull — its **identity, stats and slot layout** in one record.
  *
  * @remarks
- * A pure id/name record — this is the shipyard registry, not a stats sheet, so it
- * carries no hull mass, jump range or slot layout.
+ * The identity fields (`symbol`, `name`, `entitlement`) come from Frontier's
+ * shipyard registry and are always present. The stats fields (`hullMass`, `speed`,
+ * …) and the slot-layout fields (`core`, `hardpoints`, `optional`, …) come from
+ * coriolis-data and are present for every hull it covers — all but one (the Lynx
+ * Highliner, `MediumTransport01`, which carries identity only). Masses are tonnes,
+ * `speed`/`boost` are metres per second at 4 pips to engines, rotation rates are
+ * degrees per second.
  */
 export interface Ship {
     /**
@@ -44,6 +51,52 @@ export interface Ship {
      * empty) for hulls available to everyone.
      */
     readonly entitlement?: string;
+
+    // ── Stats (from coriolis-data) — present for every hull but the Lynx Highliner. ──
+
+    /** Empty-hull mass, in tonnes. A build's unladen mass is this plus every fitted module. */
+    readonly hullMass?: number;
+    /** Top speed at 4 pips to engines, in metres per second. */
+    readonly speed?: number;
+    /** Boost speed, in metres per second. */
+    readonly boost?: number;
+    /** Base shield strength, in megajoules, before generator and boosters. */
+    readonly baseShieldStrength?: number;
+    /** Base armour (hull hit points) before reinforcement. */
+    readonly baseArmour?: number;
+    /** Hull hardness — resistance to armour piercing. */
+    readonly hardness?: number;
+    /** Mass-lock factor — how strongly the hull impedes a smaller ship's FSD. */
+    readonly masslock?: number;
+    /** Number of crew seats (SLF/multicrew). */
+    readonly crew?: number;
+    /** Heat capacity — how much heat the hull absorbs before taking damage. */
+    readonly heatCapacity?: number;
+    /** Reserve tank capacity, in tonnes (feeds the main tank from empty). */
+    readonly reserveFuelCapacity?: number;
+    /** Pitch rate, in degrees per second. */
+    readonly pitch?: number;
+    /** Roll rate, in degrees per second. */
+    readonly roll?: number;
+    /** Yaw rate, in degrees per second. */
+    readonly yaw?: number;
+    /** Minimum thrust as a percentage — the throttle floor. */
+    readonly minThrust?: number;
+    /** Speed gained per pip to engines, as a fraction of base speed. */
+    readonly pipSpeed?: number;
+
+    // ── Slot layout (from coriolis-data) — present alongside the stats. ──
+
+    /** The seven core-internal mount sizes. */
+    readonly core?: CoreSlots;
+    /** Weapon-hardpoint sizes, largest first (1 Small – 4 Huge). */
+    readonly hardpoints?: readonly number[];
+    /** Number of tiny utility mounts. */
+    readonly utility?: number;
+    /** Optional-internal mounts, largest first. */
+    readonly optional?: readonly OptionalSlotSpec[];
+    /** The armour options and their added mass. */
+    readonly bulkheads?: readonly BulkheadOption[];
 }
 
 /**
@@ -90,4 +143,44 @@ export function getShipBySymbol(symbol: string): Ship | null {
 export function getShipByName(name: string): Ship | null {
     const wanted = name.trim().toLowerCase();
     return SHIPS.find((ship) => ship.name.toLowerCase() === wanted) ?? null;
+}
+
+/**
+ * A hull's slot layout as a self-contained {@link ShipSlots}, ready to feed
+ * {@link enumerateSlots}.
+ *
+ * @param symbol - The internal identifier, e.g. `"Anaconda"` (case-insensitive).
+ * @returns The hull's slot layout, or `null` if no hull with that symbol is carried
+ * or the merged catalogue holds no slots for it (the one hull coriolis does not
+ * cover). This is a projection of the slot-bearing fields already on {@link Ship}.
+ * @remarks
+ * This is the **read-only** layout, for your own outfitting UI (feed it to
+ * `enumerateSlots`). To assemble and edit an actual build — fit modules, engineer
+ * them, read jump range — start a `ShipLoadout` instead and use its live
+ * `slots()` / `coreModules()` handles.
+ * @example
+ * ```ts
+ * getShipSlots('anaconda')?.hardpoints; // -> [4, 3, 3, 3, 2, 2, 1, 1]
+ * ```
+ */
+export function getShipSlots(symbol: string): ShipSlots | null {
+    const ship = getShipBySymbol(symbol);
+    if (
+        !ship ||
+        !ship.core ||
+        !ship.hardpoints ||
+        ship.utility === undefined ||
+        !ship.optional ||
+        !ship.bulkheads
+    ) {
+        return null;
+    }
+    return {
+        symbol: ship.symbol,
+        core: ship.core,
+        hardpoints: ship.hardpoints,
+        utility: ship.utility,
+        optional: ship.optional,
+        bulkheads: ship.bulkheads,
+    };
 }

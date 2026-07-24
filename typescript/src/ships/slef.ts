@@ -140,10 +140,89 @@ export type Slef = readonly SlefEntry[];
 /** A synthetic header used when the input is a bare, header-less loadout. */
 const SYNTHETIC_HEADER: SlefHeader = { appName: '', appVersion: '' };
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const isOptionalString = (value: unknown): value is string | undefined =>
+    value === undefined || typeof value === 'string';
+
+const isOptionalFiniteNumber = (value: unknown): value is number | undefined =>
+    value === undefined || (typeof value === 'number' && Number.isFinite(value));
+
+function isEngineeringModifier(value: unknown): value is EngineeringModifier {
+    if (!isRecord(value) || typeof value.Label !== 'string') return false;
+    return (
+        isOptionalFiniteNumber(value.Value) &&
+        isOptionalFiniteNumber(value.OriginalValue) &&
+        isOptionalString(value.ValueStr) &&
+        isOptionalFiniteNumber(value.LessIsGood)
+    );
+}
+
+function isModuleEngineering(value: unknown): value is ModuleEngineering {
+    if (!isRecord(value)) return false;
+    return (
+        typeof value.BlueprintName === 'string' &&
+        typeof value.Level === 'number' &&
+        Number.isFinite(value.Level) &&
+        typeof value.Quality === 'number' &&
+        Number.isFinite(value.Quality) &&
+        isOptionalString(value.ExperimentalEffect) &&
+        isOptionalString(value.ExperimentalEffect_Localised) &&
+        Array.isArray(value.Modifiers) &&
+        value.Modifiers.every(isEngineeringModifier)
+    );
+}
+
+function isLoadoutModule(value: unknown): value is LoadoutModule {
+    if (!isRecord(value)) return false;
+    return (
+        typeof value.Slot === 'string' &&
+        typeof value.Item === 'string' &&
+        (value.On === undefined || typeof value.On === 'boolean') &&
+        isOptionalFiniteNumber(value.Priority) &&
+        isOptionalFiniteNumber(value.Health) &&
+        isOptionalFiniteNumber(value.Value) &&
+        (value.Engineering === undefined || isModuleEngineering(value.Engineering))
+    );
+}
+
+function isSlefHeader(value: unknown): value is SlefHeader {
+    if (!isRecord(value)) return false;
+    return (
+        typeof value.appName === 'string' &&
+        (typeof value.appVersion === 'string' ||
+            (typeof value.appVersion === 'number' && Number.isFinite(value.appVersion))) &&
+        isOptionalString(value.appURL) &&
+        (value.appCustomProperties === undefined || isRecord(value.appCustomProperties))
+    );
+}
+
 function isLoadout(value: unknown): value is LoadoutEvent {
-    if (typeof value !== 'object' || value === null) return false;
-    const v = value as Record<string, unknown>;
-    return typeof v.Ship === 'string' && Array.isArray(v.Modules);
+    if (!isRecord(value)) return false;
+    const fuel = value.FuelCapacity;
+    const validFuel =
+        fuel === undefined ||
+        (isRecord(fuel) &&
+            typeof fuel.Main === 'number' &&
+            Number.isFinite(fuel.Main) &&
+            typeof fuel.Reserve === 'number' &&
+            Number.isFinite(fuel.Reserve));
+    return (
+        typeof value.Ship === 'string' &&
+        Array.isArray(value.Modules) &&
+        value.Modules.every(isLoadoutModule) &&
+        isOptionalString(value.event) &&
+        isOptionalString(value.ShipName) &&
+        isOptionalString(value.ShipIdent) &&
+        isOptionalFiniteNumber(value.HullValue) &&
+        isOptionalFiniteNumber(value.ModulesValue) &&
+        isOptionalFiniteNumber(value.UnladenMass) &&
+        isOptionalFiniteNumber(value.CargoCapacity) &&
+        isOptionalFiniteNumber(value.MaxJumpRange) &&
+        validFuel &&
+        isOptionalFiniteNumber(value.Rebuy)
+    );
 }
 
 /**
@@ -155,6 +234,8 @@ function isLoadout(value: unknown): value is LoadoutEvent {
  * - a single `{ header, data }` object;
  * - a bare journal `Loadout` event (`{ Ship, Modules, ... }`) — wrapped in an entry
  *   with an empty synthetic header.
+ * Every returned header, loadout, module and engineering modifier is runtime-checked
+ * against the public record shape; malformed entries are skipped.
  * @returns The entries, in export order — never empty (a parse that finds no valid
  * entry throws instead).
  * @throws {SyntaxError} If `input` is a string that is not valid JSON.
@@ -176,9 +257,9 @@ export function parseSlef(input: string | object): SlefEntry[] {
             entries.push({ header: SYNTHETIC_HEADER, data: raw });
             continue;
         }
-        if (typeof raw === 'object' && raw !== null && isLoadout((raw as SlefEntry).data)) {
-            const entry = raw as SlefEntry;
-            entries.push({ header: entry.header ?? SYNTHETIC_HEADER, data: entry.data });
+        if (isRecord(raw) && isLoadout(raw.data)) {
+            const header = raw.header ?? SYNTHETIC_HEADER;
+            if (isSlefHeader(header)) entries.push({ header, data: raw.data });
         }
     }
 

@@ -13,6 +13,10 @@ data. **TypeScript** is available today (`typescript/`); Python is planned.
 npm install @elite-dangerous-almanac/core
 ```
 
+Licensing note: the package bundles game and community data under
+source-specific terms, including non-commercial terms. See [License](#license)
+before redistribution or commercial use.
+
 ESM-only, `"sideEffects": false`. Import the slice you need so bundlers drop the
 rest. Native ESM applications can use leaf subpaths (for example,
 `@elite-dangerous-almanac/core/astro/star-system`) to avoid evaluating unrelated
@@ -317,38 +321,45 @@ microResourcesInCategory("consumable", ALL_MICRO_RESOURCES).length; // -> 6
 
 ## Ships and outfitting
 
-The `ships` feature area is Frontier's shipyard and outfitting registries — the
-48 player-flyable **hulls** and the ~1200 fittable **modules** as symbol/name
-records — plus a **stats layer** (masses, power, FSD constants, …) and **jump-range
-calculations** you can drive straight from a [SLEF](#ship-builds-jump-range-and-slef)
-export. The registries and the stats are separate catalogues keyed by the same
-Frontier `symbol`, so an app that only wants names never bundles the numbers.
+The `ships` feature area covers Frontier's 48 player-flyable **hulls** and the ~1200
+fittable **modules** — each as **one record carrying identity, stats and (for hulls)
+slot layout together** — plus **jump-range calculations** you can drive straight from
+a [SLEF](#ship-builds-jump-range-and-slef) export. Modules stay split by outfitting
+category for direct catalogue imports, so an app can avoid categories it does not
+search. The high-level `ShipLoadout` facade is the deliberate exception: resolving
+an arbitrary imported build and its engineering requires all four module catalogues.
 
-Ships are one small catalogue, so the lookups carry the data:
+Ships are one small catalogue, so the lookups carry the data. Each `Ship` carries the
+hull's identity, its stats (`hullMass`, `speed`, …) and its slot layout (`core`,
+`hardpoints`, …) — all but the one hull coriolis does not cover:
 
 ```ts
 import {
   SHIPS,
   getShipBySymbol,
   getShipByName,
+  getShipSlots,
 } from "@elite-dangerous-almanac/core/ships/ships";
 
 getShipBySymbol("empire_trader")?.name; // -> 'Imperial Clipper' (journal-style lowercase symbol)
+getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the record
+getShipSlots("anaconda")?.hardpoints; // -> [4, 3, 3, 3, 2, 2, 1, 1] (slot layout, ready for the build editor)
 getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
 SHIPS.length; // -> 48
 ```
 
 Modules are split by Frontier's four outfitting **categories**, so you pay only
 for the catalogue you import (subpaths below are relative to
-`@elite-dangerous-almanac/core`):
+`@elite-dangerous-almanac/core`). Each record carries the module's **identity and
+its stats together** (see [Module stats](#ship-and-module-stats) below):
 
-| Import                    | Export              | What's in it                                            | Entries | ≈ bundled |
-| ------------------------- | ------------------- | ------------------------------------------------------- | ------- | --------- |
-| `ships/modules-standard`  | `STANDARD_MODULES`  | Core internals (armour, power plant, thrusters, FSD, …) | 521     | 67 KB     |
-| `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 475     | 64 KB     |
-| `ships/modules-hardpoint` | `HARDPOINT_MODULES` | Hardpoint weapons and tools                             | 159     | 25 KB     |
-| `ships/modules-utility`   | `UTILITY_MODULES`   | Utility-mount fittings (chaff, heat sinks, boosters, …) | 35      | 4 KB      |
-| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated                                  | 1190    | 161 KB    |
+| Import                    | Export              | What's in it                                            | Entries |
+| ------------------------- | ------------------- | ------------------------------------------------------- | ------- |
+| `ships/modules-standard`  | `STANDARD_MODULES`  | Core internals (armour, power plant, thrusters, FSD, …) | 521     |
+| `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 475     |
+| `ships/modules-hardpoint` | `HARDPOINT_MODULES` | Hardpoint weapons and tools                             | 159     |
+| `ships/modules-utility`   | `UTILITY_MODULES`   | Utility-mount fittings (chaff, heat sinks, boosters, …) | 35      |
+| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated                                  | 1190    |
 
 The query functions live in `ships/modules` and hold no data — hand them whichever
 catalogue you imported:
@@ -377,28 +388,25 @@ the one hull-specific module (which is what `getModulesForShip` returns). Module
 
 ### Ship and module stats
 
-The numbers behind the registries — hull masses, module masses, power draw, FSD
-constants, thruster/shield/distributor performance — live in **parallel stats
-catalogues keyed by the same `symbol`**. Join a registry record to its stats on
-`symbol`; import only the slice you need.
+The numbers behind the catalogues — hull masses, module masses, power draw, FSD
+constants, thruster/shield/distributor performance — are **fields on the very same
+record**, so once you resolve a module or hull you already have its stats:
 
 ```ts
-import { getShipStats } from "@elite-dangerous-almanac/core/ships/ship-stats";
-import { getModuleStats } from "@elite-dangerous-almanac/core/ships/module-stats";
-import { STANDARD_MODULE_STATS } from "@elite-dangerous-almanac/core/ships/module-stats-standard";
+import { getModuleBySymbol } from "@elite-dangerous-almanac/core/ships/modules";
+import { STANDARD_MODULES } from "@elite-dangerous-almanac/core/ships/modules-standard";
+import { getShipBySymbol } from "@elite-dangerous-almanac/core/ships/ships";
 
-getShipStats("anaconda")?.hullMass; // -> 400 (tonnes)
-getModuleStats("int_hyperdrive_size5_class5", STANDARD_MODULE_STATS)?.optMass; // -> 1050
+getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes)
+getModuleBySymbol("int_hyperdrive_size5_class5", STANDARD_MODULES)?.optMass; // -> 1050
 ```
 
-Stats records mirror the registry split — `ship-stats`, and `module-stats-standard`
-/ `-internal` / `-hardpoint` / `-utility` (and `-all`) — with the query functions in
-`module-stats` (data-free; pass the catalogue you imported). Each module-stats record
-repeats the module's `name` so it reads on its own, and carries `restrictedToShips`
-when a module is limited to particular hulls (e.g. the Python Mk II's MkII Gravity
-Optimised thrusters → `["Explorer_NX"]`); armour's hull restriction stays in the
-registry. Masses are tonnes, power megawatts, ranges light-years. Only mechanical
-stats are carried — weapon combat stats (damage, falloff, …) are not.
+The stat fields are **sparse** — a module carries only the ones its group uses, and
+ship-specific armour carries none. `restrictedToShips` appears on the few non-armour
+modules limited to particular hulls (e.g. the Python Mk II's MkII Gravity Optimised
+thrusters → `["Explorer_NX"]`); armour's hull restriction stays in its `ship` field.
+Masses are tonnes, power megawatts, ranges light-years. Only mechanical stats are
+carried — weapon combat stats (damage, falloff, …) are not.
 
 ### Ship builds, jump range and SLEF
 
@@ -426,6 +434,12 @@ from `ships/jump-range` (`singleJumpRange`, `fuelPerJump`, `totalRange`), or par
 SLEF export yourself with `parseSlef` from `ships/slef`. The port is validated
 against EDSY: it reproduces the sample build's exported `MaxJumpRange` of 89.414678.
 
+> **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
+> currently reaches about 700 KB of emitted JavaScript before compression because it
+> must resolve any ship/module id plus blueprints and experimental effects. Prefer
+> `ships/slef`, `ships/jump-range`, and the individual catalogue modules when you only
+> need parsing, maths, or one outfitting category.
+
 #### Building and engineering a loadout
 
 The same class assembles a build from scratch. Start an **empty** hull, enumerate its
@@ -446,8 +460,8 @@ import {
 
 const build = ShipLoadout.empty("Anaconda");
 
-build.slotsOfKind("optional"); // every optional mount: { key, size, restriction?, occupied }
-build.modulesForSlot("FrameShiftDrive", ALL_MODULES); // what fits (size/kind/restriction checked)
+build.optionalModules(); // every optional mount as a live slot handle: { key, name, size, occupied, ... }
+build.coreModules(); // the seven core mounts; also hardpoints(), utilityMounts()
 
 build
   .setModule(
@@ -467,21 +481,50 @@ build
 build.maxJumpRange(); // -> ~76.9, reflecting the engineered optimal mass
 ```
 
-`setModule` validates the fit (module size ≤ slot size, right category, military /
-planetary-approach and hull restrictions) and throws otherwise. **Slot keys are the
-journal names** (`FrameShiftDrive`, `MainEngines` for thrusters, `Radar` for sensors,
-`HugeHardpoint1`, `Slot01_Size7`, `Military01`, …), so a SLEF-loaded build and one
-assembled here share one vocabulary — enumerate them with `slots()` rather than
+**Or work fluently through the slot and module handles**, so you never repeat a slot
+key. `coreModules()` / `hardpoints()` / `utilityMounts()` / `optionalModules()` (and the
+general `slots()` / `slotsOfKind()`) return **live `LoadoutSlot` views** that know their
+own key; each fits, lists candidates and reaches its module in place. `getFittedModule()`
+and `slot.module` return a **live `FittedModule` handle** you engineer directly:
+
+```ts
+const conda = ShipLoadout.empty("Anaconda");
+const drive = conda.coreModules().find((s) => s.core === "frameShiftDrive")!;
+
+drive.modulesForSlot(STANDARD_MODULES); // what fits *this* slot — no key argument
+drive
+  .fit(getModuleBySymbol("Int_Hyperdrive_Size6_Class5", STANDARD_MODULES)!) // -> FittedModule
+  .applyBlueprint("FSD_LongRange", { grade: 5 }); // engineer it, still no key
+
+const fsd = conda.getFittedModule("FrameShiftDrive")!;
+fsd.getAvailableBlueprints(); // -> [{ fdname: "FSD_LongRange", grades: [1,2,3,4,5] }, ...]
+fsd.getAvailableExperimentalEffects(); // -> ["special_fsd_heavy", ...] valid for this family
+fsd.clearEngineering(); // back to base stats; fsd.remove() empties the slot
+```
+
+`setModule` (and `slot.fit`) validates the fit (module size ≤ slot size, right category,
+military / planetary-approach and hull restrictions) and throws otherwise. **Slot keys
+are the journal names** (`FrameShiftDrive`, `MainEngines` for thrusters, `Radar` for
+sensors, `HugeHardpoint1`, `Slot01_Size7`, `Military01`, …), so a SLEF-loaded build and
+one assembled here share one vocabulary — enumerate them with `slots()` rather than
 guessing. A module lives in the catalogue for its outfitting **category**, which is not
 always the slot it occupies — a fuel tank is in `STANDARD_MODULES` even though it fits
 an optional slot — so pass `ALL_MODULES` to `modulesForSlot` when you want every
 candidate.
 
-`applyBlueprint` also validates that the blueprint and experimental effect belong to
-the fitted module's engineering family and that quality is a finite value from 0 to
+**Two ways to reach a hull's mounts.** For an editable build, start a `ShipLoadout` and
+use its live handles — `slots()`, `coreModules()`, `hardpoints()`, `utilityMounts()`,
+`optionalModules()` — which is what most consumers want. If you only need the **raw,
+read-only** layout (to drive your own outfitting UI), call `getShipSlots(symbol)` and
+feed the result to `enumerateSlots`; the rest of the `ships/slots` exports
+(`BuildSlot`, `CoreSlots`, `parseSlotName`, …) are that low-level model.
 
-1. An armour recipe, for example, cannot be applied to an FSD merely because both
-   modify mass or integrity.
+`applyBlueprint` also validates that the blueprint and experimental effect belong to
+the fitted module's engineering family, that quality is a finite value from 0 to 1,
+and that the catalogue carries every base stat the recipe changes. An armour recipe,
+for example, cannot be applied to an FSD merely because both modify mass or integrity;
+a recipe whose combat or armour base stats are not carried is rejected rather than
+silently emitting a partial `Engineering.Modifiers` block.
 
 **Blueprint and experimental ids are Frontier `fdname`s** — the same strings a journal
 `Loadout` event carries in `Engineering.BlueprintName` / `ExperimentalEffect` (e.g.
@@ -491,6 +534,26 @@ from `ships/engineering` turns a blueprint grade (from `ships/blueprints`) and a
 experimental effect (from `ships/experimental-effects`) into journal-style modifiers.
 The calculator is validated against the real "Deep Black" export — its size-8 drive's
 optimal mass 4670 → 7528.04 at G5 Long Range + Mass Manager.
+
+**Material requirements** — what a roll _costs_ — sit alongside the modifiers in
+`ships/blueprints`: every grade is `{ features, materials }`, so `getBlueprintGrade`
+gives the modifiers and `getBlueprintGradeMaterials` the recipe. Each requirement is
+`{ symbol, name, count }`; join `symbol` to the [`materials`](#materials) domain for the
+material's own grade and category:
+
+```ts
+import { getBlueprintGradeMaterials } from "@elite-dangerous-almanac/core/ships/blueprints";
+
+getBlueprintGradeMaterials("FSD_LongRange", 5);
+// -> [{ symbol: "Arsenic", name: "Arsenic", count: 1 },
+//     { symbol: "ChemicalManipulators", name: "Chemical Manipulators", count: 1 },
+//     { symbol: "DataminedWake", name: "Datamined Wake Exceptions", count: 1 }]
+```
+
+`null` means the blueprint or grade is unknown; an empty array means a **known** recipe
+that costs nothing (only `CargoRack_IncreasedCapacity` grade 5). Blueprints are keyed
+only by the grades that have data, so iterating grades 1–5 can return `null` for a grade
+a blueprint doesn't define.
 
 ## Market commodities
 
@@ -639,4 +702,8 @@ credit, update both the in-source attribution and this section in the same chang
 
 ## License
 
-MIT.
+The project's own code and documentation are MIT-licensed. Bundled Elite Dangerous
+and third-party data remains under its source-specific terms, including
+non-commercial restrictions described in `LICENSE` and
+`typescript/THIRD_PARTY_NOTICES.md`. Review those files before redistribution or
+commercial use.

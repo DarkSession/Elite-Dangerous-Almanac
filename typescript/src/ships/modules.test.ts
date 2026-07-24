@@ -12,7 +12,9 @@ import { INTERNAL_MODULES } from './modules-internal.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { UTILITY_MODULES } from './modules-utility.js';
 import { ALL_MODULES } from './modules-all.js';
+import { SHIPS } from './ships.js';
 import modulesFixture from '../../../fixtures/ships/modules.json' with { type: 'json' };
+import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
 
 const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
     standard: STANDARD_MODULES,
@@ -20,6 +22,31 @@ const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
     hardpoint: HARDPOINT_MODULES,
     utility: UTILITY_MODULES,
     all: ALL_MODULES,
+};
+
+/** Identity fields — everything else on a merged record is a stat. */
+const IDENTITY_KEYS = new Set([
+    'symbol',
+    'category',
+    'name',
+    'mount',
+    'guidance',
+    'ship',
+    'class',
+    'rating',
+    'entitlement',
+]);
+
+/** Whether a merged record carries any stats (vs. identity only, like armour). */
+const hasStats = (m: OutfittingModule): boolean =>
+    Object.keys(m).some((k) => !IDENTITY_KEYS.has(k));
+
+/** A merged record projected onto just the keys a subset fixture carries. */
+const project = (obj: object, ref: object): Record<string, unknown> => {
+    const source = obj as Record<string, unknown>;
+    const out: Record<string, unknown> = {};
+    for (const key of Object.keys(ref)) out[key] = source[key];
+    return out;
 };
 
 for (const [name, expected] of Object.entries(modulesFixture.counts)) {
@@ -52,11 +79,11 @@ test('every module lands in the catalogue named by its own category', () => {
     }
 });
 
-test('fixture records resolve by symbol with the expected fields', () => {
+test('fixture records resolve by symbol with the expected identity fields', () => {
     for (const expected of modulesFixture.records) {
         const bySymbol = getModuleBySymbol(expected.symbol, ALL_MODULES);
         assert.ok(bySymbol, `missing ${expected.symbol}`);
-        assert.deepEqual(bySymbol, expected);
+        assert.deepEqual(project(bySymbol, expected), expected);
     }
 });
 
@@ -140,4 +167,58 @@ test('missing modules resolve to null', () => {
 test('symbols are unique across the whole catalogue', () => {
     const symbols = new Set(ALL_MODULES.map((m) => m.symbol.toLowerCase()));
     assert.equal(symbols.size, ALL_MODULES.length);
+});
+
+// ── Stats (merged into each record from coriolis-data) ───────────────────────
+
+for (const [name, expected] of Object.entries(statsFixture.counts)) {
+    test(`the ${name} catalogue holds ${expected} modules with stats`, () => {
+        assert.equal(CATALOGUES[name]!.filter(hasStats).length, expected);
+    });
+}
+
+test('stats spot checks: each merged record carries the expected stat values', () => {
+    for (const expected of statsFixture.spot) {
+        const record = getModuleBySymbol(expected.symbol, ALL_MODULES);
+        assert.ok(record, `missing ${expected.symbol}`);
+        assert.deepEqual(project(record, expected), expected);
+    }
+});
+
+test('FSD constants are readable straight off the module record', () => {
+    const fsd = getModuleBySymbol('int_hyperdrive_size5_class5', STANDARD_MODULES);
+    assert.equal(fsd?.name, 'Frame Shift Drive');
+    assert.equal(fsd?.optMass, 1050);
+    assert.equal(fsd?.fuelPower, 2.45);
+});
+
+test('ship-restricted modules name real hulls, armour excepted', () => {
+    const hulls = new Set(SHIPS.map((s) => s.symbol.toLowerCase()));
+    const restricted = ALL_MODULES.filter((m) => m.restrictedToShips);
+    assert.ok(restricted.length > 0, 'expected at least one ship-restricted module');
+    for (const m of restricted) {
+        for (const ship of m.restrictedToShips!) {
+            assert.ok(
+                hulls.has(ship.toLowerCase()),
+                `restriction ${ship} on ${m.symbol} is not a hull`,
+            );
+        }
+    }
+    // The Python Mk II's MkII gravity thrusters are restricted to that hull.
+    const grav = getModuleBySymbol(
+        'Int_Engine_Size7_Class5_GravityOptimised_MkII',
+        STANDARD_MODULES,
+    );
+    assert.deepEqual(grav?.restrictedToShips, ['Explorer_NX']);
+    // Ship-specific armour keeps its restriction in the registry, not restrictedToShips.
+    const armour = getModuleBySymbol('Anaconda_Armour_Grade1', STANDARD_MODULES);
+    assert.equal(armour?.restrictedToShips, undefined);
+    assert.equal(armour?.ship, 'Anaconda');
+});
+
+test('modules without stats (ship-specific armour) carry identity only', () => {
+    const armour = getModuleBySymbol('SideWinder_Armour_Grade1', STANDARD_MODULES);
+    assert.ok(armour);
+    assert.equal(hasStats(armour), false);
+    assert.equal(armour.mass, undefined);
 });

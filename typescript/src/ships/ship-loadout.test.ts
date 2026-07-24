@@ -73,6 +73,45 @@ test('fromLoadout works on a bare journal event', () => {
     assert.ok(near(build.maxJumpRange(), expected.edsyMaxJumpRange, 5e-2));
 });
 
+test('loadout inputs and returned raw records cannot mutate internal state', () => {
+    const source = {
+        Ship: 'anaconda',
+        UnladenMass: 500,
+        Modules: [
+            {
+                Slot: 'FrameShiftDrive',
+                Item: 'Int_Hyperdrive_Size6_Class5',
+                Engineering: {
+                    BlueprintName: 'FSD_LongRange',
+                    Level: 1,
+                    Quality: 1,
+                    Modifiers: [{ Label: 'FSDOptimalMass', Value: 1980, OriginalValue: 1800 }],
+                },
+            },
+        ],
+    };
+    const build = ShipLoadout.fromLoadout(source);
+
+    source.Modules[0]!.Item = 'int_hyperdrive_size99_class9_madeup';
+    source.Modules[0]!.Engineering.Modifiers[0]!.Value = 1;
+    assert.equal(build.moduleAt('FrameShiftDrive')?.Item, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(build.frameShiftDrive.optMass, 1980);
+
+    const exposed = build.moduleAt('FrameShiftDrive') as unknown as {
+        Item: string;
+        Engineering?: { Modifiers: { Value?: number }[] };
+    };
+    exposed.Item = 'int_hyperdrive_size99_class9_madeup';
+    exposed.Engineering!.Modifiers[0]!.Value = 2;
+    assert.equal(build.moduleAt('FrameShiftDrive')?.Item, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(build.frameShiftDrive.optMass, 1980);
+
+    const listed = build.modules[0] as { Item: string };
+    listed.Item = 'another_fake_module';
+    assert.equal(build.moduleAt('FrameShiftDrive')?.Item, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(build.unladenMass, 500);
+});
+
 test('editing a SLEF build keeps imported aggregate figures coherent', () => {
     const build = ShipLoadout.fromSlef(slefString);
     const originalMass = build.unladenMass!;
@@ -363,6 +402,29 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
     );
 });
 
+test('engineering rejects recipes whose base stats are not carried', () => {
+    const weapon = ShipLoadout.empty('Sidewinder').setModule(
+        'SmallHardpoint1',
+        mod('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES),
+    );
+    const fittedWeapon = weapon.getFittedModule('SmallHardpoint1')!;
+    assert.ok(
+        !fittedWeapon
+            .getAvailableBlueprints()
+            .some((blueprint) => blueprint.fdname === 'Weapon_Overcharged'),
+    );
+    assert.throws(
+        () => weapon.applyBlueprint('SmallHardpoint1', 'Weapon_Overcharged', { grade: 5 }),
+        /missing base stats for Damage/,
+    );
+
+    const imported = ShipLoadout.fromSlef(slefString);
+    assert.throws(
+        () => imported.applyBlueprint('Armour', 'Armour_HeavyDuty', { grade: 5 }),
+        /missing base stats/,
+    );
+});
+
 test('clearEngineering restores base stats', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'FrameShiftDrive',
@@ -374,4 +436,108 @@ test('clearEngineering restores base stats', () => {
     assert.equal(build.getFittedModule('FrameShiftDrive')?.Engineering, undefined);
     assert.ok(build.frameShiftDrive.optMass < engineered); // back to base 1800
     assert.equal(build.frameShiftDrive.optMass, 1800);
+});
+
+// ── Fluent slot + fitted-module handles ─────────────────────────────────────
+
+test('coreModules / hardpoints / utilityMounts / optionalModules list the mounts', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    assert.equal(conda.coreModules().length, 7);
+    assert.equal(conda.hardpoints().length, 8);
+    assert.equal(conda.utilityMounts().length, 8);
+    assert.equal(conda.optionalModules().length, 14);
+    // Each carries a human-readable name and the right kind.
+    assert.ok(conda.coreModules().every((s) => s.kind === 'core' && s.name.length > 0));
+    const fsd = conda.coreModules().find((s) => s.core === 'frameShiftDrive');
+    assert.equal(fsd?.name, 'Frame Shift Drive');
+    assert.equal(fsd?.key, 'FrameShiftDrive');
+    assert.equal(conda.hardpoints()[0]?.name, 'Huge Hardpoint 1');
+    assert.equal(conda.utilityMounts()[0]?.name, 'Utility Mount 1');
+});
+
+test('a slot handle is a live view and fits/lists/clears without repeating its key', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    const [drive] = conda.coreModules().filter((s) => s.core === 'frameShiftDrive');
+    assert.ok(drive);
+    assert.equal(drive.occupied, false);
+    assert.equal(drive.module === null, true);
+
+    // modulesForSlot needs no slot key now.
+    const drives = drive.modulesForSlot(STANDARD_MODULES);
+    assert.ok(drives.length > 0 && drives.every((m) => m.class <= 6));
+
+    // fit() returns a live FittedModule handle; the slot view updates in place.
+    const fitted = drive.fit(mod('Int_Hyperdrive_Size6_Class5'));
+    assert.equal(drive.occupied, true);
+    assert.equal(drive.module !== null && drive.module.Item, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(fitted.Item, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(fitted.slot, 'FrameShiftDrive');
+
+    drive.clear();
+    assert.equal(drive.occupied, false);
+    assert.equal(conda.modules.length, 0);
+});
+
+test('applyBlueprint / clearEngineering work straight on the fitted module', () => {
+    const build = ShipLoadout.empty('Explorer_NX');
+    const fsd = build
+        .coreModules()
+        .find((s) => s.core === 'frameShiftDrive')!
+        .fit(mod('Int_Hyperdrive_Overcharge_Size8_Class5_OverchargeBooster_MkII'));
+
+    fsd.applyBlueprint('FSD_LongRange', {
+        grade: 5,
+        quality: 1,
+        experimental: 'special_fsd_heavy',
+    });
+    assert.ok(Math.abs(build.frameShiftDrive.optMass - 7528.04) < 1e-2);
+    assert.equal(fsd.Engineering?.BlueprintName, 'FSD_LongRange');
+
+    fsd.clearEngineering();
+    assert.equal(fsd.Engineering, undefined);
+    assert.equal(build.frameShiftDrive.optMass, 4670); // base
+});
+
+test('getAvailableBlueprints / getAvailableExperimentalEffects match the module family', () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'FrameShiftDrive',
+        mod('Int_Hyperdrive_Size6_Class5'),
+    );
+    const fsd = build.getFittedModule('FrameShiftDrive')!;
+
+    const blueprints = fsd.getAvailableBlueprints();
+    const longRange = blueprints.find((b) => b.fdname === 'FSD_LongRange');
+    assert.ok(longRange, 'FSD_LongRange should be offered on an FSD');
+    assert.deepEqual([...longRange!.grades], [1, 2, 3, 4, 5]);
+    // No armour recipe leaks onto a frame shift drive.
+    assert.ok(!blueprints.some((b) => b.fdname.toLowerCase().startsWith('armour_')));
+
+    const experimentals = fsd.getAvailableExperimentalEffects();
+    assert.ok(experimentals.includes('special_fsd_heavy'));
+    assert.ok(!experimentals.includes('special_shieldbooster_toughened'));
+});
+
+test('getFittedModule returns null for an empty slot and a live handle otherwise', () => {
+    const build = ShipLoadout.empty('Anaconda');
+    assert.equal(build.getFittedModule('FrameShiftDrive'), null);
+    build.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'));
+    const handle = build.getFittedModule('FrameShiftDrive')!;
+    handle.remove();
+    assert.equal(build.getFittedModule('FrameShiftDrive'), null);
+    // Reading a removed handle's live fields throws rather than lying.
+    assert.throws(() => handle.Item, /no longer contains/);
+});
+
+test('a fitted-module handle cannot operate on a replacement module', () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'FrameShiftDrive',
+        mod('Int_Hyperdrive_Size6_Class5'),
+    );
+    const oldHandle = build.getFittedModule('FrameShiftDrive')!;
+    build.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size5_Class5'));
+    assert.throws(() => oldHandle.Item, /no longer contains/);
+    assert.throws(
+        () => oldHandle.applyBlueprint('FSD_LongRange', { grade: 5 }),
+        /no longer contains/,
+    );
 });

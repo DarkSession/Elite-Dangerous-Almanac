@@ -4,7 +4,7 @@
     "description": "Ready-to-go static data and calculations for Elite Dangerous community apps and researchers.",
     "type": "module",
     "sideEffects": false,
-    "license": "MIT",
+    "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/DarkSession/Elite-Dangerous-Almanac.git",
@@ -80,7 +80,7 @@
         "prepublishOnly": "npm run check && npm run build && npm run test:package",
         "test": "node --experimental-test-coverage --test-coverage-include=\"src/astro/*.ts\" --test-coverage-include=\"src/materials/*.ts\" --test-coverage-include=\"src/ships/*.ts\" --test-coverage-include=\"src/commodities/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
         "typecheck": "tsc --noEmit",
-        "docs": "typedoc",
+        "docs": "typedoc && node scripts/postprocess-wiki.mjs",
         "test:package": "node --test package.test.mjs"
     },
     "devDependencies": {

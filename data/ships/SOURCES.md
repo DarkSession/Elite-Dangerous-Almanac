@@ -14,28 +14,63 @@ See AGENTS.md §Attribution for how to consume them.
 
 ## Ships
 
-- **Files:** `ships.jsonc` (48 player-flyable hulls) and `fixtures/ships/ships.json`.
-- **Source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), the community-maintained
-  registry of Frontier's internal ids and names (`shipyard.csv`, columns
-  `id,symbol,name,entitlement`). FDevIDs states no explicit licence; consult the
-  repository terms before redistributing the raw identifiers.
-- **Derivation:** records are carried over in shipyard order (roughly the order
-  hulls were introduced): internal `symbol` and display `name`. The CSV's numeric
-  ship-type `id` column is dropped — hulls are keyed by `symbol`. `entitlement` is
-  FDevIDs' DLC/grant token, kept only where the CSV gives one (28 of the 48 hulls
-  carry no entitlement, so the field is omitted for them rather than stored empty).
+Each hull is **one record** carrying its identity, its stats, and its slot layout —
+identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
+
+- **Files:** `ships.jsonc` (48 player-flyable hulls) and `fixtures/ships/ships.json`,
+  `ship-stats.json`, `ship-slots.json` (the stats and slots halves keep their own
+  parity fixtures).
+- **Identity source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), the
+  community-maintained registry of Frontier's internal ids and names (`shipyard.csv`,
+  columns `id,symbol,name,entitlement`). FDevIDs states no explicit licence; consult
+  the repository terms before redistributing the raw identifiers.
+- **Identity derivation:** records are carried over in shipyard order (roughly the
+  order hulls were introduced): internal `symbol` and display `name`. The CSV's
+  numeric ship-type `id` column is dropped — hulls are keyed by `symbol`.
+  `entitlement` is FDevIDs' DLC/grant token, kept only where the CSV gives one (28 of
+  the 48 hulls carry no entitlement, so the field is omitted rather than stored empty).
+- **Stats + slots source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
+  `ships/*.json` (`properties` for stats, `slots` + `bulkheads` for the layout),
+  **commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`** (`master`, acquired 2026-07-24
+  UTC). Coriolis-data's `LICENSE.md` releases only its _code_ under MIT; the JSON
+  **stat/slot values are Elite Dangerous game data, the property of Frontier
+  Developments plc**, redistributed here under Frontier's media-usage terms.
+- **Stats derivation:** acquisition normalisation looks up each hull's coriolis
+  record by display name (normalised; coriolis "Viper" ⇒ registry "Viper MkIII") and
+  copies a fixed whitelist of `properties` fields (`hullMass`, `speed`, `boost`,
+  `baseArmour`, …). The repository's
+  `scripts/data/ships/merge-normalized-catalogues.mjs` then performs the deterministic
+  symbol join, preserving registry order and rejecting duplicate or unmatched input.
+  Masses are tonnes, speeds m/s, rotation rates deg/s.
+- **Slots derivation:** coriolis's fixed-order `slots.standard` seven-array becomes
+  the seven named `core` sizes (power plant, thrusters, frame shift drive, life
+  support, power distributor, sensors, fuel tank); `slots.hardpoints` splits into
+  `hardpoints` (the non-zero weapon-mount sizes) and `utility` (the count of zero
+  entries); `slots.internal` becomes `optional`, each entry a `{ size }` with an
+  optional `restriction` ("military" or "planetaryApproachSuite"). `bulkheads` keeps
+  each armour option's name and added mass (t) for armour-mass computation (the
+  default Lightweight Alloy is zero-mass). **Slot keys** are journal-compatible
+  (`FrameShiftDrive`, `HugeHardpoint1`, `TinyHardpoint2`, `Slot01_Size6`, `Military01`,
+  `PlanetaryApproachSuite`), so a build assembled from an empty hull and one loaded
+  from a SLEF export share one vocabulary. See `typescript/src/ships/slots.ts`.
+- **Kept deliberately (do not "fix" back):** the Lynx Highliner (`MediumTransport01`)
+  has no coriolis hull entry, so it carries identity only — no stats and no slot
+  layout. Stats and slots are present for the other 47 hulls.
 
 ## Modules (outfitting)
 
+Each module is **one record** carrying its identity and its stats — identity from
+FDevIDs, stats from coriolis-data, joined on `symbol`.
+
 - **Files:** `modules-standard.jsonc`, `modules-internal.jsonc`,
-  `modules-hardpoint.jsonc`, `modules-utility.jsonc`, and
-  `fixtures/ships/modules.json`. Split along FDevIDs' four outfitting categories so
-  an app that only wants weapons never bundles the 996 core and optional internals;
-  see AGENTS.md §Build.
-- **Source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), `outfitting.csv`
+  `modules-hardpoint.jsonc`, `modules-utility.jsonc`, and `fixtures/ships/modules.json`,
+  `module-stats.json` (the stats half keeps its own parity fixture). Split along
+  FDevIDs' four outfitting categories so an app that only wants weapons never bundles
+  the 996 core and optional internals; see AGENTS.md §Build.
+- **Identity source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), `outfitting.csv`
   (columns `id,symbol,category,name,mount,guidance,ship,class,rating,entitlement`),
   same licence note as above.
-- **Derivation:** the 1190 modules are carried over in CSV order within each
+- **Identity derivation:** the 1190 modules are carried over in CSV order within each
   category file. The CSV's numeric `id` column is dropped — modules are keyed by
   `symbol`. `class` is FDevIDs' `class` — the module size (0–8) — and `rating`
   its grade letter (A–I); together they are the "5A" the outfitting screen shows.
@@ -43,7 +78,35 @@ See AGENTS.md §Attribution for how to consume them.
   are stored only on the hardpoints that carry them; `ship` names the hull an armour
   variant belongs to (armour is the one ship-specific module, so only the 241 armour
   records carry it); `entitlement` is kept only where it is a real DLC/grant token.
-- **Kept as-is from the source (do not "fix" these back):**
+- **Stats source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
+  `modules/**`, **commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`** (`master`,
+  acquired 2026-07-24 UTC). Coriolis-data's `LICENSE.md` releases only its _code_
+  under MIT; the JSON **stat values are Elite Dangerous game data, the property of
+  Frontier Developments plc**, redistributed under Frontier's media-usage terms.
+- **Stats derivation:** acquisition normalisation looks up each module's coriolis
+  record by `symbol` (case-insensitively) and copies a fixed whitelist of fields under
+  clearer names — e.g. coriolis `optmass`→`optMass`, `fuelmul`→`fuelMul`,
+  `pgen`→`powerCapacity`, `wepcap`→`weaponsCapacity`. The repository's
+  `scripts/data/ships/merge-normalized-catalogues.mjs` performs the final checked
+  symbol join. The stat fields are sparse (only the ones a module's group uses) and
+  appended after the identity fields on the same record. Masses are tonnes, power
+  megawatts, ranges light-years.
+- **Stats kept deliberately (do not "fix" back):**
+  - **`restrictedToShips`** carries the hull symbol(s) a non-armour module is limited
+    to (coriolis's `ship` field: the MkII Gravity Optimised thrusters → `Explorer_NX`,
+    the MkII Agile Boost thrusters → `SmallCombat01_NX` "Kestrel", the MkII Mining
+    controller and Mining Volley Repeater → `LakonMiner`). **Armour's** hull
+    restriction is _not_ repeated here — it lives in the `ship` field
+    (`OutfittingModule.ship` / `getModulesForShip`).
+  - **Only mechanical/engineering stats are carried; weapon combat stats** (damage,
+    falloff, breach, thermal load, …) are intentionally left out — a separate domain
+    no current calculation needs.
+  - **Coverage is a subset of the registry:** ship-specific armour has no generic
+    module stats (0 armour rows carry stats), so those records are identity-only.
+  - **Pre-engineered/duplicate drives share a `symbol`** in coriolis (e.g. the V1
+    FSDs); the first (primary) occurrence wins, and any baked engineering is expected
+    to arrive as SLEF `Engineering.Modifiers` instead.
+- **Identity kept as-is from the source (do not "fix" these back):**
   - **The three removed Discovery Scanner tiers** (`Int_StellarBodyDiscoveryScanner_Standard`
     / `_Intermediate` / `_Advanced`) are retained: a registry that maps a module
     symbol to a name must still resolve symbols that appear in older journals and
@@ -57,78 +120,25 @@ See AGENTS.md §Attribution for how to consume them.
     `mount` in its `mount` column — a thruster has no hardpoint mount, so the field
     is omitted, matching every other thruster.
 
-## Ship and module stats
-
-- **Files:** `ship-stats.jsonc` (per-hull stats) and `module-stats-standard.jsonc` /
-  `-internal.jsonc` / `-hardpoint.jsonc` / `-utility.jsonc` (per-module stats),
-  plus `fixtures/ships/ship-stats.json` and `fixtures/ships/module-stats.json`.
-  These are the **numbers** behind the id/name registries above; each stats record
-  is keyed by the same Frontier `symbol`, so the two join on `symbol`.
-- **Source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
-  `ships/*.json` and `modules/**`, **commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`**
-  (`master`, acquired 2026-07-24 UTC). Coriolis-data's `LICENSE.md` releases only its
-  *code* under MIT; the JSON **stat values are Elite Dangerous game data, the property
-  of Frontier Developments plc**, redistributed here under Frontier's media-usage
-  terms (see the repository `LICENSE` and `README.md`).
-- **Derivation:** a join script (kept out of the shipped package) reads each registry
-  file, looks up the matching coriolis record by `symbol` (case-insensitively), and
-  copies a fixed whitelist of fields under clearer names — e.g. coriolis `optmass`→
-  `optMass`, `fuelmul`→`fuelMul`, `pgen`→`powerCapacity`, `wepcap`→`weaponsCapacity`.
-  Ship stats join coriolis `ships/*.json` `properties` to the registry by display
-  name (normalised; coriolis "Viper" ⇒ registry "Viper MkIII"). Masses are tonnes,
-  power megawatts, ranges light-years.
-- **Kept deliberately (do not "fix" back):**
-  - **`name` is repeated** on every module-stats record (the registry's display
-    name) so a stats record is legible on its own, even though the registry already
-    carries it.
-  - **`restrictedToShips`** carries the hull symbol(s) a non-armour module is limited
-    to (coriolis's `ship` field: the MkII Gravity Optimised thrusters → `Explorer_NX`,
-    the MkII Agile Boost thrusters → `SmallCombat01_NX` "Kestrel", the MkII Mining
-    controller and Mining Volley Repeater → `LakonMiner`). **Armour's** hull
-    restriction is *not* repeated here — it lives in the registry
-    (`OutfittingModule.ship` / `getModulesForShip`).
-  - **Only mechanical/engineering stats are carried; weapon combat stats** (damage,
-    falloff, breach, thermal load, …) are intentionally left out — a separate domain
-    no current calculation needs.
-  - **Coverage is a subset of the registry:** ship-specific armour has no generic
-    module stats (0 armour rows), and the Lynx Highliner (`MediumTransport01`) has no
-    coriolis hull entry, so it has no ship-stats row.
-  - **Pre-engineered/duplicate drives share a `symbol`** in coriolis (e.g. the V1
-    FSDs); the first (primary) occurrence wins, and any baked engineering is expected
-    to arrive as SLEF `Engineering.Modifiers` instead.
-
-## Ship slot layouts
-
-- **Files:** `ship-slots.jsonc` (per-hull mount layout) and
-  `fixtures/ships/ship-slots.json`. Keyed by the same Frontier `symbol` as the
-  registries above; the two join on `symbol`.
-- **Source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
-  `ships/*.json` `slots` + `bulkheads`, same commit and Frontier media-usage terms
-  as the stats above.
-- **Derivation:** coriolis's fixed-order `slots.standard` seven-array becomes the
-  seven named `core` sizes (power plant, thrusters, frame shift drive, life support,
-  power distributor, sensors, fuel tank); `slots.hardpoints` splits into `hardpoints`
-  (the non-zero weapon-mount sizes) and `utility` (the count of zero entries);
-  `slots.internal` becomes `optional`, each entry a `{ size }` with an optional
-  `restriction` ("military" or "planetaryApproachSuite"). `bulkheads` keeps each
-  armour option's name and added mass (t) for later armour-mass computation (the
-  default Lightweight Alloy is zero-mass). Present for the 47 hulls coriolis carries.
-- **Slot keys** are journal-compatible (`FrameShiftDrive`, `HugeHardpoint1`,
-  `TinyHardpoint2`, `Slot01_Size6`, `Military01`, `PlanetaryApproachSuite`), so a
-  build assembled from an empty hull and one loaded from a SLEF export share one
-  vocabulary. See `typescript/src/ships/slots.ts`.
-
 ## Engineering (blueprints and experimental effects)
 
-- **Files:** `blueprints.jsonc` (per-blueprint, per-grade stat modifiers) and
-  `experimental-effects.jsonc` (per special-effect stat modifiers), validated by
-  `fixtures/ships/engineering.json`. Both are resolved to journal Modifier **Labels**
-  so the computed modifiers read back like a real `Engineering.Modifiers` block.
+- **Files:** `blueprints.jsonc` (per-blueprint, per-grade stat modifiers **and**
+  material requirements) and `experimental-effects.jsonc` (per special-effect stat
+  modifiers), validated by `fixtures/ships/engineering.json`. Modifiers are resolved to
+  journal Modifier **Labels** so the computed modifiers read back like a real
+  `Engineering.Modifiers` block. Each blueprint grade is `{ features, materials }`.
 - **Blueprint source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
-  `modifications/blueprints.json` (features) + `modifications.json` (apply method),
-  same commit and Frontier media-usage terms as above. Each grade is a list of
-  `{ label, method, min, max }`; the modifier value is bounded by the engineering
-  quality roll (`v = min + (max − min)·quality`).
+  `modifications/blueprints.json` (grade `features` + `components`) + `modifications.json`
+  (apply method), same commit and Frontier media-usage terms as above. Each grade's
+  `features` is a list of `{ label, method, min, max }`; the modifier value is bounded
+  by the engineering quality roll (`v = min + (max − min)·quality`).
+- **Material requirements** live on the same grade (`materials`), from that grade's
+  `components` map. Coriolis keys components by material **display name**; a join script
+  resolves each to the material's Frontier `symbol` against the `materials` domain at
+  generation time, emitting `{ symbol, name, count }` per requirement (join `symbol` to
+  `materials` for the material's own grade and category). **Kept as-is:**
+  `CargoRack_IncreasedCapacity` grade 5 has no components upstream, so its `materials`
+  is an empty list (the grade still resolves) rather than being dropped.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
   `expeffect` — **coriolis-data does not carry the numeric experimental modifiers**,
   so these come from EDSY, whose code is (c) taleden under a **CC BY-NC 4.0** License

@@ -42,6 +42,33 @@ test('parseSlef throws TypeError when nothing is a loadout', () => {
     assert.throws(() => parseSlef([]), TypeError);
 });
 
+test('parseSlef rejects envelopes and modules that violate its returned types', () => {
+    assert.throws(
+        () =>
+            parseSlef({
+                header: 7,
+                data: { Ship: 'sidewinder', Modules: [] },
+            }),
+        TypeError,
+    );
+    assert.throws(
+        () =>
+            parseSlef({
+                header: { appName: 'test', appVersion: '1' },
+                data: { Ship: 'sidewinder', Modules: [42] },
+            }),
+        TypeError,
+    );
+    assert.throws(
+        () =>
+            parseSlef({
+                Ship: 'sidewinder',
+                Modules: [{ Slot: 'FrameShiftDrive', Item: 42 }],
+            }),
+        TypeError,
+    );
+});
+
 const fsdModule = slefFixture[0]!.data.Modules.find(
     (m) => m.Slot === 'FrameShiftDrive',
 ) as unknown as LoadoutModule;

@@ -1,20 +1,30 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { SHIPS, getShipBySymbol, getShipByName } from './ships.js';
+import { SHIPS, getShipBySymbol, getShipByName, getShipSlots } from './ships.js';
 import shipsFixture from '../../../fixtures/ships/ships.json' with { type: 'json' };
+import statsFixture from '../../../fixtures/ships/ship-stats.json' with { type: 'json' };
+import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
+
+/** A merged Ship record projected onto just the keys a subset fixture carries. */
+const project = (obj: object, ref: object): Record<string, unknown> => {
+    const source = obj as Record<string, unknown>;
+    const out: Record<string, unknown> = {};
+    for (const key of Object.keys(ref)) out[key] = source[key];
+    return out;
+};
 
 test(`the ship catalogue holds ${shipsFixture.count} hulls`, () => {
     assert.equal(SHIPS.length, shipsFixture.count);
 });
 
-test('fixture records resolve by symbol and name with the expected fields', () => {
+test('fixture records resolve by symbol and name with the expected identity fields', () => {
     for (const expected of shipsFixture.records) {
         const bySymbol = getShipBySymbol(expected.symbol);
         assert.ok(bySymbol, `missing ${expected.symbol}`);
-        assert.deepEqual(bySymbol, expected);
+        assert.deepEqual(project(bySymbol, expected), expected);
         // Both lookups return the same record.
-        assert.deepEqual(getShipByName(expected.name), expected);
+        assert.deepEqual(getShipByName(expected.name), bySymbol);
     }
 });
 
@@ -47,4 +57,50 @@ test('symbols and names are unique across the catalogue', () => {
     const names = new Set(SHIPS.map((s) => s.name.toLowerCase()));
     assert.equal(symbols.size, SHIPS.length);
     assert.equal(names.size, SHIPS.length);
+});
+
+// ── Stats (merged into each Ship from coriolis-data) ─────────────────────────
+
+test(`${statsFixture.count} hulls carry stats; getShipBySymbol reads them`, () => {
+    assert.equal(SHIPS.filter((s) => s.hullMass !== undefined).length, statsFixture.count);
+    assert.equal(getShipBySymbol('anaconda')?.hullMass, 400);
+    assert.equal(getShipBySymbol('anaconda')?.hullMass, getShipBySymbol('ANACONDA')?.hullMass);
+});
+
+test('ship-stats spot checks: each merged hull carries the expected stat values', () => {
+    for (const expected of statsFixture.spot) {
+        const ship = getShipBySymbol(expected.symbol);
+        assert.ok(ship, `missing ${expected.symbol}`);
+        assert.deepEqual(project(ship, expected), expected);
+    }
+});
+
+// ── Slot layout (merged into each Ship; getShipSlots projects it back out) ────
+
+test(`${slotsFixture.count} hulls carry a slot layout`, () => {
+    assert.equal(SHIPS.filter((s) => getShipSlots(s.symbol) !== null).length, slotsFixture.count);
+});
+
+test('getShipSlots resolves case-insensitively and returns null for the unknown', () => {
+    assert.equal(getShipSlots('anaconda')?.core.frameShiftDrive, 6);
+    assert.deepEqual(getShipSlots('ANACONDA'), getShipSlots('Anaconda'));
+    assert.equal(getShipSlots('not_a_ship'), null);
+    // The one hull coriolis does not cover has identity but no slot layout.
+    assert.equal(getShipSlots('MediumTransport01'), null);
+});
+
+test('every hull with a layout declares seven core sizes and its bulkheads', () => {
+    for (const ship of SHIPS) {
+        const layout = getShipSlots(ship.symbol);
+        if (!layout) continue;
+        assert.equal(Object.keys(layout.core).length, 7, `${ship.symbol} core`);
+        assert.ok(layout.bulkheads.length >= 5, `${ship.symbol} bulkheads`);
+        assert.equal(layout.bulkheads[0]?.mass, 0, `${ship.symbol} default alloy is zero-mass`);
+    }
+});
+
+test('ship-slots spot checks reproduce the full layout', () => {
+    for (const expected of slotsFixture.spot) {
+        assert.deepEqual(getShipSlots(expected.symbol), expected);
+    }
 });

@@ -37,8 +37,6 @@ const catalogueSchema = JSON.parse(readFileSync(SCHEMA_PATH, 'utf8')) as {
 
 const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'ships.jsonc': 'shipCatalogue',
-    'ship-stats.jsonc': 'shipStatsCatalogue',
-    'ship-slots.jsonc': 'shipSlotsCatalogue',
     'blueprints.jsonc': 'blueprintCatalogue',
     'experimental-effects.jsonc': 'experimentalCatalogue',
 };
@@ -51,17 +49,16 @@ ajv.addSchema(catalogueSchema);
 
 function schemaDefinition(name: string): string {
     if (name.startsWith('modules-')) return 'moduleCatalogue';
-    if (name.startsWith('module-stats-')) return 'moduleStatsCatalogue';
     const definition = DEFINITION_BY_FILE[name];
     assert.ok(definition, `no JSON Schema definition mapped for ${name}`);
     return definition;
 }
 
 test('data/ships holds the expected number of catalogues', () => {
-    // 5 registries (ships + 4 module categories) + 5 stat catalogues (ship-stats
-    // + 4 module-stats categories) + 1 slot-layout catalogue (ship-slots) + 2
-    // engineering catalogues (blueprints + experimental-effects).
-    assert.equal(DATA_FILES.length, 13);
+    // 5 catalogues carrying identity + stats (ships + 4 module categories, each hull
+    // and module now one record) + 2 engineering catalogues (blueprints — each grade
+    // carrying its modifiers and its materials — and experimental-effects).
+    assert.equal(DATA_FILES.length, 7);
 });
 
 for (const name of DATA_FILES) {

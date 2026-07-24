@@ -1,227 +1,4346 @@
 /*
- * Every player-flyable ship hull in Elite Dangerous, as Frontier's shipyard
- * registry: the internal symbol and the display name.
+ * The Elite Dangerous ship catalogue — every player-flyable hull's identity, its
+ * per-hull stats, and its outfitting slot layout, in one record per hull.
  *
- * Source:  EDCD FDevIDs, shipyard.csv
+ * Sources: EDCD FDevIDs, shipyard.csv (identity: symbol, name, entitlement?)
  *          https://github.com/EDCD/FDevIDs
- *          Community-maintained Frontier id/name registry. No explicit licence
- *          is stated; consult the repository terms.
+ *          EDCD/coriolis-data, ships/*.json (stats + slots/bulkheads)
+ *          https://github.com/EDCD/coriolis-data
+ *          The stat/slot values are Elite Dangerous game data, property of Frontier
+ *          Developments plc, redistributed under Frontier's media-usage terms:
+ *          https://forums.frontier.co.uk/threads/510879/
  *
- * Each record is { symbol, name, entitlement? }. `symbol` is the internal
- * identifier (e.g. `Empire_Trader`); the journal names a ship's type by
- * its lower-cased symbol in the `Ship` field (`empire_trader`). `name` is the
- * display name (e.g. `Imperial Clipper`). `entitlement` is present only when the
- * hull is gated behind a DLC or purchase grant, carrying Frontier's raw token.
+ * `symbol` is the internal identifier (e.g. `Empire_Trader`); `name` the display
+ * name; `entitlement` the DLC/grant token on gated hulls. Stats (hullMass in
+ * tonnes, speed/boost in m/s, rotation rates in deg/s, …) and the slot layout
+ * (`core` sizes, `hardpoints`, `utility` count, `optional` mounts, `bulkheads`)
+ * are present for every hull the coriolis data covers; the one hull it does not
+ * (the Lynx Highliner, `MediumTransport01`) carries identity only.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
 [
   {
     "symbol": "SideWinder",
-    "name": "Sidewinder"
+    "name": "Sidewinder",
+    "hullMass": 25,
+    "speed": 220,
+    "boost": 320,
+    "baseShieldStrength": 40,
+    "baseArmour": 60,
+    "hardness": 20,
+    "masslock": 6,
+    "crew": 1,
+    "heatCapacity": 140,
+    "reserveFuelCapacity": 0.3,
+    "pitch": 42,
+    "roll": 110,
+    "yaw": 16,
+    "minThrust": 45.454,
+    "pipSpeed": 0.13636363636364,
+    "core": {
+      "powerPlant": 2,
+      "thrusters": 2,
+      "frameShiftDrive": 2,
+      "lifeSupport": 1,
+      "powerDistributor": 1,
+      "sensors": 1,
+      "fuelTank": 1
+    },
+    "hardpoints": [
+      1,
+      1
+    ],
+    "utility": 2,
+    "optional": [
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 2
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 4
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 4
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 4
+      }
+    ]
   },
   {
     "symbol": "Eagle",
-    "name": "Eagle"
+    "name": "Eagle",
+    "hullMass": 50,
+    "speed": 240,
+    "boost": 350,
+    "baseShieldStrength": 60,
+    "baseArmour": 40,
+    "hardness": 28,
+    "masslock": 6,
+    "crew": 1,
+    "heatCapacity": 165,
+    "reserveFuelCapacity": 0.34,
+    "pitch": 50,
+    "roll": 120,
+    "yaw": 18,
+    "minThrust": 75,
+    "pipSpeed": 0.0625,
+    "core": {
+      "powerPlant": 2,
+      "thrusters": 3,
+      "frameShiftDrive": 3,
+      "lifeSupport": 1,
+      "powerDistributor": 2,
+      "sensors": 2,
+      "fuelTank": 2
+    },
+    "hardpoints": [
+      1,
+      1,
+      1
+    ],
+    "utility": 1,
+    "optional": [
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2,
+        "restriction": "military"
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 4
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 8
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 8
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 8
+      }
+    ]
   },
   {
     "symbol": "Hauler",
-    "name": "Hauler"
+    "name": "Hauler",
+    "hullMass": 14,
+    "speed": 200,
+    "boost": 300,
+    "baseShieldStrength": 50,
+    "baseArmour": 100,
+    "hardness": 20,
+    "masslock": 6,
+    "crew": 1,
+    "heatCapacity": 123,
+    "reserveFuelCapacity": 0.25,
+    "pitch": 36,
+    "roll": 100,
+    "yaw": 14,
+    "minThrust": 35,
+    "pipSpeed": 0.1625,
+    "core": {
+      "powerPlant": 2,
+      "thrusters": 2,
+      "frameShiftDrive": 2,
+      "lifeSupport": 1,
+      "powerDistributor": 1,
+      "sensors": 1,
+      "fuelTank": 2
+    },
+    "hardpoints": [
+      1
+    ],
+    "utility": 2,
+    "optional": [
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 1
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 2
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 2
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 2
+      }
+    ]
   },
   {
     "symbol": "Adder",
-    "name": "Adder"
+    "name": "Adder",
+    "hullMass": 35,
+    "speed": 220,
+    "boost": 320,
+    "baseShieldStrength": 60,
+    "baseArmour": 90,
+    "hardness": 35,
+    "masslock": 7,
+    "crew": 2,
+    "heatCapacity": 170,
+    "reserveFuelCapacity": 0.36,
+    "pitch": 38,
+    "roll": 100,
+    "yaw": 14,
+    "minThrust": 45.454,
+    "pipSpeed": 0.13636363636364,
+    "core": {
+      "powerPlant": 3,
+      "thrusters": 3,
+      "frameShiftDrive": 3,
+      "lifeSupport": 1,
+      "powerDistributor": 2,
+      "sensors": 3,
+      "fuelTank": 3
+    },
+    "hardpoints": [
+      2,
+      1,
+      1
+    ],
+    "utility": 2,
+    "optional": [
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 3
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 5
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 5
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 5
+      }
+    ]
   },
   {
     "symbol": "Viper",
-    "name": "Viper MkIII"
+    "name": "Viper MkIII",
+    "hullMass": 50,
+    "speed": 320,
+    "boost": 400,
+    "baseShieldStrength": 105,
+    "baseArmour": 70,
+    "hardness": 35,
+    "masslock": 7,
+    "crew": 1,
+    "heatCapacity": 195,
+    "reserveFuelCapacity": 0.41,
+    "pitch": 35,
+    "roll": 90,
+    "yaw": 15,
+    "minThrust": 62.5,
+    "pipSpeed": 0.09375,
+    "core": {
+      "powerPlant": 3,
+      "thrusters": 3,
+      "frameShiftDrive": 3,
+      "lifeSupport": 2,
+      "powerDistributor": 3,
+      "sensors": 3,
+      "fuelTank": 2
+    },
+    "hardpoints": [
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 2,
+    "optional": [
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3,
+        "restriction": "military"
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 5
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 9
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 9
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 9
+      }
+    ]
   },
   {
     "symbol": "CobraMkIII",
-    "name": "Cobra MkIII"
+    "name": "Cobra MkIII",
+    "hullMass": 180,
+    "speed": 280,
+    "boost": 400,
+    "baseShieldStrength": 80,
+    "baseArmour": 120,
+    "hardness": 35,
+    "masslock": 8,
+    "crew": 2,
+    "heatCapacity": 225,
+    "reserveFuelCapacity": 0.49,
+    "pitch": 40,
+    "roll": 100,
+    "yaw": 10,
+    "minThrust": 50,
+    "pipSpeed": 0.125,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 4,
+      "frameShiftDrive": 4,
+      "lifeSupport": 3,
+      "powerDistributor": 3,
+      "sensors": 3,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 2,
+    "optional": [
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 14
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 27
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 27
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 27
+      }
+    ]
   },
   {
     "symbol": "Type6",
-    "name": "Type-6 Transporter"
+    "name": "Type-6 Transporter",
+    "hullMass": 155,
+    "speed": 220,
+    "boost": 350,
+    "baseShieldStrength": 90,
+    "baseArmour": 180,
+    "hardness": 35,
+    "masslock": 8,
+    "crew": 1,
+    "heatCapacity": 179,
+    "reserveFuelCapacity": 0.39,
+    "pitch": 30,
+    "roll": 100,
+    "yaw": 17,
+    "minThrust": 40.909,
+    "pipSpeed": 0.14772727272727,
+    "core": {
+      "powerPlant": 3,
+      "thrusters": 4,
+      "frameShiftDrive": 4,
+      "lifeSupport": 2,
+      "powerDistributor": 3,
+      "sensors": 2,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      1,
+      1
+    ],
+    "utility": 3,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 12
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 23
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 23
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 23
+      }
+    ]
   },
   {
     "symbol": "Dolphin",
     "name": "Dolphin",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "hullMass": 140,
+    "speed": 250,
+    "boost": 350,
+    "baseShieldStrength": 110,
+    "baseArmour": 110,
+    "hardness": 35,
+    "masslock": 9,
+    "crew": 1,
+    "heatCapacity": 165,
+    "reserveFuelCapacity": 0.5,
+    "pitch": 30,
+    "roll": 100,
+    "yaw": 20,
+    "minThrust": 48,
+    "pipSpeed": 0.13,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 5,
+      "frameShiftDrive": 4,
+      "lifeSupport": 4,
+      "powerDistributor": 3,
+      "sensors": 3,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      1,
+      1
+    ],
+    "utility": 3,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 32
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 63
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 63
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 63
+      }
+    ]
   },
   {
     "symbol": "Type7",
-    "name": "Type-7 Transporter"
+    "name": "Type-7 Transporter",
+    "hullMass": 350,
+    "speed": 180,
+    "boost": 300,
+    "baseShieldStrength": 155,
+    "baseArmour": 340,
+    "hardness": 54,
+    "masslock": 10,
+    "crew": 1,
+    "heatCapacity": 226,
+    "reserveFuelCapacity": 0.52,
+    "pitch": 22,
+    "roll": 60,
+    "yaw": 22,
+    "minThrust": 33.333,
+    "pipSpeed": 0.16666666666667,
+    "core": {
+      "powerPlant": 5,
+      "thrusters": 5,
+      "frameShiftDrive": 5,
+      "lifeSupport": 4,
+      "powerDistributor": 4,
+      "sensors": 3,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 32
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 63
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 63
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 63
+      }
+    ]
   },
   {
     "symbol": "Asp",
-    "name": "Asp Explorer"
+    "name": "Asp Explorer",
+    "hullMass": 280,
+    "speed": 250,
+    "boost": 340,
+    "baseShieldStrength": 140,
+    "baseArmour": 210,
+    "hardness": 52,
+    "masslock": 11,
+    "crew": 2,
+    "heatCapacity": 272,
+    "reserveFuelCapacity": 0.63,
+    "pitch": 38,
+    "roll": 100,
+    "yaw": 10,
+    "minThrust": 48,
+    "pipSpeed": 0.13,
+    "core": {
+      "powerPlant": 5,
+      "thrusters": 5,
+      "frameShiftDrive": 5,
+      "lifeSupport": 4,
+      "powerDistributor": 4,
+      "sensors": 5,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      2,
+      2,
+      1,
+      1,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 21
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 42
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 42
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 42
+      }
+    ]
   },
   {
     "symbol": "Vulture",
-    "name": "Vulture"
+    "name": "Vulture",
+    "hullMass": 230,
+    "speed": 210,
+    "boost": 340,
+    "baseShieldStrength": 240,
+    "baseArmour": 160,
+    "hardness": 55,
+    "masslock": 10,
+    "crew": 2,
+    "heatCapacity": 237,
+    "reserveFuelCapacity": 0.57,
+    "pitch": 42,
+    "roll": 110,
+    "yaw": 17,
+    "minThrust": 90.476,
+    "pipSpeed": 0.023809523809524,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 5,
+      "frameShiftDrive": 4,
+      "lifeSupport": 3,
+      "powerDistributor": 5,
+      "sensors": 4,
+      "fuelTank": 3
+    },
+    "hardpoints": [
+      3,
+      3
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 5,
+        "restriction": "military"
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 17
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 35
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 35
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 35
+      }
+    ]
   },
   {
     "symbol": "Empire_Trader",
-    "name": "Imperial Clipper"
+    "name": "Imperial Clipper",
+    "hullMass": 400,
+    "speed": 300,
+    "boost": 380,
+    "baseShieldStrength": 180,
+    "baseArmour": 270,
+    "hardness": 60,
+    "masslock": 12,
+    "crew": 2,
+    "heatCapacity": 304,
+    "reserveFuelCapacity": 0.74,
+    "pitch": 40,
+    "roll": 80,
+    "yaw": 18,
+    "minThrust": 60,
+    "pipSpeed": 0.1,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 5,
+      "powerDistributor": 6,
+      "sensors": 5,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      3,
+      3,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 7
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 30
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 60
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 60
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 60
+      }
+    ]
   },
   {
     "symbol": "Federation_Dropship",
-    "name": "Federal Dropship"
+    "name": "Federal Dropship",
+    "hullMass": 580,
+    "speed": 180,
+    "boost": 300,
+    "baseShieldStrength": 200,
+    "baseArmour": 300,
+    "hardness": 60,
+    "masslock": 14,
+    "crew": 2,
+    "heatCapacity": 331,
+    "reserveFuelCapacity": 0.83,
+    "pitch": 30,
+    "roll": 80,
+    "yaw": 14,
+    "minThrust": 55.556,
+    "pipSpeed": 0.11111111111111,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 5,
+      "powerDistributor": 6,
+      "sensors": 4,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      3,
+      2,
+      2,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 44
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 87
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 87
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 87
+      }
+    ]
   },
   {
     "symbol": "Orca",
-    "name": "Orca"
+    "name": "Orca",
+    "hullMass": 290,
+    "speed": 300,
+    "boost": 380,
+    "baseShieldStrength": 220,
+    "baseArmour": 220,
+    "hardness": 55,
+    "masslock": 16,
+    "crew": 2,
+    "heatCapacity": 262,
+    "reserveFuelCapacity": 0.79,
+    "pitch": 25,
+    "roll": 55,
+    "yaw": 18,
+    "minThrust": 66.667,
+    "pipSpeed": 0.083333333333333,
+    "core": {
+      "powerPlant": 5,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 6,
+      "powerDistributor": 5,
+      "sensors": 4,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      3,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 21
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 87
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 87
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 87
+      }
+    ]
   },
   {
     "symbol": "Type9",
-    "name": "Type-9 Heavy"
+    "name": "Type-9 Heavy",
+    "hullMass": 850,
+    "speed": 130,
+    "boost": 200,
+    "baseShieldStrength": 240,
+    "baseArmour": 480,
+    "hardness": 65,
+    "masslock": 16,
+    "crew": 4,
+    "heatCapacity": 289,
+    "reserveFuelCapacity": 0.77,
+    "pitch": 20,
+    "roll": 20,
+    "yaw": 8,
+    "minThrust": 30.769,
+    "pipSpeed": 0.17307692307692,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 7,
+      "frameShiftDrive": 6,
+      "lifeSupport": 5,
+      "powerDistributor": 6,
+      "sensors": 4,
+      "fuelTank": 6
+    },
+    "hardpoints": [
+      2,
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 8
+      },
+      {
+        "size": 8
+      },
+      {
+        "size": 7
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 75
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 150
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 150
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 150
+      }
+    ]
   },
   {
     "symbol": "Python",
-    "name": "Python"
+    "name": "Python",
+    "hullMass": 350,
+    "speed": 230,
+    "boost": 300,
+    "baseShieldStrength": 260,
+    "baseArmour": 260,
+    "hardness": 65,
+    "masslock": 17,
+    "crew": 2,
+    "heatCapacity": 300,
+    "reserveFuelCapacity": 0.83,
+    "pitch": 29,
+    "roll": 90,
+    "yaw": 10,
+    "minThrust": 60.87,
+    "pipSpeed": 0.097826086956522,
+    "core": {
+      "powerPlant": 7,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 4,
+      "powerDistributor": 7,
+      "sensors": 6,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      3,
+      3,
+      3,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 26
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 53
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 53
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 53
+      }
+    ]
   },
   {
     "symbol": "BelugaLiner",
     "name": "Beluga Liner",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "hullMass": 950,
+    "speed": 200,
+    "boost": 280,
+    "baseShieldStrength": 280,
+    "baseArmour": 280,
+    "hardness": 60,
+    "masslock": 18,
+    "crew": 4,
+    "heatCapacity": 283,
+    "reserveFuelCapacity": 0.81,
+    "pitch": 25,
+    "roll": 60,
+    "yaw": 17,
+    "minThrust": 55,
+    "pipSpeed": 0.1125,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 7,
+      "frameShiftDrive": 7,
+      "lifeSupport": 8,
+      "powerDistributor": 6,
+      "sensors": 5,
+      "fuelTank": 7
+    },
+    "hardpoints": [
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "utility": 6,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 83
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 165
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 165
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 165
+      }
+    ]
   },
   {
     "symbol": "FerDeLance",
-    "name": "Fer-de-Lance"
+    "name": "Fer-de-Lance",
+    "hullMass": 250,
+    "speed": 260,
+    "boost": 350,
+    "baseShieldStrength": 300,
+    "baseArmour": 225,
+    "hardness": 70,
+    "masslock": 12,
+    "crew": 2,
+    "heatCapacity": 224,
+    "reserveFuelCapacity": 0.67,
+    "pitch": 38,
+    "roll": 90,
+    "yaw": 12,
+    "minThrust": 84.615,
+    "pipSpeed": 0.038461538461538,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 5,
+      "frameShiftDrive": 4,
+      "lifeSupport": 4,
+      "powerDistributor": 6,
+      "sensors": 4,
+      "fuelTank": 3
+    },
+    "hardpoints": [
+      4,
+      2,
+      2,
+      2,
+      2
+    ],
+    "utility": 6,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 19
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 38
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 38
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 38
+      }
+    ]
   },
   {
     "symbol": "Anaconda",
-    "name": "Anaconda"
+    "name": "Anaconda",
+    "hullMass": 400,
+    "speed": 180,
+    "boost": 240,
+    "baseShieldStrength": 350,
+    "baseArmour": 525,
+    "hardness": 65,
+    "masslock": 23,
+    "crew": 4,
+    "heatCapacity": 334,
+    "reserveFuelCapacity": 1.07,
+    "pitch": 25,
+    "roll": 60,
+    "yaw": 10,
+    "minThrust": 44.444,
+    "pipSpeed": 0.13888888888889,
+    "core": {
+      "powerPlant": 8,
+      "thrusters": 7,
+      "frameShiftDrive": 6,
+      "lifeSupport": 5,
+      "powerDistributor": 8,
+      "sensors": 8,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      4,
+      3,
+      3,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 8,
+    "optional": [
+      {
+        "size": 7
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5,
+        "restriction": "military"
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 30
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 60
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 60
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 60
+      }
+    ]
   },
   {
     "symbol": "Federation_Corvette",
-    "name": "Federal Corvette"
+    "name": "Federal Corvette",
+    "hullMass": 900,
+    "speed": 200,
+    "boost": 260,
+    "baseShieldStrength": 555,
+    "baseArmour": 370,
+    "hardness": 70,
+    "masslock": 24,
+    "crew": 4,
+    "heatCapacity": 333,
+    "reserveFuelCapacity": 1.13,
+    "pitch": 28,
+    "roll": 75,
+    "yaw": 8,
+    "minThrust": 50,
+    "pipSpeed": 0.125,
+    "core": {
+      "powerPlant": 8,
+      "thrusters": 7,
+      "frameShiftDrive": 6,
+      "lifeSupport": 5,
+      "powerDistributor": 8,
+      "sensors": 8,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      4,
+      4,
+      3,
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 8,
+    "optional": [
+      {
+        "size": 7
+      },
+      {
+        "size": 7
+      },
+      {
+        "size": 7
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5,
+        "restriction": "military"
+      },
+      {
+        "size": 5,
+        "restriction": "military"
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 30
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 60
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 60
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 60
+      }
+    ]
   },
   {
     "symbol": "Cutter",
-    "name": "Imperial Cutter"
+    "name": "Imperial Cutter",
+    "hullMass": 1100,
+    "speed": 200,
+    "boost": 320,
+    "baseShieldStrength": 600,
+    "baseArmour": 400,
+    "hardness": 70,
+    "masslock": 27,
+    "crew": 4,
+    "heatCapacity": 327,
+    "reserveFuelCapacity": 1.16,
+    "pitch": 18,
+    "roll": 45,
+    "yaw": 8,
+    "minThrust": 80,
+    "pipSpeed": 0.05,
+    "core": {
+      "powerPlant": 8,
+      "thrusters": 8,
+      "frameShiftDrive": 7,
+      "lifeSupport": 7,
+      "powerDistributor": 7,
+      "sensors": 7,
+      "fuelTank": 6
+    },
+    "hardpoints": [
+      4,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2
+    ],
+    "utility": 8,
+    "optional": [
+      {
+        "size": 8
+      },
+      {
+        "size": 8
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5,
+        "restriction": "military"
+      },
+      {
+        "size": 5,
+        "restriction": "military"
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 30
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 60
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 60
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 60
+      }
+    ]
   },
   {
     "symbol": "DiamondBack",
-    "name": "Diamondback Scout"
+    "name": "Diamondback Scout",
+    "hullMass": 170,
+    "speed": 280,
+    "boost": 380,
+    "baseShieldStrength": 120,
+    "baseArmour": 120,
+    "hardness": 40,
+    "masslock": 8,
+    "crew": 1,
+    "heatCapacity": 346,
+    "reserveFuelCapacity": 0.49,
+    "pitch": 42,
+    "roll": 100,
+    "yaw": 15,
+    "minThrust": 60.714,
+    "pipSpeed": 0.096153846153846,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 4,
+      "frameShiftDrive": 4,
+      "lifeSupport": 2,
+      "powerDistributor": 3,
+      "sensors": 2,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 13
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 26
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 26
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 26
+      }
+    ]
   },
   {
     "symbol": "Empire_Courier",
-    "name": "Imperial Courier"
+    "name": "Imperial Courier",
+    "hullMass": 35,
+    "speed": 280,
+    "boost": 380,
+    "baseShieldStrength": 200,
+    "baseArmour": 80,
+    "hardness": 30,
+    "masslock": 7,
+    "crew": 1,
+    "heatCapacity": 230,
+    "reserveFuelCapacity": 0.41,
+    "pitch": 38,
+    "roll": 90,
+    "yaw": 16,
+    "minThrust": 78.571,
+    "pipSpeed": 0.053571428571429,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 3,
+      "frameShiftDrive": 3,
+      "lifeSupport": 1,
+      "powerDistributor": 3,
+      "sensors": 2,
+      "fuelTank": 3
+    },
+    "hardpoints": [
+      2,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 4
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 8
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 8
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 8
+      }
+    ]
   },
   {
     "symbol": "DiamondBackXL",
-    "name": "Diamondback Explorer"
+    "name": "Diamondback Explorer",
+    "hullMass": 260,
+    "speed": 260,
+    "boost": 340,
+    "baseShieldStrength": 150,
+    "baseArmour": 150,
+    "hardness": 42,
+    "masslock": 10,
+    "crew": 1,
+    "heatCapacity": 351,
+    "reserveFuelCapacity": 0.52,
+    "pitch": 35,
+    "roll": 90,
+    "yaw": 13,
+    "minThrust": 61.538,
+    "pipSpeed": 0.098214285714286,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 4,
+      "frameShiftDrive": 5,
+      "lifeSupport": 3,
+      "powerDistributor": 4,
+      "sensors": 3,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      3,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 23
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 47
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 26
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 47
+      }
+    ]
   },
   {
     "symbol": "Empire_Eagle",
-    "name": "Imperial Eagle"
+    "name": "Imperial Eagle",
+    "hullMass": 50,
+    "speed": 300,
+    "boost": 400,
+    "baseShieldStrength": 80,
+    "baseArmour": 60,
+    "hardness": 28,
+    "masslock": 6,
+    "crew": 1,
+    "heatCapacity": 163,
+    "reserveFuelCapacity": 0.37,
+    "pitch": 40,
+    "roll": 100,
+    "yaw": 15,
+    "minThrust": 70,
+    "pipSpeed": 0.075,
+    "core": {
+      "powerPlant": 3,
+      "thrusters": 3,
+      "frameShiftDrive": 3,
+      "lifeSupport": 1,
+      "powerDistributor": 2,
+      "sensors": 2,
+      "fuelTank": 2
+    },
+    "hardpoints": [
+      2,
+      1,
+      1
+    ],
+    "utility": 1,
+    "optional": [
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2,
+        "restriction": "military"
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 4
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 8
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 8
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 8
+      }
+    ]
   },
   {
     "symbol": "Federation_Dropship_MkII",
-    "name": "Federal Assault Ship"
+    "name": "Federal Assault Ship",
+    "hullMass": 480,
+    "speed": 210,
+    "boost": 350,
+    "baseShieldStrength": 200,
+    "baseArmour": 300,
+    "hardness": 60,
+    "masslock": 14,
+    "crew": 2,
+    "heatCapacity": 286,
+    "reserveFuelCapacity": 0.72,
+    "pitch": 38,
+    "roll": 90,
+    "yaw": 19,
+    "minThrust": 71.429,
+    "pipSpeed": 0.071428571428571,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 5,
+      "powerDistributor": 6,
+      "sensors": 4,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      3,
+      3,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 44
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 87
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 87
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 87
+      }
+    ]
   },
   {
     "symbol": "Federation_Gunship",
-    "name": "Federal Gunship"
+    "name": "Federal Gunship",
+    "hullMass": 580,
+    "speed": 170,
+    "boost": 280,
+    "baseShieldStrength": 250,
+    "baseArmour": 350,
+    "hardness": 60,
+    "masslock": 14,
+    "crew": 2,
+    "heatCapacity": 325,
+    "reserveFuelCapacity": 0.82,
+    "pitch": 25,
+    "roll": 80,
+    "yaw": 18,
+    "minThrust": 58.824,
+    "pipSpeed": 0.10294117647059,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 5,
+      "powerDistributor": 7,
+      "sensors": 5,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      3,
+      2,
+      2,
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 44
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 87
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 87
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 87
+      }
+    ]
   },
   {
     "symbol": "Viper_MkIV",
-    "name": "Viper MkIV"
+    "name": "Viper MkIV",
+    "hullMass": 190,
+    "speed": 270,
+    "boost": 340,
+    "baseShieldStrength": 150,
+    "baseArmour": 150,
+    "hardness": 35,
+    "masslock": 7,
+    "crew": 1,
+    "heatCapacity": 209,
+    "reserveFuelCapacity": 0.46,
+    "pitch": 30,
+    "roll": 90,
+    "yaw": 12,
+    "minThrust": 64.815,
+    "pipSpeed": 0.087962962962963,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 4,
+      "frameShiftDrive": 4,
+      "lifeSupport": 2,
+      "powerDistributor": 3,
+      "sensors": 3,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 2,
+    "optional": [
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3,
+        "restriction": "military"
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 5
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 9
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 9
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 9
+      }
+    ]
   },
   {
     "symbol": "CobraMkIV",
     "name": "Cobra MkIV",
-    "entitlement": "ELITE_HORIZONS_V_COBRA_MK_IV_1000"
+    "entitlement": "ELITE_HORIZONS_V_COBRA_MK_IV_1000",
+    "hullMass": 210,
+    "speed": 200,
+    "boost": 300,
+    "baseShieldStrength": 120,
+    "baseArmour": 120,
+    "hardness": 35,
+    "masslock": 8,
+    "crew": 2,
+    "heatCapacity": 228,
+    "reserveFuelCapacity": 0.51,
+    "pitch": 30,
+    "roll": 90,
+    "yaw": 10,
+    "minThrust": 50,
+    "pipSpeed": 0.125,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 4,
+      "frameShiftDrive": 4,
+      "lifeSupport": 3,
+      "powerDistributor": 3,
+      "sensors": 3,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      2,
+      2,
+      1,
+      1,
+      1
+    ],
+    "utility": 2,
+    "optional": [
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 14
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 27
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 27
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 27
+      }
+    ]
   },
   {
     "symbol": "Independant_Trader",
-    "name": "Keelback"
+    "name": "Keelback",
+    "hullMass": 180,
+    "speed": 200,
+    "boost": 300,
+    "baseShieldStrength": 135,
+    "baseArmour": 270,
+    "hardness": 45,
+    "masslock": 8,
+    "crew": 2,
+    "heatCapacity": 215,
+    "reserveFuelCapacity": 0.39,
+    "pitch": 27,
+    "roll": 100,
+    "yaw": 15,
+    "minThrust": 45,
+    "pipSpeed": 0.1375,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 4,
+      "frameShiftDrive": 4,
+      "lifeSupport": 1,
+      "powerDistributor": 3,
+      "sensors": 2,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 3,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 12
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 23
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 23
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 23
+      }
+    ]
   },
   {
     "symbol": "Asp_Scout",
-    "name": "Asp Scout"
+    "name": "Asp Scout",
+    "hullMass": 150,
+    "speed": 220,
+    "boost": 300,
+    "baseShieldStrength": 120,
+    "baseArmour": 180,
+    "hardness": 52,
+    "masslock": 8,
+    "crew": 2,
+    "heatCapacity": 210,
+    "reserveFuelCapacity": 0.47,
+    "pitch": 40,
+    "roll": 110,
+    "yaw": 15,
+    "minThrust": 50,
+    "pipSpeed": 0.125,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 4,
+      "frameShiftDrive": 4,
+      "lifeSupport": 3,
+      "powerDistributor": 4,
+      "sensors": 4,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 2,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 21
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 42
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 42
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 42
+      }
+    ]
   },
   {
     "symbol": "Type9_Military",
     "name": "Type-10 Defender",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "hullMass": 1200,
+    "speed": 179,
+    "boost": 219,
+    "baseShieldStrength": 320,
+    "baseArmour": 580,
+    "hardness": 75,
+    "masslock": 26,
+    "crew": 4,
+    "heatCapacity": 335,
+    "reserveFuelCapacity": 0.77,
+    "pitch": 20,
+    "roll": 20,
+    "yaw": 8,
+    "minThrust": 83.333,
+    "pipSpeed": 0.041666666666667,
+    "core": {
+      "powerPlant": 8,
+      "thrusters": 7,
+      "frameShiftDrive": 7,
+      "lifeSupport": 5,
+      "powerDistributor": 7,
+      "sensors": 4,
+      "fuelTank": 6
+    },
+    "hardpoints": [
+      3,
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 8,
+    "optional": [
+      {
+        "size": 8
+      },
+      {
+        "size": 7
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 5,
+        "restriction": "military"
+      },
+      {
+        "size": 5,
+        "restriction": "military"
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 75
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 150
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 150
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 150
+      }
+    ]
   },
   {
     "symbol": "Krait_MkII",
     "name": "Krait MkII",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "hullMass": 320,
+    "speed": 240,
+    "boost": 330,
+    "baseShieldStrength": 220,
+    "baseArmour": 220,
+    "hardness": 55,
+    "masslock": 16,
+    "crew": 3,
+    "heatCapacity": 300,
+    "reserveFuelCapacity": 0.63,
+    "pitch": 26,
+    "roll": 90,
+    "yaw": 10,
+    "minThrust": 62.3,
+    "pipSpeed": 0.09375,
+    "core": {
+      "powerPlant": 7,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 4,
+      "powerDistributor": 7,
+      "sensors": 6,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      3,
+      3,
+      3,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 36
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 67
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 67
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 67
+      }
+    ]
   },
   {
     "symbol": "TypeX",
     "name": "Alliance Chieftain",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "hullMass": 400,
+    "speed": 230,
+    "boost": 330,
+    "baseShieldStrength": 200,
+    "baseArmour": 280,
+    "hardness": 65,
+    "masslock": 13,
+    "crew": 2,
+    "heatCapacity": 289,
+    "reserveFuelCapacity": 0.77,
+    "pitch": 39,
+    "roll": 92,
+    "yaw": 16,
+    "minThrust": 65.217,
+    "pipSpeed": 0.08695652173913,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 5,
+      "powerDistributor": 6,
+      "sensors": 4,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      3,
+      3,
+      2,
+      1,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 40
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 78
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 78
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 78
+      }
+    ]
   },
   {
     "symbol": "TypeX_2",
     "name": "Alliance Crusader",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "hullMass": 500,
+    "speed": 180,
+    "boost": 300,
+    "baseShieldStrength": 200,
+    "baseArmour": 300,
+    "hardness": 65,
+    "masslock": 13,
+    "crew": 4,
+    "heatCapacity": 316,
+    "reserveFuelCapacity": 0.77,
+    "pitch": 32,
+    "roll": 80,
+    "yaw": 16,
+    "minThrust": 61.11,
+    "pipSpeed": 0.15833333333333,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 5,
+      "powerDistributor": 6,
+      "sensors": 4,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      3,
+      2,
+      2,
+      1,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 40
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 78
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 78
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 78
+      }
+    ]
   },
   {
     "symbol": "TypeX_3",
     "name": "Alliance Challenger",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "hullMass": 450,
+    "speed": 204,
+    "boost": 310,
+    "baseShieldStrength": 220,
+    "baseArmour": 300,
+    "hardness": 65,
+    "masslock": 13,
+    "crew": 2,
+    "heatCapacity": 316,
+    "reserveFuelCapacity": 0.77,
+    "pitch": 32,
+    "roll": 90,
+    "yaw": 16,
+    "minThrust": 65,
+    "pipSpeed": 0.088709677419355,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 5,
+      "powerDistributor": 6,
+      "sensors": 4,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      3,
+      2,
+      2,
+      2,
+      1,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 40
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 78
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 78
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 78
+      }
+    ]
   },
   {
     "symbol": "Krait_Light",
     "name": "Krait Phantom",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "hullMass": 270,
+    "speed": 250,
+    "boost": 350,
+    "baseShieldStrength": 200,
+    "baseArmour": 180,
+    "hardness": 55,
+    "masslock": 14,
+    "crew": 2,
+    "heatCapacity": 300,
+    "reserveFuelCapacity": 0.63,
+    "pitch": 26,
+    "roll": 90,
+    "yaw": 10,
+    "minThrust": 64,
+    "pipSpeed": 0.09,
+    "core": {
+      "powerPlant": 7,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 4,
+      "powerDistributor": 7,
+      "sensors": 6,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      3,
+      3,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 26
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 53
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 53
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 53
+      }
+    ]
   },
   {
     "symbol": "Mamba",
     "name": "Mamba",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "hullMass": 250,
+    "speed": 310,
+    "boost": 380,
+    "baseShieldStrength": 270,
+    "baseArmour": 230,
+    "hardness": 70,
+    "masslock": 12,
+    "crew": 2,
+    "heatCapacity": 165,
+    "reserveFuelCapacity": 0.5,
+    "pitch": 27,
+    "roll": 80,
+    "yaw": 10,
+    "minThrust": 77.42,
+    "pipSpeed": 0.056451612903226,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 5,
+      "frameShiftDrive": 4,
+      "lifeSupport": 4,
+      "powerDistributor": 6,
+      "sensors": 4,
+      "fuelTank": 3
+    },
+    "hardpoints": [
+      4,
+      3,
+      3,
+      1,
+      1
+    ],
+    "utility": 6,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 19
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 38
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 38
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 38
+      }
+    ]
   },
   {
     "symbol": "Python_NX",
     "name": "Python MkII",
-    "entitlement": "ELITE_V_PYTHON_NX"
+    "entitlement": "ELITE_V_PYTHON_NX",
+    "hullMass": 450,
+    "speed": 256,
+    "boost": 345,
+    "baseShieldStrength": 335,
+    "baseArmour": 280,
+    "hardness": 70,
+    "masslock": 17,
+    "crew": 2,
+    "heatCapacity": 316,
+    "reserveFuelCapacity": 0.83,
+    "pitch": 37.72,
+    "roll": 92.76,
+    "yaw": 12.74,
+    "minThrust": 85.75,
+    "pipSpeed": 0.097826086956522,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 4,
+      "powerDistributor": 6,
+      "sensors": 5,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      3,
+      3,
+      3,
+      3,
+      2,
+      2
+    ],
+    "utility": 6,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 26
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 53
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 53
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 53
+      }
+    ]
   },
   {
     "symbol": "Type8",
     "name": "Type-8 Transporter",
-    "entitlement": "ELITE_V_TYPE8"
+    "entitlement": "ELITE_V_TYPE8",
+    "hullMass": 400,
+    "speed": 200,
+    "boost": 340,
+    "baseShieldStrength": 228,
+    "baseArmour": 440,
+    "hardness": 58,
+    "masslock": 18,
+    "crew": 1,
+    "heatCapacity": 226,
+    "reserveFuelCapacity": 0.52,
+    "pitch": 28,
+    "roll": 60,
+    "yaw": 18,
+    "minThrust": 45,
+    "pipSpeed": 0.16666666666667,
+    "core": {
+      "powerPlant": 5,
+      "thrusters": 5,
+      "frameShiftDrive": 5,
+      "lifeSupport": 3,
+      "powerDistributor": 4,
+      "sensors": 3,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      2,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 7
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 32
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 63
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 63
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 63
+      }
+    ]
   },
   {
     "symbol": "Mandalay",
     "name": "Mandalay",
-    "entitlement": "ELITE_V_MANDALAY"
+    "entitlement": "ELITE_V_MANDALAY",
+    "hullMass": 230,
+    "speed": 280,
+    "boost": 350,
+    "baseShieldStrength": 220,
+    "baseArmour": 230,
+    "hardness": 55,
+    "masslock": 11,
+    "crew": 2,
+    "heatCapacity": 250,
+    "reserveFuelCapacity": 0.52,
+    "pitch": 35,
+    "roll": 96,
+    "yaw": 28,
+    "minThrust": 71.5,
+    "pipSpeed": 0.16666666666667,
+    "core": {
+      "powerPlant": 5,
+      "thrusters": 5,
+      "frameShiftDrive": 5,
+      "lifeSupport": 4,
+      "powerDistributor": 5,
+      "sensors": 5,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      2,
+      2,
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 19
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 38
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 38
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 38
+      }
+    ]
   },
   {
     "symbol": "CobraMkV",
     "name": "Cobra MkV",
-    "entitlement": "ELITE_V_COBRA_MKV"
+    "entitlement": "ELITE_V_COBRA_MKV",
+    "hullMass": 150,
+    "speed": 291,
+    "boost": 412,
+    "baseShieldStrength": 160,
+    "baseArmour": 180,
+    "hardness": 40,
+    "masslock": 8,
+    "crew": 3,
+    "heatCapacity": 245,
+    "reserveFuelCapacity": 0.49,
+    "pitch": 45.61,
+    "roll": 121.62,
+    "yaw": 33.45,
+    "minThrust": 79,
+    "pipSpeed": 0.125,
+    "core": {
+      "powerPlant": 4,
+      "thrusters": 4,
+      "frameShiftDrive": 4,
+      "lifeSupport": 3,
+      "powerDistributor": 4,
+      "sensors": 3,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      2,
+      2,
+      2,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 14
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 27
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 27
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 27
+      }
+    ]
   },
   {
     "symbol": "Corsair",
     "name": "Corsair",
-    "entitlement": "ELITE_V_CORSAIR"
+    "entitlement": "ELITE_V_CORSAIR",
+    "hullMass": 265,
+    "speed": 280,
+    "boost": 355,
+    "baseShieldStrength": 235,
+    "baseArmour": 270,
+    "hardness": 65,
+    "masslock": 17,
+    "crew": 2,
+    "heatCapacity": 230,
+    "reserveFuelCapacity": 0.41,
+    "pitch": 26,
+    "roll": 80,
+    "yaw": 10,
+    "minThrust": 65,
+    "pipSpeed": 0.053571428571429,
+    "core": {
+      "powerPlant": 7,
+      "thrusters": 7,
+      "frameShiftDrive": 5,
+      "lifeSupport": 4,
+      "powerDistributor": 7,
+      "sensors": 6,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 32
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 63
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 63
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 63
+      }
+    ]
   },
   {
     "symbol": "PantherMkII",
     "name": "Panther Clipper MkII",
-    "entitlement": "ELITE_V_PANTHER_MKII"
+    "entitlement": "ELITE_V_PANTHER_MKII",
+    "hullMass": 1200,
+    "speed": 181,
+    "boost": 250,
+    "baseShieldStrength": 350,
+    "baseArmour": 620,
+    "hardness": 70,
+    "masslock": 27,
+    "crew": 4,
+    "heatCapacity": 250,
+    "reserveFuelCapacity": 1.16,
+    "pitch": 18,
+    "roll": 20,
+    "yaw": 10,
+    "minThrust": 33.3,
+    "pipSpeed": 0.16666666666667,
+    "core": {
+      "powerPlant": 8,
+      "thrusters": 8,
+      "frameShiftDrive": 7,
+      "lifeSupport": 5,
+      "powerDistributor": 7,
+      "sensors": 5,
+      "fuelTank": 7
+    },
+    "hardpoints": [
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      1,
+      1,
+      1,
+      1
+    ],
+    "utility": 6,
+    "optional": [
+      {
+        "size": 8
+      },
+      {
+        "size": 8
+      },
+      {
+        "size": 7
+      },
+      {
+        "size": 7
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 75
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 150
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 150
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 150
+      }
+    ]
   },
   {
     "symbol": "LakonMiner",
     "name": "Type-11 Prospector",
-    "entitlement": "ELITE_V_LAKON_MINER"
+    "entitlement": "ELITE_V_LAKON_MINER",
+    "hullMass": 320,
+    "speed": 272,
+    "boost": 367,
+    "baseShieldStrength": 275,
+    "baseArmour": 350,
+    "hardness": 58,
+    "masslock": 16,
+    "crew": 3,
+    "heatCapacity": 289,
+    "reserveFuelCapacity": 0.77,
+    "pitch": 25,
+    "roll": 37.5,
+    "yaw": 22,
+    "minThrust": 70.5,
+    "pipSpeed": 0.17307692307692,
+    "core": {
+      "powerPlant": 6,
+      "thrusters": 5,
+      "frameShiftDrive": 5,
+      "lifeSupport": 3,
+      "powerDistributor": 7,
+      "sensors": 3,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      2,
+      1,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 32
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 63
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 63
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 63
+      }
+    ]
   },
   {
     "symbol": "Explorer_NX",
     "name": "Caspian Explorer",
-    "entitlement": "ELITE_V_EXPLORER_NX"
+    "entitlement": "ELITE_V_EXPLORER_NX",
+    "hullMass": 950,
+    "speed": 210,
+    "boost": 290,
+    "baseShieldStrength": 500,
+    "baseArmour": 345,
+    "hardness": 60,
+    "masslock": 19,
+    "crew": 4,
+    "heatCapacity": 250,
+    "reserveFuelCapacity": 1.14,
+    "pitch": 30,
+    "roll": 75,
+    "yaw": 14,
+    "minThrust": 76,
+    "pipSpeed": 0.16666666666667,
+    "core": {
+      "powerPlant": 8,
+      "thrusters": 7,
+      "frameShiftDrive": 8,
+      "lifeSupport": 5,
+      "powerDistributor": 7,
+      "sensors": 8,
+      "fuelTank": 7
+    },
+    "hardpoints": [
+      3,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "utility": 6,
+    "optional": [
+      {
+        "size": 7
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Mk II Ablative Lightweight",
+        "mass": 15
+      },
+      {
+        "name": "Mk II Ablative Reinforced",
+        "mass": 30
+      },
+      {
+        "name": "Mk II Ablative Military Grade",
+        "mass": 60
+      },
+      {
+        "name": "Mk II Ablative Mirrored",
+        "mass": 60
+      },
+      {
+        "name": "Mk II Ablative Reactive",
+        "mass": 60
+      }
+    ]
   },
   {
     "symbol": "SmallCombat01_NX",
     "name": "Kestrel Mk II",
-    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+    "entitlement": "ELITE_V_SMALL_COMBAT_01",
+    "hullMass": 190,
+    "speed": 271,
+    "boost": 360,
+    "baseShieldStrength": 225,
+    "baseArmour": 70,
+    "hardness": 55,
+    "masslock": 10,
+    "crew": 1,
+    "heatCapacity": 237,
+    "reserveFuelCapacity": 0.57,
+    "pitch": 51.4,
+    "roll": 123.36,
+    "yaw": 24.67,
+    "minThrust": 89,
+    "pipSpeed": 0.023809523809524,
+    "core": {
+      "powerPlant": 5,
+      "thrusters": 5,
+      "frameShiftDrive": 4,
+      "lifeSupport": 1,
+      "powerDistributor": 5,
+      "sensors": 2,
+      "fuelTank": 4
+    },
+    "hardpoints": [
+      3,
+      3,
+      3,
+      1,
+      1
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4,
+        "restriction": "military"
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite"
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 17
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 35
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 35
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 35
+      }
+    ]
   },
   {
     "symbol": "MediumTransport01",

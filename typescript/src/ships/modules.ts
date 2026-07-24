@@ -3,19 +3,19 @@
  * feature.
  *
  * Elite Dangerous has ~1200 fittable modules. This module holds the
- * {@link OutfittingModule} record shape and the pure functions that search a
- * catalogue ({@link getModuleBySymbol}, {@link getModulesByName},
- * {@link getModulesForShip}); the catalogues themselves
- * live in sibling modules, one per Frontier outfitting category, so you only bundle
- * the ones you ask for:
+ * {@link OutfittingModule} record shape — a module's **identity and its stats**
+ * together — and the pure functions that search a catalogue
+ * ({@link getModuleBySymbol}, {@link getModulesByName}, {@link getModulesForShip});
+ * the catalogues themselves live in sibling modules, one per Frontier outfitting
+ * category, so you only bundle the ones you ask for:
  *
- * | Module | Export | Entries | ≈ bundled |
- * | --- | --- | --- | --- |
- * | `./modules-standard` | `STANDARD_MODULES` | 521 | 67 KB |
- * | `./modules-internal` | `INTERNAL_MODULES` | 475 | 64 KB |
- * | `./modules-hardpoint` | `HARDPOINT_MODULES` | 159 | 25 KB |
- * | `./modules-utility` | `UTILITY_MODULES` | 35 | 4 KB |
- * | `./modules-all` | `ALL_MODULES` | 1190 | 161 KB |
+ * | Module | Export | Entries |
+ * | --- | --- | --- |
+ * | `./modules-standard` | `STANDARD_MODULES` | 521 |
+ * | `./modules-internal` | `INTERNAL_MODULES` | 475 |
+ * | `./modules-hardpoint` | `HARDPOINT_MODULES` | 159 |
+ * | `./modules-utility` | `UTILITY_MODULES` | 35 |
+ * | `./modules-all` | `ALL_MODULES` | 1190 |
  *
  * Importing a query function from here costs nothing but the function: pass in
  * whichever catalogue you imported.
@@ -56,12 +56,16 @@ export type ModuleGuidance = 'Dumbfire' | 'Seeker' | 'Swarm';
 export type ModuleRating = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I';
 
 /**
- * One fittable outfitting module in Frontier's registry.
+ * One fittable outfitting module — its **identity and its stats** in one record.
  *
  * @remarks
- * A pure registry record — the outfitting registry, not a stats sheet. It tells you
- * what a module *is* (symbol, name, category, size and rating), not its mass,
- * cost or performance.
+ * The identity fields (`symbol`, `name`, `category`, `class`, `rating`, …) come from
+ * Frontier's outfitting registry and are always present. The stats fields (`mass`,
+ * `powerDraw`, the FSD constants, per-group performance, …) come from coriolis-data
+ * and are **sparse** — a module carries only the stats that apply to it, and a few
+ * modules (ship-specific armour) carry no stats at all. Masses are tonnes, power is
+ * megawatts, ranges are light-years. Weapon combat stats (damage, falloff, breach)
+ * are intentionally not carried.
  */
 export interface OutfittingModule {
     /** Internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`. Unique — the module's key. */
@@ -109,6 +113,82 @@ export interface OutfittingModule {
      * `"ELITE_HORIZONS_V_PLANETARY_LANDINGS"`. Present only on gated modules.
      */
     readonly entitlement?: string;
+
+    // ── Stats (from coriolis-data) — sparse: only the fields the module's group
+    //    uses are present. The three `*Multiplier` fields are group-dependent (a
+    //    thruster's speed multiplier, a shield generator's strength multiplier). ──
+
+    /**
+     * The hull symbol(s) a module is restricted to, when it is ship-specific — e.g.
+     * `["Explorer_NX"]` for the Python Mk II's MkII Gravity Optimised thrusters.
+     *
+     * @remarks
+     * Present only on the handful of non-armour modules limited to particular hulls.
+     * Armour is ship-specific too, but that restriction lives in
+     * {@link OutfittingModule.ship} / {@link getModulesForShip}, not here. Symbols
+     * match {@link Ship.symbol}.
+     */
+    readonly restrictedToShips?: readonly string[];
+    /** Mass, in tonnes. */
+    readonly mass?: number;
+    /** Integrity (hit points against module damage). */
+    readonly integrity?: number;
+    /** Power draw, in megawatts. */
+    readonly powerDraw?: number;
+    /** Boot time from power-on, in seconds. */
+    readonly bootTime?: number;
+
+    /** Optimised mass, in tonnes — thrusters, shield generators, and FSDs. */
+    readonly optMass?: number;
+    /** Minimum mass for the performance curve, in tonnes. */
+    readonly minMass?: number;
+    /** Maximum mass for the performance curve, in tonnes. */
+    readonly maxMass?: number;
+    /** Performance multiplier at `optMass` — thruster speed or shield strength. */
+    readonly optMultiplier?: number;
+    /** Performance multiplier at `minMass`. */
+    readonly minMultiplier?: number;
+    /** Performance multiplier at `maxMass`. */
+    readonly maxMultiplier?: number;
+
+    /** FSD: maximum fuel per jump, in tonnes. */
+    readonly maxFuel?: number;
+    /** FSD: rating (linear) fuel constant. */
+    readonly fuelMul?: number;
+    /** FSD: size (power) fuel constant. */
+    readonly fuelPower?: number;
+    /** Guardian FSD Booster: flat jump-range bonus, in light-years. */
+    readonly jumpBoost?: number;
+
+    /** Power plant: power generated, in megawatts. */
+    readonly powerCapacity?: number;
+    /** Power plant: heat efficiency (lower runs cooler). */
+    readonly heatEfficiency?: number;
+
+    /** Power distributor: WEP capacitor capacity. */
+    readonly weaponsCapacity?: number;
+    /** Power distributor: WEP recharge rate, per second. */
+    readonly weaponsRecharge?: number;
+    /** Power distributor: ENG capacitor capacity. */
+    readonly enginesCapacity?: number;
+    /** Power distributor: ENG recharge rate, per second. */
+    readonly enginesRecharge?: number;
+    /** Power distributor: SYS capacitor capacity. */
+    readonly systemsCapacity?: number;
+    /** Power distributor: SYS recharge rate, per second. */
+    readonly systemsRecharge?: number;
+
+    /** Fuel tank: capacity, in tonnes. */
+    readonly fuelCapacity?: number;
+    /** Cargo rack: capacity, in tonnes. */
+    readonly cargoCapacity?: number;
+
+    /** Shield generator: regeneration rate, MJ per second. */
+    readonly shieldRegenRate?: number;
+    /** Shield generator: broken (down) regeneration rate, MJ per second. */
+    readonly shieldBrokenRegenRate?: number;
+    /** Shield booster: shield strength bonus, as a fraction (`0.04` = +4%). */
+    readonly shieldBoost?: number;
 }
 
 /**

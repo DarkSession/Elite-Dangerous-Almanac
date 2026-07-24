@@ -4,11 +4,12 @@
  * boosters, kill warrant / manifest / wake scanners, the xeno and Shutdown Field
  * scanners, …).
  *
- * ~4 KB bundled — the smallest catalogue. The other categories live in
- * `./modules-standard`, `./modules-internal` and `./modules-hardpoint`, so
- * importing this module never bundles them.
+ * The smallest catalogue. The other categories live in `./modules-standard`,
+ * `./modules-internal` and `./modules-hardpoint`, so importing this module never
+ * bundles them.
  *
- * Data from EDCD FDevIDs (`outfitting.csv`); see `data/ships/SOURCES.md`.
+ * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,
+ * joined on `symbol`; see `data/ships/SOURCES.md`.
  *
  * @packageDocumentation
  */

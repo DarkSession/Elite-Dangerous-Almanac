@@ -5,27 +5,28 @@
  * This entry point re-exports the ships feature area. Every symbol is also reachable
  * from its own module, so bundlers can drop anything you do not use.
  *
- * Two registries, each an id/name catalogue rather than a stats sheet:
+ * Two catalogues, each now carrying **identity and stats in one record**:
  *
  * - **Ships** — {@link SHIPS} and the {@link getShipBySymbol} / {@link getShipByName}
- *   lookups. One small catalogue; the lookups carry it.
+ *   lookups. One small catalogue; each {@link Ship} carries the hull's identity,
+ *   stats and slot layout together.
  * - **Modules** — the {@link OutfittingModule} type and the data-free query
  *   functions ({@link getModuleBySymbol} & co.) over a catalogue you pass in. The
  *   catalogues are split by Frontier's four outfitting categories
  *   ({@link STANDARD_MODULES}, {@link INTERNAL_MODULES}, {@link HARDPOINT_MODULES},
  *   {@link UTILITY_MODULES}, or {@link ALL_MODULES}) so you only bundle the slice
- *   you search.
+ *   you search; each record carries the module's identity and its stats.
  *
- * Data from EDCD FDevIDs (`shipyard.csv`, `outfitting.csv`); see
- * `data/ships/SOURCES.md`.
+ * Identity from EDCD FDevIDs (`shipyard.csv`, `outfitting.csv`); stats and slot
+ * layouts from EDCD/coriolis-data; see `data/ships/SOURCES.md`.
  *
  * @packageDocumentation
  */
 
-// ── Ships (the shipyard registry) ───────────────────────────────────────────
-export { SHIPS, getShipBySymbol, getShipByName, type Ship } from './ships.js';
+// ── Ships (identity + stats + slot layout, one record per hull) ─────────────
+export { SHIPS, getShipBySymbol, getShipByName, getShipSlots, type Ship } from './ships.js';
 
-// ── Modules: types + data-free queries ──────────────────────────────────────
+// ── Modules: types + data-free queries (each record carries identity + stats) ─
 // The query functions hold no data; each catalogue is its own module, so import
 // only the category you need and pass it in.
 export {
@@ -45,15 +46,6 @@ export { INTERNAL_MODULES } from './modules-internal.js';
 export { HARDPOINT_MODULES } from './modules-hardpoint.js';
 export { UTILITY_MODULES } from './modules-utility.js';
 export { ALL_MODULES } from './modules-all.js';
-
-// ── Stats: ships and modules (the numbers, keyed by the same `symbol`) ───────
-export { SHIP_STATS, getShipStats, type ShipStats } from './ship-stats.js';
-export { getModuleStats, type ModuleStats } from './module-stats.js';
-export { STANDARD_MODULE_STATS } from './module-stats-standard.js';
-export { INTERNAL_MODULE_STATS } from './module-stats-internal.js';
-export { HARDPOINT_MODULE_STATS } from './module-stats-hardpoint.js';
-export { UTILITY_MODULE_STATS } from './module-stats-utility.js';
-export { ALL_MODULE_STATS } from './module-stats-all.js';
 
 // ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
 export {
@@ -75,13 +67,15 @@ export {
 } from './jump-range.js';
 export {
     ShipLoadout,
+    LoadoutSlot,
+    FittedModule,
     type FuelCapacity,
     type JumpOptions,
-    type LoadoutSlot,
+    type AvailableBlueprint,
     type ApplyBlueprintOptions,
 } from './ship-loadout.js';
 
-// ── Build editor: slot model + per-hull slot layouts ────────────────────────
+// ── Build editor: slot model (per-hull slot layouts live on each `Ship`) ─────
 export {
     parseSlotName,
     enumerateSlots,
@@ -95,15 +89,21 @@ export {
     type ShipSlots,
     type ParsedSlot,
 } from './slots.js';
-export { SHIP_SLOTS, getShipSlots } from './ship-slots.js';
 
 // ── Engineering: blueprint + experimental-effect calculator ─────────────────
 export {
     computeModifiers,
     type ModifierMethod,
     type BlueprintFeature,
+    type BlueprintMaterial,
+    type BlueprintGrade,
     type ExperimentalContribution,
     type BlueprintGrades,
 } from './engineering.js';
-export { BLUEPRINTS, getBlueprint, getBlueprintGrade } from './blueprints.js';
+export {
+    BLUEPRINTS,
+    getBlueprint,
+    getBlueprintGrade,
+    getBlueprintGradeMaterials,
+} from './blueprints.js';
 export { EXPERIMENTAL_EFFECTS, getExperimentalEffect } from './experimental-effects.js';

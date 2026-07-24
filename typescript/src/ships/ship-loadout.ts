@@ -8,7 +8,7 @@
  * and {@link ShipLoadout.setModule | fit} and {@link ShipLoadout.removeModule | remove}
  * modules. It composes the data-free pieces of this folder — the SLEF parser
  * (`./slef`), the jump-range maths (`./jump-range`), the slot model (`./slots`), and
- * the module/ship stat catalogues.
+ * the module and ship catalogues (each record carrying its own stats).
  *
  * Instances are **mutable**: `setModule`/`removeModule` change the build in place and
  * return `this` for chaining. Values a SLEF export already computed (its
@@ -17,6 +17,13 @@
  * Editing an imported build adjusts the supplied aggregate figures by the changed
  * module's contribution; when that contribution is unknown, the affected figure is
  * discarded and recomputed rather than allowed to go stale.
+ *
+ * @remarks
+ * This is the batteries-included ship facade: resolving arbitrary journal module
+ * ids and engineering recipes requires the complete ship/module, blueprint, and
+ * experimental-effect catalogues. Import `./slef`, `./jump-range`, or an individual
+ * module catalogue instead when you only need one data-free operation or one
+ * outfitting category.
  *
  * @example
  * ```ts
@@ -43,21 +50,25 @@ import {
     totalRange,
     type FrameShiftDriveParams,
 } from './jump-range.js';
-import { getModuleStats, type ModuleStats } from './module-stats.js';
-import { ALL_MODULE_STATS } from './module-stats-all.js';
-import { getShipStats } from './ship-stats.js';
-import { getShipSlots } from './ship-slots.js';
-import { enumerateSlots, type BuildSlot, type SlotKind, type CoreSlotType } from './slots.js';
+import { getShipBySymbol, getShipSlots } from './ships.js';
+import { ALL_MODULES } from './modules-all.js';
+import {
+    enumerateSlots,
+    type BuildSlot,
+    type SlotKind,
+    type SlotRestriction,
+    type CoreSlotType,
+} from './slots.js';
 import { computeModifiers } from './engineering.js';
-import { getBlueprintGrade } from './blueprints.js';
-import { getExperimentalEffect } from './experimental-effects.js';
+import { BLUEPRINTS, getBlueprintGrade } from './blueprints.js';
+import { EXPERIMENTAL_EFFECTS, getExperimentalEffect } from './experimental-effects.js';
 import {
     blueprintTargets,
     experimentalTarget,
     moduleEngineeringTarget,
 } from './engineering-compatibility.js';
 import type { ModuleEngineering } from './slef.js';
-import type { OutfittingModule } from './modules.js';
+import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 
 /** A ship's fuel-tank capacities, in tonnes. */
 export interface FuelCapacity {
@@ -85,12 +96,12 @@ export interface ApplyBlueprintOptions {
     readonly experimental?: string;
 }
 
-/** A hull mount with the module (if any) currently fitted in it. */
-export interface LoadoutSlot extends BuildSlot {
-    /** The fitted module, or `null` if the mount is empty. */
-    readonly module: LoadoutModule | null;
-    /** Whether a module is fitted. */
-    readonly occupied: boolean;
+/** A blueprint that can engineer a module, with the grades it offers. */
+export interface AvailableBlueprint {
+    /** The blueprint's Frontier `fdname`, e.g. `"FSD_LongRange"`. */
+    readonly fdname: string;
+    /** The grades the blueprint offers, ascending (e.g. `[1, 2, 3, 4, 5]`). */
+    readonly grades: readonly number[];
 }
 
 /** Top-level figures a SLEF export carries, trusted over the computed fallbacks. */
@@ -140,11 +151,11 @@ const MILITARY_PREFIXES: readonly string[] = [
 ];
 
 /**
- * Journal Modifier Label → the {@link ModuleStats} field holding its base value.
- * The three `*OptimalMass` labels and the two `*Strength`/`*Performance` labels all
- * share a stats field; only one is ever referenced for a given module.
+ * Journal Modifier Label → the {@link OutfittingModule} field holding its base
+ * value. The three `*OptimalMass` labels and the two `*Strength`/`*Performance`
+ * labels all share a stats field; only one is ever referenced for a given module.
  */
-const STAT_LABELS: readonly (readonly [string, keyof ModuleStats])[] = [
+const STAT_LABELS: readonly (readonly [string, keyof OutfittingModule])[] = [
     ['Mass', 'mass'],
     ['Integrity', 'integrity'],
     ['PowerDraw', 'powerDraw'],
@@ -177,13 +188,13 @@ function coreTypeOf(symbol: string): CoreSlotType | null {
     return null;
 }
 
-/** Stats for a module id, across every outfitting category. */
-function statFor(item: string): ReturnType<typeof getModuleStats> {
-    return getModuleStats(item, ALL_MODULE_STATS);
+/** The full record (identity + stats) for a module id, across every category. */
+function statFor(item: string): OutfittingModule | null {
+    return getModuleBySymbol(item, ALL_MODULES);
 }
 
 /** A module's base stat values keyed by journal Modifier Label, for engineering. */
-function baseStats(stats: ModuleStats): Record<string, number> {
+function baseStats(stats: OutfittingModule): Record<string, number> {
     const base: Record<string, number> = {};
     for (const [label, field] of STAT_LABELS) {
         const value = stats[field];
@@ -192,12 +203,131 @@ function baseStats(stats: ModuleStats): Record<string, number> {
     return base;
 }
 
+/** Modifier labels that cannot be computed from the base stats this library carries. */
+function missingBaseLabels(
+    base: Readonly<Record<string, number>>,
+    features: readonly { readonly label: string }[],
+    experimental?: readonly { readonly label: string }[],
+): string[] {
+    return [
+        ...new Set(
+            [...features, ...(experimental ?? [])]
+                .map((feature) => feature.label)
+                .filter((label) => base[label] === undefined),
+        ),
+    ];
+}
+
+/** The blueprints that can engineer a module, with the grades each offers. */
+function availableBlueprintsFor(item: string): AvailableBlueprint[] {
+    const target = moduleEngineeringTarget(item);
+    const stats = statFor(item);
+    if (!stats) return [];
+    const base = baseStats(stats);
+    const out: AvailableBlueprint[] = [];
+    for (const fdname of Object.keys(BLUEPRINTS)) {
+        if (!blueprintTargets(fdname)?.includes(target)) continue;
+        const grades = Object.entries(BLUEPRINTS[fdname]!)
+            .filter(([, grade]) => missingBaseLabels(base, grade.features).length === 0)
+            .map(([grade]) => Number(grade))
+            .filter(Number.isFinite)
+            .sort((a, b) => a - b);
+        if (grades.length > 0) out.push({ fdname, grades });
+    }
+    return out;
+}
+
+/** The experimental-effect `fdname`s that can be applied to a module. */
+function availableExperimentalsFor(item: string): string[] {
+    const target = moduleEngineeringTarget(item);
+    const stats = statFor(item);
+    if (!stats) return [];
+    const base = baseStats(stats);
+    return Object.keys(EXPERIMENTAL_EFFECTS).filter((fd) => {
+        const effect = EXPERIMENTAL_EFFECTS[fd];
+        return (
+            experimentalTarget(fd) === target &&
+            effect !== undefined &&
+            missingBaseLabels(base, effect).length === 0
+        );
+    });
+}
+
+/** Detach a journal module from caller-owned and returned mutable objects. */
+function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
+    return {
+        Slot: module.Slot,
+        Item: module.Item,
+        ...(module.On === undefined ? {} : { On: module.On }),
+        ...(module.Priority === undefined ? {} : { Priority: module.Priority }),
+        ...(module.Health === undefined ? {} : { Health: module.Health }),
+        ...(module.Value === undefined ? {} : { Value: module.Value }),
+        ...(module.Engineering === undefined
+            ? {}
+            : {
+                  Engineering: {
+                      BlueprintName: module.Engineering.BlueprintName,
+                      Level: module.Engineering.Level,
+                      Quality: module.Engineering.Quality,
+                      ...(module.Engineering.ExperimentalEffect === undefined
+                          ? {}
+                          : { ExperimentalEffect: module.Engineering.ExperimentalEffect }),
+                      ...(module.Engineering.ExperimentalEffect_Localised === undefined
+                          ? {}
+                          : {
+                                ExperimentalEffect_Localised:
+                                    module.Engineering.ExperimentalEffect_Localised,
+                            }),
+                      Modifiers: module.Engineering.Modifiers.map((modifier) => ({ ...modifier })),
+                  },
+              }),
+    };
+}
+
+/** Human-readable name for a core mount, by function. */
+const CORE_NAMES: Record<CoreSlotType, string> = {
+    powerPlant: 'Power Plant',
+    thrusters: 'Thrusters',
+    frameShiftDrive: 'Frame Shift Drive',
+    lifeSupport: 'Life Support',
+    powerDistributor: 'Power Distributor',
+    sensors: 'Sensors',
+    fuelTank: 'Fuel Tank',
+};
+
+/** A human-readable label for a slot, derived from its key and kind. */
+function slotDisplayName(slot: BuildSlot): string {
+    switch (slot.kind) {
+        case 'core':
+            return slot.core ? CORE_NAMES[slot.core] : slot.key;
+        case 'hardpoint': {
+            const m = /^(Small|Medium|Large|Huge)Hardpoint(\d+)$/.exec(slot.key);
+            return m ? `${m[1]} Hardpoint ${Number(m[2])}` : slot.key;
+        }
+        case 'utility': {
+            const m = /^TinyHardpoint(\d+)$/.exec(slot.key);
+            return m ? `Utility Mount ${Number(m[1])}` : slot.key;
+        }
+        case 'optional': {
+            if (slot.restriction === 'planetaryApproachSuite') return 'Planetary Approach Suite';
+            const mil = /^Military(\d+)$/.exec(slot.key);
+            if (mil) return `Military Slot ${Number(mil[1])}`;
+            const opt = /^Slot(\d+)_Size(\d+)$/.exec(slot.key);
+            return opt ? `Optional Internal ${Number(opt[1])} (Size ${slot.size})` : slot.key;
+        }
+        case 'armour':
+            return 'Armour';
+        case 'cargoHatch':
+            return 'Cargo Hatch';
+    }
+}
+
 /**
  * A fitted ship — read a SLEF export, or assemble a hull from scratch.
  *
  * @remarks
- * Jump calculations resolve the frame shift drive's constants from the module-stats
- * catalogues, applying any engineering the build carries (a Long Range blueprint's
+ * Jump calculations resolve the frame shift drive's constants from the drive's module
+ * record, applying any engineering the build carries (a Long Range blueprint's
  * `FSDOptimalMass`, for instance). For a SLEF build, mass comes from the export's
  * `UnladenMass`; for an assembled build it is the hull mass plus every fitted module's
  * mass (armour defaults to the zero-mass lightweight alloy).
@@ -206,6 +336,7 @@ export class ShipLoadout {
     readonly #shipSymbol: string;
     readonly #modules: Map<string, LoadoutModule>;
     readonly #top: TopFigures;
+    readonly #slotVersions = new Map<string, number>();
 
     private constructor(shipSymbol: string, modules: Map<string, LoadoutModule>, top: TopFigures) {
         this.#shipSymbol = shipSymbol;
@@ -244,7 +375,7 @@ export class ShipLoadout {
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
         const modules = new Map<string, LoadoutModule>();
-        for (const m of event.Modules) modules.set(m.Slot, m);
+        for (const m of event.Modules) modules.set(m.Slot, cloneLoadoutModule(m));
         const top: TopFigures = {};
         if (event.ShipName !== undefined) top.ShipName = event.ShipName;
         if (event.ShipIdent !== undefined) top.ShipIdent = event.ShipIdent;
@@ -253,7 +384,7 @@ export class ShipLoadout {
         if (event.Rebuy !== undefined) top.Rebuy = event.Rebuy;
         if (event.UnladenMass !== undefined) top.UnladenMass = event.UnladenMass;
         if (event.CargoCapacity !== undefined) top.CargoCapacity = event.CargoCapacity;
-        if (event.FuelCapacity !== undefined) top.FuelCapacity = event.FuelCapacity;
+        if (event.FuelCapacity !== undefined) top.FuelCapacity = { ...event.FuelCapacity };
         return new ShipLoadout(event.Ship, modules, top);
     }
 
@@ -305,8 +436,8 @@ export class ShipLoadout {
      */
     get unladenMass(): number | null {
         if (this.#top.UnladenMass !== undefined) return this.#top.UnladenMass;
-        const hull = getShipStats(this.#shipSymbol);
-        if (!hull) return null;
+        const hull = getShipBySymbol(this.#shipSymbol);
+        if (!hull || hull.hullMass === undefined) return null;
         let mass = hull.hullMass;
         for (const m of this.#modules.values()) {
             const moduleMass = this.#moduleMass(m);
@@ -324,7 +455,7 @@ export class ShipLoadout {
     get fuelCapacity(): FuelCapacity {
         const cap = this.#top.FuelCapacity;
         const main = cap?.Main ?? this.#sumFuelTanks();
-        const reserve = cap?.Reserve ?? getShipStats(this.#shipSymbol)?.reserveFuelCapacity ?? 0;
+        const reserve = cap?.Reserve ?? getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity ?? 0;
         return { main, reserve };
     }
 
@@ -356,12 +487,17 @@ export class ShipLoadout {
 
     /** The fitted modules, in the order they were added / exported. */
     get modules(): readonly LoadoutModule[] {
-        return [...this.#modules.values()];
+        return [...this.#modules.values()].map(cloneLoadoutModule);
     }
 
     /**
-     * Every mount the hull offers, each annotated with the module fitted in it (or
-     * marked empty), in outfitting-panel order.
+     * Every mount the hull offers, each a live {@link LoadoutSlot} handle that knows its
+     * own key and reports the module fitted in it, in outfitting-panel order.
+     *
+     * The handles are **live views**: fit or clear a module and the same handle's
+     * {@link LoadoutSlot.module | `module`} / {@link LoadoutSlot.occupied | `occupied`}
+     * update to match. You can fit, clear, list candidates and engineer straight from a
+     * slot without ever repeating its key.
      *
      * @throws {TypeError} If the hull has no known slot layout.
      * @example
@@ -370,14 +506,11 @@ export class ShipLoadout {
      * ```
      */
     slots(): LoadoutSlot[] {
-        return this.#layout().map((slot) => {
-            const module = this.#modules.get(slot.key) ?? null;
-            return { ...slot, module, occupied: module !== null };
-        });
+        return this.#layout().map((slot) => new LoadoutSlot(this, slot));
     }
 
     /**
-     * The hull's mounts of one kind, each with its fitted module or marked empty.
+     * The hull's mounts of one kind, each a live {@link LoadoutSlot} handle.
      *
      * @param kind - Which kind of mount to list.
      * @throws {TypeError} If the hull has no known slot layout.
@@ -387,12 +520,74 @@ export class ShipLoadout {
     }
 
     /**
-     * The module fitted in a slot, or `null` if the slot is empty.
+     * The hull's seven core-internal mounts (power plant, thrusters, FSD, life support,
+     * power distributor, sensors, fuel tank), as live {@link LoadoutSlot} handles.
+     *
+     * @throws {TypeError} If the hull has no known slot layout.
+     */
+    coreModules(): LoadoutSlot[] {
+        return this.slotsOfKind('core');
+    }
+
+    /**
+     * The hull's weapon hardpoints, as live {@link LoadoutSlot} handles.
+     *
+     * @throws {TypeError} If the hull has no known slot layout.
+     */
+    hardpoints(): LoadoutSlot[] {
+        return this.slotsOfKind('hardpoint');
+    }
+
+    /**
+     * The hull's tiny utility mounts, as live {@link LoadoutSlot} handles.
+     *
+     * @throws {TypeError} If the hull has no known slot layout.
+     */
+    utilityMounts(): LoadoutSlot[] {
+        return this.slotsOfKind('utility');
+    }
+
+    /**
+     * The hull's optional-internal mounts (including any military and planetary-approach
+     * slots), as live {@link LoadoutSlot} handles.
+     *
+     * @throws {TypeError} If the hull has no known slot layout.
+     */
+    optionalModules(): LoadoutSlot[] {
+        return this.slotsOfKind('optional');
+    }
+
+    /**
+     * A live {@link FittedModule} handle for the module in a slot, or `null` if the slot
+     * is empty.
+     *
+     * The handle carries its slot key, so you can engineer, de-engineer or remove the
+     * module — and ask which blueprints it accepts — without repeating the key:
+     * `build.getFittedModule('FrameShiftDrive')?.applyBlueprint('FSD_LongRange', { grade: 5 })`.
      *
      * @param slotKey - The slot key, e.g. `"FrameShiftDrive"`, `"Slot01_Size6"`.
      */
-    getFittedModule(slotKey: string): LoadoutModule | null {
-        return this.#modules.get(slotKey) ?? null;
+    getFittedModule(slotKey: string): FittedModule | null {
+        return this.#modules.has(slotKey)
+            ? new FittedModule(
+                  this,
+                  slotKey,
+                  this.#slotVersions.get(slotKey) ?? 0,
+                  () => this.#slotVersions.get(slotKey) ?? 0,
+              )
+            : null;
+    }
+
+    /**
+     * The raw journal `Loadout` module object in a slot, or `null` if empty. The
+     * low-level counterpart to {@link getFittedModule} for when you want the plain data
+     * rather than a handle.
+     *
+     * @param slotKey - The slot key.
+     */
+    moduleAt(slotKey: string): LoadoutModule | null {
+        const module = this.#modules.get(slotKey);
+        return module ? cloneLoadoutModule(module) : null;
     }
 
     /**
@@ -481,7 +676,9 @@ export class ShipLoadout {
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
      * @throws {TypeError} If the fitted module has no stats to engineer, or the
-     * blueprint/experimental targets another module family.
+     * blueprint/experimental targets another module family, or the catalogue does
+     * not carry every base stat the recipe modifies. Incomplete engineering is
+     * rejected rather than stored as a partial journal modifier block.
      * @example
      * ```ts
      * build.setModule('FrameShiftDrive', fsd)
@@ -540,7 +737,14 @@ export class ShipLoadout {
                 );
             }
         }
-        const modifiers = computeModifiers(baseStats(stats), features, quality, experimental);
+        const base = baseStats(stats);
+        const missing = missingBaseLabels(base, features, experimental);
+        if (missing.length > 0) {
+            throw new TypeError(
+                `ShipLoadout.applyBlueprint: cannot compute "${blueprintName}" for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
+            );
+        }
+        const modifiers = computeModifiers(base, features, quality, experimental);
         const engineering: ModuleEngineering = {
             BlueprintName: blueprintName,
             Level: options.grade,
@@ -776,7 +980,8 @@ export class ShipLoadout {
         const previous = this.#modules.get(slotKey) ?? null;
         this.#adjustImportedFigures(previous, replacement);
         if (replacement === null) this.#modules.delete(slotKey);
-        else this.#modules.set(slotKey, replacement);
+        else this.#modules.set(slotKey, cloneLoadoutModule(replacement));
+        this.#slotVersions.set(slotKey, (this.#slotVersions.get(slotKey) ?? 0) + 1);
     }
 
     /**
@@ -913,5 +1118,277 @@ export class ShipLoadout {
             return statFor(m.Item)?.jumpBoost ?? 0;
         }
         return 0;
+    }
+}
+
+/**
+ * A live handle on one of a hull's mounts, as returned by {@link ShipLoadout.slots},
+ * {@link ShipLoadout.coreModules}, {@link ShipLoadout.hardpoints} and friends.
+ *
+ * The slot knows its own key, so you can list what fits it, fit or clear a module and
+ * reach the fitted module's engineering without ever repeating the key. It is a **live
+ * view** onto its {@link ShipLoadout}: {@link module} and {@link occupied} reflect the
+ * current build every time you read them.
+ *
+ * @example
+ * ```ts
+ * const [drive] = ShipLoadout.empty('Anaconda').coreModules().filter((s) => s.core === 'frameShiftDrive');
+ * drive.modulesForSlot(STANDARD_MODULES);            // what fits this exact slot
+ * drive.fit(getModuleBySymbol('Int_Hyperdrive_Size6_Class5', STANDARD_MODULES)!)
+ *      .applyBlueprint('FSD_LongRange', { grade: 5 }); // fit, then engineer, no key repeated
+ * ```
+ */
+export class LoadoutSlot implements BuildSlot {
+    /** Stable, journal-compatible slot key, e.g. `"FrameShiftDrive"`, `"Slot01_Size6"`. */
+    readonly key: string;
+    /** Which kind of mount this is. */
+    readonly kind: SlotKind;
+    /** Slot size (class); `0` for utility/armour/cargo-hatch placeholders. */
+    readonly size: number;
+    /** The optional-internal restriction, when the slot is a restricted one. */
+    readonly restriction?: SlotRestriction;
+    /** For a core slot, which core module type it accepts. */
+    readonly core?: CoreSlotType;
+    /** A human-readable label, e.g. `"Frame Shift Drive"`, `"Huge Hardpoint 1"`. */
+    readonly name: string;
+
+    readonly #loadout: ShipLoadout;
+
+    /** @internal Constructed by {@link ShipLoadout}; not part of the public API. */
+    constructor(loadout: ShipLoadout, slot: BuildSlot) {
+        this.#loadout = loadout;
+        this.key = slot.key;
+        this.kind = slot.kind;
+        this.size = slot.size;
+        if (slot.restriction !== undefined) this.restriction = slot.restriction;
+        if (slot.core !== undefined) this.core = slot.core;
+        this.name = slotDisplayName(slot);
+    }
+
+    /** The module fitted here as a live {@link FittedModule} handle, or `null` if empty. */
+    get module(): FittedModule | null {
+        return this.#loadout.getFittedModule(this.key);
+    }
+
+    /** Whether a module is fitted in this slot right now. */
+    get occupied(): boolean {
+        return this.#loadout.moduleAt(this.key) !== null;
+    }
+
+    /**
+     * The modules from a catalogue that fit this slot — its size, kind and any
+     * restriction all satisfied. The slot key is implied.
+     *
+     * @param catalogue - A module catalogue to filter (e.g. `INTERNAL_MODULES`, or
+     * `ALL_MODULES` to search every category); pass only the category you need so
+     * bundlers keep the rest out.
+     * @returns The fitting modules, in catalogue order.
+     */
+    modulesForSlot(catalogue: readonly OutfittingModule[]): OutfittingModule[] {
+        return this.#loadout.modulesForSlot(this.key, catalogue);
+    }
+
+    /**
+     * Fit a module into this slot, replacing whatever is there.
+     *
+     * @param module - The module to fit (resolve it from a catalogue first).
+     * @returns A live {@link FittedModule} handle for the newly fitted module, so you
+     * can engineer it in the same chain.
+     * @throws {TypeError} If the module does not fit (wrong kind, too large, or a
+     * restriction it does not satisfy), or is null/undefined.
+     */
+    fit(module: OutfittingModule): FittedModule {
+        this.#loadout.setModule(this.key, module);
+        return this.#loadout.getFittedModule(this.key)!;
+    }
+
+    /**
+     * Empty this slot.
+     *
+     * @returns The slot, for chaining. Clearing an already-empty slot is a no-op.
+     */
+    clear(): this {
+        this.#loadout.removeModule(this.key);
+        return this;
+    }
+}
+
+/**
+ * A live handle on the module fitted in one slot, as returned by
+ * {@link ShipLoadout.getFittedModule} and {@link LoadoutSlot.module}.
+ *
+ * The handle carries its slot key, so its engineering methods need no key. Its journal
+ * fields ({@link item}, {@link engineering}, and the capitalised {@link Item} /
+ * {@link Engineering} aliases) are **live** — they read the current build, so a handle
+ * stays valid across its own {@link applyBlueprint} / {@link clearEngineering} calls.
+ * Once the slot is emptied (via {@link remove}, or the module being replaced elsewhere),
+ * the handle is spent: reading its fields throws a `TypeError` rather than returning
+ * stale data.
+ *
+ * @example
+ * ```ts
+ * const fsd = build.getFittedModule('FrameShiftDrive')!;
+ * fsd.getAvailableBlueprints();                  // -> [{ fdname: 'FSD_LongRange', grades: [1..5] }, ...]
+ * fsd.applyBlueprint('FSD_LongRange', { grade: 5, experimental: 'special_fsd_heavy' });
+ * fsd.clearEngineering();                        // back to base stats
+ * ```
+ */
+export class FittedModule {
+    readonly #loadout: ShipLoadout;
+    readonly #slotKey: string;
+    #slotVersion: number;
+    readonly #currentSlotVersion: () => number;
+
+    /** @internal Constructed by {@link ShipLoadout}; not part of the public API. */
+    constructor(
+        loadout: ShipLoadout,
+        slotKey: string,
+        slotVersion: number,
+        currentSlotVersion: () => number,
+    ) {
+        this.#loadout = loadout;
+        this.#slotKey = slotKey;
+        this.#slotVersion = slotVersion;
+        this.#currentSlotVersion = currentSlotVersion;
+    }
+
+    #raw(): LoadoutModule {
+        if (this.#slotVersion !== this.#currentSlotVersion()) {
+            throw new TypeError(
+                `FittedModule: slot "${this.#slotKey}" no longer contains this fitted module`,
+            );
+        }
+        const module = this.#loadout.moduleAt(this.#slotKey);
+        if (!module) {
+            throw new TypeError(
+                `FittedModule: slot "${this.#slotKey}" is now empty (the module was removed)`,
+            );
+        }
+        return module;
+    }
+
+    /** The slot key this module occupies, e.g. `"FrameShiftDrive"`. */
+    get slot(): string {
+        return this.#slotKey;
+    }
+
+    /** The slot key, journal spelling (alias of {@link slot}). */
+    get Slot(): string {
+        return this.#slotKey;
+    }
+
+    /** The module's Frontier symbol, e.g. `"int_hyperdrive_size6_class5"`. */
+    get item(): string {
+        return this.#raw().Item;
+    }
+
+    /** The module's Frontier symbol, journal spelling (alias of {@link item}). */
+    get Item(): string {
+        return this.#raw().Item;
+    }
+
+    /** Whether the module is powered on, or `undefined` if the build does not say. */
+    get On(): boolean | undefined {
+        return this.#raw().On;
+    }
+
+    /** The module's power priority, or `undefined` if the build does not say. */
+    get Priority(): number | undefined {
+        return this.#raw().Priority;
+    }
+
+    /** The module's health (0–1), or `undefined` if the build does not say. */
+    get Health(): number | undefined {
+        return this.#raw().Health;
+    }
+
+    /** The module's credit value, or `undefined` if the build does not say. */
+    get Value(): number | undefined {
+        return this.#raw().Value;
+    }
+
+    /** The applied engineering, or `undefined` if the module is not engineered. */
+    get engineering(): ModuleEngineering | undefined {
+        return this.#raw().Engineering;
+    }
+
+    /** The applied engineering, journal spelling (alias of {@link engineering}). */
+    get Engineering(): ModuleEngineering | undefined {
+        return this.#raw().Engineering;
+    }
+
+    /** The underlying raw journal `Loadout` module object. */
+    get raw(): LoadoutModule {
+        return this.#raw();
+    }
+
+    /** This module's full catalogue record (identity + base stats), or `null`. */
+    get stats(): OutfittingModule | null {
+        return statFor(this.#raw().Item);
+    }
+
+    /**
+     * Engineer this module — apply a blueprint (with a grade and quality) and an
+     * optional experimental effect, computing and storing the resulting stat modifiers.
+     * The slot key is implied.
+     *
+     * @param blueprintName - The blueprint's Frontier `fdname`, e.g. `"FSD_LongRange"`.
+     * @param options - {@link ApplyBlueprintOptions}: `grade` (1–5), optional `quality`
+     * (0–1, default 1), and optional `experimental` effect `fdname`.
+     * @returns This handle, for chaining.
+     * @throws {RangeError} If the blueprint/grade/experimental is unknown, or `quality`
+     * is outside `[0, 1]`.
+     * @throws {TypeError} If the module has no stats to engineer, or the
+     * blueprint/experimental targets another module family.
+     */
+    applyBlueprint(blueprintName: string, options: ApplyBlueprintOptions): this {
+        this.#raw();
+        this.#loadout.applyBlueprint(this.#slotKey, blueprintName, options);
+        this.#slotVersion = this.#currentSlotVersion();
+        return this;
+    }
+
+    /**
+     * Strip the engineering from this module, restoring its base stats.
+     *
+     * @returns This handle, for chaining. A no-op if the module is un-engineered.
+     */
+    clearEngineering(): this {
+        this.#raw();
+        this.#loadout.clearEngineering(this.#slotKey);
+        this.#slotVersion = this.#currentSlotVersion();
+        return this;
+    }
+
+    /**
+     * The blueprints that can engineer this module, each with the grades it offers.
+     *
+     * @returns The compatible blueprints, in catalogue order.
+     * Only grades whose complete modifier set can be computed from this module's
+     * carried base stats are returned.
+     * @example
+     * ```ts
+     * build.getFittedModule('FrameShiftDrive')!.getAvailableBlueprints();
+     * // -> [{ fdname: 'FSD_LongRange', grades: [1, 2, 3, 4, 5] }, ...]
+     * ```
+     */
+    getAvailableBlueprints(): AvailableBlueprint[] {
+        return availableBlueprintsFor(this.#raw().Item);
+    }
+
+    /**
+     * The experimental-effect `fdname`s that can be applied to this module.
+     *
+     * @returns The compatible experimental-effect ids, in catalogue order.
+     * Effects requiring a base stat this catalogue does not carry are omitted.
+     */
+    getAvailableExperimentalEffects(): string[] {
+        return availableExperimentalsFor(this.#raw().Item);
+    }
+
+    /** Remove this module from its slot. */
+    remove(): void {
+        this.#raw();
+        this.#loadout.removeModule(this.#slotKey);
     }
 }

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { parseSlotName, enumerateSlots } from './slots.js';
-import { getShipSlots } from './ship-slots.js';
+import { getShipSlots } from './ships.js';
 
 test('parseSlotName classifies every journal slot-name form', () => {
     assert.deepEqual(parseSlotName('PowerPlant'), { kind: 'core', size: null, core: 'powerPlant' });

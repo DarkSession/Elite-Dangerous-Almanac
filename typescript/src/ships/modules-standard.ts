@@ -3,12 +3,13 @@
  * slots every hull must fill (armour, power plant, thrusters, frame shift drive,
  * life support, power distributor, sensors, fuel tank).
  *
- * ~67 KB bundled. The armour variants here are the one ship-specific module, so
- * this is also where {@link getModulesForShip} finds a hull's bulkheads. The other
- * categories live in `./modules-internal`, `./modules-hardpoint` and
- * `./modules-utility`, so importing this module never bundles them.
+ * The armour variants here are the one ship-specific module, so this is also where
+ * {@link getModulesForShip} finds a hull's bulkheads. The other categories live in
+ * `./modules-internal`, `./modules-hardpoint` and `./modules-utility`, so importing
+ * this module never bundles them.
  *
- * Data from EDCD FDevIDs (`outfitting.csv`); see `data/ships/SOURCES.md`.
+ * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,
+ * joined on `symbol`; see `data/ships/SOURCES.md`.
  *
  * @packageDocumentation
  */

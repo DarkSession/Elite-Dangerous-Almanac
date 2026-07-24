@@ -23,7 +23,8 @@ SOFTWARE.
 ---
 
 The MIT License above covers this project's own code, documentation, and the
-organisation of its data files.
+organisation of its data files. It does not relicense bundled third-party or
+Elite Dangerous game data.
 
 Elite Dangerous Almanac also incorporates Elite Dangerous game data (ship,
 module, and outfitting values). That data is the property of Frontier
@@ -38,5 +39,8 @@ Developments plc and is used here under Frontier's media-usage terms:
 Frontier's rules:
 https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/
 
-If you build on this library and redistribute the game data, please include the
-same notice in your own project.
+Other bundled catalogues and derived values remain subject to the terms listed
+in `typescript/THIRD_PARTY_NOTICES.md`. In particular, some upstream sources
+state no explicit licence and EDSY-derived material is attributed there under
+CC BY-NC 4.0. Consumers must review those terms before redistributing the data
+or using it commercially, and should preserve the applicable notices.

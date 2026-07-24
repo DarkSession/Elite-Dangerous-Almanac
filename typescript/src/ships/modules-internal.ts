@@ -4,11 +4,11 @@
  * fuel scoops, refineries, passenger cabins, limpet and planetary controllers,
  * hull/module reinforcement, …).
  *
- * ~64 KB bundled. The other categories live in `./modules-standard`,
- * `./modules-hardpoint` and `./modules-utility`, so importing this module never
- * bundles them.
+ * The other categories live in `./modules-standard`, `./modules-hardpoint` and
+ * `./modules-utility`, so importing this module never bundles them.
  *
- * Data from EDCD FDevIDs (`outfitting.csv`); see `data/ships/SOURCES.md`.
+ * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,
+ * joined on `symbol`; see `data/ships/SOURCES.md`.
  *
  * @packageDocumentation
  */

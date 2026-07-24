@@ -1,21 +1,25 @@
 /*
- * Hardpoint modules — the mounted weapons and hardpoint tools.
+ * Hardpoint modules — the weapons and tools mounted on a ship's hardpoints.
  *
- * The `hardpoint` slice of Frontier's outfitting registry: hardpoint weapons (the mounted guns, launchers and mining/utility hardpoints).
+ * The `hardpoint` slice of Frontier's outfitting catalogue: each module's identity
+ * AND its engineering/mechanical stats, joined on the Frontier `symbol`.
  *
- * Source:  EDCD FDevIDs, outfitting.csv
+ * Sources: EDCD FDevIDs, outfitting.csv (identity: symbol, category, name, class,
+ *          rating, mount?, guidance?, ship?, entitlement?)
  *          https://github.com/EDCD/FDevIDs
- *          Community-maintained Frontier id/name registry. No explicit licence
- *          is stated; consult the repository terms.
+ *          EDCD/coriolis-data, modules/** (stats: mass, power, performance, …)
+ *          https://github.com/EDCD/coriolis-data
+ *          The stat values are Elite Dangerous game data, property of Frontier
+ *          Developments plc, redistributed under Frontier's media-usage terms:
+ *          https://forums.frontier.co.uk/threads/510879/
  *
- * Each record is { symbol, category, name, mount?, guidance?, ship?, class,
- * rating, entitlement? }. `symbol` is the internal identifier
- * (e.g. `Hpt_PulseLaser_Fixed_Small`); `name` the display
- * name. `class` is the module size (0-8) and `rating` its grade letter (A-I) — the
- * "5A" the outfitting screen shows. `mount` (Fixed / Gimballed / Turreted) and
- * `guidance` (Dumbfire / Seeker / Swarm) appear only on the hardpoints they apply
- * to; `ship` names the hull an armour variant belongs to; `entitlement` carries
- * Frontier's DLC/grant token when the module is gated.
+ * `symbol` is the internal identifier (e.g. `Hpt_PulseLaser_Fixed_Small`); `name`
+ * the display name; `class` the module size (0-8) and `rating` its grade letter
+ * (A-I) — the "5A" the outfitting screen shows. Identity fields always present;
+ * every stat field is optional, present only where the module has it (masses in
+ * tonnes, power in MW, ranges in LY). `restrictedToShips` lists the hull(s) a
+ * non-armour module is limited to; armour's hull restriction is its `ship` field.
+ * Modules without stats (ship-specific armour) carry identity only.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -26,7 +30,10 @@
     "name": "Pulse Laser",
     "mount": "Fixed",
     "class": 1,
-    "rating": "F"
+    "rating": "F",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.39
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Medium",
@@ -34,7 +41,10 @@
     "name": "Pulse Laser",
     "mount": "Fixed",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.6
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Large",
@@ -42,7 +52,10 @@
     "name": "Pulse Laser",
     "mount": "Fixed",
     "class": 3,
-    "rating": "D"
+    "rating": "D",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.9
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Huge",
@@ -50,7 +63,10 @@
     "name": "Pulse Laser",
     "mount": "Fixed",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 1.33
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Small",
@@ -58,7 +74,10 @@
     "name": "Pulse Laser",
     "mount": "Gimballed",
     "class": 1,
-    "rating": "G"
+    "rating": "G",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.39
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Medium",
@@ -66,7 +85,10 @@
     "name": "Pulse Laser",
     "mount": "Gimballed",
     "class": 2,
-    "rating": "F"
+    "rating": "F",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.6
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Large",
@@ -74,7 +96,10 @@
     "name": "Pulse Laser",
     "mount": "Gimballed",
     "class": 3,
-    "rating": "E"
+    "rating": "E",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.92
   },
   {
     "symbol": "Hpt_PulseLaser_Turret_Small",
@@ -82,7 +107,10 @@
     "name": "Pulse Laser",
     "mount": "Turreted",
     "class": 1,
-    "rating": "G"
+    "rating": "G",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.38
   },
   {
     "symbol": "Hpt_PulseLaser_Turret_Medium",
@@ -90,7 +118,10 @@
     "name": "Pulse Laser",
     "mount": "Turreted",
     "class": 2,
-    "rating": "F"
+    "rating": "F",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.58
   },
   {
     "symbol": "Hpt_PulseLaser_Turret_Large",
@@ -98,7 +129,10 @@
     "name": "Pulse Laser",
     "mount": "Turreted",
     "class": 3,
-    "rating": "F"
+    "rating": "F",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.89
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Small",
@@ -106,7 +140,10 @@
     "name": "Burst Laser",
     "mount": "Fixed",
     "class": 1,
-    "rating": "F"
+    "rating": "F",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.65
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Medium",
@@ -114,7 +151,10 @@
     "name": "Burst Laser",
     "mount": "Fixed",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "mass": 4,
+    "integrity": 40,
+    "powerDraw": 1.05
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Large",
@@ -122,7 +162,10 @@
     "name": "Burst Laser",
     "mount": "Fixed",
     "class": 3,
-    "rating": "D"
+    "rating": "D",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.66
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Huge",
@@ -130,7 +173,10 @@
     "name": "Burst Laser",
     "mount": "Fixed",
     "class": 4,
-    "rating": "E"
+    "rating": "E",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 2.58
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Small",
@@ -138,7 +184,10 @@
     "name": "Burst Laser",
     "mount": "Gimballed",
     "class": 1,
-    "rating": "G"
+    "rating": "G",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.64
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Medium",
@@ -146,7 +195,10 @@
     "name": "Burst Laser",
     "mount": "Gimballed",
     "class": 2,
-    "rating": "F"
+    "rating": "F",
+    "mass": 4,
+    "integrity": 40,
+    "powerDraw": 1.04
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Large",
@@ -154,7 +206,10 @@
     "name": "Burst Laser",
     "mount": "Gimballed",
     "class": 3,
-    "rating": "E"
+    "rating": "E",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.65
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Turret_Small",
@@ -162,7 +217,10 @@
     "name": "Burst Laser",
     "mount": "Turreted",
     "class": 1,
-    "rating": "G"
+    "rating": "G",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.6
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Turret_Medium",
@@ -170,7 +228,10 @@
     "name": "Burst Laser",
     "mount": "Turreted",
     "class": 2,
-    "rating": "F"
+    "rating": "F",
+    "mass": 4,
+    "integrity": 40,
+    "powerDraw": 0.98
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Turret_Large",
@@ -178,7 +239,10 @@
     "name": "Burst Laser",
     "mount": "Turreted",
     "class": 3,
-    "rating": "E"
+    "rating": "E",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.57
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Small",
@@ -186,7 +250,10 @@
     "name": "Beam Laser",
     "mount": "Fixed",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.62
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Medium",
@@ -194,7 +261,10 @@
     "name": "Beam Laser",
     "mount": "Fixed",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.01
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Large",
@@ -202,7 +272,10 @@
     "name": "Beam Laser",
     "mount": "Fixed",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.62
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Huge",
@@ -210,7 +283,10 @@
     "name": "Beam Laser",
     "mount": "Fixed",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 2.61
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Small",
@@ -218,7 +294,10 @@
     "name": "Beam Laser",
     "mount": "Gimballed",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.6
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Medium",
@@ -226,7 +305,10 @@
     "name": "Beam Laser",
     "mount": "Gimballed",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Large",
@@ -234,7 +316,10 @@
     "name": "Beam Laser",
     "mount": "Gimballed",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.6
   },
   {
     "symbol": "Hpt_BeamLaser_Turret_Small",
@@ -242,7 +327,10 @@
     "name": "Beam Laser",
     "mount": "Turreted",
     "class": 1,
-    "rating": "F"
+    "rating": "F",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.57
   },
   {
     "symbol": "Hpt_BeamLaser_Turret_Medium",
@@ -250,7 +338,10 @@
     "name": "Beam Laser",
     "mount": "Turreted",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.93
   },
   {
     "symbol": "Hpt_BeamLaser_Turret_Large",
@@ -258,7 +349,10 @@
     "name": "Beam Laser",
     "mount": "Turreted",
     "class": 3,
-    "rating": "D"
+    "rating": "D",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.51
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Small",
@@ -266,7 +360,10 @@
     "name": "Cannon",
     "mount": "Fixed",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.34
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Medium",
@@ -274,7 +371,10 @@
     "name": "Cannon",
     "mount": "Fixed",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.49
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Large",
@@ -282,7 +382,10 @@
     "name": "Cannon",
     "mount": "Fixed",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.67
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Huge",
@@ -290,7 +393,10 @@
     "name": "Cannon",
     "mount": "Fixed",
     "class": 4,
-    "rating": "B"
+    "rating": "B",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 0.92
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Small",
@@ -298,7 +404,10 @@
     "name": "Cannon",
     "mount": "Gimballed",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.38
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Medium",
@@ -306,7 +415,10 @@
     "name": "Cannon",
     "mount": "Gimballed",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.54
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Huge",
@@ -314,7 +426,10 @@
     "name": "Cannon",
     "mount": "Gimballed",
     "class": 4,
-    "rating": "B"
+    "rating": "B",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 1.03
   },
   {
     "symbol": "Hpt_Cannon_Turret_Small",
@@ -322,7 +437,10 @@
     "name": "Cannon",
     "mount": "Turreted",
     "class": 1,
-    "rating": "F"
+    "rating": "F",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.32
   },
   {
     "symbol": "Hpt_Cannon_Turret_Medium",
@@ -330,7 +448,10 @@
     "name": "Cannon",
     "mount": "Turreted",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.45
   },
   {
     "symbol": "Hpt_Cannon_Turret_Large",
@@ -338,7 +459,10 @@
     "name": "Cannon",
     "mount": "Turreted",
     "class": 3,
-    "rating": "D"
+    "rating": "D",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.64
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Small",
@@ -346,7 +470,10 @@
     "name": "Fragment Cannon",
     "mount": "Fixed",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.45
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Medium",
@@ -354,7 +481,10 @@
     "name": "Fragment Cannon",
     "mount": "Fixed",
     "class": 2,
-    "rating": "A"
+    "rating": "A",
+    "mass": 4,
+    "integrity": 80,
+    "powerDraw": 0.74
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Large",
@@ -362,7 +492,10 @@
     "name": "Fragment Cannon",
     "mount": "Fixed",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 80,
+    "powerDraw": 1.02
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
@@ -370,7 +503,10 @@
     "name": "Fragment Cannon",
     "mount": "Gimballed",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.59
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Medium",
@@ -378,7 +514,10 @@
     "name": "Fragment Cannon",
     "mount": "Gimballed",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "mass": 4,
+    "integrity": 80,
+    "powerDraw": 1.03
   },
   {
     "symbol": "Hpt_Slugshot_Turret_Small",
@@ -386,7 +525,10 @@
     "name": "Fragment Cannon",
     "mount": "Turreted",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.42
   },
   {
     "symbol": "Hpt_Slugshot_Turret_Medium",
@@ -394,7 +536,10 @@
     "name": "Fragment Cannon",
     "mount": "Turreted",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "mass": 4,
+    "integrity": 80,
+    "powerDraw": 0.79
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Small",
@@ -402,7 +547,10 @@
     "name": "Multi-Cannon",
     "mount": "Fixed",
     "class": 1,
-    "rating": "F"
+    "rating": "F",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.28
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
@@ -410,7 +558,10 @@
     "name": "Multi-Cannon",
     "mount": "Fixed",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.46
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Large",
@@ -418,7 +569,10 @@
     "name": "Multi-Cannon",
     "mount": "Fixed",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.64
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Huge",
@@ -426,7 +580,10 @@
     "name": "Multi-Cannon",
     "mount": "Fixed",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 0.73
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Small",
@@ -434,7 +591,10 @@
     "name": "Multi-Cannon",
     "mount": "Gimballed",
     "class": 1,
-    "rating": "G"
+    "rating": "G",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.37
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Medium",
@@ -442,7 +602,10 @@
     "name": "Multi-Cannon",
     "mount": "Gimballed",
     "class": 2,
-    "rating": "F"
+    "rating": "F",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.64
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Large",
@@ -450,7 +613,10 @@
     "name": "Multi-Cannon",
     "mount": "Gimballed",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.97
   },
   {
     "symbol": "Hpt_MultiCannon_Turret_Small",
@@ -458,7 +624,10 @@
     "name": "Multi-Cannon",
     "mount": "Turreted",
     "class": 1,
-    "rating": "G"
+    "rating": "G",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.26
   },
   {
     "symbol": "Hpt_MultiCannon_Turret_Medium",
@@ -466,7 +635,10 @@
     "name": "Multi-Cannon",
     "mount": "Turreted",
     "class": 2,
-    "rating": "F"
+    "rating": "F",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.5
   },
   {
     "symbol": "Hpt_MultiCannon_Turret_Large",
@@ -475,7 +647,10 @@
     "mount": "Turreted",
     "class": 3,
     "rating": "E",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.86
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Medium",
@@ -483,7 +658,10 @@
     "name": "Plasma Accelerator",
     "mount": "Fixed",
     "class": 2,
-    "rating": "C"
+    "rating": "C",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.43
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Large",
@@ -491,7 +669,10 @@
     "name": "Plasma Accelerator",
     "mount": "Fixed",
     "class": 3,
-    "rating": "B"
+    "rating": "B",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.97
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
@@ -499,7 +680,10 @@
     "name": "Plasma Accelerator",
     "mount": "Fixed",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 2.63
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Small",
@@ -507,7 +691,10 @@
     "name": "Rail Gun",
     "mount": "Fixed",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 1.15
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
@@ -515,7 +702,10 @@
     "name": "Rail Gun",
     "mount": "Fixed",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.63
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Small",
@@ -524,7 +714,10 @@
     "mount": "Fixed",
     "guidance": "Seeker",
     "class": 1,
-    "rating": "B"
+    "rating": "B",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.6
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -533,7 +726,10 @@
     "mount": "Fixed",
     "guidance": "Seeker",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
@@ -543,7 +739,10 @@
     "guidance": "Seeker",
     "class": 3,
     "rating": "A",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.62
   },
   {
     "symbol": "Hpt_MineLauncher_Fixed_Small",
@@ -551,7 +750,10 @@
     "name": "Mine Launcher",
     "mount": "Fixed",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.4
   },
   {
     "symbol": "Hpt_MineLauncher_Fixed_Medium",
@@ -559,7 +761,10 @@
     "name": "Mine Launcher",
     "mount": "Fixed",
     "class": 2,
-    "rating": "I"
+    "rating": "I",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.4
   },
   {
     "symbol": "Hpt_AdvancedTorpPylon_Fixed_Small",
@@ -568,7 +773,10 @@
     "mount": "Fixed",
     "guidance": "Seeker",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.4
   },
   {
     "symbol": "Hpt_AdvancedTorpPylon_Fixed_Medium",
@@ -577,7 +785,10 @@
     "mount": "Fixed",
     "guidance": "Seeker",
     "class": 2,
-    "rating": "I"
+    "rating": "I",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.4
   },
   {
     "symbol": "Hpt_AdvancedTorpPylon_Fixed_Large",
@@ -587,7 +798,10 @@
     "guidance": "Seeker",
     "class": 3,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.6
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
@@ -595,7 +809,10 @@
     "name": "Mining Laser",
     "mount": "Fixed",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.5
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Medium",
@@ -603,7 +820,10 @@
     "name": "Mining Laser",
     "mount": "Fixed",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "mass": 2,
+    "integrity": 51,
+    "powerDraw": 0.75
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Small",
@@ -612,7 +832,10 @@
     "mount": "Fixed",
     "guidance": "Dumbfire",
     "class": 1,
-    "rating": "B"
+    "rating": "B",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.4
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
@@ -621,7 +844,10 @@
     "mount": "Fixed",
     "guidance": "Dumbfire",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Large",
@@ -629,7 +855,10 @@
     "name": "Cannon",
     "mount": "Gimballed",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.75
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
@@ -637,7 +866,10 @@
     "name": "Fragment Cannon",
     "mount": "Gimballed",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 80,
+    "powerDraw": 1.55
   },
   {
     "symbol": "Hpt_Slugshot_Turret_Large",
@@ -645,7 +877,10 @@
     "name": "Fragment Cannon",
     "mount": "Turreted",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 80,
+    "powerDraw": 1.29
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced",
@@ -654,7 +889,10 @@
     "mount": "Fixed",
     "class": 3,
     "rating": "B",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200050"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200050",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.97
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small_Advanced",
@@ -663,7 +901,10 @@
     "mount": "Fixed",
     "class": 1,
     "rating": "D",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200120"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200120",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.7
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
@@ -672,7 +913,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200010"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200010",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.63
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Medium_Disruptor",
@@ -681,7 +925,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "E",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200070"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200070",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.7
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Large_Range",
@@ -690,7 +937,10 @@
     "mount": "Fixed",
     "class": 3,
     "rating": "C",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200140"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200140",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.02
   },
   {
     "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
@@ -700,7 +950,10 @@
     "guidance": "Swarm",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200080"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200080",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Small_Strong",
@@ -709,7 +962,10 @@
     "mount": "Fixed",
     "class": 1,
     "rating": "F",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200090"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200090",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.28
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Small_Heat",
@@ -718,7 +974,10 @@
     "mount": "Fixed",
     "class": 1,
     "rating": "E",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200060"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200060",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.62
   },
   {
     "symbol": "Hpt_MineLauncher_Fixed_Small_Impulse",
@@ -726,7 +985,10 @@
     "name": "Shock Mine Launcher",
     "mount": "Fixed",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.4
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
@@ -735,7 +997,10 @@
     "mount": "Fixed",
     "class": 1,
     "rating": "F",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200030"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200030",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.8
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Huge",
@@ -743,7 +1008,10 @@
     "name": "Beam Laser",
     "mount": "Gimballed",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 2.57
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Huge",
@@ -751,7 +1019,10 @@
     "name": "Pulse Laser",
     "mount": "Gimballed",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 1.37
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Huge",
@@ -759,7 +1030,10 @@
     "name": "Multi-Cannon",
     "mount": "Gimballed",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 1.22
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Huge",
@@ -767,7 +1041,10 @@
     "name": "Burst Laser",
     "mount": "Gimballed",
     "class": 4,
-    "rating": "E"
+    "rating": "E",
+    "mass": 16,
+    "integrity": 80,
+    "powerDraw": 2.59
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso",
@@ -777,7 +1054,10 @@
     "guidance": "Dumbfire",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200100"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200100",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_MiningLaser_Turret_Small",
@@ -785,7 +1065,10 @@
     "name": "Mining Laser",
     "mount": "Turreted",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.5
   },
   {
     "symbol": "Hpt_MiningLaser_Turret_Medium",
@@ -793,7 +1076,10 @@
     "name": "Mining Laser",
     "mount": "Turreted",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "mass": 2,
+    "integrity": 51,
+    "powerDraw": 0.75
   },
   {
     "symbol": "Hpt_FlakMortar_Fixed_Medium",
@@ -802,7 +1088,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
@@ -812,7 +1101,10 @@
     "guidance": "Dumbfire",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
@@ -822,7 +1114,10 @@
     "guidance": "Dumbfire",
     "class": 3,
     "rating": "A",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.62
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Medium",
@@ -831,7 +1126,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "E",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.46
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Large",
@@ -840,7 +1138,10 @@
     "mount": "Fixed",
     "class": 3,
     "rating": "C",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.64
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Medium",
@@ -850,7 +1151,10 @@
     "guidance": "Dumbfire",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Large",
@@ -860,7 +1164,10 @@
     "guidance": "Dumbfire",
     "class": 3,
     "rating": "A",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.75
   },
   {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
@@ -869,7 +1176,10 @@
     "mount": "Turreted",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Medium",
@@ -878,7 +1188,10 @@
     "mount": "Turreted",
     "class": 2,
     "rating": "F",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.5
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Large",
@@ -887,7 +1200,10 @@
     "mount": "Turreted",
     "class": 3,
     "rating": "E",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.64
   },
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
@@ -896,7 +1212,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_GAUSS_FIXED_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_GAUSS_FIXED_MEDIUM",
+    "mass": 4,
+    "integrity": 42,
+    "powerDraw": 2.61
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
@@ -906,7 +1225,10 @@
     "guidance": "Dumbfire",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_CAUSTIC_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_CAUSTIC_MEDIUM",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_FlechetteLauncher_Fixed_Medium",
@@ -915,7 +1237,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_FLECHETTE_FIXED_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_FLECHETTE_FIXED_MEDIUM",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_FlechetteLauncher_Turret_Medium",
@@ -924,7 +1249,10 @@
     "mount": "Turreted",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_FLECHETTE_TURRET_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_FLECHETTE_TURRET_MEDIUM",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
@@ -933,7 +1261,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_FIXED_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_FIXED_MEDIUM",
+    "mass": 4,
+    "integrity": 42,
+    "powerDraw": 2.13
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Medium",
@@ -942,7 +1273,10 @@
     "mount": "Turreted",
     "class": 2,
     "rating": "E",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_TURRET_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_TURRET_MEDIUM",
+    "mass": 4,
+    "integrity": 42,
+    "powerDraw": 2.01
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
@@ -951,7 +1285,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "A",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_FIXED_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_FIXED_MEDIUM",
+    "mass": 4,
+    "integrity": 42,
+    "powerDraw": 1.21
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Medium",
@@ -960,7 +1297,10 @@
     "mount": "Turreted",
     "class": 2,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_TURRET_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_TURRET_MEDIUM",
+    "mass": 4,
+    "integrity": 42,
+    "powerDraw": 1.16
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Fixed_Medium",
@@ -969,7 +1309,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_FIXED_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_FIXED_MEDIUM",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.57
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Gimbal_Medium",
@@ -978,7 +1321,10 @@
     "mount": "Gimballed",
     "class": 2,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_GIMBAL_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_GIMBAL_MEDIUM",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.61
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Turret_Medium",
@@ -987,7 +1333,10 @@
     "mount": "Turreted",
     "class": 2,
     "rating": "E",
-    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_TURRET_MEDIUM"
+    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_TURRET_MEDIUM",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.5
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Large",
@@ -996,7 +1345,10 @@
     "mount": "Fixed",
     "class": 3,
     "rating": "C",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_FIXED_LARGE"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_FIXED_LARGE",
+    "mass": 8,
+    "integrity": 51,
+    "powerDraw": 1.68
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Large",
@@ -1005,7 +1357,10 @@
     "mount": "Turreted",
     "class": 3,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_TURRET_LARGE"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_TURRET_LARGE",
+    "mass": 8,
+    "integrity": 51,
+    "powerDraw": 1.39
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Fixed_Large",
@@ -1014,7 +1369,10 @@
     "mount": "Fixed",
     "class": 3,
     "rating": "C",
-    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_FIXED_LARGE"
+    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_FIXED_LARGE",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.89
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Gimbal_Large",
@@ -1023,7 +1381,10 @@
     "mount": "Gimballed",
     "class": 3,
     "rating": "C",
-    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_GIMBAL_LARGE"
+    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_GIMBAL_LARGE",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.89
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Turret_Large",
@@ -1032,7 +1393,10 @@
     "mount": "Turreted",
     "class": 3,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_TURRET_LARGE"
+    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_TURRET_LARGE",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.64
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Large",
@@ -1041,7 +1405,10 @@
     "mount": "Fixed",
     "class": 3,
     "rating": "C",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_FIXED_LARGE"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_FIXED_LARGE",
+    "mass": 8,
+    "integrity": 51,
+    "powerDraw": 3.1
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Large",
@@ -1050,7 +1417,10 @@
     "mount": "Turreted",
     "class": 3,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_TURRET_LARGE"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_TURRET_LARGE",
+    "mass": 8,
+    "integrity": 51,
+    "powerDraw": 2.53
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Large",
@@ -1060,7 +1430,10 @@
     "guidance": "Dumbfire",
     "class": 3,
     "rating": "A",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.62
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Turret_Small",
@@ -1069,7 +1442,10 @@
     "mount": "Turreted",
     "class": 1,
     "rating": "F",
-    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_TURRET_SMALL"
+    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_TURRET_SMALL",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.54
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Gimbal_Small",
@@ -1078,7 +1454,10 @@
     "mount": "Gimballed",
     "class": 1,
     "rating": "E",
-    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_GIMBAL_SMALL"
+    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_GIMBAL_SMALL",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.47
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Fixed_Small",
@@ -1087,7 +1466,10 @@
     "mount": "Fixed",
     "class": 1,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_FIXED_SMALL"
+    "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_FIXED_SMALL",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.41
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Small",
@@ -1096,7 +1478,10 @@
     "mount": "Turreted",
     "class": 1,
     "rating": "F",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_TURRET_SMALL"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_TURRET_SMALL",
+    "mass": 2,
+    "integrity": 34,
+    "powerDraw": 1.6
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Small",
@@ -1105,7 +1490,10 @@
     "mount": "Fixed",
     "class": 1,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_FIXED_SMALL"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_FIXED_SMALL",
+    "mass": 2,
+    "integrity": 34,
+    "powerDraw": 1.4
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Small",
@@ -1114,7 +1502,10 @@
     "mount": "Turreted",
     "class": 1,
     "rating": "F",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_TURRET_SMALL"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_TURRET_SMALL",
+    "mass": 2,
+    "integrity": 34,
+    "powerDraw": 0.72
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Small",
@@ -1123,7 +1514,10 @@
     "mount": "Fixed",
     "class": 1,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_FIXED_SMALL"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_FIXED_SMALL",
+    "mass": 2,
+    "integrity": 34,
+    "powerDraw": 0.87
   },
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
@@ -1132,7 +1526,10 @@
     "mount": "Fixed",
     "class": 1,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_GAUSS_FIXED_SMALL"
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_GAUSS_FIXED_SMALL",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 1.91
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Fixed_Small",
@@ -1141,7 +1538,10 @@
     "mount": "Fixed",
     "guidance": "Seeker",
     "class": 1,
-    "rating": "B"
+    "rating": "B",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.42
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Turret_Small",
@@ -1150,7 +1550,10 @@
     "mount": "Turreted",
     "guidance": "Seeker",
     "class": 1,
-    "rating": "B"
+    "rating": "B",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.42
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Fixed_Medium",
@@ -1159,7 +1562,10 @@
     "mount": "Fixed",
     "guidance": "Seeker",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.01
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Turret_Medium",
@@ -1168,7 +1574,10 @@
     "mount": "Turreted",
     "guidance": "Seeker",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.93
   },
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
@@ -1176,7 +1585,10 @@
     "name": "Abrasion Blaster",
     "mount": "Fixed",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.34
   },
   {
     "symbol": "Hpt_Mining_AbrBlstr_Turret_Small",
@@ -1184,7 +1596,10 @@
     "name": "Abrasion Blaster",
     "mount": "Turreted",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.47
   },
   {
     "symbol": "Hpt_Mining_SeismChrgWarhd_Fixed_Medium",
@@ -1193,7 +1608,10 @@
     "mount": "Fixed",
     "guidance": "Seeker",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_Mining_SeismChrgWarhd_Turret_Medium",
@@ -1202,7 +1620,10 @@
     "mount": "Turreted",
     "guidance": "Seeker",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium_Advanced",
@@ -1210,7 +1631,10 @@
     "name": "Advanced Multi-Cannon",
     "mount": "Fixed",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.46
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Small_Advanced",
@@ -1218,7 +1642,10 @@
     "name": "Advanced Multi-Cannon",
     "mount": "Fixed",
     "class": 1,
-    "rating": "F"
+    "rating": "F",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.28
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Small_Advanced",
@@ -1227,7 +1654,10 @@
     "mount": "Fixed",
     "guidance": "Dumbfire",
     "class": 1,
-    "rating": "B"
+    "rating": "B",
+    "mass": 2,
+    "integrity": 40,
+    "powerDraw": 0.4
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Advanced",
@@ -1236,7 +1666,10 @@
     "mount": "Fixed",
     "guidance": "Dumbfire",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.2
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Large_V2",
@@ -1246,7 +1679,10 @@
     "guidance": "Dumbfire",
     "class": 3,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.72
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Medium_V2",
@@ -1255,7 +1691,10 @@
     "mount": "Fixed",
     "class": 2,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.48
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium_V2",
@@ -1265,7 +1704,10 @@
     "guidance": "Dumbfire",
     "class": 2,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.3
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Large_V2",
@@ -1275,7 +1717,10 @@
     "guidance": "Dumbfire",
     "class": 3,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.85
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Medium_V2",
@@ -1285,7 +1730,10 @@
     "guidance": "Dumbfire",
     "class": 2,
     "rating": "E",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 1.3
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Large_V2",
@@ -1294,7 +1742,10 @@
     "mount": "Fixed",
     "class": 3,
     "rating": "B",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.69
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Large_V2",
@@ -1303,7 +1754,10 @@
     "mount": "Turreted",
     "class": 3,
     "rating": "D",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.69
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Medium_V2",
@@ -1312,7 +1766,10 @@
     "mount": "Turreted",
     "class": 2,
     "rating": "E",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.52
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
@@ -1321,7 +1778,10 @@
     "mount": "Gimballed",
     "class": 3,
     "rating": "C",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 0.64
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
@@ -1330,7 +1790,10 @@
     "mount": "Gimballed",
     "class": 2,
     "rating": "E",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.46
   },
   {
     "symbol": "Hpt_Human_Extraction_Fixed_Medium",
@@ -1339,7 +1802,10 @@
     "mount": "Fixed",
     "guidance": "Seeker",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "mass": 4,
+    "integrity": 50,
+    "powerDraw": 1
   },
   {
     "symbol": "Hpt_ATVentDisruptorPylon_Fixed_Medium",
@@ -1347,7 +1813,10 @@
     "name": "Guardian Nanite Torpedo Pylon",
     "mount": "Fixed",
     "class": 2,
-    "rating": "I"
+    "rating": "I",
+    "mass": 3,
+    "integrity": 50,
+    "powerDraw": 0.4
   },
   {
     "symbol": "Hpt_ATVentDisruptorPylon_Fixed_Large",
@@ -1355,7 +1824,10 @@
     "name": "Guardian Nanite Torpedo Pylon",
     "mount": "Fixed",
     "class": 3,
-    "rating": "I"
+    "rating": "I",
+    "mass": 5,
+    "integrity": 80,
+    "powerDraw": 0.7
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Medium_Burst",
@@ -1364,7 +1836,10 @@
     "mount": "Gimballed",
     "class": 2,
     "rating": "D",
-    "entitlement": "ELITE_SPECIFIC_V_POWER_200130"
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200130",
+    "mass": 4,
+    "integrity": 51,
+    "powerDraw": 0.64
   },
   {
     "symbol": "Hpt_MiningToolV2_Fixed_Large",
@@ -1372,7 +1847,13 @@
     "name": "Mining Volley Repeater",
     "mount": "Fixed",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "mass": 8,
+    "integrity": 61,
+    "powerDraw": 1.5,
+    "restrictedToShips": [
+      "LakonMiner"
+    ]
   },
   {
     "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
@@ -1380,6 +1861,9 @@
     "name": "Mk II Plasma Shock Accelerator",
     "mount": "Fixed",
     "class": 3,
-    "rating": "B"
+    "rating": "B",
+    "mass": 8,
+    "integrity": 64,
+    "powerDraw": 1.51
   }
 ]

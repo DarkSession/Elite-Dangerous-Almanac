@@ -9,6 +9,10 @@ JavaScript applications.
 npm install @elite-dangerous-almanac/core
 ```
 
+Licensing note: the package bundles game and community data under
+source-specific terms, including non-commercial terms. See [License](#license)
+before redistribution or commercial use.
+
 The package is ESM-only. Browser bundlers may import a feature barrel:
 
 ```ts
@@ -67,4 +71,8 @@ Third-party data and algorithm credits are included in
 
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+The project's own code and documentation are MIT-licensed. Bundled Elite
+Dangerous and third-party data is not relicensed under MIT and includes
+non-commercial or otherwise source-specific terms. Review
+[LICENSE](./LICENSE) and [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)
+before redistribution or commercial use.

@@ -60,8 +60,33 @@ export interface ExperimentalContribution {
     readonly value: number;
 }
 
+/** One material a blueprint grade consumes per roll. */
+export interface BlueprintMaterial {
+    /**
+     * The material's Frontier symbol, e.g. `"ChemicalManipulators"` — the key into the
+     * `materials` domain (`getMaterialBySymbol`) for its own grade and category.
+     */
+    readonly symbol: string;
+    /** Display name, e.g. `"Chemical Manipulators"`. */
+    readonly name: string;
+    /** How many of this material a single roll at the grade consumes. */
+    readonly count: number;
+}
+
+/** One grade of a blueprint — the modifiers it applies and the materials it costs. */
+export interface BlueprintGrade {
+    /** The stat modifiers this grade applies (feed to {@link computeModifiers}). */
+    readonly features: readonly BlueprintFeature[];
+    /**
+     * The materials one roll at this grade consumes — possibly empty (a known recipe
+     * that costs nothing). Join each `symbol` to the `materials` domain for its grade
+     * and category.
+     */
+    readonly materials: readonly BlueprintMaterial[];
+}
+
 /** A blueprint's grades, keyed by grade number as a string (`"1"`–`"5"`). */
-export type BlueprintGrades = Readonly<Record<string, readonly BlueprintFeature[]>>;
+export type BlueprintGrades = Readonly<Record<string, BlueprintGrade>>;
 
 /** Round to 6 decimals to shed floating-point noise, matching in-game modifier values. */
 const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;

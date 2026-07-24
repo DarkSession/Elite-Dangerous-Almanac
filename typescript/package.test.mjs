@@ -86,15 +86,13 @@ test('internal engineering compatibility rules are not package exports', async (
     });
 });
 
-test('published source maps do not embed the full TypeScript and data sources', async () => {
-    const map = JSON.parse(
-        await readFile(new URL('./dist/ships/ship-loadout.js.map', import.meta.url), 'utf8'),
-    );
-    assert.equal(map.sourcesContent, undefined);
+test('the package omits unusable source maps whose sources are not published', async () => {
+    await assert.rejects(readFile(new URL('./dist/ships/ship-loadout.js.map', import.meta.url)));
 });
 
 test('the publication manifest includes consumer documentation and notices', async () => {
     const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
+    assert.equal(pkg.license, 'SEE LICENSE IN LICENSE');
     assert.equal(
         pkg.repository.url,
         'git+https://github.com/DarkSession/Elite-Dangerous-Almanac.git',
@@ -115,4 +113,9 @@ test('the publication manifest includes consumer documentation and notices', asy
     const notices = await readFile(new URL('./THIRD_PARTY_NOTICES.md', import.meta.url), 'utf8');
     assert.match(notices, /Odyssey micro resources/);
     assert.match(notices, /Market commodities/);
+    assert.match(notices, /CC BY-NC 4\.0/);
+
+    const license = await readFile(new URL('./LICENSE', import.meta.url), 'utf8');
+    assert.match(license, /does not relicense bundled third-party/);
+    assert.match(license, /before redistributing the data or using\s+it commercially/);
 });

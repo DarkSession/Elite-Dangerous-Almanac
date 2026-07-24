@@ -3,13 +3,14 @@
  * modules in one array.
  *
  * @remarks
- * **This module pulls in every module catalogue (~161 KB bundled)** — it exists for
- * consumers that really do want to search all 1190 modules (a "resolve any module
- * id" lookup, say). If you only need one category, import that catalogue's module
+ * **This module pulls in every module catalogue** — it exists for consumers that
+ * really do want to search all 1190 modules (a "resolve any module id" lookup, say).
+ * If you only need one category, import that catalogue's module
  * (`./modules-standard`, `./modules-internal`, `./modules-hardpoint`,
  * `./modules-utility`) and nothing else gets bundled.
  *
- * Data from EDCD FDevIDs (`outfitting.csv`); see `data/ships/SOURCES.md`.
+ * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,
+ * joined on `symbol`; see `data/ships/SOURCES.md`.
  *
  * @packageDocumentation
  */

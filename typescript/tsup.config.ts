@@ -38,12 +38,11 @@ export default defineConfig({
     splitting: true, // dedupe shared modules into chunks; keeps per-module entries independent
     treeshake: true,
     clean: true,
-    sourcemap: true,
-    esbuildOptions(options) {
-        // Keep debuggable mappings without embedding every TypeScript and JSONC
-        // source in the npm tarball (the data-heavy maps otherwise dominate it).
-        options.sourcesContent = false;
-    },
+    // The published package does not include the TypeScript/JSONC sources, so
+    // external maps could not display their source and more than doubled the
+    // unpacked package size. Keep the distributable focused on executable ESM and
+    // declarations; repository builds remain directly debuggable from `src/`.
+    sourcemap: false,
     outDir: 'dist',
     esbuildPlugins: [
         {

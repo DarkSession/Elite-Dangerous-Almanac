@@ -10,8 +10,9 @@
  * export) into the same shape — so a build loaded from SLEF and a build assembled from
  * scratch speak one vocabulary.
  *
- * It holds no data; {@link enumerateSlots} takes a {@link ShipSlots} layout (from
- * `./ship-slots`) and expands it into keyed {@link BuildSlot}s.
+ * It holds no data; {@link enumerateSlots} takes a {@link ShipSlots} layout (from a
+ * hull's `Ship` record via `getShipSlots` in `./ships`) and expands it into keyed
+ * {@link BuildSlot}s.
  *
  * @packageDocumentation
  */
@@ -79,7 +80,7 @@ export interface BulkheadOption {
     readonly mass: number;
 }
 
-/** A hull's full slot layout, as carried in `data/ships/ship-slots.jsonc`. */
+/** A hull's full slot layout — the slot-bearing fields of a `Ship`, as `getShipSlots` returns. */
 export interface ShipSlots {
     /** Hull symbol, matching the registry's `Ship.symbol`. */
     readonly symbol: string;
