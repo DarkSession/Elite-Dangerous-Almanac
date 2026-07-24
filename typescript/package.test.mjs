@@ -7,12 +7,13 @@ import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
 import { nearestNebulae } from '@elite-dangerous-almanac/core/astro/nebulae';
 import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
 import { permitLockForSystemName } from '@elite-dangerous-almanac/core/astro/permit-locks';
-import {
-    permitLockedSystemForAddress,
-} from '@elite-dangerous-almanac/core/astro/permit-locked-systems';
-import {
-    isPermitLockedRegionName,
-} from '@elite-dangerous-almanac/core/astro/permit-locked-regions';
+import { permitLockedSystemForAddress } from '@elite-dangerous-almanac/core/astro/permit-locked-systems';
+import { isPermitLockedRegionName } from '@elite-dangerous-almanac/core/astro/permit-locked-regions';
+import { getMaterialByName } from '@elite-dangerous-almanac/core/materials';
+import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
+import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
 
 async function readReachableJs(entry, seen = new Set()) {
     if (seen.has(entry.href)) return '';
@@ -44,10 +45,36 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(permitLockForSystemName('  sol ')?.name, 'Sol');
     assert.equal(permitLockedSystemForAddress(10_477_373_803)?.name, 'Sol');
     assert.equal(isPermitLockedRegionName('Cone Sector'), true);
+    assert.equal(getMaterialByName('iron', RAW_MATERIALS)?.name, 'Iron');
+    assert.equal(getShipBySymbol('empire_trader')?.name, 'Imperial Clipper');
+    assert.equal(
+        getModuleBySymbol('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES)?.name,
+        'Chaff Launcher',
+    );
+});
+
+test('a single module catalogue does not bundle the others', async () => {
+    const graph = await readReachableJs(
+        new URL('./dist/ships/modules-utility.js', import.meta.url),
+    );
+    // The utility catalogue must not drag in the standard-category armour data.
+    assert.doesNotMatch(graph, /Anaconda_Armour/);
+    assert.match(graph, /Chaff Launcher/);
+});
+
+test('internal material construction helpers are not package exports', async () => {
+    await assert.rejects(import('@elite-dangerous-almanac/core/materials/material-catalogue'), {
+        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+    });
 });
 
 test('the publication manifest includes consumer documentation and notices', async () => {
     const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
+    assert.equal(
+        pkg.repository.url,
+        'git+https://github.com/DarkSession/Elite-Dangerous-Almanac.git',
+    );
+    assert.equal(pkg.homepage, 'https://github.com/DarkSession/Elite-Dangerous-Almanac#readme');
     assert.deepEqual(
         ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md'].map((name) => [
             name,

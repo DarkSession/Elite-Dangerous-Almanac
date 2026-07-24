@@ -1,0 +1,77 @@
+{
+  "description": "Ground truth for the outfitting catalogues (data/ships/modules-*.jsonc, from EDCD FDevIDs outfitting.csv). `counts` pins the size of each category catalogue; `records` pins individual modules across every category, including the retained removed Discovery Scanner (no entitlement) and DLC-gated modules; `shipArmour` pins that getModulesForShip returns a hull's five bulkhead variants. `class` is the module size (0-8) and `rating` the grade letter (A-I).",
+  "counts": {
+    "standard": 521,
+    "internal": 475,
+    "hardpoint": 159,
+    "utility": 35,
+    "all": 1190
+  },
+  "records": [
+    {
+      "symbol": "Anaconda_Armour_Grade1",
+      "category": "standard",
+      "name": "Lightweight Alloy",
+      "class": 1,
+      "rating": "I",
+      "ship": "Anaconda"
+    },
+    {
+      "symbol": "Hpt_PulseLaser_Fixed_Small",
+      "category": "hardpoint",
+      "name": "Pulse Laser",
+      "class": 1,
+      "rating": "F",
+      "mount": "Fixed"
+    },
+    {
+      "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
+      "category": "hardpoint",
+      "name": "Missile Rack",
+      "class": 2,
+      "rating": "B",
+      "mount": "Fixed",
+      "guidance": "Dumbfire"
+    },
+    {
+      "symbol": "Hpt_ChaffLauncher_Tiny",
+      "category": "utility",
+      "name": "Chaff Launcher",
+      "class": 0,
+      "rating": "I"
+    },
+    {
+      "symbol": "Int_HullReinforcement_Size1_Class1",
+      "category": "internal",
+      "name": "Hull Reinforcement Package",
+      "class": 1,
+      "rating": "E"
+    },
+    {
+      "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
+      "category": "internal",
+      "name": "Advanced Discovery Scanner",
+      "class": 1,
+      "rating": "C"
+    },
+    {
+      "symbol": "Int_GuardianFSDBooster_Size1",
+      "category": "internal",
+      "name": "Guardian FSD Booster",
+      "class": 1,
+      "rating": "H",
+      "entitlement": "ELITE_HORIZONS_V_GUARDIAN_FSDBOOSTER"
+    }
+  ],
+  "shipArmour": {
+    "ship": "Anaconda",
+    "count": 5,
+    "names": [
+      "Lightweight Alloy",
+      "Reinforced Alloy",
+      "Military Grade Composite",
+      "Mirrored Surface Composite",
+      "Reactive Surface Composite"
+    ]
+  }
+}

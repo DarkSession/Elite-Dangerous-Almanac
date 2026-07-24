@@ -15,6 +15,7 @@
 
 import type { Nebula } from './nebulae.js';
 import planetaryNebulaeData from '../../../data/astro/nebulae-planetary.jsonc' with { type: 'json' };
+import { deepFreeze } from '../deep-freeze.js';
 
 /**
  * All 5489 planetary nebulae, sorted by name.
@@ -30,6 +31,6 @@ import planetaryNebulaeData from '../../../data/astro/nebulae-planetary.jsonc' w
  * PLANETARY_NEBULAE[0].name; // -> 'Aemonz EQ-Y e1899'
  * ```
  */
-export const PLANETARY_NEBULAE: readonly Nebula[] = (
-    planetaryNebulaeData as { nebulae: readonly Nebula[] }
-).nebulae;
+export const PLANETARY_NEBULAE: readonly Nebula[] = deepFreeze(
+    (planetaryNebulaeData as { nebulae: readonly Nebula[] }).nebulae,
+);

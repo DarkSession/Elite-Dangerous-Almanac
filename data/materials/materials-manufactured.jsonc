@@ -1,0 +1,519 @@
+/*
+ * Manufactured engineering materials (incl. Guardian & Thargoid).
+ *
+ * Source:       EDCD FDevIDs, material.csv
+ *               https://github.com/EDCD/FDevIDs
+ *               Community-maintained Frontier id/name registry. No explicit
+ *               licence is stated; consult the repository terms.
+ * Secondary:    INARA (https://inara.cz/elite/components/) for the newer
+ *               caustic / Titan Thargoid materials not yet in FDevIDs.
+ *
+ * Each record is { symbol, name, elementSymbol, grade, line }. `symbol` is
+ * Frontier's internal id (matched case-insensitively, as the journal reports
+ * it); `name` is the display name. `grade` is 1-5 (raw tops out at 4) and is
+ * itself the rarity. `line` is the in-game group.
+ * `elementSymbol` is null — only raw materials (elements) have one.
+ * The newer caustic / Titan Thargoid materials are not in FDevIDs; their grade
+ * comes from INARA (see data/materials/SOURCES.md).
+ *
+ * Full provenance: data/materials/SOURCES.md.
+ */
+[
+  {
+    "symbol": "SalvagedAlloys",
+    "name": "Salvaged Alloys",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Alloys"
+  },
+  {
+    "symbol": "GalvanisingAlloys",
+    "name": "Galvanising Alloys",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Alloys"
+  },
+  {
+    "symbol": "PhaseAlloys",
+    "name": "Phase Alloys",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Alloys"
+  },
+  {
+    "symbol": "ProtoLightAlloys",
+    "name": "Proto Light Alloys",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Alloys"
+  },
+  {
+    "symbol": "ProtoRadiolicAlloys",
+    "name": "Proto Radiolic Alloys",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Alloys"
+  },
+  {
+    "symbol": "GridResistors",
+    "name": "Grid Resistors",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Capacitors"
+  },
+  {
+    "symbol": "HybridCapacitors",
+    "name": "Hybrid Capacitors",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Capacitors"
+  },
+  {
+    "symbol": "ElectrochemicalArrays",
+    "name": "Electrochemical Arrays",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Capacitors"
+  },
+  {
+    "symbol": "PolymerCapacitors",
+    "name": "Polymer Capacitors",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Capacitors"
+  },
+  {
+    "symbol": "MilitarySupercapacitors",
+    "name": "Military Supercapacitors",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Capacitors"
+  },
+  {
+    "symbol": "ChemicalStorageUnits",
+    "name": "Chemical Storage Units",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Chemical"
+  },
+  {
+    "symbol": "ChemicalProcessors",
+    "name": "Chemical Processors",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Chemical"
+  },
+  {
+    "symbol": "ChemicalDistillery",
+    "name": "Chemical Distillery",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Chemical"
+  },
+  {
+    "symbol": "ChemicalManipulators",
+    "name": "Chemical Manipulators",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Chemical"
+  },
+  {
+    "symbol": "PharmaceuticalIsolators",
+    "name": "Pharmaceutical Isolators",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Chemical"
+  },
+  {
+    "symbol": "CompactComposites",
+    "name": "Compact Composites",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Composite"
+  },
+  {
+    "symbol": "FilamentComposites",
+    "name": "Filament Composites",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Composite"
+  },
+  {
+    "symbol": "HighDensityComposites",
+    "name": "High Density Composites",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Composite"
+  },
+  {
+    "symbol": "FedProprietaryComposites",
+    "name": "Proprietary Composites",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Composite"
+  },
+  {
+    "symbol": "FedCoreComposites",
+    "name": "Core Dynamics Composites",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Composite"
+  },
+  {
+    "symbol": "BasicConductors",
+    "name": "Basic Conductors",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Conductive"
+  },
+  {
+    "symbol": "ConductiveComponents",
+    "name": "Conductive Components",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Conductive"
+  },
+  {
+    "symbol": "ConductiveCeramics",
+    "name": "Conductive Ceramics",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Conductive"
+  },
+  {
+    "symbol": "ConductivePolymers",
+    "name": "Conductive Polymers",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Conductive"
+  },
+  {
+    "symbol": "BiotechConductors",
+    "name": "Biotech Conductors",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Conductive"
+  },
+  {
+    "symbol": "CrystalShards",
+    "name": "Crystal Shards",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Crystals"
+  },
+  {
+    "symbol": "UncutFocusCrystals",
+    "name": "Flawed Focus Crystals",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Crystals"
+  },
+  {
+    "symbol": "FocusCrystals",
+    "name": "Focus Crystals",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Crystals"
+  },
+  {
+    "symbol": "RefinedFocusCrystals",
+    "name": "Refined Focus Crystals",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Crystals"
+  },
+  {
+    "symbol": "ExquisiteFocusCrystals",
+    "name": "Exquisite Focus Crystals",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Crystals"
+  },
+  {
+    "symbol": "Guardian_PowerCell",
+    "name": "Guardian Power Cell",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "Guardian_Sentinel_WreckageComponents",
+    "name": "Guardian Sentinel Wreckage Components",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "Guardian_PowerConduit",
+    "name": "Guardian Power Conduit",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "Guardian_Sentinel_WeaponParts",
+    "name": "Guardian Sentinel Weapon Parts",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "Guardian_TechComponent",
+    "name": "Guardian Technology Component",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "HeatConductionWiring",
+    "name": "Heat Conduction Wiring",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Heat"
+  },
+  {
+    "symbol": "HeatDispersionPlate",
+    "name": "Heat Dispersion Plate",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Heat"
+  },
+  {
+    "symbol": "HeatExchangers",
+    "name": "Heat Exchangers",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Heat"
+  },
+  {
+    "symbol": "HeatVanes",
+    "name": "Heat Vanes",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Heat"
+  },
+  {
+    "symbol": "ProtoHeatRadiators",
+    "name": "Proto Heat Radiators",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Heat"
+  },
+  {
+    "symbol": "MechanicalScrap",
+    "name": "Mechanical Scrap",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Mechanical Components"
+  },
+  {
+    "symbol": "MechanicalEquipment",
+    "name": "Mechanical Equipment",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Mechanical Components"
+  },
+  {
+    "symbol": "MechanicalComponents",
+    "name": "Mechanical Components",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Mechanical Components"
+  },
+  {
+    "symbol": "ConfigurableComponents",
+    "name": "Configurable Components",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Mechanical Components"
+  },
+  {
+    "symbol": "ImprovisedComponents",
+    "name": "Improvised Components",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Mechanical Components"
+  },
+  {
+    "symbol": "WornShieldEmitters",
+    "name": "Worn Shield Emitters",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Shielding"
+  },
+  {
+    "symbol": "ShieldEmitters",
+    "name": "Shield Emitters",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Shielding"
+  },
+  {
+    "symbol": "ShieldingSensors",
+    "name": "Shielding Sensors",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Shielding"
+  },
+  {
+    "symbol": "CompoundShielding",
+    "name": "Compound Shielding",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Shielding"
+  },
+  {
+    "symbol": "ImperialShielding",
+    "name": "Imperial Shielding",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Shielding"
+  },
+  {
+    "symbol": "tg_abrasion03",
+    "name": "Hardened Surface Fragments",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "tg_causticshard",
+    "name": "Caustic Shard",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "unknowncorechip",
+    "name": "Tactical Core Chip",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "UnknownCarapace",
+    "name": "Thargoid Carapace",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "TG_BioMechanicalConduits",
+    "name": "Bio-Mechanical Conduits",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "tg_causticgeneratorparts",
+    "name": "Corrosive Mechanisms",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "tg_abrasion02",
+    "name": "Phasing Membrane Residue",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "UnknownEnergyCell",
+    "name": "Thargoid Energy Cell",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "TG_WreckageComponents",
+    "name": "Wreckage Components",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "tg_causticcrystal",
+    "name": "Caustic Crystal",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "UnknownTechnologyComponents",
+    "name": "Thargoid Technological Components",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "TG_WeaponParts",
+    "name": "Weapon Parts",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "tg_abrasion01",
+    "name": "Heat Exposure Specimen",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "TG_PropulsionElement",
+    "name": "Propulsion Elements",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "UnknownEnergySource",
+    "name": "Sensor Fragment",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "UnknownOrganicCircuitry",
+    "name": "Thargoid Organic Circuitry",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "TemperedAlloys",
+    "name": "Tempered Alloys",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Thermic"
+  },
+  {
+    "symbol": "HeatResistantCeramics",
+    "name": "Heat Resistant Ceramics",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Thermic"
+  },
+  {
+    "symbol": "PrecipitatedAlloys",
+    "name": "Precipitated Alloys",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thermic"
+  },
+  {
+    "symbol": "ThermicAlloys",
+    "name": "Thermic Alloys",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Thermic"
+  },
+  {
+    "symbol": "MilitaryGradeAlloys",
+    "name": "Military Grade Alloys",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Thermic"
+  }
+]

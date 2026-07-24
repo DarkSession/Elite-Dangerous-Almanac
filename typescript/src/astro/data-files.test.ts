@@ -46,12 +46,14 @@ for (const name of DATA_FILES) {
     });
 
     test(`${name} keeps its attribution out of the parsed payload`, () => {
-        const parsed: unknown = JSON.parse(stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')));
+        const parsed: unknown = JSON.parse(
+            stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
+        );
         if (Array.isArray(parsed)) return;
         for (const key of BANNED_KEYS) {
             assert.ok(
                 !Object.hasOwn(parsed as object, key),
-                `${name} has a top-level "${key}" — move it into the comment header`
+                `${name} has a top-level "${key}" — move it into the comment header`,
             );
         }
     });

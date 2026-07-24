@@ -1,11 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-    GALACTIC_REGIONS,
-    getGalacticRegion,
-    getGalacticRegionByName,
-} from './galactic-region.js';
+import { GALACTIC_REGIONS, getGalacticRegion, getGalacticRegionByName } from './galactic-region.js';
 import {
     findRegionAt,
     findRegionForBoxel,

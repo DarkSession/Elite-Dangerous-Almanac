@@ -135,10 +135,7 @@ export { ALL_NEBULAE } from './nebulae-all.js';
 
 // ── Low-level boxel primitives ──────────────────────────────────────────────
 // Building blocks the encoders use; most consumers never need these directly.
-export {
-    lettersToBoxelCode,
-    boxelCodeToLetters,
-} from './system-name.js';
+export { lettersToBoxelCode, boxelCodeToLetters } from './system-name.js';
 
 export {
     boxelCodeToAbsoluteBoxel,

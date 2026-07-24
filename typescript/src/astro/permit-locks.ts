@@ -51,10 +51,7 @@
  * @packageDocumentation
  */
 
-import {
-    permitLockedSystemForName,
-    type PermitLockedSystem,
-} from './permit-locked-systems.js';
+import { permitLockedSystemForName } from './permit-locked-systems.js';
 import { permitLockedRegionForSystemName } from './permit-locked-regions.js';
 
 export {

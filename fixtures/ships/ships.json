@@ -1,0 +1,24 @@
+{
+  "description": "Ground truth for the ship catalogue (data/ships/ships.jsonc, from EDCD FDevIDs shipyard.csv). `count` pins the catalogue size; `records` pins individual hulls (with `entitlement` present only on DLC/grant-gated hulls); `lookups` pins the case-insensitive symbol/name resolution the journal relies on.",
+  "count": 48,
+  "records": [
+    { "symbol": "SideWinder", "name": "Sidewinder" },
+    { "symbol": "Anaconda", "name": "Anaconda" },
+    { "symbol": "Empire_Trader", "name": "Imperial Clipper" },
+    {
+      "symbol": "Krait_MkII",
+      "name": "Krait MkII",
+      "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    },
+    {
+      "symbol": "Python_NX",
+      "name": "Python MkII",
+      "entitlement": "ELITE_V_PYTHON_NX"
+    }
+  ],
+  "lookups": [
+    { "query": "empire_trader", "by": "symbol", "name": "Imperial Clipper" },
+    { "query": "Empire_Trader", "by": "symbol", "name": "Imperial Clipper" },
+    { "query": "imperial clipper", "by": "name", "symbol": "Empire_Trader" }
+  ]
+}

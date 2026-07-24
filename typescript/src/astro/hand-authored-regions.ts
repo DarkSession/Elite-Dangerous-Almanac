@@ -26,17 +26,18 @@
 
 import type { GalacticCoords } from './coords.js';
 import handAuthoredData from '../../../data/astro/hand-authored-regions.jsonc' with { type: 'json' };
+import { deepFreeze } from '../deep-freeze.js';
 
 /** One sphere of a hand-authored region (centre and radius in light-years). */
 export interface HandAuthoredSphere {
     /** Sphere centre X in light-years (Sol at origin). */
-    cx: number;
+    readonly cx: number;
     /** Sphere centre Y in light-years. */
-    cy: number;
+    readonly cy: number;
     /** Sphere centre Z in light-years. */
-    cz: number;
+    readonly cz: number;
     /** Sphere radius in light-years. */
-    r: number;
+    readonly r: number;
 }
 
 /**
@@ -49,13 +50,15 @@ export interface HandAuthoredSphere {
  */
 export interface HandAuthoredRegion {
     /** Canonically-cased region name, e.g. `Pleiades Sector`. */
-    name: string;
+    readonly name: string;
     /** The spheres whose union defines the region's volume. */
-    spheres: readonly HandAuthoredSphere[];
+    readonly spheres: readonly HandAuthoredSphere[];
 }
 
 /** All hand-authored regions, sorted smallest-radius-first (overlap priority). */
-export const HAND_AUTHORED_REGIONS: readonly HandAuthoredRegion[] = handAuthoredData as readonly HandAuthoredRegion[];
+export const HAND_AUTHORED_REGIONS: readonly HandAuthoredRegion[] = deepFreeze(
+    handAuthoredData as readonly HandAuthoredRegion[],
+);
 
 /**
  * The hand-authored region containing a galactic point, or `null` for procedural

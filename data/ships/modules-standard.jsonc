@@ -1,0 +1,3997 @@
+/*
+ * Core internal modules — the eight slots every hull must fill.
+ *
+ * The `standard` slice of Frontier's outfitting registry: core internal modules (armour, power plant, thrusters, FSD, life support, power distributor, sensors, fuel tank).
+ *
+ * Source:  EDCD FDevIDs, outfitting.csv
+ *          https://github.com/EDCD/FDevIDs
+ *          Community-maintained Frontier id/name registry. No explicit licence
+ *          is stated; consult the repository terms.
+ *
+ * Each record is { symbol, category, name, mount?, guidance?, ship?, class,
+ * rating, entitlement? }. `symbol` is the internal identifier
+ * (e.g. `Hpt_PulseLaser_Fixed_Small`); `name` the display
+ * name. `class` is the module size (0-8) and `rating` its grade letter (A-I) — the
+ * "5A" the outfitting screen shows. `mount` (Fixed / Gimballed / Turreted) and
+ * `guidance` (Dumbfire / Seeker / Swarm) appear only on the hardpoints they apply
+ * to; `ship` names the hull an armour variant belongs to; `entitlement` carries
+ * Frontier's DLC/grant token when the module is gated.
+ *
+ * Full provenance: data/ships/SOURCES.md.
+ */
+[
+  {
+    "symbol": "SideWinder_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Sidewinder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "SideWinder_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Sidewinder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "SideWinder_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Sidewinder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "SideWinder_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Sidewinder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "SideWinder_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Sidewinder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Eagle_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Eagle_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Eagle_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Eagle_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Eagle_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Hauler_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Hauler",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Hauler_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Hauler",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Hauler_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Hauler",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Hauler_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Hauler",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Hauler_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Hauler",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Adder_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Adder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Adder_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Adder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Adder_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Adder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Adder_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Adder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Adder_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Adder",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Viper MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Viper MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Viper MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Viper MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Viper MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIII_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Cobra MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIII_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Cobra MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIII_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Cobra MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIII_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Cobra MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIII_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Cobra MkIII",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type6_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Type-6 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type6_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Type-6 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type6_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Type-6 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type6_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Type-6 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type6_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Type-6 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Dolphin_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Dolphin",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Dolphin_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Dolphin",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Dolphin_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Dolphin",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Dolphin_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Dolphin",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Dolphin_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Dolphin",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type7_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Type-7 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type7_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Type-7 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type7_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Type-7 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type7_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Type-7 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type7_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Type-7 Transporter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Asp Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Asp Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Asp Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Asp Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Asp Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Vulture_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Vulture",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Vulture_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Vulture",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Vulture_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Vulture",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Vulture_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Vulture",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Vulture_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Vulture",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Trader_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Imperial Clipper",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Trader_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Imperial Clipper",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Trader_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Imperial Clipper",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Trader_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Imperial Clipper",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Trader_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Imperial Clipper",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Federal Dropship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Federal Dropship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Federal Dropship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Federal Dropship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Federal Dropship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Orca_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Orca",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Orca_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Orca",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Orca_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Orca",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Orca_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Orca",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Orca_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Orca",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type9_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Type-9 Heavy",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type9_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Type-9 Heavy",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type9_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Type-9 Heavy",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type9_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Type-9 Heavy",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Type9_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Type-9 Heavy",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Python_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Python",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Python_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Python",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Python_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Python",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Python_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Python",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Python_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Python",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "BelugaLiner_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Beluga Liner",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "BelugaLiner_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Beluga Liner",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "BelugaLiner_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Beluga Liner",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "BelugaLiner_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Beluga Liner",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "BelugaLiner_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Beluga Liner",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "FerDeLance_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Fer-de-Lance",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "FerDeLance_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Fer-de-Lance",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "FerDeLance_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Fer-de-Lance",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "FerDeLance_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Fer-de-Lance",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "FerDeLance_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Fer-de-Lance",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Anaconda_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Anaconda",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Anaconda_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Anaconda",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Anaconda_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Anaconda",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Anaconda_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Anaconda",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Anaconda_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Anaconda",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Corvette_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Federal Corvette",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Corvette_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Federal Corvette",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Corvette_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Federal Corvette",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Corvette_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Federal Corvette",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Corvette_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Federal Corvette",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Cutter_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Imperial Cutter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Cutter_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Imperial Cutter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Cutter_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Imperial Cutter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Cutter_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Imperial Cutter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Cutter_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Imperial Cutter",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Int_Powerplant_Size2_Class1",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Powerplant_Size2_Class2",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Powerplant_Size2_Class3",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Powerplant_Size2_Class4",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Powerplant_Size2_Class5",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Powerplant_Size3_Class1",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Powerplant_Size3_Class2",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Powerplant_Size3_Class3",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Powerplant_Size3_Class4",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Powerplant_Size3_Class5",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Powerplant_Size4_Class1",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Powerplant_Size4_Class2",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Powerplant_Size4_Class3",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Powerplant_Size4_Class4",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Powerplant_Size4_Class5",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Powerplant_Size5_Class1",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Powerplant_Size5_Class2",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Powerplant_Size5_Class3",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Powerplant_Size5_Class4",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Powerplant_Size5_Class5",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Powerplant_Size6_Class1",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Powerplant_Size6_Class2",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Powerplant_Size6_Class3",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Powerplant_Size6_Class4",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Powerplant_Size6_Class5",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Powerplant_Size7_Class1",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Powerplant_Size7_Class2",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Powerplant_Size7_Class3",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Powerplant_Size7_Class4",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Powerplant_Size7_Class5",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Powerplant_Size8_Class1",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Powerplant_Size8_Class2",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Powerplant_Size8_Class3",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Powerplant_Size8_Class4",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Powerplant_Size8_Class5",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Engine_Size2_Class1",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Engine_Size2_Class2",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Engine_Size2_Class3",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Engine_Size2_Class4",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Engine_Size2_Class5",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Engine_Size3_Class1",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Engine_Size3_Class2",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Engine_Size3_Class3",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Engine_Size3_Class4",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Engine_Size3_Class5",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Engine_Size4_Class1",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Engine_Size4_Class2",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Engine_Size4_Class3",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Engine_Size4_Class4",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Engine_Size4_Class5",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Engine_Size5_Class1",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Engine_Size5_Class2",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Engine_Size5_Class3",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Engine_Size5_Class4",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Engine_Size5_Class5",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Engine_Size6_Class1",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Engine_Size6_Class2",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Engine_Size6_Class3",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Engine_Size6_Class4",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Engine_Size6_Class5",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Engine_Size7_Class1",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Engine_Size7_Class2",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Engine_Size7_Class3",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Engine_Size7_Class4",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Engine_Size7_Class5",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Engine_Size8_Class1",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Engine_Size8_Class2",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Engine_Size8_Class3",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Engine_Size8_Class4",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Engine_Size8_Class5",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size2_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size2_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size2_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size2_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size2_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size3_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size3_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size3_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size3_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size3_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size4_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size4_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size4_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size4_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size4_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size5_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size5_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size5_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size5_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size5_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size6_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size6_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size6_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size6_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size6_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size7_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size7_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size7_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size7_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size7_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size8_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size8_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size8_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size8_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size8_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size1_Class1",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size1_Class2",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size1_Class3",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size1_Class4",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size1_Class5",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size2_Class1",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size2_Class2",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size2_Class3",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size2_Class4",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size2_Class5",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size3_Class1",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size3_Class2",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size3_Class3",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size3_Class4",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size3_Class5",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size4_Class1",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size4_Class2",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size4_Class3",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size4_Class4",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size4_Class5",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size5_Class1",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size5_Class2",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size5_Class3",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size5_Class4",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size5_Class5",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size6_Class1",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size6_Class2",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size6_Class3",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size6_Class4",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size6_Class5",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size7_Class1",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size7_Class2",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size7_Class3",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size7_Class4",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size7_Class5",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size8_Class1",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size8_Class2",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size8_Class3",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size8_Class4",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size8_Class5",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size1_Class1",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size1_Class2",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size1_Class3",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size1_Class4",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size1_Class5",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size2_Class1",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size2_Class2",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size2_Class3",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size2_Class4",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size2_Class5",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size3_Class1",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size3_Class2",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size3_Class3",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size3_Class4",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size3_Class5",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size4_Class1",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size4_Class2",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size4_Class3",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size4_Class4",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size4_Class5",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size5_Class1",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size5_Class2",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size5_Class3",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size5_Class4",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size5_Class5",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size6_Class1",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size6_Class2",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size6_Class3",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size6_Class4",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size6_Class5",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size7_Class1",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size7_Class2",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size7_Class3",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size7_Class4",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size7_Class5",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size8_Class1",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size8_Class2",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size8_Class3",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size8_Class4",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size8_Class5",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Sensors_Size1_Class1",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Sensors_Size1_Class2",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Sensors_Size1_Class3",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Sensors_Size1_Class4",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Sensors_Size1_Class5",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Sensors_Size2_Class1",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Sensors_Size2_Class2",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Sensors_Size2_Class3",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Sensors_Size2_Class4",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Sensors_Size2_Class5",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Sensors_Size3_Class1",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Sensors_Size3_Class2",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Sensors_Size3_Class3",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Sensors_Size3_Class4",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Sensors_Size3_Class5",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Sensors_Size4_Class1",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Sensors_Size4_Class2",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Sensors_Size4_Class3",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Sensors_Size4_Class4",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Sensors_Size4_Class5",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Sensors_Size5_Class1",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Sensors_Size5_Class2",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Sensors_Size5_Class3",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Sensors_Size5_Class4",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Sensors_Size5_Class5",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Sensors_Size6_Class1",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Sensors_Size6_Class2",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Sensors_Size6_Class3",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Sensors_Size6_Class4",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Sensors_Size6_Class5",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Sensors_Size7_Class1",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Sensors_Size7_Class2",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Sensors_Size7_Class3",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Sensors_Size7_Class4",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Sensors_Size7_Class5",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Sensors_Size8_Class1",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Sensors_Size8_Class2",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Sensors_Size8_Class3",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Sensors_Size8_Class4",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Sensors_Size8_Class5",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FuelTank_Size1_Class3",
+    "category": "standard",
+    "name": "Fuel Tank",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelTank_Size2_Class3",
+    "category": "standard",
+    "name": "Fuel Tank",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelTank_Size3_Class3",
+    "category": "standard",
+    "name": "Fuel Tank",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelTank_Size4_Class3",
+    "category": "standard",
+    "name": "Fuel Tank",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelTank_Size5_Class3",
+    "category": "standard",
+    "name": "Fuel Tank",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelTank_Size6_Class3",
+    "category": "standard",
+    "name": "Fuel Tank",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelTank_Size7_Class3",
+    "category": "standard",
+    "name": "Fuel Tank",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelTank_Size8_Class3",
+    "category": "standard",
+    "name": "Fuel Tank",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PowerPlant_Size2_Class1_free",
+    "category": "standard",
+    "name": "Power Plant",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Engine_Size2_Class1_free",
+    "category": "standard",
+    "name": "Thrusters",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size2_Class1_free",
+    "category": "standard",
+    "name": "Frame Shift Drive",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_LifeSupport_Size1_Class1_free",
+    "category": "standard",
+    "name": "Life Support",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size1_Class1_free",
+    "category": "standard",
+    "name": "Power Distributor",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Sensors_Size1_Class1_free",
+    "category": "standard",
+    "name": "Sensors",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelTank_Size1_Class3_free",
+    "category": "standard",
+    "name": "Fuel Tank",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "DiamondBack_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Diamondback Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "DiamondBack_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Diamondback Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "DiamondBack_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Diamondback Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "DiamondBack_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Diamondback Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "DiamondBack_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Diamondback Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Courier_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Imperial Courier",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Courier_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Imperial Courier",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Courier_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Imperial Courier",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Courier_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Imperial Courier",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Courier_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Imperial Courier",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "DiamondBackXL_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Diamondback Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "DiamondBackXL_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Diamondback Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "DiamondBackXL_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Diamondback Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "DiamondBackXL_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Diamondback Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "DiamondBackXL_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Diamondback Explorer",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Eagle_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Imperial Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Eagle_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Imperial Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Eagle_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Imperial Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Eagle_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Imperial Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Empire_Eagle_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Imperial Eagle",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_MkII_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Federal Assault Ship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_MkII_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Federal Assault Ship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_MkII_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Federal Assault Ship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_MkII_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Federal Assault Ship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Dropship_MkII_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Federal Assault Ship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Gunship_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Federal Gunship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Gunship_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Federal Gunship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Gunship_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Federal Gunship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Gunship_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Federal Gunship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Federation_Gunship_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Federal Gunship",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_MkIV_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Viper MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_MkIV_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Viper MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_MkIV_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Viper MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_MkIV_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Viper MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Viper_MkIV_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Viper MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIV_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Cobra MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIV_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Cobra MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIV_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Cobra MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIV_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Cobra MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "CobraMkIV_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Cobra MkIV",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Independant_Trader_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Keelback",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Independant_Trader_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Keelback",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Independant_Trader_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Keelback",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Independant_Trader_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Keelback",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Independant_Trader_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Keelback",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Scout_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Asp Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Scout_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Asp Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Scout_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Asp Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Scout_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Asp Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Asp_Scout_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Asp Scout",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Int_Engine_Size3_Class5_Fast",
+    "category": "standard",
+    "name": "Enhanced Performance Thrusters",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Engine_Size2_Class5_Fast",
+    "category": "standard",
+    "name": "Enhanced Performance Thrusters",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Type9_Military_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Type-10 Defender",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Type9_Military_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Type-10 Defender",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Type9_Military_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Type-10 Defender",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Type9_Military_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Type-10 Defender",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Type9_Military_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Type-10 Defender",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_MkII_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Krait MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_MkII_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Krait MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_MkII_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Krait MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_MkII_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Krait MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_MkII_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Krait MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Alliance Chieftain",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Alliance Chieftain",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Alliance Chieftain",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Alliance Chieftain",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Alliance Chieftain",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_2_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Alliance Crusader",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_2_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Alliance Crusader",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_2_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Alliance Crusader",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_2_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Alliance Crusader",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_2_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Alliance Crusader",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_3_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Alliance Challenger",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_3_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Alliance Challenger",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_3_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Alliance Challenger",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_3_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Alliance Challenger",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_3_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Alliance Challenger",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_Light_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Krait Phantom",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_Light_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Krait Phantom",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_Light_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Krait Phantom",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_Light_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Krait Phantom",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_Light_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Krait Phantom",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Mamba_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Mamba",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Mamba_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Mamba",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Mamba_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Mamba",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Mamba_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Mamba",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Mamba_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Mamba",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Python_NX_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Python MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PYTHON_NX"
+  },
+  {
+    "symbol": "Python_NX_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Python MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PYTHON_NX"
+  },
+  {
+    "symbol": "Python_NX_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Python MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PYTHON_NX"
+  },
+  {
+    "symbol": "Python_NX_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Python MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PYTHON_NX"
+  },
+  {
+    "symbol": "Python_NX_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Python MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PYTHON_NX"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size5_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size7_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size6_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size4_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size3_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size2_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Type8_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Type-8 Transporter",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_TYPE8"
+  },
+  {
+    "symbol": "Type8_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Type-8 Transporter",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_TYPE8"
+  },
+  {
+    "symbol": "Type8_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Type-8 Transporter",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_TYPE8"
+  },
+  {
+    "symbol": "Type8_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Type-8 Transporter",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_TYPE8"
+  },
+  {
+    "symbol": "Type8_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Type-8 Transporter",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_TYPE8"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size2_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size2_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size2_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size2_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size3_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size3_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size3_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size3_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size4_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size4_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size4_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size4_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size5_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size5_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size5_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size5_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size6_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size6_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size6_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size6_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size7_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size7_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size7_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Mandalay_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Mandalay",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_MANDALAY"
+  },
+  {
+    "symbol": "Mandalay_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Mandalay",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_MANDALAY"
+  },
+  {
+    "symbol": "Mandalay_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Mandalay",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_MANDALAY"
+  },
+  {
+    "symbol": "Mandalay_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Mandalay",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_MANDALAY"
+  },
+  {
+    "symbol": "Mandalay_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Mandalay",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_MANDALAY"
+  },
+  {
+    "symbol": "CobraMkV_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Cobra MkV",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_COBRA_MKV"
+  },
+  {
+    "symbol": "CobraMkV_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Cobra MkV",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_COBRA_MKV"
+  },
+  {
+    "symbol": "CobraMkV_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Cobra MkV",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_COBRA_MKV"
+  },
+  {
+    "symbol": "CobraMkV_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Cobra MkV",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_COBRA_MKV"
+  },
+  {
+    "symbol": "CobraMkV_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Cobra MkV",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_COBRA_MKV"
+  },
+  {
+    "symbol": "Corsair_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Corsair",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_CORSAIR"
+  },
+  {
+    "symbol": "Corsair_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Corsair",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_CORSAIR"
+  },
+  {
+    "symbol": "Corsair_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Corsair",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_CORSAIR"
+  },
+  {
+    "symbol": "Corsair_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Corsair",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_CORSAIR"
+  },
+  {
+    "symbol": "Corsair_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Corsair",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_CORSAIR"
+  },
+  {
+    "symbol": "PantherMkII_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Panther Clipper MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PANTHER_MKII"
+  },
+  {
+    "symbol": "PantherMkII_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Panther Clipper MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PANTHER_MKII"
+  },
+  {
+    "symbol": "PantherMkII_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Panther Clipper MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PANTHER_MKII"
+  },
+  {
+    "symbol": "PantherMkII_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Panther Clipper MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PANTHER_MKII"
+  },
+  {
+    "symbol": "PantherMkII_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Panther Clipper MkII",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_PANTHER_MKII"
+  },
+  {
+    "symbol": "LakonMiner_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Type-11 Prospector",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_LAKON_MINER"
+  },
+  {
+    "symbol": "LakonMiner_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Type-11 Prospector",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_LAKON_MINER"
+  },
+  {
+    "symbol": "LakonMiner_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Type-11 Prospector",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_LAKON_MINER"
+  },
+  {
+    "symbol": "LakonMiner_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Type-11 Prospector",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_LAKON_MINER"
+  },
+  {
+    "symbol": "LakonMiner_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Type-11 Prospector",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_V_LAKON_MINER"
+  },
+  {
+    "symbol": "Explorer_NX_Armour_Grade1",
+    "category": "standard",
+    "name": "Mk II Ablative Lightweight Alloys",
+    "ship": "Caspian Explorer",
+    "class": 1,
+    "rating": "C",
+    "entitlement": "ELITE_V_EXPLORER_NX"
+  },
+  {
+    "symbol": "Explorer_NX_Armour_Grade2",
+    "category": "standard",
+    "name": "Mk II Ablative Reinforced Alloys",
+    "ship": "Caspian Explorer",
+    "class": 1,
+    "rating": "B",
+    "entitlement": "ELITE_V_EXPLORER_NX"
+  },
+  {
+    "symbol": "Explorer_NX_Armour_Grade3",
+    "category": "standard",
+    "name": "Mk II Ablative Military Grade Composite",
+    "ship": "Caspian Explorer",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_V_EXPLORER_NX"
+  },
+  {
+    "symbol": "Explorer_NX_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mk II Ablative Mirrored Surface Composite",
+    "ship": "Caspian Explorer",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_V_EXPLORER_NX"
+  },
+  {
+    "symbol": "Explorer_NX_Armour_Reactive",
+    "category": "standard",
+    "name": "Mk II Ablative Reactive Surface Composite",
+    "ship": "Caspian Explorer",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_V_EXPLORER_NX"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size8_Class1",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size8_Class2",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size8_Class3",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size8_Class4",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5",
+    "category": "standard",
+    "name": "Frame Shift Drive (SCO)",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Explorer_NX_Armour_Grade1_Default",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Caspian Explorer",
+    "class": 1,
+    "rating": "C",
+    "entitlement": "ELITE_V_EXPLORER_NX"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5_OverchargeBooster_MkII",
+    "category": "standard",
+    "name": "Mk II Supercharge Optimised Frame Shift Drive (SCO)",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
+    "category": "standard",
+    "name": "Mk II Gravity Optimised Thrusters",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "SmallCombat01_NX_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Kestrel Mk II",
+    "class": 1,
+    "rating": "C",
+    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+  },
+  {
+    "symbol": "SmallCombat01_NX_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Kestrel Mk II",
+    "class": 1,
+    "rating": "B",
+    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+  },
+  {
+    "symbol": "SmallCombat01_NX_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Kestrel Mk II",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+  },
+  {
+    "symbol": "SmallCombat01_NX_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Kestrel Mk II",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+  },
+  {
+    "symbol": "SmallCombat01_NX_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Kestrel Mk II",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+  },
+  {
+    "symbol": "Int_MkIIAgileBoost_Engine_Size5_Class5",
+    "category": "standard",
+    "name": "Mk II Agile Boost Thrusters",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "MediumTransport01_Armour_Grade1",
+    "category": "standard",
+    "name": "Lightweight Alloy",
+    "ship": "Lynx Highliner",
+    "class": 1,
+    "rating": "C",
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+  },
+  {
+    "symbol": "MediumTransport01_Armour_Grade2",
+    "category": "standard",
+    "name": "Reinforced Alloy",
+    "ship": "Lynx Highliner",
+    "class": 1,
+    "rating": "B",
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+  },
+  {
+    "symbol": "MediumTransport01_Armour_Grade3",
+    "category": "standard",
+    "name": "Military Grade Composite",
+    "ship": "Lynx Highliner",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+  },
+  {
+    "symbol": "MediumTransport01_Armour_Mirrored",
+    "category": "standard",
+    "name": "Mirrored Surface Composite",
+    "ship": "Lynx Highliner",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+  },
+  {
+    "symbol": "MediumTransport01_Armour_Reactive",
+    "category": "standard",
+    "name": "Reactive Surface Composite",
+    "ship": "Lynx Highliner",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+  }
+]

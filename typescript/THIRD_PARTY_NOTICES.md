@@ -33,6 +33,18 @@ subject to its respective terms.
   [EDSM](https://www.edsm.net) and [Spansh](https://spansh.co.uk). The NGC 2392
   fixture was obtained from the EDSM system API (system id 21224); its region
   origin is derived from the catalogued sphere bounds.
+- **Engineering materials:** material names, Frontier ids, symbols, grades and
+  groups come from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs) (`material.csv`),
+  the community-maintained registry of Frontier's internal ids. FDevIDs states no
+  explicit licence; consult the repository terms. The newest Thargoid caustic/Titan
+  materials it does not yet list are supplemented from
+  [INARA](https://inara.cz/elite/components/) and flagged provisional (`id`/`symbol`
+  null).
+- **Ships and outfitting modules:** hull and module names, Frontier ids, symbols,
+  sizes, ratings, mounts and entitlement tokens come from
+  [EDCD FDevIDs](https://github.com/EDCD/FDevIDs) (`shipyard.csv`, `outfitting.csv`),
+  the community-maintained registry of Frontier's internal ids. FDevIDs states no
+  explicit licence; consult the repository terms.
 
 The detailed per-file provenance and derivation notes live in the repository's
-`data/astro/SOURCES.md`.
+`data/astro/SOURCES.md`, `data/materials/SOURCES.md` and `data/ships/SOURCES.md`.

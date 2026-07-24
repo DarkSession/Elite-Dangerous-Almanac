@@ -61,17 +61,17 @@ export interface Nebula {
      * is usually the system name, sometimes with a community name appended in
      * parentheses (`"Aemonz WZ-Y e6771 (Lazurite Nebula)"`).
      */
-    name: string;
+    readonly name: string;
     /** The in-game system the nebula is catalogued at, e.g. `"Witch Head Sector IR-W c1-8"`. */
-    system: string;
+    readonly system: string;
     /** Galactic X of the catalogued system, in light-years (Sol at origin). */
-    x: number;
+    readonly x: number;
     /** Galactic Y of the catalogued system, in light-years (Sol at origin). */
-    y: number;
+    readonly y: number;
     /** Galactic Z of the catalogued system, in light-years (Sol at origin). */
-    z: number;
+    readonly z: number;
     /** Which class of nebula this is. */
-    type: NebulaType;
+    readonly type: NebulaType;
     /**
      * Id of the galactic codex region the nebula sits in, 1–42.
      *
@@ -80,13 +80,13 @@ export interface Nebula {
      * costs ~9 KB of region metadata rather than the ~207 KB lookup grid
      * `findRegionAt` needs.
      */
-    regionId: number;
+    readonly regionId: number;
 }
 
 /** A {@link Nebula} annotated with its distance from a queried point. */
 export interface NebulaWithDistance extends Nebula {
     /** Straight-line distance from the queried coordinates, in light-years. */
-    distanceLy: number;
+    readonly distanceLy: number;
 }
 
 /** Squared distance between a point and a nebula's catalogued system, in ly². */

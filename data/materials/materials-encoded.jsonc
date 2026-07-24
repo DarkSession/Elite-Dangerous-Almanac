@@ -1,0 +1,351 @@
+/*
+ * Encoded engineering materials / data (incl. Guardian & Thargoid).
+ *
+ * Source:       EDCD FDevIDs, material.csv
+ *               https://github.com/EDCD/FDevIDs
+ *               Community-maintained Frontier id/name registry. No explicit
+ *               licence is stated; consult the repository terms.
+ * Secondary:    INARA (https://inara.cz/elite/components/) for the newer
+ *               caustic / Titan Thargoid materials not yet in FDevIDs.
+ *
+ * Each record is { symbol, name, elementSymbol, grade, line }. `symbol` is
+ * Frontier's internal id (matched case-insensitively, as the journal reports
+ * it); `name` is the display name. `grade` is 1-5 (raw tops out at 4) and is
+ * itself the rarity. `line` is the in-game group.
+ * `elementSymbol` is null — only raw materials (elements) have one.
+ * The newer caustic / Titan Thargoid materials are not in FDevIDs; their grade
+ * comes from INARA (see data/materials/SOURCES.md).
+ *
+ * Full provenance: data/materials/SOURCES.md.
+ */
+[
+  {
+    "symbol": "BulkScanData",
+    "name": "Anomalous Bulk Scan Data",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Data Archives"
+  },
+  {
+    "symbol": "ScanArchives",
+    "name": "Unidentified Scan Archives",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Data Archives"
+  },
+  {
+    "symbol": "ScanDatabanks",
+    "name": "Classified Scan Databanks",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Data Archives"
+  },
+  {
+    "symbol": "EncodedScanData",
+    "name": "Divergent Scan Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Data Archives"
+  },
+  {
+    "symbol": "ClassifiedScanData",
+    "name": "Classified Scan Fragment",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Data Archives"
+  },
+  {
+    "symbol": "ScrambledEmissionData",
+    "name": "Exceptional Scrambled Emission Data",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Emission Data"
+  },
+  {
+    "symbol": "ArchivedEmissionData",
+    "name": "Irregular Emission Data",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Emission Data"
+  },
+  {
+    "symbol": "EmissionData",
+    "name": "Unexpected Emission Data",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Emission Data"
+  },
+  {
+    "symbol": "DecodedEmissionData",
+    "name": "Decoded Emission Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Emission Data"
+  },
+  {
+    "symbol": "CompactEmissionsData",
+    "name": "Abnormal Compact Emissions Data",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Emission Data"
+  },
+  {
+    "symbol": "LegacyFirmware",
+    "name": "Specialised Legacy Firmware",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Encoded Firmware"
+  },
+  {
+    "symbol": "ConsumerFirmware",
+    "name": "Modified Consumer Firmware",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Encoded Firmware"
+  },
+  {
+    "symbol": "IndustrialFirmware",
+    "name": "Cracked Industrial Firmware",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Encoded Firmware"
+  },
+  {
+    "symbol": "SecurityFirmware",
+    "name": "Security Firmware Patch",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Encoded Firmware"
+  },
+  {
+    "symbol": "EmbeddedFirmware",
+    "name": "Modified Embedded Firmware",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Encoded Firmware"
+  },
+  {
+    "symbol": "EncryptedFiles",
+    "name": "Unusual Encrypted Files",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Encryption Files"
+  },
+  {
+    "symbol": "EncryptionCodes",
+    "name": "Tagged Encryption Codes",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Encryption Files"
+  },
+  {
+    "symbol": "SymmetricKeys",
+    "name": "Open Symmetric Keys",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Encryption Files"
+  },
+  {
+    "symbol": "EncryptionArchives",
+    "name": "Atypical Encryption Archives",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Encryption Files"
+  },
+  {
+    "symbol": "AdaptiveEncryptors",
+    "name": "Adaptive Encryptors Capture",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Encryption Files"
+  },
+  {
+    "symbol": "Guardian_ModuleBlueprint",
+    "name": "Guardian Module Blueprint Segment",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "Guardian_WeaponBlueprint",
+    "name": "Guardian Weapon Blueprint Segment",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "AncientBiologicalData",
+    "name": "Pattern Alpha Obelisk Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "AncientCulturalData",
+    "name": "Pattern Beta Obelisk Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "AncientLanguageData",
+    "name": "Pattern Delta Obelisk Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "AncientTechnologicalData",
+    "name": "Pattern Epsilon Obelisk Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "AncientHistoricalData",
+    "name": "Pattern Gamma Obelisk Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "Guardian_VesselBlueprint",
+    "name": "Guardian Vessel Blueprint Segment",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Guardian"
+  },
+  {
+    "symbol": "ShieldCycleRecordings",
+    "name": "Distorted Shield Cycle Recordings",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Shield Data"
+  },
+  {
+    "symbol": "ShieldSoakAnalysis",
+    "name": "Inconsistent Shield Soak Analysis",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Shield Data"
+  },
+  {
+    "symbol": "ShieldDensityReports",
+    "name": "Untypical Shield Scans",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Shield Data"
+  },
+  {
+    "symbol": "ShieldPatternAnalysis",
+    "name": "Aberrant Shield Pattern Analysis",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Shield Data"
+  },
+  {
+    "symbol": "ShieldFrequencyData",
+    "name": "Peculiar Shield Frequency Data",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Shield Data"
+  },
+  {
+    "symbol": "TG_StructuralData",
+    "name": "Thargoid Structural Data",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "tg_shutdowndata",
+    "name": "Massive Energy Surge Analytics",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "TG_ShipFlightData",
+    "name": "Ship Flight Data",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "tg_interdictiondata",
+    "name": "Thargoid Interdiction Telemetry",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "TG_CompositionData",
+    "name": "Thargoid Material Composition Data",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "UnknownShipSignature",
+    "name": "Thargoid Ship Signature",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "TG_ShipSystemsData",
+    "name": "Ship Systems Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "TG_ResidueData",
+    "name": "Thargoid Residue Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "UnknownWakeData",
+    "name": "Thargoid Wake Data",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Thargoid"
+  },
+  {
+    "symbol": "DisruptedWakeEchoes",
+    "name": "Atypical Disrupted Wake Echoes",
+    "elementSymbol": null,
+    "grade": 1,
+    "line": "Wake Scans"
+  },
+  {
+    "symbol": "FSDTelemetry",
+    "name": "Anomalous FSD Telemetry",
+    "elementSymbol": null,
+    "grade": 2,
+    "line": "Wake Scans"
+  },
+  {
+    "symbol": "WakeSolutions",
+    "name": "Strange Wake Solutions",
+    "elementSymbol": null,
+    "grade": 3,
+    "line": "Wake Scans"
+  },
+  {
+    "symbol": "HyperspaceTrajectories",
+    "name": "Eccentric Hyperspace Trajectories",
+    "elementSymbol": null,
+    "grade": 4,
+    "line": "Wake Scans"
+  },
+  {
+    "symbol": "DataminedWake",
+    "name": "Datamined Wake Exceptions",
+    "elementSymbol": null,
+    "grade": 5,
+    "line": "Wake Scans"
+  }
+]

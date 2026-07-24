@@ -35,8 +35,8 @@ import { PROCGEN_NEBULAE } from './nebulae-procgen.js';
  * ALL_NEBULAE.filter((n) => n.type === 'procgen').length;    // -> 166
  * ```
  */
-export const ALL_NEBULAE: readonly Nebula[] = [
+export const ALL_NEBULAE: readonly Nebula[] = Object.freeze([
     ...REAL_NEBULAE,
     ...PLANETARY_NEBULAE,
     ...PROCGEN_NEBULAE,
-];
+]);

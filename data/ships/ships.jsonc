@@ -1,0 +1,231 @@
+/*
+ * Every player-flyable ship hull in Elite Dangerous, as Frontier's shipyard
+ * registry: the internal symbol and the display name.
+ *
+ * Source:  EDCD FDevIDs, shipyard.csv
+ *          https://github.com/EDCD/FDevIDs
+ *          Community-maintained Frontier id/name registry. No explicit licence
+ *          is stated; consult the repository terms.
+ *
+ * Each record is { symbol, name, entitlement? }. `symbol` is the internal
+ * identifier (e.g. `Empire_Trader`); the journal names a ship's type by
+ * its lower-cased symbol in the `Ship` field (`empire_trader`). `name` is the
+ * display name (e.g. `Imperial Clipper`). `entitlement` is present only when the
+ * hull is gated behind a DLC or purchase grant, carrying Frontier's raw token.
+ *
+ * Full provenance: data/ships/SOURCES.md.
+ */
+[
+  {
+    "symbol": "SideWinder",
+    "name": "Sidewinder"
+  },
+  {
+    "symbol": "Eagle",
+    "name": "Eagle"
+  },
+  {
+    "symbol": "Hauler",
+    "name": "Hauler"
+  },
+  {
+    "symbol": "Adder",
+    "name": "Adder"
+  },
+  {
+    "symbol": "Viper",
+    "name": "Viper MkIII"
+  },
+  {
+    "symbol": "CobraMkIII",
+    "name": "Cobra MkIII"
+  },
+  {
+    "symbol": "Type6",
+    "name": "Type-6 Transporter"
+  },
+  {
+    "symbol": "Dolphin",
+    "name": "Dolphin",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Type7",
+    "name": "Type-7 Transporter"
+  },
+  {
+    "symbol": "Asp",
+    "name": "Asp Explorer"
+  },
+  {
+    "symbol": "Vulture",
+    "name": "Vulture"
+  },
+  {
+    "symbol": "Empire_Trader",
+    "name": "Imperial Clipper"
+  },
+  {
+    "symbol": "Federation_Dropship",
+    "name": "Federal Dropship"
+  },
+  {
+    "symbol": "Orca",
+    "name": "Orca"
+  },
+  {
+    "symbol": "Type9",
+    "name": "Type-9 Heavy"
+  },
+  {
+    "symbol": "Python",
+    "name": "Python"
+  },
+  {
+    "symbol": "BelugaLiner",
+    "name": "Beluga Liner",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "FerDeLance",
+    "name": "Fer-de-Lance"
+  },
+  {
+    "symbol": "Anaconda",
+    "name": "Anaconda"
+  },
+  {
+    "symbol": "Federation_Corvette",
+    "name": "Federal Corvette"
+  },
+  {
+    "symbol": "Cutter",
+    "name": "Imperial Cutter"
+  },
+  {
+    "symbol": "DiamondBack",
+    "name": "Diamondback Scout"
+  },
+  {
+    "symbol": "Empire_Courier",
+    "name": "Imperial Courier"
+  },
+  {
+    "symbol": "DiamondBackXL",
+    "name": "Diamondback Explorer"
+  },
+  {
+    "symbol": "Empire_Eagle",
+    "name": "Imperial Eagle"
+  },
+  {
+    "symbol": "Federation_Dropship_MkII",
+    "name": "Federal Assault Ship"
+  },
+  {
+    "symbol": "Federation_Gunship",
+    "name": "Federal Gunship"
+  },
+  {
+    "symbol": "Viper_MkIV",
+    "name": "Viper MkIV"
+  },
+  {
+    "symbol": "CobraMkIV",
+    "name": "Cobra MkIV",
+    "entitlement": "ELITE_HORIZONS_V_COBRA_MK_IV_1000"
+  },
+  {
+    "symbol": "Independant_Trader",
+    "name": "Keelback"
+  },
+  {
+    "symbol": "Asp_Scout",
+    "name": "Asp Scout"
+  },
+  {
+    "symbol": "Type9_Military",
+    "name": "Type-10 Defender",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_MkII",
+    "name": "Krait MkII",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX",
+    "name": "Alliance Chieftain",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_2",
+    "name": "Alliance Crusader",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "TypeX_3",
+    "name": "Alliance Challenger",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Krait_Light",
+    "name": "Krait Phantom",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Mamba",
+    "name": "Mamba",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Python_NX",
+    "name": "Python MkII",
+    "entitlement": "ELITE_V_PYTHON_NX"
+  },
+  {
+    "symbol": "Type8",
+    "name": "Type-8 Transporter",
+    "entitlement": "ELITE_V_TYPE8"
+  },
+  {
+    "symbol": "Mandalay",
+    "name": "Mandalay",
+    "entitlement": "ELITE_V_MANDALAY"
+  },
+  {
+    "symbol": "CobraMkV",
+    "name": "Cobra MkV",
+    "entitlement": "ELITE_V_COBRA_MKV"
+  },
+  {
+    "symbol": "Corsair",
+    "name": "Corsair",
+    "entitlement": "ELITE_V_CORSAIR"
+  },
+  {
+    "symbol": "PantherMkII",
+    "name": "Panther Clipper MkII",
+    "entitlement": "ELITE_V_PANTHER_MKII"
+  },
+  {
+    "symbol": "LakonMiner",
+    "name": "Type-11 Prospector",
+    "entitlement": "ELITE_V_LAKON_MINER"
+  },
+  {
+    "symbol": "Explorer_NX",
+    "name": "Caspian Explorer",
+    "entitlement": "ELITE_V_EXPLORER_NX"
+  },
+  {
+    "symbol": "SmallCombat01_NX",
+    "name": "Kestrel Mk II",
+    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+  },
+  {
+    "symbol": "MediumTransport01",
+    "name": "Lynx Highliner",
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+  }
+]

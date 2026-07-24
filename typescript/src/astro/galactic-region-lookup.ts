@@ -134,8 +134,12 @@ function regionIdAtCell(px: number, pz: number): number {
  * ```
  */
 export function findRegionAt(point: PlanePoint): RegionLookup {
-    const px = Math.floor(((point.x - projection.x0) * projection.scaleNumerator) / projection.scaleDenominator);
-    const pz = Math.floor(((point.z - projection.z0) * projection.scaleNumerator) / projection.scaleDenominator);
+    const px = Math.floor(
+        ((point.x - projection.x0) * projection.scaleNumerator) / projection.scaleDenominator,
+    );
+    const pz = Math.floor(
+        ((point.z - projection.z0) * projection.scaleNumerator) / projection.scaleDenominator,
+    );
     return getGalacticRegion(regionIdAtCell(px, pz));
 }
 

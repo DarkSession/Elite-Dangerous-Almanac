@@ -22,13 +22,14 @@
  */
 
 import regionData from '../../../data/astro/galactic-regions.jsonc' with { type: 'json' };
+import { deepFreeze } from '../deep-freeze.js';
 
 /** A 2-D point on the galactic plane (X east/west, Z toward/away from the core), in light-years. */
 export interface PlanePoint {
     /** Galactic X coordinate, in light-years. */
-    x: number;
+    readonly x: number;
     /** Galactic Z coordinate, in light-years. */
-    z: number;
+    readonly z: number;
 }
 
 /**
@@ -40,13 +41,13 @@ export interface PlanePoint {
  */
 export interface PlaneBounds {
     /** Minimum galactic X, in light-years. */
-    minX: number;
+    readonly minX: number;
     /** Maximum galactic X, in light-years. */
-    maxX: number;
+    readonly maxX: number;
     /** Minimum galactic Z, in light-years. */
-    minZ: number;
+    readonly minZ: number;
     /** Maximum galactic Z, in light-years. */
-    maxZ: number;
+    readonly maxZ: number;
 }
 
 /**
@@ -59,23 +60,23 @@ export interface PlaneBounds {
  */
 export interface GalacticRegion {
     /** Region id, 1–42. Stable across releases; matches the codex region ordering. */
-    id: number;
+    readonly id: number;
     /** Human-readable region name, e.g. `"Inner Orion Spur"`. */
-    name: string;
+    readonly name: string;
     /**
      * Grayscale value this region has in the upstream `RegionMap.png`
      * (`0xA8` for region 1, decreasing by 4 per id). Useful when cross-referencing
      * the source image.
      */
-    grayscale: number;
+    readonly grayscale: number;
     /** Number of grid cells the region occupies (each cell ≈49.35 ly square). */
-    cellCount: number;
+    readonly cellCount: number;
     /** Approximate footprint area on the galactic plane, in square light-years. */
-    areaLy2: number;
+    readonly areaLy2: number;
     /** Axis-aligned bounds on the galactic plane, in light-years. */
-    bounds: PlaneBounds;
+    readonly bounds: PlaneBounds;
     /** Cell-weighted centroid on the galactic plane, in light-years. */
-    centroid: PlanePoint;
+    readonly centroid: PlanePoint;
 }
 
 /**
@@ -91,13 +92,11 @@ export interface GalacticRegion {
  * GALACTIC_REGIONS[0].name; // -> 'Galactic Centre'
  * ```
  */
-export const GALACTIC_REGIONS: readonly GalacticRegion[] = (
-    regionData as { regions: readonly GalacticRegion[] }
-).regions;
-
-const BY_ID: ReadonlyMap<number, GalacticRegion> = new Map(
-    GALACTIC_REGIONS.map((r) => [r.id, r]),
+export const GALACTIC_REGIONS: readonly GalacticRegion[] = deepFreeze(
+    (regionData as { regions: readonly GalacticRegion[] }).regions,
 );
+
+const BY_ID: ReadonlyMap<number, GalacticRegion> = new Map(GALACTIC_REGIONS.map((r) => [r.id, r]));
 
 const BY_NAME: ReadonlyMap<string, GalacticRegion> = new Map(
     GALACTIC_REGIONS.map((r) => [r.name.toLowerCase(), r]),

@@ -55,7 +55,12 @@ export function lettersToBoxelCode(l1: number, l2: number, l3: number, n1: numbe
 }
 
 /** Unpack a base-26 boxel code into its `(l1, l2, l3, n1)` letter code. */
-export function boxelCodeToLetters(boxelCode: number): { l1: number; l2: number; l3: number; n1: number } {
+export function boxelCodeToLetters(boxelCode: number): {
+    l1: number;
+    l2: number;
+    l3: number;
+    n1: number;
+} {
     return {
         l1: boxelCode % 26,
         l2: Math.trunc(boxelCode / 26) % 26,

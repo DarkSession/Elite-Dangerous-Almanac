@@ -1,5 +1,7 @@
 # Data sources — `data/astro/`
 
+**Library snapshot:** 2026-07-24. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+
 Attribution for the astrophysical data files in this directory. This file is the
 long form; each data file also repeats its own credit in a comment header, so the
 provenance meets you where you meet the data.

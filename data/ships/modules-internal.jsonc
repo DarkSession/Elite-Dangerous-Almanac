@@ -1,0 +1,3436 @@
+/*
+ * Optional internal modules — everything that fills an optional slot.
+ *
+ * The `internal` slice of Frontier's outfitting registry: optional internal modules (cargo racks, shield generators, fuel scoops, refineries, cabins, planetary/limpet controllers, ...).
+ *
+ * Source:  EDCD FDevIDs, outfitting.csv
+ *          https://github.com/EDCD/FDevIDs
+ *          Community-maintained Frontier id/name registry. No explicit licence
+ *          is stated; consult the repository terms.
+ *
+ * Each record is { symbol, category, name, mount?, guidance?, ship?, class,
+ * rating, entitlement? }. `symbol` is the internal identifier
+ * (e.g. `Hpt_PulseLaser_Fixed_Small`); `name` the display
+ * name. `class` is the module size (0-8) and `rating` its grade letter (A-I) — the
+ * "5A" the outfitting screen shows. `mount` (Fixed / Gimballed / Turreted) and
+ * `guidance` (Dumbfire / Seeker / Swarm) appear only on the hardpoints they apply
+ * to; `ship` names the hull an armour variant belongs to; `entitlement` carries
+ * Frontier's DLC/grant token when the module is gated.
+ *
+ * Full provenance: data/ships/SOURCES.md.
+ */
+[
+  {
+    "symbol": "Int_DockingComputer_Standard",
+    "category": "internal",
+    "name": "Standard Docking Computer",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class1",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class2",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class3",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class5",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class1",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class2",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class3",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class4",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class5",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class1",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class2",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class3",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class4",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class5",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class1",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class2",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class3",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class4",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class5",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class1",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class2",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class3",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class4",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class5",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class1",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class2",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class3",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class4",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class5",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class1",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class2",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class3",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class4",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class5",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class1",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class2",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class3",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class4",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class5",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class1",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class2",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class3",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class4",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class5",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class1",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class2",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class3",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class4",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class5",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class1",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class2",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class3",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class4",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class5",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class1",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class2",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class3",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class4",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class5",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class1",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class2",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class3",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class4",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class5",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class1",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class2",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class3",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class4",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class5",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class1",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class2",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class3",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class4",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class5",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class1",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class2",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class3",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class4",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class5",
+    "category": "internal",
+    "name": "Shield Cell Bank",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_CargoRack_Size1_Class1",
+    "category": "internal",
+    "name": "Cargo Rack",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_CargoRack_Size2_Class1",
+    "category": "internal",
+    "name": "Cargo Rack",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_CargoRack_Size3_Class1",
+    "category": "internal",
+    "name": "Cargo Rack",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_CargoRack_Size4_Class1",
+    "category": "internal",
+    "name": "Cargo Rack",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_CargoRack_Size5_Class1",
+    "category": "internal",
+    "name": "Cargo Rack",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_CargoRack_Size6_Class1",
+    "category": "internal",
+    "name": "Cargo Rack",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_CargoRack_Size7_Class1",
+    "category": "internal",
+    "name": "Cargo Rack",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_CargoRack_Size8_Class1",
+    "category": "internal",
+    "name": "Cargo Rack",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class1",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class2",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class3",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class4",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class5",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class1",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class2",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class3",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class4",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class5",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class1",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class2",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class3",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class4",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class5",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class1",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class2",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class3",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class4",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class5",
+    "category": "internal",
+    "name": "Hatch Breaker Limpet Controller",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_StellarBodyDiscoveryScanner_Standard",
+    "category": "internal",
+    "name": "Basic Discovery Scanner",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_StellarBodyDiscoveryScanner_Intermediate",
+    "category": "internal",
+    "name": "Intermediate Discovery Scanner",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
+    "category": "internal",
+    "name": "Advanced Discovery Scanner",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DetailedSurfaceScanner_Tiny",
+    "category": "internal",
+    "name": "Detailed Surface Scanner",
+    "class": 1,
+    "rating": "I"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class1_free",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_StellarBodyDiscoveryScanner_Standard_free",
+    "category": "internal",
+    "name": "Basic Discovery Scanner",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_CargoRack_Size2_Class1_free",
+    "category": "internal",
+    "name": "Cargo Rack",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size1_Class1",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size2_Class1",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size3_Class1",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size4_Class1",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size5_Class1",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size6_Class1",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size7_Class1",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size8_Class1",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size1_Class2",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size2_Class2",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size3_Class2",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size4_Class2",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size5_Class2",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size6_Class2",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size7_Class2",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size8_Class2",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size1_Class3",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size2_Class3",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size3_Class3",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size4_Class3",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size5_Class3",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size6_Class3",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size7_Class3",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size8_Class3",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size1_Class4",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size2_Class4",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size3_Class4",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size4_Class4",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size5_Class4",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size6_Class4",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size7_Class4",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size8_Class4",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size1_Class5",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size2_Class5",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size3_Class5",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size4_Class5",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size5_Class5",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size6_Class5",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size7_Class5",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FuelScoop_Size8_Class5",
+    "category": "internal",
+    "name": "Fuel Scoop",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Refinery_Size1_Class1",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Refinery_Size2_Class1",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Refinery_Size3_Class1",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Refinery_Size4_Class1",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Refinery_Size1_Class2",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Refinery_Size2_Class2",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Refinery_Size3_Class2",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Refinery_Size4_Class2",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Refinery_Size1_Class3",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Refinery_Size2_Class3",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Refinery_Size3_Class3",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Refinery_Size4_Class3",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Refinery_Size1_Class4",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Refinery_Size2_Class4",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Refinery_Size3_Class4",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Refinery_Size4_Class4",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Refinery_Size1_Class5",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Refinery_Size2_Class5",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Refinery_Size3_Class5",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Refinery_Size4_Class5",
+    "category": "internal",
+    "name": "Refinery",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class1",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class1",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class1",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class1",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class2",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class2",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class2",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class2",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class3",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class3",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class3",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class3",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class4",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class4",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class4",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class4",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class5",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class5",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class5",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class5",
+    "category": "internal",
+    "name": "Frame Shift Drive Interdictor",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Repairer_Size1_Class1",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Repairer_Size2_Class1",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Repairer_Size3_Class1",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Repairer_Size4_Class1",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Repairer_Size5_Class1",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Repairer_Size6_Class1",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Repairer_Size7_Class1",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Repairer_Size8_Class1",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 8,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_Repairer_Size1_Class2",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Repairer_Size2_Class2",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Repairer_Size3_Class2",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Repairer_Size4_Class2",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Repairer_Size5_Class2",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Repairer_Size6_Class2",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Repairer_Size7_Class2",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Repairer_Size8_Class2",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_Repairer_Size1_Class3",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Repairer_Size2_Class3",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Repairer_Size3_Class3",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Repairer_Size4_Class3",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Repairer_Size5_Class3",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Repairer_Size6_Class3",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Repairer_Size7_Class3",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Repairer_Size8_Class3",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_Repairer_Size1_Class4",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Repairer_Size2_Class4",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 2,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Repairer_Size3_Class4",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Repairer_Size4_Class4",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 4,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Repairer_Size5_Class4",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Repairer_Size6_Class4",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Repairer_Size7_Class4",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Repairer_Size8_Class4",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 8,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_Repairer_Size1_Class5",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Repairer_Size2_Class5",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 2,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Repairer_Size3_Class5",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Repairer_Size4_Class5",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 4,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Repairer_Size5_Class5",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Repairer_Size6_Class5",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 6,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Repairer_Size7_Class5",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_Repairer_Size8_Class5",
+    "category": "internal",
+    "name": "Auto Field-Maintenance Unit",
+    "class": 8,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size1_Class1",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size1_Class2",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size2_Class1",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size2_Class2",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size3_Class1",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size3_Class2",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size4_Class1",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size4_Class2",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size5_Class1",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size5_Class2",
+    "category": "internal",
+    "name": "Hull Reinforcement Package",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class1",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class2",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class3",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class4",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class5",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class1",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class2",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class3",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class4",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class5",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class1",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class2",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class3",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class4",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class5",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class1",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class2",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class3",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class4",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class5",
+    "category": "internal",
+    "name": "Collector Limpet Controller",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class1",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class2",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class3",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class4",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class5",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class1",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class2",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class3",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class4",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class5",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class1",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class2",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class3",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class4",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class5",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class1",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class2",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class3",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class4",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class5",
+    "category": "internal",
+    "name": "Fuel Transfer Limpet Controller",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class1",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class2",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class3",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class4",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class5",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class1",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class2",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class3",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class4",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class5",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class1",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class2",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class3",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class4",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class5",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class1",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class2",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class3",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class4",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class5",
+    "category": "internal",
+    "name": "Prospector Limpet Controller",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class5_Strong",
+    "category": "internal",
+    "name": "Prismatic Shield Generator",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200020"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class5_Strong",
+    "category": "internal",
+    "name": "Prismatic Shield Generator",
+    "class": 2,
+    "rating": "A",
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200020"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class5_Strong",
+    "category": "internal",
+    "name": "Prismatic Shield Generator",
+    "class": 3,
+    "rating": "A",
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200020"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class5_Strong",
+    "category": "internal",
+    "name": "Prismatic Shield Generator",
+    "class": 4,
+    "rating": "A",
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200020"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class5_Strong",
+    "category": "internal",
+    "name": "Prismatic Shield Generator",
+    "class": 5,
+    "rating": "A",
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200020"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class5_Strong",
+    "category": "internal",
+    "name": "Prismatic Shield Generator",
+    "class": 6,
+    "rating": "A",
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200020"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class5_Strong",
+    "category": "internal",
+    "name": "Prismatic Shield Generator",
+    "class": 7,
+    "rating": "A",
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200020"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class5_Strong",
+    "category": "internal",
+    "name": "Prismatic Shield Generator",
+    "class": 8,
+    "rating": "A",
+    "entitlement": "ELITE_SPECIFIC_V_POWER_200020"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class3_Fast",
+    "category": "internal",
+    "name": "Bi-Weave Shield Generator",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class3_Fast",
+    "category": "internal",
+    "name": "Bi-Weave Shield Generator",
+    "class": 2,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class3_Fast",
+    "category": "internal",
+    "name": "Bi-Weave Shield Generator",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class3_Fast",
+    "category": "internal",
+    "name": "Bi-Weave Shield Generator",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class3_Fast",
+    "category": "internal",
+    "name": "Bi-Weave Shield Generator",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class3_Fast",
+    "category": "internal",
+    "name": "Bi-Weave Shield Generator",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class3_Fast",
+    "category": "internal",
+    "name": "Bi-Weave Shield Generator",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class3_Fast",
+    "category": "internal",
+    "name": "Bi-Weave Shield Generator",
+    "class": 8,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_BuggyBay_Size2_Class1",
+    "category": "internal",
+    "name": "Planetary Vehicle Hangar",
+    "class": 2,
+    "rating": "H",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_BuggyBay_Size2_Class2",
+    "category": "internal",
+    "name": "Planetary Vehicle Hangar",
+    "class": 2,
+    "rating": "G",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_BuggyBay_Size4_Class1",
+    "category": "internal",
+    "name": "Planetary Vehicle Hangar",
+    "class": 4,
+    "rating": "H",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_BuggyBay_Size4_Class2",
+    "category": "internal",
+    "name": "Planetary Vehicle Hangar",
+    "class": 4,
+    "rating": "G",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_BuggyBay_Size6_Class1",
+    "category": "internal",
+    "name": "Planetary Vehicle Hangar",
+    "class": 6,
+    "rating": "H",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_BuggyBay_Size6_Class2",
+    "category": "internal",
+    "name": "Planetary Vehicle Hangar",
+    "class": 6,
+    "rating": "G",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_PlanetApproachSuite",
+    "category": "internal",
+    "name": "Planetary Approach Suite",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_CorrosionProofCargoRack_Size1_Class1",
+    "category": "internal",
+    "name": "Corrosion Resistant Cargo Rack",
+    "class": 1,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_CorrosionProofCargoRack_Size1_Class2",
+    "category": "internal",
+    "name": "Corrosion Resistant Cargo Rack",
+    "class": 1,
+    "rating": "F",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size4_Class1",
+    "category": "internal",
+    "name": "Economy Class Passenger Cabin",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size4_Class2",
+    "category": "internal",
+    "name": "Business Class Passenger Cabin",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size4_Class3",
+    "category": "internal",
+    "name": "First Class Passenger Cabin",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size5_Class4",
+    "category": "internal",
+    "name": "Luxury Class Passenger Cabin",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size6_Class1",
+    "category": "internal",
+    "name": "Economy Class Passenger Cabin",
+    "class": 6,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size6_Class2",
+    "category": "internal",
+    "name": "Business Class Passenger Cabin",
+    "class": 6,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size6_Class3",
+    "category": "internal",
+    "name": "First Class Passenger Cabin",
+    "class": 6,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size6_Class4",
+    "category": "internal",
+    "name": "Luxury Class Passenger Cabin",
+    "class": 6,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_FighterBay_Size5_Class1",
+    "category": "internal",
+    "name": "Fighter Hangar",
+    "class": 5,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_FighterBay_Size6_Class1",
+    "category": "internal",
+    "name": "Fighter Hangar",
+    "class": 6,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_FighterBay_Size7_Class1",
+    "category": "internal",
+    "name": "Fighter Hangar",
+    "class": 7,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size2_Class1",
+    "category": "internal",
+    "name": "Economy Class Passenger Cabin",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size3_Class1",
+    "category": "internal",
+    "name": "Economy Class Passenger Cabin",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size3_Class2",
+    "category": "internal",
+    "name": "Business Class Passenger Cabin",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size5_Class1",
+    "category": "internal",
+    "name": "Economy Class Passenger Cabin",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size5_Class2",
+    "category": "internal",
+    "name": "Business Class Passenger Cabin",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size5_Class3",
+    "category": "internal",
+    "name": "First Class Passenger Cabin",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size1_Class1",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size1_Class2",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size2_Class1",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 2,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size2_Class2",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size3_Class1",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size3_Class2",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size4_Class1",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 4,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size4_Class2",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size5_Class1",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size5_Class2",
+    "category": "internal",
+    "name": "Module Reinforcement Package",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class1",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class2",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 1,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class3",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 1,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class4",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 1,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class5",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 1,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class1",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class2",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class3",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class4",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class5",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 3,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class1",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class2",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class3",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class4",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 5,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class5",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class1",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class2",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class3",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class4",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 7,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class5",
+    "category": "internal",
+    "name": "Repair Limpet Controller",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_DroneControl_UnkVesselResearch",
+    "category": "internal",
+    "name": "Research Limpet Controller",
+    "class": 1,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size1_Class1",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 1,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size1_Class2",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 1,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size2_Class1",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 2,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size2_Class2",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 2,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size3_Class1",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 3,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size3_Class2",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 3,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size4_Class1",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 4,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size4_Class2",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 4,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size5_Class1",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 5,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size5_Class2",
+    "category": "internal",
+    "name": "Meta Alloy Hull Reinforcement",
+    "class": 5,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_METAHULL"
+  },
+  {
+    "symbol": "Int_DroneControl_Decontamination_Size1_Class1",
+    "category": "internal",
+    "name": "Decontamination Limpet Controller",
+    "class": 1,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_DroneControl_Decontamination_Size3_Class1",
+    "category": "internal",
+    "name": "Decontamination Limpet Controller",
+    "class": 3,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_DroneControl_Decontamination_Size5_Class1",
+    "category": "internal",
+    "name": "Decontamination Limpet Controller",
+    "class": 5,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_DroneControl_Decontamination_Size7_Class1",
+    "category": "internal",
+    "name": "Decontamination Limpet Controller",
+    "class": 7,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_CorrosionProofCargoRack_Size4_Class1",
+    "category": "internal",
+    "name": "Corrosion Resistant Cargo Rack",
+    "class": 4,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_CORROSIONCARGO_SIZE4"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size1_Class1",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 1,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size1_Class2",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 1,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size2_Class1",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 2,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size2_Class2",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 2,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size3_Class1",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 3,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 3,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size4_Class1",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 4,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size4_Class2",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 4,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size5_Class1",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 5,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size5_Class2",
+    "category": "internal",
+    "name": "Guardian Hull Reinforcement",
+    "class": 5,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size1_Class1",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 1,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size1_Class2",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 1,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size2_Class1",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 2,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size2_Class2",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 2,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size3_Class1",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 3,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size3_Class2",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 3,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size4_Class1",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 4,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size4_Class2",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 4,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size5_Class1",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 5,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size5_Class2",
+    "category": "internal",
+    "name": "Guardian Module Reinforcement",
+    "class": 5,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size1_Class1",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 1,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size1_Class2",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 1,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size2_Class1",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 2,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size2_Class2",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 2,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size3_Class1",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 3,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size3_Class2",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 3,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size4_Class1",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 4,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size4_Class2",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 4,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size5_Class1",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 5,
+    "rating": "E",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size5_Class2",
+    "category": "internal",
+    "name": "Guardian Shield Reinforcement",
+    "class": 5,
+    "rating": "D",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT"
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size1",
+    "category": "internal",
+    "name": "Guardian FSD Booster",
+    "class": 1,
+    "rating": "H",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_FSDBOOSTER"
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size2",
+    "category": "internal",
+    "name": "Guardian FSD Booster",
+    "class": 2,
+    "rating": "H",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_FSDBOOSTER"
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size3",
+    "category": "internal",
+    "name": "Guardian FSD Booster",
+    "class": 3,
+    "rating": "H",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_FSDBOOSTER"
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size4",
+    "category": "internal",
+    "name": "Guardian FSD Booster",
+    "class": 4,
+    "rating": "H",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_FSDBOOSTER"
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size5",
+    "category": "internal",
+    "name": "Guardian FSD Booster",
+    "class": 5,
+    "rating": "H",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_FSDBOOSTER"
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size1",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Distributor",
+    "class": 1,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size2",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Distributor",
+    "class": 2,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size3",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Distributor",
+    "class": 3,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size4",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Distributor",
+    "class": 4,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size5",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Distributor",
+    "class": 5,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size6",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Distributor",
+    "class": 6,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size7",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Distributor",
+    "class": 7,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size8",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Distributor",
+    "class": 8,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size2",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Plant",
+    "class": 2,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERPLANT"
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size3",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Plant",
+    "class": 3,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERPLANT"
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size4",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Plant",
+    "class": 4,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERPLANT"
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size5",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Plant",
+    "class": 5,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERPLANT"
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size6",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Plant",
+    "class": 6,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERPLANT"
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size7",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Plant",
+    "class": 7,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERPLANT"
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size8",
+    "category": "internal",
+    "name": "Guardian Hybrid Power Plant",
+    "class": 8,
+    "rating": "A",
+    "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERPLANT"
+  },
+  {
+    "symbol": "Int_DroneControl_Recon_Size1_Class1",
+    "category": "internal",
+    "name": "Recon Limpet Controller",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Recon_Size3_Class1",
+    "category": "internal",
+    "name": "Recon Limpet Controller",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Recon_Size5_Class1",
+    "category": "internal",
+    "name": "Recon Limpet Controller",
+    "class": 5,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DroneControl_Recon_Size7_Class1",
+    "category": "internal",
+    "name": "Recon Limpet Controller",
+    "class": 7,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_SupercruiseAssist",
+    "category": "internal",
+    "name": "Supercruise Assist",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_DockingComputer_Advanced",
+    "category": "internal",
+    "name": "Advanced Docking Computer",
+    "class": 1,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_PlanetApproachSuite_Advanced",
+    "category": "internal",
+    "name": "Advanced Planetary Approach Suite",
+    "class": 1,
+    "rating": "I",
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Mining_Size3_Class1",
+    "category": "internal",
+    "name": "Mining Multi Limpet Controller",
+    "class": 3,
+    "rating": "E"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Mining_Size3_Class3",
+    "category": "internal",
+    "name": "Mining Multi Limpet Controller",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Operations_Size3_Class3",
+    "category": "internal",
+    "name": "Operations Multi Limpet Controller",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Operations_Size3_Class4",
+    "category": "internal",
+    "name": "Operations Multi Limpet Controller",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Rescue_Size3_Class2",
+    "category": "internal",
+    "name": "Rescue Multi Limpet Controller",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Rescue_Size3_Class3",
+    "category": "internal",
+    "name": "Rescue Multi Limpet Controller",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Xeno_Size3_Class3",
+    "category": "internal",
+    "name": "Xeno Multi Limpet Controller",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Xeno_Size3_Class4",
+    "category": "internal",
+    "name": "Xeno Multi Limpet Controller",
+    "class": 3,
+    "rating": "B"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Universal_Size7_Class3",
+    "category": "internal",
+    "name": "Universal Multi Limpet Controller",
+    "class": 7,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Universal_Size7_Class5",
+    "category": "internal",
+    "name": "Universal Multi Limpet Controller",
+    "class": 7,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_ExpModuleStabiliser_Size3_Class3",
+    "category": "internal",
+    "name": "Experimental Weapon Stabiliser",
+    "class": 3,
+    "rating": "F"
+  },
+  {
+    "symbol": "Int_ExpModuleStabiliser_Size5_Class3",
+    "category": "internal",
+    "name": "Experimental Weapon Stabiliser",
+    "class": 5,
+    "rating": "F",
+    "entitlement": "ELITE_HORIZONS_V_EXPERIMENTALSTABILISER_SIZE5"
+  },
+  {
+    "symbol": "Int_LargeCargoRack_Size7_Class1",
+    "category": "internal",
+    "name": "Mk II Cargo Rack",
+    "class": 7,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_LargeCargoRack_Size8_class1",
+    "category": "internal",
+    "name": "Mk II Cargo Rack",
+    "class": 8,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_MultiDroneControl_MiningV2_Size5_Class5",
+    "category": "internal",
+    "name": "Mk II Mining Multi-Limpet Controller",
+    "class": 5,
+    "rating": "A"
+  },
+  {
+    "symbol": "Int_MkII_PassengerCabin_Size2_Class1",
+    "category": "internal",
+    "name": "MkII Economy Class Passenger Cabin",
+    "class": 2,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_MkII_PassengerCabin_Size3_Class1",
+    "category": "internal",
+    "name": "MkII Economy Class Passenger Cabin",
+    "class": 3,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_MkII_PassengerCabin_Size3_Class2",
+    "category": "internal",
+    "name": "MkII Business Class Passenger Cabin",
+    "class": 3,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_MkII_PassengerCabin_Size4_Class1",
+    "category": "internal",
+    "name": "MkII Economy Class Passenger Cabin",
+    "class": 4,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_MkII_PassengerCabin_Size4_Class2",
+    "category": "internal",
+    "name": "MkII Business Class Passenger Cabin",
+    "class": 4,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_MkII_PassengerCabin_Size5_Class1",
+    "category": "internal",
+    "name": "MkII Economy Class Passenger Cabin",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_MkII_PassengerCabin_Size5_Class2",
+    "category": "internal",
+    "name": "MkII Business Class Passenger Cabin",
+    "class": 5,
+    "rating": "C"
+  },
+  {
+    "symbol": "Int_MkII_PassengerCabin_Size6_Class1",
+    "category": "internal",
+    "name": "MkII Economy Class Passenger Cabin",
+    "class": 5,
+    "rating": "D"
+  },
+  {
+    "symbol": "Int_MkII_PassengerCabin_Size6_Class2",
+    "category": "internal",
+    "name": "MkII Business Class Passenger Cabin",
+    "class": 5,
+    "rating": "C"
+  }
+]

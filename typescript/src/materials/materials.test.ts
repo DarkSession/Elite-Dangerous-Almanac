@@ -1,0 +1,156 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+
+import {
+    getMaterialBySymbol,
+    getMaterialByName,
+    getMaterialByElementSymbol,
+    materialsByGrade,
+    materialsInLine,
+    MaterialGrade,
+    MaterialLine,
+    type Material,
+} from './materials.js';
+import { RAW_MATERIALS } from './materials-raw.js';
+import { MANUFACTURED_MATERIALS } from './materials-manufactured.js';
+import { ENCODED_MATERIALS } from './materials-encoded.js';
+import { ALL_MATERIALS } from './materials-all.js';
+import materialsFixture from '../../../fixtures/materials/materials.json' with { type: 'json' };
+
+const CATALOGUES: Record<string, readonly Material[]> = {
+    raw: RAW_MATERIALS,
+    manufactured: MANUFACTURED_MATERIALS,
+    encoded: ENCODED_MATERIALS,
+    all: ALL_MATERIALS,
+};
+
+const GRADES: readonly MaterialGrade[] = [
+    MaterialGrade.VeryCommon,
+    MaterialGrade.Common,
+    MaterialGrade.Standard,
+    MaterialGrade.Rare,
+    MaterialGrade.VeryRare,
+];
+
+for (const [name, expected] of Object.entries(materialsFixture.counts)) {
+    test(`the ${name} catalogue holds ${expected} materials`, () => {
+        assert.equal(CATALOGUES[name]!.length, expected);
+    });
+}
+
+test('ALL_MATERIALS is exactly the three catalogues concatenated', () => {
+    assert.deepEqual(ALL_MATERIALS, [
+        ...RAW_MATERIALS,
+        ...MANUFACTURED_MATERIALS,
+        ...ENCODED_MATERIALS,
+    ]);
+});
+
+test('fixture records resolve by symbol and name with the expected fields', () => {
+    for (const expected of materialsFixture.records) {
+        const bySymbol = getMaterialBySymbol(expected.symbol, ALL_MATERIALS);
+        assert.ok(bySymbol, `missing ${expected.symbol}`);
+        assert.deepEqual(bySymbol, expected);
+        // The same record is reachable by its display name.
+        assert.deepEqual(getMaterialByName(expected.name, ALL_MATERIALS), expected);
+    }
+});
+
+test('an empty or absent key never coincidentally matches a record', () => {
+    // Manufactured/encoded materials carry a null elementSymbol; an empty or
+    // absent-key query must return null rather than any of them.
+    assert.equal(getMaterialBySymbol('', ALL_MATERIALS), null);
+    assert.equal(getMaterialByElementSymbol('', ALL_MATERIALS), null);
+});
+
+test('grade is the rarity: every grade is 1-5, its enum name is the tier, raw never exceeds 4', () => {
+    for (const material of ALL_MATERIALS) {
+        assert.ok(material.grade >= 1 && material.grade <= 5);
+        // The grade's enum member name is the rarity tier (no separate rarity field).
+        assert.equal(typeof MaterialGrade[material.grade], 'string');
+    }
+    assert.ok(!('rarity' in (getMaterialByName('Iron', RAW_MATERIALS) as object)));
+    assert.equal(MaterialGrade[MaterialGrade.VeryRare], 'VeryRare');
+    assert.ok(RAW_MATERIALS.every((m) => m.grade <= MaterialGrade.Rare));
+    assert.equal(materialsByGrade(MaterialGrade.VeryRare, RAW_MATERIALS).length, 0);
+});
+
+test('getMaterialBySymbol matches the Frontier symbol / journal id, case-insensitively', () => {
+    // The journal reports the lower-cased symbol; it must still resolve.
+    assert.equal(
+        getMaterialBySymbol('temperedalloys', MANUFACTURED_MATERIALS)?.name,
+        'Tempered Alloys',
+    );
+    assert.equal(
+        getMaterialBySymbol('TemperedAlloys', MANUFACTURED_MATERIALS)?.name,
+        'Tempered Alloys',
+    );
+    assert.equal(
+        getMaterialByName('imperial shielding', MANUFACTURED_MATERIALS)?.grade,
+        MaterialGrade.VeryRare,
+    );
+    assert.equal(getMaterialBySymbol('nonexistent', ALL_MATERIALS), null);
+    assert.equal(getMaterialByName('nonexistent', ALL_MATERIALS), null);
+});
+
+test('only raw materials carry an element symbol', () => {
+    assert.equal(getMaterialByName('iron', RAW_MATERIALS)?.elementSymbol, 'Fe');
+    assert.equal(getMaterialByElementSymbol('fe', RAW_MATERIALS)?.name, 'Iron');
+    assert.equal(getMaterialByElementSymbol('Fe', RAW_MATERIALS)?.name, 'Iron');
+    assert.ok(RAW_MATERIALS.every((m) => typeof m.elementSymbol === 'string'));
+    assert.ok(MANUFACTURED_MATERIALS.every((m) => m.elementSymbol === null));
+    assert.ok(ENCODED_MATERIALS.every((m) => m.elementSymbol === null));
+    // A manufactured material has no element symbol, so the lookup never finds it.
+    assert.equal(getMaterialByElementSymbol('fe', MANUFACTURED_MATERIALS), null);
+    assert.equal(getMaterialByElementSymbol('nonexistent', ALL_MATERIALS), null);
+});
+
+test('materialsByGrade selects by grade across every grade', () => {
+    // Every grade 1-5 is represented somewhere (raw lacks 5, but manufactured/encoded have it).
+    for (const grade of GRADES) {
+        assert.ok(materialsByGrade(grade, ALL_MATERIALS).length > 0);
+    }
+    // A grade-4 raw material exists in each of the seven lines.
+    assert.equal(materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length, 7);
+});
+
+test('materialsInLine returns exactly the requested line', () => {
+    for (const { catalogue, line, grades } of materialsFixture.lineGrades) {
+        const found = materialsInLine(line as MaterialLine, CATALOGUES[catalogue]!);
+        assert.deepEqual(
+            found.map((m) => m.grade),
+            grades,
+        );
+    }
+    // A line with no members in this catalogue yields an empty array.
+    assert.deepEqual(materialsInLine(MaterialLine.Guardian, RAW_MATERIALS), []);
+});
+
+test('every material line value is a member of the MaterialLine enum', () => {
+    const lines = new Set<string>(Object.values(MaterialLine));
+    for (const material of ALL_MATERIALS) {
+        assert.ok(lines.has(material.line), `unknown line ${material.line}`);
+    }
+});
+
+test('the newer Thargoid materials not in FDevIDs are present and resolve by symbol', () => {
+    for (const name of materialsFixture.notInFdevIds) {
+        const material = getMaterialByName(name, ALL_MATERIALS);
+        assert.ok(material, `missing ${name}`);
+        // Sourced from INARA rather than FDevIDs, but still keyed by their journal symbol.
+        assert.equal(typeof material.symbol, 'string');
+        assert.deepEqual(getMaterialBySymbol(material.symbol, ALL_MATERIALS), material);
+        assert.equal(material.elementSymbol, null);
+        assert.equal(material.line, MaterialLine.Thargoid);
+    }
+});
+
+test('catalogues and their records are frozen', () => {
+    const iron = getMaterialByName('Iron', RAW_MATERIALS);
+    assert.ok(iron);
+    assert.equal(Object.isFrozen(RAW_MATERIALS), true);
+    assert.equal(Object.isFrozen(ALL_MATERIALS), true);
+    assert.equal(Object.isFrozen(iron), true);
+    assert.throws(() => Object.assign(iron, { name: 'Changed' }), TypeError);
+    assert.throws(() => Array.prototype.push.call(RAW_MATERIALS, iron as unknown), TypeError);
+});

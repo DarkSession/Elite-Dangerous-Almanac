@@ -91,7 +91,9 @@ export function boxelCodeToAbsoluteBoxel(
         by * boxelSize >= (origin.y0 % boxelSize) + origin.sizeY ||
         bz * boxelSize >= (origin.z0 % boxelSize) + origin.sizeZ
     ) {
-        throw new RangeError(`Boxel code out of range for size class ${sizeClass} in ${origin.name}`);
+        throw new RangeError(
+            `Boxel code out of range for size class ${sizeClass} in ${origin.name}`,
+        );
     }
 
     const x = bx + Math.floor(origin.x0 / boxelSize);
@@ -122,7 +124,9 @@ export function absoluteBoxelToBoxelCode(
 ): number | null {
     const boxelSize = boxelInternalSize(sizeClass);
     if (
-        origin.x0 < 0 || origin.y0 < 0 || origin.z0 < 0 ||
+        origin.x0 < 0 ||
+        origin.y0 < 0 ||
+        origin.z0 < 0 ||
         !Number.isInteger(absoluteBoxel.x) ||
         !Number.isInteger(absoluteBoxel.y) ||
         !Number.isInteger(absoluteBoxel.z)

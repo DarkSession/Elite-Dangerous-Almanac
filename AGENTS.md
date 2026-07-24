@@ -20,6 +20,8 @@ The library starts in **TypeScript**, with **Python** (and potentially other lan
 
 When adding features or data, keep them portable: prefer language-neutral formats (e.g. JSON) for static data and fixtures so every implementation can consume them without duplication.
 
+Every data update must also follow `data/SNAPSHOTS.md`: record its acquisition date, immutable upstream revision when available, derivation method, and any manual corrections.
+
 ### Data file format: JSONC in `data/`, plain JSON in `fixtures/`
 
 Files in **`data/`** are **JSONC** (`.jsonc`): JSON preceded by a comment header carrying the file's attribution (see §Attribution). Files in **`fixtures/`** stay plain `.json` — they are test-only, never bundled, so there is nothing to keep out of a payload.

@@ -21,6 +21,7 @@
 
 import { sectorCoordsFromName } from './sector-name.js';
 import originsData from '../../../data/astro/named-region-origins.jsonc' with { type: 'json' };
+import { deepFreeze } from '../deep-freeze.js';
 
 /**
  * A region's origin and extent, in internal units (32 per light-year, measured
@@ -28,26 +29,26 @@ import originsData from '../../../data/astro/named-region-origins.jsonc' with { 
  */
 export interface RegionOrigin {
     /** The region name, as catalogued. */
-    name: string;
+    readonly name: string;
     /** Origin X in internal units. */
-    x0: number;
+    readonly x0: number;
     /** Origin Y in internal units. */
-    y0: number;
+    readonly y0: number;
     /** Origin Z in internal units. */
-    z0: number;
+    readonly z0: number;
     /** Extent along X in internal units. */
-    sizeX: number;
+    readonly sizeX: number;
     /** Extent along Y in internal units. */
-    sizeY: number;
+    readonly sizeY: number;
     /** Extent along Z in internal units. */
-    sizeZ: number;
+    readonly sizeZ: number;
 }
 
 /** Internal units per procedural-sector edge (1280 ly × 32 units/ly). */
 export const SECTOR_INTERNAL_SIZE = 40960;
 
 const CATALOGUE: ReadonlyMap<string, RegionOrigin> = new Map(
-    (originsData as readonly RegionOrigin[]).map((r) => [r.name.toLowerCase(), r]),
+    deepFreeze(originsData as readonly RegionOrigin[]).map((r) => [r.name.toLowerCase(), r]),
 );
 
 /**

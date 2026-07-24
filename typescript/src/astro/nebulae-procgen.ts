@@ -14,6 +14,7 @@
 
 import type { Nebula } from './nebulae.js';
 import procgenNebulaeData from '../../../data/astro/nebulae-procgen.jsonc' with { type: 'json' };
+import { deepFreeze } from '../deep-freeze.js';
 
 /**
  * All 166 procedurally generated nebulae, sorted by name.
@@ -29,6 +30,6 @@ import procgenNebulaeData from '../../../data/astro/nebulae-procgen.jsonc' with 
  * PROCGEN_NEBULAE[0].name;   // -> 'Agnairt AA-A h36'
  * ```
  */
-export const PROCGEN_NEBULAE: readonly Nebula[] = (
-    procgenNebulaeData as { nebulae: readonly Nebula[] }
-).nebulae;
+export const PROCGEN_NEBULAE: readonly Nebula[] = deepFreeze(
+    (procgenNebulaeData as { nebulae: readonly Nebula[] }).nebulae,
+);

@@ -66,8 +66,11 @@ const check = (name, cond, detail = '') => {
         const sys = StarSystem.fromName(s.name);
         check(`fromName(${s.name})`, sys !== null, 'parse returned null');
         if (!sys) continue;
-        check(`encode ${s.name}`, sys.systemAddress === BigInt(s.id64),
-            `got ${sys.systemAddress}, want ${s.id64}`);
+        check(
+            `encode ${s.name}`,
+            sys.systemAddress === BigInt(s.id64),
+            `got ${sys.systemAddress}, want ${s.id64}`,
+        );
         // Round-trip the id64 back to a name. Without coords the decoder can only
         // produce the PROCEDURAL name, so a hand-authored fixture name (e.g.
         // "Col 285 Sector …") is recovered only when coords are supplied — that
@@ -86,13 +89,15 @@ const check = (name, cond, detail = '') => {
     for (const s of systems) {
         const id64 = BigInt(s.id64);
         const withCoords = StarSystem.fromSystemAddress(id64, s.coords);
-        check(`HA name ${s.name}`, withCoords.name === s.name,
-            `got "${withCoords.name}"`);
+        check(`HA name ${s.name}`, withCoords.name === s.name, `got "${withCoords.name}"`);
         check(`HA permit ${s.name}`, withCoords.needsPermit === s.needsPermit);
         if (s.proceduralName) {
             const noCoords = StarSystem.fromSystemAddress(id64);
-            check(`HA alias ${s.name}`, noCoords.name === s.proceduralName,
-                `got "${noCoords.name}", want "${s.proceduralName}"`);
+            check(
+                `HA alias ${s.name}`,
+                noCoords.name === s.proceduralName,
+                `got "${noCoords.name}", want "${s.proceduralName}"`,
+            );
         }
     }
     console.log(`[2] hand-authored region override across ${systems.length} systems`);
@@ -107,9 +112,15 @@ const check = (name, cond, detail = '') => {
     }
     for (const b of boxels) {
         const r = findRegionForBoxel(BigInt(b.id64)).region;
-        check(`boxelRegion@${b.name}`, r?.name === b.region, `got "${r?.name}", want "${b.region}"`);
+        check(
+            `boxelRegion@${b.name}`,
+            r?.name === b.region,
+            `got "${r?.name}", want "${b.region}"`,
+        );
     }
-    console.log(`[3] galactic region lookup across ${coords.length} coords + ${boxels.length} boxels`);
+    console.log(
+        `[3] galactic region lookup across ${coords.length} coords + ${boxels.length} boxels`,
+    );
 }
 
 // ── 4. Direct pure-function path (what most internal PRs touch) ───────────────
@@ -118,15 +129,24 @@ const check = (name, cond, detail = '') => {
     check('parse parts', parts && parts.n1 === 11 && parts.n2 === 96);
     // GOTCHA: parseSystemName preserves the region's input casing — it does NOT
     // canonicalize. Re-casing happens in StarSystem.fromName / canonicalizeSystemName.
-    check('format preserves casing', formatSystemName(parts) === 'synuefe EN-H d11-96',
-        `got "${formatSystemName(parts)}"`);
-    check('fromName canonicalizes', StarSystem.fromName('synuefe en-h d11-96').name === 'Synuefe EN-H d11-96',
-        `got "${StarSystem.fromName('synuefe en-h d11-96').name}"`);
+    check(
+        'format preserves casing',
+        formatSystemName(parts) === 'synuefe EN-H d11-96',
+        `got "${formatSystemName(parts)}"`,
+    );
+    check(
+        'fromName canonicalizes',
+        StarSystem.fromName('synuefe en-h d11-96').name === 'Synuefe EN-H d11-96',
+        `got "${StarSystem.fromName('synuefe en-h d11-96').name}"`,
+    );
     const origin = resolveRegionOrigin('Synuefe');
     check('origin resolves', origin != null);
     const id64 = encodeSystemAddress(parts, origin);
     const decoded = decodeSystemAddress(id64);
-    check('encode/decode roundtrip', decoded.sizeClass === parts.massCode && decoded.sequence === 96);
+    check(
+        'encode/decode roundtrip',
+        decoded.sizeClass === parts.massCode && decoded.sequence === 96,
+    );
     console.log(`[4] direct function path: Synuefe EN-H d11-96 -> id64 ${id64}`);
 }
 
@@ -140,31 +160,45 @@ const check = (name, cond, detail = '') => {
         all: ALL_NEBULAE,
     };
     for (const [name, want] of Object.entries(neb.counts)) {
-        check(`catalogue ${name}`, catalogues[name].length === want,
-            `got ${catalogues[name].length}, want ${want}`);
+        check(
+            `catalogue ${name}`,
+            catalogues[name].length === want,
+            `got ${catalogues[name].length}, want ${want}`,
+        );
     }
     for (const q of neb.nearest) {
         const hits = nearestNebulae(q.from, catalogues[q.catalogue], q.count);
         for (const [i, want] of q.expect.entries()) {
-            check(`nearest@${q.origin}[${i}]`, hits[i]?.name === want.name,
-                `got "${hits[i]?.name}", want "${want.name}"`);
-            check(`nearest@${q.origin}[${i}] distance`,
+            check(
+                `nearest@${q.origin}[${i}]`,
+                hits[i]?.name === want.name,
+                `got "${hits[i]?.name}", want "${want.name}"`,
+            );
+            check(
+                `nearest@${q.origin}[${i}] distance`,
                 Math.abs(hits[i]?.distanceLy - want.distanceLy) < 1e-5,
-                `got ${hits[i]?.distanceLy}, want ${want.distanceLy}`);
+                `got ${hits[i]?.distanceLy}, want ${want.distanceLy}`,
+            );
         }
     }
     for (const q of neb.within) {
         const names = nebulaeWithin(q.from, catalogues[q.catalogue], q.radiusLy).map((n) => n.name);
-        check(`within@${q.origin} ${q.radiusLy}ly`,
+        check(
+            `within@${q.origin} ${q.radiusLy}ly`,
             names.join('|') === q.expect.map((e) => e.name).join('|'),
-            `got [${names}]`);
+            `got [${names}]`,
+        );
     }
     // Name lookup is case-insensitive but otherwise exact.
     for (const r of neb.records) {
-        check(`byName ${r.name}`,
-            getNebulaByName(r.name.toLowerCase(), catalogues[r.catalogue])?.system === r.system);
+        check(
+            `byName ${r.name}`,
+            getNebulaByName(r.name.toLowerCase(), catalogues[r.catalogue])?.system === r.system,
+        );
     }
-    console.log(`[5] nebulae: ${ALL_NEBULAE.length} catalogued, ${neb.nearest.length} nearest + ${neb.within.length} radius queries`);
+    console.log(
+        `[5] nebulae: ${ALL_NEBULAE.length} catalogued, ${neb.nearest.length} nearest + ${neb.within.length} radius queries`,
+    );
 }
 
 // ── Summary ───────────────────────────────────────────────────────────────────

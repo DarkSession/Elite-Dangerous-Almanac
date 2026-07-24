@@ -10,3 +10,5 @@
  */
 
 export * from './astro/index.js';
+export * from './ships/index.js';
+export * from './materials/index.js';

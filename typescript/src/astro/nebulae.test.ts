@@ -132,7 +132,10 @@ test('nebulaeWithin includes the boundary and rejects a negative radius', () => 
 test('queries copy their records and leave the catalogue untouched', () => {
     const before = REAL_NEBULAE[0]!;
     const [hit] = nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 1);
-    assert.notEqual(hit, REAL_NEBULAE.find((n) => n.name === hit!.name));
+    assert.notEqual(
+        hit,
+        REAL_NEBULAE.find((n) => n.name === hit!.name),
+    );
     assert.equal(REAL_NEBULAE[0], before);
     assert.ok(!('distanceLy' in REAL_NEBULAE[0]!));
 });

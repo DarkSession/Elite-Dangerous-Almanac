@@ -22,7 +22,15 @@ import { stripJsonComments } from './scripts/jsonc.mjs';
  */
 export default defineConfig({
     // Each module is its own entry (tests excluded); the barrels re-export them.
-    entry: ['src/index.ts', 'src/astro/*.ts', '!src/astro/*.test.ts'],
+    entry: [
+        'src/index.ts',
+        'src/astro/*.ts',
+        '!src/astro/*.test.ts',
+        'src/materials/*.ts',
+        '!src/materials/*.test.ts',
+        'src/ships/*.ts',
+        '!src/ships/*.test.ts',
+    ],
     format: ['esm'],
     dts: true,
     splitting: true, // dedupe shared modules into chunks; keeps per-module entries independent

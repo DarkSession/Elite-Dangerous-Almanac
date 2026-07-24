@@ -1,0 +1,236 @@
+/**
+ * Engineering-material types and lookups — the **data-free** core of the materials
+ * feature.
+ *
+ * Elite Dangerous groups its engineering materials into three categories — raw,
+ * manufactured and encoded — each material carrying a **grade** ({@link MaterialGrade})
+ * and sitting in a **line** ({@link MaterialLine}: Chemical, Emission Data, the seven
+ * raw element families, …). This module holds the {@link Material} record shape, the
+ * grade ⇄ rarity mapping, and the pure functions that search a catalogue
+ * ({@link getMaterialByName}, {@link materialsByGrade}, {@link materialsInLine}, …).
+ * The catalogues themselves live in sibling modules, one per category, so you only
+ * bundle what you ask for:
+ *
+ * | Module | Export | Entries |
+ * | --- | --- | --- |
+ * | `./materials-raw` | `RAW_MATERIALS` | 28 |
+ * | `./materials-manufactured` | `MANUFACTURED_MATERIALS` | 71 |
+ * | `./materials-encoded` | `ENCODED_MATERIALS` | 47 |
+ * | `./materials-all` | `ALL_MATERIALS` | 146 |
+ *
+ * Importing a query function from here costs nothing but the function: pass in
+ * whichever catalogue you imported.
+ *
+ * Data originates from EDCD FDevIDs, with a handful of newer Thargoid materials
+ * from INARA; see `data/materials/SOURCES.md`.
+ *
+ * @example
+ * ```ts
+ * import { getMaterialByName } from '@elite-dangerous-almanac/core/materials';
+ * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+ *
+ * getMaterialByName('iron', RAW_MATERIALS)?.grade; // -> MaterialGrade.VeryCommon (1)
+ * ```
+ *
+ * @packageDocumentation
+ */
+
+/** Which of the three engineering-material categories a material belongs to. */
+export type MaterialCategory = 'raw' | 'manufactured' | 'encoded';
+
+/**
+ * A material grade, 1–5. **A material's grade is its rarity** — the members are named
+ * for the rarity each grade denotes, so there is no separate rarity field.
+ *
+ * @remarks
+ * Raw materials only reach {@link MaterialGrade.Rare} (4); grade 5 appears in the
+ * manufactured and encoded categories only. The numeric values match Frontier's own
+ * grading, so a `MaterialGrade` compares equal to the plain number (`grade === 5`).
+ * The member name is the rarity — read it with `MaterialGrade[grade]` (`"VeryCommon"`)
+ * if you need a string.
+ */
+export enum MaterialGrade {
+    VeryCommon = 1,
+    Common = 2,
+    Standard = 3,
+    Rare = 4,
+    VeryRare = 5,
+}
+
+/**
+ * The in-game line (group) a material belongs to.
+ *
+ * @remarks
+ * The seven raw lines are named after their grade-1 element (Carbon, Phosphorus,
+ * Sulphur, Iron, Nickel, Rhenium, Lead). Manufactured and encoded materials use
+ * Frontier's group names. Guardian and Thargoid materials — which Frontier files
+ * outside the standard groups — are collected under {@link MaterialLine.Guardian}
+ * and {@link MaterialLine.Thargoid}.
+ */
+export enum MaterialLine {
+    // Raw — the seven element families (named by their grade-1 element).
+    Carbon = 'Carbon',
+    Phosphorus = 'Phosphorus',
+    Sulphur = 'Sulphur',
+    Iron = 'Iron',
+    Nickel = 'Nickel',
+    Rhenium = 'Rhenium',
+    Lead = 'Lead',
+    // Manufactured — the ten standard five-grade lines.
+    Chemical = 'Chemical',
+    Thermic = 'Thermic',
+    Heat = 'Heat',
+    Conductive = 'Conductive',
+    MechanicalComponents = 'Mechanical Components',
+    Capacitors = 'Capacitors',
+    Shielding = 'Shielding',
+    Composite = 'Composite',
+    Crystals = 'Crystals',
+    Alloys = 'Alloys',
+    // Encoded — the six standard five-grade data lines.
+    EmissionData = 'Emission Data',
+    WakeScans = 'Wake Scans',
+    ShieldData = 'Shield Data',
+    EncryptionFiles = 'Encryption Files',
+    DataArchives = 'Data Archives',
+    EncodedFirmware = 'Encoded Firmware',
+    // Cross-category special groups.
+    Guardian = 'Guardian',
+    Thargoid = 'Thargoid',
+}
+
+/**
+ * One engineering material and how it is classified.
+ *
+ * @remarks
+ * A `Material` is a plain, frozen value object. `category` is derived from the
+ * catalogue the record lives in. There is no separate rarity field — the `grade` is
+ * the rarity (its {@link MaterialGrade} member name is the rarity tier).
+ */
+export interface Material {
+    /** Which category this material belongs to. */
+    readonly category: MaterialCategory;
+    /**
+     * Frontier's internal symbol, e.g. `"GridResistors"` — the id the player journal
+     * reports (case-insensitively, so `"gridresistors"` matches). This is the same
+     * field, with the same meaning, as `symbol` on a ship or outfitting module.
+     */
+    readonly symbol: string;
+    /** Display name, e.g. `"Grid Resistors"`. */
+    readonly name: string;
+    /**
+     * The chemical element symbol for a raw material, e.g. `"Fe"` for Iron.
+     *
+     * @remarks
+     * Only raw materials — which are chemical elements — have one. Manufactured and
+     * encoded materials are `null`.
+     */
+    readonly elementSymbol: string | null;
+    /** The material grade, 1–5 (raw materials only reach 4) — this is its rarity. */
+    readonly grade: MaterialGrade;
+    /** The in-game line (group) this material sits in. */
+    readonly line: MaterialLine;
+}
+
+/** Case- and whitespace-insensitive key for name / symbol matching. */
+function normalize(value: string): string {
+    return value.trim().toLowerCase();
+}
+
+/**
+ * Look up a material by its Frontier symbol / journal id (case-insensitive).
+ *
+ * This is the same lookup as `getShipBySymbol` / `getModuleBySymbol` in the `ships`
+ * feature — `symbol` means Frontier's internal id in every catalogue.
+ *
+ * @param symbol - The internal symbol, e.g. `"GridResistors"`, or the lower-cased
+ * form the player journal reports (`"gridresistors"`).
+ * @param materials - The catalogue to search — `RAW_MATERIALS`, `MANUFACTURED_MATERIALS`,
+ * `ENCODED_MATERIALS`, `ALL_MATERIALS`, or any subset you have filtered yourself.
+ * @returns The matching {@link Material}, or `null` if the catalogue holds no
+ * material with that symbol.
+ * @example
+ * ```ts
+ * getMaterialBySymbol('temperedalloys', MANUFACTURED_MATERIALS)?.name; // -> 'Tempered Alloys'
+ * ```
+ */
+export function getMaterialBySymbol(
+    symbol: string,
+    materials: readonly Material[],
+): Material | null {
+    const wanted = normalize(symbol);
+    return materials.find((material) => normalize(material.symbol) === wanted) ?? null;
+}
+
+/**
+ * Look up a material by its display name (case-insensitive).
+ *
+ * @param name - The display name as the catalogue spells it, e.g. `"Grid Resistors"`.
+ * @param materials - The catalogue to search (see {@link getMaterialBySymbol}).
+ * @returns The matching {@link Material}, or `null` if the catalogue holds no
+ * material of that name.
+ * @example
+ * ```ts
+ * getMaterialByName('imperial shielding', MANUFACTURED_MATERIALS)?.grade; // -> 5
+ * ```
+ */
+export function getMaterialByName(name: string, materials: readonly Material[]): Material | null {
+    const wanted = normalize(name);
+    return materials.find((material) => normalize(material.name) === wanted) ?? null;
+}
+
+/**
+ * Look up a raw material by its chemical element symbol (case-insensitive).
+ *
+ * @param elementSymbol - The element symbol, e.g. `"Fe"` or `"fe"`.
+ * @param materials - The catalogue to search (see {@link getMaterialBySymbol}).
+ * @returns The matching {@link Material}, or `null`. Only raw materials carry an
+ * element symbol, so manufactured and encoded catalogues never match.
+ * @example
+ * ```ts
+ * getMaterialByElementSymbol('fe', RAW_MATERIALS)?.name; // -> 'Iron'
+ * ```
+ */
+export function getMaterialByElementSymbol(
+    elementSymbol: string,
+    materials: readonly Material[],
+): Material | null {
+    const wanted = normalize(elementSymbol);
+    return (
+        materials.find(
+            (material) =>
+                material.elementSymbol !== null && normalize(material.elementSymbol) === wanted,
+        ) ?? null
+    );
+}
+
+/**
+ * Every material of a given grade, in catalogue order.
+ *
+ * @param grade - The grade to match, 1–5 (or a {@link MaterialGrade} member).
+ * @param materials - The catalogue to search (see {@link getMaterialByName}).
+ * @returns A new array of matches (possibly empty). The input is not modified.
+ * @example
+ * ```ts
+ * materialsByGrade(MaterialGrade.VeryRare, MANUFACTURED_MATERIALS).length;
+ * ```
+ */
+export function materialsByGrade(grade: MaterialGrade, materials: readonly Material[]): Material[] {
+    return materials.filter((material) => material.grade === grade);
+}
+
+/**
+ * Every material in a given line, in catalogue order.
+ *
+ * @param line - The line to match, e.g. `MaterialLine.Chemical`.
+ * @param materials - The catalogue to search (see {@link getMaterialByName}).
+ * @returns A new array of matches (possibly empty). The input is not modified.
+ * @example
+ * ```ts
+ * materialsInLine(MaterialLine.Chemical, MANUFACTURED_MATERIALS).map((m) => m.grade);
+ * // -> [1, 2, 3, 4, 5]
+ * ```
+ */
+export function materialsInLine(line: MaterialLine, materials: readonly Material[]): Material[] {
+    return materials.filter((material) => material.line === line);
+}

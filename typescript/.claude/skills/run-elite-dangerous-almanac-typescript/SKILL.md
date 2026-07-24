@@ -57,6 +57,7 @@ Expected output (exit 0 on all-pass, 1 on any failure):
 ```
 
 What it exercises (each block maps to one shared fixture):
+
 1. **`name ⇄ id64`** — `StarSystem.fromName(name).systemAddress` and the reverse
    decode, across every entry in `system-addresses.json`.
 2. **Hand-authored regions** — `fromSystemAddress(id64, coords)` reproduces the
@@ -104,7 +105,7 @@ node --import tsx --test src/astro/system-address.test.ts   # a single test file
   is `'synuefe EN-H d11-96'` (region casing preserved). Canonical re-casing happens
   in `StarSystem.fromName(...).name` / `canonicalizeSystemName`.
 - **Decoding a hand-authored system needs coords.** `fromSystemAddress(id64)`
-  without coords yields the *procedural* name (e.g. `Pru Euq SU-T b3-0`), not the
+  without coords yields the _procedural_ name (e.g. `Pru Euq SU-T b3-0`), not the
   game-displayed hand-authored name (`Col 285 Sector IB-X b30-0`). Two entries in
   `system-addresses.json` are hand-authored, so the driver only asserts the
   no-coords decode for procedural systems and covers the coords path via
@@ -117,9 +118,9 @@ node --import tsx --test src/astro/system-address.test.ts   # a single test file
 
 ## Troubleshooting
 
-| Symptom | Fix |
-|---|---|
-| `ERR_MODULE_NOT_FOUND …/dist/astro/index.js` | Run `npm run build` first. |
-| `Cannot find module './src/astro/index.ts'` | Use the `.js` extension in the import, and run with `node --import tsx`. |
+| Symptom                                      | Fix                                                                                 |
+| -------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `ERR_MODULE_NOT_FOUND …/dist/astro/index.js` | Run `npm run build` first.                                                          |
+| `Cannot find module './src/astro/index.ts'`  | Use the `.js` extension in the import, and run with `node --import tsx`.            |
 | Driver reports `decode … got "<procedural>"` | Expected for hand-authored fixtures without coords — see Gotchas; not a regression. |
-| `node_modules` missing | `npm install`. |
+| `node_modules` missing                       | `npm install`.                                                                      |

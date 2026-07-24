@@ -32,18 +32,21 @@ test('round-trips ambiguous and four-fragment generated names', () => {
 });
 
 test('rejects in-range grid slots that have no assigned procedural name', () => {
-    assert.throws(
-        () => sectorNameFromCoords({ x: 1, y: 0, z: 84 }),
-        /has no procedural name/,
-    );
+    assert.throws(() => sectorNameFromCoords({ x: 1, y: 0, z: 84 }), /has no procedural name/);
 });
 
 test('produces both C1 (one word) and C2 (two word) names', () => {
     const names = new Set<string>();
     for (let i = 0; i < 400; i++)
         names.add(sectorNameFromCoords({ x: i % 79, y: (i * 7) % 64, z: (i * 13) % 71 }));
-    assert.ok([...names].some((n) => n.includes(' ')), 'expected some C2 (two-word) names');
-    assert.ok([...names].some((n) => !n.includes(' ')), 'expected some C1 (single-word) names');
+    assert.ok(
+        [...names].some((n) => n.includes(' ')),
+        'expected some C2 (two-word) names',
+    );
+    assert.ok(
+        [...names].some((n) => !n.includes(' ')),
+        'expected some C1 (single-word) names',
+    );
 });
 
 test('canonicalises casing via the grid round-trip', () => {

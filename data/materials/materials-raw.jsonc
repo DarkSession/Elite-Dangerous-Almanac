@@ -1,0 +1,214 @@
+/*
+ * Raw engineering materials (the 28 elements, grades 1-4).
+ *
+ * Source:       EDCD FDevIDs, material.csv
+ *               https://github.com/EDCD/FDevIDs
+ *               Community-maintained Frontier id/name registry. No explicit
+ *               licence is stated; consult the repository terms.
+ *
+ * Each record is { symbol, name, elementSymbol, grade, line }. `symbol` is
+ * Frontier's internal id (matched case-insensitively, as the journal reports
+ * it); `name` is the display name. `grade` is 1-4 for raw materials and is itself
+ * the rarity. `line` is the in-game group (the grade-1 element family).
+ * `elementSymbol` is the chemical element symbol (Fe, C, …).
+ *
+ * Full provenance: data/materials/SOURCES.md.
+ */
+[
+  {
+    "symbol": "Carbon",
+    "name": "Carbon",
+    "elementSymbol": "C",
+    "grade": 1,
+    "line": "Carbon"
+  },
+  {
+    "symbol": "Vanadium",
+    "name": "Vanadium",
+    "elementSymbol": "V",
+    "grade": 2,
+    "line": "Carbon"
+  },
+  {
+    "symbol": "Niobium",
+    "name": "Niobium",
+    "elementSymbol": "Nb",
+    "grade": 3,
+    "line": "Carbon"
+  },
+  {
+    "symbol": "Yttrium",
+    "name": "Yttrium",
+    "elementSymbol": "Y",
+    "grade": 4,
+    "line": "Carbon"
+  },
+  {
+    "symbol": "Iron",
+    "name": "Iron",
+    "elementSymbol": "Fe",
+    "grade": 1,
+    "line": "Iron"
+  },
+  {
+    "symbol": "Zinc",
+    "name": "Zinc",
+    "elementSymbol": "Zn",
+    "grade": 2,
+    "line": "Iron"
+  },
+  {
+    "symbol": "Tin",
+    "name": "Tin",
+    "elementSymbol": "Sn",
+    "grade": 3,
+    "line": "Iron"
+  },
+  {
+    "symbol": "Selenium",
+    "name": "Selenium",
+    "elementSymbol": "Se",
+    "grade": 4,
+    "line": "Iron"
+  },
+  {
+    "symbol": "Lead",
+    "name": "Lead",
+    "elementSymbol": "Pb",
+    "grade": 1,
+    "line": "Lead"
+  },
+  {
+    "symbol": "Zirconium",
+    "name": "Zirconium",
+    "elementSymbol": "Zr",
+    "grade": 2,
+    "line": "Lead"
+  },
+  {
+    "symbol": "Boron",
+    "name": "Boron",
+    "elementSymbol": "B",
+    "grade": 3,
+    "line": "Lead"
+  },
+  {
+    "symbol": "Antimony",
+    "name": "Antimony",
+    "elementSymbol": "Sb",
+    "grade": 4,
+    "line": "Lead"
+  },
+  {
+    "symbol": "Nickel",
+    "name": "Nickel",
+    "elementSymbol": "Ni",
+    "grade": 1,
+    "line": "Nickel"
+  },
+  {
+    "symbol": "Germanium",
+    "name": "Germanium",
+    "elementSymbol": "Ge",
+    "grade": 2,
+    "line": "Nickel"
+  },
+  {
+    "symbol": "Tungsten",
+    "name": "Tungsten",
+    "elementSymbol": "W",
+    "grade": 3,
+    "line": "Nickel"
+  },
+  {
+    "symbol": "Tellurium",
+    "name": "Tellurium",
+    "elementSymbol": "Te",
+    "grade": 4,
+    "line": "Nickel"
+  },
+  {
+    "symbol": "Phosphorus",
+    "name": "Phosphorus",
+    "elementSymbol": "P",
+    "grade": 1,
+    "line": "Phosphorus"
+  },
+  {
+    "symbol": "Chromium",
+    "name": "Chromium",
+    "elementSymbol": "Cr",
+    "grade": 2,
+    "line": "Phosphorus"
+  },
+  {
+    "symbol": "Molybdenum",
+    "name": "Molybdenum",
+    "elementSymbol": "Mo",
+    "grade": 3,
+    "line": "Phosphorus"
+  },
+  {
+    "symbol": "Technetium",
+    "name": "Technetium",
+    "elementSymbol": "Tc",
+    "grade": 4,
+    "line": "Phosphorus"
+  },
+  {
+    "symbol": "Rhenium",
+    "name": "Rhenium",
+    "elementSymbol": "Re",
+    "grade": 1,
+    "line": "Rhenium"
+  },
+  {
+    "symbol": "Arsenic",
+    "name": "Arsenic",
+    "elementSymbol": "As",
+    "grade": 2,
+    "line": "Rhenium"
+  },
+  {
+    "symbol": "Mercury",
+    "name": "Mercury",
+    "elementSymbol": "Hg",
+    "grade": 3,
+    "line": "Rhenium"
+  },
+  {
+    "symbol": "Polonium",
+    "name": "Polonium",
+    "elementSymbol": "Po",
+    "grade": 4,
+    "line": "Rhenium"
+  },
+  {
+    "symbol": "Sulphur",
+    "name": "Sulphur",
+    "elementSymbol": "S",
+    "grade": 1,
+    "line": "Sulphur"
+  },
+  {
+    "symbol": "Manganese",
+    "name": "Manganese",
+    "elementSymbol": "Mn",
+    "grade": 2,
+    "line": "Sulphur"
+  },
+  {
+    "symbol": "Cadmium",
+    "name": "Cadmium",
+    "elementSymbol": "Cd",
+    "grade": 3,
+    "line": "Sulphur"
+  },
+  {
+    "symbol": "Ruthenium",
+    "name": "Ruthenium",
+    "elementSymbol": "Ru",
+    "grade": 4,
+    "line": "Sulphur"
+  }
+]

@@ -15,6 +15,7 @@
 
 import type { Nebula } from './nebulae.js';
 import realNebulaeData from '../../../data/astro/nebulae-real.jsonc' with { type: 'json' };
+import { deepFreeze } from '../deep-freeze.js';
 
 /**
  * All 180 real-world nebulae and dark regions, sorted by name.
@@ -30,5 +31,6 @@ import realNebulaeData from '../../../data/astro/nebulae-real.jsonc' with { type
  * // -> 'Horsehead Dark Region IR-V c2-9'
  * ```
  */
-export const REAL_NEBULAE: readonly Nebula[] = (realNebulaeData as { nebulae: readonly Nebula[] })
-    .nebulae;
+export const REAL_NEBULAE: readonly Nebula[] = deepFreeze(
+    (realNebulaeData as { nebulae: readonly Nebula[] }).nebulae,
+);

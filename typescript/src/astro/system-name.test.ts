@@ -35,7 +35,15 @@ test('rejects malformed names', () => {
 
 test('formats parts, omitting N1 when zero', () => {
     assert.equal(
-        formatSystemName({ regionName: 'Synuefe', l1: 4, l2: 13, l3: 7, massCode: 3, n1: 11, n2: 96 }),
+        formatSystemName({
+            regionName: 'Synuefe',
+            l1: 4,
+            l2: 13,
+            l3: 7,
+            massCode: 3,
+            n1: 11,
+            n2: 96,
+        }),
         'Synuefe EN-H d11-96',
     );
     assert.equal(
