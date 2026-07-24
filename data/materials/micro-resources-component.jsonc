@@ -1,0 +1,184 @@
+/*
+ * Odyssey micro resources — the component category (33 entries).
+ *
+ * Components — the manufactured parts used to upgrade suits and hand weapons at Pioneer Supplies.
+ *
+ * Source:  EDCD FDevIDs, microresources.csv
+ *          https://github.com/EDCD/FDevIDs
+ *          Community-maintained Frontier id/name registry. No explicit licence
+ *          is stated; consult the repository terms.
+ *
+ * Each record is { symbol, category, name }. `symbol` is Frontier's internal id
+ * (e.g. `graphene`) — what the player journal reports, matched case-insensitively;
+ * `name` is the display name. `category` is one of component / consumable / data /
+ * item. Frontier's numeric micro-resource id from the CSV is not carried.
+ *
+ * Full provenance: data/materials/SOURCES.md.
+ */
+[
+  {
+    "symbol": "graphene",
+    "category": "component",
+    "name": "Graphene"
+  },
+  {
+    "symbol": "aerogel",
+    "category": "component",
+    "name": "Aerogel"
+  },
+  {
+    "symbol": "carbonfibreplating",
+    "category": "component",
+    "name": "Carbon Fibre Plating"
+  },
+  {
+    "symbol": "chemicalcatalyst",
+    "category": "component",
+    "name": "Chemical Catalyst"
+  },
+  {
+    "symbol": "chemicalsuperbase",
+    "category": "component",
+    "name": "Chemical Superbase"
+  },
+  {
+    "symbol": "circuitboard",
+    "category": "component",
+    "name": "Circuit Board"
+  },
+  {
+    "symbol": "circuitswitch",
+    "category": "component",
+    "name": "Circuit Switch"
+  },
+  {
+    "symbol": "electricalfuse",
+    "category": "component",
+    "name": "Electrical Fuse"
+  },
+  {
+    "symbol": "electricalwiring",
+    "category": "component",
+    "name": "Electrical Wiring"
+  },
+  {
+    "symbol": "encryptedmemorychip",
+    "category": "component",
+    "name": "Encrypted Memory Chip"
+  },
+  {
+    "symbol": "epoxyadhesive",
+    "category": "component",
+    "name": "Epoxy Adhesive"
+  },
+  {
+    "symbol": "memorychip",
+    "category": "component",
+    "name": "Memory Chip"
+  },
+  {
+    "symbol": "metalcoil",
+    "category": "component",
+    "name": "Metal Coil"
+  },
+  {
+    "symbol": "microhydraulics",
+    "category": "component",
+    "name": "Micro Hydraulics"
+  },
+  {
+    "symbol": "microsupercapacitor",
+    "category": "component",
+    "name": "Micro Supercapacitor"
+  },
+  {
+    "symbol": "microthrusters",
+    "category": "component",
+    "name": "Micro Thrusters"
+  },
+  {
+    "symbol": "microtransformer",
+    "category": "component",
+    "name": "Micro Transformer"
+  },
+  {
+    "symbol": "motor",
+    "category": "component",
+    "name": "Motor"
+  },
+  {
+    "symbol": "opticalfibre",
+    "category": "component",
+    "name": "Optical Fibre"
+  },
+  {
+    "symbol": "opticallens",
+    "category": "component",
+    "name": "Optical Lens"
+  },
+  {
+    "symbol": "scrambler",
+    "category": "component",
+    "name": "Scrambler"
+  },
+  {
+    "symbol": "titaniumplating",
+    "category": "component",
+    "name": "Titanium Plating"
+  },
+  {
+    "symbol": "transmitter",
+    "category": "component",
+    "name": "Transmitter"
+  },
+  {
+    "symbol": "tungstencarbide",
+    "category": "component",
+    "name": "Tungsten Carbide"
+  },
+  {
+    "symbol": "viscoelasticpolymer",
+    "category": "component",
+    "name": "Viscoelastic Polymer"
+  },
+  {
+    "symbol": "rdx",
+    "category": "component",
+    "name": "RDX"
+  },
+  {
+    "symbol": "electromagnet",
+    "category": "component",
+    "name": "Electromagnet"
+  },
+  {
+    "symbol": "oxygenicbacteria",
+    "category": "component",
+    "name": "Oxygenic Bacteria"
+  },
+  {
+    "symbol": "epinephrine",
+    "category": "component",
+    "name": "Epinephrine"
+  },
+  {
+    "symbol": "phneutraliser",
+    "category": "component",
+    "name": "pH Neutraliser"
+  },
+  {
+    "symbol": "microelectrode",
+    "category": "component",
+    "name": "Microelectrode"
+  },
+  {
+    "symbol": "ionbattery",
+    "category": "component",
+    "name": "Ion Battery"
+  },
+  {
+    "symbol": "weaponcomponent",
+    "category": "component",
+    "name": "Weapon Component"
+  }
+]

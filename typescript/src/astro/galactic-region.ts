@@ -93,7 +93,7 @@ export interface GalacticRegion {
  * ```
  */
 export const GALACTIC_REGIONS: readonly GalacticRegion[] = deepFreeze(
-    (regionData as { regions: readonly GalacticRegion[] }).regions,
+    regionData as readonly GalacticRegion[],
 );
 
 const BY_ID: ReadonlyMap<number, GalacticRegion> = new Map(GALACTIC_REGIONS.map((r) => [r.id, r]));

@@ -32,5 +32,5 @@ import { deepFreeze } from '../deep-freeze.js';
  * ```
  */
 export const REAL_NEBULAE: readonly Nebula[] = deepFreeze(
-    (realNebulaeData as { nebulae: readonly Nebula[] }).nebulae,
+    realNebulaeData as readonly Nebula[],
 );

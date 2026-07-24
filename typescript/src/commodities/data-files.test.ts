@@ -1,7 +1,7 @@
 /**
- * Guards the shared `data/materials/*.jsonc` files themselves, independently of the
- * modules that consume them. The sibling `src/astro/data-files.test.ts` explains the
- * two invariants in full; the same two apply here:
+ * Guards the shared `data/commodities/*.jsonc` files themselves, independently of the
+ * modules that consume them. The `src/astro/data-files.test.ts` explains the two
+ * invariants in full; the same two apply here:
  *
  * 1. Every file is still strict JSON once comments are blanked (no trailing commas,
  *    so any language's standard parser accepts it).
@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
-const DATA_DIR = fileURLToPath(new URL('../../../data/materials/', import.meta.url));
+const DATA_DIR = fileURLToPath(new URL('../../../data/commodities/', import.meta.url));
 const DATA_FILES = readdirSync(DATA_DIR)
     .filter((name) => name.endsWith('.jsonc'))
     .sort();
@@ -24,10 +24,8 @@ const DATA_FILES = readdirSync(DATA_DIR)
 /** Payload keys that would put non-data prose back into the bundle. */
 const BANNED_KEYS = ['attribution', 'description'];
 
-test('data/materials holds the expected number of catalogues', () => {
-    // 3 engineering-material catalogues (raw/manufactured/encoded) + 4 Odyssey
-    // micro-resource catalogues (component/consumable/data/item).
-    assert.equal(DATA_FILES.length, 7);
+test('data/commodities holds the expected number of catalogues', () => {
+    assert.equal(DATA_FILES.length, 2);
 });
 
 for (const name of DATA_FILES) {

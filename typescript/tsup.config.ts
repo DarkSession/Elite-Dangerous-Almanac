@@ -30,6 +30,8 @@ export default defineConfig({
         '!src/materials/*.test.ts',
         'src/ships/*.ts',
         '!src/ships/*.test.ts',
+        'src/commodities/*.ts',
+        '!src/commodities/*.test.ts',
     ],
     format: ['esm'],
     dts: true,

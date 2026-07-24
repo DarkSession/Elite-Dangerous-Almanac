@@ -1,0 +1,45 @@
+# Data sources — `data/commodities/`
+
+**Library snapshot:** 2026-07-24. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+
+Attribution for the market-commodity data files in this directory. This file is the
+long form; each data file also repeats its own credit in a comment header, so the
+provenance meets you where you meet the data.
+
+The data files are **JSONC** (`.jsonc`): attribution lives in a comment so it
+documents the file without becoming part of the payload every consumer inlines
+into their bundle. Comments are the only JSONC extension used — no trailing commas —
+so stripping comments leaves strict JSON any language's standard parser accepts.
+See AGENTS.md §Attribution for how to consume them.
+
+## Standard commodities
+
+- **Files:** `commodities.jsonc` (256 tradable goods) and
+  `fixtures/commodities/commodities.json`.
+- **Source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), the community-maintained
+  registry of Frontier's internal ids and names (`commodity.csv`, columns
+  `id,symbol,category,name`). FDevIDs states no explicit licence; consult the
+  repository terms before redistributing the raw identifiers.
+- **Derivation:** records are carried over in registry order as
+  `{ symbol, name, category }`. `symbol` is Frontier's internal id (keyed on, matched
+  case-insensitively as the market/journal reports it); `name` is the display name;
+  `category` is the market group (Metals, Minerals, Foods, …), kept verbatim including
+  the space in multi-word groups (`Consumer Items`, `Industrial Materials`, `Legal
+  Drugs`). The CSV's numeric `id` column is dropped — commodities are keyed by
+  `symbol`. The `NonMarketable` group (its one member, symbol `Drones`, is Limpets) is
+  retained: a registry must resolve every symbol the market can report.
+
+## Rare commodities
+
+- **Files:** `rare-commodities.jsonc` (142 location-specific luxury goods) and the
+  same fixture.
+- **Source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), `rare_commodity.csv`
+  (columns `id,symbol,market_id,category,name`), same licence note as above.
+- **Derivation:** records are carried over in registry order as
+  `{ symbol, name, category }`, exactly as for standard commodities. Both the numeric
+  `id` and the `market_id` columns are dropped: rares are keyed by `symbol`, and the
+  `market_id` — the id of the single station that produces a rare — has no station
+  registry in this library to resolve against, so a bare number would be a dangling
+  reference rather than usable data. A record's rareness is not stored on it; it is
+  derived from which catalogue (`RARE_COMMODITIES`) the record lives in and surfaced as
+  the `rare` flag, the same way a material's category is derived from its catalogue.

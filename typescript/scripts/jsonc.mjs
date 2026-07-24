@@ -8,11 +8,11 @@
  * the build strip comments through this module first.
  *
  * Consumed by:
- * - `scripts/register-jsonc.mjs` — Node module hook, used by `npm test`.
+ * - `scripts/register-jsonc.mjs` — synchronous Node module hook, used by `npm test`.
  * - `tsup.config.ts` — esbuild `onLoad` plugin, used by `npm run build`.
  */
 
-import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 /**
@@ -81,14 +81,19 @@ export function stripJsonComments(source) {
 }
 
 /**
- * Node module-customization `load` hook that serves `.jsonc` files as JSON
- * modules.
+ * Synchronous module-customization `load` hook that serves `.jsonc` files as
+ * JSON modules.
  *
- * @type {import('node:module').LoadHook}
+ * Registered through `module.registerHooks` (not `module.register`) so it shares
+ * the in-thread hook chain that tsx now uses on newer Node — see
+ * `scripts/register-jsonc.mjs` for why that matters. Being synchronous, it reads
+ * the file with `readFileSync`.
+ *
+ * @type {import('node:module').LoadHookSync}
  */
-export async function load(url, context, nextLoad) {
+export function load(url, context, nextLoad) {
     if (url.startsWith('file:') && url.endsWith('.jsonc')) {
-        const source = await readFile(fileURLToPath(url), 'utf8');
+        const source = readFileSync(fileURLToPath(url), 'utf8');
         return { format: 'json', source: stripJsonComments(source), shortCircuit: true };
     }
     return nextLoad(url, context);

@@ -11,9 +11,13 @@ import { permitLockedSystemForAddress } from '@elite-dangerous-almanac/core/astr
 import { isPermitLockedRegionName } from '@elite-dangerous-almanac/core/astro/permit-locked-regions';
 import { getMaterialByName } from '@elite-dangerous-almanac/core/materials';
 import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+import { getMicroResourceBySymbol } from '@elite-dangerous-almanac/core/materials';
+import { COMPONENT_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-component';
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
 import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
 import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
+import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities';
+import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-rare';
 
 async function readReachableJs(entry, seen = new Set()) {
     if (seen.has(entry.href)) return '';
@@ -46,11 +50,13 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(permitLockedSystemForAddress(10_477_373_803)?.name, 'Sol');
     assert.equal(isPermitLockedRegionName('Cone Sector'), true);
     assert.equal(getMaterialByName('iron', RAW_MATERIALS)?.name, 'Iron');
+    assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
     assert.equal(getShipBySymbol('empire_trader')?.name, 'Imperial Clipper');
     assert.equal(
         getModuleBySymbol('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES)?.name,
         'Chaff Launcher',
     );
+    assert.equal(getCommodityBySymbol('lavianbrandy', RARE_COMMODITIES)?.name, 'Lavian Brandy');
 });
 
 test('a single module catalogue does not bundle the others', async () => {
@@ -64,6 +70,12 @@ test('a single module catalogue does not bundle the others', async () => {
 
 test('internal material construction helpers are not package exports', async () => {
     await assert.rejects(import('@elite-dangerous-almanac/core/materials/material-catalogue'), {
+        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+    });
+});
+
+test('internal commodity construction helpers are not package exports', async () => {
+    await assert.rejects(import('@elite-dangerous-almanac/core/commodities/commodity-catalogue'), {
         code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
     });
 });

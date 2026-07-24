@@ -1,0 +1,589 @@
+/*
+ * Odyssey micro resources — the data category (114 entries).
+ *
+ * Data — the intel and files downloaded, stolen or traded on foot.
+ *
+ * Source:  EDCD FDevIDs, microresources.csv
+ *          https://github.com/EDCD/FDevIDs
+ *          Community-maintained Frontier id/name registry. No explicit licence
+ *          is stated; consult the repository terms.
+ *
+ * Each record is { symbol, category, name }. `symbol` is Frontier's internal id
+ * (e.g. `graphene`) — what the player journal reports, matched case-insensitively;
+ * `name` is the display name. `category` is one of component / consumable / data /
+ * item. Frontier's numeric micro-resource id from the CSV is not carried.
+ *
+ * Full provenance: data/materials/SOURCES.md.
+ */
+[
+  {
+    "symbol": "internalcorrespondence",
+    "category": "data",
+    "name": "Internal Correspondence"
+  },
+  {
+    "symbol": "spyware",
+    "category": "data",
+    "name": "Spyware"
+  },
+  {
+    "symbol": "biometricdata",
+    "category": "data",
+    "name": "Biometric Data"
+  },
+  {
+    "symbol": "nocdata",
+    "category": "data",
+    "name": "NOC Data"
+  },
+  {
+    "symbol": "axcombatlogs",
+    "category": "data",
+    "name": "AX Combat Logs"
+  },
+  {
+    "symbol": "accidentlogs",
+    "category": "data",
+    "name": "Accident Logs"
+  },
+  {
+    "symbol": "airqualityreports",
+    "category": "data",
+    "name": "Air Quality Reports"
+  },
+  {
+    "symbol": "atmosphericdata",
+    "category": "data",
+    "name": "Atmospheric Data"
+  },
+  {
+    "symbol": "audiologs",
+    "category": "data",
+    "name": "Audio Logs"
+  },
+  {
+    "symbol": "ballisticsdata",
+    "category": "data",
+    "name": "Ballistics Data"
+  },
+  {
+    "symbol": "biologicalweapondata",
+    "category": "data",
+    "name": "Biological Weapon Data"
+  },
+  {
+    "symbol": "blacklistdata",
+    "category": "data",
+    "name": "Blacklist Data"
+  },
+  {
+    "symbol": "bloodtestresults",
+    "category": "data",
+    "name": "Blood Test Results"
+  },
+  {
+    "symbol": "campaignplans",
+    "category": "data",
+    "name": "Campaign Plans"
+  },
+  {
+    "symbol": "catmedia",
+    "category": "data",
+    "name": "Cat Media"
+  },
+  {
+    "symbol": "censusdata",
+    "category": "data",
+    "name": "Census Data"
+  },
+  {
+    "symbol": "chemicalexperimentdata",
+    "category": "data",
+    "name": "Chemical Experiment Data"
+  },
+  {
+    "symbol": "chemicalformulae",
+    "category": "data",
+    "name": "Chemical Formulae"
+  },
+  {
+    "symbol": "chemicalinventory",
+    "category": "data",
+    "name": "Chemical Inventory"
+  },
+  {
+    "symbol": "chemicalpatents",
+    "category": "data",
+    "name": "Chemical Patents"
+  },
+  {
+    "symbol": "chemicalweapondata",
+    "category": "data",
+    "name": "Chemical Weapon Data"
+  },
+  {
+    "symbol": "classicentertainment",
+    "category": "data",
+    "name": "Classic Entertainment"
+  },
+  {
+    "symbol": "cocktailrecipes",
+    "category": "data",
+    "name": "Cocktail Recipes"
+  },
+  {
+    "symbol": "combattrainingmaterial",
+    "category": "data",
+    "name": "Combat Training Material"
+  },
+  {
+    "symbol": "combatantperformance",
+    "category": "data",
+    "name": "Combatant Performance"
+  },
+  {
+    "symbol": "conflicthistory",
+    "category": "data",
+    "name": "Conflict History"
+  },
+  {
+    "symbol": "cropyieldanalysis",
+    "category": "data",
+    "name": "Crop Yield Analysis"
+  },
+  {
+    "symbol": "culinaryrecipes",
+    "category": "data",
+    "name": "Culinary Recipes"
+  },
+  {
+    "symbol": "digitaldesigns",
+    "category": "data",
+    "name": "Digital Designs"
+  },
+  {
+    "symbol": "dutyrota",
+    "category": "data",
+    "name": "Duty Rota"
+  },
+  {
+    "symbol": "employeedirectory",
+    "category": "data",
+    "name": "Employee Directory"
+  },
+  {
+    "symbol": "employeeexpenses",
+    "category": "data",
+    "name": "Employee Expenses"
+  },
+  {
+    "symbol": "employeegeneticdata",
+    "category": "data",
+    "name": "Employee Genetic Data"
+  },
+  {
+    "symbol": "employmenthistory",
+    "category": "data",
+    "name": "Employment History"
+  },
+  {
+    "symbol": "enhancedinterrogationrecordings",
+    "category": "data",
+    "name": "Enhanced Interrogation Recordings"
+  },
+  {
+    "symbol": "espionagematerial",
+    "category": "data",
+    "name": "Espionage Material"
+  },
+  {
+    "symbol": "evacuationprotocols",
+    "category": "data",
+    "name": "Evacuation Protocols"
+  },
+  {
+    "symbol": "explorationjournals",
+    "category": "data",
+    "name": "Exploration Journals"
+  },
+  {
+    "symbol": "extractionyielddata",
+    "category": "data",
+    "name": "Extraction Yield Data"
+  },
+  {
+    "symbol": "factionassociates",
+    "category": "data",
+    "name": "Faction Associates"
+  },
+  {
+    "symbol": "financialprojections",
+    "category": "data",
+    "name": "Financial Projections"
+  },
+  {
+    "symbol": "factionnews",
+    "category": "data",
+    "name": "Faction News"
+  },
+  {
+    "symbol": "fleetregistry",
+    "category": "data",
+    "name": "Fleet Registry"
+  },
+  {
+    "symbol": "genesequencingdata",
+    "category": "data",
+    "name": "Gene Sequencing Data"
+  },
+  {
+    "symbol": "geneticresearch",
+    "category": "data",
+    "name": "Genetic Research"
+  },
+  {
+    "symbol": "hydroponicdata",
+    "category": "data",
+    "name": "Hydroponic Data"
+  },
+  {
+    "symbol": "incidentlogs",
+    "category": "data",
+    "name": "Incident Logs"
+  },
+  {
+    "symbol": "influenceprojections",
+    "category": "data",
+    "name": "Influence Projections"
+  },
+  {
+    "symbol": "interrogationrecordings",
+    "category": "data",
+    "name": "Interrogation Recordings"
+  },
+  {
+    "symbol": "interviewrecordings",
+    "category": "data",
+    "name": "Interview Recordings"
+  },
+  {
+    "symbol": "jobapplications",
+    "category": "data",
+    "name": "Job Applications"
+  },
+  {
+    "symbol": "kompromat",
+    "category": "data",
+    "name": "Kompromat"
+  },
+  {
+    "symbol": "literaryfiction",
+    "category": "data",
+    "name": "Literary Fiction"
+  },
+  {
+    "symbol": "maintenancelogs",
+    "category": "data",
+    "name": "Maintenance Logs"
+  },
+  {
+    "symbol": "manufacturinginstructions",
+    "category": "data",
+    "name": "Manufacturing Instructions"
+  },
+  {
+    "symbol": "medicalrecords",
+    "category": "data",
+    "name": "Medical Records"
+  },
+  {
+    "symbol": "medicaltrialrecords",
+    "category": "data",
+    "name": "Clinical Trial Records"
+  },
+  {
+    "symbol": "meetingminutes",
+    "category": "data",
+    "name": "Meeting Minutes"
+  },
+  {
+    "symbol": "mineralsurvey",
+    "category": "data",
+    "name": "Mineral Survey"
+  },
+  {
+    "symbol": "mininganalytics",
+    "category": "data",
+    "name": "Mining Analytics"
+  },
+  {
+    "symbol": "multimediaentertainment",
+    "category": "data",
+    "name": "Multimedia Entertainment"
+  },
+  {
+    "symbol": "networkaccesshistory",
+    "category": "data",
+    "name": "Network Access History"
+  },
+  {
+    "symbol": "networksecurityprotocols",
+    "category": "data",
+    "name": "Network Security Protocols"
+  },
+  {
+    "symbol": "nextofkinrecords",
+    "category": "data",
+    "name": "Next of Kin Records"
+  },
+  {
+    "symbol": "operationalmanual",
+    "category": "data",
+    "name": "Operational Manual"
+  },
+  {
+    "symbol": "opinionpolls",
+    "category": "data",
+    "name": "Opinion Polls"
+  },
+  {
+    "symbol": "patienthistory",
+    "category": "data",
+    "name": "Patient History"
+  },
+  {
+    "symbol": "patrolroutes",
+    "category": "data",
+    "name": "Patrol Routes"
+  },
+  {
+    "symbol": "personallogs",
+    "category": "data",
+    "name": "Personal Logs"
+  },
+  {
+    "symbol": "photoalbums",
+    "category": "data",
+    "name": "Photo Albums"
+  },
+  {
+    "symbol": "plantgrowthcharts",
+    "category": "data",
+    "name": "Plant Growth Charts"
+  },
+  {
+    "symbol": "politicalaffiliations",
+    "category": "data",
+    "name": "Political Affiliations"
+  },
+  {
+    "symbol": "prisonerlogs",
+    "category": "data",
+    "name": "Prisoner Logs"
+  },
+  {
+    "symbol": "productionreports",
+    "category": "data",
+    "name": "Production Reports"
+  },
+  {
+    "symbol": "productionschedule",
+    "category": "data",
+    "name": "Production Schedule"
+  },
+  {
+    "symbol": "propaganda",
+    "category": "data",
+    "name": "Propaganda"
+  },
+  {
+    "symbol": "purchaserecords",
+    "category": "data",
+    "name": "Purchase Records"
+  },
+  {
+    "symbol": "purchaserequests",
+    "category": "data",
+    "name": "Purchase Requests"
+  },
+  {
+    "symbol": "radioactivitydata",
+    "category": "data",
+    "name": "Radioactivity Data"
+  },
+  {
+    "symbol": "reactoroutputreview",
+    "category": "data",
+    "name": "Reactor Output Review"
+  },
+  {
+    "symbol": "recyclinglogs",
+    "category": "data",
+    "name": "Recycling Logs"
+  },
+  {
+    "symbol": "residentialdirectory",
+    "category": "data",
+    "name": "Residential Directory"
+  },
+  {
+    "symbol": "riskassessments",
+    "category": "data",
+    "name": "Risk Assessments"
+  },
+  {
+    "symbol": "salesrecords",
+    "category": "data",
+    "name": "Sales Records"
+  },
+  {
+    "symbol": "securityexpenses",
+    "category": "data",
+    "name": "Security Expenses"
+  },
+  {
+    "symbol": "seedgeneaology",
+    "category": "data",
+    "name": "Seed Geneaology"
+  },
+  {
+    "symbol": "settlementassaultplans",
+    "category": "data",
+    "name": "Settlement Assault Plans"
+  },
+  {
+    "symbol": "settlementdefenceplans",
+    "category": "data",
+    "name": "Settlement Defence Plans"
+  },
+  {
+    "symbol": "shareholderinformation",
+    "category": "data",
+    "name": "Shareholder Information"
+  },
+  {
+    "symbol": "slushfundlogs",
+    "category": "data",
+    "name": "Slush Fund Logs"
+  },
+  {
+    "symbol": "smearcampaignplans",
+    "category": "data",
+    "name": "Smear Campaign Plans"
+  },
+  {
+    "symbol": "spectralanalysisdata",
+    "category": "data",
+    "name": "Spectral Analysis Data"
+  },
+  {
+    "symbol": "stellaractivitylogs",
+    "category": "data",
+    "name": "Stellar Activity Logs"
+  },
+  {
+    "symbol": "surveilleancelogs",
+    "category": "data",
+    "name": "Surveillance Logs"
+  },
+  {
+    "symbol": "tacticalplans",
+    "category": "data",
+    "name": "Tactical Plans"
+  },
+  {
+    "symbol": "taxrecords",
+    "category": "data",
+    "name": "Tax Records"
+  },
+  {
+    "symbol": "topographicalsurveys",
+    "category": "data",
+    "name": "Topographical Surveys"
+  },
+  {
+    "symbol": "travelpermits",
+    "category": "data",
+    "name": "Travel Permits"
+  },
+  {
+    "symbol": "troopdeploymentrecords",
+    "category": "data",
+    "name": "Troop Deployment Records"
+  },
+  {
+    "symbol": "unionmembership",
+    "category": "data",
+    "name": "Union Membership"
+  },
+  {
+    "symbol": "vaccinationrecords",
+    "category": "data",
+    "name": "Vaccination Records"
+  },
+  {
+    "symbol": "vaccineresearch",
+    "category": "data",
+    "name": "Vaccine Research"
+  },
+  {
+    "symbol": "vipsecuritydetail",
+    "category": "data",
+    "name": "VIP Security Detail"
+  },
+  {
+    "symbol": "virologydata",
+    "category": "data",
+    "name": "Virology Data"
+  },
+  {
+    "symbol": "virus",
+    "category": "data",
+    "name": "Virus"
+  },
+  {
+    "symbol": "visitorregister",
+    "category": "data",
+    "name": "Visitor Register"
+  },
+  {
+    "symbol": "weaponinventory",
+    "category": "data",
+    "name": "Weapon Inventory"
+  },
+  {
+    "symbol": "weapontestdata",
+    "category": "data",
+    "name": "Weapon Test Data"
+  },
+  {
+    "symbol": "xenodefenceprotocols",
+    "category": "data",
+    "name": "Xeno-Defence Protocols"
+  },
+  {
+    "symbol": "payrollinformation",
+    "category": "data",
+    "name": "Payroll Information"
+  },
+  {
+    "symbol": "geologicaldata",
+    "category": "data",
+    "name": "Geological Data"
+  },
+  {
+    "symbol": "criminalrecords",
+    "category": "data",
+    "name": "Criminal Records"
+  },
+  {
+    "symbol": "factiondonatorlist",
+    "category": "data",
+    "name": "Faction Donator List"
+  },
+  {
+    "symbol": "pharmaceuticalpatents",
+    "category": "data",
+    "name": "Pharmaceutical Patents"
+  }
+]

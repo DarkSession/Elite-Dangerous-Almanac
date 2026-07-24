@@ -34,6 +34,15 @@
             "types": "./dist/astro/*.d.ts",
             "import": "./dist/astro/*.js"
         },
+        "./commodities/commodity-catalogue": null,
+        "./commodities": {
+            "types": "./dist/commodities/index.d.ts",
+            "import": "./dist/commodities/index.js"
+        },
+        "./commodities/*": {
+            "types": "./dist/commodities/*.d.ts",
+            "import": "./dist/commodities/*.js"
+        },
         "./materials/material-catalogue": null,
         "./materials": {
             "types": "./dist/materials/index.d.ts",
@@ -68,7 +77,7 @@
         "format:check": "prettier --check . ../README.md ../.github/workflows/*.yml",
         "lint": "eslint .",
         "prepublishOnly": "npm run check && npm run build && npm run test:package",
-        "test": "node --experimental-test-coverage --test-coverage-include=\"src/astro/*.ts\" --test-coverage-include=\"src/materials/*.ts\" --test-coverage-include=\"src/ships/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
+        "test": "node --experimental-test-coverage --test-coverage-include=\"src/astro/*.ts\" --test-coverage-include=\"src/materials/*.ts\" --test-coverage-include=\"src/ships/*.ts\" --test-coverage-include=\"src/commodities/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
         "typecheck": "tsc --noEmit",
         "docs": "typedoc",
         "test:package": "node --test package.test.mjs"

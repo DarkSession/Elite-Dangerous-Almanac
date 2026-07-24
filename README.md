@@ -284,6 +284,37 @@ grade 4 — there is no grade-5 raw element.
 > catalogued here by their journal `symbol`, like every other material. See
 > `data/materials/SOURCES.md` for the list.
 
+### Odyssey micro resources
+
+The same `materials` feature area also carries the 196 on-foot **micro resources**
+introduced by Odyssey — the components, data, consumables and items a Commander
+carries on foot. These are a separate registry from the ship-side engineering
+materials above: a micro resource is a plain `{ symbol, category, name }` record
+with **no grade and no line**. Like the materials, they ship as one module per
+category:
+
+| Import                                 | Export                       | What's in it                                | Entries |
+| -------------------------------------- | ---------------------------- | ------------------------------------------- | ------- |
+| `materials/micro-resources-component`  | `COMPONENT_MICRO_RESOURCES`  | Parts spent upgrading suits and weapons     | 33      |
+| `materials/micro-resources-consumable` | `CONSUMABLE_MICRO_RESOURCES` | Deployable field tools (medkits, grenades…) | 6       |
+| `materials/micro-resources-data`       | `DATA_MICRO_RESOURCES`       | Intel and files traded on foot              | 114     |
+| `materials/micro-resources-item`       | `ITEM_MICRO_RESOURCES`       | Physical goods collected and traded on foot | 43      |
+| `materials/micro-resources-all`        | `ALL_MICRO_RESOURCES`        | All four, concatenated                      | 196     |
+
+```ts
+import {
+  getMicroResourceBySymbol,
+  getMicroResourceByName,
+  microResourcesInCategory,
+} from "@elite-dangerous-almanac/core/materials";
+import { COMPONENT_MICRO_RESOURCES } from "@elite-dangerous-almanac/core/materials/micro-resources-component";
+import { ALL_MICRO_RESOURCES } from "@elite-dangerous-almanac/core/materials/micro-resources-all";
+
+getMicroResourceBySymbol("graphene", COMPONENT_MICRO_RESOURCES)?.name; // -> 'Graphene'
+getMicroResourceByName("circuit board", COMPONENT_MICRO_RESOURCES)?.symbol; // -> 'circuitboard'
+microResourcesInCategory("consumable", ALL_MICRO_RESOURCES).length; // -> 6
+```
+
 ## Ships and outfitting
 
 The `ships` feature area is Frontier's shipyard and outfitting registries: the
@@ -341,6 +372,47 @@ present only on the hardpoints that have them; `ship` is present only on armour,
 the one hull-specific module (which is what `getModulesForShip` returns). Module
 `name` is **not** unique — it repeats across sizes, ratings and hulls — so key on
 `symbol`; `getModulesByName` returns every match.
+
+## Market commodities
+
+The `commodities` feature area is Frontier's commodity-market registry: the 256
+**standard** goods traded at station markets and the 142 **rare** goods each
+produced at a single station. Every entry is a symbol/name/category record (not a
+price sheet — no buy/sell price, supply or demand, which the source registry does
+not carry). The two registries share a shape, so you pay only for the catalogue you
+import (subpaths below are relative to `@elite-dangerous-almanac/core`):
+
+| Import                             | Export             | What's in it                                     | Entries |
+| ---------------------------------- | ------------------ | ------------------------------------------------ | ------- |
+| `commodities/commodities-standard` | `COMMODITIES`      | Standard market goods, all sixteen market groups | 256     |
+| `commodities/commodities-rare`     | `RARE_COMMODITIES` | Location-specific rare/luxury goods              | 142     |
+| `commodities/commodities-all`      | `ALL_COMMODITIES`  | Both, standard then rare                         | 398     |
+
+The query functions live in `commodities` and hold no data — hand them whichever
+catalogue you imported:
+
+```ts
+import {
+  getCommodityBySymbol,
+  getCommodityByName,
+  commoditiesInCategory,
+} from "@elite-dangerous-almanac/core/commodities";
+import { COMMODITIES } from "@elite-dangerous-almanac/core/commodities/commodities-standard";
+import { RARE_COMMODITIES } from "@elite-dangerous-almanac/core/commodities/commodities-rare";
+
+getCommodityBySymbol("platinum", COMMODITIES)?.category; // -> 'Metals' (journal-style lowercase symbol)
+getCommodityByName("lavian brandy", RARE_COMMODITIES)?.rare; // -> true
+commoditiesInCategory("Metals", COMMODITIES).length; // -> every metal on the market
+```
+
+Each commodity carries a stable Frontier `symbol` (the journal names commodities by
+its lower-cased form, so `getCommodityBySymbol` accepts either casing), a display
+`name`, and a `category` — the market group it sells under (`Metals`, `Foods`,
+`Legal Drugs`, …). A `rare` flag distinguishes the two registries; it is derived
+from which catalogue a record lives in, so it stays correct through
+`ALL_COMMODITIES`. A rare's origin station is **not** carried — the source's
+`market_id` is dropped, since the library has no station registry to resolve it
+against.
 
 ## Data freshness
 
@@ -403,11 +475,21 @@ field so it documents the data without being inlined into your bundle.)
   stated; check the repository terms). The newest Thargoid caustic/Titan materials
   it does not yet list are filled in from [INARA](https://inara.cz/elite/components/).
   Full provenance in `data/materials/SOURCES.md`.
+- **Odyssey micro resources** (on-foot components, data, consumables and items —
+  names, symbols and categories) — from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
+  (`microresources.csv`), the community-maintained registry of Frontier's internal
+  ids (no explicit licence stated; check the repository terms). Full provenance in
+  `data/materials/SOURCES.md`.
 - **Ships and outfitting modules** (hull and module names, ids, symbols, sizes,
   ratings, mounts and entitlements) — from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
   (`shipyard.csv`, `outfitting.csv`), the community-maintained registry of
   Frontier's internal ids (no explicit licence stated; check the repository terms).
   Full provenance in `data/ships/SOURCES.md`.
+- **Market commodities** (standard and rare goods — names, symbols and market
+  categories) — from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
+  (`commodity.csv`, `rare_commodity.csv`), the community-maintained registry of
+  Frontier's internal ids (no explicit licence stated; check the repository terms).
+  Full provenance in `data/commodities/SOURCES.md`.
 
 If you add or change data, port an algorithm, or add a dependency that warrants
 credit, update both the in-source attribution and this section in the same change.

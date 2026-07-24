@@ -1,0 +1,49 @@
+/*
+ * Odyssey micro resources — the consumable category (6 entries).
+ *
+ * Consumables — the deployable field tools (medkits, energy cells, grenades, E-Breach) carried on foot.
+ *
+ * Source:  EDCD FDevIDs, microresources.csv
+ *          https://github.com/EDCD/FDevIDs
+ *          Community-maintained Frontier id/name registry. No explicit licence
+ *          is stated; consult the repository terms.
+ *
+ * Each record is { symbol, category, name }. `symbol` is Frontier's internal id
+ * (e.g. `graphene`) — what the player journal reports, matched case-insensitively;
+ * `name` is the display name. `category` is one of component / consumable / data /
+ * item. Frontier's numeric micro-resource id from the CSV is not carried.
+ *
+ * Full provenance: data/materials/SOURCES.md.
+ */
+[
+  {
+    "symbol": "healthpack",
+    "category": "consumable",
+    "name": "Medkit"
+  },
+  {
+    "symbol": "energycell",
+    "category": "consumable",
+    "name": "Energy Cell"
+  },
+  {
+    "symbol": "amm_grenade_emp",
+    "category": "consumable",
+    "name": "Shield Disruptor"
+  },
+  {
+    "symbol": "amm_grenade_frag",
+    "category": "consumable",
+    "name": "Frag Grenade"
+  },
+  {
+    "symbol": "amm_grenade_shield",
+    "category": "consumable",
+    "name": "Shield Projector"
+  },
+  {
+    "symbol": "bypass",
+    "category": "consumable",
+    "name": "E-Breach"
+  }
+]

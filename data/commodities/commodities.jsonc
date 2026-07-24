@@ -1,0 +1,1300 @@
+/*
+ * Standard market commodities in Elite Dangerous — the goods traded at station
+ * commodity markets, as Frontier's internal registry.
+ *
+ * Source:       EDCD FDevIDs, commodity.csv
+ *               https://github.com/EDCD/FDevIDs
+ *               Community-maintained Frontier id/name registry. No explicit
+ *               licence is stated; consult the repository terms.
+ *
+ * Each record is { symbol, name, category }. `symbol` is Frontier's internal id
+ * (matched case-insensitively, as the market/journal reports it); `name` is the
+ * display name; `category` is the market group (Metals, Minerals, Foods, …). The
+ * CSV's numeric `id` column is dropped — commodities are keyed by `symbol`. The
+ * `rare` flag is not stored here: everything in this file is a standard commodity
+ * (the rare goods live in rare-commodities.jsonc).
+ *
+ * Full provenance: data/commodities/SOURCES.md.
+ */
+[
+  {
+    "symbol": "Platinum",
+    "name": "Platinum",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Palladium",
+    "name": "Palladium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Gold",
+    "name": "Gold",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Silver",
+    "name": "Silver",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Bertrandite",
+    "name": "Bertrandite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Indite",
+    "name": "Indite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Gallite",
+    "name": "Gallite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Coltan",
+    "name": "Coltan",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Uraninite",
+    "name": "Uraninite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Lepidolite",
+    "name": "Lepidolite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Cobalt",
+    "name": "Cobalt",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Rutile",
+    "name": "Rutile",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Bauxite",
+    "name": "Bauxite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Water",
+    "name": "Water",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "Beryllium",
+    "name": "Beryllium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Indium",
+    "name": "Indium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Gallium",
+    "name": "Gallium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Tantalum",
+    "name": "Tantalum",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Uranium",
+    "name": "Uranium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Lithium",
+    "name": "Lithium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Titanium",
+    "name": "Titanium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Copper",
+    "name": "Copper",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Aluminium",
+    "name": "Aluminium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Algae",
+    "name": "Algae",
+    "category": "Foods"
+  },
+  {
+    "symbol": "FruitAndVegetables",
+    "name": "Fruit and Vegetables",
+    "category": "Foods"
+  },
+  {
+    "symbol": "Grain",
+    "name": "Grain",
+    "category": "Foods"
+  },
+  {
+    "symbol": "Animalmeat",
+    "name": "Animal Meat",
+    "category": "Foods"
+  },
+  {
+    "symbol": "Fish",
+    "name": "Fish",
+    "category": "Foods"
+  },
+  {
+    "symbol": "FoodCartridges",
+    "name": "Food Cartridges",
+    "category": "Foods"
+  },
+  {
+    "symbol": "SyntheticMeat",
+    "name": "Synthetic Meat",
+    "category": "Foods"
+  },
+  {
+    "symbol": "Tea",
+    "name": "Tea",
+    "category": "Foods"
+  },
+  {
+    "symbol": "Coffee",
+    "name": "Coffee",
+    "category": "Foods"
+  },
+  {
+    "symbol": "Leather",
+    "name": "Leather",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "NaturalFabrics",
+    "name": "Natural Fabrics",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "SyntheticFabrics",
+    "name": "Synthetic Fabrics",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "Polymers",
+    "name": "Polymers",
+    "category": "Industrial Materials"
+  },
+  {
+    "symbol": "Semiconductors",
+    "name": "Semiconductors",
+    "category": "Industrial Materials"
+  },
+  {
+    "symbol": "Superconductors",
+    "name": "Superconductors",
+    "category": "Industrial Materials"
+  },
+  {
+    "symbol": "HydrogenFuel",
+    "name": "Hydrogen Fuel",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "MineralOil",
+    "name": "Mineral Oil",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "Explosives",
+    "name": "Explosives",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "Pesticides",
+    "name": "Pesticides",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "AgriculturalMedicines",
+    "name": "Agri-Medicines",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "PerformanceEnhancers",
+    "name": "Performance Enhancers",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "BasicMedicines",
+    "name": "Basic Medicines",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "BasicNarcotics",
+    "name": "Narcotics",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "Tobacco",
+    "name": "Tobacco",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "Beer",
+    "name": "Beer",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "Wine",
+    "name": "Wine",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "Liquor",
+    "name": "Liquor",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "PowerGenerators",
+    "name": "Power Generators",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "WaterPurifiers",
+    "name": "Water Purifiers",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "HeliostaticFurnaces",
+    "name": "Microbial Furnaces",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "MineralExtractors",
+    "name": "Mineral Extractors",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "CropHarvesters",
+    "name": "Crop Harvesters",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "MarineSupplies",
+    "name": "Marine Equipment",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "ComputerComponents",
+    "name": "Computer Components",
+    "category": "Technology"
+  },
+  {
+    "symbol": "HazardousEnvironmentSuits",
+    "name": "H.E. Suits",
+    "category": "Technology"
+  },
+  {
+    "symbol": "Robotics",
+    "name": "Robotics",
+    "category": "Technology"
+  },
+  {
+    "symbol": "AutoFabricators",
+    "name": "Auto-Fabricators",
+    "category": "Technology"
+  },
+  {
+    "symbol": "AnimalMonitors",
+    "name": "Animal Monitors",
+    "category": "Technology"
+  },
+  {
+    "symbol": "AquaponicSystems",
+    "name": "Aquaponic Systems",
+    "category": "Technology"
+  },
+  {
+    "symbol": "AdvancedCatalysers",
+    "name": "Advanced Catalysers",
+    "category": "Technology"
+  },
+  {
+    "symbol": "TerrainEnrichmentSystems",
+    "name": "Land Enrichment Systems",
+    "category": "Technology"
+  },
+  {
+    "symbol": "PersonalWeapons",
+    "name": "Personal Weapons",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "BattleWeapons",
+    "name": "Battle Weapons",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "ReactiveArmour",
+    "name": "Reactive Armour",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "NonLethalWeapons",
+    "name": "Non-Lethal Weapons",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "DomesticAppliances",
+    "name": "Domestic Appliances",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "ConsumerTechnology",
+    "name": "Consumer Technology",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "Clothing",
+    "name": "Clothing",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "Slaves",
+    "name": "Slaves",
+    "category": "Slavery"
+  },
+  {
+    "symbol": "Biowaste",
+    "name": "Biowaste",
+    "category": "Waste"
+  },
+  {
+    "symbol": "ToxicWaste",
+    "name": "Toxic Waste",
+    "category": "Waste"
+  },
+  {
+    "symbol": "ChemicalWaste",
+    "name": "Chemical Waste",
+    "category": "Waste"
+  },
+  {
+    "symbol": "Scrap",
+    "name": "Scrap",
+    "category": "Waste"
+  },
+  {
+    "symbol": "ProgenitorCells",
+    "name": "Progenitor Cells",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "CombatStabilisers",
+    "name": "Combat Stabilisers",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "ResonatingSeparators",
+    "name": "Resonating Separators",
+    "category": "Technology"
+  },
+  {
+    "symbol": "BioReducingLichen",
+    "name": "Bioreducing Lichen",
+    "category": "Technology"
+  },
+  {
+    "symbol": "AtmosphericExtractors",
+    "name": "Atmospheric Processors",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "Drones",
+    "name": "Limpets",
+    "category": "NonMarketable"
+  },
+  {
+    "symbol": "USSCargoBlackBox",
+    "name": "Black Box",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "USSCargoTradeData",
+    "name": "Trade Data",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "USSCargoMilitaryPlans",
+    "name": "Military Plans",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "USSCargoAncientArtefact",
+    "name": "Ancient Artefact",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "USSCargoRareArtwork",
+    "name": "Rare Artwork",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "USSCargoExperimentalChemicals",
+    "name": "Experimental Chemicals",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "USSCargoRebelTransmissions",
+    "name": "Rebel Transmissions",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "USSCargoPrototypeTech",
+    "name": "Prototype Tech",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "USSCargoTechnicalBlueprints",
+    "name": "Technical Blueprints",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ImperialSlaves",
+    "name": "Imperial Slaves",
+    "category": "Slavery"
+  },
+  {
+    "symbol": "UnknownArtifact",
+    "name": "Thargoid Sensor",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AiRelics",
+    "name": "AI Relics",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "Hafnium178",
+    "name": "Hafnium 178",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Painite",
+    "name": "Painite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Antiquities",
+    "name": "Antiquities",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "MilitaryIntelligence",
+    "name": "Military Intelligence",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "Osmium",
+    "name": "Osmium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "SAP8CoreContainer",
+    "name": "SAP 8 Core Container",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "TrinketsOfFortune",
+    "name": "Trinkets of Hidden Fortune",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "WreckageComponents",
+    "name": "Wreckage Components",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "EncriptedDataStorage",
+    "name": "Encrypted Data Storage",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "OccupiedCryoPod",
+    "name": "Occupied Escape Pod",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "PersonalEffects",
+    "name": "Personal Effects",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ComercialSamples",
+    "name": "Commercial Samples",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "TacticalData",
+    "name": "Tactical Data",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AssaultPlans",
+    "name": "Assault Plans",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "EncryptedCorrespondence",
+    "name": "Encrypted Correspondence",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "DiplomaticBag",
+    "name": "Diplomatic Bag",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ScientificResearch",
+    "name": "Scientific Research",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ScientificSamples",
+    "name": "Scientific Samples",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "PoliticalPrisoner",
+    "name": "Political Prisoners",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "Hostage",
+    "name": "Hostages",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "LargeExplorationDataCash",
+    "name": "Large Survey Data Cache",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "SmallExplorationDataCash",
+    "name": "Small Survey Data Cache",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AntiqueJewellery",
+    "name": "Antique Jewellery",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "PreciousGems",
+    "name": "Precious Gems",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "EarthRelics",
+    "name": "Earth Relics",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "GeneBank",
+    "name": "Gene Bank",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "TimeCapsule",
+    "name": "Time Capsule",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "Cryolite",
+    "name": "Cryolite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Goslarite",
+    "name": "Goslarite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Moissanite",
+    "name": "Moissanite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Pyrophyllite",
+    "name": "Pyrophyllite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Lanthanum",
+    "name": "Lanthanum",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Thallium",
+    "name": "Thallium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Bismuth",
+    "name": "Bismuth",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Thorium",
+    "name": "Thorium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "CeramicComposites",
+    "name": "Ceramic Composites",
+    "category": "Industrial Materials"
+  },
+  {
+    "symbol": "SyntheticReagents",
+    "name": "Synthetic Reagents",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "NerveAgents",
+    "name": "Nerve Agents",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "SurfaceStabilisers",
+    "name": "Surface Stabilisers",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "BootlegLiquor",
+    "name": "Bootleg Liquor",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "GeologicalEquipment",
+    "name": "Geological Equipment",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "ThermalCoolingUnits",
+    "name": "Thermal Cooling Units",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "BuildingFabricators",
+    "name": "Building Fabricators",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "MuTomImager",
+    "name": "Muon Imager",
+    "category": "Technology"
+  },
+  {
+    "symbol": "StructuralRegulators",
+    "name": "Structural Regulators",
+    "category": "Technology"
+  },
+  {
+    "symbol": "Landmines",
+    "name": "Landmines",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "SkimerComponents",
+    "name": "Skimmer Components",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "EvacuationShelter",
+    "name": "Evacuation Shelter",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "GeologicalSamples",
+    "name": "Geological Samples",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "MetaAlloys",
+    "name": "Meta-Alloys",
+    "category": "Industrial Materials"
+  },
+  {
+    "symbol": "Taaffeite",
+    "name": "Taaffeite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Jadeite",
+    "name": "Jadeite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "UnstableDataCore",
+    "name": "Unstable Data Core",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "DamagedEscapePod",
+    "name": "Damaged Escape Pod",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "Praseodymium",
+    "name": "Praseodymium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Bromellite",
+    "name": "Bromellite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Samarium",
+    "name": "Samarium",
+    "category": "Metals"
+  },
+  {
+    "symbol": "LowTemperatureDiamond",
+    "name": "Low Temperature Diamonds",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "HydrogenPeroxide",
+    "name": "Hydrogen Peroxide",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "LiquidOxygen",
+    "name": "Liquid oxygen",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "MethanolMonohydrateCrystals",
+    "name": "Methanol Monohydrate Crystals",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "LithiumHydroxide",
+    "name": "Lithium Hydroxide",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "MethaneClathrate",
+    "name": "Methane Clathrate",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "InsulatingMembrane",
+    "name": "Insulating Membrane",
+    "category": "Industrial Materials"
+  },
+  {
+    "symbol": "CMMComposite",
+    "name": "CMM Composite",
+    "category": "Industrial Materials"
+  },
+  {
+    "symbol": "CoolingHoses",
+    "name": "Micro-weave Cooling Hoses",
+    "category": "Industrial Materials"
+  },
+  {
+    "symbol": "NeofabricInsulation",
+    "name": "Neofabric Insulation",
+    "category": "Industrial Materials"
+  },
+  {
+    "symbol": "ArticulationMotors",
+    "name": "Articulation Motors",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "HNShockMount",
+    "name": "HN Shock Mount",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "EmergencyPowerCells",
+    "name": "Emergency Power Cells",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "PowerConverter",
+    "name": "Power Converter",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "PowerGridAssembly",
+    "name": "Energy Grid Assembly",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "PowerTransferConduits",
+    "name": "Power Transfer Bus",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "RadiationBaffle",
+    "name": "Radiation Baffle",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "ExhaustManifold",
+    "name": "Exhaust Manifold",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "ReinforcedMountingPlate",
+    "name": "Reinforced Mounting Plate",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "HeatsinkInterlink",
+    "name": "Heatsink Interlink",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "MagneticEmitterCoil",
+    "name": "Magnetic Emitter Coil",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "ModularTerminals",
+    "name": "Modular Terminals",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "Nanobreakers",
+    "name": "Nanobreakers",
+    "category": "Technology"
+  },
+  {
+    "symbol": "TelemetrySuite",
+    "name": "Telemetry Suite",
+    "category": "Technology"
+  },
+  {
+    "symbol": "MicroControllers",
+    "name": "Micro Controllers",
+    "category": "Technology"
+  },
+  {
+    "symbol": "IonDistributor",
+    "name": "Ion Distributor",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "DiagnosticSensor",
+    "name": "Hardware Diagnostic Sensor",
+    "category": "Technology"
+  },
+  {
+    "symbol": "UnknownArtifact2",
+    "name": "Thargoid Probe",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ConductiveFabrics",
+    "name": "Conductive Fabrics",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "MilitaryGradeFabrics",
+    "name": "Military Grade Fabrics",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "AdvancedMedicines",
+    "name": "Advanced Medicines",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "MedicalDiagnosticEquipment",
+    "name": "Medical Diagnostic Equipment",
+    "category": "Technology"
+  },
+  {
+    "symbol": "SurvivalEquipment",
+    "name": "Survival Equipment",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "DataCore",
+    "name": "Data Core",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "MysteriousIdol",
+    "name": "Mysterious Idol",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ProhibitedResearchMaterials",
+    "name": "Prohibited Research Materials",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AntimatterContainmentUnit",
+    "name": "Antimatter Containment Unit",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "SpacePioneerRelics",
+    "name": "Space Pioneer Relics",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "FossilRemnants",
+    "name": "Fossil Remnants",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AncientRelic",
+    "name": "Guardian Relic",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AncientOrb",
+    "name": "Guardian Orb",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AncientCasket",
+    "name": "Guardian Casket",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AncientTablet",
+    "name": "Guardian Tablet",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AncientUrn",
+    "name": "Guardian Urn",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AncientTotem",
+    "name": "Guardian Totem",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "UnknownResin",
+    "name": "Thargoid Resin",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "UnknownBiologicalMatter",
+    "name": "Thargoid Biological Matter",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "UnknownTechnologySamples",
+    "name": "Thargoid Technology Samples",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "UnknownArtifact3",
+    "name": "Thargoid Link",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidHeart",
+    "name": "Thargoid Heart",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType1",
+    "name": "Thargoid Cyclops Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType2",
+    "name": "Thargoid Basilisk Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType3",
+    "name": "Thargoid Medusa Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidScoutTissueSample",
+    "name": "Thargoid Scout Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AncientKey",
+    "name": "Ancient Key",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType4",
+    "name": "Thargoid Hydra Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "M_TissueSample_Fluid",
+    "name": "Mollusc Fluid",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "M_TissueSample_Soft",
+    "name": "Mollusc Soft Tissue",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "M_TissueSample_Nerves",
+    "name": "Mollusc Brain Tissue",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "S_TissueSample_Cells",
+    "name": "Pod Core Tissue",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "S_TissueSample_Surface",
+    "name": "Pod Dead Tissue",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "S_TissueSample_Core",
+    "name": "Pod Surface Tissue",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "P_ParticulateSample",
+    "name": "Anomaly Particles",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "S9_TissueSample_Shell",
+    "name": "Pod Tissue",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "M3_TissueSample_Membrane",
+    "name": "Mollusc Membrane",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "M3_TissueSample_Mycelium",
+    "name": "Mollusc Mycelium",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "M3_TissueSample_Spores",
+    "name": "Mollusc Spores",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "S6_TissueSample_Mesoglea",
+    "name": "Pod Mesoglea",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "S6_TissueSample_Cells",
+    "name": "Pod Outer Tissue",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "S6_TissueSample_Coenosarc",
+    "name": "Pod Shell Tissue",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "Rhodplumsite",
+    "name": "Rhodplumsite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Serendibite",
+    "name": "Serendibite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Monazite",
+    "name": "Monazite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Musgravite",
+    "name": "Musgravite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Benitoite",
+    "name": "Benitoite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Grandidierite",
+    "name": "Grandidierite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Alexandrite",
+    "name": "Alexandrite",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "Opal",
+    "name": "Void Opal",
+    "category": "Minerals"
+  },
+  {
+    "symbol": "RockforthFertiliser",
+    "name": "Rockforth Fertiliser",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "AgronomicTreatment",
+    "name": "Agronomic Treatment",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "Tritium",
+    "name": "Tritium",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "OnionHeadC",
+    "name": "Onionhead Gamma Strain",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "AncientRelicTG",
+    "name": "Unclassified Relic",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType5",
+    "name": "Thargoid Orthrus Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidGeneratorTissueSample",
+    "name": "Caustic Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "UnocuppiedEscapePod",
+    "name": "Unoccupied Escape Pod",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType6",
+    "name": "Thargoid Glaive Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType7",
+    "name": "Thargoid Scythe Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType9a",
+    "name": "Titan Deep Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType9b",
+    "name": "Titan Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType9c",
+    "name": "Titan Partial Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType10a",
+    "name": "Titan Maw Deep Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType10b",
+    "name": "Titan Maw Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTissueSampleType10c",
+    "name": "Titan Maw Partial Tissue Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "UnknownSack",
+    "name": "Protective Membrane Scrap",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidPod",
+    "name": "Xenobiological Prison Pod",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "CoralSap",
+    "name": "Coral Sap",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "UnknownMineral",
+    "name": "Impure Spire Mineral",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "UnknownRefinedMineral",
+    "name": "Semi-Refined Spire Mineral",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidTitanDriveComponent",
+    "name": "Titan Drive Component",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidCystSpecimen",
+    "name": "Cyst Specimen",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidBoneFragments",
+    "name": "Bone Fragments",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "ThargoidOrganSample",
+    "name": "Organ Sample",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "Steel",
+    "name": "Steel",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Haematite",
+    "name": "Haematite",
+    "category": "Minerals"
+  }
+]

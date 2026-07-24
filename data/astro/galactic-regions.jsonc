@@ -13,721 +13,719 @@
  *
  * Full provenance and derivation notes: data/astro/SOURCES.md.
  */
-{
-  "regions": [
-    {
-      "id": 1,
-      "name": "Galactic Centre",
-      "grayscale": 168,
-      "cellCount": 11409,
-      "areaLy2": 27785056.953125,
-      "bounds": {
-        "minX": -2905.671875,
-        "maxX": 3608.453125,
-        "minZ": 23615.875,
-        "maxZ": 30278.03125
-      },
-      "centroid": {
-        "x": -96.59375,
-        "z": 27257.265625
-      }
+[
+  {
+    "id": 1,
+    "name": "Galactic Centre",
+    "grayscale": 168,
+    "cellCount": 11409,
+    "areaLy2": 27785056.953125,
+    "bounds": {
+      "minX": -2905.671875,
+      "maxX": 3608.453125,
+      "minZ": 23615.875,
+      "maxZ": 30278.03125
     },
-    {
-      "id": 2,
-      "name": "Empyrean Straits",
-      "grayscale": 164,
-      "cellCount": 42489,
-      "areaLy2": 103476140.3125,
-      "bounds": {
-        "minX": -4780.953125,
-        "maxX": 10122.5625,
-        "minZ": 18582.234375,
-        "maxZ": 35805.171875
-      },
-      "centroid": {
-        "x": 3557.03125,
-        "z": 25617.609375
-      }
-    },
-    {
-      "id": 3,
-      "name": "Ryker's Hope",
-      "grayscale": 160,
-      "cellCount": 28301,
-      "areaLy2": 68923209.46875,
-      "bounds": {
-        "minX": -5027.703125,
-        "maxX": 8000.546875,
-        "minZ": 29636.5,
-        "maxZ": 39901.171875
-      },
-      "centroid": {
-        "x": 1904.3125,
-        "z": 34336.90625
-      }
-    },
-    {
-      "id": 4,
-      "name": "Odin's Hold",
-      "grayscale": 156,
-      "cellCount": 35882,
-      "areaLy2": 87385696.6875,
-      "bounds": {
-        "minX": -11196.375,
-        "maxX": -1622.59375,
-        "minZ": 16558.90625,
-        "maxZ": 33239
-      },
-      "centroid": {
-        "x": -6186.75,
-        "z": 24863.9375
-      }
-    },
-    {
-      "id": 5,
-      "name": "Norma Arm",
-      "grayscale": 152,
-      "cellCount": 22103,
-      "areaLy2": 53828829.328125,
-      "bounds": {
-        "minX": -6458.828125,
-        "maxX": 6470.703125,
-        "minZ": 13597.9375,
-        "maxZ": 19815.96875
-      },
-      "centroid": {
-        "x": 341.84375,
-        "z": 16351.453125
-      }
-    },
-    {
-      "id": 6,
-      "name": "Arcadian Stream",
-      "grayscale": 148,
-      "cellCount": 78985,
-      "areaLy2": 192357149.921875,
-      "bounds": {
-        "minX": 3559.09375,
-        "maxX": 16291.234375,
-        "minZ": 15078.421875,
-        "maxZ": 44786.765625
-      },
-      "centroid": {
-        "x": 10165.65625,
-        "z": 30626.625
-      }
-    },
-    {
-      "id": 7,
-      "name": "Izanami",
-      "grayscale": 144,
-      "cellCount": 34094,
-      "areaLy2": 83031267.578125,
-      "bounds": {
-        "minX": -13466.453125,
-        "maxX": 3509.75,
-        "minZ": 31955.921875,
-        "maxZ": 41727.09375
-      },
-      "centroid": {
-        "x": -5270.09375,
-        "z": 36868.828125
-      }
-    },
-    {
-      "id": 8,
-      "name": "Inner Orion-Perseus Conflux",
-      "grayscale": 140,
-      "cellCount": 28497,
-      "areaLy2": 69400540.625,
-      "bounds": {
-        "minX": -16279.359375,
-        "maxX": -5817.296875,
-        "minZ": 21740.59375,
-        "maxZ": 33584.453125
-      },
-      "centroid": {
-        "x": -12162.21875,
-        "z": 28579.90625
-      }
-    },
-    {
-      "id": 9,
-      "name": "Inner Scutum-Centaurus Arm",
-      "grayscale": 136,
-      "cellCount": 41544,
-      "areaLy2": 101174722.234375,
-      "bounds": {
-        "minX": -14305.390625,
-        "maxX": 400.734375,
-        "minZ": 7676.015625,
-        "maxZ": 24405.453125
-      },
-      "centroid": {
-        "x": -7587.90625,
-        "z": 14616.421875
-      }
-    },
-    {
-      "id": 10,
-      "name": "Norma Expanse",
-      "grayscale": 132,
-      "cellCount": 79179,
-      "areaLy2": 192829610.34375,
-      "bounds": {
-        "minX": -1622.59375,
-        "maxX": 23693.65625,
-        "minZ": 8564.296875,
-        "maxZ": 25688.546875
-      },
-      "centroid": {
-        "x": 12934.234375,
-        "z": 16728.765625
-      }
-    },
-    {
-      "id": 11,
-      "name": "Trojan Belt",
-      "grayscale": 128,
-      "cellCount": 44429,
-      "areaLy2": 108200744.609375,
-      "bounds": {
-        "minX": 14662.703125,
-        "maxX": 25272.828125,
-        "minZ": 24997.65625,
-        "maxZ": 39457.03125
-      },
-      "centroid": {
-        "x": 19968.09375,
-        "z": 31525.140625
-      }
-    },
-    {
-      "id": 12,
-      "name": "The Veils",
-      "grayscale": 124,
-      "cellCount": 62537,
-      "areaLy2": 152300298.59375,
-      "bounds": {
-        "minX": 2276.015625,
-        "maxX": 23496.25,
-        "minZ": 36150.609375,
-        "maxZ": 52583.96875
-      },
-      "centroid": {
-        "x": 14181.640625,
-        "z": 44470.171875
-      }
-    },
-    {
-      "id": 13,
-      "name": "Newton's Vault",
-      "grayscale": 120,
-      "cellCount": 62369,
-      "areaLy2": 151891157.59375,
-      "bounds": {
-        "minX": -16970.25,
-        "maxX": 4694.125,
-        "minZ": 39605.078125,
-        "maxZ": 51794.375
-      },
-      "centroid": {
-        "x": -5981.6875,
-        "z": 45020.015625
-      }
-    },
-    {
-      "id": 14,
-      "name": "The Conduit",
-      "grayscale": 116,
-      "cellCount": 48611,
-      "areaLy2": 118385432.859375,
-      "bounds": {
-        "minX": -29505,
-        "maxX": -11541.8125,
-        "minZ": 35755.8125,
-        "maxZ": 49524.296875
-      },
-      "centroid": {
-        "x": -20418.390625,
-        "z": 42404.53125
-      }
-    },
-    {
-      "id": 15,
-      "name": "Outer Orion-Perseus Conflux",
-      "grayscale": 112,
-      "cellCount": 34467,
-      "areaLy2": 83939657.984375,
-      "bounds": {
-        "minX": -21263.65625,
-        "maxX": -6902.96875,
-        "minZ": 26576.828125,
-        "maxZ": 41529.703125
-      },
-      "centroid": {
-        "x": -15682.5625,
-        "z": 34318.65625
-      }
-    },
-    {
-      "id": 16,
-      "name": "Orion-Cygnus Arm",
-      "grayscale": 108,
-      "cellCount": 38276,
-      "areaLy2": 93215955.8125,
-      "bounds": {
-        "minX": -21263.65625,
-        "maxX": -11689.875,
-        "minZ": 10834.375,
-        "maxZ": 27859.921875
-      },
-      "centroid": {
-        "x": -16994.34375,
-        "z": 19347.796875
-      }
-    },
-    {
-      "id": 17,
-      "name": "Temple",
-      "grayscale": 104,
-      "cellCount": 23195,
-      "areaLy2": 56488245.765625,
-      "bounds": {
-        "minX": -17710.5,
-        "maxX": -7495.171875,
-        "minZ": 3925.453125,
-        "maxZ": 14288.828125
-      },
-      "centroid": {
-        "x": -12148.078125,
-        "z": 9097.609375
-      }
-    },
-    {
-      "id": 18,
-      "name": "Inner Orion Spur",
-      "grayscale": 100,
-      "cellCount": 46302,
-      "areaLy2": 112762179.59375,
-      "bounds": {
-        "minX": -10110.6875,
-        "maxX": 4003.234375,
-        "minZ": -1404.28125,
-        "maxZ": 9255.1875
-      },
-      "centroid": {
-        "x": -2451.109375,
-        "z": 3801.984375
-      }
-    },
-    {
-      "id": 19,
-      "name": "Hawking's Gap",
-      "grayscale": 96,
-      "cellCount": 80131,
-      "areaLy2": 195148075.96875,
-      "bounds": {
-        "minX": 2917.546875,
-        "maxX": 30109.078125,
-        "minZ": 3185.21875,
-        "maxZ": 17348.5
-      },
-      "centroid": {
-        "x": 17324.21875,
-        "z": 9488.109375
-      }
-    },
-    {
-      "id": 20,
-      "name": "Dryman's Point",
-      "grayscale": 92,
-      "cellCount": 72309,
-      "areaLy2": 176098666.25,
-      "bounds": {
-        "minX": 21719.671875,
-        "maxX": 37116.6875,
-        "minZ": 14634.28125,
-        "maxZ": 31265.03125
-      },
-      "centroid": {
-        "x": 29768.15625,
-        "z": 23004.40625
-      }
-    },
-    {
-      "id": 21,
-      "name": "Sagittarius-Carina Arm",
-      "grayscale": 88,
-      "cellCount": 74468,
-      "areaLy2": 181356615.046875,
-      "bounds": {
-        "minX": 22114.46875,
-        "maxX": 40373.75,
-        "minZ": 28205.359375,
-        "maxZ": 43849.125
-      },
-      "centroid": {
-        "x": 31880.4375,
-        "z": 35505.59375
-      }
-    },
-    {
-      "id": 22,
-      "name": "Mare Somnia",
-      "grayscale": 84,
-      "cellCount": 124760,
-      "areaLy2": 303835893.1875,
-      "bounds": {
-        "minX": 18906.765625,
-        "maxX": 43630.8125,
-        "minZ": 38716.78125,
-        "maxZ": 61417.5
-      },
-      "centroid": {
-        "x": 31624.03125,
-        "z": 49021.46875
-      }
-    },
-    {
-      "id": 23,
-      "name": "Acheron",
-      "grayscale": 80,
-      "cellCount": 156658,
-      "areaLy2": 381519103.515625,
-      "bounds": {
-        "minX": 5681.125,
-        "maxX": 35488.15625,
-        "minZ": 48438.609375,
-        "maxZ": 70448.453125
-      },
-      "centroid": {
-        "x": 19973.03125,
-        "z": 60436.0625
-      }
-    },
-    {
-      "id": 24,
-      "name": "Formorian Frontier",
-      "grayscale": 76,
-      "cellCount": 100335,
-      "areaLy2": 244352150.875,
-      "bounds": {
-        "minX": -11097.671875,
-        "maxX": 13182.234375,
-        "minZ": 46563.34375,
-        "maxZ": 63440.828125
-      },
-      "centroid": {
-        "x": -249.125,
-        "z": 54195.359375
-      }
-    },
-    {
-      "id": 25,
-      "name": "Hieronymus Delta",
-      "grayscale": 72,
-      "cellCount": 68902,
-      "areaLy2": 167801384.359375,
-      "bounds": {
-        "minX": -23533.71875,
-        "maxX": -9074.34375,
-        "minZ": 45971.140625,
-        "maxZ": 65118.703125
-      },
-      "centroid": {
-        "x": -15932.515625,
-        "z": 55945.59375
-      }
-    },
-    {
-      "id": 26,
-      "name": "Outer Scutum-Centaurus Arm",
-      "grayscale": 68,
-      "cellCount": 166944,
-      "areaLy2": 406569247.765625,
-      "bounds": {
-        "minX": -44507.21875,
-        "maxX": -14107.984375,
-        "minZ": 40197.265625,
-        "maxZ": 68918.609375
-      },
-      "centroid": {
-        "x": -29756.78125,
-        "z": 54248.59375
-      }
-    },
-    {
-      "id": 27,
-      "name": "Outer Arm",
-      "grayscale": 64,
-      "cellCount": 97369,
-      "areaLy2": 237128864.09375,
-      "bounds": {
-        "minX": -39473.578125,
-        "maxX": -20572.765625,
-        "minZ": 16509.546875,
-        "maxZ": 42368.640625
-      },
-      "centroid": {
-        "x": -30527.046875,
-        "z": 29076.671875
-      }
-    },
-    {
-      "id": 28,
-      "name": "Aquila's Halo",
-      "grayscale": 60,
-      "cellCount": 58423,
-      "areaLy2": 142281215.03125,
-      "bounds": {
-        "minX": -46234.453125,
-        "maxX": -36019.125,
-        "minZ": 7774.703125,
-        "maxZ": 32449.40625
-      },
-      "centroid": {
-        "x": -40960.390625,
-        "z": 22319.640625
-      }
-    },
-    {
-      "id": 29,
-      "name": "Errant Marches",
-      "grayscale": 56,
-      "cellCount": 181848,
-      "areaLy2": 442865898.5625,
-      "bounds": {
-        "minX": -43717.625,
-        "maxX": -14798.875,
-        "minZ": -12754.640625,
-        "maxZ": 19273.125
-      },
-      "centroid": {
-        "x": -31335.375,
-        "z": 3319.921875
-      }
-    },
-    {
-      "id": 30,
-      "name": "Perseus Arm",
-      "grayscale": 52,
-      "cellCount": 42804,
-      "areaLy2": 104243279.671875,
-      "bounds": {
-        "minX": -27925.8125,
-        "maxX": -19092.28125,
-        "minZ": 16016.0625,
-        "maxZ": 37236.296875
-      },
-      "centroid": {
-        "x": -23462.34375,
-        "z": 25309.625
-      }
-    },
-    {
-      "id": 31,
-      "name": "Formidine Rift",
-      "grayscale": 48,
-      "cellCount": 113245,
-      "areaLy2": 275792687.75,
-      "bounds": {
-        "minX": -27728.421875,
-        "maxX": -1918.6875,
-        "minZ": -19663.546875,
-        "maxZ": -2786.0625
-      },
-      "centroid": {
-        "x": -13485.640625,
-        "z": -11139.5
-      }
-    },
-    {
-      "id": 32,
-      "name": "Vulcan Gate",
-      "grayscale": 44,
-      "cellCount": 54739,
-      "areaLy2": 133309337.578125,
-      "bounds": {
-        "minX": -27728.421875,
-        "maxX": -13910.59375,
-        "minZ": -417.296875,
-        "maxZ": 17644.59375
-      },
-      "centroid": {
-        "x": -21166.375,
-        "z": 9013.96875
-      }
-    },
-    {
-      "id": 33,
-      "name": "Elysian Shore",
-      "grayscale": 40,
-      "cellCount": 51984,
-      "areaLy2": 126599912.40625,
-      "bounds": {
-        "minX": -18648.125,
-        "maxX": 400.734375,
-        "minZ": -8066.453125,
-        "maxZ": 6392.921875
-      },
-      "centroid": {
-        "x": -9128.046875,
-        "z": -1673.34375
-      }
-    },
-    {
-      "id": 34,
-      "name": "Sanguineous Rim",
-      "grayscale": 36,
-      "cellCount": 52410,
-      "areaLy2": 127637377.0625,
-      "bounds": {
-        "minX": -1721.296875,
-        "maxX": 17870.421875,
-        "minZ": -10040.421875,
-        "maxZ": -664.03125
-      },
-      "centroid": {
-        "x": 7604.28125,
-        "z": -5393.328125
-      }
-    },
-    {
-      "id": 35,
-      "name": "Outer Orion Spur",
-      "grayscale": 32,
-      "cellCount": 30189,
-      "areaLy2": 73521174.890625,
-      "bounds": {
-        "minX": 2226.65625,
-        "maxX": 19202.859375,
-        "minZ": -2440.609375,
-        "maxZ": 6096.828125
-      },
-      "centroid": {
-        "x": 10145.921875,
-        "z": 1729.109375
-      }
-    },
-    {
-      "id": 36,
-      "name": "Achilles's Altar",
-      "grayscale": 28,
-      "cellCount": 56288,
-      "areaLy2": 137081714.9375,
-      "bounds": {
-        "minX": 12293.9375,
-        "maxX": 29418.1875,
-        "minZ": -8707.984375,
-        "maxZ": 6689.03125
-      },
-      "centroid": {
-        "x": 21422.46875,
-        "z": -756.15625
-      }
-    },
-    {
-      "id": 37,
-      "name": "Xibalba",
-      "grayscale": 24,
-      "cellCount": 107173,
-      "areaLy2": 261005163.359375,
-      "bounds": {
-        "minX": 18660.015625,
-        "maxX": 46048.921875,
-        "minZ": -14629.921875,
-        "maxZ": 11870.703125
-      },
-      "centroid": {
-        "x": 33397.328125,
-        "z": -3144.265625
-      }
-    },
-    {
-      "id": 38,
-      "name": "Lyra's Song",
-      "grayscale": 20,
-      "cellCount": 56543,
-      "areaLy2": 137702732.515625,
-      "bounds": {
-        "minX": 24828.6875,
-        "maxX": 38695.875,
-        "minZ": -1749.71875,
-        "maxZ": 15917.359375
-      },
-      "centroid": {
-        "x": 31932.75,
-        "z": 7431.8125
-      }
-    },
-    {
-      "id": 39,
-      "name": "Tenebrae",
-      "grayscale": 16,
-      "cellCount": 119939,
-      "areaLy2": 292095007.953125,
-      "bounds": {
-        "minX": 33267.4375,
-        "maxX": 48763.140625,
-        "minZ": 6540.96875,
-        "maxZ": 43355.625
-      },
-      "centroid": {
-        "x": 41464.171875,
-        "z": 23535.234375
-      }
-    },
-    {
-      "id": 40,
-      "name": "The Abyss",
-      "grayscale": 12,
-      "cellCount": 113579,
-      "areaLy2": 276606099,
-      "bounds": {
-        "minX": -15933.921875,
-        "maxX": 13873.125,
-        "minZ": 58209.796875,
-        "maxZ": 73606.8125
-      },
-      "centroid": {
-        "x": -885.8125,
-        "z": 66971.859375
-      }
-    },
-    {
-      "id": 41,
-      "name": "Kepler's Crest",
-      "grayscale": 8,
-      "cellCount": 124612,
-      "areaLy2": 303475459.453125,
-      "bounds": {
-        "minX": -2856.328125,
-        "maxX": 28974.03125,
-        "minZ": -22081.671875,
-        "maxZ": -7227.5
-      },
-      "centroid": {
-        "x": 10331.609375,
-        "z": -15033.265625
-      }
-    },
-    {
-      "id": 42,
-      "name": "The Void",
-      "grayscale": 4,
-      "cellCount": 81451,
-      "areaLy2": 198362755.171875,
-      "bounds": {
-        "minX": -49244.765625,
-        "maxX": -32021.8125,
-        "minZ": 31067.625,
-        "maxZ": 48981.453125
-      },
-      "centroid": {
-        "x": -41132.078125,
-        "z": 38738.890625
-      }
+    "centroid": {
+      "x": -96.59375,
+      "z": 27257.265625
     }
-  ]
-}
+  },
+  {
+    "id": 2,
+    "name": "Empyrean Straits",
+    "grayscale": 164,
+    "cellCount": 42489,
+    "areaLy2": 103476140.3125,
+    "bounds": {
+      "minX": -4780.953125,
+      "maxX": 10122.5625,
+      "minZ": 18582.234375,
+      "maxZ": 35805.171875
+    },
+    "centroid": {
+      "x": 3557.03125,
+      "z": 25617.609375
+    }
+  },
+  {
+    "id": 3,
+    "name": "Ryker's Hope",
+    "grayscale": 160,
+    "cellCount": 28301,
+    "areaLy2": 68923209.46875,
+    "bounds": {
+      "minX": -5027.703125,
+      "maxX": 8000.546875,
+      "minZ": 29636.5,
+      "maxZ": 39901.171875
+    },
+    "centroid": {
+      "x": 1904.3125,
+      "z": 34336.90625
+    }
+  },
+  {
+    "id": 4,
+    "name": "Odin's Hold",
+    "grayscale": 156,
+    "cellCount": 35882,
+    "areaLy2": 87385696.6875,
+    "bounds": {
+      "minX": -11196.375,
+      "maxX": -1622.59375,
+      "minZ": 16558.90625,
+      "maxZ": 33239
+    },
+    "centroid": {
+      "x": -6186.75,
+      "z": 24863.9375
+    }
+  },
+  {
+    "id": 5,
+    "name": "Norma Arm",
+    "grayscale": 152,
+    "cellCount": 22103,
+    "areaLy2": 53828829.328125,
+    "bounds": {
+      "minX": -6458.828125,
+      "maxX": 6470.703125,
+      "minZ": 13597.9375,
+      "maxZ": 19815.96875
+    },
+    "centroid": {
+      "x": 341.84375,
+      "z": 16351.453125
+    }
+  },
+  {
+    "id": 6,
+    "name": "Arcadian Stream",
+    "grayscale": 148,
+    "cellCount": 78985,
+    "areaLy2": 192357149.921875,
+    "bounds": {
+      "minX": 3559.09375,
+      "maxX": 16291.234375,
+      "minZ": 15078.421875,
+      "maxZ": 44786.765625
+    },
+    "centroid": {
+      "x": 10165.65625,
+      "z": 30626.625
+    }
+  },
+  {
+    "id": 7,
+    "name": "Izanami",
+    "grayscale": 144,
+    "cellCount": 34094,
+    "areaLy2": 83031267.578125,
+    "bounds": {
+      "minX": -13466.453125,
+      "maxX": 3509.75,
+      "minZ": 31955.921875,
+      "maxZ": 41727.09375
+    },
+    "centroid": {
+      "x": -5270.09375,
+      "z": 36868.828125
+    }
+  },
+  {
+    "id": 8,
+    "name": "Inner Orion-Perseus Conflux",
+    "grayscale": 140,
+    "cellCount": 28497,
+    "areaLy2": 69400540.625,
+    "bounds": {
+      "minX": -16279.359375,
+      "maxX": -5817.296875,
+      "minZ": 21740.59375,
+      "maxZ": 33584.453125
+    },
+    "centroid": {
+      "x": -12162.21875,
+      "z": 28579.90625
+    }
+  },
+  {
+    "id": 9,
+    "name": "Inner Scutum-Centaurus Arm",
+    "grayscale": 136,
+    "cellCount": 41544,
+    "areaLy2": 101174722.234375,
+    "bounds": {
+      "minX": -14305.390625,
+      "maxX": 400.734375,
+      "minZ": 7676.015625,
+      "maxZ": 24405.453125
+    },
+    "centroid": {
+      "x": -7587.90625,
+      "z": 14616.421875
+    }
+  },
+  {
+    "id": 10,
+    "name": "Norma Expanse",
+    "grayscale": 132,
+    "cellCount": 79179,
+    "areaLy2": 192829610.34375,
+    "bounds": {
+      "minX": -1622.59375,
+      "maxX": 23693.65625,
+      "minZ": 8564.296875,
+      "maxZ": 25688.546875
+    },
+    "centroid": {
+      "x": 12934.234375,
+      "z": 16728.765625
+    }
+  },
+  {
+    "id": 11,
+    "name": "Trojan Belt",
+    "grayscale": 128,
+    "cellCount": 44429,
+    "areaLy2": 108200744.609375,
+    "bounds": {
+      "minX": 14662.703125,
+      "maxX": 25272.828125,
+      "minZ": 24997.65625,
+      "maxZ": 39457.03125
+    },
+    "centroid": {
+      "x": 19968.09375,
+      "z": 31525.140625
+    }
+  },
+  {
+    "id": 12,
+    "name": "The Veils",
+    "grayscale": 124,
+    "cellCount": 62537,
+    "areaLy2": 152300298.59375,
+    "bounds": {
+      "minX": 2276.015625,
+      "maxX": 23496.25,
+      "minZ": 36150.609375,
+      "maxZ": 52583.96875
+    },
+    "centroid": {
+      "x": 14181.640625,
+      "z": 44470.171875
+    }
+  },
+  {
+    "id": 13,
+    "name": "Newton's Vault",
+    "grayscale": 120,
+    "cellCount": 62369,
+    "areaLy2": 151891157.59375,
+    "bounds": {
+      "minX": -16970.25,
+      "maxX": 4694.125,
+      "minZ": 39605.078125,
+      "maxZ": 51794.375
+    },
+    "centroid": {
+      "x": -5981.6875,
+      "z": 45020.015625
+    }
+  },
+  {
+    "id": 14,
+    "name": "The Conduit",
+    "grayscale": 116,
+    "cellCount": 48611,
+    "areaLy2": 118385432.859375,
+    "bounds": {
+      "minX": -29505,
+      "maxX": -11541.8125,
+      "minZ": 35755.8125,
+      "maxZ": 49524.296875
+    },
+    "centroid": {
+      "x": -20418.390625,
+      "z": 42404.53125
+    }
+  },
+  {
+    "id": 15,
+    "name": "Outer Orion-Perseus Conflux",
+    "grayscale": 112,
+    "cellCount": 34467,
+    "areaLy2": 83939657.984375,
+    "bounds": {
+      "minX": -21263.65625,
+      "maxX": -6902.96875,
+      "minZ": 26576.828125,
+      "maxZ": 41529.703125
+    },
+    "centroid": {
+      "x": -15682.5625,
+      "z": 34318.65625
+    }
+  },
+  {
+    "id": 16,
+    "name": "Orion-Cygnus Arm",
+    "grayscale": 108,
+    "cellCount": 38276,
+    "areaLy2": 93215955.8125,
+    "bounds": {
+      "minX": -21263.65625,
+      "maxX": -11689.875,
+      "minZ": 10834.375,
+      "maxZ": 27859.921875
+    },
+    "centroid": {
+      "x": -16994.34375,
+      "z": 19347.796875
+    }
+  },
+  {
+    "id": 17,
+    "name": "Temple",
+    "grayscale": 104,
+    "cellCount": 23195,
+    "areaLy2": 56488245.765625,
+    "bounds": {
+      "minX": -17710.5,
+      "maxX": -7495.171875,
+      "minZ": 3925.453125,
+      "maxZ": 14288.828125
+    },
+    "centroid": {
+      "x": -12148.078125,
+      "z": 9097.609375
+    }
+  },
+  {
+    "id": 18,
+    "name": "Inner Orion Spur",
+    "grayscale": 100,
+    "cellCount": 46302,
+    "areaLy2": 112762179.59375,
+    "bounds": {
+      "minX": -10110.6875,
+      "maxX": 4003.234375,
+      "minZ": -1404.28125,
+      "maxZ": 9255.1875
+    },
+    "centroid": {
+      "x": -2451.109375,
+      "z": 3801.984375
+    }
+  },
+  {
+    "id": 19,
+    "name": "Hawking's Gap",
+    "grayscale": 96,
+    "cellCount": 80131,
+    "areaLy2": 195148075.96875,
+    "bounds": {
+      "minX": 2917.546875,
+      "maxX": 30109.078125,
+      "minZ": 3185.21875,
+      "maxZ": 17348.5
+    },
+    "centroid": {
+      "x": 17324.21875,
+      "z": 9488.109375
+    }
+  },
+  {
+    "id": 20,
+    "name": "Dryman's Point",
+    "grayscale": 92,
+    "cellCount": 72309,
+    "areaLy2": 176098666.25,
+    "bounds": {
+      "minX": 21719.671875,
+      "maxX": 37116.6875,
+      "minZ": 14634.28125,
+      "maxZ": 31265.03125
+    },
+    "centroid": {
+      "x": 29768.15625,
+      "z": 23004.40625
+    }
+  },
+  {
+    "id": 21,
+    "name": "Sagittarius-Carina Arm",
+    "grayscale": 88,
+    "cellCount": 74468,
+    "areaLy2": 181356615.046875,
+    "bounds": {
+      "minX": 22114.46875,
+      "maxX": 40373.75,
+      "minZ": 28205.359375,
+      "maxZ": 43849.125
+    },
+    "centroid": {
+      "x": 31880.4375,
+      "z": 35505.59375
+    }
+  },
+  {
+    "id": 22,
+    "name": "Mare Somnia",
+    "grayscale": 84,
+    "cellCount": 124760,
+    "areaLy2": 303835893.1875,
+    "bounds": {
+      "minX": 18906.765625,
+      "maxX": 43630.8125,
+      "minZ": 38716.78125,
+      "maxZ": 61417.5
+    },
+    "centroid": {
+      "x": 31624.03125,
+      "z": 49021.46875
+    }
+  },
+  {
+    "id": 23,
+    "name": "Acheron",
+    "grayscale": 80,
+    "cellCount": 156658,
+    "areaLy2": 381519103.515625,
+    "bounds": {
+      "minX": 5681.125,
+      "maxX": 35488.15625,
+      "minZ": 48438.609375,
+      "maxZ": 70448.453125
+    },
+    "centroid": {
+      "x": 19973.03125,
+      "z": 60436.0625
+    }
+  },
+  {
+    "id": 24,
+    "name": "Formorian Frontier",
+    "grayscale": 76,
+    "cellCount": 100335,
+    "areaLy2": 244352150.875,
+    "bounds": {
+      "minX": -11097.671875,
+      "maxX": 13182.234375,
+      "minZ": 46563.34375,
+      "maxZ": 63440.828125
+    },
+    "centroid": {
+      "x": -249.125,
+      "z": 54195.359375
+    }
+  },
+  {
+    "id": 25,
+    "name": "Hieronymus Delta",
+    "grayscale": 72,
+    "cellCount": 68902,
+    "areaLy2": 167801384.359375,
+    "bounds": {
+      "minX": -23533.71875,
+      "maxX": -9074.34375,
+      "minZ": 45971.140625,
+      "maxZ": 65118.703125
+    },
+    "centroid": {
+      "x": -15932.515625,
+      "z": 55945.59375
+    }
+  },
+  {
+    "id": 26,
+    "name": "Outer Scutum-Centaurus Arm",
+    "grayscale": 68,
+    "cellCount": 166944,
+    "areaLy2": 406569247.765625,
+    "bounds": {
+      "minX": -44507.21875,
+      "maxX": -14107.984375,
+      "minZ": 40197.265625,
+      "maxZ": 68918.609375
+    },
+    "centroid": {
+      "x": -29756.78125,
+      "z": 54248.59375
+    }
+  },
+  {
+    "id": 27,
+    "name": "Outer Arm",
+    "grayscale": 64,
+    "cellCount": 97369,
+    "areaLy2": 237128864.09375,
+    "bounds": {
+      "minX": -39473.578125,
+      "maxX": -20572.765625,
+      "minZ": 16509.546875,
+      "maxZ": 42368.640625
+    },
+    "centroid": {
+      "x": -30527.046875,
+      "z": 29076.671875
+    }
+  },
+  {
+    "id": 28,
+    "name": "Aquila's Halo",
+    "grayscale": 60,
+    "cellCount": 58423,
+    "areaLy2": 142281215.03125,
+    "bounds": {
+      "minX": -46234.453125,
+      "maxX": -36019.125,
+      "minZ": 7774.703125,
+      "maxZ": 32449.40625
+    },
+    "centroid": {
+      "x": -40960.390625,
+      "z": 22319.640625
+    }
+  },
+  {
+    "id": 29,
+    "name": "Errant Marches",
+    "grayscale": 56,
+    "cellCount": 181848,
+    "areaLy2": 442865898.5625,
+    "bounds": {
+      "minX": -43717.625,
+      "maxX": -14798.875,
+      "minZ": -12754.640625,
+      "maxZ": 19273.125
+    },
+    "centroid": {
+      "x": -31335.375,
+      "z": 3319.921875
+    }
+  },
+  {
+    "id": 30,
+    "name": "Perseus Arm",
+    "grayscale": 52,
+    "cellCount": 42804,
+    "areaLy2": 104243279.671875,
+    "bounds": {
+      "minX": -27925.8125,
+      "maxX": -19092.28125,
+      "minZ": 16016.0625,
+      "maxZ": 37236.296875
+    },
+    "centroid": {
+      "x": -23462.34375,
+      "z": 25309.625
+    }
+  },
+  {
+    "id": 31,
+    "name": "Formidine Rift",
+    "grayscale": 48,
+    "cellCount": 113245,
+    "areaLy2": 275792687.75,
+    "bounds": {
+      "minX": -27728.421875,
+      "maxX": -1918.6875,
+      "minZ": -19663.546875,
+      "maxZ": -2786.0625
+    },
+    "centroid": {
+      "x": -13485.640625,
+      "z": -11139.5
+    }
+  },
+  {
+    "id": 32,
+    "name": "Vulcan Gate",
+    "grayscale": 44,
+    "cellCount": 54739,
+    "areaLy2": 133309337.578125,
+    "bounds": {
+      "minX": -27728.421875,
+      "maxX": -13910.59375,
+      "minZ": -417.296875,
+      "maxZ": 17644.59375
+    },
+    "centroid": {
+      "x": -21166.375,
+      "z": 9013.96875
+    }
+  },
+  {
+    "id": 33,
+    "name": "Elysian Shore",
+    "grayscale": 40,
+    "cellCount": 51984,
+    "areaLy2": 126599912.40625,
+    "bounds": {
+      "minX": -18648.125,
+      "maxX": 400.734375,
+      "minZ": -8066.453125,
+      "maxZ": 6392.921875
+    },
+    "centroid": {
+      "x": -9128.046875,
+      "z": -1673.34375
+    }
+  },
+  {
+    "id": 34,
+    "name": "Sanguineous Rim",
+    "grayscale": 36,
+    "cellCount": 52410,
+    "areaLy2": 127637377.0625,
+    "bounds": {
+      "minX": -1721.296875,
+      "maxX": 17870.421875,
+      "minZ": -10040.421875,
+      "maxZ": -664.03125
+    },
+    "centroid": {
+      "x": 7604.28125,
+      "z": -5393.328125
+    }
+  },
+  {
+    "id": 35,
+    "name": "Outer Orion Spur",
+    "grayscale": 32,
+    "cellCount": 30189,
+    "areaLy2": 73521174.890625,
+    "bounds": {
+      "minX": 2226.65625,
+      "maxX": 19202.859375,
+      "minZ": -2440.609375,
+      "maxZ": 6096.828125
+    },
+    "centroid": {
+      "x": 10145.921875,
+      "z": 1729.109375
+    }
+  },
+  {
+    "id": 36,
+    "name": "Achilles's Altar",
+    "grayscale": 28,
+    "cellCount": 56288,
+    "areaLy2": 137081714.9375,
+    "bounds": {
+      "minX": 12293.9375,
+      "maxX": 29418.1875,
+      "minZ": -8707.984375,
+      "maxZ": 6689.03125
+    },
+    "centroid": {
+      "x": 21422.46875,
+      "z": -756.15625
+    }
+  },
+  {
+    "id": 37,
+    "name": "Xibalba",
+    "grayscale": 24,
+    "cellCount": 107173,
+    "areaLy2": 261005163.359375,
+    "bounds": {
+      "minX": 18660.015625,
+      "maxX": 46048.921875,
+      "minZ": -14629.921875,
+      "maxZ": 11870.703125
+    },
+    "centroid": {
+      "x": 33397.328125,
+      "z": -3144.265625
+    }
+  },
+  {
+    "id": 38,
+    "name": "Lyra's Song",
+    "grayscale": 20,
+    "cellCount": 56543,
+    "areaLy2": 137702732.515625,
+    "bounds": {
+      "minX": 24828.6875,
+      "maxX": 38695.875,
+      "minZ": -1749.71875,
+      "maxZ": 15917.359375
+    },
+    "centroid": {
+      "x": 31932.75,
+      "z": 7431.8125
+    }
+  },
+  {
+    "id": 39,
+    "name": "Tenebrae",
+    "grayscale": 16,
+    "cellCount": 119939,
+    "areaLy2": 292095007.953125,
+    "bounds": {
+      "minX": 33267.4375,
+      "maxX": 48763.140625,
+      "minZ": 6540.96875,
+      "maxZ": 43355.625
+    },
+    "centroid": {
+      "x": 41464.171875,
+      "z": 23535.234375
+    }
+  },
+  {
+    "id": 40,
+    "name": "The Abyss",
+    "grayscale": 12,
+    "cellCount": 113579,
+    "areaLy2": 276606099,
+    "bounds": {
+      "minX": -15933.921875,
+      "maxX": 13873.125,
+      "minZ": 58209.796875,
+      "maxZ": 73606.8125
+    },
+    "centroid": {
+      "x": -885.8125,
+      "z": 66971.859375
+    }
+  },
+  {
+    "id": 41,
+    "name": "Kepler's Crest",
+    "grayscale": 8,
+    "cellCount": 124612,
+    "areaLy2": 303475459.453125,
+    "bounds": {
+      "minX": -2856.328125,
+      "maxX": 28974.03125,
+      "minZ": -22081.671875,
+      "maxZ": -7227.5
+    },
+    "centroid": {
+      "x": 10331.609375,
+      "z": -15033.265625
+    }
+  },
+  {
+    "id": 42,
+    "name": "The Void",
+    "grayscale": 4,
+    "cellCount": 81451,
+    "areaLy2": 198362755.171875,
+    "bounds": {
+      "minX": -49244.765625,
+      "maxX": -32021.8125,
+      "minZ": 31067.625,
+      "maxZ": 48981.453125
+    },
+    "centroid": {
+      "x": -41132.078125,
+      "z": 38738.890625
+    }
+  }
+]

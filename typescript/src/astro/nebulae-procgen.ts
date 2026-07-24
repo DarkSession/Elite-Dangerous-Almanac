@@ -31,5 +31,5 @@ import { deepFreeze } from '../deep-freeze.js';
  * ```
  */
 export const PROCGEN_NEBULAE: readonly Nebula[] = deepFreeze(
-    (procgenNebulaeData as { nebulae: readonly Nebula[] }).nebulae,
+    procgenNebulaeData as readonly Nebula[],
 );

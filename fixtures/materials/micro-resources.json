@@ -1,0 +1,47 @@
+{
+  "description": "Ground truth for the Odyssey micro-resource catalogues (data/materials/micro-resources-*.jsonc, from EDCD FDevIDs microresources.csv). `counts` pins the size of each catalogue; `records` pins individual entries. `symbol` is Frontier's internal id (the journal id, like ships/modules/materials), `name` is the display name, `category` is one of component / consumable / data / item. Micro resources have no grade or line — they are on-foot resources, not ship-side engineering materials.",
+  "counts": {
+    "component": 33,
+    "consumable": 6,
+    "data": 114,
+    "item": 43,
+    "all": 196
+  },
+  "records": [
+    {
+      "symbol": "graphene",
+      "category": "component",
+      "name": "Graphene"
+    },
+    {
+      "symbol": "circuitboard",
+      "category": "component",
+      "name": "Circuit Board"
+    },
+    {
+      "symbol": "healthpack",
+      "category": "consumable",
+      "name": "Medkit"
+    },
+    {
+      "symbol": "bypass",
+      "category": "consumable",
+      "name": "E-Breach"
+    },
+    {
+      "symbol": "internalcorrespondence",
+      "category": "data",
+      "name": "Internal Correspondence"
+    },
+    {
+      "symbol": "spyware",
+      "category": "data",
+      "name": "Spyware"
+    },
+    {
+      "symbol": "chemicalsample",
+      "category": "item",
+      "name": "Chemical Sample"
+    }
+  ]
+}

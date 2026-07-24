@@ -1,0 +1,731 @@
+/*
+ * Rare market commodities in Elite Dangerous — the location-specific luxury goods,
+ * each produced at a single station and valued higher the further it is carried.
+ *
+ * Source:       EDCD FDevIDs, rare_commodity.csv
+ *               https://github.com/EDCD/FDevIDs
+ *               Community-maintained Frontier id/name registry. No explicit
+ *               licence is stated; consult the repository terms.
+ *
+ * Each record is { symbol, name, category }. `symbol` is Frontier's internal id
+ * (matched case-insensitively, as the market/journal reports it); `name` is the
+ * display name; `category` is the market group (Foods, Legal Drugs, Textiles, …).
+ * The CSV's numeric `id` and `market_id` columns are dropped — rares are keyed by
+ * `symbol`, and the library carries no station registry to resolve a market id
+ * against. The `rare` flag is not stored here: everything in this file is a rare
+ * commodity (the standard goods live in commodities.jsonc).
+ *
+ * Full provenance: data/commodities/SOURCES.md.
+ */
+[
+  {
+    "symbol": "EraninPearlWhisky",
+    "name": "Eranin Pearl Whisky",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "LavianBrandy",
+    "name": "Lavian Brandy",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "HIP10175BushMeat",
+    "name": "HIP 10175 Bush Meat",
+    "category": "Foods"
+  },
+  {
+    "symbol": "AlbinoQuechuaMammoth",
+    "name": "Albino Quechua Mammoth Meat",
+    "category": "Foods"
+  },
+  {
+    "symbol": "UtgaroarMillenialEggs",
+    "name": "Utgaroar Millennial Eggs",
+    "category": "Foods"
+  },
+  {
+    "symbol": "WitchhaulKobeBeef",
+    "name": "Witchhaul Kobe Beef",
+    "category": "Foods"
+  },
+  {
+    "symbol": "KarsukiLocusts",
+    "name": "Karsuki Locusts",
+    "category": "Foods"
+  },
+  {
+    "symbol": "GiantIrukamaSnails",
+    "name": "Giant Irukama Snails",
+    "category": "Foods"
+  },
+  {
+    "symbol": "BaltahSineVacuumKrill",
+    "name": "Baltah'sine Vacuum Krill",
+    "category": "Foods"
+  },
+  {
+    "symbol": "CetiRabbits",
+    "name": "Ceti Rabbits",
+    "category": "Foods"
+  },
+  {
+    "symbol": "KachiriginLeaches",
+    "name": "Kachirigin Filter Leeches",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "LyraeWeed",
+    "name": "Lyrae Weed",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "OnionHead",
+    "name": "Onionhead",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "TarachTorSpice",
+    "name": "Tarach Spice",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "Wolf1301Fesh",
+    "name": "Wolf Fesh",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "BorasetaniPathogenetics",
+    "name": "Borasetani Pathogenetics",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "HIP118311Swarm",
+    "name": "HIP 118311 Swarm",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "KonggaAle",
+    "name": "Kongga Ale",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "WuthieloKuFroth",
+    "name": "Wuthielo Ku Froth",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "AlacarakmoSkinArt",
+    "name": "Alacarakmo Skin Art",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "EleuThermals",
+    "name": "Eleu Thermals",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "EshuUmbrellas",
+    "name": "Eshu Umbrellas",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "KaretiiCouture",
+    "name": "Karetii Couture",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "NjangariSaddles",
+    "name": "Njangari Saddles",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "AnyNaCoffee",
+    "name": "Any Na Coffee",
+    "category": "Foods"
+  },
+  {
+    "symbol": "CD75CatCoffee",
+    "name": "CD-75 Kitten Brand Coffee",
+    "category": "Foods"
+  },
+  {
+    "symbol": "GomanYauponCoffee",
+    "name": "Goman Yaupon Coffee",
+    "category": "Foods"
+  },
+  {
+    "symbol": "VolkhabBeeDrones",
+    "name": "Volkhab Bee Drones",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "KinagoInstruments",
+    "name": "Kinago Violins",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "NgunaModernAntiques",
+    "name": "Nguna Modern Antiques",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "RajukruStoves",
+    "name": "Rajukru Multi-Stoves",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "TiolceWaste2PasteUnits",
+    "name": "Tiolce Waste2Paste Units",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "ChiEridaniMarinePaste",
+    "name": "Chi Eridani Marine Paste",
+    "category": "Foods"
+  },
+  {
+    "symbol": "EsusekuCaviar",
+    "name": "Esuseku Caviar",
+    "category": "Foods"
+  },
+  {
+    "symbol": "LiveHecateSeaWorms",
+    "name": "Live Hecate Sea Worms",
+    "category": "Foods"
+  },
+  {
+    "symbol": "HelvetitjPearls",
+    "name": "Helvetitj Pearls",
+    "category": "Metals"
+  },
+  {
+    "symbol": "HIP41181Squid",
+    "name": "HIP Proto-Squid",
+    "category": "Foods"
+  },
+  {
+    "symbol": "CoquimSpongiformVictuals",
+    "name": "Coquim Spongiform Victuals",
+    "category": "Foods"
+  },
+  {
+    "symbol": "AerialEdenApple",
+    "name": "Eden Apples of Aerial",
+    "category": "Foods"
+  },
+  {
+    "symbol": "NeritusBerries",
+    "name": "Neritus Berries",
+    "category": "Foods"
+  },
+  {
+    "symbol": "OchoengChillies",
+    "name": "Ochoeng Chillies",
+    "category": "Foods"
+  },
+  {
+    "symbol": "DeuringasTruffles",
+    "name": "Deuringas Truffles",
+    "category": "Foods"
+  },
+  {
+    "symbol": "HR7221Wheat",
+    "name": "HR 7221 Wheat",
+    "category": "Foods"
+  },
+  {
+    "symbol": "JarouaRice",
+    "name": "Jaroua Rice",
+    "category": "Foods"
+  },
+  {
+    "symbol": "BelalansRayLeather",
+    "name": "Belalans Ray Leather",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "DamnaCarapaces",
+    "name": "Damna Carapaces",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "RapaBaoSnakeSkins",
+    "name": "Rapa Bao Snake Skins",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "VanayequiRhinoFur",
+    "name": "Vanayequi Ceratomorpha Fur",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "BastSnakeGin",
+    "name": "Bast Snake Gin",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "ThrutisCream",
+    "name": "Thrutis Cream",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "WulpaHyperboreSystems",
+    "name": "Wulpa Hyperbore Systems",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "AganippeRush",
+    "name": "Aganippe Rush",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "TerraMaterBloodBores",
+    "name": "Terra Mater Blood Bores",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "HolvaDuellingBlades",
+    "name": "Holva Duelling Blades",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "KamorinHistoricWeapons",
+    "name": "Kamorin Historic Weapons",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "GilyaSignatureWeapons",
+    "name": "Gilya Signature Weapons",
+    "category": "Weapons"
+  },
+  {
+    "symbol": "DeltaPhoenicisPalms",
+    "name": "Delta Phoenicis Palms",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "ToxandjiVirocide",
+    "name": "Toxandji Virocide",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "XiheCompanions",
+    "name": "Xihe Biomorphic Companions",
+    "category": "Technology"
+  },
+  {
+    "symbol": "SanumaMEAT",
+    "name": "Sanuma Decorative Meat",
+    "category": "Foods"
+  },
+  {
+    "symbol": "EthgrezeTeaBuds",
+    "name": "Ethgreze Tea Buds",
+    "category": "Foods"
+  },
+  {
+    "symbol": "CeremonialHeikeTea",
+    "name": "Ceremonial Heike Tea",
+    "category": "Foods"
+  },
+  {
+    "symbol": "TanmarkTranquilTea",
+    "name": "Tanmark Tranquil Tea",
+    "category": "Foods"
+  },
+  {
+    "symbol": "AZCancriFormula42",
+    "name": "AZ Cancri Formula 42",
+    "category": "Technology"
+  },
+  {
+    "symbol": "KamitraCigars",
+    "name": "Kamitra Cigars",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "RusaniOldSmokey",
+    "name": "Rusani Old Smokey",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "YasoKondiLeaf",
+    "name": "Yaso Kondi Leaf",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "ChateauDeAegaeon",
+    "name": "Chateau De Aegaeon",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "WatersOfShintara",
+    "name": "The Waters of Shintara",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "OphiuchiExinoArtefacts",
+    "name": "Ophiuch Exino Artefacts",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "BakedGreebles",
+    "name": "Baked Greebles",
+    "category": "Foods"
+  },
+  {
+    "symbol": "CetiAepyornisEgg",
+    "name": "Aepyornis Egg",
+    "category": "Foods"
+  },
+  {
+    "symbol": "SaxonWine",
+    "name": "Saxon Wine",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "CentauriMegaGin",
+    "name": "Centauri Mega Gin",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "AnduligaFireWorks",
+    "name": "Anduliga Fire Works",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "BankiAmphibiousLeather",
+    "name": "Banki Amphibious Leather",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "CherbonesBloodCrystals",
+    "name": "Cherbones Blood Crystals",
+    "category": "Metals"
+  },
+  {
+    "symbol": "MotronaExperienceJelly",
+    "name": "Motrona Experience Jelly",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "GeawenDanceDust",
+    "name": "Geawen Dance Dust",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "GerasianGueuzeBeer",
+    "name": "Gerasian Gueuze Beer",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "HaidneBlackBrew",
+    "name": "Haiden Black Brew",
+    "category": "Foods"
+  },
+  {
+    "symbol": "HavasupaiDreamCatcher",
+    "name": "Havasupai Dream Catcher",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "BurnhamBileDistillate",
+    "name": "Burnham Bile Distillate",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "HIPOrganophosphates",
+    "name": "HIP Organophosphates",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "JaradharrePuzzlebox",
+    "name": "Jaradharre Puzzle Box",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "KorroKungPellets",
+    "name": "Koro Kung Pellets",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "LFTVoidExtractCoffee",
+    "name": "Void Extract Coffee",
+    "category": "Foods"
+  },
+  {
+    "symbol": "HonestyPills",
+    "name": "Honesty Pills",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "NonEuclidianExotanks",
+    "name": "Non Euclidian Exotanks",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "LTTHyperSweet",
+    "name": "LTT Hyper Sweet",
+    "category": "Foods"
+  },
+  {
+    "symbol": "MechucosHighTea",
+    "name": "Mechucos High Tea",
+    "category": "Foods"
+  },
+  {
+    "symbol": "MedbStarlube",
+    "name": "Medb Starlube",
+    "category": "Chemicals"
+  },
+  {
+    "symbol": "MokojingBeastFeast",
+    "name": "Mokojing Beast Feast",
+    "category": "Foods"
+  },
+  {
+    "symbol": "MukusubiiChitinOs",
+    "name": "Mukusubii Chitin-os",
+    "category": "Foods"
+  },
+  {
+    "symbol": "MulachiGiantFungus",
+    "name": "Mulachi Giant Fungus",
+    "category": "Foods"
+  },
+  {
+    "symbol": "NgadandariFireOpals",
+    "name": "Ngadandari Fire Opals",
+    "category": "Metals"
+  },
+  {
+    "symbol": "TiegfriesSynthSilk",
+    "name": "Tiegfries Synth Silk",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "UzumokuLowGWings",
+    "name": "Uzumoku Low-G Wings",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "VHerculisBodyRub",
+    "name": "V Herculis Body Rub",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "WheemeteWheatCakes",
+    "name": "Wheemete Wheat Cakes",
+    "category": "Foods"
+  },
+  {
+    "symbol": "VegaSlimWeed",
+    "name": "Vega Slimweed",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "AltairianSkin",
+    "name": "Altairian Skin",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "PavonisEarGrubs",
+    "name": "Pavonis Ear Grubs",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "JotunMookah",
+    "name": "Jotun Mookah",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "GiantVerrix",
+    "name": "Giant Verrix",
+    "category": "Machinery"
+  },
+  {
+    "symbol": "IndiBourbon",
+    "name": "Indi Bourbon",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "AroucaConventualSweets",
+    "name": "Arouca Conventual Sweets",
+    "category": "Foods"
+  },
+  {
+    "symbol": "TauriChimes",
+    "name": "Tauri Chimes",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "ZeesszeAntGlue",
+    "name": "Zeessze Ant Grub Glue",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "PantaaPrayerSticks",
+    "name": "Pantaa Prayer Sticks",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "FujinTea",
+    "name": "Fujin Tea",
+    "category": "Foods"
+  },
+  {
+    "symbol": "ChameleonCloth",
+    "name": "Chameleon Cloth",
+    "category": "Textiles"
+  },
+  {
+    "symbol": "OrrerianViciousBrew",
+    "name": "Orrerian Vicious Brew",
+    "category": "Foods"
+  },
+  {
+    "symbol": "UszaianTreeGrub",
+    "name": "Uszaian Tree Grub",
+    "category": "Foods"
+  },
+  {
+    "symbol": "MomusBogSpaniel",
+    "name": "Momus Bog Spaniel",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "DisoMaCorn",
+    "name": "Diso Ma Corn",
+    "category": "Foods"
+  },
+  {
+    "symbol": "LeestianEvilJuice",
+    "name": "Leestian Evil Juice",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "BlueMilk",
+    "name": "Azure Milk",
+    "category": "Foods"
+  },
+  {
+    "symbol": "AlienEggs",
+    "name": "Leathery Eggs",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "AlyaBodilySoap",
+    "name": "Alya Body Soap",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "VidavantianLace",
+    "name": "Vidavantian Lace",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "TransgenicOnionHead",
+    "name": "Lucan Onionhead",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "JaquesQuinentianStill",
+    "name": "Jaques Quinentian Still",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "SoontillRelics",
+    "name": "Soontill Relics",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "Advert1",
+    "name": "Ultra-Compact Processor Prototypes",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "TheHuttonMug",
+    "name": "The Hutton Mug",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "SothisCrystallineGold",
+    "name": "Sothis Crystalline Gold",
+    "category": "Metals"
+  },
+  {
+    "symbol": "MasterChefs",
+    "name": "Master Chefs",
+    "category": "Slavery"
+  },
+  {
+    "symbol": "PersonalGifts",
+    "name": "Festive Gifts",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "CrystallineSpheres",
+    "name": "Crystalline Spheres",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "OnionHeadA",
+    "name": "Onionhead Alpha Strain",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "OnionHeadB",
+    "name": "Onionhead Beta Strain",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "GalacticTravelGuide",
+    "name": "Galactic Travel Guide",
+    "category": "Salvage"
+  },
+  {
+    "symbol": "AnimalEffigies",
+    "name": "Crom Silver Fesh",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "ShansCharisOrchid",
+    "name": "Shan's Charis Orchid",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "BuckyballBeerMats",
+    "name": "Buckyball Beer Mats",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "HarmaSilverSeaRum",
+    "name": "Harma Silver Sea Rum",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "PlatinumAloy",
+    "name": "Platinum Alloy",
+    "category": "Metals"
+  },
+  {
+    "symbol": "Nanomedicines",
+    "name": "Nanomedicines",
+    "category": "Medicines"
+  },
+  {
+    "symbol": "Duradrives",
+    "name": "Duradrives",
+    "category": "Consumer Items"
+  },
+  {
+    "symbol": "ApaVietii",
+    "name": "Apa Vietii",
+    "category": "Legal Drugs"
+  },
+  {
+    "symbol": "ClassifiedExperimentalEquipment",
+    "name": "Classified Experimental Equipment",
+    "category": "Technology"
+  }
+]

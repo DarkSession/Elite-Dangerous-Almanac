@@ -1,13 +1,20 @@
 /**
- * Registers the `.jsonc` load hook from `./jsonc.mjs`.
+ * Registers the synchronous `.jsonc` load hook from `./jsonc.mjs`.
  *
  * Used by `npm test` as `node --import tsx --import ./scripts/register-jsonc.mjs`.
- * The order matters: Node runs `load` hooks in reverse registration order, so
- * this must be registered *after* tsx for it to get first refusal on `.jsonc`
- * URLs. Registered before tsx, tsx's esbuild hook claims them first and fails
- * with "Do not know how to load path".
+ *
+ * Registered through `module.registerHooks` (synchronous, in-thread), *not*
+ * `module.register`. tsx installs its own load hook synchronously via
+ * `module.registerHooks` on Node >= 22.22.3 (and the equivalent 24/25 lines).
+ * Synchronous hooks run ahead of anything registered with the asynchronous
+ * `module.register`, so an async hook here would let tsx's esbuild loader claim
+ * `.jsonc` URLs first and fail with "Do not know how to load path". Staying in
+ * the same synchronous chain — and, because hooks run in reverse registration
+ * order, imported *after* tsx — gives this hook first refusal on `.jsonc`.
  */
 
-import { register } from 'node:module';
+import { registerHooks } from 'node:module';
 
-register('./jsonc.mjs', import.meta.url);
+import { load } from './jsonc.mjs';
+
+registerHooks({ load });

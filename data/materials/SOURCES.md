@@ -65,3 +65,26 @@ material.
 
 INARA agreed with FDevIDs on every material the two share (e.g. Bio-Mechanical
 Conduits = grade 3), which is why it is used to fill the gap.
+
+## Odyssey micro resources — component, consumable, data, item
+
+- **Files:** `micro-resources-component.jsonc`, `micro-resources-consumable.jsonc`,
+  `micro-resources-data.jsonc`, `micro-resources-item.jsonc`, and
+  `fixtures/materials/micro-resources.json`.
+- **Primary source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
+  (`microresources.csv`), the community-maintained registry of Frontier's internal
+  ids and names for the on-foot (Odyssey) micro resources. It provides, for each
+  micro resource, the internal symbol, category (Component / Consumable / Data /
+  Item) and English display name. FDevIDs states no explicit licence; consult the
+  repository terms before redistributing the raw identifiers.
+- **Derivation:**
+  - `symbol` is FDevIDs' internal id (e.g. `graphene`) — what the player journal
+    reports (case-insensitively), the same field/meaning as on a ship, module or
+    material. Frontier's numeric micro-resource id from the CSV is **not** carried.
+  - `name` is the English display name (`Graphene`).
+  - `category` is FDevIDs' category, lower-cased to `component` / `consumable` /
+    `data` / `item` (matching how ship modules and materials spell their category).
+    Each of the four data files holds exactly one category.
+  - Micro resources have **no grade and no line** — those belong to the ship-side
+    engineering materials above; a micro resource is a plain `{ symbol, category,
+    name }` registry record.

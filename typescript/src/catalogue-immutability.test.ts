@@ -6,8 +6,10 @@ import { HAND_AUTHORED_REGIONS } from './astro/hand-authored-regions.js';
 import { getNamedRegionOrigin } from './astro/named-regions.js';
 import { ALL_NEBULAE } from './astro/nebulae-all.js';
 import { ALL_MATERIALS } from './materials/materials-all.js';
+import { ALL_MICRO_RESOURCES } from './materials/micro-resources-all.js';
 import { ALL_MODULES } from './ships/modules-all.js';
 import { SHIPS } from './ships/ships.js';
+import { ALL_COMMODITIES } from './commodities/commodities-all.js';
 
 test('every exported object catalogue and all of its records are frozen', () => {
     const catalogues: readonly (readonly object[])[] = [
@@ -15,8 +17,10 @@ test('every exported object catalogue and all of its records are frozen', () => 
         HAND_AUTHORED_REGIONS,
         ALL_NEBULAE,
         ALL_MATERIALS,
+        ALL_MICRO_RESOURCES,
         ALL_MODULES,
         SHIPS,
+        ALL_COMMODITIES,
     ];
 
     for (const catalogue of catalogues) {
