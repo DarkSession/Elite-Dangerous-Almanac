@@ -31,6 +31,4 @@ import { deepFreeze } from '../deep-freeze.js';
  * // -> 'Horsehead Dark Region IR-V c2-9'
  * ```
  */
-export const REAL_NEBULAE: readonly Nebula[] = deepFreeze(
-    realNebulaeData as readonly Nebula[],
-);
+export const REAL_NEBULAE: readonly Nebula[] = deepFreeze(realNebulaeData as readonly Nebula[]);
