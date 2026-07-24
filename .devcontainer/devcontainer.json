@@ -1,6 +1,10 @@
 {
   "name": "Elite Dangerous Almanac",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+
+  "runArgs": ["--privileged"],
 
   "features": {
     "ghcr.io/devcontainers/features/python:1": {

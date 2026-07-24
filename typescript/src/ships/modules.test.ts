@@ -37,6 +37,11 @@ test('ALL_MODULES is exactly the four category catalogues concatenated', () => {
     ]);
 });
 
+test('module symbols are unique across all four catalogues', () => {
+    const symbols = ALL_MODULES.map((module) => module.symbol.toLowerCase());
+    assert.equal(new Set(symbols).size, symbols.length);
+});
+
 test('every module lands in the catalogue named by its own category', () => {
     for (const [name, catalogue] of Object.entries(CATALOGUES)) {
         if (name === 'all') continue;

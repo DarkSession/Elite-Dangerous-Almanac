@@ -56,6 +56,7 @@
             "types": "./dist/ships/index.d.ts",
             "import": "./dist/ships/index.js"
         },
+        "./ships/engineering-compatibility": null,
         "./ships/*": {
             "types": "./dist/ships/*.d.ts",
             "import": "./dist/ships/*.js"
@@ -73,8 +74,8 @@
     "scripts": {
         "build": "tsup",
         "check": "npm run lint && npm run format:check && npm run typecheck && npm test",
-        "format": "prettier --write . ../README.md ../.github/workflows/*.yml",
-        "format:check": "prettier --check . ../README.md ../.github/workflows/*.yml",
+        "format": "prettier --write . ../README.md ../schemas/**/*.{json,md} ../.github/workflows/*.yml",
+        "format:check": "prettier --check . ../README.md ../schemas/**/*.{json,md} ../.github/workflows/*.yml",
         "lint": "eslint .",
         "prepublishOnly": "npm run check && npm run build && npm run test:package",
         "test": "node --experimental-test-coverage --test-coverage-include=\"src/astro/*.ts\" --test-coverage-include=\"src/materials/*.ts\" --test-coverage-include=\"src/ships/*.ts\" --test-coverage-include=\"src/commodities/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
@@ -85,6 +86,7 @@
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@types/node": "^22.20.1",
+        "ajv": "^6.15.0",
         "eslint": "^10.7.0",
         "globals": "^17.7.0",
         "prettier": "^3.9.6",

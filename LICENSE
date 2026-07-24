@@ -19,3 +19,24 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+The MIT License above covers this project's own code, documentation, and the
+organisation of its data files.
+
+Elite Dangerous Almanac also incorporates Elite Dangerous game data (ship,
+module, and outfitting values). That data is the property of Frontier
+Developments plc and is used here under Frontier's media-usage terms:
+
+    Elite Dangerous Almanac was created using assets and imagery from Elite
+    Dangerous, with the permission of Frontier Developments plc, for
+    non-commercial purposes. It is not endorsed by nor reflects the views or
+    opinions of Frontier Developments and no employee of Frontier Developments
+    was involved in the making of it.
+
+Frontier's rules:
+https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/
+
+If you build on this library and redistribute the game data, please include the
+same notice in your own project.

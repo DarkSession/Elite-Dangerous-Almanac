@@ -89,6 +89,7 @@ Monorepo with one subfolder per language implementation and shared, language-neu
 ```
 data/          # shared static data (JSONC) — astrophysical, ships, characters, market
 fixtures/      # shared test fixtures (JSON) — every implementation validates against these
+schemas/       # shared JSON Schemas — language-neutral validation for data payloads
 typescript/    # TypeScript library (package.json, src/, tests, typedoc.json)
 python/        # (future) Python library — same features, same fixtures
 ```

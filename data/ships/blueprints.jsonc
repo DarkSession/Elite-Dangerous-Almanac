@@ -1,0 +1,8925 @@
+/*
+ * Engineering **blueprints** — per grade, the stat modifiers a blueprint applies,
+ * resolved to journal Modifier Labels. Keyed by the blueprint's Frontier `fdname`
+ * (as it appears in a Loadout event's `Engineering.BlueprintName`).
+ *
+ * Source:  EDCD/coriolis-data, modifications/blueprints.json (commit 0db9234b5b9ce8c939ea84133d7ce336eea88e27)
+ *          https://github.com/EDCD/coriolis-data
+ *          Journal Labels resolved via EDSY (github.com/taleden/EDSY, CC BY-NC 4.0).
+ *          The game logic is Elite Dangerous data, property of Frontier Developments
+ *          plc, under Frontier's media-usage terms:
+ *          https://forums.frontier.co.uk/threads/510879/
+ *
+ * Each grade is a list of features { label, method, min, max }: `label` is the
+ * journal Modifier Label, `method` is how it applies ("multiplicative" -> base*(1+v),
+ * "additive" -> base+v, "overwrite" -> v), and [min, max] bound the modifier value by
+ * the engineering quality roll (v = min + (max-min)*quality).
+ *
+ * Full provenance: data/ships/SOURCES.md.
+ */
+{
+  "AFM_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3.0
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 1.0,
+        "max": 1.0
+      }
+    ]
+  },
+  "Armour_Advanced": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.15
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.03
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.25
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.03,
+        "max": 0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.35
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.06,
+        "max": 0.09
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.35,
+        "max": -0.45
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.09,
+        "max": 0.12
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.55
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.15
+      }
+    ]
+  },
+  "Armour_Explosive": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.12
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.19
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.19,
+        "max": 0.26
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.26,
+        "max": 0.33
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.33,
+        "max": 0.4
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.12,
+        "max": -0.12
+      }
+    ]
+  },
+  "Armour_HeavyDuty": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.01
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.12
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.01
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.01
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.01,
+        "max": 0.02
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.17
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.01,
+        "max": 0.02
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.01,
+        "max": 0.02
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.02,
+        "max": 0.03
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0.17,
+        "max": 0.22
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.02,
+        "max": 0.03
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.02,
+        "max": 0.03
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.03,
+        "max": 0.04
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0.22,
+        "max": 0.27
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.03,
+        "max": 0.04
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.03,
+        "max": 0.04
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.04,
+        "max": 0.05
+      },
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0.27,
+        "max": 0.32
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.04,
+        "max": 0.05
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.04,
+        "max": 0.05
+      }
+    ]
+  },
+  "Armour_Kinetic": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.12
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.19
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.19,
+        "max": 0.26
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.26,
+        "max": 0.33
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.33,
+        "max": 0.4
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.12,
+        "max": -0.12
+      }
+    ]
+  },
+  "Armour_Thermic": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.12
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.19
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.19,
+        "max": 0.26
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.26,
+        "max": 0.33
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.33,
+        "max": 0.4
+      }
+    ]
+  },
+  "Misc_LightWeight": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.45
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.55
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.55,
+        "max": -0.65
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.65,
+        "max": -0.75
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.75,
+        "max": -0.85
+      }
+    ]
+  },
+  "Misc_Reinforced": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.9,
+        "max": 0.9
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.2
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.5,
+        "max": 1.5
+      }
+    ]
+  },
+  "Misc_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      }
+    ]
+  },
+  "Misc_ChaffCapacity": {
+    "1": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      }
+    ]
+  },
+  "CollectionLimpet_LightWeight": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.45
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.55
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.55,
+        "max": -0.65
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.65,
+        "max": -0.75
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.75,
+        "max": -0.85
+      }
+    ]
+  },
+  "CollectionLimpet_Reinforced": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.9,
+        "max": 0.9
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.2
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.5,
+        "max": 1.5
+      }
+    ]
+  },
+  "CollectionLimpet_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      }
+    ]
+  },
+  "Engine_Dirty": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.025,
+        "max": -0.025
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.12
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.04
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.19
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.06
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.075,
+        "max": -0.075
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0.19,
+        "max": 0.26
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.08
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0.26,
+        "max": 0.33
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.5
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.125,
+        "max": -0.125
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0.33,
+        "max": 0.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ]
+  },
+  "Engine_Reinforced": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.05,
+        "max": 0.05
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.2
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.7
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.3
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.7,
+        "max": 0.9
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.4
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.9,
+        "max": 1.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.5
+      }
+    ]
+  },
+  "Engine_Tuned": {
+    "1": [
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.08
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.13
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.04
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.3
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0.13,
+        "max": 0.18
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.08
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.4
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0.18,
+        "max": 0.23
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.5
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.16,
+        "max": -0.16
+      },
+      {
+        "label": "EngineOptimalMass",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "EngineOptPerformance",
+        "method": "multiplicative",
+        "min": 0.23,
+        "max": 0.28
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.16
+      },
+      {
+        "label": "EngineHeatRate",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.6
+      }
+    ]
+  },
+  "FSD_FastBoot": {
+    "1": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.2
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.04
+      }
+    ],
+    "2": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.35
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.08
+      }
+    ],
+    "3": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": -0.35,
+        "max": -0.5
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      }
+    ],
+    "4": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.65
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.16
+      }
+    ],
+    "5": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": -0.65,
+        "max": -0.8
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ]
+  },
+  "FSD_LongRange": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.15
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.03
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.25
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.35
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.09
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.35,
+        "max": 0.45
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.45,
+        "max": 0.55
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      }
+    ]
+  },
+  "FSD_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.25
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.04
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.08
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.15
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.75
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.2
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.75,
+        "max": 1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.16
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.25
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1.25
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.3
+      }
+    ]
+  },
+  "FSDinterdictor_Expanded": {
+    "1": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": 0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      }
+    ],
+    "3": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      }
+    ],
+    "4": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.25
+      }
+    ],
+    "5": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      }
+    ]
+  },
+  "FSDinterdictor_LongRange": {
+    "1": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.3
+      }
+    ],
+    "3": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.4
+      }
+    ],
+    "4": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.25
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.5
+      }
+    ],
+    "5": [
+      {
+        "label": "FSDInterdictorFacingLimit",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "FSDInterdictorRange",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.6
+      }
+    ]
+  },
+  "FuelScoop_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3.0
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 1.0,
+        "max": 1.0
+      }
+    ]
+  },
+  "FuelTransferLimpet_LightWeight": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.45
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.55
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.55,
+        "max": -0.65
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.65,
+        "max": -0.75
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.75,
+        "max": -0.85
+      }
+    ]
+  },
+  "FuelTransferLimpet_Reinforced": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.9,
+        "max": 0.9
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.2
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.5,
+        "max": 1.5
+      }
+    ]
+  },
+  "FuelTransferLimpet_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      }
+    ]
+  },
+  "HatchBreakerLimpet_LightWeight": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.45
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.55
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.55,
+        "max": -0.65
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.65,
+        "max": -0.75
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.75,
+        "max": -0.85
+      }
+    ]
+  },
+  "HatchBreakerLimpet_Reinforced": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.9,
+        "max": 0.9
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.2
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.5,
+        "max": 1.5
+      }
+    ]
+  },
+  "HatchBreakerLimpet_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      }
+    ]
+  },
+  "Misc_HeatSinkCapacity": {
+    "1": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "min": 0.49,
+        "max": 0.49
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.5
+      }
+    ]
+  },
+  "HullReinforcement_Advanced": {
+    "1": [
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.08
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.08
+      }
+    ],
+    "2": [
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.12
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.12
+      }
+    ],
+    "3": [
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.16
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.16
+      }
+    ],
+    "4": [
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.2
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": -0.16,
+        "max": -0.16
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.16,
+        "max": -0.2
+      }
+    ],
+    "5": [
+      {
+        "label": "DefenceModifierHealthMultiplier",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.24
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.24
+      }
+    ]
+  },
+  "HullReinforcement_Explosive": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.12
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.02,
+        "max": -0.02
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.19
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.19,
+        "max": 0.26
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.26,
+        "max": 0.33
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.33,
+        "max": 0.4
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      }
+    ]
+  },
+  "HullReinforcement_HeavyDuty": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.24
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.08
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.03
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.24,
+        "max": 0.36
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.16
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.03,
+        "max": 0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.36,
+        "max": 0.48
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.24,
+        "max": 0.24
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.06,
+        "max": 0.09
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.48,
+        "max": 0.6
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.32,
+        "max": 0.32
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.09,
+        "max": 0.12
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.72
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.15
+      }
+    ]
+  },
+  "HullReinforcement_Kinetic": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.12
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.02,
+        "max": -0.02
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.19
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.19,
+        "max": 0.26
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.26,
+        "max": 0.33
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.33,
+        "max": 0.4
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      }
+    ]
+  },
+  "HullReinforcement_Thermic": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.12
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.19
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.19,
+        "max": 0.26
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.26,
+        "max": 0.33
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "DefenceModifierHealthAddition",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.33,
+        "max": 0.4
+      }
+    ]
+  },
+  "LifeSupport_LightWeight": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.45
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.55
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.55,
+        "max": -0.65
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.65,
+        "max": -0.75
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.75,
+        "max": -0.85
+      }
+    ]
+  },
+  "LifeSupport_Reinforced": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.9,
+        "max": 0.9
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.2
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.5,
+        "max": 1.5
+      }
+    ]
+  },
+  "LifeSupport_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3.0
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 1.12,
+        "max": 1.12
+      }
+    ]
+  },
+  "Misc_PointDefenseCapacity": {
+    "1": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      }
+    ]
+  },
+  "PowerDistributor_HighCapacity": {
+    "1": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.1
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.1
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.1
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.1
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      }
+    ],
+    "2": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.18
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.18
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.1
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.18
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0.18,
+        "max": 0.26
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.2
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0.18,
+        "max": 0.26
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0.18,
+        "max": 0.26
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      }
+    ],
+    "4": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0.26,
+        "max": 0.34
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.14,
+        "max": -0.14
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.25
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0.26,
+        "max": 0.34
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.14,
+        "max": -0.14
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0.26,
+        "max": 0.34
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.14,
+        "max": -0.14
+      }
+    ],
+    "5": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0.34,
+        "max": 0.42
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.18,
+        "max": -0.18
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.3
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0.34,
+        "max": 0.42
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.18,
+        "max": -0.18
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0.34,
+        "max": 0.42
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.18,
+        "max": -0.18
+      }
+    ]
+  },
+  "PowerDistributor_HighFrequency": {
+    "1": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.09
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.09
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.09
+      }
+    ],
+    "2": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.18
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.18
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.18
+      }
+    ],
+    "3": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0.18,
+        "max": 0.27
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0.18,
+        "max": 0.27
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0.18,
+        "max": 0.27
+      }
+    ],
+    "4": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0.27,
+        "max": 0.36
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0.27,
+        "max": 0.36
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0.27,
+        "max": 0.36
+      }
+    ],
+    "5": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0.36,
+        "max": 0.45
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0.36,
+        "max": 0.45
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0.36,
+        "max": 0.45
+      }
+    ]
+  },
+  "PowerDistributor_PriorityEngines": {
+    "1": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.2
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.16
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.01,
+        "max": -0.01
+      }
+    ],
+    "2": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.3
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.23
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      }
+    ],
+    "3": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.4
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0.23,
+        "max": 0.3
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      }
+    ],
+    "4": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.5
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.37
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      }
+    ],
+    "5": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.6
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": 0.37,
+        "max": 0.44
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      }
+    ]
+  },
+  "PowerDistributor_PrioritySystems": {
+    "1": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.2
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.16
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      }
+    ],
+    "2": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.3
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.23
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.4
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0.23,
+        "max": 0.3
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      }
+    ],
+    "4": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.5
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.37
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      }
+    ],
+    "5": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.6
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": 0.37,
+        "max": 0.44
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      }
+    ]
+  },
+  "PowerDistributor_PriorityWeapons": {
+    "1": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.2
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.16
+      }
+    ],
+    "2": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.3
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.23
+      }
+    ],
+    "3": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.4
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0.23,
+        "max": 0.3
+      }
+    ],
+    "4": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.5
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.37
+      }
+    ],
+    "5": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.6
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "min": 0.37,
+        "max": 0.44
+      }
+    ]
+  },
+  "PowerDistributor_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.03
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.8
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.06
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.15
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 1.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.09
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.2
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.25
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.6,
+        "max": 2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.3
+      }
+    ]
+  },
+  "PowerPlant_Armoured": {
+    "1": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.04
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.4
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.04
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.04
+      }
+    ],
+    "2": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.06
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.6
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.06
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.08
+      }
+    ],
+    "3": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.08
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.8
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.08
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      }
+    ],
+    "4": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.1
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 1
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.16
+      }
+    ],
+    "5": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.12
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1.2
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.12
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ]
+  },
+  "PowerPlant_Boosted": {
+    "1": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": 0.05,
+        "max": 0.05
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.12
+      }
+    ],
+    "2": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.19
+      }
+    ],
+    "3": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0.19,
+        "max": 0.26
+      }
+    ],
+    "4": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0.26,
+        "max": 0.33
+      }
+    ],
+    "5": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.25
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": 0.33,
+        "max": 0.4
+      }
+    ]
+  },
+  "PowerPlant_Stealth": {
+    "1": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.25
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.04
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      }
+    ],
+    "2": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.35
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.08
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": -0.35,
+        "max": -0.45
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      }
+    ],
+    "4": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.55
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.16
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      }
+    ],
+    "5": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "min": -0.55,
+        "max": -0.65
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      }
+    ]
+  },
+  "ProspectingLimpet_LightWeight": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.45
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.55
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.55,
+        "max": -0.65
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.65,
+        "max": -0.75
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.75,
+        "max": -0.85
+      }
+    ]
+  },
+  "ProspectingLimpet_Reinforced": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.9,
+        "max": 0.9
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.2
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.5,
+        "max": 1.5
+      }
+    ]
+  },
+  "ProspectingLimpet_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      }
+    ]
+  },
+  "Refineries_Shielded": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.8
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.8,
+        "max": 2.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.4,
+        "max": 3.0
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 1.0,
+        "max": 1.0
+      }
+    ]
+  },
+  "Sensor_FastScan": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.35
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": -0.35,
+        "max": -0.5
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.65
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.25
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": -0.8,
+        "max": -0.8
+      }
+    ]
+  },
+  "Scanner_LongRange": {
+    "1": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.24
+      }
+    ],
+    "2": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0.24,
+        "max": 0.48
+      }
+    ],
+    "3": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0.48,
+        "max": 0.72
+      }
+    ],
+    "4": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.25
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0.72,
+        "max": 0.96
+      }
+    ],
+    "5": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0.96,
+        "max": 1.2
+      }
+    ]
+  },
+  "Scanner_WideAngle": {
+    "1": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.4
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.8
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "3": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 1.2
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      }
+    ],
+    "4": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.6
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ],
+    "5": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 1.6,
+        "max": 2
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.5
+      }
+    ]
+  },
+  "Sensor_LightWeight": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.2
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.35
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.35,
+        "max": -0.5
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.65
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.65,
+        "max": -0.8
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.25
+      }
+    ]
+  },
+  "Sensor_LongRange": {
+    "1": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.15
+      }
+    ],
+    "2": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.3
+      }
+    ],
+    "3": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.45
+      }
+    ],
+    "4": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.25
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0.45,
+        "max": 0.6
+      }
+    ],
+    "5": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.75
+      }
+    ]
+  },
+  "Sensor_WideAngle": {
+    "1": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.4
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      }
+    ],
+    "2": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.8
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.08
+      }
+    ],
+    "3": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 1.2
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      }
+    ],
+    "4": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 1.2,
+        "max": 1.6
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.16,
+        "max": -0.16
+      }
+    ],
+    "5": [
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "SensorTargetScanAngle",
+        "method": "multiplicative",
+        "min": 1.6,
+        "max": 2
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      }
+    ]
+  },
+  "Sensor_Expanded": {
+    "1": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "ProbeRadius",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "ProbeRadius",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.2
+      }
+    ],
+    "3": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      },
+      {
+        "label": "ProbeRadius",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.3
+      }
+    ],
+    "4": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      },
+      {
+        "label": "ProbeRadius",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.4
+      }
+    ],
+    "5": [
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "label": "ProbeRadius",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.5
+      }
+    ]
+  },
+  "ShieldBooster_Explosive": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.07
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.01,
+        "max": -0.01
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.07,
+        "max": 0.12
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.0175,
+        "max": -0.0175
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.0175,
+        "max": -0.0175
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.17
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.025,
+        "max": -0.025
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.025,
+        "max": -0.025
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.17,
+        "max": 0.22
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.0325,
+        "max": -0.0325
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.0325,
+        "max": -0.0325
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.22,
+        "max": 0.27
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      }
+    ]
+  },
+  "ShieldBooster_HeavyDuty": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.05,
+        "max": 0.05
+      },
+      {
+        "label": "DefenceModifierShieldMultiplier",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1.5,
+        "max": 1.5
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "DefenceModifierShieldMultiplier",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.17
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 2,
+        "max": 2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "DefenceModifierShieldMultiplier",
+        "method": "multiplicative",
+        "min": 0.17,
+        "max": 0.24
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 2.5,
+        "max": 2.5
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "DefenceModifierShieldMultiplier",
+        "method": "multiplicative",
+        "min": 0.24,
+        "max": 0.31
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 3,
+        "max": 3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "DefenceModifierShieldMultiplier",
+        "method": "multiplicative",
+        "min": 0.31,
+        "max": 0.38
+      }
+    ]
+  },
+  "ShieldBooster_Kinetic": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.07
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.01,
+        "max": -0.01
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.0175,
+        "max": -0.0175
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.07,
+        "max": 0.12
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.0175,
+        "max": -0.0175
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.025,
+        "max": -0.025
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.17
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.025,
+        "max": -0.025
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.0325,
+        "max": -0.0325
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.17,
+        "max": 0.22
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.0325,
+        "max": -0.0325
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.22,
+        "max": 0.27
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      }
+    ]
+  },
+  "ShieldBooster_Resistive": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.05,
+        "max": 0.05
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.05,
+        "max": 0.05
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.05,
+        "max": 0.05
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.05,
+        "max": 0.05
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.08,
+        "max": 0.08
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.08,
+        "max": 0.08
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.08,
+        "max": 0.08
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.11,
+        "max": 0.11
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.11,
+        "max": 0.11
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.11,
+        "max": 0.11
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.14,
+        "max": 0.14
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.14,
+        "max": 0.14
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.14,
+        "max": 0.14
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.17,
+        "max": 0.17
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.17,
+        "max": 0.17
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.17,
+        "max": 0.17
+      }
+    ]
+  },
+  "ShieldBooster_Thermic": {
+    "1": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.07
+      }
+    ],
+    "2": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.0175,
+        "max": -0.0175
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.0175,
+        "max": -0.0175
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.07,
+        "max": 0.12
+      }
+    ],
+    "3": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.025,
+        "max": -0.025
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.025,
+        "max": -0.025
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.12,
+        "max": 0.17
+      }
+    ],
+    "4": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.0325,
+        "max": -0.0325
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.0325,
+        "max": -0.0325
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.17,
+        "max": 0.22
+      }
+    ],
+    "5": [
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.22,
+        "max": 0.27
+      }
+    ]
+  },
+  "ShieldCellBank_Rapid": {
+    "1": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "ShieldBankDuration",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "ShieldBankReinforcement",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.05
+      },
+      {
+        "label": "ShieldBankSpinUp",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "ShieldBankDuration",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "ShieldBankReinforcement",
+        "method": "multiplicative",
+        "min": 0.05,
+        "max": 0.1
+      },
+      {
+        "label": "ShieldBankSpinUp",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.2
+      }
+    ],
+    "3": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "ShieldBankDuration",
+        "method": "multiplicative",
+        "min": -0.18,
+        "max": -0.18
+      },
+      {
+        "label": "ShieldBankReinforcement",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.15
+      },
+      {
+        "label": "ShieldBankSpinUp",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.3
+      }
+    ],
+    "4": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "ShieldBankDuration",
+        "method": "multiplicative",
+        "min": -0.24,
+        "max": -0.24
+      },
+      {
+        "label": "ShieldBankReinforcement",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.2
+      },
+      {
+        "label": "ShieldBankSpinUp",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.4
+      }
+    ]
+  },
+  "ShieldCellBank_Specialised": {
+    "1": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.08
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "ShieldBankReinforcement",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.04
+      },
+      {
+        "label": "ShieldBankHeat",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.06
+      }
+    ],
+    "2": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.16
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "ShieldBankReinforcement",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.06
+      },
+      {
+        "label": "ShieldBankHeat",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.12
+      }
+    ],
+    "3": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": -0.16,
+        "max": -0.24
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "ShieldBankReinforcement",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.08
+      },
+      {
+        "label": "ShieldBankHeat",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.18
+      }
+    ],
+    "4": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "min": -0.24,
+        "max": -0.32
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "ShieldBankReinforcement",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.1
+      },
+      {
+        "label": "ShieldBankHeat",
+        "method": "multiplicative",
+        "min": -0.18,
+        "max": -0.24
+      }
+    ]
+  },
+  "ShieldGenerator_Kinetic": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.2
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.1
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.03,
+        "max": -0.03
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.25
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.1,
+        "max": 0.2
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.06,
+        "max": -0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.3
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.2,
+        "max": 0.3
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.09,
+        "max": -0.09
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.35
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.3,
+        "max": 0.4
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.12,
+        "max": -0.12
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.35,
+        "max": 0.4
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.4,
+        "max": 0.5
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": -0.15,
+        "max": -0.15
+      }
+    ]
+  },
+  "ShieldGenerator_Optimised": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.18
+      },
+      {
+        "label": "ShieldGenOptimalMass",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.03
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.18,
+        "max": -0.26
+      },
+      {
+        "label": "ShieldGenOptimalMass",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.06
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.25
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.26,
+        "max": -0.34
+      },
+      {
+        "label": "ShieldGenOptimalMass",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.09
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.3
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.34,
+        "max": -0.42
+      },
+      {
+        "label": "ShieldGenOptimalMass",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.12
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.35
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.25
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.42,
+        "max": -0.5
+      },
+      {
+        "label": "ShieldGenOptimalMass",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.15
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.35,
+        "max": -0.4
+      }
+    ]
+  },
+  "ShieldGenerator_Reinforced": {
+    "1": [
+      {
+        "label": "BrokenRegenRate",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.04
+      },
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.045
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.045
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.14
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.045
+      }
+    ],
+    "2": [
+      {
+        "label": "BrokenRegenRate",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.06
+      },
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.045,
+        "max": 0.075
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.045,
+        "max": 0.075
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0.14,
+        "max": 0.2
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.045,
+        "max": 0.075
+      }
+    ],
+    "3": [
+      {
+        "label": "BrokenRegenRate",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.08
+      },
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.075,
+        "max": 0.105
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.075,
+        "max": 0.105
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.26
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.075,
+        "max": 0.105
+      }
+    ],
+    "4": [
+      {
+        "label": "BrokenRegenRate",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.105,
+        "max": 0.135
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.105,
+        "max": 0.135
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0.26,
+        "max": 0.32
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.105,
+        "max": 0.135
+      }
+    ],
+    "5": [
+      {
+        "label": "BrokenRegenRate",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      },
+      {
+        "label": "ExplosiveResistance",
+        "method": "additive",
+        "min": 0.135,
+        "max": 0.165
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": 0.135,
+        "max": 0.165
+      },
+      {
+        "label": "ShieldGenStrength",
+        "method": "multiplicative",
+        "min": 0.32,
+        "max": 0.38
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.135,
+        "max": 0.165
+      }
+    ]
+  },
+  "ShieldGenerator_Thermic": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.2
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0,
+        "max": 0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.25
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.08,
+        "max": -0.08
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.1,
+        "max": 0.2
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.3
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.2,
+        "max": 0.3
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.35
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.16,
+        "max": -0.16
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.3,
+        "max": 0.4
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0.35,
+        "max": 0.4
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "min": 0.4,
+        "max": 0.5
+      }
+    ]
+  },
+  "Weapon_DoubleShot": {
+    "1": [
+      {
+        "label": "BurstSize",
+        "method": "overwrite",
+        "min": 2,
+        "max": 2
+      },
+      {
+        "label": "BurstRateOfFire",
+        "method": "overwrite",
+        "min": 0,
+        "max": 6
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 0.34,
+        "max": 0.34
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      }
+    ],
+    "2": [
+      {
+        "label": "BurstSize",
+        "method": "overwrite",
+        "min": 2,
+        "max": 2
+      },
+      {
+        "label": "BurstRateOfFire",
+        "method": "overwrite",
+        "min": 6,
+        "max": 8
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 0.34,
+        "max": 0.34
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      }
+    ],
+    "3": [
+      {
+        "label": "BurstSize",
+        "method": "overwrite",
+        "min": 2,
+        "max": 2
+      },
+      {
+        "label": "BurstRateOfFire",
+        "method": "overwrite",
+        "min": 8,
+        "max": 10
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 0.34,
+        "max": 0.34
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      }
+    ],
+    "4": [
+      {
+        "label": "BurstSize",
+        "method": "overwrite",
+        "min": 2,
+        "max": 2
+      },
+      {
+        "label": "BurstRateOfFire",
+        "method": "overwrite",
+        "min": 10,
+        "max": 12
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 0.34,
+        "max": 0.34
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.08
+      }
+    ],
+    "5": [
+      {
+        "label": "BurstSize",
+        "method": "overwrite",
+        "min": 2,
+        "max": 2
+      },
+      {
+        "label": "BurstRateOfFire",
+        "method": "overwrite",
+        "min": 12,
+        "max": 14
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      }
+    ]
+  },
+  "Weapon_Efficient": {
+    "1": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.08
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.38
+      }
+    ],
+    "2": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.12
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.15
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.12
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": -0.38,
+        "max": -0.43
+      }
+    ],
+    "3": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.16
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.25
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.24
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": -0.43,
+        "max": -0.48
+      }
+    ],
+    "4": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.2
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.35
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.24,
+        "max": -0.36
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": -0.48,
+        "max": -0.52
+      }
+    ],
+    "5": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.24
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": -0.35,
+        "max": -0.45
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.36,
+        "max": -0.48
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": -0.52,
+        "max": -0.6
+      }
+    ]
+  },
+  "Weapon_Focused": {
+    "1": [
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.36
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.4
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.36
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.36
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.01,
+        "max": 0.01
+      }
+    ],
+    "2": [
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "min": 0.36,
+        "max": 0.52
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.6
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0.36,
+        "max": 0.52
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0.36,
+        "max": 0.52
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.02,
+        "max": 0.02
+      }
+    ],
+    "3": [
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "min": 0.52,
+        "max": 0.68
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.8
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0.52,
+        "max": 0.68
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0.52,
+        "max": 0.68
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.03
+      }
+    ],
+    "4": [
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "min": 0.68,
+        "max": 0.84
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 1
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0.68,
+        "max": 0.84
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0.68,
+        "max": 0.84
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.04
+      }
+    ],
+    "5": [
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "min": 0.84,
+        "max": 1
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1.2
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0.84,
+        "max": 1
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0.84,
+        "max": 1
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.05,
+        "max": 0.05
+      }
+    ]
+  },
+  "Weapon_HighCapacity": {
+    "1": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.36
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.36
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.04,
+        "max": 0.04
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.02
+      }
+    ],
+    "2": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "min": 0.36,
+        "max": 0.52
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 0.36,
+        "max": 0.52
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.08,
+        "max": 0.08
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.04
+      }
+    ],
+    "3": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "min": 0.52,
+        "max": 0.68
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 0.52,
+        "max": 0.68
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.06
+      }
+    ],
+    "4": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "min": 0.68,
+        "max": 0.84
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 0.68,
+        "max": 0.84
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.16,
+        "max": 0.16
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.08
+      }
+    ],
+    "5": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "min": 0.84,
+        "max": 1
+      },
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": 0.84,
+        "max": 1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.1
+      }
+    ]
+  },
+  "Weapon_LightWeight": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.3
+      }
+    ],
+    "2": [
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.2
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.45
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.1
+      }
+    ],
+    "3": [
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.25
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.2
+      }
+    ],
+    "4": [
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.3
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.6,
+        "max": -0.75
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.3
+      }
+    ],
+    "5": [
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.35
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": -0.6,
+        "max": -0.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": -0.75,
+        "max": -0.9
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.4
+      }
+    ]
+  },
+  "Weapon_LongRange": {
+    "1": [
+      {
+        "label": "FalloffRange",
+        "method": "overwrite",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.03
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.2
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.2
+      }
+    ],
+    "2": [
+      {
+        "label": "FalloffRange",
+        "method": "overwrite",
+        "min": 0.2,
+        "max": 0.4
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.06
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.4
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.4
+      }
+    ],
+    "3": [
+      {
+        "label": "FalloffRange",
+        "method": "overwrite",
+        "min": 0.4,
+        "max": 0.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.09
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.6
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.6
+      }
+    ],
+    "4": [
+      {
+        "label": "FalloffRange",
+        "method": "overwrite",
+        "min": 0.6,
+        "max": 0.8
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.8
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.8
+      }
+    ],
+    "5": [
+      {
+        "label": "FalloffRange",
+        "method": "overwrite",
+        "min": 0.8,
+        "max": 1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 1
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 1
+      }
+    ]
+  },
+  "MC_Overcharged": {
+    "1": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.3
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.03
+      }
+    ],
+    "2": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": -0.06,
+        "max": -0.06
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.4
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": -0.09,
+        "max": -0.09
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.5
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.09
+      }
+    ],
+    "4": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": -0.12,
+        "max": -0.12
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.6
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      }
+    ],
+    "5": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.15
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.7
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.35,
+        "max": 0.35
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      }
+    ]
+  },
+  "Weapon_Overcharged": {
+    "1": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.3
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.03,
+        "max": 0.03
+      }
+    ],
+    "2": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.4
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.06,
+        "max": 0.06
+      }
+    ],
+    "3": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.5
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.25,
+        "max": 0.25
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.09,
+        "max": 0.09
+      }
+    ],
+    "4": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.6
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.12,
+        "max": 0.12
+      }
+    ],
+    "5": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.7
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0.35,
+        "max": 0.35
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.15
+      }
+    ]
+  },
+  "Weapon_RapidFire": {
+    "1": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": -0.01,
+        "max": -0.01
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.25
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.08
+      }
+    ],
+    "2": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": -0.02,
+        "max": -0.02
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.05
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.35
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": -0.08,
+        "max": -0.17
+      }
+    ],
+    "3": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": -0.03,
+        "max": -0.03
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.15
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "min": -0.35,
+        "max": -0.45
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": -0.17,
+        "max": -0.26
+      }
+    ],
+    "4": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": -0.04,
+        "max": -0.04
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.25
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "min": -0.45,
+        "max": -0.55
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": -0.26,
+        "max": -0.35
+      }
+    ],
+    "5": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": -0.05,
+        "max": -0.05
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.35
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "min": 0.5,
+        "max": 0.5
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "min": -0.55,
+        "max": -0.65
+      },
+      {
+        "label": "RateOfFire",
+        "method": "multiplicative",
+        "min": -0.35,
+        "max": -0.44
+      }
+    ]
+  },
+  "Weapon_ShortRange": {
+    "1": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.15,
+        "max": 0.27
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.27,
+        "max": 0.39
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.2
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.1,
+        "max": 0.1
+      }
+    ],
+    "3": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.39,
+        "max": 0.51
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.3,
+        "max": -0.3
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      }
+    ],
+    "4": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.51,
+        "max": 0.63
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.4,
+        "max": -0.4
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.3
+      }
+    ],
+    "5": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "min": 0.63,
+        "max": 0.75
+      },
+      {
+        "label": "Range",
+        "method": "multiplicative",
+        "min": -0.5,
+        "max": -0.5
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      }
+    ]
+  },
+  "Weapon_Sturdy": {
+    "1": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.2
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 0,
+        "max": 0.2
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": 0,
+        "max": -0.1
+      }
+    ],
+    "2": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 1.5,
+        "max": 1.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.4
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 0.2,
+        "max": 0.3
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": -0.1,
+        "max": -0.15
+      }
+    ],
+    "3": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2,
+        "max": 2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.6,
+        "max": 0.6
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 0.3,
+        "max": 0.4
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": -0.15,
+        "max": -0.2
+      }
+    ],
+    "4": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 2.5,
+        "max": 2.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 0.8,
+        "max": 0.8
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 0.4,
+        "max": 0.5
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": -0.2,
+        "max": -0.25
+      }
+    ],
+    "5": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "min": 3,
+        "max": 3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "min": 0.5,
+        "max": 0.6
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "min": -0.25,
+        "max": -0.3
+      }
+    ]
+  },
+  "CargoRack_IncreasedCapacity": {
+    "5": [
+      {
+        "label": "CargoCapacity",
+        "method": "multiplicative",
+        "min": 0.344,
+        "max": 0.344
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "description": "Expected ShipLoadout jump/fuel outputs for fixtures/ships/slef-the-deep-black.json. Cross-language validation target; matches EDSY MaxJumpRange.",
+  "ship": "explorer_nx",
+  "frameShiftDrive": {
+    "symbol": "int_hyperdrive_overcharge_size8_class5_overchargebooster_mkii",
+    "optMass": 7528.04,
+    "maxFuel": 6.8,
+    "fuelMul": 0.011,
+    "fuelPower": 2.5025,
+    "jumpBoost": 10.5
+  },
+  "unladenMass": 1237.3,
+  "mainFuel": 128,
+  "cargoCapacity": 16,
+  "maxJumpRange": 89.414678,
+  "edsyMaxJumpRange": 89.414678,
+  "unladenJumpRange": 82.409288,
+  "ladenJumpRange": 81.576342,
+  "totalRange": 1625.166,
+  "fuelPerJump50Ly": 1.9474
+}

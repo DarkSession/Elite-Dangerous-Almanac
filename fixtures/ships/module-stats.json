@@ -1,0 +1,59 @@
+{
+  "description": "Parity fixture for the module-stats catalogues (data/ships/module-stats-*.jsonc). Cross-language validation.",
+  "counts": {
+    "standard": 268,
+    "internal": 357,
+    "hardpoint": 159,
+    "utility": 35,
+    "all": 819
+  },
+  "spot": [
+    {
+      "symbol": "Int_Hyperdrive_Size5_Class5",
+      "name": "Frame Shift Drive",
+      "mass": 20,
+      "integrity": 120,
+      "powerDraw": 0.6,
+      "optMass": 1050,
+      "maxFuel": 5,
+      "fuelMul": 0.012,
+      "fuelPower": 2.45
+    },
+    {
+      "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5_OverchargeBooster_MkII",
+      "name": "Mk II Supercharge Optimised Frame Shift Drive (SCO)",
+      "mass": 160,
+      "integrity": 188,
+      "powerDraw": 1.05,
+      "bootTime": 10,
+      "optMass": 4670,
+      "maxFuel": 6.8,
+      "fuelMul": 0.011,
+      "fuelPower": 2.5025
+    },
+    {
+      "symbol": "Int_GuardianFSDBooster_Size5",
+      "name": "Guardian FSD Booster",
+      "mass": 1.3,
+      "integrity": 32,
+      "powerDraw": 2.14,
+      "jumpBoost": 10.5
+    },
+    {
+      "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
+      "name": "Mk II Gravity Optimised Thrusters",
+      "mass": 80,
+      "integrity": 144,
+      "powerDraw": 9.12,
+      "optMass": 2160,
+      "minMass": 1080,
+      "maxMass": 3240,
+      "optMultiplier": 1,
+      "minMultiplier": 0.96,
+      "maxMultiplier": 1.16,
+      "restrictedToShips": [
+        "Explorer_NX"
+      ]
+    }
+  ]
+}

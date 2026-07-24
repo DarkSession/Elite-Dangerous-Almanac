@@ -1,0 +1,2867 @@
+/*
+ * Engineering/mechanical stats for the internal outfitting modules, keyed by the
+ * same Frontier `symbol` as data/ships/modules-internal.jsonc. Join the two on
+ * `symbol` to pair a module's identity with its stats.
+ *
+ * Source:  EDCD/coriolis-data, modules/** (commit 0db9234b5b9ce8c939ea84133d7ce336eea88e27)
+ *          https://github.com/EDCD/coriolis-data
+ *          The JSON stat values are Elite Dangerous game data, property of
+ *          Frontier Developments plc, redistributed under Frontier's media-usage
+ *          terms: https://forums.frontier.co.uk/threads/510879/
+ *
+ * `name` is the module's display name (from the registry). `restrictedToShips`
+ * lists the hull symbol(s) a module is limited to (the few non-armour restricted
+ * modules; armour's hull restriction lives in the registry). Every other field is
+ * optional, present only where the module has it: mass (t), integrity, powerDraw
+ * (MW), bootTime (s); optMass/minMass/maxMass (t) and optMultiplier/minMultiplier/
+ * maxMultiplier (thruster speed or shield strength); maxFuel (t/jump), fuelMul,
+ * fuelPower (FSD); jumpBoost (LY, Guardian FSD booster); powerCapacity (MW),
+ * heatEfficiency (power plant); weapons/engines/systems Capacity+Recharge (power
+ * distributor); fuelCapacity / cargoCapacity (t); shieldRegenRate/
+ * shieldBrokenRegenRate, shieldBoost. Weapon combat stats are not carried.
+ *
+ * Full provenance: data/ships/SOURCES.md.
+ */
+[
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class1",
+    "name": "Shield Generator",
+    "mass": 1.3,
+    "integrity": 32,
+    "powerDraw": 0.72,
+    "optMass": 25,
+    "minMass": 13,
+    "maxMass": 63,
+    "optMultiplier": 0.8,
+    "minMultiplier": 0.3,
+    "maxMultiplier": 1.3,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class2",
+    "name": "Shield Generator",
+    "mass": 0.5,
+    "integrity": 24,
+    "powerDraw": 0.96,
+    "optMass": 25,
+    "minMass": 13,
+    "maxMass": 63,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class3",
+    "name": "Shield Generator",
+    "mass": 1.3,
+    "integrity": 40,
+    "powerDraw": 1.2,
+    "optMass": 25,
+    "minMass": 13,
+    "maxMass": 63,
+    "optMultiplier": 1,
+    "minMultiplier": 0.5,
+    "maxMultiplier": 1.5,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class5",
+    "name": "Shield Generator",
+    "mass": 1.3,
+    "integrity": 48,
+    "powerDraw": 1.68,
+    "optMass": 25,
+    "minMass": 13,
+    "maxMass": 63,
+    "optMultiplier": 1.2,
+    "minMultiplier": 0.7,
+    "maxMultiplier": 1.7,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class1",
+    "name": "Shield Generator",
+    "mass": 2.5,
+    "integrity": 41,
+    "powerDraw": 0.9,
+    "optMass": 55,
+    "minMass": 28,
+    "maxMass": 138,
+    "optMultiplier": 0.8,
+    "minMultiplier": 0.3,
+    "maxMultiplier": 1.3,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class2",
+    "name": "Shield Generator",
+    "mass": 1,
+    "integrity": 31,
+    "powerDraw": 1.2,
+    "optMass": 55,
+    "minMass": 28,
+    "maxMass": 138,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class3",
+    "name": "Shield Generator",
+    "mass": 2.5,
+    "integrity": 51,
+    "powerDraw": 1.5,
+    "optMass": 55,
+    "minMass": 28,
+    "maxMass": 138,
+    "optMultiplier": 1,
+    "minMultiplier": 0.5,
+    "maxMultiplier": 1.5,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class4",
+    "name": "Shield Generator",
+    "mass": 4,
+    "integrity": 71,
+    "powerDraw": 1.8,
+    "optMass": 55,
+    "minMass": 28,
+    "maxMass": 138,
+    "optMultiplier": 1.1,
+    "minMultiplier": 0.6,
+    "maxMultiplier": 1.6,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class5",
+    "name": "Shield Generator",
+    "mass": 2.5,
+    "integrity": 61,
+    "powerDraw": 2.1,
+    "optMass": 55,
+    "minMass": 28,
+    "maxMass": 138,
+    "optMultiplier": 1.2,
+    "minMultiplier": 0.7,
+    "maxMultiplier": 1.7,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class1",
+    "name": "Shield Generator",
+    "mass": 5,
+    "integrity": 51,
+    "powerDraw": 1.08,
+    "optMass": 165,
+    "minMass": 83,
+    "maxMass": 413,
+    "optMultiplier": 0.8,
+    "minMultiplier": 0.3,
+    "maxMultiplier": 1.3,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.87
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class2",
+    "name": "Shield Generator",
+    "mass": 2,
+    "integrity": 38,
+    "powerDraw": 1.44,
+    "optMass": 165,
+    "minMass": 83,
+    "maxMass": 413,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.87
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class3",
+    "name": "Shield Generator",
+    "mass": 5,
+    "integrity": 64,
+    "powerDraw": 1.8,
+    "optMass": 165,
+    "minMass": 83,
+    "maxMass": 413,
+    "optMultiplier": 1,
+    "minMultiplier": 0.5,
+    "maxMultiplier": 1.5,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.87
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class4",
+    "name": "Shield Generator",
+    "mass": 8,
+    "integrity": 90,
+    "powerDraw": 2.16,
+    "optMass": 165,
+    "minMass": 83,
+    "maxMass": 413,
+    "optMultiplier": 1.1,
+    "minMultiplier": 0.6,
+    "maxMultiplier": 1.6,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.87
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class5",
+    "name": "Shield Generator",
+    "mass": 5,
+    "integrity": 77,
+    "powerDraw": 2.52,
+    "optMass": 165,
+    "minMass": 83,
+    "maxMass": 413,
+    "optMultiplier": 1.2,
+    "minMultiplier": 0.7,
+    "maxMultiplier": 1.7,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.87
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class1",
+    "name": "Shield Generator",
+    "mass": 10,
+    "integrity": 64,
+    "powerDraw": 1.32,
+    "optMass": 285,
+    "minMass": 143,
+    "maxMass": 713,
+    "optMultiplier": 0.8,
+    "minMultiplier": 0.3,
+    "maxMultiplier": 1.3,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 2.53
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class2",
+    "name": "Shield Generator",
+    "mass": 4,
+    "integrity": 48,
+    "powerDraw": 1.76,
+    "optMass": 285,
+    "minMass": 143,
+    "maxMass": 713,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 2.53
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class3",
+    "name": "Shield Generator",
+    "mass": 10,
+    "integrity": 80,
+    "powerDraw": 2.2,
+    "optMass": 285,
+    "minMass": 143,
+    "maxMass": 713,
+    "optMultiplier": 1,
+    "minMultiplier": 0.5,
+    "maxMultiplier": 1.5,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 2.53
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class4",
+    "name": "Shield Generator",
+    "mass": 16,
+    "integrity": 112,
+    "powerDraw": 2.64,
+    "optMass": 285,
+    "minMass": 143,
+    "maxMass": 713,
+    "optMultiplier": 1.1,
+    "minMultiplier": 0.6,
+    "maxMultiplier": 1.6,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 2.53
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class5",
+    "name": "Shield Generator",
+    "mass": 10,
+    "integrity": 96,
+    "powerDraw": 3.08,
+    "optMass": 285,
+    "minMass": 143,
+    "maxMass": 713,
+    "optMultiplier": 1.2,
+    "minMultiplier": 0.7,
+    "maxMultiplier": 1.7,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 2.53
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class1",
+    "name": "Shield Generator",
+    "mass": 20,
+    "integrity": 77,
+    "powerDraw": 1.56,
+    "optMass": 405,
+    "minMass": 203,
+    "maxMass": 1013,
+    "optMultiplier": 0.8,
+    "minMultiplier": 0.3,
+    "maxMultiplier": 1.3,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 3.75
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class2",
+    "name": "Shield Generator",
+    "mass": 8,
+    "integrity": 58,
+    "powerDraw": 2.08,
+    "optMass": 405,
+    "minMass": 203,
+    "maxMass": 1013,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 3.75
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class3",
+    "name": "Shield Generator",
+    "mass": 20,
+    "integrity": 96,
+    "powerDraw": 2.6,
+    "optMass": 405,
+    "minMass": 203,
+    "maxMass": 1013,
+    "optMultiplier": 1,
+    "minMultiplier": 0.5,
+    "maxMultiplier": 1.5,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 3.75
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class4",
+    "name": "Shield Generator",
+    "mass": 32,
+    "integrity": 134,
+    "powerDraw": 3.12,
+    "optMass": 405,
+    "minMass": 203,
+    "maxMass": 1013,
+    "optMultiplier": 1.1,
+    "minMultiplier": 0.6,
+    "maxMultiplier": 1.6,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 3.75
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class5",
+    "name": "Shield Generator",
+    "mass": 20,
+    "integrity": 115,
+    "powerDraw": 3.64,
+    "optMass": 405,
+    "minMass": 203,
+    "maxMass": 1013,
+    "optMultiplier": 1.2,
+    "minMultiplier": 0.7,
+    "maxMultiplier": 1.7,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 3.75
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class1",
+    "name": "Shield Generator",
+    "mass": 40,
+    "integrity": 90,
+    "powerDraw": 1.86,
+    "optMass": 540,
+    "minMass": 270,
+    "maxMass": 1350,
+    "optMultiplier": 0.8,
+    "minMultiplier": 0.3,
+    "maxMultiplier": 1.3,
+    "shieldRegenRate": 1.3,
+    "shieldBrokenRegenRate": 5.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class2",
+    "name": "Shield Generator",
+    "mass": 16,
+    "integrity": 68,
+    "powerDraw": 2.48,
+    "optMass": 540,
+    "minMass": 270,
+    "maxMass": 1350,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1.3,
+    "shieldBrokenRegenRate": 5.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class3",
+    "name": "Shield Generator",
+    "mass": 40,
+    "integrity": 113,
+    "powerDraw": 3.1,
+    "optMass": 540,
+    "minMass": 270,
+    "maxMass": 1350,
+    "optMultiplier": 1,
+    "minMultiplier": 0.5,
+    "maxMultiplier": 1.5,
+    "shieldRegenRate": 1.3,
+    "shieldBrokenRegenRate": 5.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class4",
+    "name": "Shield Generator",
+    "mass": 64,
+    "integrity": 158,
+    "powerDraw": 3.72,
+    "optMass": 540,
+    "minMass": 270,
+    "maxMass": 1350,
+    "optMultiplier": 1.1,
+    "minMultiplier": 0.6,
+    "maxMultiplier": 1.6,
+    "shieldRegenRate": 1.3,
+    "shieldBrokenRegenRate": 5.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class5",
+    "name": "Shield Generator",
+    "mass": 40,
+    "integrity": 136,
+    "powerDraw": 4.34,
+    "optMass": 540,
+    "minMass": 270,
+    "maxMass": 1350,
+    "optMultiplier": 1.2,
+    "minMultiplier": 0.7,
+    "maxMultiplier": 1.7,
+    "shieldRegenRate": 1.3,
+    "shieldBrokenRegenRate": 5.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class1",
+    "name": "Shield Generator",
+    "mass": 80,
+    "integrity": 105,
+    "powerDraw": 2.1,
+    "optMass": 1060,
+    "minMass": 530,
+    "maxMass": 2650,
+    "optMultiplier": 0.8,
+    "minMultiplier": 0.3,
+    "maxMultiplier": 1.3,
+    "shieldRegenRate": 1.8,
+    "shieldBrokenRegenRate": 7.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class2",
+    "name": "Shield Generator",
+    "mass": 32,
+    "integrity": 79,
+    "powerDraw": 2.8,
+    "optMass": 1060,
+    "minMass": 530,
+    "maxMass": 2650,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1.8,
+    "shieldBrokenRegenRate": 7.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class3",
+    "name": "Shield Generator",
+    "mass": 80,
+    "integrity": 131,
+    "powerDraw": 3.5,
+    "optMass": 1060,
+    "minMass": 530,
+    "maxMass": 2650,
+    "optMultiplier": 1,
+    "minMultiplier": 0.5,
+    "maxMultiplier": 1.5,
+    "shieldRegenRate": 1.8,
+    "shieldBrokenRegenRate": 7.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class4",
+    "name": "Shield Generator",
+    "mass": 128,
+    "integrity": 183,
+    "powerDraw": 4.2,
+    "optMass": 1060,
+    "minMass": 530,
+    "maxMass": 2650,
+    "optMultiplier": 1.1,
+    "minMultiplier": 0.6,
+    "maxMultiplier": 1.6,
+    "shieldRegenRate": 1.8,
+    "shieldBrokenRegenRate": 7.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class5",
+    "name": "Shield Generator",
+    "mass": 80,
+    "integrity": 157,
+    "powerDraw": 4.9,
+    "optMass": 1060,
+    "minMass": 530,
+    "maxMass": 2650,
+    "optMultiplier": 1.2,
+    "minMultiplier": 0.7,
+    "maxMultiplier": 1.7,
+    "shieldRegenRate": 1.8,
+    "shieldBrokenRegenRate": 7.33
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class1",
+    "name": "Shield Generator",
+    "mass": 160,
+    "integrity": 120,
+    "powerDraw": 2.4,
+    "optMass": 1800,
+    "minMass": 900,
+    "maxMass": 4500,
+    "optMultiplier": 0.8,
+    "minMultiplier": 0.3,
+    "maxMultiplier": 1.3,
+    "shieldRegenRate": 2.4,
+    "shieldBrokenRegenRate": 9.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class2",
+    "name": "Shield Generator",
+    "mass": 64,
+    "integrity": 90,
+    "powerDraw": 3.2,
+    "optMass": 1800,
+    "minMass": 900,
+    "maxMass": 4500,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 2.4,
+    "shieldBrokenRegenRate": 9.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class3",
+    "name": "Shield Generator",
+    "mass": 160,
+    "integrity": 150,
+    "powerDraw": 4,
+    "optMass": 1800,
+    "minMass": 900,
+    "maxMass": 4500,
+    "optMultiplier": 1,
+    "minMultiplier": 0.5,
+    "maxMultiplier": 1.5,
+    "shieldRegenRate": 2.4,
+    "shieldBrokenRegenRate": 9.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class4",
+    "name": "Shield Generator",
+    "mass": 256,
+    "integrity": 210,
+    "powerDraw": 4.8,
+    "optMass": 1800,
+    "minMass": 900,
+    "maxMass": 4500,
+    "optMultiplier": 1.1,
+    "minMultiplier": 0.6,
+    "maxMultiplier": 1.6,
+    "shieldRegenRate": 2.4,
+    "shieldBrokenRegenRate": 9.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class5",
+    "name": "Shield Generator",
+    "mass": 160,
+    "integrity": 180,
+    "powerDraw": 5.6,
+    "optMass": 1800,
+    "minMass": 900,
+    "maxMass": 4500,
+    "optMultiplier": 1.2,
+    "minMultiplier": 0.7,
+    "maxMultiplier": 1.7,
+    "shieldRegenRate": 2.4,
+    "shieldBrokenRegenRate": 9.6
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class1",
+    "name": "Shield Cell Bank",
+    "mass": 1.3,
+    "integrity": 32,
+    "powerDraw": 0.41,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class2",
+    "name": "Shield Cell Bank",
+    "mass": 0.5,
+    "integrity": 24,
+    "powerDraw": 0.55,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class3",
+    "name": "Shield Cell Bank",
+    "mass": 1.3,
+    "integrity": 40,
+    "powerDraw": 0.69,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class4",
+    "name": "Shield Cell Bank",
+    "mass": 2,
+    "integrity": 56,
+    "powerDraw": 0.83,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size1_Class5",
+    "name": "Shield Cell Bank",
+    "mass": 1.3,
+    "integrity": 48,
+    "powerDraw": 0.97,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class1",
+    "name": "Shield Cell Bank",
+    "mass": 2.5,
+    "integrity": 41,
+    "powerDraw": 0.5,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class2",
+    "name": "Shield Cell Bank",
+    "mass": 1,
+    "integrity": 31,
+    "powerDraw": 0.67,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class3",
+    "name": "Shield Cell Bank",
+    "mass": 2.5,
+    "integrity": 51,
+    "powerDraw": 0.84,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class4",
+    "name": "Shield Cell Bank",
+    "mass": 4,
+    "integrity": 71,
+    "powerDraw": 1.01,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size2_Class5",
+    "name": "Shield Cell Bank",
+    "mass": 2.5,
+    "integrity": 61,
+    "powerDraw": 1.18,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class1",
+    "name": "Shield Cell Bank",
+    "mass": 5,
+    "integrity": 51,
+    "powerDraw": 0.61,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class2",
+    "name": "Shield Cell Bank",
+    "mass": 2,
+    "integrity": 38,
+    "powerDraw": 0.82,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class3",
+    "name": "Shield Cell Bank",
+    "mass": 5,
+    "integrity": 64,
+    "powerDraw": 1.02,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class4",
+    "name": "Shield Cell Bank",
+    "mass": 8,
+    "integrity": 90,
+    "powerDraw": 1.22,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size3_Class5",
+    "name": "Shield Cell Bank",
+    "mass": 5,
+    "integrity": 77,
+    "powerDraw": 1.43,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class1",
+    "name": "Shield Cell Bank",
+    "mass": 10,
+    "integrity": 64,
+    "powerDraw": 0.74,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class2",
+    "name": "Shield Cell Bank",
+    "mass": 4,
+    "integrity": 48,
+    "powerDraw": 0.98,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class3",
+    "name": "Shield Cell Bank",
+    "mass": 10,
+    "integrity": 80,
+    "powerDraw": 1.23,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class4",
+    "name": "Shield Cell Bank",
+    "mass": 16,
+    "integrity": 112,
+    "powerDraw": 1.48,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size4_Class5",
+    "name": "Shield Cell Bank",
+    "mass": 10,
+    "integrity": 96,
+    "powerDraw": 1.72,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class1",
+    "name": "Shield Cell Bank",
+    "mass": 20,
+    "integrity": 77,
+    "powerDraw": 0.9,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class2",
+    "name": "Shield Cell Bank",
+    "mass": 8,
+    "integrity": 58,
+    "powerDraw": 1.2,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class3",
+    "name": "Shield Cell Bank",
+    "mass": 20,
+    "integrity": 96,
+    "powerDraw": 1.5,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class4",
+    "name": "Shield Cell Bank",
+    "mass": 32,
+    "integrity": 134,
+    "powerDraw": 1.8,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size5_Class5",
+    "name": "Shield Cell Bank",
+    "mass": 20,
+    "integrity": 115,
+    "powerDraw": 2.1,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class1",
+    "name": "Shield Cell Bank",
+    "mass": 40,
+    "integrity": 90,
+    "powerDraw": 1.06,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class2",
+    "name": "Shield Cell Bank",
+    "mass": 16,
+    "integrity": 68,
+    "powerDraw": 1.42,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class3",
+    "name": "Shield Cell Bank",
+    "mass": 40,
+    "integrity": 113,
+    "powerDraw": 1.77,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class4",
+    "name": "Shield Cell Bank",
+    "mass": 64,
+    "integrity": 158,
+    "powerDraw": 2.12,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size6_Class5",
+    "name": "Shield Cell Bank",
+    "mass": 40,
+    "integrity": 136,
+    "powerDraw": 2.48,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class1",
+    "name": "Shield Cell Bank",
+    "mass": 80,
+    "integrity": 105,
+    "powerDraw": 1.24,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class2",
+    "name": "Shield Cell Bank",
+    "mass": 32,
+    "integrity": 79,
+    "powerDraw": 1.66,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class3",
+    "name": "Shield Cell Bank",
+    "mass": 80,
+    "integrity": 131,
+    "powerDraw": 2.07,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class4",
+    "name": "Shield Cell Bank",
+    "mass": 128,
+    "integrity": 183,
+    "powerDraw": 2.48,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size7_Class5",
+    "name": "Shield Cell Bank",
+    "mass": 80,
+    "integrity": 157,
+    "powerDraw": 2.9,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class1",
+    "name": "Shield Cell Bank",
+    "mass": 160,
+    "integrity": 120,
+    "powerDraw": 1.44,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class2",
+    "name": "Shield Cell Bank",
+    "mass": 64,
+    "integrity": 90,
+    "powerDraw": 1.92,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class3",
+    "name": "Shield Cell Bank",
+    "mass": 160,
+    "integrity": 150,
+    "powerDraw": 2.4,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class4",
+    "name": "Shield Cell Bank",
+    "mass": 256,
+    "integrity": 210,
+    "powerDraw": 2.88,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_ShieldCellBank_Size8_Class5",
+    "name": "Shield Cell Bank",
+    "mass": 160,
+    "integrity": 180,
+    "powerDraw": 3.36,
+    "bootTime": 25
+  },
+  {
+    "symbol": "Int_CargoRack_Size1_Class1",
+    "name": "Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 2
+  },
+  {
+    "symbol": "Int_CargoRack_Size2_Class1",
+    "name": "Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 4
+  },
+  {
+    "symbol": "Int_CargoRack_Size3_Class1",
+    "name": "Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 8
+  },
+  {
+    "symbol": "Int_CargoRack_Size4_Class1",
+    "name": "Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 16
+  },
+  {
+    "symbol": "Int_CargoRack_Size5_Class1",
+    "name": "Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 32
+  },
+  {
+    "symbol": "Int_CargoRack_Size6_Class1",
+    "name": "Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 64
+  },
+  {
+    "symbol": "Int_CargoRack_Size7_Class1",
+    "name": "Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 128
+  },
+  {
+    "symbol": "Int_CargoRack_Size8_Class1",
+    "name": "Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 256
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class1",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.12
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class2",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 0.5,
+    "powerDraw": 0.16
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class3",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.2
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class4",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.24
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class5",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.28
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class1",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.18
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class2",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.24
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class3",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.3
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class4",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.36
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class5",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.42
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class1",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.3
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class2",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.4
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class3",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.5
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class4",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.6
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class5",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.7
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class1",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.42
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class2",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.56
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class3",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.7
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class4",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 128,
+    "powerDraw": 0.84
+  },
+  {
+    "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class5",
+    "name": "Hatch Breaker Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.98
+  },
+  {
+    "symbol": "Int_DetailedSurfaceScanner_Tiny",
+    "name": "Detailed Surface Scanner",
+    "mass": 0,
+    "powerDraw": 0
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class1",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 1.3,
+    "integrity": 32,
+    "powerDraw": 0.14,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class1",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 2.5,
+    "integrity": 41,
+    "powerDraw": 0.17,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class1",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 5,
+    "integrity": 51,
+    "powerDraw": 0.2,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class1",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 10,
+    "integrity": 64,
+    "powerDraw": 0.25,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class2",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 0.5,
+    "integrity": 24,
+    "powerDraw": 0.18,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class2",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 1,
+    "integrity": 51,
+    "powerDraw": 0.22,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class2",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 2,
+    "integrity": 38,
+    "powerDraw": 0.27,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class2",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 4,
+    "integrity": 48,
+    "powerDraw": 0.33,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class3",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 1.3,
+    "integrity": 40,
+    "powerDraw": 0.23,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class3",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 2.5,
+    "integrity": 51,
+    "powerDraw": 0.28,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class3",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 5,
+    "integrity": 64,
+    "powerDraw": 0.34,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class3",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 10,
+    "integrity": 80,
+    "powerDraw": 0.41,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class4",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 2,
+    "integrity": 56,
+    "powerDraw": 0.28,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class4",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 4,
+    "integrity": 71,
+    "powerDraw": 0.34,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class4",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 8,
+    "integrity": 90,
+    "powerDraw": 0.41,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class4",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 16,
+    "integrity": 112,
+    "powerDraw": 0.49,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size1_Class5",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 1.3,
+    "integrity": 48,
+    "powerDraw": 0.32,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size2_Class5",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 2.5,
+    "integrity": 61,
+    "powerDraw": 0.39,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size3_Class5",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 5,
+    "integrity": 77,
+    "powerDraw": 0.48,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_FSDInterdictor_Size4_Class5",
+    "name": "Frame Shift Drive Interdictor",
+    "mass": 10,
+    "integrity": 96,
+    "powerDraw": 0.57,
+    "bootTime": 15
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size1_Class1",
+    "name": "Hull Reinforcement Package",
+    "mass": 2
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size1_Class2",
+    "name": "Hull Reinforcement Package",
+    "mass": 1
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size2_Class1",
+    "name": "Hull Reinforcement Package",
+    "mass": 4
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size2_Class2",
+    "name": "Hull Reinforcement Package",
+    "mass": 2
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size3_Class1",
+    "name": "Hull Reinforcement Package",
+    "mass": 8
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size3_Class2",
+    "name": "Hull Reinforcement Package",
+    "mass": 4
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size4_Class1",
+    "name": "Hull Reinforcement Package",
+    "mass": 16
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size4_Class2",
+    "name": "Hull Reinforcement Package",
+    "mass": 8
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size5_Class1",
+    "name": "Hull Reinforcement Package",
+    "mass": 32
+  },
+  {
+    "symbol": "Int_HullReinforcement_Size5_Class2",
+    "name": "Hull Reinforcement Package",
+    "mass": 16
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class1",
+    "name": "Collector Limpet Controller",
+    "mass": 0.5,
+    "powerDraw": 0.14
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class2",
+    "name": "Collector Limpet Controller",
+    "mass": 0.5,
+    "powerDraw": 0.18
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class3",
+    "name": "Collector Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.23
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class4",
+    "name": "Collector Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.28
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size1_Class5",
+    "name": "Collector Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.32
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class1",
+    "name": "Collector Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.2
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class2",
+    "name": "Collector Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.27
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class3",
+    "name": "Collector Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.34
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class4",
+    "name": "Collector Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.41
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size3_Class5",
+    "name": "Collector Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.48
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class1",
+    "name": "Collector Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.3
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class2",
+    "name": "Collector Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.4
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class3",
+    "name": "Collector Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.5
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class4",
+    "name": "Collector Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.6
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size5_Class5",
+    "name": "Collector Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.7
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class1",
+    "name": "Collector Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.41
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class2",
+    "name": "Collector Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.55
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class3",
+    "name": "Collector Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.69
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class4",
+    "name": "Collector Limpet Controller",
+    "mass": 128,
+    "powerDraw": 0.83
+  },
+  {
+    "symbol": "Int_DroneControl_Collection_Size7_Class5",
+    "name": "Collector Limpet Controller",
+    "mass": 128,
+    "powerDraw": 0.97
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class1",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.18
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class2",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 0.5,
+    "powerDraw": 0.14
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class3",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.23
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class4",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.32
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size1_Class5",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.28
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class1",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.27
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class2",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.2
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class3",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.34
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class4",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.48
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size3_Class5",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.41
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class1",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.4
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class2",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.3
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class3",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.5
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class4",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.97
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size5_Class5",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.6
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class1",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.55
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class2",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.41
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class3",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.69
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class4",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 128,
+    "powerDraw": 0.97
+  },
+  {
+    "symbol": "Int_DroneControl_FuelTransfer_Size7_Class5",
+    "name": "Fuel Transfer Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.83
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class1",
+    "name": "Prospector Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.18
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class2",
+    "name": "Prospector Limpet Controller",
+    "mass": 0.5,
+    "powerDraw": 0.14
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class3",
+    "name": "Prospector Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.23
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class4",
+    "name": "Prospector Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.32
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size1_Class5",
+    "name": "Prospector Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.28
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class1",
+    "name": "Prospector Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.27
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class2",
+    "name": "Prospector Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.2
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class3",
+    "name": "Prospector Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.34
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class4",
+    "name": "Prospector Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.48
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size3_Class5",
+    "name": "Prospector Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.41
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class1",
+    "name": "Prospector Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.4
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class2",
+    "name": "Prospector Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.3
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class3",
+    "name": "Prospector Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.5
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class4",
+    "name": "Prospector Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.97
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size5_Class5",
+    "name": "Prospector Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.6
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class1",
+    "name": "Prospector Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.55
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class2",
+    "name": "Prospector Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.41
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class3",
+    "name": "Prospector Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.69
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class4",
+    "name": "Prospector Limpet Controller",
+    "mass": 128,
+    "powerDraw": 0.97
+  },
+  {
+    "symbol": "Int_DroneControl_Prospector_Size7_Class5",
+    "name": "Prospector Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.83
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class5_Strong",
+    "name": "Prismatic Shield Generator",
+    "mass": 2.5,
+    "integrity": 48,
+    "powerDraw": 2.52,
+    "optMass": 25,
+    "minMass": 13,
+    "maxMass": 63,
+    "optMultiplier": 1.5,
+    "minMultiplier": 1,
+    "maxMultiplier": 2,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.2
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class5_Strong",
+    "name": "Prismatic Shield Generator",
+    "mass": 5,
+    "integrity": 61,
+    "powerDraw": 3.15,
+    "optMass": 55,
+    "minMass": 23,
+    "maxMass": 138,
+    "optMultiplier": 1.5,
+    "minMultiplier": 1,
+    "maxMultiplier": 2,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.2
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class5_Strong",
+    "name": "Prismatic Shield Generator",
+    "mass": 10,
+    "integrity": 77,
+    "powerDraw": 3.78,
+    "optMass": 165,
+    "minMass": 83,
+    "maxMass": 413,
+    "optMultiplier": 1.5,
+    "minMultiplier": 1,
+    "maxMultiplier": 2,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.3
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class5_Strong",
+    "name": "Prismatic Shield Generator",
+    "mass": 20,
+    "integrity": 96,
+    "powerDraw": 4.62,
+    "optMass": 285,
+    "minMass": 143,
+    "maxMass": 713,
+    "optMultiplier": 1.5,
+    "minMultiplier": 1,
+    "maxMultiplier": 2,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.7
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class5_Strong",
+    "name": "Prismatic Shield Generator",
+    "mass": 40,
+    "integrity": 115,
+    "powerDraw": 5.46,
+    "optMass": 405,
+    "minMass": 203,
+    "maxMass": 1013,
+    "optMultiplier": 1.5,
+    "minMultiplier": 1,
+    "maxMultiplier": 2,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 2.3
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class5_Strong",
+    "name": "Prismatic Shield Generator",
+    "mass": 80,
+    "integrity": 136,
+    "powerDraw": 6.51,
+    "optMass": 540,
+    "minMass": 270,
+    "maxMass": 1350,
+    "optMultiplier": 1.5,
+    "minMultiplier": 1,
+    "maxMultiplier": 2,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 3.2
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class5_Strong",
+    "name": "Prismatic Shield Generator",
+    "mass": 160,
+    "integrity": 157,
+    "powerDraw": 7.35,
+    "optMass": 1060,
+    "minMass": 530,
+    "maxMass": 2650,
+    "optMultiplier": 1.5,
+    "minMultiplier": 1,
+    "maxMultiplier": 2,
+    "shieldRegenRate": 1.1,
+    "shieldBrokenRegenRate": 4.2
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class5_Strong",
+    "name": "Prismatic Shield Generator",
+    "mass": 320,
+    "integrity": 180,
+    "powerDraw": 8.4,
+    "optMass": 1800,
+    "minMass": 900,
+    "maxMass": 4500,
+    "optMultiplier": 1.5,
+    "minMultiplier": 1,
+    "maxMultiplier": 2,
+    "shieldRegenRate": 1.4,
+    "shieldBrokenRegenRate": 5.4
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size1_Class3_Fast",
+    "name": "Bi-Weave Shield Generator",
+    "mass": 1.3,
+    "integrity": 40,
+    "powerDraw": 1.2,
+    "optMass": 25,
+    "minMass": 13,
+    "maxMass": 63,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1.8,
+    "shieldBrokenRegenRate": 2.4
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size2_Class3_Fast",
+    "name": "Bi-Weave Shield Generator",
+    "mass": 2.5,
+    "integrity": 51,
+    "powerDraw": 1.5,
+    "optMass": 55,
+    "minMass": 28,
+    "maxMass": 138,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1.8,
+    "shieldBrokenRegenRate": 2.4
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class3_Fast",
+    "name": "Bi-Weave Shield Generator",
+    "mass": 5,
+    "integrity": 64,
+    "powerDraw": 1.8,
+    "optMass": 165,
+    "minMass": 83,
+    "maxMass": 413,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1.8,
+    "shieldBrokenRegenRate": 2.8
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size4_Class3_Fast",
+    "name": "Bi-Weave Shield Generator",
+    "mass": 10,
+    "integrity": 80,
+    "powerDraw": 2.2,
+    "optMass": 285,
+    "minMass": 143,
+    "maxMass": 713,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 1.8,
+    "shieldBrokenRegenRate": 3.8
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size5_Class3_Fast",
+    "name": "Bi-Weave Shield Generator",
+    "mass": 20,
+    "integrity": 96,
+    "powerDraw": 2.6,
+    "optMass": 405,
+    "minMass": 203,
+    "maxMass": 1013,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 2.2,
+    "shieldBrokenRegenRate": 5.6
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size6_Class3_Fast",
+    "name": "Bi-Weave Shield Generator",
+    "mass": 40,
+    "integrity": 113,
+    "powerDraw": 3.1,
+    "optMass": 540,
+    "minMass": 270,
+    "maxMass": 1350,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 3.2,
+    "shieldBrokenRegenRate": 8
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size7_Class3_Fast",
+    "name": "Bi-Weave Shield Generator",
+    "mass": 80,
+    "integrity": 131,
+    "powerDraw": 3.5,
+    "optMass": 1060,
+    "minMass": 530,
+    "maxMass": 2650,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 4.4,
+    "shieldBrokenRegenRate": 11
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size8_Class3_Fast",
+    "name": "Bi-Weave Shield Generator",
+    "mass": 160,
+    "integrity": 150,
+    "powerDraw": 4,
+    "optMass": 1800,
+    "minMass": 900,
+    "maxMass": 4500,
+    "optMultiplier": 0.9,
+    "minMultiplier": 0.4,
+    "maxMultiplier": 1.4,
+    "shieldRegenRate": 5.8,
+    "shieldBrokenRegenRate": 14.4
+  },
+  {
+    "symbol": "Int_BuggyBay_Size2_Class1",
+    "name": "Planetary Vehicle Hangar",
+    "mass": 12,
+    "integrity": 30,
+    "powerDraw": 0.25
+  },
+  {
+    "symbol": "Int_BuggyBay_Size2_Class2",
+    "name": "Planetary Vehicle Hangar",
+    "mass": 6,
+    "integrity": 30,
+    "powerDraw": 0.75
+  },
+  {
+    "symbol": "Int_BuggyBay_Size4_Class1",
+    "name": "Planetary Vehicle Hangar",
+    "mass": 20,
+    "integrity": 30,
+    "powerDraw": 0.4
+  },
+  {
+    "symbol": "Int_BuggyBay_Size4_Class2",
+    "name": "Planetary Vehicle Hangar",
+    "mass": 10,
+    "integrity": 30,
+    "powerDraw": 1.2
+  },
+  {
+    "symbol": "Int_BuggyBay_Size6_Class1",
+    "name": "Planetary Vehicle Hangar",
+    "mass": 34,
+    "integrity": 30,
+    "powerDraw": 0.6
+  },
+  {
+    "symbol": "Int_BuggyBay_Size6_Class2",
+    "name": "Planetary Vehicle Hangar",
+    "mass": 17,
+    "integrity": 30,
+    "powerDraw": 1.8
+  },
+  {
+    "symbol": "Int_PlanetApproachSuite",
+    "name": "Planetary Approach Suite",
+    "mass": 0,
+    "powerDraw": 0
+  },
+  {
+    "symbol": "Int_CorrosionProofCargoRack_Size1_Class1",
+    "name": "Corrosion Resistant Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 1
+  },
+  {
+    "symbol": "Int_CorrosionProofCargoRack_Size1_Class2",
+    "name": "Corrosion Resistant Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 2
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size4_Class1",
+    "name": "Economy Class Passenger Cabin",
+    "mass": 10
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size4_Class2",
+    "name": "Business Class Passenger Cabin",
+    "mass": 10
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size4_Class3",
+    "name": "First Class Passenger Cabin",
+    "mass": 10
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size5_Class4",
+    "name": "Luxury Class Passenger Cabin",
+    "mass": 20
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size6_Class1",
+    "name": "Economy Class Passenger Cabin",
+    "mass": 40
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size6_Class2",
+    "name": "Business Class Passenger Cabin",
+    "mass": 40
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size6_Class3",
+    "name": "First Class Passenger Cabin",
+    "mass": 40
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size6_Class4",
+    "name": "Luxury Class Passenger Cabin",
+    "mass": 40
+  },
+  {
+    "symbol": "Int_FighterBay_Size5_Class1",
+    "name": "Fighter Hangar",
+    "mass": 20,
+    "integrity": 60,
+    "powerDraw": 0.25
+  },
+  {
+    "symbol": "Int_FighterBay_Size6_Class1",
+    "name": "Fighter Hangar",
+    "mass": 40,
+    "integrity": 80,
+    "powerDraw": 0.35
+  },
+  {
+    "symbol": "Int_FighterBay_Size7_Class1",
+    "name": "Fighter Hangar",
+    "mass": 60,
+    "integrity": 120,
+    "powerDraw": 0.35
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size2_Class1",
+    "name": "Economy Class Passenger Cabin",
+    "mass": 2.5
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size3_Class1",
+    "name": "Economy Class Passenger Cabin",
+    "mass": 5
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size3_Class2",
+    "name": "Business Class Passenger Cabin",
+    "mass": 5
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size5_Class1",
+    "name": "Economy Class Passenger Cabin",
+    "mass": 20
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size5_Class2",
+    "name": "Business Class Passenger Cabin",
+    "mass": 20
+  },
+  {
+    "symbol": "Int_PassengerCabin_Size5_Class3",
+    "name": "First Class Passenger Cabin",
+    "mass": 20
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size1_Class1",
+    "name": "Module Reinforcement Package",
+    "mass": 2,
+    "integrity": 77
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size1_Class2",
+    "name": "Module Reinforcement Package",
+    "mass": 1,
+    "integrity": 70
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size2_Class1",
+    "name": "Module Reinforcement Package",
+    "mass": 4,
+    "integrity": 115
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size2_Class2",
+    "name": "Module Reinforcement Package",
+    "mass": 2,
+    "integrity": 105
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size3_Class1",
+    "name": "Module Reinforcement Package",
+    "mass": 8,
+    "integrity": 170
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size3_Class2",
+    "name": "Module Reinforcement Package",
+    "mass": 4,
+    "integrity": 155
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size4_Class1",
+    "name": "Module Reinforcement Package",
+    "mass": 16,
+    "integrity": 260
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size4_Class2",
+    "name": "Module Reinforcement Package",
+    "mass": 8,
+    "integrity": 235
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size5_Class1",
+    "name": "Module Reinforcement Package",
+    "mass": 32,
+    "integrity": 385
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size5_Class2",
+    "name": "Module Reinforcement Package",
+    "mass": 16,
+    "integrity": 350
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class1",
+    "name": "Repair Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.18
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class2",
+    "name": "Repair Limpet Controller",
+    "mass": 0.5,
+    "powerDraw": 0.14
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class3",
+    "name": "Repair Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.23
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class4",
+    "name": "Repair Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.32
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size1_Class5",
+    "name": "Repair Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.28
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class1",
+    "name": "Repair Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.27
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class2",
+    "name": "Repair Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.2
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class3",
+    "name": "Repair Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.34
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class4",
+    "name": "Repair Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.48
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size3_Class5",
+    "name": "Repair Limpet Controller",
+    "mass": 5,
+    "powerDraw": 0.41
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class1",
+    "name": "Repair Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.4
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class2",
+    "name": "Repair Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.3
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class3",
+    "name": "Repair Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.5
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class4",
+    "name": "Repair Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.97
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size5_Class5",
+    "name": "Repair Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.6
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class1",
+    "name": "Repair Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.55
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class2",
+    "name": "Repair Limpet Controller",
+    "mass": 32,
+    "powerDraw": 0.41
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class3",
+    "name": "Repair Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.69
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class4",
+    "name": "Repair Limpet Controller",
+    "mass": 128,
+    "powerDraw": 0.97
+  },
+  {
+    "symbol": "Int_DroneControl_Repair_Size7_Class5",
+    "name": "Repair Limpet Controller",
+    "mass": 80,
+    "powerDraw": 0.83
+  },
+  {
+    "symbol": "Int_DroneControl_UnkVesselResearch",
+    "name": "Research Limpet Controller",
+    "mass": 1.3,
+    "integrity": 20,
+    "powerDraw": 0.4
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size1_Class1",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 2
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size1_Class2",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 2
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size2_Class1",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 4
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size2_Class2",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 2
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size3_Class1",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 8
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size3_Class2",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 4
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size4_Class1",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 16
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size4_Class2",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 8
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size5_Class1",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 32
+  },
+  {
+    "symbol": "Int_MetaAlloyHullReinforcement_Size5_Class2",
+    "name": "Meta Alloy Hull Reinforcement",
+    "mass": 16
+  },
+  {
+    "symbol": "Int_DroneControl_Decontamination_Size1_Class1",
+    "name": "Decontamination Limpet Controller",
+    "mass": 1.3,
+    "powerDraw": 0.18
+  },
+  {
+    "symbol": "Int_DroneControl_Decontamination_Size3_Class1",
+    "name": "Decontamination Limpet Controller",
+    "mass": 2,
+    "powerDraw": 0.2
+  },
+  {
+    "symbol": "Int_DroneControl_Decontamination_Size5_Class1",
+    "name": "Decontamination Limpet Controller",
+    "mass": 20,
+    "powerDraw": 0.5
+  },
+  {
+    "symbol": "Int_DroneControl_Decontamination_Size7_Class1",
+    "name": "Decontamination Limpet Controller",
+    "mass": 128,
+    "powerDraw": 0.97
+  },
+  {
+    "symbol": "Int_CorrosionProofCargoRack_Size4_Class1",
+    "name": "Corrosion Resistant Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 16
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size1_Class1",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 2,
+    "powerDraw": 0.45
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size1_Class2",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 1,
+    "powerDraw": 0.56
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size2_Class1",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 4,
+    "powerDraw": 0.68
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size2_Class2",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 2,
+    "powerDraw": 0.79
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size3_Class1",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 8,
+    "powerDraw": 0.9
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 4,
+    "powerDraw": 1.01
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size4_Class1",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 16,
+    "powerDraw": 1.13
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size4_Class2",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 8,
+    "powerDraw": 1.24
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size5_Class1",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 32,
+    "powerDraw": 1.35
+  },
+  {
+    "symbol": "Int_GuardianHullReinforcement_Size5_Class2",
+    "name": "Guardian Hull Reinforcement",
+    "mass": 16,
+    "powerDraw": 1.46
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size1_Class1",
+    "name": "Guardian Module Reinforcement",
+    "mass": 2,
+    "integrity": 85,
+    "powerDraw": 0.27
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size1_Class2",
+    "name": "Guardian Module Reinforcement",
+    "mass": 1,
+    "integrity": 77,
+    "powerDraw": 0.34
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size2_Class1",
+    "name": "Guardian Module Reinforcement",
+    "mass": 4,
+    "integrity": 127,
+    "powerDraw": 0.41
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size2_Class2",
+    "name": "Guardian Module Reinforcement",
+    "mass": 2,
+    "integrity": 116,
+    "powerDraw": 0.47
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size3_Class1",
+    "name": "Guardian Module Reinforcement",
+    "mass": 8,
+    "integrity": 187,
+    "powerDraw": 0.54
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size3_Class2",
+    "name": "Guardian Module Reinforcement",
+    "mass": 4,
+    "integrity": 171,
+    "powerDraw": 0.61
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size4_Class1",
+    "name": "Guardian Module Reinforcement",
+    "mass": 16,
+    "integrity": 286,
+    "powerDraw": 0.68
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size4_Class2",
+    "name": "Guardian Module Reinforcement",
+    "mass": 8,
+    "integrity": 259,
+    "powerDraw": 0.74
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size5_Class1",
+    "name": "Guardian Module Reinforcement",
+    "mass": 32,
+    "integrity": 424,
+    "powerDraw": 0.81
+  },
+  {
+    "symbol": "Int_GuardianModuleReinforcement_Size5_Class2",
+    "name": "Guardian Module Reinforcement",
+    "mass": 16,
+    "integrity": 385,
+    "powerDraw": 0.88
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size1_Class1",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 2,
+    "integrity": 36,
+    "powerDraw": 0.35
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size1_Class2",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 1,
+    "integrity": 36,
+    "powerDraw": 0.46
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size2_Class1",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 4,
+    "integrity": 36,
+    "powerDraw": 0.56
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size2_Class2",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 2,
+    "integrity": 36,
+    "powerDraw": 0.67
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size3_Class1",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 8,
+    "integrity": 36,
+    "powerDraw": 0.74
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size3_Class2",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 4,
+    "integrity": 36,
+    "powerDraw": 0.84
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size4_Class1",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 16,
+    "integrity": 36,
+    "powerDraw": 0.95
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size4_Class2",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 8,
+    "integrity": 36,
+    "powerDraw": 1.05
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size5_Class1",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 32,
+    "integrity": 36,
+    "powerDraw": 1.16
+  },
+  {
+    "symbol": "Int_GuardianShieldReinforcement_Size5_Class2",
+    "name": "Guardian Shield Reinforcement",
+    "mass": 16,
+    "integrity": 36,
+    "powerDraw": 1.26
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size1",
+    "name": "Guardian FSD Booster",
+    "mass": 1.3,
+    "integrity": 32,
+    "powerDraw": 0.75,
+    "jumpBoost": 4
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size2",
+    "name": "Guardian FSD Booster",
+    "mass": 1.3,
+    "integrity": 32,
+    "powerDraw": 0.98,
+    "jumpBoost": 6
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size3",
+    "name": "Guardian FSD Booster",
+    "mass": 1.3,
+    "integrity": 32,
+    "powerDraw": 1.27,
+    "jumpBoost": 7.75
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size4",
+    "name": "Guardian FSD Booster",
+    "mass": 1.3,
+    "integrity": 32,
+    "powerDraw": 1.65,
+    "jumpBoost": 9.25
+  },
+  {
+    "symbol": "Int_GuardianFSDBooster_Size5",
+    "name": "Guardian FSD Booster",
+    "mass": 1.3,
+    "integrity": 32,
+    "powerDraw": 2.14,
+    "jumpBoost": 10.5
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size1",
+    "name": "Guardian Hybrid Power Distributor",
+    "mass": 1.4,
+    "integrity": 56,
+    "powerDraw": 0.62,
+    "weaponsCapacity": 10,
+    "weaponsRecharge": 2.5,
+    "enginesCapacity": 9,
+    "enginesRecharge": 0.8,
+    "systemsCapacity": 10,
+    "systemsRecharge": 0.8
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size2",
+    "name": "Guardian Hybrid Power Distributor",
+    "mass": 2.6,
+    "integrity": 45,
+    "powerDraw": 0.73,
+    "weaponsCapacity": 13,
+    "weaponsRecharge": 3.1,
+    "enginesCapacity": 11,
+    "enginesRecharge": 1,
+    "systemsCapacity": 11,
+    "systemsRecharge": 1
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size3",
+    "name": "Guardian Hybrid Power Distributor",
+    "mass": 5.25,
+    "integrity": 56,
+    "powerDraw": 0.78,
+    "weaponsCapacity": 13,
+    "weaponsRecharge": 3.1,
+    "enginesCapacity": 14,
+    "enginesRecharge": 1.7,
+    "systemsCapacity": 14,
+    "systemsRecharge": 1.7
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size4",
+    "name": "Guardian Hybrid Power Distributor",
+    "mass": 10.5,
+    "integrity": 56,
+    "powerDraw": 0.87,
+    "weaponsCapacity": 22,
+    "weaponsRecharge": 4.9,
+    "enginesCapacity": 17,
+    "enginesRecharge": 2.5,
+    "systemsCapacity": 14,
+    "systemsRecharge": 1.7
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size5",
+    "name": "Guardian Hybrid Power Distributor",
+    "mass": 21,
+    "integrity": 56,
+    "powerDraw": 0.96,
+    "weaponsCapacity": 29,
+    "weaponsRecharge": 6,
+    "enginesCapacity": 22,
+    "enginesRecharge": 3.3,
+    "systemsCapacity": 22,
+    "systemsRecharge": 3.3
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size6",
+    "name": "Guardian Hybrid Power Distributor",
+    "mass": 42,
+    "integrity": 56,
+    "powerDraw": 1.07,
+    "weaponsCapacity": 35,
+    "weaponsRecharge": 7.3,
+    "enginesCapacity": 26,
+    "enginesRecharge": 4.2,
+    "systemsCapacity": 26,
+    "systemsRecharge": 4.2
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size7",
+    "name": "Guardian Hybrid Power Distributor",
+    "mass": 84,
+    "integrity": 56,
+    "powerDraw": 1.16,
+    "weaponsCapacity": 43,
+    "weaponsRecharge": 8.5,
+    "enginesCapacity": 31,
+    "enginesRecharge": 5.2,
+    "systemsCapacity": 31,
+    "systemsRecharge": 5.2
+  },
+  {
+    "symbol": "Int_GuardianPowerDistributor_Size8",
+    "name": "Guardian Hybrid Power Distributor",
+    "mass": 168,
+    "integrity": 56,
+    "powerDraw": 1.25,
+    "weaponsCapacity": 50,
+    "weaponsRecharge": 10.1,
+    "enginesCapacity": 36,
+    "enginesRecharge": 6.2,
+    "systemsCapacity": 36,
+    "systemsRecharge": 6.2
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size2",
+    "name": "Guardian Hybrid Power Plant",
+    "mass": 1.5,
+    "integrity": 56,
+    "powerCapacity": 12.7,
+    "heatEfficiency": 0.5
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size3",
+    "name": "Guardian Hybrid Power Plant",
+    "mass": 2.9,
+    "integrity": 70,
+    "powerCapacity": 15.8,
+    "heatEfficiency": 0.5
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size4",
+    "name": "Guardian Hybrid Power Plant",
+    "mass": 5.9,
+    "integrity": 88,
+    "powerCapacity": 20.6,
+    "heatEfficiency": 0.5
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size5",
+    "name": "Guardian Hybrid Power Plant",
+    "mass": 11.7,
+    "integrity": 106,
+    "powerCapacity": 26.9,
+    "heatEfficiency": 0.5
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size6",
+    "name": "Guardian Hybrid Power Plant",
+    "mass": 23.4,
+    "integrity": 124,
+    "powerCapacity": 33.3,
+    "heatEfficiency": 0.5
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size7",
+    "name": "Guardian Hybrid Power Plant",
+    "mass": 46.8,
+    "integrity": 144,
+    "powerCapacity": 39.6,
+    "heatEfficiency": 0.5
+  },
+  {
+    "symbol": "Int_GuardianPowerplant_Size8",
+    "name": "Guardian Hybrid Power Plant",
+    "mass": 93.6,
+    "integrity": 165,
+    "powerCapacity": 47.5,
+    "heatEfficiency": 0.5
+  },
+  {
+    "symbol": "Int_DroneControl_Recon_Size1_Class1",
+    "name": "Recon Limpet Controller",
+    "mass": 1.3,
+    "integrity": 24,
+    "powerDraw": 0.18
+  },
+  {
+    "symbol": "Int_DroneControl_Recon_Size3_Class1",
+    "name": "Recon Limpet Controller",
+    "mass": 2,
+    "integrity": 51,
+    "powerDraw": 0.2
+  },
+  {
+    "symbol": "Int_DroneControl_Recon_Size5_Class1",
+    "name": "Recon Limpet Controller",
+    "mass": 20,
+    "integrity": 96,
+    "powerDraw": 0.5
+  },
+  {
+    "symbol": "Int_DroneControl_Recon_Size7_Class1",
+    "name": "Recon Limpet Controller",
+    "mass": 128,
+    "integrity": 157,
+    "powerDraw": 0.97
+  },
+  {
+    "symbol": "Int_SupercruiseAssist",
+    "name": "Supercruise Assist",
+    "mass": 0,
+    "powerDraw": 0.3
+  },
+  {
+    "symbol": "Int_PlanetApproachSuite_Advanced",
+    "name": "Advanced Planetary Approach Suite",
+    "mass": 0,
+    "powerDraw": 0
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Mining_Size3_Class1",
+    "name": "Mining Multi Limpet Controller",
+    "mass": 12,
+    "powerDraw": 0.5
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Mining_Size3_Class3",
+    "name": "Mining Multi Limpet Controller",
+    "mass": 10,
+    "powerDraw": 0.35
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Operations_Size3_Class3",
+    "name": "Operations Multi Limpet Controller",
+    "mass": 10,
+    "powerDraw": 0.35
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Operations_Size3_Class4",
+    "name": "Operations Multi Limpet Controller",
+    "mass": 15,
+    "powerDraw": 0.3
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Rescue_Size3_Class2",
+    "name": "Rescue Multi Limpet Controller",
+    "mass": 8,
+    "powerDraw": 0.4
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Rescue_Size3_Class3",
+    "name": "Rescue Multi Limpet Controller",
+    "mass": 10,
+    "powerDraw": 0.35
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Xeno_Size3_Class3",
+    "name": "Xeno Multi Limpet Controller",
+    "mass": 10,
+    "powerDraw": 0.35
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Xeno_Size3_Class4",
+    "name": "Xeno Multi Limpet Controller",
+    "mass": 15,
+    "powerDraw": 0.3
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Universal_Size7_Class3",
+    "name": "Universal Multi Limpet Controller",
+    "mass": 125,
+    "powerDraw": 0.8
+  },
+  {
+    "symbol": "Int_MultiDroneControl_Universal_Size7_Class5",
+    "name": "Universal Multi Limpet Controller",
+    "mass": 140,
+    "powerDraw": 1.1
+  },
+  {
+    "symbol": "Int_ExpModuleStabiliser_Size3_Class3",
+    "name": "Experimental Weapon Stabiliser",
+    "mass": 8,
+    "powerDraw": 0
+  },
+  {
+    "symbol": "Int_ExpModuleStabiliser_Size5_Class3",
+    "name": "Experimental Weapon Stabiliser",
+    "mass": 20,
+    "powerDraw": 0
+  },
+  {
+    "symbol": "Int_LargeCargoRack_Size7_Class1",
+    "name": "Mk II Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 192
+  },
+  {
+    "symbol": "Int_LargeCargoRack_Size8_class1",
+    "name": "Mk II Cargo Rack",
+    "mass": 0,
+    "cargoCapacity": 384
+  },
+  {
+    "symbol": "Int_MultiDroneControl_MiningV2_Size5_Class5",
+    "name": "Mk II Mining Multi-Limpet Controller",
+    "mass": 64,
+    "integrity": 105,
+    "powerDraw": 1.4,
+    "restrictedToShips": [
+      "LakonMiner"
+    ]
+  }
+]

@@ -45,3 +45,65 @@ export { INTERNAL_MODULES } from './modules-internal.js';
 export { HARDPOINT_MODULES } from './modules-hardpoint.js';
 export { UTILITY_MODULES } from './modules-utility.js';
 export { ALL_MODULES } from './modules-all.js';
+
+// ── Stats: ships and modules (the numbers, keyed by the same `symbol`) ───────
+export { SHIP_STATS, getShipStats, type ShipStats } from './ship-stats.js';
+export { getModuleStats, type ModuleStats } from './module-stats.js';
+export { STANDARD_MODULE_STATS } from './module-stats-standard.js';
+export { INTERNAL_MODULE_STATS } from './module-stats-internal.js';
+export { HARDPOINT_MODULE_STATS } from './module-stats-hardpoint.js';
+export { UTILITY_MODULE_STATS } from './module-stats-utility.js';
+export { ALL_MODULE_STATS } from './module-stats-all.js';
+
+// ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
+export {
+    parseSlef,
+    getModifier,
+    type Slef,
+    type SlefEntry,
+    type SlefHeader,
+    type LoadoutEvent,
+    type LoadoutModule,
+    type ModuleEngineering,
+    type EngineeringModifier,
+} from './slef.js';
+export {
+    singleJumpRange,
+    fuelPerJump,
+    totalRange,
+    type FrameShiftDriveParams,
+} from './jump-range.js';
+export {
+    ShipLoadout,
+    type FuelCapacity,
+    type JumpOptions,
+    type LoadoutSlot,
+    type ApplyBlueprintOptions,
+} from './ship-loadout.js';
+
+// ── Build editor: slot model + per-hull slot layouts ────────────────────────
+export {
+    parseSlotName,
+    enumerateSlots,
+    type SlotKind,
+    type SlotRestriction,
+    type CoreSlotType,
+    type BuildSlot,
+    type CoreSlots,
+    type OptionalSlotSpec,
+    type BulkheadOption,
+    type ShipSlots,
+    type ParsedSlot,
+} from './slots.js';
+export { SHIP_SLOTS, getShipSlots } from './ship-slots.js';
+
+// ── Engineering: blueprint + experimental-effect calculator ─────────────────
+export {
+    computeModifiers,
+    type ModifierMethod,
+    type BlueprintFeature,
+    type ExperimentalContribution,
+    type BlueprintGrades,
+} from './engineering.js';
+export { BLUEPRINTS, getBlueprint, getBlueprintGrade } from './blueprints.js';
+export { EXPERIMENTAL_EFFECTS, getExperimentalEffect } from './experimental-effects.js';

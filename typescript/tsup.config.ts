@@ -39,6 +39,11 @@ export default defineConfig({
     treeshake: true,
     clean: true,
     sourcemap: true,
+    esbuildOptions(options) {
+        // Keep debuggable mappings without embedding every TypeScript and JSONC
+        // source in the npm tarball (the data-heavy maps otherwise dominate it).
+        options.sourcesContent = false;
+    },
     outDir: 'dist',
     esbuildPlugins: [
         {

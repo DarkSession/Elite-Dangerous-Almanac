@@ -80,6 +80,19 @@ test('internal commodity construction helpers are not package exports', async ()
     });
 });
 
+test('internal engineering compatibility rules are not package exports', async () => {
+    await assert.rejects(import('@elite-dangerous-almanac/core/ships/engineering-compatibility'), {
+        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+    });
+});
+
+test('published source maps do not embed the full TypeScript and data sources', async () => {
+    const map = JSON.parse(
+        await readFile(new URL('./dist/ships/ship-loadout.js.map', import.meta.url), 'utf8'),
+    );
+    assert.equal(map.sourcesContent, undefined);
+});
+
 test('the publication manifest includes consumer documentation and notices', async () => {
     const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
     assert.equal(
@@ -98,4 +111,8 @@ test('the publication manifest includes consumer documentation and notices', asy
             ['THIRD_PARTY_NOTICES.md', true],
         ],
     );
+
+    const notices = await readFile(new URL('./THIRD_PARTY_NOTICES.md', import.meta.url), 'utf8');
+    assert.match(notices, /Odyssey micro resources/);
+    assert.match(notices, /Market commodities/);
 });

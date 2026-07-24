@@ -1,0 +1,22 @@
+{
+  "anchor": {
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "quality": 1,
+    "experimental": "special_fsd_heavy",
+    "base": {
+      "FSDOptimalMass": 4670,
+      "Mass": 160,
+      "Integrity": 188,
+      "PowerDraw": 1.05
+    },
+    "expected": {
+      "FSDOptimalMass": 7528.04,
+      "Mass": 208,
+      "Integrity": 147.016,
+      "PowerDraw": 1.2075
+    }
+  },
+  "blueprintCount": 81,
+  "experimentalCount": 57
+}

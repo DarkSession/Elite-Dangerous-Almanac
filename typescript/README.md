@@ -27,8 +27,10 @@ import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-co
 
 - `astro` supplies procedural naming, system-address conversion, regions,
   nebulae and permit locks.
-- `ships` supplies the shipyard and outfitting registries.
-- `materials` supplies raw, manufactured and encoded engineering materials.
+- `ships` supplies ship/module registries, stats, SLEF parsing, loadout editing,
+  engineering, and jump-range calculations.
+- `materials` supplies ship engineering materials and Odyssey micro resources.
+- `commodities` supplies standard and rare market-goods catalogues.
 
 Each area has a barrel plus leaf subpaths for its data-heavy catalogues:
 
@@ -44,6 +46,10 @@ system?.systemAddress; // 3309179996515n
 getShipBySymbol('empire_trader')?.name; // 'Imperial Clipper'
 getMaterialByName('iron', RAW_MATERIALS)?.grade; // 1
 ```
+
+`ShipLoadout` validates module fits and engineering compatibility. When an imported
+SLEF build is edited, its supplied mass/capacity figures are adjusted when possible;
+an aggregate that cannot be updated safely is discarded and recomputed.
 
 See the [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#readme)
 and [generated GitHub Wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki)

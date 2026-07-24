@@ -1,0 +1,282 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://elite-dangerous-almanac.dev/schemas/ships/catalogues.schema.json",
+  "title": "Elite Dangerous Almanac ship catalogue schemas",
+  "description": "Language-neutral schemas for every JSONC payload in data/ships.",
+  "definitions": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "name"],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "entitlement": { "$ref": "#/definitions/nonEmptyString" }
+      }
+    },
+    "shipCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/ship" }
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "category", "name", "class", "rating"],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "category": {
+          "enum": ["standard", "internal", "hardpoint", "utility"]
+        },
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "class": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "rating": {
+          "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
+        },
+        "mount": {
+          "enum": ["Fixed", "Gimballed", "Turreted"]
+        },
+        "guidance": {
+          "enum": ["Dumbfire", "Seeker", "Swarm"]
+        },
+        "ship": { "$ref": "#/definitions/nonEmptyString" },
+        "entitlement": { "$ref": "#/definitions/nonEmptyString" }
+      }
+    },
+    "moduleCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/module" }
+    },
+    "shipStats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "symbol",
+        "hullMass",
+        "speed",
+        "boost",
+        "baseShieldStrength",
+        "baseArmour",
+        "hardness",
+        "masslock",
+        "crew",
+        "heatCapacity",
+        "reserveFuelCapacity",
+        "pitch",
+        "roll",
+        "yaw",
+        "minThrust",
+        "pipSpeed"
+      ],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "hullMass": { "type": "number", "minimum": 0 },
+        "speed": { "type": "number", "minimum": 0 },
+        "boost": { "type": "number", "minimum": 0 },
+        "baseShieldStrength": { "type": "number", "minimum": 0 },
+        "baseArmour": { "type": "number", "minimum": 0 },
+        "hardness": { "type": "number", "minimum": 0 },
+        "masslock": { "type": "number", "minimum": 0 },
+        "crew": { "type": "integer", "minimum": 1 },
+        "heatCapacity": { "type": "number", "minimum": 0 },
+        "reserveFuelCapacity": { "type": "number", "minimum": 0 },
+        "pitch": { "type": "number", "minimum": 0 },
+        "roll": { "type": "number", "minimum": 0 },
+        "yaw": { "type": "number", "minimum": 0 },
+        "minThrust": { "type": "number", "minimum": 0, "maximum": 100 },
+        "pipSpeed": { "type": "number", "minimum": 0 }
+      }
+    },
+    "shipStatsCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/shipStats" }
+    },
+    "moduleStats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "name"],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "restrictedToShips": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/nonEmptyString" }
+        },
+        "mass": { "type": "number", "minimum": 0 },
+        "integrity": { "type": "number", "minimum": 0 },
+        "powerDraw": { "type": "number", "minimum": 0 },
+        "bootTime": { "type": "number", "minimum": 0 },
+        "optMass": { "type": "number", "minimum": 0 },
+        "minMass": { "type": "number", "minimum": 0 },
+        "maxMass": { "type": "number", "minimum": 0 },
+        "optMultiplier": { "type": "number" },
+        "minMultiplier": { "type": "number" },
+        "maxMultiplier": { "type": "number" },
+        "maxFuel": { "type": "number", "minimum": 0 },
+        "fuelMul": { "type": "number", "exclusiveMinimum": 0 },
+        "fuelPower": { "type": "number", "exclusiveMinimum": 0 },
+        "jumpBoost": { "type": "number", "minimum": 0 },
+        "powerCapacity": { "type": "number", "minimum": 0 },
+        "heatEfficiency": { "type": "number", "minimum": 0 },
+        "weaponsCapacity": { "type": "number", "minimum": 0 },
+        "weaponsRecharge": { "type": "number", "minimum": 0 },
+        "enginesCapacity": { "type": "number", "minimum": 0 },
+        "enginesRecharge": { "type": "number", "minimum": 0 },
+        "systemsCapacity": { "type": "number", "minimum": 0 },
+        "systemsRecharge": { "type": "number", "minimum": 0 },
+        "fuelCapacity": { "type": "number", "minimum": 0 },
+        "cargoCapacity": { "type": "number", "minimum": 0 },
+        "shieldRegenRate": { "type": "number", "minimum": 0 },
+        "shieldBrokenRegenRate": { "type": "number", "minimum": 0 },
+        "shieldBoost": { "type": "number" }
+      }
+    },
+    "moduleStatsCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/moduleStats" }
+    },
+    "coreSlots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "powerPlant",
+        "thrusters",
+        "frameShiftDrive",
+        "lifeSupport",
+        "powerDistributor",
+        "sensors",
+        "fuelTank"
+      ],
+      "properties": {
+        "powerPlant": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "thrusters": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "frameShiftDrive": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "lifeSupport": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "powerDistributor": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "sensors": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "fuelTank": { "type": "integer", "minimum": 1, "maximum": 8 }
+      }
+    },
+    "optionalSlot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["size"],
+      "properties": {
+        "size": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "restriction": {
+          "enum": ["military", "planetaryApproachSuite"]
+        }
+      }
+    },
+    "bulkhead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "mass"],
+      "properties": {
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "mass": { "type": "number", "minimum": 0 }
+      }
+    },
+    "shipSlots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "symbol",
+        "core",
+        "hardpoints",
+        "utility",
+        "optional",
+        "bulkheads"
+      ],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "core": { "$ref": "#/definitions/coreSlots" },
+        "hardpoints": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1, "maximum": 4 }
+        },
+        "utility": { "type": "integer", "minimum": 0 },
+        "optional": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/optionalSlot" }
+        },
+        "bulkheads": {
+          "type": "array",
+          "minItems": 5,
+          "items": { "$ref": "#/definitions/bulkhead" }
+        }
+      }
+    },
+    "shipSlotsCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/shipSlots" }
+    },
+    "blueprintFeature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "method", "min", "max"],
+      "properties": {
+        "label": { "$ref": "#/definitions/nonEmptyString" },
+        "method": {
+          "enum": ["multiplicative", "additive", "overwrite"]
+        },
+        "min": { "type": "number" },
+        "max": { "type": "number" }
+      }
+    },
+    "blueprintGrades": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[1-5]$": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/blueprintFeature" }
+        }
+      }
+    },
+    "blueprintCatalogue": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/definitions/blueprintGrades"
+      }
+    },
+    "experimentalContribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "method", "value"],
+      "properties": {
+        "label": { "$ref": "#/definitions/nonEmptyString" },
+        "method": {
+          "enum": ["multiplicative", "additive", "overwrite"]
+        },
+        "value": { "type": "number" }
+      }
+    },
+    "experimentalCatalogue": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "$ref": "#/definitions/experimentalContribution" }
+      }
+    }
+  }
+}

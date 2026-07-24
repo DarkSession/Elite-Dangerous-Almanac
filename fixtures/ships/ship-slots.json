@@ -1,0 +1,255 @@
+{
+  "count": 47,
+  "spot": [
+    {
+      "symbol": "SideWinder",
+      "core": {
+        "powerPlant": 2,
+        "thrusters": 2,
+        "frameShiftDrive": 2,
+        "lifeSupport": 1,
+        "powerDistributor": 1,
+        "sensors": 1,
+        "fuelTank": 1
+      },
+      "hardpoints": [
+        1,
+        1
+      ],
+      "utility": 2,
+      "optional": [
+        {
+          "size": 2
+        },
+        {
+          "size": 2
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1,
+          "restriction": "planetaryApproachSuite"
+        }
+      ],
+      "bulkheads": [
+        {
+          "name": "Lightweight Alloy",
+          "mass": 0
+        },
+        {
+          "name": "Reinforced Alloy",
+          "mass": 2
+        },
+        {
+          "name": "Military Grade Composite",
+          "mass": 4
+        },
+        {
+          "name": "Mirrored Surface Composite",
+          "mass": 4
+        },
+        {
+          "name": "Reactive Surface Composite",
+          "mass": 4
+        }
+      ]
+    },
+    {
+      "symbol": "Anaconda",
+      "core": {
+        "powerPlant": 8,
+        "thrusters": 7,
+        "frameShiftDrive": 6,
+        "lifeSupport": 5,
+        "powerDistributor": 8,
+        "sensors": 8,
+        "fuelTank": 5
+      },
+      "hardpoints": [
+        4,
+        3,
+        3,
+        3,
+        2,
+        2,
+        1,
+        1
+      ],
+      "utility": 8,
+      "optional": [
+        {
+          "size": 7
+        },
+        {
+          "size": 6
+        },
+        {
+          "size": 6
+        },
+        {
+          "size": 6
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 5,
+          "restriction": "military"
+        },
+        {
+          "size": 4
+        },
+        {
+          "size": 4
+        },
+        {
+          "size": 4
+        },
+        {
+          "size": 2
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1,
+          "restriction": "planetaryApproachSuite"
+        }
+      ],
+      "bulkheads": [
+        {
+          "name": "Lightweight Alloy",
+          "mass": 0
+        },
+        {
+          "name": "Reinforced Alloy",
+          "mass": 30
+        },
+        {
+          "name": "Military Grade Composite",
+          "mass": 60
+        },
+        {
+          "name": "Mirrored Surface Composite",
+          "mass": 60
+        },
+        {
+          "name": "Reactive Surface Composite",
+          "mass": 60
+        }
+      ]
+    },
+    {
+      "symbol": "Explorer_NX",
+      "core": {
+        "powerPlant": 8,
+        "thrusters": 7,
+        "frameShiftDrive": 8,
+        "lifeSupport": 5,
+        "powerDistributor": 7,
+        "sensors": 8,
+        "fuelTank": 7
+      },
+      "hardpoints": [
+        3,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "utility": 6,
+      "optional": [
+        {
+          "size": 7
+        },
+        {
+          "size": 6
+        },
+        {
+          "size": 6
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 4
+        },
+        {
+          "size": 4
+        },
+        {
+          "size": 3
+        },
+        {
+          "size": 2
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1,
+          "restriction": "planetaryApproachSuite"
+        }
+      ],
+      "bulkheads": [
+        {
+          "name": "Lightweight Alloy",
+          "mass": 0
+        },
+        {
+          "name": "Mk II Ablative Lightweight",
+          "mass": 15
+        },
+        {
+          "name": "Mk II Ablative Reinforced",
+          "mass": 30
+        },
+        {
+          "name": "Mk II Ablative Military Grade",
+          "mass": 60
+        },
+        {
+          "name": "Mk II Ablative Mirrored",
+          "mass": 60
+        },
+        {
+          "name": "Mk II Ablative Reactive",
+          "mass": 60
+        }
+      ]
+    }
+  ]
+}

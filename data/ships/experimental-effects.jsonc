@@ -1,0 +1,658 @@
+/*
+ * Engineering **experimental effects** (special effects) — the stat modifiers each
+ * experimental applies, resolved to journal Modifier Labels. Keyed by the effect's
+ * Frontier `fdname` (as it appears in `Engineering.ExperimentalEffect`).
+ *
+ * Source:  EDSY (github.com/taleden/EDSY) eddb.js `expeffect` — coriolis-data does
+ *          not carry the numeric experimental modifiers. EDSY is (c) taleden under a
+ *          CC BY-NC 4.0 License (http://creativecommons.org/licenses/by-nc/4.0/).
+ *          The game logic is Elite Dangerous data, property of Frontier Developments
+ *          plc, under Frontier's media-usage terms:
+ *          https://forums.frontier.co.uk/threads/510879/
+ *
+ * Each effect is a list of contributions { label, method, value }, applied on top of
+ * a blueprint. Weapon-combat-only effects are dropped, matching the stats layer.
+ *
+ * Full provenance: data/ships/SOURCES.md.
+ */
+{
+  "special_concordant_sequence": [
+    {
+      "label": "ThermalLoad",
+      "method": "multiplicative",
+      "value": 0.5
+    }
+  ],
+  "special_weapon_toughened": [
+    {
+      "label": "Integrity",
+      "method": "multiplicative",
+      "value": 0.15
+    }
+  ],
+  "special_emissive_munitions": [
+    {
+      "label": "ThermalLoad",
+      "method": "multiplicative",
+      "value": 1.0
+    }
+  ],
+  "special_feedback_cascade_cooled": [
+    {
+      "label": "ThermalLoad",
+      "method": "multiplicative",
+      "value": -0.4
+    }
+  ],
+  "special_weapon_efficient": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_incendiary_rounds": [
+    {
+      "label": "ThermalLoad",
+      "method": "multiplicative",
+      "value": 2.0
+    }
+  ],
+  "special_weapon_rateoffire": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": 0.05
+    }
+  ],
+  "special_weapon_damage": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": 0.05
+    }
+  ],
+  "special_plasma_slug_cooled": [
+    {
+      "label": "ThermalLoad",
+      "method": "multiplicative",
+      "value": -0.4
+    }
+  ],
+  "special_weapon_lightweight": [
+    {
+      "label": "Mass",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_super_penetrator_cooled": [
+    {
+      "label": "ThermalLoad",
+      "method": "multiplicative",
+      "value": -0.4
+    }
+  ],
+  "special_shieldbooster_explosive": [
+    {
+      "label": "DefenceModifierShieldMultiplier",
+      "method": "multiplicative",
+      "value": -0.01
+    },
+    {
+      "label": "ExplosiveResistance",
+      "method": "additive",
+      "value": 0.02
+    }
+  ],
+  "special_shieldbooster_toughened": [
+    {
+      "label": "Integrity",
+      "method": "multiplicative",
+      "value": 0.15
+    }
+  ],
+  "special_shieldbooster_efficient": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_shieldbooster_kinetic": [
+    {
+      "label": "DefenceModifierShieldMultiplier",
+      "method": "multiplicative",
+      "value": -0.01
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": 0.02
+    }
+  ],
+  "special_shieldbooster_chunky": [
+    {
+      "label": "DefenceModifierShieldMultiplier",
+      "method": "multiplicative",
+      "value": 0.05
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": -0.02
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": -0.02
+    },
+    {
+      "label": "ExplosiveResistance",
+      "method": "additive",
+      "value": -0.02
+    }
+  ],
+  "special_shieldbooster_thermic": [
+    {
+      "label": "DefenceModifierShieldMultiplier",
+      "method": "multiplicative",
+      "value": -0.01
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": 0.02
+    }
+  ],
+  "special_armour_kinetic": [
+    {
+      "label": "DefenceModifierHealthMultiplier",
+      "method": "multiplicative",
+      "value": -0.03
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": 0.08
+    }
+  ],
+  "special_armour_chunky": [
+    {
+      "label": "DefenceModifierHealthMultiplier",
+      "method": "multiplicative",
+      "value": 0.08
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": -0.03
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": -0.03
+    },
+    {
+      "label": "ExplosiveResistance",
+      "method": "additive",
+      "value": -0.03
+    }
+  ],
+  "special_armour_explosive": [
+    {
+      "label": "DefenceModifierHealthMultiplier",
+      "method": "multiplicative",
+      "value": -0.03
+    },
+    {
+      "label": "ExplosiveResistance",
+      "method": "additive",
+      "value": 0.08
+    }
+  ],
+  "special_armour_thermic": [
+    {
+      "label": "DefenceModifierHealthMultiplier",
+      "method": "multiplicative",
+      "value": -0.03
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": 0.08
+    }
+  ],
+  "special_powerplant_toughened": [
+    {
+      "label": "Integrity",
+      "method": "multiplicative",
+      "value": 0.15
+    }
+  ],
+  "special_powerplant_highcharge": [
+    {
+      "label": "Mass",
+      "method": "multiplicative",
+      "value": 0.1
+    },
+    {
+      "label": "PowerCapacity",
+      "method": "multiplicative",
+      "value": 0.05
+    }
+  ],
+  "special_powerplant_lightweight": [
+    {
+      "label": "Mass",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_powerplant_cooled": [
+    {
+      "label": "HeatEfficiency",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_engine_toughened": [
+    {
+      "label": "Integrity",
+      "method": "multiplicative",
+      "value": 0.15
+    }
+  ],
+  "special_engine_overloaded": [
+    {
+      "label": "EngineOptPerformance",
+      "method": "multiplicative",
+      "value": 0.04
+    },
+    {
+      "label": "EngineHeatRate",
+      "method": "multiplicative",
+      "value": 0.1
+    }
+  ],
+  "special_engine_haulage": [
+    {
+      "label": "EngineOptimalMass",
+      "method": "multiplicative",
+      "value": 0.1
+    }
+  ],
+  "special_engine_lightweight": [
+    {
+      "label": "Mass",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_engine_cooled": [
+    {
+      "label": "Mass",
+      "method": "multiplicative",
+      "value": 0.05
+    },
+    {
+      "label": "EngineHeatRate",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_fsd_fuelcapacity": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": 0.05
+    },
+    {
+      "label": "MaxFuelPerJump",
+      "method": "multiplicative",
+      "value": 0.1
+    }
+  ],
+  "special_fsd_toughened": [
+    {
+      "label": "Integrity",
+      "method": "multiplicative",
+      "value": 0.25
+    }
+  ],
+  "special_fsd_heavy": [
+    {
+      "label": "Integrity",
+      "method": "multiplicative",
+      "value": -0.08
+    },
+    {
+      "label": "FSDOptimalMass",
+      "method": "multiplicative",
+      "value": 0.04
+    }
+  ],
+  "special_fsd_lightweight": [
+    {
+      "label": "Mass",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_fsd_cooled": [
+    {
+      "label": "FSDHeatRate",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_powerdistributor_capacity": [
+    {
+      "label": "WeaponsCapacity",
+      "method": "multiplicative",
+      "value": 0.08
+    },
+    {
+      "label": "EnginesCapacity",
+      "method": "multiplicative",
+      "value": 0.08
+    },
+    {
+      "label": "EnginesRecharge",
+      "method": "multiplicative",
+      "value": -0.02
+    },
+    {
+      "label": "SystemsCapacity",
+      "method": "multiplicative",
+      "value": 0.08
+    }
+  ],
+  "special_powerdistributor_toughened": [
+    {
+      "label": "Integrity",
+      "method": "multiplicative",
+      "value": 0.15
+    }
+  ],
+  "special_powerdistributor_efficient": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_powerdistributor_lightweight": [
+    {
+      "label": "Mass",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_powerdistributor_fast": [
+    {
+      "label": "WeaponsCapacity",
+      "method": "multiplicative",
+      "value": -0.04
+    },
+    {
+      "label": "EnginesCapacity",
+      "method": "multiplicative",
+      "value": -0.04
+    },
+    {
+      "label": "EnginesRecharge",
+      "method": "multiplicative",
+      "value": 0.04
+    },
+    {
+      "label": "SystemsCapacity",
+      "method": "multiplicative",
+      "value": -0.04
+    }
+  ],
+  "special_hullreinforcement_kinetic": [
+    {
+      "label": "DefenceModifierHealthAddition",
+      "method": "additive",
+      "value": -0.05
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": 0.02
+    }
+  ],
+  "special_hullreinforcement_chunky": [
+    {
+      "label": "DefenceModifierHealthAddition",
+      "method": "additive",
+      "value": 0.1
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": -0.02
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": -0.02
+    },
+    {
+      "label": "ExplosiveResistance",
+      "method": "additive",
+      "value": -0.02
+    }
+  ],
+  "special_hullreinforcement_explosive": [
+    {
+      "label": "DefenceModifierHealthAddition",
+      "method": "additive",
+      "value": -0.05
+    },
+    {
+      "label": "ExplosiveResistance",
+      "method": "additive",
+      "value": 0.02
+    }
+  ],
+  "special_hullreinforcement_thermic": [
+    {
+      "label": "DefenceModifierHealthAddition",
+      "method": "additive",
+      "value": -0.05
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": 0.02
+    }
+  ],
+  "special_shieldcell_oversized": [
+    {
+      "label": "ShieldBankSpinUp",
+      "method": "multiplicative",
+      "value": 0.2
+    },
+    {
+      "label": "ShieldBankReinforcement",
+      "method": "additive",
+      "value": 0.05
+    }
+  ],
+  "special_shieldcell_toughened": [
+    {
+      "label": "Integrity",
+      "method": "multiplicative",
+      "value": 0.15
+    }
+  ],
+  "special_shieldcell_efficient": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_shieldcell_gradual": [
+    {
+      "label": "ShieldBankDuration",
+      "method": "multiplicative",
+      "value": 0.1
+    },
+    {
+      "label": "ShieldBankReinforcement",
+      "method": "additive",
+      "value": -0.05
+    }
+  ],
+  "special_shieldcell_lightweight": [
+    {
+      "label": "Mass",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_shield_toughened": [
+    {
+      "label": "Integrity",
+      "method": "multiplicative",
+      "value": 0.15
+    }
+  ],
+  "special_shield_regenerative": [
+    {
+      "label": "RegenRate",
+      "method": "multiplicative",
+      "value": 0.15
+    },
+    {
+      "label": "BrokenRegenRate",
+      "method": "multiplicative",
+      "value": 0.15
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": -0.015
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": -0.015
+    },
+    {
+      "label": "ExplosiveResistance",
+      "method": "additive",
+      "value": -0.015
+    }
+  ],
+  "special_shield_kinetic": [
+    {
+      "label": "ShieldGenStrength",
+      "method": "multiplicative",
+      "value": -0.03
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": 0.08
+    }
+  ],
+  "special_shield_health": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": 0.1
+    },
+    {
+      "label": "ShieldGenStrength",
+      "method": "multiplicative",
+      "value": 0.06
+    },
+    {
+      "label": "EnergyPerRegen",
+      "method": "multiplicative",
+      "value": 0.25
+    }
+  ],
+  "special_shield_efficient": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": -0.2
+    },
+    {
+      "label": "ShieldGenStrength",
+      "method": "multiplicative",
+      "value": -0.02
+    },
+    {
+      "label": "EnergyPerRegen",
+      "method": "multiplicative",
+      "value": -0.2
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": -0.01
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": -0.01
+    },
+    {
+      "label": "ExplosiveResistance",
+      "method": "additive",
+      "value": -0.01
+    }
+  ],
+  "special_shield_resistive": [
+    {
+      "label": "PowerDraw",
+      "method": "multiplicative",
+      "value": 0.1
+    },
+    {
+      "label": "EnergyPerRegen",
+      "method": "multiplicative",
+      "value": 0.25
+    },
+    {
+      "label": "KineticResistance",
+      "method": "additive",
+      "value": 0.03
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": 0.03
+    },
+    {
+      "label": "ExplosiveResistance",
+      "method": "additive",
+      "value": 0.03
+    }
+  ],
+  "special_shield_lightweight": [
+    {
+      "label": "Mass",
+      "method": "multiplicative",
+      "value": -0.1
+    }
+  ],
+  "special_shield_thermic": [
+    {
+      "label": "ShieldGenStrength",
+      "method": "multiplicative",
+      "value": -0.03
+    },
+    {
+      "label": "ThermicResistance",
+      "method": "additive",
+      "value": 0.08
+    }
+  ]
+}

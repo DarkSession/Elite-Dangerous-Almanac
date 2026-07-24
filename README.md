@@ -317,10 +317,12 @@ microResourcesInCategory("consumable", ALL_MICRO_RESOURCES).length; // -> 6
 
 ## Ships and outfitting
 
-The `ships` feature area is Frontier's shipyard and outfitting registries: the
-48 player-flyable **hulls** and the ~1200 fittable **modules**, each a symbol/name
-record (not a stats sheet — no hull mass or module cost, which the source registry
-does not carry).
+The `ships` feature area is Frontier's shipyard and outfitting registries — the
+48 player-flyable **hulls** and the ~1200 fittable **modules** as symbol/name
+records — plus a **stats layer** (masses, power, FSD constants, …) and **jump-range
+calculations** you can drive straight from a [SLEF](#ship-builds-jump-range-and-slef)
+export. The registries and the stats are separate catalogues keyed by the same
+Frontier `symbol`, so an app that only wants names never bundles the numbers.
 
 Ships are one small catalogue, so the lookups carry the data:
 
@@ -372,6 +374,123 @@ present only on the hardpoints that have them; `ship` is present only on armour,
 the one hull-specific module (which is what `getModulesForShip` returns). Module
 `name` is **not** unique — it repeats across sizes, ratings and hulls — so key on
 `symbol`; `getModulesByName` returns every match.
+
+### Ship and module stats
+
+The numbers behind the registries — hull masses, module masses, power draw, FSD
+constants, thruster/shield/distributor performance — live in **parallel stats
+catalogues keyed by the same `symbol`**. Join a registry record to its stats on
+`symbol`; import only the slice you need.
+
+```ts
+import { getShipStats } from "@elite-dangerous-almanac/core/ships/ship-stats";
+import { getModuleStats } from "@elite-dangerous-almanac/core/ships/module-stats";
+import { STANDARD_MODULE_STATS } from "@elite-dangerous-almanac/core/ships/module-stats-standard";
+
+getShipStats("anaconda")?.hullMass; // -> 400 (tonnes)
+getModuleStats("int_hyperdrive_size5_class5", STANDARD_MODULE_STATS)?.optMass; // -> 1050
+```
+
+Stats records mirror the registry split — `ship-stats`, and `module-stats-standard`
+/ `-internal` / `-hardpoint` / `-utility` (and `-all`) — with the query functions in
+`module-stats` (data-free; pass the catalogue you imported). Each module-stats record
+repeats the module's `name` so it reads on its own, and carries `restrictedToShips`
+when a module is limited to particular hulls (e.g. the Python Mk II's MkII Gravity
+Optimised thrusters → `["Explorer_NX"]`); armour's hull restriction stays in the
+registry. Masses are tonnes, power megawatts, ranges light-years. Only mechanical
+stats are carried — weapon combat stats (damage, falloff, …) are not.
+
+### Ship builds, jump range and SLEF
+
+Give `ShipLoadout` a **SLEF** export (the community ship-loadout format — a journal
+`Loadout` event wrapped in a `{ header, data }` envelope, as EDSY and Coriolis
+produce) and it answers jump-range and fuel questions about the build:
+
+```ts
+import { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
+
+const build = ShipLoadout.fromSlef(slefJsonString); // string or parsed value
+
+build.shipName; // -> 'The Deep Black'
+build.maxJumpRange(); // -> 89.41  best single jump (one jump's fuel, no cargo)
+build.unladenJumpRange(); // full tank, no cargo
+build.ladenJumpRange(); // full tank, full cargo
+build.totalRange(); // -> multi-jump range as the tank drains
+build.fuelPerJump(50); // -> tonnes of fuel a 50 LY jump costs
+```
+
+`ShipLoadout` resolves the drive's constants from the module stats and applies the
+export's engineering (a Long Range blueprint's `FSDOptimalMass`, a Guardian FSD
+Booster's bonus). Need just the maths? Skip the class and import the pure functions
+from `ships/jump-range` (`singleJumpRange`, `fuelPerJump`, `totalRange`), or parse a
+SLEF export yourself with `parseSlef` from `ships/slef`. The port is validated
+against EDSY: it reproduces the sample build's exported `MaxJumpRange` of 89.414678.
+
+#### Building and engineering a loadout
+
+The same class assembles a build from scratch. Start an **empty** hull, enumerate its
+mounts (core, hardpoint, utility, optional — occupied or empty, with size and any
+restriction), fit and remove modules, and engineer them with a blueprint calculator.
+Mass, fuel and jump range are computed from the fitted modules and the hull's stats.
+Editing an imported SLEF build adjusts its supplied mass and capacity aggregates by
+the changed module's contribution. If a contribution is unknown, the affected
+aggregate is discarded and recomputed rather than returned stale.
+
+```ts
+import {
+  ShipLoadout,
+  getModuleBySymbol,
+  ALL_MODULES,
+  STANDARD_MODULES,
+} from "@elite-dangerous-almanac/core/ships";
+
+const build = ShipLoadout.empty("Anaconda");
+
+build.slotsOfKind("optional"); // every optional mount: { key, size, restriction?, occupied }
+build.modulesForSlot("FrameShiftDrive", ALL_MODULES); // what fits (size/kind/restriction checked)
+
+build
+  .setModule(
+    "FrameShiftDrive",
+    getModuleBySymbol("Int_Hyperdrive_Size6_Class5", STANDARD_MODULES)!,
+  )
+  // A fuel tank is what a jump draws from — without one, maxJumpRange() is 0.
+  .setModule(
+    "Slot01_Size7",
+    getModuleBySymbol("Int_FuelTank_Size6_Class3", STANDARD_MODULES)!,
+  )
+  .applyBlueprint("FrameShiftDrive", "FSD_LongRange", {
+    grade: 5,
+    experimental: "special_fsd_heavy",
+  });
+
+build.maxJumpRange(); // -> ~76.9, reflecting the engineered optimal mass
+```
+
+`setModule` validates the fit (module size ≤ slot size, right category, military /
+planetary-approach and hull restrictions) and throws otherwise. **Slot keys are the
+journal names** (`FrameShiftDrive`, `MainEngines` for thrusters, `Radar` for sensors,
+`HugeHardpoint1`, `Slot01_Size7`, `Military01`, …), so a SLEF-loaded build and one
+assembled here share one vocabulary — enumerate them with `slots()` rather than
+guessing. A module lives in the catalogue for its outfitting **category**, which is not
+always the slot it occupies — a fuel tank is in `STANDARD_MODULES` even though it fits
+an optional slot — so pass `ALL_MODULES` to `modulesForSlot` when you want every
+candidate.
+
+`applyBlueprint` also validates that the blueprint and experimental effect belong to
+the fitted module's engineering family and that quality is a finite value from 0 to
+
+1. An armour recipe, for example, cannot be applied to an FSD merely because both
+   modify mass or integrity.
+
+**Blueprint and experimental ids are Frontier `fdname`s** — the same strings a journal
+`Loadout` event carries in `Engineering.BlueprintName` / `ExperimentalEffect` (e.g.
+`FSD_LongRange`, `special_fsd_heavy`). Enumerate them with `Object.keys(BLUEPRINTS)` and
+`Object.keys(EXPERIMENTAL_EFFECTS)`. Need only the engineering maths? `computeModifiers`
+from `ships/engineering` turns a blueprint grade (from `ships/blueprints`) and an
+experimental effect (from `ships/experimental-effects`) into journal-style modifiers.
+The calculator is validated against the real "Deep Black" export — its size-8 drive's
+optimal mass 4670 → 7528.04 at G5 Long Range + Mass Manager.
 
 ## Market commodities
 
@@ -430,13 +549,15 @@ npm run docs     # typedoc -> GitHub Wiki markdown
 ```
 
 Full API documentation is generated from source and published to the repository
-wiki.
+wiki. The language-neutral JSON Schemas in `schemas/` validate shared catalogue
+records (currently all ship-domain payloads) before an implementation builds them
+into a package.
 
 ## Attributions
 
 Much of this data and several algorithms come from the Elite Dangerous community.
 The same credit lives next to each data file — as a comment header on the file
-itself, with the long form in `data/astro/SOURCES.md` — and in the doc comment of
+itself, with the long form in its domain's `SOURCES.md` — and in the doc comment of
 each ported module. (Attribution sits in a comment rather than an `attribution`
 field so it documents the data without being inlined into your bundle.)
 
@@ -485,6 +606,28 @@ field so it documents the data without being inlined into your bundle.)
   (`shipyard.csv`, `outfitting.csv`), the community-maintained registry of
   Frontier's internal ids (no explicit licence stated; check the repository terms).
   Full provenance in `data/ships/SOURCES.md`.
+- **Ship and module stats, slot layouts and blueprints** (hull/module masses, power,
+  FSD constants, thruster/shield/distributor performance, ship-restriction flags,
+  per-hull slot layouts, engineering blueprint modifiers) — from
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (`ships/*.json`,
+  `modules/**`, `modifications/**`). Coriolis-data releases only its code under MIT;
+  the stat values are Elite Dangerous game data, property of Frontier Developments plc
+  (see the Frontier notice below). Full provenance in `data/ships/SOURCES.md`.
+- **Jump-range & fuel algorithm, experimental-effect modifiers** — the hyperspace
+  formula is ported as fact (our own implementation) from
+  [EDSY](https://github.com/taleden/EDSY) by **taleden** (code licensed CC BY-NC 4.0),
+  derived from Frontier's "mass effect on hyperspace range" description. The numeric
+  experimental (special) effect modifiers, which coriolis-data does not carry, also
+  come from EDSY (`eddb.js`). **SLEF** parsing follows the
+  [Inara Ship Loadout Export Format spec](https://inara.cz/elite/inara-impexp-slef/).
+- **Elite Dangerous game data** — the ship and module stat values are the property of
+  **Frontier Developments plc**, used under Frontier's
+  [media-usage rules](https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/):
+  _"Elite Dangerous Almanac was created using assets and imagery from Elite Dangerous,
+  with the permission of Frontier Developments plc, for non-commercial purposes. It is
+  not endorsed by nor reflects the views or opinions of Frontier Developments and no
+  employee of Frontier Developments was involved in the making of it."_ Projects that
+  redistribute this data should include the same notice.
 - **Market commodities** (standard and rare goods — names, symbols and market
   categories) — from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
   (`commodity.csv`, `rare_commodity.csv`), the community-maintained registry of

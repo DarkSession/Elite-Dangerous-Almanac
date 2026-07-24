@@ -36,6 +36,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Generate API documentation
+        run: npm run docs
+
       - name: Test with coverage thresholds
         run: npm test
 
