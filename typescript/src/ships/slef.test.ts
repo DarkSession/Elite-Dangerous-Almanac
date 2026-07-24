@@ -69,6 +69,55 @@ test('parseSlef rejects envelopes and modules that violate its returned types', 
     );
 });
 
+test('parseSlef rejects numeric values outside the documented journal ranges', () => {
+    const invalidLoadouts = [
+        { Ship: 'sidewinder', FuelCapacity: { Main: -1, Reserve: 0 }, Modules: [] },
+        { Ship: 'sidewinder', Modules: [{ Slot: 'MainEngines', Item: 'x', Priority: 5 }] },
+        { Ship: 'sidewinder', Modules: [{ Slot: 'MainEngines', Item: 'x', Health: -0.1 }] },
+        {
+            Ship: 'sidewinder',
+            Modules: [
+                {
+                    Slot: 'MainEngines',
+                    Item: 'x',
+                    Engineering: {
+                        BlueprintName: 'Engine_Dirty',
+                        Level: 6,
+                        Quality: 1,
+                        Modifiers: [],
+                    },
+                },
+            ],
+        },
+        {
+            Ship: 'sidewinder',
+            Modules: [
+                {
+                    Slot: 'MainEngines',
+                    Item: 'x',
+                    Engineering: {
+                        BlueprintName: 'Engine_Dirty',
+                        Level: 5,
+                        Quality: -0.1,
+                        Modifiers: [],
+                    },
+                },
+            ],
+        },
+    ];
+
+    for (const loadout of invalidLoadouts) {
+        assert.throws(() => parseSlef(loadout), TypeError);
+    }
+});
+
+test('parseSlef rejects a non-Loadout journal event discriminator', () => {
+    assert.throws(
+        () => parseSlef({ event: 'FSDJump', Ship: 'sidewinder', Modules: [] }),
+        TypeError,
+    );
+});
+
 const fsdModule = slefFixture[0]!.data.Modules.find(
     (m) => m.Slot === 'FrameShiftDrive',
 ) as unknown as LoadoutModule;

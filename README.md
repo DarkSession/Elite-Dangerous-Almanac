@@ -555,6 +555,42 @@ that costs nothing (only `CargoRack_IncreasedCapacity` grade 5). Blueprints are 
 only by the grades that have data, so iterating grades 1–5 can return `null` for a grade
 a blueprint doesn't define.
 
+Experimental (special) effects cost materials too, and carry them the same way: each
+effect in `ships/experimental-effects` is `{ modifiers, materials }`, so
+`getExperimentalEffect` gives the modifiers and `getExperimentalEffectMaterials` the
+recipe. An experimental effect is a single application (one roll), so its `materials` is
+the whole cost.
+
+**Total cost to a grade** — engineering a blueprint to a grade means rolling up through
+the grades: grade `g` takes `g` rolls (grade 1 → 1 roll … grade 5 → 5 rolls), and each
+roll consumes that grade's materials. So a grade-5-only material like Datamined Wake
+Exceptions (1 per roll) costs 5 to complete grade 5. `getBlueprintCost` totals it for you.
+Pass a **current grade** to price only what is left from a module that already sits at a
+grade (default `0`, unengineered); set it to `grade − 1` to price a single grade alone.
+Fold in an experimental effect with `sumMaterials` for the grand total:
+
+```ts
+import { getBlueprintCost } from "@elite-dangerous-almanac/core/ships/blueprints";
+import { getExperimentalEffectMaterials } from "@elite-dangerous-almanac/core/ships/experimental-effects";
+import { sumMaterials } from "@elite-dangerous-almanac/core/ships/engineering";
+
+// Every material to take an FSD to G5 Long Range from scratch (1+2+3+4+5 rolls):
+getBlueprintCost("FSD_LongRange", 5);
+// -> includes { symbol: "DataminedWake", name: "Datamined Wake Exceptions", count: 5 }, ...
+
+// Only what is left when the drive is already at grade 3 (grades 4 and 5):
+getBlueprintCost("FSD_LongRange", 5, 3);
+
+// …plus the Mass Manager experimental (one application):
+sumMaterials(
+  getBlueprintCost("FSD_LongRange", 5)!,
+  getExperimentalEffectMaterials("special_fsd_heavy")!,
+);
+```
+
+The two data modules stay decoupled — `getBlueprintCost` never pulls in the experimental
+catalogue — so combine them yourself with `sumMaterials` only when you need both.
+
 ## Market commodities
 
 The `commodities` feature area is Frontier's commodity-market registry: the 256
@@ -680,8 +716,8 @@ field so it documents the data without being inlined into your bundle.)
   formula is ported as fact (our own implementation) from
   [EDSY](https://github.com/taleden/EDSY) by **taleden** (code licensed CC BY-NC 4.0),
   derived from Frontier's "mass effect on hyperspace range" description. The numeric
-  experimental (special) effect modifiers, which coriolis-data does not carry, also
-  come from EDSY (`eddb.js`). **SLEF** parsing follows the
+  experimental (special) effect modifiers **and their material recipes**, which
+  coriolis-data does not carry, also come from EDSY (`eddb.js`). **SLEF** parsing follows the
   [Inara Ship Loadout Export Format spec](https://inara.cz/elite/inara-impexp-slef/).
 - **Elite Dangerous game data** — the ship and module stat values are the property of
   **Frontier Developments plc**, used under Frontier's

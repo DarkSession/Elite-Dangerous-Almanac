@@ -55,10 +55,11 @@ subject to its respective terms.
   `modules/**`, `modifications/**`, commit `0db9234`). Coriolis-data releases only its
   _code_ under MIT; the JSON stat values are **Elite Dangerous game data, property of
   Frontier Developments plc**, used under Frontier's media-usage terms (see below).
-- **Experimental (special) effect modifiers and journal Modifier Labels:** the numeric
-  experimental-effect modifiers — which coriolis-data does not carry — and the
-  attribute-to-journal-Label mapping come from [EDSY](https://github.com/taleden/EDSY)
-  (`eddb.js`) by taleden, whose code is licensed **CC BY-NC 4.0**.
+- **Experimental (special) effect modifiers, material recipes, and journal Modifier
+  Labels:** the numeric experimental-effect modifiers and their material costs — which
+  coriolis-data does not carry — plus the attribute-to-journal-Label mapping come from
+  [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by taleden, whose code is licensed
+  **CC BY-NC 4.0**.
 - **Jump-range and fuel algorithm:** the hyperspace formula is ported as fact
   (our own implementation) from [EDSY](https://github.com/taleden/EDSY) by taleden,
   whose code is licensed **CC BY-NC 4.0** — attribution to taleden and to Frontier's

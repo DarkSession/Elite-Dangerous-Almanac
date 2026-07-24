@@ -248,7 +248,7 @@ function availableExperimentalsFor(item: string): string[] {
         return (
             experimentalTarget(fd) === target &&
             effect !== undefined &&
-            missingBaseLabels(base, effect).length === 0
+            missingBaseLabels(base, effect.modifiers).length === 0
         );
     });
 }
@@ -466,7 +466,9 @@ export class ShipLoadout {
     get cargoCapacity(): number {
         if (this.#top.CargoCapacity !== undefined) return this.#top.CargoCapacity;
         let sum = 0;
-        for (const m of this.#modules.values()) sum += statFor(m.Item)?.cargoCapacity ?? 0;
+        for (const m of this.#modules.values()) {
+            sum += this.#moduleCapacity(m, 'CargoCapacity', 'cargoCapacity') ?? 0;
+        }
         return sum;
     }
 
@@ -971,7 +973,9 @@ export class ShipLoadout {
 
     #sumFuelTanks(): number {
         let sum = 0;
-        for (const m of this.#modules.values()) sum += statFor(m.Item)?.fuelCapacity ?? 0;
+        for (const m of this.#modules.values()) {
+            sum += this.#moduleCapacity(m, 'FuelCapacity', 'fuelCapacity') ?? 0;
+        }
         return sum;
     }
 

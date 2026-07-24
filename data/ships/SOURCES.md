@@ -124,9 +124,10 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
 
 - **Files:** `blueprints.jsonc` (per-blueprint, per-grade stat modifiers **and**
   material requirements) and `experimental-effects.jsonc` (per special-effect stat
-  modifiers), validated by `fixtures/ships/engineering.json`. Modifiers are resolved to
-  journal Modifier **Labels** so the computed modifiers read back like a real
-  `Engineering.Modifiers` block. Each blueprint grade is `{ features, materials }`.
+  modifiers **and** material cost), validated by `fixtures/ships/engineering.json`.
+  Modifiers are resolved to journal Modifier **Labels** so the computed modifiers read
+  back like a real `Engineering.Modifiers` block. Each blueprint grade is
+  `{ features, materials }`; each experimental effect is `{ modifiers, materials }`.
 - **Blueprint source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
   `modifications/blueprints.json` (grade `features` + `components`) + `modifications.json`
   (apply method), same commit and Frontier media-usage terms as above. Each grade's
@@ -140,11 +141,15 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   `CargoRack_IncreasedCapacity` grade 5 has no components upstream, so its `materials`
   is an empty list (the grade still resolves) rather than being dropped.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
-  `expeffect` — **coriolis-data does not carry the numeric experimental modifiers**,
-  so these come from EDSY, whose code is (c) taleden under a **CC BY-NC 4.0** License
-  (<http://creativecommons.org/licenses/by-nc/4.0/>). The underlying game logic is
-  Elite Dangerous data, the property of Frontier Developments plc, under Frontier's
-  media-usage terms. Each effect is a list of `{ label, method, value }`.
+  `expeffect` — **coriolis-data carries neither the numeric experimental modifiers nor
+  their recipes**, so both come from EDSY, whose code is (c) taleden under a
+  **CC BY-NC 4.0** License (<http://creativecommons.org/licenses/by-nc/4.0/>). The
+  underlying game logic is Elite Dangerous data, the property of Frontier Developments
+  plc, under Frontier's media-usage terms. Each effect is `{ modifiers, materials }`:
+  `modifiers` a list of `{ label, method, value }`, `materials` its `mats` map resolved
+  from EDSY's material short-codes to Frontier material `symbol`s against the `materials`
+  domain, emitting `{ symbol, name, count }` per requirement. An experimental effect is a
+  single application (one roll), so its `materials` is the whole cost.
 - **Journal Labels** for both sources are resolved via EDSY's own attribute table
   (`attr → fdattr`), the authority for the exact Label strings the game writes
   (e.g. coriolis `optmass` on an FSD → `FSDOptimalMass`, `maxfuel` → `MaxFuelPerJump`).
@@ -156,6 +161,13 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   into `ShipLoadout.applyBlueprint`. Validated to reproduce the real "Deep Black"
   export's engineered figures — `FSDOptimalMass` 4670 → **7528.04** at G5 Long Range
   with the Mass Manager (`special_fsd_heavy`) experimental.
+- **Cost:** `getBlueprintCost(fdname, grade, currentGrade = 0)` (in `blueprints.ts`)
+  totals the materials to engineer a module up to a grade: grade `g` takes `g` rolls
+  (`rollsForGrade`), so the total is `Σ g ·` (grade `g`'s recipe) over every grade from
+  `currentGrade + 1` to the target. `currentGrade` defaults to 0 (unengineered); set it to
+  `grade − 1` to price a single grade alone. Fold in an experimental effect's
+  `getExperimentalEffectMaterials` with `sumMaterials` for the grand total; the two data
+  modules stay decoupled so neither pulls the other into a bundle.
 
 ## Jump-range and fuel algorithm
 

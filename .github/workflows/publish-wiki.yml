@@ -35,7 +35,7 @@ jobs:
         working-directory: typescript
 
       - name: Generate Markdown API docs
-        run: npx typedoc
+        run: npm run docs
         working-directory: typescript
 
       - name: Publish to GitHub Wiki

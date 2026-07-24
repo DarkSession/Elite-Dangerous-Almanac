@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { computeModifiers } from './engineering.js';
+import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js';
 import { getBlueprint, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import {
@@ -103,6 +103,29 @@ test('quality outside [0, 1] is rejected', () => {
     assert.throws(() => computeModifiers(base, g5, 5), RangeError);
     assert.throws(() => computeModifiers(base, g5, -5), RangeError);
     assert.throws(() => computeModifiers(base, g5, Number.NaN), RangeError);
+});
+
+test('rollsForGrade returns grades 1–5 and rejects values outside that range', () => {
+    assert.equal(rollsForGrade(1), 1);
+    assert.equal(rollsForGrade(5), 5);
+    assert.throws(() => rollsForGrade(0), RangeError);
+    assert.throws(() => rollsForGrade(6), RangeError);
+    assert.throws(() => rollsForGrade(-1), RangeError);
+    assert.throws(() => rollsForGrade(2.5), RangeError);
+});
+
+test('sumMaterials folds lists together, combining by symbol case-insensitively', () => {
+    const a = [
+        { symbol: 'Iron', name: 'Iron', count: 2 },
+        { symbol: 'Carbon', name: 'Carbon', count: 1 },
+    ];
+    const b = [{ symbol: 'iron', name: 'Iron', count: 3 }];
+    assert.deepEqual(sumMaterials(a, b), [
+        { symbol: 'Iron', name: 'Iron', count: 5 },
+        { symbol: 'Carbon', name: 'Carbon', count: 1 },
+    ]);
+    assert.deepEqual(sumMaterials(), []);
+    assert.deepEqual(sumMaterials([], a), a);
 });
 
 test('lookups are case-insensitive and miss cleanly', () => {

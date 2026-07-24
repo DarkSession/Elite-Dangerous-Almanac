@@ -2,7 +2,7 @@
  * Guards the shared `data/astro/*.jsonc` files themselves, independently of the
  * modules that consume them.
  *
- * Two invariants, both easy to break by accident:
+ * Three invariants, all easy to break by accident:
  *
  * 1. **Every file is still strict JSON once comments are blanked.** JSONC's other
  *    extension — trailing commas — is deliberately *not* accepted by
@@ -16,22 +16,49 @@
  *    (AGENTS.md §Attribution) but not in the parsed payload, where every byte is
  *    inlined into consumers' bundles. A re-added `attribution` or `description`
  *    key would rebuild exactly the bloat the comment header exists to avoid.
+ *
+ * 3. **Every payload matches the shared JSON Schema.** This keeps the static data
+ *    contract language-neutral instead of encoding it only in TypeScript types.
  */
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import type Ajv from 'ajv';
 
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
 const DATA_DIR = fileURLToPath(new URL('../../../data/astro/', import.meta.url));
+const SCHEMA_PATH = fileURLToPath(
+    new URL('../../../schemas/astro/catalogues.schema.json', import.meta.url),
+);
 const DATA_FILES = readdirSync(DATA_DIR)
     .filter((name) => name.endsWith('.jsonc'))
     .sort();
 
 /** Payload keys that would put non-data prose back into the bundle. */
 const BANNED_KEYS = ['attribution', 'description'];
+const catalogueSchema = JSON.parse(readFileSync(SCHEMA_PATH, 'utf8')) as {
+    readonly $id: string;
+};
+
+const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
+    'galactic-region-cells.jsonc': 'regionCellCatalogue',
+    'galactic-regions.jsonc': 'galacticRegionCatalogue',
+    'hand-authored-regions.jsonc': 'handAuthoredRegionCatalogue',
+    'named-region-origins.jsonc': 'namedRegionOriginCatalogue',
+    'nebulae-planetary.jsonc': 'planetaryNebulaCatalogue',
+    'nebulae-procgen.jsonc': 'procgenNebulaCatalogue',
+    'nebulae-real.jsonc': 'realNebulaCatalogue',
+    'permit-locked-regions.jsonc': 'permitLockedRegionCatalogue',
+    'permit-locked-systems.jsonc': 'permitLockedSystemCatalogue',
+};
+
+const AjvConstructor = createRequire(import.meta.url)('ajv') as typeof Ajv;
+const ajv = new AjvConstructor({ allErrors: true });
+ajv.addSchema(catalogueSchema);
 
 test('data/astro holds the expected number of catalogues', () => {
     assert.equal(DATA_FILES.length, 9);
@@ -56,5 +83,21 @@ for (const name of DATA_FILES) {
                 `${name} has a top-level "${key}" — move it into the comment header`,
             );
         }
+    });
+
+    test(`${name} matches the shared JSON Schema`, () => {
+        const parsed: unknown = JSON.parse(
+            stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
+        );
+        const definition = DEFINITION_BY_FILE[name];
+        assert.ok(definition, `no JSON Schema definition mapped for ${name}`);
+        const validate = ajv.compile({
+            $ref: `${catalogueSchema.$id}#/definitions/${definition}`,
+        });
+        assert.equal(
+            validate(parsed),
+            true,
+            `${name}: ${ajv.errorsText(validate.errors, { separator: '\n' })}`,
+        );
     });
 }

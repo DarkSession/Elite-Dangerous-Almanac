@@ -357,6 +357,21 @@ test('applyBlueprint reproduces the Deep Black FSD modifiers and lifts jump rang
     assert.equal(massMod?.Value, 208);
 });
 
+test('assembled builds include engineered cargo capacity in their aggregates', () => {
+    const rack = mod('Int_CargoRack_Size5_Class1', INTERNAL_MODULES);
+    const build = ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', rack);
+    assert.equal(build.cargoCapacity, 32);
+
+    build.applyBlueprint('Slot05_Size5', 'CargoRack_IncreasedCapacity', { grade: 5 });
+    assert.equal(build.cargoCapacity, 43.008);
+    assert.equal(
+        build
+            .moduleAt('Slot05_Size5')
+            ?.Engineering?.Modifiers.find((modifier) => modifier.Label === 'CargoCapacity')?.Value,
+        43.008,
+    );
+});
+
 test('applyBlueprint validates the slot, blueprint and experimental', () => {
     const build = ShipLoadout.empty('Anaconda');
     // empty slot

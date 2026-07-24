@@ -149,13 +149,32 @@ const isOptionalString = (value: unknown): value is string | undefined =>
 const isOptionalFiniteNumber = (value: unknown): value is number | undefined =>
     value === undefined || (typeof value === 'number' && Number.isFinite(value));
 
+const isOptionalNumberInRange = (
+    value: unknown,
+    minimum: number,
+    maximum = Number.POSITIVE_INFINITY,
+): value is number | undefined =>
+    value === undefined ||
+    (typeof value === 'number' && Number.isFinite(value) && value >= minimum && value <= maximum);
+
+const isOptionalIntegerInRange = (
+    value: unknown,
+    minimum: number,
+    maximum: number,
+): value is number | undefined => {
+    if (value === undefined) return true;
+    return (
+        typeof value === 'number' && Number.isInteger(value) && value >= minimum && value <= maximum
+    );
+};
+
 function isEngineeringModifier(value: unknown): value is EngineeringModifier {
     if (!isRecord(value) || typeof value.Label !== 'string') return false;
     return (
         isOptionalFiniteNumber(value.Value) &&
         isOptionalFiniteNumber(value.OriginalValue) &&
         isOptionalString(value.ValueStr) &&
-        isOptionalFiniteNumber(value.LessIsGood)
+        isOptionalIntegerInRange(value.LessIsGood, 0, 1)
     );
 }
 
@@ -163,10 +182,10 @@ function isModuleEngineering(value: unknown): value is ModuleEngineering {
     if (!isRecord(value)) return false;
     return (
         typeof value.BlueprintName === 'string' &&
-        typeof value.Level === 'number' &&
-        Number.isFinite(value.Level) &&
-        typeof value.Quality === 'number' &&
-        Number.isFinite(value.Quality) &&
+        isOptionalIntegerInRange(value.Level, 1, 5) &&
+        value.Level !== undefined &&
+        isOptionalNumberInRange(value.Quality, 0, 1) &&
+        value.Quality !== undefined &&
         isOptionalString(value.ExperimentalEffect) &&
         isOptionalString(value.ExperimentalEffect_Localised) &&
         Array.isArray(value.Modifiers) &&
@@ -180,9 +199,9 @@ function isLoadoutModule(value: unknown): value is LoadoutModule {
         typeof value.Slot === 'string' &&
         typeof value.Item === 'string' &&
         (value.On === undefined || typeof value.On === 'boolean') &&
-        isOptionalFiniteNumber(value.Priority) &&
-        isOptionalFiniteNumber(value.Health) &&
-        isOptionalFiniteNumber(value.Value) &&
+        isOptionalIntegerInRange(value.Priority, 0, 4) &&
+        isOptionalNumberInRange(value.Health, 0, 1) &&
+        isOptionalNumberInRange(value.Value, 0) &&
         (value.Engineering === undefined || isModuleEngineering(value.Engineering))
     );
 }
@@ -204,24 +223,24 @@ function isLoadout(value: unknown): value is LoadoutEvent {
     const validFuel =
         fuel === undefined ||
         (isRecord(fuel) &&
-            typeof fuel.Main === 'number' &&
-            Number.isFinite(fuel.Main) &&
-            typeof fuel.Reserve === 'number' &&
-            Number.isFinite(fuel.Reserve));
+            isOptionalNumberInRange(fuel.Main, 0) &&
+            fuel.Main !== undefined &&
+            isOptionalNumberInRange(fuel.Reserve, 0) &&
+            fuel.Reserve !== undefined);
     return (
         typeof value.Ship === 'string' &&
         Array.isArray(value.Modules) &&
         value.Modules.every(isLoadoutModule) &&
-        isOptionalString(value.event) &&
+        (value.event === undefined || value.event === 'Loadout') &&
         isOptionalString(value.ShipName) &&
         isOptionalString(value.ShipIdent) &&
-        isOptionalFiniteNumber(value.HullValue) &&
-        isOptionalFiniteNumber(value.ModulesValue) &&
-        isOptionalFiniteNumber(value.UnladenMass) &&
-        isOptionalFiniteNumber(value.CargoCapacity) &&
-        isOptionalFiniteNumber(value.MaxJumpRange) &&
+        isOptionalNumberInRange(value.HullValue, 0) &&
+        isOptionalNumberInRange(value.ModulesValue, 0) &&
+        isOptionalNumberInRange(value.UnladenMass, 0) &&
+        isOptionalNumberInRange(value.CargoCapacity, 0) &&
+        isOptionalNumberInRange(value.MaxJumpRange, 0) &&
         validFuel &&
-        isOptionalFiniteNumber(value.Rebuy)
+        isOptionalNumberInRange(value.Rebuy, 0)
     );
 }
 

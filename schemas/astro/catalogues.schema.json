@@ -1,0 +1,257 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://elite-dangerous-almanac.dev/schemas/astro/catalogues.schema.json",
+  "title": "Elite Dangerous Almanac astro catalogue schemas",
+  "description": "Language-neutral schemas for every JSONC payload in data/astro.",
+  "definitions": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "planePoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "z"],
+      "properties": {
+        "x": { "type": "number" },
+        "z": { "type": "number" }
+      }
+    },
+    "planeBounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minX", "maxX", "minZ", "maxZ"],
+      "properties": {
+        "minX": { "type": "number" },
+        "maxX": { "type": "number" },
+        "minZ": { "type": "number" },
+        "maxZ": { "type": "number" }
+      }
+    },
+    "galacticRegion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "grayscale",
+        "cellCount",
+        "areaLy2",
+        "bounds",
+        "centroid"
+      ],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1, "maximum": 42 },
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "grayscale": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "cellCount": { "type": "integer", "minimum": 1 },
+        "areaLy2": { "type": "number", "exclusiveMinimum": 0 },
+        "bounds": { "$ref": "#/definitions/planeBounds" },
+        "centroid": { "$ref": "#/definitions/planePoint" }
+      }
+    },
+    "galacticRegionCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/galacticRegion" }
+    },
+    "sphere": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cx", "cy", "cz", "r"],
+      "properties": {
+        "cx": { "type": "number" },
+        "cy": { "type": "number" },
+        "cz": { "type": "number" },
+        "r": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "handAuthoredRegion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "spheres"],
+      "properties": {
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "spheres": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/sphere" }
+        }
+      }
+    },
+    "handAuthoredRegionCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/handAuthoredRegion" }
+    },
+    "namedRegionOrigin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "x0", "y0", "z0", "sizeX", "sizeY", "sizeZ"],
+      "properties": {
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "x0": { "type": "number", "minimum": 0 },
+        "y0": { "type": "number", "minimum": 0 },
+        "z0": { "type": "number", "minimum": 0 },
+        "sizeX": { "type": "number", "exclusiveMinimum": 0 },
+        "sizeY": { "type": "number", "exclusiveMinimum": 0 },
+        "sizeZ": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "namedRegionOriginCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/namedRegionOrigin" }
+    },
+    "nebula": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "system", "x", "y", "z", "type", "regionId"],
+      "properties": {
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "system": { "$ref": "#/definitions/nonEmptyString" },
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "z": { "type": "number" },
+        "type": { "enum": ["real", "planetary", "procgen"] },
+        "regionId": { "type": "integer", "minimum": 1, "maximum": 42 }
+      }
+    },
+    "realNebulaCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          { "$ref": "#/definitions/nebula" },
+          {
+            "properties": {
+              "type": { "const": "real" }
+            }
+          }
+        ]
+      }
+    },
+    "planetaryNebulaCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          { "$ref": "#/definitions/nebula" },
+          {
+            "properties": {
+              "type": { "const": "planetary" }
+            }
+          }
+        ]
+      }
+    },
+    "procgenNebulaCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          { "$ref": "#/definitions/nebula" },
+          {
+            "properties": {
+              "type": { "const": "procgen" }
+            }
+          }
+        ]
+      }
+    },
+    "permitLockedRegionCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/nonEmptyString" }
+    },
+    "permitLockedSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "id64"],
+      "properties": {
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "id64": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        }
+      }
+    },
+    "permitLockedSystemCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/permitLockedSystem" }
+    },
+    "projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x0",
+        "y0",
+        "z0",
+        "scaleNumerator",
+        "scaleDenominator",
+        "lyPerCell",
+        "gridWidth",
+        "gridHeight"
+      ],
+      "properties": {
+        "x0": { "type": "number" },
+        "y0": { "type": "number" },
+        "z0": { "type": "number" },
+        "scaleNumerator": { "type": "integer", "minimum": 1 },
+        "scaleDenominator": { "type": "integer", "minimum": 1 },
+        "lyPerCell": { "type": "number", "exclusiveMinimum": 0 },
+        "gridWidth": { "type": "integer", "minimum": 1 },
+        "gridHeight": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "cellRun": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": [
+        { "type": "integer", "minimum": 0 },
+        { "type": "integer", "minimum": 1 }
+      ]
+    },
+    "regionCells": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minPz", "rows"],
+      "properties": {
+        "minPz": { "type": "integer", "minimum": 0 },
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/cellRun" }
+          }
+        }
+      }
+    },
+    "regionCellRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "cells"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1, "maximum": 42 },
+        "cells": { "$ref": "#/definitions/regionCells" }
+      }
+    },
+    "regionCellCatalogue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projection", "regions"],
+      "properties": {
+        "projection": { "$ref": "#/definitions/projection" },
+        "regions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/regionCellRecord" }
+        }
+      }
+    }
+  }
+}

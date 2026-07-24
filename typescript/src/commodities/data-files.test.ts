@@ -1,28 +1,46 @@
 /**
  * Guards the shared `data/commodities/*.jsonc` files themselves, independently of the
  * modules that consume them. The `src/astro/data-files.test.ts` explains the two
- * invariants in full; the same two apply here:
+ * invariants in full; the same ones apply here:
  *
  * 1. Every file is still strict JSON once comments are blanked (no trailing commas,
  *    so any language's standard parser accepts it).
  * 2. Attribution stays in the comment header, never in the parsed payload — every
  *    payload byte is inlined into consumers' bundles.
+ * 3. Every payload matches `schemas/commodities/catalogues.schema.json`.
  */
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import type Ajv from 'ajv';
 
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
 const DATA_DIR = fileURLToPath(new URL('../../../data/commodities/', import.meta.url));
+const SCHEMA_PATH = fileURLToPath(
+    new URL('../../../schemas/commodities/catalogues.schema.json', import.meta.url),
+);
 const DATA_FILES = readdirSync(DATA_DIR)
     .filter((name) => name.endsWith('.jsonc'))
     .sort();
 
 /** Payload keys that would put non-data prose back into the bundle. */
 const BANNED_KEYS = ['attribution', 'description'];
+const catalogueSchema = JSON.parse(readFileSync(SCHEMA_PATH, 'utf8')) as {
+    readonly $id: string;
+};
+
+const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
+    'commodities.jsonc': 'commodityCatalogue',
+    'rare-commodities.jsonc': 'commodityCatalogue',
+};
+
+const AjvConstructor = createRequire(import.meta.url)('ajv') as typeof Ajv;
+const ajv = new AjvConstructor({ allErrors: true });
+ajv.addSchema(catalogueSchema);
 
 test('data/commodities holds the expected number of catalogues', () => {
     assert.equal(DATA_FILES.length, 2);
@@ -47,5 +65,21 @@ for (const name of DATA_FILES) {
                 `${name} has a top-level "${key}" — move it into the comment header`,
             );
         }
+    });
+
+    test(`${name} matches the shared JSON Schema`, () => {
+        const parsed: unknown = JSON.parse(
+            stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
+        );
+        const definition = DEFINITION_BY_FILE[name];
+        assert.ok(definition, `no JSON Schema definition mapped for ${name}`);
+        const validate = ajv.compile({
+            $ref: `${catalogueSchema.$id}#/definitions/${definition}`,
+        });
+        assert.equal(
+            validate(parsed),
+            true,
+            `${name}: ${ajv.errorsText(validate.errors, { separator: '\n' })}`,
+        );
     });
 }

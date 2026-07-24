@@ -93,11 +93,15 @@ export {
 // ── Engineering: blueprint + experimental-effect calculator ─────────────────
 export {
     computeModifiers,
+    rollsForGrade,
+    sumMaterials,
     type ModifierMethod,
     type BlueprintFeature,
+    type EngineeringMaterial,
     type BlueprintMaterial,
     type BlueprintGrade,
     type ExperimentalContribution,
+    type ExperimentalEffect,
     type BlueprintGrades,
 } from './engineering.js';
 export {
@@ -105,5 +109,10 @@ export {
     getBlueprint,
     getBlueprintGrade,
     getBlueprintGradeMaterials,
+    getBlueprintCost,
 } from './blueprints.js';
-export { EXPERIMENTAL_EFFECTS, getExperimentalEffect } from './experimental-effects.js';
+export {
+    EXPERIMENTAL_EFFECTS,
+    getExperimentalEffect,
+    getExperimentalEffectMaterials,
+} from './experimental-effects.js';

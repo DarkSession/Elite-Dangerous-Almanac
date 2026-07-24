@@ -230,13 +230,27 @@
         "value": { "type": "number" }
       }
     },
+    "experimentalEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["modifiers", "materials"],
+      "properties": {
+        "modifiers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/experimentalContribution" }
+        },
+        "materials": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/blueprintMaterial" }
+        }
+      }
+    },
     "experimentalCatalogue": {
       "type": "object",
       "minProperties": 1,
       "additionalProperties": {
-        "type": "array",
-        "minItems": 1,
-        "items": { "$ref": "#/definitions/experimentalContribution" }
+        "$ref": "#/definitions/experimentalEffect"
       }
     }
   }
