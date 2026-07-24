@@ -1,6 +1,11 @@
 {
     "$schema": "https://typedoc.org/schema.json",
-    "entryPoints": ["src/index.ts"],
+    "entryPoints": [
+        "src/astro/index.ts",
+        "src/commodities/index.ts",
+        "src/materials/index.ts",
+        "src/ships/index.ts"
+    ],
     "out": "docs/wiki",
     "plugin": ["typedoc-plugin-markdown", "typedoc-github-wiki-theme"],
     "excludePrivate": true,

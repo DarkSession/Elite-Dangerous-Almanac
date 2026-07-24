@@ -67,7 +67,7 @@ This is a library, so documentation is a first-class deliverable:
 
 ### Doc-generation toolchain
 
-- **TypeScript**: TypeDoc + `typedoc-plugin-markdown` + `typedoc-github-wiki-theme`. The wiki theme produces wiki-friendly file names, wiki-compatible internal links, and a `_Sidebar.md` for navigation.
+- **TypeScript**: TypeDoc + `typedoc-plugin-markdown` + `typedoc-github-wiki-theme`. The wiki theme produces wiki-friendly file names, wiki-compatible internal links, and a `_Sidebar.md` for navigation. `typedoc.json` lists **one entry point per feature module** (`src/astro/index.ts`, `src/commodities/index.ts`, `src/materials/index.ts`, `src/ships/index.ts`) rather than the root barrel — this gives the wiki one section per module: `Home` links to each module, every module has its own index page (carrying its `@packageDocumentation` intro), and symbol pages are namespaced (e.g. `astro.Function.decodeSystemAddress`). Add a module here when you add one under `src/`.
 - **Python (future)**: `mkdocstrings` (or `pydoc-markdown`) to render Google-style docstrings to Markdown for the same wiki.
 - **Publishing**: a GitHub Actions workflow generates the Markdown docs and pushes them to the wiki's backing git repo (`<repo>.wiki.git`), e.g. via `Andrew-Chen-Wang/github-wiki-action`. The job needs `contents: write` permission. Note: the wiki must be initialized once manually (create any first page) before CI can push to it.
 
