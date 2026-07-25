@@ -25,10 +25,10 @@ import type { CoreSlots, OptionalSlotSpec, BulkheadOption, ShipSlots } from './s
  * The identity fields (`symbol`, `name`, `entitlement`) come from Frontier's
  * shipyard registry and are always present. The stats fields (`hullMass`, `speed`,
  * …) and the slot-layout fields (`core`, `hardpoints`, `optional`, …) come from
- * coriolis-data and are present for every hull it covers — all but one (the Lynx
- * Highliner, `MediumTransport01`, which carries identity only). Masses are tonnes,
- * `speed`/`boost` are metres per second at 4 pips to engines, rotation rates are
- * degrees per second.
+ * coriolis-data and are present for every hull it covers. The Lynx Highliner
+ * (`MediumTransport01`), which is not yet present there, carries equivalent fields
+ * sourced from EDSY and Frontier's update notes. Masses are tonnes, `speed`/`boost`
+ * are metres per second at 4 pips to engines, rotation rates are degrees per second.
  */
 export interface Ship {
     /**
@@ -52,7 +52,7 @@ export interface Ship {
      */
     readonly entitlement?: string;
 
-    // ── Stats (from coriolis-data) — present for every hull but the Lynx Highliner. ──
+    // ── Stats (primarily from coriolis-data; see the module remarks for exceptions). ──
 
     /** Empty-hull mass, in tonnes. A build's unladen mass is this plus every fitted module. */
     readonly hullMass?: number;
@@ -151,8 +151,8 @@ export function getShipByName(name: string): Ship | null {
  *
  * @param symbol - The internal identifier, e.g. `"Anaconda"` (case-insensitive).
  * @returns The hull's slot layout, or `null` if no hull with that symbol is carried
- * or the merged catalogue holds no slots for it (the one hull coriolis does not
- * cover). This is a projection of the slot-bearing fields already on {@link Ship}.
+ * or its catalogue record has no slot data. This is a projection of the slot-bearing
+ * fields already on {@link Ship}.
  * @remarks
  * This is the **read-only** layout, for your own outfitting UI (feed it to
  * `enumerateSlots`). To assemble and edit an actual build — fit modules, engineer

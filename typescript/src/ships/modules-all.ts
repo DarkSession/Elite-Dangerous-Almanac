@@ -4,7 +4,7 @@
  *
  * @remarks
  * **This module pulls in every module catalogue** — it exists for consumers that
- * really do want to search all 1190 modules (a "resolve any module id" lookup, say).
+ * really do want to search all 1197 modules (a "resolve any module id" lookup, say).
  * If you only need one category, import that catalogue's module
  * (`./modules-standard`, `./modules-internal`, `./modules-hardpoint`,
  * `./modules-utility`) and nothing else gets bundled.
@@ -33,7 +33,7 @@ import { UTILITY_MODULES } from './modules-utility.js';
  *
  * @example
  * ```ts
- * ALL_MODULES.length;                                          // -> 1190
+ * ALL_MODULES.length;                                          // -> 1197
  * ALL_MODULES.filter((m) => m.category === 'utility').length;  // -> 35
  * ```
  */

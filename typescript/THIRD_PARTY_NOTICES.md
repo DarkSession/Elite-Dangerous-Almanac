@@ -6,9 +6,12 @@ subject to its respective terms.
 
 - **Procedural sector and system naming:** reverse-engineered by the Elite
   Dangerous community and ported from the EDTS reference implementation
-  (`pgdata.py`) by Alot/Esvandiary. The previously cited repository is no longer
-  publicly available, so its original license could not be independently
-  re-confirmed.
+  (`edtslib/pgdata.py` and `edtslib/pgnames.py`) by **Andy Martin** (Esvandiary),
+  [bitbucket.org/Esvandiary/edts](https://bitbucket.org/Esvandiary/edts), licensed
+  **BSD 3-Clause, © 2016 Andy Martin** (reproduced in full at the end of this file).
+  The TypeScript port passed through
+  [canonn-science/canonn-signals](https://github.com/canonn-science/canonn-signals)
+  (MIT, © 2023 Canonn Research Group) before being restructured here.
 - **Galactic codex regions:** region names, ids, and lookup geometry derive from
   [EliteDangerousRegionMap](https://github.com/klightspeed/EliteDangerousRegionMap)
   by Ben Peddell (klightspeed), MIT.
@@ -81,3 +84,38 @@ subject to its respective terms.
 The detailed per-file provenance and derivation notes live in the repository's
 `data/astro/SOURCES.md`, `data/materials/SOURCES.md`, `data/ships/SOURCES.md` and
 `data/commodities/SOURCES.md`.
+
+---
+
+## EDTS license (procedural naming)
+
+The procedural sector- and system-naming algorithm and its region tables derive
+from EDTS by Andy Martin (<https://bitbucket.org/Esvandiary/edts>), whose full
+license is reproduced here as required by its terms:
+
+```
+Copyright (c) 2016, Andy Martin
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the EDTS Project nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE EDTS PROJECT OR ANDY MARTIN BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```

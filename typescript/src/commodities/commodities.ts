@@ -93,7 +93,7 @@ export interface Commodity {
     readonly rare: boolean;
 }
 
-/** Case- and whitespace-insensitive key for name / symbol matching. */
+/** Case- and whitespace-insensitive key for name, symbol, category and group matching. */
 function normalize(value: string): string {
     return value.trim().toLowerCase();
 }
@@ -147,17 +147,22 @@ export function getCommodityByName(
 /**
  * Every commodity in a given market group, in catalogue order.
  *
- * @param category - The market group to match, e.g. `"Metals"`.
+ * @param category - The market group to match, e.g. `"Metals"`. Leading/trailing
+ * whitespace and case are ignored, like every other lookup here, so a group name
+ * that arrived from a market payload or a user's dropdown resolves without
+ * re-casing it first.
  * @param commodities - The catalogue to search (see {@link getCommodityBySymbol}).
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
  * commoditiesInCategory('Metals', COMMODITIES).length; // -> every metal on the market
+ * commoditiesInCategory('metals', COMMODITIES).length; // -> the same; case is ignored
  * ```
  */
 export function commoditiesInCategory(
     category: CommodityCategory,
     commodities: readonly Commodity[],
 ): Commodity[] {
-    return commodities.filter((commodity) => commodity.category === category);
+    const wanted = normalize(category);
+    return commodities.filter((commodity) => normalize(commodity.category) === wanted);
 }

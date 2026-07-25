@@ -142,7 +142,10 @@ test('queries copy their records and leave the catalogue untouched', () => {
 
 for (const record of nebulaeFixture.records) {
     test(`getNebulaByName finds ${record.name} case-insensitively`, () => {
-        const hit = getNebulaByName(record.name.toUpperCase(), CATALOGUES[record.catalogue]!);
+        const hit = getNebulaByName(
+            `  ${record.name.toUpperCase()}\n`,
+            CATALOGUES[record.catalogue]!,
+        );
         assert.equal(hit?.system, record.system);
     });
 }

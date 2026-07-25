@@ -16,11 +16,14 @@ standard parser accepts. See AGENTS.md §Attribution for how to consume them.
 
 - **File/code:** `named-region-origins.jsonc`, `typescript/src/astro/sector-name.ts`,
   and the system-name/address modules.
-- **Source:** the EDTS reference implementation (`pgdata.py`) by Alot
-  (Esvandiary), based on community reverse-engineering of Elite Dangerous's
-  procedural generator. The previously cited GitHub repository is no longer
-  publicly available, so its original license could not be independently
-  re-confirmed.
+- **Source:** the EDTS reference implementation (`edtslib/pgdata.py` and
+  `edtslib/pgnames.py`) by Andy Martin (Esvandiary), based on community
+  reverse-engineering of Elite Dangerous's procedural generator.
+- **Author/License:** Andy Martin (Esvandiary),
+  [bitbucket.org/Esvandiary/edts](https://bitbucket.org/Esvandiary/edts),
+  BSD 3-Clause License, © 2016 Andy Martin. (EDTS moved from GitHub to Bitbucket;
+  the old GitHub URL now 404s. The full BSD 3-Clause text is reproduced in
+  `typescript/THIRD_PARTY_NOTICES.md`.)
 - **Derivation:** named-region origins are stored in the game's internal coordinate
   frame (32 units per light-year from the galaxy corner). Where a region is defined
   by a single sphere, its origin and extent are the sphere's axis-aligned bounds in

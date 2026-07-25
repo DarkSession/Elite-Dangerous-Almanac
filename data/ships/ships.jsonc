@@ -14,8 +14,9 @@
  * name; `entitlement` the DLC/grant token on gated hulls. Stats (hullMass in
  * tonnes, speed/boost in m/s, rotation rates in deg/s, …) and the slot layout
  * (`core` sizes, `hardpoints`, `utility` count, `optional` mounts, `bulkheads`)
- * are present for every hull the coriolis data covers; the one hull it does not
- * (the Lynx Highliner, `MediumTransport01`) carries identity only.
+ * are present for every hull. Most come from coriolis-data; the Lynx Highliner
+ * (`MediumTransport01`) instead uses EDSY and Frontier update-note values documented
+ * in `SOURCES.md`.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -4345,6 +4346,89 @@
   {
     "symbol": "MediumTransport01",
     "name": "Lynx Highliner",
-    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01",
+    "hullMass": 260,
+    "speed": 285,
+    "boost": 350,
+    "baseShieldStrength": 200,
+    "baseArmour": 350,
+    "hardness": 55,
+    "crew": 2,
+    "reserveFuelCapacity": 0.75,
+    "pitch": 26,
+    "roll": 60,
+    "yaw": 19,
+    "minThrust": 73.75,
+    "core": {
+      "powerPlant": 5,
+      "thrusters": 6,
+      "frameShiftDrive": 5,
+      "lifeSupport": 6,
+      "powerDistributor": 5,
+      "sensors": 3,
+      "fuelTank": 5
+    },
+    "hardpoints": [
+      3,
+      2,
+      2,
+      2,
+      2
+    ],
+    "utility": 4,
+    "optional": [
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 6
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 5
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      }
+    ],
+    "bulkheads": [
+      {
+        "name": "Lightweight Alloy",
+        "mass": 0
+      },
+      {
+        "name": "Reinforced Alloy",
+        "mass": 26
+      },
+      {
+        "name": "Military Grade Composite",
+        "mass": 53
+      },
+      {
+        "name": "Mirrored Surface Composite",
+        "mass": 53
+      },
+      {
+        "name": "Reactive Surface Composite",
+        "mass": 53
+      }
+    ]
   }
 ]

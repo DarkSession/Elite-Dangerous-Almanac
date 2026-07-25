@@ -21,13 +21,20 @@ import { lettersToBoxelCode, type SystemNameParts } from './system-name.js';
 import type { RegionOrigin } from './named-regions.js';
 export { SECTOR_INTERNAL_SIZE } from './named-regions.js';
 import type { SectorCoords } from './sector-name.js';
+import { toSystemAddress, type SystemAddressInput } from './system-address-input.js';
 
 /**
  * Return the boxel edge for a size class in internal units (32 units per ly).
  *
  * @param sizeClass - An integer from 0 through 7.
- * @returns The boxel edge in internal units (320 through 40960).
+ * @returns The boxel edge in internal units (320 through 40960). Divide by 32 for
+ * light-years, or use `boxelEdgeLy` from `./mass-code`.
  * @throws {RangeError} If `sizeClass` is outside 0–7.
+ * @example
+ * ```ts
+ * boxelInternalSize(3);      // -> 2560 internal units
+ * boxelInternalSize(3) / 32; // -> 80 ly, the edge of a d-class boxel
+ * ```
  */
 export function boxelInternalSize(sizeClass: number): number {
     if (!Number.isInteger(sizeClass) || sizeClass < 0 || sizeClass > 7) {
@@ -59,9 +66,11 @@ export interface DecodedAddress {
  * unknown, when N1 overflows the code, when the boxel code falls outside the
  * region, or when the resulting sector cannot be represented by the address bits.
  *
- * @param sizeClass - Size class 0–7.
+ * @param sizeClass - Size class 0–7 (mass code `a`–`h`).
  * @param boxelCode - The base-26 boxel code ({@link lettersToBoxelCode}).
- * @param origin - The resolved region origin (internal units).
+ * @param origin - The resolved region origin (internal units, 32 per light-year).
+ * @returns The boxel's absolute indices on the per-size-class boxel grid, measured
+ * from the galaxy corner.
  * @throws {Error} If the region origin is unknown.
  * @throws {RangeError} If the code or the resulting sector is out of range.
  */
@@ -116,6 +125,19 @@ export function boxelCodeToAbsoluteBoxel(
  * Used by the hand-authored-sector override: the same physical boxel yields a
  * different boxel code under a hand-authored region whose origin differs from
  * the procedural sector's. This is the inverse of {@link boxelCodeToAbsoluteBoxel}.
+ *
+ * @param sizeClass - Size class 0–7 (mass code `a`–`h`).
+ * @param absoluteBoxel - The boxel's absolute grid indices, as
+ * {@link decodeSystemAddress} returns in `absoluteBoxel`.
+ * @param origin - The region origin to measure against (internal units, 32 per
+ * light-year), from `./named-regions`.
+ * @returns The base-26 boxel code within that region, or `null` when the boxel lies
+ * outside the region or the region origin is unknown.
+ * @example
+ * ```ts
+ * const { sizeClass, absoluteBoxel } = decodeSystemAddress(id64);
+ * absoluteBoxelToBoxelCode(sizeClass, absoluteBoxel, resolveRegionOrigin('Pleiades Sector')!);
+ * ```
  */
 export function absoluteBoxelToBoxelCode(
     sizeClass: number,
@@ -158,13 +180,23 @@ function assertAddressRange(id64: bigint): void {
 /**
  * Decode a system address into its geometric components.
  *
- * @param id64 - The 64-bit system address.
+ * @param id64 - The 64-bit system address, as a `bigint`, a normally parsed
+ * journal `number`, or a decimal `string` (see {@link SystemAddressInput}).
  * @returns The decoded size class, sector, boxel code, sequence and absolute boxel.
+ * @throws {TypeError} If `id64` is not a usable address representation (a
+ * non-integer, or a `number` so large it has already been rounded).
  * @throws {RangeError} If `id64` is negative or does not fit in 64 bits.
+ * @example
+ * ```ts
+ * decodeSystemAddress(3309179996515n);
+ * // -> { sizeClass: 3, sectorCoords: { x: 39, y: 31, z: 18 }, boxelCode: …, sequence: 96, … }
+ *
+ * decodeSystemAddress(event.SystemAddress); // a journal number works too
+ * ```
  */
-export function decodeSystemAddress(id64: bigint): DecodedAddress {
-    assertAddressRange(id64);
-    const addr = id64;
+export function decodeSystemAddress(id64: SystemAddressInput): DecodedAddress {
+    const addr = toSystemAddress(id64);
+    assertAddressRange(addr);
     const sc = Number(addr & 7n);
 
     const z0 = Number((addr >> 3n) & BigInt(0x3fff >> sc));
@@ -197,13 +229,21 @@ export function decodeSystemAddress(id64: bigint): DecodedAddress {
  * {@link decodeSystemAddress} instead; use this only when a source specifically
  * hands you a modulated address.
  *
- * @param id64 - The 64-bit modulated system address.
+ * @param id64 - The 64-bit modulated system address, as a `bigint` or a decimal
+ * `string` (see {@link SystemAddressInput}). A modulated address packs the sector
+ * into the high bits, so it routinely exceeds `2^53` — a JS `number` cannot carry
+ * one and is rejected rather than silently rounded.
  * @returns The decoded components (same shape as {@link decodeSystemAddress}).
+ * @throws {TypeError} If `id64` is not a usable address representation.
  * @throws {RangeError} If `id64` is negative or does not fit in 64 bits.
+ * @example
+ * ```ts
+ * decodeModSystemAddress(modAddressFromSomeTool).sectorCoords; // -> { x, y, z }
+ * ```
  */
-export function decodeModSystemAddress(id64: bigint): DecodedAddress {
-    assertAddressRange(id64);
-    const addr = id64;
+export function decodeModSystemAddress(id64: SystemAddressInput): DecodedAddress {
+    const addr = toSystemAddress(id64);
+    assertAddressRange(addr);
     const seq = Number(addr & 0x7fffn);
     const boxelCode = Number((addr >> 16n) & 0x1fffffn);
     const sc = Number((addr >> 37n) & 7n);
@@ -231,10 +271,18 @@ export function decodeModSystemAddress(id64: bigint): DecodedAddress {
 /**
  * Encode system-name parts and a resolved region origin into a system address.
  *
- * @param parts - The parsed system-name parts.
- * @param origin - The region origin (from `./named-regions`).
+ * @param parts - The parsed system-name parts, as {@link parseSystemName} returns
+ * (letters and mass code are zero-based numeric indices, not characters).
+ * @param origin - The region origin (internal units), from `resolveRegionOrigin` in
+ * `./named-regions`.
  * @returns The 64-bit system address.
+ * @throws {Error} If the region origin is unknown.
  * @throws {RangeError} If the sequence does not fit its size-class-dependent field.
+ * @example
+ * ```ts
+ * const parts = parseSystemName('Synuefe EN-H d11-96')!;
+ * encodeSystemAddress(parts, resolveRegionOrigin(parts.regionName)!); // -> 3309179996515n
+ * ```
  */
 export function encodeSystemAddress(parts: SystemNameParts, origin: RegionOrigin): bigint {
     const sc = parts.massCode;
@@ -264,10 +312,17 @@ export function encodeSystemAddress(parts: SystemNameParts, origin: RegionOrigin
  * Prefer {@link encodeSystemAddress} for the normal `id64`; use the modulated
  * form only when a tool you are feeding expects that specific layout.
  *
- * @param parts - The parsed system-name parts.
- * @param origin - The region origin (from `./named-regions`).
- * @returns The 64-bit modulated system address.
+ * @param parts - The parsed system-name parts, as {@link parseSystemName} returns.
+ * @param origin - The region origin (internal units), from `resolveRegionOrigin`.
+ * @returns The 64-bit modulated system address. These routinely exceed `2^53`, so
+ * keep them as `bigint` (or a decimal string) rather than a JS `number`.
+ * @throws {Error} If the region origin is unknown.
  * @throws {RangeError} If the sequence does not fit the 15-bit modulated field.
+ * @example
+ * ```ts
+ * const parts = parseSystemName('Synuefe EN-H d11-96')!;
+ * encodeModSystemAddress(parts, resolveRegionOrigin(parts.regionName)!).toString();
+ * ```
  */
 export function encodeModSystemAddress(parts: SystemNameParts, origin: RegionOrigin): bigint {
     const sc = parts.massCode;

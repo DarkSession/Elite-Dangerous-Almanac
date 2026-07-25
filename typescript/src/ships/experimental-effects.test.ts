@@ -4,17 +4,40 @@ import assert from 'node:assert/strict';
 import {
     EXPERIMENTAL_EFFECTS,
     getExperimentalEffect,
+    getExperimentalEffectName,
     getExperimentalEffectMaterials,
 } from './experimental-effects.js';
 import { getMaterialBySymbol } from '../materials/materials.js';
 import { ALL_MATERIALS } from '../materials/materials-all.js';
 
-test('every effect carries both its modifiers and its materials', () => {
+test('every effect carries a display name, a recipe, and modifiers/materials arrays', () => {
     for (const [fdname, effect] of Object.entries(EXPERIMENTAL_EFFECTS)) {
+        assert.ok(typeof effect.name === 'string' && effect.name.length > 0, `${fdname} name`);
         assert.ok(Array.isArray(effect.modifiers), `${fdname} modifiers`);
-        assert.ok(effect.modifiers.length > 0, `${fdname} has no modifiers`);
         assert.ok(Array.isArray(effect.materials), `${fdname} materials`);
+        // Every effect ships with a real recipe (its one-application cost).
         assert.ok(effect.materials.length > 0, `${fdname} has no materials`);
+    }
+});
+
+test('getExperimentalEffectName resolves case-insensitively and misses cleanly', () => {
+    assert.equal(getExperimentalEffectName('special_fsd_heavy'), 'Mass Manager');
+    assert.equal(getExperimentalEffectName('SPECIAL_FSD_HEAVY'), 'Mass Manager');
+    assert.equal(getExperimentalEffectName('special_auto_loader'), 'Auto Loader');
+    assert.equal(getExperimentalEffectName('nope'), null);
+});
+
+test('an effect either has numeric modifiers or a description (never neither)', () => {
+    // The qualitative weapon-combat effects (e.g. Auto Loader) expose a gameplay flag
+    // with no numeric magnitude, so they carry an empty `modifiers` list and a
+    // human-readable `description` instead. No record may be both empty and undescribed.
+    for (const [fdname, effect] of Object.entries(EXPERIMENTAL_EFFECTS)) {
+        if (effect.modifiers.length === 0) {
+            assert.ok(
+                typeof effect.description === 'string' && effect.description.length > 0,
+                `${fdname} has no modifiers and no description`,
+            );
+        }
     }
 });
 

@@ -77,6 +77,17 @@ export function getExperimentalEffectMaterials(
     return resolveEffect(fdname)?.materials ?? null;
 }
 
+/**
+ * Look up an experimental effect's in-game display name by its Frontier `fdname`,
+ * case-insensitively.
+ *
+ * @param fdname - The effect id, e.g. `"special_fsd_heavy"`.
+ * @returns The display name (e.g. `"Mass Manager"`), or `null` if the effect is unknown.
+ */
+export function getExperimentalEffectName(fdname: string): string | null {
+    return resolveEffect(fdname)?.name ?? null;
+}
+
 /** Resolve an effect record by `fdname`, case-insensitively (shared by the lookups). */
 function resolveEffect(fdname: string): ExperimentalEffect | null {
     if (Object.hasOwn(EXPERIMENTAL_EFFECTS, fdname)) return EXPERIMENTAL_EFFECTS[fdname]!;

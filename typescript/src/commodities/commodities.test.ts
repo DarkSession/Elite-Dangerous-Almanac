@@ -95,6 +95,23 @@ test('commoditiesInCategory selects exactly the requested market group', () => {
     assert.deepEqual(commoditiesInCategory('Minerals', RARE_COMMODITIES), []);
 });
 
+test('commoditiesInCategory ignores case and whitespace, like every other lookup', () => {
+    const metals = commoditiesInCategory('Metals', COMMODITIES);
+    assert.ok(metals.length > 0);
+    for (const spelling of ['metals', 'METALS', ' Metals ']) {
+        assert.deepEqual(
+            commoditiesInCategory(spelling as CommodityCategory, COMMODITIES),
+            metals,
+            `${spelling} should resolve like 'Metals'`,
+        );
+    }
+    // Multi-word groups too, where a caller is most likely to re-case.
+    assert.deepEqual(
+        commoditiesInCategory('consumer items' as CommodityCategory, COMMODITIES),
+        commoditiesInCategory('Consumer Items', COMMODITIES),
+    );
+});
+
 test('catalogues and their records are frozen', () => {
     const platinum = getCommodityByName('Platinum', COMMODITIES);
     assert.ok(platinum);

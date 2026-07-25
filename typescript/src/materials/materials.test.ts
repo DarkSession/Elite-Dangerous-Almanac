@@ -126,6 +126,23 @@ test('materialsInLine returns exactly the requested line', () => {
     assert.deepEqual(materialsInLine(MaterialLine.Guardian, RAW_MATERIALS), []);
 });
 
+test('materialsInLine ignores case and whitespace', () => {
+    const alloys = materialsInLine(MaterialLine.Alloys, MANUFACTURED_MATERIALS);
+    assert.ok(alloys.length > 0);
+    for (const spelling of ['alloys', 'ALLOYS', ' Alloys ']) {
+        assert.deepEqual(
+            materialsInLine(spelling as MaterialLine, MANUFACTURED_MATERIALS),
+            alloys,
+            `${spelling} should resolve like MaterialLine.Alloys`,
+        );
+    }
+    // A multi-word line, where a caller is most likely to re-case.
+    assert.deepEqual(
+        materialsInLine('emission data' as MaterialLine, ENCODED_MATERIALS),
+        materialsInLine(MaterialLine.EmissionData, ENCODED_MATERIALS),
+    );
+});
+
 test('every material line value is a member of the MaterialLine enum', () => {
     const lines = new Set<string>(Object.values(MaterialLine));
     for (const material of ALL_MATERIALS) {

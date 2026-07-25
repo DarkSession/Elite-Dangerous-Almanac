@@ -18,6 +18,8 @@ import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
 import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
 import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities';
 import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-rare';
+import { toSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address-input';
+import { sectorNameFromGalacticCoords } from '@elite-dangerous-almanac/core/astro/galaxy-grid';
 
 async function readReachableJs(entry, seen = new Set()) {
     if (seen.has(entry.href)) return '';
@@ -57,6 +59,33 @@ test('fine-grained package subpaths resolve', () => {
         'Chaff Launcher',
     );
     assert.equal(getCommodityBySymbol('lavianbrandy', RARE_COMMODITIES)?.name, 'Lavian Brandy');
+    assert.equal(toSystemAddress(10_477_373_803), 10_477_373_803n);
+    assert.equal(sectorNameFromGalacticCoords({ x: 751, y: -179, z: -91 }), 'Synuefe');
+});
+
+test('a journal address reaches every id64 entry point without conversion', async () => {
+    // JSON.parse of a journal event yields a plain number, not a bigint.
+    const { StarSystem: SS } = await import('@elite-dangerous-almanac/core/astro/star-system');
+    const { decodeSystemAddress } =
+        await import('@elite-dangerous-almanac/core/astro/system-address');
+    const { findRegionForBoxel } =
+        await import('@elite-dangerous-almanac/core/astro/galactic-region-lookup');
+    assert.equal(SS.fromSystemAddress(3_309_179_996_515).name, 'Synuefe EN-H d11-96');
+    assert.equal(decodeSystemAddress(3_309_179_996_515).sizeClass, 3);
+    assert.equal(findRegionForBoxel(3_309_179_996_515).region?.name, 'Inner Orion Spur');
+    assert.throws(() => SS.fromSystemAddress(2 ** 53 + 2), TypeError);
+});
+
+test('converting an address costs nothing but the conversion', async () => {
+    // The address-input leaf must stay dependency-free, so accepting a journal number
+    // never drags data into a consumer's bundle.
+    const graph = await readReachableJs(
+        new URL('./dist/astro/system-address-input.js', import.meta.url),
+    );
+    assert.ok(graph.length < 4096, `expected a tiny module, got ${graph.length} bytes`);
+    for (const marker of [/Witch Head/, /Col 70 Sector/, /scaleNumerator/, /Anaconda/]) {
+        assert.doesNotMatch(graph, marker);
+    }
 });
 
 test('a single module catalogue does not bundle the others', async () => {
@@ -82,6 +111,12 @@ test('internal commodity construction helpers are not package exports', async ()
 
 test('internal engineering compatibility rules are not package exports', async () => {
     await assert.rejects(import('@elite-dangerous-almanac/core/ships/engineering-compatibility'), {
+        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+    });
+});
+
+test('internal loadout engineering adapters are not package exports', async () => {
+    await assert.rejects(import('@elite-dangerous-almanac/core/ships/loadout-engineering'), {
         code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
     });
 });

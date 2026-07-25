@@ -53,9 +53,16 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   (`FrameShiftDrive`, `HugeHardpoint1`, `TinyHardpoint2`, `Slot01_Size6`, `Military01`,
   `PlanetaryApproachSuite`), so a build assembled from an empty hull and one loaded
   from a SLEF export share one vocabulary. See `typescript/src/ships/slots.ts`.
-- **Kept deliberately (do not "fix" back):** the Lynx Highliner (`MediumTransport01`)
-  has no coriolis hull entry, so it carries identity only — no stats and no slot
-  layout. Stats and slots are present for the other 47 hulls.
+- **Lynx Highliner (`MediumTransport01`) — from EDSY + Frontier's Lynx update notes:**
+  the Lynx has no coriolis hull entry, so its stats and slot layout are sourced instead
+  from EDSY's ship data and Frontier's Lynx update notes (hull mass 260 t, 285/350 m/s,
+  200/350 base shield/armour, hardness 55, 2 crew, rotation 26/60/19 deg/s, min thrust
+  73.75%; core PP5/thr6/FSD5/LS6/dist5/sen3/tank5; hardpoints 1 large + 4 medium;
+  4 utilities; optionals 6/6/6/5/5/4/4/3/2/1; five bulkheads at 0/26/53/53/53 t). Values
+  the static catalogue does not expose are omitted rather than invented: `masslock`,
+  `heatCapacity`, `pipSpeed`, acceleration, and the min-pitch / boost-energy figures.
+  The two size-6 and one size-5 passenger-reserved optionals are stored as plain
+  optional slots — the slot schema has no passenger-reservation restriction.
 
 ## Modules (outfitting)
 
@@ -66,12 +73,13 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   `modules-hardpoint.jsonc`, `modules-utility.jsonc`, and `fixtures/ships/modules.json`,
   `module-stats.json` (the stats half keeps its own parity fixture). Split along
   FDevIDs' four outfitting categories so an app that only wants weapons never bundles
-  the 996 core and optional internals; see AGENTS.md §Build.
+  the 1003 core and optional internals; see AGENTS.md §Build.
 - **Identity source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), `outfitting.csv`
   (columns `id,symbol,category,name,mount,guidance,ship,class,rating,entitlement`),
   same licence note as above.
-- **Identity derivation:** the 1190 modules are carried over in CSV order within each
-  category file. The CSV's numeric `id` column is dropped — modules are keyed by
+- **Identity derivation:** the 1190 FDevIDs modules are carried over in CSV order within
+  each category file (the Operations/Lynx additions below bring the internal catalogue to
+  482, all four to 1197). The CSV's numeric `id` column is dropped — modules are keyed by
   `symbol`. `class` is FDevIDs' `class` — the module size (0–8) — and `rating`
   its grade letter (A–I); together they are the "5A" the outfitting screen shows.
   `mount` (Fixed / Gimballed / Turreted) and `guidance` (Dumbfire / Seeker / Swarm)
@@ -119,6 +127,29 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   - One source row (`Int_MkIIAgileBoost_Engine_Size5_Class5`) has the literal string
     `mount` in its `mount` column — a thruster has no hardpoint mount, so the field
     is omitted, matching every other thruster.
+- **Operations / Lynx additions — from EDSY, Inara and Frontier's update notes** (not
+  in coriolis-data / FDevIDs at the acquired commit):
+  - **Mk II Vessel Hangars** (`Int_FighterBayMk2_Size{5,6,7}_Class1`) — new internal
+    records with the same operational stats as the Mk I bays at half the mass
+    (10/20/30 t, integrity 60/80/120, power 0.25/0.35/0.35 MW). The three Mk I
+    **Fighter Hangar** records were renamed to **Mk I Vessel Hangar** (same symbols and
+    stats; the Operations update renamed them and let them deploy the Nomad). The Mk II
+    bays' restriction to the Caspian Explorer / Panther Clipper Mk II / Type-11
+    Prospector is documented but not stored — those hull symbols are not in the registry.
+  - **Mk II passenger cabins** (`Int_MkII_PassengerCabin_Size{2..6}_Class{1,2}`) already
+    existed as identity records; their mass was added (2.5/5/10/20/40 t by size) and the
+    two size-6 records' `class` was corrected from 5 to 6.
+  - **Corrosion Resistant Cargo Racks** `Int_CorrosionProofCargoRack_Size{2,5,6}_Class1`
+    (capacity 4/32/64) and the built-in **Cargo Hatch** `ModularCargoBayDoor`
+    (power 0.6 MW) were added — active EDSY records the FDevIDs join had omitted.
+- **Deliberately not modelled here:** credit / Merc-Coin cost, passenger capacity, and
+  fighter-bay/rebuild counts — the module schema carries none of these for any record,
+  so the dossier's cost/capacity/bay figures are noted but not stored. The **Merc-Coin
+  pre-engineered weapon variants** are not separate module records: their base module
+  symbols already exist, and the pre-engineering is expressed as the Operations
+  blueprints below. The **Nomad** (`Lander01`) is a ship-launched vehicle, not a
+  shipyard hull, and its `Vehicle_Lander01_*` weapons carry no category/class/rating the
+  module schema requires, so neither the vessel nor its modules are added.
 
 ## Engineering (blueprints and experimental effects)
 
@@ -126,8 +157,14 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   material requirements) and `experimental-effects.jsonc` (per special-effect stat
   modifiers **and** material cost), validated by `fixtures/ships/engineering.json`.
   Modifiers are resolved to journal Modifier **Labels** so the computed modifiers read
-  back like a real `Engineering.Modifiers` block. Each blueprint grade is
-  `{ features, materials }`; each experimental effect is `{ modifiers, materials }`.
+  back like a real `Engineering.Modifiers` block. Each blueprint is `{ name, grades }`
+  (each grade `{ features, materials }`); each experimental effect is
+  `{ name, modifiers, materials, description? }`.
+- **Display names:** each blueprint and experimental effect carries its in-game `name`.
+  Effect names are EDSY `expeffect[].name` (all 86); blueprint names are coriolis
+  `blueprint.name` for the 81 journal-keyed blueprints and the Operations dossier's
+  display label for the 26 `recipe_*` ones. Read them with `getBlueprintName` /
+  `getExperimentalEffectName`.
 - **Blueprint source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
   `modifications/blueprints.json` (grade `features` + `components`) + `modifications.json`
   (apply method), same commit and Frontier media-usage terms as above. Each grade's
@@ -140,6 +177,22 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   `materials` for the material's own grade and category). **Kept as-is:**
   `CargoRack_IncreasedCapacity` grade 5 has no components upstream, so its `materials`
   is an empty list (the grade still resolves) rather than being dropped.
+- **Operations pre-engineered blueprints — from the in-game / Inara blueprint registry**
+  (not in coriolis at the acquired commit): the Merc-Coin weapon rewards and the
+  general/core/optional recipes (`recipe_*` keys, e.g. `recipe_fuelscoop_efficiency`,
+  `recipe_multicannon_rapid`) plus the Anti-Guardian `recipe_guardianmodule_sturdy`
+  (grade 1 only). These are **keyed by Frontier's compiled `recipe_*` key**, not a
+  journal `BlueprintName`. The registry exposes **one displayed total per grade**, not a
+  roll-bounded range, so each feature stores that total as a fixed value (`min == max`).
+  Their per-roll `materials` are from the same registry (resolved to Frontier material
+  `symbol`s against the `materials` domain); the per-roll **Merc-Coin** amount is also
+  charged but is a currency, not a material, so it is not stored. Some totals are
+  non-monotonic (pre-engineered UI values, not primitive weights — notably the
+  Enduring-feedback rail-gun damage and the Balanced-distributor G4 mass) and are
+  **preserved as published, not silently "corrected"**. The Merc-Coin **weapon-reward**
+  recipes begin at grade 2 because the bought module already contains the grade-1
+  pre-engineering; the general/core/optional recipes (fuel scoop, laser plasma-conversion)
+  span grades 1–5, and the Anti-Guardian recipe is grade 1 only.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
   `expeffect` — **coriolis-data carries neither the numeric experimental modifiers nor
   their recipes**, so both come from EDSY, whose code is (c) taleden under a
@@ -150,13 +203,25 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   from EDSY's material short-codes to Frontier material `symbol`s against the `materials`
   domain, emitting `{ symbol, name, count }` per requirement. An experimental effect is a
   single application (one roll), so its `materials` is the whole cost.
+- **Weapon-combat experimental effects — re-added for completeness:** the 29 effects
+  once dropped (Auto Loader, Corrosive Shell, Force Shell, FSD Interrupt, Plasma Slug, …)
+  are now present. A purely-qualitative one — a gameplay flag with no numeric magnitude
+  the data exposes — carries an **empty `modifiers` list and a human-readable
+  `description`** instead; effects that do have magnitudes carry them (e.g. Force Shell
+  shot speed −16.6667%, FSD Interrupt damage −30% / burst interval +50%). Their
+  one-application `materials` are from the same in-game / Inara registry (a Merc-Coin
+  amount is also charged but is not stored). All target weapons in the compatibility map.
 - **Journal Labels** for both sources are resolved via EDSY's own attribute table
   (`attr → fdattr`), the authority for the exact Label strings the game writes
   (e.g. coriolis `optmass` on an FSD → `FSDOptimalMass`, `maxfuel` → `MaxFuelPerJump`).
   Group-ambiguous keys (`optmass`, `optmul`, `thermload`) are disambiguated by the
   blueprint's target module group.
-- **Kept deliberately (do not "fix" back):** weapon-combat-only experimental effects
-  are dropped, matching the stats layer (which carries no weapon combat stats).
+- **Kept deliberately (do not "fix" back):** the module **stats** layer still carries
+  no weapon combat stats, but the weapon-combat **experimental effects** and the
+  Operations weapon **blueprints** are included as reference data (their combat labels
+  simply have no base value for the calculator to fold, so they are stored, not
+  computed). The dormant `Decorative_*` transformations EDSY also lists are **not**
+  included — internal visual/test entries, not obtainable engineering.
 - **Calculator:** `typescript/src/ships/engineering.ts` (`computeModifiers`), wired
   into `ShipLoadout.applyBlueprint`. Validated to reproduce the real "Deep Black"
   export's engineered figures — `FSDOptimalMass` 4670 → **7528.04** at G5 Long Range

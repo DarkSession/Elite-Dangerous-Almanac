@@ -32,6 +32,7 @@ import { getNamedRegionOrigin, resolveRegionOrigin } from './named-regions.js';
 import { handAuthoredRegionForCoords } from './hand-authored-regions.js';
 import { isPermitLockedRegionName } from './permit-locked-regions.js';
 import type { GalacticCoords } from './coords.js';
+import { toSystemAddress, type SystemAddressInput } from './system-address-input.js';
 
 /** Attributes a hand-authored region contributes to a decoded system. */
 interface HaOverride {
@@ -150,6 +151,15 @@ export class StarSystem {
      * syntax.
      *
      * @param name - A system name in any casing, e.g. `blae eock kc-c d0`.
+     * @returns The system, or `null` when `name` is not a **procedurally named**
+     * system. Hand-named systems (`Sol`, `Maia`, `Shinrarta Dezhra`) have no
+     * algorithmic address and so yield `null` too — that is a "not covered by the
+     * scheme" answer, not "your string was malformed".
+     * @example
+     * ```ts
+     * StarSystem.fromName('blae eock kc-c d0')?.name; // -> 'Blae Eock KC-C d0'
+     * StarSystem.fromName('Sol');                     // -> null (hand-named system)
+     * ```
      */
     static fromName(name: string): StarSystem | null {
         const parts = parseSystemName(name);
@@ -186,25 +196,35 @@ export class StarSystem {
      * shows. Coordinates come from an external source you already have the `id64`
      * from — the player journal, EDSM or Spansh — in light-years with Sol at origin.
      *
-     * @param id64 - The system address.
+     * @param id64 - The system address, as a `bigint`, a normally parsed journal
+     *   `number` (`event.SystemAddress`), or a decimal `string` (see
+     *   {@link SystemAddressInput}).
      * @param coords - Galactic position (light-years, Sol at origin). Optional, but
      *   required for correct hand-authored-region names.
+     * @returns The system at that address.
+     * @throws {TypeError} If the address is not a usable representation — a
+     * non-integer, or a `number` beyond `2^53 - 1` that has already been rounded.
      * @throws {RangeError} If the address is outside 64 bits or its grid slot has no
      * assigned procedural name.
      */
-    static fromSystemAddress(id64: bigint, coords?: GalacticCoords): StarSystem {
-        return StarSystem.#fromDecoded(decodeSystemAddress(id64), id64, coords);
+    static fromSystemAddress(id64: SystemAddressInput, coords?: GalacticCoords): StarSystem {
+        const address = toSystemAddress(id64);
+        return StarSystem.#fromDecoded(decodeSystemAddress(address), address, coords);
     }
 
     /**
      * Build a system from its 64-bit modulated system address.
      *
-     * @param id64 - The modulated system address.
+     * @param id64 - The modulated system address, as a `bigint` or a decimal `string`
+     *   (see {@link SystemAddressInput}). Modulated addresses routinely exceed `2^53`,
+     *   so a JS `number` cannot carry one and is rejected.
      * @param coords - Optional galactic position (light-years, Sol at origin).
+     * @returns The system at that address.
+     * @throws {TypeError} If the address is not a usable representation.
      * @throws {RangeError} If the address is outside 64 bits or its grid slot has no
      * assigned procedural name.
      */
-    static fromModSystemAddress(id64: bigint, coords?: GalacticCoords): StarSystem {
+    static fromModSystemAddress(id64: SystemAddressInput, coords?: GalacticCoords): StarSystem {
         // The modulated form is a different bit layout, not a different id64, so it
         // is not memoised as `this.#id64`.
         return StarSystem.#fromDecoded(decodeModSystemAddress(id64), undefined, coords);
@@ -261,9 +281,20 @@ export class StarSystem {
         return this.#parts.n2;
     }
 
-    /** Galactic position (light-years, Sol at origin), if known. */
-    get coords(): GalacticCoords | undefined {
-        return this.#coords ? { ...this.#coords } : undefined;
+    /**
+     * Galactic position (light-years, Sol at origin), if known.
+     *
+     * @remarks
+     * Only ever the coordinates **you supplied** to
+     * {@link StarSystem.fromSystemAddress} — a name or an `id64` does not carry an
+     * exact position, so this is `null` for a system built from either alone. For an
+     * approximate position from an address, use `findRegionForBoxel(id64)` from
+     * `./galactic-region-lookup`, which returns the boxel corner in light-years.
+     * @returns A copy of the coordinates, or `null` when none are known (`null`, not
+     * `undefined` — every "absent" result in this library is `null`).
+     */
+    get coords(): GalacticCoords | null {
+        return this.#coords ? { ...this.#coords } : null;
     }
 
     /**

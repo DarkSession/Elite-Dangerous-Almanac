@@ -76,14 +76,6 @@ export interface EngineeringMaterial {
     readonly count: number;
 }
 
-/**
- * One material a blueprint grade consumes per roll.
- *
- * @deprecated Use {@link EngineeringMaterial} — the same shape, shared by blueprints and
- * experimental effects. Kept as an alias so existing imports keep working.
- */
-export type BlueprintMaterial = EngineeringMaterial;
-
 /** One grade of a blueprint — the modifiers it applies and the materials it costs. */
 export interface BlueprintGrade {
     /** The stat modifiers this grade applies (feed to {@link computeModifiers}). */
@@ -102,14 +94,45 @@ export interface BlueprintGrade {
  * unlike a blueprint whose grades are rolled up to.
  */
 export interface ExperimentalEffect {
-    /** The stat contributions this effect applies (feed to {@link computeModifiers}). */
+    /** The in-game display name, e.g. `"Mass Manager"`, `"Auto Loader"`. */
+    readonly name: string;
+    /**
+     * The stat contributions this effect applies (feed to {@link computeModifiers}).
+     *
+     * @remarks
+     * May be **empty** for a purely qualitative effect — one whose game behaviour is a
+     * gameplay flag with no numeric magnitude the data exposes (e.g. Auto Loader
+     * reloading while firing, Smart Rounds sparing untargeted ships). Such an effect
+     * still carries a human-readable {@link ExperimentalEffect.description}.
+     */
     readonly modifiers: readonly ExperimentalContribution[];
     /** The materials one application of this effect consumes. */
     readonly materials: readonly EngineeringMaterial[];
+    /**
+     * A short human-readable note on what the effect does in game — present on effects
+     * whose behaviour is not fully captured by {@link ExperimentalEffect.modifiers}
+     * (chiefly the qualitative weapon-combat effects with no numeric magnitude).
+     */
+    readonly description?: string;
 }
 
 /** A blueprint's grades, keyed by grade number as a string (`"1"`–`"5"`). */
 export type BlueprintGrades = Readonly<Record<string, BlueprintGrade>>;
+
+/**
+ * One engineering blueprint — its in-game display name and its per-grade data.
+ *
+ * @remarks
+ * A blueprint is keyed in {@link BLUEPRINTS} by its Frontier `fdname`; this is the record
+ * that key maps to. `grades` carries the modifier `features` and material cost of each
+ * grade the blueprint defines (a blueprint need not define every grade `1`–`5`).
+ */
+export interface Blueprint {
+    /** The in-game display name, e.g. `"Increased range"`, `"Fuel Scoop — Scoop rate enhanced"`. */
+    readonly name: string;
+    /** The blueprint's grades, keyed by grade number as a string (`"1"`–`"5"`). */
+    readonly grades: BlueprintGrades;
+}
 
 /** Round to 6 decimals to shed floating-point noise, matching in-game modifier values. */
 const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;

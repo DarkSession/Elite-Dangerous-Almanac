@@ -1,7 +1,7 @@
 {
     "name": "@elite-dangerous-almanac/core",
     "version": "0.0.1",
-    "description": "Ready-to-go static data and calculations for Elite Dangerous community apps and researchers.",
+    "description": "Elite Dangerous static data and calculations: procedural system naming and id64 addresses, galactic regions, nebulae, ships and outfitting with jump range, engineering materials, and market commodities.",
     "type": "module",
     "sideEffects": false,
     "license": "SEE LICENSE IN LICENSE",
@@ -16,10 +16,23 @@
     },
     "keywords": [
         "elite-dangerous",
+        "astro",
         "astronomy",
+        "id64",
+        "system-address",
+        "procedural-generation",
+        "nebulae",
         "ships",
+        "outfitting",
         "engineering",
-        "game-data"
+        "materials",
+        "commodities",
+        "trading",
+        "slef",
+        "jump-range",
+        "game-data",
+        "esm",
+        "typescript"
     ],
     "exports": {
         ".": {
@@ -57,6 +70,7 @@
             "import": "./dist/ships/index.js"
         },
         "./ships/engineering-compatibility": null,
+        "./ships/loadout-engineering": null,
         "./ships/*": {
             "types": "./dist/ships/*.d.ts",
             "import": "./dist/ships/*.js"

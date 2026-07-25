@@ -90,6 +90,18 @@ test('microResourcesInCategory returns exactly the requested category', () => {
     }
 });
 
+test('microResourcesInCategory ignores case and whitespace', () => {
+    const consumables = microResourcesInCategory('consumable', ALL_MICRO_RESOURCES);
+    assert.ok(consumables.length > 0);
+    for (const spelling of ['Consumable', 'CONSUMABLE', ' consumable ']) {
+        assert.deepEqual(
+            microResourcesInCategory(spelling as MicroResourceCategory, ALL_MICRO_RESOURCES),
+            consumables,
+            `${spelling} should resolve like 'consumable'`,
+        );
+    }
+});
+
 test('every micro-resource category value is a known category', () => {
     const known = new Set<string>(CATEGORIES);
     for (const resource of ALL_MICRO_RESOURCES) {

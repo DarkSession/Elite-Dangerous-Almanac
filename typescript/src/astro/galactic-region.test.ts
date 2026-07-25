@@ -21,9 +21,9 @@ test('getGalacticRegion resolves by id and rejects out-of-range / outside-map id
     assert.equal(getGalacticRegion(43), null);
 });
 
-test('getGalacticRegionByName is case-insensitive', () => {
+test('getGalacticRegionByName ignores case and surrounding whitespace', () => {
     assert.equal(getGalacticRegionByName('the void')?.id, 42);
-    assert.equal(getGalacticRegionByName('GALACTIC CENTRE')?.id, 1);
+    assert.equal(getGalacticRegionByName('  GALACTIC CENTRE\n')?.id, 1);
     assert.equal(getGalacticRegionByName('Nowhere'), null);
 });
 

@@ -211,11 +211,20 @@
         "^[1-5]$": { "$ref": "#/definitions/blueprintGrade" }
       }
     },
+    "blueprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "grades"],
+      "properties": {
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "grades": { "$ref": "#/definitions/blueprintGrades" }
+      }
+    },
     "blueprintCatalogue": {
       "type": "object",
       "minProperties": 1,
       "additionalProperties": {
-        "$ref": "#/definitions/blueprintGrades"
+        "$ref": "#/definitions/blueprint"
       }
     },
     "experimentalContribution": {
@@ -233,17 +242,18 @@
     "experimentalEffect": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["modifiers", "materials"],
+      "required": ["name", "modifiers", "materials"],
       "properties": {
+        "name": { "$ref": "#/definitions/nonEmptyString" },
         "modifiers": {
           "type": "array",
-          "minItems": 1,
           "items": { "$ref": "#/definitions/experimentalContribution" }
         },
         "materials": {
           "type": "array",
           "items": { "$ref": "#/definitions/blueprintMaterial" }
-        }
+        },
+        "description": { "$ref": "#/definitions/nonEmptyString" }
       }
     },
     "experimentalCatalogue": {

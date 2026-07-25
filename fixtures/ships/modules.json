@@ -2,10 +2,10 @@
   "description": "Ground truth for the outfitting catalogues (data/ships/modules-*.jsonc, from EDCD FDevIDs outfitting.csv). `counts` pins the size of each category catalogue; `records` pins individual modules across every category, including the retained removed Discovery Scanner (no entitlement) and DLC-gated modules; `shipArmour` pins that getModulesForShip returns a hull's five bulkhead variants. `class` is the module size (0-8) and `rating` the grade letter (A-I).",
   "counts": {
     "standard": 521,
-    "internal": 475,
+    "internal": 482,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1190
+    "all": 1197
   },
   "records": [
     {

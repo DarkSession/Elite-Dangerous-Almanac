@@ -39,6 +39,10 @@ test('every hand-authored region has an origin for address/name conversion', () 
     }
 });
 
+test('named-region origin lookup ignores surrounding whitespace', () => {
+    assert.equal(getNamedRegionOrigin('  PLEIADES SECTOR\n')?.name, 'Pleiades Sector');
+});
+
 test('canonicalises known hand-authored region names', () => {
     const sys = StarSystem.fromName('pleiades sector hr-w d1-79');
     assert.ok(sys);

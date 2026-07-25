@@ -55,6 +55,25 @@ getMaterialByName('iron', RAW_MATERIALS)?.grade; // 1
 SLEF build is edited, its supplied mass/capacity figures are adjusted when possible;
 an aggregate that cannot be updated safely is discarded and recomputed.
 
+## Three things worth knowing before you start
+
+- **System addresses.** Anything taking an `id64` accepts a `bigint`, a `number` (a
+  normally parsed journal `SystemAddress`), or a decimal string; addresses come back as
+  `bigint`, since the fields reach bit 55. A `number` past `2^53 - 1` has already been
+  rounded, so it is refused with a `TypeError` instead of resolving the wrong system.
+- **Two `{ x, y, z }` conventions.** `GalacticCoords` is light-years with Sol at the
+  origin (the journal/EDSM/Spansh frame) and is what nearly everything takes.
+  `SectorCoords` is an integer sector index (0–127) on the 1280 ly naming grid, which is
+  what `sectorNameFromCoords` takes. They are structurally identical, so TypeScript will
+  not catch a mix-up — convert with `sectorCoordsFromGalacticCoords`, or call
+  `sectorNameFromGalacticCoords` directly.
+- **Failure is split by cause.** Lookups return `null`; malformed input throws
+  `TypeError`; out-of-range input throws `RangeError`. `StarSystem.fromName` returns
+  `null` for any non-procedural name, including real hand-named systems like `Sol`.
+
+Case and surrounding whitespace are ignored by every lookup — by symbol, name, category
+or line — so journal values resolve as they arrive.
+
 See the [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#readme)
 and [generated GitHub Wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki)
 for the complete API guide. Report problems in the

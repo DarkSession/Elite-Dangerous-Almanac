@@ -19,6 +19,19 @@
  * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE} and its sibling
  * catalogues.
  *
+ * **Two `{x, y, z}` conventions, so check which one a function wants.**
+ * {@link GalacticCoords} is light-years with Sol at the origin — what the journal,
+ * EDSM and Spansh report, and what {@link findRegionAt},
+ * {@link handAuthoredRegionForCoords} and {@link nearestNebulae} take.
+ * {@link SectorCoords} is an integer *sector index* (0–127 per axis) on the 1280 ly
+ * naming grid, which is what {@link sectorNameFromCoords} takes. They are the same
+ * shape, so nothing stops you passing one for the other — convert a real position
+ * with {@link sectorCoordsFromGalacticCoords} (or go straight to
+ * {@link sectorNameFromGalacticCoords}).
+ *
+ * **Permit locks** are six similarly-named lookups; {@link permitLockForSystemName}
+ * is the one to start from (it answers for both kinds of lock, from a name alone).
+ *
  * @packageDocumentation
  */
 
@@ -40,6 +53,8 @@ export {
 } from './system-name.js';
 
 // ── System addresses (id64): decode / encode ────────────────────────────────
+// Every entry point that takes an address accepts a `bigint`, a normally parsed
+// journal `number`, or a decimal `string` (`SystemAddressInput`).
 export {
     decodeSystemAddress,
     decodeModSystemAddress,
@@ -48,13 +63,28 @@ export {
     type DecodedAddress,
 } from './system-address.js';
 
+export {
+    toSystemAddress,
+    tryToSystemAddress,
+    type SystemAddressInput,
+} from './system-address-input.js';
+
 // ── Procedural sectors: name ⇄ grid coordinates ─────────────────────────────
+// `SectorCoords` are **sector grid indices** (0–127), not light-years. Convert a
+// real position with `sectorCoordsFromGalacticCoords` / `sectorNameFromGalacticCoords`.
 export {
     sectorNameFromCoords,
     sectorCoordsFromName,
     canonicalizeSectorName,
     type SectorCoords,
 } from './sector-name.js';
+
+export {
+    sectorCoordsFromGalacticCoords,
+    sectorNameFromGalacticCoords,
+    GALAXY_ORIGIN,
+    SECTOR_EDGE_LY,
+} from './galaxy-grid.js';
 
 // ── Mass codes (a–h size classes) ───────────────────────────────────────────
 export {
@@ -78,8 +108,14 @@ export {
 
 // ── Permit locks (which systems and regions need a permit) ──────────────────
 // The only place permit state lives: `HandAuthoredRegion` carries no permit flag.
-// From a name use `permitLockForSystemName`; from coordinates, resolve the region
-// with `handAuthoredRegionForCoords` and pass its name to `isPermitLockedRegionName`.
+// Six lookups, easy to confuse — pick by what you hold and what you need back:
+//
+//   have a system name, want either kind of lock  -> permitLockForSystemName  (start here)
+//   have a system name, want just yes/no          -> isPermitLockedSystemName (either kind)
+//   have a system name, want only its own lock    -> permitLockedSystemForName
+//   have an id64 / journal address                -> permitLockedSystemForAddress
+//   have a *region* name (e.g. from coordinates)  -> isPermitLockedRegionName
+//   have a system name, want its region's lock    -> permitLockedRegionForSystemName
 export {
     permitLockForSystemName,
     isPermitLockedSystemName,
@@ -91,7 +127,6 @@ export {
     PERMIT_LOCKED_REGIONS,
     type PermitLock,
     type PermitLockedSystem,
-    type SystemAddressInput,
 } from './permit-locks.js';
 
 // ── Galactic codex regions (the 42 codex zones) ─────────────────────────────

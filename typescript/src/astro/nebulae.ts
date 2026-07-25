@@ -169,9 +169,9 @@ export function nebulaeWithin(
  * Look up a nebula by name (case-insensitive).
  *
  * @param name - The nebula name as the catalogue spells it, e.g.
- * `"Witch Head Nebula"`. Matching ignores case but is otherwise exact — including
- * any parenthetical community name (`"Aemonz WZ-Y e6771 (Lazurite Nebula)"`), so
- * pass the whole string.
+ * `"Witch Head Nebula"`. Matching ignores case and surrounding whitespace but is
+ * otherwise exact — including any parenthetical community name
+ * (`"Aemonz WZ-Y e6771 (Lazurite Nebula)"`), so pass the whole string.
  * @param nebulae - The catalogue to search (see {@link nearestNebulae}).
  * @returns The matching {@link Nebula}, or `null` if the catalogue holds no nebula
  * of that name. Only the catalogue you pass is searched — a real nebula will not
@@ -183,6 +183,6 @@ export function nebulaeWithin(
  * ```
  */
 export function getNebulaByName(name: string, nebulae: readonly Nebula[]): Nebula | null {
-    const wanted = name.toLowerCase();
+    const wanted = name.trim().toLowerCase();
     return nebulae.find((nebula) => nebula.name.toLowerCase() === wanted) ?? null;
 }

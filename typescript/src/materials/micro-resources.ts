@@ -68,7 +68,7 @@ export interface MicroResource {
     readonly name: string;
 }
 
-/** Case- and whitespace-insensitive key for name / symbol matching. */
+/** Case- and whitespace-insensitive key for name, symbol, category and group matching. */
 function normalize(value: string): string {
     return value.trim().toLowerCase();
 }
@@ -123,17 +123,20 @@ export function getMicroResourceByName(
 /**
  * Every micro resource in a given category, in catalogue order.
  *
- * @param category - The category to match, e.g. `'component'`.
+ * @param category - The category to match, e.g. `'component'`. Leading/trailing
+ * whitespace and case are ignored, like every other lookup here.
  * @param microResources - The catalogue to search (see {@link getMicroResourceBySymbol}).
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
  * microResourcesInCategory('consumable', ALL_MICRO_RESOURCES).length; // -> 6
+ * microResourcesInCategory('Consumable', ALL_MICRO_RESOURCES).length; // -> 6; case is ignored
  * ```
  */
 export function microResourcesInCategory(
     category: MicroResourceCategory,
     microResources: readonly MicroResource[],
 ): MicroResource[] {
-    return microResources.filter((resource) => resource.category === category);
+    const wanted = normalize(category);
+    return microResources.filter((resource) => normalize(resource.category) === wanted);
 }

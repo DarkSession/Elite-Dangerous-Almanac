@@ -12,10 +12,10 @@
  * | Module | Export | Entries |
  * | --- | --- | --- |
  * | `./modules-standard` | `STANDARD_MODULES` | 521 |
- * | `./modules-internal` | `INTERNAL_MODULES` | 475 |
+ * | `./modules-internal` | `INTERNAL_MODULES` | 482 |
  * | `./modules-hardpoint` | `HARDPOINT_MODULES` | 159 |
  * | `./modules-utility` | `UTILITY_MODULES` | 35 |
- * | `./modules-all` | `ALL_MODULES` | 1190 |
+ * | `./modules-all` | `ALL_MODULES` | 1197 |
  *
  * Importing a query function from here costs nothing but the function: pass in
  * whichever catalogue you imported.

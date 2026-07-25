@@ -1,11 +1,11 @@
 {
-  "description": "Parity fixture for the module-stats catalogues (data/ships/module-stats-*.jsonc). Cross-language validation.",
+  "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc. Cross-language validation.",
   "counts": {
     "standard": 268,
-    "internal": 357,
+    "internal": 373,
     "hardpoint": 159,
     "utility": 35,
-    "all": 819
+    "all": 835
   },
   "spot": [
     {

@@ -26,6 +26,7 @@
 
 import { getGalacticRegion, type GalacticRegion, type PlanePoint } from './galactic-region.js';
 import { decodeSystemAddress } from './system-address.js';
+import type { SystemAddressInput } from './system-address-input.js';
 import { boxelEdgeLy } from './mass-code.js';
 import cellData from '../../../data/astro/galactic-region-cells.jsonc' with { type: 'json' };
 
@@ -74,11 +75,14 @@ const ROW_INDEX: ReadonlyMap<number, readonly [number, number, number][]> = (() 
     return index;
 })();
 
-/** Galactic X coordinate of the region grid's origin corner, in light-years. */
+// The three are one point: the galaxy's origin corner in light-years, which is both
+// where the region grid starts and where sector/boxel indices are measured from. It is
+// also published, dependency-free, as `GALAXY_ORIGIN` in `./galaxy-grid`.
+/** Galactic X of the galaxy's origin corner, in light-years. */
 export const REGION_MAP_X0 = projection.x0;
-/** Galactic Y coordinate of the galaxy origin corner, in light-years (for boxel decode). */
+/** Galactic Y of the galaxy's origin corner, in light-years. */
 export const REGION_MAP_Y0 = projection.y0;
-/** Galactic Z coordinate of the region grid's origin corner, in light-years. */
+/** Galactic Z of the galaxy's origin corner, in light-years. */
 export const REGION_MAP_Z0 = projection.z0;
 /** Edge length of one region-grid cell, in light-years (`4096 / 83` ≈ 49.3494). */
 export const REGION_MAP_LY_PER_CELL = projection.lyPerCell;
@@ -151,14 +155,24 @@ export function findRegionAt(point: PlanePoint): RegionLookup {
  * boxel, which can differ from {@link findRegionAt} of the system's exact
  * coordinates near a region border.
  *
- * @param id64 - The 64-bit system address.
- * @returns The boxel corner coordinates and the region there.
+ * @param id64 - The 64-bit system address, as a `bigint`, a normally parsed journal
+ * `number`, or a decimal `string` (see {@link SystemAddressInput}).
+ * @returns The boxel corner coordinates — **galactic light-years, Sol at origin** —
+ * and the region there. Those coordinates are also the closest this library gets to
+ * a position for an `id64` alone: the corner of the system's boxel, so they are
+ * accurate to one boxel edge ({@link boxelEdgeLy} of the size class: 10 ly for mass
+ * code `a`, 1280 ly for `h`).
+ * @throws {TypeError} If `id64` is not a usable address representation.
+ * @throws {RangeError} If the address is outside 64 bits.
  * @example
  * ```ts
- * findRegionForBoxel(5306097239922n).region?.name;
+ * findRegionForBoxel(5306097239922n).region?.name; // -> the codex region
+ *
+ * // Approximate position from an id64 alone (boxel corner, in light-years):
+ * const { x, y, z } = findRegionForBoxel(3309179996515n); // -> { x: 735, y: -185, z: -105 }
  * ```
  */
-export function findRegionForBoxel(id64: bigint): BoxelRegion {
+export function findRegionForBoxel(id64: SystemAddressInput): BoxelRegion {
     const { sizeClass, absoluteBoxel } = decodeSystemAddress(id64);
     const edge = boxelEdgeLy(sizeClass);
     const x = absoluteBoxel.x * edge + projection.x0;

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseSlef, getModifier, type LoadoutModule } from './slef.js';
+import { parseSlef, getLoadoutModifier, type LoadoutModule } from './slef.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 
 const slefString = JSON.stringify(slefFixture);
@@ -31,6 +31,16 @@ test('parseSlef accepts a bare Loadout event and synthesises a header', () => {
     assert.equal(entries.length, 1);
     assert.equal(entries[0]!.header.appName, '');
     assert.equal(entries[0]!.data.Ship, 'explorer_nx');
+});
+
+test('the synthetic header cannot leak mutations between parses', () => {
+    const bare = slefFixture[0]!.data;
+    const first = parseSlef(bare);
+    assert.ok(Object.isFrozen(first[0]!.header));
+    assert.throws(() => {
+        (first[0]!.header as { appName: string }).appName = 'mutated';
+    }, TypeError);
+    assert.equal(parseSlef(bare)[0]!.header.appName, '');
 });
 
 test('parseSlef throws SyntaxError on invalid JSON', () => {
@@ -122,15 +132,15 @@ const fsdModule = slefFixture[0]!.data.Modules.find(
     (m) => m.Slot === 'FrameShiftDrive',
 ) as unknown as LoadoutModule;
 
-test('getModifier reads a numeric modifier case-insensitively', () => {
-    assert.equal(getModifier(fsdModule, 'FSDOptimalMass'), 7528.04);
-    assert.equal(getModifier(fsdModule, 'fsdoptimalmass'), 7528.04);
+test('getLoadoutModifier reads a numeric modifier case-insensitively', () => {
+    assert.equal(getLoadoutModifier(fsdModule, 'FSDOptimalMass'), 7528.04);
+    assert.equal(getLoadoutModifier(fsdModule, 'fsdoptimalmass'), 7528.04);
 });
 
-test('getModifier returns null for an absent modifier or an unengineered module', () => {
-    assert.equal(getModifier(fsdModule, 'NoSuchLabel'), null);
+test('getLoadoutModifier returns null for an absent modifier or an unengineered module', () => {
+    assert.equal(getLoadoutModifier(fsdModule, 'NoSuchLabel'), null);
     const fuelTank = slefFixture[0]!.data.Modules.find(
         (m) => m.Slot === 'FuelTank',
     ) as unknown as LoadoutModule;
-    assert.equal(getModifier(fuelTank, 'Mass'), null);
+    assert.equal(getLoadoutModifier(fuelTank, 'Mass'), null);
 });

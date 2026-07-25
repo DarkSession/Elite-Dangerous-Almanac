@@ -85,8 +85,8 @@ test('getShipSlots resolves case-insensitively and returns null for the unknown'
     assert.equal(getShipSlots('anaconda')?.core.frameShiftDrive, 6);
     assert.deepEqual(getShipSlots('ANACONDA'), getShipSlots('Anaconda'));
     assert.equal(getShipSlots('not_a_ship'), null);
-    // The one hull coriolis does not cover has identity but no slot layout.
-    assert.equal(getShipSlots('MediumTransport01'), null);
+    // The Lynx Highliner now carries a full slot layout (added from EDSY / update notes).
+    assert.equal(getShipSlots('MediumTransport01')?.core.frameShiftDrive, 5);
 });
 
 test('every hull with a layout declares seven core sizes and its bulkheads', () => {

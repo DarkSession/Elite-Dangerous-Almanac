@@ -10,8 +10,10 @@
  * procedural sector whose origin is simply its grid position times the sector
  * size.
  *
- * The catalogue derives from the EDTS/community procedural-naming research and is
- * cross-checked against EDSM/Spansh; see `data/astro/SOURCES.md` for provenance.
+ * The catalogue derives from EDTS by Andy Martin (Esvandiary), BSD 3-Clause
+ * © 2016 (https://bitbucket.org/Esvandiary/edts), and community procedural-naming
+ * research, cross-checked against EDSM/Spansh; see `data/astro/SOURCES.md` for
+ * provenance.
  *
  * The catalogue is loaded once from shared JSON (`data/astro/`); the lookup map is
  * an immutable module constant.
@@ -54,11 +56,11 @@ const CATALOGUE: ReadonlyMap<string, RegionOrigin> = new Map(
 /**
  * Look up a hand-authored named region's catalogued origin.
  *
- * @param name - A named region in any casing.
+ * @param name - A named region in any casing, with optional surrounding whitespace.
  * @returns Its canonical origin record, or `null` when it is not catalogued.
  */
 export function getNamedRegionOrigin(name: string): RegionOrigin | null {
-    return CATALOGUE.get(name.toLowerCase()) ?? null;
+    return CATALOGUE.get(name.trim().toLowerCase()) ?? null;
 }
 
 /**

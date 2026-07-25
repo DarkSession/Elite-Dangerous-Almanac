@@ -23,7 +23,24 @@ export type SlotKind = 'core' | 'hardpoint' | 'utility' | 'optional' | 'armour' 
 /** A restriction limiting which optional-internal modules a slot accepts. */
 export type SlotRestriction = 'military' | 'planetaryApproachSuite';
 
-/** The seven fixed core-internal mounts, by function. */
+/**
+ * The seven fixed core-internal mounts, by function.
+ *
+ * @remarks
+ * These are **not** slot keys. A core mount has two names: this camelCase *function*
+ * (`BuildSlot.core`) and the journal's PascalCase *slot key* (`BuildSlot.key`), which
+ * is what every `slotKey` argument wants. Two of the pairs are not even the same word:
+ *
+ * | `core` (function) | `key` (journal slot) |
+ * | --- | --- |
+ * | `powerPlant` | `PowerPlant` |
+ * | `thrusters` | `MainEngines` |
+ * | `frameShiftDrive` | `FrameShiftDrive` |
+ * | `lifeSupport` | `LifeSupport` |
+ * | `powerDistributor` | `PowerDistributor` |
+ * | `sensors` | `Radar` |
+ * | `fuelTank` | `FuelTank` |
+ */
 export type CoreSlotType =
     | 'powerPlant'
     | 'thrusters'
@@ -38,29 +55,55 @@ export interface BuildSlot {
     /**
      * Stable, journal-compatible slot key, e.g. `"PowerPlant"`, `"HugeHardpoint1"`,
      * `"TinyHardpoint2"`, `"Slot01_Size6"`, `"Military01"`, `"PlanetaryApproachSuite"`.
+     *
+     * @remarks
+     * This is the string every `slotKey` argument takes, and it is matched **exactly**
+     * — journal spelling, case-sensitive, no surrounding whitespace — because it is the
+     * game's own identifier. Enumerate keys with `ShipLoadout.slots()` rather than
+     * typing them. Note a core slot's {@link BuildSlot.core} function name is a
+     * *different* string (`thrusters` vs the key `MainEngines`); see
+     * {@link CoreSlotType}.
      */
     readonly key: string;
     /** Which kind of mount this is. */
     readonly kind: SlotKind;
     /**
-     * Slot size (class). Core/optional/hardpoint slots are 1–8; utility, armour and
-     * the cargo hatch are `0`/`1` placeholders (nothing sized fits them).
+     * Slot size (class). Core/optional/hardpoint slots are 1–8; utility and armour
+     * use `0` placeholders because their fit rules are not size-based, while the
+     * fixed cargo hatch uses `1`.
      */
     readonly size: number;
     /** The optional-internal restriction, when the slot is a restricted one. */
     readonly restriction?: SlotRestriction;
-    /** For a core slot, which core module type it accepts. */
+    /**
+     * For a core slot, which core module type it accepts — the camelCase *function*
+     * name, not the slot key (see {@link CoreSlotType}). Absent on every other kind
+     * of mount.
+     */
     readonly core?: CoreSlotType;
 }
 
-/** The size of each of a hull's seven core-internal mounts. */
+/**
+ * The size of each of a hull's seven core-internal mounts.
+ *
+ * @remarks
+ * Each value is the mount's class (size), `1`–`8`: the largest module that fits it.
+ * Keys are the core *functions* ({@link CoreSlotType}), not journal slot keys.
+ */
 export interface CoreSlots {
+    /** Power-plant mount size, 1–8. */
     readonly powerPlant: number;
+    /** Thruster mount size, 1–8 (journal slot `MainEngines`). */
     readonly thrusters: number;
+    /** Frame shift drive mount size, 1–8. */
     readonly frameShiftDrive: number;
+    /** Life-support mount size, 1–8. */
     readonly lifeSupport: number;
+    /** Power-distributor mount size, 1–8. */
     readonly powerDistributor: number;
+    /** Sensor mount size, 1–8 (journal slot `Radar`). */
     readonly sensors: number;
+    /** Main fuel-tank mount size, 1–8. */
     readonly fuelTank: number;
 }
 
@@ -96,15 +139,22 @@ export interface ShipSlots {
     readonly bulkheads: readonly BulkheadOption[];
 }
 
-/** Result of {@link parseSlotName}. `size` is `null` when the name does not encode it. */
+/** What a journal slot key says about the mount, as {@link parseSlotName} reads it. */
 export interface ParsedSlot {
+    /** Which kind of mount the key names. */
     readonly kind: SlotKind;
+    /**
+     * Slot size (class), 1–8, or `null` when the key does not encode one (`Radar`,
+     * `TinyHardpoint1`, `Armour`, …) — the hull's layout carries the size instead.
+     */
     readonly size: number | null;
+    /** The optional-internal restriction the key implies (`Military01` → `military`). */
     readonly restriction?: SlotRestriction;
+    /** For a core key, the core function it fills (`MainEngines` → `thrusters`). */
     readonly core?: CoreSlotType;
 }
 
-/** Core module type → its fixed journal slot key. */
+/** Core module function → its fixed journal slot key (see {@link CoreSlotType}). */
 const CORE_KEY: Record<CoreSlotType, string> = {
     powerPlant: 'PowerPlant',
     thrusters: 'MainEngines',
@@ -115,7 +165,7 @@ const CORE_KEY: Record<CoreSlotType, string> = {
     fuelTank: 'FuelTank',
 };
 
-/** Journal core slot key → core module type (the inverse of {@link CORE_KEY}). */
+/** Journal core slot key → core module function (the inverse of `CORE_KEY`). */
 const CORE_TYPE: Record<string, CoreSlotType> = {
     PowerPlant: 'powerPlant',
     MainEngines: 'thrusters',

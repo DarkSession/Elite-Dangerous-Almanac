@@ -50,7 +50,7 @@ export { ALL_MODULES } from './modules-all.js';
 // ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
 export {
     parseSlef,
-    getModifier,
+    getLoadoutModifier,
     type Slef,
     type SlefEntry,
     type SlefHeader,
@@ -98,15 +98,16 @@ export {
     type ModifierMethod,
     type BlueprintFeature,
     type EngineeringMaterial,
-    type BlueprintMaterial,
     type BlueprintGrade,
     type ExperimentalContribution,
     type ExperimentalEffect,
     type BlueprintGrades,
+    type Blueprint,
 } from './engineering.js';
 export {
     BLUEPRINTS,
     getBlueprint,
+    getBlueprintName,
     getBlueprintGrade,
     getBlueprintGradeMaterials,
     getBlueprintCost,
@@ -114,5 +115,6 @@ export {
 export {
     EXPERIMENTAL_EFFECTS,
     getExperimentalEffect,
+    getExperimentalEffectName,
     getExperimentalEffectMaterials,
 } from './experimental-effects.js';

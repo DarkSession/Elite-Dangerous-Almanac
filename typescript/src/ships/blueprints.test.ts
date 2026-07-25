@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
     BLUEPRINTS,
     getBlueprint,
+    getBlueprintName,
     getBlueprintGrade,
     getBlueprintGradeMaterials,
     getBlueprintCost,
@@ -11,9 +12,23 @@ import {
 import { getMaterialBySymbol } from '../materials/materials.js';
 import { ALL_MATERIALS } from '../materials/materials-all.js';
 
+test('every blueprint carries a display name and grades', () => {
+    for (const [fdname, bp] of Object.entries(BLUEPRINTS)) {
+        assert.ok(typeof bp.name === 'string' && bp.name.length > 0, `${fdname} has no name`);
+        assert.ok(bp.grades && Object.keys(bp.grades).length > 0, `${fdname} has no grades`);
+    }
+});
+
+test('getBlueprintName resolves case-insensitively and misses cleanly', () => {
+    assert.equal(getBlueprintName('FSD_LongRange'), 'Increased range');
+    assert.equal(getBlueprintName('fsd_longrange'), 'Increased range');
+    assert.equal(getBlueprintName('recipe_guardianmodule_sturdy'), 'Anti-Guardian Zone Resistance');
+    assert.equal(getBlueprintName('nope'), null);
+});
+
 test('every grade carries both its features and its materials', () => {
-    for (const [fdname, grades] of Object.entries(BLUEPRINTS)) {
-        for (const [grade, entry] of Object.entries(grades)) {
+    for (const [fdname, bp] of Object.entries(BLUEPRINTS)) {
+        for (const [grade, entry] of Object.entries(bp.grades)) {
             assert.ok(Array.isArray(entry.features), `${fdname} ${grade} features`);
             assert.ok(entry.features.length > 0, `${fdname} ${grade} has no features`);
             assert.ok(Array.isArray(entry.materials), `${fdname} ${grade} materials`);
@@ -42,7 +57,7 @@ test('getBlueprintGradeMaterials resolves case-insensitively and misses cleanly'
 });
 
 test('every material requirement joins to a real material in the materials domain', () => {
-    for (const grades of Object.values(BLUEPRINTS)) {
+    for (const { grades } of Object.values(BLUEPRINTS)) {
         for (const { materials } of Object.values(grades)) {
             for (const req of materials) {
                 const material = getMaterialBySymbol(req.symbol, ALL_MATERIALS);
@@ -58,7 +73,7 @@ test('every material requirement joins to a real material in the materials domai
 });
 
 test('no grade lists a material twice', () => {
-    for (const [fdname, grades] of Object.entries(BLUEPRINTS)) {
+    for (const [fdname, { grades }] of Object.entries(BLUEPRINTS)) {
         for (const [grade, { materials }] of Object.entries(grades)) {
             const symbols = materials.map((r) => r.symbol.toLowerCase());
             assert.equal(
@@ -73,7 +88,7 @@ test('no grade lists a material twice', () => {
 test('the one empty recipe (CargoRack_IncreasedCapacity G5) is preserved as [] not null', () => {
     assert.deepEqual(getBlueprintGradeMaterials('CargoRack_IncreasedCapacity', 5), []);
     // It is the only empty recipe across the whole catalogue.
-    const empties = Object.entries(BLUEPRINTS).flatMap(([fd, grades]) =>
+    const empties = Object.entries(BLUEPRINTS).flatMap(([fd, { grades }]) =>
         Object.entries(grades)
             .filter(([, entry]) => entry.materials.length === 0)
             .map(([grade]) => `${fd}:${grade}`),
@@ -81,9 +96,10 @@ test('the one empty recipe (CargoRack_IncreasedCapacity G5) is preserved as [] n
     assert.deepEqual(empties, ['CargoRack_IncreasedCapacity:5']);
 });
 
-test('getBlueprint returns the full per-grade structure', () => {
+test('getBlueprint returns the name and full per-grade structure', () => {
     const bp = getBlueprint('FSD_LongRange');
-    assert.ok(bp?.['5']?.features && bp['5'].materials);
+    assert.equal(bp?.name, 'Increased range');
+    assert.ok(bp?.grades['5']?.features && bp.grades['5'].materials);
 });
 
 const countFor = (mats: readonly { symbol: string; count: number }[] | null, symbol: string) =>

@@ -7,6 +7,26 @@ language-neutral fixtures so every language port behaves identically.
 The library is a monorepo with one folder per language implementation over shared
 data. **TypeScript** is available today (`typescript/`); Python is planned.
 
+## What's in it
+
+Four feature areas, each its own import subpath, each with leaf modules so you
+bundle only the catalogues you touch:
+
+| Feature area                         | What it answers                                                                             | Start with                       |
+| ------------------------------------ | ------------------------------------------------------------------------------------------- | -------------------------------- |
+| [`astro`](#quick-start)              | System name ⇄ `id64`, sectors, galactic regions, 5835 nebulae, permit locks                 | `StarSystem`                     |
+| [`ships`](#ships-and-outfitting)     | 48 hulls and ~1200 modules with stats and slots, SLEF builds, jump range, engineering costs | `ShipLoadout`, `getShipBySymbol` |
+| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                  | `getMaterialByName`              |
+| [`commodities`](#market-commodities) | 256 standard and 142 rare market goods                                                      | `getCommodityBySymbol`           |
+
+Also here: [the four kinds of "region"](#the-four-kinds-of-region) (the one thing
+that trips everyone up), [nebulae](#nebulae), [permit
+locks](#permit-locks), [ship and module stats](#ship-and-module-stats), [SLEF and
+jump range](#ship-builds-jump-range-and-slef), [build editing and
+engineering](#building-and-engineering-a-loadout), [data
+freshness](#data-freshness), [attributions](#attributions) and
+[licensing](#license).
+
 ## Install (TypeScript)
 
 ```bash
@@ -45,17 +65,34 @@ sys?.massCode; // 'd'
 // id64  ->  name
 StarSystem.fromSystemAddress(3309179996515n).name; // 'Synuefe EN-H d11-96'
 
+// A journal address is a plain number after JSON.parse — that works too,
+// as does a decimal string from a database or URL.
+StarSystem.fromSystemAddress(event.SystemAddress).name;
+
 // id64 + coordinates  ->  the name the game actually shows
 // (a system inside a hand-authored region renders under that region's name)
-StarSystem.fromSystemAddress(id64, { x, y, z }).name; // e.g. 'Pleiades Sector HR-W d1-79'
+const address = 2724879894859n;
+const coords = { x: -80.625, y: -146.65625, z: -343.25 };
+
+StarSystem.fromSystemAddress(address).name; // 'Synuefai XU-M d8-79'   <- procedural
+StarSystem.fromSystemAddress(address, coords).name; // 'Pleiades Sector HR-W d1-79'  <- what the game shows
 ```
 
 **Why `coords`?** An `id64` encodes only the boxel, not the exact position, so on
 its own it can't tell whether a system sits inside a hand-authored region
-(Pleiades, Coalsack, …). Pass the coordinates you already have alongside the
+(Pleiades, Coalsack, …) — as the two lines above show, the same address renders
+under two different names. Pass the coordinates you already have alongside the
 `id64` — from the player journal, [EDSM](https://www.edsm.net) or
 [Spansh](https://spansh.co.uk), in light-years with Sol at the origin — to get the
 name the game displays. Without them you get the procedural name.
+
+**Which types an address accepts.** Every entry point that takes an `id64` —
+`StarSystem.fromSystemAddress`, `decodeSystemAddress`, `findRegionForBoxel`,
+`permitLockedSystemForAddress` — accepts a `bigint`, a `number` (a normally parsed
+journal event), or a decimal string. A number beyond `2^53 - 1` has already been
+rounded by `JSON.parse`, so it is rejected with a `TypeError` rather than resolving
+the wrong system; convert those yourself with `toSystemAddress`. Addresses come
+back as `bigint`, because the fields reach bit 55.
 
 Prefer a single calculation? Skip the class and import the pure function:
 
@@ -67,11 +104,17 @@ import {
   findRegionAt,
 } from "@elite-dangerous-almanac/core/astro";
 
-sectorNameFromCoords({ x: 39, y: 30, z: 20 }); // 'Blae Eock'
+sectorNameFromCoords({ x: 39, y: 30, z: 20 }); // 'Blae Eock' (sector indices, not light-years)
 decodeSystemAddress(3309179996515n); // { sizeClass, sectorCoords, boxelCode, ... }
 findRegionForBoxel(3309179996515n).region?.name; // 'Inner Orion Spur' (a system's codex region)
-findRegionAt({ x: 0, z: 0 })?.name; // 'Inner Orion Spur' (codex region at coords)
+findRegionAt({ x: 0, z: 0 })?.name; // 'Inner Orion Spur' (codex region at coords, in light-years)
 ```
+
+> **"Modulated" addresses.** Alongside the `id64`, a few community tools and data dumps
+> use a _modulated_ address: the same system, a different bit layout. `decodeSystemAddress`
+> and `StarSystem.fromSystemAddress` are for the ordinary `id64` that the journal, EDSM,
+> EDDN and Spansh all report; reach for the `…Mod…` variants only when a source hands you
+> the modulated form. They routinely exceed `2^53`, so keep them as `bigint`.
 
 > **Codex region and bundle size.** `StarSystem` deliberately has no
 > `galacticRegion` member: wiring the region lookup into the facade would pull the
@@ -83,25 +126,32 @@ findRegionAt({ x: 0, z: 0 })?.name; // 'Inner Orion Spur' (codex region at coord
 
 Failures are split by cause so you know what to catch:
 
-| Call                                                                | On bad input                                                                                |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `StarSystem.fromName(name)`                                         | returns `null` when the name is malformed                                                   |
-| `StarSystem.fromSystemAddress(id64)` / `fromModSystemAddress(id64)` | throws `RangeError` when the address is outside 64 bits or resolves to an unnamed grid slot |
-| `sys.systemAddress` / `sys.modSystemAddress`                        | throws on access — `Error` (unknown region) or `RangeError` (field out of range)            |
+| Call                                                                | On bad input                                                                                                                                                                                                    |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `StarSystem.fromName(name)`                                         | returns `null` when the string is not a **procedural** name — a real but hand-named system (`Sol`, `Maia`) also yields `null`, since it has no algorithmic address                                              |
+| `StarSystem.fromSystemAddress(id64)` / `fromModSystemAddress(id64)` | throws `TypeError` when the value cannot be an address (non-integer, or a `number` past `2^53` that `JSON.parse` already rounded); throws `RangeError` when it is outside 64 bits or names an unnamed grid slot |
+| `sys.systemAddress` / `sys.modSystemAddress`                        | throws on access — `Error` (unknown region) or `RangeError` (field out of range)                                                                                                                                |
+| `sectorNameFromCoords(coords)`                                      | throws `RangeError` unless each axis is an integer 0–127 — those are **sector indices**, not light-years ([see below](#the-four-kinds-of-region))                                                               |
 
-Reading `.name`, `.sectorName`, `.massCode`, `.coords` never throws.
+Reading `.name`, `.sectorName`, `.massCode`, `.coords` never throws. Every lookup in
+the library returns `null` when there is nothing to return — including `sys.coords`,
+which is `null` unless you supplied coordinates.
 
 ## The four kinds of "region"
 
 Elite Dangerous overloads the word _region_. The API keeps them separate — this
 table is the map:
 
-| Concept                   | What it is                                              | Entry point                                               |
-| ------------------------- | ------------------------------------------------------- | --------------------------------------------------------- |
-| **Procedural sector**     | The boxel-grid name (`Synuefe`, `Blae Eock`)            | `sectorNameFromCoords` / `sectorCoordsFromName`           |
-| **Region origin**         | A sector's corner, needed to encode a name to an `id64` | `resolveRegionOrigin`                                     |
-| **Hand-authored region**  | A named nebula/cluster sector (Pleiades, Coalsack)      | `handAuthoredRegionForCoords` / `HAND_AUTHORED_REGIONS`   |
-| **Galactic codex region** | One of the 42 codex zones (Inner Orion Spur, …)         | `findRegionAt` / `getGalacticRegion` / `GALACTIC_REGIONS` |
+| Concept                   | What it is                                              | Entry point                                                                                  | Takes                        |
+| ------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------- |
+| **Procedural sector**     | The boxel-grid name (`Synuefe`, `Blae Eock`)            | `sectorNameFromGalacticCoords` / `sectorNameFromCoords` / `sectorCoordsFromName`             | light-years / sector indices |
+| **Region origin**         | A sector's corner, needed to encode a name to an `id64` | `resolveRegionOrigin`                                                                        | a sector name                |
+| **Hand-authored region**  | A named nebula/cluster sector (Pleiades, Coalsack)      | `handAuthoredRegionForCoords` / `HAND_AUTHORED_REGIONS`                                      | light-years                  |
+| **Galactic codex region** | One of the 42 codex zones (Inner Orion Spur, …)         | `findRegionAt` (a position) / `findRegionForBoxel` (an `id64`) / `getGalacticRegion` (an id) | light-years / `id64`         |
+
+Note the shapes differ: `findRegionAt` hands back the region (or `null`), while
+`findRegionForBoxel` hands back `{ x, y, z, region }` — the boxel corner **and** the
+region there, because it had to compute the position to answer at all.
 
 None of these is the _nebula catalogue_. A hand-authored region is a named **sector
 volume** the game names systems after (some happen to be nebulae); if you want
@@ -112,24 +162,50 @@ One sample of each:
 
 ```ts
 import {
-  sectorNameFromCoords, // procedural sector
+  sectorNameFromGalacticCoords, // procedural sector, from a position
+  sectorNameFromCoords, // procedural sector, from a grid index
   resolveRegionOrigin, // region origin
   handAuthoredRegionForCoords, // hand-authored region
   findRegionAt, // galactic codex region
 } from "@elite-dangerous-almanac/core/astro";
 
-// Procedural sector — the boxel-grid name for a grid position
+// Procedural sector — from a real position (light-years, Sol at origin)
+sectorNameFromGalacticCoords({ x: 751, y: -179, z: -91 }); // 'Synuefe'
+
+// …or from a sector index, if that is what you hold (integers 0–127, NOT light-years)
 sectorNameFromCoords({ x: 39, y: 30, z: 20 }); // 'Blae Eock'
 
-// Region origin — a sector's corner in internal units, used to encode an id64
+// Region origin — a sector's corner in internal units (32 per light-year, measured
+// from the galaxy's corner), used to encode an id64
 resolveRegionOrigin("Synuefe");
 // { name: 'Synuefe', x0: 1597440, y0: 1269760, z0: 737280, sizeX: 40960, sizeY: 40960, sizeZ: 40960 }
 
-// Hand-authored region — a named nebula/cluster sector, by galactic coordinates
+// Hand-authored region — a named nebula/cluster sector, by galactic coordinates (light-years)
 handAuthoredRegionForCoords({ x: -80.6, y: -146.7, z: -343.3 })?.name; // 'Pleiades Sector'
 
-// Galactic codex region — one of the 42 codex zones, by a point on the galactic plane
+// Galactic codex region — one of the 42 codex zones, by a point on the galactic plane (light-years)
 findRegionAt({ x: 0, z: 0 })?.name; // 'Inner Orion Spur'
+```
+
+> **Three coordinate conventions, one `{ x, y, z }` shape.** Light-years with Sol at
+> the origin (`GalacticCoords`) is what the journal, EDSM and Spansh give you and what
+> most functions here take. A **sector index** (`SectorCoords`) is a position on the
+> 128³ grid of 1280 ly cubes — `sectorNameFromCoords` wants those, and TypeScript
+> cannot tell the two apart, so convert with `sectorCoordsFromGalacticCoords` (or skip
+> the step with `sectorNameFromGalacticCoords`). **Internal units** are 1/32 light-year
+> from the galaxy's corner, and appear only in `RegionOrigin` and the boxel maths.
+> `GALAXY_ORIGIN` and `SECTOR_EDGE_LY` are exported if you want to do the arithmetic
+> yourself.
+
+**Coordinates from an `id64`, approximately.** No `id64` carries an exact position, but
+`findRegionForBoxel` returns the corner of the system's boxel in light-years — accurate
+to one boxel edge (10 ly at mass code `a`, 1280 ly at `h`):
+
+```ts
+import { findRegionForBoxel } from "@elite-dangerous-almanac/core/astro/galactic-region-lookup";
+
+const { x, y, z, region } = findRegionForBoxel(3309179996515n);
+// { x: 735, y: -185, z: -105, region: … }   the real system is at (751, -179, -91)
 ```
 
 ## Nebulae
@@ -193,7 +269,23 @@ permit flag — so it is a community-maintained list with two halves:
 These modules are the **only** place permit state lives — `HandAuthoredRegion`
 carries no permit flag. Import either leaf to avoid loading the other catalogue;
 `permitLockForSystemName` checks both halves from a name alone and
-tells you which one applied (~2.9 KB bundled):
+tells you which one applied (~2.9 KB bundled).
+
+Six lookups answer this question and their names are close together, so pick by what
+you hold and what you want back:
+
+| You have                                           | You want                              | Call                                   |
+| -------------------------------------------------- | ------------------------------------- | -------------------------------------- |
+| a system name                                      | either kind of lock, and which        | `permitLockForSystemName` ← start here |
+| a system name                                      | just yes/no (either kind)             | `isPermitLockedSystemName`             |
+| a system name                                      | only its _own_ lock, ignoring regions | `permitLockedSystemForName`            |
+| an `id64` / journal address                        | the individually locked system        | `permitLockedSystemForAddress`         |
+| a **region** name (e.g. resolved from coordinates) | whether that region is locked         | `isPermitLockedRegionName`             |
+| a system name                                      | the locked region it sits in          | `permitLockedRegionForSystemName`      |
+
+Note `isPermitLockedSystemName` is _not_ the boolean twin of
+`permitLockedSystemForName`: it reports `true` for a region lock too, while
+`permitLockedSystemForName` only ever consults the exact-system list.
 
 ```ts
 import {
@@ -277,7 +369,9 @@ materialsInLine(MaterialLine.EmissionData, ENCODED_MATERIALS).length; // -> 5 (g
 ```
 
 Each material carries a stable Frontier `symbol`; the journal names materials by
-the lower-cased symbol, so `getMaterialBySymbol` accepts either casing. A
+the lower-cased symbol, so `getMaterialBySymbol` accepts either casing. Every lookup in
+the library — by symbol, name, category or line — ignores case and surrounding
+whitespace, so a value that arrived from a journal line or a dropdown resolves as it is. A
 material's **grade is its rarity** — the `MaterialGrade` enum's member names are
 the tiers (`VeryCommon` … `VeryRare`), so there is no separate rarity field; read
 `MaterialGrade[grade]` if you need the tier as a string. Raw materials stop at
@@ -331,7 +425,8 @@ an arbitrary imported build and its engineering requires all four module catalog
 
 Ships are one small catalogue, so the lookups carry the data. Each `Ship` carries the
 hull's identity, its stats (`hullMass`, `speed`, …) and its slot layout (`core`,
-`hardpoints`, …) — all but the one hull coriolis does not cover:
+`hardpoints`, …). Most mechanical data comes from coriolis-data; the Lynx Highliner's
+equivalent fields come from EDSY and Frontier's update notes:
 
 ```ts
 import {
@@ -341,12 +436,17 @@ import {
   getShipSlots,
 } from "@elite-dangerous-almanac/core/ships/ships";
 
-getShipBySymbol("empire_trader")?.name; // -> 'Imperial Clipper' (journal-style lowercase symbol)
+getShipBySymbol("empire_trader")?.name; // -> 'Imperial Clipper' (lookups accept either casing)
 getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the record
 getShipSlots("anaconda")?.hardpoints; // -> [4, 3, 3, 3, 2, 2, 1, 1] (slot layout, ready for the build editor)
 getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
 SHIPS.length; // -> 48
 ```
+
+The stored `symbol` is Frontier's own casing (`Empire_Trader`), while the journal's
+`Ship` field carries it lower-cased (`empire_trader`). Every `*BySymbol` lookup here
+matches case-insensitively, so either form resolves — but compare a record's `symbol`
+to a journal value case-insensitively rather than with `===`.
 
 Modules are split by Frontier's four outfitting **categories**, so you pay only
 for the catalogue you import (subpaths below are relative to
@@ -356,10 +456,10 @@ its stats together** (see [Module stats](#ship-and-module-stats) below):
 | Import                    | Export              | What's in it                                            | Entries |
 | ------------------------- | ------------------- | ------------------------------------------------------- | ------- |
 | `ships/modules-standard`  | `STANDARD_MODULES`  | Core internals (armour, power plant, thrusters, FSD, …) | 521     |
-| `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 475     |
+| `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 482     |
 | `ships/modules-hardpoint` | `HARDPOINT_MODULES` | Hardpoint weapons and tools                             | 159     |
 | `ships/modules-utility`   | `UTILITY_MODULES`   | Utility-mount fittings (chaff, heat sinks, boosters, …) | 35      |
-| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated                                  | 1190    |
+| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated                                  | 1197    |
 
 The query functions live in `ships/modules` and hold no data — hand them whichever
 catalogue you imported:
@@ -443,8 +543,10 @@ against EDSY: it reproduces the sample build's exported `MaxJumpRange` of 89.414
 #### Building and engineering a loadout
 
 The same class assembles a build from scratch. Start an **empty** hull, enumerate its
-mounts (core, hardpoint, utility, optional — occupied or empty, with size and any
-restriction), fit and remove modules, and engineer them with a blueprint calculator.
+mounts (core, hardpoint, utility, optional and armour — occupied or empty, with size
+and any restriction), fit and remove modules, and engineer supported modules with a
+blueprint calculator. Armour fits are checked against the hull; the built-in cargo
+hatch is fixed.
 Mass, fuel and jump range are computed from the fitted modules and the hull's stats.
 Editing an imported SLEF build adjusts its supplied mass and capacity aggregates by
 the changed module's contribution. If a contribution is unknown, the affected
@@ -507,7 +609,15 @@ military / planetary-approach and hull restrictions) and throws otherwise. **Slo
 are the journal names** (`FrameShiftDrive`, `MainEngines` for thrusters, `Radar` for
 sensors, `HugeHardpoint1`, `Slot01_Size7`, `Military01`, …), so a SLEF-loaded build and
 one assembled here share one vocabulary — enumerate them with `slots()` rather than
-guessing. A module lives in the catalogue for its outfitting **category**, which is not
+guessing. They are matched **exactly**, in the game's spelling.
+
+Careful with the two names a _core_ mount has: `slot.key` is the journal slot
+(`MainEngines`, `Radar`) and is what every `slotKey` argument takes, while `slot.core` is
+the camelCase function (`thrusters`, `sensors`) you filter on. That is why the example
+above matches `s.core === "frameShiftDrive"` but calls
+`getFittedModule("FrameShiftDrive")`. Pass the camelCase form where a key is expected
+and you get nothing: `getFittedModule` returns `null`, `setModule` throws a `RangeError`
+naming the slot it could not find. A module lives in the catalogue for its outfitting **category**, which is not
 always the slot it occupies — a fuel tank is in `STANDARD_MODULES` even though it fits
 an optional slot — so pass `ALL_MODULES` to `modulesForSlot` when you want every
 candidate.
@@ -618,7 +728,7 @@ import {
 import { COMMODITIES } from "@elite-dangerous-almanac/core/commodities/commodities-standard";
 import { RARE_COMMODITIES } from "@elite-dangerous-almanac/core/commodities/commodities-rare";
 
-getCommodityBySymbol("platinum", COMMODITIES)?.category; // -> 'Metals' (journal-style lowercase symbol)
+getCommodityBySymbol("platinum", COMMODITIES)?.category; // -> 'Metals' (either casing resolves)
 getCommodityByName("lavian brandy", RARE_COMMODITIES)?.rare; // -> true
 commoditiesInCategory("Metals", COMMODITIES).length; // -> every metal on the market
 ```
@@ -661,9 +771,12 @@ each ported module. (Attribution sits in a comment rather than an `attribution`
 field so it documents the data without being inlined into your bundle.)
 
 - **Procedural sector & system naming** — ported and restructured from the
-  [EDTS](https://github.com/Esvandiary/edts) reference algorithm (`pgdata.py`) by
-  Alot (Esvandiary), via the canonn-signals TypeScript port. Original in-game
-  algorithm reverse-engineered by the Elite Dangerous community.
+  [EDTS](https://bitbucket.org/Esvandiary/edts) reference algorithm
+  (`edtslib/pgdata.py` and `edtslib/pgnames.py`) by **Andy Martin** (Esvandiary),
+  **BSD 3-Clause, © 2016 Andy Martin**, via the
+  [canonn-signals](https://github.com/canonn-science/canonn-signals) TypeScript
+  port (MIT). Original in-game algorithm reverse-engineered by the Elite Dangerous
+  community. (EDTS lives on Bitbucket, not GitHub.)
 - **Galactic codex regions** (the 42 regions, lookup grid, and boxel/coordinate
   region resolution) — from
   [EliteDangerousRegionMap](https://github.com/klightspeed/EliteDangerousRegionMap)

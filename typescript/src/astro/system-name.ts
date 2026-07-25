@@ -49,12 +49,32 @@ const CODE_A_LOWER = 'a'.charCodeAt(0);
 /**
  * Pack a boxel's `(l1, l2, l3, n1)` letter code into the single base-26 index the
  * address format uses (the **boxel code**).
+ *
+ * @param l1 - First letter as a zero-based index, `0`–`25` (`A`–`Z`).
+ * @param l2 - Second letter as a zero-based index, `0`–`25`.
+ * @param l3 - Third letter as a zero-based index, `0`–`25`.
+ * @param n1 - The boxel number that follows the letters (`d11-96` → `11`).
+ * @returns The packed base-26 boxel code.
+ * @example
+ * ```ts
+ * lettersToBoxelCode(4, 13, 7, 11); // the 'EN-H …11' boxel of a d-class sector
+ * ```
  */
 export function lettersToBoxelCode(l1: number, l2: number, l3: number, n1: number): number {
     return ((n1 * 26 + l3) * 26 + l2) * 26 + l1;
 }
 
-/** Unpack a base-26 boxel code into its `(l1, l2, l3, n1)` letter code. */
+/**
+ * Unpack a base-26 boxel code into its `(l1, l2, l3, n1)` letter code — the inverse
+ * of {@link lettersToBoxelCode}.
+ *
+ * @param boxelCode - The packed base-26 boxel code, as `decodeSystemAddress` returns.
+ * @returns The three letter indices (`0`–`25` each) and the boxel number `n1`.
+ * @example
+ * ```ts
+ * boxelCodeToLetters(lettersToBoxelCode(4, 13, 7, 11)); // -> { l1: 4, l2: 13, l3: 7, n1: 11 }
+ * ```
+ */
 export function boxelCodeToLetters(boxelCode: number): {
     l1: number;
     l2: number;
@@ -202,6 +222,8 @@ export interface IsProceduralSystemNameOptions {
  *
  * @param name - The candidate name.
  * @param options - See {@link IsProceduralSystemNameOptions}.
+ * @returns `true` when the name parses as a procedural system name. A hand-named
+ * system (`Sol`, `Maia`) is `false`: it is a real system, just not a procedural name.
  * @example
  * ```ts
  * isProceduralSystemName('Blae Eock KC-C d0');                    // -> true

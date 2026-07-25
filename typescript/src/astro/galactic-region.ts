@@ -120,7 +120,8 @@ export function getGalacticRegion(id: number): GalacticRegion | null {
 /**
  * Look up a region by name (case-insensitive).
  *
- * @param name - The region name, e.g. `"Inner Orion Spur"`.
+ * @param name - The region name, e.g. `"Inner Orion Spur"`. Matching ignores case
+ * and surrounding whitespace.
  * @returns The {@link GalacticRegion}, or `null` if no region has that name.
  * @example
  * ```ts
@@ -128,5 +129,5 @@ export function getGalacticRegion(id: number): GalacticRegion | null {
  * ```
  */
 export function getGalacticRegionByName(name: string): GalacticRegion | null {
-    return BY_NAME.get(name.toLowerCase()) ?? null;
+    return BY_NAME.get(name.trim().toLowerCase()) ?? null;
 }

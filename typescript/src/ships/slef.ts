@@ -11,7 +11,7 @@
  * ```
  *
  * The top level is an **array** so several builds can travel together. This module
- * is **data-free** — just the record shapes and {@link parseSlef} / {@link getModifier}.
+ * is **data-free** — just the record shapes and {@link parseSlef} / {@link getLoadoutModifier}.
  * To turn a parsed build into jump-range and fuel numbers, hand it to
  * {@link ShipLoadout} (`./ship-loadout`).
  *
@@ -138,7 +138,7 @@ export interface SlefEntry {
 export type Slef = readonly SlefEntry[];
 
 /** A synthetic header used when the input is a bare, header-less loadout. */
-const SYNTHETIC_HEADER: SlefHeader = { appName: '', appVersion: '' };
+const SYNTHETIC_HEADER: SlefHeader = Object.freeze({ appName: '', appVersion: '' });
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -298,10 +298,10 @@ export function parseSlef(input: string | object): SlefEntry[] {
  * engineered, carries no such modifier, or the modifier is non-numeric.
  * @example
  * ```ts
- * getModifier(fsdModule, 'FSDOptimalMass'); // -> 7528.04, or null if stock
+ * getLoadoutModifier(fsdModule, 'FSDOptimalMass'); // -> 7528.04, or null if stock
  * ```
  */
-export function getModifier(module: LoadoutModule, label: string): number | null {
+export function getLoadoutModifier(module: LoadoutModule, label: string): number | null {
     const wanted = label.trim().toLowerCase();
     const mod = module.Engineering?.Modifiers.find((m) => m.Label.toLowerCase() === wanted);
     return typeof mod?.Value === 'number' ? mod.Value : null;

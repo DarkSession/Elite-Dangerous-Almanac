@@ -8,9 +8,9 @@
  */
 
 import systemsData from '../../../data/astro/permit-locked-systems.jsonc' with { type: 'json' };
+import { tryToSystemAddress, type SystemAddressInput } from './system-address-input.js';
 
-/** A system address accepted from library code, a parsed journal, or stored JSON. */
-export type SystemAddressInput = bigint | number | string;
+export type { SystemAddressInput };
 
 /** One individually permit-locked system. */
 export interface PermitLockedSystem {
@@ -65,17 +65,6 @@ const SYSTEM_BY_ADDRESS: ReadonlyMap<bigint, PermitLockedSystem> = new Map(
     PERMIT_LOCKED_SYSTEMS.map((system) => [system.id64, system]),
 );
 
-/** Convert a supported address representation without accepting rounded numbers. */
-function normalizeAddress(address: SystemAddressInput): bigint | null {
-    if (typeof address === 'bigint') return address;
-    if (typeof address === 'number') {
-        return Number.isSafeInteger(address) && address >= 0 ? BigInt(address) : null;
-    }
-
-    const trimmed = address.trim();
-    return /^\d+$/.test(trimmed) ? BigInt(trimmed) : null;
-}
-
 /**
  * Find an individually permit-locked system by exact name.
  *
@@ -105,6 +94,6 @@ export function permitLockedSystemForName(name: string): PermitLockedSystem | nu
 export function permitLockedSystemForAddress(
     address: SystemAddressInput,
 ): PermitLockedSystem | null {
-    const normalized = normalizeAddress(address);
+    const normalized = tryToSystemAddress(address);
     return normalized === null ? null : (SYSTEM_BY_ADDRESS.get(normalized) ?? null);
 }

@@ -13,18 +13,24 @@
  *          plc, under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
- * Each effect is { modifiers, materials }. A modifier is { label, method, value }:
+ * Each effect is { name, modifiers, materials, description? }. `name` is the in-game
+ * display name (EDSY `expeffect[].name`). A modifier is { label, method, value }:
  * `label` the journal Modifier Label, `method` how it applies, `value` the fixed
  * contribution (a fraction for percentage modifiers). A material is { symbol, name,
  * count }: join `symbol` to the materials domain for its own grade and category,
  * `count` how many one application consumes. An experimental effect is a single
- * application (one roll). Weapon-combat-only effects are dropped, matching the stats
- * layer.
+ * application (one roll). Weapon-combat effects are included for completeness; a
+ * purely-qualitative one (a gameplay flag with no numeric magnitude, e.g. Auto Loader)
+ * carries an empty `modifiers` list and a human-readable `description` instead. The
+ * re-added combat effects' one-application material costs are sourced from the current
+ * in-game / Inara registry (a Merc-Coin amount is also charged but is a currency, not a
+ * material, so it is not stored).
  *
  * Full provenance: data/ships/SOURCES.md.
  */
 {
   "special_concordant_sequence": {
+    "name": "Concordant Sequence",
     "modifiers": [
       {
         "label": "ThermalLoad",
@@ -51,6 +57,7 @@
     ]
   },
   "special_weapon_toughened": {
+    "name": "Double Braced",
     "modifiers": [
       {
         "label": "Integrity",
@@ -77,6 +84,7 @@
     ]
   },
   "special_emissive_munitions": {
+    "name": "Emissive Munitions",
     "modifiers": [
       {
         "label": "ThermalLoad",
@@ -108,6 +116,7 @@
     ]
   },
   "special_feedback_cascade_cooled": {
+    "name": "Feedback Cascade",
     "modifiers": [
       {
         "label": "ThermalLoad",
@@ -134,6 +143,7 @@
     ]
   },
   "special_weapon_efficient": {
+    "name": "Flow Control",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -160,6 +170,7 @@
     ]
   },
   "special_incendiary_rounds": {
+    "name": "Incendiary Rounds",
     "modifiers": [
       {
         "label": "ThermalLoad",
@@ -191,6 +202,7 @@
     ]
   },
   "special_weapon_rateoffire": {
+    "name": "Multi-Servos",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -222,6 +234,7 @@
     ]
   },
   "special_weapon_damage": {
+    "name": "Oversized",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -248,6 +261,7 @@
     ]
   },
   "special_plasma_slug_cooled": {
+    "name": "Plasma Slug",
     "modifiers": [
       {
         "label": "ThermalLoad",
@@ -279,6 +293,7 @@
     ]
   },
   "special_weapon_lightweight": {
+    "name": "Stripped Down",
     "modifiers": [
       {
         "label": "Mass",
@@ -305,6 +320,7 @@
     ]
   },
   "special_super_penetrator_cooled": {
+    "name": "Super Penetrator",
     "modifiers": [
       {
         "label": "ThermalLoad",
@@ -336,6 +352,7 @@
     ]
   },
   "special_shieldbooster_explosive": {
+    "name": "Blast Block",
     "modifiers": [
       {
         "label": "DefenceModifierShieldMultiplier",
@@ -372,6 +389,7 @@
     ]
   },
   "special_shieldbooster_toughened": {
+    "name": "Double Braced",
     "modifiers": [
       {
         "label": "Integrity",
@@ -398,6 +416,7 @@
     ]
   },
   "special_shieldbooster_efficient": {
+    "name": "Flow Control",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -429,6 +448,7 @@
     ]
   },
   "special_shieldbooster_kinetic": {
+    "name": "Force Block",
     "modifiers": [
       {
         "label": "DefenceModifierShieldMultiplier",
@@ -460,6 +480,7 @@
     ]
   },
   "special_shieldbooster_chunky": {
+    "name": "Super Capacitors",
     "modifiers": [
       {
         "label": "DefenceModifierShieldMultiplier",
@@ -501,6 +522,7 @@
     ]
   },
   "special_shieldbooster_thermic": {
+    "name": "Thermo Block",
     "modifiers": [
       {
         "label": "DefenceModifierShieldMultiplier",
@@ -532,6 +554,7 @@
     ]
   },
   "special_armour_kinetic": {
+    "name": "Angled Plating",
     "modifiers": [
       {
         "label": "DefenceModifierHealthMultiplier",
@@ -563,6 +586,7 @@
     ]
   },
   "special_armour_chunky": {
+    "name": "Deep Plating",
     "modifiers": [
       {
         "label": "DefenceModifierHealthMultiplier",
@@ -604,6 +628,7 @@
     ]
   },
   "special_armour_explosive": {
+    "name": "Layered Plating",
     "modifiers": [
       {
         "label": "DefenceModifierHealthMultiplier",
@@ -635,6 +660,7 @@
     ]
   },
   "special_armour_thermic": {
+    "name": "Reflective Plating",
     "modifiers": [
       {
         "label": "DefenceModifierHealthMultiplier",
@@ -666,6 +692,7 @@
     ]
   },
   "special_powerplant_toughened": {
+    "name": "Double Braced",
     "modifiers": [
       {
         "label": "Integrity",
@@ -692,6 +719,7 @@
     ]
   },
   "special_powerplant_highcharge": {
+    "name": "Monstered",
     "modifiers": [
       {
         "label": "Mass",
@@ -723,6 +751,7 @@
     ]
   },
   "special_powerplant_lightweight": {
+    "name": "Stripped Down",
     "modifiers": [
       {
         "label": "Mass",
@@ -749,6 +778,7 @@
     ]
   },
   "special_powerplant_cooled": {
+    "name": "Thermal Spread",
     "modifiers": [
       {
         "label": "HeatEfficiency",
@@ -775,6 +805,7 @@
     ]
   },
   "special_engine_toughened": {
+    "name": "Double Braced",
     "modifiers": [
       {
         "label": "Integrity",
@@ -801,6 +832,7 @@
     ]
   },
   "special_engine_overloaded": {
+    "name": "Drag Drives",
     "modifiers": [
       {
         "label": "EngineOptPerformance",
@@ -832,6 +864,7 @@
     ]
   },
   "special_engine_haulage": {
+    "name": "Drive Distributors",
     "modifiers": [
       {
         "label": "EngineOptimalMass",
@@ -858,6 +891,7 @@
     ]
   },
   "special_engine_lightweight": {
+    "name": "Stripped Down",
     "modifiers": [
       {
         "label": "Mass",
@@ -884,6 +918,7 @@
     ]
   },
   "special_engine_cooled": {
+    "name": "Thermal Spread",
     "modifiers": [
       {
         "label": "Mass",
@@ -915,6 +950,7 @@
     ]
   },
   "special_fsd_fuelcapacity": {
+    "name": "Deep Charge",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -946,6 +982,7 @@
     ]
   },
   "special_fsd_toughened": {
+    "name": "Double Braced",
     "modifiers": [
       {
         "label": "Integrity",
@@ -972,6 +1009,7 @@
     ]
   },
   "special_fsd_heavy": {
+    "name": "Mass Manager",
     "modifiers": [
       {
         "label": "Integrity",
@@ -1003,6 +1041,7 @@
     ]
   },
   "special_fsd_lightweight": {
+    "name": "Stripped Down",
     "modifiers": [
       {
         "label": "Mass",
@@ -1029,6 +1068,7 @@
     ]
   },
   "special_fsd_cooled": {
+    "name": "Thermal Spread",
     "modifiers": [
       {
         "label": "FSDHeatRate",
@@ -1060,6 +1100,7 @@
     ]
   },
   "special_powerdistributor_capacity": {
+    "name": "Cluster Capacitors",
     "modifiers": [
       {
         "label": "WeaponsCapacity",
@@ -1101,6 +1142,7 @@
     ]
   },
   "special_powerdistributor_toughened": {
+    "name": "Double Braced",
     "modifiers": [
       {
         "label": "Integrity",
@@ -1127,6 +1169,7 @@
     ]
   },
   "special_powerdistributor_efficient": {
+    "name": "Flow Control",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -1153,6 +1196,7 @@
     ]
   },
   "special_powerdistributor_lightweight": {
+    "name": "Stripped Down",
     "modifiers": [
       {
         "label": "Mass",
@@ -1179,6 +1223,7 @@
     ]
   },
   "special_powerdistributor_fast": {
+    "name": "Super Conduits",
     "modifiers": [
       {
         "label": "WeaponsCapacity",
@@ -1220,6 +1265,7 @@
     ]
   },
   "special_hullreinforcement_kinetic": {
+    "name": "Angled Plating",
     "modifiers": [
       {
         "label": "DefenceModifierHealthAddition",
@@ -1256,6 +1302,7 @@
     ]
   },
   "special_hullreinforcement_chunky": {
+    "name": "Deep Plating",
     "modifiers": [
       {
         "label": "DefenceModifierHealthAddition",
@@ -1297,6 +1344,7 @@
     ]
   },
   "special_hullreinforcement_explosive": {
+    "name": "Layered Plating",
     "modifiers": [
       {
         "label": "DefenceModifierHealthAddition",
@@ -1328,6 +1376,7 @@
     ]
   },
   "special_hullreinforcement_thermic": {
+    "name": "Reflective Plating",
     "modifiers": [
       {
         "label": "DefenceModifierHealthAddition",
@@ -1364,6 +1413,7 @@
     ]
   },
   "special_shieldcell_oversized": {
+    "name": "Boss Cells",
     "modifiers": [
       {
         "label": "ShieldBankSpinUp",
@@ -1395,6 +1445,7 @@
     ]
   },
   "special_shieldcell_toughened": {
+    "name": "Double Braced",
     "modifiers": [
       {
         "label": "Integrity",
@@ -1421,6 +1472,7 @@
     ]
   },
   "special_shieldcell_efficient": {
+    "name": "Flow Control",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -1447,6 +1499,7 @@
     ]
   },
   "special_shieldcell_gradual": {
+    "name": "Recycling Cell",
     "modifiers": [
       {
         "label": "ShieldBankDuration",
@@ -1478,6 +1531,7 @@
     ]
   },
   "special_shieldcell_lightweight": {
+    "name": "Stripped Down",
     "modifiers": [
       {
         "label": "Mass",
@@ -1504,6 +1558,7 @@
     ]
   },
   "special_shield_toughened": {
+    "name": "Double Braced",
     "modifiers": [
       {
         "label": "Integrity",
@@ -1530,6 +1585,7 @@
     ]
   },
   "special_shield_regenerative": {
+    "name": "Fast Charge",
     "modifiers": [
       {
         "label": "RegenRate",
@@ -1576,6 +1632,7 @@
     ]
   },
   "special_shield_kinetic": {
+    "name": "Force Block",
     "modifiers": [
       {
         "label": "ShieldGenStrength",
@@ -1607,6 +1664,7 @@
     ]
   },
   "special_shield_health": {
+    "name": "Hi-Cap",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -1643,6 +1701,7 @@
     ]
   },
   "special_shield_efficient": {
+    "name": "Lo-Draw",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -1694,6 +1753,7 @@
     ]
   },
   "special_shield_resistive": {
+    "name": "Multi-Weave",
     "modifiers": [
       {
         "label": "PowerDraw",
@@ -1740,6 +1800,7 @@
     ]
   },
   "special_shield_lightweight": {
+    "name": "Stripped Down",
     "modifiers": [
       {
         "label": "Mass",
@@ -1766,6 +1827,7 @@
     ]
   },
   "special_shield_thermic": {
+    "name": "Thermo Block",
     "modifiers": [
       {
         "label": "ShieldGenStrength",
@@ -1795,5 +1857,815 @@
         "count": 1
       }
     ]
+  },
+  "special_auto_loader": {
+    "name": "Auto Loader",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "MechanicalEquipment",
+        "name": "Mechanical Equipment",
+        "count": 4
+      },
+      {
+        "symbol": "MechanicalComponents",
+        "name": "Mechanical Components",
+        "count": 3
+      },
+      {
+        "symbol": "HighDensityComposites",
+        "name": "High Density Composites",
+        "count": 3
+      }
+    ],
+    "description": "Reloads the weapon while it continues firing."
+  },
+  "special_corrosive_shell": {
+    "name": "Corrosive Shell",
+    "modifiers": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": -0.2
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "ChemicalStorageUnits",
+        "name": "Chemical Storage Units",
+        "count": 5
+      },
+      {
+        "symbol": "PrecipitatedAlloys",
+        "name": "Precipitated Alloys",
+        "count": 4
+      },
+      {
+        "symbol": "Arsenic",
+        "name": "Arsenic",
+        "count": 3
+      }
+    ],
+    "description": "Reduces the target armour hardness; costs 20% maximum ammo."
+  },
+  "special_blinding_shell": {
+    "name": "Dazzle Shell",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "MechanicalScrap",
+        "name": "Mechanical Scrap",
+        "count": 5
+      },
+      {
+        "symbol": "Manganese",
+        "name": "Manganese",
+        "count": 4
+      },
+      {
+        "symbol": "HybridCapacitors",
+        "name": "Hybrid Capacitors",
+        "count": 5
+      },
+      {
+        "symbol": "MechanicalComponents",
+        "name": "Mechanical Components",
+        "count": 5
+      }
+    ],
+    "description": "Reduces the target's sensor acuity."
+  },
+  "special_dispersal_field": {
+    "name": "Dispersal Field",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "ConductiveComponents",
+        "name": "Conductive Components",
+        "count": 5
+      },
+      {
+        "symbol": "HybridCapacitors",
+        "name": "Hybrid Capacitors",
+        "count": 5
+      },
+      {
+        "symbol": "ArchivedEmissionData",
+        "name": "Irregular Emission Data",
+        "count": 5
+      },
+      {
+        "symbol": "WornShieldEmitters",
+        "name": "Worn Shield Emitters",
+        "count": 5
+      }
+    ],
+    "description": "Reduces the target's gimbal and turret tracking."
+  },
+  "special_drag_munitions": {
+    "name": "Drag Munitions",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "Carbon",
+        "name": "Carbon",
+        "count": 5
+      },
+      {
+        "symbol": "GridResistors",
+        "name": "Grid Resistors",
+        "count": 5
+      },
+      {
+        "symbol": "Molybdenum",
+        "name": "Molybdenum",
+        "count": 2
+      }
+    ],
+    "description": "Reduces the target's speed and prevents it from boosting engine thrust."
+  },
+  "special_force_shell": {
+    "name": "Force Shell",
+    "modifiers": [
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "value": -0.166667
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "MechanicalScrap",
+        "name": "Mechanical Scrap",
+        "count": 5
+      },
+      {
+        "symbol": "Zinc",
+        "name": "Zinc",
+        "count": 5
+      },
+      {
+        "symbol": "PhaseAlloys",
+        "name": "Phase Alloys",
+        "count": 3
+      },
+      {
+        "symbol": "HeatConductionWiring",
+        "name": "Heat Conduction Wiring",
+        "count": 3
+      }
+    ],
+    "description": "Pushes the target off course."
+  },
+  "special_fsd_interrupt": {
+    "name": "FSD Interrupt",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": 0.5
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "WakeSolutions",
+        "name": "Strange Wake Solutions",
+        "count": 3
+      },
+      {
+        "symbol": "FSDTelemetry",
+        "name": "Anomalous FSD Telemetry",
+        "count": 5
+      },
+      {
+        "symbol": "MechanicalEquipment",
+        "name": "Mechanical Equipment",
+        "count": 5
+      },
+      {
+        "symbol": "ConfigurableComponents",
+        "name": "Configurable Components",
+        "count": 3
+      }
+    ],
+    "description": "Reboots the target's frame shift drive."
+  },
+  "special_high_yield_shell": {
+    "name": "High Yield Shell",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.35
+      },
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": 0.111111
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "MechanicalScrap",
+        "name": "Mechanical Scrap",
+        "count": 5
+      },
+      {
+        "symbol": "ProtoLightAlloys",
+        "name": "Proto Light Alloys",
+        "count": 3
+      },
+      {
+        "symbol": "ChemicalManipulators",
+        "name": "Chemical Manipulators",
+        "count": 3
+      },
+      {
+        "symbol": "Nickel",
+        "name": "Nickel",
+        "count": 5
+      }
+    ],
+    "description": "Deals 50/50 kinetic/explosive damage with module splash damage."
+  },
+  "special_distortion_field": {
+    "name": "Inertial Impact",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": 0.5
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "value": 3
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "UncutFocusCrystals",
+        "name": "Flawed Focus Crystals",
+        "count": 5
+      },
+      {
+        "symbol": "ShieldCycleRecordings",
+        "name": "Distorted Shield Cycle Recordings",
+        "count": 5
+      },
+      {
+        "symbol": "DisruptedWakeEchoes",
+        "name": "Atypical Disrupted Wake Echoes",
+        "count": 5
+      }
+    ],
+    "description": "Deals 50/50 kinetic/thermal damage."
+  },
+  "special_choke_canister": {
+    "name": "Ion Disruptor",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "Sulphur",
+        "name": "Sulphur",
+        "count": 5
+      },
+      {
+        "symbol": "Phosphorus",
+        "name": "Phosphorus",
+        "count": 5
+      },
+      {
+        "symbol": "ChemicalDistillery",
+        "name": "Chemical Distillery",
+        "count": 3
+      },
+      {
+        "symbol": "ElectrochemicalArrays",
+        "name": "Electrochemical Arrays",
+        "count": 3
+      }
+    ],
+    "description": "Reboots the target's thrusters."
+  },
+  "special_mass_lock": {
+    "name": "Mass Lock Munition",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "MechanicalEquipment",
+        "name": "Mechanical Equipment",
+        "count": 5
+      },
+      {
+        "symbol": "HighDensityComposites",
+        "name": "High Density Composites",
+        "count": 3
+      },
+      {
+        "symbol": "ShieldPatternAnalysis",
+        "name": "Aberrant Shield Pattern Analysis",
+        "count": 3
+      }
+    ],
+    "description": "Inhibits the target's frame shift drive."
+  },
+  "special_overload_munitions": {
+    "name": "Overload Munitions",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "FilamentComposites",
+        "name": "Filament Composites",
+        "count": 5
+      },
+      {
+        "symbol": "EncryptionCodes",
+        "name": "Tagged Encryption Codes",
+        "count": 4
+      },
+      {
+        "symbol": "ShieldPatternAnalysis",
+        "name": "Aberrant Shield Pattern Analysis",
+        "count": 2
+      },
+      {
+        "symbol": "Germanium",
+        "name": "Germanium",
+        "count": 3
+      }
+    ],
+    "description": "Converts damage to 50/50 explosive/thermal."
+  },
+  "special_penetrator_munitions": {
+    "name": "Penetrator Munitions",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "GalvanisingAlloys",
+        "name": "Galvanising Alloys",
+        "count": 5
+      },
+      {
+        "symbol": "ElectrochemicalArrays",
+        "name": "Electrochemical Arrays",
+        "count": 3
+      },
+      {
+        "symbol": "Zirconium",
+        "name": "Zirconium",
+        "count": 3
+      }
+    ],
+    "description": "Deals damage to the target's modules."
+  },
+  "special_deep_cut_payload": {
+    "name": "Penetrator Payload",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "MechanicalComponents",
+        "name": "Mechanical Components",
+        "count": 3
+      },
+      {
+        "symbol": "Tungsten",
+        "name": "Tungsten",
+        "count": 3
+      },
+      {
+        "symbol": "BulkScanData",
+        "name": "Anomalous Bulk Scan Data",
+        "count": 5
+      },
+      {
+        "symbol": "Selenium",
+        "name": "Selenium",
+        "count": 3
+      }
+    ],
+    "description": "Deals damage to the target's modules."
+  },
+  "special_phasing_sequence": {
+    "name": "Phasing Sequence",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.1
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "FocusCrystals",
+        "name": "Focus Crystals",
+        "count": 5
+      },
+      {
+        "symbol": "ShieldPatternAnalysis",
+        "name": "Aberrant Shield Pattern Analysis",
+        "count": 3
+      },
+      {
+        "symbol": "Niobium",
+        "name": "Niobium",
+        "count": 3
+      },
+      {
+        "symbol": "ConfigurableComponents",
+        "name": "Configurable Components",
+        "count": 3
+      }
+    ],
+    "description": "10% of damage bypasses shields."
+  },
+  "special_plasma_slug": {
+    "name": "Plasma Slug",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.1
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": -1
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "HeatExchangers",
+        "name": "Heat Exchangers",
+        "count": 3
+      },
+      {
+        "symbol": "EmbeddedFirmware",
+        "name": "Modified Embedded Firmware",
+        "count": 2
+      },
+      {
+        "symbol": "RefinedFocusCrystals",
+        "name": "Refined Focus Crystals",
+        "count": 2
+      },
+      {
+        "symbol": "Mercury",
+        "name": "Mercury",
+        "count": 4
+      }
+    ],
+    "description": "Reloads from ship fuel instead of ammunition."
+  },
+  "special_radiant_canister": {
+    "name": "Radiant Canister",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "Polonium",
+        "name": "Polonium",
+        "count": 1
+      },
+      {
+        "symbol": "PhaseAlloys",
+        "name": "Phase Alloys",
+        "count": 3
+      },
+      {
+        "symbol": "HeatDispersionPlate",
+        "name": "Heat Dispersion Plate",
+        "count": 4
+      }
+    ],
+    "description": "Emits an area of heat and sensor disruption."
+  },
+  "special_regeneration_sequence": {
+    "name": "Regeneration Sequence",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.1
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "RefinedFocusCrystals",
+        "name": "Refined Focus Crystals",
+        "count": 3
+      },
+      {
+        "symbol": "ShieldingSensors",
+        "name": "Shielding Sensors",
+        "count": 4
+      },
+      {
+        "symbol": "ShieldFrequencyData",
+        "name": "Peculiar Shield Frequency Data",
+        "count": 1
+      }
+    ],
+    "description": "Regenerates wingmates’ shields on hits."
+  },
+  "special_reverberating_cascade": {
+    "name": "Reverberating Cascade",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "ConfigurableComponents",
+        "name": "Configurable Components",
+        "count": 2
+      },
+      {
+        "symbol": "ScanDatabanks",
+        "name": "Classified Scan Databanks",
+        "count": 3
+      },
+      {
+        "symbol": "FilamentComposites",
+        "name": "Filament Composites",
+        "count": 4
+      },
+      {
+        "symbol": "Chromium",
+        "name": "Chromium",
+        "count": 4
+      }
+    ],
+    "description": "Damages the target's shield generator."
+  },
+  "special_scramble_spectrum": {
+    "name": "Scramble Spectrum",
+    "modifiers": [
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": 0.111111
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "CrystalShards",
+        "name": "Crystal Shards",
+        "count": 5
+      },
+      {
+        "symbol": "ShieldDensityReports",
+        "name": "Untypical Shield Scans",
+        "count": 3
+      },
+      {
+        "symbol": "ScrambledEmissionData",
+        "name": "Exceptional Scrambled Emission Data",
+        "count": 5
+      }
+    ],
+    "description": "Causes the target's modules to malfunction."
+  },
+  "special_screening_shell": {
+    "name": "Screening Shell",
+    "modifiers": [
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "value": -0.5
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "MechanicalScrap",
+        "name": "Mechanical Scrap",
+        "count": 5
+      },
+      {
+        "symbol": "ShieldCycleRecordings",
+        "name": "Distorted Shield Cycle Recordings",
+        "count": 5
+      },
+      {
+        "symbol": "ConsumerFirmware",
+        "name": "Modified Consumer Firmware",
+        "count": 5
+      },
+      {
+        "symbol": "Niobium",
+        "name": "Niobium",
+        "count": 3
+      }
+    ],
+    "description": "Effective against munitions (e.g. missiles)."
+  },
+  "special_shiftlock_canister": {
+    "name": "Shift-Lock Canister",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "TemperedAlloys",
+        "name": "Tempered Alloys",
+        "count": 5
+      },
+      {
+        "symbol": "WakeSolutions",
+        "name": "Strange Wake Solutions",
+        "count": 3
+      },
+      {
+        "symbol": "SalvagedAlloys",
+        "name": "Salvaged Alloys",
+        "count": 5
+      }
+    ],
+    "description": "Reboots the frame shift drives of ships in the area."
+  },
+  "special_smart_rounds": {
+    "name": "Smart Rounds",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "MechanicalScrap",
+        "name": "Mechanical Scrap",
+        "count": 5
+      },
+      {
+        "symbol": "SecurityFirmware",
+        "name": "Security Firmware Patch",
+        "count": 3
+      },
+      {
+        "symbol": "DecodedEmissionData",
+        "name": "Decoded Emission Data",
+        "count": 3
+      },
+      {
+        "symbol": "ScanDatabanks",
+        "name": "Classified Scan Databanks",
+        "count": 3
+      }
+    ],
+    "description": "Deals no damage to ships that are not the current target."
+  },
+  "special_super_penetrator": {
+    "name": "Super Penetrator (Pre-Eng)",
+    "modifiers": [
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "value": 0.5
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "ProtoLightAlloys",
+        "name": "Proto Light Alloys",
+        "count": 3
+      },
+      {
+        "symbol": "RefinedFocusCrystals",
+        "name": "Refined Focus Crystals",
+        "count": 3
+      },
+      {
+        "symbol": "Zirconium",
+        "name": "Zirconium",
+        "count": 3
+      },
+      {
+        "symbol": "ShieldDensityReports",
+        "name": "Untypical Shield Scans",
+        "count": 5
+      }
+    ],
+    "description": "Deals damage to the target's modules."
+  },
+  "special_lock_breaker": {
+    "name": "Target Lock Breaker",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "Selenium",
+        "name": "Selenium",
+        "count": 5
+      },
+      {
+        "symbol": "SecurityFirmware",
+        "name": "Security Firmware Patch",
+        "count": 3
+      },
+      {
+        "symbol": "AdaptiveEncryptors",
+        "name": "Adaptive Encryptors Capture",
+        "count": 1
+      }
+    ],
+    "description": "Causes the target to lose its lock."
+  },
+  "special_thermal_cascade": {
+    "name": "Thermal Cascade",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "HeatConductionWiring",
+        "name": "Heat Conduction Wiring",
+        "count": 5
+      },
+      {
+        "symbol": "HybridCapacitors",
+        "name": "Hybrid Capacitors",
+        "count": 4
+      },
+      {
+        "symbol": "HighDensityComposites",
+        "name": "High Density Composites",
+        "count": 3
+      },
+      {
+        "symbol": "Phosphorus",
+        "name": "Phosphorus",
+        "count": 5
+      }
+    ],
+    "description": "Increases heat on a shielded target."
+  },
+  "special_thermal_conduit": {
+    "name": "Thermal Conduit",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "HeatDispersionPlate",
+        "name": "Heat Dispersion Plate",
+        "count": 5
+      },
+      {
+        "symbol": "Sulphur",
+        "name": "Sulphur",
+        "count": 5
+      },
+      {
+        "symbol": "TemperedAlloys",
+        "name": "Tempered Alloys",
+        "count": 5
+      }
+    ],
+    "description": "Damage scales with the attacker's heat level."
+  },
+  "special_thermalshock": {
+    "name": "Thermal Shock",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.1
+      }
+    ],
+    "materials": [
+      {
+        "symbol": "UncutFocusCrystals",
+        "name": "Flawed Focus Crystals",
+        "count": 5
+      },
+      {
+        "symbol": "HeatResistantCeramics",
+        "name": "Heat Resistant Ceramics",
+        "count": 3
+      },
+      {
+        "symbol": "ConductiveComponents",
+        "name": "Conductive Components",
+        "count": 3
+      },
+      {
+        "symbol": "Tungsten",
+        "name": "Tungsten",
+        "count": 3
+      }
+    ],
+    "description": "Increases the target's heat."
+  },
+  "special_thermal_vent": {
+    "name": "Thermal Vent",
+    "modifiers": [],
+    "materials": [
+      {
+        "symbol": "UncutFocusCrystals",
+        "name": "Flawed Focus Crystals",
+        "count": 5
+      },
+      {
+        "symbol": "ConductivePolymers",
+        "name": "Conductive Polymers",
+        "count": 3
+      },
+      {
+        "symbol": "PrecipitatedAlloys",
+        "name": "Precipitated Alloys",
+        "count": 3
+      }
+    ],
+    "description": "Reduces the attacker's heat when hitting a target."
   }
 }

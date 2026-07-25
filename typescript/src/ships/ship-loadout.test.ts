@@ -322,12 +322,63 @@ test('modulesForSlot lists only fitting modules', () => {
     assert.throws(() => conda.modulesForSlot('NoSuchSlot', STANDARD_MODULES), RangeError);
 });
 
-test('the armour and cargo-hatch slots cannot be edited', () => {
+test('fit checks use restrictions carried by caller-supplied module records', () => {
+    const restricted: OutfittingModule = {
+        symbol: 'CustomRestrictedLaser',
+        category: 'hardpoint',
+        name: 'Custom Restricted Laser',
+        class: 1,
+        rating: 'A',
+        restrictedToShips: ['Explorer_NX'],
+    };
+    assert.throws(
+        () => ShipLoadout.empty('SideWinder').setModule('SmallHardpoint1', restricted),
+        /restricted to Explorer_NX/,
+    );
+});
+
+test('armour is hull-specific while the cargo hatch remains fixed', () => {
     const conda = ShipLoadout.empty('Anaconda');
+    const armour = conda.modulesForSlot('Armour', STANDARD_MODULES);
+    assert.equal(armour.length, 5);
+    assert.ok(armour.every((module) => module.ship === 'Anaconda'));
+    conda.setModule(
+        'Armour',
+        armour.find((module) => module.symbol.endsWith('_Grade2'))!,
+    );
+    assert.equal(conda.getFittedModule('Armour')?.Item, 'Anaconda_Armour_Grade2');
+    assert.throws(
+        () =>
+            conda.setModule(
+                'Armour',
+                getModuleBySymbol('SideWinder_Armour_Grade2', STANDARD_MODULES)!,
+            ),
+        /belongs to Sidewinder, not Anaconda/,
+    );
     assert.throws(
         () => conda.setModule('CargoHatch', mod('Int_Hyperdrive_Size6_Class5')),
         /cargoHatch slot cannot be changed/,
     );
+
+    const imported = ShipLoadout.fromSlef(slefString);
+    const cargoHatch = imported.moduleAt('CargoHatch');
+    assert.ok(cargoHatch);
+    assert.throws(() => imported.removeModule('CargoHatch'), /cargoHatch slot cannot be changed/);
+    assert.deepEqual(imported.moduleAt('CargoHatch'), cargoHatch);
+    assert.throws(
+        () =>
+            imported
+                .slots()
+                .find((slot) => slot.key === 'CargoHatch')!
+                .clear(),
+        /cargoHatch slot cannot be changed/,
+    );
+    assert.deepEqual(imported.moduleAt('CargoHatch'), cargoHatch);
+    assert.throws(
+        () => imported.getFittedModule('CargoHatch')!.remove(),
+        /cargoHatch slot cannot be changed/,
+    );
+    assert.deepEqual(imported.moduleAt('CargoHatch'), cargoHatch);
 });
 
 // ── Engineering ─────────────────────────────────────────────────────────────

@@ -50,10 +50,15 @@ export type MaterialCategory = 'raw' | 'manufactured' | 'encoded';
  * if you need a string.
  */
 export enum MaterialGrade {
+    /** Grade 1 — Very Common. */
     VeryCommon = 1,
+    /** Grade 2 — Common. */
     Common = 2,
+    /** Grade 3 — Standard. */
     Standard = 3,
+    /** Grade 4 — Rare. The highest grade a raw element reaches. */
     Rare = 4,
+    /** Grade 5 — Very Rare. Manufactured and encoded materials only. */
     VeryRare = 5,
 }
 
@@ -68,34 +73,55 @@ export enum MaterialGrade {
  * and {@link MaterialLine.Thargoid}.
  */
 export enum MaterialLine {
-    // Raw — the seven element families (named by their grade-1 element).
+    /** Raw element family, grades 1–4: Carbon, Vanadium, Niobium, Yttrium. */
     Carbon = 'Carbon',
+    /** Raw element family, grades 1–4, starting at Phosphorus. */
     Phosphorus = 'Phosphorus',
+    /** Raw element family, grades 1–4, starting at Sulphur. */
     Sulphur = 'Sulphur',
+    /** Raw element family, grades 1–4, starting at Iron. */
     Iron = 'Iron',
+    /** Raw element family, grades 1–4, starting at Nickel. */
     Nickel = 'Nickel',
+    /** Raw element family, grades 1–4, starting at Rhenium. */
     Rhenium = 'Rhenium',
+    /** Raw element family, grades 1–4, starting at Lead. */
     Lead = 'Lead',
-    // Manufactured — the ten standard five-grade lines.
+    /** Manufactured line, grades 1–5 (Chemical Storage Units → Chemical Manipulators). */
     Chemical = 'Chemical',
+    /** Manufactured line, grades 1–5 (Thermic alloys and processors). */
     Thermic = 'Thermic',
+    /** Manufactured line, grades 1–5 (heat conduction wiring → exchangers). */
     Heat = 'Heat',
+    /** Manufactured line, grades 1–5 (conductive components → polymers). */
     Conductive = 'Conductive',
+    /** Manufactured line, grades 1–5 (mechanical scrap → equipment). */
     MechanicalComponents = 'Mechanical Components',
+    /** Manufactured line, grades 1–5 (grid resistors → military supercapacitors). */
     Capacitors = 'Capacitors',
+    /** Manufactured line, grades 1–5 (worn shield emitters → imperial shielding). */
     Shielding = 'Shielding',
+    /** Manufactured line, grades 1–5 (compact composites → core dynamics composites). */
     Composite = 'Composite',
+    /** Manufactured line, grades 1–5 (crystal shards → exquisite focus crystals). */
     Crystals = 'Crystals',
+    /** Manufactured line, grades 1–5 (salvaged alloys → proto light alloys). */
     Alloys = 'Alloys',
-    // Encoded — the six standard five-grade data lines.
+    /** Encoded line, grades 1–5 (exceptional scrambled emission data → abnormal compact emissions). */
     EmissionData = 'Emission Data',
+    /** Encoded line, grades 1–5 (atypical disrupted wake echoes → datamined wake exceptions). */
     WakeScans = 'Wake Scans',
+    /** Encoded line, grades 1–5 (distorted shield cycle recordings → inconsistent shield soak analysis). */
     ShieldData = 'Shield Data',
+    /** Encoded line, grades 1–5 (unusual encrypted files → adaptive encryptors capture). */
     EncryptionFiles = 'Encryption Files',
+    /** Encoded line, grades 1–5 (atypical encoded data → classified scan databanks). */
     DataArchives = 'Data Archives',
+    /** Encoded line, grades 1–5 (specialised legacy firmware → modified embedded firmware). */
     EncodedFirmware = 'Encoded Firmware',
-    // Cross-category special groups.
+    /** Guardian technology materials, filed outside the standard lines. */
     Guardian = 'Guardian',
+    /** Thargoid materials (including the caustic/Titan set), outside the standard lines. */
     Thargoid = 'Thargoid',
 }
 
@@ -132,7 +158,7 @@ export interface Material {
     readonly line: MaterialLine;
 }
 
-/** Case- and whitespace-insensitive key for name / symbol matching. */
+/** Case- and whitespace-insensitive key for name, symbol, category and group matching. */
 function normalize(value: string): string {
     return value.trim().toLowerCase();
 }
@@ -222,7 +248,9 @@ export function materialsByGrade(grade: MaterialGrade, materials: readonly Mater
 /**
  * Every material in a given line, in catalogue order.
  *
- * @param line - The line to match, e.g. `MaterialLine.Chemical`.
+ * @param line - The line to match, e.g. `MaterialLine.Chemical`. A plain string of
+ * the line's value works too: leading/trailing whitespace and case are ignored, like
+ * every other lookup here.
  * @param materials - The catalogue to search (see {@link getMaterialByName}).
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
@@ -232,5 +260,6 @@ export function materialsByGrade(grade: MaterialGrade, materials: readonly Mater
  * ```
  */
 export function materialsInLine(line: MaterialLine, materials: readonly Material[]): Material[] {
-    return materials.filter((material) => material.line === line);
+    const wanted = normalize(line);
+    return materials.filter((material) => normalize(material.line) === wanted);
 }

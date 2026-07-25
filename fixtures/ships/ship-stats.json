@@ -1,6 +1,6 @@
 {
-  "description": "Parity fixture for the ship-stats catalogue (data/ships/ship-stats.jsonc). Cross-language validation.",
-  "count": 47,
+  "description": "Parity fixture for the stat fields merged into data/ships/ships.jsonc. Cross-language validation.",
+  "count": 48,
   "spot": [
     {
       "symbol": "Anaconda",
