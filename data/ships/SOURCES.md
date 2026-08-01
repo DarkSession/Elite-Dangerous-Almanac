@@ -329,6 +329,38 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   `getExperimentalEffectMaterials` with `sumMaterials` for the grand total; the two data
   modules stay decoupled so neither pulls the other into a bundle.
 
+## Engineering options (what each module can take)
+
+- **File:** `engineering-options.jsonc`, validated by `fixtures/ships/engineering-options.json`.
+  Read it with `getEngineeringGroup` / `getBlueprintsForModule` /
+  `getExperimentalsForModule` / `getExperimentalsForBlueprint` in
+  `typescript/src/ships/engineering-options.ts`.
+- **Availability is a property of the module, not of the blueprint.** A Pulse Laser and a
+  Rail Gun both take the Efficient blueprint but offer different experimental effects, so
+  "which experimentals go with blueprint X" has no single answer. Modules are therefore
+  grouped (22 groups covering 428 engineerable modules) and each group lists the
+  `blueprints` and `experimentals` it offers. `getExperimentalsForBlueprint` is provided
+  for convenience and returns the **union** across every group offering that blueprint —
+  deliberately looser than the per-module answer, and a test pins that it is never
+  narrower.
+- **Source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`, whose module-group tables
+  carry each group's `blueprints` and `expeffects` lists, plus the per-module exclusions
+  described below. Same CC BY-NC 4.0 licence note as the experimental-effect section
+  above. Acquired 2026-08-01 UTC.
+- **`exclusions` are the exceptions, and they are real.** 29 modules do not take their
+  whole group's list: the Multi-cannons cannot take Phasing Sequence, the dumbfire racks
+  cannot take Drag Munitions, and the mining tools take no experimental at all. Upstream
+  these are an exclusion map (with a wildcard for "none of them"); here the wildcard is
+  **expanded to the explicit list** so a consumer never has to interpret one. A module
+  absent from `exclusions` takes its whole group's list.
+- **Kept deliberately:** a mining tool stays in `modules` (it has blueprints) even though
+  its experimental list resolves to empty — "engineerable with no experimental slot" and
+  "not engineerable at all" are different answers, and `getEngineeringGroup` separates
+  them.
+- **Key form:** EDSY names the Anti-Guardian blueprint by its journal form
+  (`GuardianModule_Sturdy`); this catalogue stores it under the `recipe_*` id the rest of
+  `blueprints.jsonc` uses, so every id here joins directly.
+
 ## Pre-engineered modules
 
 - **File:** `pre-engineered.jsonc`, validated by `fixtures/ships/pre-engineered.json`.

@@ -729,6 +729,38 @@ sumMaterials(
 The two data modules stay decoupled — `getBlueprintCost` never pulls in the experimental
 catalogue — so combine them yourself with `sumMaterials` only when you need both.
 
+#### What a module can be engineered with
+
+Before you pick a blueprint, you usually need the menu. Availability is a property of
+the **module**, not the blueprint — a Pulse Laser and a Rail Gun both take Efficient but
+offer different experimental effects:
+
+```ts
+import {
+  getBlueprintsForModule,
+  getExperimentalsForModule,
+  getExperimentalsForBlueprint,
+} from "@elite-dangerous-almanac/core/ships/engineering-options";
+
+getBlueprintsForModule("Int_Hyperdrive_Size5_Class5");
+// -> ['FSD_FastBoot', 'FSD_LongRange', 'FSD_Shielded']
+
+getExperimentalsForModule("Hpt_MultiCannon_Fixed_Medium").length; // -> 12
+getExperimentalsForModule("Hpt_MultiCannon_Fixed_Small").length; // -> 11
+```
+
+That one-effect difference is not a bug: the small Multi-cannon cannot take Phasing
+Sequence. 29 modules are exceptions like this, and they are applied for you.
+
+`getExperimentalsForBlueprint` answers the blueprint-first question, but it returns the
+**union** across every module group offering that blueprint — so it is a superset, not
+the exact list for any one module. Once you know the module, use
+`getExperimentalsForModule`.
+
+A module that cannot be engineered at all returns `[]` from both. To tell that apart
+from a module that _is_ engineerable but has no experimental slot (the mining tools),
+ask `getEngineeringGroup` — it returns `null` only for the former.
+
 #### Modules you can buy already engineered
 
 Some outfitting rows are sold **pre-engineered** — the Mercenary shop's rail gun, missile

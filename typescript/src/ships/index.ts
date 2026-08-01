@@ -119,6 +119,14 @@ export {
     getExperimentalEffectMaterials,
 } from './experimental-effects.js';
 export {
+    ENGINEERING_OPTION_GROUPS,
+    getEngineeringGroup,
+    getBlueprintsForModule,
+    getExperimentalsForModule,
+    getExperimentalsForBlueprint,
+    type EngineeringOptionGroup,
+} from './engineering-options.js';
+export {
     PRE_ENGINEERED_MODULES,
     getPreEngineeredVariants,
     getPreEngineeredByBlueprint,

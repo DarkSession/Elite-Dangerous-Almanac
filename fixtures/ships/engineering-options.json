@@ -1,0 +1,44 @@
+{
+  "description": "Ground truth for data/ships/engineering-options.jsonc — which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins the catalogue shape, `modules` that a module resolves to its group, `exclusions` the modules that are the exception to their group (a Multi-cannon cannot take Phasing Sequence; mining tools take no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it.",
+  "counts": { "groups": 22, "modules": 428, "exclusions": 29 },
+  "groups": [
+    {
+      "id": "beamLasers",
+      "name": "Beam Lasers",
+      "blueprintCount": 6,
+      "experimentalCount": 9
+    },
+    {
+      "id": "frameShiftDrives",
+      "name": "Frame Shift Drives",
+      "blueprintCount": 3,
+      "experimentalCount": 5
+    }
+  ],
+  "modules": [
+    { "symbol": "Hpt_BeamLaser_Fixed_Small", "group": "beamLasers" },
+    { "symbol": "Int_Hyperdrive_Size5_Class5", "group": "frameShiftDrives" },
+    { "symbol": "Int_Powerplant_Size2_Class1", "group": "powerPlants" }
+  ],
+  "notEngineerable": ["Int_CargoRack_Size2_Class1", "ModularCargoBayDoor"],
+  "exclusions": [
+    {
+      "symbol": "Hpt_MultiCannon_Fixed_Small",
+      "excluded": ["special_phasing_sequence"]
+    },
+    {
+      "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
+      "excluded": ["special_incendiary_rounds"]
+    }
+  ],
+  "blueprintUnion": {
+    "blueprint": "FSD_LongRange",
+    "experimentals": [
+      "special_fsd_cooled",
+      "special_fsd_fuelcapacity",
+      "special_fsd_heavy",
+      "special_fsd_lightweight",
+      "special_fsd_toughened"
+    ]
+  }
+}
