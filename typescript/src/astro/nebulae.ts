@@ -8,12 +8,15 @@
  * catalogues themselves live in sibling modules, one per class, so you only bundle
  * the ones you ask for:
  *
- * | Module | Export | Entries | ≈ bundled |
- * | --- | --- | --- | --- |
- * | `./nebulae-real` | `REAL_NEBULAE` | 180 | 19 KB |
- * | `./nebulae-procgen` | `PROCGEN_NEBULAE` | 166 | 19 KB |
- * | `./nebulae-planetary` | `PLANETARY_NEBULAE` | 5489 | 645 KB |
- * | `./nebulae-all` | `ALL_NEBULAE` | 5835 | 682 KB |
+ * Sizes are the published minified ESM, before any transport compression; the gzipped
+ * figure is roughly a fifth of it.
+ *
+ * | Module | Export | Entries | Minified | Gzipped |
+ * | --- | --- | --- | --- | --- |
+ * | `./nebulae-real` | `REAL_NEBULAE` | 180 | 19 KB | 5 KB |
+ * | `./nebulae-procgen` | `PROCGEN_NEBULAE` | 166 | 19 KB | 6 KB |
+ * | `./nebulae-planetary` | `PLANETARY_NEBULAE` | 5489 | 645 KB | 140 KB |
+ * | `./nebulae-all` | `ALL_NEBULAE` | 5835 | 682 KB | 151 KB |
  *
  * Importing a query function from here costs nothing but the function: pass in
  * whichever catalogue you imported.
@@ -77,7 +80,7 @@ export interface Nebula {
      *
      * @remarks
      * Resolve it to a name with `getGalacticRegion` from `./galactic-region` — that
-     * costs ~9 KB of region metadata rather than the ~207 KB lookup grid
+     * costs ~9 KB of region metadata rather than the ~267 KB lookup grid
      * `findRegionAt` needs.
      */
     readonly regionId: number;
@@ -101,7 +104,9 @@ function distanceSquared(coords: GalacticCoords, nebula: Nebula): number {
  * The nebulae closest to a point, nearest first.
  *
  * @param coords - The point to measure from, in light-years (Sol at origin). A
- * `StarSystem.coords` value can be passed directly.
+ * `StarSystem.coords` value fits once you have narrowed it — it is
+ * `GalacticCoords | null`, and is `null` unless that system was built from an address
+ * *and* you supplied its coordinates, so null-check it first.
  * @param nebulae - The catalogue to search — `REAL_NEBULAE`, `PLANETARY_NEBULAE`,
  * `PROCGEN_NEBULAE`, `ALL_NEBULAE`, or any subset you have filtered yourself.
  * @param count - How many to return. Defaults to `3`. Values `<= 0` yield an empty

@@ -21,13 +21,18 @@
  *
  * **Two `{x, y, z}` conventions, so check which one a function wants.**
  * {@link GalacticCoords} is light-years with Sol at the origin — what the journal,
- * EDSM and Spansh report, and what {@link findRegionAt},
- * {@link handAuthoredRegionForCoords} and {@link nearestNebulae} take.
+ * EDSM and Spansh report, and what {@link handAuthoredRegionForCoords} and
+ * {@link nearestNebulae} take.
  * {@link SectorCoords} is an integer *sector index* (0–127 per axis) on the 1280 ly
  * naming grid, which is what {@link sectorNameFromCoords} takes. They are the same
  * shape, so nothing stops you passing one for the other — convert a real position
  * with {@link sectorCoordsFromGalacticCoords} (or go straight to
  * {@link sectorNameFromGalacticCoords}).
+ *
+ * {@link findRegionAt} is the odd one out: it takes a flat {@link PlanePoint}
+ * (`{x, z}` in light-years), because the region map is an X/Z projection. A
+ * `GalacticCoords` **variable** passes straight through, but an inline
+ * `{ x, y, z }` literal is a compile error — see {@link findRegionAt}.
  *
  * **Permit locks** are six similarly-named lookups; {@link permitLockForSystemName}
  * is the one to start from (it answers for both kinds of lock, from a name alone).
@@ -139,6 +144,9 @@ export {
     type PlanePoint,
 } from './galactic-region.js';
 
+// The two lookups return different shapes on purpose: `findRegionAt` answers with the
+// region alone (`GalacticRegion | null`), while `findRegionForBoxel` also hands back
+// the boxel-corner coordinates it had to derive, so its region sits at `.region`.
 export {
     findRegionAt,
     findRegionForBoxel,

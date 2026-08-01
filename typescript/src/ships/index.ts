@@ -5,7 +5,15 @@
  * This entry point re-exports the ships feature area. Every symbol is also reachable
  * from its own module, so bundlers can drop anything you do not use.
  *
- * Two catalogues, each now carrying **identity and stats in one record**:
+ * **Working with a whole build? Start with {@link ShipLoadout}** — it reads a SLEF
+ * export ({@link ShipLoadout.fromSlef}) or a journal `Loadout` event
+ * ({@link ShipLoadout.fromLoadout}), lets you fit modules and apply engineering, and
+ * answers the questions apps actually ask ({@link ShipLoadout.maxJumpRange},
+ * `unladenMass`, `rebuy`). It is the batteries-included facade and pulls in every
+ * catalogue (~516 KB minified); everything below is what it is built from, so drop to
+ * the pieces when you need one answer rather than a whole ship.
+ *
+ * The area has four layers:
  *
  * - **Ships** — {@link SHIPS} and the {@link getShipBySymbol} / {@link getShipByName}
  *   lookups. One small catalogue; each {@link Ship} carries the hull's identity,
@@ -16,6 +24,17 @@
  *   ({@link STANDARD_MODULES}, {@link INTERNAL_MODULES}, {@link HARDPOINT_MODULES},
  *   {@link UTILITY_MODULES}, or {@link ALL_MODULES}) so you only bundle the slice
  *   you search; each record carries the module's identity and its stats.
+ * - **Jump range & SLEF** — {@link singleJumpRange}, {@link fuelPerJump} and
+ *   {@link totalRange} are pure maths over {@link FrameShiftDriveParams} and cost
+ *   nothing but the function; {@link parseSlef} reads an Inara SLEF export on its own.
+ * - **Engineering** — {@link computeModifiers} applies a {@link BLUEPRINTS} recipe and
+ *   an {@link EXPERIMENTAL_EFFECTS} entry; {@link ENGINEERING_OPTION_GROUPS} answers
+ *   what a module *can* be engineered with, and {@link PRE_ENGINEERED_MODULES} covers
+ *   the fixed-roll modules you cannot craft.
+ *
+ * Note that a hull's derived figures split by cost: cheap stored values are properties
+ * ({@link ShipLoadout.unladenMass}), while anything that recomputes or takes options is
+ * a method ({@link ShipLoadout.maxJumpRange}).
  *
  * Identity from EDCD FDevIDs (`shipyard.csv`, `outfitting.csv`); stats and slot
  * layouts from EDCD/coriolis-data; see `data/ships/SOURCES.md`.

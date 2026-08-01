@@ -54,7 +54,10 @@ catalogues**. Start with `StarSystem` — one immutable handle that composes the
 lower-level naming functions:
 
 ```ts
-import { StarSystem } from "@elite-dangerous-almanac/core/astro";
+// The leaf entry is the cheap one: ~101 KB minified, against ~995 KB for the
+// `/astro` barrel, which re-exports every catalogue in the area. A bundler will
+// tree-shake the barrel down; Node evaluates whatever you import, so prefer leaves.
+import { StarSystem } from "@elite-dangerous-almanac/core/astro/star-system";
 
 // Name  ->  id64
 const sys = StarSystem.fromName("Synuefe EN-H d11-96");
@@ -97,18 +100,23 @@ back as `bigint`, because the fields reach bit 55.
 Prefer a single calculation? Skip the class and import the pure function:
 
 ```ts
+import { sectorNameFromCoords } from "@elite-dangerous-almanac/core/astro/sector-name";
+import { decodeSystemAddress } from "@elite-dangerous-almanac/core/astro/system-address";
 import {
-  sectorNameFromCoords,
-  decodeSystemAddress,
   findRegionForBoxel,
   findRegionAt,
-} from "@elite-dangerous-almanac/core/astro";
+} from "@elite-dangerous-almanac/core/astro/galactic-region-lookup";
 
 sectorNameFromCoords({ x: 39, y: 30, z: 20 }); // 'Blae Eock' (sector indices, not light-years)
 decodeSystemAddress(3309179996515n); // { sizeClass, sectorCoords, boxelCode, ... }
 findRegionForBoxel(3309179996515n).region?.name; // 'Inner Orion Spur' (a system's codex region)
 findRegionAt({ x: 0, z: 0 })?.name; // 'Inner Orion Spur' (codex region at coords, in light-years)
 ```
+
+`findRegionAt` takes a flat `{ x, z }` — the region map is an X/Z projection, so the
+vertical `y` is ignored. Coordinates you already hold as a `GalacticCoords` variable
+pass straight through, but writing the `y` inline (`findRegionAt({ x, y, z })`) is a
+compile error: TypeScript rejects excess properties on fresh object literals.
 
 > **"Modulated" addresses.** Alongside the `id64`, a few community tools and data dumps
 > use a _modulated_ address: the same system, a different bit layout. `decodeSystemAddress`
@@ -118,7 +126,7 @@ findRegionAt({ x: 0, z: 0 })?.name; // 'Inner Orion Spur' (codex region at coord
 
 > **Codex region and bundle size.** `StarSystem` deliberately has no
 > `galacticRegion` member: wiring the region lookup into the facade would pull the
-> ~207 KB region-cell grid into _every_ `StarSystem` import (a class getter can't be
+> ~267 KB region-cell grid into _every_ `StarSystem` import (a class getter can't be
 > tree-shaken away when unused). Get a system's region from its address with the
 > standalone `findRegionForBoxel` instead, so only code that needs the grid pays for it.
 
@@ -215,12 +223,15 @@ coordinates and its codex region id. They ship as **one module per class**, so y
 pay only for the catalogue you import (subpaths below are relative to
 `@elite-dangerous-almanac/core`):
 
-| Import                    | Export              | What's in it                                                          | Entries | ≈ bundled |
-| ------------------------- | ------------------- | --------------------------------------------------------------------- | ------- | --------- |
-| `astro/nebulae-real`      | `REAL_NEBULAE`      | Real-world nebulae and dark regions (Witch Head, Horsehead, Coalsack) | 180     | 19 KB     |
-| `astro/nebulae-procgen`   | `PROCGEN_NEBULAE`   | Procedurally generated nebulae (`Agnairt AA-A h36`)                   | 166     | 19 KB     |
-| `astro/nebulae-planetary` | `PLANETARY_NEBULAE` | Planetary nebulae, at the system each surrounds                       | 5489    | 645 KB    |
-| `astro/nebulae-all`       | `ALL_NEBULAE`       | All three, concatenated                                               | 5835    | 682 KB    |
+| Import                    | Export              | What's in it                                                          | Entries | Minified | Gzipped |
+| ------------------------- | ------------------- | --------------------------------------------------------------------- | ------- | -------- | ------- |
+| `astro/nebulae-real`      | `REAL_NEBULAE`      | Real-world nebulae and dark regions (Witch Head, Horsehead, Coalsack) | 180     | 19 KB    | 5 KB    |
+| `astro/nebulae-procgen`   | `PROCGEN_NEBULAE`   | Procedurally generated nebulae (`Agnairt AA-A h36`)                   | 166     | 19 KB    | 6 KB    |
+| `astro/nebulae-planetary` | `PLANETARY_NEBULAE` | Planetary nebulae, at the system each surrounds                       | 5489    | 645 KB   | 140 KB  |
+| `astro/nebulae-all`       | `ALL_NEBULAE`       | All three, concatenated                                               | 5835    | 682 KB   | 151 KB  |
+
+Every size in this README is the published **minified** ESM as npm ships it, measured
+over a module and everything it imports; the gzipped figure is what a server sends.
 
 The query functions live in `astro/nebulae` and hold no data — hand them whichever
 catalogue you imported:
@@ -243,7 +254,7 @@ getNebulaByName("witch head nebula", REAL_NEBULAE)?.system; // -> 'Witch Head Se
 
 Each record carries a `regionId` (1–42), so you can label a nebula's codex region
 with `getGalacticRegion` (~9 KB of region metadata) instead of `findRegionAt`
-(~207 KB lookup grid). Note that the catalogue stores one point per nebula — the
+(~267 KB lookup grid). Note that the catalogue stores one point per nebula — the
 position of its catalogued system — not the nebula's extent, so `distanceLy` is
 the distance to that system.
 
@@ -269,7 +280,7 @@ permit flag — so it is a community-maintained list with two halves:
 These modules are the **only** place permit state lives — `HandAuthoredRegion`
 carries no permit flag. Import either leaf to avoid loading the other catalogue;
 `permitLockForSystemName` checks both halves from a name alone and
-tells you which one applied (~2.9 KB bundled).
+tells you which one applied (~4 KB minified).
 
 Six lookups answer this question and their names are close together, so pick by what
 you hold and what you want back:
@@ -563,7 +574,7 @@ SLEF export yourself with `parseSlef` from `ships/slef`. The port is validated
 against EDSY: it reproduces the sample build's exported `MaxJumpRange` of 89.414678.
 
 > **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
-> currently reaches about 700 KB of emitted JavaScript before compression because it
+> currently reaches about 516 KB of minified JavaScript (~57 KB gzipped) because it
 > must resolve any ship/module id plus blueprints and experimental effects. Prefer
 > `ships/slef`, `ships/jump-range`, and the individual catalogue modules when you only
 > need parsing, maths, or one outfitting category.

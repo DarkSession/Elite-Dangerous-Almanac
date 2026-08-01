@@ -126,15 +126,24 @@ function regionIdAtCell(px: number, pz: number): number {
  * name shown when jumping *into* a system.
  *
  * @param point - Galactic position, in light-years. Only {@link PlanePoint.x} and
- * {@link PlanePoint.z} are read, so a full {@link GalacticCoords} (e.g. a
- * `StarSystem.coords`) can be passed straight through — the vertical `y` is ignored
- * because the region map is a flat X/Z projection.
+ * {@link PlanePoint.z} are read — the vertical `y` is ignored, because the region map
+ * is a flat X/Z projection.
+ *
+ * A {@link GalacticCoords} you already hold in a variable (e.g. a `StarSystem.coords`)
+ * passes straight through: `PlanePoint` is a structural subset, so the extra `y` is
+ * fine. Writing the `y` inline is not — TypeScript applies excess-property checking to
+ * fresh object literals, so `findRegionAt({ x, y, z })` is a compile error. Drop the
+ * `y`, or pass the variable.
  * @returns The {@link GalacticRegion} containing the point, or `null` if the point
  * lies outside the mapped region grid.
  * @example
  * ```ts
  * findRegionAt({ x: 0, z: 0 })?.name;      // -> 'Inner Orion Spur' (near Sol)
  * findRegionAt({ x: 0, z: 25900 })?.name;  // -> 'Galactic Centre'
+ *
+ * // From coordinates you already have, pass the variable — not an inline `{ x, y, z }`:
+ * const coords = { x: 0, y: 0, z: 0 };
+ * findRegionAt(coords)?.name;              // -> 'Inner Orion Spur'
  * ```
  */
 export function findRegionAt(point: PlanePoint): RegionLookup {
