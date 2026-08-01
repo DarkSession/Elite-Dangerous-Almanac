@@ -764,11 +764,12 @@ ask `getEngineeringGroup` — it returns `null` only for the former.
 #### Modules you can buy already engineered
 
 Some modules arrive **already engineered** — the Mercenary shop's rail gun, missile racks
-and power distributors, and the modules awarded for community goals. These have **no
-symbol of their own**: the game hands you an ordinary module with engineering already
-applied, so a journal reports the base symbol plus an `Engineering` block.
-`ships/pre-engineered` supplies the link the module and blueprint catalogues cannot:
-which stock modules come pre-engineered, and with what.
+and power distributors, the modules awarded for community goals, and the tech-broker
+unlocks (the "V1" drives, the Guardian weapons). These have **no symbol of their own**:
+the game hands you an ordinary module with engineering already applied, so a journal
+reports the base symbol plus an `Engineering` block. `ships/pre-engineered` supplies the
+link the module and blueprint catalogues cannot: which stock modules come pre-engineered,
+and with what.
 
 ```ts
 import {
@@ -792,22 +793,53 @@ getPreEngineeredByBlueprint("recipe_seekermissilerack_drag").map(
 // -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
 ```
 
-`acquisition` tells the two kinds apart, and they behave differently:
+`acquisition` tells the three kinds apart, and they behave differently:
 
-|                  | `mercenary` (21)    | `communityGoal` (30)  |
-| ---------------- | ------------------- | --------------------- |
-| Blueprint id     | Merc `recipe_*` key | ordinary journal name |
-| Grade on arrival | always 1            | 28 of 30 at grade 5   |
-| Experimental     | none                | 8 of 30 carry one     |
+|                  | `mercenary` (21)    | `communityGoal` (30)  | `techBroker` (21)     |
+| ---------------- | ------------------- | --------------------- | --------------------- |
+| Blueprint id     | Merc `recipe_*` key | ordinary journal name | ordinary journal name |
+| Grade on arrival | always 1            | 28 of 30 at grade 5   | 14 of 21 at grade 5   |
+| Experimental     | none                | 8 of 30 carry one     | 4 of 21 carry one     |
+| Price            | `mercCoinCost`      | not bought            | not bought            |
+| Stat block       | not published       | `modifiers`           | `modifiers`           |
 
-A variant's identity is the **`(symbol, blueprint, experimental)` triple** — no narrower
-key holds. The medium Seeker Missile Rack has two High Capacity CG rewards that differ
-only in the effect applied.
+A variant's identity is the **`(symbol, blueprint, grade, experimental)` quadruple** — no
+narrower key holds. The medium Seeker Missile Rack has three High Capacity rewards that
+differ only in the effect applied, and the medium Guardian Shard Cannon carries Long
+Range with no experimental **twice**: grade 5 as a CG reward, grade 1 from a tech broker.
 
-> **A community-goal reward is not reproducible.** Alongside its blueprint and effect it
-> carries hand-set modifier overrides no blueprint grants — that is what makes it a
-> reward. The recorded blueprint/grade/experimental **identify** it; they are not a
-> recipe that recreates it.
+##### Building a ship with one
+
+A reward variant carries `modifiers` — the hand-set stat changes it actually arrives
+with, in the same vocabulary blueprints use. `ships/pre-engineered-stats` resolves those
+against the base module so the result can be fitted and budgeted:
+
+```ts
+import { getPreEngineeredVariants } from "@elite-dangerous-almanac/core/ships/pre-engineered";
+import {
+  getPreEngineeredStats,
+  unresolvedModifiers,
+} from "@elite-dangerous-almanac/core/ships/pre-engineered-stats";
+
+const [fsdV1] = getPreEngineeredVariants("Int_Hyperdrive_Size5_Class5");
+getPreEngineeredStats(fsdV1); // -> { …, optMass: 1785, mass: 26, integrity: 84, … }
+// the stock 5A drive has optMass 1050 — this is the "V1" drive's known 1785
+```
+
+> **Weapon stats are not resolvable.** The module catalogues carry core and
+> optional-internal stats, not `Damage` or `AmmoClipSize`, so a weapon variant's
+> damage-side modifiers have no base value to apply to. They are reported by
+> `unresolvedModifiers` rather than dropped silently; mass, integrity and power draw
+> still resolve, which is what a power-and-mass budget needs.
+
+> **A reward variant is not reproducible by engineering.** Those hand-set modifiers are
+> what make it a reward. The recorded blueprint/grade/experimental **identify** it; they
+> are not a recipe that recreates it, and `getBlueprintCost` on one prices ordinary
+> engineering instead.
+
+The 21 Merc shop rows carry a `mercCoinCost` (300–950 MC) but no `modifiers`: no registry
+publishes the grade-1 pre-engineering they arrive with, so the catalogue omits it rather
+than guessing. Resolving one returns the stock record unchanged.
 
 Merc rows arrive at **grade 1**, which is why those blueprints' own recipes start at
 grade 2 — the first grade came with the module. Price the rest of the climb by passing the

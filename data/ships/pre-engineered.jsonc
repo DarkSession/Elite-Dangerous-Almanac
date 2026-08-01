@@ -5,8 +5,8 @@
  * Sources: the in-game outfitting and blueprint registries, cross-checked against
  *          Inara (https://inara.cz/elite/outfitting/, https://inara.cz/elite/blueprints/)
  *          and Frontier's update notes for the release that introduced each variant.
- *          The community-goal rewards come from EDSY's stored-module presets
- *          (github.com/taleden/EDSY), (c) taleden under a CC BY-NC 4.0 License
+ *          The community-goal and tech-broker rewards come from EDSY's stored-module
+ *          presets (github.com/taleden/EDSY), (c) taleden under a CC BY-NC 4.0 License
  *          (http://creativecommons.org/licenses/by-nc/4.0/).
  *          The underlying values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
@@ -20,21 +20,57 @@
  * `grade` is the grade already applied.
  *
  * `acquisition` says where the variant comes from:
- *   - `"mercenary"`    — the Merc-Coin shop rows, all at grade 1.
+ *   - `"mercenary"`     — the Merc-Coin shop rows, all at grade 1.
  *   - `"communityGoal"` — awarded for taking part in a community goal. Mostly grade 5,
  *     and often carrying an experimental effect the shop rows do not.
+ *   - `"techBroker"`    — unlocked at a tech broker. Human brokers stock the "V1" drives
+ *     and seeker racks; the Guardian weapon rows come from the Salvation, Azimuth and
+ *     Sirius brokers. Several are recorded elsewhere as having *also* been community-goal
+ *     rewards; this field records the one route the source states, not every route.
  *
- * The Merc-Coin price is deliberately not stored — modules carry a credit `cost`, but
- * Merc Coin is a separate currency with no credit equivalent.
+ * `mercCoinCost` is the shop price in **Merc Coin**, a separate currency with no credit
+ * equivalent — which is why it is its own field rather than the `cost` modules carry.
+ * Only the `mercenary` rows have one. Tech-broker unlock costs are not stored: they are
+ * paid in materials and commodities, not in any single currency.
+ *
+ * `modifiers` is the variant's hand-set stat block, in the same vocabulary blueprints
+ * and experimental effects use — a journal Modifier `label`, a `method`
+ * (`multiplicative` / `additive` / `overwrite`) and a `value`. It is what makes these
+ * records fittable: apply them over the base module's stats to get the engineered
+ * module. The 21 `mercenary` rows carry none — no registry publishes the grade-1
+ * pre-engineering they arrive with, and a guess is worse than an omission.
+ *
+ * Modifier values are the **authored decimals, recovered — not rounded by eye.** The
+ * source encodes them in a custom 20-bit float, which carries about fifteen significant
+ * bits, so decoding a change the game states as `+20%` yields `0.199997`. Each value
+ * stored here is the *shortest decimal that re-encodes to the identical bits*, so it is
+ * the figure the encoder was given, and every one of the 51 stat blocks recovers
+ * exactly. Nothing is approximated: a value with no short form would have been left as
+ * decoded, and none needed it. The recovery is why the 5A "FSD V1" resolves to a whole
+ * 1785 optimal mass from `+0.7` rather than to 1785.0126 from `0.699988`.
+ *
+ * One modifier is deliberately dropped: burst interval, which 13 variants carry and
+ * which Frontier's journal has no Modifier Label for. It drives rate of fire, and
+ * deriving a `RateOfFire` value from it needs weapon base stats the module catalogues
+ * do not hold — so it is omitted rather than approximated.
  *
  * The Merc recipes start at grade 2 precisely because grade 1 is what the purchased
  * module already contains; `getBlueprintCost(bp, target, 1)` prices taking one of those
- * the rest of the way. Community-goal rewards are mostly already at grade 5.
+ * the rest of the way. Community-goal and tech-broker rewards are mostly already at
+ * grade 5 — but not always: the Guardian weapon rows record grade 1, and there the
+ * blueprint's own grade 1 exists, so the grade is a real grade of a real recipe.
  *
- * **A community-goal reward is not reproducible by engineering the same blueprint.**
- * Its stat block also carries hand-set modifier overrides that no blueprint grants,
- * which is exactly what makes it a reward. The `blueprint`/`grade`/`experimental`
- * recorded here identify what it *is*, not a recipe that recreates it.
+ * **A reward variant is not reproducible by engineering the same blueprint.** Its stat
+ * block also carries hand-set modifier overrides that no blueprint grants, which is
+ * exactly what makes it a reward — the 2A Guardian Shard Cannon, for instance, arrives
+ * with an armour-piercing bonus Long Range does not confer. The
+ * `blueprint`/`grade`/`experimental` recorded here identify what it *is*, not a recipe
+ * that recreates it.
+ *
+ * No single field is unique, and neither is any triple: the 2A Guardian Shard Cannon
+ * carries Long Range with no experimental *twice* — once at grade 1 from the Salvation
+ * broker and once at grade 5 as a community-goal reward. The identity of a variant is
+ * the (`symbol`, `blueprint`, `grade`, `experimental`) quadruple.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -44,161 +80,241 @@
     "name": "Abrasion Blaster",
     "blueprint": "recipe_abrasionblaster_farreaching",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 400
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
     "name": "Enzyme Missile Rack",
     "blueprint": "recipe_enzymemissilerack_highyield",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 850
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
     "name": "Fragment Cannon",
     "blueprint": "recipe_fragmentcannonsmall_doublescreaming",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 800
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
     "name": "Fragment Cannon",
     "blueprint": "recipe_fragmentcannonlarge_doublescreaming",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 950
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
     "name": "Mining Laser",
     "blueprint": "recipe_mininglaser_longrange",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 450
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
     "name": "Multi-Cannon",
     "blueprint": "recipe_multicannon_rapid",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 850
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
     "name": "Rail Gun",
     "blueprint": "recipe_railgun_longshot",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 950
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Seeker Missile Rack",
     "blueprint": "recipe_seekermissilerack_drag",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 800
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
     "name": "Seeker Missile Rack",
     "blueprint": "recipe_seekermissilerack_drag",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 900
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Seeker Missile Rack",
     "blueprint": "recipe_seekermissilerack_lightweightthermal",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 800
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Seeker Missile Rack",
     "blueprint": "recipe_seekermissilerackmedium_lockdown",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 800
   },
   {
     "symbol": "Int_CargoRack_Size5_Class1",
     "name": "Cargo Rack",
     "blueprint": "recipe_cargoracks5c1_extended",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 550
   },
   {
     "symbol": "Int_CargoRack_Size6_Class1",
     "name": "Cargo Rack",
     "blueprint": "recipe_cargoracks6c1_extended",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 550
   },
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
     "name": "Detailed Surface Scanner",
     "blueprint": "recipe_detailedsurfacescanner_longrange",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 350
   },
   {
     "symbol": "Int_ModuleReinforcement_Size5_Class2",
     "name": "Module Reinforcement Package",
     "blueprint": "recipe_modulereinforcement_heavyduty",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 450
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class2",
     "name": "Power Distributor",
     "blueprint": "recipe_powerdistributors3c2_supportfocused",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 300
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class5",
     "name": "Power Distributor",
     "blueprint": "recipe_powerdistributors3c5_supportfocused",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 350
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class2",
     "name": "Power Distributor",
     "blueprint": "recipe_powerdistributors4c2_supportfocused",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 400
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class5",
     "name": "Power Distributor",
     "blueprint": "recipe_powerdistributors4c5_supportfocused",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 450
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class5",
     "name": "Power Distributor",
     "blueprint": "recipe_powerdistributor_balanced",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 500
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class5",
     "name": "Power Distributor",
     "blueprint": "recipe_powerdistributors6c5_supportfocused",
     "grade": 1,
-    "acquisition": "mercenary"
+    "acquisition": "mercenary",
+    "mercCoinCost": 550
   },
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
     "name": "Abrasion Blaster",
     "blueprint": "Weapon_LongRange",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "value": 4
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": 4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": -0.5
+      }
+    ]
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
     "name": "Enzyme Missile Rack",
     "blueprint": "Weapon_HighCapacity",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.75
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 0.25
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": 0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.6
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.2
+      }
+    ]
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
@@ -206,7 +322,39 @@
     "blueprint": "Weapon_DoubleShot",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_screening_shell"
+    "experimental": "special_screening_shell",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 1.6667
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 0.67776
+      },
+      {
+        "label": "BurstSize",
+        "method": "overwrite",
+        "value": 2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.6
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": -0.1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.2
+      }
+    ]
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
@@ -214,14 +362,88 @@
     "blueprint": "Weapon_DoubleShot",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_screening_shell"
+    "experimental": "special_screening_shell",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 1.6667
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 0.67776
+      },
+      {
+        "label": "BurstSize",
+        "method": "overwrite",
+        "value": 2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.6
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": -0.1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.2
+      }
+    ]
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
     "name": "Guardian Shard Cannon",
     "blueprint": "Weapon_LongRange",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "value": 1.02
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": 5.05
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "value": -3.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.5
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": 4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 1.3
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "value": 0.11111
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": 15.5
+      }
+    ]
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
@@ -229,7 +451,39 @@
     "blueprint": "Weapon_RapidFire",
     "grade": 1,
     "acquisition": "communityGoal",
-    "experimental": "special_phasing_sequence"
+    "experimental": "special_phasing_sequence",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 3
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 2.0476
+      },
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "value": -0.1
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "value": 3
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "RoundsPerShot",
+        "method": "additive",
+        "value": 2
+      }
+    ]
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
@@ -237,7 +491,44 @@
     "blueprint": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_feedback_cascade_cooled"
+    "experimental": "special_feedback_cascade_cooled",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "value": 5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.9
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.65
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "value": 0.25
+      }
+    ]
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
@@ -245,7 +536,34 @@
     "blueprint": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_super_penetrator"
+    "experimental": "special_super_penetrator",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.2
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.25
+      }
+    ]
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -253,7 +571,34 @@
     "blueprint": "Weapon_HighCapacity",
     "grade": 1,
     "acquisition": "communityGoal",
-    "experimental": "special_drag_munitions"
+    "experimental": "special_drag_munitions",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 2
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 2
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": 0.41667
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 1.5
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.25
+      }
+    ]
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -261,7 +606,49 @@
     "blueprint": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_fsd_interrupt"
+    "experimental": "special_fsd_interrupt",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": 0.35
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": -0.1
+      }
+    ]
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
@@ -269,139 +656,1462 @@
     "blueprint": "Weapon_HighCapacity",
     "grade": 5,
     "acquisition": "communityGoal",
-    "experimental": "special_fsd_interrupt"
+    "experimental": "special_fsd_interrupt",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": 0.35
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 1.2
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": -0.1
+      }
+    ]
   },
   {
     "symbol": "Hpt_ElectronicCountermeasure_Tiny",
     "name": "Electronic Countermeasure",
     "blueprint": "Misc_LightWeight",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": -0.85
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 1
+      }
+    ]
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class5",
     "name": "Kill Warrant Scanner",
     "blueprint": "Sensor_FastScan",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "MaxAngle",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.5
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "value": 0.65
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "value": -0.8
+      }
+    ]
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class3",
     "name": "Kill Warrant Scanner",
     "blueprint": "Sensor_FastScan",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "MaxAngle",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.5
+      },
+      {
+        "label": "ScannerRange",
+        "method": "multiplicative",
+        "value": 0.65
+      },
+      {
+        "label": "ScannerTimeToScan",
+        "method": "multiplicative",
+        "value": -0.8
+      }
+    ]
   },
   {
     "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
     "name": "Point Defence",
     "blueprint": "Misc_LightWeight",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": -0.85
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": 0.05
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class5",
     "name": "Power Distributor",
     "blueprint": "PowerDistributor_PrioritySystems",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.25
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.2
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class2",
     "name": "Power Distributor",
     "blueprint": "PowerDistributor_PrioritySystems",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.25
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.2
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class5",
     "name": "Power Distributor",
     "blueprint": "PowerDistributor_PrioritySystems",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.25
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.2
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class2",
     "name": "Power Distributor",
     "blueprint": "PowerDistributor_PrioritySystems",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.25
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.2
+      }
+    ]
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class5",
     "name": "Power Distributor",
     "blueprint": "PowerDistributor_PrioritySystems",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "EnginesCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "EnginesRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "SystemsCapacity",
+        "method": "multiplicative",
+        "value": 0.45
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "WeaponsCapacity",
+        "method": "multiplicative",
+        "value": -0.25
+      },
+      {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.2
+      }
+    ]
   },
   {
     "symbol": "Int_Powerplant_Size3_Class5",
     "name": "Power Plant",
     "blueprint": "PowerPlant_Armoured",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "value": 0.13
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": 0.95
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "value": 0.52
+      }
+    ]
   },
   {
     "symbol": "Int_Powerplant_Size3_Class5",
     "name": "Power Plant",
     "blueprint": "PowerPlant_Boosted",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "value": 0.35
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "value": 0.6
+      }
+    ]
   },
   {
     "symbol": "Int_Powerplant_Size4_Class5",
     "name": "Power Plant",
     "blueprint": "PowerPlant_Boosted",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "value": 0.35
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "value": 0.6
+      }
+    ]
   },
   {
     "symbol": "Int_Powerplant_Size5_Class5",
     "name": "Power Plant",
     "blueprint": "PowerPlant_Boosted",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "HeatEfficiency",
+        "method": "multiplicative",
+        "value": 0.35
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.30188
+      },
+      {
+        "label": "PowerCapacity",
+        "method": "multiplicative",
+        "value": 0.6
+      }
+    ]
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class5",
     "name": "Frame Shift Drive",
     "blueprint": "FSD_LongRange",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class5",
     "name": "Frame Shift Drive",
     "blueprint": "FSD_LongRange",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class5",
     "name": "Frame Shift Drive",
     "blueprint": "FSD_LongRange",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
   },
   {
     "symbol": "Int_CargoRack_Size5_Class1",
     "name": "Cargo Rack",
     "blueprint": "CargoRack_IncreasedCapacity",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "CargoCapacity",
+        "method": "multiplicative",
+        "value": 0.34375
+      }
+    ]
   },
   {
     "symbol": "Int_CargoRack_Size6_Class1",
     "name": "Cargo Rack",
     "blueprint": "CargoRack_IncreasedCapacity",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "CargoCapacity",
+        "method": "multiplicative",
+        "value": 0.34375
+      }
+    ]
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class5",
     "name": "Shield Generator",
     "blueprint": "ShieldGenerator_Kinetic",
     "grade": 5,
-    "acquisition": "communityGoal"
+    "acquisition": "communityGoal",
+    "modifiers": [
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "KineticResistance",
+        "method": "additive",
+        "value": 0.18
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.4
+      },
+      {
+        "label": "ThermicResistance",
+        "method": "additive",
+        "value": 0.42
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
+    "name": "AX Missile Rack",
+    "blueprint": "Weapon_HighCapacity",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.03
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.2
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "value": 0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "value": -0.45
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
+    "name": "AX Missile Rack",
+    "blueprint": "Weapon_HighCapacity",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.03
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.2
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "value": 0.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "value": -0.45
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
+    "name": "Enhanced AX Multi-Cannon",
+    "blueprint": "Weapon_Overcharged",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "experimental": "special_auto_loader",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": 0.1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.75
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
+    "name": "Enhanced AX Multi-Cannon",
+    "blueprint": "Weapon_Overcharged",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "experimental": "special_auto_loader",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": 0.1
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.75
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
+    "name": "Guardian Gauss Cannon",
+    "blueprint": "Weapon_RapidFire",
+    "grade": 1,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 3
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 4
+      },
+      {
+        "label": "BurstRateOfFire",
+        "method": "overwrite",
+        "value": 10
+      },
+      {
+        "label": "BurstSize",
+        "method": "overwrite",
+        "value": 4
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.75214
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.75
+      },
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "value": -0.2
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": -0.75
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
+    "name": "Guardian Gauss Cannon",
+    "blueprint": "Weapon_RapidFire",
+    "grade": 1,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 3
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 4
+      },
+      {
+        "label": "BurstRateOfFire",
+        "method": "overwrite",
+        "value": 10
+      },
+      {
+        "label": "BurstSize",
+        "method": "overwrite",
+        "value": 4
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.75214
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.75
+      },
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "value": -0.2
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": -0.75
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Small",
+    "name": "Guardian Plasma Charger",
+    "blueprint": "Weapon_Overcharged",
+    "grade": 1,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.33333
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "value": 0.375
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": 0.66
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.3239
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "value": 4
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": 0.5
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
+    "name": "Guardian Plasma Charger",
+    "blueprint": "Weapon_Overcharged",
+    "grade": 1,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 0.33333
+      },
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "value": 0.375
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": 0.66
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.3239
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "value": 4
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": 0.5
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_Guardian_ShardCannon_Fixed_Small",
+    "name": "Guardian Shard Cannon",
+    "blueprint": "Weapon_LongRange",
+    "grade": 1,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "value": 1.02
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": 4.2769
+      },
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "value": -0.11765
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "value": -3.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.5
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": 0.7647
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 1.3
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "value": 2.1497
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": 15.5
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+    "name": "Guardian Shard Cannon",
+    "blueprint": "Weapon_LongRange",
+    "grade": 1,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "ArmourPenetration",
+        "method": "multiplicative",
+        "value": 1.02
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": 4.2769
+      },
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "value": -0.11765
+      },
+      {
+        "label": "Jitter",
+        "method": "additive",
+        "value": -3.5
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.5
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": 0.7647
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 1.3
+      },
+      {
+        "label": "ShotSpeed",
+        "method": "multiplicative",
+        "value": 2.1497
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": 15.5
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_MiningLaser_Fixed_Small",
+    "name": "Mining Laser",
+    "blueprint": "Weapon_LongRange",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "experimental": "special_incendiary_rounds",
+    "modifiers": [
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": -0.05
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "FalloffRange",
+        "method": "multiplicative",
+        "value": 7.3333
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "MaximumRange",
+        "method": "multiplicative",
+        "value": 4
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": -0.5
+      },
+      {
+        "label": "ThermalLoad",
+        "method": "multiplicative",
+        "value": -0.83
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+    "name": "Seeker Missile Rack",
+    "blueprint": "Weapon_HighCapacity",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "experimental": "special_thermal_cascade",
+    "modifiers": [
+      {
+        "label": "AmmoClipSize",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "multiplicative",
+        "value": -0.4
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.6
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": -0.9
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": -0.2
+      }
+    ]
+  },
+  {
+    "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
+    "name": "Heat Sink Launcher",
+    "blueprint": "Misc_HeatSinkCapacity",
+    "grade": 1,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "AmmoMaximum",
+        "method": "multiplicative",
+        "value": 1
+      },
+      {
+        "label": "ReloadTime",
+        "method": "multiplicative",
+        "value": 0.75
+      }
+    ]
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size5_Class5",
+    "name": "Frame Shift Drive",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size2_Class5",
+    "name": "Frame Shift Drive (SCO)",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size3_Class5",
+    "name": "Frame Shift Drive (SCO)",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size4_Class5",
+    "name": "Frame Shift Drive (SCO)",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size5_Class5",
+    "name": "Frame Shift Drive (SCO)",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size6_Class5",
+    "name": "Frame Shift Drive (SCO)",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
+  },
+  {
+    "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
+    "name": "Frame Shift Drive (SCO)",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "BootTime",
+        "method": "multiplicative",
+        "value": -0.8
+      },
+      {
+        "label": "FSDHeatRate",
+        "method": "multiplicative",
+        "value": 0.2
+      },
+      {
+        "label": "FSDOptimalMass",
+        "method": "multiplicative",
+        "value": 0.7
+      },
+      {
+        "label": "Integrity",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
+        "label": "Mass",
+        "method": "multiplicative",
+        "value": 0.3
+      },
+      {
+        "label": "PowerDraw",
+        "method": "multiplicative",
+        "value": 0.15
+      }
+    ]
+  },
+  {
+    "symbol": "Int_DetailedSurfaceScanner_Tiny",
+    "name": "Detailed Surface Scanner",
+    "blueprint": "Sensor_Expanded",
+    "grade": 5,
+    "acquisition": "techBroker",
+    "modifiers": [
+      {
+        "label": "DSS_PatchRadius",
+        "method": "multiplicative",
+        "value": 1
+      }
+    ]
   }
 ]

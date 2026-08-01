@@ -181,8 +181,9 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     — no registry publishes a figure for them. **`cost` is omitted, never set to 0**:
     `0` is a real price (the starter Lightweight Alloy bulkhead costs nothing), so a
     cost calculation must be able to tell "free" from "unknown".
-  - **Still not modelled:** the **Merc-Coin** price of the pre-engineered variants (a
-    separate currency, not credits), passenger capacity, and fighter-bay/rebuild counts.
+  - **Still not modelled:** passenger capacity and fighter-bay/rebuild counts. The
+    **Merc-Coin** price of the pre-engineered variants is now carried, but on the
+    variant rather than the module — see `mercCoinCost` in the pre-engineered section.
 - **Deliberately not modelled here:** the **Merc-Coin
   pre-engineered weapon variants** are not separate module records: their base module
   symbols already exist, and the pre-engineering is expressed as the Operations
@@ -365,22 +366,23 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
 
 - **File:** `pre-engineered.jsonc`, validated by `fixtures/ships/pre-engineered.json`.
   Read it with `getPreEngineeredVariants` / `getPreEngineeredByBlueprint` /
-  `isPreEngineered` in `typescript/src/ships/pre-engineered.ts`.
+  `isPreEngineered` in `typescript/src/ships/pre-engineered.ts`, and resolve a variant
+  into a fittable module with `getPreEngineeredStats` in `pre-engineered-stats.ts`.
 - **Why it is a catalogue of its own.** A pre-engineered module has **no symbol of its
   own** — the game sells an ordinary module with engineering already applied, and a
   journal `Loadout` reports it as the base `symbol` plus an `Engineering` block. So the
   module catalogues already hold every one of these modules and `blueprints.jsonc`
   already holds every one of these blueprints; what was missing was the **link** saying
   which stock modules can be bought already engineered, and with what. Each record is a
-  pairing — `{ symbol, name, blueprint, grade, acquisition }` — not a module, which is
-  also why it is exempt from the "unique symbols per catalogue" rule the other
-  array-shaped files follow.
+  pairing — `{ symbol, name, blueprint, grade, acquisition }` plus the stat block and
+  price described below — not a module, which is also why it is exempt from the "unique
+  symbols per catalogue" rule the other array-shaped files follow.
 - **Neither column is a key on its own.** One base module is sold in several
-  pre-engineered flavours (the 2B Missile Rack has three), and one blueprint is sold on
-  several base modules (the Drag seeker on both the medium and the large rack). The
-  `(symbol, blueprint)` pair is what is unique, so both lookups return arrays.
-- **`acquisition` says where a variant comes from.** 51 records: 21 `mercenary` and
-  30 `communityGoal`.
+  pre-engineered flavours (the medium Seeker Missile Rack has six), and one blueprint is
+  sold on several base modules (the Drag seeker on both the medium and the large rack),
+  so both lookups return arrays.
+- **`acquisition` says where a variant comes from.** 72 records: 21 `mercenary`,
+  30 `communityGoal` and 21 `techBroker`.
   - **`mercenary`** — the Merc-Coin shop rows. Source: the in-game outfitting and
     blueprint registries, cross-checked against the current
     [Inara outfitting](https://inara.cz/elite/outfitting/) and
@@ -397,25 +399,73 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     resulting id is asserted to join to `blueprints.jsonc`,
     `experimental-effects.jsonc` and the module catalogues. 28 of the 30 are grade 5;
     8 carry an experimental effect. Acquired 2026-08-01 UTC.
-- **A community-goal reward is not reproducible by engineering the same blueprint.**
-  Alongside its blueprint and effect, each reward carries hand-set modifier overrides no
-  blueprint grants — that is what makes it a reward rather than a shortcut. The
-  `blueprint` / `grade` / `experimental` recorded here **identify** the variant; they are
-  not a recipe that recreates it. `getBlueprintCost` on a community-goal row prices
-  ordinary engineering, not the reward.
+  - **`techBroker`** — modules unlocked at a tech broker, from the same EDSY presets and
+    decoded the same way. Human brokers stock the "V1" drives, the SCO drives and a
+    seeker rack; the Guardian weapon rows come from the Salvation, Azimuth and Sirius
+    brokers. 14 of the 21 are grade 5 — the seven grade-1 rows are the Guardian weapons
+    and a heat sink launcher, where the blueprint named does define a grade 1, so the
+    grade is a real grade of a real recipe rather than the Merc-shop convention.
+    Acquired 2026-08-01 UTC.
+  - **One route per row, not every route.** The source records a single tag per preset
+    and several rows are annotated as having been obtainable both ways — the six SCO "V1"
+    drives most obviously. `acquisition` records the tag; it is not a claim that no other
+    route ever existed.
+- **A reward variant is not reproducible by engineering the same blueprint.** Alongside
+  its blueprint and effect, each reward carries hand-set modifier overrides no blueprint
+  grants — that is what makes it a reward rather than a shortcut. The `blueprint` /
+  `grade` / `experimental` recorded here **identify** the variant; they are not a recipe
+  that recreates it. `getBlueprintCost` on a reward row prices ordinary engineering, not
+  the reward.
 - **Two community-goal rewards are not stored:** the size-5 and size-6 Corrosion
   Resistant Cargo Racks carry no engineering at all. They already exist as ordinary
   module records (`Int_CorrosionProofCargoRack_Size{5,6}_Class1`), so there is no pairing
   to record.
-- **The identity of a variant is the `(symbol, blueprint, experimental)` triple.** No
-  narrower key holds: one module carries several variants, one blueprint appears on
-  several modules, and even `(symbol, blueprint)` repeats — the medium Seeker Missile
-  Rack has two High Capacity community-goal rewards that differ only in the effect
-  applied.
-- **Deliberately not stored:** the Merc-Coin price. Modules and hulls carry a credit
-  price (`cost` / `hullCost` / `retailCost`, see the modules section), but Merc Coin is a
-  separate currency with no credit equivalent, so a shop price in MC has nowhere
-  meaningful to live.
+- **The identity of a variant is the `(symbol, blueprint, grade, experimental)`
+  quadruple.** No narrower key holds: one module carries several variants, one blueprint
+  appears on several modules, `(symbol, blueprint)` repeats when only the effect differs
+  (the medium Seeker Missile Rack has three High Capacity rewards), and even
+  `(symbol, blueprint, experimental)` repeats when only the grade differs — the medium
+  Guardian Shard Cannon carries Long Range with no experimental twice, at grade 5 as a
+  community-goal reward and at grade 1 from the Salvation broker.
+- **`mercCoinCost` is the shop price in Merc Coin**, on the 21 `mercenary` rows and
+  nowhere else. Source: the in-game outfitting registry, with the variants and prices
+  corroborated by the current [Inara outfitting registry](https://inara.cz/elite/outfitting/).
+  Merc Coin is a separate currency with no credit equivalent, which is why it is its own
+  field rather than the `cost` modules carry. Tech-broker unlocks have no equivalent
+  number: they are paid in materials and commodities, so nothing is stored for them.
+- **`modifiers` is the hand-set stat block a reward variant arrives with** — what makes
+  these records fittable rather than merely catalogued. Same vocabulary as a blueprint
+  feature: a journal Modifier `label`, a `method` (`multiplicative` / `additive` /
+  `overwrite`) and a `value`. Decoded from the same EDSY preset state as the blueprint
+  and grade, then translated into the Almanac's own vocabulary — EDSY's attribute names
+  map to journal Modifier Labels through its own table, and resistances, which EDSY
+  stores in a different form from this repo, are converted using the module's base
+  resistance. 51 rows carry one; the 21 `mercenary` rows do not, because no registry
+  publishes the grade-1 pre-engineering they arrive with and a guess is worse than an
+  omission.
+  - **Values are the authored decimals, recovered rather than rounded.** The presets
+    encode modifiers in EDSY's custom 20-bit float (1 sign, 5 exponent, 14 mantissa),
+    which carries about fifteen significant bits — so decoding a change the game states
+    as `+20%` yields `0.199997`. Rounding that by eye would be a guess, so instead each
+    value is the **shortest decimal that re-encodes to the identical 20 bits**: the
+    figure the encoder was originally given, checked by re-encoding rather than assumed.
+    All 51 stat blocks recover exactly; a value with no short round-tripping form would
+    have been kept as decoded, and none needed it. This is what makes the 5A "FSD V1"
+    resolve to a whole 1785 optimal mass (from `+0.7`) instead of 1785.0126 (from
+    `0.699988`). A test caps the decimal places so the step cannot silently regress.
+  - **One modifier is deliberately dropped:** burst interval, carried by 13 variants.
+    Frontier's journal has no Modifier Label for it; it drives rate of fire, and deriving
+    a `RateOfFire` value from it needs weapon base stats the module catalogues do not
+    hold. Omitted rather than approximated.
+  - **What resolves, and what cannot.** The module catalogues carry core and
+    optional-internal stats, not weapon stats, so `Damage`, `MaximumRange`,
+    `AmmoClipSize` and the rest have no base value to apply to.
+    `getPreEngineeredStats` resolves what it can and `unresolvedModifiers` reports the
+    remainder rather than dropping it silently. A pre-engineered rail gun still resolves
+    its mass, integrity and power draw, which is what a power-and-mass budget needs; five
+    variants modify **only** weapon or scanner stats and so resolve to no change at all,
+    a set pinned in the fixture. Cross-checked against a known value: the 5A "FSD V1"
+    resolves to 1785 optimal mass from the stock drive's 1050.
 - **Not included:** engineered modules that are one-off mission or salvage rewards rather
   than a repeatable outfitting row. Those arrive in a build as their base symbol plus an
   `Engineering.Modifiers` block, which `ShipLoadout` already applies directly; there is no

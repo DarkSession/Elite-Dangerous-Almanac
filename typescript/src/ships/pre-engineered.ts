@@ -18,14 +18,16 @@
  * recipes start at grade 2 — price the remaining upgrade with
  * `getBlueprintCost(blueprint, target, grade)`.
  *
- * Note that one base module can appear more than once: a 2B Missile Rack is sold in
- * three different pre-engineered flavours, so `Hpt_BasicMissileRack_Fixed_Medium` has
- * three entries. Look variants up with {@link getPreEngineeredVariants} (plural) rather
- * than assuming one.
+ * Note that one base module can appear more than once: the medium Seeker Missile Rack is
+ * sold or awarded in six different pre-engineered flavours, so
+ * `Hpt_BasicMissileRack_Fixed_Medium` has six entries. Look variants up with
+ * {@link getPreEngineeredVariants} (plural) rather than assuming one.
  *
- * The Merc-Coin price is deliberately not stored: modules carry a credit `cost`, but
- * Merc Coin is a separate currency with no credit equivalent. See
- * `data/ships/SOURCES.md`.
+ * Most variants carry a {@link PreEngineeredVariant.modifiers} block — the hand-set stat
+ * changes the variant arrives with, which is what lets one be fitted and its stats
+ * computed. Resolve them against the base module with `getPreEngineeredStats` from
+ * `./pre-engineered-stats.js`; it lives in its own module so that consumers who only
+ * want the catalogue do not bundle the module and engineering tables.
  *
  * @packageDocumentation
  */
@@ -39,8 +41,30 @@ import { deepFreeze } from '../deep-freeze.js';
  * - `mercenary` — bought from the Merc-Coin shop; always arrives at grade 1.
  * - `communityGoal` — awarded for taking part in a community goal; mostly grade 5, and
  *   often carrying an experimental effect the shop rows do not.
+ * - `techBroker` — unlocked at a tech broker. Records the one route the source states;
+ *   several of these were also community-goal rewards at some point.
  */
-export type PreEngineeredAcquisition = 'mercenary' | 'communityGoal';
+export type PreEngineeredAcquisition = 'mercenary' | 'communityGoal' | 'techBroker';
+
+/**
+ * One hand-set stat change a pre-engineered variant arrives with.
+ *
+ * Same vocabulary as a blueprint feature or experimental contribution: a journal
+ * Modifier `label`, the `method` by which it applies, and its `value`. Unlike a
+ * blueprint feature there is no `min`/`max` — a pre-engineered variant is a fixed
+ * article, not a roll.
+ */
+export interface PreEngineeredModifier {
+    /** Journal Modifier Label, e.g. `"PowerDraw"`, `"ArmourPenetration"`. */
+    readonly label: string;
+    /** How the value applies to the base stat. */
+    readonly method: 'multiplicative' | 'additive' | 'overwrite';
+    /**
+     * The modifier value: a fraction for `multiplicative` (`0.5` is `+50%`), an absolute
+     * delta for `additive`, and the replacement value for `overwrite`.
+     */
+    readonly value: number;
+}
 
 /**
  * One purchasable pre-engineered module variant — a pairing of a stock module with the
@@ -62,6 +86,19 @@ export interface PreEngineeredVariant {
     readonly experimental?: string;
     /** Where the variant comes from. */
     readonly acquisition: PreEngineeredAcquisition;
+    /**
+     * The shop price in Merc Coin. Present only on `mercenary` rows — the other routes
+     * are not bought with a currency. Merc Coin has no credit equivalent, which is why
+     * this is separate from the credit `cost` a module carries.
+     */
+    readonly mercCoinCost?: number;
+    /**
+     * The hand-set stat block the variant arrives with, sorted by `label`.
+     *
+     * Absent on every `mercenary` row: no registry publishes the grade-1 pre-engineering
+     * those arrive with. Present on all 51 community-goal and tech-broker rows.
+     */
+    readonly modifiers?: readonly PreEngineeredModifier[];
 }
 
 /**
@@ -69,10 +106,11 @@ export interface PreEngineeredVariant {
  *
  * @example
  * ```ts
- * PRE_ENGINEERED_MODULES.length; // -> 21
+ * PRE_ENGINEERED_MODULES.length; // -> 72
  * PRE_ENGINEERED_MODULES[0];
  * // -> { symbol: 'Hpt_Mining_AbrBlstr_Fixed_Small', name: 'Abrasion Blaster',
- * //      blueprint: 'recipe_abrasionblaster_farreaching', grade: 1, acquisition: 'mercenary' }
+ * //      blueprint: 'recipe_abrasionblaster_farreaching', grade: 1,
+ * //      acquisition: 'mercenary', mercCoinCost: 400 }
  * ```
  */
 export const PRE_ENGINEERED_MODULES: readonly PreEngineeredVariant[] = deepFreeze(
@@ -94,9 +132,10 @@ export const PRE_ENGINEERED_MODULES: readonly PreEngineeredVariant[] = deepFreez
  * getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Medium').map((v) => v.blueprint);
  * // -> ['recipe_seekermissilerack_drag',
  * //     'recipe_seekermissilerack_lightweightthermal',
- * //     'recipe_seekermissilerackmedium_lockdown']
+ * //     'recipe_seekermissilerackmedium_lockdown',
+ * //     'Weapon_HighCapacity', 'Weapon_HighCapacity', 'Weapon_HighCapacity']
  *
- * getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5'); // -> []
+ * getPreEngineeredVariants('Int_Hyperdrive_Size2_Class1'); // -> []
  * ```
  */
 export function getPreEngineeredVariants(symbol: string): readonly PreEngineeredVariant[] {
@@ -123,7 +162,7 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
  * getPreEngineeredByBlueprint('recipe_seekermissilerack_drag').map((v) => v.symbol);
  * // -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
  *
- * getPreEngineeredByBlueprint('FSD_LongRange'); // -> []
+ * getPreEngineeredByBlueprint('NoSuchBlueprint'); // -> []
  * ```
  */
 export function getPreEngineeredByBlueprint(blueprint: string): readonly PreEngineeredVariant[] {
@@ -140,7 +179,7 @@ export function getPreEngineeredByBlueprint(blueprint: string): readonly PreEngi
  * @example
  * ```ts
  * isPreEngineered('Hpt_Railgun_Fixed_Medium'); // -> true
- * isPreEngineered('Int_Hyperdrive_Size5_Class5'); // -> false
+ * isPreEngineered('Int_Hyperdrive_Size2_Class1'); // -> false
  * ```
  */
 export function isPreEngineered(symbol: string): boolean {

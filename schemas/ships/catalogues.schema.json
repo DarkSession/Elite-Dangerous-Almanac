@@ -268,6 +268,16 @@
         "$ref": "#/definitions/experimentalEffect"
       }
     },
+    "preEngineeredModifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "method", "value"],
+      "properties": {
+        "label": { "$ref": "#/definitions/nonEmptyString" },
+        "method": { "enum": ["multiplicative", "additive", "overwrite"] },
+        "value": { "type": "number" }
+      }
+    },
     "preEngineeredVariant": {
       "type": "object",
       "additionalProperties": false,
@@ -278,7 +288,13 @@
         "blueprint": { "$ref": "#/definitions/nonEmptyString" },
         "grade": { "type": "integer", "minimum": 1, "maximum": 5 },
         "experimental": { "$ref": "#/definitions/nonEmptyString" },
-        "acquisition": { "enum": ["mercenary", "communityGoal"] }
+        "acquisition": { "enum": ["mercenary", "communityGoal", "techBroker"] },
+        "mercCoinCost": { "type": "integer", "exclusiveMinimum": 0 },
+        "modifiers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/preEngineeredModifier" }
+        }
       }
     },
     "preEngineeredCatalogue": {

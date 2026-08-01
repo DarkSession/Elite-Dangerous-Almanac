@@ -133,4 +133,10 @@ export {
     isPreEngineered,
     type PreEngineeredVariant,
     type PreEngineeredAcquisition,
+    type PreEngineeredModifier,
 } from './pre-engineered.js';
+export {
+    getPreEngineeredStats,
+    getPreEngineeredModifiers,
+    unresolvedModifiers,
+} from './pre-engineered-stats.js';

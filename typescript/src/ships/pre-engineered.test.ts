@@ -33,6 +33,7 @@ test('pinned pairings carry the expected base module, blueprint, grade and effec
             (v) =>
                 v.symbol === expected.symbol &&
                 v.blueprint === expected.blueprint &&
+                v.grade === expected.grade &&
                 (v.experimental ?? null) === (expected.experimental ?? null),
         );
         assert.equal(found.length, 1, `${expected.symbol} / ${expected.blueprint}`);
@@ -73,8 +74,8 @@ test('each variant carries the same display name as the module it fits as', () =
 });
 
 test('a Merc-shop blueprint starts at grade 2 — grade 1 is what you bought', () => {
-    // Only the Merc rows work this way. Community-goal rewards use ordinary journal
-    // blueprints, which do define a grade 1, and mostly arrive at grade 5 already.
+    // Only the Merc rows work this way. Community-goal and tech-broker rewards use
+    // ordinary journal blueprints, which do define a grade 1.
     for (const variant of PRE_ENGINEERED_MODULES) {
         if (variant.acquisition !== 'mercenary') continue;
         assert.equal(variant.grade, 1);
@@ -83,9 +84,11 @@ test('a Merc-shop blueprint starts at grade 2 — grade 1 is what you bought', (
     }
 });
 
-test('a community-goal reward records a real grade of a real blueprint', () => {
+test('a reward variant records a real grade of a real blueprint', () => {
+    // Both reward routes name an ordinary journal blueprint, so the grade recorded must
+    // be one the blueprint actually defines — including the grade-1 Guardian rows.
     for (const variant of PRE_ENGINEERED_MODULES) {
-        if (variant.acquisition !== 'communityGoal') continue;
+        if (variant.acquisition === 'mercenary') continue;
         const grades = Object.keys(BLUEPRINTS[variant.blueprint]!.grades);
         assert.ok(
             grades.includes(String(variant.grade)),
@@ -102,15 +105,32 @@ test('one base module can carry several pre-engineered variants', () => {
     );
 });
 
-test('the same blueprint on one module is two variants when the effect differs', () => {
-    // A community-goal reward is identified by its experimental too: the medium seeker
-    // rack has two High Capacity rewards that differ only in the effect applied.
+test('the same blueprint on one module is several variants when the effect differs', () => {
+    // A reward is identified by its experimental too: the medium seeker rack has three
+    // High Capacity variants that differ only in the effect applied.
     const { symbol, blueprint, experimentals } = fixture.sameBlueprintTwice;
     const found = getPreEngineeredVariants(symbol).filter((v) => v.blueprint === blueprint);
     assert.deepEqual(
-        found.map((v) => v.experimental),
+        found.map((v) => v.experimental ?? null),
         experimentals,
     );
+});
+
+test('even (symbol, blueprint, experimental) repeats — the grade separates them', () => {
+    // The medium Guardian Shard Cannon is sold pre-engineered with Long Range and no
+    // experimental twice: grade 5 as a community-goal reward, grade 1 from a tech
+    // broker. This is why the identity key has to include the grade.
+    const { symbol, blueprint, grades, acquisitions } = fixture.sameTripleDifferentGrade;
+    const found = getPreEngineeredVariants(symbol).filter((v) => v.blueprint === blueprint);
+    assert.deepEqual(
+        found.map((v) => v.grade),
+        grades,
+    );
+    assert.deepEqual(
+        found.map((v) => v.acquisition),
+        acquisitions,
+    );
+    assert.equal(new Set(found.map((v) => v.experimental ?? null)).size, 1);
 });
 
 test('getPreEngineeredVariants normalises input and misses cleanly', () => {
@@ -130,11 +150,15 @@ test('getPreEngineeredByBlueprint resolves case-insensitively and misses cleanly
 });
 
 test('an ordinary journal blueprint can also arrive pre-engineered', () => {
-    // The community-goal "FSD V1" rewards are Long Range drives, so a plain journal
-    // blueprint now resolves here too — not just the Merc-shop recipe_* keys.
+    // The "V1" drives are Long Range, so a plain journal blueprint resolves here too —
+    // not just the Merc-shop recipe_* keys — and by two different routes.
     const drives = getPreEngineeredByBlueprint('FSD_LongRange');
     assert.ok(drives.length > 0);
-    assert.ok(drives.every((v) => v.acquisition === 'communityGoal' && v.grade === 5));
+    assert.ok(drives.every((v) => v.grade === 5));
+    assert.deepEqual([...new Set(drives.map((v) => v.acquisition))].sort(), [
+        'communityGoal',
+        'techBroker',
+    ]);
 });
 
 test('isPreEngineered separates bought-engineered modules from stock ones', () => {
@@ -144,14 +168,14 @@ test('isPreEngineered separates bought-engineered modules from stock ones', () =
     }
 });
 
-test('a (symbol, blueprint, experimental) triple appears at most once', () => {
+test('a (symbol, blueprint, grade, experimental) quadruple appears at most once', () => {
     // No narrower key holds: one module carries several variants, one blueprint appears
-    // on several modules, and even (symbol, blueprint) repeats when only the effect
-    // differs. The triple is the identity of a variant.
-    const triples = PRE_ENGINEERED_MODULES.map((v) =>
-        `${v.symbol}|${v.blueprint}|${v.experimental ?? ''}`.toLowerCase(),
+    // on several modules, (symbol, blueprint) repeats when only the effect differs, and
+    // (symbol, blueprint, experimental) repeats when only the grade differs.
+    const keys = PRE_ENGINEERED_MODULES.map((v) =>
+        `${v.symbol}|${v.blueprint}|${v.grade}|${v.experimental ?? ''}`.toLowerCase(),
     );
-    assert.equal(new Set(triples).size, triples.length);
+    assert.equal(new Set(keys).size, keys.length);
 });
 
 test('one blueprint can be sold on more than one base module', () => {
@@ -174,4 +198,81 @@ test('the remaining upgrade is priced from the grade already applied', () => {
     assert.deepEqual(fromPurchase, getBlueprintCost(variant.blueprint, 5, 0));
     // Pricing from a later grade does drop the grades already paid for.
     assert.ok(total(getBlueprintCost(variant.blueprint, 5, 4)) < total(fromPurchase));
+});
+
+test('a Merc Coin price is carried by exactly the rows that are bought with one', () => {
+    const priced = PRE_ENGINEERED_MODULES.filter((v) => v.mercCoinCost !== undefined);
+    assert.equal(priced.length, fixture.modifierCounts.withMercCoinCost);
+    // Merc Coin is a currency of its own: only the shop rows have a price in it, and
+    // the reward routes are not bought at all.
+    assert.ok(priced.every((v) => v.acquisition === 'mercenary'));
+    assert.equal(
+        priced.length,
+        PRE_ENGINEERED_MODULES.filter((v) => v.acquisition === 'mercenary').length,
+    );
+    for (const v of priced) {
+        assert.ok(Number.isInteger(v.mercCoinCost) && v.mercCoinCost! > 0, v.symbol);
+    }
+    assert.equal(
+        priced.reduce((sum, v) => sum + v.mercCoinCost!, 0),
+        fixture.mercCoin.total,
+    );
+    assert.equal(Math.min(...priced.map((v) => v.mercCoinCost!)), fixture.mercCoin.cheapest);
+    assert.equal(Math.max(...priced.map((v) => v.mercCoinCost!)), fixture.mercCoin.dearest);
+});
+
+test('a stat block is carried by exactly the reward rows', () => {
+    // The reward routes publish the hand-set stats each variant arrives with. The Merc
+    // shop rows do not, and the catalogue omits rather than guesses — so the two sets
+    // are complements, and `mercCoinCost` and `modifiers` never appear together.
+    const withMods = PRE_ENGINEERED_MODULES.filter((v) => v.modifiers !== undefined);
+    assert.equal(withMods.length, fixture.modifierCounts.withModifiers);
+    assert.ok(withMods.every((v) => v.acquisition !== 'mercenary'));
+    assert.equal(
+        PRE_ENGINEERED_MODULES.filter((v) => v.modifiers === undefined).length,
+        fixture.modifierCounts.withoutModifiers,
+    );
+    assert.ok(PRE_ENGINEERED_MODULES.every((v) => !(v.modifiers && v.mercCoinCost !== undefined)));
+});
+
+test('every modifier is well formed and sorted by label', () => {
+    const methods = new Set(['multiplicative', 'additive', 'overwrite']);
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        if (!variant.modifiers) continue;
+        assert.ok(variant.modifiers.length > 0, variant.symbol);
+        for (const m of variant.modifiers) {
+            assert.ok(methods.has(m.method), `${variant.symbol}: bad method ${m.method}`);
+            assert.ok(Number.isFinite(m.value), `${variant.symbol}: ${m.label} is not finite`);
+        }
+        const labels = variant.modifiers.map((m) => m.label);
+        assert.deepEqual(labels, [...labels].sort(), `${variant.symbol}: modifiers unsorted`);
+        assert.equal(new Set(labels).size, labels.length, `${variant.symbol}: duplicate label`);
+    }
+});
+
+test('modifier values are the authored decimals, not raw decoding noise', () => {
+    // The source encodes modifiers in a 20-bit float, so decoding +20% yields 0.199997.
+    // Each stored value is the shortest decimal that re-encodes to the identical bits,
+    // which recovers the authored figure without inventing precision. Capping the
+    // decimal places guards that step: raw noise runs to six or more.
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        for (const m of variant.modifiers ?? []) {
+            const places = (String(m.value).split('.')[1] ?? '').length;
+            assert.ok(
+                places <= fixture.maxModifierDecimalPlaces,
+                `${variant.symbol}: ${m.label} = ${m.value} looks like undecoded float noise`,
+            );
+            assert.ok(
+                !String(m.value).includes('e'),
+                `${variant.symbol}: ${m.label} in exponent form`,
+            );
+        }
+    }
+});
+
+test('the modifier labels are the pinned set', () => {
+    const labels = [
+        ...new Set(PRE_ENGINEERED_MODULES.flatMap((v) => (v.modifiers ?? []).map((m) => m.label))),
+    ].sort();
+    assert.deepEqual(labels, fixture.modifierLabels);
 });

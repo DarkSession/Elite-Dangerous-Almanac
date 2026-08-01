@@ -1,14 +1,77 @@
 {
-  "description": "Ground truth for data/ships/pre-engineered.jsonc — the module variants that arrive already engineered, whether bought from the Merc-Coin shop or awarded for a community goal. A pre-engineered module has no symbol of its own, so each record pairs a base module `symbol` (joins to the module catalogues) with the `blueprint` baked in, the `grade` already applied, and an optional `experimental`. Neither symbol nor blueprint is unique on its own, and even (symbol, blueprint) repeats — the (symbol, blueprint, experimental) triple is the key. `counts` pins the catalogue size and its split by acquisition; `records` pins individual pairings; `multiVariant` pins that one base module carries several variants; `joins` pins that every record resolves against the module, blueprint and experimental catalogues.",
-  "count": 51,
-  "counts": { "mercenary": 21, "communityGoal": 30 },
+  "description": "Ground truth for data/ships/pre-engineered.jsonc — the module variants that arrive already engineered, whether bought from the Merc-Coin shop, awarded for a community goal, or unlocked at a tech broker. A pre-engineered module has no symbol of its own, so each record pairs a base module `symbol` (joins to the module catalogues) with the `blueprint` baked in, the `grade` already applied, and an optional `experimental`. No narrower key than the (symbol, blueprint, grade, experimental) quadruple is unique — the medium Guardian Shard Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the catalogue size and its split by acquisition; `records` pins individual pairings; `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable; `mercCoin` pins shop prices; `joins` pins that every record resolves against the module, blueprint and experimental catalogues.",
+  "count": 72,
+  "counts": {
+    "mercenary": 21,
+    "communityGoal": 30,
+    "techBroker": 21
+  },
+  "modifierCounts": {
+    "withModifiers": 51,
+    "withoutModifiers": 21,
+    "withMercCoinCost": 21
+  },
+  "modifierLabels": [
+    "AmmoClipSize",
+    "AmmoMaximum",
+    "ArmourPenetration",
+    "BootTime",
+    "BurstRateOfFire",
+    "BurstSize",
+    "CargoCapacity",
+    "DSS_PatchRadius",
+    "Damage",
+    "DistributorDraw",
+    "EnginesCapacity",
+    "EnginesRecharge",
+    "FSDHeatRate",
+    "FSDOptimalMass",
+    "FalloffRange",
+    "HeatEfficiency",
+    "Integrity",
+    "Jitter",
+    "KineticResistance",
+    "Mass",
+    "MaxAngle",
+    "MaximumRange",
+    "PowerCapacity",
+    "PowerDraw",
+    "ReloadTime",
+    "RoundsPerShot",
+    "ScannerRange",
+    "ScannerTimeToScan",
+    "ShotSpeed",
+    "SystemsCapacity",
+    "SystemsRecharge",
+    "ThermalLoad",
+    "ThermicResistance",
+    "WeaponsCapacity",
+    "WeaponsRecharge"
+  ],
+  "maxModifierDecimalPlaces": 5,
+  "fullyUnresolved": {
+    "count": 5,
+    "symbols": [
+      "Hpt_MultiCannon_Fixed_Medium",
+      "Hpt_Guardian_GaussCannon_Fixed_Small",
+      "Hpt_Guardian_GaussCannon_Fixed_Medium",
+      "Hpt_HeatSinkLauncher_Turret_Tiny",
+      "Int_DetailedSurfaceScanner_Tiny"
+    ]
+  },
+  "mercCoin": {
+    "total": 13000,
+    "cheapest": 300,
+    "dearest": 950
+  },
   "records": [
     {
       "symbol": "Hpt_Railgun_Fixed_Medium",
       "name": "Rail Gun",
       "blueprint": "recipe_railgun_longshot",
       "grade": 1,
-      "acquisition": "mercenary"
+      "acquisition": "mercenary",
+      "mercCoinCost": 950
     },
     {
       "symbol": "Hpt_Railgun_Fixed_Medium",
@@ -16,7 +79,44 @@
       "blueprint": "Weapon_HighCapacity",
       "grade": 5,
       "acquisition": "communityGoal",
-      "experimental": "special_feedback_cascade_cooled"
+      "experimental": "special_feedback_cascade_cooled",
+      "modifiers": [
+        {
+          "label": "AmmoClipSize",
+          "method": "multiplicative",
+          "value": 1
+        },
+        {
+          "label": "AmmoMaximum",
+          "method": "multiplicative",
+          "value": 1
+        },
+        {
+          "label": "FalloffRange",
+          "method": "multiplicative",
+          "value": 5
+        },
+        {
+          "label": "Mass",
+          "method": "multiplicative",
+          "value": 0.9
+        },
+        {
+          "label": "MaximumRange",
+          "method": "multiplicative",
+          "value": 1
+        },
+        {
+          "label": "PowerDraw",
+          "method": "multiplicative",
+          "value": 0.65
+        },
+        {
+          "label": "ReloadTime",
+          "method": "multiplicative",
+          "value": 0.25
+        }
+      ]
     },
     {
       "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
@@ -24,14 +124,135 @@
       "blueprint": "Weapon_HighCapacity",
       "grade": 5,
       "acquisition": "communityGoal",
-      "experimental": "special_super_penetrator"
+      "experimental": "special_super_penetrator",
+      "modifiers": [
+        {
+          "label": "AmmoClipSize",
+          "method": "multiplicative",
+          "value": 1
+        },
+        {
+          "label": "AmmoMaximum",
+          "method": "multiplicative",
+          "value": 1
+        },
+        {
+          "label": "Damage",
+          "method": "multiplicative",
+          "value": -0.2
+        },
+        {
+          "label": "Mass",
+          "method": "multiplicative",
+          "value": 0.7
+        },
+        {
+          "label": "PowerDraw",
+          "method": "multiplicative",
+          "value": 0.25
+        }
+      ]
     },
     {
       "symbol": "Int_PowerDistributor_Size5_Class5",
       "name": "Power Distributor",
       "blueprint": "recipe_powerdistributor_balanced",
       "grade": 1,
-      "acquisition": "mercenary"
+      "acquisition": "mercenary",
+      "mercCoinCost": 500
+    },
+    {
+      "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+      "name": "Guardian Shard Cannon",
+      "blueprint": "Weapon_LongRange",
+      "grade": 1,
+      "acquisition": "techBroker",
+      "modifiers": [
+        {
+          "label": "ArmourPenetration",
+          "method": "multiplicative",
+          "value": 1.02
+        },
+        {
+          "label": "DistributorDraw",
+          "method": "multiplicative",
+          "value": 4.2769
+        },
+        {
+          "label": "FalloffRange",
+          "method": "multiplicative",
+          "value": -0.11765
+        },
+        {
+          "label": "Jitter",
+          "method": "additive",
+          "value": -3.5
+        },
+        {
+          "label": "Mass",
+          "method": "multiplicative",
+          "value": 0.5
+        },
+        {
+          "label": "MaximumRange",
+          "method": "multiplicative",
+          "value": 0.7647
+        },
+        {
+          "label": "PowerDraw",
+          "method": "multiplicative",
+          "value": 1.3
+        },
+        {
+          "label": "ShotSpeed",
+          "method": "multiplicative",
+          "value": 2.1497
+        },
+        {
+          "label": "ThermalLoad",
+          "method": "multiplicative",
+          "value": 15.5
+        }
+      ]
+    },
+    {
+      "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
+      "name": "Frame Shift Drive (SCO)",
+      "blueprint": "FSD_LongRange",
+      "grade": 5,
+      "acquisition": "techBroker",
+      "modifiers": [
+        {
+          "label": "BootTime",
+          "method": "multiplicative",
+          "value": -0.8
+        },
+        {
+          "label": "FSDHeatRate",
+          "method": "multiplicative",
+          "value": 0.2
+        },
+        {
+          "label": "FSDOptimalMass",
+          "method": "multiplicative",
+          "value": 0.7
+        },
+        {
+          "label": "Integrity",
+          "method": "multiplicative",
+          "value": -0.3
+        },
+        {
+          "label": "Mass",
+          "method": "multiplicative",
+          "value": 0.3
+        },
+        {
+          "label": "PowerDraw",
+          "method": "multiplicative",
+          "value": 0.15
+        }
+      ]
     }
   ],
   "multiVariant": {
@@ -41,19 +262,81 @@
       "recipe_seekermissilerack_lightweightthermal",
       "recipe_seekermissilerackmedium_lockdown",
       "Weapon_HighCapacity",
+      "Weapon_HighCapacity",
       "Weapon_HighCapacity"
     ]
   },
   "sameBlueprintTwice": {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "blueprint": "Weapon_HighCapacity",
-    "experimentals": ["special_drag_munitions", "special_fsd_interrupt"]
+    "experimentals": [
+      "special_drag_munitions",
+      "special_fsd_interrupt",
+      "special_thermal_cascade"
+    ]
   },
-  "notPreEngineered": ["Int_Hyperdrive_Size5_Class5", "Int_ShieldGenerator_Size1_Class4"],
+  "sameTripleDifferentGrade": {
+    "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+    "blueprint": "Weapon_LongRange",
+    "grades": [
+      5,
+      1
+    ],
+    "acquisitions": [
+      "communityGoal",
+      "techBroker"
+    ]
+  },
+  "resolved": {
+    "fsdV1Size5": {
+      "symbol": "Int_Hyperdrive_Size5_Class5",
+      "blueprint": "FSD_LongRange",
+      "base": {
+        "optMass": 1050,
+        "mass": 20,
+        "integrity": 120
+      },
+      "engineered": {
+        "optMass": 1785,
+        "mass": 26,
+        "integrity": 84
+      },
+      "unresolved": [
+        "FSDHeatRate"
+      ]
+    },
+    "guardianShardMediumG1": {
+      "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+      "blueprint": "Weapon_LongRange",
+      "grade": 1,
+      "base": {
+        "mass": 4,
+        "powerDraw": 1.21
+      },
+      "engineered": {
+        "mass": 6,
+        "powerDraw": 2.783
+      },
+      "unresolved": [
+        "ArmourPenetration",
+        "DistributorDraw",
+        "FalloffRange",
+        "Jitter",
+        "MaximumRange",
+        "ShotSpeed",
+        "ThermalLoad"
+      ]
+    }
+  },
+  "notPreEngineered": [
+    "Int_Hyperdrive_Size2_Class1",
+    "Int_ShieldGenerator_Size1_Class4"
+  ],
   "joins": {
     "everySymbolIsAKnownModule": true,
     "everyBlueprintIsAKnownBlueprint": true,
     "everyExperimentalIsAKnownEffect": true,
-    "everyMercenaryBlueprintStartsAtGradeTwo": true
+    "everyMercenaryBlueprintStartsAtGradeTwo": true,
+    "everyRewardGradeIsARealGrade": true
   }
 }
