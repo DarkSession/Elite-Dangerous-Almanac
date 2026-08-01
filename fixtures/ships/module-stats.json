@@ -2,10 +2,10 @@
   "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc. Cross-language validation.",
   "counts": {
     "standard": 268,
-    "internal": 373,
+    "internal": 374,
     "hardpoint": 159,
     "utility": 35,
-    "all": 835
+    "all": 836
   },
   "spot": [
     {
@@ -54,6 +54,18 @@
       "restrictedToShips": [
         "Explorer_NX"
       ]
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size1_Class4",
+      "name": "Shield Generator",
+      "optMass": 25,
+      "minMass": 13,
+      "maxMass": 63,
+      "optMultiplier": 1.1,
+      "minMultiplier": 0.6,
+      "maxMultiplier": 1.6,
+      "shieldRegenRate": 1,
+      "shieldBrokenRegenRate": 1.6
     }
   ]
 }

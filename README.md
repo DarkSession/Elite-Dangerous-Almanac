@@ -456,10 +456,10 @@ its stats together** (see [Module stats](#ship-and-module-stats) below):
 | Import                    | Export              | What's in it                                            | Entries |
 | ------------------------- | ------------------- | ------------------------------------------------------- | ------- |
 | `ships/modules-standard`  | `STANDARD_MODULES`  | Core internals (armour, power plant, thrusters, FSD, …) | 521     |
-| `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 482     |
+| `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 483     |
 | `ships/modules-hardpoint` | `HARDPOINT_MODULES` | Hardpoint weapons and tools                             | 159     |
 | `ships/modules-utility`   | `UTILITY_MODULES`   | Utility-mount fittings (chaff, heat sinks, boosters, …) | 35      |
-| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated                                  | 1197    |
+| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated                                  | 1198    |
 
 The query functions live in `ships/modules` and hold no data — hand them whichever
 catalogue you imported:
@@ -700,6 +700,47 @@ sumMaterials(
 
 The two data modules stay decoupled — `getBlueprintCost` never pulls in the experimental
 catalogue — so combine them yourself with `sumMaterials` only when you need both.
+
+#### Modules you can buy already engineered
+
+Some outfitting rows are sold **pre-engineered** — the Mercenary shop's rail gun, missile
+racks, power distributors and so on. These have **no symbol of their own**: the game sells
+an ordinary module with engineering already applied, so a journal reports the base symbol
+plus an `Engineering` block. `ships/pre-engineered` supplies the link the module and
+blueprint catalogues cannot: which stock modules are sold pre-engineered, and with what.
+
+```ts
+import {
+  getPreEngineeredVariants,
+  getPreEngineeredByBlueprint,
+  isPreEngineered,
+} from "@elite-dangerous-almanac/core/ships/pre-engineered";
+
+isPreEngineered("Hpt_Railgun_Fixed_Medium"); // -> true
+
+// One module can be sold in several flavours…
+getPreEngineeredVariants("Hpt_BasicMissileRack_Fixed_Medium").map(
+  (v) => v.blueprint,
+);
+// -> ['recipe_seekermissilerack_drag',
+//     'recipe_seekermissilerack_lightweightthermal',
+//     'recipe_seekermissilerackmedium_lockdown']
+
+// …and one blueprint on several modules, so both lookups return arrays.
+getPreEngineeredByBlueprint("recipe_seekermissilerack_drag").map(
+  (v) => v.symbol,
+);
+// -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
+```
+
+Every variant arrives at **grade 1**, which is why these blueprints' own recipes start at
+grade 2 — the first grade came with the module. Price the rest of the climb by passing the
+grade you already have:
+
+```ts
+const bought = getPreEngineeredByBlueprint("recipe_railgun_longshot")[0];
+getBlueprintCost(bought.blueprint, 5, bought.grade); // grades 2-5 only
+```
 
 ## Market commodities
 

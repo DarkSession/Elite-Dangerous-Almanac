@@ -2,6 +2,20 @@
 
 **Library snapshot:** 2026-07-24. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
+**Revision 2026-08-01 (UTC) — completeness pass over the outfitting and engineering
+catalogues.** The four module catalogues, `blueprints.jsonc` and
+`experimental-effects.jsonc` were re-checked against
+[EDSY](https://github.com/taleden/EDSY) `eddb.js` (commit
+`882a67ee03b69a05e139134a153d8c7c18e60250`, acquired 2026-08-01 UTC) and the in-game /
+[Inara](https://inara.cz/elite/blueprints/) blueprint and experimental-effect registries,
+looking for records those sources carry that the earlier FDevIDs/coriolis-data join had
+dropped. Every value below comes from EDSY or the in-game registry. Added:
+`Int_ShieldGenerator_Size1_Class4`, `recipe_guardianweapon_sturdy`,
+`special_feedback_cascade`. Corrected: `special_feedback_cascade_cooled`,
+`special_plasma_slug_cooled`, `special_super_penetrator_cooled` and
+`special_incendiary_rounds`, each of which had lost modifiers its EDSY source carries.
+Ship hulls were checked and needed no change.
+
 Attribution for the ship and outfitting data files in this directory. This file
 is the long form; each data file also repeats its own credit in a comment header,
 so the provenance meets you where you meet the data.
@@ -78,8 +92,8 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   (columns `id,symbol,category,name,mount,guidance,ship,class,rating,entitlement`),
   same licence note as above.
 - **Identity derivation:** the 1190 FDevIDs modules are carried over in CSV order within
-  each category file (the Operations/Lynx additions below bring the internal catalogue to
-  482, all four to 1197). The CSV's numeric `id` column is dropped — modules are keyed by
+  each category file (the Operations/Lynx additions and the 1B shield generator below bring
+  the internal catalogue to 483, all four to 1198). The CSV's numeric `id` column is dropped — modules are keyed by
   `symbol`. `class` is FDevIDs' `class` — the module size (0–8) — and `rating`
   its grade letter (A–I); together they are the "5A" the outfitting screen shows.
   `mount` (Fixed / Gimballed / Turreted) and `guidance` (Dumbfire / Seeker / Swarm)
@@ -142,14 +156,41 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   - **Corrosion Resistant Cargo Racks** `Int_CorrosionProofCargoRack_Size{2,5,6}_Class1`
     (capacity 4/32/64) and the built-in **Cargo Hatch** `ModularCargoBayDoor`
     (power 0.6 MW) were added — active EDSY records the FDevIDs join had omitted.
+  - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
+    in the game: every other shield-generator size carries all five ratings, and size 1
+    ran E/D/C/A with **B missing**. The module is real, so the record was added with the
+    stats its sources do expose — `optMass` 25 t, `minMass` 13 t, `maxMass` 63 t,
+    multipliers 0.6 / 1.1 / 1.6, regen 1.0 / 1.6 MJ/s. **`mass`, `integrity` and
+    `powerDraw` are deliberately omitted**: EDSY carries this variant commented out with
+    those three fields blank (identity `fdid` 128064261 and the multipliers only), and no
+    other registry publishes them. Omitted rather than interpolated from the neighbouring
+    ratings — see the Lynx note above for the same rule.
 - **Deliberately not modelled here:** credit / Merc-Coin cost, passenger capacity, and
   fighter-bay/rebuild counts — the module schema carries none of these for any record,
   so the dossier's cost/capacity/bay figures are noted but not stored. The **Merc-Coin
   pre-engineered weapon variants** are not separate module records: their base module
   symbols already exist, and the pre-engineering is expressed as the Operations
-  blueprints below. The **Nomad** (`Lander01`) is a ship-launched vehicle, not a
+  blueprints below — the pairing between the two is `pre-engineered.jsonc` (next section). The **Nomad** (`Lander01`) is a ship-launched vehicle, not a
   shipyard hull, and its `Vehicle_Lander01_*` weapons carry no category/class/rating the
   module schema requires, so neither the vessel nor its modules are added.
+- **Inclusion rule — a public registry has to corroborate the record.** A module symbol is
+  carried here only when [FDevIDs](https://github.com/EDCD/FDevIDs),
+  [coriolis-data](https://github.com/EDCD/coriolis-data) or
+  [EDSY](https://github.com/taleden/EDSY) lists it as player-obtainable outfitting. That
+  keeps `getModuleBySymbol` and `getModulesForShip` a player-facing outfitting view rather
+  than an inventory of every symbol the game has ever used. Two consequences worth knowing
+  before "fixing" an apparent omission:
+  - **Symbols outside outfitting are not stored** — hull geometry, ship-launched-fighter
+    weapons and internals, station fittings, and non-purchasable internal or test variants.
+    A journal will never ask you to price these, and the module schema has no
+    category/class/rating for most of them.
+  - **A named variant with no published stats is not stored either.** Where a registry
+    records only that a variant exists, adding it would mean inventing the mass, power and
+    integrity a fitting calculator needs. The one exception is documented above
+    (`Int_ShieldGenerator_Size1_Class4`), where the multipliers *are* published and only
+    the three unknown fields are omitted.
+  - The built-in **Cargo Hatch** is stored once as `ModularCargoBayDoor`; per-hull
+    duplicates of the same fitting are not carried separately.
 
 ## Engineering (blueprints and experimental effects)
 
@@ -161,9 +202,9 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   (each grade `{ features, materials }`); each experimental effect is
   `{ name, modifiers, materials, description? }`.
 - **Display names:** each blueprint and experimental effect carries its in-game `name`.
-  Effect names are EDSY `expeffect[].name` (all 86); blueprint names are coriolis
+  Effect names are EDSY `expeffect[].name` (all 87); blueprint names are coriolis
   `blueprint.name` for the 81 journal-keyed blueprints and the Operations dossier's
-  display label for the 26 `recipe_*` ones. Read them with `getBlueprintName` /
+  display label for the 27 `recipe_*` ones. Read them with `getBlueprintName` /
   `getExperimentalEffectName`.
 - **Blueprint source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
   `modifications/blueprints.json` (grade `features` + `components`) + `modifications.json`
@@ -193,6 +234,14 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   recipes begin at grade 2 because the bought module already contains the grade-1
   pre-engineering; the general/core/optional recipes (fuel scoop, laser plasma-conversion)
   span grades 1–5, and the Anti-Guardian recipe is grade 1 only.
+- **Anti-Guardian Zone Resistance is keyed twice.** The registry exposes the one
+  player-facing blueprint under a module key and a weapon key —
+  `recipe_guardianmodule_sturdy` and **`recipe_guardianweapon_sturdy`** — with the same
+  display name, the same grade-1-only `GuardianModuleResistance` +100%, and the same
+  recipe (2×`TG_Abrasion03`, 1×`TG_CausticCrystal`). Both are stored so a journal or saved
+  build referencing either resolves; `blueprintTargets` scopes the weapon key to weapons
+  and the module key to the wider family list. The two are intentional duplicates, not a
+  copy-paste slip — do not dedupe them.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
   `expeffect` — **coriolis-data carries neither the numeric experimental modifiers nor
   their recipes**, so both come from EDSY, whose code is (c) taleden under a
@@ -211,6 +260,20 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   shot speed −16.6667%, FSD Interrupt damage −30% / burst interval +50%). Their
   one-application `materials` are from the same in-game / Inara registry (a Merc-Coin
   amount is also charged but is not stored). All target weapons in the compatibility map.
+- **Feedback Cascade (`special_feedback_cascade`) — added.** The catalogue carried only
+  the pre-engineered rail-gun variant `special_feedback_cascade_cooled`; the plain effect
+  players apply themselves was missing. EDSY holds it commented out (`wpnx_feca`, marked
+  "verify mats"), which is why the earlier import skipped it. It is damage −20% with the
+  same one-application recipe as the cooled variant (5×`SymmetricKeys`,
+  5×`ShieldEmitters`, 5×`FilamentComposites`).
+- **Pre-engineered `_cooled` variants now keep their base effect's modifiers.** Each
+  `_cooled` rail-gun variant is its base effect **plus** a −40% thermal load, but three
+  had been stored carrying the thermal cut alone: `special_feedback_cascade_cooled` was
+  missing damage −20%, `special_plasma_slug_cooled` damage −10% and ammo −100%, and
+  `special_super_penetrator_cooled` reload +50%. All three now match EDSY's `hrgx_*`
+  entries. `special_incendiary_rounds` likewise regained its burst interval +5.2632%.
+  Damage-**type** splits (kinetic/thermal/explosive weights) stay in `description` rather
+  than `modifiers`, as they already do for High Yield Shell and Inertial Impact.
 - **Journal Labels** for both sources are resolved via EDSY's own attribute table
   (`attr → fdattr`), the authority for the exact Label strings the game writes
   (e.g. coriolis `optmass` on an FSD → `FSDOptimalMass`, `maxfuel` → `MaxFuelPerJump`).
@@ -222,6 +285,22 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   simply have no base value for the calculator to fold, so they are stored, not
   computed). The dormant `Decorative_*` transformations EDSY also lists are **not**
   included — internal visual/test entries, not obtainable engineering.
+- **Blueprint keys deliberately left out:**
+  - **Per-module-group aliases, not extra blueprints.** A blueprint that applies to several
+    module groups is exposed once per group under a `recipe_sensor_<group>_<mod>`-style
+    key whose display name points back at the canonical blueprint — for example the
+    long-range sensor modification appears once for sensors and again for each scanner
+    type. The blueprints they point at are already stored under their journal
+    `BlueprintName`s (`Sensor_LongRange`, `Scanner_WideAngle`, `Misc_LightWeight`, …),
+    which is what the journal actually writes. Storing the aliases would multiply one
+    blueprint into many identical records.
+  - **Generic community-goal and tech-broker wrappers** ("Unique Modification", "Unique
+    Enhancement") — reward placeholders that carry no grades or features, so there is
+    nothing for the calculator to fold.
+  - **Effects with no published magnitude** are not stored with invented numbers. Where a
+    qualitative effect *is* published with a recipe it is carried with an empty `modifiers`
+    list and a `description`, as described above; where neither a magnitude nor a recipe is
+    published, it is left out entirely.
 - **Calculator:** `typescript/src/ships/engineering.ts` (`computeModifiers`), wired
   into `ShipLoadout.applyBlueprint`. Validated to reproduce the real "Deep Black"
   export's engineered figures — `FSDOptimalMass` 4670 → **7528.04** at G5 Long Range
@@ -233,6 +312,41 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   `grade − 1` to price a single grade alone. Fold in an experimental effect's
   `getExperimentalEffectMaterials` with `sumMaterials` for the grand total; the two data
   modules stay decoupled so neither pulls the other into a bundle.
+
+## Pre-engineered modules
+
+- **File:** `pre-engineered.jsonc`, validated by `fixtures/ships/pre-engineered.json`.
+  Read it with `getPreEngineeredVariants` / `getPreEngineeredByBlueprint` /
+  `isPreEngineered` in `typescript/src/ships/pre-engineered.ts`.
+- **Why it is a catalogue of its own.** A pre-engineered module has **no symbol of its
+  own** — the game sells an ordinary module with engineering already applied, and a
+  journal `Loadout` reports it as the base `symbol` plus an `Engineering` block. So the
+  module catalogues already hold every one of these modules and `blueprints.jsonc`
+  already holds every one of these blueprints; what was missing was the **link** saying
+  which stock modules can be bought already engineered, and with what. Each record is a
+  pairing — `{ symbol, name, blueprint, grade, acquisition }` — not a module, which is
+  also why it is exempt from the "unique symbols per catalogue" rule the other
+  array-shaped files follow.
+- **Neither column is a key on its own.** One base module is sold in several
+  pre-engineered flavours (the 2B Missile Rack has three), and one blueprint is sold on
+  several base modules (the Drag seeker on both the medium and the large rack). The
+  `(symbol, blueprint)` pair is what is unique, so both lookups return arrays.
+- **Source:** the in-game outfitting and blueprint registries, cross-checked against the
+  current [Inara outfitting](https://inara.cz/elite/outfitting/) and
+  [blueprint](https://inara.cz/elite/blueprints/) registries and Frontier's update notes
+  for the release that introduced each variant. Acquired 2026-08-01 UTC.
+- **`grade` is 1 for every current record**, and that is the point: the purchased module
+  already contains the grade-1 pre-engineering, which is exactly why these blueprints'
+  own recipes start at grade 2 (see the Operations section above). The two facts are
+  consistent by construction and a test asserts it — `getBlueprintCost(bp, target, 1)`
+  prices taking a bought variant the rest of the way.
+- **Deliberately not stored:** the Merc-Coin price. It is a currency, not a material, and
+  no catalogue in this repository carries prices — the same rule the module and ship
+  catalogues follow for credits.
+- **Not included:** engineered modules that are one-off mission or salvage rewards rather
+  than a repeatable outfitting row. Those arrive in a build as their base symbol plus an
+  `Engineering.Modifiers` block, which `ShipLoadout` already applies directly; there is no
+  stable catalogue row to point at.
 
 ## Jump-range and fuel algorithm
 

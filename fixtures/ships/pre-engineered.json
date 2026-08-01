@@ -1,0 +1,41 @@
+{
+  "description": "Ground truth for data/ships/pre-engineered.jsonc — the purchasable pre-engineered module variants. A pre-engineered module has no symbol of its own, so each record pairs a base module `symbol` (joins to the module catalogues) with the `blueprint` baked in at purchase and the `grade` already applied. Neither column is unique on its own: one module is sold in several flavours and one blueprint is sold on several modules, so the (symbol, blueprint) pair is the key. `count` pins the catalogue size; `records` pins individual pairings; `multiVariant` pins the several-flavours case; `joins` pins that every record resolves against the module and blueprint catalogues.",
+  "count": 21,
+  "records": [
+    {
+      "symbol": "Hpt_Railgun_Fixed_Medium",
+      "name": "Rail Gun",
+      "blueprint": "recipe_railgun_longshot",
+      "grade": 1,
+      "acquisition": "mercenary"
+    },
+    {
+      "symbol": "Int_PowerDistributor_Size5_Class5",
+      "name": "Power Distributor",
+      "blueprint": "recipe_powerdistributor_balanced",
+      "grade": 1,
+      "acquisition": "mercenary"
+    },
+    {
+      "symbol": "Int_DetailedSurfaceScanner_Tiny",
+      "name": "Detailed Surface Scanner",
+      "blueprint": "recipe_detailedsurfacescanner_longrange",
+      "grade": 1,
+      "acquisition": "mercenary"
+    }
+  ],
+  "multiVariant": {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+    "blueprints": [
+      "recipe_seekermissilerack_drag",
+      "recipe_seekermissilerack_lightweightthermal",
+      "recipe_seekermissilerackmedium_lockdown"
+    ]
+  },
+  "notPreEngineered": ["Int_Hyperdrive_Size5_Class5", "Int_ShieldGenerator_Size1_Class4"],
+  "joins": {
+    "everySymbolIsAKnownModule": true,
+    "everyBlueprintIsAKnownBlueprint": true,
+    "everyBlueprintStartsAtGradeTwo": true
+  }
+}

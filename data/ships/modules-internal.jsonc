@@ -86,6 +86,21 @@
     "shieldBrokenRegenRate": 1.6
   },
   {
+    "symbol": "Int_ShieldGenerator_Size1_Class4",
+    "category": "internal",
+    "name": "Shield Generator",
+    "class": 1,
+    "rating": "B",
+    "optMass": 25,
+    "minMass": 13,
+    "maxMass": 63,
+    "optMultiplier": 1.1,
+    "minMultiplier": 0.6,
+    "maxMultiplier": 1.6,
+    "shieldRegenRate": 1,
+    "shieldBrokenRegenRate": 1.6
+  },
+  {
     "symbol": "Int_ShieldGenerator_Size1_Class5",
     "category": "internal",
     "name": "Shield Generator",

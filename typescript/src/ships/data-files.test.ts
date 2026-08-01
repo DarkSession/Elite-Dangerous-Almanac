@@ -39,6 +39,7 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'ships.jsonc': 'shipCatalogue',
     'blueprints.jsonc': 'blueprintCatalogue',
     'experimental-effects.jsonc': 'experimentalCatalogue',
+    'pre-engineered.jsonc': 'preEngineeredCatalogue',
 };
 
 // Ajv 6 is CommonJS; require it directly so Node's synchronous JSONC ESM hook does
@@ -57,8 +58,9 @@ function schemaDefinition(name: string): string {
 test('data/ships holds the expected number of catalogues', () => {
     // 5 catalogues carrying identity + stats (ships + 4 module categories, each hull
     // and module now one record) + 2 engineering catalogues (blueprints — each grade
-    // carrying its modifiers and its materials — and experimental-effects).
-    assert.equal(DATA_FILES.length, 7);
+    // carrying its modifiers and its materials — and experimental-effects) + the
+    // pre-engineered pairings joining a bought variant to the blueprint baked into it.
+    assert.equal(DATA_FILES.length, 8);
 });
 
 for (const name of DATA_FILES) {
@@ -96,6 +98,12 @@ for (const name of DATA_FILES) {
     });
 
     test(`${name} has unique symbols when it is symbol-keyed`, () => {
+        // `pre-engineered.jsonc` is exempt by design: its records are *pairings*, not
+        // modules, and one base module is sold in several pre-engineered flavours — so
+        // `symbol` repeats there. Neither column is unique on its own; the invariant
+        // that holds is on the (symbol, blueprint) pair, asserted in
+        // pre-engineered.test.ts.
+        if (name === 'pre-engineered.jsonc') return;
         const parsed: unknown = JSON.parse(
             stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
         );

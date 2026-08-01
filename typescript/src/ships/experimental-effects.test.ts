@@ -27,6 +27,37 @@ test('getExperimentalEffectName resolves case-insensitively and misses cleanly',
     assert.equal(getExperimentalEffectName('nope'), null);
 });
 
+test('Feedback Cascade ships as both the plain and the pre-engineered cooled effect', () => {
+    assert.deepEqual(getExperimentalEffect('special_feedback_cascade'), [
+        { label: 'Damage', method: 'multiplicative', value: -0.2 },
+    ]);
+    // The cooled rail-gun variant keeps that damage penalty and adds its thermal cut.
+    assert.deepEqual(getExperimentalEffect('special_feedback_cascade_cooled'), [
+        { label: 'Damage', method: 'multiplicative', value: -0.2 },
+        { label: 'ThermalLoad', method: 'multiplicative', value: -0.4 },
+    ]);
+    // Both are one application of the same recipe.
+    assert.deepEqual(
+        getExperimentalEffectMaterials('special_feedback_cascade'),
+        getExperimentalEffectMaterials('special_feedback_cascade_cooled'),
+    );
+});
+
+test('pre-engineered cooled effects keep every modifier of their base effect', () => {
+    // Each `_cooled` variant is its base effect plus a -40% thermal load.
+    for (const base of ['special_plasma_slug', 'special_super_penetrator']) {
+        const plain = getExperimentalEffect(base)!;
+        const cooled = getExperimentalEffect(`${base}_cooled`)!;
+        for (const modifier of plain) {
+            assert.ok(
+                cooled.some((c) => c.label === modifier.label && c.value === modifier.value),
+                `${base}_cooled drops ${modifier.label}`,
+            );
+        }
+        assert.ok(cooled.some((c) => c.label === 'ThermalLoad' && c.value === -0.4));
+    }
+});
+
 test('an effect either has numeric modifiers or a description (never neither)', () => {
     // The qualitative weapon-combat effects (e.g. Auto Loader) expose a gameplay flag
     // with no numeric magnitude, so they carry an empty `modifiers` list and a

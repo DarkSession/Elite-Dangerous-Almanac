@@ -118,3 +118,11 @@ export {
     getExperimentalEffectName,
     getExperimentalEffectMaterials,
 } from './experimental-effects.js';
+export {
+    PRE_ENGINEERED_MODULES,
+    getPreEngineeredVariants,
+    getPreEngineeredByBlueprint,
+    isPreEngineered,
+    type PreEngineeredVariant,
+    type PreEngineeredAcquisition,
+} from './pre-engineered.js';

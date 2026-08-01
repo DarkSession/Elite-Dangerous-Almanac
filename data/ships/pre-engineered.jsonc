@@ -1,0 +1,176 @@
+/*
+ * **Pre-engineered module variants** — the outfitting rows you buy already engineered,
+ * each mapped to the base module symbol it fits as and the blueprint baked into it.
+ *
+ * Sources: the in-game outfitting and blueprint registries, cross-checked against
+ *          Inara (https://inara.cz/elite/outfitting/, https://inara.cz/elite/blueprints/)
+ *          and Frontier's update notes for the release that introduced each variant.
+ *          The underlying values are Elite Dangerous game data, property of Frontier
+ *          Developments plc, redistributed under Frontier's media-usage terms:
+ *          https://forums.frontier.co.uk/threads/510879/
+ *
+ * A pre-engineered module has **no symbol of its own**: the game sells an ordinary
+ * module with engineering already applied, and a journal `Loadout` reports it as the
+ * base `symbol` plus an `Engineering` block. So each record here is a *pairing*, not a
+ * new module — `symbol` joins to the module catalogues, `blueprint` to
+ * `blueprints.jsonc`, and `grade` is the grade already applied at purchase.
+ *
+ * `acquisition` says where the variant comes from: `"mercenary"` for the Merc-Coin
+ * shop rows. The Merc-Coin price itself is deliberately not stored — it is a currency,
+ * and no catalogue in this repository carries prices.
+ *
+ * The blueprint recipes for these keys start at grade 2 precisely because grade 1 is
+ * what the purchased module already contains; `getBlueprintCost(bp, target, 1)` prices
+ * taking one of these the rest of the way.
+ *
+ * Full provenance: data/ships/SOURCES.md.
+ */
+[
+  {
+    "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
+    "name": "Abrasion Blaster",
+    "blueprint": "recipe_abrasionblaster_farreaching",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_CausticMissile_Fixed_Medium",
+    "name": "Enzyme Missile Rack",
+    "blueprint": "recipe_enzymemissilerack_highyield",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_Slugshot_Gimbal_Small",
+    "name": "Fragment Cannon",
+    "blueprint": "recipe_fragmentcannonsmall_doublescreaming",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_Slugshot_Gimbal_Large",
+    "name": "Fragment Cannon",
+    "blueprint": "recipe_fragmentcannonlarge_doublescreaming",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_MiningLaser_Fixed_Small",
+    "name": "Mining Laser",
+    "blueprint": "recipe_mininglaser_longrange",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_MultiCannon_Fixed_Medium",
+    "name": "Multi-Cannon",
+    "blueprint": "recipe_multicannon_rapid",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_Railgun_Fixed_Medium",
+    "name": "Rail Gun",
+    "blueprint": "recipe_railgun_longshot",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+    "name": "Seeker Missile Rack",
+    "blueprint": "recipe_seekermissilerack_drag",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+    "name": "Seeker Missile Rack",
+    "blueprint": "recipe_seekermissilerack_drag",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+    "name": "Seeker Missile Rack",
+    "blueprint": "recipe_seekermissilerack_lightweightthermal",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+    "name": "Seeker Missile Rack",
+    "blueprint": "recipe_seekermissilerackmedium_lockdown",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_CargoRack_Size5_Class1",
+    "name": "Cargo Rack",
+    "blueprint": "recipe_cargoracks5c1_extended",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_CargoRack_Size6_Class1",
+    "name": "Cargo Rack",
+    "blueprint": "recipe_cargoracks6c1_extended",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_DetailedSurfaceScanner_Tiny",
+    "name": "Detailed Surface Scanner",
+    "blueprint": "recipe_detailedsurfacescanner_longrange",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_ModuleReinforcement_Size5_Class2",
+    "name": "Module Reinforcement Package",
+    "blueprint": "recipe_modulereinforcement_heavyduty",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size3_Class2",
+    "name": "Power Distributor",
+    "blueprint": "recipe_powerdistributors3c2_supportfocused",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size3_Class5",
+    "name": "Power Distributor",
+    "blueprint": "recipe_powerdistributors3c5_supportfocused",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size4_Class2",
+    "name": "Power Distributor",
+    "blueprint": "recipe_powerdistributors4c2_supportfocused",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size4_Class5",
+    "name": "Power Distributor",
+    "blueprint": "recipe_powerdistributors4c5_supportfocused",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size5_Class5",
+    "name": "Power Distributor",
+    "blueprint": "recipe_powerdistributor_balanced",
+    "grade": 1,
+    "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size6_Class5",
+    "name": "Power Distributor",
+    "blueprint": "recipe_powerdistributors6c5_supportfocused",
+    "grade": 1,
+    "acquisition": "mercenary"
+  }
+]

@@ -118,6 +118,9 @@ const RECIPE_TARGETS: ReadonlyMap<string, readonly EngineeringTarget[]> = new Ma
             'powerPlant',
         ],
     ],
+    // Anti-Guardian Zone Resistance is keyed twice — once for modules, once for weapons —
+    // with an identical grade-1 effect and recipe. See data/ships/SOURCES.md.
+    ['recipe_guardianweapon_sturdy', ['weapon']],
 ]);
 
 /** Resolve a known blueprint id to the families it can engineer. @internal */
@@ -145,6 +148,7 @@ export function blueprintTargets(fdname: string): readonly EngineeringTarget[] |
 const WEAPON_EXPERIMENTALS = new Set([
     'special_concordant_sequence',
     'special_emissive_munitions',
+    'special_feedback_cascade',
     'special_feedback_cascade_cooled',
     'special_incendiary_rounds',
     'special_plasma_slug_cooled',

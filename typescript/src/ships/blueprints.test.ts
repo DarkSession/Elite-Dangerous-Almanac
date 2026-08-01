@@ -26,6 +26,23 @@ test('getBlueprintName resolves case-insensitively and misses cleanly', () => {
     assert.equal(getBlueprintName('nope'), null);
 });
 
+test('Anti-Guardian Zone Resistance resolves under both of its keys', () => {
+    // The one blueprint is keyed once for modules and once for weapons.
+    for (const key of ['recipe_guardianmodule_sturdy', 'recipe_guardianweapon_sturdy']) {
+        const bp = getBlueprint(key);
+        assert.ok(bp, `${key} is missing`);
+        assert.equal(bp.name, 'Anti-Guardian Zone Resistance');
+        assert.deepEqual(Object.keys(bp.grades), ['1'], `${key} is grade 1 only`);
+        assert.deepEqual(getBlueprintGrade(key, 1), [
+            { label: 'GuardianModuleResistance', method: 'additive', min: 1, max: 1 },
+        ]);
+        assert.deepEqual(getBlueprintGradeMaterials(key, 1), [
+            { symbol: 'tg_abrasion03', name: 'Hardened Surface Fragments', count: 2 },
+            { symbol: 'tg_causticcrystal', name: 'Caustic Crystal', count: 1 },
+        ]);
+    }
+});
+
 test('every grade carries both its features and its materials', () => {
     for (const [fdname, bp] of Object.entries(BLUEPRINTS)) {
         for (const [grade, entry] of Object.entries(bp.grades)) {
