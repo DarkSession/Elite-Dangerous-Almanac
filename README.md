@@ -763,11 +763,12 @@ ask `getEngineeringGroup` — it returns `null` only for the former.
 
 #### Modules you can buy already engineered
 
-Some outfitting rows are sold **pre-engineered** — the Mercenary shop's rail gun, missile
-racks, power distributors and so on. These have **no symbol of their own**: the game sells
-an ordinary module with engineering already applied, so a journal reports the base symbol
-plus an `Engineering` block. `ships/pre-engineered` supplies the link the module and
-blueprint catalogues cannot: which stock modules are sold pre-engineered, and with what.
+Some modules arrive **already engineered** — the Mercenary shop's rail gun, missile racks
+and power distributors, and the modules awarded for community goals. These have **no
+symbol of their own**: the game hands you an ordinary module with engineering already
+applied, so a journal reports the base symbol plus an `Engineering` block.
+`ships/pre-engineered` supplies the link the module and blueprint catalogues cannot:
+which stock modules come pre-engineered, and with what.
 
 ```ts
 import {
@@ -778,13 +779,11 @@ import {
 
 isPreEngineered("Hpt_Railgun_Fixed_Medium"); // -> true
 
-// One module can be sold in several flavours…
-getPreEngineeredVariants("Hpt_BasicMissileRack_Fixed_Medium").map(
-  (v) => v.blueprint,
-);
-// -> ['recipe_seekermissilerack_drag',
-//     'recipe_seekermissilerack_lightweightthermal',
-//     'recipe_seekermissilerackmedium_lockdown']
+// One module can carry several variants — here a Merc shop row and a CG reward…
+getPreEngineeredVariants("Hpt_Railgun_Fixed_Medium");
+// -> [{ blueprint: 'recipe_railgun_longshot', grade: 1, acquisition: 'mercenary' }, …
+//     { blueprint: 'Weapon_HighCapacity', grade: 5, acquisition: 'communityGoal',
+//       experimental: 'special_feedback_cascade_cooled' }]
 
 // …and one blueprint on several modules, so both lookups return arrays.
 getPreEngineeredByBlueprint("recipe_seekermissilerack_drag").map(
@@ -793,7 +792,24 @@ getPreEngineeredByBlueprint("recipe_seekermissilerack_drag").map(
 // -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
 ```
 
-Every variant arrives at **grade 1**, which is why these blueprints' own recipes start at
+`acquisition` tells the two kinds apart, and they behave differently:
+
+|                  | `mercenary` (21)    | `communityGoal` (30)  |
+| ---------------- | ------------------- | --------------------- |
+| Blueprint id     | Merc `recipe_*` key | ordinary journal name |
+| Grade on arrival | always 1            | 28 of 30 at grade 5   |
+| Experimental     | none                | 8 of 30 carry one     |
+
+A variant's identity is the **`(symbol, blueprint, experimental)` triple** — no narrower
+key holds. The medium Seeker Missile Rack has two High Capacity CG rewards that differ
+only in the effect applied.
+
+> **A community-goal reward is not reproducible.** Alongside its blueprint and effect it
+> carries hand-set modifier overrides no blueprint grants — that is what makes it a
+> reward. The recorded blueprint/grade/experimental **identify** it; they are not a
+> recipe that recreates it.
+
+Merc rows arrive at **grade 1**, which is why those blueprints' own recipes start at
 grade 2 — the first grade came with the module. Price the rest of the climb by passing the
 grade you already have:
 

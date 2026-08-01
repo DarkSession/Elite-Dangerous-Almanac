@@ -33,8 +33,14 @@
 import preEngineeredData from '../../../data/ships/pre-engineered.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
 
-/** Where a pre-engineered variant is obtained. */
-export type PreEngineeredAcquisition = 'mercenary';
+/**
+ * Where a pre-engineered variant is obtained.
+ *
+ * - `mercenary` — bought from the Merc-Coin shop; always arrives at grade 1.
+ * - `communityGoal` — awarded for taking part in a community goal; mostly grade 5, and
+ *   often carrying an experimental effect the shop rows do not.
+ */
+export type PreEngineeredAcquisition = 'mercenary' | 'communityGoal';
 
 /**
  * One purchasable pre-engineered module variant — a pairing of a stock module with the
@@ -47,8 +53,13 @@ export interface PreEngineeredVariant {
     readonly name: string;
     /** The blueprint baked in at purchase, e.g. `"recipe_railgun_longshot"`. Joins to `BLUEPRINTS`. */
     readonly blueprint: string;
-    /** The blueprint grade already applied when bought (1–5). */
+    /** The blueprint grade already applied (1–5). */
     readonly grade: number;
+    /**
+     * The experimental effect already applied, e.g. `"special_feedback_cascade_cooled"`.
+     * Joins to `EXPERIMENTAL_EFFECTS`. Absent when the variant carries none.
+     */
+    readonly experimental?: string;
     /** Where the variant comes from. */
     readonly acquisition: PreEngineeredAcquisition;
 }

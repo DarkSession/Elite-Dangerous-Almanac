@@ -379,15 +379,39 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   pre-engineered flavours (the 2B Missile Rack has three), and one blueprint is sold on
   several base modules (the Drag seeker on both the medium and the large rack). The
   `(symbol, blueprint)` pair is what is unique, so both lookups return arrays.
-- **Source:** the in-game outfitting and blueprint registries, cross-checked against the
-  current [Inara outfitting](https://inara.cz/elite/outfitting/) and
-  [blueprint](https://inara.cz/elite/blueprints/) registries and Frontier's update notes
-  for the release that introduced each variant. Acquired 2026-08-01 UTC.
-- **`grade` is 1 for every current record**, and that is the point: the purchased module
-  already contains the grade-1 pre-engineering, which is exactly why these blueprints'
-  own recipes start at grade 2 (see the Operations section above). The two facts are
-  consistent by construction and a test asserts it — `getBlueprintCost(bp, target, 1)`
-  prices taking a bought variant the rest of the way.
+- **`acquisition` says where a variant comes from.** 51 records: 21 `mercenary` and
+  30 `communityGoal`.
+  - **`mercenary`** — the Merc-Coin shop rows. Source: the in-game outfitting and
+    blueprint registries, cross-checked against the current
+    [Inara outfitting](https://inara.cz/elite/outfitting/) and
+    [blueprint](https://inara.cz/elite/blueprints/) registries and Frontier's update
+    notes. All 21 are grade 1, and that is the point: the purchased module already
+    contains the grade-1 pre-engineering, which is exactly why these blueprints' own
+    recipes start at grade 2 (see the Operations section above). The two facts are
+    consistent by construction and a test asserts it —
+    `getBlueprintCost(bp, target, 1)` prices taking a bought variant the rest of the way.
+  - **`communityGoal`** — modules awarded for taking part in a community goal. Source:
+    [EDSY](https://github.com/taleden/EDSY)'s stored-module presets, which record each
+    reward as an encoded module state; the blueprint, grade and experimental effect were
+    decoded from that state rather than inferred from its display label, and every
+    resulting id is asserted to join to `blueprints.jsonc`,
+    `experimental-effects.jsonc` and the module catalogues. 28 of the 30 are grade 5;
+    8 carry an experimental effect. Acquired 2026-08-01 UTC.
+- **A community-goal reward is not reproducible by engineering the same blueprint.**
+  Alongside its blueprint and effect, each reward carries hand-set modifier overrides no
+  blueprint grants — that is what makes it a reward rather than a shortcut. The
+  `blueprint` / `grade` / `experimental` recorded here **identify** the variant; they are
+  not a recipe that recreates it. `getBlueprintCost` on a community-goal row prices
+  ordinary engineering, not the reward.
+- **Two community-goal rewards are not stored:** the size-5 and size-6 Corrosion
+  Resistant Cargo Racks carry no engineering at all. They already exist as ordinary
+  module records (`Int_CorrosionProofCargoRack_Size{5,6}_Class1`), so there is no pairing
+  to record.
+- **The identity of a variant is the `(symbol, blueprint, experimental)` triple.** No
+  narrower key holds: one module carries several variants, one blueprint appears on
+  several modules, and even `(symbol, blueprint)` repeats — the medium Seeker Missile
+  Rack has two High Capacity community-goal rewards that differ only in the effect
+  applied.
 - **Deliberately not stored:** the Merc-Coin price. Modules and hulls carry a credit
   price (`cost` / `hullCost` / `retailCost`, see the modules section), but Merc Coin is a
   separate currency with no credit equivalent, so a shop price in MC has nowhere

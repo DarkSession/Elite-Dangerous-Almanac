@@ -277,7 +277,8 @@
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "blueprint": { "$ref": "#/definitions/nonEmptyString" },
         "grade": { "type": "integer", "minimum": 1, "maximum": 5 },
-        "acquisition": { "enum": ["mercenary"] }
+        "experimental": { "$ref": "#/definitions/nonEmptyString" },
+        "acquisition": { "enum": ["mercenary", "communityGoal"] }
       }
     },
     "preEngineeredCatalogue": {

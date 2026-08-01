@@ -5,23 +5,36 @@
  * Sources: the in-game outfitting and blueprint registries, cross-checked against
  *          Inara (https://inara.cz/elite/outfitting/, https://inara.cz/elite/blueprints/)
  *          and Frontier's update notes for the release that introduced each variant.
+ *          The community-goal rewards come from EDSY's stored-module presets
+ *          (github.com/taleden/EDSY), (c) taleden under a CC BY-NC 4.0 License
+ *          (http://creativecommons.org/licenses/by-nc/4.0/).
  *          The underlying values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
- * A pre-engineered module has **no symbol of its own**: the game sells an ordinary
- * module with engineering already applied, and a journal `Loadout` reports it as the
- * base `symbol` plus an `Engineering` block. So each record here is a *pairing*, not a
- * new module — `symbol` joins to the module catalogues, `blueprint` to
- * `blueprints.jsonc`, and `grade` is the grade already applied at purchase.
+ * A pre-engineered module has **no symbol of its own**: the game sells or awards an
+ * ordinary module with engineering already applied, and a journal `Loadout` reports it
+ * as the base `symbol` plus an `Engineering` block. So each record here is a *pairing*,
+ * not a new module — `symbol` joins to the module catalogues, `blueprint` to
+ * `blueprints.jsonc`, the optional `experimental` to `experimental-effects.jsonc`, and
+ * `grade` is the grade already applied.
  *
- * `acquisition` says where the variant comes from: `"mercenary"` for the Merc-Coin
- * shop rows. The Merc-Coin price itself is deliberately not stored — modules carry a
- * credit `cost`, but Merc Coin is a separate currency with no credit equivalent.
+ * `acquisition` says where the variant comes from:
+ *   - `"mercenary"`    — the Merc-Coin shop rows, all at grade 1.
+ *   - `"communityGoal"` — awarded for taking part in a community goal. Mostly grade 5,
+ *     and often carrying an experimental effect the shop rows do not.
  *
- * The blueprint recipes for these keys start at grade 2 precisely because grade 1 is
- * what the purchased module already contains; `getBlueprintCost(bp, target, 1)` prices
- * taking one of these the rest of the way.
+ * The Merc-Coin price is deliberately not stored — modules carry a credit `cost`, but
+ * Merc Coin is a separate currency with no credit equivalent.
+ *
+ * The Merc recipes start at grade 2 precisely because grade 1 is what the purchased
+ * module already contains; `getBlueprintCost(bp, target, 1)` prices taking one of those
+ * the rest of the way. Community-goal rewards are mostly already at grade 5.
+ *
+ * **A community-goal reward is not reproducible by engineering the same blueprint.**
+ * Its stat block also carries hand-set modifier overrides that no blueprint grants,
+ * which is exactly what makes it a reward. The `blueprint`/`grade`/`experimental`
+ * recorded here identify what it *is*, not a recipe that recreates it.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -172,5 +185,223 @@
     "blueprint": "recipe_powerdistributors6c5_supportfocused",
     "grade": 1,
     "acquisition": "mercenary"
+  },
+  {
+    "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
+    "name": "Abrasion Blaster",
+    "blueprint": "Weapon_LongRange",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Hpt_CausticMissile_Fixed_Medium",
+    "name": "Enzyme Missile Rack",
+    "blueprint": "Weapon_HighCapacity",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Hpt_Slugshot_Gimbal_Small",
+    "name": "Fragment Cannon",
+    "blueprint": "Weapon_DoubleShot",
+    "grade": 5,
+    "acquisition": "communityGoal",
+    "experimental": "special_screening_shell"
+  },
+  {
+    "symbol": "Hpt_Slugshot_Gimbal_Large",
+    "name": "Fragment Cannon",
+    "blueprint": "Weapon_DoubleShot",
+    "grade": 5,
+    "acquisition": "communityGoal",
+    "experimental": "special_screening_shell"
+  },
+  {
+    "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+    "name": "Guardian Shard Cannon",
+    "blueprint": "Weapon_LongRange",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Hpt_MultiCannon_Fixed_Medium",
+    "name": "Multi-Cannon",
+    "blueprint": "Weapon_RapidFire",
+    "grade": 1,
+    "acquisition": "communityGoal",
+    "experimental": "special_phasing_sequence"
+  },
+  {
+    "symbol": "Hpt_Railgun_Fixed_Medium",
+    "name": "Rail Gun",
+    "blueprint": "Weapon_HighCapacity",
+    "grade": 5,
+    "acquisition": "communityGoal",
+    "experimental": "special_feedback_cascade_cooled"
+  },
+  {
+    "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
+    "name": "Imperial Hammer Rail Gun",
+    "blueprint": "Weapon_HighCapacity",
+    "grade": 5,
+    "acquisition": "communityGoal",
+    "experimental": "special_super_penetrator"
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+    "name": "Seeker Missile Rack",
+    "blueprint": "Weapon_HighCapacity",
+    "grade": 1,
+    "acquisition": "communityGoal",
+    "experimental": "special_drag_munitions"
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+    "name": "Seeker Missile Rack",
+    "blueprint": "Weapon_HighCapacity",
+    "grade": 5,
+    "acquisition": "communityGoal",
+    "experimental": "special_fsd_interrupt"
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+    "name": "Seeker Missile Rack",
+    "blueprint": "Weapon_HighCapacity",
+    "grade": 5,
+    "acquisition": "communityGoal",
+    "experimental": "special_fsd_interrupt"
+  },
+  {
+    "symbol": "Hpt_ElectronicCountermeasure_Tiny",
+    "name": "Electronic Countermeasure",
+    "blueprint": "Misc_LightWeight",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Hpt_CrimeScanner_Size0_Class5",
+    "name": "Kill Warrant Scanner",
+    "blueprint": "Sensor_FastScan",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Hpt_CrimeScanner_Size0_Class3",
+    "name": "Kill Warrant Scanner",
+    "blueprint": "Sensor_FastScan",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
+    "name": "Point Defence",
+    "blueprint": "Misc_LightWeight",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size3_Class5",
+    "name": "Power Distributor",
+    "blueprint": "PowerDistributor_PrioritySystems",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size3_Class2",
+    "name": "Power Distributor",
+    "blueprint": "PowerDistributor_PrioritySystems",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size4_Class5",
+    "name": "Power Distributor",
+    "blueprint": "PowerDistributor_PrioritySystems",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size4_Class2",
+    "name": "Power Distributor",
+    "blueprint": "PowerDistributor_PrioritySystems",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_PowerDistributor_Size6_Class5",
+    "name": "Power Distributor",
+    "blueprint": "PowerDistributor_PrioritySystems",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_Powerplant_Size3_Class5",
+    "name": "Power Plant",
+    "blueprint": "PowerPlant_Armoured",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_Powerplant_Size3_Class5",
+    "name": "Power Plant",
+    "blueprint": "PowerPlant_Boosted",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_Powerplant_Size4_Class5",
+    "name": "Power Plant",
+    "blueprint": "PowerPlant_Boosted",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_Powerplant_Size5_Class5",
+    "name": "Power Plant",
+    "blueprint": "PowerPlant_Boosted",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size3_Class5",
+    "name": "Frame Shift Drive",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size4_Class5",
+    "name": "Frame Shift Drive",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_Hyperdrive_Size6_Class5",
+    "name": "Frame Shift Drive",
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_CargoRack_Size5_Class1",
+    "name": "Cargo Rack",
+    "blueprint": "CargoRack_IncreasedCapacity",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_CargoRack_Size6_Class1",
+    "name": "Cargo Rack",
+    "blueprint": "CargoRack_IncreasedCapacity",
+    "grade": 5,
+    "acquisition": "communityGoal"
+  },
+  {
+    "symbol": "Int_ShieldGenerator_Size3_Class5",
+    "name": "Shield Generator",
+    "blueprint": "ShieldGenerator_Kinetic",
+    "grade": 5,
+    "acquisition": "communityGoal"
   }
 ]
