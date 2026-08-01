@@ -16,7 +16,8 @@
  * (`core` sizes, `hardpoints`, `utility` count, `optional` mounts, `bulkheads`)
  * are present for every hull. Most come from coriolis-data; the Lynx Highliner
  * (`MediumTransport01`) instead uses EDSY and Frontier update-note values documented
- * in `SOURCES.md`.
+ * in `SOURCES.md`. `hullCost` is the bare hull's standard price in credits and
+ * `retailCost` the hull with its default modules; both are present for every hull.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -98,7 +99,9 @@
         "name": "Reactive Surface Composite",
         "mass": 4
       }
-    ]
+    ],
+    "hullCost": 4588,
+    "retailCost": 32000
   },
   {
     "symbol": "Eagle",
@@ -182,7 +185,9 @@
         "name": "Reactive Surface Composite",
         "mass": 8
       }
-    ]
+    ],
+    "hullCost": 10947,
+    "retailCost": 44800
   },
   {
     "symbol": "Hauler",
@@ -260,7 +265,9 @@
         "name": "Reactive Surface Composite",
         "mass": 2
       }
-    ]
+    ],
+    "hullCost": 30308,
+    "retailCost": 52720
   },
   {
     "symbol": "Adder",
@@ -343,7 +350,9 @@
         "name": "Reactive Surface Composite",
         "mass": 5
       }
-    ]
+    ],
+    "hullCost": 40833,
+    "retailCost": 87808
   },
   {
     "symbol": "Viper",
@@ -428,7 +437,9 @@
         "name": "Reactive Surface Composite",
         "mass": 9
       }
-    ]
+    ],
+    "hullCost": 96733,
+    "retailCost": 142931
   },
   {
     "symbol": "CobraMkIII",
@@ -515,7 +526,9 @@
         "name": "Reactive Surface Composite",
         "mass": 27
       }
-    ]
+    ],
+    "hullCost": 208372,
+    "retailCost": 349718
   },
   {
     "symbol": "Type6",
@@ -600,7 +613,9 @@
         "name": "Reactive Surface Composite",
         "mass": 23
       }
-    ]
+    ],
+    "hullCost": 866622,
+    "retailCost": 1045945
   },
   {
     "symbol": "Dolphin",
@@ -689,7 +704,9 @@
         "name": "Reactive Surface Composite",
         "mass": 63
       }
-    ]
+    ],
+    "hullCost": 1117906,
+    "retailCost": 1337323
   },
   {
     "symbol": "Type7",
@@ -782,7 +799,9 @@
         "name": "Reactive Surface Composite",
         "mass": 63
       }
-    ]
+    ],
+    "hullCost": 16783094,
+    "retailCost": 17472252
   },
   {
     "symbol": "Asp",
@@ -871,7 +890,9 @@
         "name": "Reactive Surface Composite",
         "mass": 42
       }
-    ]
+    ],
+    "hullCost": 6145793,
+    "retailCost": 6661154
   },
   {
     "symbol": "Vulture",
@@ -957,7 +978,9 @@
         "name": "Reactive Surface Composite",
         "mass": 35
       }
-    ]
+    ],
+    "hullCost": 4692214,
+    "retailCost": 4925615
   },
   {
     "symbol": "Empire_Trader",
@@ -1047,7 +1070,9 @@
         "name": "Reactive Surface Composite",
         "mass": 60
       }
-    ]
+    ],
+    "hullCost": 21116895,
+    "retailCost": 22295860
   },
   {
     "symbol": "Federation_Dropship",
@@ -1143,7 +1168,9 @@
         "name": "Reactive Surface Composite",
         "mass": 87
       }
-    ]
+    ],
+    "hullCost": 13510106,
+    "retailCost": 14314210
   },
   {
     "symbol": "Orca",
@@ -1232,7 +1259,9 @@
         "name": "Reactive Surface Composite",
         "mass": 87
       }
-    ]
+    ],
+    "hullCost": 47800723,
+    "retailCost": 48539887
   },
   {
     "symbol": "Type9",
@@ -1329,7 +1358,9 @@
         "name": "Reactive Surface Composite",
         "mass": 150
       }
-    ]
+    ],
+    "hullCost": 72116858,
+    "retailCost": 76555842
   },
   {
     "symbol": "Python",
@@ -1423,7 +1454,9 @@
         "name": "Reactive Surface Composite",
         "mass": 53
       }
-    ]
+    ],
+    "hullCost": 55324684,
+    "retailCost": 56978179
   },
   {
     "symbol": "BelugaLiner",
@@ -1524,7 +1557,9 @@
         "name": "Reactive Surface Composite",
         "mass": 165
       }
-    ]
+    ],
+    "hullCost": 79694761,
+    "retailCost": 84532764
   },
   {
     "symbol": "FerDeLance",
@@ -1606,7 +1641,9 @@
         "name": "Reactive Surface Composite",
         "mass": 38
       }
-    ]
+    ],
+    "hullCost": 51242363,
+    "retailCost": 51567040
   },
   {
     "symbol": "Anaconda",
@@ -1713,7 +1750,9 @@
         "name": "Reactive Surface Composite",
         "mass": 60
       }
-    ]
+    ],
+    "hullCost": 142456440,
+    "retailCost": 146969451
   },
   {
     "symbol": "Federation_Corvette",
@@ -1820,7 +1859,9 @@
         "name": "Reactive Surface Composite",
         "mass": 60
       }
-    ]
+    ],
+    "hullCost": 183156068,
+    "retailCost": 187969450
   },
   {
     "symbol": "Cutter",
@@ -1924,7 +1965,9 @@
         "name": "Reactive Surface Composite",
         "mass": 60
       }
-    ]
+    ],
+    "hullCost": 200493413,
+    "retailCost": 208969451
   },
   {
     "symbol": "DiamondBack",
@@ -2005,7 +2048,9 @@
         "name": "Reactive Surface Composite",
         "mass": 26
       }
-    ]
+    ],
+    "hullCost": 463926,
+    "retailCost": 564329
   },
   {
     "symbol": "Empire_Courier",
@@ -2091,7 +2136,9 @@
         "name": "Reactive Surface Composite",
         "mass": 8
       }
-    ]
+    ],
+    "hullCost": 2484137,
+    "retailCost": 2542931
   },
   {
     "symbol": "DiamondBackXL",
@@ -2177,7 +2224,9 @@
         "name": "Reactive Surface Composite",
         "mass": 47
       }
-    ]
+    ],
+    "hullCost": 1638277,
+    "retailCost": 1894760
   },
   {
     "symbol": "Empire_Eagle",
@@ -2261,7 +2310,9 @@
         "name": "Reactive Surface Composite",
         "mass": 8
       }
-    ]
+    ],
+    "hullCost": 73023,
+    "retailCost": 110830
   },
   {
     "symbol": "Federation_Dropship_MkII",
@@ -2353,7 +2404,9 @@
         "name": "Reactive Surface Composite",
         "mass": 87
       }
-    ]
+    ],
+    "hullCost": 19111109,
+    "retailCost": 19814210
   },
   {
     "symbol": "Federation_Gunship",
@@ -2449,7 +2502,9 @@
         "name": "Reactive Surface Composite",
         "mass": 87
       }
-    ]
+    ],
+    "hullCost": 34814912,
+    "retailCost": 35814210
   },
   {
     "symbol": "Viper_MkIV",
@@ -2540,7 +2595,9 @@
         "name": "Reactive Surface Composite",
         "mass": 9
       }
-    ]
+    ],
+    "hullCost": 312797,
+    "retailCost": 437931
   },
   {
     "symbol": "CobraMkIV",
@@ -2635,7 +2692,9 @@
         "name": "Reactive Surface Composite",
         "mass": 27
       }
-    ]
+    ],
+    "hullCost": 623374,
+    "retailCost": 764720
   },
   {
     "symbol": "Independant_Trader",
@@ -2719,7 +2778,9 @@
         "name": "Reactive Surface Composite",
         "mass": 23
       }
-    ]
+    ],
+    "hullCost": 2946463,
+    "retailCost": 3126154
   },
   {
     "symbol": "Asp_Scout",
@@ -2803,7 +2864,9 @@
         "name": "Reactive Surface Composite",
         "mass": 42
       }
-    ]
+    ],
+    "hullCost": 3819823,
+    "retailCost": 3961154
   },
   {
     "symbol": "Type9_Military",
@@ -2910,7 +2973,9 @@
         "name": "Reactive Surface Composite",
         "mass": 150
       }
-    ]
+    ],
+    "hullCost": 121334619,
+    "retailCost": 124755342
   },
   {
     "symbol": "Krait_MkII",
@@ -3002,7 +3067,9 @@
         "name": "Reactive Surface Composite",
         "mass": 67
       }
-    ]
+    ],
+    "hullCost": 44160710,
+    "retailCost": 45814205
   },
   {
     "symbol": "TypeX",
@@ -3098,7 +3165,9 @@
         "name": "Reactive Surface Composite",
         "mass": 78
       }
-    ]
+    ],
+    "hullCost": 18612476,
+    "retailCost": 19382252
   },
   {
     "symbol": "TypeX_2",
@@ -3197,7 +3266,9 @@
         "name": "Reactive Surface Composite",
         "mass": 78
       }
-    ]
+    ],
+    "hullCost": 22096565,
+    "retailCost": 22866341
   },
   {
     "symbol": "TypeX_3",
@@ -3297,7 +3368,9 @@
         "name": "Reactive Surface Composite",
         "mass": 78
       }
-    ]
+    ],
+    "hullCost": 29569804,
+    "retailCost": 30472252
   },
   {
     "symbol": "Krait_Light",
@@ -3388,7 +3461,9 @@
         "name": "Reactive Surface Composite",
         "mass": 53
       }
-    ]
+    ],
+    "hullCost": 35741519,
+    "retailCost": 37472252
   },
   {
     "symbol": "Mamba",
@@ -3471,7 +3546,9 @@
         "name": "Reactive Surface Composite",
         "mass": 38
       }
-    ]
+    ],
+    "hullCost": 55442918,
+    "retailCost": 55867040
   },
   {
     "symbol": "Python_NX",
@@ -3555,7 +3632,9 @@
         "name": "Reactive Surface Composite",
         "mass": 53
       }
-    ]
+    ],
+    "hullCost": 64743724,
+    "retailCost": 67527359
   },
   {
     "symbol": "Type8",
@@ -3648,7 +3727,9 @@
         "name": "Reactive Surface Composite",
         "mass": 63
       }
-    ]
+    ],
+    "hullCost": 34820576,
+    "retailCost": 38453970
   },
   {
     "symbol": "Mandalay",
@@ -3744,7 +3825,9 @@
         "name": "Reactive Surface Composite",
         "mass": 38
       }
-    ]
+    ],
+    "hullCost": 16527192,
+    "retailCost": 17639220
   },
   {
     "symbol": "CobraMkV",
@@ -3836,7 +3919,9 @@
         "name": "Reactive Surface Composite",
         "mass": 27
       }
-    ]
+    ],
+    "hullCost": 1477085,
+    "retailCost": 1989461
   },
   {
     "symbol": "Corsair",
@@ -3932,7 +4017,9 @@
         "name": "Reactive Surface Composite",
         "mass": 63
       }
-    ]
+    ],
+    "hullCost": 76884160,
+    "retailCost": 79304750
   },
   {
     "symbol": "PantherMkII",
@@ -4038,7 +4125,9 @@
         "name": "Reactive Surface Composite",
         "mass": 150
       }
-    ]
+    ],
+    "hullCost": 286905678,
+    "retailCost": 301348586
   },
   {
     "symbol": "LakonMiner",
@@ -4138,7 +4227,9 @@
         "name": "Reactive Surface Composite",
         "mass": 63
       }
-    ]
+    ],
+    "hullCost": 66346710,
+    "retailCost": 67861850
   },
   {
     "symbol": "Explorer_NX",
@@ -4251,7 +4342,9 @@
         "name": "Mk II Ablative Reactive",
         "mass": 60
       }
-    ]
+    ],
+    "hullCost": 189326510,
+    "retailCost": 194861290
   },
   {
     "symbol": "SmallCombat01_NX",
@@ -4341,7 +4434,9 @@
         "name": "Reactive Surface Composite",
         "mass": 35
       }
-    ]
+    ],
+    "hullCost": 13776380,
+    "retailCost": 14273820
   },
   {
     "symbol": "MediumTransport01",
@@ -4429,6 +4524,8 @@
         "name": "Reactive Surface Composite",
         "mass": 53
       }
-    ]
+    ],
+    "hullCost": 67992080,
+    "retailCost": 69289470
   }
 ]

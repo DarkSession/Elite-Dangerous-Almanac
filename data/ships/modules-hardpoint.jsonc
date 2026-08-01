@@ -20,6 +20,8 @@
  * tonnes, power in MW, ranges in LY). `restrictedToShips` lists the hull(s) a
  * non-armour module is limited to; armour's hull restriction is its `ship` field.
  * Modules without stats (ship-specific armour) carry identity only.
+ * `cost` is the standard purchase price in credits before any station discount;
+ * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -33,7 +35,8 @@
     "rating": "F",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.39
+    "powerDraw": 0.39,
+    "cost": 2200
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Medium",
@@ -44,7 +47,8 @@
     "rating": "E",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 17600
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Large",
@@ -55,7 +59,8 @@
     "rating": "D",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.9
+    "powerDraw": 0.9,
+    "cost": 70400
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Huge",
@@ -66,7 +71,8 @@
     "rating": "A",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 1.33
+    "powerDraw": 1.33,
+    "cost": 177600
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Small",
@@ -77,7 +83,8 @@
     "rating": "G",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.39
+    "powerDraw": 0.39,
+    "cost": 6600
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Medium",
@@ -88,7 +95,8 @@
     "rating": "F",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 35400
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Large",
@@ -99,7 +107,8 @@
     "rating": "E",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.92
+    "powerDraw": 0.92,
+    "cost": 140600
   },
   {
     "symbol": "Hpt_PulseLaser_Turret_Small",
@@ -110,7 +119,8 @@
     "rating": "G",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.38
+    "powerDraw": 0.38,
+    "cost": 26000
   },
   {
     "symbol": "Hpt_PulseLaser_Turret_Medium",
@@ -121,7 +131,8 @@
     "rating": "F",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.58
+    "powerDraw": 0.58,
+    "cost": 132800
   },
   {
     "symbol": "Hpt_PulseLaser_Turret_Large",
@@ -132,7 +143,8 @@
     "rating": "F",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.89
+    "powerDraw": 0.89,
+    "cost": 400400
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Small",
@@ -143,7 +155,8 @@
     "rating": "F",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.65
+    "powerDraw": 0.65,
+    "cost": 4400
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Medium",
@@ -154,7 +167,8 @@
     "rating": "E",
     "mass": 4,
     "integrity": 40,
-    "powerDraw": 1.05
+    "powerDraw": 1.05,
+    "cost": 23000
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Large",
@@ -165,7 +179,8 @@
     "rating": "D",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.66
+    "powerDraw": 1.66,
+    "cost": 140400
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Huge",
@@ -176,7 +191,8 @@
     "rating": "E",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 2.58
+    "powerDraw": 2.58,
+    "cost": 281600
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Small",
@@ -187,7 +203,8 @@
     "rating": "G",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.64
+    "powerDraw": 0.64,
+    "cost": 8600
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Medium",
@@ -198,7 +215,8 @@
     "rating": "F",
     "mass": 4,
     "integrity": 40,
-    "powerDraw": 1.04
+    "powerDraw": 1.04,
+    "cost": 48500
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Large",
@@ -209,7 +227,8 @@
     "rating": "E",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.65
+    "powerDraw": 1.65,
+    "cost": 281600
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Turret_Small",
@@ -220,7 +239,8 @@
     "rating": "G",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 52800
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Turret_Medium",
@@ -231,7 +251,8 @@
     "rating": "F",
     "mass": 4,
     "integrity": 40,
-    "powerDraw": 0.98
+    "powerDraw": 0.98,
+    "cost": 162800
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Turret_Large",
@@ -242,7 +263,8 @@
     "rating": "E",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.57
+    "powerDraw": 1.57,
+    "cost": 800400
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Small",
@@ -253,7 +275,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.62
+    "powerDraw": 0.62,
+    "cost": 37430
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Medium",
@@ -264,7 +287,8 @@
     "rating": "D",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.01
+    "powerDraw": 1.01,
+    "cost": 299520
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Large",
@@ -275,7 +299,8 @@
     "rating": "C",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.62
+    "powerDraw": 1.62,
+    "cost": 1177600
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Huge",
@@ -286,7 +311,8 @@
     "rating": "A",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 2.61
+    "powerDraw": 2.61,
+    "cost": 2396160
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Small",
@@ -297,7 +323,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 74650
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Medium",
@@ -308,7 +335,8 @@
     "rating": "D",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1
+    "powerDraw": 1,
+    "cost": 500600
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Large",
@@ -319,7 +347,8 @@
     "rating": "C",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.6
+    "powerDraw": 1.6,
+    "cost": 2396160
   },
   {
     "symbol": "Hpt_BeamLaser_Turret_Small",
@@ -330,7 +359,8 @@
     "rating": "F",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.57
+    "powerDraw": 0.57,
+    "cost": 500000
   },
   {
     "symbol": "Hpt_BeamLaser_Turret_Medium",
@@ -341,7 +371,8 @@
     "rating": "E",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.93
+    "powerDraw": 0.93,
+    "cost": 2099900
   },
   {
     "symbol": "Hpt_BeamLaser_Turret_Large",
@@ -352,7 +383,8 @@
     "rating": "D",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.51
+    "powerDraw": 1.51,
+    "cost": 19399600
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Small",
@@ -363,7 +395,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.34
+    "powerDraw": 0.34,
+    "cost": 21100
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Medium",
@@ -374,7 +407,8 @@
     "rating": "D",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.49
+    "powerDraw": 0.49,
+    "cost": 168430
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Large",
@@ -385,7 +419,8 @@
     "rating": "C",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.67
+    "powerDraw": 0.67,
+    "cost": 675200
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Huge",
@@ -396,7 +431,8 @@
     "rating": "B",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 0.92
+    "powerDraw": 0.92,
+    "cost": 2700800
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Small",
@@ -407,7 +443,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.38
+    "powerDraw": 0.38,
+    "cost": 42200
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Medium",
@@ -418,7 +455,8 @@
     "rating": "D",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.54
+    "powerDraw": 0.54,
+    "cost": 337600
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Huge",
@@ -429,7 +467,8 @@
     "rating": "B",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 1.03
+    "powerDraw": 1.03,
+    "cost": 5401600
   },
   {
     "symbol": "Hpt_Cannon_Turret_Small",
@@ -440,7 +479,8 @@
     "rating": "F",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.32
+    "powerDraw": 0.32,
+    "cost": 506400
   },
   {
     "symbol": "Hpt_Cannon_Turret_Medium",
@@ -451,7 +491,8 @@
     "rating": "E",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.45
+    "powerDraw": 0.45,
+    "cost": 4051200
   },
   {
     "symbol": "Hpt_Cannon_Turret_Large",
@@ -462,7 +503,8 @@
     "rating": "D",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.64
+    "powerDraw": 0.64,
+    "cost": 16204800
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Small",
@@ -473,7 +515,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.45
+    "powerDraw": 0.45,
+    "cost": 36000
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Medium",
@@ -484,7 +527,8 @@
     "rating": "A",
     "mass": 4,
     "integrity": 80,
-    "powerDraw": 0.74
+    "powerDraw": 0.74,
+    "cost": 291840
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Large",
@@ -495,7 +539,8 @@
     "rating": "C",
     "mass": 8,
     "integrity": 80,
-    "powerDraw": 1.02
+    "powerDraw": 1.02,
+    "cost": 1167360
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
@@ -506,7 +551,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.59
+    "powerDraw": 0.59,
+    "cost": 54720
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Medium",
@@ -517,7 +563,8 @@
     "rating": "D",
     "mass": 4,
     "integrity": 80,
-    "powerDraw": 1.03
+    "powerDraw": 1.03,
+    "cost": 437760
   },
   {
     "symbol": "Hpt_Slugshot_Turret_Small",
@@ -528,7 +575,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.42
+    "powerDraw": 0.42,
+    "cost": 182400
   },
   {
     "symbol": "Hpt_Slugshot_Turret_Medium",
@@ -539,7 +587,8 @@
     "rating": "D",
     "mass": 4,
     "integrity": 80,
-    "powerDraw": 0.79
+    "powerDraw": 0.79,
+    "cost": 1459200
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Small",
@@ -550,7 +599,8 @@
     "rating": "F",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.28
+    "powerDraw": 0.28,
+    "cost": 9500
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
@@ -561,7 +611,8 @@
     "rating": "E",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.46
+    "powerDraw": 0.46,
+    "cost": 0
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Large",
@@ -572,7 +623,8 @@
     "rating": "C",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.64
+    "powerDraw": 0.64,
+    "cost": 140400
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Huge",
@@ -583,7 +635,8 @@
     "rating": "A",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 0.73
+    "powerDraw": 0.73,
+    "cost": 1177600
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Small",
@@ -594,7 +647,8 @@
     "rating": "G",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.37
+    "powerDraw": 0.37,
+    "cost": 14250
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Medium",
@@ -605,7 +659,8 @@
     "rating": "F",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.64
+    "powerDraw": 0.64,
+    "cost": 57000
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Large",
@@ -616,7 +671,8 @@
     "rating": "C",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 578436
   },
   {
     "symbol": "Hpt_MultiCannon_Turret_Small",
@@ -627,7 +683,8 @@
     "rating": "G",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.26
+    "powerDraw": 0.26,
+    "cost": 81600
   },
   {
     "symbol": "Hpt_MultiCannon_Turret_Medium",
@@ -638,7 +695,8 @@
     "rating": "F",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 1292800
   },
   {
     "symbol": "Hpt_MultiCannon_Turret_Large",
@@ -650,7 +708,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.86
+    "powerDraw": 0.86,
+    "cost": 3794600
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Medium",
@@ -661,7 +720,8 @@
     "rating": "C",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.43
+    "powerDraw": 1.43,
+    "cost": 834200
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Large",
@@ -672,7 +732,8 @@
     "rating": "B",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.97
+    "powerDraw": 1.97,
+    "cost": 3051200
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
@@ -683,7 +744,8 @@
     "rating": "A",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 2.63
+    "powerDraw": 2.63,
+    "cost": 13793600
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Small",
@@ -694,7 +756,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 1.15
+    "powerDraw": 1.15,
+    "cost": 51600
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
@@ -705,7 +768,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.63
+    "powerDraw": 1.63,
+    "cost": 0
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Small",
@@ -717,7 +781,8 @@
     "rating": "B",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 72600
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
@@ -729,7 +794,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 0
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
@@ -742,7 +808,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.62
+    "powerDraw": 1.62,
+    "cost": 1471030
   },
   {
     "symbol": "Hpt_MineLauncher_Fixed_Small",
@@ -753,7 +820,8 @@
     "rating": "I",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 24260
   },
   {
     "symbol": "Hpt_MineLauncher_Fixed_Medium",
@@ -764,7 +832,8 @@
     "rating": "I",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 294080
   },
   {
     "symbol": "Hpt_AdvancedTorpPylon_Fixed_Small",
@@ -776,7 +845,8 @@
     "rating": "I",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 11200
   },
   {
     "symbol": "Hpt_AdvancedTorpPylon_Fixed_Medium",
@@ -788,7 +858,8 @@
     "rating": "I",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 44800
   },
   {
     "symbol": "Hpt_AdvancedTorpPylon_Fixed_Large",
@@ -801,7 +872,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 157960
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
@@ -812,7 +884,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 0
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Medium",
@@ -823,7 +896,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 51,
-    "powerDraw": 0.75
+    "powerDraw": 0.75,
+    "cost": 22576
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Small",
@@ -835,7 +909,8 @@
     "rating": "B",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 32175
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
@@ -847,7 +922,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 240400
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Large",
@@ -858,7 +934,8 @@
     "rating": "C",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.75
+    "powerDraw": 0.75,
+    "cost": 1350400
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
@@ -869,7 +946,8 @@
     "rating": "C",
     "mass": 8,
     "integrity": 80,
-    "powerDraw": 1.55
+    "powerDraw": 1.55,
+    "cost": 1751040
   },
   {
     "symbol": "Hpt_Slugshot_Turret_Large",
@@ -880,7 +958,8 @@
     "rating": "C",
     "mass": 8,
     "integrity": 80,
-    "powerDraw": 1.29
+    "powerDraw": 1.29,
+    "cost": 5836800
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced",
@@ -892,7 +971,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200050",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.97
+    "powerDraw": 1.97,
+    "cost": 4119120
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small_Advanced",
@@ -904,7 +984,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200120",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.7
+    "powerDraw": 0.7,
+    "cost": 13600
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
@@ -916,7 +997,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200010",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.63
+    "powerDraw": 1.63,
+    "cost": 619200
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Medium_Disruptor",
@@ -928,7 +1010,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200070",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.7
+    "powerDraw": 0.7,
+    "cost": 26400
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Large_Range",
@@ -940,7 +1023,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200140",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.02
+    "powerDraw": 1.02,
+    "cost": 1751040
   },
   {
     "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
@@ -953,7 +1037,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200080",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 768600
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Small_Strong",
@@ -965,7 +1050,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200090",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.28
+    "powerDraw": 0.28,
+    "cost": 13980
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Small_Heat",
@@ -977,7 +1063,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200060",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.62
+    "powerDraw": 0.62,
+    "cost": 56150
   },
   {
     "symbol": "Hpt_MineLauncher_Fixed_Small_Impulse",
@@ -988,7 +1075,8 @@
     "rating": "I",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 36390
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
@@ -1000,7 +1088,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200030",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.8
+    "powerDraw": 0.8,
+    "cost": 8800
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Huge",
@@ -1011,7 +1100,8 @@
     "rating": "A",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 2.57
+    "powerDraw": 2.57,
+    "cost": 8746160
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Huge",
@@ -1022,7 +1112,8 @@
     "rating": "A",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 1.37
+    "powerDraw": 1.37,
+    "cost": 877600
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Huge",
@@ -1033,7 +1124,8 @@
     "rating": "A",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 1.22
+    "powerDraw": 1.22,
+    "cost": 6377600
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Huge",
@@ -1044,7 +1136,8 @@
     "rating": "E",
     "mass": 16,
     "integrity": 80,
-    "powerDraw": 2.59
+    "powerDraw": 2.59,
+    "cost": 1245600
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso",
@@ -1057,7 +1150,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200100",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 1951040
   },
   {
     "symbol": "Hpt_MiningLaser_Turret_Small",
@@ -1068,7 +1162,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 9400
   },
   {
     "symbol": "Hpt_MiningLaser_Turret_Medium",
@@ -1079,7 +1174,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 51,
-    "powerDraw": 0.75
+    "powerDraw": 0.75,
+    "cost": 32576
   },
   {
     "symbol": "Hpt_FlakMortar_Fixed_Medium",
@@ -1091,7 +1187,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 261800
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
@@ -1104,7 +1201,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 540900
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
@@ -1117,7 +1215,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.62
+    "powerDraw": 1.62,
+    "cost": 0
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Medium",
@@ -1129,7 +1228,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.46
+    "powerDraw": 0.46,
+    "cost": 379000
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Large",
@@ -1141,7 +1241,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.64
+    "powerDraw": 0.64,
+    "cost": 1181500
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Medium",
@@ -1154,7 +1255,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 2022700
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Large",
@@ -1167,7 +1269,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.75
+    "powerDraw": 1.75,
+    "cost": 4056750
   },
   {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
@@ -1179,7 +1282,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 1259200
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Medium",
@@ -1191,7 +1295,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 1826500
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Large",
@@ -1203,7 +1308,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.64
+    "powerDraw": 0.64,
+    "cost": 3821600
   },
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
@@ -1215,7 +1321,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_GAUSS_FIXED_MEDIUM",
     "mass": 4,
     "integrity": 42,
-    "powerDraw": 2.61
+    "powerDraw": 2.61,
+    "cost": 0
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
@@ -1228,7 +1335,8 @@
     "entitlement": "ELITE_HORIZONS_V_CAUSTIC_MEDIUM",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 480501
   },
   {
     "symbol": "Hpt_FlechetteLauncher_Fixed_Medium",
@@ -1240,7 +1348,8 @@
     "entitlement": "ELITE_HORIZONS_V_FLECHETTE_FIXED_MEDIUM",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 353761
   },
   {
     "symbol": "Hpt_FlechetteLauncher_Turret_Medium",
@@ -1252,7 +1361,8 @@
     "entitlement": "ELITE_HORIZONS_V_FLECHETTE_TURRET_MEDIUM",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 1279200
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
@@ -1264,7 +1374,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_FIXED_MEDIUM",
     "mass": 4,
     "integrity": 42,
-    "powerDraw": 2.13
+    "powerDraw": 2.13,
+    "cost": 0
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Medium",
@@ -1276,7 +1387,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_TURRET_MEDIUM",
     "mass": 4,
     "integrity": 42,
-    "powerDraw": 2.01
+    "powerDraw": 2.01,
+    "cost": 1659200
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
@@ -1288,7 +1400,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_FIXED_MEDIUM",
     "mass": 4,
     "integrity": 42,
-    "powerDraw": 1.21
+    "powerDraw": 1.21,
+    "cost": 0
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Medium",
@@ -1300,7 +1413,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_TURRET_MEDIUM",
     "mass": 4,
     "integrity": 42,
-    "powerDraw": 1.16
+    "powerDraw": 1.16,
+    "cost": 1767001
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Fixed_Medium",
@@ -1312,7 +1426,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_FIXED_MEDIUM",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.57
+    "powerDraw": 0.57,
+    "cost": 367501
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Gimbal_Medium",
@@ -1324,7 +1439,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_GIMBAL_MEDIUM",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.61
+    "powerDraw": 0.61,
+    "cost": 565200
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Turret_Medium",
@@ -1336,7 +1452,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_TURRET_MEDIUM",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 1359200
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Large",
@@ -1348,7 +1465,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_FIXED_LARGE",
     "mass": 8,
     "integrity": 51,
-    "powerDraw": 1.68
+    "powerDraw": 1.68,
+    "cost": 1461350
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Large",
@@ -1360,7 +1478,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_TURRET_LARGE",
     "mass": 8,
     "integrity": 51,
-    "powerDraw": 1.39
+    "powerDraw": 1.39,
+    "cost": 5865026
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Fixed_Large",
@@ -1372,7 +1491,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_FIXED_LARGE",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.89
+    "powerDraw": 0.89,
+    "cost": 1015750
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Gimbal_Large",
@@ -1384,7 +1504,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_GIMBAL_LARGE",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.89
+    "powerDraw": 0.89,
+    "cost": 2249050
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Turret_Large",
@@ -1396,7 +1517,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_TURRET_LARGE",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.64
+    "powerDraw": 0.64,
+    "cost": 6050201
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Large",
@@ -1408,7 +1530,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_FIXED_LARGE",
     "mass": 8,
     "integrity": 51,
-    "powerDraw": 3.1
+    "powerDraw": 3.1,
+    "cost": 1423301
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Large",
@@ -1420,7 +1543,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_TURRET_LARGE",
     "mass": 8,
     "integrity": 51,
-    "powerDraw": 2.53
+    "powerDraw": 2.53,
+    "cost": 5495200
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Large",
@@ -1433,7 +1557,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.62
+    "powerDraw": 1.62,
+    "cost": 1021500
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Turret_Small",
@@ -1445,7 +1570,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_TURRET_SMALL",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.54
+    "powerDraw": 0.54,
+    "cost": 364000
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Gimbal_Small",
@@ -1457,7 +1583,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_GIMBAL_SMALL",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.47
+    "powerDraw": 0.47,
+    "cost": 137501
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Fixed_Small",
@@ -1469,7 +1596,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLASMASHOCK_FIXED_SMALL",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 65941
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Small",
@@ -1481,7 +1609,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_TURRET_SMALL",
     "mass": 2,
     "integrity": 34,
-    "powerDraw": 1.6
+    "powerDraw": 1.6,
+    "cost": 484050
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Small",
@@ -1493,7 +1622,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_PLASMA_FIXED_SMALL",
     "mass": 2,
     "integrity": 34,
-    "powerDraw": 1.4
+    "powerDraw": 1.4,
+    "cost": 0
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Small",
@@ -1505,7 +1635,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_TURRET_SMALL",
     "mass": 2,
     "integrity": 34,
-    "powerDraw": 0.72
+    "powerDraw": 0.72,
+    "cost": 502000
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Small",
@@ -1517,7 +1648,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHARD_FIXED_SMALL",
     "mass": 2,
     "integrity": 34,
-    "powerDraw": 0.87
+    "powerDraw": 0.87,
+    "cost": 0
   },
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
@@ -1529,7 +1661,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_GAUSS_FIXED_SMALL",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 1.91
+    "powerDraw": 1.91,
+    "cost": 0
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Fixed_Small",
@@ -1541,7 +1674,8 @@
     "rating": "B",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.42
+    "powerDraw": 0.42,
+    "cost": 12600
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Turret_Small",
@@ -1553,7 +1687,8 @@
     "rating": "B",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.42
+    "powerDraw": 0.42,
+    "cost": 38750
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Fixed_Medium",
@@ -1565,7 +1700,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.01
+    "powerDraw": 1.01,
+    "cost": 122170
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Turret_Medium",
@@ -1577,7 +1713,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.93
+    "powerDraw": 0.93,
+    "cost": 381750
   },
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
@@ -1588,7 +1725,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.34
+    "powerDraw": 0.34,
+    "cost": 9700
   },
   {
     "symbol": "Hpt_Mining_AbrBlstr_Turret_Small",
@@ -1599,7 +1737,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.47
+    "powerDraw": 0.47,
+    "cost": 27480
   },
   {
     "symbol": "Hpt_Mining_SeismChrgWarhd_Fixed_Medium",
@@ -1611,7 +1750,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 153110
   },
   {
     "symbol": "Hpt_Mining_SeismChrgWarhd_Turret_Medium",
@@ -1623,7 +1763,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 445570
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium_Advanced",
@@ -1634,7 +1775,8 @@
     "rating": "E",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.46
+    "powerDraw": 0.46,
+    "cost": 38000
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Small_Advanced",
@@ -1645,7 +1787,8 @@
     "rating": "F",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.28
+    "powerDraw": 0.28,
+    "cost": 9500
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Small_Advanced",
@@ -1657,7 +1800,8 @@
     "rating": "B",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 32180
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Advanced",
@@ -1669,7 +1813,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 1471030
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Large_V2",
@@ -1682,7 +1827,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.72
+    "powerDraw": 1.72,
+    "cost": 1703835
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Medium_V2",
@@ -1694,7 +1840,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.48
+    "powerDraw": 0.48,
+    "cost": 455077
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium_V2",
@@ -1707,7 +1854,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.3
+    "powerDraw": 1.3,
+    "cost": 681534
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Large_V2",
@@ -1720,7 +1868,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.85
+    "powerDraw": 1.85,
+    "cost": 5347534
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Medium_V2",
@@ -1733,7 +1882,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 1.3
+    "powerDraw": 1.3,
+    "cost": 2666286
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Large_V2",
@@ -1745,7 +1895,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.69
+    "powerDraw": 0.69,
+    "cost": 1360322
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Large_V2",
@@ -1757,7 +1908,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.69
+    "powerDraw": 0.69,
+    "cost": 4588709
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Medium_V2",
@@ -1769,7 +1921,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.52
+    "powerDraw": 0.52,
+    "cost": 2193297
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
@@ -1781,7 +1934,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 0.64
+    "powerDraw": 0.64,
+    "cost": 2390460
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
@@ -1793,7 +1947,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.46
+    "powerDraw": 0.46,
+    "cost": 1197644
   },
   {
     "symbol": "Hpt_Human_Extraction_Fixed_Medium",
@@ -1805,7 +1960,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 50,
-    "powerDraw": 1
+    "powerDraw": 1,
+    "cost": 822091
   },
   {
     "symbol": "Hpt_ATVentDisruptorPylon_Fixed_Medium",
@@ -1816,7 +1972,8 @@
     "rating": "I",
     "mass": 3,
     "integrity": 50,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 843170
   },
   {
     "symbol": "Hpt_ATVentDisruptorPylon_Fixed_Large",
@@ -1827,7 +1984,8 @@
     "rating": "I",
     "mass": 5,
     "integrity": 80,
-    "powerDraw": 0.7
+    "powerDraw": 0.7,
+    "cost": 1627419
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Medium_Burst",
@@ -1839,7 +1997,8 @@
     "entitlement": "ELITE_SPECIFIC_V_POWER_200130",
     "mass": 4,
     "integrity": 51,
-    "powerDraw": 0.64
+    "powerDraw": 0.64,
+    "cost": 314620
   },
   {
     "symbol": "Hpt_MiningToolV2_Fixed_Large",
@@ -1853,7 +2012,8 @@
     "powerDraw": 1.5,
     "restrictedToShips": [
       "LakonMiner"
-    ]
+    ],
+    "cost": 149910
   },
   {
     "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
@@ -1864,6 +2024,7 @@
     "rating": "B",
     "mass": 8,
     "integrity": 64,
-    "powerDraw": 1.51
+    "powerDraw": 1.51,
+    "cost": 3051200
   }
 ]

@@ -12,12 +12,12 @@ data. **TypeScript** is available today (`typescript/`); Python is planned.
 Four feature areas, each its own import subpath, each with leaf modules so you
 bundle only the catalogues you touch:
 
-| Feature area                         | What it answers                                                                             | Start with                       |
-| ------------------------------------ | ------------------------------------------------------------------------------------------- | -------------------------------- |
-| [`astro`](#quick-start)              | System name ⇄ `id64`, sectors, galactic regions, 5835 nebulae, permit locks                 | `StarSystem`                     |
-| [`ships`](#ships-and-outfitting)     | 48 hulls and ~1200 modules with stats and slots, SLEF builds, jump range, engineering costs | `ShipLoadout`, `getShipBySymbol` |
-| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                  | `getMaterialByName`              |
-| [`commodities`](#market-commodities) | 256 standard and 142 rare market goods                                                      | `getCommodityBySymbol`           |
+| Feature area                         | What it answers                                                                                     | Start with                       |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------- | -------------------------------- |
+| [`astro`](#quick-start)              | System name ⇄ `id64`, sectors, galactic regions, 5835 nebulae, permit locks                         | `StarSystem`                     |
+| [`ships`](#ships-and-outfitting)     | 48 hulls and ~1200 modules with stats, slots and prices, SLEF builds, jump range, engineering costs | `ShipLoadout`, `getShipBySymbol` |
+| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                          | `getMaterialByName`              |
+| [`commodities`](#market-commodities) | 256 standard and 142 rare market goods                                                              | `getCommodityBySymbol`           |
 
 Also here: [the four kinds of "region"](#the-four-kinds-of-region) (the one thing
 that trips everyone up), [nebulae](#nebulae), [permit
@@ -416,8 +416,8 @@ microResourcesInCategory("consumable", ALL_MICRO_RESOURCES).length; // -> 6
 ## Ships and outfitting
 
 The `ships` feature area covers Frontier's 48 player-flyable **hulls** and the ~1200
-fittable **modules** — each as **one record carrying identity, stats and (for hulls)
-slot layout together** — plus **jump-range calculations** you can drive straight from
+fittable **modules** — each as **one record carrying identity, stats, price and (for
+hulls) slot layout together** — plus **jump-range calculations** you can drive straight from
 a [SLEF](#ship-builds-jump-range-and-slef) export. Modules stay split by outfitting
 category for direct catalogue imports, so an app can avoid categories it does not
 search. The high-level `ShipLoadout` facade is the deliberate exception: resolving
@@ -507,6 +507,34 @@ modules limited to particular hulls (e.g. the Python Mk II's MkII Gravity Optimi
 thrusters → `["Explorer_NX"]`); armour's hull restriction stays in its `ship` field.
 Masses are tonnes, power megawatts, ranges light-years. Only mechanical stats are
 carried — weapon combat stats (damage, falloff, …) are not.
+
+#### Prices
+
+Standard list prices in credits sit on the same records — no second lookup:
+
+```ts
+getModuleBySymbol("int_powerplant_size8_class1", STANDARD_MODULES)?.cost; // -> 1441233
+
+getShipBySymbol("anaconda")?.hullCost; // -> 142456440  (bare hull)
+getShipBySymbol("anaconda")?.retailCost; // -> 146969451  (hull + default modules)
+```
+
+These are the **undiscounted** list prices an outfitting screen quotes at 0%
+discount — stations apply their own discount or markup on top, which is live market
+state this library does not carry.
+
+All 48 hulls are priced, and 1178 of 1198 modules. The rest — the starter `*_free`
+variants, the size-8 frame shift drives, and a few reward-only internals — have no
+published price, so **`cost` is `undefined` rather than `0`**. That distinction is
+deliberate: `0` is a real price (the starter Lightweight Alloy bulkhead is free), so
+treat `undefined` as _unknown_ and decide for yourself whether to skip it or fail:
+
+```ts
+const cost = getModuleBySymbol(symbol, ALL_MODULES)?.cost;
+if (cost === undefined) {
+  // no published price — don't silently add 0 to a build total
+}
+```
 
 ### Ship builds, jump range and SLEF
 

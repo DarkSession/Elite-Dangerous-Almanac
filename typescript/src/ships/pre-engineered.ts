@@ -23,8 +23,9 @@
  * three entries. Look variants up with {@link getPreEngineeredVariants} (plural) rather
  * than assuming one.
  *
- * The Merc-Coin price is deliberately not stored — it is a currency, and no catalogue
- * in this repository carries prices. See `data/ships/SOURCES.md`.
+ * The Merc-Coin price is deliberately not stored: modules carry a credit `cost`, but
+ * Merc Coin is a separate currency with no credit equivalent. See
+ * `data/ships/SOURCES.md`.
  *
  * @packageDocumentation
  */

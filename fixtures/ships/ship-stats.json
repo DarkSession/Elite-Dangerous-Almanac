@@ -1,6 +1,12 @@
 {
   "description": "Parity fixture for the stat fields merged into data/ships/ships.jsonc. Cross-language validation.",
   "count": 48,
+  "pricedCount": 48,
+  "prices": [
+    { "symbol": "SideWinder", "hullCost": 4588, "retailCost": 32000 },
+    { "symbol": "Anaconda", "hullCost": 142456440, "retailCost": 146969451 },
+    { "symbol": "MediumTransport01", "hullCost": 67992080, "retailCost": 69289470 }
+  ],
   "spot": [
     {
       "symbol": "Anaconda",

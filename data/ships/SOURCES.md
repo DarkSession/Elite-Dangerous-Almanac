@@ -165,9 +165,25 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     those three fields blank (identity `fdid` 128064261 and the multipliers only), and no
     other registry publishes them. Omitted rather than interpolated from the neighbouring
     ratings — see the Lynx note above for the same rule.
-- **Deliberately not modelled here:** credit / Merc-Coin cost, passenger capacity, and
-  fighter-bay/rebuild counts — the module schema carries none of these for any record,
-  so the dossier's cost/capacity/bay figures are noted but not stored. The **Merc-Coin
+- **Prices — `cost` on modules, `hullCost` / `retailCost` on hulls.** `cost` is the
+  module's standard list price in credits, before any station discount or markup — the
+  figure an outfitting screen quotes at 0% discount. On hulls, `hullCost` is the bare
+  hull and `retailCost` the hull with its default module loadout (`retailCost` is never
+  below `hullCost`, and a test asserts it). Sources are coriolis-data's `cost` per module
+  and `properties.hullCost` / `retailCost` per ship, with EDSY filling the records
+  coriolis does not price (the newer hulls' armour, the Operations additions, the
+  retained removed scanners) and supplying the Lynx Highliner, which has no coriolis
+  entry. Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
+  on hull + bulkhead name because those records carry no symbol upstream.
+  - **All 48 hulls are priced. 1178 of 1198 modules are.** The 20 without a price are
+    the starter `*_free` variants, the size-8 frame shift drives, the three Mk II Vessel
+    Hangars, the size-2 Corrosion Resistant Cargo Rack and `Int_ShieldGenerator_Size1_Class4`
+    — no registry publishes a figure for them. **`cost` is omitted, never set to 0**:
+    `0` is a real price (the starter Lightweight Alloy bulkhead costs nothing), so a
+    cost calculation must be able to tell "free" from "unknown".
+  - **Still not modelled:** the **Merc-Coin** price of the pre-engineered variants (a
+    separate currency, not credits), passenger capacity, and fighter-bay/rebuild counts.
+- **Deliberately not modelled here:** the **Merc-Coin
   pre-engineered weapon variants** are not separate module records: their base module
   symbols already exist, and the pre-engineering is expressed as the Operations
   blueprints below — the pairing between the two is `pre-engineered.jsonc` (next section). The **Nomad** (`Lander01`) is a ship-launched vehicle, not a
@@ -340,9 +356,10 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   own recipes start at grade 2 (see the Operations section above). The two facts are
   consistent by construction and a test asserts it — `getBlueprintCost(bp, target, 1)`
   prices taking a bought variant the rest of the way.
-- **Deliberately not stored:** the Merc-Coin price. It is a currency, not a material, and
-  no catalogue in this repository carries prices — the same rule the module and ship
-  catalogues follow for credits.
+- **Deliberately not stored:** the Merc-Coin price. Modules and hulls carry a credit
+  price (`cost` / `hullCost` / `retailCost`, see the modules section), but Merc Coin is a
+  separate currency with no credit equivalent, so a shop price in MC has nowhere
+  meaningful to live.
 - **Not included:** engineered modules that are one-off mission or salvage rewards rather
   than a repeatable outfitting row. Those arrive in a build as their base symbol plus an
   `Engineering.Modifiers` block, which `ShipLoadout` already applies directly; there is no

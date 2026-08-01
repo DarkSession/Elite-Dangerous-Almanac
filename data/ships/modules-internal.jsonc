@@ -20,6 +20,8 @@
  * tonnes, power in MW, ranges in LY). `restrictedToShips` lists the hull(s) a
  * non-armour module is limited to; armour's hull restriction is its `ship` field.
  * Modules without stats (ship-specific armour) carry identity only.
+ * `cost` is the standard purchase price in credits before any station discount;
+ * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -29,7 +31,8 @@
     "category": "internal",
     "name": "Standard Docking Computer",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "cost": 4500
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class1",
@@ -47,7 +50,8 @@
     "minMultiplier": 0.3,
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "cost": 300
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class2",
@@ -65,7 +69,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "cost": 1240
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class3",
@@ -83,7 +88,8 @@
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "cost": 5140
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class4",
@@ -116,7 +122,8 @@
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "cost": 88075
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class1",
@@ -134,7 +141,8 @@
     "minMultiplier": 0.3,
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "cost": 1978
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class2",
@@ -152,7 +160,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "cost": 5934
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class3",
@@ -170,7 +179,8 @@
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "cost": 17803
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class4",
@@ -188,7 +198,8 @@
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "cost": 53408
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class5",
@@ -206,7 +217,8 @@
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "cost": 160224
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class1",
@@ -224,7 +236,8 @@
     "minMultiplier": 0.3,
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.87
+    "shieldBrokenRegenRate": 1.87,
+    "cost": 6271
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class2",
@@ -242,7 +255,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.87
+    "shieldBrokenRegenRate": 1.87,
+    "cost": 18812
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class3",
@@ -260,7 +274,8 @@
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.87
+    "shieldBrokenRegenRate": 1.87,
+    "cost": 56435
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class4",
@@ -278,7 +293,8 @@
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.87
+    "shieldBrokenRegenRate": 1.87,
+    "cost": 169304
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class5",
@@ -296,7 +312,8 @@
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.87
+    "shieldBrokenRegenRate": 1.87,
+    "cost": 507912
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class1",
@@ -314,7 +331,8 @@
     "minMultiplier": 0.3,
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 2.53
+    "shieldBrokenRegenRate": 2.53,
+    "cost": 19878
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class2",
@@ -332,7 +350,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 2.53
+    "shieldBrokenRegenRate": 2.53,
+    "cost": 59633
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class3",
@@ -350,7 +369,8 @@
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 2.53
+    "shieldBrokenRegenRate": 2.53,
+    "cost": 178898
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class4",
@@ -368,7 +388,8 @@
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 2.53
+    "shieldBrokenRegenRate": 2.53,
+    "cost": 536693
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class5",
@@ -386,7 +407,8 @@
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 2.53
+    "shieldBrokenRegenRate": 2.53,
+    "cost": 1610080
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class1",
@@ -404,7 +426,8 @@
     "minMultiplier": 0.3,
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 3.75
+    "shieldBrokenRegenRate": 3.75,
+    "cost": 63012
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class2",
@@ -422,7 +445,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 3.75
+    "shieldBrokenRegenRate": 3.75,
+    "cost": 189035
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class3",
@@ -440,7 +464,8 @@
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 3.75
+    "shieldBrokenRegenRate": 3.75,
+    "cost": 567106
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class4",
@@ -458,7 +483,8 @@
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 3.75
+    "shieldBrokenRegenRate": 3.75,
+    "cost": 1701318
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class5",
@@ -476,7 +502,8 @@
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 3.75
+    "shieldBrokenRegenRate": 3.75,
+    "cost": 5103953
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class1",
@@ -494,7 +521,8 @@
     "minMultiplier": 0.3,
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1.3,
-    "shieldBrokenRegenRate": 5.33
+    "shieldBrokenRegenRate": 5.33,
+    "cost": 199747
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class2",
@@ -512,7 +540,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.3,
-    "shieldBrokenRegenRate": 5.33
+    "shieldBrokenRegenRate": 5.33,
+    "cost": 599242
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class3",
@@ -530,7 +559,8 @@
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1.3,
-    "shieldBrokenRegenRate": 5.33
+    "shieldBrokenRegenRate": 5.33,
+    "cost": 1797726
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class4",
@@ -548,7 +578,8 @@
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1.3,
-    "shieldBrokenRegenRate": 5.33
+    "shieldBrokenRegenRate": 5.33,
+    "cost": 5393177
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class5",
@@ -566,7 +597,8 @@
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1.3,
-    "shieldBrokenRegenRate": 5.33
+    "shieldBrokenRegenRate": 5.33,
+    "cost": 16179531
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class1",
@@ -584,7 +616,8 @@
     "minMultiplier": 0.3,
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1.8,
-    "shieldBrokenRegenRate": 7.33
+    "shieldBrokenRegenRate": 7.33,
+    "cost": 633199
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class2",
@@ -602,7 +635,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
-    "shieldBrokenRegenRate": 7.33
+    "shieldBrokenRegenRate": 7.33,
+    "cost": 1899597
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class3",
@@ -620,7 +654,8 @@
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1.8,
-    "shieldBrokenRegenRate": 7.33
+    "shieldBrokenRegenRate": 7.33,
+    "cost": 5698790
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class4",
@@ -638,7 +673,8 @@
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1.8,
-    "shieldBrokenRegenRate": 7.33
+    "shieldBrokenRegenRate": 7.33,
+    "cost": 17096371
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class5",
@@ -656,7 +692,8 @@
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1.8,
-    "shieldBrokenRegenRate": 7.33
+    "shieldBrokenRegenRate": 7.33,
+    "cost": 51289112
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class1",
@@ -674,7 +711,8 @@
     "minMultiplier": 0.3,
     "maxMultiplier": 1.3,
     "shieldRegenRate": 2.4,
-    "shieldBrokenRegenRate": 9.6
+    "shieldBrokenRegenRate": 9.6,
+    "cost": 2007241
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class2",
@@ -692,7 +730,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 2.4,
-    "shieldBrokenRegenRate": 9.6
+    "shieldBrokenRegenRate": 9.6,
+    "cost": 6021722
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class3",
@@ -710,7 +749,8 @@
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
     "shieldRegenRate": 2.4,
-    "shieldBrokenRegenRate": 9.6
+    "shieldBrokenRegenRate": 9.6,
+    "cost": 18065165
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class4",
@@ -728,7 +768,8 @@
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
     "shieldRegenRate": 2.4,
-    "shieldBrokenRegenRate": 9.6
+    "shieldBrokenRegenRate": 9.6,
+    "cost": 54195495
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class5",
@@ -746,7 +787,8 @@
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
     "shieldRegenRate": 2.4,
-    "shieldBrokenRegenRate": 9.6
+    "shieldBrokenRegenRate": 9.6,
+    "cost": 162586486
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class1",
@@ -757,7 +799,8 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.41,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 517
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class2",
@@ -768,7 +811,8 @@
     "mass": 0.5,
     "integrity": 24,
     "powerDraw": 0.55,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 1293
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class3",
@@ -779,7 +823,8 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.69,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 3231
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class4",
@@ -790,7 +835,8 @@
     "mass": 2,
     "integrity": 56,
     "powerDraw": 0.83,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 8078
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class5",
@@ -801,7 +847,8 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 0.97,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 20195
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class1",
@@ -812,7 +859,8 @@
     "mass": 2.5,
     "integrity": 41,
     "powerDraw": 0.5,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 1448
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class2",
@@ -823,7 +871,8 @@
     "mass": 1,
     "integrity": 31,
     "powerDraw": 0.67,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 3619
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class3",
@@ -834,7 +883,8 @@
     "mass": 2.5,
     "integrity": 51,
     "powerDraw": 0.84,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 9048
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class4",
@@ -845,7 +895,8 @@
     "mass": 4,
     "integrity": 71,
     "powerDraw": 1.01,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 22619
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class5",
@@ -856,7 +907,8 @@
     "mass": 2.5,
     "integrity": 61,
     "powerDraw": 1.18,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 56547
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class1",
@@ -867,7 +919,8 @@
     "mass": 5,
     "integrity": 51,
     "powerDraw": 0.61,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 4053
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class2",
@@ -878,7 +931,8 @@
     "mass": 2,
     "integrity": 38,
     "powerDraw": 0.82,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 10133
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class3",
@@ -889,7 +943,8 @@
     "mass": 5,
     "integrity": 64,
     "powerDraw": 1.02,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 25333
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class4",
@@ -900,7 +955,8 @@
     "mass": 8,
     "integrity": 90,
     "powerDraw": 1.22,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 63333
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class5",
@@ -911,7 +967,8 @@
     "mass": 5,
     "integrity": 77,
     "powerDraw": 1.43,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 158331
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class1",
@@ -922,7 +979,8 @@
     "mass": 10,
     "integrity": 64,
     "powerDraw": 0.74,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 11349
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class2",
@@ -933,7 +991,8 @@
     "mass": 4,
     "integrity": 48,
     "powerDraw": 0.98,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 28373
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class3",
@@ -944,7 +1003,8 @@
     "mass": 10,
     "integrity": 80,
     "powerDraw": 1.23,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 70932
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class4",
@@ -955,7 +1015,8 @@
     "mass": 16,
     "integrity": 112,
     "powerDraw": 1.48,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 177331
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class5",
@@ -966,7 +1027,8 @@
     "mass": 10,
     "integrity": 96,
     "powerDraw": 1.72,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 443328
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class1",
@@ -977,7 +1039,8 @@
     "mass": 20,
     "integrity": 77,
     "powerDraw": 0.9,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 31778
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class2",
@@ -988,7 +1051,8 @@
     "mass": 8,
     "integrity": 58,
     "powerDraw": 1.2,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 79444
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class3",
@@ -999,7 +1063,8 @@
     "mass": 20,
     "integrity": 96,
     "powerDraw": 1.5,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 198611
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class4",
@@ -1010,7 +1075,8 @@
     "mass": 32,
     "integrity": 134,
     "powerDraw": 1.8,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 496527
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class5",
@@ -1021,7 +1087,8 @@
     "mass": 20,
     "integrity": 115,
     "powerDraw": 2.1,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 1241317
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class1",
@@ -1032,7 +1099,8 @@
     "mass": 40,
     "integrity": 90,
     "powerDraw": 1.06,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 88978
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class2",
@@ -1043,7 +1111,8 @@
     "mass": 16,
     "integrity": 68,
     "powerDraw": 1.42,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 222444
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class3",
@@ -1054,7 +1123,8 @@
     "mass": 40,
     "integrity": 113,
     "powerDraw": 1.77,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 556110
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class4",
@@ -1065,7 +1135,8 @@
     "mass": 64,
     "integrity": 158,
     "powerDraw": 2.12,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 1390275
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class5",
@@ -1076,7 +1147,8 @@
     "mass": 40,
     "integrity": 136,
     "powerDraw": 2.48,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 3475688
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class1",
@@ -1087,7 +1159,8 @@
     "mass": 80,
     "integrity": 105,
     "powerDraw": 1.24,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 249137
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class2",
@@ -1098,7 +1171,8 @@
     "mass": 32,
     "integrity": 79,
     "powerDraw": 1.66,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 622843
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class3",
@@ -1109,7 +1183,8 @@
     "mass": 80,
     "integrity": 131,
     "powerDraw": 2.07,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 1557108
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class4",
@@ -1120,7 +1195,8 @@
     "mass": 128,
     "integrity": 183,
     "powerDraw": 2.48,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 3892770
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class5",
@@ -1131,7 +1207,8 @@
     "mass": 80,
     "integrity": 157,
     "powerDraw": 2.9,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 9731925
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class1",
@@ -1142,7 +1219,8 @@
     "mass": 160,
     "integrity": 120,
     "powerDraw": 1.44,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 697584
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class2",
@@ -1153,7 +1231,8 @@
     "mass": 64,
     "integrity": 90,
     "powerDraw": 1.92,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 1743961
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class3",
@@ -1164,7 +1243,8 @@
     "mass": 160,
     "integrity": 150,
     "powerDraw": 2.4,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 4359903
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class4",
@@ -1175,7 +1255,8 @@
     "mass": 256,
     "integrity": 210,
     "powerDraw": 2.88,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 10899756
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class5",
@@ -1186,7 +1267,8 @@
     "mass": 160,
     "integrity": 180,
     "powerDraw": 3.36,
-    "bootTime": 25
+    "bootTime": 25,
+    "cost": 27249391
   },
   {
     "symbol": "Int_CargoRack_Size1_Class1",
@@ -1195,7 +1277,8 @@
     "class": 1,
     "rating": "E",
     "mass": 0,
-    "cargoCapacity": 2
+    "cargoCapacity": 2,
+    "cost": 1000
   },
   {
     "symbol": "Int_CargoRack_Size2_Class1",
@@ -1204,7 +1287,8 @@
     "class": 2,
     "rating": "E",
     "mass": 0,
-    "cargoCapacity": 4
+    "cargoCapacity": 4,
+    "cost": 3250
   },
   {
     "symbol": "Int_CargoRack_Size3_Class1",
@@ -1213,7 +1297,8 @@
     "class": 3,
     "rating": "E",
     "mass": 0,
-    "cargoCapacity": 8
+    "cargoCapacity": 8,
+    "cost": 10563
   },
   {
     "symbol": "Int_CargoRack_Size4_Class1",
@@ -1222,7 +1307,8 @@
     "class": 4,
     "rating": "E",
     "mass": 0,
-    "cargoCapacity": 16
+    "cargoCapacity": 16,
+    "cost": 34328
   },
   {
     "symbol": "Int_CargoRack_Size5_Class1",
@@ -1231,7 +1317,8 @@
     "class": 5,
     "rating": "E",
     "mass": 0,
-    "cargoCapacity": 32
+    "cargoCapacity": 32,
+    "cost": 0
   },
   {
     "symbol": "Int_CargoRack_Size6_Class1",
@@ -1240,7 +1327,8 @@
     "class": 6,
     "rating": "E",
     "mass": 0,
-    "cargoCapacity": 64
+    "cargoCapacity": 64,
+    "cost": 0
   },
   {
     "symbol": "Int_CargoRack_Size7_Class1",
@@ -1249,7 +1337,8 @@
     "class": 7,
     "rating": "E",
     "mass": 0,
-    "cargoCapacity": 128
+    "cargoCapacity": 128,
+    "cost": 1178420
   },
   {
     "symbol": "Int_CargoRack_Size8_Class1",
@@ -1258,14 +1347,16 @@
     "class": 8,
     "rating": "E",
     "mass": 0,
-    "cargoCapacity": 256
+    "cargoCapacity": 256,
+    "cost": 3829866
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon",
     "category": "internal",
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 18040
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class1",
@@ -1274,7 +1365,8 @@
     "class": 1,
     "rating": "E",
     "mass": 1.3,
-    "powerDraw": 0.12
+    "powerDraw": 0.12,
+    "cost": 600
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class2",
@@ -1283,7 +1375,8 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
-    "powerDraw": 0.16
+    "powerDraw": 0.16,
+    "cost": 1200
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class3",
@@ -1292,7 +1385,8 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 2400
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class4",
@@ -1301,7 +1395,8 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
-    "powerDraw": 0.24
+    "powerDraw": 0.24,
+    "cost": 4800
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class5",
@@ -1310,7 +1405,8 @@
     "class": 1,
     "rating": "A",
     "mass": 1.3,
-    "powerDraw": 0.28
+    "powerDraw": 0.28,
+    "cost": 9600
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class1",
@@ -1319,7 +1415,8 @@
     "class": 3,
     "rating": "E",
     "mass": 5,
-    "powerDraw": 0.18
+    "powerDraw": 0.18,
+    "cost": 5400
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class2",
@@ -1328,7 +1425,8 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
-    "powerDraw": 0.24
+    "powerDraw": 0.24,
+    "cost": 10800
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class3",
@@ -1337,7 +1435,8 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
-    "powerDraw": 0.3
+    "powerDraw": 0.3,
+    "cost": 21600
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class4",
@@ -1346,7 +1445,8 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
-    "powerDraw": 0.36
+    "powerDraw": 0.36,
+    "cost": 43200
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class5",
@@ -1355,7 +1455,8 @@
     "class": 3,
     "rating": "A",
     "mass": 5,
-    "powerDraw": 0.42
+    "powerDraw": 0.42,
+    "cost": 86400
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class1",
@@ -1364,7 +1465,8 @@
     "class": 5,
     "rating": "E",
     "mass": 20,
-    "powerDraw": 0.3
+    "powerDraw": 0.3,
+    "cost": 48600
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class2",
@@ -1373,7 +1475,8 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 97200
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class3",
@@ -1382,7 +1485,8 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 194400
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class4",
@@ -1391,7 +1495,8 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 388800
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class5",
@@ -1400,7 +1505,8 @@
     "class": 5,
     "rating": "A",
     "mass": 20,
-    "powerDraw": 0.7
+    "powerDraw": 0.7,
+    "cost": 777600
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class1",
@@ -1409,7 +1515,8 @@
     "class": 7,
     "rating": "E",
     "mass": 80,
-    "powerDraw": 0.42
+    "powerDraw": 0.42,
+    "cost": 437400
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class2",
@@ -1418,7 +1525,8 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
-    "powerDraw": 0.56
+    "powerDraw": 0.56,
+    "cost": 874800
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class3",
@@ -1427,7 +1535,8 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
-    "powerDraw": 0.7
+    "powerDraw": 0.7,
+    "cost": 1749600
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class4",
@@ -1436,7 +1545,8 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
-    "powerDraw": 0.84
+    "powerDraw": 0.84,
+    "cost": 3499200
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class5",
@@ -1445,28 +1555,32 @@
     "class": 7,
     "rating": "A",
     "mass": 80,
-    "powerDraw": 0.98
+    "powerDraw": 0.98,
+    "cost": 6998400
   },
   {
     "symbol": "Int_StellarBodyDiscoveryScanner_Standard",
     "category": "internal",
     "name": "Basic Discovery Scanner",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "cost": 1000
   },
   {
     "symbol": "Int_StellarBodyDiscoveryScanner_Intermediate",
     "category": "internal",
     "name": "Intermediate Discovery Scanner",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "cost": 505000
   },
   {
     "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
     "category": "internal",
     "name": "Advanced Discovery Scanner",
     "class": 1,
-    "rating": "C"
+    "rating": "C",
+    "cost": 1545000
   },
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
@@ -1475,7 +1589,8 @@
     "class": 1,
     "rating": "I",
     "mass": 0,
-    "powerDraw": 0
+    "powerDraw": 0,
+    "cost": 0
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class1_free",
@@ -1503,420 +1618,480 @@
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "cost": 309
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class1",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "cost": 1068
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class1",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 3,
-    "rating": "E"
+    "rating": "E",
+    "cost": 3386
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class1",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 4,
-    "rating": "E"
+    "rating": "E",
+    "cost": 10734
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class1",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 5,
-    "rating": "E"
+    "rating": "E",
+    "cost": 34026
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class1",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 6,
-    "rating": "E"
+    "rating": "E",
+    "cost": 107864
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class1",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 7,
-    "rating": "E"
+    "rating": "E",
+    "cost": 341927
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class1",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 8,
-    "rating": "E"
+    "rating": "E",
+    "cost": 1083910
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class2",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "cost": 1285
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class2",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "cost": 4451
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class2",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 3,
-    "rating": "D"
+    "rating": "D",
+    "cost": 14109
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class2",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 4,
-    "rating": "D"
+    "rating": "D",
+    "cost": 44724
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class2",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 5,
-    "rating": "D"
+    "rating": "D",
+    "cost": 141776
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class2",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 6,
-    "rating": "D"
+    "rating": "D",
+    "cost": 449431
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class2",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 7,
-    "rating": "D"
+    "rating": "D",
+    "cost": 1424698
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class2",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 8,
-    "rating": "D"
+    "rating": "D",
+    "cost": 4516291
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class3",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 1,
-    "rating": "C"
+    "rating": "C",
+    "cost": 5142
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class3",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 2,
-    "rating": "C"
+    "rating": "C",
+    "cost": 17803
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class3",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "cost": 56435
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class3",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 4,
-    "rating": "C"
+    "rating": "C",
+    "cost": 178898
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class3",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 5,
-    "rating": "C"
+    "rating": "C",
+    "cost": 567106
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class3",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 6,
-    "rating": "C"
+    "rating": "C",
+    "cost": 1797726
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class3",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 7,
-    "rating": "C"
+    "rating": "C",
+    "cost": 5698790
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class3",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 8,
-    "rating": "C"
+    "rating": "C",
+    "cost": 18065165
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class4",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 1,
-    "rating": "B"
+    "rating": "B",
+    "cost": 20568
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class4",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "cost": 71211
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class4",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 3,
-    "rating": "B"
+    "rating": "B",
+    "cost": 225738
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class4",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 4,
-    "rating": "B"
+    "rating": "B",
+    "cost": 715591
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class4",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 5,
-    "rating": "B"
+    "rating": "B",
+    "cost": 2268424
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class4",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 6,
-    "rating": "B"
+    "rating": "B",
+    "cost": 7190903
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class4",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 7,
-    "rating": "B"
+    "rating": "B",
+    "cost": 22795161
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class4",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 8,
-    "rating": "B"
+    "rating": "B",
+    "cost": 72260660
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class5",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 1,
-    "rating": "A"
+    "rating": "A",
+    "cost": 82270
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class5",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 2,
-    "rating": "A"
+    "rating": "A",
+    "cost": 284844
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class5",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 3,
-    "rating": "A"
+    "rating": "A",
+    "cost": 902954
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class5",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "cost": 2862364
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class5",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 5,
-    "rating": "A"
+    "rating": "A",
+    "cost": 9073694
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class5",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 6,
-    "rating": "A"
+    "rating": "A",
+    "cost": 28763610
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class5",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 7,
-    "rating": "A"
+    "rating": "A",
+    "cost": 91180644
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class5",
     "category": "internal",
     "name": "Fuel Scoop",
     "class": 8,
-    "rating": "A"
+    "rating": "A",
+    "cost": 289042641
   },
   {
     "symbol": "Int_Refinery_Size1_Class1",
     "category": "internal",
     "name": "Refinery",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "cost": 6000
   },
   {
     "symbol": "Int_Refinery_Size2_Class1",
     "category": "internal",
     "name": "Refinery",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "cost": 12600
   },
   {
     "symbol": "Int_Refinery_Size3_Class1",
     "category": "internal",
     "name": "Refinery",
     "class": 3,
-    "rating": "E"
+    "rating": "E",
+    "cost": 26460
   },
   {
     "symbol": "Int_Refinery_Size4_Class1",
     "category": "internal",
     "name": "Refinery",
     "class": 4,
-    "rating": "E"
+    "rating": "E",
+    "cost": 55566
   },
   {
     "symbol": "Int_Refinery_Size1_Class2",
     "category": "internal",
     "name": "Refinery",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "cost": 18000
   },
   {
     "symbol": "Int_Refinery_Size2_Class2",
     "category": "internal",
     "name": "Refinery",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "cost": 37800
   },
   {
     "symbol": "Int_Refinery_Size3_Class2",
     "category": "internal",
     "name": "Refinery",
     "class": 3,
-    "rating": "D"
+    "rating": "D",
+    "cost": 79380
   },
   {
     "symbol": "Int_Refinery_Size4_Class2",
     "category": "internal",
     "name": "Refinery",
     "class": 4,
-    "rating": "D"
+    "rating": "D",
+    "cost": 166698
   },
   {
     "symbol": "Int_Refinery_Size1_Class3",
     "category": "internal",
     "name": "Refinery",
     "class": 1,
-    "rating": "C"
+    "rating": "C",
+    "cost": 54000
   },
   {
     "symbol": "Int_Refinery_Size2_Class3",
     "category": "internal",
     "name": "Refinery",
     "class": 2,
-    "rating": "C"
+    "rating": "C",
+    "cost": 113400
   },
   {
     "symbol": "Int_Refinery_Size3_Class3",
     "category": "internal",
     "name": "Refinery",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "cost": 238140
   },
   {
     "symbol": "Int_Refinery_Size4_Class3",
     "category": "internal",
     "name": "Refinery",
     "class": 4,
-    "rating": "C"
+    "rating": "C",
+    "cost": 500094
   },
   {
     "symbol": "Int_Refinery_Size1_Class4",
     "category": "internal",
     "name": "Refinery",
     "class": 1,
-    "rating": "B"
+    "rating": "B",
+    "cost": 162000
   },
   {
     "symbol": "Int_Refinery_Size2_Class4",
     "category": "internal",
     "name": "Refinery",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "cost": 340200
   },
   {
     "symbol": "Int_Refinery_Size3_Class4",
     "category": "internal",
     "name": "Refinery",
     "class": 3,
-    "rating": "B"
+    "rating": "B",
+    "cost": 714420
   },
   {
     "symbol": "Int_Refinery_Size4_Class4",
     "category": "internal",
     "name": "Refinery",
     "class": 4,
-    "rating": "B"
+    "rating": "B",
+    "cost": 1500282
   },
   {
     "symbol": "Int_Refinery_Size1_Class5",
     "category": "internal",
     "name": "Refinery",
     "class": 1,
-    "rating": "A"
+    "rating": "A",
+    "cost": 486000
   },
   {
     "symbol": "Int_Refinery_Size2_Class5",
     "category": "internal",
     "name": "Refinery",
     "class": 2,
-    "rating": "A"
+    "rating": "A",
+    "cost": 1020600
   },
   {
     "symbol": "Int_Refinery_Size3_Class5",
     "category": "internal",
     "name": "Refinery",
     "class": 3,
-    "rating": "A"
+    "rating": "A",
+    "cost": 2143260
   },
   {
     "symbol": "Int_Refinery_Size4_Class5",
     "category": "internal",
     "name": "Refinery",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "cost": 4500846
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class1",
@@ -1927,7 +2102,8 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.14,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 12000
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class1",
@@ -1938,7 +2114,8 @@
     "mass": 2.5,
     "integrity": 41,
     "powerDraw": 0.17,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 33600
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class1",
@@ -1949,7 +2126,8 @@
     "mass": 5,
     "integrity": 51,
     "powerDraw": 0.2,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 94080
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class1",
@@ -1960,7 +2138,8 @@
     "mass": 10,
     "integrity": 64,
     "powerDraw": 0.25,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 263424
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class2",
@@ -1971,7 +2150,8 @@
     "mass": 0.5,
     "integrity": 24,
     "powerDraw": 0.18,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 36000
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class2",
@@ -1982,7 +2162,8 @@
     "mass": 1,
     "integrity": 51,
     "powerDraw": 0.22,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 100800
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class2",
@@ -1993,7 +2174,8 @@
     "mass": 2,
     "integrity": 38,
     "powerDraw": 0.27,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 282240
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class2",
@@ -2004,7 +2186,8 @@
     "mass": 4,
     "integrity": 48,
     "powerDraw": 0.33,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 790272
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class3",
@@ -2015,7 +2198,8 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.23,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 108000
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class3",
@@ -2026,7 +2210,8 @@
     "mass": 2.5,
     "integrity": 51,
     "powerDraw": 0.28,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 302400
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class3",
@@ -2037,7 +2222,8 @@
     "mass": 5,
     "integrity": 64,
     "powerDraw": 0.34,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 846720
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class3",
@@ -2048,7 +2234,8 @@
     "mass": 10,
     "integrity": 80,
     "powerDraw": 0.41,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 2370816
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class4",
@@ -2059,7 +2246,8 @@
     "mass": 2,
     "integrity": 56,
     "powerDraw": 0.28,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 324000
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class4",
@@ -2070,7 +2258,8 @@
     "mass": 4,
     "integrity": 71,
     "powerDraw": 0.34,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 907200
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class4",
@@ -2081,7 +2270,8 @@
     "mass": 8,
     "integrity": 90,
     "powerDraw": 0.41,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 2540160
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class4",
@@ -2092,7 +2282,8 @@
     "mass": 16,
     "integrity": 112,
     "powerDraw": 0.49,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 7112448
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class5",
@@ -2103,7 +2294,8 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 0.32,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 972000
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class5",
@@ -2114,7 +2306,8 @@
     "mass": 2.5,
     "integrity": 61,
     "powerDraw": 0.39,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 2721600
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class5",
@@ -2125,7 +2318,8 @@
     "mass": 5,
     "integrity": 77,
     "powerDraw": 0.48,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 7620480
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class5",
@@ -2136,287 +2330,328 @@
     "mass": 10,
     "integrity": 96,
     "powerDraw": 0.57,
-    "bootTime": 15
+    "bootTime": 15,
+    "cost": 21337344
   },
   {
     "symbol": "Int_Repairer_Size1_Class1",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "cost": 10000
   },
   {
     "symbol": "Int_Repairer_Size2_Class1",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "cost": 18000
   },
   {
     "symbol": "Int_Repairer_Size3_Class1",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
-    "rating": "E"
+    "rating": "E",
+    "cost": 32400
   },
   {
     "symbol": "Int_Repairer_Size4_Class1",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
-    "rating": "E"
+    "rating": "E",
+    "cost": 58320
   },
   {
     "symbol": "Int_Repairer_Size5_Class1",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
-    "rating": "E"
+    "rating": "E",
+    "cost": 104976
   },
   {
     "symbol": "Int_Repairer_Size6_Class1",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
-    "rating": "E"
+    "rating": "E",
+    "cost": 188957
   },
   {
     "symbol": "Int_Repairer_Size7_Class1",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
-    "rating": "E"
+    "rating": "E",
+    "cost": 340122
   },
   {
     "symbol": "Int_Repairer_Size8_Class1",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
-    "rating": "E"
+    "rating": "E",
+    "cost": 612220
   },
   {
     "symbol": "Int_Repairer_Size1_Class2",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
-    "rating": "D"
+    "rating": "D",
+    "cost": 30000
   },
   {
     "symbol": "Int_Repairer_Size2_Class2",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
-    "rating": "D"
+    "rating": "D",
+    "cost": 54000
   },
   {
     "symbol": "Int_Repairer_Size3_Class2",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
-    "rating": "D"
+    "rating": "D",
+    "cost": 97200
   },
   {
     "symbol": "Int_Repairer_Size4_Class2",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
-    "rating": "D"
+    "rating": "D",
+    "cost": 174960
   },
   {
     "symbol": "Int_Repairer_Size5_Class2",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
-    "rating": "D"
+    "rating": "D",
+    "cost": 314928
   },
   {
     "symbol": "Int_Repairer_Size6_Class2",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
-    "rating": "D"
+    "rating": "D",
+    "cost": 566870
   },
   {
     "symbol": "Int_Repairer_Size7_Class2",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
-    "rating": "D"
+    "rating": "D",
+    "cost": 1020367
   },
   {
     "symbol": "Int_Repairer_Size8_Class2",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
-    "rating": "D"
+    "rating": "D",
+    "cost": 1836660
   },
   {
     "symbol": "Int_Repairer_Size1_Class3",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
-    "rating": "C"
+    "rating": "C",
+    "cost": 90000
   },
   {
     "symbol": "Int_Repairer_Size2_Class3",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
-    "rating": "C"
+    "rating": "C",
+    "cost": 162000
   },
   {
     "symbol": "Int_Repairer_Size3_Class3",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
-    "rating": "C"
+    "rating": "C",
+    "cost": 291600
   },
   {
     "symbol": "Int_Repairer_Size4_Class3",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
-    "rating": "C"
+    "rating": "C",
+    "cost": 524880
   },
   {
     "symbol": "Int_Repairer_Size5_Class3",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
-    "rating": "C"
+    "rating": "C",
+    "cost": 944784
   },
   {
     "symbol": "Int_Repairer_Size6_Class3",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
-    "rating": "C"
+    "rating": "C",
+    "cost": 1700611
   },
   {
     "symbol": "Int_Repairer_Size7_Class3",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
-    "rating": "C"
+    "rating": "C",
+    "cost": 3061100
   },
   {
     "symbol": "Int_Repairer_Size8_Class3",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
-    "rating": "C"
+    "rating": "C",
+    "cost": 5509980
   },
   {
     "symbol": "Int_Repairer_Size1_Class4",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
-    "rating": "B"
+    "rating": "B",
+    "cost": 270000
   },
   {
     "symbol": "Int_Repairer_Size2_Class4",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
-    "rating": "B"
+    "rating": "B",
+    "cost": 486000
   },
   {
     "symbol": "Int_Repairer_Size3_Class4",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
-    "rating": "B"
+    "rating": "B",
+    "cost": 874800
   },
   {
     "symbol": "Int_Repairer_Size4_Class4",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
-    "rating": "B"
+    "rating": "B",
+    "cost": 1574640
   },
   {
     "symbol": "Int_Repairer_Size5_Class4",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
-    "rating": "B"
+    "rating": "B",
+    "cost": 2834352
   },
   {
     "symbol": "Int_Repairer_Size6_Class4",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
-    "rating": "B"
+    "rating": "B",
+    "cost": 5101834
   },
   {
     "symbol": "Int_Repairer_Size7_Class4",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
-    "rating": "B"
+    "rating": "B",
+    "cost": 9183300
   },
   {
     "symbol": "Int_Repairer_Size8_Class4",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
-    "rating": "B"
+    "rating": "B",
+    "cost": 16529941
   },
   {
     "symbol": "Int_Repairer_Size1_Class5",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
-    "rating": "A"
+    "rating": "A",
+    "cost": 810000
   },
   {
     "symbol": "Int_Repairer_Size2_Class5",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
-    "rating": "A"
+    "rating": "A",
+    "cost": 1458000
   },
   {
     "symbol": "Int_Repairer_Size3_Class5",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
-    "rating": "A"
+    "rating": "A",
+    "cost": 2624400
   },
   {
     "symbol": "Int_Repairer_Size4_Class5",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
-    "rating": "A"
+    "rating": "A",
+    "cost": 4723920
   },
   {
     "symbol": "Int_Repairer_Size5_Class5",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
-    "rating": "A"
+    "rating": "A",
+    "cost": 8503056
   },
   {
     "symbol": "Int_Repairer_Size6_Class5",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
-    "rating": "A"
+    "rating": "A",
+    "cost": 15305501
   },
   {
     "symbol": "Int_Repairer_Size7_Class5",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
-    "rating": "A"
+    "rating": "A",
+    "cost": 27549901
   },
   {
     "symbol": "Int_Repairer_Size8_Class5",
     "category": "internal",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
-    "rating": "A"
+    "rating": "A",
+    "cost": 49589823
   },
   {
     "symbol": "Int_HullReinforcement_Size1_Class1",
@@ -2424,7 +2659,8 @@
     "name": "Hull Reinforcement Package",
     "class": 1,
     "rating": "E",
-    "mass": 2
+    "mass": 2,
+    "cost": 5000
   },
   {
     "symbol": "Int_HullReinforcement_Size1_Class2",
@@ -2432,7 +2668,8 @@
     "name": "Hull Reinforcement Package",
     "class": 1,
     "rating": "D",
-    "mass": 1
+    "mass": 1,
+    "cost": 15000
   },
   {
     "symbol": "Int_HullReinforcement_Size2_Class1",
@@ -2440,7 +2677,8 @@
     "name": "Hull Reinforcement Package",
     "class": 2,
     "rating": "E",
-    "mass": 4
+    "mass": 4,
+    "cost": 12000
   },
   {
     "symbol": "Int_HullReinforcement_Size2_Class2",
@@ -2448,7 +2686,8 @@
     "name": "Hull Reinforcement Package",
     "class": 2,
     "rating": "D",
-    "mass": 2
+    "mass": 2,
+    "cost": 36000
   },
   {
     "symbol": "Int_HullReinforcement_Size3_Class1",
@@ -2456,7 +2695,8 @@
     "name": "Hull Reinforcement Package",
     "class": 3,
     "rating": "E",
-    "mass": 8
+    "mass": 8,
+    "cost": 28000
   },
   {
     "symbol": "Int_HullReinforcement_Size3_Class2",
@@ -2464,7 +2704,8 @@
     "name": "Hull Reinforcement Package",
     "class": 3,
     "rating": "D",
-    "mass": 4
+    "mass": 4,
+    "cost": 84000
   },
   {
     "symbol": "Int_HullReinforcement_Size4_Class1",
@@ -2472,7 +2713,8 @@
     "name": "Hull Reinforcement Package",
     "class": 4,
     "rating": "E",
-    "mass": 16
+    "mass": 16,
+    "cost": 65000
   },
   {
     "symbol": "Int_HullReinforcement_Size4_Class2",
@@ -2480,7 +2722,8 @@
     "name": "Hull Reinforcement Package",
     "class": 4,
     "rating": "D",
-    "mass": 8
+    "mass": 8,
+    "cost": 195000
   },
   {
     "symbol": "Int_HullReinforcement_Size5_Class1",
@@ -2488,7 +2731,8 @@
     "name": "Hull Reinforcement Package",
     "class": 5,
     "rating": "E",
-    "mass": 32
+    "mass": 32,
+    "cost": 150000
   },
   {
     "symbol": "Int_HullReinforcement_Size5_Class2",
@@ -2496,7 +2740,8 @@
     "name": "Hull Reinforcement Package",
     "class": 5,
     "rating": "D",
-    "mass": 16
+    "mass": 16,
+    "cost": 450000
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class1",
@@ -2505,7 +2750,8 @@
     "class": 1,
     "rating": "E",
     "mass": 0.5,
-    "powerDraw": 0.14
+    "powerDraw": 0.14,
+    "cost": 600
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class2",
@@ -2514,7 +2760,8 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
-    "powerDraw": 0.18
+    "powerDraw": 0.18,
+    "cost": 1200
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class3",
@@ -2523,7 +2770,8 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
-    "powerDraw": 0.23
+    "powerDraw": 0.23,
+    "cost": 2400
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class4",
@@ -2532,7 +2780,8 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
-    "powerDraw": 0.28
+    "powerDraw": 0.28,
+    "cost": 4800
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class5",
@@ -2541,7 +2790,8 @@
     "class": 1,
     "rating": "A",
     "mass": 2,
-    "powerDraw": 0.32
+    "powerDraw": 0.32,
+    "cost": 9600
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class1",
@@ -2550,7 +2800,8 @@
     "class": 3,
     "rating": "E",
     "mass": 2,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 5400
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class2",
@@ -2559,7 +2810,8 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
-    "powerDraw": 0.27
+    "powerDraw": 0.27,
+    "cost": 10800
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class3",
@@ -2568,7 +2820,8 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
-    "powerDraw": 0.34
+    "powerDraw": 0.34,
+    "cost": 21600
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class4",
@@ -2577,7 +2830,8 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 43200
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class5",
@@ -2586,7 +2840,8 @@
     "class": 3,
     "rating": "A",
     "mass": 8,
-    "powerDraw": 0.48
+    "powerDraw": 0.48,
+    "cost": 86400
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class1",
@@ -2595,7 +2850,8 @@
     "class": 5,
     "rating": "E",
     "mass": 8,
-    "powerDraw": 0.3
+    "powerDraw": 0.3,
+    "cost": 48600
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class2",
@@ -2604,7 +2860,8 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 97200
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class3",
@@ -2613,7 +2870,8 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 194400
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class4",
@@ -2622,7 +2880,8 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 388800
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class5",
@@ -2631,7 +2890,8 @@
     "class": 5,
     "rating": "A",
     "mass": 32,
-    "powerDraw": 0.7
+    "powerDraw": 0.7,
+    "cost": 777600
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class1",
@@ -2640,7 +2900,8 @@
     "class": 7,
     "rating": "E",
     "mass": 32,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 437400
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class2",
@@ -2649,7 +2910,8 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
-    "powerDraw": 0.55
+    "powerDraw": 0.55,
+    "cost": 874800
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class3",
@@ -2658,7 +2920,8 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
-    "powerDraw": 0.69
+    "powerDraw": 0.69,
+    "cost": 1749600
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class4",
@@ -2667,7 +2930,8 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
-    "powerDraw": 0.83
+    "powerDraw": 0.83,
+    "cost": 3499200
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class5",
@@ -2676,7 +2940,8 @@
     "class": 7,
     "rating": "A",
     "mass": 128,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 6998400
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class1",
@@ -2685,7 +2950,8 @@
     "class": 1,
     "rating": "E",
     "mass": 1.3,
-    "powerDraw": 0.18
+    "powerDraw": 0.18,
+    "cost": 600
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class2",
@@ -2694,7 +2960,8 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
-    "powerDraw": 0.14
+    "powerDraw": 0.14,
+    "cost": 1200
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class3",
@@ -2703,7 +2970,8 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
-    "powerDraw": 0.23
+    "powerDraw": 0.23,
+    "cost": 2400
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class4",
@@ -2712,7 +2980,8 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
-    "powerDraw": 0.32
+    "powerDraw": 0.32,
+    "cost": 4800
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class5",
@@ -2721,7 +2990,8 @@
     "class": 1,
     "rating": "A",
     "mass": 1.3,
-    "powerDraw": 0.28
+    "powerDraw": 0.28,
+    "cost": 9600
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class1",
@@ -2730,7 +3000,8 @@
     "class": 3,
     "rating": "E",
     "mass": 5,
-    "powerDraw": 0.27
+    "powerDraw": 0.27,
+    "cost": 5400
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class2",
@@ -2739,7 +3010,8 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 10800
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class3",
@@ -2748,7 +3020,8 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
-    "powerDraw": 0.34
+    "powerDraw": 0.34,
+    "cost": 21600
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class4",
@@ -2757,7 +3030,8 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
-    "powerDraw": 0.48
+    "powerDraw": 0.48,
+    "cost": 43200
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class5",
@@ -2766,7 +3040,8 @@
     "class": 3,
     "rating": "A",
     "mass": 5,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 86400
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class1",
@@ -2775,7 +3050,8 @@
     "class": 5,
     "rating": "E",
     "mass": 20,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 48600
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class2",
@@ -2784,7 +3060,8 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
-    "powerDraw": 0.3
+    "powerDraw": 0.3,
+    "cost": 97200
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class3",
@@ -2793,7 +3070,8 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 194400
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class4",
@@ -2802,7 +3080,8 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 388800
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class5",
@@ -2811,7 +3090,8 @@
     "class": 5,
     "rating": "A",
     "mass": 20,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 777600
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class1",
@@ -2820,7 +3100,8 @@
     "class": 7,
     "rating": "E",
     "mass": 80,
-    "powerDraw": 0.55
+    "powerDraw": 0.55,
+    "cost": 437400
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class2",
@@ -2829,7 +3110,8 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 874800
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class3",
@@ -2838,7 +3120,8 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
-    "powerDraw": 0.69
+    "powerDraw": 0.69,
+    "cost": 1749600
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class4",
@@ -2847,7 +3130,8 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 3499200
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class5",
@@ -2856,7 +3140,8 @@
     "class": 7,
     "rating": "A",
     "mass": 80,
-    "powerDraw": 0.83
+    "powerDraw": 0.83,
+    "cost": 6998400
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class1",
@@ -2865,7 +3150,8 @@
     "class": 1,
     "rating": "E",
     "mass": 1.3,
-    "powerDraw": 0.18
+    "powerDraw": 0.18,
+    "cost": 600
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class2",
@@ -2874,7 +3160,8 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
-    "powerDraw": 0.14
+    "powerDraw": 0.14,
+    "cost": 1200
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class3",
@@ -2883,7 +3170,8 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
-    "powerDraw": 0.23
+    "powerDraw": 0.23,
+    "cost": 2400
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class4",
@@ -2892,7 +3180,8 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
-    "powerDraw": 0.32
+    "powerDraw": 0.32,
+    "cost": 4800
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class5",
@@ -2901,7 +3190,8 @@
     "class": 1,
     "rating": "A",
     "mass": 1.3,
-    "powerDraw": 0.28
+    "powerDraw": 0.28,
+    "cost": 9600
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class1",
@@ -2910,7 +3200,8 @@
     "class": 3,
     "rating": "E",
     "mass": 5,
-    "powerDraw": 0.27
+    "powerDraw": 0.27,
+    "cost": 5400
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class2",
@@ -2919,7 +3210,8 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 10800
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class3",
@@ -2928,7 +3220,8 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
-    "powerDraw": 0.34
+    "powerDraw": 0.34,
+    "cost": 21600
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class4",
@@ -2937,7 +3230,8 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
-    "powerDraw": 0.48
+    "powerDraw": 0.48,
+    "cost": 43200
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class5",
@@ -2946,7 +3240,8 @@
     "class": 3,
     "rating": "A",
     "mass": 5,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 86400
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class1",
@@ -2955,7 +3250,8 @@
     "class": 5,
     "rating": "E",
     "mass": 20,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 48600
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class2",
@@ -2964,7 +3260,8 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
-    "powerDraw": 0.3
+    "powerDraw": 0.3,
+    "cost": 97200
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class3",
@@ -2973,7 +3270,8 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 194400
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class4",
@@ -2982,7 +3280,8 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 388800
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class5",
@@ -2991,7 +3290,8 @@
     "class": 5,
     "rating": "A",
     "mass": 20,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 777600
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class1",
@@ -3000,7 +3300,8 @@
     "class": 7,
     "rating": "E",
     "mass": 80,
-    "powerDraw": 0.55
+    "powerDraw": 0.55,
+    "cost": 437400
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class2",
@@ -3009,7 +3310,8 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 874800
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class3",
@@ -3018,7 +3320,8 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
-    "powerDraw": 0.69
+    "powerDraw": 0.69,
+    "cost": 1749600
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class4",
@@ -3027,7 +3330,8 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 3499200
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class5",
@@ -3036,7 +3340,8 @@
     "class": 7,
     "rating": "A",
     "mass": 80,
-    "powerDraw": 0.83
+    "powerDraw": 0.83,
+    "cost": 6998400
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class5_Strong",
@@ -3055,7 +3360,8 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.2
+    "shieldBrokenRegenRate": 1.2,
+    "cost": 132200
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class5_Strong",
@@ -3074,7 +3380,8 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.2
+    "shieldBrokenRegenRate": 1.2,
+    "cost": 240340
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class5_Strong",
@@ -3093,7 +3400,8 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.3
+    "shieldBrokenRegenRate": 1.3,
+    "cost": 761870
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class5_Strong",
@@ -3112,7 +3420,8 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.7
+    "shieldBrokenRegenRate": 1.7,
+    "cost": 2415120
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class5_Strong",
@@ -3131,7 +3440,8 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 2.3
+    "shieldBrokenRegenRate": 2.3,
+    "cost": 7655930
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class5_Strong",
@@ -3150,7 +3460,8 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 3.2
+    "shieldBrokenRegenRate": 3.2,
+    "cost": 24269300
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class5_Strong",
@@ -3169,7 +3480,8 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1.1,
-    "shieldBrokenRegenRate": 4.2
+    "shieldBrokenRegenRate": 4.2,
+    "cost": 76933670
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class5_Strong",
@@ -3188,7 +3500,8 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1.4,
-    "shieldBrokenRegenRate": 5.4
+    "shieldBrokenRegenRate": 5.4,
+    "cost": 243879730
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class3_Fast",
@@ -3206,7 +3519,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
-    "shieldBrokenRegenRate": 2.4
+    "shieldBrokenRegenRate": 2.4,
+    "cost": 7713
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class3_Fast",
@@ -3224,7 +3538,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
-    "shieldBrokenRegenRate": 2.4
+    "shieldBrokenRegenRate": 2.4,
+    "cost": 26705
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class3_Fast",
@@ -3242,7 +3557,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
-    "shieldBrokenRegenRate": 2.8
+    "shieldBrokenRegenRate": 2.8,
+    "cost": 84653
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class3_Fast",
@@ -3260,7 +3576,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
-    "shieldBrokenRegenRate": 3.8
+    "shieldBrokenRegenRate": 3.8,
+    "cost": 268347
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class3_Fast",
@@ -3278,7 +3595,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 2.2,
-    "shieldBrokenRegenRate": 5.6
+    "shieldBrokenRegenRate": 5.6,
+    "cost": 850659
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class3_Fast",
@@ -3296,7 +3614,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 3.2,
-    "shieldBrokenRegenRate": 8
+    "shieldBrokenRegenRate": 8,
+    "cost": 2696589
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class3_Fast",
@@ -3314,7 +3633,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 4.4,
-    "shieldBrokenRegenRate": 11
+    "shieldBrokenRegenRate": 11,
+    "cost": 8548185
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class3_Fast",
@@ -3332,7 +3652,8 @@
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
     "shieldRegenRate": 5.8,
-    "shieldBrokenRegenRate": 14.4
+    "shieldBrokenRegenRate": 14.4,
+    "cost": 27097748
   },
   {
     "symbol": "Int_BuggyBay_Size2_Class1",
@@ -3343,7 +3664,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 12,
     "integrity": 30,
-    "powerDraw": 0.25
+    "powerDraw": 0.25,
+    "cost": 18000
   },
   {
     "symbol": "Int_BuggyBay_Size2_Class2",
@@ -3354,7 +3676,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 6,
     "integrity": 30,
-    "powerDraw": 0.75
+    "powerDraw": 0.75,
+    "cost": 21600
   },
   {
     "symbol": "Int_BuggyBay_Size4_Class1",
@@ -3365,7 +3688,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 20,
     "integrity": 30,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 72000
   },
   {
     "symbol": "Int_BuggyBay_Size4_Class2",
@@ -3376,7 +3700,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 10,
     "integrity": 30,
-    "powerDraw": 1.2
+    "powerDraw": 1.2,
+    "cost": 86400
   },
   {
     "symbol": "Int_BuggyBay_Size6_Class1",
@@ -3387,7 +3712,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 34,
     "integrity": 30,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 576000
   },
   {
     "symbol": "Int_BuggyBay_Size6_Class2",
@@ -3398,7 +3724,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 17,
     "integrity": 30,
-    "powerDraw": 1.8
+    "powerDraw": 1.8,
+    "cost": 691200
   },
   {
     "symbol": "Int_PlanetApproachSuite",
@@ -3408,7 +3735,8 @@
     "rating": "I",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "powerDraw": 0
+    "powerDraw": 0,
+    "cost": 500
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size1_Class1",
@@ -3418,7 +3746,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "cargoCapacity": 1
+    "cargoCapacity": 1,
+    "cost": 6250
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size1_Class2",
@@ -3428,7 +3757,8 @@
     "rating": "F",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "cargoCapacity": 2
+    "cargoCapacity": 2,
+    "cost": 0
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size2_Class1",
@@ -3448,7 +3778,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "cargoCapacity": 32
+    "cargoCapacity": 32,
+    "cost": 0
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size6_Class1",
@@ -3458,7 +3789,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "cargoCapacity": 64
+    "cargoCapacity": 64,
+    "cost": 0
   },
   {
     "symbol": "ModularCargoBayDoor",
@@ -3466,7 +3798,8 @@
     "name": "Cargo Hatch",
     "class": 1,
     "rating": "H",
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 0
   },
   {
     "symbol": "Int_PassengerCabin_Size4_Class1",
@@ -3474,7 +3807,8 @@
     "name": "Economy Class Passenger Cabin",
     "class": 4,
     "rating": "E",
-    "mass": 10
+    "mass": 10,
+    "cost": 18954
   },
   {
     "symbol": "Int_PassengerCabin_Size4_Class2",
@@ -3482,7 +3816,8 @@
     "name": "Business Class Passenger Cabin",
     "class": 4,
     "rating": "D",
-    "mass": 10
+    "mass": 10,
+    "cost": 56862
   },
   {
     "symbol": "Int_PassengerCabin_Size4_Class3",
@@ -3490,7 +3825,8 @@
     "name": "First Class Passenger Cabin",
     "class": 4,
     "rating": "C",
-    "mass": 10
+    "mass": 10,
+    "cost": 170586
   },
   {
     "symbol": "Int_PassengerCabin_Size5_Class4",
@@ -3498,7 +3834,8 @@
     "name": "Luxury Class Passenger Cabin",
     "class": 5,
     "rating": "B",
-    "mass": 20
+    "mass": 20,
+    "cost": 1658095
   },
   {
     "symbol": "Int_PassengerCabin_Size6_Class1",
@@ -3506,7 +3843,8 @@
     "name": "Economy Class Passenger Cabin",
     "class": 6,
     "rating": "E",
-    "mass": 40
+    "mass": 40,
+    "cost": 61410
   },
   {
     "symbol": "Int_PassengerCabin_Size6_Class2",
@@ -3514,7 +3852,8 @@
     "name": "Business Class Passenger Cabin",
     "class": 6,
     "rating": "D",
-    "mass": 40
+    "mass": 40,
+    "cost": 184232
   },
   {
     "symbol": "Int_PassengerCabin_Size6_Class3",
@@ -3522,7 +3861,8 @@
     "name": "First Class Passenger Cabin",
     "class": 6,
     "rating": "C",
-    "mass": 40
+    "mass": 40,
+    "cost": 552698
   },
   {
     "symbol": "Int_PassengerCabin_Size6_Class4",
@@ -3530,7 +3870,8 @@
     "name": "Luxury Class Passenger Cabin",
     "class": 6,
     "rating": "B",
-    "mass": 40
+    "mass": 40,
+    "cost": 4974287
   },
   {
     "symbol": "Int_FighterBay_Size5_Class1",
@@ -3541,7 +3882,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 20,
     "integrity": 60,
-    "powerDraw": 0.25
+    "powerDraw": 0.25,
+    "cost": 575643
   },
   {
     "symbol": "Int_FighterBay_Size6_Class1",
@@ -3552,7 +3894,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 40,
     "integrity": 80,
-    "powerDraw": 0.35
+    "powerDraw": 0.35,
+    "cost": 1869340
   },
   {
     "symbol": "Int_FighterBay_Size7_Class1",
@@ -3563,7 +3906,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 60,
     "integrity": 120,
-    "powerDraw": 0.35
+    "powerDraw": 0.35,
+    "cost": 2369320
   },
   {
     "symbol": "Int_FighterBayMk2_Size5_Class1",
@@ -3601,7 +3945,8 @@
     "name": "Economy Class Passenger Cabin",
     "class": 2,
     "rating": "E",
-    "mass": 2.5
+    "mass": 2.5,
+    "cost": 4312
   },
   {
     "symbol": "Int_PassengerCabin_Size3_Class1",
@@ -3609,7 +3954,8 @@
     "name": "Economy Class Passenger Cabin",
     "class": 3,
     "rating": "E",
-    "mass": 5
+    "mass": 5,
+    "cost": 8657
   },
   {
     "symbol": "Int_PassengerCabin_Size3_Class2",
@@ -3617,7 +3963,8 @@
     "name": "Business Class Passenger Cabin",
     "class": 3,
     "rating": "D",
-    "mass": 5
+    "mass": 5,
+    "cost": 26705
   },
   {
     "symbol": "Int_PassengerCabin_Size5_Class1",
@@ -3625,7 +3972,8 @@
     "name": "Economy Class Passenger Cabin",
     "class": 5,
     "rating": "E",
-    "mass": 20
+    "mass": 20,
+    "cost": 34954
   },
   {
     "symbol": "Int_PassengerCabin_Size5_Class2",
@@ -3633,7 +3981,8 @@
     "name": "Business Class Passenger Cabin",
     "class": 5,
     "rating": "D",
-    "mass": 20
+    "mass": 20,
+    "cost": 92362
   },
   {
     "symbol": "Int_PassengerCabin_Size5_Class3",
@@ -3641,7 +3990,8 @@
     "name": "First Class Passenger Cabin",
     "class": 5,
     "rating": "C",
-    "mass": 20
+    "mass": 20,
+    "cost": 340526
   },
   {
     "symbol": "Int_ModuleReinforcement_Size1_Class1",
@@ -3650,7 +4000,8 @@
     "class": 1,
     "rating": "E",
     "mass": 2,
-    "integrity": 77
+    "integrity": 77,
+    "cost": 5000
   },
   {
     "symbol": "Int_ModuleReinforcement_Size1_Class2",
@@ -3659,7 +4010,8 @@
     "class": 1,
     "rating": "D",
     "mass": 1,
-    "integrity": 70
+    "integrity": 70,
+    "cost": 15000
   },
   {
     "symbol": "Int_ModuleReinforcement_Size2_Class1",
@@ -3668,7 +4020,8 @@
     "class": 2,
     "rating": "E",
     "mass": 4,
-    "integrity": 115
+    "integrity": 115,
+    "cost": 12000
   },
   {
     "symbol": "Int_ModuleReinforcement_Size2_Class2",
@@ -3677,7 +4030,8 @@
     "class": 2,
     "rating": "D",
     "mass": 2,
-    "integrity": 105
+    "integrity": 105,
+    "cost": 36000
   },
   {
     "symbol": "Int_ModuleReinforcement_Size3_Class1",
@@ -3686,7 +4040,8 @@
     "class": 3,
     "rating": "E",
     "mass": 8,
-    "integrity": 170
+    "integrity": 170,
+    "cost": 28000
   },
   {
     "symbol": "Int_ModuleReinforcement_Size3_Class2",
@@ -3695,7 +4050,8 @@
     "class": 3,
     "rating": "D",
     "mass": 4,
-    "integrity": 155
+    "integrity": 155,
+    "cost": 84000
   },
   {
     "symbol": "Int_ModuleReinforcement_Size4_Class1",
@@ -3704,7 +4060,8 @@
     "class": 4,
     "rating": "E",
     "mass": 16,
-    "integrity": 260
+    "integrity": 260,
+    "cost": 65000
   },
   {
     "symbol": "Int_ModuleReinforcement_Size4_Class2",
@@ -3713,7 +4070,8 @@
     "class": 4,
     "rating": "D",
     "mass": 8,
-    "integrity": 235
+    "integrity": 235,
+    "cost": 195000
   },
   {
     "symbol": "Int_ModuleReinforcement_Size5_Class1",
@@ -3722,7 +4080,8 @@
     "class": 5,
     "rating": "E",
     "mass": 32,
-    "integrity": 385
+    "integrity": 385,
+    "cost": 150000
   },
   {
     "symbol": "Int_ModuleReinforcement_Size5_Class2",
@@ -3731,7 +4090,8 @@
     "class": 5,
     "rating": "D",
     "mass": 16,
-    "integrity": 350
+    "integrity": 350,
+    "cost": 450000
   },
   {
     "symbol": "Int_DroneControl_Repair_Size1_Class1",
@@ -3740,7 +4100,8 @@
     "class": 1,
     "rating": "E",
     "mass": 1.3,
-    "powerDraw": 0.18
+    "powerDraw": 0.18,
+    "cost": 600
   },
   {
     "symbol": "Int_DroneControl_Repair_Size1_Class2",
@@ -3749,7 +4110,8 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
-    "powerDraw": 0.14
+    "powerDraw": 0.14,
+    "cost": 1200
   },
   {
     "symbol": "Int_DroneControl_Repair_Size1_Class3",
@@ -3758,7 +4120,8 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
-    "powerDraw": 0.23
+    "powerDraw": 0.23,
+    "cost": 2400
   },
   {
     "symbol": "Int_DroneControl_Repair_Size1_Class4",
@@ -3767,7 +4130,8 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
-    "powerDraw": 0.32
+    "powerDraw": 0.32,
+    "cost": 4800
   },
   {
     "symbol": "Int_DroneControl_Repair_Size1_Class5",
@@ -3776,7 +4140,8 @@
     "class": 1,
     "rating": "A",
     "mass": 1.3,
-    "powerDraw": 0.28
+    "powerDraw": 0.28,
+    "cost": 9600
   },
   {
     "symbol": "Int_DroneControl_Repair_Size3_Class1",
@@ -3785,7 +4150,8 @@
     "class": 3,
     "rating": "E",
     "mass": 5,
-    "powerDraw": 0.27
+    "powerDraw": 0.27,
+    "cost": 5400
   },
   {
     "symbol": "Int_DroneControl_Repair_Size3_Class2",
@@ -3794,7 +4160,8 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 10800
   },
   {
     "symbol": "Int_DroneControl_Repair_Size3_Class3",
@@ -3803,7 +4170,8 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
-    "powerDraw": 0.34
+    "powerDraw": 0.34,
+    "cost": 21600
   },
   {
     "symbol": "Int_DroneControl_Repair_Size3_Class4",
@@ -3812,7 +4180,8 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
-    "powerDraw": 0.48
+    "powerDraw": 0.48,
+    "cost": 43200
   },
   {
     "symbol": "Int_DroneControl_Repair_Size3_Class5",
@@ -3821,7 +4190,8 @@
     "class": 3,
     "rating": "A",
     "mass": 5,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 86400
   },
   {
     "symbol": "Int_DroneControl_Repair_Size5_Class1",
@@ -3830,7 +4200,8 @@
     "class": 5,
     "rating": "E",
     "mass": 20,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 48600
   },
   {
     "symbol": "Int_DroneControl_Repair_Size5_Class2",
@@ -3839,7 +4210,8 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
-    "powerDraw": 0.3
+    "powerDraw": 0.3,
+    "cost": 97200
   },
   {
     "symbol": "Int_DroneControl_Repair_Size5_Class3",
@@ -3848,7 +4220,8 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 194400
   },
   {
     "symbol": "Int_DroneControl_Repair_Size5_Class4",
@@ -3857,7 +4230,8 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 388800
   },
   {
     "symbol": "Int_DroneControl_Repair_Size5_Class5",
@@ -3866,7 +4240,8 @@
     "class": 5,
     "rating": "A",
     "mass": 20,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 777600
   },
   {
     "symbol": "Int_DroneControl_Repair_Size7_Class1",
@@ -3875,7 +4250,8 @@
     "class": 7,
     "rating": "E",
     "mass": 80,
-    "powerDraw": 0.55
+    "powerDraw": 0.55,
+    "cost": 437400
   },
   {
     "symbol": "Int_DroneControl_Repair_Size7_Class2",
@@ -3884,7 +4260,8 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 874800
   },
   {
     "symbol": "Int_DroneControl_Repair_Size7_Class3",
@@ -3893,7 +4270,8 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
-    "powerDraw": 0.69
+    "powerDraw": 0.69,
+    "cost": 1749600
   },
   {
     "symbol": "Int_DroneControl_Repair_Size7_Class4",
@@ -3902,7 +4280,8 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 3499200
   },
   {
     "symbol": "Int_DroneControl_Repair_Size7_Class5",
@@ -3911,7 +4290,8 @@
     "class": 7,
     "rating": "A",
     "mass": 80,
-    "powerDraw": 0.83
+    "powerDraw": 0.83,
+    "cost": 6998400
   },
   {
     "symbol": "Int_DroneControl_UnkVesselResearch",
@@ -3922,7 +4302,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 1.3,
     "integrity": 20,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 1749600
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size1_Class1",
@@ -3931,7 +4312,8 @@
     "class": 1,
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 2
+    "mass": 2,
+    "cost": 7501
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size1_Class2",
@@ -3940,7 +4322,8 @@
     "class": 1,
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 2
+    "mass": 2,
+    "cost": 22501
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size2_Class1",
@@ -3949,7 +4332,8 @@
     "class": 2,
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 4
+    "mass": 4,
+    "cost": 18000
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size2_Class2",
@@ -3958,7 +4342,8 @@
     "class": 2,
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 2
+    "mass": 2,
+    "cost": 54000
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size3_Class1",
@@ -3967,7 +4352,8 @@
     "class": 3,
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 8
+    "mass": 8,
+    "cost": 42000
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size3_Class2",
@@ -3976,7 +4362,8 @@
     "class": 3,
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 4
+    "mass": 4,
+    "cost": 126000
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size4_Class1",
@@ -3985,7 +4372,8 @@
     "class": 4,
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 16
+    "mass": 16,
+    "cost": 97501
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size4_Class2",
@@ -3994,7 +4382,8 @@
     "class": 4,
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 8
+    "mass": 8,
+    "cost": 292501
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size5_Class1",
@@ -4003,7 +4392,8 @@
     "class": 5,
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 32
+    "mass": 32,
+    "cost": 225001
   },
   {
     "symbol": "Int_MetaAlloyHullReinforcement_Size5_Class2",
@@ -4012,7 +4402,8 @@
     "class": 5,
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 16
+    "mass": 16,
+    "cost": 675001
   },
   {
     "symbol": "Int_DroneControl_Decontamination_Size1_Class1",
@@ -4022,7 +4413,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 1.3,
-    "powerDraw": 0.18
+    "powerDraw": 0.18,
+    "cost": 3600
   },
   {
     "symbol": "Int_DroneControl_Decontamination_Size3_Class1",
@@ -4032,7 +4424,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 2,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 16200
   },
   {
     "symbol": "Int_DroneControl_Decontamination_Size5_Class1",
@@ -4042,7 +4435,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 20,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 145800
   },
   {
     "symbol": "Int_DroneControl_Decontamination_Size7_Class1",
@@ -4052,7 +4446,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 128,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 1312200
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size4_Class1",
@@ -4062,7 +4457,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_CORROSIONCARGO_SIZE4",
     "mass": 0,
-    "cargoCapacity": 16
+    "cargoCapacity": 16,
+    "cost": 94330
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size1_Class1",
@@ -4072,7 +4468,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 2,
-    "powerDraw": 0.45
+    "powerDraw": 0.45,
+    "cost": 10000
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size1_Class2",
@@ -4082,7 +4479,8 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 1,
-    "powerDraw": 0.56
+    "powerDraw": 0.56,
+    "cost": 30000
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size2_Class1",
@@ -4092,7 +4490,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 4,
-    "powerDraw": 0.68
+    "powerDraw": 0.68,
+    "cost": 24000
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size2_Class2",
@@ -4102,7 +4501,8 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 2,
-    "powerDraw": 0.79
+    "powerDraw": 0.79,
+    "cost": 72000
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size3_Class1",
@@ -4112,7 +4512,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 8,
-    "powerDraw": 0.9
+    "powerDraw": 0.9,
+    "cost": 57600
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
@@ -4122,7 +4523,8 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 4,
-    "powerDraw": 1.01
+    "powerDraw": 1.01,
+    "cost": 172800
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size4_Class1",
@@ -4132,7 +4534,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 16,
-    "powerDraw": 1.13
+    "powerDraw": 1.13,
+    "cost": 138240
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size4_Class2",
@@ -4142,7 +4545,8 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 8,
-    "powerDraw": 1.24
+    "powerDraw": 1.24,
+    "cost": 414720
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size5_Class1",
@@ -4152,7 +4556,8 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 32,
-    "powerDraw": 1.35
+    "powerDraw": 1.35,
+    "cost": 331778
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size5_Class2",
@@ -4162,7 +4567,8 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 16,
-    "powerDraw": 1.46
+    "powerDraw": 1.46,
+    "cost": 995330
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size1_Class1",
@@ -4173,7 +4579,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 2,
     "integrity": 85,
-    "powerDraw": 0.27
+    "powerDraw": 0.27,
+    "cost": 10000
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size1_Class2",
@@ -4184,7 +4591,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 1,
     "integrity": 77,
-    "powerDraw": 0.34
+    "powerDraw": 0.34,
+    "cost": 30000
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size2_Class1",
@@ -4195,7 +4603,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 4,
     "integrity": 127,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 24000
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size2_Class2",
@@ -4206,7 +4615,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 2,
     "integrity": 116,
-    "powerDraw": 0.47
+    "powerDraw": 0.47,
+    "cost": 72000
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size3_Class1",
@@ -4217,7 +4627,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 8,
     "integrity": 187,
-    "powerDraw": 0.54
+    "powerDraw": 0.54,
+    "cost": 57600
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size3_Class2",
@@ -4228,7 +4639,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 4,
     "integrity": 171,
-    "powerDraw": 0.61
+    "powerDraw": 0.61,
+    "cost": 172800
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size4_Class1",
@@ -4239,7 +4651,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 16,
     "integrity": 286,
-    "powerDraw": 0.68
+    "powerDraw": 0.68,
+    "cost": 138240
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size4_Class2",
@@ -4250,7 +4663,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 8,
     "integrity": 259,
-    "powerDraw": 0.74
+    "powerDraw": 0.74,
+    "cost": 414720
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size5_Class1",
@@ -4261,7 +4675,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 32,
     "integrity": 424,
-    "powerDraw": 0.81
+    "powerDraw": 0.81,
+    "cost": 331778
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size5_Class2",
@@ -4272,7 +4687,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_MODULEREINFORCEMENT",
     "mass": 16,
     "integrity": 385,
-    "powerDraw": 0.88
+    "powerDraw": 0.88,
+    "cost": 995330
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size1_Class1",
@@ -4283,7 +4699,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 2,
     "integrity": 36,
-    "powerDraw": 0.35
+    "powerDraw": 0.35,
+    "cost": 10000
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size1_Class2",
@@ -4294,7 +4711,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 1,
     "integrity": 36,
-    "powerDraw": 0.46
+    "powerDraw": 0.46,
+    "cost": 30000
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size2_Class1",
@@ -4305,7 +4723,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 4,
     "integrity": 36,
-    "powerDraw": 0.56
+    "powerDraw": 0.56,
+    "cost": 24000
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size2_Class2",
@@ -4316,7 +4735,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 2,
     "integrity": 36,
-    "powerDraw": 0.67
+    "powerDraw": 0.67,
+    "cost": 72000
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size3_Class1",
@@ -4327,7 +4747,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 8,
     "integrity": 36,
-    "powerDraw": 0.74
+    "powerDraw": 0.74,
+    "cost": 57600
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size3_Class2",
@@ -4338,7 +4759,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 4,
     "integrity": 36,
-    "powerDraw": 0.84
+    "powerDraw": 0.84,
+    "cost": 172800
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size4_Class1",
@@ -4349,7 +4771,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 16,
     "integrity": 36,
-    "powerDraw": 0.95
+    "powerDraw": 0.95,
+    "cost": 138240
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size4_Class2",
@@ -4360,7 +4783,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 8,
     "integrity": 36,
-    "powerDraw": 1.05
+    "powerDraw": 1.05,
+    "cost": 414720
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size5_Class1",
@@ -4371,7 +4795,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 32,
     "integrity": 36,
-    "powerDraw": 1.16
+    "powerDraw": 1.16,
+    "cost": 331778
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size5_Class2",
@@ -4382,7 +4807,8 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 16,
     "integrity": 36,
-    "powerDraw": 1.26
+    "powerDraw": 1.26,
+    "cost": 995330
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size1",
@@ -4394,7 +4820,8 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.75,
-    "jumpBoost": 4
+    "jumpBoost": 4,
+    "cost": 405022
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size2",
@@ -4406,7 +4833,8 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.98,
-    "jumpBoost": 6
+    "jumpBoost": 6,
+    "cost": 810521
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size3",
@@ -4418,7 +4846,8 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 1.27,
-    "jumpBoost": 7.75
+    "jumpBoost": 7.75,
+    "cost": 1620431
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size4",
@@ -4430,7 +4859,8 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 1.65,
-    "jumpBoost": 9.25
+    "jumpBoost": 9.25,
+    "cost": 3245013
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size5",
@@ -4442,7 +4872,8 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 2.14,
-    "jumpBoost": 10.5
+    "jumpBoost": 10.5,
+    "cost": 6483101
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size1",
@@ -4459,7 +4890,8 @@
     "enginesCapacity": 9,
     "enginesRecharge": 0.8,
     "systemsCapacity": 10,
-    "systemsRecharge": 0.8
+    "systemsRecharge": 0.8,
+    "cost": 40957
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size2",
@@ -4476,7 +4908,8 @@
     "enginesCapacity": 11,
     "enginesRecharge": 1,
     "systemsCapacity": 11,
-    "systemsRecharge": 1
+    "systemsRecharge": 1,
+    "cost": 111600
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size3",
@@ -4493,7 +4926,8 @@
     "enginesCapacity": 14,
     "enginesRecharge": 1.7,
     "systemsCapacity": 14,
-    "systemsRecharge": 1.7
+    "systemsRecharge": 1.7,
+    "cost": 311365
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size4",
@@ -4510,7 +4944,8 @@
     "enginesCapacity": 17,
     "enginesRecharge": 2.5,
     "systemsCapacity": 14,
-    "systemsRecharge": 1.7
+    "systemsRecharge": 1.7,
+    "cost": 868708
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size5",
@@ -4527,7 +4962,8 @@
     "enginesCapacity": 22,
     "enginesRecharge": 3.3,
     "systemsCapacity": 22,
-    "systemsRecharge": 3.3
+    "systemsRecharge": 3.3,
+    "cost": 2423690
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size6",
@@ -4544,7 +4980,8 @@
     "enginesCapacity": 26,
     "enginesRecharge": 4.2,
     "systemsCapacity": 26,
-    "systemsRecharge": 4.2
+    "systemsRecharge": 4.2,
+    "cost": 6762091
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size7",
@@ -4561,7 +4998,8 @@
     "enginesCapacity": 31,
     "enginesRecharge": 5.2,
     "systemsCapacity": 31,
-    "systemsRecharge": 5.2
+    "systemsRecharge": 5.2,
+    "cost": 18866235
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size8",
@@ -4578,7 +5016,8 @@
     "enginesCapacity": 36,
     "enginesRecharge": 6.2,
     "systemsCapacity": 36,
-    "systemsRecharge": 6.2
+    "systemsRecharge": 6.2,
+    "cost": 52636793
   },
   {
     "symbol": "Int_GuardianPowerplant_Size2",
@@ -4590,7 +5029,8 @@
     "mass": 1.5,
     "integrity": 56,
     "powerCapacity": 12.7,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 192165
   },
   {
     "symbol": "Int_GuardianPowerplant_Size3",
@@ -4602,7 +5042,8 @@
     "mass": 2.9,
     "integrity": 70,
     "powerCapacity": 15.8,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 576493
   },
   {
     "symbol": "Int_GuardianPowerplant_Size4",
@@ -4614,7 +5055,8 @@
     "mass": 5.9,
     "integrity": 88,
     "powerCapacity": 20.6,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 1729480
   },
   {
     "symbol": "Int_GuardianPowerplant_Size5",
@@ -4626,7 +5068,8 @@
     "mass": 11.7,
     "integrity": 106,
     "powerCapacity": 26.9,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 5188441
   },
   {
     "symbol": "Int_GuardianPowerplant_Size6",
@@ -4638,7 +5081,8 @@
     "mass": 23.4,
     "integrity": 124,
     "powerCapacity": 33.3,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 15565317
   },
   {
     "symbol": "Int_GuardianPowerplant_Size7",
@@ -4650,7 +5094,8 @@
     "mass": 46.8,
     "integrity": 144,
     "powerCapacity": 39.6,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 46695951
   },
   {
     "symbol": "Int_GuardianPowerplant_Size8",
@@ -4662,7 +5107,8 @@
     "mass": 93.6,
     "integrity": 165,
     "powerCapacity": 47.5,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 140087850
   },
   {
     "symbol": "Int_DroneControl_Recon_Size1_Class1",
@@ -4672,7 +5118,8 @@
     "rating": "E",
     "mass": 1.3,
     "integrity": 24,
-    "powerDraw": 0.18
+    "powerDraw": 0.18,
+    "cost": 2600
   },
   {
     "symbol": "Int_DroneControl_Recon_Size3_Class1",
@@ -4682,7 +5129,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 51,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 8200
   },
   {
     "symbol": "Int_DroneControl_Recon_Size5_Class1",
@@ -4692,7 +5140,8 @@
     "rating": "E",
     "mass": 20,
     "integrity": 96,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 75800
   },
   {
     "symbol": "Int_DroneControl_Recon_Size7_Class1",
@@ -4702,7 +5151,8 @@
     "rating": "E",
     "mass": 128,
     "integrity": 157,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 612200
   },
   {
     "symbol": "Int_SupercruiseAssist",
@@ -4711,14 +5161,16 @@
     "class": 1,
     "rating": "E",
     "mass": 0,
-    "powerDraw": 0.3
+    "powerDraw": 0.3,
+    "cost": 9121
   },
   {
     "symbol": "Int_DockingComputer_Advanced",
     "category": "internal",
     "name": "Advanced Docking Computer",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "cost": 13507
   },
   {
     "symbol": "Int_PlanetApproachSuite_Advanced",
@@ -4728,7 +5180,8 @@
     "rating": "I",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "powerDraw": 0
+    "powerDraw": 0,
+    "cost": 500
   },
   {
     "symbol": "Int_MultiDroneControl_Mining_Size3_Class1",
@@ -4737,7 +5190,8 @@
     "class": 3,
     "rating": "E",
     "mass": 12,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 15000
   },
   {
     "symbol": "Int_MultiDroneControl_Mining_Size3_Class3",
@@ -4746,7 +5200,8 @@
     "class": 3,
     "rating": "C",
     "mass": 10,
-    "powerDraw": 0.35
+    "powerDraw": 0.35,
+    "cost": 50000
   },
   {
     "symbol": "Int_MultiDroneControl_Operations_Size3_Class3",
@@ -4755,7 +5210,8 @@
     "class": 3,
     "rating": "C",
     "mass": 10,
-    "powerDraw": 0.35
+    "powerDraw": 0.35,
+    "cost": 50000
   },
   {
     "symbol": "Int_MultiDroneControl_Operations_Size3_Class4",
@@ -4764,7 +5220,8 @@
     "class": 3,
     "rating": "B",
     "mass": 15,
-    "powerDraw": 0.3
+    "powerDraw": 0.3,
+    "cost": 80000
   },
   {
     "symbol": "Int_MultiDroneControl_Rescue_Size3_Class2",
@@ -4773,7 +5230,8 @@
     "class": 3,
     "rating": "D",
     "mass": 8,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 30000
   },
   {
     "symbol": "Int_MultiDroneControl_Rescue_Size3_Class3",
@@ -4782,7 +5240,8 @@
     "class": 3,
     "rating": "C",
     "mass": 10,
-    "powerDraw": 0.35
+    "powerDraw": 0.35,
+    "cost": 50000
   },
   {
     "symbol": "Int_MultiDroneControl_Xeno_Size3_Class3",
@@ -4791,7 +5250,8 @@
     "class": 3,
     "rating": "C",
     "mass": 10,
-    "powerDraw": 0.35
+    "powerDraw": 0.35,
+    "cost": 50000
   },
   {
     "symbol": "Int_MultiDroneControl_Xeno_Size3_Class4",
@@ -4800,7 +5260,8 @@
     "class": 3,
     "rating": "B",
     "mass": 15,
-    "powerDraw": 0.3
+    "powerDraw": 0.3,
+    "cost": 80000
   },
   {
     "symbol": "Int_MultiDroneControl_Universal_Size7_Class3",
@@ -4809,7 +5270,8 @@
     "class": 7,
     "rating": "C",
     "mass": 125,
-    "powerDraw": 0.8
+    "powerDraw": 0.8,
+    "cost": 4000000
   },
   {
     "symbol": "Int_MultiDroneControl_Universal_Size7_Class5",
@@ -4818,7 +5280,8 @@
     "class": 7,
     "rating": "A",
     "mass": 140,
-    "powerDraw": 1.1
+    "powerDraw": 1.1,
+    "cost": 8000000
   },
   {
     "symbol": "Int_ExpModuleStabiliser_Size3_Class3",
@@ -4827,7 +5290,8 @@
     "class": 3,
     "rating": "F",
     "mass": 8,
-    "powerDraw": 0
+    "powerDraw": 0,
+    "cost": 2000000
   },
   {
     "symbol": "Int_ExpModuleStabiliser_Size5_Class3",
@@ -4837,7 +5301,8 @@
     "rating": "F",
     "entitlement": "ELITE_HORIZONS_V_EXPERIMENTALSTABILISER_SIZE5",
     "mass": 20,
-    "powerDraw": 0
+    "powerDraw": 0,
+    "cost": 4000000
   },
   {
     "symbol": "Int_LargeCargoRack_Size7_Class1",
@@ -4846,7 +5311,8 @@
     "class": 7,
     "rating": "D",
     "mass": 0,
-    "cargoCapacity": 192
+    "cargoCapacity": 192,
+    "cost": 1958680
   },
   {
     "symbol": "Int_LargeCargoRack_Size8_class1",
@@ -4855,7 +5321,8 @@
     "class": 8,
     "rating": "D",
     "mass": 0,
-    "cargoCapacity": 384
+    "cargoCapacity": 384,
+    "cost": 4929317
   },
   {
     "symbol": "Int_MultiDroneControl_MiningV2_Size5_Class5",
@@ -4868,7 +5335,8 @@
     "powerDraw": 1.4,
     "restrictedToShips": [
       "LakonMiner"
-    ]
+    ],
+    "cost": 2332800
   },
   {
     "symbol": "Int_MkII_PassengerCabin_Size2_Class1",
@@ -4876,7 +5344,8 @@
     "name": "MkII Economy Class Passenger Cabin",
     "class": 2,
     "rating": "D",
-    "mass": 2.5
+    "mass": 2.5,
+    "cost": 5750
   },
   {
     "symbol": "Int_MkII_PassengerCabin_Size3_Class1",
@@ -4884,7 +5353,8 @@
     "name": "MkII Economy Class Passenger Cabin",
     "class": 3,
     "rating": "D",
-    "mass": 5
+    "mass": 5,
+    "cost": 11540
   },
   {
     "symbol": "Int_MkII_PassengerCabin_Size3_Class2",
@@ -4892,7 +5362,8 @@
     "name": "MkII Business Class Passenger Cabin",
     "class": 3,
     "rating": "C",
-    "mass": 5
+    "mass": 5,
+    "cost": 35610
   },
   {
     "symbol": "Int_MkII_PassengerCabin_Size4_Class1",
@@ -4900,7 +5371,8 @@
     "name": "MkII Economy Class Passenger Cabin",
     "class": 4,
     "rating": "D",
-    "mass": 10
+    "mass": 10,
+    "cost": 25270
   },
   {
     "symbol": "Int_MkII_PassengerCabin_Size4_Class2",
@@ -4908,7 +5380,8 @@
     "name": "MkII Business Class Passenger Cabin",
     "class": 4,
     "rating": "C",
-    "mass": 10
+    "mass": 10,
+    "cost": 75820
   },
   {
     "symbol": "Int_MkII_PassengerCabin_Size5_Class1",
@@ -4916,7 +5389,8 @@
     "name": "MkII Economy Class Passenger Cabin",
     "class": 5,
     "rating": "D",
-    "mass": 20
+    "mass": 20,
+    "cost": 46610
   },
   {
     "symbol": "Int_MkII_PassengerCabin_Size5_Class2",
@@ -4924,7 +5398,8 @@
     "name": "MkII Business Class Passenger Cabin",
     "class": 5,
     "rating": "C",
-    "mass": 20
+    "mass": 20,
+    "cost": 123150
   },
   {
     "symbol": "Int_MkII_PassengerCabin_Size6_Class1",
@@ -4932,7 +5407,8 @@
     "name": "MkII Economy Class Passenger Cabin",
     "class": 6,
     "rating": "D",
-    "mass": 40
+    "mass": 40,
+    "cost": 81880
   },
   {
     "symbol": "Int_MkII_PassengerCabin_Size6_Class2",
@@ -4940,6 +5416,7 @@
     "name": "MkII Business Class Passenger Cabin",
     "class": 6,
     "rating": "C",
-    "mass": 40
+    "mass": 40,
+    "cost": 245640
   }
 ]

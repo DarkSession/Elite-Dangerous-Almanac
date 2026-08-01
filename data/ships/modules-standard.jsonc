@@ -20,6 +20,8 @@
  * tonnes, power in MW, ranges in LY). `restrictedToShips` lists the hull(s) a
  * non-armour module is limited to; armour's hull restriction is its `ship` field.
  * Modules without stats (ship-specific armour) carry identity only.
+ * `cost` is the standard purchase price in credits before any station discount;
+ * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -30,7 +32,8 @@
     "name": "Lightweight Alloy",
     "ship": "Sidewinder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "SideWinder_Armour_Grade2",
@@ -38,7 +41,8 @@
     "name": "Reinforced Alloy",
     "ship": "Sidewinder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 25600
   },
   {
     "symbol": "SideWinder_Armour_Grade3",
@@ -46,7 +50,8 @@
     "name": "Military Grade Composite",
     "ship": "Sidewinder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 80320
   },
   {
     "symbol": "SideWinder_Armour_Mirrored",
@@ -54,7 +59,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Sidewinder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 132064
   },
   {
     "symbol": "SideWinder_Armour_Reactive",
@@ -62,7 +68,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Sidewinder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 139424
   },
   {
     "symbol": "Eagle_Armour_Grade1",
@@ -70,7 +77,8 @@
     "name": "Lightweight Alloy",
     "ship": "Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Eagle_Armour_Grade2",
@@ -78,7 +86,8 @@
     "name": "Reinforced Alloy",
     "ship": "Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 26880
   },
   {
     "symbol": "Eagle_Armour_Grade3",
@@ -86,7 +95,8 @@
     "name": "Military Grade Composite",
     "ship": "Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 90048
   },
   {
     "symbol": "Eagle_Armour_Mirrored",
@@ -94,7 +104,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 140089
   },
   {
     "symbol": "Eagle_Armour_Reactive",
@@ -102,7 +113,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 150393
   },
   {
     "symbol": "Hauler_Armour_Grade1",
@@ -110,7 +122,8 @@
     "name": "Lightweight Alloy",
     "ship": "Hauler",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Hauler_Armour_Grade2",
@@ -118,7 +131,8 @@
     "name": "Reinforced Alloy",
     "ship": "Hauler",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 42176
   },
   {
     "symbol": "Hauler_Armour_Grade3",
@@ -126,7 +140,8 @@
     "name": "Military Grade Composite",
     "ship": "Hauler",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 185047
   },
   {
     "symbol": "Hauler_Armour_Mirrored",
@@ -134,7 +149,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Hauler",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 270295
   },
   {
     "symbol": "Hauler_Armour_Reactive",
@@ -142,7 +158,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Hauler",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 282421
   },
   {
     "symbol": "Adder_Armour_Grade1",
@@ -150,7 +167,8 @@
     "name": "Lightweight Alloy",
     "ship": "Adder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Adder_Armour_Grade2",
@@ -158,7 +176,8 @@
     "name": "Reinforced Alloy",
     "ship": "Adder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 35123
   },
   {
     "symbol": "Adder_Armour_Grade3",
@@ -166,7 +185,8 @@
     "name": "Military Grade Composite",
     "ship": "Adder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 79027
   },
   {
     "symbol": "Adder_Armour_Mirrored",
@@ -174,7 +194,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Adder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 186767
   },
   {
     "symbol": "Adder_Armour_Reactive",
@@ -182,7 +203,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Adder",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 206963
   },
   {
     "symbol": "Viper_Armour_Grade1",
@@ -190,7 +212,8 @@
     "name": "Lightweight Alloy",
     "ship": "Viper MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Viper_Armour_Grade2",
@@ -198,7 +221,8 @@
     "name": "Reinforced Alloy",
     "ship": "Viper MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 57172
   },
   {
     "symbol": "Viper_Armour_Grade3",
@@ -206,7 +230,8 @@
     "name": "Military Grade Composite",
     "ship": "Viper MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 128637
   },
   {
     "symbol": "Viper_Armour_Mirrored",
@@ -214,7 +239,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Viper MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 304014
   },
   {
     "symbol": "Viper_Armour_Reactive",
@@ -222,7 +248,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Viper MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 336888
   },
   {
     "symbol": "CobraMkIII_Armour_Grade1",
@@ -230,7 +257,8 @@
     "name": "Lightweight Alloy",
     "ship": "Cobra MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "CobraMkIII_Armour_Grade2",
@@ -238,7 +266,8 @@
     "name": "Reinforced Alloy",
     "ship": "Cobra MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 139887
   },
   {
     "symbol": "CobraMkIII_Armour_Grade3",
@@ -246,7 +275,8 @@
     "name": "Military Grade Composite",
     "ship": "Cobra MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 341746
   },
   {
     "symbol": "CobraMkIII_Armour_Mirrored",
@@ -254,7 +284,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Cobra MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 734407
   },
   {
     "symbol": "CobraMkIII_Armour_Reactive",
@@ -262,7 +293,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Cobra MkIII",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 824285
   },
   {
     "symbol": "Type6_Armour_Grade1",
@@ -270,7 +302,8 @@
     "name": "Lightweight Alloy",
     "ship": "Type-6 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Type6_Armour_Grade2",
@@ -278,7 +311,8 @@
     "name": "Reinforced Alloy",
     "ship": "Type-6 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 418378
   },
   {
     "symbol": "Type6_Armour_Grade3",
@@ -286,7 +320,8 @@
     "name": "Military Grade Composite",
     "ship": "Type-6 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 941350
   },
   {
     "symbol": "Type6_Armour_Mirrored",
@@ -294,7 +329,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Type-6 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 2224725
   },
   {
     "symbol": "Type6_Armour_Reactive",
@@ -302,7 +338,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Type-6 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 2465292
   },
   {
     "symbol": "Dolphin_Armour_Grade1",
@@ -310,7 +347,8 @@
     "name": "Lightweight Alloy",
     "ship": "Dolphin",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Dolphin_Armour_Grade2",
@@ -318,7 +356,8 @@
     "name": "Reinforced Alloy",
     "ship": "Dolphin",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 534929
   },
   {
     "symbol": "Dolphin_Armour_Grade3",
@@ -326,7 +365,8 @@
     "name": "Military Grade Composite",
     "ship": "Dolphin",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1203590
   },
   {
     "symbol": "Dolphin_Armour_Mirrored",
@@ -334,7 +374,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Dolphin",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 2808378
   },
   {
     "symbol": "Dolphin_Armour_Reactive",
@@ -342,7 +383,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Dolphin",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 3152070
   },
   {
     "symbol": "Type7_Armour_Grade1",
@@ -350,7 +392,8 @@
     "name": "Lightweight Alloy",
     "ship": "Type-7 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Type7_Armour_Grade2",
@@ -358,7 +401,8 @@
     "name": "Reinforced Alloy",
     "ship": "Type-7 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 6988900
   },
   {
     "symbol": "Type7_Armour_Grade3",
@@ -366,7 +410,8 @@
     "name": "Military Grade Composite",
     "ship": "Type-7 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 15725026
   },
   {
     "symbol": "Type7_Armour_Mirrored",
@@ -374,7 +419,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Type-7 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 37163480
   },
   {
     "symbol": "Type7_Armour_Reactive",
@@ -382,7 +428,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Type-7 Transporter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 41182097
   },
   {
     "symbol": "Asp_Armour_Grade1",
@@ -390,7 +437,8 @@
     "name": "Lightweight Alloy",
     "ship": "Asp Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Asp_Armour_Grade2",
@@ -398,7 +446,8 @@
     "name": "Reinforced Alloy",
     "ship": "Asp Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 2664461
   },
   {
     "symbol": "Asp_Armour_Grade3",
@@ -406,7 +455,8 @@
     "name": "Military Grade Composite",
     "ship": "Asp Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 5995038
   },
   {
     "symbol": "Asp_Armour_Mirrored",
@@ -414,7 +464,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Asp Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 14168274
   },
   {
     "symbol": "Asp_Armour_Reactive",
@@ -422,7 +473,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Asp Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 15700339
   },
   {
     "symbol": "Vulture_Armour_Grade1",
@@ -430,7 +482,8 @@
     "name": "Lightweight Alloy",
     "ship": "Vulture",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Vulture_Armour_Grade2",
@@ -438,7 +491,8 @@
     "name": "Reinforced Alloy",
     "ship": "Vulture",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1970246
   },
   {
     "symbol": "Vulture_Armour_Grade3",
@@ -446,7 +500,8 @@
     "name": "Military Grade Composite",
     "ship": "Vulture",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 4433053
   },
   {
     "symbol": "Vulture_Armour_Mirrored",
@@ -454,7 +509,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Vulture",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 10476783
   },
   {
     "symbol": "Vulture_Armour_Reactive",
@@ -462,7 +518,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Vulture",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 11609674
   },
   {
     "symbol": "Empire_Trader_Armour_Grade1",
@@ -470,7 +527,8 @@
     "name": "Lightweight Alloy",
     "ship": "Imperial Clipper",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Empire_Trader_Armour_Grade2",
@@ -478,7 +536,8 @@
     "name": "Reinforced Alloy",
     "ship": "Imperial Clipper",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 8918344
   },
   {
     "symbol": "Empire_Trader_Armour_Grade3",
@@ -486,7 +545,8 @@
     "name": "Military Grade Composite",
     "ship": "Imperial Clipper",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 20066274
   },
   {
     "symbol": "Empire_Trader_Armour_Mirrored",
@@ -494,7 +554,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Imperial Clipper",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 47423294
   },
   {
     "symbol": "Empire_Trader_Armour_Reactive",
@@ -502,7 +563,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Imperial Clipper",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 52551342
   },
   {
     "symbol": "Federation_Dropship_Armour_Grade1",
@@ -510,7 +572,8 @@
     "name": "Lightweight Alloy",
     "ship": "Federal Dropship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Federation_Dropship_Armour_Grade2",
@@ -518,7 +581,8 @@
     "name": "Reinforced Alloy",
     "ship": "Federal Dropship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 5725682
   },
   {
     "symbol": "Federation_Dropship_Armour_Grade3",
@@ -526,7 +590,8 @@
     "name": "Military Grade Composite",
     "ship": "Federal Dropship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 12882784
   },
   {
     "symbol": "Federation_Dropship_Armour_Mirrored",
@@ -534,7 +599,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Federal Dropship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 30446314
   },
   {
     "symbol": "Federation_Dropship_Armour_Reactive",
@@ -542,7 +608,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Federal Dropship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 33738581
   },
   {
     "symbol": "Orca_Armour_Grade1",
@@ -550,7 +617,8 @@
     "name": "Lightweight Alloy",
     "ship": "Orca",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Orca_Armour_Grade2",
@@ -558,7 +626,8 @@
     "name": "Reinforced Alloy",
     "ship": "Orca",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 19415954
   },
   {
     "symbol": "Orca_Armour_Grade3",
@@ -566,7 +635,8 @@
     "name": "Military Grade Composite",
     "ship": "Orca",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 43685898
   },
   {
     "symbol": "Orca_Armour_Mirrored",
@@ -574,7 +644,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Orca",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 103244339
   },
   {
     "symbol": "Orca_Armour_Reactive",
@@ -582,7 +653,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Orca",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 114408513
   },
   {
     "symbol": "Type9_Armour_Grade1",
@@ -590,7 +662,8 @@
     "name": "Lightweight Alloy",
     "ship": "Type-9 Heavy",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Type9_Armour_Grade2",
@@ -598,7 +671,8 @@
     "name": "Reinforced Alloy",
     "ship": "Type-9 Heavy",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 30622336
   },
   {
     "symbol": "Type9_Armour_Grade3",
@@ -606,7 +680,8 @@
     "name": "Military Grade Composite",
     "ship": "Type-9 Heavy",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 68900257
   },
   {
     "symbol": "Type9_Armour_Mirrored",
@@ -614,7 +689,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Type-9 Heavy",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 162834275
   },
   {
     "symbol": "Type9_Armour_Reactive",
@@ -622,7 +698,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Type-9 Heavy",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 180442119
   },
   {
     "symbol": "Python_Armour_Grade1",
@@ -630,7 +707,8 @@
     "name": "Lightweight Alloy",
     "ship": "Python",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Python_Armour_Grade2",
@@ -638,7 +716,8 @@
     "name": "Reinforced Alloy",
     "ship": "Python",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 22791271
   },
   {
     "symbol": "Python_Armour_Grade3",
@@ -646,7 +725,8 @@
     "name": "Military Grade Composite",
     "ship": "Python",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 51280361
   },
   {
     "symbol": "Python_Armour_Mirrored",
@@ -654,7 +734,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Python",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 121192586
   },
   {
     "symbol": "Python_Armour_Reactive",
@@ -662,7 +743,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Python",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 134297567
   },
   {
     "symbol": "BelugaLiner_Armour_Grade1",
@@ -670,7 +752,8 @@
     "name": "Lightweight Alloy",
     "ship": "Beluga Liner",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "BelugaLiner_Armour_Grade2",
@@ -678,7 +761,8 @@
     "name": "Reinforced Alloy",
     "ship": "Beluga Liner",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 33813105
   },
   {
     "symbol": "BelugaLiner_Armour_Grade3",
@@ -686,7 +770,8 @@
     "name": "Military Grade Composite",
     "ship": "Beluga Liner",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 76079487
   },
   {
     "symbol": "BelugaLiner_Armour_Mirrored",
@@ -694,7 +779,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Beluga Liner",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 179801189
   },
   {
     "symbol": "BelugaLiner_Armour_Reactive",
@@ -702,7 +788,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Beluga Liner",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 199243724
   },
   {
     "symbol": "FerDeLance_Armour_Grade1",
@@ -710,7 +797,8 @@
     "name": "Lightweight Alloy",
     "ship": "Fer-de-Lance",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "FerDeLance_Armour_Grade2",
@@ -718,7 +806,8 @@
     "name": "Reinforced Alloy",
     "ship": "Fer-de-Lance",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 20626816
   },
   {
     "symbol": "FerDeLance_Armour_Grade3",
@@ -726,7 +815,8 @@
     "name": "Military Grade Composite",
     "ship": "Fer-de-Lance",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 46410336
   },
   {
     "symbol": "FerDeLance_Armour_Mirrored",
@@ -734,7 +824,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Fer-de-Lance",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 109683094
   },
   {
     "symbol": "FerDeLance_Armour_Reactive",
@@ -742,7 +833,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Fer-de-Lance",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 121543513
   },
   {
     "symbol": "Anaconda_Armour_Grade1",
@@ -750,7 +842,8 @@
     "name": "Lightweight Alloy",
     "ship": "Anaconda",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Anaconda_Armour_Grade2",
@@ -758,7 +851,8 @@
     "name": "Reinforced Alloy",
     "ship": "Anaconda",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 58787780
   },
   {
     "symbol": "Anaconda_Armour_Grade3",
@@ -766,7 +860,8 @@
     "name": "Military Grade Composite",
     "ship": "Anaconda",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 132272505
   },
   {
     "symbol": "Anaconda_Armour_Mirrored",
@@ -774,7 +869,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Anaconda",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 312604021
   },
   {
     "symbol": "Anaconda_Armour_Reactive",
@@ -782,7 +878,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Anaconda",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 346406995
   },
   {
     "symbol": "Federation_Corvette_Armour_Grade1",
@@ -790,7 +887,8 @@
     "name": "Lightweight Alloy",
     "ship": "Federal Corvette",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Federation_Corvette_Armour_Grade2",
@@ -798,7 +896,8 @@
     "name": "Reinforced Alloy",
     "ship": "Federal Corvette",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 75187780
   },
   {
     "symbol": "Federation_Corvette_Armour_Grade3",
@@ -806,7 +905,8 @@
     "name": "Military Grade Composite",
     "ship": "Federal Corvette",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 169172505
   },
   {
     "symbol": "Federation_Corvette_Armour_Mirrored",
@@ -814,7 +914,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Federal Corvette",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 399811021
   },
   {
     "symbol": "Federation_Corvette_Armour_Reactive",
@@ -822,7 +923,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Federal Corvette",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 443043995
   },
   {
     "symbol": "Cutter_Armour_Grade1",
@@ -830,7 +932,8 @@
     "name": "Lightweight Alloy",
     "ship": "Imperial Cutter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Cutter_Armour_Grade2",
@@ -838,7 +941,8 @@
     "name": "Reinforced Alloy",
     "ship": "Imperial Cutter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 83587780
   },
   {
     "symbol": "Cutter_Armour_Grade3",
@@ -846,7 +950,8 @@
     "name": "Military Grade Composite",
     "ship": "Imperial Cutter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 188072505
   },
   {
     "symbol": "Cutter_Armour_Mirrored",
@@ -854,7 +959,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Imperial Cutter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 444478021
   },
   {
     "symbol": "Cutter_Armour_Reactive",
@@ -862,7 +968,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Imperial Cutter",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 492540995
   },
   {
     "symbol": "Int_Powerplant_Size2_Class1",
@@ -873,7 +980,8 @@
     "mass": 2.5,
     "integrity": 46,
     "powerCapacity": 6.4,
-    "heatEfficiency": 1
+    "heatEfficiency": 1,
+    "cost": 1977
   },
   {
     "symbol": "Int_Powerplant_Size2_Class2",
@@ -884,7 +992,8 @@
     "mass": 1,
     "integrity": 41,
     "powerCapacity": 7.2,
-    "heatEfficiency": 0.75
+    "heatEfficiency": 0.75,
+    "cost": 5931
   },
   {
     "symbol": "Int_Powerplant_Size2_Class3",
@@ -895,7 +1004,8 @@
     "mass": 1.3,
     "integrity": 51,
     "powerCapacity": 8,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 17793
   },
   {
     "symbol": "Int_Powerplant_Size2_Class4",
@@ -906,7 +1016,8 @@
     "mass": 2,
     "integrity": 61,
     "powerCapacity": 8.8,
-    "heatEfficiency": 0.45
+    "heatEfficiency": 0.45,
+    "cost": 53379
   },
   {
     "symbol": "Int_Powerplant_Size2_Class5",
@@ -917,7 +1028,8 @@
     "mass": 1.3,
     "integrity": 56,
     "powerCapacity": 9.6,
-    "heatEfficiency": 0.4
+    "heatEfficiency": 0.4,
+    "cost": 160137
   },
   {
     "symbol": "Int_Powerplant_Size3_Class1",
@@ -928,7 +1040,8 @@
     "mass": 5,
     "integrity": 58,
     "powerCapacity": 8,
-    "heatEfficiency": 1
+    "heatEfficiency": 1,
+    "cost": 5931
   },
   {
     "symbol": "Int_Powerplant_Size3_Class2",
@@ -939,7 +1052,8 @@
     "mass": 2,
     "integrity": 51,
     "powerCapacity": 9,
-    "heatEfficiency": 0.75
+    "heatEfficiency": 0.75,
+    "cost": 17793
   },
   {
     "symbol": "Int_Powerplant_Size3_Class3",
@@ -950,7 +1064,8 @@
     "mass": 2.5,
     "integrity": 64,
     "powerCapacity": 10,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 53379
   },
   {
     "symbol": "Int_Powerplant_Size3_Class4",
@@ -961,7 +1076,8 @@
     "mass": 4,
     "integrity": 77,
     "powerCapacity": 11,
-    "heatEfficiency": 0.45
+    "heatEfficiency": 0.45,
+    "cost": 160137
   },
   {
     "symbol": "Int_Powerplant_Size3_Class5",
@@ -972,7 +1088,8 @@
     "mass": 2.5,
     "integrity": 70,
     "powerCapacity": 12,
-    "heatEfficiency": 0.4
+    "heatEfficiency": 0.4,
+    "cost": 480411
   },
   {
     "symbol": "Int_Powerplant_Size4_Class1",
@@ -983,7 +1100,8 @@
     "mass": 10,
     "integrity": 72,
     "powerCapacity": 10.4,
-    "heatEfficiency": 1
+    "heatEfficiency": 1,
+    "cost": 17793
   },
   {
     "symbol": "Int_Powerplant_Size4_Class2",
@@ -994,7 +1112,8 @@
     "mass": 4,
     "integrity": 64,
     "powerCapacity": 11.7,
-    "heatEfficiency": 0.75
+    "heatEfficiency": 0.75,
+    "cost": 53379
   },
   {
     "symbol": "Int_Powerplant_Size4_Class3",
@@ -1005,7 +1124,8 @@
     "mass": 5,
     "integrity": 80,
     "powerCapacity": 13,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 160137
   },
   {
     "symbol": "Int_Powerplant_Size4_Class4",
@@ -1016,7 +1136,8 @@
     "mass": 8,
     "integrity": 96,
     "powerCapacity": 14.3,
-    "heatEfficiency": 0.45
+    "heatEfficiency": 0.45,
+    "cost": 480411
   },
   {
     "symbol": "Int_Powerplant_Size4_Class5",
@@ -1027,7 +1148,8 @@
     "mass": 5,
     "integrity": 88,
     "powerCapacity": 15.6,
-    "heatEfficiency": 0.4
+    "heatEfficiency": 0.4,
+    "cost": 1441233
   },
   {
     "symbol": "Int_Powerplant_Size5_Class1",
@@ -1038,7 +1160,8 @@
     "mass": 20,
     "integrity": 86,
     "powerCapacity": 13.6,
-    "heatEfficiency": 1
+    "heatEfficiency": 1,
+    "cost": 53379
   },
   {
     "symbol": "Int_Powerplant_Size5_Class2",
@@ -1049,7 +1172,8 @@
     "mass": 8,
     "integrity": 77,
     "powerCapacity": 15.3,
-    "heatEfficiency": 0.75
+    "heatEfficiency": 0.75,
+    "cost": 160137
   },
   {
     "symbol": "Int_Powerplant_Size5_Class3",
@@ -1060,7 +1184,8 @@
     "mass": 10,
     "integrity": 96,
     "powerCapacity": 17,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 480411
   },
   {
     "symbol": "Int_Powerplant_Size5_Class4",
@@ -1071,7 +1196,8 @@
     "mass": 16,
     "integrity": 114,
     "powerCapacity": 18.7,
-    "heatEfficiency": 0.45
+    "heatEfficiency": 0.45,
+    "cost": 1441233
   },
   {
     "symbol": "Int_Powerplant_Size5_Class5",
@@ -1082,7 +1208,8 @@
     "mass": 10,
     "integrity": 106,
     "powerCapacity": 20.4,
-    "heatEfficiency": 0.4
+    "heatEfficiency": 0.4,
+    "cost": 4323699
   },
   {
     "symbol": "Int_Powerplant_Size6_Class1",
@@ -1093,7 +1220,8 @@
     "mass": 40,
     "integrity": 102,
     "powerCapacity": 16.8,
-    "heatEfficiency": 1
+    "heatEfficiency": 1,
+    "cost": 160137
   },
   {
     "symbol": "Int_Powerplant_Size6_Class2",
@@ -1104,7 +1232,8 @@
     "mass": 16,
     "integrity": 90,
     "powerCapacity": 18.9,
-    "heatEfficiency": 0.75
+    "heatEfficiency": 0.75,
+    "cost": 480411
   },
   {
     "symbol": "Int_Powerplant_Size6_Class3",
@@ -1115,7 +1244,8 @@
     "mass": 20,
     "integrity": 113,
     "powerCapacity": 21,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 1441233
   },
   {
     "symbol": "Int_Powerplant_Size6_Class4",
@@ -1126,7 +1256,8 @@
     "mass": 32,
     "integrity": 136,
     "powerCapacity": 23.1,
-    "heatEfficiency": 0.45
+    "heatEfficiency": 0.45,
+    "cost": 4323699
   },
   {
     "symbol": "Int_Powerplant_Size6_Class5",
@@ -1137,7 +1268,8 @@
     "mass": 20,
     "integrity": 124,
     "powerCapacity": 25.2,
-    "heatEfficiency": 0.4
+    "heatEfficiency": 0.4,
+    "cost": 12971097
   },
   {
     "symbol": "Int_Powerplant_Size7_Class1",
@@ -1148,7 +1280,8 @@
     "mass": 80,
     "integrity": 118,
     "powerCapacity": 20,
-    "heatEfficiency": 1
+    "heatEfficiency": 1,
+    "cost": 480411
   },
   {
     "symbol": "Int_Powerplant_Size7_Class2",
@@ -1159,7 +1292,8 @@
     "mass": 32,
     "integrity": 105,
     "powerCapacity": 22.5,
-    "heatEfficiency": 0.75
+    "heatEfficiency": 0.75,
+    "cost": 1441233
   },
   {
     "symbol": "Int_Powerplant_Size7_Class3",
@@ -1170,7 +1304,8 @@
     "mass": 40,
     "integrity": 131,
     "powerCapacity": 25,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 4323699
   },
   {
     "symbol": "Int_Powerplant_Size7_Class4",
@@ -1181,7 +1316,8 @@
     "mass": 64,
     "integrity": 157,
     "powerCapacity": 27.5,
-    "heatEfficiency": 0.45
+    "heatEfficiency": 0.45,
+    "cost": 12971097
   },
   {
     "symbol": "Int_Powerplant_Size7_Class5",
@@ -1192,7 +1328,8 @@
     "mass": 40,
     "integrity": 144,
     "powerCapacity": 30,
-    "heatEfficiency": 0.4
+    "heatEfficiency": 0.4,
+    "cost": 38913291
   },
   {
     "symbol": "Int_Powerplant_Size8_Class1",
@@ -1203,7 +1340,8 @@
     "mass": 160,
     "integrity": 135,
     "powerCapacity": 24,
-    "heatEfficiency": 1
+    "heatEfficiency": 1,
+    "cost": 1441233
   },
   {
     "symbol": "Int_Powerplant_Size8_Class2",
@@ -1214,7 +1352,8 @@
     "mass": 64,
     "integrity": 120,
     "powerCapacity": 27,
-    "heatEfficiency": 0.75
+    "heatEfficiency": 0.75,
+    "cost": 4323699
   },
   {
     "symbol": "Int_Powerplant_Size8_Class3",
@@ -1225,7 +1364,8 @@
     "mass": 80,
     "integrity": 150,
     "powerCapacity": 30,
-    "heatEfficiency": 0.5
+    "heatEfficiency": 0.5,
+    "cost": 12971097
   },
   {
     "symbol": "Int_Powerplant_Size8_Class4",
@@ -1236,7 +1376,8 @@
     "mass": 128,
     "integrity": 180,
     "powerCapacity": 33,
-    "heatEfficiency": 0.45
+    "heatEfficiency": 0.45,
+    "cost": 38913291
   },
   {
     "symbol": "Int_Powerplant_Size8_Class5",
@@ -1247,7 +1388,8 @@
     "mass": 80,
     "integrity": 165,
     "powerCapacity": 36,
-    "heatEfficiency": 0.4
+    "heatEfficiency": 0.4,
+    "cost": 116739873
   },
   {
     "symbol": "Int_Engine_Size2_Class1",
@@ -1263,7 +1405,8 @@
     "maxMass": 72,
     "optMultiplier": 1,
     "minMultiplier": 0.83,
-    "maxMultiplier": 1.03
+    "maxMultiplier": 1.03,
+    "cost": 1978
   },
   {
     "symbol": "Int_Engine_Size2_Class2",
@@ -1279,7 +1422,8 @@
     "maxMass": 81,
     "optMultiplier": 1,
     "minMultiplier": 0.86,
-    "maxMultiplier": 1.06
+    "maxMultiplier": 1.06,
+    "cost": 5934
   },
   {
     "symbol": "Int_Engine_Size2_Class3",
@@ -1295,7 +1439,8 @@
     "maxMass": 90,
     "optMultiplier": 1,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.1
+    "maxMultiplier": 1.1,
+    "cost": 17803
   },
   {
     "symbol": "Int_Engine_Size2_Class4",
@@ -1311,7 +1456,8 @@
     "maxMass": 99,
     "optMultiplier": 1,
     "minMultiplier": 0.93,
-    "maxMultiplier": 1.13
+    "maxMultiplier": 1.13,
+    "cost": 53408
   },
   {
     "symbol": "Int_Engine_Size2_Class5",
@@ -1327,7 +1473,8 @@
     "maxMass": 108,
     "optMultiplier": 1,
     "minMultiplier": 0.96,
-    "maxMultiplier": 1.16
+    "maxMultiplier": 1.16,
+    "cost": 160224
   },
   {
     "symbol": "Int_Engine_Size3_Class1",
@@ -1343,7 +1490,8 @@
     "maxMass": 120,
     "optMultiplier": 1,
     "minMultiplier": 0.83,
-    "maxMultiplier": 1.03
+    "maxMultiplier": 1.03,
+    "cost": 6271
   },
   {
     "symbol": "Int_Engine_Size3_Class2",
@@ -1359,7 +1507,8 @@
     "maxMass": 135,
     "optMultiplier": 1,
     "minMultiplier": 0.86,
-    "maxMultiplier": 1.06
+    "maxMultiplier": 1.06,
+    "cost": 18812
   },
   {
     "symbol": "Int_Engine_Size3_Class3",
@@ -1375,7 +1524,8 @@
     "maxMass": 150,
     "optMultiplier": 1,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.1
+    "maxMultiplier": 1.1,
+    "cost": 56435
   },
   {
     "symbol": "Int_Engine_Size3_Class4",
@@ -1391,7 +1541,8 @@
     "maxMass": 165,
     "optMultiplier": 1,
     "minMultiplier": 0.93,
-    "maxMultiplier": 1.13
+    "maxMultiplier": 1.13,
+    "cost": 169304
   },
   {
     "symbol": "Int_Engine_Size3_Class5",
@@ -1407,7 +1558,8 @@
     "maxMass": 180,
     "optMultiplier": 1,
     "minMultiplier": 0.96,
-    "maxMultiplier": 1.16
+    "maxMultiplier": 1.16,
+    "cost": 507912
   },
   {
     "symbol": "Int_Engine_Size4_Class1",
@@ -1423,7 +1575,8 @@
     "maxMass": 420,
     "optMultiplier": 1,
     "minMultiplier": 0.83,
-    "maxMultiplier": 1.03
+    "maxMultiplier": 1.03,
+    "cost": 19878
   },
   {
     "symbol": "Int_Engine_Size4_Class2",
@@ -1439,7 +1592,8 @@
     "maxMass": 472.5,
     "optMultiplier": 1,
     "minMultiplier": 0.86,
-    "maxMultiplier": 1.06
+    "maxMultiplier": 1.06,
+    "cost": 59633
   },
   {
     "symbol": "Int_Engine_Size4_Class3",
@@ -1455,7 +1609,8 @@
     "maxMass": 525,
     "optMultiplier": 1,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.1
+    "maxMultiplier": 1.1,
+    "cost": 178898
   },
   {
     "symbol": "Int_Engine_Size4_Class4",
@@ -1471,7 +1626,8 @@
     "maxMass": 577.5,
     "optMultiplier": 1,
     "minMultiplier": 0.93,
-    "maxMultiplier": 1.13
+    "maxMultiplier": 1.13,
+    "cost": 536693
   },
   {
     "symbol": "Int_Engine_Size4_Class5",
@@ -1487,7 +1643,8 @@
     "maxMass": 630,
     "optMultiplier": 1,
     "minMultiplier": 0.96,
-    "maxMultiplier": 1.16
+    "maxMultiplier": 1.16,
+    "cost": 1610080
   },
   {
     "symbol": "Int_Engine_Size5_Class1",
@@ -1503,7 +1660,8 @@
     "maxMass": 840,
     "optMultiplier": 1,
     "minMultiplier": 0.83,
-    "maxMultiplier": 1.03
+    "maxMultiplier": 1.03,
+    "cost": 63012
   },
   {
     "symbol": "Int_Engine_Size5_Class2",
@@ -1519,7 +1677,8 @@
     "maxMass": 945,
     "optMultiplier": 1,
     "minMultiplier": 0.86,
-    "maxMultiplier": 1.06
+    "maxMultiplier": 1.06,
+    "cost": 189035
   },
   {
     "symbol": "Int_Engine_Size5_Class3",
@@ -1535,7 +1694,8 @@
     "maxMass": 1050,
     "optMultiplier": 1,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.1
+    "maxMultiplier": 1.1,
+    "cost": 567106
   },
   {
     "symbol": "Int_Engine_Size5_Class4",
@@ -1551,7 +1711,8 @@
     "maxMass": 1155,
     "optMultiplier": 1,
     "minMultiplier": 0.93,
-    "maxMultiplier": 1.13
+    "maxMultiplier": 1.13,
+    "cost": 1701318
   },
   {
     "symbol": "Int_Engine_Size5_Class5",
@@ -1567,7 +1728,8 @@
     "maxMass": 1260,
     "optMultiplier": 1,
     "minMultiplier": 0.96,
-    "maxMultiplier": 1.16
+    "maxMultiplier": 1.16,
+    "cost": 5103953
   },
   {
     "symbol": "Int_Engine_Size6_Class1",
@@ -1583,7 +1745,8 @@
     "maxMass": 1440,
     "optMultiplier": 1,
     "minMultiplier": 0.83,
-    "maxMultiplier": 1.03
+    "maxMultiplier": 1.03,
+    "cost": 199747
   },
   {
     "symbol": "Int_Engine_Size6_Class2",
@@ -1599,7 +1762,8 @@
     "maxMass": 1620,
     "optMultiplier": 1,
     "minMultiplier": 0.86,
-    "maxMultiplier": 1.06
+    "maxMultiplier": 1.06,
+    "cost": 599242
   },
   {
     "symbol": "Int_Engine_Size6_Class3",
@@ -1615,7 +1779,8 @@
     "maxMass": 1800,
     "optMultiplier": 1,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.1
+    "maxMultiplier": 1.1,
+    "cost": 1797726
   },
   {
     "symbol": "Int_Engine_Size6_Class4",
@@ -1631,7 +1796,8 @@
     "maxMass": 1980,
     "optMultiplier": 1,
     "minMultiplier": 0.93,
-    "maxMultiplier": 1.13
+    "maxMultiplier": 1.13,
+    "cost": 5393177
   },
   {
     "symbol": "Int_Engine_Size6_Class5",
@@ -1647,7 +1813,8 @@
     "maxMass": 2160,
     "optMultiplier": 1,
     "minMultiplier": 0.96,
-    "maxMultiplier": 1.16
+    "maxMultiplier": 1.16,
+    "cost": 16179531
   },
   {
     "symbol": "Int_Engine_Size7_Class1",
@@ -1663,7 +1830,8 @@
     "maxMass": 2160,
     "optMultiplier": 1,
     "minMultiplier": 0.83,
-    "maxMultiplier": 1.03
+    "maxMultiplier": 1.03,
+    "cost": 633199
   },
   {
     "symbol": "Int_Engine_Size7_Class2",
@@ -1679,7 +1847,8 @@
     "maxMass": 2430,
     "optMultiplier": 1,
     "minMultiplier": 0.86,
-    "maxMultiplier": 1.06
+    "maxMultiplier": 1.06,
+    "cost": 1899597
   },
   {
     "symbol": "Int_Engine_Size7_Class3",
@@ -1695,7 +1864,8 @@
     "maxMass": 2700,
     "optMultiplier": 1,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.1
+    "maxMultiplier": 1.1,
+    "cost": 5698790
   },
   {
     "symbol": "Int_Engine_Size7_Class4",
@@ -1711,7 +1881,8 @@
     "maxMass": 2970,
     "optMultiplier": 1,
     "minMultiplier": 0.93,
-    "maxMultiplier": 1.13
+    "maxMultiplier": 1.13,
+    "cost": 17096371
   },
   {
     "symbol": "Int_Engine_Size7_Class5",
@@ -1727,7 +1898,8 @@
     "maxMass": 3240,
     "optMultiplier": 1,
     "minMultiplier": 0.96,
-    "maxMultiplier": 1.16
+    "maxMultiplier": 1.16,
+    "cost": 51289112
   },
   {
     "symbol": "Int_Engine_Size8_Class1",
@@ -1743,7 +1915,8 @@
     "maxMass": 3360,
     "optMultiplier": 1,
     "minMultiplier": 0.83,
-    "maxMultiplier": 1.03
+    "maxMultiplier": 1.03,
+    "cost": 2007241
   },
   {
     "symbol": "Int_Engine_Size8_Class2",
@@ -1759,7 +1932,8 @@
     "maxMass": 3780,
     "optMultiplier": 1,
     "minMultiplier": 0.86,
-    "maxMultiplier": 1.06
+    "maxMultiplier": 1.06,
+    "cost": 6021722
   },
   {
     "symbol": "Int_Engine_Size8_Class3",
@@ -1775,7 +1949,8 @@
     "maxMass": 4200,
     "optMultiplier": 1,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.1
+    "maxMultiplier": 1.1,
+    "cost": 18065165
   },
   {
     "symbol": "Int_Engine_Size8_Class4",
@@ -1791,7 +1966,8 @@
     "maxMass": 4620,
     "optMultiplier": 1,
     "minMultiplier": 0.93,
-    "maxMultiplier": 1.13
+    "maxMultiplier": 1.13,
+    "cost": 54195495
   },
   {
     "symbol": "Int_Engine_Size8_Class5",
@@ -1807,7 +1983,8 @@
     "maxMass": 5040,
     "optMultiplier": 1,
     "minMultiplier": 0.96,
-    "maxMultiplier": 1.16
+    "maxMultiplier": 1.16,
+    "cost": 162586486
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class1",
@@ -1821,7 +1998,8 @@
     "optMass": 48,
     "maxFuel": 0.6,
     "fuelMul": 0.011,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 1978
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class2",
@@ -1835,7 +2013,8 @@
     "optMass": 54,
     "maxFuel": 0.6,
     "fuelMul": 0.01,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 5934
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class3",
@@ -1849,7 +2028,8 @@
     "optMass": 60,
     "maxFuel": 0.6,
     "fuelMul": 0.008,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 17803
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class4",
@@ -1863,7 +2043,8 @@
     "optMass": 75,
     "maxFuel": 0.8,
     "fuelMul": 0.01,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 53408
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class5",
@@ -1877,7 +2058,8 @@
     "optMass": 90,
     "maxFuel": 0.9,
     "fuelMul": 0.012,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 160224
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class1",
@@ -1891,7 +2073,8 @@
     "optMass": 80,
     "maxFuel": 1.2,
     "fuelMul": 0.011,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 6271
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class2",
@@ -1905,7 +2088,8 @@
     "optMass": 90,
     "maxFuel": 1.2,
     "fuelMul": 0.01,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 18812
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class3",
@@ -1919,7 +2103,8 @@
     "optMass": 100,
     "maxFuel": 1.2,
     "fuelMul": 0.008,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 56435
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class4",
@@ -1933,7 +2118,8 @@
     "optMass": 125,
     "maxFuel": 1.5,
     "fuelMul": 0.01,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 169304
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class5",
@@ -1947,7 +2133,8 @@
     "optMass": 150,
     "maxFuel": 1.8,
     "fuelMul": 0.012,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 507912
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class1",
@@ -1961,7 +2148,8 @@
     "optMass": 280,
     "maxFuel": 2,
     "fuelMul": 0.011,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 19878
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class2",
@@ -1975,7 +2163,8 @@
     "optMass": 315,
     "maxFuel": 2,
     "fuelMul": 0.01,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 59633
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class3",
@@ -1989,7 +2178,8 @@
     "optMass": 350,
     "maxFuel": 2,
     "fuelMul": 0.008,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 178898
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class4",
@@ -2003,7 +2193,8 @@
     "optMass": 437.5,
     "maxFuel": 2.5,
     "fuelMul": 0.01,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 536693
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class5",
@@ -2017,7 +2208,8 @@
     "optMass": 525,
     "maxFuel": 3,
     "fuelMul": 0.012,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 1610080
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class1",
@@ -2031,7 +2223,8 @@
     "optMass": 560,
     "maxFuel": 3.3,
     "fuelMul": 0.011,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 63012
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class2",
@@ -2045,7 +2238,8 @@
     "optMass": 630,
     "maxFuel": 3.3,
     "fuelMul": 0.01,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 189035
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class3",
@@ -2059,7 +2253,8 @@
     "optMass": 700,
     "maxFuel": 3.3,
     "fuelMul": 0.008,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 567106
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class4",
@@ -2073,7 +2268,8 @@
     "optMass": 875,
     "maxFuel": 4.1,
     "fuelMul": 0.01,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 1701318
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class5",
@@ -2087,7 +2283,8 @@
     "optMass": 1050,
     "maxFuel": 5,
     "fuelMul": 0.012,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 0
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class1",
@@ -2101,7 +2298,8 @@
     "optMass": 960,
     "maxFuel": 5.3,
     "fuelMul": 0.011,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 199747
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class2",
@@ -2115,7 +2313,8 @@
     "optMass": 1080,
     "maxFuel": 5.3,
     "fuelMul": 0.01,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 599242
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class3",
@@ -2129,7 +2328,8 @@
     "optMass": 1200,
     "maxFuel": 5.3,
     "fuelMul": 0.008,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 1797726
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class4",
@@ -2143,7 +2343,8 @@
     "optMass": 1500,
     "maxFuel": 6.6,
     "fuelMul": 0.01,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 5393177
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class5",
@@ -2157,7 +2358,8 @@
     "optMass": 1800,
     "maxFuel": 8,
     "fuelMul": 0.012,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 16179531
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class1",
@@ -2171,7 +2373,8 @@
     "optMass": 1440,
     "maxFuel": 8.5,
     "fuelMul": 0.011,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 633199
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class2",
@@ -2185,7 +2388,8 @@
     "optMass": 1620,
     "maxFuel": 8.5,
     "fuelMul": 0.01,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 1899597
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class3",
@@ -2199,7 +2403,8 @@
     "optMass": 1800,
     "maxFuel": 8.5,
     "fuelMul": 0.008,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 5698790
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class4",
@@ -2213,7 +2418,8 @@
     "optMass": 2250,
     "maxFuel": 10.6,
     "fuelMul": 0.01,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 17096371
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class5",
@@ -2227,7 +2433,8 @@
     "optMass": 2700,
     "maxFuel": 12.8,
     "fuelMul": 0.012,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 51289112
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class1",
@@ -2273,7 +2480,8 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.32,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 517
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class2",
@@ -2284,7 +2492,8 @@
     "mass": 0.5,
     "integrity": 36,
     "powerDraw": 0.36,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 1293
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class3",
@@ -2295,7 +2504,8 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.4,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 3231
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class4",
@@ -2306,7 +2516,8 @@
     "mass": 2,
     "integrity": 44,
     "powerDraw": 0.44,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 8078
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class5",
@@ -2317,7 +2528,8 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 0.48,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 20195
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class1",
@@ -2328,7 +2540,8 @@
     "mass": 2.5,
     "integrity": 41,
     "powerDraw": 0.37,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 1448
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class2",
@@ -2339,7 +2552,8 @@
     "mass": 1,
     "integrity": 46,
     "powerDraw": 0.41,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 3619
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class3",
@@ -2350,7 +2564,8 @@
     "mass": 2.5,
     "integrity": 51,
     "powerDraw": 0.46,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 9048
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class4",
@@ -2361,7 +2576,8 @@
     "mass": 4,
     "integrity": 56,
     "powerDraw": 0.51,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 22619
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class5",
@@ -2372,7 +2588,8 @@
     "mass": 2.5,
     "integrity": 61,
     "powerDraw": 0.55,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 56547
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class1",
@@ -2383,7 +2600,8 @@
     "mass": 5,
     "integrity": 51,
     "powerDraw": 0.42,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 4053
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class2",
@@ -2394,7 +2612,8 @@
     "mass": 2,
     "integrity": 58,
     "powerDraw": 0.48,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 10133
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class3",
@@ -2405,7 +2624,8 @@
     "mass": 5,
     "integrity": 64,
     "powerDraw": 0.53,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 25333
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class4",
@@ -2416,7 +2636,8 @@
     "mass": 8,
     "integrity": 70,
     "powerDraw": 0.58,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 63333
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class5",
@@ -2427,7 +2648,8 @@
     "mass": 5,
     "integrity": 77,
     "powerDraw": 0.64,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 158331
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class1",
@@ -2438,7 +2660,8 @@
     "mass": 10,
     "integrity": 64,
     "powerDraw": 0.5,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 11349
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class2",
@@ -2449,7 +2672,8 @@
     "mass": 4,
     "integrity": 72,
     "powerDraw": 0.56,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 28373
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class3",
@@ -2460,7 +2684,8 @@
     "mass": 10,
     "integrity": 80,
     "powerDraw": 0.62,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 70932
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class4",
@@ -2471,7 +2696,8 @@
     "mass": 16,
     "integrity": 88,
     "powerDraw": 0.68,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 177331
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class5",
@@ -2482,7 +2708,8 @@
     "mass": 10,
     "integrity": 96,
     "powerDraw": 0.74,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 443328
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class1",
@@ -2493,7 +2720,8 @@
     "mass": 20,
     "integrity": 77,
     "powerDraw": 0.57,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 31778
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class2",
@@ -2504,7 +2732,8 @@
     "mass": 8,
     "integrity": 86,
     "powerDraw": 0.64,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 79444
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class3",
@@ -2515,7 +2744,8 @@
     "mass": 20,
     "integrity": 96,
     "powerDraw": 0.71,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 198611
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class4",
@@ -2526,7 +2756,8 @@
     "mass": 32,
     "integrity": 106,
     "powerDraw": 0.78,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 496527
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class5",
@@ -2537,7 +2768,8 @@
     "mass": 20,
     "integrity": 115,
     "powerDraw": 0.85,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 1241317
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class1",
@@ -2548,7 +2780,8 @@
     "mass": 40,
     "integrity": 90,
     "powerDraw": 0.64,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 88978
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class2",
@@ -2559,7 +2792,8 @@
     "mass": 16,
     "integrity": 102,
     "powerDraw": 0.72,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 222444
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class3",
@@ -2570,7 +2804,8 @@
     "mass": 40,
     "integrity": 113,
     "powerDraw": 0.8,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 556110
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class4",
@@ -2581,7 +2816,8 @@
     "mass": 64,
     "integrity": 124,
     "powerDraw": 0.88,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 1390275
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class5",
@@ -2592,7 +2828,8 @@
     "mass": 40,
     "integrity": 136,
     "powerDraw": 0.96,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 3475688
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class1",
@@ -2603,7 +2840,8 @@
     "mass": 80,
     "integrity": 105,
     "powerDraw": 0.72,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 249137
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class2",
@@ -2614,7 +2852,8 @@
     "mass": 32,
     "integrity": 118,
     "powerDraw": 0.81,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 622843
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class3",
@@ -2625,7 +2864,8 @@
     "mass": 80,
     "integrity": 131,
     "powerDraw": 0.9,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 1557108
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class4",
@@ -2636,7 +2876,8 @@
     "mass": 128,
     "integrity": 144,
     "powerDraw": 0.99,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 3892770
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class5",
@@ -2647,7 +2888,8 @@
     "mass": 80,
     "integrity": 157,
     "powerDraw": 1.08,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 9731925
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class1",
@@ -2658,7 +2900,8 @@
     "mass": 160,
     "integrity": 120,
     "powerDraw": 0.8,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 697584
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class2",
@@ -2669,7 +2912,8 @@
     "mass": 64,
     "integrity": 135,
     "powerDraw": 0.9,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 1743961
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class3",
@@ -2680,7 +2924,8 @@
     "mass": 160,
     "integrity": 150,
     "powerDraw": 1,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 4359903
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class4",
@@ -2691,7 +2936,8 @@
     "mass": 256,
     "integrity": 165,
     "powerDraw": 1.1,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 10899756
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class5",
@@ -2702,7 +2948,8 @@
     "mass": 160,
     "integrity": 180,
     "powerDraw": 1.2,
-    "bootTime": 1
+    "bootTime": 1,
+    "cost": 27249391
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class1",
@@ -2718,7 +2965,8 @@
     "enginesCapacity": 8,
     "enginesRecharge": 0.4,
     "systemsCapacity": 8,
-    "systemsRecharge": 0.4
+    "systemsRecharge": 0.4,
+    "cost": 517
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class2",
@@ -2734,7 +2982,8 @@
     "enginesCapacity": 9,
     "enginesRecharge": 0.5,
     "systemsCapacity": 9,
-    "systemsRecharge": 0.5
+    "systemsRecharge": 0.5,
+    "cost": 1293
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class3",
@@ -2750,7 +2999,8 @@
     "enginesCapacity": 10,
     "enginesRecharge": 0.5,
     "systemsCapacity": 10,
-    "systemsRecharge": 0.5
+    "systemsRecharge": 0.5,
+    "cost": 3231
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class4",
@@ -2766,7 +3016,8 @@
     "enginesCapacity": 11,
     "enginesRecharge": 0.6,
     "systemsCapacity": 11,
-    "systemsRecharge": 0.6
+    "systemsRecharge": 0.6,
+    "cost": 8078
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class5",
@@ -2782,7 +3033,8 @@
     "enginesCapacity": 12,
     "enginesRecharge": 0.6,
     "systemsCapacity": 12,
-    "systemsRecharge": 0.6
+    "systemsRecharge": 0.6,
+    "cost": 20195
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class1",
@@ -2798,7 +3050,8 @@
     "enginesCapacity": 10,
     "enginesRecharge": 0.6,
     "systemsCapacity": 10,
-    "systemsRecharge": 0.6
+    "systemsRecharge": 0.6,
+    "cost": 1448
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class2",
@@ -2814,7 +3067,8 @@
     "enginesCapacity": 11,
     "enginesRecharge": 0.6,
     "systemsCapacity": 11,
-    "systemsRecharge": 0.6
+    "systemsRecharge": 0.6,
+    "cost": 3619
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class3",
@@ -2830,7 +3084,8 @@
     "enginesCapacity": 12,
     "enginesRecharge": 0.7,
     "systemsCapacity": 12,
-    "systemsRecharge": 0.7
+    "systemsRecharge": 0.7,
+    "cost": 9048
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class4",
@@ -2846,7 +3101,8 @@
     "enginesCapacity": 13,
     "enginesRecharge": 0.8,
     "systemsCapacity": 13,
-    "systemsRecharge": 0.8
+    "systemsRecharge": 0.8,
+    "cost": 22619
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class5",
@@ -2862,7 +3118,8 @@
     "enginesCapacity": 14,
     "enginesRecharge": 0.8,
     "systemsCapacity": 14,
-    "systemsRecharge": 0.8
+    "systemsRecharge": 0.8,
+    "cost": 56547
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class1",
@@ -2878,7 +3135,8 @@
     "enginesCapacity": 12,
     "enginesRecharge": 0.9,
     "systemsCapacity": 12,
-    "systemsRecharge": 0.9
+    "systemsRecharge": 0.9,
+    "cost": 4053
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class2",
@@ -2894,7 +3152,8 @@
     "enginesCapacity": 14,
     "enginesRecharge": 1,
     "systemsCapacity": 14,
-    "systemsRecharge": 1
+    "systemsRecharge": 1,
+    "cost": 10133
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class3",
@@ -2910,7 +3169,8 @@
     "enginesCapacity": 15,
     "enginesRecharge": 1.1,
     "systemsCapacity": 15,
-    "systemsRecharge": 1.1
+    "systemsRecharge": 1.1,
+    "cost": 25333
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class4",
@@ -2926,7 +3186,8 @@
     "enginesCapacity": 17,
     "enginesRecharge": 1.2,
     "systemsCapacity": 17,
-    "systemsRecharge": 1.2
+    "systemsRecharge": 1.2,
+    "cost": 63333
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class5",
@@ -2942,7 +3203,8 @@
     "enginesCapacity": 18,
     "enginesRecharge": 1.3,
     "systemsCapacity": 18,
-    "systemsRecharge": 1.3
+    "systemsRecharge": 1.3,
+    "cost": 158331
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class1",
@@ -2958,7 +3220,8 @@
     "enginesCapacity": 15,
     "enginesRecharge": 1.3,
     "systemsCapacity": 15,
-    "systemsRecharge": 1.3
+    "systemsRecharge": 1.3,
+    "cost": 11349
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class2",
@@ -2974,7 +3237,8 @@
     "enginesCapacity": 17,
     "enginesRecharge": 1.4,
     "systemsCapacity": 17,
-    "systemsRecharge": 1.4
+    "systemsRecharge": 1.4,
+    "cost": 28373
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class3",
@@ -2990,7 +3254,8 @@
     "enginesCapacity": 19,
     "enginesRecharge": 1.6,
     "systemsCapacity": 19,
-    "systemsRecharge": 1.6
+    "systemsRecharge": 1.6,
+    "cost": 70932
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class4",
@@ -3006,7 +3271,8 @@
     "enginesCapacity": 21,
     "enginesRecharge": 1.8,
     "systemsCapacity": 21,
-    "systemsRecharge": 1.8
+    "systemsRecharge": 1.8,
+    "cost": 177331
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class5",
@@ -3022,7 +3288,8 @@
     "enginesCapacity": 23,
     "enginesRecharge": 1.9,
     "systemsCapacity": 23,
-    "systemsRecharge": 1.9
+    "systemsRecharge": 1.9,
+    "cost": 443328
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class1",
@@ -3038,7 +3305,8 @@
     "enginesCapacity": 19,
     "enginesRecharge": 1.7,
     "systemsCapacity": 19,
-    "systemsRecharge": 1.7
+    "systemsRecharge": 1.7,
+    "cost": 31778
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class2",
@@ -3054,7 +3322,8 @@
     "enginesCapacity": 22,
     "enginesRecharge": 1.9,
     "systemsCapacity": 22,
-    "systemsRecharge": 1.9
+    "systemsRecharge": 1.9,
+    "cost": 79444
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class3",
@@ -3070,7 +3339,8 @@
     "enginesCapacity": 24,
     "enginesRecharge": 2.1,
     "systemsCapacity": 24,
-    "systemsRecharge": 2.1
+    "systemsRecharge": 2.1,
+    "cost": 198611
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class4",
@@ -3086,7 +3356,8 @@
     "enginesCapacity": 26,
     "enginesRecharge": 2.3,
     "systemsCapacity": 26,
-    "systemsRecharge": 2.3
+    "systemsRecharge": 2.3,
+    "cost": 496527
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class5",
@@ -3102,7 +3373,8 @@
     "enginesCapacity": 29,
     "enginesRecharge": 2.5,
     "systemsCapacity": 29,
-    "systemsRecharge": 2.5
+    "systemsRecharge": 2.5,
+    "cost": 1241317
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class1",
@@ -3118,7 +3390,8 @@
     "enginesCapacity": 23,
     "enginesRecharge": 2.2,
     "systemsCapacity": 23,
-    "systemsRecharge": 2.2
+    "systemsRecharge": 2.2,
+    "cost": 88978
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class2",
@@ -3134,7 +3407,8 @@
     "enginesCapacity": 26,
     "enginesRecharge": 2.4,
     "systemsCapacity": 26,
-    "systemsRecharge": 2.4
+    "systemsRecharge": 2.4,
+    "cost": 222444
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class3",
@@ -3150,7 +3424,8 @@
     "enginesCapacity": 29,
     "enginesRecharge": 2.7,
     "systemsCapacity": 29,
-    "systemsRecharge": 2.7
+    "systemsRecharge": 2.7,
+    "cost": 556110
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class4",
@@ -3166,7 +3441,8 @@
     "enginesCapacity": 32,
     "enginesRecharge": 3,
     "systemsCapacity": 32,
-    "systemsRecharge": 3
+    "systemsRecharge": 3,
+    "cost": 1390275
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class5",
@@ -3182,7 +3458,8 @@
     "enginesCapacity": 35,
     "enginesRecharge": 3.2,
     "systemsCapacity": 35,
-    "systemsRecharge": 3.2
+    "systemsRecharge": 3.2,
+    "cost": 3475688
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class1",
@@ -3198,7 +3475,8 @@
     "enginesCapacity": 27,
     "enginesRecharge": 2.6,
     "systemsCapacity": 27,
-    "systemsRecharge": 2.6
+    "systemsRecharge": 2.6,
+    "cost": 249137
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class2",
@@ -3214,7 +3492,8 @@
     "enginesCapacity": 31,
     "enginesRecharge": 3,
     "systemsCapacity": 31,
-    "systemsRecharge": 3
+    "systemsRecharge": 3,
+    "cost": 622843
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class3",
@@ -3230,7 +3509,8 @@
     "enginesCapacity": 34,
     "enginesRecharge": 3.3,
     "systemsCapacity": 34,
-    "systemsRecharge": 3.3
+    "systemsRecharge": 3.3,
+    "cost": 1557108
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class4",
@@ -3246,7 +3526,8 @@
     "enginesCapacity": 37,
     "enginesRecharge": 3.6,
     "systemsCapacity": 37,
-    "systemsRecharge": 3.6
+    "systemsRecharge": 3.6,
+    "cost": 3892770
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class5",
@@ -3262,7 +3543,8 @@
     "enginesCapacity": 41,
     "enginesRecharge": 4,
     "systemsCapacity": 41,
-    "systemsRecharge": 4
+    "systemsRecharge": 4,
+    "cost": 9731925
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class1",
@@ -3278,7 +3560,8 @@
     "enginesCapacity": 32,
     "enginesRecharge": 3.2,
     "systemsCapacity": 32,
-    "systemsRecharge": 3.2
+    "systemsRecharge": 3.2,
+    "cost": 697584
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class2",
@@ -3294,7 +3577,8 @@
     "enginesCapacity": 36,
     "enginesRecharge": 3.6,
     "systemsCapacity": 36,
-    "systemsRecharge": 3.6
+    "systemsRecharge": 3.6,
+    "cost": 1743961
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class3",
@@ -3310,7 +3594,8 @@
     "enginesCapacity": 40,
     "enginesRecharge": 4,
     "systemsCapacity": 40,
-    "systemsRecharge": 4
+    "systemsRecharge": 4,
+    "cost": 4359903
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class4",
@@ -3326,7 +3611,8 @@
     "enginesCapacity": 44,
     "enginesRecharge": 4.4,
     "systemsCapacity": 44,
-    "systemsRecharge": 4.4
+    "systemsRecharge": 4.4,
+    "cost": 10899756
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class5",
@@ -3342,7 +3628,8 @@
     "enginesCapacity": 48,
     "enginesRecharge": 4.8,
     "systemsCapacity": 48,
-    "systemsRecharge": 4.8
+    "systemsRecharge": 4.8,
+    "cost": 27249391
   },
   {
     "symbol": "Int_Sensors_Size1_Class1",
@@ -3352,7 +3639,8 @@
     "rating": "E",
     "mass": 1.3,
     "integrity": 46,
-    "powerDraw": 0.16
+    "powerDraw": 0.16,
+    "cost": 517
   },
   {
     "symbol": "Int_Sensors_Size1_Class2",
@@ -3362,7 +3650,8 @@
     "rating": "D",
     "mass": 0.5,
     "integrity": 41,
-    "powerDraw": 0.18
+    "powerDraw": 0.18,
+    "cost": 1293
   },
   {
     "symbol": "Int_Sensors_Size1_Class3",
@@ -3372,7 +3661,8 @@
     "rating": "C",
     "mass": 1.3,
     "integrity": 51,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 3231
   },
   {
     "symbol": "Int_Sensors_Size1_Class4",
@@ -3382,7 +3672,8 @@
     "rating": "B",
     "mass": 2,
     "integrity": 61,
-    "powerDraw": 0.33
+    "powerDraw": 0.33,
+    "cost": 8078
   },
   {
     "symbol": "Int_Sensors_Size1_Class5",
@@ -3392,7 +3683,8 @@
     "rating": "A",
     "mass": 1.3,
     "integrity": 56,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 20195
   },
   {
     "symbol": "Int_Sensors_Size2_Class1",
@@ -3402,7 +3694,8 @@
     "rating": "E",
     "mass": 2.5,
     "integrity": 46,
-    "powerDraw": 0.18
+    "powerDraw": 0.18,
+    "cost": 1448
   },
   {
     "symbol": "Int_Sensors_Size2_Class2",
@@ -3412,7 +3705,8 @@
     "rating": "D",
     "mass": 1,
     "integrity": 41,
-    "powerDraw": 0.21
+    "powerDraw": 0.21,
+    "cost": 3619
   },
   {
     "symbol": "Int_Sensors_Size2_Class3",
@@ -3422,7 +3716,8 @@
     "rating": "C",
     "mass": 2.5,
     "integrity": 51,
-    "powerDraw": 0.23
+    "powerDraw": 0.23,
+    "cost": 9048
   },
   {
     "symbol": "Int_Sensors_Size2_Class4",
@@ -3432,7 +3727,8 @@
     "rating": "B",
     "mass": 4,
     "integrity": 61,
-    "powerDraw": 0.38
+    "powerDraw": 0.38,
+    "cost": 22619
   },
   {
     "symbol": "Int_Sensors_Size2_Class5",
@@ -3442,7 +3738,8 @@
     "rating": "A",
     "mass": 2.5,
     "integrity": 56,
-    "powerDraw": 0.69
+    "powerDraw": 0.69,
+    "cost": 56547
   },
   {
     "symbol": "Int_Sensors_Size3_Class1",
@@ -3452,7 +3749,8 @@
     "rating": "E",
     "mass": 5,
     "integrity": 58,
-    "powerDraw": 0.22
+    "powerDraw": 0.22,
+    "cost": 4053
   },
   {
     "symbol": "Int_Sensors_Size3_Class2",
@@ -3462,7 +3760,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 51,
-    "powerDraw": 0.25
+    "powerDraw": 0.25,
+    "cost": 10133
   },
   {
     "symbol": "Int_Sensors_Size3_Class3",
@@ -3472,7 +3771,8 @@
     "rating": "C",
     "mass": 5,
     "integrity": 64,
-    "powerDraw": 0.28
+    "powerDraw": 0.28,
+    "cost": 25333
   },
   {
     "symbol": "Int_Sensors_Size3_Class4",
@@ -3482,7 +3782,8 @@
     "rating": "B",
     "mass": 8,
     "integrity": 77,
-    "powerDraw": 0.46
+    "powerDraw": 0.46,
+    "cost": 63333
   },
   {
     "symbol": "Int_Sensors_Size3_Class5",
@@ -3492,7 +3793,8 @@
     "rating": "A",
     "mass": 5,
     "integrity": 70,
-    "powerDraw": 0.84
+    "powerDraw": 0.84,
+    "cost": 158331
   },
   {
     "symbol": "Int_Sensors_Size4_Class1",
@@ -3502,7 +3804,8 @@
     "rating": "E",
     "mass": 10,
     "integrity": 72,
-    "powerDraw": 0.27
+    "powerDraw": 0.27,
+    "cost": 11349
   },
   {
     "symbol": "Int_Sensors_Size4_Class2",
@@ -3512,7 +3815,8 @@
     "rating": "D",
     "mass": 4,
     "integrity": 64,
-    "powerDraw": 0.31
+    "powerDraw": 0.31,
+    "cost": 28373
   },
   {
     "symbol": "Int_Sensors_Size4_Class3",
@@ -3522,7 +3826,8 @@
     "rating": "C",
     "mass": 10,
     "integrity": 80,
-    "powerDraw": 0.34
+    "powerDraw": 0.34,
+    "cost": 70932
   },
   {
     "symbol": "Int_Sensors_Size4_Class4",
@@ -3532,7 +3837,8 @@
     "rating": "B",
     "mass": 16,
     "integrity": 96,
-    "powerDraw": 0.56
+    "powerDraw": 0.56,
+    "cost": 177331
   },
   {
     "symbol": "Int_Sensors_Size4_Class5",
@@ -3542,7 +3848,8 @@
     "rating": "A",
     "mass": 10,
     "integrity": 88,
-    "powerDraw": 1.02
+    "powerDraw": 1.02,
+    "cost": 443328
   },
   {
     "symbol": "Int_Sensors_Size5_Class1",
@@ -3552,7 +3859,8 @@
     "rating": "E",
     "mass": 20,
     "integrity": 86,
-    "powerDraw": 0.33
+    "powerDraw": 0.33,
+    "cost": 31778
   },
   {
     "symbol": "Int_Sensors_Size5_Class2",
@@ -3562,7 +3870,8 @@
     "rating": "D",
     "mass": 8,
     "integrity": 77,
-    "powerDraw": 0.37
+    "powerDraw": 0.37,
+    "cost": 79444
   },
   {
     "symbol": "Int_Sensors_Size5_Class3",
@@ -3572,7 +3881,8 @@
     "rating": "C",
     "mass": 20,
     "integrity": 96,
-    "powerDraw": 0.41
+    "powerDraw": 0.41,
+    "cost": 198611
   },
   {
     "symbol": "Int_Sensors_Size5_Class4",
@@ -3582,7 +3892,8 @@
     "rating": "B",
     "mass": 32,
     "integrity": 115,
-    "powerDraw": 0.68
+    "powerDraw": 0.68,
+    "cost": 496527
   },
   {
     "symbol": "Int_Sensors_Size5_Class5",
@@ -3592,7 +3903,8 @@
     "rating": "A",
     "mass": 20,
     "integrity": 106,
-    "powerDraw": 1.23
+    "powerDraw": 1.23,
+    "cost": 1241317
   },
   {
     "symbol": "Int_Sensors_Size6_Class1",
@@ -3602,7 +3914,8 @@
     "rating": "E",
     "mass": 40,
     "integrity": 102,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 88978
   },
   {
     "symbol": "Int_Sensors_Size6_Class2",
@@ -3612,7 +3925,8 @@
     "rating": "D",
     "mass": 16,
     "integrity": 90,
-    "powerDraw": 0.45
+    "powerDraw": 0.45,
+    "cost": 222444
   },
   {
     "symbol": "Int_Sensors_Size6_Class3",
@@ -3622,7 +3936,8 @@
     "rating": "C",
     "mass": 40,
     "integrity": 113,
-    "powerDraw": 0.5
+    "powerDraw": 0.5,
+    "cost": 556110
   },
   {
     "symbol": "Int_Sensors_Size6_Class4",
@@ -3632,7 +3947,8 @@
     "rating": "B",
     "mass": 64,
     "integrity": 136,
-    "powerDraw": 0.83
+    "powerDraw": 0.83,
+    "cost": 1390275
   },
   {
     "symbol": "Int_Sensors_Size6_Class5",
@@ -3642,7 +3958,8 @@
     "rating": "A",
     "mass": 40,
     "integrity": 124,
-    "powerDraw": 1.5
+    "powerDraw": 1.5,
+    "cost": 3475688
   },
   {
     "symbol": "Int_Sensors_Size7_Class1",
@@ -3652,7 +3969,8 @@
     "rating": "E",
     "mass": 80,
     "integrity": 118,
-    "powerDraw": 0.47
+    "powerDraw": 0.47,
+    "cost": 249137
   },
   {
     "symbol": "Int_Sensors_Size7_Class2",
@@ -3662,7 +3980,8 @@
     "rating": "D",
     "mass": 32,
     "integrity": 105,
-    "powerDraw": 0.53
+    "powerDraw": 0.53,
+    "cost": 622843
   },
   {
     "symbol": "Int_Sensors_Size7_Class3",
@@ -3672,7 +3991,8 @@
     "rating": "C",
     "mass": 80,
     "integrity": 131,
-    "powerDraw": 0.59
+    "powerDraw": 0.59,
+    "cost": 1557108
   },
   {
     "symbol": "Int_Sensors_Size7_Class4",
@@ -3682,7 +4002,8 @@
     "rating": "B",
     "mass": 128,
     "integrity": 157,
-    "powerDraw": 0.97
+    "powerDraw": 0.97,
+    "cost": 3892770
   },
   {
     "symbol": "Int_Sensors_Size7_Class5",
@@ -3692,7 +4013,8 @@
     "rating": "A",
     "mass": 80,
     "integrity": 144,
-    "powerDraw": 1.77
+    "powerDraw": 1.77,
+    "cost": 9731925
   },
   {
     "symbol": "Int_Sensors_Size8_Class1",
@@ -3702,7 +4024,8 @@
     "rating": "E",
     "mass": 160,
     "integrity": 135,
-    "powerDraw": 0.55
+    "powerDraw": 0.55,
+    "cost": 697584
   },
   {
     "symbol": "Int_Sensors_Size8_Class2",
@@ -3712,7 +4035,8 @@
     "rating": "D",
     "mass": 64,
     "integrity": 120,
-    "powerDraw": 0.62
+    "powerDraw": 0.62,
+    "cost": 1743961
   },
   {
     "symbol": "Int_Sensors_Size8_Class3",
@@ -3722,7 +4046,8 @@
     "rating": "C",
     "mass": 160,
     "integrity": 150,
-    "powerDraw": 0.69
+    "powerDraw": 0.69,
+    "cost": 4359903
   },
   {
     "symbol": "Int_Sensors_Size8_Class4",
@@ -3732,7 +4057,8 @@
     "rating": "B",
     "mass": 256,
     "integrity": 180,
-    "powerDraw": 1.14
+    "powerDraw": 1.14,
+    "cost": 10899756
   },
   {
     "symbol": "Int_Sensors_Size8_Class5",
@@ -3742,7 +4068,8 @@
     "rating": "A",
     "mass": 160,
     "integrity": 165,
-    "powerDraw": 2.07
+    "powerDraw": 2.07,
+    "cost": 27249391
   },
   {
     "symbol": "Int_FuelTank_Size1_Class3",
@@ -3751,7 +4078,8 @@
     "class": 1,
     "rating": "C",
     "mass": 0,
-    "fuelCapacity": 2
+    "fuelCapacity": 2,
+    "cost": 1000
   },
   {
     "symbol": "Int_FuelTank_Size2_Class3",
@@ -3760,7 +4088,8 @@
     "class": 2,
     "rating": "C",
     "mass": 0,
-    "fuelCapacity": 4
+    "fuelCapacity": 4,
+    "cost": 3750
   },
   {
     "symbol": "Int_FuelTank_Size3_Class3",
@@ -3769,7 +4098,8 @@
     "class": 3,
     "rating": "C",
     "mass": 0,
-    "fuelCapacity": 8
+    "fuelCapacity": 8,
+    "cost": 7063
   },
   {
     "symbol": "Int_FuelTank_Size4_Class3",
@@ -3778,7 +4108,8 @@
     "class": 4,
     "rating": "C",
     "mass": 0,
-    "fuelCapacity": 16
+    "fuelCapacity": 16,
+    "cost": 24734
   },
   {
     "symbol": "Int_FuelTank_Size5_Class3",
@@ -3787,7 +4118,8 @@
     "class": 5,
     "rating": "C",
     "mass": 0,
-    "fuelCapacity": 32
+    "fuelCapacity": 32,
+    "cost": 97754
   },
   {
     "symbol": "Int_FuelTank_Size6_Class3",
@@ -3796,7 +4128,8 @@
     "class": 6,
     "rating": "C",
     "mass": 0,
-    "fuelCapacity": 64
+    "fuelCapacity": 64,
+    "cost": 341577
   },
   {
     "symbol": "Int_FuelTank_Size7_Class3",
@@ -3805,7 +4138,8 @@
     "class": 7,
     "rating": "C",
     "mass": 0,
-    "fuelCapacity": 128
+    "fuelCapacity": 128,
+    "cost": 1780914
   },
   {
     "symbol": "Int_FuelTank_Size8_Class3",
@@ -3814,7 +4148,8 @@
     "class": 8,
     "rating": "C",
     "mass": 0,
-    "fuelCapacity": 256
+    "fuelCapacity": 256,
+    "cost": 5428429
   },
   {
     "symbol": "Int_PowerPlant_Size2_Class1_free",
@@ -3871,7 +4206,8 @@
     "name": "Lightweight Alloy",
     "ship": "Diamondback Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "DiamondBack_Armour_Grade2",
@@ -3879,7 +4215,8 @@
     "name": "Reinforced Alloy",
     "ship": "Diamondback Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 225731
   },
   {
     "symbol": "DiamondBack_Armour_Grade3",
@@ -3887,7 +4224,8 @@
     "name": "Military Grade Composite",
     "ship": "Diamondback Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 507896
   },
   {
     "symbol": "DiamondBack_Armour_Mirrored",
@@ -3895,7 +4233,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Diamondback Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1185090
   },
   {
     "symbol": "DiamondBack_Armour_Reactive",
@@ -3903,7 +4242,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Diamondback Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1330123
   },
   {
     "symbol": "Empire_Courier_Armour_Grade1",
@@ -3911,7 +4251,8 @@
     "name": "Lightweight Alloy",
     "ship": "Imperial Courier",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Empire_Courier_Armour_Grade2",
@@ -3919,7 +4260,8 @@
     "name": "Reinforced Alloy",
     "ship": "Imperial Courier",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1017172
   },
   {
     "symbol": "Empire_Courier_Armour_Grade3",
@@ -3927,7 +4269,8 @@
     "name": "Military Grade Composite",
     "ship": "Imperial Courier",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 2288637
   },
   {
     "symbol": "Empire_Courier_Armour_Mirrored",
@@ -3935,7 +4278,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Imperial Courier",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 5408814
   },
   {
     "symbol": "Empire_Courier_Armour_Reactive",
@@ -3943,7 +4287,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Imperial Courier",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 5993688
   },
   {
     "symbol": "DiamondBackXL_Armour_Grade1",
@@ -3951,7 +4296,8 @@
     "name": "Lightweight Alloy",
     "ship": "Diamondback Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "DiamondBackXL_Armour_Grade2",
@@ -3959,7 +4305,8 @@
     "name": "Reinforced Alloy",
     "ship": "Diamondback Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 757904
   },
   {
     "symbol": "DiamondBackXL_Armour_Grade3",
@@ -3967,7 +4314,8 @@
     "name": "Military Grade Composite",
     "ship": "Diamondback Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1705284
   },
   {
     "symbol": "DiamondBackXL_Armour_Mirrored",
@@ -3975,7 +4323,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Diamondback Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 3978996
   },
   {
     "symbol": "DiamondBackXL_Armour_Reactive",
@@ -3983,7 +4332,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Diamondback Explorer",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 4465949
   },
   {
     "symbol": "Empire_Eagle_Armour_Grade1",
@@ -3991,7 +4341,8 @@
     "name": "Lightweight Alloy",
     "ship": "Imperial Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Empire_Eagle_Armour_Grade2",
@@ -3999,7 +4350,8 @@
     "name": "Reinforced Alloy",
     "ship": "Imperial Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 66495
   },
   {
     "symbol": "Empire_Eagle_Armour_Grade3",
@@ -4007,7 +4359,8 @@
     "name": "Military Grade Composite",
     "ship": "Imperial Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 222758
   },
   {
     "symbol": "Empire_Eagle_Armour_Mirrored",
@@ -4015,7 +4368,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Imperial Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 346549
   },
   {
     "symbol": "Empire_Eagle_Armour_Reactive",
@@ -4023,7 +4377,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Imperial Eagle",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 372039
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Grade1",
@@ -4031,7 +4386,8 @@
     "name": "Lightweight Alloy",
     "ship": "Federal Assault Ship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Grade2",
@@ -4039,7 +4395,8 @@
     "name": "Reinforced Alloy",
     "ship": "Federal Assault Ship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 7925682
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Grade3",
@@ -4047,7 +4404,8 @@
     "name": "Military Grade Composite",
     "ship": "Federal Assault Ship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 17832784
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Mirrored",
@@ -4055,7 +4413,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Federal Assault Ship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 42144814
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Reactive",
@@ -4063,7 +4422,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Federal Assault Ship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 46702081
   },
   {
     "symbol": "Federation_Gunship_Armour_Grade1",
@@ -4071,7 +4431,8 @@
     "name": "Lightweight Alloy",
     "ship": "Federal Gunship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Federation_Gunship_Armour_Grade2",
@@ -4079,7 +4440,8 @@
     "name": "Reinforced Alloy",
     "ship": "Federal Gunship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 14325682
   },
   {
     "symbol": "Federation_Gunship_Armour_Grade3",
@@ -4087,7 +4449,8 @@
     "name": "Military Grade Composite",
     "ship": "Federal Gunship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 32232784
   },
   {
     "symbol": "Federation_Gunship_Armour_Mirrored",
@@ -4095,7 +4458,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Federal Gunship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 76176814
   },
   {
     "symbol": "Federation_Gunship_Armour_Reactive",
@@ -4103,7 +4467,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Federal Gunship",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 84414081
   },
   {
     "symbol": "Viper_MkIV_Armour_Grade1",
@@ -4111,7 +4476,8 @@
     "name": "Lightweight Alloy",
     "ship": "Viper MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Viper_MkIV_Armour_Grade2",
@@ -4119,7 +4485,8 @@
     "name": "Reinforced Alloy",
     "ship": "Viper MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 175172
   },
   {
     "symbol": "Viper_MkIV_Armour_Grade3",
@@ -4127,7 +4494,8 @@
     "name": "Military Grade Composite",
     "ship": "Viper MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 394137
   },
   {
     "symbol": "Viper_MkIV_Armour_Mirrored",
@@ -4135,7 +4503,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Viper MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 931479
   },
   {
     "symbol": "Viper_MkIV_Armour_Reactive",
@@ -4143,7 +4512,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Viper MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1032203
   },
   {
     "symbol": "CobraMkIV_Armour_Grade1",
@@ -4151,7 +4521,8 @@
     "name": "Lightweight Alloy",
     "ship": "Cobra MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "CobraMkIV_Armour_Grade2",
@@ -4159,7 +4530,8 @@
     "name": "Reinforced Alloy",
     "ship": "Cobra MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 305887
   },
   {
     "symbol": "CobraMkIV_Armour_Grade3",
@@ -4167,7 +4539,8 @@
     "name": "Military Grade Composite",
     "ship": "Cobra MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 688246
   },
   {
     "symbol": "CobraMkIV_Armour_Mirrored",
@@ -4175,7 +4548,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Cobra MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1605907
   },
   {
     "symbol": "CobraMkIV_Armour_Reactive",
@@ -4183,7 +4557,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Cobra MkIV",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1802440
   },
   {
     "symbol": "Independant_Trader_Armour_Grade1",
@@ -4191,7 +4566,8 @@
     "name": "Lightweight Alloy",
     "ship": "Keelback",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Independant_Trader_Armour_Grade2",
@@ -4199,7 +4575,8 @@
     "name": "Reinforced Alloy",
     "ship": "Keelback",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1250461
   },
   {
     "symbol": "Independant_Trader_Armour_Grade3",
@@ -4207,7 +4584,8 @@
     "name": "Military Grade Composite",
     "ship": "Keelback",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 2813538
   },
   {
     "symbol": "Independant_Trader_Armour_Mirrored",
@@ -4215,7 +4593,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Keelback",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 6649329
   },
   {
     "symbol": "Independant_Trader_Armour_Reactive",
@@ -4223,7 +4602,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Keelback",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 7368344
   },
   {
     "symbol": "Asp_Scout_Armour_Grade1",
@@ -4231,7 +4611,8 @@
     "name": "Lightweight Alloy",
     "ship": "Asp Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 0
   },
   {
     "symbol": "Asp_Scout_Armour_Grade2",
@@ -4239,7 +4620,8 @@
     "name": "Reinforced Alloy",
     "ship": "Asp Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 1584461
   },
   {
     "symbol": "Asp_Scout_Armour_Grade3",
@@ -4247,7 +4629,8 @@
     "name": "Military Grade Composite",
     "ship": "Asp Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 3565038
   },
   {
     "symbol": "Asp_Scout_Armour_Mirrored",
@@ -4255,7 +4638,8 @@
     "name": "Mirrored Surface Composite",
     "ship": "Asp Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 8425374
   },
   {
     "symbol": "Asp_Scout_Armour_Reactive",
@@ -4263,7 +4647,8 @@
     "name": "Reactive Surface Composite",
     "ship": "Asp Scout",
     "class": 1,
-    "rating": "I"
+    "rating": "I",
+    "cost": 9336439
   },
   {
     "symbol": "Int_Engine_Size3_Class5_Fast",
@@ -4279,7 +4664,8 @@
     "maxMass": 200,
     "optMultiplier": 1.15,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.367
+    "maxMultiplier": 1.367,
+    "cost": 5103950
   },
   {
     "symbol": "Int_Engine_Size2_Class5_Fast",
@@ -4295,7 +4681,8 @@
     "maxMass": 120,
     "optMultiplier": 1.15,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.367
+    "maxMultiplier": 1.367,
+    "cost": 1610080
   },
   {
     "symbol": "Type9_Military_Armour_Grade1",
@@ -4304,7 +4691,8 @@
     "ship": "Type-10 Defender",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 0
   },
   {
     "symbol": "Type9_Military_Armour_Grade2",
@@ -4313,7 +4701,8 @@
     "ship": "Type-10 Defender",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 49902136
   },
   {
     "symbol": "Type9_Military_Armour_Grade3",
@@ -4322,7 +4711,8 @@
     "ship": "Type-10 Defender",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 112279807
   },
   {
     "symbol": "Type9_Military_Armour_Mirrored",
@@ -4331,7 +4721,8 @@
     "ship": "Type-10 Defender",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 265354612
   },
   {
     "symbol": "Type9_Military_Armour_Reactive",
@@ -4340,7 +4731,8 @@
     "ship": "Type-10 Defender",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 294048341
   },
   {
     "symbol": "Krait_MkII_Armour_Grade1",
@@ -4349,7 +4741,8 @@
     "ship": "Krait MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 0
   },
   {
     "symbol": "Krait_MkII_Armour_Grade2",
@@ -4358,7 +4751,8 @@
     "ship": "Krait MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 18325682
   },
   {
     "symbol": "Krait_MkII_Armour_Grade3",
@@ -4367,7 +4761,8 @@
     "ship": "Krait MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 41232784
   },
   {
     "symbol": "Krait_MkII_Armour_Mirrored",
@@ -4376,7 +4771,8 @@
     "ship": "Krait MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 97446814
   },
   {
     "symbol": "Krait_MkII_Armour_Reactive",
@@ -4385,7 +4781,8 @@
     "ship": "Krait MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 88322097
   },
   {
     "symbol": "TypeX_Armour_Grade1",
@@ -4394,7 +4791,8 @@
     "ship": "Alliance Chieftain",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 0
   },
   {
     "symbol": "TypeX_Armour_Grade2",
@@ -4403,7 +4801,8 @@
     "ship": "Alliance Chieftain",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 7752900
   },
   {
     "symbol": "TypeX_Armour_Grade3",
@@ -4412,7 +4811,8 @@
     "ship": "Alliance Chieftain",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 17444026
   },
   {
     "symbol": "TypeX_Armour_Mirrored",
@@ -4421,7 +4821,8 @@
     "ship": "Alliance Chieftain",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 41226050
   },
   {
     "symbol": "TypeX_Armour_Reactive",
@@ -4430,7 +4831,8 @@
     "ship": "Alliance Chieftain",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 45683967
   },
   {
     "symbol": "TypeX_2_Armour_Grade1",
@@ -4439,7 +4841,8 @@
     "ship": "Alliance Crusader",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 0
   },
   {
     "symbol": "TypeX_2_Armour_Grade2",
@@ -4448,7 +4851,8 @@
     "ship": "Alliance Crusader",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 9146536
   },
   {
     "symbol": "TypeX_2_Armour_Grade3",
@@ -4457,7 +4861,8 @@
     "ship": "Alliance Crusader",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 20579706
   },
   {
     "symbol": "TypeX_2_Armour_Mirrored",
@@ -4466,7 +4871,8 @@
     "ship": "Alliance Crusader",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 48636707
   },
   {
     "symbol": "TypeX_2_Armour_Reactive",
@@ -4475,7 +4881,8 @@
     "ship": "Alliance Crusader",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 53895965
   },
   {
     "symbol": "TypeX_3_Armour_Grade1",
@@ -4484,7 +4891,8 @@
     "ship": "Alliance Challenger",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 0
   },
   {
     "symbol": "TypeX_3_Armour_Grade2",
@@ -4493,7 +4901,8 @@
     "ship": "Alliance Challenger",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 12188900
   },
   {
     "symbol": "TypeX_3_Armour_Grade3",
@@ -4502,7 +4911,8 @@
     "ship": "Alliance Challenger",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 27425026
   },
   {
     "symbol": "TypeX_3_Armour_Mirrored",
@@ -4511,7 +4921,8 @@
     "ship": "Alliance Challenger",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 64814480
   },
   {
     "symbol": "TypeX_3_Armour_Reactive",
@@ -4520,7 +4931,8 @@
     "ship": "Alliance Challenger",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 71823097
   },
   {
     "symbol": "Krait_Light_Armour_Grade1",
@@ -4529,7 +4941,8 @@
     "ship": "Krait Phantom",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 0
   },
   {
     "symbol": "Krait_Light_Armour_Grade2",
@@ -4538,7 +4951,8 @@
     "ship": "Krait Phantom",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 14988900
   },
   {
     "symbol": "Krait_Light_Armour_Grade3",
@@ -4547,7 +4961,8 @@
     "ship": "Krait Phantom",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 33725026
   },
   {
     "symbol": "Krait_Light_Armour_Mirrored",
@@ -4556,7 +4971,8 @@
     "ship": "Krait Phantom",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 79703480
   },
   {
     "symbol": "Krait_Light_Armour_Reactive",
@@ -4565,7 +4981,8 @@
     "ship": "Krait Phantom",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 88322097
   },
   {
     "symbol": "Mamba_Armour_Grade1",
@@ -4574,7 +4991,8 @@
     "ship": "Mamba",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 0
   },
   {
     "symbol": "Mamba_Armour_Grade2",
@@ -4583,7 +5001,8 @@
     "ship": "Mamba",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 22346816
   },
   {
     "symbol": "Mamba_Armour_Grade3",
@@ -4592,7 +5011,8 @@
     "ship": "Mamba",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 50280336
   },
   {
     "symbol": "Mamba_Armour_Mirrored",
@@ -4601,7 +5021,8 @@
     "ship": "Mamba",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 118829194
   },
   {
     "symbol": "Mamba_Armour_Reactive",
@@ -4610,7 +5031,8 @@
     "ship": "Mamba",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS"
+    "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
+    "cost": 131678613
   },
   {
     "symbol": "Python_NX_Armour_Grade1",
@@ -4619,7 +5041,8 @@
     "ship": "Python MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PYTHON_NX"
+    "entitlement": "ELITE_V_PYTHON_NX",
+    "cost": 0
   },
   {
     "symbol": "Python_NX_Armour_Grade2",
@@ -4628,7 +5051,8 @@
     "ship": "Python MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PYTHON_NX"
+    "entitlement": "ELITE_V_PYTHON_NX",
+    "cost": 23702103
   },
   {
     "symbol": "Python_NX_Armour_Grade3",
@@ -4637,7 +5061,8 @@
     "ship": "Python MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PYTHON_NX"
+    "entitlement": "ELITE_V_PYTHON_NX",
+    "cost": 53329732
   },
   {
     "symbol": "Python_NX_Armour_Mirrored",
@@ -4646,7 +5071,8 @@
     "ship": "Python MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PYTHON_NX"
+    "entitlement": "ELITE_V_PYTHON_NX",
+    "cost": 126035933
   },
   {
     "symbol": "Python_NX_Armour_Reactive",
@@ -4655,7 +5081,8 @@
     "ship": "Python MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PYTHON_NX"
+    "entitlement": "ELITE_V_PYTHON_NX",
+    "cost": 139664643
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class3",
@@ -4669,7 +5096,8 @@
     "optMass": 1050,
     "maxFuel": 5,
     "fuelMul": 0.012,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 2041581
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class3",
@@ -4683,7 +5111,8 @@
     "optMass": 2700,
     "maxFuel": 12.8,
     "fuelMul": 0.012,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 20515645
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class3",
@@ -4697,7 +5126,8 @@
     "optMass": 1800,
     "maxFuel": 8,
     "fuelMul": 0.012,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 6471812
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class3",
@@ -4711,7 +5141,8 @@
     "optMass": 525,
     "maxFuel": 3,
     "fuelMul": 0.012,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 644032
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class3",
@@ -4725,7 +5156,8 @@
     "optMass": 150,
     "maxFuel": 1.8,
     "fuelMul": 0.012,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 203165
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class3",
@@ -4739,7 +5171,8 @@
     "optMass": 90,
     "maxFuel": 0.9,
     "fuelMul": 0.012,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 64090
   },
   {
     "symbol": "Type8_Armour_Grade1",
@@ -4748,7 +5181,8 @@
     "ship": "Type-8 Transporter",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_TYPE8"
+    "entitlement": "ELITE_V_TYPE8",
+    "cost": 0
   },
   {
     "symbol": "Type8_Armour_Grade2",
@@ -4757,7 +5191,8 @@
     "ship": "Type-8 Transporter",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_TYPE8"
+    "entitlement": "ELITE_V_TYPE8",
+    "cost": 15381590
   },
   {
     "symbol": "Type8_Armour_Grade3",
@@ -4766,7 +5201,8 @@
     "ship": "Type-8 Transporter",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_TYPE8"
+    "entitlement": "ELITE_V_TYPE8",
+    "cost": 34608570
   },
   {
     "symbol": "Type8_Armour_Mirrored",
@@ -4775,7 +5211,8 @@
     "ship": "Type-8 Transporter",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_TYPE8"
+    "entitlement": "ELITE_V_TYPE8",
+    "cost": 37163480
   },
   {
     "symbol": "Type8_Armour_Reactive",
@@ -4784,7 +5221,8 @@
     "ship": "Type-8 Transporter",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_TYPE8"
+    "entitlement": "ELITE_V_TYPE8",
+    "cost": 90636000
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class1",
@@ -4798,7 +5236,8 @@
     "optMass": 60,
     "maxFuel": 0.6,
     "fuelMul": 0.008,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 21363
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class2",
@@ -4812,7 +5251,8 @@
     "optMass": 90,
     "maxFuel": 0.9,
     "fuelMul": 0.012,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 64090
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class4",
@@ -4826,7 +5266,8 @@
     "optMass": 90,
     "maxFuel": 0.9,
     "fuelMul": 0.012,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 64090
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class5",
@@ -4840,7 +5281,8 @@
     "optMass": 100,
     "maxFuel": 1,
     "fuelMul": 0.013,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "cost": 192269
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class1",
@@ -4854,7 +5296,8 @@
     "optMass": 100,
     "maxFuel": 1.2,
     "fuelMul": 0.008,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 67722
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class2",
@@ -4868,7 +5311,8 @@
     "optMass": 150,
     "maxFuel": 1.8,
     "fuelMul": 0.012,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 203165
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class4",
@@ -4882,7 +5326,8 @@
     "optMass": 150,
     "maxFuel": 1.8,
     "fuelMul": 0.012,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 203165
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class5",
@@ -4896,7 +5341,8 @@
     "optMass": 167,
     "maxFuel": 1.9,
     "fuelMul": 0.013,
-    "fuelPower": 2.15
+    "fuelPower": 2.15,
+    "cost": 609494
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class1",
@@ -4910,7 +5356,8 @@
     "optMass": 350,
     "maxFuel": 2,
     "fuelMul": 0.008,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 214677
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class2",
@@ -4924,7 +5371,8 @@
     "optMass": 525,
     "maxFuel": 3,
     "fuelMul": 0.012,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 644032
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class4",
@@ -4938,7 +5386,8 @@
     "optMass": 525,
     "maxFuel": 3,
     "fuelMul": 0.012,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 644032
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class5",
@@ -4952,7 +5401,8 @@
     "optMass": 585,
     "maxFuel": 3.2,
     "fuelMul": 0.013,
-    "fuelPower": 2.3
+    "fuelPower": 2.3,
+    "cost": 1932096
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class1",
@@ -4966,7 +5416,8 @@
     "optMass": 700,
     "maxFuel": 3.3,
     "fuelMul": 0.008,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 623816
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class2",
@@ -4980,7 +5431,8 @@
     "optMass": 1050,
     "maxFuel": 5,
     "fuelMul": 0.012,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 2041581
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class4",
@@ -4994,7 +5446,8 @@
     "optMass": 1050,
     "maxFuel": 5,
     "fuelMul": 0.012,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 2041581
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class5",
@@ -5008,7 +5461,8 @@
     "optMass": 1175,
     "maxFuel": 5.2,
     "fuelMul": 0.013,
-    "fuelPower": 2.45
+    "fuelPower": 2.45,
+    "cost": 6124743
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class1",
@@ -5022,7 +5476,8 @@
     "optMass": 1200,
     "maxFuel": 5.3,
     "fuelMul": 0.008,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 2157271
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class2",
@@ -5036,7 +5491,8 @@
     "optMass": 1800,
     "maxFuel": 8,
     "fuelMul": 0.012,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 6471812
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class4",
@@ -5050,7 +5506,8 @@
     "optMass": 1800,
     "maxFuel": 8,
     "fuelMul": 0.012,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 6471812
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class5",
@@ -5064,7 +5521,8 @@
     "optMass": 2000,
     "maxFuel": 8.3,
     "fuelMul": 0.013,
-    "fuelPower": 2.6
+    "fuelPower": 2.6,
+    "cost": 19415437
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class1",
@@ -5078,7 +5536,8 @@
     "optMass": 1800,
     "maxFuel": 8.5,
     "fuelMul": 0.008,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 6838548
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class2",
@@ -5092,7 +5551,8 @@
     "optMass": 2700,
     "maxFuel": 12.8,
     "fuelMul": 0.012,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 20515645
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class4",
@@ -5106,7 +5566,8 @@
     "optMass": 2700,
     "maxFuel": 12.8,
     "fuelMul": 0.012,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 20515645
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
@@ -5120,7 +5581,8 @@
     "optMass": 3000,
     "maxFuel": 13.1,
     "fuelMul": 0.013,
-    "fuelPower": 2.75
+    "fuelPower": 2.75,
+    "cost": 61546935
   },
   {
     "symbol": "Mandalay_Armour_Grade1",
@@ -5129,7 +5591,8 @@
     "ship": "Mandalay",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_MANDALAY"
+    "entitlement": "ELITE_V_MANDALAY",
+    "cost": 0
   },
   {
     "symbol": "Mandalay_Armour_Grade2",
@@ -5138,7 +5601,8 @@
     "ship": "Mandalay",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_MANDALAY"
+    "entitlement": "ELITE_V_MANDALAY",
+    "cost": 6191367
   },
   {
     "symbol": "Mandalay_Armour_Grade3",
@@ -5147,7 +5611,8 @@
     "ship": "Mandalay",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_MANDALAY"
+    "entitlement": "ELITE_V_MANDALAY",
+    "cost": 13930575
   },
   {
     "symbol": "Mandalay_Armour_Mirrored",
@@ -5156,7 +5621,8 @@
     "ship": "Mandalay",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_MANDALAY"
+    "entitlement": "ELITE_V_MANDALAY",
+    "cost": 32922590
   },
   {
     "symbol": "Mandalay_Armour_Reactive",
@@ -5165,7 +5631,8 @@
     "ship": "Mandalay",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_MANDALAY"
+    "entitlement": "ELITE_V_MANDALAY",
+    "cost": 36482626
   },
   {
     "symbol": "CobraMkV_Armour_Grade1",
@@ -5174,7 +5641,8 @@
     "ship": "Cobra MkV",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_COBRA_MKV"
+    "entitlement": "ELITE_V_COBRA_MKV",
+    "cost": 0
   },
   {
     "symbol": "CobraMkV_Armour_Grade2",
@@ -5183,7 +5651,8 @@
     "ship": "Cobra MkV",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_COBRA_MKV"
+    "entitlement": "ELITE_V_COBRA_MKV",
+    "cost": 795784
   },
   {
     "symbol": "CobraMkV_Armour_Grade3",
@@ -5192,7 +5661,8 @@
     "ship": "Cobra MkV",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_COBRA_MKV"
+    "entitlement": "ELITE_V_COBRA_MKV",
+    "cost": 1790514
   },
   {
     "symbol": "CobraMkV_Armour_Mirrored",
@@ -5201,7 +5671,8 @@
     "ship": "Cobra MkV",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_COBRA_MKV"
+    "entitlement": "ELITE_V_COBRA_MKV",
+    "cost": 4177866
   },
   {
     "symbol": "CobraMkV_Armour_Reactive",
@@ -5210,7 +5681,8 @@
     "ship": "Cobra MkV",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_COBRA_MKV"
+    "entitlement": "ELITE_V_COBRA_MKV",
+    "cost": 4689157
   },
   {
     "symbol": "Corsair_Armour_Grade1",
@@ -5219,7 +5691,8 @@
     "ship": "Corsair",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_CORSAIR"
+    "entitlement": "ELITE_V_CORSAIR",
+    "cost": 0
   },
   {
     "symbol": "Corsair_Armour_Grade2",
@@ -5228,7 +5701,8 @@
     "ship": "Corsair",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_CORSAIR"
+    "entitlement": "ELITE_V_CORSAIR",
+    "cost": 31721900
   },
   {
     "symbol": "Corsair_Armour_Grade3",
@@ -5237,7 +5711,8 @@
     "ship": "Corsair",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_CORSAIR"
+    "entitlement": "ELITE_V_CORSAIR",
+    "cost": 71374270
   },
   {
     "symbol": "Corsair_Armour_Mirrored",
@@ -5246,7 +5721,8 @@
     "ship": "Corsair",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_CORSAIR"
+    "entitlement": "ELITE_V_CORSAIR",
+    "cost": 166539970
   },
   {
     "symbol": "Corsair_Armour_Reactive",
@@ -5255,7 +5731,8 @@
     "ship": "Corsair",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_CORSAIR"
+    "entitlement": "ELITE_V_CORSAIR",
+    "cost": 186921290
   },
   {
     "symbol": "PantherMkII_Armour_Grade1",
@@ -5264,7 +5741,8 @@
     "ship": "Panther Clipper MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PANTHER_MKII"
+    "entitlement": "ELITE_V_PANTHER_MKII",
+    "cost": 0
   },
   {
     "symbol": "PantherMkII_Armour_Grade2",
@@ -5273,7 +5751,8 @@
     "ship": "Panther Clipper MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PANTHER_MKII"
+    "entitlement": "ELITE_V_PANTHER_MKII",
+    "cost": 120839434
   },
   {
     "symbol": "PantherMkII_Armour_Grade3",
@@ -5282,7 +5761,8 @@
     "ship": "Panther Clipper MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PANTHER_MKII"
+    "entitlement": "ELITE_V_PANTHER_MKII",
+    "cost": 271213728
   },
   {
     "symbol": "PantherMkII_Armour_Mirrored",
@@ -5291,7 +5771,8 @@
     "ship": "Panther Clipper MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PANTHER_MKII"
+    "entitlement": "ELITE_V_PANTHER_MKII",
+    "cost": 632832030
   },
   {
     "symbol": "PantherMkII_Armour_Reactive",
@@ -5300,7 +5781,8 @@
     "ship": "Panther Clipper MkII",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_PANTHER_MKII"
+    "entitlement": "ELITE_V_PANTHER_MKII",
+    "cost": 710278615
   },
   {
     "symbol": "LakonMiner_Armour_Grade1",
@@ -5309,7 +5791,8 @@
     "ship": "Type-11 Prospector",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_LAKON_MINER"
+    "entitlement": "ELITE_V_LAKON_MINER",
+    "cost": 0
   },
   {
     "symbol": "LakonMiner_Armour_Grade2",
@@ -5318,7 +5801,8 @@
     "ship": "Type-11 Prospector",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_LAKON_MINER"
+    "entitlement": "ELITE_V_LAKON_MINER",
+    "cost": 27144740
   },
   {
     "symbol": "LakonMiner_Armour_Grade3",
@@ -5327,7 +5811,8 @@
     "ship": "Type-11 Prospector",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_LAKON_MINER"
+    "entitlement": "ELITE_V_LAKON_MINER",
+    "cost": 61075670
   },
   {
     "symbol": "LakonMiner_Armour_Mirrored",
@@ -5336,7 +5821,8 @@
     "ship": "Type-11 Prospector",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_LAKON_MINER"
+    "entitlement": "ELITE_V_LAKON_MINER",
+    "cost": 144342150
   },
   {
     "symbol": "LakonMiner_Armour_Reactive",
@@ -5345,7 +5831,8 @@
     "ship": "Type-11 Prospector",
     "class": 1,
     "rating": "I",
-    "entitlement": "ELITE_V_LAKON_MINER"
+    "entitlement": "ELITE_V_LAKON_MINER",
+    "cost": 159950380
   },
   {
     "symbol": "Explorer_NX_Armour_Grade1",
@@ -5354,7 +5841,8 @@
     "ship": "Caspian Explorer",
     "class": 1,
     "rating": "C",
-    "entitlement": "ELITE_V_EXPLORER_NX"
+    "entitlement": "ELITE_V_EXPLORER_NX",
+    "cost": 9743070
   },
   {
     "symbol": "Explorer_NX_Armour_Grade2",
@@ -5363,7 +5851,8 @@
     "ship": "Caspian Explorer",
     "class": 1,
     "rating": "B",
-    "entitlement": "ELITE_V_EXPLORER_NX"
+    "entitlement": "ELITE_V_EXPLORER_NX",
+    "cost": 77944520
   },
   {
     "symbol": "Explorer_NX_Armour_Grade3",
@@ -5372,7 +5861,8 @@
     "ship": "Caspian Explorer",
     "class": 1,
     "rating": "A",
-    "entitlement": "ELITE_V_EXPLORER_NX"
+    "entitlement": "ELITE_V_EXPLORER_NX",
+    "cost": 175375160
   },
   {
     "symbol": "Explorer_NX_Armour_Mirrored",
@@ -5381,7 +5871,8 @@
     "ship": "Caspian Explorer",
     "class": 1,
     "rating": "A",
-    "entitlement": "ELITE_V_EXPLORER_NX"
+    "entitlement": "ELITE_V_EXPLORER_NX",
+    "cost": 414469960
   },
   {
     "symbol": "Explorer_NX_Armour_Reactive",
@@ -5390,7 +5881,8 @@
     "ship": "Caspian Explorer",
     "class": 1,
     "rating": "A",
-    "entitlement": "ELITE_V_EXPLORER_NX"
+    "entitlement": "ELITE_V_EXPLORER_NX",
+    "cost": 459288060
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class1",
@@ -5404,7 +5896,8 @@
     "optMass": 2800,
     "maxFuel": 13.6,
     "fuelMul": 0.008,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "cost": 6838550
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class2",
@@ -5418,7 +5911,8 @@
     "optMass": 4200,
     "maxFuel": 20.4,
     "fuelMul": 0.012,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "cost": 20515650
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class3",
@@ -5432,7 +5926,8 @@
     "optMass": 4200,
     "maxFuel": 20.4,
     "fuelMul": 0.012,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "cost": 20515650
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class4",
@@ -5446,7 +5941,8 @@
     "optMass": 4200,
     "maxFuel": 20.4,
     "fuelMul": 0.012,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "cost": 20515650
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5",
@@ -5461,7 +5957,8 @@
     "optMass": 4670,
     "maxFuel": 20.7,
     "fuelMul": 0.013,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "cost": 61546940
   },
   {
     "symbol": "Explorer_NX_Armour_Grade1_Default",
@@ -5470,7 +5967,8 @@
     "ship": "Caspian Explorer",
     "class": 1,
     "rating": "C",
-    "entitlement": "ELITE_V_EXPLORER_NX"
+    "entitlement": "ELITE_V_EXPLORER_NX",
+    "cost": 0
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5_OverchargeBooster_MkII",
@@ -5485,7 +5983,8 @@
     "optMass": 4670,
     "maxFuel": 6.8,
     "fuelMul": 0.011,
-    "fuelPower": 2.5025
+    "fuelPower": 2.5025,
+    "cost": 82042060
   },
   {
     "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
@@ -5504,7 +6003,8 @@
     "maxMultiplier": 1.16,
     "restrictedToShips": [
       "Explorer_NX"
-    ]
+    ],
+    "cost": 68368390
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Grade1",
@@ -5513,7 +6013,8 @@
     "ship": "Kestrel Mk II",
     "class": 1,
     "rating": "C",
-    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+    "entitlement": "ELITE_V_SMALL_COMBAT_01",
+    "cost": 0
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Grade2",
@@ -5522,7 +6023,8 @@
     "ship": "Kestrel Mk II",
     "class": 1,
     "rating": "B",
-    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+    "entitlement": "ELITE_V_SMALL_COMBAT_01",
+    "cost": 1970246
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Grade3",
@@ -5531,7 +6033,8 @@
     "ship": "Kestrel Mk II",
     "class": 1,
     "rating": "A",
-    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+    "entitlement": "ELITE_V_SMALL_COMBAT_01",
+    "cost": 4433053
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Mirrored",
@@ -5540,7 +6043,8 @@
     "ship": "Kestrel Mk II",
     "class": 1,
     "rating": "A",
-    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+    "entitlement": "ELITE_V_SMALL_COMBAT_01",
+    "cost": 10476783
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Reactive",
@@ -5549,7 +6053,8 @@
     "ship": "Kestrel Mk II",
     "class": 1,
     "rating": "A",
-    "entitlement": "ELITE_V_SMALL_COMBAT_01"
+    "entitlement": "ELITE_V_SMALL_COMBAT_01",
+    "cost": 11609674
   },
   {
     "symbol": "Int_MkIIAgileBoost_Engine_Size5_Class5",
@@ -5568,7 +6073,8 @@
     "maxMultiplier": 1.16,
     "restrictedToShips": [
       "SmallCombat01_NX"
-    ]
+    ],
+    "cost": 6637629
   },
   {
     "symbol": "MediumTransport01_Armour_Grade1",
@@ -5577,7 +6083,8 @@
     "ship": "Lynx Highliner",
     "class": 1,
     "rating": "C",
-    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01",
+    "cost": 0
   },
   {
     "symbol": "MediumTransport01_Armour_Grade2",
@@ -5586,7 +6093,8 @@
     "ship": "Lynx Highliner",
     "class": 1,
     "rating": "B",
-    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01",
+    "cost": 27715790
   },
   {
     "symbol": "MediumTransport01_Armour_Grade3",
@@ -5595,7 +6103,8 @@
     "ship": "Lynx Highliner",
     "class": 1,
     "rating": "A",
-    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01",
+    "cost": 62360520
   },
   {
     "symbol": "MediumTransport01_Armour_Mirrored",
@@ -5604,7 +6113,8 @@
     "ship": "Lynx Highliner",
     "class": 1,
     "rating": "A",
-    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01",
+    "cost": 147378700
   },
   {
     "symbol": "MediumTransport01_Armour_Reactive",
@@ -5613,6 +6123,7 @@
     "ship": "Lynx Highliner",
     "class": 1,
     "rating": "A",
-    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01"
+    "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01",
+    "cost": 163315270
   }
 ]

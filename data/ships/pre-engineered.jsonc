@@ -16,8 +16,8 @@
  * `blueprints.jsonc`, and `grade` is the grade already applied at purchase.
  *
  * `acquisition` says where the variant comes from: `"mercenary"` for the Merc-Coin
- * shop rows. The Merc-Coin price itself is deliberately not stored — it is a currency,
- * and no catalogue in this repository carries prices.
+ * shop rows. The Merc-Coin price itself is deliberately not stored — modules carry a
+ * credit `cost`, but Merc Coin is a separate currency with no credit equivalent.
  *
  * The blueprint recipes for these keys start at grade 2 precisely because grade 1 is
  * what the purchased module already contains; `getBlueprintCost(bp, target, 1)` prices

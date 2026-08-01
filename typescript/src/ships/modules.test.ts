@@ -35,6 +35,9 @@ const IDENTITY_KEYS = new Set([
     'class',
     'rating',
     'entitlement',
+    // Price is commercial data, not a stat: ship-specific armour is priced but carries
+    // no mass/integrity/power, and must still count as identity-only here.
+    'cost',
 ]);
 
 /** Whether a merged record carries any stats (vs. identity only, like armour). */
@@ -182,6 +185,40 @@ test('stats spot checks: each merged record carries the expected stat values', (
         const record = getModuleBySymbol(expected.symbol, ALL_MODULES);
         assert.ok(record, `missing ${expected.symbol}`);
         assert.deepEqual(project(record, expected), expected);
+    }
+});
+
+// ── Prices ───────────────────────────────────────────────────────────────────
+
+for (const [name, expected] of Object.entries(statsFixture.priceCounts)) {
+    test(`the ${name} catalogue prices ${expected} modules`, () => {
+        assert.equal(CATALOGUES[name]!.filter((m) => m.cost !== undefined).length, expected);
+    });
+}
+
+test('price spot checks: each record carries its standard purchase price', () => {
+    for (const expected of statsFixture.prices) {
+        const record = getModuleBySymbol(expected.symbol, ALL_MODULES);
+        assert.ok(record, `missing ${expected.symbol}`);
+        assert.equal(record.cost, expected.cost);
+    }
+});
+
+test('an unpriced record omits cost rather than reporting it as free', () => {
+    // 0 is a real price (a starter bulkhead); "no published price" must stay undefined
+    // so a cost calculation can tell the two apart.
+    for (const symbol of statsFixture.unpriced) {
+        const record = getModuleBySymbol(symbol, ALL_MODULES);
+        assert.ok(record, `missing ${symbol}`);
+        assert.equal(record.cost, undefined, symbol);
+    }
+    assert.equal(getModuleBySymbol('Anaconda_Armour_Grade1', ALL_MODULES)!.cost, 0);
+});
+
+test('every price is a non-negative integer number of credits', () => {
+    for (const m of ALL_MODULES) {
+        if (m.cost === undefined) continue;
+        assert.ok(Number.isInteger(m.cost) && m.cost >= 0, `${m.symbol}: ${String(m.cost)}`);
     }
 });
 

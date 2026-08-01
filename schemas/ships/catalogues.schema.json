@@ -59,6 +59,9 @@
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "entitlement": { "$ref": "#/definitions/nonEmptyString" },
 
+        "hullCost": { "type": "integer", "minimum": 0 },
+        "retailCost": { "type": "integer", "minimum": 0 },
+
         "hullMass": { "type": "number", "minimum": 0 },
         "speed": { "type": "number", "minimum": 0 },
         "boost": { "type": "number", "minimum": 0 },
@@ -156,7 +159,9 @@
         "cargoCapacity": { "type": "number", "minimum": 0 },
         "shieldRegenRate": { "type": "number", "minimum": 0 },
         "shieldBrokenRegenRate": { "type": "number", "minimum": 0 },
-        "shieldBoost": { "type": "number" }
+        "shieldBoost": { "type": "number" },
+
+        "cost": { "type": "integer", "minimum": 0 }
       }
     },
     "moduleCatalogue": {

@@ -74,6 +74,16 @@ export interface Ship {
     readonly heatCapacity?: number;
     /** Reserve tank capacity, in tonnes (feeds the main tank from empty). */
     readonly reserveFuelCapacity?: number;
+    /**
+     * Standard price of the **hull alone**, in credits, before any discount. This is
+     * the figure a shipyard quotes when you already own the modules.
+     */
+    readonly hullCost?: number;
+    /**
+     * Standard price of the hull **with its default module loadout**, in credits — the
+     * "retail" price a shipyard shows for a ready-to-fly ship. Always ≥ {@link hullCost}.
+     */
+    readonly retailCost?: number;
     /** Pitch rate, in degrees per second. */
     readonly pitch?: number;
     /** Roll rate, in degrees per second. */

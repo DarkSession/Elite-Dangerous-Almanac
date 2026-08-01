@@ -20,6 +20,8 @@
  * tonnes, power in MW, ranges in LY). `restrictedToShips` lists the hull(s) a
  * non-armour module is limited to; armour's hull restriction is its `ship` field.
  * Modules without stats (ship-specific armour) carry identity only.
+ * `cost` is the standard purchase price in credits before any station discount;
+ * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -32,7 +34,8 @@
     "rating": "I",
     "mass": 1.3,
     "integrity": 20,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 8500
   },
   {
     "symbol": "Hpt_ElectronicCountermeasure_Tiny",
@@ -42,7 +45,8 @@
     "rating": "F",
     "mass": 1.3,
     "integrity": 20,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 12500
   },
   {
     "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
@@ -52,7 +56,8 @@
     "rating": "I",
     "mass": 1.3,
     "integrity": 20,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 0
   },
   {
     "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
@@ -62,7 +67,8 @@
     "rating": "I",
     "mass": 0.5,
     "integrity": 30,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 18550
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class1",
@@ -72,7 +78,8 @@
     "rating": "E",
     "mass": 1.3,
     "integrity": 32,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 13544
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class2",
@@ -82,7 +89,8 @@
     "rating": "D",
     "mass": 1.3,
     "integrity": 24,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 40633
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class3",
@@ -92,7 +100,8 @@
     "rating": "C",
     "mass": 1.3,
     "integrity": 40,
-    "powerDraw": 0.8
+    "powerDraw": 0.8,
+    "cost": 121899
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class4",
@@ -102,7 +111,8 @@
     "rating": "B",
     "mass": 1.3,
     "integrity": 56,
-    "powerDraw": 1.6
+    "powerDraw": 1.6,
+    "cost": 365698
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class5",
@@ -112,7 +122,8 @@
     "rating": "A",
     "mass": 1.3,
     "integrity": 48,
-    "powerDraw": 3.2
+    "powerDraw": 3.2,
+    "cost": 1097095
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class1",
@@ -122,7 +133,8 @@
     "rating": "E",
     "mass": 1.3,
     "integrity": 32,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 13544
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class2",
@@ -132,7 +144,8 @@
     "rating": "D",
     "mass": 1.3,
     "integrity": 24,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 40633
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class3",
@@ -142,7 +155,8 @@
     "rating": "C",
     "mass": 1.3,
     "integrity": 40,
-    "powerDraw": 0.8
+    "powerDraw": 0.8,
+    "cost": 121899
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class4",
@@ -152,7 +166,8 @@
     "rating": "B",
     "mass": 1.3,
     "integrity": 56,
-    "powerDraw": 1.6
+    "powerDraw": 1.6,
+    "cost": 365698
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class5",
@@ -162,7 +177,8 @@
     "rating": "A",
     "mass": 1.3,
     "integrity": 48,
-    "powerDraw": 3.2
+    "powerDraw": 3.2,
+    "cost": 1097095
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class1",
@@ -172,7 +188,8 @@
     "rating": "E",
     "mass": 1.3,
     "integrity": 32,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 13544
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class2",
@@ -182,7 +199,8 @@
     "rating": "D",
     "mass": 1.3,
     "integrity": 24,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 40633
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class3",
@@ -192,7 +210,8 @@
     "rating": "C",
     "mass": 1.3,
     "integrity": 40,
-    "powerDraw": 0.8
+    "powerDraw": 0.8,
+    "cost": 121899
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class4",
@@ -202,7 +221,8 @@
     "rating": "B",
     "mass": 1.3,
     "integrity": 56,
-    "powerDraw": 1.6
+    "powerDraw": 1.6,
+    "cost": 365698
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class5",
@@ -212,7 +232,8 @@
     "rating": "A",
     "mass": 1.3,
     "integrity": 48,
-    "powerDraw": 3.2
+    "powerDraw": 3.2,
+    "cost": 1097095
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class1",
@@ -223,7 +244,8 @@
     "mass": 0.5,
     "integrity": 25,
     "powerDraw": 0.2,
-    "shieldBoost": 0.04
+    "shieldBoost": 0.04,
+    "cost": 10000
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class2",
@@ -234,7 +256,8 @@
     "mass": 1,
     "integrity": 35,
     "powerDraw": 0.5,
-    "shieldBoost": 0.08
+    "shieldBoost": 0.08,
+    "cost": 23000
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class3",
@@ -245,7 +268,8 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.7,
-    "shieldBoost": 0.12
+    "shieldBoost": 0.12,
+    "cost": 53000
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class4",
@@ -256,7 +280,8 @@
     "mass": 3,
     "integrity": 45,
     "powerDraw": 1,
-    "shieldBoost": 0.16
+    "shieldBoost": 0.16,
+    "cost": 122000
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class5",
@@ -267,7 +292,8 @@
     "mass": 3.5,
     "integrity": 48,
     "powerDraw": 1.2,
-    "shieldBoost": 0.2
+    "shieldBoost": 0.2,
+    "cost": 281000
   },
   {
     "symbol": "Hpt_AntiUnknownShutdown_Tiny",
@@ -278,7 +304,8 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 1.3,
     "integrity": 35,
-    "powerDraw": 0.2
+    "powerDraw": 0.2,
+    "cost": 63000
   },
   {
     "symbol": "Hpt_XenoScanner_Basic_Tiny",
@@ -290,7 +317,8 @@
     "mass": 1.3,
     "integrity": 56,
     "powerDraw": 0.2,
-    "bootTime": 2
+    "bootTime": 2,
+    "cost": 365698
   },
   {
     "symbol": "Hpt_XenoScannerMk2_Basic_Tiny",
@@ -302,7 +330,8 @@
     "mass": 1.3,
     "integrity": 56,
     "powerDraw": 0.8,
-    "bootTime": 2
+    "bootTime": 2,
+    "cost": 745948
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class1",
@@ -313,7 +342,8 @@
     "mass": 1.3,
     "integrity": 24,
     "powerDraw": 0.2,
-    "bootTime": 3
+    "bootTime": 3,
+    "cost": 13544
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class2",
@@ -324,7 +354,8 @@
     "mass": 1.3,
     "integrity": 24,
     "powerDraw": 0.4,
-    "bootTime": 3
+    "bootTime": 3,
+    "cost": 40633
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class3",
@@ -335,7 +366,8 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.8,
-    "bootTime": 3
+    "bootTime": 3,
+    "cost": 121899
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class4",
@@ -346,7 +378,8 @@
     "mass": 1.3,
     "integrity": 56,
     "powerDraw": 1.6,
-    "bootTime": 3
+    "bootTime": 3,
+    "cost": 365698
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class5",
@@ -357,7 +390,8 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 3.2,
-    "bootTime": 3
+    "bootTime": 3,
+    "cost": 1097095
   },
   {
     "symbol": "Hpt_CausticSinkLauncher_Turret_Tiny",
@@ -367,7 +401,8 @@
     "rating": "I",
     "mass": 1.7,
     "integrity": 45,
-    "powerDraw": 0.6
+    "powerDraw": 0.6,
+    "cost": 50000
   },
   {
     "symbol": "Hpt_AntiUnknownShutdown_Tiny_V2",
@@ -377,7 +412,8 @@
     "rating": "E",
     "mass": 3,
     "integrity": 70,
-    "powerDraw": 0.4
+    "powerDraw": 0.4,
+    "cost": 150000
   },
   {
     "symbol": "Hpt_XenoScanner_Advanced_Tiny",
@@ -388,6 +424,7 @@
     "mass": 3,
     "integrity": 100,
     "powerDraw": 1,
-    "bootTime": 2
+    "bootTime": 2,
+    "cost": 850000
   }
 ]

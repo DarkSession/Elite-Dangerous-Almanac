@@ -189,6 +189,16 @@ export interface OutfittingModule {
     readonly shieldBrokenRegenRate?: number;
     /** Shield booster: shield strength bonus, as a fraction (`0.04` = +4%). */
     readonly shieldBoost?: number;
+
+    /**
+     * Standard purchase price, in credits — the base list price before any station
+     * discount or markup, which is what an outfitting screen quotes at 0% discount.
+     *
+     * Absent on the handful of records no registry prices: the starter `*_free`
+     * variants, the size-8 frame shift drives, and a few reward-only internals. Treat
+     * `undefined` as "unknown", never as free — see `data/ships/SOURCES.md`.
+     */
+    readonly cost?: number;
 }
 
 /**

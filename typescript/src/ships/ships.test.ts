@@ -75,6 +75,24 @@ test('ship-stats spot checks: each merged hull carries the expected stat values'
     }
 });
 
+test(`all ${statsFixture.pricedCount} hulls carry a hull and a retail price`, () => {
+    assert.equal(SHIPS.filter((s) => s.hullCost !== undefined).length, statsFixture.pricedCount);
+    for (const expected of statsFixture.prices) {
+        const ship = getShipBySymbol(expected.symbol);
+        assert.ok(ship, `missing ${expected.symbol}`);
+        assert.equal(ship.hullCost, expected.hullCost);
+        assert.equal(ship.retailCost, expected.retailCost);
+    }
+});
+
+test('retail price covers the hull plus its default modules, so never undercuts it', () => {
+    for (const s of SHIPS) {
+        assert.ok(Number.isInteger(s.hullCost) && s.hullCost! >= 0, s.symbol);
+        assert.ok(Number.isInteger(s.retailCost) && s.retailCost! >= 0, s.symbol);
+        assert.ok(s.retailCost! >= s.hullCost!, `${s.symbol}: retail < hull`);
+    }
+});
+
 // ── Slot layout (merged into each Ship; getShipSlots projects it back out) ────
 
 test(`${slotsFixture.count} hulls carry a slot layout`, () => {
