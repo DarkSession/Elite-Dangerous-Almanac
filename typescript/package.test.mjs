@@ -27,7 +27,10 @@ async function readReachableJs(entry, seen = new Set()) {
 
     const source = await readFile(entry, 'utf8');
     const modules = [source];
-    const importPattern = /(?:from\s+|import\s*)['"](\.\.?\/[^'"]+\.js)['"]/g;
+    // `from` may sit flush against the quote in minified output (`from'./chunk-X.js'`),
+    // so the separator is optional. If this stops matching, the traversal silently
+    // shrinks and every `doesNotMatch` assertion below starts passing vacuously.
+    const importPattern = /(?:from\s*|import\s*)['"](\.\.?\/[^'"]+\.js)['"]/g;
     for (const match of source.matchAll(importPattern)) {
         const specifier = match[1];
         if (specifier) modules.push(await readReachableJs(new URL(specifier, entry), seen));
