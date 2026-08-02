@@ -94,11 +94,11 @@ It also validates module fits and engineering compatibility. When an imported SL
 build is edited, its supplied mass/capacity figures are adjusted when possible; an
 aggregate that cannot be updated safely is discarded and recomputed.
 
-`ShipLoadout` pulls in every catalogue (~589 KB minified) because it must resolve any
-module id. When you only need one answer, the calculations are also data-free leaf
-modules of roughly 0.6–3 KB each: `ships/jump-range`, `ships/power`, `ships/shields`,
-`ships/armour`, `ships/weapons`, `ships/resistances`, and `ships/slef` for parsing
-alone.
+`ShipLoadout` pulls in every catalogue (~606 KB minified, ~69 KB gzipped) because it
+must resolve any module id. When you only need one answer, the calculations are also
+data-free leaf modules of roughly 0.5–3 KB each: `ships/jump-range`, `ships/power`,
+`ships/shields`, `ships/armour`, `ships/weapons`, `ships/resistances`, and
+`ships/slef` for parsing alone.
 
 ## Four things worth knowing before you start
 
@@ -132,16 +132,20 @@ for the complete API guide. Report problems in the
 
 ## Data freshness and credits
 
-The checked-in catalogues are snapshot **2026-07-24**, plus one market commodity
-(`curatedcommodity`) added 2026-08-02 from a player-journal observation rather than
-from an upstream registry — its market category is a maintainer assignment, and a
-module-stat reconciliation on 2026-08-02 that left every outfitting module carrying at
-least one stat and corrected 40 records. Some documented `integrity` and `powerDraw`
-gaps remain, listed in
-[TODO.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/TODO.md).
-Provenance
-and the metadata required for future updates are documented in
-[data/SNAPSHOTS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/SNAPSHOTS.md).
+The bundled catalogues are a snapshot dated **2026-07-24**, with two updates made on
+2026-08-02: one market commodity added (`curatedcommodity`, from a player-journal
+observation rather than an upstream registry, so its market category is a maintainer
+assignment), and a module-stat reconciliation that left every outfitting module
+carrying at least one stat and corrected 40 records.
+
+A value no source publishes is left **absent rather than guessed** — a handful of
+`integrity`, `powerDraw` and `mass` fields are `undefined` for that reason. The
+[repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#data-freshness)
+covers freshness in full,
+[TODO.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/TODO.md)
+lists the open gaps, and
+[data/SNAPSHOTS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/SNAPSHOTS.md)
+records the provenance metadata every update must carry.
 
 Third-party data and algorithm credits are included in
 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).

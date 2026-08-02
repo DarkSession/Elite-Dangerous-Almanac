@@ -1,8 +1,13 @@
 # Data snapshot metadata
 
-The checked-in catalogues are a library snapshot dated **2026-07-24**. Package
-documentation reports this date so consumers can judge freshness independently
-from the npm package version.
+The checked-in catalogues began as one library-wide snapshot dated **2026-07-24**,
+and domains are revised independently after that. The **`SOURCES.md` header in each
+`data/<domain>/` is authoritative** for that domain: it carries the snapshot line,
+any later revision, and the upstream identifiers behind both. This file states the
+policy; do not restate a domain's dates here or they will drift apart.
+
+Package documentation reports the baseline and any revision since, so consumers can
+judge freshness independently from the npm package version.
 
 ## Initial-snapshot limitations
 

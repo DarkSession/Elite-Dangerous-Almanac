@@ -57,6 +57,8 @@ Tree-shakeability is part of feature parity: other language implementations shou
   - **TypeScript**: `npm test` runs `node --test --experimental-test-coverage` with `--test-coverage-lines/-branches/-functions=80`, scoped to `src/<area>/*.ts` and excluding `*.test.ts`. Adding a new feature area means adding its `--test-coverage-include` glob, or the area is silently unmeasured.
   - **Python (future)**: measure with `coverage.py` / `pytest --cov` and fail CI under 80%.
 
+## Documentation Requirements
+
 This is a library, so documentation is a first-class deliverable:
 
 - **Every public class, function, type, and constant must be documented in detail** — description, parameters, return values, units (critical for astrophysical/market calculations), value ranges, and examples.
@@ -82,7 +84,7 @@ Much of the static data and many calculations derive from the Elite Dangerous co
 
 Whenever you add or change data, port an algorithm, or introduce a dependency that warrants credit, update **both** the in-source attribution and `ATTRIBUTIONS.md` in the same change. Respect each source's license terms (attribution text, share-alike, etc.).
 
-> **Do not write a second copy of the credits.** `README.md` carries a short pointer, not a list. `typescript/THIRD_PARTY_NOTICES.md` is a **generated, git-ignored** verbatim copy of `ATTRIBUTIONS.md` — npm can only pack files inside the package directory, and several upstream licences require the notice to travel with the distribution. `npm run build` writes it (`typescript/scripts/copy-notices.mjs`), `prepublishOnly` runs the build, and `package.test.mjs` asserts the two are byte-identical. Edit the root file; never the copy.
+> **Do not write a second copy of the credits or the licence.** `README.md` carries a short pointer, not a list. `typescript/THIRD_PARTY_NOTICES.md` and `typescript/LICENSE` are **generated, git-ignored** verbatim copies of the root `ATTRIBUTIONS.md` and `LICENSE` — npm can only pack files inside the package directory, and several upstream licences require the notice to travel with the distribution. `npm run build` writes both (`typescript/scripts/copy-notices.mjs`), `prepublishOnly` runs the build, and `package.test.mjs` asserts each copy is byte-identical to its source. Edit the root files; never the copies. Because the root `LICENSE` is packed verbatim, keep its wording readable from inside a consumer's `node_modules` as well as from the repository.
 
 ## Repository Layout
 
