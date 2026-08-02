@@ -50,12 +50,16 @@ Work top-down, the way a real evaluator adopts a library.
 2. **Map the public surface.** List every exported symbol and type per subpath
    (`src/index.ts`, `src/astro/index.ts`, …). This is the actual API. Group by
    feature area. Flag exports whose purpose isn't obvious from the name alone.
-3. **Attempt a realistic task, using only the public surface.** Pick a concrete
-   goal an ED app dev would have (e.g. "turn a system name the player typed into
-   its id64", "find which galactic region a coordinate is in", "get a ship's
-   stats"). Trace how you'd do it from imports → calls → return value **reading
-   only docs + types**, not the implementation. Record every point where you had
-   to guess, open a source file, or would have gotten it wrong.
+3. **Attempt a realistic task, using only the public surface.** Pick two or three
+   concrete goals an ED app dev would have, at least one from `./ships` since
+   that is the widest surface — e.g. "turn a system name the player typed into
+   its id64", "find which galactic region a coordinate is in", "load a player's
+   loadout from a journal or SLEF export and show its jump range", "work out
+   whether this build has enough power", "show a weapon's DPS with its
+   engineering applied". Trace how you'd do it from imports → calls → return
+   value **reading only docs + types**, not the implementation. Record every
+   point where you had to guess, open a source file, or would have gotten it
+   wrong.
 4. **Cross-check docs against reality.** Do `@example` snippets actually run with
    the current exports? Do names match the docs? Are units, value ranges, and
    return types stated where they matter (astro/market math especially)? Is every
@@ -77,10 +81,15 @@ exact export/name/signature over describing it.
   working example. Can someone find the entry point for their task without
   reading source? (A missing/empty README is a top-tier consumer finding.)
 - **Naming & self-explaining API.** Would each exported name make sense to an ED
-  dev with no repo context? Flag jargon that isn't defined for the consumer
-  (e.g. `boxel`, `mass code`, `hand-authored sector`, `id64` vs. `systemAddress`,
-  `mod` variants). Distinguish "domain term they'd know" from "internal term
-  they'd have to reverse-engineer."
+  dev with no repo context? Flag jargon that isn't defined for the consumer —
+  in `astro`, terms like `boxel`, `mass code`, `hand-authored sector`, `id64`
+  vs. `systemAddress`; in `ships`, terms like `symbol` vs. `fdname`, "core" vs.
+  "standard" modules, `BurstInterval` (this library's own label for a stat the
+  journal reports as `RateOfFire`), pre-engineered *variant* vs. a blueprint you
+  can apply, and Modifier `Label` strings generally. Distinguish "domain term
+  they'd know" from "internal term they'd have to reverse-engineer", and be
+  especially alert to a name this library chose that differs from the one the
+  game writes — a consumer matching on journal fields will not find it.
 - **Documentation completeness & accuracy.** TSDoc on every public symbol;
   `@param`/`@returns`/`@example`; **units and value ranges** stated; examples
   that actually work. Note undocumented exports and doc/behaviour mismatches.
@@ -92,15 +101,25 @@ exact export/name/signature over describing it.
   false` / named-exports-only honoured in a way the consumer benefits from? Does
   the docs tell them which import keeps their bundle small?
 - **Type ergonomics & surprises.** Are the types a consumer touches exported and
-  usable? Call out surprising-but-required types with no warning — especially
-  `bigint` id64s (bitwise past 2^32), `coords`-required decode paths, and any
-  parse-doesn't-canonicalize behaviour. These are the classic misuse traps.
+  usable? Call out surprising-but-required types with no warning — `bigint`
+  id64s (bitwise past 2^32), `coords`-required decode paths, and any
+  parse-doesn't-canonicalize behaviour. In `ships`, watch for values whose
+  **unit or convention** a consumer would guess wrong: percentages stored as
+  fractions here but as whole numbers in a journal, resistances that do not
+  simply add, an optional stat whose absence means "the game assumes a default"
+  rather than "zero", and metrics returned `undefined` for a module that cannot
+  have them. A number that looks plausible but is 100× out is the worst
+  failure mode this library can hand someone — check the docs state the unit.
 - **Errors & edge cases.** What happens on bad input (malformed name, out-of-range
   coords)? Is the failure mode documented, or will the consumer discover it in
   production?
-- **Attribution & trust.** Community-derived data/algorithms: is credit visible
-  to the consumer (README Attributions section, in-source/source-metadata)? A
-  researcher-facing library with no sourcing is a trust finding.
+- **Attribution & trust.** Community-derived data and algorithms: is credit
+  visible to the consumer (README Attributions section, `THIRD_PARTY_NOTICES.md`,
+  in-source comments)? A researcher-facing library with no sourcing is a trust
+  finding. Also judge whether a consumer can tell **how current and how
+  complete** the data is — the snapshot date, and whether known gaps are
+  discoverable from the shipped package rather than only from a `SOURCES.md`
+  that npm consumers never see.
 
 ## Severity lens (consumer impact, not code smell)
 
@@ -130,8 +149,25 @@ Answer the user's three questions directly, in this order:
 4. **Top recommendations** — a short prioritized list (highest consumer impact
    first) of concrete changes.
 
-Scope the review to what exists — this is greenfield and today only the `astro`
-feature area ships, so review that surface concretely and note where the pattern
-(good or bad) will repeat as ships/market/character areas land. Offer to render
-the report as an Artifact only if the user wants a shareable version; default to
-inline markdown.
+## What ships today
+
+Four feature areas are published, each on its own subpath: **`./astro`**
+(procedural names, id64 addresses, regions, nebulae), **`./ships`** (ship and
+outfitting catalogues, engineering, loadouts, and build metrics — power,
+shields, armour, resistances, weapons, jump range), **`./materials`**, and
+**`./commodities`**. `python/` does not exist yet.
+
+`./ships` is by far the largest surface and the one most worth reviewing hard:
+it has the most exports, the deepest domain vocabulary, and the most places a
+consumer can get a plausible-looking wrong number. Do not spend the whole review
+on `astro` because it comes first alphabetically — weight attention by how much
+API a consumer actually has to navigate.
+
+A consumer-visible detail worth checking rather than assuming: several modules
+are deliberately mapped to **`null`** in the `exports` map, so deep-importing
+them throws a resolution error. Verify the ones a consumer would plausibly
+*want* are not among them — a type they need to name, or a helper the docs
+mention, being unreachable is a real finding.
+
+Offer to render the report as an Artifact only if the user wants a shareable
+version; default to inline markdown.

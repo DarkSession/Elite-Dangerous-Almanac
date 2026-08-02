@@ -42,7 +42,7 @@ Consumers (community apps, often web-based) must only pay for what they import. 
 - **Small modules**: one class/interface/feature area per file. No god-modules.
 - **ESM output** with `"sideEffects": false` in `package.json`; no side effects at module top level (no registration-on-import, no mutable module state, no self-executing code).
 - **Named exports only** — no default exports, no namespace-object re-export patterns (`export * as X`) that defeat tree-shaking.
-- **Subpath exports** (`exports` map in `package.json`) per feature area (e.g. `almanac/ships`, `almanac/market`, `almanac/astro`) so consumers can import a slice without touching the root barrel.
+- **Subpath exports** (`exports` map in `package.json`) per feature area, so consumers can import a slice without touching the root barrel. The published package is `@elite-dangerous-almanac/core`, exposing `./astro`, `./ships`, `./materials` and `./commodities` plus a wildcard for individual modules within each (`./ships/*`). A module that is an implementation detail is mapped to **`null`** in the same map, which makes deep-importing it a resolution error rather than a supported entry point — the pattern to follow for anything marked `@internal`.
 - **Prefer pure functions over stateful classes**; when classes are used, avoid static registries or cross-class coupling that drags unrelated code into the bundle.
 - **Static data is the biggest bundle risk**: never expose one monolithic data import. Split `data/` consumption into per-domain (and where sensible per-entity-group) modules so importing one ship's stats doesn't bundle the whole galaxy.
 - **Nothing in a data payload that isn't data.** Prose a program never reads — attribution, notes, descriptions — is inlined into every consumer's bundle just like the records are. It belongs in the file's comment header (see §Data file format), where it stays next to the data and costs consumers nothing. On the small catalogues this is not a rounding error: `permit-locks` was 20% attribution by weight.
@@ -53,8 +53,8 @@ Tree-shakeability is part of feature parity: other language implementations shou
 ## Testing Requirements
 
 - **Validate against the shared fixtures.** Behavior is proven against the language-neutral fixtures in `fixtures/` (see Multi-Language Strategy), so every implementation demonstrates identical behavior on identical data.
-- **Minimum coverage: ≥ 80%.** Each language implementation must keep automated-test coverage (lines and branches) at **80% or above**, and CI must enforce it — a drop below the threshold fails the build. Add genuine test cases for real behavior; do not chase the number with assertion-free tests or by excluding code from measurement.
-  - **TypeScript**: measure with `node --test --experimental-test-coverage` (or c8/istanbul) and fail CI under 80%.
+- **Minimum coverage: ≥ 80%.** Each language implementation must keep automated-test coverage at **80% or above** on **lines, branches and functions**, and CI must enforce it — a drop below the threshold fails the build. Add genuine test cases for real behavior; do not chase the number with assertion-free tests or by excluding code from measurement.
+  - **TypeScript**: `npm test` runs `node --test --experimental-test-coverage` with `--test-coverage-lines/-branches/-functions=80`, scoped to `src/<area>/*.ts` and excluding `*.test.ts`. Adding a new feature area means adding its `--test-coverage-include` glob, or the area is silently unmeasured.
   - **Python (future)**: measure with `coverage.py` / `pytest --cov` and fail CI under 80%.
 
 This is a library, so documentation is a first-class deliverable:
@@ -87,25 +87,66 @@ Whenever you add or change data, port an algorithm, or introduce a dependency th
 Monorepo with one subfolder per language implementation and shared, language-neutral assets at the top level:
 
 ```
-data/          # shared static data (JSONC) — astrophysical, ships, characters, market
+data/          # shared static data (JSONC), one folder per domain, each with a SOURCES.md
 fixtures/      # shared test fixtures (JSON) — every implementation validates against these
 schemas/       # shared JSON Schemas — language-neutral validation for data payloads
+scripts/       # repository tooling for deriving data; never shipped in any package
 typescript/    # TypeScript library (package.json, src/, tests, typedoc.json)
 python/        # (future) Python library — same features, same fixtures
 ```
 
-`data/` and `fixtures/` are owned by no implementation; language folders consume them. Never copy shared data into a language folder.
+`data/` and `fixtures/` are owned by no implementation; language folders consume them. Never copy shared data into a language folder. `data/SNAPSHOTS.md` states the snapshot date and the metadata every update must record; each `data/<domain>/SOURCES.md` carries the long-form provenance for that domain — source, revision, derivation, manual corrections, and known gaps.
 
 ## Repository Status
 
-Greenfield — no source code yet. Only the dev container configuration, doc/CI scaffolding, and this layout exist so far.
+Four feature areas exist in TypeScript, all under `typescript/src/`:
+
+- **`astro/`** — procedural system names and id64 addresses, galactic regions, nebulae.
+- **`ships/`** — ship and outfitting catalogues, engineering (blueprints, experimental effects, pre-engineered variants), loadouts, and build metrics: power, shields, armour, resistances, weapons, jump range.
+- **`materials/`** — engineering materials and micro-resources.
+- **`commodities/`** — market commodities.
+
+`python/` does not exist yet. When it lands it consumes the same `data/` and `fixtures/` and must reach parity.
+
+Two repo-wide conventions worth knowing before touching a catalogue:
+
+- **Catalogues are frozen.** Shared data is imported as a process-wide module singleton, so every exported catalogue is passed through `deepFreeze` (`src/deep-freeze.ts`) — otherwise one consumer's mutation changes another's lookups. `src/catalogue-immutability.test.ts` asserts this for every exported catalogue; add new ones to it.
+- **Data files are hand-maintained artefacts.** `scripts/data/ships/merge-normalized-catalogues.mjs` joins normalized *local* arrays that a maintainer prepares; no script in this repository reads, clones or fetches an upstream repository, and none should be added. Record what a change was derived from in the domain's `SOURCES.md` rather than in a script that reaches for it.
 
 ## Environment
 
 Development happens inside a dev container (`.devcontainer/devcontainer.json`) based on the TypeScript/Node 22 (bookworm) image, with Python 3.12 also installed. Runs as the `node` user. ESLint + Prettier for TypeScript; Pylance for Python.
 
-## Notes for Future Updates
+## Commands
 
-Once the project takes shape, update this file with:
-- Build, lint, and test commands per language (including how to run a single test)
-- The high-level architecture, especially how shared data/fixtures flow into each language implementation
+All TypeScript commands run from `typescript/`:
+
+| Command                | What it does                                                       |
+| ---------------------- | ------------------------------------------------------------------ |
+| `npm run check`        | lint → format:check → typecheck → test. **Run this before finishing.** |
+| `npm test`             | full suite with the coverage thresholds                             |
+| `npm run typecheck`    | `tsc --noEmit`                                                      |
+| `npm run lint`         | ESLint                                                              |
+| `npm run format`       | Prettier over the package, root README, schemas and workflows       |
+| `npm run build`        | `tsup` → `dist/` (minified, JSON catalogues inlined)                |
+| `npm run test:package` | imports the **built** `dist/` and checks every export subpath        |
+| `npm run docs`         | TypeDoc → `docs/wiki`, then `scripts/postprocess-wiki.mjs`           |
+
+Run one test file with the same loaders the suite uses — plain `node --test` cannot resolve `.ts` or `.jsonc`:
+
+```bash
+node --import tsx --import ./scripts/register-jsonc.mjs --test src/ships/weapons.test.ts
+```
+
+`npm run check` does not build. When a change touches the export map, the bundler config, or anything a consumer imports, also run `npm run build && npm run test:package` — CI does, and `dist/` is what consumers actually get.
+
+## How the shared assets flow into TypeScript
+
+```
+data/<domain>/*.jsonc ──(strip comments)──> src/<area>/<catalogue>.ts ──> deepFreeze ──> exported constant
+fixtures/<domain>/*.json ────────────────────────────────────────────> src/<area>/*.test.ts
+```
+
+- A catalogue module imports its `.jsonc` directly. Comments are stripped by `scripts/jsonc.mjs`, wired into the test runner via `scripts/register-jsonc.mjs` (`--import` **after** tsx) and into the build by an esbuild `onLoad` plugin in `tsup.config.ts`. `src/jsonc.d.ts` types the import as `unknown`, so each catalogue casts to its own interface — that cast is the only place the data's shape is asserted, so keep the interface honest.
+- Fixtures are imported by tests with `with { type: 'json' }` and hold the *expected* values. They are the parity contract: a fixture pins behaviour for every future language implementation, so prefer adding a fixture entry over an inline literal whenever the value is a fact about the game rather than a fact about TypeScript.
+- `typedoc.json` lists **one entry point per feature area**. Add a new area there, to the `exports` map, to the coverage globs, and to `src/index.ts`.
