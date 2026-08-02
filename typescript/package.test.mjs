@@ -170,10 +170,23 @@ test('the publication manifest includes consumer documentation and notices', asy
         ],
     );
 
+    // The packaged notice is a generated copy of the repository's canonical
+    // ATTRIBUTIONS.md. Assert it exists and is byte-identical: a missing or stale
+    // copy would publish a tarball whose credits are wrong or absent, and several
+    // upstream licences require the notice to travel with the distribution.
     const notices = await readFile(new URL('./THIRD_PARTY_NOTICES.md', import.meta.url), 'utf8');
+    const canonical = await readFile(new URL('../ATTRIBUTIONS.md', import.meta.url), 'utf8');
+    assert.equal(
+        notices,
+        canonical,
+        'THIRD_PARTY_NOTICES.md is stale — run `npm run build` (it copies ATTRIBUTIONS.md)',
+    );
     assert.match(notices, /Odyssey micro resources/);
     assert.match(notices, /Market commodities/);
     assert.match(notices, /CC BY-NC 4\.0/);
+    // The BSD 3-Clause text must ship in full, as EDTS's terms require.
+    assert.match(notices, /Copyright \(c\) 2016, Andy Martin/);
+    assert.match(notices, /THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS/);
 
     const license = await readFile(new URL('./LICENSE', import.meta.url), 'utf8');
     assert.match(license, /does not relicense bundled third-party/);

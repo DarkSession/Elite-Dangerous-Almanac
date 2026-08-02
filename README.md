@@ -1032,105 +1032,26 @@ into a package.
 
 ## Attributions
 
-Much of this data and several algorithms come from the Elite Dangerous community.
-The same credit lives next to each data file — as a comment header on the file
-itself, with the long form in its domain's `SOURCES.md` — and in the doc comment of
-each ported module. (Attribution sits in a comment rather than an `attribution`
-field so it documents the data without being inlined into your bundle.)
+Much of this data and several algorithms come from the Elite Dangerous community —
+EDTS, Coriolis, EDSY, EDCD FDevIDs, EliteDangerousRegionMap, EDAstro, Canonn,
+EDSM, Spansh, INARA — and the ship and module stat values are the property of
+Frontier Developments plc, used under their media-usage rules.
 
-- **Procedural sector & system naming** — ported and restructured from the
-  [EDTS](https://bitbucket.org/Esvandiary/edts) reference algorithm
-  (`edtslib/pgdata.py` and `edtslib/pgnames.py`) by **Andy Martin** (Esvandiary),
-  **BSD 3-Clause, © 2016 Andy Martin**, via the
-  [canonn-signals](https://github.com/canonn-science/canonn-signals) TypeScript
-  port (MIT). Original in-game algorithm reverse-engineered by the Elite Dangerous
-  community. (EDTS lives on Bitbucket, not GitHub.)
-- **Galactic codex regions** (the 42 regions, lookup grid, and boxel/coordinate
-  region resolution) — from
-  [EliteDangerousRegionMap](https://github.com/klightspeed/EliteDangerousRegionMap)
-  by Ben Peddell ([klightspeed](https://github.com/klightspeed)), MIT. Per-region
-  footprint figures (area, bounds, centroid) are derived by this project and are
-  approximate. Original region-boundary research on the
-  [Frontier forums](https://forums.frontier.co.uk/threads/determining-the-region-of-a-system.537845/).
-- **Nebula catalogues** (names, catalogued systems, coordinates, classes and
-  region ids) — from the EDAstro nebulae coordinates dataset by **CMDR Orvidius**
-  ([EDAstro](https://edastro.com/mapcharts/)), obtained via
-  [canonn-signals](https://github.com/canonn-science/canonn-signals) by the Canonn
-  Research Group (MIT). EDAstro states no explicit licence for the dataset; check
-  the site's terms before redistributing it.
-- **Permit-locked systems and regions** — from the community-maintained "Elite
-  Dangerous Permit Database" spreadsheet, obtained via
-  [canonn-signals](https://github.com/canonn-science/canonn-signals) by the Canonn
-  Research Group (MIT). Permit status is published in no game file or API, so the
-  list is hand-maintained and best-effort; the region half is reconciled against
-  this project's hand-authored region spheres and against
-  [EDSM](https://www.edsm.net).
-- **Hand-authored region spheres, named-region origins, and ground-truth `id64`
-  fixtures** — factual records compiled and cross-checked against
-  [EDSM](https://www.edsm.net) and [Spansh](https://spansh.co.uk). Detailed
-  per-file derivations and source terms are recorded in `data/astro/SOURCES.md`
-  and shipped to npm consumers in `THIRD_PARTY_NOTICES.md`.
-- **Engineering materials** (raw, manufactured, encoded — names, ids, symbols,
-  grades and groups) — from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), the
-  community-maintained registry of Frontier's internal ids (no explicit licence
-  stated; check the repository terms). The newest Thargoid caustic/Titan materials
-  it does not yet list are filled in from [INARA](https://inara.cz/elite/components/).
-  Full provenance in `data/materials/SOURCES.md`.
-- **Odyssey micro resources** (on-foot components, data, consumables and items —
-  names, symbols and categories) — from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
-  (`microresources.csv`), the community-maintained registry of Frontier's internal
-  ids (no explicit licence stated; check the repository terms). Full provenance in
-  `data/materials/SOURCES.md`.
-- **Ships and outfitting modules** (hull and module names, ids, symbols, sizes,
-  ratings, mounts and entitlements) — from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
-  (`shipyard.csv`, `outfitting.csv`), the community-maintained registry of
-  Frontier's internal ids (no explicit licence stated; check the repository terms).
-  Full provenance in `data/ships/SOURCES.md`.
-- **Ship and module stats, slot layouts and blueprints** (hull/module masses, power,
-  FSD constants, thruster/shield/distributor performance, damage resistances, hull and
-  shield reinforcement, weapon damage and rate of fire, armour hull boost,
-  ship-restriction flags, per-hull slot layouts, engineering blueprint modifiers) — from
-  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (`ships/*.json`,
-  `modules/**`, `modifications/**`). Coriolis-data releases only its code under MIT;
-  the stat values are Elite Dangerous game data, property of Frontier Developments plc
-  (see the Frontier notice below). Full provenance in `data/ships/SOURCES.md`.
-- **Build-metric algorithms** (power budget and priority groups, shield strength and
-  its mass curve, armour hit points, resistance stacking and its diminishing returns,
-  weapon DPS/EPS/HPS) — ported as fact (our own implementation) from
-  [EDCD/Coriolis](https://github.com/EDCD/coriolis) by the **Coriolis contributors**
-  (application code MIT-licensed): `src/app/shipyard/Calculations.js`, `Ship.js` and
-  `Module.js`. Cross-checked against [EDSY](https://github.com/taleden/EDSY) by
-  **taleden** (CC BY-NC 4.0), whose reading of real journal data settles the percentage
-  stats' units and compounding. Both cite the original Frontier-forum research; see
-  `data/ships/SOURCES.md` for the exact functions, commits and threads.
-- **Jump-range & fuel algorithm, experimental-effect modifiers** — the hyperspace
-  formula is ported as fact (our own implementation) from
-  [EDSY](https://github.com/taleden/EDSY) by **taleden** (code licensed CC BY-NC 4.0),
-  derived from Frontier's "mass effect on hyperspace range" description. The numeric
-  experimental (special) effect modifiers **and their material recipes**, which
-  coriolis-data does not carry, also come from EDSY (`eddb.js`). **SLEF** parsing follows the
-  [Inara Ship Loadout Export Format spec](https://inara.cz/elite/inara-impexp-slef/).
-- **Elite Dangerous game data** — the ship and module stat values are the property of
-  **Frontier Developments plc**, used under Frontier's
-  [media-usage rules](https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/):
-  _"Elite Dangerous Almanac was created using assets and imagery from Elite Dangerous,
-  with the permission of Frontier Developments plc, for non-commercial purposes. It is
-  not endorsed by nor reflects the views or opinions of Frontier Developments and no
-  employee of Frontier Developments was involved in the making of it."_ Projects that
-  redistribute this data should include the same notice.
-- **Market commodities** (standard and rare goods — names, symbols and market
-  categories) — from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
-  (`commodity.csv`, `rare_commodity.csv`), the community-maintained registry of
-  Frontier's internal ids (no explicit licence stated; check the repository terms).
-  Full provenance in `data/commodities/SOURCES.md`.
+**Every credit, licence and non-commercial restriction is in
+[ATTRIBUTIONS.md](ATTRIBUTIONS.md).** Read it before redistributing the data or
+using it commercially. It is the single canonical list, and it is what ships to
+npm consumers as `THIRD_PARTY_NOTICES.md`.
 
-If you add or change data, port an algorithm, or add a dependency that warrants
-credit, update both the in-source attribution and this section in the same change.
+The same credit also lives next to each thing being credited: as a comment header
+on every data file — with the long form in its domain's `SOURCES.md` — and in the
+doc comment of each ported module. (Attribution sits in a comment rather than an
+`attribution` field so it documents the data without being inlined into your
+bundle.)
 
 ## License
 
 The project's own code and documentation are MIT-licensed. Bundled Elite Dangerous
 and third-party data remains under its source-specific terms, including
-non-commercial restrictions described in `LICENSE` and
-`typescript/THIRD_PARTY_NOTICES.md`. Review those files before redistribution or
+non-commercial restrictions, described in [ATTRIBUTIONS.md](ATTRIBUTIONS.md) and
+[typescript/LICENSE](typescript/LICENSE). Review both before redistribution or
 commercial use.

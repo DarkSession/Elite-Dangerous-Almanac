@@ -1,3 +1,7 @@
 node_modules/
 dist/
 **/docs/wiki/
+
+# Generated from the root ATTRIBUTIONS.md by typescript/scripts/copy-notices.mjs
+# (part of `npm run build`). Edit ATTRIBUTIONS.md, not the copy.
+typescript/THIRD_PARTY_NOTICES.md

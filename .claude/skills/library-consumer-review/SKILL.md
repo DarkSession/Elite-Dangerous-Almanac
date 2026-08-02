@@ -114,9 +114,11 @@ exact export/name/signature over describing it.
   coords)? Is the failure mode documented, or will the consumer discover it in
   production?
 - **Attribution & trust.** Community-derived data and algorithms: is credit
-  visible to the consumer (README Attributions section, `THIRD_PARTY_NOTICES.md`,
-  in-source comments)? A researcher-facing library with no sourcing is a trust
-  finding. Also judge whether a consumer can tell **how current and how
+  visible to the consumer? The package ships `THIRD_PARTY_NOTICES.md` (a copy of
+  the repository's root `ATTRIBUTIONS.md`) alongside `LICENSE`, and the package
+  README links to it — judge whether someone evaluating the library would
+  actually find the non-commercial restrictions before depending on it. A
+  researcher-facing library with no sourcing is a trust finding. Also judge whether a consumer can tell **how current and how
   complete** the data is — the snapshot date, and whether known gaps are
   discoverable from the shipped package rather than only from a `SOURCES.md`
   that npm consumers never see.

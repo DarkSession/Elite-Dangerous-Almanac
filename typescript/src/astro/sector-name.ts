@@ -17,7 +17,7 @@
  *
  * Ported and restructured from the EDTS reference algorithm by Andy Martin
  * (Esvandiary), `edtslib/pgdata.py` at https://bitbucket.org/Esvandiary/edts,
- * BSD 3-Clause © 2016 Andy Martin (see typescript/THIRD_PARTY_NOTICES.md), via
+ * BSD 3-Clause © 2016 Andy Martin (see ATTRIBUTIONS.md), via
  * the canonn-signals TypeScript port.
  *
  * @packageDocumentation

@@ -7,7 +7,7 @@
  *         Dangerous's procedural generator.
  * Author/License: Andy Martin (Esvandiary), https://bitbucket.org/Esvandiary/edts,
  *         BSD 3-Clause License, (c) 2016 Andy Martin. Full text in
- *         typescript/THIRD_PARTY_NOTICES.md.
+ *         ATTRIBUTIONS.md.
  *
  * Where a region is defined by a single sphere, its origin and extent are that
  * sphere's axis-aligned bounds in the internal frame.

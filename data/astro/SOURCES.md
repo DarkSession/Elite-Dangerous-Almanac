@@ -23,7 +23,7 @@ standard parser accepts. See AGENTS.md §Attribution for how to consume them.
   [bitbucket.org/Esvandiary/edts](https://bitbucket.org/Esvandiary/edts),
   BSD 3-Clause License, © 2016 Andy Martin. (EDTS moved from GitHub to Bitbucket;
   the old GitHub URL now 404s. The full BSD 3-Clause text is reproduced in
-  `typescript/THIRD_PARTY_NOTICES.md`.)
+  `ATTRIBUTIONS.md`.)
 - **Derivation:** named-region origins are stored in the game's internal coordinate
   frame (32 units per light-year from the galaxy corner). Where a region is defined
   by a single sphere, its origin and extent are the sphere's axis-aligned bounds in

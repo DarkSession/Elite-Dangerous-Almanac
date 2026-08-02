@@ -78,9 +78,11 @@ Much of the static data and many calculations derive from the Elite Dangerous co
 - **In the source code**, next to the thing being attributed. Put the credit where a reader encounters the data or algorithm:
   - Data files (`data/`): open the file with a **comment header** giving origin, author, license/terms, and any derivation caveats, then point at the sibling `SOURCES.md` for the long form. Put it in a comment, not in an `attribution` field — see §Data file format for why, and copy the header of any existing `data/astro/*.jsonc` for the shape.
   - Code (calculations, ported algorithms): a doc comment on the function/module citing the original source, author, and license, with a link where possible.
-- **In `README.md`**: maintain a dedicated "Attributions" / "Credits" section listing every external data source, algorithm, and library, with author, link, and license. This is the human-facing summary and must stay in sync with the in-source credits.
+- **In `ATTRIBUTIONS.md`** at the repository root: the single canonical list of every external data source, algorithm and library, with author, link and licence — including any licence text an upstream requires be reproduced in full. It lives at the root because it is language-neutral, exactly like `data/` and `fixtures/`.
 
-Whenever you add or change data, port an algorithm, or introduce a dependency that warrants credit, update **both** the in-source attribution and the README section in the same change. Respect each source's license terms (attribution text, share-alike, etc.).
+Whenever you add or change data, port an algorithm, or introduce a dependency that warrants credit, update **both** the in-source attribution and `ATTRIBUTIONS.md` in the same change. Respect each source's license terms (attribution text, share-alike, etc.).
+
+> **Do not write a second copy of the credits.** `README.md` carries a short pointer, not a list. `typescript/THIRD_PARTY_NOTICES.md` is a **generated, git-ignored** verbatim copy of `ATTRIBUTIONS.md` — npm can only pack files inside the package directory, and several upstream licences require the notice to travel with the distribution. `npm run build` writes it (`typescript/scripts/copy-notices.mjs`), `prepublishOnly` runs the build, and `package.test.mjs` asserts the two are byte-identical. Edit the root file; never the copy.
 
 ## Repository Layout
 
