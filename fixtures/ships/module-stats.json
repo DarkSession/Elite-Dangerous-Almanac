@@ -1,6 +1,6 @@
 {
   "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc (engineering/mechanical stats, the defence stats \u2014 resistances, hull boost and reinforcement \u2014 and the weapon stats). Cross-language validation.",
-  "countsNote": "Every module in every catalogue now carries stats, so these equal the catalogue sizes. The 16 records that used to have none were the nine `*_free` starter variants, `Int_Hyperdrive_Size8_Class{1..5}`, `Int_DroneControl_ResourceSiphon` and `Int_StellarBodyDiscoveryScanner_Standard_free` — identity-only rows until Frontier's own module definitions supplied their figures.",
+  "countsNote": "Every module in every catalogue now carries at least one stat, so these equal the catalogue sizes and no longer fail independently of the catalogue counts in modules.json — they assert that no record regresses to identity-only. The 16 rows that used to have none were the ten `*_free` starter variants, `Int_Hyperdrive_Size8_Class{1..5}` and `Int_DroneControl_ResourceSiphon`. Two of them clear the bar on `mass` alone and are still functionally incomplete: `Int_FuelTank_Size1_Class3_free` has no `fuelCapacity` and `Int_CargoRack_Size2_Class1_free` no `cargoCapacity`, because no source states them — see the `*_free` capacity gap in TODO.md. The `spot` entries below are what actually pins the backfilled and corrected values.",
   "counts": {
     "core": 521,
     "internal": 483,

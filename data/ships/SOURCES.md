@@ -2,42 +2,59 @@
 
 **Library snapshot:** 2026-07-24, plus a module-stat reconciliation on 2026-08-02 (see the revision below). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
-**Revision 2026-08-02 (UTC) — every module now carries stats, and 41 records were
+**Revision 2026-08-02 (UTC) — every module now carries stats, and 40 records were
 corrected.** The four module catalogues were reconciled against **Frontier's own module
 definitions for game build `2026.07.08.330683`**, and every difference was then
-cross-checked against [EDSY](https://github.com/taleden/EDSY) `eddb.js` (`db 20260428`,
-acquired 2026-08-02 UTC) before being applied. Where the two disagreed, EDSY won and the
-change was dropped — three candidate corrections were **rejected** on that basis, listed
-below. `data/ships/modules-*.jsonc` are the only payloads touched.
+cross-checked against [EDSY](https://github.com/taleden/EDSY) `eddb.js` (commit
+`cd68edfba665719958ce038b6e5d9eb02d0d2b02`, its internal `db 20260428`, SHA-256
+`967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, acquired 2026-08-02
+UTC) before being applied. Where the two disagreed, EDSY won and the change was dropped —
+three candidate corrections were **rejected** on that basis, listed below. The payloads
+touched are `data/ships/modules-*.jsonc`, plus one display name each in
+`blueprints.jsonc` and `experimental-effects.jsonc`.
 
 - **Backfilled (a field the record did not have, so no value was overwritten):**
   `bootTime` on 717 records, `integrity` on 237, `powerDraw` on 115, `mass` on 17, and
-  the family curves on the identity-only rows — `optMass`/`maxFuel`/`fuelMul`/`fuelPower`
+  the family curves on the rows that had none — `optMass`/`maxFuel`/`fuelMul`/`fuelPower`
   on 6, the thruster and shield mass curves on 2 each, the distributor capacities and
   recharges on 1, and `powerCapacity`/`heatEfficiency` on 1. **Every module in every
-  catalogue now has stats** (1198/1198), so `fixtures/ships/module-stats.json` `counts`
-  now equals the catalogue sizes.
+  catalogue now has at least one stat** (1198/1198), so `fixtures/ships/module-stats.json`
+  `counts` now equals the catalogue sizes. Two rows clear that bar on `mass` alone and are
+  still functionally incomplete — see the `*_free` capacity gap in `TODO.md`.
 - **Closes the `TODO.md` gap "Modules still missing `mass`, deliberately" in full.**
-  The nine `*_free` starter variants,
+  The ten `*_free` starter variants,
   `Int_Hyperdrive_Size8_Class{1..5}`, `Int_ShieldGenerator_Size1_Class4` and
-  `Int_DroneControl_ResourceSiphon` were all identity-only rows whose `mass` was left
-  absent because absent meant *unknown*. They are now sourced.
-  `Int_ShieldGenerator_Size1_Class4`'s hand-filled curve was **confirmed unchanged** —
-  its `optMass` 25 / `minMass` 13 / `maxMass` 63 and 0.6-1.1-1.6 multipliers match
-  Frontier's definitions exactly, which retrospectively validates that hand-fill.
-- **Closes the `TODO.md` gap "106 modules are missing `powerDraw` that upstream
-  carries".** The 7A fuel scoop, 6A AFM unit and advanced docking
-  computer on the Deep Black now draw the 4.68 MW the item predicted, so its `retracted`
-  budget moves 14.8159 → 19.4959 MW and its headroom 8.0321 → 3.3521 MW.
-  `fixtures/ships/build-metrics.json` is re-pinned; the build stays within budget.
+  `Int_DroneControl_ResourceSiphon` all had `mass` left
+  absent because absent meant *unknown*. They are now sourced. All but
+  `Int_ShieldGenerator_Size1_Class4` were identity-only rows; that one already carried a
+  12-field hand-filled curve, and it was **confirmed unchanged** — its `optMass` 25 /
+  `minMass` 13 / `maxMass` 63 and 0.6-1.1-1.6 multipliers match Frontier's definitions
+  exactly, which retrospectively validates that hand-fill.
+- **Fills 102 of the 106 records in the `TODO.md` gap "106 modules are missing
+  `powerDraw` that upstream carries".** The fuel scoop, AFM unit, refinery and docking
+  computer families are complete. The four `Int_StellarBodyDiscoveryScanner_*` records
+  are **not** filled: no source carries a power draw for them — Frontier's definitions
+  give them only `mass`, `integrity` and size, EDSY the same, and coriolis-data has no
+  record for them at all. They are withdrawn modules whose function is now built in, and
+  the absence is left as *unknown* rather than guessed at zero. Recorded in `TODO.md`.
+  The part that is closed is the defect the item was written about: the Deep Black's 7A
+  fuel scoop, 6A AFM unit and advanced docking computer now draw the 4.68 MW it
+  predicted, so its `retracted` budget moves 14.8159 → 19.4959 MW and its headroom
+  8.0321 → 3.3521 MW. `fixtures/ships/build-metrics.json` is re-pinned; the build stays
+  within budget.
 - **`Int_DroneControl_ResourceSiphon` is `mass: 0`, not a gap.** That same `TODO.md`
   entry reasoned that limpet controllers have mass so the absence had to be an omission. It is
   genuinely zero. This one rests on a weaker footing than the rest: no source states the
   zero outright — EDSY omits the field and reads a missing mass as zero — but that is the
   same convention this catalogue already applies to `Int_DetailedSurfaceScanner_Tiny` and
   `Int_DockingComputer_Standard`. EDSY does state its `integrity` 20 and `powerDraw` 0.4.
+- **Cost:** the four catalogues grow about 24 KB of raw JSON (+5.6%), which is inlined
+  into every consumer's bundle. 244 of the 717 `bootTime` values are `0` (every hardpoint
+  among them). They are kept rather than omitted because this catalogue's convention is
+  that an absent field means *unknown* — collapsing a real zero into absence is the
+  defect the `cost` handling already guards against.
 
-**Corrected — 41 records, 43 fields.** In every case coriolis-data's value is the source
+**Corrected — 40 records, 43 fields.** In every case coriolis-data's value is the source
 of the error and EDSY carries the corrected figure:
 
 | Records | Field | Was | Now | Why the old value was wrong |
@@ -50,10 +67,10 @@ of the error and EDSY carries the corrected figure:
 | `Int_Hyperdrive_Overcharge_Size7_Class2` | `integrity` | 2700 | 150 | `optMass` copied into `integrity`; every sibling drive is 131–164 |
 | `Hpt_Slugshot_{Fixed,Gimbal,Turret}_Medium` | `integrity` | 80 | 51 | 80 is the huge-mount value |
 | `Hpt_Slugshot_{Fixed,Gimbal,Turret}_Large` | `integrity` | 80 | 64 | as above; the catalogue already had 64 on `Hpt_Slugshot_Fixed_Large_Range` |
-| `Hpt_PulseLaserBurst_Gimbal_Huge` | `integrity` | 80 | 64 | |
+| `Hpt_PulseLaserBurst_Gimbal_Huge` | `integrity` | 80 | 64 | a real outlier, not the Fragment Cannon rule misapplied — see "Values that look wrong and are not" below |
 | `Hpt_HeatSinkLauncher_Turret_Tiny` | `integrity` | 20 | 45 | 20 is the chaff launcher's; the Caustic Sink Launcher, its analogue, is 45 in both sources. Same duplicate-record defect as the `cost` fix in the previous revision, which had been applied to `cost` and `mass` but not `integrity` |
 | `Hpt_MRAScanner_Size0_Class1` | `integrity` | 24 | 32 | every other size-0 scanner family runs 32/24/40/56/48; 24 had been duplicated into Class1 |
-| `Int_DroneControl_{FuelTransfer,Prospector,Repair}_Size5_Class4` | `powerDraw` | 0.97 | 0.72 | 0.97 is the size-7 B-rated value; 0.72 restores the 1.78 Class4/Class1 ratio the family holds at sizes 1, 3 and 7 |
+| `Int_DroneControl_{FuelTransfer,Prospector,Repair}_Size5_Class4` | `powerDraw` | 0.97 | 0.72 | 0.97 is the size-7 B-rated value; 0.72 restores the Class4/Class1 ratio the family holds elsewhere (1.78 at sizes 1 and 3, 1.76 at size 7, 1.80 here) |
 | `Hpt_Mining_SubSurfDispMisle_Turret_Small` | `powerDraw` | 0.42 | 0.53 | |
 | `Int_ShieldGenerator_Size1_Class5_Strong` | `mass` | 2.5 | 2.6 | Prismatic is exactly 2× the base generator at every other size, so size 1 is 2×1.3, not half of size 2's 5.0 |
 | `Int_ShieldGenerator_Size2_Class5_Strong` | `minMass` | 23 | 28 | |
@@ -73,11 +90,27 @@ they are not "found" and applied again:
 - **`Int_Engine_Size{2,3}_Class5_Fast` multipliers stay 1.15 / 1.367.** EDSY stores
   thruster multipliers as whole percentages (`engoptmul:115`), so it agrees on 1.15 and
   cannot represent 1.367 at all; the catalogue's value is the more precise one.
-- **Thruster and FSD mass-curve fractions stay fractional.** `Int_Engine_Size4_Class2`
+- **Thruster and FSD mass-curve fractions stay fractional (placeholder).** `Int_Engine_Size4_Class2`
   `minMass` 157.5 / `maxMass` 472.5, `Int_Engine_Size4_Class4` 192.5 / 577.5 and
   `Int_Hyperdrive_Size4_Class4` `optMass` 437.5 are exact — `optMass/2`, `optMass×1.5`
   and `350×1.25`. The whole numbers are a rounding artefact of a source that stores these
   fields as integers, so applying them would have *introduced* error.
+
+**Values that look wrong and are not.** Three records break the pattern their family
+follows, were challenged on exactly that basis during review, and were then confirmed
+outright by EDSY at the revision above. Recorded so the "breaks its family's curve"
+heuristic does not keep rediscovering them:
+
+- **`Hpt_PulseLaserBurst_Gimbal_Huge` `integrity` really is 64**, and it really is the
+  only huge (class-4, 16 t) hardpoint not at 80 — its own fixed sibling is 80. EDSY gives
+  `integ:64` for it and 80 for the other eleven. Note that EDSY also gives it
+  `maxbrc: 80`, which is max **breach** damage and is easy to misread as the integrity.
+- **`Int_GuardianPowerDistributor_Size{5,6}` `integrity` really are both 99.** Guardian
+  distributor integrity otherwise tracks 0.80× the A-rated standard ladder, which would
+  put size 5 near 85; EDSY states 99 for both sizes. The duplicate is in the game data.
+- **`Int_DroneControl_Recon_Size5_Class1` `bootTime` really is 9.85** — the only
+  non-integer boot time in all 1198 records, where its three family siblings are exactly
+  10. EDSY gives `boottime:9.85`.
 
 Two display names were corrected where EDSY and Frontier agree against this catalogue:
 `CargoRack_IncreasedCapacity` "Expanded Capacity" → **"Expanded Cargo Rack"**, and

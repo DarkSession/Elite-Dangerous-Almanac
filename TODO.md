@@ -6,20 +6,47 @@ short, actionable list.
 
 ## Ships — data gaps
 
-### 1. Frame Shift Drive and thruster heat rates are not carried
+### 1. Three stat gaps the 2026-08-02 reconciliation did not close
 
-Frontier's module definitions expose an `FSDHeatRate` on all 79 frame shift drives and
-an engine heat rate on all 43 thrusters. This catalogue has no field for either, so
-`unresolvedModifiers()` still reports `FSDHeatRate` on the pre-engineered V1 drive
-(pinned in `fixtures/ships/pre-engineered.json`) — a blueprint can modify a stat the
-records do not hold.
+All three were surfaced by that pass and deliberately left rather than guessed. Long-form
+reasoning in `data/ships/SOURCES.md`.
 
-Adding it means a new `OutfittingModule` field, its TSDoc, a `schemas/ships` property,
-a `module-stat-labels` entry and fixture pins, so it was left out of the 2026-08-02
-stat pass rather than half-done. Nothing computes with heat today, which is why this is
-a gap and not a defect.
+**a. 83 non-armour records still have no `integrity`.** Mostly the families that carry no
+other mechanical stat either — passenger cabins (23), hull and Guardian/meta-alloy
+reinforcement packages (30), fuel tanks (9), cargo racks (16), module stabilisers,
+planetary approach suites. Neither Frontier's module definitions nor EDSY carries an
+integrity for them. A further 241 records without `integrity` are ship armour, which is a
+different shape and not counted here.
 
-### 2. Four corrosion-resistant cargo racks have no price at all
+**b. The four `Int_StellarBodyDiscoveryScanner_*` records have no `powerDraw`.** They are
+the remainder of the old "106 modules are missing `powerDraw`" gap. No source has a value:
+Frontier's definitions give them only mass, integrity and size, EDSY the same, and
+coriolis-data has no record for them at all. They are withdrawn modules whose function is
+built in now, so `0` is plausible but unsourced — left absent, since absent means unknown.
+
+**c. `Int_FuelTank_Size1_Class3_free` and `Int_CargoRack_Size2_Class1_free` have `mass`
+and nothing else.** Their paid twins carry `fuelCapacity: 2` and `cargoCapacity: 4`, and
+these are almost certainly the same modules, but no source states the capacity for the
+`_free` rows and inferring it from the twin would be invention. Consequence: a build
+using either reports zero fuel or cargo from it, so `jumpRange()` and a SLEF
+`CargoCapacity` are wrong for a stock starter fit. Fill from a real journal `Loadout` of
+a stock Sidewinder or Adder. Note these two are why "every module now has stats" is a
+weaker claim than it sounds — they clear that bar on `mass` alone.
+
+### 2. Frame Shift Drive and thruster heat rates are not carried
+
+Frontier's module definitions expose an `FSDHeatRate` on every frame shift drive and an
+engine heat rate on every thruster — 72 and 40 records respectively in this catalogue.
+There is no field for either, so `unresolvedModifiers()` still reports `FSDHeatRate` on
+the pre-engineered V1 drive (pinned in `fixtures/ships/pre-engineered.json`): a blueprint
+can modify a stat the records do not hold.
+
+Adding it means a new `OutfittingModule` field, its TSDoc, a `schemas/ships` property, a
+`module-stat-labels` entry and fixture pins, so it was left out of the 2026-08-02 stat
+pass rather than half-done. Nothing computes with heat today, which is why this is a gap
+and not a defect.
+
+### 3. Four corrosion-resistant cargo racks have no price at all
 
 `Int_CorrosionProofCargoRack_Size{1_Class2,5_Class1,6_Class1}` read `cost: 0` in
 coriolis-data itself — a gap upstream, not the duplicate-symbol defect fixed in this
@@ -33,7 +60,7 @@ they are pinned in `fixtures/ships/module-stats.json` under `unpriced`. Since cr
 quoted at retail, a build carrying one of these exports no `ModulesValue` or `Rebuy` at
 all until real prices are sourced from EDSY or Inara.
 
-### 3. Two experimental effects exist in the game that no public dataset carries
+### 4. Two experimental effects exist in the game that no public dataset carries
 
 `special_guardian_module_resistance` ("Anti-Guardian Field Resistance") and
 `special_plasma_rounds` ("Plasma Conversion") are real effect identities — the
@@ -49,7 +76,7 @@ empty `modifiers` would be worse than the gap — a consumer cannot tell "no mod
 from "modifiers unknown". Fill them from a real `EngineerCraft` journal capture that
 applies either effect.
 
-### 4. Module identities exist that no outfitting registry lists
+### 5. Module identities exist that no outfitting registry lists
 
 Reconciling against Frontier's module definitions surfaced 535 identities this
 catalogue does not carry. **None of them appear in EDCD FDevIDs `outfitting.csv`**, so
@@ -67,14 +94,14 @@ absence there is the evidence they are not purchasable.
 
 ## Ships — test coverage
 
-### 5. No external ground truth for shields, armour or weapon DPS
+### 6. No external ground truth for shields, armour or weapon DPS
 
 A journal `Loadout` event never reports them, so the corpus validates mass, capacities,
 jump range and credits against Frontier's own figures but checks the defence and weapon
 metrics only against our own maths. An EDSY or Coriolis reading of a weaponed build
 would close this — it is the largest remaining hole in the parity story.
 
-### 6. The build corpus has no cargo-heavy hull
+### 7. The build corpus has no cargo-heavy hull
 
 `fixtures/ships/` holds two real builds: an exploration Caspian Explorer (EDSY export)
 and a combat Krait Phantom (journal capture). Nothing exercises a large cargo hold or
@@ -87,7 +114,7 @@ states no licence (`NOASSERTION`), so it was not committed.
 
 ## Ships — API
 
-### 7. Journal-only fields do not survive an import
+### 8. Journal-only fields do not survive an import
 
 `LoadoutEvent` omits fields real journals carry: `timestamp`, `ShipID`, `HullHealth`,
 `Hot`, module `AmmoInClip` / `AmmoInHopper`, and engineering `Engineer` / `EngineerID` /
@@ -98,7 +125,7 @@ journal → `ShipLoadout` → SLEF round trip loses them.
 Deliberately out of scope when SLEF export was added; the additions would all be
 optional and backwards-compatible.
 
-### 8. An export cannot report what a build actually cost
+### 9. An export cannot report what a build actually cost
 
 Credits are quoted at retail, so a source's own purchase record — the station discount
 it was bought at, and any per-module `Value` — is dropped on the way out. That is the
@@ -107,7 +134,7 @@ nowhere to get it. If that turns out to be wanted, the honest shape is a separat
 accessor for the source's stated figures rather than putting them back in the export,
 where they would be indistinguishable from list prices.
 
-### 9. The cosmetic slot families are a hand-maintained list
+### 10. The cosmetic slot families are a hand-maintained list
 
 `COSMETIC_SLOT_PATTERNS` in `typescript/src/ships/ship-loadout.ts` names the journal slot
 families that hold cosmetics rather than outfitting — cockpit, paint, decals, nameplates,
@@ -123,7 +150,7 @@ The cost is that a cosmetic family Frontier adds later takes `ModulesValue`,
 extended. The Krait Phantom capture exercises 15 of the families; the rest rest on the
 journal documentation. Worth re-checking whenever a capture joins the corpus.
 
-### 10. `modulesValue` and `rebuy` getters die on a no-op refit
+### 11. `modulesValue` and `rebuy` getters die on a no-op refit
 
 `#adjustImportedFigures` deletes both from `#top` on any `setModule`, including
 re-fitting the identical module, so the getters that report the *source's* figures start
