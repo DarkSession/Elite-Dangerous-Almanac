@@ -204,6 +204,18 @@ test('getPreEngineeredModifiers reports journal shape with the original value', 
     assert.ok(modifiers.every((m) => m.OriginalValue !== undefined));
 });
 
+test('every authored modifier is either computed or reported unresolved', () => {
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        const computed = getPreEngineeredModifiers(variant).map((modifier) => modifier.Label);
+        const unresolved = unresolvedModifiers(variant);
+        assert.deepEqual(
+            [...computed, ...unresolved].sort(),
+            (variant.modifiers ?? []).map((modifier) => modifier.label).sort(),
+            `${variant.symbol} / ${variant.blueprint}`,
+        );
+    }
+});
+
 test('resolving is total across the catalogue and never returns null', () => {
     // Every symbol joins to a module (pinned in pre-engineered.test.ts), so resolution
     // cannot miss — a null here would mean the two catalogues had drifted apart.

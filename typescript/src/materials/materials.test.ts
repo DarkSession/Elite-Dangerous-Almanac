@@ -131,14 +131,14 @@ test('materialsInLine ignores case and whitespace', () => {
     assert.ok(alloys.length > 0);
     for (const spelling of ['alloys', 'ALLOYS', ' Alloys ']) {
         assert.deepEqual(
-            materialsInLine(spelling as MaterialLine, MANUFACTURED_MATERIALS),
+            materialsInLine(spelling, MANUFACTURED_MATERIALS),
             alloys,
             `${spelling} should resolve like MaterialLine.Alloys`,
         );
     }
     // A multi-word line, where a caller is most likely to re-case.
     assert.deepEqual(
-        materialsInLine('emission data' as MaterialLine, ENCODED_MATERIALS),
+        materialsInLine('emission data', ENCODED_MATERIALS),
         materialsInLine(MaterialLine.EmissionData, ENCODED_MATERIALS),
     );
 });

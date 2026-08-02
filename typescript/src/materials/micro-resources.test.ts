@@ -95,7 +95,7 @@ test('microResourcesInCategory ignores case and whitespace', () => {
     assert.ok(consumables.length > 0);
     for (const spelling of ['Consumable', 'CONSUMABLE', ' consumable ']) {
         assert.deepEqual(
-            microResourcesInCategory(spelling as MicroResourceCategory, ALL_MICRO_RESOURCES),
+            microResourcesInCategory(spelling, ALL_MICRO_RESOURCES),
             consumables,
             `${spelling} should resolve like 'consumable'`,
         );

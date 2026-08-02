@@ -118,8 +118,10 @@ function relatedStat(
  * A fitted module's catalogue record with every engineered stat folded in — the
  * module as it actually performs on this build.
  */
-export function effectiveModule(module: LoadoutModule): OutfittingModule | null {
-    const stats = statFor(module.Item);
+export function effectiveModule(
+    module: LoadoutModule,
+    stats: OutfittingModule | null = statFor(module.Item),
+): OutfittingModule | null {
     if (!stats || !module.Engineering) return stats;
     const merged: Record<string, unknown> = { ...stats };
     // Every stat the record carries, plus any the engineering *introduces* — Double
@@ -143,8 +145,10 @@ export function effectiveModule(module: LoadoutModule): OutfittingModule | null 
 }
 
 /** One fitted module's claim on the power plant. */
-export function powerConsumerFor(module: LoadoutModule): PowerConsumer | null {
-    const stats = statFor(module.Item);
+export function powerConsumerFor(
+    module: LoadoutModule,
+    stats: OutfittingModule | null = statFor(module.Item),
+): PowerConsumer | null {
     const draw = effectiveStat(module, 'powerDraw', stats);
     if (draw === undefined || draw === 0) return null;
     // Weapons and most utility fittings only draw while the hardpoints are out; the
@@ -160,11 +164,14 @@ export function powerConsumerFor(module: LoadoutModule): PowerConsumer | null {
 }
 
 /** The build's power-plant capacity, post-engineering, or `0` when none is fitted. */
-export function powerAvailable(modules: readonly LoadoutModule[]): number {
+export function powerAvailable(
+    modules: readonly LoadoutModule[],
+    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) => statFor(module.Item),
+): number {
     for (const module of modules) {
         if (!startsWithAny(module.Item, PREFIX.powerPlant)) continue;
         if (!isEnabled(module)) return 0; // a switched-off plant powers nothing
-        return effectiveStat(module, 'powerCapacity') ?? 0;
+        return effectiveStat(module, 'powerCapacity', statsFor(module)) ?? 0;
     }
     return 0;
 }
@@ -181,8 +188,7 @@ interface ModuleResistances {
  * Read the four resistances off a fitted module, post-engineering. A resistance the
  * module does not carry reads as `0` — no resistance and no weakness.
  */
-function resistancesOf(module: LoadoutModule): ModuleResistances {
-    const stats = statFor(module.Item);
+function resistancesOf(module: LoadoutModule, stats: OutfittingModule | null): ModuleResistances {
     return {
         kineticResistance: effectiveStat(module, 'kineticResistance', stats) ?? 0,
         thermalResistance: effectiveStat(module, 'thermalResistance', stats) ?? 0,
@@ -196,6 +202,7 @@ export function shieldInputFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
     systemsPips: number,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) => statFor(module.Item),
 ): ShieldInput {
     const hull = getShipBySymbol(shipSymbol);
     let generator: ShieldGeneratorParams | null = null;
@@ -204,7 +211,7 @@ export function shieldInputFor(
 
     for (const module of modules) {
         if (!isEnabled(module)) continue;
-        const stats = statFor(module.Item);
+        const stats = statsFor(module);
         if (!generator && startsWithAny(module.Item, PREFIX.shieldGenerator)) {
             const massRatio = modifierRatio(module, stats, 'optMass');
             const strengthRatio = modifierRatio(module, stats, 'optMultiplier');
@@ -225,12 +232,12 @@ export function shieldInputFor(
                 ...(optMultiplier === undefined ? {} : { optMultiplier }),
                 ...(minMultiplier === undefined ? {} : { minMultiplier }),
                 ...(maxMultiplier === undefined ? {} : { maxMultiplier }),
-                ...resistancesOf(module),
+                ...resistancesOf(module, stats),
             };
         } else if (startsWithAny(module.Item, PREFIX.shieldBooster)) {
             boosters.push({
                 shieldBoost: effectiveStat(module, 'shieldBoost', stats) ?? 0,
-                ...resistancesOf(module),
+                ...resistancesOf(module, stats),
             });
         } else if (startsWithAny(module.Item, PREFIX.shieldReinforcement)) {
             reinforcement += effectiveStat(module, 'shieldAddition', stats) ?? 0;
@@ -266,7 +273,11 @@ function stockBulkhead(shipSymbol: string): OutfittingModule | null {
 }
 
 /** Gather a build's bulkhead and reinforcement packages. */
-export function armourInputFor(shipSymbol: string, modules: readonly LoadoutModule[]): ArmourInput {
+export function armourInputFor(
+    shipSymbol: string,
+    modules: readonly LoadoutModule[],
+    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) => statFor(module.Item),
+): ArmourInput {
     const hull = getShipBySymbol(shipSymbol);
     const reinforcements: HullReinforcementParams[] = [];
     const moduleReinforcements: ModuleReinforcementParams[] = [];
@@ -274,11 +285,11 @@ export function armourInputFor(shipSymbol: string, modules: readonly LoadoutModu
 
     for (const module of modules) {
         if (!isEnabled(module)) continue;
-        const stats = statFor(module.Item);
+        const stats = statsFor(module);
         if (module.Slot === 'Armour') {
             bulkhead = {
                 hullBoost: effectiveStat(module, 'hullBoost', stats) ?? 0,
-                ...resistancesOf(module),
+                ...resistancesOf(module, stats),
             };
         } else if (startsWithAny(module.Item, PREFIX.hullReinforcement)) {
             // A stock package has no hull boost; only an engineered one does, and then
@@ -289,7 +300,7 @@ export function armourInputFor(shipSymbol: string, modules: readonly LoadoutModu
                 hullReinforcement: effectiveStat(module, 'hullReinforcement', stats) ?? 0,
                 hullBoost:
                     boost === null ? 0 : boost / scaleForLabel('DefenceModifierHealthMultiplier'),
-                ...resistancesOf(module),
+                ...resistancesOf(module, stats),
             });
         } else if (startsWithAny(module.Item, PREFIX.moduleReinforcement)) {
             moduleReinforcements.push({
@@ -349,8 +360,10 @@ const WEAPON_FIELDS = [
  * rebuilt from the parts whenever one of them has been engineered. And the **falloff
  * range** is held to the weapon's maximum range, as Coriolis's `getFalloff` does.
  */
-export function weaponStatsFor(module: LoadoutModule): WeaponStats | null {
-    const stats = statFor(module.Item);
+export function weaponStatsFor(
+    module: LoadoutModule,
+    stats: OutfittingModule | null = statFor(module.Item),
+): WeaponStats | null {
     if (!stats || stats.category !== 'hardpoint') return null;
     const weapon: Record<string, unknown> = {};
     for (const field of WEAPON_FIELDS) {

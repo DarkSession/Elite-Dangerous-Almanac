@@ -136,6 +136,26 @@ test('the internal journal-label table is not a package export', async () => {
     });
 });
 
+test('the build does not emit entry artifacts for inaccessible internal modules', async () => {
+    const internalEntries = [
+        'commodities/commodity-catalogue',
+        'materials/material-catalogue',
+        'ships/engineering-compatibility',
+        'ships/loadout-engineering',
+        'ships/loadout-metrics',
+        'ships/module-stat-labels',
+    ];
+    for (const entry of internalEntries) {
+        for (const extension of ['js', 'd.ts']) {
+            await assert.rejects(
+                readFile(new URL(`./dist/${entry}.${extension}`, import.meta.url)),
+                { code: 'ENOENT' },
+                `dist/${entry}.${extension} should not be emitted`,
+            );
+        }
+    }
+});
+
 test('the data-free build calculations are importable on their own', async () => {
     const { powerBudget } = await import('@elite-dangerous-almanac/core/ships/power');
     const { stackShieldResistance } =

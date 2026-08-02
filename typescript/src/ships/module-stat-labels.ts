@@ -168,6 +168,16 @@ export const STAT_LABELS: readonly StatLabel[] = [
 
 const BY_LABEL = new Map(STAT_LABELS.map((entry) => [entry.label, entry]));
 
+const LABELS_BY_FIELD: ReadonlyMap<keyof OutfittingModule, readonly string[]> = (() => {
+    const labels = new Map<keyof OutfittingModule, string[]>();
+    for (const entry of STAT_LABELS) {
+        const fieldLabels = labels.get(entry.field) ?? [];
+        fieldLabels.push(entry.label);
+        labels.set(entry.field, fieldLabels);
+    }
+    return labels;
+})();
+
 /**
  * Convert catalogue stats to base values keyed by journal Modifier Label, **in the
  * journal's own units** — so the modifiers {@link computeModifiers} returns are
@@ -230,6 +240,6 @@ export function multiplierBaseForLabel(label: string): number | null {
  *
  * @internal
  */
-export function labelsForField(field: keyof OutfittingModule): string[] {
-    return STAT_LABELS.filter((entry) => entry.field === field).map((entry) => entry.label);
+export function labelsForField(field: keyof OutfittingModule): readonly string[] {
+    return LABELS_BY_FIELD.get(field) ?? [];
 }

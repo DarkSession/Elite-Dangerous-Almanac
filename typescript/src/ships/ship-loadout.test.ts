@@ -14,6 +14,8 @@ import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'j
 import { ALL_MODULES } from './modules-all.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff } from './weapons.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
+import { getPreEngineeredStats } from './pre-engineered-stats.js';
 
 const mod = (symbol: string, catalogue = CORE_MODULES) => getModuleBySymbol(symbol, catalogue)!;
 
@@ -544,6 +546,26 @@ test('clearEngineering restores base stats', () => {
     assert.equal(build.getFittedModule('FrameShiftDrive')?.Engineering, undefined);
     assert.ok(build.frameShiftDrive.optMass < engineered); // back to base 1800
     assert.equal(build.frameShiftDrive.optMass, 1800);
+});
+
+test('resolved pre-engineered stats survive fitting and drive build calculations', () => {
+    const variant = getPreEngineeredVariants('Int_Hyperdrive_Size5_Class5').find(
+        (candidate) => candidate.blueprint === 'FSD_LongRange',
+    )!;
+    const resolved = getPreEngineeredStats(variant)!;
+    assert.equal(resolved.mass, 26);
+    assert.equal(resolved.optMass, 1785);
+
+    const build = ShipLoadout.empty('Anaconda').setModule('FrameShiftDrive', resolved);
+    const fitted = build.getFittedModule('FrameShiftDrive')!;
+    assert.equal(fitted.stats?.mass, 26);
+    assert.equal(fitted.effectiveStats?.optMass, 1785);
+    assert.equal(build.unladenMass, 426); // 400 t hull + the fitted 26 t V1 drive
+    assert.equal(build.frameShiftDrive.optMass, 1785);
+
+    // Fitting snapshots the supplied record; later caller mutation cannot change a build.
+    (resolved as { mass?: number }).mass = 999;
+    assert.equal(build.unladenMass, 426);
 });
 
 // ── Fluent slot + fitted-module handles ─────────────────────────────────────

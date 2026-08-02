@@ -13,14 +13,19 @@ import {
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { baseStats, fieldForLabel } from './module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
-import { getModuleBySymbol, type OutfittingModule } from './modules.js';
+import type { OutfittingModule } from './modules.js';
 import type { AvailableBlueprint } from './ship-loadout.js';
 
 export { baseStats };
 
+/** The complete catalogue is already part of the loadout facade; index it once. */
+const MODULE_BY_SYMBOL: ReadonlyMap<string, OutfittingModule> = new Map(
+    ALL_MODULES.map((module) => [module.symbol.toLowerCase(), module]),
+);
+
 /** Resolve a module's complete catalogue record across every category. @internal */
 export function statFor(item: string): OutfittingModule | null {
-    return getModuleBySymbol(item, ALL_MODULES);
+    return MODULE_BY_SYMBOL.get(item.trim().toLowerCase()) ?? null;
 }
 
 /**

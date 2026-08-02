@@ -4,11 +4,7 @@
  * @packageDocumentation
  */
 
-import {
-    availableBlueprintsFor,
-    availableExperimentalsFor,
-    statFor,
-} from './loadout-engineering.js';
+import { availableBlueprintsFor, availableExperimentalsFor } from './loadout-engineering.js';
 import { effectiveModule } from './loadout-metrics.js';
 import type { OutfittingModule } from './modules.js';
 import type { ApplyBlueprintOptions, AvailableBlueprint, ShipLoadout } from './ship-loadout.js';
@@ -34,6 +30,7 @@ export class FittedModule {
     readonly #slotKey: string;
     #slotVersion: number;
     readonly #currentSlotVersion: () => number;
+    readonly #currentStats: () => OutfittingModule | null;
 
     /** @internal Constructed by {@link ShipLoadout}; not part of the public API. */
     constructor(
@@ -41,11 +38,13 @@ export class FittedModule {
         slotKey: string,
         slotVersion: number,
         currentSlotVersion: () => number,
+        currentStats: () => OutfittingModule | null,
     ) {
         this.#loadout = loadout;
         this.#slotKey = slotKey;
         this.#slotVersion = slotVersion;
         this.#currentSlotVersion = currentSlotVersion;
+        this.#currentStats = currentStats;
     }
 
     #raw(): LoadoutModule {
@@ -138,9 +137,10 @@ export class FittedModule {
         return this.#raw();
     }
 
-    /** The module's complete base catalogue record, or `null` if unknown. */
+    /** The snapshotted record fitted into this build, or `null` if unknown. */
     get stats(): OutfittingModule | null {
-        return statFor(this.#raw().Item);
+        this.#raw();
+        return this.#currentStats();
     }
 
     /**
@@ -157,7 +157,7 @@ export class FittedModule {
      * ```
      */
     get effectiveStats(): OutfittingModule | null {
-        return effectiveModule(this.#raw());
+        return effectiveModule(this.#raw(), this.#currentStats());
     }
 
     /**

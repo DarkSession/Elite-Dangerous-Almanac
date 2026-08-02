@@ -162,6 +162,14 @@ export function getCommodityByName(
 export function commoditiesInCategory(
     category: CommodityCategory,
     commodities: readonly Commodity[],
+): Commodity[];
+export function commoditiesInCategory(
+    category: string,
+    commodities: readonly Commodity[],
+): Commodity[];
+export function commoditiesInCategory(
+    category: string,
+    commodities: readonly Commodity[],
 ): Commodity[] {
     const wanted = normalize(category);
     return commodities.filter((commodity) => normalize(commodity.category) === wanted);

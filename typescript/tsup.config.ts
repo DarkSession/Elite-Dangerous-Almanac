@@ -5,7 +5,7 @@ import { stripJsonComments } from './scripts/jsonc.mjs';
 /**
  * Builds the library to `dist/` as tree-shakeable ESM with type declarations.
  *
- * **One entry per source module**, not just per subpath barrel. This is what makes
+ * **One entry per public source module**, not just per subpath barrel. This is what makes
  * the tree-shaking promise real: if the two barrels (`src/index.ts`,
  * `src/astro/index.ts`) were the only entries, `splitting` would fuse every module
  * and its inlined JSON into one shared chunk, so a consumer importing a single leaf
@@ -21,17 +21,25 @@ import { stripJsonComments } from './scripts/jsonc.mjs';
  * esbuild's `json` loader rejects comments, hence the `jsonc` plugin below.
  */
 export default defineConfig({
-    // Each module is its own entry (tests excluded); the barrels re-export them.
+    // Each public module is its own entry; tests and export-map-blocked implementation
+    // details are excluded. The latter are still bundled into public modules that use
+    // them, but do not get misleading standalone JavaScript/declaration artifacts.
     entry: [
         'src/index.ts',
         'src/astro/*.ts',
         '!src/astro/*.test.ts',
         'src/materials/*.ts',
         '!src/materials/*.test.ts',
+        '!src/materials/material-catalogue.ts',
         'src/ships/*.ts',
         '!src/ships/*.test.ts',
+        '!src/ships/engineering-compatibility.ts',
+        '!src/ships/loadout-engineering.ts',
+        '!src/ships/loadout-metrics.ts',
+        '!src/ships/module-stat-labels.ts',
         'src/commodities/*.ts',
         '!src/commodities/*.test.ts',
+        '!src/commodities/commodity-catalogue.ts',
     ],
     format: ['esm'],
     dts: true,

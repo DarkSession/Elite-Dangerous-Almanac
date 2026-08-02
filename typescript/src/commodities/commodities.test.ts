@@ -100,14 +100,14 @@ test('commoditiesInCategory ignores case and whitespace, like every other lookup
     assert.ok(metals.length > 0);
     for (const spelling of ['metals', 'METALS', ' Metals ']) {
         assert.deepEqual(
-            commoditiesInCategory(spelling as CommodityCategory, COMMODITIES),
+            commoditiesInCategory(spelling, COMMODITIES),
             metals,
             `${spelling} should resolve like 'Metals'`,
         );
     }
     // Multi-word groups too, where a caller is most likely to re-case.
     assert.deepEqual(
-        commoditiesInCategory('consumer items' as CommodityCategory, COMMODITIES),
+        commoditiesInCategory('consumer items', COMMODITIES),
         commoditiesInCategory('Consumer Items', COMMODITIES),
     );
 });

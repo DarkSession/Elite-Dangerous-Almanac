@@ -18,7 +18,7 @@ import internalModulesData from '../../../data/ships/modules-internal.jsonc' wit
 import { deepFreeze } from '../deep-freeze.js';
 
 /**
- * All 482 optional internal modules, in Frontier's registry order.
+ * All 483 optional internal modules, in Frontier's registry order.
  *
  * @remarks
  * Every record has `category: 'internal'`. Search it with the query functions from
@@ -26,7 +26,7 @@ import { deepFreeze } from '../deep-freeze.js';
  *
  * @example
  * ```ts
- * INTERNAL_MODULES.length; // -> 482
+ * INTERNAL_MODULES.length; // -> 483
  * ```
  */
 export const INTERNAL_MODULES: readonly OutfittingModule[] = deepFreeze(

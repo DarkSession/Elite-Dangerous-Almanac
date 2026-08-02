@@ -17,6 +17,9 @@
  * Editing an imported build adjusts the supplied aggregate figures by the changed
  * module's contribution; when that contribution is unknown, the affected figure is
  * discarded and recomputed rather than allowed to go stale.
+ * `setModule` snapshots the complete record it receives, including resolved
+ * pre-engineered or caller-supplied stats, so every later metric uses the article that
+ * was actually fitted rather than resolving its symbol back to a stock module.
  *
  * @remarks
  * This is the batteries-included ship facade: resolving arbitrary journal module
@@ -76,6 +79,7 @@ import { armourMetrics, type ArmourMetrics } from './armour.js';
 import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.js';
 import { FittedModule } from './fitted-module.js';
 import { LoadoutSlot } from './loadout-slot.js';
+import { deepFreeze } from '../deep-freeze.js';
 
 export { FittedModule } from './fitted-module.js';
 export { LoadoutSlot } from './loadout-slot.js';
@@ -246,6 +250,19 @@ function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
     };
 }
 
+/** Snapshot caller-supplied stats so later caller mutation cannot alter the build. */
+function cloneModuleStats(module: OutfittingModule): OutfittingModule {
+    return deepFreeze({
+        ...module,
+        ...(module.restrictedToShips === undefined
+            ? {}
+            : { restrictedToShips: [...module.restrictedToShips] }),
+        ...(module.damageDistribution === undefined
+            ? {}
+            : { damageDistribution: { ...module.damageDistribution } }),
+    });
+}
+
 /**
  * A fitted ship — read a SLEF export, or assemble a hull from scratch.
  *
@@ -259,6 +276,7 @@ function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
 export class ShipLoadout {
     readonly #shipSymbol: string;
     readonly #modules: Map<string, LoadoutModule>;
+    readonly #moduleStats = new Map<string, OutfittingModule>();
     readonly #top: TopFigures;
     readonly #slotVersions = new Map<string, number>();
 
@@ -512,6 +530,7 @@ export class ShipLoadout {
                   slotKey,
                   this.#slotVersions.get(slotKey) ?? 0,
                   () => this.#slotVersions.get(slotKey) ?? 0,
+                  () => this.#statsFor(this.#modules.get(slotKey) ?? null),
               )
             : null;
     }
@@ -558,7 +577,8 @@ export class ShipLoadout {
      *
      * @param slotKey - The slot key to fit into, matched exactly (journal spelling).
      * @param module - The module to fit (resolve it from a catalogue first, e.g. with
-     * {@link getModuleBySymbol}).
+     * {@link getModuleBySymbol}). The complete record is snapshotted, so a result from
+     * `getPreEngineeredStats` or a caller-supplied catalogue keeps its resolved stats.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the hull has no slot with that key.
      * @throws {TypeError} If `module` is null/undefined (e.g. a `getModuleBySymbol`
@@ -585,7 +605,11 @@ export class ShipLoadout {
         if (problem) {
             throw new TypeError(`ShipLoadout.setModule: ${module.symbol} → ${slotKey}: ${problem}`);
         }
-        this.#replaceModule(slotKey, { Slot: slotKey, Item: module.symbol });
+        this.#replaceModule(
+            slotKey,
+            { Slot: slotKey, Item: module.symbol },
+            cloneModuleStats(module),
+        );
         return this;
     }
 
@@ -638,7 +662,7 @@ export class ShipLoadout {
         if (!module) {
             throw new RangeError(`ShipLoadout.applyBlueprint: slot "${slotKey}" is empty`);
         }
-        const stats = statFor(module.Item);
+        const stats = this.#statsFor(module);
         if (!stats) {
             throw new TypeError(`ShipLoadout.applyBlueprint: no stats for module "${module.Item}"`);
         }
@@ -874,10 +898,13 @@ export class ShipLoadout {
         const modules = [...this.#modules.values()];
         const consumers: PowerConsumer[] = [];
         for (const module of modules) {
-            const consumer = powerConsumerFor(module);
+            const consumer = powerConsumerFor(module, this.#statsFor(module));
             if (consumer) consumers.push(consumer);
         }
-        return powerBudget(powerAvailable(modules), consumers);
+        return powerBudget(
+            powerAvailable(modules, (module) => this.#statsFor(module)),
+            consumers,
+        );
     }
 
     /**
@@ -906,6 +933,7 @@ export class ShipLoadout {
             this.#shipSymbol,
             [...this.#modules.values()],
             options.systemsPips ?? 0,
+            (module) => this.#statsFor(module),
         );
         if (!input.generator) return null;
         return shieldMetrics(input);
@@ -927,7 +955,11 @@ export class ShipLoadout {
      * ```
      */
     armourMetrics(): ArmourMetrics {
-        return armourMetrics(armourInputFor(this.#shipSymbol, [...this.#modules.values()]));
+        return armourMetrics(
+            armourInputFor(this.#shipSymbol, [...this.#modules.values()], (module) =>
+                this.#statsFor(module),
+            ),
+        );
     }
 
     /**
@@ -951,9 +983,9 @@ export class ShipLoadout {
     weaponMetrics(): BuildWeaponMetrics {
         const weapons: FittedWeaponMetrics[] = [];
         for (const module of this.#modules.values()) {
-            const stats = weaponStatsFor(module);
+            const record = this.#statsFor(module);
+            const stats = weaponStatsFor(module, record);
             if (!stats) continue;
-            const record = statFor(module.Item);
             weapons.push({
                 slot: module.Slot,
                 symbol: module.Item,
@@ -1083,11 +1115,20 @@ export class ShipLoadout {
     }
 
     /** Replace one fitted module and keep imported aggregate figures coherent. */
-    #replaceModule(slotKey: string, replacement: LoadoutModule | null): void {
+    #replaceModule(
+        slotKey: string,
+        replacement: LoadoutModule | null,
+        replacementStats?: OutfittingModule,
+    ): void {
         const previous = this.#modules.get(slotKey) ?? null;
-        this.#adjustImportedFigures(previous, replacement);
-        if (replacement === null) this.#modules.delete(slotKey);
-        else this.#modules.set(slotKey, cloneLoadoutModule(replacement));
+        this.#adjustImportedFigures(previous, replacement, replacementStats);
+        if (replacement === null) {
+            this.#modules.delete(slotKey);
+            this.#moduleStats.delete(slotKey);
+        } else {
+            this.#modules.set(slotKey, cloneLoadoutModule(replacement));
+            if (replacementStats !== undefined) this.#moduleStats.set(slotKey, replacementStats);
+        }
         this.#slotVersions.set(slotKey, (this.#slotVersions.get(slotKey) ?? 0) + 1);
     }
 
@@ -1095,23 +1136,27 @@ export class ShipLoadout {
      * Adjust SLEF aggregates by the changed module's contribution. If either side
      * cannot be resolved, discard that aggregate so its getter recomputes safely.
      */
-    #adjustImportedFigures(previous: LoadoutModule | null, next: LoadoutModule | null): void {
+    #adjustImportedFigures(
+        previous: LoadoutModule | null,
+        next: LoadoutModule | null,
+        nextStats?: OutfittingModule,
+    ): void {
         const previousMass = this.#moduleMass(previous);
-        const nextMass = this.#moduleMass(next);
+        const nextMass = this.#moduleMass(next, nextStats);
         if (this.#top.UnladenMass !== undefined) {
             if (previousMass === null || nextMass === null) delete this.#top.UnladenMass;
             else this.#top.UnladenMass += nextMass - previousMass;
         }
 
         const previousCargo = this.#moduleCapacity(previous, 'CargoCapacity', 'cargoCapacity');
-        const nextCargo = this.#moduleCapacity(next, 'CargoCapacity', 'cargoCapacity');
+        const nextCargo = this.#moduleCapacity(next, 'CargoCapacity', 'cargoCapacity', nextStats);
         if (this.#top.CargoCapacity !== undefined) {
             if (previousCargo === null || nextCargo === null) delete this.#top.CargoCapacity;
             else this.#top.CargoCapacity += nextCargo - previousCargo;
         }
 
         const previousFuel = this.#moduleCapacity(previous, 'FuelCapacity', 'fuelCapacity');
-        const nextFuel = this.#moduleCapacity(next, 'FuelCapacity', 'fuelCapacity');
+        const nextFuel = this.#moduleCapacity(next, 'FuelCapacity', 'fuelCapacity', nextStats);
         if (this.#top.FuelCapacity?.Main !== undefined) {
             const reserve = this.#top.FuelCapacity.Reserve;
             if (previousFuel === null || nextFuel === null) {
@@ -1131,11 +1176,11 @@ export class ShipLoadout {
     }
 
     /** A module's post-engineering mass, `0` for no module, or `null` if unknown. */
-    #moduleMass(module: LoadoutModule | null): number | null {
+    #moduleMass(module: LoadoutModule | null, statsOverride?: OutfittingModule): number | null {
         if (module === null) return 0;
         const modified = getLoadoutModifier(module, 'Mass');
         if (modified !== null) return modified;
-        const stats = statFor(module.Item);
+        const stats = statsOverride ?? this.#statsFor(module);
         if (stats?.mass !== undefined) return stats.mass;
         if (module.Slot === 'CargoHatch' && module.Item.toLowerCase() === 'modularcargobaydoor') {
             return 0;
@@ -1151,11 +1196,12 @@ export class ShipLoadout {
         module: LoadoutModule | null,
         modifierLabel: 'CargoCapacity' | 'FuelCapacity',
         field: 'cargoCapacity' | 'fuelCapacity',
+        statsOverride?: OutfittingModule,
     ): number | null {
         if (module === null) return 0;
         const modified = getLoadoutModifier(module, modifierLabel);
         if (modified !== null) return modified;
-        const stats = statFor(module.Item);
+        const stats = statsOverride ?? this.#statsFor(module);
         if (stats?.[field] !== undefined) return stats[field];
         const symbol = module.Item.toLowerCase();
         const shouldCarryCapacity =
@@ -1174,7 +1220,7 @@ export class ShipLoadout {
             }
         }
         if (!fsdModule) return null;
-        const base = statFor(fsdModule.Item);
+        const base = this.#statsFor(fsdModule);
         if (!base || base.fuelMul === undefined || base.fuelPower === undefined) {
             // A drive is fitted, but the stats catalogue has no jump constants for it
             // (an unrecognised / newer drive id). Fail with a diagnosable message
@@ -1201,8 +1247,14 @@ export class ShipLoadout {
         for (const m of this.#modules.values()) {
             if (!m.Item.toLowerCase().startsWith(BOOSTER_PREFIX)) continue;
             if (m.On === false) continue; // an unpowered booster gives no bonus
-            return statFor(m.Item)?.jumpBoost ?? 0;
+            return this.#statsFor(m)?.jumpBoost ?? 0;
         }
         return 0;
+    }
+
+    /** Resolve the snapshotted fitted record, or fall back to the built-in catalogue. */
+    #statsFor(module: LoadoutModule | null): OutfittingModule | null {
+        if (module === null) return null;
+        return this.#moduleStats.get(module.Slot) ?? statFor(module.Item);
     }
 }

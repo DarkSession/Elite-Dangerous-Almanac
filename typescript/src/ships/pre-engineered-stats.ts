@@ -65,12 +65,12 @@ export function getPreEngineeredModifiers(variant: PreEngineeredVariant): Engine
 }
 
 /**
- * The labels a variant modifies that the module catalogues hold no base value for.
+ * The labels a variant modifies that cannot be computed for its particular base module.
  *
- * Now that the catalogues carry the weapon stats too, this is almost always empty —
- * what remains are the scanner stats (probe radius and the like) nothing holds a base
- * for. Reported rather than dropped so a consumer can tell the difference between "this
- * variant changes nothing else" and "this catalogue cannot say".
+ * This includes both labels the catalogues do not model at all (a scanner's probe
+ * radius, say) and known fields whose base value is absent from this particular module.
+ * Reported rather than dropped so a consumer can distinguish "this variant changes
+ * nothing else" from "this catalogue cannot say".
  *
  * @param variant - A pre-engineered variant.
  * @returns The unresolvable labels, in the variant's own order.
@@ -81,9 +81,10 @@ export function getPreEngineeredModifiers(variant: PreEngineeredVariant): Engine
  * ```
  */
 export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
+    const resolved = new Set(getPreEngineeredModifiers(variant).map((modifier) => modifier.Label));
     return (variant.modifiers ?? [])
-        .map((m) => m.label)
-        .filter((label) => fieldForLabel(label) === null);
+        .map((modifier) => modifier.label)
+        .filter((label) => !resolved.has(label));
 }
 
 /**

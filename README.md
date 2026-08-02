@@ -939,17 +939,24 @@ import {
   getPreEngineeredStats,
   unresolvedModifiers,
 } from "@elite-dangerous-almanac/core/ships/pre-engineered-stats";
+import { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
 
 const [fsdV1] = getPreEngineeredVariants("Int_Hyperdrive_Size5_Class5");
-getPreEngineeredStats(fsdV1); // -> { …, optMass: 1785, mass: 26, integrity: 84, … }
+const resolvedFsd = getPreEngineeredStats(fsdV1)!;
+// -> { …, optMass: 1785, mass: 26, integrity: 84, … }
 // the stock 5A drive has optMass 1050 — this is the "V1" drive's known 1785
+
+const build = ShipLoadout.empty("Anaconda").setModule(
+  "FrameShiftDrive",
+  resolvedFsd,
+);
+build.frameShiftDrive.optMass; // -> 1785; fitting preserves the reward's resolved stats
 ```
 
-> **Weapon stats are not resolvable.** The module catalogues carry core and
-> optional-internal stats, not `Damage` or `AmmoClipSize`, so a weapon variant's
-> damage-side modifiers have no base value to apply to. They are reported by
-> `unresolvedModifiers` rather than dropped silently; mass, integrity and power draw
-> still resolve, which is what a power-and-mass budget needs.
+> **Weapon stats resolve too.** The module catalogues carry damage, range, rate-of-fire
+> and ammunition stats, so weapon variants resolve those alongside mass, integrity and
+> power draw. The few labels for which no catalogue has a base value (such as scanner
+> probe radius) are reported by `unresolvedModifiers` rather than dropped silently.
 
 > **A reward variant is not reproducible by engineering.** Those hand-set modifiers are
 > what make it a reward. The recorded blueprint/grade/experimental **identify** it; they

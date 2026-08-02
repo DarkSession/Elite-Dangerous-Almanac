@@ -136,6 +136,14 @@ export function getMicroResourceByName(
 export function microResourcesInCategory(
     category: MicroResourceCategory,
     microResources: readonly MicroResource[],
+): MicroResource[];
+export function microResourcesInCategory(
+    category: string,
+    microResources: readonly MicroResource[],
+): MicroResource[];
+export function microResourcesInCategory(
+    category: string,
+    microResources: readonly MicroResource[],
 ): MicroResource[] {
     const wanted = normalize(category);
     return microResources.filter((resource) => normalize(resource.category) === wanted);

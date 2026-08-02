@@ -259,7 +259,9 @@ export function materialsByGrade(grade: MaterialGrade, materials: readonly Mater
  * // -> [1, 2, 3, 4, 5]
  * ```
  */
-export function materialsInLine(line: MaterialLine, materials: readonly Material[]): Material[] {
+export function materialsInLine(line: MaterialLine, materials: readonly Material[]): Material[];
+export function materialsInLine(line: string, materials: readonly Material[]): Material[];
+export function materialsInLine(line: string, materials: readonly Material[]): Material[] {
     const wanted = normalize(line);
     return materials.filter((material) => normalize(material.line) === wanted);
 }
