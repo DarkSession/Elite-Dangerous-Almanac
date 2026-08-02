@@ -340,7 +340,7 @@ export interface OutfittingModule {
      *
      * Absent on the handful of records no registry prices: the starter `*_free`
      * variants, the size-8 frame shift drives, and a few reward-only internals. Treat
-     * `undefined` as "unknown", never as free — see `data/ships/SOURCES.md`.
+     * `undefined` as "unknown", never as free — see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
      */
     readonly cost?: number;
 }

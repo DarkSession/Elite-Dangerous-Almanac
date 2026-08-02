@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 
 import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-code';
@@ -164,6 +164,73 @@ test('the data-free build calculations are importable on their own', async () =>
     assert.equal(powerBudget(10, [{ draw: 4, priority: 1 }]).headroom, 6);
     assert.ok(Math.abs(stackShieldResistance(0, [0.1, 0.1]) - 0.19) < 1e-9);
     assert.equal(weaponMetrics({ damage: 2, rateOfFire: 3 }).damagePerSecond, 6);
+});
+
+test('each barrel ships its orientation documentation in the declarations', async () => {
+    // A barrel is pure re-exports, so tsup's declaration rollup emits a flat export
+    // list and drops the file-level comment. `scripts/attach-barrel-docs.mjs` puts it
+    // back. Without it, a consumer who opens (or goes to definition on) the module
+    // they just imported finds a bare export list, and the guidance that orients the
+    // feature area ships only to the repository.
+    const barrels = [
+        'index.d.ts',
+        'astro/index.d.ts',
+        'ships/index.d.ts',
+        'materials/index.d.ts',
+        'commodities/index.d.ts',
+    ];
+    for (const file of barrels) {
+        const text = await readFile(new URL(`./dist/${file}`, import.meta.url), 'utf8');
+        assert.ok(
+            text.startsWith('/**'),
+            `dist/${file} lost its @packageDocumentation block — run \`npm run build\``,
+        );
+        assert.ok(
+            text.includes('@packageDocumentation'),
+            `dist/${file} has no @packageDocumentation`,
+        );
+        // Match on size, not on prose: a reworded intro is fine, a lost one is not.
+        // The floor only has to separate "the guide" from "a stub" — the root barrel
+        // is the shortest real block at ~320 chars (it only points at the subpaths),
+        // the feature-area barrels run from ~980 to ~3100. Kept well clear of 320 so
+        // that trimming a sentence does not trip it with a misleading message.
+        const block = text.slice(0, text.indexOf('*/'));
+        assert.ok(
+            block.length > 150,
+            `dist/${file} has only a stub doc block (${block.length} chars) — expected the guide`,
+        );
+    }
+});
+
+test('data provenance references in the declarations are followable off-package', async () => {
+    // `data/` is not in `files`, so a bare `data/ships/SOURCES.md` in a TSDoc comment
+    // points at a file the consumer's node_modules does not contain — the reference a
+    // consumer follows to judge how current and how complete the catalogues are is the
+    // one they cannot reach. Every such reference must be an absolute URL.
+    const declarations = await readdir(new URL('./dist', import.meta.url), {
+        recursive: true,
+    });
+    const checked = [];
+    for (const name of declarations) {
+        if (!name.endsWith('.d.ts')) continue;
+        const text = await readFile(new URL(`./dist/${name}`, import.meta.url), 'utf8');
+        // Drop absolute markdown links first — whatever their label says, an
+        // `https://` target is followable. Matching on the target rather than the
+        // label matters: `[the provenance notes](https://…/data/astro/SOURCES.md)`
+        // is correct, and a label-based strip would flag the path inside its URL.
+        // A link with a *relative* target survives this and is still caught.
+        const bare = text.replace(/\[[^\]]*\]\(https:\/\/[^)]+\)/g, '');
+        // Deliberately broad: a directory (`data/astro/`, `data/commodities`), a
+        // top-level file (`data/SNAPSHOTS.md`), an unticked path, any extension and
+        // any case. Each is equally unreachable from a consumer's `node_modules`.
+        for (const match of bare.matchAll(/\bdata\/[\w.-]+(?:\/[\w.-]*)*/gi)) {
+            assert.fail(`dist/${name} references ${match[0]} relatively; use an absolute URL`);
+        }
+        if (text.includes('SOURCES.md')) checked.push(name);
+    }
+    // Guard the guard: if the traversal stops finding provenance references at all,
+    // the loop above starts passing vacuously.
+    assert.ok(checked.length > 20, `expected many provenance references, found ${checked.length}`);
 });
 
 test('the package omits unusable source maps whose sources are not published', async () => {

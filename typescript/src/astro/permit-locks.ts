@@ -34,7 +34,7 @@
  * system-level flag would be wrong for them.
  *
  * Sourced from the community "Elite Dangerous Permit Database" spreadsheet via
- * canonn-signals (MIT, © 2023 Canonn Research Group); see `data/astro/SOURCES.md`.
+ * canonn-signals (MIT, © 2023 Canonn Research Group); see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).
  *
  * @example
  * ```ts

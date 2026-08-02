@@ -4,7 +4,7 @@
  *
  * Search it with the query functions in `./micro-resources`.
  *
- * Data from EDCD FDevIDs (`microresources.csv`); see `data/materials/SOURCES.md`.
+ * Data from EDCD FDevIDs (`microresources.csv`); see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
  *
  * @packageDocumentation
  */

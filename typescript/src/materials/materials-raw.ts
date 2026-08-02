@@ -5,7 +5,7 @@
  * Each line is named after its grade-1 element: Carbon, Phosphorus, Sulphur, Iron,
  * Nickel, Rhenium, Lead. Search it with the query functions in `./materials`.
  *
- * Data from EDCD FDevIDs; see `data/materials/SOURCES.md`.
+ * Data from EDCD FDevIDs; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
  *
  * @packageDocumentation
  */

@@ -23,7 +23,7 @@ export interface PermitLockedSystem {
      * @remarks
      * Most of these systems are hand-named rather than procedural, so their address
      * cannot be computed from the name. It is recorded from Spansh/EDSM; see
-     * `data/astro/SOURCES.md`.
+     * [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).
      */
     readonly id64: bigint;
 }

@@ -61,7 +61,7 @@ export interface BlueprintFeature {
      * These are the journal's own labels, with one deliberate exception: the recipes
      * that shorten a weapon's fire interval carry `"BurstInterval"`, the stat they
      * change, where a journal reports the resulting `"RateOfFire"` instead. See
-     * `data/ships/SOURCES.md`.
+     * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
      */
     readonly label: string;
     /** How the value applies. */

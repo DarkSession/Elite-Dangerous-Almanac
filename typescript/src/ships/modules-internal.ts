@@ -8,7 +8,7 @@
  * `./modules-utility`, so importing this module never bundles them.
  *
  * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,
- * joined on `symbol`; see `data/ships/SOURCES.md`.
+ * joined on `symbol`; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

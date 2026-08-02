@@ -8,11 +8,11 @@
  * (Sol at the origin); membership is first-match sphere containment.
  *
  * Sphere records are compiled and cross-checked against EDSM and Spansh; see
- * `data/astro/SOURCES.md` for provenance and source terms.
+ * [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md) for provenance and source terms.
  *
  * The list is pre-sorted **smallest-radius-first**, which reproduces the game's
  * overlap priority: when spheres overlap, the most specific (smallest) region
- * wins. Data is loaded once from shared JSON (`data/astro/`).
+ * wins. Data is loaded once from shared JSON ([`data/astro/`](https://github.com/DarkSession/Elite-Dangerous-Almanac/tree/main/data/astro)).
  *
  * @remarks
  * "Region" is overloaded in this galaxy. A {@link HandAuthoredRegion} is a *hand-authored

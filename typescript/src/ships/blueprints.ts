@@ -15,7 +15,7 @@
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`): `features` from the
  * grade with journal Labels resolved via EDSY, `materials` from the grade's
  * `components` resolved to material symbols against the `materials` domain; see
- * `data/ships/SOURCES.md`.
+ * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

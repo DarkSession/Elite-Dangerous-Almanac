@@ -7,7 +7,7 @@
  * catalogue identity. About 19 KB bundled; the far larger planetary class lives in
  * `./nebulae-planetary`.
  *
- * Data from EDAstro (CMDR Orvidius); see `data/astro/SOURCES.md`.
+ * Data from EDAstro (CMDR Orvidius); see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).
  *
  * @packageDocumentation
  */

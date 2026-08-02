@@ -32,7 +32,8 @@ import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-co
 - `astro` supplies procedural naming, system-address conversion, regions,
   nebulae and permit locks.
 - `ships` supplies ship/module registries, stats, SLEF parsing, loadout editing,
-  engineering, and jump-range calculations.
+  engineering, and the build metrics an outfitting screen shows — jump range, power
+  budget, shield and armour strength with resistances, and weapon DPS.
 - `materials` supplies ship engineering materials and Odyssey micro resources.
 - `commodities` supplies standard and rare market-goods catalogues.
 
@@ -41,21 +42,61 @@ Each area has a barrel plus leaf subpaths for its data-heavy catalogues:
 ```ts
 import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
-import { getMaterialByName } from '@elite-dangerous-almanac/core/materials/materials';
+import {
+    getMaterialByName,
+    MaterialGrade,
+} from '@elite-dangerous-almanac/core/materials/materials';
 import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
 
 const system = StarSystem.fromName('Synuefe EN-H d11-96');
 system?.systemAddress; // 3309179996515n
 
 getShipBySymbol('empire_trader')?.name; // 'Imperial Clipper'
-getMaterialByName('iron', RAW_MATERIALS)?.grade; // 1
+getMaterialByName('iron', RAW_MATERIALS)?.grade; // MaterialGrade.VeryCommon (1)
 ```
 
-`ShipLoadout` validates module fits and engineering compatibility. When an imported
-SLEF build is edited, its supplied mass/capacity figures are adjusted when possible;
-an aggregate that cannot be updated safely is discarded and recomputed.
+## Working with a whole build
 
-## Three things worth knowing before you start
+`ShipLoadout` is the batteries-included facade: give it a SLEF export or a journal
+`Loadout` event and it answers what an outfitting screen shows. Every figure is
+post-engineering — the build's own modifiers are applied first — and modules switched
+off are left out.
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+const build = ShipLoadout.fromSlef(slefJsonString); // or .fromLoadout(journalEvent)
+
+build.maxJumpRange(); // -> 89.41  best single jump (one jump's fuel, no cargo)
+
+const power = build.powerBudget();
+power.available; // -> 22.85 MW generated
+power.headroom; // -> available - deployed; negative means over budget
+power.withinBudget; // -> true
+
+build.shieldMetrics()?.strength; // -> 230.65 MJ (shieldMetrics() is null with no generator)
+build.armourMetrics().hitPoints; // -> 819.72
+
+// Weapons are totalled the same way. The figures above are a real exploration build,
+// which carries no hardpoints, so its own weapon totals are 0 — an armed build reports:
+build.weaponMetrics().total.damagePerSecond; // -> DPS, engineering applied
+build.weaponMetrics().weapons; // -> the same figures per hardpoint
+```
+
+Resistances come back as **fractions**, not percentages: `-0.2` is a 20% weakness, and
+they do not simply add — see `ships/resistances` for the stacking rules.
+
+It also validates module fits and engineering compatibility. When an imported SLEF
+build is edited, its supplied mass/capacity figures are adjusted when possible; an
+aggregate that cannot be updated safely is discarded and recomputed.
+
+`ShipLoadout` pulls in every catalogue (~589 KB minified) because it must resolve any
+module id. When you only need one answer, the calculations are also data-free leaf
+modules of roughly 0.6–3 KB each: `ships/jump-range`, `ships/power`, `ships/shields`,
+`ships/armour`, `ships/weapons`, `ships/resistances`, and `ships/slef` for parsing
+alone.
+
+## Four things worth knowing before you start
 
 - **System addresses.** Anything taking an `id64` accepts a `bigint`, a `number` (a
   normally parsed journal `SystemAddress`), or a decimal string; addresses come back as
@@ -67,6 +108,12 @@ an aggregate that cannot be updated safely is discarded and recomputed.
   what `sectorNameFromCoords` takes. They are structurally identical, so TypeScript will
   not catch a mix-up — convert with `sectorCoordsFromGalacticCoords`, or call
   `sectorNameFromGalacticCoords` directly.
+- **`symbol` vs. `fdname`.** Both are Frontier's own internal ids, and a journal carries
+  both, but they key different catalogues. Ships and modules are looked up by **`symbol`**
+  — the `Ship` / `Item` string, e.g. `'empire_trader'`, `'Int_Hyperdrive_Size6_Class5'`
+  (`getShipBySymbol`, `getModuleBySymbol`). Blueprints and experimental effects are looked
+  up by **`fdname`** — the `Engineering.BlueprintName` / `ExperimentalEffect` string, e.g.
+  `'FSD_LongRange'`, `'special_fsd_heavy'` (`getBlueprint`, `getExperimentalEffect`).
 - **Failure is split by cause.** Lookups return `null`; malformed input throws
   `TypeError`; out-of-range input throws `RangeError`. `StarSystem.fromName` returns
   `null` for any non-procedural name, including real hand-named systems like `Sol`.
@@ -81,8 +128,10 @@ for the complete API guide. Report problems in the
 
 ## Data freshness and credits
 
-The checked-in catalogues are snapshot **2026-07-24**. Provenance and the metadata
-required for future updates are documented in
+The checked-in catalogues are snapshot **2026-07-24**, plus one market commodity
+(`curatedcommodity`) added 2026-08-02 from a player-journal observation rather than
+from an upstream registry — its market category is a maintainer assignment. Provenance
+and the metadata required for future updates are documented in
 [data/SNAPSHOTS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/SNAPSHOTS.md).
 
 Third-party data and algorithm credits are included in

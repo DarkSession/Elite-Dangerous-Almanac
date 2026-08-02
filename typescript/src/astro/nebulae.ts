@@ -23,7 +23,7 @@
  *
  * Positions are galactic light-years with Sol at the origin — the same frame the
  * journal, EDSM and Spansh use. Catalogue data originates from EDAstro
- * (CMDR Orvidius); see `data/astro/SOURCES.md`.
+ * (CMDR Orvidius); see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).
  *
  * @example
  * ```ts

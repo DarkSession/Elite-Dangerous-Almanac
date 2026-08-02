@@ -4,7 +4,7 @@
  *
  * The region a system belongs to is fixed by its position on a flat ≈49.35 ly
  * (`4096 / 83` ly) grid over the galactic plane. Each region's cells are stored as
- * run-length geometry in `data/astro/galactic-region-cells.jsonc` (kept separate
+ * run-length geometry in [`data/astro/galactic-region-cells.jsonc`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/galactic-region-cells.jsonc) (kept separate
  * from the lightweight metadata so metadata-only consumers never bundle it); this
  * module rebuilds a per-row lookup index from them. The per-region metadata objects
  * live in `./galactic-region`.
@@ -19,7 +19,7 @@
  * data file's attribution.
  *
  * Algorithm ported from klightspeed's EliteDangerousRegionMap (`RegionMap.js`),
- * MIT © Ben Peddell. See `data/astro/galactic-region-cells.jsonc` for attribution.
+ * MIT © Ben Peddell. See [`data/astro/galactic-region-cells.jsonc`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/galactic-region-cells.jsonc) for attribution.
  *
  * @packageDocumentation
  */

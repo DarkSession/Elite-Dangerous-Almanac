@@ -9,7 +9,7 @@
  * bundles the whole ship list — which is what you wanted anyway.
  *
  * Identity from EDCD FDevIDs (`shipyard.csv`); stats and slot layout from
- * EDCD/coriolis-data, joined on `symbol`; see `data/ships/SOURCES.md`.
+ * EDCD/coriolis-data, joined on `symbol`; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

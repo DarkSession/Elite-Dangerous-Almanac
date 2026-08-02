@@ -22,7 +22,7 @@
  * whichever catalogue you imported.
  *
  * Data originates from EDCD FDevIDs, with a handful of newer Thargoid materials
- * from INARA; see `data/materials/SOURCES.md`.
+ * from INARA; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
  *
  * @example
  * ```ts

@@ -44,7 +44,7 @@
  * a method ({@link ShipLoadout.maxJumpRange}).
  *
  * Identity from EDCD FDevIDs (`shipyard.csv`, `outfitting.csv`); stats and slot
- * layouts from EDCD/coriolis-data; see `data/ships/SOURCES.md`.
+ * layouts from EDCD/coriolis-data; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

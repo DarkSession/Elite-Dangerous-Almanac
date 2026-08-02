@@ -1,7 +1,7 @@
 {
     "name": "@elite-dangerous-almanac/core",
     "version": "0.0.1",
-    "description": "Elite Dangerous static data and calculations: procedural system naming and id64 addresses, galactic regions, nebulae, ships and outfitting with jump range, engineering materials, and market commodities.",
+    "description": "Elite Dangerous static data and calculations: procedural system naming and id64 addresses, galactic regions, nebulae, ships and outfitting with build metrics (jump range, power, shields, armour, weapon DPS), engineering materials, and market commodities.",
     "type": "module",
     "sideEffects": false,
     "license": "SEE LICENSE IN LICENSE",
@@ -29,7 +29,13 @@
         "commodities",
         "trading",
         "slef",
+        "loadout",
         "jump-range",
+        "build-metrics",
+        "dps",
+        "shields",
+        "armour",
+        "power",
         "game-data",
         "esm",
         "typescript"
@@ -88,7 +94,7 @@
         "THIRD_PARTY_NOTICES.md"
     ],
     "scripts": {
-        "build": "node scripts/copy-notices.mjs && tsup",
+        "build": "node scripts/copy-notices.mjs && tsup && node scripts/attach-barrel-docs.mjs",
         "check": "npm run lint && npm run format:check && npm run typecheck && npm test",
         "format": "prettier --write . ../README.md ../schemas/**/*.{json,md} ../.github/workflows/*.yml",
         "format:check": "prettier --check . ../README.md ../schemas/**/*.{json,md} ../.github/workflows/*.yml",

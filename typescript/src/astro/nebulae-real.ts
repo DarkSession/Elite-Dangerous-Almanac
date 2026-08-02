@@ -8,7 +8,7 @@
  * generated classes live in `./nebulae-planetary` and `./nebulae-procgen`, so
  * importing this module never bundles them.
  *
- * Data from EDAstro (CMDR Orvidius); see `data/astro/SOURCES.md`.
+ * Data from EDAstro (CMDR Orvidius); see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).
  *
  * @packageDocumentation
  */

@@ -14,7 +14,7 @@
  * display names. Enumerate the available effects with `Object.keys(EXPERIMENTAL_EFFECTS)`.
  *
  * Data from EDSY (`eddb.js` `expeffect`) — coriolis-data does not carry the numeric
- * experimental modifiers or their recipes; see `data/ships/SOURCES.md`.
+ * experimental modifiers or their recipes; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

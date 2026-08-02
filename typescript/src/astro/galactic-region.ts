@@ -12,7 +12,7 @@
  *
  * The region ids and names come from klightspeed's EliteDangerousRegionMap; the
  * footprint fields are derived from its grayscale region map. See the attribution
- * in `data/astro/galactic-regions.jsonc`.
+ * in [`data/astro/galactic-regions.jsonc`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/galactic-regions.jsonc).
  *
  * @remarks
  * Region ids are 1–42; id `0` means "outside the mapped region grid" and has no

@@ -22,7 +22,7 @@
  * whichever catalogue you imported.
  *
  * Data originates from EDCD FDevIDs (`microresources.csv`); see
- * `data/materials/SOURCES.md`.
+ * [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
  *
  * @example
  * ```ts
