@@ -15345,7 +15345,7 @@
     }
   },
   "CargoRack_IncreasedCapacity": {
-    "name": "Expanded Capacity",
+    "name": "Expanded Cargo Rack",
     "grades": {
       "5": {
         "features": [

@@ -9,6 +9,11 @@
  *          https://github.com/EDCD/FDevIDs
  *          EDCD/coriolis-data, modules/** (stats: mass, power, performance, …)
  *          https://github.com/EDCD/coriolis-data
+ *          Frontier's own module definitions for game build 2026.07.08.330683
+ *          (mass, integrity, powerDraw, bootTime where coriolis-data carries none,
+ *          and the corrections where its value is a duplicated or mis-copied row),
+ *          every difference cross-checked against EDSY eddb.js (taleden,
+ *          CC BY-NC 4.0) before being applied: https://github.com/taleden/EDSY
  *          The stat values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -48,6 +53,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.39,
+    "bootTime": 0,
     "damage": 2.05,
     "damageDistribution": {
       "thermal": 1
@@ -71,6 +77,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.6,
+    "bootTime": 0,
     "damage": 3.5,
     "damageDistribution": {
       "thermal": 1
@@ -94,6 +101,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.9,
+    "bootTime": 0,
     "damage": 5.98,
     "damageDistribution": {
       "thermal": 1
@@ -117,6 +125,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 1.33,
+    "bootTime": 0,
     "damage": 10.24,
     "damageDistribution": {
       "thermal": 1
@@ -140,6 +149,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.39,
+    "bootTime": 0,
     "damage": 1.56,
     "damageDistribution": {
       "thermal": 1
@@ -163,6 +173,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.6,
+    "bootTime": 0,
     "damage": 2.68,
     "damageDistribution": {
       "thermal": 1
@@ -186,6 +197,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.92,
+    "bootTime": 0,
     "damage": 4.58,
     "damageDistribution": {
       "thermal": 1
@@ -209,6 +221,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.38,
+    "bootTime": 0,
     "damage": 1.19,
     "damageDistribution": {
       "thermal": 1
@@ -232,6 +245,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.58,
+    "bootTime": 0,
     "damage": 2.05,
     "damageDistribution": {
       "thermal": 1
@@ -255,6 +269,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.89,
+    "bootTime": 0,
     "damage": 3.5,
     "damageDistribution": {
       "thermal": 1
@@ -278,6 +293,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.65,
+    "bootTime": 0,
     "damage": 1.72,
     "damageDistribution": {
       "thermal": 1
@@ -303,6 +319,7 @@
     "mass": 4,
     "integrity": 40,
     "powerDraw": 1.05,
+    "bootTime": 0,
     "damage": 3.53,
     "damageDistribution": {
       "thermal": 1
@@ -328,6 +345,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.66,
+    "bootTime": 0,
     "damage": 7.73,
     "damageDistribution": {
       "thermal": 1
@@ -353,6 +371,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 2.58,
+    "bootTime": 0,
     "damage": 20.61,
     "damageDistribution": {
       "thermal": 1
@@ -378,6 +397,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.64,
+    "bootTime": 0,
     "damage": 1.22,
     "damageDistribution": {
       "thermal": 1
@@ -403,6 +423,7 @@
     "mass": 4,
     "integrity": 40,
     "powerDraw": 1.04,
+    "bootTime": 0,
     "damage": 2.45,
     "damageDistribution": {
       "thermal": 1
@@ -428,6 +449,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.65,
+    "bootTime": 0,
     "damage": 5.16,
     "damageDistribution": {
       "thermal": 1
@@ -453,6 +475,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.6,
+    "bootTime": 0,
     "damage": 0.87,
     "damageDistribution": {
       "thermal": 1
@@ -478,6 +501,7 @@
     "mass": 4,
     "integrity": 40,
     "powerDraw": 0.98,
+    "bootTime": 0,
     "damage": 1.72,
     "damageDistribution": {
       "thermal": 1
@@ -503,6 +527,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.57,
+    "bootTime": 0,
     "damage": 3.53,
     "damageDistribution": {
       "thermal": 1
@@ -528,6 +553,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.62,
+    "bootTime": 0,
     "damage": 9.8,
     "damageDistribution": {
       "thermal": 1
@@ -549,6 +575,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.01,
+    "bootTime": 0,
     "damage": 15.96,
     "damageDistribution": {
       "thermal": 1
@@ -570,6 +597,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.62,
+    "bootTime": 0,
     "damage": 25.78,
     "damageDistribution": {
       "thermal": 1
@@ -591,6 +619,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 2.61,
+    "bootTime": 0,
     "damage": 41.38,
     "damageDistribution": {
       "thermal": 1
@@ -612,6 +641,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.6,
+    "bootTime": 0,
     "damage": 7.66,
     "damageDistribution": {
       "thermal": 1
@@ -633,6 +663,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1,
+    "bootTime": 0,
     "damage": 12.52,
     "damageDistribution": {
       "thermal": 1
@@ -654,6 +685,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.6,
+    "bootTime": 0,
     "damage": 20.28,
     "damageDistribution": {
       "thermal": 1
@@ -675,6 +707,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.57,
+    "bootTime": 0,
     "damage": 5.4,
     "damageDistribution": {
       "thermal": 1
@@ -696,6 +729,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.93,
+    "bootTime": 0,
     "damage": 8.82,
     "damageDistribution": {
       "thermal": 1
@@ -717,6 +751,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.51,
+    "bootTime": 0,
     "damage": 14.34,
     "damageDistribution": {
       "thermal": 1
@@ -738,6 +773,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.34,
+    "bootTime": 0,
     "damage": 22.5,
     "damageDistribution": {
       "kinetic": 1
@@ -765,6 +801,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.49,
+    "bootTime": 0,
     "damage": 36.5,
     "damageDistribution": {
       "kinetic": 1
@@ -792,6 +829,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.67,
+    "bootTime": 0,
     "damage": 54.94,
     "damageDistribution": {
       "kinetic": 1
@@ -819,6 +857,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 0.92,
+    "bootTime": 0,
     "damage": 82.1,
     "damageDistribution": {
       "kinetic": 1
@@ -846,6 +885,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.38,
+    "bootTime": 0,
     "damage": 16,
     "damageDistribution": {
       "kinetic": 1
@@ -873,6 +913,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.54,
+    "bootTime": 0,
     "damage": 24.5,
     "damageDistribution": {
       "kinetic": 1
@@ -900,6 +941,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 1.03,
+    "bootTime": 0,
     "damage": 56.58,
     "damageDistribution": {
       "kinetic": 1
@@ -927,6 +969,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.32,
+    "bootTime": 0,
     "damage": 12.75,
     "damageDistribution": {
       "kinetic": 1
@@ -954,6 +997,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.45,
+    "bootTime": 0,
     "damage": 19.77,
     "damageDistribution": {
       "kinetic": 1
@@ -981,6 +1025,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "bootTime": 0,
     "damage": 30.4,
     "damageDistribution": {
       "kinetic": 1
@@ -1008,6 +1053,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.45,
+    "bootTime": 0,
     "damage": 1.43,
     "damageDistribution": {
       "kinetic": 1
@@ -1035,8 +1081,9 @@
     "class": 2,
     "rating": "A",
     "mass": 4,
-    "integrity": 80,
+    "integrity": 51,
     "powerDraw": 0.74,
+    "bootTime": 0,
     "damage": 3,
     "damageDistribution": {
       "kinetic": 1
@@ -1064,8 +1111,9 @@
     "class": 3,
     "rating": "C",
     "mass": 8,
-    "integrity": 80,
+    "integrity": 64,
     "powerDraw": 1.02,
+    "bootTime": 0,
     "damage": 4.57,
     "damageDistribution": {
       "kinetic": 1
@@ -1095,6 +1143,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.59,
+    "bootTime": 0,
     "damage": 1.01,
     "damageDistribution": {
       "kinetic": 1
@@ -1122,8 +1171,9 @@
     "class": 2,
     "rating": "D",
     "mass": 4,
-    "integrity": 80,
+    "integrity": 51,
     "powerDraw": 1.03,
+    "bootTime": 0,
     "damage": 2.275,
     "damageDistribution": {
       "kinetic": 1
@@ -1153,6 +1203,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.42,
+    "bootTime": 0,
     "damage": 0.69,
     "damageDistribution": {
       "kinetic": 1
@@ -1180,8 +1231,9 @@
     "class": 2,
     "rating": "D",
     "mass": 4,
-    "integrity": 80,
+    "integrity": 51,
     "powerDraw": 0.79,
+    "bootTime": 0,
     "damage": 1.7,
     "damageDistribution": {
       "kinetic": 1
@@ -1211,6 +1263,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.28,
+    "bootTime": 0,
     "damage": 1.12,
     "damageDistribution": {
       "kinetic": 1
@@ -1238,6 +1291,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.46,
+    "bootTime": 0,
     "damage": 2.19,
     "damageDistribution": {
       "kinetic": 1
@@ -1265,6 +1319,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "bootTime": 0,
     "damage": 3.925,
     "damageDistribution": {
       "kinetic": 1
@@ -1292,6 +1347,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 0.73,
+    "bootTime": 0,
     "damage": 4.625,
     "damageDistribution": {
       "kinetic": 1
@@ -1320,6 +1376,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.37,
+    "bootTime": 0,
     "damage": 0.82,
     "damageDistribution": {
       "kinetic": 1
@@ -1347,6 +1404,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.64,
+    "bootTime": 0,
     "damage": 1.64,
     "damageDistribution": {
       "kinetic": 1
@@ -1374,6 +1432,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.97,
+    "bootTime": 0,
     "damage": 2.84,
     "damageDistribution": {
       "kinetic": 1
@@ -1401,6 +1460,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.26,
+    "bootTime": 0,
     "damage": 0.56,
     "damageDistribution": {
       "kinetic": 1
@@ -1428,6 +1488,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.5,
+    "bootTime": 0,
     "damage": 1.17,
     "damageDistribution": {
       "kinetic": 1
@@ -1456,6 +1517,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.86,
+    "bootTime": 0,
     "damage": 2.2,
     "damageDistribution": {
       "kinetic": 1
@@ -1483,6 +1545,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.43,
+    "bootTime": 0,
     "damage": 54.3,
     "damageDistribution": {
       "kinetic": 0.2,
@@ -1512,6 +1575,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.97,
+    "bootTime": 0,
     "damage": 83.4,
     "damageDistribution": {
       "kinetic": 0.2,
@@ -1541,6 +1605,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 2.63,
+    "bootTime": 0,
     "damage": 125.2,
     "damageDistribution": {
       "kinetic": 0.2,
@@ -1570,6 +1635,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 1.15,
+    "bootTime": 0,
     "damage": 23.25,
     "damageDistribution": {
       "kinetic": 0.3333333333333333,
@@ -1598,6 +1664,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.63,
+    "bootTime": 0,
     "damage": 41.5,
     "damageDistribution": {
       "kinetic": 0.3333333333333333,
@@ -1627,6 +1694,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.6,
+    "bootTime": 0,
     "damage": 40,
     "damageDistribution": {
       "explosive": 1
@@ -1653,6 +1721,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 40,
     "damageDistribution": {
       "explosive": 1
@@ -1680,6 +1749,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.62,
+    "bootTime": 0,
     "damage": 40,
     "damageDistribution": {
       "explosive": 1
@@ -1705,6 +1775,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "damage": 44,
     "damageDistribution": {
       "thermal": 0.5,
@@ -1730,6 +1801,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "damage": 44,
     "damageDistribution": {
       "thermal": 0.5,
@@ -1756,6 +1828,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "damage": 120,
     "damageDistribution": {
       "explosive": 1
@@ -1782,6 +1855,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "damage": 120,
     "damageDistribution": {
       "explosive": 1
@@ -1809,6 +1883,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.6,
+    "bootTime": 0,
     "damage": 120,
     "damageDistribution": {
       "explosive": 1
@@ -1834,6 +1909,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.5,
+    "bootTime": 0,
     "damage": 2,
     "damageDistribution": {
       "thermal": 1
@@ -1855,6 +1931,7 @@
     "mass": 2,
     "integrity": 51,
     "powerDraw": 0.75,
+    "bootTime": 0,
     "damage": 4,
     "damageDistribution": {
       "thermal": 1
@@ -1877,6 +1954,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "damage": 50,
     "damageDistribution": {
       "explosive": 1
@@ -1903,6 +1981,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 50,
     "damageDistribution": {
       "explosive": 1
@@ -1928,6 +2007,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.75,
+    "bootTime": 0,
     "damage": 37.39,
     "damageDistribution": {
       "kinetic": 1
@@ -1953,8 +2033,9 @@
     "class": 3,
     "rating": "C",
     "mass": 8,
-    "integrity": 80,
+    "integrity": 64,
     "powerDraw": 1.55,
+    "bootTime": 0,
     "damage": 3.77,
     "damageDistribution": {
       "kinetic": 1
@@ -1982,8 +2063,9 @@
     "class": 3,
     "rating": "C",
     "mass": 8,
-    "integrity": 80,
+    "integrity": 64,
     "powerDraw": 1.29,
+    "bootTime": 0,
     "damage": 2.98,
     "damageDistribution": {
       "kinetic": 1
@@ -2014,6 +2096,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.97,
+    "bootTime": 0,
     "damage": 34.5,
     "damageDistribution": {
       "kinetic": 0.2,
@@ -2044,6 +2127,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.7,
+    "bootTime": 0,
     "damage": 8,
     "damageDistribution": {
       "thermal": 1
@@ -2066,6 +2150,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.63,
+    "bootTime": 0,
     "damage": 31.4,
     "damageDistribution": {
       "kinetic": 0.3333333333333333,
@@ -2097,6 +2182,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.7,
+    "bootTime": 0,
     "damage": 2.8,
     "damageDistribution": {
       "thermal": 1
@@ -2120,6 +2206,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.02,
+    "bootTime": 0,
     "damage": 3.96,
     "damageDistribution": {
       "kinetic": 1
@@ -2151,6 +2238,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 7.5,
     "damageDistribution": {
       "explosive": 1
@@ -2178,6 +2266,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.28,
+    "bootTime": 0,
     "damage": 2.9,
     "damageDistribution": {
       "kinetic": 1
@@ -2206,6 +2295,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.62,
+    "bootTime": 0,
     "damage": 4.9,
     "damageDistribution": {
       "thermal": 1
@@ -2227,6 +2317,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "damage": 32,
     "damageDistribution": {
       "thermal": 0.5,
@@ -2253,6 +2344,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.8,
+    "bootTime": 0,
     "damage": 3.6,
     "damageDistribution": {
       "thermal": 1
@@ -2279,6 +2371,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 2.57,
+    "bootTime": 0,
     "damage": 32.68,
     "damageDistribution": {
       "thermal": 1
@@ -2300,6 +2393,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 1.37,
+    "bootTime": 0,
     "damage": 7.82,
     "damageDistribution": {
       "thermal": 1
@@ -2323,6 +2417,7 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 1.22,
+    "bootTime": 0,
     "damage": 3.46,
     "damageDistribution": {
       "kinetic": 1
@@ -2349,8 +2444,9 @@
     "class": 4,
     "rating": "E",
     "mass": 16,
-    "integrity": 80,
+    "integrity": 64,
     "powerDraw": 2.59,
+    "bootTime": 0,
     "damage": 12.09,
     "damageDistribution": {
       "thermal": 1
@@ -2378,6 +2474,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 40,
     "damageDistribution": {
       "explosive": 1
@@ -2403,6 +2500,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.5,
+    "bootTime": 0,
     "damage": 2,
     "damageDistribution": {
       "thermal": 1
@@ -2424,6 +2522,7 @@
     "mass": 2,
     "integrity": 51,
     "powerDraw": 0.75,
+    "bootTime": 0,
     "damage": 4,
     "damageDistribution": {
       "thermal": 1
@@ -2446,6 +2545,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 34,
     "damageDistribution": {
       "explosive": 1
@@ -2474,6 +2574,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 64,
     "damageDistribution": {
       "explosive": 1,
@@ -2503,6 +2604,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.62,
+    "bootTime": 0,
     "damage": 64,
     "damageDistribution": {
       "explosive": 1,
@@ -2531,6 +2633,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.46,
+    "bootTime": 0,
     "damage": 3.3,
     "damageDistribution": {
       "kinetic": 1,
@@ -2560,6 +2663,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "bootTime": 0,
     "damage": 6.1,
     "damageDistribution": {
       "kinetic": 1,
@@ -2590,6 +2694,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 50,
     "damageDistribution": {
       "explosive": 1,
@@ -2619,6 +2724,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.75,
+    "bootTime": 0,
     "damage": 64,
     "damageDistribution": {
       "explosive": 1,
@@ -2647,6 +2753,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 34,
     "damageDistribution": {
       "explosive": 1
@@ -2674,6 +2781,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.5,
+    "bootTime": 0,
     "damage": 1.7,
     "damageDistribution": {
       "kinetic": 1,
@@ -2703,6 +2811,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "bootTime": 0,
     "damage": 3.3,
     "damageDistribution": {
       "kinetic": 1,
@@ -2732,6 +2841,7 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 2.61,
+    "bootTime": 0,
     "damage": 38.5,
     "damageDistribution": {
       "thermal": 1
@@ -2761,6 +2871,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 5,
     "damageDistribution": {
       "explosive": 1
@@ -2787,6 +2898,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 13,
     "damageDistribution": {
       "kinetic": 1
@@ -2813,6 +2925,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 13,
     "damageDistribution": {
       "kinetic": 1
@@ -2839,6 +2952,7 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 2.13,
+    "bootTime": 0,
     "damage": 5,
     "damageDistribution": {
       "absolute": 1
@@ -2867,6 +2981,7 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 2.01,
+    "bootTime": 0,
     "damage": 4,
     "damageDistribution": {
       "absolute": 1
@@ -2895,6 +3010,7 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 1.21,
+    "bootTime": 0,
     "damage": 3.7,
     "damageDistribution": {
       "thermal": 1
@@ -2925,6 +3041,7 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 1.16,
+    "bootTime": 0,
     "damage": 2.4,
     "damageDistribution": {
       "thermal": 1
@@ -2955,6 +3072,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.57,
+    "bootTime": 0,
     "damage": 13,
     "damageDistribution": {
       "kinetic": 1
@@ -2983,6 +3101,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.61,
+    "bootTime": 0,
     "damage": 10.2,
     "damageDistribution": {
       "kinetic": 1
@@ -3011,6 +3130,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.5,
+    "bootTime": 0,
     "damage": 9,
     "damageDistribution": {
       "kinetic": 1
@@ -3040,6 +3160,7 @@
     "mass": 8,
     "integrity": 51,
     "powerDraw": 1.68,
+    "bootTime": 0,
     "damage": 5.2,
     "damageDistribution": {
       "thermal": 1
@@ -3070,6 +3191,7 @@
     "mass": 8,
     "integrity": 51,
     "powerDraw": 1.39,
+    "bootTime": 0,
     "damage": 3.4,
     "damageDistribution": {
       "thermal": 1
@@ -3100,6 +3222,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.89,
+    "bootTime": 0,
     "damage": 18.1,
     "damageDistribution": {
       "kinetic": 1
@@ -3129,6 +3252,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.89,
+    "bootTime": 0,
     "damage": 14.9,
     "damageDistribution": {
       "kinetic": 1
@@ -3157,6 +3281,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "bootTime": 0,
     "damage": 12.26,
     "damageDistribution": {
       "kinetic": 1
@@ -3185,6 +3310,7 @@
     "mass": 8,
     "integrity": 51,
     "powerDraw": 3.1,
+    "bootTime": 0,
     "damage": 7,
     "damageDistribution": {
       "absolute": 1
@@ -3213,6 +3339,7 @@
     "mass": 8,
     "integrity": 51,
     "powerDraw": 2.53,
+    "bootTime": 0,
     "damage": 6,
     "damageDistribution": {
       "absolute": 1
@@ -3242,6 +3369,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.62,
+    "bootTime": 0,
     "damage": 50,
     "damageDistribution": {
       "explosive": 1
@@ -3268,6 +3396,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.54,
+    "bootTime": 0,
     "damage": 4.5,
     "damageDistribution": {
       "kinetic": 1
@@ -3296,6 +3425,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.47,
+    "bootTime": 0,
     "damage": 6.9,
     "damageDistribution": {
       "kinetic": 1
@@ -3324,6 +3454,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.41,
+    "bootTime": 0,
     "damage": 8.6,
     "damageDistribution": {
       "kinetic": 1
@@ -3352,6 +3483,7 @@
     "mass": 2,
     "integrity": 34,
     "powerDraw": 1.6,
+    "bootTime": 0,
     "damage": 2,
     "damageDistribution": {
       "absolute": 1
@@ -3380,6 +3512,7 @@
     "mass": 2,
     "integrity": 34,
     "powerDraw": 1.4,
+    "bootTime": 0,
     "damage": 3,
     "damageDistribution": {
       "absolute": 1
@@ -3408,6 +3541,7 @@
     "mass": 2,
     "integrity": 34,
     "powerDraw": 0.72,
+    "bootTime": 0,
     "damage": 1.1,
     "damageDistribution": {
       "thermal": 1
@@ -3438,6 +3572,7 @@
     "mass": 2,
     "integrity": 34,
     "powerDraw": 0.87,
+    "bootTime": 0,
     "damage": 2,
     "damageDistribution": {
       "thermal": 1
@@ -3468,6 +3603,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 1.91,
+    "bootTime": 0,
     "damage": 22,
     "damageDistribution": {
       "thermal": 1
@@ -3495,6 +3631,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.42,
+    "bootTime": 0,
     "damage": 5,
     "damageDistribution": {
       "explosive": 1
@@ -3522,7 +3659,8 @@
     "rating": "B",
     "mass": 2,
     "integrity": 40,
-    "powerDraw": 0.42,
+    "powerDraw": 0.53,
+    "bootTime": 0,
     "damage": 5,
     "damageDistribution": {
       "explosive": 1
@@ -3551,6 +3689,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.01,
+    "bootTime": 0,
     "damage": 5,
     "damageDistribution": {
       "explosive": 1
@@ -3579,6 +3718,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.93,
+    "bootTime": 0,
     "damage": 5,
     "damageDistribution": {
       "explosive": 1
@@ -3606,6 +3746,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.34,
+    "bootTime": 0,
     "damage": 4,
     "damageDistribution": {
       "thermal": 1
@@ -3632,6 +3773,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.47,
+    "bootTime": 0,
     "damage": 4,
     "damageDistribution": {
       "thermal": 1
@@ -3659,6 +3801,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 15,
     "damageDistribution": {
       "explosive": 1
@@ -3686,6 +3829,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 15,
     "damageDistribution": {
       "explosive": 1
@@ -3712,6 +3856,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.46,
+    "bootTime": 0,
     "damage": 2.19,
     "damageDistribution": {
       "kinetic": 1
@@ -3739,6 +3884,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.28,
+    "bootTime": 0,
     "damage": 1.12,
     "damageDistribution": {
       "kinetic": 1
@@ -3767,6 +3913,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "damage": 50,
     "damageDistribution": {
       "explosive": 1
@@ -3793,6 +3940,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "damage": 50,
     "damageDistribution": {
       "explosive": 1
@@ -3820,6 +3968,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.72,
+    "bootTime": 0,
     "damage": 77,
     "damageDistribution": {
       "explosive": 1,
@@ -3847,6 +3996,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.48,
+    "bootTime": 0,
     "damage": 3.9,
     "damageDistribution": {
       "kinetic": 1,
@@ -3877,6 +4027,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.3,
+    "bootTime": 0,
     "damage": 77,
     "damageDistribution": {
       "explosive": 1,
@@ -3905,6 +4056,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.85,
+    "bootTime": 0,
     "damage": 64,
     "damageDistribution": {
       "explosive": 1,
@@ -3933,6 +4085,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.3,
+    "bootTime": 0,
     "damage": 64,
     "damageDistribution": {
       "explosive": 1,
@@ -3960,6 +4113,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.69,
+    "bootTime": 0,
     "damage": 7.3,
     "damageDistribution": {
       "kinetic": 1,
@@ -3989,6 +4143,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.69,
+    "bootTime": 0,
     "damage": 3.9,
     "damageDistribution": {
       "kinetic": 1,
@@ -4018,6 +4173,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.52,
+    "bootTime": 0,
     "damage": 2,
     "damageDistribution": {
       "kinetic": 1,
@@ -4047,6 +4203,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "bootTime": 0,
     "damage": 6.3,
     "damageDistribution": {
       "kinetic": 1,
@@ -4076,6 +4233,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.46,
+    "bootTime": 0,
     "damage": 3.7,
     "damageDistribution": {
       "kinetic": 1,
@@ -4105,6 +4263,7 @@
     "mass": 4,
     "integrity": 50,
     "powerDraw": 1,
+    "bootTime": 0,
     "damage": 5,
     "damageDistribution": {
       "explosive": 1
@@ -4130,6 +4289,7 @@
     "mass": 3,
     "integrity": 50,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "damage": 0,
     "damageDistribution": {
       "explosive": 1
@@ -4154,6 +4314,7 @@
     "mass": 5,
     "integrity": 80,
     "powerDraw": 0.7,
+    "bootTime": 0,
     "damage": 0,
     "damageDistribution": {
       "explosive": 1
@@ -4179,6 +4340,7 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.64,
+    "bootTime": 0,
     "damage": 14.63,
     "damageDistribution": {
       "kinetic": 1
@@ -4211,6 +4373,7 @@
     "restrictedToShips": [
       "LakonMiner"
     ],
+    "bootTime": 0,
     "damage": 0.3,
     "damageDistribution": {
       "thermal": 1
@@ -4239,6 +4402,7 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.51,
+    "bootTime": 0,
     "damage": 13.9,
     "damageDistribution": {
       "kinetic": 0.2,

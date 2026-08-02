@@ -134,7 +134,9 @@ for the complete API guide. Report problems in the
 
 The checked-in catalogues are snapshot **2026-07-24**, plus one market commodity
 (`curatedcommodity`) added 2026-08-02 from a player-journal observation rather than
-from an upstream registry — its market category is a maintainer assignment. Provenance
+from an upstream registry — its market category is a maintainer assignment, and a
+module-stat reconciliation on 2026-08-02 that gave every outfitting module its mass,
+integrity, power draw and boot time and corrected 41 records. Provenance
 and the metadata required for future updates are documented in
 [data/SNAPSHOTS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/SNAPSHOTS.md).
 

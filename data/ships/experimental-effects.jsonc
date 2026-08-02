@@ -2218,7 +2218,7 @@
     "description": "Deals 50/50 kinetic/thermal damage."
   },
   "special_choke_canister": {
-    "name": "Ion Disruptor",
+    "name": "Ion Disruption",
     "modifiers": [],
     "materials": [
       {

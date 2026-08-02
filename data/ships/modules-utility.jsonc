@@ -9,6 +9,11 @@
  *          https://github.com/EDCD/FDevIDs
  *          EDCD/coriolis-data, modules/** (stats: mass, power, performance, …)
  *          https://github.com/EDCD/coriolis-data
+ *          Frontier's own module definitions for game build 2026.07.08.330683
+ *          (mass, integrity, powerDraw, bootTime where coriolis-data carries none,
+ *          and the corrections where its value is a duplicated or mis-copied row),
+ *          every difference cross-checked against EDSY eddb.js (taleden,
+ *          CC BY-NC 4.0) before being applied: https://github.com/taleden/EDSY
  *          The stat values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -47,6 +52,7 @@
     "mass": 1.3,
     "integrity": 20,
     "powerDraw": 0.2,
+    "bootTime": 0,
     "alwaysPowered": true,
     "rateOfFire": 1,
     "burstInterval": 1,
@@ -66,6 +72,7 @@
     "mass": 1.3,
     "integrity": 20,
     "powerDraw": 0.2,
+    "bootTime": 0,
     "reloadTime": 10,
     "thermalLoad": 4,
     "maximumRange": 3000,
@@ -78,8 +85,9 @@
     "class": 0,
     "rating": "I",
     "mass": 1.3,
-    "integrity": 20,
+    "integrity": 45,
     "powerDraw": 0.2,
+    "bootTime": 0,
     "alwaysPowered": true,
     "rateOfFire": 0.2,
     "burstInterval": 5,
@@ -98,6 +106,7 @@
     "mass": 0.5,
     "integrity": 30,
     "powerDraw": 0.2,
+    "bootTime": 0,
     "alwaysPowered": true,
     "damage": 0.2,
     "damageDistribution": {
@@ -125,6 +134,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.2,
+    "bootTime": 3,
     "maximumRange": 2000,
     "cost": 13544
   },
@@ -137,6 +147,7 @@
     "mass": 1.3,
     "integrity": 24,
     "powerDraw": 0.4,
+    "bootTime": 3,
     "maximumRange": 2500,
     "cost": 40633
   },
@@ -149,6 +160,7 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.8,
+    "bootTime": 3,
     "maximumRange": 3000,
     "cost": 121899
   },
@@ -161,6 +173,7 @@
     "mass": 1.3,
     "integrity": 56,
     "powerDraw": 1.6,
+    "bootTime": 3,
     "maximumRange": 3500,
     "cost": 365698
   },
@@ -173,6 +186,7 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 3.2,
+    "bootTime": 3,
     "maximumRange": 4000,
     "cost": 1097095
   },
@@ -185,6 +199,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.2,
+    "bootTime": 1,
     "maximumRange": 2000,
     "cost": 13544
   },
@@ -197,6 +212,7 @@
     "mass": 1.3,
     "integrity": 24,
     "powerDraw": 0.4,
+    "bootTime": 1,
     "maximumRange": 2500,
     "cost": 40633
   },
@@ -209,6 +225,7 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.8,
+    "bootTime": 1,
     "maximumRange": 3000,
     "cost": 121899
   },
@@ -221,6 +238,7 @@
     "mass": 1.3,
     "integrity": 56,
     "powerDraw": 1.6,
+    "bootTime": 1,
     "maximumRange": 3500,
     "cost": 365698
   },
@@ -233,6 +251,7 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 3.2,
+    "bootTime": 1,
     "maximumRange": 4000,
     "cost": 1097095
   },
@@ -245,6 +264,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.2,
+    "bootTime": 2,
     "maximumRange": 2000,
     "cost": 13544
   },
@@ -257,6 +277,7 @@
     "mass": 1.3,
     "integrity": 24,
     "powerDraw": 0.4,
+    "bootTime": 2,
     "maximumRange": 2500,
     "cost": 40633
   },
@@ -269,6 +290,7 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.8,
+    "bootTime": 2,
     "maximumRange": 3000,
     "cost": 121899
   },
@@ -281,6 +303,7 @@
     "mass": 1.3,
     "integrity": 56,
     "powerDraw": 1.6,
+    "bootTime": 2,
     "maximumRange": 3500,
     "cost": 365698
   },
@@ -293,6 +316,7 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 3.2,
+    "bootTime": 2,
     "maximumRange": 4000,
     "cost": 1097095
   },
@@ -305,6 +329,7 @@
     "mass": 0.5,
     "integrity": 25,
     "powerDraw": 0.2,
+    "bootTime": 0,
     "shieldBoost": 0.04,
     "kineticResistance": 0,
     "thermalResistance": 0,
@@ -321,6 +346,7 @@
     "mass": 1,
     "integrity": 35,
     "powerDraw": 0.5,
+    "bootTime": 0,
     "shieldBoost": 0.08,
     "kineticResistance": 0,
     "thermalResistance": 0,
@@ -337,6 +363,7 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.7,
+    "bootTime": 0,
     "shieldBoost": 0.12,
     "kineticResistance": 0,
     "thermalResistance": 0,
@@ -353,6 +380,7 @@
     "mass": 3,
     "integrity": 45,
     "powerDraw": 1,
+    "bootTime": 0,
     "shieldBoost": 0.16,
     "kineticResistance": 0,
     "thermalResistance": 0,
@@ -369,6 +397,7 @@
     "mass": 3.5,
     "integrity": 48,
     "powerDraw": 1.2,
+    "bootTime": 0,
     "shieldBoost": 0.2,
     "kineticResistance": 0,
     "thermalResistance": 0,
@@ -386,6 +415,7 @@
     "mass": 1.3,
     "integrity": 35,
     "powerDraw": 0.2,
+    "bootTime": 0,
     "alwaysPowered": true,
     "maximumRange": 3000,
     "cost": 63000
@@ -425,7 +455,7 @@
     "class": 0,
     "rating": "E",
     "mass": 1.3,
-    "integrity": 24,
+    "integrity": 32,
     "powerDraw": 0.2,
     "bootTime": 3,
     "cost": 13544
@@ -487,6 +517,7 @@
     "mass": 1.7,
     "integrity": 45,
     "powerDraw": 0.6,
+    "bootTime": 0,
     "alwaysPowered": true,
     "rateOfFire": 0.2,
     "burstInterval": 5,
@@ -505,6 +536,7 @@
     "mass": 3,
     "integrity": 70,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "alwaysPowered": true,
     "maximumRange": 0,
     "cost": 150000
