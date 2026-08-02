@@ -22,9 +22,9 @@ resistances, hull and shield reinforcement, module protection, the `alwaysPowere
 and the weapon stats (damage and its type split, rate of fire, clip and reload,
 distributor draw, thermal load, piercing, ranges, shot speed, jitter). Source:
 [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) at the same commit
-`0db9234b5b9ce8c939ea84133d7ce336eea88e27` already used for the other stats, joined by
-`scripts/data/ships/add-coriolis-stats.mjs` (see "Modules" below for the derivation and
-the three values filled by hand). In the same pass each hull's **`bulkheads` list moved
+`0db9234b5b9ce8c939ea84133d7ce336eea88e27` already used for the other stats (see
+"Modules" below for the field mapping, the derivations, and the three values filled by
+hand). In the same pass each hull's **`bulkheads` list moved
 out of `ships.jsonc` and onto its `<Hull>_Armour_*` records** in
 `modules-core.jsonc`: armour is a module like any other, so its mass, hull boost and
 resistances now live with every other module's stats instead of being duplicated on the
@@ -139,12 +139,11 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   `burstrof`→`burstRateOfFire`, `charge`→`chargeTime`, `clip`→`clipSize`,
   `ammo`→`ammoMaximum`, `reload`→`reloadTime`, `distdraw`→`distributorDraw`,
   `thermload`→`thermalLoad`, `piercing`→`armourPiercing`, `range`→`maximumRange`,
-  `falloff`→`falloffRange`, `shotspeed`→`shotSpeed`, `jitter`). Joined by
-  `scripts/data/ships/add-coriolis-stats.mjs`, which is additive and idempotent: it
-  never overwrites a field the catalogue already has.
+  `falloff`→`falloffRange`, `shotspeed`→`shotSpeed`, `jitter`). The join was additive:
+  no field the catalogue already carried was overwritten.
   - **`rateOfFire` is derived, not copied.** Upstream stores the fire interval; the
-    journal (and this catalogue) report the combined shots per second, so the script
-    computes `burst / ((burst − 1) / burstRateOfFire + fireInterval + chargeTime)` —
+    journal (and this catalogue) report the combined shots per second, so it is
+    computed as `burst / ((burst − 1) / burstRateOfFire + fireInterval + chargeTime)` —
     the same derivation Coriolis (`Module.getRoF`) and EDSY (`rof = fpc / spc`) use.
     Continuous-fire weapons (beam and mining lasers) have no fire interval upstream and
     so carry no `rateOfFire`; their `damage`, `distributorDraw` and `thermalLoad` are
