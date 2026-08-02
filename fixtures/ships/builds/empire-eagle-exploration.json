@@ -1,0 +1,31 @@
+{
+  "id": "empire-eagle-exploration",
+  "ship": "Empire_Eagle",
+  "role": "exploration",
+  "modules": [
+    { "slot": "Armour", "item": "Empire_Eagle_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size2_Class2" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size3_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size1_Class2" },
+    { "slot": "Radar", "item": "Int_Sensors_Size2_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size2_Class3" },
+    { "slot": "Slot01_Size3", "item": "Int_FuelScoop_Size3_Class5" },
+    { "slot": "Slot02_Size2", "item": "Int_BuggyBay_Size2_Class2" },
+    { "slot": "Slot03_Size1", "item": "Int_Repairer_Size1_Class5", "on": false },
+    { "slot": "Slot04_Size1", "item": "Int_ShieldGenerator_Size1_Class5" },
+    { "slot": "Slot05_Size1", "item": "Int_GuardianFSDBooster_Size1" },
+    { "slot": "Slot06_Size1", "item": "Int_DetailedSurfaceScanner_Tiny", "on": false }
+  ],
+  "metrics": {
+    "unladenMass": 67.9,
+    "cargoCapacity": 0,
+    "fuelCapacity": 4,
+    "maxJumpRange": 26.130639,
+    "power": { "available": 9.6, "retracted": 7.29, "deployed": 7.29, "withinBudget": true },
+    "shields": { "strength": 58.663691, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 108, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

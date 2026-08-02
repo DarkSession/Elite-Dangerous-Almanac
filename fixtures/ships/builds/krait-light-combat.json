@@ -1,0 +1,42 @@
+{
+  "id": "krait-light-combat",
+  "ship": "Krait_Light",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Krait_Light_Armour_Reactive", "priority": 1, "engineering": { "blueprint": "Armour_Thermic", "grade": 4 } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size7_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 5, "experimental": "special_powerplant_lightweight" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 4, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_GuardianPowerDistributor_Size7" },
+    { "slot": "Radar", "item": "Int_Sensors_Size6_Class5" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced", "engineering": { "blueprint": "Weapon_Efficient", "grade": 4 } },
+    { "slot": "LargeHardpoint2", "item": "Hpt_PlasmaAccelerator_Fixed_Large", "engineering": { "blueprint": "Weapon_Efficient", "grade": 4 } },
+    { "slot": "MediumHardpoint1", "item": "Hpt_Railgun_Fixed_Medium", "engineering": { "blueprint": "Weapon_HighCapacity", "grade": 4, "experimental": "special_plasma_slug_cooled" } },
+    { "slot": "MediumHardpoint2", "item": "Hpt_Railgun_Fixed_Medium", "engineering": { "blueprint": "Weapon_HighCapacity", "grade": 4, "experimental": "special_plasma_slug_cooled" } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 4, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 4, "experimental": "special_shieldbooster_explosive" } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 4 } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_PlasmaPointDefence_Turret_Tiny", "engineering": { "blueprint": "Misc_PointDefenseCapacity", "grade": 1 } },
+    { "slot": "Slot01_Size6", "item": "Int_ShieldGenerator_Size6_Class3_Fast", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5, "experimental": "special_shield_regenerative" } },
+    { "slot": "Slot02_Size5", "item": "Int_CargoRack_Size5_Class1", "priority": 1 },
+    { "slot": "Slot03_Size5", "item": "Int_FuelScoop_Size5_Class5" },
+    { "slot": "Slot04_Size5", "item": "Int_GuardianFSDBooster_Size5" },
+    { "slot": "Slot05_Size3", "item": "Int_Repairer_Size3_Class5", "engineering": { "blueprint": "Misc_Shielded", "grade": 4 } },
+    { "slot": "Slot06_Size3", "item": "Int_DroneControl_Repair_Size3_Class5" },
+    { "slot": "Slot07_Size3", "item": "Int_FuelTank_Size3_Class3", "priority": 1 },
+    { "slot": "Slot08_Size2", "item": "Int_DockingComputer_Advanced", "priority": 1 },
+    { "slot": "Slot09_Size1", "item": "Int_DroneControl_Collection_Size1_Class5" }
+  ],
+  "metrics": {
+    "unladenMass": 634.3,
+    "cargoCapacity": 32,
+    "fuelCapacity": 40,
+    "maxJumpRange": 29.765759,
+    "power": { "available": 30, "retracted": 24.19, "deployed": 31.39, "withinBudget": false },
+    "shields": { "strength": 448, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 630, "resistances": { "kinetic": 0.25, "thermal": -0.4, "explosive": 0.2 } },
+    "weapons": { "count": 4, "damagePerSecond": 92.66062, "sustainedDamagePerSecond": 85.140593 }
+  }
+}

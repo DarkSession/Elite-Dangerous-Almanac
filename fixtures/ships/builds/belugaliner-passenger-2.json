@@ -1,0 +1,43 @@
+{
+  "id": "belugaliner-passenger-2",
+  "ship": "BelugaLiner",
+  "role": "passenger",
+  "modules": [
+    { "slot": "Armour", "item": "BelugaLiner_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size5_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size7_Class2" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size7_Class2", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size8_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size5_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size5_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size7_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint3", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint4", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint5", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint6", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "Slot01_Size6", "item": "Int_PassengerCabin_Size6_Class1" },
+    { "slot": "Slot02_Size6", "item": "Int_PassengerCabin_Size6_Class1" },
+    { "slot": "Slot03_Size6", "item": "Int_PassengerCabin_Size6_Class1" },
+    { "slot": "Slot04_Size6", "item": "Int_PassengerCabin_Size6_Class1" },
+    { "slot": "Slot05_Size5", "item": "Int_PassengerCabin_Size5_Class1" },
+    { "slot": "Slot06_Size5", "item": "Int_ShieldGenerator_Size5_Class3_Fast" },
+    { "slot": "Slot07_Size4", "item": "Int_PassengerCabin_Size4_Class1" },
+    { "slot": "Slot08_Size3", "item": "Int_PassengerCabin_Size3_Class1" },
+    { "slot": "Slot09_Size3", "item": "Int_PassengerCabin_Size3_Class1" },
+    { "slot": "Slot10_Size3", "item": "Int_PassengerCabin_Size3_Class1" },
+    { "slot": "Slot11_Size3", "item": "Int_PassengerCabin_Size3_Class1" },
+    { "slot": "Slot12_Size1", "item": "Int_SupercruiseAssist" }
+  ],
+  "metrics": {
+    "unladenMass": 1353.8,
+    "cargoCapacity": 0,
+    "fuelCapacity": 128,
+    "maxJumpRange": 24.935823,
+    "power": { "available": 20.4, "retracted": 13.7, "deployed": 13.7, "withinBudget": true },
+    "shields": { "strength": 112.584922, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 504, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "dolphin-exploration",
+  "ship": "Dolphin",
+  "role": "exploration",
+  "modules": [
+    { "slot": "Armour", "item": "Dolphin_Armour_Grade1" },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class2", "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 5, "experimental": "special_powerplant_lightweight" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class2", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_lightweight" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size4_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2", "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size1_Class2", "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_lightweight" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size3_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "Slot01_Size5", "item": "Int_GuardianFSDBooster_Size5" },
+    { "slot": "Slot02_Size4", "item": "Int_FuelScoop_Size4_Class5", "priority": 3 },
+    { "slot": "Slot03_Size4", "item": "Int_Repairer_Size4_Class4", "priority": 4, "on": false },
+    { "slot": "Slot04_Size3", "item": "Int_ShieldGenerator_Size3_Class2", "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot05_Size2", "item": "Int_FuelTank_Size2_Class3" },
+    { "slot": "Slot06_Size2", "item": "Int_BuggyBay_Size2_Class2", "priority": 4 },
+    { "slot": "Slot07_Size2", "item": "Int_DetailedSurfaceScanner_Tiny", "engineering": { "blueprint": "Sensor_Expanded", "grade": 5 } },
+    { "slot": "Slot08_Size1", "item": "Int_SupercruiseAssist" },
+    { "slot": "Slot09_Size1", "item": "Int_DockingComputer_Advanced", "priority": 4 }
+  ],
+  "metrics": {
+    "unladenMass": 170.8,
+    "cargoCapacity": 0,
+    "fuelCapacity": 20,
+    "maxJumpRange": 47.335085,
+    "power": { "available": 7.2, "retracted": 10.96, "deployed": 10.96, "withinBudget": false },
+    "shields": { "strength": 113.433966, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 198, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

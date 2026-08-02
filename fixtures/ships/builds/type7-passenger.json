@@ -1,0 +1,39 @@
+{
+  "id": "type7-passenger",
+  "ship": "Type7",
+  "role": "passenger",
+  "modules": [
+    { "slot": "Armour", "item": "Type7_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 5, "experimental": "special_powerplant_cooled" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size5_Class2", "engineering": { "blueprint": "Engine_Tuned", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_cooled" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size4_Class2", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5, "experimental": "special_powerdistributor_lightweight" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size3_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3", "priority": 1 },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 1, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 1, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 1, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 1, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "Slot01_Size6", "item": "Int_PassengerCabin_Size6_Class3", "priority": 1 },
+    { "slot": "Slot02_Size6", "item": "Int_PassengerCabin_Size6_Class3", "priority": 1 },
+    { "slot": "Slot03_Size6", "item": "Int_PassengerCabin_Size6_Class3", "priority": 1 },
+    { "slot": "Slot04_Size5", "item": "Int_PassengerCabin_Size5_Class3", "priority": 2 },
+    { "slot": "Slot05_Size5", "item": "Int_PassengerCabin_Size5_Class3" },
+    { "slot": "Slot06_Size5", "item": "Int_PassengerCabin_Size5_Class3" },
+    { "slot": "Slot07_Size3", "item": "Int_CargoRack_Size3_Class1" },
+    { "slot": "Slot08_Size3", "item": "Int_ShieldGenerator_Size3_Class2", "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot09_Size2", "item": "Int_DockingComputer_Advanced" },
+    { "slot": "Slot10_Size1", "item": "Int_SupercruiseAssist" }
+  ],
+  "metrics": {
+    "unladenMass": 576.5,
+    "cargoCapacity": 8,
+    "fuelCapacity": 32,
+    "maxJumpRange": 21.180739,
+    "power": { "available": 9.6, "retracted": 9.49, "deployed": 9.49, "withinBudget": true },
+    "shields": { "strength": 64.788037, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 612, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

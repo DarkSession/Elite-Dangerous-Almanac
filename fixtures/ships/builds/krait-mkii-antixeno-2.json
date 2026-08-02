@@ -1,0 +1,43 @@
+{
+  "id": "krait-mkii-antixeno-2",
+  "ship": "Krait_MkII",
+  "role": "antiXeno",
+  "modules": [
+    { "slot": "Armour", "item": "Krait_MkII_Armour_Grade3", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size7_Class5", "engineering": { "blueprint": "PowerPlant_Armoured", "grade": 5, "experimental": "special_powerplant_cooled" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Tuned", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5", "engineering": { "blueprint": "FSD_Shielded", "grade": 5, "experimental": "special_fsd_fuelcapacity" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class5", "engineering": { "blueprint": "LifeSupport_Reinforced", "grade": 4 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class5", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size6_Class5", "engineering": { "blueprint": "Sensor_LongRange", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_ATMultiCannon_Turret_Large" },
+    { "slot": "LargeHardpoint2", "item": "Hpt_MultiCannon_Turret_Large", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_weapon_damage" } },
+    { "slot": "LargeHardpoint3", "item": "Hpt_ATMultiCannon_Turret_Large" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_Guardian_GaussCannon_Fixed_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_Guardian_GaussCannon_Fixed_Medium" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_XenoScanner_Basic_Tiny" },
+    { "slot": "TinyHardpoint4", "item": "Hpt_AntiUnknownShutdown_Tiny" },
+    { "slot": "Slot01_Size6", "item": "Int_ShieldGenerator_Size6_Class3_Fast", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5, "experimental": "special_shield_regenerative" } },
+    { "slot": "Slot02_Size6", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot03_Size5", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot04_Size5", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot05_Size4", "item": "Int_GuardianModuleReinforcement_Size4_Class2" },
+    { "slot": "Slot06_Size3", "item": "Int_GuardianHullReinforcement_Size3_Class2" },
+    { "slot": "Slot07_Size3", "item": "Int_GuardianHullReinforcement_Size3_Class2" },
+    { "slot": "Slot08_Size2", "item": "Int_GuardianHullReinforcement_Size2_Class2" },
+    { "slot": "Slot09_Size1", "item": "Int_GuardianModuleReinforcement_Size1_Class2" }
+  ],
+  "metrics": {
+    "unladenMass": 765.6,
+    "cargoCapacity": 0,
+    "fuelCapacity": 32,
+    "maxJumpRange": 15.98313,
+    "power": { "available": 30, "retracted": 20.88, "deployed": 28.44, "withinBudget": true },
+    "shields": { "strength": 397.957212, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 2828, "resistances": { "kinetic": -0.112231, "thermal": 0.127647, "explosive": -0.297603 } },
+    "weapons": { "count": 5, "damagePerSecond": 145.600011, "sustainedDamagePerSecond": 119.034943 }
+  }
+}

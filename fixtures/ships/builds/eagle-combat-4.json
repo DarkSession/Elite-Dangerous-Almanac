@@ -1,0 +1,32 @@
+{
+  "id": "eagle-combat-4",
+  "ship": "Eagle",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Eagle_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size3_Class3" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size3_Class3" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class5" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size2_Class3" },
+    { "slot": "Radar", "item": "Int_Sensors_Size2_Class3" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size2_Class3" },
+    { "slot": "SmallHardpoint1", "item": "Hpt_MultiCannon_Gimbal_Small" },
+    { "slot": "SmallHardpoint2", "item": "Hpt_MultiCannon_Gimbal_Small" },
+    { "slot": "SmallHardpoint3", "item": "Hpt_BeamLaser_Gimbal_Small" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_CrimeScanner_Size0_Class2" },
+    { "slot": "Slot01_Size3", "item": "Int_ShieldGenerator_Size3_Class2" },
+    { "slot": "Slot02_Size2", "item": "Int_FuelScoop_Size2_Class3" },
+    { "slot": "Slot03_Size1", "item": "Int_ShieldCellBank_Size1_Class5" }
+  ],
+  "metrics": {
+    "unladenMass": 78.2,
+    "cargoCapacity": 0,
+    "fuelCapacity": 4,
+    "maxJumpRange": 12.951348,
+    "power": { "available": 9.6, "retracted": 7.25, "deployed": 8.99, "withinBudget": true },
+    "shields": { "strength": 84, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 72, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 3, "damagePerSecond": 21.326666, "sustainedDamagePerSecond": 17.073265 }
+  }
+}

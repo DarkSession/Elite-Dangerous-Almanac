@@ -1,0 +1,31 @@
+{
+  "id": "sidewinder-passenger",
+  "ship": "SideWinder",
+  "role": "passenger",
+  "modules": [
+    { "slot": "Armour", "item": "SideWinder_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class2" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size2_Class2" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size2_Class2" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size1_Class2" },
+    { "slot": "Radar", "item": "Int_Sensors_Size1_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size1_Class3" },
+    { "slot": "Slot01_Size2", "item": "Int_ShieldGenerator_Size2_Class1" },
+    { "slot": "Slot02_Size2", "item": "Int_PassengerCabin_Size2_Class1" },
+    { "slot": "Slot03_Size1", "item": "Int_FuelScoop_Size1_Class2" },
+    { "slot": "Slot04_Size1", "item": "Int_FuelTank_Size1_Class3" },
+    { "slot": "Slot05_Size1", "item": "Int_DockingComputer_Advanced" },
+    { "slot": "Slot06_Size1", "item": "Int_SupercruiseAssist" }
+  ],
+  "metrics": {
+    "unladenMass": 34.5,
+    "cargoCapacity": 0,
+    "fuelCapacity": 4,
+    "maxJumpRange": 11.916872,
+    "power": { "available": 7.2, "retracted": 5.16, "deployed": 5.16, "withinBudget": true },
+    "shields": { "strength": 52, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 108, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

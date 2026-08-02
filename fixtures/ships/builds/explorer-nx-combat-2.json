@@ -1,0 +1,42 @@
+{
+  "id": "explorer-nx-combat-2",
+  "ship": "Explorer_NX",
+  "role": "combat",
+  "modules": [
+    { "slot": "MediumHardpoint5", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "MediumHardpoint6", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "Armour", "item": "Explorer_NX_Armour_Grade1" },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size8_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size7_Class5_GravityOptimised_MkII" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size8_Class5_OverchargeBooster_MkII" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size5_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size8_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size7_Class3" },
+    { "slot": "Slot01_Size7", "item": "Int_FuelScoop_Size7_Class5" },
+    { "slot": "Slot02_Size6", "item": "Int_Repairer_Size6_Class5" },
+    { "slot": "Slot03_Size6", "item": "Int_Repairer_Size6_Class5" },
+    { "slot": "Slot04_Size5", "item": "Int_Repairer_Size5_Class5" },
+    { "slot": "Slot05_Size5", "item": "Int_ShieldGenerator_Size5_Class2" },
+    { "slot": "Slot06_Size5", "item": "Int_DroneControl_Repair_Size5_Class2" },
+    { "slot": "Slot07_Size5", "item": "Int_FighterBay_Size5_Class1" },
+    { "slot": "Slot08_Size4", "item": "Int_BuggyBay_Size4_Class2" },
+    { "slot": "Slot09_Size4", "item": "Int_CargoRack_Size4_Class1" },
+    { "slot": "Slot10_Size3", "item": "Int_CargoRack_Size3_Class1" },
+    { "slot": "Slot11_Size2", "item": "Int_DroneControl_UnkVesselResearch" },
+    { "slot": "Slot12_Size1", "item": "Int_DetailedSurfaceScanner_Tiny" },
+    { "slot": "Slot13_Size1", "item": "Int_SupercruiseAssist" },
+    { "slot": "Slot14_Size1", "item": "Int_DockingComputer_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 1493.6,
+    "cargoCapacity": 24,
+    "fuelCapacity": 128,
+    "maxJumpRange": 40.59205,
+    "power": { "available": 36, "retracted": 27.72, "deployed": 28.92, "withinBudget": true },
+    "shields": { "strength": 201.044503, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 621, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 2, "damagePerSecond": 19.142859, "sustainedDamagePerSecond": 19.142859 }
+  }
+}

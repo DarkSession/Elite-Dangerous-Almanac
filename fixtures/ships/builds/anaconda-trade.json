@@ -1,0 +1,35 @@
+{
+  "id": "anaconda-trade",
+  "ship": "Anaconda",
+  "role": "trade",
+  "modules": [
+    { "slot": "Armour", "item": "Anaconda_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class5", "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 5, "experimental": "special_powerplant_lightweight" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size5_Class2", "engineering": { "blueprint": "Engine_Tuned", "grade": 3, "experimental": "special_engine_lightweight" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size6_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size5_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 4 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size4_Class2", "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_lightweight" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size8_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "Slot01_Size7", "item": "Int_FuelScoop_Size7_Class5", "priority": 2 },
+    { "slot": "Slot02_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot04_Size6", "item": "Int_BuggyBay_Size2_Class2", "priority": 1, "on": false },
+    { "slot": "Slot05_Size5", "item": "Int_Repairer_Size4_Class3", "priority": 1, "on": false },
+    { "slot": "Slot06_Size5", "item": "Int_GuardianFSDBooster_Size5" },
+    { "slot": "Slot07_Size5", "item": "Int_Repairer_Size3_Class2", "priority": 1, "on": false },
+    { "slot": "Slot08_Size4", "item": "Int_ShieldGenerator_Size4_Class2", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot09_Size4", "item": "Int_FuelTank_Size3_Class3", "priority": 1 },
+    { "slot": "Slot11_Size2", "item": "Int_DockingComputer_Advanced", "priority": 3 },
+    { "slot": "Slot12_Size1", "item": "Int_SupercruiseAssist", "priority": 3 }
+  ],
+  "metrics": {
+    "unladenMass": 536.6,
+    "cargoCapacity": 64,
+    "fuelCapacity": 40,
+    "maxJumpRange": 50.800795,
+    "power": { "available": 9.6, "retracted": 12.72, "deployed": 12.72, "withinBudget": false },
+    "shields": { "strength": 222.084896, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 945, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

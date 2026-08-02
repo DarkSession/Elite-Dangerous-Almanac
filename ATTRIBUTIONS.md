@@ -130,6 +130,20 @@ in the doc comment of each ported module, and in long form in the domain
   and remain the property of Frontier Developments plc — see the notice below. Neither
   is bundled into the published package.
 
+- **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`
+  holds 181 ship builds published by Elite Dangerous players as
+  [Coriolis](https://coriolis.io/) (`s.orbis.zone`) and [EDSY](https://edsy.org/) share
+  links, decoded to Frontier slot keys and module symbols. A loadout is a list of which
+  parts go in which slots — Elite Dangerous game data, the property of **Frontier
+  Developments plc** (see the notice below), assembled by a player. Individual builds
+  are stored without their author, name or link; see `data/ships/SOURCES.md` for the
+  acquisition record and what that choice costs. Decoding the two link formats used
+  each tool's own published serialisation and id tables —
+  [EDCD/coriolis](https://github.com/EDCD/coriolis) and
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (**MIT**, code) and EDSY's
+  `eddb.js` (taleden, **CC BY-NC 4.0**) — all already credited above; no code from any of
+  them is vendored here. Not bundled into the published package.
+
 ## Elite Dangerous game data (Frontier media-usage notice)
 
 The ship and module stat values are the property of **Frontier Developments plc**

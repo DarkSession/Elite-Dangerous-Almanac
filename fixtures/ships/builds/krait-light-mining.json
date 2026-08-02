@@ -1,0 +1,42 @@
+{
+  "id": "krait-light-mining",
+  "ship": "Krait_Light",
+  "role": "mining",
+  "modules": [
+    { "slot": "Armour", "item": "Krait_Light_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_Advanced", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size5_Class5", "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 5, "experimental": "special_powerplant_lightweight" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_haulage" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class2", "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_lightweight" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size6_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_Mining_SubSurfDispMisle_Fixed_Medium" },
+    { "slot": "LargeHardpoint2", "item": "Hpt_Mining_SeismChrgWarhd_Fixed_Medium" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_Mining_AbrBlstr_Fixed_Small" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_Mining_AbrBlstr_Fixed_Small" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_MRAScanner_Size0_Class5" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5" },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5" },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class5" },
+    { "slot": "Slot01_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot02_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot03_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot04_Size5", "item": "Int_DroneControl_Collection_Size5_Class5" },
+    { "slot": "Slot05_Size3", "item": "Int_Refinery_Size3_Class5" },
+    { "slot": "Slot06_Size3", "item": "Int_ShieldGenerator_Size3_Class5", "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot07_Size3", "item": "Int_FuelScoop_Size3_Class5" },
+    { "slot": "Slot08_Size2", "item": "Int_DroneControl_Prospector_Size1_Class5" },
+    { "slot": "Slot09_Size1", "item": "Int_DetailedSurfaceScanner_Tiny", "engineering": { "blueprint": "Sensor_Expanded", "grade": 5 } }
+  ],
+  "metrics": {
+    "unladenMass": 454.1,
+    "cargoCapacity": 128,
+    "fuelCapacity": 32,
+    "maxJumpRange": 26.827706,
+    "power": { "available": 20.4, "retracted": 17.9, "deployed": 23.99, "withinBudget": false },
+    "shields": { "strength": 266.064866, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 324, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 4, "damagePerSecond": 57.5, "sustainedDamagePerSecond": 21.5 }
+  }
+}

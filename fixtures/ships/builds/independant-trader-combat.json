@@ -1,0 +1,39 @@
+{
+  "id": "independant-trader-combat",
+  "ship": "Independant_Trader",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Independant_Trader_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size4_Class4" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class3" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size4_Class2" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size3_Class4" },
+    { "slot": "Radar", "item": "Int_Sensors_Size2_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_PulseLaserBurst_Gimbal_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_PulseLaserBurst_Gimbal_Medium" },
+    { "slot": "SmallHardpoint1", "item": "Hpt_BeamLaser_Gimbal_Small" },
+    { "slot": "SmallHardpoint2", "item": "Hpt_BeamLaser_Gimbal_Small" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "Slot01_Size5", "item": "Int_FighterBay_Size5_Class1" },
+    { "slot": "Slot02_Size5", "item": "Int_HullReinforcement_Size5_Class2" },
+    { "slot": "Slot03_Size4", "item": "Int_ShieldGenerator_Size4_Class3" },
+    { "slot": "Slot04_Size3", "item": "Int_CargoRack_Size3_Class1" },
+    { "slot": "Slot05_Size2", "item": "Int_FSDInterdictor_Size2_Class1" },
+    { "slot": "Slot06_Size2", "item": "Int_HullReinforcement_Size2_Class2" },
+    { "slot": "Slot07_Size1", "item": "Int_DockingComputer_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 277.9,
+    "cargoCapacity": 8,
+    "fuelCapacity": 16,
+    "maxJumpRange": 11.26563,
+    "power": { "available": 14.3, "retracted": 9.16, "deployed": 12.44, "withinBudget": true },
+    "shields": { "strength": 182.267337, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 1066, "resistances": { "kinetic": -0.1583, "thermal": 0.03475, "explosive": -0.35135 } },
+    "weapons": { "count": 4, "damagePerSecond": 35.912671, "sustainedDamagePerSecond": 35.912671 }
+  }
+}

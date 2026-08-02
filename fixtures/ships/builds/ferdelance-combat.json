@@ -1,0 +1,43 @@
+{
+  "id": "ferdelance-combat",
+  "ship": "FerDeLance",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "FerDeLance_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size6_Class5", "engineering": { "blueprint": "PowerPlant_Armoured", "grade": 5, "experimental": "special_powerplant_highcharge" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size5_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size4_Class2", "engineering": { "blueprint": "FSD_FastBoot", "grade": 5, "experimental": "special_fsd_lightweight" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 2 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size6_Class5", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 1 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size3_Class3" },
+    { "slot": "HugeHardpoint1", "item": "Hpt_MultiCannon_Gimbal_Huge", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_corrosive_shell" } },
+    { "slot": "MediumHardpoint1", "item": "Hpt_MultiCannon_Gimbal_Medium", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_emissive_munitions" } },
+    { "slot": "MediumHardpoint2", "item": "Hpt_MultiCannon_Gimbal_Medium", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_incendiary_rounds" } },
+    { "slot": "MediumHardpoint3", "item": "Hpt_MultiCannon_Gimbal_Medium", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_incendiary_rounds" } },
+    { "slot": "MediumHardpoint4", "item": "Hpt_MultiCannon_Gimbal_Medium", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_incendiary_rounds" } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_Thermic", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint5", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint6", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "Slot01_Size5", "item": "Int_ShieldGenerator_Size5_Class5_Strong", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5, "experimental": "special_shield_health" } },
+    { "slot": "Slot02_Size4", "item": "Int_HullReinforcement_Size4_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot03_Size4", "item": "Int_HullReinforcement_Size4_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot04_Size2", "item": "Int_HullReinforcement_Size2_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot05_Size1", "item": "Int_HullReinforcement_Size1_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot06_Size1", "item": "Int_FSDInterdictor_Size1_Class2", "engineering": { "blueprint": "FSDinterdictor_Expanded", "grade": 3 } },
+    { "slot": "PlanetaryApproachSuite", "item": "Int_PlanetApproachSuite_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 454.5,
+    "cargoCapacity": 0,
+    "fuelCapacity": 8,
+    "maxJumpRange": 12.657584,
+    "power": { "available": 25.2, "retracted": 21.03, "deployed": 24.81, "withinBudget": true },
+    "shields": { "strength": 1231.235015, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 1365, "resistances": { "kinetic": -0.13525, "thermal": 0.053958, "explosive": -0.324459 } },
+    "weapons": { "count": 5, "damagePerSecond": 73.761201, "sustainedDamagePerSecond": 55.444229 }
+  }
+}

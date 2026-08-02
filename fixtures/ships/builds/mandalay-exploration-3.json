@@ -1,0 +1,37 @@
+{
+  "id": "mandalay-exploration-3",
+  "ship": "Mandalay",
+  "role": "exploration",
+  "modules": [
+    { "slot": "Armour", "item": "Mandalay_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size3_Class5", "engineering": { "blueprint": "PowerPlant_Armoured", "grade": 3, "experimental": "special_powerplant_lightweight" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size5_Class2", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_lightweight" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size5_Class5", "priority": 2, "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2", "priority": 1, "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size4_Class2", "priority": 1, "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_lightweight" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size5_Class2", "priority": 1, "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 1 },
+    { "slot": "Slot01_Size6", "item": "Int_FuelScoop_Size6_Class5", "priority": 3 },
+    { "slot": "Slot02_Size5", "item": "Int_GuardianFSDBooster_Size5", "priority": 2 },
+    { "slot": "Slot03_Size4", "item": "Int_CargoRack_Size4_Class1", "on": false },
+    { "slot": "Slot04_Size4", "item": "Int_BuggyBay_Size4_Class2", "priority": 4 },
+    { "slot": "Slot05_Size3", "item": "Int_ShieldGenerator_Size3_Class2", "priority": 1, "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot06_Size3", "item": "Int_DroneControl_Collection_Size3_Class2", "priority": 2, "engineering": { "blueprint": "CollectionLimpet_LightWeight", "grade": 5 } },
+    { "slot": "Slot07_Size2", "item": "Int_Repairer_Size2_Class5", "on": false },
+    { "slot": "Slot08_Size1", "item": "Int_DetailedSurfaceScanner_Tiny" },
+    { "slot": "Slot09_Size1", "item": "Int_DockingComputer_Advanced", "priority": 1 },
+    { "slot": "Slot10_Size1", "item": "Int_SupercruiseAssist", "priority": 3 },
+    { "slot": "PlanetaryApproachSuite", "item": "Int_PlanetApproachSuite_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 293.1,
+    "cargoCapacity": 16,
+    "fuelCapacity": 32,
+    "maxJumpRange": 55.941213,
+    "power": { "available": 12, "retracted": 13.45, "deployed": 13.45, "withinBudget": false },
+    "shields": { "strength": 140.613934, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 414, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}
