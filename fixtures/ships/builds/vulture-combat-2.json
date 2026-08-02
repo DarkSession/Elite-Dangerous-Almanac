@@ -1,0 +1,39 @@
+{
+  "id": "vulture-combat-2",
+  "ship": "Vulture",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Vulture_Armour_Grade3", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size4_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size5_Class5" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size4_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size3_Class2", "priority": 3 },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size5_Class5", "priority": 2 },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class2", "priority": 2 },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size3_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_BeamLaser_Fixed_Large", "priority": 3 },
+    { "slot": "LargeHardpoint2", "item": "Hpt_MultiCannon_Gimbal_Large", "priority": 3 },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ChaffLauncher_Tiny", "priority": 2 },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ChaffLauncher_Tiny", "priority": 2 },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class3", "priority": 2 },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class4", "priority": 3 },
+    { "slot": "Slot01_Size5", "item": "Int_ShieldGenerator_Size5_Class3_Fast", "priority": 2 },
+    { "slot": "Military01", "item": "Int_HullReinforcement_Size5_Class2" },
+    { "slot": "Slot02_Size4", "item": "Int_HullReinforcement_Size4_Class2" },
+    { "slot": "Slot03_Size2", "item": "Int_ModuleReinforcement_Size2_Class2", "priority": 4 },
+    { "slot": "Slot04_Size1", "item": "Int_HullReinforcement_Size1_Class2" },
+    { "slot": "Slot05_Size1", "item": "Int_HullReinforcement_Size1_Class2" },
+    { "slot": "Slot06_Size1", "item": "Int_Repairer_Size1_Class5", "priority": 4 },
+    { "slot": "Slot07_Size1", "item": "Int_ModuleReinforcement_Size1_Class2" }
+  ],
+  "metrics": {
+    "unladenMass": 398.6,
+    "cargoCapacity": 0,
+    "fuelCapacity": 8,
+    "maxJumpRange": 14.419434,
+    "power": { "available": 15.6, "retracted": 14.06, "deployed": 16.65, "withinBudget": false },
+    "shields": { "strength": 405.918132, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 1500, "resistances": { "kinetic": -0.135163, "thermal": 0.054031, "explosive": -0.324356 } },
+    "weapons": { "count": 2, "damagePerSecond": 44.713334, "sustainedDamagePerSecond": 39.709156 }
+  }
+}

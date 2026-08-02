@@ -1,0 +1,41 @@
+{
+  "id": "federation-dropship-combat",
+  "ship": "Federation_Dropship",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Federation_Dropship_Armour_Grade3", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size6_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5", "priority": 1 },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size5_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size6_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class3" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_PulseLaser_Turret_Large" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "MediumHardpoint3", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "MediumHardpoint4", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_CrimeScanner_Size0_Class4" },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5" },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class5" },
+    { "slot": "Slot01_Size6", "item": "Int_ShieldGenerator_Size6_Class3_Fast" },
+    { "slot": "Slot02_Size5", "item": "Int_HullReinforcement_Size5_Class2" },
+    { "slot": "Slot03_Size5", "item": "Int_HullReinforcement_Size5_Class2" },
+    { "slot": "Slot04_Size4", "item": "Int_HullReinforcement_Size4_Class2" },
+    { "slot": "Slot05_Size3", "item": "Int_FuelScoop_Size3_Class5" },
+    { "slot": "Slot06_Size3", "item": "Int_FSDInterdictor_Size3_Class3", "priority": 1 },
+    { "slot": "Slot07_Size2", "item": "Int_ShieldCellBank_Size2_Class5" }
+  ],
+  "metrics": {
+    "unladenMass": 926.1,
+    "cargoCapacity": 0,
+    "fuelCapacity": 16,
+    "maxJumpRange": 13.22801,
+    "power": { "available": 25.2, "retracted": 17.66, "deployed": 22.55, "withinBudget": true },
+    "shields": { "strength": 235.918037, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 2160, "resistances": { "kinetic": -0.117935, "thermal": 0.068388, "explosive": -0.304258 } },
+    "weapons": { "count": 5, "damagePerSecond": 47.745179, "sustainedDamagePerSecond": 47.745179 }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "sidewinder-exploration",
+  "ship": "SideWinder",
+  "role": "exploration",
+  "modules": [
+    { "slot": "Armour", "item": "SideWinder_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class2", "priority": 1 },
+    { "slot": "MainEngines", "item": "Int_Engine_Size2_Class2" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size2_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size1_Class2" },
+    { "slot": "Radar", "item": "Int_Sensors_Size1_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size1_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "Slot01_Size2", "item": "Int_FuelTank_Size2_Class3", "priority": 1 },
+    { "slot": "Slot02_Size2", "item": "Int_BuggyBay_Size2_Class2", "on": false },
+    { "slot": "Slot03_Size1", "item": "Int_DockingComputer_Advanced", "on": false },
+    { "slot": "Slot04_Size1", "item": "Int_DetailedSurfaceScanner_Tiny" },
+    { "slot": "Slot05_Size1", "item": "Int_ShieldGenerator_Size1_Class5" },
+    { "slot": "Slot06_Size1", "item": "Int_FuelScoop_Size1_Class4" },
+    { "slot": "PlanetaryApproachSuite", "item": "Int_PlanetApproachSuite", "priority": 1 }
+  ],
+  "metrics": {
+    "unladenMass": 39.6,
+    "cargoCapacity": 0,
+    "fuelCapacity": 6,
+    "maxJumpRange": 19.245009,
+    "power": { "available": 7.2, "retracted": 5.61, "deployed": 5.61, "withinBudget": true },
+    "shields": { "strength": 48, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 108, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

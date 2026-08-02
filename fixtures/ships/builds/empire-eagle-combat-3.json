@@ -1,0 +1,32 @@
+{
+  "id": "empire-eagle-combat-3",
+  "ship": "Empire_Eagle",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Empire_Eagle_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size3_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size3_Class5" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size3_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class5", "priority": 1 },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size2_Class5", "priority": 1 },
+    { "slot": "Radar", "item": "Int_Sensors_Size2_Class5", "priority": 1 },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size2_Class3" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_PlasmaAccelerator_Fixed_Medium", "priority": 3 },
+    { "slot": "SmallHardpoint1", "item": "Hpt_PulseLaser_Gimbal_Small", "priority": 2 },
+    { "slot": "SmallHardpoint2", "item": "Hpt_PulseLaser_Gimbal_Small", "priority": 2 },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "Slot01_Size3", "item": "Int_ShieldGenerator_Size3_Class5", "priority": 1 },
+    { "slot": "Slot02_Size2", "item": "Int_ShieldCellBank_Size2_Class4", "priority": 1 },
+    { "slot": "Slot03_Size1", "item": "Int_FuelScoop_Size1_Class5", "priority": 4 }
+  ],
+  "metrics": {
+    "unladenMass": 87.1,
+    "cargoCapacity": 0,
+    "fuelCapacity": 4,
+    "maxJumpRange": 17.351018,
+    "power": { "available": 12, "retracted": 9.93, "deployed": 12.14, "withinBudget": false },
+    "shields": { "strength": 136, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 108, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 3, "damagePerSecond": 30.400792, "sustainedDamagePerSecond": 27.463444 }
+  }
+}

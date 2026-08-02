@@ -1,0 +1,42 @@
+{
+  "id": "mamba-combat-4",
+  "ship": "Mamba",
+  "role": "combat",
+  "modules": [
+    { "slot": "HugeHardpoint1", "item": "Hpt_PlasmaAccelerator_Fixed_Huge", "priority": 2, "engineering": { "blueprint": "Weapon_Efficient", "grade": 5, "experimental": "special_weapon_damage" } },
+    { "slot": "LargeHardpoint1", "item": "Hpt_Slugshot_Gimbal_Large", "priority": 2, "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_weapon_damage" } },
+    { "slot": "LargeHardpoint2", "item": "Hpt_Slugshot_Gimbal_Large", "priority": 2, "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_weapon_damage" } },
+    { "slot": "SmallHardpoint1", "item": "Hpt_Slugshot_Gimbal_Small", "priority": 2, "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_drag_munitions" } },
+    { "slot": "SmallHardpoint2", "item": "Hpt_Slugshot_Gimbal_Small", "priority": 2, "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_corrosive_shell" } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 1, "engineering": { "blueprint": "ShieldBooster_Thermic", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 1, "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 1, "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 1, "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint5", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 1, "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint6", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 1, "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "Armour", "item": "Mamba_Armour_Reactive", "priority": 1, "engineering": { "blueprint": "Armour_Advanced", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size6_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 3, "experimental": "special_powerplant_cooled" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size5_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size4_Class5", "priority": 4, "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2", "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size6_Class5", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class2", "engineering": { "blueprint": "Sensor_LongRange", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size3_Class3", "priority": 1 },
+    { "slot": "Slot01_Size5", "item": "Int_ShieldGenerator_Size5_Class5_Strong", "priority": 1, "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5, "experimental": "special_shield_health" } },
+    { "slot": "Slot02_Size4", "item": "Int_GuardianFSDBooster_Size4", "priority": 4 },
+    { "slot": "Slot03_Size3", "item": "Int_GuardianShieldReinforcement_Size3_Class2" },
+    { "slot": "Slot04_Size2", "item": "Int_SupercruiseAssist", "priority": 4 },
+    { "slot": "Slot05_Size2", "item": "Int_DockingComputer_Advanced", "priority": 4 },
+    { "slot": "Slot06_Size1", "item": "Int_HullReinforcement_Size1_Class2", "priority": 1, "engineering": { "blueprint": "HullReinforcement_Thermic", "grade": 5, "experimental": "special_hullreinforcement_chunky" } }
+  ],
+  "metrics": {
+    "unladenMass": 489.3,
+    "cargoCapacity": 0,
+    "fuelCapacity": 8,
+    "maxJumpRange": 22.263817,
+    "power": { "available": 25.2, "retracted": 24.16, "deployed": 31.07, "withinBudget": false },
+    "shields": { "strength": 1251.111513, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 915, "resistances": { "kinetic": 0.25375, "thermal": -0.393, "explosive": 0.204 } },
+    "weapons": { "count": 5, "damagePerSecond": 604.745401, "sustainedDamagePerSecond": 92.153704 }
+  }
+}

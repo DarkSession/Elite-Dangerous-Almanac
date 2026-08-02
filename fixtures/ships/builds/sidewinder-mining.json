@@ -1,0 +1,32 @@
+{
+  "id": "sidewinder-mining",
+  "ship": "SideWinder",
+  "role": "mining",
+  "modules": [
+    { "slot": "Armour", "item": "SideWinder_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class2" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size2_Class2" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size2_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class5" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size1_Class2" },
+    { "slot": "Radar", "item": "Int_Sensors_Size1_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size1_Class3" },
+    { "slot": "SmallHardpoint1", "item": "Hpt_MiningLaser_Fixed_Small" },
+    { "slot": "SmallHardpoint2", "item": "Hpt_MiningLaser_Fixed_Small" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "Slot01_Size2", "item": "Int_CargoRack_Size2_Class1" },
+    { "slot": "Slot02_Size2", "item": "Int_CargoRack_Size2_Class1" },
+    { "slot": "Slot03_Size1", "item": "Int_Refinery_Size1_Class5" }
+  ],
+  "metrics": {
+    "unladenMass": 38.4,
+    "cargoCapacity": 8,
+    "fuelCapacity": 2,
+    "maxJumpRange": 19.832643,
+    "power": { "available": 7.2, "retracted": 4.29, "deployed": 5.29, "withinBudget": true },
+    "shields": null,
+    "armour": { "hitPoints": 108, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 2, "damagePerSecond": 4, "sustainedDamagePerSecond": 4 }
+  }
+}

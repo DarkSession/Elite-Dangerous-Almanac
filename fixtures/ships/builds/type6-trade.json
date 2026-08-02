@@ -1,0 +1,36 @@
+{
+  "id": "type6-trade",
+  "ship": "Type6",
+  "role": "trade",
+  "modules": [
+    { "slot": "Armour", "item": "Type6_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size3_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class5" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size4_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size2_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size3_Class2" },
+    { "slot": "Radar", "item": "Int_Sensors_Size2_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class3" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class3" },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "Slot01_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot02_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot03_Size4", "item": "Int_CargoRack_Size4_Class1" },
+    { "slot": "Slot04_Size4", "item": "Int_ShieldGenerator_Size4_Class5" },
+    { "slot": "Slot05_Size3", "item": "Int_CargoRack_Size3_Class1" },
+    { "slot": "Slot06_Size2", "item": "Int_CargoRack_Size2_Class1" },
+    { "slot": "Slot07_Size2", "item": "Int_CargoRack_Size2_Class1" },
+    { "slot": "Slot08_Size1", "item": "Int_CargoRack_Size1_Class1" }
+  ],
+  "metrics": {
+    "unladenMass": 196.8,
+    "cargoCapacity": 98,
+    "fuelCapacity": 16,
+    "maxJumpRange": 28.983207,
+    "power": { "available": 12, "retracted": 11.12, "deployed": 11.12, "withinBudget": true },
+    "shields": { "strength": 184.120699, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 324, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

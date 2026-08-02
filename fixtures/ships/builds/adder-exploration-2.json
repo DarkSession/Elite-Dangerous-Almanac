@@ -1,0 +1,28 @@
+{
+  "id": "adder-exploration-2",
+  "ship": "Adder",
+  "role": "exploration",
+  "modules": [
+    { "slot": "Armour", "item": "Adder_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class2" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size2_Class2" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size3_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size2_Class2" },
+    { "slot": "Radar", "item": "Int_Sensors_Size3_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size3_Class3" },
+    { "slot": "Slot01_Size3", "item": "Int_FuelScoop_Size3_Class4" },
+    { "slot": "Slot02_Size3", "item": "Int_ShieldGenerator_Size2_Class2" },
+    { "slot": "Slot03_Size2", "item": "Int_DetailedSurfaceScanner_Tiny" }
+  ],
+  "metrics": {
+    "unladenMass": 46.5,
+    "cargoCapacity": 0,
+    "fuelCapacity": 8,
+    "maxJumpRange": 31.935932,
+    "power": { "available": 7.2, "retracted": 5.33, "deployed": 5.33, "withinBudget": true },
+    "shields": { "strength": 75.035579, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 162, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

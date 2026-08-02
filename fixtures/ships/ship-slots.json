@@ -180,6 +180,71 @@
           "restriction": "planetaryApproachSuite"
         }
       ]
+    },
+    {
+      "symbol": "LakonMiner",
+      "core": {
+        "powerPlant": 6,
+        "thrusters": 5,
+        "frameShiftDrive": 5,
+        "lifeSupport": 3,
+        "powerDistributor": 7,
+        "sensors": 3,
+        "fuelTank": 5
+      },
+      "hardpoints": [
+        3,
+        2,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "utility": 4,
+      "optional": [
+        {
+          "size": 6
+        },
+        {
+          "size": 6
+        },
+        {
+          "size": 6
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 5
+        },
+        {
+          "size": 4
+        },
+        {
+          "size": 3
+        },
+        {
+          "size": 2
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1
+        },
+        {
+          "size": 1,
+          "restriction": "planetaryApproachSuite"
+        }
+      ]
     }
   ]
 }

@@ -2,10 +2,17 @@
  * **Engineering options** — which blueprints and which experimental effects a given
  * module can actually take.
  *
- * Availability is a property of the **module**, not of the blueprint. A Pulse Laser and
- * a Rail Gun both accept the Efficient blueprint, but they offer different experimental
- * effects; asking "what can I put on this module?" is the question the game actually
- * answers. So modules are grouped, and each group lists what it offers.
+ * Availability is a property of the **module**, not of the blueprint. A Pulse Laser
+ * accepts the Efficient blueprint and a Rail Gun does not, and the two offer different
+ * experimental effects even where their blueprints overlap; asking "what can I put on
+ * this module?" is the question the game actually answers. So modules are grouped, and
+ * each group lists what it offers.
+ *
+ * The catalogue groups 428 of the 1198 modules, so families it does not yet map — hull
+ * armour, sensors, life support, heat sink and chaff launchers, the Detailed Surface
+ * Scanner, limpet controllers, AFMUs, fuel scoops, FSD interdictors, the Guardian
+ * weapons — answer "nothing" here although real builds engineer them. Treat an empty
+ * result as "not listed", not as "cannot be engineered"; `TODO.md` tracks the gap.
  *
  * Its own module (and data file) so consumers who never open an engineering menu do not
  * bundle it. Everything returned joins straight to `BLUEPRINTS` and
@@ -138,7 +145,7 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * groups that accept it.
  *
  * Because availability is per module, this is the **union**: engineering a Rail Gun with
- * `Weapon_Efficient` does not offer every effect listed here, only its own group's. Use
+ * `Weapon_LongRange` does not offer every effect listed here, only its own group's. Use
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
  * @param blueprint - A blueprint id, e.g. `"Weapon_Efficient"`.

@@ -1,0 +1,37 @@
+{
+  "id": "empire-courier-exploration",
+  "ship": "Empire_Courier",
+  "role": "exploration",
+  "modules": [
+    { "slot": "Armour", "item": "Empire_Courier_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size3_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 3, "experimental": "special_powerplant_cooled" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size3_Class5_Fast", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_haulage" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size3_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_lightweight" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size3_Class2", "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size2_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size2_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class1", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class1", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_thermic" } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class1", "engineering": { "blueprint": "ShieldBooster_Thermic", "grade": 5, "experimental": "special_shieldbooster_thermic" } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class1", "engineering": { "blueprint": "ShieldBooster_Thermic", "grade": 5, "experimental": "special_shieldbooster_thermic" } },
+    { "slot": "Slot01_Size3", "item": "Int_ShieldGenerator_Size3_Class5_Strong", "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot02_Size3", "item": "Int_FuelScoop_Size3_Class5", "priority": 1 },
+    { "slot": "Slot03_Size2", "item": "Int_GuardianFSDBooster_Size2" },
+    { "slot": "Slot04_Size2", "item": "Int_GuardianShieldReinforcement_Size2_Class2" },
+    { "slot": "Slot05_Size2", "item": "Int_GuardianShieldReinforcement_Size2_Class2" },
+    { "slot": "Slot06_Size1", "item": "Int_GuardianShieldReinforcement_Size1_Class2" },
+    { "slot": "Slot07_Size1", "item": "Int_DetailedSurfaceScanner_Tiny" },
+    { "slot": "Slot08_Size1", "item": "Int_SupercruiseAssist" }
+  ],
+  "metrics": {
+    "unladenMass": 69.3,
+    "cargoCapacity": 0,
+    "fuelCapacity": 4,
+    "maxJumpRange": 27.694874,
+    "power": { "available": 12, "retracted": 14.61, "deployed": 14.61, "withinBudget": false },
+    "shields": { "strength": 735, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 144, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

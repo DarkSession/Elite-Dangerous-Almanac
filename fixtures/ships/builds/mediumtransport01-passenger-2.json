@@ -1,0 +1,43 @@
+{
+  "id": "mediumtransport01-passenger-2",
+  "ship": "MediumTransport01",
+  "role": "passenger",
+  "modules": [
+    { "slot": "LargeHardpoint1", "item": "Hpt_MineLauncher_Fixed_Medium", "priority": 2, "engineering": { "blueprint": "Weapon_LightWeight", "grade": 5, "experimental": "special_choke_canister" } },
+    { "slot": "MediumHardpoint2", "item": "Hpt_BasicMissileRack_Fixed_Medium", "priority": 2, "engineering": { "blueprint": "Weapon_HighCapacity", "grade": 5, "experimental": "special_fsd_interrupt" } },
+    { "slot": "MediumHardpoint3", "item": "Hpt_MineLauncher_Fixed_Medium", "priority": 2, "engineering": { "blueprint": "Weapon_LightWeight", "grade": 5, "experimental": "special_radiant_canister" } },
+    { "slot": "MediumHardpoint4", "item": "Hpt_MineLauncher_Fixed_Medium", "priority": 2, "engineering": { "blueprint": "Weapon_LightWeight", "grade": 5, "experimental": "special_shiftlock_canister" } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 3, "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 3, "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 3, "engineering": { "blueprint": "ShieldBooster_Thermic", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 1, "engineering": { "blueprint": "Misc_HeatSinkCapacity", "grade": 1 } },
+    { "slot": "Armour", "item": "MediumTransport01_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size5_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Armoured", "grade": 5, "experimental": "special_powerplant_highcharge" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size6_Class2", "priority": 1, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size5_Class5", "priority": 1, "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size3_Class2", "engineering": { "blueprint": "Sensor_LongRange", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3", "priority": 1 },
+    { "slot": "Slot01_Size6", "item": "Int_MkII_PassengerCabin_Size6_Class2" },
+    { "slot": "Slot02_Size6", "item": "Int_MkII_PassengerCabin_Size6_Class2" },
+    { "slot": "Slot03_Size6", "item": "Int_MkII_PassengerCabin_Size6_Class2", "priority": 1 },
+    { "slot": "Slot04_Size5", "item": "Int_MkII_PassengerCabin_Size5_Class2" },
+    { "slot": "Slot05_Size5", "item": "Int_MkII_PassengerCabin_Size5_Class2", "priority": 1 },
+    { "slot": "Slot06_Size4", "item": "Int_MkII_PassengerCabin_Size4_Class2", "priority": 1 },
+    { "slot": "Slot07_Size4", "item": "Int_ShieldGenerator_Size4_Class5_Strong", "priority": 1, "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5, "experimental": "special_shield_health" } },
+    { "slot": "Slot08_Size3", "item": "Int_MkII_PassengerCabin_Size3_Class2", "priority": 1 },
+    { "slot": "Slot09_Size2", "item": "Int_GuardianFSDBooster_Size2", "priority": 3 },
+    { "slot": "Slot10_Size1", "item": "Int_HullReinforcement_Size1_Class2", "priority": 1, "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } }
+  ],
+  "metrics": {
+    "unladenMass": 593.1,
+    "cargoCapacity": 0,
+    "fuelCapacity": 32,
+    "maxJumpRange": 28.656049,
+    "power": { "available": 20.4, "retracted": 19.27, "deployed": 21.67, "withinBudget": false },
+    "shields": { "strength": 503.554585, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 740, "resistances": { "kinetic": -0.194, "thermal": 0.005, "explosive": -0.393 } },
+    "weapons": { "count": 4, "damagePerSecond": 145.33332, "sustainedDamagePerSecond": 54.935396 }
+  }
+}

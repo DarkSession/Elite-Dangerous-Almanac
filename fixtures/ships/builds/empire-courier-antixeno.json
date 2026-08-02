@@ -1,0 +1,37 @@
+{
+  "id": "empire-courier-antixeno",
+  "ship": "Empire_Courier",
+  "role": "antiXeno",
+  "modules": [
+    { "slot": "Armour", "item": "Empire_Courier_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size3_Class5", "engineering": { "blueprint": "PowerPlant_Armoured", "grade": 5, "experimental": "special_powerplant_toughened" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size3_Class5_Fast", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_haulage" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size3_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size2_Class2", "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size2_Class5", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size3_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ElectronicCountermeasure_Tiny", "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ElectronicCountermeasure_Tiny", "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_CloudScanner_Size0_Class4", "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_XenoScanner_Basic_Tiny" },
+    { "slot": "Slot01_Size3", "item": "Int_FuelScoop_Size3_Class5" },
+    { "slot": "Slot02_Size3", "item": "Int_CargoRack_Size3_Class1" },
+    { "slot": "Slot03_Size2", "item": "Int_BuggyBay_Size2_Class2", "priority": 4 },
+    { "slot": "Slot04_Size2", "item": "Int_Repairer_Size2_Class4", "priority": 3 },
+    { "slot": "Slot05_Size2", "item": "Int_Repairer_Size2_Class4", "priority": 2 },
+    { "slot": "Slot06_Size1", "item": "Int_DroneControl_Repair_Size1_Class2", "priority": 2 },
+    { "slot": "Slot07_Size1", "item": "Int_DetailedSurfaceScanner_Tiny", "engineering": { "blueprint": "Sensor_Expanded", "grade": 5 } },
+    { "slot": "Slot08_Size1", "item": "Int_DockingComputer_Advanced", "priority": 1 }
+  ],
+  "metrics": {
+    "unladenMass": 63.2,
+    "cargoCapacity": 8,
+    "fuelCapacity": 8,
+    "maxJumpRange": 23.730854,
+    "power": { "available": 12, "retracted": 11.31, "deployed": 13.51, "withinBudget": false },
+    "shields": null,
+    "armour": { "hitPoints": 144, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

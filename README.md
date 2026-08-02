@@ -938,9 +938,10 @@ catalogue — so combine them yourself with `sumMaterials` only when you need bo
 
 #### What a module can be engineered with
 
-Before you pick a blueprint, you usually need the menu. Availability is a property of
-the **module**, not the blueprint — a Pulse Laser and a Rail Gun both take Efficient but
-offer different experimental effects:
+Before you pick a blueprint, you usually need the menu, and the menu differs per
+**module**: a Pulse Laser takes Efficient, a Rail Gun does not, and the two offer
+different experimental effects even where their blueprints overlap (Long Range,
+Lightweight, Short Range, Sturdy):
 
 ```ts
 import {
@@ -951,6 +952,11 @@ import {
 
 getBlueprintsForModule("Int_Hyperdrive_Size5_Class5");
 // -> ['FSD_FastBoot', 'FSD_LongRange', 'FSD_Shielded']
+
+getBlueprintsForModule("Hpt_PulseLaser_Fixed_Small").includes(
+  "Weapon_Efficient",
+); // -> true
+getBlueprintsForModule("Hpt_Railgun_Fixed_Small").includes("Weapon_Efficient"); // -> false
 
 getExperimentalsForModule("Hpt_MultiCannon_Fixed_Medium").length; // -> 12
 getExperimentalsForModule("Hpt_MultiCannon_Fixed_Small").length; // -> 11
@@ -964,9 +970,28 @@ Sequence. 29 modules are exceptions like this, and they are applied for you.
 the exact list for any one module. Once you know the module, use
 `getExperimentalsForModule`.
 
-A module that cannot be engineered at all returns `[]` from both. To tell that apart
-from a module that _is_ engineerable but has no experimental slot (the mining tools),
-ask `getEngineeringGroup` — it returns `null` only for the former.
+A module the options catalogue does not group returns `[]` from both. To tell that apart
+from a module that _is_ grouped but has no experimental to offer, ask
+`getEngineeringGroup` — it returns `null` only for the former. Exactly six modules are in
+that second case: four Mining Laser variants and the two Abrasion Blasters. (The small
+fixed Mining Laser is not one of them — it is grouped and does offer an effect.)
+
+> **`[]` does not yet mean "cannot be engineered".** The options catalogue groups 428 of
+> the 1198 modules, so whole engineerable families — hull armour, sensors, life support,
+> heat sink and chaff launchers, the Detailed Surface Scanner, limpet controllers, AFMUs,
+> fuel scoops, FSD interdictors, the Guardian weapons — currently answer `[]` even though
+> real builds engineer them.
+>
+> For some of those families `ShipLoadout.applyBlueprint` also refuses the recipe: sensors
+> and the Detailed Surface Scanner because the module records lack the base stats their
+> blueprints modify, life support, limpet controllers, AFMUs and fuel scoops because
+> `Misc_LightWeight` / `Misc_Shielded` are mapped to too narrow a target family. Measured
+> on the 181-build corpus in `fixtures/ships/builds/`: 481 of its 1902 declared
+> engineering entries are rejected, across 128 builds. Armour, heat sink launchers, chaff
+> and the Guardian weapons engineer fine — for those it really is only the _menu_ that is
+> missing. (The Caustic Sink Launcher is the exception among the launchers: its
+> engineering target is `miscellaneous`, so `Misc_HeatSinkCapacity` is refused on it.)
+> `TODO.md` §1, §4 and §10 track all three problems.
 
 #### Modules you can buy already engineered
 

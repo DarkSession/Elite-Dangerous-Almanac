@@ -1,0 +1,35 @@
+{
+  "id": "orca-mining",
+  "ship": "Orca",
+  "role": "mining",
+  "modules": [
+    { "slot": "Armour", "item": "Orca_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_Advanced", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size3_Class5", "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 5, "experimental": "special_powerplant_lightweight" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class2", "engineering": { "blueprint": "Engine_Tuned", "grade": 5, "experimental": "special_engine_lightweight" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size6_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size3_Class2", "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_lightweight" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_MiningLaser_Turret_Medium" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "Slot01_Size6", "item": "Int_FuelScoop_Size6_Class5" },
+    { "slot": "Slot02_Size5", "item": "Int_GuardianFSDBooster_Size5" },
+    { "slot": "Slot03_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot04_Size5", "item": "Int_Repairer_Size5_Class5" },
+    { "slot": "Slot06_Size3", "item": "Int_ShieldGenerator_Size3_Class2", "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot07_Size2", "item": "Int_BuggyBay_Size2_Class2" },
+    { "slot": "Slot08_Size2", "item": "Int_Repairer_Size2_Class5" },
+    { "slot": "Slot09_Size1", "item": "Int_DroneControl_Repair_Size1_Class5" }
+  ],
+  "metrics": {
+    "unladenMass": 352.4,
+    "cargoCapacity": 32,
+    "fuelCapacity": 32,
+    "maxJumpRange": 48.405799,
+    "power": { "available": 12, "retracted": 15.72, "deployed": 16.47, "withinBudget": false },
+    "shields": { "strength": 108.064475, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 396, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 1, "damagePerSecond": 4, "sustainedDamagePerSecond": 4 }
+  }
+}

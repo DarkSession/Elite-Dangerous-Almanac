@@ -1,0 +1,40 @@
+{
+  "id": "cobramkiv-combat",
+  "ship": "CobraMkIV",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "CobraMkIV_Armour_Grade3", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size4_Class4" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class4" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size4_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size3_Class4" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size3_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size3_Class4" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_DumbfireMissileRack_Fixed_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_DumbfireMissileRack_Fixed_Medium" },
+    { "slot": "SmallHardpoint1", "item": "Hpt_MultiCannon_Gimbal_Small" },
+    { "slot": "SmallHardpoint2", "item": "Hpt_BeamLaser_Gimbal_Small" },
+    { "slot": "SmallHardpoint3", "item": "Hpt_BeamLaser_Gimbal_Small" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_PlasmaPointDefence_Turret_Tiny" },
+    { "slot": "Slot01_Size4", "item": "Int_HullReinforcement_Size4_Class2" },
+    { "slot": "Slot02_Size4", "item": "Int_HullReinforcement_Size4_Class2" },
+    { "slot": "Slot03_Size4", "item": "Int_ShieldGenerator_Size4_Class5" },
+    { "slot": "Slot04_Size4", "item": "Int_HullReinforcement_Size4_Class2" },
+    { "slot": "Slot05_Size3", "item": "Int_HullReinforcement_Size3_Class2" },
+    { "slot": "Slot06_Size3", "item": "Int_HullReinforcement_Size3_Class2" },
+    { "slot": "Slot07_Size2", "item": "Int_HullReinforcement_Size2_Class2" },
+    { "slot": "Slot08_Size2", "item": "Int_BuggyBay_Size2_Class2", "on": false }
+  ],
+  "metrics": {
+    "unladenMass": 357.8,
+    "cargoCapacity": 0,
+    "fuelCapacity": 16,
+    "maxJumpRange": 16.050013,
+    "power": { "available": 14.3, "retracted": 10.08, "deployed": 14.05, "withinBudget": true },
+    "shields": { "strength": 172.674615, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 2120, "resistances": { "kinetic": -0.084844, "thermal": 0.095964, "explosive": -0.265651 } },
+    "weapons": { "count": 5, "damagePerSecond": 72.153333, "sustainedDamagePerSecond": 64.471077 }
+  }
+}

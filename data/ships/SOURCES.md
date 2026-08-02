@@ -256,6 +256,23 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   (`FrameShiftDrive`, `HugeHardpoint1`, `TinyHardpoint2`, `Slot01_Size6`, `Military01`,
   `PlanetaryApproachSuite`), so a build assembled from an empty hull and one loaded
   from a SLEF export share one vocabulary. See `typescript/src/ships/slots.ts`.
+- **Manual correction, 2026-08-02 — the Type-11 Prospector's four mining hardpoints.**
+  The hull carried `hardpoints: [2, 1, 1, 1]`; it has eight mounts, not four. Coriolis
+  writes a *restricted* hardpoint as an object (`{ "class": 3, "name": "Mining",
+  "eligible": {…} }`) rather than a bare size, and the Type-11 is the only hull in
+  coriolis-data that has any, so acquisition's "non-zero numbers are weapon mounts" rule
+  silently dropped its 3/2/2/1 mining mounts — leaving the game's dedicated mining hull
+  with nowhere to fit a mining tool, and no large mount at all for
+  `Hpt_MiningToolV2_Fixed_Large` — which is itself `restrictedToShips: ["LakonMiner"]`,
+  so it was unfittable on the only hull that may carry it. Corrected to
+  `[3, 2, 2, 2, 1, 1, 1, 1]`, which three sources agree on: coriolis-data (commit as
+  above), EDSY's `eddb.js` (database version `423039901`, last modified `20260428`;
+  `ship[…].slots.hardpoint = [3,2,2,2,1,1,1,1]`) and
+  [Inara's ship page](https://inara.cz/elite/ship/68/), read 2026-08-02, listing 1 Large
+  Mining, 1 Medium, 2 Medium Mining, 3 Small and 1 Small Mining. The four unrestricted
+  mounts are exactly the `[2, 1, 1, 1]` the record already had. **The mining restriction
+  itself is not stored** — the slot schema has no hardpoint restriction — so the
+  catalogue says only that the mounts exist and how big they are; see `TODO.md`.
 - **Lynx Highliner (`MediumTransport01`) — from EDSY + Frontier's Lynx update notes:**
   the Lynx has no coriolis hull entry, so its stats and slot layout are sourced instead
   from EDSY's ship data and Frontier's Lynx update notes (hull mass 260 t, 285/350 m/s,
@@ -1005,7 +1022,55 @@ exactly — which is what shows the recomputation is right rather than merely
 self-consistent.
 
 **Still missing external ground truth:** shields, armour and weapon DPS. A journal never
-reports them, and the only builds in the corpus with weapons are checked against our own
-maths. An EDSY or Coriolis reading of a weaponed build would close that gap, as would a
-trade or mining hull — the corpus has an explorer, a combat multirole and a small
-combat hull, but nothing cargo-heavy beyond the Krait's 32 t.
+reports them, and every weaponed build here is checked against our own maths. An EDSY or
+Coriolis *reading* of a weaponed build would close that gap; the build corpus below does
+not, because it pins figures this library computed rather than figures a tool published.
+
+## Build corpus — `fixtures/ships/builds/`
+
+181 community builds, 2–5 for each of the 48 hulls, as a breadth fixture: 4271 fitted
+modules covering 558 distinct module symbols, and every hull's slot *layout* exercised by
+builds people actually fly rather than by hand-written combinations. Not every individual
+mount: 64 of the 1294 non-cargo-hatch slots are never occupied (18 hulls are covered
+mount-for-mount), and the Panther Clipper Mk II's weapon and utility mounts are all empty
+because both of its builds are pure traders.
+
+- **Acquisition (2026-08-02 UTC).** Public build links — Coriolis (`coriolis.io/outfit`,
+  `s.orbis.zone`) and EDSY (`edsy.org`) — were collected from community build libraries,
+  forum and Steam threads, video descriptions and squadron documents, then decoded
+  locally to Frontier slot keys and module symbols. Both link formats carry the whole
+  build in the URL: Coriolis's is the module-id serialisation its `Ship.buildFrom` reads
+  (with the engineering struct in the fourth, gzipped part); EDSY's is the versioned
+  hash its `Build.fromHash` reads. The decoders were throwaway scripts run outside the
+  working tree, per AGENTS.md — what landed here is the decoded data.
+- **What is deliberately not kept, and what that costs.** A build's own name, author and
+  source link are **not** stored, on the maintainer's instruction that the sources need
+  not be credited. State the consequence plainly against `data/SNAPSHOTS.md`, which asks
+  that a source with no immutable version be preserved by content or checksum: each build
+  file *is* the decoded content of its link, so the payload is preserved, but **no
+  individual build can be traced back to the page it came from, or re-derived from this
+  repository**. What remains auditable is everything that makes it a fixture — every
+  build re-checks against the catalogues (slot exists, module fits, metrics reproduce),
+  which `builds.test.ts` does on every run. Re-collecting the corpus means harvesting
+  links afresh.
+- **Validation.** Every build was assembled through `ShipLoadout` before selection: each
+  module must resolve in the catalogues, its slot must exist on that hull and accept it,
+  and all seven core internals must be filled. Builds that failed were dropped — the one
+  systematic failure, the Type-11's missing mining hardpoints, was a defect in this
+  catalogue and is corrected above. Near-duplicates (>85% identical fit) were collapsed,
+  and each hull's picks spread across the roles its builds cover.
+- **Layout.** One file per build, `fixtures/ships/builds/<id>.json`, named by the `id`
+  it carries; `index.json` lists every id with its hull and role, and holds the corpus's
+  description. One file per build keeps a change to one build a one-file diff, and lets a
+  port load a single build without parsing the other 180. It is the one fixture a test
+  reads from disk rather than importing — 181 static JSON imports would be a wall — so
+  `index.json` is the entry point and the files are the fixture.
+- **What the fixture pins.** The fit (slot → module symbol, power priority, and the
+  engineering the author declared), plus the metrics this library derives: mass, cargo,
+  fuel, jump range, the power budget, shield and armour strength with resistances, and
+  weapon DPS. **Engineering is recorded but not applied** — every pinned figure comes
+  from stock module stats, so builds designed around an engineered plant read
+  `withinBudget: false`. That keeps the numbers a pure function of the catalogues, which
+  is what a port needs; it also sidesteps the applied-engineering gap in `TODO.md`.
+- **Not ground truth.** These figures are this implementation's own output, pinned so
+  every future implementation must agree. Only the *builds* are external.

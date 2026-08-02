@@ -1,0 +1,39 @@
+{
+  "id": "cobramkv-multipurpose",
+  "ship": "CobraMkV",
+  "role": "multipurpose",
+  "modules": [
+    { "slot": "Armour", "item": "CobraMkV_Armour_Reactive", "priority": 1, "engineering": { "blueprint": "Armour_Advanced", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size4_Class5", "engineering": { "blueprint": "PowerPlant_Armoured", "grade": 5, "experimental": "special_powerplant_cooled" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size4_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size3_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 2 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size4_Class5", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size3_Class5", "engineering": { "blueprint": "Sensor_LongRange", "grade": 3 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class2", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_efficient" } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class2", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_efficient" } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ChaffLauncher_Tiny", "engineering": { "blueprint": "Misc_ChaffCapacity", "grade": 1 } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ChaffLauncher_Tiny", "engineering": { "blueprint": "Misc_ChaffCapacity", "grade": 1 } },
+    { "slot": "Slot01_Size5", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot02_Size4", "item": "Int_GuardianShieldReinforcement_Size4_Class2" },
+    { "slot": "Slot03_Size4", "item": "Int_GuardianShieldReinforcement_Size4_Class2" },
+    { "slot": "Slot04_Size4", "item": "Int_GuardianShieldReinforcement_Size4_Class2" },
+    { "slot": "Slot05_Size3", "item": "Int_ShieldGenerator_Size3_Class3_Fast", "engineering": { "blueprint": "ShieldGenerator_Thermic", "grade": 5, "experimental": "special_shield_efficient" } },
+    { "slot": "Slot06_Size3", "item": "Int_HullReinforcement_Size3_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot07_Size3", "item": "Int_ModuleReinforcement_Size3_Class2" },
+    { "slot": "Slot08_Size2", "item": "Int_ModuleReinforcement_Size2_Class2" },
+    { "slot": "Slot09_Size1", "item": "Int_HullReinforcement_Size1_Class2", "engineering": { "blueprint": "HullReinforcement_Thermic", "grade": 3, "experimental": "special_hullreinforcement_thermic" } },
+    { "slot": "PlanetaryApproachSuite", "item": "Int_PlanetApproachSuite_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 279.6,
+    "cargoCapacity": 0,
+    "fuelCapacity": 16,
+    "maxJumpRange": 22.663737,
+    "power": { "available": 15.6, "retracted": 13.71, "deployed": 13.71, "withinBudget": true },
+    "shields": { "strength": 727.251916, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 1390, "resistances": { "kinetic": 0.28332, "thermal": -0.337802, "explosive": 0.235542 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}
