@@ -646,15 +646,13 @@ build.toSlef(); // the envelope as an object, for composing
 SLEF's header credits the **exporting application**, so pass your own; the default
 names this library. Two things worth knowing:
 
-- **Physical figures are always recomputed** from the hull and the fitted modules —
-  `UnladenMass`, `CargoCapacity`, `FuelCapacity` and `MaxJumpRange` — so an edited build
+- **Every figure is recomputed** from the hull and the fitted modules, so an edited build
   exports numbers that match its current fit.
-- **Credit figures are read from the build** when it states them. `HullValue`,
-  `ModulesValue` and `Rebuy` record a _purchase_ — the station discount that applied,
-  and whether the exporter counts the hull bare or with its stock fittings — which no
-  catalogue of list prices can reproduce. Editing the fit invalidates them, and only
-  then are they derived from the catalogue. A build assembled from scratch has no
-  purchase to report, so it is priced from the catalogue throughout.
+- **Credits are quoted at retail** — the bare hull's list price plus every fitted
+  module's, with `Rebuy` 5% of the two. A source's own `HullValue`, `ModulesValue` and
+  per-module `Value` are deliberately **ignored**: they record what one commander paid at
+  one station, discount and all, which is not a property of the build. The Deep Black's
+  modules were bought 12.25% under list; the same build exports at list either way.
 - Anything that cannot be worked out is **left out** rather than emitted as a stale or
   zero value, which SLEF explicitly allows. An unrecognised hull or module id costs you
   the figures that depend on it, not a wrong answer.

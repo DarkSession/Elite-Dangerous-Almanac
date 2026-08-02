@@ -340,35 +340,11 @@ export class ShipLoadout {
     readonly #moduleStats = new Map<string, OutfittingModule>();
     readonly #top: TopFigures;
     readonly #slotVersions = new Map<string, number>();
-    /**
-     * Whether the import's account of what it cost is complete — its per-module prices
-     * add up to the total it declared, or it priced its modules and declared no total.
-     *
-     * @remarks
-     * When it is, the *unpriced* modules are provably the ones that came free with the
-     * hull, and can be costed at nothing. When it is not — an older journal omits
-     * `Value` on modules that were paid for — an unpriced module means "we were not
-     * told", and has to be estimated from the catalogue instead. Computed once at
-     * import because it outlives the edit that discards the declared total.
-     */
-    readonly #importPricesReconcile: boolean;
 
     private constructor(shipSymbol: string, modules: Map<string, LoadoutModule>, top: TopFigures) {
         this.#shipSymbol = shipSymbol;
         this.#modules = modules;
         this.#top = top;
-
-        let stated = 0;
-        let anyPriced = false;
-        for (const m of modules.values()) {
-            if (m.Value === undefined) continue;
-            stated += m.Value;
-            anyPriced = true;
-        }
-        // SLEF requires neither field, so a build may price its modules without
-        // declaring a total. Priced modules are then their own account of what was paid.
-        this.#importPricesReconcile =
-            top.ModulesValue === undefined ? anyPriced : stated === top.ModulesValue;
     }
 
     /**
@@ -926,6 +902,12 @@ export class ShipLoadout {
      * the fitted modules rather than echoed from whatever an import supplied, and any
      * figure that cannot be worked out is **left out** rather than emitted as a stale or
      * zero value — SLEF requires nothing beyond `Ship` and `Modules`.
+     *
+     * Credits are quoted at **retail**: the bare hull's `hullCost` plus every fitted
+     * module's catalogue list price, with `Rebuy` 5% of the two. A source's own
+     * `HullValue` / `ModulesValue` / `Value` figures are deliberately ignored, because
+     * they record one commander's purchase at one station — the Deep Black's modules are
+     * all 12.25% off list — and a station discount is not a property of the build.
      * @example
      * ```ts
      * const event = build.toLoadoutEvent();
@@ -937,36 +919,20 @@ export class ShipLoadout {
         const unladenMass = this.#computedUnladenMass();
         const cargoCapacity = this.#computedCargoCapacity();
         const fuel = this.#computedFuelCapacity();
-        // Credits are a fact about a *purchase* — the discount the player got, whether
-        // the exporter counts the hull bare or with its stock fittings — not a property
-        // of the fit, so a build that states them is trusted over any list price. The
-        // catalogue's `retailCost` (hull plus stock modules) is the game's own reading
-        // when there is nothing to trust. `#adjustImportedFigures` drops the stated
-        // `ModulesValue` and `Rebuy` as soon as the fit changes, so an edited build
-        // falls through to the computed figures rather than reporting a stale price.
-        // Note that `ModulesValue` cannot be reliably rebuilt from the parts: older
-        // journals omit `Value` on modules that were nonetheless paid for, so their
-        // per-module sum falls short of the total the same event declares.
-        const hullValue = this.#top.HullValue ?? hull?.retailCost ?? hull?.hullCost ?? null;
-        const modulesValue = this.#top.ModulesValue ?? this.#computedModulesValue();
-        // A module's `Value` and the build's `ModulesValue` must come from one account,
-        // or the document contradicts itself and a re-import reads it wrongly. Copy the
-        // source's own prices under a total it supplied; write ours under a total we
-        // derived; write none at all when we could not total the build, because prices
-        // with nothing to add up to are what make an unknown look free.
-        const prices =
-            this.#top.ModulesValue !== undefined
-                ? 'carried'
-                : modulesValue === null
-                  ? 'none'
-                  : 'derived';
-        const modules = this.#exportModules(options, prices);
+        // Credits are quoted at **retail** — the bare hull plus every fitted module at
+        // the catalogue's list price. What a build reports instead is what one commander
+        // paid at one station: the Deep Black's modules all sit at 0.8775 of list, a
+        // 12.25% outfitting discount, and the game and EDSY do not even agree on whether
+        // `HullValue` means the bare hull or the hull with its stock fittings. None of
+        // that is a property of the build, so none of it is carried through.
+        const hullValue = hull?.hullCost ?? null;
+        const modulesValue = this.#computedModulesValue();
+        const modules = this.#exportModules(options);
         const maxJumpRange = this.#exportableJumpRange(unladenMass);
         const rebuy =
-            this.#top.Rebuy ??
-            (hullValue === null || modulesValue === null
+            hullValue === null || modulesValue === null
                 ? null
-                : Math.trunc((hullValue + modulesValue) * REBUY_FRACTION));
+                : Math.trunc((hullValue + modulesValue) * REBUY_FRACTION);
 
         return {
             event: 'Loadout',
@@ -1009,17 +975,8 @@ export class ShipLoadout {
         return stringifySlef(this.toSlef(options), { indent: options.indent ?? 0 });
     }
 
-    /**
-     * The fitted modules as journal records, in the requested order.
-     *
-     * @param prices - Where each module's `Value` comes from: `'carried'` copies what
-     * the source stated, `'derived'` writes the price this build counted, and `'none'`
-     * writes no price at all — see {@link toLoadoutEvent}.
-     */
-    #exportModules(
-        options: LoadoutExportOptions,
-        prices: 'carried' | 'derived' | 'none',
-    ): LoadoutModule[] {
+    /** The fitted modules as journal records, in the requested order. */
+    #exportModules(options: LoadoutExportOptions): LoadoutModule[] {
         const ordered =
             options.moduleOrder === 'slots'
                 ? this.#slotOrderedModules()
@@ -1027,14 +984,10 @@ export class ShipLoadout {
         return ordered.map((m) => {
             const on = m.On ?? (options.explicitPower ? true : undefined);
             const priority = m.Priority ?? (options.explicitPower ? 0 : undefined);
-            // A module that is genuinely free keeps no `Value`, exactly as the game
-            // writes it.
-            const value =
-                prices === 'none'
-                    ? 'free'
-                    : prices === 'carried'
-                      ? (m.Value ?? 'free')
-                      : this.#moduleValue(m);
+            // The module's list price, so the parts add up to the build's `ModulesValue`.
+            // Something with no price of its own — a decal, the cockpit — keeps no
+            // `Value`, exactly as the game writes it.
+            const value = this.#moduleValue(m);
             return {
                 Slot: m.Slot,
                 // The journal and every SLEF producer write lower-case ids; a build
@@ -1075,14 +1028,10 @@ export class ShipLoadout {
     }
 
     /**
-     * Fitted-modules value in credits, summed from the modules themselves — each
-     * module's own `Value` where it has one, the catalogue's list price otherwise.
+     * Fitted-modules value in credits at **list price**, summed from the catalogue.
      *
      * @remarks
-     * Summed from the parts rather than read off the import, so removing a module drops
-     * its cost. A module's own `Value` is preferred because it records what was actually
-     * paid: outfitting discounts are real and the catalogue only knows list prices.
-     * `null` when any fitted module's price is unresolvable, so the caller omits the
+     * `null` when any fitted module has no published price, so the caller omits the
      * figure rather than under-reporting it.
      */
     #computedModulesValue(): number | null {
@@ -1096,34 +1045,21 @@ export class ShipLoadout {
     }
 
     /**
-     * What one fitted module contributes to `ModulesValue` — or why it contributes
-     * nothing.
+     * What one fitted module costs at list price — or why it costs nothing.
      *
-     * @returns The price in credits; `'free'` when the module genuinely costs nothing
-     * (a cosmetic, or one that came with the hull); `'unknown'` when it should have a
-     * price and none can be found.
+     * @returns The price in credits; `'free'` for something that is not an outfitting
+     * module at all; `'unknown'` when it should have a price and the catalogue has none.
      * @remarks
-     * The single source of truth for pricing, so that what {@link toLoadoutEvent} writes
-     * on a module and what it counts in the total can never disagree. They must not: an
-     * export whose module prices do not add up to its own `ModulesValue` fails the
-     * reconciliation test on re-import, and the figures would drift with every hop.
+     * Deliberately ignores the module's own `Value`. That figure records what a
+     * particular commander paid at a particular station, discount and all, which is not
+     * a property of the build — see {@link toLoadoutEvent}.
      */
     #moduleValue(module: LoadoutModule): number | 'free' | 'unknown' {
-        if (module.Value !== undefined) return module.Value;
         // Cosmetics, ship kits and the cockpit are not outfitting and carry no price.
         if (!isOutfittingSlot(module.Slot)) return 'free';
-
-        // `#moduleStats` holds a snapshot only for slots filled through `setModule`, so
-        // its presence marks a module fitted *here*, which must always be costed from
-        // the catalogue.
-        const fittedHere = this.#moduleStats.get(module.Slot);
-        if (fittedHere === undefined && this.#importPricesReconcile) {
-            // Came with the import, which accounted for every credit it charged — so
-            // this one was free with the hull (the stock bulkhead, tank, approach suite
-            // and cargo hatch) and the game already counts it inside `HullValue`.
-            return 'free';
-        }
-        return (fittedHere ?? this.#statsFor(module))?.cost ?? 'unknown';
+        // Prefer the snapshot taken when the module was fitted, so a caller-supplied
+        // record prices as the article that was actually fitted.
+        return (this.#moduleStats.get(module.Slot) ?? this.#statsFor(module))?.cost ?? 'unknown';
     }
 
     /** `maxJumpRange()` when the build can answer it, else `null` — never throws. */

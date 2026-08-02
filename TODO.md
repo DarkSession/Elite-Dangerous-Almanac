@@ -44,9 +44,9 @@ record is priced at 94 330, and the E-rated rack family follows a ×3.25 curve, 
 sizes 5 and 6 near 306 000 and 996 000.
 
 `cost` is now omitted on all four so a calculation can tell "free" from "unknown", and
-they are pinned in `fixtures/ships/module-stats.json` under `unpriced`. A build carrying
-one exports no `ModulesValue` or `Rebuy` until real prices are sourced from EDSY or
-Inara.
+they are pinned in `fixtures/ships/module-stats.json` under `unpriced`. Since credits are
+quoted at retail, a build carrying one of these exports no `ModulesValue` or `Rebuy` at
+all until real prices are sourced from EDSY or Inara.
 
 ### 3. Modules still missing `mass`, deliberately
 
@@ -92,27 +92,18 @@ journal → `ShipLoadout` → SLEF round trip loses them.
 Deliberately out of scope when SLEF export was added; the additions would all be
 optional and backwards-compatible.
 
-### 7. An export that cannot price the build discards the prices it *could* read
+### 7. An export cannot report what a build actually cost
 
-When `toLoadoutEvent` cannot total a build it omits `ModulesValue` **and** every module
-`Value`, so a purchase record the source supplied is not recoverable afterwards:
+Credits are quoted at retail, so a source's own purchase record — the station discount
+it was bought at, and any per-module `Value` — is dropped on the way out. That is the
+intended behaviour, but it means a consumer wanting "what did this commander pay" has
+nowhere to get it. If that turns out to be wanted, the honest shape is a separate
+accessor for the source's stated figures rather than putting them back in the export,
+where they would be indistinguishable from list prices.
 
-```
-journal → fit an unpriceable rack → export → import → fit a priceable rack
-  direct: ModulesValue 50,788,298   hopped: 56,467,878   (+5,679,580, list prices)
-```
+### 8. `modulesValue` and `rebuy` getters die on a no-op refit
 
-The emitted document is honest — no total, no prices, so no consumer is misled — and
-mass, capacities and jump range are unaffected. But the information is lost.
-
-Carrying the source's `Value`s under an omitted total is **not** the fix: that is exactly
-the shape that makes an unknown look free on re-import, because the constructor's
-"priced modules, no declared total" fallback fires on it. Closing this properly needs a
-third signal — some way for a document to say "these prices are complete" independently
-of the total — which SLEF does not offer. Revisit only if it bites someone.
-
-### 8. `ModulesValue` and `Rebuy` die on a no-op refit
-
-`#adjustImportedFigures` deletes both unconditionally on any `setModule`, including
-re-fitting the identical module. Cheap fix: skip the delete when
-`previous?.Item === next?.Item`.
+`#adjustImportedFigures` deletes both from `#top` on any `setModule`, including
+re-fitting the identical module, so the getters that report the *source's* figures start
+returning `null`. Exports are unaffected — they never read those fields. Cheap fix: skip
+the delete when `previous?.Item === next?.Item`.

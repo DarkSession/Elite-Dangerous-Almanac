@@ -765,9 +765,10 @@ its own fixture, with the expected outputs in a sibling fixture that names it by
   Frontier game output, redistributed under Frontier's media-usage terms). Source file
   SHA-256 `509db62ac63fe1a07eb41d1840435f1e775fbb687e03629aa8856adefae64312`;
   stored unmodified apart from unwrapping the single-element array and re-indenting.
-  Its `HullValue`, `ModulesValue`, `UnladenMass`, `CargoCapacity`, `MaxJumpRange` and
-  `Rebuy` are **Frontier's own figures** — the strongest ground truth available, since
-  no third-party calculator sits in between. Pinned by
+  Its `UnladenMass`, `CargoCapacity` and `MaxJumpRange` are **Frontier's own figures** —
+  the strongest ground truth available, since no third-party calculator sits in between.
+  Its credit figures are a purchase record rather than ground truth, and are pinned only
+  as evidence of how far a build can sit from list price. Pinned by
   `fixtures/ships/slef-export.json` and `fixtures/ships/jump-range.json`.
 
 Two facts this build established that the EDSY export could not:
@@ -777,48 +778,45 @@ Two facts this build established that the EDSY export could not:
   None is an outfitting module — this catalogue deliberately does not carry them — and
   all weigh nothing and cost nothing. They are recognised by slot: `parseSlotName`
   returns `null` for exactly these, and only for these.
-- **The two sources disagree about `HullValue`.** The game reports the hull *with its
-  stock fittings* (`retailCost`: 37 472 252 for the Krait, matching the journal exactly),
-  while EDSY reports the bare hull (`hullCost`: 189 326 510 for the Caspian Explorer,
-  again matching exactly). Consistently, the journal gives no `Value` to the modules
-  that come free with the hull — its stock bulkhead, tank, approach suite and cargo
-  hatch — because their cost already sits inside `HullValue`.
+- **The two sources disagree about `HullValue`** — the game counts the hull's stock
+  fittings inside it, EDSY does not. See the credits note below, which is why neither
+  reading is carried through.
 
-**Credit figures are read from the build, not rebuilt from its parts.** They record a
-*purchase* — the station discount that applied, and which of the two hull conventions
-the exporter used — so no catalogue of list prices can reproduce them. Three
-observations forced this:
+**Credits are quoted at retail, and a build's own figures are discarded.** `HullValue`
+is the bare hull's `hullCost`, `ModulesValue` the sum of every fitted module's catalogue
+list price, and `Rebuy` a flat 5% of the two, truncated. Nothing a source claims to have
+paid is carried through, because what a build reports is one commander's purchase at one
+station rather than a property of the build. Three observations from the corpus show how
+far that can be from list:
 
-- The Deep Black's modules all sit at a uniform **0.8775** of catalogue list price: a
-  12.25% outfitting discount the library cannot know about. Summing list prices
-  overstates its `ModulesValue` by ~14%.
-- A third real journal (a Viper Mk IV, checked but **not redistributed** — its source
-  repository states no licence) declares `ModulesValue` 4 940 956 while its own
-  per-module `Value`s sum to 3 942 898. Older journals omit `Value` on modules that
-  were nonetheless paid for, here an FSD interdictor, so even summing the build's own
-  parts falls short of the total the same event declares.
-- `Rebuy` is close to a flat 5% of hull plus modules but not exactly: exact on the Deep
-  Black (19 097 585), ~3 credits high on both journal captures.
+- **Discounts are real and invisible.** The Deep Black's modules all sit at a uniform
+  **0.8775** of list — a 12.25% outfitting discount — while its hull is at full price.
+  The Viper Mk IV's modules sit at exactly **0.85**. Nothing in the export says so.
+- **The two sources disagree about what `HullValue` means.** The game reports the hull
+  *with its stock fittings* (coriolis `retailCost`, 37 472 252 for the Krait, matching
+  its journal exactly), EDSY the bare hull (`hullCost`, 189 326 510 for the Caspian
+  Explorer, also exact). Consistently, the journal gives no `Value` at all to the five
+  modules that came free with that hull, because their cost already sits inside
+  `HullValue`. Quoting `hullCost` and pricing every fitted module keeps one convention
+  and avoids double-counting either way.
+- **A build's own parts need not add up.** A real Viper Mk IV journal declares
+  `ModulesValue` 4 940 956 while its per-module `Value`s sum to 3 942 898: older journals
+  omit `Value` on modules that were nonetheless paid for, here an FSD interdictor. A
+  figure rebuilt from such a source would inherit the shortfall.
 
-So `HullValue`, `ModulesValue` and `Rebuy` are taken from the build whenever it states
-them; `#adjustImportedFigures` drops the last two as soon as the fit changes, and only
-then are they derived — from `retailCost` and the catalogue's list prices, which is also
-all a build assembled from the catalogues can offer. Physical figures (`UnladenMass`,
-`CargoCapacity`, `FuelCapacity`, `MaxJumpRange`) are always recomputed, because they
-*are* properties of the fit. All three builds reproduce all seven figures exactly.
+The upside is that the export becomes a pure function of the hull and the fitted module
+symbols. Two builds with the same fit price identically whatever their owners paid; an
+edit reprices exactly the module that changed; and a document always adds up, since each
+module carries the same list price the total counted. Where a fitted module has no
+published price the total is omitted rather than under-reported — 23 catalogue records
+can trigger that today: the four corrosion-resistant racks, the three Mk II vessel
+hangars, `Int_ShieldGenerator_Size1_Class4`, `Int_Hyperdrive_Size8_Class{1..5}` and the
+ten `*_free` starter variants.
 
-**On the way out, a module's `Value` and the build's `ModulesValue` always come from the
-same account**, because a document whose parts disagree with its total is read wrongly
-when it comes back in. Three cases: the import declared a total, so its own module
-prices are copied verbatim under it; no total was declared but every module could be
-priced, so ours are written under ours; or something could not be priced, in which case
-the total is omitted **and no module price is written either**. That last case matters —
-prices with no total to add up to are indistinguishable from a fully-priced build whose
-remaining modules came free with the hull, so re-importing one would silently turn "we
-could not price this" into "this was free". 23 catalogue records can still trigger it:
-the four corrosion-resistant racks, the three Mk II vessel hangars,
-`Int_ShieldGenerator_Size1_Class4`, `Int_Hyperdrive_Size8_Class{1..5}` and the ten
-`*_free` starter variants.
+Physical figures (`UnladenMass`, `CargoCapacity`, `FuelCapacity`, `MaxJumpRange`) are
+recomputed too, and unlike the credits they **do** reproduce each source's own figures
+exactly — which is what shows the recomputation is right rather than merely
+self-consistent.
 
 **Still missing external ground truth:** shields, armour and weapon DPS. A journal never
 reports them, and the only builds in the corpus with weapons are checked against our own

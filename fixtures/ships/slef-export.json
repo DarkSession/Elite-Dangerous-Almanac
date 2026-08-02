@@ -1,9 +1,9 @@
 {
-  "description": "Expected ShipLoadout export output — the journal `Loadout` event and SLEF envelope a build serialises to. Pins the decisions rather than whole blobs: which top-level keys an export emits and which it leaves out, module order, and the lower-cased journal casing. Every top-level figure is recomputed from the hull and the fitted modules, never echoed from the import, so `deepBlack.recomputed` doubles as a catalogue check — those are the Deep Black's own journal figures. Cross-language validation.",
+  "description": "Expected ShipLoadout export output — the journal `Loadout` event and SLEF envelope a build serialises to. Pins the decisions rather than whole blobs: which top-level keys an export emits and which it leaves out, module order, and the lower-cased journal casing. Every top-level figure is recomputed from the hull and the fitted modules, never echoed from the import. Credits are quoted at RETAIL — the bare hull's `hullCost` plus every module's catalogue list price — so they deliberately differ from what a source build reports, since that records one commander's purchase at one station. Each build's `discount` section pins the ratio, which is how the retail figures are shown to be right. Cross-language validation.",
   "rebuyFraction": 0.05,
   "deepBlack": {
     "build": "fixtures/ships/slef-the-deep-black.json",
-    "note": "Round-trip of a real EDSY export. Every recomputed figure reproduces the export's own, which is what makes recomputation trustworthy.",
+    "note": "Round-trip of a real EDSY export. The physical figures reproduce the export's own exactly, which is what makes recomputation trustworthy. The credit figures do not, and should not: this export was taken at a 12.25% outfitting discount.",
     "topLevelKeys": [
       "event",
       "Ship",
@@ -22,12 +22,20 @@
     "recomputed": {
       "Ship": "explorer_nx",
       "HullValue": 189326510,
-      "ModulesValue": 192625195,
+      "ModulesValue": 219515904,
       "UnladenMass": 1237.3,
       "CargoCapacity": 16,
       "MaxJumpRange": 89.414678,
       "FuelCapacity": { "Main": 128, "Reserve": 1.14 },
-      "Rebuy": 19097585
+      "Rebuy": 20442120
+    },
+    "physicalFiguresMatchSource": ["UnladenMass", "CargoCapacity", "MaxJumpRange", "FuelCapacity"],
+    "discount": {
+      "note": "What the export reports, and how it relates to our retail figures. Its modules sit at a uniform 0.8775 of list — a 12.25% outfitting discount — while its hull is at full list price, so `HullValue` matches and `ModulesValue` does not.",
+      "sourceHullValue": 189326510,
+      "sourceModulesValue": 192625195,
+      "sourceRebuy": 19097585,
+      "moduleDiscount": 0.8775
     },
     "fittedOrder": [
       "CargoHatch",
@@ -76,7 +84,7 @@
       "CargoHatch"
     ],
     "afterEdit": {
-      "note": "Fitting a 5C fuel tank into Slot06_Size5, which held a 5D shield generator the export priced at 165883. Nothing is dropped: the physical figures recompute, and the credit figures — no longer trustworthy once the fit changed — are re-derived, dropping the replaced module's stated price and adding the new one's catalogue cost of 97754.",
+      "note": "Fitting a 5C fuel tank into Slot06_Size5, which held a 5D shield generator. Nothing is dropped, and nothing is adjusted in place: every figure is recomputed from the new fit, so ModulesValue swaps the generator's list price of 189035 for the tank's 97754.",
       "slot": "Slot06_Size5",
       "item": "Int_FuelTank_Size5_Class3",
       "topLevelKeys": [
@@ -94,12 +102,12 @@
         "Modules"
       ],
       "recomputed": {
-        "ModulesValue": 192557066,
+        "ModulesValue": 219424623,
         "UnladenMass": 1233.7,
         "CargoCapacity": 16,
         "MaxJumpRange": 89.643693,
         "FuelCapacity": { "Main": 160, "Reserve": 1.14 },
-        "Rebuy": 19094178
+        "Rebuy": 20437556
       }
     }
   },
@@ -140,18 +148,32 @@
     ],
     "recomputed": {
       "Ship": "krait_light",
-      "HullValue": 37472252,
-      "ModulesValue": 50785509,
+      "HullValue": 35741519,
+      "ModulesValue": 56467878,
       "UnladenMass": 388.829998,
       "CargoCapacity": 32,
       "MaxJumpRange": 60.547796,
       "FuelCapacity": { "Main": 32, "Reserve": 0.63 },
-      "Rebuy": 4412891
+      "Rebuy": 4610469
     },
     "journalTolerance": {
       "note": "The journal rounds; these are the source event's own figures, matched within 1e-4.",
       "UnladenMass": 388.830017,
       "MaxJumpRange": 60.547791
+    },
+    "discount": {
+      "note": "The journal's credit figures differ from retail in three independent ways, which is why none of them is carried through: the modules were bought at a discount; the game reports HullValue as the hull WITH its stock fittings (coriolis `retailCost` 37472252) where we quote the bare hull (`hullCost` 35741519); and it gives no `Value` at all to the five modules that came free with the hull, so its ModulesValue counts fewer articles than ours.",
+      "sourceHullValue": 37472252,
+      "sourceModulesValue": 50785509,
+      "sourceRebuy": 4412891,
+      "hullRetailCost": 37472252,
+      "unpricedInSource": [
+        "Armour",
+        "FuelTank",
+        "Slot09_Size1",
+        "PlanetaryApproachSuite",
+        "CargoHatch"
+      ]
     }
   },
   "assembled": {
@@ -176,13 +198,13 @@
     "omittedKeys": ["ShipName", "ShipIdent"],
     "recomputed": {
       "Ship": "sidewinder",
-      "HullValue": 32000,
+      "HullValue": 4588,
       "ModulesValue": 161224,
       "UnladenMass": 27.5,
       "CargoCapacity": 0,
       "MaxJumpRange": 27.444467,
       "FuelCapacity": { "Main": 2, "Reserve": 0.3 },
-      "Rebuy": 9661
+      "Rebuy": 8290
     },
     "valueNote": "Each module carries the price it was counted at, so the export's parts add up to its own ModulesValue. Without that a re-import cannot tell a free hull fitting from one we priced, and the total drifts on every export/import hop.",
     "modules": [

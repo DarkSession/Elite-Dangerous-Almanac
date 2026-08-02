@@ -65,22 +65,41 @@ test(`the export emits ${fixture.deepBlack.topLevelKeys.length} top-level keys, 
     assert.equal(event.Modules.length, fixture.deepBlack.moduleCount);
 });
 
-test('every recomputed figure matches the exported build’s own', () => {
+test('every recomputed figure matches the fixture', () => {
     const event = ShipLoadout.fromSlef(slefString).toLoadoutEvent();
     assert.deepEqual(figuresOf(event, fixture.deepBlack.recomputed), fixture.deepBlack.recomputed);
 });
 
-test('the recomputed figures are the journal’s, not our own invention', () => {
-    // The fixture's expectations are the real export's values, so pinning them here
-    // means a catalogue regression fails this test rather than being rubber-stamped.
-    const expected = fixture.deepBlack.recomputed;
-    assert.equal(expected.HullValue, source.HullValue);
-    assert.equal(expected.ModulesValue, source.ModulesValue);
-    assert.equal(expected.UnladenMass, source.UnladenMass);
-    assert.equal(expected.CargoCapacity, source.CargoCapacity);
-    assert.equal(expected.MaxJumpRange, source.MaxJumpRange);
-    assert.equal(expected.Rebuy, source.Rebuy);
-    assert.deepEqual(expected.FuelCapacity, source.FuelCapacity);
+test('the physical figures are the exporter’s own, not our invention', () => {
+    // These are properties of the fit, so a real export is the ground truth and pinning
+    // them means a catalogue regression fails here rather than being rubber-stamped.
+    const expected = fixture.deepBlack.recomputed as unknown as Record<string, unknown>;
+    for (const key of fixture.deepBlack.physicalFiguresMatchSource) {
+        assert.deepEqual(
+            expected[key],
+            (source as unknown as Record<string, unknown>)[key],
+            `${key} should reproduce the export's own figure`,
+        );
+    }
+});
+
+test('credits are quoted at retail, so a discounted source does not match', () => {
+    // The source paid 12.25% under list for its modules. That is one commander's
+    // purchase at one station, not a property of the build, so the export quotes list.
+    const { discount, recomputed } = fixture.deepBlack;
+    assert.equal(discount.sourceHullValue, source.HullValue);
+    assert.equal(discount.sourceModulesValue, source.ModulesValue);
+    assert.equal(discount.sourceRebuy, source.Rebuy);
+
+    // The hull was bought at full list, so only the modules diverge — and by exactly
+    // the discount, which is what shows the retail figure is right rather than merely
+    // different.
+    assert.equal(recomputed.HullValue, discount.sourceHullValue);
+    assert.ok(
+        Math.abs(discount.sourceModulesValue / recomputed.ModulesValue - discount.moduleDiscount) <
+            1e-4,
+        `expected the source to sit at ${discount.moduleDiscount} of retail`,
+    );
 });
 
 test('rebuy is a flat 5% of hull plus modules, truncated', () => {
@@ -108,10 +127,33 @@ test('the journal’s own rounded figures agree with ours', () => {
     const { journalTolerance } = fixture.kraitPhantom;
     assert.ok(Math.abs(event.UnladenMass! - journalTolerance.UnladenMass) < 1e-4);
     assert.ok(Math.abs(event.MaxJumpRange! - journalTolerance.MaxJumpRange) < 1e-4);
-    assert.equal(krait.HullValue, fixture.kraitPhantom.recomputed.HullValue);
-    assert.equal(krait.ModulesValue, fixture.kraitPhantom.recomputed.ModulesValue);
-    assert.equal(krait.Rebuy, fixture.kraitPhantom.recomputed.Rebuy);
     assert.equal(krait.CargoCapacity, fixture.kraitPhantom.recomputed.CargoCapacity);
+});
+
+test('the journal’s credits diverge from retail for three separate reasons', () => {
+    // Worth pinning because each is a different way a source's own figures fail to be a
+    // property of the build, and together they are why none of them is carried through.
+    const { discount, recomputed } = fixture.kraitPhantom;
+    assert.equal(discount.sourceHullValue, krait.HullValue);
+    assert.equal(discount.sourceModulesValue, krait.ModulesValue);
+    assert.equal(discount.sourceRebuy, krait.Rebuy);
+
+    // 1. The game quotes the hull with its stock fittings; we quote the bare hull.
+    assert.equal(discount.hullRetailCost, krait.HullValue);
+    assert.ok(recomputed.HullValue < discount.hullRetailCost);
+
+    // 2. It gives no price at all to the modules that came free with the hull…
+    assert.deepEqual(
+        krait.Modules.filter(
+            (m) =>
+                m.Value === undefined &&
+                !/^(PaintJob|Ship|Bobble|Decal|Weapon|Engine|Vessel)/.test(m.Slot),
+        ).map((m) => m.Slot),
+        discount.unpricedInSource,
+    );
+
+    // 3. …and it bought the rest at a discount, so our total is the larger one.
+    assert.ok(recomputed.ModulesValue > discount.sourceModulesValue);
 });
 
 test('cosmetics and hull geometry weigh nothing and cost nothing', () => {
@@ -161,27 +203,29 @@ test('the jump figures for a real journal build match the fixture', () => {
     assert.equal(pinned.sourceMaxJumpRange, krait.MaxJumpRange);
 });
 
-test('a stated price is trusted over the catalogue, but not across an edit', () => {
-    // Prices record a purchase — the station discount, and which hull convention the
-    // exporter used — so they are read from the build, not rebuilt from list prices.
-    // Editing the fit invalidates that, and only then are they derived.
-    const build = ShipLoadout.fromLoadout(krait);
-    assert.equal(build.toLoadoutEvent().ModulesValue, krait.ModulesValue);
-
-    build.removeModule('Slot05_Size3');
-    const edited = build.toLoadoutEvent();
-    assert.notEqual(edited.ModulesValue, krait.ModulesValue);
-    assert.ok(edited.ModulesValue! < krait.ModulesValue!, 'removing a module must cost less');
+test('every module is priced from the catalogue, whatever the source paid', () => {
+    // The Deep Black's modules were all bought 12.25% under list. The export quotes
+    // list for each one, so the same module costs the same in every build.
+    const event = ShipLoadout.fromSlef(slefString).toLoadoutEvent();
+    for (const exported of event.Modules) {
+        const catalogued = getModuleBySymbol(exported.Item, ALL_MODULES);
+        if (catalogued?.cost === undefined) {
+            assert.ok(
+                !Object.hasOwn(exported, 'Value'),
+                `${exported.Item} priced without a source`,
+            );
+            continue;
+        }
+        assert.equal(exported.Value, catalogued.cost, exported.Item);
+    }
     assert.equal(
-        edited.Rebuy,
-        Math.trunc((edited.HullValue! + edited.ModulesValue!) * fixture.rebuyFraction),
+        event.Modules.reduce((total, m) => total + (m.Value ?? 0), 0),
+        event.ModulesValue,
+        'the parts must add up to the total',
     );
 });
 
-test('a module fitted into an empty slot is priced, not treated as a hull freebie', () => {
-    // A missing `Value` means two different things: "came free with the hull" on an
-    // imported module, and "we have not priced it yet" on one fitted here. Conflating
-    // them made an added module cost nothing.
+test('a module fitted into an empty slot adds its list price', () => {
     const before = ShipLoadout.fromSlef(slefString).toLoadoutEvent().ModulesValue!;
     const build = ShipLoadout.fromSlef(slefString);
     const tank = module('Int_FuelTank_Size5_Class3');
@@ -189,34 +233,26 @@ test('a module fitted into an empty slot is priced, not treated as a hull freebi
     assert.equal(build.toLoadoutEvent().ModulesValue! - before, tank.cost);
 });
 
-test('a build whose stated prices do not add up will not invent a total', () => {
-    // Older journals omit `Value` on modules that were nonetheless paid for, so their
-    // per-module sum falls short of the total the same event declares. An unpriced
-    // module there means "we were not told", not "free with the hull" — costing it at
-    // nothing would under-report the build by millions.
-    let kept = 0;
-    const partiallyPriced: LoadoutEvent = {
-        ...krait,
-        Modules: krait.Modules.map((m) => {
-            if (m.Value === undefined || kept++ < 2) return m;
-            const stripped: Record<string, unknown> = { ...m };
-            delete stripped.Value;
-            return stripped as unknown as LoadoutModule;
-        }),
+test('stripping a source’s own prices changes nothing', () => {
+    // The strongest statement of the policy: credits are a function of the hull and the
+    // fitted module symbols alone. Whatever a source claims to have paid — everything,
+    // something, nothing — the export is identical.
+    const strip = (m: LoadoutModule): LoadoutModule => {
+        const bare: Record<string, unknown> = { ...m };
+        delete bare.Value;
+        return bare as unknown as LoadoutModule;
     };
-    const build = ShipLoadout.fromLoadout(partiallyPriced);
-    assert.equal(build.toLoadoutEvent().ModulesValue, krait.ModulesValue, 'stated total stands');
+    const unpriced: Record<string, unknown> = {
+        ...krait,
+        Modules: krait.Modules.map(strip),
+    };
+    delete unpriced.ModulesValue;
+    delete unpriced.HullValue;
+    delete unpriced.Rebuy;
 
-    build.removeModule('Slot05_Size3');
-    const edited = build.toLoadoutEvent();
-    // Now derived. The catalogue's list prices are not the discounted figures the
-    // journal recorded, so this cannot be exact — but it must be the right ship, not a
-    // near-empty one. Anything below the journal's own total minus the module removed
-    // would mean unpriced modules were silently costed at nothing.
-    const removed = krait.Modules.find((m) => m.Slot === 'Slot05_Size3')!.Value!;
-    assert.ok(
-        edited.ModulesValue! > krait.ModulesValue! - removed,
-        `derived ModulesValue ${edited.ModulesValue} dropped below the discounted total`,
+    assert.deepEqual(
+        ShipLoadout.fromLoadout(unpriced as unknown as LoadoutEvent).toLoadoutEvent(),
+        ShipLoadout.fromLoadout(krait).toLoadoutEvent(),
     );
 });
 
@@ -278,10 +314,10 @@ test('a build we cannot price stays unpriced however many times it is re-exporte
     }
 });
 
-test('an import whose prices do not add up is copied faithfully, not corrected', () => {
-    // The source's own total and its own per-module prices disagree. Re-emitting our
-    // derived prices under its declared total would invent purchases it never made, so
-    // the export copies what it was given and stays put across hops.
+test('an import whose own prices disagree with its total is corrected to retail', () => {
+    // Older journals omit `Value` on modules that were paid for, so a source's parts can
+    // fall short of the total it declares. Neither figure is carried through, so the
+    // inconsistency simply does not propagate.
     let kept = 0;
     let event: LoadoutEvent = {
         ...krait,
@@ -292,15 +328,15 @@ test('an import whose prices do not add up is copied faithfully, not corrected',
             return stripped as unknown as LoadoutModule;
         }),
     };
-    const sourceSum = event.Modules.reduce((total, m) => total + (m.Value ?? 0), 0);
+    const retail = fixture.kraitPhantom.recomputed.ModulesValue;
 
     for (let hop = 0; hop < 3; hop++) {
         event = ShipLoadout.fromLoadout(event).toLoadoutEvent();
-        assert.equal(event.ModulesValue, krait.ModulesValue, `hop ${hop} moved the total`);
+        assert.equal(event.ModulesValue, retail, `hop ${hop} did not settle at retail`);
         assert.equal(
             event.Modules.reduce((total, m) => total + (m.Value ?? 0), 0),
-            sourceSum,
-            `hop ${hop} invented module prices`,
+            retail,
+            `hop ${hop}: the parts must add up to the total`,
         );
     }
 });
