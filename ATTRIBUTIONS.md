@@ -38,7 +38,7 @@ in the doc comment of each ported module, and in long form in the domain
   own implementation) from [EDSY](https://github.com/taleden/EDSY) by **taleden**
   (**CC BY-NC 4.0**), derived from Frontier's "mass effect on hyperspace range"
   description.
-- **SLEF parsing** — follows the
+- **SLEF parsing and writing** — both follow the
   [Inara Ship Loadout Export Format specification](https://inara.cz/elite/inara-impexp-slef/).
 
 ## Data
@@ -108,6 +108,17 @@ in the doc comment of each ported module, and in long form in the domain
   costs, which coriolis-data does not carry, plus the attribute-to-journal-Label
   mapping, from [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**,
   whose code is licensed **CC BY-NC 4.0**.
+
+- **Ground-truth ship builds (test fixtures, not shipped)** — two real builds used to
+  check the loadout maths against something other than itself.
+  `fixtures/ships/slef-the-deep-black.json` is a real
+  [EDSY](https://edsy.org/) export (taleden, **CC BY-NC 4.0**).
+  `fixtures/ships/journal-krait-phantom.json` is a real Frontier journal `Loadout`
+  event, obtained from
+  [adam-drewery/EliteAssist](https://github.com/adam-drewery/EliteAssist)
+  (`src/example_data/loadout.json`, **WTFPL**). Both are Elite Dangerous game output
+  and remain the property of Frontier Developments plc — see the notice below. Neither
+  is bundled into the published package.
 
 ## Elite Dangerous game data (Frontier media-usage notice)
 

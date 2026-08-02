@@ -1,7 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseSlef, getLoadoutModifier, type LoadoutModule } from './slef.js';
+import {
+    parseSlef,
+    getLoadoutModifier,
+    toSlef,
+    stringifySlef,
+    LIBRARY_SLEF_HEADER,
+    type LoadoutEvent,
+    type LoadoutModule,
+    type SlefHeader,
+} from './slef.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 
 const slefString = JSON.stringify(slefFixture);
@@ -126,6 +135,141 @@ test('parseSlef rejects a non-Loadout journal event discriminator', () => {
         () => parseSlef({ event: 'FSDJump', Ship: 'sidewinder', Modules: [] }),
         TypeError,
     );
+});
+
+// ── Writing: toSlef / stringifySlef ─────────────────────────────────────────
+
+const minimal: LoadoutEvent = { Ship: 'sidewinder', Modules: [] };
+
+test('toSlef wraps a loadout with a header identifying this library', () => {
+    const [entry] = toSlef(minimal);
+    assert.equal(entry!.header.appName, LIBRARY_SLEF_HEADER.appName);
+    assert.equal(entry!.header.appVersion, LIBRARY_SLEF_HEADER.appVersion);
+    assert.equal(entry!.data.Ship, 'sidewinder');
+});
+
+test('toSlef credits a caller-supplied app', () => {
+    const header = { appName: 'MyApp', appVersion: '1.2.0', appURL: 'https://example.test/b' };
+    assert.deepEqual(toSlef(minimal, header)[0]!.header, header);
+});
+
+test('toSlef carries several builds in one export, in order', () => {
+    const slef = toSlef([minimal, { Ship: 'anaconda', Modules: [] }]);
+    assert.deepEqual(
+        slef.map((e) => e.data.Ship),
+        ['sidewinder', 'anaconda'],
+    );
+});
+
+test('everything toSlef produces parses back', () => {
+    const parsed = parseSlef(
+        stringifySlef(toSlef(slefFixture[0]!.data as unknown as LoadoutEvent)),
+    );
+    assert.deepEqual(parsed[0]!.data, slefFixture[0]!.data);
+});
+
+test('stringifySlef is compact by default and indents on request', () => {
+    const slef = toSlef(minimal);
+    assert.doesNotMatch(stringifySlef(slef), /\n/);
+    assert.match(stringifySlef(slef, { indent: 2 }), /\n {2}/);
+});
+
+test('toSlef rejects a loadout that parseSlef would not accept', () => {
+    const invalid: unknown[] = [
+        { Modules: [] }, // no Ship
+        { Ship: 'sidewinder' }, // no Modules
+        { Ship: 'sidewinder', Modules: [{ Slot: 'PowerPlant', Item: 'x', Priority: 9 }] },
+        {
+            Ship: 'sidewinder',
+            Modules: [
+                {
+                    Slot: 'MainEngines',
+                    Item: 'x',
+                    Engineering: {
+                        BlueprintName: 'Engine_Dirty',
+                        Level: 6,
+                        Quality: 1,
+                        Modifiers: [],
+                    },
+                },
+            ],
+        },
+    ];
+    for (const loadout of invalid) {
+        assert.throws(() => toSlef(loadout as LoadoutEvent), TypeError);
+    }
+});
+
+/**
+ * The example from the Inara SLEF specification, <https://inara.cz/elite/inara-impexp-slef/>,
+ * verbatim. Only `Ship`, `Modules`, `Slot` and `Item` are required: its engineered
+ * module states no `Modifiers`, and its second module lower-cases both slot and item.
+ */
+const SPEC_EXAMPLE = [
+    {
+        header: {
+            appName: 'Inara',
+            appVersion: '1.0',
+            appURL: 'https://inara.cz/cmdr-fleet/1/32243/',
+            appCustomProperties: { anything: 'here' },
+        },
+        data: {
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'HugeHardpoint1',
+                    Item: 'Hpt_BeamLaser_Gimbal_Huge',
+                    Engineering: {
+                        BlueprintName: 'Weapon_LightWeight',
+                        Level: 4,
+                        Quality: 0.95,
+                        ExperimentalEffect: 'special_corrosive_shell',
+                    },
+                },
+                { Slot: 'largehardpoint1', Item: 'hpt_multicannon_gimbal_large' },
+            ],
+        },
+    },
+];
+
+test('the specification’s own example parses, Modifiers and all', () => {
+    // Engineering without a Modifiers array is the case worth pinning: a journal always
+    // writes one, so it is easy to require it and then be unable to read the format.
+    const [entry] = parseSlef(SPEC_EXAMPLE);
+    assert.equal(entry!.header.appName, 'Inara');
+    assert.equal(entry!.data.Modules.length, 2);
+    const engineered = entry!.data.Modules[0]!.Engineering!;
+    assert.equal(engineered.BlueprintName, 'Weapon_LightWeight');
+    assert.equal(engineered.Modifiers, undefined);
+});
+
+test('a blueprint that states no Modifiers survives toSlef and a round trip', () => {
+    const loadout = SPEC_EXAMPLE[0]!.data as unknown as LoadoutEvent;
+    const wrapped = toSlef(loadout);
+    assert.deepEqual(parseSlef(stringifySlef(wrapped))[0]!.data, loadout);
+    // Absent, not an invented empty array — "not stated" is not "changed nothing".
+    assert.equal(
+        Object.hasOwn(
+            parseSlef(stringifySlef(wrapped))[0]!.data.Modules[0]!.Engineering!,
+            'Modifiers',
+        ),
+        false,
+    );
+});
+
+test('getLoadoutModifier returns null when the blueprint states no modifiers', () => {
+    assert.equal(
+        getLoadoutModifier(SPEC_EXAMPLE[0]!.data.Modules[0]! as LoadoutModule, 'Mass'),
+        null,
+    );
+});
+
+test('toSlef rejects an empty export, which would not parse back', () => {
+    assert.throws(() => toSlef([]), TypeError);
+});
+
+test('toSlef rejects a malformed header', () => {
+    assert.throws(() => toSlef(minimal, { appName: 'x' } as unknown as SlefHeader), TypeError);
 });
 
 const fsdModule = slefFixture[0]!.data.Modules.find(

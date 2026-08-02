@@ -183,6 +183,33 @@ export class FittedModule {
     }
 
     /**
+     * Switch this module on or off.
+     *
+     * @param on - `true` to power it, `false` to switch it off.
+     * @returns This handle for chaining — it stays valid, unlike after
+     * {@link applyBlueprint}, because the module record is patched rather than replaced.
+     */
+    setEnabled(on: boolean): this {
+        this.#raw();
+        this.#loadout.setModuleEnabled(this.#slotKey, on);
+        return this;
+    }
+
+    /**
+     * Set this module's power-priority group.
+     *
+     * @param priority - The journal's **zero-based** group, `0`–`4`. The outfitting
+     * panel numbers the same five groups `1`–`5`.
+     * @returns This handle for chaining.
+     * @throws {RangeError} If `priority` is not an integer in `[0, 4]`.
+     */
+    setPriority(priority: number): this {
+        this.#raw();
+        this.#loadout.setModulePriority(this.#slotKey, priority);
+        return this;
+    }
+
+    /**
      * Return compatible blueprints and the grades computable from carried stats.
      *
      * @returns Compatible blueprints in catalogue order.

@@ -6,8 +6,10 @@
  * from its own module, so bundlers can drop anything you do not use.
  *
  * **Working with a whole build? Start with {@link ShipLoadout}** — it reads a SLEF
- * export ({@link ShipLoadout.fromSlef}) or a journal `Loadout` event
- * ({@link ShipLoadout.fromLoadout}), lets you fit modules and apply engineering, and
+ * export ({@link ShipLoadout.fromSlef}) or a journal `Loadout` event straight out of a
+ * player journal ({@link ShipLoadout.fromLoadout}), writes either back out
+ * ({@link ShipLoadout.toSlefString}, {@link ShipLoadout.toLoadoutEvent}), lets you fit
+ * modules and apply engineering, and
  * answers the questions apps actually ask ({@link ShipLoadout.maxJumpRange},
  * {@link ShipLoadout.powerBudget}, {@link ShipLoadout.shieldMetrics}, `unladenMass`,
  * `rebuy`). It is the batteries-included facade and pulls in every catalogue (~589 KB
@@ -27,7 +29,9 @@
  *   you search; each record carries the module's identity and its stats.
  * - **Jump range & SLEF** — {@link singleJumpRange}, {@link fuelPerJump} and
  *   {@link totalRange} are pure maths over {@link FrameShiftDriveParams} and cost
- *   nothing but the function; {@link parseSlef} reads an Inara SLEF export on its own.
+ *   nothing but the function; {@link parseSlef} reads an Inara SLEF export — or a bare
+ *   journal `Loadout` event — on its own, and {@link toSlef} / {@link stringifySlef}
+ *   write one back out.
  * - **Build metrics** — the rest of what an outfitting screen shows, each its own
  *   data-free module: {@link powerBudget} (what the plant makes against what the build
  *   draws, by priority group), {@link shieldMetrics} and {@link armourMetrics} (strength,
@@ -77,10 +81,14 @@ export { ALL_MODULES } from './modules-all.js';
 // ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
 export {
     parseSlef,
+    toSlef,
+    stringifySlef,
     getLoadoutModifier,
+    LIBRARY_SLEF_HEADER,
     type Slef,
     type SlefEntry,
     type SlefHeader,
+    type SlefStringifyOptions,
     type LoadoutEvent,
     type LoadoutModule,
     type ModuleEngineering,
@@ -104,6 +112,8 @@ export {
     type BuildWeaponMetrics,
     type AvailableBlueprint,
     type ApplyBlueprintOptions,
+    type LoadoutExportOptions,
+    type SlefExportOptions,
 } from './ship-loadout.js';
 
 // ── Build metrics: power, shields, armour and weapons (all data-free) ────────

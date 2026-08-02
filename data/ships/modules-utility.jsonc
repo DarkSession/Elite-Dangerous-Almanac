@@ -87,7 +87,7 @@
     "ammoMaximum": 3,
     "reloadTime": 10,
     "distributorDraw": 2,
-    "cost": 0
+    "cost": 3500
   },
   {
     "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",

@@ -1253,7 +1253,7 @@
     "maximumRange": 4000,
     "falloffRange": 2000,
     "shotSpeed": 1600,
-    "cost": 0
+    "cost": 38000
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Large",
@@ -1614,7 +1614,7 @@
     "armourPiercing": 100,
     "maximumRange": 3000,
     "falloffRange": 1000,
-    "cost": 0
+    "cost": 412800
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Small",
@@ -1666,7 +1666,7 @@
     "thermalLoad": 3.6,
     "armourPiercing": 60,
     "shotSpeed": 625,
-    "cost": 0
+    "cost": 512400
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
@@ -1843,7 +1843,7 @@
     "armourPiercing": 18,
     "maximumRange": 500,
     "falloffRange": 300,
-    "cost": 0
+    "cost": 6800
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Medium",
@@ -2518,7 +2518,7 @@
     "armourPiercing": 60,
     "falloffRange": 10000,
     "shotSpeed": 750,
-    "cost": 0
+    "cost": 1352250
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Medium",
@@ -2747,7 +2747,7 @@
     "armourPiercing": 140,
     "maximumRange": 3000,
     "falloffRange": 1500,
-    "cost": 0
+    "cost": 543801
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
@@ -2854,7 +2854,7 @@
     "maximumRange": 3500,
     "falloffRange": 1000,
     "shotSpeed": 1200,
-    "cost": 0
+    "cost": 567761
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Medium",
@@ -2912,7 +2912,7 @@
     "falloffRange": 1700,
     "shotSpeed": 1133,
     "jitter": 5,
-    "cost": 0
+    "cost": 507761
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Medium",
@@ -3395,7 +3395,7 @@
     "maximumRange": 3000,
     "falloffRange": 1000,
     "shotSpeed": 1200,
-    "cost": 0
+    "cost": 176500
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Small",
@@ -3455,7 +3455,7 @@
     "falloffRange": 1700,
     "shotSpeed": 1133,
     "jitter": 5,
-    "cost": 0
+    "cost": 151650
   },
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
@@ -3482,7 +3482,7 @@
     "armourPiercing": 140,
     "maximumRange": 3000,
     "falloffRange": 1500,
-    "cost": 0
+    "cost": 167250
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Fixed_Small",

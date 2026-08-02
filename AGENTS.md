@@ -97,7 +97,7 @@ typescript/    # TypeScript library (package.json, src/, tests, typedoc.json)
 python/        # (future) Python library — same features, same fixtures
 ```
 
-`data/` and `fixtures/` are owned by no implementation; language folders consume them. Never copy shared data into a language folder. `data/SNAPSHOTS.md` states the snapshot date and the metadata every update must record; each `data/<domain>/SOURCES.md` carries the long-form provenance for that domain — source, revision, derivation, manual corrections, and known gaps.
+`data/` and `fixtures/` are owned by no implementation; language folders consume them. Never copy shared data into a language folder. `data/SNAPSHOTS.md` states the snapshot date and the metadata every update must record; each `data/<domain>/SOURCES.md` carries the long-form provenance for that domain — source, revision, derivation, manual corrections, and known gaps. `TODO.md` is the short actionable list of those gaps: when a change uncovers one it cannot fix in scope, record it there and keep the reasoning in the domain's `SOURCES.md`.
 
 ## Repository Status
 
@@ -113,7 +113,7 @@ Four feature areas exist in TypeScript, all under `typescript/src/`:
 Two repo-wide conventions worth knowing before touching a catalogue:
 
 - **Catalogues are frozen.** Shared data is imported as a process-wide module singleton, so every exported catalogue is passed through `deepFreeze` (`src/deep-freeze.ts`) — otherwise one consumer's mutation changes another's lookups. `src/catalogue-immutability.test.ts` asserts this for every exported catalogue; add new ones to it.
-- **Data files are hand-maintained artefacts.** `scripts/data/ships/merge-normalized-catalogues.mjs` joins normalized *local* arrays that a maintainer prepares; no script in this repository reads, clones or fetches an upstream repository, and none should be added. Record what a change was derived from in the domain's `SOURCES.md` rather than in a script that reaches for it.
+- **Data files are hand-maintained artefacts.** `scripts/data/ships/merge-normalized-catalogues.mjs` joins normalized *local* arrays that a maintainer prepares; **no script in this repository reads, clones or fetches an upstream repository, and none should be added.** Fetching during acquisition is fine — write the throwaway script in a scratch directory outside the working tree, run it there, and commit only the derived data. What lands in the repo is the data plus its provenance in the domain's `SOURCES.md`, never the script that reached for it. The rule is about what ships and what CI runs, not about how a maintainer got the bytes.
 
 ## Environment
 

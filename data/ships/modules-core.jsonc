@@ -2926,7 +2926,7 @@
     "maxFuel": 5,
     "fuelMul": 0.012,
     "fuelPower": 2.45,
-    "cost": 0
+    "cost": 5103953
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class1",

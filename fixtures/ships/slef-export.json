@@ -1,0 +1,285 @@
+{
+  "description": "Expected ShipLoadout export output — the journal `Loadout` event and SLEF envelope a build serialises to. Pins the decisions rather than whole blobs: which top-level keys an export emits and which it leaves out, module order, and the lower-cased journal casing. Every top-level figure is recomputed from the hull and the fitted modules, never echoed from the import. Credits are quoted at RETAIL — the bare hull's `hullCost` plus every module's catalogue list price — so they deliberately differ from what a source build reports, since that records one commander's purchase at one station. Each build's `discount` section pins the ratio, which is how the retail figures are shown to be right. Cross-language validation.",
+  "rebuyFraction": 0.05,
+  "classification": {
+    "note": "How an entry in `Modules` is decided to be an outfitting module, a cosmetic, or unknown — the rule that governs every mass and credit figure below. The catalogue has the FIRST say: an article it can identify contributes its mass and list price whatever its slot is called, which matters because slot names are not a closed set (the game adds families, and the SLEF specification's own example lower-cases them). Only an article the catalogue cannot identify is classified by slot, and then only to recognise a cosmetic from the families listed here. Anything else is UNKNOWN, and an unknown omits the figures that depend on it rather than being counted as free and weightless — guessing would understate a build's mass and credits without saying so.",
+    "cosmeticSlotPatterns": [
+      "^shipcockpit$",
+      "^paintjob$",
+      "^decal\\d*$",
+      "^shipname\\d*$",
+      "^shipid\\d*$",
+      "^bobble\\d*$",
+      "^shipkit\\w*$",
+      "^enginecolour$",
+      "^weaponcolour$",
+      "^vesselvoice$",
+      "^stringlights$"
+    ],
+    "patternsMatchLowerCasedSlot": true,
+    "examples": [
+      {
+        "slot": "FutureCoreSlot",
+        "item": "int_hyperdrive_size5_class5",
+        "verdict": "outfitting",
+        "why": "The catalogue knows the article; an unfamiliar slot name does not make it free."
+      },
+      {
+        "slot": "frameshiftdrive",
+        "item": "int_hyperdrive_size5_class5",
+        "verdict": "outfitting",
+        "why": "Lower-cased slot keys are what the SLEF specification's own example uses."
+      },
+      {
+        "slot": "Bobble10",
+        "item": "bobble_christmastree",
+        "verdict": "cosmetic",
+        "why": "Matches a cosmetic family by pattern, not by appearing in any fixture."
+      },
+      {
+        "slot": "SomeFutureSlot",
+        "item": "int_something_we_have_never_seen",
+        "verdict": "unknown",
+        "why": "Neither the catalogue nor the cosmetic families recognise it, so ModulesValue, UnladenMass, MaxJumpRange and Rebuy are all omitted."
+      }
+    ]
+  },
+  "engineeringWithoutModifiers": {
+    "note": "SLEF requires only Ship, Modules, Slot and Item; the specification's own example carries an Engineering block with BlueprintName, Level, Quality and ExperimentalEffect but NO Modifiers array. A parser that requires Modifiers cannot read the format it implements. Absent means 'not stated', not 'changed nothing': the module performs at its catalogue stats, modifier lookups return null, and an export must not invent an empty array on the way back out. Source: https://inara.cz/elite/inara-impexp-slef/",
+    "modifiersRequired": false,
+    "exportInventsEmptyArray": false
+  },
+  "deepBlack": {
+    "build": "fixtures/ships/slef-the-deep-black.json",
+    "note": "Round-trip of a real EDSY export. The physical figures reproduce the export's own exactly, which is what makes recomputation trustworthy. The credit figures do not, and should not: this export was taken at a 12.25% outfitting discount.",
+    "topLevelKeys": [
+      "event",
+      "Ship",
+      "ShipName",
+      "ShipIdent",
+      "HullValue",
+      "ModulesValue",
+      "UnladenMass",
+      "CargoCapacity",
+      "MaxJumpRange",
+      "FuelCapacity",
+      "Rebuy",
+      "Modules"
+    ],
+    "moduleCount": 21,
+    "recomputed": {
+      "Ship": "explorer_nx",
+      "HullValue": 189326510,
+      "ModulesValue": 219515904,
+      "UnladenMass": 1237.3,
+      "CargoCapacity": 16,
+      "MaxJumpRange": 89.414678,
+      "FuelCapacity": { "Main": 128, "Reserve": 1.14 },
+      "Rebuy": 20442120
+    },
+    "physicalFiguresMatchSource": ["UnladenMass", "CargoCapacity", "MaxJumpRange", "FuelCapacity"],
+    "discount": {
+      "note": "What the export reports, and how it relates to our retail figures. Its modules sit at a uniform 0.8775 of list — a 12.25% outfitting discount — while its hull is at full list price, so `HullValue` matches and `ModulesValue` does not.",
+      "sourceHullValue": 189326510,
+      "sourceModulesValue": 192625195,
+      "sourceRebuy": 19097585,
+      "moduleDiscount": 0.8775
+    },
+    "fittedOrder": [
+      "CargoHatch",
+      "TinyHardpoint5",
+      "TinyHardpoint6",
+      "Armour",
+      "PowerPlant",
+      "MainEngines",
+      "FrameShiftDrive",
+      "LifeSupport",
+      "PowerDistributor",
+      "Radar",
+      "FuelTank",
+      "Slot01_Size7",
+      "Slot02_Size6",
+      "Slot03_Size6",
+      "Slot06_Size5",
+      "Slot07_Size5",
+      "Slot08_Size4",
+      "Slot09_Size4",
+      "Slot10_Size3",
+      "Slot13_Size1",
+      "Slot14_Size1"
+    ],
+    "slotOrder": [
+      "TinyHardpoint5",
+      "TinyHardpoint6",
+      "Armour",
+      "PowerPlant",
+      "MainEngines",
+      "FrameShiftDrive",
+      "LifeSupport",
+      "PowerDistributor",
+      "Radar",
+      "FuelTank",
+      "Slot01_Size7",
+      "Slot02_Size6",
+      "Slot03_Size6",
+      "Slot06_Size5",
+      "Slot07_Size5",
+      "Slot08_Size4",
+      "Slot09_Size4",
+      "Slot10_Size3",
+      "Slot13_Size1",
+      "Slot14_Size1",
+      "CargoHatch"
+    ],
+    "afterEdit": {
+      "note": "Fitting a 5C fuel tank into Slot06_Size5, which held a 5D shield generator. Nothing is dropped, and nothing is adjusted in place: every figure is recomputed from the new fit, so ModulesValue swaps the generator's list price of 189035 for the tank's 97754.",
+      "slot": "Slot06_Size5",
+      "item": "Int_FuelTank_Size5_Class3",
+      "topLevelKeys": [
+        "event",
+        "Ship",
+        "ShipName",
+        "ShipIdent",
+        "HullValue",
+        "ModulesValue",
+        "UnladenMass",
+        "CargoCapacity",
+        "MaxJumpRange",
+        "FuelCapacity",
+        "Rebuy",
+        "Modules"
+      ],
+      "recomputed": {
+        "ModulesValue": 219424623,
+        "UnladenMass": 1233.7,
+        "CargoCapacity": 16,
+        "MaxJumpRange": 89.643693,
+        "FuelCapacity": { "Main": 160, "Reserve": 1.14 },
+        "Rebuy": 20437556
+      }
+    }
+  },
+  "kraitPhantom": {
+    "build": "fixtures/ships/journal-krait-phantom.json",
+    "note": "A real journal `Loadout` event — Frontier's own figures, so `recomputed` is ground truth rather than a third-party calculator's reading. Unlike an EDSY export it also carries the cockpit, ship kit, nameplates, bobbles, paint and voice pack: 15 of its 40 `Modules` entries are not outfitting at all, and must contribute neither mass nor credits.",
+    "topLevelKeys": [
+      "event",
+      "Ship",
+      "ShipName",
+      "ShipIdent",
+      "HullValue",
+      "ModulesValue",
+      "UnladenMass",
+      "CargoCapacity",
+      "MaxJumpRange",
+      "FuelCapacity",
+      "Rebuy",
+      "Modules"
+    ],
+    "moduleCount": 40,
+    "nonOutfittingSlots": [
+      "PaintJob",
+      "ShipName0",
+      "ShipName1",
+      "ShipID0",
+      "ShipID1",
+      "Bobble01",
+      "Bobble02",
+      "ShipKitSpoiler",
+      "ShipKitWings",
+      "ShipKitTail",
+      "ShipKitBumper",
+      "WeaponColour",
+      "EngineColour",
+      "VesselVoice",
+      "ShipCockpit"
+    ],
+    "recomputed": {
+      "Ship": "krait_light",
+      "HullValue": 35741519,
+      "ModulesValue": 56467878,
+      "UnladenMass": 388.829998,
+      "CargoCapacity": 32,
+      "MaxJumpRange": 60.547796,
+      "FuelCapacity": { "Main": 32, "Reserve": 0.63 },
+      "Rebuy": 4610469
+    },
+    "journalTolerance": {
+      "note": "The journal rounds; these are the source event's own figures, matched within 1e-4.",
+      "UnladenMass": 388.830017,
+      "MaxJumpRange": 60.547791
+    },
+    "discount": {
+      "note": "The journal's credit figures differ from retail in three independent ways, which is why none of them is carried through: the modules were bought at a discount; the game reports HullValue as the hull WITH its stock fittings (coriolis `retailCost` 37472252) where we quote the bare hull (`hullCost` 35741519); and it gives no `Value` at all to the five modules that came free with the hull, so its ModulesValue counts fewer articles than ours.",
+      "sourceHullValue": 37472252,
+      "sourceModulesValue": 50785509,
+      "sourceRebuy": 4412891,
+      "hullRetailCost": 37472252,
+      "unpricedInSource": [
+        "Armour",
+        "FuelTank",
+        "Slot09_Size1",
+        "PlanetaryApproachSuite",
+        "CargoHatch"
+      ]
+    }
+  },
+  "assembled": {
+    "note": "ShipLoadout.empty('Sidewinder') with a 2A drive and a 1C tank fitted. Catalogue-cased symbols are lower-cased on the way out, and power state is omitted unless asked for.",
+    "ship": "Sidewinder",
+    "fit": {
+      "FrameShiftDrive": "Int_Hyperdrive_Size2_Class5",
+      "FuelTank": "Int_FuelTank_Size1_Class3"
+    },
+    "topLevelKeys": [
+      "event",
+      "Ship",
+      "HullValue",
+      "ModulesValue",
+      "UnladenMass",
+      "CargoCapacity",
+      "MaxJumpRange",
+      "FuelCapacity",
+      "Rebuy",
+      "Modules"
+    ],
+    "omittedKeys": ["ShipName", "ShipIdent"],
+    "recomputed": {
+      "Ship": "sidewinder",
+      "HullValue": 4588,
+      "ModulesValue": 161224,
+      "UnladenMass": 27.5,
+      "CargoCapacity": 0,
+      "MaxJumpRange": 27.444467,
+      "FuelCapacity": { "Main": 2, "Reserve": 0.3 },
+      "Rebuy": 8290
+    },
+    "valueNote": "Each module carries the price it was counted at, so the export's parts add up to its own ModulesValue. Without that a re-import cannot tell a free hull fitting from one we priced, and the total drifts on every export/import hop.",
+    "modules": [
+      { "Slot": "FrameShiftDrive", "Item": "int_hyperdrive_size2_class5", "Value": 160224 },
+      { "Slot": "FuelTank", "Item": "int_fueltank_size1_class3", "Value": 1000 }
+    ],
+    "modulesWithExplicitPower": [
+      {
+        "Slot": "FrameShiftDrive",
+        "Item": "int_hyperdrive_size2_class5",
+        "On": true,
+        "Priority": 0,
+        "Value": 160224
+      },
+      {
+        "Slot": "FuelTank",
+        "Item": "int_fueltank_size1_class3",
+        "On": true,
+        "Priority": 0,
+        "Value": 1000
+      }
+    ]
+  },
+  "unknownHull": {
+    "note": "A hull the catalogues do not know. Its mass, hull price, rebuy, jump range and reserve fuel cannot be worked out, so those keys are left out rather than emitted as zero — an unknown reserve would make FuelCapacity a lie, and it is the whole object or nothing.",
+    "ship": "not_a_real_hull",
+    "topLevelKeys": ["event", "Ship", "ModulesValue", "CargoCapacity", "Modules"],
+    "omittedKeys": ["HullValue", "UnladenMass", "MaxJumpRange", "FuelCapacity", "Rebuy"]
+  }
+}

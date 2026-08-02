@@ -11,14 +11,22 @@
  * ```
  *
  * The top level is an **array** so several builds can travel together. This module
- * is **data-free** — just the record shapes and {@link parseSlef} / {@link getLoadoutModifier}.
- * To turn a parsed build into jump-range and fuel numbers, hand it to
- * {@link ShipLoadout} (`./ship-loadout`).
+ * is **data-free** — just the record shapes, {@link parseSlef} / {@link getLoadoutModifier}
+ * to read, and {@link toSlef} / {@link stringifySlef} to write. To turn a parsed build
+ * into jump-range and fuel numbers, or to produce the `Loadout` event {@link toSlef}
+ * wraps, hand it to {@link ShipLoadout} (`./ship-loadout`).
+ *
+ * ```ts
+ * const build = ShipLoadout.fromSlef(exported);       // in
+ * const text = stringifySlef(build.toSlef());         // and back out
+ * ```
  *
  * Reference: the Inara SLEF specification, <https://inara.cz/elite/inara-impexp-slef/>.
  *
  * @packageDocumentation
  */
+
+import { LIBRARY_NAME, LIBRARY_VERSION } from '../version.js';
 
 /** The envelope header — which app produced the export. */
 export interface SlefHeader {
@@ -69,8 +77,18 @@ export interface ModuleEngineering {
     readonly ExperimentalEffect?: string;
     /** The experimental effect's display name, when present. */
     readonly ExperimentalEffect_Localised?: string;
-    /** Every stat this engineering changed. */
-    readonly Modifiers: readonly EngineeringModifier[];
+    /**
+     * Every stat this engineering changed.
+     *
+     * @remarks
+     * **Optional.** A journal `Loadout` event always writes it, but SLEF requires only
+     * `BlueprintName`, `Level` and `Quality` — the specification's own example omits it —
+     * so an export from another app may name the blueprint and its roll without spelling
+     * out the resulting stats. Treat a missing array as "not stated", not as "nothing was
+     * changed": the blueprint's effect can be recomputed with `computeModifiers` from
+     * `./engineering`.
+     */
+    readonly Modifiers?: readonly EngineeringModifier[];
 }
 
 /** One fitted module in a `Loadout` event. */
@@ -188,8 +206,10 @@ function isModuleEngineering(value: unknown): value is ModuleEngineering {
         value.Quality !== undefined &&
         isOptionalString(value.ExperimentalEffect) &&
         isOptionalString(value.ExperimentalEffect_Localised) &&
-        Array.isArray(value.Modifiers) &&
-        value.Modifiers.every(isEngineeringModifier)
+        // Not required by SLEF — see ModuleEngineering.Modifiers. Rejecting a block
+        // without one would make this parser unable to read the spec's own example.
+        (value.Modifiers === undefined ||
+            (Array.isArray(value.Modifiers) && value.Modifiers.every(isEngineeringModifier)))
     );
 }
 
@@ -288,6 +308,81 @@ export function parseSlef(input: string | object): SlefEntry[] {
     return entries;
 }
 
+/** Options for {@link stringifySlef}. */
+export interface SlefStringifyOptions {
+    /**
+     * Spaces per indent level. `0` — the default — emits compact JSON, which is what
+     * the clipboard-and-paste exchange these exports travel by wants.
+     */
+    readonly indent?: number;
+}
+
+/**
+ * The header a SLEF export made by this library carries when the caller supplies none.
+ *
+ * @remarks
+ * SLEF's header names the **exporting application**, so an app building on this library
+ * should pass its own rather than shipping this one.
+ */
+export const LIBRARY_SLEF_HEADER: SlefHeader = Object.freeze({
+    appName: LIBRARY_NAME,
+    appVersion: LIBRARY_VERSION,
+});
+
+/**
+ * Wrap one or more loadouts in SLEF envelopes.
+ *
+ * @param data - A single `Loadout` event or several. Several travel in one export as
+ * separate entries, which is what the format's array top level is for.
+ * @param header - Which app to credit. Defaults to {@link LIBRARY_SLEF_HEADER}; pass
+ * your own app's name and version.
+ * @returns The export, one entry per loadout, in the order given.
+ * @throws {TypeError} If `data` is empty, or the header or any loadout does not match
+ * the record shape. Every entry is checked with the same guards {@link parseSlef}
+ * applies, so anything this returns is guaranteed to parse back.
+ * @example
+ * ```ts
+ * const slef = toSlef(build.toLoadoutEvent(), { appName: 'MyApp', appVersion: '1.2.0' });
+ * stringifySlef(slef); // -> '[{"header":{...},"data":{...}}]'
+ * ```
+ */
+export function toSlef(data: LoadoutEvent | readonly LoadoutEvent[], header?: SlefHeader): Slef {
+    const chosen = header ?? LIBRARY_SLEF_HEADER;
+    if (!isSlefHeader(chosen)) {
+        throw new TypeError('toSlef: header needs a string `appName` and an `appVersion`');
+    }
+
+    const events = Array.isArray(data) ? data : [data as LoadoutEvent];
+    if (events.length === 0) {
+        // parseSlef rejects an empty export, so returning one would break the promise
+        // that everything this produces parses back.
+        throw new TypeError('toSlef: needs at least one Loadout');
+    }
+    return events.map((event, index) => {
+        if (!isLoadout(event)) {
+            throw new TypeError(
+                `toSlef: entry ${index} is not a valid Loadout (needs a \`Ship\` and \`Modules\`)`,
+            );
+        }
+        return { header: chosen, data: event };
+    });
+}
+
+/**
+ * Serialise a SLEF export to its JSON string.
+ *
+ * @param slef - The entries, as {@link toSlef} returns them.
+ * @param options - Formatting. Compact by default.
+ * @returns The JSON text.
+ * @example
+ * ```ts
+ * stringifySlef(slef, { indent: 2 }); // human-readable, for writing to a file
+ * ```
+ */
+export function stringifySlef(slef: Slef, options: SlefStringifyOptions = {}): string {
+    return JSON.stringify(slef, null, options.indent ?? 0);
+}
+
 /**
  * Read one engineering modifier off a module by its journal label.
  *
@@ -295,7 +390,8 @@ export function parseSlef(input: string | object): SlefEntry[] {
  * @param label - The stat's journal name, e.g. `"FSDOptimalMass"`. Matched
  * case-insensitively.
  * @returns The modifier's numeric `Value`, or `null` if the module is not
- * engineered, carries no such modifier, or the modifier is non-numeric.
+ * engineered, states no modifiers at all, carries no such modifier, or the modifier is
+ * non-numeric.
  * @example
  * ```ts
  * getLoadoutModifier(fsdModule, 'FSDOptimalMass'); // -> 7528.04, or null if stock
@@ -303,6 +399,6 @@ export function parseSlef(input: string | object): SlefEntry[] {
  */
 export function getLoadoutModifier(module: LoadoutModule, label: string): number | null {
     const wanted = label.trim().toLowerCase();
-    const mod = module.Engineering?.Modifiers.find((m) => m.Label.toLowerCase() === wanted);
+    const mod = module.Engineering?.Modifiers?.find((m) => m.Label.toLowerCase() === wanted);
     return typeof mod?.Value === 'number' ? mod.Value : null;
 }

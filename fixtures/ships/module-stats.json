@@ -2,17 +2,17 @@
   "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc (engineering/mechanical stats, the defence stats \u2014 resistances, hull boost and reinforcement \u2014 and the weapon stats). Cross-language validation.",
   "counts": {
     "core": 509,
-    "internal": 414,
+    "internal": 479,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1117
+    "all": 1182
   },
   "priceCounts": {
     "core": 509,
-    "internal": 475,
+    "internal": 472,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1178
+    "all": 1175
   },
   "prices": [
     {
@@ -30,8 +30,16 @@
   ],
   "unpriced": [
     "Int_ShieldGenerator_Size1_Class4",
-    "Int_Hyperdrive_Size8_Class1"
+    "Int_Hyperdrive_Size8_Class1",
+    "Int_CorrosionProofCargoRack_Size1_Class2",
+    "Int_CorrosionProofCargoRack_Size2_Class1",
+    "Int_CorrosionProofCargoRack_Size5_Class1",
+    "Int_CorrosionProofCargoRack_Size6_Class1"
   ],
+  "freeModules": {
+    "note": "Every non-armour module priced at 0, pinned so a zero has to be deliberate. coriolis-data holds some symbols twice — a priced record and a 0 one — and the 'first occurrence wins' rule had been applied to mass but not to cost, leaving 16 modules silently free. Only the built-in cargo hatch survives: it is fitted to every hull and cannot be bought. Ship-specific armour is excluded — a hull's stock bulkhead really is free, and 56 of them are.",
+    "symbols": ["ModularCargoBayDoor"]
+  },
   "spot": [
     {
       "symbol": "Int_Hyperdrive_Size5_Class5",

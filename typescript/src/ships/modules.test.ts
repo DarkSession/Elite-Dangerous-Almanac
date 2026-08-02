@@ -216,6 +216,16 @@ test('an unpriced record omits cost rather than reporting it as free', () => {
     assert.equal(getModuleBySymbol('Anaconda_Armour_Grade1', ALL_MODULES)!.cost, 0);
 });
 
+test('only the modules that really are free are priced at 0', () => {
+    // A zero cost is indistinguishable from a merge that dropped the price, and that is
+    // exactly how 16 modules once ended up free. Pin the survivors so a new zero has to
+    // be argued for. Ship-specific armour is excluded: a stock bulkhead is genuinely free.
+    const free = ALL_MODULES.filter((m) => m.cost === 0 && !/_Armour_/i.test(m.symbol)).map(
+        (m) => m.symbol,
+    );
+    assert.deepEqual(free.sort(), [...statsFixture.freeModules.symbols].sort());
+});
+
 test('every price is a non-negative integer number of credits', () => {
     for (const m of ALL_MODULES) {
         if (m.cost === undefined) continue;
