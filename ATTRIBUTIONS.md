@@ -108,6 +108,16 @@ in the doc comment of each ported module, and in long form in the domain
   costs, which coriolis-data does not carry, plus the attribute-to-journal-Label
   mapping, from [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**,
   whose code is licensed **CC BY-NC 4.0**.
+- **Module mass, integrity, power draw and boot time** — the per-module figures
+  backfilled onto the records coriolis-data leaves blank, and the corrections applied
+  where coriolis-data's value is a duplicated or mis-copied row, come from
+  [EDSY](https://github.com/taleden/EDSY) (`eddb.js`, taleden, **CC BY-NC 4.0**), which
+  carries them for nearly every outfitting module. The remainder — the size-8 frame
+  shift drives and the `*_free` starter fittings, which no third-party registry lists —
+  were read from the live game's own outfitting panels. Either way the values are
+  **Elite Dangerous game data, property of Frontier Developments plc**; see the notice
+  below. `data/ships/SOURCES.md` has the record-by-record derivation, the per-field
+  coverage split, and the three candidate corrections that cross-checking **rejected**.
 
 - **Ground-truth ship builds (test fixtures, not shipped)** — two real builds used to
   check the loadout maths against something other than itself.

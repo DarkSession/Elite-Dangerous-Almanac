@@ -13,9 +13,15 @@
  *          plc, under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
- * Each blueprint is { name, grades }. `name` is the in-game display name (coriolis
- * `blueprint.name` for the journal-keyed ones; the Operations dossier's display label
- * for the `recipe_*` ones). `grades` maps grade "1".."5" to { features, materials }.
+ * Each blueprint is { name, grades }. `name` is the blueprint's short modifier label
+ * (coriolis `blueprint.name` for the journal-keyed ones; the Operations dossier's
+ * display label for the `recipe_*` ones), deliberately NOT the full outfitting-panel
+ * string — the panel says "Long-Range Weapon" where this says "Long range", because
+ * the name is read next to the module it applies to. Re-checked 2026-08-02;
+ * `CargoRack_IncreasedCapacity` was corrected then, being the one name that was wrong
+ * in its own right rather than short by convention. See the "Display names" note in
+ * SOURCES.md.
+ * `grades` maps grade "1".."5" to { features, materials }.
  * A feature is { label, method, min, max }: `label` the journal Modifier Label, `method`
  * how it applies ("multiplicative" -> base*(1+v), "additive" -> base+v, "overwrite" -> v),
  * [min, max] bounding the value by the quality roll (v = min + (max-min)*quality). A
@@ -15345,7 +15351,7 @@
     }
   },
   "CargoRack_IncreasedCapacity": {
-    "name": "Expanded Capacity",
+    "name": "Expanded Cargo Rack",
     "grades": {
       "5": {
         "features": [

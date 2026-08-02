@@ -1,11 +1,12 @@
 {
-  "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc (engineering/mechanical stats, the defence stats \u2014 resistances, hull boost and reinforcement \u2014 and the weapon stats). Cross-language validation.",
+  "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc (engineering/mechanical stats, the defence stats — resistances, hull boost and reinforcement — and the weapon stats). Cross-language validation.",
+  "countsNote": "Every module in every catalogue now carries at least one stat, so these equal the catalogue sizes and no longer fail independently of the catalogue counts in modules.json — they assert that no record regresses to identity-only. The 16 rows that used to have none were the ten `*_free` starter variants, `Int_Hyperdrive_Size8_Class{1..5}` and `Int_DroneControl_ResourceSiphon`. No row is left holding only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. `Int_DroneControl_ResourceSiphon` deliberately still has no `mass` — no source states one, so absent keeps meaning unknown. The `spot` entries below are what actually pins the backfilled and corrected values.",
   "counts": {
-    "core": 509,
-    "internal": 479,
+    "core": 521,
+    "internal": 483,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1182
+    "all": 1198
   },
   "priceCounts": {
     "core": 509,
@@ -84,13 +85,15 @@
       "optMultiplier": 1,
       "minMultiplier": 0.96,
       "maxMultiplier": 1.16,
-      "restrictedToShips": [
-        "Explorer_NX"
-      ]
+      "restrictedToShips": ["Explorer_NX"]
     },
     {
       "symbol": "Int_ShieldGenerator_Size1_Class4",
       "name": "Shield Generator",
+      "mass": 2,
+      "integrity": 56,
+      "powerDraw": 1.44,
+      "bootTime": 1,
       "optMass": 25,
       "minMass": 13,
       "maxMass": 63,
@@ -99,6 +102,96 @@
       "maxMultiplier": 1.6,
       "shieldRegenRate": 1,
       "shieldBrokenRegenRate": 1.6
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size8_Class5",
+      "name": "Frame Shift Drive",
+      "mass": 160,
+      "integrity": 188,
+      "powerDraw": 1.05,
+      "bootTime": 10,
+      "optMass": 4200,
+      "maxFuel": 20.4,
+      "fuelMul": 0.012,
+      "fuelPower": 2.9
+    },
+    {
+      "symbol": "Int_PowerDistributor_Size1_Class1_free",
+      "name": "Power Distributor",
+      "mass": 1.3,
+      "integrity": 36,
+      "powerDraw": 0.32,
+      "bootTime": 5,
+      "weaponsCapacity": 10,
+      "weaponsRecharge": 1.2,
+      "enginesCapacity": 8,
+      "enginesRecharge": 0.4,
+      "systemsCapacity": 8,
+      "systemsRecharge": 0.4
+    },
+    {
+      "symbol": "Int_DroneControl_ResourceSiphon",
+      "name": "Hatch Breaker Limpet Controller",
+      "integrity": 20,
+      "powerDraw": 0.4,
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size2_Class1_free",
+      "name": "Shield Generator",
+      "mass": 2.5,
+      "integrity": 41,
+      "powerDraw": 0.9,
+      "bootTime": 1,
+      "optMass": 55,
+      "minMass": 28,
+      "maxMass": 138,
+      "optMultiplier": 0.8,
+      "minMultiplier": 0.3,
+      "maxMultiplier": 1.3,
+      "shieldRegenRate": 1,
+      "shieldBrokenRegenRate": 1.6,
+      "kineticResistance": 0.4,
+      "thermalResistance": -0.2,
+      "explosiveResistance": 0.5,
+      "distributorDraw": 0.6
+    },
+    {
+      "symbol": "Int_FuelTank_Size1_Class3_free",
+      "name": "Fuel Tank",
+      "mass": 0,
+      "fuelCapacity": 2
+    },
+    {
+      "symbol": "Int_CargoRack_Size2_Class1_free",
+      "name": "Cargo Rack",
+      "mass": 0,
+      "cargoCapacity": 4
+    },
+    {
+      "symbol": "Int_GuardianPowerDistributor_Size8",
+      "name": "Guardian Hybrid Power Distributor",
+      "integrity": 132,
+      "weaponsCapacity": 50,
+      "enginesCapacity": 36,
+      "systemsCapacity": 36
+    },
+    {
+      "symbol": "Int_Hyperdrive_Overcharge_Size7_Class2",
+      "name": "Frame Shift Drive (SCO)",
+      "integrity": 150
+    },
+    {
+      "symbol": "Hpt_Slugshot_Fixed_Large",
+      "name": "Fragment Cannon",
+      "integrity": 64,
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
+      "name": "Advanced Discovery Scanner",
+      "mass": 2,
+      "integrity": 40
     },
     {
       "symbol": "Anaconda_Armour_Reactive",
@@ -185,10 +278,275 @@
       "chargeTime": 1.2,
       "clipSize": 1,
       "reloadTime": 1
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size8_Class1",
+      "name": "Frame Shift Drive",
+      "mass": 160,
+      "integrity": 135,
+      "powerDraw": 0.56,
+      "optMass": 2240,
+      "maxFuel": 13.6
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size8_Class2",
+      "name": "Frame Shift Drive",
+      "mass": 64,
+      "integrity": 120,
+      "powerDraw": 0.63,
+      "optMass": 2520,
+      "maxFuel": 13.6
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size8_Class3",
+      "name": "Frame Shift Drive",
+      "mass": 160,
+      "integrity": 150,
+      "powerDraw": 0.7,
+      "optMass": 2800,
+      "maxFuel": 13.6
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size8_Class4",
+      "name": "Frame Shift Drive",
+      "mass": 256,
+      "integrity": 225,
+      "powerDraw": 0.88,
+      "optMass": 3500,
+      "maxFuel": 17
+    },
+    {
+      "symbol": "Int_PowerPlant_Size2_Class1_free",
+      "name": "Power Plant",
+      "mass": 2.5,
+      "integrity": 46,
+      "powerCapacity": 6.4,
+      "heatEfficiency": 1
+    },
+    {
+      "symbol": "Int_Engine_Size2_Class1_free",
+      "name": "Thrusters",
+      "mass": 2.5,
+      "integrity": 46,
+      "powerDraw": 2,
+      "bootTime": 0,
+      "optMass": 48,
+      "minMass": 24,
+      "maxMass": 72,
+      "optMultiplier": 1,
+      "minMultiplier": 0.83,
+      "maxMultiplier": 1.03
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size2_Class1_free",
+      "name": "Frame Shift Drive",
+      "mass": 2.5,
+      "integrity": 46,
+      "powerDraw": 0.16,
+      "bootTime": 10,
+      "optMass": 48,
+      "maxFuel": 0.6,
+      "fuelMul": 0.011,
+      "fuelPower": 2
+    },
+    {
+      "symbol": "Int_LifeSupport_Size1_Class1_free",
+      "name": "Life Support",
+      "mass": 1.3,
+      "integrity": 32,
+      "powerDraw": 0.32,
+      "bootTime": 1
+    },
+    {
+      "symbol": "Int_Sensors_Size1_Class1_free",
+      "name": "Sensors",
+      "mass": 1.3,
+      "integrity": 36,
+      "powerDraw": 0.16,
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_DetailedSurfaceScanner_Tiny",
+      "name": "Detailed Surface Scanner",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_StellarBodyDiscoveryScanner_Standard_free",
+      "name": "Basic Discovery Scanner",
+      "mass": 2,
+      "integrity": 40
+    },
+    {
+      "symbol": "ModularCargoBayDoor",
+      "name": "Cargo Hatch",
+      "integrity": 20,
+      "bootTime": 2
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size5_Class1",
+      "name": "Mk II Vessel Hangar",
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size6_Class1",
+      "name": "Mk II Vessel Hangar",
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size7_Class1",
+      "name": "Mk II Vessel Hangar",
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size1_Class1",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size1_Class2",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size2_Class1",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size2_Class2",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size3_Class1",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size4_Class1",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size4_Class2",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size5_Class1",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size5_Class2",
+      "name": "Guardian Hull Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size1_Class1",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size1_Class2",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size2_Class1",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size2_Class2",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size3_Class1",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size3_Class2",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size4_Class1",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size4_Class2",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size5_Class1",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size5_Class2",
+      "name": "Guardian Module Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size1_Class1",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size1_Class2",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size2_Class1",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size2_Class2",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size3_Class1",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size3_Class2",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size4_Class1",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size4_Class2",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size5_Class1",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size5_Class2",
+      "name": "Guardian Shield Reinforcement",
+      "bootTime": 0
     }
   ],
-  "continuousFire": [
-    "Hpt_BeamLaser_Fixed_Small",
-    "Hpt_MiningLaser_Fixed_Small"
-  ]
+  "continuousFire": ["Hpt_BeamLaser_Fixed_Small", "Hpt_MiningLaser_Fixed_Small"]
 }

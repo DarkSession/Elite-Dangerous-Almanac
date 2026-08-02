@@ -1,6 +1,180 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, plus a module-stat reconciliation on 2026-08-02 (see the revision below). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+
+**Revision 2026-08-02 (UTC) — every module now carries stats, and 40 records were
+corrected.** The four module catalogues were reconciled against
+[EDSY](https://github.com/taleden/EDSY) `eddb.js` (commit
+`cd68edfba665719958ce038b6e5d9eb02d0d2b02`, its internal `db 20260428`, SHA-256
+`967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, acquired 2026-08-02
+UTC), which carries a mass, integrity, power draw and boot time for nearly every
+outfitting module that coriolis-data leaves blank. Every value applied here either comes
+from EDSY or was confirmed against it; where a candidate correction disagreed with EDSY,
+EDSY won and the change was dropped — three were **rejected** on that basis, listed
+below. The payloads touched are `data/ships/modules-*.jsonc`, plus one display name each
+in `blueprints.jsonc` and `experimental-effects.jsonc`.
+
+**Coverage, stated plainly.** EDSY carries 677 of the 717 `bootTime` values, 223 of 237
+`integrity`, 104 of 115 `powerDraw`, and **contradicts none of them** — every value it
+does supply matches what is stored here. That leaves **110 values across 50 records**
+EDSY does not supply. Two things count as "does not supply", and they are not the same:
+
+- **12 records have no EDSY entry at all** — nine of the ten `*_free` starter fittings
+  (`Int_PowerPlant_Size2_Class1_free`, `Int_Engine_Size2_Class1_free`,
+  `Int_Hyperdrive_Size2_Class1_free`, `Int_LifeSupport_Size1_Class1_free`,
+  `Int_PowerDistributor_Size1_Class1_free`, `Int_Sensors_Size1_Class1_free`,
+  `Int_FuelTank_Size1_Class3_free`, `Int_CargoRack_Size2_Class1_free`,
+  `Int_StellarBodyDiscoveryScanner_Standard_free`) and
+  `Int_FighterBayMk2_Size{5,6,7}_Class1`.
+- **38 records EDSY lists but leaves the particular field blank.** Blank is the operative
+  word: several of these entries are commented-out definitions with some values filled in
+  and others left empty, and the filled ones count. `Int_Hyperdrive_Size8_Class{1..5}`
+  state `boottime`, `fuelmul` and `fuelpower` — only mass, integrity, power draw,
+  optimal mass and max fuel are blank. `Int_DetailedSurfaceScanner_Tiny` is missing boot
+  time alone. The rest are `ModularCargoBayDoor`, `Int_ShieldGenerator_Size1_Class4` and
+  the Guardian hull, module and shield reinforcement families, all missing boot time.
+
+`Int_DroneControl_ResourceSiphon` is **not** in that set: EDSY gives it an integrity, a
+power draw *and* a boot time. Only its mass is unaccounted for, and that is left absent
+rather than guessed — see below. `Int_ShieldGenerator_Size2_Class1_free` is not in it
+either; EDSY carries that record in full, including its resistances and the distributor
+draw it spells `genpwr`.
+
+Of the 110, **108 were read from the live game's own outfitting and module panels**
+(2026-08-02 UTC), the same route this file already uses for the in-game blueprint and
+Operations registries. The remaining **two are derived, not read**:
+`Int_FuelTank_Size1_Class3_free`'s `fuelCapacity` and
+`Int_CargoRack_Size2_Class1_free`'s `cargoCapacity` follow from capacity being exactly
+2^size across all eight sizes of both families, with no exception.
+
+**All 110 are pinned individually** in `fixtures/ships/module-stats.json` `spot`, so a
+port validates against the same numbers and a silent drift fails a test — that is the
+only guard these values have, since they cannot be re-fetched from a public source. Each
+is also independently consistent with its own family's curve: the size-8 drives extend
+the size-7 ladder, and every `*_free` variant matches its paid twin wherever the twin has
+a value.
+
+- **Backfilled (a field the record did not have, so no value was overwritten):**
+  `bootTime` on 717 records, `integrity` on 237, `powerDraw` on 115, `mass` on 16, and
+  the family curves on the rows that had none — `optMass`/`maxFuel`/`fuelMul`/`fuelPower`
+  on 6, the thruster and shield mass curves on 2 each, the distributor capacities and
+  recharges on 1, and `powerCapacity`/`heatEfficiency` on 1, plus the three `*_free`
+  completions described below. **Every module in every
+  catalogue now has at least one stat** (1198/1198), so `fixtures/ships/module-stats.json`
+  `counts` now equals the catalogue sizes — and no record is left holding only a lone
+  `mass`.
+- **Closes the `TODO.md` gap "Modules still missing `mass`, deliberately" for all but one
+  record.** The ten `*_free` starter variants,
+  `Int_Hyperdrive_Size8_Class{1..5}` and `Int_ShieldGenerator_Size1_Class4` had `mass`
+  left absent because absent meant *unknown*. They are now sourced.
+  `Int_DroneControl_ResourceSiphon`, the eleventh, is **not** — see below. All but
+  `Int_ShieldGenerator_Size1_Class4` were identity-only rows; that one already carried a
+  12-field hand-filled curve, and it was **confirmed unchanged** — its `optMass` 25 /
+  `minMass` 13 / `maxMass` 63 and 0.6-1.1-1.6 multipliers match the reference figures
+  exactly, which retrospectively validates that hand-fill.
+- **Fills 102 of the 106 records in the `TODO.md` gap "106 modules are missing
+  `powerDraw` that upstream carries".** The fuel scoop, AFM unit, refinery and docking
+  computer families are complete. The four `Int_StellarBodyDiscoveryScanner_*` records
+  are **not** filled: no source carries a power draw for them — EDSY gives them only
+  `mass` and `integrity`, and coriolis-data has no record for them at all. They are withdrawn modules whose function is now built in, and
+  the absence is left as *unknown* rather than guessed at zero. Recorded in `TODO.md`.
+  The part that is closed is the defect the item was written about: the Deep Black's 7A
+  fuel scoop, 6A AFM unit and advanced docking computer now draw the 4.68 MW it
+  predicted, so its `retracted` budget moves 14.8159 → 19.4959 MW and its headroom
+  8.0321 → 3.3521 MW. `fixtures/ships/build-metrics.json` is re-pinned; the build stays
+  within budget.
+- **`Int_DroneControl_ResourceSiphon` keeps no `mass` — deliberately.** An earlier draft
+  of this revision set it to `0` on the grounds that EDSY omits the field and reads a
+  missing mass as zero, the same way this catalogue treats
+  `Int_DetailedSurfaceScanner_Tiny` and `Int_DockingComputer_Standard`. That was wrong to
+  apply here: no source states the zero, and unlike those two there is no uniformity to
+  appeal to — every sized limpet controller in the family has a real, non-zero mass. A
+  written-down inference is still an inference, and `absent` has to keep meaning
+  *unknown*. Its `integrity` 20 and `powerDraw` 0.4 do come from EDSY and are kept. The
+  outstanding mass is recorded in `TODO.md`.
+- **The three `*_free` starter fittings that were still hollow are now complete.**
+  `Int_ShieldGenerator_Size2_Class1_free` gains `shieldRegenRate` 1,
+  `shieldBrokenRegenRate` 1.6, the resistances 0.4 / −0.2 / 0.5 and `distributorDraw`
+  0.6 — **all six straight from EDSY**, which carries that record in full (as
+  `genrate`, `bgenrate`, `kinres`/`thmres`/`expres` as whole percentages, and `genpwr`
+  for the distributor draw). An earlier draft of this revision justified them by
+  rating-level uniformity instead, which produced identical numbers but understated the
+  provenance; the uniformity is real — all eight E-rated generators share those
+  resistances — but it is not what these values rest on.
+  `Int_FuelTank_Size1_Class3_free` gains `fuelCapacity: 2` and
+  `Int_CargoRack_Size2_Class1_free` `cargoCapacity: 4`, and **those two genuinely are
+  derived**: EDSY has no entry for either record, but capacity is exactly 2^size across
+  all eight sizes of both families with no exception, so the value follows from the
+  record's own `class`. Without all three a stock starter fit reported 0 t of fuel, 0 t
+  of cargo and 0/0/0 shield resistances.
+- **Cost:** the four catalogues grow about 24 KB of raw JSON (+5.6%), which is inlined
+  into every consumer's bundle. 244 of the 717 `bootTime` values are `0` (every hardpoint
+  among them). They are kept rather than omitted because this catalogue's convention is
+  that an absent field means *unknown* — collapsing a real zero into absence is the
+  defect the `cost` handling already guards against.
+
+**Corrected — 40 records, 43 fields.** In every case coriolis-data's value is the source
+of the error and EDSY carries the corrected figure:
+
+| Records | Field | Was | Now | Why the old value was wrong |
+| --- | --- | --- | --- | --- |
+| `Int_GuardianPowerDistributor_Size{1,4,5,6,7,8}` | `integrity` | 56 | 35/70/99/99/115/132 | 56 is size 3's value, repeated across six sizes |
+| `Int_GuardianPowerDistributor_Size3` | `weaponsCapacity`/`weaponsRecharge` | 13 / 3.1 | 17 / 3.9 | copied from an adjacent size |
+| `Int_GuardianPowerDistributor_Size4` | `systemsCapacity`/`systemsRecharge` | 14 / 1.7 | 17 / 2.5 | copied from an adjacent size |
+| `Int_Sensors_Size1_Class{1..5}` | `integrity` | 46/41/51/61/56 | 36/32/40/48/44 | coriolis's size-1 row is a verbatim copy of its size-2 row; size 1 is the only mismatching size in the family |
+| `Int_PowerDistributor_Size1_Class{1..5}` | `integrity` | 46/41/51/61/56 | 36/32/40/48/44 | same duplicated-row defect |
+| `Int_Hyperdrive_Overcharge_Size7_Class2` | `integrity` | 2700 | 150 | `optMass` copied into `integrity`; every sibling drive is 131–164 |
+| `Hpt_Slugshot_{Fixed,Gimbal,Turret}_Medium` | `integrity` | 80 | 51 | 80 is the huge-mount value |
+| `Hpt_Slugshot_{Fixed,Gimbal,Turret}_Large` | `integrity` | 80 | 64 | as above; the catalogue already had 64 on `Hpt_Slugshot_Fixed_Large_Range` |
+| `Hpt_PulseLaserBurst_Gimbal_Huge` | `integrity` | 80 | 64 | a real outlier, not the Fragment Cannon rule misapplied — see "Values that look wrong and are not" below |
+| `Hpt_HeatSinkLauncher_Turret_Tiny` | `integrity` | 20 | 45 | 20 is the chaff launcher's; the Caustic Sink Launcher, its analogue, is 45 in both sources. Same duplicate-record defect as the `cost` fix in the previous revision, which had been applied to `cost` and `mass` but not `integrity` |
+| `Hpt_MRAScanner_Size0_Class1` | `integrity` | 24 | 32 | every other size-0 scanner family runs 32/24/40/56/48; 24 had been duplicated into Class1 |
+| `Int_DroneControl_{FuelTransfer,Prospector,Repair}_Size5_Class4` | `powerDraw` | 0.97 | 0.72 | 0.97 is the size-7 B-rated value; 0.72 restores the Class4/Class1 ratio the family holds elsewhere (1.78 at sizes 1 and 3, 1.76 at size 7, 1.80 here) |
+| `Hpt_Mining_SubSurfDispMisle_Turret_Small` | `powerDraw` | 0.42 | 0.53 | |
+| `Int_ShieldGenerator_Size1_Class5_Strong` | `mass` | 2.5 | 2.6 | Prismatic is exactly 2× the base generator at every other size, so size 1 is 2×1.3, not half of size 2's 5.0 |
+| `Int_ShieldGenerator_Size2_Class5_Strong` | `minMass` | 23 | 28 | |
+| `Int_MetaAlloyHullReinforcement_Size1_Class2` | `mass` | 2 | 1 | |
+| `Int_Engine_Size3_Class5` | `integrity` | 72 | 70 | |
+| `Int_Powerplant_Size5_Class4` | `integrity` | 114 | 115 | |
+| `Int_FSDInterdictor_Size2_Class2` | `integrity` | 51 | 31 | |
+| `Int_StellarBodyDiscoveryScanner_{Standard,Intermediate,Advanced}` | `mass` | 0 | 2 | the previous revision set all three to 0 as part of the massless-modules pass. They are not massless: EDSY retains all three in its "removed, now built-in" block at `mass: 2.00`. Their `class` stays 1, per FDevIDs |
+
+**Rejected — three candidate corrections that cross-checking threw out.** Recorded so
+they are not "found" and applied again:
+
+- **`Int_GuardianShieldReinforcement_*` `integrity` is genuinely 36 on all ten records.**
+  A flat value across five sizes and two classes looks exactly like a placeholder, and a
+  reference figure suggested a rising 36→72 curve, but EDSY independently
+  carries 36 for all ten. Applying the curve would have corrupted correct data.
+- **`Int_Engine_Size{2,3}_Class5_Fast` multipliers stay 1.15 / 1.367.** EDSY stores
+  thruster multipliers as whole percentages (`engoptmul:115`), so it agrees on 1.15 and
+  cannot represent 1.367 at all; the catalogue's value is the more precise one.
+- **Thruster and FSD mass-curve fractions stay fractional (placeholder).** `Int_Engine_Size4_Class2`
+  `minMass` 157.5 / `maxMass` 472.5, `Int_Engine_Size4_Class4` 192.5 / 577.5 and
+  `Int_Hyperdrive_Size4_Class4` `optMass` 437.5 are exact — `optMass/2`, `optMass×1.5`
+  and `350×1.25`. The whole numbers are a rounding artefact of a source that stores these
+  fields as integers, so applying them would have *introduced* error.
+
+**Values that look wrong and are not.** Three records break the pattern their family
+follows, were challenged on exactly that basis during review, and were then confirmed
+outright by EDSY at the revision above. Recorded so the "breaks its family's curve"
+heuristic does not keep rediscovering them:
+
+- **`Hpt_PulseLaserBurst_Gimbal_Huge` `integrity` really is 64**, and it really is the
+  only huge (class-4, 16 t) hardpoint not at 80 — its own fixed sibling is 80. EDSY gives
+  `integ:64` for it and 80 for the other eleven. Note that EDSY also gives it
+  `maxbrc: 80`, which is max **breach** damage and is easy to misread as the integrity.
+- **`Int_GuardianPowerDistributor_Size{5,6}` `integrity` really are both 99.** Guardian
+  distributor integrity otherwise tracks 0.80× the A-rated standard ladder, which would
+  put size 5 near 85; EDSY states 99 for both sizes. The duplicate is in the game data.
+- **`Int_DroneControl_Recon_Size5_Class1` `bootTime` really is 9.85** — the only
+  non-integer boot time in all 1198 records, where its three family siblings are exactly
+  10. EDSY gives `boottime:9.85`.
+
+Two display names were corrected, each one EDSY carries and this catalogue had wrong:
+`CargoRack_IncreasedCapacity` "Expanded Capacity" → **"Expanded Cargo Rack"**, and
+`special_choke_canister` "Ion Disruptor" → **"Ion Disruption"**. The other blueprint
+names were checked and deliberately left alone — see "Display names" below.
 
 **Revision 2026-08-01 (UTC) — completeness pass over the outfitting and engineering
 catalogues.** The four module catalogues, `blueprints.jsonc` and
@@ -383,11 +557,21 @@ up straight through with no disambiguation at all. Both paths are evidence that
   back like a real `Engineering.Modifiers` block. Each blueprint is `{ name, grades }`
   (each grade `{ features, materials }`); each experimental effect is
   `{ name, modifiers, materials, description? }`.
-- **Display names:** each blueprint and experimental effect carries its in-game `name`.
+- **Display names:** each blueprint and experimental effect carries its `name`.
   Effect names are EDSY `expeffect[].name` (all 87); blueprint names are coriolis
   `blueprint.name` for the 81 journal-keyed blueprints and the Operations dossier's
   display label for the 27 `recipe_*` ones. Read them with `getBlueprintName` /
   `getExperimentalEffectName`.
+  - **These are the short modifier labels, not the full outfitting-panel
+    strings — deliberately.** The panel calls `Weapon_LongRange` "Long-Range Weapon",
+    `ShieldBooster_HeavyDuty` "Heavy Duty Shield Booster" and
+    `Armour_Advanced` "Lightweight Armour"; this catalogue says "Long range", "Heavy
+    duty" and "Lightweight". Nearly all 81 differ that way, because a blueprint's name
+    is read next to the module it is applied to, where repeating the module's own name
+    is noise. Re-checked on 2026-08-02 and left as-is: the
+    convention is house style, and switching to the panel strings would change every
+    `getBlueprintName` return for no gain. Only the two names that were wrong in their
+    own right were corrected (see the 2026-08-02 revision).
 - **Blueprint source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
   `modifications/blueprints.json` (grade `features` + `components`) + `modifications.json`
   (apply method), same commit and Frontier media-usage terms as above. Each grade's

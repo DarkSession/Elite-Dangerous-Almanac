@@ -4,9 +4,9 @@
     "build": "fixtures/ships/slef-the-deep-black.json",
     "power": {
       "available": 22.848,
-      "retracted": 14.8159,
-      "deployed": 14.8159,
-      "headroom": 8.0321,
+      "retracted": 19.4959,
+      "deployed": 19.4959,
+      "headroom": 3.3521,
       "withinBudget": true
     },
     "shields": {
