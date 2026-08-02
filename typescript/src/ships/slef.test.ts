@@ -200,6 +200,70 @@ test('toSlef rejects a loadout that parseSlef would not accept', () => {
     }
 });
 
+/**
+ * The example from the Inara SLEF specification, <https://inara.cz/elite/inara-impexp-slef/>,
+ * verbatim. Only `Ship`, `Modules`, `Slot` and `Item` are required: its engineered
+ * module states no `Modifiers`, and its second module lower-cases both slot and item.
+ */
+const SPEC_EXAMPLE = [
+    {
+        header: {
+            appName: 'Inara',
+            appVersion: '1.0',
+            appURL: 'https://inara.cz/cmdr-fleet/1/32243/',
+            appCustomProperties: { anything: 'here' },
+        },
+        data: {
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'HugeHardpoint1',
+                    Item: 'Hpt_BeamLaser_Gimbal_Huge',
+                    Engineering: {
+                        BlueprintName: 'Weapon_LightWeight',
+                        Level: 4,
+                        Quality: 0.95,
+                        ExperimentalEffect: 'special_corrosive_shell',
+                    },
+                },
+                { Slot: 'largehardpoint1', Item: 'hpt_multicannon_gimbal_large' },
+            ],
+        },
+    },
+];
+
+test('the specification’s own example parses, Modifiers and all', () => {
+    // Engineering without a Modifiers array is the case worth pinning: a journal always
+    // writes one, so it is easy to require it and then be unable to read the format.
+    const [entry] = parseSlef(SPEC_EXAMPLE);
+    assert.equal(entry!.header.appName, 'Inara');
+    assert.equal(entry!.data.Modules.length, 2);
+    const engineered = entry!.data.Modules[0]!.Engineering!;
+    assert.equal(engineered.BlueprintName, 'Weapon_LightWeight');
+    assert.equal(engineered.Modifiers, undefined);
+});
+
+test('a blueprint that states no Modifiers survives toSlef and a round trip', () => {
+    const loadout = SPEC_EXAMPLE[0]!.data as unknown as LoadoutEvent;
+    const wrapped = toSlef(loadout);
+    assert.deepEqual(parseSlef(stringifySlef(wrapped))[0]!.data, loadout);
+    // Absent, not an invented empty array — "not stated" is not "changed nothing".
+    assert.equal(
+        Object.hasOwn(
+            parseSlef(stringifySlef(wrapped))[0]!.data.Modules[0]!.Engineering!,
+            'Modifiers',
+        ),
+        false,
+    );
+});
+
+test('getLoadoutModifier returns null when the blueprint states no modifiers', () => {
+    assert.equal(
+        getLoadoutModifier(SPEC_EXAMPLE[0]!.data.Modules[0]! as LoadoutModule, 'Mass'),
+        null,
+    );
+});
+
 test('toSlef rejects an empty export, which would not parse back', () => {
     assert.throws(() => toSlef([]), TypeError);
 });

@@ -63,13 +63,7 @@ import {
     type FrameShiftDriveParams,
 } from './jump-range.js';
 import { getShipBySymbol, getShipSlots } from './ships.js';
-import {
-    enumerateSlots,
-    parseSlotName,
-    type BuildSlot,
-    type SlotKind,
-    type CoreSlotType,
-} from './slots.js';
+import { enumerateSlots, type BuildSlot, type SlotKind, type CoreSlotType } from './slots.js';
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
@@ -259,18 +253,44 @@ const MILITARY_PREFIXES: readonly string[] = [
 ];
 
 /**
- * Whether a journal slot key names an **outfitting** mount.
+ * The journal's **cosmetic** slot families, matched against a lower-cased slot key.
  *
  * @remarks
  * A real journal `Loadout` event lists far more than fitted modules: the cockpit, ship
- * kits, nameplates, bobbles, paint jobs, engine and weapon colours, voice packs. None is
- * an outfitting module — the catalogues deliberately do not carry them (see
- * `data/ships/SOURCES.md`) — and all contribute neither mass nor credits. Their slots are
- * exactly the ones {@link parseSlotName} does not recognise, so treat those as free and
- * weightless rather than as unknowns that would poison a whole build's totals.
+ * kits, nameplates, decals, bobbles, paint jobs, engine and weapon colours, voice packs
+ * and string lights. None is an outfitting module — the catalogues deliberately do not
+ * carry them (see `data/ships/SOURCES.md`) — and all contribute neither mass nor credits.
  */
-function isOutfittingSlot(slotKey: string): boolean {
-    return parseSlotName(slotKey) !== null;
+const COSMETIC_SLOT_PATTERNS: readonly RegExp[] = [
+    /^shipcockpit$/,
+    /^paintjob$/,
+    /^decal\d*$/,
+    /^shipname\d*$/,
+    /^shipid\d*$/,
+    /^bobble\d*$/,
+    /^shipkit\w*$/,
+    /^enginecolour$/,
+    /^weaponcolour$/,
+    /^vesselvoice$/,
+    /^stringlights$/,
+];
+
+/**
+ * Whether a journal slot key names a cosmetic mount rather than an outfitting one.
+ *
+ * @remarks
+ * Recognised **positively**, from {@link COSMETIC_SLOT_PATTERNS}, rather than as "a name
+ * `parseSlotName` does not know". The two are not the same thing: an unfamiliar
+ * name is at least as likely to be a slot family the game has added, or a producer that
+ * lower-cases its slot keys as the SLEF specification's own example does, and calling
+ * that free and weightless would understate a build's mass and credits without saying so.
+ * An article the catalogue can identify is therefore counted whatever its slot is called,
+ * and only a genuinely unidentifiable one is classified by slot at all — see
+ * {@link ShipLoadout.toLoadoutEvent}.
+ */
+function isCosmeticSlot(slotKey: string): boolean {
+    const key = slotKey.toLowerCase();
+    return COSMETIC_SLOT_PATTERNS.some((pattern) => pattern.test(key));
 }
 
 /** The core slot type a standard module fills, or `null` if it is not a core module. */
@@ -305,7 +325,13 @@ function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
                                 ExperimentalEffect_Localised:
                                     module.Engineering.ExperimentalEffect_Localised,
                             }),
-                      Modifiers: module.Engineering.Modifiers.map((modifier) => ({ ...modifier })),
+                      ...(module.Engineering.Modifiers === undefined
+                          ? {}
+                          : {
+                                Modifiers: module.Engineering.Modifiers.map((modifier) => ({
+                                    ...modifier,
+                                })),
+                            }),
                   },
               }),
     };
@@ -1047,19 +1073,23 @@ export class ShipLoadout {
     /**
      * What one fitted module costs at list price — or why it costs nothing.
      *
-     * @returns The price in credits; `'free'` for something that is not an outfitting
+     * @returns The price in credits; `'free'` for a cosmetic, which is not an outfitting
      * module at all; `'unknown'` when it should have a price and the catalogue has none.
      * @remarks
      * Deliberately ignores the module's own `Value`. That figure records what a
      * particular commander paid at a particular station, discount and all, which is not
      * a property of the build — see {@link toLoadoutEvent}.
+     *
+     * The catalogue has the first say: an article it can identify is priced whatever its
+     * slot is called. The slot is consulted only when the article is unidentifiable, and
+     * then only to recognise a cosmetic — see {@link isCosmeticSlot}.
      */
     #moduleValue(module: LoadoutModule): number | 'free' | 'unknown' {
-        // Cosmetics, ship kits and the cockpit are not outfitting and carry no price.
-        if (!isOutfittingSlot(module.Slot)) return 'free';
-        // Prefer the snapshot taken when the module was fitted, so a caller-supplied
+        // Prefers the snapshot taken when the module was fitted, so a caller-supplied
         // record prices as the article that was actually fitted.
-        return (this.#moduleStats.get(module.Slot) ?? this.#statsFor(module))?.cost ?? 'unknown';
+        const stats = this.#statsFor(module);
+        if (stats !== null) return stats.cost ?? 'unknown';
+        return isCosmeticSlot(module.Slot) ? 'free' : 'unknown';
     }
 
     /** `maxJumpRange()` when the build can answer it, else `null` — never throws. */
@@ -1508,10 +1538,15 @@ export class ShipLoadout {
         delete this.#top.Rebuy;
     }
 
-    /** A module's post-engineering mass, `0` for no module, or `null` if unknown. */
+    /**
+     * A module's post-engineering mass, `0` for no module, or `null` if unknown.
+     *
+     * @remarks
+     * Classified the same way as {@link #moduleValue}: the catalogue first, the slot only
+     * for an article it cannot identify, and then only to spot a cosmetic.
+     */
     #moduleMass(module: LoadoutModule | null, statsOverride?: OutfittingModule): number | null {
         if (module === null) return 0;
-        if (!isOutfittingSlot(module.Slot)) return 0;
         const modified = getLoadoutModifier(module, 'Mass');
         if (modified !== null) return modified;
         const stats = statsOverride ?? this.#statsFor(module);
@@ -1519,7 +1554,7 @@ export class ShipLoadout {
         if (module.Slot === 'CargoHatch' && module.Item.toLowerCase() === 'modularcargobaydoor') {
             return 0;
         }
-        return null;
+        return stats === null && isCosmeticSlot(module.Slot) ? 0 : null;
     }
 
     /**

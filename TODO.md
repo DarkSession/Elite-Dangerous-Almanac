@@ -37,9 +37,10 @@ carries.
 
 ### 2. Four corrosion-resistant cargo racks have no price at all
 
-`Int_CorrosionProofCargoRack_Size{1_Class2,2_Class1,5_Class1,6_Class1}` read `cost: 0`
-in coriolis-data itself — a gap upstream, not the duplicate-symbol defect fixed in this
-change, so there is no first occurrence to fall back on. They are not free: the size-4
+`Int_CorrosionProofCargoRack_Size{1_Class2,5_Class1,6_Class1}` read `cost: 0` in
+coriolis-data itself — a gap upstream, not the duplicate-symbol defect fixed in this
+change, so there is no first occurrence to fall back on; `_Size2_Class1` never carried a
+price at all. They are not free: the size-4
 record is priced at 94 330, and the E-rated rack family follows a ×3.25 curve, putting
 sizes 5 and 6 near 306 000 and 996 000.
 
@@ -101,7 +102,23 @@ nowhere to get it. If that turns out to be wanted, the honest shape is a separat
 accessor for the source's stated figures rather than putting them back in the export,
 where they would be indistinguishable from list prices.
 
-### 8. `modulesValue` and `rebuy` getters die on a no-op refit
+### 8. The cosmetic slot families are a hand-maintained list
+
+`COSMETIC_SLOT_PATTERNS` in `typescript/src/ships/ship-loadout.ts` names the journal slot
+families that hold cosmetics rather than outfitting — cockpit, paint, decals, nameplates,
+bobbles, ship kits, colours, voice packs, string lights — and
+`fixtures/ships/slef-export.json` pins it under `classification` so a port draws the same
+line.
+
+Matching is **positive**, which is the safe direction: an article the catalogue can
+identify counts whatever its slot is called, and anything neither the catalogue nor this
+list recognises is unknown, so an export omits the figures rather than understating them.
+The cost is that a cosmetic family Frontier adds later takes `ModulesValue`,
+`UnladenMass`, `MaxJumpRange` and `Rebuy` off every build wearing it until the list is
+extended. The Krait Phantom capture exercises 15 of the families; the rest rest on the
+journal documentation. Worth re-checking whenever a capture joins the corpus.
+
+### 9. `modulesValue` and `rebuy` getters die on a no-op refit
 
 `#adjustImportedFigures` deletes both from `#top` on any `setModule`, including
 re-fitting the identical module, so the getters that report the *source's* figures start

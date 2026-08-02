@@ -50,6 +50,33 @@ test('exporting is idempotent — re-importing an export re-exports identically'
     assert.deepEqual(twice, once);
 });
 
+test('a blueprint that states no modifiers leaves the catalogue stats standing', () => {
+    // SLEF allows an Engineering block to name a blueprint without spelling out what it
+    // changed. There is then nothing to fold in, so the module performs as sold rather
+    // than the build failing to compute.
+    const laser = module('Hpt_BeamLaser_Gimbal_Huge');
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: [
+            {
+                Slot: 'HugeHardpoint1',
+                Item: laser.symbol.toLowerCase(),
+                Engineering: { BlueprintName: 'Weapon_LightWeight', Level: 4, Quality: 0.95 },
+            },
+        ],
+    });
+    const fitted = build.getFittedModule('HugeHardpoint1')!;
+    assert.equal(fitted.effectiveStats?.mass, laser.mass);
+    assert.equal(fitted.effectiveStats?.damage, laser.damage);
+    // …and it exports exactly as it came in, without an empty Modifiers array appearing.
+    const exported = build.toLoadoutEvent().Modules[0]!.Engineering!;
+    assert.deepEqual(exported, {
+        BlueprintName: 'Weapon_LightWeight',
+        Level: 4,
+        Quality: 0.95,
+    });
+});
+
 test('engineering survives the round trip intact', () => {
     const event = ShipLoadout.fromSlef(slefString).toLoadoutEvent();
     const exported = event.Modules.find((m) => m.Slot === 'FrameShiftDrive')!;
@@ -175,6 +202,78 @@ test('cosmetics and hull geometry weigh nothing and cost nothing', () => {
     const dressed = ShipLoadout.fromLoadout(krait).toLoadoutEvent();
     assert.equal(bare.UnladenMass, dressed.UnladenMass);
     assert.equal(bare.ModulesValue, dressed.ModulesValue);
+});
+
+// ── Outfitting, cosmetic or unknown ──────────────────────────────────────────
+
+/** A bare hull with one module in one slot, exported. */
+const withOneModule = (slot: string, item: string): LoadoutEvent =>
+    ShipLoadout.fromLoadout({
+        Ship: 'krait_light',
+        Modules: [{ Slot: slot, Item: item }],
+    }).toLoadoutEvent();
+
+test('the classification examples in the fixture come out as the fixture says', () => {
+    // The rule that governs every mass and credit figure: the catalogue first, the slot
+    // only for an article it cannot identify, and then only to recognise a cosmetic.
+    // Anything else is unknown, and an unknown omits figures rather than counting as 0.
+    const empty = ShipLoadout.fromLoadout({ Ship: 'krait_light', Modules: [] }).toLoadoutEvent();
+    const dependent = ['ModulesValue', 'UnladenMass', 'MaxJumpRange', 'Rebuy'];
+
+    for (const { slot, item, verdict } of fixture.classification.examples) {
+        const event = withOneModule(slot, item);
+        const exported = event.Modules[0]!;
+        // The hull is knowable whatever is fitted, so it is emitted in every case.
+        assert.equal(event.HullValue, fixture.kraitPhantom.recomputed.HullValue, slot);
+
+        if (verdict === 'unknown') {
+            for (const key of dependent) {
+                assert.equal(Object.hasOwn(event, key), false, `${slot}.${key}`);
+            }
+            assert.equal(Object.hasOwn(exported, 'Value'), false, slot);
+            continue;
+        }
+        if (verdict === 'cosmetic') {
+            assert.equal(Object.hasOwn(exported, 'Value'), false, slot);
+            assert.equal(event.ModulesValue, empty.ModulesValue, slot);
+            assert.equal(event.UnladenMass, empty.UnladenMass, slot);
+            continue;
+        }
+        const stats = module(item);
+        assert.equal(exported.Value, stats.cost, slot);
+        assert.equal(event.ModulesValue, empty.ModulesValue! + stats.cost!, slot);
+        assert.equal(event.UnladenMass, empty.UnladenMass! + stats.mass!, slot);
+    }
+});
+
+test('the fixture’s cosmetic patterns agree with the classification in force', () => {
+    // Pins the patterns themselves, so a port reading the fixture draws the same line
+    // through a real journal's 40 slots as this implementation does.
+    const patterns = fixture.classification.cosmeticSlotPatterns.map((p) => new RegExp(p));
+    const matches = (slot: string) => patterns.some((p) => p.test(slot.toLowerCase()));
+    assert.deepEqual(
+        krait.Modules.map((m) => m.Slot).filter(matches),
+        fixture.kraitPhantom.nonOutfittingSlots,
+    );
+});
+
+test('a cosmetic is recognised by its family, not by appearing in a fixture', () => {
+    // A third decal, a tenth bobble, a lower-cased slot key: all cosmetics the corpus
+    // happens not to hold, and none of them may move a figure.
+    const dressed: LoadoutEvent = {
+        ...krait,
+        Modules: [
+            ...krait.Modules,
+            { Slot: 'Decal3', Item: 'decal_planet_shine' },
+            { Slot: 'Bobble10', Item: 'bobble_christmastree' },
+            { Slot: 'stringlights', Item: 'string_lights_coloured' },
+        ],
+    };
+    const event = ShipLoadout.fromLoadout(dressed).toLoadoutEvent();
+    assert.deepEqual(
+        figuresOf(event, fixture.kraitPhantom.recomputed),
+        fixture.kraitPhantom.recomputed,
+    );
 });
 
 test('the jump figures for a real journal build match the fixture', () => {

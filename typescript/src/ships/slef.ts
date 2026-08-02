@@ -77,8 +77,18 @@ export interface ModuleEngineering {
     readonly ExperimentalEffect?: string;
     /** The experimental effect's display name, when present. */
     readonly ExperimentalEffect_Localised?: string;
-    /** Every stat this engineering changed. */
-    readonly Modifiers: readonly EngineeringModifier[];
+    /**
+     * Every stat this engineering changed.
+     *
+     * @remarks
+     * **Optional.** A journal `Loadout` event always writes it, but SLEF requires only
+     * `BlueprintName`, `Level` and `Quality` — the specification's own example omits it —
+     * so an export from another app may name the blueprint and its roll without spelling
+     * out the resulting stats. Treat a missing array as "not stated", not as "nothing was
+     * changed": the blueprint's effect can be recomputed with `computeModifiers` from
+     * `./engineering`.
+     */
+    readonly Modifiers?: readonly EngineeringModifier[];
 }
 
 /** One fitted module in a `Loadout` event. */
@@ -196,8 +206,10 @@ function isModuleEngineering(value: unknown): value is ModuleEngineering {
         value.Quality !== undefined &&
         isOptionalString(value.ExperimentalEffect) &&
         isOptionalString(value.ExperimentalEffect_Localised) &&
-        Array.isArray(value.Modifiers) &&
-        value.Modifiers.every(isEngineeringModifier)
+        // Not required by SLEF — see ModuleEngineering.Modifiers. Rejecting a block
+        // without one would make this parser unable to read the spec's own example.
+        (value.Modifiers === undefined ||
+            (Array.isArray(value.Modifiers) && value.Modifiers.every(isEngineeringModifier)))
     );
 }
 
@@ -378,7 +390,8 @@ export function stringifySlef(slef: Slef, options: SlefStringifyOptions = {}): s
  * @param label - The stat's journal name, e.g. `"FSDOptimalMass"`. Matched
  * case-insensitively.
  * @returns The modifier's numeric `Value`, or `null` if the module is not
- * engineered, carries no such modifier, or the modifier is non-numeric.
+ * engineered, states no modifiers at all, carries no such modifier, or the modifier is
+ * non-numeric.
  * @example
  * ```ts
  * getLoadoutModifier(fsdModule, 'FSDOptimalMass'); // -> 7528.04, or null if stock
@@ -386,6 +399,6 @@ export function stringifySlef(slef: Slef, options: SlefStringifyOptions = {}): s
  */
 export function getLoadoutModifier(module: LoadoutModule, label: string): number | null {
     const wanted = label.trim().toLowerCase();
-    const mod = module.Engineering?.Modifiers.find((m) => m.Label.toLowerCase() === wanted);
+    const mod = module.Engineering?.Modifiers?.find((m) => m.Label.toLowerCase() === wanted);
     return typeof mod?.Value === 'number' ? mod.Value : null;
 }

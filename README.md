@@ -561,8 +561,9 @@ These are the **undiscounted** list prices an outfitting screen quotes at 0%
 discount — stations apply their own discount or markup on top, which is live market
 state this library does not carry.
 
-All 48 hulls are priced, and 1178 of 1198 modules. The rest — the starter `*_free`
-variants, the size-8 frame shift drives, and a few reward-only internals — have no
+All 48 hulls are priced, and 1175 of 1198 modules. The other 23 — the ten starter
+`*_free` variants, the five size-8 frame shift drives, the three Mk II fighter hangars,
+the four Corrosion Resistant Cargo Racks and `Int_ShieldGenerator_Size1_Class4` — have no
 published price, so **`cost` is `undefined` rather than `0`**. That distinction is
 deliberate: `0` is a real price (the starter Lightweight Alloy bulkhead is free), so
 treat `undefined` as _unknown_ and decide for yourself whether to skip it or fail:
@@ -624,6 +625,12 @@ build.jumpRangeSummary(); // all five at once:
 // -> { max, unladen, laden, totalUnladen, totalLaden }
 ```
 
+Exports are read to the **specification** rather than to the journal, which is stricter:
+SLEF requires only `Ship`, `Modules`, `Slot` and `Item`, and an `Engineering` block may
+name a blueprint without listing what it changed. `ModuleEngineering.Modifiers` is
+therefore optional — absent means _not stated_, not _changed nothing_, so the module
+performs as sold and `getLoadoutModifier` returns `null` for every label.
+
 `ShipLoadout` resolves the drive's constants from the module stats and applies the
 export's engineering (a Long Range blueprint's `FSDOptimalMass`, a Guardian FSD
 Booster's bonus). Need just the maths? Skip the class and import the pure functions
@@ -656,6 +663,14 @@ names this library. Two things worth knowing:
 - Anything that cannot be worked out is **left out** rather than emitted as a stale or
   zero value, which SLEF explicitly allows. An unrecognised hull or module id costs you
   the figures that depend on it, not a wrong answer.
+- **Cosmetics are recognised, not assumed.** A journal `Loadout` lists the cockpit, ship
+  kit, nameplates, decals, bobbles, paint, colours and voice pack alongside the fitted
+  modules — 15 of the Krait Phantom fixture's 40 entries. Those weigh nothing and cost
+  nothing, but they are matched against their own slot families rather than inferred from
+  "this slot name is unfamiliar". A module the catalogue can identify counts whatever its
+  slot is called, and anything neither the catalogue nor the cosmetic families recognise
+  is treated as unknown — so a slot family the game adds later costs you the figures
+  instead of quietly understating mass and credits.
 - **Ship and module ids are lower-cased** on the way out, matching what the journal and
   every other SLEF producer write.
 

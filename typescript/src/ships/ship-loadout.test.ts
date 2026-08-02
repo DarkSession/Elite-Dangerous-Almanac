@@ -415,7 +415,7 @@ test('applyBlueprint reproduces the Deep Black FSD modifiers and lifts jump rang
     assert.equal(engineered.BlueprintName, 'FSD_LongRange');
     assert.equal(engineered.Level, 5);
     assert.equal(engineered.ExperimentalEffect, 'special_fsd_heavy');
-    const massMod = engineered.Modifiers.find((m) => m.Label === 'Mass');
+    const massMod = engineered.Modifiers!.find((m) => m.Label === 'Mass');
     assert.equal(massMod?.Value, 208);
 });
 
@@ -429,7 +429,7 @@ test('assembled builds include engineered cargo capacity in their aggregates', (
     assert.equal(
         build
             .moduleAt('Slot05_Size5')
-            ?.Engineering?.Modifiers.find((modifier) => modifier.Label === 'CargoCapacity')?.Value,
+            ?.Engineering?.Modifiers?.find((modifier) => modifier.Label === 'CargoCapacity')?.Value,
         43.008,
     );
 });
@@ -491,7 +491,7 @@ test('weapon and armour recipes engineer the stats the catalogue carries', () =>
             .some((blueprint) => blueprint.fdname === 'Weapon_Overcharged'),
     );
     weapon.applyBlueprint('SmallHardpoint1', 'Weapon_Overcharged', { grade: 5 });
-    const overcharged = weapon.getFittedModule('SmallHardpoint1')!.Engineering!.Modifiers;
+    const overcharged = weapon.getFittedModule('SmallHardpoint1')!.Engineering!.Modifiers!;
     const damage = overcharged.find((m) => m.Label === 'Damage')!;
     assert.ok(damage.Value! > damage.OriginalValue!, 'Overcharged raises damage');
 
@@ -501,7 +501,7 @@ test('weapon and armour recipes engineer the stats the catalogue carries', () =>
     conda.applyBlueprint('Armour', 'Armour_HeavyDuty', { grade: 5 });
     const boost = conda
         .getFittedModule('Armour')!
-        .Engineering!.Modifiers.find((m) => m.Label === 'DefenceModifierHealthMultiplier')!;
+        .Engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthMultiplier')!;
     // The journal reports hull boost as a percentage, and it compounds on the armour
     // multiplier: a 250% bulkhead (x3.5 armour) at a full grade-5 roll (+32%) becomes
     // x4.62, i.e. 362%.
@@ -531,7 +531,7 @@ test('engineering rejects recipes whose base stats are not carried', () => {
     build.applyBlueprint('Slot01_Size7', 'HullReinforcement_HeavyDuty', { grade: 5 });
     const added = build
         .getFittedModule('Slot01_Size7')!
-        .Engineering!.Modifiers.find((m) => m.Label === 'DefenceModifierHealthAddition')!;
+        .Engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthAddition')!;
     assert.ok(added.Value! > added.OriginalValue!);
 });
 

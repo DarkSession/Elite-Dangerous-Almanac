@@ -283,10 +283,12 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   retained removed scanners) and supplying the Lynx Highliner, which has no coriolis
   entry. Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
   on hull + bulkhead name because those records carry no symbol upstream.
-  - **All 48 hulls are priced. 1178 of 1198 modules are.** The 20 without a price are
-    the starter `*_free` variants, the size-8 frame shift drives, the three Mk II Vessel
-    Hangars, the size-2 Corrosion Resistant Cargo Rack and `Int_ShieldGenerator_Size1_Class4`
-    — no registry publishes a figure for them. **`cost` is omitted, never set to 0**:
+  - **All 48 hulls are priced. 1175 of 1198 modules are.** The 23 without a price are the
+    ten starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
+    Vessel Hangars, **all four** Corrosion Resistant Cargo Racks and
+    `Int_ShieldGenerator_Size1_Class4` — no registry publishes a figure for them. Three of
+    the four racks joined the list in the 2026-08-02 revision described above, which is
+    why this count moved from 1178/20. **`cost` is omitted, never set to 0**:
     `0` is a real price (the starter Lightweight Alloy bulkhead costs nothing), so a
     cost calculation must be able to tell "free" from "unknown".
   - **Still not modelled:** passenger capacity and fighter-bay/rebuild counts. The

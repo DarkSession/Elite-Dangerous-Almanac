@@ -1,6 +1,54 @@
 {
   "description": "Expected ShipLoadout export output — the journal `Loadout` event and SLEF envelope a build serialises to. Pins the decisions rather than whole blobs: which top-level keys an export emits and which it leaves out, module order, and the lower-cased journal casing. Every top-level figure is recomputed from the hull and the fitted modules, never echoed from the import. Credits are quoted at RETAIL — the bare hull's `hullCost` plus every module's catalogue list price — so they deliberately differ from what a source build reports, since that records one commander's purchase at one station. Each build's `discount` section pins the ratio, which is how the retail figures are shown to be right. Cross-language validation.",
   "rebuyFraction": 0.05,
+  "classification": {
+    "note": "How an entry in `Modules` is decided to be an outfitting module, a cosmetic, or unknown — the rule that governs every mass and credit figure below. The catalogue has the FIRST say: an article it can identify contributes its mass and list price whatever its slot is called, which matters because slot names are not a closed set (the game adds families, and the SLEF specification's own example lower-cases them). Only an article the catalogue cannot identify is classified by slot, and then only to recognise a cosmetic from the families listed here. Anything else is UNKNOWN, and an unknown omits the figures that depend on it rather than being counted as free and weightless — guessing would understate a build's mass and credits without saying so.",
+    "cosmeticSlotPatterns": [
+      "^shipcockpit$",
+      "^paintjob$",
+      "^decal\\d*$",
+      "^shipname\\d*$",
+      "^shipid\\d*$",
+      "^bobble\\d*$",
+      "^shipkit\\w*$",
+      "^enginecolour$",
+      "^weaponcolour$",
+      "^vesselvoice$",
+      "^stringlights$"
+    ],
+    "patternsMatchLowerCasedSlot": true,
+    "examples": [
+      {
+        "slot": "FutureCoreSlot",
+        "item": "int_hyperdrive_size5_class5",
+        "verdict": "outfitting",
+        "why": "The catalogue knows the article; an unfamiliar slot name does not make it free."
+      },
+      {
+        "slot": "frameshiftdrive",
+        "item": "int_hyperdrive_size5_class5",
+        "verdict": "outfitting",
+        "why": "Lower-cased slot keys are what the SLEF specification's own example uses."
+      },
+      {
+        "slot": "Bobble10",
+        "item": "bobble_christmastree",
+        "verdict": "cosmetic",
+        "why": "Matches a cosmetic family by pattern, not by appearing in any fixture."
+      },
+      {
+        "slot": "SomeFutureSlot",
+        "item": "int_something_we_have_never_seen",
+        "verdict": "unknown",
+        "why": "Neither the catalogue nor the cosmetic families recognise it, so ModulesValue, UnladenMass, MaxJumpRange and Rebuy are all omitted."
+      }
+    ]
+  },
+  "engineeringWithoutModifiers": {
+    "note": "SLEF requires only Ship, Modules, Slot and Item; the specification's own example carries an Engineering block with BlueprintName, Level, Quality and ExperimentalEffect but NO Modifiers array. A parser that requires Modifiers cannot read the format it implements. Absent means 'not stated', not 'changed nothing': the module performs at its catalogue stats, modifier lookups return null, and an export must not invent an empty array on the way back out. Source: https://inara.cz/elite/inara-impexp-slef/",
+    "modifiersRequired": false,
+    "exportInventsEmptyArray": false
+  },
   "deepBlack": {
     "build": "fixtures/ships/slef-the-deep-black.json",
     "note": "Round-trip of a real EDSY export. The physical figures reproduce the export's own exactly, which is what makes recomputation trustworthy. The credit figures do not, and should not: this export was taken at a 12.25% outfitting discount.",
