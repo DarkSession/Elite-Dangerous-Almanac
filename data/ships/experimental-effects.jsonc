@@ -21,8 +21,12 @@
  *          used under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
- * Each effect is { name, modifiers, materials, description? }. `name` is the in-game
- * display name (EDSY `expeffect[].name`). A modifier is { label, method, value }:
+ * Each effect is { name, modifiers, materials, description? }. `name` is the effect's
+ * display name from EDSY `expeffect[].name`; where another registry differs it is only
+ * in casing or hyphenation ("Multi-servos" vs "Multi-Servos"), and EDSY's form is kept.
+ * Re-checked 2026-08-02; `special_choke_canister` was corrected to "Ion Disruption"
+ * then, EDSY's spelling having been mistranscribed as "Ion Disruptor".
+ * A modifier is { label, method, value }:
  * `label` the journal Modifier Label, `method` how it applies, `value` the fixed
  * contribution (a fraction for percentage modifiers). A material is { symbol, name,
  * count }: join `symbol` to the materials domain for its own grade and category,
@@ -2218,7 +2222,7 @@
     "description": "Deals 50/50 kinetic/thermal damage."
   },
   "special_choke_canister": {
-    "name": "Ion Disruptor",
+    "name": "Ion Disruption",
     "modifiers": [],
     "materials": [
       {
