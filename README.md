@@ -17,7 +17,7 @@ bundle only the catalogues you touch:
 | [`astro`](#quick-start)              | System name ⇄ `id64`, sectors, galactic regions, 5835 nebulae, permit locks                                                             | `StarSystem`                     |
 | [`ships`](#ships-and-outfitting)     | 48 hulls and ~1200 modules with stats, slots and prices, SLEF builds, jump range, power, shields, armour, weapon DPS, engineering costs | `ShipLoadout`, `getShipBySymbol` |
 | [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                                                              | `getMaterialByName`              |
-| [`commodities`](#market-commodities) | 256 standard and 142 rare market goods                                                                                                  | `getCommodityBySymbol`           |
+| [`commodities`](#market-commodities) | 257 standard and 142 rare market goods                                                                                                  | `getCommodityBySymbol`           |
 
 Also here: [the four kinds of "region"](#the-four-kinds-of-region) (the one thing
 that trips everyone up), [nebulae](#nebulae), [permit
@@ -978,7 +978,7 @@ getBlueprintCost(bought.blueprint, 5, bought.grade); // grades 2-5 only
 
 ## Market commodities
 
-The `commodities` feature area is Frontier's commodity-market registry: the 256
+The `commodities` feature area is Frontier's commodity-market registry: the 257
 **standard** goods traded at station markets and the 142 **rare** goods each
 produced at a single station. Every entry is a symbol/name/category record (not a
 price sheet — no buy/sell price, supply or demand, which the source registry does
@@ -987,9 +987,9 @@ import (subpaths below are relative to `@elite-dangerous-almanac/core`):
 
 | Import                             | Export             | What's in it                                     | Entries |
 | ---------------------------------- | ------------------ | ------------------------------------------------ | ------- |
-| `commodities/commodities-standard` | `COMMODITIES`      | Standard market goods, all sixteen market groups | 256     |
+| `commodities/commodities-standard` | `COMMODITIES`      | Standard market goods, all sixteen market groups | 257     |
 | `commodities/commodities-rare`     | `RARE_COMMODITIES` | Location-specific rare/luxury goods              | 142     |
-| `commodities/commodities-all`      | `ALL_COMMODITIES`  | Both, standard then rare                         | 398     |
+| `commodities/commodities-all`      | `ALL_COMMODITIES`  | Both, standard then rare                         | 399     |
 
 The query functions live in `commodities` and hold no data — hand them whichever
 catalogue you imported:

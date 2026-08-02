@@ -13,8 +13,10 @@
  * commoditiesInCategory('Metals', COMMODITIES).length;    // -> every metal on the market
  * ```
  *
- * Data from EDCD FDevIDs (`commodity.csv`, `rare_commodity.csv`); see
- * `data/commodities/SOURCES.md`.
+ * Data from EDCD FDevIDs (`commodity.csv`, `rare_commodity.csv`), plus one standard
+ * record observed in a player journal and not yet in FDevIDs (its market category is
+ * a maintainer assignment); see
+ * [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
  *
  * @packageDocumentation
  */

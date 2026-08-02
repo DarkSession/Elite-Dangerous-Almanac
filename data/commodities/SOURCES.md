@@ -1,6 +1,6 @@
 # Data sources — `data/commodities/`
 
-**Library snapshot:** 2026-07-24. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, plus one record added 2026-08-02 (see Standard commodities below). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 Attribution for the market-commodity data files in this directory. This file is the
 long form; each data file also repeats its own credit in a comment header, so the
@@ -14,7 +14,7 @@ See AGENTS.md §Attribution for how to consume them.
 
 ## Standard commodities
 
-- **Files:** `commodities.jsonc` (256 tradable goods) and
+- **Files:** `commodities.jsonc` (257 tradable goods) and
   `fixtures/commodities/commodities.json`.
 - **Source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), the community-maintained
   registry of Frontier's internal ids and names (`commodity.csv`, columns
@@ -28,6 +28,19 @@ See AGENTS.md §Attribution for how to consume them.
   Drugs`). The CSV's numeric `id` column is dropped — commodities are keyed by
   `symbol`. The `NonMarketable` group (its one member, symbol `Drones`, is Limpets) is
   retained: a registry must resolve every symbol the market can report.
+- **Manual addition (2026-08-02):** one record is **not** from FDevIDs —
+  `curatedcommodity` / "Curated Commodity Package". Acquired from a player-journal
+  `MarketBuy` event timestamped `2026-08-01T16:12:01Z` (`MarketID` 128667761,
+  `BuyPrice` 347), which supplies the `symbol` (`Type`) and `name` (`Type_Localised`)
+  verbatim. A `MarketBuy` carries **no category**, so `Industrial Materials` is a
+  maintainer assignment pending an upstream FDevIDs entry, not an observed value —
+  treat it as the one field here that upstream may contradict. The record is appended
+  after the registry order rather than inserted into it, so FDevIDs order is still
+  recoverable by dropping the tail. Standard rather than rare: a `MarketBuy` of 388
+  units far exceeds any rare's per-station allocation. The event's `Count`,
+  `BuyPrice`, `TotalCost` and `MarketID` are dropped — this is an id/name/category
+  registry, not a price sheet. Pinned in `fixtures/commodities/commodities.json`
+  `records` so a regression cannot pass silently.
 
 ## Rare commodities
 

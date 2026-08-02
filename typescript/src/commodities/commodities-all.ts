@@ -13,11 +13,11 @@ import { COMMODITIES } from './commodities-standard.js';
 import { RARE_COMMODITIES } from './commodities-rare.js';
 
 /**
- * All 398 commodities, standard first then rare.
+ * All 399 commodities, standard first then rare.
  *
  * @example
  * ```ts
- * ALL_COMMODITIES.length; // -> 398
+ * ALL_COMMODITIES.length; // -> 399
  * ```
  */
 export const ALL_COMMODITIES: readonly Commodity[] = Object.freeze([

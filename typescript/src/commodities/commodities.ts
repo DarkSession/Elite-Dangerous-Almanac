@@ -3,7 +3,7 @@
  * feature.
  *
  * Elite Dangerous trades goods at station commodity markets. Frontier splits them
- * into two registries: the ~256 **standard** commodities on every market, and the
+ * into two registries: the ~257 **standard** commodities on every market, and the
  * ~142 **rare** commodities each produced at a single station. This module holds the
  * {@link Commodity} record shape and the pure functions that search a catalogue
  * ({@link getCommodityBySymbol}, {@link getCommodityByName},
@@ -12,15 +12,17 @@
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
- * | `./commodities-standard` | `COMMODITIES` | 256 |
+ * | `./commodities-standard` | `COMMODITIES` | 257 |
  * | `./commodities-rare` | `RARE_COMMODITIES` | 142 |
- * | `./commodities-all` | `ALL_COMMODITIES` | 398 |
+ * | `./commodities-all` | `ALL_COMMODITIES` | 399 |
  *
  * Importing a query function from here costs nothing but the function: pass in
  * whichever catalogue you imported.
  *
- * Data from EDCD FDevIDs (`commodity.csv`, `rare_commodity.csv`); see
- * `data/commodities/SOURCES.md`.
+ * Data from EDCD FDevIDs (`commodity.csv`, `rare_commodity.csv`), plus one standard
+ * record observed in a player journal and not yet in FDevIDs (its market category is
+ * a maintainer assignment); see
+ * [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
  *
  * @example
  * ```ts

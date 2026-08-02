@@ -6,7 +6,7 @@
  * live in `./commodities-standard`. Search it with the query functions in
  * `./commodities`.
  *
- * Data from EDCD FDevIDs (`rare_commodity.csv`); see `data/commodities/SOURCES.md`.
+ * Data from EDCD FDevIDs (`rare_commodity.csv`); see [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
  *
  * @packageDocumentation
  */

@@ -6,6 +6,11 @@
  *               https://github.com/EDCD/FDevIDs
  *               Community-maintained Frontier id/name registry. No explicit
  *               licence is stated; consult the repository terms.
+ * Secondary:    Player journal observation for `curatedcommodity` (Curated
+ *               Commodity Package), a market good not yet in FDevIDs. Its
+ *               symbol and name come from a MarketBuy event; its category is
+ *               a maintainer assignment, not an upstream value. Appended after
+ *               the registry order rather than inserted into it.
  *
  * Each record is { symbol, name, category }. `symbol` is Frontier's internal id
  * (matched case-insensitively, as the market/journal reports it); `name` is the
@@ -1296,5 +1301,10 @@
     "symbol": "Haematite",
     "name": "Haematite",
     "category": "Minerals"
+  },
+  {
+    "symbol": "curatedcommodity",
+    "name": "Curated Commodity Package",
+    "category": "Industrial Materials"
   }
 ]

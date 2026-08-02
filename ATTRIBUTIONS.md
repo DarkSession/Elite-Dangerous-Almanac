@@ -89,7 +89,10 @@ in the doc comment of each ported module, and in long form in the domain
 - **Market commodities** — standard and rare commodity names, symbols and market
   categories, from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
   (`commodity.csv`, `rare_commodity.csv`), which states no explicit licence;
-  consult the repository terms.
+  consult the repository terms. One standard record (`curatedcommodity` /
+  Curated Commodity Package) is not in FDevIDs and is taken from a player-journal
+  `MarketBuy` observation; its market category is a maintainer assignment, not an
+  upstream value. See `data/commodities/SOURCES.md`.
 - **Ship and module stats, slot layouts and blueprints** — hull and module masses,
   power, FSD constants, thruster/shield/distributor performance, damage
   resistances, hull and shield reinforcement, module protection, armour hull
