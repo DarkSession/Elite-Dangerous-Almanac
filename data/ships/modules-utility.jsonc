@@ -17,9 +17,21 @@
  * the display name; `class` the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. Identity fields always present;
  * every stat field is optional, present only where the module has it (masses in
- * tonnes, power in MW, ranges in LY). `restrictedToShips` lists the hull(s) a
+ * tonnes, power in MW, jump ranges in LY). `restrictedToShips` lists the hull(s) a
  * non-armour module is limited to; armour's hull restriction is its `ship` field.
- * Modules without stats (ship-specific armour) carry identity only.
+ *
+ * Defence stats: `kineticResistance`, `thermalResistance`, `explosiveResistance` and
+ * `causticResistance` are fractions of damage removed (negative = a weakness);
+ * `hullBoost` is an armour variant's bonus as a fraction of the hull's base armour
+ * (0.8 means base armour x 1.8), `hullReinforcement` is hull points added,
+ * `shieldAddition` shield megajoules added, `moduleProtection` the fraction of module
+ * damage absorbed. `alwaysPowered` marks a hardpoint-mounted module that draws its
+ * power even with hardpoints retracted.
+ * Weapon stats: `damage` is per round (per second on continuous-fire beam and mining
+ * lasers, which carry no `rateOfFire`), `damageDistribution` splits it by type,
+ * `rateOfFire` is shots per second with the burst pattern and charge time folded in,
+ * `distributorDraw` (MW) and `thermalLoad` are per shot, and `maximumRange` /
+ * `falloffRange` / `shotSpeed` are metres and metres per second.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  *
@@ -35,6 +47,14 @@
     "mass": 1.3,
     "integrity": 20,
     "powerDraw": 0.2,
+    "alwaysPowered": true,
+    "rateOfFire": 1,
+    "burstInterval": 1,
+    "clipSize": 1,
+    "ammoMaximum": 10,
+    "reloadTime": 10,
+    "distributorDraw": 4,
+    "thermalLoad": 4,
     "cost": 8500
   },
   {
@@ -46,6 +66,9 @@
     "mass": 1.3,
     "integrity": 20,
     "powerDraw": 0.2,
+    "reloadTime": 10,
+    "thermalLoad": 4,
+    "maximumRange": 3000,
     "cost": 12500
   },
   {
@@ -57,6 +80,13 @@
     "mass": 1.3,
     "integrity": 20,
     "powerDraw": 0.2,
+    "alwaysPowered": true,
+    "rateOfFire": 0.2,
+    "burstInterval": 5,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "reloadTime": 10,
+    "distributorDraw": 2,
     "cost": 0
   },
   {
@@ -68,6 +98,22 @@
     "mass": 0.5,
     "integrity": 30,
     "powerDraw": 0.2,
+    "alwaysPowered": true,
+    "damage": 0.2,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 10,
+    "burstInterval": 0.2,
+    "burstRounds": 4,
+    "burstRateOfFire": 15,
+    "clipSize": 12,
+    "ammoMaximum": 10000,
+    "reloadTime": 0.4,
+    "thermalLoad": 0.1,
+    "maximumRange": 2500,
+    "shotSpeed": 1000,
+    "jitter": 0.75,
     "cost": 18550
   },
   {
@@ -79,6 +125,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.2,
+    "maximumRange": 2000,
     "cost": 13544
   },
   {
@@ -90,6 +137,7 @@
     "mass": 1.3,
     "integrity": 24,
     "powerDraw": 0.4,
+    "maximumRange": 2500,
     "cost": 40633
   },
   {
@@ -101,6 +149,7 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.8,
+    "maximumRange": 3000,
     "cost": 121899
   },
   {
@@ -112,6 +161,7 @@
     "mass": 1.3,
     "integrity": 56,
     "powerDraw": 1.6,
+    "maximumRange": 3500,
     "cost": 365698
   },
   {
@@ -123,6 +173,7 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 3.2,
+    "maximumRange": 4000,
     "cost": 1097095
   },
   {
@@ -134,6 +185,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.2,
+    "maximumRange": 2000,
     "cost": 13544
   },
   {
@@ -145,6 +197,7 @@
     "mass": 1.3,
     "integrity": 24,
     "powerDraw": 0.4,
+    "maximumRange": 2500,
     "cost": 40633
   },
   {
@@ -156,6 +209,7 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.8,
+    "maximumRange": 3000,
     "cost": 121899
   },
   {
@@ -167,6 +221,7 @@
     "mass": 1.3,
     "integrity": 56,
     "powerDraw": 1.6,
+    "maximumRange": 3500,
     "cost": 365698
   },
   {
@@ -178,6 +233,7 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 3.2,
+    "maximumRange": 4000,
     "cost": 1097095
   },
   {
@@ -189,6 +245,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.2,
+    "maximumRange": 2000,
     "cost": 13544
   },
   {
@@ -200,6 +257,7 @@
     "mass": 1.3,
     "integrity": 24,
     "powerDraw": 0.4,
+    "maximumRange": 2500,
     "cost": 40633
   },
   {
@@ -211,6 +269,7 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 0.8,
+    "maximumRange": 3000,
     "cost": 121899
   },
   {
@@ -222,6 +281,7 @@
     "mass": 1.3,
     "integrity": 56,
     "powerDraw": 1.6,
+    "maximumRange": 3500,
     "cost": 365698
   },
   {
@@ -233,6 +293,7 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 3.2,
+    "maximumRange": 4000,
     "cost": 1097095
   },
   {
@@ -245,6 +306,10 @@
     "integrity": 25,
     "powerDraw": 0.2,
     "shieldBoost": 0.04,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "alwaysPowered": true,
     "cost": 10000
   },
   {
@@ -257,6 +322,10 @@
     "integrity": 35,
     "powerDraw": 0.5,
     "shieldBoost": 0.08,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "alwaysPowered": true,
     "cost": 23000
   },
   {
@@ -269,6 +338,10 @@
     "integrity": 40,
     "powerDraw": 0.7,
     "shieldBoost": 0.12,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "alwaysPowered": true,
     "cost": 53000
   },
   {
@@ -281,6 +354,10 @@
     "integrity": 45,
     "powerDraw": 1,
     "shieldBoost": 0.16,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "alwaysPowered": true,
     "cost": 122000
   },
   {
@@ -293,6 +370,10 @@
     "integrity": 48,
     "powerDraw": 1.2,
     "shieldBoost": 0.2,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "alwaysPowered": true,
     "cost": 281000
   },
   {
@@ -305,6 +386,8 @@
     "mass": 1.3,
     "integrity": 35,
     "powerDraw": 0.2,
+    "alwaysPowered": true,
+    "maximumRange": 3000,
     "cost": 63000
   },
   {
@@ -318,6 +401,7 @@
     "integrity": 56,
     "powerDraw": 0.2,
     "bootTime": 2,
+    "maximumRange": 500,
     "cost": 365698
   },
   {
@@ -331,6 +415,7 @@
     "integrity": 56,
     "powerDraw": 0.8,
     "bootTime": 2,
+    "maximumRange": 2000,
     "cost": 745948
   },
   {
@@ -402,6 +487,13 @@
     "mass": 1.7,
     "integrity": 45,
     "powerDraw": 0.6,
+    "alwaysPowered": true,
+    "rateOfFire": 0.2,
+    "burstInterval": 5,
+    "clipSize": 1,
+    "ammoMaximum": 5,
+    "reloadTime": 10,
+    "distributorDraw": 2,
     "cost": 50000
   },
   {
@@ -413,6 +505,8 @@
     "mass": 3,
     "integrity": 70,
     "powerDraw": 0.4,
+    "alwaysPowered": true,
+    "maximumRange": 0,
     "cost": 150000
   },
   {
@@ -425,6 +519,7 @@
     "integrity": 100,
     "powerDraw": 1,
     "bootTime": 2,
+    "maximumRange": 1000,
     "cost": 850000
   }
 ]

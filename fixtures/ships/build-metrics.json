@@ -1,0 +1,403 @@
+{
+  "description": "Parity fixture for the ship-build metrics: the power budget and its priority groups, the shield and armour metrics with their stacked resistances, and weapon DPS. Covers fixtures/ships/slef-the-deep-black.json and an Anaconda assembled from the catalogues, plus the pure functions each metric is built from. Cross-language validation.",
+  "deepBlack": {
+    "build": "fixtures/ships/slef-the-deep-black.json",
+    "power": {
+      "available": 22.848,
+      "retracted": 14.8159,
+      "deployed": 14.8159,
+      "headroom": 8.0321,
+      "withinBudget": true
+    },
+    "shields": {
+      "strength": 230.652918,
+      "massCurveMultiplier": 0.461306,
+      "resistances": {
+        "kinetic": 0.4,
+        "thermal": -0.2,
+        "explosive": 0.5,
+        "caustic": 0
+      },
+      "effectiveHitPoints": {
+        "kinetic": 384.42153,
+        "thermal": 192.210765,
+        "explosive": 461.305836,
+        "caustic": 230.652918
+      }
+    },
+    "armour": {
+      "hitPoints": 819.72,
+      "bulkheads": 819.72,
+      "reinforcement": 0,
+      "resistances": {
+        "kinetic": -0.14,
+        "thermal": 0.05,
+        "explosive": -0.33,
+        "caustic": 0
+      },
+      "effectiveHitPoints": {
+        "kinetic": 719.052632,
+        "thermal": 862.863158,
+        "explosive": 616.330827,
+        "caustic": 819.72
+      }
+    },
+    "weaponCount": 0
+  },
+  "anaconda": {
+    "modules": {
+      "PowerPlant": "Int_Powerplant_Size8_Class5",
+      "Armour": "Anaconda_Armour_Reactive",
+      "Slot01_Size7": "Int_ShieldGenerator_Size7_Class5",
+      "TinyHardpoint1": "Hpt_ShieldBooster_Size0_Class5",
+      "TinyHardpoint2": "Hpt_ShieldBooster_Size0_Class5",
+      "Military01": "Int_HullReinforcement_Size5_Class2",
+      "Slot02_Size6": "Int_ModuleReinforcement_Size5_Class2",
+      "HugeHardpoint1": "Hpt_BeamLaser_Fixed_Huge",
+      "LargeHardpoint1": "Hpt_MultiCannon_Gimbal_Large"
+    },
+    "power": {
+      "available": 36,
+      "retracted": 7.3,
+      "deployed": 10.88,
+      "bands": [
+        {
+          "priority": 1,
+          "retracted": 7.3,
+          "deployed": 10.88,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 2,
+          "retracted": 0,
+          "deployed": 0,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 3,
+          "retracted": 0,
+          "deployed": 0,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 4,
+          "retracted": 0,
+          "deployed": 0,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 5,
+          "retracted": 0,
+          "deployed": 0,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        }
+      ]
+    },
+    "shields": {
+      "strength": 833,
+      "generator": 595,
+      "boosters": 238,
+      "boostMultiplier": 1.4,
+      "massCurveMultiplier": 1.7,
+      "resistances": {
+        "kinetic": 0.4,
+        "thermal": -0.2,
+        "explosive": 0.5,
+        "caustic": 0
+      },
+      "resistancesAtFourPips": {
+        "kinetic": 0.76,
+        "thermal": 0.52,
+        "explosive": 0.8,
+        "caustic": 0.6
+      },
+      "effectiveHitPoints": {
+        "kinetic": 1388.333333,
+        "thermal": 694.166667,
+        "explosive": 1666,
+        "caustic": 833
+      }
+    },
+    "armour": {
+      "hitPoints": 2227.5,
+      "bulkheads": 1837.5,
+      "reinforcement": 390,
+      "resistances": {
+        "kinetic": 0.26875,
+        "thermal": -0.365,
+        "explosive": 0.22,
+        "caustic": 0
+      },
+      "effectiveHitPoints": {
+        "kinetic": 3046.153846,
+        "thermal": 1631.868132,
+        "explosive": 2855.769231,
+        "caustic": 2227.5
+      },
+      "moduleArmour": 350,
+      "moduleProtection": 0.6
+    },
+    "weapons": {
+      "damagePerSecond": 60.313334,
+      "sustainedDamagePerSecond": 55.309156,
+      "energyPerSecond": 9.856667,
+      "heatPerSecond": 12.166667,
+      "powerDraw": 3.58,
+      "kineticDamagePerSecond": 18.933334,
+      "thermalDamagePerSecond": 41.38
+    }
+  },
+  "weapons": [
+    {
+      "symbol": "Hpt_PulseLaser_Fixed_Small",
+      "damagePerSecond": 7.884616,
+      "sustainedDamagePerSecond": 7.884616,
+      "sustainedFireFactor": 1,
+      "energyPerSecond": 1.153846,
+      "heatPerSecond": 1.269231,
+      "continuous": false
+    },
+    {
+      "symbol": "Hpt_BeamLaser_Fixed_Small",
+      "damagePerSecond": 9.8,
+      "sustainedDamagePerSecond": 9.8,
+      "sustainedFireFactor": 1,
+      "energyPerSecond": 1.94,
+      "heatPerSecond": 3.5,
+      "continuous": true
+    },
+    {
+      "symbol": "Hpt_MultiCannon_Fixed_Small",
+      "damagePerSecond": 8.615385,
+      "sustainedDamagePerSecond": 6.639004,
+      "sustainedFireFactor": 0.770599,
+      "energyPerSecond": 0.461538,
+      "heatPerSecond": 0.692308,
+      "continuous": false
+    },
+    {
+      "symbol": "Hpt_Railgun_Fixed_Small",
+      "damagePerSecond": 12.704916,
+      "sustainedDamagePerSecond": 12.704916,
+      "sustainedFireFactor": 1,
+      "energyPerSecond": 1.469945,
+      "heatPerSecond": 6.557376,
+      "continuous": false
+    },
+    {
+      "symbol": "Hpt_Slugshot_Fixed_Medium",
+      "damagePerSecond": 180,
+      "sustainedDamagePerSecond": 20,
+      "sustainedFireFactor": 0.111111,
+      "energyPerSecond": 1.85,
+      "heatPerSecond": 3.5,
+      "continuous": false
+    },
+    {
+      "symbol": "Hpt_PulseLaserBurst_Fixed_Small",
+      "damagePerSecond": 8.147368,
+      "sustainedDamagePerSecond": 8.147368,
+      "sustainedFireFactor": 1,
+      "energyPerSecond": 1.184211,
+      "heatPerSecond": 1.8,
+      "continuous": false
+    }
+  ],
+  "functions": {
+    "powerBudget": {
+      "available": 6,
+      "consumers": [
+        {
+          "draw": 4,
+          "priority": 1
+        },
+        {
+          "draw": 1,
+          "priority": 2
+        },
+        {
+          "draw": 3,
+          "priority": 3,
+          "deployedOnly": true
+        },
+        {
+          "draw": 1,
+          "priority": 4
+        }
+      ],
+      "retracted": 6,
+      "deployed": 9,
+      "bands": [
+        {
+          "priority": 1,
+          "retracted": 4,
+          "deployed": 4,
+          "retractedTotal": 4,
+          "deployedTotal": 4,
+          "poweredRetracted": true,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 2,
+          "retracted": 1,
+          "deployed": 1,
+          "retractedTotal": 5,
+          "deployedTotal": 5,
+          "poweredRetracted": true,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 3,
+          "retracted": 0,
+          "deployed": 3,
+          "retractedTotal": 5,
+          "deployedTotal": 8,
+          "poweredRetracted": true,
+          "poweredDeployed": false
+        },
+        {
+          "priority": 4,
+          "retracted": 1,
+          "deployed": 1,
+          "retractedTotal": 6,
+          "deployedTotal": 9,
+          "poweredRetracted": true,
+          "poweredDeployed": false
+        },
+        {
+          "priority": 5,
+          "retracted": 0,
+          "deployed": 0,
+          "retractedTotal": 6,
+          "deployedTotal": 9,
+          "poweredRetracted": true,
+          "poweredDeployed": false
+        }
+      ]
+    },
+    "stackShieldResistance": [
+      {
+        "generator": 0.4,
+        "boosters": [],
+        "expected": 0.4
+      },
+      {
+        "generator": 0,
+        "boosters": [
+          0.1,
+          0.1
+        ],
+        "expected": 0.19
+      },
+      {
+        "generator": 0.4,
+        "boosters": [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        "expected": 0.66712
+      }
+    ],
+    "stackArmourResistance": [
+      {
+        "bulkhead": 0.25,
+        "reinforcements": [
+          0.025
+        ],
+        "expected": 0.26875
+      },
+      {
+        "bulkhead": 0.25,
+        "reinforcements": [
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05
+        ],
+        "expected": 0.374341
+      },
+      {
+        "bulkhead": -0.2,
+        "reinforcements": [
+          0.005
+        ],
+        "expected": -0.194
+      }
+    ],
+    "systemsResistance": [
+      {
+        "pips": 0,
+        "expected": 0
+      },
+      {
+        "pips": 1,
+        "expected": 0.184672
+      },
+      {
+        "pips": 2,
+        "expected": 0.332871
+      },
+      {
+        "pips": 3,
+        "expected": 0.469844
+      },
+      {
+        "pips": 4,
+        "expected": 0.6
+      }
+    ],
+    "damageFalloff": [
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 0,
+        "expected": 1
+      },
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 2000,
+        "expected": 1
+      },
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 3000,
+        "expected": 0.5
+      },
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 4000,
+        "expected": 0
+      },
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 5000,
+        "expected": 0
+      }
+    ],
+    "armourPiercingFactor": [
+      {
+        "armourPiercing": 22,
+        "hardness": 65,
+        "expected": 0.338462
+      },
+      {
+        "armourPiercing": 100,
+        "hardness": 65,
+        "expected": 1
+      }
+    ]
+  }
+}

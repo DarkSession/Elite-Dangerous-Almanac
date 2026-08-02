@@ -52,12 +52,23 @@ subject to its respective terms.
   the community-maintained registry of Frontier's internal ids. FDevIDs states no
   explicit licence; consult the repository terms.
 - **Ship and module stats, slot layouts and blueprints:** hull masses, module masses,
-  power, FSD constants, thruster/shield/distributor performance, ship-restriction
-  flags, per-hull slot layouts and engineering blueprint modifiers come from
-  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (`ships/*.json`,
+  power, FSD constants, thruster/shield/distributor performance, damage resistances,
+  hull and shield reinforcement, module protection, armour hull boost, weapon damage,
+  rate of fire, clip/reload, distributor draw, thermal load, piercing and ranges,
+  ship-restriction flags, per-hull slot layouts and engineering blueprint modifiers come
+  from [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (`ships/*.json`,
   `modules/**`, `modifications/**`, commit `0db9234`). Coriolis-data releases only its
   _code_ under MIT; the JSON stat values are **Elite Dangerous game data, property of
   Frontier Developments plc**, used under Frontier's media-usage terms (see below).
+- **Build-metric algorithms:** the power budget and its priority groups, shield strength
+  and its mass curve, armour hit points, resistance stacking with diminishing returns,
+  and weapon DPS / capacitor draw / heat are ported as fact (our own implementation)
+  from [EDCD/Coriolis](https://github.com/EDCD/coriolis) by the Coriolis contributors —
+  `src/app/shipyard/Calculations.js`, `Ship.js` and `Module.js`, commit `68c042ca`,
+  whose application code is licensed **MIT**. Cross-checked against
+  [EDSY](https://github.com/taleden/EDSY) by taleden (**CC BY-NC 4.0**), whose reading
+  of real journal data settles the percentage stats' units and compounding. Both credit
+  the original Frontier-forum research the formulas come from.
 - **Experimental (special) effect modifiers, material recipes, and journal Modifier
   Labels:** the numeric experimental-effect modifiers and their material costs — which
   coriolis-data does not carry — plus the attribute-to-journal-Label mapping come from

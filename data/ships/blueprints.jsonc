@@ -13648,7 +13648,7 @@
             "max": 0.04
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": 0,
             "max": -0.02
@@ -13689,7 +13689,7 @@
             "max": 0.08
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": -0.02,
             "max": -0.04
@@ -13735,7 +13735,7 @@
             "max": 0.12
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": -0.04,
             "max": -0.06
@@ -13786,7 +13786,7 @@
             "max": 0.16
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": -0.06,
             "max": -0.08
@@ -13837,7 +13837,7 @@
             "max": 0.2
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": -0.08,
             "max": -0.1
@@ -14735,7 +14735,7 @@
             "max": -0.25
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": 0,
             "max": -0.08
@@ -14776,7 +14776,7 @@
             "max": -0.35
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": -0.08,
             "max": -0.17
@@ -14822,7 +14822,7 @@
             "max": -0.45
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": -0.17,
             "max": -0.26
@@ -14873,7 +14873,7 @@
             "max": -0.55
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": -0.26,
             "max": -0.35
@@ -14924,7 +14924,7 @@
             "max": -0.65
           },
           {
-            "label": "RateOfFire",
+            "label": "BurstInterval",
             "method": "multiplicative",
             "min": -0.35,
             "max": -0.44

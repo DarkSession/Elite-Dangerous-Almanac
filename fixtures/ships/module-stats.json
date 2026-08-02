@@ -1,25 +1,37 @@
 {
-  "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc. Cross-language validation.",
+  "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc (engineering/mechanical stats, the defence stats \u2014 resistances, hull boost and reinforcement \u2014 and the weapon stats). Cross-language validation.",
   "counts": {
-    "standard": 268,
-    "internal": 374,
+    "core": 509,
+    "internal": 414,
     "hardpoint": 159,
     "utility": 35,
-    "all": 836
+    "all": 1117
   },
   "priceCounts": {
-    "standard": 509,
+    "core": 509,
     "internal": 475,
     "hardpoint": 159,
     "utility": 35,
     "all": 1178
   },
   "prices": [
-    { "symbol": "Int_Powerplant_Size8_Class1", "cost": 1441233 },
-    { "symbol": "Hpt_PulseLaser_Fixed_Small", "cost": 2200 },
-    { "symbol": "Anaconda_Armour_Grade1", "cost": 0 }
+    {
+      "symbol": "Int_Powerplant_Size8_Class1",
+      "cost": 1441233
+    },
+    {
+      "symbol": "Hpt_PulseLaser_Fixed_Small",
+      "cost": 2200
+    },
+    {
+      "symbol": "Anaconda_Armour_Grade1",
+      "cost": 0
+    }
   ],
-  "unpriced": ["Int_ShieldGenerator_Size1_Class4", "Int_Hyperdrive_Size8_Class1"],
+  "unpriced": [
+    "Int_ShieldGenerator_Size1_Class4",
+    "Int_Hyperdrive_Size8_Class1"
+  ],
   "spot": [
     {
       "symbol": "Int_Hyperdrive_Size5_Class5",
@@ -79,6 +91,96 @@
       "maxMultiplier": 1.6,
       "shieldRegenRate": 1,
       "shieldBrokenRegenRate": 1.6
+    },
+    {
+      "symbol": "Anaconda_Armour_Reactive",
+      "name": "Reactive Surface Composite",
+      "ship": "Anaconda",
+      "mass": 60,
+      "hullBoost": 2.5,
+      "kineticResistance": 0.25,
+      "thermalResistance": -0.4,
+      "explosiveResistance": 0.2,
+      "causticResistance": 0
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size5_Class5",
+      "name": "Shield Generator",
+      "optMultiplier": 1.2,
+      "kineticResistance": 0.4,
+      "thermalResistance": -0.2,
+      "explosiveResistance": 0.5,
+      "distributorDraw": 0.6
+    },
+    {
+      "symbol": "Int_HullReinforcement_Size3_Class2",
+      "name": "Hull Reinforcement Package",
+      "mass": 4,
+      "hullReinforcement": 260,
+      "kineticResistance": 0.015,
+      "thermalResistance": 0.015,
+      "explosiveResistance": 0.015,
+      "causticResistance": 0
+    },
+    {
+      "symbol": "Hpt_ShieldBooster_Size0_Class5",
+      "name": "Shield Booster",
+      "powerDraw": 1.2,
+      "shieldBoost": 0.2,
+      "alwaysPowered": true
+    },
+    {
+      "symbol": "Hpt_MultiCannon_Fixed_Small",
+      "name": "Multi-Cannon",
+      "powerDraw": 0.28,
+      "damage": 1.12,
+      "damageDistribution": {
+        "kinetic": 1
+      },
+      "rateOfFire": 7.692308,
+      "burstInterval": 0.13,
+      "clipSize": 100,
+      "ammoMaximum": 2100,
+      "reloadTime": 4,
+      "distributorDraw": 0.06,
+      "thermalLoad": 0.09,
+      "armourPiercing": 22,
+      "maximumRange": 4000,
+      "falloffRange": 2000,
+      "shotSpeed": 1600
+    },
+    {
+      "symbol": "Hpt_PulseLaserBurst_Fixed_Small",
+      "name": "Burst Laser",
+      "damage": 1.72,
+      "rateOfFire": 4.736842,
+      "burstInterval": 0.5,
+      "burstRounds": 3,
+      "burstRateOfFire": 15
+    },
+    {
+      "symbol": "Hpt_BeamLaser_Fixed_Small",
+      "name": "Beam Laser",
+      "damage": 9.8,
+      "distributorDraw": 1.94,
+      "thermalLoad": 3.5
+    },
+    {
+      "symbol": "Hpt_Railgun_Fixed_Small",
+      "name": "Rail Gun",
+      "damage": 23.25,
+      "damageDistribution": {
+        "kinetic": 0.3333333333333333,
+        "thermal": 0.6666666666666666
+      },
+      "rateOfFire": 0.546448,
+      "chargeTime": 1.2,
+      "clipSize": 1,
+      "reloadTime": 1
     }
+  ],
+  "continuousFire": [
+    "Hpt_BeamLaser_Fixed_Small",
+    "Hpt_MiningLaser_Fixed_Small"
   ]
 }

@@ -6,7 +6,7 @@
  * These are the modules that carry a {@link OutfittingModule.mount}
  * (Fixed / Gimballed / Turreted) and, for launchers, a
  * {@link OutfittingModule.guidance}. The other categories live in
- * `./modules-standard`, `./modules-internal` and `./modules-utility`, so importing
+ * `./modules-core`, `./modules-internal` and `./modules-utility`, so importing
  * this module never bundles them.
  *
  * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,

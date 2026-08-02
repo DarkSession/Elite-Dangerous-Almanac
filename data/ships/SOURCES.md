@@ -16,6 +16,20 @@ dropped. Every value below comes from EDSY or the in-game registry. Added:
 `special_incendiary_rounds`, each of which had lost modifiers its EDSY source carries.
 Ship hulls were checked and needed no change.
 
+**Revision 2026-08-01 (UTC) — defence, power and weapon stats, and the bulkhead move.**
+The four module catalogues gained the stats the build calculations need: the four damage
+resistances, hull and shield reinforcement, module protection, the `alwaysPowered` flag,
+and the weapon stats (damage and its type split, rate of fire, clip and reload,
+distributor draw, thermal load, piercing, ranges, shot speed, jitter). Source:
+[EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) at the same commit
+`0db9234b5b9ce8c939ea84133d7ce336eea88e27` already used for the other stats, joined by
+`scripts/data/ships/add-coriolis-stats.mjs` (see "Modules" below for the derivation and
+the three values filled by hand). In the same pass each hull's **`bulkheads` list moved
+out of `ships.jsonc` and onto its `<Hull>_Armour_*` records** in
+`modules-core.jsonc`: armour is a module like any other, so its mass, hull boost and
+resistances now live with every other module's stats instead of being duplicated on the
+hull.
+
 Attribution for the ship and outfitting data files in this directory. This file
 is the long form; each data file also repeats its own credit in a comment header,
 so the provenance meets you where you meet the data.
@@ -61,9 +75,10 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   support, power distributor, sensors, fuel tank); `slots.hardpoints` splits into
   `hardpoints` (the non-zero weapon-mount sizes) and `utility` (the count of zero
   entries); `slots.internal` becomes `optional`, each entry a `{ size }` with an
-  optional `restriction` ("military" or "planetaryApproachSuite"). `bulkheads` keeps
-  each armour option's name and added mass (t) for armour-mass computation (the
-  default Lightweight Alloy is zero-mass). **Slot keys** are journal-compatible
+  optional `restriction` ("military" or "planetaryApproachSuite"). Coriolis's per-hull
+  `bulkheads` are **not** kept on the hull: they are joined onto that hull's armour
+  modules instead (see "Modules"), because armour is a module and the catalogue keeps a
+  module's stats with the module. **Slot keys** are journal-compatible
   (`FrameShiftDrive`, `HugeHardpoint1`, `TinyHardpoint2`, `Slot01_Size6`, `Military01`,
   `PlanetaryApproachSuite`), so a build assembled from an empty hull and one loaded
   from a SLEF export share one vocabulary. See `typescript/src/ships/slots.ts`.
@@ -72,7 +87,8 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   from EDSY's ship data and Frontier's Lynx update notes (hull mass 260 t, 285/350 m/s,
   200/350 base shield/armour, hardness 55, 2 crew, rotation 26/60/19 deg/s, min thrust
   73.75%; core PP5/thr6/FSD5/LS6/dist5/sen3/tank5; hardpoints 1 large + 4 medium;
-  4 utilities; optionals 6/6/6/5/5/4/4/3/2/1; five bulkheads at 0/26/53/53/53 t). Values
+  4 utilities; optionals 6/6/6/5/5/4/4/3/2/1; its five armour options at 0/26/53/53/53 t,
+  carried on the `MediumTransport01_Armour_*` module records). Values
   the static catalogue does not expose are omitted rather than invented: `masslock`,
   `heatCapacity`, `pipSpeed`, acceleration, and the min-pitch / boost-energy figures.
   The two size-6 and one size-5 passenger-reserved optionals are stored as plain
@@ -83,7 +99,7 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
 Each module is **one record** carrying its identity and its stats — identity from
 FDevIDs, stats from coriolis-data, joined on `symbol`.
 
-- **Files:** `modules-standard.jsonc`, `modules-internal.jsonc`,
+- **Files:** `modules-core.jsonc`, `modules-internal.jsonc`,
   `modules-hardpoint.jsonc`, `modules-utility.jsonc`, and `fixtures/ships/modules.json`,
   `module-stats.json` (the stats half keeps its own parity fixture). Split along
   FDevIDs' four outfitting categories so an app that only wants weapons never bundles
@@ -112,7 +128,49 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   `scripts/data/ships/merge-normalized-catalogues.mjs` performs the final checked
   symbol join. The stat fields are sparse (only the ones a module's group uses) and
   appended after the identity fields on the same record. Masses are tonnes, power
-  megawatts, ranges light-years.
+  megawatts, jump ranges light-years, weapon ranges metres.
+- **Defence, power and weapon stats (2026-08-01 revision):** the same coriolis-data
+  commit supplies the resistances (`kinres`/`thermres`/`explres`/`causres` →
+  `kineticResistance`/`thermalResistance`/`explosiveResistance`/`causticResistance`),
+  `hullreinforcement`→`hullReinforcement`, `shieldaddition`→`shieldAddition`,
+  `protection`→`moduleProtection`, `passive`→`alwaysPowered`, and the weapon block
+  (`damage`, `damagedist`→`damageDistribution` with the single-letter keys spelled out,
+  `roundspershot`→`roundsPerShot`, `fireint`→`burstInterval`, `burst`→`burstRounds`,
+  `burstrof`→`burstRateOfFire`, `charge`→`chargeTime`, `clip`→`clipSize`,
+  `ammo`→`ammoMaximum`, `reload`→`reloadTime`, `distdraw`→`distributorDraw`,
+  `thermload`→`thermalLoad`, `piercing`→`armourPiercing`, `range`→`maximumRange`,
+  `falloff`→`falloffRange`, `shotspeed`→`shotSpeed`, `jitter`). Joined by
+  `scripts/data/ships/add-coriolis-stats.mjs`, which is additive and idempotent: it
+  never overwrites a field the catalogue already has.
+  - **`rateOfFire` is derived, not copied.** Upstream stores the fire interval; the
+    journal (and this catalogue) report the combined shots per second, so the script
+    computes `burst / ((burst − 1) / burstRateOfFire + fireInterval + chargeTime)` —
+    the same derivation Coriolis (`Module.getRoF`) and EDSY (`rof = fpc / spc`) use.
+    Continuous-fire weapons (beam and mining lasers) have no fire interval upstream and
+    so carry no `rateOfFire`; their `damage`, `distributorDraw` and `thermalLoad` are
+    already per second.
+  - **`maximumRange`/`falloffRange` are limited to the hardpoint and utility
+    categories.** Upstream's `range` is metres for anything hardpoint-mounted but
+    kilometres for sensors and its own units for limpet controllers, so the range
+    fields are only carried where the unit is unambiguous.
+  - **Two upstream zeroes are dropped rather than copied:** `roundspershot: 0` on two
+    Shock Cannon variants (Coriolis itself reads the field as `roundspershot || 1`; a
+    zero would zero their DPS) and `burstrof: 0` on the Mining Volley Repeater, whose
+    burst is a single shot.
+  - **Filled by hand, from a documented uniformity:** `Int_ShieldGenerator_Size1_Class4`
+    (added from EDSY in the earlier pass, so it has no coriolis record) takes the
+    resistances and distributor draw every one of the 55 shield generators coriolis does
+    carry shares — kinetic 0.4, thermal −0.2, explosive 0.5, draw 0.6. The cargo hatch
+    (`ModularCargoBayDoor`) takes the 0.6 MW draw Coriolis hard-codes for it
+    (`ModuleUtils.cargoHatch`), since it is fitted to every hull and cannot be removed.
+- **Armour (bulkhead) stats:** coriolis keeps a hull's five (Caspian Explorer: six)
+  armour options on the *hull* record; this catalogue keeps them on the matching
+  `<Hull>_Armour_*` module records, joined by hull and by the symbol's grade suffix
+  (`_Grade1`, `_Grade1_Default`, `_Grade2`, `_Grade3`, `_Mirrored`, `_Reactive`). Each
+  gains its added `mass` (t), `hullBoost` (the fraction of the hull's base armour it
+  adds on top) and the four resistances. The Lynx Highliner has no coriolis hull entry,
+  so its options take the per-grade hull boost and resistances that all 47 hulls coriolis
+  does carry share, with the masses already sourced from EDSY.
 - **Stats kept deliberately (do not "fix" back):**
   - **`restrictedToShips`** carries the hull symbol(s) a non-armour module is limited
     to (coriolis's `ship` field: the MkII Gravity Optimised thrusters → `Explorer_NX`,
@@ -120,11 +178,16 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     controller and Mining Volley Repeater → `LakonMiner`). **Armour's** hull
     restriction is _not_ repeated here — it lives in the `ship` field
     (`OutfittingModule.ship` / `getModulesForShip`).
-  - **Only mechanical/engineering stats are carried; weapon combat stats** (damage,
-    falloff, breach, thermal load, …) are intentionally left out — a separate domain
-    no current calculation needs.
-  - **Coverage is a subset of the registry:** ship-specific armour has no generic
-    module stats (0 armour rows carry stats), so those records are identity-only.
+  - **Weapon combat stats are now carried too.** The original merge took only the
+    mechanical/engineering stats; the enrichment pass described under "Build metrics"
+    below added the combat side, so all 159 hardpoint records carry `damage` and
+    `thermalLoad`, 133 a `falloffRange` and 142 a `burstInterval`. Module-breach stats
+    (`breachdmg`, `breachmin`, `breachmax`) remain the one deliberate omission — no
+    calculation here reads them.
+  - **Ship-specific armour now carries its bulkhead stats.** These records were once
+    identity-only; the same enrichment pass moved each hull's per-bulkhead block off
+    `ships.jsonc` and onto the 241 `*_Armour_*` module records, which now carry `mass`,
+    `hullBoost` and the four resistances.
   - **Pre-engineered/duplicate drives share a `symbol`** in coriolis (e.g. the V1
     FSDs); the first (primary) occurrence wins, and any baked engineering is expected
     to arrive as SLEF `Engineering.Modifiers` instead.
@@ -211,6 +274,61 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
 
 ## Engineering (blueprints and experimental effects)
 
+**Rate-of-fire features carry the label of the stat they change.** Frontier's own
+`Weapon_RapidFire` and `Weapon_HighCapacity` recipes modify the **fire interval** —
+coriolis-data stores the feature as `rof` but flags it `higherbetter: false`, and its own
+calculator inverts it (`Module.js`: `if (name == 'rof') modValue = 1/(1+modValue) - 1`),
+while EDSY stores the same recipes outright as burst-interval modifiers
+(`bstint:[-8,-17,-26,-35,-44]`). Those ten features are therefore stored here under
+**`BurstInterval`**, the stat they actually move; a weapon's combined `rateOfFire`
+follows from the interval and its burst pattern. The Inara-sourced `recipe_*` totals are
+left as published: they are *displayed* rate-of-fire changes, so they keep the
+`RateOfFire` label and apply to the rate directly — which is the only reading that
+reproduces the published figure on a charged weapon such as the rail gun.
+
+**Corrected 2026-08-01:** the four `special_hullreinforcement_*` experimental effects
+stored their `DefenceModifierHealthAddition` contribution as *additive*, which read as a
+flat 0.05 hull points rather than the percentage both sources give (coriolis's
+`modifierActions` treats `hullreinforcement` as a multiplicative percentage; EDSY stores
+`ihrpx_ap: { hullrnf: -5 }`). They are now `multiplicative`. The label was inert until
+this revision gave hull reinforcement packages a `hullReinforcement` base to apply to.
+
+**Completed 2026-08-01: six experimental-effect legs that recorded only the cost.** Four
+effects carried their drawback and not the benefit they are named for, so each looked
+complete while doing nothing a build would notice. Both references agree on every value,
+and each addition is now pinned by a test:
+
+| Effect                                                   | Was                                   | Added                                       |
+| -------------------------------------------------------- | ------------------------------------- | ------------------------------------------- |
+| `special_weapon_damage` (Oversized)                      | `PowerDraw +5%`                       | `Damage +3%`                                |
+| `special_weapon_rateoffire` (Multi-Servos)               | `PowerDraw +5%`                       | `BurstInterval −2.9126%`                    |
+| `special_powerdistributor_capacity` (Cluster Capacitors) | three capacity legs, one recharge leg | `WeaponsRecharge` and `SystemsRecharge` −2% |
+| `special_powerdistributor_fast` (Super Conduits)         | three capacity legs, one recharge leg | `WeaponsRecharge` and `SystemsRecharge` +4% |
+
+Multi-Servos is stored under `BurstInterval` for the reason given above — EDSY writes it
+as `bstint: -2.9126…`, coriolis as `rof: -0.029126…` under its inverted convention, and
+both come to the same +3% rate of fire.
+
+**Deliberately not added: two single-sourced canister magnitudes.** coriolis gives
+`special_radiant_canister` an `ammo: -0.25` and `special_shiftlock_canister` a
+`damage: -0.2`; EDSY records no magnitude for either, its `special:` text describing only
+the gameplay flag ("Area heat increased and sensors disrupted", "Area FSDs reboot"). The
+in-game descriptions coriolis carries do say a cost exists ("at the cost of ammo
+capacity" / "at the cost of reduced damage"), so the *direction* is not in doubt — but a
+magnitude a single source asserts is worse than this file's standing convention for a
+qualitative effect: an empty `modifiers` list and a `description`. Both keep that, and a
+test holds them to it.
+
+**Not added: `special_plasma_slug_pa`.** coriolis splits Plasma Slug into a legacy id
+(`special_plasma_slug`, named "Plasma slug (Legacy)", damage −20%) and a current
+plasma-accelerator id (`special_plasma_slug_pa`, damage −10%). EDSY carries no `_pa` id
+at all, and where it has to disambiguate — `edsy.js` `Build.fromCAPI`, importing a
+Frontier API loadout — it does so by module type, mapping a rail gun's
+`special_plasma_slug` to `special_plasma_slug_cooled`. `Build.fromJournal` looks the id
+up straight through with no disambiguation at all. Both paths are evidence that
+`special_plasma_slug` is the id the game writes. This repo follows EDSY: one
+`special_plasma_slug` at damage −10% / ammo −100%, plus the `_cooled` rail-gun variant.
+
 - **Files:** `blueprints.jsonc` (per-blueprint, per-grade stat modifiers **and**
   material requirements) and `experimental-effects.jsonc` (per special-effect stat
   modifiers **and** material cost), validated by `fixtures/ships/engineering.json`.
@@ -260,8 +378,8 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   and the module key to the wider family list. The two are intentional duplicates, not a
   copy-paste slip — do not dedupe them.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
-  `expeffect` — **coriolis-data carries neither the numeric experimental modifiers nor
-  their recipes**, so both come from EDSY, whose code is (c) taleden under a
+  `expeffect` is the primary source — one table holding each effect's modifiers and its
+  recipe together, keyed the way this file is. EDSY is (c) taleden under a
   **CC BY-NC 4.0** License (<http://creativecommons.org/licenses/by-nc/4.0/>). The
   underlying game logic is Elite Dangerous data, the property of Frontier Developments
   plc, under Frontier's media-usage terms. Each effect is `{ modifiers, materials }`:
@@ -269,6 +387,23 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   from EDSY's material short-codes to Frontier material `symbol`s against the `materials`
   domain, emitting `{ symbol, name, count }` per requirement. An experimental effect is a
   single application (one roll), so its `materials` is the whole cost.
+  - **Cross-checked against coriolis-data** (commit
+    `0db9234b5b9ce8c939ea84133d7ce336eea88e27`, acquired 2026-08-01 UTC), which holds the
+    same facts split across `modifications/modifierActions.json` (modifiers) and
+    `modifications/specials.json` (recipes). All 87 effects here appear in
+    `specials.json`; **85** have a `modifierActions.json` entry to diff against — the two
+    that do not, `special_blinding_shell` and `special_smart_rounds`, are qualitative
+    records this file stores with no modifiers either. The two sources agree everywhere
+    once each one's conventions are accounted for: coriolis stores the four resistances
+    as `modmod` percentage points where this file stores fractions (hull and shield boost
+    it stores as fractions, exactly as here — it is *EDSY* that uses points for those),
+    names a thruster's or drive's heat `thermload` where the journal Label is
+    `EngineHeatRate` / `FSDHeatRate`, and inverts rate of fire as described above.
+  - **What the two sources genuinely disagree on**, beyond the two coriolis-only legs
+    noted above: EDSY gives `special_plasma_slug` and `special_plasma_slug_cooled` an
+    `ammomax: -100` leg (stored here as `AmmoMaximum −1`, the "reloads from ship fuel"
+    mechanic) that coriolis's `modifierActions` does not carry at all; and coriolis
+    splits Plasma Slug by weapon family where EDSY does not, discussed next.
 - **Weapon-combat experimental effects — re-added for completeness:** the 29 effects
   once dropped (Auto Loader, Corrosive Shell, Force Shell, FSD Interrupt, Plasma Slug, …)
   are now present. A purely-qualitative one — a gameplay flag with no numeric magnitude
@@ -453,23 +588,102 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     have been kept as decoded, and none needed it. This is what makes the 5A "FSD V1"
     resolve to a whole 1785 optimal mass (from `+0.7`) instead of 1785.0126 (from
     `0.699988`). A test caps the decimal places so the step cannot silently regress.
-  - **One modifier is deliberately dropped:** burst interval, carried by 13 variants.
-    Frontier's journal has no Modifier Label for it; it drives rate of fire, and deriving
-    a `RateOfFire` value from it needs weapon base stats the module catalogues do not
-    hold. Omitted rather than approximated.
-  - **What resolves, and what cannot.** The module catalogues carry core and
-    optional-internal stats, not weapon stats, so `Damage`, `MaximumRange`,
-    `AmmoClipSize` and the rest have no base value to apply to.
-    `getPreEngineeredStats` resolves what it can and `unresolvedModifiers` reports the
-    remainder rather than dropping it silently. A pre-engineered rail gun still resolves
-    its mass, integrity and power draw, which is what a power-and-mass budget needs; five
-    variants modify **only** weapon or scanner stats and so resolve to no change at all,
-    a set pinned in the fixture. Cross-checked against a known value: the 5A "FSD V1"
+  - **…except where the game authored a _stat_, not a multiplier.** Recovering the
+    multiplier is the right move only when a multiplier is what was written down. The
+    tech-broker "Modified Guardian Shard Cannon" is 3000 m range with falloff from
+    1500 m — round numbers — but no short multiplier on a 1700 m base reproduces them, so
+    the best recovery still read 2999.99 m and 1499.995 m. These are found with the same
+    round-trip discipline applied one level up: round the **resulting stat**, derive the
+    multiplier it implies, and re-encode. Where that lands on the stored bits (within the
+    encoder's own one-unit rounding), the source cannot tell the two apart and the round
+    stat is what was authored, so it is stored as an **`overwrite` of the stat** — exact,
+    and the shape a journal reports a pre-engineered modifier in anyway. **14 modifiers**
+    across 7 modules were corrected this way; the file now holds 20 `overwrite` modifiers
+    over 11 modules, each pinned by a test to resolve to exactly its stored value.
+    Worth stating plainly, because the blueprint name invites the opposite reading: the
+    Shard's `MaximumRange` ×1.7647 with `FalloffRange` ×0.88235 is **not** a Long Range
+    roll of any grade. It is a bespoke stat block, as every reward variant's is.
+    - **The guard that matters:** an `overwrite` is absolute, so it is only applied where
+      _this repo's_ base agrees with the one the stat was inverted against. One candidate
+      failed that check and was left as a multiplier — the medium Guardian Gauss Cannon's
+      damage, where EDSY's stock figure is 70 and coriolis's (and therefore this
+      catalogue's) is 38.5. Converting it would have silently imported EDSY's stock value
+      under cover of a rounding fix. The two sources differ on the gauss cannons' stock
+      damage by a constant factor (40 vs 22 small, 70 vs 38.5 medium); which is right is
+      an open question about the *module* catalogue, recorded here and not settled.
+  - **Burst interval, dropped from 13 variants, is now restored.** EDSY carries no
+    journal Label for `bstint` — the journal reports the resulting `RateOfFire`, never the
+    interval it comes from — so the decoder skipped it, and the 13 variants that change a
+    burst pattern kept the *stock* cadence. Four of them (the two frag cannons and the two
+    Guardian gauss cannons) were left inconsistent as well as slow, carrying the engineered
+    `BurstSize` — and, on the gauss cannons, the engineered `BurstRateOfFire` — against a
+    stock interval. They are now stored under **`BurstInterval`**, the
+    same label the Rapid Fire and High Capacity blueprint features use (see the
+    Engineering section above), which is the only addition to the file: re-running the
+    decoder over the same EDSY revision reproduces every other byte. Nothing downstream
+    would have noticed the omission on its own — a stock cadence is a plausible number —
+    so `fixtures/ships/pre-engineered.json` now pins all 13 intervals and the rate each
+    derives, under `burstIntervalVariants`.
+  - **Where the two references disagree about a pre-engineered weapon, this file follows
+    EDSY.** coriolis models 29 pre-engineered modules as separate module records with
+    their own observed stats rather than as modifiers, so the two can be compared. On the
+    medium rail gun and the medium multi-cannon they agree within about 10% (0.3225 s
+    against 0.36 s, 0.100 s against 0.1115 s). On the Guardian gauss cannons they do not:
+    EDSY gives a four-round burst at 10 /s on a 0.5126 s interval with a quarter of the
+    stock damage, thermal load and distributor draw, and coriolis a single shot on a
+    1.15 s interval at reduced damage (9.6 on the small, 18.3 on the medium) with
+    **stock** thermal load and distributor draw. Since
+    the pre-engineered gauss cannon's defining property is that it runs cool, coriolis's
+    record looks like the incomplete one; EDSY's also conserves the stock weapon's damage
+    per cycle, which coriolis's does not. This is a divergence between the two sources,
+    not one introduced by restoring the interval — they already disagreed on that
+    variant's damage, clip size and ammunition.
+  - **What resolves, and what cannot.** The module catalogues now carry the weapon stats
+    too, so `Damage`, `MaximumRange`, `AmmoClipSize` and the rest resolve like everything
+    else. `getPreEngineeredStats` resolves what it can and `unresolvedModifiers` reports
+    the remainder rather than dropping it silently; only the Detailed Surface Scanner's
+    variant, which changes scanner stats alone, resolves to no change at all — a set
+    pinned in the fixture. Cross-checked against a known value: the 5A "FSD V1"
     resolves to 1785 optimal mass from the stock drive's 1050.
 - **Not included:** engineered modules that are one-off mission or salvage rewards rather
   than a repeatable outfitting row. Those arrive in a build as their base symbol plus an
   `Engineering.Modifiers` block, which `ShipLoadout` already applies directly; there is no
   stable catalogue row to point at.
+
+## Build-metric algorithms (power, shields, armour, weapons)
+
+- **Files:** `typescript/src/ships/power.ts`, `shields.ts`, `armour.ts`,
+  `resistances.ts`, `weapons.ts` and the `ShipLoadout` methods that feed them, validated
+  by `fixtures/ships/build-metrics.json`.
+- **Source of the formulas:** [EDCD/Coriolis](https://github.com/EDCD/coriolis)
+  (**commit `68c042ca6e3db62372cbbb2077cf972345511712`**, acquired 2026-08-01 UTC) —
+  `src/app/shipyard/Calculations.js` (`shieldStrength`, `shieldMetrics`,
+  `armourMetrics`, `diminishingReturnsShields`, `diminishingReturnsArmour`,
+  `mapIntoDiminishingRange`, `sysResistance`), `Ship.js` (`updatePowerUsed`,
+  `powerUsageType`, `getSlotStatus`) and `Module.js` (`getDps`, `getSustainedFactor`,
+  `getEps`, `getHps`). Coriolis's application code is MIT-licensed; the **mathematical
+  formulas are ported as fact** (our own implementation, not copied code), attributed to
+  the Coriolis contributors and to the Frontier forum research the code itself cites.
+- **Cross-checked against [EDSY](https://github.com/taleden/EDSY)** (taleden, CC BY-NC
+  4.0), `edsy.js`: `getMassCurveMultiplier`, `getEffectiveDamageResistance`,
+  `getEffectiveShieldBoostMultiplier`, `getPipDamageResistance` and the `fpc`/`spc`/`rof`
+  derivations. Coriolis's and EDSY's resistance models are algebraically identical
+  (both are the community "half credit past 30%" rule); where the two differ, EDSY's
+  reading of real journal data was taken:
+  - a shield generator will not engage at all around a hull heavier than its maximum
+    mass (EDSY `edsy.js` line ~2828), so the mass curve reports `0` past it;
+  - a shield generator's minimum and maximum mass follow its **optimal** mass under
+    engineering, and its minimum and maximum strength follow its optimal strength
+    (EDSY `getRelatedAttrModifier`), because blueprint recipes only name the optimum.
+- **Journal units and the `modmod` stats:** a journal reports hull boost, shield boost
+  and the four resistances as *percentages of a multiplier*, and they compound on that
+  multiplier rather than on the stat: a `+80%` bulkhead engineered by a `+32%` blueprint
+  reads `137.6%` (`1.8 × 1.32 − 1`), and a `−20%` kinetic resistance with `+5%` reads
+  `−14%` (`1.2 × 0.95` in damage-multiplier space). This is Frontier's `modmod`
+  convention as EDSY documents it (`eddb.js` attribute table, `modmod: 100` / `-100`);
+  it is verified against the shared `slef-the-deep-black.json` fixture, whose engineered
+  armour carries exactly those values. `typescript/src/ships/module-stat-labels.ts`
+  holds the per-label unit and algebra table.
 
 ## Jump-range and fuel algorithm
 

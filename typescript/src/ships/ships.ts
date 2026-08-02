@@ -16,7 +16,7 @@
 
 import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
-import type { CoreSlots, OptionalSlotSpec, BulkheadOption, ShipSlots } from './slots.js';
+import type { CoreSlots, OptionalSlotSpec, ShipSlots } from './slots.js';
 
 /**
  * One ship hull — its **identity, stats and slot layout** in one record.
@@ -105,8 +105,6 @@ export interface Ship {
     readonly utility?: number;
     /** Optional-internal mounts, largest first. */
     readonly optional?: readonly OptionalSlotSpec[];
-    /** The armour options and their added mass. */
-    readonly bulkheads?: readonly BulkheadOption[];
 }
 
 /**
@@ -175,14 +173,7 @@ export function getShipByName(name: string): Ship | null {
  */
 export function getShipSlots(symbol: string): ShipSlots | null {
     const ship = getShipBySymbol(symbol);
-    if (
-        !ship ||
-        !ship.core ||
-        !ship.hardpoints ||
-        ship.utility === undefined ||
-        !ship.optional ||
-        !ship.bulkheads
-    ) {
+    if (!ship || !ship.core || !ship.hardpoints || ship.utility === undefined || !ship.optional) {
         return null;
     }
     return {
@@ -191,6 +182,5 @@ export function getShipSlots(symbol: string): ShipSlots | null {
         hardpoints: ship.hardpoints,
         utility: ship.utility,
         optional: ship.optional,
-        bulkheads: ship.bulkheads,
     };
 }

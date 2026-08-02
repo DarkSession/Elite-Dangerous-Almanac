@@ -107,13 +107,12 @@ test('getShipSlots resolves case-insensitively and returns null for the unknown'
     assert.equal(getShipSlots('MediumTransport01')?.core.frameShiftDrive, 5);
 });
 
-test('every hull with a layout declares seven core sizes and its bulkheads', () => {
+test('every hull with a layout declares seven core sizes and some optional slots', () => {
     for (const ship of SHIPS) {
         const layout = getShipSlots(ship.symbol);
         if (!layout) continue;
         assert.equal(Object.keys(layout.core).length, 7, `${ship.symbol} core`);
-        assert.ok(layout.bulkheads.length >= 5, `${ship.symbol} bulkheads`);
-        assert.equal(layout.bulkheads[0]?.mass, 0, `${ship.symbol} default alloy is zero-mass`);
+        assert.ok(layout.optional.length > 0, `${ship.symbol} optional slots`);
     }
 });
 

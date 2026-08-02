@@ -9,6 +9,7 @@ import {
     availableExperimentalsFor,
     statFor,
 } from './loadout-engineering.js';
+import { effectiveModule } from './loadout-metrics.js';
 import type { OutfittingModule } from './modules.js';
 import type { ApplyBlueprintOptions, AvailableBlueprint, ShipLoadout } from './ship-loadout.js';
 import type { LoadoutModule, ModuleEngineering } from './slef.js';
@@ -140,6 +141,23 @@ export class FittedModule {
     /** The module's complete base catalogue record, or `null` if unknown. */
     get stats(): OutfittingModule | null {
         return statFor(this.#raw().Item);
+    }
+
+    /**
+     * The same record with this build's engineering folded in — the module as it
+     * actually performs, rather than as it left the shipyard.
+     *
+     * @returns The post-engineering record, or `null` if the module is not in the
+     * catalogues. Identical to {@link stats} on a stock module.
+     * @example
+     * ```ts
+     * const laser = build.getFittedModule('LargeHardpoint1')!;
+     * laser.stats?.damage;          // -> as sold
+     * laser.effectiveStats?.damage; // -> with the Overcharged blueprint applied
+     * ```
+     */
+    get effectiveStats(): OutfittingModule | null {
+        return effectiveModule(this.#raw());
     }
 
     /**

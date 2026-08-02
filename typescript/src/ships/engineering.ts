@@ -9,8 +9,21 @@
  * base value:
  *
  * - `multiplicative` — `final = base · Π(1 + v)` (percentage modifiers compound)
- * - `additive` — `final = base + Σ v` (resistances, flat reinforcement)
+ * - `additive` — `final = base + Σ v` (flat reinforcement)
  * - `overwrite` — `final = v` (the value replaces the base)
+ *
+ * A handful of stats are **percentages of a multiplier** and compound on that
+ * multiplier instead, whichever method the recipe names: hull boost and shield boost on
+ * `1 + v`, and the four resistances on their damage multiplier `1 − v`. That is why a
+ * `+80%` bulkhead engineered by a `+32%` blueprint reads `137.6%` and not `105.6%`, and
+ * why a `−20%` kinetic resistance with `+5%` becomes `−14%`.
+ *
+ * @remarks
+ * Every feature names the stat it actually changes. Frontier's own Rapid Fire and High
+ * Capacity recipes shorten the **fire interval** (`BurstInterval`) rather than raising
+ * the rate of fire, so that is the label they carry; a weapon's combined `rateOfFire`
+ * follows from the interval and the burst pattern via `combinedRateOfFire` in
+ * `./weapons`. `ShipLoadout` and `getPreEngineeredStats` recompute it for you.
  *
  * The catalogues live in `./blueprints` and `./experimental-effects`; this module
  * holds no data. It is what {@link ShipLoadout.applyBlueprint} uses under the hood.
@@ -34,13 +47,22 @@
  */
 
 import type { EngineeringModifier } from './slef.js';
+import { multiplierBaseForLabel } from './module-stat-labels.js';
 
 /** How a modifier value is applied to a base stat. */
 export type ModifierMethod = 'multiplicative' | 'additive' | 'overwrite';
 
 /** One stat a blueprint grade modifies, bounded by the quality roll. */
 export interface BlueprintFeature {
-    /** The journal Modifier Label, e.g. `"FSDOptimalMass"`, `"Mass"`. */
+    /**
+     * The Modifier Label the stat is known by, e.g. `"FSDOptimalMass"`, `"Mass"`.
+     *
+     * @remarks
+     * These are the journal's own labels, with one deliberate exception: the recipes
+     * that shorten a weapon's fire interval carry `"BurstInterval"`, the stat they
+     * change, where a journal reports the resulting `"RateOfFire"` instead. See
+     * `data/ships/SOURCES.md`.
+     */
     readonly label: string;
     /** How the value applies. */
     readonly method: ModifierMethod;
@@ -176,14 +198,68 @@ export function computeModifiers(
     const modifiers: EngineeringModifier[] = [];
     for (const [label, contributions] of byLabel) {
         const original = base[label];
-        if (original === undefined) continue; // cannot modify a stat we do not carry
-        // Fold in a stable order — compound the multiplicative factors, then add the
-        // additive terms, then let an overwrite (if any) win last.
-        let value = original;
-        for (const c of contributions) if (c.method === 'multiplicative') value *= 1 + c.value;
-        for (const c of contributions) if (c.method === 'additive') value += c.value;
-        for (const c of contributions) if (c.method === 'overwrite') value = c.value;
-        modifiers.push({ Label: label, Value: round6(value), OriginalValue: original });
+        const overwrite = contributions.find((c) => c.method === 'overwrite');
+        // A stat the module does not carry cannot be *scaled*, but it can still be set or
+        // added to: an overwrite replaces it outright (Double Shot gives a burst size to
+        // a weapon that fires one round at a time) and an addition starts from zero
+        // (Rapid Fire adds jitter to a weapon that had none) — the same fallbacks
+        // Coriolis uses. A purely multiplicative recipe has nothing to work on.
+        const baseless =
+            original === undefined &&
+            (overwrite !== undefined || contributions.some((c) => c.method === 'additive'));
+        if (original === undefined && !baseless) continue;
+        const multiplierBase = multiplierBaseForLabel(label);
+        let value = original ?? 0;
+        if (multiplierBase === null) {
+            // Fold in a stable order — compound the multiplicative factors, then add
+            // the additive terms, then let an overwrite (if any) win last.
+            for (const c of contributions) if (c.method === 'multiplicative') value *= 1 + c.value;
+            for (const c of contributions) if (c.method === 'additive') value += c.value;
+        } else {
+            // A percentage-of-a-multiplier stat compounds on its multiplier, whatever
+            // method the recipe declares: hull boost and shield boost on `1 + v`,
+            // a resistance on its damage multiplier `1 - v`.
+            let factor = 1 + value / multiplierBase;
+            for (const c of contributions) {
+                if (c.method === 'overwrite') continue;
+                factor *= 1 + (c.value * 100) / multiplierBase;
+            }
+            value = (factor - 1) * multiplierBase;
+        }
+        if (overwrite) value = overwrite.value;
+        modifiers.push({
+            Label: label,
+            Value: round6(value),
+            // A stat the module never carried has no original value to report.
+            ...(original === undefined ? {} : { OriginalValue: original }),
+        });
+    }
+    return resolveFalloffFromRange(modifiers, base);
+}
+
+/**
+ * Long Range's "damage falls off from maximum range" is stored upstream as an overwrite
+ * in `[0, 1]` — a flag, not a distance — so a literal reading would put the falloff a
+ * metre from the muzzle. Resolve it to the weapon's (modified) maximum range, and hold
+ * every falloff to that ceiling.
+ *
+ * @remarks
+ * Reference: Coriolis `Module.getFalloff` — `if (mods['fallofffromrange']) return
+ * getRange()`, and otherwise `falloff > range ? range : falloff`.
+ */
+function resolveFalloffFromRange(
+    modifiers: EngineeringModifier[],
+    base: Readonly<Record<string, number>>,
+): EngineeringModifier[] {
+    const falloff = modifiers.find((m) => m.Label === 'FalloffRange');
+    if (!falloff || falloff.Value === undefined) return modifiers;
+    const range =
+        modifiers.find((m) => m.Label === 'Range' || m.Label === 'MaximumRange')?.Value ??
+        base['Range'] ??
+        base['MaximumRange'];
+    if (range === undefined) return modifiers;
+    if (falloff.Value <= 1 || falloff.Value > range) {
+        return modifiers.map((m) => (m === falloff ? { ...m, Value: round6(range) } : m));
     }
     return modifiers;
 }

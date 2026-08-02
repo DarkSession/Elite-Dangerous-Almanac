@@ -11,11 +11,11 @@
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
- * | `./modules-standard` | `STANDARD_MODULES` | 521 |
- * | `./modules-internal` | `INTERNAL_MODULES` | 482 |
+ * | `./modules-core` | `CORE_MODULES` | 521 |
+ * | `./modules-internal` | `INTERNAL_MODULES` | 483 |
  * | `./modules-hardpoint` | `HARDPOINT_MODULES` | 159 |
  * | `./modules-utility` | `UTILITY_MODULES` | 35 |
- * | `./modules-all` | `ALL_MODULES` | 1197 |
+ * | `./modules-all` | `ALL_MODULES` | 1198 |
  *
  * Importing a query function from here costs nothing but the function: pass in
  * whichever catalogue you imported.
@@ -35,16 +35,18 @@
 /**
  * Frontier's outfitting category — which kind of slot a module fits.
  *
- * - `standard` — core internals every hull must fit (armour, power plant,
- *   thrusters, frame shift drive, life support, power distributor, sensors, fuel
- *   tank).
+ * - `core` — the core internals every hull must fit (armour, power plant, thrusters,
+ *   frame shift drive, life support, power distributor, sensors, fuel tank). Frontier's
+ *   own registry calls this category "standard"; it is named for the slots it fills,
+ *   which are the same seven {@link CoreSlotType}s plus armour. A fuel tank is a `core`
+ *   module that also fits an optional slot.
  * - `internal` — optional internals (cargo racks, shield generators, fuel scoops,
  *   passenger cabins, limpet and planetary controllers, …).
  * - `hardpoint` — the weapons and tools mounted on a hardpoint.
  * - `utility` — the small utility-mount fittings (chaff, heat sinks, point defence,
  *   shield boosters, scanners).
  */
-export type ModuleCategory = 'standard' | 'internal' | 'hardpoint' | 'utility';
+export type ModuleCategory = 'core' | 'internal' | 'hardpoint' | 'utility';
 
 /** How a hardpoint weapon is aimed. Only hardpoint modules carry a mount. */
 export type ModuleMount = 'Fixed' | 'Gimballed' | 'Turreted';
@@ -56,16 +58,49 @@ export type ModuleGuidance = 'Dumbfire' | 'Seeker' | 'Swarm';
 export type ModuleRating = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I';
 
 /**
+ * How a weapon's damage splits across the damage types, as fractions of one shot.
+ *
+ * @remarks
+ * The four **physical** shares — {@link DamageDistribution.kinetic | kinetic},
+ * {@link DamageDistribution.thermal | thermal},
+ * {@link DamageDistribution.explosive | explosive} and
+ * {@link DamageDistribution.absolute | absolute} — partition the damage and sum to
+ * `1`; a type a weapon does not deal is absent rather than `0`. Each is met by the
+ * defender's resistance of the same name, except `absolute`, which no shield or hull
+ * resistance reduces.
+ *
+ * {@link DamageDistribution.antiXeno | antiXeno} is different: it **overlays** the
+ * physical split instead of partitioning it, flagging the portion that is effective
+ * against Thargoid targets. An AX multi-cannon is `{ kinetic: 1, antiXeno: 1 }` — all
+ * of its damage is kinetic *and* all of it is anti-xeno, so a distribution's values
+ * can sum past `1`.
+ */
+export interface DamageDistribution {
+    /** Kinetic share of one shot's damage, `0`–`1`. */
+    readonly kinetic?: number;
+    /** Thermal share of one shot's damage, `0`–`1`. */
+    readonly thermal?: number;
+    /** Explosive share of one shot's damage, `0`–`1`. */
+    readonly explosive?: number;
+    /** Absolute share — damage no resistance reduces — of one shot's damage, `0`–`1`. */
+    readonly absolute?: number;
+    /**
+     * Anti-xeno share: the portion effective against Thargoids. Overlays the physical
+     * shares rather than partitioning them (see the type's remarks).
+     */
+    readonly antiXeno?: number;
+}
+
+/**
  * One fittable outfitting module — its **identity and its stats** in one record.
  *
  * @remarks
  * The identity fields (`symbol`, `name`, `category`, `class`, `rating`, …) come from
  * Frontier's outfitting registry and are always present. The stats fields (`mass`,
- * `powerDraw`, the FSD constants, per-group performance, …) come from coriolis-data
- * and are **sparse** — a module carries only the stats that apply to it, and a few
- * modules (ship-specific armour) carry no stats at all. Masses are tonnes, power is
- * megawatts, ranges are light-years. Weapon combat stats (damage, falloff, breach)
- * are intentionally not carried.
+ * `powerDraw`, the FSD constants, per-group performance, the defence and weapon
+ * stats, …) come from coriolis-data and are **sparse** — a module carries only the
+ * stats that apply to it. Masses are tonnes, power is megawatts, jump ranges are
+ * light-years and weapon ranges are metres.
  */
 export interface OutfittingModule {
     /** Internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`. Unique — the module's key. */
@@ -104,7 +139,7 @@ export interface OutfittingModule {
     readonly guidance?: ModuleGuidance;
     /**
      * The hull an armour variant belongs to, e.g. `"Anaconda"`. Present only on the
-     * `standard`-category armour modules, which are the one ship-specific module;
+     * `core`-category armour modules, which are the one ship-specific module;
      * absent on every generic module.
      */
     readonly ship?: string;
@@ -190,6 +225,115 @@ export interface OutfittingModule {
     /** Shield booster: shield strength bonus, as a fraction (`0.04` = +4%). */
     readonly shieldBoost?: number;
 
+    // ── Defence: resistances and reinforcement ─────────────────────────────────
+    // Carried by shield generators, shield boosters, hull and module reinforcement
+    // packages. Resistances are the fraction of incoming damage removed, so `0.4` is
+    // 40% resisted and a *negative* value is a weakness (every shield generator is
+    // −0.2 to thermal). They stack with diminishing returns — see `./resistances`.
+
+    /** Kinetic resistance, as a fraction (`0.4` = 40% resisted, `-0.2` = 20% weaker). */
+    readonly kineticResistance?: number;
+    /** Thermal resistance, as a fraction (negative is a weakness). */
+    readonly thermalResistance?: number;
+    /** Explosive resistance, as a fraction (negative is a weakness). */
+    readonly explosiveResistance?: number;
+    /** Caustic resistance, as a fraction (negative is a weakness). */
+    readonly causticResistance?: number;
+    /**
+     * Armour: the hull hit points this bulkhead adds, as a fraction of the hull's
+     * {@link Ship.baseArmour} on top of it — `0.8` (lightweight alloy) means
+     * `baseArmour × 1.8`, `2.5` means `baseArmour × 3.5`.
+     *
+     * @remarks
+     * Carried by the ship-specific armour modules, which are the `core`-category
+     * records with a {@link OutfittingModule.ship}. List a hull's five (or, on the
+     * Caspian Explorer, six) options with {@link getModulesForShip}.
+     */
+    readonly hullBoost?: number;
+    /** Hull reinforcement package: hull hit points added. */
+    readonly hullReinforcement?: number;
+    /** Guardian shield reinforcement package: shield megajoules added. */
+    readonly shieldAddition?: number;
+    /**
+     * Module reinforcement package: the fraction of module damage it absorbs
+     * (`0.3` = 30%). Protects the *modules*, not the hull.
+     */
+    readonly moduleProtection?: number;
+
+    /**
+     * `true` when a hardpoint-mounted module draws its power continuously.
+     *
+     * @remarks
+     * Weapons and most utility fittings only draw power while the hardpoints are
+     * deployed; shield boosters, chaff, heat sinks, point defence, caustic sinks and
+     * shutdown field neutralisers draw theirs all the time, and carry this flag.
+     * Absent on every `core`/`internal` module, which are always powered anyway.
+     * See {@link powerDraw} and `./power`.
+     */
+    readonly alwaysPowered?: boolean;
+
+    // ── Weapons ────────────────────────────────────────────────────────────────
+    // A weapon's raw combat stats. `damage` is per **round**, while `distributorDraw`
+    // and `thermalLoad` are per **shot** — the two differ on a weapon that fires several
+    // rounds at once, like a fragment cannon. On the continuous-fire beam and mining
+    // lasers, which carry no `rateOfFire`, all three are already per second. `./weapons`
+    // turns them into DPS, capacitor draw per second and heat per second.
+
+    /** Damage per round — or per second on a continuous-fire (beam) weapon. */
+    readonly damage?: number;
+    /** How `damage` splits across the damage types. */
+    readonly damageDistribution?: DamageDistribution;
+    /**
+     * Rounds fired per shot, for the weapons that fire several at once (fragment
+     * cannons, shard cannons). Absent means one round per shot.
+     */
+    readonly roundsPerShot?: number;
+    /**
+     * Shots per second, with the burst pattern and any charge time folded in — the
+     * journal's `RateOfFire`.
+     *
+     * @remarks
+     * Absent on continuous-fire weapons (beam and mining lasers), whose `damage` is
+     * already per second. Excludes reload time; {@link OutfittingModule.clipSize} and
+     * {@link OutfittingModule.reloadTime} give the sustained rate.
+     */
+    readonly rateOfFire?: number;
+    /** Seconds between shots — between *bursts* on a burst-fire weapon. */
+    readonly burstInterval?: number;
+    /** Shots in one burst. Absent (or `1`) on a weapon that does not fire in bursts. */
+    readonly burstRounds?: number;
+    /** Shots per second *within* a burst. */
+    readonly burstRateOfFire?: number;
+    /** Seconds spent charging before a shot (rail guns), if any. */
+    readonly chargeTime?: number;
+    /** Rounds in a clip before reloading. Absent on weapons that never reload. */
+    readonly clipSize?: number;
+    /** Reserve rounds to reload from. */
+    readonly ammoMaximum?: number;
+    /** Seconds to reload a clip. */
+    readonly reloadTime?: number;
+    /**
+     * Weapons-capacitor draw, in megawatts — per shot, or per second on a
+     * continuous-fire weapon. Shield generators carry it too, as the capacitor cost of
+     * one MJ per second of regeneration.
+     */
+    readonly distributorDraw?: number;
+    /** Heat generated — per shot, or per second on a continuous-fire weapon. */
+    readonly thermalLoad?: number;
+    /**
+     * Armour piercing rating. Damage to a hull is scaled by
+     * `min(1, armourPiercing / hardness)` against a hull of that {@link Ship.hardness}.
+     */
+    readonly armourPiercing?: number;
+    /** Maximum range, in metres — beyond it the weapon does nothing. */
+    readonly maximumRange?: number;
+    /** Range at which damage starts to drop off, in metres. */
+    readonly falloffRange?: number;
+    /** Projectile speed, in metres per second. Absent on hitscan (laser) weapons. */
+    readonly shotSpeed?: number;
+    /** Maximum aim deviation, in degrees. */
+    readonly jitter?: number;
+
     /**
      * Standard purchase price, in credits — the base list price before any station
      * discount or markup, which is what an outfitting screen quotes at 0% discount.
@@ -207,7 +351,7 @@ export interface OutfittingModule {
  * @param symbol - The internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`.
  * Leading/trailing whitespace and case are ignored, so the journal's lower-cased
  * form resolves too.
- * @param modules - The catalogue to search — `STANDARD_MODULES`, `INTERNAL_MODULES`,
+ * @param modules - The catalogue to search — `CORE_MODULES`, `INTERNAL_MODULES`,
  * `HARDPOINT_MODULES`, `UTILITY_MODULES`, `ALL_MODULES`, or any subset you have
  * filtered yourself.
  * @returns The matching {@link OutfittingModule}, or `null` if the catalogue holds
@@ -254,7 +398,7 @@ export function getModulesByName(
  * `"Anaconda"`. Leading/trailing whitespace and case are ignored, but matching is
  * otherwise exact.
  * @param modules - The catalogue to search (see {@link getModuleBySymbol}). Armour lives
- * in `STANDARD_MODULES` (and therefore `ALL_MODULES`); other catalogues hold no
+ * in `CORE_MODULES` (and therefore `ALL_MODULES`); other catalogues hold no
  * ship-specific modules and return an empty array.
  * @returns The ship's armour modules — the five bulkhead variants — or an empty
  * array if the catalogue holds none for that hull. The input array is not modified.
@@ -264,7 +408,7 @@ export function getModulesByName(
  * this registry does not carry.
  * @example
  * ```ts
- * getModulesForShip('Anaconda', STANDARD_MODULES).map((m) => m.name);
+ * getModulesForShip('Anaconda', CORE_MODULES).map((m) => m.name);
  * // -> [ 'Lightweight Alloy', 'Reinforced Alloy', 'Military Grade Composite',
  * //      'Mirrored Surface Composite', 'Reactive Surface Composite' ]
  * ```

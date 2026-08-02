@@ -12,22 +12,23 @@
  * data file, while resolving stats pulls in every module record. Consumers who only list
  * variants should not pay for the module catalogues.
  *
- * **What is resolved, and what is not.** The module catalogues carry core and
- * optional-internal stats — mass, integrity, power, capacities, optimal mass. They carry
- * no weapon stats, so a variant's `Damage`, `MaximumRange` or `AmmoClipSize` modifiers
- * have no base value to apply to and are reported by {@link unresolvedModifiers} rather
- * than silently dropped. A pre-engineered rail gun still resolves its mass, integrity
- * and power draw correctly, which is what a power-and-mass budget needs.
+ * **What is resolved, and what is not.** The module catalogues carry the mechanical
+ * stats (mass, integrity, power, capacities, optimal mass), the defence stats and the
+ * weapon stats, so almost every variant resolves in full — a pre-engineered rail gun
+ * gets its damage, ranges and clip as well as its mass and power draw. The few labels
+ * nothing carries a base for (a scanner's probe radius, say) are reported by
+ * {@link unresolvedModifiers} rather than silently dropped.
  *
  * @packageDocumentation
  */
 
 import { computeModifiers, type BlueprintFeature } from './engineering.js';
-import { baseStats, fieldForLabel } from './module-stat-labels.js';
+import { baseStats, fieldForLabel, scaleForLabel } from './module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import type { PreEngineeredModifier, PreEngineeredVariant } from './pre-engineered.js';
 import type { EngineeringModifier } from './slef.js';
+import { combinedRateOfFire } from './weapons.js';
 
 /** A pre-engineered modifier is a fixed article, so its min and max are the same value. */
 function asFeatures(modifiers: readonly PreEngineeredModifier[]): BlueprintFeature[] {
@@ -66,16 +67,17 @@ export function getPreEngineeredModifiers(variant: PreEngineeredVariant): Engine
 /**
  * The labels a variant modifies that the module catalogues hold no base value for.
  *
- * These are almost entirely weapon and scanner stats — `Damage`, `AmmoClipSize`,
- * `MaximumRange` and friends. Reported rather than dropped so a consumer can tell the
- * difference between "this variant changes nothing else" and "this catalogue cannot say".
+ * Now that the catalogues carry the weapon stats too, this is almost always empty —
+ * what remains are the scanner stats (probe radius and the like) nothing holds a base
+ * for. Reported rather than dropped so a consumer can tell the difference between "this
+ * variant changes nothing else" and "this catalogue cannot say".
  *
  * @param variant - A pre-engineered variant.
  * @returns The unresolvable labels, in the variant's own order.
  *
  * @example
  * ```ts
- * unresolvedModifiers(railgun); // -> ['AmmoClipSize', 'AmmoMaximum', 'Damage', ...]
+ * unresolvedModifiers(railgun); // -> []  (every label it changes resolves)
  * ```
  */
 export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
@@ -121,8 +123,27 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         asFeatures(variant.modifiers),
     )) {
         const field = fieldForLabel(Label);
-        // Every field a label maps to holds a number, so the computed value fits.
-        if (field) Object.assign(resolved, { [field]: Value });
+        // Every field a label maps to holds a number, so the computed value fits —
+        // once it is back in the catalogue's units (a journal reports a resistance as
+        // `40` where the catalogue stores `0.4`).
+        if (field && Value !== undefined) {
+            Object.assign(resolved, { [field]: Value / scaleForLabel(Label) });
+        }
+    }
+    // A variant that changes the burst pattern changes the rate of fire with it, even
+    // though the recipe never names it — the rate is derived from the firing cycle.
+    if (
+        resolved.rateOfFire !== undefined &&
+        !variant.modifiers.some((m) => m.label === 'RateOfFire') &&
+        variant.modifiers.some(
+            (m) =>
+                m.label === 'BurstSize' ||
+                m.label === 'BurstRateOfFire' ||
+                m.label === 'BurstInterval',
+        )
+    ) {
+        const rate = combinedRateOfFire(resolved);
+        if (rate !== undefined) resolved.rateOfFire = rate;
     }
     return resolved;
 }

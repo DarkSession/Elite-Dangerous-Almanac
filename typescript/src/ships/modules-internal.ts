@@ -4,7 +4,7 @@
  * fuel scoops, refineries, passenger cabins, limpet and planetary controllers,
  * hull/module reinforcement, …).
  *
- * The other categories live in `./modules-standard`, `./modules-hardpoint` and
+ * The other categories live in `./modules-core`, `./modules-hardpoint` and
  * `./modules-utility`, so importing this module never bundles them.
  *
  * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,

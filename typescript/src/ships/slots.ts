@@ -115,15 +115,15 @@ export interface OptionalSlotSpec {
     readonly restriction?: SlotRestriction;
 }
 
-/** One armour (bulkhead) option and the mass it adds to the hull. */
-export interface BulkheadOption {
-    /** Display name, e.g. `"Lightweight Alloy"`, `"Reactive Surface Composite"`. */
-    readonly name: string;
-    /** Mass this bulkhead adds over the (zero-mass) lightweight default, in tonnes. */
-    readonly mass: number;
-}
-
-/** A hull's full slot layout — the slot-bearing fields of a `Ship`, as `getShipSlots` returns. */
+/**
+ * A hull's full slot layout — the slot-bearing fields of a `Ship`, as `getShipSlots`
+ * returns.
+ *
+ * @remarks
+ * The armour mount is not listed here because it is not sized: a hull's armour options
+ * are ordinary modules in `CORE_MODULES`, tied to the hull by their
+ * {@link OutfittingModule.ship} field. List them with `getModulesForShip`.
+ */
 export interface ShipSlots {
     /** Hull symbol, matching the registry's `Ship.symbol`. */
     readonly symbol: string;
@@ -135,8 +135,6 @@ export interface ShipSlots {
     readonly utility: number;
     /** Optional-internal mounts, largest first. */
     readonly optional: readonly OptionalSlotSpec[];
-    /** The five armour options and their added mass. */
-    readonly bulkheads: readonly BulkheadOption[];
 }
 
 /** What a journal slot key says about the mount, as {@link parseSlotName} reads it. */

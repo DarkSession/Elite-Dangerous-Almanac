@@ -7,17 +7,18 @@ import {
     getModulesForShip,
     type OutfittingModule,
 } from './modules.js';
-import { STANDARD_MODULES } from './modules-standard.js';
+import { CORE_MODULES } from './modules-core.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { UTILITY_MODULES } from './modules-utility.js';
 import { ALL_MODULES } from './modules-all.js';
+import { combinedRateOfFire } from './weapons.js';
 import { SHIPS } from './ships.js';
 import modulesFixture from '../../../fixtures/ships/modules.json' with { type: 'json' };
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
 
 const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
-    standard: STANDARD_MODULES,
+    core: CORE_MODULES,
     internal: INTERNAL_MODULES,
     hardpoint: HARDPOINT_MODULES,
     utility: UTILITY_MODULES,
@@ -60,7 +61,7 @@ for (const [name, expected] of Object.entries(modulesFixture.counts)) {
 
 test('ALL_MODULES is exactly the four category catalogues concatenated', () => {
     assert.deepEqual(ALL_MODULES, [
-        ...STANDARD_MODULES,
+        ...CORE_MODULES,
         ...INTERNAL_MODULES,
         ...HARDPOINT_MODULES,
         ...UTILITY_MODULES,
@@ -126,17 +127,17 @@ test('getModulesByName returns every size/rating variant, catalogue only', () =>
     assert.deepEqual(getModulesByName('Pulse Laser', UTILITY_MODULES), []);
 });
 
-test('getModulesForShip returns a hull armour set, and nothing outside standard', () => {
+test('getModulesForShip returns a hull armour set, and nothing outside core', () => {
     const { ship, count, names } = modulesFixture.shipArmour;
-    const armour = getModulesForShip(ship, STANDARD_MODULES);
+    const armour = getModulesForShip(ship, CORE_MODULES);
     assert.equal(armour.length, count);
     assert.deepEqual(
         armour.map((m) => m.name),
         names,
     );
-    assert.ok(armour.every((m) => m.ship === ship && m.category === 'standard'));
-    // Case-insensitive, and no ship-specific modules live outside standard.
-    assert.equal(getModulesForShip(ship.toLowerCase(), STANDARD_MODULES).length, count);
+    assert.ok(armour.every((m) => m.ship === ship && m.category === 'core'));
+    // Case-insensitive, and no ship-specific modules live outside core.
+    assert.equal(getModulesForShip(ship.toLowerCase(), CORE_MODULES).length, count);
     assert.deepEqual(getModulesForShip(ship, HARDPOINT_MODULES), []);
 });
 
@@ -160,7 +161,7 @@ test('lookups ignore surrounding whitespace', () => {
         'Chaff Launcher',
     );
     assert.equal(getModulesByName('  Pulse Laser  ', HARDPOINT_MODULES).length > 1, true);
-    assert.equal(getModulesForShip(' Anaconda ', STANDARD_MODULES).length, 5);
+    assert.equal(getModulesForShip(' Anaconda ', CORE_MODULES).length, 5);
 });
 
 test('missing modules resolve to null', () => {
@@ -223,7 +224,7 @@ test('every price is a non-negative integer number of credits', () => {
 });
 
 test('FSD constants are readable straight off the module record', () => {
-    const fsd = getModuleBySymbol('int_hyperdrive_size5_class5', STANDARD_MODULES);
+    const fsd = getModuleBySymbol('int_hyperdrive_size5_class5', CORE_MODULES);
     assert.equal(fsd?.name, 'Frame Shift Drive');
     assert.equal(fsd?.optMass, 1050);
     assert.equal(fsd?.fuelPower, 2.45);
@@ -242,20 +243,76 @@ test('ship-restricted modules name real hulls, armour excepted', () => {
         }
     }
     // The Python Mk II's MkII gravity thrusters are restricted to that hull.
-    const grav = getModuleBySymbol(
-        'Int_Engine_Size7_Class5_GravityOptimised_MkII',
-        STANDARD_MODULES,
-    );
+    const grav = getModuleBySymbol('Int_Engine_Size7_Class5_GravityOptimised_MkII', CORE_MODULES);
     assert.deepEqual(grav?.restrictedToShips, ['Explorer_NX']);
     // Ship-specific armour keeps its restriction in the registry, not restrictedToShips.
-    const armour = getModuleBySymbol('Anaconda_Armour_Grade1', STANDARD_MODULES);
+    const armour = getModuleBySymbol('Anaconda_Armour_Grade1', CORE_MODULES);
     assert.equal(armour?.restrictedToShips, undefined);
     assert.equal(armour?.ship, 'Anaconda');
 });
 
-test('modules without stats (ship-specific armour) carry identity only', () => {
-    const armour = getModuleBySymbol('SideWinder_Armour_Grade1', STANDARD_MODULES);
-    assert.ok(armour);
-    assert.equal(hasStats(armour), false);
-    assert.equal(armour.mass, undefined);
+test('ship armour carries its hull-specific bulkhead stats', () => {
+    // Armour is the one ship-specific module, and its stats differ per hull: a
+    // Sidewinder's reactive composite weighs 4 t against an Anaconda's 60 t. Both
+    // share the grade's hull boost and resistances.
+    const sidewinder = getModuleBySymbol('SideWinder_Armour_Reactive', CORE_MODULES);
+    const anaconda = getModuleBySymbol('Anaconda_Armour_Reactive', CORE_MODULES);
+    assert.ok(sidewinder && anaconda);
+    assert.equal(sidewinder.mass, 4);
+    assert.equal(anaconda.mass, 60);
+    assert.equal(sidewinder.hullBoost, anaconda.hullBoost);
+    assert.equal(anaconda.kineticResistance, 0.25);
+    // The stock lightweight alloy is the zero-mass baseline every hull starts from.
+    assert.equal(getModuleBySymbol('SideWinder_Armour_Grade1', CORE_MODULES)?.mass, 0);
+});
+
+test('every hull offers a full armour set, all of it priced and stat-bearing', () => {
+    for (const ship of SHIPS) {
+        const armour = getModulesForShip(ship.name, CORE_MODULES);
+        assert.ok(armour.length >= 5, `${ship.symbol} armour set`);
+        for (const variant of armour) {
+            assert.equal(typeof variant.mass, 'number', variant.symbol);
+            assert.equal(typeof variant.hullBoost, 'number', variant.symbol);
+            assert.ok(hasStats(variant), variant.symbol);
+        }
+    }
+});
+
+test('a continuous-fire weapon carries damage per second and no rate of fire', () => {
+    for (const symbol of statsFixture.continuousFire) {
+        const weapon = getModuleBySymbol(symbol, ALL_MODULES);
+        assert.ok(weapon, symbol);
+        assert.equal(weapon.rateOfFire, undefined, symbol);
+        assert.ok((weapon.damage ?? 0) > 0, symbol);
+    }
+});
+
+test("a weapon's physical damage shares sum to one", () => {
+    for (const weapon of HARDPOINT_MODULES) {
+        const split = weapon.damageDistribution;
+        if (!split) continue;
+        const physical =
+            (split.kinetic ?? 0) +
+            (split.thermal ?? 0) +
+            (split.explosive ?? 0) +
+            (split.absolute ?? 0);
+        assert.ok(Math.abs(physical - 1) < 1e-9, `${weapon.symbol}: ${String(physical)}`);
+    }
+});
+
+test("every weapon's carried rate of fire agrees with its own firing cycle", () => {
+    // `rateOfFire` is derived from the interval, burst pattern and charge time at
+    // acquisition time; if the two ever disagree, an engineered build would jump.
+    let checked = 0;
+    for (const weapon of ALL_MODULES) {
+        if (weapon.rateOfFire === undefined) continue;
+        const derived = combinedRateOfFire(weapon);
+        assert.ok(derived !== undefined, `${weapon.symbol}: no cycle to derive from`);
+        assert.ok(
+            Math.abs(derived - weapon.rateOfFire) < 1e-5,
+            `${weapon.symbol}: carried ${weapon.rateOfFire} vs derived ${derived}`,
+        );
+        checked++;
+    }
+    assert.ok(checked > 140, `expected the whole weapon catalogue, checked ${checked}`);
 });

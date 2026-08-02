@@ -7,7 +7,7 @@ import { stripJsonComments } from "../../../typescript/scripts/jsonc.mjs";
 const usage = `Usage:
   node scripts/data/ships/merge-normalized-catalogues.mjs \\
     --ship-identities <jsonc> --ship-stats <jsonc> --ship-slots <jsonc> \\
-    --standard-identities <jsonc> --standard-stats <jsonc> \\
+    --core-identities <jsonc> --core-stats <jsonc> \\
     --internal-identities <jsonc> --internal-stats <jsonc> \\
     --hardpoint-identities <jsonc> --hardpoint-stats <jsonc> \\
     --utility-identities <jsonc> --utility-stats <jsonc> \\
@@ -100,8 +100,8 @@ const required = [
   "ship-identities",
   "ship-stats",
   "ship-slots",
-  "standard-identities",
-  "standard-stats",
+  "core-identities",
+  "core-stats",
   "internal-identities",
   "internal-stats",
   "hardpoint-identities",
@@ -126,7 +126,7 @@ const ships = join(
 );
 await writeJsonc(resolve(out, "ships.jsonc"), ships);
 
-for (const category of ["standard", "internal", "hardpoint", "utility"]) {
+for (const category of ["core", "internal", "hardpoint", "utility"]) {
   const identities = await readArray(args.get(`${category}-identities`));
   const stats = await readArray(args.get(`${category}-stats`));
   await writeJsonc(

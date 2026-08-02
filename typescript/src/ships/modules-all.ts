@@ -6,7 +6,7 @@
  * **This module pulls in every module catalogue** — it exists for consumers that
  * really do want to search all 1197 modules (a "resolve any module id" lookup, say).
  * If you only need one category, import that catalogue's module
- * (`./modules-standard`, `./modules-internal`, `./modules-hardpoint`,
+ * (`./modules-core`, `./modules-internal`, `./modules-hardpoint`,
  * `./modules-utility`) and nothing else gets bundled.
  *
  * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,
@@ -16,13 +16,13 @@
  */
 
 import type { OutfittingModule } from './modules.js';
-import { STANDARD_MODULES } from './modules-standard.js';
+import { CORE_MODULES } from './modules-core.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { UTILITY_MODULES } from './modules-utility.js';
 
 /**
- * Every outfitting module — the concatenation of `STANDARD_MODULES`,
+ * Every outfitting module — the concatenation of `CORE_MODULES`,
  * `INTERNAL_MODULES`, `HARDPOINT_MODULES` and `UTILITY_MODULES`, in that order
  * (each in Frontier's registry order).
  *
@@ -38,7 +38,7 @@ import { UTILITY_MODULES } from './modules-utility.js';
  * ```
  */
 export const ALL_MODULES: readonly OutfittingModule[] = Object.freeze([
-    ...STANDARD_MODULES,
+    ...CORE_MODULES,
     ...INTERNAL_MODULES,
     ...HARDPOINT_MODULES,
     ...UTILITY_MODULES,

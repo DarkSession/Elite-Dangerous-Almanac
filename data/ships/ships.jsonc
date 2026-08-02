@@ -4,7 +4,7 @@
  *
  * Sources: EDCD FDevIDs, shipyard.csv (identity: symbol, name, entitlement?)
  *          https://github.com/EDCD/FDevIDs
- *          EDCD/coriolis-data, ships/*.json (stats + slots/bulkheads)
+ *          EDCD/coriolis-data, ships/*.json (stats + slot layout)
  *          https://github.com/EDCD/coriolis-data
  *          The stat/slot values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
@@ -13,8 +13,9 @@
  * `symbol` is the internal identifier (e.g. `Empire_Trader`); `name` the display
  * name; `entitlement` the DLC/grant token on gated hulls. Stats (hullMass in
  * tonnes, speed/boost in m/s, rotation rates in deg/s, …) and the slot layout
- * (`core` sizes, `hardpoints`, `utility` count, `optional` mounts, `bulkheads`)
- * are present for every hull. Most come from coriolis-data; the Lynx Highliner
+ * (`core` sizes, `hardpoints`, `utility` count, `optional` mounts) are present for
+ * every hull. A hull's armour options are modules like any other: they live in
+ * `modules-core.jsonc`, keyed to the hull by their `ship` field. Most come from coriolis-data; the Lynx Highliner
  * (`MediumTransport01`) instead uses EDSY and Frontier update-note values documented
  * in `SOURCES.md`. `hullCost` is the bare hull's standard price in credits and
  * `retailCost` the hull with its default modules; both are present for every hull.
@@ -76,28 +77,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 2
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 4
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 4
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 4
       }
     ],
     "hullCost": 4588,
@@ -164,28 +143,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 4
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 8
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 8
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 8
-      }
-    ],
     "hullCost": 10947,
     "retailCost": 44800
   },
@@ -242,28 +199,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 1
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 2
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 2
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 2
       }
     ],
     "hullCost": 30308,
@@ -329,28 +264,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 3
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 5
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 5
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 5
-      }
-    ],
     "hullCost": 40833,
     "retailCost": 87808
   },
@@ -414,28 +327,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 5
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 9
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 9
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 9
       }
     ],
     "hullCost": 96733,
@@ -505,28 +396,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 14
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 27
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 27
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 27
-      }
-    ],
     "hullCost": 208372,
     "retailCost": 349718
   },
@@ -590,28 +459,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 12
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 23
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 23
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 23
       }
     ],
     "hullCost": 866622,
@@ -681,28 +528,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 32
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 63
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 63
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 63
       }
     ],
     "hullCost": 1117906,
@@ -778,28 +603,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 32
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 63
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 63
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 63
-      }
-    ],
     "hullCost": 16783094,
     "retailCost": 17472252
   },
@@ -869,28 +672,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 21
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 42
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 42
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 42
-      }
-    ],
     "hullCost": 6145793,
     "retailCost": 6661154
   },
@@ -955,28 +736,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 17
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 35
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 35
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 35
       }
     ],
     "hullCost": 4692214,
@@ -1047,28 +806,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 30
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 60
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 60
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 60
       }
     ],
     "hullCost": 21116895,
@@ -1147,28 +884,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 44
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 87
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 87
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 87
-      }
-    ],
     "hullCost": 13510106,
     "retailCost": 14314210
   },
@@ -1236,28 +951,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 21
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 87
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 87
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 87
       }
     ],
     "hullCost": 47800723,
@@ -1337,28 +1030,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 75
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 150
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 150
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 150
-      }
-    ],
     "hullCost": 72116858,
     "retailCost": 76555842
   },
@@ -1431,28 +1102,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 26
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 53
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 53
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 53
       }
     ],
     "hullCost": 55324684,
@@ -1536,28 +1185,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 83
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 165
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 165
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 165
-      }
-    ],
     "hullCost": 79694761,
     "retailCost": 84532764
   },
@@ -1618,28 +1245,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 19
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 38
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 38
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 38
       }
     ],
     "hullCost": 51242363,
@@ -1729,28 +1334,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 30
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 60
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 60
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 60
-      }
-    ],
     "hullCost": 142456440,
     "retailCost": 146969451
   },
@@ -1838,28 +1421,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 30
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 60
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 60
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 60
-      }
-    ],
     "hullCost": 183156068,
     "retailCost": 187969450
   },
@@ -1944,28 +1505,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 30
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 60
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 60
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 60
-      }
-    ],
     "hullCost": 200493413,
     "retailCost": 208969451
   },
@@ -2025,28 +1564,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 13
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 26
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 26
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 26
       }
     ],
     "hullCost": 463926,
@@ -2115,28 +1632,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 4
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 8
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 8
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 8
-      }
-    ],
     "hullCost": 2484137,
     "retailCost": 2542931
   },
@@ -2203,28 +1698,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 23
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 47
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 26
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 47
-      }
-    ],
     "hullCost": 1638277,
     "retailCost": 1894760
   },
@@ -2287,28 +1760,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 4
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 8
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 8
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 8
       }
     ],
     "hullCost": 73023,
@@ -2381,28 +1832,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 44
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 87
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 87
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 87
       }
     ],
     "hullCost": 19111109,
@@ -2481,28 +1910,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 44
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 87
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 87
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 87
-      }
-    ],
     "hullCost": 34814912,
     "retailCost": 35814210
   },
@@ -2572,28 +1979,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 5
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 9
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 9
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 9
       }
     ],
     "hullCost": 312797,
@@ -2671,28 +2056,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 14
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 27
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 27
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 27
-      }
-    ],
     "hullCost": 623374,
     "retailCost": 764720
   },
@@ -2757,28 +2120,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 12
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 23
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 23
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 23
-      }
-    ],
     "hullCost": 2946463,
     "retailCost": 3126154
   },
@@ -2841,28 +2182,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 21
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 42
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 42
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 42
       }
     ],
     "hullCost": 3819823,
@@ -2952,28 +2271,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 75
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 150
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 150
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 150
-      }
-    ],
     "hullCost": 121334619,
     "retailCost": 124755342
   },
@@ -3044,28 +2341,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 36
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 67
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 67
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 67
       }
     ],
     "hullCost": 44160710,
@@ -3142,28 +2417,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 40
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 78
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 78
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 78
       }
     ],
     "hullCost": 18612476,
@@ -3243,28 +2496,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 40
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 78
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 78
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 78
       }
     ],
     "hullCost": 22096565,
@@ -3347,28 +2578,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 40
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 78
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 78
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 78
-      }
-    ],
     "hullCost": 29569804,
     "retailCost": 30472252
   },
@@ -3440,28 +2649,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 26
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 53
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 53
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 53
-      }
-    ],
     "hullCost": 35741519,
     "retailCost": 37472252
   },
@@ -3523,28 +2710,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 19
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 38
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 38
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 38
       }
     ],
     "hullCost": 55442918,
@@ -3609,28 +2774,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 26
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 53
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 53
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 53
       }
     ],
     "hullCost": 64743724,
@@ -3704,28 +2847,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 32
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 63
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 63
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 63
       }
     ],
     "hullCost": 34820576,
@@ -3804,28 +2925,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 19
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 38
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 38
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 38
-      }
-    ],
     "hullCost": 16527192,
     "retailCost": 17639220
   },
@@ -3896,28 +2995,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 14
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 27
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 27
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 27
       }
     ],
     "hullCost": 1477085,
@@ -3994,28 +3071,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 32
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 63
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 63
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 63
       }
     ],
     "hullCost": 76884160,
@@ -4104,28 +3159,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 75
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 150
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 150
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 150
-      }
-    ],
     "hullCost": 286905678,
     "retailCost": 301348586
   },
@@ -4204,28 +3237,6 @@
       {
         "size": 1,
         "restriction": "planetaryApproachSuite"
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 32
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 63
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 63
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 63
       }
     ],
     "hullCost": 66346710,
@@ -4317,32 +3328,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Mk II Ablative Lightweight",
-        "mass": 15
-      },
-      {
-        "name": "Mk II Ablative Reinforced",
-        "mass": 30
-      },
-      {
-        "name": "Mk II Ablative Military Grade",
-        "mass": 60
-      },
-      {
-        "name": "Mk II Ablative Mirrored",
-        "mass": 60
-      },
-      {
-        "name": "Mk II Ablative Reactive",
-        "mass": 60
-      }
-    ],
     "hullCost": 189326510,
     "retailCost": 194861290
   },
@@ -4413,28 +3398,6 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 17
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 35
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 35
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 35
-      }
-    ],
     "hullCost": 13776380,
     "retailCost": 14273820
   },
@@ -4501,28 +3464,6 @@
       },
       {
         "size": 1
-      }
-    ],
-    "bulkheads": [
-      {
-        "name": "Lightweight Alloy",
-        "mass": 0
-      },
-      {
-        "name": "Reinforced Alloy",
-        "mass": 26
-      },
-      {
-        "name": "Military Grade Composite",
-        "mass": 53
-      },
-      {
-        "name": "Mirrored Surface Composite",
-        "mass": 53
-      },
-      {
-        "name": "Reactive Surface Composite",
-        "mass": 53
       }
     ],
     "hullCost": 67992080,

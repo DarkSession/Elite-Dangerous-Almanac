@@ -9,11 +9,12 @@
  * export ({@link ShipLoadout.fromSlef}) or a journal `Loadout` event
  * ({@link ShipLoadout.fromLoadout}), lets you fit modules and apply engineering, and
  * answers the questions apps actually ask ({@link ShipLoadout.maxJumpRange},
- * `unladenMass`, `rebuy`). It is the batteries-included facade and pulls in every
- * catalogue (~516 KB minified); everything below is what it is built from, so drop to
- * the pieces when you need one answer rather than a whole ship.
+ * {@link ShipLoadout.powerBudget}, {@link ShipLoadout.shieldMetrics}, `unladenMass`,
+ * `rebuy`). It is the batteries-included facade and pulls in every catalogue (~589 KB
+ * minified); everything below is what it is built from, so drop to the pieces when you
+ * need one answer rather than a whole ship.
  *
- * The area has four layers:
+ * The area has five layers:
  *
  * - **Ships** — {@link SHIPS} and the {@link getShipBySymbol} / {@link getShipByName}
  *   lookups. One small catalogue; each {@link Ship} carries the hull's identity,
@@ -21,12 +22,18 @@
  * - **Modules** — the {@link OutfittingModule} type and the data-free query
  *   functions ({@link getModuleBySymbol} & co.) over a catalogue you pass in. The
  *   catalogues are split by Frontier's four outfitting categories
- *   ({@link STANDARD_MODULES}, {@link INTERNAL_MODULES}, {@link HARDPOINT_MODULES},
+ *   ({@link CORE_MODULES}, {@link INTERNAL_MODULES}, {@link HARDPOINT_MODULES},
  *   {@link UTILITY_MODULES}, or {@link ALL_MODULES}) so you only bundle the slice
  *   you search; each record carries the module's identity and its stats.
  * - **Jump range & SLEF** — {@link singleJumpRange}, {@link fuelPerJump} and
  *   {@link totalRange} are pure maths over {@link FrameShiftDriveParams} and cost
  *   nothing but the function; {@link parseSlef} reads an Inara SLEF export on its own.
+ * - **Build metrics** — the rest of what an outfitting screen shows, each its own
+ *   data-free module: {@link powerBudget} (what the plant makes against what the build
+ *   draws, by priority group), {@link shieldMetrics} and {@link armourMetrics} (strength,
+ *   hit points and the resistances behind them, stacked by {@link stackShieldResistance}
+ *   / {@link stackArmourResistance}), and {@link weaponMetrics} (DPS, sustained DPS,
+ *   capacitor draw and heat).
  * - **Engineering** — {@link computeModifiers} applies a {@link BLUEPRINTS} recipe and
  *   an {@link EXPERIMENTAL_EFFECTS} entry; {@link ENGINEERING_OPTION_GROUPS} answers
  *   what a module *can* be engineered with, and {@link PRE_ENGINEERED_MODULES} covers
@@ -57,10 +64,11 @@ export {
     type ModuleMount,
     type ModuleGuidance,
     type ModuleRating,
+    type DamageDistribution,
 } from './modules.js';
 
 // ── Module catalogues (one per outfitting category) ─────────────────────────
-export { STANDARD_MODULES } from './modules-standard.js';
+export { CORE_MODULES } from './modules-core.js';
 export { INTERNAL_MODULES } from './modules-internal.js';
 export { HARDPOINT_MODULES } from './modules-hardpoint.js';
 export { UTILITY_MODULES } from './modules-utility.js';
@@ -90,9 +98,58 @@ export {
     FittedModule,
     type FuelCapacity,
     type JumpOptions,
+    type JumpRangeSummary,
+    type DefenceOptions,
+    type FittedWeaponMetrics,
+    type BuildWeaponMetrics,
     type AvailableBlueprint,
     type ApplyBlueprintOptions,
 } from './ship-loadout.js';
+
+// ── Build metrics: power, shields, armour and weapons (all data-free) ────────
+export { powerBudget, type PowerConsumer, type PowerBand, type PowerBudget } from './power.js';
+export {
+    stackShieldResistance,
+    stackShieldMultiplier,
+    stackArmourResistance,
+    stackArmourMultiplier,
+    systemsResistance,
+    type DamageResistances,
+    type DamageTypeValues,
+} from './resistances.js';
+export {
+    shieldMetrics,
+    shieldStrength,
+    shieldMassCurveMultiplier,
+    type ShieldGeneratorParams,
+    type ShieldBoosterParams,
+    type ShieldInput,
+    type ShieldMetrics,
+} from './shields.js';
+export {
+    armourMetrics,
+    type BulkheadParams,
+    type HullReinforcementParams,
+    type ModuleReinforcementParams,
+    type ArmourInput,
+    type ArmourMetrics,
+} from './armour.js';
+export {
+    weaponMetrics,
+    sumWeaponMetrics,
+    combinedRateOfFire,
+    damagePerSecond,
+    sustainedDamagePerSecond,
+    sustainedFireFactor,
+    energyPerSecond,
+    heatPerSecond,
+    damageFalloff,
+    armourPiercingFactor,
+    splitDamage,
+    type WeaponStats,
+    type WeaponMetrics,
+    type DamageSplit,
+} from './weapons.js';
 
 // ── Build editor: slot model (per-hull slot layouts live on each `Ship`) ─────
 export {
@@ -104,7 +161,6 @@ export {
     type BuildSlot,
     type CoreSlots,
     type OptionalSlotSpec,
-    type BulkheadOption,
     type ShipSlots,
     type ParsedSlot,
 } from './slots.js';

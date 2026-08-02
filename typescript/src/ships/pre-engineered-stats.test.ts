@@ -11,9 +11,14 @@ import {
     getPreEngineeredVariants,
     type PreEngineeredVariant,
 } from './pre-engineered.js';
-import { getModuleBySymbol } from './modules.js';
+import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
+import { combinedRateOfFire } from './weapons.js';
+import { fieldForLabel, scaleForLabel } from './module-stat-labels.js';
 import fixture from '../../../fixtures/ships/pre-engineered.json' with { type: 'json' };
+
+/** The rounding `computeModifiers` applies, so a pin means the same thing to a port. */
+const round6 = (value: number): number => Math.round(value * 1e6) / 1e6;
 
 /** The one variant matching every field given — asserted unique so a pin cannot drift. */
 function only(match: Partial<PreEngineeredVariant>): PreEngineeredVariant {
@@ -39,20 +44,48 @@ test('a pre-engineered drive resolves to its known in-game stats', () => {
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
 });
 
-test('a pre-engineered weapon resolves the stats the catalogue does carry', () => {
+test('a pre-engineered weapon resolves its damage-side stats too', () => {
     const { symbol, blueprint, grade, base, engineered, unresolved } =
         fixture.resolved.guardianShardMediumG1;
     const variant = only({ symbol, blueprint, grade });
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
     assert.equal(stock.mass, base.mass);
     assert.equal(stock.powerDraw, base.powerDraw);
+    assert.equal(stock.maximumRange, base.maximumRange);
+    assert.equal(stock.thermalLoad, base.thermalLoad);
+    assert.equal(stock.armourPiercing, base.armourPiercing);
 
     const fitted = getPreEngineeredStats(variant)!;
     assert.equal(fitted.mass, engineered.mass);
     assert.equal(fitted.powerDraw, engineered.powerDraw);
-    // The catalogue carries no weapon stats, so the damage-side modifiers are reported
-    // as unresolved rather than silently dropped.
+    // Whole metres, not 2999.99: see the authored-stat note below.
+    assert.equal(fitted.maximumRange, engineered.maximumRange);
+    assert.equal(fitted.falloffRange, engineered.falloffRange);
+    assert.equal(fitted.thermalLoad, engineered.thermalLoad);
+    assert.equal(fitted.armourPiercing, engineered.armourPiercing);
+    // Every modifier this variant carries now has a base stat to apply to.
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
+});
+
+test('a stat the source authored as a value resolves to exactly that value', () => {
+    // EDSY encodes a modifier as a multiplier in a 20-bit float, so a stat the game
+    // authored as a round number comes back short however the multiplier is recovered —
+    // the "Modified Guardian Shard Cannon" reads 2999.99 m rather than 3000 m. Those
+    // modifiers are stored as an `overwrite` of the stat itself, which is also the shape
+    // a journal reports a pre-engineered module in. An overwrite must land exactly.
+    let checked = 0;
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        const fitted = getPreEngineeredStats(variant)!;
+        for (const modifier of variant.modifiers ?? []) {
+            if (modifier.method !== 'overwrite') continue;
+            const field = fieldForLabel(modifier.label) as keyof OutfittingModule | null;
+            if (!field) continue;
+            const resolved = (fitted[field] as number) * scaleForLabel(modifier.label);
+            assert.equal(resolved, modifier.value, `${variant.symbol} ${modifier.label}`);
+            checked++;
+        }
+    }
+    assert.ok(checked >= fixture.authoredStats.count, `only ${checked} overwrites checked`);
 });
 
 test('identity fields survive resolution — a variant is the same article', () => {
@@ -82,11 +115,12 @@ test('a variant with no stat block resolves to the base record itself', () => {
     }
 });
 
-test('a reward variant changes a carried stat unless it only touches weapon stats', () => {
-    // Most reward variants move mass, integrity or power draw. Five do not: every
-    // modifier they carry targets a weapon or scanner stat the module catalogues hold no
-    // base value for, so resolving them is necessarily a no-op. Pinned so that the
-    // no-ops stay a known, listed set rather than silent breakage.
+test('a reward variant changes a carried stat unless it only touches uncarried ones', () => {
+    // Almost every reward variant now moves a stat the catalogues carry. One does not:
+    // the Detailed Surface Scanner's variant only touches the scanner stats (probe
+    // radius and the like), which the catalogues hold no base value for, so resolving
+    // it is necessarily a no-op. Pinned so that the no-ops stay a known, listed set
+    // rather than silent breakage.
     const noOps: string[] = [];
     for (const variant of PRE_ENGINEERED_MODULES) {
         if (variant.acquisition === 'mercenary') continue;
@@ -105,6 +139,45 @@ test('a reward variant changes a carried stat unless it only touches weapon stat
     }
     assert.deepEqual(noOps, fixture.fullyUnresolved.symbols);
     assert.equal(noOps.length, fixture.fullyUnresolved.count);
+});
+
+test('variants that change a burst pattern move the interval their rate comes from', () => {
+    // A journal never reports the burst interval — it reports the resulting RateOfFire —
+    // so nothing downstream notices if the modifier behind it goes missing: the weapon
+    // simply keeps its stock cadence. Pin the interval and the rate it derives.
+    const pinned = fixture.burstIntervalVariants;
+    const carriers = PRE_ENGINEERED_MODULES.filter((v) =>
+        v.modifiers?.some((m) => m.label === 'BurstInterval'),
+    );
+    assert.equal(carriers.length, pinned.count);
+    // …and the fixture covers every one of them, so dropping a row cannot quietly
+    // shrink what this test walks.
+    assert.equal(pinned.variants.length, pinned.count);
+
+    for (const expected of pinned.variants) {
+        const { symbol, blueprint, grade, experimental } = expected;
+        const variant = only(
+            experimental === null
+                ? { symbol, blueprint, grade }
+                : { symbol, blueprint, grade, experimental },
+        );
+        // `only` cannot match on an absent field, so assert the absence separately —
+        // otherwise a null pin would silently mean "any experimental".
+        if (experimental === null) assert.equal(variant.experimental, undefined, symbol);
+        const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
+        assert.equal(stock.burstInterval, expected.stockBurstInterval, symbol);
+
+        const fitted = getPreEngineeredStats(variant)!;
+        assert.equal(round6(fitted.burstInterval ?? 0), expected.burstInterval, symbol);
+        // The stat a consumer actually reads: the resolver writes `rateOfFire` back
+        // because the recipe never names it. Asserting only the recomputation would
+        // pass even if the resolver stopped writing the field at all.
+        assert.equal(round6(fitted.rateOfFire ?? 0), expected.rateOfFire, symbol);
+        assert.equal(round6(combinedRateOfFire(fitted) ?? 0), expected.rateOfFire, symbol);
+        // The whole point: the variant does not fire at the stock cadence.
+        assert.notEqual(fitted.burstInterval, stock.burstInterval, symbol);
+        assert.notEqual(fitted.rateOfFire, stock.rateOfFire, symbol);
+    }
 });
 
 test('resolved stats stay finite and non-negative', () => {
@@ -146,5 +219,10 @@ test('two variants of one module resolve differently', () => {
     const a = getPreEngineeredStats(first!)!;
     const b = getPreEngineeredStats(second!)!;
     assert.equal(a.mass, b.mass); // both carry Mass +50%
-    assert.notDeepEqual(unresolvedModifiers(first!), unresolvedModifiers(second!));
+    assert.notDeepEqual(a, b);
+    // The grade-5 Long Range roll is the one that reaches out to 8.5 km.
+    const longRange = fixture.resolved.guardianShardMediumLongRange.engineered;
+    assert.equal(a.maximumRange, longRange.maximumRange);
+    assert.equal(a.falloffRange, longRange.falloffRange);
+    assert.equal(a.shotSpeed, longRange.shotSpeed);
 });

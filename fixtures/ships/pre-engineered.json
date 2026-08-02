@@ -1,5 +1,5 @@
 {
-  "description": "Ground truth for data/ships/pre-engineered.jsonc — the module variants that arrive already engineered, whether bought from the Merc-Coin shop, awarded for a community goal, or unlocked at a tech broker. A pre-engineered module has no symbol of its own, so each record pairs a base module `symbol` (joins to the module catalogues) with the `blueprint` baked in, the `grade` already applied, and an optional `experimental`. No narrower key than the (symbol, blueprint, grade, experimental) quadruple is unique — the medium Guardian Shard Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the catalogue size and its split by acquisition; `records` pins individual pairings; `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable; `mercCoin` pins shop prices; `joins` pins that every record resolves against the module, blueprint and experimental catalogues.",
+  "description": "Ground truth for data/ships/pre-engineered.jsonc — the module variants that arrive already engineered, whether bought from the Merc-Coin shop, awarded for a community goal, or unlocked at a tech broker. A pre-engineered module has no symbol of its own, so each record pairs a base module `symbol` (joins to the module catalogues) with the `blueprint` baked in, the `grade` already applied, and an optional `experimental`. No narrower key than the (symbol, blueprint, grade, experimental) quadruple is unique — the medium Guardian Shard Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the catalogue size and its split by acquisition; `records` pins individual pairings; `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable; `burstIntervalVariants` pins the variants that change a burst pattern, so the modifier that drives their rate of fire cannot be dropped again; `resolved` pins whole stat blocks against known in-game values; `mercCoin` pins shop prices; `joins` pins that every record resolves against the module, blueprint and experimental catalogues.",
   "count": 72,
   "counts": {
     "mercenary": 21,
@@ -16,6 +16,7 @@
     "AmmoMaximum",
     "ArmourPenetration",
     "BootTime",
+    "BurstInterval",
     "BurstRateOfFire",
     "BurstSize",
     "CargoCapacity",
@@ -49,15 +50,135 @@
     "WeaponsRecharge"
   ],
   "maxModifierDecimalPlaces": 5,
-  "fullyUnresolved": {
-    "count": 5,
-    "symbols": [
-      "Hpt_MultiCannon_Fixed_Medium",
-      "Hpt_Guardian_GaussCannon_Fixed_Small",
-      "Hpt_Guardian_GaussCannon_Fixed_Medium",
-      "Hpt_HeatSinkLauncher_Turret_Tiny",
-      "Int_DetailedSurfaceScanner_Tiny"
+  "burstIntervalVariants": {
+    "count": 13,
+    "variants": [
+      {
+        "symbol": "Hpt_Slugshot_Gimbal_Small",
+        "blueprint": "Weapon_DoubleShot",
+        "grade": 5,
+        "experimental": "special_screening_shell",
+        "stockBurstInterval": 0.17,
+        "burstInterval": 0.1598,
+        "rateOfFire": 1.724435
+      },
+      {
+        "symbol": "Hpt_Slugshot_Gimbal_Large",
+        "blueprint": "Weapon_DoubleShot",
+        "grade": 5,
+        "experimental": "special_screening_shell",
+        "stockBurstInterval": 0.21,
+        "burstInterval": 0.1974,
+        "rateOfFire": 1.670286
+      },
+      {
+        "symbol": "Hpt_MultiCannon_Fixed_Medium",
+        "blueprint": "Weapon_RapidFire",
+        "grade": 1,
+        "experimental": "special_phasing_sequence",
+        "stockBurstInterval": 0.14,
+        "burstInterval": 0.1,
+        "rateOfFire": 10
+      },
+      {
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "experimental": "special_feedback_cascade_cooled",
+        "stockBurstInterval": 0.83,
+        "burstInterval": 0.322496,
+        "rateOfFire": 0.656816
+      },
+      {
+        "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "experimental": "special_super_penetrator",
+        "stockBurstInterval": 0.001,
+        "burstInterval": 0.000737,
+        "rateOfFire": 1.955582
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 1,
+        "experimental": "special_drag_munitions",
+        "stockBurstInterval": 3,
+        "burstInterval": 2.4,
+        "rateOfFire": 0.416667
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "experimental": "special_fsd_interrupt",
+        "stockBurstInterval": 3,
+        "burstInterval": 2.7,
+        "rateOfFire": 0.37037
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "experimental": "special_fsd_interrupt",
+        "stockBurstInterval": 3,
+        "burstInterval": 2.7,
+        "rateOfFire": 0.37037
+      },
+      {
+        "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "experimental": null,
+        "stockBurstInterval": 2,
+        "burstInterval": 1.4,
+        "rateOfFire": 0.714286
+      },
+      {
+        "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "experimental": null,
+        "stockBurstInterval": 2,
+        "burstInterval": 1.4,
+        "rateOfFire": 0.714286
+      },
+      {
+        "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
+        "blueprint": "Weapon_RapidFire",
+        "grade": 1,
+        "experimental": null,
+        "stockBurstInterval": 0.83,
+        "burstInterval": 0.512633,
+        "rateOfFire": 4.922271
+      },
+      {
+        "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
+        "blueprint": "Weapon_RapidFire",
+        "grade": 1,
+        "experimental": null,
+        "stockBurstInterval": 0.83,
+        "burstInterval": 0.512633,
+        "rateOfFire": 4.922271
+      },
+      {
+        "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "experimental": "special_thermal_cascade",
+        "stockBurstInterval": 3,
+        "burstInterval": 2.7,
+        "rateOfFire": 0.37037
+      }
     ]
+  },
+  "authoredStats": {
+    "count": 20,
+    "note": "Modifiers stored as an `overwrite` of the resulting stat rather than a multiplier, because that is what the game authored — see SOURCES.md. Each must resolve to exactly its stored value."
+  },
+  "fullyUnresolved": {
+    "count": 1,
+    "symbols": ["Int_DetailedSurfaceScanner_Tiny"]
   },
   "mercCoin": {
     "total": 13000,
@@ -90,6 +211,11 @@
           "label": "AmmoMaximum",
           "method": "multiplicative",
           "value": 1
+        },
+        {
+          "label": "BurstInterval",
+          "method": "multiplicative",
+          "value": -0.61145
         },
         {
           "label": "FalloffRange",
@@ -137,6 +263,11 @@
           "value": 1
         },
         {
+          "label": "BurstInterval",
+          "method": "multiplicative",
+          "value": -0.2635
+        },
+        {
           "label": "Damage",
           "method": "multiplicative",
           "value": -0.2
@@ -175,13 +306,13 @@
         },
         {
           "label": "DistributorDraw",
-          "method": "multiplicative",
-          "value": 4.2769
+          "method": "overwrite",
+          "value": 3.43
         },
         {
           "label": "FalloffRange",
-          "method": "multiplicative",
-          "value": -0.11765
+          "method": "overwrite",
+          "value": 1500
         },
         {
           "label": "Jitter",
@@ -195,8 +326,8 @@
         },
         {
           "label": "MaximumRange",
-          "method": "multiplicative",
-          "value": 0.7647
+          "method": "overwrite",
+          "value": 3000
         },
         {
           "label": "PowerDraw",
@@ -205,8 +336,8 @@
         },
         {
           "label": "ShotSpeed",
-          "method": "multiplicative",
-          "value": 2.1497
+          "method": "overwrite",
+          "value": 3568.6
         },
         {
           "label": "ThermalLoad",
@@ -278,14 +409,8 @@
   "sameTripleDifferentGrade": {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
     "blueprint": "Weapon_LongRange",
-    "grades": [
-      5,
-      1
-    ],
-    "acquisitions": [
-      "communityGoal",
-      "techBroker"
-    ]
+    "grades": [5, 1],
+    "acquisitions": ["communityGoal", "techBroker"]
   },
   "resolved": {
     "fsdV1Size5": {
@@ -301,9 +426,7 @@
         "mass": 26,
         "integrity": 84
       },
-      "unresolved": [
-        "FSDHeatRate"
-      ]
+      "unresolved": ["FSDHeatRate"]
     },
     "guardianShardMediumG1": {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
@@ -311,21 +434,31 @@
       "grade": 1,
       "base": {
         "mass": 4,
-        "powerDraw": 1.21
+        "powerDraw": 1.21,
+        "maximumRange": 1700,
+        "thermalLoad": 1.2,
+        "armourPiercing": 45
       },
       "engineered": {
         "mass": 6,
-        "powerDraw": 2.783
+        "powerDraw": 2.783,
+        "maximumRange": 3000,
+        "falloffRange": 1500,
+        "thermalLoad": 19.8,
+        "armourPiercing": 90.9
       },
-      "unresolved": [
-        "ArmourPenetration",
-        "DistributorDraw",
-        "FalloffRange",
-        "Jitter",
-        "MaximumRange",
-        "ShotSpeed",
-        "ThermalLoad"
-      ]
+      "unresolved": [],
+      "note": "The tech-broker 'Modified Guardian Shard Cannon': 3000 m range with falloff starting at 1500 m. Not a Long Range grade — the blueprint named identifies the variant, it does not reproduce it."
+    },
+    "guardianShardMediumLongRange": {
+      "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+      "blueprint": "Weapon_LongRange",
+      "grade": 5,
+      "engineered": {
+        "maximumRange": 8500,
+        "falloffRange": 1700,
+        "shotSpeed": 1258.89
+      }
     }
   },
   "notPreEngineered": [

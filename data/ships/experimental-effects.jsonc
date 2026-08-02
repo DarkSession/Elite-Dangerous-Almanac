@@ -3,14 +3,22 @@
  * modifiers it applies AND the materials one application costs. Keyed by the effect's
  * Frontier `fdname` (as it appears in `Engineering.ExperimentalEffect`).
  *
- * Sources: EDSY (github.com/taleden/EDSY) eddb.js `expeffect` — coriolis-data does
- *          not carry the numeric experimental modifiers OR their recipes. `modifiers`
- *          are the effect's stat contributions; `materials` its `mats` map, resolved
- *          from EDSY's material short-codes to Frontier material `symbol`s against the
- *          materials domain. EDSY is (c) taleden under a CC BY-NC 4.0 License
- *          (http://creativecommons.org/licenses/by-nc/4.0/).
- *          The game logic is Elite Dangerous data, property of Frontier Developments
- *          plc, under Frontier's media-usage terms:
+ * Sources: EDSY (github.com/taleden/EDSY) eddb.js `expeffect` is the primary source —
+ *          one table holding each effect's modifiers and its recipe together.
+ *          `modifiers` are the effect's stat contributions; `materials` its `mats` map,
+ *          resolved from EDSY's material short-codes to Frontier material `symbol`s
+ *          against the materials domain. EDSY is (c) taleden under a CC BY-NC 4.0
+ *          License (http://creativecommons.org/licenses/by-nc/4.0/).
+ *          Every value is cross-checked against EDCD/coriolis-data
+ *          (github.com/EDCD/coriolis-data, commit 0db9234b5b9ce8c939ea84133d7ce336
+ *          eea88e27, acquired 2026-08-01 UTC), which holds the same facts split across
+ *          `modifications/modifierActions.json` and `modifications/specials.json`.
+ *          Where the two disagree, a magnitude only one of them carries is not stored:
+ *          the effect keeps the empty `modifiers` list and `description` this file uses
+ *          for every qualitative effect.
+ *          coriolis-data's MIT licence covers its *code* only — its JSON, like EDSY's
+ *          tables, is Elite Dangerous data, the property of Frontier Developments plc,
+ *          used under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
  * Each effect is { name, modifiers, materials, description? }. `name` is the in-game
@@ -246,6 +254,11 @@
         "label": "PowerDraw",
         "method": "multiplicative",
         "value": 0.05
+      },
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.029126
       }
     ],
     "materials": [
@@ -278,6 +291,11 @@
         "label": "PowerDraw",
         "method": "multiplicative",
         "value": 0.05
+      },
+      {
+        "label": "Damage",
+        "method": "multiplicative",
+        "value": 0.03
       }
     ],
     "materials": [
@@ -1161,6 +1179,11 @@
         "value": 0.08
       },
       {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": -0.02
+      },
+      {
         "label": "EnginesCapacity",
         "method": "multiplicative",
         "value": 0.08
@@ -1174,6 +1197,11 @@
         "label": "SystemsCapacity",
         "method": "multiplicative",
         "value": 0.08
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "value": -0.02
       }
     ],
     "materials": [
@@ -1284,6 +1312,11 @@
         "value": -0.04
       },
       {
+        "label": "WeaponsRecharge",
+        "method": "multiplicative",
+        "value": 0.04
+      },
+      {
         "label": "EnginesCapacity",
         "method": "multiplicative",
         "value": -0.04
@@ -1297,6 +1330,11 @@
         "label": "SystemsCapacity",
         "method": "multiplicative",
         "value": -0.04
+      },
+      {
+        "label": "SystemsRecharge",
+        "method": "multiplicative",
+        "value": 0.04
       }
     ],
     "materials": [
@@ -1322,7 +1360,7 @@
     "modifiers": [
       {
         "label": "DefenceModifierHealthAddition",
-        "method": "additive",
+        "method": "multiplicative",
         "value": -0.05
       },
       {
@@ -1359,7 +1397,7 @@
     "modifiers": [
       {
         "label": "DefenceModifierHealthAddition",
-        "method": "additive",
+        "method": "multiplicative",
         "value": 0.1
       },
       {
@@ -1401,7 +1439,7 @@
     "modifiers": [
       {
         "label": "DefenceModifierHealthAddition",
-        "method": "additive",
+        "method": "multiplicative",
         "value": -0.05
       },
       {
@@ -1433,7 +1471,7 @@
     "modifiers": [
       {
         "label": "DefenceModifierHealthAddition",
-        "method": "additive",
+        "method": "multiplicative",
         "value": -0.05
       },
       {
@@ -1475,7 +1513,7 @@
       },
       {
         "label": "ShieldBankReinforcement",
-        "method": "additive",
+        "method": "multiplicative",
         "value": 0.05
       }
     ],
@@ -1561,7 +1599,7 @@
       },
       {
         "label": "ShieldBankReinforcement",
-        "method": "additive",
+        "method": "multiplicative",
         "value": -0.05
       }
     ],

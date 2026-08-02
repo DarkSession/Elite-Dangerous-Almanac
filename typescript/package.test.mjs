@@ -124,6 +124,28 @@ test('internal loadout engineering adapters are not package exports', async () =
     });
 });
 
+test('internal loadout metric adapters are not package exports', async () => {
+    await assert.rejects(import('@elite-dangerous-almanac/core/ships/loadout-metrics'), {
+        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+    });
+});
+
+test('the internal journal-label table is not a package export', async () => {
+    await assert.rejects(import('@elite-dangerous-almanac/core/ships/module-stat-labels'), {
+        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+    });
+});
+
+test('the data-free build calculations are importable on their own', async () => {
+    const { powerBudget } = await import('@elite-dangerous-almanac/core/ships/power');
+    const { stackShieldResistance } =
+        await import('@elite-dangerous-almanac/core/ships/resistances');
+    const { weaponMetrics } = await import('@elite-dangerous-almanac/core/ships/weapons');
+    assert.equal(powerBudget(10, [{ draw: 4, priority: 1 }]).headroom, 6);
+    assert.ok(Math.abs(stackShieldResistance(0, [0.1, 0.1]) - 0.19) < 1e-9);
+    assert.equal(weaponMetrics({ damage: 2, rateOfFire: 3 }).damagePerSecond, 6);
+});
+
 test('the package omits unusable source maps whose sources are not published', async () => {
     await assert.rejects(readFile(new URL('./dist/ships/ship-loadout.js.map', import.meta.url)));
 });

@@ -72,6 +72,83 @@ test('an effect either has numeric modifiers or a description (never neither)', 
     }
 });
 
+test('an effect named for a stat actually moves that stat', () => {
+    // The cost leg alone is easy to record and leaves the effect looking complete while
+    // doing nothing: Oversized read as "+5% power draw" with no damage, and Multi-Servos
+    // as "+5% power draw" with no change to the firing cycle.
+    const named: [string, string, number][] = [
+        ['special_weapon_damage', 'Damage', 0.03],
+        ['special_weapon_rateoffire', 'BurstInterval', -0.029126],
+        ['special_weapon_efficient', 'PowerDraw', -0.1],
+        ['special_weapon_toughened', 'Integrity', 0.15],
+        ['special_weapon_lightweight', 'Mass', -0.1],
+        ['special_powerplant_highcharge', 'PowerCapacity', 0.05],
+        ['special_shieldcell_oversized', 'ShieldBankReinforcement', 0.05],
+    ];
+    for (const [fdname, label, value] of named) {
+        const modifier = getExperimentalEffect(fdname)?.find((m) => m.label === label);
+        assert.ok(modifier, `${fdname} does not move ${label}`);
+        assert.equal(modifier.value, value, fdname);
+    }
+});
+
+test('percentage contributions are stored as percentages, not flat amounts', () => {
+    // `method` decides whether a value scales the module's own stat or is bolted on, and
+    // a wrong one is invisible until the label gains a base to apply to: these eight read
+    // as a flat 0.05 hull points / shield reinforcement rather than ±5%. Both references
+    // type all of them as percentages (EDSY `hullrnf`/`shieldrnfps` carry neither
+    // `modadd` nor `modmod`; coriolis's `modifierActions` values are fractions).
+    const percentages: [string, string][] = [
+        ['special_hullreinforcement_kinetic', 'DefenceModifierHealthAddition'],
+        ['special_hullreinforcement_chunky', 'DefenceModifierHealthAddition'],
+        ['special_hullreinforcement_explosive', 'DefenceModifierHealthAddition'],
+        ['special_hullreinforcement_thermic', 'DefenceModifierHealthAddition'],
+        ['special_shieldcell_oversized', 'ShieldBankReinforcement'],
+        ['special_shieldcell_gradual', 'ShieldBankReinforcement'],
+        ['special_shield_kinetic', 'ShieldGenStrength'],
+        ['special_engine_haulage', 'EngineOptimalMass'],
+    ];
+    for (const [fdname, label] of percentages) {
+        const modifier = getExperimentalEffect(fdname)?.find((m) => m.label === label);
+        assert.ok(modifier, `${fdname} does not carry ${label}`);
+        assert.equal(modifier.method, 'multiplicative', `${fdname} ${label}`);
+        assert.ok(Math.abs(modifier.value) < 1, `${fdname} ${label} is not a fraction`);
+    }
+});
+
+test('the canister effects stay qualitative, with no single-sourced magnitude', () => {
+    // coriolis-data gives Radiant Canister an ammunition cost and Shift-Lock Canister a
+    // damage cost that no other source carries a magnitude for. Their in-game
+    // descriptions do say a cost exists, but a number one source asserts alone is worse
+    // than the honest empty list plus a description this file uses for every other
+    // qualitative effect.
+    for (const fdname of ['special_radiant_canister', 'special_shiftlock_canister']) {
+        assert.deepEqual(getExperimentalEffect(fdname), [], fdname);
+        assert.ok(EXPERIMENTAL_EFFECTS[fdname]?.description, `${fdname} needs a description`);
+    }
+});
+
+test('the power-distributor effects move all three banks, capacity and recharge alike', () => {
+    // Cluster Capacitors and Super Conduits each trade one against the other across
+    // systems, engines and weapons; a missing bank silently favours that bank.
+    for (const [fdname, capacity, recharge] of [
+        ['special_powerdistributor_capacity', 0.08, -0.02],
+        ['special_powerdistributor_fast', -0.04, 0.04],
+    ] as const) {
+        const modifiers = getExperimentalEffect(fdname)!;
+        for (const bank of ['Systems', 'Engines', 'Weapons']) {
+            assert.deepEqual(
+                modifiers.find((m) => m.label === `${bank}Capacity`),
+                { label: `${bank}Capacity`, method: 'multiplicative', value: capacity },
+            );
+            assert.deepEqual(
+                modifiers.find((m) => m.label === `${bank}Recharge`),
+                { label: `${bank}Recharge`, method: 'multiplicative', value: recharge },
+            );
+        }
+    }
+});
+
 test('getExperimentalEffect returns the modifiers; getExperimentalEffectMaterials the recipe', () => {
     const modifiers = getExperimentalEffect('special_fsd_heavy');
     assert.ok(modifiers && modifiers.some((m) => m.label === 'FSDOptimalMass'));

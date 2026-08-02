@@ -1,0 +1,191 @@
+/**
+ * **Damage resistances** — how a build's shield and hull resistances stack, including
+ * the diminishing returns the game applies once they get high.
+ *
+ * A resistance is the fraction of incoming damage removed: `0.4` means 40% of that
+ * damage type never lands, and a *negative* value is a weakness (every shield generator
+ * is `-0.2` against thermal). Its complement is the **damage multiplier**, `1 −
+ * resistance`, which is what stacking actually multiplies.
+ *
+ * Sources stack multiplicatively on the multiplier — two 20% resisters leave
+ * `0.8 × 0.8 = 0.64`, i.e. 36% resisted rather than 40% — and then the game bends the
+ * result so that stacking cannot run away:
+ *
+ * - **Shields.** Once the boosters push the multiplier below 70% of what the generator
+ *   alone gives, the remaining gain is halved: the range `[0, max]` is squeezed into
+ *   `[max/2, max]`, where `max` is `0.7 ×` the generator's own multiplier.
+ * - **Hull.** Once the stack drops the multiplier below the lowest single source's
+ *   multiplier (capped at `0.7`), the range `[0, max]` is squeezed into `[0.35, max]`.
+ *   If the squeeze would *raise* the multiplier above `0.7`, the plain product stands.
+ *
+ * This module is data-free — pass fractions in, get fractions out. {@link ShipLoadout}
+ * (`./ship-loadout`), `./shields` and `./armour` gather the numbers for you.
+ *
+ * @remarks
+ * Reference implementation: EDCD/Coriolis by the Coriolis contributors (MIT),
+ * <https://github.com/EDCD/coriolis> —
+ * `src/app/shipyard/Calculations.js` (`diminishingReturnsShields`,
+ * `diminishingReturnsArmour`, `mapIntoDiminishingRange`, `sysResistance`), commit
+ * `68c042ca6e3db62372cbbb2077cf972345511712`. The algorithm is ported as fact, not code.
+ *
+ * @example
+ * ```ts
+ * import { stackShieldResistance } from '@elite-dangerous-almanac/core/ships/resistances';
+ *
+ * // A stock shield generator (40% kinetic) under four 20% resistance-augmented boosters
+ * stackShieldResistance(0.4, [0.2, 0.2, 0.2, 0.2]); // -> 0.667…, not 0.4 + 4 × 0.2
+ * ```
+ *
+ * @packageDocumentation
+ */
+
+/**
+ * One value per damage type — whatever the value happens to be: a resistance, a pool of
+ * effective hit points, a share of incoming damage.
+ *
+ * @remarks
+ * Absolute damage is not listed: no resistance reduces it, so there is nothing per-type
+ * to say about it. The unit is the one the field that carries this type documents.
+ */
+export interface DamageTypeValues {
+    /** The kinetic figure. */
+    readonly kinetic: number;
+    /** The thermal figure. */
+    readonly thermal: number;
+    /** The explosive figure. */
+    readonly explosive: number;
+    /** The caustic figure. */
+    readonly caustic: number;
+}
+
+/**
+ * The four resistances a build carries, each the **fraction** of that damage type
+ * removed: `0.4` is 40% resisted, and a negative value is a weakness. Values run in
+ * `(-∞, 1]`.
+ */
+export type DamageResistances = DamageTypeValues;
+
+/** The fraction of damage that lands, given a resistance. */
+const multiplierOf = (resistance: number): number => 1 - resistance;
+
+/**
+ * Squeeze the range `[0, max]` into `[min, max]` for `now` — the game's diminishing
+ * curve. `now` above `max` is left alone by the callers, which check first.
+ */
+const mapIntoDiminishingRange = (min: number, max: number, now: number): number =>
+    max === 0 ? min : min + (max - min) * (now / max);
+
+/**
+ * The damage multiplier of a shield stack — the fraction of incoming damage that
+ * still lands.
+ *
+ * @param generator - The shield generator's resistance to this damage type, as a
+ * fraction.
+ * @param boosters - Each fitted shield booster's resistance to the same type, as
+ * fractions. Only powered boosters count; pass an empty array for none.
+ * @returns The fraction of damage that gets through, after diminishing returns.
+ * @remarks
+ * The complement of {@link stackShieldResistance}; use whichever you need — this one
+ * is what you multiply incoming damage by.
+ */
+export function stackShieldMultiplier(generator: number, boosters: readonly number[] = []): number {
+    const generatorMultiplier = multiplierOf(generator);
+    const combined = boosters.reduce(
+        (product, resistance) => product * multiplierOf(resistance),
+        generatorMultiplier,
+    );
+    // Diminishing returns start once the boosters have taken 30% off the generator's
+    // own multiplier; beyond that each further point is worth half as much.
+    const threshold = generatorMultiplier * 0.7;
+    if (combined >= threshold) return combined;
+    return mapIntoDiminishingRange(threshold / 2, threshold, combined);
+}
+
+/**
+ * A shield stack's effective resistance to one damage type.
+ *
+ * @param generator - The shield generator's resistance to this damage type, as a
+ * fraction (negative for a weakness).
+ * @param boosters - Each **powered** shield booster's resistance to the same type, as
+ * fractions.
+ * @returns The effective resistance, as a fraction — the share of incoming damage of
+ * that type the shields remove.
+ * @example
+ * ```ts
+ * stackShieldResistance(0.4);                 // -> 0.4   (generator alone)
+ * stackShieldResistance(-0.2, [0.1, 0.1]);    // -> a thermal weakness, partly patched
+ * ```
+ */
+export function stackShieldResistance(generator: number, boosters: readonly number[] = []): number {
+    return 1 - stackShieldMultiplier(generator, boosters);
+}
+
+/**
+ * The damage multiplier of a hull stack — the fraction of incoming damage that still
+ * lands.
+ *
+ * @param bulkhead - The fitted armour's resistance to this damage type, as a fraction.
+ * @param reinforcements - Each hull reinforcement package's resistance to the same
+ * type, as fractions. Only powered/fitted packages count.
+ * @returns The fraction of damage that gets through, after diminishing returns.
+ */
+export function stackArmourMultiplier(
+    bulkhead: number,
+    reinforcements: readonly number[] = [],
+): number {
+    const multipliers = [bulkhead, ...reinforcements].map(multiplierOf);
+    const combined = multipliers.reduce((product, multiplier) => product * multiplier, 1);
+    // The floor is the best single source, and never worse than 70% resisted.
+    const threshold = Math.min(0.7, ...multipliers);
+    const diminished = mapIntoDiminishingRange(0.35, threshold, combined);
+    // Diminishing returns only ever bite; if the squeeze would *improve* a stack that
+    // never reached the threshold, the plain product stands.
+    return diminished < 0.7 ? diminished : combined;
+}
+
+/**
+ * A hull stack's effective resistance to one damage type.
+ *
+ * @param bulkhead - The fitted armour's resistance to this damage type, as a fraction
+ * (lightweight alloy is `-0.2` to kinetic — a weakness).
+ * @param reinforcements - Each fitted hull reinforcement package's resistance to the
+ * same type, as fractions.
+ * @returns The effective resistance, as a fraction.
+ * @example
+ * ```ts
+ * // Reactive surface composite (+25% kinetic) with three 1.5% hull reinforcements
+ * stackArmourResistance(0.25, [0.015, 0.015, 0.015]); // -> 0.28…
+ * ```
+ */
+export function stackArmourResistance(
+    bulkhead: number,
+    reinforcements: readonly number[] = [],
+): number {
+    return 1 - stackArmourMultiplier(bulkhead, reinforcements);
+}
+
+/**
+ * The extra shield resistance pips to SYS buy, on top of the generator and boosters.
+ *
+ * @param pips - Pips to the systems capacitor, `0`–`4`. Fractional pips are allowed —
+ * the game's own curve is continuous.
+ * @returns The resistance the pips add, as a fraction: `0` at no pips rising to `0.6`
+ * (60%) at four, following `0.6 × (pips / 4) ^ 0.85`.
+ * @throws {RangeError} If `pips` is not a finite number in `[0, 4]`.
+ * @remarks
+ * This applies to **every** damage type including absolute, and multiplies with the
+ * shield's own resistance rather than adding to it: incoming damage is scaled by
+ * `(1 − shieldResistance) × (1 − sysResistance)`.
+ * @example
+ * ```ts
+ * systemsResistance(0); // -> 0
+ * systemsResistance(2); // -> 0.333…
+ * systemsResistance(4); // -> 0.6
+ * ```
+ */
+export function systemsResistance(pips: number): number {
+    if (!Number.isFinite(pips) || pips < 0 || pips > 4) {
+        throw new RangeError('systemsResistance: pips must be a finite number in [0, 4]');
+    }
+    return (Math.pow(pips, 0.85) * 0.6) / Math.pow(4, 0.85);
+}

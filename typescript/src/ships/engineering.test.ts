@@ -10,6 +10,10 @@ import {
     moduleEngineeringTarget,
 } from './engineering-compatibility.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
+import { getModuleBySymbol } from './modules.js';
+import { ALL_MODULES } from './modules-all.js';
+import { baseStats } from './module-stat-labels.js';
+import { combinedRateOfFire } from './weapons.js';
 
 const near = (a: number, b: number, eps = 1e-3) => Math.abs(a - b) < eps;
 const modFor = (mods: { Label: string; Value?: number }[], label: string) =>
@@ -134,4 +138,87 @@ test('lookups are case-insensitive and miss cleanly', () => {
     assert.equal(getBlueprintGrade('FSD_LongRange', 9), null);
     assert.ok(getExperimentalEffect('SPECIAL_FSD_HEAVY'));
     assert.equal(getExperimentalEffect('nope'), null);
+});
+
+test('Rapid Fire shortens the fire interval, and the rate of fire follows', () => {
+    // Frontier's recipe modifies the *interval* — -44% of the wait between shots —
+    // so that is the label it carries. The rate of fire is derived from it.
+    const multiCannon = getModuleBySymbol('Hpt_MultiCannon_Fixed_Small', ALL_MODULES)!;
+    const rapid = computeModifiers(
+        baseStats(multiCannon),
+        getBlueprintGrade('Weapon_RapidFire', 5)!,
+        1,
+    );
+    assert.equal(
+        rapid.find((m) => m.Label === 'RateOfFire'),
+        undefined,
+        'the recipe names the interval, not the rate',
+    );
+    const interval = rapid.find((m) => m.Label === 'BurstInterval')!;
+    assert.equal(interval.OriginalValue, multiCannon.burstInterval);
+    assert.ok(Math.abs(interval.Value! - multiCannon.burstInterval! * 0.56) < 1e-9);
+
+    // A single-shot weapon's rate is the interval's reciprocal...
+    assert.ok(
+        Math.abs(
+            combinedRateOfFire({ ...multiCannon, burstInterval: interval.Value! })! -
+                multiCannon.rateOfFire! / 0.56,
+        ) < 1e-5,
+    );
+    // ...while a burst weapon keeps the (3 - 1) / 15 s its own burst takes.
+    const burstLaser = getModuleBySymbol('Hpt_PulseLaserBurst_Fixed_Small', ALL_MODULES)!;
+    const burstInterval = computeModifiers(
+        baseStats(burstLaser),
+        getBlueprintGrade('Weapon_RapidFire', 5)!,
+        1,
+    ).find((m) => m.Label === 'BurstInterval')!;
+    assert.ok(
+        Math.abs(
+            combinedRateOfFire({ ...burstLaser, burstInterval: burstInterval.Value! })! -
+                3 / (2 / 15 + 0.5 * 0.56),
+        ) < 1e-9,
+    );
+});
+
+test('a tech-broker recipe raises the rate of fire directly, as its registry publishes it', () => {
+    // The Inara-sourced `recipe_*` totals are the displayed stat change, so a
+    // rate-of-fire total is exactly that — including on a charged weapon, whose spin-up
+    // is part of the published cycle.
+    const railgun = getModuleBySymbol('Hpt_Railgun_Fixed_Medium', ALL_MODULES)!;
+    const rate = computeModifiers(
+        baseStats(railgun),
+        getBlueprintGrade('recipe_railgun_longshot', 5)!,
+        1,
+    ).find((m) => m.Label === 'RateOfFire')!;
+    assert.ok(Math.abs(rate.Value! - railgun.rateOfFire! * 1.667) < 1e-5, `${rate.Value}`);
+});
+
+test('a long-range recipe pushes the damage falloff out to the new maximum range', () => {
+    // Upstream encodes "damage falls off from maximum range" as an overwrite in [0, 1]
+    // — a flag, not a distance. Read literally it would put the falloff a metre out.
+    const multiCannon = getModuleBySymbol('Hpt_MultiCannon_Fixed_Small', ALL_MODULES)!;
+    const modifiers = computeModifiers(
+        baseStats(multiCannon),
+        getBlueprintGrade('Weapon_LongRange', 5)!,
+        1,
+    );
+    const range = modifiers.find((m) => m.Label === 'Range')!;
+    const falloff = modifiers.find((m) => m.Label === 'FalloffRange')!;
+    assert.equal(range.Value, 8000); // 4000 doubled at a full grade-5 roll
+    assert.equal(falloff.Value, range.Value);
+});
+
+test('an overwrite recipe applies to a stat the module does not carry', () => {
+    // Double Shot gives a two-round burst to a multi-cannon that fires one at a time.
+    const multiCannon = getModuleBySymbol('Hpt_MultiCannon_Fixed_Small', ALL_MODULES)!;
+    assert.equal(multiCannon.burstRounds, undefined);
+    const modifiers = computeModifiers(
+        baseStats(multiCannon),
+        getBlueprintGrade('Weapon_DoubleShot', 5)!,
+        1,
+    );
+    const size = modifiers.find((m) => m.Label === 'BurstSize')!;
+    assert.equal(size.Value, 2);
+    assert.equal(size.OriginalValue, 1); // the value the game assumes when absent
+    assert.equal(modifiers.find((m) => m.Label === 'BurstRateOfFire')?.Value, 14);
 });

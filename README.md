@@ -12,12 +12,12 @@ data. **TypeScript** is available today (`typescript/`); Python is planned.
 Four feature areas, each its own import subpath, each with leaf modules so you
 bundle only the catalogues you touch:
 
-| Feature area                         | What it answers                                                                                     | Start with                       |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------- | -------------------------------- |
-| [`astro`](#quick-start)              | System name ⇄ `id64`, sectors, galactic regions, 5835 nebulae, permit locks                         | `StarSystem`                     |
-| [`ships`](#ships-and-outfitting)     | 48 hulls and ~1200 modules with stats, slots and prices, SLEF builds, jump range, engineering costs | `ShipLoadout`, `getShipBySymbol` |
-| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                          | `getMaterialByName`              |
-| [`commodities`](#market-commodities) | 256 standard and 142 rare market goods                                                              | `getCommodityBySymbol`           |
+| Feature area                         | What it answers                                                                                                                         | Start with                       |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| [`astro`](#quick-start)              | System name ⇄ `id64`, sectors, galactic regions, 5835 nebulae, permit locks                                                             | `StarSystem`                     |
+| [`ships`](#ships-and-outfitting)     | 48 hulls and ~1200 modules with stats, slots and prices, SLEF builds, jump range, power, shields, armour, weapon DPS, engineering costs | `ShipLoadout`, `getShipBySymbol` |
+| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                                                              | `getMaterialByName`              |
+| [`commodities`](#market-commodities) | 256 standard and 142 rare market goods                                                                                                  | `getCommodityBySymbol`           |
 
 Also here: [the four kinds of "region"](#the-four-kinds-of-region) (the one thing
 that trips everyone up), [nebulae](#nebulae), [permit
@@ -466,7 +466,7 @@ its stats together** (see [Module stats](#ship-and-module-stats) below):
 
 | Import                    | Export              | What's in it                                            | Entries |
 | ------------------------- | ------------------- | ------------------------------------------------------- | ------- |
-| `ships/modules-standard`  | `STANDARD_MODULES`  | Core internals (armour, power plant, thrusters, FSD, …) | 521     |
+| `ships/modules-core`      | `CORE_MODULES`      | Core internals (armour, power plant, thrusters, FSD, …) | 521     |
 | `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 483     |
 | `ships/modules-hardpoint` | `HARDPOINT_MODULES` | Hardpoint weapons and tools                             | 159     |
 | `ships/modules-utility`   | `UTILITY_MODULES`   | Utility-mount fittings (chaff, heat sinks, boosters, …) | 35      |
@@ -482,11 +482,11 @@ import {
   getModulesForShip,
 } from "@elite-dangerous-almanac/core/ships/modules";
 import { HARDPOINT_MODULES } from "@elite-dangerous-almanac/core/ships/modules-hardpoint";
-import { STANDARD_MODULES } from "@elite-dangerous-almanac/core/ships/modules-standard";
+import { CORE_MODULES } from "@elite-dangerous-almanac/core/ships/modules-core";
 
 getModuleBySymbol("Hpt_PulseLaser_Fixed_Small", HARDPOINT_MODULES)?.name; // -> 'Pulse Laser'
 getModulesByName("Pulse Laser", HARDPOINT_MODULES).length; // every size/mount variant
-getModulesForShip("Anaconda", STANDARD_MODULES).length; // -> 5 (its bulkhead set)
+getModulesForShip("Anaconda", CORE_MODULES).length; // -> 5 (its bulkhead set)
 ```
 
 Each module carries a `class` (the module **size**, 0–8) and a `rating` (the grade
@@ -505,26 +505,53 @@ record**, so once you resolve a module or hull you already have its stats:
 
 ```ts
 import { getModuleBySymbol } from "@elite-dangerous-almanac/core/ships/modules";
-import { STANDARD_MODULES } from "@elite-dangerous-almanac/core/ships/modules-standard";
+import { CORE_MODULES } from "@elite-dangerous-almanac/core/ships/modules-core";
 import { getShipBySymbol } from "@elite-dangerous-almanac/core/ships/ships";
 
 getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes)
-getModuleBySymbol("int_hyperdrive_size5_class5", STANDARD_MODULES)?.optMass; // -> 1050
+getModuleBySymbol("int_hyperdrive_size5_class5", CORE_MODULES)?.optMass; // -> 1050
 ```
 
-The stat fields are **sparse** — a module carries only the ones its group uses, and
-ship-specific armour carries none. `restrictedToShips` appears on the few non-armour
-modules limited to particular hulls (e.g. the Python Mk II's MkII Gravity Optimised
-thrusters → `["Explorer_NX"]`); armour's hull restriction stays in its `ship` field.
-Masses are tonnes, power megawatts, ranges light-years. Only mechanical stats are
-carried — weapon combat stats (damage, falloff, …) are not.
+The stat fields are **sparse** — a module carries only the ones its group uses.
+`restrictedToShips` appears on the few non-armour modules limited to particular hulls
+(e.g. the Python Mk II's MkII Gravity Optimised thrusters → `["Explorer_NX"]`);
+armour's hull restriction stays in its `ship` field. Masses are tonnes, power
+megawatts, jump ranges light-years, weapon ranges metres.
+
+Alongside the mechanical stats, records carry what the [build
+metrics](#build-metrics-power-shields-armour-and-firepower) need:
+
+```ts
+import { INTERNAL_MODULES } from "@elite-dangerous-almanac/core/ships/modules-internal";
+import { HARDPOINT_MODULES } from "@elite-dangerous-almanac/core/ships/modules-hardpoint";
+
+// Defence: resistances as fractions (negative is a weakness)
+getModuleBySymbol("Int_ShieldGenerator_Size5_Class5", INTERNAL_MODULES)
+  ?.thermalResistance; // -> -0.2
+getModuleBySymbol("Int_HullReinforcement_Size3_Class2", INTERNAL_MODULES)
+  ?.hullReinforcement; // -> 260
+
+// Armour is a module too: each hull's variants carry that hull's mass and hull boost
+getModuleBySymbol("Anaconda_Armour_Reactive", CORE_MODULES)?.hullBoost; // -> 2.5 (base armour x 3.5)
+
+// Weapons: damage per round, its type split, and the rate that turns it into DPS
+const mc = getModuleBySymbol("Hpt_MultiCannon_Fixed_Small", HARDPOINT_MODULES)!;
+mc.damage; // -> 1.12   per round
+mc.rateOfFire; // -> 7.69   shots per second, bursts and charge time folded in
+mc.damageDistribution; // -> { kinetic: 1 }
+```
+
+A weapon's `damage` is per **round** and its `distributorDraw` and `thermalLoad` per
+**shot** — the two differ on a weapon that fires several rounds at once, like a
+fragment cannon. The continuous-fire beam and mining lasers carry no `rateOfFire`,
+because all three stats are already per second on those.
 
 #### Prices
 
 Standard list prices in credits sit on the same records — no second lookup:
 
 ```ts
-getModuleBySymbol("int_powerplant_size8_class1", STANDARD_MODULES)?.cost; // -> 1441233
+getModuleBySymbol("int_powerplant_size8_class1", CORE_MODULES)?.cost; // -> 1441233
 
 getShipBySymbol("anaconda")?.hullCost; // -> 142456440  (bare hull)
 getShipBySymbol("anaconda")?.retailCost; // -> 146969451  (hull + default modules)
@@ -562,8 +589,12 @@ build.shipName; // -> 'The Deep Black'
 build.maxJumpRange(); // -> 89.41  best single jump (one jump's fuel, no cargo)
 build.unladenJumpRange(); // full tank, no cargo
 build.ladenJumpRange(); // full tank, full cargo
+build.jumpRange({ fuel: 32, cargo: 16 }); // any partial load you like
 build.totalRange(); // -> multi-jump range as the tank drains
 build.fuelPerJump(50); // -> tonnes of fuel a 50 LY jump costs
+
+build.jumpRangeSummary(); // all five at once:
+// -> { max, unladen, laden, totalUnladen, totalLaden }
 ```
 
 `ShipLoadout` resolves the drive's constants from the module stats and applies the
@@ -574,10 +605,87 @@ SLEF export yourself with `parseSlef` from `ships/slef`. The port is validated
 against EDSY: it reproduces the sample build's exported `MaxJumpRange` of 89.414678.
 
 > **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
-> currently reaches about 516 KB of minified JavaScript (~57 KB gzipped) because it
+> currently reaches about 589 KB of minified JavaScript (~66 KB gzipped) because it
 > must resolve any ship/module id plus blueprints and experimental effects. Prefer
-> `ships/slef`, `ships/jump-range`, and the individual catalogue modules when you only
-> need parsing, maths, or one outfitting category.
+> `ships/slef`, `ships/jump-range`, the [build-metric
+> modules](#build-metrics-power-shields-armour-and-firepower) (1–3 KB each), and the
+> individual catalogue modules when you only need parsing, maths, or one outfitting
+> category.
+
+#### Build metrics: power, shields, armour and firepower
+
+The same handle answers the rest of what an outfitting screen shows. Every figure is
+**post-engineering** — journal modifiers on the fitted modules are applied first — and
+modules switched off in the build are left out:
+
+```ts
+const build = ShipLoadout.fromSlef(slefJsonString);
+
+// Power: what the plant makes against what the build draws
+const power = build.powerBudget();
+power.available; // -> 22.85 MW generated
+power.retracted; // -> draw with the hardpoints stowed
+power.deployed; // -> draw with them out (weapons only draw deployed)
+power.headroom; // -> available - deployed; negative means over budget
+power.withinBudget; // -> true
+power.bands[4]?.poweredDeployed; // -> is priority group 5 still lit?
+
+// Shields: strength in MJ and what it is worth against each damage type
+const shields = build.shieldMetrics(); // null when no generator is fitted
+shields?.strength; // -> 230.65 MJ  (generator + boosters + Guardian reinforcement)
+shields?.resistances.thermal; // -> -0.2  a stock generator is thermally weak
+shields?.effectiveHitPoints.kinetic; // -> kinetic damage the shields can soak
+build.shieldMetrics({ systemsPips: 4 })?.resistances.thermal; // -> with 4 pips to SYS
+
+// Armour: hull hit points and the bulkhead's resistances
+const hull = build.armourMetrics();
+hull.hitPoints; // -> 819.72  (base armour x bulkhead, plus reinforcement packages)
+hull.resistances.explosive; // -> -0.33
+hull.effectiveHitPoints.thermal; // -> thermal damage the hull can soak
+
+// Firepower: per weapon and totalled (this exploration build carries none, so its
+// own totals are zero — the lines below are what an armed build reports)
+const guns = build.weaponMetrics();
+guns.total.damagePerSecond; // -> DPS while the trigger is held
+guns.total.sustainedDamagePerSecond; // -> with reloads folded in
+guns.total.energyPerSecond; // -> MW drawn from the WEP capacitor
+guns.total.heatPerSecond; // -> heat generated
+guns.total.powerDraw; // -> MW asked of the power plant when deployed
+guns.total.damageByType.thermal; // -> the thermal share of that DPS
+guns.weapons[0]; // -> { slot, symbol, name, enabled, metrics }
+```
+
+**Shields scale with the hull's mass, not the build's** — fitting more modules never
+weakens them — and a generator will not engage at all around a hull heavier than its
+maximum mass. Resistances **stack with diminishing returns**: two 20% sources leave 36%,
+not 40%, and past a threshold each further point is worth half as much. Armour hit
+points are `baseArmour × (1 + hullBoost)` plus each hull reinforcement package.
+
+Need just the maths, without a build? Each calculation is a data-free module you can
+import on its own:
+
+| Import              | What it does                                                          |
+| ------------------- | --------------------------------------------------------------------- |
+| `ships/power`       | `powerBudget(available, consumers)` — totals and the priority groups  |
+| `ships/shields`     | `shieldMetrics`, `shieldStrength`, `shieldMassCurveMultiplier`        |
+| `ships/armour`      | `armourMetrics` — hit points, reinforcement, resistances              |
+| `ships/weapons`     | `weaponMetrics`, `damagePerSecond`, `damageFalloff`, `splitDamage`    |
+| `ships/resistances` | `stackShieldResistance`, `stackArmourResistance`, `systemsResistance` |
+
+```ts
+import { weaponMetrics } from "@elite-dangerous-almanac/core/ships/weapons";
+import { getModuleBySymbol } from "@elite-dangerous-almanac/core/ships/modules";
+import { HARDPOINT_MODULES } from "@elite-dangerous-almanac/core/ships/modules-hardpoint";
+
+// A catalogue record is already a valid weapon input
+const mc = getModuleBySymbol("Hpt_MultiCannon_Fixed_Small", HARDPOINT_MODULES)!;
+weaponMetrics(mc).damagePerSecond; // -> 8.62
+weaponMetrics(mc).sustainedDamagePerSecond; // -> 6.64, with the 4 s reload
+```
+
+The models are ported from [Coriolis](https://github.com/EDCD/coriolis) and
+cross-checked against [EDSY](https://github.com/taleden/EDSY); see
+[`data/ships/SOURCES.md`](data/ships/SOURCES.md) for the exact functions and commits.
 
 #### Building and engineering a loadout
 
@@ -596,7 +704,7 @@ import {
   ShipLoadout,
   getModuleBySymbol,
   ALL_MODULES,
-  STANDARD_MODULES,
+  CORE_MODULES,
 } from "@elite-dangerous-almanac/core/ships";
 
 const build = ShipLoadout.empty("Anaconda");
@@ -607,12 +715,12 @@ build.coreModules(); // the seven core mounts; also hardpoints(), utilityMounts(
 build
   .setModule(
     "FrameShiftDrive",
-    getModuleBySymbol("Int_Hyperdrive_Size6_Class5", STANDARD_MODULES)!,
+    getModuleBySymbol("Int_Hyperdrive_Size6_Class5", CORE_MODULES)!,
   )
   // A fuel tank is what a jump draws from — without one, maxJumpRange() is 0.
   .setModule(
     "Slot01_Size7",
-    getModuleBySymbol("Int_FuelTank_Size6_Class3", STANDARD_MODULES)!,
+    getModuleBySymbol("Int_FuelTank_Size6_Class3", CORE_MODULES)!,
   )
   .applyBlueprint("FrameShiftDrive", "FSD_LongRange", {
     grade: 5,
@@ -632,9 +740,9 @@ and `slot.module` return a **live `FittedModule` handle** you engineer directly:
 const conda = ShipLoadout.empty("Anaconda");
 const drive = conda.coreModules().find((s) => s.core === "frameShiftDrive")!;
 
-drive.modulesForSlot(STANDARD_MODULES); // what fits *this* slot — no key argument
+drive.modulesForSlot(CORE_MODULES); // what fits *this* slot — no key argument
 drive
-  .fit(getModuleBySymbol("Int_Hyperdrive_Size6_Class5", STANDARD_MODULES)!) // -> FittedModule
+  .fit(getModuleBySymbol("Int_Hyperdrive_Size6_Class5", CORE_MODULES)!) // -> FittedModule
   .applyBlueprint("FSD_LongRange", { grade: 5 }); // engineer it, still no key
 
 const fsd = conda.getFittedModule("FrameShiftDrive")!;
@@ -657,7 +765,7 @@ above matches `s.core === "frameShiftDrive"` but calls
 `getFittedModule("FrameShiftDrive")`. Pass the camelCase form where a key is expected
 and you get nothing: `getFittedModule` returns `null`, `setModule` throws a `RangeError`
 naming the slot it could not find. A module lives in the catalogue for its outfitting **category**, which is not
-always the slot it occupies — a fuel tank is in `STANDARD_MODULES` even though it fits
+always the slot it occupies — a fuel tank is in `CORE_MODULES` even though it fits
 an optional slot — so pass `ALL_MODULES` to `modulesForSlot` when you want every
 candidate.
 
@@ -979,12 +1087,22 @@ field so it documents the data without being inlined into your bundle.)
   Frontier's internal ids (no explicit licence stated; check the repository terms).
   Full provenance in `data/ships/SOURCES.md`.
 - **Ship and module stats, slot layouts and blueprints** (hull/module masses, power,
-  FSD constants, thruster/shield/distributor performance, ship-restriction flags,
-  per-hull slot layouts, engineering blueprint modifiers) — from
+  FSD constants, thruster/shield/distributor performance, damage resistances, hull and
+  shield reinforcement, weapon damage and rate of fire, armour hull boost,
+  ship-restriction flags, per-hull slot layouts, engineering blueprint modifiers) — from
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (`ships/*.json`,
   `modules/**`, `modifications/**`). Coriolis-data releases only its code under MIT;
   the stat values are Elite Dangerous game data, property of Frontier Developments plc
   (see the Frontier notice below). Full provenance in `data/ships/SOURCES.md`.
+- **Build-metric algorithms** (power budget and priority groups, shield strength and
+  its mass curve, armour hit points, resistance stacking and its diminishing returns,
+  weapon DPS/EPS/HPS) — ported as fact (our own implementation) from
+  [EDCD/Coriolis](https://github.com/EDCD/coriolis) by the **Coriolis contributors**
+  (application code MIT-licensed): `src/app/shipyard/Calculations.js`, `Ship.js` and
+  `Module.js`. Cross-checked against [EDSY](https://github.com/taleden/EDSY) by
+  **taleden** (CC BY-NC 4.0), whose reading of real journal data settles the percentage
+  stats' units and compounding. Both cite the original Frontier-forum research; see
+  `data/ships/SOURCES.md` for the exact functions, commits and threads.
 - **Jump-range & fuel algorithm, experimental-effect modifiers** — the hyperspace
   formula is ported as fact (our own implementation) from
   [EDSY](https://github.com/taleden/EDSY) by **taleden** (code licensed CC BY-NC 4.0),

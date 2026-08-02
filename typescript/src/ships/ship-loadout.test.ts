@@ -4,16 +4,28 @@ import assert from 'node:assert/strict';
 import { ShipLoadout } from './ship-loadout.js';
 import type { LoadoutEvent } from './slef.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
-import { STANDARD_MODULES } from './modules-standard.js';
+import { CORE_MODULES } from './modules-core.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
+import { UTILITY_MODULES } from './modules-utility.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 import expected from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
+import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
+import { ALL_MODULES } from './modules-all.js';
+import type { DamageTypeValues } from './resistances.js';
+import { damageFalloff } from './weapons.js';
 
-const mod = (symbol: string, catalogue = STANDARD_MODULES) => getModuleBySymbol(symbol, catalogue)!;
+const mod = (symbol: string, catalogue = CORE_MODULES) => getModuleBySymbol(symbol, catalogue)!;
 
 const slefString = JSON.stringify(slefFixture);
 const near = (a: number, b: number, eps = 1e-3) => Math.abs(a - b) < eps;
+/** Per-damage-type figures rounded to the six decimals the shared fixture stores. */
+const rounded = (r: DamageTypeValues) => ({
+    kinetic: Math.round(r.kinetic * 1e6) / 1e6,
+    thermal: Math.round(r.thermal * 1e6) / 1e6,
+    explosive: Math.round(r.explosive * 1e6) / 1e6,
+    caustic: Math.round(r.caustic * 1e6) / 1e6,
+});
 
 test('fromSlef reads the ship identity and top-level figures', () => {
     const build = ShipLoadout.fromSlef(slefString);
@@ -315,11 +327,11 @@ test('setModule throws a clear error when handed an undefined module', () => {
 
 test('modulesForSlot lists only fitting modules', () => {
     const conda = ShipLoadout.empty('Anaconda');
-    const drives = conda.modulesForSlot('FrameShiftDrive', STANDARD_MODULES);
+    const drives = conda.modulesForSlot('FrameShiftDrive', CORE_MODULES);
     assert.ok(drives.length > 0);
     assert.ok(drives.every((m) => m.symbol.toLowerCase().startsWith('int_hyperdrive')));
     assert.ok(drives.every((m) => m.class <= 6));
-    assert.throws(() => conda.modulesForSlot('NoSuchSlot', STANDARD_MODULES), RangeError);
+    assert.throws(() => conda.modulesForSlot('NoSuchSlot', CORE_MODULES), RangeError);
 });
 
 test('fit checks use restrictions carried by caller-supplied module records', () => {
@@ -339,7 +351,7 @@ test('fit checks use restrictions carried by caller-supplied module records', ()
 
 test('armour is hull-specific while the cargo hatch remains fixed', () => {
     const conda = ShipLoadout.empty('Anaconda');
-    const armour = conda.modulesForSlot('Armour', STANDARD_MODULES);
+    const armour = conda.modulesForSlot('Armour', CORE_MODULES);
     assert.equal(armour.length, 5);
     assert.ok(armour.every((module) => module.ship === 'Anaconda'));
     conda.setModule(
@@ -349,10 +361,7 @@ test('armour is hull-specific while the cargo hatch remains fixed', () => {
     assert.equal(conda.getFittedModule('Armour')?.Item, 'Anaconda_Armour_Grade2');
     assert.throws(
         () =>
-            conda.setModule(
-                'Armour',
-                getModuleBySymbol('SideWinder_Armour_Grade2', STANDARD_MODULES)!,
-            ),
+            conda.setModule('Armour', getModuleBySymbol('SideWinder_Armour_Grade2', CORE_MODULES)!),
         /belongs to Sidewinder, not Anaconda/,
     );
     assert.throws(
@@ -468,27 +477,60 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
     );
 });
 
-test('engineering rejects recipes whose base stats are not carried', () => {
+test('weapon and armour recipes engineer the stats the catalogue carries', () => {
     const weapon = ShipLoadout.empty('Sidewinder').setModule(
         'SmallHardpoint1',
         mod('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES),
     );
     const fittedWeapon = weapon.getFittedModule('SmallHardpoint1')!;
     assert.ok(
-        !fittedWeapon
+        fittedWeapon
             .getAvailableBlueprints()
             .some((blueprint) => blueprint.fdname === 'Weapon_Overcharged'),
     );
-    assert.throws(
-        () => weapon.applyBlueprint('SmallHardpoint1', 'Weapon_Overcharged', { grade: 5 }),
-        /missing base stats for Damage/,
-    );
+    weapon.applyBlueprint('SmallHardpoint1', 'Weapon_Overcharged', { grade: 5 });
+    const overcharged = weapon.getFittedModule('SmallHardpoint1')!.Engineering!.Modifiers;
+    const damage = overcharged.find((m) => m.Label === 'Damage')!;
+    assert.ok(damage.Value! > damage.OriginalValue!, 'Overcharged raises damage');
 
-    const imported = ShipLoadout.fromSlef(slefString);
-    assert.throws(
-        () => imported.applyBlueprint('Armour', 'Armour_HeavyDuty', { grade: 5 }),
-        /missing base stats/,
+    // Armour's hull boost is a per-hull stat on the armour module, so Heavy Duty
+    // resolves against it.
+    const conda = ShipLoadout.empty('Anaconda').setModule('Armour', mod('Anaconda_Armour_Grade3'));
+    conda.applyBlueprint('Armour', 'Armour_HeavyDuty', { grade: 5 });
+    const boost = conda
+        .getFittedModule('Armour')!
+        .Engineering!.Modifiers.find((m) => m.Label === 'DefenceModifierHealthMultiplier')!;
+    // The journal reports hull boost as a percentage, and it compounds on the armour
+    // multiplier: a 250% bulkhead (x3.5 armour) at a full grade-5 roll (+32%) becomes
+    // x4.62, i.e. 362%.
+    assert.equal(boost.OriginalValue, 250);
+    assert.equal(boost.Value, 362);
+});
+
+test('engineering rejects recipes whose base stats are not carried', () => {
+    // A hull reinforcement package has no base hull boost — in game the modifier *is*
+    // the bonus — so the Advanced recipe cannot be computed and says so rather than
+    // quietly resolving it to nothing.
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'Slot01_Size7',
+        mod('Int_HullReinforcement_Size5_Class2', INTERNAL_MODULES),
     );
+    const fitted = build.getFittedModule('Slot01_Size7')!;
+    assert.ok(
+        !fitted
+            .getAvailableBlueprints()
+            .some((blueprint) => blueprint.fdname === 'HullReinforcement_Advanced'),
+    );
+    assert.throws(
+        () => build.applyBlueprint('Slot01_Size7', 'HullReinforcement_Advanced', { grade: 5 }),
+        /missing base stats for DefenceModifierHealthMultiplier/,
+    );
+    // The Heavy Duty recipe, which only touches carried stats, still works.
+    build.applyBlueprint('Slot01_Size7', 'HullReinforcement_HeavyDuty', { grade: 5 });
+    const added = build
+        .getFittedModule('Slot01_Size7')!
+        .Engineering!.Modifiers.find((m) => m.Label === 'DefenceModifierHealthAddition')!;
+    assert.ok(added.Value! > added.OriginalValue!);
 });
 
 test('clearEngineering restores base stats', () => {
@@ -529,7 +571,7 @@ test('a slot handle is a live view and fits/lists/clears without repeating its k
     assert.equal(drive.module === null, true);
 
     // modulesForSlot needs no slot key now.
-    const drives = drive.modulesForSlot(STANDARD_MODULES);
+    const drives = drive.modulesForSlot(CORE_MODULES);
     assert.ok(drives.length > 0 && drives.every((m) => m.class <= 6));
 
     // fit() returns a live FittedModule handle; the slot view updates in place.
@@ -606,4 +648,338 @@ test('a fitted-module handle cannot operate on a replacement module', () => {
         () => oldHandle.applyBlueprint('FSD_LongRange', { grade: 5 }),
         /no longer contains/,
     );
+});
+
+// ── Build metrics: power, shields, armour, weapons ───────────────────────────
+
+/** The fixture's Anaconda, assembled from the catalogues. */
+function fixtureAnaconda(): ShipLoadout {
+    const build = ShipLoadout.empty('Anaconda');
+    for (const [slot, symbol] of Object.entries(metrics.anaconda.modules)) {
+        build.setModule(slot, getModuleBySymbol(symbol, ALL_MODULES)!);
+    }
+    return build;
+}
+
+test('the SLEF build reproduces the fixture power budget', () => {
+    const budget = ShipLoadout.fromSlef(slefString).powerBudget();
+    const expectedPower = metrics.deepBlack.power;
+    assert.ok(near(budget.available, expectedPower.available), `${budget.available}`);
+    assert.ok(near(budget.retracted, expectedPower.retracted), `${budget.retracted}`);
+    assert.ok(near(budget.deployed, expectedPower.deployed), `${budget.deployed}`);
+    assert.equal(budget.withinBudget, expectedPower.withinBudget);
+    assert.ok(near(budget.headroom, expectedPower.headroom));
+    // This build carries no weapons, so deploying the hardpoints changes nothing.
+    assert.ok(near(budget.retracted, budget.deployed));
+});
+
+test('the SLEF build reproduces the fixture shield and armour metrics', () => {
+    const build = ShipLoadout.fromSlef(slefString);
+    const shields = build.shieldMetrics()!;
+    assert.ok(near(shields.strength, metrics.deepBlack.shields.strength), `${shields.strength}`);
+    assert.ok(
+        near(shields.massCurveMultiplier, metrics.deepBlack.shields.massCurveMultiplier),
+        `${shields.massCurveMultiplier}`,
+    );
+    assert.deepEqual(rounded(shields.resistances), metrics.deepBlack.shields.resistances);
+    assert.deepEqual(
+        rounded(shields.effectiveHitPoints),
+        metrics.deepBlack.shields.effectiveHitPoints,
+    );
+
+    // The armour is engineered: the journal reports its hull boost as 137.6%, so the
+    // Caspian Explorer's 345 base armour becomes 345 x 2.376.
+    const armour = build.armourMetrics();
+    assert.ok(near(armour.hitPoints, metrics.deepBlack.armour.hitPoints), `${armour.hitPoints}`);
+    assert.ok(near(armour.hitPoints, 345 * 2.376));
+    assert.deepEqual(rounded(armour.resistances), metrics.deepBlack.armour.resistances);
+    assert.deepEqual(
+        rounded(armour.effectiveHitPoints),
+        metrics.deepBlack.armour.effectiveHitPoints,
+    );
+    assert.equal(build.weaponMetrics().weapons.length, metrics.deepBlack.weaponCount);
+});
+
+test('an assembled Anaconda reproduces the fixture metrics', () => {
+    const build = fixtureAnaconda();
+    const expectedBuild = metrics.anaconda;
+
+    const budget = build.powerBudget();
+    assert.ok(near(budget.available, expectedBuild.power.available));
+    assert.ok(near(budget.retracted, expectedBuild.power.retracted));
+    assert.ok(near(budget.deployed, expectedBuild.power.deployed));
+    // The two weapons only draw once the hardpoints are out.
+    assert.ok(budget.deployed > budget.retracted);
+    assert.deepEqual(
+        budget.bands.map((band) => ({
+            priority: band.priority,
+            retracted: Math.round(band.retracted * 1e6) / 1e6,
+            deployed: Math.round(band.deployed * 1e6) / 1e6,
+            deployedTotal: Math.round(band.deployedTotal * 1e6) / 1e6,
+            poweredDeployed: band.poweredDeployed,
+        })),
+        expectedBuild.power.bands,
+    );
+
+    const shields = build.shieldMetrics()!;
+    assert.ok(near(shields.strength, expectedBuild.shields.strength));
+    assert.ok(near(shields.generator, expectedBuild.shields.generator));
+    assert.ok(near(shields.boosters, expectedBuild.shields.boosters));
+    assert.ok(near(shields.boostMultiplier, expectedBuild.shields.boostMultiplier));
+    assert.deepEqual(rounded(shields.resistances), expectedBuild.shields.resistances);
+    assert.deepEqual(rounded(shields.effectiveHitPoints), expectedBuild.shields.effectiveHitPoints);
+    assert.deepEqual(
+        rounded(build.shieldMetrics({ systemsPips: 4 })!.resistances),
+        expectedBuild.shields.resistancesAtFourPips,
+    );
+
+    const armour = build.armourMetrics();
+    assert.ok(near(armour.hitPoints, expectedBuild.armour.hitPoints));
+    assert.ok(near(armour.bulkheads, expectedBuild.armour.bulkheads));
+    assert.ok(near(armour.reinforcement, expectedBuild.armour.reinforcement));
+    assert.deepEqual(rounded(armour.resistances), expectedBuild.armour.resistances);
+    assert.deepEqual(rounded(armour.effectiveHitPoints), expectedBuild.armour.effectiveHitPoints);
+    // The module reinforcement package protects the modules, not the hull.
+    assert.ok(near(armour.moduleArmour, expectedBuild.armour.moduleArmour));
+    assert.ok(near(armour.moduleProtection, expectedBuild.armour.moduleProtection));
+
+    const weapons = build.weaponMetrics();
+    assert.equal(weapons.weapons.length, 2);
+    assert.ok(near(weapons.total.damagePerSecond, expectedBuild.weapons.damagePerSecond));
+    assert.ok(
+        near(
+            weapons.total.sustainedDamagePerSecond,
+            expectedBuild.weapons.sustainedDamagePerSecond,
+        ),
+    );
+    assert.ok(near(weapons.total.energyPerSecond, expectedBuild.weapons.energyPerSecond));
+    assert.ok(near(weapons.total.heatPerSecond, expectedBuild.weapons.heatPerSecond));
+    assert.ok(near(weapons.total.powerDraw, expectedBuild.weapons.powerDraw));
+    assert.ok(
+        near(weapons.total.damageByType.kinetic, expectedBuild.weapons.kineticDamagePerSecond),
+    );
+    assert.ok(
+        near(weapons.total.damageByType.thermal, expectedBuild.weapons.thermalDamagePerSecond),
+    );
+});
+
+test('a hull with no shield generator reports no shields', () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'PowerPlant',
+        mod('Int_Powerplant_Size8_Class5'),
+    );
+    assert.equal(build.shieldMetrics(), null);
+    // ...but still has the armour it left the shipyard with.
+    assert.equal(build.armourMetrics().hitPoints, 945);
+});
+
+test('switched-off modules drop out of every metric', () => {
+    const build = fixtureAnaconda();
+    const lit = build.weaponMetrics().total.damagePerSecond;
+    const shielded = build.shieldMetrics()!.strength;
+
+    const off = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: build.modules.map((m) => ({ ...m, On: false })),
+    });
+    assert.equal(off.shieldMetrics(), null); // the generator is off
+    assert.equal(off.powerBudget().available, 0); // so is the plant
+    assert.equal(off.weaponMetrics().total.damagePerSecond, 0);
+    // The weapons are still listed, with their own figures intact.
+    assert.equal(off.weaponMetrics().weapons.length, 2);
+    assert.ok(off.weaponMetrics().weapons.every((w) => !w.enabled));
+    assert.ok(lit > 0 && shielded > 0);
+});
+
+test('engineering moves the metrics it should', () => {
+    const build = fixtureAnaconda();
+    const before = build.shieldMetrics()!;
+    build.applyBlueprint('Slot01_Size7', 'ShieldGenerator_Reinforced', { grade: 5 });
+    const after = build.shieldMetrics()!;
+    assert.ok(after.strength > before.strength, `${before.strength} -> ${after.strength}`);
+
+    const bareArmour = build.armourMetrics().hitPoints;
+    build.applyBlueprint('Armour', 'Armour_HeavyDuty', { grade: 5 });
+    const heavyArmour = build.armourMetrics();
+    // Heavy Duty compounds on the armour multiplier: x3.5 becomes x4.62.
+    assert.ok(near(heavyArmour.bulkheads, 525 * 4.62, 1e-6));
+    assert.ok(heavyArmour.hitPoints > bareArmour);
+    // It stiffens the resistances too.
+    assert.ok(heavyArmour.resistances.kinetic > 0.26875);
+
+    const weaponsBefore = build.weaponMetrics().total.damagePerSecond;
+    build.applyBlueprint('LargeHardpoint1', 'Weapon_Overcharged', { grade: 5 });
+    assert.ok(build.weaponMetrics().total.damagePerSecond > weaponsBefore);
+});
+
+test('jumpRangeSummary gathers the loads that matter', () => {
+    const build = ShipLoadout.fromSlef(slefString);
+    const summary = build.jumpRangeSummary();
+    assert.ok(near(summary.max, build.maxJumpRange()));
+    assert.ok(near(summary.unladen, build.unladenJumpRange()));
+    assert.ok(near(summary.laden, build.ladenJumpRange()));
+    assert.ok(near(summary.totalUnladen, build.totalRange()));
+    assert.ok(near(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity })));
+    // Best single jump beats a full tank, which beats a full tank and a full hold.
+    assert.ok(summary.max > summary.unladen);
+    assert.ok(summary.unladen > summary.laden);
+    assert.ok(summary.totalUnladen > summary.totalLaden);
+    // A partial load sits between the two.
+    const partial = build.jumpRange({ cargo: build.cargoCapacity / 2 });
+    assert.ok(partial < summary.unladen && partial > summary.laden);
+});
+
+test('a fitted module reports its stats before and after engineering', () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'LargeHardpoint1',
+        mod('Hpt_MultiCannon_Gimbal_Large', HARDPOINT_MODULES),
+    );
+    const gun = build.getFittedModule('LargeHardpoint1')!;
+    // Stock: the effective record is the catalogue record itself.
+    assert.deepEqual(gun.effectiveStats, gun.stats);
+
+    gun.applyBlueprint('Weapon_Overcharged', { grade: 5 });
+    const after = build.getFittedModule('LargeHardpoint1')!;
+    assert.ok(after.effectiveStats!.damage! > after.stats!.damage!);
+    assert.equal(after.effectiveStats!.symbol, after.stats!.symbol);
+});
+
+test('a module the catalogues do not carry reports no stats', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        UnladenMass: 500,
+        Modules: [{ Slot: 'Slot01_Size7', Item: 'int_future_module_without_stats' }],
+    });
+    const unknown = build.getFittedModule('Slot01_Size7')!;
+    assert.equal(unknown.stats, null);
+    assert.equal(unknown.effectiveStats, null);
+    // It cannot claim any power either.
+    assert.equal(build.powerBudget().deployed, 0);
+});
+
+test('always-powered utility modules draw with the hardpoints stowed', () => {
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
+        .setModule('TinyHardpoint1', mod('Hpt_ShieldBooster_Size0_Class5', UTILITY_MODULES))
+        .setModule('TinyHardpoint2', mod('Hpt_CrimeScanner_Size0_Class5', UTILITY_MODULES));
+    const budget = build.powerBudget();
+    const booster = mod('Hpt_ShieldBooster_Size0_Class5', UTILITY_MODULES);
+    const scanner = mod('Hpt_CrimeScanner_Size0_Class5', UTILITY_MODULES);
+    // The shield booster is always powered; the kill warrant scanner is not.
+    assert.ok(near(budget.retracted, booster.powerDraw!));
+    assert.ok(near(budget.deployed, booster.powerDraw! + scanner.powerDraw!));
+});
+
+test("a build whose hull is beyond the generator's maximum mass has no shields", () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'Slot01_Size7',
+        mod('Int_ShieldGenerator_Size1_Class1', INTERNAL_MODULES),
+    );
+    // A size-1 generator cannot cover a 400 t hull.
+    assert.equal(build.shieldMetrics()!.strength, 0);
+});
+
+test('metrics on an unrecognised hull stay defined rather than throwing', () => {
+    const build = ShipLoadout.fromLoadout({ Ship: 'not_a_real_hull', Modules: [] });
+    assert.equal(build.armourMetrics().hitPoints, 0);
+    assert.equal(build.shieldMetrics(), null);
+    assert.equal(build.powerBudget().available, 0);
+    assert.deepEqual(build.weaponMetrics().weapons, []);
+});
+
+test('an engineered hull reinforcement package adds a share of the base armour', () => {
+    // The journal reports the package's hull boost as a percentage; read as a fraction
+    // it would add a hundred times too much armour.
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: [
+            { Slot: 'Armour', Item: 'anaconda_armour_grade1' },
+            {
+                Slot: 'Slot01_Size7',
+                Item: 'int_hullreinforcement_size5_class2',
+                Engineering: {
+                    BlueprintName: 'HullReinforcement_Advanced',
+                    Level: 5,
+                    Quality: 1,
+                    Modifiers: [
+                        { Label: 'DefenceModifierHealthMultiplier', Value: 6, OriginalValue: 0 },
+                        { Label: 'DefenceModifierHealthAddition', Value: 341, OriginalValue: 390 },
+                    ],
+                },
+            },
+        ],
+    });
+    const armour = build.armourMetrics();
+    assert.equal(armour.reinforcement, 341 + 525 * 0.06);
+    assert.equal(armour.hitPoints, 945 + 341 + 31.5);
+});
+
+test('engineering the burst pattern moves the rate of fire with it', () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'LargeHardpoint1',
+        mod('Hpt_MultiCannon_Gimbal_Large', HARDPOINT_MODULES),
+    );
+    const before = build.weaponMetrics().total.damagePerSecond;
+    // Double Shot names no rate of fire, but a two-round burst fires faster.
+    build.applyBlueprint('LargeHardpoint1', 'Weapon_DoubleShot', { grade: 5 });
+    const engineered = build.getFittedModule('LargeHardpoint1')!.effectiveStats!;
+    assert.equal(engineered.burstRounds, 2);
+    const after = build.weaponMetrics();
+    assert.ok(after.total.damagePerSecond > before);
+    const expectedRate = 2 / (1 / 14 + engineered.burstInterval!);
+    assert.ok(Math.abs(after.weapons[0]!.metrics.rateOfFire - expectedRate) < 1e-6);
+    // The module handle's own view must agree with the metrics, not report the stock rate.
+    assert.ok(Math.abs(engineered.rateOfFire! - expectedRate) < 1e-6, `${engineered.rateOfFire}`);
+});
+
+test('a long-range weapon keeps its damage all the way out', () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'LargeHardpoint1',
+        mod('Hpt_MultiCannon_Gimbal_Large', HARDPOINT_MODULES),
+    );
+    build.applyBlueprint('LargeHardpoint1', 'Weapon_LongRange', { grade: 5 });
+    const engineered = build.getFittedModule('LargeHardpoint1')!.effectiveStats!;
+    assert.equal(engineered.falloffRange, engineered.maximumRange);
+    assert.equal(damageFalloff(engineered, engineered.maximumRange! - 1), 1);
+});
+
+test('Rapid Fire applies to a plain weapon, adding the jitter it had none of', () => {
+    const build = ShipLoadout.empty('Vulture').setModule(
+        'LargeHardpoint1',
+        mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES),
+    );
+    const gun = build.getFittedModule('LargeHardpoint1')!;
+    assert.equal(gun.stats!.jitter, undefined);
+    assert.ok(gun.getAvailableBlueprints().some((b) => b.fdname === 'Weapon_RapidFire'));
+
+    build.applyBlueprint('LargeHardpoint1', 'Weapon_RapidFire', { grade: 5 });
+    const engineered = build.getFittedModule('LargeHardpoint1')!.effectiveStats!;
+    assert.equal(engineered.jitter, 0.5); // additive, from an assumed zero
+    assert.ok(Math.abs(engineered.burstInterval! - 0.14 * 0.56) < 1e-9);
+    assert.ok(Math.abs(engineered.rateOfFire! - 7.142857 / 0.56) < 1e-4);
+    assert.ok(build.weaponMetrics().total.damagePerSecond > 0);
+});
+
+test("a journal's own rate of fire wins over anything derived from the cycle", () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'vulture',
+        Modules: [
+            {
+                Slot: 'LargeHardpoint1',
+                Item: 'Hpt_MultiCannon_Fixed_Medium',
+                Engineering: {
+                    BlueprintName: 'Weapon_RapidFire',
+                    Level: 5,
+                    Quality: 1,
+                    Modifiers: [
+                        { Label: 'RateOfFire', Value: 12.9, OriginalValue: 7.142857 },
+                        { Label: 'BurstInterval', Value: 0.0784, OriginalValue: 0.14 },
+                    ],
+                },
+            },
+        ],
+    });
+    // The game's own figure is authoritative, even though the cycle implies 12.755.
+    assert.equal(build.getFittedModule('LargeHardpoint1')!.effectiveStats!.rateOfFire, 12.9);
+    assert.equal(build.weaponMetrics().weapons[0]!.metrics.rateOfFire, 12.9);
 });

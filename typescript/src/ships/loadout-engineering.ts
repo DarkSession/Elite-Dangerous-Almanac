@@ -11,7 +11,7 @@ import {
     moduleEngineeringTarget,
 } from './engineering-compatibility.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
-import { baseStats } from './module-stat-labels.js';
+import { baseStats, fieldForLabel } from './module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import type { AvailableBlueprint } from './ship-loadout.js';
@@ -23,17 +23,40 @@ export function statFor(item: string): OutfittingModule | null {
     return getModuleBySymbol(item, ALL_MODULES);
 }
 
-/** Modifier labels absent from the base stats carried by a module. @internal */
+/**
+ * Modifier labels a recipe changes that the module carries no base value for — the
+ * ones {@link computeModifiers} would have to skip.
+ *
+ * `overwrite` and `additive` contributions are exempt: the first replaces the stat
+ * outright and the second starts from zero, so neither needs a base to scale (Double
+ * Shot gives a burst size to a weapon that has none; Rapid Fire adds jitter to a weapon
+ * that had none).
+ *
+ * @internal
+ */
 export function missingBaseLabels(
     base: Readonly<Record<string, number>>,
-    features: readonly { readonly label: string }[],
-    experimental?: readonly { readonly label: string }[],
+    features: readonly { readonly label: string; readonly method?: string }[],
+    experimental?: readonly { readonly label: string; readonly method?: string }[],
 ): string[] {
+    const contributions = [...features, ...(experimental ?? [])];
+    // An overwrite replaces the stat outright and an addition starts from zero, so
+    // neither needs a base value to apply to — as long as the catalogue has somewhere to
+    // put the result. A label it models no field for stays uncomputable.
+    const baseless = new Set(
+        contributions
+            .filter(
+                (c) =>
+                    (c.method === 'overwrite' || c.method === 'additive') &&
+                    fieldForLabel(c.label) !== null,
+            )
+            .map((c) => c.label),
+    );
     return [
         ...new Set(
-            [...features, ...(experimental ?? [])]
+            contributions
                 .map((feature) => feature.label)
-                .filter((label) => base[label] === undefined),
+                .filter((label) => base[label] === undefined && !baseless.has(label)),
         ),
     ];
 }

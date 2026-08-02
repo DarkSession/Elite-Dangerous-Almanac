@@ -17,9 +17,21 @@
  * the display name; `class` the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. Identity fields always present;
  * every stat field is optional, present only where the module has it (masses in
- * tonnes, power in MW, ranges in LY). `restrictedToShips` lists the hull(s) a
+ * tonnes, power in MW, jump ranges in LY). `restrictedToShips` lists the hull(s) a
  * non-armour module is limited to; armour's hull restriction is its `ship` field.
- * Modules without stats (ship-specific armour) carry identity only.
+ *
+ * Defence stats: `kineticResistance`, `thermalResistance`, `explosiveResistance` and
+ * `causticResistance` are fractions of damage removed (negative = a weakness);
+ * `hullBoost` is an armour variant's bonus as a fraction of the hull's base armour
+ * (0.8 means base armour x 1.8), `hullReinforcement` is hull points added,
+ * `shieldAddition` shield megajoules added, `moduleProtection` the fraction of module
+ * damage absorbed. `alwaysPowered` marks a hardpoint-mounted module that draws its
+ * power even with hardpoints retracted.
+ * Weapon stats: `damage` is per round (per second on continuous-fire beam and mining
+ * lasers, which carry no `rateOfFire`), `damageDistribution` splits it by type,
+ * `rateOfFire` is shots per second with the burst pattern and charge time folded in,
+ * `distributorDraw` (MW) and `thermalLoad` are per shot, and `maximumRange` /
+ * `falloffRange` / `shotSpeed` are metres and metres per second.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  *
@@ -36,6 +48,17 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.39,
+    "damage": 2.05,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.846154,
+    "burstInterval": 0.26,
+    "distributorDraw": 0.3,
+    "thermalLoad": 0.33,
+    "armourPiercing": 20,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 2200
   },
   {
@@ -48,6 +71,17 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.6,
+    "damage": 3.5,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.448276,
+    "burstInterval": 0.29,
+    "distributorDraw": 0.5,
+    "thermalLoad": 0.56,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 17600
   },
   {
@@ -60,6 +94,17 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.9,
+    "damage": 5.98,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.030303,
+    "burstInterval": 0.33,
+    "distributorDraw": 0.86,
+    "thermalLoad": 0.96,
+    "armourPiercing": 52,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 70400
   },
   {
@@ -72,6 +117,17 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 1.33,
+    "damage": 10.24,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 2.631579,
+    "burstInterval": 0.38,
+    "distributorDraw": 1.48,
+    "thermalLoad": 1.64,
+    "armourPiercing": 65,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 177600
   },
   {
@@ -84,6 +140,17 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.39,
+    "damage": 1.56,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 4,
+    "burstInterval": 0.25,
+    "distributorDraw": 0.31,
+    "thermalLoad": 0.31,
+    "armourPiercing": 20,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 6600
   },
   {
@@ -96,6 +163,17 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.6,
+    "damage": 2.68,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.571429,
+    "burstInterval": 0.28,
+    "distributorDraw": 0.54,
+    "thermalLoad": 0.54,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 35400
   },
   {
@@ -108,6 +186,17 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.92,
+    "damage": 4.58,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.225806,
+    "burstInterval": 0.31,
+    "distributorDraw": 0.92,
+    "thermalLoad": 0.92,
+    "armourPiercing": 52,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 140600
   },
   {
@@ -120,6 +209,17 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.38,
+    "damage": 1.19,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.333333,
+    "burstInterval": 0.3,
+    "distributorDraw": 0.19,
+    "thermalLoad": 0.19,
+    "armourPiercing": 20,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 26000
   },
   {
@@ -132,6 +232,17 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.58,
+    "damage": 2.05,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.030303,
+    "burstInterval": 0.33,
+    "distributorDraw": 0.33,
+    "thermalLoad": 0.33,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 132800
   },
   {
@@ -144,6 +255,17 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.89,
+    "damage": 3.5,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 2.702703,
+    "burstInterval": 0.37,
+    "distributorDraw": 0.56,
+    "thermalLoad": 0.56,
+    "armourPiercing": 52,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 400400
   },
   {
@@ -156,6 +278,19 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.65,
+    "damage": 1.72,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 4.736842,
+    "burstInterval": 0.5,
+    "burstRounds": 3,
+    "burstRateOfFire": 15,
+    "distributorDraw": 0.25,
+    "thermalLoad": 0.38,
+    "armourPiercing": 20,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 4400
   },
   {
@@ -168,6 +303,19 @@
     "mass": 4,
     "integrity": 40,
     "powerDraw": 1.05,
+    "damage": 3.53,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.695409,
+    "burstInterval": 0.63,
+    "burstRounds": 3,
+    "burstRateOfFire": 11,
+    "distributorDraw": 0.5,
+    "thermalLoad": 0.78,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 23000
   },
   {
@@ -180,6 +328,19 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.66,
+    "damage": 7.73,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 2.68886,
+    "burstInterval": 0.83,
+    "burstRounds": 3,
+    "burstRateOfFire": 7,
+    "distributorDraw": 1.11,
+    "thermalLoad": 1.7,
+    "armourPiercing": 52,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 140400
   },
   {
@@ -192,6 +353,19 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 2.58,
+    "damage": 20.61,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 1.565217,
+    "burstInterval": 1.25,
+    "burstRounds": 3,
+    "burstRateOfFire": 3,
+    "distributorDraw": 2.98,
+    "thermalLoad": 4.53,
+    "armourPiercing": 65,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 281600
   },
   {
@@ -204,6 +378,19 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.64,
+    "damage": 1.22,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 5.284974,
+    "burstInterval": 0.45,
+    "burstRounds": 3,
+    "burstRateOfFire": 17,
+    "distributorDraw": 0.24,
+    "thermalLoad": 0.34,
+    "armourPiercing": 20,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 8600
   },
   {
@@ -216,6 +403,19 @@
     "mass": 4,
     "integrity": 40,
     "powerDraw": 1.04,
+    "damage": 2.45,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 4.202586,
+    "burstInterval": 0.56,
+    "burstRounds": 3,
+    "burstRateOfFire": 13,
+    "distributorDraw": 0.49,
+    "thermalLoad": 0.67,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 48500
   },
   {
@@ -228,6 +428,19 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.65,
+    "damage": 5.16,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.218117,
+    "burstInterval": 0.71,
+    "burstRounds": 3,
+    "burstRateOfFire": 9,
+    "distributorDraw": 1.03,
+    "thermalLoad": 1.42,
+    "armourPiercing": 52,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 281600
   },
   {
@@ -240,6 +453,19 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.6,
+    "damage": 0.87,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 4.79798,
+    "burstInterval": 0.52,
+    "burstRounds": 3,
+    "burstRateOfFire": 19,
+    "distributorDraw": 0.14,
+    "thermalLoad": 0.19,
+    "armourPiercing": 20,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 52800
   },
   {
@@ -252,6 +478,19 @@
     "mass": 4,
     "integrity": 40,
     "powerDraw": 0.98,
+    "damage": 1.72,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.930131,
+    "burstInterval": 0.63,
+    "burstRounds": 3,
+    "burstRateOfFire": 15,
+    "distributorDraw": 0.28,
+    "thermalLoad": 0.38,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 162800
   },
   {
@@ -264,6 +503,19 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.57,
+    "damage": 3.53,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 3.119093,
+    "burstInterval": 0.78,
+    "burstRounds": 3,
+    "burstRateOfFire": 11,
+    "distributorDraw": 0.56,
+    "thermalLoad": 0.78,
+    "armourPiercing": 52,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 800400
   },
   {
@@ -276,6 +528,15 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.62,
+    "damage": 9.8,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 1.94,
+    "thermalLoad": 3.5,
+    "armourPiercing": 18,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 37430
   },
   {
@@ -288,6 +549,15 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.01,
+    "damage": 15.96,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 3.16,
+    "thermalLoad": 5.1,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 299520
   },
   {
@@ -300,6 +570,15 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.62,
+    "damage": 25.78,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 5.1,
+    "thermalLoad": 7.2,
+    "armourPiercing": 50,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 1177600
   },
   {
@@ -312,6 +591,15 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 2.61,
+    "damage": 41.38,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 8.19,
+    "thermalLoad": 9.9,
+    "armourPiercing": 60,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 2396160
   },
   {
@@ -324,6 +612,15 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.6,
+    "damage": 7.66,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 2.11,
+    "thermalLoad": 3.6,
+    "armourPiercing": 18,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 74650
   },
   {
@@ -336,6 +633,15 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1,
+    "damage": 12.52,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 3.44,
+    "thermalLoad": 5.3,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 500600
   },
   {
@@ -348,6 +654,15 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.6,
+    "damage": 20.28,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 5.58,
+    "thermalLoad": 7.6,
+    "armourPiercing": 50,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 2396160
   },
   {
@@ -360,6 +675,15 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.57,
+    "damage": 5.4,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 1.32,
+    "thermalLoad": 2.4,
+    "armourPiercing": 18,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 500000
   },
   {
@@ -372,6 +696,15 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.93,
+    "damage": 8.82,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 2.16,
+    "thermalLoad": 3.5,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 2099900
   },
   {
@@ -384,6 +717,15 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.51,
+    "damage": 14.34,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 3.51,
+    "thermalLoad": 5.1,
+    "armourPiercing": 50,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 19399600
   },
   {
@@ -396,6 +738,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.34,
+    "damage": 22.5,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 6,
+    "ammoMaximum": 120,
+    "reloadTime": 3,
+    "distributorDraw": 0.46,
+    "thermalLoad": 1.4,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 3000,
+    "shotSpeed": 1200,
     "cost": 21100
   },
   {
@@ -408,6 +765,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.49,
+    "damage": 36.5,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.460829,
+    "burstInterval": 2.17,
+    "clipSize": 6,
+    "ammoMaximum": 120,
+    "reloadTime": 3,
+    "distributorDraw": 0.7,
+    "thermalLoad": 2.1,
+    "armourPiercing": 50,
+    "maximumRange": 3500,
+    "falloffRange": 3500,
+    "shotSpeed": 1051.051025,
     "cost": 168430
   },
   {
@@ -420,6 +792,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.67,
+    "damage": 54.94,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.420168,
+    "burstInterval": 2.38,
+    "clipSize": 6,
+    "ammoMaximum": 120,
+    "reloadTime": 3,
+    "distributorDraw": 1.07,
+    "thermalLoad": 3.2,
+    "armourPiercing": 70,
+    "maximumRange": 4000,
+    "falloffRange": 4000,
+    "shotSpeed": 959.232605,
     "cost": 675200
   },
   {
@@ -432,6 +819,21 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 0.92,
+    "damage": 82.1,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.380228,
+    "burstInterval": 2.63,
+    "clipSize": 6,
+    "ammoMaximum": 120,
+    "reloadTime": 3,
+    "distributorDraw": 1.61,
+    "thermalLoad": 4.8,
+    "armourPiercing": 90,
+    "maximumRange": 4500,
+    "falloffRange": 4500,
+    "shotSpeed": 900,
     "cost": 2700800
   },
   {
@@ -444,6 +846,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.38,
+    "damage": 16,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.520833,
+    "burstInterval": 1.92,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 4,
+    "distributorDraw": 0.48,
+    "thermalLoad": 1.3,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 3000,
+    "shotSpeed": 1000,
     "cost": 42200
   },
   {
@@ -456,6 +873,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.54,
+    "damage": 24.5,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.480769,
+    "burstInterval": 2.08,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 4,
+    "distributorDraw": 0.75,
+    "thermalLoad": 1.9,
+    "armourPiercing": 50,
+    "maximumRange": 3500,
+    "falloffRange": 3500,
+    "shotSpeed": 875,
     "cost": 337600
   },
   {
@@ -468,6 +900,21 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 1.03,
+    "damage": 56.58,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.4,
+    "burstInterval": 2.5,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 4,
+    "distributorDraw": 1.72,
+    "thermalLoad": 4.4,
+    "armourPiercing": 90,
+    "maximumRange": 4500,
+    "falloffRange": 4500,
+    "shotSpeed": 750,
     "cost": 5401600
   },
   {
@@ -480,6 +927,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.32,
+    "damage": 12.75,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.4329,
+    "burstInterval": 2.31,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 4,
+    "distributorDraw": 0.22,
+    "thermalLoad": 0.7,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 3000,
+    "shotSpeed": 1000,
     "cost": 506400
   },
   {
@@ -492,6 +954,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.45,
+    "damage": 19.77,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.4,
+    "burstInterval": 2.5,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 4,
+    "distributorDraw": 0.34,
+    "thermalLoad": 1,
+    "armourPiercing": 50,
+    "maximumRange": 3500,
+    "falloffRange": 3500,
+    "shotSpeed": 875,
     "cost": 4051200
   },
   {
@@ -504,6 +981,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "damage": 30.4,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.367647,
+    "burstInterval": 2.72,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 4,
+    "distributorDraw": 0.53,
+    "thermalLoad": 1.6,
+    "armourPiercing": 70,
+    "maximumRange": 4000,
+    "falloffRange": 4000,
+    "shotSpeed": 800,
     "cost": 16204800
   },
   {
@@ -516,6 +1008,23 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.45,
+    "damage": 1.43,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 5.555556,
+    "burstInterval": 0.18,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.21,
+    "thermalLoad": 0.4,
+    "armourPiercing": 20,
+    "maximumRange": 2000,
+    "falloffRange": 1800,
+    "shotSpeed": 667,
+    "jitter": 5,
     "cost": 36000
   },
   {
@@ -528,6 +1037,23 @@
     "mass": 4,
     "integrity": 80,
     "powerDraw": 0.74,
+    "damage": 3,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 5,
+    "burstInterval": 0.2,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.37,
+    "thermalLoad": 0.7,
+    "armourPiercing": 30,
+    "maximumRange": 2000,
+    "falloffRange": 1800,
+    "shotSpeed": 667,
+    "jitter": 5,
     "cost": 291840
   },
   {
@@ -540,6 +1066,23 @@
     "mass": 8,
     "integrity": 80,
     "powerDraw": 1.02,
+    "damage": 4.57,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 4.545455,
+    "burstInterval": 0.22,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.57,
+    "thermalLoad": 1.1,
+    "armourPiercing": 45,
+    "maximumRange": 2000,
+    "falloffRange": 1800,
+    "shotSpeed": 667,
+    "jitter": 5,
     "cost": 1167360
   },
   {
@@ -552,6 +1095,23 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.59,
+    "damage": 1.01,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 5.882353,
+    "burstInterval": 0.17,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.26,
+    "thermalLoad": 0.4,
+    "armourPiercing": 20,
+    "maximumRange": 2000,
+    "falloffRange": 1800,
+    "shotSpeed": 667,
+    "jitter": 5,
     "cost": 54720
   },
   {
@@ -564,6 +1124,23 @@
     "mass": 4,
     "integrity": 80,
     "powerDraw": 1.03,
+    "damage": 2.275,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 5.263158,
+    "burstInterval": 0.19,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.49,
+    "thermalLoad": 0.8,
+    "armourPiercing": 30,
+    "maximumRange": 2000,
+    "falloffRange": 1800,
+    "shotSpeed": 667,
+    "jitter": 5,
     "cost": 437760
   },
   {
@@ -576,6 +1153,23 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.42,
+    "damage": 0.69,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 4.761905,
+    "burstInterval": 0.21,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.1,
+    "thermalLoad": 0.2,
+    "armourPiercing": 20,
+    "maximumRange": 2000,
+    "falloffRange": 1800,
+    "shotSpeed": 667,
+    "jitter": 5,
     "cost": 182400
   },
   {
@@ -588,6 +1182,23 @@
     "mass": 4,
     "integrity": 80,
     "powerDraw": 0.79,
+    "damage": 1.7,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 4.347826,
+    "burstInterval": 0.23,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.21,
+    "thermalLoad": 0.4,
+    "armourPiercing": 30,
+    "maximumRange": 2000,
+    "falloffRange": 1800,
+    "shotSpeed": 667,
+    "jitter": 5,
     "cost": 1459200
   },
   {
@@ -600,6 +1211,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.28,
+    "damage": 1.12,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.692308,
+    "burstInterval": 0.13,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.06,
+    "thermalLoad": 0.09,
+    "armourPiercing": 22,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 9500
   },
   {
@@ -612,6 +1238,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.46,
+    "damage": 2.19,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.142857,
+    "burstInterval": 0.14,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.11,
+    "thermalLoad": 0.18,
+    "armourPiercing": 37,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 0
   },
   {
@@ -624,6 +1265,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "damage": 3.925,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 5.882353,
+    "burstInterval": 0.17,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.18,
+    "thermalLoad": 0.28,
+    "armourPiercing": 54,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 140400
   },
   {
@@ -636,6 +1292,22 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 0.73,
+    "damage": 4.625,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 2,
+    "rateOfFire": 3.030303,
+    "burstInterval": 0.33,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.24,
+    "thermalLoad": 0.39,
+    "armourPiercing": 68,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 1177600
   },
   {
@@ -648,6 +1320,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.37,
+    "damage": 0.82,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 8.333333,
+    "burstInterval": 0.12,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 5,
+    "distributorDraw": 0.07,
+    "thermalLoad": 0.1,
+    "armourPiercing": 22,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 14250
   },
   {
@@ -660,6 +1347,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.64,
+    "damage": 1.64,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.692308,
+    "burstInterval": 0.13,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 5,
+    "distributorDraw": 0.14,
+    "thermalLoad": 0.2,
+    "armourPiercing": 37,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 57000
   },
   {
@@ -672,6 +1374,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.97,
+    "damage": 2.84,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 6.666667,
+    "burstInterval": 0.15,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 5,
+    "distributorDraw": 0.25,
+    "thermalLoad": 0.34,
+    "armourPiercing": 54,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 578436
   },
   {
@@ -684,6 +1401,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.26,
+    "damage": 0.56,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.142857,
+    "burstInterval": 0.14,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.03,
+    "thermalLoad": 0.04,
+    "armourPiercing": 22,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 81600
   },
   {
@@ -696,6 +1428,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.5,
+    "damage": 1.17,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 6.25,
+    "burstInterval": 0.16,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.06,
+    "thermalLoad": 0.09,
+    "armourPiercing": 37,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 1292800
   },
   {
@@ -709,6 +1456,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.86,
+    "damage": 2.2,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 5.263158,
+    "burstInterval": 0.19,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.16,
+    "thermalLoad": 0.2,
+    "armourPiercing": 54,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 3794600
   },
   {
@@ -721,6 +1483,23 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.43,
+    "damage": 54.3,
+    "damageDistribution": {
+      "kinetic": 0.2,
+      "thermal": 0.2,
+      "absolute": 0.6
+    },
+    "rateOfFire": 0.330033,
+    "burstInterval": 3.03,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 6,
+    "distributorDraw": 8.65,
+    "thermalLoad": 15.6,
+    "armourPiercing": 100,
+    "maximumRange": 3500,
+    "falloffRange": 2000,
+    "shotSpeed": 875,
     "cost": 834200
   },
   {
@@ -733,6 +1512,23 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.97,
+    "damage": 83.4,
+    "damageDistribution": {
+      "kinetic": 0.2,
+      "thermal": 0.2,
+      "absolute": 0.6
+    },
+    "rateOfFire": 0.289855,
+    "burstInterval": 3.45,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 6,
+    "distributorDraw": 13.6,
+    "thermalLoad": 21.75,
+    "armourPiercing": 100,
+    "maximumRange": 3500,
+    "falloffRange": 2000,
+    "shotSpeed": 875,
     "cost": 3051200
   },
   {
@@ -745,6 +1541,23 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 2.63,
+    "damage": 125.2,
+    "damageDistribution": {
+      "kinetic": 0.2,
+      "thermal": 0.2,
+      "absolute": 0.6
+    },
+    "rateOfFire": 0.25,
+    "burstInterval": 4,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 6,
+    "distributorDraw": 21.04,
+    "thermalLoad": 29.5,
+    "armourPiercing": 100,
+    "maximumRange": 3500,
+    "falloffRange": 2000,
+    "shotSpeed": 875,
     "cost": 13793600
   },
   {
@@ -757,6 +1570,22 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 1.15,
+    "damage": 23.25,
+    "damageDistribution": {
+      "kinetic": 0.3333333333333333,
+      "thermal": 0.6666666666666666
+    },
+    "rateOfFire": 0.546448,
+    "burstInterval": 0.63,
+    "chargeTime": 1.2,
+    "clipSize": 1,
+    "ammoMaximum": 80,
+    "reloadTime": 1,
+    "distributorDraw": 2.69,
+    "thermalLoad": 12,
+    "armourPiercing": 100,
+    "maximumRange": 3000,
+    "falloffRange": 1000,
     "cost": 51600
   },
   {
@@ -769,6 +1598,22 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.63,
+    "damage": 41.5,
+    "damageDistribution": {
+      "kinetic": 0.3333333333333333,
+      "thermal": 0.6666666666666666
+    },
+    "rateOfFire": 0.492611,
+    "burstInterval": 0.83,
+    "chargeTime": 1.2,
+    "clipSize": 1,
+    "ammoMaximum": 80,
+    "reloadTime": 1,
+    "distributorDraw": 5.11,
+    "thermalLoad": 20,
+    "armourPiercing": 100,
+    "maximumRange": 3000,
+    "falloffRange": 1000,
     "cost": 0
   },
   {
@@ -782,6 +1627,19 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.6,
+    "damage": 40,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.333333,
+    "burstInterval": 3,
+    "clipSize": 6,
+    "ammoMaximum": 6,
+    "reloadTime": 12,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 625,
     "cost": 72600
   },
   {
@@ -795,6 +1653,19 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 40,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.333333,
+    "burstInterval": 3,
+    "clipSize": 6,
+    "ammoMaximum": 18,
+    "reloadTime": 12,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 625,
     "cost": 0
   },
   {
@@ -809,6 +1680,19 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.62,
+    "damage": 40,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.333333,
+    "burstInterval": 3,
+    "clipSize": 6,
+    "ammoMaximum": 36,
+    "reloadTime": 12,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 625,
     "cost": 1471030
   },
   {
@@ -821,6 +1705,19 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "damage": 44,
+    "damageDistribution": {
+      "thermal": 0.5,
+      "explosive": 0.5
+    },
+    "rateOfFire": 1,
+    "burstInterval": 1,
+    "clipSize": 1,
+    "ammoMaximum": 36,
+    "reloadTime": 2,
+    "distributorDraw": 0,
+    "thermalLoad": 5,
+    "armourPiercing": 60,
     "cost": 24260
   },
   {
@@ -833,6 +1730,19 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.4,
+    "damage": 44,
+    "damageDistribution": {
+      "thermal": 0.5,
+      "explosive": 0.5
+    },
+    "rateOfFire": 1,
+    "burstInterval": 1,
+    "clipSize": 3,
+    "ammoMaximum": 72,
+    "reloadTime": 6.6,
+    "distributorDraw": 0,
+    "thermalLoad": 7.5,
+    "armourPiercing": 60,
     "cost": 294080
   },
   {
@@ -846,6 +1756,19 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "damage": 120,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 1,
+    "burstInterval": 1,
+    "clipSize": 1,
+    "ammoMaximum": 1,
+    "reloadTime": 5,
+    "distributorDraw": 0,
+    "thermalLoad": 45,
+    "armourPiercing": 10000,
+    "shotSpeed": 250,
     "cost": 11200
   },
   {
@@ -859,6 +1782,19 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.4,
+    "damage": 120,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 1,
+    "burstInterval": 1,
+    "clipSize": 1,
+    "ammoMaximum": 2,
+    "reloadTime": 5,
+    "distributorDraw": 0,
+    "thermalLoad": 50,
+    "armourPiercing": 10000,
+    "shotSpeed": 250,
     "cost": 44800
   },
   {
@@ -873,6 +1809,19 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.6,
+    "damage": 120,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 1,
+    "burstInterval": 1,
+    "clipSize": 4,
+    "ammoMaximum": 4,
+    "reloadTime": 5,
+    "distributorDraw": 0,
+    "thermalLoad": 55,
+    "armourPiercing": 10000,
+    "shotSpeed": 250,
     "cost": 157960
   },
   {
@@ -885,6 +1834,15 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.5,
+    "damage": 2,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 1.5,
+    "thermalLoad": 2,
+    "armourPiercing": 18,
+    "maximumRange": 500,
+    "falloffRange": 300,
     "cost": 0
   },
   {
@@ -897,6 +1855,15 @@
     "mass": 2,
     "integrity": 51,
     "powerDraw": 0.75,
+    "damage": 4,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 3,
+    "thermalLoad": 4,
+    "armourPiercing": 18,
+    "maximumRange": 500,
+    "falloffRange": 300,
     "cost": 22576
   },
   {
@@ -910,6 +1877,19 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "damage": 50,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 8,
+    "ammoMaximum": 16,
+    "reloadTime": 5,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 750,
     "cost": 32175
   },
   {
@@ -923,6 +1903,19 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 50,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 12,
+    "ammoMaximum": 48,
+    "reloadTime": 5,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 750,
     "cost": 240400
   },
   {
@@ -935,6 +1928,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.75,
+    "damage": 37.39,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.440529,
+    "burstInterval": 2.27,
+    "clipSize": 5,
+    "ammoMaximum": 100,
+    "reloadTime": 4,
+    "distributorDraw": 1.14,
+    "thermalLoad": 2.9,
+    "armourPiercing": 70,
+    "maximumRange": 4000,
+    "falloffRange": 4000,
+    "shotSpeed": 800,
     "cost": 1350400
   },
   {
@@ -947,6 +1955,23 @@
     "mass": 8,
     "integrity": 80,
     "powerDraw": 1.55,
+    "damage": 3.77,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 4.761905,
+    "burstInterval": 0.21,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.81,
+    "thermalLoad": 1.4,
+    "armourPiercing": 45,
+    "maximumRange": 2000,
+    "falloffRange": 1800,
+    "shotSpeed": 667,
+    "jitter": 5,
     "cost": 1751040
   },
   {
@@ -959,6 +1984,23 @@
     "mass": 8,
     "integrity": 80,
     "powerDraw": 1.29,
+    "damage": 2.98,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 4,
+    "burstInterval": 0.25,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.37,
+    "thermalLoad": 0.7,
+    "armourPiercing": 45,
+    "maximumRange": 2000,
+    "falloffRange": 1800,
+    "shotSpeed": 667,
+    "jitter": 5,
     "cost": 5836800
   },
   {
@@ -972,6 +2014,23 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.97,
+    "damage": 34.5,
+    "damageDistribution": {
+      "kinetic": 0.2,
+      "thermal": 0.2,
+      "absolute": 0.6
+    },
+    "rateOfFire": 0.8,
+    "burstInterval": 1.25,
+    "clipSize": 20,
+    "ammoMaximum": 300,
+    "reloadTime": 6,
+    "distributorDraw": 5.5,
+    "thermalLoad": 11,
+    "armourPiercing": 100,
+    "maximumRange": 3500,
+    "falloffRange": 2000,
+    "shotSpeed": 875,
     "cost": 4119120
   },
   {
@@ -985,6 +2044,15 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.7,
+    "damage": 8,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 1.75,
+    "thermalLoad": 6,
+    "armourPiercing": 18,
+    "maximumRange": 2000,
+    "falloffRange": 400,
     "cost": 13600
   },
   {
@@ -998,6 +2066,24 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.63,
+    "damage": 31.4,
+    "damageDistribution": {
+      "kinetic": 0.3333333333333333,
+      "thermal": 0.6666666666666666
+    },
+    "rateOfFire": 1.955247,
+    "burstInterval": 0.001,
+    "burstRounds": 3,
+    "burstRateOfFire": 6,
+    "chargeTime": 1.2,
+    "clipSize": 3,
+    "ammoMaximum": 240,
+    "reloadTime": 1.2,
+    "distributorDraw": 2,
+    "thermalLoad": 11,
+    "armourPiercing": 100,
+    "maximumRange": 3000,
+    "falloffRange": 1000,
     "cost": 619200
   },
   {
@@ -1011,6 +2097,16 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.7,
+    "damage": 2.8,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 1.666667,
+    "burstInterval": 0.6,
+    "distributorDraw": 0.9,
+    "thermalLoad": 1,
+    "armourPiercing": 35,
+    "falloffRange": 500,
     "cost": 26400
   },
   {
@@ -1024,6 +2120,23 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.02,
+    "damage": 3.96,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 4.545455,
+    "burstInterval": 0.22,
+    "clipSize": 3,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.57,
+    "thermalLoad": 1.1,
+    "armourPiercing": 45,
+    "maximumRange": 3000,
+    "falloffRange": 2800,
+    "shotSpeed": 1000,
+    "jitter": 1.7,
     "cost": 1751040
   },
   {
@@ -1038,6 +2151,20 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 7.5,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "roundsPerShot": 4,
+    "rateOfFire": 2,
+    "burstInterval": 0.5,
+    "clipSize": 12,
+    "ammoMaximum": 120,
+    "reloadTime": 5,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 600,
     "cost": 768600
   },
   {
@@ -1051,6 +2178,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.28,
+    "damage": 2.9,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 4.347826,
+    "burstInterval": 0.23,
+    "clipSize": 60,
+    "ammoMaximum": 1000,
+    "reloadTime": 4,
+    "distributorDraw": 0.12,
+    "thermalLoad": 0.2,
+    "armourPiercing": 30,
+    "maximumRange": 4500,
+    "falloffRange": 3000,
+    "shotSpeed": 1800,
     "cost": 13980
   },
   {
@@ -1064,6 +2206,15 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.62,
+    "damage": 4.9,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 2.52,
+    "thermalLoad": 2.7,
+    "armourPiercing": 18,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 56150
   },
   {
@@ -1076,6 +2227,19 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "damage": 32,
+    "damageDistribution": {
+      "thermal": 0.5,
+      "explosive": 0.5
+    },
+    "rateOfFire": 1,
+    "burstInterval": 1,
+    "clipSize": 1,
+    "ammoMaximum": 36,
+    "reloadTime": 2,
+    "distributorDraw": 0,
+    "thermalLoad": 5,
+    "armourPiercing": 60,
     "cost": 36390
   },
   {
@@ -1089,6 +2253,20 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.8,
+    "damage": 3.6,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 7.619048,
+    "burstInterval": 0.7,
+    "burstRounds": 8,
+    "burstRateOfFire": 20,
+    "distributorDraw": 0.31,
+    "thermalLoad": 0.3,
+    "armourPiercing": 1,
+    "maximumRange": 1000,
+    "falloffRange": 600,
+    "jitter": 1.7,
     "cost": 8800
   },
   {
@@ -1101,6 +2279,15 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 2.57,
+    "damage": 32.68,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 8.99,
+    "thermalLoad": 10.6,
+    "armourPiercing": 60,
+    "maximumRange": 3000,
+    "falloffRange": 600,
     "cost": 8746160
   },
   {
@@ -1113,6 +2300,17 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 1.37,
+    "damage": 7.82,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 2.777778,
+    "burstInterval": 0.36,
+    "distributorDraw": 1.56,
+    "thermalLoad": 1.56,
+    "armourPiercing": 65,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 877600
   },
   {
@@ -1125,6 +2323,22 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 1.22,
+    "damage": 3.46,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "roundsPerShot": 2,
+    "rateOfFire": 3.367003,
+    "burstInterval": 0.297,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 5,
+    "distributorDraw": 0.37,
+    "thermalLoad": 0.51,
+    "armourPiercing": 68,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 6377600
   },
   {
@@ -1137,6 +2351,19 @@
     "mass": 16,
     "integrity": 80,
     "powerDraw": 2.59,
+    "damage": 12.09,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 2.142857,
+    "burstInterval": 1,
+    "burstRounds": 3,
+    "burstRateOfFire": 5,
+    "distributorDraw": 2.41,
+    "thermalLoad": 3.33,
+    "armourPiercing": 65,
+    "maximumRange": 3000,
+    "falloffRange": 500,
     "cost": 1245600
   },
   {
@@ -1151,6 +2378,19 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 40,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.333333,
+    "burstInterval": 3,
+    "clipSize": 12,
+    "ammoMaximum": 48,
+    "reloadTime": 5,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 750,
     "cost": 1951040
   },
   {
@@ -1163,6 +2403,15 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.5,
+    "damage": 2,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 1.5,
+    "thermalLoad": 2,
+    "armourPiercing": 18,
+    "maximumRange": 500,
+    "falloffRange": 300,
     "cost": 9400
   },
   {
@@ -1175,6 +2424,15 @@
     "mass": 2,
     "integrity": 51,
     "powerDraw": 0.75,
+    "damage": 4,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "distributorDraw": 3,
+    "thermalLoad": 4,
+    "armourPiercing": 18,
+    "maximumRange": 500,
+    "falloffRange": 300,
     "cost": 32576
   },
   {
@@ -1188,6 +2446,20 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 34,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 32,
+    "reloadTime": 2,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "falloffRange": 100000,
+    "shotSpeed": 550,
     "cost": 261800
   },
   {
@@ -1202,6 +2474,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 64,
+    "damageDistribution": {
+      "explosive": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 8,
+    "ammoMaximum": 64,
+    "reloadTime": 5,
+    "distributorDraw": 0.14,
+    "thermalLoad": 2.4,
+    "armourPiercing": 60,
+    "falloffRange": 10000,
+    "shotSpeed": 750,
     "cost": 540900
   },
   {
@@ -1216,6 +2503,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.62,
+    "damage": 64,
+    "damageDistribution": {
+      "explosive": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 12,
+    "ammoMaximum": 128,
+    "reloadTime": 5,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "falloffRange": 10000,
+    "shotSpeed": 750,
     "cost": 0
   },
   {
@@ -1229,6 +2531,22 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.46,
+    "damage": 3.3,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 7.142857,
+    "burstInterval": 0.14,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.11,
+    "thermalLoad": 0.2,
+    "armourPiercing": 17,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 379000
   },
   {
@@ -1242,6 +2560,22 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "damage": 6.1,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 5.882353,
+    "burstInterval": 0.17,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.18,
+    "thermalLoad": 0.3,
+    "armourPiercing": 33,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 1181500
   },
   {
@@ -1256,6 +2590,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 50,
+    "damageDistribution": {
+      "explosive": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 8,
+    "ammoMaximum": 64,
+    "reloadTime": 5,
+    "distributorDraw": 0.08,
+    "thermalLoad": 1.5,
+    "armourPiercing": 60,
+    "falloffRange": 10000,
+    "shotSpeed": 750,
     "cost": 2022700
   },
   {
@@ -1270,6 +2619,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.75,
+    "damage": 64,
+    "damageDistribution": {
+      "explosive": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 12,
+    "ammoMaximum": 128,
+    "reloadTime": 5,
+    "distributorDraw": 0.14,
+    "thermalLoad": 1.9,
+    "armourPiercing": 60,
+    "falloffRange": 10000,
+    "shotSpeed": 750,
     "cost": 4056750
   },
   {
@@ -1283,6 +2647,20 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 34,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 32,
+    "reloadTime": 2,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "falloffRange": 100000,
+    "shotSpeed": 550,
     "cost": 1259200
   },
   {
@@ -1296,6 +2674,22 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.5,
+    "damage": 1.7,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 6.25,
+    "burstInterval": 0.16,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.06,
+    "thermalLoad": 0.1,
+    "armourPiercing": 17,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 1826500
   },
   {
@@ -1309,6 +2703,22 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "damage": 3.3,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 6.25,
+    "burstInterval": 0.16,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.06,
+    "thermalLoad": 0.1,
+    "armourPiercing": 33,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 3821600
   },
   {
@@ -1322,6 +2732,21 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 2.61,
+    "damage": 38.5,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 1.204819,
+    "burstInterval": 0.83,
+    "burstRounds": 1,
+    "clipSize": 1,
+    "ammoMaximum": 80,
+    "reloadTime": 1,
+    "distributorDraw": 7.2,
+    "thermalLoad": 25,
+    "armourPiercing": 140,
+    "maximumRange": 3000,
+    "falloffRange": 1500,
     "cost": 0
   },
   {
@@ -1336,6 +2761,19 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 5,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 8,
+    "ammoMaximum": 64,
+    "reloadTime": 5,
+    "distributorDraw": 0.08,
+    "thermalLoad": 1.5,
+    "armourPiercing": 60,
+    "shotSpeed": 750,
     "cost": 480501
   },
   {
@@ -1349,6 +2787,19 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 13,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 72,
+    "reloadTime": 2,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 80,
+    "shotSpeed": 550,
     "cost": 353761
   },
   {
@@ -1362,6 +2813,19 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 13,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 72,
+    "reloadTime": 2,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 70,
+    "shotSpeed": 550,
     "cost": 1279200
   },
   {
@@ -1375,6 +2839,21 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 2.13,
+    "damage": 5,
+    "damageDistribution": {
+      "absolute": 1
+    },
+    "rateOfFire": 5,
+    "burstInterval": 0.2,
+    "clipSize": 15,
+    "ammoMaximum": 200,
+    "reloadTime": 3,
+    "distributorDraw": 1.25,
+    "thermalLoad": 5.2,
+    "armourPiercing": 80,
+    "maximumRange": 3500,
+    "falloffRange": 1000,
+    "shotSpeed": 1200,
     "cost": 0
   },
   {
@@ -1388,6 +2867,21 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 2.01,
+    "damage": 4,
+    "damageDistribution": {
+      "absolute": 1
+    },
+    "rateOfFire": 5,
+    "burstInterval": 0.2,
+    "clipSize": 15,
+    "ammoMaximum": 200,
+    "reloadTime": 3,
+    "distributorDraw": 1.4,
+    "thermalLoad": 5.8,
+    "armourPiercing": 80,
+    "maximumRange": 3500,
+    "falloffRange": 1000,
+    "shotSpeed": 1200,
     "cost": 1659200
   },
   {
@@ -1401,6 +2895,23 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 1.21,
+    "damage": 3.7,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 1.666667,
+    "burstInterval": 0.6,
+    "clipSize": 5,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.65,
+    "thermalLoad": 1.2,
+    "armourPiercing": 45,
+    "maximumRange": 1700,
+    "falloffRange": 1700,
+    "shotSpeed": 1133,
+    "jitter": 5,
     "cost": 0
   },
   {
@@ -1414,6 +2925,23 @@
     "mass": 4,
     "integrity": 42,
     "powerDraw": 1.16,
+    "damage": 2.4,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 1.666667,
+    "burstInterval": 0.6,
+    "clipSize": 5,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.57,
+    "thermalLoad": 1.1,
+    "armourPiercing": 45,
+    "maximumRange": 1700,
+    "falloffRange": 1700,
+    "shotSpeed": 1133,
+    "jitter": 5,
     "cost": 1767001
   },
   {
@@ -1427,6 +2955,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.57,
+    "damage": 13,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.751938,
+    "burstInterval": 0.129,
+    "clipSize": 16,
+    "ammoMaximum": 880,
+    "reloadTime": 6,
+    "distributorDraw": 0.47,
+    "thermalLoad": 1.8,
+    "armourPiercing": 40,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
     "cost": 367501
   },
   {
@@ -1440,6 +2983,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.61,
+    "damage": 10.2,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.751938,
+    "burstInterval": 0.129,
+    "clipSize": 16,
+    "ammoMaximum": 880,
+    "reloadTime": 6,
+    "distributorDraw": 0.58,
+    "thermalLoad": 2.1,
+    "armourPiercing": 40,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
     "cost": 565200
   },
   {
@@ -1453,6 +3011,22 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.5,
+    "damage": 9,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.751938,
+    "burstInterval": 0.129,
+    "clipSize": 16,
+    "ammoMaximum": 880,
+    "reloadTime": 6,
+    "distributorDraw": 0.39,
+    "thermalLoad": 1.2,
+    "armourPiercing": 40,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
+    "jitter": 0,
     "cost": 1359200
   },
   {
@@ -1466,6 +3040,23 @@
     "mass": 8,
     "integrity": 51,
     "powerDraw": 1.68,
+    "damage": 5.2,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 1.666667,
+    "burstInterval": 0.6,
+    "clipSize": 5,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 1.4,
+    "thermalLoad": 2.2,
+    "armourPiercing": 60,
+    "maximumRange": 1700,
+    "falloffRange": 1700,
+    "shotSpeed": 1133,
+    "jitter": 5,
     "cost": 1461350
   },
   {
@@ -1479,6 +3070,23 @@
     "mass": 8,
     "integrity": 51,
     "powerDraw": 1.39,
+    "damage": 3.4,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 1.666667,
+    "burstInterval": 0.6,
+    "clipSize": 5,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 1.2,
+    "thermalLoad": 2,
+    "armourPiercing": 60,
+    "maximumRange": 1700,
+    "falloffRange": 1700,
+    "shotSpeed": 1133,
+    "jitter": 5,
     "cost": 5865026
   },
   {
@@ -1492,6 +3100,22 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.89,
+    "damage": 18.1,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.751938,
+    "burstInterval": 0.129,
+    "clipSize": 16,
+    "ammoMaximum": 880,
+    "reloadTime": 6,
+    "distributorDraw": 0.92,
+    "thermalLoad": 2.66,
+    "armourPiercing": 60,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
+    "jitter": 0,
     "cost": 1015750
   },
   {
@@ -1505,6 +3129,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.89,
+    "damage": 14.9,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.751938,
+    "burstInterval": 0.129,
+    "clipSize": 16,
+    "ammoMaximum": 880,
+    "reloadTime": 6,
+    "distributorDraw": 1.07,
+    "thermalLoad": 3.1,
+    "armourPiercing": 60,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
     "cost": 2249050
   },
   {
@@ -1518,6 +3157,21 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "damage": 12.26,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.751938,
+    "burstInterval": 0.129,
+    "clipSize": 16,
+    "ammoMaximum": 880,
+    "reloadTime": 6,
+    "distributorDraw": 0.79,
+    "thermalLoad": 2.2,
+    "armourPiercing": 60,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
     "cost": 6050201
   },
   {
@@ -1531,6 +3185,21 @@
     "mass": 8,
     "integrity": 51,
     "powerDraw": 3.1,
+    "damage": 7,
+    "damageDistribution": {
+      "absolute": 1
+    },
+    "rateOfFire": 5,
+    "burstInterval": 0.2,
+    "clipSize": 15,
+    "ammoMaximum": 200,
+    "reloadTime": 3,
+    "distributorDraw": 2.42,
+    "thermalLoad": 6.2,
+    "armourPiercing": 95,
+    "maximumRange": 3000,
+    "falloffRange": 1000,
+    "shotSpeed": 1200,
     "cost": 1423301
   },
   {
@@ -1544,6 +3213,21 @@
     "mass": 8,
     "integrity": 51,
     "powerDraw": 2.53,
+    "damage": 6,
+    "damageDistribution": {
+      "absolute": 1
+    },
+    "rateOfFire": 5,
+    "burstInterval": 0.2,
+    "clipSize": 15,
+    "ammoMaximum": 200,
+    "reloadTime": 3,
+    "distributorDraw": 2.6,
+    "thermalLoad": 6.4,
+    "armourPiercing": 95,
+    "maximumRange": 3000,
+    "falloffRange": 1000,
+    "shotSpeed": 1200,
     "cost": 5495200
   },
   {
@@ -1558,6 +3242,19 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.62,
+    "damage": 50,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 12,
+    "ammoMaximum": 96,
+    "reloadTime": 5,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 750,
     "cost": 1021500
   },
   {
@@ -1571,6 +3268,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.54,
+    "damage": 4.5,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.751938,
+    "burstInterval": 0.129,
+    "clipSize": 16,
+    "ammoMaximum": 880,
+    "reloadTime": 6,
+    "distributorDraw": 0.21,
+    "thermalLoad": 0.7,
+    "armourPiercing": 25,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
     "cost": 364000
   },
   {
@@ -1584,6 +3296,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.47,
+    "damage": 6.9,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.751938,
+    "burstInterval": 0.129,
+    "clipSize": 16,
+    "ammoMaximum": 880,
+    "reloadTime": 6,
+    "distributorDraw": 0.39,
+    "thermalLoad": 1.5,
+    "armourPiercing": 25,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
     "cost": 137501
   },
   {
@@ -1597,6 +3324,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.41,
+    "damage": 8.6,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.751938,
+    "burstInterval": 0.129,
+    "clipSize": 16,
+    "ammoMaximum": 880,
+    "reloadTime": 6,
+    "distributorDraw": 0.27,
+    "thermalLoad": 1.1,
+    "armourPiercing": 25,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
     "cost": 65941
   },
   {
@@ -1610,6 +3352,21 @@
     "mass": 2,
     "integrity": 34,
     "powerDraw": 1.6,
+    "damage": 2,
+    "damageDistribution": {
+      "absolute": 1
+    },
+    "rateOfFire": 5,
+    "burstInterval": 0.2,
+    "clipSize": 15,
+    "ammoMaximum": 200,
+    "reloadTime": 3,
+    "distributorDraw": 0.8,
+    "thermalLoad": 5,
+    "armourPiercing": 65,
+    "maximumRange": 3000,
+    "falloffRange": 1000,
+    "shotSpeed": 1200,
     "cost": 484050
   },
   {
@@ -1623,6 +3380,21 @@
     "mass": 2,
     "integrity": 34,
     "powerDraw": 1.4,
+    "damage": 3,
+    "damageDistribution": {
+      "absolute": 1
+    },
+    "rateOfFire": 5,
+    "burstInterval": 0.2,
+    "clipSize": 15,
+    "ammoMaximum": 200,
+    "reloadTime": 3,
+    "distributorDraw": 0.68,
+    "thermalLoad": 4.2,
+    "armourPiercing": 65,
+    "maximumRange": 3000,
+    "falloffRange": 1000,
+    "shotSpeed": 1200,
     "cost": 0
   },
   {
@@ -1636,6 +3408,23 @@
     "mass": 2,
     "integrity": 34,
     "powerDraw": 0.72,
+    "damage": 1.1,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 1.666667,
+    "burstInterval": 0.6,
+    "clipSize": 5,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.36,
+    "thermalLoad": 0.6,
+    "armourPiercing": 30,
+    "maximumRange": 1700,
+    "falloffRange": 1700,
+    "shotSpeed": 1133,
+    "jitter": 5,
     "cost": 502000
   },
   {
@@ -1649,6 +3438,23 @@
     "mass": 2,
     "integrity": 34,
     "powerDraw": 0.87,
+    "damage": 2,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "roundsPerShot": 12,
+    "rateOfFire": 1.666667,
+    "burstInterval": 0.6,
+    "clipSize": 5,
+    "ammoMaximum": 180,
+    "reloadTime": 5,
+    "distributorDraw": 0.42,
+    "thermalLoad": 0.7,
+    "armourPiercing": 30,
+    "maximumRange": 1700,
+    "falloffRange": 1700,
+    "shotSpeed": 1133,
+    "jitter": 5,
     "cost": 0
   },
   {
@@ -1662,6 +3468,20 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 1.91,
+    "damage": 22,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 1.204819,
+    "burstInterval": 0.83,
+    "clipSize": 1,
+    "ammoMaximum": 80,
+    "reloadTime": 1,
+    "distributorDraw": 3.8,
+    "thermalLoad": 15,
+    "armourPiercing": 140,
+    "maximumRange": 3000,
+    "falloffRange": 1500,
     "cost": 0
   },
   {
@@ -1675,6 +3495,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.42,
+    "damage": 5,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 32,
+    "reloadTime": 2,
+    "distributorDraw": 0.18,
+    "thermalLoad": 2.2,
+    "armourPiercing": 25,
+    "maximumRange": 3000,
+    "falloffRange": 500,
+    "shotSpeed": 550,
     "cost": 12600
   },
   {
@@ -1688,6 +3523,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.42,
+    "damage": 5,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 32,
+    "reloadTime": 2,
+    "distributorDraw": 0.16,
+    "thermalLoad": 2.2,
+    "armourPiercing": 25,
+    "maximumRange": 3000,
+    "falloffRange": 500,
+    "shotSpeed": 550,
     "cost": 38750
   },
   {
@@ -1701,6 +3551,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.01,
+    "damage": 5,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 96,
+    "reloadTime": 2,
+    "distributorDraw": 0.18,
+    "thermalLoad": 2.9,
+    "armourPiercing": 25,
+    "maximumRange": 3000,
+    "falloffRange": 500,
+    "shotSpeed": 550,
     "cost": 122170
   },
   {
@@ -1714,6 +3579,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.93,
+    "damage": 5,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 96,
+    "reloadTime": 2,
+    "distributorDraw": 0.24,
+    "thermalLoad": 2.9,
+    "armourPiercing": 25,
+    "maximumRange": 3000,
+    "falloffRange": 500,
+    "shotSpeed": 550,
     "cost": 381750
   },
   {
@@ -1726,6 +3606,20 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.34,
+    "damage": 4,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 5,
+    "burstInterval": 0.2,
+    "clipSize": 1,
+    "reloadTime": 2,
+    "distributorDraw": 2,
+    "thermalLoad": 1.8,
+    "armourPiercing": 18,
+    "maximumRange": 1000,
+    "falloffRange": 1000,
+    "shotSpeed": 667,
     "cost": 9700
   },
   {
@@ -1738,6 +3632,20 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.47,
+    "damage": 4,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 5,
+    "burstInterval": 0.2,
+    "clipSize": 1,
+    "reloadTime": 2,
+    "distributorDraw": 2,
+    "thermalLoad": 1.8,
+    "armourPiercing": 18,
+    "maximumRange": 1000,
+    "falloffRange": 1000,
+    "shotSpeed": 667,
     "cost": 27480
   },
   {
@@ -1751,6 +3659,20 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 15,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 1,
+    "burstInterval": 1,
+    "clipSize": 1,
+    "ammoMaximum": 72,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 500,
+    "shotSpeed": 350,
     "cost": 153110
   },
   {
@@ -1764,6 +3686,20 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 15,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 1,
+    "burstInterval": 1,
+    "clipSize": 1,
+    "ammoMaximum": 72,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 35,
+    "maximumRange": 3000,
+    "falloffRange": 500,
+    "shotSpeed": 350,
     "cost": 445570
   },
   {
@@ -1776,6 +3712,21 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.46,
+    "damage": 2.19,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.142857,
+    "burstInterval": 0.14,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.11,
+    "thermalLoad": 0.18,
+    "armourPiercing": 37,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 38000
   },
   {
@@ -1788,6 +3739,21 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.28,
+    "damage": 1.12,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 7.692308,
+    "burstInterval": 0.13,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.06,
+    "thermalLoad": 0.09,
+    "armourPiercing": 22,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 1600,
     "cost": 9500
   },
   {
@@ -1801,6 +3767,19 @@
     "mass": 2,
     "integrity": 40,
     "powerDraw": 0.4,
+    "damage": 50,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 8,
+    "ammoMaximum": 64,
+    "reloadTime": 5,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 750,
     "cost": 32180
   },
   {
@@ -1814,6 +3793,19 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.2,
+    "damage": 50,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 12,
+    "ammoMaximum": 64,
+    "reloadTime": 5,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 750,
     "cost": 1471030
   },
   {
@@ -1828,6 +3820,20 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.72,
+    "damage": 77,
+    "damageDistribution": {
+      "explosive": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 12,
+    "ammoMaximum": 128,
+    "reloadTime": 5,
+    "distributorDraw": 0.24,
+    "thermalLoad": 3.6,
+    "armourPiercing": 60,
+    "shotSpeed": 1250,
     "cost": 1703835
   },
   {
@@ -1841,6 +3847,22 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.48,
+    "damage": 3.9,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 7.142857,
+    "burstInterval": 0.14,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.11,
+    "thermalLoad": 0.18,
+    "armourPiercing": 17,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 4000,
     "cost": 455077
   },
   {
@@ -1855,6 +3877,20 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.3,
+    "damage": 77,
+    "damageDistribution": {
+      "explosive": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 8,
+    "ammoMaximum": 64,
+    "reloadTime": 5,
+    "distributorDraw": 0.14,
+    "thermalLoad": 2.4,
+    "armourPiercing": 60,
+    "shotSpeed": 1250,
     "cost": 681534
   },
   {
@@ -1869,6 +3905,20 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.85,
+    "damage": 64,
+    "damageDistribution": {
+      "explosive": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 12,
+    "ammoMaximum": 128,
+    "reloadTime": 5,
+    "distributorDraw": 0.14,
+    "thermalLoad": 1.9,
+    "armourPiercing": 60,
+    "shotSpeed": 1250,
     "cost": 5347534
   },
   {
@@ -1883,6 +3933,20 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 1.3,
+    "damage": 64,
+    "damageDistribution": {
+      "explosive": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 8,
+    "ammoMaximum": 64,
+    "reloadTime": 5,
+    "distributorDraw": 0.08,
+    "thermalLoad": 1.5,
+    "armourPiercing": 60,
+    "shotSpeed": 1250,
     "cost": 2666286
   },
   {
@@ -1896,6 +3960,22 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.69,
+    "damage": 7.3,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 5.882353,
+    "burstInterval": 0.17,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.18,
+    "thermalLoad": 0.28,
+    "armourPiercing": 33,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 4000,
     "cost": 1360322
   },
   {
@@ -1909,6 +3989,22 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.69,
+    "damage": 3.9,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 6.25,
+    "burstInterval": 0.16,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.06,
+    "thermalLoad": 0.1,
+    "armourPiercing": 33,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 4000,
     "cost": 4588709
   },
   {
@@ -1922,6 +4018,22 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.52,
+    "damage": 2,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 6.25,
+    "burstInterval": 0.16,
+    "clipSize": 90,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.06,
+    "thermalLoad": 0.1,
+    "armourPiercing": 17,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 4000,
     "cost": 2193297
   },
   {
@@ -1935,6 +4047,22 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 0.64,
+    "damage": 6.3,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 5.882353,
+    "burstInterval": 0.17,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.18,
+    "thermalLoad": 0.28,
+    "armourPiercing": 33,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 4000,
     "cost": 2390460
   },
   {
@@ -1948,6 +4076,22 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.46,
+    "damage": 3.7,
+    "damageDistribution": {
+      "kinetic": 1,
+      "antiXeno": 1
+    },
+    "rateOfFire": 7.142857,
+    "burstInterval": 0.14,
+    "clipSize": 100,
+    "ammoMaximum": 2100,
+    "reloadTime": 4,
+    "distributorDraw": 0.11,
+    "thermalLoad": 0.18,
+    "armourPiercing": 17,
+    "maximumRange": 4000,
+    "falloffRange": 2000,
+    "shotSpeed": 4000,
     "cost": 1197644
   },
   {
@@ -1961,6 +4105,19 @@
     "mass": 4,
     "integrity": 50,
     "powerDraw": 1,
+    "damage": 5,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 96,
+    "reloadTime": 2,
+    "distributorDraw": 0.21,
+    "thermalLoad": 2.9,
+    "armourPiercing": 25,
+    "shotSpeed": 550,
     "cost": 822091
   },
   {
@@ -1973,6 +4130,18 @@
     "mass": 3,
     "integrity": 50,
     "powerDraw": 0.4,
+    "damage": 0,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 64,
+    "reloadTime": 3,
+    "distributorDraw": 0,
+    "thermalLoad": 35,
+    "shotSpeed": 1000,
     "cost": 843170
   },
   {
@@ -1985,6 +4154,18 @@
     "mass": 5,
     "integrity": 80,
     "powerDraw": 0.7,
+    "damage": 0,
+    "damageDistribution": {
+      "explosive": 1
+    },
+    "rateOfFire": 0.5,
+    "burstInterval": 2,
+    "clipSize": 1,
+    "ammoMaximum": 125,
+    "reloadTime": 3,
+    "distributorDraw": 0,
+    "thermalLoad": 35,
+    "shotSpeed": 1000,
     "cost": 1627419
   },
   {
@@ -1998,6 +4179,23 @@
     "mass": 4,
     "integrity": 51,
     "powerDraw": 0.64,
+    "damage": 14.63,
+    "damageDistribution": {
+      "kinetic": 1
+    },
+    "rateOfFire": 1.086957,
+    "burstInterval": 2.26,
+    "burstRounds": 3,
+    "burstRateOfFire": 4,
+    "clipSize": 9,
+    "ammoMaximum": 300,
+    "reloadTime": 4,
+    "distributorDraw": 0.75,
+    "thermalLoad": 1.92,
+    "armourPiercing": 42,
+    "maximumRange": 3500,
+    "falloffRange": 3500,
+    "shotSpeed": 1300,
     "cost": 314620
   },
   {
@@ -2013,6 +4211,22 @@
     "restrictedToShips": [
       "LakonMiner"
     ],
+    "damage": 0.3,
+    "damageDistribution": {
+      "thermal": 1
+    },
+    "rateOfFire": 20,
+    "burstInterval": 0.05,
+    "burstRounds": 1,
+    "clipSize": 1,
+    "ammoMaximum": 1,
+    "reloadTime": 4,
+    "distributorDraw": 2,
+    "thermalLoad": 0.4,
+    "armourPiercing": 18,
+    "maximumRange": 500,
+    "falloffRange": 500,
+    "shotSpeed": 167,
     "cost": 149910
   },
   {
@@ -2025,6 +4239,25 @@
     "mass": 8,
     "integrity": 64,
     "powerDraw": 1.51,
+    "damage": 13.9,
+    "damageDistribution": {
+      "kinetic": 0.2,
+      "thermal": 0.2,
+      "absolute": 0.6
+    },
+    "rateOfFire": 7.7951,
+    "burstInterval": 0.406,
+    "burstRounds": 4,
+    "burstRateOfFire": 28,
+    "clipSize": 18,
+    "ammoMaximum": 0,
+    "reloadTime": 5,
+    "distributorDraw": 0.92,
+    "thermalLoad": 1.7,
+    "armourPiercing": 60,
+    "maximumRange": 3000,
+    "falloffRange": 2500,
+    "shotSpeed": 1200,
     "cost": 3051200
   }
 ]

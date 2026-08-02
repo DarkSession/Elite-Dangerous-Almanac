@@ -4,7 +4,7 @@
  * boosters, kill warrant / manifest / wake scanners, the xeno and Shutdown Field
  * scanners, …).
  *
- * The smallest catalogue. The other categories live in `./modules-standard`,
+ * The smallest catalogue. The other categories live in `./modules-core`,
  * `./modules-internal` and `./modules-hardpoint`, so importing this module never
  * bundles them.
  *

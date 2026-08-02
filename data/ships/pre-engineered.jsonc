@@ -335,6 +335,11 @@
         "value": 0.67776
       },
       {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.06
+      },
+      {
         "label": "BurstSize",
         "method": "overwrite",
         "value": 2
@@ -373,6 +378,11 @@
         "label": "AmmoMaximum",
         "method": "multiplicative",
         "value": 0.67776
+      },
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.06
       },
       {
         "label": "BurstSize",
@@ -435,8 +445,8 @@
       },
       {
         "label": "ShotSpeed",
-        "method": "multiplicative",
-        "value": 0.11111
+        "method": "overwrite",
+        "value": 1258.89
       },
       {
         "label": "ThermalLoad",
@@ -460,8 +470,13 @@
       },
       {
         "label": "AmmoMaximum",
-        "method": "multiplicative",
-        "value": 2.0476
+        "method": "overwrite",
+        "value": 6400
+      },
+      {
+        "label": "BurstInterval",
+        "method": "overwrite",
+        "value": 0.1
       },
       {
         "label": "FalloffRange",
@@ -502,6 +517,11 @@
         "label": "AmmoMaximum",
         "method": "multiplicative",
         "value": 1
+      },
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.61145
       },
       {
         "label": "FalloffRange",
@@ -549,6 +569,11 @@
         "value": 1
       },
       {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.2635
+      },
+      {
         "label": "Damage",
         "method": "multiplicative",
         "value": -0.2
@@ -584,9 +609,14 @@
         "value": 2
       },
       {
-        "label": "DistributorDraw",
+        "label": "BurstInterval",
         "method": "multiplicative",
-        "value": 0.41667
+        "value": -0.2
+      },
+      {
+        "label": "DistributorDraw",
+        "method": "overwrite",
+        "value": 0.34
       },
       {
         "label": "Mass",
@@ -622,6 +652,11 @@
         "label": "ArmourPenetration",
         "method": "multiplicative",
         "value": 0.4
+      },
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.1
       },
       {
         "label": "Damage",
@@ -672,6 +707,11 @@
         "label": "ArmourPenetration",
         "method": "multiplicative",
         "value": 0.4
+      },
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.1
       },
       {
         "label": "Damage",
@@ -1107,8 +1147,8 @@
       },
       {
         "label": "Integrity",
-        "method": "multiplicative",
-        "value": -0.30188
+        "method": "overwrite",
+        "value": 74
       },
       {
         "label": "PowerCapacity",
@@ -1309,6 +1349,11 @@
         "value": 1
       },
       {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.3
+      },
+      {
         "label": "Damage",
         "method": "multiplicative",
         "value": -0.03
@@ -1356,6 +1401,11 @@
         "label": "AmmoMaximum",
         "method": "multiplicative",
         "value": 1
+      },
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.3
       },
       {
         "label": "Damage",
@@ -1457,6 +1507,11 @@
         "value": 4
       },
       {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.38237
+      },
+      {
         "label": "BurstRateOfFire",
         "method": "overwrite",
         "value": 10
@@ -1506,6 +1561,11 @@
         "value": 4
       },
       {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.38237
+      },
+      {
         "label": "BurstRateOfFire",
         "method": "overwrite",
         "value": 10
@@ -1546,8 +1606,8 @@
     "modifiers": [
       {
         "label": "AmmoClipSize",
-        "method": "multiplicative",
-        "value": 0.33333
+        "method": "overwrite",
+        "value": 20
       },
       {
         "label": "ArmourPenetration",
@@ -1585,8 +1645,8 @@
     "modifiers": [
       {
         "label": "AmmoClipSize",
-        "method": "multiplicative",
-        "value": 0.33333
+        "method": "overwrite",
+        "value": 20
       },
       {
         "label": "ArmourPenetration",
@@ -1634,8 +1694,8 @@
       },
       {
         "label": "FalloffRange",
-        "method": "multiplicative",
-        "value": -0.11765
+        "method": "overwrite",
+        "value": 1500
       },
       {
         "label": "Jitter",
@@ -1649,8 +1709,8 @@
       },
       {
         "label": "MaximumRange",
-        "method": "multiplicative",
-        "value": 0.7647
+        "method": "overwrite",
+        "value": 3000
       },
       {
         "label": "PowerDraw",
@@ -1659,8 +1719,8 @@
       },
       {
         "label": "ShotSpeed",
-        "method": "multiplicative",
-        "value": 2.1497
+        "method": "overwrite",
+        "value": 3568.6
       },
       {
         "label": "ThermalLoad",
@@ -1683,13 +1743,13 @@
       },
       {
         "label": "DistributorDraw",
-        "method": "multiplicative",
-        "value": 4.2769
+        "method": "overwrite",
+        "value": 3.43
       },
       {
         "label": "FalloffRange",
-        "method": "multiplicative",
-        "value": -0.11765
+        "method": "overwrite",
+        "value": 1500
       },
       {
         "label": "Jitter",
@@ -1703,8 +1763,8 @@
       },
       {
         "label": "MaximumRange",
-        "method": "multiplicative",
-        "value": 0.7647
+        "method": "overwrite",
+        "value": 3000
       },
       {
         "label": "PowerDraw",
@@ -1713,8 +1773,8 @@
       },
       {
         "label": "ShotSpeed",
-        "method": "multiplicative",
-        "value": 2.1497
+        "method": "overwrite",
+        "value": 3568.6
       },
       {
         "label": "ThermalLoad",
@@ -1785,6 +1845,11 @@
         "label": "AmmoMaximum",
         "method": "multiplicative",
         "value": 1
+      },
+      {
+        "label": "BurstInterval",
+        "method": "multiplicative",
+        "value": -0.1
       },
       {
         "label": "DistributorDraw",

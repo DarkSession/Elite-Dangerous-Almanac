@@ -26,7 +26,7 @@
  * `optMass` and `maxFuel` are what engineering changes (Long Range raises `optMass`;
  * some effects change `maxFuel`); `fuelMul` and `fuelPower` are intrinsic to the
  * drive and never modified. Read these off the drive's module record from
- * `./modules-standard` (and, for a Guardian FSD Booster's `jumpBoost`,
+ * `./modules-core` (and, for a Guardian FSD Booster's `jumpBoost`,
  * `./modules-internal`), whose records now carry their stats.
  */
 export interface FrameShiftDriveParams {

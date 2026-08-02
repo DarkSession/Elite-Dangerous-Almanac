@@ -71,6 +71,8 @@
         },
         "./ships/engineering-compatibility": null,
         "./ships/loadout-engineering": null,
+        "./ships/loadout-metrics": null,
+        "./ships/module-stat-labels": null,
         "./ships/*": {
             "types": "./dist/ships/*.d.ts",
             "import": "./dist/ships/*.js"

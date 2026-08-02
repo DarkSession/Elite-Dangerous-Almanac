@@ -41,13 +41,23 @@
         }
       }
     },
-    "bulkhead": {
+    "resistance": {
+      "description": "Fraction of incoming damage of one type removed; negative is a weakness.",
+      "type": "number",
+      "minimum": -1,
+      "maximum": 1
+    },
+    "damageDistribution": {
+      "description": "How a weapon's damage splits by type. The four physical shares sum to 1; antiXeno overlays them rather than partitioning, flagging damage that is effective against Thargoids.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "mass"],
+      "minProperties": 1,
       "properties": {
-        "name": { "$ref": "#/definitions/nonEmptyString" },
-        "mass": { "type": "number", "minimum": 0 }
+        "kinetic": { "type": "number", "minimum": 0, "maximum": 1 },
+        "thermal": { "type": "number", "minimum": 0, "maximum": 1 },
+        "explosive": { "type": "number", "minimum": 0, "maximum": 1 },
+        "absolute": { "type": "number", "minimum": 0, "maximum": 1 },
+        "antiXeno": { "type": "number", "minimum": 0, "maximum": 1 }
       }
     },
     "ship": {
@@ -87,11 +97,6 @@
         "optional": {
           "type": "array",
           "items": { "$ref": "#/definitions/optionalSlot" }
-        },
-        "bulkheads": {
-          "type": "array",
-          "minItems": 5,
-          "items": { "$ref": "#/definitions/bulkhead" }
         }
       }
     },
@@ -107,7 +112,7 @@
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
         "category": {
-          "enum": ["standard", "internal", "hardpoint", "utility"]
+          "enum": ["core", "internal", "hardpoint", "utility"]
         },
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "class": {
@@ -160,6 +165,36 @@
         "shieldRegenRate": { "type": "number", "minimum": 0 },
         "shieldBrokenRegenRate": { "type": "number", "minimum": 0 },
         "shieldBoost": { "type": "number" },
+
+        "kineticResistance": { "$ref": "#/definitions/resistance" },
+        "thermalResistance": { "$ref": "#/definitions/resistance" },
+        "explosiveResistance": { "$ref": "#/definitions/resistance" },
+        "causticResistance": { "$ref": "#/definitions/resistance" },
+        "hullBoost": { "type": "number", "minimum": 0 },
+        "hullReinforcement": { "type": "number", "minimum": 0 },
+        "shieldAddition": { "type": "number", "minimum": 0 },
+        "moduleProtection": { "type": "number", "minimum": 0, "maximum": 1 },
+
+        "alwaysPowered": { "type": "boolean" },
+
+        "damage": { "type": "number", "minimum": 0 },
+        "damageDistribution": { "$ref": "#/definitions/damageDistribution" },
+        "roundsPerShot": { "type": "number", "minimum": 1 },
+        "rateOfFire": { "type": "number", "exclusiveMinimum": 0 },
+        "burstInterval": { "type": "number", "exclusiveMinimum": 0 },
+        "burstRounds": { "type": "number", "minimum": 1 },
+        "burstRateOfFire": { "type": "number", "exclusiveMinimum": 0 },
+        "chargeTime": { "type": "number", "minimum": 0 },
+        "clipSize": { "type": "number", "minimum": 0 },
+        "ammoMaximum": { "type": "number", "minimum": 0 },
+        "reloadTime": { "type": "number", "minimum": 0 },
+        "distributorDraw": { "type": "number", "minimum": 0 },
+        "thermalLoad": { "type": "number", "minimum": 0 },
+        "armourPiercing": { "type": "number", "minimum": 0 },
+        "maximumRange": { "type": "number", "minimum": 0 },
+        "falloffRange": { "type": "number", "minimum": 0 },
+        "shotSpeed": { "type": "number", "minimum": 0 },
+        "jitter": { "type": "number", "minimum": 0 },
 
         "cost": { "type": "integer", "minimum": 0 }
       }

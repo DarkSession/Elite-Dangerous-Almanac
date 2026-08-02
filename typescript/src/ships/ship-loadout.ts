@@ -34,9 +34,9 @@
  * build.maxJumpRange();  // -> 89.41  (best single jump, one jump's fuel, no cargo)
  *
  * // Assemble one:
- * import { STANDARD_MODULES, getModuleBySymbol } from '@elite-dangerous-almanac/core/ships';
+ * import { CORE_MODULES, getModuleBySymbol } from '@elite-dangerous-almanac/core/ships';
  * const conda = ShipLoadout.empty('Anaconda');
- * conda.setModule('FrameShiftDrive', getModuleBySymbol('Int_Hyperdrive_Size6_Class5', STANDARD_MODULES)!);
+ * conda.setModule('FrameShiftDrive', getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!);
  * conda.slotsOfKind('optional'); // every optional mount, occupied or empty, with size
  * ```
  *
@@ -63,6 +63,17 @@ import {
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
 import { baseStats, missingBaseLabels, statFor } from './loadout-engineering.js';
+import {
+    armourInputFor,
+    powerAvailable,
+    powerConsumerFor,
+    shieldInputFor,
+    weaponStatsFor,
+} from './loadout-metrics.js';
+import { powerBudget, type PowerBudget, type PowerConsumer } from './power.js';
+import { shieldMetrics, type ShieldMetrics } from './shields.js';
+import { armourMetrics, type ArmourMetrics } from './armour.js';
+import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.js';
 import { FittedModule } from './fitted-module.js';
 import { LoadoutSlot } from './loadout-slot.js';
 
@@ -93,6 +104,54 @@ export interface ApplyBlueprintOptions {
     readonly quality?: number;
     /** The experimental (special) effect's Frontier `fdname`, if any. */
     readonly experimental?: string;
+}
+
+/** Options for the defence figures a build reports. */
+export interface DefenceOptions {
+    /**
+     * Pips to the systems capacitor, `0`–`4`, folded into the shield resistances.
+     * Defaults to `0` — the bare shield, as an outfitting screen shows it.
+     */
+    readonly systemsPips?: number;
+}
+
+/** One fitted weapon and what it does, as {@link ShipLoadout.weaponMetrics} reports it. */
+export interface FittedWeaponMetrics {
+    /** The hardpoint's slot key, e.g. `"LargeHardpoint1"`. */
+    readonly slot: string;
+    /** The weapon's internal symbol. */
+    readonly symbol: string;
+    /** The weapon's display name, e.g. `"Multi-Cannon"`. */
+    readonly name: string;
+    /** Whether the weapon is switched on — a disabled weapon is excluded from the totals. */
+    readonly enabled: boolean;
+    /** What this weapon does per second, post-engineering. */
+    readonly metrics: WeaponMetrics;
+}
+
+/** A build's firepower: every fitted weapon, and the totals across the enabled ones. */
+export interface BuildWeaponMetrics {
+    /** Every fitted weapon, in slot order. */
+    readonly weapons: readonly FittedWeaponMetrics[];
+    /** The totals across the **enabled** weapons. */
+    readonly total: WeaponMetrics;
+}
+
+/** A build's jump ranges at the loads that matter, in light-years. */
+export interface JumpRangeSummary {
+    /**
+     * Best single jump: no cargo, and only one jump's fuel aboard — the figure the game
+     * and EDSY label "maximum jump range".
+     */
+    readonly max: number;
+    /** Single jump on a full tank with an empty hold. */
+    readonly unladen: number;
+    /** Single jump on a full tank with a full hold. */
+    readonly laden: number;
+    /** Summed range of every jump on one full tank, empty hold. */
+    readonly totalUnladen: number;
+    /** Summed range of every jump on one full tank, full hold. */
+    readonly totalLaden: number;
 }
 
 /** A blueprint that can engineer a module, with the grades it offers. */
@@ -508,9 +567,9 @@ export class ShipLoadout {
      * on an unrecognised hull).
      * @example
      * ```ts
-     * import { STANDARD_MODULES, getModuleBySymbol } from '@elite-dangerous-almanac/core/ships';
-     * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', STANDARD_MODULES)!;
-     * const tank = getModuleBySymbol('Int_FuelTank_Size6_Class3', STANDARD_MODULES)!;
+     * import { CORE_MODULES, getModuleBySymbol } from '@elite-dangerous-almanac/core/ships';
+     * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
+     * const tank = getModuleBySymbol('Int_FuelTank_Size6_Class3', CORE_MODULES)!;
      * build.setModule('FrameShiftDrive', fsd).setModule('Slot01_Size7', tank);
      * ```
      */
@@ -765,6 +824,152 @@ export class ShipLoadout {
         );
     }
 
+    /**
+     * Every jump figure at once — best, unladen, laden, and the multi-jump totals.
+     *
+     * @returns The {@link JumpRangeSummary}, in light-years. For a partial load, call
+     * {@link jumpRange} with the `fuel` and `cargo` you actually have.
+     * @throws {TypeError} If the build has no frame shift drive, or the mass cannot be
+     * determined.
+     * @example
+     * ```ts
+     * const jumps = build.jumpRangeSummary();
+     * jumps.max;    // -> 89.41  (one jump's fuel, empty hold)
+     * jumps.laden;  // -> the range with the hold full
+     * // Half a tank and 32 t aboard:
+     * build.jumpRange({ fuel: build.fuelCapacity.main / 2, cargo: 32 });
+     * ```
+     */
+    jumpRangeSummary(): JumpRangeSummary {
+        const cargo = this.cargoCapacity;
+        return {
+            max: this.maxJumpRange(),
+            unladen: this.jumpRange(),
+            laden: this.jumpRange({ cargo }),
+            totalUnladen: this.totalRange(),
+            totalLaden: this.totalRange({ cargo }),
+        };
+    }
+
+    /**
+     * The build's power budget: what the plant makes, what the modules draw with
+     * hardpoints retracted and deployed, and which priority groups stay lit.
+     *
+     * Draws are post-engineering, modules switched off in the journal are skipped, and
+     * weapons (plus the utility fittings that are not always powered) count only
+     * towards the deployed total.
+     *
+     * @returns The {@link PowerBudget}. With no power plant fitted, `available` is `0`
+     * and nothing is powered.
+     * @example
+     * ```ts
+     * const power = build.powerBudget();
+     * power.available;                  // -> 20.4 MW generated
+     * power.deployed;                   // -> 19.02 MW drawn, hardpoints out
+     * power.withinBudget;               // -> true
+     * power.bands[4]?.poweredDeployed;  // -> is priority group 5 still lit?
+     * ```
+     */
+    powerBudget(): PowerBudget {
+        const modules = [...this.#modules.values()];
+        const consumers: PowerConsumer[] = [];
+        for (const module of modules) {
+            const consumer = powerConsumerFor(module);
+            if (consumer) consumers.push(consumer);
+        }
+        return powerBudget(powerAvailable(modules), consumers);
+    }
+
+    /**
+     * The build's shields: strength in megajoules, where it comes from, and the
+     * effective resistances.
+     *
+     * Shield strength scales with the **hull's** mass, not the build's, so fitting
+     * more modules never weakens it. Boosters, Guardian shield reinforcement and any
+     * engineering are all folded in; switched-off modules are ignored.
+     *
+     * @param options - {@link DefenceOptions}. `systemsPips` (0–4) folds the SYS
+     * capacitor's own resistance into the reported figures; it defaults to `0`, which
+     * is what an outfitting screen shows.
+     * @returns The {@link ShieldMetrics}, or `null` when the build has no shield
+     * generator fitted (or has one switched off).
+     * @example
+     * ```ts
+     * const shields = build.shieldMetrics();
+     * shields?.strength;              // -> MJ
+     * shields?.resistances.thermal;   // -> negative on a stock generator
+     * build.shieldMetrics({ systemsPips: 4 })?.resistances.thermal; // -> with 4 pips to SYS
+     * ```
+     */
+    shieldMetrics(options: DefenceOptions = {}): ShieldMetrics | null {
+        const input = shieldInputFor(
+            this.#shipSymbol,
+            [...this.#modules.values()],
+            options.systemsPips ?? 0,
+        );
+        if (!input.generator) return null;
+        return shieldMetrics(input);
+    }
+
+    /**
+     * The build's armour: hull hit points, the bulkhead and reinforcement each
+     * contribute, and the effective resistances.
+     *
+     * @returns The {@link ArmourMetrics}. A build with no armour module fitted is
+     * reported on the stock lightweight alloy the hull leaves the shipyard with, which
+     * is what the game does.
+     * @example
+     * ```ts
+     * const hull = build.armourMetrics();
+     * hull.hitPoints;                  // -> total hull points
+     * hull.resistances.explosive;      // -> lightweight alloy is explosively weak
+     * hull.effectiveHitPoints.thermal; // -> thermal damage the hull can soak
+     * ```
+     */
+    armourMetrics(): ArmourMetrics {
+        return armourMetrics(armourInputFor(this.#shipSymbol, [...this.#modules.values()]));
+    }
+
+    /**
+     * The build's firepower: DPS, sustained DPS, weapons-capacitor draw, heat and power
+     * draw for every fitted weapon, plus the totals.
+     *
+     * Every figure is post-engineering. A weapon switched off in the journal is still
+     * listed — with its own metrics — but left out of the totals.
+     *
+     * @returns The {@link BuildWeaponMetrics}.
+     * @example
+     * ```ts
+     * const guns = build.weaponMetrics();
+     * guns.total.damagePerSecond;          // -> burst DPS across the hardpoints
+     * guns.total.sustainedDamagePerSecond; // -> with reloads folded in
+     * guns.total.energyPerSecond;          // -> MW asked of the WEP capacitor
+     * guns.total.powerDraw;                // -> MW asked of the power plant when deployed
+     * guns.weapons[0]?.metrics.damageByType.thermal;
+     * ```
+     */
+    weaponMetrics(): BuildWeaponMetrics {
+        const weapons: FittedWeaponMetrics[] = [];
+        for (const module of this.#modules.values()) {
+            const stats = weaponStatsFor(module);
+            if (!stats) continue;
+            const record = statFor(module.Item);
+            weapons.push({
+                slot: module.Slot,
+                symbol: module.Item,
+                name: record?.name ?? module.Item,
+                enabled: module.On !== false,
+                metrics: weaponMetrics(stats),
+            });
+        }
+        return {
+            weapons,
+            total: sumWeaponMetrics(
+                weapons.filter((weapon) => weapon.enabled).map((weapon) => weapon.metrics),
+            ),
+        };
+    }
+
     #layout(): BuildSlot[] {
         const layout = getShipSlots(this.#shipSymbol);
         if (!layout) {
@@ -790,7 +995,7 @@ export class ShipLoadout {
         }
         if (slot.kind === 'armour') {
             const hull = getShipBySymbol(this.#shipSymbol);
-            if (module.category !== 'standard' || module.ship === undefined) {
+            if (module.category !== 'core' || module.ship === undefined) {
                 return 'not a ship armour module';
             }
             if (!hull || module.ship.toLowerCase() !== hull.name.toLowerCase()) {
@@ -935,28 +1140,7 @@ export class ShipLoadout {
         if (module.Slot === 'CargoHatch' && module.Item.toLowerCase() === 'modularcargobaydoor') {
             return 0;
         }
-        if (module.Slot === 'Armour') return this.#bulkheadMass(module.Item);
         return null;
-    }
-
-    /** Resolve a bulkhead's added mass from its stable Frontier symbol suffix. */
-    #bulkheadMass(item: string): number | null {
-        const layout = getShipSlots(this.#shipSymbol);
-        if (!layout) return null;
-        const normalized = item.toLowerCase();
-        let index: number | null = null;
-        if (normalized.endsWith('_armour_grade1_default')) index = 0;
-        else if (normalized.endsWith('_armour_grade1'))
-            index = layout.bulkheads.length === 6 ? 1 : 0;
-        else if (normalized.endsWith('_armour_grade2'))
-            index = layout.bulkheads.length === 6 ? 2 : 1;
-        else if (normalized.endsWith('_armour_grade3'))
-            index = layout.bulkheads.length === 6 ? 3 : 2;
-        else if (normalized.endsWith('_armour_mirrored'))
-            index = layout.bulkheads.length === 6 ? 4 : 3;
-        else if (normalized.endsWith('_armour_reactive'))
-            index = layout.bulkheads.length === 6 ? 5 : 4;
-        return index === null ? null : (layout.bulkheads[index]?.mass ?? null);
     }
 
     /**

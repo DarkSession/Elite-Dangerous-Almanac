@@ -17,9 +17,21 @@
  * the display name; `class` the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. Identity fields always present;
  * every stat field is optional, present only where the module has it (masses in
- * tonnes, power in MW, ranges in LY). `restrictedToShips` lists the hull(s) a
+ * tonnes, power in MW, jump ranges in LY). `restrictedToShips` lists the hull(s) a
  * non-armour module is limited to; armour's hull restriction is its `ship` field.
- * Modules without stats (ship-specific armour) carry identity only.
+ *
+ * Defence stats: `kineticResistance`, `thermalResistance`, `explosiveResistance` and
+ * `causticResistance` are fractions of damage removed (negative = a weakness);
+ * `hullBoost` is an armour variant's bonus as a fraction of the hull's base armour
+ * (0.8 means base armour x 1.8), `hullReinforcement` is hull points added,
+ * `shieldAddition` shield megajoules added, `moduleProtection` the fraction of module
+ * damage absorbed. `alwaysPowered` marks a hardpoint-mounted module that draws its
+ * power even with hardpoints retracted.
+ * Weapon stats: `damage` is per round (per second on continuous-fire beam and mining
+ * lasers, which carry no `rateOfFire`), `damageDistribution` splits it by type,
+ * `rateOfFire` is shots per second with the burst pattern and charge time folded in,
+ * `distributorDraw` (MW) and `thermalLoad` are per shot, and `maximumRange` /
+ * `falloffRange` / `shotSpeed` are metres and metres per second.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  *
@@ -51,6 +63,10 @@
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 300
   },
   {
@@ -70,6 +86,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 1240
   },
   {
@@ -89,6 +109,10 @@
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 5140
   },
   {
@@ -104,7 +128,11 @@
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.6
+    "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class5",
@@ -123,6 +151,10 @@
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 88075
   },
   {
@@ -142,6 +174,10 @@
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 1978
   },
   {
@@ -161,6 +197,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 5934
   },
   {
@@ -180,6 +220,10 @@
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 17803
   },
   {
@@ -199,6 +243,10 @@
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 53408
   },
   {
@@ -218,6 +266,10 @@
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 160224
   },
   {
@@ -237,6 +289,10 @@
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.87,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 6271
   },
   {
@@ -256,6 +312,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.87,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 18812
   },
   {
@@ -275,6 +335,10 @@
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.87,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 56435
   },
   {
@@ -294,6 +358,10 @@
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.87,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 169304
   },
   {
@@ -313,6 +381,10 @@
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.87,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 507912
   },
   {
@@ -332,6 +404,10 @@
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 2.53,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 19878
   },
   {
@@ -351,6 +427,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 2.53,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 59633
   },
   {
@@ -370,6 +450,10 @@
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 2.53,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 178898
   },
   {
@@ -389,6 +473,10 @@
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 2.53,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 536693
   },
   {
@@ -408,6 +496,10 @@
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 2.53,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 1610080
   },
   {
@@ -427,6 +519,10 @@
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 3.75,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 63012
   },
   {
@@ -446,6 +542,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 3.75,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 189035
   },
   {
@@ -465,6 +565,10 @@
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 3.75,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 567106
   },
   {
@@ -484,6 +588,10 @@
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 3.75,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 1701318
   },
   {
@@ -503,6 +611,10 @@
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 3.75,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 5103953
   },
   {
@@ -522,6 +634,10 @@
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1.3,
     "shieldBrokenRegenRate": 5.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 199747
   },
   {
@@ -541,6 +657,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.3,
     "shieldBrokenRegenRate": 5.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 599242
   },
   {
@@ -560,6 +680,10 @@
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1.3,
     "shieldBrokenRegenRate": 5.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 1797726
   },
   {
@@ -579,6 +703,10 @@
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1.3,
     "shieldBrokenRegenRate": 5.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 5393177
   },
   {
@@ -598,6 +726,10 @@
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1.3,
     "shieldBrokenRegenRate": 5.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 16179531
   },
   {
@@ -617,6 +749,10 @@
     "maxMultiplier": 1.3,
     "shieldRegenRate": 1.8,
     "shieldBrokenRegenRate": 7.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 633199
   },
   {
@@ -636,6 +772,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
     "shieldBrokenRegenRate": 7.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 1899597
   },
   {
@@ -655,6 +795,10 @@
     "maxMultiplier": 1.5,
     "shieldRegenRate": 1.8,
     "shieldBrokenRegenRate": 7.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 5698790
   },
   {
@@ -674,6 +818,10 @@
     "maxMultiplier": 1.6,
     "shieldRegenRate": 1.8,
     "shieldBrokenRegenRate": 7.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 17096371
   },
   {
@@ -693,6 +841,10 @@
     "maxMultiplier": 1.7,
     "shieldRegenRate": 1.8,
     "shieldBrokenRegenRate": 7.33,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 51289112
   },
   {
@@ -712,6 +864,10 @@
     "maxMultiplier": 1.3,
     "shieldRegenRate": 2.4,
     "shieldBrokenRegenRate": 9.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 2007241
   },
   {
@@ -731,6 +887,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 2.4,
     "shieldBrokenRegenRate": 9.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 6021722
   },
   {
@@ -750,6 +910,10 @@
     "maxMultiplier": 1.5,
     "shieldRegenRate": 2.4,
     "shieldBrokenRegenRate": 9.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 18065165
   },
   {
@@ -769,6 +933,10 @@
     "maxMultiplier": 1.6,
     "shieldRegenRate": 2.4,
     "shieldBrokenRegenRate": 9.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 54195495
   },
   {
@@ -788,6 +956,10 @@
     "maxMultiplier": 1.7,
     "shieldRegenRate": 2.4,
     "shieldBrokenRegenRate": 9.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 162586486
   },
   {
@@ -800,6 +972,9 @@
     "integrity": 32,
     "powerDraw": 0.41,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 170,
     "cost": 517
   },
   {
@@ -812,6 +987,9 @@
     "integrity": 24,
     "powerDraw": 0.55,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 0,
+    "thermalLoad": 170,
     "cost": 1293
   },
   {
@@ -824,6 +1002,9 @@
     "integrity": 40,
     "powerDraw": 0.69,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 2,
+    "thermalLoad": 170,
     "cost": 3231
   },
   {
@@ -836,6 +1017,9 @@
     "integrity": 56,
     "powerDraw": 0.83,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 170,
     "cost": 8078
   },
   {
@@ -848,6 +1032,9 @@
     "integrity": 48,
     "powerDraw": 0.97,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 2,
+    "thermalLoad": 170,
     "cost": 20195
   },
   {
@@ -860,6 +1047,9 @@
     "integrity": 41,
     "powerDraw": 0.5,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 240,
     "cost": 1448
   },
   {
@@ -872,6 +1062,9 @@
     "integrity": 31,
     "powerDraw": 0.67,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 2,
+    "thermalLoad": 240,
     "cost": 3619
   },
   {
@@ -884,6 +1077,9 @@
     "integrity": 51,
     "powerDraw": 0.84,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 240,
     "cost": 9048
   },
   {
@@ -896,6 +1092,9 @@
     "integrity": 71,
     "powerDraw": 1.01,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 240,
     "cost": 22619
   },
   {
@@ -908,6 +1107,9 @@
     "integrity": 61,
     "powerDraw": 1.18,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 240,
     "cost": 56547
   },
   {
@@ -920,6 +1122,9 @@
     "integrity": 51,
     "powerDraw": 0.61,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 340,
     "cost": 4053
   },
   {
@@ -932,6 +1137,9 @@
     "integrity": 38,
     "powerDraw": 0.82,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 2,
+    "thermalLoad": 340,
     "cost": 10133
   },
   {
@@ -944,6 +1152,9 @@
     "integrity": 64,
     "powerDraw": 1.02,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 340,
     "cost": 25333
   },
   {
@@ -956,6 +1167,9 @@
     "integrity": 90,
     "powerDraw": 1.22,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 340,
     "cost": 63333
   },
   {
@@ -968,6 +1182,9 @@
     "integrity": 77,
     "powerDraw": 1.43,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 340,
     "cost": 158331
   },
   {
@@ -980,6 +1197,9 @@
     "integrity": 64,
     "powerDraw": 0.74,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 410,
     "cost": 11349
   },
   {
@@ -992,6 +1212,9 @@
     "integrity": 48,
     "powerDraw": 0.98,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 2,
+    "thermalLoad": 410,
     "cost": 28373
   },
   {
@@ -1004,6 +1227,9 @@
     "integrity": 80,
     "powerDraw": 1.23,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 410,
     "cost": 70932
   },
   {
@@ -1016,6 +1242,9 @@
     "integrity": 112,
     "powerDraw": 1.48,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 410,
     "cost": 177331
   },
   {
@@ -1028,6 +1257,9 @@
     "integrity": 96,
     "powerDraw": 1.72,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 410,
     "cost": 443328
   },
   {
@@ -1040,6 +1272,9 @@
     "integrity": 77,
     "powerDraw": 0.9,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 540,
     "cost": 31778
   },
   {
@@ -1052,6 +1287,9 @@
     "integrity": 58,
     "powerDraw": 1.2,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 2,
+    "thermalLoad": 540,
     "cost": 79444
   },
   {
@@ -1064,6 +1302,9 @@
     "integrity": 96,
     "powerDraw": 1.5,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 540,
     "cost": 198611
   },
   {
@@ -1076,6 +1317,9 @@
     "integrity": 134,
     "powerDraw": 1.8,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 540,
     "cost": 496527
   },
   {
@@ -1088,6 +1332,9 @@
     "integrity": 115,
     "powerDraw": 2.1,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 540,
     "cost": 1241317
   },
   {
@@ -1100,6 +1347,9 @@
     "integrity": 90,
     "powerDraw": 1.06,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 5,
+    "thermalLoad": 640,
     "cost": 88978
   },
   {
@@ -1112,6 +1362,9 @@
     "integrity": 68,
     "powerDraw": 1.42,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 640,
     "cost": 222444
   },
   {
@@ -1124,6 +1377,9 @@
     "integrity": 113,
     "powerDraw": 1.77,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 640,
     "cost": 556110
   },
   {
@@ -1136,6 +1392,9 @@
     "integrity": 158,
     "powerDraw": 2.12,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 5,
+    "thermalLoad": 640,
     "cost": 1390275
   },
   {
@@ -1148,6 +1407,9 @@
     "integrity": 136,
     "powerDraw": 2.48,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 640,
     "cost": 3475688
   },
   {
@@ -1160,6 +1422,9 @@
     "integrity": 105,
     "powerDraw": 1.24,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 5,
+    "thermalLoad": 720,
     "cost": 249137
   },
   {
@@ -1172,6 +1437,9 @@
     "integrity": 79,
     "powerDraw": 1.66,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 720,
     "cost": 622843
   },
   {
@@ -1184,6 +1452,9 @@
     "integrity": 131,
     "powerDraw": 2.07,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 720,
     "cost": 1557108
   },
   {
@@ -1196,6 +1467,9 @@
     "integrity": 183,
     "powerDraw": 2.48,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 5,
+    "thermalLoad": 720,
     "cost": 3892770
   },
   {
@@ -1208,6 +1482,9 @@
     "integrity": 157,
     "powerDraw": 2.9,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 720,
     "cost": 9731925
   },
   {
@@ -1220,6 +1497,9 @@
     "integrity": 120,
     "powerDraw": 1.44,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 5,
+    "thermalLoad": 800,
     "cost": 697584
   },
   {
@@ -1232,6 +1512,9 @@
     "integrity": 90,
     "powerDraw": 1.92,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 3,
+    "thermalLoad": 800,
     "cost": 1743961
   },
   {
@@ -1244,6 +1527,9 @@
     "integrity": 150,
     "powerDraw": 2.4,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 800,
     "cost": 4359903
   },
   {
@@ -1256,6 +1542,9 @@
     "integrity": 210,
     "powerDraw": 2.88,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 5,
+    "thermalLoad": 800,
     "cost": 10899756
   },
   {
@@ -1268,6 +1557,9 @@
     "integrity": 180,
     "powerDraw": 3.36,
     "bootTime": 25,
+    "clipSize": 1,
+    "ammoMaximum": 4,
+    "thermalLoad": 800,
     "cost": 27249391
   },
   {
@@ -2339,6 +2631,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "E",
+    "ammoMaximum": 1000,
     "cost": 10000
   },
   {
@@ -2347,6 +2640,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "E",
+    "ammoMaximum": 2300,
     "cost": 18000
   },
   {
@@ -2355,6 +2649,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "E",
+    "ammoMaximum": 3600,
     "cost": 32400
   },
   {
@@ -2363,6 +2658,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "E",
+    "ammoMaximum": 4900,
     "cost": 58320
   },
   {
@@ -2371,6 +2667,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "E",
+    "ammoMaximum": 6100,
     "cost": 104976
   },
   {
@@ -2379,6 +2676,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "E",
+    "ammoMaximum": 7400,
     "cost": 188957
   },
   {
@@ -2387,6 +2685,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "E",
+    "ammoMaximum": 8700,
     "cost": 340122
   },
   {
@@ -2395,6 +2694,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "E",
+    "ammoMaximum": 10000,
     "cost": 612220
   },
   {
@@ -2403,6 +2703,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "D",
+    "ammoMaximum": 900,
     "cost": 30000
   },
   {
@@ -2411,6 +2712,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "D",
+    "ammoMaximum": 2100,
     "cost": 54000
   },
   {
@@ -2419,6 +2721,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "D",
+    "ammoMaximum": 3200,
     "cost": 97200
   },
   {
@@ -2427,6 +2730,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "D",
+    "ammoMaximum": 4400,
     "cost": 174960
   },
   {
@@ -2435,6 +2739,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "D",
+    "ammoMaximum": 5500,
     "cost": 314928
   },
   {
@@ -2443,6 +2748,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "D",
+    "ammoMaximum": 6700,
     "cost": 566870
   },
   {
@@ -2451,6 +2757,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "D",
+    "ammoMaximum": 7800,
     "cost": 1020367
   },
   {
@@ -2459,6 +2766,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "D",
+    "ammoMaximum": 9000,
     "cost": 1836660
   },
   {
@@ -2467,6 +2775,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "C",
+    "ammoMaximum": 1000,
     "cost": 90000
   },
   {
@@ -2475,6 +2784,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "C",
+    "ammoMaximum": 2300,
     "cost": 162000
   },
   {
@@ -2483,6 +2793,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "C",
+    "ammoMaximum": 3600,
     "cost": 291600
   },
   {
@@ -2491,6 +2802,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "C",
+    "ammoMaximum": 4900,
     "cost": 524880
   },
   {
@@ -2499,6 +2811,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "C",
+    "ammoMaximum": 6100,
     "cost": 944784
   },
   {
@@ -2507,6 +2820,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "C",
+    "ammoMaximum": 7400,
     "cost": 1700611
   },
   {
@@ -2515,6 +2829,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "C",
+    "ammoMaximum": 8700,
     "cost": 3061100
   },
   {
@@ -2523,6 +2838,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "C",
+    "ammoMaximum": 10000,
     "cost": 5509980
   },
   {
@@ -2531,6 +2847,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "B",
+    "ammoMaximum": 1200,
     "cost": 270000
   },
   {
@@ -2539,6 +2856,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "B",
+    "ammoMaximum": 2800,
     "cost": 486000
   },
   {
@@ -2547,6 +2865,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "B",
+    "ammoMaximum": 4300,
     "cost": 874800
   },
   {
@@ -2555,6 +2874,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "B",
+    "ammoMaximum": 5900,
     "cost": 1574640
   },
   {
@@ -2563,6 +2883,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "B",
+    "ammoMaximum": 7300,
     "cost": 2834352
   },
   {
@@ -2571,6 +2892,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "B",
+    "ammoMaximum": 8900,
     "cost": 5101834
   },
   {
@@ -2579,6 +2901,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "B",
+    "ammoMaximum": 10400,
     "cost": 9183300
   },
   {
@@ -2587,6 +2910,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "B",
+    "ammoMaximum": 12000,
     "cost": 16529941
   },
   {
@@ -2595,6 +2919,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "A",
+    "ammoMaximum": 1100,
     "cost": 810000
   },
   {
@@ -2603,6 +2928,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "A",
+    "ammoMaximum": 2500,
     "cost": 1458000
   },
   {
@@ -2611,6 +2937,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "A",
+    "ammoMaximum": 4000,
     "cost": 2624400
   },
   {
@@ -2619,6 +2946,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "A",
+    "ammoMaximum": 5400,
     "cost": 4723920
   },
   {
@@ -2627,6 +2955,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "A",
+    "ammoMaximum": 6700,
     "cost": 8503056
   },
   {
@@ -2635,6 +2964,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "A",
+    "ammoMaximum": 8100,
     "cost": 15305501
   },
   {
@@ -2643,6 +2973,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "A",
+    "ammoMaximum": 9600,
     "cost": 27549901
   },
   {
@@ -2651,6 +2982,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "A",
+    "ammoMaximum": 11000,
     "cost": 49589823
   },
   {
@@ -2660,6 +2992,11 @@
     "class": 1,
     "rating": "E",
     "mass": 2,
+    "kineticResistance": 0.005,
+    "thermalResistance": 0.005,
+    "explosiveResistance": 0.005,
+    "causticResistance": 0,
+    "hullReinforcement": 80,
     "cost": 5000
   },
   {
@@ -2669,6 +3006,11 @@
     "class": 1,
     "rating": "D",
     "mass": 1,
+    "kineticResistance": 0.005,
+    "thermalResistance": 0.005,
+    "explosiveResistance": 0.005,
+    "causticResistance": 0,
+    "hullReinforcement": 110,
     "cost": 15000
   },
   {
@@ -2678,6 +3020,11 @@
     "class": 2,
     "rating": "E",
     "mass": 4,
+    "kineticResistance": 0.01,
+    "thermalResistance": 0.01,
+    "explosiveResistance": 0.01,
+    "causticResistance": 0,
+    "hullReinforcement": 150,
     "cost": 12000
   },
   {
@@ -2687,6 +3034,11 @@
     "class": 2,
     "rating": "D",
     "mass": 2,
+    "kineticResistance": 0.01,
+    "thermalResistance": 0.01,
+    "explosiveResistance": 0.01,
+    "causticResistance": 0,
+    "hullReinforcement": 190,
     "cost": 36000
   },
   {
@@ -2696,6 +3048,11 @@
     "class": 3,
     "rating": "E",
     "mass": 8,
+    "kineticResistance": 0.015,
+    "thermalResistance": 0.015,
+    "explosiveResistance": 0.015,
+    "causticResistance": 0,
+    "hullReinforcement": 230,
     "cost": 28000
   },
   {
@@ -2705,6 +3062,11 @@
     "class": 3,
     "rating": "D",
     "mass": 4,
+    "kineticResistance": 0.015,
+    "thermalResistance": 0.015,
+    "explosiveResistance": 0.015,
+    "causticResistance": 0,
+    "hullReinforcement": 260,
     "cost": 84000
   },
   {
@@ -2714,6 +3076,11 @@
     "class": 4,
     "rating": "E",
     "mass": 16,
+    "kineticResistance": 0.02,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0.02,
+    "causticResistance": 0,
+    "hullReinforcement": 300,
     "cost": 65000
   },
   {
@@ -2723,6 +3090,11 @@
     "class": 4,
     "rating": "D",
     "mass": 8,
+    "kineticResistance": 0.02,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0.02,
+    "causticResistance": 0,
+    "hullReinforcement": 330,
     "cost": 195000
   },
   {
@@ -2732,6 +3104,11 @@
     "class": 5,
     "rating": "E",
     "mass": 32,
+    "kineticResistance": 0.025,
+    "thermalResistance": 0.025,
+    "explosiveResistance": 0.025,
+    "causticResistance": 0,
+    "hullReinforcement": 360,
     "cost": 150000
   },
   {
@@ -2741,6 +3118,11 @@
     "class": 5,
     "rating": "D",
     "mass": 16,
+    "kineticResistance": 0.025,
+    "thermalResistance": 0.025,
+    "explosiveResistance": 0.025,
+    "causticResistance": 0,
+    "hullReinforcement": 390,
     "cost": 450000
   },
   {
@@ -3361,6 +3743,10 @@
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.2,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 132200
   },
   {
@@ -3381,6 +3767,10 @@
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.2,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 240340
   },
   {
@@ -3401,6 +3791,10 @@
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.3,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 761870
   },
   {
@@ -3421,6 +3815,10 @@
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 1.7,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 2415120
   },
   {
@@ -3441,6 +3839,10 @@
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 2.3,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 7655930
   },
   {
@@ -3461,6 +3863,10 @@
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
     "shieldBrokenRegenRate": 3.2,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 24269300
   },
   {
@@ -3481,6 +3887,10 @@
     "maxMultiplier": 2,
     "shieldRegenRate": 1.1,
     "shieldBrokenRegenRate": 4.2,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 76933670
   },
   {
@@ -3501,6 +3911,10 @@
     "maxMultiplier": 2,
     "shieldRegenRate": 1.4,
     "shieldBrokenRegenRate": 5.4,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 243879730
   },
   {
@@ -3520,6 +3934,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
     "shieldBrokenRegenRate": 2.4,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 7713
   },
   {
@@ -3539,6 +3957,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
     "shieldBrokenRegenRate": 2.4,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 26705
   },
   {
@@ -3558,6 +3980,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
     "shieldBrokenRegenRate": 2.8,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 84653
   },
   {
@@ -3577,6 +4003,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 1.8,
     "shieldBrokenRegenRate": 3.8,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 268347
   },
   {
@@ -3596,6 +4026,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 2.2,
     "shieldBrokenRegenRate": 5.6,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 850659
   },
   {
@@ -3615,6 +4049,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 3.2,
     "shieldBrokenRegenRate": 8,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 2696589
   },
   {
@@ -3634,6 +4072,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 4.4,
     "shieldBrokenRegenRate": 11,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 8548185
   },
   {
@@ -3653,6 +4095,10 @@
     "maxMultiplier": 1.4,
     "shieldRegenRate": 5.8,
     "shieldBrokenRegenRate": 14.4,
+    "kineticResistance": 0.4,
+    "thermalResistance": -0.2,
+    "explosiveResistance": 0.5,
+    "distributorDraw": 0.6,
     "cost": 27097748
   },
   {
@@ -4001,6 +4447,7 @@
     "rating": "E",
     "mass": 2,
     "integrity": 77,
+    "moduleProtection": 0.3,
     "cost": 5000
   },
   {
@@ -4011,6 +4458,7 @@
     "rating": "D",
     "mass": 1,
     "integrity": 70,
+    "moduleProtection": 0.6,
     "cost": 15000
   },
   {
@@ -4021,6 +4469,7 @@
     "rating": "E",
     "mass": 4,
     "integrity": 115,
+    "moduleProtection": 0.3,
     "cost": 12000
   },
   {
@@ -4031,6 +4480,7 @@
     "rating": "D",
     "mass": 2,
     "integrity": 105,
+    "moduleProtection": 0.6,
     "cost": 36000
   },
   {
@@ -4041,6 +4491,7 @@
     "rating": "E",
     "mass": 8,
     "integrity": 170,
+    "moduleProtection": 0.3,
     "cost": 28000
   },
   {
@@ -4051,6 +4502,7 @@
     "rating": "D",
     "mass": 4,
     "integrity": 155,
+    "moduleProtection": 0.6,
     "cost": 84000
   },
   {
@@ -4061,6 +4513,7 @@
     "rating": "E",
     "mass": 16,
     "integrity": 260,
+    "moduleProtection": 0.3,
     "cost": 65000
   },
   {
@@ -4071,6 +4524,7 @@
     "rating": "D",
     "mass": 8,
     "integrity": 235,
+    "moduleProtection": 0.6,
     "cost": 195000
   },
   {
@@ -4081,6 +4535,7 @@
     "rating": "E",
     "mass": 32,
     "integrity": 385,
+    "moduleProtection": 0.3,
     "cost": 150000
   },
   {
@@ -4091,6 +4546,7 @@
     "rating": "D",
     "mass": 16,
     "integrity": 350,
+    "moduleProtection": 0.6,
     "cost": 450000
   },
   {
@@ -4313,6 +4769,11 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 2,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 72,
     "cost": 7501
   },
   {
@@ -4323,6 +4784,11 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 2,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 99,
     "cost": 22501
   },
   {
@@ -4333,6 +4799,11 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 4,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 135,
     "cost": 18000
   },
   {
@@ -4343,6 +4814,11 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 2,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 171,
     "cost": 54000
   },
   {
@@ -4353,6 +4829,11 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 8,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 207,
     "cost": 42000
   },
   {
@@ -4363,6 +4844,11 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 4,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 234,
     "cost": 126000
   },
   {
@@ -4373,6 +4859,11 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 16,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 270,
     "cost": 97501
   },
   {
@@ -4383,6 +4874,11 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 8,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 297,
     "cost": 292501
   },
   {
@@ -4393,6 +4889,11 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 32,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 324,
     "cost": 225001
   },
   {
@@ -4403,6 +4904,11 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
     "mass": 16,
+    "kineticResistance": 0,
+    "thermalResistance": 0,
+    "explosiveResistance": 0,
+    "causticResistance": 0.03,
+    "hullReinforcement": 351,
     "cost": 675001
   },
   {
@@ -4469,6 +4975,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 2,
     "powerDraw": 0.45,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 100,
     "cost": 10000
   },
   {
@@ -4480,6 +4991,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 1,
     "powerDraw": 0.56,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 138,
     "cost": 30000
   },
   {
@@ -4491,6 +5007,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 4,
     "powerDraw": 0.68,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 188,
     "cost": 24000
   },
   {
@@ -4502,6 +5023,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 2,
     "powerDraw": 0.79,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 238,
     "cost": 72000
   },
   {
@@ -4513,6 +5039,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 8,
     "powerDraw": 0.9,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 288,
     "cost": 57600
   },
   {
@@ -4524,6 +5055,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 4,
     "powerDraw": 1.01,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 325,
     "cost": 172800
   },
   {
@@ -4535,6 +5071,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 16,
     "powerDraw": 1.13,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 375,
     "cost": 138240
   },
   {
@@ -4546,6 +5087,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 8,
     "powerDraw": 1.24,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 413,
     "cost": 414720
   },
   {
@@ -4557,6 +5103,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 32,
     "powerDraw": 1.35,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 450,
     "cost": 331778
   },
   {
@@ -4568,6 +5119,11 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 16,
     "powerDraw": 1.46,
+    "kineticResistance": 0,
+    "thermalResistance": 0.02,
+    "explosiveResistance": 0,
+    "causticResistance": 0.05,
+    "hullReinforcement": 488,
     "cost": 995330
   },
   {
@@ -4580,6 +5136,7 @@
     "mass": 2,
     "integrity": 85,
     "powerDraw": 0.27,
+    "moduleProtection": 0.3,
     "cost": 10000
   },
   {
@@ -4592,6 +5149,7 @@
     "mass": 1,
     "integrity": 77,
     "powerDraw": 0.34,
+    "moduleProtection": 0.6,
     "cost": 30000
   },
   {
@@ -4604,6 +5162,7 @@
     "mass": 4,
     "integrity": 127,
     "powerDraw": 0.41,
+    "moduleProtection": 0.3,
     "cost": 24000
   },
   {
@@ -4616,6 +5175,7 @@
     "mass": 2,
     "integrity": 116,
     "powerDraw": 0.47,
+    "moduleProtection": 0.6,
     "cost": 72000
   },
   {
@@ -4628,6 +5188,7 @@
     "mass": 8,
     "integrity": 187,
     "powerDraw": 0.54,
+    "moduleProtection": 0.3,
     "cost": 57600
   },
   {
@@ -4640,6 +5201,7 @@
     "mass": 4,
     "integrity": 171,
     "powerDraw": 0.61,
+    "moduleProtection": 0.6,
     "cost": 172800
   },
   {
@@ -4652,6 +5214,7 @@
     "mass": 16,
     "integrity": 286,
     "powerDraw": 0.68,
+    "moduleProtection": 0.3,
     "cost": 138240
   },
   {
@@ -4664,6 +5227,7 @@
     "mass": 8,
     "integrity": 259,
     "powerDraw": 0.74,
+    "moduleProtection": 0.6,
     "cost": 414720
   },
   {
@@ -4676,6 +5240,7 @@
     "mass": 32,
     "integrity": 424,
     "powerDraw": 0.81,
+    "moduleProtection": 0.3,
     "cost": 331778
   },
   {
@@ -4688,6 +5253,7 @@
     "mass": 16,
     "integrity": 385,
     "powerDraw": 0.88,
+    "moduleProtection": 0.6,
     "cost": 995330
   },
   {
@@ -4700,6 +5266,7 @@
     "mass": 2,
     "integrity": 36,
     "powerDraw": 0.35,
+    "shieldAddition": 44,
     "cost": 10000
   },
   {
@@ -4712,6 +5279,7 @@
     "mass": 1,
     "integrity": 36,
     "powerDraw": 0.46,
+    "shieldAddition": 61,
     "cost": 30000
   },
   {
@@ -4724,6 +5292,7 @@
     "mass": 4,
     "integrity": 36,
     "powerDraw": 0.56,
+    "shieldAddition": 83,
     "cost": 24000
   },
   {
@@ -4736,6 +5305,7 @@
     "mass": 2,
     "integrity": 36,
     "powerDraw": 0.67,
+    "shieldAddition": 105,
     "cost": 72000
   },
   {
@@ -4748,6 +5318,7 @@
     "mass": 8,
     "integrity": 36,
     "powerDraw": 0.74,
+    "shieldAddition": 127,
     "cost": 57600
   },
   {
@@ -4760,6 +5331,7 @@
     "mass": 4,
     "integrity": 36,
     "powerDraw": 0.84,
+    "shieldAddition": 143,
     "cost": 172800
   },
   {
@@ -4772,6 +5344,7 @@
     "mass": 16,
     "integrity": 36,
     "powerDraw": 0.95,
+    "shieldAddition": 165,
     "cost": 138240
   },
   {
@@ -4784,6 +5357,7 @@
     "mass": 8,
     "integrity": 36,
     "powerDraw": 1.05,
+    "shieldAddition": 182,
     "cost": 414720
   },
   {
@@ -4796,6 +5370,7 @@
     "mass": 32,
     "integrity": 36,
     "powerDraw": 1.16,
+    "shieldAddition": 198,
     "cost": 331778
   },
   {
@@ -4808,6 +5383,7 @@
     "mass": 16,
     "integrity": 36,
     "powerDraw": 1.26,
+    "shieldAddition": 215,
     "cost": 995330
   },
   {
