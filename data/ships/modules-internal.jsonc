@@ -44,6 +44,7 @@
     "name": "Standard Docking Computer",
     "class": 1,
     "rating": "E",
+    "mass": 0,
     "cost": 4500
   },
   {
@@ -1610,7 +1611,7 @@
     "rating": "E",
     "mass": 0,
     "cargoCapacity": 32,
-    "cost": 0
+    "cost": 111566
   },
   {
     "symbol": "Int_CargoRack_Size6_Class1",
@@ -1620,7 +1621,7 @@
     "rating": "E",
     "mass": 0,
     "cargoCapacity": 64,
-    "cost": 0
+    "cost": 362591
   },
   {
     "symbol": "Int_CargoRack_Size7_Class1",
@@ -1856,6 +1857,7 @@
     "name": "Basic Discovery Scanner",
     "class": 1,
     "rating": "E",
+    "mass": 0,
     "cost": 1000
   },
   {
@@ -1864,6 +1866,7 @@
     "name": "Intermediate Discovery Scanner",
     "class": 1,
     "rating": "D",
+    "mass": 0,
     "cost": 505000
   },
   {
@@ -1872,6 +1875,7 @@
     "name": "Advanced Discovery Scanner",
     "class": 1,
     "rating": "C",
+    "mass": 0,
     "cost": 1545000
   },
   {
@@ -1882,7 +1886,7 @@
     "rating": "I",
     "mass": 0,
     "powerDraw": 0,
-    "cost": 0
+    "cost": 250000
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class1_free",
@@ -1911,6 +1915,7 @@
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "E",
+    "mass": 0,
     "cost": 309
   },
   {
@@ -1919,6 +1924,7 @@
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "E",
+    "mass": 0,
     "cost": 1068
   },
   {
@@ -1927,6 +1933,7 @@
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "E",
+    "mass": 0,
     "cost": 3386
   },
   {
@@ -1935,6 +1942,7 @@
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "E",
+    "mass": 0,
     "cost": 10734
   },
   {
@@ -1943,6 +1951,7 @@
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "E",
+    "mass": 0,
     "cost": 34026
   },
   {
@@ -1951,6 +1960,7 @@
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "E",
+    "mass": 0,
     "cost": 107864
   },
   {
@@ -1959,6 +1969,7 @@
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "E",
+    "mass": 0,
     "cost": 341927
   },
   {
@@ -1967,6 +1978,7 @@
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "E",
+    "mass": 0,
     "cost": 1083910
   },
   {
@@ -1975,6 +1987,7 @@
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "D",
+    "mass": 0,
     "cost": 1285
   },
   {
@@ -1983,6 +1996,7 @@
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "D",
+    "mass": 0,
     "cost": 4451
   },
   {
@@ -1991,6 +2005,7 @@
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "D",
+    "mass": 0,
     "cost": 14109
   },
   {
@@ -1999,6 +2014,7 @@
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "D",
+    "mass": 0,
     "cost": 44724
   },
   {
@@ -2007,6 +2023,7 @@
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "D",
+    "mass": 0,
     "cost": 141776
   },
   {
@@ -2015,6 +2032,7 @@
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "D",
+    "mass": 0,
     "cost": 449431
   },
   {
@@ -2023,6 +2041,7 @@
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "D",
+    "mass": 0,
     "cost": 1424698
   },
   {
@@ -2031,6 +2050,7 @@
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "D",
+    "mass": 0,
     "cost": 4516291
   },
   {
@@ -2039,6 +2059,7 @@
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "C",
+    "mass": 0,
     "cost": 5142
   },
   {
@@ -2047,6 +2068,7 @@
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "C",
+    "mass": 0,
     "cost": 17803
   },
   {
@@ -2055,6 +2077,7 @@
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "C",
+    "mass": 0,
     "cost": 56435
   },
   {
@@ -2063,6 +2086,7 @@
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "C",
+    "mass": 0,
     "cost": 178898
   },
   {
@@ -2071,6 +2095,7 @@
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "C",
+    "mass": 0,
     "cost": 567106
   },
   {
@@ -2079,6 +2104,7 @@
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "C",
+    "mass": 0,
     "cost": 1797726
   },
   {
@@ -2087,6 +2113,7 @@
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "C",
+    "mass": 0,
     "cost": 5698790
   },
   {
@@ -2095,6 +2122,7 @@
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "C",
+    "mass": 0,
     "cost": 18065165
   },
   {
@@ -2103,6 +2131,7 @@
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "B",
+    "mass": 0,
     "cost": 20568
   },
   {
@@ -2111,6 +2140,7 @@
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "B",
+    "mass": 0,
     "cost": 71211
   },
   {
@@ -2119,6 +2149,7 @@
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "B",
+    "mass": 0,
     "cost": 225738
   },
   {
@@ -2127,6 +2158,7 @@
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "B",
+    "mass": 0,
     "cost": 715591
   },
   {
@@ -2135,6 +2167,7 @@
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "B",
+    "mass": 0,
     "cost": 2268424
   },
   {
@@ -2143,6 +2176,7 @@
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "B",
+    "mass": 0,
     "cost": 7190903
   },
   {
@@ -2151,6 +2185,7 @@
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "B",
+    "mass": 0,
     "cost": 22795161
   },
   {
@@ -2159,6 +2194,7 @@
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "B",
+    "mass": 0,
     "cost": 72260660
   },
   {
@@ -2167,6 +2203,7 @@
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "A",
+    "mass": 0,
     "cost": 82270
   },
   {
@@ -2175,6 +2212,7 @@
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "A",
+    "mass": 0,
     "cost": 284844
   },
   {
@@ -2183,6 +2221,7 @@
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "A",
+    "mass": 0,
     "cost": 902954
   },
   {
@@ -2191,6 +2230,7 @@
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "A",
+    "mass": 0,
     "cost": 2862364
   },
   {
@@ -2199,6 +2239,7 @@
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "A",
+    "mass": 0,
     "cost": 9073694
   },
   {
@@ -2207,6 +2248,7 @@
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "A",
+    "mass": 0,
     "cost": 28763610
   },
   {
@@ -2215,6 +2257,7 @@
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "A",
+    "mass": 0,
     "cost": 91180644
   },
   {
@@ -2223,6 +2266,7 @@
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "A",
+    "mass": 0,
     "cost": 289042641
   },
   {
@@ -2231,6 +2275,7 @@
     "name": "Refinery",
     "class": 1,
     "rating": "E",
+    "mass": 0,
     "cost": 6000
   },
   {
@@ -2239,6 +2284,7 @@
     "name": "Refinery",
     "class": 2,
     "rating": "E",
+    "mass": 0,
     "cost": 12600
   },
   {
@@ -2247,6 +2293,7 @@
     "name": "Refinery",
     "class": 3,
     "rating": "E",
+    "mass": 0,
     "cost": 26460
   },
   {
@@ -2255,6 +2302,7 @@
     "name": "Refinery",
     "class": 4,
     "rating": "E",
+    "mass": 0,
     "cost": 55566
   },
   {
@@ -2263,6 +2311,7 @@
     "name": "Refinery",
     "class": 1,
     "rating": "D",
+    "mass": 0,
     "cost": 18000
   },
   {
@@ -2271,6 +2320,7 @@
     "name": "Refinery",
     "class": 2,
     "rating": "D",
+    "mass": 0,
     "cost": 37800
   },
   {
@@ -2279,6 +2329,7 @@
     "name": "Refinery",
     "class": 3,
     "rating": "D",
+    "mass": 0,
     "cost": 79380
   },
   {
@@ -2287,6 +2338,7 @@
     "name": "Refinery",
     "class": 4,
     "rating": "D",
+    "mass": 0,
     "cost": 166698
   },
   {
@@ -2295,6 +2347,7 @@
     "name": "Refinery",
     "class": 1,
     "rating": "C",
+    "mass": 0,
     "cost": 54000
   },
   {
@@ -2303,6 +2356,7 @@
     "name": "Refinery",
     "class": 2,
     "rating": "C",
+    "mass": 0,
     "cost": 113400
   },
   {
@@ -2311,6 +2365,7 @@
     "name": "Refinery",
     "class": 3,
     "rating": "C",
+    "mass": 0,
     "cost": 238140
   },
   {
@@ -2319,6 +2374,7 @@
     "name": "Refinery",
     "class": 4,
     "rating": "C",
+    "mass": 0,
     "cost": 500094
   },
   {
@@ -2327,6 +2383,7 @@
     "name": "Refinery",
     "class": 1,
     "rating": "B",
+    "mass": 0,
     "cost": 162000
   },
   {
@@ -2335,6 +2392,7 @@
     "name": "Refinery",
     "class": 2,
     "rating": "B",
+    "mass": 0,
     "cost": 340200
   },
   {
@@ -2343,6 +2401,7 @@
     "name": "Refinery",
     "class": 3,
     "rating": "B",
+    "mass": 0,
     "cost": 714420
   },
   {
@@ -2351,6 +2410,7 @@
     "name": "Refinery",
     "class": 4,
     "rating": "B",
+    "mass": 0,
     "cost": 1500282
   },
   {
@@ -2359,6 +2419,7 @@
     "name": "Refinery",
     "class": 1,
     "rating": "A",
+    "mass": 0,
     "cost": 486000
   },
   {
@@ -2367,6 +2428,7 @@
     "name": "Refinery",
     "class": 2,
     "rating": "A",
+    "mass": 0,
     "cost": 1020600
   },
   {
@@ -2375,6 +2437,7 @@
     "name": "Refinery",
     "class": 3,
     "rating": "A",
+    "mass": 0,
     "cost": 2143260
   },
   {
@@ -2383,6 +2446,7 @@
     "name": "Refinery",
     "class": 4,
     "rating": "A",
+    "mass": 0,
     "cost": 4500846
   },
   {
@@ -2631,6 +2695,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "E",
+    "mass": 0,
     "ammoMaximum": 1000,
     "cost": 10000
   },
@@ -2640,6 +2705,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "E",
+    "mass": 0,
     "ammoMaximum": 2300,
     "cost": 18000
   },
@@ -2649,6 +2715,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "E",
+    "mass": 0,
     "ammoMaximum": 3600,
     "cost": 32400
   },
@@ -2658,6 +2725,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "E",
+    "mass": 0,
     "ammoMaximum": 4900,
     "cost": 58320
   },
@@ -2667,6 +2735,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "E",
+    "mass": 0,
     "ammoMaximum": 6100,
     "cost": 104976
   },
@@ -2676,6 +2745,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "E",
+    "mass": 0,
     "ammoMaximum": 7400,
     "cost": 188957
   },
@@ -2685,6 +2755,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "E",
+    "mass": 0,
     "ammoMaximum": 8700,
     "cost": 340122
   },
@@ -2694,6 +2765,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "E",
+    "mass": 0,
     "ammoMaximum": 10000,
     "cost": 612220
   },
@@ -2703,6 +2775,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "D",
+    "mass": 0,
     "ammoMaximum": 900,
     "cost": 30000
   },
@@ -2712,6 +2785,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "D",
+    "mass": 0,
     "ammoMaximum": 2100,
     "cost": 54000
   },
@@ -2721,6 +2795,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "D",
+    "mass": 0,
     "ammoMaximum": 3200,
     "cost": 97200
   },
@@ -2730,6 +2805,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "D",
+    "mass": 0,
     "ammoMaximum": 4400,
     "cost": 174960
   },
@@ -2739,6 +2815,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "D",
+    "mass": 0,
     "ammoMaximum": 5500,
     "cost": 314928
   },
@@ -2748,6 +2825,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "D",
+    "mass": 0,
     "ammoMaximum": 6700,
     "cost": 566870
   },
@@ -2757,6 +2835,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "D",
+    "mass": 0,
     "ammoMaximum": 7800,
     "cost": 1020367
   },
@@ -2766,6 +2845,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "D",
+    "mass": 0,
     "ammoMaximum": 9000,
     "cost": 1836660
   },
@@ -2775,6 +2855,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "C",
+    "mass": 0,
     "ammoMaximum": 1000,
     "cost": 90000
   },
@@ -2784,6 +2865,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "C",
+    "mass": 0,
     "ammoMaximum": 2300,
     "cost": 162000
   },
@@ -2793,6 +2875,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "C",
+    "mass": 0,
     "ammoMaximum": 3600,
     "cost": 291600
   },
@@ -2802,6 +2885,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "C",
+    "mass": 0,
     "ammoMaximum": 4900,
     "cost": 524880
   },
@@ -2811,6 +2895,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "C",
+    "mass": 0,
     "ammoMaximum": 6100,
     "cost": 944784
   },
@@ -2820,6 +2905,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "C",
+    "mass": 0,
     "ammoMaximum": 7400,
     "cost": 1700611
   },
@@ -2829,6 +2915,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "C",
+    "mass": 0,
     "ammoMaximum": 8700,
     "cost": 3061100
   },
@@ -2838,6 +2925,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "C",
+    "mass": 0,
     "ammoMaximum": 10000,
     "cost": 5509980
   },
@@ -2847,6 +2935,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "B",
+    "mass": 0,
     "ammoMaximum": 1200,
     "cost": 270000
   },
@@ -2856,6 +2945,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "B",
+    "mass": 0,
     "ammoMaximum": 2800,
     "cost": 486000
   },
@@ -2865,6 +2955,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "B",
+    "mass": 0,
     "ammoMaximum": 4300,
     "cost": 874800
   },
@@ -2874,6 +2965,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "B",
+    "mass": 0,
     "ammoMaximum": 5900,
     "cost": 1574640
   },
@@ -2883,6 +2975,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "B",
+    "mass": 0,
     "ammoMaximum": 7300,
     "cost": 2834352
   },
@@ -2892,6 +2985,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "B",
+    "mass": 0,
     "ammoMaximum": 8900,
     "cost": 5101834
   },
@@ -2901,6 +2995,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "B",
+    "mass": 0,
     "ammoMaximum": 10400,
     "cost": 9183300
   },
@@ -2910,6 +3005,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "B",
+    "mass": 0,
     "ammoMaximum": 12000,
     "cost": 16529941
   },
@@ -2919,6 +3015,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "A",
+    "mass": 0,
     "ammoMaximum": 1100,
     "cost": 810000
   },
@@ -2928,6 +3025,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "A",
+    "mass": 0,
     "ammoMaximum": 2500,
     "cost": 1458000
   },
@@ -2937,6 +3035,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "A",
+    "mass": 0,
     "ammoMaximum": 4000,
     "cost": 2624400
   },
@@ -2946,6 +3045,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "A",
+    "mass": 0,
     "ammoMaximum": 5400,
     "cost": 4723920
   },
@@ -2955,6 +3055,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "A",
+    "mass": 0,
     "ammoMaximum": 6700,
     "cost": 8503056
   },
@@ -2964,6 +3065,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "A",
+    "mass": 0,
     "ammoMaximum": 8100,
     "cost": 15305501
   },
@@ -2973,6 +3075,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "A",
+    "mass": 0,
     "ammoMaximum": 9600,
     "cost": 27549901
   },
@@ -2982,6 +3085,7 @@
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "A",
+    "mass": 0,
     "ammoMaximum": 11000,
     "cost": 49589823
   },
@@ -4203,8 +4307,7 @@
     "rating": "F",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "cargoCapacity": 2,
-    "cost": 0
+    "cargoCapacity": 2
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size2_Class1",
@@ -4224,8 +4327,7 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "cargoCapacity": 32,
-    "cost": 0
+    "cargoCapacity": 32
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size6_Class1",
@@ -4235,8 +4337,7 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "cargoCapacity": 64,
-    "cost": 0
+    "cargoCapacity": 64
   },
   {
     "symbol": "ModularCargoBayDoor",
@@ -4244,6 +4345,7 @@
     "name": "Cargo Hatch",
     "class": 1,
     "rating": "H",
+    "mass": 0,
     "powerDraw": 0.6,
     "cost": 0
   },
@@ -5746,6 +5848,7 @@
     "name": "Advanced Docking Computer",
     "class": 1,
     "rating": "E",
+    "mass": 0,
     "cost": 13507
   },
   {

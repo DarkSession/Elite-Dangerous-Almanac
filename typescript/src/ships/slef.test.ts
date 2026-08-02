@@ -1,7 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseSlef, getLoadoutModifier, type LoadoutModule } from './slef.js';
+import {
+    parseSlef,
+    getLoadoutModifier,
+    toSlef,
+    stringifySlef,
+    LIBRARY_SLEF_HEADER,
+    type LoadoutEvent,
+    type LoadoutModule,
+    type SlefHeader,
+} from './slef.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 
 const slefString = JSON.stringify(slefFixture);
@@ -126,6 +135,77 @@ test('parseSlef rejects a non-Loadout journal event discriminator', () => {
         () => parseSlef({ event: 'FSDJump', Ship: 'sidewinder', Modules: [] }),
         TypeError,
     );
+});
+
+// ── Writing: toSlef / stringifySlef ─────────────────────────────────────────
+
+const minimal: LoadoutEvent = { Ship: 'sidewinder', Modules: [] };
+
+test('toSlef wraps a loadout with a header identifying this library', () => {
+    const [entry] = toSlef(minimal);
+    assert.equal(entry!.header.appName, LIBRARY_SLEF_HEADER.appName);
+    assert.equal(entry!.header.appVersion, LIBRARY_SLEF_HEADER.appVersion);
+    assert.equal(entry!.data.Ship, 'sidewinder');
+});
+
+test('toSlef credits a caller-supplied app', () => {
+    const header = { appName: 'MyApp', appVersion: '1.2.0', appURL: 'https://example.test/b' };
+    assert.deepEqual(toSlef(minimal, header)[0]!.header, header);
+});
+
+test('toSlef carries several builds in one export, in order', () => {
+    const slef = toSlef([minimal, { Ship: 'anaconda', Modules: [] }]);
+    assert.deepEqual(
+        slef.map((e) => e.data.Ship),
+        ['sidewinder', 'anaconda'],
+    );
+});
+
+test('everything toSlef produces parses back', () => {
+    const parsed = parseSlef(
+        stringifySlef(toSlef(slefFixture[0]!.data as unknown as LoadoutEvent)),
+    );
+    assert.deepEqual(parsed[0]!.data, slefFixture[0]!.data);
+});
+
+test('stringifySlef is compact by default and indents on request', () => {
+    const slef = toSlef(minimal);
+    assert.doesNotMatch(stringifySlef(slef), /\n/);
+    assert.match(stringifySlef(slef, { indent: 2 }), /\n {2}/);
+});
+
+test('toSlef rejects a loadout that parseSlef would not accept', () => {
+    const invalid: unknown[] = [
+        { Modules: [] }, // no Ship
+        { Ship: 'sidewinder' }, // no Modules
+        { Ship: 'sidewinder', Modules: [{ Slot: 'PowerPlant', Item: 'x', Priority: 9 }] },
+        {
+            Ship: 'sidewinder',
+            Modules: [
+                {
+                    Slot: 'MainEngines',
+                    Item: 'x',
+                    Engineering: {
+                        BlueprintName: 'Engine_Dirty',
+                        Level: 6,
+                        Quality: 1,
+                        Modifiers: [],
+                    },
+                },
+            ],
+        },
+    ];
+    for (const loadout of invalid) {
+        assert.throws(() => toSlef(loadout as LoadoutEvent), TypeError);
+    }
+});
+
+test('toSlef rejects an empty export, which would not parse back', () => {
+    assert.throws(() => toSlef([]), TypeError);
+});
+
+test('toSlef rejects a malformed header', () => {
+    assert.throws(() => toSlef(minimal, { appName: 'x' } as unknown as SlefHeader), TypeError);
 });
 
 const fsdModule = slefFixture[0]!.data.Modules.find(

@@ -22,7 +22,7 @@ bundle only the catalogues you touch:
 Also here: [the four kinds of "region"](#the-four-kinds-of-region) (the one thing
 that trips everyone up), [nebulae](#nebulae), [permit
 locks](#permit-locks), [ship and module stats](#ship-and-module-stats), [SLEF and
-jump range](#ship-builds-jump-range-and-slef), [build editing and
+jump range](#ship-builds-jump-range-the-journal-and-slef), [build editing and
 engineering](#building-and-engineering-a-loadout), [data
 freshness](#data-freshness), [attributions](#attributions) and
 [licensing](#license).
@@ -429,7 +429,7 @@ microResourcesInCategory("consumable", ALL_MICRO_RESOURCES).length; // -> 6
 The `ships` feature area covers Frontier's 48 player-flyable **hulls** and the ~1200
 fittable **modules** — each as **one record carrying identity, stats, price and (for
 hulls) slot layout together** — plus **jump-range calculations** you can drive straight from
-a [SLEF](#ship-builds-jump-range-and-slef) export. Modules stay split by outfitting
+a [SLEF](#ship-builds-jump-range-the-journal-and-slef) export. Modules stay split by outfitting
 category for direct catalogue imports, so an app can avoid categories it does not
 search. The high-level `ShipLoadout` facade is the deliberate exception: resolving
 an arbitrary imported build and its engineering requires all four module catalogues.
@@ -574,15 +574,42 @@ if (cost === undefined) {
 }
 ```
 
-### Ship builds, jump range and SLEF
+### Ship builds, jump range, the journal and SLEF
 
-Give `ShipLoadout` a **SLEF** export (the community ship-loadout format — a journal
-`Loadout` event wrapped in a `{ header, data }` envelope, as EDSY and Coriolis
-produce) and it answers jump-range and fuel questions about the build:
+A build comes in from either of the two formats the game and its tools speak, and goes
+back out the same way:
+
+| Source                                                          | Call                                              |
+| --------------------------------------------------------------- | ------------------------------------------------- |
+| A **journal `Loadout` event**, straight out of a player journal | `ShipLoadout.fromLoadout(event)`                  |
+| A **SLEF** export, as EDSY, Coriolis and Inara produce          | `ShipLoadout.fromSlef(json)`                      |
+| Back out again                                                  | `build.toLoadoutEvent()` / `build.toSlefString()` |
+
+SLEF is nothing more than that same journal event wrapped in a `{ header, data }`
+envelope recording which app exported it, so the two are the same data with different
+packaging.
+
+#### From the game journal
+
+The `Loadout` event the game writes whenever you board or refit a ship needs no
+unwrapping — hand it over as it comes out of `JSON.parse`:
 
 ```ts
 import { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
 
+const event = JSON.parse(journalLine); // { "event": "Loadout", "Ship": "explorer_nx", … }
+const build = ShipLoadout.fromLoadout(event);
+
+build.shipName; // -> 'The Deep Black'
+build.maxJumpRange(); // -> 89.41
+```
+
+`parseSlef` accepts a bare `Loadout` event too, so code that already handles SLEF needs
+no separate path for journal input.
+
+#### From a SLEF export
+
+```ts
 const build = ShipLoadout.fromSlef(slefJsonString); // string or parsed value
 
 build.shipName; // -> 'The Deep Black'
@@ -603,6 +630,54 @@ Booster's bonus). Need just the maths? Skip the class and import the pure functi
 from `ships/jump-range` (`singleJumpRange`, `fuelPerJump`, `totalRange`), or parse a
 SLEF export yourself with `parseSlef` from `ships/slef`. The port is validated
 against EDSY: it reproduces the sample build's exported `MaxJumpRange` of 89.414678.
+
+#### Exporting a build
+
+Hand the build back to EDSY, Coriolis or Inara — or write it to a file:
+
+```ts
+build.toSlefString({ header: { appName: "MyApp", appVersion: "1.0.0" } });
+// -> '[{"header":{"appName":"MyApp",…},"data":{"event":"Loadout",…}}]'
+
+build.toLoadoutEvent(); // the journal event on its own, unwrapped
+build.toSlef(); // the envelope as an object, for composing
+```
+
+SLEF's header credits the **exporting application**, so pass your own; the default
+names this library. Two things worth knowing:
+
+- **Physical figures are always recomputed** from the hull and the fitted modules —
+  `UnladenMass`, `CargoCapacity`, `FuelCapacity` and `MaxJumpRange` — so an edited build
+  exports numbers that match its current fit.
+- **Credit figures are read from the build** when it states them. `HullValue`,
+  `ModulesValue` and `Rebuy` record a _purchase_ — the station discount that applied,
+  and whether the exporter counts the hull bare or with its stock fittings — which no
+  catalogue of list prices can reproduce. Editing the fit invalidates them, and only
+  then are they derived from the catalogue. A build assembled from scratch has no
+  purchase to report, so it is priced from the catalogue throughout.
+- Anything that cannot be worked out is **left out** rather than emitted as a stale or
+  zero value, which SLEF explicitly allows. An unrecognised hull or module id costs you
+  the figures that depend on it, not a wrong answer.
+- **Ship and module ids are lower-cased** on the way out, matching what the journal and
+  every other SLEF producer write.
+
+Several builds travel in one export via the standalone `toSlef` from `ships/slef`:
+
+```ts
+import {
+  toSlef,
+  stringifySlef,
+} from "@elite-dangerous-almanac/core/ships/slef";
+
+stringifySlef(toSlef([a.toLoadoutEvent(), b.toLoadoutEvent()]), { indent: 2 });
+```
+
+Power state is part of a faithful export, so it is settable:
+
+```ts
+build.setModulePriority("PowerPlant", 2); // journal groups are 0-4; the panel shows 1-5
+build.setModuleEnabled("TinyHardpoint6", false);
+```
 
 > **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
 > currently reaches about 589 KB of minified JavaScript (~66 KB gzipped) because it

@@ -46,7 +46,16 @@
  * @packageDocumentation
  */
 
-import { parseSlef, getLoadoutModifier, type LoadoutEvent, type LoadoutModule } from './slef.js';
+import {
+    parseSlef,
+    getLoadoutModifier,
+    toSlef as toSlefEnvelope,
+    stringifySlef,
+    type LoadoutEvent,
+    type LoadoutModule,
+    type Slef,
+    type SlefHeader,
+} from './slef.js';
 import {
     singleJumpRange,
     fuelPerJump,
@@ -54,7 +63,13 @@ import {
     type FrameShiftDriveParams,
 } from './jump-range.js';
 import { getShipBySymbol, getShipSlots } from './ships.js';
-import { enumerateSlots, type BuildSlot, type SlotKind, type CoreSlotType } from './slots.js';
+import {
+    enumerateSlots,
+    parseSlotName,
+    type BuildSlot,
+    type SlotKind,
+    type CoreSlotType,
+} from './slots.js';
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
@@ -166,6 +181,37 @@ export interface AvailableBlueprint {
     readonly grades: readonly number[];
 }
 
+/** How to shape a build on the way out — see {@link ShipLoadout.toLoadoutEvent}. */
+export interface LoadoutExportOptions {
+    /**
+     * Module order. `'fitted'` — the default — keeps the order the build carries: an
+     * import's own `Modules[]` order, or the order modules were fitted. `'slots'`
+     * re-orders into outfitting-panel order; a module in a slot the hull's layout does
+     * not describe keeps its relative position at the end rather than being dropped.
+     */
+    readonly moduleOrder?: 'fitted' | 'slots';
+    /**
+     * Write `On: true` / `Priority: 0` on modules that carry neither — as a journal
+     * always does and a build assembled here never does. Off by default, following
+     * SLEF's "require what is necessary, do not force the rest".
+     */
+    readonly explicitPower?: boolean;
+}
+
+/** As {@link LoadoutExportOptions}, plus the SLEF envelope — see {@link ShipLoadout.toSlef}. */
+export interface SlefExportOptions extends LoadoutExportOptions {
+    /**
+     * The envelope header. Defaults to one naming this library; an app built on it
+     * should pass its own, since SLEF's header credits the *exporting application*.
+     */
+    readonly header?: SlefHeader;
+    /** Spaces per indent for {@link ShipLoadout.toSlefString}. `0` (the default) is compact. */
+    readonly indent?: number;
+}
+
+/** Insurance rebuy is a flat 5% of the hull-plus-modules value, truncated. */
+const REBUY_FRACTION = 0.05;
+
 /** Top-level figures a SLEF export carries, trusted over the computed fallbacks. */
 interface TopFigures {
     ShipName?: string;
@@ -211,6 +257,21 @@ const MILITARY_PREFIXES: readonly string[] = [
     'int_guardianmodulereinforcement',
     'int_guardianshieldreinforcement',
 ];
+
+/**
+ * Whether a journal slot key names an **outfitting** mount.
+ *
+ * @remarks
+ * A real journal `Loadout` event lists far more than fitted modules: the cockpit, ship
+ * kits, nameplates, bobbles, paint jobs, engine and weapon colours, voice packs. None is
+ * an outfitting module — the catalogues deliberately do not carry them (see
+ * `data/ships/SOURCES.md`) — and all contribute neither mass nor credits. Their slots are
+ * exactly the ones {@link parseSlotName} does not recognise, so treat those as free and
+ * weightless rather than as unknowns that would poison a whole build's totals.
+ */
+function isOutfittingSlot(slotKey: string): boolean {
+    return parseSlotName(slotKey) !== null;
+}
 
 /** The core slot type a standard module fills, or `null` if it is not a core module. */
 function coreTypeOf(symbol: string): CoreSlotType | null {
@@ -279,11 +340,35 @@ export class ShipLoadout {
     readonly #moduleStats = new Map<string, OutfittingModule>();
     readonly #top: TopFigures;
     readonly #slotVersions = new Map<string, number>();
+    /**
+     * Whether the import's account of what it cost is complete — its per-module prices
+     * add up to the total it declared, or it priced its modules and declared no total.
+     *
+     * @remarks
+     * When it is, the *unpriced* modules are provably the ones that came free with the
+     * hull, and can be costed at nothing. When it is not — an older journal omits
+     * `Value` on modules that were paid for — an unpriced module means "we were not
+     * told", and has to be estimated from the catalogue instead. Computed once at
+     * import because it outlives the edit that discards the declared total.
+     */
+    readonly #importPricesReconcile: boolean;
 
     private constructor(shipSymbol: string, modules: Map<string, LoadoutModule>, top: TopFigures) {
         this.#shipSymbol = shipSymbol;
         this.#modules = modules;
         this.#top = top;
+
+        let stated = 0;
+        let anyPriced = false;
+        for (const m of modules.values()) {
+            if (m.Value === undefined) continue;
+            stated += m.Value;
+            anyPriced = true;
+        }
+        // SLEF requires neither field, so a build may price its modules without
+        // declaring a total. Priced modules are then their own account of what was paid.
+        this.#importPricesReconcile =
+            top.ModulesValue === undefined ? anyPriced : stated === top.ModulesValue;
     }
 
     /**
@@ -377,7 +462,14 @@ export class ShipLoadout {
      * at the zero-mass lightweight default.
      */
     get unladenMass(): number | null {
-        if (this.#top.UnladenMass !== undefined) return this.#top.UnladenMass;
+        return this.#top.UnladenMass ?? this.#computedUnladenMass();
+    }
+
+    /**
+     * Unladen mass worked out from the hull and the fitted modules, ignoring any figure
+     * an import supplied. `null` when the hull's mass or any module's is unknown.
+     */
+    #computedUnladenMass(): number | null {
         const hull = getShipBySymbol(this.#shipSymbol);
         if (!hull || hull.hullMass === undefined) return null;
         let mass = hull.hullMass;
@@ -406,12 +498,38 @@ export class ShipLoadout {
      * otherwise it is the sum of the fitted cargo racks.
      */
     get cargoCapacity(): number {
-        if (this.#top.CargoCapacity !== undefined) return this.#top.CargoCapacity;
+        return this.#top.CargoCapacity ?? this.#computedCargoCapacity() ?? 0;
+    }
+
+    /**
+     * Cargo capacity summed from the fitted racks, ignoring any imported figure, or
+     * `null` if a fitted rack's capacity is unknown — reporting the rest as the total
+     * would understate it.
+     */
+    #computedCargoCapacity(): number | null {
         let sum = 0;
         for (const m of this.#modules.values()) {
-            sum += this.#moduleCapacity(m, 'CargoCapacity', 'cargoCapacity') ?? 0;
+            const capacity = this.#moduleCapacity(m, 'CargoCapacity', 'cargoCapacity');
+            if (capacity === null) return null;
+            sum += capacity;
         }
         return sum;
+    }
+
+    /**
+     * Fuel capacity from the fitted tanks and the hull, ignoring any import, or `null`
+     * if a tank is unknown or the hull's reserve is (an unrecognised hull).
+     */
+    #computedFuelCapacity(): FuelCapacity | null {
+        const reserve = getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity;
+        if (reserve === undefined) return null;
+        let main = 0;
+        for (const m of this.#modules.values()) {
+            const capacity = this.#moduleCapacity(m, 'FuelCapacity', 'fuelCapacity');
+            if (capacity === null) return null;
+            main += capacity;
+        }
+        return { main, reserve };
     }
 
     /** Hull cost in credits, or `null` if unknown. */
@@ -745,6 +863,285 @@ export class ShipLoadout {
             this.#replaceModule(slotKey, bare);
         }
         return this;
+    }
+
+    /**
+     * Switch a fitted module on or off.
+     *
+     * @param slotKey - The slot's journal key, e.g. `"PowerPlant"`.
+     * @param on - `true` to power it, `false` to switch it off.
+     * @returns `this`, for chaining.
+     * @throws {RangeError} If the slot is empty.
+     * @example
+     * ```ts
+     * build.setModuleEnabled('TinyHardpoint6', false); // an unpowered heat sink
+     * ```
+     */
+    setModuleEnabled(slotKey: string, on: boolean): this {
+        this.#patchModule(slotKey, { On: on });
+        return this;
+    }
+
+    /**
+     * Set a fitted module's power-priority group.
+     *
+     * @param slotKey - The slot's journal key.
+     * @param priority - The journal's **zero-based** group, `0`–`4`. Note that the
+     * outfitting panel — and {@link powerBudget}'s `bands[].priority` — number the same
+     * five groups `1`–`5`.
+     * @returns `this`, for chaining.
+     * @throws {RangeError} If the slot is empty, or `priority` is not an integer in `[0, 4]`.
+     */
+    setModulePriority(slotKey: string, priority: number): this {
+        if (!Number.isInteger(priority) || priority < 0 || priority > 4) {
+            throw new RangeError(
+                `ShipLoadout: power priority must be an integer 0-4, got ${priority}`,
+            );
+        }
+        this.#patchModule(slotKey, { Priority: priority });
+        return this;
+    }
+
+    /**
+     * Change a fitted module's power state in place.
+     *
+     * @remarks
+     * Deliberately **not** routed through `#replaceModule`: powering a module up or down
+     * changes no mass, capacity, value or rebuy, so running the aggregate adjustment
+     * would wrongly discard `ModulesValue` and `Rebuy`. It also leaves `#slotVersions`
+     * alone, so live {@link FittedModule} handles stay valid and see the change — they
+     * re-read through {@link moduleAt} on every access.
+     */
+    #patchModule(slotKey: string, patch: Pick<Partial<LoadoutModule>, 'On' | 'Priority'>): void {
+        const module = this.#modules.get(slotKey);
+        if (!module) throw new RangeError(`ShipLoadout: slot "${slotKey}" is empty`);
+        this.#modules.set(slotKey, cloneLoadoutModule({ ...module, ...patch }));
+    }
+
+    /**
+     * This build as a journal `Loadout` event — the `data` half of a SLEF entry.
+     *
+     * @param options - Module ordering and how sparse to be about power state.
+     * @returns A fresh event. Every top-level figure is **recomputed** from the hull and
+     * the fitted modules rather than echoed from whatever an import supplied, and any
+     * figure that cannot be worked out is **left out** rather than emitted as a stale or
+     * zero value — SLEF requires nothing beyond `Ship` and `Modules`.
+     * @example
+     * ```ts
+     * const event = build.toLoadoutEvent();
+     * event.MaxJumpRange; // recomputed, not the exporter's claim
+     * ```
+     */
+    toLoadoutEvent(options: LoadoutExportOptions = {}): LoadoutEvent {
+        const hull = getShipBySymbol(this.#shipSymbol);
+        const unladenMass = this.#computedUnladenMass();
+        const cargoCapacity = this.#computedCargoCapacity();
+        const fuel = this.#computedFuelCapacity();
+        // Credits are a fact about a *purchase* — the discount the player got, whether
+        // the exporter counts the hull bare or with its stock fittings — not a property
+        // of the fit, so a build that states them is trusted over any list price. The
+        // catalogue's `retailCost` (hull plus stock modules) is the game's own reading
+        // when there is nothing to trust. `#adjustImportedFigures` drops the stated
+        // `ModulesValue` and `Rebuy` as soon as the fit changes, so an edited build
+        // falls through to the computed figures rather than reporting a stale price.
+        // Note that `ModulesValue` cannot be reliably rebuilt from the parts: older
+        // journals omit `Value` on modules that were nonetheless paid for, so their
+        // per-module sum falls short of the total the same event declares.
+        const hullValue = this.#top.HullValue ?? hull?.retailCost ?? hull?.hullCost ?? null;
+        const modulesValue = this.#top.ModulesValue ?? this.#computedModulesValue();
+        // A module's `Value` and the build's `ModulesValue` must come from one account,
+        // or the document contradicts itself and a re-import reads it wrongly. Copy the
+        // source's own prices under a total it supplied; write ours under a total we
+        // derived; write none at all when we could not total the build, because prices
+        // with nothing to add up to are what make an unknown look free.
+        const prices =
+            this.#top.ModulesValue !== undefined
+                ? 'carried'
+                : modulesValue === null
+                  ? 'none'
+                  : 'derived';
+        const modules = this.#exportModules(options, prices);
+        const maxJumpRange = this.#exportableJumpRange(unladenMass);
+        const rebuy =
+            this.#top.Rebuy ??
+            (hullValue === null || modulesValue === null
+                ? null
+                : Math.trunc((hullValue + modulesValue) * REBUY_FRACTION));
+
+        return {
+            event: 'Loadout',
+            Ship: this.#shipSymbol.toLowerCase(),
+            ...(this.#top.ShipName === undefined ? {} : { ShipName: this.#top.ShipName }),
+            ...(this.#top.ShipIdent === undefined ? {} : { ShipIdent: this.#top.ShipIdent }),
+            ...(hullValue === null ? {} : { HullValue: hullValue }),
+            ...(modulesValue === null ? {} : { ModulesValue: modulesValue }),
+            ...(unladenMass === null ? {} : { UnladenMass: unladenMass }),
+            ...(cargoCapacity === null ? {} : { CargoCapacity: cargoCapacity }),
+            ...(maxJumpRange === null ? {} : { MaxJumpRange: maxJumpRange }),
+            ...(fuel === null ? {} : { FuelCapacity: { Main: fuel.main, Reserve: fuel.reserve } }),
+            ...(rebuy === null ? {} : { Rebuy: rebuy }),
+            Modules: modules,
+        };
+    }
+
+    /**
+     * This build as a one-entry SLEF export.
+     *
+     * @param options - Ordering, power state, and the envelope header.
+     * @returns The export. Several builds travel together as
+     * `toSlef([a.toLoadoutEvent(), b.toLoadoutEvent()])` using the function of the same
+     * name from `./slef`.
+     */
+    toSlef(options: SlefExportOptions = {}): Slef {
+        return toSlefEnvelope(this.toLoadoutEvent(options), options.header);
+    }
+
+    /**
+     * This build as SLEF JSON — ready to write to a file or put on the clipboard.
+     *
+     * @param options - As {@link toSlef}, plus `indent` (compact by default).
+     * @example
+     * ```ts
+     * build.toSlefString({ header: { appName: 'MyApp', appVersion: '1.0.0' } });
+     * ```
+     */
+    toSlefString(options: SlefExportOptions = {}): string {
+        return stringifySlef(this.toSlef(options), { indent: options.indent ?? 0 });
+    }
+
+    /**
+     * The fitted modules as journal records, in the requested order.
+     *
+     * @param prices - Where each module's `Value` comes from: `'carried'` copies what
+     * the source stated, `'derived'` writes the price this build counted, and `'none'`
+     * writes no price at all — see {@link toLoadoutEvent}.
+     */
+    #exportModules(
+        options: LoadoutExportOptions,
+        prices: 'carried' | 'derived' | 'none',
+    ): LoadoutModule[] {
+        const ordered =
+            options.moduleOrder === 'slots'
+                ? this.#slotOrderedModules()
+                : [...this.#modules.values()];
+        return ordered.map((m) => {
+            const on = m.On ?? (options.explicitPower ? true : undefined);
+            const priority = m.Priority ?? (options.explicitPower ? 0 : undefined);
+            // A module that is genuinely free keeps no `Value`, exactly as the game
+            // writes it.
+            const value =
+                prices === 'none'
+                    ? 'free'
+                    : prices === 'carried'
+                      ? (m.Value ?? 'free')
+                      : this.#moduleValue(m);
+            return {
+                Slot: m.Slot,
+                // The journal and every SLEF producer write lower-case ids; a build
+                // assembled here carries catalogue casing, so normalise on the way out.
+                Item: m.Item.toLowerCase(),
+                ...(on === undefined ? {} : { On: on }),
+                ...(priority === undefined ? {} : { Priority: priority }),
+                ...(m.Health === undefined ? {} : { Health: m.Health }),
+                ...(typeof value === 'number' ? { Value: value } : {}),
+                ...(m.Engineering === undefined
+                    ? {}
+                    : { Engineering: cloneLoadoutModule(m).Engineering! }),
+            };
+        });
+    }
+
+    /**
+     * The fitted modules in outfitting-panel order. Anything in a slot the hull's
+     * layout does not describe keeps its relative order at the end — never dropped.
+     */
+    #slotOrderedModules(): LoadoutModule[] {
+        const layout = getShipSlots(this.#shipSymbol);
+        if (!layout) {
+            throw new TypeError(
+                `ShipLoadout.toLoadoutEvent: no slot layout for hull "${this.#shipSymbol}", so modules cannot be ordered by slot`,
+            );
+        }
+        const remaining = new Map(this.#modules);
+        const ordered: LoadoutModule[] = [];
+        for (const slot of enumerateSlots(layout)) {
+            const module = remaining.get(slot.key);
+            if (module) {
+                ordered.push(module);
+                remaining.delete(slot.key);
+            }
+        }
+        return [...ordered, ...remaining.values()];
+    }
+
+    /**
+     * Fitted-modules value in credits, summed from the modules themselves — each
+     * module's own `Value` where it has one, the catalogue's list price otherwise.
+     *
+     * @remarks
+     * Summed from the parts rather than read off the import, so removing a module drops
+     * its cost. A module's own `Value` is preferred because it records what was actually
+     * paid: outfitting discounts are real and the catalogue only knows list prices.
+     * `null` when any fitted module's price is unresolvable, so the caller omits the
+     * figure rather than under-reporting it.
+     */
+    #computedModulesValue(): number | null {
+        let sum = 0;
+        for (const m of this.#modules.values()) {
+            const value = this.#moduleValue(m);
+            if (value === 'unknown') return null;
+            if (value !== 'free') sum += value;
+        }
+        return sum;
+    }
+
+    /**
+     * What one fitted module contributes to `ModulesValue` — or why it contributes
+     * nothing.
+     *
+     * @returns The price in credits; `'free'` when the module genuinely costs nothing
+     * (a cosmetic, or one that came with the hull); `'unknown'` when it should have a
+     * price and none can be found.
+     * @remarks
+     * The single source of truth for pricing, so that what {@link toLoadoutEvent} writes
+     * on a module and what it counts in the total can never disagree. They must not: an
+     * export whose module prices do not add up to its own `ModulesValue` fails the
+     * reconciliation test on re-import, and the figures would drift with every hop.
+     */
+    #moduleValue(module: LoadoutModule): number | 'free' | 'unknown' {
+        if (module.Value !== undefined) return module.Value;
+        // Cosmetics, ship kits and the cockpit are not outfitting and carry no price.
+        if (!isOutfittingSlot(module.Slot)) return 'free';
+
+        // `#moduleStats` holds a snapshot only for slots filled through `setModule`, so
+        // its presence marks a module fitted *here*, which must always be costed from
+        // the catalogue.
+        const fittedHere = this.#moduleStats.get(module.Slot);
+        if (fittedHere === undefined && this.#importPricesReconcile) {
+            // Came with the import, which accounted for every credit it charged — so
+            // this one was free with the hull (the stock bulkhead, tank, approach suite
+            // and cargo hatch) and the game already counts it inside `HullValue`.
+            return 'free';
+        }
+        return (fittedHere ?? this.#statsFor(module))?.cost ?? 'unknown';
+    }
+
+    /** `maxJumpRange()` when the build can answer it, else `null` — never throws. */
+    #exportableJumpRange(unladenMass: number | null): number | null {
+        if (unladenMass === null) return null;
+        let drive: FrameShiftDriveParams | null;
+        try {
+            drive = this.#resolveDrive();
+        } catch {
+            // An unrecognised drive id has no jump constants; omit rather than fail.
+            return null;
+        }
+        if (drive === null) return null;
+        // Mirrors maxJumpRange(): one jump's fuel, no cargo — but off the recomputed
+        // mass and tank rather than anything an import supplied.
+        const tank = this.#computedFuelCapacity();
+        if (tank === null) return null;
+        return singleJumpRange(unladenMass, Math.min(tank.main, drive.maxFuel), drive);
     }
 
     /**
@@ -1178,6 +1575,7 @@ export class ShipLoadout {
     /** A module's post-engineering mass, `0` for no module, or `null` if unknown. */
     #moduleMass(module: LoadoutModule | null, statsOverride?: OutfittingModule): number | null {
         if (module === null) return 0;
+        if (!isOutfittingSlot(module.Slot)) return 0;
         const modified = getLoadoutModifier(module, 'Mass');
         if (modified !== null) return modified;
         const stats = statsOverride ?? this.#statsFor(module);

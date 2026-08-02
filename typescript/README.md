@@ -31,9 +31,10 @@ import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-co
 
 - `astro` supplies procedural naming, system-address conversion, regions,
   nebulae and permit locks.
-- `ships` supplies ship/module registries, stats, SLEF parsing, loadout editing,
-  engineering, and the build metrics an outfitting screen shows — jump range, power
-  budget, shield and armour strength with resistances, and weapon DPS.
+- `ships` supplies ship/module registries, stats, journal `Loadout` and SLEF import
+  **and export**, loadout editing, engineering, and the build metrics an outfitting
+  screen shows — jump range, power budget, shield and armour strength with
+  resistances, and weapon DPS.
 - `materials` supplies ship engineering materials and Odyssey micro resources.
 - `commodities` supplies standard and rare market-goods catalogues.
 
@@ -68,6 +69,9 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 const build = ShipLoadout.fromSlef(slefJsonString); // or .fromLoadout(journalEvent)
 
 build.maxJumpRange(); // -> 89.41  best single jump (one jump's fuel, no cargo)
+
+// …and back out to anything that reads SLEF, with every figure recomputed:
+build.toSlefString({ header: { appName: 'MyApp', appVersion: '1.0.0' } });
 
 const power = build.powerBudget();
 power.available; // -> 22.85 MW generated

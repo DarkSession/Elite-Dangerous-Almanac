@@ -20,6 +20,7 @@ import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities'
 import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-rare';
 import { toSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address-input';
 import { sectorNameFromGalacticCoords } from '@elite-dangerous-almanac/core/astro/galaxy-grid';
+import { parseSlef, toSlef, stringifySlef } from '@elite-dangerous-almanac/core/ships/slef';
 
 async function readReachableJs(entry, seen = new Set()) {
     if (seen.has(entry.href)) return '';
@@ -64,6 +65,8 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(getCommodityBySymbol('lavianbrandy', RARE_COMMODITIES)?.name, 'Lavian Brandy');
     assert.equal(toSystemAddress(10_477_373_803), 10_477_373_803n);
     assert.equal(sectorNameFromGalacticCoords({ x: 751, y: -179, z: -91 }), 'Synuefe');
+    const slef = stringifySlef(toSlef({ Ship: 'sidewinder', Modules: [] }));
+    assert.equal(parseSlef(slef)[0]?.data.Ship, 'sidewinder');
 });
 
 test('a journal address reaches every id64 entry point without conversion', async () => {
@@ -87,6 +90,17 @@ test('converting an address costs nothing but the conversion', async () => {
     );
     assert.ok(graph.length < 4096, `expected a tiny module, got ${graph.length} bytes`);
     for (const marker of [/Witch Head/, /Col 70 Sector/, /scaleNumerator/, /Anaconda/]) {
+        assert.doesNotMatch(graph, marker);
+    }
+});
+
+test('reading and writing SLEF costs nothing but the wire format', async () => {
+    // `ships/slef` is the parse-and-serialise leaf: apps that only move builds between
+    // tools must not pay for the catalogues. Serialising is the easy way to break this,
+    // since the obvious implementation reaches for ShipLoadout.
+    const graph = await readReachableJs(new URL('./dist/ships/slef.js', import.meta.url));
+    assert.ok(graph.length < 8192, `expected a tiny module, got ${graph.length} bytes`);
+    for (const marker of [/Anaconda/, /Chaff Launcher/, /FSD_LongRange/, /Witch Head/]) {
         assert.doesNotMatch(graph, marker);
     }
 });

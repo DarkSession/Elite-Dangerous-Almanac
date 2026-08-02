@@ -1,5 +1,5 @@
 {
-  "description": "Expected ShipLoadout jump/fuel outputs for fixtures/ships/slef-the-deep-black.json. Cross-language validation target; matches EDSY MaxJumpRange.",
+  "description": "Expected ShipLoadout jump/fuel outputs. The flat keys below cover fixtures/ships/slef-the-deep-black.json and match EDSY's own MaxJumpRange; `builds` adds further hulls, each naming the artifact it reads and the figure its source asserts. Cross-language validation target.",
   "ship": "explorer_nx",
   "frameShiftDrive": {
     "symbol": "int_hyperdrive_overcharge_size8_class5_overchargebooster_mkii",
@@ -17,5 +17,28 @@
   "unladenJumpRange": 82.409288,
   "ladenJumpRange": 81.576342,
   "totalRange": 1625.166,
-  "fuelPerJump50Ly": 1.9474
+  "fuelPerJump50Ly": 1.9474,
+  "builds": {
+    "kraitPhantom": {
+      "build": "fixtures/ships/journal-krait-phantom.json",
+      "note": "A real journal capture, so `sourceMaxJumpRange` is Frontier's own figure rather than a third-party calculator's. Engineered Long Range drive plus a Guardian FSD Booster.",
+      "ship": "krait_light",
+      "frameShiftDrive": {
+        "optMass": 1618.259888,
+        "maxFuel": 5.5,
+        "fuelMul": 0.012,
+        "fuelPower": 2.45,
+        "jumpBoost": 10.5
+      },
+      "unladenMass": 388.830017,
+      "mainFuel": 32,
+      "cargoCapacity": 32,
+      "sourceMaxJumpRange": 60.547791,
+      "maxJumpRange": 60.547794,
+      "unladenJumpRange": 57.396245,
+      "ladenJumpRange": 54.082242,
+      "totalUnladenRange": 350.090753,
+      "totalLadenRange": 329.156774
+    }
+  }
 }

@@ -156,6 +156,52 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     Shock Cannon variants (Coriolis itself reads the field as `roundspershot || 1`; a
     zero would zero their DPS) and `burstrof: 0` on the Mining Volley Repeater, whose
     burst is a single shot.
+  - **Massless modules now state `"mass": 0` instead of omitting the field**
+    (revision 2026-08-02 UTC; coriolis-data commit
+    `0db9234b5b9ce8c939ea84133d7ce336eea88e27`, re-read for this change). Upstream
+    carries **no `mass` key at all** for fuel scoops, refineries, AFM units and docking
+    computers, and Coriolis's own code reads a missing mass as zero
+    (`Module.getMass()` → `this.mass || 0`). This catalogue instead reads an absent
+    field as *unknown*, so a single such module made a whole hull's mass — and with it
+    its jump range — impossible to compute. The 106 affected records
+    (`Int_FuelScoop_*` ×40, `Int_Repairer_*` ×40, `Int_Refinery_*` ×20,
+    `Int_DockingComputer_{Standard,Advanced}`, the three removed
+    `Int_StellarBodyDiscoveryScanner_*` tiers, `ModularCargoBayDoor`) now say so
+    outright, matching upstream's own `"mass": 0` on `Int_DetailedSurfaceScanner_Tiny`.
+    **Verified, not assumed:** summing the Deep Black's module masses with these six
+    families excluded already gave exactly the 1237.3 t its journal reports, so the
+    game itself treats them as zero.
+    **Deliberately left absent** (unknown, not zero): the ten `*_free` starter
+    variants and `Int_Hyperdrive_Size8_Class{1..5}`, which are identity-only rows with
+    no stats whatsoever; `Int_ShieldGenerator_Size1_Class4`, whose omission is
+    documented below; and `Int_DroneControl_ResourceSiphon` — limpet controllers do
+    have mass, so that one is a genuine gap rather than a zero.
+  - **Sixteen duplicated symbols were priced at `0`** because the "first occurrence
+    wins" rule above had been applied to `mass` but not to `cost`: where coriolis-data
+    holds a symbol twice, the merge took the price from the *second*, unpriced record.
+    All sixteen now carry the first occurrence's price (revision 2026-08-02 UTC, same
+    commit `0db9234b`):
+    `Hpt_HeatSinkLauncher_Turret_Tiny` 3500 — confirmed independently against a real
+    journal, which prices the fitted module at 3071 = 3500 less the 12.25% outfitting
+    discount that export was taken at; `Int_Hyperdrive_Size5_Class5` 5 103 953;
+    `Int_CargoRack_Size5_Class1` 111 566 and `_Size6_Class1` 362 591;
+    `Int_DetailedSurfaceScanner_Tiny` 250 000; `Hpt_MultiCannon_Fixed_Medium` 38 000;
+    `Hpt_Railgun_Fixed_Medium` 412 800; `Hpt_BasicMissileRack_Fixed_Medium` 512 400;
+    `Hpt_MiningLaser_Fixed_Small` 6800; `Hpt_ATDumbfireMissile_Fixed_Large` 1 352 250;
+    and the six small/medium Guardian weapons (Gauss 167 250 / 543 801, Plasma
+    176 500 / 567 761, Shard 151 650 / 507 761).
+    **Still `0`, deliberately:** only `ModularCargoBayDoor`, which is built into every
+    hull and cannot be bought. `fixtures/ships/module-stats.json` pins that list under
+    `freeModules`, so a new zero has to be argued for rather than slipping in: a zero
+    price is otherwise indistinguishable from a dropped one.
+  - **Corrosion-resistant cargo racks are now *unpriced* rather than `0`.**
+    `Int_CorrosionProofCargoRack_Size{1_Class2,5_Class1,6_Class1}` read `cost: 0`
+    upstream — a gap in coriolis, not the duplicate-symbol defect above, so there is no
+    first occurrence to fall back on. They are certainly not free: the size-4 record is
+    priced, and the Deep Black's journal buys it at 82 775 = 94 330 less that export's
+    12.25% discount. Carrying `0` made a build with one silently under-report instead of
+    omitting the figure, so the field is now omitted, matching `_Size2_Class1`, which
+    never had one. Real prices from EDSY or Inara would close this.
   - **Filled by hand, from a documented uniformity:** `Int_ShieldGenerator_Size1_Class4`
     (added from EDSY in the earlier pass, so it has no coriolis record) takes the
     resistances and distributor draw every one of the 55 shield generators coriolis does
@@ -697,4 +743,85 @@ up straight through with no disambiguation at all. Both paths are evidence that
   (89.414678 LY) for the sample "Deep Black" build.
 - **SLEF:** the sample loadout is a real EDSY export; the parser follows the
   [Inara SLEF specification](https://inara.cz/elite/inara-impexp-slef/) (a journal
-  `Loadout` event wrapped in a `{ header, data }` envelope).
+  `Loadout` event wrapped in a `{ header, data }` envelope). The **writer**
+  (`toSlef` / `stringifySlef`, and `ShipLoadout.toLoadoutEvent`) follows the same
+  specification, and every entry it emits is checked with the parser's own guards so
+  output always parses back.
+
+## Ground-truth builds
+
+Real builds whose figures came from the game or its tools rather than from this
+library, so the maths is checked against something external. Each is stored verbatim as
+its own fixture, with the expected outputs in a sibling fixture that names it by path.
+
+- **`fixtures/ships/slef-the-deep-black.json`** — a real EDSY export of an exploration
+  Caspian Explorer. Acquired earlier; see the jump-range note above. Zero weapons, so it
+  exercises jump range, fuel and power but not the combat metrics.
+- **`fixtures/ships/journal-krait-phantom.json`** — a real Frontier journal `Loadout`
+  event for an engineered combat Krait Phantom (40 `Modules` entries, 6 hardpoints and
+  utilities). Acquired **2026-08-02 UTC** from
+  [adam-drewery/EliteAssist](https://github.com/adam-drewery/EliteAssist),
+  `src/example_data/loadout.json` (repository licence **WTFPL**; the loadout itself is
+  Frontier game output, redistributed under Frontier's media-usage terms). Source file
+  SHA-256 `509db62ac63fe1a07eb41d1840435f1e775fbb687e03629aa8856adefae64312`;
+  stored unmodified apart from unwrapping the single-element array and re-indenting.
+  Its `HullValue`, `ModulesValue`, `UnladenMass`, `CargoCapacity`, `MaxJumpRange` and
+  `Rebuy` are **Frontier's own figures** — the strongest ground truth available, since
+  no third-party calculator sits in between. Pinned by
+  `fixtures/ships/slef-export.json` and `fixtures/ships/jump-range.json`.
+
+Two facts this build established that the EDSY export could not:
+
+- **A journal lists far more than fitted modules.** 15 of its 40 entries are the
+  cockpit, ship kit, nameplates, bobbles, paint, engine/weapon colours and voice pack.
+  None is an outfitting module — this catalogue deliberately does not carry them — and
+  all weigh nothing and cost nothing. They are recognised by slot: `parseSlotName`
+  returns `null` for exactly these, and only for these.
+- **The two sources disagree about `HullValue`.** The game reports the hull *with its
+  stock fittings* (`retailCost`: 37 472 252 for the Krait, matching the journal exactly),
+  while EDSY reports the bare hull (`hullCost`: 189 326 510 for the Caspian Explorer,
+  again matching exactly). Consistently, the journal gives no `Value` to the modules
+  that come free with the hull — its stock bulkhead, tank, approach suite and cargo
+  hatch — because their cost already sits inside `HullValue`.
+
+**Credit figures are read from the build, not rebuilt from its parts.** They record a
+*purchase* — the station discount that applied, and which of the two hull conventions
+the exporter used — so no catalogue of list prices can reproduce them. Three
+observations forced this:
+
+- The Deep Black's modules all sit at a uniform **0.8775** of catalogue list price: a
+  12.25% outfitting discount the library cannot know about. Summing list prices
+  overstates its `ModulesValue` by ~14%.
+- A third real journal (a Viper Mk IV, checked but **not redistributed** — its source
+  repository states no licence) declares `ModulesValue` 4 940 956 while its own
+  per-module `Value`s sum to 3 942 898. Older journals omit `Value` on modules that
+  were nonetheless paid for, here an FSD interdictor, so even summing the build's own
+  parts falls short of the total the same event declares.
+- `Rebuy` is close to a flat 5% of hull plus modules but not exactly: exact on the Deep
+  Black (19 097 585), ~3 credits high on both journal captures.
+
+So `HullValue`, `ModulesValue` and `Rebuy` are taken from the build whenever it states
+them; `#adjustImportedFigures` drops the last two as soon as the fit changes, and only
+then are they derived — from `retailCost` and the catalogue's list prices, which is also
+all a build assembled from the catalogues can offer. Physical figures (`UnladenMass`,
+`CargoCapacity`, `FuelCapacity`, `MaxJumpRange`) are always recomputed, because they
+*are* properties of the fit. All three builds reproduce all seven figures exactly.
+
+**On the way out, a module's `Value` and the build's `ModulesValue` always come from the
+same account**, because a document whose parts disagree with its total is read wrongly
+when it comes back in. Three cases: the import declared a total, so its own module
+prices are copied verbatim under it; no total was declared but every module could be
+priced, so ours are written under ours; or something could not be priced, in which case
+the total is omitted **and no module price is written either**. That last case matters —
+prices with no total to add up to are indistinguishable from a fully-priced build whose
+remaining modules came free with the hull, so re-importing one would silently turn "we
+could not price this" into "this was free". 23 catalogue records can still trigger it:
+the four corrosion-resistant racks, the three Mk II vessel hangars,
+`Int_ShieldGenerator_Size1_Class4`, `Int_Hyperdrive_Size8_Class{1..5}` and the ten
+`*_free` starter variants.
+
+**Still missing external ground truth:** shields, armour and weapon DPS. A journal never
+reports them, and the only builds in the corpus with weapons are checked against our own
+maths. An EDSY or Coriolis reading of a weaponed build would close that gap, as would a
+trade or mining hull — the corpus has an explorer, a combat multirole and a small
+combat hull, but nothing cargo-heavy beyond the Krait's 32 t.
