@@ -74,8 +74,8 @@ test('the small Multi-cannon is exactly one effect short of its group', () => {
 });
 
 test('an engineerable module with no experimental slot still has blueprints', () => {
-    // Mining tools are engineerable but take no experimental — distinct from a module
-    // that cannot be engineered at all, which has neither.
+    // The Abrasion Blaster is grouped and takes blueprints but no experimental —
+    // distinct from a module the catalogue does not group, which has neither.
     const symbol = 'Hpt_Mining_AbrBlstr_Fixed_Small';
     assert.ok(getEngineeringGroup(symbol));
     assert.ok(getBlueprintsForModule(symbol).length > 0);
