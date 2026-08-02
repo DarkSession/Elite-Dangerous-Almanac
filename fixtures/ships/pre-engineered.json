@@ -426,7 +426,7 @@
         "mass": 26,
         "integrity": 84
       },
-      "unresolved": ["BootTime", "FSDHeatRate"]
+      "unresolved": ["FSDHeatRate"]
     },
     "guardianShardMediumG1": {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",

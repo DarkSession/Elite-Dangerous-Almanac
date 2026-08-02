@@ -9,6 +9,13 @@
  *          https://github.com/EDCD/FDevIDs
  *          EDCD/coriolis-data, modules/** (stats: mass, power, performance, …)
  *          https://github.com/EDCD/coriolis-data
+ *          EDSY eddb.js (taleden, CC BY-NC 4.0): https://github.com/taleden/EDSY
+ *          — mass, integrity, powerDraw and bootTime where coriolis-data carries
+ *          none, and the corrections where its value is a duplicated or mis-copied
+ *          row. The few records no third-party registry lists (the size-8 frame
+ *          shift drives and the `*_free` starter fittings) were read from the live
+ *          game's own outfitting panels and are pinned in
+ *          fixtures/ships/module-stats.json.
  *          The stat values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -45,6 +52,9 @@
     "class": 1,
     "rating": "E",
     "mass": 0,
+    "integrity": 10,
+    "powerDraw": 0.39,
+    "bootTime": 3,
     "cost": 4500
   },
   {
@@ -56,6 +66,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.72,
+    "bootTime": 1,
     "optMass": 25,
     "minMass": 13,
     "maxMass": 63,
@@ -79,6 +90,7 @@
     "mass": 0.5,
     "integrity": 24,
     "powerDraw": 0.96,
+    "bootTime": 1,
     "optMass": 25,
     "minMass": 13,
     "maxMass": 63,
@@ -102,6 +114,7 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 1.2,
+    "bootTime": 1,
     "optMass": 25,
     "minMass": 13,
     "maxMass": 63,
@@ -122,6 +135,10 @@
     "name": "Shield Generator",
     "class": 1,
     "rating": "B",
+    "mass": 2,
+    "integrity": 56,
+    "powerDraw": 1.44,
+    "bootTime": 1,
     "optMass": 25,
     "minMass": 13,
     "maxMass": 63,
@@ -144,6 +161,7 @@
     "mass": 1.3,
     "integrity": 48,
     "powerDraw": 1.68,
+    "bootTime": 1,
     "optMass": 25,
     "minMass": 13,
     "maxMass": 63,
@@ -167,6 +185,7 @@
     "mass": 2.5,
     "integrity": 41,
     "powerDraw": 0.9,
+    "bootTime": 1,
     "optMass": 55,
     "minMass": 28,
     "maxMass": 138,
@@ -190,6 +209,7 @@
     "mass": 1,
     "integrity": 31,
     "powerDraw": 1.2,
+    "bootTime": 1,
     "optMass": 55,
     "minMass": 28,
     "maxMass": 138,
@@ -213,6 +233,7 @@
     "mass": 2.5,
     "integrity": 51,
     "powerDraw": 1.5,
+    "bootTime": 1,
     "optMass": 55,
     "minMass": 28,
     "maxMass": 138,
@@ -236,6 +257,7 @@
     "mass": 4,
     "integrity": 71,
     "powerDraw": 1.8,
+    "bootTime": 1,
     "optMass": 55,
     "minMass": 28,
     "maxMass": 138,
@@ -259,6 +281,7 @@
     "mass": 2.5,
     "integrity": 61,
     "powerDraw": 2.1,
+    "bootTime": 1,
     "optMass": 55,
     "minMass": 28,
     "maxMass": 138,
@@ -282,6 +305,7 @@
     "mass": 5,
     "integrity": 51,
     "powerDraw": 1.08,
+    "bootTime": 1,
     "optMass": 165,
     "minMass": 83,
     "maxMass": 413,
@@ -305,6 +329,7 @@
     "mass": 2,
     "integrity": 38,
     "powerDraw": 1.44,
+    "bootTime": 1,
     "optMass": 165,
     "minMass": 83,
     "maxMass": 413,
@@ -328,6 +353,7 @@
     "mass": 5,
     "integrity": 64,
     "powerDraw": 1.8,
+    "bootTime": 1,
     "optMass": 165,
     "minMass": 83,
     "maxMass": 413,
@@ -351,6 +377,7 @@
     "mass": 8,
     "integrity": 90,
     "powerDraw": 2.16,
+    "bootTime": 1,
     "optMass": 165,
     "minMass": 83,
     "maxMass": 413,
@@ -374,6 +401,7 @@
     "mass": 5,
     "integrity": 77,
     "powerDraw": 2.52,
+    "bootTime": 1,
     "optMass": 165,
     "minMass": 83,
     "maxMass": 413,
@@ -397,6 +425,7 @@
     "mass": 10,
     "integrity": 64,
     "powerDraw": 1.32,
+    "bootTime": 1,
     "optMass": 285,
     "minMass": 143,
     "maxMass": 713,
@@ -420,6 +449,7 @@
     "mass": 4,
     "integrity": 48,
     "powerDraw": 1.76,
+    "bootTime": 1,
     "optMass": 285,
     "minMass": 143,
     "maxMass": 713,
@@ -443,6 +473,7 @@
     "mass": 10,
     "integrity": 80,
     "powerDraw": 2.2,
+    "bootTime": 1,
     "optMass": 285,
     "minMass": 143,
     "maxMass": 713,
@@ -466,6 +497,7 @@
     "mass": 16,
     "integrity": 112,
     "powerDraw": 2.64,
+    "bootTime": 1,
     "optMass": 285,
     "minMass": 143,
     "maxMass": 713,
@@ -489,6 +521,7 @@
     "mass": 10,
     "integrity": 96,
     "powerDraw": 3.08,
+    "bootTime": 1,
     "optMass": 285,
     "minMass": 143,
     "maxMass": 713,
@@ -512,6 +545,7 @@
     "mass": 20,
     "integrity": 77,
     "powerDraw": 1.56,
+    "bootTime": 1,
     "optMass": 405,
     "minMass": 203,
     "maxMass": 1013,
@@ -535,6 +569,7 @@
     "mass": 8,
     "integrity": 58,
     "powerDraw": 2.08,
+    "bootTime": 1,
     "optMass": 405,
     "minMass": 203,
     "maxMass": 1013,
@@ -558,6 +593,7 @@
     "mass": 20,
     "integrity": 96,
     "powerDraw": 2.6,
+    "bootTime": 1,
     "optMass": 405,
     "minMass": 203,
     "maxMass": 1013,
@@ -581,6 +617,7 @@
     "mass": 32,
     "integrity": 134,
     "powerDraw": 3.12,
+    "bootTime": 1,
     "optMass": 405,
     "minMass": 203,
     "maxMass": 1013,
@@ -604,6 +641,7 @@
     "mass": 20,
     "integrity": 115,
     "powerDraw": 3.64,
+    "bootTime": 1,
     "optMass": 405,
     "minMass": 203,
     "maxMass": 1013,
@@ -627,6 +665,7 @@
     "mass": 40,
     "integrity": 90,
     "powerDraw": 1.86,
+    "bootTime": 1,
     "optMass": 540,
     "minMass": 270,
     "maxMass": 1350,
@@ -650,6 +689,7 @@
     "mass": 16,
     "integrity": 68,
     "powerDraw": 2.48,
+    "bootTime": 1,
     "optMass": 540,
     "minMass": 270,
     "maxMass": 1350,
@@ -673,6 +713,7 @@
     "mass": 40,
     "integrity": 113,
     "powerDraw": 3.1,
+    "bootTime": 1,
     "optMass": 540,
     "minMass": 270,
     "maxMass": 1350,
@@ -696,6 +737,7 @@
     "mass": 64,
     "integrity": 158,
     "powerDraw": 3.72,
+    "bootTime": 1,
     "optMass": 540,
     "minMass": 270,
     "maxMass": 1350,
@@ -719,6 +761,7 @@
     "mass": 40,
     "integrity": 136,
     "powerDraw": 4.34,
+    "bootTime": 1,
     "optMass": 540,
     "minMass": 270,
     "maxMass": 1350,
@@ -742,6 +785,7 @@
     "mass": 80,
     "integrity": 105,
     "powerDraw": 2.1,
+    "bootTime": 1,
     "optMass": 1060,
     "minMass": 530,
     "maxMass": 2650,
@@ -765,6 +809,7 @@
     "mass": 32,
     "integrity": 79,
     "powerDraw": 2.8,
+    "bootTime": 1,
     "optMass": 1060,
     "minMass": 530,
     "maxMass": 2650,
@@ -788,6 +833,7 @@
     "mass": 80,
     "integrity": 131,
     "powerDraw": 3.5,
+    "bootTime": 1,
     "optMass": 1060,
     "minMass": 530,
     "maxMass": 2650,
@@ -811,6 +857,7 @@
     "mass": 128,
     "integrity": 183,
     "powerDraw": 4.2,
+    "bootTime": 1,
     "optMass": 1060,
     "minMass": 530,
     "maxMass": 2650,
@@ -834,6 +881,7 @@
     "mass": 80,
     "integrity": 157,
     "powerDraw": 4.9,
+    "bootTime": 1,
     "optMass": 1060,
     "minMass": 530,
     "maxMass": 2650,
@@ -857,6 +905,7 @@
     "mass": 160,
     "integrity": 120,
     "powerDraw": 2.4,
+    "bootTime": 1,
     "optMass": 1800,
     "minMass": 900,
     "maxMass": 4500,
@@ -880,6 +929,7 @@
     "mass": 64,
     "integrity": 90,
     "powerDraw": 3.2,
+    "bootTime": 1,
     "optMass": 1800,
     "minMass": 900,
     "maxMass": 4500,
@@ -903,6 +953,7 @@
     "mass": 160,
     "integrity": 150,
     "powerDraw": 4,
+    "bootTime": 1,
     "optMass": 1800,
     "minMass": 900,
     "maxMass": 4500,
@@ -926,6 +977,7 @@
     "mass": 256,
     "integrity": 210,
     "powerDraw": 4.8,
+    "bootTime": 1,
     "optMass": 1800,
     "minMass": 900,
     "maxMass": 4500,
@@ -949,6 +1001,7 @@
     "mass": 160,
     "integrity": 180,
     "powerDraw": 5.6,
+    "bootTime": 1,
     "optMass": 1800,
     "minMass": 900,
     "maxMass": 4500,
@@ -1649,6 +1702,10 @@
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
     "rating": "I",
+    "mass": 0,
+    "integrity": 20,
+    "powerDraw": 0.4,
+    "bootTime": 0,
     "cost": 18040
   },
   {
@@ -1658,7 +1715,9 @@
     "class": 1,
     "rating": "E",
     "mass": 1.3,
+    "integrity": 32,
     "powerDraw": 0.12,
+    "bootTime": 3,
     "cost": 600
   },
   {
@@ -1668,7 +1727,9 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
+    "integrity": 24,
     "powerDraw": 0.16,
+    "bootTime": 3,
     "cost": 1200
   },
   {
@@ -1678,7 +1739,9 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
+    "integrity": 40,
     "powerDraw": 0.2,
+    "bootTime": 3,
     "cost": 2400
   },
   {
@@ -1688,7 +1751,9 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
+    "integrity": 56,
     "powerDraw": 0.24,
+    "bootTime": 3,
     "cost": 4800
   },
   {
@@ -1698,7 +1763,9 @@
     "class": 1,
     "rating": "A",
     "mass": 1.3,
+    "integrity": 48,
     "powerDraw": 0.28,
+    "bootTime": 3,
     "cost": 9600
   },
   {
@@ -1708,7 +1775,9 @@
     "class": 3,
     "rating": "E",
     "mass": 5,
+    "integrity": 51,
     "powerDraw": 0.18,
+    "bootTime": 3,
     "cost": 5400
   },
   {
@@ -1718,7 +1787,9 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
+    "integrity": 38,
     "powerDraw": 0.24,
+    "bootTime": 3,
     "cost": 10800
   },
   {
@@ -1728,7 +1799,9 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
+    "integrity": 64,
     "powerDraw": 0.3,
+    "bootTime": 3,
     "cost": 21600
   },
   {
@@ -1738,7 +1811,9 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
+    "integrity": 90,
     "powerDraw": 0.36,
+    "bootTime": 3,
     "cost": 43200
   },
   {
@@ -1748,7 +1823,9 @@
     "class": 3,
     "rating": "A",
     "mass": 5,
+    "integrity": 77,
     "powerDraw": 0.42,
+    "bootTime": 3,
     "cost": 86400
   },
   {
@@ -1758,7 +1835,9 @@
     "class": 5,
     "rating": "E",
     "mass": 20,
+    "integrity": 77,
     "powerDraw": 0.3,
+    "bootTime": 3,
     "cost": 48600
   },
   {
@@ -1768,7 +1847,9 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
+    "integrity": 58,
     "powerDraw": 0.4,
+    "bootTime": 3,
     "cost": 97200
   },
   {
@@ -1778,7 +1859,9 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
+    "integrity": 96,
     "powerDraw": 0.5,
+    "bootTime": 3,
     "cost": 194400
   },
   {
@@ -1788,7 +1871,9 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
+    "integrity": 134,
     "powerDraw": 0.6,
+    "bootTime": 3,
     "cost": 388800
   },
   {
@@ -1798,7 +1883,9 @@
     "class": 5,
     "rating": "A",
     "mass": 20,
+    "integrity": 115,
     "powerDraw": 0.7,
+    "bootTime": 3,
     "cost": 777600
   },
   {
@@ -1808,7 +1895,9 @@
     "class": 7,
     "rating": "E",
     "mass": 80,
+    "integrity": 105,
     "powerDraw": 0.42,
+    "bootTime": 3,
     "cost": 437400
   },
   {
@@ -1818,7 +1907,9 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
+    "integrity": 79,
     "powerDraw": 0.56,
+    "bootTime": 3,
     "cost": 874800
   },
   {
@@ -1828,7 +1919,9 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
+    "integrity": 131,
     "powerDraw": 0.7,
+    "bootTime": 3,
     "cost": 1749600
   },
   {
@@ -1838,7 +1931,9 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
+    "integrity": 183,
     "powerDraw": 0.84,
+    "bootTime": 3,
     "cost": 3499200
   },
   {
@@ -1848,7 +1943,9 @@
     "class": 7,
     "rating": "A",
     "mass": 80,
+    "integrity": 157,
     "powerDraw": 0.98,
+    "bootTime": 3,
     "cost": 6998400
   },
   {
@@ -1857,7 +1954,8 @@
     "name": "Basic Discovery Scanner",
     "class": 1,
     "rating": "E",
-    "mass": 0,
+    "mass": 2,
+    "integrity": 40,
     "cost": 1000
   },
   {
@@ -1866,7 +1964,8 @@
     "name": "Intermediate Discovery Scanner",
     "class": 1,
     "rating": "D",
-    "mass": 0,
+    "mass": 2,
+    "integrity": 40,
     "cost": 505000
   },
   {
@@ -1875,7 +1974,8 @@
     "name": "Advanced Discovery Scanner",
     "class": 1,
     "rating": "C",
-    "mass": 0,
+    "mass": 2,
+    "integrity": 40,
     "cost": 1545000
   },
   {
@@ -1885,7 +1985,9 @@
     "class": 1,
     "rating": "I",
     "mass": 0,
+    "integrity": 20,
     "powerDraw": 0,
+    "bootTime": 0,
     "cost": 250000
   },
   {
@@ -1893,21 +1995,34 @@
     "category": "internal",
     "name": "Shield Generator",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "mass": 2.5,
+    "integrity": 41,
+    "powerDraw": 0.9,
+    "bootTime": 1,
+    "optMass": 55,
+    "minMass": 28,
+    "maxMass": 138,
+    "optMultiplier": 0.8,
+    "minMultiplier": 0.3,
+    "maxMultiplier": 1.3
   },
   {
     "symbol": "Int_StellarBodyDiscoveryScanner_Standard_free",
     "category": "internal",
     "name": "Basic Discovery Scanner",
     "class": 1,
-    "rating": "E"
+    "rating": "E",
+    "mass": 2,
+    "integrity": 40
   },
   {
     "symbol": "Int_CargoRack_Size2_Class1_free",
     "category": "internal",
     "name": "Cargo Rack",
     "class": 2,
-    "rating": "E"
+    "rating": "E",
+    "mass": 0
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class1",
@@ -1916,6 +2031,9 @@
     "class": 1,
     "rating": "E",
     "mass": 0,
+    "integrity": 32,
+    "powerDraw": 0.14,
+    "bootTime": 4,
     "cost": 309
   },
   {
@@ -1925,6 +2043,9 @@
     "class": 2,
     "rating": "E",
     "mass": 0,
+    "integrity": 41,
+    "powerDraw": 0.17,
+    "bootTime": 4,
     "cost": 1068
   },
   {
@@ -1934,6 +2055,9 @@
     "class": 3,
     "rating": "E",
     "mass": 0,
+    "integrity": 51,
+    "powerDraw": 0.2,
+    "bootTime": 4,
     "cost": 3386
   },
   {
@@ -1943,6 +2067,9 @@
     "class": 4,
     "rating": "E",
     "mass": 0,
+    "integrity": 64,
+    "powerDraw": 0.25,
+    "bootTime": 4,
     "cost": 10734
   },
   {
@@ -1952,6 +2079,9 @@
     "class": 5,
     "rating": "E",
     "mass": 0,
+    "integrity": 77,
+    "powerDraw": 0.3,
+    "bootTime": 4,
     "cost": 34026
   },
   {
@@ -1961,6 +2091,9 @@
     "class": 6,
     "rating": "E",
     "mass": 0,
+    "integrity": 90,
+    "powerDraw": 0.35,
+    "bootTime": 4,
     "cost": 107864
   },
   {
@@ -1970,6 +2103,9 @@
     "class": 7,
     "rating": "E",
     "mass": 0,
+    "integrity": 105,
+    "powerDraw": 0.41,
+    "bootTime": 4,
     "cost": 341927
   },
   {
@@ -1979,6 +2115,9 @@
     "class": 8,
     "rating": "E",
     "mass": 0,
+    "integrity": 120,
+    "powerDraw": 0.48,
+    "bootTime": 4,
     "cost": 1083910
   },
   {
@@ -1988,6 +2127,9 @@
     "class": 1,
     "rating": "D",
     "mass": 0,
+    "integrity": 24,
+    "powerDraw": 0.18,
+    "bootTime": 4,
     "cost": 1285
   },
   {
@@ -1997,6 +2139,9 @@
     "class": 2,
     "rating": "D",
     "mass": 0,
+    "integrity": 31,
+    "powerDraw": 0.22,
+    "bootTime": 4,
     "cost": 4451
   },
   {
@@ -2006,6 +2151,9 @@
     "class": 3,
     "rating": "D",
     "mass": 0,
+    "integrity": 38,
+    "powerDraw": 0.27,
+    "bootTime": 4,
     "cost": 14109
   },
   {
@@ -2015,6 +2163,9 @@
     "class": 4,
     "rating": "D",
     "mass": 0,
+    "integrity": 48,
+    "powerDraw": 0.33,
+    "bootTime": 4,
     "cost": 44724
   },
   {
@@ -2024,6 +2175,9 @@
     "class": 5,
     "rating": "D",
     "mass": 0,
+    "integrity": 58,
+    "powerDraw": 0.4,
+    "bootTime": 4,
     "cost": 141776
   },
   {
@@ -2033,6 +2187,9 @@
     "class": 6,
     "rating": "D",
     "mass": 0,
+    "integrity": 68,
+    "powerDraw": 0.47,
+    "bootTime": 4,
     "cost": 449431
   },
   {
@@ -2042,6 +2199,9 @@
     "class": 7,
     "rating": "D",
     "mass": 0,
+    "integrity": 79,
+    "powerDraw": 0.55,
+    "bootTime": 4,
     "cost": 1424698
   },
   {
@@ -2051,6 +2211,9 @@
     "class": 8,
     "rating": "D",
     "mass": 0,
+    "integrity": 90,
+    "powerDraw": 0.64,
+    "bootTime": 4,
     "cost": 4516291
   },
   {
@@ -2060,6 +2223,9 @@
     "class": 1,
     "rating": "C",
     "mass": 0,
+    "integrity": 40,
+    "powerDraw": 0.23,
+    "bootTime": 4,
     "cost": 5142
   },
   {
@@ -2069,6 +2235,9 @@
     "class": 2,
     "rating": "C",
     "mass": 0,
+    "integrity": 51,
+    "powerDraw": 0.28,
+    "bootTime": 4,
     "cost": 17803
   },
   {
@@ -2078,6 +2247,9 @@
     "class": 3,
     "rating": "C",
     "mass": 0,
+    "integrity": 64,
+    "powerDraw": 0.34,
+    "bootTime": 4,
     "cost": 56435
   },
   {
@@ -2087,6 +2259,9 @@
     "class": 4,
     "rating": "C",
     "mass": 0,
+    "integrity": 80,
+    "powerDraw": 0.41,
+    "bootTime": 4,
     "cost": 178898
   },
   {
@@ -2096,6 +2271,9 @@
     "class": 5,
     "rating": "C",
     "mass": 0,
+    "integrity": 96,
+    "powerDraw": 0.5,
+    "bootTime": 4,
     "cost": 567106
   },
   {
@@ -2105,6 +2283,9 @@
     "class": 6,
     "rating": "C",
     "mass": 0,
+    "integrity": 113,
+    "powerDraw": 0.59,
+    "bootTime": 4,
     "cost": 1797726
   },
   {
@@ -2114,6 +2295,9 @@
     "class": 7,
     "rating": "C",
     "mass": 0,
+    "integrity": 131,
+    "powerDraw": 0.69,
+    "bootTime": 4,
     "cost": 5698790
   },
   {
@@ -2123,6 +2307,9 @@
     "class": 8,
     "rating": "C",
     "mass": 0,
+    "integrity": 150,
+    "powerDraw": 0.8,
+    "bootTime": 4,
     "cost": 18065165
   },
   {
@@ -2132,6 +2319,9 @@
     "class": 1,
     "rating": "B",
     "mass": 0,
+    "integrity": 56,
+    "powerDraw": 0.28,
+    "bootTime": 4,
     "cost": 20568
   },
   {
@@ -2141,6 +2331,9 @@
     "class": 2,
     "rating": "B",
     "mass": 0,
+    "integrity": 70,
+    "powerDraw": 0.34,
+    "bootTime": 4,
     "cost": 71211
   },
   {
@@ -2150,6 +2343,9 @@
     "class": 3,
     "rating": "B",
     "mass": 0,
+    "integrity": 90,
+    "powerDraw": 0.41,
+    "bootTime": 4,
     "cost": 225738
   },
   {
@@ -2159,6 +2355,9 @@
     "class": 4,
     "rating": "B",
     "mass": 0,
+    "integrity": 112,
+    "powerDraw": 0.49,
+    "bootTime": 4,
     "cost": 715591
   },
   {
@@ -2168,6 +2367,9 @@
     "class": 5,
     "rating": "B",
     "mass": 0,
+    "integrity": 134,
+    "powerDraw": 0.6,
+    "bootTime": 4,
     "cost": 2268424
   },
   {
@@ -2177,6 +2379,9 @@
     "class": 6,
     "rating": "B",
     "mass": 0,
+    "integrity": 158,
+    "powerDraw": 0.71,
+    "bootTime": 4,
     "cost": 7190903
   },
   {
@@ -2186,6 +2391,9 @@
     "class": 7,
     "rating": "B",
     "mass": 0,
+    "integrity": 183,
+    "powerDraw": 0.83,
+    "bootTime": 4,
     "cost": 22795161
   },
   {
@@ -2195,6 +2403,9 @@
     "class": 8,
     "rating": "B",
     "mass": 0,
+    "integrity": 210,
+    "powerDraw": 0.96,
+    "bootTime": 4,
     "cost": 72260660
   },
   {
@@ -2204,6 +2415,9 @@
     "class": 1,
     "rating": "A",
     "mass": 0,
+    "integrity": 48,
+    "powerDraw": 0.32,
+    "bootTime": 4,
     "cost": 82270
   },
   {
@@ -2213,6 +2427,9 @@
     "class": 2,
     "rating": "A",
     "mass": 0,
+    "integrity": 61,
+    "powerDraw": 0.39,
+    "bootTime": 4,
     "cost": 284844
   },
   {
@@ -2222,6 +2439,9 @@
     "class": 3,
     "rating": "A",
     "mass": 0,
+    "integrity": 77,
+    "powerDraw": 0.48,
+    "bootTime": 4,
     "cost": 902954
   },
   {
@@ -2231,6 +2451,9 @@
     "class": 4,
     "rating": "A",
     "mass": 0,
+    "integrity": 96,
+    "powerDraw": 0.57,
+    "bootTime": 4,
     "cost": 2862364
   },
   {
@@ -2240,6 +2463,9 @@
     "class": 5,
     "rating": "A",
     "mass": 0,
+    "integrity": 115,
+    "powerDraw": 0.7,
+    "bootTime": 4,
     "cost": 9073694
   },
   {
@@ -2249,6 +2475,9 @@
     "class": 6,
     "rating": "A",
     "mass": 0,
+    "integrity": 136,
+    "powerDraw": 0.83,
+    "bootTime": 4,
     "cost": 28763610
   },
   {
@@ -2258,6 +2487,9 @@
     "class": 7,
     "rating": "A",
     "mass": 0,
+    "integrity": 157,
+    "powerDraw": 0.97,
+    "bootTime": 4,
     "cost": 91180644
   },
   {
@@ -2267,6 +2499,9 @@
     "class": 8,
     "rating": "A",
     "mass": 0,
+    "integrity": 180,
+    "powerDraw": 1.12,
+    "bootTime": 4,
     "cost": 289042641
   },
   {
@@ -2276,6 +2511,9 @@
     "class": 1,
     "rating": "E",
     "mass": 0,
+    "integrity": 32,
+    "powerDraw": 0.14,
+    "bootTime": 10,
     "cost": 6000
   },
   {
@@ -2285,6 +2523,9 @@
     "class": 2,
     "rating": "E",
     "mass": 0,
+    "integrity": 41,
+    "powerDraw": 0.17,
+    "bootTime": 10,
     "cost": 12600
   },
   {
@@ -2294,6 +2535,9 @@
     "class": 3,
     "rating": "E",
     "mass": 0,
+    "integrity": 51,
+    "powerDraw": 0.2,
+    "bootTime": 10,
     "cost": 26460
   },
   {
@@ -2303,6 +2547,9 @@
     "class": 4,
     "rating": "E",
     "mass": 0,
+    "integrity": 64,
+    "powerDraw": 0.25,
+    "bootTime": 10,
     "cost": 55566
   },
   {
@@ -2312,6 +2559,9 @@
     "class": 1,
     "rating": "D",
     "mass": 0,
+    "integrity": 24,
+    "powerDraw": 0.18,
+    "bootTime": 10,
     "cost": 18000
   },
   {
@@ -2321,6 +2571,9 @@
     "class": 2,
     "rating": "D",
     "mass": 0,
+    "integrity": 31,
+    "powerDraw": 0.22,
+    "bootTime": 10,
     "cost": 37800
   },
   {
@@ -2330,6 +2583,9 @@
     "class": 3,
     "rating": "D",
     "mass": 0,
+    "integrity": 38,
+    "powerDraw": 0.27,
+    "bootTime": 10,
     "cost": 79380
   },
   {
@@ -2339,6 +2595,9 @@
     "class": 4,
     "rating": "D",
     "mass": 0,
+    "integrity": 48,
+    "powerDraw": 0.33,
+    "bootTime": 10,
     "cost": 166698
   },
   {
@@ -2348,6 +2607,9 @@
     "class": 1,
     "rating": "C",
     "mass": 0,
+    "integrity": 40,
+    "powerDraw": 0.23,
+    "bootTime": 10,
     "cost": 54000
   },
   {
@@ -2357,6 +2619,9 @@
     "class": 2,
     "rating": "C",
     "mass": 0,
+    "integrity": 51,
+    "powerDraw": 0.28,
+    "bootTime": 10,
     "cost": 113400
   },
   {
@@ -2366,6 +2631,9 @@
     "class": 3,
     "rating": "C",
     "mass": 0,
+    "integrity": 64,
+    "powerDraw": 0.34,
+    "bootTime": 10,
     "cost": 238140
   },
   {
@@ -2375,6 +2643,9 @@
     "class": 4,
     "rating": "C",
     "mass": 0,
+    "integrity": 80,
+    "powerDraw": 0.41,
+    "bootTime": 10,
     "cost": 500094
   },
   {
@@ -2384,6 +2655,9 @@
     "class": 1,
     "rating": "B",
     "mass": 0,
+    "integrity": 56,
+    "powerDraw": 0.28,
+    "bootTime": 10,
     "cost": 162000
   },
   {
@@ -2393,6 +2667,9 @@
     "class": 2,
     "rating": "B",
     "mass": 0,
+    "integrity": 71,
+    "powerDraw": 0.34,
+    "bootTime": 10,
     "cost": 340200
   },
   {
@@ -2402,6 +2679,9 @@
     "class": 3,
     "rating": "B",
     "mass": 0,
+    "integrity": 90,
+    "powerDraw": 0.41,
+    "bootTime": 10,
     "cost": 714420
   },
   {
@@ -2411,6 +2691,9 @@
     "class": 4,
     "rating": "B",
     "mass": 0,
+    "integrity": 112,
+    "powerDraw": 0.49,
+    "bootTime": 10,
     "cost": 1500282
   },
   {
@@ -2420,6 +2703,9 @@
     "class": 1,
     "rating": "A",
     "mass": 0,
+    "integrity": 48,
+    "powerDraw": 0.32,
+    "bootTime": 10,
     "cost": 486000
   },
   {
@@ -2429,6 +2715,9 @@
     "class": 2,
     "rating": "A",
     "mass": 0,
+    "integrity": 61,
+    "powerDraw": 0.39,
+    "bootTime": 10,
     "cost": 1020600
   },
   {
@@ -2438,6 +2727,9 @@
     "class": 3,
     "rating": "A",
     "mass": 0,
+    "integrity": 77,
+    "powerDraw": 0.48,
+    "bootTime": 10,
     "cost": 2143260
   },
   {
@@ -2447,6 +2739,9 @@
     "class": 4,
     "rating": "A",
     "mass": 0,
+    "integrity": 96,
+    "powerDraw": 0.57,
+    "bootTime": 10,
     "cost": 4500846
   },
   {
@@ -2516,7 +2811,7 @@
     "class": 2,
     "rating": "D",
     "mass": 1,
-    "integrity": 51,
+    "integrity": 31,
     "powerDraw": 0.22,
     "bootTime": 15,
     "cost": 100800
@@ -2696,6 +2991,9 @@
     "class": 1,
     "rating": "E",
     "mass": 0,
+    "integrity": 32,
+    "powerDraw": 0.54,
+    "bootTime": 9,
     "ammoMaximum": 1000,
     "cost": 10000
   },
@@ -2706,6 +3004,9 @@
     "class": 2,
     "rating": "E",
     "mass": 0,
+    "integrity": 41,
+    "powerDraw": 0.68,
+    "bootTime": 9,
     "ammoMaximum": 2300,
     "cost": 18000
   },
@@ -2716,6 +3017,9 @@
     "class": 3,
     "rating": "E",
     "mass": 0,
+    "integrity": 51,
+    "powerDraw": 0.81,
+    "bootTime": 9,
     "ammoMaximum": 3600,
     "cost": 32400
   },
@@ -2726,6 +3030,9 @@
     "class": 4,
     "rating": "E",
     "mass": 0,
+    "integrity": 64,
+    "powerDraw": 0.99,
+    "bootTime": 9,
     "ammoMaximum": 4900,
     "cost": 58320
   },
@@ -2736,6 +3043,9 @@
     "class": 5,
     "rating": "E",
     "mass": 0,
+    "integrity": 77,
+    "powerDraw": 1.17,
+    "bootTime": 9,
     "ammoMaximum": 6100,
     "cost": 104976
   },
@@ -2746,6 +3056,9 @@
     "class": 6,
     "rating": "E",
     "mass": 0,
+    "integrity": 90,
+    "powerDraw": 1.4,
+    "bootTime": 9,
     "ammoMaximum": 7400,
     "cost": 188957
   },
@@ -2756,6 +3069,9 @@
     "class": 7,
     "rating": "E",
     "mass": 0,
+    "integrity": 105,
+    "powerDraw": 1.58,
+    "bootTime": 9,
     "ammoMaximum": 8700,
     "cost": 340122
   },
@@ -2766,6 +3082,9 @@
     "class": 8,
     "rating": "E",
     "mass": 0,
+    "integrity": 120,
+    "powerDraw": 1.8,
+    "bootTime": 9,
     "ammoMaximum": 10000,
     "cost": 612220
   },
@@ -2776,6 +3095,9 @@
     "class": 1,
     "rating": "D",
     "mass": 0,
+    "integrity": 24,
+    "powerDraw": 0.72,
+    "bootTime": 9,
     "ammoMaximum": 900,
     "cost": 30000
   },
@@ -2786,6 +3108,9 @@
     "class": 2,
     "rating": "D",
     "mass": 0,
+    "integrity": 31,
+    "powerDraw": 0.9,
+    "bootTime": 9,
     "ammoMaximum": 2100,
     "cost": 54000
   },
@@ -2796,6 +3121,9 @@
     "class": 3,
     "rating": "D",
     "mass": 0,
+    "integrity": 38,
+    "powerDraw": 1.08,
+    "bootTime": 9,
     "ammoMaximum": 3200,
     "cost": 97200
   },
@@ -2806,6 +3134,9 @@
     "class": 4,
     "rating": "D",
     "mass": 0,
+    "integrity": 48,
+    "powerDraw": 1.32,
+    "bootTime": 9,
     "ammoMaximum": 4400,
     "cost": 174960
   },
@@ -2816,6 +3147,9 @@
     "class": 5,
     "rating": "D",
     "mass": 0,
+    "integrity": 58,
+    "powerDraw": 1.56,
+    "bootTime": 9,
     "ammoMaximum": 5500,
     "cost": 314928
   },
@@ -2826,6 +3160,9 @@
     "class": 6,
     "rating": "D",
     "mass": 0,
+    "integrity": 68,
+    "powerDraw": 1.86,
+    "bootTime": 9,
     "ammoMaximum": 6700,
     "cost": 566870
   },
@@ -2836,6 +3173,9 @@
     "class": 7,
     "rating": "D",
     "mass": 0,
+    "integrity": 79,
+    "powerDraw": 2.1,
+    "bootTime": 9,
     "ammoMaximum": 7800,
     "cost": 1020367
   },
@@ -2846,6 +3186,9 @@
     "class": 8,
     "rating": "D",
     "mass": 0,
+    "integrity": 90,
+    "powerDraw": 2.4,
+    "bootTime": 9,
     "ammoMaximum": 9000,
     "cost": 1836660
   },
@@ -2856,6 +3199,9 @@
     "class": 1,
     "rating": "C",
     "mass": 0,
+    "integrity": 40,
+    "powerDraw": 0.9,
+    "bootTime": 9,
     "ammoMaximum": 1000,
     "cost": 90000
   },
@@ -2866,6 +3212,9 @@
     "class": 2,
     "rating": "C",
     "mass": 0,
+    "integrity": 51,
+    "powerDraw": 1.13,
+    "bootTime": 9,
     "ammoMaximum": 2300,
     "cost": 162000
   },
@@ -2876,6 +3225,9 @@
     "class": 3,
     "rating": "C",
     "mass": 0,
+    "integrity": 64,
+    "powerDraw": 1.35,
+    "bootTime": 9,
     "ammoMaximum": 3600,
     "cost": 291600
   },
@@ -2886,6 +3238,9 @@
     "class": 4,
     "rating": "C",
     "mass": 0,
+    "integrity": 80,
+    "powerDraw": 1.65,
+    "bootTime": 9,
     "ammoMaximum": 4900,
     "cost": 524880
   },
@@ -2896,6 +3251,9 @@
     "class": 5,
     "rating": "C",
     "mass": 0,
+    "integrity": 96,
+    "powerDraw": 1.95,
+    "bootTime": 9,
     "ammoMaximum": 6100,
     "cost": 944784
   },
@@ -2906,6 +3264,9 @@
     "class": 6,
     "rating": "C",
     "mass": 0,
+    "integrity": 113,
+    "powerDraw": 2.33,
+    "bootTime": 9,
     "ammoMaximum": 7400,
     "cost": 1700611
   },
@@ -2916,6 +3277,9 @@
     "class": 7,
     "rating": "C",
     "mass": 0,
+    "integrity": 131,
+    "powerDraw": 2.63,
+    "bootTime": 9,
     "ammoMaximum": 8700,
     "cost": 3061100
   },
@@ -2926,6 +3290,9 @@
     "class": 8,
     "rating": "C",
     "mass": 0,
+    "integrity": 150,
+    "powerDraw": 3,
+    "bootTime": 9,
     "ammoMaximum": 10000,
     "cost": 5509980
   },
@@ -2936,6 +3303,9 @@
     "class": 1,
     "rating": "B",
     "mass": 0,
+    "integrity": 56,
+    "powerDraw": 1.04,
+    "bootTime": 9,
     "ammoMaximum": 1200,
     "cost": 270000
   },
@@ -2946,6 +3316,9 @@
     "class": 2,
     "rating": "B",
     "mass": 0,
+    "integrity": 71,
+    "powerDraw": 1.29,
+    "bootTime": 9,
     "ammoMaximum": 2800,
     "cost": 486000
   },
@@ -2956,6 +3329,9 @@
     "class": 3,
     "rating": "B",
     "mass": 0,
+    "integrity": 90,
+    "powerDraw": 1.55,
+    "bootTime": 9,
     "ammoMaximum": 4300,
     "cost": 874800
   },
@@ -2966,6 +3342,9 @@
     "class": 4,
     "rating": "B",
     "mass": 0,
+    "integrity": 112,
+    "powerDraw": 1.9,
+    "bootTime": 9,
     "ammoMaximum": 5900,
     "cost": 1574640
   },
@@ -2976,6 +3355,9 @@
     "class": 5,
     "rating": "B",
     "mass": 0,
+    "integrity": 134,
+    "powerDraw": 2.24,
+    "bootTime": 9,
     "ammoMaximum": 7300,
     "cost": 2834352
   },
@@ -2986,6 +3368,9 @@
     "class": 6,
     "rating": "B",
     "mass": 0,
+    "integrity": 158,
+    "powerDraw": 2.67,
+    "bootTime": 9,
     "ammoMaximum": 8900,
     "cost": 5101834
   },
@@ -2996,6 +3381,9 @@
     "class": 7,
     "rating": "B",
     "mass": 0,
+    "integrity": 183,
+    "powerDraw": 3.02,
+    "bootTime": 9,
     "ammoMaximum": 10400,
     "cost": 9183300
   },
@@ -3006,6 +3394,9 @@
     "class": 8,
     "rating": "B",
     "mass": 0,
+    "integrity": 210,
+    "powerDraw": 3.45,
+    "bootTime": 9,
     "ammoMaximum": 12000,
     "cost": 16529941
   },
@@ -3016,6 +3407,9 @@
     "class": 1,
     "rating": "A",
     "mass": 0,
+    "integrity": 46,
+    "powerDraw": 1.26,
+    "bootTime": 9,
     "ammoMaximum": 1100,
     "cost": 810000
   },
@@ -3026,6 +3420,9 @@
     "class": 2,
     "rating": "A",
     "mass": 0,
+    "integrity": 59,
+    "powerDraw": 1.58,
+    "bootTime": 9,
     "ammoMaximum": 2500,
     "cost": 1458000
   },
@@ -3036,6 +3433,9 @@
     "class": 3,
     "rating": "A",
     "mass": 0,
+    "integrity": 74,
+    "powerDraw": 1.89,
+    "bootTime": 9,
     "ammoMaximum": 4000,
     "cost": 2624400
   },
@@ -3046,6 +3446,9 @@
     "class": 4,
     "rating": "A",
     "mass": 0,
+    "integrity": 92,
+    "powerDraw": 2.31,
+    "bootTime": 9,
     "ammoMaximum": 5400,
     "cost": 4723920
   },
@@ -3056,6 +3459,9 @@
     "class": 5,
     "rating": "A",
     "mass": 0,
+    "integrity": 110,
+    "powerDraw": 2.73,
+    "bootTime": 9,
     "ammoMaximum": 6700,
     "cost": 8503056
   },
@@ -3066,6 +3472,9 @@
     "class": 6,
     "rating": "A",
     "mass": 0,
+    "integrity": 130,
+    "powerDraw": 3.26,
+    "bootTime": 9,
     "ammoMaximum": 8100,
     "cost": 15305501
   },
@@ -3076,6 +3485,9 @@
     "class": 7,
     "rating": "A",
     "mass": 0,
+    "integrity": 151,
+    "powerDraw": 3.68,
+    "bootTime": 9,
     "ammoMaximum": 9600,
     "cost": 27549901
   },
@@ -3086,6 +3498,9 @@
     "class": 8,
     "rating": "A",
     "mass": 0,
+    "integrity": 173,
+    "powerDraw": 4.2,
+    "bootTime": 9,
     "ammoMaximum": 11000,
     "cost": 49589823
   },
@@ -3236,7 +3651,9 @@
     "class": 1,
     "rating": "E",
     "mass": 0.5,
+    "integrity": 24,
     "powerDraw": 0.14,
+    "bootTime": 6,
     "cost": 600
   },
   {
@@ -3246,7 +3663,9 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
+    "integrity": 32,
     "powerDraw": 0.18,
+    "bootTime": 6,
     "cost": 1200
   },
   {
@@ -3256,7 +3675,9 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
+    "integrity": 40,
     "powerDraw": 0.23,
+    "bootTime": 6,
     "cost": 2400
   },
   {
@@ -3266,7 +3687,9 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
+    "integrity": 48,
     "powerDraw": 0.28,
+    "bootTime": 6,
     "cost": 4800
   },
   {
@@ -3276,7 +3699,9 @@
     "class": 1,
     "rating": "A",
     "mass": 2,
+    "integrity": 56,
     "powerDraw": 0.32,
+    "bootTime": 6,
     "cost": 9600
   },
   {
@@ -3286,7 +3711,9 @@
     "class": 3,
     "rating": "E",
     "mass": 2,
+    "integrity": 38,
     "powerDraw": 0.2,
+    "bootTime": 6,
     "cost": 5400
   },
   {
@@ -3296,7 +3723,9 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
+    "integrity": 51,
     "powerDraw": 0.27,
+    "bootTime": 6,
     "cost": 10800
   },
   {
@@ -3306,7 +3735,9 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
+    "integrity": 64,
     "powerDraw": 0.34,
+    "bootTime": 6,
     "cost": 21600
   },
   {
@@ -3316,7 +3747,9 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
+    "integrity": 77,
     "powerDraw": 0.41,
+    "bootTime": 6,
     "cost": 43200
   },
   {
@@ -3326,7 +3759,9 @@
     "class": 3,
     "rating": "A",
     "mass": 8,
+    "integrity": 90,
     "powerDraw": 0.48,
+    "bootTime": 6,
     "cost": 86400
   },
   {
@@ -3336,7 +3771,9 @@
     "class": 5,
     "rating": "E",
     "mass": 8,
+    "integrity": 58,
     "powerDraw": 0.3,
+    "bootTime": 6,
     "cost": 48600
   },
   {
@@ -3346,7 +3783,9 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
+    "integrity": 77,
     "powerDraw": 0.4,
+    "bootTime": 6,
     "cost": 97200
   },
   {
@@ -3356,7 +3795,9 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
+    "integrity": 96,
     "powerDraw": 0.5,
+    "bootTime": 6,
     "cost": 194400
   },
   {
@@ -3366,7 +3807,9 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
+    "integrity": 115,
     "powerDraw": 0.6,
+    "bootTime": 6,
     "cost": 388800
   },
   {
@@ -3376,7 +3819,9 @@
     "class": 5,
     "rating": "A",
     "mass": 32,
+    "integrity": 134,
     "powerDraw": 0.7,
+    "bootTime": 6,
     "cost": 777600
   },
   {
@@ -3386,7 +3831,9 @@
     "class": 7,
     "rating": "E",
     "mass": 32,
+    "integrity": 79,
     "powerDraw": 0.41,
+    "bootTime": 6,
     "cost": 437400
   },
   {
@@ -3396,7 +3843,9 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
+    "integrity": 105,
     "powerDraw": 0.55,
+    "bootTime": 6,
     "cost": 874800
   },
   {
@@ -3406,7 +3855,9 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
+    "integrity": 131,
     "powerDraw": 0.69,
+    "bootTime": 6,
     "cost": 1749600
   },
   {
@@ -3416,7 +3867,9 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
+    "integrity": 157,
     "powerDraw": 0.83,
+    "bootTime": 6,
     "cost": 3499200
   },
   {
@@ -3426,7 +3879,9 @@
     "class": 7,
     "rating": "A",
     "mass": 128,
+    "integrity": 183,
     "powerDraw": 0.97,
+    "bootTime": 6,
     "cost": 6998400
   },
   {
@@ -3436,7 +3891,9 @@
     "class": 1,
     "rating": "E",
     "mass": 1.3,
+    "integrity": 24,
     "powerDraw": 0.18,
+    "bootTime": 10,
     "cost": 600
   },
   {
@@ -3446,7 +3903,9 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
+    "integrity": 32,
     "powerDraw": 0.14,
+    "bootTime": 10,
     "cost": 1200
   },
   {
@@ -3456,7 +3915,9 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
+    "integrity": 40,
     "powerDraw": 0.23,
+    "bootTime": 10,
     "cost": 2400
   },
   {
@@ -3466,7 +3927,9 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
+    "integrity": 48,
     "powerDraw": 0.32,
+    "bootTime": 10,
     "cost": 4800
   },
   {
@@ -3476,7 +3939,9 @@
     "class": 1,
     "rating": "A",
     "mass": 1.3,
+    "integrity": 56,
     "powerDraw": 0.28,
+    "bootTime": 10,
     "cost": 9600
   },
   {
@@ -3486,7 +3951,9 @@
     "class": 3,
     "rating": "E",
     "mass": 5,
+    "integrity": 38,
     "powerDraw": 0.27,
+    "bootTime": 10,
     "cost": 5400
   },
   {
@@ -3496,7 +3963,9 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
+    "integrity": 51,
     "powerDraw": 0.2,
+    "bootTime": 10,
     "cost": 10800
   },
   {
@@ -3506,7 +3975,9 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
+    "integrity": 64,
     "powerDraw": 0.34,
+    "bootTime": 10,
     "cost": 21600
   },
   {
@@ -3516,7 +3987,9 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
+    "integrity": 77,
     "powerDraw": 0.48,
+    "bootTime": 10,
     "cost": 43200
   },
   {
@@ -3526,7 +3999,9 @@
     "class": 3,
     "rating": "A",
     "mass": 5,
+    "integrity": 90,
     "powerDraw": 0.41,
+    "bootTime": 10,
     "cost": 86400
   },
   {
@@ -3536,7 +4011,9 @@
     "class": 5,
     "rating": "E",
     "mass": 20,
+    "integrity": 58,
     "powerDraw": 0.4,
+    "bootTime": 10,
     "cost": 48600
   },
   {
@@ -3546,7 +4023,9 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
+    "integrity": 77,
     "powerDraw": 0.3,
+    "bootTime": 10,
     "cost": 97200
   },
   {
@@ -3556,7 +4035,9 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
+    "integrity": 96,
     "powerDraw": 0.5,
+    "bootTime": 10,
     "cost": 194400
   },
   {
@@ -3566,7 +4047,9 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
-    "powerDraw": 0.97,
+    "integrity": 115,
+    "powerDraw": 0.72,
+    "bootTime": 10,
     "cost": 388800
   },
   {
@@ -3576,7 +4059,9 @@
     "class": 5,
     "rating": "A",
     "mass": 20,
+    "integrity": 134,
     "powerDraw": 0.6,
+    "bootTime": 10,
     "cost": 777600
   },
   {
@@ -3586,7 +4071,9 @@
     "class": 7,
     "rating": "E",
     "mass": 80,
+    "integrity": 79,
     "powerDraw": 0.55,
+    "bootTime": 10,
     "cost": 437400
   },
   {
@@ -3596,7 +4083,9 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
+    "integrity": 105,
     "powerDraw": 0.41,
+    "bootTime": 10,
     "cost": 874800
   },
   {
@@ -3606,7 +4095,9 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
+    "integrity": 131,
     "powerDraw": 0.69,
+    "bootTime": 10,
     "cost": 1749600
   },
   {
@@ -3616,7 +4107,9 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
+    "integrity": 157,
     "powerDraw": 0.97,
+    "bootTime": 10,
     "cost": 3499200
   },
   {
@@ -3626,7 +4119,9 @@
     "class": 7,
     "rating": "A",
     "mass": 80,
+    "integrity": 183,
     "powerDraw": 0.83,
+    "bootTime": 10,
     "cost": 6998400
   },
   {
@@ -3636,7 +4131,9 @@
     "class": 1,
     "rating": "E",
     "mass": 1.3,
+    "integrity": 24,
     "powerDraw": 0.18,
+    "bootTime": 4,
     "cost": 600
   },
   {
@@ -3646,7 +4143,9 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
+    "integrity": 32,
     "powerDraw": 0.14,
+    "bootTime": 4,
     "cost": 1200
   },
   {
@@ -3656,7 +4155,9 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
+    "integrity": 40,
     "powerDraw": 0.23,
+    "bootTime": 4,
     "cost": 2400
   },
   {
@@ -3666,7 +4167,9 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
+    "integrity": 48,
     "powerDraw": 0.32,
+    "bootTime": 4,
     "cost": 4800
   },
   {
@@ -3676,7 +4179,9 @@
     "class": 1,
     "rating": "A",
     "mass": 1.3,
+    "integrity": 56,
     "powerDraw": 0.28,
+    "bootTime": 4,
     "cost": 9600
   },
   {
@@ -3686,7 +4191,9 @@
     "class": 3,
     "rating": "E",
     "mass": 5,
+    "integrity": 38,
     "powerDraw": 0.27,
+    "bootTime": 4,
     "cost": 5400
   },
   {
@@ -3696,7 +4203,9 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
+    "integrity": 51,
     "powerDraw": 0.2,
+    "bootTime": 4,
     "cost": 10800
   },
   {
@@ -3706,7 +4215,9 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
+    "integrity": 64,
     "powerDraw": 0.34,
+    "bootTime": 4,
     "cost": 21600
   },
   {
@@ -3716,7 +4227,9 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
+    "integrity": 77,
     "powerDraw": 0.48,
+    "bootTime": 4,
     "cost": 43200
   },
   {
@@ -3726,7 +4239,9 @@
     "class": 3,
     "rating": "A",
     "mass": 5,
+    "integrity": 90,
     "powerDraw": 0.41,
+    "bootTime": 4,
     "cost": 86400
   },
   {
@@ -3736,7 +4251,9 @@
     "class": 5,
     "rating": "E",
     "mass": 20,
+    "integrity": 58,
     "powerDraw": 0.4,
+    "bootTime": 4,
     "cost": 48600
   },
   {
@@ -3746,7 +4263,9 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
+    "integrity": 77,
     "powerDraw": 0.3,
+    "bootTime": 4,
     "cost": 97200
   },
   {
@@ -3756,7 +4275,9 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
+    "integrity": 96,
     "powerDraw": 0.5,
+    "bootTime": 4,
     "cost": 194400
   },
   {
@@ -3766,7 +4287,9 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
-    "powerDraw": 0.97,
+    "integrity": 115,
+    "powerDraw": 0.72,
+    "bootTime": 4,
     "cost": 388800
   },
   {
@@ -3776,7 +4299,9 @@
     "class": 5,
     "rating": "A",
     "mass": 20,
+    "integrity": 134,
     "powerDraw": 0.6,
+    "bootTime": 4,
     "cost": 777600
   },
   {
@@ -3786,7 +4311,9 @@
     "class": 7,
     "rating": "E",
     "mass": 80,
+    "integrity": 79,
     "powerDraw": 0.55,
+    "bootTime": 4,
     "cost": 437400
   },
   {
@@ -3796,7 +4323,9 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
+    "integrity": 105,
     "powerDraw": 0.41,
+    "bootTime": 4,
     "cost": 874800
   },
   {
@@ -3806,7 +4335,9 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
+    "integrity": 131,
     "powerDraw": 0.69,
+    "bootTime": 4,
     "cost": 1749600
   },
   {
@@ -3816,7 +4347,9 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
+    "integrity": 157,
     "powerDraw": 0.97,
+    "bootTime": 4,
     "cost": 3499200
   },
   {
@@ -3826,7 +4359,9 @@
     "class": 7,
     "rating": "A",
     "mass": 80,
+    "integrity": 183,
     "powerDraw": 0.83,
+    "bootTime": 4,
     "cost": 6998400
   },
   {
@@ -3836,9 +4371,10 @@
     "class": 1,
     "rating": "A",
     "entitlement": "ELITE_SPECIFIC_V_POWER_200020",
-    "mass": 2.5,
+    "mass": 2.6,
     "integrity": 48,
     "powerDraw": 2.52,
+    "bootTime": 1,
     "optMass": 25,
     "minMass": 13,
     "maxMass": 63,
@@ -3863,8 +4399,9 @@
     "mass": 5,
     "integrity": 61,
     "powerDraw": 3.15,
+    "bootTime": 1,
     "optMass": 55,
-    "minMass": 23,
+    "minMass": 28,
     "maxMass": 138,
     "optMultiplier": 1.5,
     "minMultiplier": 1,
@@ -3887,6 +4424,7 @@
     "mass": 10,
     "integrity": 77,
     "powerDraw": 3.78,
+    "bootTime": 1,
     "optMass": 165,
     "minMass": 83,
     "maxMass": 413,
@@ -3911,6 +4449,7 @@
     "mass": 20,
     "integrity": 96,
     "powerDraw": 4.62,
+    "bootTime": 1,
     "optMass": 285,
     "minMass": 143,
     "maxMass": 713,
@@ -3935,6 +4474,7 @@
     "mass": 40,
     "integrity": 115,
     "powerDraw": 5.46,
+    "bootTime": 1,
     "optMass": 405,
     "minMass": 203,
     "maxMass": 1013,
@@ -3959,6 +4499,7 @@
     "mass": 80,
     "integrity": 136,
     "powerDraw": 6.51,
+    "bootTime": 1,
     "optMass": 540,
     "minMass": 270,
     "maxMass": 1350,
@@ -3983,6 +4524,7 @@
     "mass": 160,
     "integrity": 157,
     "powerDraw": 7.35,
+    "bootTime": 1,
     "optMass": 1060,
     "minMass": 530,
     "maxMass": 2650,
@@ -4007,6 +4549,7 @@
     "mass": 320,
     "integrity": 180,
     "powerDraw": 8.4,
+    "bootTime": 1,
     "optMass": 1800,
     "minMass": 900,
     "maxMass": 4500,
@@ -4030,6 +4573,7 @@
     "mass": 1.3,
     "integrity": 40,
     "powerDraw": 1.2,
+    "bootTime": 1,
     "optMass": 25,
     "minMass": 13,
     "maxMass": 63,
@@ -4053,6 +4597,7 @@
     "mass": 2.5,
     "integrity": 51,
     "powerDraw": 1.5,
+    "bootTime": 1,
     "optMass": 55,
     "minMass": 28,
     "maxMass": 138,
@@ -4076,6 +4621,7 @@
     "mass": 5,
     "integrity": 64,
     "powerDraw": 1.8,
+    "bootTime": 1,
     "optMass": 165,
     "minMass": 83,
     "maxMass": 413,
@@ -4099,6 +4645,7 @@
     "mass": 10,
     "integrity": 80,
     "powerDraw": 2.2,
+    "bootTime": 1,
     "optMass": 285,
     "minMass": 143,
     "maxMass": 713,
@@ -4122,6 +4669,7 @@
     "mass": 20,
     "integrity": 96,
     "powerDraw": 2.6,
+    "bootTime": 1,
     "optMass": 405,
     "minMass": 203,
     "maxMass": 1013,
@@ -4145,6 +4693,7 @@
     "mass": 40,
     "integrity": 113,
     "powerDraw": 3.1,
+    "bootTime": 1,
     "optMass": 540,
     "minMass": 270,
     "maxMass": 1350,
@@ -4168,6 +4717,7 @@
     "mass": 80,
     "integrity": 131,
     "powerDraw": 3.5,
+    "bootTime": 1,
     "optMass": 1060,
     "minMass": 530,
     "maxMass": 2650,
@@ -4191,6 +4741,7 @@
     "mass": 160,
     "integrity": 150,
     "powerDraw": 4,
+    "bootTime": 1,
     "optMass": 1800,
     "minMass": 900,
     "maxMass": 4500,
@@ -4215,6 +4766,7 @@
     "mass": 12,
     "integrity": 30,
     "powerDraw": 0.25,
+    "bootTime": 5,
     "cost": 18000
   },
   {
@@ -4227,6 +4779,7 @@
     "mass": 6,
     "integrity": 30,
     "powerDraw": 0.75,
+    "bootTime": 5,
     "cost": 21600
   },
   {
@@ -4239,6 +4792,7 @@
     "mass": 20,
     "integrity": 30,
     "powerDraw": 0.4,
+    "bootTime": 5,
     "cost": 72000
   },
   {
@@ -4251,6 +4805,7 @@
     "mass": 10,
     "integrity": 30,
     "powerDraw": 1.2,
+    "bootTime": 5,
     "cost": 86400
   },
   {
@@ -4263,6 +4818,7 @@
     "mass": 34,
     "integrity": 30,
     "powerDraw": 0.6,
+    "bootTime": 5,
     "cost": 576000
   },
   {
@@ -4275,6 +4831,7 @@
     "mass": 17,
     "integrity": 30,
     "powerDraw": 1.8,
+    "bootTime": 5,
     "cost": 691200
   },
   {
@@ -4346,7 +4903,9 @@
     "class": 1,
     "rating": "H",
     "mass": 0,
+    "integrity": 20,
     "powerDraw": 0.6,
+    "bootTime": 2,
     "cost": 0
   },
   {
@@ -4431,6 +4990,7 @@
     "mass": 20,
     "integrity": 60,
     "powerDraw": 0.25,
+    "bootTime": 5,
     "cost": 575643
   },
   {
@@ -4443,6 +5003,7 @@
     "mass": 40,
     "integrity": 80,
     "powerDraw": 0.35,
+    "bootTime": 5,
     "cost": 1869340
   },
   {
@@ -4455,6 +5016,7 @@
     "mass": 60,
     "integrity": 120,
     "powerDraw": 0.35,
+    "bootTime": 5,
     "cost": 2369320
   },
   {
@@ -4465,7 +5027,8 @@
     "rating": "D",
     "mass": 10,
     "integrity": 60,
-    "powerDraw": 0.25
+    "powerDraw": 0.25,
+    "bootTime": 5
   },
   {
     "symbol": "Int_FighterBayMk2_Size6_Class1",
@@ -4475,7 +5038,8 @@
     "rating": "D",
     "mass": 20,
     "integrity": 80,
-    "powerDraw": 0.35
+    "powerDraw": 0.35,
+    "bootTime": 5
   },
   {
     "symbol": "Int_FighterBayMk2_Size7_Class1",
@@ -4485,7 +5049,8 @@
     "rating": "D",
     "mass": 30,
     "integrity": 120,
-    "powerDraw": 0.35
+    "powerDraw": 0.35,
+    "bootTime": 5
   },
   {
     "symbol": "Int_PassengerCabin_Size2_Class1",
@@ -4658,7 +5223,9 @@
     "class": 1,
     "rating": "E",
     "mass": 1.3,
+    "integrity": 24,
     "powerDraw": 0.18,
+    "bootTime": 10,
     "cost": 600
   },
   {
@@ -4668,7 +5235,9 @@
     "class": 1,
     "rating": "D",
     "mass": 0.5,
+    "integrity": 32,
     "powerDraw": 0.14,
+    "bootTime": 10,
     "cost": 1200
   },
   {
@@ -4678,7 +5247,9 @@
     "class": 1,
     "rating": "C",
     "mass": 1.3,
+    "integrity": 40,
     "powerDraw": 0.23,
+    "bootTime": 10,
     "cost": 2400
   },
   {
@@ -4688,7 +5259,9 @@
     "class": 1,
     "rating": "B",
     "mass": 2,
+    "integrity": 48,
     "powerDraw": 0.32,
+    "bootTime": 10,
     "cost": 4800
   },
   {
@@ -4698,7 +5271,9 @@
     "class": 1,
     "rating": "A",
     "mass": 1.3,
+    "integrity": 56,
     "powerDraw": 0.28,
+    "bootTime": 10,
     "cost": 9600
   },
   {
@@ -4708,7 +5283,9 @@
     "class": 3,
     "rating": "E",
     "mass": 5,
+    "integrity": 38,
     "powerDraw": 0.27,
+    "bootTime": 10,
     "cost": 5400
   },
   {
@@ -4718,7 +5295,9 @@
     "class": 3,
     "rating": "D",
     "mass": 2,
+    "integrity": 51,
     "powerDraw": 0.2,
+    "bootTime": 10,
     "cost": 10800
   },
   {
@@ -4728,7 +5307,9 @@
     "class": 3,
     "rating": "C",
     "mass": 5,
+    "integrity": 64,
     "powerDraw": 0.34,
+    "bootTime": 10,
     "cost": 21600
   },
   {
@@ -4738,7 +5319,9 @@
     "class": 3,
     "rating": "B",
     "mass": 8,
+    "integrity": 77,
     "powerDraw": 0.48,
+    "bootTime": 10,
     "cost": 43200
   },
   {
@@ -4748,7 +5331,9 @@
     "class": 3,
     "rating": "A",
     "mass": 5,
+    "integrity": 90,
     "powerDraw": 0.41,
+    "bootTime": 10,
     "cost": 86400
   },
   {
@@ -4758,7 +5343,9 @@
     "class": 5,
     "rating": "E",
     "mass": 20,
+    "integrity": 58,
     "powerDraw": 0.4,
+    "bootTime": 10,
     "cost": 48600
   },
   {
@@ -4768,7 +5355,9 @@
     "class": 5,
     "rating": "D",
     "mass": 8,
+    "integrity": 77,
     "powerDraw": 0.3,
+    "bootTime": 10,
     "cost": 97200
   },
   {
@@ -4778,7 +5367,9 @@
     "class": 5,
     "rating": "C",
     "mass": 20,
+    "integrity": 96,
     "powerDraw": 0.5,
+    "bootTime": 10,
     "cost": 194400
   },
   {
@@ -4788,7 +5379,9 @@
     "class": 5,
     "rating": "B",
     "mass": 32,
-    "powerDraw": 0.97,
+    "integrity": 115,
+    "powerDraw": 0.72,
+    "bootTime": 10,
     "cost": 388800
   },
   {
@@ -4798,7 +5391,9 @@
     "class": 5,
     "rating": "A",
     "mass": 20,
+    "integrity": 134,
     "powerDraw": 0.6,
+    "bootTime": 10,
     "cost": 777600
   },
   {
@@ -4808,7 +5403,9 @@
     "class": 7,
     "rating": "E",
     "mass": 80,
+    "integrity": 79,
     "powerDraw": 0.55,
+    "bootTime": 10,
     "cost": 437400
   },
   {
@@ -4818,7 +5415,9 @@
     "class": 7,
     "rating": "D",
     "mass": 32,
+    "integrity": 105,
     "powerDraw": 0.41,
+    "bootTime": 10,
     "cost": 874800
   },
   {
@@ -4828,7 +5427,9 @@
     "class": 7,
     "rating": "C",
     "mass": 80,
+    "integrity": 131,
     "powerDraw": 0.69,
+    "bootTime": 10,
     "cost": 1749600
   },
   {
@@ -4838,7 +5439,9 @@
     "class": 7,
     "rating": "B",
     "mass": 128,
+    "integrity": 157,
     "powerDraw": 0.97,
+    "bootTime": 10,
     "cost": 3499200
   },
   {
@@ -4848,7 +5451,9 @@
     "class": 7,
     "rating": "A",
     "mass": 80,
+    "integrity": 183,
     "powerDraw": 0.83,
+    "bootTime": 10,
     "cost": 6998400
   },
   {
@@ -4861,6 +5466,7 @@
     "mass": 1.3,
     "integrity": 20,
     "powerDraw": 0.4,
+    "bootTime": 0,
     "cost": 1749600
   },
   {
@@ -4885,7 +5491,7 @@
     "class": 1,
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_METAHULL",
-    "mass": 2,
+    "mass": 1,
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
@@ -5021,7 +5627,9 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 1.3,
+    "integrity": 24,
     "powerDraw": 0.18,
+    "bootTime": 10,
     "cost": 3600
   },
   {
@@ -5032,7 +5640,9 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 2,
+    "integrity": 51,
     "powerDraw": 0.2,
+    "bootTime": 10,
     "cost": 16200
   },
   {
@@ -5043,7 +5653,9 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 20,
+    "integrity": 96,
     "powerDraw": 0.5,
+    "bootTime": 10,
     "cost": 145800
   },
   {
@@ -5054,7 +5666,9 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 128,
+    "integrity": 157,
     "powerDraw": 0.97,
+    "bootTime": 10,
     "cost": 1312200
   },
   {
@@ -5077,6 +5691,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 2,
     "powerDraw": 0.45,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5093,6 +5708,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 1,
     "powerDraw": 0.56,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5109,6 +5725,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 4,
     "powerDraw": 0.68,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5125,6 +5742,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 2,
     "powerDraw": 0.79,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5141,6 +5759,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 8,
     "powerDraw": 0.9,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5157,6 +5776,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 4,
     "powerDraw": 1.01,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5173,6 +5793,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 16,
     "powerDraw": 1.13,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5189,6 +5810,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 8,
     "powerDraw": 1.24,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5205,6 +5827,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 32,
     "powerDraw": 1.35,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5221,6 +5844,7 @@
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_HULLREINFORCEMENT",
     "mass": 16,
     "powerDraw": 1.46,
+    "bootTime": 0,
     "kineticResistance": 0,
     "thermalResistance": 0.02,
     "explosiveResistance": 0,
@@ -5238,6 +5862,7 @@
     "mass": 2,
     "integrity": 85,
     "powerDraw": 0.27,
+    "bootTime": 0,
     "moduleProtection": 0.3,
     "cost": 10000
   },
@@ -5251,6 +5876,7 @@
     "mass": 1,
     "integrity": 77,
     "powerDraw": 0.34,
+    "bootTime": 0,
     "moduleProtection": 0.6,
     "cost": 30000
   },
@@ -5264,6 +5890,7 @@
     "mass": 4,
     "integrity": 127,
     "powerDraw": 0.41,
+    "bootTime": 0,
     "moduleProtection": 0.3,
     "cost": 24000
   },
@@ -5277,6 +5904,7 @@
     "mass": 2,
     "integrity": 116,
     "powerDraw": 0.47,
+    "bootTime": 0,
     "moduleProtection": 0.6,
     "cost": 72000
   },
@@ -5290,6 +5918,7 @@
     "mass": 8,
     "integrity": 187,
     "powerDraw": 0.54,
+    "bootTime": 0,
     "moduleProtection": 0.3,
     "cost": 57600
   },
@@ -5303,6 +5932,7 @@
     "mass": 4,
     "integrity": 171,
     "powerDraw": 0.61,
+    "bootTime": 0,
     "moduleProtection": 0.6,
     "cost": 172800
   },
@@ -5316,6 +5946,7 @@
     "mass": 16,
     "integrity": 286,
     "powerDraw": 0.68,
+    "bootTime": 0,
     "moduleProtection": 0.3,
     "cost": 138240
   },
@@ -5329,6 +5960,7 @@
     "mass": 8,
     "integrity": 259,
     "powerDraw": 0.74,
+    "bootTime": 0,
     "moduleProtection": 0.6,
     "cost": 414720
   },
@@ -5342,6 +5974,7 @@
     "mass": 32,
     "integrity": 424,
     "powerDraw": 0.81,
+    "bootTime": 0,
     "moduleProtection": 0.3,
     "cost": 331778
   },
@@ -5355,6 +5988,7 @@
     "mass": 16,
     "integrity": 385,
     "powerDraw": 0.88,
+    "bootTime": 0,
     "moduleProtection": 0.6,
     "cost": 995330
   },
@@ -5368,6 +6002,7 @@
     "mass": 2,
     "integrity": 36,
     "powerDraw": 0.35,
+    "bootTime": 0,
     "shieldAddition": 44,
     "cost": 10000
   },
@@ -5381,6 +6016,7 @@
     "mass": 1,
     "integrity": 36,
     "powerDraw": 0.46,
+    "bootTime": 0,
     "shieldAddition": 61,
     "cost": 30000
   },
@@ -5394,6 +6030,7 @@
     "mass": 4,
     "integrity": 36,
     "powerDraw": 0.56,
+    "bootTime": 0,
     "shieldAddition": 83,
     "cost": 24000
   },
@@ -5407,6 +6044,7 @@
     "mass": 2,
     "integrity": 36,
     "powerDraw": 0.67,
+    "bootTime": 0,
     "shieldAddition": 105,
     "cost": 72000
   },
@@ -5420,6 +6058,7 @@
     "mass": 8,
     "integrity": 36,
     "powerDraw": 0.74,
+    "bootTime": 0,
     "shieldAddition": 127,
     "cost": 57600
   },
@@ -5433,6 +6072,7 @@
     "mass": 4,
     "integrity": 36,
     "powerDraw": 0.84,
+    "bootTime": 0,
     "shieldAddition": 143,
     "cost": 172800
   },
@@ -5446,6 +6086,7 @@
     "mass": 16,
     "integrity": 36,
     "powerDraw": 0.95,
+    "bootTime": 0,
     "shieldAddition": 165,
     "cost": 138240
   },
@@ -5459,6 +6100,7 @@
     "mass": 8,
     "integrity": 36,
     "powerDraw": 1.05,
+    "bootTime": 0,
     "shieldAddition": 182,
     "cost": 414720
   },
@@ -5472,6 +6114,7 @@
     "mass": 32,
     "integrity": 36,
     "powerDraw": 1.16,
+    "bootTime": 0,
     "shieldAddition": 198,
     "cost": 331778
   },
@@ -5485,6 +6128,7 @@
     "mass": 16,
     "integrity": 36,
     "powerDraw": 1.26,
+    "bootTime": 0,
     "shieldAddition": 215,
     "cost": 995330
   },
@@ -5498,6 +6142,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.75,
+    "bootTime": 15,
     "jumpBoost": 4,
     "cost": 405022
   },
@@ -5511,6 +6156,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 0.98,
+    "bootTime": 15,
     "jumpBoost": 6,
     "cost": 810521
   },
@@ -5524,6 +6170,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 1.27,
+    "bootTime": 15,
     "jumpBoost": 7.75,
     "cost": 1620431
   },
@@ -5537,6 +6184,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 1.65,
+    "bootTime": 15,
     "jumpBoost": 9.25,
     "cost": 3245013
   },
@@ -5550,6 +6198,7 @@
     "mass": 1.3,
     "integrity": 32,
     "powerDraw": 2.14,
+    "bootTime": 15,
     "jumpBoost": 10.5,
     "cost": 6483101
   },
@@ -5561,8 +6210,9 @@
     "rating": "A",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR",
     "mass": 1.4,
-    "integrity": 56,
+    "integrity": 35,
     "powerDraw": 0.62,
+    "bootTime": 5,
     "weaponsCapacity": 10,
     "weaponsRecharge": 2.5,
     "enginesCapacity": 9,
@@ -5581,6 +6231,7 @@
     "mass": 2.6,
     "integrity": 45,
     "powerDraw": 0.73,
+    "bootTime": 5,
     "weaponsCapacity": 13,
     "weaponsRecharge": 3.1,
     "enginesCapacity": 11,
@@ -5599,8 +6250,9 @@
     "mass": 5.25,
     "integrity": 56,
     "powerDraw": 0.78,
-    "weaponsCapacity": 13,
-    "weaponsRecharge": 3.1,
+    "bootTime": 5,
+    "weaponsCapacity": 17,
+    "weaponsRecharge": 3.9,
     "enginesCapacity": 14,
     "enginesRecharge": 1.7,
     "systemsCapacity": 14,
@@ -5615,14 +6267,15 @@
     "rating": "A",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR",
     "mass": 10.5,
-    "integrity": 56,
+    "integrity": 70,
     "powerDraw": 0.87,
+    "bootTime": 5,
     "weaponsCapacity": 22,
     "weaponsRecharge": 4.9,
     "enginesCapacity": 17,
     "enginesRecharge": 2.5,
-    "systemsCapacity": 14,
-    "systemsRecharge": 1.7,
+    "systemsCapacity": 17,
+    "systemsRecharge": 2.5,
     "cost": 868708
   },
   {
@@ -5633,8 +6286,9 @@
     "rating": "A",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR",
     "mass": 21,
-    "integrity": 56,
+    "integrity": 99,
     "powerDraw": 0.96,
+    "bootTime": 5,
     "weaponsCapacity": 29,
     "weaponsRecharge": 6,
     "enginesCapacity": 22,
@@ -5651,8 +6305,9 @@
     "rating": "A",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR",
     "mass": 42,
-    "integrity": 56,
+    "integrity": 99,
     "powerDraw": 1.07,
+    "bootTime": 5,
     "weaponsCapacity": 35,
     "weaponsRecharge": 7.3,
     "enginesCapacity": 26,
@@ -5669,8 +6324,9 @@
     "rating": "A",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR",
     "mass": 84,
-    "integrity": 56,
+    "integrity": 115,
     "powerDraw": 1.16,
+    "bootTime": 5,
     "weaponsCapacity": 43,
     "weaponsRecharge": 8.5,
     "enginesCapacity": 31,
@@ -5687,8 +6343,9 @@
     "rating": "A",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR",
     "mass": 168,
-    "integrity": 56,
+    "integrity": 132,
     "powerDraw": 1.25,
+    "bootTime": 5,
     "weaponsCapacity": 50,
     "weaponsRecharge": 10.1,
     "enginesCapacity": 36,
@@ -5797,6 +6454,7 @@
     "mass": 1.3,
     "integrity": 24,
     "powerDraw": 0.18,
+    "bootTime": 10,
     "cost": 2600
   },
   {
@@ -5808,6 +6466,7 @@
     "mass": 2,
     "integrity": 51,
     "powerDraw": 0.2,
+    "bootTime": 10,
     "cost": 8200
   },
   {
@@ -5819,6 +6478,7 @@
     "mass": 20,
     "integrity": 96,
     "powerDraw": 0.5,
+    "bootTime": 9.85,
     "cost": 75800
   },
   {
@@ -5830,6 +6490,7 @@
     "mass": 128,
     "integrity": 157,
     "powerDraw": 0.97,
+    "bootTime": 10,
     "cost": 612200
   },
   {
@@ -5839,7 +6500,9 @@
     "class": 1,
     "rating": "E",
     "mass": 0,
+    "integrity": 10,
     "powerDraw": 0.3,
+    "bootTime": 3,
     "cost": 9121
   },
   {
@@ -5849,6 +6512,9 @@
     "class": 1,
     "rating": "E",
     "mass": 0,
+    "integrity": 10,
+    "powerDraw": 0.45,
+    "bootTime": 3,
     "cost": 13507
   },
   {
@@ -5869,7 +6535,9 @@
     "class": 3,
     "rating": "E",
     "mass": 12,
+    "integrity": 45,
     "powerDraw": 0.5,
+    "bootTime": 6,
     "cost": 15000
   },
   {
@@ -5879,7 +6547,9 @@
     "class": 3,
     "rating": "C",
     "mass": 10,
+    "integrity": 68,
     "powerDraw": 0.35,
+    "bootTime": 6,
     "cost": 50000
   },
   {
@@ -5889,7 +6559,9 @@
     "class": 3,
     "rating": "C",
     "mass": 10,
+    "integrity": 68,
     "powerDraw": 0.35,
+    "bootTime": 6,
     "cost": 50000
   },
   {
@@ -5899,7 +6571,9 @@
     "class": 3,
     "rating": "B",
     "mass": 15,
+    "integrity": 80,
     "powerDraw": 0.3,
+    "bootTime": 6,
     "cost": 80000
   },
   {
@@ -5909,7 +6583,9 @@
     "class": 3,
     "rating": "D",
     "mass": 8,
+    "integrity": 58,
     "powerDraw": 0.4,
+    "bootTime": 6,
     "cost": 30000
   },
   {
@@ -5919,7 +6595,9 @@
     "class": 3,
     "rating": "C",
     "mass": 10,
+    "integrity": 68,
     "powerDraw": 0.35,
+    "bootTime": 6,
     "cost": 50000
   },
   {
@@ -5929,7 +6607,9 @@
     "class": 3,
     "rating": "C",
     "mass": 10,
+    "integrity": 68,
     "powerDraw": 0.35,
+    "bootTime": 6,
     "cost": 50000
   },
   {
@@ -5939,7 +6619,9 @@
     "class": 3,
     "rating": "B",
     "mass": 15,
+    "integrity": 80,
     "powerDraw": 0.3,
+    "bootTime": 6,
     "cost": 80000
   },
   {
@@ -5949,7 +6631,9 @@
     "class": 7,
     "rating": "C",
     "mass": 125,
+    "integrity": 150,
     "powerDraw": 0.8,
+    "bootTime": 6,
     "cost": 4000000
   },
   {
@@ -5959,7 +6643,9 @@
     "class": 7,
     "rating": "A",
     "mass": 140,
+    "integrity": 200,
     "powerDraw": 1.1,
+    "bootTime": 6,
     "cost": 8000000
   },
   {
@@ -6015,6 +6701,7 @@
     "restrictedToShips": [
       "LakonMiner"
     ],
+    "bootTime": 6,
     "cost": 2332800
   },
   {
