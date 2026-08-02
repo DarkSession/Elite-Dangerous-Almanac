@@ -40,7 +40,9 @@ Frontier's rules:
 https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/
 
 Other bundled catalogues and derived values remain subject to the terms listed
-in `typescript/THIRD_PARTY_NOTICES.md`. In particular, some upstream sources
-state no explicit licence and EDSY-derived material is attributed there under
+in the third-party notices that accompany this project: `ATTRIBUTIONS.md` at
+the repository root, shipped inside the npm package as
+`THIRD_PARTY_NOTICES.md`. In particular, some upstream sources state no
+explicit licence and EDSY-derived material is attributed there under
 CC BY-NC 4.0. Consumers must review those terms before redistributing the data
 or using it commercially, and should preserve the applicable notices.

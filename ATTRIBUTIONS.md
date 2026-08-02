@@ -148,12 +148,15 @@ Projects that redistribute this data should include the same notice.
 
 Detailed derivation notes, upstream revisions, manual corrections and known gaps
 live with the data, in
-[`data/astro/SOURCES.md`](data/astro/SOURCES.md),
-[`data/materials/SOURCES.md`](data/materials/SOURCES.md),
-[`data/ships/SOURCES.md`](data/ships/SOURCES.md) and
-[`data/commodities/SOURCES.md`](data/commodities/SOURCES.md).
-`data/SNAPSHOTS.md` records the snapshot date and the metadata every update must
-carry. These files are repository-only; they are not shipped to npm consumers.
+[`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md),
+[`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md),
+[`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
+and
+[`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
+[`data/SNAPSHOTS.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/SNAPSHOTS.md)
+records the snapshot date and the metadata every update must carry. Those files
+live in the repository only — this file is also published inside the npm package
+as `THIRD_PARTY_NOTICES.md`, where they are not present, so the links are absolute.
 
 If you add or change data, port an algorithm, or add a dependency that warrants
 credit, update the in-source attribution and this file in the same change.

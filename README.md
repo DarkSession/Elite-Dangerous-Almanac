@@ -693,7 +693,7 @@ build.setModuleEnabled("TinyHardpoint6", false);
 ```
 
 > **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
-> currently reaches about 589 KB of minified JavaScript (~66 KB gzipped) because it
+> currently reaches about 606 KB of minified JavaScript (~69 KB gzipped) because it
 > must resolve any ship/module id plus blueprints and experimental effects. Prefer
 > `ships/slef`, `ships/jump-range`, the [build-metric
 > modules](#build-metrics-power-shields-armour-and-firepower) (1–3 KB each), and the
@@ -1107,23 +1107,38 @@ against.
 
 ## Data freshness
 
-The checked-in catalogues are snapshot **2026-07-24**. `data/SNAPSHOTS.md` records the initial-snapshot limitation and the versioning metadata required for every future update.
+The checked-in catalogues are a snapshot dated **2026-07-24**, with two changes
+since:
+
+- **2026-08-02** — one market commodity added, `curatedcommodity` ("Curated
+  Commodity Package"), from a player-journal observation rather than an upstream
+  registry; its market category is a maintainer assignment.
+- **2026-08-02** — a module-stat reconciliation against EDSY that left every
+  outfitting module carrying at least one stat and corrected 40 records.
+
+Values no source publishes are left **absent rather than guessed**, so some
+`integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
+_unknown_, never as zero. [TODO.md](TODO.md) is the short list of those gaps.
+[`data/SNAPSHOTS.md`](data/SNAPSHOTS.md) records the initial-snapshot limitation
+and the versioning metadata every future update must carry, and each
+`data/<domain>/SOURCES.md` carries that domain's full derivation.
 
 ## Development
 
 ```bash
 cd typescript
 npm install
-npm test         # shared fixtures + enforced 80% line/branch/function coverage
-npm run typecheck
-npm run build    # tsup -> dist/ (ESM + d.ts, per-subpath)
-npm run docs     # typedoc -> GitHub Wiki markdown
+npm run check          # lint -> format:check -> typecheck -> test; run before finishing
+npm test               # shared fixtures + enforced 80% line/branch/function coverage
+npm run build          # tsup -> dist/ (ESM + d.ts, per-subpath)
+npm run test:package   # imports the built dist/ and checks every export subpath
+npm run docs           # typedoc -> GitHub Wiki markdown
 ```
 
 Full API documentation is generated from source and published to the repository
 wiki. The language-neutral JSON Schemas in `schemas/` validate shared catalogue
-records (currently all ship-domain payloads) before an implementation builds them
-into a package.
+records — one schema per data domain — before an implementation builds them into
+a package. `AGENTS.md` documents the repository conventions in full.
 
 ## Attributions
 
@@ -1147,6 +1162,10 @@ bundle.)
 
 The project's own code and documentation are MIT-licensed. Bundled Elite Dangerous
 and third-party data remains under its source-specific terms, including
-non-commercial restrictions, described in [ATTRIBUTIONS.md](ATTRIBUTIONS.md) and
-[typescript/LICENSE](typescript/LICENSE). Review both before redistribution or
-commercial use.
+non-commercial restrictions. [LICENSE](LICENSE) states both halves and
+[ATTRIBUTIONS.md](ATTRIBUTIONS.md) lists them source by source; review both before
+redistribution or commercial use.
+
+There is one licence file, at the repository root. The npm package's `LICENSE` and
+`THIRD_PARTY_NOTICES.md` are verbatim copies written at build time, so a consumer's
+`node_modules` carries the same terms.

@@ -13,14 +13,25 @@ the checked-in ship and module catalogues. It keeps identity order and identity
 fields authoritative, joins case-insensitively on `symbol`, rejects duplicate or
 unmatched records, and preserves each output JSONC file's attribution header.
 
-The inputs are normalized arrays:
+Every input is an array of objects carrying a string `symbol`, and nothing else is
+required of them. The identity array fixes the output order, and each stat or slot
+array contributes all of its fields **except `symbol` and `name`** — identity wins on
+those two. Symbols match case-insensitively; a duplicate symbol within one array, or a
+stat record whose symbol no identity carries, is an error rather than a silent drop.
 
-- ship identities: `{ symbol, name, entitlement? }`;
-- ship stats and slots: the former `ship-stats.jsonc` and `ship-slots.jsonc`
-  shapes documented in `data/ships/SOURCES.md`;
-- module identities: the FDevIDs-derived identity fields;
-- module stats: the former `module-stats-<category>.jsonc` shape documented in
-  `data/ships/SOURCES.md`.
+- ship identities (`--ship-identities`): `{ symbol, name, entitlement? }`, the
+  FDevIDs `shipyard.csv` fields;
+- ship stats (`--ship-stats`): `{ symbol, hullMass, speed, baseArmour, … }`, the
+  whitelisted coriolis-data `properties`;
+- ship slots (`--ship-slots`): `{ symbol, core, hardpoints, utility, optional }`;
+- module identities (`--<category>-identities`):
+  `{ symbol, category, name, class, rating, mount?, guidance?, ship?, entitlement? }`,
+  the FDevIDs `outfitting.csv` fields;
+- module stats (`--<category>-stats`): `{ symbol, mass?, integrity?, powerDraw?, … }`
+  — sparse, each record carrying only the stats its module group uses.
+
+`data/ships/SOURCES.md` records where each field came from and how it was normalized;
+this file describes only the join.
 
 Keep downloaded upstream files or their SHA-256 checksums with the update
 record, then normalize only the whitelisted fields and run:

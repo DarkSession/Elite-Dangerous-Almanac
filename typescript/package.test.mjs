@@ -289,7 +289,20 @@ test('the publication manifest includes consumer documentation and notices', asy
     assert.match(notices, /Copyright \(c\) 2016, Andy Martin/);
     assert.match(notices, /THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS/);
 
+    // The packaged licence is the same kind of generated copy, of the repository's
+    // single root LICENSE. package.json declares "SEE LICENSE IN LICENSE", so a
+    // missing or stale copy publishes a tarball whose stated terms are absent or
+    // wrong — and the root file is the only one anybody edits.
     const license = await readFile(new URL('./LICENSE', import.meta.url), 'utf8');
-    assert.match(license, /does not relicense bundled third-party/);
-    assert.match(license, /before redistributing the data or using\s+it commercially/);
+    const canonicalLicense = await readFile(new URL('../LICENSE', import.meta.url), 'utf8');
+    assert.equal(
+        license,
+        canonicalLicense,
+        'LICENSE is stale — run `npm run build` (it copies the root LICENSE)',
+    );
+    // Match on collapsed whitespace: the assertion is that the licence still states
+    // these terms, not that it is wrapped at any particular column.
+    const licenseProse = license.replace(/\s+/g, ' ');
+    assert.match(licenseProse, /does not relicense bundled third-party/);
+    assert.match(licenseProse, /before redistributing the data or using it commercially/);
 });
