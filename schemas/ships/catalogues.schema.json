@@ -30,14 +30,33 @@
         "fuelTank": { "type": "integer", "minimum": 1, "maximum": 8 }
       }
     },
+    "hardpointSlot": {
+      "description": "One weapon hardpoint: its size, plus a restriction when the mount only takes one family of modules (the Type-11 Prospector's mining mounts).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["size"],
+      "properties": {
+        "size": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "restriction": {
+          "enum": ["mining"]
+        }
+      }
+    },
     "optionalSlot": {
+      "description": "One optional-internal mount: its size, plus a restriction when the mount only takes one family of modules.",
       "type": "object",
       "additionalProperties": false,
       "required": ["size"],
       "properties": {
         "size": { "type": "integer", "minimum": 1, "maximum": 8 },
         "restriction": {
-          "enum": ["military", "planetaryApproachSuite"]
+          "enum": [
+            "military",
+            "planetaryApproachSuite",
+            "cargo",
+            "limpetController",
+            "vesselHangar"
+          ]
         }
       }
     },
@@ -91,7 +110,7 @@
         "core": { "$ref": "#/definitions/coreSlots" },
         "hardpoints": {
           "type": "array",
-          "items": { "type": "integer", "minimum": 1, "maximum": 4 }
+          "items": { "$ref": "#/definitions/hardpointSlot" }
         },
         "utility": { "type": "integer", "minimum": 0 },
         "optional": {

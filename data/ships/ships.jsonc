@@ -14,7 +14,13 @@
  * name; `entitlement` the DLC/grant token on gated hulls. Stats (hullMass in
  * tonnes, speed/boost in m/s, rotation rates in deg/s, …) and the slot layout
  * (`core` sizes, `hardpoints`, `utility` count, `optional` mounts) are present for
- * every hull. A hull's armour options are modules like any other: they live in
+ * every hull. A `hardpoints` or `optional` mount is `{ size }`, plus a
+ * `restriction` when the mount only takes one family of modules — the Type-11
+ * Prospector's four mining hardpoints and its limpet-controller and vessel-hangar
+ * optionals, the Panther Clipper Mk II's two cargo-only optionals, and the military
+ * and planetary-approach-suite mounts every hull has.
+ *
+ * A hull's armour options are modules like any other: they live in
  * `modules-core.jsonc`, keyed to the hull by their `ship` field. Most come from coriolis-data; the Lynx Highliner
  * (`MediumTransport01`) instead uses EDSY and Frontier update-note values documented
  * in `SOURCES.md`. `hullCost` is the bare hull's standard price in credits and
@@ -51,8 +57,12 @@
       "fuelTank": 1
     },
     "hardpoints": [
-      1,
-      1
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 2,
     "optional": [
@@ -110,9 +120,15 @@
       "fuelTank": 2
     },
     "hardpoints": [
-      1,
-      1,
-      1
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 1,
     "optional": [
@@ -174,7 +190,9 @@
       "fuelTank": 2
     },
     "hardpoints": [
-      1
+      {
+        "size": 1
+      }
     ],
     "utility": 2,
     "optional": [
@@ -232,9 +250,15 @@
       "fuelTank": 3
     },
     "hardpoints": [
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 2,
     "optional": [
@@ -295,10 +319,18 @@
       "fuelTank": 2
     },
     "hardpoints": [
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 2,
     "optional": [
@@ -360,10 +392,18 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 2,
     "optional": [
@@ -427,8 +467,12 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      1,
-      1
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 3,
     "optional": [
@@ -493,8 +537,12 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      1,
-      1
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 3,
     "optional": [
@@ -561,10 +609,18 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      1,
-      1,
-      1,
-      1
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -634,12 +690,24 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      2,
-      2,
-      1,
-      1,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -703,8 +771,12 @@
       "fuelTank": 3
     },
     "hardpoints": [
-      3,
-      3
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      }
     ],
     "utility": 4,
     "optional": [
@@ -769,10 +841,18 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      3,
-      3,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -839,11 +919,21 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      3,
-      2,
-      2,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -915,9 +1005,15 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      3,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -984,11 +1080,21 @@
       "fuelTank": 6
     },
     "hardpoints": [
-      2,
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -1061,11 +1167,21 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      3,
-      3,
-      3,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -1136,11 +1252,21 @@
       "fuelTank": 7
     },
     "hardpoints": [
-      2,
-      2,
-      2,
-      2,
-      2
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 6,
     "optional": [
@@ -1216,11 +1342,21 @@
       "fuelTank": 3
     },
     "hardpoints": [
-      4,
-      2,
-      2,
-      2,
-      2
+      {
+        "size": 4
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 6,
     "optional": [
@@ -1278,14 +1414,30 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      4,
-      3,
-      3,
-      3,
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 8,
     "optional": [
@@ -1365,13 +1517,27 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      4,
-      4,
-      3,
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 4
+      },
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 8,
     "optional": [
@@ -1452,13 +1618,27 @@
       "fuelTank": 6
     },
     "hardpoints": [
-      4,
-      3,
-      3,
-      2,
-      2,
-      2,
-      2
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 8,
     "optional": [
@@ -1536,10 +1716,18 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -1597,9 +1785,15 @@
       "fuelTank": 3
     },
     "hardpoints": [
-      2,
-      2,
-      2
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -1663,9 +1857,15 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      3,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -1729,9 +1929,15 @@
       "fuelTank": 2
     },
     "hardpoints": [
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 1,
     "optional": [
@@ -1793,10 +1999,18 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      3,
-      3,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -1865,13 +2079,27 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      3,
-      2,
-      2,
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -1941,10 +2169,18 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 2,
     "optional": [
@@ -2013,11 +2249,21 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      2,
-      2,
-      1,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 2,
     "optional": [
@@ -2087,10 +2333,18 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 3,
     "optional": [
@@ -2151,10 +2405,18 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 2,
     "optional": [
@@ -2216,15 +2478,33 @@
       "fuelTank": 6
     },
     "hardpoints": [
-      3,
-      3,
-      3,
-      3,
-      2,
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 8,
     "optional": [
@@ -2303,11 +2583,21 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      3,
-      3,
-      3,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -2375,12 +2665,24 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      3,
-      3,
-      2,
-      1,
-      1,
-      1
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -2451,12 +2753,24 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      3,
-      2,
-      2,
-      1,
-      1,
-      1
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -2530,13 +2844,27 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      3,
-      2,
-      2,
-      2,
-      1,
-      1,
-      1
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -2610,10 +2938,18 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      3,
-      3,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -2681,11 +3017,21 @@
       "fuelTank": 3
     },
     "hardpoints": [
-      4,
-      3,
-      3,
-      1,
-      1
+      {
+        "size": 4
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 6,
     "optional": [
@@ -2744,12 +3090,24 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      3,
-      3,
-      3,
-      3,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 6,
     "optional": [
@@ -2808,12 +3166,24 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      2,
-      1,
-      1,
-      1,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -2881,12 +3251,24 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      2,
-      2,
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -2957,11 +3339,21 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      2,
-      2,
-      2,
-      1,
-      1
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -3029,12 +3421,24 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      3,
-      3,
-      3,
-      2,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [
@@ -3105,27 +3509,49 @@
       "fuelTank": 7
     },
     "hardpoints": [
-      3,
-      3,
-      2,
-      2,
-      2,
-      2,
-      1,
-      1,
-      1,
-      1
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 6,
     "optional": [
       {
-        "size": 8
+        "size": 8,
+        "restriction": "cargo"
       },
       {
         "size": 8
       },
       {
-        "size": 7
+        "size": 7,
+        "restriction": "cargo"
       },
       {
         "size": 7
@@ -3191,14 +3617,34 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      3,
-      2,
-      2,
-      2,
-      1,
-      1,
-      1,
-      1
+      {
+        "size": 3,
+        "restriction": "mining"
+      },
+      {
+        "size": 2,
+        "restriction": "mining"
+      },
+      {
+        "size": 2,
+        "restriction": "mining"
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 1,
+        "restriction": "mining"
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -3218,10 +3664,12 @@
         "size": 5
       },
       {
-        "size": 5
+        "size": 5,
+        "restriction": "limpetController"
       },
       {
-        "size": 5
+        "size": 5,
+        "restriction": "vesselHangar"
       },
       {
         "size": 4
@@ -3275,13 +3723,27 @@
       "fuelTank": 7
     },
     "hardpoints": [
-      3,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 6,
     "optional": [
@@ -3364,11 +3826,21 @@
       "fuelTank": 4
     },
     "hardpoints": [
-      3,
-      3,
-      3,
-      1,
-      1
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 3
+      },
+      {
+        "size": 1
+      },
+      {
+        "size": 1
+      }
     ],
     "utility": 4,
     "optional": [
@@ -3431,11 +3903,21 @@
       "fuelTank": 5
     },
     "hardpoints": [
-      3,
-      2,
-      2,
-      2,
-      2
+      {
+        "size": 3
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      },
+      {
+        "size": 2
+      }
     ],
     "utility": 4,
     "optional": [

@@ -25,44 +25,56 @@ on a module the options catalogue does not group. The blueprints themselves are 
 present in `BLUEPRINTS` — only the module→group map and the per-group lists are missing,
 so this is a data gap, not a calculation one: `ShipLoadout.applyBlueprint` does not read
 this catalogue at all — it checks the blueprint's own target family, which is a separate
-problem (§4 and §10). Both source registries carry the missing lists (EDSY
+problem (§5 and §11). Both source registries carry the missing lists (EDSY
 `mtype[].blueprints` / `.expeffects`, coriolis `modifications/modules.json`).
 
-### 2. A hardpoint cannot carry a restriction at all — the Type-11's mining mounts
+### 2. The journal's optional-slot numbering is irregular, and `enumerateSlots` is not
 
-**A hull's `hardpoints` is a bare `readonly number[]` of sizes, so there is nowhere to
-say that a mount only takes certain modules.** The Type-11 Prospector needs exactly that:
-four of its eight mounts (1 large, 2 medium, 1 small) are **mining-only**, and the other
-four take ordinary weapons. Their sizes were restored on 2026-08-02 (see
-`data/ships/SOURCES.md`) so builds fit at all, but today `setModule` will happily put a
-plasma accelerator in the large mining mount, and nothing can answer "what may I fit
-here?" for that hull. Coriolis-data carries the rule (`{ "class": 3, "name": "Mining",
-"eligible": { "abl": 1, "ml": 1, … } }`) and Inara shows it in the outfitting list.
+`enumerateSlots` numbers a hull's unrestricted optionals `Slot01_Size7`,
+`Slot02_Size6`, … with no gaps. **Real journals skip numbers on at least eight hulls.**
+EDSY's `ship[…].slotnames`, which is where it reads and writes journal slot names,
+gives the Anaconda `…Slot10_Size4`, **`Slot13_Size2`**, **`Slot14_Size1`**; the Vulture
+`Slot01_Size5`, `Slot02_Size4`, `Slot03_Size2`, **`Slot05_Size1`**, …; the Type-9 and
+Python a **`Slot00_Size8`** first; and the Imperial Cutter's *hardpoints*
+`SmallHardpoint1`, `SmallHardpoint2`, **`SmallHardpoint4`**, `SmallHardpoint5`,
+`SmallHardpoint6`. Asp Explorer, Federal Dropship, Type-7, Type-10 and Beluga are in
+the same list.
 
-Fixing it is a shape change, not a data patch:
+The restricted mounts closed in the 2026-08-04 pass (see `data/ships/SOURCES.md`) fixed
+the *rule* — a restricted slot takes a name of its own and consumes no `SlotNN` number
+— but not this. The consequence is real and one-directional: a build **assembled here**
+on one of those hulls emits slot keys a game journal would not use, so a SLEF export of
+it names slots the game does not have. Import is unaffected, since `parseSlotName`
+reads the size off the name rather than matching a hull's list.
 
-- `ShipSlots.hardpoints` becomes `{ size, restriction? }` entries, mirroring
-  `OptionalSlotSpec` (a breaking change to a published type — or add a parallel
-  `hardpointSpecs` and keep `hardpoints` as sizes).
-- `SlotRestriction` gains `mining` (and see below), `BuildSlot`/`enumerateSlots` carry it
-  through, `parseSlotName` cannot infer it — the journal names these mounts like any
-  other, so only the hull layout knows.
-- `setModule` enforces it, the `schemas/ships` catalogue schema gains the property, and
-  `fixtures/ships/ship-slots.json` pins the Type-11 layout that already spot-checks it.
+The honest fix is a per-hull slot-name override in `ships.jsonc` (an optional
+`slotNames` alongside `optional`, mirroring EDSY's own shape) rather than a cleverer
+numbering rule — the sequences have no derivable pattern. Only EDSY carries them;
+coriolis-data does not model journal names at all, so a second source would have to be
+real journal captures.
 
-**The same gap on optional internals**, where the field exists but the values do not:
-`military` and `planetaryApproachSuite` are the only restrictions modelled, so the
-**Panther Clipper Mk II's two cargo-only optionals** and the Type-11's
-**limpet-controller** and **vessel-hangar** optionals are stored as ordinary slots.
+### 3. Three restricted-mount families the game has that nothing here models
 
-Separately — and by a different mechanism — the three **Mk II Vessel Hangars**
-(`Int_FighterBayMk2_Size{5,6,7}_Class1`) carry no `restrictedToShips`, although
-`data/ships/SOURCES.md` records that they fit only the Caspian Explorer, Panther Clipper
-Mk II and Type-11. That field already exists and is already used this way (the Mk II
-mining controller and `Hpt_MiningToolV2_Fixed_Large` both name `LakonMiner`), so it is a
-missing value, not a missing feature.
+`SlotRestriction` now has six values — `mining` on a hardpoint, and `military`,
+`planetaryApproachSuite`, `cargo`, `limpetController` and `vesselHangar` on an optional.
+Three further families are visible in the sources and deliberately not stored, each for
+its own reason:
 
-### 3. Three stat gaps the 2026-08-02 reconciliation did not close
+- **Passenger-reserved optionals.** The Lynx Highliner's two size-6 and one size-5
+  optionals take passenger cabins only; EDSY names them `Passenger01`..`Passenger03`
+  and reserves them to `{ipc:1}`. Unlike every other restricted family, `PASSENGER` is
+  **not** in EDSY's journal import map and its eligibility check for `ipc` is commented
+  out in `edsy.js`, so the journal name is the one unconfirmed thing about it. Fill it
+  from a real journal `Loadout` for a Lynx; the rest of the mechanism is already in
+  place (`OptionalRestriction` + a `restriction` value + a prefix list).
+- **Mount-type restrictions on a hardpoint.** Nothing here records that a mount is
+  fixed-only, gimballed-only or turret-only; `OutfittingModule.mount` carries the
+  weapon's side of it, but no hull says a mount refuses a turret.
+- **The size-0 utility mount rules.** `utility` is a bare count, so a utility mount
+  cannot carry a restriction either. No hull is known to need one — this is recorded so
+  the omission is visible, not because a case exists.
+
+### 4. Three stat gaps the 2026-08-02 reconciliation did not close
 
 All three were surfaced by that pass and deliberately left rather than guessed. Long-form
 reasoning in `data/ships/SOURCES.md`.
@@ -88,7 +100,7 @@ every sized limpet controller in the family has a real, non-zero mass. Left abse
 than inferred. Fill from a real journal `Loadout` that fits it, or from an outfitting
 screen reading.
 
-### 4. Blueprints cannot be applied to most real builds: base stats are missing
+### 5. Blueprints cannot be applied to most real builds: base stats are missing
 
 `applyBlueprint` refuses a recipe when the module record does not carry every base stat
 the recipe modifies — incomplete engineering is rejected rather than stored half-applied.
@@ -127,7 +139,7 @@ not a sourced base value. No corpus build hits it today.
 This is why `fixtures/ships/builds/` pins its metrics **pre-engineering**: applying what
 those builds declare is not possible today.
 
-### 5. Four corrosion-resistant cargo racks have no price at all
+### 6. Four corrosion-resistant cargo racks have no price at all
 
 `Int_CorrosionProofCargoRack_Size{1_Class2,5_Class1,6_Class1}` read `cost: 0` in
 coriolis-data itself — a gap upstream, not the duplicate-symbol defect fixed in this
@@ -141,7 +153,7 @@ they are pinned in `fixtures/ships/module-stats.json` under `unpriced`. Since cr
 quoted at retail, a build carrying one of these exports no `ModulesValue` or `Rebuy` at
 all until real prices are sourced from EDSY or Inara.
 
-### 6. Two experimental effects exist in the game that no public dataset carries
+### 7. Two experimental effects exist in the game that no public dataset carries
 
 `special_guardian_module_resistance` ("Anti-Guardian Field Resistance") and
 `special_plasma_rounds` ("Plasma Conversion") are real effect identities — the
@@ -157,7 +169,7 @@ empty `modifiers` would be worse than the gap — a consumer cannot tell "no mod
 from "modifiers unknown". Fill them from a real `EngineerCraft` journal capture that
 applies either effect.
 
-### 7. Module identities exist that no outfitting registry lists
+### 8. Module identities exist that no outfitting registry lists
 
 Reconciling the catalogue against the full set of module identities the game recognises
 surfaced 535 this catalogue does not carry. **None of them appear in EDCD FDevIDs `outfitting.csv`**, so
@@ -175,14 +187,14 @@ absence there is the evidence they are not purchasable.
 
 ## Ships — test coverage
 
-### 8. No external ground truth for shields, armour or weapon DPS
+### 9. No external ground truth for shields, armour or weapon DPS
 
 A journal `Loadout` event never reports them, so the corpus validates mass, capacities,
 jump range and credits against Frontier's own figures but checks the defence and weapon
 metrics only against our own maths. An EDSY or Coriolis reading of a weaponed build
 would close this — it is the largest remaining hole in the parity story.
 
-### 9. Only two builds in the corpus carry a source's own figures
+### 10. Only two builds in the corpus carry a source's own figures
 
 `fixtures/ships/builds/` now covers every hull with 2–5 real community builds,
 including cargo-heavy ones (Type-9, Cutter and Panther trade fits), so breadth is no
@@ -198,7 +210,7 @@ states no licence (`NOASSERTION`), so it was not committed.
 
 ## Ships — API
 
-### 10. `Misc_LightWeight` is rejected on the modules that most often carry it
+### 11. `Misc_LightWeight` is rejected on the modules that most often carry it
 
 `applyBlueprint` maps a blueprint to a module *family* and refuses a mismatch. The
 Lightweight recipe used by life support, limpet controllers and AFMUs is
@@ -213,13 +225,13 @@ AFMUs, collector controllers, fuel scoops and life support (19), as does
 `Misc_HeatSinkCapacity` on the Caustic Sink Launcher (2 — the launcher's engineering
 target is `miscellaneous`, not `heatSink`, so the ordinary heat sink launcher is fine and
 this one is not), and `Misc_Reinforced`, `HatchBreakerLimpet_LightWeight` and
-`Sensor_LongRange` on a scanner (1 each). Together with §4 that is 481 of 1902 entries
+`Sensor_LongRange` on a scanner (1 each). Together with §5 that is 481 of 1902 entries
 rejected, across 128 of the 181 builds. The mapping in `engineering-compatibility.ts`
 needs the wider target list; note `LifeSupport_LightWeight` and
 `CollectionLimpet_LightWeight` also exist as separate recipe ids, so which id a build
 carries depends on where it was authored.
 
-### 11. Journal-only fields do not survive an import
+### 12. Journal-only fields do not survive an import
 
 `LoadoutEvent` omits fields real journals carry: `timestamp`, `ShipID`, `HullHealth`,
 `Hot`, module `AmmoInClip` / `AmmoInHopper`, and engineering `Engineer` / `EngineerID` /
@@ -230,7 +242,7 @@ journal → `ShipLoadout` → SLEF round trip loses them.
 Deliberately out of scope when SLEF export was added; the additions would all be
 optional and backwards-compatible.
 
-### 12. An export cannot report what a build actually cost
+### 13. An export cannot report what a build actually cost
 
 Credits are quoted at retail, so a source's own purchase record — the station discount
 it was bought at, and any per-module `Value` — is dropped on the way out. That is the
@@ -239,7 +251,7 @@ nowhere to get it. If that turns out to be wanted, the honest shape is a separat
 accessor for the source's stated figures rather than putting them back in the export,
 where they would be indistinguishable from list prices.
 
-### 13. The cosmetic slot families are a hand-maintained list
+### 14. The cosmetic slot families are a hand-maintained list
 
 `COSMETIC_SLOT_PATTERNS` in `typescript/src/ships/ship-loadout.ts` names the journal slot
 families that hold cosmetics rather than outfitting — cockpit, paint, decals, nameplates,
@@ -255,7 +267,7 @@ The cost is that a cosmetic family Frontier adds later takes `ModulesValue`,
 extended. The Krait Phantom capture exercises 15 of the families; the rest rest on the
 journal documentation. Worth re-checking whenever a capture joins the corpus.
 
-### 14. `modulesValue` and `rebuy` getters die on a no-op refit
+### 15. `modulesValue` and `rebuy` getters die on a no-op refit
 
 `#adjustImportedFigures` deletes both from `#top` on any `setModule`, including
 re-fitting the identical module, so the getters that report the *source's* figures start

@@ -1,6 +1,74 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, plus a module-stat reconciliation on 2026-08-02 (see the revision below). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, plus a module-stat reconciliation on 2026-08-02 and a slot-restriction pass on 2026-08-04 (see the revisions below). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+
+**Revision 2026-08-04 (UTC) — a restricted mount is now stored as one, and the journal
+names it by.** A hull's `hardpoints` was a bare array of sizes, so there was nowhere to
+record that four of the Type-11 Prospector's eight mounts take mining tools and nothing
+else; `optional` had the field but only two of its values. Both are now arrays of
+`{ size, restriction? }`, and `restriction` takes five values: `mining` on a hardpoint,
+and `military`, `planetaryApproachSuite`, `cargo`, `limpetController` or `vesselHangar`
+on an optional.
+
+**No value here was inferred from one source.** Both registries this domain already
+uses carry the rule, at the revisions already recorded above — nothing new was
+acquired, so no new snapshot metadata applies:
+
+- [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) **commit
+  `0db9234b5b9ce8c939ea84133d7ce336eea88e27`** writes a restricted mount as an object
+  rather than a bare size: `ships/type_11_prospector.json` has
+  `{ "class": 3, "name": "Mining", "eligible": { "abl": 1, "ml": 1, "mvr": 1, "pwa": 1,
+  "scl": 1, "sdm": 1 } }` for the large mount and `{ "class": 5, "name": "Limpets", … }`
+  / `{ "class": 5, "name": "Fighter", "eligible": { "fh": 1 } }` for two of its
+  optionals, and `ships/panther_clipper.json` has `{ "class": 8, "name": "Cargo",
+  "eligible": { "cr": 1, "crl": 1, "ft": 1 } }` twice.
+- [EDSY](https://github.com/taleden/EDSY) `eddb.js` (the same file already used on
+  2026-08-02: internal `db 20260428`, SHA-256
+  `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`) carries the same
+  rule as a per-slot `reserved` map — `{hmtl:1,hmtm:1}` on the Type-11's mounts 0, 1, 2
+  and 4, `{iclc,idlc,iftlc,ihblc,imlc,iplc,inlc,irlc,islc}` and `{ifh:1}` on its two
+  restricted optionals, `{cft:1,icr:1}` on the Panther's two.
+
+The two agree mount-for-mount. They differ on exactly one entry: coriolis lists `pwa`
+(the Pulse Wave Analyser) as eligible for a mining hardpoint. It is a **utility**
+fitting in both registries and in this catalogue, and no utility module fits a
+hardpoint of any kind, so the difference is a grouping artefact and is not stored.
+Coriolis's `sdm` group and EDSY's `hmtm` both include the Sub-Surface Extraction
+Missile (`Hpt_Human_Extraction_Fixed_Medium`) alongside the displacement missile it
+varies, so it counts as a mining tool despite its unrelated symbol.
+
+**The journal names a restricted mount differently, which the earlier note assumed it
+did not.** EDSY's `ship[…].slotnames` gives the Type-11 `LargeMiningHardpoint1`,
+`MediumMiningHardpoint1`, `MediumMiningHardpoint2`, `MediumHardpoint3`,
+`SmallMiningHardpoint1`, `SmallHardpoint2..4` and, for its internals,
+`LimpetController01` and `FighterBay01`; the Panther Clipper Mk II gets `Cargo01` and
+`Cargo02`. These are journal names, not EDSY's own: `edsy.js` reads them in
+`Build.fromJournal()` and writes them in `exportJournal()`, and its journal import map
+lists `HUGEMININGHARDPOINT`, `LARGEMININGHARDPOINT`, `MEDIUMMININGHARDPOINT`,
+`SMALLMININGHARDPOINT`, `CARGO`, `LIMPETCONTROLLER` and `FIGHTERBAY` as slot-name
+prefixes it must recognise. Two numbering rules follow from the lists, and both are
+reproduced by `enumerateSlots`:
+
+- a restricted **hardpoint** shares the per-size-class numbering with the unrestricted
+  ones and only takes an infix, so the Type-11's four medium mounts run
+  `MediumMiningHardpoint1`, `MediumMiningHardpoint2`, `MediumHardpoint3`;
+- a restricted **optional** takes a name and number of its own and does **not** consume
+  a `SlotNN` number, exactly as `Military01` and `PlanetaryApproachSuite` already did —
+  so the Panther's column runs `Cargo01`, `Slot01_Size8`, `Cargo02`, `Slot02_Size7`, …
+
+Both hulls' full enumerated key lists are pinned in `fixtures/ships/ship-slots.json`
+under `keys`, and the two hulls' layouts under `spot`, so a port produces the same
+vocabulary. The six corpus builds on these hulls
+(`fixtures/ships/builds/lakonminer-mining*.json`, `panthermkii-trade*.json`) were
+re-slotted onto the corrected keys; every one of them already had its modules in
+mounts the restrictions allow, so no build's fit changed and no pinned metric moved.
+
+Alongside this, the three **Mk II Vessel Hangars** gained the
+`restrictedToShips: ["Explorer_NX", "PantherMkII", "LakonMiner"]` this file had
+recorded in prose since the Operations pass. That is a missing value, not a new
+feature — `Int_MultiDroneControl_MiningV2_Size5_Class5` already carries the field the
+same way. EDSY has no record for the Mk II bays at all, so their hull restriction still
+rests on Frontier's update notes and Inara, as it did when the records were added.
 
 **Revision 2026-08-02 (UTC) — every module now carries stats, and 40 records were
 corrected.** The four module catalogues were reconciled against
@@ -247,9 +315,10 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
 - **Slots derivation:** coriolis's fixed-order `slots.standard` seven-array becomes
   the seven named `core` sizes (power plant, thrusters, frame shift drive, life
   support, power distributor, sensors, fuel tank); `slots.hardpoints` splits into
-  `hardpoints` (the non-zero weapon-mount sizes) and `utility` (the count of zero
-  entries); `slots.internal` becomes `optional`, each entry a `{ size }` with an
-  optional `restriction` ("military" or "planetaryApproachSuite"). Coriolis's per-hull
+  `hardpoints` (the non-zero weapon mounts) and `utility` (the count of zero
+  entries); `slots.internal` becomes `optional`. A `hardpoints` or `optional` entry is
+  a `{ size }` with an optional `restriction` — see the 2026-08-04 revision below for
+  the five restriction values and where each comes from. Coriolis's per-hull
   `bulkheads` are **not** kept on the hull: they are joined onto that hull's armour
   modules instead (see "Modules"), because armour is a module and the catalogue keeps a
   module's stats with the module. **Slot keys** are journal-compatible
@@ -270,9 +339,10 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   `ship[…].slots.hardpoint = [3,2,2,2,1,1,1,1]`) and
   [Inara's ship page](https://inara.cz/elite/ship/68/), read 2026-08-02, listing 1 Large
   Mining, 1 Medium, 2 Medium Mining, 3 Small and 1 Small Mining. The four unrestricted
-  mounts are exactly the `[2, 1, 1, 1]` the record already had. **The mining restriction
-  itself is not stored** — the slot schema has no hardpoint restriction — so the
-  catalogue says only that the mounts exist and how big they are; see `TODO.md`.
+  mounts are exactly the `[2, 1, 1, 1]` the record already had. The mining restriction
+  itself was **not** stored at the time — the slot schema had no hardpoint restriction —
+  so the catalogue said only that the mounts exist and how big they are. Closed by the
+  2026-08-04 revision below.
 - **Lynx Highliner (`MediumTransport01`) — from EDSY + Frontier's Lynx update notes:**
   the Lynx has no coriolis hull entry, so its stats and slot layout are sourced instead
   from EDSY's ship data and Frontier's Lynx update notes (hull mass 260 t, 285/350 m/s,
@@ -283,7 +353,9 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   the static catalogue does not expose are omitted rather than invented: `masslock`,
   `heatCapacity`, `pipSpeed`, acceleration, and the min-pitch / boost-energy figures.
   The two size-6 and one size-5 passenger-reserved optionals are stored as plain
-  optional slots — the slot schema has no passenger-reservation restriction.
+  optional slots: the schema now carries slot restrictions (2026-08-04, below), but
+  no passenger value, because the journal names for those three mounts are the one
+  restricted family EDSY's own import map does not claim — see `TODO.md`.
 
 ## Modules (outfitting)
 
@@ -448,7 +520,9 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     **Fighter Hangar** records were renamed to **Mk I Vessel Hangar** (same symbols and
     stats; the Operations update renamed them and let them deploy the Nomad). The Mk II
     bays' restriction to the Caspian Explorer / Panther Clipper Mk II / Type-11
-    Prospector is documented but not stored — those hull symbols are not in the registry.
+    Prospector was documented but not stored; it is now
+    `restrictedToShips: ["Explorer_NX", "PantherMkII", "LakonMiner"]` on all three
+    records (2026-08-04, below) — the hull symbols the registry does carry.
   - **Mk II passenger cabins** (`Int_MkII_PassengerCabin_Size{2..6}_Class{1,2}`) already
     existed as identity records; their mass was added (2.5/5/10/20/40 t by size) and the
     two size-6 records' `class` was corrected from 5 to 6.

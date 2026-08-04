@@ -318,6 +318,85 @@ test('a military slot only takes military-eligible modules', () => {
     }
 });
 
+test("the Type-11's mining hardpoints only take mining tools", () => {
+    const miner = ShipLoadout.empty('LakonMiner');
+    // Every mining family the mounts accept, at a size each mount can hold.
+    for (const symbol of [
+        'Hpt_MiningToolV2_Fixed_Large',
+        'Hpt_MiningLaser_Fixed_Small_Advanced',
+        'Hpt_Mining_AbrBlstr_Fixed_Small',
+        'Hpt_Mining_SubSurfDispMisle_Fixed_Small',
+    ]) {
+        assert.doesNotThrow(
+            () => miner.setModule('LargeMiningHardpoint1', mod(symbol, HARDPOINT_MODULES)),
+            symbol,
+        );
+    }
+    // An ordinary weapon of the right size is turned away.
+    const plasma = mod('Hpt_PlasmaAccelerator_Fixed_Large', HARDPOINT_MODULES);
+    assert.throws(() => miner.setModule('LargeMiningHardpoint1', plasma), /only takes a mining/);
+    // ...and fits the unrestricted mounts, which take mining tools too.
+    const cannon = mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES);
+    assert.doesNotThrow(() => miner.setModule('MediumHardpoint3', cannon));
+    assert.doesNotThrow(() =>
+        miner.setModule('MediumHardpoint3', mod('Hpt_MiningLaser_Fixed_Medium', HARDPOINT_MODULES)),
+    );
+    // The mounts are listable, so an outfitting UI can answer "what fits here?".
+    const forMining = miner.modulesForSlot('MediumMiningHardpoint1', HARDPOINT_MODULES);
+    assert.ok(forMining.length > 0);
+    assert.ok(
+        forMining.every((m) => /^hpt_(mining|human_extraction)/.test(m.symbol.toLowerCase())),
+        forMining.map((m) => m.symbol).join(', '),
+    );
+});
+
+test('the restricted optionals take their own family and nothing else', () => {
+    const miner = ShipLoadout.empty('LakonMiner');
+    assert.doesNotThrow(() =>
+        miner.setModule(
+            'LimpetController01',
+            mod('Int_MultiDroneControl_MiningV2_Size5_Class5', INTERNAL_MODULES),
+        ),
+    );
+    assert.doesNotThrow(() =>
+        miner.setModule('FighterBay01', mod('Int_FighterBay_Size5_Class1', INTERNAL_MODULES)),
+    );
+    const rack = mod('Int_CargoRack_Size5_Class1', INTERNAL_MODULES);
+    assert.throws(() => miner.setModule('LimpetController01', rack), /only takes a limpet/);
+    assert.throws(() => miner.setModule('FighterBay01', rack), /only takes a vessel hangar/);
+
+    const panther = ShipLoadout.empty('PantherMkII');
+    assert.doesNotThrow(() =>
+        panther.setModule('Cargo01', mod('Int_LargeCargoRack_Size8_class1', INTERNAL_MODULES)),
+    );
+    // A fuel tank counts as cargo here, as it does in every optional slot.
+    assert.doesNotThrow(() => panther.setModule('Cargo02', mod('Int_FuelTank_Size7_Class3')));
+    const shield = mod('Int_ShieldGenerator_Size8_Class3', INTERNAL_MODULES);
+    assert.throws(() => panther.setModule('Cargo01', shield), /only takes a cargo rack/);
+});
+
+test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => {
+    const bay = mod('Int_FighterBayMk2_Size5_Class1', INTERNAL_MODULES);
+    assert.doesNotThrow(() => ShipLoadout.empty('LakonMiner').setModule('FighterBay01', bay));
+    assert.doesNotThrow(() => ShipLoadout.empty('Explorer_NX').setModule('Slot04_Size5', bay));
+    assert.doesNotThrow(() => ShipLoadout.empty('PantherMkII').setModule('Slot06_Size5', bay));
+    assert.throws(
+        () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', bay),
+        /restricted to Explorer_NX, PantherMkII, LakonMiner/,
+    );
+});
+
+test('a restricted mount reports a human-readable name', () => {
+    const miner = ShipLoadout.empty('LakonMiner');
+    const named = (key: string) => miner.slots().find((s) => s.key === key)?.name;
+    assert.equal(named('LargeMiningHardpoint1'), 'Large Mining Hardpoint 1');
+    assert.equal(named('MediumHardpoint3'), 'Medium Hardpoint 3');
+    assert.equal(named('LimpetController01'), 'Limpet Controller Slot 1');
+    assert.equal(named('FighterBay01'), 'Vessel Hangar Slot 1');
+    const panther = ShipLoadout.empty('PantherMkII');
+    assert.equal(panther.slots().find((s) => s.key === 'Cargo02')?.name, 'Cargo Slot 2');
+});
+
 test('setModule throws a clear error when handed an undefined module', () => {
     const conda = ShipLoadout.empty('Anaconda');
     // The classic `getModuleBySymbol('typo', CAT)!` miss.

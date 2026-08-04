@@ -16,7 +16,7 @@
 
 import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
-import type { CoreSlots, OptionalSlotSpec, ShipSlots } from './slots.js';
+import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from './slots.js';
 
 /**
  * One ship hull — its **identity, stats and slot layout** in one record.
@@ -99,8 +99,12 @@ export interface Ship {
 
     /** The seven core-internal mount sizes. */
     readonly core?: CoreSlots;
-    /** Weapon-hardpoint sizes, largest first (1 Small – 4 Huge). */
-    readonly hardpoints?: readonly number[];
+    /**
+     * Weapon hardpoints, largest first (1 Small – 4 Huge). A mount carries a
+     * `restriction` only when it takes one family of weapons and nothing else — on
+     * the Type-11 Prospector's four mining mounts alone.
+     */
+    readonly hardpoints?: readonly HardpointSlotSpec[];
     /** Number of tiny utility mounts. */
     readonly utility?: number;
     /** Optional-internal mounts, largest first. */
@@ -168,7 +172,10 @@ export function getShipByName(name: string): Ship | null {
  * `slots()` / `coreModules()` handles.
  * @example
  * ```ts
- * getShipSlots('anaconda')?.hardpoints; // -> [4, 3, 3, 3, 2, 2, 1, 1]
+ * getShipSlots('anaconda')?.hardpoints;
+ * // -> [{ size: 4 }, { size: 3 }, { size: 3 }, { size: 3 }, { size: 2 }, ...]
+ * getShipSlots('LakonMiner')?.hardpoints[0];
+ * // -> { size: 3, restriction: 'mining' } — the Type-11's large mining mount
  * ```
  */
 export function getShipSlots(symbol: string): ShipSlots | null {

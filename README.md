@@ -449,7 +449,8 @@ import {
 
 getShipBySymbol("empire_trader")?.name; // -> 'Imperial Clipper' (lookups accept either casing)
 getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the record
-getShipSlots("anaconda")?.hardpoints; // -> [4, 3, 3, 3, 2, 2, 1, 1] (slot layout, ready for the build editor)
+getShipSlots("anaconda")?.hardpoints; // -> [{ size: 4 }, { size: 3 }, ...] (slot layout, ready for the build editor)
+getShipSlots("LakonMiner")?.hardpoints[0]; // -> { size: 3, restriction: 'mining' } — a restricted mount
 getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
 SHIPS.length; // -> 48
 ```
@@ -840,11 +841,29 @@ fsd.clearEngineering(); // back to base stats; fsd.remove() empties the slot
 ```
 
 `setModule` (and `slot.fit`) validates the fit (module size ≤ slot size, right category,
-military / planetary-approach and hull restrictions) and throws otherwise. **Slot keys
+slot and hull restrictions) and throws otherwise. **Slot keys
 are the journal names** (`FrameShiftDrive`, `MainEngines` for thrusters, `Radar` for
 sensors, `HugeHardpoint1`, `Slot01_Size7`, `Military01`, …), so a SLEF-loaded build and
 one assembled here share one vocabulary — enumerate them with `slots()` rather than
 guessing. They are matched **exactly**, in the game's spelling.
+
+**Some mounts take one family of modules and nothing else**, and the journal gives each
+such mount a name of its own — so `slot.restriction` says what it takes and
+`modulesForSlot` lists exactly that. Every hull has `Military01…` (reinforcement
+packages and shield cell banks) and `PlanetaryApproachSuite`; the two newest hulls add
+more. The Type-11 Prospector's `LargeMiningHardpoint1`, `MediumMiningHardpoint1`,
+`MediumMiningHardpoint2` and `SmallMiningHardpoint1` take **mining tools only** (its
+other four mounts, `MediumHardpoint3` and `SmallHardpoint2…4`, take any weapon), while
+its `LimpetController01` and `FighterBay01` take limpet controllers and vessel hangars;
+the Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks.
+
+```ts
+const miner = ShipLoadout.empty("LakonMiner");
+miner.hardpoints().map((s) => [s.key, s.restriction]);
+// -> [['LargeMiningHardpoint1', 'mining'], ..., ['MediumHardpoint3', undefined], ...]
+miner.modulesForSlot("LargeMiningHardpoint1", HARDPOINT_MODULES); // mining tools only
+miner.setModule("LargeMiningHardpoint1", plasmaAccelerator); // throws: slot only takes a mining tool
+```
 
 Careful with the two names a _core_ mount has: `slot.key` is the journal slot
 (`MainEngines`, `Radar`) and is what every `slotKey` argument takes, while `slot.core` is
