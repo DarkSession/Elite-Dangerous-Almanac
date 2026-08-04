@@ -28,37 +28,58 @@ this catalogue at all — it checks the blueprint's own target family, which is 
 problem (§5 and §11). Both source registries carry the missing lists (EDSY
 `mtype[].blueprints` / `.expeffects`, coriolis `modifications/modules.json`).
 
-### 2. The journal's optional-slot numbering is irregular, and `enumerateSlots` is not
+### 2. Eleven hulls name their journal slots in ways `enumerateSlots` does not
 
-`enumerateSlots` numbers a hull's unrestricted optionals `Slot01_Size7`,
-`Slot02_Size6`, … with no gaps. **Real journals skip numbers on at least eight hulls.**
-EDSY's `ship[…].slotnames`, which is where it reads and writes journal slot names,
-gives the Anaconda `…Slot10_Size4`, **`Slot13_Size2`**, **`Slot14_Size1`**; the Vulture
-`Slot01_Size5`, `Slot02_Size4`, `Slot03_Size2`, **`Slot05_Size1`**, …; the Type-9 and
-Python a **`Slot00_Size8`** first; and the Imperial Cutter's *hardpoints*
-`SmallHardpoint1`, `SmallHardpoint2`, **`SmallHardpoint4`**, `SmallHardpoint5`,
-`SmallHardpoint6`. Asp Explorer, Federal Dropship, Type-7, Type-10 and Beluga are in
-the same list.
+`enumerateSlots` numbers a hull's unrestricted optionals `Slot01_SizeN`,
+`Slot02_SizeN`, … with no gaps, and its hardpoints `1, 2, 3` within each size class.
+**Neither rule is what the game does on 11 hulls.** EDSY's `ship[…].slotnames` — the
+table `edsy.js` reads journal slot names with (`Build.fromJournal`) and writes them back
+from (`exportJournal`) — carries an override for exactly **13** hulls. The 2026-08-04
+pass reproduces two of them (Panther Clipper Mk II, Type-11 Prospector) exactly; the
+other eleven diverge, every one of them a naming difference alone:
+
+| Hull | EDSY's journal names | `enumerateSlots` |
+| --- | --- | --- |
+| Anaconda | `…Slot10_Size4`, **`Slot13_Size2`**, **`Slot14_Size1`** | `…Slot11_Size2`, `Slot12_Size1` |
+| Type-9 Heavy | **`Slot00_Size8`** first, then `Slot01`…`Slot08`, **`Slot11_Size2`**, **`Slot12_Size1`** | `Slot01`…`Slot11`, 1-based, no gap |
+| Type-10 Defender | `Slot01`…`Slot08`, **`Slot11_Size2`**, **`Slot12_Size1`** | `Slot09_Size2`, `Slot10_Size1` |
+| Federal Dropship | `…Slot06_Size3`, **`Slot09_Size2`**, **`Slot10_Size1`** | `Slot07_Size2`, `Slot08_Size1` |
+| Vulture | `Slot01`, `Slot02`, `Slot03`, **`Slot05`**, `Slot06`, `Slot07`, `Slot08` | `Slot01`…`Slot07` |
+| Type-7 Transporter | `…Slot08_Size2`, `Slot09_Size2`, **`Slot09_Size1`** — the number 09 twice | `Slot09_Size2`, `Slot10_Size1` |
+| Keelback | `Slot03_Size3` on a slot that is size **4** | `Slot03_Size4` |
+| Asp Scout | `Slot01_Size4` on a slot that is size **5** | `Slot01_Size5` |
+| **Type-8 Transporter** | *hardpoints* `…SmallHardpoint2`, **`SmallHardpoint4`**, `SmallHardpoint5`, `SmallHardpoint6` | `SmallHardpoint3`, `4`, `5` |
+| **Caspian Explorer** | *hardpoints* `LargeHardpoint1`, **`MediumHardpoint6`**, **`MediumHardpoint5`**, `MediumHardpoint1`…`4` — out of order, not merely gapped | `MediumHardpoint1`…`6` in layout order |
+| Lynx Highliner | `Slot01_Size6`, **`Passenger01`…`03`**, `Slot02_Size5`, … (§3) | `Slot01`…`Slot10` |
+
+Two things this is **not**. It is not a size disagreement: our `hardpoints` and
+`optional` sizes match EDSY's own `slots` arrays for all 13 hulls, so only the names
+differ. And on the Keelback, Asp Scout and Type-7 the journal's own `_SizeN` suffix
+misreports the slot — `edsy.js` compensates for exactly that, taking the greater of the
+name's size and the fitted module's class, which is why those rows show a size in the
+name that the hull does not have.
 
 The restricted mounts closed in the 2026-08-04 pass (see `data/ships/SOURCES.md`) fixed
-the *rule* — a restricted slot takes a name of its own and consumes no `SlotNN` number
-— but not this. The consequence is real and one-directional: a build **assembled here**
-on one of those hulls emits slot keys a game journal would not use, so a SLEF export of
-it names slots the game does not have. Import is unaffected, since `parseSlotName`
-reads the size off the name rather than matching a hull's list.
+the *rule* — a restricted mount takes a name of its own and consumes no `SlotNN` number
+— but not this. The consequence is one-directional: a build **assembled here** on one of
+those hulls emits slot keys a game journal would not use, so a SLEF export of it names
+slots the game does not have. Import is unaffected, since `parseSlotName` reads kind and
+size off the name rather than matching a hull's list. The Caspian Explorer is the worst
+case, because its keys are not merely renumbered — a build assembled here puts a weapon
+in a *different physical mount* than the same key would in game.
 
 The honest fix is a per-hull slot-name override in `ships.jsonc` (an optional
-`slotNames` alongside `optional`, mirroring EDSY's own shape) rather than a cleverer
-numbering rule — the sequences have no derivable pattern. Only EDSY carries them;
-coriolis-data does not model journal names at all, so a second source would have to be
-real journal captures.
+`slotNames` alongside `hardpoints`/`optional`, mirroring EDSY's own shape) rather than a
+cleverer numbering rule — the sequences have no derivable pattern. Only EDSY carries
+them; coriolis-data does not model journal names at all, so a second source would have
+to be real journal captures.
 
-### 3. Three restricted-mount families the game has that nothing here models
+### 3. Four restricted-mount rules the game has that nothing here models
 
 `SlotRestriction` now has six values — `mining` on a hardpoint, and `military`,
 `planetaryApproachSuite`, `cargo`, `limpetController` and `vesselHangar` on an optional.
-Three further families are visible in the sources and deliberately not stored, each for
-its own reason:
+Four further rules are visible in the sources and deliberately not stored, each for its
+own reason:
 
 - **Passenger-reserved optionals.** The Lynx Highliner's two size-6 and one size-5
   optionals take passenger cabins only; EDSY names them `Passenger01`..`Passenger03`
@@ -67,6 +88,19 @@ its own reason:
   out in `edsy.js`, so the journal name is the one unconfirmed thing about it. Fill it
   from a real journal `Loadout` for a Lynx; the rest of the mechanism is already in
   place (`OptionalRestriction` + a `restriction` value + a prefix list).
+- **The restriction's other half: a module that fits *only* a restricted mount.** The
+  planetary approach suite is the one module modelled this way (`setModule` refuses it
+  in any other slot), but the sources give two more. EDSY reserves
+  `Int_LargeCargoRack_Size7_Class1` and `_Size8_Class1` (Mk II Cargo Rack) to ship 63,
+  the Panther Clipper Mk II, and `edsy.js` refuses any reserved `icr` outside a slot
+  named `CARGO*`; coriolis-data carries the same as `"restriction": "Cargo"` on the
+  module and describes it as a "Panther Clipper storage rack". The Mk II Mining
+  Multi-Limpet Controller is the same shape against `LIMPETCONTROLLER*`. Today
+  `ShipLoadout.empty('Type9').setModule('Slot01_Size8', mkIICargoRack)` succeeds and
+  should not. The right fix is a module-side field naming the slot restriction a module
+  requires — **not** `restrictedToShips: ["PantherMkII"]`, which encodes the weaker rule
+  and would still let the rack into the Panther's *unrestricted* size-8 mount. Left
+  whole rather than half-done.
 - **Mount-type restrictions on a hardpoint.** Nothing here records that a mount is
   fixed-only, gimballed-only or turret-only; `OutfittingModule.mount` carries the
   weapon's side of it, but no hull says a mount refuses a turret.

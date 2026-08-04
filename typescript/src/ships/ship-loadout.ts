@@ -279,7 +279,8 @@ const MINING_PREFIXES: readonly string[] = [
 
 /**
  * Optional-internal groups a **cargo** slot accepts (symbol prefixes) — the Panther
- * Clipper Mk II's two largest optionals. A fuel tank counts, as it does everywhere.
+ * Clipper Mk II's `Cargo01` and `Cargo02`, which are its first size-8 and first size-7
+ * mounts rather than its two largest. A fuel tank counts, as it does everywhere.
  */
 const CARGO_PREFIXES: readonly string[] = [
     'int_cargorack',

@@ -17,8 +17,9 @@
  * every hull. A `hardpoints` or `optional` mount is `{ size }`, plus a
  * `restriction` when the mount only takes one family of modules — the Type-11
  * Prospector's four mining hardpoints and its limpet-controller and vessel-hangar
- * optionals, the Panther Clipper Mk II's two cargo-only optionals, and the military
- * and planetary-approach-suite mounts every hull has.
+ * optionals, the Panther Clipper Mk II's two cargo-only optionals, the military
+ * mounts 16 hulls have, and the planetary-approach-suite mount all but the Lynx
+ * Highliner has.
  *
  * A hull's armour options are modules like any other: they live in
  * `modules-core.jsonc`, keyed to the hull by their `ship` field. Most come from coriolis-data; the Lynx Highliner

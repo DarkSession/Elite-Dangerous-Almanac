@@ -469,5 +469,126 @@
       "PlanetaryApproachSuite",
       "CargoHatch"
     ]
-  }
+  },
+  "restrictions": [
+    {
+      "ship": "LakonMiner",
+      "slot": "LargeMiningHardpoint1",
+      "restriction": "mining",
+      "accepts": [
+        "Hpt_MiningToolV2_Fixed_Large",
+        "Hpt_MiningLaser_Fixed_Medium",
+        "Hpt_MiningLaser_Fixed_Small_Advanced",
+        "Hpt_Mining_AbrBlstr_Turret_Small",
+        "Hpt_Mining_SeismChrgWarhd_Turret_Medium",
+        "Hpt_Mining_SubSurfDispMisle_Fixed_Medium"
+      ],
+      "rejects": [
+        "Hpt_PlasmaAccelerator_Fixed_Large",
+        "Hpt_MultiCannon_Fixed_Medium"
+      ]
+    },
+    {
+      "ship": "LakonMiner",
+      "slot": "MediumMiningHardpoint1",
+      "restriction": "mining",
+      "accepts": [
+        "Hpt_Human_Extraction_Fixed_Medium",
+        "Hpt_MiningLaser_Fixed_Medium"
+      ],
+      "rejects": [
+        "Hpt_BeamLaser_Gimbal_Medium"
+      ]
+    },
+    {
+      "ship": "LakonMiner",
+      "slot": "MediumHardpoint3",
+      "restriction": null,
+      "accepts": [
+        "Hpt_BeamLaser_Gimbal_Medium",
+        "Hpt_MiningLaser_Fixed_Medium",
+        "Hpt_Human_Extraction_Fixed_Medium"
+      ],
+      "rejects": []
+    },
+    {
+      "ship": "LakonMiner",
+      "slot": "LimpetController01",
+      "restriction": "limpetController",
+      "accepts": [
+        "Int_DroneControl_Collection_Size5_Class5",
+        "Int_MultiDroneControl_MiningV2_Size5_Class5",
+        "Int_DroneControl_UnkVesselResearch"
+      ],
+      "rejects": [
+        "Int_CargoRack_Size5_Class1",
+        "Int_FuelScoop_Size5_Class5"
+      ]
+    },
+    {
+      "ship": "LakonMiner",
+      "slot": "FighterBay01",
+      "restriction": "vesselHangar",
+      "accepts": [
+        "Int_FighterBay_Size5_Class1",
+        "Int_FighterBayMk2_Size5_Class1"
+      ],
+      "rejects": [
+        "Int_CargoRack_Size5_Class1",
+        "Int_DroneControl_Collection_Size5_Class5"
+      ]
+    },
+    {
+      "ship": "PantherMkII",
+      "slot": "Cargo01",
+      "restriction": "cargo",
+      "accepts": [
+        "Int_CargoRack_Size8_Class1",
+        "Int_LargeCargoRack_Size8_class1",
+        "Int_CorrosionProofCargoRack_Size6_Class1",
+        "Int_FuelTank_Size8_Class3"
+      ],
+      "rejects": [
+        "Int_ShieldGenerator_Size8_Class3",
+        "Int_Refinery_Size4_Class5"
+      ]
+    },
+    {
+      "ship": "Anaconda",
+      "slot": "Military01",
+      "restriction": "military",
+      "accepts": [
+        "Int_HullReinforcement_Size5_Class2",
+        "Int_ShieldCellBank_Size5_Class5",
+        "Int_GuardianHullReinforcement_Size5_Class2",
+        "Int_ModuleReinforcement_Size5_Class2"
+      ],
+      "rejects": [
+        "Int_FuelScoop_Size5_Class5",
+        "Int_CargoRack_Size5_Class1"
+      ]
+    },
+    {
+      "ship": "Anaconda",
+      "slot": "PlanetaryApproachSuite",
+      "restriction": "planetaryApproachSuite",
+      "accepts": [
+        "Int_PlanetApproachSuite"
+      ],
+      "rejects": [
+        "Int_CargoRack_Size1_Class1"
+      ]
+    },
+    {
+      "ship": "Anaconda",
+      "slot": "Slot12_Size1",
+      "restriction": null,
+      "accepts": [
+        "Int_CargoRack_Size1_Class1"
+      ],
+      "rejects": [
+        "Int_PlanetApproachSuite"
+      ]
+    }
+  ]
 }

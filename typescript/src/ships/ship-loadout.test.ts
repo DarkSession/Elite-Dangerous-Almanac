@@ -11,6 +11,7 @@ import { UTILITY_MODULES } from './modules-utility.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 import expected from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
 import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
+import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff } from './weapons.js';
@@ -386,6 +387,35 @@ test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => 
     );
 });
 
+test('every restricted mount accepts and refuses what the fixture pins', () => {
+    // The rule is a fact about the game, not about TypeScript, so which module
+    // families each restriction takes is pinned language-neutrally rather than left
+    // to the prefix lists in this file.
+    for (const rule of slotsFixture.restrictions) {
+        const build = ShipLoadout.empty(rule.ship);
+        const slot = build.slots().find((s) => s.key === rule.slot);
+        assert.ok(slot, `${rule.ship} has no slot ${rule.slot}`);
+        assert.equal(slot.restriction ?? null, rule.restriction, `${rule.slot} restriction`);
+        for (const symbol of rule.accepts) {
+            assert.doesNotThrow(
+                () => build.setModule(rule.slot, mod(symbol, ALL_MODULES)),
+                `${rule.slot} should accept ${symbol}`,
+            );
+        }
+        for (const symbol of rule.rejects) {
+            assert.throws(
+                () => build.setModule(rule.slot, mod(symbol, ALL_MODULES)),
+                `${rule.slot} should reject ${symbol}`,
+            );
+        }
+        // `modulesForSlot` and `setModule` must agree, or an outfitting UI offers a
+        // module the fit check then refuses.
+        const offered = new Set(build.modulesForSlot(rule.slot, ALL_MODULES).map((m) => m.symbol));
+        for (const symbol of rule.accepts) assert.ok(offered.has(symbol), `not offered: ${symbol}`);
+        for (const symbol of rule.rejects) assert.ok(!offered.has(symbol), `offered: ${symbol}`);
+    }
+});
+
 test('a restricted mount reports a human-readable name', () => {
     const miner = ShipLoadout.empty('LakonMiner');
     const named = (key: string) => miner.slots().find((s) => s.key === key)?.name;
@@ -395,6 +425,12 @@ test('a restricted mount reports a human-readable name', () => {
     assert.equal(named('FighterBay01'), 'Vessel Hangar Slot 1');
     const panther = ShipLoadout.empty('PantherMkII');
     assert.equal(panther.slots().find((s) => s.key === 'Cargo02')?.name, 'Cargo Slot 2');
+    // The military and approach-suite labels went through the same rewrite.
+    const conda = ShipLoadout.empty('Anaconda');
+    const condaName = (key: string) => conda.slots().find((s) => s.key === key)?.name;
+    assert.equal(condaName('Military01'), 'Military Slot 1');
+    assert.equal(condaName('PlanetaryApproachSuite'), 'Planetary Approach Suite');
+    assert.equal(condaName('HugeHardpoint1'), 'Huge Hardpoint 1');
 });
 
 test('setModule throws a clear error when handed an undefined module', () => {

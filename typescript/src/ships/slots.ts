@@ -43,7 +43,8 @@ export type HardpointRestriction = 'mining';
  * - `planetaryApproachSuite` — the approach suite alone, which in turn fits nowhere
  *   else (journal `PlanetaryApproachSuite`).
  * - `cargo` — cargo racks (ordinary, Mk II and corrosion-resistant) and fuel tanks;
- *   the Panther Clipper Mk II's two largest optionals (journal `Cargo01`).
+ *   the Panther Clipper Mk II's first size-8 and first size-7 optionals (journal
+ *   `Cargo01` and `Cargo02`).
  * - `limpetController` — any limpet controller, single-purpose or multi (the Type-11
  *   Prospector's size-5 optional; journal `LimpetController01`).
  * - `vesselHangar` — Mk I and Mk II vessel hangars, the modules the game called
