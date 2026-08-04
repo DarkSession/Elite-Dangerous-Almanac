@@ -68,12 +68,22 @@ not only in the TypeScript prefix lists. The six corpus builds on these hulls
 re-slotted onto the corrected keys; every one of them already had its modules in
 mounts the restrictions allow, so no build's fit changed and no pinned metric moved.
 
-Alongside this, the three **Mk II Vessel Hangars** gained the
-`restrictedToShips: ["Explorer_NX", "PantherMkII", "LakonMiner"]` this file had
-recorded in prose since the Operations pass. That is a missing value, not a new
-feature — `Int_MultiDroneControl_MiningV2_Size5_Class5` already carries the field the
-same way. EDSY has no record for the Mk II bays at all, so their hull restriction still
-rests on Frontier's update notes and Inara, as it did when the records were added.
+Alongside this, two families gained a `restrictedToShips` they should already have had.
+Both are missing values, not a new feature — `Int_MultiDroneControl_MiningV2_Size5_Class5`
+already carries the field the same way:
+
+- the three **Mk II Vessel Hangars** → `["Explorer_NX", "PantherMkII", "LakonMiner"]`,
+  which this file had recorded in prose since the Operations pass. EDSY has no record
+  for the Mk II bays at all, so their hull restriction still rests on Frontier's update
+  notes and Inara, as it did when the records were added.
+- the two **Mk II Cargo Racks** (`Int_LargeCargoRack_Size{7,8}_Class1`) →
+  `["PantherMkII"]`, from both registries: EDSY marks them `reserved:{63:1}` (ship 63
+  is the Panther Clipper Mk II) and coriolis-data describes them as a "Panther Clipper
+  storage rack". Without it they fitted **any** hull's size-7 or size-8 optional, which
+  a review caught by building a Type-9 that carried one. The sources say something
+  stronger still — that they fit only a *cargo-restricted* mount, so even the Panther's
+  own unrestricted size-8 should refuse one — and that half needs a module-side field
+  this catalogue does not have; it is recorded in `TODO.md` §3 rather than approximated.
 
 **Revision 2026-08-02 (UTC) — every module now carries stats, and 40 records were
 corrected.** The four module catalogues were reconciled against

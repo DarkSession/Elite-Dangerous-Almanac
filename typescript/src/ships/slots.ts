@@ -59,16 +59,45 @@ export type OptionalRestriction =
  * restricted mount can carry.
  *
  * @remarks
- * A {@link BuildSlot} of kind `hardpoint` only ever carries a
- * {@link HardpointRestriction}; one of kind `optional` only ever carries an
- * {@link OptionalRestriction}. This union is what you get when you read
- * `BuildSlot.restriction` without narrowing on the kind first.
+ * In practice a {@link BuildSlot} of kind `hardpoint` only ever carries a
+ * {@link HardpointRestriction} and one of kind `optional` only ever carries an
+ * {@link OptionalRestriction} — but `BuildSlot` is a flat interface, not a
+ * discriminated union, so **checking `slot.kind` does not narrow this type**. An
+ * exhaustive `switch` over a hardpoint's restriction still has to handle (or cast
+ * away) the optional-only values; there is no `never` case to lean on.
  *
  * The list is what the hull layouts model, not every rule the game has: passenger
  * cabin-reserved optionals (the Lynx Highliner's three) are still stored as ordinary
  * slots — see `TODO.md`.
+ *
+ * The journal spells two of these differently from the value: `vesselHangar` mounts
+ * are named `FighterBay01` (the game renamed the modules but not the slots), and
+ * `planetaryApproachSuite` is the only one whose key carries no number.
  */
 export type SlotRestriction = HardpointRestriction | OptionalRestriction;
+
+/**
+ * What each restriction accepts, as a short phrase fit for an outfitting UI.
+ *
+ * @remarks
+ * This is the same wording `ShipLoadout.setModule` uses when it refuses a module, so
+ * a label you show and the error a consumer sees cannot drift apart. It describes the
+ * module *families* a mount takes; for the actual fitting records, call
+ * `ShipLoadout.modulesForSlot` with the catalogue you care about.
+ * @example
+ * ```ts
+ * const slot = ShipLoadout.empty('LakonMiner').hardpoints()[0]!;
+ * slot.restriction && SLOT_RESTRICTION_LABELS[slot.restriction]; // -> 'mining tools'
+ * ```
+ */
+export const SLOT_RESTRICTION_LABELS: Readonly<Record<SlotRestriction, string>> = {
+    mining: 'mining tools',
+    military: 'reinforcement packages and shield cell banks',
+    planetaryApproachSuite: 'planetary approach suites',
+    cargo: 'cargo racks and fuel tanks',
+    limpetController: 'limpet controllers',
+    vesselHangar: 'vessel hangars',
+};
 
 /**
  * The seven fixed core-internal mounts, by function.
@@ -197,7 +226,7 @@ export interface ShipSlots {
     readonly symbol: string;
     /** The seven core-internal sizes. */
     readonly core: CoreSlots;
-    /** Weapon hardpoints, largest first (1 Small – 4 Huge). */
+    /** Weapon hardpoints, largest first. */
     readonly hardpoints: readonly HardpointSlotSpec[];
     /** Number of tiny utility mounts. */
     readonly utility: number;

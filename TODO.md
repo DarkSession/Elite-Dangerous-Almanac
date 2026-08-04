@@ -97,16 +97,16 @@ own reason:
   module and describes it as a "Panther Clipper storage rack". The Mk II Mining
   Multi-Limpet Controller is the same shape against `LIMPETCONTROLLER*`.
 
-  The two are wrong by different amounts today, so scope the fix to both: the racks
-  carry no `restrictedToShips` at all, so
-  `ShipLoadout.empty('Type9').setModule('Slot01_Size8', mkIICargoRack)` succeeds — any
-  hull, any size-8 mount. The controller *does* carry `restrictedToShips:
-  ["LakonMiner"]`, so it is correctly refused on every other hull, and only the slot
-  half is missing — it is still accepted in the Type-11's unrestricted `Slot05_Size5`.
-  The right fix is a module-side field naming the slot restriction a module requires,
-  which covers both — **not** `restrictedToShips: ["PantherMkII"]` on the racks, which
-  encodes the weaker rule and would still let one into the Panther's *unrestricted*
-  size-8 mount. Left whole rather than half-done.
+  Both now carry the hull half — `restrictedToShips: ["PantherMkII"]` on the racks
+  (added 2026-08-04, after a review found a Type-9 happily carrying one) and
+  `["LakonMiner"]` on the controller — so neither leaks onto a hull that cannot buy it.
+  **The slot half is what remains**, and it is the same for both:
+  `ShipLoadout.empty('PantherMkII').setModule('Slot01_Size8', mkIICargoRack)` still
+  succeeds although the game only sells that rack for `Cargo01`/`Cargo02`, and the
+  controller is still accepted in the Type-11's unrestricted `Slot05_Size5`. The fix is
+  a module-side field naming the slot restriction a module *requires* — the mirror of
+  `OptionalRestriction` — which would also let the planetary approach suite's
+  hard-coded special case in `#fitError` become ordinary data.
 - **Mount-type restrictions on a hardpoint.** Nothing here records that a mount is
   fixed-only, gimballed-only or turret-only; `OutfittingModule.mount` carries the
   weapon's side of it, but no hull says a mount refuses a turret.
@@ -313,3 +313,23 @@ journal documentation. Worth re-checking whenever a capture joins the corpus.
 re-fitting the identical module, so the getters that report the *source's* figures start
 returning `null`. Exports are unaffected — they never read those fields. Cheap fix: skip
 the delete when `previous?.Item === next?.Item`.
+
+### 16. Two consumer-facing rough edges a DX review found
+
+Neither is wrong, but both cost an app developer time; both are outside the slot work
+that surfaced them.
+
+**`FittedModule` spells the module id `item`, everything else spells it `symbol`.**
+`getModuleBySymbol`, `Ship.symbol` and `OutfittingModule.symbol` all use one word; the
+handle you get back from `getFittedModule` exposes the journal's `Item`. A consumer
+writes `getFittedModule(key)?.symbol`, gets `undefined`, and — in plain JavaScript —
+gets no error. A `symbol` alias getter on `FittedModule` would close it; the precedent
+for carrying both spellings is already there.
+
+**A shape change ships with no changelog.** `ShipSlots.hardpoints` went
+`readonly number[]` → `readonly HardpointSlotSpec[]` on 2026-08-04. TypeScript
+consumers get a compile error, JavaScript consumers get `NaN` from
+`hardpoints[0] + 1`. The shipped `typescript/README.md` now carries an upgrade note,
+but the package has no `CHANGELOG.md` and none is in `package.json` `files`, so there
+is no single place an upgrader can check. Worth adding before the first real release,
+along with a version policy — the package is still `0.0.1`.

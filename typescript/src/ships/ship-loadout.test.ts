@@ -288,7 +288,7 @@ test('setModule rejects the wrong module kind, oversize, and hull-restricted fit
     // A module restricted to another hull (MkII Gravity Optimised thrusters → Explorer_NX)
     assert.throws(
         () => conda.setModule('MainEngines', mod('Int_Engine_Size7_Class5_GravityOptimised_MkII')),
-        /restricted to Explorer_NX/,
+        /restricted to Caspian Explorer \(Explorer_NX\)/,
     );
 });
 
@@ -315,7 +315,10 @@ test('a military slot only takes military-eligible modules', () => {
     // A fuel scoop is not.
     const scoop = getModuleBySymbol('Int_FuelScoop_Size5_Class5', INTERNAL_MODULES);
     if (scoop) {
-        assert.throws(() => conda.setModule('Military01', scoop), /military-eligible/);
+        assert.throws(
+            () => conda.setModule('Military01', scoop),
+            /only takes reinforcement packages and shield cell banks/,
+        );
     }
 });
 
@@ -335,7 +338,10 @@ test("the Type-11's mining hardpoints only take mining tools", () => {
     }
     // An ordinary weapon of the right size is turned away.
     const plasma = mod('Hpt_PlasmaAccelerator_Fixed_Large', HARDPOINT_MODULES);
-    assert.throws(() => miner.setModule('LargeMiningHardpoint1', plasma), /only takes a mining/);
+    assert.throws(
+        () => miner.setModule('LargeMiningHardpoint1', plasma),
+        /only takes mining tools/,
+    );
     // ...and fits the unrestricted mounts, which take mining tools too.
     const cannon = mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES);
     assert.doesNotThrow(() => miner.setModule('MediumHardpoint3', cannon));
@@ -363,8 +369,8 @@ test('the restricted optionals take their own family and nothing else', () => {
         miner.setModule('FighterBay01', mod('Int_FighterBay_Size5_Class1', INTERNAL_MODULES)),
     );
     const rack = mod('Int_CargoRack_Size5_Class1', INTERNAL_MODULES);
-    assert.throws(() => miner.setModule('LimpetController01', rack), /only takes a limpet/);
-    assert.throws(() => miner.setModule('FighterBay01', rack), /only takes a vessel hangar/);
+    assert.throws(() => miner.setModule('LimpetController01', rack), /only takes limpet/);
+    assert.throws(() => miner.setModule('FighterBay01', rack), /only takes vessel hangars/);
 
     const panther = ShipLoadout.empty('PantherMkII');
     assert.doesNotThrow(() =>
@@ -373,7 +379,7 @@ test('the restricted optionals take their own family and nothing else', () => {
     // A fuel tank counts as cargo here, as it does in every optional slot.
     assert.doesNotThrow(() => panther.setModule('Cargo02', mod('Int_FuelTank_Size7_Class3')));
     const shield = mod('Int_ShieldGenerator_Size8_Class3', INTERNAL_MODULES);
-    assert.throws(() => panther.setModule('Cargo01', shield), /only takes a cargo rack/);
+    assert.throws(() => panther.setModule('Cargo01', shield), /only takes cargo racks/);
 });
 
 test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => {
@@ -383,7 +389,7 @@ test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => 
     assert.doesNotThrow(() => ShipLoadout.empty('PantherMkII').setModule('Slot06_Size5', bay));
     assert.throws(
         () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', bay),
-        /restricted to Explorer_NX, PantherMkII, LakonMiner/,
+        /restricted to Caspian Explorer \(Explorer_NX\), Panther Clipper MkII \(PantherMkII\), Type-11 Prospector \(LakonMiner\)/,
     );
 });
 
@@ -469,7 +475,7 @@ test('fit checks use restrictions carried by caller-supplied module records', ()
     };
     assert.throws(
         () => ShipLoadout.empty('SideWinder').setModule('SmallHardpoint1', restricted),
-        /restricted to Explorer_NX/,
+        /restricted to Caspian Explorer \(Explorer_NX\)/,
     );
 });
 

@@ -859,11 +859,22 @@ its `LimpetController01` and `FighterBay01` take limpet controllers and vessel h
 the Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks.
 
 ```ts
+import {
+  ShipLoadout,
+  HARDPOINT_MODULES,
+  SLOT_RESTRICTION_LABELS,
+  getModuleBySymbol,
+} from "@elite-dangerous-almanac/core/ships";
+
 const miner = ShipLoadout.empty("LakonMiner");
 miner.hardpoints().map((s) => [s.key, s.restriction]);
 // -> [['LargeMiningHardpoint1', 'mining'], ..., ['MediumHardpoint3', undefined], ...]
+SLOT_RESTRICTION_LABELS.mining; // -> 'mining tools' — what to show a user
 miner.modulesForSlot("LargeMiningHardpoint1", HARDPOINT_MODULES); // mining tools only
-miner.setModule("LargeMiningHardpoint1", plasmaAccelerator); // throws: slot only takes a mining tool
+miner.setModule(
+  "LargeMiningHardpoint1",
+  getModuleBySymbol("Hpt_PlasmaAccelerator_Fixed_Large", HARDPOINT_MODULES)!,
+); // throws: slot only takes mining tools
 ```
 
 Careful with the two names a _core_ mount has: `slot.key` is the journal slot

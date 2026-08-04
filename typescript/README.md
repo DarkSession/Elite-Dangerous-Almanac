@@ -32,7 +32,8 @@ import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-co
 - `astro` supplies procedural naming, system-address conversion, regions,
   nebulae and permit locks.
 - `ships` supplies ship/module registries, stats, journal `Loadout` and SLEF import
-  **and export**, loadout editing, engineering, and the build metrics an outfitting
+  **and export**, loadout editing (including the mounts that only take one family of
+  modules — see below), engineering, and the build metrics an outfitting
   screen shows — jump range, power budget, shield and armour strength with
   resistances, and weapon DPS.
 - `materials` supplies ship engineering materials and Odyssey micro resources.
@@ -125,6 +126,42 @@ data-free leaf modules of roughly 0.5–3 KB each: `ships/jump-range`, `ships/po
 Case and surrounding whitespace are ignored by every lookup — by symbol, name, category
 or line — so journal values resolve as they arrive.
 
+## Mounts that only take one family of modules
+
+Some mounts are restricted, and the journal gives each one a **name of its own** — so
+`slot.restriction` tells you what it takes, `modulesForSlot` lists exactly that, and
+`setModule` throws rather than accept anything else. `PlanetaryApproachSuite` is on all
+but one hull (the Lynx Highliner) and `Military01…` on 16 of the 48; two hulls add more.
+The Type-11 Prospector's `LargeMiningHardpoint1`, `MediumMiningHardpoint1`,
+`MediumMiningHardpoint2` and `SmallMiningHardpoint1` take **mining tools only** — its
+other four mounts (`MediumHardpoint3`, `SmallHardpoint2…4`) take any weapon — while its
+`LimpetController01` and `FighterBay01` take limpet controllers and vessel hangars. The
+Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks.
+
+```ts
+import {
+    ShipLoadout,
+    HARDPOINT_MODULES,
+    SLOT_RESTRICTION_LABELS,
+    getModuleBySymbol,
+} from '@elite-dangerous-almanac/core/ships';
+
+const miner = ShipLoadout.empty('LakonMiner');
+
+const mount = miner.hardpoints()[0]!; // -> key 'LargeMiningHardpoint1'
+mount.restriction; // -> 'mining'
+SLOT_RESTRICTION_LABELS[mount.restriction!]; // -> 'mining tools' (what to show a user)
+mount.modulesForSlot(HARDPOINT_MODULES); // -> the mining tools that fit, and only those
+
+mount.fit(getModuleBySymbol('Hpt_PlasmaAccelerator_Fixed_Large', HARDPOINT_MODULES)!);
+// throws TypeError: ... → LargeMiningHardpoint1: slot only takes mining tools
+```
+
+> **Upgrading from 0.0.1:** `ShipSlots.hardpoints` (and `Ship.hardpoints`) changed from
+> `readonly number[]` to `readonly HardpointSlotSpec[]` — `{ size, restriction? }`
+> entries, matching `optional`. Read `hardpoints[i].size` where you read
+> `hardpoints[i]` before. TypeScript flags every site; **plain JavaScript will not**.
+
 See the [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#readme)
 and [generated GitHub Wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki)
 for the complete API guide. Report problems in the
@@ -136,7 +173,10 @@ The bundled catalogues are a snapshot dated **2026-07-24**, with two updates mad
 2026-08-02: one market commodity added (`curatedcommodity`, from a player-journal
 observation rather than an upstream registry, so its market category is a maintainer
 assignment), and a module-stat reconciliation that left every outfitting module
-carrying at least one stat and corrected 40 records.
+carrying at least one stat and corrected 40 records. A third followed on **2026-08-04**:
+every hull's mounts now record any restriction they carry (see above), and the modules
+limited to particular hulls gained the `restrictedToShips` values that were previously
+only documented.
 
 A value no source publishes is left **absent rather than guessed** — a handful of
 `integrity`, `powerDraw` and `mass` fields are `undefined` for that reason. The

@@ -165,6 +165,7 @@ export {
 export {
     parseSlotName,
     enumerateSlots,
+    SLOT_RESTRICTION_LABELS,
     type SlotKind,
     type SlotRestriction,
     type HardpointRestriction,

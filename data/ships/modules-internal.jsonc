@@ -6698,6 +6698,9 @@
     "rating": "D",
     "mass": 0,
     "cargoCapacity": 192,
+    "restrictedToShips": [
+      "PantherMkII"
+    ],
     "cost": 1958680
   },
   {
@@ -6708,6 +6711,9 @@
     "rating": "D",
     "mass": 0,
     "cargoCapacity": 384,
+    "restrictedToShips": [
+      "PantherMkII"
+    ],
     "cost": 4929317
   },
   {

@@ -65,6 +65,7 @@ import {
 import { getShipBySymbol, getShipSlots } from './ships.js';
 import {
     enumerateSlots,
+    SLOT_RESTRICTION_LABELS,
     type BuildSlot,
     type SlotKind,
     type CoreSlotType,
@@ -304,36 +305,39 @@ const LIMPET_CONTROLLER_PREFIXES: readonly string[] = ['int_dronecontrol', 'int_
 const VESSEL_HANGAR_PREFIXES: readonly string[] = ['int_fighterbay'];
 
 /**
- * Slot restriction → the module families it accepts, and how to name them when a
- * module is turned away.
+ * Slot restriction → the module symbol prefixes it accepts.
  *
  * @remarks
  * `planetaryApproachSuite` is absent because it is the one restriction that binds
  * both ways — the suite fits nowhere else either — so `#fitError` handles it as a
- * pair of checks rather than a membership test.
+ * pair of checks rather than a membership test. What each restriction accepts *in
+ * words* is not repeated here: the refusal message is built from the exported
+ * {@link SLOT_RESTRICTION_LABELS}, so a label an app shows and the error it may have
+ * to explain cannot drift apart.
  */
-const RESTRICTED_SLOT_MODULES: Record<
+const RESTRICTED_SLOT_PREFIXES: Record<
     Exclude<SlotRestriction, 'planetaryApproachSuite'>,
-    { readonly prefixes: readonly string[]; readonly accepts: string }
+    readonly string[]
 > = {
-    mining: { prefixes: MINING_PREFIXES, accepts: 'a mining tool' },
-    military: { prefixes: MILITARY_PREFIXES, accepts: 'a military-eligible module' },
-    cargo: { prefixes: CARGO_PREFIXES, accepts: 'a cargo rack or fuel tank' },
-    limpetController: { prefixes: LIMPET_CONTROLLER_PREFIXES, accepts: 'a limpet controller' },
-    vesselHangar: { prefixes: VESSEL_HANGAR_PREFIXES, accepts: 'a vessel hangar' },
+    mining: MINING_PREFIXES,
+    military: MILITARY_PREFIXES,
+    cargo: CARGO_PREFIXES,
+    limpetController: LIMPET_CONTROLLER_PREFIXES,
+    vesselHangar: VESSEL_HANGAR_PREFIXES,
 };
 
 /**
  * Why a module symbol fails a slot's restriction, or `null` if it satisfies it (or
  * the slot has none). The planetary approach suite is not checked here — see
- * {@link RESTRICTED_SLOT_MODULES}.
+ * {@link RESTRICTED_SLOT_PREFIXES}.
  */
 function restrictionError(slot: BuildSlot, symbol: string): string | null {
     const restriction = slot.restriction;
     if (!restriction || restriction === 'planetaryApproachSuite') return null;
-    const rule = RESTRICTED_SLOT_MODULES[restriction];
-    if (rule.prefixes.some((prefix) => symbol.startsWith(prefix))) return null;
-    return `slot only takes ${rule.accepts}`;
+    if (RESTRICTED_SLOT_PREFIXES[restriction].some((prefix) => symbol.startsWith(prefix))) {
+        return null;
+    }
+    return `slot only takes ${SLOT_RESTRICTION_LABELS[restriction]}`;
 }
 
 /**
@@ -1490,7 +1494,13 @@ export class ShipLoadout {
             restricted &&
             !restricted.some((s) => s.toLowerCase() === this.#shipSymbol.toLowerCase())
         ) {
-            return `module is restricted to ${restricted.join(', ')}`;
+            // Name the hulls the way a player would recognise them, keeping the
+            // symbol so the message is still greppable against journal data.
+            const hulls = restricted.map((s) => {
+                const hull = getShipBySymbol(s);
+                return hull ? `${hull.name} (${s})` : s;
+            });
+            return `module is restricted to ${hulls.join(', ')}`;
         }
         const sym = module.symbol.toLowerCase();
         const coreType = coreTypeOf(sym);
@@ -1524,7 +1534,9 @@ export class ShipLoadout {
                 }
                 const isPas = sym.startsWith(PLANETARY_APPROACH_PREFIX);
                 if (slot.restriction === 'planetaryApproachSuite') {
-                    if (!isPas) return 'slot only takes a planetary approach suite';
+                    if (!isPas) {
+                        return `slot only takes ${SLOT_RESTRICTION_LABELS.planetaryApproachSuite}`;
+                    }
                 } else if (isPas) {
                     return 'a planetary approach suite only fits its own slot';
                 }

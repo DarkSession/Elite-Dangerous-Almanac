@@ -26,6 +26,11 @@ const CORE_NAMES: Record<CoreSlotType, string> = {
 /**
  * Human-readable label for a numbered restricted optional mount, by restriction. The
  * planetary approach suite is absent: its key carries no number and its label is fixed.
+ *
+ * @remarks
+ * These are this library's wording, not the game's outfitting-panel text, so an app
+ * with its own copy or its own translations should not treat {@link LoadoutSlot.name}
+ * as authoritative.
  */
 const RESTRICTED_OPTIONAL_NAMES: Partial<Record<SlotRestriction, string>> = {
     military: 'Military Slot',

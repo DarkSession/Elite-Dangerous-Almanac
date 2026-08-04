@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseSlotName, enumerateSlots } from './slots.js';
-import { getShipSlots } from './ships.js';
+import { parseSlotName, enumerateSlots, SLOT_RESTRICTION_LABELS } from './slots.js';
+import { getShipSlots, SHIPS } from './ships.js';
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 
 test('parseSlotName classifies every journal slot-name form', () => {
@@ -175,4 +175,32 @@ test('every SLEF slot name in a real export classifies', async () => {
     for (const m of slef[0]!.data.Modules) {
         assert.ok(parseSlotName(m.Slot) !== null, `unclassified slot: ${m.Slot}`);
     }
+});
+
+test('every restriction a hull can carry has a label to show for it', () => {
+    // A UI reads `slot.restriction`; without a label per value it would hardcode one.
+    const carried = new Set<string>();
+    for (const ship of SHIPS) {
+        const layout = getShipSlots(ship.symbol);
+        if (!layout) continue;
+        for (const slot of enumerateSlots(layout)) {
+            if (slot.restriction) carried.add(slot.restriction);
+        }
+    }
+    assert.ok(carried.size > 0);
+    for (const restriction of carried) {
+        assert.ok(
+            SLOT_RESTRICTION_LABELS[restriction as keyof typeof SLOT_RESTRICTION_LABELS],
+            `no label for ${restriction}`,
+        );
+    }
+    // The labels cover the whole union, not merely what the hulls happen to use.
+    assert.deepEqual(Object.keys(SLOT_RESTRICTION_LABELS).sort(), [
+        'cargo',
+        'limpetController',
+        'military',
+        'mining',
+        'planetaryApproachSuite',
+        'vesselHangar',
+    ]);
 });
