@@ -1,39 +1,52 @@
 /**
- * Engineering-material types and lookups — the **data-free** core of the materials
- * feature.
+ * Engineering-material types and lookups.
  *
  * Elite Dangerous groups its engineering materials into three categories — raw,
  * manufactured and encoded — each material carrying a **grade** ({@link MaterialGrade})
  * and sitting in a **line** ({@link MaterialLine}: Chemical, Emission Data, the seven
  * raw element families, …). This module holds the {@link Material} record shape, the
- * grade ⇄ rarity mapping, and the pure functions that search a catalogue
- * ({@link getMaterialByName}, {@link materialsByGrade}, {@link materialsInLine}, …).
- * The catalogues themselves live in sibling modules, one per category, so you only
- * bundle what you ask for:
+ * grade ⇄ rarity mapping, and the functions that find one ({@link getMaterial},
+ * {@link getMaterialByName}, {@link materialsByGrade}, {@link materialsInLine}, …).
+ *
+ * **Every lookup searches all 146 materials by default** — you do not have to hand it
+ * a catalogue:
+ *
+ * ```ts
+ * getMaterialByName('iron')?.grade; // -> MaterialGrade.VeryCommon (1)
+ * ```
+ *
+ * Each lookup still takes an optional second argument to **narrow** the search to a
+ * subset — one category's catalogue, or any array you have filtered yourself:
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
  * | `./materials-raw` | `RAW_MATERIALS` | 28 |
  * | `./materials-manufactured` | `MANUFACTURED_MATERIALS` | 71 |
  * | `./materials-encoded` | `ENCODED_MATERIALS` | 47 |
- * | `./materials-all` | `ALL_MATERIALS` | 146 |
+ * | `./materials-all` | `ALL_MATERIALS` | 146 (the default) |
  *
- * Importing a query function from here costs nothing but the function: pass in
- * whichever catalogue you imported.
+ * That argument narrows *results*, not bundle size: importing any lookup from here
+ * pulls all three catalogues, since that is what it falls back to. All 146 records
+ * are about 15 KB minified (~3 KB gzipped). A build that must not carry them can import one
+ * catalogue module and search it with plain `Array` methods, or use
+ * {@link materialsInCategory} once the data is loaded anyway.
  *
  * Data originates from EDCD FDevIDs, with a handful of newer Thargoid materials
  * from INARA; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
  *
  * @example
  * ```ts
- * import { getMaterialByName } from '@elite-dangerous-almanac/core/materials';
- * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+ * import { getMaterial, materialsInCategory } from '@elite-dangerous-almanac/core/materials';
  *
- * getMaterialByName('iron', RAW_MATERIALS)?.grade; // -> MaterialGrade.VeryCommon (1)
+ * getMaterial('iron')?.grade;              // -> MaterialGrade.VeryCommon (1)
+ * getMaterial('Fe')?.name;                 // -> 'Iron'  (raw materials answer to their element too)
+ * materialsInCategory('raw').length;       // -> 28
  * ```
  *
  * @packageDocumentation
  */
+
+import { ALL_MATERIALS } from './materials-all.js';
 
 /** Which of the three engineering-material categories a material belongs to. */
 export type MaterialCategory = 'raw' | 'manufactured' | 'encoded';
@@ -164,6 +177,41 @@ function normalize(value: string): string {
 }
 
 /**
+ * Look up a material by **whatever string you have** — its Frontier symbol, its
+ * display name, or (for a raw element) its chemical symbol.
+ *
+ * Reach for this when the string could be any of them: a journal line gives you the
+ * symbol, a UI dropdown the display name, a spreadsheet of mining yields the element.
+ * When you know which one you hold, {@link getMaterialBySymbol},
+ * {@link getMaterialByName} and {@link getMaterialByElementSymbol} say so in the call.
+ *
+ * @param material - The symbol, display name or element symbol. Leading/trailing
+ * whitespace and case are ignored.
+ * @param materials - Optional subset to search instead of all 146 materials — one
+ * category's catalogue (`RAW_MATERIALS`, `MANUFACTURED_MATERIALS`,
+ * `ENCODED_MATERIALS`) or any array you have filtered yourself.
+ * @returns The matching {@link Material}, or `null` if nothing matches. Symbol is
+ * tried first, then display name, then element symbol, so an exact symbol always
+ * wins.
+ * @example
+ * ```ts
+ * getMaterial('gridresistors')?.name; // -> 'Grid Resistors'  (journal symbol)
+ * getMaterial('Grid Resistors')?.grade; // -> 1                (display name)
+ * getMaterial('fe')?.name; // -> 'Iron'                        (element symbol)
+ * ```
+ */
+export function getMaterial(
+    material: string,
+    materials: readonly Material[] = ALL_MATERIALS,
+): Material | null {
+    return (
+        getMaterialBySymbol(material, materials) ??
+        getMaterialByName(material, materials) ??
+        getMaterialByElementSymbol(material, materials)
+    );
+}
+
+/**
  * Look up a material by its Frontier symbol / journal id (case-insensitive).
  *
  * This is the same lookup as `getShipBySymbol` / `getModuleBySymbol` in the `ships`
@@ -171,18 +219,18 @@ function normalize(value: string): string {
  *
  * @param symbol - The internal symbol, e.g. `"GridResistors"`, or the lower-cased
  * form the player journal reports (`"gridresistors"`).
- * @param materials - The catalogue to search — `RAW_MATERIALS`, `MANUFACTURED_MATERIALS`,
- * `ENCODED_MATERIALS`, `ALL_MATERIALS`, or any subset you have filtered yourself.
- * @returns The matching {@link Material}, or `null` if the catalogue holds no
- * material with that symbol.
+ * @param materials - Optional subset to search instead of all 146 materials —
+ * `RAW_MATERIALS`, `MANUFACTURED_MATERIALS`, `ENCODED_MATERIALS`, or any array you
+ * have filtered yourself. Omit it unless you specifically want to exclude the rest.
+ * @returns The matching {@link Material}, or `null` if no material has that symbol.
  * @example
  * ```ts
- * getMaterialBySymbol('temperedalloys', MANUFACTURED_MATERIALS)?.name; // -> 'Tempered Alloys'
+ * getMaterialBySymbol('temperedalloys')?.name; // -> 'Tempered Alloys'
  * ```
  */
 export function getMaterialBySymbol(
     symbol: string,
-    materials: readonly Material[],
+    materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
     const wanted = normalize(symbol);
     return materials.find((material) => normalize(material.symbol) === wanted) ?? null;
@@ -192,15 +240,17 @@ export function getMaterialBySymbol(
  * Look up a material by its display name (case-insensitive).
  *
  * @param name - The display name as the catalogue spells it, e.g. `"Grid Resistors"`.
- * @param materials - The catalogue to search (see {@link getMaterialBySymbol}).
- * @returns The matching {@link Material}, or `null` if the catalogue holds no
- * material of that name.
+ * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
+ * @returns The matching {@link Material}, or `null` if no material has that name.
  * @example
  * ```ts
- * getMaterialByName('imperial shielding', MANUFACTURED_MATERIALS)?.grade; // -> 5
+ * getMaterialByName('imperial shielding')?.grade; // -> 5
  * ```
  */
-export function getMaterialByName(name: string, materials: readonly Material[]): Material | null {
+export function getMaterialByName(
+    name: string,
+    materials: readonly Material[] = ALL_MATERIALS,
+): Material | null {
     const wanted = normalize(name);
     return materials.find((material) => normalize(material.name) === wanted) ?? null;
 }
@@ -209,17 +259,17 @@ export function getMaterialByName(name: string, materials: readonly Material[]):
  * Look up a raw material by its chemical element symbol (case-insensitive).
  *
  * @param elementSymbol - The element symbol, e.g. `"Fe"` or `"fe"`.
- * @param materials - The catalogue to search (see {@link getMaterialBySymbol}).
+ * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
  * @returns The matching {@link Material}, or `null`. Only raw materials carry an
- * element symbol, so manufactured and encoded catalogues never match.
+ * element symbol, so a manufactured or encoded subset never matches.
  * @example
  * ```ts
- * getMaterialByElementSymbol('fe', RAW_MATERIALS)?.name; // -> 'Iron'
+ * getMaterialByElementSymbol('fe')?.name; // -> 'Iron'
  * ```
  */
 export function getMaterialByElementSymbol(
     elementSymbol: string,
-    materials: readonly Material[],
+    materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
     const wanted = normalize(elementSymbol);
     return (
@@ -234,14 +284,18 @@ export function getMaterialByElementSymbol(
  * Every material of a given grade, in catalogue order.
  *
  * @param grade - The grade to match, 1–5 (or a {@link MaterialGrade} member).
- * @param materials - The catalogue to search (see {@link getMaterialByName}).
+ * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
- * materialsByGrade(MaterialGrade.VeryRare, MANUFACTURED_MATERIALS).length;
+ * materialsByGrade(MaterialGrade.VeryRare).length;                 // -> across every category
+ * materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length;      // -> 7, one per raw line
  * ```
  */
-export function materialsByGrade(grade: MaterialGrade, materials: readonly Material[]): Material[] {
+export function materialsByGrade(
+    grade: MaterialGrade,
+    materials: readonly Material[] = ALL_MATERIALS,
+): Material[] {
     return materials.filter((material) => material.grade === grade);
 }
 
@@ -251,17 +305,50 @@ export function materialsByGrade(grade: MaterialGrade, materials: readonly Mater
  * @param line - The line to match, e.g. `MaterialLine.Chemical`. A plain string of
  * the line's value works too: leading/trailing whitespace and case are ignored, like
  * every other lookup here.
- * @param materials - The catalogue to search (see {@link getMaterialByName}).
+ * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
- * materialsInLine(MaterialLine.Chemical, MANUFACTURED_MATERIALS).map((m) => m.grade);
- * // -> [1, 2, 3, 4, 5]
+ * materialsInLine(MaterialLine.Chemical).map((m) => m.grade); // -> [1, 2, 3, 4, 5]
  * ```
  */
-export function materialsInLine(line: MaterialLine, materials: readonly Material[]): Material[];
-export function materialsInLine(line: string, materials: readonly Material[]): Material[];
-export function materialsInLine(line: string, materials: readonly Material[]): Material[] {
+export function materialsInLine(line: MaterialLine, materials?: readonly Material[]): Material[];
+export function materialsInLine(line: string, materials?: readonly Material[]): Material[];
+export function materialsInLine(
+    line: string,
+    materials: readonly Material[] = ALL_MATERIALS,
+): Material[] {
     const wanted = normalize(line);
     return materials.filter((material) => normalize(material.line) === wanted);
+}
+
+/**
+ * Every material in a given category, in catalogue order.
+ *
+ * @remarks
+ * The same answer as importing that category's own catalogue module, reached from a
+ * string — which is what you have when the category came from a dropdown or a saved
+ * filter rather than from your own source code.
+ *
+ * @param category - The category to match: `'raw'`, `'manufactured'` or `'encoded'`.
+ * Leading/trailing whitespace and case are ignored, like every other lookup here.
+ * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
+ * @returns A new array of matches (possibly empty). The input is not modified.
+ * @example
+ * ```ts
+ * materialsInCategory('raw').length;          // -> 28
+ * materialsInCategory('Encoded').length;      // -> 47; case is ignored
+ * ```
+ */
+export function materialsInCategory(
+    category: MaterialCategory,
+    materials?: readonly Material[],
+): Material[];
+export function materialsInCategory(category: string, materials?: readonly Material[]): Material[];
+export function materialsInCategory(
+    category: string,
+    materials: readonly Material[] = ALL_MATERIALS,
+): Material[] {
+    const wanted = normalize(category);
+    return materials.filter((material) => normalize(material.category) === wanted);
 }

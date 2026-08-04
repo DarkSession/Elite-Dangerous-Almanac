@@ -18,15 +18,15 @@
  *
  * The area has five layers:
  *
- * - **Ships** — {@link SHIPS} and the {@link getShipBySymbol} / {@link getShipByName}
- *   lookups. One small catalogue; each {@link Ship} carries the hull's identity,
- *   stats and slot layout together.
- * - **Modules** — the {@link OutfittingModule} type and the data-free query
- *   functions ({@link getModuleBySymbol} & co.) over a catalogue you pass in. The
- *   catalogues are split by Frontier's four outfitting categories
- *   ({@link CORE_MODULES}, {@link INTERNAL_MODULES}, {@link HARDPOINT_MODULES},
- *   {@link UTILITY_MODULES}, or {@link ALL_MODULES}) so you only bundle the slice
- *   you search; each record carries the module's identity and its stats.
+ * - **Ships** — {@link SHIPS} and the {@link getShip} / {@link getShipBySymbol} /
+ *   {@link getShipByName} lookups. One small catalogue; each {@link Ship} carries the
+ *   hull's identity, stats and slot layout together.
+ * - **Modules** — the {@link OutfittingModule} type and the lookups
+ *   ({@link getModuleBySymbol} & co.), which search all 1198 modules unless you hand
+ *   them a narrower set. The catalogues are also exported split by Frontier's four
+ *   outfitting categories ({@link CORE_MODULES}, {@link INTERNAL_MODULES},
+ *   {@link HARDPOINT_MODULES}, {@link UTILITY_MODULES}, and {@link ALL_MODULES}); each
+ *   record carries the module's identity and its stats.
  * - **Jump range & SLEF** — {@link singleJumpRange}, {@link fuelPerJump} and
  *   {@link totalRange} are pure maths over {@link FrameShiftDriveParams} and cost
  *   nothing but the function; {@link parseSlef} reads an Inara SLEF export — or a bare
@@ -54,11 +54,17 @@
  */
 
 // ── Ships (identity + stats + slot layout, one record per hull) ─────────────
-export { SHIPS, getShipBySymbol, getShipByName, getShipSlots, type Ship } from './ships.js';
+export {
+    SHIPS,
+    getShip,
+    getShipBySymbol,
+    getShipByName,
+    getShipSlots,
+    type Ship,
+} from './ships.js';
 
-// ── Modules: types + data-free queries (each record carries identity + stats) ─
-// The query functions hold no data; each catalogue is its own module, so import
-// only the category you need and pass it in.
+// ── Modules: types + lookups (each record carries identity + stats) ──────────
+// The lookups search every module unless you pass a narrower catalogue.
 export {
     getModuleBySymbol,
     getModulesByName,

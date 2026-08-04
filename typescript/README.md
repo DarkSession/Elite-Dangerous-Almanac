@@ -38,23 +38,40 @@ import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-co
 - `materials` supplies ship engineering materials and Odyssey micro resources.
 - `commodities` supplies standard and rare market-goods catalogues.
 
-Each area has a barrel plus leaf subpaths for its data-heavy catalogues:
+Each area has a barrel plus leaf subpaths for its data-heavy catalogues. Every
+registry lookup searches the whole registry, so finding something takes one import
+and one argument:
 
 ```ts
 import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
-import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
-import {
-    getMaterialByName,
-    MaterialGrade,
-} from '@elite-dangerous-almanac/core/materials/materials';
-import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+import { getShip } from '@elite-dangerous-almanac/core/ships/ships';
+import { getMaterial, MaterialGrade } from '@elite-dangerous-almanac/core/materials/materials';
+import { getCommodity } from '@elite-dangerous-almanac/core/commodities/commodities';
 
 const system = StarSystem.fromName('Synuefe EN-H d11-96');
 system?.systemAddress; // 3309179996515n
 
-getShipBySymbol('empire_trader')?.name; // 'Imperial Clipper'
-getMaterialByName('iron', RAW_MATERIALS)?.grade; // MaterialGrade.VeryCommon (1)
+getShip('empire_trader')?.name; // 'Imperial Clipper'
+getMaterial('iron')?.grade; // MaterialGrade.VeryCommon (1)
+getCommodity('lavian brandy')?.rare; // true
 ```
+
+Every lookup also takes an optional trailing argument that narrows the search to a
+subset — one category's catalogue, or an array you have filtered yourself:
+
+```ts
+import { materialsByGrade, MaterialGrade } from '@elite-dangerous-almanac/core/materials';
+import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+
+materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length; // 7, one per raw line
+```
+
+That argument narrows results, not bundle size: a lookup imports the full registry it
+falls back to. The registries are small (~15 KB minified for all 146 materials, ~28 KB
+for all 399 commodities) — with one exception. `ships/modules` pulls all four module
+catalogues, about 290 KB minified (~29 KB gzipped); a build that must carry only one
+outfitting category should import that catalogue and search it with plain `Array`
+methods instead.
 
 ## Working with a whole build
 
@@ -118,6 +135,8 @@ data-free leaf modules of roughly 0.5–3 KB each: `ships/jump-range`, `ships/po
   (`getShipBySymbol`, `getModuleBySymbol`). Blueprints and experimental effects are looked
   up by **`fdname`** — the `Engineering.BlueprintName` / `ExperimentalEffect` string, e.g.
   `'FSD_LongRange'`, `'special_fsd_heavy'` (`getBlueprint`, `getExperimentalEffect`).
+  When you are not sure whether a string is a symbol or a display name, `getShip`,
+  `getMaterial`, `getMicroResource` and `getCommodity` accept either.
 - **Failure is split by cause.** Lookups return `null`; malformed input throws
   `TypeError`; out-of-range input throws `RangeError`. `StarSystem.fromName` returns
   `null` for any non-procedural name, including real hand-named systems like `Sol`.

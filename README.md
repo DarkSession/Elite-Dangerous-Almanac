@@ -16,8 +16,8 @@ bundle only the catalogues you touch:
 | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | [`astro`](#quick-start)              | System name ⇄ `id64`, sectors, galactic regions, 5835 nebulae, permit locks                                                             | `StarSystem`                     |
 | [`ships`](#ships-and-outfitting)     | 48 hulls and ~1200 modules with stats, slots and prices, SLEF builds, jump range, power, shields, armour, weapon DPS, engineering costs | `ShipLoadout`, `getShipBySymbol` |
-| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                                                              | `getMaterialByName`              |
-| [`commodities`](#market-commodities) | 257 standard and 142 rare market goods                                                                                                  | `getCommodityBySymbol`           |
+| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                                                              | `getMaterial`                    |
+| [`commodities`](#market-commodities) | 257 standard and 142 rare market goods                                                                                                  | `getCommodity`                   |
 
 Also here: [the four kinds of "region"](#the-four-kinds-of-region) (the one thing
 that trips everyone up), [nebulae](#nebulae), [permit
@@ -345,39 +345,58 @@ would be wrong for them.
 The `materials` feature area covers the 146 engineering **materials** — raw,
 manufactured and encoded — each with its grade (1–5, which **is** its rarity, from
 Very Common to Very Rare) and in-game line. Guardian and Thargoid materials are
-included. They ship as **one module per category**, so you pay only for what you
-import (subpaths below are relative to `@elite-dangerous-almanac/core`):
+included.
+
+**Every lookup searches all 146 by default**, so finding a material takes one import
+and one argument:
+
+```ts
+import {
+  getMaterial,
+  getMaterialBySymbol,
+  getMaterialByName,
+  materialsByGrade,
+  materialsInCategory,
+  materialsInLine,
+  MaterialGrade,
+  MaterialLine,
+} from "@elite-dangerous-almanac/core/materials";
+
+const iron = getMaterialByName("iron");
+iron?.grade; // -> MaterialGrade.VeryCommon
+iron && MaterialGrade[iron.grade]; // -> 'VeryCommon' (rarity tier)
+getMaterialBySymbol("temperedalloys")?.name; // -> 'Tempered Alloys'
+materialsInLine(MaterialLine.EmissionData).length; // -> 5 (grades 1–5)
+materialsInCategory("raw").length; // -> 28
+
+// Not sure whether the string is a symbol, a display name or an element?
+getMaterial("gridresistors")?.name; // -> 'Grid Resistors'  (journal symbol)
+getMaterial("Grid Resistors")?.grade; // -> 1                (display name)
+getMaterial("fe")?.name; // -> 'Iron'                        (element symbol)
+```
+
+Every lookup takes an optional trailing argument that **narrows** the search to a
+subset — one category's catalogue, or any array you have filtered yourself (subpaths
+below are relative to `@elite-dangerous-almanac/core`):
 
 | Import                             | Export                   | What's in it                                         | Entries |
 | ---------------------------------- | ------------------------ | ---------------------------------------------------- | ------- |
 | `materials/materials-raw`          | `RAW_MATERIALS`          | The 28 elements, seven lines of grades 1–4           | 28      |
 | `materials/materials-manufactured` | `MANUFACTURED_MATERIALS` | Ten five-grade lines plus Guardian & Thargoid        | 71      |
 | `materials/materials-encoded`      | `ENCODED_MATERIALS`      | Seven five-grade data lines plus Guardian & Thargoid | 47      |
-| `materials/materials-all`          | `ALL_MATERIALS`          | All three, concatenated                              | 146     |
-
-The query functions live in `materials` and hold no data — hand them whichever
-catalogue you imported:
+| `materials/materials-all`          | `ALL_MATERIALS`          | All three, concatenated — the default                | 146     |
 
 ```ts
-import {
-  getMaterialBySymbol,
-  getMaterialByName,
-  materialsByGrade,
-  materialsInLine,
-  MaterialGrade,
-  MaterialLine,
-} from "@elite-dangerous-almanac/core/materials";
+import { materialsByGrade } from "@elite-dangerous-almanac/core/materials";
 import { RAW_MATERIALS } from "@elite-dangerous-almanac/core/materials/materials-raw";
-import { MANUFACTURED_MATERIALS } from "@elite-dangerous-almanac/core/materials/materials-manufactured";
-import { ENCODED_MATERIALS } from "@elite-dangerous-almanac/core/materials/materials-encoded";
 
-const iron = getMaterialByName("iron", RAW_MATERIALS);
-iron?.grade; // -> MaterialGrade.VeryCommon
-iron && MaterialGrade[iron.grade]; // -> 'VeryCommon' (rarity tier)
-getMaterialBySymbol("temperedalloys", MANUFACTURED_MATERIALS)?.name; // -> 'Tempered Alloys'
 materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length; // -> 7 (one per raw line)
-materialsInLine(MaterialLine.EmissionData, ENCODED_MATERIALS).length; // -> 5 (grades 1–5)
 ```
+
+That argument narrows _results_, not bundle size: importing any lookup pulls all
+three catalogues, since that is what it falls back to (~15 KB minified, ~3 KB gzipped).
+`materialsInCategory` reaches the same subsets from a plain string, which is what you
+have when the category came from a dropdown rather than from your own source code.
 
 Each material carries a stable Frontier `symbol`; the journal names materials by
 the lower-cased symbol, so `getMaterialBySymbol` accepts either casing. Every lookup in
@@ -399,8 +418,27 @@ The same `materials` feature area also carries the 196 on-foot **micro resources
 introduced by Odyssey — the components, data, consumables and items a Commander
 carries on foot. These are a separate registry from the ship-side engineering
 materials above: a micro resource is a plain `{ symbol, category, name }` record
-with **no grade and no line**. Like the materials, they ship as one module per
-category:
+with **no grade and no line**. Like the materials, every lookup searches all 196 by
+default:
+
+```ts
+import {
+  getMicroResource,
+  getMicroResourceBySymbol,
+  getMicroResourceByName,
+  microResourcesInCategory,
+} from "@elite-dangerous-almanac/core/materials";
+
+getMicroResourceBySymbol("graphene")?.name; // -> 'Graphene'
+getMicroResourceByName("circuit board")?.symbol; // -> 'circuitboard'
+microResourcesInCategory("consumable").length; // -> 6
+
+// …or, when the string could be either key:
+getMicroResource("circuitboard")?.name; // -> 'Circuit Board'
+```
+
+The same optional trailing argument narrows the search to one category's catalogue,
+or to any array you have filtered yourself:
 
 | Import                                 | Export                       | What's in it                                | Entries |
 | -------------------------------------- | ---------------------------- | ------------------------------------------- | ------- |
@@ -408,31 +446,16 @@ category:
 | `materials/micro-resources-consumable` | `CONSUMABLE_MICRO_RESOURCES` | Deployable field tools (medkits, grenades…) | 6       |
 | `materials/micro-resources-data`       | `DATA_MICRO_RESOURCES`       | Intel and files traded on foot              | 114     |
 | `materials/micro-resources-item`       | `ITEM_MICRO_RESOURCES`       | Physical goods collected and traded on foot | 43      |
-| `materials/micro-resources-all`        | `ALL_MICRO_RESOURCES`        | All four, concatenated                      | 196     |
-
-```ts
-import {
-  getMicroResourceBySymbol,
-  getMicroResourceByName,
-  microResourcesInCategory,
-} from "@elite-dangerous-almanac/core/materials";
-import { COMPONENT_MICRO_RESOURCES } from "@elite-dangerous-almanac/core/materials/micro-resources-component";
-import { ALL_MICRO_RESOURCES } from "@elite-dangerous-almanac/core/materials/micro-resources-all";
-
-getMicroResourceBySymbol("graphene", COMPONENT_MICRO_RESOURCES)?.name; // -> 'Graphene'
-getMicroResourceByName("circuit board", COMPONENT_MICRO_RESOURCES)?.symbol; // -> 'circuitboard'
-microResourcesInCategory("consumable", ALL_MICRO_RESOURCES).length; // -> 6
-```
+| `materials/micro-resources-all`        | `ALL_MICRO_RESOURCES`        | All four, concatenated — the default        | 196     |
 
 ## Ships and outfitting
 
 The `ships` feature area covers Frontier's 48 player-flyable **hulls** and the ~1200
 fittable **modules** — each as **one record carrying identity, stats, price and (for
 hulls) slot layout together** — plus **jump-range calculations** you can drive straight from
-a [SLEF](#ship-builds-jump-range-the-journal-and-slef) export. Modules stay split by outfitting
-category for direct catalogue imports, so an app can avoid categories it does not
-search. The high-level `ShipLoadout` facade is the deliberate exception: resolving
-an arbitrary imported build and its engineering requires all four module catalogues.
+a [SLEF](#ship-builds-jump-range-the-journal-and-slef) export. Modules are also
+exported split by outfitting category, so an app that never searches outside one
+category can import just that catalogue and skip the rest.
 
 Ships are one small catalogue, so the lookups carry the data. Each `Ship` carries the
 hull's identity, its stats (`hullMass`, `speed`, …) and its slot layout (`core`,
@@ -442,6 +465,7 @@ equivalent fields come from EDSY and Frontier's update notes:
 ```ts
 import {
   SHIPS,
+  getShip,
   getShipBySymbol,
   getShipByName,
   getShipSlots,
@@ -452,6 +476,11 @@ getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the r
 getShipSlots("anaconda")?.hardpoints; // -> [4, 3, 3, 3, 2, 2, 1, 1] (slot layout, ready for the build editor)
 getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
 SHIPS.length; // -> 48
+
+// A journal gives you the symbol, a dropdown the display name, and for most hulls
+// the two differ. When the string could be either, `getShip` takes both:
+getShip("empire_trader")?.name; // -> 'Imperial Clipper'
+getShip("Imperial Clipper")?.symbol; // -> 'Empire_Trader'
 ```
 
 The stored `symbol` is Frontier's own casing (`Empire_Trader`), while the journal's
@@ -459,8 +488,24 @@ The stored `symbol` is Frontier's own casing (`Empire_Trader`), while the journa
 matches case-insensitively, so either form resolves — but compare a record's `symbol`
 to a journal value case-insensitively rather than with `===`.
 
-Modules are split by Frontier's four outfitting **categories**, so you pay only
-for the catalogue you import (subpaths below are relative to
+The module lookups live in `ships/modules` and **search all 1198 modules by
+default**. A journal `Item` string does not tell you which outfitting category it
+belongs to, so having to know that before you could look it up was backwards:
+
+```ts
+import {
+  getModuleBySymbol,
+  getModulesByName,
+  getModulesForShip,
+} from "@elite-dangerous-almanac/core/ships/modules";
+
+getModuleBySymbol("Hpt_PulseLaser_Fixed_Small")?.name; // -> 'Pulse Laser'
+getModulesByName("Pulse Laser").length; // every size/mount variant
+getModulesForShip("Anaconda").length; // -> 5 (its bulkhead set)
+```
+
+Modules are also exported split by Frontier's four outfitting **categories**, which
+the optional trailing argument narrows the search to (subpaths below are relative to
 `@elite-dangerous-almanac/core`). Each record carries the module's **identity and
 its stats together** (see [Module stats](#ship-and-module-stats) below):
 
@@ -470,24 +515,23 @@ its stats together** (see [Module stats](#ship-and-module-stats) below):
 | `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 483     |
 | `ships/modules-hardpoint` | `HARDPOINT_MODULES` | Hardpoint weapons and tools                             | 159     |
 | `ships/modules-utility`   | `UTILITY_MODULES`   | Utility-mount fittings (chaff, heat sinks, boosters, …) | 35      |
-| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated                                  | 1198    |
-
-The query functions live in `ships/modules` and hold no data — hand them whichever
-catalogue you imported:
+| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated — the default                    | 1198    |
 
 ```ts
-import {
-  getModuleBySymbol,
-  getModulesByName,
-  getModulesForShip,
-} from "@elite-dangerous-almanac/core/ships/modules";
+import { getModulesByName } from "@elite-dangerous-almanac/core/ships/modules";
 import { HARDPOINT_MODULES } from "@elite-dangerous-almanac/core/ships/modules-hardpoint";
-import { CORE_MODULES } from "@elite-dangerous-almanac/core/ships/modules-core";
 
-getModuleBySymbol("Hpt_PulseLaser_Fixed_Small", HARDPOINT_MODULES)?.name; // -> 'Pulse Laser'
-getModulesByName("Pulse Laser", HARDPOINT_MODULES).length; // every size/mount variant
-getModulesForShip("Anaconda", CORE_MODULES).length; // -> 5 (its bulkhead set)
+getModulesByName("Pulse Laser", HARDPOINT_MODULES).length; // hardpoints only
 ```
+
+> **This is the one default that costs real bundle weight.** Importing a lookup from
+> `ships/modules` pulls all four catalogues — about 290 KB minified (~29 KB
+> gzipped) — because that is what it falls back to, and passing an explicit catalogue
+> does not undo it. A build that must carry only one category should import that
+> catalogue module and search it with plain `Array` methods
+> (`UTILITY_MODULES.find((m) => m.symbol === wanted)`), which pulls no other
+> category. Every record carries its `category`, so filtering _results_ by category
+> never needs a separate catalogue.
 
 Each module carries a `class` (the module **size**, 0–8) and a `rating` (the grade
 letter, A–I) — together the "5A" the outfitting screen shows. `mount`
@@ -1095,31 +1139,44 @@ The `commodities` feature area is Frontier's commodity-market registry: the 257
 **standard** goods traded at station markets and the 142 **rare** goods each
 produced at a single station. Every entry is a symbol/name/category record (not a
 price sheet — no buy/sell price, supply or demand, which the source registry does
-not carry). The two registries share a shape, so you pay only for the catalogue you
-import (subpaths below are relative to `@elite-dangerous-almanac/core`):
+not carry). The two registries share a shape, and **every lookup searches both by
+default** — so you do not have to know whether a good is standard or rare before you
+can find it:
+
+```ts
+import {
+  getCommodity,
+  getCommodityBySymbol,
+  getCommodityByName,
+  commoditiesInCategory,
+} from "@elite-dangerous-almanac/core/commodities";
+
+getCommodityBySymbol("platinum")?.category; // -> 'Metals' (either casing resolves)
+getCommodityByName("lavian brandy")?.rare; // -> true
+commoditiesInCategory("Metals").length; // -> every metal, standard and rare
+
+// …or, when the string could be either key:
+getCommodity("lavianbrandy")?.name; // -> 'Lavian Brandy'
+```
+
+The optional trailing argument narrows the search to one registry, or to any array
+you have filtered yourself (subpaths below are relative to
+`@elite-dangerous-almanac/core`):
 
 | Import                             | Export             | What's in it                                     | Entries |
 | ---------------------------------- | ------------------ | ------------------------------------------------ | ------- |
 | `commodities/commodities-standard` | `COMMODITIES`      | Standard market goods, all sixteen market groups | 257     |
 | `commodities/commodities-rare`     | `RARE_COMMODITIES` | Location-specific rare/luxury goods              | 142     |
-| `commodities/commodities-all`      | `ALL_COMMODITIES`  | Both, standard then rare                         | 399     |
-
-The query functions live in `commodities` and hold no data — hand them whichever
-catalogue you imported:
+| `commodities/commodities-all`      | `ALL_COMMODITIES`  | Both, standard then rare — the default           | 399     |
 
 ```ts
-import {
-  getCommodityBySymbol,
-  getCommodityByName,
-  commoditiesInCategory,
-} from "@elite-dangerous-almanac/core/commodities";
+import { commoditiesInCategory } from "@elite-dangerous-almanac/core/commodities";
 import { COMMODITIES } from "@elite-dangerous-almanac/core/commodities/commodities-standard";
-import { RARE_COMMODITIES } from "@elite-dangerous-almanac/core/commodities/commodities-rare";
 
-getCommodityBySymbol("platinum", COMMODITIES)?.category; // -> 'Metals' (either casing resolves)
-getCommodityByName("lavian brandy", RARE_COMMODITIES)?.rare; // -> true
-commoditiesInCategory("Metals", COMMODITIES).length; // -> every metal on the market
+commoditiesInCategory("Metals", COMMODITIES).length; // -> the standard ones only
 ```
+
+Every record carries the `rare` flag, so a subset is also one `.filter()` away.
 
 Each commodity carries a stable Frontier `symbol` (the journal names commodities by
 its lower-cased form, so `getCommodityBySymbol` accepts either casing), a display

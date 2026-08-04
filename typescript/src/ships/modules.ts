@@ -1,13 +1,21 @@
 /**
- * Outfitting-module types and lookups — the **data-free** core of the ship-modules
- * feature.
+ * Outfitting-module types and lookups.
  *
  * Elite Dangerous has ~1200 fittable modules. This module holds the
  * {@link OutfittingModule} record shape — a module's **identity and its stats**
- * together — and the pure functions that search a catalogue
- * ({@link getModuleBySymbol}, {@link getModulesByName}, {@link getModulesForShip});
- * the catalogues themselves live in sibling modules, one per Frontier outfitting
- * category, so you only bundle the ones you ask for:
+ * together — and the functions that find one ({@link getModuleBySymbol},
+ * {@link getModulesByName}, {@link getModulesForShip}).
+ *
+ * **Every lookup searches all 1198 modules by default.** A journal `Item` string
+ * does not tell you which outfitting category it belongs to, so needing to know that
+ * before you could look it up was backwards:
+ *
+ * ```ts
+ * getModuleBySymbol('Hpt_PulseLaser_Fixed_Small')?.name; // -> 'Pulse Laser'
+ * ```
+ *
+ * Each lookup still takes an optional second argument to **narrow** the search to a
+ * subset — one category's catalogue, or any array you have filtered yourself:
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
@@ -15,22 +23,29 @@
  * | `./modules-internal` | `INTERNAL_MODULES` | 483 |
  * | `./modules-hardpoint` | `HARDPOINT_MODULES` | 159 |
  * | `./modules-utility` | `UTILITY_MODULES` | 35 |
- * | `./modules-all` | `ALL_MODULES` | 1198 |
+ * | `./modules-all` | `ALL_MODULES` | 1198 (the default) |
  *
- * Importing a query function from here costs nothing but the function: pass in
- * whichever catalogue you imported.
+ * @remarks
+ * **This is the one place where the default costs real bundle weight.** Importing a
+ * lookup from here pulls all four catalogues — about 290 KB minified (~29 KB
+ * gzipped) — because that is what it falls back to, and passing an explicit
+ * catalogue does not undo it. A build that must carry only one category should
+ * import that catalogue module and search it with plain `Array` methods
+ * (`UTILITY_MODULES.find((m) => m.symbol === wanted)`), which pulls no other
+ * category. Every record carries its {@link OutfittingModule.category}, so
+ * filtering results by category needs no separate catalogue.
  *
  * @example
  * ```ts
  * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
- * import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
  *
- * getModuleBySymbol('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES)?.name;
- * // -> 'Pulse Laser'
+ * getModuleBySymbol('hpt_pulselaser_fixed_small')?.name; // -> 'Pulse Laser'
  * ```
  *
  * @packageDocumentation
  */
+
+import { ALL_MODULES } from './modules-all.js';
 
 /**
  * Frontier's outfitting category — which kind of slot a module fits.
@@ -351,19 +366,20 @@ export interface OutfittingModule {
  * @param symbol - The internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`.
  * Leading/trailing whitespace and case are ignored, so the journal's lower-cased
  * form resolves too.
- * @param modules - The catalogue to search — `CORE_MODULES`, `INTERNAL_MODULES`,
- * `HARDPOINT_MODULES`, `UTILITY_MODULES`, `ALL_MODULES`, or any subset you have
- * filtered yourself.
- * @returns The matching {@link OutfittingModule}, or `null` if the catalogue holds
- * no module with that symbol.
+ * @param modules - Optional subset to search instead of all 1198 modules —
+ * `CORE_MODULES`, `INTERNAL_MODULES`, `HARDPOINT_MODULES`, `UTILITY_MODULES`, or any
+ * array you have filtered yourself. Omit it unless you specifically want to exclude
+ * the other categories; a symbol is unique across all four.
+ * @returns The matching {@link OutfittingModule}, or `null` if no module has that
+ * symbol.
  * @example
  * ```ts
- * getModuleBySymbol('hpt_pulselaser_fixed_small', HARDPOINT_MODULES)?.class; // -> 1
+ * getModuleBySymbol('hpt_pulselaser_fixed_small')?.class; // -> 1
  * ```
  */
 export function getModuleBySymbol(
     symbol: string,
-    modules: readonly OutfittingModule[],
+    modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule | null {
     const wanted = symbol.trim().toLowerCase();
     return modules.find((module) => module.symbol.toLowerCase() === wanted) ?? null;
@@ -374,18 +390,18 @@ export function getModuleBySymbol(
  *
  * @param name - The display name as the registry spells it, e.g. `"Pulse Laser"`.
  * Leading/trailing whitespace and case are ignored, but matching is otherwise exact.
- * @param modules - The catalogue to search (see {@link getModuleBySymbol}).
+ * @param modules - Optional subset to search (see {@link getModuleBySymbol}).
  * @returns All matching modules — the name is shared across sizes, ratings and (for
  * armour) hulls, so this returns an array. Empty if none match. The input array is
  * not modified.
  * @example
  * ```ts
- * getModulesByName('pulse laser', HARDPOINT_MODULES).length; // -> every size/mount variant
+ * getModulesByName('pulse laser').length; // -> every size/mount variant
  * ```
  */
 export function getModulesByName(
     name: string,
-    modules: readonly OutfittingModule[],
+    modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule[] {
     const wanted = name.trim().toLowerCase();
     return modules.filter((module) => module.name.toLowerCase() === wanted);
@@ -397,25 +413,24 @@ export function getModulesByName(
  * @param ship - The hull's display name as the registry spells it, e.g.
  * `"Anaconda"`. Leading/trailing whitespace and case are ignored, but matching is
  * otherwise exact.
- * @param modules - The catalogue to search (see {@link getModuleBySymbol}). Armour lives
- * in `CORE_MODULES` (and therefore `ALL_MODULES`); other catalogues hold no
- * ship-specific modules and return an empty array.
+ * @param modules - Optional subset to search (see {@link getModuleBySymbol}). Armour
+ * lives in `CORE_MODULES`; narrowing to any other category returns an empty array.
  * @returns The ship's armour modules — the five bulkhead variants — or an empty
- * array if the catalogue holds none for that hull. The input array is not modified.
+ * array if none are carried for that hull. The input array is not modified.
  * @remarks
  * Armour is the only module tied to a specific hull; every other module fits by slot
  * size, so "modules for a ship" beyond armour is a question of slot layout, which
  * this registry does not carry.
  * @example
  * ```ts
- * getModulesForShip('Anaconda', CORE_MODULES).map((m) => m.name);
+ * getModulesForShip('Anaconda').map((m) => m.name);
  * // -> [ 'Lightweight Alloy', 'Reinforced Alloy', 'Military Grade Composite',
  * //      'Mirrored Surface Composite', 'Reactive Surface Composite' ]
  * ```
  */
 export function getModulesForShip(
     ship: string,
-    modules: readonly OutfittingModule[],
+    modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule[] {
     const wanted = ship.trim().toLowerCase();
     return modules.filter((module) => module.ship?.toLowerCase() === wanted);

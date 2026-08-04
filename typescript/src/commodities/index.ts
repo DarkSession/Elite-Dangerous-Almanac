@@ -2,15 +2,24 @@
  * Elite Dangerous market commodities — the goods traded at station commodity
  * markets, standard and rare.
  *
- * The query functions hold no data; each catalogue is its own module, so import
- * only the ones you use:
+ * Every lookup searches both registries by default — import the function and call
+ * it:
  *
  * ```ts
- * import { getCommodityByName, commoditiesInCategory } from '@elite-dangerous-almanac/core/commodities';
+ * import { getCommodity, commoditiesInCategory } from '@elite-dangerous-almanac/core/commodities';
+ *
+ * getCommodity('gold')?.category;         // -> 'Metals'
+ * commoditiesInCategory('Metals').length; // -> every metal, standard and rare
+ * ```
+ *
+ * Every lookup also takes an optional trailing argument to **narrow** the search to
+ * one registry, or to an array you have filtered yourself:
+ *
+ * ```ts
+ * import { commoditiesInCategory } from '@elite-dangerous-almanac/core/commodities';
  * import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-standard';
  *
- * getCommodityByName('gold', COMMODITIES)?.category;      // -> 'Metals'
- * commoditiesInCategory('Metals', COMMODITIES).length;    // -> every metal on the market
+ * commoditiesInCategory('Metals', COMMODITIES).length; // -> the standard ones only
  * ```
  *
  * Data from EDCD FDevIDs (`commodity.csv`, `rare_commodity.csv`), plus one standard
@@ -21,8 +30,9 @@
  * @packageDocumentation
  */
 
-// ── Types and the data-free query functions ──────────────────────────────────
+// ── Types and the lookups (each defaults to both registries) ─────────────────
 export {
+    getCommodity,
     getCommodityBySymbol,
     getCommodityByName,
     commoditiesInCategory,
@@ -30,7 +40,7 @@ export {
     type CommodityCategory,
 } from './commodities.js';
 
-// ── Catalogues (one module per registry so bundlers can drop the rest) ────────
+// ── Catalogues (one module per registry, for narrowing a search by hand) ──────
 export { COMMODITIES } from './commodities-standard.js';
 export { RARE_COMMODITIES } from './commodities-rare.js';
 export { ALL_COMMODITIES } from './commodities-all.js';

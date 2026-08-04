@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+    getCommodity,
     getCommodityBySymbol,
     getCommodityByName,
     commoditiesInCategory,
@@ -110,6 +111,37 @@ test('commoditiesInCategory ignores case and whitespace, like every other lookup
         commoditiesInCategory('consumer items', COMMODITIES),
         commoditiesInCategory('Consumer Items', COMMODITIES),
     );
+});
+
+test('every lookup searches both registries when no catalogue is given', () => {
+    // The caller does not have to know whether a good is standard or rare first.
+    assert.equal(getCommodityBySymbol('platinum')?.rare, false);
+    assert.equal(getCommodityBySymbol('lavianbrandy')?.rare, true);
+    assert.equal(getCommodityByName('lavian brandy')?.symbol, 'LavianBrandy');
+    assert.equal(
+        commoditiesInCategory('Metals').length,
+        commoditiesInCategory('Metals', COMMODITIES).length +
+            commoditiesInCategory('Metals', RARE_COMMODITIES).length,
+    );
+});
+
+test('an explicit catalogue still narrows the search', () => {
+    // Lavian Brandy is rare, so a standard-only search must not find it.
+    assert.equal(getCommodityBySymbol('lavianbrandy', COMMODITIES), null);
+    assert.equal(getCommodityByName('platinum', RARE_COMMODITIES), null);
+    assert.deepEqual(commoditiesInCategory('Minerals', RARE_COMMODITIES), []);
+});
+
+test('getCommodity resolves a symbol or a display name', () => {
+    const brandy = getCommodityBySymbol('LavianBrandy', RARE_COMMODITIES);
+    assert.ok(brandy);
+    // Both keys reach the same record — the caller need not know which it holds.
+    assert.deepEqual(getCommodity('lavianbrandy'), brandy);
+    assert.deepEqual(getCommodity(' Lavian Brandy '), brandy);
+    assert.equal(getCommodity('nonexistent'), null);
+    assert.equal(getCommodity(''), null);
+    // The catalogue argument narrows it like every other lookup.
+    assert.equal(getCommodity('lavian brandy', COMMODITIES), null);
 });
 
 test('catalogues and their records are frozen', () => {

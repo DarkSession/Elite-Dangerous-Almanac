@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+    getMicroResource,
     getMicroResourceBySymbol,
     getMicroResourceByName,
     microResourcesInCategory,
@@ -107,6 +108,36 @@ test('every micro-resource category value is a known category', () => {
     for (const resource of ALL_MICRO_RESOURCES) {
         assert.ok(known.has(resource.category), `unknown category ${resource.category}`);
     }
+});
+
+test('every lookup searches all micro resources when no catalogue is given', () => {
+    assert.equal(getMicroResourceBySymbol('circuitboard')?.name, 'Circuit Board');
+    assert.equal(getMicroResourceByName('circuit board')?.symbol, 'circuitboard');
+    assert.equal(microResourcesInCategory('consumable').length, CONSUMABLE_MICRO_RESOURCES.length);
+    // A record from every category is reachable without naming its catalogue.
+    for (const category of CATEGORIES) {
+        const first = CATALOGUES[category]![0]!;
+        assert.deepEqual(getMicroResourceBySymbol(first.symbol), first);
+    }
+});
+
+test('an explicit catalogue still narrows the search', () => {
+    // Graphene is a component, so a consumable-only search must not find it.
+    assert.equal(getMicroResourceBySymbol('graphene', CONSUMABLE_MICRO_RESOURCES), null);
+    assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
+    assert.deepEqual(microResourcesInCategory('item', COMPONENT_MICRO_RESOURCES), []);
+});
+
+test('getMicroResource resolves a symbol or a display name', () => {
+    const board = getMicroResourceBySymbol('circuitboard', COMPONENT_MICRO_RESOURCES);
+    assert.ok(board);
+    // Both keys reach the same record — the caller need not know which it holds.
+    assert.deepEqual(getMicroResource('circuitboard'), board);
+    assert.deepEqual(getMicroResource(' Circuit Board '), board);
+    assert.equal(getMicroResource('nonexistent'), null);
+    assert.equal(getMicroResource(''), null);
+    // The catalogue argument narrows it like every other lookup.
+    assert.equal(getMicroResource('circuit board', CONSUMABLE_MICRO_RESOURCES), null);
 });
 
 test('catalogues and their records are frozen', () => {
