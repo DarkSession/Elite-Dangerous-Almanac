@@ -22,11 +22,10 @@ import { deepFreeze } from '../deep-freeze.js';
  * All 35 utility-mount modules, in Frontier's registry order.
  *
  * @remarks
- * Every record has `category: 'utility'`. Search it with plain `Array` methods
- * (`UTILITY_MODULES.find((m) => m.symbol.toLowerCase() === wanted)` — a journal spells
- * the symbol lower-cased) to keep the other three categories
- * out of your bundle — the lookups in `./modules` default to all 1198 modules, so
- * importing one pulls every catalogue.
+ * Every record has `category: 'utility'`. To keep the other three categories out of
+ * your bundle, search this array directly — `UTILITY_MODULES.find((m) =>
+ * m.symbol.toLowerCase() === wanted)`, lower-cased because a journal's symbols are —
+ * rather than with the lookups in `./modules`, which default to all 1198 modules.
  *
  * @example
  * ```ts

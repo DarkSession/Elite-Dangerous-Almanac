@@ -24,10 +24,9 @@
  * | `./commodities-rare` | `RARE_COMMODITIES` | 142 |
  * | `./commodities-all` | `ALL_COMMODITIES` | 399 (the default) |
  *
- * That argument narrows *results*, not bundle size: importing any lookup from here
- * pulls both catalogues, since that is what it falls back to (about 28 KB minified
- * for all 399). Every record carries a {@link Commodity.rare} flag, so a subset is
- * one `.filter()` away once the data is loaded.
+ * It narrows *results*, not bundle size: importing a lookup pulls both catalogues,
+ * since that is what it falls back to — 28 KB minified for all 399. Every record
+ * carries a {@link Commodity.rare} flag, so a subset is one `.filter()` away.
  *
  * Data from EDCD FDevIDs (`commodity.csv`, `rare_commodity.csv`), plus one standard
  * record observed in a player journal and not yet in FDevIDs (its market category is

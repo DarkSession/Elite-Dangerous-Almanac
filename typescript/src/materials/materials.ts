@@ -25,11 +25,9 @@
  * | `./materials-encoded` | `ENCODED_MATERIALS` | 47 |
  * | `./materials-all` | `ALL_MATERIALS` | 146 (the default) |
  *
- * That argument narrows *results*, not bundle size: importing any lookup from here
- * pulls all three catalogues, since that is what it falls back to. All 146 records
- * are about 15 KB minified (~3 KB gzipped). A build that must not carry them can import one
- * catalogue module and search it with plain `Array` methods, or use
- * {@link materialsInCategory} once the data is loaded anyway.
+ * It narrows *results*, not bundle size: importing a lookup pulls all three
+ * catalogues, since that is what it falls back to — 15 KB minified for all 146.
+ * {@link materialsInCategory} reaches the same subsets from a plain string.
  *
  * Data originates from EDCD FDevIDs, with a handful of newer Thargoid materials
  * from INARA; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).

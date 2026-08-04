@@ -26,23 +26,21 @@
  * | `./modules-utility` | `UTILITY_MODULES` | 35 |
  * | `./modules-all` | `ALL_MODULES` | 1198 (the default) |
  *
- * In practice the category catalogues are for **listing** a category — an outfitting
- * screen's hardpoint tab — rather than for narrowing a lookup: no module symbol or
- * display name is shared across categories, so passing one to a lookup can only make
- * it fail to find something it would otherwise have found. The argument earns its
- * keep on a subset you filtered yourself (a hull's fittable set, a player's owned
- * modules).
+ * Those four are for **listing** a category — an outfitting screen's hardpoint tab.
+ * They make poor narrowing arguments: no module symbol or display name is shared
+ * across categories, so passing one to a lookup can only make it miss.
  *
  * @remarks
- * **This is the one place where the default costs real bundle weight.** Importing a
- * lookup from here pulls all four catalogues — about 290 KB minified (~30 KB
- * gzipped) — because that is what it falls back to, and passing an explicit
- * catalogue does not undo it. A build that must carry only one category should
- * import that catalogue module and search it with plain `Array` methods
- * (`UTILITY_MODULES.find((m) => m.symbol.toLowerCase() === wanted)` — catalogue symbols
- * are mixed-case and a journal's are not), which pulls no other
- * category. Every record carries its {@link OutfittingModule.category}, so
- * filtering results by category needs no separate catalogue.
+ * **This is the one default that costs real bundle weight.** A lookup imported from
+ * here pulls all four catalogues — about 290 KB minified (~30 KB gzipped) — since
+ * that is what it falls back to, and passing an explicit catalogue does not undo it.
+ * A build that must carry only one category should import that catalogue and search
+ * it directly:
+ *
+ * ```ts
+ * // Catalogue symbols are mixed-case; a journal's are not.
+ * UTILITY_MODULES.find((m) => m.symbol.toLowerCase() === wanted);
+ * ```
  *
  * @example
  * ```ts

@@ -26,10 +26,9 @@
  * | `./micro-resources-item` | `ITEM_MICRO_RESOURCES` | 43 |
  * | `./micro-resources-all` | `ALL_MICRO_RESOURCES` | 196 (the default) |
  *
- * That argument narrows *results*, not bundle size: importing any lookup from here
- * pulls all four catalogues, since that is what it falls back to (about 14 KB
- * minified for all 196). {@link microResourcesInCategory} reaches the same subsets
- * from a plain string once the data is loaded.
+ * It narrows *results*, not bundle size: importing a lookup pulls all four
+ * catalogues, since that is what it falls back to — 14 KB minified for all 196.
+ * {@link microResourcesInCategory} reaches the same subsets from a plain string.
  *
  * Data originates from EDCD FDevIDs (`microresources.csv`); see
  * [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).

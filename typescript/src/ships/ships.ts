@@ -4,10 +4,8 @@
  * an internal symbol or a display name into a {@link Ship}.
  *
  * There is only one list of ships and it is tiny (48 records), so the lookups here
- * take no catalogue argument at all — they always search {@link SHIPS}. (The module
- * lookups in `./modules` do still take one, for searching a subset you filtered
- * yourself.) Importing a lookup here bundles the whole ship list — which is what you
- * wanted anyway.
+ * take no catalogue argument at all — they always search {@link SHIPS}. Importing one
+ * bundles the whole ship list, which is what you wanted anyway.
  *
  * Identity from EDCD FDevIDs (`shipyard.csv`); stats and slot layout from
  * EDCD/coriolis-data, joined on `symbol`; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
