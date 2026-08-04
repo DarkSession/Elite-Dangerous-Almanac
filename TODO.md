@@ -45,7 +45,7 @@ other eleven diverge, every one of them a naming difference alone:
 | Type-10 Defender | `Slot01`…`Slot08`, **`Slot11_Size2`**, **`Slot12_Size1`** | `Slot09_Size2`, `Slot10_Size1` |
 | Federal Dropship | `…Slot06_Size3`, **`Slot09_Size2`**, **`Slot10_Size1`** | `Slot07_Size2`, `Slot08_Size1` |
 | Vulture | `Slot01`, `Slot02`, `Slot03`, **`Slot05`**, `Slot06`, `Slot07`, `Slot08` | `Slot01`…`Slot07` |
-| Type-7 Transporter | `…Slot08_Size2`, `Slot09_Size2`, **`Slot09_Size1`** — the number 09 twice | `Slot09_Size2`, `Slot10_Size1` |
+| Type-7 Transporter | `Slot01_Size6`, `Slot02_Size6`, `Slot03_Size5`, `Slot04_Size5`, `Slot05_Size4`, `Slot06_Size4`, `Slot07_Size2`, `Slot08_Size2`, `Slot09_Size2`, **`Slot09_Size1`** — the number 09 twice, and six of the ten suffixes misreport the size | `Slot01_Size6`…`Slot10_Size1`, sizes 6,6,6,5,5,5,3,3,2,1 |
 | Keelback | `Slot03_Size3` on a slot that is size **4** | `Slot03_Size4` |
 | Asp Scout | `Slot01_Size4` on a slot that is size **5** | `Slot01_Size5` |
 | **Type-8 Transporter** | *hardpoints* `…SmallHardpoint2`, **`SmallHardpoint4`**, `SmallHardpoint5`, `SmallHardpoint6` | `SmallHardpoint3`, `4`, `5` |
@@ -95,12 +95,18 @@ own reason:
   the Panther Clipper Mk II, and `edsy.js` refuses any reserved `icr` outside a slot
   named `CARGO*`; coriolis-data carries the same as `"restriction": "Cargo"` on the
   module and describes it as a "Panther Clipper storage rack". The Mk II Mining
-  Multi-Limpet Controller is the same shape against `LIMPETCONTROLLER*`. Today
-  `ShipLoadout.empty('Type9').setModule('Slot01_Size8', mkIICargoRack)` succeeds and
-  should not. The right fix is a module-side field naming the slot restriction a module
-  requires — **not** `restrictedToShips: ["PantherMkII"]`, which encodes the weaker rule
-  and would still let the rack into the Panther's *unrestricted* size-8 mount. Left
-  whole rather than half-done.
+  Multi-Limpet Controller is the same shape against `LIMPETCONTROLLER*`.
+
+  The two are wrong by different amounts today, so scope the fix to both: the racks
+  carry no `restrictedToShips` at all, so
+  `ShipLoadout.empty('Type9').setModule('Slot01_Size8', mkIICargoRack)` succeeds — any
+  hull, any size-8 mount. The controller *does* carry `restrictedToShips:
+  ["LakonMiner"]`, so it is correctly refused on every other hull, and only the slot
+  half is missing — it is still accepted in the Type-11's unrestricted `Slot05_Size5`.
+  The right fix is a module-side field naming the slot restriction a module requires,
+  which covers both — **not** `restrictedToShips: ["PantherMkII"]` on the racks, which
+  encodes the weaker rule and would still let one into the Panther's *unrestricted*
+  size-8 mount. Left whole rather than half-done.
 - **Mount-type restrictions on a hardpoint.** Nothing here records that a mount is
   fixed-only, gimballed-only or turret-only; `OutfittingModule.mount` carries the
   weapon's side of it, but no hull says a mount refuses a turret.

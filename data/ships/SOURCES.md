@@ -323,7 +323,7 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   `hardpoints` (the non-zero weapon mounts) and `utility` (the count of zero
   entries); `slots.internal` becomes `optional`. A `hardpoints` or `optional` entry is
   a `{ size }` with an optional `restriction` — see the 2026-08-04 revision above for
-  the five restriction values and where each comes from. Coriolis's per-hull
+  the six restriction values and where each comes from. Coriolis's per-hull
   `bulkheads` are **not** kept on the hull: they are joined onto that hull's armour
   modules instead (see "Modules"), because armour is a module and the catalogue keeps a
   module's stats with the module. **Slot keys** are journal-compatible

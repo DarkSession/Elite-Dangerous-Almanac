@@ -851,7 +851,7 @@ guessing. They are matched **exactly**, in the game's spelling.
 such mount a name of its own — so `slot.restriction` says what it takes and
 `modulesForSlot` lists exactly that. `PlanetaryApproachSuite` is on all but one hull
 (the Lynx Highliner), `Military01…` (reinforcement packages and shield cell banks) on
-16 of the 48; the two newest hulls add more. The Type-11 Prospector's
+16 of the 48; two hulls add more. The Type-11 Prospector's
 `LargeMiningHardpoint1`, `MediumMiningHardpoint1`,
 `MediumMiningHardpoint2` and `SmallMiningHardpoint1` take **mining tools only** (its
 other four mounts, `MediumHardpoint3` and `SmallHardpoint2…4`, take any weapon), while

@@ -580,11 +580,13 @@
       ]
     },
     {
-      "ship": "Anaconda",
-      "slot": "Slot12_Size1",
+      "ship": "LakonMiner",
+      "slot": "Slot01_Size6",
       "restriction": null,
       "accepts": [
-        "Int_CargoRack_Size1_Class1"
+        "Int_CargoRack_Size6_Class1",
+        "Int_DroneControl_Collection_Size5_Class5",
+        "Int_FighterBay_Size6_Class1"
       ],
       "rejects": [
         "Int_PlanetApproachSuite"

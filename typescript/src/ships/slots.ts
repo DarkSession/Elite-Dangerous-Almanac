@@ -5,7 +5,7 @@
  * A hull offers a fixed set of mounts: seven core internals, a handful of weapon
  * hardpoints, some tiny utility mounts, and a column of optional internals. Some of
  * those mounts are **restricted** to one family of modules — military and
- * planetary-approach optionals on most hulls, and, on two of the newest, cargo-only,
+ * planetary-approach optionals on most hulls, and, on two hulls, cargo-only,
  * limpet-controller-only and vessel-hangar-only optionals and mining-only hardpoints
  * (see {@link SlotRestriction}). This module gives
  * each mount a stable **slot key** and a {@link BuildSlot} descriptor, and

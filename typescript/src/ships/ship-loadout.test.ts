@@ -396,6 +396,13 @@ test('every restricted mount accepts and refuses what the fixture pins', () => {
         const slot = build.slots().find((s) => s.key === rule.slot);
         assert.ok(slot, `${rule.ship} has no slot ${rule.slot}`);
         assert.equal(slot.restriction ?? null, rule.restriction, `${rule.slot} restriction`);
+        // `assert.throws(fn, string)` treats the string as a *message*, so a typo in a
+        // `rejects` symbol would pass on the undefined-module error instead. Resolve
+        // every symbol first, so a fixture typo fails loudly rather than silently
+        // retiring the case it was meant to test.
+        for (const symbol of [...rule.accepts, ...rule.rejects]) {
+            assert.ok(getModuleBySymbol(symbol, ALL_MODULES), `no module "${symbol}"`);
+        }
         for (const symbol of rule.accepts) {
             assert.doesNotThrow(
                 () => build.setModule(rule.slot, mod(symbol, ALL_MODULES)),
