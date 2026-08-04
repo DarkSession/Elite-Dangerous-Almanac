@@ -154,10 +154,11 @@ SLOT_RESTRICTION_LABELS[mount.restriction!]; // -> 'mining tools' (what to show 
 mount.modulesForSlot(HARDPOINT_MODULES); // -> the mining tools that fit, and only those
 
 mount.fit(getModuleBySymbol('Hpt_PlasmaAccelerator_Fixed_Large', HARDPOINT_MODULES)!);
-// throws TypeError: ... → LargeMiningHardpoint1: slot only takes mining tools
+// throws TypeError: ShipLoadout.setModule: Hpt_PlasmaAccelerator_Fixed_Large
+//   → LargeMiningHardpoint1: slot only takes mining tools
 ```
 
-> **Upgrading from 0.0.1:** `ShipSlots.hardpoints` (and `Ship.hardpoints`) changed from
+> **Upgrading from 0.0.1 to 0.1.0:** `ShipSlots.hardpoints` (and `Ship.hardpoints`) changed from
 > `readonly number[]` to `readonly HardpointSlotSpec[]` — `{ size, restriction? }`
 > entries, matching `optional`. Read `hardpoints[i].size` where you read
 > `hardpoints[i]` before. TypeScript flags every site; **plain JavaScript will not**.

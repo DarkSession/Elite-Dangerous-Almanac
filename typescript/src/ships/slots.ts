@@ -20,6 +20,8 @@
  * @packageDocumentation
  */
 
+import { deepFreeze } from '../deep-freeze.js';
+
 /** The kind of mount a slot is. */
 export type SlotKind = 'core' | 'hardpoint' | 'utility' | 'optional' | 'armour' | 'cargoHatch';
 
@@ -90,14 +92,14 @@ export type SlotRestriction = HardpointRestriction | OptionalRestriction;
  * slot.restriction && SLOT_RESTRICTION_LABELS[slot.restriction]; // -> 'mining tools'
  * ```
  */
-export const SLOT_RESTRICTION_LABELS: Readonly<Record<SlotRestriction, string>> = {
+export const SLOT_RESTRICTION_LABELS: Readonly<Record<SlotRestriction, string>> = deepFreeze({
     mining: 'mining tools',
     military: 'reinforcement packages and shield cell banks',
     planetaryApproachSuite: 'planetary approach suites',
     cargo: 'cargo racks and fuel tanks',
     limpetController: 'limpet controllers',
     vesselHangar: 'vessel hangars',
-};
+});
 
 /**
  * The seven fixed core-internal mounts, by function.
@@ -156,6 +158,10 @@ export interface BuildSlot {
      * The restriction, when the mount is a restricted one — a
      * {@link HardpointRestriction} on a `hardpoint` slot, an
      * {@link OptionalRestriction} on an `optional` one. Absent on every other kind.
+     *
+     * @remarks
+     * {@link SLOT_RESTRICTION_LABELS} turns this into a phrase to show a user;
+     * `ShipLoadout.modulesForSlot` turns it into the modules that actually fit.
      */
     readonly restriction?: SlotRestriction;
     /**

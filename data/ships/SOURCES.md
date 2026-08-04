@@ -527,6 +527,13 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   - One source row (`Int_MkIIAgileBoost_Engine_Size5_Class5`) has the literal string
     `mount` in its `mount` column — a thruster has no hardpoint mount, so the field
     is omitted, matching every other thruster.
+  - **`Int_LargeCargoRack_Size8_class1` really is spelled with a lower-case `class1`**
+    — the only record in all four catalogues that is. It is not a typo here: EDCD
+    FDevIDs `outfitting.csv` spells it exactly that way (row `129034964`), and identity
+    comes from FDevIDs. EDSY normalises it to `_Class1`, which is why a cross-check
+    against EDSY looks like it disagrees. Lookups are case-insensitive so nothing
+    breaks, but `module.symbol` is what an app renders and compares, so leave the
+    casing alone until FDevIDs changes it.
 - **Operations / Lynx additions — from EDSY, Inara and Frontier's update notes** (not
   in coriolis-data / FDevIDs at the acquired commit):
   - **Mk II Vessel Hangars** (`Int_FighterBayMk2_Size{5,6,7}_Class1`) — new internal

@@ -97,7 +97,11 @@ export class LoadoutSlot implements BuildSlot {
     readonly kind: SlotKind;
     /** Slot size (class); `0` for utility and armour placeholders. */
     readonly size: number;
-    /** The mount's restriction, when it is a restricted one. */
+    /**
+     * The mount's restriction, when it is a restricted one — this mount takes that
+     * family of modules and nothing else. {@link SLOT_RESTRICTION_LABELS} names the
+     * family for a user; {@link LoadoutSlot.modulesForSlot} lists what actually fits.
+     */
     readonly restriction?: SlotRestriction;
     /** For a core slot, the core module function it accepts. */
     readonly core?: CoreSlotType;
@@ -128,7 +132,9 @@ export class LoadoutSlot implements BuildSlot {
     }
 
     /**
-     * Return the modules from a catalogue that fit this slot.
+     * Return the modules from a catalogue that fit this slot — size, kind and any
+     * {@link LoadoutSlot.restriction} all satisfied, so a restricted mount lists only
+     * its own family.
      *
      * @param catalogue - A module catalogue or filtered subset.
      * @returns Fitting modules in catalogue order.
@@ -142,6 +148,17 @@ export class LoadoutSlot implements BuildSlot {
      *
      * @param module - The module record to fit.
      * @returns A live handle for the newly fitted module.
+     * @throws {TypeError} If `module` is null/undefined, or it does not fit — wrong
+     * kind, too large for the mount, restricted to another hull, or refused by this
+     * mount's {@link LoadoutSlot.restriction}. The message names the module, the slot
+     * and the reason. Use {@link LoadoutSlot.modulesForSlot} to offer only fits.
+     * @example
+     * ```ts
+     * const mount = ShipLoadout.empty('LakonMiner').hardpoints()[0]!;
+     * mount.fit(plasmaAccelerator);
+     * // TypeError: ShipLoadout.setModule: Hpt_PlasmaAccelerator_Fixed_Large
+     * //   → LargeMiningHardpoint1: slot only takes mining tools
+     * ```
      */
     fit(module: OutfittingModule): FittedModule {
         this.#loadout.setModule(this.key, module);
