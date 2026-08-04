@@ -15,7 +15,8 @@
  * ```
  *
  * Each lookup still takes an optional second argument to **narrow** the search to a
- * subset — one category's catalogue, or any array you have filtered yourself:
+ * subset — any array you have filtered yourself. The catalogue is also exported split
+ * by Frontier's four outfitting categories:
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
@@ -34,11 +35,12 @@
  *
  * @remarks
  * **This is the one place where the default costs real bundle weight.** Importing a
- * lookup from here pulls all four catalogues — about 290 KB minified (~29 KB
+ * lookup from here pulls all four catalogues — about 290 KB minified (~30 KB
  * gzipped) — because that is what it falls back to, and passing an explicit
  * catalogue does not undo it. A build that must carry only one category should
  * import that catalogue module and search it with plain `Array` methods
- * (`UTILITY_MODULES.find((m) => m.symbol === wanted)`), which pulls no other
+ * (`UTILITY_MODULES.find((m) => m.symbol.toLowerCase() === wanted)` — catalogue symbols
+ * are mixed-case and a journal's are not), which pulls no other
  * category. Every record carries its {@link OutfittingModule.category}, so
  * filtering results by category needs no separate catalogue.
  *

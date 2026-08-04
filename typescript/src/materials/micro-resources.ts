@@ -27,7 +27,7 @@
  * | `./micro-resources-all` | `ALL_MICRO_RESOURCES` | 196 (the default) |
  *
  * That argument narrows *results*, not bundle size: importing any lookup from here
- * pulls all four catalogues, since that is what it falls back to (about 13 KB
+ * pulls all four catalogues, since that is what it falls back to (about 14 KB
  * minified for all 196). {@link microResourcesInCategory} reaches the same subsets
  * from a plain string once the data is loaded.
  *

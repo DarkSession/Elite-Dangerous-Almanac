@@ -237,8 +237,8 @@ The query functions live in `astro/nebulae` and hold no data — hand them which
 catalogue you imported. **Nebulae are the one registry whose catalogue argument stays
 required**: the [material](#materials), [commodity](#market-commodities) and
 [module](#ships-and-outfitting) lookups all default to their whole registry, but
-`ALL_NEBULAE` is 682 KB — three quarters of it planetary nebulae most apps never
-touch — so there is no defensible default to fall back to.
+`ALL_NEBULAE` is 682 KB — 94% of it planetary nebulae most apps never touch — so
+there is no defensible default to fall back to.
 
 ```ts
 import {
@@ -530,15 +530,17 @@ import { UTILITY_MODULES } from "@elite-dangerous-almanac/core/ships/modules-uti
 // Listing a category: import just that catalogue and read it. This pulls no other
 // category, where a lookup from `ships/modules` would pull all four.
 UTILITY_MODULES.length; // -> 35, the whole utility tab
-UTILITY_MODULES.find((m) => m.symbol === wanted); // a lookup that stays this cheap
+// Catalogue symbols are mixed-case, journal ones are not — hence `toLowerCase()`.
+const wanted = journalItem.toLowerCase();
+UTILITY_MODULES.find((m) => m.symbol.toLowerCase() === wanted); // stays this cheap
 ```
 
 > **This is the one default that costs real bundle weight.** Importing a lookup from
-> `ships/modules` pulls all four catalogues — about 290 KB minified (~29 KB
+> `ships/modules` pulls all four catalogues — about 290 KB minified (~30 KB
 > gzipped) — because that is what it falls back to, and passing an explicit catalogue
 > does not undo it. A build that must carry only one category should import that
 > catalogue module and search it with plain `Array` methods
-> (`UTILITY_MODULES.find((m) => m.symbol === wanted)`), which pulls no other
+> (`UTILITY_MODULES.find((m) => m.symbol.toLowerCase() === wanted)`), which pulls no other
 > category. Every record carries its `category`, so filtering _results_ by category
 > never needs a separate catalogue.
 
