@@ -136,3 +136,17 @@ test('getShip resolves a hull by symbol or by display name', () => {
         assert.deepEqual(getShip(ship.name), ship, ship.name);
     }
 });
+
+test('no hull’s display name is another hull’s symbol', () => {
+    // `getShip` tries symbol before name, an order no test could otherwise observe.
+    // Keep the two keyspaces disjoint and the precedence never matters; if a future
+    // shipyard entry collides, this fails rather than silently picking a winner.
+    const symbols = new Set(SHIPS.map((ship) => ship.symbol.toLowerCase()));
+    for (const ship of SHIPS) {
+        const name = ship.name.toLowerCase();
+        assert.ok(
+            !symbols.has(name) || ship.symbol.toLowerCase() === name,
+            `${ship.name} collides with another hull's symbol`,
+        );
+    }
+});

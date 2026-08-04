@@ -234,7 +234,11 @@ Every size in this README is the published **minified** ESM as npm ships it, mea
 over a module and everything it imports; the gzipped figure is what a server sends.
 
 The query functions live in `astro/nebulae` and hold no data — hand them whichever
-catalogue you imported:
+catalogue you imported. **Nebulae are the one registry whose catalogue argument stays
+required**: the [material](#materials), [commodity](#market-commodities) and
+[module](#ships-and-outfitting) lookups all default to their whole registry, but
+`ALL_NEBULAE` is 682 KB — three quarters of it planetary nebulae most apps never
+touch — so there is no defensible default to fall back to.
 
 ```ts
 import {
@@ -504,10 +508,13 @@ getModulesByName("Pulse Laser").length; // every size/mount variant
 getModulesForShip("Anaconda").length; // -> 5 (its bulkhead set)
 ```
 
-Modules are also exported split by Frontier's four outfitting **categories**, which
-the optional trailing argument narrows the search to (subpaths below are relative to
-`@elite-dangerous-almanac/core`). Each record carries the module's **identity and
-its stats together** (see [Module stats](#ship-and-module-stats) below):
+Modules are also exported split by Frontier's four outfitting **categories** —
+useful for _listing_ a category (an outfitting screen's hardpoint tab), rather than
+for narrowing a lookup: no module name or symbol is shared across categories, so
+passing one to a lookup can only make it fail to find something. Each record carries
+the module's **identity and its stats together** (see [Module
+stats](#ship-and-module-stats) below); subpaths are relative to
+`@elite-dangerous-almanac/core`:
 
 | Import                    | Export              | What's in it                                            | Entries |
 | ------------------------- | ------------------- | ------------------------------------------------------- | ------- |
@@ -518,10 +525,12 @@ its stats together** (see [Module stats](#ship-and-module-stats) below):
 | `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated — the default                    | 1198    |
 
 ```ts
-import { getModulesByName } from "@elite-dangerous-almanac/core/ships/modules";
-import { HARDPOINT_MODULES } from "@elite-dangerous-almanac/core/ships/modules-hardpoint";
+import { UTILITY_MODULES } from "@elite-dangerous-almanac/core/ships/modules-utility";
 
-getModulesByName("Pulse Laser", HARDPOINT_MODULES).length; // hardpoints only
+// Listing a category: import just that catalogue and read it. This pulls no other
+// category, where a lookup from `ships/modules` would pull all four.
+UTILITY_MODULES.length; // -> 35, the whole utility tab
+UTILITY_MODULES.find((m) => m.symbol === wanted); // a lookup that stays this cheap
 ```
 
 > **This is the one default that costs real bundle weight.** Importing a lookup from
@@ -613,7 +622,7 @@ deliberate: `0` is a real price (the starter Lightweight Alloy bulkhead is free)
 treat `undefined` as _unknown_ and decide for yourself whether to skip it or fail:
 
 ```ts
-const cost = getModuleBySymbol(symbol, ALL_MODULES)?.cost;
+const cost = getModuleBySymbol(symbol)?.cost;
 if (cost === undefined) {
   // no published price — don't silently add 0 to a build total
 }

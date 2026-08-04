@@ -140,6 +140,16 @@ test('getMicroResource resolves a symbol or a display name', () => {
     assert.equal(getMicroResource('circuit board', CONSUMABLE_MICRO_RESOURCES), null);
 });
 
+test('getMicroResource tries symbol before display name', () => {
+    // Symbols and names never collide in the shipped data, so the documented
+    // precedence is only observable against a catalogue that makes them collide.
+    const board = getMicroResourceBySymbol('circuitboard');
+    const graphene = getMicroResourceBySymbol('graphene');
+    assert.ok(board && graphene);
+    const decoy: MicroResource = { ...graphene, name: 'circuitboard' };
+    assert.equal(getMicroResource('circuitboard', [decoy, board])?.symbol, 'circuitboard');
+});
+
 test('catalogues and their records are frozen', () => {
     const graphene = getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES);
     assert.ok(graphene);

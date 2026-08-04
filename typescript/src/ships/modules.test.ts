@@ -338,9 +338,10 @@ test('every lookup searches all modules when no catalogue is given', () => {
         getModulesForShip('Anaconda').map((m) => m.symbol),
         getModulesForShip('Anaconda', CORE_MODULES).map((m) => m.symbol),
     );
-    // One record from every category resolves without naming its catalogue.
-    for (const [category, catalogue] of Object.entries(CATALOGUES)) {
-        const first = catalogue[0]!;
+    // One record from each of the four categories resolves without naming its
+    // catalogue (`all` is excluded — its first record is CORE_MODULES[0]).
+    for (const category of ['core', 'internal', 'hardpoint', 'utility'] as const) {
+        const first = CATALOGUES[category]![0]!;
         assert.deepEqual(getModuleBySymbol(first.symbol), first, category);
     }
 });

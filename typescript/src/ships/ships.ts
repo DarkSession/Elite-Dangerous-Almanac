@@ -3,9 +3,10 @@
  * stats, and its slot layout in one record**, with the lookups an app needs to turn
  * an internal symbol or a display name into a {@link Ship}.
  *
- * Unlike the outfitting modules (split into several catalogues by category), there
- * is only one list of ships and it is tiny (48 records), so this module carries both
- * the {@link SHIPS} data and the query functions. Importing a lookup therefore
+ * There is only one list of ships and it is tiny (48 records), so the lookups here
+ * take no catalogue argument at all — they always search {@link SHIPS}. (The module
+ * lookups in `./modules` do still take one, since narrowing to a single outfitting
+ * category is a question worth asking of 1198 records.) Importing a lookup here
  * bundles the whole ship list — which is what you wanted anyway.
  *
  * Identity from EDCD FDevIDs (`shipyard.csv`); stats and slot layout from

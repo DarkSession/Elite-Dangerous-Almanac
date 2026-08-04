@@ -21,6 +21,14 @@
  * Importing a query function from here costs nothing but the function: pass in
  * whichever catalogue you imported.
  *
+ * @remarks
+ * **Nebulae are the one registry whose catalogue argument stays required.** The
+ * materials, micro-resource, commodity and outfitting-module lookups all default to
+ * their whole registry, because the largest of those is 290 KB and most are under
+ * 30 KB. `ALL_NEBULAE` is 682 KB (151 KB gzipped) — three quarters of it planetary
+ * nebulae most apps never touch — so defaulting to it would quietly cost more than
+ * the rest of the library put together. Name the catalogue you want here.
+ *
  * Positions are galactic light-years with Sol at the origin — the same frame the
  * journal, EDSM and Spansh use. Catalogue data originates from EDAstro
  * (CMDR Orvidius); see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).

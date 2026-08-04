@@ -144,6 +144,16 @@ test('getCommodity resolves a symbol or a display name', () => {
     assert.equal(getCommodity('lavian brandy', COMMODITIES), null);
 });
 
+test('getCommodity tries symbol before display name', () => {
+    // Symbols and names never collide in the shipped data, so the documented
+    // precedence is only observable against a catalogue that makes them collide.
+    const platinum = getCommodityBySymbol('Platinum');
+    const brandy = getCommodityBySymbol('LavianBrandy');
+    assert.ok(platinum && brandy);
+    const decoy: Commodity = { ...brandy, name: 'Platinum' };
+    assert.equal(getCommodity('platinum', [decoy, platinum])?.symbol, 'Platinum');
+});
+
 test('catalogues and their records are frozen', () => {
     const platinum = getCommodityByName('Platinum', COMMODITIES);
     assert.ok(platinum);

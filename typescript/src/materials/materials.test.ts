@@ -165,10 +165,12 @@ test('the newer Thargoid materials not in FDevIDs are present and resolve by sym
 });
 
 test('every lookup searches all materials when no catalogue is given', () => {
-    // The common call is the one-argument one: the catalogue argument only narrows.
-    assert.deepEqual(getMaterialBySymbol('temperedalloys'), {
-        ...getMaterialBySymbol('temperedalloys', MANUFACTURED_MATERIALS),
-    });
+    // The common call is the one-argument one: the catalogue argument only narrows,
+    // and reaches the very same frozen record (identity, not just deep equality).
+    assert.equal(
+        getMaterialBySymbol('temperedalloys'),
+        getMaterialBySymbol('temperedalloys', MANUFACTURED_MATERIALS),
+    );
     assert.equal(getMaterialByName('iron')?.elementSymbol, 'Fe');
     assert.equal(getMaterialByElementSymbol('fe')?.name, 'Iron');
     assert.equal(
@@ -211,6 +213,25 @@ test('getMaterial resolves a symbol, a display name or an element symbol', () =>
     assert.equal(getMaterial(''), null);
     // The catalogue argument narrows it like every other lookup.
     assert.equal(getMaterial('fe', MANUFACTURED_MATERIALS), null);
+});
+
+test('getMaterial tries symbol, then name, then element symbol', () => {
+    // The three keyspaces are disjoint in the shipped data, so the documented
+    // precedence is only observable against a catalogue that makes them collide.
+    const grid = getMaterialBySymbol('GridResistors');
+    const iron = getMaterialByName('Iron');
+    assert.ok(grid && iron);
+
+    // A decoy whose *name* is another record's symbol: the symbol match must win.
+    const nameDecoy: Material = { ...iron, name: 'GridResistors' };
+    assert.equal(getMaterial('gridresistors', [nameDecoy, grid])?.symbol, 'GridResistors');
+
+    // A decoy whose *element symbol* is another record's display name: name wins.
+    const elementDecoy: Material = { ...iron, elementSymbol: 'Grid Resistors' };
+    assert.equal(getMaterial('grid resistors', [elementDecoy, grid])?.symbol, 'GridResistors');
+
+    // With no higher-precedence match, the element symbol still resolves.
+    assert.equal(getMaterial('fe', [grid, iron])?.name, 'Iron');
 });
 
 test('materialsInCategory returns exactly one category, case-insensitively', () => {

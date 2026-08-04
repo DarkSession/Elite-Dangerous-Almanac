@@ -25,6 +25,13 @@
  * | `./modules-utility` | `UTILITY_MODULES` | 35 |
  * | `./modules-all` | `ALL_MODULES` | 1198 (the default) |
  *
+ * In practice the category catalogues are for **listing** a category — an outfitting
+ * screen's hardpoint tab — rather than for narrowing a lookup: no module symbol or
+ * display name is shared across categories, so passing one to a lookup can only make
+ * it fail to find something it would otherwise have found. The argument earns its
+ * keep on a subset you filtered yourself (a hull's fittable set, a player's owned
+ * modules).
+ *
  * @remarks
  * **This is the one place where the default costs real bundle weight.** Importing a
  * lookup from here pulls all four catalogues — about 290 KB minified (~29 KB
