@@ -535,6 +535,9 @@ test('the restrictions accept what the game itself fitted in a real capture', ()
     assert.deepEqual(fittedIn(pantherCapture[0]!.data.Modules, 'slot01'), [
         ['slot01_size8', 'int_cargorack_size8_class1'],
     ]);
+    assert.deepEqual(fittedIn(pantherCapture[0]!.data.Modules, 'slot02'), [
+        ['slot02_size7', 'int_cargorack_size7_class1'],
+    ]);
 });
 
 test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => {

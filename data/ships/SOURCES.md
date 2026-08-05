@@ -1616,7 +1616,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
 
 Real builds whose figures came from the game or its tools rather than from this
 library, so the maths is checked against something external. Each is stored verbatim as
-its own fixture, with the expected outputs in a sibling fixture that names it by path.
+its own fixture, with the expected outputs in a sibling fixture that names it by path —
+where the build is used for metrics. The last two below are evidence for the outfitting
+*rules* rather than for the maths: they pin no metric, and what is checked against them
+is which module the game put in which mount.
 
 - **`fixtures/ships/slef-the-deep-black.json`** — a real EDSY export of an exploration
   Caspian Explorer. Acquired earlier; see the jump-range note above. Zero weapons, so it
@@ -1643,7 +1646,10 @@ its own fixture, with the expected outputs in a sibling fixture that names it by
   redistributed under Frontier's media-usage terms. Source text SHA-256
   `3e008ea9b1226c49b6f7c080d897a4cbabbcbcc36ce83e58a293b397712279ee`; stored unmodified
   apart from re-indenting. The header's Inara commander and ship ids are kept as
-  received, since they are the provenance.
+  received. That predates the scrubbing applied to the two 2026-08-05 captures below,
+  where the same fields were removed as a person's account details; bringing this one
+  into line is the owner's call, and until it is made the two forms differ deliberately
+  rather than by oversight.
 
   It is the **only external source that exercises the restricted mounts**, and it
   settles what nothing else could: Inara independently writes
@@ -1690,7 +1696,7 @@ its own fixture, with the expected outputs in a sibling fixture that names it by
   `passenger02` hold `int_mkii_passengercabin_size6_class1` and `passenger03`
   `int_mkii_passengercabin_size5_class1`, which is what EDSY's `{ipc:1}` reservation
   could not confirm on its own — `PASSENGER` is absent from EDSY's journal import map.
-  It carries two more cabins in *unrestricted* mounts (`slot01_size6`, `slot03_size4`,
+  It carries three more cabins in *unrestricted* mounts (`slot01_size6`, `slot03_size4`,
   `slot04_size4`), so it also shows the restriction runs one way only.
 - **`fixtures/ships/slef-inara-panther-mkii.json`** — a real Inara SLEF export of a
   trading Panther Clipper Mk II (25 `Modules` entries), contributed **2026-08-05 UTC**
