@@ -1355,9 +1355,10 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   exactly that set, which a test asserts rather than trusting.
 - **The alias is directional, and that is what keeps it safe.** A generic id stands in for a
   family's id, never for another generic one: `Misc_ChaffCapacity` and
-  `Misc_HeatSinkCapacity` are both "Ammo capacity" over the same three labels, but a chaff
-  launcher's roll is 50–80 rounds where a heat sink's is 40–60, so neither may substitute
-  for the other. An id **no menu lists anywhere** substitutes too, which covers
+  `Misc_HeatSinkCapacity` are both "Ammo capacity" over the same three labels, but they roll
+  different amounts of different ammunition — the chaff recipe adds up to +50% of a chaff
+  launcher's 10 rounds, the heat sink's a flat +49% of a launcher's 3 — so neither may
+  substitute for the other. An id **no menu lists anywhere** substitutes too, which covers
   Anti-Guardian Zone Resistance: the game writes `recipe_guardianweapon_sturdy` on a weapon
   and `recipe_guardianmodule_sturdy` on a module, and every group lists the module id.
   `Weapon_LightWeight` is excluded by the labels instead — a weapon's Lightweight cuts
@@ -1384,10 +1385,17 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   nowhere else: `recipe_railgun_longshot` resolves on the medium rail gun, not on the small
   one. That is narrower than the family map, which took any weapon recipe on any weapon,
   and it matters most for the 21 Mercenary variants, whose own `modifiers` no registry
-  publishes — folding the recipe is the only route to their numbers. `MC_Overcharged`,
-  coriolis's multi-cannon Overcharged, is the one id left reachable by nothing: no menu
-  lists it, no module is sold with it, and it is one clip-size leg from the
-  `Weapon_Overcharged` the multi-cannon menus do list. No corpus build carries it.
+  publishes — folding the recipe is the only route to their numbers. One of them, the
+  Mercenary Module Reinforcement Package, has no engineering menu at all, so the gate asks
+  what a module is *sold* with before it concludes the module takes nothing.
+
+  Six blueprint ids and one experimental are left reachable on no module: `MC_Overcharged`,
+  `recipe_fuelscoop_efficiency`, the three laser `*_thermalplasmaconversion` recipes,
+  `recipe_seekermissileracklarge_lockdown` and `special_feedback_cascade`. Each applied
+  somewhere under the family map, so this is a capability the change gives up. No menu
+  lists them, no module is sold carrying one, and no corpus build declares one — which is
+  why the change went ahead rather than inventing a home for them, but it is a real loss
+  and [#39](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39) tracks it.
 - **What it costs.** `ShipLoadout` now carries the options catalogue whether or not the
   consumer opens a menu: measured on the shipped `dist/`, its import graph goes from 624 KB
   to 708 KB, 74 KB to 82 KB gzipped — the options catalogue and, for the pre-engineered

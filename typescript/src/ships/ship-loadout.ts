@@ -953,15 +953,14 @@ export class ShipLoadout {
             );
         }
         // The engineering menu is the authority on what a module accepts, so the same
-        // catalogue answers `getBlueprintsForModule` and this gate.
-        if (!isEngineerable(module.Item)) {
-            throw new TypeError(
-                `ShipLoadout.applyBlueprint: no registry lists an engineering menu for module "${module.Item}"`,
-            );
-        }
+        // catalogue answers `getBlueprintsForModule` and this gate. A module with no menu
+        // is not necessarily unengineerable: some are sold already carrying a recipe, and
+        // `blueprintAvailableFor` knows that, so ask it before blaming the module.
         if (!blueprintAvailableFor(module.Item, blueprintName)) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered blueprint "${blueprintName}"; it takes ${getBlueprintsForModule(module.Item).join(', ')}`,
+                isEngineerable(module.Item)
+                    ? `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered blueprint "${blueprintName}"; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
+                    : `ShipLoadout.applyBlueprint: no registry lists an engineering menu for module "${module.Item}"`,
             );
         }
         if (

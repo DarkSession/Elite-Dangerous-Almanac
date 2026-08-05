@@ -9,7 +9,11 @@ import {
     experimentalAvailableFor,
     isEngineerable,
 } from './loadout-engineering.js';
-import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
+import {
+    getBlueprintsForModule,
+    getEngineeringGroup,
+    getExperimentalsForModule,
+} from './engineering-options.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
@@ -124,15 +128,22 @@ test('a recipe sold on one module is not thereby available on its neighbours', (
     assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'recipe_railgun_longshot'));
     assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'recipe_railgun_longshot'));
     assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'recipe_railgun_longshot'));
-    // Its experimental travels the same way, and no further. The medium rail gun is sold
-    // in two variants; the Mercenary one pairs High Capacity with a cooled Feedback
-    // Cascade, which the rail gun's own menu does not list.
-    const variant = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium').find(
-        (candidate) => candidate.experimental,
+    // A module with no engineering menu at all can still be sold carrying a recipe, and
+    // the menu check must not refuse it first: the Mercenary Module Reinforcement Package
+    // is the one such case, and reproducing its numbers is the whole point of this leg.
+    assert.equal(getEngineeringGroup('Int_ModuleReinforcement_Size5_Class2'), null);
+    assert.ok(
+        blueprintAvailableFor(
+            'Int_ModuleReinforcement_Size5_Class2',
+            'recipe_modulereinforcement_heavyduty',
+        ),
     );
-    assert.equal(variant?.experimental, 'special_feedback_cascade_cooled');
-    assert.ok(experimentalAvailableFor('Hpt_Railgun_Fixed_Medium', variant!.experimental!));
-    assert.ok(!experimentalAvailableFor('Hpt_MultiCannon_Fixed_Medium', variant!.experimental!));
+    assert.ok(
+        !blueprintAvailableFor(
+            'Int_ModuleReinforcement_Size3_Class2',
+            'recipe_modulereinforcement_heavyduty',
+        ),
+    );
 });
 
 test('the gate matches an id the way every other lookup does', () => {

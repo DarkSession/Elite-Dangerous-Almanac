@@ -109,8 +109,7 @@ const MENU_IDS: ReadonlySet<string> = new Set(
 );
 
 /**
- * Whether a module is *sold* carrying this recipe or effect, rather than offered it at an
- * engineer.
+ * Whether a module is *sold* carrying this recipe, rather than offered it at an engineer.
  *
  * The `recipe_*` keys belong to modules bought already engineered — the Mercenary shop's
  * rail gun, the community-goal and tech-broker rewards — so no engineering menu lists them
@@ -123,11 +122,9 @@ const MENU_IDS: ReadonlySet<string> = new Set(
  *
  * @internal
  */
-function isPreEngineeredWith(item: string, wanted: string): boolean {
+function isSoldWithBlueprint(item: string, wanted: string): boolean {
     return getPreEngineeredVariants(item).some(
-        (variant) =>
-            variant.blueprint.toLowerCase() === wanted ||
-            variant.experimental?.toLowerCase() === wanted,
+        (variant) => variant.blueprint.toLowerCase() === wanted,
     );
 }
 
@@ -164,7 +161,7 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
     const offered = getBlueprintsForModule(item);
     const wanted = fdname.trim().toLowerCase();
     if (offered.some((id) => id.toLowerCase() === wanted)) return true;
-    if (isPreEngineeredWith(item, wanted)) return true;
+    if (isSoldWithBlueprint(item, wanted)) return true;
     const ambiguous = isGenericSpelling(wanted) || !MENU_IDS.has(wanted);
     if (!ambiguous) return false;
     const signature = recipeSignature(fdname.trim());
@@ -180,18 +177,17 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
 /**
  * Whether a module's engineering menu offers an experimental effect.
  *
- * No aliasing here: the effect ids are unique per effect, and the menu already narrows a
- * group's list to the individual module (a small Multi-cannon is one effect short of a
- * medium one).
+ * No aliasing and no pre-engineered leg here: effect ids are unique per effect, the menu
+ * already narrows a group's list to the individual module (a small Multi-cannon is one
+ * effect short of a medium one), and every experimental a pre-engineered variant arrives
+ * with is one its module's menu lists anyway — `pre-engineered.test.ts` asserts that, so
+ * the day it stops being true a test says so rather than this quietly covering for it.
  *
  * @internal
  */
 export function experimentalAvailableFor(item: string, fdname: string): boolean {
     const wanted = fdname.trim().toLowerCase();
-    return (
-        getExperimentalsForModule(item).some((id) => id.toLowerCase() === wanted) ||
-        isPreEngineeredWith(item, wanted)
-    );
+    return getExperimentalsForModule(item).some((id) => id.toLowerCase() === wanted);
 }
 
 /** Whether any registry lists an engineering menu for this module at all. @internal */
