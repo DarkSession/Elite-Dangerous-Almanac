@@ -192,19 +192,20 @@ for the complete API guide. Report problems in the
 
 ## Data freshness and credits
 
-The bundled catalogues are a snapshot dated **2026-07-24**, with several updates since.
-Two on 2026-08-01: a completeness pass over the outfitting and engineering catalogues
-against EDSY, and the defence, power and weapon stats the build calculations need, from
-coriolis-data. Two on 2026-08-02: one market commodity added (`curatedcommodity`, from a
-player-journal observation rather than an upstream registry, so its market category is a
-maintainer assignment), and a module-stat reconciliation that left every outfitting
-module carrying at least one stat and corrected 40 records. One on **2026-08-04**: every
-hull's mounts now record any restriction they carry (see above), and the modules limited
-to particular hulls gained the `restrictedToShips` values that were previously only
-documented. Two on **2026-08-05**: one changed no value, a module whose missing stat is
-unknown rather than absent because it has none now saying so in its own `unknownStats`
-field; the other priced the 1F Corrosion Resistant Cargo Rack from EDSY at 12 560, which
-coriolis-data carries as `0`.
+The bundled catalogues are a snapshot dated **2026-07-24**, revised since. The larger
+passes: two on 2026-08-01, a completeness pass over the outfitting and engineering
+catalogues against EDSY, and the defence, power and weapon stats the build calculations
+need, from coriolis-data; two on 2026-08-02, one market commodity added
+(`curatedcommodity`, from a player-journal observation rather than an upstream registry,
+so its market category is a maintainer assignment) and a module-stat reconciliation that
+left every outfitting module carrying at least one stat and corrected 40 records; one on
+**2026-08-04**, every hull's mounts now recording any restriction they carry (see above),
+with the modules limited to particular hulls gaining the `restrictedToShips` values that
+were previously only documented; and two on **2026-08-05**, one changing no value — a
+module whose missing stat is unknown rather than absent because it has none now says so
+in its own `unknownStats` field — the other pricing the 1F Corrosion Resistant Cargo Rack
+from EDSY at 12 560, which coriolis-data carries as `0`. Smaller corrections are not
+listed here — each domain's `SOURCES.md` is the authoritative record.
 
 A value no source publishes is left **absent rather than guessed** — a handful of
 `integrity`, `powerDraw` and `mass` fields are `undefined` for that reason. The

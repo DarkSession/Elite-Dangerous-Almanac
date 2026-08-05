@@ -1,6 +1,6 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, plus five revisions: a completeness pass and a defence/power/weapon stat pass on 2026-08-01, a module-stat reconciliation on 2026-08-02, a slot-restriction pass on 2026-08-04, and on 2026-08-05 both the classification of what the stat pass could not fill and a price correction (all but the price correction are the `**Revision**` blocks below; that one is recorded inline, in the prices sub-list under "Modules (outfitting)"). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by a price correction on 2026-08-05, recorded with the other corrosion-rack price notes in "Modules (outfitting)". The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 **Revision 2026-08-05 (UTC) — the stats no source carries are now stated as unknown.**
 No value was added, changed or removed: this revision is a *classification* of the three
@@ -544,8 +544,9 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     - **Every cost in that table is a multiple of 10 but one:**
       `Int_ShieldGenerator_Size1_Class5`, at 88 075. (Take in the ship table's own armour
       rows as well and eight more appear — Python Mk II and Cobra Mk V — and the hull
-      prices beside them add three more again. That spread is exactly the
-      method-dependence being avoided by scoping to the module table.)
+      prices in that table add three more again, for the Python Mk II, Cobra Mk V and
+      Panther Clipper Mk II. That spread is exactly the method-dependence being avoided
+      by scoping to the module table.)
     - Where coriolis prices the same module and the two differ, the difference is
       overwhelmingly EDSY carrying coriolis's exact figure rounded to the nearest 10
       (`Int_CargoRack_Size5_Class1` 111 566 → 111 570, `_Size6_Class1` 362 591 →

@@ -1256,8 +1256,10 @@ against.
 
 ## Data freshness
 
-The checked-in catalogues are a snapshot dated **2026-07-24**, with five changes
-since:
+The checked-in catalogues are a snapshot dated **2026-07-24**, revised since. Each
+domain's `SOURCES.md` is the authoritative record of what changed and when — the
+larger passes below are a summary, not a complete list, and smaller corrections are
+recorded inline there beside the field they touch.
 
 - **2026-08-01** — a completeness pass over the outfitting and engineering
   catalogues against EDSY and the in-game registries, adding three records the
