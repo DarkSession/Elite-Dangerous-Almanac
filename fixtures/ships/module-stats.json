@@ -651,7 +651,119 @@
       "symbol": "Int_GuardianShieldReinforcement_Size5_Class2",
       "name": "Guardian Shield Reinforcement",
       "bootTime": 0
+    },
+    {
+      "symbol": "Int_Engine_Size6_Class2",
+      "name": "Thrusters",
+      "engineHeatRate": 1.3
+    },
+    {
+      "symbol": "Int_Engine_Size2_Class5_Fast",
+      "name": "Enhanced Performance Thrusters",
+      "engineHeatRate": 2
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size5_Class5",
+      "name": "Frame Shift Drive",
+      "fsdHeatRate": 27
+    },
+    {
+      "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5",
+      "name": "Frame Shift Drive (SCO)",
+      "fsdHeatRate": 50
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size8_Class5",
+      "name": "Frame Shift Drive",
+      "fsdHeatRate": 50
+    },
+    {
+      "symbol": "Int_Sensors_Size8_Class2",
+      "name": "Sensors",
+      "scannerRange": 5760,
+      "scanAngle": 30
+    },
+    {
+      "symbol": "Int_Sensors_Size1_Class1_free",
+      "name": "Sensors",
+      "scannerRange": 4000,
+      "scanAngle": 30
+    },
+    {
+      "symbol": "Hpt_CrimeScanner_Size0_Class5",
+      "name": "Kill Warrant Scanner",
+      "maximumRange": 4000,
+      "scannerRange": 4000,
+      "scanAngle": 15,
+      "scanTime": 10
+    },
+    {
+      "symbol": "Hpt_MRAScanner_Size0_Class5",
+      "name": "Pulse Wave Analyser",
+      "scannerRange": 24000,
+      "scanAngle": 15,
+      "scanTime": 3
+    },
+    {
+      "symbol": "Int_DetailedSurfaceScanner_Tiny",
+      "name": "Detailed Surface Scanner",
+      "probeRadius": 20
+    },
+    {
+      "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
+      "name": "Advanced Discovery Scanner",
+      "scanAngle": 10,
+      "scanTime": 5,
+      "unknownStats": ["powerDraw"]
+    },
+    {
+      "symbol": "Int_ShieldCellBank_Size8_Class5",
+      "name": "Shield Cell Bank",
+      "shieldBankReinforcement": 65,
+      "shieldBankHeat": 800,
+      "shieldBankSpinUp": 5,
+      "shieldBankDuration": 17.1,
+      "thermalLoad": 800
+    },
+    {
+      "symbol": "Int_FSDInterdictor_Size4_Class5",
+      "name": "Frame Shift Drive Interdictor",
+      "interdictorFacingLimit": 50,
+      "interdictorRange": 16
+    },
+    {
+      "symbol": "Int_FuelScoop_Size6_Class5",
+      "name": "Fuel Scoop",
+      "refuelRate": 0.878
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size3_Class5",
+      "name": "Shield Generator",
+      "distributorDraw": 0.6
+    },
+    {
+      "symbol": "Hpt_Mining_SeismChrgWarhd_Fixed_Medium",
+      "name": "Seismic Charge Launcher",
+      "reloadTime": 1
     }
   ],
-  "continuousFire": ["Hpt_BeamLaser_Fixed_Small", "Hpt_MiningLaser_Fixed_Small"]
+  "continuousFire": ["Hpt_BeamLaser_Fixed_Small", "Hpt_MiningLaser_Fixed_Small"],
+  "statCounts": {
+    "note": "How many records carry each of the base stats a blueprint recipe scales — the values that have to be present before the recipe can be applied at all. A count is a whole family: every thruster has a heat rate, every drive (plain and SCO) has one, every shield cell bank has all four cell stats, every sensor suite and utility scanner has a range and a scan cone. A drop here means a record lost a value, which is what made the recipes uncomputable in the first place.",
+    "counts": {
+      "engineHeatRate": 40,
+      "fsdHeatRate": 72,
+      "refuelRate": 40,
+      "shieldBankReinforcement": 40,
+      "shieldBankHeat": 40,
+      "shieldBankSpinUp": 40,
+      "shieldBankDuration": 40,
+      "scannerRange": 64,
+      "scanAngle": 68,
+      "scanTime": 27,
+      "probeRadius": 1,
+      "interdictorFacingLimit": 20,
+      "interdictorRange": 20
+    }
+  }
 }

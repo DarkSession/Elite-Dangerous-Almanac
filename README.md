@@ -1013,10 +1013,17 @@ feed the result to `enumerateSlots`; the rest of the `ships/slots` exports
 
 `applyBlueprint` also validates that the blueprint and experimental effect belong to
 the fitted module's engineering family, that quality is a finite value from 0 to 1,
-and that the catalogue carries every base stat the recipe changes. An armour recipe,
-for example, cannot be applied to an FSD merely because both modify mass or integrity;
-a recipe whose combat or armour base stats are not carried is rejected rather than
-silently emitting a partial `Engineering.Modifiers` block.
+and that every stat the recipe changes can actually be answered for that module. An
+armour recipe, for example, cannot be applied to an FSD merely because both modify mass
+or integrity.
+
+A recipe leg on a stat the module simply **does not have** is not a failure — it is
+inert, exactly as in the game. Long Range scales a projectile's shot speed and leaves a
+beam laser's alone, because a beam laser has no projectile; Rapid Fire shortens a reload
+only on a weapon that reloads. What is rejected is a stat that _cannot be answered_:
+one the record declares **unknown** (`isStatUnknown`), or one this record shape models no
+field for at all. Those throw rather than silently emitting a partial
+`Engineering.Modifiers` block.
 
 **Blueprint and experimental ids are Frontier `fdname`s** — the same strings a journal
 `Loadout` event carries in `Engineering.BlueprintName` / `ExperimentalEffect` (e.g.
@@ -1129,19 +1136,19 @@ fixed Mining Laser is not one of them — it is grouped and does offer an effect
 > fuel scoops, FSD interdictors, the Guardian weapons — currently answer `[]` even though
 > real builds engineer them.
 >
-> For some of those families `ShipLoadout.applyBlueprint` also refuses the recipe: sensors
-> and the Detailed Surface Scanner because the module records lack the base stats their
-> blueprints modify, life support, limpet controllers, AFMUs and fuel scoops because
-> `Misc_LightWeight` / `Misc_Shielded` are mapped to too narrow a target family. Measured
-> on the 181-build corpus in `fixtures/ships/builds/`: 481 of its 1902 declared
-> engineering entries are rejected, across 128 builds. Armour, heat sink launchers, chaff
-> and the Guardian weapons engineer fine — for those it really is only the _menu_ that is
-> missing. (The Caustic Sink Launcher is the exception among the launchers: its
-> engineering target is `miscellaneous`, so `Misc_HeatSinkCapacity` is refused on it.)
-> Issues [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13),
-> [#10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10) and
-> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14) track all three
-> problems.
+> For some of those families `ShipLoadout.applyBlueprint` also refuses the recipe: life
+> support, limpet controllers, AFMUs and fuel scoops, because `Misc_LightWeight` /
+> `Misc_Shielded` are mapped to too narrow a target family. Measured on the 181-build
+> corpus in `fixtures/ships/builds/`: 76 of its 1902 declared engineering entries are
+> rejected, across 54 builds. Armour, heat sink launchers, chaff and the Guardian weapons
+> engineer fine — for those it really is only the _menu_ that is missing. (The Caustic
+> Sink Launcher is the exception among the launchers: its engineering target is
+> `miscellaneous`, so `Misc_HeatSinkCapacity` is refused on it.) Issues
+> [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13) and
+> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14) track the two
+> remaining problems; the missing base stats that used to reject a further 405 entries
+> — thruster and drive heat rates, the scanner and cell-bank stats, a shield generator's
+> energy per regen — are sourced.
 
 #### Modules you can buy already engineered
 

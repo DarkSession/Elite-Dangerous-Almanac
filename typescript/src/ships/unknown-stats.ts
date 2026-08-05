@@ -33,13 +33,17 @@
  * *published* price, so an absent `cost` already means unknown on its own — there is
  * nothing to disambiguate. See the README's list-prices section.
  *
- * **Nor is this the whole of what the catalogue does not know.** The base stats that
- * engineering blueprints modify and no record carries (`EngineHeatRate`,
- * `EnergyPerRegen`, the scanner ranges and the rest) are a separate and larger gap,
- * tracked at https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10; a field
- * with no place in the record shape cannot be named.
- * Read a `false` from {@link isStatUnknown} as "not one of the known gaps", not as
- * "the game has no such value".
+ * **A `false` is a real answer, and the engineering calculator acts on it.** An absence
+ * this predicate does not claim is a stat the module simply does not have — a beam
+ * laser's shot speed, a pulse laser's reload — and a blueprint that scales such a stat
+ * leaves it alone rather than being refused. Naming a stat here says the opposite: the
+ * value exists and nobody publishes it, so nothing can be scaled from it and the recipe
+ * is refused outright.
+ *
+ * **The field can only name stats the record shape has.** A journal label the shape
+ * models no field for at all — Anti-Guardian Zone Resistance, which is a capability
+ * rather than a number — cannot be named, and is tracked at
+ * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27.
  *
  * @packageDocumentation
  */

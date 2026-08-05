@@ -212,6 +212,23 @@ test('stats spot checks: each merged record carries the expected stat values', (
     }
 });
 
+test('the stats a blueprint needs are carried by every module of the family', () => {
+    // A count here is a whole family, so a single record losing its value fails. These
+    // are the base stats a recipe scales; without them a blueprint cannot be applied at
+    // all, which is the state the catalogue used to be in.
+    for (const [field, expected] of Object.entries(statsFixture.statCounts.counts)) {
+        const carried = ALL_MODULES.filter(
+            (module) => module[field as keyof OutfittingModule] !== undefined,
+        );
+        assert.equal(carried.length, expected, field);
+        // Sourced, not conjured: a value that is present must never also be declared a
+        // gap on the same record.
+        for (const module of carried) {
+            assert.equal(isStatUnknown(module, field as keyof OutfittingModule), false, field);
+        }
+    }
+});
+
 // ── Prices ───────────────────────────────────────────────────────────────────
 
 for (const [name, expected] of Object.entries(statsFixture.priceCounts)) {

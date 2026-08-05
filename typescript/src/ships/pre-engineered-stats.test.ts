@@ -36,11 +36,13 @@ test('a pre-engineered drive resolves to its known in-game stats', () => {
     assert.equal(stock.optMass, base.optMass);
     assert.equal(stock.mass, base.mass);
     assert.equal(stock.integrity, base.integrity);
+    assert.equal(stock.fsdHeatRate, base.fsdHeatRate);
 
     const fitted = getPreEngineeredStats(variant)!;
     assert.equal(fitted.optMass, engineered.optMass);
     assert.equal(fitted.mass, engineered.mass);
     assert.equal(fitted.integrity, engineered.integrity);
+    assert.equal(fitted.fsdHeatRate, engineered.fsdHeatRate);
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
 });
 
@@ -116,11 +118,10 @@ test('a variant with no stat block resolves to the base record itself', () => {
 });
 
 test('a reward variant changes a carried stat unless it only touches uncarried ones', () => {
-    // Almost every reward variant now moves a stat the catalogues carry. One does not:
-    // the Detailed Surface Scanner's variant only touches the scanner stats (probe
-    // radius and the like), which the catalogues hold no base value for, so resolving
-    // it is necessarily a no-op. Pinned so that the no-ops stay a known, listed set
-    // rather than silent breakage.
+    // Every reward variant now moves a stat the catalogues carry. The last hold-out was
+    // the Detailed Surface Scanner, whose variant only touches the probe radius; that is
+    // sourced now, so the set is empty. Pinned rather than dropped: a regression that
+    // stops resolving a variant would put it back, and this says so.
     const noOps: string[] = [];
     for (const variant of PRE_ENGINEERED_MODULES) {
         if (variant.acquisition === 'mercenary') continue;

@@ -83,6 +83,8 @@ export const STAT_LABELS: readonly StatLabel[] = [
     { label: 'ShieldGenStrength', field: 'optMultiplier', scale: percent },
     { label: 'ShieldGenMinStrength', field: 'minMultiplier', scale: percent },
     { label: 'ShieldGenMaxStrength', field: 'maxMultiplier', scale: percent },
+    { label: 'EngineHeatRate', field: 'engineHeatRate' },
+    { label: 'FSDHeatRate', field: 'fsdHeatRate' },
     { label: 'MaxFuelPerJump', field: 'maxFuel' },
     { label: 'PowerCapacity', field: 'powerCapacity' },
     { label: 'HeatEfficiency', field: 'heatEfficiency' },
@@ -92,10 +94,41 @@ export const STAT_LABELS: readonly StatLabel[] = [
     { label: 'SystemsRecharge', field: 'systemsRecharge' },
     { label: 'WeaponsCapacity', field: 'weaponsCapacity' },
     { label: 'WeaponsRecharge', field: 'weaponsRecharge' },
+    { label: 'RefuelRate', field: 'refuelRate' },
     { label: 'FuelCapacity', field: 'fuelCapacity' },
     { label: 'CargoCapacity', field: 'cargoCapacity' },
     { label: 'RegenRate', field: 'shieldRegenRate' },
     { label: 'BrokenRegenRate', field: 'shieldBrokenRegenRate' },
+    // A shield generator's distributor draw is the systems-capacitor cost of one MJ per
+    // second of regeneration, and the journal gives it its own label rather than reusing
+    // a weapon's `DistributorDraw`. Same catalogue field, both spellings.
+    { label: 'EnergyPerRegen', field: 'distributorDraw' },
+
+    // ── Shield cell banks ───────────────────────────────────────────────────
+    { label: 'ShieldBankReinforcement', field: 'shieldBankReinforcement' },
+    { label: 'ShieldBankHeat', field: 'shieldBankHeat' },
+    // A cell bank's heat is also the `thermalLoad` its record has always carried — the
+    // same figure from the same upstream field — so a recipe that moves it moves both.
+    { label: 'ShieldBankHeat', field: 'thermalLoad' },
+    { label: 'ShieldBankSpinUp', field: 'shieldBankSpinUp' },
+    { label: 'ShieldBankDuration', field: 'shieldBankDuration' },
+
+    // ── Scanning, and the FSD interdictor ───────────────────────────────────
+    // `ScannerRange` names the sensor suites' own field first and falls back to the
+    // range field the utility scanners already carried; `baseStats` takes whichever the
+    // record has, and `fieldForLabel` can be handed the record to pick the same one.
+    { label: 'ScannerRange', field: 'scannerRange' },
+    { label: 'ScannerRange', field: 'maximumRange' },
+    { label: 'SensorTargetScanAngle', field: 'scanAngle' },
+    // The utility scanners' scan cone is the same stat under the journal's other name.
+    { label: 'MaxAngle', field: 'scanAngle' },
+    { label: 'ScannerTimeToScan', field: 'scanTime' },
+    // The blueprint recipe says `ProbeRadius`; a journal writes `DSS_PatchRadius` for
+    // the same stat on the same module. Both resolve.
+    { label: 'ProbeRadius', field: 'probeRadius' },
+    { label: 'DSS_PatchRadius', field: 'probeRadius' },
+    { label: 'FSDInterdictorFacingLimit', field: 'interdictorFacingLimit' },
+    { label: 'FSDInterdictorRange', field: 'interdictorRange' },
 
     // ── Defence ─────────────────────────────────────────────────────────────
     {
@@ -104,10 +137,12 @@ export const STAT_LABELS: readonly StatLabel[] = [
         scale: percent,
         multiplierBase: percent,
     },
-    // On an armour module this scales the bulkhead's own hull boost, which the
-    // catalogue carries. A hull reinforcement package has no base hull boost — the
-    // game's modifier *is* the bonus — so nothing resolves for it and the label stays
-    // uncomputable there rather than silently resolving to zero.
+    // On an armour module this scales the bulkhead's own hull boost, which the catalogue
+    // carries. A hull reinforcement package carries none, and because this is a
+    // percentage-of-a-multiplier stat that absence is itself a value — no hull boost is a
+    // ×1 multiplier, 0% — so it resolves from zero and the recipe's bonus *is* the
+    // result, which is how the game reads it and what a journal reports
+    // (`OriginalValue: 0`). See `multiplierBase` and {@link computeModifiers}.
     {
         label: 'DefenceModifierHealthMultiplier',
         field: 'hullBoost',
@@ -166,7 +201,21 @@ export const STAT_LABELS: readonly StatLabel[] = [
     { label: 'Jitter', field: 'jitter' },
 ];
 
-const BY_LABEL = new Map(STAT_LABELS.map((entry) => [entry.label, entry]));
+/**
+ * Every entry for a label, in declaration order. Nearly always one; `ScannerRange` has
+ * two, because the sensor suites and the utility scanners keep the same journal stat in
+ * different catalogue fields. The first entry is the label's own answer for everything
+ * that does not depend on which module is being asked about.
+ */
+const BY_LABEL: ReadonlyMap<string, readonly StatLabel[]> = (() => {
+    const entries = new Map<string, StatLabel[]>();
+    for (const entry of STAT_LABELS) {
+        const forLabel = entries.get(entry.label) ?? [];
+        forLabel.push(entry);
+        entries.set(entry.label, forLabel);
+    }
+    return entries;
+})();
 
 const LABELS_BY_FIELD: ReadonlyMap<keyof OutfittingModule, readonly string[]> = (() => {
     const labels = new Map<keyof OutfittingModule, string[]>();
@@ -188,6 +237,7 @@ const LABELS_BY_FIELD: ReadonlyMap<keyof OutfittingModule, readonly string[]> = 
 export function baseStats(stats: OutfittingModule): Record<string, number> {
     const base: Record<string, number> = {};
     for (const { label, field, scale, defaultBase } of STAT_LABELS) {
+        if (base[label] !== undefined) continue; // an earlier entry already answered
         const value = stats[field];
         if (typeof value === 'number') base[label] = value * (scale ?? 1);
         // A stat the module leaves out but the game still assumes a value for can be
@@ -203,13 +253,37 @@ function isWeapon(stats: OutfittingModule): boolean {
 }
 
 /**
- * The catalogue field a journal modifier label writes back to, or `null` when the
- * catalogue carries no base value for that label (a scanner's probe radius, say).
+ * Whether a record's silence about a field means "nobody publishes this", rather than
+ * "the module has no such stat" — see {@link OutfittingModule.unknownStats}.
  *
  * @internal
  */
-export function fieldForLabel(label: string): keyof OutfittingModule | null {
-    return BY_LABEL.get(label)?.field ?? null;
+export function isUnknown(stats: OutfittingModule, field: keyof OutfittingModule): boolean {
+    return stats.unknownStats?.includes(field) === true;
+}
+
+/**
+ * The catalogue field a journal modifier label writes back to, or `null` when the
+ * catalogue models no field for that label at all.
+ *
+ * @param label - The journal Modifier Label.
+ * @param stats - The record the label is being resolved against, when there is one.
+ * The one label that maps to two fields, `ScannerRange`, answers with whichever of them
+ * the record carries; without a record it answers with the first.
+ *
+ * @internal
+ */
+export function fieldForLabel(
+    label: string,
+    stats?: OutfittingModule,
+): keyof OutfittingModule | null {
+    const entries = BY_LABEL.get(label);
+    if (!entries || entries.length === 0) return null;
+    if (stats && entries.length > 1) {
+        const carried = entries.find((entry) => typeof stats[entry.field] === 'number');
+        if (carried) return carried.field;
+    }
+    return entries[0]!.field;
 }
 
 /**
@@ -219,7 +293,7 @@ export function fieldForLabel(label: string): keyof OutfittingModule | null {
  * @internal
  */
 export function scaleForLabel(label: string): number {
-    return BY_LABEL.get(label)?.scale ?? 1;
+    return BY_LABEL.get(label)?.[0]?.scale ?? 1;
 }
 
 /**
@@ -229,7 +303,7 @@ export function scaleForLabel(label: string): number {
  * @internal
  */
 export function multiplierBaseForLabel(label: string): number | null {
-    return BY_LABEL.get(label)?.multiplierBase ?? null;
+    return BY_LABEL.get(label)?.[0]?.multiplierBase ?? null;
 }
 
 /**

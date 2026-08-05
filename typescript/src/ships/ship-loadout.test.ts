@@ -661,30 +661,99 @@ test('weapon and armour recipes engineer the stats the catalogue carries', () =>
     assert.equal(boost.Value, 362);
 });
 
-test('engineering rejects recipes whose base stats are not carried', () => {
-    // A hull reinforcement package has no base hull boost — in game the modifier *is*
-    // the bonus — so the Advanced recipe cannot be computed and says so rather than
-    // quietly resolving it to nothing.
+test('a hull reinforcement package engineers a hull boost it never had', () => {
+    // A reinforcement package carries no base hull boost, and unlike an ordinary stat
+    // that absence is not "nothing to scale": a percentage-of-a-multiplier stat has a
+    // real neutral value of 0% (a x1 multiplier), so the recipe's bonus *is* the result.
     const build = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
         mod('Int_HullReinforcement_Size5_Class2', INTERNAL_MODULES),
     );
     const fitted = build.getFittedModule('Slot01_Size7')!;
     assert.ok(
-        !fitted
+        fitted
             .getAvailableBlueprints()
             .some((blueprint) => blueprint.fdname === 'HullReinforcement_Advanced'),
     );
-    assert.throws(
-        () => build.applyBlueprint('Slot01_Size7', 'HullReinforcement_Advanced', { grade: 5 }),
-        /missing base stats for DefenceModifierHealthMultiplier/,
-    );
-    // The Heavy Duty recipe, which only touches carried stats, still works.
+    build.applyBlueprint('Slot01_Size7', 'HullReinforcement_Advanced', { grade: 5 });
+    const boost = build
+        .getFittedModule('Slot01_Size7')!
+        .Engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthMultiplier')!;
+    // Grade 5 Lightweight is +24% at a full roll, compounded on a x1 multiplier.
+    assert.equal(boost.OriginalValue, 0);
+    assert.equal(boost.Value, 24);
+    // The Heavy Duty recipe, which moves the reinforcement itself, still works.
     build.applyBlueprint('Slot01_Size7', 'HullReinforcement_HeavyDuty', { grade: 5 });
     const added = build
         .getFittedModule('Slot01_Size7')!
         .Engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthAddition')!;
     assert.ok(added.Value! > added.OriginalValue!);
+});
+
+test('a recipe leg on a stat the module does not have is inert, not a rejection', () => {
+    // Long Range scales a projectile's shot speed. A beam laser has no projectile, so no
+    // registry publishes one and the game leaves the stat alone — the recipe still
+    // applies, and simply emits no ShotSpeed modifier.
+    const beam = getModuleBySymbol('Hpt_BeamLaser_Fixed_Medium', ALL_MODULES)!;
+    assert.equal(beam.shotSpeed, undefined);
+    assert.equal(beam.unknownStats, undefined); // absent means "has none", not "unknown"
+
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'MediumHardpoint1',
+        mod(beam.symbol, HARDPOINT_MODULES),
+    );
+    build.applyBlueprint('MediumHardpoint1', 'Weapon_LongRange', { grade: 5 });
+    const modifiers = build.getFittedModule('MediumHardpoint1')!.Engineering!.Modifiers!;
+    assert.ok(!modifiers.some((m) => m.Label === 'ShotSpeed'));
+    assert.ok(modifiers.some((m) => m.Label === 'MaximumRange' || m.Label === 'Range'));
+
+    // A weapon that does fire a projectile gets the leg.
+    const cannon = ShipLoadout.empty('Anaconda').setModule(
+        'MediumHardpoint1',
+        mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES),
+    );
+    cannon.applyBlueprint('MediumHardpoint1', 'Weapon_LongRange', { grade: 5 });
+    const shot = cannon
+        .getFittedModule('MediumHardpoint1')!
+        .Engineering!.Modifiers!.find((m) => m.Label === 'ShotSpeed')!;
+    assert.ok(shot.Value! > shot.OriginalValue!);
+});
+
+test('engineering still refuses what cannot be answered', () => {
+    // Two things are not "the module has no such stat", and both still refuse rather
+    // than resolve to a guess.
+
+    // 1. The record declares the value *unknown*: nobody publishes the Resource Siphon
+    //    controller's mass, so there is nothing for Lightweight to scale.
+    const siphon = getModuleBySymbol('Int_DroneControl_ResourceSiphon', ALL_MODULES)!;
+    assert.deepEqual(siphon.unknownStats, ['mass']);
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'Slot01_Size7',
+        mod(siphon.symbol, INTERNAL_MODULES),
+    );
+    assert.ok(
+        !build
+            .getFittedModule('Slot01_Size7')!
+            .getAvailableBlueprints()
+            .some((blueprint) => blueprint.fdname === 'Misc_LightWeight'),
+    );
+    assert.throws(
+        () => build.applyBlueprint('Slot01_Size7', 'Misc_LightWeight', { grade: 5 }),
+        /missing base stats for Mass/,
+    );
+
+    // 2. The catalogue models no field for the label at all. Anti-Guardian Zone
+    //    Resistance is a capability a module either has or has not, not a number this
+    //    record shape can hold — see
+    //    https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27.
+    const plant = ShipLoadout.empty('Anaconda').setModule(
+        'PowerPlant',
+        mod('Int_Powerplant_Size7_Class5'),
+    );
+    assert.throws(
+        () => plant.applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', { grade: 1 }),
+        /missing base stats for GuardianModuleResistance/,
+    );
 });
 
 test('clearEngineering restores base stats', () => {

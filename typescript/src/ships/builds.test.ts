@@ -10,6 +10,7 @@ import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
+import { baseStats, missingBaseLabels } from './loadout-engineering.js';
 import index from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
 
 /** One module as the corpus records it. */
@@ -162,6 +163,36 @@ test('every declared blueprint, grade and experimental effect is in the catalogu
             }
         }
     }
+});
+
+test('every declared engineering entry resolves against the base stats it needs', () => {
+    // The corpus is the measure of whether a real build can be engineered at all. 405 of
+    // its declared entries used to be refused for a base stat no record carried — a
+    // thruster's heat rate, a scanner's range, a cell bank's reinforcement; sourcing
+    // those closed it, and this is what says the hole stays shut. It checks the base
+    // stats only, which is the gap that was fixed: whether every recipe is also mapped to
+    // every family that accepts it is a separate question, tracked at
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14.
+    let checked = 0;
+    for (const build of builds) {
+        for (const entry of build.modules) {
+            const engineering = entry.engineering;
+            if (!engineering) continue;
+            const stats = getModuleBySymbol(entry.item, ALL_MODULES)!;
+            const features = getBlueprintGrade(engineering.blueprint, engineering.grade)!;
+            const experimental =
+                engineering.experimental === undefined
+                    ? undefined
+                    : getExperimentalEffect(engineering.experimental)!;
+            assert.deepEqual(
+                missingBaseLabels(stats, baseStats(stats), features, experimental),
+                [],
+                `${build.id}: ${entry.item} + ${engineering.blueprint}`,
+            );
+            checked++;
+        }
+    }
+    assert.equal(checked, index.declaredEngineering);
 });
 
 test('every build reproduces its pinned metrics', () => {

@@ -38,14 +38,30 @@
  * lasers, which carry no `rateOfFire`), `damageDistribution` splits it by type,
  * `rateOfFire` is shots per second with the burst pattern and charge time folded in,
  * `distributorDraw` (MW) and `thermalLoad` are per shot, and `maximumRange` /
- * `falloffRange` / `shotSpeed` are metres and metres per second.
+ * `falloffRange` / `shotSpeed` are metres and metres per second. `shotSpeed` is absent
+ * on the weapons with no projectile at all (the lasers, rail guns, Gauss cannons and
+ * mine launchers), as is `reloadTime` on the ones that never reload.
+ * Engineering base stats: the values a blueprint recipe scales, so a recipe that names
+ * one needs it here. `engineHeatRate` and `fsdHeatRate` are waste heat per second (at
+ * top speed, and while charging a jump); `refuelRate` is a fuel scoop's tonnes per
+ * second; `shieldBankReinforcement` / `shieldBankHeat` / `shieldBankSpinUp` /
+ * `shieldBankDuration` are one shield cell's MJ per second, heat per use, and seconds
+ * before and of the reinforcement; `scannerRange` is metres (a utility scanner's scan
+ * distance, a sensor suite's typical emission range — the panel shows the latter in km),
+ * `scanAngle` degrees and `scanTime` seconds; `probeRadius` is the Detailed Surface
+ * Scanner's probe radius as a percentage, which is how the game stores that one;
+ * `interdictorFacingLimit` is degrees and `interdictorRange` is seconds to intercept.
+ * A shield generator's `distributorDraw` is the systems-capacitor cost of 1 MJ/s of
+ * regeneration, the stat a journal labels `EnergyPerRegen`.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  * `unknownStats` names the stat fields this record omits because the value is
  * *unknown* rather than because the module has none — a cargo rack has no
  * `powerDraw`, but a Discovery Scanner has one nobody publishes. Present only where
  * an absence needs that said; a field named here is always absent from the record,
- * so sourcing a value means deleting its name here in the same change.
+ * so sourcing a value means deleting its name here in the same change. The difference
+ * is load-bearing for engineering: a recipe that scales a stat the module does not have
+ * is inert, while one that scales a stat named here is refused outright.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -1034,6 +1050,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 170,
+    "shieldBankReinforcement": 12,
+    "shieldBankHeat": 170,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1,
     "cost": 517
   },
   {
@@ -1049,6 +1069,10 @@
     "clipSize": 1,
     "ammoMaximum": 0,
     "thermalLoad": 170,
+    "shieldBankReinforcement": 16,
+    "shieldBankHeat": 170,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1,
     "cost": 1293
   },
   {
@@ -1064,6 +1088,10 @@
     "clipSize": 1,
     "ammoMaximum": 2,
     "thermalLoad": 170,
+    "shieldBankReinforcement": 20,
+    "shieldBankHeat": 170,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1,
     "cost": 3231
   },
   {
@@ -1079,6 +1107,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 170,
+    "shieldBankReinforcement": 24,
+    "shieldBankHeat": 170,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1,
     "cost": 8078
   },
   {
@@ -1094,6 +1126,10 @@
     "clipSize": 1,
     "ammoMaximum": 2,
     "thermalLoad": 170,
+    "shieldBankReinforcement": 28,
+    "shieldBankHeat": 170,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1,
     "cost": 20195
   },
   {
@@ -1109,6 +1145,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 240,
+    "shieldBankReinforcement": 14,
+    "shieldBankHeat": 240,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1.5,
     "cost": 1448
   },
   {
@@ -1124,6 +1164,10 @@
     "clipSize": 1,
     "ammoMaximum": 2,
     "thermalLoad": 240,
+    "shieldBankReinforcement": 18,
+    "shieldBankHeat": 240,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1.5,
     "cost": 3619
   },
   {
@@ -1139,6 +1183,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 240,
+    "shieldBankReinforcement": 23,
+    "shieldBankHeat": 240,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1.5,
     "cost": 9048
   },
   {
@@ -1154,6 +1202,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 240,
+    "shieldBankReinforcement": 28,
+    "shieldBankHeat": 240,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1.5,
     "cost": 22619
   },
   {
@@ -1169,6 +1221,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 240,
+    "shieldBankReinforcement": 32,
+    "shieldBankHeat": 240,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 1.5,
     "cost": 56547
   },
   {
@@ -1184,6 +1240,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 340,
+    "shieldBankReinforcement": 17,
+    "shieldBankHeat": 340,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 2.3,
     "cost": 4053
   },
   {
@@ -1199,6 +1259,10 @@
     "clipSize": 1,
     "ammoMaximum": 2,
     "thermalLoad": 340,
+    "shieldBankReinforcement": 23,
+    "shieldBankHeat": 340,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 2.3,
     "cost": 10133
   },
   {
@@ -1214,6 +1278,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 340,
+    "shieldBankReinforcement": 29,
+    "shieldBankHeat": 340,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 2.3,
     "cost": 25333
   },
   {
@@ -1229,6 +1297,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 340,
+    "shieldBankReinforcement": 35,
+    "shieldBankHeat": 340,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 2.3,
     "cost": 63333
   },
   {
@@ -1244,6 +1316,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 340,
+    "shieldBankReinforcement": 41,
+    "shieldBankHeat": 340,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 2.3,
     "cost": 158331
   },
   {
@@ -1259,6 +1335,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 410,
+    "shieldBankReinforcement": 20,
+    "shieldBankHeat": 410,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 3.4,
     "cost": 11349
   },
   {
@@ -1274,6 +1354,10 @@
     "clipSize": 1,
     "ammoMaximum": 2,
     "thermalLoad": 410,
+    "shieldBankReinforcement": 26,
+    "shieldBankHeat": 410,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 3.4,
     "cost": 28373
   },
   {
@@ -1289,6 +1373,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 410,
+    "shieldBankReinforcement": 33,
+    "shieldBankHeat": 410,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 3.4,
     "cost": 70932
   },
   {
@@ -1304,6 +1392,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 410,
+    "shieldBankReinforcement": 39,
+    "shieldBankHeat": 410,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 3.4,
     "cost": 177331
   },
   {
@@ -1319,6 +1411,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 410,
+    "shieldBankReinforcement": 46,
+    "shieldBankHeat": 410,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 3.4,
     "cost": 443328
   },
   {
@@ -1334,6 +1430,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 540,
+    "shieldBankReinforcement": 21,
+    "shieldBankHeat": 540,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 5.1,
     "cost": 31778
   },
   {
@@ -1349,6 +1449,10 @@
     "clipSize": 1,
     "ammoMaximum": 2,
     "thermalLoad": 540,
+    "shieldBankReinforcement": 28,
+    "shieldBankHeat": 540,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 5.1,
     "cost": 79444
   },
   {
@@ -1364,6 +1468,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 540,
+    "shieldBankReinforcement": 35,
+    "shieldBankHeat": 540,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 5.1,
     "cost": 198611
   },
   {
@@ -1379,6 +1487,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 540,
+    "shieldBankReinforcement": 41,
+    "shieldBankHeat": 540,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 5.1,
     "cost": 496527
   },
   {
@@ -1394,6 +1506,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 540,
+    "shieldBankReinforcement": 48,
+    "shieldBankHeat": 540,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 5.1,
     "cost": 1241317
   },
   {
@@ -1409,6 +1525,10 @@
     "clipSize": 1,
     "ammoMaximum": 5,
     "thermalLoad": 640,
+    "shieldBankReinforcement": 20,
+    "shieldBankHeat": 640,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 7.6,
     "cost": 88978
   },
   {
@@ -1424,6 +1544,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 640,
+    "shieldBankReinforcement": 26,
+    "shieldBankHeat": 640,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 7.6,
     "cost": 222444
   },
   {
@@ -1439,6 +1563,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 640,
+    "shieldBankReinforcement": 33,
+    "shieldBankHeat": 640,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 7.6,
     "cost": 556110
   },
   {
@@ -1454,6 +1582,10 @@
     "clipSize": 1,
     "ammoMaximum": 5,
     "thermalLoad": 640,
+    "shieldBankReinforcement": 39,
+    "shieldBankHeat": 640,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 7.6,
     "cost": 1390275
   },
   {
@@ -1469,6 +1601,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 640,
+    "shieldBankReinforcement": 46,
+    "shieldBankHeat": 640,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 7.6,
     "cost": 3475688
   },
   {
@@ -1484,6 +1620,10 @@
     "clipSize": 1,
     "ammoMaximum": 5,
     "thermalLoad": 720,
+    "shieldBankReinforcement": 24,
+    "shieldBankHeat": 720,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 11.4,
     "cost": 249137
   },
   {
@@ -1499,6 +1639,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 720,
+    "shieldBankReinforcement": 32,
+    "shieldBankHeat": 720,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 11.4,
     "cost": 622843
   },
   {
@@ -1514,6 +1658,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 720,
+    "shieldBankReinforcement": 41,
+    "shieldBankHeat": 720,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 11.4,
     "cost": 1557108
   },
   {
@@ -1529,6 +1677,10 @@
     "clipSize": 1,
     "ammoMaximum": 5,
     "thermalLoad": 720,
+    "shieldBankReinforcement": 49,
+    "shieldBankHeat": 720,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 11.4,
     "cost": 3892770
   },
   {
@@ -1544,6 +1696,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 720,
+    "shieldBankReinforcement": 57,
+    "shieldBankHeat": 720,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 11.4,
     "cost": 9731925
   },
   {
@@ -1559,6 +1715,10 @@
     "clipSize": 1,
     "ammoMaximum": 5,
     "thermalLoad": 800,
+    "shieldBankReinforcement": 28,
+    "shieldBankHeat": 800,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 17.1,
     "cost": 697584
   },
   {
@@ -1574,6 +1734,10 @@
     "clipSize": 1,
     "ammoMaximum": 3,
     "thermalLoad": 800,
+    "shieldBankReinforcement": 37,
+    "shieldBankHeat": 800,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 17.1,
     "cost": 1743961
   },
   {
@@ -1589,6 +1753,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 800,
+    "shieldBankReinforcement": 47,
+    "shieldBankHeat": 800,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 17.1,
     "cost": 4359903
   },
   {
@@ -1604,6 +1772,10 @@
     "clipSize": 1,
     "ammoMaximum": 5,
     "thermalLoad": 800,
+    "shieldBankReinforcement": 56,
+    "shieldBankHeat": 800,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 17.1,
     "cost": 10899756
   },
   {
@@ -1619,6 +1791,10 @@
     "clipSize": 1,
     "ammoMaximum": 4,
     "thermalLoad": 800,
+    "shieldBankReinforcement": 65,
+    "shieldBankHeat": 800,
+    "shieldBankSpinUp": 5,
+    "shieldBankDuration": 17.1,
     "cost": 27249391
   },
   {
@@ -1961,6 +2137,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
+    "scanAngle": 10,
+    "scanTime": 5,
     "cost": 1000,
     "unknownStats": ["powerDraw"]
   },
@@ -1972,6 +2150,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 40,
+    "scanAngle": 10,
+    "scanTime": 5,
     "cost": 505000,
     "unknownStats": ["powerDraw"]
   },
@@ -1983,6 +2163,8 @@
     "rating": "C",
     "mass": 2,
     "integrity": 40,
+    "scanAngle": 10,
+    "scanTime": 5,
     "cost": 1545000,
     "unknownStats": ["powerDraw"]
   },
@@ -1996,6 +2178,7 @@
     "integrity": 20,
     "powerDraw": 0,
     "bootTime": 0,
+    "probeRadius": 20,
     "cost": 250000
   },
   {
@@ -2029,6 +2212,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
+    "scanAngle": 10,
+    "scanTime": 5,
     "unknownStats": ["powerDraw"]
   },
   {
@@ -2050,6 +2235,7 @@
     "integrity": 32,
     "powerDraw": 0.14,
     "bootTime": 4,
+    "refuelRate": 0.018,
     "cost": 309
   },
   {
@@ -2062,6 +2248,7 @@
     "integrity": 41,
     "powerDraw": 0.17,
     "bootTime": 4,
+    "refuelRate": 0.032,
     "cost": 1068
   },
   {
@@ -2074,6 +2261,7 @@
     "integrity": 51,
     "powerDraw": 0.2,
     "bootTime": 4,
+    "refuelRate": 0.075,
     "cost": 3386
   },
   {
@@ -2086,6 +2274,7 @@
     "integrity": 64,
     "powerDraw": 0.25,
     "bootTime": 4,
+    "refuelRate": 0.147,
     "cost": 10734
   },
   {
@@ -2098,6 +2287,7 @@
     "integrity": 77,
     "powerDraw": 0.3,
     "bootTime": 4,
+    "refuelRate": 0.247,
     "cost": 34026
   },
   {
@@ -2110,6 +2300,7 @@
     "integrity": 90,
     "powerDraw": 0.35,
     "bootTime": 4,
+    "refuelRate": 0.376,
     "cost": 107864
   },
   {
@@ -2122,6 +2313,7 @@
     "integrity": 105,
     "powerDraw": 0.41,
     "bootTime": 4,
+    "refuelRate": 0.534,
     "cost": 341927
   },
   {
@@ -2134,6 +2326,7 @@
     "integrity": 120,
     "powerDraw": 0.48,
     "bootTime": 4,
+    "refuelRate": 0.72,
     "cost": 1083910
   },
   {
@@ -2146,6 +2339,7 @@
     "integrity": 24,
     "powerDraw": 0.18,
     "bootTime": 4,
+    "refuelRate": 0.024,
     "cost": 1285
   },
   {
@@ -2158,6 +2352,7 @@
     "integrity": 31,
     "powerDraw": 0.22,
     "bootTime": 4,
+    "refuelRate": 0.043,
     "cost": 4451
   },
   {
@@ -2170,6 +2365,7 @@
     "integrity": 38,
     "powerDraw": 0.27,
     "bootTime": 4,
+    "refuelRate": 0.1,
     "cost": 14109
   },
   {
@@ -2182,6 +2378,7 @@
     "integrity": 48,
     "powerDraw": 0.33,
     "bootTime": 4,
+    "refuelRate": 0.196,
     "cost": 44724
   },
   {
@@ -2194,6 +2391,7 @@
     "integrity": 58,
     "powerDraw": 0.4,
     "bootTime": 4,
+    "refuelRate": 0.33,
     "cost": 141776
   },
   {
@@ -2206,6 +2404,7 @@
     "integrity": 68,
     "powerDraw": 0.47,
     "bootTime": 4,
+    "refuelRate": 0.502,
     "cost": 449431
   },
   {
@@ -2218,6 +2417,7 @@
     "integrity": 79,
     "powerDraw": 0.55,
     "bootTime": 4,
+    "refuelRate": 0.712,
     "cost": 1424698
   },
   {
@@ -2230,6 +2430,7 @@
     "integrity": 90,
     "powerDraw": 0.64,
     "bootTime": 4,
+    "refuelRate": 0.96,
     "cost": 4516291
   },
   {
@@ -2242,6 +2443,7 @@
     "integrity": 40,
     "powerDraw": 0.23,
     "bootTime": 4,
+    "refuelRate": 0.03,
     "cost": 5142
   },
   {
@@ -2254,6 +2456,7 @@
     "integrity": 51,
     "powerDraw": 0.28,
     "bootTime": 4,
+    "refuelRate": 0.054,
     "cost": 17803
   },
   {
@@ -2266,6 +2469,7 @@
     "integrity": 64,
     "powerDraw": 0.34,
     "bootTime": 4,
+    "refuelRate": 0.126,
     "cost": 56435
   },
   {
@@ -2278,6 +2482,7 @@
     "integrity": 80,
     "powerDraw": 0.41,
     "bootTime": 4,
+    "refuelRate": 0.245,
     "cost": 178898
   },
   {
@@ -2290,6 +2495,7 @@
     "integrity": 96,
     "powerDraw": 0.5,
     "bootTime": 4,
+    "refuelRate": 0.412,
     "cost": 567106
   },
   {
@@ -2302,6 +2508,7 @@
     "integrity": 113,
     "powerDraw": 0.59,
     "bootTime": 4,
+    "refuelRate": 0.627,
     "cost": 1797726
   },
   {
@@ -2314,6 +2521,7 @@
     "integrity": 131,
     "powerDraw": 0.69,
     "bootTime": 4,
+    "refuelRate": 0.89,
     "cost": 5698790
   },
   {
@@ -2326,6 +2534,7 @@
     "integrity": 150,
     "powerDraw": 0.8,
     "bootTime": 4,
+    "refuelRate": 1.2,
     "cost": 18065165
   },
   {
@@ -2338,6 +2547,7 @@
     "integrity": 56,
     "powerDraw": 0.28,
     "bootTime": 4,
+    "refuelRate": 0.036,
     "cost": 20568
   },
   {
@@ -2350,6 +2560,7 @@
     "integrity": 70,
     "powerDraw": 0.34,
     "bootTime": 4,
+    "refuelRate": 0.065,
     "cost": 71211
   },
   {
@@ -2362,6 +2573,7 @@
     "integrity": 90,
     "powerDraw": 0.41,
     "bootTime": 4,
+    "refuelRate": 0.151,
     "cost": 225738
   },
   {
@@ -2374,6 +2586,7 @@
     "integrity": 112,
     "powerDraw": 0.49,
     "bootTime": 4,
+    "refuelRate": 0.294,
     "cost": 715591
   },
   {
@@ -2386,6 +2599,7 @@
     "integrity": 134,
     "powerDraw": 0.6,
     "bootTime": 4,
+    "refuelRate": 0.494,
     "cost": 2268424
   },
   {
@@ -2398,6 +2612,7 @@
     "integrity": 158,
     "powerDraw": 0.71,
     "bootTime": 4,
+    "refuelRate": 0.752,
     "cost": 7190903
   },
   {
@@ -2410,6 +2625,7 @@
     "integrity": 183,
     "powerDraw": 0.83,
     "bootTime": 4,
+    "refuelRate": 1.068,
     "cost": 22795161
   },
   {
@@ -2422,6 +2638,7 @@
     "integrity": 210,
     "powerDraw": 0.96,
     "bootTime": 4,
+    "refuelRate": 1.44,
     "cost": 72260660
   },
   {
@@ -2434,6 +2651,7 @@
     "integrity": 48,
     "powerDraw": 0.32,
     "bootTime": 4,
+    "refuelRate": 0.042,
     "cost": 82270
   },
   {
@@ -2446,6 +2664,7 @@
     "integrity": 61,
     "powerDraw": 0.39,
     "bootTime": 4,
+    "refuelRate": 0.075,
     "cost": 284844
   },
   {
@@ -2458,6 +2677,7 @@
     "integrity": 77,
     "powerDraw": 0.48,
     "bootTime": 4,
+    "refuelRate": 0.176,
     "cost": 902954
   },
   {
@@ -2470,6 +2690,7 @@
     "integrity": 96,
     "powerDraw": 0.57,
     "bootTime": 4,
+    "refuelRate": 0.342,
     "cost": 2862364
   },
   {
@@ -2482,6 +2703,7 @@
     "integrity": 115,
     "powerDraw": 0.7,
     "bootTime": 4,
+    "refuelRate": 0.577,
     "cost": 9073694
   },
   {
@@ -2494,6 +2716,7 @@
     "integrity": 136,
     "powerDraw": 0.83,
     "bootTime": 4,
+    "refuelRate": 0.878,
     "cost": 28763610
   },
   {
@@ -2506,6 +2729,7 @@
     "integrity": 157,
     "powerDraw": 0.97,
     "bootTime": 4,
+    "refuelRate": 1.245,
     "cost": 91180644
   },
   {
@@ -2518,6 +2742,7 @@
     "integrity": 180,
     "powerDraw": 1.12,
     "bootTime": 4,
+    "refuelRate": 1.68,
     "cost": 289042641
   },
   {
@@ -2770,6 +2995,8 @@
     "integrity": 32,
     "powerDraw": 0.14,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 3,
     "cost": 12000
   },
   {
@@ -2782,6 +3009,8 @@
     "integrity": 41,
     "powerDraw": 0.17,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 6,
     "cost": 33600
   },
   {
@@ -2794,6 +3023,8 @@
     "integrity": 51,
     "powerDraw": 0.2,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 9,
     "cost": 94080
   },
   {
@@ -2806,6 +3037,8 @@
     "integrity": 64,
     "powerDraw": 0.25,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 12,
     "cost": 263424
   },
   {
@@ -2818,6 +3051,8 @@
     "integrity": 24,
     "powerDraw": 0.18,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 4,
     "cost": 36000
   },
   {
@@ -2830,6 +3065,8 @@
     "integrity": 31,
     "powerDraw": 0.22,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 7,
     "cost": 100800
   },
   {
@@ -2842,6 +3079,8 @@
     "integrity": 38,
     "powerDraw": 0.27,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 10,
     "cost": 282240
   },
   {
@@ -2854,6 +3093,8 @@
     "integrity": 48,
     "powerDraw": 0.33,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 13,
     "cost": 790272
   },
   {
@@ -2866,6 +3107,8 @@
     "integrity": 40,
     "powerDraw": 0.23,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 5,
     "cost": 108000
   },
   {
@@ -2878,6 +3121,8 @@
     "integrity": 51,
     "powerDraw": 0.28,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 8,
     "cost": 302400
   },
   {
@@ -2890,6 +3135,8 @@
     "integrity": 64,
     "powerDraw": 0.34,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 11,
     "cost": 846720
   },
   {
@@ -2902,6 +3149,8 @@
     "integrity": 80,
     "powerDraw": 0.41,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 14,
     "cost": 2370816
   },
   {
@@ -2914,6 +3163,8 @@
     "integrity": 56,
     "powerDraw": 0.28,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 6,
     "cost": 324000
   },
   {
@@ -2926,6 +3177,8 @@
     "integrity": 71,
     "powerDraw": 0.34,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 9,
     "cost": 907200
   },
   {
@@ -2938,6 +3191,8 @@
     "integrity": 90,
     "powerDraw": 0.41,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 12,
     "cost": 2540160
   },
   {
@@ -2950,6 +3205,8 @@
     "integrity": 112,
     "powerDraw": 0.49,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 15,
     "cost": 7112448
   },
   {
@@ -2962,6 +3219,8 @@
     "integrity": 48,
     "powerDraw": 0.32,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 7,
     "cost": 972000
   },
   {
@@ -2974,6 +3233,8 @@
     "integrity": 61,
     "powerDraw": 0.39,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 10,
     "cost": 2721600
   },
   {
@@ -2986,6 +3247,8 @@
     "integrity": 77,
     "powerDraw": 0.48,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 13,
     "cost": 7620480
   },
   {
@@ -2998,6 +3261,8 @@
     "integrity": 96,
     "powerDraw": 0.57,
     "bootTime": 15,
+    "interdictorFacingLimit": 50,
+    "interdictorRange": 16,
     "cost": 21337344
   },
   {

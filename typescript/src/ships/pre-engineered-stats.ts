@@ -15,8 +15,8 @@
  * **What is resolved, and what is not.** The module catalogues carry the mechanical
  * stats (mass, integrity, power, capacities, optimal mass), the defence stats and the
  * weapon stats, so almost every variant resolves in full — a pre-engineered rail gun
- * gets its damage, ranges and clip as well as its mass and power draw. The few labels
- * nothing carries a base for (a scanner's probe radius, say) are reported by
+ * gets its damage, ranges and clip as well as its mass and power draw. Every variant in
+ * the catalogue resolves today; a label that stopped resolving would be reported by
  * {@link unresolvedModifiers} rather than silently dropped.
  *
  * @packageDocumentation
@@ -67,10 +67,11 @@ export function getPreEngineeredModifiers(variant: PreEngineeredVariant): Engine
 /**
  * The labels a variant modifies that cannot be computed for its particular base module.
  *
- * This includes both labels the catalogues do not model at all (a scanner's probe
- * radius, say) and known fields whose base value is absent from this particular module.
- * Reported rather than dropped so a consumer can distinguish "this variant changes
- * nothing else" from "this catalogue cannot say".
+ * This includes both labels the catalogues do not model at all (Anti-Guardian Zone
+ * Resistance, which is a granted capability rather than a number) and known fields whose
+ * base value is absent from this particular module. Reported rather than dropped so a
+ * consumer can distinguish "this variant changes nothing else" from "this catalogue
+ * cannot say". Empty for every variant in the catalogue today.
  *
  * @param variant - A pre-engineered variant.
  * @returns The unresolvable labels, in the variant's own order.
@@ -123,7 +124,7 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         baseStats(module),
         asFeatures(variant.modifiers),
     )) {
-        const field = fieldForLabel(Label);
+        const field = fieldForLabel(Label, module);
         // Every field a label maps to holds a number, so the computed value fits —
         // once it is back in the catalogue's units (a journal reports a resistance as
         // `40` where the catalogue stores `0.4`).

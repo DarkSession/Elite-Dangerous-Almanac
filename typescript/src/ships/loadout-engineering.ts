@@ -11,7 +11,7 @@ import {
     moduleEngineeringTarget,
 } from './engineering-compatibility.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
-import { baseStats, fieldForLabel } from './module-stat-labels.js';
+import { baseStats, fieldForLabel, isUnknown } from './module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
 import type { OutfittingModule } from './modules.js';
 import type { AvailableBlueprint } from './ship-loadout.js';
@@ -29,39 +29,40 @@ export function statFor(item: string): OutfittingModule | null {
 }
 
 /**
- * Modifier labels a recipe changes that the module carries no base value for — the
- * ones {@link computeModifiers} would have to skip.
+ * Modifier labels a recipe changes that **cannot be answered** for a module — the ones
+ * that make {@link ShipLoadout.applyBlueprint} refuse the recipe rather than store it
+ * half-applied.
  *
- * `overwrite` and `additive` contributions are exempt: the first replaces the stat
- * outright and the second starts from zero, so neither needs a base to scale (Double
- * Shot gives a burst size to a weapon that has none; Rapid Fire adds jitter to a weapon
- * that had none).
+ * A label with no base value is not automatically one of them. The catalogue's rule is
+ * that an absent stat means *the module has no such stat* unless the record names it in
+ * {@link OutfittingModule.unknownStats}, and a recipe leg on a stat that is not there is
+ * simply inert: Long Range scales the shot speed of a weapon that fires a projectile and
+ * leaves a beam laser's alone, exactly as the game does. So a label is missing only when
+ *
+ * - the catalogue models **no field at all** for it, so there would be nowhere to put
+ *   the result — an engineered stat this record shape cannot express; or
+ * - the record declares that field **unknown**, so a value exists and nobody publishes
+ *   it. Nothing can be scaled from an unknown, and guessing would be worse than
+ *   refusing.
  *
  * @internal
  */
 export function missingBaseLabels(
+    stats: OutfittingModule,
     base: Readonly<Record<string, number>>,
     features: readonly { readonly label: string; readonly method?: string }[],
     experimental?: readonly { readonly label: string; readonly method?: string }[],
 ): string[] {
     const contributions = [...features, ...(experimental ?? [])];
-    // An overwrite replaces the stat outright and an addition starts from zero, so
-    // neither needs a base value to apply to — as long as the catalogue has somewhere to
-    // put the result. A label it models no field for stays uncomputable.
-    const baseless = new Set(
-        contributions
-            .filter(
-                (c) =>
-                    (c.method === 'overwrite' || c.method === 'additive') &&
-                    fieldForLabel(c.label) !== null,
-            )
-            .map((c) => c.label),
-    );
     return [
         ...new Set(
             contributions
-                .map((feature) => feature.label)
-                .filter((label) => base[label] === undefined && !baseless.has(label)),
+                .map((contribution) => contribution.label)
+                .filter((label) => {
+                    if (base[label] !== undefined) return false;
+                    const field = fieldForLabel(label, stats);
+                    return field === null || isUnknown(stats, field);
+                }),
         ),
     ];
 }
@@ -76,7 +77,7 @@ export function availableBlueprintsFor(item: string): AvailableBlueprint[] {
     for (const fdname of Object.keys(BLUEPRINTS)) {
         if (!blueprintTargets(fdname)?.includes(target)) continue;
         const grades = Object.entries(BLUEPRINTS[fdname]!.grades)
-            .filter(([, grade]) => missingBaseLabels(base, grade.features).length === 0)
+            .filter(([, grade]) => missingBaseLabels(stats, base, grade.features).length === 0)
             .map(([grade]) => Number(grade))
             .filter(Number.isFinite)
             .sort((a, b) => a - b);
@@ -96,7 +97,7 @@ export function availableExperimentalsFor(item: string): string[] {
         return (
             experimentalTarget(fdname) === target &&
             effect !== undefined &&
-            missingBaseLabels(base, effect.modifiers).length === 0
+            missingBaseLabels(stats, base, effect.modifiers).length === 0
         );
     });
 }

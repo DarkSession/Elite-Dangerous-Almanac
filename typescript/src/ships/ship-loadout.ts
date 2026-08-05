@@ -967,7 +967,7 @@ export class ShipLoadout {
             }
         }
         const base = baseStats(stats);
-        const missing = missingBaseLabels(base, features, experimental);
+        const missing = missingBaseLabels(stats, base, features, experimental);
         if (missing.length > 0) {
             throw new TypeError(
                 `ShipLoadout.applyBlueprint: cannot compute "${blueprintName}" for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
