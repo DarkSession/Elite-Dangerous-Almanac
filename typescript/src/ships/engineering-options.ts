@@ -8,16 +8,16 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1029 of the 1198 modules — every module a registry gives a recipe
- * for. The other 169 take no engineering: whole families (fuel tanks, passenger cabins,
+ * The catalogue groups 1029 of the 1198 modules — every module upstream allows a recipe
+ * on. The other 169 take no engineering: whole families (fuel tanks, passenger cabins,
  * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
  * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
  * Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
  * Supercruise Assist, the module stabilisers, the planetary approach suites, the
  * discovery scanners, the cargo hatch and the AX utility modules), plus the individual
- * modules upstream denies every blueprint — the turreted and V2 anti-xeno weapons, five
- * of the seven mining tools, the remote-release launchers and the Mk II Plasma Shock
- * Autocannon.
+ * modules upstream denies every blueprint — every anti-xeno multi-cannon but the two
+ * gimballed and every anti-xeno missile rack but the two fixed, five of the seven mining
+ * tools, the remote-release launchers and the Mk II Plasma Shock Autocannon.
  *
  * **A group is one menu.** Where the same kind of module comes in two flavours with
  * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian
@@ -90,8 +90,8 @@ const moduleExclusions = new Map(
  * denied modules listed in the module overview above. It stays worded as the catalogue's
  * answer rather than the game's because that is what it can honestly claim: a module
  * Frontier adds engineering for later reads `null` until a registry says so, and the
- * build corpus already has one such case (the Mk II Plasma Shock Autocannon, engineered
- * in two community builds and denied every blueprint upstream).
+ * build corpus already has one such case (the Mk II Plasma Shock Autocannon, denied every
+ * blueprint upstream and engineered on both of a community build's large hardpoints).
  *
  * @param symbol - A module symbol, e.g. `"Hpt_BeamLaser_Fixed_Small"`.
  * @returns The group id, or `null` when the module is not in the catalogue.
@@ -122,7 +122,8 @@ export function getEngineeringGroup(symbol: string): string | null {
  * `LifeSupport_LightWeight` here and `Misc_LightWeight` in an EDSY-authored build. The
  * family-specific id is the one listed, so compare ids with that in mind: the two are the
  * same recipe. `Sensor_LongRange` and `Scanner_LongRange` are **not** such a pair — those
- * are two different recipes, and the utility scanners list the `Scanner_*` ones.
+ * are two different recipes, and the utility scanners take the `Scanner_*` ones for Long
+ * Range and Wide Angle (their other four ids are shared with the sensor suites).
  *
  * @param symbol - A module symbol.
  * @returns Blueprint ids, sorted. Join to `BLUEPRINTS`.

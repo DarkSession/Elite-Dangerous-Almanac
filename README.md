@@ -1127,19 +1127,21 @@ the exact list for any one module. Once you know the module, use
 A module the options catalogue does not group returns `[]` from both. To tell that apart
 from a module that _is_ grouped but has no experimental to offer, ask
 `getEngineeringGroup` — it returns `null` only for the former. The second case is the
-common one: 364 of the 1029 grouped modules take blueprints and nothing else, because 27
-of the 53 groups offer no experimental at all — life support, sensors, the limpet
-controllers, the utility scanners, the Guardian weapons.
+common one: 364 of the 1029 grouped modules take blueprints and nothing else — 363 of
+them because their group offers no experimental at all (27 of the 53 groups: life
+support, sensors, the limpet controllers, the utility scanners, the Guardian weapons),
+and the small fixed Abrasion Blaster because it is excluded from its group's only effect.
 
-The catalogue covers 1029 of the 1198 modules — every module a registry gives a recipe
-for. The other 169 take no engineering: whole families (fuel tanks, passenger cabins, the
+The catalogue covers 1029 of the 1198 modules — every module upstream allows a recipe
+on. The other 169 take no engineering: whole families (fuel tanks, passenger cabins, the
 repair/recon/research/decontamination and multi-limpet controllers, meta-alloy and
 ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
 Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
 Supercruise Assist, the module stabilisers, the planetary approach suites, the withdrawn
 discovery scanners, the cargo hatch and the AX utility modules), plus individual modules
-their family's blueprints do not reach — the turreted and V2 anti-xeno weapons, five of
-the seven mining tools and the remote-release launchers among them.
+their family's blueprints do not reach — every anti-xeno multi-cannon but the two
+gimballed, every anti-xeno missile rack but the two fixed, five of the seven mining tools
+and the remote-release launchers among them.
 
 ```ts
 getBlueprintsForModule("Int_LifeSupport_Size4_Class2");
@@ -1168,13 +1170,14 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > life support's Lightweight is `LifeSupport_LightWeight` here and `Misc_LightWeight` in
 > an EDSY-authored build. The menus list the family-specific id, so compare ids knowing
 > the two are the same recipe. `Sensor_LongRange` and `Scanner_LongRange` are _not_ such a
-> pair: those are different recipes, and the utility scanners list the `Scanner_*` ones.
+> pair: those are different recipes, and the utility scanners take the `Scanner_*` ones for
+> Long Range and Wide Angle (the rest of their menu is shared with the sensor suites).
 >
 > **The menu and `ShipLoadout.applyBlueprint` do not yet agree.** `applyBlueprint` does
 > not read this catalogue — it maps the blueprint to a module family of its own — and it
-> refuses recipes the menu offers on 47 modules: the hatch-breaker controllers (21), the
+> refuses recipes the menu offers on 52 modules: the hatch-breaker controllers (21), the
 > Guardian shield reinforcement packages (10) and FSD boosters (5), the KWS/manifest/wake
-> scanners (15, for the generic `Misc_*` recipes) and the Caustic Sink Launcher, whose
+> scanners (5 each, for the generic `Misc_*` recipes) and the Caustic Sink Launcher, whose
 > family is `miscellaneous` rather than `heatSink`. It also refuses `Misc_LightWeight` /
 > `Misc_Shielded` on life support, limpet controllers, AFMUs and fuel scoops — 76 of the
 > 1902 declared engineering entries in `fixtures/ships/builds/`, across 54 builds. All of

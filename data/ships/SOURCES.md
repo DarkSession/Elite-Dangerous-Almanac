@@ -1204,13 +1204,22 @@ up straight through with no disambiguation at all. Both paths are evidence that
   - **This corrected three groups that predate the extension.** `powerPlants`,
     `powerDistributors` and `hullReinforcements` each offered
     `recipe_guardianmodule_sturdy` to every ordinary module in them, which EDSY denies —
-    an Anti-Guardian recipe on a non-Guardian module. 25 modules moved to the new Guardian
-    groups. A further 14 left the catalogue entirely because upstream denies them every
-    blueprint: eight AX multi-cannons (all but the two gimballed), five of the seven
-    mining tools, and the Mk II Plasma Shock Autocannon. The remaining 19 groups and their
-    module bindings are byte-identical to before, and the ten plain Module Reinforcement
-    Packages — denied their family's only recipe, and carrying none in coriolis either —
-    are not in the catalogue at all.
+    an Anti-Guardian recipe on a non-Guardian module. Those three lists lose that id, and
+    25 modules move to the new Guardian groups. A further 14 leave the catalogue entirely
+    because upstream denies them every blueprint: eight AX multi-cannons (all but the two
+    gimballed), five of the seven mining tools, and the Mk II Plasma Shock Autocannon,
+    which cost `antiXenoMultiCannons` 8 of its 10 modules, `miningToolsLasers` 5 of its 7
+    and `plasmaAccelerators` 1 of its 5. The ten plain Module Reinforcement Packages —
+    denied their family's only recipe — are not in the catalogue at all, which leaves
+    `moduleReinforcements` holding the ten Guardian packages.
+  - **Nine of the 22 pre-existing groups changed, and the other 13 are byte-identical.**
+    Three lost the Anti-Guardian recipe and their Guardian members to the split, three
+    lost members to a `noblueprints` denial, and three — `thrusters`,
+    `frameShiftDrives` and `shieldGenerators` — only *gained* the family-rule modules
+    described below (the size-8 drives, `Int_ShieldGenerator_Size1_Class4` and four
+    `*_free` starter fittings). No group's blueprint or experimental list changed except
+    those three losing `recipe_guardianmodule_sturdy`, and no module that stayed in the
+    catalogue moved to a group other than its family's Guardian half.
   - **The 169 modules absent take no engineering.** Whole families first, both registries
     agreeing: fuel tanks, passenger cabins, the repair/recon/research/decontamination and
     multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
@@ -1234,10 +1243,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
     a refinery `Refineries_Shielded` and each limpet controller its own. **This is not
     cosmetic for the scanners:** EDSY's `scan_lr` and `cs_lr` share the fdname
     `Sensor_LongRange`, but `Scanner_LongRange` is a different recipe (power draw, not
-    mass; a larger range roll), so the utility scanners list the `Scanner_*` ids and the
-    sensor suites the `Sensor_*` ones. The substituted lists are then checked against
-    coriolis for all 20 groups it covers, and they match exactly. Chaff, heat sink, point
-    defence and ECMs keep the generic `Misc_*` ids — there coriolis agrees with EDSY.
+    mass; a larger range roll), so the utility scanners take the `Scanner_*` ids for Long
+    Range and Wide Angle where the sensor suites take the `Sensor_*` ones. (Their other
+    four ids are unaffected: `Sensor_FastScan` and the generic `Misc_*` trio, exactly as
+    coriolis has them.) Eleven groups carry a substitution; the substituted lists are then
+    checked against coriolis's own, as are the nine further groups it carries a list for —
+    20 in all, every one an exact match. Chaff, heat sink, point defence and ECMs keep the
+    generic `Misc_*` ids: there coriolis agrees with EDSY.
   - **`MC_Overcharged` is left out on purpose.** coriolis carries a multi-cannon-specific
     Overcharged (one extra clip-size leg); the multi-cannon group lists EDSY's
     `Weapon_Overcharged`, as it did before this change, and every Overcharged multi-cannon
@@ -1258,29 +1270,32 @@ up straight through with no disambiguation at all. Both paths are evidence that
     not engineerable either.
 - **Checked against the build corpus.** Of the 1902 declared engineering entries in
   `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups — the measure in
-  the issue was 497 of them ungrouped — and 1889 declare a recipe their module's group
-  offers. 70 of those are the generic spelling of a family-specific recipe
-  (`Misc_LightWeight` on a life support, and so on) and count as offered; the shape of
-  that judgement is pinned in the fixture as `corpus.blueprintAliases`. The residue is
-  **13 declarations no registry supports**, left as explicit exemptions rather than folded
-  in:
+  the issue was 497 of them ungrouped — and 1888 are clean end to end: the module is
+  grouped, its group offers the blueprint, and where an experimental is declared the
+  module can take it. 70 of the 1888 declare the generic spelling of a family-specific
+  recipe (`Misc_LightWeight` on a life support, and so on) and count as offered; the shape
+  of that judgement is pinned in the fixture as `corpus.blueprintAliases`. The residue is
+  **14 entries no registry supports**, left as explicit exemptions rather than folded in:
   - `corpus.notOffered` — five `Weapon_HighCapacity` on the Guardian Gauss Cannon and six
     `special_super_penetrator_cooled` on the Guardian Shard Cannon
     ([#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36)), plus one
     `Sensor_LongRange` on a wake scanner
     ([#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32)).
-  - `corpus.notGrouped` — two `Weapon_LongRange` on the Mk II Plasma Shock Autocannon,
-    which EDSY denies every blueprint (`noblueprints: {'*'}`) and coriolis does not list.
-    It is the one case where the corpus engineers a module this catalogue calls
-    unengineerable; it is the newest weapon in the corpus, so an upstream lag is at least
+  - `corpus.notGrouped` — two `Weapon_Efficient` entries on the Mk II Plasma Shock
+    Autocannon (both in `smallcombat01-nx-combat`), which EDSY denies every blueprint
+    (`noblueprints: {'*'}`). coriolis cannot corroborate either way: its
+    `modifications/modules.json` is keyed by module *group*, so it says nothing about one
+    module. This is the one case where the corpus engineers a module this catalogue calls
+    unengineerable, and it is the newest weapon involved, so an upstream lag is at least
     as likely as a mis-declaration. Also tracked in
     [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36).
 
   A corpus build's engineering is declared by its author, never read off an outfitting
-  screen, so it is evidence about the catalogue but not authority over it. That it
-  contradicts the corrected data in only 13 of 1902 entries — and in none of the 39
-  bindings the `noblueprints` pass changed — is the strongest check available that the
-  denials are real.
+  screen, so it is evidence about the catalogue but not authority over it. Still, the
+  `noblueprints` pass moved or dropped **39 module bindings** and the corpus engineers
+  only one of those 39 modules at all — the Mk II above, twice. It offers no support for
+  any of the other 38 denials and no contradiction of them, which is the strongest check
+  available on data that only one registry publishes.
 - **File order is derivable:** `modules` is written group by group in the order `groups`
   declares them, and within a group in module-catalogue order, so a re-derivation from the
   same sources reproduces the file rather than reshuffling it.
