@@ -375,10 +375,11 @@ const COSMETIC_SLOT_PATTERNS: readonly RegExp[] = [
  *
  * @remarks
  * Recognised **positively**, from {@link COSMETIC_SLOT_PATTERNS}, rather than as "a name
- * `parseSlotName` does not know". The two are not the same thing: an unfamiliar
- * name is at least as likely to be a slot family the game has added, or a producer that
- * lower-cases its slot keys as the SLEF specification's own example does, and calling
- * that free and weightless would understate a build's mass and credits without saying so.
+ * `parseSlotName` does not know". The two are not the same thing: an unfamiliar name is
+ * at least as likely to be a slot family the game has added, and calling that free and
+ * weightless would understate a build's mass and credits without saying so. (Casing is
+ * not what makes a name unfamiliar — the patterns are matched lower-cased, as
+ * `parseSlotName` classifies a key lower-cased.)
  * An article the catalogue can identify is therefore counted whatever its slot is called,
  * and only a genuinely unidentifiable one is classified by slot at all — see
  * {@link ShipLoadout.toLoadoutEvent}.
@@ -430,6 +431,33 @@ function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
                   },
               }),
     };
+}
+
+/**
+ * The first of `keys` that names the same mount as `slotKey`, ignoring case, or `null`
+ * if none does.
+ *
+ * @remarks
+ * A build's own spelling of a slot key is authoritative and is never rewritten — an
+ * import keeps whatever its producer wrote, so a re-export is byte-identical to what
+ * came in. That spelling is not the caller's to know, though: Inara lower-cases every
+ * key, as the SLEF specification's own example does, so `LargeMiningHardpoint1` and
+ * `largemininghardpoint1` are one mount and either must find it.
+ *
+ * Every caller checks for an exact match first, so **an exactly spelled key always
+ * wins**; this settles only the case where none matches exactly. A producer that wrote
+ * *both* spellings would leave two entries for one mount, and then the earlier of them
+ * wins everywhere — reading it, editing it and ordering it for export all agree, and
+ * the other entry keeps its own slot in the export rather than being lost.
+ *
+ * A linear scan is enough: the largest build in the corpus fits 40 modules.
+ */
+function firstKeyMatchingCase(keys: Iterable<string>, slotKey: string): string | null {
+    const wanted = slotKey.toLowerCase();
+    for (const key of keys) {
+        if (key.toLowerCase() === wanted) return key;
+    }
+    return null;
 }
 
 /** Snapshot caller-supplied stats so later caller mutation cannot alter the build. */
@@ -1154,18 +1182,16 @@ export class ShipLoadout {
             );
         }
         const remaining = new Map(this.#modules);
-        // Indexed by lower-cased key, so a lower-casing producer's build orders by slot
-        // exactly as a journal's does. First spelling wins, as `#fittedKey` has it.
-        const byLowerKey = new Map<string, string>();
-        for (const key of remaining.keys()) {
-            const lower = key.toLowerCase();
-            if (!byLowerKey.has(lower)) byLowerKey.set(lower, key);
-        }
         const ordered: LoadoutModule[] = [];
         for (const slot of enumerateSlots(layout)) {
-            const key = byLowerKey.get(slot.key.toLowerCase());
-            const module = key === undefined ? undefined : remaining.get(key);
-            if (module && key !== undefined) {
+            // Resolved exactly as `#fittedKey` resolves it, so the entry this orders is
+            // the one `moduleAt` and `setModule` bind to — a lower-casing producer's
+            // build orders by slot exactly as a journal's does.
+            const key = remaining.has(slot.key)
+                ? slot.key
+                : firstKeyMatchingCase(remaining.keys(), slot.key);
+            const module = key === null ? undefined : remaining.get(key);
+            if (module && key !== null) {
                 ordered.push(module);
                 remaining.delete(key);
             }
@@ -1511,23 +1537,14 @@ export class ShipLoadout {
      * is empty.
      *
      * @remarks
-     * The build's own spelling is authoritative and is never rewritten: an import keeps
-     * whatever its producer wrote, so a re-export is byte-identical to what came in.
-     * Matching is case-insensitive because that spelling is not the caller's to know —
-     * Inara lower-cases every key, as the SLEF specification's own example does, so
-     * `LargeMiningHardpoint1` and `largemininghardpoint1` are one mount. A linear scan
-     * is enough: the largest build in the corpus fits 40 modules.
-     *
-     * A producer that wrote *both* spellings would leave two entries; the first in
-     * insertion order wins, and the other keeps its own slot in the export.
+     * The build's own spelling is authoritative and is never rewritten, so this is the
+     * key every mutation must write through. An exactly spelled key is taken as given;
+     * anything else goes to {@link firstKeyMatchingCase}, which is where the matching
+     * rule and its reasons live.
      */
     #fittedKey(slotKey: string): string | null {
         if (this.#modules.has(slotKey)) return slotKey;
-        const wanted = slotKey.toLowerCase();
-        for (const key of this.#modules.keys()) {
-            if (key.toLowerCase() === wanted) return key;
-        }
-        return null;
+        return firstKeyMatchingCase(this.#modules.keys(), slotKey);
     }
 
     /** Why `module` cannot go in `slot`, or `null` if it fits. */

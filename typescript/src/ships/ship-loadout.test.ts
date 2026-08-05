@@ -1304,12 +1304,25 @@ test('every editor and reader on the facade takes a lower-cased key', () => {
     assert.throws(() => build.removeModule('cargohatch'), TypeError);
 });
 
-test('a lower-cased build reports its bulkhead and exports in slot order', () => {
-    const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    // `armour` is the fitted bulkhead, not the stock alloy assumed for a build with none.
-    assert.equal(build.moduleAt('Armour')?.Item, 'lakonminer_armour_grade1');
-    assert.ok(build.armourMetrics().hitPoints > 0);
+test('a lower-cased armour slot is the fitted bulkhead, not the stock alloy', () => {
+    // The fixture's own bulkhead is grade 1, which *is* the Type-11's stock alloy, so
+    // it cannot tell a bound slot from the fallback. Reinforced alloy can: 1225 hull
+    // points against the 630 a build with no armour module is reported on.
+    const upgrade = (slot: string): number => {
+        const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
+        const modules = data.Modules.map((m) =>
+            m.Slot === 'armour' ? { ...m, Slot: slot, Item: 'lakonminer_armour_grade3' } : m,
+        );
+        return ShipLoadout.fromLoadout({ ...data, Modules: modules }).armourMetrics().hitPoints;
+    };
+    assert.equal(upgrade('Armour'), 1225);
+    assert.equal(upgrade('armour'), upgrade('Armour'));
+    // ...and the untouched fixture's stock-grade bulkhead is the 630 it should be.
+    assert.equal(ShipLoadout.fromSlef(JSON.stringify(inaraFixture)).armourMetrics().hitPoints, 630);
+});
 
+test('a lower-cased build exports in slot order', () => {
+    const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
     // Ordering by slot resolves the layout's keys against the build's own spelling, so
     // the hardpoints lead and nothing is left to the unrecognised-slot tail.
     const ordered = build.toLoadoutEvent({ moduleOrder: 'slots' }).Modules.map((m) => m.Slot);
@@ -1327,4 +1340,38 @@ test('a lower-cased build reports its bulkhead and exports in slot order', () =>
         .filter((key) => ordered.includes(key));
     assert.deepEqual(ordered, layoutOrder);
     assert.equal(ordered.length, 27);
+});
+
+test('two spellings of one mount resolve to the same entry everywhere', () => {
+    // A producer writing both spellings is pathological, but it must not make the
+    // readers and the editors disagree about which of the two they mean.
+    const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout({
+        ...data,
+        // `tinyhardpoint1` (a shield booster) is already in there; this is the same
+        // mount spelled the journal's way, added after it.
+        Modules: [...data.Modules, { Slot: 'TinyHardpoint1', Item: 'hpt_chafflauncher_tiny' }],
+    });
+    assert.equal(build.modules.length, 28);
+
+    // An exactly spelled key wins, so both of these name the journal-spelled entry.
+    assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_chafflauncher_tiny');
+    assert.equal(build.getFittedModule('TinyHardpoint1')?.slot, 'TinyHardpoint1');
+    // Ordering for export picks that same entry — the loser keeps its own slot in the
+    // export rather than being dropped, so no module is ever lost to a duplicate.
+    const ordered = build.toLoadoutEvent({ moduleOrder: 'slots' }).Modules;
+    const tiny = ordered.filter((m) => m.Slot.toLowerCase() === 'tinyhardpoint1');
+    assert.deepEqual(
+        tiny.map((m) => m.Slot),
+        ['TinyHardpoint1', 'tinyhardpoint1'],
+    );
+    assert.equal(ordered.length, 28);
+
+    // An exact spelling still addresses its own entry, so each of the two is
+    // individually removable and neither is stranded.
+    build.removeModule('tinyhardpoint1');
+    assert.equal(build.modules.length, 27);
+    assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_chafflauncher_tiny');
+    // With the duplicate gone, the survivor answers to either spelling again.
+    assert.equal(build.moduleAt('tinyhardpoint1')?.Item, 'hpt_chafflauncher_tiny');
 });

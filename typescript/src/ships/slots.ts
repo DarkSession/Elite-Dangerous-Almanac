@@ -274,16 +274,21 @@ const CORE_KEY: Record<CoreSlotType, string> = {
 /**
  * Journal core slot key → core module function (the inverse of `CORE_KEY`), keyed in
  * lower case because {@link parseSlotName} classifies a key whatever its casing.
+ *
+ * @remarks
+ * A `Map` rather than an object literal: {@link parseSlotName} looks this up with an
+ * arbitrary caller-supplied string, and an object would answer `'constructor'` and
+ * `'__proto__'` with something inherited from `Object.prototype` instead of a miss.
  */
-const CORE_TYPE: Record<string, CoreSlotType> = {
-    powerplant: 'powerPlant',
-    mainengines: 'thrusters',
-    frameshiftdrive: 'frameShiftDrive',
-    lifesupport: 'lifeSupport',
-    powerdistributor: 'powerDistributor',
-    radar: 'sensors',
-    fueltank: 'fuelTank',
-};
+const CORE_TYPE: ReadonlyMap<string, CoreSlotType> = new Map([
+    ['powerplant', 'powerPlant'],
+    ['mainengines', 'thrusters'],
+    ['frameshiftdrive', 'frameShiftDrive'],
+    ['lifesupport', 'lifeSupport'],
+    ['powerdistributor', 'powerDistributor'],
+    ['radar', 'sensors'],
+    ['fueltank', 'fuelTank'],
+] as const);
 
 /** Ordered so `CORE_ORDER[i]` follows the outfitting panel. */
 const CORE_ORDER: readonly CoreSlotType[] = [
@@ -434,7 +439,7 @@ export function parseSlotName(slot: string): ParsedSlot | null {
     // Every comparison below is against the lower-cased key, so a producer's casing
     // never decides whether a mount is recognised.
     const key = slot.toLowerCase();
-    const core = CORE_TYPE[key];
+    const core = CORE_TYPE.get(key);
     if (core) return { kind: 'core', size: null, core };
     if (key === 'armour') return { kind: 'armour', size: 0 };
     if (key === 'cargohatch') return { kind: 'cargoHatch', size: 1 };

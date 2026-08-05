@@ -62,6 +62,11 @@ test('parseSlotName reads a restricted mount off its journal name alone', () => 
 test('parseSlotName returns null for an unrecognised name', () => {
     assert.equal(parseSlotName('Nonsense42'), null);
     assert.equal(parseSlotName(''), null);
+    // The core-key lookup is a Map, so a name that happens to be an Object.prototype
+    // member is a miss like any other rather than an inherited "classification".
+    assert.equal(parseSlotName('constructor'), null);
+    assert.equal(parseSlotName('__proto__'), null);
+    assert.equal(parseSlotName('toString'), null);
 });
 
 test('parseSlotName classifies a key whatever its casing', () => {
