@@ -38,14 +38,30 @@
  * lasers, which carry no `rateOfFire`), `damageDistribution` splits it by type,
  * `rateOfFire` is shots per second with the burst pattern and charge time folded in,
  * `distributorDraw` (MW) and `thermalLoad` are per shot, and `maximumRange` /
- * `falloffRange` / `shotSpeed` are metres and metres per second.
+ * `falloffRange` / `shotSpeed` are metres and metres per second. `shotSpeed` is absent
+ * on the weapons with no projectile at all (the lasers, rail guns, Gauss cannons and
+ * mine launchers), as is `reloadTime` on the ones that never reload.
+ * Engineering base stats: the values a blueprint recipe scales, so a recipe that names
+ * one needs it here. `engineHeatRate` and `fsdHeatRate` are waste heat per second (at
+ * top speed, and while charging a jump); `refuelRate` is a fuel scoop's tonnes per
+ * second; `shieldBankReinforcement` / `shieldBankHeat` / `shieldBankSpinUp` /
+ * `shieldBankDuration` are one shield cell's MJ per second, heat per use, and seconds
+ * before and of the reinforcement; `scannerRange` is metres (a utility scanner's scan
+ * distance, a sensor suite's typical emission range — the panel shows the latter in km),
+ * `scanAngle` degrees and `scanTime` seconds; `probeRadius` is the Detailed Surface
+ * Scanner's probe radius as a percentage, which is how the game stores that one;
+ * `interdictorFacingLimit` is degrees and `interdictorRange` is seconds to intercept.
+ * A shield generator's `distributorDraw` is the systems-capacitor cost of 1 MJ/s of
+ * regeneration, the stat a journal labels `EnergyPerRegen`.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  * `unknownStats` names the stat fields this record omits because the value is
  * *unknown* rather than because the module has none — a cargo rack has no
  * `powerDraw`, but a Discovery Scanner has one nobody publishes. Present only where
  * an absence needs that said; a field named here is always absent from the record,
- * so sourcing a value means deleting its name here in the same change.
+ * so sourcing a value means deleting its name here in the same change. The difference
+ * is load-bearing for engineering: a recipe that scales a stat the module does not have
+ * is inert, while one that scales a stat named here is refused outright.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -3817,6 +3833,7 @@
     "burstInterval": 1,
     "clipSize": 1,
     "ammoMaximum": 72,
+    "reloadTime": 1,
     "distributorDraw": 0.24,
     "thermalLoad": 3.6,
     "armourPiercing": 35,
@@ -3845,6 +3862,7 @@
     "burstInterval": 1,
     "clipSize": 1,
     "ammoMaximum": 72,
+    "reloadTime": 1,
     "distributorDraw": 0.24,
     "thermalLoad": 3.6,
     "armourPiercing": 35,

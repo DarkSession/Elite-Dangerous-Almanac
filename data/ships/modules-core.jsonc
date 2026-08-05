@@ -38,14 +38,30 @@
  * lasers, which carry no `rateOfFire`), `damageDistribution` splits it by type,
  * `rateOfFire` is shots per second with the burst pattern and charge time folded in,
  * `distributorDraw` (MW) and `thermalLoad` are per shot, and `maximumRange` /
- * `falloffRange` / `shotSpeed` are metres and metres per second.
+ * `falloffRange` / `shotSpeed` are metres and metres per second. `shotSpeed` is absent
+ * on the weapons with no projectile at all (the lasers, rail guns, Gauss cannons and
+ * mine launchers), as is `reloadTime` on the ones that never reload.
+ * Engineering base stats: the values a blueprint recipe scales, so a recipe that names
+ * one needs it here. `engineHeatRate` and `fsdHeatRate` are waste heat per second (at
+ * top speed, and while charging a jump); `refuelRate` is a fuel scoop's tonnes per
+ * second; `shieldBankReinforcement` / `shieldBankHeat` / `shieldBankSpinUp` /
+ * `shieldBankDuration` are one shield cell's MJ per second, heat per use, and seconds
+ * before and of the reinforcement; `scannerRange` is metres (a utility scanner's scan
+ * distance, a sensor suite's typical emission range — the panel shows the latter in km),
+ * `scanAngle` degrees and `scanTime` seconds; `probeRadius` is the Detailed Surface
+ * Scanner's probe radius as a percentage, which is how the game stores that one;
+ * `interdictorFacingLimit` is degrees and `interdictorRange` is seconds to intercept.
+ * A shield generator's `distributorDraw` is the systems-capacitor cost of 1 MJ/s of
+ * regeneration, the stat a journal labels `EnergyPerRegen`.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
  * `unknownStats` names the stat fields this record omits because the value is
  * *unknown* rather than because the module has none — a cargo rack has no
  * `powerDraw`, but a Discovery Scanner has one nobody publishes. Present only where
  * an absence needs that said; a field named here is always absent from the record,
- * so sourcing a value means deleting its name here in the same change.
+ * so sourcing a value means deleting its name here in the same change. The difference
+ * is load-bearing for engineering: a recipe that scales a stat the module does not have
+ * is inert, while one that scales a stat named here is refused outright.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -2061,6 +2077,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.83,
     "maxMultiplier": 1.03,
+    "engineHeatRate": 1.3,
     "cost": 1978
   },
   {
@@ -2079,6 +2096,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.86,
     "maxMultiplier": 1.06,
+    "engineHeatRate": 1.3,
     "cost": 5934
   },
   {
@@ -2097,6 +2115,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.9,
     "maxMultiplier": 1.1,
+    "engineHeatRate": 1.3,
     "cost": 17803
   },
   {
@@ -2115,6 +2134,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.93,
     "maxMultiplier": 1.13,
+    "engineHeatRate": 1.3,
     "cost": 53408
   },
   {
@@ -2133,6 +2153,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
+    "engineHeatRate": 1.3,
     "cost": 160224
   },
   {
@@ -2151,6 +2172,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.83,
     "maxMultiplier": 1.03,
+    "engineHeatRate": 1.3,
     "cost": 6271
   },
   {
@@ -2169,6 +2191,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.86,
     "maxMultiplier": 1.06,
+    "engineHeatRate": 1.3,
     "cost": 18812
   },
   {
@@ -2187,6 +2210,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.9,
     "maxMultiplier": 1.1,
+    "engineHeatRate": 1.3,
     "cost": 56435
   },
   {
@@ -2205,6 +2229,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.93,
     "maxMultiplier": 1.13,
+    "engineHeatRate": 1.3,
     "cost": 169304
   },
   {
@@ -2223,6 +2248,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
+    "engineHeatRate": 1.3,
     "cost": 507912
   },
   {
@@ -2241,6 +2267,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.83,
     "maxMultiplier": 1.03,
+    "engineHeatRate": 1.3,
     "cost": 19878
   },
   {
@@ -2259,6 +2286,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.86,
     "maxMultiplier": 1.06,
+    "engineHeatRate": 1.3,
     "cost": 59633
   },
   {
@@ -2277,6 +2305,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.9,
     "maxMultiplier": 1.1,
+    "engineHeatRate": 1.3,
     "cost": 178898
   },
   {
@@ -2295,6 +2324,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.93,
     "maxMultiplier": 1.13,
+    "engineHeatRate": 1.3,
     "cost": 536693
   },
   {
@@ -2313,6 +2343,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
+    "engineHeatRate": 1.3,
     "cost": 1610080
   },
   {
@@ -2331,6 +2362,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.83,
     "maxMultiplier": 1.03,
+    "engineHeatRate": 1.3,
     "cost": 63012
   },
   {
@@ -2349,6 +2381,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.86,
     "maxMultiplier": 1.06,
+    "engineHeatRate": 1.3,
     "cost": 189035
   },
   {
@@ -2367,6 +2400,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.9,
     "maxMultiplier": 1.1,
+    "engineHeatRate": 1.3,
     "cost": 567106
   },
   {
@@ -2385,6 +2419,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.93,
     "maxMultiplier": 1.13,
+    "engineHeatRate": 1.3,
     "cost": 1701318
   },
   {
@@ -2403,6 +2438,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
+    "engineHeatRate": 1.3,
     "cost": 5103953
   },
   {
@@ -2421,6 +2457,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.83,
     "maxMultiplier": 1.03,
+    "engineHeatRate": 1.3,
     "cost": 199747
   },
   {
@@ -2439,6 +2476,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.86,
     "maxMultiplier": 1.06,
+    "engineHeatRate": 1.3,
     "cost": 599242
   },
   {
@@ -2457,6 +2495,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.9,
     "maxMultiplier": 1.1,
+    "engineHeatRate": 1.3,
     "cost": 1797726
   },
   {
@@ -2475,6 +2514,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.93,
     "maxMultiplier": 1.13,
+    "engineHeatRate": 1.3,
     "cost": 5393177
   },
   {
@@ -2493,6 +2533,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
+    "engineHeatRate": 1.3,
     "cost": 16179531
   },
   {
@@ -2511,6 +2552,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.83,
     "maxMultiplier": 1.03,
+    "engineHeatRate": 1.3,
     "cost": 633199
   },
   {
@@ -2529,6 +2571,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.86,
     "maxMultiplier": 1.06,
+    "engineHeatRate": 1.3,
     "cost": 1899597
   },
   {
@@ -2547,6 +2590,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.9,
     "maxMultiplier": 1.1,
+    "engineHeatRate": 1.3,
     "cost": 5698790
   },
   {
@@ -2565,6 +2609,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.93,
     "maxMultiplier": 1.13,
+    "engineHeatRate": 1.3,
     "cost": 17096371
   },
   {
@@ -2583,6 +2628,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
+    "engineHeatRate": 1.3,
     "cost": 51289112
   },
   {
@@ -2601,6 +2647,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.83,
     "maxMultiplier": 1.03,
+    "engineHeatRate": 1.3,
     "cost": 2007241
   },
   {
@@ -2619,6 +2666,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.86,
     "maxMultiplier": 1.06,
+    "engineHeatRate": 1.3,
     "cost": 6021722
   },
   {
@@ -2637,6 +2685,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.9,
     "maxMultiplier": 1.1,
+    "engineHeatRate": 1.3,
     "cost": 18065165
   },
   {
@@ -2655,6 +2704,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.93,
     "maxMultiplier": 1.13,
+    "engineHeatRate": 1.3,
     "cost": 54195495
   },
   {
@@ -2673,6 +2723,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
+    "engineHeatRate": 1.3,
     "cost": 162586486
   },
   {
@@ -2689,6 +2740,7 @@
     "maxFuel": 0.6,
     "fuelMul": 0.011,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 1978
   },
   {
@@ -2705,6 +2757,7 @@
     "maxFuel": 0.6,
     "fuelMul": 0.01,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 5934
   },
   {
@@ -2721,6 +2774,7 @@
     "maxFuel": 0.6,
     "fuelMul": 0.008,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 17803
   },
   {
@@ -2737,6 +2791,7 @@
     "maxFuel": 0.8,
     "fuelMul": 0.01,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 53408
   },
   {
@@ -2753,6 +2808,7 @@
     "maxFuel": 0.9,
     "fuelMul": 0.012,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 160224
   },
   {
@@ -2769,6 +2825,7 @@
     "maxFuel": 1.2,
     "fuelMul": 0.011,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 6271
   },
   {
@@ -2785,6 +2842,7 @@
     "maxFuel": 1.2,
     "fuelMul": 0.01,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 18812
   },
   {
@@ -2801,6 +2859,7 @@
     "maxFuel": 1.2,
     "fuelMul": 0.008,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 56435
   },
   {
@@ -2817,6 +2876,7 @@
     "maxFuel": 1.5,
     "fuelMul": 0.01,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 169304
   },
   {
@@ -2833,6 +2893,7 @@
     "maxFuel": 1.8,
     "fuelMul": 0.012,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 507912
   },
   {
@@ -2849,6 +2910,7 @@
     "maxFuel": 2,
     "fuelMul": 0.011,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 19878
   },
   {
@@ -2865,6 +2927,7 @@
     "maxFuel": 2,
     "fuelMul": 0.01,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 59633
   },
   {
@@ -2881,6 +2944,7 @@
     "maxFuel": 2,
     "fuelMul": 0.008,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 178898
   },
   {
@@ -2897,6 +2961,7 @@
     "maxFuel": 2.5,
     "fuelMul": 0.01,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 536693
   },
   {
@@ -2913,6 +2978,7 @@
     "maxFuel": 3,
     "fuelMul": 0.012,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 1610080
   },
   {
@@ -2929,6 +2995,7 @@
     "maxFuel": 3.3,
     "fuelMul": 0.011,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 63012
   },
   {
@@ -2945,6 +3012,7 @@
     "maxFuel": 3.3,
     "fuelMul": 0.01,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 189035
   },
   {
@@ -2961,6 +3029,7 @@
     "maxFuel": 3.3,
     "fuelMul": 0.008,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 567106
   },
   {
@@ -2977,6 +3046,7 @@
     "maxFuel": 4.1,
     "fuelMul": 0.01,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 1701318
   },
   {
@@ -2993,6 +3063,7 @@
     "maxFuel": 5,
     "fuelMul": 0.012,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 5103953
   },
   {
@@ -3009,6 +3080,7 @@
     "maxFuel": 5.3,
     "fuelMul": 0.011,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 199747
   },
   {
@@ -3025,6 +3097,7 @@
     "maxFuel": 5.3,
     "fuelMul": 0.01,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 599242
   },
   {
@@ -3041,6 +3114,7 @@
     "maxFuel": 5.3,
     "fuelMul": 0.008,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 1797726
   },
   {
@@ -3057,6 +3131,7 @@
     "maxFuel": 6.6,
     "fuelMul": 0.01,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 5393177
   },
   {
@@ -3073,6 +3148,7 @@
     "maxFuel": 8,
     "fuelMul": 0.012,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 16179531
   },
   {
@@ -3089,6 +3165,7 @@
     "maxFuel": 8.5,
     "fuelMul": 0.011,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 633199
   },
   {
@@ -3105,6 +3182,7 @@
     "maxFuel": 8.5,
     "fuelMul": 0.01,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 1899597
   },
   {
@@ -3121,6 +3199,7 @@
     "maxFuel": 8.5,
     "fuelMul": 0.008,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 5698790
   },
   {
@@ -3137,6 +3216,7 @@
     "maxFuel": 10.6,
     "fuelMul": 0.01,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 17096371
   },
   {
@@ -3153,6 +3233,7 @@
     "maxFuel": 12.8,
     "fuelMul": 0.012,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 51289112
   },
   {
@@ -3168,7 +3249,8 @@
     "optMass": 2240,
     "maxFuel": 13.6,
     "fuelMul": 0.011,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "fsdHeatRate": 50
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class2",
@@ -3183,7 +3265,8 @@
     "optMass": 2520,
     "maxFuel": 13.6,
     "fuelMul": 0.01,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "fsdHeatRate": 50
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class3",
@@ -3198,7 +3281,8 @@
     "optMass": 2800,
     "maxFuel": 13.6,
     "fuelMul": 0.008,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "fsdHeatRate": 50
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class4",
@@ -3213,7 +3297,8 @@
     "optMass": 3500,
     "maxFuel": 17,
     "fuelMul": 0.01,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "fsdHeatRate": 50
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class5",
@@ -3228,7 +3313,8 @@
     "optMass": 4200,
     "maxFuel": 20.4,
     "fuelMul": 0.012,
-    "fuelPower": 2.9
+    "fuelPower": 2.9,
+    "fsdHeatRate": 50
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class1",
@@ -4440,6 +4526,8 @@
     "integrity": 36,
     "powerDraw": 0.16,
     "bootTime": 5,
+    "scannerRange": 4000,
+    "scanAngle": 30,
     "cost": 517
   },
   {
@@ -4452,6 +4540,8 @@
     "integrity": 32,
     "powerDraw": 0.18,
     "bootTime": 5,
+    "scannerRange": 4500,
+    "scanAngle": 30,
     "cost": 1293
   },
   {
@@ -4464,6 +4554,8 @@
     "integrity": 40,
     "powerDraw": 0.2,
     "bootTime": 5,
+    "scannerRange": 5000,
+    "scanAngle": 30,
     "cost": 3231
   },
   {
@@ -4476,6 +4568,8 @@
     "integrity": 48,
     "powerDraw": 0.33,
     "bootTime": 5,
+    "scannerRange": 5500,
+    "scanAngle": 30,
     "cost": 8078
   },
   {
@@ -4488,6 +4582,8 @@
     "integrity": 44,
     "powerDraw": 0.6,
     "bootTime": 5,
+    "scannerRange": 6000,
+    "scanAngle": 30,
     "cost": 20195
   },
   {
@@ -4500,6 +4596,8 @@
     "integrity": 46,
     "powerDraw": 0.18,
     "bootTime": 5,
+    "scannerRange": 4160,
+    "scanAngle": 30,
     "cost": 1448
   },
   {
@@ -4512,6 +4610,8 @@
     "integrity": 41,
     "powerDraw": 0.21,
     "bootTime": 5,
+    "scannerRange": 4680,
+    "scanAngle": 30,
     "cost": 3619
   },
   {
@@ -4524,6 +4624,8 @@
     "integrity": 51,
     "powerDraw": 0.23,
     "bootTime": 5,
+    "scannerRange": 5200,
+    "scanAngle": 30,
     "cost": 9048
   },
   {
@@ -4536,6 +4638,8 @@
     "integrity": 61,
     "powerDraw": 0.38,
     "bootTime": 5,
+    "scannerRange": 5720,
+    "scanAngle": 30,
     "cost": 22619
   },
   {
@@ -4548,6 +4652,8 @@
     "integrity": 56,
     "powerDraw": 0.69,
     "bootTime": 5,
+    "scannerRange": 6240,
+    "scanAngle": 30,
     "cost": 56547
   },
   {
@@ -4560,6 +4666,8 @@
     "integrity": 58,
     "powerDraw": 0.22,
     "bootTime": 5,
+    "scannerRange": 4320,
+    "scanAngle": 30,
     "cost": 4053
   },
   {
@@ -4572,6 +4680,8 @@
     "integrity": 51,
     "powerDraw": 0.25,
     "bootTime": 5,
+    "scannerRange": 4860,
+    "scanAngle": 30,
     "cost": 10133
   },
   {
@@ -4584,6 +4694,8 @@
     "integrity": 64,
     "powerDraw": 0.28,
     "bootTime": 5,
+    "scannerRange": 5400,
+    "scanAngle": 30,
     "cost": 25333
   },
   {
@@ -4596,6 +4708,8 @@
     "integrity": 77,
     "powerDraw": 0.46,
     "bootTime": 5,
+    "scannerRange": 5940,
+    "scanAngle": 30,
     "cost": 63333
   },
   {
@@ -4608,6 +4722,8 @@
     "integrity": 70,
     "powerDraw": 0.84,
     "bootTime": 5,
+    "scannerRange": 6480,
+    "scanAngle": 30,
     "cost": 158331
   },
   {
@@ -4620,6 +4736,8 @@
     "integrity": 72,
     "powerDraw": 0.27,
     "bootTime": 5,
+    "scannerRange": 4480,
+    "scanAngle": 30,
     "cost": 11349
   },
   {
@@ -4632,6 +4750,8 @@
     "integrity": 64,
     "powerDraw": 0.31,
     "bootTime": 5,
+    "scannerRange": 5040,
+    "scanAngle": 30,
     "cost": 28373
   },
   {
@@ -4644,6 +4764,8 @@
     "integrity": 80,
     "powerDraw": 0.34,
     "bootTime": 5,
+    "scannerRange": 5600,
+    "scanAngle": 30,
     "cost": 70932
   },
   {
@@ -4656,6 +4778,8 @@
     "integrity": 96,
     "powerDraw": 0.56,
     "bootTime": 5,
+    "scannerRange": 6160,
+    "scanAngle": 30,
     "cost": 177331
   },
   {
@@ -4668,6 +4792,8 @@
     "integrity": 88,
     "powerDraw": 1.02,
     "bootTime": 5,
+    "scannerRange": 6720,
+    "scanAngle": 30,
     "cost": 443328
   },
   {
@@ -4680,6 +4806,8 @@
     "integrity": 86,
     "powerDraw": 0.33,
     "bootTime": 5,
+    "scannerRange": 4640,
+    "scanAngle": 30,
     "cost": 31778
   },
   {
@@ -4692,6 +4820,8 @@
     "integrity": 77,
     "powerDraw": 0.37,
     "bootTime": 5,
+    "scannerRange": 5220,
+    "scanAngle": 30,
     "cost": 79444
   },
   {
@@ -4704,6 +4834,8 @@
     "integrity": 96,
     "powerDraw": 0.41,
     "bootTime": 5,
+    "scannerRange": 5800,
+    "scanAngle": 30,
     "cost": 198611
   },
   {
@@ -4716,6 +4848,8 @@
     "integrity": 115,
     "powerDraw": 0.68,
     "bootTime": 5,
+    "scannerRange": 6380,
+    "scanAngle": 30,
     "cost": 496527
   },
   {
@@ -4728,6 +4862,8 @@
     "integrity": 106,
     "powerDraw": 1.23,
     "bootTime": 5,
+    "scannerRange": 6960,
+    "scanAngle": 30,
     "cost": 1241317
   },
   {
@@ -4740,6 +4876,8 @@
     "integrity": 102,
     "powerDraw": 0.4,
     "bootTime": 5,
+    "scannerRange": 4800,
+    "scanAngle": 30,
     "cost": 88978
   },
   {
@@ -4752,6 +4890,8 @@
     "integrity": 90,
     "powerDraw": 0.45,
     "bootTime": 5,
+    "scannerRange": 5400,
+    "scanAngle": 30,
     "cost": 222444
   },
   {
@@ -4764,6 +4904,8 @@
     "integrity": 113,
     "powerDraw": 0.5,
     "bootTime": 5,
+    "scannerRange": 6000,
+    "scanAngle": 30,
     "cost": 556110
   },
   {
@@ -4776,6 +4918,8 @@
     "integrity": 136,
     "powerDraw": 0.83,
     "bootTime": 5,
+    "scannerRange": 6600,
+    "scanAngle": 30,
     "cost": 1390275
   },
   {
@@ -4788,6 +4932,8 @@
     "integrity": 124,
     "powerDraw": 1.5,
     "bootTime": 5,
+    "scannerRange": 7200,
+    "scanAngle": 30,
     "cost": 3475688
   },
   {
@@ -4800,6 +4946,8 @@
     "integrity": 118,
     "powerDraw": 0.47,
     "bootTime": 5,
+    "scannerRange": 4960,
+    "scanAngle": 30,
     "cost": 249137
   },
   {
@@ -4812,6 +4960,8 @@
     "integrity": 105,
     "powerDraw": 0.53,
     "bootTime": 5,
+    "scannerRange": 5580,
+    "scanAngle": 30,
     "cost": 622843
   },
   {
@@ -4824,6 +4974,8 @@
     "integrity": 131,
     "powerDraw": 0.59,
     "bootTime": 5,
+    "scannerRange": 6200,
+    "scanAngle": 30,
     "cost": 1557108
   },
   {
@@ -4836,6 +4988,8 @@
     "integrity": 157,
     "powerDraw": 0.97,
     "bootTime": 5,
+    "scannerRange": 6820,
+    "scanAngle": 30,
     "cost": 3892770
   },
   {
@@ -4848,6 +5002,8 @@
     "integrity": 144,
     "powerDraw": 1.77,
     "bootTime": 5,
+    "scannerRange": 7440,
+    "scanAngle": 30,
     "cost": 9731925
   },
   {
@@ -4860,6 +5016,8 @@
     "integrity": 135,
     "powerDraw": 0.55,
     "bootTime": 5,
+    "scannerRange": 5120,
+    "scanAngle": 30,
     "cost": 697584
   },
   {
@@ -4872,6 +5030,8 @@
     "integrity": 120,
     "powerDraw": 0.62,
     "bootTime": 5,
+    "scannerRange": 5760,
+    "scanAngle": 30,
     "cost": 1743961
   },
   {
@@ -4884,6 +5044,8 @@
     "integrity": 150,
     "powerDraw": 0.69,
     "bootTime": 5,
+    "scannerRange": 6400,
+    "scanAngle": 30,
     "cost": 4359903
   },
   {
@@ -4896,6 +5058,8 @@
     "integrity": 180,
     "powerDraw": 1.14,
     "bootTime": 5,
+    "scannerRange": 7040,
+    "scanAngle": 30,
     "cost": 10899756
   },
   {
@@ -4908,6 +5072,8 @@
     "integrity": 165,
     "powerDraw": 2.07,
     "bootTime": 5,
+    "scannerRange": 7680,
+    "scanAngle": 30,
     "cost": 27249391
   },
   {
@@ -5016,7 +5182,8 @@
     "maxMass": 72,
     "optMultiplier": 1,
     "minMultiplier": 0.83,
-    "maxMultiplier": 1.03
+    "maxMultiplier": 1.03,
+    "engineHeatRate": 1.3
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class1_free",
@@ -5031,7 +5198,8 @@
     "optMass": 48,
     "maxFuel": 0.6,
     "fuelMul": 0.011,
-    "fuelPower": 2
+    "fuelPower": 2,
+    "fsdHeatRate": 10
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class1_free",
@@ -5070,7 +5238,9 @@
     "mass": 1.3,
     "integrity": 36,
     "powerDraw": 0.16,
-    "bootTime": 5
+    "bootTime": 5,
+    "scannerRange": 4000,
+    "scanAngle": 30
   },
   {
     "symbol": "Int_FuelTank_Size1_Class3_free",
@@ -5847,6 +6017,7 @@
     "optMultiplier": 1.15,
     "minMultiplier": 0.9,
     "maxMultiplier": 1.367,
+    "engineHeatRate": 1.3,
     "cost": 5103950
   },
   {
@@ -5865,6 +6036,7 @@
     "optMultiplier": 1.15,
     "minMultiplier": 0.9,
     "maxMultiplier": 1.367,
+    "engineHeatRate": 2,
     "cost": 1610080
   },
   {
@@ -6521,6 +6693,7 @@
     "maxFuel": 5,
     "fuelMul": 0.012,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 2041581
   },
   {
@@ -6537,6 +6710,7 @@
     "maxFuel": 12.8,
     "fuelMul": 0.012,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 20515645
   },
   {
@@ -6553,6 +6727,7 @@
     "maxFuel": 8,
     "fuelMul": 0.012,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 6471812
   },
   {
@@ -6569,6 +6744,7 @@
     "maxFuel": 3,
     "fuelMul": 0.012,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 644032
   },
   {
@@ -6585,6 +6761,7 @@
     "maxFuel": 1.8,
     "fuelMul": 0.012,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 203165
   },
   {
@@ -6601,6 +6778,7 @@
     "maxFuel": 0.9,
     "fuelMul": 0.012,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 64090
   },
   {
@@ -6697,6 +6875,7 @@
     "maxFuel": 0.6,
     "fuelMul": 0.008,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 21363
   },
   {
@@ -6713,6 +6892,7 @@
     "maxFuel": 0.9,
     "fuelMul": 0.012,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 64090
   },
   {
@@ -6729,6 +6909,7 @@
     "maxFuel": 0.9,
     "fuelMul": 0.012,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 64090
   },
   {
@@ -6745,6 +6926,7 @@
     "maxFuel": 1,
     "fuelMul": 0.013,
     "fuelPower": 2,
+    "fsdHeatRate": 10,
     "cost": 192269
   },
   {
@@ -6761,6 +6943,7 @@
     "maxFuel": 1.2,
     "fuelMul": 0.008,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 67722
   },
   {
@@ -6777,6 +6960,7 @@
     "maxFuel": 1.8,
     "fuelMul": 0.012,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 203165
   },
   {
@@ -6793,6 +6977,7 @@
     "maxFuel": 1.8,
     "fuelMul": 0.012,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 203165
   },
   {
@@ -6809,6 +6994,7 @@
     "maxFuel": 1.9,
     "fuelMul": 0.013,
     "fuelPower": 2.15,
+    "fsdHeatRate": 14,
     "cost": 609494
   },
   {
@@ -6825,6 +7011,7 @@
     "maxFuel": 2,
     "fuelMul": 0.008,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 214677
   },
   {
@@ -6841,6 +7028,7 @@
     "maxFuel": 3,
     "fuelMul": 0.012,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 644032
   },
   {
@@ -6857,6 +7045,7 @@
     "maxFuel": 3,
     "fuelMul": 0.012,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 644032
   },
   {
@@ -6873,6 +7062,7 @@
     "maxFuel": 3.2,
     "fuelMul": 0.013,
     "fuelPower": 2.3,
+    "fsdHeatRate": 18,
     "cost": 1932096
   },
   {
@@ -6889,6 +7079,7 @@
     "maxFuel": 3.3,
     "fuelMul": 0.008,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 623816
   },
   {
@@ -6905,6 +7096,7 @@
     "maxFuel": 5,
     "fuelMul": 0.012,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 2041581
   },
   {
@@ -6921,6 +7113,7 @@
     "maxFuel": 5,
     "fuelMul": 0.012,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 2041581
   },
   {
@@ -6937,6 +7130,7 @@
     "maxFuel": 5.2,
     "fuelMul": 0.013,
     "fuelPower": 2.45,
+    "fsdHeatRate": 27,
     "cost": 6124743
   },
   {
@@ -6953,6 +7147,7 @@
     "maxFuel": 5.3,
     "fuelMul": 0.008,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 2157271
   },
   {
@@ -6969,6 +7164,7 @@
     "maxFuel": 8,
     "fuelMul": 0.012,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 6471812
   },
   {
@@ -6985,6 +7181,7 @@
     "maxFuel": 8,
     "fuelMul": 0.012,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 6471812
   },
   {
@@ -7001,6 +7198,7 @@
     "maxFuel": 8.3,
     "fuelMul": 0.013,
     "fuelPower": 2.6,
+    "fsdHeatRate": 37,
     "cost": 19415437
   },
   {
@@ -7017,6 +7215,7 @@
     "maxFuel": 8.5,
     "fuelMul": 0.008,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 6838548
   },
   {
@@ -7033,6 +7232,7 @@
     "maxFuel": 12.8,
     "fuelMul": 0.012,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 20515645
   },
   {
@@ -7049,6 +7249,7 @@
     "maxFuel": 12.8,
     "fuelMul": 0.012,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 20515645
   },
   {
@@ -7065,6 +7266,7 @@
     "maxFuel": 13.1,
     "fuelMul": 0.013,
     "fuelPower": 2.75,
+    "fsdHeatRate": 43,
     "cost": 61546935
   },
   {
@@ -7561,6 +7763,7 @@
     "maxFuel": 13.6,
     "fuelMul": 0.008,
     "fuelPower": 2.9,
+    "fsdHeatRate": 50,
     "cost": 6838550
   },
   {
@@ -7577,6 +7780,7 @@
     "maxFuel": 20.4,
     "fuelMul": 0.012,
     "fuelPower": 2.9,
+    "fsdHeatRate": 50,
     "cost": 20515650
   },
   {
@@ -7593,6 +7797,7 @@
     "maxFuel": 20.4,
     "fuelMul": 0.012,
     "fuelPower": 2.9,
+    "fsdHeatRate": 50,
     "cost": 20515650
   },
   {
@@ -7609,6 +7814,7 @@
     "maxFuel": 20.4,
     "fuelMul": 0.012,
     "fuelPower": 2.9,
+    "fsdHeatRate": 50,
     "cost": 20515650
   },
   {
@@ -7625,6 +7831,7 @@
     "maxFuel": 20.7,
     "fuelMul": 0.013,
     "fuelPower": 2.9,
+    "fsdHeatRate": 50,
     "cost": 61546940
   },
   {
@@ -7657,6 +7864,7 @@
     "maxFuel": 6.8,
     "fuelMul": 0.011,
     "fuelPower": 2.5025,
+    "fsdHeatRate": 50,
     "cost": 82042060
   },
   {
@@ -7678,6 +7886,7 @@
     "restrictedToShips": [
       "Explorer_NX"
     ],
+    "engineHeatRate": 1.3,
     "cost": 68368390
   },
   {
@@ -7779,6 +7988,7 @@
     "restrictedToShips": [
       "SmallCombat01_NX"
     ],
+    "engineHeatRate": 1.3,
     "cost": 6637629
   },
   {

@@ -222,3 +222,52 @@ test('an overwrite recipe applies to a stat the module does not carry', () => {
     assert.equal(size.OriginalValue, 1); // the value the game assumes when absent
     assert.equal(modifiers.find((m) => m.Label === 'BurstRateOfFire')?.Value, 14);
 });
+
+test('the base stats a recipe scales come back in the journal spelling for the family', () => {
+    // One catalogue field can answer to more than one journal label, and which label a
+    // stat arrives under is a fact about the module's family, not about the stat. A
+    // shield generator's distributor draw is `EnergyPerRegen`; a cell bank's heat is
+    // `ShieldBankHeat` as well as `ThermalLoad`; a utility scanner's range is
+    // `ScannerRange` as well as `MaximumRange`.
+    const generator = baseStats(
+        getModuleBySymbol('Int_ShieldGenerator_Size3_Class5', ALL_MODULES)!,
+    );
+    assert.equal(generator['EnergyPerRegen'], 0.6);
+    assert.equal(generator['DistributorDraw'], 0.6);
+
+    const cellBank = baseStats(getModuleBySymbol('Int_ShieldCellBank_Size8_Class5', ALL_MODULES)!);
+    assert.equal(cellBank['ShieldBankReinforcement'], 65);
+    assert.equal(cellBank['ShieldBankSpinUp'], 5);
+    assert.equal(cellBank['ShieldBankDuration'], 17.1);
+    assert.equal(cellBank['ShieldBankHeat'], 800);
+
+    // A sensor suite's range is its typical emission range, in metres — the panel shows
+    // 5.76 km. A utility scanner's is the scan distance, in the same units.
+    assert.equal(
+        baseStats(getModuleBySymbol('Int_Sensors_Size8_Class2', ALL_MODULES)!)['ScannerRange'],
+        5760,
+    );
+    const scanner = baseStats(getModuleBySymbol('Hpt_CrimeScanner_Size0_Class5', ALL_MODULES)!);
+    assert.equal(scanner['ScannerRange'], 4000);
+    assert.equal(scanner['SensorTargetScanAngle'], 15);
+    assert.equal(scanner['ScannerTimeToScan'], 10);
+
+    // The Detailed Surface Scanner's probe radius is a percentage, and the journal and
+    // the recipe spell its label differently. Both have to reach the same base.
+    const dss = baseStats(getModuleBySymbol('Int_DetailedSurfaceScanner_Tiny', ALL_MODULES)!);
+    assert.equal(dss['ProbeRadius'], 20);
+    assert.equal(dss['DSS_PatchRadius'], 20);
+});
+
+test('a heat-rate recipe reproduces the heat a real journal reports', () => {
+    // Ground truth: the Krait Phantom capture in fixtures/ships/journal-krait-phantom.json
+    // carries `EngineHeatRate` 1.3 -> 1.95 for grade 4 Dirty Drive Tuning on a 6D thruster.
+    const thrusters = getModuleBySymbol('Int_Engine_Size6_Class2', ALL_MODULES)!;
+    const heat = computeModifiers(
+        baseStats(thrusters),
+        getBlueprintGrade('Engine_Dirty', 4)!,
+        1,
+    ).find((m) => m.Label === 'EngineHeatRate')!;
+    assert.equal(heat.OriginalValue, 1.3);
+    assert.equal(heat.Value, 1.95);
+});

@@ -174,9 +174,11 @@
         "optMultiplier": { "type": "number" },
         "minMultiplier": { "type": "number" },
         "maxMultiplier": { "type": "number" },
+        "engineHeatRate": { "type": "number", "minimum": 0 },
         "maxFuel": { "type": "number", "minimum": 0 },
         "fuelMul": { "type": "number", "exclusiveMinimum": 0 },
         "fuelPower": { "type": "number", "exclusiveMinimum": 0 },
+        "fsdHeatRate": { "type": "number", "minimum": 0 },
         "jumpBoost": { "type": "number", "minimum": 0 },
         "powerCapacity": { "type": "number", "minimum": 0 },
         "heatEfficiency": { "type": "number", "minimum": 0 },
@@ -186,11 +188,17 @@
         "enginesRecharge": { "type": "number", "minimum": 0 },
         "systemsCapacity": { "type": "number", "minimum": 0 },
         "systemsRecharge": { "type": "number", "minimum": 0 },
+        "refuelRate": { "type": "number", "minimum": 0 },
         "fuelCapacity": { "type": "number", "minimum": 0 },
         "cargoCapacity": { "type": "number", "minimum": 0 },
         "shieldRegenRate": { "type": "number", "minimum": 0 },
         "shieldBrokenRegenRate": { "type": "number", "minimum": 0 },
         "shieldBoost": { "type": "number" },
+
+        "shieldBankReinforcement": { "type": "number", "minimum": 0 },
+        "shieldBankHeat": { "type": "number", "minimum": 0 },
+        "shieldBankSpinUp": { "type": "number", "minimum": 0 },
+        "shieldBankDuration": { "type": "number", "minimum": 0 },
 
         "kineticResistance": { "$ref": "#/definitions/resistance" },
         "thermalResistance": { "$ref": "#/definitions/resistance" },
@@ -200,6 +208,18 @@
         "hullReinforcement": { "type": "number", "minimum": 0 },
         "shieldAddition": { "type": "number", "minimum": 0 },
         "moduleProtection": { "type": "number", "minimum": 0, "maximum": 1 },
+
+        "scannerRange": { "type": "number", "minimum": 0 },
+        "scanAngle": { "type": "number", "minimum": 0, "maximum": 360 },
+        "scanTime": { "type": "number", "minimum": 0 },
+        "probeRadius": { "type": "number", "minimum": 0 },
+
+        "interdictorFacingLimit": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 360
+        },
+        "interdictorRange": { "type": "number", "minimum": 0 },
 
         "alwaysPowered": { "type": "boolean" },
 

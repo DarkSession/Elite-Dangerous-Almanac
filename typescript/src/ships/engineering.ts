@@ -199,16 +199,23 @@ export function computeModifiers(
     for (const [label, contributions] of byLabel) {
         const original = base[label];
         const overwrite = contributions.find((c) => c.method === 'overwrite');
+        const multiplierBase = multiplierBaseForLabel(label);
         // A stat the module does not carry cannot be *scaled*, but it can still be set or
         // added to: an overwrite replaces it outright (Double Shot gives a burst size to
         // a weapon that fires one round at a time) and an addition starts from zero
         // (Rapid Fire adds jitter to a weapon that had none) — the same fallbacks
         // Coriolis uses. A purely multiplicative recipe has nothing to work on.
+        //
+        // A percentage-of-a-multiplier stat is the exception: it has no absent state. No
+        // hull boost is a ×1 multiplier — 0% — which is a real base to compound on, and
+        // is why a hull reinforcement package can be engineered to a hull boost it never
+        // had: the recipe's +24% *is* the bonus.
         const baseless =
             original === undefined &&
-            (overwrite !== undefined || contributions.some((c) => c.method === 'additive'));
+            (multiplierBase !== null ||
+                overwrite !== undefined ||
+                contributions.some((c) => c.method === 'additive'));
         if (original === undefined && !baseless) continue;
-        const multiplierBase = multiplierBaseForLabel(label);
         let value = original ?? 0;
         if (multiplierBase === null) {
             // Fold in a stable order — compound the multiplicative factors, then add
@@ -230,8 +237,12 @@ export function computeModifiers(
         modifiers.push({
             Label: label,
             Value: round6(value),
-            // A stat the module never carried has no original value to report.
-            ...(original === undefined ? {} : { OriginalValue: original }),
+            // A stat the module never carried has no original value to report — except a
+            // percentage-of-a-multiplier stat, whose absence *is* a value: 0%, exactly as
+            // a journal reports it.
+            ...(original === undefined && multiplierBase === null
+                ? {}
+                : { OriginalValue: original ?? 0 }),
         });
     }
     return resolveFalloffFromRange(modifiers, base);

@@ -123,7 +123,7 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         baseStats(module),
         asFeatures(variant.modifiers),
     )) {
-        const field = fieldForLabel(Label);
+        const field = fieldForLabel(Label, module);
         // Every field a label maps to holds a number, so the computed value fits —
         // once it is back in the catalogue's units (a journal reports a resistance as
         // `40` where the catalogue stores `0.4`).

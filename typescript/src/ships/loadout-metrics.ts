@@ -133,7 +133,7 @@ export function effectiveModule(
     // A SLEF export may name a blueprint without stating its modifiers; then there is
     // nothing to fold in beyond the fields the catalogue record already carries.
     for (const modifier of module.Engineering.Modifiers ?? []) {
-        const field = fieldForLabel(modifier.Label);
+        const field = fieldForLabel(modifier.Label, stats);
         if (field) fields.add(field);
     }
     for (const key of fields) {

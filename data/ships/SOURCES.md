@@ -2,6 +2,104 @@
 
 **Library snapshot:** 2026-07-24, revised repeatedly since — most recently by a price correction on 2026-08-05, recorded with the other corrosion-rack price notes in "Modules (outfitting)". The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
+**Revision 2026-08-05 (UTC), later the same day — the base stats blueprints modify are
+now carried, so a real build can be engineered.** `applyBlueprint` refuses a recipe whose
+base stats a module record does not hold, and 406 of the 1902 declared engineering entries
+in `fixtures/ships/builds/` were being refused for exactly that: the most-used blueprints
+in the game moved stats no record had. Thirteen stat fields are added and two backfilled;
+after this pass every one of those 1902 entries resolves. Counts and spot values are
+pinned in `fixtures/ships/module-stats.json` (`statCounts`, `spot`) and the corpus-wide
+claim in `builds.test.ts`.
+
+- **Sources.** EDSY `eddb.js` is the primary source for every field here — it is the only
+  one of the two registries that carries the heat rates and the scanner stats at all. The
+  file was re-read from `master` on 2026-08-05 (UTC) and is **byte-identical to the
+  revision already recorded on this page**: SHA-256
+  `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, so the commit pin
+  `cd68edfba665719958ce038b6e5d9eb02d0d2b02` still describes it. EDSY is (c) taleden under
+  **CC BY-NC 4.0**; the values are Elite Dangerous game data, the property of Frontier
+  Developments plc, redistributed under Frontier's media-usage terms. Cross-checked
+  against [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) at the commit this
+  domain already uses, `0db9234b5b9ce8c939ea84133d7ce336eea88e27` (`modules/**`,
+  `modifications/modifierActions.json`, `modifications/blueprints.json`).
+- **Which upstream field is which.** coriolis's `modifications/modifierActions.json` maps
+  each journal Modifier Label to the field it moves, and is what settled the joins:
+  `EngineHeatRate`/`FSDHeatRate`/`ShieldBankHeat` → `thermload`, `EnergyPerRegen` →
+  `distdraw`, `ShieldBankReinforcement` → `shieldreinforcement`, `ShieldBankSpinUp` →
+  `spinup`, `ShieldBankDuration` → `duration`, `ScannerRange` → `range`,
+  `SensorTargetScanAngle`/`MaxAngle` → `angle`, `ScannerTimeToScan` → `scantime`,
+  `FSDInterdictorFacingLimit` → `facinglimit`, `FSDInterdictorRange` → `ranget`. EDSY's
+  own attribute table names the same stats `engheat`, `fsdheat`, `scbheat`, `genpwr`,
+  `shieldrnfps`, `spinup`, `scbdur`, `scanrng`/`typemis`, `maxangle`/`scanangle`,
+  `scantime`, `facinglim`, `timerng`, `scooprate` and `proberad`.
+- **The two registries agree everywhere both carry a value.** Shield cell banks, the
+  interdictors, the utility scanners, the sensor suites and the shield generators were
+  compared record by record; the one difference is a rounding, coriolis's `duration: 17`
+  against EDSY's `scbdur: 17.1` on the 8A cell bank, and EDSY's figure is kept as the more
+  precise. coriolis carries **no** `thermload` on thrusters or drives despite naming the
+  field in `modifierActions.json`, which is why EDSY is primary here.
+- **Units, where the two disagree about them.** `scannerRange` is stored in **metres**
+  throughout, which is what a journal reports and what EDSY stores; coriolis holds a
+  sensor suite's as kilometres (`5.76` for the 8D suite, `5760` here) and a utility
+  scanner's as metres. `probeRadius` is stored as a **percentage** (`20`), not a
+  fraction: that is EDSY's form, coriolis's `proberadius: 0.2` is the other, and the
+  journal capture already in this repository settles it — `fixtures/ships/journal-krait-phantom.json`
+  reports the Detailed Surface Scanner's `DSS_PatchRadius` as `20` → `28` for a grade-4
+  Expanded Probe Scanning Radius roll. `interdictorRange` is **seconds to intercept**, the
+  unit the game measures a supercruise separation in, not a distance.
+- **Two of the added stats duplicate a number the record already had, and that is
+  deliberate.** A utility scanner's `scannerRange` is the same distance as its
+  `maximumRange`, and a shield cell bank's `shieldBankHeat` the same figure as its
+  `thermalLoad` — one upstream field each, read under two names. Dropping either would
+  change what a consumer already reads, and dropping the new name would leave the sensor
+  suites (which have no `maximumRange`) and the Pulse Wave Analyser (which has none
+  either) modelled differently from their siblings. Both pairs are kept in step instead:
+  `ScannerRange` and `ShieldBankHeat` each map to both fields in `module-stat-labels.ts`,
+  so an engineered scanner or cell bank reads the same whichever field is asked.
+- **Values no third-party registry lists, derived from the family rule.** Seven records:
+  the three `*_free` starter fittings (thrusters, drive, sensors) and the five plain
+  size-8 drives, plus the Mk II supercharge-optimised size-8 SCO drive. Each `*_free`
+  record is byte-identical to its priced twin apart from the missing `cost`, so it takes
+  that twin's value. A drive's heat rate is a function of its **size alone** across all 65
+  records both registries do carry — 10, 14, 18, 27, 37, 43 for sizes 2 to 7, identical
+  between the plain and SCO lines at every size — and the size-8 SCO drives are 50, so the
+  size-8 plain drives and the Mk II booster take 50. Stated here as derivation, not as a
+  reading: no registry publishes these eight figures.
+- **`shotSpeed` and `reloadTime` needed almost nothing.** The 49 weapons with no
+  `shotSpeed` and the 41 with no `reloadTime` are not gaps: they are the lasers, rail
+  guns, Gauss cannons and mine launchers, which have no projectile to speed up and no clip
+  to reload. Neither registry publishes a figure, and EDSY's per-family `modifiable` lists
+  say outright that the game does not move those stats on those weapons. The **two** real
+  omissions were the medium Seismic Charge Launchers, fixed and turreted, whose
+  `reloadTime` of 1 s EDSY carries (`rldtime`) and this catalogue had dropped; both are
+  filled. Nothing was invented for the other 88.
+- **`EnergyPerRegen` needed no data at all.** All 57 shield generators already carried
+  `distributorDraw`, and EDSY (`genpwr`) and coriolis (`distdraw`) both confirm it is the
+  same stat under the journal's other name. It was a missing line in the label map, not a
+  missing value, and it alone accounted for 36 of the 406 refusals.
+- **`refuelRate` is not on issue #10's list**, which was measured from the corpus and no
+  corpus build carries a fuel-scoop recipe. It is the same defect — `recipe_fuelscoop_efficiency`
+  moves `RefuelRate` and no record held one — so it is closed here rather than left as the
+  last hole of its kind. Stored in tonnes per second (EDSY `scooprate`); coriolis's `rate`
+  is the same figure in kilograms.
+- **What is still refused, and why that is right.** Two things, after this pass. A stat a
+  record declares **unknown** — the Resource Siphon controller's mass, the withdrawn
+  Discovery Scanners' power draw — still refuses every recipe that scales it, because
+  nothing can be scaled from an unknown. And `GuardianModuleResistance` refuses
+  everywhere, because it is not a number: EDSY stores Anti-Guardian Zone Resistance as a
+  flag the recipe *grants*, and this record shape has no field for it
+  ([issue #27](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27)). Beyond
+  base stats, 76 corpus entries are still refused for a target-family mismatch, which is a
+  mapping defect rather than a data one
+  ([issue #14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14)).
+- **A hull reinforcement package's hull boost is computed, not stored.** Its
+  `DefenceModifierHealthMultiplier` leg used to be refused as a missing base stat. It is
+  not one: a percentage-of-a-multiplier stat has no absent state, because no hull boost is
+  a ×1 multiplier — 0% — and EDSY says so explicitly (`hullbst`, `default: 0`,
+  `modmod: 100`). The calculator now compounds from that zero, which is why a package can
+  be engineered to a hull boost it never had and why a journal reports the leg with
+  `OriginalValue: 0`. No value was added to any record for this.
+
 **Revision 2026-08-05 (UTC) — the stats no source carries are now stated as unknown.**
 No value was added, changed or removed: this revision is a *classification* of the three
 gaps the 2026-08-02 pass left open. Five module records gain an `unknownStats` field
@@ -44,9 +142,12 @@ registry carries the value. No source was re-acquired or fetched for this revisi
   *published* price, so an absent `cost` is already unambiguous (README, list prices);
   there is nothing to disambiguate.
 - **Scope.** The field can only name stats the record shape has. The base stats
-  blueprints modify that no record carries at all (`EngineHeatRate`, `EnergyPerRegen`,
-  the scanner ranges) cannot be named and stay in
-  [issue #10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10).
+  blueprints modify that no record carried at all — `EngineHeatRate`, the scanner ranges
+  and the rest — were sourced by the revision above, which also made this distinction
+  load-bearing: a recipe that scales a stat a record simply omits is now inert, while one
+  that scales a stat named here is refused. One journal label is still unmodellable, and
+  it is a capability rather than a number:
+  [issue #27](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27).
 
 **Revision 2026-08-04 (UTC) — a restricted mount is now stored as one, and the journal
 names it by.** A hull's `hardpoints` was a bare array of sizes, so there was nowhere to
@@ -1319,8 +1420,10 @@ because both of its builds are pure traders.
   fuel, jump range, the power budget, shield and armour strength with resistances, and
   weapon DPS. **Engineering is recorded but not applied** — every pinned figure comes
   from stock module stats, so builds designed around an engineered plant read
-  `withinBudget: false`. That keeps the numbers a pure function of the catalogues, which
-  is what a port needs; it also sidesteps the applied-engineering gap in
-  [issue #10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10).
+  `withinBudget: false`. That keeps the numbers a pure function of the catalogues and
+  cheap for a port to reach, and it is a choice rather than a limitation: since the base
+  stats were sourced (revision above) all 1902 declared entries resolve, and `index.json`
+  carries `declaredEngineering` so `builds.test.ts` can assert exactly that on every run.
+  Applying them and re-pinning every metric would be a separate pass over the corpus.
 - **Not ground truth.** These figures are this implementation's own output, pinned so
   every future implementation must agree. Only the *builds* are external.
