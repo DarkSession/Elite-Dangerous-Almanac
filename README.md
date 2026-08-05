@@ -778,7 +778,7 @@ build.setModuleEnabled("TinyHardpoint6", false);
 ```
 
 > **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
-> currently reaches about 708 KB of minified JavaScript (~82 KB gzipped) because it must
+> currently reaches about 709 KB of minified JavaScript (~82 KB gzipped) because it must
 > resolve any ship/module id, plus blueprints and experimental effects, plus the
 > engineering menu it validates against and the pre-engineered catalogue. Prefer
 > `ships/slef`, `ships/jump-range`, the [build-metric

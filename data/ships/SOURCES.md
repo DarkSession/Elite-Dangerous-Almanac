@@ -1480,7 +1480,7 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   and [#39](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39) tracks it.
 - **What it costs.** `ShipLoadout` now carries the options catalogue whether or not the
   consumer opens a menu: measured on the shipped `dist/`, its import graph goes from 624 KB
-  to 708 KB, 74 KB to 82 KB gzipped — the options catalogue, plus `pre-engineered` for the
+  to 709 KB, 74 KB to 82 KB gzipped — the options catalogue, plus `pre-engineered` for the
   route above. The `ships` barrel went the other way, 716 KB to 711 KB, the family map
   having gone with it. That is the price of one answer instead of two, paid deliberately.
 
