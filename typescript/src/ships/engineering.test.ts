@@ -34,12 +34,62 @@ test('every engineering id has an explicit compatibility target', () => {
     assert.equal(moduleEngineeringTarget('Int_Hyperdrive_Size5_Class5'), 'frameShiftDrive');
     assert.equal(moduleEngineeringTarget('Anaconda_Armour_Reactive'), 'armour');
     assert.equal(moduleEngineeringTarget('Hpt_PulseLaser_Fixed_Small'), 'weapon');
+});
+
+test('the generic Misc recipes cover every family the game offers them on', () => {
+    // Lightweight and Reinforced share one family list; Shielded adds the three families
+    // the game gives Shielded and nothing else.
     assert.deepEqual(blueprintTargets('Misc_LightWeight'), [
         'miscellaneous',
         'chaff',
+        'collectionLimpet',
+        'fuelTransferLimpet',
+        'hatchBreakerLimpet',
         'heatSink',
+        'lifeSupport',
         'pointDefence',
+        'prospectorLimpet',
+        'scanner',
     ]);
+    assert.deepEqual(blueprintTargets('Misc_Reinforced'), blueprintTargets('Misc_LightWeight'));
+    assert.deepEqual(
+        [...blueprintTargets('Misc_Shielded')!].sort(),
+        [...blueprintTargets('Misc_LightWeight')!, 'afmu', 'fuelScoop', 'refinery'].sort(),
+    );
+
+    // Long Range and Wide Angle belong to both the sensor suite and the utility scanners;
+    // Fast Scan is the scanners' alone and Expanded the Detailed Surface Scanner's.
+    assert.deepEqual(blueprintTargets('Sensor_LongRange'), ['sensors', 'scanner']);
+    assert.deepEqual(blueprintTargets('Sensor_WideAngle'), ['sensors', 'scanner']);
+    assert.deepEqual(blueprintTargets('Sensor_LightWeight'), ['sensors']);
+    assert.deepEqual(blueprintTargets('Sensor_FastScan'), ['scanner']);
+    assert.deepEqual(blueprintTargets('Sensor_Expanded'), ['detailedSurfaceScanner']);
+});
+
+test('the modules named for one family and symboled for another are classified by family', () => {
+    // The Hatch Breaker Limpet Controller's symbol says "resource siphon" ...
+    assert.equal(
+        moduleEngineeringTarget('Int_DroneControl_ResourceSiphon_Size1_Class5'),
+        'hatchBreakerLimpet',
+    );
+    // ... and the Caustic Sink Launcher is a heat sink launcher, ammo capacity included.
+    assert.equal(moduleEngineeringTarget('Hpt_CausticSinkLauncher_Turret_Tiny'), 'heatSink');
+    assert.ok(blueprintTargets('Misc_HeatSinkCapacity')?.includes('heatSink'));
+});
+
+test('every pinned compatibility case resolves the way the fixture says', () => {
+    for (const testCase of fixture.compatibility.cases) {
+        const module = getModuleBySymbol(testCase.module, ALL_MODULES);
+        assert.ok(module, `no module "${testCase.module}"`);
+        assert.ok(getBlueprint(testCase.blueprint), `no blueprint "${testCase.blueprint}"`);
+        const targets = blueprintTargets(testCase.blueprint);
+        assert.notEqual(targets, null, `no target for "${testCase.blueprint}"`);
+        assert.equal(
+            targets!.includes(moduleEngineeringTarget(module.symbol)),
+            testCase.accepted,
+            `${testCase.blueprint} on ${testCase.module}`,
+        );
+    }
 });
 
 test('computeModifiers reproduces the FSD Long Range G5 + Mass Manager anchor', () => {

@@ -958,6 +958,62 @@ up straight through with no disambiguation at all. Both paths are evidence that
   (`GuardianModule_Sturdy`); this catalogue stores it under the `recipe_*` id the rest of
   `blueprints.jsonc` uses, so every id here joins directly.
 
+## Engineering compatibility (may this blueprint go on this module?)
+
+Not a data file: `typescript/src/ships/engineering-compatibility.ts` maps a blueprint id
+to the module families it may be applied to, and a module symbol to its family, so
+`ShipLoadout.applyBlueprint` can refuse an impossible combination. The reasoning belongs
+here because it is a fact about the game, and every language implementation needs the same
+map; the cases it must get right are pinned in `fixtures/ships/engineering.json`
+(`compatibility.cases`) and, wholesale, by the build corpus — `builds.test.ts` asserts
+that **every** engineering entry the 181 builds declare is one its module can take.
+
+- **Sources.** EDSY (`eddb.js`) module-group tables — each `mtype` lists the `blueprints`
+  its group offers and the `fdname` each of those ids writes to a journal — cross-checked
+  against EDCD/coriolis-data `modifications/modules.json` at the same commit the blueprint
+  data came from (`0db9234b5b9ce8c939ea84133d7ce336eea88e27`). Same licence notes as the
+  sections above. Checked 2026-08-05 UTC.
+- **One modification, several ids.** Frontier keys Lightweight, Reinforced and Shielded
+  both generically (`Misc_LightWeight`, `Misc_Reinforced`, `Misc_Shielded`) and per family
+  (`LifeSupport_LightWeight`, `CollectionLimpet_Shielded`, `AFM_Shielded`,
+  `FuelScoop_Shielded`, `Refineries_Shielded`, …). The two spellings are the same recipe —
+  their grades in `blueprints.jsonc` are identical, roll ranges and materials included,
+  with one published exception: `LifeSupport_Shielded` G5 draws +112% power where the rest
+  draw +100%. Which spelling a build carries depends on where it was authored, EDSY
+  writing the generic id for every family and coriolis the family-prefixed one, so both
+  resolve to the whole family set. Measured on the corpus before this was fixed: 76 of
+  1902 entries were refused for a family mismatch, 52 of them `Misc_LightWeight` on life
+  support, collector controllers and scanners
+  ([#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14)).
+- **Which families, exactly.** Lightweight and Reinforced: chaff launchers, ECMs, heat sink
+  launchers, point defence, the KWS/manifest/wake scanners, life support and the four
+  limpet controllers. Shielded: those plus AFMUs, fuel scoops and refineries, the three
+  families the game offers Shielded and nothing else. Sensors are in neither list — their
+  Lightweight is `Sensor_LightWeight`, a different recipe carrying a scan-angle leg — and
+  neither are weapons or hull armour, whose Lightweight (`Weapon_LightWeight`,
+  `Armour_Advanced`) is different again.
+- **Long Range and Wide Angle belong to two families.** The sensor suite and the utility
+  scanners both take them and the game writes one `BlueprintName` for both, but the rolls
+  differ: the sensors' Long Range costs mass, the scanners' costs power draw. EDSY keeps
+  the single `Sensor_LongRange` / `Sensor_WideAngle` fdname for both groups; coriolis
+  splits the scanner side out as `Scanner_LongRange` / `Scanner_WideAngle`, and both sets
+  are stored. The corpus carries both spellings on the same Frame Shift Wake Scanner, so
+  both are accepted on either family and the applied numbers follow the id the caller
+  names. Fast Scan (`Sensor_FastScan`) is the scanners' alone; Expanded
+  (`Sensor_Expanded`) the Detailed Surface Scanner's.
+- **Two modules whose symbol names a different thing than their family.** The Hatch Breaker
+  Limpet Controller is `Int_DroneControl_ResourceSiphon_*`, so matching on "hatchbreaker"
+  matched nothing and the family was unreachable. The Caustic Sink Launcher
+  (`Hpt_CausticSinkLauncher_Turret_Tiny`) is a heat sink launcher: EDSY files it under
+  `uhsl` with `Hpt_HeatSinkLauncher_Turret_Tiny` and coriolis gives its `csl` group the
+  same four recipes as `hs`, ammo capacity (`Misc_HeatSinkCapacity`) included. Both are
+  classified by family now, not by the words in the symbol.
+- **`miscellaneous` stays the fallback**, and stays accepted for the generic recipes. It
+  holds the modules with no specialised family of their own — ECMs, the Shutdown Field
+  Neutraliser, the repair/recon/decontamination/research and multi-limpet controllers —
+  and neither upstream enumerates blueprints for all of them, so a refusal there would be
+  a guess.
+
 ## Pre-engineered modules
 
 - **File:** `pre-engineered.jsonc`, validated by `fixtures/ships/pre-engineered.json`.

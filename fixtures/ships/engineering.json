@@ -18,5 +18,35 @@
     }
   },
   "blueprintCount": 108,
-  "experimentalCount": 87
+  "experimentalCount": 87,
+  "compatibility": {
+    "description": "Whether a blueprint may be applied to a module at all — the check ShipLoadout.applyBlueprint makes before it computes anything. `accepted: false` means the game does not offer that recipe on that module. The generic Misc_LightWeight / Misc_Reinforced / Misc_Shielded recipes and the shared Long Range / Wide Angle scanner recipes each cover several module families, because Frontier keys one modification under more than one id and which id a build carries depends on where it was authored.",
+    "cases": [
+      { "blueprint": "Misc_LightWeight", "module": "Int_LifeSupport_Size4_Class2", "accepted": true },
+      { "blueprint": "LifeSupport_LightWeight", "module": "Int_LifeSupport_Size4_Class2", "accepted": true },
+      { "blueprint": "Misc_LightWeight", "module": "Int_DroneControl_Collection_Size3_Class3", "accepted": true },
+      { "blueprint": "Misc_LightWeight", "module": "Int_DroneControl_ResourceSiphon_Size1_Class5", "accepted": true },
+      { "blueprint": "HatchBreakerLimpet_LightWeight", "module": "Int_DroneControl_ResourceSiphon_Size1_Class5", "accepted": true },
+      { "blueprint": "Misc_LightWeight", "module": "Hpt_CloudScanner_Size0_Class4", "accepted": true },
+      { "blueprint": "Misc_LightWeight", "module": "Hpt_ChaffLauncher_Tiny", "accepted": true },
+      { "blueprint": "Misc_Reinforced", "module": "Int_LifeSupport_Size4_Class4", "accepted": true },
+      { "blueprint": "Misc_Shielded", "module": "Int_Repairer_Size3_Class5", "accepted": true },
+      { "blueprint": "Misc_Shielded", "module": "Int_FuelScoop_Size5_Class5", "accepted": true },
+      { "blueprint": "Misc_Shielded", "module": "Int_Refinery_Size1_Class1", "accepted": true },
+      { "blueprint": "Misc_Shielded", "module": "Int_DroneControl_Collection_Size5_Class2", "accepted": true },
+      { "blueprint": "Misc_HeatSinkCapacity", "module": "Hpt_CausticSinkLauncher_Turret_Tiny", "accepted": true },
+      { "blueprint": "Misc_HeatSinkCapacity", "module": "Hpt_HeatSinkLauncher_Turret_Tiny", "accepted": true },
+      { "blueprint": "Sensor_LongRange", "module": "Int_Sensors_Size5_Class5", "accepted": true },
+      { "blueprint": "Sensor_LongRange", "module": "Hpt_CloudScanner_Size0_Class5", "accepted": true },
+      { "blueprint": "Scanner_LongRange", "module": "Hpt_CloudScanner_Size0_Class5", "accepted": true },
+      { "blueprint": "Sensor_WideAngle", "module": "Hpt_CrimeScanner_Size0_Class3", "accepted": true },
+      { "blueprint": "Misc_LightWeight", "module": "Int_Hyperdrive_Size5_Class5", "accepted": false },
+      { "blueprint": "Misc_LightWeight", "module": "Hpt_PulseLaser_Fixed_Small", "accepted": false },
+      { "blueprint": "Misc_LightWeight", "module": "Int_Sensors_Size5_Class5", "accepted": false },
+      { "blueprint": "Misc_Reinforced", "module": "Int_Repairer_Size3_Class5", "accepted": false },
+      { "blueprint": "Misc_HeatSinkCapacity", "module": "Hpt_ChaffLauncher_Tiny", "accepted": false },
+      { "blueprint": "Sensor_Expanded", "module": "Int_Sensors_Size5_Class5", "accepted": false },
+      { "blueprint": "Sensor_FastScan", "module": "Int_Sensors_Size5_Class5", "accepted": false }
+    ]
+  }
 }

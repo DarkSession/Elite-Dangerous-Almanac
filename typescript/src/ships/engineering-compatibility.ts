@@ -6,6 +6,13 @@
  * here lets {@link ShipLoadout} reject impossible combinations without adding
  * TypeScript-specific metadata to the shared JSON payloads.
  *
+ * A blueprint id names one family only when the game offers that recipe to one family.
+ * Several do not: the generic `Misc_LightWeight` / `Misc_Reinforced` / `Misc_Shielded`
+ * recipes are shared across every support family that takes them, and Long Range and Wide
+ * Angle are shared by the sensor suite and the utility scanners. Those ids resolve to a
+ * *list* of families, so a build authored anywhere is accepted — see
+ * {@link GENERIC_MISC_TARGETS} and `data/ships/SOURCES.md` (§Engineering compatibility).
+ *
  * @internal
  */
 
@@ -50,6 +57,53 @@ const prefixTarget = (
     }
     return null;
 };
+
+/**
+ * The families that offer the generic **Lightweight** and **Reinforced** recipes.
+ *
+ * Frontier keys one modification under several ids: a family-prefixed one
+ * (`LifeSupport_LightWeight`, `CollectionLimpet_LightWeight`, …) and the generic
+ * `Misc_LightWeight`, whose grades are identical to them in `blueprints.jsonc`. Which id
+ * a build carries depends on where it was authored — EDSY writes `Misc_LightWeight` for
+ * every family below, coriolis-data the family-prefixed one — so both spellings have to
+ * resolve to the same set.
+ *
+ * The set is EDSY's own module-group table (`eddb.js`, the `misc_lw` / `misc_rf` group
+ * lists): chaff launchers, ECMs, heat sink launchers, point defence, the KWS/manifest/wake
+ * scanners, life support and the four limpet controllers. `miscellaneous` is the fallback
+ * bucket, so it stays. Sensors are **not** here — their Lightweight is `Sensor_LightWeight`,
+ * a different recipe with a scan-angle leg — and neither are weapons, hull armour, AFMUs,
+ * fuel scoops or refineries, none of which the game offers Lightweight or Reinforced on.
+ *
+ * @internal
+ */
+const GENERIC_MISC_TARGETS: readonly EngineeringTarget[] = [
+    'miscellaneous',
+    'chaff',
+    'collectionLimpet',
+    'fuelTransferLimpet',
+    'hatchBreakerLimpet',
+    'heatSink',
+    'lifeSupport',
+    'pointDefence',
+    'prospectorLimpet',
+    'scanner',
+];
+
+/**
+ * The families that offer the generic **Shielded** recipe: {@link GENERIC_MISC_TARGETS}
+ * plus the three the game gives Shielded and nothing else — AFMUs, fuel scoops and
+ * refineries, which also carry the family-prefixed `AFM_Shielded`, `FuelScoop_Shielded`
+ * and `Refineries_Shielded`.
+ *
+ * @internal
+ */
+const GENERIC_SHIELDED_TARGETS: readonly EngineeringTarget[] = [
+    ...GENERIC_MISC_TARGETS,
+    'afmu',
+    'fuelScoop',
+    'refinery',
+];
 
 const BLUEPRINT_TARGETS: readonly (readonly [string, EngineeringTarget])[] = [
     ['afm_', 'afmu'],
@@ -131,15 +185,22 @@ export function blueprintTargets(fdname: string): readonly EngineeringTarget[] |
     if (normalized === 'misc_chaffcapacity') return ['chaff'];
     if (normalized === 'misc_heatsinkcapacity') return ['heatSink'];
     if (normalized === 'misc_pointdefensecapacity') return ['pointDefence'];
-    if (
-        normalized === 'misc_lightweight' ||
-        normalized === 'misc_reinforced' ||
-        normalized === 'misc_shielded'
-    ) {
-        return ['miscellaneous', 'chaff', 'heatSink', 'pointDefence'];
+    if (normalized === 'misc_lightweight' || normalized === 'misc_reinforced') {
+        return GENERIC_MISC_TARGETS;
     }
+    if (normalized === 'misc_shielded') return GENERIC_SHIELDED_TARGETS;
     if (normalized === 'sensor_expanded') return ['detailedSurfaceScanner'];
     if (normalized === 'sensor_fastscan') return ['scanner'];
+    // Long Range and Wide Angle are offered on both the internal sensor suite and the
+    // utility scanners, and the game writes one `BlueprintName` for both. The two groups
+    // roll different numbers — the sensors' Long Range costs mass, the scanners' costs
+    // power draw — which is why coriolis-data splits the scanner side out under
+    // `Scanner_LongRange` / `Scanner_WideAngle` while EDSY keeps a single `Sensor_*`
+    // fdname. The corpus carries both spellings on the same Frame Shift Wake Scanner, so
+    // both are accepted and the applied numbers follow the id the caller names.
+    if (normalized === 'sensor_longrange' || normalized === 'sensor_wideangle') {
+        return ['sensors', 'scanner'];
+    }
     if (normalized.startsWith('sensor_')) return ['sensors'];
     const target = prefixTarget(normalized, BLUEPRINT_TARGETS);
     return target === null ? null : [target];
@@ -210,8 +271,9 @@ export function experimentalTarget(fdname: string): EngineeringTarget | null {
 /**
  * Classify a module symbol into the engineering family whose recipes it accepts.
  *
- * The fallback is `miscellaneous`: these are modules such as ECMs and the limpet
- * controllers without their own specialised blueprint family.
+ * The fallback is `miscellaneous`: these are modules such as ECMs, the Shutdown Field
+ * Neutraliser and the limpet controllers without their own specialised blueprint family
+ * (repair, recon, decontamination, research and the multi-limpet controllers).
  *
  * @internal
  */
@@ -227,8 +289,16 @@ export function moduleEngineeringTarget(moduleSymbol: string): EngineeringTarget
     if (symbol.startsWith('int_fsdinterdictor')) return 'frameShiftDriveInterdictor';
     if (symbol.startsWith('int_fuelscoop')) return 'fuelScoop';
     if (symbol.startsWith('int_dronecontrol_fueltransfer')) return 'fuelTransferLimpet';
-    if (symbol.startsWith('int_dronecontrol_hatchbreaker')) return 'hatchBreakerLimpet';
-    if (symbol.startsWith('hpt_heatsinklauncher')) return 'heatSink';
+    // The Hatch Breaker Limpet Controller's symbol is `Int_DroneControl_ResourceSiphon`;
+    // nothing in the catalogue is named `hatchbreaker`, so matching on the family's
+    // display name alone left the whole family unreachable.
+    if (symbol.startsWith('int_dronecontrol_resourcesiphon')) return 'hatchBreakerLimpet';
+    // The Caustic Sink Launcher is a heat sink launcher: both upstreams group it with
+    // `Hpt_HeatSinkLauncher_Turret_Tiny` and give it the same recipes, ammo capacity
+    // (`Misc_HeatSinkCapacity`) included.
+    if (symbol.startsWith('hpt_heatsinklauncher') || symbol.startsWith('hpt_causticsinklauncher')) {
+        return 'heatSink';
+    }
     if (symbol.includes('modulereinforcement')) return 'moduleReinforcement';
     if (symbol.includes('hullreinforcement')) return 'hullReinforcement';
     if (symbol.startsWith('int_lifesupport')) return 'lifeSupport';
@@ -254,8 +324,7 @@ export function moduleEngineeringTarget(moduleSymbol: string): EngineeringTarget
     }
     if (
         symbol.startsWith('hpt_electroniccountermeasure') ||
-        symbol.startsWith('hpt_antiunknownshutdown') ||
-        symbol.startsWith('hpt_causticsinklauncher')
+        symbol.startsWith('hpt_antiunknownshutdown')
     ) {
         return 'miscellaneous';
     }

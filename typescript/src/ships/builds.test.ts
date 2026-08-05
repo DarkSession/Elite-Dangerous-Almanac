@@ -9,6 +9,7 @@ import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import { getBlueprintGrade } from './blueprints.js';
+import { blueprintTargets, moduleEngineeringTarget } from './engineering-compatibility.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import index from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
 
@@ -162,6 +163,26 @@ test('every declared blueprint, grade and experimental effect is in the catalogu
             }
         }
     }
+});
+
+test('every declared blueprint is one its module can take', () => {
+    const rejected: string[] = [];
+    for (const build of builds) {
+        for (const entry of build.modules) {
+            if (!entry.engineering) continue;
+            const target = moduleEngineeringTarget(entry.item);
+            const targets = blueprintTargets(entry.engineering.blueprint);
+            if (targets === null || !targets.includes(target)) {
+                rejected.push(
+                    `${build.id}: "${entry.engineering.blueprint}" targets ` +
+                        `${targets?.join('/') ?? 'nothing known'}, not ${target} "${entry.item}"`,
+                );
+            }
+        }
+    }
+    // Every entry in the corpus is a recipe a real build tool wrote against a real module,
+    // so a mismatch is this library's mapping being too narrow, not the build being wrong.
+    assert.deepEqual(rejected, [], `${rejected.length} of the corpus's entries were rejected`);
 });
 
 test('every build reproduces its pinned metrics', () => {

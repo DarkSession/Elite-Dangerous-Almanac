@@ -1108,19 +1108,16 @@ fixed Mining Laser is not one of them — it is grouped and does offer an effect
 > fuel scoops, FSD interdictors, the Guardian weapons — currently answer `[]` even though
 > real builds engineer them.
 >
-> For some of those families `ShipLoadout.applyBlueprint` also refuses the recipe: sensors
-> and the Detailed Surface Scanner because the module records lack the base stats their
-> blueprints modify, life support, limpet controllers, AFMUs and fuel scoops because
-> `Misc_LightWeight` / `Misc_Shielded` are mapped to too narrow a target family. Measured
-> on the 181-build corpus in `fixtures/ships/builds/`: 481 of its 1902 declared
-> engineering entries are rejected, across 128 builds. Armour, heat sink launchers, chaff
-> and the Guardian weapons engineer fine — for those it really is only the _menu_ that is
-> missing. (The Caustic Sink Launcher is the exception among the launchers: its
-> engineering target is `miscellaneous`, so `Misc_HeatSinkCapacity` is refused on it.)
-> Issues [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13),
-> [#10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10) and
-> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14) track all three
-> problems.
+> For some of those families `ShipLoadout.applyBlueprint` also refuses the recipe — sensors,
+> the Detailed Surface Scanner, thrusters and shield cell banks among them — because the
+> module records lack the base stats their blueprints modify. Measured on the 181-build
+> corpus in `fixtures/ships/builds/`: 406 of its 1902 declared engineering entries are
+> rejected, across 128 builds. Armour, life support, the limpet controllers, AFMUs, fuel
+> scoops, heat sink and chaff launchers and the Guardian weapons engineer fine — for those
+> it really is only the _menu_ that is missing. Issues
+> [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13) and
+> [#10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10) track the two
+> remaining problems.
 
 #### Modules you can buy already engineered
 
