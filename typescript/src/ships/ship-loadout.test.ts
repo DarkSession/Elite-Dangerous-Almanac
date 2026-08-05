@@ -1133,3 +1133,17 @@ test("a journal's own rate of fire wins over anything derived from the cycle", (
     assert.equal(build.getFittedModule('LargeHardpoint1')!.effectiveStats!.rateOfFire, 12.9);
     assert.equal(build.weaponMetrics().weapons[0]!.metrics.rateOfFire, 12.9);
 });
+
+test('a fitted module answers to the same word a catalogue record does', () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'FrameShiftDrive',
+        mod('Int_Hyperdrive_Size6_Class5'),
+    );
+    const fitted = build.getFittedModule('FrameShiftDrive')!;
+    // `symbol` is what every catalogue lookup takes, so a handle and a record agree.
+    assert.equal(fitted.symbol, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(getModuleBySymbol(fitted.symbol, CORE_MODULES)?.class, 6);
+    // The journal spelling is still there, as it is for slot / on / priority.
+    assert.equal(fitted.Item, fitted.symbol);
+    assert.equal(fitted.Slot, fitted.slot);
+});

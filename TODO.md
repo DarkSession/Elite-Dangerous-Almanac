@@ -350,23 +350,3 @@ journal documentation. Worth re-checking whenever a capture joins the corpus.
 re-fitting the identical module, so the getters that report the *source's* figures start
 returning `null`. Exports are unaffected — they never read those fields. Cheap fix: skip
 the delete when `previous?.Item === next?.Item`.
-
-### 17. Two consumer-facing rough edges a DX review found
-
-Neither is wrong, but both cost an app developer time; both are outside the slot work
-that surfaced them.
-
-**`FittedModule` spells the module id `item`, everything else spells it `symbol`.**
-`getModuleBySymbol`, `Ship.symbol` and `OutfittingModule.symbol` all use one word; the
-handle you get back from `getFittedModule` exposes the journal's `Item`. A consumer
-writes `getFittedModule(key)?.symbol`, gets `undefined`, and — in plain JavaScript —
-gets no error. A `symbol` alias getter on `FittedModule` would close it; the precedent
-for carrying both spellings is already there.
-
-**A shape change ships with no changelog.** `ShipSlots.hardpoints` went
-`readonly number[]` → `readonly HardpointSlotSpec[]` on 2026-08-04. TypeScript
-consumers get a compile error, JavaScript consumers get `NaN` from
-`hardpoints[0] + 1`. The shipped `typescript/README.md` now carries an upgrade note,
-but the package has no `CHANGELOG.md` and none is in `package.json` `files`, so there
-is no single place an upgrader can check. Worth adding before the first real release,
-along with a version policy — the package is still `0.0.1`.
