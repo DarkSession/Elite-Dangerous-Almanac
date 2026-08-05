@@ -143,7 +143,7 @@
     ]
   },
   "freeModules": {
-    "note": "Every non-armour module priced at 0, pinned so a zero has to be deliberate. coriolis-data holds some symbols twice — a priced record and a 0 one — and the 'first occurrence wins' rule had been applied to mass but not to cost, leaving 16 modules silently free. Only the built-in cargo hatch survives: it is fitted to every hull and cannot be bought. Ship-specific armour is excluded — a hull's stock bulkhead really is free, and 56 of them are.",
+    "note": "Every non-armour module priced at 0, pinned so a zero has to be deliberate. coriolis-data holds some symbols twice — a priced record and a 0 one — and the 'first occurrence wins' rule had been applied to mass but not to cost, leaving 16 modules silently free. Only the built-in cargo hatch survives: it is fitted to every hull and cannot be bought. Ship-specific armour is excluded — a hull's stock bulkhead really is free, and 48 of them are, one per hull.",
     "symbols": ["ModularCargoBayDoor"]
   },
   "spot": [

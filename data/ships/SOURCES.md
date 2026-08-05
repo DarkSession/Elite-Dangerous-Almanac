@@ -530,18 +530,20 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     `967834d6…`, internal `db 20260428`), re-read for this change; the record is module
     `161`, annotated `// at Palin, Sedesi`. Coriolis's `0` was coriolis's own gap, not a
     shared one: on the two corrosion racks *both* registries price they agree exactly
-    (`_Size1_Class1` 6250, `_Size4_Class1` 94 330), and FDevIDs `outfitting.csv` lists
-    exactly those three symbols, so this is the last of the purchasable racks.
-  - **Read that 12 560 as ± 5.** EDSY publishes module costs at **10-credit
-    granularity**, which is measured rather than assumed. Two observations, both stated
-    so they can be re-run rather than taken on trust — exact totals are deliberately not
-    quoted, because they move with how you count duplicated, commented-out and
-    case-mismatched symbols, and the conclusion does not:
-    - Scanning `eddb.js` for module records carrying a numeric `cost`, **every one is a
-      multiple of 10 except nine**, and the nine are the same whichever way the scan
-      treats commented-out records: `Python_NX_Armour_` and `CobraMkV_Armour_`
-      `{Grade2,Grade3,Mirrored,Reactive}`, plus `Int_ShieldGenerator_Size1_Class5`
-      (88 075).
+    (`_Size1_Class1` 6250, `_Size4_Class1` 94 330), and the only corrosion racks FDevIDs
+    `outfitting.csv` lists at all are those two plus `_Size1_Class2` itself — so this is
+    the last of the purchasable ones.
+  - **Read that 12 560 as exact to within 10 credits.** EDSY publishes module costs at
+    **10-credit granularity**, which is measured rather than assumed. Two observations,
+    both scoped to `eddb.module` — EDSY's outfitting table, where module `161` lives —
+    so they can be re-run. Totals across the whole of `eddb.js` are deliberately not
+    quoted: they move with how the scan treats commented-out records, the ship table's
+    own armour rows and case-mismatched symbols, whereas within the module table the
+    result is flat.
+    - **Every cost in that table is a multiple of 10 but one:**
+      `Int_ShieldGenerator_Size1_Class5`, at 88 075. (Widen the scan to the whole file
+      and eight more appear — the Python Mk II and Cobra Mk V hull-armour rows — which
+      is exactly the method-dependence being avoided here.)
     - Where coriolis prices the same module and the two differ, the difference is
       overwhelmingly EDSY carrying coriolis's exact figure rounded to the nearest 10
       (`Int_CargoRack_Size5_Class1` 111 566 → 111 570, `_Size6_Class1` 362 591 →
@@ -550,6 +552,10 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
       (`Hpt_MkIIPlasmaShockAutocannon_Fixed_Large`: EDSY 4 612 670, coriolis 3 051 200),
       so read a lone EDSY figure as possibly stale as well as rounded.
 
+    **Ten, not five, is the honest bound.** Nearest-10 would give ± 5, but EDSY does not
+    always round to nearest: of the pairs that differ by under 10 credits, eleven differ
+    by 6 to 9 and every one of them has EDSY *above* coriolis, so it sometimes rounds up
+    instead (`Int_LifeSupport_Size8_Class5`: coriolis 27 249 391 → EDSY 27 249 400).
     Every EDSY-sourced price already in this catalogue carries the same granularity, so
     this record is no less exact than the rest of them.
   - **The remaining three racks have no list price to publish** (same revision).
@@ -639,11 +645,11 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     shield generator below) that the FDevIDs join had omitted. All three racks carry
     EDSY's `hidden:1`, and they are also the three the prices section leaves unpriced,
     but the flag is not the reason: `hidden:1` marks a record EDSY keeps out of its
-    pickers for assorted reasons, and of its sixteen such records one does carry a price
-    (`Int_DroneControl_ResourceSiphon`, `cost: 18040` — which EDSY itself annotates
-    `// bug?`, so it is a weak counter-example, but it is enough to show the flag is not
-    a statement about price). They are unpriced because no source states a figure — see
-    the prices section for what each one actually says.
+    pickers for assorted reasons, and of the nine such records in its module table one
+    does carry a price (`Int_DroneControl_ResourceSiphon`, `cost: 18040` — which EDSY
+    itself annotates `// bug?`, so it is a weak counter-example, but it is enough to show
+    the flag is not a statement about price). They are unpriced because no source states
+    a figure — see the prices section for what each one actually says.
   - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
     in the game: every other shield-generator size carries all five ratings, and size 1
     ran E/D/C/A with **B missing**. The module is real, so the record was added with the

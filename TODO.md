@@ -198,23 +198,24 @@ those builds declare is not possible today.
 
 Was four. `Int_CorrosionProofCargoRack_Size1_Class2` is now priced at **12 560**, from
 EDSY (`eddb.js` module `161`, annotated `// at Palin, Sedesi`); coriolis's `cost: 0` for
-it was coriolis's own gap. Read it as 12 560 ± 5 — EDSY publishes module costs at
-10-credit granularity: every module cost in `eddb.js` is a multiple of 10 bar nine (the
-Python Mk II and Cobra Mk V armour rows and `Int_ShieldGenerator_Size1_Class5`), and
-where coriolis prices the same module and the two differ, the difference is
-overwhelmingly EDSY carrying coriolis's figure rounded to the nearest 10. See
-`data/ships/SOURCES.md` for the worked examples. The catalogue's other EDSY-sourced
+it was coriolis's own gap. Take it as exact to within 10 credits — EDSY publishes module
+costs at 10-credit granularity: every cost in its outfitting table is a multiple of 10
+bar one (`Int_ShieldGenerator_Size1_Class5`), and where coriolis prices the same module
+and the two differ, the difference is overwhelmingly EDSY carrying coriolis's figure
+rounded to 10. Not always to *nearest* 10, which is why the bound is 10 rather than 5.
+See `data/ships/SOURCES.md` for the worked examples. The catalogue's other EDSY-sourced
 prices already carry that granularity. Two corpus builds
-(`empire-courier-exploration-2`, `asp-mining`) can
-therefore be priced again, which leaves **no** build in the corpus carrying an unpriced
-module.
+(`empire-courier-exploration-2`, `asp-mining`) can therefore be priced again, which
+leaves **no** build in the corpus carrying an unpriced module.
 
 **The other three are a different problem, and closing it is not a data-sourcing job.**
 `_Size2_Class1`, `_Size5_Class1` and `_Size6_Class1` are not sold anywhere: FDevIDs
 `outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN` and "never
 released" on size 2, `cost: 0 // TODO: cost // CG reward` on sizes 5 and 6. Sizes 5 and 6
 were Community Goal rewards; size 2 never shipped. So the upstream `0` is the absence of
-a price, not a dropped one, and no outfitting registry publishes one today.
+a price, not a dropped one, and no outfitting registry publishes one today — though EDSY
+writing `TODO: cost` rather than "none" means upstream treats the figure as pending, so
+do not read this as proof that no price exists.
 
 `cost` stays omitted on all three so a calculation can tell "free" from "unknown" — a
 reward module still has an insurance value, so reporting it free would understate a
