@@ -6,9 +6,9 @@
  * it:
  *
  * ```ts
- * import { getCommodity, commoditiesInCategory } from '@elite-dangerous-almanac/core/commodities';
+ * import { getCommodityByName, commoditiesInCategory } from '@elite-dangerous-almanac/core/commodities';
  *
- * getCommodity('gold')?.category;         // -> 'Metals'
+ * getCommodityByName('gold')?.category;   // -> 'Metals'
  * commoditiesInCategory('Metals').length; // -> every metal, standard and rare
  * ```
  *
@@ -32,7 +32,6 @@
 
 // ── Types and the lookups (each defaults to both registries) ─────────────────
 export {
-    getCommodity,
     getCommodityBySymbol,
     getCommodityByName,
     commoditiesInCategory,

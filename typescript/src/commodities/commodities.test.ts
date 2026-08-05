@@ -2,7 +2,6 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-    getCommodity,
     getCommodityBySymbol,
     getCommodityByName,
     commoditiesInCategory,
@@ -130,28 +129,6 @@ test('an explicit catalogue still narrows the search', () => {
     assert.equal(getCommodityBySymbol('lavianbrandy', COMMODITIES), null);
     assert.equal(getCommodityByName('platinum', RARE_COMMODITIES), null);
     assert.deepEqual(commoditiesInCategory('Minerals', RARE_COMMODITIES), []);
-});
-
-test('getCommodity resolves a symbol or a display name', () => {
-    const brandy = getCommodityBySymbol('LavianBrandy', RARE_COMMODITIES);
-    assert.ok(brandy);
-    // Both keys reach the same record — the caller need not know which it holds.
-    assert.deepEqual(getCommodity('lavianbrandy'), brandy);
-    assert.deepEqual(getCommodity(' Lavian Brandy '), brandy);
-    assert.equal(getCommodity('nonexistent'), null);
-    assert.equal(getCommodity(''), null);
-    // The catalogue argument narrows it like every other lookup.
-    assert.equal(getCommodity('lavian brandy', COMMODITIES), null);
-});
-
-test('getCommodity tries symbol before display name', () => {
-    // Symbols and names never collide in the shipped data, so the documented
-    // precedence is only observable against a catalogue that makes them collide.
-    const platinum = getCommodityBySymbol('Platinum');
-    const brandy = getCommodityBySymbol('LavianBrandy');
-    assert.ok(platinum && brandy);
-    const decoy: Commodity = { ...brandy, name: 'Platinum' };
-    assert.equal(getCommodity('platinum', [decoy, platinum])?.symbol, 'Platinum');
 });
 
 test('catalogues and their records are frozen', () => {

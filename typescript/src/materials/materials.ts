@@ -5,8 +5,9 @@
  * manufactured and encoded — each material carrying a **grade** ({@link MaterialGrade})
  * and sitting in a **line** ({@link MaterialLine}: Chemical, Emission Data, the seven
  * raw element families, …). This module holds the {@link Material} record shape, the
- * grade ⇄ rarity mapping, and the functions that find one ({@link getMaterial},
- * {@link getMaterialByName}, {@link materialsByGrade}, {@link materialsInLine}, …).
+ * grade ⇄ rarity mapping, and the functions that find one
+ * ({@link getMaterialBySymbol}, {@link getMaterialByName}, {@link materialsByGrade},
+ * {@link materialsInLine}, …).
  *
  * **Every lookup searches all 146 materials by default** — you do not have to hand it
  * a catalogue:
@@ -34,11 +35,10 @@
  *
  * @example
  * ```ts
- * import { getMaterial, materialsInCategory } from '@elite-dangerous-almanac/core/materials';
+ * import { getMaterialByName, materialsInCategory } from '@elite-dangerous-almanac/core/materials';
  *
- * getMaterial('iron')?.grade;              // -> MaterialGrade.VeryCommon (1)
- * getMaterial('Fe')?.name;                 // -> 'Iron'  (raw materials answer to their element too)
- * materialsInCategory('raw').length;       // -> 28
+ * getMaterialByName('iron')?.grade;     // -> MaterialGrade.VeryCommon (1)
+ * materialsInCategory('raw').length;    // -> 28
  * ```
  *
  * @packageDocumentation
@@ -172,41 +172,6 @@ export interface Material {
 /** Case- and whitespace-insensitive key for name, symbol, category and group matching. */
 function normalize(value: string): string {
     return value.trim().toLowerCase();
-}
-
-/**
- * Look up a material by **whatever string you have** — its Frontier symbol, its
- * display name, or (for a raw element) its chemical symbol.
- *
- * Reach for this when the string could be any of them: a journal line gives you the
- * symbol, a UI dropdown the display name, a spreadsheet of mining yields the element.
- * When you know which one you hold, {@link getMaterialBySymbol},
- * {@link getMaterialByName} and {@link getMaterialByElementSymbol} say so in the call.
- *
- * @param material - The symbol, display name or element symbol. Leading/trailing
- * whitespace and case are ignored.
- * @param materials - Optional subset to search instead of all 146 materials — one
- * category's catalogue (`RAW_MATERIALS`, `MANUFACTURED_MATERIALS`,
- * `ENCODED_MATERIALS`) or any array you have filtered yourself.
- * @returns The matching {@link Material}, or `null` if nothing matches. Symbol is
- * tried first, then display name, then element symbol, so an exact symbol always
- * wins.
- * @example
- * ```ts
- * getMaterial('gridresistors')?.name; // -> 'Grid Resistors'  (journal symbol)
- * getMaterial('Grid Resistors')?.grade; // -> 1                (display name)
- * getMaterial('fe')?.name; // -> 'Iron'                        (element symbol)
- * ```
- */
-export function getMaterial(
-    material: string,
-    materials: readonly Material[] = ALL_MATERIALS,
-): Material | null {
-    return (
-        getMaterialBySymbol(material, materials) ??
-        getMaterialByName(material, materials) ??
-        getMaterialByElementSymbol(material, materials)
-    );
 }
 
 /**

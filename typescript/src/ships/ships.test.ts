@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { SHIPS, getShip, getShipBySymbol, getShipByName, getShipSlots } from './ships.js';
+import { SHIPS, getShipBySymbol, getShipByName, getShipSlots } from './ships.js';
 import shipsFixture from '../../../fixtures/ships/ships.json' with { type: 'json' };
 import statsFixture from '../../../fixtures/ships/ship-stats.json' with { type: 'json' };
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
@@ -119,34 +119,5 @@ test('every hull with a layout declares seven core sizes and some optional slots
 test('ship-slots spot checks reproduce the full layout', () => {
     for (const expected of slotsFixture.spot) {
         assert.deepEqual(getShipSlots(expected.symbol), expected);
-    }
-});
-
-test('getShip resolves a hull by symbol or by display name', () => {
-    const clipper = getShipBySymbol('Empire_Trader');
-    assert.ok(clipper);
-    // The two differ for most hulls, and a caller may hold either.
-    assert.deepEqual(getShip('empire_trader'), clipper);
-    assert.deepEqual(getShip(' Imperial Clipper '), clipper);
-    assert.equal(getShip('nonexistent'), null);
-    assert.equal(getShip(''), null);
-    // Every hull is reachable by both of its keys.
-    for (const ship of SHIPS) {
-        assert.deepEqual(getShip(ship.symbol), ship, ship.symbol);
-        assert.deepEqual(getShip(ship.name), ship, ship.name);
-    }
-});
-
-test('no hull’s display name is another hull’s symbol', () => {
-    // `getShip` tries symbol before name, an order no test could otherwise observe.
-    // Keep the two keyspaces disjoint and the precedence never matters; if a future
-    // shipyard entry collides, this fails rather than silently picking a winner.
-    const symbols = new Set(SHIPS.map((ship) => ship.symbol.toLowerCase()));
-    for (const ship of SHIPS) {
-        const name = ship.name.toLowerCase();
-        assert.ok(
-            !symbols.has(name) || ship.symbol.toLowerCase() === name,
-            `${ship.name} collides with another hull's symbol`,
-        );
     }
 });

@@ -16,8 +16,8 @@ bundle only the catalogues you touch:
 | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | [`astro`](#quick-start)              | System name ⇄ `id64`, sectors, galactic regions, 5835 nebulae, permit locks                                                             | `StarSystem`                     |
 | [`ships`](#ships-and-outfitting)     | 48 hulls and ~1200 modules with stats, slots and prices, SLEF builds, jump range, power, shields, armour, weapon DPS, engineering costs | `ShipLoadout`, `getShipBySymbol` |
-| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                                                              | `getMaterial`                    |
-| [`commodities`](#market-commodities) | 257 standard and 142 rare market goods                                                                                                  | `getCommodity`                   |
+| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                                                              | `getMaterialByName`              |
+| [`commodities`](#market-commodities) | 257 standard and 142 rare market goods                                                                                                  | `getCommodityBySymbol`           |
 
 Also here: [the four kinds of "region"](#the-four-kinds-of-region) (the one thing
 that trips everyone up), [nebulae](#nebulae), [permit
@@ -356,7 +356,6 @@ and one argument:
 
 ```ts
 import {
-  getMaterial,
   getMaterialBySymbol,
   getMaterialByName,
   materialsByGrade,
@@ -372,11 +371,7 @@ iron && MaterialGrade[iron.grade]; // -> 'VeryCommon' (rarity tier)
 getMaterialBySymbol("temperedalloys")?.name; // -> 'Tempered Alloys'
 materialsInLine(MaterialLine.EmissionData).length; // -> 5 (grades 1–5)
 materialsInCategory("raw").length; // -> 28
-
-// Not sure whether the string is a symbol, a display name or an element?
-getMaterial("gridresistors")?.name; // -> 'Grid Resistors'  (journal symbol)
-getMaterial("Grid Resistors")?.grade; // -> 1                (display name)
-getMaterial("fe")?.name; // -> 'Iron'                        (element symbol)
+getMaterialByElementSymbol("fe")?.name; // -> 'Iron' (raw materials only)
 ```
 
 Every lookup takes an optional trailing argument that **narrows** the search to a
@@ -427,7 +422,6 @@ default:
 
 ```ts
 import {
-  getMicroResource,
   getMicroResourceBySymbol,
   getMicroResourceByName,
   microResourcesInCategory,
@@ -436,9 +430,6 @@ import {
 getMicroResourceBySymbol("graphene")?.name; // -> 'Graphene'
 getMicroResourceByName("circuit board")?.symbol; // -> 'circuitboard'
 microResourcesInCategory("consumable").length; // -> 6
-
-// …or, when the string could be either key:
-getMicroResource("circuitboard")?.name; // -> 'Circuit Board'
 ```
 
 The same optional trailing argument narrows the search to one category's catalogue,
@@ -469,7 +460,6 @@ equivalent fields come from EDSY and Frontier's update notes:
 ```ts
 import {
   SHIPS,
-  getShip,
   getShipBySymbol,
   getShipByName,
   getShipSlots,
@@ -480,11 +470,6 @@ getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the r
 getShipSlots("anaconda")?.hardpoints; // -> [4, 3, 3, 3, 2, 2, 1, 1] (slot layout, ready for the build editor)
 getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
 SHIPS.length; // -> 48
-
-// A journal gives you the symbol, a dropdown the display name, and for most hulls
-// the two differ. When the string could be either, `getShip` takes both:
-getShip("empire_trader")?.name; // -> 'Imperial Clipper'
-getShip("Imperial Clipper")?.symbol; // -> 'Empire_Trader'
 ```
 
 The stored `symbol` is Frontier's own casing (`Empire_Trader`), while the journal's
@@ -1156,7 +1141,6 @@ can find it:
 
 ```ts
 import {
-  getCommodity,
   getCommodityBySymbol,
   getCommodityByName,
   commoditiesInCategory,
@@ -1165,9 +1149,6 @@ import {
 getCommodityBySymbol("platinum")?.category; // -> 'Metals' (either casing resolves)
 getCommodityByName("lavian brandy")?.rare; // -> true
 commoditiesInCategory("Metals").length; // -> every metal, standard and rare
-
-// …or, when the string could be either key:
-getCommodity("lavianbrandy")?.name; // -> 'Lavian Brandy'
 ```
 
 The optional trailing argument narrows the search to one registry, or to any array

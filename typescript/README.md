@@ -45,16 +45,19 @@ see below):
 
 ```ts
 import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
-import { getShip } from '@elite-dangerous-almanac/core/ships/ships';
-import { getMaterial, MaterialGrade } from '@elite-dangerous-almanac/core/materials/materials';
-import { getCommodity } from '@elite-dangerous-almanac/core/commodities/commodities';
+import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
+import {
+    getMaterialByName,
+    MaterialGrade,
+} from '@elite-dangerous-almanac/core/materials/materials';
+import { getCommodityByName } from '@elite-dangerous-almanac/core/commodities/commodities';
 
 const system = StarSystem.fromName('Synuefe EN-H d11-96');
 system?.systemAddress; // 3309179996515n
 
-getShip('empire_trader')?.name; // 'Imperial Clipper'
-getMaterial('iron')?.grade; // MaterialGrade.VeryCommon (1)
-getCommodity('lavian brandy')?.rare; // true
+getShipBySymbol('empire_trader')?.name; // 'Imperial Clipper'
+getMaterialByName('iron')?.grade; // MaterialGrade.VeryCommon (1)
+getCommodityByName('lavian brandy')?.rare; // true
 ```
 
 Every lookup also takes an optional trailing argument that narrows the search to a
@@ -137,8 +140,6 @@ data-free leaf modules of roughly 0.5–3 KB each: `ships/jump-range`, `ships/po
   (`getShipBySymbol`, `getModuleBySymbol`). Blueprints and experimental effects are looked
   up by **`fdname`** — the `Engineering.BlueprintName` / `ExperimentalEffect` string, e.g.
   `'FSD_LongRange'`, `'special_fsd_heavy'` (`getBlueprint`, `getExperimentalEffect`).
-  When you are not sure whether a string is a symbol or a display name, `getShip`,
-  `getMaterial`, `getMicroResource` and `getCommodity` accept either.
 - **Failure is split by cause.** Lookups return `null`; malformed input throws
   `TypeError`; out-of-range input throws `RangeError`. `StarSystem.fromName` returns
   `null` for any non-procedural name, including real hand-named systems like `Sol`.

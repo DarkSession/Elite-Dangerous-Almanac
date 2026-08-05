@@ -9,17 +9,17 @@
  *
  * ```ts
  * import {
- *   getMaterial,
+ *   getMaterialByName,
  *   materialsByGrade,
  *   materialsInCategory,
- *   getMicroResource,
+ *   getMicroResourceBySymbol,
  *   MaterialGrade,
  * } from '@elite-dangerous-almanac/core/materials';
  *
- * getMaterial('iron')?.grade;                    // -> MaterialGrade.VeryCommon
- * materialsByGrade(MaterialGrade.Rare).length;   // -> across every category
- * materialsInCategory('raw').length;             // -> 28
- * getMicroResource('graphene')?.name;            // -> 'Graphene'
+ * getMaterialByName('iron')?.grade;               // -> MaterialGrade.VeryCommon
+ * materialsByGrade(MaterialGrade.Rare).length;    // -> across every category
+ * materialsInCategory('raw').length;              // -> 28
+ * getMicroResourceBySymbol('graphene')?.name;     // -> 'Graphene'
  * ```
  *
  * Every lookup also takes an optional trailing argument to **narrow** the search to
@@ -37,7 +37,6 @@
 
 // ── Types, enums, and the lookups (each defaults to the whole registry) ──────
 export {
-    getMaterial,
     getMaterialBySymbol,
     getMaterialByName,
     getMaterialByElementSymbol,
@@ -58,7 +57,6 @@ export { ALL_MATERIALS } from './materials-all.js';
 
 // ── Odyssey micro resources — on-foot components, data, consumables, items ────
 export {
-    getMicroResource,
     getMicroResourceBySymbol,
     getMicroResourceByName,
     microResourcesInCategory,

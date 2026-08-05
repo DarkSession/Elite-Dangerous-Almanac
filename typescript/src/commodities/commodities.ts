@@ -5,14 +5,14 @@
  * into two registries: the ~257 **standard** commodities on every market, and the
  * ~142 **rare** commodities each produced at a single station. This module holds the
  * {@link Commodity} record shape and the functions that find one
- * ({@link getCommodity}, {@link getCommodityBySymbol}, {@link getCommodityByName},
+ * ({@link getCommodityBySymbol}, {@link getCommodityByName},
  * {@link commoditiesInCategory}).
  *
  * **Every lookup searches all 399 commodities by default** — standard and rare — so
  * you do not have to know which registry a good belongs to before you can find it:
  *
  * ```ts
- * getCommodity('lavian brandy')?.rare; // -> true
+ * getCommodityByName('lavian brandy')?.rare; // -> true
  * ```
  *
  * Each lookup still takes an optional second argument to **narrow** the search to a
@@ -35,9 +35,9 @@
  *
  * @example
  * ```ts
- * import { getCommodity } from '@elite-dangerous-almanac/core/commodities';
+ * import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities';
  *
- * getCommodity('platinum')?.category; // -> 'Metals'
+ * getCommodityBySymbol('platinum')?.category; // -> 'Metals'
  * ```
  *
  * @packageDocumentation
@@ -108,36 +108,6 @@ export interface Commodity {
 /** Case- and whitespace-insensitive key for name, symbol, category and group matching. */
 function normalize(value: string): string {
     return value.trim().toLowerCase();
-}
-
-/**
- * Look up a commodity by **whatever string you have** — its Frontier symbol or its
- * display name.
- *
- * Reach for this when the string could be either: a market or journal payload gives
- * you the symbol, a UI dropdown the display name. When you know which one you hold,
- * {@link getCommodityBySymbol} and {@link getCommodityByName} say so in the call.
- *
- * @param commodity - The symbol or display name. Leading/trailing whitespace and
- * case are ignored.
- * @param commodities - Optional subset to search instead of all 399 commodities —
- * `COMMODITIES` (standard only), `RARE_COMMODITIES`, or any array you have filtered
- * yourself.
- * @returns The matching {@link Commodity}, or `null` if nothing matches. Symbol is
- * tried first, so an exact symbol always wins.
- * @example
- * ```ts
- * getCommodity('lavianbrandy')?.name;   // -> 'Lavian Brandy'  (journal symbol)
- * getCommodity('Lavian Brandy')?.rare;  // -> true             (display name)
- * ```
- */
-export function getCommodity(
-    commodity: string,
-    commodities: readonly Commodity[] = ALL_COMMODITIES,
-): Commodity | null {
-    return (
-        getCommodityBySymbol(commodity, commodities) ?? getCommodityByName(commodity, commodities)
-    );
 }
 
 /**

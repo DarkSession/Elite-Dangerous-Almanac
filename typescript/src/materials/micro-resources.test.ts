@@ -2,7 +2,6 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-    getMicroResource,
     getMicroResourceBySymbol,
     getMicroResourceByName,
     microResourcesInCategory,
@@ -126,28 +125,6 @@ test('an explicit catalogue still narrows the search', () => {
     assert.equal(getMicroResourceBySymbol('graphene', CONSUMABLE_MICRO_RESOURCES), null);
     assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
     assert.deepEqual(microResourcesInCategory('item', COMPONENT_MICRO_RESOURCES), []);
-});
-
-test('getMicroResource resolves a symbol or a display name', () => {
-    const board = getMicroResourceBySymbol('circuitboard', COMPONENT_MICRO_RESOURCES);
-    assert.ok(board);
-    // Both keys reach the same record — the caller need not know which it holds.
-    assert.deepEqual(getMicroResource('circuitboard'), board);
-    assert.deepEqual(getMicroResource(' Circuit Board '), board);
-    assert.equal(getMicroResource('nonexistent'), null);
-    assert.equal(getMicroResource(''), null);
-    // The catalogue argument narrows it like every other lookup.
-    assert.equal(getMicroResource('circuit board', CONSUMABLE_MICRO_RESOURCES), null);
-});
-
-test('getMicroResource tries symbol before display name', () => {
-    // Symbols and names never collide in the shipped data, so the documented
-    // precedence is only observable against a catalogue that makes them collide.
-    const board = getMicroResourceBySymbol('circuitboard');
-    const graphene = getMicroResourceBySymbol('graphene');
-    assert.ok(board && graphene);
-    const decoy: MicroResource = { ...graphene, name: 'circuitboard' };
-    assert.equal(getMicroResource('circuitboard', [decoy, board])?.symbol, 'circuitboard');
 });
 
 test('catalogues and their records are frozen', () => {

@@ -5,14 +5,14 @@
  * consumables and items a Commander carries on foot (distinct from the ship-side
  * engineering {@link Material}s, which have a grade and a line). This module holds the
  * {@link MicroResource} record shape and the functions that find one
- * ({@link getMicroResource}, {@link getMicroResourceBySymbol},
- * {@link getMicroResourceByName}, {@link microResourcesInCategory}).
+ * ({@link getMicroResourceBySymbol}, {@link getMicroResourceByName},
+ * {@link microResourcesInCategory}).
  *
  * **Every lookup searches all 196 micro resources by default** — you do not have to
  * hand it a catalogue:
  *
  * ```ts
- * getMicroResource('graphene')?.category; // -> 'component'
+ * getMicroResourceBySymbol('graphene')?.category; // -> 'component'
  * ```
  *
  * Each lookup still takes an optional second argument to **narrow** the search to a
@@ -35,9 +35,9 @@
  *
  * @example
  * ```ts
- * import { getMicroResource } from '@elite-dangerous-almanac/core/materials/micro-resources';
+ * import { getMicroResourceBySymbol } from '@elite-dangerous-almanac/core/materials/micro-resources';
  *
- * getMicroResource('graphene')?.name; // -> 'Graphene'
+ * getMicroResourceBySymbol('graphene')?.name; // -> 'Graphene'
  * ```
  *
  * @packageDocumentation
@@ -81,37 +81,6 @@ export interface MicroResource {
 /** Case- and whitespace-insensitive key for name, symbol, category and group matching. */
 function normalize(value: string): string {
     return value.trim().toLowerCase();
-}
-
-/**
- * Look up a micro resource by **whatever string you have** — its Frontier symbol or
- * its display name.
- *
- * Reach for this when the string could be either: a journal line gives you the
- * symbol, a UI dropdown the display name. When you know which one you hold,
- * {@link getMicroResourceBySymbol} and {@link getMicroResourceByName} say so in the
- * call.
- *
- * @param microResource - The symbol or display name. Leading/trailing whitespace and
- * case are ignored.
- * @param microResources - Optional subset to search instead of all 196 micro
- * resources — one category's catalogue or any array you have filtered yourself.
- * @returns The matching {@link MicroResource}, or `null` if nothing matches. Symbol
- * is tried first, so an exact symbol always wins.
- * @example
- * ```ts
- * getMicroResource('circuitboard')?.name;    // -> 'Circuit Board'  (journal symbol)
- * getMicroResource('Circuit Board')?.symbol; // -> 'circuitboard'   (display name)
- * ```
- */
-export function getMicroResource(
-    microResource: string,
-    microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
-): MicroResource | null {
-    return (
-        getMicroResourceBySymbol(microResource, microResources) ??
-        getMicroResourceByName(microResource, microResources)
-    );
 }
 
 /**

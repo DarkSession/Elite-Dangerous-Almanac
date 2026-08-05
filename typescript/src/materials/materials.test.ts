@@ -2,7 +2,6 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-    getMaterial,
     getMaterialBySymbol,
     getMaterialByName,
     getMaterialByElementSymbol,
@@ -197,41 +196,6 @@ test('an explicit catalogue still narrows the search', () => {
     const justIron = ALL_MATERIALS.filter((m) => m.name === 'Iron');
     assert.equal(getMaterialByName('carbon', justIron), null);
     assert.equal(getMaterialByName('iron', justIron)?.name, 'Iron');
-});
-
-test('getMaterial resolves a symbol, a display name or an element symbol', () => {
-    const iron = getMaterialByName('Iron', RAW_MATERIALS);
-    assert.ok(iron);
-    // All three keys reach the same record — the caller need not know which it holds.
-    assert.deepEqual(getMaterial('iron'), iron);
-    assert.deepEqual(getMaterial('Iron'), iron);
-    assert.deepEqual(getMaterial(' FE '), iron);
-    // A multi-word display name and its journal symbol both resolve.
-    assert.equal(getMaterial('grid resistors')?.symbol, 'GridResistors');
-    assert.equal(getMaterial('gridresistors')?.name, 'Grid Resistors');
-    assert.equal(getMaterial('nonexistent'), null);
-    assert.equal(getMaterial(''), null);
-    // The catalogue argument narrows it like every other lookup.
-    assert.equal(getMaterial('fe', MANUFACTURED_MATERIALS), null);
-});
-
-test('getMaterial tries symbol, then name, then element symbol', () => {
-    // The three keyspaces are disjoint in the shipped data, so the documented
-    // precedence is only observable against a catalogue that makes them collide.
-    const grid = getMaterialBySymbol('GridResistors');
-    const iron = getMaterialByName('Iron');
-    assert.ok(grid && iron);
-
-    // A decoy whose *name* is another record's symbol: the symbol match must win.
-    const nameDecoy: Material = { ...iron, name: 'GridResistors' };
-    assert.equal(getMaterial('gridresistors', [nameDecoy, grid])?.symbol, 'GridResistors');
-
-    // A decoy whose *element symbol* is another record's display name: name wins.
-    const elementDecoy: Material = { ...iron, elementSymbol: 'Grid Resistors' };
-    assert.equal(getMaterial('grid resistors', [elementDecoy, grid])?.symbol, 'GridResistors');
-
-    // With no higher-precedence match, the element symbol still resolves.
-    assert.equal(getMaterial('fe', [grid, iron])?.name, 'Iron');
 });
 
 test('materialsInCategory returns exactly one category, case-insensitively', () => {

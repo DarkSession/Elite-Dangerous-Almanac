@@ -119,29 +119,6 @@ export interface Ship {
 export const SHIPS: readonly Ship[] = deepFreeze(shipsData as readonly Ship[]);
 
 /**
- * Look up a hull by **whatever string you have** — its internal symbol or its
- * shipyard display name.
- *
- * Reach for this when the string could be either: a journal `Ship` field gives you
- * the symbol (`"empire_trader"`), a UI dropdown the display name
- * (`"Imperial Clipper"`), and for most hulls the two differ. When you know which one
- * you hold, {@link getShipBySymbol} and {@link getShipByName} say so in the call.
- *
- * @param ship - The symbol or display name. Leading/trailing whitespace and case are
- * ignored.
- * @returns The matching {@link Ship}, or `null` if no hull matches. Symbol is tried
- * first, so an exact symbol always wins.
- * @example
- * ```ts
- * getShip('empire_trader')?.name;     // -> 'Imperial Clipper'  (journal symbol)
- * getShip('Imperial Clipper')?.symbol; // -> 'Empire_Trader'    (display name)
- * ```
- */
-export function getShip(ship: string): Ship | null {
-    return getShipBySymbol(ship) ?? getShipByName(ship);
-}
-
-/**
  * Look up a ship by its internal symbol, case-insensitively.
  *
  * @param symbol - The internal identifier, e.g. `"Empire_Trader"`. Leading/trailing

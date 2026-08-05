@@ -18,8 +18,8 @@
  *
  * The area has five layers:
  *
- * - **Ships** — {@link SHIPS} and the {@link getShip} / {@link getShipBySymbol} /
- *   {@link getShipByName} lookups. One small catalogue; each {@link Ship} carries the
+ * - **Ships** — {@link SHIPS} and the {@link getShipBySymbol} / {@link getShipByName}
+ *   lookups. One small catalogue; each {@link Ship} carries the
  *   hull's identity, stats and slot layout together.
  * - **Modules** — the {@link OutfittingModule} type and the lookups
  *   ({@link getModuleBySymbol} & co.), which search all 1198 modules unless you hand
@@ -54,14 +54,7 @@
  */
 
 // ── Ships (identity + stats + slot layout, one record per hull) ─────────────
-export {
-    SHIPS,
-    getShip,
-    getShipBySymbol,
-    getShipByName,
-    getShipSlots,
-    type Ship,
-} from './ships.js';
+export { SHIPS, getShipBySymbol, getShipByName, getShipSlots, type Ship } from './ships.js';
 
 // ── Modules: types + lookups (each record carries identity + stats) ──────────
 // The lookups search every module unless you pass a narrower catalogue.
