@@ -1004,9 +1004,12 @@ that **every** engineering entry the 181 builds declare is one its module can ta
   narrows range, `Scanner_WideAngle` costs mass and lengthens the scan time. EDSY keeps
   the single `Sensor_LongRange` / `Sensor_WideAngle` fdname for both groups; coriolis
   splits the scanner side out as `Scanner_LongRange` / `Scanner_WideAngle`, and both sets
-  are stored. The corpus carries both spellings on the same Frame Shift Wake Scanner, so
-  both are accepted on either family and the applied numbers follow the id the caller
-  names — which for a `Sensor_*` id on a scanner is the wrong set. That is unreachable
+  are stored. Two corpus builds carry the two spellings on the same Frame Shift Wake
+  Scanner, so the `Sensor_*` ids — the ones the game itself writes, for both groups —
+  target sensors and scanners alike, while `Scanner_LongRange` / `Scanner_WideAngle`, being
+  coriolis's scanner-only keys, target scanners alone and are refused on the sensor suite
+  (both directions are pinned in `fixtures/ships/engineering.json`). The applied numbers
+  follow the id the caller names — which for a `Sensor_*` id on a scanner is the wrong set. That is unreachable
   while the scanners carry no `ScannerRange` base stat, and closing that gap makes it
   reachable, so the ordering is tracked at
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32). Fast Scan

@@ -1005,10 +1005,12 @@ Lightweight, Reinforced and Shielded are keyed both generically (`Misc_LightWeig
 per family (`LifeSupport_LightWeight`, `AFM_Shielded`, …), and Long Range and Wide Angle
 are shared by the sensor suite and the utility scanners (`Sensor_LongRange`,
 `Scanner_LongRange`). Which spelling a build carries depends on the tool that exported it,
-so the **generic** id is accepted on every family the modification covers — the one that
-is ambiguous has to be. A family's own id keeps naming that family alone, which is what it
-unambiguously means: `LifeSupport_LightWeight` is refused on a limpet controller, and
-`Scanner_LongRange` on the sensor suite, whose spelling is `Sensor_LongRange`.
+so an id is accepted wherever the game writes it. The **ambiguous** ones therefore cover
+several families: `Misc_LightWeight` covers every family that takes Lightweight, and
+`Sensor_LongRange` covers the sensor suite _and_ the utility scanners, because the game
+writes that one id for both. An id that names a family covers that family alone —
+`LifeSupport_LightWeight` is refused on a limpet controller, and `Scanner_LongRange`, which
+is the scanners' spelling only, is refused on the sensor suite.
 
 The numbers applied are the ones stored under the id you name. For Lightweight and
 Reinforced that is the same recipe either way. Three pairs are not, so name the family's
@@ -1126,22 +1128,21 @@ that second case: four Mining Laser variants and the two Abrasion Blasters. (The
 fixed Mining Laser is not one of them — it is grouped and does offer an effect.)
 
 > **`[]` does not yet mean "cannot be engineered".** The options catalogue groups 428 of
-> the 1198 modules, so whole engineerable families — hull armour, sensors, life support,
-> heat sink and chaff launchers, point defence, the Detailed Surface Scanner and the
-> KWS/manifest/wake scanners, limpet controllers, AFMUs, fuel scoops, refineries, FSD
-> interdictors, the Guardian weapons — currently answer `[]` even though real builds
-> engineer them.
+> the 1198 modules, so whole engineerable families — hull armour, cargo racks, sensors,
+> life support, heat sink and chaff launchers, point defence, ECMs, the Detailed Surface
+> Scanner and the KWS/manifest/wake scanners, limpet controllers, AFMUs, fuel scoops,
+> refineries, FSD interdictors, the Guardian weapons — currently answer `[]` even though
+> real builds engineer them. That is the _menu_ missing, and nothing else: everything in
+> that list engineers through `ShipLoadout.applyBlueprint`, with three exceptions.
 >
-> Four of those families — sensors, the Detailed Surface Scanner, FSD interdictors and the
-> KWS/manifest/wake scanners — are also refused by `ShipLoadout.applyBlueprint`, because the
-> module records lack the base stats their blueprints modify. That second gap is not
-> confined to this list: thrusters, shield generators, shield cell banks and many weapons
+> **The exceptions** are sensors, the Detailed Surface Scanner and FSD interdictors, whose
+> module records lack the base stats their blueprints modify, so every recipe for them is
+> refused. The utility scanners are half of a fourth: they take Lightweight, Reinforced and
+> Shielded, but not their own Fast Scan, Long Range or Wide Angle, for the same reason. And
+> that gap is not confined to this list — thrusters, shield cell banks and many weapons
 > _are_ grouped here and still refused there. Measured on the 181-build corpus in
-> `fixtures/ships/builds/`: 406 of
-> its 1902 declared engineering entries are rejected, across 128 builds. Armour, life
-> support, the limpet controllers, AFMUs, fuel scoops, heat sink and chaff launchers and the
-> Guardian weapons engineer fine — for those it really is only the _menu_ that is missing.
-> Issues
+> `fixtures/ships/builds/`: 406 of its 1902 declared engineering entries are rejected,
+> across 128 builds, every one of them for a missing base stat. Issues
 > [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13) and
 > [#10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10) track the two
 > remaining problems.

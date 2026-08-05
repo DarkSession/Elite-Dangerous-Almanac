@@ -9,10 +9,11 @@
  * each group lists what it offers.
  *
  * The catalogue groups 428 of the 1198 modules, so families it does not yet map — hull
- * armour, sensors, life support, heat sink and chaff launchers, the Detailed Surface
- * Scanner, limpet controllers, AFMUs, fuel scoops, FSD interdictors, the Guardian
- * weapons — answer "nothing" here although real builds engineer them. Treat an empty
- * result as "not listed", not as "cannot be engineered"; the gap is tracked at
+ * armour, cargo racks, sensors, life support, heat sink and chaff launchers, point
+ * defence, ECMs, the Detailed Surface Scanner and the KWS/manifest/wake scanners, limpet
+ * controllers, AFMUs, fuel scoops, refineries, FSD interdictors, the Guardian weapons —
+ * answer "nothing" here although real builds engineer them. Treat an empty result as
+ * "not listed", not as "cannot be engineered"; the gap is tracked at
  * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13.
  *
  * Its own module (and data file) so consumers who never open an engineering menu do not
