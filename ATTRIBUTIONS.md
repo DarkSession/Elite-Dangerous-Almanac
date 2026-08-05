@@ -119,16 +119,18 @@ in the doc comment of each ported module, and in long form in the domain
   below. `data/ships/SOURCES.md` has the record-by-record derivation, the per-field
   coverage split, and the three candidate corrections that cross-checking **rejected**.
 
-- **Ground-truth ship builds (test fixtures, not shipped)** — two real builds used to
+- **Ground-truth ship builds (test fixtures, not shipped)** — three real builds used to
   check the loadout maths against something other than itself.
   `fixtures/ships/slef-the-deep-black.json` is a real
   [EDSY](https://edsy.org/) export (taleden, **CC BY-NC 4.0**).
   `fixtures/ships/journal-krait-phantom.json` is a real Frontier journal `Loadout`
   event, obtained from
   [adam-drewery/EliteAssist](https://github.com/adam-drewery/EliteAssist)
-  (`src/example_data/loadout.json`, **WTFPL**). Both are Elite Dangerous game output
-  and remain the property of Frontier Developments plc — see the notice below. Neither
-  is bundled into the published package.
+  (`src/example_data/loadout.json`, **WTFPL**).
+  `fixtures/ships/slef-inara-type-11.json` is a real [Inara](https://inara.cz/) SLEF
+  export, contributed by the repository owner from their own commander's fleet.
+  All three are Elite Dangerous game output and remain the property of Frontier
+  Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`
   holds 181 ship builds published by Elite Dangerous players as

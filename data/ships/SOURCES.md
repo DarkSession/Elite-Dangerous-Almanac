@@ -1070,7 +1070,42 @@ its own fixture, with the expected outputs in a sibling fixture that names it by
   as evidence of how far a build can sit from list price. Pinned by
   `fixtures/ships/slef-export.json` and `fixtures/ships/jump-range.json`.
 
-Two facts this build established that the EDSY export could not:
+- **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
+  export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed
+  **2026-08-04 UTC** by the repository owner from their own commander's fleet, which is
+  the licence position: it is one player's build, shared by that player for this
+  purpose, and like every other build here the loadout itself is Frontier game output
+  redistributed under Frontier's media-usage terms. Source text SHA-256
+  `3e008ea9b1226c49b6f7c080d897a4cbabbcbcc36ce83e58a293b397712279ee`; stored unmodified
+  apart from re-indenting. The header's Inara commander and ship ids are kept as
+  received, since they are the provenance.
+
+  It is the **only external source that exercises the restricted mounts**, and it
+  settles what nothing else could: Inara independently writes
+  `largemininghardpoint1`, `mediummininghardpoint1`, `mediummininghardpoint2`,
+  `mediumhardpoint3`, `smallmininghardpoint1`, `limpetcontroller01` and
+  `fighterbay01` — this catalogue's keys character for character, once case is set
+  aside. Its internals run `slot01_size6`…`slot05_size5`, then `slot06_size4`, so a
+  restricted optional really does consume no `SlotNN` number, exactly as the
+  2026-08-04 revision derived from EDSY. And its `mediumhardpoint3` carries a
+  sub-surface displacement missile, confirming an *unrestricted* mount takes mining
+  tools too.
+
+  **Its credit figures are a purchase record, not ground truth**, and diverge three
+  ways: the hull sits at a 2.5% shipyard discount, the modules at about 5.2% across 23
+  priced entries, and Inara **rounds** its `Rebuy` where the game truncates (5% of its
+  own hull plus modules is 5 613 800.75, which it states as `5613801`). The journal
+  capture above is the authority on that convention, so this catalogue keeps
+  truncating; the divergence is pinned as evidence rather than followed.
+
+  **One thing it exposed rather than confirmed:** Inara lower-cases every slot key, as
+  the SLEF specification's own example does, and slot binding here is case-sensitive —
+  so a build imported from Inara reports **no** occupied mounts and `setModule` on one
+  adds a duplicate. That is a pre-existing defect of the loadout facade rather than of
+  this data, and it is recorded in `TODO.md`; the tests over this fixture compare slot
+  keys case-insensitively until it is fixed.
+
+Two facts the Krait Phantom capture established that the EDSY export could not:
 
 - **A journal lists far more than fitted modules.** 15 of its 40 entries are the
   cockpit, ship kit, nameplates, bobbles, paint, engine/weapon colours and voice pack.

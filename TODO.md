@@ -25,7 +25,7 @@ on a module the options catalogue does not group. The blueprints themselves are 
 present in `BLUEPRINTS` — only the module→group map and the per-group lists are missing,
 so this is a data gap, not a calculation one: `ShipLoadout.applyBlueprint` does not read
 this catalogue at all — it checks the blueprint's own target family, which is a separate
-problem (§5 and §11). Both source registries carry the missing lists (EDSY
+problem (§5 and §12). Both source registries carry the missing lists (EDSY
 `mtype[].blueprints` / `.expeffects`, coriolis `modifications/modules.json`).
 
 ### 2. Eleven hulls name their journal slots in ways `enumerateSlots` does not
@@ -234,23 +234,60 @@ jump range and credits against Frontier's own figures but checks the defence and
 metrics only against our own maths. An EDSY or Coriolis reading of a weaponed build
 would close this — it is the largest remaining hole in the parity story.
 
-### 10. Only two builds in the corpus carry a source's own figures
+### 10. Only three builds in the corpus carry a source's own figures
 
 `fixtures/ships/builds/` now covers every hull with 2–5 real community builds,
 including cargo-heavy ones (Type-9, Cutter and Panther trade fits), so breadth is no
 longer the gap. What those 181 builds cannot do is *check* the maths: their pinned
-figures are this library's own output. Only the Caspian Explorer EDSY export and the
-Krait Phantom journal capture carry numbers computed elsewhere.
+figures are this library's own output. Only the Caspian Explorer EDSY export, the
+Krait Phantom journal capture and the Inara Type-11 export (added 2026-08-04) carry
+numbers computed elsewhere.
 
 More builds of that kind are still worth having — a journal capture for a large trader
-would confirm laden jump range and cargo mass at a scale the Krait's 32 t cannot.
+would confirm laden jump range and cargo mass at a scale the Krait's 32 t cannot, and
+none of the three carries an external shield, armour or DPS figure, which is §9's gap.
 Acquisition constraint: such a source must carry a licence that permits redistribution.
 A Viper Mk IV capture from `UFO-Studios/EDDP` was checked and passed, but its repository
 states no licence (`NOASSERTION`), so it was not committed.
 
 ## Ships — API
 
-### 11. `Misc_LightWeight` is rejected on the modules that most often carry it
+### 11. A build imported from Inara binds to no slot at all, and editing it duplicates modules
+
+**Slot keys are matched case-sensitively, and Inara lower-cases every one of them.**
+`fixtures/ships/slef-inara-type-11.json` is a real Inara export whose slots read
+`largemininghardpoint1`, `powerplant`, `slot01_size6`. Nothing in `slots()` binds to
+them, so on a 27-module build:
+
+| | |
+| --- | --- |
+| `slots()` occupied | **0 of 27** |
+| `moduleAt('LargeMiningHardpoint1')` | `null` |
+| `getFittedModule('FrameShiftDrive')` | `null` |
+| `hardpoints()[0].module` | `null` |
+| `parseSlotName('powerplant')` | `null` |
+
+The figures are unaffected, because they read the module map rather than the layout:
+mass, cargo, jump range, power, weapons, `modulesValue` and `rebuy` are all correct,
+and a SLEF round trip preserves every module. **Editing is the dangerous part.**
+`setModule('LargeMiningHardpoint1', …)` does not replace the lower-cased entry, it
+*adds* one: the build goes to 28 modules carrying two large mining hardpoints, which
+inflates mass, power draw, cargo and credits with no error.
+
+This affects **every hull and every Inara-sourced SLEF**, and predates the slot
+restrictions — `powerplant` fails exactly like `largemininghardpoint1`. It went unseen
+because both other ground-truth fixtures are EDSY and journal exports, which use
+Frontier's own casing. `ship-loadout.ts` already notes that producers lower-case slot
+keys "as the SLEF specification's own example does", and handles it for cosmetic
+classification but not for slot binding.
+
+The fix is to resolve slot keys case-insensitively in `#requireSlot`, `moduleAt`,
+`getFittedModule`, `setModule`, `removeModule` and the occupancy check, and to let
+`parseSlotName` classify any casing — **not** to canonicalise keys on import, which
+would break the byte-identical re-export the round-trip tests pin. Until then, tests
+over the Inara fixture compare slot keys case-insensitively.
+
+### 12. `Misc_LightWeight` is rejected on the modules that most often carry it
 
 `applyBlueprint` maps a blueprint to a module *family* and refuses a mismatch. The
 Lightweight recipe used by life support, limpet controllers and AFMUs is
@@ -271,7 +308,7 @@ needs the wider target list; note `LifeSupport_LightWeight` and
 `CollectionLimpet_LightWeight` also exist as separate recipe ids, so which id a build
 carries depends on where it was authored.
 
-### 12. Journal-only fields do not survive an import
+### 13. Journal-only fields do not survive an import
 
 `LoadoutEvent` omits fields real journals carry: `timestamp`, `ShipID`, `HullHealth`,
 `Hot`, module `AmmoInClip` / `AmmoInHopper`, and engineering `Engineer` / `EngineerID` /
@@ -282,7 +319,7 @@ journal → `ShipLoadout` → SLEF round trip loses them.
 Deliberately out of scope when SLEF export was added; the additions would all be
 optional and backwards-compatible.
 
-### 13. An export cannot report what a build actually cost
+### 14. An export cannot report what a build actually cost
 
 Credits are quoted at retail, so a source's own purchase record — the station discount
 it was bought at, and any per-module `Value` — is dropped on the way out. That is the
@@ -291,7 +328,7 @@ nowhere to get it. If that turns out to be wanted, the honest shape is a separat
 accessor for the source's stated figures rather than putting them back in the export,
 where they would be indistinguishable from list prices.
 
-### 14. The cosmetic slot families are a hand-maintained list
+### 15. The cosmetic slot families are a hand-maintained list
 
 `COSMETIC_SLOT_PATTERNS` in `typescript/src/ships/ship-loadout.ts` names the journal slot
 families that hold cosmetics rather than outfitting — cockpit, paint, decals, nameplates,
@@ -307,14 +344,14 @@ The cost is that a cosmetic family Frontier adds later takes `ModulesValue`,
 extended. The Krait Phantom capture exercises 15 of the families; the rest rest on the
 journal documentation. Worth re-checking whenever a capture joins the corpus.
 
-### 15. `modulesValue` and `rebuy` getters die on a no-op refit
+### 16. `modulesValue` and `rebuy` getters die on a no-op refit
 
 `#adjustImportedFigures` deletes both from `#top` on any `setModule`, including
 re-fitting the identical module, so the getters that report the *source's* figures start
 returning `null`. Exports are unaffected — they never read those fields. Cheap fix: skip
 the delete when `previous?.Item === next?.Item`.
 
-### 16. Two consumer-facing rough edges a DX review found
+### 17. Two consumer-facing rough edges a DX review found
 
 Neither is wrong, but both cost an app developer time; both are outside the slot work
 that surfaced them.

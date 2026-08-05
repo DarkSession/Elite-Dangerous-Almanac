@@ -9,6 +9,7 @@ import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with 
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import fixture from '../../../fixtures/ships/slef-export.json' with { type: 'json' };
 import jumpFixture from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
+import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 
 const slefString = JSON.stringify(slefFixture);
 const source = slefFixture[0]!.data as unknown as LoadoutEvent;
@@ -677,4 +678,92 @@ test('a SLEF producer that does not know the mining names still imports', () => 
         build.toLoadoutEvent().Modules.map((m) => m.Slot),
         ['MediumHardpoint1', 'FrameShiftDrive', 'FuelTank'],
     );
+});
+
+test("a real Inara export confirms the Type-11's journal slot vocabulary", async () => {
+    // External ground truth: Inara wrote these slot names, not this library. It is the
+    // only source in the corpus that exercises the restricted mounts end to end.
+    const { default: inara } = await import('../../../fixtures/ships/slef-inara-type-11.json', {
+        with: { type: 'json' },
+    });
+    const exported = inara[0]!.data.Modules.map((m) => m.Slot);
+
+    // Inara lower-cases every slot key, as the SLEF specification's own example does,
+    // so compare case-insensitively — see TODO.md for the binding gap that causes.
+    const canonical = new Map(
+        ShipLoadout.empty('LakonMiner')
+            .slots()
+            .map((s) => [s.key.toLowerCase(), s.key]),
+    );
+    const unknown = exported.filter((slot) => !canonical.has(slot.toLowerCase()));
+    assert.deepEqual(unknown, [], 'Inara named a mount this hull does not have');
+
+    // The restricted mounts specifically: Inara's spelling is ours, character for
+    // character once case is set aside.
+    for (const key of [
+        'LargeMiningHardpoint1',
+        'MediumMiningHardpoint1',
+        'MediumMiningHardpoint2',
+        'MediumHardpoint3',
+        'SmallMiningHardpoint1',
+        'LimpetController01',
+        'FighterBay01',
+    ]) {
+        assert.ok(exported.includes(key.toLowerCase()), `Inara did not name ${key}`);
+    }
+    // ...and the numbering rule holds in a real export: a restricted optional consumes
+    // no SlotNN number, so the size-4 that follows the two size-5s is Slot06, not Slot08.
+    assert.ok(exported.includes('slot05_size5'));
+    assert.ok(exported.includes('slot06_size4'));
+    assert.ok(!exported.some((s) => /^slot(07|08)_size[45]$/.test(s)));
+});
+
+test("the Type-11 export's credits are a purchase record, and ours are retail", () => {
+    // Every figure Inara states is below list, at three different ratios — the hull at
+    // a 2.5% shipyard discount, the modules at ~5.2% across 23 priced entries. That is
+    // one commander's purchase history, not a property of the build, so the recomputed
+    // export quotes list and the source's own figures stay reachable on the getters.
+    const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
+    const stated = inaraFixture[0]!.data;
+    const ours = build.toLoadoutEvent();
+
+    for (const key of ['HullValue', 'ModulesValue', 'Rebuy'] as const) {
+        assert.ok(
+            ours[key]! > stated[key],
+            `${key}: retail ${ours[key]} should exceed the discounted ${stated[key]}`,
+        );
+    }
+    assert.ok(Math.abs(stated.HullValue / ours.HullValue! - 0.975) < 1e-4, 'hull discount');
+
+    // The source's own figures are not lost — they are what the getters report.
+    assert.equal(build.modulesValue, stated.ModulesValue);
+    assert.equal(build.rebuy, stated.Rebuy);
+
+    // Inara rounds its rebuy where the game truncates: 5% of its own hull + modules is
+    // 5_613_800.75, which it states as ...801. We follow the journal and truncate.
+    const fivePercent = (stated.HullValue + stated.ModulesValue) * fixture.rebuyFraction;
+    assert.equal(stated.Rebuy, Math.round(fivePercent));
+    assert.equal(
+        Math.trunc((ours.HullValue! + ours.ModulesValue!) * fixture.rebuyFraction),
+        ours.Rebuy,
+    );
+});
+
+test('every figure the Type-11 export needs is computable from it', () => {
+    // A build carrying an unpriced or unrecognised module exports no credits at all, so
+    // this doubles as a check that all 27 of its modules resolve in the catalogues.
+    const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
+    assert.equal(build.modules.length, 27);
+    const ours = build.toLoadoutEvent();
+    for (const key of [
+        'UnladenMass',
+        'CargoCapacity',
+        'MaxJumpRange',
+        'ModulesValue',
+        'Rebuy',
+    ] as const) {
+        assert.ok(ours[key] !== undefined, `${key} was omitted`);
+    }
+    assert.equal(build.cargoCapacity, 208);
+    assert.equal(build.weaponMetrics().weapons.length, 5);
 });
