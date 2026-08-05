@@ -1342,6 +1342,30 @@ test('a lower-cased build exports in slot order', () => {
     assert.equal(ordered.length, 27);
 });
 
+test("a core mount's function name reaches its slot only where casing is the difference", () => {
+    // Five of the seven `CoreSlotType` values differ from their slot key by case alone,
+    // so matching case-insensitively lets them through where it used to reject them.
+    // `thrusters` and `sensors` are different words — `MainEngines` and `Radar` — and
+    // still miss. This is what the README promises a consumer; pin it so it cannot drift.
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'FrameShiftDrive',
+        mod('Int_Hyperdrive_Size6_Class5'),
+    );
+    assert.equal(build.getFittedModule('frameShiftDrive')?.Item, 'Int_Hyperdrive_Size6_Class5');
+    for (const core of ['powerPlant', 'lifeSupport', 'powerDistributor', 'fuelTank'] as const) {
+        assert.doesNotThrow(() => build.modulesForSlot(core, CORE_MODULES), core);
+    }
+    for (const core of ['thrusters', 'sensors'] as const) {
+        assert.equal(build.getFittedModule(core), null, core);
+        assert.throws(() => build.modulesForSlot(core, CORE_MODULES), RangeError, core);
+        assert.throws(
+            () => build.setModule(core, mod('Int_Engine_Size6_Class5')),
+            RangeError,
+            core,
+        );
+    }
+});
+
 test('two spellings of one mount resolve to the same entry everywhere', () => {
     // A producer writing both spellings is pathological, but it must not make the
     // readers and the editors disagree about which of the two they mean.

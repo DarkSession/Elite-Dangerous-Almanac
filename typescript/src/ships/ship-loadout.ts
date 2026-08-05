@@ -439,16 +439,23 @@ function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
  *
  * @remarks
  * A build's own spelling of a slot key is authoritative and is never rewritten — an
- * import keeps whatever its producer wrote, so a re-export is byte-identical to what
- * came in. That spelling is not the caller's to know, though: Inara lower-cases every
- * key, as the SLEF specification's own example does, so `LargeMiningHardpoint1` and
+ * import keeps its producer's slot keys, so they re-export byte for byte. That spelling
+ * is not the caller's to know, though: Inara lower-cases every key, as the SLEF
+ * specification's own example does, so `LargeMiningHardpoint1` and
  * `largemininghardpoint1` are one mount and either must find it.
  *
  * Every caller checks for an exact match first, so **an exactly spelled key always
- * wins**; this settles only the case where none matches exactly. A producer that wrote
- * *both* spellings would leave two entries for one mount, and then the earlier of them
- * wins everywhere — reading it, editing it and ordering it for export all agree, and
- * the other entry keeps its own slot in the export rather than being lost.
+ * wins**; this settles only the case where none matches exactly, and then the earlier
+ * entry wins. A well-formed build has one entry per mount, so the two rules agree and
+ * reading, editing and ordering for export all reach the same module.
+ *
+ * A malformed producer that wrote *both* spellings leaves two entries for one mount,
+ * and there they can part: `#fittedKey` prefers a key spelled exactly as the **caller**
+ * typed it, while the slot-ordered export prefers one spelled exactly as the **hull
+ * layout** has it. Editing through the caller's own non-canonical spelling can
+ * therefore land on the entry the export puts in its unrecognised-slot tail. Neither
+ * entry is ever dropped, which is what matters; a build that names one mount twice has
+ * no right answer to give.
  *
  * A linear scan is enough: the largest build in the corpus fits 40 modules.
  */
