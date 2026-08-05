@@ -19,17 +19,19 @@
  * every hull. A `hardpoints` or `optional` mount is `{ size }`, plus a
  * `restriction` when the mount only takes one family of modules — the Type-11
  * Prospector's four mining hardpoints and its limpet-controller and vessel-hangar
- * optionals, the Panther Clipper Mk II's two cargo-only optionals, the military
- * mounts 16 hulls have, and the planetary-approach-suite mount all but the Lynx
- * Highliner has.
+ * optionals, the Panther Clipper Mk II's two cargo-only optionals, the Lynx
+ * Highliner's three passenger-cabin-only optionals, the military mounts 16 hulls
+ * have, and the planetary-approach-suite mount all but the Lynx Highliner has.
  *
  * A mount also carries a `name` where the game's journal slot key is not what the
- * ordinary numbering rules produce — 13 hulls, being the 11 whose names no rule
- * derives plus 2 the rules do derive, pinned so the stored set matches its source one
- * for one. Among the 11: the Anaconda's `Slot13_Size2`/`Slot14_Size1` with no 11 or
+ * ordinary numbering rules produce — 13 hulls, being the 10 whose names no rule
+ * derives plus 3 the rules do derive, pinned so the stored set matches its source one
+ * for one. Among the 10: the Anaconda's `Slot13_Size2`/`Slot14_Size1` with no 11 or
  * 12, the Type-9 Heavy starting at `Slot00_Size8`, the Type-8 Transporter skipping
- * `SmallHardpoint3`, the Caspian Explorer's mediums running 6, 5, 1, 2, 3, 4, and the
- * Lynx Highliner's `Passenger01`–`03`; SOURCES.md lists all 13, hull by hull. A mount
+ * `SmallHardpoint3`, and the Caspian Explorer's mediums running 6, 5, 1, 2, 3, 4; the
+ * other 3 are the Panther Clipper Mk II, the Type-11 Prospector and the Lynx
+ * Highliner, whose `Passenger01`–`03` the rules reach because a restricted mount
+ * consumes no `SlotNN` number. SOURCES.md lists all 13, hull by hull. A mount
  * with no `name` is one the rules get right, and a hull that names any mount of a kind
  * names all of them. A key's `_SizeN` suffix is Frontier's own and on three hulls
  * disagrees with the mount it names (the Keelback's `Slot03_Size3` is a size-4

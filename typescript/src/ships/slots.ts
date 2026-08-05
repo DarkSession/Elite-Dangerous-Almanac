@@ -15,7 +15,7 @@
  *
  * It holds no data; {@link enumerateSlots} takes a {@link ShipSlots} layout (from a
  * hull's `Ship` record via `getShipSlots` in `./ships`) and expands it into keyed
- * {@link BuildSlot}s. Most hulls number their mounts by rule; on eleven the game does
+ * {@link BuildSlot}s. Most hulls number their mounts by rule; on ten the game does
  * not, and a mount there carries its own `name` — see {@link enumerateSlots}.
  *
  * @packageDocumentation
@@ -53,8 +53,8 @@ export type HardpointRestriction = 'mining';
  * - `vesselHangar` — Mk I and Mk II vessel hangars, the modules the game called
  *   fighter hangars before the Operations update (the Type-11 Prospector's other
  *   size-5 optional; journal `FighterBay01`).
- * - `passenger` — passenger cabins, Mk I and Mk II, of every class from economy to
- *   luxury (the Lynx Highliner's two size-6 and one size-5 optionals; journal
+ * - `passenger` — passenger cabins, Mk I and Mk II, at every class either family
+ *   offers (the Lynx Highliner's two size-6 and one size-5 optionals; journal
  *   `Passenger01`–`Passenger03`).
  */
 export type OptionalRestriction =
@@ -157,7 +157,7 @@ export interface BuildSlot {
      * {@link BuildSlot.core} function name is a *different* string (`thrusters` vs the
      * key `MainEngines`); see {@link CoreSlotType}.
      *
-     * **Do not compute one.** The numbering looks regular and on eleven hulls is
+     * **Do not compute one.** The numbering looks regular and on ten hulls is
      * not: the Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1`
      * with no slots 11 or 12, the Type-9 Heavy starts at `Slot00_Size8`, the Type-7
      * Transporter uses the number `09` twice, and the Keelback's `Slot03_Size3` sits

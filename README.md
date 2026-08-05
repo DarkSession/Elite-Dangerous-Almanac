@@ -938,16 +938,15 @@ mount as the journal's `FrameShiftDrive` and `LargeMiningHardpoint1`. A build ke
 whatever spelling it was imported with — editing one of its mounts never renames it, so
 re-exporting returns the producer's own keys untouched.
 
-**Enumerate them; do not compute them.** The numbering looks regular and on 11 of the 48
+**Enumerate them; do not compute them.** The numbering looks regular and on 10 of the 48
 hulls is not, so a key you construct by counting will name a mount the game does not
 have. The Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1` — there is
 no 11 or 12; the Type-9 Heavy starts at `Slot00_Size8`; the Type-7 Transporter uses the
-number `09` twice; the Type-8 Transporter has no `SmallHardpoint3`; the Caspian
+number `09` twice; the Type-8 Transporter has no `SmallHardpoint3`; and the Caspian
 Explorer's medium hardpoints run 6, 5, 1, 2, 3, 4 in layout order, so the same key means
-a **different physical mount** than position would suggest; and the Lynx Highliner calls
-three of its optionals `Passenger01`–`03`. Those names are the game's, carried per hull
-on the mount itself — `getShipSlots(symbol)?.optional[i].name` — and applied by
-`enumerateSlots`. A mount without a `name` is one the rules get right.
+a **different physical mount** than position would suggest. Those names are the game's,
+carried per hull on the mount itself — `getShipSlots(symbol)?.optional[i].name` — and
+applied by `enumerateSlots`. A mount without a `name` is one the rules get right.
 
 A `_SizeN` suffix is part of the name, not a measurement: on the Keelback, Asp Scout and
 Type-7 Transporter, Frontier's own key disagrees with the mount it names (the Keelback's
@@ -962,12 +961,13 @@ with `toSlef()` under a computed key names a mount the receiving app cannot matc
 such mount a name of its own — so `slot.restriction` says what it takes and
 `modulesForSlot` lists exactly that. `PlanetaryApproachSuite` is on all but one hull
 (the Lynx Highliner), `Military01…` (reinforcement packages and shield cell banks) on
-16 of the 48; two hulls add more. The Type-11 Prospector's
+16 of the 48; three hulls add more. The Type-11 Prospector's
 `LargeMiningHardpoint1`, `MediumMiningHardpoint1`,
 `MediumMiningHardpoint2` and `SmallMiningHardpoint1` take **mining tools only** (its
 other four mounts, `MediumHardpoint3` and `SmallHardpoint2…4`, take any weapon), while
 its `LimpetController01` and `FighterBay01` take limpet controllers and vessel hangars;
-the Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks.
+the Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks; and
+the Lynx Highliner's `Passenger01`–`Passenger03` take passenger cabins alone.
 
 ```ts
 import {

@@ -647,11 +647,10 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   carried on the `MediumTransport01_Armour_*` module records). Values
   the static catalogue does not expose are omitted rather than invented: `masslock`,
   `heatCapacity`, `pipSpeed`, acceleration, and the min-pitch / boost-energy figures.
-  The two size-6 and one size-5 passenger-reserved optionals are stored as plain
-  optional slots: the schema now carries slot restrictions (2026-08-04, above), but
-  no passenger value, because the journal names for those three mounts are the one
-  restricted family EDSY's own import map does not claim — see
-  [issue #11](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11).
+  The two size-6 and one size-5 passenger-reserved optionals carry
+  `"restriction": "passenger"` — see the 2026-08-05 revision at the top of this file,
+  which sources them and supersedes the two earlier notes that stored them as plain
+  optionals.
 
 ## Modules (outfitting)
 

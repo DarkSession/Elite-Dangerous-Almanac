@@ -41,7 +41,7 @@
           "enum": ["mining"]
         },
         "name": {
-          "description": "The mount's journal slot key, when the ordinary numbering rules do not reproduce it (the Anaconda's Slot13_Size2, the Type-9 Heavy's Slot00_Size8, the Caspian Explorer's out-of-order mediums, the Lynx Highliner's Passenger01). Absent when the rules are right. A _SizeN suffix is the game's own and may disagree with this mount's `size`, which is always the real one.",
+          "description": "The mount's journal slot key, when the ordinary numbering rules do not reproduce it (the Anaconda's Slot13_Size2, the Type-9 Heavy's Slot00_Size8, the Caspian Explorer's out-of-order mediums, the Keelback's Slot03_Size3). Absent when the rules are right. A _SizeN suffix is the game's own and may disagree with this mount's `size`, which is always the real one.",
           "type": "string",
           "minLength": 1
         }
@@ -65,7 +65,7 @@
           ]
         },
         "name": {
-          "description": "The mount's journal slot key, when the ordinary numbering rules do not reproduce it (the Anaconda's Slot13_Size2, the Type-9 Heavy's Slot00_Size8, the Caspian Explorer's out-of-order mediums, the Lynx Highliner's Passenger01). Absent when the rules are right. A _SizeN suffix is the game's own and may disagree with this mount's `size`, which is always the real one.",
+          "description": "The mount's journal slot key, when the ordinary numbering rules do not reproduce it (the Anaconda's Slot13_Size2, the Type-9 Heavy's Slot00_Size8, the Caspian Explorer's out-of-order mediums, the Keelback's Slot03_Size3). Absent when the rules are right. A _SizeN suffix is the game's own and may disagree with this mount's `size`, which is always the real one.",
           "type": "string",
           "minLength": 1
         }

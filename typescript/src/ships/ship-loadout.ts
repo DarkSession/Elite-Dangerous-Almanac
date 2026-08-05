@@ -314,7 +314,8 @@ const VESSEL_HANGAR_PREFIXES: readonly string[] = ['int_fighterbay'];
 /**
  * Optional-internal groups a **passenger** slot accepts (symbol prefixes) — the Lynx
  * Highliner's `Passenger01`–`Passenger03`. Both cabin families count, at every class
- * from economy to luxury; the Mk II cabins are a separate symbol family rather than a
+ * each offers (economy through luxury for the Mk I cabins, economy and business for
+ * the Mk II ones); the Mk II cabins are a separate symbol family rather than a
  * `PassengerCabin` variant, which is why there are two prefixes and not one.
  */
 const PASSENGER_PREFIXES: readonly string[] = ['int_passengercabin', 'int_mkii_passengercabin'];
