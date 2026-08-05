@@ -950,6 +950,11 @@ export class ShipLoadout {
         }
         const moduleTarget = moduleEngineeringTarget(module.Item);
         const expectedTargets = blueprintTargets(blueprintName);
+        if (moduleTarget === 'unengineerable') {
+            throw new TypeError(
+                `ShipLoadout.applyBlueprint: module "${module.Item}" takes no engineering`,
+            );
+        }
         if (expectedTargets === null || !expectedTargets.includes(moduleTarget)) {
             throw new TypeError(
                 `ShipLoadout.applyBlueprint: blueprint "${blueprintName}" targets ${expectedTargets?.join('/') ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,

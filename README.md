@@ -1005,8 +1005,11 @@ Lightweight, Reinforced and Shielded are keyed both generically (`Misc_LightWeig
 per family (`LifeSupport_LightWeight`, `AFM_Shielded`, …), and Long Range and Wide Angle
 are shared by the sensor suite and the utility scanners (`Sensor_LongRange`,
 `Scanner_LongRange`). Which spelling a build carries depends on the tool that exported it,
-so `applyBlueprint` accepts either — the numbers it applies are the ones stored under the
-id you name.
+so `applyBlueprint` accepts either — and the numbers it applies are the ones stored under
+the id you name. For Lightweight, Reinforced and Shielded that is the same recipe either
+way. Long Range and Wide Angle are the exception: the sensor suite's costs mass and the
+scanners' costs power draw, so on a utility scanner name the `Scanner_*` id
+([#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32)).
 
 Need only the engineering maths? `computeModifiers`
 from `ships/engineering` turns a blueprint grade (from `ships/blueprints`) and an

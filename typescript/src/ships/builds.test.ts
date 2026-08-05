@@ -165,24 +165,56 @@ test('every declared blueprint, grade and experimental effect is in the catalogu
     }
 });
 
+/**
+ * The two ways `applyBlueprint` refuses a recipe for the module it is on, as its own
+ * messages spell them: a family mismatch, and a module that takes no engineering at all.
+ * Anything else it throws — a missing base stat, an unknown id — is a different failure.
+ */
+const COMPATIBILITY_REFUSAL = /blueprint ".*" targets .*, not \w+ module|takes no engineering/;
+
 test('every declared blueprint is one its module can take', () => {
     const rejected: string[] = [];
     for (const build of builds) {
+        const loadout = assemble(build);
         for (const entry of build.modules) {
             if (!entry.engineering) continue;
-            const target = moduleEngineeringTarget(entry.item);
-            const targets = blueprintTargets(entry.engineering.blueprint);
-            if (targets === null || !targets.includes(target)) {
-                rejected.push(
-                    `${build.id}: "${entry.engineering.blueprint}" targets ` +
-                        `${targets?.join('/') ?? 'nothing known'}, not ${target} "${entry.item}"`,
-                );
+            try {
+                loadout.applyBlueprint(entry.slot, entry.engineering.blueprint, {
+                    grade: entry.engineering.grade,
+                    ...(entry.engineering.experimental !== undefined
+                        ? { experimental: entry.engineering.experimental }
+                        : {}),
+                });
+            } catch (error) {
+                // Drive the real API rather than re-checking the map, so this cannot drift
+                // from `applyBlueprint`; only its compatibility refusals count here, since
+                // a missing base stat is a data gap (issue #10), not a mapping defect.
+                const message = error instanceof Error ? error.message : String(error);
+                if (COMPATIBILITY_REFUSAL.test(message)) rejected.push(`${build.id}: ${message}`);
             }
         }
     }
     // Every entry in the corpus is a recipe a real build tool wrote against a real module,
-    // so a mismatch is this library's mapping being too narrow, not the build being wrong.
-    assert.deepEqual(rejected, [], `${rejected.length} of the corpus's entries were rejected`);
+    // so a refusal here is this library's mapping being too narrow, not the build being
+    // wrong. The fixture's `accepted: false` cases hold the mapping down from the other
+    // side; without them, a mapping that accepted everything would also pass this test.
+    assert.deepEqual(rejected, [], `${rejected.length} of the corpus's entries were refused`);
+});
+
+test('the corpus never engineers a module the catalogues put in another family', () => {
+    // Same corpus, read through the map directly: the entry that proves the assertion
+    // above is about compatibility and not about `applyBlueprint` happening not to throw.
+    for (const build of builds) {
+        for (const entry of build.modules) {
+            if (!entry.engineering) continue;
+            const target = moduleEngineeringTarget(entry.item);
+            assert.notEqual(target, 'unengineerable', `${build.id}: ${entry.item}`);
+            assert.ok(
+                blueprintTargets(entry.engineering.blueprint)?.includes(target),
+                `${build.id}: "${entry.engineering.blueprint}" does not target ${target} "${entry.item}"`,
+            );
+        }
+    }
 });
 
 test('every build reproduces its pinned metrics', () => {

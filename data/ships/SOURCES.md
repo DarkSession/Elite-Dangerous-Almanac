@@ -983,8 +983,7 @@ that **every** engineering entry the 181 builds declare is one its module can ta
   writing the generic id for every family and coriolis the family-prefixed one, so both
   resolve to the whole family set. Measured on the corpus before this was fixed: 76 of
   1902 entries were refused for a family mismatch, 52 of them `Misc_LightWeight` on life
-  support, collector controllers and scanners
-  ([#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14)).
+  support, collector controllers and scanners.
 - **Which families, exactly.** Lightweight and Reinforced: chaff launchers, ECMs, heat sink
   launchers, point defence, the KWS/manifest/wake scanners, life support and the four
   limpet controllers. Shielded: those plus AFMUs, fuel scoops and refineries, the three
@@ -999,8 +998,19 @@ that **every** engineering entry the 181 builds declare is one its module can ta
   splits the scanner side out as `Scanner_LongRange` / `Scanner_WideAngle`, and both sets
   are stored. The corpus carries both spellings on the same Frame Shift Wake Scanner, so
   both are accepted on either family and the applied numbers follow the id the caller
-  names. Fast Scan (`Sensor_FastScan`) is the scanners' alone; Expanded
-  (`Sensor_Expanded`) the Detailed Surface Scanner's.
+  names — which for a `Sensor_*` id on a scanner is the wrong set. That is unreachable
+  while the scanners carry no `ScannerRange` base stat, and closing that gap makes it
+  reachable, so the ordering is tracked at
+  [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32). Fast Scan
+  (`Sensor_FastScan`) is the scanners' alone; Expanded (`Sensor_Expanded`) the Detailed
+  Surface Scanner's.
+- **`scanner` is three module groups, not everything with "scanner" in its symbol.** Kill
+  warrant, manifest and frame shift wake are the scanners the game engineers. The Pulse
+  Wave Analyser (`Hpt_MRAScanner_*`), the three Xeno Scanners and the removed Discovery
+  Scanner tiers carry no `blueprints:` key in EDSY and an empty map in coriolis, so they
+  answer `unengineerable` — no blueprint id resolves to it, and `applyBlueprint` says the
+  module takes no engineering rather than naming a family. Widening the generic recipes to
+  `scanner` without this split would have offered Lightweight on a Pulse Wave Analyser.
 - **Two modules whose symbol names a different thing than their family.** The Hatch Breaker
   Limpet Controller is `Int_DroneControl_ResourceSiphon_*`, so matching on "hatchbreaker"
   matched nothing and the family was unreachable. The Caustic Sink Launcher
@@ -1011,8 +1021,11 @@ that **every** engineering entry the 181 builds declare is one its module can ta
 - **`miscellaneous` stays the fallback**, and stays accepted for the generic recipes. It
   holds the modules with no specialised family of their own — ECMs, the Shutdown Field
   Neutraliser, the repair/recon/decontamination/research and multi-limpet controllers —
-  and neither upstream enumerates blueprints for all of them, so a refusal there would be
-  a guess.
+  and neither upstream enumerates blueprints for all of them, so a blanket refusal there
+  would be a guess. The cost is that the modules the game engineers not at all, which land
+  in the same bucket, accept the generic recipes too: a fighter bay engineers to −85% mass
+  today. Deciding those family by family is the same work the scanners needed and is
+  tracked at [#31](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/31).
 
 ## Pre-engineered modules
 

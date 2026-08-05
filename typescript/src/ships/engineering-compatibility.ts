@@ -24,7 +24,14 @@
  * @internal
  */
 
-/** The module families distinguished by Elite Dangerous engineering. @internal */
+/**
+ * The module families distinguished by Elite Dangerous engineering.
+ *
+ * `unengineerable` is not a family: it marks the modules the game offers no blueprint on
+ * at all, so no blueprint id ever resolves to it. See {@link moduleEngineeringTarget}.
+ *
+ * @internal
+ */
 export type EngineeringTarget =
     | 'afmu'
     | 'armour'
@@ -53,6 +60,7 @@ export type EngineeringTarget =
     | 'shieldCellBank'
     | 'shieldGenerator'
     | 'thrusters'
+    | 'unengineerable'
     | 'weapon';
 
 const prefixTarget = (
@@ -205,7 +213,11 @@ export function blueprintTargets(fdname: string): readonly EngineeringTarget[] |
     // power draw — which is why coriolis-data splits the scanner side out under
     // `Scanner_LongRange` / `Scanner_WideAngle` while EDSY keeps a single `Sensor_*`
     // fdname. The corpus carries both spellings on the same Frame Shift Wake Scanner, so
-    // both are accepted and the applied numbers follow the id the caller names.
+    // both are accepted; the numbers then applied are the ones stored under the id named,
+    // which is the wrong set for a scanner given a `Sensor_*` id. That is unreachable
+    // today — a utility scanner carries no `ScannerRange` base stat, so the call fails the
+    // missing-base check first — and is tracked, together with the ordering against that
+    // gap, at https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32.
     if (normalized === 'sensor_longrange' || normalized === 'sensor_wideangle') {
         return ['sensors', 'scanner'];
     }
@@ -281,7 +293,13 @@ export function experimentalTarget(fdname: string): EngineeringTarget | null {
  *
  * The fallback is `miscellaneous`: these are modules such as ECMs, the Shutdown Field
  * Neutraliser and the limpet controllers without their own specialised blueprint family
- * (repair, recon, decontamination, research and the multi-limpet controllers).
+ * (repair, recon, decontamination, research and the multi-limpet controllers). Because it
+ * is the fallback it is also where modules the game does not engineer at all land — fuel
+ * tanks, passenger cabins, docking computers — and they accept the generic `Misc_*`
+ * recipes as a result, which
+ * {@link https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/31 | issue #31}
+ * tracks. `unengineerable` is the opposite answer, returned only where a source says
+ * outright that the module takes nothing.
  *
  * @internal
  */
@@ -322,7 +340,20 @@ export function moduleEngineeringTarget(moduleSymbol: string): EngineeringTarget
     }
     if (symbol.startsWith('int_dronecontrol_prospector')) return 'prospectorLimpet';
     if (symbol.startsWith('int_refinery')) return 'refinery';
-    if (symbol.includes('scanner')) return 'scanner';
+    // `scanner` is the three utility scanners the game engineers — kill warrant, manifest
+    // and frame shift wake — and only those. Every other module with "scanner" in its
+    // symbol takes no blueprint at all: the Pulse Wave Analyser (`Hpt_MRAScanner`), the
+    // Xeno Scanners and the three removed Discovery Scanner tiers are absent from both
+    // upstreams' blueprint tables, so a recipe on one is a mistake to refuse rather than a
+    // family to widen. An unrecognised scanner joins them: refusing is the visible failure.
+    if (
+        symbol.startsWith('hpt_crimescanner') ||
+        symbol.startsWith('hpt_cargoscanner') ||
+        symbol.startsWith('hpt_cloudscanner')
+    ) {
+        return 'scanner';
+    }
+    if (symbol.includes('scanner')) return 'unengineerable';
     if (symbol.startsWith('int_sensors')) return 'sensors';
     if (symbol.startsWith('hpt_shieldbooster')) return 'shieldBooster';
     if (symbol.startsWith('int_shieldcellbank')) return 'shieldCellBank';

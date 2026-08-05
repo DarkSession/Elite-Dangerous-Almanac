@@ -630,6 +630,20 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
     );
 });
 
+test('a module the game does not engineer says so, rather than naming a family', () => {
+    // The Pulse Wave Analyser has "scanner" in its symbol but takes no blueprint at all,
+    // so the generic recipes must not reach it through the utility-scanner family.
+    const build = ShipLoadout.empty('Python').setModule(
+        'TinyHardpoint1',
+        mod('Hpt_MRAScanner_Size0_Class1', UTILITY_MODULES),
+    );
+    assert.throws(
+        () => build.applyBlueprint('TinyHardpoint1', 'Misc_LightWeight', { grade: 5 }),
+        /"Hpt_MRAScanner_Size0_Class1" takes no engineering/,
+    );
+    assert.deepEqual(build.getFittedModule('TinyHardpoint1')!.getAvailableBlueprints(), []);
+});
+
 test('weapon and armour recipes engineer the stats the catalogue carries', () => {
     const weapon = ShipLoadout.empty('Sidewinder').setModule(
         'SmallHardpoint1',

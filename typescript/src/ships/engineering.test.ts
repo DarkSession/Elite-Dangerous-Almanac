@@ -38,8 +38,9 @@ test('every engineering id has an explicit compatibility target', () => {
 
 test('the generic Misc recipes cover every family the game offers them on', () => {
     // Lightweight and Reinforced share one family list; Shielded adds the three families
-    // the game gives Shielded and nothing else.
-    assert.deepEqual(blueprintTargets('Misc_LightWeight'), [
+    // the game gives Shielded and nothing else. Spelled out rather than compared to each
+    // other, since both ids return the same array and would agree either way.
+    const lightweight = [
         'miscellaneous',
         'chaff',
         'collectionLimpet',
@@ -50,12 +51,22 @@ test('the generic Misc recipes cover every family the game offers them on', () =
         'pointDefence',
         'prospectorLimpet',
         'scanner',
-    ]);
-    assert.deepEqual(blueprintTargets('Misc_Reinforced'), blueprintTargets('Misc_LightWeight'));
+    ];
+    assert.deepEqual(blueprintTargets('Misc_LightWeight'), lightweight);
+    assert.deepEqual(blueprintTargets('Misc_Reinforced'), lightweight);
     assert.deepEqual(
         [...blueprintTargets('Misc_Shielded')!].sort(),
-        [...blueprintTargets('Misc_LightWeight')!, 'afmu', 'fuelScoop', 'refinery'].sort(),
+        [...lightweight, 'afmu', 'fuelScoop', 'refinery'].sort(),
     );
+    // Nothing else joins them: the families with a Lightweight of their own are not on the
+    // generic list, and neither is anything the game does not engineer.
+    for (const family of ['sensors', 'weapon', 'armour', 'frameShiftDrive', 'unengineerable']) {
+        assert.ok(!lightweight.includes(family), `Lightweight must not target ${family}`);
+        assert.ok(
+            !blueprintTargets('Misc_Shielded')!.includes(family as never),
+            `Shielded must not target ${family}`,
+        );
+    }
 
     // Long Range and Wide Angle belong to both the sensor suite and the utility scanners;
     // Fast Scan is the scanners' alone and Expanded the Detailed Surface Scanner's.
@@ -75,6 +86,27 @@ test('the modules named for one family and symboled for another are classified b
     // ... and the Caustic Sink Launcher is a heat sink launcher, ammo capacity included.
     assert.equal(moduleEngineeringTarget('Hpt_CausticSinkLauncher_Turret_Tiny'), 'heatSink');
     assert.ok(blueprintTargets('Misc_HeatSinkCapacity')?.includes('heatSink'));
+});
+
+test('the scanners the game does not engineer are not in the scanner family', () => {
+    // `scanner` is the three utility scanners and only those, so widening the generic
+    // recipes to it does not hand a Pulse Wave Analyser a Lightweight blueprint.
+    for (const symbol of ['Hpt_CrimeScanner_Size0_Class3', 'Hpt_CargoScanner_Size0_Class2']) {
+        assert.equal(moduleEngineeringTarget(symbol), 'scanner', symbol);
+    }
+    for (const symbol of [
+        'Hpt_MRAScanner_Size0_Class1',
+        'Hpt_XenoScanner_Basic_Tiny',
+        'Hpt_XenoScannerMk2_Basic_Tiny',
+        'Hpt_XenoScanner_Advanced_Tiny',
+        'Int_StellarBodyDiscoveryScanner_Advanced',
+    ]) {
+        assert.equal(moduleEngineeringTarget(symbol), 'unengineerable', symbol);
+    }
+    // Nothing resolves to `unengineerable`, so every blueprint is refused on those modules.
+    for (const id of Object.keys(BLUEPRINTS)) {
+        assert.ok(!blueprintTargets(id)?.includes('unengineerable'), id);
+    }
 });
 
 test('every pinned compatibility case resolves the way the fixture says', () => {
