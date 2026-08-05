@@ -216,8 +216,9 @@ export function blueprintTargets(fdname: string): readonly EngineeringTarget[] |
     if (normalized === 'sensor_fastscan') return ['scanner'];
     // Long Range and Wide Angle are offered on both the internal sensor suite and the
     // utility scanners, and the game writes one `BlueprintName` for both. The two groups
-    // roll different numbers — the sensors' Long Range costs mass, the scanners' costs
-    // power draw — which is why coriolis-data splits the scanner side out under
+    // roll different numbers — the sensors' Long Range costs mass and the scanners' costs
+    // power draw, Wide Angle the other way round — which is why coriolis-data splits the
+    // scanner side out under
     // `Scanner_LongRange` / `Scanner_WideAngle` while EDSY keeps a single `Sensor_*`
     // fdname. The corpus carries both spellings on the same Frame Shift Wake Scanner, so
     // both are accepted; the numbers then applied are the ones stored under the id named,

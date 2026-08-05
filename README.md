@@ -1011,8 +1011,11 @@ pairs are not, so name the family's own id when you have it:
 
 - **Shielded on life support.** `LifeSupport_Shielded` G5 draws +112% power where
   `Misc_Shielded` draws +100% — the one published divergence among the family twins.
-- **Long Range and Wide Angle on a utility scanner.** The sensor suite's costs mass and
-  the scanners' costs power draw, so on a scanner name the `Scanner_*` id
+- **Long Range and Wide Angle on a utility scanner.** Each spelling carries the side
+  effect its own group pays, and the two are not the same: Long Range costs mass on the
+  sensor suite (`Sensor_LongRange`) and power draw on a scanner (`Scanner_LongRange`),
+  while Wide Angle is the reverse — power draw on the suite (`Sensor_WideAngle`), mass on
+  a scanner (`Scanner_WideAngle`). On a utility scanner, name the `Scanner_*` id
   ([#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32)).
 
 Need only the engineering maths? `computeModifiers`

@@ -993,7 +993,9 @@ that **every** engineering entry the 181 builds declare is one its module can ta
   `Armour_Advanced`) is different again.
 - **Long Range and Wide Angle belong to two families.** The sensor suite and the utility
   scanners both take them and the game writes one `BlueprintName` for both, but the rolls
-  differ: the sensors' Long Range costs mass, the scanners' costs power draw. EDSY keeps
+  differ: the sensors' Long Range costs mass, the scanners' costs power draw, and Wide
+  Angle is the same split the other way round — `Sensor_WideAngle` costs power draw and
+  narrows range, `Scanner_WideAngle` costs mass and lengthens the scan time. EDSY keeps
   the single `Sensor_LongRange` / `Sensor_WideAngle` fdname for both groups; coriolis
   splits the scanner side out as `Scanner_LongRange` / `Scanner_WideAngle`, and both sets
   are stored. The corpus carries both spellings on the same Frame Shift Wake Scanner, so
