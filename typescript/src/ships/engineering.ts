@@ -254,6 +254,11 @@ export function computeModifiers(
  * metre from the muzzle. Resolve it to the weapon's (modified) maximum range, and hold
  * every falloff to that ceiling.
  *
+ * A weapon with **no maximum range at all** — a missile rack, a torpedo pylon, a mine
+ * launcher — has nothing for the flag to resolve against and no falloff either, so the
+ * leg is dropped rather than shipped as the raw sentinel. Its own `Range` leg is already
+ * inert on such a weapon for the same reason; this keeps the pair consistent.
+ *
  * @remarks
  * Reference: Coriolis `Module.getFalloff` — `if (mods['fallofffromrange']) return
  * getRange()`, and otherwise `falloff > range ? range : falloff`.
@@ -268,7 +273,11 @@ function resolveFalloffFromRange(
         modifiers.find((m) => m.Label === 'Range' || m.Label === 'MaximumRange')?.Value ??
         base['Range'] ??
         base['MaximumRange'];
-    if (range === undefined) return modifiers;
+    if (range === undefined) {
+        // Still a flag, and nothing to turn it into: drop it. A falloff the weapon really
+        // carries has a distance of its own and survives.
+        return falloff.Value <= 1 ? modifiers.filter((m) => m !== falloff) : modifiers;
+    }
     if (falloff.Value <= 1 || falloff.Value > range) {
         return modifiers.map((m) => (m === falloff ? { ...m, Value: round6(range) } : m));
     }

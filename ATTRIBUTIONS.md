@@ -121,6 +121,20 @@ in the doc comment of each ported module, and in long form in the domain
   Where neither registry nor panel yielded a figure, the module record says so itself,
   in its `unknownStats` field. That classification is this repository's own
   reconciliation work — no third-party figure is reproduced by it.
+- **The base stats engineering blueprints modify** — thruster and frame shift drive heat
+  rates, fuel scoop rate, the shield cell bank stats (reinforcement, heat, spin-up,
+  duration), scanner range, scan angle and scan time on both the sensor suites and the
+  utility scanners, the Detailed Surface Scanner's probe radius, and the FSD
+  interdictor's facing limit and range, from
+  [EDSY](https://github.com/taleden/EDSY) (`eddb.js`, taleden, **CC BY-NC 4.0**), which
+  is the only one of the two registries that carries them — coriolis-data names several
+  of these stats in `modifications/modifierActions.json` without holding a value for
+  them. Cross-checked against
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (commit `0db9234`)
+  wherever it does. The values are **Elite Dangerous game data, property of Frontier
+  Developments plc**; see the notice below. `data/ships/SOURCES.md` records the
+  field-by-field joins, the units each source uses, and the handful of figures derived
+  from a family rule rather than read from a registry.
 
 - **Ground-truth ship builds (test fixtures, not shipped)** — three real builds used to
   check the loadout maths against something other than itself.

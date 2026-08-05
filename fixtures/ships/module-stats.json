@@ -710,6 +710,13 @@
       "probeRadius": 20
     },
     {
+      "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
+      "name": "Advanced Discovery Scanner",
+      "scanAngle": 10,
+      "scanTime": 5,
+      "unknownStats": ["powerDraw"]
+    },
+    {
       "symbol": "Int_ShieldCellBank_Size8_Class5",
       "name": "Shield Cell Bank",
       "shieldBankReinforcement": 65,
@@ -752,8 +759,8 @@
       "shieldBankSpinUp": 40,
       "shieldBankDuration": 40,
       "scannerRange": 64,
-      "scanAngle": 64,
-      "scanTime": 23,
+      "scanAngle": 68,
+      "scanTime": 27,
       "probeRadius": 1,
       "interdictorFacingLimit": 20,
       "interdictorRange": 20

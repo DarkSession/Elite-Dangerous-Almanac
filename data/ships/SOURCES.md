@@ -56,23 +56,42 @@ claim in `builds.test.ts`.
   either) modelled differently from their siblings. Both pairs are kept in step instead:
   `ScannerRange` and `ShieldBankHeat` each map to both fields in `module-stat-labels.ts`,
   so an engineered scanner or cell bank reads the same whichever field is asked.
-- **Values no third-party registry lists, derived from the family rule.** Seven records:
-  the three `*_free` starter fittings (thrusters, drive, sensors) and the five plain
-  size-8 drives, plus the Mk II supercharge-optimised size-8 SCO drive. Each `*_free`
-  record is byte-identical to its priced twin apart from the missing `cost`, so it takes
-  that twin's value. A drive's heat rate is a function of its **size alone** across all 65
-  records both registries do carry — 10, 14, 18, 27, 37, 43 for sizes 2 to 7, identical
-  between the plain and SCO lines at every size — and the size-8 SCO drives are 50, so the
-  size-8 plain drives and the Mk II booster take 50. Stated here as derivation, not as a
-  reading: no registry publishes these eight figures.
+- **Values no third-party registry lists, derived from the family rule.** Eight records
+  carrying nine figures: the three `*_free` starter fittings (thrusters, drive, sensors —
+  the sensors contribute both a `scannerRange` and a `scanAngle`) and the five plain
+  size-8 drives. Each `*_free` record is byte-identical to its priced twin apart from the
+  missing `cost`, so it takes that twin's value. A drive's heat rate is a function of its
+  **size alone** across all 66 records EDSY does carry — 10, 14, 18, 27, 37, 43 for sizes
+  2 to 7, identical between the plain and SCO lines at every size — and the size-8 SCO
+  drives are 50, so the size-8 plain drives take 50. Stated here as derivation, not as a
+  reading: no registry publishes these nine figures.
+  - **The Mk II supercharge-optimised size-8 SCO drive is _not_ among them**, though an
+    earlier draft of this revision counted it as one. EDSY publishes its `fsdheat: 50`
+    outright; it was missed because EDSY spells the fdname
+    `Int_Hyperdrive_Overcharge_Size8_Class5_Overchargebooster_MkII` where the outfitting
+    registry this catalogue is keyed on capitalises the `B`. Matching case-insensitively,
+    as every lookup in this library already does, makes it a reading. The value is the
+    same either way; the provenance is not.
+- **Four records read from a commented-out upstream row.** The three withdrawn Discovery
+  Scanners (`Int_StellarBodyDiscoveryScanner_{Standard,Intermediate,Advanced}`) and the
+  free twin of the first take `scanAngle: 10` and `scanTime: 5` from EDSY's row for them,
+  which the file keeps but comments out — `/* removed, now built-in */`, the modules
+  having left the game in 3.3. The same precedent as `special_feedback_cascade` below.
+  The values matter because these four are `scanner`-family, so `Sensor_FastScan` and
+  `Sensor_WideAngle` reach them: without a base the scan-angle and scan-time legs would
+  be silently dropped as "the module has no such stat", which is untrue of them.
+  Their `activerng` / `passiverng` — a detection radius in light-seconds, and infinite on
+  the Advanced — are a different quantity from `scannerRange` and are deliberately not
+  mapped, so `Scanner_LongRange` still refuses on them, as it should: their `powerDraw`
+  is unknown and declared so.
 - **`shotSpeed` and `reloadTime` needed almost nothing.** The 49 weapons with no
-  `shotSpeed` and the 41 with no `reloadTime` are not gaps: they are the lasers, rail
+  `shotSpeed` and the 43 that had no `reloadTime` are not gaps: they are the lasers, rail
   guns, Gauss cannons and mine launchers, which have no projectile to speed up and no clip
   to reload. Neither registry publishes a figure, and EDSY's per-family `modifiable` lists
   say outright that the game does not move those stats on those weapons. The **two** real
   omissions were the medium Seismic Charge Launchers, fixed and turreted, whose
   `reloadTime` of 1 s EDSY carries (`rldtime`) and this catalogue had dropped; both are
-  filled. Nothing was invented for the other 88.
+  filled, leaving 41 records with no `reloadTime`. Nothing was invented for the other 90.
 - **`EnergyPerRegen` needed no data at all.** All 57 shield generators already carried
   `distributorDraw`, and EDSY (`genpwr`) and coriolis (`distdraw`) both confirm it is the
   same stat under the journal's other name. It was a missing line in the label map, not a
@@ -92,6 +111,13 @@ claim in `builds.test.ts`.
   base stats, 76 corpus entries are still refused for a target-family mismatch, which is a
   mapping defect rather than a data one
   ([issue #14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14)).
+- **A weapon with no maximum range now loses Long Range's falloff leg too.** That leg is
+  stored upstream as an overwrite in `[0, 1]` — a flag meaning "damage falls off from
+  maximum range" — which the calculator resolves to the weapon's own range. On a missile
+  rack, torpedo pylon or mine launcher there is no range to resolve against and no falloff
+  either, and the recipe's `Range` leg is inert there for the same reason; the flag is
+  dropped rather than published as a one-metre falloff. Before this pass the whole recipe
+  was refused on those 26 weapons, so the path was unreachable.
 - **A hull reinforcement package's hull boost is computed, not stored.** Its
   `DefenceModifierHealthMultiplier` leg used to be refused as a missing base stat. It is
   not one: a percentage-of-a-multiplier stat has no absent state, because no hull boost is

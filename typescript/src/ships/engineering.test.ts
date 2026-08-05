@@ -271,3 +271,22 @@ test('a heat-rate recipe reproduces the heat a real journal reports', () => {
     assert.equal(heat.OriginalValue, 1.3);
     assert.equal(heat.Value, 1.95);
 });
+
+test('long range drops the falloff flag on a weapon with no maximum range', () => {
+    // The falloff leg is a flag in [0, 1] that resolves to the weapon's range. A missile
+    // rack has no range for it to resolve against — and no damage falloff either — so the
+    // leg is dropped rather than shipped as a one-metre falloff. Its `Range` leg is
+    // already inert on such a weapon for the same reason.
+    const rack = getModuleBySymbol('Hpt_DumbfireMissileRack_Fixed_Small', ALL_MODULES)!;
+    assert.equal(rack.maximumRange, undefined);
+    assert.equal(rack.falloffRange, undefined);
+    const modifiers = computeModifiers(
+        baseStats(rack),
+        getBlueprintGrade('Weapon_LongRange', 5)!,
+        1,
+    );
+    assert.ok(!modifiers.some((m) => m.Label === 'FalloffRange'));
+    assert.ok(!modifiers.some((m) => m.Label === 'Range' || m.Label === 'MaximumRange'));
+    // The legs the weapon does have still apply.
+    assert.ok(modifiers.some((m) => m.Label === 'Mass'));
+});

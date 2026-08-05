@@ -2137,6 +2137,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
+    "scanAngle": 10,
+    "scanTime": 5,
     "cost": 1000,
     "unknownStats": ["powerDraw"]
   },
@@ -2148,6 +2150,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 40,
+    "scanAngle": 10,
+    "scanTime": 5,
     "cost": 505000,
     "unknownStats": ["powerDraw"]
   },
@@ -2159,6 +2163,8 @@
     "rating": "C",
     "mass": 2,
     "integrity": 40,
+    "scanAngle": 10,
+    "scanTime": 5,
     "cost": 1545000,
     "unknownStats": ["powerDraw"]
   },
@@ -2206,6 +2212,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
+    "scanAngle": 10,
+    "scanTime": 5,
     "unknownStats": ["powerDraw"]
   },
   {
