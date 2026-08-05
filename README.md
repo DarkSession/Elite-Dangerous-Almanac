@@ -1005,9 +1005,14 @@ Lightweight, Reinforced and Shielded are keyed both generically (`Misc_LightWeig
 per family (`LifeSupport_LightWeight`, `AFM_Shielded`, …), and Long Range and Wide Angle
 are shared by the sensor suite and the utility scanners (`Sensor_LongRange`,
 `Scanner_LongRange`). Which spelling a build carries depends on the tool that exported it,
-so `applyBlueprint` accepts either — and the numbers it applies are the ones stored under
-the id you name. For Lightweight and Reinforced that is the same recipe either way. Three
-pairs are not, so name the family's own id when you have it:
+so the **generic** id is accepted on every family the modification covers — the one that
+is ambiguous has to be. A family's own id keeps naming that family alone, which is what it
+unambiguously means: `LifeSupport_LightWeight` is refused on a limpet controller, and
+`Scanner_LongRange` on the sensor suite, whose spelling is `Sensor_LongRange`.
+
+The numbers applied are the ones stored under the id you name. For Lightweight and
+Reinforced that is the same recipe either way. Three pairs are not, so name the family's
+own id when you have it:
 
 - **Shielded on life support.** `LifeSupport_Shielded` G5 draws +112% power where
   `Misc_Shielded` draws +100% — the one published divergence among the family twins.
@@ -1122,15 +1127,17 @@ fixed Mining Laser is not one of them — it is grouped and does offer an effect
 
 > **`[]` does not yet mean "cannot be engineered".** The options catalogue groups 428 of
 > the 1198 modules, so whole engineerable families — hull armour, sensors, life support,
-> heat sink and chaff launchers, the Detailed Surface Scanner, limpet controllers, AFMUs,
-> fuel scoops, FSD interdictors, the Guardian weapons — currently answer `[]` even though
-> real builds engineer them.
+> heat sink and chaff launchers, point defence, the Detailed Surface Scanner and the
+> KWS/manifest/wake scanners, limpet controllers, AFMUs, fuel scoops, refineries, FSD
+> interdictors, the Guardian weapons — currently answer `[]` even though real builds
+> engineer them.
 >
-> Two of those families — sensors and the Detailed Surface Scanner — are also refused by
-> `ShipLoadout.applyBlueprint`, because the module records lack the base stats their
-> blueprints modify. That second gap is not confined to this list: thrusters, shield
-> generators, shield cell banks and many weapons _are_ grouped here and still refused
-> there. Measured on the 181-build corpus in `fixtures/ships/builds/`: 406 of
+> Four of those families — sensors, the Detailed Surface Scanner, FSD interdictors and the
+> KWS/manifest/wake scanners — are also refused by `ShipLoadout.applyBlueprint`, because the
+> module records lack the base stats their blueprints modify. That second gap is not
+> confined to this list: thrusters, shield generators, shield cell banks and many weapons
+> _are_ grouped here and still refused there. Measured on the 181-build corpus in
+> `fixtures/ships/builds/`: 406 of
 > its 1902 declared engineering entries are rejected, across 128 builds. Armour, life
 > support, the limpet controllers, AFMUs, fuel scoops, heat sink and chaff launchers and the
 > Guardian weapons engineer fine — for those it really is only the _menu_ that is missing.

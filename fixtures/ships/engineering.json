@@ -20,7 +20,7 @@
   "blueprintCount": 108,
   "experimentalCount": 87,
   "compatibility": {
-    "description": "Whether a blueprint may be applied to a module at all — the check ShipLoadout.applyBlueprint makes before it computes anything. `accepted: false` means the game does not offer that recipe on that module. The generic Misc_LightWeight / Misc_Reinforced / Misc_Shielded recipes and the shared Long Range / Wide Angle scanner recipes each cover several module families, because Frontier keys one modification under more than one id and which id a build carries depends on where it was authored.",
+    "description": "Whether a blueprint may be applied to a module at all — the check ShipLoadout.applyBlueprint makes before it computes anything. `accepted: false` means the game does not offer that recipe on that module. Frontier keys one modification under more than one id, and which id a build carries depends on where it was authored, so the ambiguous spelling covers several module families: the generic Misc_LightWeight / Misc_Reinforced / Misc_Shielded, and Sensor_LongRange / Sensor_WideAngle, which the game writes for both the sensor suite and the utility scanners. A spelling that names one family — LifeSupport_LightWeight, Scanner_LongRange — covers that family alone.",
     "cases": [
       { "blueprint": "Misc_LightWeight", "module": "Int_LifeSupport_Size4_Class2", "accepted": true },
       { "blueprint": "LifeSupport_LightWeight", "module": "Int_LifeSupport_Size4_Class2", "accepted": true },
@@ -48,6 +48,8 @@
       { "blueprint": "Misc_Reinforced", "module": "Int_StellarBodyDiscoveryScanner_Advanced", "accepted": false },
       { "blueprint": "Misc_HeatSinkCapacity", "module": "Hpt_CloudScanner_Size0_Class5", "accepted": false },
       { "blueprint": "LifeSupport_LightWeight", "module": "Int_DroneControl_Collection_Size3_Class3", "accepted": false },
+      { "blueprint": "Scanner_LongRange", "module": "Int_Sensors_Size5_Class5", "accepted": false },
+      { "blueprint": "Scanner_WideAngle", "module": "Int_Sensors_Size5_Class5", "accepted": false },
       { "blueprint": "Misc_LightWeight", "module": "Int_Hyperdrive_Size5_Class5", "accepted": false },
       { "blueprint": "Misc_LightWeight", "module": "Hpt_PulseLaser_Fixed_Small", "accepted": false },
       { "blueprint": "Misc_LightWeight", "module": "Int_Sensors_Size5_Class5", "accepted": false },
