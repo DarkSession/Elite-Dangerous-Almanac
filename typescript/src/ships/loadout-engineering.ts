@@ -4,7 +4,7 @@
  * @internal
  */
 
-import { BLUEPRINTS } from './blueprints.js';
+import { BLUEPRINTS, getBlueprint } from './blueprints.js';
 import {
     ENGINEERING_OPTION_GROUPS,
     getBlueprintsForModule,
@@ -12,6 +12,7 @@ import {
     getExperimentalsForModule,
 } from './engineering-options.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
 import { baseStats, fieldForLabel, isUnknown } from './module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
 import type { OutfittingModule } from './modules.js';
@@ -82,7 +83,7 @@ export function missingBaseLabels(
  * @internal
  */
 function recipeSignature(fdname: string): string | null {
-    const blueprint = BLUEPRINTS[fdname];
+    const blueprint = getBlueprint(fdname);
     if (!blueprint) return null;
     const grades = Object.entries(blueprint.grades)
         .map(
@@ -106,6 +107,29 @@ const MENU_IDS: ReadonlySet<string> = new Set(
         group.blueprints.map((id) => id.toLowerCase()),
     ),
 );
+
+/**
+ * Whether a module is *sold* carrying this recipe or effect, rather than offered it at an
+ * engineer.
+ *
+ * The `recipe_*` keys belong to modules bought already engineered — the Mercenary shop's
+ * rail gun, the community-goal and tech-broker rewards — so no engineering menu lists them
+ * and the menu check alone would refuse a caller reproducing one. The pre-engineered
+ * catalogue names which module each arrives on, which is the same question answered by
+ * purchase instead of by a menu, and it is narrower than a family: `recipe_railgun_longshot`
+ * resolves on the rail gun that ships with it and nowhere else. It matters most for the 21
+ * Mercenary variants, whose own `modifiers` no registry publishes — folding the recipe is
+ * the only way to their numbers.
+ *
+ * @internal
+ */
+function isPreEngineeredWith(item: string, wanted: string): boolean {
+    return getPreEngineeredVariants(item).some(
+        (variant) =>
+            variant.blueprint.toLowerCase() === wanted ||
+            variant.experimental?.toLowerCase() === wanted,
+    );
+}
 
 /**
  * Whether a module's engineering menu offers a blueprint — the check
@@ -140,6 +164,7 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
     const offered = getBlueprintsForModule(item);
     const wanted = fdname.trim().toLowerCase();
     if (offered.some((id) => id.toLowerCase() === wanted)) return true;
+    if (isPreEngineeredWith(item, wanted)) return true;
     const ambiguous = isGenericSpelling(wanted) || !MENU_IDS.has(wanted);
     if (!ambiguous) return false;
     const signature = recipeSignature(fdname.trim());
@@ -163,7 +188,10 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
  */
 export function experimentalAvailableFor(item: string, fdname: string): boolean {
     const wanted = fdname.trim().toLowerCase();
-    return getExperimentalsForModule(item).some((id) => id.toLowerCase() === wanted);
+    return (
+        getExperimentalsForModule(item).some((id) => id.toLowerCase() === wanted) ||
+        isPreEngineeredWith(item, wanted)
+    );
 }
 
 /** Whether any registry lists an engineering menu for this module at all. @internal */

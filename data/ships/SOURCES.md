@@ -1065,9 +1065,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `recipe_guardianmodule_sturdy` and **`recipe_guardianweapon_sturdy`** — with the same
   display name, the same grade-1-only `GuardianModuleResistance` +100%, and the same
   recipe (2×`TG_Abrasion03`, 1×`TG_CausticCrystal`). Both are stored so a journal or saved
-  build referencing either resolves; `blueprintTargets` scopes the weapon key to weapons
-  and the module key to the wider family list. The two are intentional duplicates, not a
-  copy-paste slip — do not dedupe them.
+  build referencing either resolves; every engineering menu lists the module key, and the
+  compatibility gate accepts the weapon key as its other spelling (§Engineering
+  compatibility). The two are intentional duplicates, not a copy-paste slip — do not
+  dedupe them.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
   `expeffect` is the primary source — one table holding each effect's modifiers and its
   recipe together, keyed the way this file is. EDSY is (c) taleden under a
@@ -1339,7 +1340,7 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
 - **Why it is not a family map any more.** It was: `engineering-compatibility.ts` mapped a
   blueprint id to a module *family* and a module symbol to the same, both by string prefix.
   Two hand-maintained answers to one question drift, and this pair did — measured before
-  the change, the map refused recipes the menu offers on 47 modules, and 76 of the corpus's
+  the change, the map refused recipes the menu offers on 52 modules, and 76 of the corpus's
   1902 declared entries for a family mismatch it invented. Both defects were in the
   inference, not in the data: the Hatch Breaker Limpet Controller's symbol is
   `Int_DroneControl_ResourceSiphon`, which the prefix rule for "hatchbreaker" never matched,
@@ -1361,20 +1362,37 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   and `recipe_guardianmodule_sturdy` on a module, and every group lists the module id.
   `Weapon_LightWeight` is excluded by the labels instead — a weapon's Lightweight cuts
   distributor draw, which the generic one does not touch.
-- **What the corpus still cannot engineer, and why that is the honest answer.** 14 of its
+- **What the corpus cannot engineer, and why refusing is the honest answer.** 14 of its
   1902 entries declare a recipe no registry lists for that module: `Weapon_HighCapacity` on
   a Guardian Gauss Cannon (5) and `special_super_penetrator_cooled` on a Guardian Shard
-  Cannon (6), which EDSY's `hexgg` group answers with Rapid Fire and Anti-Guardian Zone
+  Cannon (6), where EDSY's `hexgg` group answers Rapid Fire and Anti-Guardian Zone
   Resistance alone; `Weapon_Efficient` on the Mk II Plasma Shock Autocannon (2), which EDSY
   marks `noblueprints`; and `Sensor_LongRange` on a wake scanner (1), the scanner id
-  collision. They are recorded in the fixture and exempted by name, never by count, so a
-  new disagreement fails a test instead of hiding in an allowance. Tracked at
+  collision. **Thirteen of the fourteen are newly refused** — only the wake scanner was
+  refused before, because a family map that classified all three as weapons could not see
+  that the game offers those weapons almost nothing. Trading 76 wrong refusals for 13 that
+  each cite an upstream denial is the point of reading a per-module menu, but it is a
+  tightening on real community builds, not continuity. They are recorded in the fixture and
+  exempted by name with their counts, never by a bare total, so a new disagreement fails a
+  test instead of hiding in the allowance. Tracked at
   [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36) and
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
+- **The pre-engineered route stays open.** A `recipe_*` key belongs to a module bought
+  already engineered, so no menu lists one and the menu check alone refused all 20 of them
+  everywhere — a capability the family map had. `pre-engineered.jsonc` names which module
+  each arrives on, so the gate accepts a recipe on the module that is sold carrying it and
+  nowhere else: `recipe_railgun_longshot` resolves on the medium rail gun, not on the small
+  one. That is narrower than the family map, which took any weapon recipe on any weapon,
+  and it matters most for the 21 Mercenary variants, whose own `modifiers` no registry
+  publishes — folding the recipe is the only route to their numbers. `MC_Overcharged`,
+  coriolis's multi-cannon Overcharged, is the one id left reachable by nothing: no menu
+  lists it, no module is sold with it, and it is one clip-size leg from the
+  `Weapon_Overcharged` the multi-cannon menus do list. No corpus build carries it.
 - **What it costs.** `ShipLoadout` now carries the options catalogue whether or not the
   consumer opens a menu: measured on the shipped `dist/`, its import graph goes from 624 KB
-  to 681 KB, 74 KB to 79 KB gzipped. The `ships` barrel is unchanged at 711 KB, slightly
-  smaller than before because the family map went with it. That is the price of one answer
+  to 708 KB, 74 KB to 82 KB gzipped — the options catalogue and, for the pre-engineered
+  route below, `pre-engineered`. The `ships` barrel went the other way, 716 KB to 711 KB,
+  the family map having gone with it. That is the price of one answer
   instead of two, and it was paid deliberately.
 
 ## Pre-engineered modules

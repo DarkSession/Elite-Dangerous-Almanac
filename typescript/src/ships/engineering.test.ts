@@ -10,6 +10,7 @@ import {
     isEngineerable,
 } from './loadout-engineering.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
 import { getModuleBySymbol } from './modules.js';
@@ -80,9 +81,10 @@ test('a build that spells a modification generically is still engineered', () =>
     );
 });
 
-test('the gate accepts a spelling the menu omits only where the fixture pins an alias', () => {
-    // Every acceptance the menu itself does not explain has to be one of the aliases the
-    // shared fixture records — so the accommodation cannot quietly widen.
+test('the gate accepts what the menu omits only by a pinned alias or a pre-engineered sale', () => {
+    // Two things beyond the menu may explain an acceptance, and nothing else may: the
+    // generic spelling of a recipe the menu lists under a family's name, and a recipe the
+    // module is sold already carrying. Anything else means the gate has quietly widened.
     const pinned = new Set(
         Object.entries(optionsFixture.corpus.blueprintAliases).flatMap(([generic, specific]) =>
             specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
@@ -92,22 +94,63 @@ test('the gate accepts a spelling the menu omits only where the fixture pins an 
     for (const module of ALL_MODULES) {
         const offered = getBlueprintsForModule(module.symbol);
         if (offered.length === 0) continue;
+        const sold = new Set(
+            getPreEngineeredVariants(module.symbol).map((variant) =>
+                variant.blueprint.toLowerCase(),
+            ),
+        );
         for (const fdname of Object.keys(BLUEPRINTS)) {
             if (offered.includes(fdname)) continue;
             if (!blueprintAvailableFor(module.symbol, fdname)) continue;
+            if (sold.has(fdname.toLowerCase())) continue;
             const matched = offered.filter((id) =>
                 pinned.has(`${fdname.toLowerCase()}|${id.toLowerCase()}`),
             );
             assert.equal(
                 matched.length,
                 1,
-                `${module.symbol} accepts "${fdname}", which no pinned alias explains`,
+                `${module.symbol} accepts "${fdname}", which neither a pinned alias nor a pre-engineered sale explains`,
             );
             seen.add(`${fdname.toLowerCase()}|${matched[0]!.toLowerCase()}`);
         }
     }
     // ...and every alias the fixture pins is one the gate actually honours.
     assert.deepEqual([...seen].sort(), [...pinned].sort());
+});
+
+test('a recipe sold on one module is not thereby available on its neighbours', () => {
+    // The pre-engineered route is per module, not per family: the Mercenary rail gun's
+    // recipe resolves on the rail gun that ships with it and on nothing else.
+    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'recipe_railgun_longshot'));
+    assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'recipe_railgun_longshot'));
+    assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'recipe_railgun_longshot'));
+    // Its experimental travels the same way, and no further. The medium rail gun is sold
+    // in two variants; the Mercenary one pairs High Capacity with a cooled Feedback
+    // Cascade, which the rail gun's own menu does not list.
+    const variant = getPreEngineeredVariants('Hpt_Railgun_Fixed_Medium').find(
+        (candidate) => candidate.experimental,
+    );
+    assert.equal(variant?.experimental, 'special_feedback_cascade_cooled');
+    assert.ok(experimentalAvailableFor('Hpt_Railgun_Fixed_Medium', variant!.experimental!));
+    assert.ok(!experimentalAvailableFor('Hpt_MultiCannon_Fixed_Medium', variant!.experimental!));
+});
+
+test('the gate matches an id the way every other lookup does', () => {
+    // `getBlueprint` has already accepted the id by the time the gate sees it, so the two
+    // must agree on casing and whitespace — including down the alias path, which resolves
+    // the id a second time.
+    for (const id of [
+        'Misc_LightWeight',
+        'misc_lightweight',
+        'MISC_LIGHTWEIGHT',
+        ' Misc_LightWeight ',
+    ]) {
+        assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', id), JSON.stringify(id));
+    }
+    assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'lifesupport_lightweight'));
+    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'RECIPE_RAILGUN_LONGSHOT'));
+    // An id that is only a property of `Object.prototype` is not a blueprint.
+    assert.ok(!blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'toString'));
 });
 
 test('a module no registry gives a menu takes no engineering', () => {

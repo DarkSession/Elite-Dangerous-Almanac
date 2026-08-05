@@ -778,8 +778,9 @@ build.setModuleEnabled("TinyHardpoint6", false);
 ```
 
 > **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
-> currently reaches about 606 KB of minified JavaScript (~69 KB gzipped) because it
-> must resolve any ship/module id plus blueprints and experimental effects. Prefer
+> currently reaches about 708 KB of minified JavaScript (~82 KB gzipped) because it must
+> resolve any ship/module id, plus blueprints and experimental effects, plus the
+> engineering menu it validates against and the pre-engineered catalogue. Prefer
 > `ships/slef`, `ships/jump-range`, the [build-metric
 > modules](#build-metrics-power-shields-armour-and-firepower) (1–3 KB each), and the
 > individual catalogue modules when you only need parsing, maths, or one outfitting
