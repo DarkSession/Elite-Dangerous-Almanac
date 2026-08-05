@@ -121,11 +121,11 @@ in the doc comment of each ported module, and in long form in the domain
   plc**; see the notice below. `data/ships/SOURCES.md` records the group-by-group
   derivation, the two registries' disagreements, and the modules bound by a family rule
   rather than a source row.
-- **Per-hull journal slot names** — the slot keys 11 hulls use that no numbering rule
+- **Per-hull journal slot names** — the slot keys 10 hulls use that no numbering rule
   derives (the Anaconda's `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian
-  Explorer's out-of-order medium hardpoints, the Lynx Highliner's `Passenger01`–`03`),
-  plus 2 more the rules do derive, pinned so the stored table matches its source one for
-  one. Stored as a `name` on the mount itself, from [EDSY](https://github.com/taleden/EDSY)
+  Explorer's out-of-order medium hardpoints), plus 3 more the rules do derive — the
+  Panther Clipper Mk II, the Type-11 Prospector and the Lynx Highliner — pinned so the
+  stored table matches its source one for one. Stored as a `name` on the mount itself, from [EDSY](https://github.com/taleden/EDSY)
   (`eddb.js` `ship[…].slotnames`, taleden, **CC BY-NC 4.0**), the only registry that
   models them — coriolis-data does not carry journal slot names at all. The names
   themselves are **Elite Dangerous game data, property of Frontier Developments plc**;
@@ -159,7 +159,7 @@ in the doc comment of each ported module, and in long form in the domain
   field-by-field joins, the units each source uses, and the handful of figures derived
   from a family rule rather than read from a registry.
 
-- **Ground-truth ship builds (test fixtures, not shipped)** — three real builds used to
+- **Ground-truth ship builds (test fixtures, not shipped)** — five real builds used to
   check the loadout maths against something other than itself.
   `fixtures/ships/slef-the-deep-black.json` is a real
   [EDSY](https://edsy.org/) export (taleden, **CC BY-NC 4.0**).
@@ -167,9 +167,12 @@ in the doc comment of each ported module, and in long form in the domain
   event, obtained from
   [adam-drewery/EliteAssist](https://github.com/adam-drewery/EliteAssist)
   (`src/example_data/loadout.json`, **WTFPL**).
-  `fixtures/ships/slef-inara-type-11.json` is a real [Inara](https://inara.cz/) SLEF
-  export, contributed by the repository owner from their own commander's fleet.
-  All three are Elite Dangerous game output and remain the property of Frontier
+  `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json` and
+  `slef-inara-panther-mkii.json` are real [Inara](https://inara.cz/) SLEF exports,
+  contributed by the repository owner from their own commander's fleet; the latter two
+  are what a restricted mount's rules are checked against, and their headers keep only
+  the producing app and version.
+  All five are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`

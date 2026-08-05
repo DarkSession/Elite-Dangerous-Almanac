@@ -235,7 +235,6 @@ interface TopFigures {
 const FSD_PREFIX = 'int_hyperdrive';
 const BOOSTER_PREFIX = 'int_guardianfsdbooster';
 const FUEL_TANK_PREFIX = 'int_fueltank';
-const PLANETARY_APPROACH_PREFIX = 'int_planetapproachsuite';
 
 /**
  * Core-module symbol prefix → the core slot type it fills. Includes the Guardian
@@ -312,39 +311,69 @@ const LIMPET_CONTROLLER_PREFIXES: readonly string[] = ['int_dronecontrol', 'int_
 const VESSEL_HANGAR_PREFIXES: readonly string[] = ['int_fighterbay'];
 
 /**
+ * Optional-internal groups a **passenger** slot accepts (symbol prefixes) — the Lynx
+ * Highliner's `Passenger01`–`Passenger03`. Both cabin families count, at every class
+ * each offers (economy through luxury for the Mk I cabins, economy and business for
+ * the Mk II ones); the Mk II cabins are a separate symbol family rather than a
+ * `PassengerCabin` variant, which is why there are two prefixes and not one.
+ */
+const PASSENGER_PREFIXES: readonly string[] = ['int_passengercabin', 'int_mkii_passengercabin'];
+
+/**
+ * Optional-internal groups a **planetary-approach-suite** slot accepts (symbol
+ * prefixes) — the ordinary suite and the advanced one, and nothing else. This is the
+ * restriction that binds both ways: the suites in turn declare
+ * `restrictedToSlot: 'planetaryApproachSuite'`, so neither half is a special case.
+ */
+const PLANETARY_APPROACH_PREFIXES: readonly string[] = ['int_planetapproachsuite'];
+
+/**
  * Slot restriction → the module symbol prefixes it accepts.
  *
  * @remarks
- * `planetaryApproachSuite` is absent because it is the one restriction that binds
- * both ways — the suite fits nowhere else either — so `#fitError` handles it as a
- * pair of checks rather than a membership test. What each restriction accepts *in
- * words* is not repeated here: the refusal message is built from the exported
- * {@link SLOT_RESTRICTION_LABELS}, so a label an app shows and the error it may have
- * to explain cannot drift apart.
+ * This is the **mount's** half of a restriction: which modules it takes. The
+ * module's half — which mounts a module goes in, when it goes in only one kind — is
+ * {@link OutfittingModule.restrictedToSlot}, carried by the catalogue rather than
+ * listed here. What each restriction accepts *in words* is not repeated either: the
+ * refusal message is built from the exported {@link SLOT_RESTRICTION_LABELS}, so a
+ * label an app shows and the error it may have to explain cannot drift apart.
  */
-const RESTRICTED_SLOT_PREFIXES: Record<
-    Exclude<SlotRestriction, 'planetaryApproachSuite'>,
-    readonly string[]
-> = {
+const RESTRICTED_SLOT_PREFIXES: Record<SlotRestriction, readonly string[]> = {
     mining: MINING_PREFIXES,
     military: MILITARY_PREFIXES,
     cargo: CARGO_PREFIXES,
     limpetController: LIMPET_CONTROLLER_PREFIXES,
     vesselHangar: VESSEL_HANGAR_PREFIXES,
+    passenger: PASSENGER_PREFIXES,
+    planetaryApproachSuite: PLANETARY_APPROACH_PREFIXES,
 };
 
 /**
  * Why a module symbol fails a slot's restriction, or `null` if it satisfies it (or
- * the slot has none). The planetary approach suite is not checked here — see
- * {@link RESTRICTED_SLOT_PREFIXES}.
+ * the slot has none).
  */
 function restrictionError(slot: BuildSlot, symbol: string): string | null {
     const restriction = slot.restriction;
-    if (!restriction || restriction === 'planetaryApproachSuite') return null;
+    if (!restriction) return null;
     if (RESTRICTED_SLOT_PREFIXES[restriction].some((prefix) => symbol.startsWith(prefix))) {
         return null;
     }
     return `slot only takes ${SLOT_RESTRICTION_LABELS[restriction]}`;
+}
+
+/**
+ * Why a module's own {@link OutfittingModule.restrictedToSlot} refuses `slot`, or
+ * `null` if it is satisfied (or the module requires no particular mount).
+ *
+ * @remarks
+ * The message names the mount the module *does* fit rather than what the mount it was
+ * offered takes, because that is the half a caller got wrong: they have a Mk II Cargo
+ * Rack in hand and need to be told it goes in a cargo mount.
+ */
+function moduleSlotError(slot: BuildSlot, module: OutfittingModule): string | null {
+    const required = module.restrictedToSlot;
+    if (!required || slot.restriction === required) return null;
+    return `module only fits a mount that takes ${SLOT_RESTRICTION_LABELS[required]}`;
 }
 
 /**
@@ -1585,6 +1614,11 @@ export class ShipLoadout {
             });
             return `module is restricted to ${hulls.join(', ')}`;
         }
+        // The other half of the same idea: a module the game sells for one kind of
+        // mount fits no other, restricted or not. Checked before the per-kind rules
+        // because it holds whatever kind of mount is on offer.
+        const wrongMount = moduleSlotError(slot, module);
+        if (wrongMount) return wrongMount;
         const sym = module.symbol.toLowerCase();
         const coreType = coreTypeOf(sym);
 
@@ -1614,14 +1648,6 @@ export class ShipLoadout {
                 // belongs only in its core slot.
                 if (coreType && coreType !== 'fuelTank') {
                     return 'a core module only fits its core slot';
-                }
-                const isPas = sym.startsWith(PLANETARY_APPROACH_PREFIX);
-                if (slot.restriction === 'planetaryApproachSuite') {
-                    if (!isPas) {
-                        return `slot only takes ${SLOT_RESTRICTION_LABELS.planetaryApproachSuite}`;
-                    }
-                } else if (isPas) {
-                    return 'a planetary approach suite only fits its own slot';
                 }
                 const restricted = restrictionError(slot, sym);
                 if (restricted) return restricted;

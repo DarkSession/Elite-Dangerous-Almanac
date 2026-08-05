@@ -53,6 +53,7 @@
  */
 
 import { ALL_MODULES } from './modules-all.js';
+import type { SlotRestriction } from './slots.js';
 
 /**
  * Frontier's outfitting category — which kind of slot a module fits.
@@ -186,6 +187,44 @@ export interface OutfittingModule {
      * match {@link Ship.symbol}.
      */
     readonly restrictedToShips?: readonly string[];
+    /**
+     * The slot restriction a module **requires** — it fits only mounts carrying this
+     * {@link SlotRestriction}, and no unrestricted mount at all.
+     *
+     * @remarks
+     * The mirror image of `BuildSlot.restriction`, and the other half of the same
+     * rule: a mount's restriction says which modules it takes, this says which mounts
+     * a module goes in. Most restricted families bind one way only — a cargo rack fits
+     * a `cargo` mount *and* any unrestricted optional — so this is present on just the
+     * five records the game sells for one kind of mount and nowhere else:
+     *
+     * | Module | Requires |
+     * | --- | --- |
+     * | `Int_PlanetApproachSuite`, `Int_PlanetApproachSuite_Advanced` | `planetaryApproachSuite` |
+     * | `Int_LargeCargoRack_Size7_Class1`, `Int_LargeCargoRack_Size8_class1` (Mk II Cargo Rack) | `cargo` |
+     * | `Int_MultiDroneControl_MiningV2_Size5_Class5` (Mk II Mining Multi-Limpet Controller) | `limpetController` |
+     *
+     * It composes with {@link OutfittingModule.restrictedToShips} rather than
+     * replacing it: the Mk II racks name both the hull that can buy them and the kind
+     * of mount they go in, and a build must satisfy both. Where a module names a hull
+     * and nothing else — the Mk II Vessel Hangars, say — it fits that hull's ordinary
+     * optionals like anything else.
+     *
+     * **The rule is read off the record, not off the symbol.** A module you assemble
+     * yourself — from a journal `Item` string, say — is refused only if you give it
+     * this field, exactly as `restrictedToShips` behaves. Resolve records from a
+     * catalogue and the question does not arise.
+     * @example
+     * ```ts
+     * const rack = getModuleBySymbol('Int_LargeCargoRack_Size8_class1', INTERNAL_MODULES)!;
+     * rack.restrictedToSlot; // -> 'cargo'
+     * ShipLoadout.empty('PantherMkII').setModule('Cargo01', rack); // fits
+     * ShipLoadout.empty('PantherMkII').setModule('Slot01_Size8', rack);
+     * // TypeError: ShipLoadout.setModule: Int_LargeCargoRack_Size8_class1 → Slot01_Size8:
+     * //   module only fits a mount that takes cargo racks and fuel tanks
+     * ```
+     */
+    readonly restrictedToSlot?: SlotRestriction;
     /**
      * The stat fields this record omits because the value is **unknown**, rather than
      * because the module has no such stat.
