@@ -33,7 +33,7 @@
       "cost": 12560
     }
   ],
-  "unpricedNote": "The three Corrosion Resistant Cargo Racks left here are not sold at any station: FDevIDs `outfitting.csv` lists none of them, EDSY hides all three and marks `Size2_Class1` `cost: NaN` / \"never released\" and sizes 5 and 6 `cost: 0 // TODO`, and coriolis-data carries the same 0. They are Community Goal rewards and an unreleased variant, so there is no list price to publish rather than a price this catalogue failed to copy. `Size1_Class2` left this list once EDSY was found to price it at 12 560.",
+  "unpricedNote": "The three Corrosion Resistant Cargo Racks left here are not sold at any station: FDevIDs `outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN` / \"never released\" on `Size2_Class1`, `cost: 0 // TODO: cost // CG reward` on sizes 5 and 6. coriolis-data carries 0 for sizes 5 and 6 and has no record at all for size 2. Sizes 5 and 6 were Community Goal rewards and size 2 never shipped, so there is no list price to publish rather than a price this catalogue failed to copy. `Size1_Class2` left this list once EDSY was found to price it at 12 560.",
   "unpriced": [
     "Int_ShieldGenerator_Size1_Class4",
     "Int_Hyperdrive_Size8_Class1",
