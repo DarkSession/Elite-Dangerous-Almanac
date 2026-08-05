@@ -533,8 +533,9 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     (`_Size1_Class1` 6250, `_Size4_Class1` 94 330), and the only corrosion racks FDevIDs
     `outfitting.csv` lists at all are those two plus `_Size1_Class2` itself — so this is
     the last of the purchasable ones.
-  - **Read that 12 560 as exact to within 10 credits.** EDSY publishes module costs at
-    **10-credit granularity**, which is measured rather than assumed. Two observations,
+  - **Read that 12 560 as a 10-granular figure, not a to-the-credit one.** EDSY publishes
+    module costs at **10-credit granularity**, which is measured rather than assumed. Two
+    observations,
     both scoped to `eddb.module` — EDSY's outfitting table, where module `161` lives —
     so they can be re-run. Totals across the whole of `eddb.js` are deliberately not
     quoted: they move with how the scan treats commented-out records, the ship table's
@@ -552,12 +553,18 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
       (`Hpt_MkIIPlasmaShockAutocannon_Fixed_Large`: EDSY 4 612 670, coriolis 3 051 200),
       so read a lone EDSY figure as possibly stale as well as rounded.
 
-    **Ten, not five, is the honest bound.** Nearest-10 would give ± 5, but EDSY does not
-    always round to nearest: of the pairs that differ by under 10 credits, eleven differ
-    by 6 to 9 and every one of them has EDSY *above* coriolis, so it sometimes rounds up
-    instead (`Int_LifeSupport_Size8_Class5`: coriolis 27 249 391 → EDSY 27 249 400).
-    Every EDSY-sourced price already in this catalogue carries the same granularity, so
-    this record is no less exact than the rest of them.
+    **What that does and does not bound.** It bounds the *rounding* to under 10 credits,
+    and not to ± 5: EDSY does not always round to nearest, since of the pairs differing
+    by under 10 credits, eleven differ by 6 to 9 with EDSY *above* coriolis in every one
+    (`Int_LifeSupport_Size8_Class5`: coriolis 27 249 391 → EDSY 27 249 400). It does
+    **not** bound how far the figure sits from the game's own price. Three pairs where
+    both registries publish a multiple of 10 still differ by 10
+    (`Int_FighterBay_Size{6,7}_Class1`, `Int_PassengerCabin_Size6_Class1`), which no
+    rounding explains — one of the two is simply out by ten or more. So treat 12 560 as
+    the best published figure at 10-credit resolution, not as an accuracy guarantee; only
+    an in-game reading settles the last digits. Every EDSY-sourced price already in this
+    catalogue carries the same granularity, so this record is no less exact than the rest
+    of them.
   - **The remaining three racks have no list price to publish** (same revision).
     `_Size2_Class1`, `_Size5_Class1` and `_Size6_Class1` are **not sold at any station**:
     FDevIDs `outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN`

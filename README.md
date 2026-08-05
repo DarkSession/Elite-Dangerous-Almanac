@@ -1267,6 +1267,10 @@ since:
 - **2026-08-05** — no value changed: a module record whose missing stat means
   _unknown_ rather than _no such stat_ now says so in its own
   [`unknownStats`](#when-a-stat-is-missing) field.
+- **2026-08-05** — one module price filled from EDSY, the 1F Corrosion Resistant
+  Cargo Rack (`Int_CorrosionProofCargoRack_Size1_Class2`, 12 560), which
+  coriolis-data carries as `0`. The other three racks of that family stay unpriced:
+  no station sells them, so no registry quotes one.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

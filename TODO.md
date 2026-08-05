@@ -198,13 +198,15 @@ those builds declare is not possible today.
 
 Was four. `Int_CorrosionProofCargoRack_Size1_Class2` is now priced at **12 560**, from
 EDSY (`eddb.js` module `161`, annotated `// at Palin, Sedesi`); coriolis's `cost: 0` for
-it was coriolis's own gap. Take it as exact to within 10 credits — EDSY publishes module
-costs at 10-credit granularity: every cost in its outfitting table is a multiple of 10
-bar one (`Int_ShieldGenerator_Size1_Class5`), and where coriolis prices the same module
-and the two differ, the difference is overwhelmingly EDSY carrying coriolis's figure
-rounded to 10. Not always to *nearest* 10, which is why the bound is 10 rather than 5.
-See `data/ships/SOURCES.md` for the worked examples. The catalogue's other EDSY-sourced
-prices already carry that granularity. Two corpus builds
+it was coriolis's own gap. Take it as a 10-granular figure rather than a to-the-credit
+one — EDSY publishes module costs at 10-credit granularity: every cost in its outfitting
+table is a multiple of 10 bar one (`Int_ShieldGenerator_Size1_Class5`), and where
+coriolis prices the same module and the two differ, the difference is overwhelmingly
+EDSY carrying coriolis's figure rounded to 10. That bounds the rounding, not the
+accuracy: a few pairs where both registries publish a multiple of 10 still differ by 10,
+so only an in-game reading settles the last digits. See `data/ships/SOURCES.md` for the
+worked examples. The catalogue's other EDSY-sourced prices already carry that
+granularity. Two corpus builds
 (`empire-courier-exploration-2`, `asp-mining`) can therefore be priced again, which
 leaves **no** build in the corpus carrying an unpriced module.
 
