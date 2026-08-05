@@ -4,9 +4,11 @@
 
 **Revision 2026-08-05 (UTC) — 13 hulls now carry the journal's own slot names.**
 `enumerateSlots` numbered a hull's unrestricted optionals `Slot01_SizeN`, `Slot02_SizeN`,
-… with no gaps and its hardpoints `1, 2, 3` within each size class. **Neither rule is
-what the game does on 13 hulls**, and the sequences have no derivable pattern, so a
-per-hull override is the only honest fix. Each of the 13 gains an optional `slotNames`
+… with no gaps and its hardpoints `1, 2, 3` within each size class. **On 11 hulls one of
+those two rules is not what the game does** — the optional rule on nine of them, the
+hardpoint rule on the Type-8 Transporter and Caspian Explorer — and the sequences have no
+derivable pattern, so a per-hull override is the only honest fix. Those 11 and the 2 more
+EDSY names (see the last bullet below) each gain an optional `slotNames`
 alongside `hardpoints`/`optional` — `{ hardpoints?: string[], optional?: string[] }`,
 positionally parallel to the layout array of the same name, naming **every** mount of
 that kind including the restricted ones. An absent array means the rules already produce

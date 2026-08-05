@@ -108,10 +108,11 @@ in the doc comment of each ported module, and in long form in the domain
   costs, which coriolis-data does not carry, plus the attribute-to-journal-Label
   mapping, from [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**,
   whose code is licensed **CC BY-NC 4.0**.
-- **Per-hull journal slot names** — the slot keys 13 hulls use that no numbering rule
+- **Per-hull journal slot names** — the slot keys 11 hulls use that no numbering rule
   derives (the Anaconda's `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian
   Explorer's out-of-order medium hardpoints, the Lynx Highliner's `Passenger01`–`03`),
-  stored per hull as `slotNames`, from [EDSY](https://github.com/taleden/EDSY)
+  plus 2 more the rules do derive, pinned so the stored table matches its source one for
+  one. Stored per hull as `slotNames`, from [EDSY](https://github.com/taleden/EDSY)
   (`eddb.js` `ship[…].slotnames`, taleden, **CC BY-NC 4.0**), the only registry that
   models them — coriolis-data does not carry journal slot names at all. The names
   themselves are **Elite Dangerous game data, property of Frontier Developments plc**;

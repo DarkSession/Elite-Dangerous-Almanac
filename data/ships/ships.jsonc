@@ -25,10 +25,11 @@
  *
  * `slotNames` is the hull's own journal slot keys, present on 13 hulls — the 11 whose
  * names no numbering rule derives, plus 2 the rules do derive, pinned so the table
- * matches its source one for one. The 11 are — the Anaconda's `Slot13_Size2`/`Slot14_Size1`
- * with no 11 or 12, the Type-9 Heavy starting at `Slot00_Size8`, the Type-8
- * Transporter skipping `SmallHardpoint3`, the Caspian Explorer's mediums running
- * 6, 5, 1, 2, 3, 4, the Lynx Highliner's `Passenger01`–`03`. Its `hardpoints` /
+ * matches its source one for one. Among the 11: the Anaconda's
+ * `Slot13_Size2`/`Slot14_Size1` with no 11 or 12, the Type-9 Heavy starting at
+ * `Slot00_Size8`, the Type-8 Transporter skipping `SmallHardpoint3`, the Caspian
+ * Explorer's mediums running 6, 5, 1, 2, 3, 4, and the Lynx Highliner's
+ * `Passenger01`–`03`; SOURCES.md lists all 13, hull by hull. Its `hardpoints` /
  * `optional` arrays are positionally parallel to the sibling layout arrays and name
  * every mount of that kind, restricted ones included; an absent array means the
  * rules already produce the right names. A key's `_SizeN` suffix is Frontier's own
