@@ -242,10 +242,10 @@ test('the slot keys real captures use are mounts the hull actually has', async (
     // These are the game's own keys, so every one of them must name a mount
     // `enumerateSlots` produces — case-insensitively, since a SLEF producer may
     // lower-case them. Note what this does and does not prove: the corpus has captures
-    // for two of the 13 named hulls, and neither exercises an overridden name. The
+    // for four of the 13 named hulls, and none exercises an overridden name. The
     // Caspian one is still load-bearing — its optionals read Slot01…Slot10, Slot13,
     // Slot14, which is what the plain rules give, so it is the evidence for *not*
-    // overriding that hull's optionals. The other 11 hulls' names rest on EDSY alone.
+    // overriding that hull's optionals. The other 9 hulls' names rest on EDSY alone.
     const captures: [string, { Ship: string; Modules: { Slot: string }[] }][] = [
         [
             'the-deep-black',
@@ -259,6 +259,22 @@ test('the slot keys real captures use are mounts the hull actually has', async (
             'inara-type-11',
             (
                 await import('../../../fixtures/ships/slef-inara-type-11.json', {
+                    with: { type: 'json' },
+                })
+            ).default[0]!.data,
+        ],
+        [
+            'inara-lynx-highliner',
+            (
+                await import('../../../fixtures/ships/slef-inara-lynx-highliner.json', {
+                    with: { type: 'json' },
+                })
+            ).default[0]!.data,
+        ],
+        [
+            'inara-panther-mkii',
+            (
+                await import('../../../fixtures/ships/slef-inara-panther-mkii.json', {
                     with: { type: 'json' },
                 })
             ).default[0]!.data,

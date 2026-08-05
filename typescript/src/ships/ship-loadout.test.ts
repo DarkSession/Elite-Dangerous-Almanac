@@ -13,6 +13,8 @@ import expected from '../../../fixtures/ships/jump-range.json' with { type: 'jso
 import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
+import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
+import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
@@ -414,6 +416,114 @@ test("the Lynx Highliner's cabin mounts take cabins of either family and nothing
             'Slot01_Size6',
             mod('Int_MkII_PassengerCabin_Size6_Class2', INTERNAL_MODULES),
         ),
+    );
+});
+
+test('a module reserved to one kind of mount fits no other mount on its own hull', () => {
+    // The other half of a restriction. Both racks and the Mk II mining controller are
+    // already `restrictedToShips`, so only the hull that can buy them gets this far —
+    // and on that hull the game still sells them for one mount alone.
+    const panther = ShipLoadout.empty('PantherMkII');
+    const rack = mod('Int_LargeCargoRack_Size8_class1', INTERNAL_MODULES);
+    assert.equal(rack.restrictedToSlot, 'cargo');
+    assert.doesNotThrow(() => panther.setModule('Cargo01', rack));
+    assert.throws(
+        () => panther.setModule('Slot01_Size8', rack),
+        /module only fits a mount that takes cargo racks and fuel tanks/,
+    );
+    // The size-7 rack is the same shape, and `Cargo02` is the Panther's *first* size-7
+    // mount rather than one of the two largest — so this is not "the biggest mount".
+    assert.doesNotThrow(() =>
+        panther.setModule('Cargo02', mod('Int_LargeCargoRack_Size7_Class1', INTERNAL_MODULES)),
+    );
+
+    const miner = ShipLoadout.empty('LakonMiner');
+    const controller = mod('Int_MultiDroneControl_MiningV2_Size5_Class5', INTERNAL_MODULES);
+    assert.doesNotThrow(() => miner.setModule('LimpetController01', controller));
+    assert.throws(
+        () => miner.setModule('Slot05_Size5', controller),
+        /module only fits a mount that takes limpet controllers/,
+    );
+    // An ordinary controller has no such reservation and fits either mount.
+    const plain = mod('Int_DroneControl_Collection_Size5_Class5', INTERNAL_MODULES);
+    assert.equal(plain.restrictedToSlot, undefined);
+    assert.doesNotThrow(() => miner.setModule('Slot05_Size5', plain));
+    assert.doesNotThrow(() => miner.setModule('LimpetController01', plain));
+
+    // An outfitting UI must not offer what the fit check would refuse.
+    assert.ok(
+        !panther
+            .modulesForSlot('Slot01_Size8', INTERNAL_MODULES)
+            .some((m) => m.symbol === rack.symbol),
+    );
+    assert.ok(
+        panther.modulesForSlot('Cargo01', INTERNAL_MODULES).some((m) => m.symbol === rack.symbol),
+    );
+});
+
+test('the planetary approach suite states its own mount instead of being special-cased', () => {
+    // This rule used to be two hard-coded checks in `#fitError`; it is now the same
+    // `restrictedToSlot` the racks and the controller use, and behaves identically.
+    const suite = mod('Int_PlanetApproachSuite', INTERNAL_MODULES);
+    assert.equal(suite.restrictedToSlot, 'planetaryApproachSuite');
+    assert.equal(
+        mod('Int_PlanetApproachSuite_Advanced', INTERNAL_MODULES).restrictedToSlot,
+        'planetaryApproachSuite',
+    );
+    const conda = ShipLoadout.empty('Anaconda');
+    assert.doesNotThrow(() => conda.setModule('PlanetaryApproachSuite', suite));
+    assert.throws(
+        () => conda.setModule('Slot14_Size1', suite),
+        /module only fits a mount that takes planetary approach suites/,
+    );
+    // The mount's half still holds on its own: it refuses a module that never declared
+    // a reservation, so neither half depends on the other being right.
+    assert.throws(
+        () =>
+            conda.setModule(
+                'PlanetaryApproachSuite',
+                mod('Int_CargoRack_Size1_Class1', INTERNAL_MODULES),
+            ),
+        /slot only takes planetary approach suites/,
+    );
+});
+
+test('every restriction accepts what the game itself fitted in a real capture', () => {
+    // The captures are the evidence these two rules rest on, so they are also the test
+    // that matters most: the game sold each of these builds, and re-fitting one module
+    // by module must not refuse a single mount. A rule drawn too tightly — a cabin
+    // family left out of the passenger prefixes, say — fails here and nowhere else.
+    const captures = [
+        ['lynx-highliner', lynxCapture[0]!.data],
+        ['panther-mkii', pantherCapture[0]!.data],
+        ['type-11', inaraFixture[0]!.data],
+    ] as const;
+    for (const [name, data] of captures) {
+        const build = ShipLoadout.empty(data.Ship);
+        for (const fitted of data.Modules) {
+            const record = getModuleBySymbol(fitted.Item, ALL_MODULES);
+            assert.ok(record, `${name}: no module "${fitted.Item}"`);
+            assert.doesNotThrow(
+                () => build.setModule(fitted.Slot, record),
+                `${name}: ${fitted.Item} → ${fitted.Slot}`,
+            );
+        }
+    }
+    // And the two mounts the captures were acquired for, spelled as Inara writes them.
+    const lynx = lynxCapture[0]!.data.Modules;
+    assert.deepEqual(
+        lynx.filter((m) => m.Slot.startsWith('passenger')).map((m) => m.Item),
+        [
+            'int_mkii_passengercabin_size6_class1',
+            'int_mkii_passengercabin_size5_class1',
+            'int_mkii_passengercabin_size6_class1',
+        ],
+    );
+    assert.deepEqual(
+        pantherCapture[0]!.data.Modules.filter((m) => m.Item.startsWith('int_largecargorack')).map(
+            (m) => m.Slot,
+        ),
+        ['cargo01', 'cargo02'],
     );
 });
 

@@ -1088,6 +1088,31 @@
       "rejects": [
         "Int_PlanetApproachSuite"
       ]
+    },
+    {
+      "ship": "PantherMkII",
+      "slot": "Slot01_Size8",
+      "restriction": null,
+      "accepts": [
+        "Int_CargoRack_Size8_Class1",
+        "Int_FuelTank_Size8_Class3"
+      ],
+      "rejects": [
+        "Int_LargeCargoRack_Size8_class1",
+        "Int_PlanetApproachSuite"
+      ]
+    },
+    {
+      "ship": "LakonMiner",
+      "slot": "Slot05_Size5",
+      "restriction": null,
+      "accepts": [
+        "Int_DroneControl_Collection_Size5_Class5",
+        "Int_MultiDroneControl_Mining_Size3_Class1"
+      ],
+      "rejects": [
+        "Int_MultiDroneControl_MiningV2_Size5_Class5"
+      ]
     }
   ]
 }

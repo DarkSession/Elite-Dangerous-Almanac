@@ -68,6 +68,36 @@
       "name": "Shield Generator",
       "class": 1,
       "rating": "B"
+    },
+    {
+      "symbol": "Int_LargeCargoRack_Size8_class1",
+      "category": "internal",
+      "name": "Mk II Cargo Rack",
+      "class": 8,
+      "rating": "D",
+      "restrictedToShips": [
+        "PantherMkII"
+      ],
+      "restrictedToSlot": "cargo"
+    },
+    {
+      "symbol": "Int_MultiDroneControl_MiningV2_Size5_Class5",
+      "category": "internal",
+      "name": "Mk II Mining Multi-Limpet Controller",
+      "class": 5,
+      "rating": "A",
+      "restrictedToShips": [
+        "LakonMiner"
+      ],
+      "restrictedToSlot": "limpetController"
+    },
+    {
+      "symbol": "Int_PlanetApproachSuite",
+      "category": "internal",
+      "name": "Planetary Approach Suite",
+      "class": 1,
+      "rating": "I",
+      "restrictedToSlot": "planetaryApproachSuite"
     }
   ],
   "shipArmour": {

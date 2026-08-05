@@ -969,6 +969,13 @@ its `LimpetController01` and `FighterBay01` take limpet controllers and vessel h
 the Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks; and
 the Lynx Highliner's `Passenger01`–`Passenger03` take passenger cabins alone.
 
+**A few modules are restricted the other way round** — they fit one kind of mount and
+nothing else, not even an unrestricted slot of the right size. Those carry
+`restrictedToSlot`, the mirror of `slot.restriction`: the two Mk II Cargo Racks and the
+Mk II Mining Multi-Limpet Controller (which also name their hull in `restrictedToShips`,
+and a build must satisfy both), and the planetary approach suites. A plain cargo rack
+has no such field — it fits a `cargo` mount _and_ every unrestricted one.
+
 ```ts
 import {
   ShipLoadout,
@@ -1361,6 +1368,20 @@ recorded inline there beside the field they touch.
   Cargo Rack (`Int_CorrosionProofCargoRack_Size1_Class2`, 12 560), which
   coriolis-data carries as `0`. The other three racks of that family stay unpriced:
   no station sells them, so no registry quotes one.
+- **2026-08-05** — two restricted-mount rules the catalogue could not express are now
+  stored: the Lynx Highliner's `Passenger01`–`Passenger03` take **passenger cabins
+  only** (a seventh `slot.restriction` value), and five module records name the mount
+  they fit _and no other_ in a new `restrictedToSlot` — the two Mk II Cargo Racks
+  (`cargo`), the Mk II Mining Multi-Limpet Controller (`limpetController`) and the two
+  planetary approach suites, whose rule stops being a special case in the fit check.
+  Sourced from two real Inara captures, of a Lynx and a Panther Clipper Mk II.
+  **Behaviour-visible three ways:** `setModule` and `modulesForSlot` now refuse those
+  modules on unrestricted mounts (a Panther's `Slot01_Size8` no longer takes a Mk II
+  rack) and refuse anything but a cabin on the Lynx's three; `OptionalRestriction`
+  gained a member, so an exhaustive `switch` over it needs a case; and the Lynx's
+  cabin mounts read `Passenger Slot 1` rather than `Passenger Slot 1 (Size 6)`, the
+  size staying on `slot.size` as it does for every other restricted mount. The hull
+  also left the group below whose keys no rule derives — 11 hulls became 10.
 - **2026-08-05** — 13 hulls gained the journal's own slot keys, from EDSY, on 11 of
   which the numbering rules were wrong. **This one is behaviour-visible:** the keys
   `enumerateSlots` and `ShipLoadout.slots()` return changed on those 11 hulls (an

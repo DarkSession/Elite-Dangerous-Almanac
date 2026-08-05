@@ -1,6 +1,73 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the engineering-options extension of 2026-08-05 (§Engineering options), which followed the per-hull slot names recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the restricted-mount pass of 2026-08-05 recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+
+**Revision 2026-08-05 (UTC), the restricted-mount pass — a mount reserved to passenger
+cabins is now stored as one, and a module reserved to a mount says so itself.**
+Two of the four rules
+[issue #11](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11) records are
+now modelled. The first adds a seventh `restriction` value, `passenger`, to the Lynx
+Highliner's three cabin mounts; the second adds a module-side field,
+`restrictedToSlot`, naming the mount a module fits *and no other* — the mirror of a
+mount's `restriction`, and the half `restrictedToShips` could not express. Both are
+rules the sources already carried and this catalogue approximated or dropped.
+
+**Sources.** No new registry snapshot: EDSY `eddb.js` and
+[EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) at the commits already
+recorded below (`967834d6…` / `db 20260428` and
+`0db9234b5b9ce8c939ea84133d7ce336eea88e27`). What is new is **two real captures**,
+`fixtures/ships/slef-inara-lynx-highliner.json` and `slef-inara-panther-mkii.json`,
+Inara SLEF exports contributed by the repository owner from their own fleet and scrubbed
+to the producing app and version — the commander link and account ids are gone, the game
+data is not. They are the ground truth the earlier revision said this rule needed.
+
+- **`passenger`, on `Passenger01`–`Passenger03`.** EDSY reserves the Lynx's three
+  cabin mounts to `{ipc:1}`. That alone was not enough to store the rule: `PASSENGER`
+  is the one restricted family absent from EDSY's journal import map, and its `ipc`
+  eligibility check is commented out in `edsy.js`, so nothing confirmed the journal
+  spelling. **The Lynx capture settles it**: its `passenger01`, `passenger02` and
+  `passenger03` each hold an `int_mkii_passengercabin_*`, the keys spelled exactly as
+  the numbering rules and the stored names give them. A second, independent confirmation
+  comes from the catalogue itself — the Lynx's `Slot02_Size5` follows the three cabin
+  mounts, which only comes out right if a cabin mount is a *restricted* one and so
+  consumes no `SlotNN` number. That the game's own numbering needs the restriction to
+  make sense is why the hull now joins the two whose stored names the rules re-derive
+  unaided, and `slots.test.ts` asserts it.
+  **What the mount accepts** is both cabin families at every class each offers —
+  `Int_PassengerCabin_Size{2..6}_Class{1..4}` (economy through luxury) and
+  `Int_MkII_PassengerCabin_Size{2..6}_Class{1,2}` (economy and business). No fuel tank,
+  which every *other* optional mount takes.
+- **`restrictedToSlot`, on five module records.** The 2026-08-04 pass gave the two Mk II
+  Cargo Racks `restrictedToShips: ["PantherMkII"]` and noted the sources said something
+  stronger that the catalogue could not then express: EDSY refuses a reserved `icr`
+  outside a slot named `CARGO*`, and coriolis-data carries `"restriction": "Cargo"` on
+  the module. The same shape holds for the Mk II Mining Multi-Limpet Controller against
+  `LIMPETCONTROLLER*`. Both are now stored, and the **Panther capture** shows the game
+  agreeing: its two Mk II racks sit in `cargo01` and `cargo02` while its *unrestricted*
+  `slot01_size8` and `slot02_size7` carry ordinary racks — a build that could not exist
+  if the reservation were about size. The Type-11 capture already recorded below does
+  the same for the controller, in `limpetcontroller01`.
+  The two **planetary approach suites** take the field too. Nothing about them changed;
+  the rule was previously two hard-coded checks in `ShipLoadout`, and it is now the same
+  data as the other three, which is what the issue asked for.
+  The field is deliberately **narrow**: it says a module fits *only* mounts with that
+  restriction, so it is wrong on anything the game also sells for an ordinary optional.
+  A plain cargo rack fits a `cargo` mount *and* every unrestricted one, and does not
+  carry it. `modules.test.ts` pins the set of five so widening it is a deliberate act.
+
+**What this supersedes.** The slot-names revision immediately below says of the Lynx's
+three mounts that "this catalogue still stores them as ordinary optionals" and that
+"`parseSlotName` classifies `PassengerNN` as the optional it is, with no restriction";
+both were true when written and are now not. Its closing note that "a test asserts the
+rules still produce those two unaided" now covers three hulls, the Lynx included. The
+standing Lynx Highliner entry under §Ships has been corrected in place rather than left
+to contradict this block.
+
+**The two rules still open** are the other half of issue #11 and stay there: no hull
+records that a hardpoint takes only one *mount* (fixed, gimballed or turret), and a
+size-0 utility mount cannot carry a restriction at all. Neither has a source that says
+what to store — for the utility mounts, no hull is even known to need one — so they are
+recorded as visible omissions rather than approximated.
 
 **Revision 2026-08-05 (UTC) — the mounts of 13 hulls now carry the journal's own slot
 names.**
@@ -648,9 +715,9 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   the static catalogue does not expose are omitted rather than invented: `masslock`,
   `heatCapacity`, `pipSpeed`, acceleration, and the min-pitch / boost-energy figures.
   The two size-6 and one size-5 passenger-reserved optionals carry
-  `"restriction": "passenger"` — see the 2026-08-05 revision at the top of this file,
-  which sources them and supersedes the two earlier notes that stored them as plain
-  optionals.
+  `"restriction": "passenger"` — see the 2026-08-05 **restricted-mount pass** at the top
+  of this file, which sources them from a real Lynx capture and supersedes the notes
+  here and in the slot-names revision that stored them as plain optionals.
 
 ## Modules (outfitting)
 
@@ -837,6 +904,14 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     controller and Mining Volley Repeater → `LakonMiner`). **Armour's** hull
     restriction is _not_ repeated here — it lives in the `ship` field
     (`OutfittingModule.ship` / `getModulesForShip`).
+  - **`restrictedToSlot`** is the same idea one axis over: the slot restriction a
+    module requires, so it fits only mounts carrying it. Five records have one — the
+    two planetary approach suites, the two Mk II Cargo Racks and the Mk II Mining
+    Multi-Limpet Controller — and it composes with `restrictedToShips` rather than
+    replacing it: the racks name both the hull that can buy them and the mount they go
+    in. It is wrong on any module the game also sells for an ordinary optional, which
+    is why a plain cargo rack does not carry it. See the restricted-mount pass of
+    2026-08-05 at the top of this file.
   - **Weapon combat stats are now carried too.** The original merge took only the
     mechanical/engineering stats; the enrichment pass described under "Build metrics"
     below added the combat side, so all 159 hardpoint records carry `damage` and

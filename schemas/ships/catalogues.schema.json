@@ -168,6 +168,18 @@
           "uniqueItems": true,
           "items": { "$ref": "#/definitions/nonEmptyString" }
         },
+        "restrictedToSlot": {
+          "description": "The slot restriction this module requires: it fits only mounts carrying it, and no unrestricted mount. The mirror of a mount's `restriction`, for the modules the game sells for one kind of mount alone — the planetary approach suites, the Mk II Cargo Racks and the Mk II Mining Multi-Limpet Controller.",
+          "enum": [
+            "mining",
+            "military",
+            "planetaryApproachSuite",
+            "cargo",
+            "limpetController",
+            "vesselHangar",
+            "passenger"
+          ]
+        },
         "unknownStats": {
           "description": "Stat fields this record omits because the value is unknown, not because the module has none. Each named field must be absent from this record.",
           "type": "array",

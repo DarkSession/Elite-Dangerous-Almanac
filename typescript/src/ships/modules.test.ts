@@ -14,7 +14,7 @@ import { UTILITY_MODULES } from './modules-utility.js';
 import { ALL_MODULES } from './modules-all.js';
 import { combinedRateOfFire } from './weapons.js';
 import { isStatUnknown } from './unknown-stats.js';
-import { SHIPS } from './ships.js';
+import { SHIPS, getShipSlots } from './ships.js';
 import modulesFixture from '../../../fixtures/ships/modules.json' with { type: 'json' };
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
 
@@ -299,6 +299,38 @@ test('ship-restricted modules name real hulls, armour excepted', () => {
     const armour = getModuleBySymbol('Anaconda_Armour_Grade1', CORE_MODULES);
     assert.equal(armour?.restrictedToShips, undefined);
     assert.equal(armour?.ship, 'Anaconda');
+});
+
+test('exactly five modules reserve themselves to one kind of mount', () => {
+    // `restrictedToSlot` says a module fits *only* mounts carrying that restriction —
+    // the narrow half of the rule, and wrong on any module the game sells for an
+    // ordinary optional too (a plain cargo rack fits a `cargo` mount *and* every
+    // unrestricted one). Pinned as a set, so widening it is a deliberate act.
+    assert.deepEqual(
+        ALL_MODULES.filter((m) => m.restrictedToSlot).map((m) => [m.symbol, m.restrictedToSlot]),
+        [
+            ['Int_PlanetApproachSuite', 'planetaryApproachSuite'],
+            ['Int_PlanetApproachSuite_Advanced', 'planetaryApproachSuite'],
+            ['Int_LargeCargoRack_Size7_Class1', 'cargo'],
+            ['Int_LargeCargoRack_Size8_class1', 'cargo'],
+            ['Int_MultiDroneControl_MiningV2_Size5_Class5', 'limpetController'],
+        ],
+    );
+    // Every value names a restriction some hull's mount actually carries, or the module
+    // would fit nowhere at all.
+    const carried = new Set<string>(
+        SHIPS.flatMap((s) => [
+            ...(getShipSlots(s.symbol)?.optional ?? []),
+            ...(getShipSlots(s.symbol)?.hardpoints ?? []),
+        ])
+            .map((mount) => mount.restriction)
+            .filter((restriction) => restriction !== undefined),
+    );
+    for (const m of ALL_MODULES) {
+        if (m.restrictedToSlot) {
+            assert.ok(carried.has(m.restrictedToSlot), `${m.symbol}: no mount takes it`);
+        }
+    }
 });
 
 test('ship armour carries its hull-specific bulkhead stats', () => {
