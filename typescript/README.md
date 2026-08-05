@@ -205,7 +205,11 @@ were previously only documented; and two on **2026-08-05**, one changing no valu
 module whose missing stat is unknown rather than absent because it has none now says so
 in its own `unknownStats` field — the other pricing the 1F Corrosion Resistant Cargo Rack
 from EDSY at 12 560, which coriolis-data carries as `0`. Smaller corrections are not
-listed here — each domain's `SOURCES.md` is the authoritative record.
+listed here — each domain's `SOURCES.md` is the authoritative record
+([ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md),
+[commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md),
+[materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md),
+[astro](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md)).
 
 A value no source publishes is left **absent rather than guessed** — a handful of
 `integrity`, `powerDraw` and `mass` fields are `undefined` for that reason. The

@@ -388,8 +388,8 @@ export interface OutfittingModule {
      * Absent on the handful of records no registry prices: the starter `*_free`
      * variants, the size-8 frame shift drives, and a few internals no outfitting
      * registry carries a figure for — among them the three Corrosion Resistant Cargo
-     * Racks no station sells, which are not free. Treat
-     * `undefined` as "unknown", never as free — see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+     * Racks no station sells, which are not free. Treat `undefined` as "unknown", never
+     * as free — see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
      */
     readonly cost?: number;
 }

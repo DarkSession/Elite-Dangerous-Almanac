@@ -6,8 +6,9 @@ and domains are revised independently after that. The **`SOURCES.md` header in e
 any later revision, and the upstream identifiers behind both. This file states the
 policy; do not restate a domain's dates here or they will drift apart.
 
-Package documentation reports the baseline and any revision since, so consumers can
-judge freshness independently from the npm package version.
+Package documentation reports the baseline and summarises the revisions since, pointing
+at the domain `SOURCES.md` files for the complete record, so consumers can judge
+freshness independently from the npm package version.
 
 ## Initial-snapshot limitations
 

@@ -648,8 +648,8 @@ the three unsold Corrosion Resistant Cargo Racks (two Community Goal rewards and
 never-released variant, so no outfitting screen quotes them) and
 `Int_ShieldGenerator_Size1_Class4` — have no published price, so **`cost` is `undefined`
 rather than `0`**. That distinction is deliberate: `0` is a real price (the starter
-Lightweight Alloy bulkhead is free), so
-treat `undefined` as _unknown_ and decide for yourself whether to skip it or fail:
+Lightweight Alloy bulkhead is free), so treat `undefined` as _unknown_ and decide for
+yourself whether to skip it or fail:
 
 ```ts
 const cost = getModuleBySymbol(symbol)?.cost;

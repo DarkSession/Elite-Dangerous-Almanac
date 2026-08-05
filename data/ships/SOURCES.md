@@ -525,7 +525,7 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     12.25% discount. Carrying `0` made a build with one silently under-report instead of
     omitting the figure, so the field is omitted, matching `_Size2_Class1`, which never
     had one. *Superseded for `_Size1_Class2` by the next bullet.*
-  - **Revision 2026-08-05 (UTC) — `_Size1_Class2` is priced at 12 560, from EDSY.**
+  - **2026-08-05 (UTC) — `_Size1_Class2` is priced at 12 560, from EDSY.**
     Same EDSY snapshot the 2026-08-02 revision above pins (`eddb.js` SHA-256
     `967834d6…`, internal `db 20260428`), re-read for this change; the record is module
     `161`, annotated `// at Palin, Sedesi`. Coriolis's `0` was coriolis's own gap, not a
