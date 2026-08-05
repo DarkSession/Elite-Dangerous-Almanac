@@ -376,19 +376,19 @@
     "engineeringOptionGroup": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "blueprints", "experimentals"],
+      "required": ["name", "blueprints"],
       "properties": {
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "blueprints": {
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": { "$ref": "#/definitions/nonEmptyString" }
-        },
-        "experimentals": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": { "$ref": "#/definitions/nonEmptyString" }
+          "description": "Blueprint id -> the experimental-effect ids that blueprint offers on this group's modules. An experimental effect belongs to the blueprint it was applied under, so the list hangs off the blueprint and not off the group; an empty array is a blueprint with no experimental slot.",
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "$ref": "#/definitions/nonEmptyString" },
+          "additionalProperties": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "#/definitions/nonEmptyString" }
+          }
         }
       }
     },

@@ -1,6 +1,56 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the per-hull slot names added on 2026-08-05, recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the move of experimental-effect availability onto the blueprint on 2026-08-05, recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+
+**Revision 2026-08-05 (UTC) — an experimental effect is stored against the blueprint that
+offers it, not against the module.**
+No value was acquired, added or removed: this revision **re-homes** the experimental lists
+`engineering-options.jsonc` already carried, because they were hanging off the wrong thing.
+The game puts the experimental slot **inside an applied blueprint** — an effect survives a
+re-roll or a grade increase of the same blueprint, and is dropped when the module is
+re-engineered to a different one — so the fact "these effects are available" is a fact
+about a blueprint on a module, not about the module. A group's `blueprints` is therefore no
+longer an array beside a group-level `experimentals` array but a **map from blueprint id to
+that blueprint's own effect list**, and the group-level array is gone.
+
+- **What moved.** All 22 groups, their names, the 428 `modules` entries and the 29
+  `exclusions` are byte-for-byte what they were. Each group's blueprint ids keep their
+  order, and each now carries the list its group used to carry: 107 blueprint entries
+  holding 893 effect ids, expanded from 154. A reconstruction of the old shape from the new
+  one is identical to the old file, so nothing was dropped, duplicated or altered.
+- **Why the expansion is not a second acquisition, and what that costs.** Neither registry
+  this domain uses publishes an experimental list per blueprint.
+  [EDSY](https://github.com/taleden/EDSY) `eddb.js` carries one `expeffects` array per
+  `mtype` — `cpp` (Power Plants) holds `['cppx_db','cppx_mon','cppx_sd','cppx_ts']` for the
+  whole group — plus per-**module** `noexpeffects` exclusions, and no per-blueprint field.
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
+  `modifications/modules.json` is the same shape: `specials` sits *beside* `blueprints`,
+  not inside it, and its `specials_D` / `specials_S` variants on the missile racks
+  distinguish dumbfire from seeker **modules**, not blueprints. So every blueprint of a
+  group here carries that group's list, and the stored answer can be **wider** than the
+  game's, never narrower. The shape is what changed, so that a per-blueprint difference has
+  somewhere to live the moment one is sourced;
+  [issue #33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33) tracks
+  acquiring one and names `recipe_guardianmodule_sturdy` (Anti-Guardian Zone Resistance) as
+  the suspected case. `fixtures/ships/engineering-options.json` records the invariant as
+  `blueprintListsIdenticalWithinGroup`, and a test fails when it stops holding.
+- **What it fixes for a consumer.** `getExperimentalsForBlueprint` used to take a blueprint
+  id alone and answer with the **union across every group offering it** — 13 effects
+  spanning power plants, distributors and hull reinforcements for
+  `recipe_guardianmodule_sturdy`, none of which was an answer about any real module. It now
+  takes the pair and answers for it. `ShipLoadout` gained the rule too: applying a
+  blueprint keeps an experimental effect the module already carried **under that same
+  blueprint** and drops it when the blueprint changes, `setExperimentalEffect` /
+  `clearExperimentalEffect` change only the effect, and an effect the applied blueprint
+  does not offer is refused. Checked against the 181-build corpus in
+  `fixtures/ships/builds/`: of its 1332 declared experimental effects, the 1234 on modules
+  this catalogue groups all name a blueprint the module offers and an effect that blueprint
+  offers — 0 disagreements, so no build changed.
+- **Payload.** Measured in the units the README defines — the shipped `dist/` files in
+  `ships/engineering-options`' import graph — the expansion costs **51.0 KB minified /
+  4.3 KB gzipped, up from 31.4 KB / 3.9 KB**. Nearly all of the growth is the redundancy
+  gzip removes, and the module stays a leaf a consumer opts into; the figure is restated
+  in the module's own docs as §Build & Tree-Shaking requires.
 
 **Revision 2026-08-05 (UTC) — the mounts of 13 hulls now carry the journal's own slot
 names.**
@@ -1027,24 +1077,38 @@ up straight through with no disambiguation at all. Both paths are evidence that
   Read it with `getEngineeringGroup` / `getBlueprintsForModule` /
   `getExperimentalsForModule` / `getExperimentalsForBlueprint` in
   `typescript/src/ships/engineering-options.ts`.
-- **Availability is a property of the module, not of the blueprint.** A Pulse Laser and a
-  Rail Gun both take the Efficient blueprint but offer different experimental effects, so
-  "which experimentals go with blueprint X" has no single answer. Modules are therefore
-  grouped (22 groups covering 428 engineerable modules) and each group lists the
-  `blueprints` and `experimentals` it offers. `getExperimentalsForBlueprint` is provided
-  for convenience and returns the **union** across every group offering that blueprint —
-  deliberately looser than the per-module answer, and a test pins that it is never
-  narrower.
+- **A blueprint is offered by a module; an experimental effect is offered by a blueprint.**
+  Those are two different joins and the file now keeps them apart. Which blueprints a
+  module takes is per module — a Pulse Laser takes Efficient, a Rail Gun does not — so
+  modules are grouped (22 groups covering 428 engineerable modules) and the group names
+  them. Which experimental effects are on offer is per **blueprint**, because that is where
+  the game puts the experimental slot: an effect survives a re-roll or a grade increase of
+  the same blueprint and is dropped when the module is re-engineered to a different one. So
+  a group's `blueprints` is a map from blueprint id to that blueprint's own effect list,
+  and the exact answer is read for a (module, blueprint) pair — `getExperimentalsForBlueprint`.
+  A blueprint id alone is not enough, because a Pulse Laser and a Rail Gun both take
+  `Weapon_Efficient` and offer different effects under it. `getExperimentalsForModule` is
+  the union across a module's blueprints, for a menu drawn before one has been picked. See
+  the 2026-08-05 revision block at the top of this file for what moved and why.
 - **Source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`, whose module-group tables
   carry each group's `blueprints` and `expeffects` lists, plus the per-module exclusions
   described below. Same CC BY-NC 4.0 licence note as the experimental-effect section
   above. Acquired 2026-08-01 UTC.
+- **The per-blueprint lists are an expansion of a per-group source.** Neither EDSY nor
+  coriolis-data distinguishes two blueprints of the same group, so each blueprint here
+  carries its group's list and the answer can be wider than the game's, never narrower.
+  The shape holds a difference the moment one is sourced;
+  [issue #33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33) tracks it
+  and names Anti-Guardian Zone Resistance as the suspected case. The fixture records the
+  invariant as `blueprintListsIdenticalWithinGroup` so the day it stops holding is a test
+  failure rather than a silent drift.
 - **`exclusions` are the exceptions, and they are real.** 29 modules do not take their
   whole group's list: the Multi-cannons cannot take Phasing Sequence, the dumbfire racks
   cannot take Drag Munitions, and the mining tools take no experimental at all. Upstream
   these are an exclusion map (with a wildcard for "none of them"); here the wildcard is
-  **expanded to the explicit list** so a consumer never has to interpret one. A module
-  absent from `exclusions` takes its whole group's list.
+  **expanded to the explicit list** so a consumer never has to interpret one. They are a
+  property of the *module*, subtracted from whichever blueprint's list is being read; a
+  module absent from `exclusions` takes each of its blueprints' whole list.
 - **Kept deliberately:** a mining tool stays in `modules` (it has blueprints) even though
   its experimental list resolves to empty — "engineerable with no experimental slot" and
   "not engineerable at all" are different answers, and `getEngineeringGroup` separates

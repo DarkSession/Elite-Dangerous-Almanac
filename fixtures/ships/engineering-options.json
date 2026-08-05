@@ -1,18 +1,34 @@
 {
-  "description": "Ground truth for data/ships/engineering-options.jsonc — which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins the catalogue shape, `modules` that a module resolves to its group, `exclusions` the modules that are the exception to their group (a Multi-cannon cannot take Phasing Sequence; mining tools take no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it.",
-  "counts": { "groups": 22, "modules": 428, "exclusions": 29 },
+  "description": "Ground truth for data/ships/engineering-options.jsonc — which blueprints each module can take, and which experimental effects each of those blueprints offers. An experimental effect belongs to the blueprint it is applied under, not to the module, so a list of experimentals hangs off a blueprint and is only exact for a (module, blueprint) pair: `groups` pins the catalogue shape down to each blueprint's effect count, `modules` that a module resolves to its group, `exclusions` the modules that are the exception to their group (a Multi-cannon cannot take Phasing Sequence; mining tools take no experimental at all), `blueprintExperimentals` the exact set a named module offers under a named blueprint, `moduleExperimentals` the looser union a module offers across all of its blueprints, and `unknownPairs` the pairs that answer with nothing. `blueprintListsIdenticalWithinGroup` records that no source yet distinguishes two blueprints of one group (https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33), so every blueprint of a group still carries that group's list — set it to false in the same change that stores the first real difference.",
+  "counts": {
+    "groups": 22,
+    "modules": 428,
+    "exclusions": 29,
+    "blueprintEntries": 107,
+    "experimentalEntries": 893
+  },
+  "blueprintListsIdenticalWithinGroup": true,
   "groups": [
     {
       "id": "beamLasers",
       "name": "Beam Lasers",
-      "blueprintCount": 6,
-      "experimentalCount": 9
+      "blueprints": {
+        "Weapon_Efficient": 9,
+        "Weapon_LightWeight": 9,
+        "Weapon_LongRange": 9,
+        "Weapon_Overcharged": 9,
+        "Weapon_ShortRange": 9,
+        "Weapon_Sturdy": 9
+      }
     },
     {
       "id": "frameShiftDrives",
       "name": "Frame Shift Drives",
-      "blueprintCount": 3,
-      "experimentalCount": 5
+      "blueprints": {
+        "FSD_FastBoot": 5,
+        "FSD_LongRange": 5,
+        "FSD_Shielded": 5
+      }
     }
   ],
   "modules": [
@@ -31,14 +47,99 @@
       "excluded": ["special_incendiary_rounds"]
     }
   ],
-  "blueprintUnion": {
-    "blueprint": "FSD_LongRange",
-    "experimentals": [
-      "special_fsd_cooled",
-      "special_fsd_fuelcapacity",
-      "special_fsd_heavy",
-      "special_fsd_lightweight",
-      "special_fsd_toughened"
-    ]
-  }
+  "blueprintExperimentals": [
+    {
+      "symbol": "Int_Hyperdrive_Size5_Class5",
+      "blueprint": "FSD_LongRange",
+      "experimentals": [
+        "special_fsd_cooled",
+        "special_fsd_fuelcapacity",
+        "special_fsd_heavy",
+        "special_fsd_lightweight",
+        "special_fsd_toughened"
+      ]
+    },
+    {
+      "symbol": "Hpt_MultiCannon_Fixed_Medium",
+      "blueprint": "Weapon_Efficient",
+      "experimentals": [
+        "special_auto_loader",
+        "special_corrosive_shell",
+        "special_emissive_munitions",
+        "special_incendiary_rounds",
+        "special_phasing_sequence",
+        "special_smart_rounds",
+        "special_thermalshock",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "symbol": "Hpt_MultiCannon_Fixed_Small",
+      "blueprint": "Weapon_Efficient",
+      "experimentals": [
+        "special_auto_loader",
+        "special_corrosive_shell",
+        "special_emissive_munitions",
+        "special_incendiary_rounds",
+        "special_smart_rounds",
+        "special_thermalshock",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
+      "blueprint": "Weapon_LongRange",
+      "experimentals": []
+    },
+    {
+      "symbol": "Int_Powerplant_Size2_Class1",
+      "blueprint": "recipe_guardianmodule_sturdy",
+      "experimentals": [
+        "special_powerplant_cooled",
+        "special_powerplant_highcharge",
+        "special_powerplant_lightweight",
+        "special_powerplant_toughened"
+      ]
+    }
+  ],
+  "moduleExperimentals": [
+    {
+      "symbol": "Int_Hyperdrive_Size5_Class5",
+      "experimentals": [
+        "special_fsd_cooled",
+        "special_fsd_fuelcapacity",
+        "special_fsd_heavy",
+        "special_fsd_lightweight",
+        "special_fsd_toughened"
+      ]
+    },
+    {
+      "symbol": "Hpt_MultiCannon_Fixed_Small",
+      "experimentals": [
+        "special_auto_loader",
+        "special_corrosive_shell",
+        "special_emissive_munitions",
+        "special_incendiary_rounds",
+        "special_smart_rounds",
+        "special_thermalshock",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    }
+  ],
+  "unknownPairs": [
+    { "symbol": "Int_Hyperdrive_Size5_Class5", "blueprint": "Weapon_Efficient" },
+    { "symbol": "Int_CargoRack_Size2_Class1", "blueprint": "CargoRack_IncreasedCapacity" }
+  ]
 }

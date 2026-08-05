@@ -10,6 +10,7 @@ import {
     experimentalTarget,
     moduleEngineeringTarget,
 } from './engineering-compatibility.js';
+import { getBlueprintsForModule, getExperimentalsForBlueprint } from './engineering-options.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { baseStats, fieldForLabel } from './module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
@@ -85,13 +86,53 @@ export function availableBlueprintsFor(item: string): AvailableBlueprint[] {
     return available;
 }
 
-/** Experimental effects whose complete modifiers can be computed for a module. @internal */
-export function availableExperimentalsFor(item: string): string[] {
+/**
+ * Whether the options catalogue has an opinion on this (module, blueprint) pair.
+ *
+ * It groups 428 of the 1198 modules, so for most pairs it has none — and silence there
+ * must not be read as a refusal. Callers use this to decide whether
+ * {@link blueprintOffersExperimental} is evidence at all.
+ *
+ * @internal
+ */
+export function optionsCoverPairing(item: string, blueprint: string): boolean {
+    const wanted = blueprint.trim().toLowerCase();
+    return getBlueprintsForModule(item).some((id) => id.toLowerCase() === wanted);
+}
+
+/**
+ * Whether a blueprint offers an experimental effect on a module.
+ *
+ * Only meaningful when {@link optionsCoverPairing} is `true` for the same pair.
+ *
+ * @internal
+ */
+export function blueprintOffersExperimental(
+    item: string,
+    blueprint: string,
+    effect: string,
+): boolean {
+    const wanted = effect.trim().toLowerCase();
+    return getExperimentalsForBlueprint(blueprint, item).some((id) => id.toLowerCase() === wanted);
+}
+
+/**
+ * Experimental effects whose complete modifiers can be computed for a module.
+ *
+ * An experimental effect belongs to the blueprint it is applied under, so pass the
+ * blueprint to get the effects that blueprint actually offers. Without one the answer is
+ * the whole family's computable set — the union a menu shows before a blueprint has been
+ * picked. The narrowing only applies where the options catalogue covers the pairing;
+ * elsewhere it has nothing to say and the computable set stands.
+ *
+ * @internal
+ */
+export function availableExperimentalsFor(item: string, blueprint?: string): string[] {
     const target = moduleEngineeringTarget(item);
     const stats = statFor(item);
     if (!stats) return [];
     const base = baseStats(stats);
-    return Object.keys(EXPERIMENTAL_EFFECTS).filter((fdname) => {
+    const computable = Object.keys(EXPERIMENTAL_EFFECTS).filter((fdname) => {
         const effect = EXPERIMENTAL_EFFECTS[fdname];
         return (
             experimentalTarget(fdname) === target &&
@@ -99,4 +140,6 @@ export function availableExperimentalsFor(item: string): string[] {
             missingBaseLabels(base, effect.modifiers).length === 0
         );
     });
+    if (blueprint === undefined || !optionsCoverPairing(item, blueprint)) return computable;
+    return computable.filter((fdname) => blueprintOffersExperimental(item, blueprint, fdname));
 }

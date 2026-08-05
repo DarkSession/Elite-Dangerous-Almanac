@@ -1,451 +1,1264 @@
 /*
- * **Engineering options** — which blueprints and which experimental effects each
- * outfitting module can actually take.
+ * **Engineering options** — which blueprints each outfitting module can take, and which
+ * experimental effects each of those blueprints offers.
  *
  * Sources: EDSY (github.com/taleden/EDSY) eddb.js — its module-group tables carry the
- *          `blueprints` and `expeffects` a group offers, and mark the individual
- *          modules that accept no experimental at all. EDSY is (c) taleden under a
- *          CC BY-NC 4.0 License (http://creativecommons.org/licenses/by-nc/4.0/).
- *          The underlying game logic is Elite Dangerous data, property of Frontier
- *          Developments plc, under Frontier's media-usage terms:
- *          https://forums.frontier.co.uk/threads/510879/
+ *          `blueprints` a group offers and the `expeffects` available on that group, and
+ *          mark the individual modules that accept no experimental at all. EDSY is (c)
+ *          taleden under a CC BY-NC 4.0 License
+ *          (http://creativecommons.org/licenses/by-nc/4.0/). The underlying game logic is
+ *          Elite Dangerous data, property of Frontier Developments plc, under Frontier's
+ *          media-usage terms: https://forums.frontier.co.uk/threads/510879/
  *
- * Availability is a property of the **module**, not of the blueprint: a Pulse Laser and
- * a Rail Gun share the Efficient blueprint but offer different experimental effects. So
- * modules are grouped (`modules` maps a module symbol to a `groups` key) and each group
- * lists the `blueprints` and `experimentals` it offers. Both lists hold ids that join
- * straight to `blueprints.jsonc` and `experimental-effects.jsonc`.
+ * **An experimental effect belongs to the blueprint, not to the module.** The game offers
+ * the experimental slot inside an applied blueprint: an effect survives a re-roll or a
+ * grade increase of the same blueprint and is dropped when the module is switched to a
+ * different one. So a list of experimentals is stored against a blueprint, and is only
+ * ever read for a (module, blueprint) pair — a blueprint id alone does not identify one,
+ * because a Pulse Laser and a Rail Gun both take `Weapon_Efficient` and offer different
+ * effects under it.
+ *
+ * Modules are therefore grouped (`modules` maps a module symbol to a `groups` key) and
+ * each group's `blueprints` maps a blueprint id to the experimental-effect ids that
+ * blueprint offers on this family. Both key spaces join straight to `blueprints.jsonc`
+ * and `experimental-effects.jsonc`.
+ *
+ * **The per-blueprint lists are an expansion, not a second acquisition.** EDSY publishes
+ * one `expeffects` array per module group and coriolis-data one `specials` array beside
+ * (not inside) its `blueprints`; neither distinguishes two blueprints of the same group,
+ * so every blueprint of a group carries that group's list. The shape is what changed, so
+ * that a per-blueprint difference has somewhere to live the moment one is sourced —
+ * Anti-Guardian Zone Resistance is the suspected case. See SOURCES.md and
+ * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33.
  *
  * `exclusions` handles the modules that are the exception to their group: a Multi-cannon
  * cannot take Phasing Sequence, and the mining tools take no experimental at all. Each
- * entry lists the effect ids that module cannot take, already expanded — subtract it
- * from the group's `experimentals` to get the exact set. Modules absent from
- * `exclusions` take their whole group's list.
+ * entry lists the effect ids that module cannot take, already expanded — subtract it from
+ * a blueprint's list to get the exact set for that (module, blueprint) pair. Modules
+ * absent from `exclusions` take each blueprint's whole list.
  *
  * Only modules the game lets you engineer appear at all; everything else is absent.
  *
  * Full provenance: data/ships/SOURCES.md.
- */{
+ */
+{
   "groups": {
     "powerPlants": {
       "name": "Power Plants",
-      "blueprints": [
-        "PowerPlant_Armoured",
-        "PowerPlant_Boosted",
-        "PowerPlant_Stealth",
-        "recipe_guardianmodule_sturdy"
-      ],
-      "experimentals": [
-        "special_powerplant_cooled",
-        "special_powerplant_highcharge",
-        "special_powerplant_lightweight",
-        "special_powerplant_toughened"
-      ]
+      "blueprints": {
+        "PowerPlant_Armoured": [
+          "special_powerplant_cooled",
+          "special_powerplant_highcharge",
+          "special_powerplant_lightweight",
+          "special_powerplant_toughened"
+        ],
+        "PowerPlant_Boosted": [
+          "special_powerplant_cooled",
+          "special_powerplant_highcharge",
+          "special_powerplant_lightweight",
+          "special_powerplant_toughened"
+        ],
+        "PowerPlant_Stealth": [
+          "special_powerplant_cooled",
+          "special_powerplant_highcharge",
+          "special_powerplant_lightweight",
+          "special_powerplant_toughened"
+        ],
+        "recipe_guardianmodule_sturdy": [
+          "special_powerplant_cooled",
+          "special_powerplant_highcharge",
+          "special_powerplant_lightweight",
+          "special_powerplant_toughened"
+        ]
+      }
     },
     "thrusters": {
       "name": "Thrusters",
-      "blueprints": [
-        "Engine_Dirty",
-        "Engine_Reinforced",
-        "Engine_Tuned"
-      ],
-      "experimentals": [
-        "special_engine_cooled",
-        "special_engine_haulage",
-        "special_engine_lightweight",
-        "special_engine_overloaded",
-        "special_engine_toughened"
-      ]
+      "blueprints": {
+        "Engine_Dirty": [
+          "special_engine_cooled",
+          "special_engine_haulage",
+          "special_engine_lightweight",
+          "special_engine_overloaded",
+          "special_engine_toughened"
+        ],
+        "Engine_Reinforced": [
+          "special_engine_cooled",
+          "special_engine_haulage",
+          "special_engine_lightweight",
+          "special_engine_overloaded",
+          "special_engine_toughened"
+        ],
+        "Engine_Tuned": [
+          "special_engine_cooled",
+          "special_engine_haulage",
+          "special_engine_lightweight",
+          "special_engine_overloaded",
+          "special_engine_toughened"
+        ]
+      }
     },
     "frameShiftDrives": {
       "name": "Frame Shift Drives",
-      "blueprints": [
-        "FSD_FastBoot",
-        "FSD_LongRange",
-        "FSD_Shielded"
-      ],
-      "experimentals": [
-        "special_fsd_cooled",
-        "special_fsd_fuelcapacity",
-        "special_fsd_heavy",
-        "special_fsd_lightweight",
-        "special_fsd_toughened"
-      ]
+      "blueprints": {
+        "FSD_FastBoot": [
+          "special_fsd_cooled",
+          "special_fsd_fuelcapacity",
+          "special_fsd_heavy",
+          "special_fsd_lightweight",
+          "special_fsd_toughened"
+        ],
+        "FSD_LongRange": [
+          "special_fsd_cooled",
+          "special_fsd_fuelcapacity",
+          "special_fsd_heavy",
+          "special_fsd_lightweight",
+          "special_fsd_toughened"
+        ],
+        "FSD_Shielded": [
+          "special_fsd_cooled",
+          "special_fsd_fuelcapacity",
+          "special_fsd_heavy",
+          "special_fsd_lightweight",
+          "special_fsd_toughened"
+        ]
+      }
     },
     "powerDistributors": {
       "name": "Power Distributors",
-      "blueprints": [
-        "PowerDistributor_HighCapacity",
-        "PowerDistributor_HighFrequency",
-        "PowerDistributor_PriorityEngines",
-        "PowerDistributor_PrioritySystems",
-        "PowerDistributor_PriorityWeapons",
-        "PowerDistributor_Shielded",
-        "recipe_guardianmodule_sturdy"
-      ],
-      "experimentals": [
-        "special_powerdistributor_capacity",
-        "special_powerdistributor_efficient",
-        "special_powerdistributor_fast",
-        "special_powerdistributor_lightweight",
-        "special_powerdistributor_toughened"
-      ]
+      "blueprints": {
+        "PowerDistributor_HighCapacity": [
+          "special_powerdistributor_capacity",
+          "special_powerdistributor_efficient",
+          "special_powerdistributor_fast",
+          "special_powerdistributor_lightweight",
+          "special_powerdistributor_toughened"
+        ],
+        "PowerDistributor_HighFrequency": [
+          "special_powerdistributor_capacity",
+          "special_powerdistributor_efficient",
+          "special_powerdistributor_fast",
+          "special_powerdistributor_lightweight",
+          "special_powerdistributor_toughened"
+        ],
+        "PowerDistributor_PriorityEngines": [
+          "special_powerdistributor_capacity",
+          "special_powerdistributor_efficient",
+          "special_powerdistributor_fast",
+          "special_powerdistributor_lightweight",
+          "special_powerdistributor_toughened"
+        ],
+        "PowerDistributor_PrioritySystems": [
+          "special_powerdistributor_capacity",
+          "special_powerdistributor_efficient",
+          "special_powerdistributor_fast",
+          "special_powerdistributor_lightweight",
+          "special_powerdistributor_toughened"
+        ],
+        "PowerDistributor_PriorityWeapons": [
+          "special_powerdistributor_capacity",
+          "special_powerdistributor_efficient",
+          "special_powerdistributor_fast",
+          "special_powerdistributor_lightweight",
+          "special_powerdistributor_toughened"
+        ],
+        "PowerDistributor_Shielded": [
+          "special_powerdistributor_capacity",
+          "special_powerdistributor_efficient",
+          "special_powerdistributor_fast",
+          "special_powerdistributor_lightweight",
+          "special_powerdistributor_toughened"
+        ],
+        "recipe_guardianmodule_sturdy": [
+          "special_powerdistributor_capacity",
+          "special_powerdistributor_efficient",
+          "special_powerdistributor_fast",
+          "special_powerdistributor_lightweight",
+          "special_powerdistributor_toughened"
+        ]
+      }
     },
     "frameShiftDrivesSCO": {
       "name": "Frame Shift Drives (SCO)",
-      "blueprints": [
-        "FSD_FastBoot",
-        "FSD_LongRange",
-        "FSD_Shielded"
-      ],
-      "experimentals": [
-        "special_fsd_cooled",
-        "special_fsd_fuelcapacity",
-        "special_fsd_heavy",
-        "special_fsd_lightweight",
-        "special_fsd_toughened"
-      ]
+      "blueprints": {
+        "FSD_FastBoot": [
+          "special_fsd_cooled",
+          "special_fsd_fuelcapacity",
+          "special_fsd_heavy",
+          "special_fsd_lightweight",
+          "special_fsd_toughened"
+        ],
+        "FSD_LongRange": [
+          "special_fsd_cooled",
+          "special_fsd_fuelcapacity",
+          "special_fsd_heavy",
+          "special_fsd_lightweight",
+          "special_fsd_toughened"
+        ],
+        "FSD_Shielded": [
+          "special_fsd_cooled",
+          "special_fsd_fuelcapacity",
+          "special_fsd_heavy",
+          "special_fsd_lightweight",
+          "special_fsd_toughened"
+        ]
+      }
     },
     "shieldGenerators": {
       "name": "Shield Generators",
-      "blueprints": [
-        "ShieldGenerator_Kinetic",
-        "ShieldGenerator_Optimised",
-        "ShieldGenerator_Reinforced",
-        "ShieldGenerator_Thermic"
-      ],
-      "experimentals": [
-        "special_shield_efficient",
-        "special_shield_health",
-        "special_shield_kinetic",
-        "special_shield_lightweight",
-        "special_shield_regenerative",
-        "special_shield_resistive",
-        "special_shield_thermic",
-        "special_shield_toughened"
-      ]
+      "blueprints": {
+        "ShieldGenerator_Kinetic": [
+          "special_shield_efficient",
+          "special_shield_health",
+          "special_shield_kinetic",
+          "special_shield_lightweight",
+          "special_shield_regenerative",
+          "special_shield_resistive",
+          "special_shield_thermic",
+          "special_shield_toughened"
+        ],
+        "ShieldGenerator_Optimised": [
+          "special_shield_efficient",
+          "special_shield_health",
+          "special_shield_kinetic",
+          "special_shield_lightweight",
+          "special_shield_regenerative",
+          "special_shield_resistive",
+          "special_shield_thermic",
+          "special_shield_toughened"
+        ],
+        "ShieldGenerator_Reinforced": [
+          "special_shield_efficient",
+          "special_shield_health",
+          "special_shield_kinetic",
+          "special_shield_lightweight",
+          "special_shield_regenerative",
+          "special_shield_resistive",
+          "special_shield_thermic",
+          "special_shield_toughened"
+        ],
+        "ShieldGenerator_Thermic": [
+          "special_shield_efficient",
+          "special_shield_health",
+          "special_shield_kinetic",
+          "special_shield_lightweight",
+          "special_shield_regenerative",
+          "special_shield_resistive",
+          "special_shield_thermic",
+          "special_shield_toughened"
+        ]
+      }
     },
     "shieldCellBanks": {
       "name": "Shield Cell Banks",
-      "blueprints": [
-        "ShieldCellBank_Rapid",
-        "ShieldCellBank_Specialised"
-      ],
-      "experimentals": [
-        "special_shieldcell_efficient",
-        "special_shieldcell_gradual",
-        "special_shieldcell_lightweight",
-        "special_shieldcell_oversized",
-        "special_shieldcell_toughened"
-      ]
+      "blueprints": {
+        "ShieldCellBank_Rapid": [
+          "special_shieldcell_efficient",
+          "special_shieldcell_gradual",
+          "special_shieldcell_lightweight",
+          "special_shieldcell_oversized",
+          "special_shieldcell_toughened"
+        ],
+        "ShieldCellBank_Specialised": [
+          "special_shieldcell_efficient",
+          "special_shieldcell_gradual",
+          "special_shieldcell_lightweight",
+          "special_shieldcell_oversized",
+          "special_shieldcell_toughened"
+        ]
+      }
     },
     "hullReinforcements": {
       "name": "Hull Reinforcements",
-      "blueprints": [
-        "HullReinforcement_Advanced",
-        "HullReinforcement_Explosive",
-        "HullReinforcement_HeavyDuty",
-        "HullReinforcement_Kinetic",
-        "HullReinforcement_Thermic",
-        "recipe_guardianmodule_sturdy"
-      ],
-      "experimentals": [
-        "special_hullreinforcement_chunky",
-        "special_hullreinforcement_explosive",
-        "special_hullreinforcement_kinetic",
-        "special_hullreinforcement_thermic"
-      ]
+      "blueprints": {
+        "HullReinforcement_Advanced": [
+          "special_hullreinforcement_chunky",
+          "special_hullreinforcement_explosive",
+          "special_hullreinforcement_kinetic",
+          "special_hullreinforcement_thermic"
+        ],
+        "HullReinforcement_Explosive": [
+          "special_hullreinforcement_chunky",
+          "special_hullreinforcement_explosive",
+          "special_hullreinforcement_kinetic",
+          "special_hullreinforcement_thermic"
+        ],
+        "HullReinforcement_HeavyDuty": [
+          "special_hullreinforcement_chunky",
+          "special_hullreinforcement_explosive",
+          "special_hullreinforcement_kinetic",
+          "special_hullreinforcement_thermic"
+        ],
+        "HullReinforcement_Kinetic": [
+          "special_hullreinforcement_chunky",
+          "special_hullreinforcement_explosive",
+          "special_hullreinforcement_kinetic",
+          "special_hullreinforcement_thermic"
+        ],
+        "HullReinforcement_Thermic": [
+          "special_hullreinforcement_chunky",
+          "special_hullreinforcement_explosive",
+          "special_hullreinforcement_kinetic",
+          "special_hullreinforcement_thermic"
+        ],
+        "recipe_guardianmodule_sturdy": [
+          "special_hullreinforcement_chunky",
+          "special_hullreinforcement_explosive",
+          "special_hullreinforcement_kinetic",
+          "special_hullreinforcement_thermic"
+        ]
+      }
     },
     "pulseLasers": {
       "name": "Pulse Lasers",
-      "blueprints": [
-        "Weapon_Efficient",
-        "Weapon_Focused",
-        "Weapon_LightWeight",
-        "Weapon_LongRange",
-        "Weapon_Overcharged",
-        "Weapon_RapidFire",
-        "Weapon_ShortRange",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_concordant_sequence",
-        "special_emissive_munitions",
-        "special_phasing_sequence",
-        "special_scramble_spectrum",
-        "special_thermalshock",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_rateoffire",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_Efficient": [
+          "special_concordant_sequence",
+          "special_emissive_munitions",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Focused": [
+          "special_concordant_sequence",
+          "special_emissive_munitions",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_concordant_sequence",
+          "special_emissive_munitions",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LongRange": [
+          "special_concordant_sequence",
+          "special_emissive_munitions",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Overcharged": [
+          "special_concordant_sequence",
+          "special_emissive_munitions",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_RapidFire": [
+          "special_concordant_sequence",
+          "special_emissive_munitions",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_ShortRange": [
+          "special_concordant_sequence",
+          "special_emissive_munitions",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_concordant_sequence",
+          "special_emissive_munitions",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "burstLasers": {
       "name": "Burst Lasers",
-      "blueprints": [
-        "Weapon_Efficient",
-        "Weapon_Focused",
-        "Weapon_LightWeight",
-        "Weapon_LongRange",
-        "Weapon_Overcharged",
-        "Weapon_RapidFire",
-        "Weapon_ShortRange",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_concordant_sequence",
-        "special_distortion_field",
-        "special_phasing_sequence",
-        "special_scramble_spectrum",
-        "special_thermalshock",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_rateoffire",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_Efficient": [
+          "special_concordant_sequence",
+          "special_distortion_field",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Focused": [
+          "special_concordant_sequence",
+          "special_distortion_field",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_concordant_sequence",
+          "special_distortion_field",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LongRange": [
+          "special_concordant_sequence",
+          "special_distortion_field",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Overcharged": [
+          "special_concordant_sequence",
+          "special_distortion_field",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_RapidFire": [
+          "special_concordant_sequence",
+          "special_distortion_field",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_ShortRange": [
+          "special_concordant_sequence",
+          "special_distortion_field",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_concordant_sequence",
+          "special_distortion_field",
+          "special_phasing_sequence",
+          "special_scramble_spectrum",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "beamLasers": {
       "name": "Beam Lasers",
-      "blueprints": [
-        "Weapon_Efficient",
-        "Weapon_LightWeight",
-        "Weapon_LongRange",
-        "Weapon_Overcharged",
-        "Weapon_ShortRange",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_concordant_sequence",
-        "special_regeneration_sequence",
-        "special_thermal_conduit",
-        "special_thermal_vent",
-        "special_thermalshock",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_Efficient": [
+          "special_concordant_sequence",
+          "special_regeneration_sequence",
+          "special_thermal_conduit",
+          "special_thermal_vent",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_concordant_sequence",
+          "special_regeneration_sequence",
+          "special_thermal_conduit",
+          "special_thermal_vent",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LongRange": [
+          "special_concordant_sequence",
+          "special_regeneration_sequence",
+          "special_thermal_conduit",
+          "special_thermal_vent",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Overcharged": [
+          "special_concordant_sequence",
+          "special_regeneration_sequence",
+          "special_thermal_conduit",
+          "special_thermal_vent",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ],
+        "Weapon_ShortRange": [
+          "special_concordant_sequence",
+          "special_regeneration_sequence",
+          "special_thermal_conduit",
+          "special_thermal_vent",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_concordant_sequence",
+          "special_regeneration_sequence",
+          "special_thermal_conduit",
+          "special_thermal_vent",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "cannons": {
       "name": "Cannons",
-      "blueprints": [
-        "Weapon_Efficient",
-        "Weapon_HighCapacity",
-        "Weapon_LightWeight",
-        "Weapon_LongRange",
-        "Weapon_Overcharged",
-        "Weapon_RapidFire",
-        "Weapon_ShortRange",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_auto_loader",
-        "special_dispersal_field",
-        "special_force_shell",
-        "special_high_yield_shell",
-        "special_smart_rounds",
-        "special_thermal_cascade",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_rateoffire",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_Efficient": [
+          "special_auto_loader",
+          "special_dispersal_field",
+          "special_force_shell",
+          "special_high_yield_shell",
+          "special_smart_rounds",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_HighCapacity": [
+          "special_auto_loader",
+          "special_dispersal_field",
+          "special_force_shell",
+          "special_high_yield_shell",
+          "special_smart_rounds",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_auto_loader",
+          "special_dispersal_field",
+          "special_force_shell",
+          "special_high_yield_shell",
+          "special_smart_rounds",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LongRange": [
+          "special_auto_loader",
+          "special_dispersal_field",
+          "special_force_shell",
+          "special_high_yield_shell",
+          "special_smart_rounds",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Overcharged": [
+          "special_auto_loader",
+          "special_dispersal_field",
+          "special_force_shell",
+          "special_high_yield_shell",
+          "special_smart_rounds",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_RapidFire": [
+          "special_auto_loader",
+          "special_dispersal_field",
+          "special_force_shell",
+          "special_high_yield_shell",
+          "special_smart_rounds",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_ShortRange": [
+          "special_auto_loader",
+          "special_dispersal_field",
+          "special_force_shell",
+          "special_high_yield_shell",
+          "special_smart_rounds",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_auto_loader",
+          "special_dispersal_field",
+          "special_force_shell",
+          "special_high_yield_shell",
+          "special_smart_rounds",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "fragmentCannons": {
       "name": "Fragment Cannons",
-      "blueprints": [
-        "Weapon_DoubleShot",
-        "Weapon_Efficient",
-        "Weapon_HighCapacity",
-        "Weapon_LightWeight",
-        "Weapon_Overcharged",
-        "Weapon_RapidFire",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_blinding_shell",
-        "special_corrosive_shell",
-        "special_drag_munitions",
-        "special_incendiary_rounds",
-        "special_screening_shell",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_rateoffire",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_DoubleShot": [
+          "special_blinding_shell",
+          "special_corrosive_shell",
+          "special_drag_munitions",
+          "special_incendiary_rounds",
+          "special_screening_shell",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Efficient": [
+          "special_blinding_shell",
+          "special_corrosive_shell",
+          "special_drag_munitions",
+          "special_incendiary_rounds",
+          "special_screening_shell",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_HighCapacity": [
+          "special_blinding_shell",
+          "special_corrosive_shell",
+          "special_drag_munitions",
+          "special_incendiary_rounds",
+          "special_screening_shell",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_blinding_shell",
+          "special_corrosive_shell",
+          "special_drag_munitions",
+          "special_incendiary_rounds",
+          "special_screening_shell",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Overcharged": [
+          "special_blinding_shell",
+          "special_corrosive_shell",
+          "special_drag_munitions",
+          "special_incendiary_rounds",
+          "special_screening_shell",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_RapidFire": [
+          "special_blinding_shell",
+          "special_corrosive_shell",
+          "special_drag_munitions",
+          "special_incendiary_rounds",
+          "special_screening_shell",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_blinding_shell",
+          "special_corrosive_shell",
+          "special_drag_munitions",
+          "special_incendiary_rounds",
+          "special_screening_shell",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "multiCannons": {
       "name": "Multi-Cannons",
-      "blueprints": [
-        "Weapon_Efficient",
-        "Weapon_HighCapacity",
-        "Weapon_LightWeight",
-        "Weapon_LongRange",
-        "Weapon_Overcharged",
-        "Weapon_RapidFire",
-        "Weapon_ShortRange",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_auto_loader",
-        "special_corrosive_shell",
-        "special_emissive_munitions",
-        "special_incendiary_rounds",
-        "special_phasing_sequence",
-        "special_smart_rounds",
-        "special_thermalshock",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_rateoffire",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_Efficient": [
+          "special_auto_loader",
+          "special_corrosive_shell",
+          "special_emissive_munitions",
+          "special_incendiary_rounds",
+          "special_phasing_sequence",
+          "special_smart_rounds",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_HighCapacity": [
+          "special_auto_loader",
+          "special_corrosive_shell",
+          "special_emissive_munitions",
+          "special_incendiary_rounds",
+          "special_phasing_sequence",
+          "special_smart_rounds",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_auto_loader",
+          "special_corrosive_shell",
+          "special_emissive_munitions",
+          "special_incendiary_rounds",
+          "special_phasing_sequence",
+          "special_smart_rounds",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LongRange": [
+          "special_auto_loader",
+          "special_corrosive_shell",
+          "special_emissive_munitions",
+          "special_incendiary_rounds",
+          "special_phasing_sequence",
+          "special_smart_rounds",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Overcharged": [
+          "special_auto_loader",
+          "special_corrosive_shell",
+          "special_emissive_munitions",
+          "special_incendiary_rounds",
+          "special_phasing_sequence",
+          "special_smart_rounds",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_RapidFire": [
+          "special_auto_loader",
+          "special_corrosive_shell",
+          "special_emissive_munitions",
+          "special_incendiary_rounds",
+          "special_phasing_sequence",
+          "special_smart_rounds",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_ShortRange": [
+          "special_auto_loader",
+          "special_corrosive_shell",
+          "special_emissive_munitions",
+          "special_incendiary_rounds",
+          "special_phasing_sequence",
+          "special_smart_rounds",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_auto_loader",
+          "special_corrosive_shell",
+          "special_emissive_munitions",
+          "special_incendiary_rounds",
+          "special_phasing_sequence",
+          "special_smart_rounds",
+          "special_thermalshock",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "plasmaAccelerators": {
       "name": "Plasma Accelerators",
-      "blueprints": [
-        "Weapon_Efficient",
-        "Weapon_Focused",
-        "Weapon_LightWeight",
-        "Weapon_LongRange",
-        "Weapon_Overcharged",
-        "Weapon_RapidFire",
-        "Weapon_ShortRange",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_blinding_shell",
-        "special_dispersal_field",
-        "special_lock_breaker",
-        "special_phasing_sequence",
-        "special_plasma_slug",
-        "special_thermal_conduit",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_rateoffire",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_Efficient": [
+          "special_blinding_shell",
+          "special_dispersal_field",
+          "special_lock_breaker",
+          "special_phasing_sequence",
+          "special_plasma_slug",
+          "special_thermal_conduit",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Focused": [
+          "special_blinding_shell",
+          "special_dispersal_field",
+          "special_lock_breaker",
+          "special_phasing_sequence",
+          "special_plasma_slug",
+          "special_thermal_conduit",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_blinding_shell",
+          "special_dispersal_field",
+          "special_lock_breaker",
+          "special_phasing_sequence",
+          "special_plasma_slug",
+          "special_thermal_conduit",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LongRange": [
+          "special_blinding_shell",
+          "special_dispersal_field",
+          "special_lock_breaker",
+          "special_phasing_sequence",
+          "special_plasma_slug",
+          "special_thermal_conduit",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Overcharged": [
+          "special_blinding_shell",
+          "special_dispersal_field",
+          "special_lock_breaker",
+          "special_phasing_sequence",
+          "special_plasma_slug",
+          "special_thermal_conduit",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_RapidFire": [
+          "special_blinding_shell",
+          "special_dispersal_field",
+          "special_lock_breaker",
+          "special_phasing_sequence",
+          "special_plasma_slug",
+          "special_thermal_conduit",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_ShortRange": [
+          "special_blinding_shell",
+          "special_dispersal_field",
+          "special_lock_breaker",
+          "special_phasing_sequence",
+          "special_plasma_slug",
+          "special_thermal_conduit",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_blinding_shell",
+          "special_dispersal_field",
+          "special_lock_breaker",
+          "special_phasing_sequence",
+          "special_plasma_slug",
+          "special_thermal_conduit",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "railGuns": {
       "name": "Rail Guns",
-      "blueprints": [
-        "Weapon_HighCapacity",
-        "Weapon_LightWeight",
-        "Weapon_LongRange",
-        "Weapon_ShortRange",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_feedback_cascade_cooled",
-        "special_plasma_slug_cooled",
-        "special_super_penetrator",
-        "special_super_penetrator_cooled",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_rateoffire",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_HighCapacity": [
+          "special_feedback_cascade_cooled",
+          "special_plasma_slug_cooled",
+          "special_super_penetrator",
+          "special_super_penetrator_cooled",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_feedback_cascade_cooled",
+          "special_plasma_slug_cooled",
+          "special_super_penetrator",
+          "special_super_penetrator_cooled",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LongRange": [
+          "special_feedback_cascade_cooled",
+          "special_plasma_slug_cooled",
+          "special_super_penetrator",
+          "special_super_penetrator_cooled",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_ShortRange": [
+          "special_feedback_cascade_cooled",
+          "special_plasma_slug_cooled",
+          "special_super_penetrator",
+          "special_super_penetrator_cooled",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_feedback_cascade_cooled",
+          "special_plasma_slug_cooled",
+          "special_super_penetrator",
+          "special_super_penetrator_cooled",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "missiles": {
       "name": "Missiles",
-      "blueprints": [
-        "Weapon_HighCapacity",
-        "Weapon_LightWeight",
-        "Weapon_RapidFire",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_drag_munitions",
-        "special_emissive_munitions",
-        "special_fsd_interrupt",
-        "special_overload_munitions",
-        "special_penetrator_munitions",
-        "special_thermal_cascade",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_rateoffire",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_HighCapacity": [
+          "special_drag_munitions",
+          "special_emissive_munitions",
+          "special_fsd_interrupt",
+          "special_overload_munitions",
+          "special_penetrator_munitions",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_drag_munitions",
+          "special_emissive_munitions",
+          "special_fsd_interrupt",
+          "special_overload_munitions",
+          "special_penetrator_munitions",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_RapidFire": [
+          "special_drag_munitions",
+          "special_emissive_munitions",
+          "special_fsd_interrupt",
+          "special_overload_munitions",
+          "special_penetrator_munitions",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_drag_munitions",
+          "special_emissive_munitions",
+          "special_fsd_interrupt",
+          "special_overload_munitions",
+          "special_penetrator_munitions",
+          "special_thermal_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_rateoffire",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "mines": {
       "name": "Mines",
-      "blueprints": [
-        "Weapon_HighCapacity",
-        "Weapon_LightWeight",
-        "Weapon_RapidFire",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_choke_canister",
-        "special_emissive_munitions",
-        "special_overload_munitions",
-        "special_radiant_canister",
-        "special_reverberating_cascade",
-        "special_shiftlock_canister",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_HighCapacity": [
+          "special_choke_canister",
+          "special_emissive_munitions",
+          "special_overload_munitions",
+          "special_radiant_canister",
+          "special_reverberating_cascade",
+          "special_shiftlock_canister",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ],
+        "Weapon_LightWeight": [
+          "special_choke_canister",
+          "special_emissive_munitions",
+          "special_overload_munitions",
+          "special_radiant_canister",
+          "special_reverberating_cascade",
+          "special_shiftlock_canister",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ],
+        "Weapon_RapidFire": [
+          "special_choke_canister",
+          "special_emissive_munitions",
+          "special_overload_munitions",
+          "special_radiant_canister",
+          "special_reverberating_cascade",
+          "special_shiftlock_canister",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_choke_canister",
+          "special_emissive_munitions",
+          "special_overload_munitions",
+          "special_radiant_canister",
+          "special_reverberating_cascade",
+          "special_shiftlock_canister",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "torpedoes": {
       "name": "Torpedoes",
-      "blueprints": [
-        "Weapon_LightWeight",
-        "Weapon_Sturdy"
-      ],
-      "experimentals": [
-        "special_deep_cut_payload",
-        "special_mass_lock",
-        "special_reverberating_cascade",
-        "special_weapon_damage",
-        "special_weapon_efficient",
-        "special_weapon_lightweight",
-        "special_weapon_toughened"
-      ]
+      "blueprints": {
+        "Weapon_LightWeight": [
+          "special_deep_cut_payload",
+          "special_mass_lock",
+          "special_reverberating_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ],
+        "Weapon_Sturdy": [
+          "special_deep_cut_payload",
+          "special_mass_lock",
+          "special_reverberating_cascade",
+          "special_weapon_damage",
+          "special_weapon_efficient",
+          "special_weapon_lightweight",
+          "special_weapon_toughened"
+        ]
+      }
     },
     "miningToolsLasers": {
       "name": "Mining Tools - Lasers",
-      "blueprints": [
-        "Weapon_LongRange"
-      ],
-      "experimentals": [
-        "special_incendiary_rounds"
-      ]
+      "blueprints": {
+        "Weapon_LongRange": [
+          "special_incendiary_rounds"
+        ]
+      }
     },
     "antiXenoMultiCannons": {
       "name": "Exp - Anti-Xeno Multi-Cannons",
-      "blueprints": [
-        "Weapon_Overcharged"
-      ],
-      "experimentals": [
-        "special_auto_loader"
-      ]
+      "blueprints": {
+        "Weapon_Overcharged": [
+          "special_auto_loader"
+        ]
+      }
     },
     "shieldBoosters": {
       "name": "Shield Boosters",
-      "blueprints": [
-        "ShieldBooster_Explosive",
-        "ShieldBooster_HeavyDuty",
-        "ShieldBooster_Kinetic",
-        "ShieldBooster_Resistive",
-        "ShieldBooster_Thermic"
-      ],
-      "experimentals": [
-        "special_shieldbooster_chunky",
-        "special_shieldbooster_efficient",
-        "special_shieldbooster_explosive",
-        "special_shieldbooster_kinetic",
-        "special_shieldbooster_thermic",
-        "special_shieldbooster_toughened"
-      ]
+      "blueprints": {
+        "ShieldBooster_Explosive": [
+          "special_shieldbooster_chunky",
+          "special_shieldbooster_efficient",
+          "special_shieldbooster_explosive",
+          "special_shieldbooster_kinetic",
+          "special_shieldbooster_thermic",
+          "special_shieldbooster_toughened"
+        ],
+        "ShieldBooster_HeavyDuty": [
+          "special_shieldbooster_chunky",
+          "special_shieldbooster_efficient",
+          "special_shieldbooster_explosive",
+          "special_shieldbooster_kinetic",
+          "special_shieldbooster_thermic",
+          "special_shieldbooster_toughened"
+        ],
+        "ShieldBooster_Kinetic": [
+          "special_shieldbooster_chunky",
+          "special_shieldbooster_efficient",
+          "special_shieldbooster_explosive",
+          "special_shieldbooster_kinetic",
+          "special_shieldbooster_thermic",
+          "special_shieldbooster_toughened"
+        ],
+        "ShieldBooster_Resistive": [
+          "special_shieldbooster_chunky",
+          "special_shieldbooster_efficient",
+          "special_shieldbooster_explosive",
+          "special_shieldbooster_kinetic",
+          "special_shieldbooster_thermic",
+          "special_shieldbooster_toughened"
+        ],
+        "ShieldBooster_Thermic": [
+          "special_shieldbooster_chunky",
+          "special_shieldbooster_efficient",
+          "special_shieldbooster_explosive",
+          "special_shieldbooster_kinetic",
+          "special_shieldbooster_thermic",
+          "special_shieldbooster_toughened"
+        ]
+      }
     }
   },
   "modules": {

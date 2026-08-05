@@ -88,7 +88,13 @@ import {
 } from './engineering-compatibility.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
-import { baseStats, missingBaseLabels, statFor } from './loadout-engineering.js';
+import {
+    baseStats,
+    blueprintOffersExperimental,
+    missingBaseLabels,
+    optionsCoverPairing,
+    statFor,
+} from './loadout-engineering.js';
 import {
     armourInputFor,
     powerAvailable,
@@ -129,8 +135,20 @@ export interface ApplyBlueprintOptions {
     readonly grade: number;
     /** The engineering quality roll, `0`–`1`. Defaults to `1` (best roll). */
     readonly quality?: number;
-    /** The experimental (special) effect's Frontier `fdname`, if any. */
-    readonly experimental?: string;
+    /**
+     * The experimental (special) effect's Frontier `fdname`.
+     *
+     * @remarks
+     * An experimental effect belongs to the **blueprint** it was applied under, so
+     * leaving this out is not the same as clearing it:
+     *
+     * - **omitted**, re-applying the blueprint already on the module (a re-roll or a
+     *   grade change) — the effect already there is **kept**, as the game keeps it;
+     * - **omitted**, applying a *different* blueprint — the effect is **dropped**,
+     *   as the game drops it;
+     * - **`null`** — the effect is removed whichever blueprint is applied.
+     */
+    readonly experimental?: string | null;
 }
 
 /** Options for the defence figures a build reports. */
@@ -465,6 +483,14 @@ function firstKeyMatchingCase(keys: Iterable<string>, slotKey: string): string |
         if (key.toLowerCase() === wanted) return key;
     }
     return null;
+}
+
+/**
+ * Whether two blueprint names are the same recipe, ignoring case and padding — the test
+ * that decides whether an applied experimental effect is being kept or replaced.
+ */
+function sameBlueprint(applied: string | undefined, incoming: string): boolean {
+    return applied !== undefined && applied.trim().toLowerCase() === incoming.trim().toLowerCase();
 }
 
 /** Snapshot caller-supplied stats so later caller mutation cannot alter the build. */
@@ -904,9 +930,18 @@ export class ShipLoadout {
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
      * @throws {TypeError} If the fitted module has no stats to engineer, or the
-     * blueprint/experimental targets another module family, or the catalogue does
-     * not carry every base stat the recipe modifies. Incomplete engineering is
-     * rejected rather than stored as a partial journal modifier block.
+     * blueprint/experimental targets another module family, or this blueprint does not
+     * offer that experimental effect on this module, or the catalogue does not carry
+     * every base stat the recipe modifies. Incomplete engineering is rejected rather
+     * than stored as a partial journal modifier block.
+     *
+     * @remarks
+     * **An experimental effect belongs to the blueprint.** Re-applying the blueprint
+     * already on the module — a re-roll, or a step up in grade — keeps the effect that
+     * is on it, exactly as the game does; applying a *different* blueprint drops it.
+     * Pass `experimental: null` to drop it deliberately, or
+     * {@link ShipLoadout.setExperimentalEffect} to change only the effect.
+     *
      * @example
      * ```ts
      * build.setModule('FrameShiftDrive', fsd)
@@ -915,6 +950,12 @@ export class ShipLoadout {
      *          experimental: 'special_fsd_heavy',
      *      });
      * build.maxJumpRange(); // now reflects the engineered optimal mass
+     *
+     * // Same blueprint, better roll — Mass Manager is still on it.
+     * build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5, quality: 1 });
+     *
+     * // Different blueprint — the game drops the effect, and so does this.
+     * build.applyBlueprint('FrameShiftDrive', 'FSD_FastBoot', { grade: 3 });
      * ```
      */
     applyBlueprint(slotKey: string, blueprintName: string, options: ApplyBlueprintOptions): this {
@@ -923,46 +964,170 @@ export class ShipLoadout {
         if (!module || key === null) {
             throw new RangeError(`ShipLoadout.applyBlueprint: slot "${slotKey}" is empty`);
         }
-        const stats = this.#statsFor(module);
-        if (!stats) {
-            throw new TypeError(`ShipLoadout.applyBlueprint: no stats for module "${module.Item}"`);
-        }
-        const features = getBlueprintGrade(blueprintName, options.grade);
-        if (!features) {
-            throw new RangeError(
-                `ShipLoadout.applyBlueprint: no blueprint "${blueprintName}" grade ${options.grade}`,
-            );
-        }
-        let experimental;
-        if (options.experimental !== undefined) {
-            experimental = getExperimentalEffect(options.experimental);
-            if (!experimental) {
-                throw new RangeError(
-                    `ShipLoadout.applyBlueprint: unknown experimental effect "${options.experimental}"`,
-                );
-            }
-        }
         const quality = options.quality ?? 1;
         if (!Number.isFinite(quality) || quality < 0 || quality > 1) {
             throw new RangeError(
                 `ShipLoadout.applyBlueprint: quality must be a finite number in [0, 1]`,
             );
         }
+        // An experimental effect belongs to the blueprint it was applied under: it
+        // survives a re-roll or a grade change of the same blueprint and goes with the
+        // old one when the module is re-engineered to a different blueprint.
+        const carried = sameBlueprint(module.Engineering?.BlueprintName, blueprintName)
+            ? module.Engineering?.ExperimentalEffect
+            : undefined;
+        const effect =
+            options.experimental === null ? undefined : (options.experimental ?? carried);
+        this.#engineer(
+            'applyBlueprint',
+            key,
+            module,
+            blueprintName,
+            options.grade,
+            quality,
+            effect,
+        );
+        return this;
+    }
+
+    /**
+     * Apply an experimental (special) effect to a module that is already engineered,
+     * leaving its blueprint, grade and quality alone.
+     *
+     * @param slotKey - The slot whose module to change, matched case-insensitively
+     * (journal spelling).
+     * @param effect - The experimental effect's Frontier `fdname`, e.g.
+     * `"special_fsd_heavy"`. Replaces any effect already applied — a module carries at
+     * most one.
+     * @returns `this`, for chaining.
+     * @throws {RangeError} If the slot is empty, the effect is unknown, or the module
+     * carries no blueprint. **An experimental effect is applied to a blueprint**, so
+     * there is nowhere to put one on a stock module: engineer it first with
+     * {@link ShipLoadout.applyBlueprint}.
+     * @throws {TypeError} If the effect targets another module family, or the blueprint
+     * on the module does not offer it, or the resulting modifiers cannot be computed.
+     *
+     * @example
+     * ```ts
+     * build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
+     * build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy');
+     * ```
+     */
+    setExperimentalEffect(slotKey: string, effect: string): this {
+        const key = this.#fittedKey(slotKey);
+        const module = key === null ? undefined : this.#modules.get(key);
+        if (!module || key === null) {
+            throw new RangeError(`ShipLoadout.setExperimentalEffect: slot "${slotKey}" is empty`);
+        }
+        const engineering = module.Engineering;
+        if (!engineering) {
+            throw new RangeError(
+                `ShipLoadout.setExperimentalEffect: module "${module.Item}" in slot "${slotKey}" carries no blueprint; an experimental effect is applied to a blueprint, so apply one first`,
+            );
+        }
+        this.#engineer(
+            'setExperimentalEffect',
+            key,
+            module,
+            engineering.BlueprintName,
+            engineering.Level,
+            engineering.Quality,
+            effect,
+        );
+        return this;
+    }
+
+    /**
+     * Remove the experimental effect from a slot's module, keeping its blueprint, grade
+     * and quality.
+     *
+     * @param slotKey - The slot to change, matched case-insensitively (journal spelling).
+     * @returns `this`, for chaining. A no-op if the slot is empty, the module is
+     * un-engineered, or it carries no experimental effect.
+     * @throws {TypeError} If the blueprint on the module cannot be recomputed without
+     * the effect — the same conditions {@link ShipLoadout.applyBlueprint} rejects.
+     *
+     * @example
+     * ```ts
+     * build.clearExperimentalEffect('FrameShiftDrive'); // the Long Range roll stays
+     * ```
+     */
+    clearExperimentalEffect(slotKey: string): this {
+        const key = this.#fittedKey(slotKey);
+        const module = key === null ? undefined : this.#modules.get(key);
+        const engineering = module?.Engineering;
+        if (!module || key === null || !engineering?.ExperimentalEffect) return this;
+        this.#engineer(
+            'clearExperimentalEffect',
+            key,
+            module,
+            engineering.BlueprintName,
+            engineering.Level,
+            engineering.Quality,
+            undefined,
+        );
+        return this;
+    }
+
+    /**
+     * Validate one blueprint/grade/quality/effect combination, compute its modifiers and
+     * store the result. Shared by every public entry point that engineers a module, so
+     * they cannot drift apart on what they accept.
+     */
+    #engineer(
+        caller: string,
+        key: string,
+        module: LoadoutModule,
+        blueprintName: string,
+        grade: number,
+        quality: number,
+        effectName: string | undefined,
+    ): void {
+        const stats = this.#statsFor(module);
+        if (!stats) {
+            throw new TypeError(`ShipLoadout.${caller}: no stats for module "${module.Item}"`);
+        }
+        const features = getBlueprintGrade(blueprintName, grade);
+        if (!features) {
+            throw new RangeError(
+                `ShipLoadout.${caller}: no blueprint "${blueprintName}" grade ${grade}`,
+            );
+        }
+        let experimental;
+        if (effectName !== undefined) {
+            experimental = getExperimentalEffect(effectName);
+            if (!experimental) {
+                throw new RangeError(
+                    `ShipLoadout.${caller}: unknown experimental effect "${effectName}"`,
+                );
+            }
+        }
         const moduleTarget = moduleEngineeringTarget(module.Item);
         const expectedTargets = blueprintTargets(blueprintName);
         if (expectedTargets === null || !expectedTargets.includes(moduleTarget)) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: blueprint "${blueprintName}" targets ${expectedTargets?.join('/') ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,
+                `ShipLoadout.${caller}: blueprint "${blueprintName}" targets ${expectedTargets?.join('/') ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,
             );
         }
-        if (options.experimental !== undefined) {
-            const expectedExperimentalTarget = experimentalTarget(options.experimental);
+        if (effectName !== undefined) {
+            const expectedExperimentalTarget = experimentalTarget(effectName);
             if (
                 expectedExperimentalTarget === null ||
                 expectedExperimentalTarget !== moduleTarget
             ) {
                 throw new TypeError(
-                    `ShipLoadout.applyBlueprint: experimental effect "${options.experimental}" targets ${expectedExperimentalTarget ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,
+                    `ShipLoadout.${caller}: experimental effect "${effectName}" targets ${expectedExperimentalTarget ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,
+                );
+            }
+            // The experimental slot is the blueprint's, so the pairing is what decides —
+            // but only where the options catalogue covers it. It groups 428 of the 1198
+            // modules, and silence there is not a refusal.
+            if (
+                optionsCoverPairing(module.Item, blueprintName) &&
+                !blueprintOffersExperimental(module.Item, blueprintName, effectName)
+            ) {
+                throw new TypeError(
+                    `ShipLoadout.${caller}: blueprint "${blueprintName}" does not offer experimental effect "${effectName}" on module "${module.Item}"`,
                 );
             }
         }
@@ -970,21 +1135,17 @@ export class ShipLoadout {
         const missing = missingBaseLabels(base, features, experimental);
         if (missing.length > 0) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: cannot compute "${blueprintName}" for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
+                `ShipLoadout.${caller}: cannot compute "${blueprintName}" for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
             );
         }
-        const modifiers = computeModifiers(base, features, quality, experimental);
         const engineering: ModuleEngineering = {
             BlueprintName: blueprintName,
-            Level: options.grade,
+            Level: grade,
             Quality: quality,
-            ...(options.experimental !== undefined
-                ? { ExperimentalEffect: options.experimental }
-                : {}),
-            Modifiers: modifiers,
+            ...(effectName !== undefined ? { ExperimentalEffect: effectName } : {}),
+            Modifiers: computeModifiers(base, features, quality, experimental),
         };
         this.#replaceModule(key, { ...module, Engineering: engineering });
-        return this;
     }
 
     /**

@@ -922,9 +922,47 @@ drive
 
 const fsd = conda.getFittedModule("FrameShiftDrive")!;
 fsd.getAvailableBlueprints(); // -> [{ fdname: "FSD_LongRange", grades: [1,2,3,4,5] }, ...]
-fsd.getAvailableExperimentalEffects(); // -> ["special_fsd_heavy", ...] valid for this family
+fsd.getAvailableExperimentalEffects(); // -> what the *applied* blueprint offers
+fsd.setExperimentalEffect("special_fsd_heavy"); // keeps the blueprint, grade and roll
+fsd.clearExperimentalEffect(); // …and takes it off again, roll intact
 fsd.clearEngineering(); // back to base stats; fsd.remove() empties the slot
 ```
+
+#### An experimental effect belongs to the blueprint
+
+In game the experimental slot lives **inside an applied blueprint**, not on the module,
+and the library models that:
+
+```ts
+build.applyBlueprint("MediumHardpoint1", "Weapon_Efficient", {
+  grade: 4,
+  experimental: "special_corrosive_shell",
+});
+
+// Same blueprint, better roll — Corrosive Shell is still on it.
+build.applyBlueprint("MediumHardpoint1", "Weapon_Efficient", { grade: 5 });
+
+// A different blueprint — the game drops the effect, and so does this.
+build.applyBlueprint("MediumHardpoint1", "Weapon_Sturdy", { grade: 5 });
+
+// Drop it deliberately without changing blueprint:
+build.applyBlueprint("MediumHardpoint1", "Weapon_Sturdy", {
+  grade: 5,
+  experimental: null,
+});
+```
+
+So `experimental` omitted means "leave whatever is there", `experimental: null` means
+"take it off", and a blueprint change means "it is gone" — the three cases the game
+distinguishes. `setExperimentalEffect` / `clearExperimentalEffect` change only the effect
+and leave the blueprint, grade and quality alone; `setExperimentalEffect` throws on a
+module carrying no blueprint, because there is nowhere to put one.
+
+Which effects are on offer follows from the same rule: pass the blueprint you mean to
+`getAvailableExperimentalEffects`, or leave it out to get the one already applied. On a
+small Multi-cannon that is the difference between 41 effects (everything the weapon
+family can compute) and the 11 the Efficient blueprint actually offers — with Phasing
+Sequence correctly absent, because that module is excluded from it.
 
 `setModule` (and `slot.fit`) validates the fit (module size ≤ slot size, right category,
 slot and hull restrictions) and throws otherwise. **Slot keys
@@ -1012,11 +1050,15 @@ feed the result to `enumerateSlots`; the rest of the `ships/slots` exports
 (`BuildSlot`, `CoreSlots`, `parseSlotName`, …) are that low-level model.
 
 `applyBlueprint` also validates that the blueprint and experimental effect belong to
-the fitted module's engineering family, that quality is a finite value from 0 to 1,
+the fitted module's engineering family, that **the blueprint being applied offers that
+experimental effect on that module**, that quality is a finite value from 0 to 1,
 and that the catalogue carries every base stat the recipe changes. An armour recipe,
 for example, cannot be applied to an FSD merely because both modify mass or integrity;
-a recipe whose combat or armour base stats are not carried is rejected rather than
-silently emitting a partial `Engineering.Modifiers` block.
+a small Multi-cannon cannot take Phasing Sequence under any blueprint; a recipe whose
+combat or armour base stats are not carried is rejected rather than silently emitting a
+partial `Engineering.Modifiers` block. The pairing check only fires where the options
+catalogue covers the module — it groups 428 of the 1198 — so silence there is not a
+refusal.
 
 **Blueprint and experimental ids are Frontier `fdname`s** — the same strings a journal
 `Loadout` event carries in `Engineering.BlueprintName` / `ExperimentalEffect` (e.g.
@@ -1085,16 +1127,17 @@ catalogue — so combine them yourself with `sumMaterials` only when you need bo
 
 #### What a module can be engineered with
 
-Before you pick a blueprint, you usually need the menu, and the menu differs per
-**module**: a Pulse Laser takes Efficient, a Rail Gun does not, and the two offer
-different experimental effects even where their blueprints overlap (Long Range,
-Lightweight, Short Range, Sturdy):
+Before you pick a blueprint, you usually need the menu. **Blueprints** are offered per
+module — a Pulse Laser takes Efficient, a Rail Gun does not — and **experimental effects
+are offered per blueprint**, because that is where the game puts the experimental slot.
+So the exact question takes both: which effects does _this blueprint_ give me on _this
+module_?
 
 ```ts
 import {
   getBlueprintsForModule,
-  getExperimentalsForModule,
   getExperimentalsForBlueprint,
+  getExperimentalsForModule,
 } from "@elite-dangerous-almanac/core/ships/engineering-options";
 
 getBlueprintsForModule("Int_Hyperdrive_Size5_Class5");
@@ -1105,17 +1148,30 @@ getBlueprintsForModule("Hpt_PulseLaser_Fixed_Small").includes(
 ); // -> true
 getBlueprintsForModule("Hpt_Railgun_Fixed_Small").includes("Weapon_Efficient"); // -> false
 
-getExperimentalsForModule("Hpt_MultiCannon_Fixed_Medium").length; // -> 12
-getExperimentalsForModule("Hpt_MultiCannon_Fixed_Small").length; // -> 11
+// Blueprint first, then the module it goes on — the exact list.
+getExperimentalsForBlueprint("FSD_LongRange", "Int_Hyperdrive_Size5_Class5");
+// -> ['special_fsd_cooled', 'special_fsd_fuelcapacity', 'special_fsd_heavy', ...]
+
+getExperimentalsForBlueprint("Weapon_Efficient", "Hpt_MultiCannon_Fixed_Medium")
+  .length; // -> 12
+getExperimentalsForBlueprint("Weapon_Efficient", "Hpt_MultiCannon_Fixed_Small")
+  .length; // -> 11
 ```
 
 That one-effect difference is not a bug: the small Multi-cannon cannot take Phasing
 Sequence. 29 modules are exceptions like this, and they are applied for you.
 
-`getExperimentalsForBlueprint` answers the blueprint-first question, but it returns the
-**union** across every module group offering that blueprint — so it is a superset, not
-the exact list for any one module. Once you know the module, use
-`getExperimentalsForModule`.
+Drawing the menu before a blueprint has been picked? `getExperimentalsForModule` is the
+**union** across every blueprint the module takes — deliberately looser, never narrower
+than any single blueprint's list. Narrow it as soon as you know the blueprint.
+
+> **A caveat on how narrow this can get.** No public registry publishes experimental
+> effects per blueprint — [EDSY](https://github.com/taleden/EDSY) and
+> [coriolis-data](https://github.com/EDCD/coriolis-data) both publish one list per module
+> group — so every blueprint of a group here carries that group's list. The shape holds a
+> real per-blueprint difference the moment one is sourced; until then the answer can be
+> wider than the game's, never narrower.
+> [#33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33) tracks it.
 
 A module the options catalogue does not group returns `[]` from both. To tell that apart
 from a module that _is_ grouped but has no experimental to offer, ask

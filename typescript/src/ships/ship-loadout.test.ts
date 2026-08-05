@@ -631,6 +631,209 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
     );
 });
 
+// ── An experimental effect belongs to its blueprint ──────────────────────────
+
+/** An FSD in a slot, ready to be engineered. */
+function engineeredDrive(): ShipLoadout {
+    return ShipLoadout.empty('Anaconda').setModule(
+        'FrameShiftDrive',
+        mod('Int_Hyperdrive_Size6_Class5'),
+    );
+}
+
+test('re-rolling the same blueprint keeps the experimental effect', () => {
+    const build = engineeredDrive();
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+        grade: 4,
+        experimental: 'special_fsd_heavy',
+    });
+    // A step up in grade is still the same blueprint, so the effect stays on — and its
+    // contribution is folded into the recomputed modifiers, not merely remembered.
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
+    const engineering = build.moduleAt('FrameShiftDrive')!.Engineering!;
+    assert.equal(engineering.Level, 5);
+    assert.equal(engineering.ExperimentalEffect, 'special_fsd_heavy');
+    const mass = engineering.Modifiers!.find((m) => m.Label === 'Mass')!;
+    assert.ok(mass.Value! > mass.OriginalValue!, 'Mass Manager still adds mass');
+
+    // Case and padding do not make it a different blueprint.
+    build.applyBlueprint('FrameShiftDrive', '  fsd_longrange  ', { grade: 5 });
+    assert.equal(
+        build.moduleAt('FrameShiftDrive')!.Engineering!.ExperimentalEffect,
+        'special_fsd_heavy',
+    );
+});
+
+test('switching blueprint drops the experimental effect, as the game does', () => {
+    // The drive takes only one applicable blueprint today (issue #10), so this needs a
+    // module family with two.
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'MediumHardpoint1',
+        mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES),
+    );
+    const massOf = () =>
+        build.moduleAt('MediumHardpoint1')!.Engineering!.Modifiers!.find((m) => m.Label === 'Mass')!
+            .Value!;
+
+    build.applyBlueprint('MediumHardpoint1', 'Weapon_Efficient', {
+        grade: 5,
+        experimental: 'special_weapon_lightweight',
+    });
+    build.applyBlueprint('MediumHardpoint1', 'Weapon_Sturdy', { grade: 5 });
+    const engineering = build.moduleAt('MediumHardpoint1')!.Engineering!;
+    assert.equal(engineering.BlueprintName, 'Weapon_Sturdy');
+    assert.equal(engineering.ExperimentalEffect, undefined);
+
+    // …and it is genuinely gone from the numbers, not merely from the label.
+    const withoutEffect = massOf();
+    build.applyBlueprint('MediumHardpoint1', 'Weapon_Sturdy', {
+        grade: 5,
+        experimental: 'special_weapon_lightweight',
+    });
+    assert.ok(massOf() < withoutEffect, 'Lightweight would have reduced the mass');
+});
+
+test('experimental: null drops the effect on a blueprint that would keep it', () => {
+    const build = engineeredDrive();
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+        grade: 5,
+        experimental: 'special_fsd_heavy',
+    });
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5, experimental: null });
+    assert.equal(build.moduleAt('FrameShiftDrive')!.Engineering!.ExperimentalEffect, undefined);
+});
+
+test('setExperimentalEffect changes only the effect, and needs a blueprint first', () => {
+    const build = engineeredDrive();
+    assert.throws(
+        () => build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy'),
+        /carries no blueprint/,
+    );
+    assert.throws(
+        () => build.setExperimentalEffect('Slot01_Size6', 'special_fsd_heavy'),
+        /is empty/,
+    );
+
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 4, quality: 0.5 });
+    build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy');
+    const engineering = build.moduleAt('FrameShiftDrive')!.Engineering!;
+    assert.equal(engineering.BlueprintName, 'FSD_LongRange');
+    assert.equal(engineering.Level, 4);
+    assert.equal(engineering.Quality, 0.5);
+    assert.equal(engineering.ExperimentalEffect, 'special_fsd_heavy');
+
+    // One effect at a time: a second application replaces the first.
+    build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_toughened');
+    assert.equal(
+        build.moduleAt('FrameShiftDrive')!.Engineering!.ExperimentalEffect,
+        'special_fsd_toughened',
+    );
+});
+
+test('clearExperimentalEffect keeps the blueprint roll and is a no-op without one', () => {
+    const build = engineeredDrive();
+    build.clearExperimentalEffect('FrameShiftDrive'); // un-engineered: nothing to do
+    assert.equal(build.moduleAt('FrameShiftDrive')!.Engineering, undefined);
+    build.clearExperimentalEffect('Slot01_Size6'); // empty slot: nothing to do
+
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+        grade: 5,
+        quality: 0.25,
+        experimental: 'special_fsd_heavy',
+    });
+    const withEffect = build.frameShiftDrive.optMass;
+    build.clearExperimentalEffect('FrameShiftDrive');
+    const engineering = build.moduleAt('FrameShiftDrive')!.Engineering!;
+    assert.equal(engineering.BlueprintName, 'FSD_LongRange');
+    assert.equal(engineering.Level, 5);
+    assert.equal(engineering.Quality, 0.25);
+    assert.equal(engineering.ExperimentalEffect, undefined);
+    assert.ok(build.frameShiftDrive.optMass < withEffect, 'Mass Manager is gone');
+});
+
+test('a blueprint refuses an experimental effect it does not offer on this module', () => {
+    // Phasing Sequence is a weapon effect, so the family check passes — but the small
+    // Multi-cannon is excluded from it, and the options catalogue covers the pairing.
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'SmallHardpoint1',
+        mod('Hpt_MultiCannon_Fixed_Small', HARDPOINT_MODULES),
+    );
+    assert.throws(
+        () =>
+            build.applyBlueprint('SmallHardpoint1', 'Weapon_Efficient', {
+                grade: 5,
+                experimental: 'special_phasing_sequence',
+            }),
+        /does not offer experimental effect "special_phasing_sequence"/,
+    );
+    // The medium one is not excluded, so the same pairing is accepted there.
+    const medium = ShipLoadout.empty('Anaconda').setModule(
+        'MediumHardpoint1',
+        mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES),
+    );
+    medium.applyBlueprint('MediumHardpoint1', 'Weapon_Efficient', {
+        grade: 5,
+        experimental: 'special_phasing_sequence',
+    });
+    assert.equal(
+        medium.moduleAt('MediumHardpoint1')!.Engineering!.ExperimentalEffect,
+        'special_phasing_sequence',
+    );
+
+    // setExperimentalEffect enforces the same rule against the applied blueprint.
+    build.applyBlueprint('SmallHardpoint1', 'Weapon_Efficient', { grade: 5 });
+    assert.throws(
+        () => build.setExperimentalEffect('SmallHardpoint1', 'special_phasing_sequence'),
+        /does not offer experimental effect/,
+    );
+});
+
+test('the available experimental effects narrow to the blueprint', () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'SmallHardpoint1',
+        mod('Hpt_MultiCannon_Fixed_Small', HARDPOINT_MODULES),
+    );
+    const gun = build.getFittedModule('SmallHardpoint1')!;
+
+    // Stock, with no blueprint named: the whole family's computable set — the union a
+    // menu shows before a blueprint has been picked.
+    const union = gun.getAvailableExperimentalEffects();
+    assert.ok(union.length > 20, `union ${union.length}`);
+    assert.ok(union.includes('special_phasing_sequence'));
+
+    // Named blueprint: the exact list, and the small Multi-cannon's exclusion applied.
+    const underEfficient = gun.getAvailableExperimentalEffects('Weapon_Efficient');
+    assert.ok(underEfficient.length < union.length);
+    assert.ok(!underEfficient.includes('special_phasing_sequence'));
+    for (const effect of underEfficient) assert.ok(union.includes(effect), effect);
+
+    // Once engineered, the applied blueprint is the default.
+    build.applyBlueprint('SmallHardpoint1', 'Weapon_Efficient', { grade: 5 });
+    assert.deepEqual(
+        build.getFittedModule('SmallHardpoint1')!.getAvailableExperimentalEffects(),
+        underEfficient,
+    );
+
+    // A module the options catalogue does not group keeps the family answer.
+    const armour = ShipLoadout.empty('Anaconda').setModule('Armour', mod('Anaconda_Armour_Grade3'));
+    const plating = armour.getFittedModule('Armour')!;
+    assert.deepEqual(
+        plating.getAvailableExperimentalEffects('Armour_HeavyDuty'),
+        plating.getAvailableExperimentalEffects(),
+    );
+});
+
+test('a fitted-module handle stays valid across experimental-effect changes', () => {
+    const build = engineeredDrive();
+    const fsd = build.getFittedModule('FrameShiftDrive')!;
+    fsd.applyBlueprint('FSD_LongRange', { grade: 5 })
+        .setExperimentalEffect('special_fsd_heavy')
+        .clearExperimentalEffect();
+    assert.equal(fsd.engineering!.BlueprintName, 'FSD_LongRange');
+    assert.equal(fsd.engineering!.ExperimentalEffect, undefined);
+    assert.throws(() => fsd.setExperimentalEffect('special_nope'), RangeError);
+});
+
 test('weapon and armour recipes engineer the stats the catalogue carries', () => {
     const weapon = ShipLoadout.empty('Sidewinder').setModule(
         'SmallHardpoint1',

@@ -184,10 +184,50 @@ export class FittedModule {
      * @param blueprintName - Frontier blueprint `fdname`.
      * @param options - Grade, optional quality in `[0, 1]`, and experimental effect.
      * @returns This handle for chaining.
+     *
+     * @remarks
+     * An experimental effect belongs to the blueprint, so re-applying the blueprint
+     * already on this module keeps the effect on it and applying a different one drops
+     * it — see {@link ApplyBlueprintOptions.experimental}.
      */
     applyBlueprint(blueprintName: string, options: ApplyBlueprintOptions): this {
         this.#raw();
         this.#loadout.applyBlueprint(this.#slotKey, blueprintName, options);
+        this.#slotVersion = this.#currentSlotVersion();
+        return this;
+    }
+
+    /**
+     * Apply an experimental (special) effect, keeping the blueprint, grade and quality
+     * already on this module.
+     *
+     * @param effect - The experimental effect's Frontier `fdname`. Replaces any effect
+     * already applied — a module carries at most one.
+     * @returns This handle for chaining.
+     * @throws {RangeError} If this module carries no blueprint. An experimental effect
+     * is applied to a blueprint, so engineer the module first.
+     * @example
+     * ```ts
+     * const fsd = build.getFittedModule('FrameShiftDrive')!;
+     * fsd.applyBlueprint('FSD_LongRange', { grade: 5 })
+     *    .setExperimentalEffect('special_fsd_heavy');
+     * ```
+     */
+    setExperimentalEffect(effect: string): this {
+        this.#raw();
+        this.#loadout.setExperimentalEffect(this.#slotKey, effect);
+        this.#slotVersion = this.#currentSlotVersion();
+        return this;
+    }
+
+    /**
+     * Remove the experimental effect, keeping the blueprint, grade and quality.
+     *
+     * @returns This handle for chaining. A no-op when no effect is applied.
+     */
+    clearExperimentalEffect(): this {
+        this.#raw();
+        this.#loadout.clearExperimentalEffect(this.#slotKey);
         this.#slotVersion = this.#currentSlotVersion();
         return this;
     }
@@ -237,12 +277,33 @@ export class FittedModule {
     }
 
     /**
-     * Return compatible experimental-effect identifiers.
+     * Return compatible experimental-effect identifiers **for one blueprint** — the
+     * experimental slot belongs to the blueprint, so that is what decides the menu.
      *
+     * @param blueprintName - The blueprint to answer for. Defaults to the one already
+     * applied to this module; with neither, the answer is the whole family's compatible
+     * set, which is the union a menu shows before a blueprint has been picked.
      * @returns Frontier experimental-effect `fdname`s in catalogue order.
+     *
+     * @remarks
+     * The narrowing only applies where the engineering-options catalogue covers the
+     * pairing — it groups 428 of the 1198 modules, and for the rest the family answer
+     * stands. See `ships/engineering-options`.
+     *
+     * @example
+     * ```ts
+     * const fsd = build.getFittedModule('FrameShiftDrive')!;
+     * fsd.getAvailableExperimentalEffects('FSD_LongRange'); // before engineering
+     * fsd.applyBlueprint('FSD_LongRange', { grade: 5 });
+     * fsd.getAvailableExperimentalEffects(); // the applied blueprint's own list
+     * ```
      */
-    getAvailableExperimentalEffects(): string[] {
-        return availableExperimentalsFor(this.#raw().Item);
+    getAvailableExperimentalEffects(blueprintName?: string): string[] {
+        const module = this.#raw();
+        return availableExperimentalsFor(
+            module.Item,
+            blueprintName ?? module.Engineering?.BlueprintName,
+        );
     }
 
     /**
