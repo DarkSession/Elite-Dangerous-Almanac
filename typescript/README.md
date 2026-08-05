@@ -38,7 +38,10 @@ import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-co
 - `materials` supplies ship engineering materials and Odyssey micro resources.
 - `commodities` supplies standard and rare market-goods catalogues.
 
-Each area has a barrel plus leaf subpaths for its data-heavy catalogues:
+Each area has a barrel plus leaf subpaths for its data-heavy catalogues. The ship,
+material, micro-resource, commodity and module lookups search their whole registry,
+so finding something takes one import and one argument (nebulae are the exception —
+see below):
 
 ```ts
 import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
@@ -47,14 +50,33 @@ import {
     getMaterialByName,
     MaterialGrade,
 } from '@elite-dangerous-almanac/core/materials/materials';
-import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+import { getCommodityByName } from '@elite-dangerous-almanac/core/commodities/commodities';
 
 const system = StarSystem.fromName('Synuefe EN-H d11-96');
 system?.systemAddress; // 3309179996515n
 
 getShipBySymbol('empire_trader')?.name; // 'Imperial Clipper'
-getMaterialByName('iron', RAW_MATERIALS)?.grade; // MaterialGrade.VeryCommon (1)
+getMaterialByName('iron')?.grade; // MaterialGrade.VeryCommon (1)
+getCommodityByName('lavian brandy')?.rare; // true
 ```
+
+Every lookup also takes an optional trailing argument that narrows the search to a
+subset — one category's catalogue, or an array you have filtered yourself:
+
+```ts
+import { materialsByGrade, MaterialGrade } from '@elite-dangerous-almanac/core/materials';
+import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+
+materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length; // 7, one per raw line
+```
+
+That argument narrows results, not bundle size: a lookup imports the full registry it
+falls back to. The registries are small (~15 KB minified for all 146 materials, ~28 KB
+for all 399 commodities) — with two exceptions. `ships/modules` pulls all four module
+catalogues, about 290 KB minified (~30 KB gzipped); a build that must carry only one
+outfitting category should import that catalogue and search it with plain `Array`
+methods instead. And `astro/nebulae` keeps its catalogue argument **required**:
+`ALL_NEBULAE` is 682 KB, so there is no defensible default to fall back to.
 
 ## Working with a whole build
 

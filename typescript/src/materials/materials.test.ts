@@ -7,6 +7,7 @@ import {
     getMaterialByElementSymbol,
     materialsByGrade,
     materialsInLine,
+    materialsInCategory,
     MaterialGrade,
     MaterialLine,
     type Material,
@@ -160,6 +161,53 @@ test('the newer Thargoid materials not in FDevIDs are present and resolve by sym
         assert.equal(material.elementSymbol, null);
         assert.equal(material.line, MaterialLine.Thargoid);
     }
+});
+
+test('every lookup searches all materials when no catalogue is given', () => {
+    // The common call is the one-argument one: the catalogue argument only narrows,
+    // and reaches the very same frozen record (identity, not just deep equality).
+    assert.equal(
+        getMaterialBySymbol('temperedalloys'),
+        getMaterialBySymbol('temperedalloys', MANUFACTURED_MATERIALS),
+    );
+    assert.equal(getMaterialByName('iron')?.elementSymbol, 'Fe');
+    assert.equal(getMaterialByElementSymbol('fe')?.name, 'Iron');
+    assert.equal(
+        materialsByGrade(MaterialGrade.VeryRare).length,
+        materialsByGrade(MaterialGrade.VeryRare, ALL_MATERIALS).length,
+    );
+    assert.deepEqual(
+        materialsInLine(MaterialLine.Chemical).map((m) => m.grade),
+        [1, 2, 3, 4, 5],
+    );
+    // Encoded materials are reachable without naming their catalogue, which is the
+    // whole point: a journal line does not say which category a symbol belongs to.
+    assert.equal(getMaterialBySymbol('bulkscandata')?.category, 'encoded');
+});
+
+test('an explicit catalogue still narrows the search', () => {
+    // Iron is raw, so a manufactured-only search must not find it.
+    assert.equal(getMaterialByName('iron', MANUFACTURED_MATERIALS), null);
+    assert.equal(getMaterialByName('iron', RAW_MATERIALS)?.category, 'raw');
+    assert.equal(materialsByGrade(MaterialGrade.VeryRare, RAW_MATERIALS).length, 0);
+    assert.deepEqual(materialsInLine(MaterialLine.Chemical, ENCODED_MATERIALS), []);
+    assert.deepEqual(materialsInCategory('raw', MANUFACTURED_MATERIALS), []);
+    // Any array works, not only the shipped catalogues.
+    const justIron = ALL_MATERIALS.filter((m) => m.name === 'Iron');
+    assert.equal(getMaterialByName('carbon', justIron), null);
+    assert.equal(getMaterialByName('iron', justIron)?.name, 'Iron');
+});
+
+test('materialsInCategory returns exactly one category, case-insensitively', () => {
+    for (const [category, expected] of Object.entries(materialsFixture.counts)) {
+        if (category === 'all') continue;
+        assert.equal(materialsInCategory(category).length, expected);
+        assert.ok(materialsInCategory(category).every((m) => m.category === category));
+    }
+    assert.equal(materialsInCategory(' Encoded ').length, materialsInCategory('encoded').length);
+    assert.deepEqual(materialsInCategory('nonexistent'), []);
+    // The same answer as importing the category's own catalogue module.
+    assert.deepEqual(materialsInCategory('raw'), [...RAW_MATERIALS]);
 });
 
 test('catalogues and their records are frozen', () => {

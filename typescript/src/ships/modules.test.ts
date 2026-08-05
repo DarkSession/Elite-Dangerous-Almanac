@@ -326,3 +326,34 @@ test("every weapon's carried rate of fire agrees with its own firing cycle", () 
     }
     assert.ok(checked > 140, `expected the whole weapon catalogue, checked ${checked}`);
 });
+
+test('every lookup searches all modules when no catalogue is given', () => {
+    // A journal `Item` string does not say which outfitting category it belongs to,
+    // so the default has to be all four.
+    assert.equal(getModuleBySymbol('Hpt_PulseLaser_Fixed_Small')?.name, 'Pulse Laser');
+    assert.equal(getModuleBySymbol('int_hyperdrive_size6_class5')?.category, 'core');
+    assert.equal(getModuleBySymbol('hpt_chafflauncher_tiny')?.category, 'utility');
+    assert.deepEqual(getModulesByName('pulse laser'), getModulesByName('pulse laser', ALL_MODULES));
+    assert.deepEqual(
+        getModulesForShip('Anaconda').map((m) => m.symbol),
+        getModulesForShip('Anaconda', CORE_MODULES).map((m) => m.symbol),
+    );
+    // One record from each of the four categories resolves without naming its
+    // catalogue (`all` is excluded — its first record is CORE_MODULES[0]).
+    for (const category of ['core', 'internal', 'hardpoint', 'utility'] as const) {
+        const first = CATALOGUES[category]![0]!;
+        assert.deepEqual(getModuleBySymbol(first.symbol), first, category);
+    }
+});
+
+test('an explicit catalogue still narrows the search', () => {
+    // A pulse laser is a hardpoint, so a utility-only search must not find it.
+    assert.equal(getModuleBySymbol('Hpt_PulseLaser_Fixed_Small', UTILITY_MODULES), null);
+    assert.equal(
+        getModuleBySymbol('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES)?.name,
+        'Pulse Laser',
+    );
+    assert.deepEqual(getModulesByName('pulse laser', INTERNAL_MODULES), []);
+    // Armour is core-only, so any other category yields nothing for a hull.
+    assert.deepEqual(getModulesForShip('Anaconda', HARDPOINT_MODULES), []);
+});

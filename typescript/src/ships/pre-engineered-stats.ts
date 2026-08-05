@@ -106,7 +106,7 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
  * @example
  * ```ts
  * const [shard] = getPreEngineeredVariants('Hpt_Guardian_ShardCannon_Fixed_Medium');
- * const stock = getModuleBySymbol(shard.symbol, ALL_MODULES)!;
+ * const stock = getModuleBySymbol(shard.symbol)!;
  * const fitted = getPreEngineeredStats(shard)!;
  * stock.mass;  // -> 4
  * fitted.mass; // -> 6  (the variant carries Mass +50%)

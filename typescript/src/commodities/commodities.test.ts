@@ -112,6 +112,25 @@ test('commoditiesInCategory ignores case and whitespace, like every other lookup
     );
 });
 
+test('every lookup searches both registries when no catalogue is given', () => {
+    // The caller does not have to know whether a good is standard or rare first.
+    assert.equal(getCommodityBySymbol('platinum')?.rare, false);
+    assert.equal(getCommodityBySymbol('lavianbrandy')?.rare, true);
+    assert.equal(getCommodityByName('lavian brandy')?.symbol, 'LavianBrandy');
+    assert.equal(
+        commoditiesInCategory('Metals').length,
+        commoditiesInCategory('Metals', COMMODITIES).length +
+            commoditiesInCategory('Metals', RARE_COMMODITIES).length,
+    );
+});
+
+test('an explicit catalogue still narrows the search', () => {
+    // Lavian Brandy is rare, so a standard-only search must not find it.
+    assert.equal(getCommodityBySymbol('lavianbrandy', COMMODITIES), null);
+    assert.equal(getCommodityByName('platinum', RARE_COMMODITIES), null);
+    assert.deepEqual(commoditiesInCategory('Minerals', RARE_COMMODITIES), []);
+});
+
 test('catalogues and their records are frozen', () => {
     const platinum = getCommodityByName('Platinum', COMMODITIES);
     assert.ok(platinum);

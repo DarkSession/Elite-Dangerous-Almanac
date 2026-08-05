@@ -19,7 +19,9 @@
  * | `./nebulae-all` | `ALL_NEBULAE` | 5835 | 682 KB | 151 KB |
  *
  * Importing a query function from here costs nothing but the function: pass in
- * whichever catalogue you imported.
+ * whichever catalogue you imported. The catalogue argument is **required** — 94% of
+ * `ALL_NEBULAE` is planetary nebulae most apps never touch, so there is no default
+ * worth falling back to silently.
  *
  * Positions are galactic light-years with Sol at the origin — the same frame the
  * journal, EDSM and Spansh use. Catalogue data originates from EDAstro

@@ -1,23 +1,32 @@
 /**
- * Market-commodity types and lookups — the **data-free** core of the commodities
- * feature.
+ * Market-commodity types and lookups.
  *
  * Elite Dangerous trades goods at station commodity markets. Frontier splits them
  * into two registries: the ~257 **standard** commodities on every market, and the
  * ~142 **rare** commodities each produced at a single station. This module holds the
- * {@link Commodity} record shape and the pure functions that search a catalogue
+ * {@link Commodity} record shape and the functions that find one
  * ({@link getCommodityBySymbol}, {@link getCommodityByName},
- * {@link commoditiesInCategory}); the catalogues themselves live in sibling modules,
- * so you only bundle the ones you ask for:
+ * {@link commoditiesInCategory}).
+ *
+ * **Every lookup searches all 399 commodities by default** — standard and rare — so
+ * you do not have to know which registry a good belongs to before you can find it:
+ *
+ * ```ts
+ * getCommodityByName('lavian brandy')?.rare; // -> true
+ * ```
+ *
+ * Each lookup still takes an optional second argument to **narrow** the search to a
+ * subset — one registry's catalogue, or any array you have filtered yourself:
  *
  * | Module | Export | Entries |
  * | --- | --- | --- |
  * | `./commodities-standard` | `COMMODITIES` | 257 |
  * | `./commodities-rare` | `RARE_COMMODITIES` | 142 |
- * | `./commodities-all` | `ALL_COMMODITIES` | 399 |
+ * | `./commodities-all` | `ALL_COMMODITIES` | 399 (the default) |
  *
- * Importing a query function from here costs nothing but the function: pass in
- * whichever catalogue you imported.
+ * It narrows *results*, not bundle size: importing a lookup pulls both catalogues,
+ * since that is what it falls back to — 28 KB minified for all 399. Every record
+ * carries a {@link Commodity.rare} flag, so a subset is one `.filter()` away.
  *
  * Data from EDCD FDevIDs (`commodity.csv`, `rare_commodity.csv`), plus one standard
  * record observed in a player journal and not yet in FDevIDs (its market category is
@@ -27,13 +36,14 @@
  * @example
  * ```ts
  * import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities';
- * import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-standard';
  *
- * getCommodityBySymbol('platinum', COMMODITIES)?.name; // -> 'Platinum'
+ * getCommodityBySymbol('platinum')?.category; // -> 'Metals'
  * ```
  *
  * @packageDocumentation
  */
+
+import { ALL_COMMODITIES } from './commodities-all.js';
 
 /**
  * A market group — the shelf a commodity sits on at the commodity market.
@@ -108,18 +118,18 @@ function normalize(value: string): string {
  *
  * @param symbol - The internal symbol, e.g. `"Platinum"`, or the lower-cased form the
  * market/journal reports (`"platinum"`). Leading/trailing whitespace is ignored.
- * @param commodities - The catalogue to search — `COMMODITIES`, `RARE_COMMODITIES`,
- * `ALL_COMMODITIES`, or any subset you have filtered yourself.
- * @returns The matching {@link Commodity}, or `null` if the catalogue holds no
- * commodity with that symbol.
+ * @param commodities - Optional subset to search instead of all 399 commodities —
+ * `COMMODITIES` (standard only), `RARE_COMMODITIES`, or any array you have filtered
+ * yourself. Omit it unless you specifically want to exclude the other registry.
+ * @returns The matching {@link Commodity}, or `null` if no commodity has that symbol.
  * @example
  * ```ts
- * getCommodityBySymbol('lavianbrandy', RARE_COMMODITIES)?.name; // -> 'Lavian Brandy'
+ * getCommodityBySymbol('lavianbrandy')?.name; // -> 'Lavian Brandy'
  * ```
  */
 export function getCommodityBySymbol(
     symbol: string,
-    commodities: readonly Commodity[],
+    commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
     const wanted = normalize(symbol);
     return commodities.find((commodity) => normalize(commodity.symbol) === wanted) ?? null;
@@ -130,17 +140,16 @@ export function getCommodityBySymbol(
  *
  * @param name - The display name as the market spells it, e.g. `"Lavian Brandy"`.
  * Leading/trailing whitespace and case are ignored, but matching is otherwise exact.
- * @param commodities - The catalogue to search (see {@link getCommodityBySymbol}).
- * @returns The matching {@link Commodity}, or `null` if the catalogue holds no
- * commodity of that name.
+ * @param commodities - Optional subset to search (see {@link getCommodityBySymbol}).
+ * @returns The matching {@link Commodity}, or `null` if no commodity has that name.
  * @example
  * ```ts
- * getCommodityByName('platinum', COMMODITIES)?.category; // -> 'Metals'
+ * getCommodityByName('platinum')?.category; // -> 'Metals'
  * ```
  */
 export function getCommodityByName(
     name: string,
-    commodities: readonly Commodity[],
+    commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
     const wanted = normalize(name);
     return commodities.find((commodity) => normalize(commodity.name) === wanted) ?? null;
@@ -153,25 +162,25 @@ export function getCommodityByName(
  * whitespace and case are ignored, like every other lookup here, so a group name
  * that arrived from a market payload or a user's dropdown resolves without
  * re-casing it first.
- * @param commodities - The catalogue to search (see {@link getCommodityBySymbol}).
+ * @param commodities - Optional subset to search (see {@link getCommodityBySymbol}).
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
- * commoditiesInCategory('Metals', COMMODITIES).length; // -> every metal on the market
- * commoditiesInCategory('metals', COMMODITIES).length; // -> the same; case is ignored
+ * commoditiesInCategory('Metals').length;            // -> every metal, standard and rare
+ * commoditiesInCategory('metals', COMMODITIES).length; // -> the standard ones only
  * ```
  */
 export function commoditiesInCategory(
     category: CommodityCategory,
-    commodities: readonly Commodity[],
+    commodities?: readonly Commodity[],
 ): Commodity[];
 export function commoditiesInCategory(
     category: string,
-    commodities: readonly Commodity[],
+    commodities?: readonly Commodity[],
 ): Commodity[];
 export function commoditiesInCategory(
     category: string,
-    commodities: readonly Commodity[],
+    commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity[] {
     const wanted = normalize(category);
     return commodities.filter((commodity) => normalize(commodity.category) === wanted);
