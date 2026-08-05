@@ -6,6 +6,8 @@
  *          https://github.com/EDCD/FDevIDs
  *          EDCD/coriolis-data, ships/*.json (stats + slot layout)
  *          https://github.com/EDCD/coriolis-data
+ *          EDSY, eddb.js `ship[…].slotnames` (the per-mount `name` journal keys)
+ *          https://github.com/taleden/EDSY
  *          The stat/slot values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -20,6 +22,18 @@
  * optionals, the Panther Clipper Mk II's two cargo-only optionals, the military
  * mounts 16 hulls have, and the planetary-approach-suite mount all but the Lynx
  * Highliner has.
+ *
+ * A mount also carries a `name` where the game's journal slot key is not what the
+ * ordinary numbering rules produce — 13 hulls, being the 11 whose names no rule
+ * derives plus 2 the rules do derive, pinned so the stored set matches its source one
+ * for one. Among the 11: the Anaconda's `Slot13_Size2`/`Slot14_Size1` with no 11 or
+ * 12, the Type-9 Heavy starting at `Slot00_Size8`, the Type-8 Transporter skipping
+ * `SmallHardpoint3`, the Caspian Explorer's mediums running 6, 5, 1, 2, 3, 4, and the
+ * Lynx Highliner's `Passenger01`–`03`; SOURCES.md lists all 13, hull by hull. A mount
+ * with no `name` is one the rules get right, and a hull that names any mount of a kind
+ * names all of them. A key's `_SizeN` suffix is Frontier's own and on three hulls
+ * disagrees with the mount it names (the Keelback's `Slot03_Size3` is a size-4
+ * mount) — the mount's own `size` beside it is always the real one.
  *
  * A hull's armour options are modules like any other: they live in
  * `modules-core.jsonc`, keyed to the hull by their `ship` field. Most come from coriolis-data; the Lynx Highliner
@@ -626,38 +640,49 @@
     "utility": 4,
     "optional": [
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot01_Size6"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot02_Size6"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot03_Size5"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot04_Size5"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot05_Size4"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot06_Size4"
       },
       {
-        "size": 3
+        "size": 3,
+        "name": "Slot07_Size2"
       },
       {
-        "size": 3
+        "size": 3,
+        "name": "Slot08_Size2"
       },
       {
-        "size": 2
-      },
-      {
-        "size": 1
+        "size": 2,
+        "name": "Slot09_Size2"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot09_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 16783094,
@@ -782,33 +807,42 @@
     "utility": 4,
     "optional": [
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot01_Size5"
       },
       {
         "size": 5,
-        "restriction": "military"
+        "restriction": "military",
+        "name": "Military01"
       },
       {
-        "size": 4
+        "size": 4,
+        "name": "Slot02_Size4"
       },
       {
-        "size": 2
-      },
-      {
-        "size": 1
-      },
-      {
-        "size": 1
-      },
-      {
-        "size": 1
-      },
-      {
-        "size": 1
+        "size": 2,
+        "name": "Slot03_Size2"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot05_Size1"
+      },
+      {
+        "size": 1,
+        "name": "Slot06_Size1"
+      },
+      {
+        "size": 1,
+        "name": "Slot07_Size1"
+      },
+      {
+        "size": 1,
+        "name": "Slot08_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 4692214,
@@ -939,40 +973,51 @@
     "utility": 4,
     "optional": [
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot01_Size6"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot02_Size5"
       },
       {
-        "size": 5
-      },
-      {
-        "size": 4
-      },
-      {
-        "size": 4,
-        "restriction": "military"
+        "size": 5,
+        "name": "Slot03_Size5"
       },
       {
         "size": 4,
-        "restriction": "military"
+        "name": "Slot04_Size4"
       },
       {
-        "size": 3
+        "size": 4,
+        "restriction": "military",
+        "name": "Military01"
       },
       {
-        "size": 3
+        "size": 4,
+        "restriction": "military",
+        "name": "Military02"
       },
       {
-        "size": 2
+        "size": 3,
+        "name": "Slot05_Size3"
       },
       {
-        "size": 1
+        "size": 3,
+        "name": "Slot06_Size3"
+      },
+      {
+        "size": 2,
+        "name": "Slot09_Size2"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot10_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 13510106,
@@ -1100,41 +1145,53 @@
     "utility": 4,
     "optional": [
       {
-        "size": 8
+        "size": 8,
+        "name": "Slot00_Size8"
       },
       {
-        "size": 8
+        "size": 8,
+        "name": "Slot01_Size8"
       },
       {
-        "size": 7
+        "size": 7,
+        "name": "Slot02_Size7"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot03_Size6"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot04_Size5"
       },
       {
-        "size": 4
+        "size": 4,
+        "name": "Slot05_Size4"
       },
       {
-        "size": 4
+        "size": 4,
+        "name": "Slot06_Size4"
       },
       {
-        "size": 3
+        "size": 3,
+        "name": "Slot07_Size3"
       },
       {
-        "size": 3
+        "size": 3,
+        "name": "Slot08_Size3"
       },
       {
-        "size": 2
-      },
-      {
-        "size": 1
+        "size": 2,
+        "name": "Slot11_Size2"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot12_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 72116858,
@@ -1443,48 +1500,62 @@
     "utility": 8,
     "optional": [
       {
-        "size": 7
+        "size": 7,
+        "name": "Slot01_Size7"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot02_Size6"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot03_Size6"
       },
       {
-        "size": 6
-      },
-      {
-        "size": 5
-      },
-      {
-        "size": 5
-      },
-      {
-        "size": 5
+        "size": 6,
+        "name": "Slot04_Size6"
       },
       {
         "size": 5,
-        "restriction": "military"
+        "name": "Slot05_Size5"
       },
       {
-        "size": 4
+        "size": 5,
+        "name": "Slot06_Size5"
       },
       {
-        "size": 4
+        "size": 5,
+        "name": "Slot07_Size5"
       },
       {
-        "size": 4
+        "size": 5,
+        "restriction": "military",
+        "name": "Military01"
       },
       {
-        "size": 2
+        "size": 4,
+        "name": "Slot08_Size4"
       },
       {
-        "size": 1
+        "size": 4,
+        "name": "Slot09_Size4"
+      },
+      {
+        "size": 4,
+        "name": "Slot10_Size4"
+      },
+      {
+        "size": 2,
+        "name": "Slot13_Size2"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot14_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 142456440,
@@ -2350,29 +2421,37 @@
     "utility": 3,
     "optional": [
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot01_Size5"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot02_Size5"
       },
       {
-        "size": 4
+        "size": 4,
+        "name": "Slot03_Size3"
       },
       {
-        "size": 3
+        "size": 3,
+        "name": "Slot04_Size3"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "Slot05_Size2"
       },
       {
-        "size": 2
-      },
-      {
-        "size": 1
+        "size": 2,
+        "name": "Slot06_Size2"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot07_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 2946463,
@@ -2422,29 +2501,37 @@
     "utility": 2,
     "optional": [
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot01_Size4"
       },
       {
-        "size": 4
+        "size": 4,
+        "name": "Slot02_Size4"
       },
       {
-        "size": 3
+        "size": 3,
+        "name": "Slot03_Size3"
       },
       {
-        "size": 3
+        "size": 3,
+        "name": "Slot04_Size3"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "Slot05_Size2"
       },
       {
-        "size": 2
-      },
-      {
-        "size": 1
+        "size": 2,
+        "name": "Slot06_Size2"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot07_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 3819823,
@@ -2510,46 +2597,59 @@
     "utility": 8,
     "optional": [
       {
-        "size": 8
+        "size": 8,
+        "name": "Slot01_Size8"
       },
       {
-        "size": 7
+        "size": 7,
+        "name": "Slot02_Size7"
       },
       {
-        "size": 6
-      },
-      {
-        "size": 5
-      },
-      {
-        "size": 4
-      },
-      {
-        "size": 4
-      },
-      {
-        "size": 3
-      },
-      {
-        "size": 3
-      },
-      {
-        "size": 2
+        "size": 6,
+        "name": "Slot03_Size6"
       },
       {
         "size": 5,
-        "restriction": "military"
+        "name": "Slot04_Size5"
+      },
+      {
+        "size": 4,
+        "name": "Slot05_Size4"
+      },
+      {
+        "size": 4,
+        "name": "Slot06_Size4"
+      },
+      {
+        "size": 3,
+        "name": "Slot07_Size3"
+      },
+      {
+        "size": 3,
+        "name": "Slot08_Size3"
+      },
+      {
+        "size": 2,
+        "name": "Slot11_Size2"
       },
       {
         "size": 5,
-        "restriction": "military"
+        "restriction": "military",
+        "name": "Military01"
       },
       {
-        "size": 1
+        "size": 5,
+        "restriction": "military",
+        "name": "Military02"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot12_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 121334619,
@@ -3168,22 +3268,28 @@
     },
     "hardpoints": [
       {
-        "size": 2
+        "size": 2,
+        "name": "MediumHardpoint1"
       },
       {
-        "size": 1
+        "size": 1,
+        "name": "SmallHardpoint1"
       },
       {
-        "size": 1
+        "size": 1,
+        "name": "SmallHardpoint2"
       },
       {
-        "size": 1
+        "size": 1,
+        "name": "SmallHardpoint4"
       },
       {
-        "size": 1
+        "size": 1,
+        "name": "SmallHardpoint5"
       },
       {
-        "size": 1
+        "size": 1,
+        "name": "SmallHardpoint6"
       }
     ],
     "utility": 4,
@@ -3545,45 +3651,58 @@
     "optional": [
       {
         "size": 8,
-        "restriction": "cargo"
+        "restriction": "cargo",
+        "name": "Cargo01"
       },
       {
-        "size": 8
+        "size": 8,
+        "name": "Slot01_Size8"
       },
       {
         "size": 7,
-        "restriction": "cargo"
+        "restriction": "cargo",
+        "name": "Cargo02"
       },
       {
-        "size": 7
+        "size": 7,
+        "name": "Slot02_Size7"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot03_Size6"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot04_Size6"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot05_Size6"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot06_Size5"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot07_Size5"
       },
       {
-        "size": 4
+        "size": 4,
+        "name": "Slot08_Size4"
       },
       {
-        "size": 2
-      },
-      {
-        "size": 1
+        "size": 2,
+        "name": "Slot09_Size2"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot10_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 286905678,
@@ -3620,76 +3739,97 @@
     "hardpoints": [
       {
         "size": 3,
-        "restriction": "mining"
+        "restriction": "mining",
+        "name": "LargeMiningHardpoint1"
       },
       {
         "size": 2,
-        "restriction": "mining"
+        "restriction": "mining",
+        "name": "MediumMiningHardpoint1"
       },
       {
         "size": 2,
-        "restriction": "mining"
+        "restriction": "mining",
+        "name": "MediumMiningHardpoint2"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "MediumHardpoint3"
       },
       {
         "size": 1,
-        "restriction": "mining"
+        "restriction": "mining",
+        "name": "SmallMiningHardpoint1"
       },
       {
-        "size": 1
+        "size": 1,
+        "name": "SmallHardpoint2"
       },
       {
-        "size": 1
+        "size": 1,
+        "name": "SmallHardpoint3"
       },
       {
-        "size": 1
+        "size": 1,
+        "name": "SmallHardpoint4"
       }
     ],
     "utility": 4,
     "optional": [
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot01_Size6"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot02_Size6"
       },
       {
-        "size": 6
-      },
-      {
-        "size": 5
-      },
-      {
-        "size": 5
+        "size": 6,
+        "name": "Slot03_Size6"
       },
       {
         "size": 5,
-        "restriction": "limpetController"
+        "name": "Slot04_Size5"
       },
       {
         "size": 5,
-        "restriction": "vesselHangar"
+        "name": "Slot05_Size5"
       },
       {
-        "size": 4
+        "size": 5,
+        "restriction": "limpetController",
+        "name": "LimpetController01"
       },
       {
-        "size": 3
+        "size": 5,
+        "restriction": "vesselHangar",
+        "name": "FighterBay01"
       },
       {
-        "size": 2
+        "size": 4,
+        "name": "Slot06_Size4"
       },
       {
-        "size": 1
+        "size": 3,
+        "name": "Slot07_Size3"
       },
       {
-        "size": 1
+        "size": 2,
+        "name": "Slot08_Size2"
       },
       {
         "size": 1,
-        "restriction": "planetaryApproachSuite"
+        "name": "Slot09_Size1"
+      },
+      {
+        "size": 1,
+        "name": "Slot10_Size1"
+      },
+      {
+        "size": 1,
+        "restriction": "planetaryApproachSuite",
+        "name": "PlanetaryApproachSuite"
       }
     ],
     "hullCost": 66346710,
@@ -3725,25 +3865,32 @@
     },
     "hardpoints": [
       {
-        "size": 3
+        "size": 3,
+        "name": "LargeHardpoint1"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "MediumHardpoint6"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "MediumHardpoint5"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "MediumHardpoint1"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "MediumHardpoint2"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "MediumHardpoint3"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "MediumHardpoint4"
       }
     ],
     "utility": 6,
@@ -3923,34 +4070,44 @@
     "utility": 4,
     "optional": [
       {
-        "size": 6
+        "size": 6,
+        "name": "Slot01_Size6"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Passenger01"
       },
       {
-        "size": 6
+        "size": 6,
+        "name": "Passenger02"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Passenger03"
       },
       {
-        "size": 5
+        "size": 5,
+        "name": "Slot02_Size5"
       },
       {
-        "size": 4
+        "size": 4,
+        "name": "Slot03_Size4"
       },
       {
-        "size": 4
+        "size": 4,
+        "name": "Slot04_Size4"
       },
       {
-        "size": 3
+        "size": 3,
+        "name": "Slot05_Size3"
       },
       {
-        "size": 2
+        "size": 2,
+        "name": "Slot06_Size2"
       },
       {
-        "size": 1
+        "size": 1,
+        "name": "Slot07_Size1"
       }
     ],
     "hullCost": 67992080,

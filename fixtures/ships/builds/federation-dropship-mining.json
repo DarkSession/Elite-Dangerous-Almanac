@@ -26,7 +26,7 @@
     { "slot": "Slot04_Size4", "item": "Int_Refinery_Size4_Class5" },
     { "slot": "Slot05_Size3", "item": "Int_DroneControl_ResourceSiphon_Size3_Class5" },
     { "slot": "Slot06_Size3", "item": "Int_CargoRack_Size3_Class1" },
-    { "slot": "Slot07_Size2", "item": "Int_CargoRack_Size2_Class1" }
+    { "slot": "Slot09_Size2", "item": "Int_CargoRack_Size2_Class1" }
   ],
   "metrics": {
     "unladenMass": 785,

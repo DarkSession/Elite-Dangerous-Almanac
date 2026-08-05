@@ -17,14 +17,14 @@
     { "slot": "TinyHardpoint4", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 1, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
     { "slot": "Slot01_Size6", "item": "Int_PassengerCabin_Size6_Class3", "priority": 1 },
     { "slot": "Slot02_Size6", "item": "Int_PassengerCabin_Size6_Class3", "priority": 1 },
-    { "slot": "Slot03_Size6", "item": "Int_PassengerCabin_Size6_Class3", "priority": 1 },
+    { "slot": "Slot03_Size5", "item": "Int_PassengerCabin_Size6_Class3", "priority": 1 },
     { "slot": "Slot04_Size5", "item": "Int_PassengerCabin_Size5_Class3", "priority": 2 },
-    { "slot": "Slot05_Size5", "item": "Int_PassengerCabin_Size5_Class3" },
-    { "slot": "Slot06_Size5", "item": "Int_PassengerCabin_Size5_Class3" },
-    { "slot": "Slot07_Size3", "item": "Int_CargoRack_Size3_Class1" },
-    { "slot": "Slot08_Size3", "item": "Int_ShieldGenerator_Size3_Class2", "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot05_Size4", "item": "Int_PassengerCabin_Size5_Class3" },
+    { "slot": "Slot06_Size4", "item": "Int_PassengerCabin_Size5_Class3" },
+    { "slot": "Slot07_Size2", "item": "Int_CargoRack_Size3_Class1" },
+    { "slot": "Slot08_Size2", "item": "Int_ShieldGenerator_Size3_Class2", "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
     { "slot": "Slot09_Size2", "item": "Int_DockingComputer_Advanced" },
-    { "slot": "Slot10_Size1", "item": "Int_SupercruiseAssist" }
+    { "slot": "Slot09_Size1", "item": "Int_SupercruiseAssist" }
   ],
   "metrics": {
     "unladenMass": 576.5,

@@ -21,10 +21,10 @@
     { "slot": "Military01", "item": "Int_ShieldCellBank_Size5_Class5" },
     { "slot": "Slot02_Size4", "item": "Int_HullReinforcement_Size4_Class2" },
     { "slot": "Slot03_Size2", "item": "Int_ModuleReinforcement_Size2_Class2" },
-    { "slot": "Slot04_Size1", "item": "Int_HullReinforcement_Size1_Class2" },
     { "slot": "Slot05_Size1", "item": "Int_HullReinforcement_Size1_Class2" },
     { "slot": "Slot06_Size1", "item": "Int_HullReinforcement_Size1_Class2" },
-    { "slot": "Slot07_Size1", "item": "Int_FSDInterdictor_Size1_Class5" }
+    { "slot": "Slot07_Size1", "item": "Int_HullReinforcement_Size1_Class2" },
+    { "slot": "Slot08_Size1", "item": "Int_FSDInterdictor_Size1_Class5" }
   ],
   "metrics": {
     "unladenMass": 411.1,

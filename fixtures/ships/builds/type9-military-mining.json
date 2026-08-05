@@ -36,9 +36,9 @@
     { "slot": "Slot06_Size4", "item": "Int_FuelScoop_Size4_Class5" },
     { "slot": "Slot07_Size3", "item": "Int_DetailedSurfaceScanner_Tiny" },
     { "slot": "Slot08_Size3", "item": "Int_MultiDroneControl_Mining_Size3_Class3" },
-    { "slot": "Slot09_Size2", "item": "Int_DockingComputer_Advanced" },
+    { "slot": "Slot11_Size2", "item": "Int_DockingComputer_Advanced" },
     { "slot": "Military01", "item": "Int_ShieldCellBank_Size5_Class5" },
-    { "slot": "Slot10_Size1", "item": "Int_SupercruiseAssist" }
+    { "slot": "Slot12_Size1", "item": "Int_SupercruiseAssist" }
   ],
   "metrics": {
     "unladenMass": 1615.7,

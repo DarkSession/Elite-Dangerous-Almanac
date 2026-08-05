@@ -36,10 +36,10 @@
     { "slot": "Slot06_Size4", "item": "Int_HullReinforcement_Size4_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
     { "slot": "Slot07_Size3", "item": "Int_ModuleReinforcement_Size3_Class2" },
     { "slot": "Slot08_Size3", "item": "Int_ModuleReinforcement_Size3_Class2" },
-    { "slot": "Slot09_Size2", "item": "Int_HullReinforcement_Size2_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot11_Size2", "item": "Int_HullReinforcement_Size2_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
     { "slot": "Military01", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
     { "slot": "Military02", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
-    { "slot": "Slot10_Size1", "item": "Int_SupercruiseAssist" }
+    { "slot": "Slot12_Size1", "item": "Int_SupercruiseAssist" }
   ],
   "metrics": {
     "unladenMass": 2112,

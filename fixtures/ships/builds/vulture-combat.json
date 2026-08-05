@@ -17,10 +17,10 @@
     { "slot": "Military01", "item": "Int_GuardianShieldReinforcement_Size5_Class2" },
     { "slot": "Slot02_Size4", "item": "Int_FuelScoop_Size4_Class5", "priority": 1 },
     { "slot": "Slot03_Size2", "item": "Int_GuardianFSDBooster_Size2" },
-    { "slot": "Slot04_Size1", "item": "Int_GuardianShieldReinforcement_Size1_Class1" },
-    { "slot": "Slot05_Size1", "item": "Int_DockingComputer_Advanced", "priority": 1 },
-    { "slot": "Slot06_Size1", "item": "Int_GuardianShieldReinforcement_Size1_Class2" },
-    { "slot": "Slot07_Size1", "item": "Int_SupercruiseAssist" }
+    { "slot": "Slot05_Size1", "item": "Int_GuardianShieldReinforcement_Size1_Class1" },
+    { "slot": "Slot06_Size1", "item": "Int_DockingComputer_Advanced", "priority": 1 },
+    { "slot": "Slot07_Size1", "item": "Int_GuardianShieldReinforcement_Size1_Class2" },
+    { "slot": "Slot08_Size1", "item": "Int_SupercruiseAssist" }
   ],
   "metrics": {
     "unladenMass": 382.3,

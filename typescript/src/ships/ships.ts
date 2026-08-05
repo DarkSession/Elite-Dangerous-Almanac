@@ -106,7 +106,12 @@ export interface Ship {
     readonly hardpoints?: readonly HardpointSlotSpec[];
     /** Number of tiny utility mounts. */
     readonly utility?: number;
-    /** Optional-internal mounts, largest first. */
+    /**
+     * Optional-internal mounts, largest first. A mount carries a `name` only where the
+     * game's slot key is not what `enumerateSlots` would number it — the Anaconda's
+     * `Slot14_Size1`, the Type-9 Heavy's `Slot00_Size8`, the Lynx Highliner's
+     * `Passenger01`.
+     */
     readonly optional?: readonly OptionalSlotSpec[];
 }
 
@@ -174,7 +179,9 @@ export function getShipByName(name: string): Ship | null {
  * getShipSlots('anaconda')?.hardpoints;
  * // -> [{ size: 4 }, { size: 3 }, { size: 3 }, { size: 3 }, { size: 2 }, ...]
  * getShipSlots('LakonMiner')?.hardpoints[0];
- * // -> { size: 3, restriction: 'mining' } — the Type-11's large mining mount
+ * // -> { size: 3, restriction: 'mining', name: 'LargeMiningHardpoint1' }
+ * getShipSlots('Anaconda')?.optional?.at(-2);   // -> { size: 1, name: 'Slot14_Size1' }
+ * getShipSlots('Sidewinder')?.optional?.at(-2); // -> { size: 1 } — the rules fit
  * ```
  */
 export function getShipSlots(symbol: string): ShipSlots | null {

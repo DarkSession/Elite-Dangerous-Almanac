@@ -1,6 +1,100 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by a price correction on 2026-08-05, recorded with the other corrosion-rack price notes in "Modules (outfitting)". The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the per-hull slot names added on 2026-08-05, recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+
+**Revision 2026-08-05 (UTC) — the mounts of 13 hulls now carry the journal's own slot
+names.**
+`enumerateSlots` numbered a hull's unrestricted optionals `Slot01_SizeN`, `Slot02_SizeN`,
+… with no gaps and its hardpoints `1, 2, 3` within each size class. **On 11 hulls one of
+those two rules is not what the game does** — the optional rule on nine of them, the
+hardpoint rule on the Type-8 Transporter and Caspian Explorer — and the sequences have no
+derivable pattern, so storing the game's name against the mount is the only honest fix. Those 11 and the 2 more
+EDSY names (see the last bullet below) each gain a `name` on the mounts themselves —
+`{ "size": 1, "name": "Slot14_Size1" }` — the same place the 2026-08-04 pass put
+`restriction`, and for the same reason: a fact about one mount belongs on that mount, not
+in a register beside it that has to be kept aligned by position. A mount with no `name`
+is one the rules already get right; a hull that names any mount of a kind names all of
+them, so a derived key and a name can never compete for the same string.
+
+**Source.** [EDSY](https://github.com/taleden/EDSY) `eddb.js` `ship[…].slotnames`,
+acquired 2026-08-05 (UTC) from `raw.githubusercontent.com/taleden/EDSY/master/eddb.js`.
+The file is **byte-identical to the one already recorded** in the 2026-08-02 revision
+below — SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`,
+internal `db 20260428`, `version 423039901`, commit
+`cd68edfba665719958ce038b6e5d9eb02d0d2b02` — so this is the same snapshot read for a
+field the earlier passes did not take, not a new acquisition. These are **journal**
+names rather than EDSY's own: `edsy.js` reads them in `Build.fromJournal()` and writes
+them in `exportJournal()`. Only EDSY carries them; coriolis-data does not model journal
+slot names at all, so the second source a value like this would normally want would have
+to be real journal captures. One is in hand and agrees — see "checked against a real
+capture" below.
+
+**Derivation.** EDSY keeps `military` mounts in a group of their own and does not model
+the planetary approach suite; this catalogue keeps both inline in `optional`. The two
+lists were therefore walked in parallel: every mount consumed the next EDSY name except
+a `military` one (which takes `Military01`, `Military02` — the rule already in force)
+and the `planetaryApproachSuite` one (`PlanetaryApproachSuite`). Two facts were asserted
+for all 13 before anything was written, and both hold: EDSY's `slots` sizes equal this
+catalogue's mount-for-mount, and its name list is exactly consumed. **So this is a
+naming difference alone — no hull's layout, mount count or size changed.**
+
+- **Anaconda** `…Slot10_Size4`, then **`Slot13_Size2`, `Slot14_Size1`** — no 11 or 12.
+- **Type-9 Heavy** starts at **`Slot00_Size8`**, the only hull that does, then runs
+  `Slot01`…`Slot08` and jumps to **`Slot11_Size2`, `Slot12_Size1`**.
+- **Type-10 Defender** (`Type9_Military`) `Slot01`…`Slot08`, then the same
+  **`Slot11`/`Slot12`** jump.
+- **Federal Dropship** `…Slot06_Size3`, then **`Slot09_Size2`, `Slot10_Size1`**.
+- **Vulture** `Slot01`, `Slot02`, `Slot03`, **`Slot05`**, `Slot06`, `Slot07`, `Slot08`.
+- **Type-7 Transporter** uses the number **`09` twice** (`Slot09_Size2` and
+  `Slot09_Size1` — distinct keys), and five of its ten suffixes misreport the size.
+- **Keelback** `Slot03_Size3` on a size-**4** mount; **Asp Scout** `Slot01_Size4` on a
+  size-**5** one.
+- **Type-8 Transporter** *hardpoints* `…SmallHardpoint2`, **`SmallHardpoint4`**,
+  `SmallHardpoint5`, `SmallHardpoint6` — no `SmallHardpoint3`.
+- **Caspian Explorer** *hardpoints* `LargeHardpoint1`, **`MediumHardpoint6`**,
+  **`MediumHardpoint5`**, `MediumHardpoint1`…`4` — out of order, not merely gapped, so
+  before this a weapon fitted here sat in a *different physical mount* than the same key
+  named in game. Its optionals are **not** overridden: EDSY gives none, and the real
+  capture below confirms the plain numbering is right for them.
+- **Lynx Highliner** `Slot01_Size6`, **`Passenger01`–`03`**, `Slot02_Size5`, … The three
+  are the passenger-cabin mounts EDSY marks `reserved:{ipc:1}`; this catalogue still
+  stores them as ordinary optionals, because the *restriction* is
+  [issue #11](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11) and this
+  revision is about names. `parseSlotName` classifies `PassengerNN` as the optional it
+  is, with no restriction.
+- **Panther Clipper Mk II** and **Type-11 Prospector** are carried too, though the
+  numbering rules already derive them exactly (the 2026-08-04 pass fixed that). They are
+  kept so the stored table matches EDSY's 13 entries one for one and re-deriving it is a
+  straight comparison; a test asserts the rules still produce those two unaided, so
+  neither the rule nor its coverage is weakened by the override sitting on top.
+
+**The `_SizeN` suffix is Frontier's, and on three hulls it is wrong.** The Keelback, Asp
+Scout and Type-7 name mounts with a class the hull does not have there. That is the
+game's own text, not a transcription slip: `edsy.js` compensates for exactly this when
+importing, taking the greater of the name's size and the fitted module's class. This
+catalogue stores the name verbatim and keeps the mount's real size in the `optional`
+entry beside it, so `BuildSlot.size` is always the mount's. `parseSlotName` reads the
+size *off the name* by design and its doc now says so.
+
+**Checked against a real capture.** `fixtures/ships/slef-the-deep-black.json` is a
+Caspian Explorer journal export and `fixtures/ships/slef-inara-type-11.json` a Type-11
+one; every slot key in both is now a mount the hull's enumerated layout declares, which
+`slots.test.ts` asserts. The Caspian capture is the load-bearing one: its internals read
+`Slot01_Size7`…`Slot10_Size3`, `Slot13_Size1`, `Slot14_Size1`, all of which the plain
+numbering already produces — evidence for leaving that hull's optionals alone rather
+than assuming EDSY simply omitted them.
+
+**What moved and what did not.** The corpus holds 45 builds on these 13 hulls; 35 of them
+had a module in a renamed mount and were re-slotted onto the corrected keys — 151 slot
+keys in all — each module staying in the *same physical mount*, so no build's fit changed
+and no pinned metric moved. The other 10 needed no edit. All 13 hulls' full
+enumerated key lists are pinned in `fixtures/ships/ship-slots.json` under `keys` (it held
+two before), and the `spot` layouts carry their mount names, so a port produces the same
+vocabulary. The consequence this closes is one-directional and was
+[issue #15](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/15): a build
+assembled here emitted slot keys a game journal would not use, so its SLEF export named
+slots the game does not have. Import gains too — a journal key like `Slot13_Size2` now
+binds to the mount it names instead of sitting beside the layout as an extra.
 
 **Revision 2026-08-05 (UTC) — the stats no source carries are now stated as unknown.**
 No value was added, changed or removed: this revision is a *classification* of the three
@@ -104,9 +198,10 @@ reproduced by `enumerateSlots`:
   so the Panther's column runs `Cargo01`, `Slot01_Size8`, `Cargo02`, `Slot02_Size7`, …
 
 Both hulls' full enumerated key lists are pinned in `fixtures/ships/ship-slots.json`
-under `keys`, and the two hulls' layouts under `spot`, so a port produces the same
-vocabulary. **Which module families each restriction accepts is pinned there too**,
-under `restrictions`: one entry per restricted mount naming modules it must accept and
+under `keys` — which the 2026-08-05 revision above widened to all 13 hulls EDSY names —
+and the two hulls' layouts under `spot`, so a port produces the same vocabulary.
+**Which module families each restriction accepts is pinned there too**, under
+`restrictions`: one entry per restricted mount naming modules it must accept and
 modules it must refuse, plus one unrestricted mount for contrast. That is a fact about
 the game rather than about any implementation, so it belongs in the shared fixtures and
 not only in the TypeScript prefix lists. The six corpus builds on these hulls

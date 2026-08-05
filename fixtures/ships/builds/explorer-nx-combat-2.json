@@ -3,8 +3,8 @@
   "ship": "Explorer_NX",
   "role": "combat",
   "modules": [
-    { "slot": "MediumHardpoint5", "item": "Hpt_PulseLaser_Gimbal_Medium" },
-    { "slot": "MediumHardpoint6", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "MediumHardpoint3", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "MediumHardpoint4", "item": "Hpt_PulseLaser_Gimbal_Medium" },
     { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
     { "slot": "Armour", "item": "Explorer_NX_Armour_Grade1" },
     { "slot": "PowerPlant", "item": "Int_Powerplant_Size8_Class5" },

@@ -14,6 +14,7 @@ import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'j
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
+import { SHIPS } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff } from './weapons.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
@@ -446,6 +447,27 @@ test('a restricted mount reports a human-readable name', () => {
     assert.equal(condaName('Military01'), 'Military Slot 1');
     assert.equal(condaName('PlanetaryApproachSuite'), 'Planetary Approach Suite');
     assert.equal(condaName('HugeHardpoint1'), 'Huge Hardpoint 1');
+    // Every mount a hull declares gets a label — a key with no case of its own would
+    // show up raw among its labelled neighbours, which is what the Lynx Highliner's
+    // `PassengerNN` mounts did when they were first named.
+    const lynx = ShipLoadout.empty('MediumTransport01');
+    const lynxName = (key: string) => lynx.slots().find((s) => s.key === key)?.name;
+    assert.equal(lynxName('Passenger01'), 'Passenger Slot 1 (Size 6)');
+    assert.equal(lynxName('Passenger03'), 'Passenger Slot 3 (Size 5)');
+    assert.equal(lynxName('Slot02_Size5'), 'Optional Internal 2 (Size 5)');
+    for (const ship of SHIPS) {
+        let build;
+        try {
+            build = ShipLoadout.empty(ship.symbol);
+        } catch {
+            continue; // no slot layout for this hull
+        }
+        for (const slot of build.slots()) {
+            // The armour mount is the one place where the label *is* the key.
+            if (slot.kind === 'armour') continue;
+            assert.notEqual(slot.name, slot.key, `${ship.symbol}: ${slot.key} has no label`);
+        }
+    }
 });
 
 test('setModule throws a clear error when handed an undefined module', () => {
