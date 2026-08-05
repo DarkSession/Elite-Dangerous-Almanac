@@ -1043,7 +1043,7 @@ test('a fitted module whose mass is unknown refuses to report a mass', () => {
         mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES),
     );
     assert.equal(build.unladenMass, null);
-    assert.ok(isStatUnknown('Int_DroneControl_ResourceSiphon', 'mass'));
+    assert.ok(isStatUnknown(mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES), 'mass'));
 
     // Its sized siblings all carry one, so the same build with any of them answers.
     build.setModule(

@@ -1,14 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-    UNKNOWN_MODULE_STATS,
-    isStatUnknown,
-    unknownStatsFor,
-    type ModuleStatField,
-} from './unknown-stats.js';
+import { isStatUnknown, modulesWithUnknownStats } from './unknown-stats.js';
 import { ALL_MODULES } from './modules-all.js';
-import { getModuleBySymbol } from './modules.js';
+import { INTERNAL_MODULES } from './modules-internal.js';
+import { getModuleBySymbol, type ModuleStatField } from './modules.js';
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
 
 const FIXTURE = statsFixture.unknownStats;
@@ -18,50 +14,54 @@ const BY_FIELD: Readonly<Record<string, readonly string[]>> = {
     mass: FIXTURE.mass,
 };
 
-test('the registry holds exactly the gaps the fixture pins', () => {
-    const registered: Record<string, string[]> = {};
-    for (const entry of UNKNOWN_MODULE_STATS) {
-        for (const field of entry.stats) (registered[field] ??= []).push(entry.symbol);
+test('the catalogue declares exactly the gaps the fixture pins', () => {
+    const declared: Record<string, string[]> = {};
+    for (const module of modulesWithUnknownStats(ALL_MODULES)) {
+        for (const field of module.unknownStats!) (declared[field] ??= []).push(module.symbol);
     }
     assert.deepEqual(
-        Object.fromEntries(Object.entries(registered).map(([f, s]) => [f, [...s].sort()])),
+        Object.fromEntries(Object.entries(declared).map(([f, s]) => [f, [...s].sort()])),
         Object.fromEntries(Object.entries(BY_FIELD).map(([f, s]) => [f, [...s].sort()])),
     );
 });
 
-test('every registered symbol is a real module, and every registered stat is absent from it', () => {
-    // The registry only ever *explains* an absence. A field that has a value is not
-    // unknown, and leaving the entry behind after sourcing one would say it is.
-    for (const entry of UNKNOWN_MODULE_STATS) {
-        const record = getModuleBySymbol(entry.symbol, ALL_MODULES);
-        assert.ok(record, `${entry.symbol} is not in the module catalogue`);
-        assert.ok(entry.stats.length > 0, `${entry.symbol} registers no stat`);
-        for (const field of entry.stats) {
-            assert.equal(record[field], undefined, `${entry.symbol}.${field} has a value`);
+test('a declared stat is always absent from the record that declares it', () => {
+    // The field only ever *explains* an absence. A stat that has a value is not
+    // unknown, and leaving the name behind after sourcing one would say it is.
+    for (const module of modulesWithUnknownStats(ALL_MODULES)) {
+        assert.ok(module.unknownStats!.length > 0, `${module.symbol} declares nothing`);
+        for (const field of module.unknownStats!) {
+            assert.equal(module[field], undefined, `${module.symbol}.${field} has a value`);
         }
     }
 });
 
-test('no module is registered twice', () => {
-    const symbols = UNKNOWN_MODULE_STATS.map((entry) => entry.symbol.toLowerCase());
-    assert.equal(new Set(symbols).size, symbols.length);
+test('the declarations name only fields the record shape has', () => {
+    // A typo'd field would silently never match, so pin the names against the fields
+    // the catalogue actually uses.
+    const fields = new Set(ALL_MODULES.flatMap((m) => Object.keys(m)) as ModuleStatField[]);
+    for (const module of modulesWithUnknownStats(ALL_MODULES)) {
+        for (const field of module.unknownStats!) {
+            assert.ok(fields.has(field), `${module.symbol}: unknown field ${field}`);
+        }
+    }
 });
 
 test('the four withdrawn Discovery Scanners are the whole of the power-draw gap', () => {
     // They are the remainder of the old "106 modules are missing powerDraw" gap: no
     // registry carries a value, and the in-game function is built in now, so 0 would be
-    // plausible and unsourced. Every other scanner-like fitting does carry one.
+    // plausible and unsourced.
     const scanners = ALL_MODULES.filter((m) =>
         m.symbol.toLowerCase().startsWith('int_stellarbodydiscoveryscanner'),
     );
     assert.equal(scanners.length, 4);
     for (const scanner of scanners) {
         assert.equal(scanner.powerDraw, undefined);
-        assert.ok(isStatUnknown(scanner.symbol, 'powerDraw'), scanner.symbol);
+        assert.ok(isStatUnknown(scanner, 'powerDraw'), scanner.symbol);
         // Their mass and integrity are sourced, and stay outside the gap.
         assert.equal(scanner.mass, 2);
         assert.equal(scanner.integrity, 40);
-        assert.equal(isStatUnknown(scanner.symbol, 'mass'), false);
+        assert.equal(isStatUnknown(scanner, 'mass'), false);
     }
 });
 
@@ -71,7 +71,7 @@ test('the unsized Hatch Breaker Limpet Controller is the whole of the mass gap',
         missing.map((m) => m.symbol),
         ['Int_DroneControl_ResourceSiphon'],
     );
-    assert.ok(isStatUnknown('Int_DroneControl_ResourceSiphon', 'mass'));
+    assert.ok(isStatUnknown(missing[0], 'mass'));
     // Every sized controller in the family has a real, non-zero mass — which is why the
     // absent one cannot be read as zero.
     const sized = ALL_MODULES.filter((m) =>
@@ -82,41 +82,28 @@ test('the unsized Hatch Breaker Limpet Controller is the whole of the mass gap',
 });
 
 test('a stat a module simply does not have is not reported as unknown', () => {
-    // The distinction the registry exists for: a cargo rack draws no power, and that is
-    // an answer, not a gap.
+    // The distinction the field exists for: a cargo rack draws no power, and that is an
+    // answer, not a gap.
     const rack = getModuleBySymbol('Int_CargoRack_Size4_Class1', ALL_MODULES);
     assert.equal(rack?.powerDraw, undefined);
-    assert.equal(isStatUnknown(rack!.symbol, 'powerDraw'), false);
-    assert.deepEqual(unknownStatsFor(rack!.symbol), []);
+    assert.equal(isStatUnknown(rack, 'powerDraw'), false);
+    assert.equal(rack?.unknownStats, undefined);
 });
 
-test('lookups take a journal-cased symbol and an unknown one', () => {
-    assert.deepEqual(unknownStatsFor('int_stellarbodydiscoveryscanner_advanced'), ['powerDraw']);
-    assert.deepEqual(unknownStatsFor('INT_DRONECONTROL_RESOURCESIPHON'), ['mass']);
-    assert.deepEqual(unknownStatsFor('not_a_module_at_all'), []);
-    assert.equal(isStatUnknown('not_a_module_at_all', 'mass'), false);
-    // An identity field is never unknown, whatever the module.
-    assert.equal(isStatUnknown('Int_DroneControl_ResourceSiphon', 'name'), false);
-});
-
-test('a narrower catalogue narrows the answer', () => {
-    const onlyTheSiphon = UNKNOWN_MODULE_STATS.filter((entry) => entry.stats.includes('mass'));
-    assert.equal(isStatUnknown('Int_DroneControl_ResourceSiphon', 'mass', onlyTheSiphon), true);
+test('an unidentifiable module, and an identity field, answer false', () => {
+    assert.equal(isStatUnknown(null, 'mass'), false);
+    assert.equal(isStatUnknown(undefined, 'powerDraw'), false);
     assert.equal(
-        isStatUnknown('Int_StellarBodyDiscoveryScanner_Advanced', 'powerDraw', onlyTheSiphon),
+        isStatUnknown(getModuleBySymbol('not_a_module_at_all', ALL_MODULES), 'mass'),
         false,
     );
-    assert.deepEqual(
-        unknownStatsFor('Int_StellarBodyDiscoveryScanner_Advanced', onlyTheSiphon),
-        [],
-    );
+    const siphon = getModuleBySymbol('Int_DroneControl_ResourceSiphon', ALL_MODULES);
+    assert.equal(isStatUnknown(siphon, 'name'), false);
 });
 
-test('the registry names only fields the module record can carry', () => {
-    // A typo'd field would silently never match, so pin the names against the fields
-    // the catalogue actually uses — every one of them, not one record's handful.
-    const fields = new Set(ALL_MODULES.flatMap((m) => Object.keys(m)) as ModuleStatField[]);
-    for (const entry of UNKNOWN_MODULE_STATS) {
-        for (const field of entry.stats) assert.ok(fields.has(field), `unknown field ${field}`);
-    }
+test('the declarations are reachable from the category catalogue alone', () => {
+    // All five are internal modules, so a consumer that never imports ALL_MODULES still
+    // sees them — the point of the field living on the record.
+    assert.equal(modulesWithUnknownStats(INTERNAL_MODULES).length, 5);
+    assert.deepEqual(modulesWithUnknownStats(ALL_MODULES).length, 5);
 });

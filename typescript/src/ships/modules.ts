@@ -186,6 +186,31 @@ export interface OutfittingModule {
      * match {@link Ship.symbol}.
      */
     readonly restrictedToShips?: readonly string[];
+    /**
+     * The stat fields this record omits because the value is **unknown**, rather than
+     * because the module has no such stat.
+     *
+     * @remarks
+     * Every stat below is optional, and a missing one reads as `undefined` either way:
+     * a cargo rack draws no power, while a withdrawn Discovery Scanner draws power
+     * nobody publishes. Only the second kind is named here, so a calculation can tell
+     * "nothing to add" from "cannot be answered" instead of adding up a zero it cannot
+     * justify — {@link isStatUnknown} is the predicate.
+     *
+     * Present on five records today. A field named here is always absent from this
+     * record, so sourcing a value means deleting its name here in the same change.
+     * Read its absence as "not one of the known gaps", not as "the game has no such
+     * value": the base stats blueprints modify that no record carries at all are a
+     * separate gap, tracked in `TODO.md`.
+     *
+     * @example
+     * ```ts
+     * const scanner = getModuleBySymbol('Int_StellarBodyDiscoveryScanner_Advanced');
+     * scanner?.powerDraw;    // -> undefined
+     * scanner?.unknownStats; // -> ['powerDraw'] — don't budget it as 0 MW
+     * ```
+     */
+    readonly unknownStats?: readonly ModuleStatField[];
     /** Mass, in tonnes. */
     readonly mass?: number;
     /** Integrity (hit points against module damage). */
@@ -366,6 +391,15 @@ export interface OutfittingModule {
      */
     readonly cost?: number;
 }
+
+/**
+ * A field of an {@link OutfittingModule} record — what
+ * {@link OutfittingModule.unknownStats} names and {@link isStatUnknown} takes.
+ *
+ * The whole record shape, not a stats-only subset: identity fields (`symbol`, `name`,
+ * `category`) are never unknown, so asking about one simply answers `false`.
+ */
+export type ModuleStatField = keyof OutfittingModule;
 
 /**
  * Look up a module by its internal symbol, case-insensitively.

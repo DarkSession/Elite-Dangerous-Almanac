@@ -40,6 +40,9 @@ const IDENTITY_KEYS = new Set([
     // Price is commercial data, not a stat: ship-specific armour is priced but carries
     // no mass/integrity/power, and must still count as identity-only here.
     'cost',
+    // A statement *about* this record's stats rather than one of them: naming a stat
+    // as unknown is the opposite of carrying it.
+    'unknownStats',
 ]);
 
 /** Whether a merged record carries any stats (vs. identity only, like armour). */
@@ -185,19 +188,19 @@ for (const [name, expected] of Object.entries(statsFixture.counts)) {
 test('the records with no integrity are the same set they have always been', () => {
     // Not a gap in the data: no registry publishes an integrity for these families and
     // the game's own module panel shows none, so the absence is the answer — which is
-    // why they are pinned as a set here rather than registered in `unknown-stats`. Ship
+    // why they are pinned as a set here rather than declaring `unknownStats`. Ship
     // armour is excluded: 241 records, a different shape, and counted with the hulls.
     const withoutIntegrity = ALL_MODULES.filter(
         (m) => m.integrity === undefined && m.ship === undefined,
-    ).map((m) => m.symbol);
+    );
     assert.equal(withoutIntegrity.length, statsFixture.withoutIntegrity.count);
     assert.deepEqual(
-        [...withoutIntegrity].sort(),
+        withoutIntegrity.map((m) => m.symbol).sort(),
         [...statsFixture.withoutIntegrity.symbols].sort(),
     );
-    // And none of them is registered as a gap, which is what says so in code.
-    for (const symbol of withoutIntegrity) {
-        assert.equal(isStatUnknown(symbol, 'integrity'), false, symbol);
+    // And none of them calls it a gap, which is what says so in code.
+    for (const module of withoutIntegrity) {
+        assert.equal(isStatUnknown(module, 'integrity'), false, module.symbol);
     }
 });
 

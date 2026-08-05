@@ -65,6 +65,7 @@ export {
     getModulesByName,
     getModulesForShip,
     type OutfittingModule,
+    type ModuleStatField,
     type ModuleCategory,
     type ModuleMount,
     type ModuleGuidance,
@@ -80,13 +81,7 @@ export { UTILITY_MODULES } from './modules-utility.js';
 export { ALL_MODULES } from './modules-all.js';
 
 // ── Which missing stats are gaps rather than stats the module does not have ──
-export {
-    UNKNOWN_MODULE_STATS,
-    unknownStatsFor,
-    isStatUnknown,
-    type UnknownModuleStats,
-    type ModuleStatField,
-} from './unknown-stats.js';
+export { isStatUnknown, modulesWithUnknownStats } from './unknown-stats.js';
 
 // ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
 export {

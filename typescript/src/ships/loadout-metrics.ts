@@ -169,11 +169,9 @@ export function powerConsumerFor(
         label: module.Slot,
     };
     if (draw === undefined) {
-        // The symbol is the catalogue's own where there is a record, so a build that
-        // supplied its own stats is still classified by the article that was fitted.
-        return isStatUnknown(stats?.symbol ?? module.Item, 'powerDraw')
-            ? { draw: 0, drawUnknown: true, ...common }
-            : null;
+        // The record the module was fitted as has the last word, so a build that
+        // supplied its own stats is classified by the article it actually carries.
+        return isStatUnknown(stats, 'powerDraw') ? { draw: 0, drawUnknown: true, ...common } : null;
     }
     if (draw === 0) return null;
     return { draw, ...common };

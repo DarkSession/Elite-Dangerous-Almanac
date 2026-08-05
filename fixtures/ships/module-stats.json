@@ -1,6 +1,6 @@
 {
   "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc (engineering/mechanical stats, the defence stats — resistances, hull boost and reinforcement — and the weapon stats). Cross-language validation.",
-  "countsNote": "Every module in every catalogue now carries at least one stat, so these equal the catalogue sizes and no longer fail independently of the catalogue counts in modules.json — they assert that no record regresses to identity-only. The 16 rows that used to have none were the ten `*_free` starter variants, `Int_Hyperdrive_Size8_Class{1..5}` and `Int_DroneControl_ResourceSiphon`. No row is left holding only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. `Int_DroneControl_ResourceSiphon` deliberately still has no `mass` — no source states one, so absent keeps meaning unknown, and it is registered as such in `unknownStats` below and in data/ships/unknown-stats.jsonc. The `spot` entries below are what actually pins the backfilled and corrected values.",
+  "countsNote": "Every module in every catalogue now carries at least one stat, so these equal the catalogue sizes and no longer fail independently of the catalogue counts in modules.json — they assert that no record regresses to identity-only. The 16 rows that used to have none were the ten `*_free` starter variants, `Int_Hyperdrive_Size8_Class{1..5}` and `Int_DroneControl_ResourceSiphon`. No row is left holding only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. `Int_DroneControl_ResourceSiphon` deliberately still has no `mass` — no source states one, so absent keeps meaning unknown, and its own record says so in `unknownStats` (pinned below). The `spot` entries below are what actually pins the backfilled and corrected values.",
   "counts": {
     "core": 521,
     "internal": 483,
@@ -38,7 +38,7 @@
     "Int_CorrosionProofCargoRack_Size6_Class1"
   ],
   "unknownStats": {
-    "note": "The absences in data/ships/modules-*.jsonc that mean *unknown*, not *the module has no such stat*, mirroring data/ships/unknown-stats.jsonc record for record. Every symbol here must be missing the field named, and no other record may be missing it for an unknown reason — a value that gets sourced is filled into the module record and dropped from both files together.",
+    "note": "The absences in data/ships/modules-*.jsonc that mean *unknown*, not *the module has no such stat*. The record itself says so, in its own `unknownStats` field; this pins which records carry which, so a port validates the same set. Every symbol here must be missing the field named — a value that gets sourced is filled into the record and its name dropped from that record's `unknownStats` in the same change.",
     "powerDraw": [
       "Int_StellarBodyDiscoveryScanner_Standard",
       "Int_StellarBodyDiscoveryScanner_Intermediate",

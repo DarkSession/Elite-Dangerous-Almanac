@@ -117,8 +117,8 @@ own reason:
 ### 4. Two stat values are still unsourced — but a consumer can now see which
 
 The 2026-08-02 reconciliation surfaced three gaps and deliberately left them rather than
-guess. The 2026-08-05 revision classified all three and made them legible in the API
-(`data/ships/unknown-stats.jsonc`, `ships/unknown-stats`); what is left is the two
+guess. The 2026-08-05 revision classified all three and made them legible on the records
+themselves (`OutfittingModule.unknownStats`, `isStatUnknown`); what is left is the two
 **values**, which no public source has. Long-form reasoning in `data/ships/SOURCES.md`.
 
 **a. 83 non-armour records have no `integrity` — closed as a finding, not a gap.** Mostly
@@ -126,7 +126,7 @@ the families that carry no other mechanical stat either — passenger cabins (23
 Guardian/meta-alloy reinforcement packages (30), fuel tanks (9), cargo racks (17), module
 stabilisers (2), planetary approach suites (2). Neither EDSY nor any other registry
 carries an integrity for them and the in-game panel does not show one, so the absence
-*is* the answer; they are not registered as unknown. The exact 83 are pinned in
+*is* the answer; they do not declare `unknownStats`. The exact 83 are pinned in
 `fixtures/ships/module-stats.json` `withoutIntegrity`, so a value appearing — or a new
 record joining one of those families — fails a test instead of passing unnoticed. A
 further 241 records without `integrity` are ship armour, a different shape, excluded by
@@ -137,23 +137,22 @@ unsourced.** They are the remainder of the old "106 modules are missing `powerDr
 No source has a value: EDSY gives them only mass and integrity, and coriolis-data has no
 record for them at all. They are withdrawn modules whose function is built in now, so `0`
 is plausible but unsourced — left absent, since absent means unknown. What changed is
-that the unknown no longer reads as zero: they are registered in
-`data/ships/unknown-stats.jsonc`, `isStatUnknown` answers for them, and a build that fits
-one gets it named in `PowerBudget.unknownDraws` rather than silently counted as drawing
-nothing. Fill from an outfitting-panel reading on an old save that still carries one.
+that the unknown no longer reads as zero: each record declares `unknownStats:
+["powerDraw"]`, and a build that fits one gets it named in `PowerBudget.unknownDraws`
+rather than silently counted as drawing nothing. Fill from an outfitting-panel reading on an old save that still carries one.
 
 **c. `Int_DroneControl_ResourceSiphon` has no `mass` — still unsourced.** The only record
 left from the old "Modules still missing `mass`, deliberately" gap. EDSY omits the field
 and its engine reads a missing mass as zero, but it does not *state* zero, and unlike the
 built-ins this catalogue does carry an explicit `mass: 0` for, there is no uniformity to
 appeal to — every sized limpet controller in the family has a real, non-zero mass. Left
-absent rather than inferred, registered as unknown alongside the scanners; `unladenMass`
+absent rather than inferred, declared as unknown on the record; `unladenMass`
 already withholds the whole figure rather than under-reporting it when this one is
 fitted. Fill from a real journal `Loadout` that fits it, or from an outfitting screen
 reading.
 
-Filling either value means deleting its entry from `data/ships/unknown-stats.jsonc` and
-`fixtures/ships/module-stats.json` `unknownStats` in the same change — a registered field
+Filling either value means dropping its name from that record's `unknownStats` and from
+`fixtures/ships/module-stats.json` `unknownStats` in the same change — a declared field
 that has a value fails `unknown-stats.test.ts`.
 
 ### 5. Blueprints cannot be applied to most real builds: base stats are missing

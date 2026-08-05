@@ -592,24 +592,34 @@ because all three stats are already per second on those.
 Sparse means a missing stat is usually an answer: a cargo rack draws no power, a fuel
 tank has no rate of fire. For five records it is a **gap** instead — the module has the
 stat in game and no public registry publishes it — and adding those up as zero would
-quietly understate a build. `ships/unknown-stats` (under 1 KB minified, and it pulls no
-catalogue) tells the two apart:
+quietly understate a build. **The record says which it is**, in `unknownStats`, so
+there is no second lookup:
+
+```ts
+const scanner = getModuleBySymbol("Int_StellarBodyDiscoveryScanner_Advanced");
+scanner?.powerDraw; // -> undefined
+scanner?.unknownStats; // -> ["powerDraw"]  — a gap, not "draws nothing"
+
+getModuleBySymbol("Int_CargoRack_Size4_Class1")?.unknownStats; // -> undefined
+```
+
+`ships/unknown-stats` is the predicate over that field for when a `?.includes()` reads
+poorly — it holds no data and pulls no catalogue:
 
 ```ts
 import { isStatUnknown } from "@elite-dangerous-almanac/core/ships/unknown-stats";
 
-isStatUnknown("Int_StellarBodyDiscoveryScanner_Advanced", "powerDraw"); // -> true
-isStatUnknown("Int_CargoRack_Size4_Class1", "powerDraw"); // -> false, it draws nothing
+isStatUnknown(scanner, "powerDraw"); // -> true
 ```
 
 The five are the four withdrawn Discovery Scanners (`powerDraw`) and the unsized Hatch
 Breaker Limpet Controller (`mass`). A whole build already answers safely without you
-consulting the register: `powerBudget()` reports such a module in `unknownDraws`
-instead of counting it as free, and `unladenMass` returns `null` rather than a total
-missing a module's mass — the latter for _any_ absent mass, register or not. `TODO.md`
-tracks what would fill each. An absent `cost` needs no such lookup — see
-[Prices](#prices) — and this is not a claim that _every_ other absence is a stat the
-game does not have.
+checking: `powerBudget()` reports such a module in `unknownDraws` instead of counting
+it as free, and `unladenMass` returns `null` rather than a total missing a module's
+mass — the latter for _any_ absent mass, declared or not. `TODO.md` tracks what would
+fill each. An absent `cost` is never declared — see [Prices](#prices), where absence
+already means unknown — and this is not a claim that _every_ other absence is a stat
+the game does not have.
 
 #### Prices
 
@@ -1246,9 +1256,9 @@ since:
   registry; its market category is a maintainer assignment.
 - **2026-08-02** — a module-stat reconciliation against EDSY that left every
   outfitting module carrying at least one stat and corrected 40 records.
-- **2026-08-05** — no value changed: the absences that mean _unknown_ rather than
-  _no such stat_ are now recorded in `data/ships/unknown-stats.jsonc` and answered
-  by [`ships/unknown-stats`](#when-a-stat-is-missing).
+- **2026-08-05** — no value changed: a module record whose missing stat means
+  _unknown_ rather than _no such stat_ now says so in its own
+  [`unknownStats`](#when-a-stat-is-missing) field.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

@@ -41,6 +41,11 @@
  * `falloffRange` / `shotSpeed` are metres and metres per second.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
+ * `unknownStats` names the stat fields this record omits because the value is
+ * *unknown* rather than because the module has none — a cargo rack has no
+ * `powerDraw`, but a Discovery Scanner has one nobody publishes. Present only where
+ * an absence needs that said; a field named here is always absent from the record,
+ * so sourcing a value means deleting its name here in the same change.
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -1705,7 +1710,8 @@
     "integrity": 20,
     "powerDraw": 0.4,
     "bootTime": 0,
-    "cost": 18040
+    "cost": 18040,
+    "unknownStats": ["mass"]
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class1",
@@ -1955,7 +1961,8 @@
     "rating": "E",
     "mass": 2,
     "integrity": 40,
-    "cost": 1000
+    "cost": 1000,
+    "unknownStats": ["powerDraw"]
   },
   {
     "symbol": "Int_StellarBodyDiscoveryScanner_Intermediate",
@@ -1965,7 +1972,8 @@
     "rating": "D",
     "mass": 2,
     "integrity": 40,
-    "cost": 505000
+    "cost": 505000,
+    "unknownStats": ["powerDraw"]
   },
   {
     "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
@@ -1975,7 +1983,8 @@
     "rating": "C",
     "mass": 2,
     "integrity": 40,
-    "cost": 1545000
+    "cost": 1545000,
+    "unknownStats": ["powerDraw"]
   },
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
@@ -2019,7 +2028,8 @@
     "class": 1,
     "rating": "E",
     "mass": 2,
-    "integrity": 40
+    "integrity": 40,
+    "unknownStats": ["powerDraw"]
   },
   {
     "symbol": "Int_CargoRack_Size2_Class1_free",

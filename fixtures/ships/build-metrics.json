@@ -281,7 +281,7 @@
       ]
     },
     "powerBudgetUnknownDraw": {
-      "note": "A consumer whose draw the catalogue cannot supply is left out of every total and reported in unknownDraws — the same consumer entries that were passed in, handed back unmodified, so an implementation must not normalise them or fill in defaults — rather than counted as drawing nothing. Only the withdrawn Discovery Scanners are like this today (data/ships/unknown-stats.jsonc). Every other figure is then a lower bound: this build reads 6 MW of 10 with 4 MW spare, and the true draw is 6 MW plus whatever the unknown module takes.",
+      "note": "A consumer whose draw the catalogue cannot supply is left out of every total and reported in unknownDraws — the same consumer entries that were passed in, handed back unmodified, so an implementation must not normalise them or fill in defaults — rather than counted as drawing nothing. Only the withdrawn Discovery Scanners are like this today; a module record says so itself, in its `unknownStats` field. Every other figure is then a lower bound: this build reads 6 MW of 10 with 4 MW spare, and the true draw is 6 MW plus whatever the unknown module takes.",
       "available": 10,
       "consumers": [
         {
