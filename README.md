@@ -1126,13 +1126,15 @@ fixed Mining Laser is not one of them — it is grouped and does offer an effect
 > fuel scoops, FSD interdictors, the Guardian weapons — currently answer `[]` even though
 > real builds engineer them.
 >
-> For some of those families `ShipLoadout.applyBlueprint` also refuses the recipe — sensors,
-> the Detailed Surface Scanner, thrusters and shield cell banks among them — because the
-> module records lack the base stats their blueprints modify. Measured on the 181-build
-> corpus in `fixtures/ships/builds/`: 406 of its 1902 declared engineering entries are
-> rejected, across 128 builds. Armour, life support, the limpet controllers, AFMUs, fuel
-> scoops, heat sink and chaff launchers and the Guardian weapons engineer fine — for those
-> it really is only the _menu_ that is missing. Issues
+> Two of those families — sensors and the Detailed Surface Scanner — are also refused by
+> `ShipLoadout.applyBlueprint`, because the module records lack the base stats their
+> blueprints modify. That second gap is not confined to this list: thrusters, shield
+> generators, shield cell banks and many weapons _are_ grouped here and still refused
+> there. Measured on the 181-build corpus in `fixtures/ships/builds/`: 406 of
+> its 1902 declared engineering entries are rejected, across 128 builds. Armour, life
+> support, the limpet controllers, AFMUs, fuel scoops, heat sink and chaff launchers and the
+> Guardian weapons engineer fine — for those it really is only the _menu_ that is missing.
+> Issues
 > [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13) and
 > [#10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10) track the two
 > remaining problems.

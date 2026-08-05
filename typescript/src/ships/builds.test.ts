@@ -9,7 +9,11 @@ import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import { getBlueprintGrade } from './blueprints.js';
-import { blueprintTargets, moduleEngineeringTarget } from './engineering-compatibility.js';
+import {
+    blueprintTargets,
+    experimentalTarget,
+    moduleEngineeringTarget,
+} from './engineering-compatibility.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import index from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
 
@@ -166,11 +170,13 @@ test('every declared blueprint, grade and experimental effect is in the catalogu
 });
 
 /**
- * The two ways `applyBlueprint` refuses a recipe for the module it is on, as its own
- * messages spell them: a family mismatch, and a module that takes no engineering at all.
- * Anything else it throws — a missing base stat, an unknown id — is a different failure.
+ * Every way `applyBlueprint` refuses a recipe for the module it is on, as its own messages
+ * spell them: a blueprint in another family, an *experimental effect* in another family,
+ * and a module that takes no engineering at all. Anything else it throws — a missing base
+ * stat, an unknown id — is a different failure and is not this test's business.
  */
-const COMPATIBILITY_REFUSAL = /blueprint ".*" targets .*, not \w+ module|takes no engineering/;
+const COMPATIBILITY_REFUSAL =
+    /(blueprint|experimental effect) ".*" targets .*, not \w+ module|takes no engineering/;
 
 test('every declared blueprint is one its module can take', () => {
     const rejected: string[] = [];
@@ -188,7 +194,8 @@ test('every declared blueprint is one its module can take', () => {
             } catch (error) {
                 // Drive the real API rather than re-checking the map, so this cannot drift
                 // from `applyBlueprint`; only its compatibility refusals count here, since
-                // a missing base stat is a data gap (issue #10), not a mapping defect.
+                // a missing base stat is a data gap, not a mapping defect — see
+                // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10.
                 const message = error instanceof Error ? error.message : String(error);
                 if (COMPATIBILITY_REFUSAL.test(message)) rejected.push(`${build.id}: ${message}`);
             }
@@ -204,6 +211,8 @@ test('every declared blueprint is one its module can take', () => {
 test('the corpus never engineers a module the catalogues put in another family', () => {
     // Same corpus, read through the map directly: the entry that proves the assertion
     // above is about compatibility and not about `applyBlueprint` happening not to throw.
+    // 1332 of the corpus's entries name an experimental effect, so both halves count.
+    let withExperimental = 0;
     for (const build of builds) {
         for (const entry of build.modules) {
             if (!entry.engineering) continue;
@@ -213,8 +222,17 @@ test('the corpus never engineers a module the catalogues put in another family',
                 blueprintTargets(entry.engineering.blueprint)?.includes(target),
                 `${build.id}: "${entry.engineering.blueprint}" does not target ${target} "${entry.item}"`,
             );
+            const effect = entry.engineering.experimental;
+            if (effect === undefined) continue;
+            withExperimental++;
+            assert.equal(
+                experimentalTarget(effect),
+                target,
+                `${build.id}: "${effect}" does not target ${target} "${entry.item}"`,
+            );
         }
     }
+    assert.ok(withExperimental > 1000, `only ${withExperimental} entries carry an experimental`);
 });
 
 test('every build reproduces its pinned metrics', () => {

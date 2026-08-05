@@ -81,10 +81,12 @@ const prefixTarget = (
  * (`LifeSupport_LightWeight`, `CollectionLimpet_LightWeight`, …) and the generic
  * `Misc_LightWeight`, whose grades are identical to them in `blueprints.jsonc`. Which id
  * a build carries depends on where it was authored: EDSY writes `Misc_LightWeight` for
- * every family below, coriolis-data the family-prefixed one where one exists — life
- * support and the limpet controllers — and the generic id elsewhere, chaff launchers,
- * heat sinks, point defence and the scanners having no prefixed spelling at all. Both
- * have to resolve to the same set.
+ * every family below, coriolis-data the family-prefixed one for the five families the
+ * catalogue has one for — life support and the four limpet controllers — and the generic
+ * id for the rest, no Lightweight, Reinforced or Shielded spelling existing for chaff
+ * launchers, ECMs, heat sinks, point defence or the scanners. So the **generic** id has to
+ * reach every family below; a prefixed id keeps naming its own family alone, which is what
+ * it unambiguously means.
  *
  * The set is EDSY's own module-group table (`eddb.js`, the `misc_lw` / `misc_rf` group
  * lists): chaff launchers, ECMs, heat sink launchers, point defence, the KWS/manifest/wake
@@ -96,9 +98,9 @@ const prefixTarget = (
  * `Sensor_LightWeight` carries a scan-angle leg, `Weapon_LightWeight` a distributor-draw
  * one, `Armour_Advanced` trades hull boost for resistances and
  * `HullReinforcement_Advanced` reinforcement for mass — so the generic id must not reach
- * them. AFMUs, fuel scoops and refineries
- * are absent for the other reason: the game offers them Shielded and nothing else, which
- * is why they are in {@link GENERIC_SHIELDED_TARGETS} and not here.
+ * them. AFMUs, fuel scoops and refineries are absent for the other reason: the game offers
+ * them Shielded and nothing else, which is why they are in
+ * {@link GENERIC_SHIELDED_TARGETS} and not here.
  *
  * @internal
  */
@@ -221,8 +223,9 @@ export function blueprintTargets(fdname: string): readonly EngineeringTarget[] |
     // roll different numbers — the sensors' Long Range costs mass and the scanners' costs
     // power draw, Wide Angle the other way round — which is why coriolis-data splits the
     // scanner side out under `Scanner_LongRange` / `Scanner_WideAngle` while EDSY keeps a
-    // single `Sensor_*` fdname. The corpus carries both spellings on one wake scanner, so
-    // both are accepted; the numbers then applied are the ones stored under the id named,
+    // single `Sensor_*` fdname. Two corpus builds carry the two spellings on the same wake
+    // scanner (`Hpt_CloudScanner_Size0_Class5`), so both are accepted; the numbers then
+    // applied are the ones stored under the id named,
     // which is the wrong set for a scanner given a `Sensor_*` id. That is unreachable
     // today — a utility scanner carries no `ScannerRange` base stat, so the call fails the
     // missing-base check first — and is tracked, together with the ordering against that

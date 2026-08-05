@@ -980,20 +980,23 @@ that **every** engineering entry the 181 builds declare is one its module can ta
   their grades in `blueprints.jsonc` are identical, roll ranges and materials included,
   with one published exception: `LifeSupport_Shielded` G5 draws +112% power where the rest
   draw +100%. Which spelling a build carries depends on where it was authored: EDSY writes
-  the generic id for every family, coriolis the family-prefixed one where the catalogue
-  has one — life support and the four limpet controllers, plus AFMUs, fuel scoops and
-  refineries for Shielded — and the generic id for the rest, chaff launchers, heat sinks,
-  point defence and the scanners having no prefixed spelling at all. Both resolve to the
-  whole family set. Measured on the corpus before this was fixed: 76 of
-  1902 entries were refused for a family mismatch, 52 of them `Misc_LightWeight` on life
-  support, collector controllers and scanners.
+  the generic id for every family, coriolis the family-prefixed one where the catalogue has
+  one — life support and the four limpet controllers, plus AFMUs, fuel scoops and refineries
+  for Shielded — and the generic id for the rest, no prefixed Lightweight, Reinforced or
+  Shielded existing for chaff launchers, ECMs, heat sinks, point defence or the scanners.
+  So it is the **generic** id that has to reach every family; a prefixed id keeps naming its
+  own family alone, which is what it unambiguously means, and the fixture pins that
+  (`LifeSupport_LightWeight` on a collector controller is refused). Measured on the corpus
+  before this was fixed: 76 of 1902 entries were refused for a family mismatch, 52 of them
+  `Misc_LightWeight` on life support, collector controllers and scanners.
 - **Which families, exactly.** Lightweight and Reinforced: chaff launchers, ECMs, heat sink
   launchers, point defence, the KWS/manifest/wake scanners, life support and the four
   limpet controllers. Shielded: those plus AFMUs, fuel scoops and refineries, the three
   families the game offers Shielded and nothing else. Sensors are in neither list — their
   Lightweight is `Sensor_LightWeight`, a different recipe carrying a scan-angle leg — and
-  neither are weapons or hull armour, whose Lightweight (`Weapon_LightWeight`,
-  `Armour_Advanced`) is different again.
+  neither are weapons, hull armour or hull reinforcement, whose Lightweight
+  (`Weapon_LightWeight` cutting distributor draw, `Armour_Advanced` trading hull boost for
+  resistances, `HullReinforcement_Advanced` reinforcement for mass) is different again.
 - **Long Range and Wide Angle belong to two families.** The sensor suite and the utility
   scanners both take them and the game writes one `BlueprintName` for both, but the rolls
   differ: the sensors' Long Range costs mass, the scanners' costs power draw, and Wide
