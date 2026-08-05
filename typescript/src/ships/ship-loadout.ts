@@ -429,9 +429,12 @@ function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
 function cloneModuleStats(module: OutfittingModule): OutfittingModule {
     return deepFreeze({
         ...module,
+        // Every nested value needs its own copy: `deepFreeze` recurses, so one left
+        // shared would freeze the caller's own array or object in place.
         ...(module.restrictedToShips === undefined
             ? {}
             : { restrictedToShips: [...module.restrictedToShips] }),
+        ...(module.unknownStats === undefined ? {} : { unknownStats: [...module.unknownStats] }),
         ...(module.damageDistribution === undefined
             ? {}
             : { damageDistribution: { ...module.damageDistribution } }),
@@ -1335,7 +1338,9 @@ export class ShipLoadout {
      * towards the deployed total.
      *
      * @returns The {@link PowerBudget}. With no power plant fitted, `available` is `0`
-     * and nothing is powered.
+     * and nothing is powered. A fitted module whose draw the catalogue cannot supply is
+     * named in {@link PowerBudget.unknownDraws} rather than counted as drawing nothing,
+     * which makes every total a lower bound while that list is non-empty.
      * @example
      * ```ts
      * const power = build.powerBudget();

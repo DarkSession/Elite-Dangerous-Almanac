@@ -13,6 +13,7 @@ import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { UTILITY_MODULES } from './modules-utility.js';
 import { ALL_MODULES } from './modules-all.js';
 import { combinedRateOfFire } from './weapons.js';
+import { isStatUnknown } from './unknown-stats.js';
 import { SHIPS } from './ships.js';
 import modulesFixture from '../../../fixtures/ships/modules.json' with { type: 'json' };
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
@@ -39,6 +40,9 @@ const IDENTITY_KEYS = new Set([
     // Price is commercial data, not a stat: ship-specific armour is priced but carries
     // no mass/integrity/power, and must still count as identity-only here.
     'cost',
+    // A statement *about* this record's stats rather than one of them: naming a stat
+    // as unknown is the opposite of carrying it.
+    'unknownStats',
 ]);
 
 /** Whether a merged record carries any stats (vs. identity only, like armour). */
@@ -180,6 +184,25 @@ for (const [name, expected] of Object.entries(statsFixture.counts)) {
         assert.equal(CATALOGUES[name]!.filter(hasStats).length, expected);
     });
 }
+
+test('the records with no integrity are the same set they have always been', () => {
+    // Not a gap in the data: no registry publishes an integrity for these families and
+    // the game's own module panel shows none, so the absence is the answer — which is
+    // why they are pinned as a set here rather than declaring `unknownStats`. Ship
+    // armour is excluded: 241 records, a different shape, and counted with the hulls.
+    const withoutIntegrity = ALL_MODULES.filter(
+        (m) => m.integrity === undefined && m.ship === undefined,
+    );
+    assert.equal(withoutIntegrity.length, statsFixture.withoutIntegrity.count);
+    assert.deepEqual(
+        withoutIntegrity.map((m) => m.symbol).sort(),
+        [...statsFixture.withoutIntegrity.symbols].sort(),
+    );
+    // And none of them calls it a gap, which is what says so in code.
+    for (const module of withoutIntegrity) {
+        assert.equal(isStatUnknown(module, 'integrity'), false, module.symbol);
+    }
+});
 
 test('stats spot checks: each merged record carries the expected stat values', () => {
     for (const expected of statsFixture.spot) {

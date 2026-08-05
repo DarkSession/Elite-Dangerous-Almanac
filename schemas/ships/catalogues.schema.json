@@ -157,6 +157,13 @@
           "uniqueItems": true,
           "items": { "$ref": "#/definitions/nonEmptyString" }
         },
+        "unknownStats": {
+          "description": "Stat fields this record omits because the value is unknown, not because the module has none. Each named field must be absent from this record.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/nonEmptyString" }
+        },
         "mass": { "type": "number", "minimum": 0 },
         "integrity": { "type": "number", "minimum": 0 },
         "powerDraw": { "type": "number", "minimum": 0 },

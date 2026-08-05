@@ -587,6 +587,46 @@ A weapon's `damage` is per **round** and its `distributorDraw` and `thermalLoad`
 fragment cannon. The continuous-fire beam and mining lasers carry no `rateOfFire`,
 because all three stats are already per second on those.
 
+#### When a stat is missing
+
+Sparse means a missing stat is usually an answer: a cargo rack draws no power, a fuel
+tank has no rate of fire. For five records it is a **gap** instead — the module has the
+stat in game and no public registry publishes it — and adding those up as zero would
+quietly understate a build. **The record says which it is**, in `unknownStats`, so
+there is no second lookup:
+
+```ts
+const scanner = getModuleBySymbol("Int_StellarBodyDiscoveryScanner_Advanced");
+scanner?.powerDraw; // -> undefined
+scanner?.unknownStats; // -> ["powerDraw"]  — a gap, not "draws nothing"
+
+getModuleBySymbol("Int_CargoRack_Size4_Class1")?.unknownStats; // -> undefined
+```
+
+`ships/unknown-stats` is the predicate over that field for when a `?.includes()` reads
+poorly, plus the roster of everything a catalogue knows it is missing. It holds no data
+and pulls no catalogue, so it takes the record (or the catalogue) you already have:
+
+```ts
+import {
+  isStatUnknown,
+  modulesWithUnknownStats,
+} from "@elite-dangerous-almanac/core/ships/unknown-stats";
+import { INTERNAL_MODULES } from "@elite-dangerous-almanac/core/ships/modules-internal";
+
+isStatUnknown(scanner, "powerDraw"); // -> true
+modulesWithUnknownStats(INTERNAL_MODULES).length; // -> 5, the whole of it today
+```
+
+The five are the four withdrawn Discovery Scanners (`powerDraw`) and the unsized Hatch
+Breaker Limpet Controller (`mass`). A whole build already answers safely without you
+checking: `powerBudget()` reports such a module in `unknownDraws` instead of counting
+it as free, and `unladenMass` returns `null` rather than a total missing a module's
+mass — the latter for _any_ absent mass, declared or not. `TODO.md` tracks what would
+fill each. An absent `cost` is never declared — see [Prices](#prices), where absence
+already means unknown — and this is not a claim that _every_ other absence is a stat
+the game does not have.
+
 #### Prices
 
 Standard list prices in credits sit on the same records — no second lookup:
@@ -758,6 +798,8 @@ power.deployed; // -> draw with them out (weapons only draw deployed)
 power.headroom; // -> available - deployed; negative means over budget
 power.withinBudget; // -> true
 power.bands[4]?.poweredDeployed; // -> is priority group 5 still lit?
+power.unknownDraws; // -> [] — the consumer entries whose draw nobody publishes, if
+//    any: while this is non-empty every figure above is a lower bound
 
 // Shields: strength in MJ and what it is worth against each damage type
 const shields = build.shieldMetrics(); // null when no generator is fitted
@@ -1212,7 +1254,7 @@ against.
 
 ## Data freshness
 
-The checked-in catalogues are a snapshot dated **2026-07-24**, with two changes
+The checked-in catalogues are a snapshot dated **2026-07-24**, with three changes
 since:
 
 - **2026-08-02** — one market commodity added, `curatedcommodity` ("Curated
@@ -1220,6 +1262,9 @@ since:
   registry; its market category is a maintainer assignment.
 - **2026-08-02** — a module-stat reconciliation against EDSY that left every
   outfitting module carrying at least one stat and corrected 40 records.
+- **2026-08-05** — no value changed: a module record whose missing stat means
+  _unknown_ rather than _no such stat_ now says so in its own
+  [`unknownStats`](#when-a-stat-is-missing) field.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

@@ -1,6 +1,51 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, plus a module-stat reconciliation on 2026-08-02 and a slot-restriction pass on 2026-08-04 (see the revisions below). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, plus a module-stat reconciliation on 2026-08-02, a slot-restriction pass on 2026-08-04, and the classification of what the stat pass could not fill on 2026-08-05 (see the revisions below). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+
+**Revision 2026-08-05 (UTC) — the stats no source carries are now stated as unknown.**
+No value was added, changed or removed: this revision is a *classification* of the three
+gaps the 2026-08-02 pass left open. Five module records gain an `unknownStats` field
+naming the stats they omit because the value is unknown, so a program can tell an
+absence that means "the module has no such stat" from one that means "nobody publishes
+it". Derivation is this repository's own reconciliation: each entry restates a finding
+the 2026-08-02 revision below already made against coriolis-data (commit
+`0db9234b5b9ce8c939ea84133d7ce336eea88e27`) and EDSY `eddb.js` (commit
+`cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256
+`967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`) — that neither
+registry carries the value. No source was re-acquired or fetched for this revision.
+
+- **Declared unknown (2 fields, 5 records).** `powerDraw` on the four
+  `Int_StellarBodyDiscoveryScanner_*` records, and `mass` on
+  `Int_DroneControl_ResourceSiphon`. Both are argued at length below and neither has a
+  source; the record names them so the absence is a statement rather than a silence.
+  Filling one means deleting its name in the same change — `unknown-stats.test.ts`
+  fails on a declared field that has a value.
+- **On the record, not in a register beside it.** An earlier draft of this revision put
+  the five in a payload of their own, `data/ships/unknown-stats.jsonc`, joined back by
+  symbol. That reintroduced exactly the join this domain removed when identity and stats
+  were merged into one record: a consumer holding the `undefined` had to know a second
+  file existed to interpret it, and the register could name a symbol the catalogue did
+  not carry. The field lives on the record instead, where the missing stat is, and the
+  schema's `module` definition carries it. `ships/unknown-stats` is now a data-free
+  predicate over that field rather than a catalogue.
+- **What that changes for a build.** `ShipLoadout.powerBudget()` used to skip a module
+  with no `powerDraw`, which is right for a cargo rack and wrong for a Discovery
+  Scanner: the build read as having headroom it may not have. Such a module is now
+  reported in `PowerBudget.unknownDraws` and left out of every total, so the totals are
+  an explicit lower bound instead of a confident understatement. Mass already behaved
+  this way — one unknown module mass withholds `unladenMass` entirely — and is unchanged.
+- **`integrity` on the 83 non-armour records that lack it is *not* declared**, because
+  the evidence says those families do not have the stat: no registry publishes one and
+  the game's own module panel shows none. It is recorded instead as a pinned set,
+  `fixtures/ships/module-stats.json` `withoutIntegrity`, which fails if the membership
+  ever changes. Guardian hull reinforcement packages are in that set and do draw power,
+  so "no integrity" is not a shorthand for "inert".
+- **`cost` is deliberately never declared.** Every module without a price has no
+  *published* price, so an absent `cost` is already unambiguous (README, list prices);
+  there is nothing to disambiguate.
+- **Scope.** The field can only name stats the record shape has. The base stats
+  blueprints modify that no record carries at all (`EngineHeatRate`, `EnergyPerRegen`,
+  the scanner ranges) cannot be named and stay in `TODO.md` §5.
 
 **Revision 2026-08-04 (UTC) — a restricted mount is now stored as one, and the journal
 names it by.** A hull's `hardpoints` was a bare array of sizes, so there was nowhere to

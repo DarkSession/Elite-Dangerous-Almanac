@@ -118,6 +118,9 @@ in the doc comment of each ported module, and in long form in the domain
   **Elite Dangerous game data, property of Frontier Developments plc**; see the notice
   below. `data/ships/SOURCES.md` has the record-by-record derivation, the per-field
   coverage split, and the three candidate corrections that cross-checking **rejected**.
+  Where neither registry nor panel yielded a figure, the module record says so itself,
+  in its `unknownStats` field. That classification is this repository's own
+  reconciliation work — no third-party figure is reproduced by it.
 
 - **Ground-truth ship builds (test fixtures, not shipped)** — three real builds used to
   check the loadout maths against something other than itself.

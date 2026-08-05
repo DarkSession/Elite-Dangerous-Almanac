@@ -17,6 +17,7 @@ import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff } from './weapons.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats } from './pre-engineered-stats.js';
+import { isStatUnknown } from './unknown-stats.js';
 
 const mod = (symbol: string, catalogue = CORE_MODULES) => getModuleBySymbol(symbol, catalogue)!;
 
@@ -696,6 +697,23 @@ test('resolved pre-engineered stats survive fitting and drive build calculations
     assert.equal(build.unladenMass, 426);
 });
 
+test('fitting a caller-supplied record leaves the caller its own arrays', () => {
+    // The snapshot is deep-frozen, so every nested value has to be *copied* first —
+    // freezing one in place would make a caller's own array immutable behind its back,
+    // and the next push would throw.
+    const supplied: OutfittingModule = {
+        ...mod('Int_StellarBodyDiscoveryScanner_Advanced', INTERNAL_MODULES),
+        restrictedToShips: ['Anaconda'],
+        unknownStats: ['powerDraw'],
+    };
+    ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', supplied);
+
+    assert.equal(Object.isFrozen(supplied), false);
+    assert.equal(Object.isFrozen(supplied.restrictedToShips), false);
+    assert.equal(Object.isFrozen(supplied.unknownStats), false);
+    assert.doesNotThrow(() => (supplied.unknownStats as string[]).push('mass'));
+});
+
 // ── Fluent slot + fitted-module handles ─────────────────────────────────────
 
 test('coreModules / hardpoints / utilityMounts / optionalModules list the mounts', () => {
@@ -1005,6 +1023,68 @@ test('a module the catalogues do not carry reports no stats', () => {
     assert.equal(unknown.effectiveStats, null);
     // It cannot claim any power either.
     assert.equal(build.powerBudget().deployed, 0);
+});
+
+test('a fitted module whose power draw is unknown is reported, not treated as free', () => {
+    // The withdrawn Basic/Intermediate/Advanced Discovery Scanners: no registry carries
+    // a power draw and the game's function is built in now, so the record has none.
+    // Counting that as 0 MW would hand the build headroom it may not have.
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
+        .setModule(
+            'Slot01_Size7',
+            mod('Int_StellarBodyDiscoveryScanner_Advanced', INTERNAL_MODULES),
+        )
+        .setModule('Slot02_Size6', mod('Int_FuelScoop_Size6_Class5', INTERNAL_MODULES));
+    const budget = build.powerBudget();
+    assert.deepEqual(
+        budget.unknownDraws.map((consumer) => consumer.label),
+        ['Slot01_Size7'],
+    );
+    // The known draws are still added up, and the scanner adds nothing to them.
+    assert.ok(
+        near(budget.retracted, mod('Int_FuelScoop_Size6_Class5', INTERNAL_MODULES).powerDraw!),
+    );
+
+    // A cargo rack in the same slot draws nothing and is not a gap: the list stays empty.
+    build.setModule('Slot01_Size7', mod('Int_CargoRack_Size7_Class1', INTERNAL_MODULES));
+    assert.deepEqual(build.powerBudget().unknownDraws, []);
+
+    // The fitted record has the last say, not the symbol: a caller that sources the
+    // draw itself and supplies its own stats gets it counted like any other.
+    const sourced: Record<string, unknown> = {
+        ...mod('Int_StellarBodyDiscoveryScanner_Advanced', INTERNAL_MODULES),
+        powerDraw: 0.2,
+    };
+    delete sourced.unknownStats;
+    build.setModule('Slot01_Size7', sourced as unknown as OutfittingModule);
+    const sourcedBudget = build.powerBudget();
+    assert.deepEqual(sourcedBudget.unknownDraws, []);
+    assert.ok(
+        near(
+            sourcedBudget.retracted,
+            mod('Int_FuelScoop_Size6_Class5', INTERNAL_MODULES).powerDraw! + 0.2,
+        ),
+    );
+});
+
+test('a fitted module whose mass is unknown refuses to report a mass', () => {
+    // The one record with no mass. Summing the rest and calling it the build's mass
+    // would understate it, so the whole figure is withheld — and so is everything that
+    // depends on it.
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'Slot01_Size7',
+        mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES),
+    );
+    assert.equal(build.unladenMass, null);
+    assert.ok(isStatUnknown(mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES), 'mass'));
+
+    // Its sized siblings all carry one, so the same build with any of them answers.
+    build.setModule(
+        'Slot01_Size7',
+        mod('Int_DroneControl_ResourceSiphon_Size1_Class1', INTERNAL_MODULES),
+    );
+    assert.ok(build.unladenMass! > 400);
 });
 
 test('always-powered utility modules draw with the hardpoints stowed', () => {
