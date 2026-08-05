@@ -12,6 +12,7 @@ import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with 
 import expected from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
 import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
+import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff } from './weapons.js';
@@ -1226,4 +1227,207 @@ test('a fitted module answers to the same word a catalogue record does', () => {
     // The journal spelling is still there, as it is for slot / on / priority.
     assert.equal(fitted.Item, fitted.symbol);
     assert.equal(fitted.Slot, fitted.slot);
+});
+
+// ── Slot keys are matched case-insensitively ────────────────────────────────
+
+test('a build imported from Inara binds every one of its lower-cased slots', () => {
+    // Inara lower-cases every slot key, as the SLEF specification's own example does.
+    // The build is otherwise ordinary, so every mount it names must bind.
+    const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
+    assert.equal(build.modules.length, 27);
+    assert.equal(build.slots().filter((s) => s.occupied).length, 27);
+
+    // ...reached by the journal's own spelling, which is not the one it wrote.
+    assert.equal(build.moduleAt('LargeMiningHardpoint1')?.Item, 'hpt_miningtoolv2_fixed_large');
+    assert.equal(
+        build.getFittedModule('FrameShiftDrive')?.Item,
+        'int_hyperdrive_overcharge_size5_class5',
+    );
+    assert.equal(build.hardpoints()[0]?.module?.Item, 'hpt_miningtoolv2_fixed_large');
+    assert.equal(build.coreModules().find((s) => s.core === 'powerPlant')?.occupied, true);
+
+    // A handle reports the build's own spelling rather than the one it was asked with.
+    assert.equal(build.getFittedModule('LargeMiningHardpoint1')?.slot, 'largemininghardpoint1');
+    assert.equal(build.moduleAt('LargeMiningHardpoint1')?.Slot, 'largemininghardpoint1');
+
+    // A key the hull genuinely has no mount for is still a miss, not a near-match.
+    assert.equal(build.moduleAt('HugeHardpoint1'), null);
+    assert.equal(build.getFittedModule('Military01'), null);
+});
+
+test('editing a lower-cased slot replaces its module rather than adding one', () => {
+    // The defect this pins: an unbound slot made `setModule` an *insert*, so the build
+    // grew a second large mining hardpoint and its mass, draw and credits with it.
+    const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
+    const before = { modules: build.modules.length, mass: build.unladenMass! };
+
+    build.setModule('LargeMiningHardpoint1', mod('Hpt_MiningLaser_Fixed_Medium', ALL_MODULES));
+    assert.equal(build.modules.length, before.modules);
+    assert.equal(build.moduleAt('largemininghardpoint1')?.Item, 'Hpt_MiningLaser_Fixed_Medium');
+    assert.equal(build.weaponMetrics().weapons.length, 5);
+    // Replacing a 4 t mining tool with a 2 t laser takes 2 t off, rather than adding 2 t.
+    assert.ok(build.unladenMass! < before.mass, `${build.unladenMass} !< ${before.mass}`);
+
+    // The slot keeps the spelling the build already had, so the export stays uniform.
+    assert.ok(
+        build.toLoadoutEvent().Modules.every((m) => m.Slot === m.Slot.toLowerCase()),
+        'editing renamed one of the import’s mounts',
+    );
+
+    build.removeModule('LARGEMININGHARDPOINT1');
+    assert.equal(build.modules.length, before.modules - 1);
+    assert.equal(build.moduleAt('largemininghardpoint1'), null);
+});
+
+test('every editor and reader on the facade takes a lower-cased key', () => {
+    const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
+
+    build.setModuleEnabled('FrameShiftDrive', false);
+    assert.equal(build.moduleAt('frameshiftdrive')?.On, false);
+    build.setModulePriority('FrameShiftDrive', 2);
+    assert.equal(build.moduleAt('frameshiftdrive')?.Priority, 2);
+
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
+    assert.ok(build.moduleAt('frameshiftdrive')?.Engineering);
+    build.clearEngineering('FrameShiftDrive');
+    assert.equal(build.moduleAt('frameshiftdrive')?.Engineering, undefined);
+
+    // ...and so does a slot the build has not filled, whose key comes from the layout.
+    assert.ok(build.modulesForSlot('tinyhardpoint2', UTILITY_MODULES).length > 0);
+    assert.equal(build.getFittedModule('TinyHardpoint2'), null);
+    build.setModule('tinyhardpoint2', mod('Hpt_ShieldBooster_Size0_Class5', UTILITY_MODULES));
+    // A fresh fit takes the layout's canonical key, having no existing one to keep.
+    assert.equal(build.moduleAt('TinyHardpoint2')?.Slot, 'TinyHardpoint2');
+
+    // The cargo hatch is protected however it is spelled.
+    assert.throws(() => build.removeModule('cargohatch'), TypeError);
+});
+
+test('a lower-cased armour slot is the fitted bulkhead, not the stock alloy', () => {
+    // The fixture's own bulkhead is grade 1, which *is* the Type-11's stock lightweight
+    // alloy, so it cannot tell a bound slot from the fallback. Grade 3 — Military Grade
+    // Composite — can: 1225 hull points against the 630 a build with no armour reports.
+    const upgrade = (slot: string): number => {
+        const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
+        const modules = data.Modules.map((m) =>
+            m.Slot === 'armour' ? { ...m, Slot: slot, Item: 'lakonminer_armour_grade3' } : m,
+        );
+        return ShipLoadout.fromLoadout({ ...data, Modules: modules }).armourMetrics().hitPoints;
+    };
+    assert.equal(upgrade('Armour'), 1225);
+    assert.equal(upgrade('armour'), upgrade('Armour'));
+    // ...and the untouched fixture's stock-grade bulkhead is the 630 it should be.
+    assert.equal(ShipLoadout.fromSlef(JSON.stringify(inaraFixture)).armourMetrics().hitPoints, 630);
+});
+
+test('a lower-cased build exports in slot order', () => {
+    const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
+    // Ordering by slot resolves the layout's keys against the build's own spelling, so
+    // the hardpoints lead and nothing is left to the unrecognised-slot tail.
+    const ordered = build.toLoadoutEvent({ moduleOrder: 'slots' }).Modules.map((m) => m.Slot);
+    assert.deepEqual(ordered.slice(0, 5), [
+        'largemininghardpoint1',
+        'mediummininghardpoint1',
+        'mediummininghardpoint2',
+        'mediumhardpoint3',
+        'smallmininghardpoint1',
+    ]);
+    // Nothing was left to that tail: the whole export follows the hull's layout order.
+    const layoutOrder = ShipLoadout.empty('LakonMiner')
+        .slots()
+        .map((s) => s.key.toLowerCase())
+        .filter((key) => ordered.includes(key));
+    assert.deepEqual(ordered, layoutOrder);
+    assert.equal(ordered.length, 27);
+});
+
+test("a core mount's function name reaches its slot only where casing is the difference", () => {
+    // Five of the seven `CoreSlotType` values differ from their slot key by case alone,
+    // so matching case-insensitively lets them through where it used to reject them.
+    // `thrusters` and `sensors` are different words — `MainEngines` and `Radar` — and
+    // still miss. This is what the README promises a consumer; pin it so it cannot drift.
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'FrameShiftDrive',
+        mod('Int_Hyperdrive_Size6_Class5'),
+    );
+    assert.equal(build.getFittedModule('frameShiftDrive')?.Item, 'Int_Hyperdrive_Size6_Class5');
+    for (const core of ['powerPlant', 'lifeSupport', 'powerDistributor', 'fuelTank'] as const) {
+        assert.doesNotThrow(() => build.modulesForSlot(core, CORE_MODULES), core);
+    }
+    for (const core of ['thrusters', 'sensors'] as const) {
+        assert.equal(build.getFittedModule(core), null, core);
+        assert.throws(() => build.modulesForSlot(core, CORE_MODULES), RangeError, core);
+        assert.throws(
+            () => build.setModule(core, mod('Int_Engine_Size6_Class5')),
+            RangeError,
+            core,
+        );
+    }
+});
+
+test('two spellings of one mount resolve to the same entry everywhere', () => {
+    // A producer writing both spellings is pathological, but it must not make the
+    // readers and the editors disagree about which of the two they mean.
+    const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout({
+        ...data,
+        // `tinyhardpoint1` (a shield booster) is already in there; this is the same
+        // mount spelled the journal's way, added after it.
+        Modules: [...data.Modules, { Slot: 'TinyHardpoint1', Item: 'hpt_chafflauncher_tiny' }],
+    });
+    assert.equal(build.modules.length, 28);
+
+    // An exactly spelled key wins, so both of these name the journal-spelled entry.
+    assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_chafflauncher_tiny');
+    assert.equal(build.getFittedModule('TinyHardpoint1')?.slot, 'TinyHardpoint1');
+    // Ordering for export picks that same entry — the loser keeps its own slot in the
+    // export rather than being dropped, so no module is ever lost to a duplicate.
+    const ordered = build.toLoadoutEvent({ moduleOrder: 'slots' }).Modules;
+    const tiny = ordered.filter((m) => m.Slot.toLowerCase() === 'tinyhardpoint1');
+    assert.deepEqual(
+        tiny.map((m) => m.Slot),
+        ['TinyHardpoint1', 'tinyhardpoint1'],
+    );
+    assert.equal(ordered.length, 28);
+
+    // An exact spelling still addresses its own entry, so each of the two is
+    // individually removable and neither is stranded.
+    build.removeModule('tinyhardpoint1');
+    assert.equal(build.modules.length, 27);
+    assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_chafflauncher_tiny');
+    // With the duplicate gone, the survivor answers to either spelling again.
+    assert.equal(build.moduleAt('tinyhardpoint1')?.Item, 'hpt_chafflauncher_tiny');
+});
+
+test('when neither spelling of a duplicated mount is exact, the earlier one wins', () => {
+    // The other half of the tie-break: with no exact match to prefer, insertion order
+    // decides — and every part of the class has to decide the same way.
+    const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout({
+        ...data,
+        // Both name the layout's `TinyHardpoint1`; neither is spelled the way it is.
+        Modules: [...data.Modules, { Slot: 'TINYHARDPOINT1', Item: 'hpt_chafflauncher_tiny' }],
+    });
+
+    // `tinyhardpoint1` came first, so it is the entry the readers name...
+    assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_shieldbooster_size0_class5');
+    assert.equal(build.getFittedModule('TinyHardpoint1')?.slot, 'tinyhardpoint1');
+    // ...the one the utility mount reports as fitted...
+    const mount = build.utilityMounts().find((s) => s.key === 'TinyHardpoint1')!;
+    assert.equal(mount.module?.Item, 'hpt_shieldbooster_size0_class5');
+    // ...and the one that takes the mount's place in a slot-ordered export, leaving the
+    // later spelling in the tail rather than dropping it.
+    const ordered = build.toLoadoutEvent({ moduleOrder: 'slots' }).Modules.map((m) => m.Slot);
+    assert.deepEqual(
+        ordered.filter((slot) => slot.toLowerCase() === 'tinyhardpoint1'),
+        ['tinyhardpoint1', 'TINYHARDPOINT1'],
+    );
+    assert.equal(ordered.at(-1), 'TINYHARDPOINT1');
+    assert.equal(ordered.length, 28);
+
+    // The editors agree with the readers: this replaces, and does not add a third.
+    build.setModule('TinyHardpoint1', mod('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES));
+    assert.equal(build.modules.length, 28);
+    assert.equal(build.moduleAt('tinyhardpoint1')?.Item, 'Hpt_ChaffLauncher_Tiny');
 });

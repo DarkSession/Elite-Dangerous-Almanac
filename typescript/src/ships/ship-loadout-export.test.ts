@@ -689,7 +689,8 @@ test("a real Inara export confirms the Type-11's journal slot vocabulary", async
     const exported = inara[0]!.data.Modules.map((m) => m.Slot);
 
     // Inara lower-cases every slot key, as the SLEF specification's own example does,
-    // so compare case-insensitively — issue #21 tracks the binding gap that causes.
+    // and an import keeps its producer's spelling, so compare case-insensitively —
+    // which is how `ShipLoadout` binds them too.
     const canonical = new Map(
         ShipLoadout.empty('LakonMiner')
             .slots()

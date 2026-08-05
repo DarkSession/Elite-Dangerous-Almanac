@@ -62,12 +62,22 @@ export class FittedModule {
         return module;
     }
 
-    /** The stable journal slot key this module occupies. */
+    /**
+     * The slot key this module occupies, in the **build's own spelling**.
+     *
+     * @remarks
+     * That is the journal's spelling on a build assembled here or imported from a
+     * journal capture, but a SLEF producer may lower-case its keys as the
+     * specification's own example does, and an import keeps whatever it wrote. So a
+     * handle fetched with `getFittedModule('FrameShiftDrive')` reports
+     * `frameshiftdrive` on an Inara build. Every `slotKey` argument in the library
+     * accepts either, so the value is always safe to pass back.
+     */
     get slot(): string {
         return this.#slotKey;
     }
 
-    /** Journal-spelling alias of {@link slot}. */
+    /** Journal-field alias of {@link slot}. */
     get Slot(): string {
         return this.#slotKey;
     }

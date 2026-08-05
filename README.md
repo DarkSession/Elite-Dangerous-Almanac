@@ -930,7 +930,12 @@ slot and hull restrictions) and throws otherwise. **Slot keys
 are the journal names** (`FrameShiftDrive`, `MainEngines` for thrusters, `Radar` for
 sensors, `HugeHardpoint1`, `Slot01_Size7`, `Military01`, …), so a SLEF-loaded build and
 one assembled here share one vocabulary — enumerate them with `slots()` rather than
-guessing. They are matched **exactly**, in the game's spelling.
+guessing. They are matched **case-insensitively** and otherwise exactly, because a SLEF
+producer may lower-case the game's own spelling as the specification's own example
+does: Inara writes `frameshiftdrive` and `largemininghardpoint1`, and both name the same
+mount as the journal's `FrameShiftDrive` and `LargeMiningHardpoint1`. A build keeps
+whatever spelling it was imported with — editing one of its mounts never renames it, so
+re-exporting returns the producer's own keys untouched.
 
 **Some mounts take one family of modules and nothing else**, and the journal gives each
 such mount a name of its own — so `slot.restriction` says what it takes and
@@ -966,9 +971,14 @@ Careful with the two names a _core_ mount has: `slot.key` is the journal slot
 (`MainEngines`, `Radar`) and is what every `slotKey` argument takes, while `slot.core` is
 the camelCase function (`thrusters`, `sensors`) you filter on. That is why the example
 above matches `s.core === "frameShiftDrive"` but calls
-`getFittedModule("FrameShiftDrive")`. Pass the camelCase form where a key is expected
-and you get nothing: `getFittedModule` returns `null`, `setModule` throws a `RangeError`
-naming the slot it could not find. A module lives in the catalogue for its outfitting **category**, which is not
+`getFittedModule("FrameShiftDrive")`. Five of the seven differ from their key by case
+alone, so case-insensitive matching lets them through —
+`getFittedModule("frameShiftDrive")` finds the drive. **The two that do not are
+`thrusters` and `sensors`**, whose keys are `MainEngines` and `Radar`: pass either
+function name where a key is expected and you get nothing, `getFittedModule` returning
+`null` and `setModule` throwing a `RangeError` naming the slot it could not find. Filter
+on `slot.core`, pass `slot.key`, and the distinction never bites.
+A module lives in the catalogue for its outfitting **category**, which is not
 always the slot it occupies — a fuel tank is in `CORE_MODULES` even though it fits
 an optional slot — so pass `ALL_MODULES` to `modulesForSlot` when you want every
 candidate.
