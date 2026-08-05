@@ -87,9 +87,16 @@ const prefixTarget = (
  * The set is EDSY's own module-group table (`eddb.js`, the `misc_lw` / `misc_rf` group
  * lists): chaff launchers, ECMs, heat sink launchers, point defence, the KWS/manifest/wake
  * scanners, life support and the four limpet controllers. `miscellaneous` is the fallback
- * bucket, so it stays. Sensors are **not** here — their Lightweight is `Sensor_LightWeight`,
- * a different recipe with a scan-angle leg — and neither are weapons, hull armour, AFMUs,
- * fuel scoops or refineries, none of which the game offers Lightweight or Reinforced on.
+ * bucket, so it stays.
+ *
+ * Two kinds of family are deliberately absent. Sensors, weapons, hull armour and hull
+ * reinforcement each have a Lightweight of their own that is a **different recipe** —
+ * `Sensor_LightWeight` carries a scan-angle leg, `Weapon_LightWeight` a distributor-draw
+ * one, `Armour_Advanced` trades hull boost for resistances and
+ * `HullReinforcement_Advanced` reinforcement for mass — so the generic id must not reach
+ * them. AFMUs, fuel scoops and refineries
+ * are absent for the other reason: the game offers them Shielded and nothing else, which
+ * is why they are in {@link GENERIC_SHIELDED_TARGETS} and not here.
  *
  * @internal
  */
