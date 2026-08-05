@@ -429,9 +429,12 @@ function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
 function cloneModuleStats(module: OutfittingModule): OutfittingModule {
     return deepFreeze({
         ...module,
+        // Every nested value needs its own copy: `deepFreeze` recurses, so one left
+        // shared would freeze the caller's own array or object in place.
         ...(module.restrictedToShips === undefined
             ? {}
             : { restrictedToShips: [...module.restrictedToShips] }),
+        ...(module.unknownStats === undefined ? {} : { unknownStats: [...module.unknownStats] }),
         ...(module.damageDistribution === undefined
             ? {}
             : { damageDistribution: { ...module.damageDistribution } }),

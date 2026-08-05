@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { isStatUnknown, modulesWithUnknownStats } from './unknown-stats.js';
 import { ALL_MODULES } from './modules-all.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
-import { getModuleBySymbol, type ModuleStatField } from './modules.js';
+import { getModuleBySymbol, type ModuleStatField, type OutfittingModule } from './modules.js';
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
 
 const FIXTURE = statsFixture.unknownStats;
@@ -38,8 +38,10 @@ test('a declared stat is always absent from the record that declares it', () => 
 
 test('the declarations name only fields the record shape has', () => {
     // A typo'd field would silently never match, so pin the names against the fields
-    // the catalogue actually uses.
+    // the catalogue actually uses — minus the declaration itself, which is a statement
+    // about the stats rather than one of them and can never be unknown.
     const fields = new Set(ALL_MODULES.flatMap((m) => Object.keys(m)) as ModuleStatField[]);
+    fields.delete('unknownStats');
     for (const module of modulesWithUnknownStats(ALL_MODULES)) {
         for (const field of module.unknownStats!) {
             assert.ok(fields.has(field), `${module.symbol}: unknown field ${field}`);
@@ -99,6 +101,17 @@ test('an unidentifiable module, and an identity field, answer false', () => {
     );
     const siphon = getModuleBySymbol('Int_DroneControl_ResourceSiphon', ALL_MODULES);
     assert.equal(isStatUnknown(siphon, 'name'), false);
+});
+
+test('a caller-supplied record is taken at its word about its own gaps', () => {
+    // The record has the last say, so a build that hands `setModule` its own stats for
+    // one of the five is classified by what that record declares — not by its symbol.
+    // Passing a bespoke record with a real draw is how a consumer says "I sourced it".
+    const scanner = getModuleBySymbol('Int_StellarBodyDiscoveryScanner_Advanced', ALL_MODULES)!;
+    const sourced: Record<string, unknown> = { ...scanner, powerDraw: 0.2 };
+    delete sourced.unknownStats;
+    assert.equal(isStatUnknown(sourced as unknown as OutfittingModule, 'powerDraw'), false);
+    assert.ok(isStatUnknown(scanner, 'powerDraw'));
 });
 
 test('the declarations are reachable from the category catalogue alone', () => {

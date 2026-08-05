@@ -46,6 +46,13 @@
 import type { ModuleStatField, OutfittingModule } from './modules.js';
 
 /**
+ * Re-exported so a consumer deep-importing this subpath can name the {@link
+ * isStatUnknown} `field` parameter's type without reaching into `./modules`, which
+ * would pull all four catalogues.
+ */
+export type { ModuleStatField } from './modules.js';
+
+/**
  * Whether one module's missing stat is a gap in the data rather than a stat the
  * module does not have.
  *

@@ -144,6 +144,16 @@ export function effectiveModule(
     // moves it even when nothing names it — same rule the weapon metrics use.
     const rate = burstAdjustedRateOfFire(module, merged);
     if (rate !== undefined) merged.rateOfFire = rate;
+    // A build that carries a modifier for a stat the catalogue calls unknown has just
+    // supplied it, so the record must stop saying it is missing — `unknownStats` names
+    // only fields that are absent.
+    if (stats.unknownStats) {
+        const stillUnknown = stats.unknownStats.filter((field) => merged[field] === undefined);
+        if (stillUnknown.length === 0) delete merged.unknownStats;
+        else if (stillUnknown.length !== stats.unknownStats.length) {
+            merged.unknownStats = stillUnknown;
+        }
+    }
     return merged as unknown as OutfittingModule;
 }
 

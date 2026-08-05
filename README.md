@@ -604,12 +604,18 @@ getModuleBySymbol("Int_CargoRack_Size4_Class1")?.unknownStats; // -> undefined
 ```
 
 `ships/unknown-stats` is the predicate over that field for when a `?.includes()` reads
-poorly — it holds no data and pulls no catalogue:
+poorly, plus the roster of everything a catalogue knows it is missing. It holds no data
+and pulls no catalogue, so it takes the record (or the catalogue) you already have:
 
 ```ts
-import { isStatUnknown } from "@elite-dangerous-almanac/core/ships/unknown-stats";
+import {
+  isStatUnknown,
+  modulesWithUnknownStats,
+} from "@elite-dangerous-almanac/core/ships/unknown-stats";
+import { INTERNAL_MODULES } from "@elite-dangerous-almanac/core/ships/modules-internal";
 
 isStatUnknown(scanner, "powerDraw"); // -> true
+modulesWithUnknownStats(INTERNAL_MODULES).length; // -> 5, the whole of it today
 ```
 
 The five are the four withdrawn Discovery Scanners (`powerDraw`) and the unsized Hatch

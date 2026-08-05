@@ -139,17 +139,17 @@ record for them at all. They are withdrawn modules whose function is built in no
 is plausible but unsourced — left absent, since absent means unknown. What changed is
 that the unknown no longer reads as zero: each record declares `unknownStats:
 ["powerDraw"]`, and a build that fits one gets it named in `PowerBudget.unknownDraws`
-rather than silently counted as drawing nothing. Fill from an outfitting-panel reading on an old save that still carries one.
+rather than silently counted as drawing nothing. Fill from an outfitting-panel reading
+on an old save that still carries one.
 
 **c. `Int_DroneControl_ResourceSiphon` has no `mass` — still unsourced.** The only record
 left from the old "Modules still missing `mass`, deliberately" gap. EDSY omits the field
 and its engine reads a missing mass as zero, but it does not *state* zero, and unlike the
 built-ins this catalogue does carry an explicit `mass: 0` for, there is no uniformity to
 appeal to — every sized limpet controller in the family has a real, non-zero mass. Left
-absent rather than inferred, declared as unknown on the record; `unladenMass`
-already withholds the whole figure rather than under-reporting it when this one is
-fitted. Fill from a real journal `Loadout` that fits it, or from an outfitting screen
-reading.
+absent rather than inferred, declared as unknown on the record; `unladenMass` already
+withholds the whole figure rather than under-reporting it when this one is fitted. Fill
+from a real journal `Loadout` that fits it, or from an outfitting screen reading.
 
 Filling either value means dropping its name from that record's `unknownStats` and from
 `fixtures/ships/module-stats.json` `unknownStats` in the same change — a declared field
