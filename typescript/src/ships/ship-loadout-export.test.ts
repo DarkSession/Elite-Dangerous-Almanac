@@ -611,3 +611,70 @@ test('switching off a Guardian FSD Booster changes the exported jump range', () 
     build.setModuleEnabled(boosterSlot, false);
     assert.ok(build.toLoadoutEvent().MaxJumpRange! < boosted);
 });
+
+test('a restricted mount survives a SLEF round trip under its journal name', () => {
+    // The keys restricted mounts get are the game's own, so SLEF — which is the
+    // journal `Loadout` event in an envelope — must carry them unchanged.
+    const build = ShipLoadout.empty('LakonMiner')
+        .setModule('LargeMiningHardpoint1', module('Hpt_MiningToolV2_Fixed_Large'))
+        .setModule('MediumMiningHardpoint1', module('Hpt_Mining_SubSurfDispMisle_Fixed_Medium'))
+        .setModule('MediumHardpoint3', module('Hpt_MultiCannon_Fixed_Medium'))
+        .setModule('SmallMiningHardpoint1', module('Hpt_Mining_AbrBlstr_Fixed_Small'))
+        .setModule('LimpetController01', module('Int_MultiDroneControl_MiningV2_Size5_Class5'))
+        .setModule('FighterBay01', module('Int_FighterBay_Size5_Class1'))
+        .setModule('FrameShiftDrive', module('Int_Hyperdrive_Size5_Class5'))
+        .setModule('FuelTank', module('Int_FuelTank_Size5_Class3'));
+
+    const exported = build.toSlefString({ header: { appName: 'Test', appVersion: '1' } });
+    const slots = parseSlef(exported)[0]!.data.Modules.map((m) => m.Slot);
+    assert.ok(slots.includes('LargeMiningHardpoint1'));
+    assert.ok(slots.includes('MediumMiningHardpoint1'));
+    assert.ok(slots.includes('LimpetController01'));
+    assert.ok(slots.includes('FighterBay01'));
+
+    // Re-importing puts every module back in the mount it came from, and the mount
+    // still knows what it takes — so an edit after a round trip is still checked.
+    const back = ShipLoadout.fromSlef(exported);
+    assert.deepEqual(
+        back.modules.map((m) => m.Slot).sort(),
+        build.modules.map((m) => m.Slot).sort(),
+    );
+    const mount = back.slots().find((s) => s.key === 'MediumMiningHardpoint1');
+    assert.equal(mount?.restriction, 'mining');
+    assert.ok(mount?.occupied);
+    assert.throws(
+        () => back.setModule('MediumMiningHardpoint1', module('Hpt_MultiCannon_Fixed_Medium')),
+        /only takes mining tools/,
+    );
+});
+
+test('a SLEF producer that does not know the mining names still imports', () => {
+    // Another app may write a Type-11's mounts the old way. Import is deliberately
+    // tolerant: the module is kept under the key it arrived with, counts towards the
+    // build's figures, and is re-exported unchanged — it is simply not one of the
+    // hull's own mounts, so `slots()` does not report it as occupied.
+    const foreign: LoadoutEvent = {
+        Ship: 'lakonminer',
+        Modules: [
+            { Slot: 'MediumHardpoint1', Item: 'hpt_mining_subsurfdispmisle_fixed_medium' },
+            { Slot: 'FrameShiftDrive', Item: 'int_hyperdrive_size5_class5' },
+            { Slot: 'FuelTank', Item: 'int_fueltank_size5_class3' },
+        ],
+    };
+    const build = ShipLoadout.fromLoadout(foreign);
+    assert.equal(build.modules.length, 3);
+    assert.equal(
+        build.moduleAt('MediumHardpoint1')?.Item,
+        'hpt_mining_subsurfdispmisle_fixed_medium',
+    );
+    assert.equal(build.weaponMetrics().weapons.length, 1);
+    assert.equal(
+        build.slots().find((s) => s.key === 'MediumHardpoint1'),
+        undefined,
+        'the hull has no plain MediumHardpoint1 — its first two mediums are mining mounts',
+    );
+    assert.deepEqual(
+        build.toLoadoutEvent().Modules.map((m) => m.Slot),
+        ['MediumHardpoint1', 'FrameShiftDrive', 'FuelTank'],
+    );
+});
