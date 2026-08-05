@@ -1181,14 +1181,22 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > differently. `applyBlueprint` refuses a recipe this menu does not list for that module,
 > and quotes the menu back when it does.
 >
-> It makes one accommodation, for the builds that spell a modification generically. Where a
-> recipe applies to several families the game writes a family-specific `BlueprintName` and
-> the menu lists that one, but an EDSY-authored build carries `Misc_LightWeight` where the
-> menu says `LifeSupport_LightWeight`. Those are the same recipe, so both are accepted — 70
-> of the corpus's declared entries are spelled that way. The alias runs only from the
-> ambiguous spelling to the menu's, never the reverse: `LifeSupport_LightWeight` stays off a
-> limpet controller, and a chaff launcher's Ammo Capacity stays off a heat sink launcher,
-> whose own roll is a different size.
+> It makes two accommodations beyond the menu. The first is for builds that spell a
+> modification generically: where a recipe applies to several families the game writes a
+> family-specific `BlueprintName` and the menu lists that one, but an EDSY-authored build
+> carries `Misc_LightWeight` where the menu says `LifeSupport_LightWeight`. Those are the
+> same recipe, so both are accepted — 70 of the corpus's declared entries are spelled that
+> way. The alias runs only from the ambiguous spelling to the menu's, never the reverse:
+> `LifeSupport_LightWeight` stays off a limpet controller, and a chaff launcher's Ammo
+> Capacity stays off a heat sink launcher, whose roll is a smaller one.
+>
+> The second is for the `recipe_*` keys of [modules sold already
+> engineered](#modules-you-can-buy-already-engineered). No menu lists one, so `applyBlueprint`
+> takes them from `ships/pre-engineered` instead, on the module that actually ships with the
+> recipe and no other — `recipe_railgun_longshot` on the medium rail gun, not the small one.
+> That is how you engineer a Mercenary module _further_: it arrives at grade 1 and its
+> recipe carries grades 2–5. It is not how you reproduce what you bought — grade 1 of those
+> recipes does not exist, because the first grade came with the module.
 
 #### Modules you can buy already engineered
 

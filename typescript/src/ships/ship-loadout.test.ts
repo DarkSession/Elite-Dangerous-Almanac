@@ -767,6 +767,46 @@ test('engineering still refuses what cannot be answered', () => {
     );
 });
 
+test('a module sold pre-engineered can be taken further, menu or no menu', () => {
+    // The Mercenary Module Reinforcement Package has no engineering menu at all, so the
+    // "no menu" refusal must not fire before the sold-with check: it arrives at grade 1 and
+    // its recipe carries grades 2-5, which is the climb this route exists for. The ordering
+    // of those two checks inside `applyBlueprint` is what this pins — the helper behind it
+    // answers correctly either way round.
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'Slot01_Size7',
+        mod('Int_ModuleReinforcement_Size5_Class2', INTERNAL_MODULES),
+    );
+    build.applyBlueprint('Slot01_Size7', 'recipe_modulereinforcement_heavyduty', { grade: 2 });
+    const engineered = build.getFittedModule('Slot01_Size7')!.Engineering!;
+    assert.equal(engineered.BlueprintName, 'recipe_modulereinforcement_heavyduty');
+    assert.equal(
+        engineered.Modifiers!.find((modifier) => modifier.Label === 'DamageProtection')?.Value,
+        64.98,
+    );
+    // Grade 1 is what the module was bought with, so the recipe does not define it.
+    assert.throws(
+        () =>
+            build.applyBlueprint('Slot01_Size7', 'recipe_modulereinforcement_heavyduty', {
+                grade: 1,
+            }),
+        RangeError,
+    );
+    // The sale is per module: a size-3 package is not sold with it, and has no menu either.
+    assert.throws(
+        () =>
+            ShipLoadout.empty('Anaconda')
+                .setModule(
+                    'Slot02_Size6',
+                    mod('Int_ModuleReinforcement_Size3_Class2', INTERNAL_MODULES),
+                )
+                .applyBlueprint('Slot02_Size6', 'recipe_modulereinforcement_heavyduty', {
+                    grade: 2,
+                }),
+        /no registry lists an engineering menu for module "Int_ModuleReinforcement_Size3_Class2"/,
+    );
+});
+
 test('clearEngineering restores base stats', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'FrameShiftDrive',

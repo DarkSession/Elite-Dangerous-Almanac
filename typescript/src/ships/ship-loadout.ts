@@ -906,11 +906,12 @@ export class ShipLoadout {
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
-     * @throws {TypeError} If the fitted module has no stats to engineer, or no registry
-     * lists an engineering menu for it, or its menu does not offer the blueprint or the
-     * experimental effect, or the catalogue does not carry every base stat the recipe
-     * modifies. Incomplete engineering is rejected rather than stored as a partial
-     * journal modifier block.
+     * @throws {TypeError} If the fitted module has no stats to engineer, or is offered
+     * neither the blueprint nor the experimental effect — by its engineering menu, by the
+     * generic spelling of a recipe that menu lists under a family's name, or by being sold
+     * already carrying it — or the catalogue does not carry every base stat the recipe
+     * modifies. Incomplete engineering is rejected rather than stored as a partial journal
+     * modifier block.
      * @example
      * ```ts
      * build.setModule('FrameShiftDrive', fsd)

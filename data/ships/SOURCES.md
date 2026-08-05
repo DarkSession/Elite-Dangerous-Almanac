@@ -1384,8 +1384,12 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   each arrives on, so the gate accepts a recipe on the module that is sold carrying it and
   nowhere else: `recipe_railgun_longshot` resolves on the medium rail gun, not on the small
   one. That is narrower than the family map, which took any weapon recipe on any weapon,
-  and it matters most for the 21 Mercenary variants, whose own `modifiers` no registry
-  publishes — folding the recipe is the only route to their numbers. One of them, the
+  and what it buys is the **climb**, not the purchase: a Mercenary module arrives at grade 1
+  and its recipe publishes grades 2–5, the grades an engineer can still add. It cannot
+  reproduce the grade the module was sold at — all 21 Mercenary rows are grade 1, none of
+  those recipes defines a grade 1, and the blueprint lookup refuses that call before the
+  gate is reached — and it is not how a reward variant is recreated either, which
+  `pre-engineered-stats` does from the variant's own `modifiers`. One of the 21, the
   Mercenary Module Reinforcement Package, has no engineering menu at all, so the gate asks
   what a module is *sold* with before it concludes the module takes nothing.
 

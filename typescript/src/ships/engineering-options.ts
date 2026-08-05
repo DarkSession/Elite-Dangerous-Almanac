@@ -39,10 +39,12 @@
  * deliberate trade, taken because the second hand-maintained map of the same fact drifted
  * from this one — §Engineering compatibility in
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
- * records what it cost. The one
- * accommodation the gate makes is for a build that spells a modification generically —
- * `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight` — which
- * {@link getBlueprintsForModule} describes.
+ * records what it cost. The gate
+ * makes two accommodations beyond the menu: a build that spells a modification generically
+ * — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
+ * {@link getBlueprintsForModule} describes — and a `recipe_*` key belonging to a module
+ * sold already engineered, which no menu lists and `ships/pre-engineered` resolves per
+ * module.
  *
  * @packageDocumentation
  */
