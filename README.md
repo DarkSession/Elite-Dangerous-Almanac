@@ -930,7 +930,12 @@ slot and hull restrictions) and throws otherwise. **Slot keys
 are the journal names** (`FrameShiftDrive`, `MainEngines` for thrusters, `Radar` for
 sensors, `HugeHardpoint1`, `Slot01_Size7`, `Military01`, …), so a SLEF-loaded build and
 one assembled here share one vocabulary — enumerate them with `slots()` rather than
-guessing. They are matched **exactly**, in the game's spelling.
+guessing. They are matched **case-insensitively** and otherwise exactly, because a SLEF
+producer may lower-case the game's own spelling as the specification's own example
+does: Inara writes `frameshiftdrive` and `largemininghardpoint1`, and both name the same
+mount as the journal's `FrameShiftDrive` and `LargeMiningHardpoint1`. A build keeps
+whatever spelling it was imported with — editing one of its mounts never renames it, so
+re-exporting returns the producer's own keys untouched.
 
 **Some mounts take one family of modules and nothing else**, and the journal gives each
 such mount a name of its own — so `slot.restriction` says what it takes and

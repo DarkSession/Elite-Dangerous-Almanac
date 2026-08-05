@@ -21,6 +21,13 @@
  * pre-engineered or caller-supplied stats, so every later metric uses the article that
  * was actually fitted rather than resolving its symbol back to a stock module.
  *
+ * **Slot keys are matched case-insensitively.** Frontier writes `FrameShiftDrive` and
+ * `LargeMiningHardpoint1`, but a SLEF producer may lower-case every key as the
+ * specification's own example does — Inara writes `frameshiftdrive` and
+ * `largemininghardpoint1` — and both spellings name the same mount, whether you are
+ * reading it or fitting into it. What a build already carries is never rewritten to
+ * match, so re-exporting an import returns the producer's own spelling untouched.
+ *
  * @remarks
  * This is the batteries-included ship facade: resolving arbitrary journal module
  * ids and engineering recipes requires the complete ship/module, blueprint, and
@@ -728,22 +735,23 @@ export class ShipLoadout {
      * `build.getFittedModule('FrameShiftDrive')?.applyBlueprint('FSD_LongRange', { grade: 5 })`.
      *
      * @param slotKey - The slot key, e.g. `"FrameShiftDrive"`, `"Slot01_Size6"`. Matched
-     * exactly, in the journal's own spelling — enumerate keys with {@link slots} rather
-     * than typing them (a core slot's `core` function name, e.g. `thrusters`, is not its
-     * key, `MainEngines`).
+     * case-insensitively, otherwise in the journal's own spelling — enumerate keys with
+     * {@link slots} rather than typing them (a core slot's `core` function name, e.g.
+     * `thrusters`, is not its key, `MainEngines`).
      * @returns A live handle on the fitted module, or `null` when the slot is empty or
-     * the key is not a slot on this hull.
+     * the key is not a slot on this hull. The handle reports the build's own spelling
+     * of the key, not the one you asked with.
      */
     getFittedModule(slotKey: string): FittedModule | null {
-        return this.#modules.has(slotKey)
-            ? new FittedModule(
-                  this,
-                  slotKey,
-                  this.#slotVersions.get(slotKey) ?? 0,
-                  () => this.#slotVersions.get(slotKey) ?? 0,
-                  () => this.#statsFor(this.#modules.get(slotKey) ?? null),
-              )
-            : null;
+        const key = this.#fittedKey(slotKey);
+        if (key === null) return null;
+        return new FittedModule(
+            this,
+            key,
+            this.#slotVersions.get(key) ?? 0,
+            () => this.#slotVersions.get(key) ?? 0,
+            () => this.#statsFor(this.#modules.get(key) ?? null),
+        );
     }
 
     /**
@@ -751,11 +759,13 @@ export class ShipLoadout {
      * low-level counterpart to {@link getFittedModule} for when you want the plain data
      * rather than a handle.
      *
-     * @param slotKey - The slot key, matched exactly (journal spelling).
-     * @returns The raw module object, or `null` when the slot is empty.
+     * @param slotKey - The slot key, matched case-insensitively (journal spelling).
+     * @returns The raw module object, or `null` when the slot is empty. Its `Slot` field
+     * carries the build's own spelling of the key.
      */
     moduleAt(slotKey: string): LoadoutModule | null {
-        const module = this.#modules.get(slotKey);
+        const key = this.#fittedKey(slotKey);
+        const module = key === null ? undefined : this.#modules.get(key);
         return module ? cloneLoadoutModule(module) : null;
     }
 
@@ -763,7 +773,7 @@ export class ShipLoadout {
      * The modules from a catalogue that fit a given slot — its size, kind and any
      * restriction all satisfied.
      *
-     * @param slotKey - The slot key to fit, matched exactly (journal spelling).
+     * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
      * @param catalogue - A module catalogue to filter (e.g. `INTERNAL_MODULES`); pass
      * only the category you need so bundlers keep the rest out.
      * @returns The fitting modules, in catalogue order.
@@ -786,7 +796,9 @@ export class ShipLoadout {
     /**
      * Fit a module into a slot, replacing whatever is there.
      *
-     * @param slotKey - The slot key to fit into, matched exactly (journal spelling).
+     * @param slotKey - The slot key to fit into, matched case-insensitively (journal
+     * spelling). An occupied slot keeps the key the build already spells it with, so
+     * fitting into an import never renames one of its mounts.
      * @param module - The module to fit (resolve it from a catalogue first, e.g. with
      * {@link getModuleBySymbol}). The complete record is snapshotted, so a result from
      * `getPreEngineeredStats` or a caller-supplied catalogue keeps its resolved stats.
@@ -816,27 +828,28 @@ export class ShipLoadout {
         if (problem) {
             throw new TypeError(`ShipLoadout.setModule: ${module.symbol} → ${slotKey}: ${problem}`);
         }
-        this.#replaceModule(
-            slotKey,
-            { Slot: slotKey, Item: module.symbol },
-            cloneModuleStats(module),
-        );
+        // Replacing keeps the key the build already uses; a fresh fit takes the hull
+        // layout's canonical spelling rather than whatever casing the caller typed.
+        const key = this.#fittedKey(slotKey) ?? slot.key;
+        this.#replaceModule(key, { Slot: key, Item: module.symbol }, cloneModuleStats(module));
         return this;
     }
 
     /**
      * Empty a slot.
      *
-     * @param slotKey - The slot key to clear, matched exactly (journal spelling).
+     * @param slotKey - The slot key to clear, matched case-insensitively (journal
+     * spelling).
      * @returns `this`, for chaining. Clearing an already-empty slot is a no-op.
      * @throws {TypeError} If `slotKey` is the built-in cargo hatch, which cannot be
      * removed or replaced.
      */
     removeModule(slotKey: string): this {
-        if (slotKey === 'CargoHatch') {
+        if (slotKey.toLowerCase() === 'cargohatch') {
             throw new TypeError('ShipLoadout.removeModule: the cargoHatch slot cannot be changed');
         }
-        if (this.#modules.has(slotKey)) this.#replaceModule(slotKey, null);
+        const key = this.#fittedKey(slotKey);
+        if (key !== null) this.#replaceModule(key, null);
         return this;
     }
 
@@ -847,7 +860,8 @@ export class ShipLoadout {
      * The modifiers are stored as an `Engineering` block on the fitted module, so the
      * build's jump-range and mass calculations pick them up automatically.
      *
-     * @param slotKey - The slot whose module to engineer, matched exactly (journal spelling).
+     * @param slotKey - The slot whose module to engineer, matched case-insensitively
+     * (journal spelling).
      * @param blueprintName - The blueprint's Frontier `fdname`, e.g. `"FSD_LongRange"`.
      * @param options - {@link ApplyBlueprintOptions}: `grade` (1–5), optional `quality`
      * (0–1, default 1), and optional `experimental` effect `fdname`.
@@ -869,8 +883,9 @@ export class ShipLoadout {
      * ```
      */
     applyBlueprint(slotKey: string, blueprintName: string, options: ApplyBlueprintOptions): this {
-        const module = this.#modules.get(slotKey);
-        if (!module) {
+        const key = this.#fittedKey(slotKey);
+        const module = key === null ? undefined : this.#modules.get(key);
+        if (!module || key === null) {
             throw new RangeError(`ShipLoadout.applyBlueprint: slot "${slotKey}" is empty`);
         }
         const stats = this.#statsFor(module);
@@ -933,19 +948,21 @@ export class ShipLoadout {
                 : {}),
             Modifiers: modifiers,
         };
-        this.#replaceModule(slotKey, { ...module, Engineering: engineering });
+        this.#replaceModule(key, { ...module, Engineering: engineering });
         return this;
     }
 
     /**
      * Strip the engineering from a slot's module, restoring its base stats.
      *
-     * @param slotKey - The slot to de-engineer, matched exactly (journal spelling).
+     * @param slotKey - The slot to de-engineer, matched case-insensitively (journal
+     * spelling).
      * @returns `this`, for chaining. A no-op if the slot is empty or un-engineered.
      */
     clearEngineering(slotKey: string): this {
-        const module = this.#modules.get(slotKey);
-        if (module?.Engineering) {
+        const key = this.#fittedKey(slotKey);
+        const module = key === null ? undefined : this.#modules.get(key);
+        if (key !== null && module?.Engineering) {
             const bare: LoadoutModule = { Slot: module.Slot, Item: module.Item };
             if (module.On !== undefined) (bare as { On?: boolean }).On = module.On;
             if (module.Priority !== undefined) {
@@ -953,7 +970,7 @@ export class ShipLoadout {
             }
             if (module.Health !== undefined) (bare as { Health?: number }).Health = module.Health;
             if (module.Value !== undefined) (bare as { Value?: number }).Value = module.Value;
-            this.#replaceModule(slotKey, bare);
+            this.#replaceModule(key, bare);
         }
         return this;
     }
@@ -961,7 +978,8 @@ export class ShipLoadout {
     /**
      * Switch a fitted module on or off.
      *
-     * @param slotKey - The slot's journal key, e.g. `"PowerPlant"`.
+     * @param slotKey - The slot's journal key, e.g. `"PowerPlant"`, matched
+     * case-insensitively.
      * @param on - `true` to power it, `false` to switch it off.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty.
@@ -978,7 +996,7 @@ export class ShipLoadout {
     /**
      * Set a fitted module's power-priority group.
      *
-     * @param slotKey - The slot's journal key.
+     * @param slotKey - The slot's journal key, matched case-insensitively.
      * @param priority - The journal's **zero-based** group, `0`–`4`. Note that the
      * outfitting panel — and {@link powerBudget}'s `bands[].priority` — number the same
      * five groups `1`–`5`.
@@ -1006,9 +1024,12 @@ export class ShipLoadout {
      * re-read through {@link moduleAt} on every access.
      */
     #patchModule(slotKey: string, patch: Pick<Partial<LoadoutModule>, 'On' | 'Priority'>): void {
-        const module = this.#modules.get(slotKey);
-        if (!module) throw new RangeError(`ShipLoadout: slot "${slotKey}" is empty`);
-        this.#modules.set(slotKey, cloneLoadoutModule({ ...module, ...patch }));
+        const key = this.#fittedKey(slotKey);
+        const module = key === null ? undefined : this.#modules.get(key);
+        if (!module || key === null) {
+            throw new RangeError(`ShipLoadout: slot "${slotKey}" is empty`);
+        }
+        this.#modules.set(key, cloneLoadoutModule({ ...module, ...patch }));
     }
 
     /**
@@ -1133,12 +1154,20 @@ export class ShipLoadout {
             );
         }
         const remaining = new Map(this.#modules);
+        // Indexed by lower-cased key, so a lower-casing producer's build orders by slot
+        // exactly as a journal's does. First spelling wins, as `#fittedKey` has it.
+        const byLowerKey = new Map<string, string>();
+        for (const key of remaining.keys()) {
+            const lower = key.toLowerCase();
+            if (!byLowerKey.has(lower)) byLowerKey.set(lower, key);
+        }
         const ordered: LoadoutModule[] = [];
         for (const slot of enumerateSlots(layout)) {
-            const module = remaining.get(slot.key);
-            if (module) {
+            const key = byLowerKey.get(slot.key.toLowerCase());
+            const module = key === undefined ? undefined : remaining.get(key);
+            if (module && key !== undefined) {
                 ordered.push(module);
-                remaining.delete(slot.key);
+                remaining.delete(key);
             }
         }
         return [...ordered, ...remaining.values()];
@@ -1467,13 +1496,38 @@ export class ShipLoadout {
     }
 
     #requireSlot(slotKey: string): BuildSlot {
-        const slot = this.#layout().find((s) => s.key === slotKey);
+        const wanted = slotKey.toLowerCase();
+        const slot = this.#layout().find((s) => s.key.toLowerCase() === wanted);
         if (!slot) {
             throw new RangeError(
                 `ShipLoadout: hull "${this.#shipSymbol}" has no slot "${slotKey}"`,
             );
         }
         return slot;
+    }
+
+    /**
+     * The key this build stores the module in `slotKey` under, or `null` when the slot
+     * is empty.
+     *
+     * @remarks
+     * The build's own spelling is authoritative and is never rewritten: an import keeps
+     * whatever its producer wrote, so a re-export is byte-identical to what came in.
+     * Matching is case-insensitive because that spelling is not the caller's to know —
+     * Inara lower-cases every key, as the SLEF specification's own example does, so
+     * `LargeMiningHardpoint1` and `largemininghardpoint1` are one mount. A linear scan
+     * is enough: the largest build in the corpus fits 40 modules.
+     *
+     * A producer that wrote *both* spellings would leave two entries; the first in
+     * insertion order wins, and the other keeps its own slot in the export.
+     */
+    #fittedKey(slotKey: string): string | null {
+        if (this.#modules.has(slotKey)) return slotKey;
+        const wanted = slotKey.toLowerCase();
+        for (const key of this.#modules.keys()) {
+            if (key.toLowerCase() === wanted) return key;
+        }
+        return null;
     }
 
     /** Why `module` cannot go in `slot`, or `null` if it fits. */
@@ -1650,7 +1704,10 @@ export class ShipLoadout {
         if (modified !== null) return modified;
         const stats = statsOverride ?? this.#statsFor(module);
         if (stats?.mass !== undefined) return stats.mass;
-        if (module.Slot === 'CargoHatch' && module.Item.toLowerCase() === 'modularcargobaydoor') {
+        if (
+            module.Slot.toLowerCase() === 'cargohatch' &&
+            module.Item.toLowerCase() === 'modularcargobaydoor'
+        ) {
             return 0;
         }
         return stats === null && isCosmeticSlot(module.Slot) ? 0 : null;

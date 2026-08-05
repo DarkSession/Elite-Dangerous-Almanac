@@ -64,6 +64,44 @@ test('parseSlotName returns null for an unrecognised name', () => {
     assert.equal(parseSlotName(''), null);
 });
 
+test('parseSlotName classifies a key whatever its casing', () => {
+    // Inara lower-cases every slot key, as the SLEF specification's own example does,
+    // so a producer's casing must not decide whether a mount is recognised. Every form
+    // below names the mount above it.
+    for (const [journal, produced] of [
+        ['PowerPlant', 'powerplant'],
+        ['MainEngines', 'mainengines'],
+        ['Radar', 'RADAR'],
+        ['Armour', 'armour'],
+        ['CargoHatch', 'cargohatch'],
+        ['PlanetaryApproachSuite', 'planetaryapproachsuite'],
+        ['HugeHardpoint2', 'hugehardpoint2'],
+        ['LargeMiningHardpoint1', 'largemininghardpoint1'],
+        ['TinyHardpoint3', 'tinyhardpoint3'],
+        ['Slot03_Size5', 'slot03_size5'],
+        ['Military01', 'MILITARY01'],
+        ['LimpetController01', 'limpetcontroller01'],
+        ['FighterBay01', 'fighterbay01'],
+    ] as const) {
+        assert.deepEqual(parseSlotName(produced), parseSlotName(journal), produced);
+    }
+    // The values it hands back keep this library's own spelling, not the input's.
+    assert.deepEqual(parseSlotName('powerplant'), { kind: 'core', size: null, core: 'powerPlant' });
+    assert.deepEqual(parseSlotName('largemininghardpoint1'), {
+        kind: 'hardpoint',
+        size: 3,
+        restriction: 'mining',
+    });
+});
+
+test('a cosmetic mount stays unclassified in either casing', () => {
+    // `parseSlotName` returns null for exactly the journal's cosmetic slots. Matching
+    // keys case-insensitively must not turn one of those into a recognised mount.
+    for (const slot of ['ShipCockpit', 'shipcockpit', 'PaintJob', 'paintjob', 'decal1']) {
+        assert.equal(parseSlotName(slot), null, slot);
+    }
+});
+
 test('enumerateSlots expands the Anaconda layout into keyed mounts', () => {
     const slots = enumerateSlots(getShipSlots('Anaconda')!);
 

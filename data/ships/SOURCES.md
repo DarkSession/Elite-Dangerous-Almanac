@@ -1216,12 +1216,16 @@ its own fixture, with the expected outputs in a sibling fixture that names it by
   truncating; the divergence is pinned as evidence rather than followed.
 
   **One thing it exposed rather than confirmed:** Inara lower-cases every slot key, as
-  the SLEF specification's own example does, and slot binding here is case-sensitive —
-  so a build imported from Inara reports **no** occupied mounts and `setModule` on one
-  adds a duplicate. That is a pre-existing defect of the loadout facade rather than of
-  this data, and it is recorded in
-  [issue #21](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/21); the
-  tests over this fixture compare slot keys case-insensitively until it is fixed.
+  the SLEF specification's own example does, and slot binding here used to be
+  case-sensitive — so a build imported from Inara reported **no** occupied mounts and
+  `setModule` on one added a duplicate rather than replacing it. That was a defect of
+  the loadout facade rather than of this data, and nothing but an Inara-sourced export
+  would have shown it: the other two ground-truth fixtures are an EDSY export and a
+  journal capture, which both use Frontier's own casing. `ShipLoadout` and
+  `parseSlotName` now resolve a slot key whatever its casing. What was **not** done is
+  canonicalising keys on import: a build keeps its producer's spelling, so this fixture
+  still re-exports byte for byte, and the tests over it compare slot keys
+  case-insensitively because that is what the library itself does.
 
 Two facts the Krait Phantom capture established that the EDSY export could not:
 

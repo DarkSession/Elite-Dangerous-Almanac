@@ -310,7 +310,9 @@ export function armourInputFor(
     for (const module of modules) {
         if (!isEnabled(module)) continue;
         const stats = statsFor(module);
-        if (module.Slot === 'Armour') {
+        // Lower-cased: a producer may write the slot key either way, and a bulkhead
+        // missed here would silently be reported as the hull's stock alloy.
+        if (module.Slot.toLowerCase() === 'armour') {
             bulkhead = {
                 hullBoost: effectiveStat(module, 'hullBoost', stats) ?? 0,
                 ...resistancesOf(module, stats),

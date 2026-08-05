@@ -138,12 +138,13 @@ export interface BuildSlot {
      * `"FighterBay01"`.
      *
      * @remarks
-     * This is the string every `slotKey` argument takes, and it is matched **exactly**
-     * — journal spelling, case-sensitive, no surrounding whitespace — because it is the
-     * game's own identifier. Enumerate keys with `ShipLoadout.slots()` rather than
-     * typing them. Note a core slot's {@link BuildSlot.core} function name is a
-     * *different* string (`thrusters` vs the key `MainEngines`); see
-     * {@link CoreSlotType}.
+     * This is the string every `slotKey` argument takes. It is matched
+     * **case-insensitively** and otherwise exactly — no surrounding whitespace, no
+     * abbreviation — because a SLEF producer may lower-case the game's own identifier,
+     * as the specification's own example does. Enumerate keys with
+     * `ShipLoadout.slots()` rather than typing them. Note a core slot's
+     * {@link BuildSlot.core} function name is a *different* string (`thrusters` vs the
+     * key `MainEngines`); see {@link CoreSlotType}.
      */
     readonly key: string;
     /** Which kind of mount this is. */
@@ -270,15 +271,18 @@ const CORE_KEY: Record<CoreSlotType, string> = {
     fuelTank: 'FuelTank',
 };
 
-/** Journal core slot key → core module function (the inverse of `CORE_KEY`). */
+/**
+ * Journal core slot key → core module function (the inverse of `CORE_KEY`), keyed in
+ * lower case because {@link parseSlotName} classifies a key whatever its casing.
+ */
 const CORE_TYPE: Record<string, CoreSlotType> = {
-    PowerPlant: 'powerPlant',
-    MainEngines: 'thrusters',
-    FrameShiftDrive: 'frameShiftDrive',
-    LifeSupport: 'lifeSupport',
-    PowerDistributor: 'powerDistributor',
-    Radar: 'sensors',
-    FuelTank: 'fuelTank',
+    powerplant: 'powerPlant',
+    mainengines: 'thrusters',
+    frameshiftdrive: 'frameShiftDrive',
+    lifesupport: 'lifeSupport',
+    powerdistributor: 'powerDistributor',
+    radar: 'sensors',
+    fueltank: 'fuelTank',
 };
 
 /** Ordered so `CORE_ORDER[i]` follows the outfitting panel. */
@@ -402,13 +406,20 @@ export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
  * {@link ParsedSlot}.
  *
  * @param slot - The journal slot name, e.g. `"FrameShiftDrive"`, `"MediumHardpoint2"`,
- * `"Slot03_Size5"`, `"Military01"`, `"LargeMiningHardpoint1"`.
+ * `"Slot03_Size5"`, `"Military01"`, `"LargeMiningHardpoint1"`. Matched
+ * **case-insensitively** — see the remarks.
  * @returns The classification, or `null` if the name is not a recognised slot. `size`
  * is `null` for names that do not encode a size (a bare `Military01`).
  * @remarks
  * Every restricted mount has a journal name of its own, so the restriction is read
  * off the name and needs no hull layout. The size still may: `Cargo01` says only
  * that the mount takes cargo, and `getShipSlots` carries how big it is.
+ *
+ * **Casing is not significant.** Frontier writes `FrameShiftDrive`, but a SLEF
+ * producer may lower-case every slot key as the specification's own example does —
+ * Inara writes `powerplant` and `largemininghardpoint1` — and both name the same
+ * mount. The returned `core` and `restriction` values keep this library's own
+ * camelCase spelling whatever the input looked like.
  * @example
  * ```ts
  * parseSlotName('Slot03_Size5'); // -> { kind: 'optional', size: 5 }
@@ -416,36 +427,39 @@ export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
  * parseSlotName('LargeMiningHardpoint1');
  * // -> { kind: 'hardpoint', size: 3, restriction: 'mining' }
  * parseSlotName('Radar'); // -> { kind: 'core', size: null, core: 'sensors' }
+ * parseSlotName('powerplant'); // -> { kind: 'core', size: null, core: 'powerPlant' }
  * ```
  */
 export function parseSlotName(slot: string): ParsedSlot | null {
-    const core = CORE_TYPE[slot];
+    // Every comparison below is against the lower-cased key, so a producer's casing
+    // never decides whether a mount is recognised.
+    const key = slot.toLowerCase();
+    const core = CORE_TYPE[key];
     if (core) return { kind: 'core', size: null, core };
-    if (slot === 'Armour') return { kind: 'armour', size: 0 };
-    if (slot === 'CargoHatch') return { kind: 'cargoHatch', size: 1 };
-    if (slot === 'PlanetaryApproachSuite') {
+    if (key === 'armour') return { kind: 'armour', size: 0 };
+    if (key === 'cargohatch') return { kind: 'cargoHatch', size: 1 };
+    if (key === 'planetaryapproachsuite') {
         return { kind: 'optional', size: null, restriction: 'planetaryApproachSuite' };
     }
 
-    const hardpoint = /^(Small|Medium|Large|Huge)(Mining)?Hardpoint\d+$/.exec(slot);
+    const hardpoint = /^(small|medium|large|huge)(mining)?hardpoint\d+$/.exec(key);
     if (hardpoint) {
-        const size = { Small: 1, Medium: 2, Large: 3, Huge: 4 }[hardpoint[1] as string];
+        const size = { small: 1, medium: 2, large: 3, huge: 4 }[hardpoint[1] as string];
         return {
             kind: 'hardpoint',
             size: size ?? null,
             ...(hardpoint[2] ? { restriction: 'mining' as const } : {}),
         };
     }
-    if (/^TinyHardpoint\d+$/.test(slot)) return { kind: 'utility', size: 0 };
-    if (/^Military\d+$/.test(slot))
-        return { kind: 'optional', size: null, restriction: 'military' };
-    if (/^Cargo\d+$/.test(slot)) return { kind: 'optional', size: null, restriction: 'cargo' };
-    if (/^LimpetController\d+$/.test(slot))
+    if (/^tinyhardpoint\d+$/.test(key)) return { kind: 'utility', size: 0 };
+    if (/^military\d+$/.test(key)) return { kind: 'optional', size: null, restriction: 'military' };
+    if (/^cargo\d+$/.test(key)) return { kind: 'optional', size: null, restriction: 'cargo' };
+    if (/^limpetcontroller\d+$/.test(key))
         return { kind: 'optional', size: null, restriction: 'limpetController' };
-    if (/^FighterBay\d+$/.test(slot))
+    if (/^fighterbay\d+$/.test(key))
         return { kind: 'optional', size: null, restriction: 'vesselHangar' };
 
-    const optional = /^Slot\d+_Size(\d+)$/.exec(slot);
+    const optional = /^slot\d+_size(\d+)$/.exec(key);
     if (optional) return { kind: 'optional', size: Number(optional[1]) };
 
     return null;
