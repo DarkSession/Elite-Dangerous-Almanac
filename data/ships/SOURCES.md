@@ -1,6 +1,6 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the per-hull slot names added on 2026-08-05, recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the engineering-options extension of 2026-08-05 (§Engineering options), which followed the per-hull slot names recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 **Revision 2026-08-05 (UTC) — the mounts of 13 hulls now carry the journal's own slot
 names.**
@@ -1250,6 +1250,17 @@ up straight through with no disambiguation at all. Both paths are evidence that
     checked against coriolis's own, as are the nine further groups it carries a list for —
     20 in all, every one an exact match. Chaff, heat sink, point defence and ECMs keep the
     generic `Misc_*` ids: there coriolis agrees with EDSY.
+  - **13 groups rest on EDSY alone**, because coriolis carries no blueprint list for
+    them at all: the nine Guardian-only groups (`guardianPowerPlants`,
+    `guardianPowerDistributors`, `guardianHullReinforcements`, `moduleReinforcements`,
+    `shieldReinforcements`, `fsdBoosters`, `guardianGauss`, `guardianPlasma`,
+    `guardianShard`), `antiXenoMissileRacks`, `experimentalWeapons`, and the
+    pre-existing `miningToolsLasers` and `antiXenoMultiCannons`. That is coriolis being
+    silent rather than contradicting — its Guardian and anti-xeno groups are empty
+    objects — but it means the second registry corroborates 40 of the 53 groups, not
+    all of them, and the Guardian-weapon disagreement in
+    [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36) has only
+    one registry behind it.
   - **`MC_Overcharged` is left out on purpose.** coriolis carries a multi-cannon-specific
     Overcharged (one extra clip-size leg); the multi-cannon group lists EDSY's
     `Weapon_Overcharged`, as it did before this change, and every Overcharged multi-cannon

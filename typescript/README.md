@@ -222,14 +222,16 @@ so its market category is a maintainer assignment) and a module-stat reconciliat
 left every outfitting module carrying at least one stat and corrected 40 records; one on
 **2026-08-04**, every hull's mounts now recording any restriction they carry (see above),
 with the modules limited to particular hulls gaining the `restrictedToShips` values that
-were previously only documented; and three on **2026-08-05**, one changing no value — a
+were previously only documented; and four on **2026-08-05**, one changing no value — a
 module whose missing stat is unknown rather than absent because it has none now says so
 in its own `unknownStats` field — one pricing the 1F Corrosion Resistant Cargo Rack
-from EDSY at 12 560, which coriolis-data carries as `0`, and one giving 13 hulls the
-journal's own slot keys, from EDSY, on 11 of which the numbering rules were wrong. That
-last is the only **behaviour-visible** one: the keys `enumerateSlots` and
+from EDSY at 12 560, which coriolis-data carries as `0`, one giving 13 hulls the
+journal's own slot keys, from EDSY, on 11 of which the numbering rules were wrong, and
+one taking the engineering-options catalogue from 428 modules in 22 groups to 1029 in 53. The last two are **behaviour-visible**: the keys `enumerateSlots` and
 `ShipLoadout.slots()` return changed on those 11 hulls (see above), while no hull's
-layout, mount count or size did. Smaller corrections are not
+layout, mount count or size did; and 601 more modules now answer an engineering group,
+14 stop answering one because upstream denies them every blueprint, and the Guardian
+power plants, distributors and hull reinforcement packages moved to groups of their own. Smaller corrections are not
 listed here — each domain's `SOURCES.md` is the authoritative record
 ([ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md),
 [commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md),

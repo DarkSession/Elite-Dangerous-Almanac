@@ -16,8 +16,9 @@
  * Supercruise Assist, the module stabilisers, the planetary approach suites, the
  * discovery scanners, the cargo hatch and the AX utility modules), plus the individual
  * modules upstream denies every blueprint — every anti-xeno multi-cannon but the two
- * gimballed and every anti-xeno missile rack but the two fixed, five of the seven mining
- * tools, the remote-release launchers and the Mk II Plasma Shock Autocannon.
+ * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, five of
+ * the seven mining tools, the remote-release launchers and the Mk II Plasma Shock
+ * Autocannon.
  *
  * **A group is one menu.** Where the same kind of module comes in two flavours with
  * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian
@@ -122,8 +123,13 @@ export function getEngineeringGroup(symbol: string): string | null {
  * `LifeSupport_LightWeight` here and `Misc_LightWeight` in an EDSY-authored build. The
  * family-specific id is the one listed, so compare ids with that in mind: the two are the
  * same recipe. `Sensor_LongRange` and `Scanner_LongRange` are **not** such a pair — those
- * are two different recipes, and the utility scanners take the `Scanner_*` ones for Long
- * Range and Wide Angle (their other four ids are shared with the sensor suites).
+ * are two different recipes rolling different stats, and the utility scanners list the
+ * `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The two menus share
+ * no id: a scanner's other four are `Sensor_FastScan` and the generic `Misc_*` trio.
+ *
+ * Anti-Guardian Zone Resistance is the other pair, and the reverse case: the game writes
+ * `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a
+ * module, and every group here — the Guardian weapons included — lists the module id.
  *
  * @param symbol - A module symbol.
  * @returns Blueprint ids, sorted. Join to `BLUEPRINTS`.
@@ -190,12 +196,15 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * `Weapon_LongRange` does not offer every effect listed here, only its own group's. Use
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
- * The groups name 81 of the 108 blueprints in `BLUEPRINTS`. The other 27 are 26
- * pre-engineered `recipe_*` variants, which are sold already applied rather than offered
- * in an engineering menu (see `ships/pre-engineered`), plus `MC_Overcharged` —
+ * The groups name 81 of the 108 blueprints in `BLUEPRINTS`. Of the other 27, 20 are the
+ * `recipe_*` keys of modules sold already engineered rather than offered in a menu (see
+ * `ships/pre-engineered`) and six are Operations recipes no registry lists a module group
+ * for — the three laser Thermal Plasma Conversions, `recipe_fuelscoop_efficiency`,
+ * `recipe_seekermissileracklarge_lockdown` and `recipe_guardianweapon_sturdy`, the weapon
+ * spelling of Anti-Guardian Zone Resistance. The 27th is `MC_Overcharged`,
  * coriolis-data's multi-cannon Overcharged, one clip-size leg apart from the
- * `Weapon_Overcharged` the multi-cannon group lists. All 27 answer `[]` here exactly as
- * an unknown id would. `recipe_guardianmodule_sturdy` is the one `recipe_*` the groups do
+ * `Weapon_Overcharged` the multi-cannon group lists. All 27 answer `[]` here exactly as an
+ * unknown id would. `recipe_guardianmodule_sturdy` is the one `recipe_*` the groups do
  * name: Anti-Guardian Zone Resistance is applied at an engineer like any other recipe.
  *
  * @param blueprint - A blueprint id, e.g. `"Weapon_Efficient"`.

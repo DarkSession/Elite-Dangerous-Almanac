@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { stripJsonComments } from '../../scripts/jsonc.mjs';
+
 import {
     ENGINEERING_OPTION_GROUPS,
     getEngineeringGroup,
@@ -38,7 +40,7 @@ test('the catalogue holds the expected groups, modules and exclusions', () => {
     for (const blueprint of offered) assert.ok(BLUEPRINTS[blueprint], blueprint);
 });
 
-test('every group holds the modules, name and list sizes the fixture pins', () => {
+test('every group holds the modules, name and menu the fixture pins', () => {
     // Totals alone would let a module move between groups unnoticed; per-group sizes
     // catch it, and every group has to appear on both sides.
     const sizes: Record<string, number> = {};
@@ -51,12 +53,38 @@ test('every group holds the modules, name and list sizes the fixture pins', () =
         Object.keys(fixture.groupSizes).sort(),
         Object.keys(ENGINEERING_OPTION_GROUPS).sort(),
     );
+    // Every group's menu, by content: a list that gains or loses an id fails here even
+    // though the counts above would still balance.
+    assert.deepEqual(
+        fixture.groups.map((expected) => expected.id),
+        Object.keys(ENGINEERING_OPTION_GROUPS),
+    );
     for (const expected of fixture.groups) {
         const group = ENGINEERING_OPTION_GROUPS[expected.id];
         assert.ok(group, `missing group ${expected.id}`);
         assert.equal(group.name, expected.name);
-        assert.equal(group.blueprints.length, expected.blueprintCount);
-        assert.equal(group.experimentals.length, expected.experimentalCount);
+        assert.deepEqual([...group.blueprints], expected.blueprints, expected.id);
+        assert.deepEqual([...group.experimentals], expected.experimentals, expected.id);
+    }
+});
+
+test('a Guardian group holds Guardian modules and its ordinary twin holds none', () => {
+    // Sizes alone would let two modules swap groups. This is the rule the split follows,
+    // so it holds for every member rather than for the pinned representative alone.
+    for (const family of fixture.splitFamilies) {
+        const guardian = ALL_MODULES.filter(
+            (module) => getEngineeringGroup(module.symbol) === family.guardian.group,
+        );
+        const ordinary = ALL_MODULES.filter(
+            (module) => getEngineeringGroup(module.symbol) === family.ordinary.group,
+        );
+        assert.ok(guardian.length > 0 && ordinary.length > 0, family.guardian.group);
+        for (const module of guardian) {
+            assert.match(module.symbol, /guardian/i, `${module.symbol} is not a Guardian module`);
+        }
+        for (const module of ordinary) {
+            assert.doesNotMatch(module.symbol, /guardian/i, module.symbol);
+        }
     }
 });
 
@@ -75,6 +103,26 @@ test('every module in the catalogue is a real module in a real group', () => {
     for (const expected of fixture.modules) {
         assert.ok(getModuleBySymbol(expected.symbol, ALL_MODULES), expected.symbol);
         assert.equal(getEngineeringGroup(expected.symbol), expected.group);
+    }
+    // Read the payload itself, not just the lookups over it: a symbol that no longer
+    // names a module — a typo, or one dropped from the module catalogues — is invisible
+    // to `getEngineeringGroup`, which is only ever asked about symbols that do exist.
+    const payload = JSON.parse(
+        stripJsonComments(
+            readFileSync(
+                fileURLToPath(
+                    new URL('../../../data/ships/engineering-options.jsonc', import.meta.url),
+                ),
+                'utf8',
+            ),
+        ),
+    ) as { modules: Record<string, string>; exclusions: Record<string, readonly string[]> };
+    for (const [symbol, group] of Object.entries(payload.modules)) {
+        assert.ok(getModuleBySymbol(symbol, ALL_MODULES), `${symbol} is not a module`);
+        assert.ok(ENGINEERING_OPTION_GROUPS[group], `${symbol}: unknown group ${group}`);
+    }
+    for (const symbol of Object.keys(payload.exclusions)) {
+        assert.ok(payload.modules[symbol], `${symbol} is excluded but not grouped`);
     }
 });
 

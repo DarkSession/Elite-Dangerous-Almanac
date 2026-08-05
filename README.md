@@ -1140,8 +1140,8 @@ Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers a
 Supercruise Assist, the module stabilisers, the planetary approach suites, the withdrawn
 discovery scanners, the cargo hatch and the AX utility modules), plus individual modules
 their family's blueprints do not reach — every anti-xeno multi-cannon but the two
-gimballed, every anti-xeno missile rack but the two fixed, five of the seven mining tools
-and the remote-release launchers among them.
+gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, five of the
+seven mining tools and the remote-release launchers among them.
 
 ```ts
 getBlueprintsForModule("Int_LifeSupport_Size4_Class2");
@@ -1170,18 +1170,21 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > life support's Lightweight is `LifeSupport_LightWeight` here and `Misc_LightWeight` in
 > an EDSY-authored build. The menus list the family-specific id, so compare ids knowing
 > the two are the same recipe. `Sensor_LongRange` and `Scanner_LongRange` are _not_ such a
-> pair: those are different recipes, and the utility scanners take the `Scanner_*` ones for
-> Long Range and Wide Angle (the rest of their menu is shared with the sensor suites).
+> pair: those are different recipes rolling different stats, and the utility scanners list
+> the `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The two menus
+> share no id at all — a scanner's other four are `Sensor_FastScan` and the generic
+> `Misc_*` trio, none of which a sensor suite offers.
 >
 > **The menu and `ShipLoadout.applyBlueprint` do not yet agree.** `applyBlueprint` does
 > not read this catalogue — it maps the blueprint to a module family of its own — and it
 > refuses recipes the menu offers on 52 modules: the hatch-breaker controllers (21), the
 > Guardian shield reinforcement packages (10) and FSD boosters (5), the KWS/manifest/wake
 > scanners (5 each, for the generic `Misc_*` recipes) and the Caustic Sink Launcher, whose
-> family is `miscellaneous` rather than `heatSink`. It also refuses `Misc_LightWeight` /
-> `Misc_Shielded` on life support, limpet controllers, AFMUs and fuel scoops — 76 of the
-> 1902 declared engineering entries in `fixtures/ships/builds/`, across 54 builds. All of
-> it is the same defect, tracked in
+> family is `miscellaneous` rather than `heatSink`. It refuses the same generic recipes on
+> life support, limpet controllers, AFMUs and fuel scoops, which is what real builds
+> actually hit: 76 of the 1902 declared engineering entries in `fixtures/ships/builds/`
+> are refused for a family mismatch, across 54 builds, the Caustic Sink Launcher's two
+> among them. All of it is the same defect, tracked in
 > [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14): until it is
 > fixed, take the menu as the answer to "what can I fit?" and expect `applyBlueprint` to
 > be narrower.
@@ -1364,6 +1367,15 @@ recorded inline there beside the field they touch.
   Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1`, not
   `Slot11`/`Slot12`), so a build that hard-codes a computed key needs re-checking.
   No hull's layout, mount count or size changed.
+- **2026-08-05** — the engineering-options catalogue went from 428 modules in 22
+  groups to 1029 in 53, covering every module EDSY's own eligibility rules allow a
+  recipe on. **Behaviour-visible three ways:** 601 more modules now answer a group
+  and a menu; 14 stop answering one, because upstream denies them every blueprint
+  (eight anti-xeno multi-cannons, five mining tools, the Mk II Plasma Shock
+  Autocannon); and the Guardian power plants, distributors and hull reinforcement
+  packages moved to groups of their own, which also took `recipe_guardianmodule_sturdy`
+  off the three ordinary menus that had wrongly offered it. See
+  [what a module can be engineered with](#what-a-module-can-be-engineered-with).
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

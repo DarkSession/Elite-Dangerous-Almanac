@@ -42,10 +42,10 @@
  * fighter and vehicle hangars, docking computers and Supercruise Assist, the module
  * stabilisers, the planetary approach suites, the discovery scanners, the cargo hatch and
  * the AX utility modules — plus the individual modules upstream denies every blueprint:
- * every anti-xeno multi-cannon but the two gimballed, every anti-xeno missile rack but
- * the two fixed, five of the seven mining tools, the remote-release launchers (three
- * denied outright, the fourth left with only the dormant Decorative entries) and the
- * Mk II Plasma Shock Autocannon.
+ * every anti-xeno multi-cannon but the two gimballed, both Enhanced anti-xeno missile
+ * racks and every turreted plain one, five of the seven mining tools, the remote-release
+ * launchers (three denied outright, the fourth left with only the dormant Decorative
+ * entries) and the Mk II Plasma Shock Autocannon.
  *
  * `modules` is ordered by group, in the order `groups` declares them, and within a group
  * in module-catalogue order.
