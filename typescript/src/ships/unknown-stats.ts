@@ -36,7 +36,8 @@
  * **Nor is this the whole of what the catalogue does not know.** The base stats that
  * engineering blueprints modify and no record carries (`EngineHeatRate`,
  * `EnergyPerRegen`, the scanner ranges and the rest) are a separate and larger gap,
- * tracked in `TODO.md`; a field with no place in the record shape cannot be named.
+ * tracked at https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10; a field
+ * with no place in the record shape cannot be named.
  * Read a `false` from {@link isStatUnknown} as "not one of the known gaps", not as
  * "the game has no such value".
  *

@@ -100,7 +100,19 @@ typescript/    # TypeScript library (package.json, src/, tests, typedoc.json)
 python/        # (future) Python library — same features, same fixtures
 ```
 
-`data/` and `fixtures/` are owned by no implementation; language folders consume them. Never copy shared data into a language folder. `data/SNAPSHOTS.md` states the snapshot date and the metadata every update must record; each `data/<domain>/SOURCES.md` carries the long-form provenance for that domain — source, revision, derivation, manual corrections, and known gaps. `TODO.md` is the short actionable list of those gaps: when a change uncovers one it cannot fix in scope, record it there and keep the reasoning in the domain's `SOURCES.md`.
+`data/` and `fixtures/` are owned by no implementation; language folders consume them. Never copy shared data into a language folder. `data/SNAPSHOTS.md` states the snapshot date and the metadata every update must record; each `data/<domain>/SOURCES.md` carries the long-form provenance for that domain — source, revision, derivation, manual corrections, and known gaps. **GitHub issues** are the short actionable list of those gaps — see §Tracking known gaps.
+
+## Tracking known gaps
+
+**Open gaps live in GitHub issues, not in a file in the repository.** There is no `TODO.md`; the list it used to hold was migrated to issues on `DarkSession/Elite-Dangerous-Almanac`, one per gap.
+
+When a change uncovers a gap it cannot fix in scope:
+
+1. **Open an issue** for it. Say what is missing, what a consumer sees today because of it, how it was measured (a fixture, a corpus count, a named record) and what would close it — a source that carries the value, or the shape the fix should take. State the area in the body (`ships — data gap`, `ships — API`, `ships — test coverage`, …) and label it `bug`, `enhancement`, `documentation` or `help wanted`. Search the open issues first: a gap that is already tracked gets a comment, not a second issue.
+2. **Keep the reasoning in the domain's `SOURCES.md`** — why a value was left absent, which sources were checked, what was rejected and on what grounds. The issue is the short actionable list; `SOURCES.md` is the provenance record, and it outlives the issue.
+3. **Cite the issue where a reader meets the gap** — the TSDoc on the function that returns the incomplete answer, the `SOURCES.md` bullet, the README paragraph. Link it as `#<number>` in Markdown; in TSDoc and code comments use the full URL, since TypeDoc output is read outside the repository. Do not paraphrase an issue's contents into a doc comment: name the symptom in one line and link.
+
+Closing a gap means closing its issue in the same change that fixes it, and dropping the citations that pointed at it.
 
 ## Repository Status
 

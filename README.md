@@ -622,8 +622,9 @@ The five are the four withdrawn Discovery Scanners (`powerDraw`) and the unsized
 Breaker Limpet Controller (`mass`). A whole build already answers safely without you
 checking: `powerBudget()` reports such a module in `unknownDraws` instead of counting
 it as free, and `unladenMass` returns `null` rather than a total missing a module's
-mass — the latter for _any_ absent mass, declared or not. `TODO.md` tracks what would
-fill each. An absent `cost` is never declared — see [Prices](#prices), where absence
+mass — the latter for _any_ absent mass, declared or not.
+[Issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17) tracks what
+would fill each. An absent `cost` is never declared — see [Prices](#prices), where absence
 already means unknown — and this is not a claim that _every_ other absence is a stat
 the game does not have.
 
@@ -1106,7 +1107,10 @@ fixed Mining Laser is not one of them — it is grouped and does offer an effect
 > and the Guardian weapons engineer fine — for those it really is only the _menu_ that is
 > missing. (The Caustic Sink Launcher is the exception among the launchers: its
 > engineering target is `miscellaneous`, so `Misc_HeatSinkCapacity` is refused on it.)
-> `TODO.md` §1, §4 and §10 track all three problems.
+> Issues [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13),
+> [#10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10) and
+> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14) track all three
+> problems.
 
 #### Modules you can buy already engineered
 
@@ -1283,7 +1287,9 @@ recorded inline there beside the field they touch.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
-_unknown_, never as zero. [TODO.md](TODO.md) is the short list of those gaps.
+_unknown_, never as zero. The
+[open issues](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues) are the
+short list of those gaps.
 [`data/SNAPSHOTS.md`](data/SNAPSHOTS.md) records the initial-snapshot limitation
 and the versioning metadata every future update must carry, and each
 `data/<domain>/SOURCES.md` carries that domain's full derivation.

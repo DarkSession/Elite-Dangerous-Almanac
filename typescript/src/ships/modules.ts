@@ -201,7 +201,8 @@ export interface OutfittingModule {
      * record, so sourcing a value means deleting its name here in the same change.
      * Read its absence as "not one of the known gaps", not as "the game has no such
      * value": the base stats blueprints modify that no record carries at all are a
-     * separate gap, tracked in `TODO.md`.
+     * separate gap, tracked at
+     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10.
      *
      * @example
      * ```ts
