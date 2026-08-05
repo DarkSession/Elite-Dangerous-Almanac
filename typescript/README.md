@@ -215,7 +215,7 @@ A value no source publishes is left **absent rather than guessed** — a handful
 `integrity`, `powerDraw` and `mass` fields are `undefined` for that reason. The
 [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#data-freshness)
 covers freshness in full,
-[TODO.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/TODO.md)
+the [issue tracker](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues)
 lists the open gaps, and
 [data/SNAPSHOTS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/SNAPSHOTS.md)
 records the provenance metadata every update must carry.

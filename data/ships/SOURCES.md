@@ -45,7 +45,8 @@ registry carries the value. No source was re-acquired or fetched for this revisi
   there is nothing to disambiguate.
 - **Scope.** The field can only name stats the record shape has. The base stats
   blueprints modify that no record carries at all (`EngineHeatRate`, `EnergyPerRegen`,
-  the scanner ranges) cannot be named and stay in `TODO.md` §5.
+  the scanner ranges) cannot be named and stay in
+  [issue #10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10).
 
 **Revision 2026-08-04 (UTC) — a restricted mount is now stored as one, and the journal
 names it by.** A hull's `hardpoints` was a bare array of sizes, so there was nowhere to
@@ -128,7 +129,9 @@ already carries the field the same way:
   a review caught by building a Type-9 that carried one. The sources say something
   stronger still — that they fit only a *cargo-restricted* mount, so even the Panther's
   own unrestricted size-8 should refuse one — and that half needs a module-side field
-  this catalogue does not have; it is recorded in `TODO.md` §3 rather than approximated.
+  this catalogue does not have; it is recorded in
+  [issue #11](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11) rather
+  than approximated.
 
 **Revision 2026-08-02 (UTC) — every module now carries stats, and 40 records were
 corrected.** The four module catalogues were reconciled against
@@ -191,7 +194,7 @@ a value.
   catalogue now has at least one stat** (1198/1198), so `fixtures/ships/module-stats.json`
   `counts` now equals the catalogue sizes — and no record is left holding only a lone
   `mass`.
-- **Closes the `TODO.md` gap "Modules still missing `mass`, deliberately" for all but one
+- **Closes the tracked gap "Modules still missing `mass`, deliberately" for all but one
   record.** The ten `*_free` starter variants,
   `Int_Hyperdrive_Size8_Class{1..5}` and `Int_ShieldGenerator_Size1_Class4` had `mass`
   left absent because absent meant *unknown*. They are now sourced.
@@ -200,12 +203,13 @@ a value.
   12-field hand-filled curve, and it was **confirmed unchanged** — its `optMass` 25 /
   `minMass` 13 / `maxMass` 63 and 0.6-1.1-1.6 multipliers match the reference figures
   exactly, which retrospectively validates that hand-fill.
-- **Fills 102 of the 106 records in the `TODO.md` gap "106 modules are missing
+- **Fills 102 of the 106 records in the tracked gap "106 modules are missing
   `powerDraw` that upstream carries".** The fuel scoop, AFM unit, refinery and docking
   computer families are complete. The four `Int_StellarBodyDiscoveryScanner_*` records
   are **not** filled: no source carries a power draw for them — EDSY gives them only
   `mass` and `integrity`, and coriolis-data has no record for them at all. They are withdrawn modules whose function is now built in, and
-  the absence is left as *unknown* rather than guessed at zero. Recorded in `TODO.md`.
+  the absence is left as *unknown* rather than guessed at zero. Recorded in
+  [issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17).
   The part that is closed is the defect the item was written about: the Deep Black's 7A
   fuel scoop, 6A AFM unit and advanced docking computer now draw the 4.68 MW it
   predicted, so its `retracted` budget moves 14.8159 → 19.4959 MW and its headroom
@@ -219,7 +223,8 @@ a value.
   appeal to — every sized limpet controller in the family has a real, non-zero mass. A
   written-down inference is still an inference, and `absent` has to keep meaning
   *unknown*. Its `integrity` 20 and `powerDraw` 0.4 do come from EDSY and are kept. The
-  outstanding mass is recorded in `TODO.md`.
+  outstanding mass is recorded in
+  [issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17).
 - **The three `*_free` starter fittings that were still hollow are now complete.**
   `Int_ShieldGenerator_Size2_Class1_free` gains `shieldRegenRate` 1,
   `shieldBrokenRegenRate` 1.6, the resistances 0.4 / −0.2 / 0.5 and `distributorDraw`
@@ -415,7 +420,8 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   The two size-6 and one size-5 passenger-reserved optionals are stored as plain
   optional slots: the schema now carries slot restrictions (2026-08-04, above), but
   no passenger value, because the journal names for those three mounts are the one
-  restricted family EDSY's own import map does not claim — see `TODO.md`.
+  restricted family EDSY's own import map does not claim — see
+  [issue #11](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11).
 
 ## Modules (outfitting)
 
@@ -1213,8 +1219,9 @@ its own fixture, with the expected outputs in a sibling fixture that names it by
   the SLEF specification's own example does, and slot binding here is case-sensitive —
   so a build imported from Inara reports **no** occupied mounts and `setModule` on one
   adds a duplicate. That is a pre-existing defect of the loadout facade rather than of
-  this data, and it is recorded in `TODO.md`; the tests over this fixture compare slot
-  keys case-insensitively until it is fixed.
+  this data, and it is recorded in
+  [issue #21](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/21); the
+  tests over this fixture compare slot keys case-insensitively until it is fixed.
 
 Two facts the Krait Phantom capture established that the EDSY export could not:
 
@@ -1313,6 +1320,7 @@ because both of its builds are pure traders.
   weapon DPS. **Engineering is recorded but not applied** — every pinned figure comes
   from stock module stats, so builds designed around an engineered plant read
   `withinBudget: false`. That keeps the numbers a pure function of the catalogues, which
-  is what a port needs; it also sidesteps the applied-engineering gap in `TODO.md`.
+  is what a port needs; it also sidesteps the applied-engineering gap in
+  [issue #10](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/10).
 - **Not ground truth.** These figures are this implementation's own output, pinned so
   every future implementation must agree. Only the *builds* are external.

@@ -70,7 +70,7 @@ export type OptionalRestriction =
  *
  * The list is what the hull layouts model, not every rule the game has: passenger
  * cabin-reserved optionals (the Lynx Highliner's three) are still stored as ordinary
- * slots — see `TODO.md`.
+ * slots — see https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11.
  *
  * The journal spells two of these differently from the value: `vesselHangar` mounts
  * are named `FighterBay01` (the game renamed the modules but not the slots), and

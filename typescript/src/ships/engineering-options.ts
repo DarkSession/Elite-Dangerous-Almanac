@@ -12,7 +12,8 @@
  * armour, sensors, life support, heat sink and chaff launchers, the Detailed Surface
  * Scanner, limpet controllers, AFMUs, fuel scoops, FSD interdictors, the Guardian
  * weapons — answer "nothing" here although real builds engineer them. Treat an empty
- * result as "not listed", not as "cannot be engineered"; `TODO.md` tracks the gap.
+ * result as "not listed", not as "cannot be engineered"; the gap is tracked at
+ * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13.
  *
  * Its own module (and data file) so consumers who never open an engineering menu do not
  * bundle it. Everything returned joins straight to `BLUEPRINTS` and
