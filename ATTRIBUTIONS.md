@@ -108,6 +108,19 @@ in the doc comment of each ported module, and in long form in the domain
   costs, which coriolis-data does not carry, plus the attribute-to-journal-Label
   mapping, from [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**,
   whose code is licensed **CC BY-NC 4.0**.
+- **Which blueprints and experimental effects each module can take** — the module-group
+  menus in `data/ships/engineering-options.jsonc`: which modules form a group, the
+  blueprint and experimental-effect lists each group offers, and the per-module
+  `noblueprints` / `noexpeffects` denials that narrow them, from
+  [EDSY](https://github.com/taleden/EDSY) (`eddb.js` `mtype[]` and `module[]`, taleden,
+  **CC BY-NC 4.0**), cross-checked against and, for the families EDSY records under one
+  generic recipe id, keyed by
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
+  `modifications/modules.json` (**MIT** for its code; the values are game data). The
+  availability rules are **Elite Dangerous game data, property of Frontier Developments
+  plc**; see the notice below. `data/ships/SOURCES.md` records the group-by-group
+  derivation, the two registries' disagreements, and the modules bound by a family rule
+  rather than a source row.
 - **Per-hull journal slot names** — the slot keys 11 hulls use that no numbering rule
   derives (the Anaconda's `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian
   Explorer's out-of-order medium hardpoints, the Lynx Highliner's `Passenger01`–`03`),

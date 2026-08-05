@@ -3,9 +3,14 @@
  * outfitting module can actually take.
  *
  * Sources: EDSY (github.com/taleden/EDSY) eddb.js — its module-group tables carry the
- *          `blueprints` and `expeffects` a group offers, and mark the individual
- *          modules that accept no experimental at all. EDSY is (c) taleden under a
- *          CC BY-NC 4.0 License (http://creativecommons.org/licenses/by-nc/4.0/).
+ *          `blueprints` and `expeffects` a group offers and which modules belong to it,
+ *          and its module records carry the per-module `noblueprints` / `noexpeffects`
+ *          denials that narrow either list. EDSY is (c) taleden under a CC BY-NC 4.0
+ *          License (http://creativecommons.org/licenses/by-nc/4.0/).
+ *          coriolis-data (github.com/EDCD/coriolis-data) modifications/modules.json —
+ *          the same per-group lists keyed by the journal `BlueprintName`s this catalogue
+ *          joins on, which is what settles the families EDSY records under one generic
+ *          id. coriolis-data is (c) EDCD under the MIT License.
  *          The underlying game logic is Elite Dangerous data, property of Frontier
  *          Developments plc, under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -16,13 +21,34 @@
  * lists the `blueprints` and `experimentals` it offers. Both lists hold ids that join
  * straight to `blueprints.jsonc` and `experimental-effects.jsonc`.
  *
- * `exclusions` handles the modules that are the exception to their group: a Multi-cannon
- * cannot take Phasing Sequence, and the mining tools take no experimental at all. Each
- * entry lists the effect ids that module cannot take, already expanded — subtract it
- * from the group's `experimentals` to get the exact set. Modules absent from
- * `exclusions` take their whole group's list.
+ * **A group is one menu, so modules of the same kind with different menus are different
+ * groups.** Upstream denies blueprints per module, and where those denials split a family
+ * in two the split is stored as two groups rather than as an exception: a Guardian Power
+ * Plant takes Anti-Guardian Zone Resistance and none of the ordinary power-plant
+ * blueprints, an ordinary one the reverse, so `powerPlants` and `guardianPowerPlants` are
+ * separate — as are the distributors and the hull reinforcement packages.
  *
- * Only modules the game lets you engineer appear at all; everything else is absent.
+ * `exclusions` handles what is left: the modules that take their group's blueprints but
+ * not all of its experimental effects — a Multi-cannon cannot take Phasing Sequence, and
+ * the Abrasion Blaster takes no experimental at all. Each entry lists the effect ids that
+ * module cannot take, already expanded — subtract it from the group's `experimentals` to
+ * get the exact set. Modules absent from `exclusions` take their whole group's list.
+ *
+ * Only modules the game lets you engineer appear at all; everything else is absent. That
+ * is 1029 of the 1198 modules. The other 169 are the families no blueprint reaches — fuel
+ * tanks, passenger cabins, the repair, recon, research, decontamination and multi-limpet
+ * controllers, meta-alloy hull reinforcement, the plain module reinforcement packages,
+ * the Pulse Wave Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons,
+ * fighter and vehicle hangars, docking computers and Supercruise Assist, the module
+ * stabilisers, the planetary approach suites, the discovery scanners, the cargo hatch and
+ * the AX utility modules — plus the individual modules upstream denies every blueprint:
+ * every anti-xeno multi-cannon but the two gimballed, both Enhanced anti-xeno missile
+ * racks and every turreted plain one, five of the seven mining tools, the remote-release
+ * launchers (three denied outright, the fourth left with only the dormant Decorative
+ * entries) and the Mk II Plasma Shock Autocannon.
+ *
+ * `modules` is ordered by group, in the order `groups` declares them, and within a group
+ * in module-catalogue order.
  *
  * Full provenance: data/ships/SOURCES.md.
  */{
@@ -32,7 +58,18 @@
       "blueprints": [
         "PowerPlant_Armoured",
         "PowerPlant_Boosted",
-        "PowerPlant_Stealth",
+        "PowerPlant_Stealth"
+      ],
+      "experimentals": [
+        "special_powerplant_cooled",
+        "special_powerplant_highcharge",
+        "special_powerplant_lightweight",
+        "special_powerplant_toughened"
+      ]
+    },
+    "guardianPowerPlants": {
+      "name": "Guardian Power Plants",
+      "blueprints": [
         "recipe_guardianmodule_sturdy"
       ],
       "experimentals": [
@@ -80,7 +117,19 @@
         "PowerDistributor_PriorityEngines",
         "PowerDistributor_PrioritySystems",
         "PowerDistributor_PriorityWeapons",
-        "PowerDistributor_Shielded",
+        "PowerDistributor_Shielded"
+      ],
+      "experimentals": [
+        "special_powerdistributor_capacity",
+        "special_powerdistributor_efficient",
+        "special_powerdistributor_fast",
+        "special_powerdistributor_lightweight",
+        "special_powerdistributor_toughened"
+      ]
+    },
+    "guardianPowerDistributors": {
+      "name": "Guardian Power Distributors",
+      "blueprints": [
         "recipe_guardianmodule_sturdy"
       ],
       "experimentals": [
@@ -146,7 +195,18 @@
         "HullReinforcement_Explosive",
         "HullReinforcement_HeavyDuty",
         "HullReinforcement_Kinetic",
-        "HullReinforcement_Thermic",
+        "HullReinforcement_Thermic"
+      ],
+      "experimentals": [
+        "special_hullreinforcement_chunky",
+        "special_hullreinforcement_explosive",
+        "special_hullreinforcement_kinetic",
+        "special_hullreinforcement_thermic"
+      ]
+    },
+    "guardianHullReinforcements": {
+      "name": "Guardian Hull Reinforcements",
+      "blueprints": [
         "recipe_guardianmodule_sturdy"
       ],
       "experimentals": [
@@ -446,6 +506,253 @@
         "special_shieldbooster_thermic",
         "special_shieldbooster_toughened"
       ]
+    },
+    "bulkheads": {
+      "name": "Bulkheads",
+      "blueprints": [
+        "Armour_Advanced",
+        "Armour_Explosive",
+        "Armour_HeavyDuty",
+        "Armour_Kinetic",
+        "Armour_Thermic"
+      ],
+      "experimentals": [
+        "special_armour_chunky",
+        "special_armour_explosive",
+        "special_armour_kinetic",
+        "special_armour_thermic"
+      ]
+    },
+    "lifeSupports": {
+      "name": "Life Supports",
+      "blueprints": [
+        "LifeSupport_LightWeight",
+        "LifeSupport_Reinforced",
+        "LifeSupport_Shielded"
+      ],
+      "experimentals": []
+    },
+    "sensors": {
+      "name": "Sensors",
+      "blueprints": [
+        "Sensor_LightWeight",
+        "Sensor_LongRange",
+        "Sensor_WideAngle"
+      ],
+      "experimentals": []
+    },
+    "autoFieldMaintenanceUnits": {
+      "name": "Auto Field-Maintenance Units",
+      "blueprints": [
+        "AFM_Shielded"
+      ],
+      "experimentals": []
+    },
+    "cargoRacks": {
+      "name": "Cargo Racks",
+      "blueprints": [
+        "CargoRack_IncreasedCapacity"
+      ],
+      "experimentals": []
+    },
+    "collectionLimpets": {
+      "name": "Collection Limpets",
+      "blueprints": [
+        "CollectionLimpet_LightWeight",
+        "CollectionLimpet_Reinforced",
+        "CollectionLimpet_Shielded"
+      ],
+      "experimentals": []
+    },
+    "fsdBoosters": {
+      "name": "FSD Boosters",
+      "blueprints": [
+        "recipe_guardianmodule_sturdy"
+      ],
+      "experimentals": []
+    },
+    "fsdInterdictors": {
+      "name": "FSD Interdictors",
+      "blueprints": [
+        "FSDinterdictor_Expanded",
+        "FSDinterdictor_LongRange"
+      ],
+      "experimentals": []
+    },
+    "fuelScoops": {
+      "name": "Fuel Scoops",
+      "blueprints": [
+        "FuelScoop_Shielded"
+      ],
+      "experimentals": []
+    },
+    "fuelTransferLimpets": {
+      "name": "Fuel Transfer Limpets",
+      "blueprints": [
+        "FuelTransferLimpet_LightWeight",
+        "FuelTransferLimpet_Reinforced",
+        "FuelTransferLimpet_Shielded"
+      ],
+      "experimentals": []
+    },
+    "hatchBreakerLimpets": {
+      "name": "Hatch Breaker Limpets",
+      "blueprints": [
+        "HatchBreakerLimpet_LightWeight",
+        "HatchBreakerLimpet_Reinforced",
+        "HatchBreakerLimpet_Shielded"
+      ],
+      "experimentals": []
+    },
+    "moduleReinforcements": {
+      "name": "Module Reinforcements",
+      "blueprints": [
+        "recipe_guardianmodule_sturdy"
+      ],
+      "experimentals": []
+    },
+    "prospectingLimpets": {
+      "name": "Prospecting Limpets",
+      "blueprints": [
+        "ProspectingLimpet_LightWeight",
+        "ProspectingLimpet_Reinforced",
+        "ProspectingLimpet_Shielded"
+      ],
+      "experimentals": []
+    },
+    "refineries": {
+      "name": "Refineries",
+      "blueprints": [
+        "Refineries_Shielded"
+      ],
+      "experimentals": []
+    },
+    "shieldReinforcements": {
+      "name": "Shield Reinforcements",
+      "blueprints": [
+        "recipe_guardianmodule_sturdy"
+      ],
+      "experimentals": []
+    },
+    "surfaceScanners": {
+      "name": "Surface Scanners",
+      "blueprints": [
+        "Sensor_Expanded"
+      ],
+      "experimentals": []
+    },
+    "chaffLaunchers": {
+      "name": "Chaff Launchers",
+      "blueprints": [
+        "Misc_ChaffCapacity",
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded"
+      ],
+      "experimentals": []
+    },
+    "ecms": {
+      "name": "ECMs",
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded"
+      ],
+      "experimentals": []
+    },
+    "heatSinkLaunchers": {
+      "name": "Heat Sink Launchers",
+      "blueprints": [
+        "Misc_HeatSinkCapacity",
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded"
+      ],
+      "experimentals": []
+    },
+    "killWarrantScanners": {
+      "name": "Kill Warrant Scanners",
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded",
+        "Scanner_LongRange",
+        "Scanner_WideAngle",
+        "Sensor_FastScan"
+      ],
+      "experimentals": []
+    },
+    "manifestScanners": {
+      "name": "Manifest Scanners",
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded",
+        "Scanner_LongRange",
+        "Scanner_WideAngle",
+        "Sensor_FastScan"
+      ],
+      "experimentals": []
+    },
+    "pointDefence": {
+      "name": "Point Defence",
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_PointDefenseCapacity",
+        "Misc_Reinforced",
+        "Misc_Shielded"
+      ],
+      "experimentals": []
+    },
+    "wakeScanners": {
+      "name": "Wake Scanners",
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded",
+        "Scanner_LongRange",
+        "Scanner_WideAngle",
+        "Sensor_FastScan"
+      ],
+      "experimentals": []
+    },
+    "experimentalWeapons": {
+      "name": "Experimental Weapons",
+      "blueprints": [
+        "Weapon_HighCapacity"
+      ],
+      "experimentals": []
+    },
+    "antiXenoMissileRacks": {
+      "name": "Exp - Anti-Xeno Missile Racks",
+      "blueprints": [
+        "Weapon_HighCapacity"
+      ],
+      "experimentals": []
+    },
+    "guardianGauss": {
+      "name": "Exp - Guardian Gauss",
+      "blueprints": [
+        "Weapon_RapidFire",
+        "recipe_guardianmodule_sturdy"
+      ],
+      "experimentals": []
+    },
+    "guardianPlasma": {
+      "name": "Exp - Guardian Plasma",
+      "blueprints": [
+        "Weapon_Overcharged",
+        "recipe_guardianmodule_sturdy"
+      ],
+      "experimentals": []
+    },
+    "guardianShard": {
+      "name": "Exp - Guardian Shard",
+      "blueprints": [
+        "Weapon_LongRange",
+        "recipe_guardianmodule_sturdy"
+      ],
+      "experimentals": []
     }
   },
   "modules": {
@@ -484,6 +791,14 @@
     "Int_Powerplant_Size8_Class3": "powerPlants",
     "Int_Powerplant_Size8_Class4": "powerPlants",
     "Int_Powerplant_Size8_Class5": "powerPlants",
+    "Int_PowerPlant_Size2_Class1_free": "powerPlants",
+    "Int_GuardianPowerplant_Size2": "guardianPowerPlants",
+    "Int_GuardianPowerplant_Size3": "guardianPowerPlants",
+    "Int_GuardianPowerplant_Size4": "guardianPowerPlants",
+    "Int_GuardianPowerplant_Size5": "guardianPowerPlants",
+    "Int_GuardianPowerplant_Size6": "guardianPowerPlants",
+    "Int_GuardianPowerplant_Size7": "guardianPowerPlants",
+    "Int_GuardianPowerplant_Size8": "guardianPowerPlants",
     "Int_Engine_Size2_Class1": "thrusters",
     "Int_Engine_Size2_Class2": "thrusters",
     "Int_Engine_Size2_Class3": "thrusters",
@@ -519,6 +834,11 @@
     "Int_Engine_Size8_Class3": "thrusters",
     "Int_Engine_Size8_Class4": "thrusters",
     "Int_Engine_Size8_Class5": "thrusters",
+    "Int_Engine_Size2_Class1_free": "thrusters",
+    "Int_Engine_Size3_Class5_Fast": "thrusters",
+    "Int_Engine_Size2_Class5_Fast": "thrusters",
+    "Int_Engine_Size7_Class5_GravityOptimised_MkII": "thrusters",
+    "Int_MkIIAgileBoost_Engine_Size5_Class5": "thrusters",
     "Int_Hyperdrive_Size2_Class1": "frameShiftDrives",
     "Int_Hyperdrive_Size2_Class2": "frameShiftDrives",
     "Int_Hyperdrive_Size2_Class3": "frameShiftDrives",
@@ -549,6 +869,12 @@
     "Int_Hyperdrive_Size7_Class3": "frameShiftDrives",
     "Int_Hyperdrive_Size7_Class4": "frameShiftDrives",
     "Int_Hyperdrive_Size7_Class5": "frameShiftDrives",
+    "Int_Hyperdrive_Size8_Class1": "frameShiftDrives",
+    "Int_Hyperdrive_Size8_Class2": "frameShiftDrives",
+    "Int_Hyperdrive_Size8_Class3": "frameShiftDrives",
+    "Int_Hyperdrive_Size8_Class4": "frameShiftDrives",
+    "Int_Hyperdrive_Size8_Class5": "frameShiftDrives",
+    "Int_Hyperdrive_Size2_Class1_free": "frameShiftDrives",
     "Int_PowerDistributor_Size1_Class1": "powerDistributors",
     "Int_PowerDistributor_Size1_Class2": "powerDistributors",
     "Int_PowerDistributor_Size1_Class3": "powerDistributors",
@@ -589,8 +915,15 @@
     "Int_PowerDistributor_Size8_Class3": "powerDistributors",
     "Int_PowerDistributor_Size8_Class4": "powerDistributors",
     "Int_PowerDistributor_Size8_Class5": "powerDistributors",
-    "Int_Engine_Size3_Class5_Fast": "thrusters",
-    "Int_Engine_Size2_Class5_Fast": "thrusters",
+    "Int_PowerDistributor_Size1_Class1_free": "powerDistributors",
+    "Int_GuardianPowerDistributor_Size1": "guardianPowerDistributors",
+    "Int_GuardianPowerDistributor_Size2": "guardianPowerDistributors",
+    "Int_GuardianPowerDistributor_Size3": "guardianPowerDistributors",
+    "Int_GuardianPowerDistributor_Size4": "guardianPowerDistributors",
+    "Int_GuardianPowerDistributor_Size5": "guardianPowerDistributors",
+    "Int_GuardianPowerDistributor_Size6": "guardianPowerDistributors",
+    "Int_GuardianPowerDistributor_Size7": "guardianPowerDistributors",
+    "Int_GuardianPowerDistributor_Size8": "guardianPowerDistributors",
     "Int_Hyperdrive_Overcharge_Size5_Class3": "frameShiftDrivesSCO",
     "Int_Hyperdrive_Overcharge_Size7_Class3": "frameShiftDrivesSCO",
     "Int_Hyperdrive_Overcharge_Size6_Class3": "frameShiftDrivesSCO",
@@ -627,11 +960,10 @@
     "Int_Hyperdrive_Overcharge_Size8_Class4": "frameShiftDrivesSCO",
     "Int_Hyperdrive_Overcharge_Size8_Class5": "frameShiftDrivesSCO",
     "Int_Hyperdrive_Overcharge_Size8_Class5_OverchargeBooster_MkII": "frameShiftDrivesSCO",
-    "Int_Engine_Size7_Class5_GravityOptimised_MkII": "thrusters",
-    "Int_MkIIAgileBoost_Engine_Size5_Class5": "thrusters",
     "Int_ShieldGenerator_Size1_Class1": "shieldGenerators",
     "Int_ShieldGenerator_Size1_Class2": "shieldGenerators",
     "Int_ShieldGenerator_Size1_Class3": "shieldGenerators",
+    "Int_ShieldGenerator_Size1_Class4": "shieldGenerators",
     "Int_ShieldGenerator_Size1_Class5": "shieldGenerators",
     "Int_ShieldGenerator_Size2_Class1": "shieldGenerators",
     "Int_ShieldGenerator_Size2_Class2": "shieldGenerators",
@@ -668,6 +1000,23 @@
     "Int_ShieldGenerator_Size8_Class3": "shieldGenerators",
     "Int_ShieldGenerator_Size8_Class4": "shieldGenerators",
     "Int_ShieldGenerator_Size8_Class5": "shieldGenerators",
+    "Int_ShieldGenerator_Size2_Class1_free": "shieldGenerators",
+    "Int_ShieldGenerator_Size1_Class5_Strong": "shieldGenerators",
+    "Int_ShieldGenerator_Size2_Class5_Strong": "shieldGenerators",
+    "Int_ShieldGenerator_Size3_Class5_Strong": "shieldGenerators",
+    "Int_ShieldGenerator_Size4_Class5_Strong": "shieldGenerators",
+    "Int_ShieldGenerator_Size5_Class5_Strong": "shieldGenerators",
+    "Int_ShieldGenerator_Size6_Class5_Strong": "shieldGenerators",
+    "Int_ShieldGenerator_Size7_Class5_Strong": "shieldGenerators",
+    "Int_ShieldGenerator_Size8_Class5_Strong": "shieldGenerators",
+    "Int_ShieldGenerator_Size1_Class3_Fast": "shieldGenerators",
+    "Int_ShieldGenerator_Size2_Class3_Fast": "shieldGenerators",
+    "Int_ShieldGenerator_Size3_Class3_Fast": "shieldGenerators",
+    "Int_ShieldGenerator_Size4_Class3_Fast": "shieldGenerators",
+    "Int_ShieldGenerator_Size5_Class3_Fast": "shieldGenerators",
+    "Int_ShieldGenerator_Size6_Class3_Fast": "shieldGenerators",
+    "Int_ShieldGenerator_Size7_Class3_Fast": "shieldGenerators",
+    "Int_ShieldGenerator_Size8_Class3_Fast": "shieldGenerators",
     "Int_ShieldCellBank_Size1_Class1": "shieldCellBanks",
     "Int_ShieldCellBank_Size1_Class2": "shieldCellBanks",
     "Int_ShieldCellBank_Size1_Class3": "shieldCellBanks",
@@ -718,47 +1067,16 @@
     "Int_HullReinforcement_Size4_Class2": "hullReinforcements",
     "Int_HullReinforcement_Size5_Class1": "hullReinforcements",
     "Int_HullReinforcement_Size5_Class2": "hullReinforcements",
-    "Int_ShieldGenerator_Size1_Class5_Strong": "shieldGenerators",
-    "Int_ShieldGenerator_Size2_Class5_Strong": "shieldGenerators",
-    "Int_ShieldGenerator_Size3_Class5_Strong": "shieldGenerators",
-    "Int_ShieldGenerator_Size4_Class5_Strong": "shieldGenerators",
-    "Int_ShieldGenerator_Size5_Class5_Strong": "shieldGenerators",
-    "Int_ShieldGenerator_Size6_Class5_Strong": "shieldGenerators",
-    "Int_ShieldGenerator_Size7_Class5_Strong": "shieldGenerators",
-    "Int_ShieldGenerator_Size8_Class5_Strong": "shieldGenerators",
-    "Int_ShieldGenerator_Size1_Class3_Fast": "shieldGenerators",
-    "Int_ShieldGenerator_Size2_Class3_Fast": "shieldGenerators",
-    "Int_ShieldGenerator_Size3_Class3_Fast": "shieldGenerators",
-    "Int_ShieldGenerator_Size4_Class3_Fast": "shieldGenerators",
-    "Int_ShieldGenerator_Size5_Class3_Fast": "shieldGenerators",
-    "Int_ShieldGenerator_Size6_Class3_Fast": "shieldGenerators",
-    "Int_ShieldGenerator_Size7_Class3_Fast": "shieldGenerators",
-    "Int_ShieldGenerator_Size8_Class3_Fast": "shieldGenerators",
-    "Int_GuardianHullReinforcement_Size1_Class1": "hullReinforcements",
-    "Int_GuardianHullReinforcement_Size1_Class2": "hullReinforcements",
-    "Int_GuardianHullReinforcement_Size2_Class1": "hullReinforcements",
-    "Int_GuardianHullReinforcement_Size2_Class2": "hullReinforcements",
-    "Int_GuardianHullReinforcement_Size3_Class1": "hullReinforcements",
-    "Int_GuardianHullReinforcement_Size3_Class2": "hullReinforcements",
-    "Int_GuardianHullReinforcement_Size4_Class1": "hullReinforcements",
-    "Int_GuardianHullReinforcement_Size4_Class2": "hullReinforcements",
-    "Int_GuardianHullReinforcement_Size5_Class1": "hullReinforcements",
-    "Int_GuardianHullReinforcement_Size5_Class2": "hullReinforcements",
-    "Int_GuardianPowerDistributor_Size1": "powerDistributors",
-    "Int_GuardianPowerDistributor_Size2": "powerDistributors",
-    "Int_GuardianPowerDistributor_Size3": "powerDistributors",
-    "Int_GuardianPowerDistributor_Size4": "powerDistributors",
-    "Int_GuardianPowerDistributor_Size5": "powerDistributors",
-    "Int_GuardianPowerDistributor_Size6": "powerDistributors",
-    "Int_GuardianPowerDistributor_Size7": "powerDistributors",
-    "Int_GuardianPowerDistributor_Size8": "powerDistributors",
-    "Int_GuardianPowerplant_Size2": "powerPlants",
-    "Int_GuardianPowerplant_Size3": "powerPlants",
-    "Int_GuardianPowerplant_Size4": "powerPlants",
-    "Int_GuardianPowerplant_Size5": "powerPlants",
-    "Int_GuardianPowerplant_Size6": "powerPlants",
-    "Int_GuardianPowerplant_Size7": "powerPlants",
-    "Int_GuardianPowerplant_Size8": "powerPlants",
+    "Int_GuardianHullReinforcement_Size1_Class1": "guardianHullReinforcements",
+    "Int_GuardianHullReinforcement_Size1_Class2": "guardianHullReinforcements",
+    "Int_GuardianHullReinforcement_Size2_Class1": "guardianHullReinforcements",
+    "Int_GuardianHullReinforcement_Size2_Class2": "guardianHullReinforcements",
+    "Int_GuardianHullReinforcement_Size3_Class1": "guardianHullReinforcements",
+    "Int_GuardianHullReinforcement_Size3_Class2": "guardianHullReinforcements",
+    "Int_GuardianHullReinforcement_Size4_Class1": "guardianHullReinforcements",
+    "Int_GuardianHullReinforcement_Size4_Class2": "guardianHullReinforcements",
+    "Int_GuardianHullReinforcement_Size5_Class1": "guardianHullReinforcements",
+    "Int_GuardianHullReinforcement_Size5_Class2": "guardianHullReinforcements",
     "Hpt_PulseLaser_Fixed_Small": "pulseLasers",
     "Hpt_PulseLaser_Fixed_Medium": "pulseLasers",
     "Hpt_PulseLaser_Fixed_Large": "pulseLasers",
@@ -769,6 +1087,8 @@
     "Hpt_PulseLaser_Turret_Small": "pulseLasers",
     "Hpt_PulseLaser_Turret_Medium": "pulseLasers",
     "Hpt_PulseLaser_Turret_Large": "pulseLasers",
+    "Hpt_PulseLaser_Fixed_Medium_Disruptor": "pulseLasers",
+    "Hpt_PulseLaser_Gimbal_Huge": "pulseLasers",
     "Hpt_PulseLaserBurst_Fixed_Small": "burstLasers",
     "Hpt_PulseLaserBurst_Fixed_Medium": "burstLasers",
     "Hpt_PulseLaserBurst_Fixed_Large": "burstLasers",
@@ -779,6 +1099,8 @@
     "Hpt_PulseLaserBurst_Turret_Small": "burstLasers",
     "Hpt_PulseLaserBurst_Turret_Medium": "burstLasers",
     "Hpt_PulseLaserBurst_Turret_Large": "burstLasers",
+    "Hpt_PulseLaserBurst_Fixed_Small_Scatter": "burstLasers",
+    "Hpt_PulseLaserBurst_Gimbal_Huge": "burstLasers",
     "Hpt_BeamLaser_Fixed_Small": "beamLasers",
     "Hpt_BeamLaser_Fixed_Medium": "beamLasers",
     "Hpt_BeamLaser_Fixed_Large": "beamLasers",
@@ -789,6 +1111,8 @@
     "Hpt_BeamLaser_Turret_Small": "beamLasers",
     "Hpt_BeamLaser_Turret_Medium": "beamLasers",
     "Hpt_BeamLaser_Turret_Large": "beamLasers",
+    "Hpt_BeamLaser_Fixed_Small_Heat": "beamLasers",
+    "Hpt_BeamLaser_Gimbal_Huge": "beamLasers",
     "Hpt_Cannon_Fixed_Small": "cannons",
     "Hpt_Cannon_Fixed_Medium": "cannons",
     "Hpt_Cannon_Fixed_Large": "cannons",
@@ -799,6 +1123,8 @@
     "Hpt_Cannon_Turret_Small": "cannons",
     "Hpt_Cannon_Turret_Medium": "cannons",
     "Hpt_Cannon_Turret_Large": "cannons",
+    "Hpt_Cannon_Gimbal_Large": "cannons",
+    "Hpt_Cannon_Gimbal_Medium_Burst": "cannons",
     "Hpt_Slugshot_Fixed_Small": "fragmentCannons",
     "Hpt_Slugshot_Fixed_Medium": "fragmentCannons",
     "Hpt_Slugshot_Fixed_Large": "fragmentCannons",
@@ -806,6 +1132,9 @@
     "Hpt_Slugshot_Gimbal_Medium": "fragmentCannons",
     "Hpt_Slugshot_Turret_Small": "fragmentCannons",
     "Hpt_Slugshot_Turret_Medium": "fragmentCannons",
+    "Hpt_Slugshot_Gimbal_Large": "fragmentCannons",
+    "Hpt_Slugshot_Turret_Large": "fragmentCannons",
+    "Hpt_Slugshot_Fixed_Large_Range": "fragmentCannons",
     "Hpt_MultiCannon_Fixed_Small": "multiCannons",
     "Hpt_MultiCannon_Fixed_Medium": "multiCannons",
     "Hpt_MultiCannon_Fixed_Large": "multiCannons",
@@ -816,67 +1145,646 @@
     "Hpt_MultiCannon_Turret_Small": "multiCannons",
     "Hpt_MultiCannon_Turret_Medium": "multiCannons",
     "Hpt_MultiCannon_Turret_Large": "multiCannons",
+    "Hpt_MultiCannon_Fixed_Small_Strong": "multiCannons",
+    "Hpt_MultiCannon_Gimbal_Huge": "multiCannons",
+    "Hpt_MultiCannon_Fixed_Medium_Advanced": "multiCannons",
+    "Hpt_MultiCannon_Fixed_Small_Advanced": "multiCannons",
     "Hpt_PlasmaAccelerator_Fixed_Medium": "plasmaAccelerators",
     "Hpt_PlasmaAccelerator_Fixed_Large": "plasmaAccelerators",
     "Hpt_PlasmaAccelerator_Fixed_Huge": "plasmaAccelerators",
+    "Hpt_PlasmaAccelerator_Fixed_Large_Advanced": "plasmaAccelerators",
     "Hpt_Railgun_Fixed_Small": "railGuns",
     "Hpt_Railgun_Fixed_Medium": "railGuns",
+    "Hpt_Railgun_Fixed_Medium_Burst": "railGuns",
     "Hpt_BasicMissileRack_Fixed_Small": "missiles",
     "Hpt_BasicMissileRack_Fixed_Medium": "missiles",
     "Hpt_BasicMissileRack_Fixed_Large": "missiles",
+    "Hpt_DumbfireMissileRack_Fixed_Small": "missiles",
+    "Hpt_DumbfireMissileRack_Fixed_Medium": "missiles",
+    "Hpt_DrunkMissileRack_Fixed_Medium": "missiles",
+    "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso": "missiles",
+    "Hpt_DumbfireMissileRack_Fixed_Large": "missiles",
+    "Hpt_DumbfireMissileRack_Fixed_Small_Advanced": "missiles",
+    "Hpt_DumbfireMissileRack_Fixed_Medium_Advanced": "missiles",
     "Hpt_MineLauncher_Fixed_Small": "mines",
     "Hpt_MineLauncher_Fixed_Medium": "mines",
+    "Hpt_MineLauncher_Fixed_Small_Impulse": "mines",
     "Hpt_AdvancedTorpPylon_Fixed_Small": "torpedoes",
     "Hpt_AdvancedTorpPylon_Fixed_Medium": "torpedoes",
     "Hpt_AdvancedTorpPylon_Fixed_Large": "torpedoes",
     "Hpt_MiningLaser_Fixed_Small": "miningToolsLasers",
-    "Hpt_MiningLaser_Fixed_Medium": "miningToolsLasers",
-    "Hpt_DumbfireMissileRack_Fixed_Small": "missiles",
-    "Hpt_DumbfireMissileRack_Fixed_Medium": "missiles",
-    "Hpt_Cannon_Gimbal_Large": "cannons",
-    "Hpt_Slugshot_Gimbal_Large": "fragmentCannons",
-    "Hpt_Slugshot_Turret_Large": "fragmentCannons",
-    "Hpt_PlasmaAccelerator_Fixed_Large_Advanced": "plasmaAccelerators",
-    "Hpt_MiningLaser_Fixed_Small_Advanced": "miningToolsLasers",
-    "Hpt_Railgun_Fixed_Medium_Burst": "railGuns",
-    "Hpt_PulseLaser_Fixed_Medium_Disruptor": "pulseLasers",
-    "Hpt_Slugshot_Fixed_Large_Range": "fragmentCannons",
-    "Hpt_DrunkMissileRack_Fixed_Medium": "missiles",
-    "Hpt_MultiCannon_Fixed_Small_Strong": "multiCannons",
-    "Hpt_BeamLaser_Fixed_Small_Heat": "beamLasers",
-    "Hpt_MineLauncher_Fixed_Small_Impulse": "mines",
-    "Hpt_PulseLaserBurst_Fixed_Small_Scatter": "burstLasers",
-    "Hpt_BeamLaser_Gimbal_Huge": "beamLasers",
-    "Hpt_PulseLaser_Gimbal_Huge": "pulseLasers",
-    "Hpt_MultiCannon_Gimbal_Huge": "multiCannons",
-    "Hpt_PulseLaserBurst_Gimbal_Huge": "burstLasers",
-    "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso": "missiles",
-    "Hpt_MiningLaser_Turret_Small": "miningToolsLasers",
-    "Hpt_MiningLaser_Turret_Medium": "miningToolsLasers",
-    "Hpt_ATMultiCannon_Fixed_Medium": "antiXenoMultiCannons",
-    "Hpt_ATMultiCannon_Fixed_Large": "antiXenoMultiCannons",
-    "Hpt_ATMultiCannon_Turret_Medium": "antiXenoMultiCannons",
-    "Hpt_ATMultiCannon_Turret_Large": "antiXenoMultiCannons",
-    "Hpt_DumbfireMissileRack_Fixed_Large": "missiles",
     "Hpt_Mining_AbrBlstr_Fixed_Small": "miningToolsLasers",
-    "Hpt_Mining_AbrBlstr_Turret_Small": "miningToolsLasers",
-    "Hpt_MultiCannon_Fixed_Medium_Advanced": "multiCannons",
-    "Hpt_MultiCannon_Fixed_Small_Advanced": "multiCannons",
-    "Hpt_DumbfireMissileRack_Fixed_Small_Advanced": "missiles",
-    "Hpt_DumbfireMissileRack_Fixed_Medium_Advanced": "missiles",
-    "Hpt_ATMultiCannon_Fixed_Medium_V2": "antiXenoMultiCannons",
-    "Hpt_ATMultiCannon_Fixed_Large_V2": "antiXenoMultiCannons",
-    "Hpt_ATMultiCannon_Turret_Large_V2": "antiXenoMultiCannons",
-    "Hpt_ATMultiCannon_Turret_Medium_V2": "antiXenoMultiCannons",
     "Hpt_ATMultiCannon_Gimbal_Large": "antiXenoMultiCannons",
     "Hpt_ATMultiCannon_Gimbal_Medium": "antiXenoMultiCannons",
-    "Hpt_Cannon_Gimbal_Medium_Burst": "cannons",
-    "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large": "plasmaAccelerators",
     "Hpt_ShieldBooster_Size0_Class1": "shieldBoosters",
     "Hpt_ShieldBooster_Size0_Class2": "shieldBoosters",
     "Hpt_ShieldBooster_Size0_Class3": "shieldBoosters",
     "Hpt_ShieldBooster_Size0_Class4": "shieldBoosters",
-    "Hpt_ShieldBooster_Size0_Class5": "shieldBoosters"
+    "Hpt_ShieldBooster_Size0_Class5": "shieldBoosters",
+    "SideWinder_Armour_Grade1": "bulkheads",
+    "SideWinder_Armour_Grade2": "bulkheads",
+    "SideWinder_Armour_Grade3": "bulkheads",
+    "SideWinder_Armour_Mirrored": "bulkheads",
+    "SideWinder_Armour_Reactive": "bulkheads",
+    "Eagle_Armour_Grade1": "bulkheads",
+    "Eagle_Armour_Grade2": "bulkheads",
+    "Eagle_Armour_Grade3": "bulkheads",
+    "Eagle_Armour_Mirrored": "bulkheads",
+    "Eagle_Armour_Reactive": "bulkheads",
+    "Hauler_Armour_Grade1": "bulkheads",
+    "Hauler_Armour_Grade2": "bulkheads",
+    "Hauler_Armour_Grade3": "bulkheads",
+    "Hauler_Armour_Mirrored": "bulkheads",
+    "Hauler_Armour_Reactive": "bulkheads",
+    "Adder_Armour_Grade1": "bulkheads",
+    "Adder_Armour_Grade2": "bulkheads",
+    "Adder_Armour_Grade3": "bulkheads",
+    "Adder_Armour_Mirrored": "bulkheads",
+    "Adder_Armour_Reactive": "bulkheads",
+    "Viper_Armour_Grade1": "bulkheads",
+    "Viper_Armour_Grade2": "bulkheads",
+    "Viper_Armour_Grade3": "bulkheads",
+    "Viper_Armour_Mirrored": "bulkheads",
+    "Viper_Armour_Reactive": "bulkheads",
+    "CobraMkIII_Armour_Grade1": "bulkheads",
+    "CobraMkIII_Armour_Grade2": "bulkheads",
+    "CobraMkIII_Armour_Grade3": "bulkheads",
+    "CobraMkIII_Armour_Mirrored": "bulkheads",
+    "CobraMkIII_Armour_Reactive": "bulkheads",
+    "Type6_Armour_Grade1": "bulkheads",
+    "Type6_Armour_Grade2": "bulkheads",
+    "Type6_Armour_Grade3": "bulkheads",
+    "Type6_Armour_Mirrored": "bulkheads",
+    "Type6_Armour_Reactive": "bulkheads",
+    "Dolphin_Armour_Grade1": "bulkheads",
+    "Dolphin_Armour_Grade2": "bulkheads",
+    "Dolphin_Armour_Grade3": "bulkheads",
+    "Dolphin_Armour_Mirrored": "bulkheads",
+    "Dolphin_Armour_Reactive": "bulkheads",
+    "Type7_Armour_Grade1": "bulkheads",
+    "Type7_Armour_Grade2": "bulkheads",
+    "Type7_Armour_Grade3": "bulkheads",
+    "Type7_Armour_Mirrored": "bulkheads",
+    "Type7_Armour_Reactive": "bulkheads",
+    "Asp_Armour_Grade1": "bulkheads",
+    "Asp_Armour_Grade2": "bulkheads",
+    "Asp_Armour_Grade3": "bulkheads",
+    "Asp_Armour_Mirrored": "bulkheads",
+    "Asp_Armour_Reactive": "bulkheads",
+    "Vulture_Armour_Grade1": "bulkheads",
+    "Vulture_Armour_Grade2": "bulkheads",
+    "Vulture_Armour_Grade3": "bulkheads",
+    "Vulture_Armour_Mirrored": "bulkheads",
+    "Vulture_Armour_Reactive": "bulkheads",
+    "Empire_Trader_Armour_Grade1": "bulkheads",
+    "Empire_Trader_Armour_Grade2": "bulkheads",
+    "Empire_Trader_Armour_Grade3": "bulkheads",
+    "Empire_Trader_Armour_Mirrored": "bulkheads",
+    "Empire_Trader_Armour_Reactive": "bulkheads",
+    "Federation_Dropship_Armour_Grade1": "bulkheads",
+    "Federation_Dropship_Armour_Grade2": "bulkheads",
+    "Federation_Dropship_Armour_Grade3": "bulkheads",
+    "Federation_Dropship_Armour_Mirrored": "bulkheads",
+    "Federation_Dropship_Armour_Reactive": "bulkheads",
+    "Orca_Armour_Grade1": "bulkheads",
+    "Orca_Armour_Grade2": "bulkheads",
+    "Orca_Armour_Grade3": "bulkheads",
+    "Orca_Armour_Mirrored": "bulkheads",
+    "Orca_Armour_Reactive": "bulkheads",
+    "Type9_Armour_Grade1": "bulkheads",
+    "Type9_Armour_Grade2": "bulkheads",
+    "Type9_Armour_Grade3": "bulkheads",
+    "Type9_Armour_Mirrored": "bulkheads",
+    "Type9_Armour_Reactive": "bulkheads",
+    "Python_Armour_Grade1": "bulkheads",
+    "Python_Armour_Grade2": "bulkheads",
+    "Python_Armour_Grade3": "bulkheads",
+    "Python_Armour_Mirrored": "bulkheads",
+    "Python_Armour_Reactive": "bulkheads",
+    "BelugaLiner_Armour_Grade1": "bulkheads",
+    "BelugaLiner_Armour_Grade2": "bulkheads",
+    "BelugaLiner_Armour_Grade3": "bulkheads",
+    "BelugaLiner_Armour_Mirrored": "bulkheads",
+    "BelugaLiner_Armour_Reactive": "bulkheads",
+    "FerDeLance_Armour_Grade1": "bulkheads",
+    "FerDeLance_Armour_Grade2": "bulkheads",
+    "FerDeLance_Armour_Grade3": "bulkheads",
+    "FerDeLance_Armour_Mirrored": "bulkheads",
+    "FerDeLance_Armour_Reactive": "bulkheads",
+    "Anaconda_Armour_Grade1": "bulkheads",
+    "Anaconda_Armour_Grade2": "bulkheads",
+    "Anaconda_Armour_Grade3": "bulkheads",
+    "Anaconda_Armour_Mirrored": "bulkheads",
+    "Anaconda_Armour_Reactive": "bulkheads",
+    "Federation_Corvette_Armour_Grade1": "bulkheads",
+    "Federation_Corvette_Armour_Grade2": "bulkheads",
+    "Federation_Corvette_Armour_Grade3": "bulkheads",
+    "Federation_Corvette_Armour_Mirrored": "bulkheads",
+    "Federation_Corvette_Armour_Reactive": "bulkheads",
+    "Cutter_Armour_Grade1": "bulkheads",
+    "Cutter_Armour_Grade2": "bulkheads",
+    "Cutter_Armour_Grade3": "bulkheads",
+    "Cutter_Armour_Mirrored": "bulkheads",
+    "Cutter_Armour_Reactive": "bulkheads",
+    "DiamondBack_Armour_Grade1": "bulkheads",
+    "DiamondBack_Armour_Grade2": "bulkheads",
+    "DiamondBack_Armour_Grade3": "bulkheads",
+    "DiamondBack_Armour_Mirrored": "bulkheads",
+    "DiamondBack_Armour_Reactive": "bulkheads",
+    "Empire_Courier_Armour_Grade1": "bulkheads",
+    "Empire_Courier_Armour_Grade2": "bulkheads",
+    "Empire_Courier_Armour_Grade3": "bulkheads",
+    "Empire_Courier_Armour_Mirrored": "bulkheads",
+    "Empire_Courier_Armour_Reactive": "bulkheads",
+    "DiamondBackXL_Armour_Grade1": "bulkheads",
+    "DiamondBackXL_Armour_Grade2": "bulkheads",
+    "DiamondBackXL_Armour_Grade3": "bulkheads",
+    "DiamondBackXL_Armour_Mirrored": "bulkheads",
+    "DiamondBackXL_Armour_Reactive": "bulkheads",
+    "Empire_Eagle_Armour_Grade1": "bulkheads",
+    "Empire_Eagle_Armour_Grade2": "bulkheads",
+    "Empire_Eagle_Armour_Grade3": "bulkheads",
+    "Empire_Eagle_Armour_Mirrored": "bulkheads",
+    "Empire_Eagle_Armour_Reactive": "bulkheads",
+    "Federation_Dropship_MkII_Armour_Grade1": "bulkheads",
+    "Federation_Dropship_MkII_Armour_Grade2": "bulkheads",
+    "Federation_Dropship_MkII_Armour_Grade3": "bulkheads",
+    "Federation_Dropship_MkII_Armour_Mirrored": "bulkheads",
+    "Federation_Dropship_MkII_Armour_Reactive": "bulkheads",
+    "Federation_Gunship_Armour_Grade1": "bulkheads",
+    "Federation_Gunship_Armour_Grade2": "bulkheads",
+    "Federation_Gunship_Armour_Grade3": "bulkheads",
+    "Federation_Gunship_Armour_Mirrored": "bulkheads",
+    "Federation_Gunship_Armour_Reactive": "bulkheads",
+    "Viper_MkIV_Armour_Grade1": "bulkheads",
+    "Viper_MkIV_Armour_Grade2": "bulkheads",
+    "Viper_MkIV_Armour_Grade3": "bulkheads",
+    "Viper_MkIV_Armour_Mirrored": "bulkheads",
+    "Viper_MkIV_Armour_Reactive": "bulkheads",
+    "CobraMkIV_Armour_Grade1": "bulkheads",
+    "CobraMkIV_Armour_Grade2": "bulkheads",
+    "CobraMkIV_Armour_Grade3": "bulkheads",
+    "CobraMkIV_Armour_Mirrored": "bulkheads",
+    "CobraMkIV_Armour_Reactive": "bulkheads",
+    "Independant_Trader_Armour_Grade1": "bulkheads",
+    "Independant_Trader_Armour_Grade2": "bulkheads",
+    "Independant_Trader_Armour_Grade3": "bulkheads",
+    "Independant_Trader_Armour_Mirrored": "bulkheads",
+    "Independant_Trader_Armour_Reactive": "bulkheads",
+    "Asp_Scout_Armour_Grade1": "bulkheads",
+    "Asp_Scout_Armour_Grade2": "bulkheads",
+    "Asp_Scout_Armour_Grade3": "bulkheads",
+    "Asp_Scout_Armour_Mirrored": "bulkheads",
+    "Asp_Scout_Armour_Reactive": "bulkheads",
+    "Type9_Military_Armour_Grade1": "bulkheads",
+    "Type9_Military_Armour_Grade2": "bulkheads",
+    "Type9_Military_Armour_Grade3": "bulkheads",
+    "Type9_Military_Armour_Mirrored": "bulkheads",
+    "Type9_Military_Armour_Reactive": "bulkheads",
+    "Krait_MkII_Armour_Grade1": "bulkheads",
+    "Krait_MkII_Armour_Grade2": "bulkheads",
+    "Krait_MkII_Armour_Grade3": "bulkheads",
+    "Krait_MkII_Armour_Mirrored": "bulkheads",
+    "Krait_MkII_Armour_Reactive": "bulkheads",
+    "TypeX_Armour_Grade1": "bulkheads",
+    "TypeX_Armour_Grade2": "bulkheads",
+    "TypeX_Armour_Grade3": "bulkheads",
+    "TypeX_Armour_Mirrored": "bulkheads",
+    "TypeX_Armour_Reactive": "bulkheads",
+    "TypeX_2_Armour_Grade1": "bulkheads",
+    "TypeX_2_Armour_Grade2": "bulkheads",
+    "TypeX_2_Armour_Grade3": "bulkheads",
+    "TypeX_2_Armour_Mirrored": "bulkheads",
+    "TypeX_2_Armour_Reactive": "bulkheads",
+    "TypeX_3_Armour_Grade1": "bulkheads",
+    "TypeX_3_Armour_Grade2": "bulkheads",
+    "TypeX_3_Armour_Grade3": "bulkheads",
+    "TypeX_3_Armour_Mirrored": "bulkheads",
+    "TypeX_3_Armour_Reactive": "bulkheads",
+    "Krait_Light_Armour_Grade1": "bulkheads",
+    "Krait_Light_Armour_Grade2": "bulkheads",
+    "Krait_Light_Armour_Grade3": "bulkheads",
+    "Krait_Light_Armour_Mirrored": "bulkheads",
+    "Krait_Light_Armour_Reactive": "bulkheads",
+    "Mamba_Armour_Grade1": "bulkheads",
+    "Mamba_Armour_Grade2": "bulkheads",
+    "Mamba_Armour_Grade3": "bulkheads",
+    "Mamba_Armour_Mirrored": "bulkheads",
+    "Mamba_Armour_Reactive": "bulkheads",
+    "Python_NX_Armour_Grade1": "bulkheads",
+    "Python_NX_Armour_Grade2": "bulkheads",
+    "Python_NX_Armour_Grade3": "bulkheads",
+    "Python_NX_Armour_Mirrored": "bulkheads",
+    "Python_NX_Armour_Reactive": "bulkheads",
+    "Type8_Armour_Grade1": "bulkheads",
+    "Type8_Armour_Grade2": "bulkheads",
+    "Type8_Armour_Grade3": "bulkheads",
+    "Type8_Armour_Mirrored": "bulkheads",
+    "Type8_Armour_Reactive": "bulkheads",
+    "Mandalay_Armour_Grade1": "bulkheads",
+    "Mandalay_Armour_Grade2": "bulkheads",
+    "Mandalay_Armour_Grade3": "bulkheads",
+    "Mandalay_Armour_Mirrored": "bulkheads",
+    "Mandalay_Armour_Reactive": "bulkheads",
+    "CobraMkV_Armour_Grade1": "bulkheads",
+    "CobraMkV_Armour_Grade2": "bulkheads",
+    "CobraMkV_Armour_Grade3": "bulkheads",
+    "CobraMkV_Armour_Mirrored": "bulkheads",
+    "CobraMkV_Armour_Reactive": "bulkheads",
+    "Corsair_Armour_Grade1": "bulkheads",
+    "Corsair_Armour_Grade2": "bulkheads",
+    "Corsair_Armour_Grade3": "bulkheads",
+    "Corsair_Armour_Mirrored": "bulkheads",
+    "Corsair_Armour_Reactive": "bulkheads",
+    "PantherMkII_Armour_Grade1": "bulkheads",
+    "PantherMkII_Armour_Grade2": "bulkheads",
+    "PantherMkII_Armour_Grade3": "bulkheads",
+    "PantherMkII_Armour_Mirrored": "bulkheads",
+    "PantherMkII_Armour_Reactive": "bulkheads",
+    "LakonMiner_Armour_Grade1": "bulkheads",
+    "LakonMiner_Armour_Grade2": "bulkheads",
+    "LakonMiner_Armour_Grade3": "bulkheads",
+    "LakonMiner_Armour_Mirrored": "bulkheads",
+    "LakonMiner_Armour_Reactive": "bulkheads",
+    "Explorer_NX_Armour_Grade1": "bulkheads",
+    "Explorer_NX_Armour_Grade2": "bulkheads",
+    "Explorer_NX_Armour_Grade3": "bulkheads",
+    "Explorer_NX_Armour_Mirrored": "bulkheads",
+    "Explorer_NX_Armour_Reactive": "bulkheads",
+    "Explorer_NX_Armour_Grade1_Default": "bulkheads",
+    "SmallCombat01_NX_Armour_Grade1": "bulkheads",
+    "SmallCombat01_NX_Armour_Grade2": "bulkheads",
+    "SmallCombat01_NX_Armour_Grade3": "bulkheads",
+    "SmallCombat01_NX_Armour_Mirrored": "bulkheads",
+    "SmallCombat01_NX_Armour_Reactive": "bulkheads",
+    "MediumTransport01_Armour_Grade1": "bulkheads",
+    "MediumTransport01_Armour_Grade2": "bulkheads",
+    "MediumTransport01_Armour_Grade3": "bulkheads",
+    "MediumTransport01_Armour_Mirrored": "bulkheads",
+    "MediumTransport01_Armour_Reactive": "bulkheads",
+    "Int_LifeSupport_Size1_Class1": "lifeSupports",
+    "Int_LifeSupport_Size1_Class2": "lifeSupports",
+    "Int_LifeSupport_Size1_Class3": "lifeSupports",
+    "Int_LifeSupport_Size1_Class4": "lifeSupports",
+    "Int_LifeSupport_Size1_Class5": "lifeSupports",
+    "Int_LifeSupport_Size2_Class1": "lifeSupports",
+    "Int_LifeSupport_Size2_Class2": "lifeSupports",
+    "Int_LifeSupport_Size2_Class3": "lifeSupports",
+    "Int_LifeSupport_Size2_Class4": "lifeSupports",
+    "Int_LifeSupport_Size2_Class5": "lifeSupports",
+    "Int_LifeSupport_Size3_Class1": "lifeSupports",
+    "Int_LifeSupport_Size3_Class2": "lifeSupports",
+    "Int_LifeSupport_Size3_Class3": "lifeSupports",
+    "Int_LifeSupport_Size3_Class4": "lifeSupports",
+    "Int_LifeSupport_Size3_Class5": "lifeSupports",
+    "Int_LifeSupport_Size4_Class1": "lifeSupports",
+    "Int_LifeSupport_Size4_Class2": "lifeSupports",
+    "Int_LifeSupport_Size4_Class3": "lifeSupports",
+    "Int_LifeSupport_Size4_Class4": "lifeSupports",
+    "Int_LifeSupport_Size4_Class5": "lifeSupports",
+    "Int_LifeSupport_Size5_Class1": "lifeSupports",
+    "Int_LifeSupport_Size5_Class2": "lifeSupports",
+    "Int_LifeSupport_Size5_Class3": "lifeSupports",
+    "Int_LifeSupport_Size5_Class4": "lifeSupports",
+    "Int_LifeSupport_Size5_Class5": "lifeSupports",
+    "Int_LifeSupport_Size6_Class1": "lifeSupports",
+    "Int_LifeSupport_Size6_Class2": "lifeSupports",
+    "Int_LifeSupport_Size6_Class3": "lifeSupports",
+    "Int_LifeSupport_Size6_Class4": "lifeSupports",
+    "Int_LifeSupport_Size6_Class5": "lifeSupports",
+    "Int_LifeSupport_Size7_Class1": "lifeSupports",
+    "Int_LifeSupport_Size7_Class2": "lifeSupports",
+    "Int_LifeSupport_Size7_Class3": "lifeSupports",
+    "Int_LifeSupport_Size7_Class4": "lifeSupports",
+    "Int_LifeSupport_Size7_Class5": "lifeSupports",
+    "Int_LifeSupport_Size8_Class1": "lifeSupports",
+    "Int_LifeSupport_Size8_Class2": "lifeSupports",
+    "Int_LifeSupport_Size8_Class3": "lifeSupports",
+    "Int_LifeSupport_Size8_Class4": "lifeSupports",
+    "Int_LifeSupport_Size8_Class5": "lifeSupports",
+    "Int_LifeSupport_Size1_Class1_free": "lifeSupports",
+    "Int_Sensors_Size1_Class1": "sensors",
+    "Int_Sensors_Size1_Class2": "sensors",
+    "Int_Sensors_Size1_Class3": "sensors",
+    "Int_Sensors_Size1_Class4": "sensors",
+    "Int_Sensors_Size1_Class5": "sensors",
+    "Int_Sensors_Size2_Class1": "sensors",
+    "Int_Sensors_Size2_Class2": "sensors",
+    "Int_Sensors_Size2_Class3": "sensors",
+    "Int_Sensors_Size2_Class4": "sensors",
+    "Int_Sensors_Size2_Class5": "sensors",
+    "Int_Sensors_Size3_Class1": "sensors",
+    "Int_Sensors_Size3_Class2": "sensors",
+    "Int_Sensors_Size3_Class3": "sensors",
+    "Int_Sensors_Size3_Class4": "sensors",
+    "Int_Sensors_Size3_Class5": "sensors",
+    "Int_Sensors_Size4_Class1": "sensors",
+    "Int_Sensors_Size4_Class2": "sensors",
+    "Int_Sensors_Size4_Class3": "sensors",
+    "Int_Sensors_Size4_Class4": "sensors",
+    "Int_Sensors_Size4_Class5": "sensors",
+    "Int_Sensors_Size5_Class1": "sensors",
+    "Int_Sensors_Size5_Class2": "sensors",
+    "Int_Sensors_Size5_Class3": "sensors",
+    "Int_Sensors_Size5_Class4": "sensors",
+    "Int_Sensors_Size5_Class5": "sensors",
+    "Int_Sensors_Size6_Class1": "sensors",
+    "Int_Sensors_Size6_Class2": "sensors",
+    "Int_Sensors_Size6_Class3": "sensors",
+    "Int_Sensors_Size6_Class4": "sensors",
+    "Int_Sensors_Size6_Class5": "sensors",
+    "Int_Sensors_Size7_Class1": "sensors",
+    "Int_Sensors_Size7_Class2": "sensors",
+    "Int_Sensors_Size7_Class3": "sensors",
+    "Int_Sensors_Size7_Class4": "sensors",
+    "Int_Sensors_Size7_Class5": "sensors",
+    "Int_Sensors_Size8_Class1": "sensors",
+    "Int_Sensors_Size8_Class2": "sensors",
+    "Int_Sensors_Size8_Class3": "sensors",
+    "Int_Sensors_Size8_Class4": "sensors",
+    "Int_Sensors_Size8_Class5": "sensors",
+    "Int_Sensors_Size1_Class1_free": "sensors",
+    "Int_Repairer_Size1_Class1": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size2_Class1": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size3_Class1": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size4_Class1": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size5_Class1": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size6_Class1": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size7_Class1": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size8_Class1": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size1_Class2": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size2_Class2": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size3_Class2": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size4_Class2": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size5_Class2": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size6_Class2": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size7_Class2": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size8_Class2": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size1_Class3": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size2_Class3": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size3_Class3": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size4_Class3": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size5_Class3": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size6_Class3": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size7_Class3": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size8_Class3": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size1_Class4": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size2_Class4": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size3_Class4": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size4_Class4": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size5_Class4": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size6_Class4": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size7_Class4": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size8_Class4": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size1_Class5": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size2_Class5": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size3_Class5": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size4_Class5": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size5_Class5": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size6_Class5": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size7_Class5": "autoFieldMaintenanceUnits",
+    "Int_Repairer_Size8_Class5": "autoFieldMaintenanceUnits",
+    "Int_CargoRack_Size1_Class1": "cargoRacks",
+    "Int_CargoRack_Size2_Class1": "cargoRacks",
+    "Int_CargoRack_Size3_Class1": "cargoRacks",
+    "Int_CargoRack_Size4_Class1": "cargoRacks",
+    "Int_CargoRack_Size5_Class1": "cargoRacks",
+    "Int_CargoRack_Size6_Class1": "cargoRacks",
+    "Int_CargoRack_Size7_Class1": "cargoRacks",
+    "Int_CargoRack_Size8_Class1": "cargoRacks",
+    "Int_CargoRack_Size2_Class1_free": "cargoRacks",
+    "Int_CorrosionProofCargoRack_Size1_Class1": "cargoRacks",
+    "Int_CorrosionProofCargoRack_Size1_Class2": "cargoRacks",
+    "Int_CorrosionProofCargoRack_Size2_Class1": "cargoRacks",
+    "Int_CorrosionProofCargoRack_Size5_Class1": "cargoRacks",
+    "Int_CorrosionProofCargoRack_Size6_Class1": "cargoRacks",
+    "Int_CorrosionProofCargoRack_Size4_Class1": "cargoRacks",
+    "Int_LargeCargoRack_Size7_Class1": "cargoRacks",
+    "Int_LargeCargoRack_Size8_class1": "cargoRacks",
+    "Int_DroneControl_Collection_Size1_Class1": "collectionLimpets",
+    "Int_DroneControl_Collection_Size1_Class2": "collectionLimpets",
+    "Int_DroneControl_Collection_Size1_Class3": "collectionLimpets",
+    "Int_DroneControl_Collection_Size1_Class4": "collectionLimpets",
+    "Int_DroneControl_Collection_Size1_Class5": "collectionLimpets",
+    "Int_DroneControl_Collection_Size3_Class1": "collectionLimpets",
+    "Int_DroneControl_Collection_Size3_Class2": "collectionLimpets",
+    "Int_DroneControl_Collection_Size3_Class3": "collectionLimpets",
+    "Int_DroneControl_Collection_Size3_Class4": "collectionLimpets",
+    "Int_DroneControl_Collection_Size3_Class5": "collectionLimpets",
+    "Int_DroneControl_Collection_Size5_Class1": "collectionLimpets",
+    "Int_DroneControl_Collection_Size5_Class2": "collectionLimpets",
+    "Int_DroneControl_Collection_Size5_Class3": "collectionLimpets",
+    "Int_DroneControl_Collection_Size5_Class4": "collectionLimpets",
+    "Int_DroneControl_Collection_Size5_Class5": "collectionLimpets",
+    "Int_DroneControl_Collection_Size7_Class1": "collectionLimpets",
+    "Int_DroneControl_Collection_Size7_Class2": "collectionLimpets",
+    "Int_DroneControl_Collection_Size7_Class3": "collectionLimpets",
+    "Int_DroneControl_Collection_Size7_Class4": "collectionLimpets",
+    "Int_DroneControl_Collection_Size7_Class5": "collectionLimpets",
+    "Int_GuardianFSDBooster_Size1": "fsdBoosters",
+    "Int_GuardianFSDBooster_Size2": "fsdBoosters",
+    "Int_GuardianFSDBooster_Size3": "fsdBoosters",
+    "Int_GuardianFSDBooster_Size4": "fsdBoosters",
+    "Int_GuardianFSDBooster_Size5": "fsdBoosters",
+    "Int_FSDInterdictor_Size1_Class1": "fsdInterdictors",
+    "Int_FSDInterdictor_Size2_Class1": "fsdInterdictors",
+    "Int_FSDInterdictor_Size3_Class1": "fsdInterdictors",
+    "Int_FSDInterdictor_Size4_Class1": "fsdInterdictors",
+    "Int_FSDInterdictor_Size1_Class2": "fsdInterdictors",
+    "Int_FSDInterdictor_Size2_Class2": "fsdInterdictors",
+    "Int_FSDInterdictor_Size3_Class2": "fsdInterdictors",
+    "Int_FSDInterdictor_Size4_Class2": "fsdInterdictors",
+    "Int_FSDInterdictor_Size1_Class3": "fsdInterdictors",
+    "Int_FSDInterdictor_Size2_Class3": "fsdInterdictors",
+    "Int_FSDInterdictor_Size3_Class3": "fsdInterdictors",
+    "Int_FSDInterdictor_Size4_Class3": "fsdInterdictors",
+    "Int_FSDInterdictor_Size1_Class4": "fsdInterdictors",
+    "Int_FSDInterdictor_Size2_Class4": "fsdInterdictors",
+    "Int_FSDInterdictor_Size3_Class4": "fsdInterdictors",
+    "Int_FSDInterdictor_Size4_Class4": "fsdInterdictors",
+    "Int_FSDInterdictor_Size1_Class5": "fsdInterdictors",
+    "Int_FSDInterdictor_Size2_Class5": "fsdInterdictors",
+    "Int_FSDInterdictor_Size3_Class5": "fsdInterdictors",
+    "Int_FSDInterdictor_Size4_Class5": "fsdInterdictors",
+    "Int_FuelScoop_Size1_Class1": "fuelScoops",
+    "Int_FuelScoop_Size2_Class1": "fuelScoops",
+    "Int_FuelScoop_Size3_Class1": "fuelScoops",
+    "Int_FuelScoop_Size4_Class1": "fuelScoops",
+    "Int_FuelScoop_Size5_Class1": "fuelScoops",
+    "Int_FuelScoop_Size6_Class1": "fuelScoops",
+    "Int_FuelScoop_Size7_Class1": "fuelScoops",
+    "Int_FuelScoop_Size8_Class1": "fuelScoops",
+    "Int_FuelScoop_Size1_Class2": "fuelScoops",
+    "Int_FuelScoop_Size2_Class2": "fuelScoops",
+    "Int_FuelScoop_Size3_Class2": "fuelScoops",
+    "Int_FuelScoop_Size4_Class2": "fuelScoops",
+    "Int_FuelScoop_Size5_Class2": "fuelScoops",
+    "Int_FuelScoop_Size6_Class2": "fuelScoops",
+    "Int_FuelScoop_Size7_Class2": "fuelScoops",
+    "Int_FuelScoop_Size8_Class2": "fuelScoops",
+    "Int_FuelScoop_Size1_Class3": "fuelScoops",
+    "Int_FuelScoop_Size2_Class3": "fuelScoops",
+    "Int_FuelScoop_Size3_Class3": "fuelScoops",
+    "Int_FuelScoop_Size4_Class3": "fuelScoops",
+    "Int_FuelScoop_Size5_Class3": "fuelScoops",
+    "Int_FuelScoop_Size6_Class3": "fuelScoops",
+    "Int_FuelScoop_Size7_Class3": "fuelScoops",
+    "Int_FuelScoop_Size8_Class3": "fuelScoops",
+    "Int_FuelScoop_Size1_Class4": "fuelScoops",
+    "Int_FuelScoop_Size2_Class4": "fuelScoops",
+    "Int_FuelScoop_Size3_Class4": "fuelScoops",
+    "Int_FuelScoop_Size4_Class4": "fuelScoops",
+    "Int_FuelScoop_Size5_Class4": "fuelScoops",
+    "Int_FuelScoop_Size6_Class4": "fuelScoops",
+    "Int_FuelScoop_Size7_Class4": "fuelScoops",
+    "Int_FuelScoop_Size8_Class4": "fuelScoops",
+    "Int_FuelScoop_Size1_Class5": "fuelScoops",
+    "Int_FuelScoop_Size2_Class5": "fuelScoops",
+    "Int_FuelScoop_Size3_Class5": "fuelScoops",
+    "Int_FuelScoop_Size4_Class5": "fuelScoops",
+    "Int_FuelScoop_Size5_Class5": "fuelScoops",
+    "Int_FuelScoop_Size6_Class5": "fuelScoops",
+    "Int_FuelScoop_Size7_Class5": "fuelScoops",
+    "Int_FuelScoop_Size8_Class5": "fuelScoops",
+    "Int_DroneControl_FuelTransfer_Size1_Class1": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size1_Class2": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size1_Class3": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size1_Class4": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size1_Class5": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size3_Class1": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size3_Class2": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size3_Class3": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size3_Class4": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size3_Class5": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size5_Class1": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size5_Class2": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size5_Class3": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size5_Class4": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size5_Class5": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size7_Class1": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size7_Class2": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size7_Class3": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size7_Class4": "fuelTransferLimpets",
+    "Int_DroneControl_FuelTransfer_Size7_Class5": "fuelTransferLimpets",
+    "Int_DroneControl_ResourceSiphon": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size1_Class1": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size1_Class2": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size1_Class3": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size1_Class4": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size1_Class5": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size3_Class1": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size3_Class2": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size3_Class3": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size3_Class4": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size3_Class5": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size5_Class1": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size5_Class2": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size5_Class3": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size5_Class4": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size5_Class5": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size7_Class1": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size7_Class2": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size7_Class3": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size7_Class4": "hatchBreakerLimpets",
+    "Int_DroneControl_ResourceSiphon_Size7_Class5": "hatchBreakerLimpets",
+    "Int_GuardianModuleReinforcement_Size1_Class1": "moduleReinforcements",
+    "Int_GuardianModuleReinforcement_Size1_Class2": "moduleReinforcements",
+    "Int_GuardianModuleReinforcement_Size2_Class1": "moduleReinforcements",
+    "Int_GuardianModuleReinforcement_Size2_Class2": "moduleReinforcements",
+    "Int_GuardianModuleReinforcement_Size3_Class1": "moduleReinforcements",
+    "Int_GuardianModuleReinforcement_Size3_Class2": "moduleReinforcements",
+    "Int_GuardianModuleReinforcement_Size4_Class1": "moduleReinforcements",
+    "Int_GuardianModuleReinforcement_Size4_Class2": "moduleReinforcements",
+    "Int_GuardianModuleReinforcement_Size5_Class1": "moduleReinforcements",
+    "Int_GuardianModuleReinforcement_Size5_Class2": "moduleReinforcements",
+    "Int_DroneControl_Prospector_Size1_Class1": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size1_Class2": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size1_Class3": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size1_Class4": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size1_Class5": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size3_Class1": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size3_Class2": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size3_Class3": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size3_Class4": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size3_Class5": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size5_Class1": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size5_Class2": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size5_Class3": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size5_Class4": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size5_Class5": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size7_Class1": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size7_Class2": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size7_Class3": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size7_Class4": "prospectingLimpets",
+    "Int_DroneControl_Prospector_Size7_Class5": "prospectingLimpets",
+    "Int_Refinery_Size1_Class1": "refineries",
+    "Int_Refinery_Size2_Class1": "refineries",
+    "Int_Refinery_Size3_Class1": "refineries",
+    "Int_Refinery_Size4_Class1": "refineries",
+    "Int_Refinery_Size1_Class2": "refineries",
+    "Int_Refinery_Size2_Class2": "refineries",
+    "Int_Refinery_Size3_Class2": "refineries",
+    "Int_Refinery_Size4_Class2": "refineries",
+    "Int_Refinery_Size1_Class3": "refineries",
+    "Int_Refinery_Size2_Class3": "refineries",
+    "Int_Refinery_Size3_Class3": "refineries",
+    "Int_Refinery_Size4_Class3": "refineries",
+    "Int_Refinery_Size1_Class4": "refineries",
+    "Int_Refinery_Size2_Class4": "refineries",
+    "Int_Refinery_Size3_Class4": "refineries",
+    "Int_Refinery_Size4_Class4": "refineries",
+    "Int_Refinery_Size1_Class5": "refineries",
+    "Int_Refinery_Size2_Class5": "refineries",
+    "Int_Refinery_Size3_Class5": "refineries",
+    "Int_Refinery_Size4_Class5": "refineries",
+    "Int_GuardianShieldReinforcement_Size1_Class1": "shieldReinforcements",
+    "Int_GuardianShieldReinforcement_Size1_Class2": "shieldReinforcements",
+    "Int_GuardianShieldReinforcement_Size2_Class1": "shieldReinforcements",
+    "Int_GuardianShieldReinforcement_Size2_Class2": "shieldReinforcements",
+    "Int_GuardianShieldReinforcement_Size3_Class1": "shieldReinforcements",
+    "Int_GuardianShieldReinforcement_Size3_Class2": "shieldReinforcements",
+    "Int_GuardianShieldReinforcement_Size4_Class1": "shieldReinforcements",
+    "Int_GuardianShieldReinforcement_Size4_Class2": "shieldReinforcements",
+    "Int_GuardianShieldReinforcement_Size5_Class1": "shieldReinforcements",
+    "Int_GuardianShieldReinforcement_Size5_Class2": "shieldReinforcements",
+    "Int_DetailedSurfaceScanner_Tiny": "surfaceScanners",
+    "Hpt_ChaffLauncher_Tiny": "chaffLaunchers",
+    "Hpt_ElectronicCountermeasure_Tiny": "ecms",
+    "Hpt_HeatSinkLauncher_Turret_Tiny": "heatSinkLaunchers",
+    "Hpt_CausticSinkLauncher_Turret_Tiny": "heatSinkLaunchers",
+    "Hpt_CrimeScanner_Size0_Class1": "killWarrantScanners",
+    "Hpt_CrimeScanner_Size0_Class2": "killWarrantScanners",
+    "Hpt_CrimeScanner_Size0_Class3": "killWarrantScanners",
+    "Hpt_CrimeScanner_Size0_Class4": "killWarrantScanners",
+    "Hpt_CrimeScanner_Size0_Class5": "killWarrantScanners",
+    "Hpt_CargoScanner_Size0_Class1": "manifestScanners",
+    "Hpt_CargoScanner_Size0_Class2": "manifestScanners",
+    "Hpt_CargoScanner_Size0_Class3": "manifestScanners",
+    "Hpt_CargoScanner_Size0_Class4": "manifestScanners",
+    "Hpt_CargoScanner_Size0_Class5": "manifestScanners",
+    "Hpt_PlasmaPointDefence_Turret_Tiny": "pointDefence",
+    "Hpt_CloudScanner_Size0_Class1": "wakeScanners",
+    "Hpt_CloudScanner_Size0_Class2": "wakeScanners",
+    "Hpt_CloudScanner_Size0_Class3": "wakeScanners",
+    "Hpt_CloudScanner_Size0_Class4": "wakeScanners",
+    "Hpt_CloudScanner_Size0_Class5": "wakeScanners",
+    "Hpt_CausticMissile_Fixed_Medium": "experimentalWeapons",
+    "Hpt_ATDumbfireMissile_Fixed_Medium": "antiXenoMissileRacks",
+    "Hpt_ATDumbfireMissile_Fixed_Large": "antiXenoMissileRacks",
+    "Hpt_Guardian_GaussCannon_Fixed_Medium": "guardianGauss",
+    "Hpt_Guardian_GaussCannon_Fixed_Small": "guardianGauss",
+    "Hpt_Guardian_PlasmaLauncher_Fixed_Medium": "guardianPlasma",
+    "Hpt_Guardian_PlasmaLauncher_Turret_Medium": "guardianPlasma",
+    "Hpt_Guardian_PlasmaLauncher_Fixed_Large": "guardianPlasma",
+    "Hpt_Guardian_PlasmaLauncher_Turret_Large": "guardianPlasma",
+    "Hpt_Guardian_PlasmaLauncher_Turret_Small": "guardianPlasma",
+    "Hpt_Guardian_PlasmaLauncher_Fixed_Small": "guardianPlasma",
+    "Hpt_Guardian_ShardCannon_Fixed_Medium": "guardianShard",
+    "Hpt_Guardian_ShardCannon_Turret_Medium": "guardianShard",
+    "Hpt_Guardian_ShardCannon_Fixed_Large": "guardianShard",
+    "Hpt_Guardian_ShardCannon_Turret_Large": "guardianShard",
+    "Hpt_Guardian_ShardCannon_Turret_Small": "guardianShard",
+    "Hpt_Guardian_ShardCannon_Fixed_Small": "guardianShard"
   },
   "exclusions": {
     "Hpt_MultiCannon_Fixed_Small": [
@@ -906,6 +1814,18 @@
     "Hpt_MultiCannon_Turret_Large": [
       "special_phasing_sequence"
     ],
+    "Hpt_MultiCannon_Fixed_Small_Strong": [
+      "special_phasing_sequence"
+    ],
+    "Hpt_MultiCannon_Gimbal_Huge": [
+      "special_phasing_sequence"
+    ],
+    "Hpt_MultiCannon_Fixed_Medium_Advanced": [
+      "special_phasing_sequence"
+    ],
+    "Hpt_MultiCannon_Fixed_Small_Advanced": [
+      "special_phasing_sequence"
+    ],
     "Hpt_BasicMissileRack_Fixed_Small": [
       "special_fsd_interrupt",
       "special_penetrator_munitions"
@@ -916,57 +1836,30 @@
     "Hpt_BasicMissileRack_Fixed_Large": [
       "special_penetrator_munitions"
     ],
-    "Hpt_MiningLaser_Fixed_Medium": [
-      "special_incendiary_rounds"
-    ],
     "Hpt_DumbfireMissileRack_Fixed_Small": [
       "special_drag_munitions"
     ],
     "Hpt_DumbfireMissileRack_Fixed_Medium": [
       "special_drag_munitions"
     ],
-    "Hpt_MiningLaser_Fixed_Small_Advanced": [
-      "special_incendiary_rounds"
-    ],
     "Hpt_DrunkMissileRack_Fixed_Medium": [
       "special_fsd_interrupt",
       "special_penetrator_munitions"
     ],
-    "Hpt_MultiCannon_Fixed_Small_Strong": [
-      "special_phasing_sequence"
-    ],
-    "Hpt_MultiCannon_Gimbal_Huge": [
-      "special_phasing_sequence"
-    ],
     "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso": [
       "special_drag_munitions"
     ],
-    "Hpt_MiningLaser_Turret_Small": [
-      "special_incendiary_rounds"
-    ],
-    "Hpt_MiningLaser_Turret_Medium": [
-      "special_incendiary_rounds"
-    ],
     "Hpt_DumbfireMissileRack_Fixed_Large": [
       "special_drag_munitions"
-    ],
-    "Hpt_Mining_AbrBlstr_Fixed_Small": [
-      "special_incendiary_rounds"
-    ],
-    "Hpt_Mining_AbrBlstr_Turret_Small": [
-      "special_incendiary_rounds"
-    ],
-    "Hpt_MultiCannon_Fixed_Medium_Advanced": [
-      "special_phasing_sequence"
-    ],
-    "Hpt_MultiCannon_Fixed_Small_Advanced": [
-      "special_phasing_sequence"
     ],
     "Hpt_DumbfireMissileRack_Fixed_Small_Advanced": [
       "special_drag_munitions"
     ],
     "Hpt_DumbfireMissileRack_Fixed_Medium_Advanced": [
       "special_drag_munitions"
+    ],
+    "Hpt_Mining_AbrBlstr_Fixed_Small": [
+      "special_incendiary_rounds"
     ]
   }
 }

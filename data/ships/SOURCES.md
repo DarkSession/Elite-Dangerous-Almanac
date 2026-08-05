@@ -1,6 +1,6 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the per-hull slot names added on 2026-08-05, recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the engineering-options extension of 2026-08-05 (§Engineering options), which followed the per-hull slot names recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 **Revision 2026-08-05 (UTC) — the mounts of 13 hulls now carry the journal's own slot
 names.**
@@ -1165,25 +1165,166 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Availability is a property of the module, not of the blueprint.** A Pulse Laser and a
   Rail Gun both take the Efficient blueprint but offer different experimental effects, so
   "which experimentals go with blueprint X" has no single answer. Modules are therefore
-  grouped (22 groups covering 428 engineerable modules) and each group lists the
+  grouped (53 groups covering 1029 engineerable modules) and each group lists the
   `blueprints` and `experimentals` it offers. `getExperimentalsForBlueprint` is provided
   for convenience and returns the **union** across every group offering that blueprint —
   deliberately looser than the per-module answer, and a test pins that it is never
   narrower.
 - **Source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`, whose module-group tables
-  carry each group's `blueprints` and `expeffects` lists, plus the per-module exclusions
-  described below. Same CC BY-NC 4.0 licence note as the experimental-effect section
-  above. Acquired 2026-08-01 UTC.
-- **`exclusions` are the exceptions, and they are real.** 29 modules do not take their
-  whole group's list: the Multi-cannons cannot take Phasing Sequence, the dumbfire racks
-  cannot take Drag Munitions, and the mining tools take no experimental at all. Upstream
-  these are an exclusion map (with a wildcard for "none of them"); here the wildcard is
-  **expanded to the explicit list** so a consumer never has to interpret one. A module
-  absent from `exclusions` takes its whole group's list.
-- **Kept deliberately:** a mining tool stays in `modules` (it has blueprints) even though
-  its experimental list resolves to empty — "engineerable with no experimental slot" and
-  "not engineerable at all" are different answers, and `getEngineeringGroup` separates
-  them.
+  carry each group's `blueprints` and `expeffects` lists and which modules belong to each
+  group, and whose module records carry the per-module `noblueprints` / `noexpeffects`
+  denials that narrow either list. Same CC BY-NC 4.0 licence note as the
+  experimental-effect section above. Acquired 2026-08-01 UTC; the 2026-08-05 extension
+  from 22 groups to 53 re-read the same snapshot the sections above pin (`eddb.js`
+  SHA-256 `967834d6…`, internal `db 20260428`) and added
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) `modifications/modules.json`
+  (MIT) as the second registry — acquired 2026-08-05 UTC from `master`, SHA-256
+  `09b6427c86bc3cfb578a246f7c6be1791429bb67009b7adaa7909e30aadc160f`. The file is pinned
+  by digest rather than by commit because it was read from the branch tip; the digest is
+  what a re-derivation must match.
+- **The extension to 53 groups (2026-08-05) closed the "428 of 1198 modules" gap.** Every
+  group EDSY's `mtype` table gives a `blueprints:` key is now carried: bulkheads (the 241
+  ship armour records), life support, sensors, the Detailed Surface Scanner, cargo racks,
+  refineries, AFMUs, fuel scoops, FSD interdictors and boosters, Guardian module and
+  shield reinforcement, the four engineerable limpet controllers, chaff, heat sink and
+  caustic sink launchers, point defence, ECMs, the KWS/manifest/wake scanners, the
+  Guardian Gauss/Plasma/Shard weapons, the AX missile racks and the Enzyme Missile Rack.
+  - **A group is one menu, so `noblueprints` can split a family in two.** EDSY denies
+    blueprints per module as well as per group (`edsy.js` `setBlueprintID` refuses a
+    denied id; `'*'` means the module is not modifiable at all), and for three families
+    the denial is a clean two-way split: a Guardian Power Plant is denied all three
+    ordinary power-plant recipes and an ordinary one is denied Anti-Guardian Zone
+    Resistance, and the same holds for the power distributors and the hull reinforcement
+    packages. Those are stored as **two groups** — `powerPlants` /
+    `guardianPowerPlants`, `powerDistributors` / `guardianPowerDistributors`,
+    `hullReinforcements` / `guardianHullReinforcements` — rather than as a per-module
+    exception, because a group *is* a menu and these are two menus. Both halves keep the
+    family's experimental list, which is what EDSY publishes (`expeffects` is per group,
+    with no per-module denial on any of them).
+  - **This corrected three groups that predate the extension.** `powerPlants`,
+    `powerDistributors` and `hullReinforcements` each offered
+    `recipe_guardianmodule_sturdy` to every ordinary module in them, which EDSY denies —
+    an Anti-Guardian recipe on a non-Guardian module. Those three lists lose that id, and
+    25 modules move to the new Guardian groups. A further 14 leave the catalogue entirely
+    because upstream denies them every blueprint: eight AX multi-cannons (all but the two
+    gimballed), five of the seven mining tools, and the Mk II Plasma Shock Autocannon,
+    which cost `antiXenoMultiCannons` 8 of its 10 modules, `miningToolsLasers` 5 of its 7
+    and `plasmaAccelerators` 1 of its 5. The ten plain Module Reinforcement Packages —
+    denied their family's only recipe — are not in the catalogue at all, which leaves
+    `moduleReinforcements` holding the ten Guardian packages.
+  - **Nine of the 22 pre-existing groups changed, and the other 13 are byte-identical.**
+    Three lost the Anti-Guardian recipe and their Guardian members to the split, three
+    lost members to a `noblueprints` denial, and three — `thrusters`,
+    `frameShiftDrives` and `shieldGenerators` — only *gained* the family-rule modules
+    described below (the size-8 drives, `Int_ShieldGenerator_Size1_Class4` and four
+    `*_free` starter fittings). No group's blueprint or experimental list changed except
+    those three losing `recipe_guardianmodule_sturdy`, and no module that stayed in the
+    catalogue moved to a group other than its family's Guardian half.
+  - **The 169 modules absent take no engineering.** Whole families first, both registries
+    agreeing: fuel tanks, passenger cabins, the repair/recon/research/decontamination and
+    multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
+    Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons, fighter and
+    vehicle hangars, the docking computers and Supercruise Assist, the module stabilisers,
+    the planetary approach suites, the withdrawn discovery scanners, the cargo hatch and
+    the AX utility modules (Xeno Scanners, Shutdown Field Neutralisers). Then the
+    individually denied modules described above. This is why `getEngineeringGroup`
+    returning `null` no longer means "not listed yet" — see the API note in
+    `engineering-options.ts`.
+  - **EDSY's `_X_` prefix means "not applicable" and is honoured**, not stripped: the
+    Detailed Surface Scanner's group lists only `iss_er` (`Sensor_Expanded`), because its
+    three other entries are `_X_`-marked. The dormant `Decorative_*` entries on the
+    remote-release launchers are dropped for the same reason `blueprints.jsonc` does not
+    carry them — internal visual entries, not obtainable engineering.
+  - **Where EDSY records one generic id and the journal writes a family-specific one,
+    coriolis-data settles it.** EDSY collapses Lightweight, Reinforced and Shielded to
+    `misc_lw` / `misc_rf` / `misc_sh` for eight families; coriolis keys the same lists by
+    the journal `BlueprintName` this catalogue joins on, so life support lists
+    `LifeSupport_LightWeight`, an AFMU `AFM_Shielded`, a fuel scoop `FuelScoop_Shielded`,
+    a refinery `Refineries_Shielded` and each limpet controller its own. **This is not
+    cosmetic for the scanners:** EDSY's `scan_lr` and `cs_lr` share the fdname
+    `Sensor_LongRange`, but `Scanner_LongRange` is a different recipe (power draw, not
+    mass; a larger range roll), so the utility scanners take the `Scanner_*` ids for Long
+    Range and Wide Angle where the sensor suites take the `Sensor_*` ones. (Their other
+    four ids are unaffected: `Sensor_FastScan` and the generic `Misc_*` trio, exactly as
+    coriolis has them.) Eleven groups carry a substitution; the substituted lists are then
+    checked against coriolis's own, as are the nine further groups it carries a list for —
+    20 in all, every one an exact match. Chaff, heat sink, point defence and ECMs keep the
+    generic `Misc_*` ids: there coriolis agrees with EDSY.
+  - **13 groups rest on EDSY alone**, because coriolis carries no blueprint list for
+    them at all: the nine Guardian-only groups (`guardianPowerPlants`,
+    `guardianPowerDistributors`, `guardianHullReinforcements`, `moduleReinforcements`,
+    `shieldReinforcements`, `fsdBoosters`, `guardianGauss`, `guardianPlasma`,
+    `guardianShard`), `antiXenoMissileRacks`, `experimentalWeapons`, and the
+    pre-existing `miningToolsLasers` and `antiXenoMultiCannons`. That is coriolis being
+    silent rather than contradicting — its Guardian and anti-xeno groups are empty
+    objects — but it means the second registry corroborates 40 of the 53 groups, not
+    all of them, and the Guardian-weapon disagreement in
+    [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36) has only
+    one registry behind it.
+  - **`MC_Overcharged` is left out on purpose.** coriolis carries a multi-cannon-specific
+    Overcharged (one extra clip-size leg); the multi-cannon group lists EDSY's
+    `Weapon_Overcharged`, as it did before this change, and every Overcharged multi-cannon
+    in the build corpus is spelled that way. It is one of the 27 blueprint ids no group
+    names — the other 26 are the pre-engineered `recipe_*` variants, which are sold
+    already applied rather than offered in a menu; `recipe_guardianmodule_sturdy` is the
+    one `recipe_*` a group does name, because it is also a recipe players apply. Same
+    shape as
+    [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32) — one
+    modification, two ids, different numbers — and not decided here.
+  - **14 modules are bound by the family rule, not by a source row.** EDSY has no live
+    entry for `Int_Hyperdrive_Size8_Class{1..5}` or `Int_ShieldGenerator_Size1_Class4`
+    (both present but commented out, and both naming their `mtype` — `cfsd` and `isg`),
+    nor for eight of the `*_free` starter fittings. Each takes its family's group, on the
+    same rule the stats above use: a `*_free` variant is its priced twin bar the price,
+    and a size-8 drive is a drive. `Int_FuelTank_Size1_Class3_free` and
+    `Int_StellarBodyDiscoveryScanner_Standard_free` are not bound, because their twins are
+    not engineerable either.
+- **Checked against the build corpus.** Of the 1902 declared engineering entries in
+  `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups — the measure in
+  the issue was 497 of them ungrouped — and 1888 are clean end to end: the module is
+  grouped, its group offers the blueprint, and where an experimental is declared the
+  module can take it. 70 of the 1888 declare the generic spelling of a family-specific
+  recipe (`Misc_LightWeight` on a life support, and so on) and count as offered; the shape
+  of that judgement is pinned in the fixture as `corpus.blueprintAliases`. The residue is
+  **14 entries no registry supports**, left as explicit exemptions rather than folded in:
+  - `corpus.notOffered` — five `Weapon_HighCapacity` on the Guardian Gauss Cannon and six
+    `special_super_penetrator_cooled` on the Guardian Shard Cannon
+    ([#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36)), plus one
+    `Sensor_LongRange` on a wake scanner
+    ([#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32)).
+  - `corpus.notGrouped` — two `Weapon_Efficient` entries on the Mk II Plasma Shock
+    Autocannon (both in `smallcombat01-nx-combat`), which EDSY denies every blueprint
+    (`noblueprints: {'*'}`). coriolis cannot corroborate either way: its
+    `modifications/modules.json` is keyed by module *group*, so it says nothing about one
+    module. This is the one case where the corpus engineers a module this catalogue calls
+    unengineerable, and it is the newest weapon involved, so an upstream lag is at least
+    as likely as a mis-declaration. Also tracked in
+    [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36).
+
+  A corpus build's engineering is declared by its author, never read off an outfitting
+  screen, so it is evidence about the catalogue but not authority over it. Still, the
+  `noblueprints` pass moved or dropped **39 module bindings** and the corpus engineers
+  only one of those 39 modules at all — the Mk II above, twice. It offers no support for
+  any of the other 38 denials and no contradiction of them, which is the strongest check
+  available on data that only one registry publishes.
+- **File order is derivable:** `modules` is written group by group in the order `groups`
+  declares them, and within a group in module-catalogue order, so a re-derivation from the
+  same sources reproduces the file rather than reshuffling it.
+- **`exclusions` are the exceptions, and they are real.** 24 modules take their group's
+  blueprints but not all of its experimental effects: 13 Multi-cannons cannot take Phasing
+  Sequence, six dumbfire racks cannot take Drag Munitions, four missile racks are short of
+  Penetrator Munitions or FSD Interrupt, and the small fixed Abrasion Blaster takes none
+  at all. Upstream these are an exclusion map (with a wildcard for "none of them"); here
+  the wildcard is **expanded to the explicit list** so a consumer never has to interpret
+  one. A module absent from `exclusions` takes its whole group's list. It was 29 before
+  the `noblueprints` pass; the five that went are mining tools that turned out to take no
+  blueprint either, so they left the catalogue rather than the exclusion list.
+- **Kept deliberately:** the Abrasion Blaster stays in `modules` (it has a blueprint) even
+  though its experimental list resolves to empty — "engineerable with no experimental
+  slot" and "not engineerable at all" are different answers, and `getEngineeringGroup`
+  separates them. That distinction carries most of the catalogue: 27 of the 53 groups
+  offer no experimental at all, so 364 of the 1029 grouped modules answer `[]` while still
+  having blueprints.
 - **Key form:** EDSY names the Anti-Guardian blueprint by its journal form
   (`GuardianModule_Sturdy`); this catalogue stores it under the `recipe_*` id the rest of
   `blueprints.jsonc` uses, so every id here joins directly.

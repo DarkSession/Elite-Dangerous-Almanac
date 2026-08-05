@@ -8,16 +8,28 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 428 of the 1198 modules, so families it does not yet map — hull
- * armour, sensors, life support, heat sink and chaff launchers, the Detailed Surface
- * Scanner, limpet controllers, AFMUs, fuel scoops, FSD interdictors, the Guardian
- * weapons — answer "nothing" here although real builds engineer them. Treat an empty
- * result as "not listed", not as "cannot be engineered"; the gap is tracked at
- * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13.
+ * The catalogue groups 1029 of the 1198 modules — every module upstream allows a recipe
+ * on. The other 169 take no engineering: whole families (fuel tanks, passenger cabins,
+ * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
+ * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
+ * Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
+ * Supercruise Assist, the module stabilisers, the planetary approach suites, the
+ * discovery scanners, the cargo hatch and the AX utility modules), plus the individual
+ * modules upstream denies every blueprint — every anti-xeno multi-cannon but the two
+ * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, five of
+ * the seven mining tools, the remote-release launchers and the Mk II Plasma Shock
+ * Autocannon.
+ *
+ * **A group is one menu.** Where the same kind of module comes in two flavours with
+ * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian
+ * Zone Resistance and an ordinary one takes only the ordinary recipes, so `powerPlants`
+ * and `guardianPowerPlants` are separate — likewise the distributors and the hull
+ * reinforcement packages.
  *
  * Its own module (and data file) so consumers who never open an engineering menu do not
- * bundle it. Everything returned joins straight to `BLUEPRINTS` and
- * `EXPERIMENTAL_EFFECTS`.
+ * bundle it — 63 KB minified, 7 KB gzipped, of which the module→group map is most of the
+ * weight. Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`,
+ * neither of which this module pulls in.
  *
  * This complements `engineering-compatibility.ts`: that answers "may this blueprint be
  * applied to this module?" for a build already assembled, while this enumerates the
@@ -74,10 +86,13 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"not listed here"**, which is not the same as "cannot be engineered".
- * The catalogue groups 428 of the 1198 modules, so families it does not yet map answer
- * `null` although the game engineers them — a cargo rack is the plain case: it takes
- * `CargoRack_IncreasedCapacity`, which is in `BLUEPRINTS`, yet has no group here.
+ * `null` means **"no source gives this module a recipe"**, which for the 169 ungrouped
+ * modules is the same as "cannot be engineered" — the families and the individually
+ * denied modules listed in the module overview above. It stays worded as the catalogue's
+ * answer rather than the game's because that is what it can honestly claim: a module
+ * Frontier adds engineering for later reads `null` until a registry says so, and the
+ * build corpus already has one such case (the Mk II Plasma Shock Autocannon, denied every
+ * blueprint upstream and engineered on both of a community build's large hardpoints).
  *
  * @param symbol - A module symbol, e.g. `"Hpt_BeamLaser_Fixed_Small"`.
  * @returns The group id, or `null` when the module is not in the catalogue.
@@ -85,9 +100,10 @@ const moduleExclusions = new Map(
  * @example
  * ```ts
  * getEngineeringGroup('Hpt_BeamLaser_Fixed_Small'); // -> 'beamLasers'
+ * getEngineeringGroup('Int_CargoRack_Size2_Class1'); // -> 'cargoRacks'
  *
- * // Not listed — which is not the same as not engineerable; see above.
- * getEngineeringGroup('Int_CargoRack_Size2_Class1'); // -> null
+ * // Not listed — no registry gives a fuel tank a blueprint.
+ * getEngineeringGroup('Int_FuelTank_Size3_Class3'); // -> null
  * ```
  */
 export function getEngineeringGroup(symbol: string): string | null {
@@ -99,16 +115,32 @@ export function getEngineeringGroup(symbol: string): string | null {
  *
  * Matching is case-insensitive and trims whitespace. A module this catalogue does not
  * group yields an empty array, never `null`, so the result is always safe to iterate —
- * but read that empty array as "not listed", not as "not engineerable"; see
- * {@link getEngineeringGroup}.
+ * see {@link getEngineeringGroup} for what an empty answer claims.
+ *
+ * **One recipe, two journal ids.** Where a modification applies to several module
+ * families the game writes a family-specific `BlueprintName`, and `BLUEPRINTS` carries
+ * both that and the generic spelling — a life support's Lightweight is
+ * `LifeSupport_LightWeight` here and `Misc_LightWeight` in an EDSY-authored build. The
+ * family-specific id is the one listed, so compare ids with that in mind: the two are the
+ * same recipe. `Sensor_LongRange` and `Scanner_LongRange` are **not** such a pair — those
+ * are two different recipes rolling different stats, and the utility scanners list the
+ * `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The two menus share
+ * no id: a scanner's other four are `Sensor_FastScan` and the generic `Misc_*` trio.
+ *
+ * Anti-Guardian Zone Resistance is the other pair, and the reverse case: the game writes
+ * `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a
+ * module, and every group here — the Guardian weapons included — lists the module id.
  *
  * @param symbol - A module symbol.
- * @returns Blueprint ids, in catalogue order. Join to `BLUEPRINTS`.
+ * @returns Blueprint ids, sorted. Join to `BLUEPRINTS`.
  *
  * @example
  * ```ts
  * getBlueprintsForModule('Hpt_BeamLaser_Fixed_Small');
  * // -> ['Weapon_Efficient', 'Weapon_LightWeight', 'Weapon_LongRange', ...]
+ *
+ * getBlueprintsForModule('Int_LifeSupport_Size4_Class2');
+ * // -> ['LifeSupport_LightWeight', 'LifeSupport_Reinforced', 'LifeSupport_Shielded']
  * ```
  */
 export function getBlueprintsForModule(symbol: string): readonly string[] {
@@ -120,16 +152,18 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * Every experimental effect a module can take — its group's list, minus the effects
  * that particular module is excluded from.
  *
- * Most modules take their whole group's list, but there are real exceptions: a
- * Multi-cannon cannot take Phasing Sequence, and six of the seven grouped mining tools
- * take no experimental at all (every Mining Laser but the small fixed one, plus both
- * Abrasion Blasters). Those are applied here, so the result is the exact set for this
- * module.
+ * Most modules take their whole group's list, but 24 are exceptions: 13 Multi-cannons
+ * cannot take Phasing Sequence, six dumbfire racks cannot take Drag Munitions, four
+ * missile racks are short of Penetrator Munitions or FSD Interrupt, and the small fixed
+ * Abrasion Blaster takes blueprints but no experimental at all. Those are applied here,
+ * so the result is the exact set for this module.
  *
- * Returns an empty array both for modules this catalogue does not group and for those
- * six, which are grouped but have no experimental slot — {@link getEngineeringGroup}
- * tells the two apart: it is `null` only for the first, and only the first may still be
- * engineerable in game.
+ * **An empty array is the common answer, and it usually means "blueprints only".** 364
+ * of the 1029 grouped modules have no experimental slot: 363 sit in the 27 of 53 groups
+ * that offer none — life support, sensors, the limpet controllers, the utility scanners,
+ * the Guardian weapons among them — and the Abrasion Blaster is excluded from its
+ * group's only effect. An ungrouped module answers empty too;
+ * {@link getEngineeringGroup} tells the two apart: it is `null` only for that one.
  *
  * @param symbol - A module symbol.
  * @returns Experimental-effect ids. Join to `EXPERIMENTAL_EFFECTS`.
@@ -162,15 +196,20 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * `Weapon_LongRange` does not offer every effect listed here, only its own group's. Use
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
- * Only the blueprints the grouped families name are covered — 42 of the 108 in
- * `BLUEPRINTS`. The other 66 are real recipes on modules this catalogue does not group
- * yet (every armour, sensor, limpet-controller and interdictor blueprint among them),
- * and they answer `[]` here exactly as an unknown id would.
+ * The groups name 81 of the 108 blueprints in `BLUEPRINTS`. Of the other 27, 20 are the
+ * `recipe_*` keys of modules sold already engineered rather than offered in a menu (see
+ * `ships/pre-engineered`) and six are Operations recipes no registry lists a module group
+ * for — the three laser Thermal Plasma Conversions, `recipe_fuelscoop_efficiency`,
+ * `recipe_seekermissileracklarge_lockdown` and `recipe_guardianweapon_sturdy`, the weapon
+ * spelling of Anti-Guardian Zone Resistance. The 27th is `MC_Overcharged`,
+ * coriolis-data's multi-cannon Overcharged, one clip-size leg apart from the
+ * `Weapon_Overcharged` the multi-cannon group lists. All 27 answer `[]` here exactly as an
+ * unknown id would. `recipe_guardianmodule_sturdy` is the one `recipe_*` the groups do
+ * name: Anti-Guardian Zone Resistance is applied at an engineer like any other recipe.
  *
  * @param blueprint - A blueprint id, e.g. `"Weapon_Efficient"`.
  * @returns Experimental-effect ids, sorted and de-duplicated; empty when no group names
- * the blueprint — because it is unknown, or not yet mapped — or when its groups take no
- * experimental.
+ * the blueprint, or when its groups take no experimental.
  *
  * @example
  * ```ts

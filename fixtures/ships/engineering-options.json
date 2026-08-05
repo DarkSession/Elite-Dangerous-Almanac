@@ -1,26 +1,1045 @@
 {
-  "description": "Ground truth for data/ships/engineering-options.jsonc — which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins the catalogue shape, `modules` that a module resolves to its group, `exclusions` the modules that are the exception to their group (a Multi-cannon cannot take Phasing Sequence; mining tools take no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it.",
-  "counts": { "groups": 22, "modules": 428, "exclusions": 29 },
+  "description": "Ground truth for data/ships/engineering-options.jsonc \u2014 which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins every group's menu by content, `modules` that a module resolves to its group, `exclusions` the modules that take their group's blueprints but not all of its experimental effects (a Multi-cannon cannot take Phasing Sequence; the Abrasion Blaster takes no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `splitFamilies` pins the families upstream splits in two by denying blueprints per module \u2014 a Guardian Power Plant and an ordinary one are the same kind of module with different menus, so they are different groups. `groupSizes` pins how many modules each group holds, so a module moving between groups fails a test rather than balancing out against the totals; `modules` pins one member of every group by name. `corpus` measures the catalogue against the 181-build community corpus in `builds/`.",
+  "counts": {
+    "groups": 53,
+    "modules": 1029,
+    "exclusions": 24,
+    "modulesWithoutExperimental": 364,
+    "blueprintsOffered": 81
+  },
+  "groupSizes": {
+    "powerPlants": 36,
+    "guardianPowerPlants": 7,
+    "thrusters": 40,
+    "frameShiftDrives": 36,
+    "powerDistributors": 41,
+    "guardianPowerDistributors": 8,
+    "frameShiftDrivesSCO": 36,
+    "shieldGenerators": 57,
+    "shieldCellBanks": 40,
+    "hullReinforcements": 10,
+    "guardianHullReinforcements": 10,
+    "pulseLasers": 12,
+    "burstLasers": 12,
+    "beamLasers": 12,
+    "cannons": 12,
+    "fragmentCannons": 10,
+    "multiCannons": 14,
+    "plasmaAccelerators": 4,
+    "railGuns": 3,
+    "missiles": 10,
+    "mines": 3,
+    "torpedoes": 3,
+    "miningToolsLasers": 2,
+    "antiXenoMultiCannons": 2,
+    "shieldBoosters": 5,
+    "bulkheads": 241,
+    "lifeSupports": 41,
+    "sensors": 41,
+    "autoFieldMaintenanceUnits": 40,
+    "cargoRacks": 17,
+    "collectionLimpets": 20,
+    "fsdBoosters": 5,
+    "fsdInterdictors": 20,
+    "fuelScoops": 40,
+    "fuelTransferLimpets": 20,
+    "hatchBreakerLimpets": 21,
+    "moduleReinforcements": 10,
+    "prospectingLimpets": 20,
+    "refineries": 20,
+    "shieldReinforcements": 10,
+    "surfaceScanners": 1,
+    "chaffLaunchers": 1,
+    "ecms": 1,
+    "heatSinkLaunchers": 2,
+    "killWarrantScanners": 5,
+    "manifestScanners": 5,
+    "pointDefence": 1,
+    "wakeScanners": 5,
+    "experimentalWeapons": 1,
+    "antiXenoMissileRacks": 2,
+    "guardianGauss": 2,
+    "guardianPlasma": 6,
+    "guardianShard": 6
+  },
   "groups": [
     {
-      "id": "beamLasers",
-      "name": "Beam Lasers",
-      "blueprintCount": 6,
-      "experimentalCount": 9
+      "id": "powerPlants",
+      "name": "Power Plants",
+      "blueprints": [
+        "PowerPlant_Armoured",
+        "PowerPlant_Boosted",
+        "PowerPlant_Stealth"
+      ],
+      "experimentals": [
+        "special_powerplant_cooled",
+        "special_powerplant_highcharge",
+        "special_powerplant_lightweight",
+        "special_powerplant_toughened"
+      ]
+    },
+    {
+      "id": "guardianPowerPlants",
+      "name": "Guardian Power Plants",
+      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "experimentals": [
+        "special_powerplant_cooled",
+        "special_powerplant_highcharge",
+        "special_powerplant_lightweight",
+        "special_powerplant_toughened"
+      ]
+    },
+    {
+      "id": "thrusters",
+      "name": "Thrusters",
+      "blueprints": ["Engine_Dirty", "Engine_Reinforced", "Engine_Tuned"],
+      "experimentals": [
+        "special_engine_cooled",
+        "special_engine_haulage",
+        "special_engine_lightweight",
+        "special_engine_overloaded",
+        "special_engine_toughened"
+      ]
     },
     {
       "id": "frameShiftDrives",
       "name": "Frame Shift Drives",
-      "blueprintCount": 3,
-      "experimentalCount": 5
+      "blueprints": ["FSD_FastBoot", "FSD_LongRange", "FSD_Shielded"],
+      "experimentals": [
+        "special_fsd_cooled",
+        "special_fsd_fuelcapacity",
+        "special_fsd_heavy",
+        "special_fsd_lightweight",
+        "special_fsd_toughened"
+      ]
+    },
+    {
+      "id": "powerDistributors",
+      "name": "Power Distributors",
+      "blueprints": [
+        "PowerDistributor_HighCapacity",
+        "PowerDistributor_HighFrequency",
+        "PowerDistributor_PriorityEngines",
+        "PowerDistributor_PrioritySystems",
+        "PowerDistributor_PriorityWeapons",
+        "PowerDistributor_Shielded"
+      ],
+      "experimentals": [
+        "special_powerdistributor_capacity",
+        "special_powerdistributor_efficient",
+        "special_powerdistributor_fast",
+        "special_powerdistributor_lightweight",
+        "special_powerdistributor_toughened"
+      ]
+    },
+    {
+      "id": "guardianPowerDistributors",
+      "name": "Guardian Power Distributors",
+      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "experimentals": [
+        "special_powerdistributor_capacity",
+        "special_powerdistributor_efficient",
+        "special_powerdistributor_fast",
+        "special_powerdistributor_lightweight",
+        "special_powerdistributor_toughened"
+      ]
+    },
+    {
+      "id": "frameShiftDrivesSCO",
+      "name": "Frame Shift Drives (SCO)",
+      "blueprints": ["FSD_FastBoot", "FSD_LongRange", "FSD_Shielded"],
+      "experimentals": [
+        "special_fsd_cooled",
+        "special_fsd_fuelcapacity",
+        "special_fsd_heavy",
+        "special_fsd_lightweight",
+        "special_fsd_toughened"
+      ]
+    },
+    {
+      "id": "shieldGenerators",
+      "name": "Shield Generators",
+      "blueprints": [
+        "ShieldGenerator_Kinetic",
+        "ShieldGenerator_Optimised",
+        "ShieldGenerator_Reinforced",
+        "ShieldGenerator_Thermic"
+      ],
+      "experimentals": [
+        "special_shield_efficient",
+        "special_shield_health",
+        "special_shield_kinetic",
+        "special_shield_lightweight",
+        "special_shield_regenerative",
+        "special_shield_resistive",
+        "special_shield_thermic",
+        "special_shield_toughened"
+      ]
+    },
+    {
+      "id": "shieldCellBanks",
+      "name": "Shield Cell Banks",
+      "blueprints": ["ShieldCellBank_Rapid", "ShieldCellBank_Specialised"],
+      "experimentals": [
+        "special_shieldcell_efficient",
+        "special_shieldcell_gradual",
+        "special_shieldcell_lightweight",
+        "special_shieldcell_oversized",
+        "special_shieldcell_toughened"
+      ]
+    },
+    {
+      "id": "hullReinforcements",
+      "name": "Hull Reinforcements",
+      "blueprints": [
+        "HullReinforcement_Advanced",
+        "HullReinforcement_Explosive",
+        "HullReinforcement_HeavyDuty",
+        "HullReinforcement_Kinetic",
+        "HullReinforcement_Thermic"
+      ],
+      "experimentals": [
+        "special_hullreinforcement_chunky",
+        "special_hullreinforcement_explosive",
+        "special_hullreinforcement_kinetic",
+        "special_hullreinforcement_thermic"
+      ]
+    },
+    {
+      "id": "guardianHullReinforcements",
+      "name": "Guardian Hull Reinforcements",
+      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "experimentals": [
+        "special_hullreinforcement_chunky",
+        "special_hullreinforcement_explosive",
+        "special_hullreinforcement_kinetic",
+        "special_hullreinforcement_thermic"
+      ]
+    },
+    {
+      "id": "pulseLasers",
+      "name": "Pulse Lasers",
+      "blueprints": [
+        "Weapon_Efficient",
+        "Weapon_Focused",
+        "Weapon_LightWeight",
+        "Weapon_LongRange",
+        "Weapon_Overcharged",
+        "Weapon_RapidFire",
+        "Weapon_ShortRange",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_concordant_sequence",
+        "special_emissive_munitions",
+        "special_phasing_sequence",
+        "special_scramble_spectrum",
+        "special_thermalshock",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "burstLasers",
+      "name": "Burst Lasers",
+      "blueprints": [
+        "Weapon_Efficient",
+        "Weapon_Focused",
+        "Weapon_LightWeight",
+        "Weapon_LongRange",
+        "Weapon_Overcharged",
+        "Weapon_RapidFire",
+        "Weapon_ShortRange",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_concordant_sequence",
+        "special_distortion_field",
+        "special_phasing_sequence",
+        "special_scramble_spectrum",
+        "special_thermalshock",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "beamLasers",
+      "name": "Beam Lasers",
+      "blueprints": [
+        "Weapon_Efficient",
+        "Weapon_LightWeight",
+        "Weapon_LongRange",
+        "Weapon_Overcharged",
+        "Weapon_ShortRange",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_concordant_sequence",
+        "special_regeneration_sequence",
+        "special_thermal_conduit",
+        "special_thermal_vent",
+        "special_thermalshock",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "cannons",
+      "name": "Cannons",
+      "blueprints": [
+        "Weapon_Efficient",
+        "Weapon_HighCapacity",
+        "Weapon_LightWeight",
+        "Weapon_LongRange",
+        "Weapon_Overcharged",
+        "Weapon_RapidFire",
+        "Weapon_ShortRange",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_auto_loader",
+        "special_dispersal_field",
+        "special_force_shell",
+        "special_high_yield_shell",
+        "special_smart_rounds",
+        "special_thermal_cascade",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "fragmentCannons",
+      "name": "Fragment Cannons",
+      "blueprints": [
+        "Weapon_DoubleShot",
+        "Weapon_Efficient",
+        "Weapon_HighCapacity",
+        "Weapon_LightWeight",
+        "Weapon_Overcharged",
+        "Weapon_RapidFire",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_blinding_shell",
+        "special_corrosive_shell",
+        "special_drag_munitions",
+        "special_incendiary_rounds",
+        "special_screening_shell",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "multiCannons",
+      "name": "Multi-Cannons",
+      "blueprints": [
+        "Weapon_Efficient",
+        "Weapon_HighCapacity",
+        "Weapon_LightWeight",
+        "Weapon_LongRange",
+        "Weapon_Overcharged",
+        "Weapon_RapidFire",
+        "Weapon_ShortRange",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_auto_loader",
+        "special_corrosive_shell",
+        "special_emissive_munitions",
+        "special_incendiary_rounds",
+        "special_phasing_sequence",
+        "special_smart_rounds",
+        "special_thermalshock",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "plasmaAccelerators",
+      "name": "Plasma Accelerators",
+      "blueprints": [
+        "Weapon_Efficient",
+        "Weapon_Focused",
+        "Weapon_LightWeight",
+        "Weapon_LongRange",
+        "Weapon_Overcharged",
+        "Weapon_RapidFire",
+        "Weapon_ShortRange",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_blinding_shell",
+        "special_dispersal_field",
+        "special_lock_breaker",
+        "special_phasing_sequence",
+        "special_plasma_slug",
+        "special_thermal_conduit",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "railGuns",
+      "name": "Rail Guns",
+      "blueprints": [
+        "Weapon_HighCapacity",
+        "Weapon_LightWeight",
+        "Weapon_LongRange",
+        "Weapon_ShortRange",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_feedback_cascade_cooled",
+        "special_plasma_slug_cooled",
+        "special_super_penetrator",
+        "special_super_penetrator_cooled",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "missiles",
+      "name": "Missiles",
+      "blueprints": [
+        "Weapon_HighCapacity",
+        "Weapon_LightWeight",
+        "Weapon_RapidFire",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_drag_munitions",
+        "special_emissive_munitions",
+        "special_fsd_interrupt",
+        "special_overload_munitions",
+        "special_penetrator_munitions",
+        "special_thermal_cascade",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_rateoffire",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "mines",
+      "name": "Mines",
+      "blueprints": [
+        "Weapon_HighCapacity",
+        "Weapon_LightWeight",
+        "Weapon_RapidFire",
+        "Weapon_Sturdy"
+      ],
+      "experimentals": [
+        "special_choke_canister",
+        "special_emissive_munitions",
+        "special_overload_munitions",
+        "special_radiant_canister",
+        "special_reverberating_cascade",
+        "special_shiftlock_canister",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "torpedoes",
+      "name": "Torpedoes",
+      "blueprints": ["Weapon_LightWeight", "Weapon_Sturdy"],
+      "experimentals": [
+        "special_deep_cut_payload",
+        "special_mass_lock",
+        "special_reverberating_cascade",
+        "special_weapon_damage",
+        "special_weapon_efficient",
+        "special_weapon_lightweight",
+        "special_weapon_toughened"
+      ]
+    },
+    {
+      "id": "miningToolsLasers",
+      "name": "Mining Tools - Lasers",
+      "blueprints": ["Weapon_LongRange"],
+      "experimentals": ["special_incendiary_rounds"]
+    },
+    {
+      "id": "antiXenoMultiCannons",
+      "name": "Exp - Anti-Xeno Multi-Cannons",
+      "blueprints": ["Weapon_Overcharged"],
+      "experimentals": ["special_auto_loader"]
+    },
+    {
+      "id": "shieldBoosters",
+      "name": "Shield Boosters",
+      "blueprints": [
+        "ShieldBooster_Explosive",
+        "ShieldBooster_HeavyDuty",
+        "ShieldBooster_Kinetic",
+        "ShieldBooster_Resistive",
+        "ShieldBooster_Thermic"
+      ],
+      "experimentals": [
+        "special_shieldbooster_chunky",
+        "special_shieldbooster_efficient",
+        "special_shieldbooster_explosive",
+        "special_shieldbooster_kinetic",
+        "special_shieldbooster_thermic",
+        "special_shieldbooster_toughened"
+      ]
+    },
+    {
+      "id": "bulkheads",
+      "name": "Bulkheads",
+      "blueprints": [
+        "Armour_Advanced",
+        "Armour_Explosive",
+        "Armour_HeavyDuty",
+        "Armour_Kinetic",
+        "Armour_Thermic"
+      ],
+      "experimentals": [
+        "special_armour_chunky",
+        "special_armour_explosive",
+        "special_armour_kinetic",
+        "special_armour_thermic"
+      ]
+    },
+    {
+      "id": "lifeSupports",
+      "name": "Life Supports",
+      "blueprints": [
+        "LifeSupport_LightWeight",
+        "LifeSupport_Reinforced",
+        "LifeSupport_Shielded"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "sensors",
+      "name": "Sensors",
+      "blueprints": [
+        "Sensor_LightWeight",
+        "Sensor_LongRange",
+        "Sensor_WideAngle"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "autoFieldMaintenanceUnits",
+      "name": "Auto Field-Maintenance Units",
+      "blueprints": ["AFM_Shielded"],
+      "experimentals": []
+    },
+    {
+      "id": "cargoRacks",
+      "name": "Cargo Racks",
+      "blueprints": ["CargoRack_IncreasedCapacity"],
+      "experimentals": []
+    },
+    {
+      "id": "collectionLimpets",
+      "name": "Collection Limpets",
+      "blueprints": [
+        "CollectionLimpet_LightWeight",
+        "CollectionLimpet_Reinforced",
+        "CollectionLimpet_Shielded"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "fsdBoosters",
+      "name": "FSD Boosters",
+      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "experimentals": []
+    },
+    {
+      "id": "fsdInterdictors",
+      "name": "FSD Interdictors",
+      "blueprints": ["FSDinterdictor_Expanded", "FSDinterdictor_LongRange"],
+      "experimentals": []
+    },
+    {
+      "id": "fuelScoops",
+      "name": "Fuel Scoops",
+      "blueprints": ["FuelScoop_Shielded"],
+      "experimentals": []
+    },
+    {
+      "id": "fuelTransferLimpets",
+      "name": "Fuel Transfer Limpets",
+      "blueprints": [
+        "FuelTransferLimpet_LightWeight",
+        "FuelTransferLimpet_Reinforced",
+        "FuelTransferLimpet_Shielded"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "hatchBreakerLimpets",
+      "name": "Hatch Breaker Limpets",
+      "blueprints": [
+        "HatchBreakerLimpet_LightWeight",
+        "HatchBreakerLimpet_Reinforced",
+        "HatchBreakerLimpet_Shielded"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "moduleReinforcements",
+      "name": "Module Reinforcements",
+      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "experimentals": []
+    },
+    {
+      "id": "prospectingLimpets",
+      "name": "Prospecting Limpets",
+      "blueprints": [
+        "ProspectingLimpet_LightWeight",
+        "ProspectingLimpet_Reinforced",
+        "ProspectingLimpet_Shielded"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "refineries",
+      "name": "Refineries",
+      "blueprints": ["Refineries_Shielded"],
+      "experimentals": []
+    },
+    {
+      "id": "shieldReinforcements",
+      "name": "Shield Reinforcements",
+      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "experimentals": []
+    },
+    {
+      "id": "surfaceScanners",
+      "name": "Surface Scanners",
+      "blueprints": ["Sensor_Expanded"],
+      "experimentals": []
+    },
+    {
+      "id": "chaffLaunchers",
+      "name": "Chaff Launchers",
+      "blueprints": [
+        "Misc_ChaffCapacity",
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "ecms",
+      "name": "ECMs",
+      "blueprints": ["Misc_LightWeight", "Misc_Reinforced", "Misc_Shielded"],
+      "experimentals": []
+    },
+    {
+      "id": "heatSinkLaunchers",
+      "name": "Heat Sink Launchers",
+      "blueprints": [
+        "Misc_HeatSinkCapacity",
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "killWarrantScanners",
+      "name": "Kill Warrant Scanners",
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded",
+        "Scanner_LongRange",
+        "Scanner_WideAngle",
+        "Sensor_FastScan"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "manifestScanners",
+      "name": "Manifest Scanners",
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded",
+        "Scanner_LongRange",
+        "Scanner_WideAngle",
+        "Sensor_FastScan"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "pointDefence",
+      "name": "Point Defence",
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_PointDefenseCapacity",
+        "Misc_Reinforced",
+        "Misc_Shielded"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "wakeScanners",
+      "name": "Wake Scanners",
+      "blueprints": [
+        "Misc_LightWeight",
+        "Misc_Reinforced",
+        "Misc_Shielded",
+        "Scanner_LongRange",
+        "Scanner_WideAngle",
+        "Sensor_FastScan"
+      ],
+      "experimentals": []
+    },
+    {
+      "id": "experimentalWeapons",
+      "name": "Experimental Weapons",
+      "blueprints": ["Weapon_HighCapacity"],
+      "experimentals": []
+    },
+    {
+      "id": "antiXenoMissileRacks",
+      "name": "Exp - Anti-Xeno Missile Racks",
+      "blueprints": ["Weapon_HighCapacity"],
+      "experimentals": []
+    },
+    {
+      "id": "guardianGauss",
+      "name": "Exp - Guardian Gauss",
+      "blueprints": ["Weapon_RapidFire", "recipe_guardianmodule_sturdy"],
+      "experimentals": []
+    },
+    {
+      "id": "guardianPlasma",
+      "name": "Exp - Guardian Plasma",
+      "blueprints": ["Weapon_Overcharged", "recipe_guardianmodule_sturdy"],
+      "experimentals": []
+    },
+    {
+      "id": "guardianShard",
+      "name": "Exp - Guardian Shard",
+      "blueprints": ["Weapon_LongRange", "recipe_guardianmodule_sturdy"],
+      "experimentals": []
     }
   ],
   "modules": [
-    { "symbol": "Hpt_BeamLaser_Fixed_Small", "group": "beamLasers" },
-    { "symbol": "Int_Hyperdrive_Size5_Class5", "group": "frameShiftDrives" },
-    { "symbol": "Int_Powerplant_Size2_Class1", "group": "powerPlants" }
+    {
+      "symbol": "Int_Powerplant_Size2_Class1",
+      "group": "powerPlants"
+    },
+    {
+      "symbol": "Int_GuardianPowerplant_Size2",
+      "group": "guardianPowerPlants"
+    },
+    {
+      "symbol": "Int_Engine_Size2_Class1",
+      "group": "thrusters"
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size5_Class5",
+      "group": "frameShiftDrives"
+    },
+    {
+      "symbol": "Int_PowerDistributor_Size1_Class1",
+      "group": "powerDistributors"
+    },
+    {
+      "symbol": "Int_GuardianPowerDistributor_Size1",
+      "group": "guardianPowerDistributors"
+    },
+    {
+      "symbol": "Int_Hyperdrive_Overcharge_Size5_Class3",
+      "group": "frameShiftDrivesSCO"
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size1_Class1",
+      "group": "shieldGenerators"
+    },
+    {
+      "symbol": "Int_ShieldCellBank_Size1_Class1",
+      "group": "shieldCellBanks"
+    },
+    {
+      "symbol": "Int_HullReinforcement_Size1_Class1",
+      "group": "hullReinforcements"
+    },
+    {
+      "symbol": "Int_GuardianHullReinforcement_Size1_Class1",
+      "group": "guardianHullReinforcements"
+    },
+    {
+      "symbol": "Hpt_PulseLaser_Fixed_Small",
+      "group": "pulseLasers"
+    },
+    {
+      "symbol": "Hpt_PulseLaserBurst_Fixed_Small",
+      "group": "burstLasers"
+    },
+    {
+      "symbol": "Hpt_BeamLaser_Fixed_Small",
+      "group": "beamLasers"
+    },
+    {
+      "symbol": "Hpt_Cannon_Fixed_Small",
+      "group": "cannons"
+    },
+    {
+      "symbol": "Hpt_Slugshot_Fixed_Small",
+      "group": "fragmentCannons"
+    },
+    {
+      "symbol": "Hpt_MultiCannon_Fixed_Small",
+      "group": "multiCannons"
+    },
+    {
+      "symbol": "Hpt_PlasmaAccelerator_Fixed_Medium",
+      "group": "plasmaAccelerators"
+    },
+    {
+      "symbol": "Hpt_Railgun_Fixed_Small",
+      "group": "railGuns"
+    },
+    {
+      "symbol": "Hpt_BasicMissileRack_Fixed_Small",
+      "group": "missiles"
+    },
+    {
+      "symbol": "Hpt_MineLauncher_Fixed_Small",
+      "group": "mines"
+    },
+    {
+      "symbol": "Hpt_AdvancedTorpPylon_Fixed_Small",
+      "group": "torpedoes"
+    },
+    {
+      "symbol": "Hpt_MiningLaser_Fixed_Small",
+      "group": "miningToolsLasers"
+    },
+    {
+      "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
+      "group": "antiXenoMultiCannons"
+    },
+    {
+      "symbol": "Hpt_ShieldBooster_Size0_Class1",
+      "group": "shieldBoosters"
+    },
+    {
+      "symbol": "Anaconda_Armour_Grade3",
+      "group": "bulkheads"
+    },
+    {
+      "symbol": "Int_LifeSupport_Size4_Class2",
+      "group": "lifeSupports"
+    },
+    {
+      "symbol": "Int_Sensors_Size3_Class5",
+      "group": "sensors"
+    },
+    {
+      "symbol": "Int_Repairer_Size3_Class5",
+      "group": "autoFieldMaintenanceUnits"
+    },
+    {
+      "symbol": "Int_CargoRack_Size2_Class1",
+      "group": "cargoRacks"
+    },
+    {
+      "symbol": "Int_DroneControl_Collection_Size3_Class5",
+      "group": "collectionLimpets"
+    },
+    {
+      "symbol": "Int_GuardianFSDBooster_Size3",
+      "group": "fsdBoosters"
+    },
+    {
+      "symbol": "Int_FSDInterdictor_Size3_Class3",
+      "group": "fsdInterdictors"
+    },
+    {
+      "symbol": "Int_FuelScoop_Size6_Class5",
+      "group": "fuelScoops"
+    },
+    {
+      "symbol": "Int_DroneControl_FuelTransfer_Size1_Class1",
+      "group": "fuelTransferLimpets"
+    },
+    {
+      "symbol": "Int_DroneControl_ResourceSiphon",
+      "group": "hatchBreakerLimpets"
+    },
+    {
+      "symbol": "Int_GuardianModuleReinforcement_Size1_Class1",
+      "group": "moduleReinforcements"
+    },
+    {
+      "symbol": "Int_DroneControl_Prospector_Size1_Class1",
+      "group": "prospectingLimpets"
+    },
+    {
+      "symbol": "Int_Refinery_Size1_Class1",
+      "group": "refineries"
+    },
+    {
+      "symbol": "Int_GuardianShieldReinforcement_Size1_Class1",
+      "group": "shieldReinforcements"
+    },
+    {
+      "symbol": "Int_DetailedSurfaceScanner_Tiny",
+      "group": "surfaceScanners"
+    },
+    {
+      "symbol": "Hpt_ChaffLauncher_Tiny",
+      "group": "chaffLaunchers"
+    },
+    {
+      "symbol": "Hpt_ElectronicCountermeasure_Tiny",
+      "group": "ecms"
+    },
+    {
+      "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
+      "group": "heatSinkLaunchers"
+    },
+    {
+      "symbol": "Hpt_CrimeScanner_Size0_Class3",
+      "group": "killWarrantScanners"
+    },
+    {
+      "symbol": "Hpt_CargoScanner_Size0_Class1",
+      "group": "manifestScanners"
+    },
+    {
+      "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
+      "group": "pointDefence"
+    },
+    {
+      "symbol": "Hpt_CloudScanner_Size0_Class1",
+      "group": "wakeScanners"
+    },
+    {
+      "symbol": "Hpt_CausticMissile_Fixed_Medium",
+      "group": "experimentalWeapons"
+    },
+    {
+      "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
+      "group": "antiXenoMissileRacks"
+    },
+    {
+      "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
+      "group": "guardianGauss"
+    },
+    {
+      "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
+      "group": "guardianPlasma"
+    },
+    {
+      "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+      "group": "guardianShard"
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size8_Class5",
+      "group": "frameShiftDrives"
+    }
   ],
-  "notEngineerable": ["Int_CargoRack_Size2_Class1", "ModularCargoBayDoor"],
+  "notEngineerable": [
+    "Int_FuelTank_Size3_Class3",
+    "ModularCargoBayDoor",
+    "Int_PassengerCabin_Size4_Class2",
+    "Int_DroneControl_Repair_Size3_Class3",
+    "Int_MetaAlloyHullReinforcement_Size1_Class1",
+    "Hpt_PlasmaShockCannon_Fixed_Medium",
+    "Int_StellarBodyDiscoveryScanner_Advanced",
+    "Int_DockingComputer_Standard",
+    "Int_ExpModuleStabiliser_Size3_Class3",
+    "Int_PlanetApproachSuite",
+    "Int_ModuleReinforcement_Size3_Class2",
+    "Hpt_ATMultiCannon_Turret_Large",
+    "Hpt_MiningLaser_Fixed_Medium",
+    "Hpt_FlechetteLauncher_Fixed_Medium"
+  ],
+  "splitFamilies": [
+    {
+      "description": "Upstream denies the ordinary recipes to the Guardian variant and Anti-Guardian Zone Resistance to the ordinary one, so each half is its own group.",
+      "ordinary": {
+        "group": "powerPlants",
+        "symbol": "Int_Powerplant_Size5_Class5",
+        "blueprints": [
+          "PowerPlant_Armoured",
+          "PowerPlant_Boosted",
+          "PowerPlant_Stealth"
+        ]
+      },
+      "guardian": {
+        "group": "guardianPowerPlants",
+        "symbol": "Int_GuardianPowerplant_Size5",
+        "blueprints": ["recipe_guardianmodule_sturdy"]
+      }
+    },
+    {
+      "ordinary": {
+        "group": "powerDistributors",
+        "symbol": "Int_PowerDistributor_Size5_Class5",
+        "blueprints": [
+          "PowerDistributor_HighCapacity",
+          "PowerDistributor_HighFrequency",
+          "PowerDistributor_PriorityEngines",
+          "PowerDistributor_PrioritySystems",
+          "PowerDistributor_PriorityWeapons",
+          "PowerDistributor_Shielded"
+        ]
+      },
+      "guardian": {
+        "group": "guardianPowerDistributors",
+        "symbol": "Int_GuardianPowerDistributor_Size5",
+        "blueprints": ["recipe_guardianmodule_sturdy"]
+      }
+    },
+    {
+      "ordinary": {
+        "group": "hullReinforcements",
+        "symbol": "Int_HullReinforcement_Size3_Class2",
+        "blueprints": [
+          "HullReinforcement_Advanced",
+          "HullReinforcement_Explosive",
+          "HullReinforcement_HeavyDuty",
+          "HullReinforcement_Kinetic",
+          "HullReinforcement_Thermic"
+        ]
+      },
+      "guardian": {
+        "group": "guardianHullReinforcements",
+        "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
+        "blueprints": ["recipe_guardianmodule_sturdy"]
+      }
+    }
+  ],
   "exclusions": [
     {
       "symbol": "Hpt_MultiCannon_Fixed_Small",
@@ -39,6 +1058,63 @@
       "special_fsd_heavy",
       "special_fsd_lightweight",
       "special_fsd_toughened"
+    ]
+  },
+  "corpus": {
+    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total; `ungroupedEntries` how many of them sit on a module this catalogue does not group \u2014 497 before the missing families were mapped. `blueprintAliases` are one recipe under two journal spellings \u2014 including Anti-Guardian Zone Resistance, which the game writes `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a module, where every group here lists the module id: the catalogue lists the family-specific id for these families, and a build declaring the generic one is engineering the same thing. `notOffered` is the residue: declarations no registry lists for that module, kept here rather than bent into the catalogue.",
+    "declaredEngineering": 1902,
+    "ungroupedEntries": 2,
+    "aliasSpellingsAccepted": 70,
+    "blueprintAliases": {
+      "Misc_LightWeight": [
+        "CollectionLimpet_LightWeight",
+        "FuelTransferLimpet_LightWeight",
+        "HatchBreakerLimpet_LightWeight",
+        "LifeSupport_LightWeight",
+        "ProspectingLimpet_LightWeight"
+      ],
+      "Misc_Reinforced": [
+        "CollectionLimpet_Reinforced",
+        "FuelTransferLimpet_Reinforced",
+        "HatchBreakerLimpet_Reinforced",
+        "LifeSupport_Reinforced",
+        "ProspectingLimpet_Reinforced"
+      ],
+      "Misc_Shielded": [
+        "AFM_Shielded",
+        "CollectionLimpet_Shielded",
+        "FuelScoop_Shielded",
+        "FuelTransferLimpet_Shielded",
+        "HatchBreakerLimpet_Shielded",
+        "LifeSupport_Shielded",
+        "ProspectingLimpet_Shielded",
+        "Refineries_Shielded"
+      ],
+      "recipe_guardianweapon_sturdy": ["recipe_guardianmodule_sturdy"]
+    },
+    "notOffered": [
+      {
+        "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "entries": 5
+      },
+      {
+        "symbol": "Hpt_CloudScanner_Size0_Class5",
+        "blueprint": "Sensor_LongRange",
+        "entries": 1
+      },
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "experimental": "special_super_penetrator_cooled",
+        "entries": 6
+      }
+    ],
+    "notGrouped": [
+      {
+        "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
+        "blueprint": "Weapon_Efficient",
+        "entries": 2
+      }
     ]
   }
 }

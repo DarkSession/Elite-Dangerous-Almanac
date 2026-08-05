@@ -1117,7 +1117,7 @@ getExperimentalsForModule("Hpt_MultiCannon_Fixed_Small").length; // -> 11
 ```
 
 That one-effect difference is not a bug: the small Multi-cannon cannot take Phasing
-Sequence. 29 modules are exceptions like this, and they are applied for you.
+Sequence. 24 modules are exceptions like this, and they are applied for you.
 
 `getExperimentalsForBlueprint` answers the blueprint-first question, but it returns the
 **union** across every module group offering that blueprint — so it is a superset, not
@@ -1126,29 +1126,68 @@ the exact list for any one module. Once you know the module, use
 
 A module the options catalogue does not group returns `[]` from both. To tell that apart
 from a module that _is_ grouped but has no experimental to offer, ask
-`getEngineeringGroup` — it returns `null` only for the former. Exactly six modules are in
-that second case: four Mining Laser variants and the two Abrasion Blasters. (The small
-fixed Mining Laser is not one of them — it is grouped and does offer an effect.)
+`getEngineeringGroup` — it returns `null` only for the former. The second case is the
+common one: 364 of the 1029 grouped modules take blueprints and nothing else — 363 of
+them because their group offers no experimental at all (27 of the 53 groups: life
+support, sensors, the limpet controllers, the utility scanners, the Guardian weapons),
+and the small fixed Abrasion Blaster because it is excluded from its group's only effect.
 
-> **`[]` does not yet mean "cannot be engineered".** The options catalogue groups 428 of
-> the 1198 modules, so whole engineerable families — hull armour, sensors, life support,
-> heat sink and chaff launchers, the Detailed Surface Scanner, limpet controllers, AFMUs,
-> fuel scoops, FSD interdictors, the Guardian weapons — currently answer `[]` even though
-> real builds engineer them.
+The catalogue covers 1029 of the 1198 modules — every module upstream allows a recipe
+on. The other 169 take no engineering: whole families (fuel tanks, passenger cabins, the
+repair/recon/research/decontamination and multi-limpet controllers, meta-alloy and
+ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
+Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
+Supercruise Assist, the module stabilisers, the planetary approach suites, the withdrawn
+discovery scanners, the cargo hatch and the AX utility modules), plus individual modules
+their family's blueprints do not reach — every anti-xeno multi-cannon but the two
+gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, five of the
+seven mining tools and the remote-release launchers among them.
+
+```ts
+getBlueprintsForModule("Int_LifeSupport_Size4_Class2");
+// -> ['LifeSupport_LightWeight', 'LifeSupport_Reinforced', 'LifeSupport_Shielded']
+
+getBlueprintsForModule("Anaconda_Armour_Grade3").length; // -> 5
+getExperimentalsForModule("Anaconda_Armour_Grade3").length; // -> 4
+
+getEngineeringGroup("Int_FuelTank_Size3_Class3"); // -> null, nothing engineers a fuel tank
+```
+
+**A group is one menu**, so a module family whose flavours have different menus is more
+than one group. A Guardian Power Plant takes Anti-Guardian Zone Resistance and none of
+the ordinary power-plant recipes; an ordinary one is the reverse. The distributors and
+hull reinforcement packages split the same way:
+
+```ts
+getBlueprintsForModule("Int_Powerplant_Size5_Class5");
+// -> ['PowerPlant_Armoured', 'PowerPlant_Boosted', 'PowerPlant_Stealth']
+getBlueprintsForModule("Int_GuardianPowerplant_Size5");
+// -> ['recipe_guardianmodule_sturdy']
+```
+
+> **One recipe can have two journal ids.** Where a modification applies to several module
+> families, `BLUEPRINTS` carries both a family-specific spelling and a generic one — a
+> life support's Lightweight is `LifeSupport_LightWeight` here and `Misc_LightWeight` in
+> an EDSY-authored build. The menus list the family-specific id, so compare ids knowing
+> the two are the same recipe. `Sensor_LongRange` and `Scanner_LongRange` are _not_ such a
+> pair: those are different recipes rolling different stats, and the utility scanners list
+> the `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The two menus
+> share no id at all — a scanner's other four are `Sensor_FastScan` and the generic
+> `Misc_*` trio, none of which a sensor suite offers.
 >
-> For some of those families `ShipLoadout.applyBlueprint` also refuses the recipe: life
-> support, limpet controllers, AFMUs and fuel scoops, because `Misc_LightWeight` /
-> `Misc_Shielded` are mapped to too narrow a target family. Measured on the 181-build
-> corpus in `fixtures/ships/builds/`: 76 of its 1902 declared engineering entries are
-> rejected, across 54 builds. Armour, heat sink launchers, chaff and the Guardian weapons
-> engineer fine — for those it really is only the _menu_ that is missing. (The Caustic
-> Sink Launcher is the exception among the launchers: its engineering target is
-> `miscellaneous`, so `Misc_HeatSinkCapacity` is refused on it.) Issues
-> [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13) and
-> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14) track the two
-> remaining problems; the missing base stats that used to reject a further 405 entries
-> — thruster and drive heat rates, the scanner and cell-bank stats, a shield generator's
-> energy per regen — are sourced.
+> **The menu and `ShipLoadout.applyBlueprint` do not yet agree.** `applyBlueprint` does
+> not read this catalogue — it maps the blueprint to a module family of its own — and it
+> refuses recipes the menu offers on 52 modules: the hatch-breaker controllers (21), the
+> Guardian shield reinforcement packages (10) and FSD boosters (5), the KWS/manifest/wake
+> scanners (5 each, for the generic `Misc_*` recipes) and the Caustic Sink Launcher, whose
+> family is `miscellaneous` rather than `heatSink`. It refuses the same generic recipes on
+> life support, limpet controllers, AFMUs and fuel scoops, which is what real builds
+> actually hit: 76 of the 1902 declared engineering entries in `fixtures/ships/builds/`
+> are refused for a family mismatch, across 54 builds, the Caustic Sink Launcher's two
+> among them. All of it is the same defect, tracked in
+> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14): until it is
+> fixed, take the menu as the answer to "what can I fit?" and expect `applyBlueprint` to
+> be narrower.
 
 #### Modules you can buy already engineered
 
@@ -1328,6 +1367,15 @@ recorded inline there beside the field they touch.
   Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1`, not
   `Slot11`/`Slot12`), so a build that hard-codes a computed key needs re-checking.
   No hull's layout, mount count or size changed.
+- **2026-08-05** — the engineering-options catalogue went from 428 modules in 22
+  groups to 1029 in 53, covering every module EDSY's own eligibility rules allow a
+  recipe on. **Behaviour-visible three ways:** 601 more modules now answer a group
+  and a menu; 14 stop answering one, because upstream denies them every blueprint
+  (eight anti-xeno multi-cannons, five mining tools, the Mk II Plasma Shock
+  Autocannon); and the Guardian power plants, distributors and hull reinforcement
+  packages moved to groups of their own, which also took `recipe_guardianmodule_sturdy`
+  off the three ordinary menus that had wrongly offered it. See
+  [what a module can be engineered with](#what-a-module-can-be-engineered-with).
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
