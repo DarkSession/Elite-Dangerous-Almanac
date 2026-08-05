@@ -301,8 +301,16 @@ export interface ParsedSlot {
     /** Which kind of mount the key names. */
     readonly kind: SlotKind;
     /**
-     * Slot size (class), 1–8, or `null` when the key does not encode one (`Radar`,
-     * `TinyHardpoint1`, `Armour`, …) — the hull's layout carries the size instead.
+     * Slot size (class), 1–8, or `null` when the key does not encode one and the mount
+     * has one to encode (`Radar`, `Military01`, `Cargo01`, …) — the hull's layout
+     * carries the size instead.
+     *
+     * @remarks
+     * `null` is not the only "no size here" answer. A mount whose fit rules are not
+     * size-based reads `0` rather than `null` — `TinyHardpoint1` and `Armour` both do,
+     * matching {@link BuildSlot.size} — and `CargoHatch` reads `1`. So test
+     * `parsed.size` for falsiness, or against the {@link ParsedSlot.kind} you expect;
+     * `=== null` alone treats a utility mount as a sized slot.
      */
     readonly size: number | null;
     /**

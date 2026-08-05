@@ -160,6 +160,22 @@ other four mounts (`MediumHardpoint3`, `SmallHardpoint2…4`) take any weapon �
 `LimpetController01` and `FighterBay01` take limpet controllers and vessel hangars. The
 Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks.
 
+## Enumerate slot keys — never compute them
+
+The numbering looks regular and on 11 of the 48 hulls is not, so a key you build by
+counting will name a mount the game does not have. The Anaconda's smallest optionals are
+`Slot13_Size2` and `Slot14_Size1` — there is no 11 or 12; the Type-9 Heavy starts at
+`Slot00_Size8`; the Type-7 Transporter uses the number `09` twice; the Type-8 Transporter
+has no `SmallHardpoint3`; the Caspian Explorer's medium hardpoints run 6, 5, 1, 2, 3, 4
+in layout order, so the same key means a **different physical mount** than position would
+suggest; and the Lynx Highliner calls three of its optionals `Passenger01`–`03`. Those
+names are the game's, carried per hull in `getShipSlots(symbol)?.slotNames` and applied by
+`enumerateSlots`, so `slots()` is the list to read.
+
+A `_SizeN` suffix is part of the name, not a measurement: on the Keelback, Asp Scout and
+Type-7 Transporter, Frontier's own key disagrees with the mount it names (the Keelback's
+`Slot03_Size3` is a **size-4** mount). `slot.size` is always the mount's real size.
+
 ```ts
 import {
     ShipLoadout,
@@ -201,10 +217,14 @@ so its market category is a maintainer assignment) and a module-stat reconciliat
 left every outfitting module carrying at least one stat and corrected 40 records; one on
 **2026-08-04**, every hull's mounts now recording any restriction they carry (see above),
 with the modules limited to particular hulls gaining the `restrictedToShips` values that
-were previously only documented; and two on **2026-08-05**, one changing no value — a
+were previously only documented; and three on **2026-08-05**, one changing no value — a
 module whose missing stat is unknown rather than absent because it has none now says so
-in its own `unknownStats` field — the other pricing the 1F Corrosion Resistant Cargo Rack
-from EDSY at 12 560, which coriolis-data carries as `0`. Smaller corrections are not
+in its own `unknownStats` field — one pricing the 1F Corrosion Resistant Cargo Rack
+from EDSY at 12 560, which coriolis-data carries as `0`, and one giving 13 hulls the
+journal's own slot keys, from EDSY, on 11 of which the numbering rules were wrong. That
+last is the only **behaviour-visible** one: the keys `enumerateSlots` and
+`ShipLoadout.slots()` return changed on those 11 hulls (see above), while no hull's
+layout, mount count or size did. Smaller corrections are not
 listed here — each domain's `SOURCES.md` is the authoritative record
 ([ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md),
 [commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md),

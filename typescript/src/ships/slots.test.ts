@@ -156,7 +156,7 @@ test('enumerateSlots expands the Anaconda layout into keyed mounts', () => {
     assert.equal(pas?.key, 'PlanetaryApproachSuite');
 });
 
-test('the restricted hulls enumerate the journal keys the fixture pins', () => {
+test('the hulls with names of their own enumerate the journal keys the fixture pins', () => {
     for (const [symbol, expected] of Object.entries(slotsFixture.keys)) {
         assert.deepEqual(
             enumerateSlots(getShipSlots(symbol)!).map((s) => s.key),

@@ -1310,6 +1310,12 @@ recorded inline there beside the field they touch.
   Cargo Rack (`Int_CorrosionProofCargoRack_Size1_Class2`, 12 560), which
   coriolis-data carries as `0`. The other three racks of that family stay unpriced:
   no station sells them, so no registry quotes one.
+- **2026-08-05** — 13 hulls gained the journal's own slot keys, from EDSY, on 11 of
+  which the numbering rules were wrong. **This one is behaviour-visible:** the keys
+  `enumerateSlots` and `ShipLoadout.slots()` return changed on those 11 hulls (an
+  Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1`, not
+  `Slot11`/`Slot12`), so a build that hard-codes a computed key needs re-checking.
+  No hull's layout, mount count or size changed.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
