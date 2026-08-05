@@ -1,6 +1,6 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, plus a module-stat reconciliation on 2026-08-02, a slot-restriction pass on 2026-08-04, the classification of what the stat pass could not fill on 2026-08-05, and a price correction the same day (see the revisions below). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, plus a module-stat reconciliation on 2026-08-02, a slot-restriction pass on 2026-08-04, the classification of what the stat pass could not fill on 2026-08-05, and a price correction the same day (recorded in the prices section, under "Modules (outfitting)"). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 **Revision 2026-08-05 (UTC) — the stats no source carries are now stated as unknown.**
 No value was added, changed or removed: this revision is a *classification* of the three
@@ -529,22 +529,29 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     Same EDSY snapshot the 2026-08-02 revision above pins (`eddb.js` SHA-256
     `967834d6…`, internal `db 20260428`), re-read for this change; the record is module
     `161`, annotated `// at Palin, Sedesi`. Coriolis's `0` was coriolis's own gap, not a
-    shared one: the two registries agree exactly on both corrosion racks either of them
-    prices (`_Size1_Class1` 6250, `_Size4_Class1` 94 330), and FDevIDs `outfitting.csv`
-    lists exactly those three symbols, so this is the last of the purchasable racks.
+    shared one: on the two corrosion racks *both* registries price they agree exactly
+    (`_Size1_Class1` 6250, `_Size4_Class1` 94 330), and FDevIDs `outfitting.csv` lists
+    exactly those three symbols, so this is the last of the purchasable racks.
   - **Read that 12 560 as ± 5.** EDSY publishes module costs at **10-credit
-    granularity**, which is measured rather than assumed: 1169 of the 1178 module costs
-    it carries are multiples of 10 (the nine that are not are eight Python Mk II / Cobra
-    Mk V armour rows and `Int_ShieldGenerator_Size1_Class5`). Where coriolis prices the
-    same symbol, EDSY's figure is coriolis's rounded to the nearest 10 — of the 921
-    symbols both price, 433 agree outright, 488 differ, and 456 of those differences are
-    exactly that rounding (`Int_CargoRack_Size5_Class1` 111 566 → 111 570, `_Size6_Class1`
-    362 591 → 362 590). The remaining 32 are the two registries disagreeing about the
-    price itself rather than about precision, sometimes widely
-    (`Hpt_MkIIPlasmaShockAutocannon_Fixed_Large`: EDSY 4 612 670, coriolis 3 051 200), so
-    read a lone EDSY figure as possibly stale as well as rounded. Every EDSY-sourced price
-    already in this catalogue carries the same granularity, so this record is no less
-    exact than the rest of them.
+    granularity**, which is measured rather than assumed. Two observations, both stated
+    so they can be re-run rather than taken on trust — exact totals are deliberately not
+    quoted, because they move with how you count duplicated, commented-out and
+    case-mismatched symbols, and the conclusion does not:
+    - Scanning `eddb.js` for module records carrying a numeric `cost`, **every one is a
+      multiple of 10 except nine**, and the nine are the same whichever way the scan
+      treats commented-out records: `Python_NX_Armour_` and `CobraMkV_Armour_`
+      `{Grade2,Grade3,Mirrored,Reactive}`, plus `Int_ShieldGenerator_Size1_Class5`
+      (88 075).
+    - Where coriolis prices the same module and the two differ, the difference is
+      overwhelmingly EDSY carrying coriolis's exact figure rounded to the nearest 10
+      (`Int_CargoRack_Size5_Class1` 111 566 → 111 570, `_Size6_Class1` 362 591 →
+      362 590). A minority are the registries disagreeing about the price itself rather
+      than about precision, sometimes widely
+      (`Hpt_MkIIPlasmaShockAutocannon_Fixed_Large`: EDSY 4 612 670, coriolis 3 051 200),
+      so read a lone EDSY figure as possibly stale as well as rounded.
+
+    Every EDSY-sourced price already in this catalogue carries the same granularity, so
+    this record is no less exact than the rest of them.
   - **The remaining three racks have no list price to publish** (same revision).
     `_Size2_Class1`, `_Size5_Class1` and `_Size6_Class1` are **not sold at any station**:
     FDevIDs `outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN`
@@ -632,9 +639,11 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     shield generator below) that the FDevIDs join had omitted. All three racks carry
     EDSY's `hidden:1`, and they are also the three the prices section leaves unpriced,
     but the flag is not the reason: `hidden:1` marks a record EDSY keeps out of its
-    pickers for assorted reasons, and it sits on priced modules too
-    (`Int_DroneControl_ResourceSiphon`, `cost: 18040`). They are unpriced because no
-    source states a figure — see the prices section for what each one actually says.
+    pickers for assorted reasons, and of its sixteen such records one does carry a price
+    (`Int_DroneControl_ResourceSiphon`, `cost: 18040` — which EDSY itself annotates
+    `// bug?`, so it is a weak counter-example, but it is enough to show the flag is not
+    a statement about price). They are unpriced because no source states a figure — see
+    the prices section for what each one actually says.
   - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
     in the game: every other shield-generator size carries all five ratings, and size 1
     ran E/D/C/A with **B missing**. The module is real, so the record was added with the
@@ -657,8 +666,8 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   - **All 48 hulls are priced. 1176 of 1198 modules are.** The 22 without a price are the
     ten starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
     Vessel Hangars, the **three unsold** Corrosion Resistant Cargo Racks (two Community
-    Goal rewards and one never-released variant) and
-    `Int_ShieldGenerator_Size1_Class4` — no registry publishes a figure for them. Three of
+    Goal rewards and one never-released variant) and `Int_ShieldGenerator_Size1_Class4` —
+    no registry publishes a figure for them. Three of
     the four racks joined the list in the 2026-08-02 revision described above (moving this
     count from 1178/20), and `_Size1_Class2` left it again on 2026-08-05 when EDSY was
     found to price it. **`cost` is omitted, never set to 0**:

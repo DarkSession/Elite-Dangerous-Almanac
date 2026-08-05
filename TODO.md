@@ -194,15 +194,18 @@ not a sourced base value. No corpus build hits it today.
 This is why `fixtures/ships/builds/` pins its metrics **pre-engineering**: applying what
 those builds declare is not possible today.
 
-### 6. Three corrosion-resistant cargo racks have no price, and no registry can supply one
+### 6. Three corrosion-resistant cargo racks have no price, and no registry publishes one
 
 Was four. `Int_CorrosionProofCargoRack_Size1_Class2` is now priced at **12 560**, from
 EDSY (`eddb.js` module `161`, annotated `// at Palin, Sedesi`); coriolis's `cost: 0` for
 it was coriolis's own gap. Read it as 12 560 ± 5 — EDSY publishes module costs at
-10-credit granularity (1169 of the 1178 it carries are multiples of 10, and on the 921
-symbols coriolis also prices, 456 of the 488 disagreements are exactly coriolis's figure
-rounded to the nearest 10). The catalogue's other EDSY-sourced prices already carry that
-granularity. Two corpus builds (`empire-courier-exploration-2`, `asp-mining`) can
+10-credit granularity: every module cost in `eddb.js` is a multiple of 10 bar nine (the
+Python Mk II and Cobra Mk V armour rows and `Int_ShieldGenerator_Size1_Class5`), and
+where coriolis prices the same module and the two differ, the difference is
+overwhelmingly EDSY carrying coriolis's figure rounded to the nearest 10. See
+`data/ships/SOURCES.md` for the worked examples. The catalogue's other EDSY-sourced
+prices already carry that granularity. Two corpus builds
+(`empire-courier-exploration-2`, `asp-mining`) can
 therefore be priced again, which leaves **no** build in the corpus carrying an unpriced
 module.
 
@@ -224,10 +227,12 @@ on one.
 Do not interpolate one instead. The **standard** E-rated racks follow a clean ×3.25 curve
 (1000 → 3250 → 10 563 → 34 328 → 111 566 → 362 591 → 1 178 420 → 3 829 866), and applying
 it to the priced corrosion size-4 record would put sizes 5 and 6 near 306 000 and 996 000
-— but the corrosion family does not follow that curve itself: its own two known prices,
-6250 at size 1 and 94 330 at size 4, work out at ×2.47 per size, which would instead put
-them near 233 000 and 576 000. Two defensible extrapolations that disagree by a third are
-the argument for leaving the field absent, not for picking one.
+— but the corrosion racks do not follow that curve themselves: the two **E-rated** ones
+that are priced, 6250 at size 1 and 94 330 at size 4, work out at ×2.47 per size, which
+would instead put sizes 5 and 6 near 233 000 and 576 000. (The new 12 560 is the F-rated
+size-1 rack, a different rating line, so it does not settle the curve either.) Two
+defensible extrapolations that disagree by 31% at size 5 and 73% at size 6 are the
+argument for leaving the field absent, not for picking one.
 
 ### 7. Two experimental effects exist in the game that no public dataset carries
 
