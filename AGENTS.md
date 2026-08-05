@@ -122,6 +122,27 @@ Two repo-wide conventions worth knowing before touching a catalogue:
 
 Development happens inside a dev container (`.devcontainer/devcontainer.json`) based on the TypeScript/Node 22 (bookworm) image, with Python 3.12 also installed. Runs as the `node` user. ESLint + Prettier for TypeScript; Pylance for Python.
 
+## Commit Identity — no personal data in git metadata
+
+**Commit as whoever git is already configured as. Never set an identity yourself.** The environment configures `user.name` / `user.email` (and, where signing is enabled, the signing key) before you start. Do not pass `-c user.name=…` / `-c user.email=…` to `git commit`, do not `git config` a different one, and do not use `--reset-author` to change *who* a commit is by. An agent that substitutes its own choice produces commits GitHub marks **Unverified**, because the identity no longer matches the key that signed them.
+
+**An identity you did not get from git config is a personal detail, and commit metadata publishes it.** A maintainer's address may be in front of you — in the conversation, an issue, a profile, an earlier commit's author field — and none of that is permission to write it into this repository's history. The author and committer fields of a public repository are world-readable and permanent in a way ordinary files are not:
+
+> A wrong address cannot be taken back by force-pushing over it. Rewriting the branch removes the *reference*; the old commit object survives on the remote, stays fetchable by its SHA, and the force-push event in a pull request timeline links to it by SHA. Only GitHub Support can purge unreachable objects. **Getting it right the first time is the only fix that works.**
+
+Before pushing, confirm the whole branch carries one identity, the configured one:
+
+```bash
+git log --format='%an <%ae> | %cn <%ce>' origin/<default-branch>..HEAD | sort -u
+```
+
+The same rule covers everything else you author. Commit messages, PR titles and bodies, code comments, data files, fixtures and `SOURCES.md` entries carry **no personal data** — no email addresses, no real names, no handles, no machine or account names, and nothing identifying a private individual. This does **not** restrict §Attribution: crediting an upstream project and its published author is required, and a licence that must be reproduced is reproduced in full. The line is between citing work someone published under their own name and copying a person's contact details into a payload or a commit trailer.
+
+Two related habits, for the same reason:
+
+- **A captured source is scrubbed of the person, not of the game.** A journal capture, a SLEF export or a community build reaches you attached to whoever produced it — a commander name, an account id, an uploader, a home directory in a path, the link the build was shared from. That goes; the game data stays. `fixtures/ships/builds/` stores its 181 builds without author, name or link (`data/ships/SOURCES.md` records the choice and what it costs), while the Krait Phantom capture deliberately keeps its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` — those describe a ship, they are what makes it ground truth, and none of them names a person.
+- **Keep the model out of the repository.** The model identifier you run as belongs in chat, never in a commit message, PR body, code comment or data file.
+
 ## Commands
 
 All TypeScript commands run from `typescript/`:
