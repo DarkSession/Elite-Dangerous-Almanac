@@ -1012,11 +1012,13 @@ read-only** layout (to drive your own outfitting UI), call `getShipSlots(symbol)
 feed the result to `enumerateSlots`; the rest of the `ships/slots` exports
 (`BuildSlot`, `CoreSlots`, `parseSlotName`, …) are that low-level model.
 
-`applyBlueprint` also validates that the blueprint and experimental effect belong to
-the fitted module's engineering family, that quality is a finite value from 0 to 1,
-and that every stat the recipe changes can actually be answered for that module. An
-armour recipe, for example, cannot be applied to an FSD merely because both modify mass
-or integrity.
+`applyBlueprint` also validates that the module is actually offered the blueprint and the
+experimental effect, that quality is a finite value from 0 to 1, and that every stat the
+recipe changes can actually be answered for that module. What a module is offered comes
+from its [engineering menu](#what-a-module-can-be-engineered-with), not from a rule about
+what kind of module it is: an armour recipe cannot go on an FSD, but neither can
+`Weapon_HighCapacity` go on a Guardian Gauss Cannon, whose menu is Rapid Fire and
+Anti-Guardian Zone Resistance alone. The error names the menu it checked against.
 
 A recipe leg on a stat the module simply **does not have** is not a failure — it is
 inert, exactly as in the game. Long Range scales a projectile's shot speed and leaves a

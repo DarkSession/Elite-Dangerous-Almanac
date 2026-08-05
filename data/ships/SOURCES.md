@@ -1103,7 +1103,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `description`** instead; effects that do have magnitudes carry them (e.g. Force Shell
   shot speed −16.6667%, FSD Interrupt damage −30% / burst interval +50%). Their
   one-application `materials` are from the same in-game / Inara registry (a Merc-Coin
-  amount is also charged but is not stored). All target weapons in the compatibility map.
+  amount is also charged but is not stored). Every one is a weapon effect, and the weapon
+  groups' menus list them.
 - **Feedback Cascade (`special_feedback_cascade`) — added.** The catalogue carried only
   the pre-engineered rail-gun variant `special_feedback_cascade_cooled`; the plain effect
   players apply themselves was missing. EDSY holds it commented out (`wpnx_feca`, marked

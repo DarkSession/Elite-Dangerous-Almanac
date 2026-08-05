@@ -24,6 +24,7 @@
     "soldAtGrade": 1,
     "gradeUnavailable": 1,
     "grade": 2,
+    "quality": 1,
     "base": { "DamageProtection": 60, "Integrity": 350, "Mass": 16 },
     "expected": { "DamageProtection": 64.98, "Integrity": 379.05, "Mass": 21.328 }
   },

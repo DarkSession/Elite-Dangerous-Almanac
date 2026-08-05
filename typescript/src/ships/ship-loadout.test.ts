@@ -779,7 +779,14 @@ test('a module sold pre-engineered can be taken further, menu or no menu', () =>
         'Slot01_Size7',
         mod(climb.symbol, INTERNAL_MODULES),
     );
-    build.applyBlueprint('Slot01_Size7', climb.blueprint, { grade: climb.grade, quality: 1 });
+    // The variant is sold at grade 1, which is why its recipe starts at 2.
+    const [sold] = getPreEngineeredVariants(climb.symbol);
+    assert.equal(sold?.grade, climb.soldAtGrade);
+    assert.equal(sold?.blueprint, climb.blueprint);
+    build.applyBlueprint('Slot01_Size7', climb.blueprint, {
+        grade: climb.grade,
+        quality: climb.quality,
+    });
     const engineered = build.getFittedModule('Slot01_Size7')!.Engineering!;
     assert.equal(engineered.BlueprintName, climb.blueprint);
     for (const [label, expected] of Object.entries(climb.expected)) {
@@ -920,7 +927,7 @@ test('applyBlueprint / clearEngineering work straight on the fitted module', () 
     assert.equal(build.frameShiftDrive.optMass, 4670); // base
 });
 
-test('getAvailableBlueprints / getAvailableExperimentalEffects match the module family', () => {
+test('getAvailableBlueprints / getAvailableExperimentalEffects answer the module menu', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'FrameShiftDrive',
         mod('Int_Hyperdrive_Size6_Class5'),
