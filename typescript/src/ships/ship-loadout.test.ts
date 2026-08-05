@@ -11,6 +11,7 @@ import { UTILITY_MODULES } from './modules-utility.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 import expected from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
 import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
+import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff } from './weapons.js';
@@ -287,7 +288,7 @@ test('setModule rejects the wrong module kind, oversize, and hull-restricted fit
     // A module restricted to another hull (MkII Gravity Optimised thrusters → Explorer_NX)
     assert.throws(
         () => conda.setModule('MainEngines', mod('Int_Engine_Size7_Class5_GravityOptimised_MkII')),
-        /restricted to Explorer_NX/,
+        /restricted to Caspian Explorer \(Explorer_NX\)/,
     );
 });
 
@@ -314,8 +315,135 @@ test('a military slot only takes military-eligible modules', () => {
     // A fuel scoop is not.
     const scoop = getModuleBySymbol('Int_FuelScoop_Size5_Class5', INTERNAL_MODULES);
     if (scoop) {
-        assert.throws(() => conda.setModule('Military01', scoop), /military-eligible/);
+        assert.throws(
+            () => conda.setModule('Military01', scoop),
+            /only takes reinforcement packages and shield cell banks/,
+        );
     }
+});
+
+test("the Type-11's mining hardpoints only take mining tools", () => {
+    const miner = ShipLoadout.empty('LakonMiner');
+    // Every mining family the mounts accept, at a size each mount can hold.
+    for (const symbol of [
+        'Hpt_MiningToolV2_Fixed_Large',
+        'Hpt_MiningLaser_Fixed_Small_Advanced',
+        'Hpt_Mining_AbrBlstr_Fixed_Small',
+        'Hpt_Mining_SubSurfDispMisle_Fixed_Small',
+    ]) {
+        assert.doesNotThrow(
+            () => miner.setModule('LargeMiningHardpoint1', mod(symbol, HARDPOINT_MODULES)),
+            symbol,
+        );
+    }
+    // An ordinary weapon of the right size is turned away.
+    const plasma = mod('Hpt_PlasmaAccelerator_Fixed_Large', HARDPOINT_MODULES);
+    assert.throws(
+        () => miner.setModule('LargeMiningHardpoint1', plasma),
+        /only takes mining tools/,
+    );
+    // ...and fits the unrestricted mounts, which take mining tools too.
+    const cannon = mod('Hpt_MultiCannon_Fixed_Medium', HARDPOINT_MODULES);
+    assert.doesNotThrow(() => miner.setModule('MediumHardpoint3', cannon));
+    assert.doesNotThrow(() =>
+        miner.setModule('MediumHardpoint3', mod('Hpt_MiningLaser_Fixed_Medium', HARDPOINT_MODULES)),
+    );
+    // The mounts are listable, so an outfitting UI can answer "what fits here?".
+    const forMining = miner.modulesForSlot('MediumMiningHardpoint1', HARDPOINT_MODULES);
+    assert.ok(forMining.length > 0);
+    assert.ok(
+        forMining.every((m) => /^hpt_(mining|human_extraction)/.test(m.symbol.toLowerCase())),
+        forMining.map((m) => m.symbol).join(', '),
+    );
+});
+
+test('the restricted optionals take their own family and nothing else', () => {
+    const miner = ShipLoadout.empty('LakonMiner');
+    assert.doesNotThrow(() =>
+        miner.setModule(
+            'LimpetController01',
+            mod('Int_MultiDroneControl_MiningV2_Size5_Class5', INTERNAL_MODULES),
+        ),
+    );
+    assert.doesNotThrow(() =>
+        miner.setModule('FighterBay01', mod('Int_FighterBay_Size5_Class1', INTERNAL_MODULES)),
+    );
+    const rack = mod('Int_CargoRack_Size5_Class1', INTERNAL_MODULES);
+    assert.throws(() => miner.setModule('LimpetController01', rack), /only takes limpet/);
+    assert.throws(() => miner.setModule('FighterBay01', rack), /only takes vessel hangars/);
+
+    const panther = ShipLoadout.empty('PantherMkII');
+    assert.doesNotThrow(() =>
+        panther.setModule('Cargo01', mod('Int_LargeCargoRack_Size8_class1', INTERNAL_MODULES)),
+    );
+    // A fuel tank counts as cargo here, as it does in every optional slot.
+    assert.doesNotThrow(() => panther.setModule('Cargo02', mod('Int_FuelTank_Size7_Class3')));
+    const shield = mod('Int_ShieldGenerator_Size8_Class3', INTERNAL_MODULES);
+    assert.throws(() => panther.setModule('Cargo01', shield), /only takes cargo racks/);
+});
+
+test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => {
+    const bay = mod('Int_FighterBayMk2_Size5_Class1', INTERNAL_MODULES);
+    assert.doesNotThrow(() => ShipLoadout.empty('LakonMiner').setModule('FighterBay01', bay));
+    assert.doesNotThrow(() => ShipLoadout.empty('Explorer_NX').setModule('Slot04_Size5', bay));
+    assert.doesNotThrow(() => ShipLoadout.empty('PantherMkII').setModule('Slot06_Size5', bay));
+    assert.throws(
+        () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', bay),
+        /restricted to Caspian Explorer \(Explorer_NX\), Panther Clipper MkII \(PantherMkII\), Type-11 Prospector \(LakonMiner\)/,
+    );
+});
+
+test('every restricted mount accepts and refuses what the fixture pins', () => {
+    // The rule is a fact about the game, not about TypeScript, so which module
+    // families each restriction takes is pinned language-neutrally rather than left
+    // to the prefix lists in this file.
+    for (const rule of slotsFixture.restrictions) {
+        const build = ShipLoadout.empty(rule.ship);
+        const slot = build.slots().find((s) => s.key === rule.slot);
+        assert.ok(slot, `${rule.ship} has no slot ${rule.slot}`);
+        assert.equal(slot.restriction ?? null, rule.restriction, `${rule.slot} restriction`);
+        // `assert.throws(fn, string)` treats the string as a *message*, so a typo in a
+        // `rejects` symbol would pass on the undefined-module error instead. Resolve
+        // every symbol first, so a fixture typo fails loudly rather than silently
+        // retiring the case it was meant to test.
+        for (const symbol of [...rule.accepts, ...rule.rejects]) {
+            assert.ok(getModuleBySymbol(symbol, ALL_MODULES), `no module "${symbol}"`);
+        }
+        for (const symbol of rule.accepts) {
+            assert.doesNotThrow(
+                () => build.setModule(rule.slot, mod(symbol, ALL_MODULES)),
+                `${rule.slot} should accept ${symbol}`,
+            );
+        }
+        for (const symbol of rule.rejects) {
+            assert.throws(
+                () => build.setModule(rule.slot, mod(symbol, ALL_MODULES)),
+                `${rule.slot} should reject ${symbol}`,
+            );
+        }
+        // `modulesForSlot` and `setModule` must agree, or an outfitting UI offers a
+        // module the fit check then refuses.
+        const offered = new Set(build.modulesForSlot(rule.slot, ALL_MODULES).map((m) => m.symbol));
+        for (const symbol of rule.accepts) assert.ok(offered.has(symbol), `not offered: ${symbol}`);
+        for (const symbol of rule.rejects) assert.ok(!offered.has(symbol), `offered: ${symbol}`);
+    }
+});
+
+test('a restricted mount reports a human-readable name', () => {
+    const miner = ShipLoadout.empty('LakonMiner');
+    const named = (key: string) => miner.slots().find((s) => s.key === key)?.name;
+    assert.equal(named('LargeMiningHardpoint1'), 'Large Mining Hardpoint 1');
+    assert.equal(named('MediumHardpoint3'), 'Medium Hardpoint 3');
+    assert.equal(named('LimpetController01'), 'Limpet Controller Slot 1');
+    assert.equal(named('FighterBay01'), 'Vessel Hangar Slot 1');
+    const panther = ShipLoadout.empty('PantherMkII');
+    assert.equal(panther.slots().find((s) => s.key === 'Cargo02')?.name, 'Cargo Slot 2');
+    // The military and approach-suite labels went through the same rewrite.
+    const conda = ShipLoadout.empty('Anaconda');
+    const condaName = (key: string) => conda.slots().find((s) => s.key === key)?.name;
+    assert.equal(condaName('Military01'), 'Military Slot 1');
+    assert.equal(condaName('PlanetaryApproachSuite'), 'Planetary Approach Suite');
+    assert.equal(condaName('HugeHardpoint1'), 'Huge Hardpoint 1');
 });
 
 test('setModule throws a clear error when handed an undefined module', () => {
@@ -347,7 +475,7 @@ test('fit checks use restrictions carried by caller-supplied module records', ()
     };
     assert.throws(
         () => ShipLoadout.empty('SideWinder').setModule('SmallHardpoint1', restricted),
-        /restricted to Explorer_NX/,
+        /restricted to Caspian Explorer \(Explorer_NX\)/,
     );
 });
 
@@ -1004,4 +1132,18 @@ test("a journal's own rate of fire wins over anything derived from the cycle", (
     // The game's own figure is authoritative, even though the cycle implies 12.755.
     assert.equal(build.getFittedModule('LargeHardpoint1')!.effectiveStats!.rateOfFire, 12.9);
     assert.equal(build.weaponMetrics().weapons[0]!.metrics.rateOfFire, 12.9);
+});
+
+test('a fitted module answers to the same word a catalogue record does', () => {
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'FrameShiftDrive',
+        mod('Int_Hyperdrive_Size6_Class5'),
+    );
+    const fitted = build.getFittedModule('FrameShiftDrive')!;
+    // `symbol` is what every catalogue lookup takes, so a handle and a record agree.
+    assert.equal(fitted.symbol, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(getModuleBySymbol(fitted.symbol, CORE_MODULES)?.class, 6);
+    // The journal spelling is still there, as it is for slot / on / priority.
+    assert.equal(fitted.Item, fitted.symbol);
+    assert.equal(fitted.Slot, fitted.slot);
 });

@@ -5034,6 +5034,11 @@
     "mass": 10,
     "integrity": 60,
     "powerDraw": 0.25,
+    "restrictedToShips": [
+      "Explorer_NX",
+      "PantherMkII",
+      "LakonMiner"
+    ],
     "bootTime": 5
   },
   {
@@ -5045,6 +5050,11 @@
     "mass": 20,
     "integrity": 80,
     "powerDraw": 0.35,
+    "restrictedToShips": [
+      "Explorer_NX",
+      "PantherMkII",
+      "LakonMiner"
+    ],
     "bootTime": 5
   },
   {
@@ -5056,6 +5066,11 @@
     "mass": 30,
     "integrity": 120,
     "powerDraw": 0.35,
+    "restrictedToShips": [
+      "Explorer_NX",
+      "PantherMkII",
+      "LakonMiner"
+    ],
     "bootTime": 5
   },
   {
@@ -6683,6 +6698,9 @@
     "rating": "D",
     "mass": 0,
     "cargoCapacity": 192,
+    "restrictedToShips": [
+      "PantherMkII"
+    ],
     "cost": 1958680
   },
   {
@@ -6693,6 +6711,9 @@
     "rating": "D",
     "mass": 0,
     "cargoCapacity": 384,
+    "restrictedToShips": [
+      "PantherMkII"
+    ],
     "cost": 4929317
   },
   {

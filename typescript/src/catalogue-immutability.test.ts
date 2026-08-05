@@ -9,6 +9,7 @@ import { ALL_MATERIALS } from './materials/materials-all.js';
 import { ALL_MICRO_RESOURCES } from './materials/micro-resources-all.js';
 import { ALL_MODULES } from './ships/modules-all.js';
 import { SHIPS } from './ships/ships.js';
+import { SLOT_RESTRICTION_LABELS } from './ships/slots.js';
 import { ALL_COMMODITIES } from './commodities/commodities-all.js';
 
 test('every exported object catalogue and all of its records are frozen', () => {
@@ -27,6 +28,17 @@ test('every exported object catalogue and all of its records are frozen', () => 
         assert.equal(Object.isFrozen(catalogue), true);
         assert.ok(catalogue.every((record) => Object.isFrozen(record)));
     }
+});
+
+test('exported lookup records are frozen too, not only the array catalogues', () => {
+    // `setModule` builds its refusal message from this table, so a consumer able to
+    // mutate it could silently rewrite the library's own error text.
+    assert.equal(Object.isFrozen(SLOT_RESTRICTION_LABELS), true);
+    assert.throws(
+        () => Object.assign(SLOT_RESTRICTION_LABELS, { mining: 'anything at all' }),
+        TypeError,
+    );
+    assert.equal(SLOT_RESTRICTION_LABELS.mining, 'mining tools');
 });
 
 test('nested records and named origins are frozen', () => {

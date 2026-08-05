@@ -63,7 +63,14 @@ import {
     type FrameShiftDriveParams,
 } from './jump-range.js';
 import { getShipBySymbol, getShipSlots } from './ships.js';
-import { enumerateSlots, type BuildSlot, type SlotKind, type CoreSlotType } from './slots.js';
+import {
+    enumerateSlots,
+    SLOT_RESTRICTION_LABELS,
+    type BuildSlot,
+    type SlotKind,
+    type CoreSlotType,
+    type SlotRestriction,
+} from './slots.js';
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
@@ -251,6 +258,87 @@ const MILITARY_PREFIXES: readonly string[] = [
     'int_guardianmodulereinforcement',
     'int_guardianshieldreinforcement',
 ];
+
+/**
+ * Weapon groups a **mining** hardpoint accepts (symbol prefixes) — the Type-11
+ * Prospector's four mining mounts.
+ *
+ * @remarks
+ * The Sub-Surface Extraction Missile is here because both source registries file it
+ * with the displacement missile it is a variant of, despite its unrelated symbol.
+ * The Pulse Wave Analyser, which coriolis-data also lists as eligible, is not: it is
+ * a utility fitting, and no utility module fits a hardpoint of any kind.
+ */
+const MINING_PREFIXES: readonly string[] = [
+    'hpt_mininglaser', // Mining Laser, Mining Lance
+    'hpt_mining_abrblstr', // Abrasion Blaster
+    'hpt_mining_seismchrgwarhd', // Seismic Charge Launcher
+    'hpt_mining_subsurfdispmisle', // Sub-Surface Displacement Missile
+    'hpt_human_extraction', // Sub-Surface Extraction Missile
+    'hpt_miningtoolv2', // Mining Volley Repeater
+];
+
+/**
+ * Optional-internal groups a **cargo** slot accepts (symbol prefixes) — the Panther
+ * Clipper Mk II's `Cargo01` and `Cargo02`, which are its first size-8 and first size-7
+ * mounts rather than its two largest. A fuel tank counts, as it does everywhere.
+ */
+const CARGO_PREFIXES: readonly string[] = [
+    'int_cargorack',
+    'int_largecargorack',
+    'int_corrosionproofcargorack',
+    'int_fueltank',
+];
+
+/**
+ * Optional-internal groups a **limpet-controller** slot accepts (symbol prefixes) —
+ * the Type-11 Prospector's size-5 controller mount. Both prefixes are needed: the
+ * multi-limpet controllers are a separate family, not a `DroneControl` variant.
+ */
+const LIMPET_CONTROLLER_PREFIXES: readonly string[] = ['int_dronecontrol', 'int_multidronecontrol'];
+
+/**
+ * Optional-internal groups a **vessel-hangar** slot accepts (symbol prefixes) — the
+ * Type-11 Prospector's size-5 hangar mount. The one prefix covers the Mk I and Mk II
+ * bays alike; the game renamed them from fighter hangars but kept the symbols.
+ */
+const VESSEL_HANGAR_PREFIXES: readonly string[] = ['int_fighterbay'];
+
+/**
+ * Slot restriction → the module symbol prefixes it accepts.
+ *
+ * @remarks
+ * `planetaryApproachSuite` is absent because it is the one restriction that binds
+ * both ways — the suite fits nowhere else either — so `#fitError` handles it as a
+ * pair of checks rather than a membership test. What each restriction accepts *in
+ * words* is not repeated here: the refusal message is built from the exported
+ * {@link SLOT_RESTRICTION_LABELS}, so a label an app shows and the error it may have
+ * to explain cannot drift apart.
+ */
+const RESTRICTED_SLOT_PREFIXES: Record<
+    Exclude<SlotRestriction, 'planetaryApproachSuite'>,
+    readonly string[]
+> = {
+    mining: MINING_PREFIXES,
+    military: MILITARY_PREFIXES,
+    cargo: CARGO_PREFIXES,
+    limpetController: LIMPET_CONTROLLER_PREFIXES,
+    vesselHangar: VESSEL_HANGAR_PREFIXES,
+};
+
+/**
+ * Why a module symbol fails a slot's restriction, or `null` if it satisfies it (or
+ * the slot has none). The planetary approach suite is not checked here — see
+ * {@link RESTRICTED_SLOT_PREFIXES}.
+ */
+function restrictionError(slot: BuildSlot, symbol: string): string | null {
+    const restriction = slot.restriction;
+    if (!restriction || restriction === 'planetaryApproachSuite') return null;
+    if (RESTRICTED_SLOT_PREFIXES[restriction].some((prefix) => symbol.startsWith(prefix))) {
+        return null;
+    }
+    return `slot only takes ${SLOT_RESTRICTION_LABELS[restriction]}`;
+}
 
 /**
  * The journal's **cosmetic** slot families, matched against a lower-cased slot key.
@@ -1406,7 +1494,13 @@ export class ShipLoadout {
             restricted &&
             !restricted.some((s) => s.toLowerCase() === this.#shipSymbol.toLowerCase())
         ) {
-            return `module is restricted to ${restricted.join(', ')}`;
+            // Name the hulls the way a player would recognise them, keeping the
+            // symbol so the message is still greppable against journal data.
+            const hulls = restricted.map((s) => {
+                const hull = getShipBySymbol(s);
+                return hull ? `${hull.name} (${s})` : s;
+            });
+            return `module is restricted to ${hulls.join(', ')}`;
         }
         const sym = module.symbol.toLowerCase();
         const coreType = coreTypeOf(sym);
@@ -1420,6 +1514,8 @@ export class ShipLoadout {
             }
             case 'hardpoint': {
                 if (module.category !== 'hardpoint') return 'not a hardpoint weapon';
+                const restricted = restrictionError(slot, sym);
+                if (restricted) return restricted;
                 break;
             }
             case 'utility': {
@@ -1438,16 +1534,14 @@ export class ShipLoadout {
                 }
                 const isPas = sym.startsWith(PLANETARY_APPROACH_PREFIX);
                 if (slot.restriction === 'planetaryApproachSuite') {
-                    if (!isPas) return 'slot only takes a planetary approach suite';
+                    if (!isPas) {
+                        return `slot only takes ${SLOT_RESTRICTION_LABELS.planetaryApproachSuite}`;
+                    }
                 } else if (isPas) {
                     return 'a planetary approach suite only fits its own slot';
                 }
-                if (
-                    slot.restriction === 'military' &&
-                    !MILITARY_PREFIXES.some((p) => sym.startsWith(p))
-                ) {
-                    return 'slot only takes a military-eligible module';
-                }
+                const restricted = restrictionError(slot, sym);
+                if (restricted) return restricted;
                 break;
             }
         }

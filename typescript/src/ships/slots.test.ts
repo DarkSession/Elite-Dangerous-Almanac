@@ -1,8 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseSlotName, enumerateSlots } from './slots.js';
-import { getShipSlots } from './ships.js';
+import { parseSlotName, enumerateSlots, SLOT_RESTRICTION_LABELS } from './slots.js';
+import { getShipSlots, SHIPS } from './ships.js';
+import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 
 test('parseSlotName classifies every journal slot-name form', () => {
     assert.deepEqual(parseSlotName('PowerPlant'), { kind: 'core', size: null, core: 'powerPlant' });
@@ -24,6 +25,37 @@ test('parseSlotName classifies every journal slot-name form', () => {
         restriction: 'planetaryApproachSuite',
     });
     assert.deepEqual(parseSlotName('Armour'), { kind: 'armour', size: 0 });
+    assert.deepEqual(parseSlotName('CargoHatch'), { kind: 'cargoHatch', size: 1 });
+});
+
+test('parseSlotName reads a restricted mount off its journal name alone', () => {
+    // Frontier names a restricted mount differently, so no hull layout is needed.
+    assert.deepEqual(parseSlotName('LargeMiningHardpoint1'), {
+        kind: 'hardpoint',
+        size: 3,
+        restriction: 'mining',
+    });
+    assert.deepEqual(parseSlotName('SmallMiningHardpoint1'), {
+        kind: 'hardpoint',
+        size: 1,
+        restriction: 'mining',
+    });
+    assert.deepEqual(parseSlotName('Cargo02'), {
+        kind: 'optional',
+        size: null,
+        restriction: 'cargo',
+    });
+    assert.deepEqual(parseSlotName('LimpetController01'), {
+        kind: 'optional',
+        size: null,
+        restriction: 'limpetController',
+    });
+    assert.deepEqual(parseSlotName('FighterBay01'), {
+        kind: 'optional',
+        size: null,
+        restriction: 'vesselHangar',
+    });
+    // The cargo hatch is not a cargo-restricted optional, however it reads.
     assert.deepEqual(parseSlotName('CargoHatch'), { kind: 'cargoHatch', size: 1 });
 });
 
@@ -74,6 +106,58 @@ test('enumerateSlots expands the Anaconda layout into keyed mounts', () => {
     assert.equal(pas?.key, 'PlanetaryApproachSuite');
 });
 
+test('the restricted hulls enumerate the journal keys the fixture pins', () => {
+    for (const [symbol, expected] of Object.entries(slotsFixture.keys)) {
+        assert.deepEqual(
+            enumerateSlots(getShipSlots(symbol)!).map((s) => s.key),
+            expected,
+            symbol,
+        );
+    }
+});
+
+test("the Type-11's mining mounts share the per-class numbering", () => {
+    const hardpoints = enumerateSlots(getShipSlots('LakonMiner')!).filter(
+        (s) => s.kind === 'hardpoint',
+    );
+    // Three of the four mediums; the unrestricted one keeps the number it would
+    // have had, so it is MediumHardpoint3 rather than MediumHardpoint1.
+    assert.deepEqual(
+        hardpoints.filter((s) => s.restriction === 'mining').map((s) => s.key),
+        [
+            'LargeMiningHardpoint1',
+            'MediumMiningHardpoint1',
+            'MediumMiningHardpoint2',
+            'SmallMiningHardpoint1',
+        ],
+    );
+    assert.deepEqual(
+        hardpoints.filter((s) => !s.restriction).map((s) => s.key),
+        ['MediumHardpoint3', 'SmallHardpoint2', 'SmallHardpoint3', 'SmallHardpoint4'],
+    );
+    assert.deepEqual(
+        hardpoints.find((s) => s.key === 'LargeMiningHardpoint1'),
+        { key: 'LargeMiningHardpoint1', kind: 'hardpoint', size: 3, restriction: 'mining' },
+    );
+});
+
+test('a restricted optional takes a name of its own and no Slot number', () => {
+    const optionals = enumerateSlots(getShipSlots('PantherMkII')!).filter(
+        (s) => s.kind === 'optional',
+    );
+    assert.deepEqual(optionals[0], {
+        key: 'Cargo01',
+        kind: 'optional',
+        size: 8,
+        restriction: 'cargo',
+    });
+    // The cargo mounts sit at layout positions 0 and 2, and the Slot numbering runs
+    // over the unrestricted mounts only — so the size-8 next to Cargo01 is Slot01.
+    assert.equal(optionals[1]?.key, 'Slot01_Size8');
+    assert.equal(optionals[2]?.key, 'Cargo02');
+    assert.equal(optionals[3]?.key, 'Slot02_Size7');
+});
+
 test('enumerated optional keys are journal-compatible and size-tagged', () => {
     const optionals = enumerateSlots(getShipSlots('Anaconda')!).filter(
         (s) => s.kind === 'optional' && !s.restriction,
@@ -91,4 +175,32 @@ test('every SLEF slot name in a real export classifies', async () => {
     for (const m of slef[0]!.data.Modules) {
         assert.ok(parseSlotName(m.Slot) !== null, `unclassified slot: ${m.Slot}`);
     }
+});
+
+test('every restriction a hull can carry has a label to show for it', () => {
+    // A UI reads `slot.restriction`; without a label per value it would hardcode one.
+    const carried = new Set<string>();
+    for (const ship of SHIPS) {
+        const layout = getShipSlots(ship.symbol);
+        if (!layout) continue;
+        for (const slot of enumerateSlots(layout)) {
+            if (slot.restriction) carried.add(slot.restriction);
+        }
+    }
+    assert.ok(carried.size > 0);
+    for (const restriction of carried) {
+        assert.ok(
+            SLOT_RESTRICTION_LABELS[restriction as keyof typeof SLOT_RESTRICTION_LABELS],
+            `no label for ${restriction}`,
+        );
+    }
+    // The labels cover the whole union, not merely what the hulls happen to use.
+    assert.deepEqual(Object.keys(SLOT_RESTRICTION_LABELS).sort(), [
+        'cargo',
+        'limpetController',
+        'military',
+        'mining',
+        'planetaryApproachSuite',
+        'vesselHangar',
+    ]);
 });

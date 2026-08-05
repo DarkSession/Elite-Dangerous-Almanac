@@ -72,12 +72,20 @@ export class FittedModule {
         return this.#slotKey;
     }
 
-    /** The module's Frontier symbol. */
-    get item(): string {
+    /**
+     * The module's Frontier symbol, e.g. `"Int_Hyperdrive_Size6_Class5"` — the same
+     * string {@link getModuleBySymbol} takes and `OutfittingModule.symbol` carries.
+     *
+     * @remarks
+     * The journal calls this field `Item`, and {@link FittedModule.Item} is that
+     * spelling; this one is named for what the rest of the library calls it, so a
+     * handle and a catalogue record answer to the same word.
+     */
+    get symbol(): string {
         return this.#raw().Item;
     }
 
-    /** Journal-spelling alias of {@link item}. */
+    /** Journal-spelling alias of {@link symbol}. */
     get Item(): string {
         return this.#raw().Item;
     }

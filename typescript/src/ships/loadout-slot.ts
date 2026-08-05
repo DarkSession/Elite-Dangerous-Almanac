@@ -23,14 +23,32 @@ const CORE_NAMES: Record<CoreSlotType, string> = {
     fuelTank: 'Fuel Tank',
 };
 
+/**
+ * Human-readable label for a numbered restricted optional mount, by restriction. The
+ * planetary approach suite is absent: its key carries no number and its label is fixed.
+ *
+ * @remarks
+ * These are this library's wording, not the game's outfitting-panel text, so an app
+ * with its own copy or its own translations should not treat {@link LoadoutSlot.name}
+ * as authoritative.
+ */
+const RESTRICTED_OPTIONAL_NAMES: Partial<Record<SlotRestriction, string>> = {
+    military: 'Military Slot',
+    cargo: 'Cargo Slot',
+    limpetController: 'Limpet Controller Slot',
+    vesselHangar: 'Vessel Hangar Slot',
+};
+
 /** A human-readable label for a slot, derived from its key and kind. */
 function slotDisplayName(slot: BuildSlot): string {
     switch (slot.kind) {
         case 'core':
             return slot.core ? CORE_NAMES[slot.core] : slot.key;
         case 'hardpoint': {
-            const match = /^(Small|Medium|Large|Huge)Hardpoint(\d+)$/.exec(slot.key);
-            return match ? `${match[1]} Hardpoint ${Number(match[2])}` : slot.key;
+            const match = /^(Small|Medium|Large|Huge)(Mining)?Hardpoint(\d+)$/.exec(slot.key);
+            if (!match) return slot.key;
+            const mining = match[2] ? ' Mining' : '';
+            return `${match[1]}${mining} Hardpoint ${Number(match[3])}`;
         }
         case 'utility': {
             const match = /^TinyHardpoint(\d+)$/.exec(slot.key);
@@ -38,8 +56,11 @@ function slotDisplayName(slot: BuildSlot): string {
         }
         case 'optional': {
             if (slot.restriction === 'planetaryApproachSuite') return 'Planetary Approach Suite';
-            const military = /^Military(\d+)$/.exec(slot.key);
-            if (military) return `Military Slot ${Number(military[1])}`;
+            if (slot.restriction) {
+                const numbered = /(\d+)$/.exec(slot.key);
+                const label = RESTRICTED_OPTIONAL_NAMES[slot.restriction];
+                return label && numbered ? `${label} ${Number(numbered[1])}` : slot.key;
+            }
             const optional = /^Slot(\d+)_Size(\d+)$/.exec(slot.key);
             return optional
                 ? `Optional Internal ${Number(optional[1])} (Size ${slot.size})`
@@ -76,7 +97,11 @@ export class LoadoutSlot implements BuildSlot {
     readonly kind: SlotKind;
     /** Slot size (class); `0` for utility and armour placeholders. */
     readonly size: number;
-    /** The optional-internal restriction, when the slot is restricted. */
+    /**
+     * The mount's restriction, when it is a restricted one — this mount takes that
+     * family of modules and nothing else. {@link SLOT_RESTRICTION_LABELS} names the
+     * family for a user; {@link LoadoutSlot.modulesForSlot} lists what actually fits.
+     */
     readonly restriction?: SlotRestriction;
     /** For a core slot, the core module function it accepts. */
     readonly core?: CoreSlotType;
@@ -107,7 +132,9 @@ export class LoadoutSlot implements BuildSlot {
     }
 
     /**
-     * Return the modules from a catalogue that fit this slot.
+     * Return the modules from a catalogue that fit this slot — size, kind and any
+     * {@link LoadoutSlot.restriction} all satisfied, so a restricted mount lists only
+     * its own family.
      *
      * @param catalogue - A module catalogue or filtered subset.
      * @returns Fitting modules in catalogue order.
@@ -121,6 +148,17 @@ export class LoadoutSlot implements BuildSlot {
      *
      * @param module - The module record to fit.
      * @returns A live handle for the newly fitted module.
+     * @throws {TypeError} If `module` is null/undefined, or it does not fit — wrong
+     * kind, too large for the mount, restricted to another hull, or refused by this
+     * mount's {@link LoadoutSlot.restriction}. The message names the module, the slot
+     * and the reason. Use {@link LoadoutSlot.modulesForSlot} to offer only fits.
+     * @example
+     * ```ts
+     * const mount = ShipLoadout.empty('LakonMiner').hardpoints()[0]!;
+     * mount.fit(plasmaAccelerator);
+     * // TypeError: ShipLoadout.setModule: Hpt_PlasmaAccelerator_Fixed_Large
+     * //   → LargeMiningHardpoint1: slot only takes mining tools
+     * ```
      */
     fit(module: OutfittingModule): FittedModule {
         this.#loadout.setModule(this.key, module);
