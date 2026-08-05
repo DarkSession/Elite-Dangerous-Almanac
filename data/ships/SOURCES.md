@@ -517,14 +517,41 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     hull and cannot be bought. `fixtures/ships/module-stats.json` pins that list under
     `freeModules`, so a new zero has to be argued for rather than slipping in: a zero
     price is otherwise indistinguishable from a dropped one.
-  - **Corrosion-resistant cargo racks are now *unpriced* rather than `0`.**
+  - **Corrosion-resistant cargo racks are *unpriced* rather than `0`.**
     `Int_CorrosionProofCargoRack_Size{1_Class2,5_Class1,6_Class1}` read `cost: 0`
     upstream — a gap in coriolis, not the duplicate-symbol defect above, so there is no
     first occurrence to fall back on. They are certainly not free: the size-4 record is
     priced, and the Deep Black's journal buys it at 82 775 = 94 330 less that export's
     12.25% discount. Carrying `0` made a build with one silently under-report instead of
-    omitting the figure, so the field is now omitted, matching `_Size2_Class1`, which
-    never had one. Real prices from EDSY or Inara would close this.
+    omitting the figure, so the field is omitted, matching `_Size2_Class1`, which never
+    had one. *Superseded for `_Size1_Class2` by the next bullet.*
+  - **`_Size1_Class2` is priced at 12 560, from EDSY** (revision 2026-08-05 UTC; EDSY
+    **commit `882a67ee03b69a05e139134a153d8c7c18e60250`** —
+    `eddb.js` module `161`, annotated "at Palin, Sedesi", the two stations that sell the
+    pair). Coriolis's `0` was its own gap: EDSY and coriolis agree
+    exactly on both corrosion racks either of them prices (`_Size1_Class1` 6250,
+    `_Size4_Class1` 94 330), and FDevIDs `outfitting.csv` lists exactly those three
+    symbols, so this is the last of the purchasable ones. **Read it as 12 560 ± 5:** EDSY
+    rounds module costs to the nearest 10, which is measurable rather than assumed — of
+    the 741 symbols both registries price, 378 disagree and 357 of those disagreements
+    are coriolis's exact figure rounded to EDSY's ten (`Int_CargoRack_Size5_Class1`
+    111 566 → 111 570, `Size6` 362 591 → 362 590). Every EDSY-sourced price already in
+    this catalogue carries the same granularity, so this record is no less exact than the
+    rest of them.
+  - **The remaining three racks have no list price to publish** (same revision).
+    `_Size2_Class1`,
+    `_Size5_Class1` and `_Size6_Class1` are **not sold at any station**: FDevIDs
+    `outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN` with the
+    comment "never released" on size 2, `cost: 0 // TODO: cost // CG reward` on sizes 5
+    and 6. Sizes 5 and 6 were handed out as Community Goal rewards and size 2 never
+    shipped, so the `0` upstream is not a dropped figure but the absence of one, and the
+    §7 inclusion rule (absence from FDevIDs is the evidence a module is not purchasable)
+    reads the same way. That makes this a different gap from the one above: no registry
+    can close it, because no outfitting screen quotes these. It takes an in-game
+    observation instead — a journal `Loadout` module `Value`, a `StoredModules` entry's
+    `BuyPrice`, or a `ModuleSell` on one — and until then `cost` stays omitted, since a
+    reward module still has an insurance value and reporting it as free would understate
+    a rebuy.
   - **Filled by hand, from a documented uniformity:** `Int_ShieldGenerator_Size1_Class4`
     (added from EDSY in the earlier pass, so it has no coriolis record) takes the
     resistances and distributor draw every one of the 55 shield generators coriolis does
@@ -595,7 +622,10 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     two size-6 records' `class` was corrected from 5 to 6.
   - **Corrosion Resistant Cargo Racks** `Int_CorrosionProofCargoRack_Size{2,5,6}_Class1`
     (capacity 4/32/64) and the built-in **Cargo Hatch** `ModularCargoBayDoor`
-    (power 0.6 MW) were added — active EDSY records the FDevIDs join had omitted.
+    (power 0.6 MW) were added — live EDSY records (not commented out, unlike the 1B
+    shield generator below) that the FDevIDs join had omitted. All three racks carry
+    EDSY's `hidden:1`, which is why they are the three the prices section leaves
+    unpriced: the flag marks a module no outfitting screen sells.
   - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
     in the game: every other shield-generator size carries all five ratings, and size 1
     ran E/D/C/A with **B missing**. The module is real, so the record was added with the
@@ -615,12 +645,13 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   retained removed scanners) and supplying the Lynx Highliner, which has no coriolis
   entry. Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
   on hull + bulkhead name because those records carry no symbol upstream.
-  - **All 48 hulls are priced. 1175 of 1198 modules are.** The 23 without a price are the
+  - **All 48 hulls are priced. 1176 of 1198 modules are.** The 22 without a price are the
     ten starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
-    Vessel Hangars, **all four** Corrosion Resistant Cargo Racks and
+    Vessel Hangars, the **three reward-only** Corrosion Resistant Cargo Racks and
     `Int_ShieldGenerator_Size1_Class4` — no registry publishes a figure for them. Three of
-    the four racks joined the list in the 2026-08-02 revision described above, which is
-    why this count moved from 1178/20. **`cost` is omitted, never set to 0**:
+    the four racks joined the list in the 2026-08-02 revision described above (moving this
+    count from 1178/20), and `_Size1_Class2` left it again on 2026-08-05 when EDSY was
+    found to price it. **`cost` is omitted, never set to 0**:
     `0` is a real price (the starter Lightweight Alloy bulkhead costs nothing), so a
     cost calculation must be able to tell "free" from "unknown".
   - **Still not modelled:** passenger capacity and fighter-bay/rebuild counts. The

@@ -194,19 +194,31 @@ not a sourced base value. No corpus build hits it today.
 This is why `fixtures/ships/builds/` pins its metrics **pre-engineering**: applying what
 those builds declare is not possible today.
 
-### 6. Four corrosion-resistant cargo racks have no price at all
+### 6. Three corrosion-resistant cargo racks have no price, and no registry can supply one
 
-`Int_CorrosionProofCargoRack_Size{1_Class2,5_Class1,6_Class1}` read `cost: 0` in
-coriolis-data itself — a gap upstream, not the duplicate-symbol defect fixed in this
-change, so there is no first occurrence to fall back on; `_Size2_Class1` never carried a
-price at all. They are not free: the size-4
-record is priced at 94 330, and the E-rated rack family follows a ×3.25 curve, putting
-sizes 5 and 6 near 306 000 and 996 000.
+Was four. `Int_CorrosionProofCargoRack_Size1_Class2` is now priced at **12 560**, from
+EDSY (`eddb.js` module `161`, "at Palin, Sedesi"); coriolis's `cost: 0` for it was
+coriolis's own gap. Read it as 12 560 ± 5 — EDSY publishes module costs rounded to the
+nearest 10, measured against coriolis on the 741 symbols both price. The catalogue's
+other EDSY-sourced prices already carry that granularity. Two corpus builds
+(`empire-courier-exploration-2`, `asp-mining`) can therefore be priced again.
 
-`cost` is now omitted on all four so a calculation can tell "free" from "unknown", and
-they are pinned in `fixtures/ships/module-stats.json` under `unpriced`. Since credits are
-quoted at retail, a build carrying one of these exports no `ModulesValue` or `Rebuy` at
-all until real prices are sourced from EDSY or Inara.
+**The other three are a different problem, and closing it is not a data-sourcing job.**
+`_Size2_Class1`, `_Size5_Class1` and `_Size6_Class1` are not sold anywhere: FDevIDs
+`outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN` and "never
+released" on size 2, `cost: 0 // TODO: cost // CG reward` on sizes 5 and 6. Sizes 5 and 6
+were Community Goal rewards; size 2 never shipped. So the upstream `0` is the absence of
+a price, not a dropped one, and no outfitting registry will ever carry it.
+
+`cost` stays omitted on all three so a calculation can tell "free" from "unknown" — a
+reward module still has an insurance value, so reporting it free would understate a
+rebuy — and they stay pinned in `fixtures/ships/module-stats.json` under `unpriced`.
+Since credits are quoted at retail, a build carrying one still exports no `ModulesValue`
+or `Rebuy`. What would close it is an in-game observation rather than a registry: a
+journal `Loadout` module `Value`, a `StoredModules` entry's `BuyPrice`, or a `ModuleSell`
+on one. The ×3.25 curve the E-rated rack family follows would put sizes 5 and 6 near
+306 000 and 996 000, but that is interpolation, and the rule here is that absent means
+unknown.
 
 ### 7. Two experimental effects exist in the game that no public dataset carries
 

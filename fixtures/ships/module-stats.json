@@ -10,10 +10,10 @@
   },
   "priceCounts": {
     "core": 509,
-    "internal": 472,
+    "internal": 473,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1175
+    "all": 1176
   },
   "prices": [
     {
@@ -27,12 +27,16 @@
     {
       "symbol": "Anaconda_Armour_Grade1",
       "cost": 0
+    },
+    {
+      "symbol": "Int_CorrosionProofCargoRack_Size1_Class2",
+      "cost": 12560
     }
   ],
+  "unpricedNote": "The three Corrosion Resistant Cargo Racks left here are not sold at any station: FDevIDs `outfitting.csv` lists none of them, EDSY hides all three and marks `Size2_Class1` `cost: NaN` / \"never released\" and sizes 5 and 6 `cost: 0 // TODO`, and coriolis-data carries the same 0. They are Community Goal rewards and an unreleased variant, so there is no list price to publish rather than a price this catalogue failed to copy. `Size1_Class2` left this list once EDSY was found to price it at 12 560.",
   "unpriced": [
     "Int_ShieldGenerator_Size1_Class4",
     "Int_Hyperdrive_Size8_Class1",
-    "Int_CorrosionProofCargoRack_Size1_Class2",
     "Int_CorrosionProofCargoRack_Size2_Class1",
     "Int_CorrosionProofCargoRack_Size5_Class1",
     "Int_CorrosionProofCargoRack_Size6_Class1"

@@ -642,10 +642,11 @@ These are the **undiscounted** list prices an outfitting screen quotes at 0%
 discount — stations apply their own discount or markup on top, which is live market
 state this library does not carry.
 
-All 48 hulls are priced, and 1175 of 1198 modules. The other 23 — the ten starter
+All 48 hulls are priced, and 1176 of 1198 modules. The other 22 — the ten starter
 `*_free` variants, the five size-8 frame shift drives, the three Mk II fighter hangars,
-the four Corrosion Resistant Cargo Racks and `Int_ShieldGenerator_Size1_Class4` — have no
-published price, so **`cost` is `undefined` rather than `0`**. That distinction is
+the three reward-only Corrosion Resistant Cargo Racks (never sold at a station, so no
+outfitting screen quotes one) and `Int_ShieldGenerator_Size1_Class4` — have no published
+price, so **`cost` is `undefined` rather than `0`**. That distinction is
 deliberate: `0` is a real price (the starter Lightweight Alloy bulkhead is free), so
 treat `undefined` as _unknown_ and decide for yourself whether to skip it or fail:
 
