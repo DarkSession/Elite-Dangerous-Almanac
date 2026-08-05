@@ -111,7 +111,8 @@ in the doc comment of each ported module, and in long form in the domain
 - **Which blueprints and experimental effects each module can take** — the module-group
   menus in `data/ships/engineering-options.jsonc`: which modules form a group, the
   blueprint and experimental-effect lists each group offers, and the per-module
-  exceptions, from [EDSY](https://github.com/taleden/EDSY) (`eddb.js` `mtype[]`, taleden,
+  `noblueprints` / `noexpeffects` denials that narrow them, from
+  [EDSY](https://github.com/taleden/EDSY) (`eddb.js` `mtype[]` and `module[]`, taleden,
   **CC BY-NC 4.0**), cross-checked against and, for the families EDSY records under one
   generic recipe id, keyed by
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)

@@ -1,6 +1,6 @@
 {
-  "description": "Ground truth for data/ships/engineering-options.jsonc — which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins the catalogue shape, `modules` that a module resolves to its group, `exclusions` the modules that are the exception to their group (a Multi-cannon cannot take Phasing Sequence; mining tools take no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `corpus` measures the catalogue against the 181-build community corpus in `builds/`: every module those builds engineer is grouped, and every recipe they declare is one its module's group offers — bar the twelve declarations listed there, which no registry offers.",
-  "counts": { "groups": 50, "modules": 1063, "exclusions": 29 },
+  "description": "Ground truth for data/ships/engineering-options.jsonc — which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins the catalogue shape, `modules` that a module resolves to its group, `exclusions` the modules that take their group's blueprints but not all of its experimental effects (a Multi-cannon cannot take Phasing Sequence; the Abrasion Blaster takes no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `splitFamilies` pins the families upstream splits in two by denying blueprints per module — a Guardian Power Plant and an ordinary one are the same kind of module with different menus, so they are different groups. `corpus` measures the catalogue against the 181-build community corpus in `builds/`.",
+  "counts": { "groups": 53, "modules": 1029, "exclusions": 24 },
   "groups": [
     {
       "id": "beamLasers",
@@ -77,7 +77,66 @@
     "Int_DroneControl_Repair_Size3_Class3",
     "Int_MetaAlloyHullReinforcement_Size1_Class1",
     "Hpt_PlasmaShockCannon_Fixed_Medium",
-    "Int_StellarBodyDiscoveryScanner_Advanced"
+    "Int_StellarBodyDiscoveryScanner_Advanced",
+    "Int_DockingComputer_Standard",
+    "Int_ExpModuleStabiliser_Size3_Class3",
+    "Int_PlanetApproachSuite",
+    "Int_ModuleReinforcement_Size3_Class2",
+    "Hpt_ATMultiCannon_Turret_Large",
+    "Hpt_MiningLaser_Fixed_Medium",
+    "Hpt_FlechetteLauncher_Fixed_Medium"
+  ],
+  "splitFamilies": [
+    {
+      "description": "Upstream denies the ordinary recipes to the Guardian variant and Anti-Guardian Zone Resistance to the ordinary one, so each half is its own group.",
+      "ordinary": {
+        "group": "powerPlants",
+        "symbol": "Int_Powerplant_Size5_Class5",
+        "blueprints": ["PowerPlant_Armoured", "PowerPlant_Boosted", "PowerPlant_Stealth"]
+      },
+      "guardian": {
+        "group": "guardianPowerPlants",
+        "symbol": "Int_GuardianPowerplant_Size5",
+        "blueprints": ["recipe_guardianmodule_sturdy"]
+      }
+    },
+    {
+      "ordinary": {
+        "group": "powerDistributors",
+        "symbol": "Int_PowerDistributor_Size5_Class5",
+        "blueprints": [
+          "PowerDistributor_HighCapacity",
+          "PowerDistributor_HighFrequency",
+          "PowerDistributor_PriorityEngines",
+          "PowerDistributor_PrioritySystems",
+          "PowerDistributor_PriorityWeapons",
+          "PowerDistributor_Shielded"
+        ]
+      },
+      "guardian": {
+        "group": "guardianPowerDistributors",
+        "symbol": "Int_GuardianPowerDistributor_Size5",
+        "blueprints": ["recipe_guardianmodule_sturdy"]
+      }
+    },
+    {
+      "ordinary": {
+        "group": "hullReinforcements",
+        "symbol": "Int_HullReinforcement_Size3_Class2",
+        "blueprints": [
+          "HullReinforcement_Advanced",
+          "HullReinforcement_Explosive",
+          "HullReinforcement_HeavyDuty",
+          "HullReinforcement_Kinetic",
+          "HullReinforcement_Thermic"
+        ]
+      },
+      "guardian": {
+        "group": "guardianHullReinforcements",
+        "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
+        "blueprints": ["recipe_guardianmodule_sturdy"]
+      }
+    }
   ],
   "exclusions": [
     {
@@ -100,9 +159,9 @@
     ]
   },
   "corpus": {
-    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total and `ungroupedModules` how many of those entries sit on a module this catalogue does not group — 497 before the families below were mapped, 0 now. `blueprintAliases` are one recipe under two journal spellings: the catalogue lists the family-specific id for these families, and a build declaring the generic one is engineering the same thing. `notOffered` is the residue: declarations neither EDSY nor coriolis lists for that module, kept here rather than bent into the catalogue.",
+    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total; `ungroupedEntries` how many of them sit on a module this catalogue does not group — 497 before the missing families were mapped. `blueprintAliases` are one recipe under two journal spellings: the catalogue lists the family-specific id for these families, and a build declaring the generic one is engineering the same thing. `notOffered` is the residue: declarations no registry lists for that module, kept here rather than bent into the catalogue.",
     "declaredEngineering": 1902,
-    "ungroupedModules": 0,
+    "ungroupedEntries": 2,
     "aliasSpellingsAccepted": 70,
     "blueprintAliases": {
       "Misc_LightWeight": [
@@ -145,6 +204,13 @@
         "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
         "experimental": "special_super_penetrator_cooled",
         "entries": 6
+      }
+    ],
+    "notGrouped": [
+      {
+        "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
+        "blueprint": "Weapon_LongRange",
+        "entries": 2
       }
     ]
   }

@@ -8,15 +8,25 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1063 of the 1198 modules — every module EDSY or coriolis-data
- * gives a recipe for. The other 135 are the families that take no engineering at all:
- * fuel tanks, passenger cabins, the repair, recon, research, decontamination and
- * multi-limpet controllers, meta-alloy hull reinforcement, the Pulse Wave Analyser, the
- * mining launchers, Shock Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars,
- * the discovery scanners and the AX utility modules.
+ * The catalogue groups 1029 of the 1198 modules — every module a registry gives a recipe
+ * for. The other 169 take no engineering: whole families (fuel tanks, passenger cabins,
+ * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
+ * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
+ * Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
+ * Supercruise Assist, the module stabilisers, the planetary approach suites, the
+ * discovery scanners, the cargo hatch and the AX utility modules), plus the individual
+ * modules upstream denies every blueprint — the turreted and V2 anti-xeno weapons, five
+ * of the seven mining tools, the remote-release launchers and the Mk II Plasma Shock
+ * Autocannon.
+ *
+ * **A group is one menu.** Where the same kind of module comes in two flavours with
+ * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian
+ * Zone Resistance and an ordinary one takes only the ordinary recipes, so `powerPlants`
+ * and `guardianPowerPlants` are separate — likewise the distributors and the hull
+ * reinforcement packages.
  *
  * Its own module (and data file) so consumers who never open an engineering menu do not
- * bundle it — 65 KB minified, 7 KB gzipped, of which the module→group map is most of the
+ * bundle it — 63 KB minified, 7 KB gzipped, of which the module→group map is most of the
  * weight. Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`,
  * neither of which this module pulls in.
  *
@@ -75,11 +85,13 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"no source gives this module a recipe"**, which for the 135 ungrouped
- * modules is the same as "cannot be engineered" — they are whole families the game
- * offers no blueprint for, listed in the module overview above. It stays worded as the
- * catalogue's answer rather than the game's because that is what it can honestly claim:
- * a module Frontier adds engineering for later reads `null` until a registry says so.
+ * `null` means **"no source gives this module a recipe"**, which for the 169 ungrouped
+ * modules is the same as "cannot be engineered" — the families and the individually
+ * denied modules listed in the module overview above. It stays worded as the catalogue's
+ * answer rather than the game's because that is what it can honestly claim: a module
+ * Frontier adds engineering for later reads `null` until a registry says so, and the
+ * build corpus already has one such case (the Mk II Plasma Shock Autocannon, engineered
+ * in two community builds and denied every blueprint upstream).
  *
  * @param symbol - A module symbol, e.g. `"Hpt_BeamLaser_Fixed_Small"`.
  * @returns The group id, or `null` when the module is not in the catalogue.
@@ -133,17 +145,18 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * Every experimental effect a module can take — its group's list, minus the effects
  * that particular module is excluded from.
  *
- * Most modules take their whole group's list, but there are real exceptions: a
- * Multi-cannon cannot take Phasing Sequence, and six of the seven grouped mining tools
- * take no experimental at all (every Mining Laser but the small fixed one, plus both
- * Abrasion Blasters). Those are applied here, so the result is the exact set for this
- * module.
+ * Most modules take their whole group's list, but 24 are exceptions: 13 Multi-cannons
+ * cannot take Phasing Sequence, six dumbfire racks cannot take Drag Munitions, four
+ * missile racks are short of Penetrator Munitions or FSD Interrupt, and the small fixed
+ * Abrasion Blaster takes blueprints but no experimental at all. Those are applied here,
+ * so the result is the exact set for this module.
  *
- * **An empty array is the common answer, and it usually means "blueprints only".** 389
- * of the 1063 grouped modules have no experimental slot at all — 27 of the 50 groups
- * offer none, among them life support, sensors, the limpet controllers, the utility
- * scanners and the Guardian weapons — and an ungrouped module answers empty too.
- * {@link getEngineeringGroup} tells the two apart: it is `null` only for the second.
+ * **An empty array is the common answer, and it usually means "blueprints only".** 364
+ * of the 1029 grouped modules have no experimental slot: 363 sit in the 27 of 53 groups
+ * that offer none — life support, sensors, the limpet controllers, the utility scanners,
+ * the Guardian weapons among them — and the Abrasion Blaster is excluded from its
+ * group's only effect. An ungrouped module answers empty too;
+ * {@link getEngineeringGroup} tells the two apart: it is `null` only for that one.
  *
  * @param symbol - A module symbol.
  * @returns Experimental-effect ids. Join to `EXPERIMENTAL_EFFECTS`.
@@ -176,12 +189,13 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * `Weapon_LongRange` does not offer every effect listed here, only its own group's. Use
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
- * The groups name 81 of the 108 blueprints in `BLUEPRINTS`. The other 27 are the
+ * The groups name 81 of the 108 blueprints in `BLUEPRINTS`. The other 27 are 26
  * pre-engineered `recipe_*` variants, which are sold already applied rather than offered
  * in an engineering menu (see `ships/pre-engineered`), plus `MC_Overcharged` —
  * coriolis-data's multi-cannon Overcharged, one clip-size leg apart from the
  * `Weapon_Overcharged` the multi-cannon group lists. All 27 answer `[]` here exactly as
- * an unknown id would.
+ * an unknown id would. `recipe_guardianmodule_sturdy` is the one `recipe_*` the groups do
+ * name: Anti-Guardian Zone Resistance is applied at an engineer like any other recipe.
  *
  * @param blueprint - A blueprint id, e.g. `"Weapon_Efficient"`.
  * @returns Experimental-effect ids, sorted and de-duplicated; empty when no group names

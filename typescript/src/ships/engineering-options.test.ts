@@ -20,6 +20,13 @@ import buildIndex from '../../../fixtures/ships/builds/index.json' with { type: 
 
 test('the catalogue holds the expected groups, modules and exclusions', () => {
     assert.equal(Object.keys(ENGINEERING_OPTION_GROUPS).length, fixture.counts.groups);
+    const grouped = ALL_MODULES.filter((module) => getEngineeringGroup(module.symbol) !== null);
+    assert.equal(grouped.length, fixture.counts.modules);
+    const narrowed = grouped.filter((module) => {
+        const group = ENGINEERING_OPTION_GROUPS[getEngineeringGroup(module.symbol)!]!;
+        return getExperimentalsForModule(module.symbol).length < group.experimentals.length;
+    });
+    assert.equal(narrowed.length, fixture.counts.exclusions);
     for (const expected of fixture.groups) {
         const group = ENGINEERING_OPTION_GROUPS[expected.id];
         assert.ok(group, `missing group ${expected.id}`);
@@ -66,6 +73,26 @@ test('a module offers its whole group unless it is explicitly excluded', () => {
             assert.ok(!offered.includes(effect), `${symbol} still offers ${effect}`);
         }
         assert.equal(offered.length, group.experimentals.length - excluded.length);
+    }
+});
+
+test('a Guardian variant and its ordinary twin are different groups, not one merged menu', () => {
+    // Upstream denies the ordinary recipes to the Guardian module and Anti-Guardian Zone
+    // Resistance to the ordinary one. Merging the two would offer each the other's menu.
+    for (const family of fixture.splitFamilies) {
+        for (const half of [family.ordinary, family.guardian]) {
+            assert.equal(getEngineeringGroup(half.symbol), half.group, half.symbol);
+            assert.deepEqual([...getBlueprintsForModule(half.symbol)], half.blueprints);
+        }
+        const ordinary = new Set(getBlueprintsForModule(family.ordinary.symbol));
+        for (const blueprint of getBlueprintsForModule(family.guardian.symbol)) {
+            assert.ok(!ordinary.has(blueprint), `${family.guardian.group}: ${blueprint} shared`);
+        }
+        // Same kind of module, so the experimental slot is unchanged by the split.
+        assert.deepEqual(
+            ENGINEERING_OPTION_GROUPS[family.guardian.group]!.experimentals,
+            ENGINEERING_OPTION_GROUPS[family.ordinary.group]!.experimentals,
+        );
     }
 });
 
@@ -128,24 +155,31 @@ const declared = corpus.flatMap((build) =>
         .map((module) => ({ symbol: module.item, ...module.engineering! })),
 );
 
-test('every module the build corpus engineers is grouped', () => {
+test('every module the build corpus engineers is grouped, bar the one upstream refuses', () => {
     assert.equal(declared.length, fixture.corpus.declaredEngineering);
     const ungrouped = declared.filter((entry) => getEngineeringGroup(entry.symbol) === null);
     assert.deepEqual(
-        [...new Set(ungrouped.map((entry) => entry.symbol))],
-        [],
-        `${ungrouped.length} declared entries sit on a module with no group`,
+        [...new Set(ungrouped.map((entry) => entry.symbol))].sort(),
+        fixture.corpus.notGrouped.map((row) => row.symbol).sort(),
     );
-    assert.equal(ungrouped.length, fixture.corpus.ungroupedModules);
+    assert.equal(ungrouped.length, fixture.corpus.ungroupedEntries);
+    for (const row of fixture.corpus.notGrouped) {
+        assert.equal(
+            declared.filter((entry) => entry.symbol === row.symbol).length,
+            row.entries,
+            row.symbol,
+        );
+    }
 });
 
 test('every recipe the build corpus declares is one its module offers', () => {
     // A recipe that applies to several module families is stored under each family's own
     // journal id; the catalogue lists the family-specific one, so a build spelling it the
-    // generic way is declaring the same thing. `notOffered` is the real residue: twelve
+    // generic way is declaring the same thing — and the alias must be one of *this*
+    // module's family, not merely some family's. `notOffered` is the real residue: eleven
     // declarations no registry lists for that module —
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36 for the eleven on
-    // the Guardian weapons, and issues/32 for the scanner id collision.
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36 for the ten on the
+    // Guardian weapons, and issues/32 for the scanner id collision.
     const aliases: Record<string, readonly string[]> = fixture.corpus.blueprintAliases;
     const exempt = new Set(
         fixture.corpus.notOffered.map(
@@ -154,12 +188,19 @@ test('every recipe the build corpus declares is one its module offers', () => {
     );
     let viaAlias = 0;
     for (const entry of declared) {
-        const group = ENGINEERING_OPTION_GROUPS[getEngineeringGroup(entry.symbol)!]!;
+        const groupId = getEngineeringGroup(entry.symbol);
+        if (groupId === null) continue; // pinned by the previous test
+        const group = ENGINEERING_OPTION_GROUPS[groupId]!;
         const offered = getBlueprintsForModule(entry.symbol);
         if (!offered.includes(entry.blueprint)) {
-            const specific = aliases[entry.blueprint];
-            if (specific?.some((id) => offered.includes(id))) viaAlias += 1;
-            else assert.ok(exempt.has(`${entry.symbol}|${entry.blueprint}`), `${entry.symbol}`);
+            const specific = aliases[entry.blueprint] ?? [];
+            const matching = specific.filter((id) => offered.includes(id));
+            if (matching.length > 0) {
+                assert.equal(matching.length, 1, `${entry.symbol}: ambiguous alias`);
+                viaAlias += 1;
+            } else {
+                assert.ok(exempt.has(`${entry.symbol}|${entry.blueprint}`), `${entry.symbol}`);
+            }
         }
         if (
             entry.experimental &&
