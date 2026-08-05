@@ -230,6 +230,16 @@ export class FittedModule {
     /**
      * Return compatible blueprints and the grades computable from carried stats.
      *
+     * @remarks
+     * One modification can appear twice under different ids. Life support, the limpet
+     * controllers, AFMUs, fuel scoops and refineries each take Lightweight, Reinforced or
+     * Shielded under both the generic id (`Misc_LightWeight`) and a family-prefixed one
+     * (`LifeSupport_LightWeight`), because Frontier keys them both ways and real builds
+     * carry either. The two spellings hold the same grades, rolls and materials — the one
+     * published exception is `LifeSupport_Shielded`, whose G5 draws +112% power where
+     * `Misc_Shielded` draws +100% — so a menu that lists one entry per modification should
+     * group by `getBlueprint(fdname).name` rather than by id.
+     *
      * @returns Compatible blueprints in catalogue order.
      */
     getAvailableBlueprints(): AvailableBlueprint[] {

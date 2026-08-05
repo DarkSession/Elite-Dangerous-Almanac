@@ -108,6 +108,14 @@ in the doc comment of each ported module, and in long form in the domain
   costs, which coriolis-data does not carry, plus the attribute-to-journal-Label
   mapping, from [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**,
   whose code is licensed **CC BY-NC 4.0**.
+- **Which blueprints and experimental effects each module can take** — the module-group
+  availability tables behind `data/ships/engineering-options.jsonc` and behind the
+  blueprint-to-module-family compatibility map `ShipLoadout.applyBlueprint` validates
+  against, from [EDSY](https://github.com/taleden/EDSY) (`eddb.js`, **taleden**,
+  **CC BY-NC 4.0**), cross-checked against
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
+  (`modifications/modules.json`, commit `0db9234`). Availability is **Elite Dangerous game
+  data, property of Frontier Developments plc**; see the notice below.
 - **Module mass, integrity, power draw and boot time** — the per-module figures
   backfilled onto the records coriolis-data leaves blank, and the corrections applied
   where coriolis-data's value is a duplicated or mis-copied row, come from

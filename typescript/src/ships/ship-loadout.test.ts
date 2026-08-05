@@ -549,6 +549,27 @@ test('applyBlueprint reproduces the Deep Black FSD modifiers and lifts jump rang
     assert.equal(massMod?.Value, 208);
 });
 
+test('the Deep Black export engineers its life support the way it declares', () => {
+    // The export carries `Misc_LightWeight` on a size-5 life support — the generic id for
+    // a modification the catalogue also stores as `LifeSupport_LightWeight`. Both spellings
+    // are real, so both must apply, and to the same numbers.
+    const build = ShipLoadout.fromSlef(slefFixture);
+    const stock = build.getFittedModule('LifeSupport')!;
+    assert.equal(stock.symbol.toLowerCase(), 'int_lifesupport_size5_class2');
+
+    const modifiers = (blueprint: string) => {
+        const engineered = ShipLoadout.fromSlef(slefFixture);
+        engineered.applyBlueprint('LifeSupport', blueprint, { grade: 5, quality: 1 });
+        return engineered.getFittedModule('LifeSupport')!.Engineering!.Modifiers!;
+    };
+
+    // G5 Lightweight: -85% mass, -50% integrity, off a base of 8 t and 86.
+    const generic = modifiers('Misc_LightWeight');
+    assert.equal(generic.find((m) => m.Label === 'Mass')?.Value, 1.2);
+    assert.equal(generic.find((m) => m.Label === 'Integrity')?.Value, 43);
+    assert.deepEqual(modifiers('LifeSupport_LightWeight'), generic);
+});
+
 test('assembled builds include engineered cargo capacity in their aggregates', () => {
     const rack = mod('Int_CargoRack_Size5_Class1', INTERNAL_MODULES);
     const build = ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', rack);

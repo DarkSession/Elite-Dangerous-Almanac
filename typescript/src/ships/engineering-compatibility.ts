@@ -13,6 +13,14 @@
  * *list* of families, so a build authored anywhere is accepted — see
  * {@link GENERIC_MISC_TARGETS} and `data/ships/SOURCES.md` (§Engineering compatibility).
  *
+ * @remarks
+ * Which family offers which recipe is read from the module-group tables of
+ * {@link https://github.com/taleden/EDSY | EDSY} (`eddb.js`, taleden, CC BY-NC 4.0),
+ * cross-checked against {@link https://github.com/EDCD/coriolis-data | EDCD/coriolis-data}
+ * (`modifications/modules.json`, commit `0db9234`, code MIT). The underlying game logic is
+ * Elite Dangerous data, property of Frontier Developments plc. Full provenance in
+ * `data/ships/SOURCES.md`; the canonical credit list is `ATTRIBUTIONS.md`.
+ *
  * @internal
  */
 

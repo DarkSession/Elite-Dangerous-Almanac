@@ -1000,7 +1000,15 @@ silently emitting a partial `Engineering.Modifiers` block.
 **Blueprint and experimental ids are Frontier `fdname`s** — the same strings a journal
 `Loadout` event carries in `Engineering.BlueprintName` / `ExperimentalEffect` (e.g.
 `FSD_LongRange`, `special_fsd_heavy`). Enumerate them with `Object.keys(BLUEPRINTS)` and
-`Object.keys(EXPERIMENTAL_EFFECTS)`. Need only the engineering maths? `computeModifiers`
+`Object.keys(EXPERIMENTAL_EFFECTS)`. A few modifications answer to more than one id:
+Lightweight, Reinforced and Shielded are keyed both generically (`Misc_LightWeight`) and
+per family (`LifeSupport_LightWeight`, `AFM_Shielded`, …), and Long Range and Wide Angle
+are shared by the sensor suite and the utility scanners (`Sensor_LongRange`,
+`Scanner_LongRange`). Which spelling a build carries depends on the tool that exported it,
+so `applyBlueprint` accepts either — the numbers it applies are the ones stored under the
+id you name.
+
+Need only the engineering maths? `computeModifiers`
 from `ships/engineering` turns a blueprint grade (from `ships/blueprints`) and an
 experimental effect (from `ships/experimental-effects`) into journal-style modifiers.
 The calculator is validated against the real "Deep Black" export — its size-8 drive's
