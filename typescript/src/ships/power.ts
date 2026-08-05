@@ -70,7 +70,11 @@ export interface PowerConsumer {
      * is named in {@link PowerBudget.unknownDraws} instead of being counted as `0`.
      */
     readonly drawUnknown?: boolean;
-    /** Optional label carried through to the matching {@link PowerBand}; ignored by the maths. */
+    /**
+     * Optional label for the module — the journal slot key when
+     * {@link ShipLoadout.powerBudget} builds the consumer. Ignored by the maths, but it
+     * is how a consumer reported in {@link PowerBudget.unknownDraws} names itself.
+     */
     readonly label?: string;
 }
 
@@ -119,18 +123,21 @@ export interface PowerBudget {
      */
     readonly bands: readonly PowerBand[];
     /**
-     * One entry per fitted module whose draw is unknown ({@link PowerConsumer.drawUnknown}),
-     * naming it by its {@link PowerConsumer.label | label} — `''` for a consumer with
-     * none, so the length is always the count. Normally empty.
+     * The **enabled** consumers whose draw is unknown ({@link PowerConsumer.drawUnknown}),
+     * handed straight back so a caller can name them — by
+     * {@link PowerConsumer.label | label}, which is the journal slot key when
+     * {@link ShipLoadout.powerBudget} built the list, or by identity for a
+     * hand-assembled one. A switched-off module is skipped before the flag is read, so
+     * it never appears here. Normally empty.
      *
      * **While it is not empty, every other figure here is a lower bound.** The unknown
      * draws contribute nothing to `retracted`, `deployed` or the bands, so `headroom`
-     * reads too high and `withinBudget` and `poweredDeployed` answer only for the draws
-     * that are known. The budget is still reported rather than refused — the per-band
-     * detail is worth having, and one unknown module is not a reason to withhold the
-     * other twenty — but a caller showing it should say so.
+     * and `utilisation` read too favourably and `withinBudget` and `poweredDeployed`
+     * answer only for the draws that are known. The budget is still reported rather
+     * than refused — the per-band detail is worth having, and one unknown module is not
+     * a reason to withhold the other twenty — but a caller showing it should say so.
      */
-    readonly unknownDraws: readonly string[];
+    readonly unknownDraws: readonly PowerConsumer[];
 }
 
 /** Clamp a priority into `1`–`5`, defaulting an absent one to `1`. */
@@ -169,14 +176,14 @@ function bandIndex(priority: number | undefined): number {
 export function powerBudget(available: number, consumers: readonly PowerConsumer[]): PowerBudget {
     const retractedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const deployedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
-    const unknownDraws: string[] = [];
+    const unknownDraws: PowerConsumer[] = [];
 
     for (const consumer of consumers) {
         if (consumer.enabled === false) continue;
         if (consumer.drawUnknown) {
             // Counting an unknown draw as 0 would report headroom the build may not
-            // have; it is named instead, and left out of every total.
-            unknownDraws.push(consumer.label ?? '');
+            // have; it is reported instead, and left out of every total.
+            unknownDraws.push(consumer);
             continue;
         }
         if (!Number.isFinite(consumer.draw) || consumer.draw === 0) continue;

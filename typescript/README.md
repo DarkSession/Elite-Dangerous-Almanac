@@ -199,7 +199,9 @@ assignment), and a module-stat reconciliation that left every outfitting module
 carrying at least one stat and corrected 40 records. A third followed on **2026-08-04**:
 every hull's mounts now record any restriction they carry (see above), and the modules
 limited to particular hulls gained the `restrictedToShips` values that were previously
-only documented.
+only documented. A fourth, on **2026-08-05**, changed no value: it added
+`ships/unknown-stats`, which says which absent stats are unknown rather than absent
+because the module has none.
 
 A value no source publishes is left **absent rather than guessed** — a handful of
 `integrity`, `powerDraw` and `mass` fields are `undefined` for that reason. The

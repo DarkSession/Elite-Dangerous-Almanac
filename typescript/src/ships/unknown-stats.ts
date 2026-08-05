@@ -33,7 +33,8 @@
  * "the game has no such value".
  *
  * Its own module and data file — five records, so a consumer that needs the distinction
- * pays about a hundred bytes for it and one that does not pays nothing.
+ * pays under 1 KB minified for it, pulling no catalogue, and one that does not pays
+ * nothing.
  *
  * @packageDocumentation
  */
@@ -50,7 +51,15 @@ import type { OutfittingModule } from './modules.js';
  */
 export type ModuleStatField = keyof OutfittingModule;
 
-/** One module and the stats its catalogue record omits because they are unknown. */
+/**
+ * One module and the stats its catalogue record omits because they are unknown.
+ *
+ * @example
+ * ```ts
+ * UNKNOWN_MODULE_STATS.find((e) => e.symbol === 'Int_DroneControl_ResourceSiphon');
+ * // -> { symbol: 'Int_DroneControl_ResourceSiphon', stats: ['mass'] }
+ * ```
+ */
 export interface UnknownModuleStats {
     /** The module's Frontier symbol, e.g. `"Int_DroneControl_ResourceSiphon"`. */
     readonly symbol: string;

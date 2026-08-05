@@ -113,9 +113,9 @@ test('a narrower catalogue narrows the answer', () => {
 });
 
 test('the registry names only fields the module record can carry', () => {
-    // A typo'd field would silently never match, so pin the names against a real record.
-    const reference = getModuleBySymbol('Int_Hyperdrive_Size5_Class5', ALL_MODULES)!;
-    const fields = new Set(Object.keys(reference) as ModuleStatField[]);
+    // A typo'd field would silently never match, so pin the names against the fields
+    // the catalogue actually uses — every one of them, not one record's handful.
+    const fields = new Set(ALL_MODULES.flatMap((m) => Object.keys(m)) as ModuleStatField[]);
     for (const entry of UNKNOWN_MODULE_STATS) {
         for (const field of entry.stats) assert.ok(fields.has(field), `unknown field ${field}`);
     }

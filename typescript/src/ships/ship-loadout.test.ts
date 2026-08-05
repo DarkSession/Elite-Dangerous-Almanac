@@ -1020,7 +1020,10 @@ test('a fitted module whose power draw is unknown is reported, not treated as fr
         )
         .setModule('Slot02_Size6', mod('Int_FuelScoop_Size6_Class5', INTERNAL_MODULES));
     const budget = build.powerBudget();
-    assert.deepEqual(budget.unknownDraws, ['Slot01_Size7']);
+    assert.deepEqual(
+        budget.unknownDraws.map((consumer) => consumer.label),
+        ['Slot01_Size7'],
+    );
     // The known draws are still added up, and the scanner adds nothing to them.
     assert.ok(
         near(budget.retracted, mod('Int_FuelScoop_Size6_Class5', INTERNAL_MODULES).powerDraw!),

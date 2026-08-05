@@ -138,12 +138,12 @@ test('the five groups are always reported, in order', () => {
     );
 });
 
-test('a draw the catalogue cannot supply is named, not counted as zero', () => {
-    const budget = powerBudget(10, [
-        { draw: 4, priority: 1, label: 'PowerPlant' },
-        { draw: 0, drawUnknown: true, priority: 1, label: 'Slot05_Size3' },
-    ]);
-    assert.deepEqual(budget.unknownDraws, ['Slot05_Size3']);
+test('a draw the catalogue cannot supply is reported, not counted as zero', () => {
+    const unknown = { draw: 0, drawUnknown: true, priority: 1, label: 'Slot05_Size3' };
+    const budget = powerBudget(10, [{ draw: 4, priority: 1, label: 'MainEngines' }, unknown]);
+    // The consumer itself comes back, so a caller can name it however it named it.
+    assert.deepEqual(budget.unknownDraws, [unknown]);
+    assert.equal(budget.unknownDraws[0], unknown);
     // Left out of every total, which is what makes the rest a lower bound.
     assert.equal(budget.retracted, 4);
     assert.equal(budget.deployed, 4);
@@ -161,12 +161,16 @@ test('an unknown draw is unknown whatever number came with it', () => {
         { draw: 5, priority: 1 },
     ]);
     assert.equal(budget.deployed, 5);
-    assert.deepEqual(budget.unknownDraws, ['Slot06_Size2']);
+    assert.deepEqual(
+        budget.unknownDraws.map((c) => c.label),
+        ['Slot06_Size2'],
+    );
 });
 
-test('an unlabelled unknown draw still counts towards the tally', () => {
+test('an unlabelled unknown draw is still reported', () => {
     const budget = powerBudget(10, [{ draw: 0, drawUnknown: true }, { draw: 1 }]);
-    assert.deepEqual(budget.unknownDraws, ['']);
+    assert.equal(budget.unknownDraws.length, 1);
+    assert.equal(budget.unknownDraws[0]?.label, undefined);
     assert.equal(budget.deployed, 1);
 });
 

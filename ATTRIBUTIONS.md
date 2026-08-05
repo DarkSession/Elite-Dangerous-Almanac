@@ -119,8 +119,10 @@ in the doc comment of each ported module, and in long form in the domain
   below. `data/ships/SOURCES.md` has the record-by-record derivation, the per-field
   coverage split, and the three candidate corrections that cross-checking **rejected**.
   Where neither registry nor panel yielded a figure, `data/ships/unknown-stats.jsonc`
-  records the absence as *unknown*; that classification is this repository's own
-  reconciliation work and carries no third-party data.
+  records the absence as _unknown_. That classification is this repository's own
+  reconciliation work — no third-party figure is reproduced in it; what its payload
+  carries is Frontier module symbols and field names, under the same notice as the
+  catalogues themselves.
 
 - **Ground-truth ship builds (test fixtures, not shipped)** — three real builds used to
   check the loadout maths against something other than itself.

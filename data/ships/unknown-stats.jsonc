@@ -2,11 +2,15 @@
  * **Unknown module stats** — the absences in `modules-*.jsonc` that mean *we do not
  * know this value*, as opposed to *the module has no such stat*.
  *
- * Sources: EDCD/coriolis-data, modules/** (https://github.com/EDCD/coriolis-data) and
- *          EDSY eddb.js (taleden, CC BY-NC 4.0: https://github.com/taleden/EDSY) —
- *          consulted for each record listed here and carrying no value for the field.
- *          The classification itself is this repository's own reconciliation work
- *          (revision 2026-08-05), not a figure taken from either registry.
+ * Basis: the findings of the 2026-08-02 module-stat reconciliation against
+ *        EDCD/coriolis-data, modules/** (https://github.com/EDCD/coriolis-data) and
+ *        EDSY eddb.js (taleden, CC BY-NC 4.0: https://github.com/taleden/EDSY) —
+ *        neither registry carries a value for the fields named here. No source was
+ *        re-acquired for this file: the classification (revision 2026-08-05) is this
+ *        repository's own work, and no figure is reproduced from either registry.
+ *        The module symbols and field names are Elite Dangerous game data, property
+ *        of Frontier Developments plc, redistributed under Frontier's media-usage
+ *        terms: https://forums.frontier.co.uk/threads/510879/
  *
  * A stat field is simply absent from a module record whether the game has no such stat
  * for it — a cargo rack draws no power — or no source publishes the one it does have.

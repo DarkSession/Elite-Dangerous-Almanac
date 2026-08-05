@@ -123,8 +123,8 @@ guess. The 2026-08-05 revision classified all three and made them legible in the
 
 **a. 83 non-armour records have no `integrity` — closed as a finding, not a gap.** Mostly
 the families that carry no other mechanical stat either — passenger cabins (23), hull and
-Guardian/meta-alloy reinforcement packages (30), fuel tanks (9), cargo racks (16), module
-stabilisers, planetary approach suites. Neither EDSY nor any other registry carries an
+Guardian/meta-alloy reinforcement packages (30), fuel tanks (9), cargo racks (17), module
+stabilisers (2), planetary approach suites (2). Neither EDSY nor any other registry carries an
 integrity for them and the in-game panel does not show one, so the absence *is* the
 answer; they are not registered as unknown. The exact 83 are pinned in
 `fixtures/ships/module-stats.json` `withoutIntegrity`, so a value appearing — or a new

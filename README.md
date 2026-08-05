@@ -603,11 +603,13 @@ isStatUnknown("Int_CargoRack_Size4_Class1", "powerDraw"); // -> false, it draws 
 ```
 
 The five are the four withdrawn Discovery Scanners (`powerDraw`) and the unsized Hatch
-Breaker Limpet Controller (`mass`). The library applies this itself: `unladenMass`
-returns `null` rather than a total missing a module's mass, and `powerBudget()` names
-such a module in `unknownDraws` rather than counting it as free. `TODO.md` tracks what
-would fill each. An absent `cost` needs no such lookup — see [Prices](#prices) — and
-this is not a claim that _every_ other absence is a stat the game does not have.
+Breaker Limpet Controller (`mass`). A whole build already answers safely without you
+consulting the register: `powerBudget()` reports such a module in `unknownDraws`
+instead of counting it as free, and `unladenMass` returns `null` rather than a total
+missing a module's mass — the latter for _any_ absent mass, register or not. `TODO.md`
+tracks what would fill each. An absent `cost` needs no such lookup — see
+[Prices](#prices) — and this is not a claim that _every_ other absence is a stat the
+game does not have.
 
 #### Prices
 
@@ -1236,7 +1238,7 @@ against.
 
 ## Data freshness
 
-The checked-in catalogues are a snapshot dated **2026-07-24**, with two changes
+The checked-in catalogues are a snapshot dated **2026-07-24**, with three changes
 since:
 
 - **2026-08-02** — one market commodity added, `curatedcommodity` ("Curated
@@ -1244,6 +1246,9 @@ since:
   registry; its market category is a maintainer assignment.
 - **2026-08-02** — a module-stat reconciliation against EDSY that left every
   outfitting module carrying at least one stat and corrected 40 records.
+- **2026-08-05** — no value changed: the absences that mean _unknown_ rather than
+  _no such stat_ are now recorded in `data/ships/unknown-stats.jsonc` and answered
+  by [`ships/unknown-stats`](#when-a-stat-is-missing).
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
