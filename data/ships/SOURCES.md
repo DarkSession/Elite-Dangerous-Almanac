@@ -1,6 +1,6 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, plus a module-stat reconciliation on 2026-08-02, a slot-restriction pass on 2026-08-04, the classification of what the stat pass could not fill on 2026-08-05, and a price correction the same day (recorded in the prices section, under "Modules (outfitting)"). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, plus five revisions: a completeness pass and a defence/power/weapon stat pass on 2026-08-01, a module-stat reconciliation on 2026-08-02, a slot-restriction pass on 2026-08-04, and on 2026-08-05 both the classification of what the stat pass could not fill and a price correction (all but the price correction are the `**Revision**` blocks below; that one is recorded inline, in the prices sub-list under "Modules (outfitting)"). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 **Revision 2026-08-05 (UTC) — the stats no source carries are now stated as unknown.**
 No value was added, changed or removed: this revision is a *classification* of the three
@@ -542,9 +542,10 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     own armour rows and case-mismatched symbols, whereas within the module table the
     result is flat.
     - **Every cost in that table is a multiple of 10 but one:**
-      `Int_ShieldGenerator_Size1_Class5`, at 88 075. (Widen the scan to the whole file
-      and eight more appear — the Python Mk II and Cobra Mk V hull-armour rows — which
-      is exactly the method-dependence being avoided here.)
+      `Int_ShieldGenerator_Size1_Class5`, at 88 075. (Take in the ship table's own armour
+      rows as well and eight more appear — Python Mk II and Cobra Mk V — and the hull
+      prices beside them add three more again. That spread is exactly the
+      method-dependence being avoided by scoping to the module table.)
     - Where coriolis prices the same module and the two differ, the difference is
       overwhelmingly EDSY carrying coriolis's exact figure rounded to the nearest 10
       (`Int_CargoRack_Size5_Class1` 111 566 → 111 570, `_Size6_Class1` 362 591 →
@@ -554,15 +555,16 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
       so read a lone EDSY figure as possibly stale as well as rounded.
 
     **What that does and does not bound.** It bounds the *rounding* to under 10 credits,
-    and not to ± 5: EDSY does not always round to nearest, since of the pairs differing
-    by under 10 credits, eleven differ by 6 to 9 with EDSY *above* coriolis in every one
-    (`Int_LifeSupport_Size8_Class5`: coriolis 27 249 391 → EDSY 27 249 400). It does
-    **not** bound how far the figure sits from the game's own price. Three pairs where
-    both registries publish a multiple of 10 still differ by 10
+    and not to ± 5: EDSY does not always round to nearest, since among the pairs differing
+    by under 10 credits a handful differ by 6 to 9, and EDSY is *above* coriolis in every
+    one of them (`Int_LifeSupport_Size8_Class5`: coriolis 27 249 391 → EDSY 27 249 400).
+    It does **not** bound how far the figure sits from the game's own price. Three pairs
+    where both registries publish a multiple of 10 still differ by 10
     (`Int_FighterBay_Size{6,7}_Class1`, `Int_PassengerCabin_Size6_Class1`), which no
-    rounding explains — one of the two is simply out by ten or more. So treat 12 560 as
-    the best published figure at 10-credit resolution, not as an accuracy guarantee; only
-    an in-game reading settles the last digits. Every EDSY-sourced price already in this
+    rounding explains: whatever the real price is, at least one of the two registries is
+    wrong about it by five credits or more, and neither says which. So treat 12 560 as the
+    best published figure at 10-credit resolution, not as an accuracy guarantee; only an
+    in-game reading settles the last digits. Every EDSY-sourced price already in this
     catalogue carries the same granularity, so this record is no less exact than the rest
     of them.
   - **The remaining three racks have no list price to publish** (same revision).

@@ -1256,9 +1256,16 @@ against.
 
 ## Data freshness
 
-The checked-in catalogues are a snapshot dated **2026-07-24**, with three changes
+The checked-in catalogues are a snapshot dated **2026-07-24**, with five changes
 since:
 
+- **2026-08-01** — a completeness pass over the outfitting and engineering
+  catalogues against EDSY and the in-game registries, adding three records the
+  earlier FDevIDs/coriolis-data join had dropped and restoring modifiers to four
+  experimental effects.
+- **2026-08-01** — the defence, power and weapon stats the build calculations need,
+  from coriolis-data; in the same pass each hull's bulkheads moved off `ships.jsonc`
+  onto its `<Hull>_Armour_*` module records.
 - **2026-08-02** — one market commodity added, `curatedcommodity` ("Curated
   Commodity Package"), from a player-journal observation rather than an upstream
   registry; its market category is a maintainer assignment.
