@@ -1305,9 +1305,9 @@ test('every editor and reader on the facade takes a lower-cased key', () => {
 });
 
 test('a lower-cased armour slot is the fitted bulkhead, not the stock alloy', () => {
-    // The fixture's own bulkhead is grade 1, which *is* the Type-11's stock alloy, so
-    // it cannot tell a bound slot from the fallback. Reinforced alloy can: 1225 hull
-    // points against the 630 a build with no armour module is reported on.
+    // The fixture's own bulkhead is grade 1, which *is* the Type-11's stock lightweight
+    // alloy, so it cannot tell a bound slot from the fallback. Grade 3 — Military Grade
+    // Composite — can: 1225 hull points against the 630 a build with no armour reports.
     const upgrade = (slot: string): number => {
         const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
         const modules = data.Modules.map((m) =>
@@ -1374,4 +1374,36 @@ test('two spellings of one mount resolve to the same entry everywhere', () => {
     assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_chafflauncher_tiny');
     // With the duplicate gone, the survivor answers to either spelling again.
     assert.equal(build.moduleAt('tinyhardpoint1')?.Item, 'hpt_chafflauncher_tiny');
+});
+
+test('when neither spelling of a duplicated mount is exact, the earlier one wins', () => {
+    // The other half of the tie-break: with no exact match to prefer, insertion order
+    // decides — and every part of the class has to decide the same way.
+    const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout({
+        ...data,
+        // Both name the layout's `TinyHardpoint1`; neither is spelled the way it is.
+        Modules: [...data.Modules, { Slot: 'TINYHARDPOINT1', Item: 'hpt_chafflauncher_tiny' }],
+    });
+
+    // `tinyhardpoint1` came first, so it is the entry the readers name...
+    assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_shieldbooster_size0_class5');
+    assert.equal(build.getFittedModule('TinyHardpoint1')?.slot, 'tinyhardpoint1');
+    // ...the one the utility mount reports as fitted...
+    const mount = build.utilityMounts().find((s) => s.key === 'TinyHardpoint1')!;
+    assert.equal(mount.module?.Item, 'hpt_shieldbooster_size0_class5');
+    // ...and the one that takes the mount's place in a slot-ordered export, leaving the
+    // later spelling in the tail rather than dropping it.
+    const ordered = build.toLoadoutEvent({ moduleOrder: 'slots' }).Modules.map((m) => m.Slot);
+    assert.deepEqual(
+        ordered.filter((slot) => slot.toLowerCase() === 'tinyhardpoint1'),
+        ['tinyhardpoint1', 'TINYHARDPOINT1'],
+    );
+    assert.equal(ordered.at(-1), 'TINYHARDPOINT1');
+    assert.equal(ordered.length, 28);
+
+    // The editors agree with the readers: this replaces, and does not add a third.
+    build.setModule('TinyHardpoint1', mod('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES));
+    assert.equal(build.modules.length, 28);
+    assert.equal(build.moduleAt('tinyhardpoint1')?.Item, 'Hpt_ChaffLauncher_Tiny');
 });

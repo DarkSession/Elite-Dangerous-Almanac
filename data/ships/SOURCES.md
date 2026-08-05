@@ -1224,7 +1224,8 @@ its own fixture, with the expected outputs in a sibling fixture that names it by
   journal capture, which both use Frontier's own casing. `ShipLoadout` and
   `parseSlotName` now resolve a slot key whatever its casing. What was **not** done is
   canonicalising keys on import: a build keeps its producer's spelling, so this fixture
-  still re-exports byte for byte, and the tests over it compare slot keys
+  re-exports its slot keys byte for byte — its *credits* deliberately do not survive a
+  round trip, per the retail rule below — and the tests over it compare slot keys
   case-insensitively because that is what the library itself does.
 
 Two facts the Krait Phantom capture established that the EDSY export could not:
