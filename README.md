@@ -1006,7 +1006,7 @@ per family (`LifeSupport_LightWeight`, `AFM_Shielded`, …), and Long Range and 
 are shared by the sensor suite and the utility scanners (`Sensor_LongRange`,
 `Scanner_LongRange`). Which spelling a build carries depends on the tool that exported it,
 so `applyBlueprint` accepts either — and the numbers it applies are the ones stored under
-the id you name. For Lightweight and Reinforced that is the same recipe either way. Two
+the id you name. For Lightweight and Reinforced that is the same recipe either way. Three
 pairs are not, so name the family's own id when you have it:
 
 - **Shielded on life support.** `LifeSupport_Shielded` G5 draws +112% power where

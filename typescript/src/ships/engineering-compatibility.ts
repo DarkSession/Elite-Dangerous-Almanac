@@ -80,9 +80,11 @@ const prefixTarget = (
  * Frontier keys one modification under several ids: a family-prefixed one
  * (`LifeSupport_LightWeight`, `CollectionLimpet_LightWeight`, …) and the generic
  * `Misc_LightWeight`, whose grades are identical to them in `blueprints.jsonc`. Which id
- * a build carries depends on where it was authored — EDSY writes `Misc_LightWeight` for
- * every family below, coriolis-data the family-prefixed one — so both spellings have to
- * resolve to the same set.
+ * a build carries depends on where it was authored: EDSY writes `Misc_LightWeight` for
+ * every family below, coriolis-data the family-prefixed one where one exists — life
+ * support and the limpet controllers — and the generic id elsewhere, chaff launchers,
+ * heat sinks, point defence and the scanners having no prefixed spelling at all. Both
+ * have to resolve to the same set.
  *
  * The set is EDSY's own module-group table (`eddb.js`, the `misc_lw` / `misc_rf` group
  * lists): chaff launchers, ECMs, heat sink launchers, point defence, the KWS/manifest/wake
@@ -218,9 +220,8 @@ export function blueprintTargets(fdname: string): readonly EngineeringTarget[] |
     // utility scanners, and the game writes one `BlueprintName` for both. The two groups
     // roll different numbers — the sensors' Long Range costs mass and the scanners' costs
     // power draw, Wide Angle the other way round — which is why coriolis-data splits the
-    // scanner side out under
-    // `Scanner_LongRange` / `Scanner_WideAngle` while EDSY keeps a single `Sensor_*`
-    // fdname. The corpus carries both spellings on the same Frame Shift Wake Scanner, so
+    // scanner side out under `Scanner_LongRange` / `Scanner_WideAngle` while EDSY keeps a
+    // single `Sensor_*` fdname. The corpus carries both spellings on one wake scanner, so
     // both are accepted; the numbers then applied are the ones stored under the id named,
     // which is the wrong set for a scanner given a `Sensor_*` id. That is unreachable
     // today — a utility scanner carries no `ScannerRange` base stat, so the call fails the

@@ -979,9 +979,12 @@ that **every** engineering entry the 181 builds declare is one its module can ta
   `FuelScoop_Shielded`, `Refineries_Shielded`, …). The two spellings are the same recipe —
   their grades in `blueprints.jsonc` are identical, roll ranges and materials included,
   with one published exception: `LifeSupport_Shielded` G5 draws +112% power where the rest
-  draw +100%. Which spelling a build carries depends on where it was authored, EDSY
-  writing the generic id for every family and coriolis the family-prefixed one, so both
-  resolve to the whole family set. Measured on the corpus before this was fixed: 76 of
+  draw +100%. Which spelling a build carries depends on where it was authored: EDSY writes
+  the generic id for every family, coriolis the family-prefixed one where the catalogue
+  has one — life support and the four limpet controllers, plus AFMUs, fuel scoops and
+  refineries for Shielded — and the generic id for the rest, chaff launchers, heat sinks,
+  point defence and the scanners having no prefixed spelling at all. Both resolve to the
+  whole family set. Measured on the corpus before this was fixed: 76 of
   1902 entries were refused for a family mismatch, 52 of them `Misc_LightWeight` on life
   support, collector controllers and scanners.
 - **Which families, exactly.** Lightweight and Reinforced: chaff launchers, ECMs, heat sink
