@@ -488,11 +488,14 @@ test('the planetary approach suite states its own mount instead of being special
     );
 });
 
-test('every restriction accepts what the game itself fitted in a real capture', () => {
+test('the restrictions accept what the game itself fitted in a real capture', () => {
     // The captures are the evidence these two rules rest on, so they are also the test
     // that matters most: the game sold each of these builds, and re-fitting one module
     // by module must not refuse a single mount. A rule drawn too tightly — a cabin
     // family left out of the passenger prefixes, say — fails here and nowhere else.
+    // Between them the three cover `mining`, `cargo`, `limpetController`,
+    // `vesselHangar` and `passenger`; `military` and `planetaryApproachSuite` are not
+    // covered here, because Inara omits an empty mount and none of the three fills one.
     const captures = [
         ['lynx-highliner', lynxCapture[0]!.data],
         ['panther-mkii', pantherCapture[0]!.data],
@@ -509,22 +512,29 @@ test('every restriction accepts what the game itself fitted in a real capture', 
             );
         }
     }
-    // And the two mounts the captures were acquired for, spelled as Inara writes them.
-    const lynx = lynxCapture[0]!.data.Modules;
-    assert.deepEqual(
-        lynx.filter((m) => m.Slot.startsWith('passenger')).map((m) => m.Item),
-        [
-            'int_mkii_passengercabin_size6_class1',
-            'int_mkii_passengercabin_size5_class1',
-            'int_mkii_passengercabin_size6_class1',
-        ],
-    );
-    assert.deepEqual(
-        pantherCapture[0]!.data.Modules.filter((m) => m.Item.startsWith('int_largecargorack')).map(
-            (m) => m.Slot,
-        ),
-        ['cargo01', 'cargo02'],
-    );
+    // And the mounts the captures were acquired for, module by mount and spelled as
+    // Inara writes them — sorted by key, since a capture lists its modules in no
+    // particular order and which cabin sits in which mount is the whole point.
+    const fittedIn = (capture: { Slot: string; Item: string }[], prefix: string) =>
+        capture
+            .filter((m) => m.Slot.startsWith(prefix))
+            .map((m) => [m.Slot, m.Item])
+            .sort();
+    assert.deepEqual(fittedIn(lynxCapture[0]!.data.Modules, 'passenger'), [
+        ['passenger01', 'int_mkii_passengercabin_size6_class1'],
+        ['passenger02', 'int_mkii_passengercabin_size6_class1'],
+        ['passenger03', 'int_mkii_passengercabin_size5_class1'],
+    ]);
+    // The Panther's Mk II racks are in its two cargo mounts, and its unrestricted
+    // size-8 and size-7 carry ordinary racks — the build that proves the reservation
+    // is about the mount rather than about size.
+    assert.deepEqual(fittedIn(pantherCapture[0]!.data.Modules, 'cargo'), [
+        ['cargo01', 'int_largecargorack_size8_class1'],
+        ['cargo02', 'int_largecargorack_size7_class1'],
+    ]);
+    assert.deepEqual(fittedIn(pantherCapture[0]!.data.Modules, 'slot01'), [
+        ['slot01_size8', 'int_cargorack_size8_class1'],
+    ]);
 });
 
 test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => {

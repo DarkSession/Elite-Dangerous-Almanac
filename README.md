@@ -1381,7 +1381,9 @@ recorded inline there beside the field they touch.
   gained a member, so an exhaustive `switch` over it needs a case; and the Lynx's
   cabin mounts read `Passenger Slot 1` rather than `Passenger Slot 1 (Size 6)`, the
   size staying on `slot.size` as it does for every other restricted mount. The hull
-  also left the group below whose keys no rule derives — 11 hulls became 10.
+  also left the group below whose keys no rule derives — 11 hulls became 10. One
+  refusal message changed with the special case that produced it: a suite in the wrong
+  mount now reads `module only fits a mount that takes planetary approach suites`.
 - **2026-08-05** — 13 hulls gained the journal's own slot keys, from EDSY, on 11 of
   which the numbering rules were wrong. **This one is behaviour-visible:** the keys
   `enumerateSlots` and `ShipLoadout.slots()` return changed on those 11 hulls (an

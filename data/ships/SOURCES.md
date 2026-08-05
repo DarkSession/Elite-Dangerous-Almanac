@@ -18,8 +18,10 @@ recorded below (`967834d6…` / `db 20260428` and
 `0db9234b5b9ce8c939ea84133d7ce336eea88e27`). What is new is **two real captures**,
 `fixtures/ships/slef-inara-lynx-highliner.json` and `slef-inara-panther-mkii.json`,
 Inara SLEF exports contributed by the repository owner from their own fleet and scrubbed
-to the producing app and version — the commander link and account ids are gone, the game
-data is not. They are the ground truth the earlier revision said this rule needed.
+to the producing app and version — the commander link and account ids are gone from
+**these two**, the game data is not. (The Type-11 export acquired on 2026-08-04 still
+carries its header ids, recorded under §Ground-truth builds; this pass did not revisit
+it.) They are the ground truth the earlier revision said this rule needed.
 
 - **`passenger`, on `Passenger01`–`Passenger03`.** EDSY reserves the Lynx's three
   cabin mounts to `{ipc:1}`. That alone was not enough to store the rule: `PASSENGER`
@@ -33,9 +35,10 @@ data is not. They are the ground truth the earlier revision said this rule neede
   consumes no `SlotNN` number. That the game's own numbering needs the restriction to
   make sense is why the hull now joins the two whose stored names the rules re-derive
   unaided, and `slots.test.ts` asserts it.
-  **What the mount accepts** is both cabin families at every class each offers —
-  `Int_PassengerCabin_Size{2..6}_Class{1..4}` (economy through luxury) and
-  `Int_MkII_PassengerCabin_Size{2..6}_Class{1,2}` (economy and business). No fuel tank,
+  **What the mount accepts** is both cabin families entire — the 14
+  `Int_PassengerCabin_*` records (sizes 2–6, economy through luxury, the higher classes
+  only on the larger sizes) and the 9 `Int_MkII_PassengerCabin_*` (sizes 2–6, economy
+  and business; the Mk II family has no first-class or luxury cabin). No fuel tank,
   which every *other* optional mount takes.
 - **`restrictedToSlot`, on five module records.** The 2026-08-04 pass gave the two Mk II
   Cargo Racks `restrictedToShips: ["PantherMkII"]` and noted the sources said something
@@ -1672,6 +1675,32 @@ its own fixture, with the expected outputs in a sibling fixture that names it by
   re-exports its slot keys byte for byte — its *credits* deliberately do not survive a
   round trip, per the retail rule below — and the tests over it compare slot keys
   case-insensitively because that is what the library itself does.
+
+- **`fixtures/ships/slef-inara-lynx-highliner.json`** — a real Inara SLEF export of an
+  engineered passenger Lynx Highliner (27 `Modules` entries), contributed **2026-08-05
+  UTC** by the repository owner from their own commander's fleet, same licence position
+  as the Type-11 above. **Manual correction:** the header was reduced to `appName` and
+  `appVersion`, dropping the `appURL` commander-fleet link and the
+  `appCustomProperties` Inara commander and ship ids — a person's account, which
+  `../../AGENTS.md` keeps out of the repository; nothing under `data` was touched, and
+  the build is otherwise stored as received apart from re-indenting. Stored-form SHA-256
+  `a213d4219fa9531224aafc185d399b08896f7c7ed0a7461b0c8dd0a822767651` (the checksum is of
+  the scrubbed file, since that is what a port must reproduce).
+  It is **the ground truth for the passenger restriction**: `passenger01` and
+  `passenger02` hold `int_mkii_passengercabin_size6_class1` and `passenger03`
+  `int_mkii_passengercabin_size5_class1`, which is what EDSY's `{ipc:1}` reservation
+  could not confirm on its own — `PASSENGER` is absent from EDSY's journal import map.
+  It carries two more cabins in *unrestricted* mounts (`slot01_size6`, `slot03_size4`,
+  `slot04_size4`), so it also shows the restriction runs one way only.
+- **`fixtures/ships/slef-inara-panther-mkii.json`** — a real Inara SLEF export of a
+  trading Panther Clipper Mk II (25 `Modules` entries), contributed **2026-08-05 UTC**
+  on the same terms, scrubbed the same way. Stored-form SHA-256
+  `b551f39bda3cf97bdf346cfad6eccdcd5b6424e60ea056b6b1226f76c842ec9b`. Its `ShipName` is
+  kept, as the Krait Phantom capture's is: it describes a ship, not a person.
+  It is **the ground truth for `restrictedToSlot`**: its two Mk II Cargo Racks sit in
+  `cargo01` and `cargo02` while its unrestricted `slot01_size8` and `slot02_size7` carry
+  ordinary `int_cargorack_*` racks of the same sizes — a build that cannot be explained
+  by size or by hull, only by the mount.
 
 Two facts the Krait Phantom capture established that the EDSY export could not:
 
