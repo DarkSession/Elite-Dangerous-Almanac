@@ -37,6 +37,7 @@ const RESTRICTED_OPTIONAL_NAMES: Partial<Record<SlotRestriction, string>> = {
     cargo: 'Cargo Slot',
     limpetController: 'Limpet Controller Slot',
     vesselHangar: 'Vessel Hangar Slot',
+    passenger: 'Passenger Slot',
 };
 
 /** A human-readable label for a slot, derived from its key and kind. */
@@ -61,12 +62,6 @@ function slotDisplayName(slot: BuildSlot): string {
                 const label = RESTRICTED_OPTIONAL_NAMES[slot.restriction];
                 return label && numbered ? `${label} ${Number(numbered[1])}` : slot.key;
             }
-            // The Lynx Highliner's three cabin mounts. Unrestricted here because the
-            // passenger-cabin rule is not modelled yet
-            // (https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11), but
-            // the game names them, so they get a label rather than a bare key.
-            const passenger = /^Passenger(\d+)$/.exec(slot.key);
-            if (passenger) return `Passenger Slot ${Number(passenger[1])} (Size ${slot.size})`;
             const optional = /^Slot(\d+)_Size(\d+)$/.exec(slot.key);
             return optional
                 ? `Optional Internal ${Number(optional[1])} (Size ${slot.size})`

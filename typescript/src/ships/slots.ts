@@ -5,9 +5,9 @@
  * A hull offers a fixed set of mounts: seven core internals, a handful of weapon
  * hardpoints, some tiny utility mounts, and a column of optional internals. Some of
  * those mounts are **restricted** to one family of modules — military and
- * planetary-approach optionals on most hulls, and, on two hulls, cargo-only,
- * limpet-controller-only and vessel-hangar-only optionals and mining-only hardpoints
- * (see {@link SlotRestriction}). This module gives
+ * planetary-approach optionals on most hulls, and, on three hulls, cargo-only,
+ * limpet-controller-only, vessel-hangar-only and passenger-cabin-only optionals and
+ * mining-only hardpoints (see {@link SlotRestriction}). This module gives
  * each mount a stable **slot key** and a {@link BuildSlot} descriptor, and
  * {@link parseSlotName} classifies a journal slot name (as it appears in a SLEF
  * export) into the same shape — so a build loaded from SLEF and a build assembled from
@@ -53,9 +53,17 @@ export type HardpointRestriction = 'mining';
  * - `vesselHangar` — Mk I and Mk II vessel hangars, the modules the game called
  *   fighter hangars before the Operations update (the Type-11 Prospector's other
  *   size-5 optional; journal `FighterBay01`).
+ * - `passenger` — passenger cabins, Mk I and Mk II, of every class from economy to
+ *   luxury (the Lynx Highliner's two size-6 and one size-5 optionals; journal
+ *   `Passenger01`–`Passenger03`).
  */
 export type OptionalRestriction =
-    'military' | 'planetaryApproachSuite' | 'cargo' | 'limpetController' | 'vesselHangar';
+    | 'military'
+    | 'planetaryApproachSuite'
+    | 'cargo'
+    | 'limpetController'
+    | 'vesselHangar'
+    | 'passenger';
 
 /**
  * A restriction limiting which modules a slot accepts — every value either kind of
@@ -69,9 +77,10 @@ export type OptionalRestriction =
  * exhaustive `switch` over a hardpoint's restriction still has to handle (or cast
  * away) the optional-only values; there is no `never` case to lean on.
  *
- * The list is what the hull layouts model, not every rule the game has: passenger
- * cabin-reserved optionals (the Lynx Highliner's three) are still stored as ordinary
- * slots — see https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11.
+ * The list is what the hull layouts model, not every rule the game has: a hardpoint
+ * that takes only one *mount* (fixed, gimballed or turret) cannot be expressed, and
+ * neither can a restricted utility mount — see
+ * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11.
  *
  * The journal spells two of these differently from the value: `vesselHangar` mounts
  * are named `FighterBay01` (the game renamed the modules but not the slots), and
@@ -100,6 +109,7 @@ export const SLOT_RESTRICTION_LABELS: Readonly<Record<SlotRestriction, string>> 
     cargo: 'cargo racks and fuel tanks',
     limpetController: 'limpet controllers',
     vesselHangar: 'vessel hangars',
+    passenger: 'passenger cabins',
 });
 
 /**
@@ -136,7 +146,7 @@ export interface BuildSlot {
      * `"TinyHardpoint2"`, `"Slot01_Size6"`, `"Military01"`,
      * `"PlanetaryApproachSuite"`, and on a restricted mount
      * `"LargeMiningHardpoint1"`, `"Cargo01"`, `"LimpetController01"`,
-     * `"FighterBay01"`.
+     * `"FighterBay01"`, `"Passenger01"`.
      *
      * @remarks
      * This is the string every `slotKey` argument takes. It is matched
@@ -234,8 +244,8 @@ export interface OptionalSlotSpec {
     readonly restriction?: OptionalRestriction;
     /**
      * The mount's own journal slot key, when the numbering rules do not reproduce it
-     * — the Anaconda's `Slot14_Size1`, the Type-9 Heavy's `Slot00_Size8`, the Lynx
-     * Highliner's `Passenger01`. Absent when the rules are right; see
+     * — the Anaconda's `Slot14_Size1`, the Type-9 Heavy's `Slot00_Size8`, the
+     * Keelback's `Slot03_Size3`. Absent when the rules are right; see
      * {@link enumerateSlots} for which hulls carry names and why.
      *
      * @remarks
@@ -354,6 +364,7 @@ const OPTIONAL_PREFIX: Record<Exclude<OptionalRestriction, 'planetaryApproachSui
     cargo: 'Cargo',
     limpetController: 'LimpetController',
     vesselHangar: 'FighterBay',
+    passenger: 'Passenger',
 };
 
 const pad2 = (n: number): string => String(n).padStart(2, '0');
@@ -371,7 +382,7 @@ const pad2 = (n: number): string => String(n).padStart(2, '0');
  * @returns Every mount the hull offers, as {@link BuildSlot}s.
  * @remarks
  * Unrestricted optionals are numbered `Slot01_SizeN`, `Slot02_SizeN`, … with no gaps,
- * and hardpoints `1, 2, 3` within each size class. **Eleven hulls disagree**, and no
+ * and hardpoints `1, 2, 3` within each size class. **Ten hulls disagree**, and no
  * rule derives what they do instead, so a mount on one of them carries its own
  * {@link OptionalSlotSpec.name} / {@link HardpointSlotSpec.name} and that wins:
  *
@@ -384,11 +395,13 @@ const pad2 = (n: number): string => String(n).padStart(2, '0');
  * | Keelback, Asp Scout | one suffix misreports the size |
  * | Type-8 Transporter | `SmallHardpoint2` then `SmallHardpoint4` |
  * | Caspian Explorer | mediums run `6, 5, 1, 2, 3, 4` — out of order, not just gapped |
- * | Lynx Highliner | its three passenger mounts are `Passenger01`–`03` |
  *
- * The Panther Clipper Mk II and Type-11 Prospector carry names too, pinning what the
- * rules already derive. A hull that names any mount of a kind names all of them, so a
- * derived key and a name never compete for the same string.
+ * The Panther Clipper Mk II, Type-11 Prospector and Lynx Highliner carry names too,
+ * pinning what the rules already derive. The Lynx is the one that had to be *earned*:
+ * its `Slot02_Size5` follows three `PassengerNN` mounts, which only comes out right
+ * because a `passenger` mount is a restricted one and so consumes no `SlotNN` number.
+ * A hull that names any mount of a kind names all of them, so a derived key and a name
+ * never compete for the same string.
  * @example
  * ```ts
  * enumerateSlots(getShipSlots('Anaconda')!).filter((s) => s.kind === 'hardpoint');
@@ -532,11 +545,10 @@ export function parseSlotName(slot: string): ParsedSlot | null {
         return { kind: 'optional', size: null, restriction: 'limpetController' };
     if (/^fighterbay\d+$/.test(key))
         return { kind: 'optional', size: null, restriction: 'vesselHangar' };
-    // The Lynx Highliner's three cabin mounts. Classified as the optionals they are,
-    // with no restriction: the game reserves them for passenger cabins, and this
-    // catalogue does not yet model that —
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11.
-    if (/^passenger\d+$/.test(key)) return { kind: 'optional', size: null };
+    // The Lynx Highliner's three cabin mounts, which the game reserves for passenger
+    // cabins — the name says so on its own, like every other restricted mount.
+    if (/^passenger\d+$/.test(key))
+        return { kind: 'optional', size: null, restriction: 'passenger' };
 
     const optional = /^slot\d+_size(\d+)$/.exec(key);
     if (optional) return { kind: 'optional', size: Number(optional[1]) };

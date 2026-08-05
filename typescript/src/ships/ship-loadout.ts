@@ -312,6 +312,14 @@ const LIMPET_CONTROLLER_PREFIXES: readonly string[] = ['int_dronecontrol', 'int_
 const VESSEL_HANGAR_PREFIXES: readonly string[] = ['int_fighterbay'];
 
 /**
+ * Optional-internal groups a **passenger** slot accepts (symbol prefixes) — the Lynx
+ * Highliner's `Passenger01`–`Passenger03`. Both cabin families count, at every class
+ * from economy to luxury; the Mk II cabins are a separate symbol family rather than a
+ * `PassengerCabin` variant, which is why there are two prefixes and not one.
+ */
+const PASSENGER_PREFIXES: readonly string[] = ['int_passengercabin', 'int_mkii_passengercabin'];
+
+/**
  * Slot restriction → the module symbol prefixes it accepts.
  *
  * @remarks
@@ -331,6 +339,7 @@ const RESTRICTED_SLOT_PREFIXES: Record<
     cargo: CARGO_PREFIXES,
     limpetController: LIMPET_CONTROLLER_PREFIXES,
     vesselHangar: VESSEL_HANGAR_PREFIXES,
+    passenger: PASSENGER_PREFIXES,
 };
 
 /**

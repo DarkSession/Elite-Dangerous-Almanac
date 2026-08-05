@@ -385,6 +385,38 @@ test('the restricted optionals take their own family and nothing else', () => {
     assert.throws(() => panther.setModule('Cargo01', shield), /only takes cargo racks/);
 });
 
+test("the Lynx Highliner's cabin mounts take cabins of either family and nothing else", () => {
+    const lynx = ShipLoadout.empty('MediumTransport01');
+    // Both symbol families count, at any class: the capture that pins these mounts
+    // carries Mk II cabins, and the Mk I ones are the same module family.
+    assert.doesNotThrow(() =>
+        lynx.setModule(
+            'Passenger01',
+            mod('Int_MkII_PassengerCabin_Size6_Class2', INTERNAL_MODULES),
+        ),
+    );
+    assert.doesNotThrow(() =>
+        lynx.setModule('Passenger02', mod('Int_PassengerCabin_Size6_Class4', INTERNAL_MODULES)),
+    );
+    // A fuel tank fits every *other* optional mount, restricted or not; not this one.
+    assert.throws(
+        () => lynx.setModule('Passenger03', mod('Int_FuelTank_Size5_Class3')),
+        /only takes passenger cabins/,
+    );
+    assert.throws(
+        () => lynx.setModule('Passenger01', mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES)),
+        /only takes passenger cabins/,
+    );
+    // The restriction is the mount's, not the module's: a cabin still fits the hull's
+    // unrestricted optionals, which is how a Lynx carries more than three of them.
+    assert.doesNotThrow(() =>
+        lynx.setModule(
+            'Slot01_Size6',
+            mod('Int_MkII_PassengerCabin_Size6_Class2', INTERNAL_MODULES),
+        ),
+    );
+});
+
 test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => {
     const bay = mod('Int_FighterBayMk2_Size5_Class1', INTERNAL_MODULES);
     assert.doesNotThrow(() => ShipLoadout.empty('LakonMiner').setModule('FighterBay01', bay));
@@ -449,11 +481,12 @@ test('a restricted mount reports a human-readable name', () => {
     assert.equal(condaName('HugeHardpoint1'), 'Huge Hardpoint 1');
     // Every mount a hull declares gets a label — a key with no case of its own would
     // show up raw among its labelled neighbours, which is what the Lynx Highliner's
-    // `PassengerNN` mounts did when they were first named.
+    // `PassengerNN` mounts did when they were first named. They now read like every
+    // other restricted mount, size left to `slot.size` as `Cargo02` leaves it.
     const lynx = ShipLoadout.empty('MediumTransport01');
     const lynxName = (key: string) => lynx.slots().find((s) => s.key === key)?.name;
-    assert.equal(lynxName('Passenger01'), 'Passenger Slot 1 (Size 6)');
-    assert.equal(lynxName('Passenger03'), 'Passenger Slot 3 (Size 5)');
+    assert.equal(lynxName('Passenger01'), 'Passenger Slot 1');
+    assert.equal(lynxName('Passenger03'), 'Passenger Slot 3');
     assert.equal(lynxName('Slot02_Size5'), 'Optional Internal 2 (Size 5)');
     for (const ship of SHIPS) {
         let build;

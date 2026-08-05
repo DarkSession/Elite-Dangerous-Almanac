@@ -4075,14 +4075,17 @@
       },
       {
         "size": 6,
+        "restriction": "passenger",
         "name": "Passenger01"
       },
       {
         "size": 6,
+        "restriction": "passenger",
         "name": "Passenger02"
       },
       {
         "size": 5,
+        "restriction": "passenger",
         "name": "Passenger03"
       },
       {

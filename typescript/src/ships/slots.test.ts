@@ -55,15 +55,21 @@ test('parseSlotName reads a restricted mount off its journal name alone', () => 
         size: null,
         restriction: 'vesselHangar',
     });
+    assert.deepEqual(parseSlotName('Passenger01'), {
+        kind: 'optional',
+        size: null,
+        restriction: 'passenger',
+    });
     // The cargo hatch is not a cargo-restricted optional, however it reads.
     assert.deepEqual(parseSlotName('CargoHatch'), { kind: 'cargoHatch', size: 1 });
 });
 
-test('parseSlotName reads the Lynx Highliner cabin mounts as plain optionals', () => {
-    // The game reserves them for passenger cabins; that restriction is not modelled yet
-    // (issue #11), so they classify as the optional mounts they are and nothing more.
-    assert.deepEqual(parseSlotName('Passenger01'), { kind: 'optional', size: null });
-    assert.deepEqual(parseSlotName('Passenger03'), { kind: 'optional', size: null });
+test('parseSlotName reads the Lynx Highliner cabin mounts as cabin-only', () => {
+    // The game reserves them for passenger cabins, and — as with every other restricted
+    // mount — the journal name is enough to say so without consulting the hull.
+    const cabin = { kind: 'optional', size: null, restriction: 'passenger' };
+    assert.deepEqual(parseSlotName('Passenger01'), cabin);
+    assert.deepEqual(parseSlotName('Passenger03'), cabin);
     // The newest slot-name form has to obey the case rule the rest of them do — an
     // Inara-sourced Lynx build writes them lower-cased like everything else.
     assert.deepEqual(parseSlotName('passenger01'), parseSlotName('Passenger01'));
@@ -98,6 +104,7 @@ test('parseSlotName classifies a key whatever its casing', () => {
         ['Military01', 'MILITARY01'],
         ['LimpetController01', 'limpetcontroller01'],
         ['FighterBay01', 'fighterbay01'],
+        ['Passenger01', 'passenger01'],
     ] as const) {
         assert.deepEqual(parseSlotName(produced), parseSlotName(journal), produced);
     }
@@ -371,11 +378,14 @@ const withoutNames = (layout: ShipSlots): ShipSlots => ({
     })),
 });
 
-test('the numbering rules still derive the two hulls whose names they already fit', () => {
-    // The Panther Clipper Mk II and Type-11 Prospector name their mounts so the stored
-    // table matches EDSY's one for one — but the rules produce the same keys unaided,
-    // and stripping the names must not change a thing.
-    for (const symbol of ['PantherMkII', 'LakonMiner']) {
+test('the numbering rules still derive the three hulls whose names they already fit', () => {
+    // The Panther Clipper Mk II, Type-11 Prospector and Lynx Highliner name their mounts
+    // so the stored table matches EDSY's one for one — but the rules produce the same
+    // keys unaided, and stripping the names must not change a thing. The Lynx joined
+    // them when its cabin mounts became `passenger`-restricted: a restricted mount
+    // consumes no `SlotNN` number, which is the only way its `Slot02_Size5` comes out
+    // right after three `PassengerNN`s.
+    for (const symbol of ['PantherMkII', 'LakonMiner', 'MediumTransport01']) {
         const layout = getShipSlots(symbol)!;
         assert.ok(
             [...layout.hardpoints, ...layout.optional].some((s) => s.name),
@@ -389,8 +399,8 @@ test('the numbering rules still derive the two hulls whose names they already fi
     }
 });
 
-test('exactly eleven hulls need a name the numbering rules cannot derive', () => {
-    // The other two named hulls are pins. If a future data change makes the rules
+test('exactly ten hulls need a name the numbering rules cannot derive', () => {
+    // The other three named hulls are pins. If a future data change makes the rules
     // right (or wrong) for a hull, this is what says so out loud.
     const diverging = SHIPS.filter((ship) => {
         const layout = getShipSlots(ship.symbol);
@@ -404,7 +414,6 @@ test('exactly eleven hulls need a name the numbering rules cannot derive', () =>
         'Explorer_NX',
         'Federation_Dropship',
         'Independant_Trader',
-        'MediumTransport01',
         'Type7',
         'Type8',
         'Type9',
@@ -479,6 +488,7 @@ test('every restriction a hull can carry has a label to show for it', () => {
         'limpetController',
         'military',
         'mining',
+        'passenger',
         'planetaryApproachSuite',
         'vesselHangar',
     ]);

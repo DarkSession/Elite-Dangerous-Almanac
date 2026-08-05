@@ -60,7 +60,8 @@
             "planetaryApproachSuite",
             "cargo",
             "limpetController",
-            "vesselHangar"
+            "vesselHangar",
+            "passenger"
           ]
         },
         "name": {

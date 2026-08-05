@@ -445,6 +445,81 @@
           "name": "PlanetaryApproachSuite"
         }
       ]
+    },
+    {
+      "symbol": "MediumTransport01",
+      "core": {
+        "powerPlant": 5,
+        "thrusters": 6,
+        "frameShiftDrive": 5,
+        "lifeSupport": 6,
+        "powerDistributor": 5,
+        "sensors": 3,
+        "fuelTank": 5
+      },
+      "hardpoints": [
+        {
+          "size": 3
+        },
+        {
+          "size": 2
+        },
+        {
+          "size": 2
+        },
+        {
+          "size": 2
+        },
+        {
+          "size": 2
+        }
+      ],
+      "utility": 4,
+      "optional": [
+        {
+          "size": 6,
+          "name": "Slot01_Size6"
+        },
+        {
+          "size": 6,
+          "restriction": "passenger",
+          "name": "Passenger01"
+        },
+        {
+          "size": 6,
+          "restriction": "passenger",
+          "name": "Passenger02"
+        },
+        {
+          "size": 5,
+          "restriction": "passenger",
+          "name": "Passenger03"
+        },
+        {
+          "size": 5,
+          "name": "Slot02_Size5"
+        },
+        {
+          "size": 4,
+          "name": "Slot03_Size4"
+        },
+        {
+          "size": 4,
+          "name": "Slot04_Size4"
+        },
+        {
+          "size": 3,
+          "name": "Slot05_Size3"
+        },
+        {
+          "size": 2,
+          "name": "Slot06_Size2"
+        },
+        {
+          "size": 1,
+          "name": "Slot07_Size1"
+        }
+      ]
     }
   ],
   "keys": {
@@ -984,6 +1059,21 @@
       ],
       "rejects": [
         "Int_CargoRack_Size1_Class1"
+      ]
+    },
+    {
+      "ship": "MediumTransport01",
+      "slot": "Passenger01",
+      "restriction": "passenger",
+      "accepts": [
+        "Int_MkII_PassengerCabin_Size6_Class2",
+        "Int_PassengerCabin_Size6_Class1",
+        "Int_PassengerCabin_Size6_Class4"
+      ],
+      "rejects": [
+        "Int_CargoRack_Size6_Class1",
+        "Int_FuelTank_Size6_Class3",
+        "Int_ShieldGenerator_Size6_Class2"
       ]
     },
     {
