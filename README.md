@@ -939,16 +939,15 @@ mount as the journal's `FrameShiftDrive` and `LargeMiningHardpoint1`. A build ke
 whatever spelling it was imported with — editing one of its mounts never renames it, so
 re-exporting returns the producer's own keys untouched.
 
-**Enumerate them; do not compute them.** The numbering looks regular and on 11 of the 48
+**Enumerate them; do not compute them.** The numbering looks regular and on 10 of the 48
 hulls is not, so a key you construct by counting will name a mount the game does not
 have. The Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1` — there is
 no 11 or 12; the Type-9 Heavy starts at `Slot00_Size8`; the Type-7 Transporter uses the
-number `09` twice; the Type-8 Transporter has no `SmallHardpoint3`; the Caspian
+number `09` twice; the Type-8 Transporter has no `SmallHardpoint3`; and the Caspian
 Explorer's medium hardpoints run 6, 5, 1, 2, 3, 4 in layout order, so the same key means
-a **different physical mount** than position would suggest; and the Lynx Highliner calls
-three of its optionals `Passenger01`–`03`. Those names are the game's, carried per hull
-on the mount itself — `getShipSlots(symbol)?.optional[i].name` — and applied by
-`enumerateSlots`. A mount without a `name` is one the rules get right.
+a **different physical mount** than position would suggest. Those names are the game's,
+carried per hull on the mount itself — `getShipSlots(symbol)?.optional[i].name` — and
+applied by `enumerateSlots`. A mount without a `name` is one the rules get right.
 
 A `_SizeN` suffix is part of the name, not a measurement: on the Keelback, Asp Scout and
 Type-7 Transporter, Frontier's own key disagrees with the mount it names (the Keelback's
@@ -963,12 +962,20 @@ with `toSlef()` under a computed key names a mount the receiving app cannot matc
 such mount a name of its own — so `slot.restriction` says what it takes and
 `modulesForSlot` lists exactly that. `PlanetaryApproachSuite` is on all but one hull
 (the Lynx Highliner), `Military01…` (reinforcement packages and shield cell banks) on
-16 of the 48; two hulls add more. The Type-11 Prospector's
+16 of the 48; three hulls add more. The Type-11 Prospector's
 `LargeMiningHardpoint1`, `MediumMiningHardpoint1`,
 `MediumMiningHardpoint2` and `SmallMiningHardpoint1` take **mining tools only** (its
 other four mounts, `MediumHardpoint3` and `SmallHardpoint2…4`, take any weapon), while
 its `LimpetController01` and `FighterBay01` take limpet controllers and vessel hangars;
-the Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks.
+the Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks; and
+the Lynx Highliner's `Passenger01`–`Passenger03` take passenger cabins alone.
+
+**A few modules are restricted the other way round** — they fit one kind of mount and
+nothing else, not even an unrestricted slot of the right size. Those carry
+`restrictedToSlot`, the mirror of `slot.restriction`: the two Mk II Cargo Racks and the
+Mk II Mining Multi-Limpet Controller (which also name their hull in `restrictedToShips`,
+and a build must satisfy both), and the planetary approach suites. A plain cargo rack
+has no such field — it fits a `cargo` mount _and_ every unrestricted one.
 
 ```ts
 import {
@@ -1372,6 +1379,22 @@ recorded inline there beside the field they touch.
   Cargo Rack (`Int_CorrosionProofCargoRack_Size1_Class2`, 12 560), which
   coriolis-data carries as `0`. The other three racks of that family stay unpriced:
   no station sells them, so no registry quotes one.
+- **2026-08-05** — two restricted-mount rules the catalogue could not express are now
+  stored: the Lynx Highliner's `Passenger01`–`Passenger03` take **passenger cabins
+  only** (a seventh `slot.restriction` value), and five module records name the mount
+  they fit _and no other_ in a new `restrictedToSlot` — the two Mk II Cargo Racks
+  (`cargo`), the Mk II Mining Multi-Limpet Controller (`limpetController`) and the two
+  planetary approach suites, whose rule stops being a special case in the fit check.
+  Sourced from two real Inara captures, of a Lynx and a Panther Clipper Mk II.
+  **Behaviour-visible three ways:** `setModule` and `modulesForSlot` now refuse those
+  modules on unrestricted mounts (a Panther's `Slot01_Size8` no longer takes a Mk II
+  rack) and refuse anything but a cabin on the Lynx's three; `OptionalRestriction`
+  gained a member, so an exhaustive `switch` over it needs a case; and the Lynx's
+  cabin mounts read `Passenger Slot 1` rather than `Passenger Slot 1 (Size 6)`, the
+  size staying on `slot.size` as it does for every other restricted mount. The hull
+  also left the group below whose keys no rule derives — 11 hulls became 10. One
+  refusal message changed with the special case that produced it: a suite in the wrong
+  mount now reads `module only fits a mount that takes planetary approach suites`.
 - **2026-08-05** — 13 hulls gained the journal's own slot keys, from EDSY, on 11 of
   which the numbering rules were wrong. **This one is behaviour-visible:** the keys
   `enumerateSlots` and `ShipLoadout.slots()` return changed on those 11 hulls (an

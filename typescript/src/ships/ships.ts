@@ -109,8 +109,8 @@ export interface Ship {
     /**
      * Optional-internal mounts, largest first. A mount carries a `name` only where the
      * game's slot key is not what `enumerateSlots` would number it — the Anaconda's
-     * `Slot14_Size1`, the Type-9 Heavy's `Slot00_Size8`, the Lynx Highliner's
-     * `Passenger01`.
+     * `Slot14_Size1`, the Type-9 Heavy's `Slot00_Size8`, the Keelback's
+     * `Slot03_Size3`.
      */
     readonly optional?: readonly OptionalSlotSpec[];
 }

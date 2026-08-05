@@ -14,6 +14,8 @@ import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'j
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
+import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
+import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
@@ -386,6 +388,159 @@ test('the restricted optionals take their own family and nothing else', () => {
     assert.throws(() => panther.setModule('Cargo01', shield), /only takes cargo racks/);
 });
 
+test("the Lynx Highliner's cabin mounts take cabins of either family and nothing else", () => {
+    const lynx = ShipLoadout.empty('MediumTransport01');
+    // Both symbol families count, at any class: the capture that pins these mounts
+    // carries Mk II cabins, and the Mk I ones are the same module family.
+    assert.doesNotThrow(() =>
+        lynx.setModule(
+            'Passenger01',
+            mod('Int_MkII_PassengerCabin_Size6_Class2', INTERNAL_MODULES),
+        ),
+    );
+    assert.doesNotThrow(() =>
+        lynx.setModule('Passenger02', mod('Int_PassengerCabin_Size6_Class4', INTERNAL_MODULES)),
+    );
+    // A fuel tank fits every *other* optional mount, restricted or not; not this one.
+    assert.throws(
+        () => lynx.setModule('Passenger03', mod('Int_FuelTank_Size5_Class3')),
+        /only takes passenger cabins/,
+    );
+    assert.throws(
+        () => lynx.setModule('Passenger01', mod('Int_CargoRack_Size6_Class1', INTERNAL_MODULES)),
+        /only takes passenger cabins/,
+    );
+    // The restriction is the mount's, not the module's: a cabin still fits the hull's
+    // unrestricted optionals, which is how a Lynx carries more than three of them.
+    assert.doesNotThrow(() =>
+        lynx.setModule(
+            'Slot01_Size6',
+            mod('Int_MkII_PassengerCabin_Size6_Class2', INTERNAL_MODULES),
+        ),
+    );
+});
+
+test('a module reserved to one kind of mount fits no other mount on its own hull', () => {
+    // The other half of a restriction. Both racks and the Mk II mining controller are
+    // already `restrictedToShips`, so only the hull that can buy them gets this far —
+    // and on that hull the game still sells them for one mount alone.
+    const panther = ShipLoadout.empty('PantherMkII');
+    const rack = mod('Int_LargeCargoRack_Size8_class1', INTERNAL_MODULES);
+    assert.equal(rack.restrictedToSlot, 'cargo');
+    assert.doesNotThrow(() => panther.setModule('Cargo01', rack));
+    assert.throws(
+        () => panther.setModule('Slot01_Size8', rack),
+        /module only fits a mount that takes cargo racks and fuel tanks/,
+    );
+    // The size-7 rack is the same shape, and `Cargo02` is the Panther's *first* size-7
+    // mount rather than one of the two largest — so this is not "the biggest mount".
+    assert.doesNotThrow(() =>
+        panther.setModule('Cargo02', mod('Int_LargeCargoRack_Size7_Class1', INTERNAL_MODULES)),
+    );
+
+    const miner = ShipLoadout.empty('LakonMiner');
+    const controller = mod('Int_MultiDroneControl_MiningV2_Size5_Class5', INTERNAL_MODULES);
+    assert.doesNotThrow(() => miner.setModule('LimpetController01', controller));
+    assert.throws(
+        () => miner.setModule('Slot05_Size5', controller),
+        /module only fits a mount that takes limpet controllers/,
+    );
+    // An ordinary controller has no such reservation and fits either mount.
+    const plain = mod('Int_DroneControl_Collection_Size5_Class5', INTERNAL_MODULES);
+    assert.equal(plain.restrictedToSlot, undefined);
+    assert.doesNotThrow(() => miner.setModule('Slot05_Size5', plain));
+    assert.doesNotThrow(() => miner.setModule('LimpetController01', plain));
+
+    // An outfitting UI must not offer what the fit check would refuse.
+    assert.ok(
+        !panther
+            .modulesForSlot('Slot01_Size8', INTERNAL_MODULES)
+            .some((m) => m.symbol === rack.symbol),
+    );
+    assert.ok(
+        panther.modulesForSlot('Cargo01', INTERNAL_MODULES).some((m) => m.symbol === rack.symbol),
+    );
+});
+
+test('the planetary approach suite states its own mount instead of being special-cased', () => {
+    // This rule used to be two hard-coded checks in `#fitError`; it is now the same
+    // `restrictedToSlot` the racks and the controller use, and behaves identically.
+    const suite = mod('Int_PlanetApproachSuite', INTERNAL_MODULES);
+    assert.equal(suite.restrictedToSlot, 'planetaryApproachSuite');
+    assert.equal(
+        mod('Int_PlanetApproachSuite_Advanced', INTERNAL_MODULES).restrictedToSlot,
+        'planetaryApproachSuite',
+    );
+    const conda = ShipLoadout.empty('Anaconda');
+    assert.doesNotThrow(() => conda.setModule('PlanetaryApproachSuite', suite));
+    assert.throws(
+        () => conda.setModule('Slot14_Size1', suite),
+        /module only fits a mount that takes planetary approach suites/,
+    );
+    // The mount's half still holds on its own: it refuses a module that never declared
+    // a reservation, so neither half depends on the other being right.
+    assert.throws(
+        () =>
+            conda.setModule(
+                'PlanetaryApproachSuite',
+                mod('Int_CargoRack_Size1_Class1', INTERNAL_MODULES),
+            ),
+        /slot only takes planetary approach suites/,
+    );
+});
+
+test('the restrictions accept what the game itself fitted in a real capture', () => {
+    // The captures are the evidence these two rules rest on, so they are also the test
+    // that matters most: the game sold each of these builds, and re-fitting one module
+    // by module must not refuse a single mount. A rule drawn too tightly — a cabin
+    // family left out of the passenger prefixes, say — fails here and nowhere else.
+    // Between them the three cover `mining`, `cargo`, `limpetController`,
+    // `vesselHangar` and `passenger`; `military` and `planetaryApproachSuite` are not
+    // covered here, because Inara omits an empty mount and none of the three fills one.
+    const captures = [
+        ['lynx-highliner', lynxCapture[0]!.data],
+        ['panther-mkii', pantherCapture[0]!.data],
+        ['type-11', inaraFixture[0]!.data],
+    ] as const;
+    for (const [name, data] of captures) {
+        const build = ShipLoadout.empty(data.Ship);
+        for (const fitted of data.Modules) {
+            const record = getModuleBySymbol(fitted.Item, ALL_MODULES);
+            assert.ok(record, `${name}: no module "${fitted.Item}"`);
+            assert.doesNotThrow(
+                () => build.setModule(fitted.Slot, record),
+                `${name}: ${fitted.Item} → ${fitted.Slot}`,
+            );
+        }
+    }
+    // And the mounts the captures were acquired for, module by mount and spelled as
+    // Inara writes them — sorted by key, since a capture lists its modules in no
+    // particular order and which cabin sits in which mount is the whole point.
+    const fittedIn = (capture: { Slot: string; Item: string }[], prefix: string) =>
+        capture
+            .filter((m) => m.Slot.startsWith(prefix))
+            .map((m) => [m.Slot, m.Item])
+            .sort();
+    assert.deepEqual(fittedIn(lynxCapture[0]!.data.Modules, 'passenger'), [
+        ['passenger01', 'int_mkii_passengercabin_size6_class1'],
+        ['passenger02', 'int_mkii_passengercabin_size6_class1'],
+        ['passenger03', 'int_mkii_passengercabin_size5_class1'],
+    ]);
+    // The Panther's Mk II racks are in its two cargo mounts, and its unrestricted
+    // size-8 and size-7 carry ordinary racks — the build that proves the reservation
+    // is about the mount rather than about size.
+    assert.deepEqual(fittedIn(pantherCapture[0]!.data.Modules, 'cargo'), [
+        ['cargo01', 'int_largecargorack_size8_class1'],
+        ['cargo02', 'int_largecargorack_size7_class1'],
+    ]);
+    assert.deepEqual(fittedIn(pantherCapture[0]!.data.Modules, 'slot01'), [
+        ['slot01_size8', 'int_cargorack_size8_class1'],
+    ]);
+    assert.deepEqual(fittedIn(pantherCapture[0]!.data.Modules, 'slot02'), [
+        ['slot02_size7', 'int_cargorack_size7_class1'],
+    ]);
+});
+
 test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => {
     const bay = mod('Int_FighterBayMk2_Size5_Class1', INTERNAL_MODULES);
     assert.doesNotThrow(() => ShipLoadout.empty('LakonMiner').setModule('FighterBay01', bay));
@@ -450,11 +605,12 @@ test('a restricted mount reports a human-readable name', () => {
     assert.equal(condaName('HugeHardpoint1'), 'Huge Hardpoint 1');
     // Every mount a hull declares gets a label — a key with no case of its own would
     // show up raw among its labelled neighbours, which is what the Lynx Highliner's
-    // `PassengerNN` mounts did when they were first named.
+    // `PassengerNN` mounts did when they were first named. They now read like every
+    // other restricted mount, size left to `slot.size` as `Cargo02` leaves it.
     const lynx = ShipLoadout.empty('MediumTransport01');
     const lynxName = (key: string) => lynx.slots().find((s) => s.key === key)?.name;
-    assert.equal(lynxName('Passenger01'), 'Passenger Slot 1 (Size 6)');
-    assert.equal(lynxName('Passenger03'), 'Passenger Slot 3 (Size 5)');
+    assert.equal(lynxName('Passenger01'), 'Passenger Slot 1');
+    assert.equal(lynxName('Passenger03'), 'Passenger Slot 3');
     assert.equal(lynxName('Slot02_Size5'), 'Optional Internal 2 (Size 5)');
     for (const ship of SHIPS) {
         let build;

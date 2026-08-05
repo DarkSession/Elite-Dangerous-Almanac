@@ -5124,6 +5124,7 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
     "powerDraw": 0,
+    "restrictedToSlot": "planetaryApproachSuite",
     "cost": 500
   },
   {
@@ -6823,6 +6824,7 @@
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
     "powerDraw": 0,
+    "restrictedToSlot": "planetaryApproachSuite",
     "cost": 500
   },
   {
@@ -6977,6 +6979,7 @@
     "restrictedToShips": [
       "PantherMkII"
     ],
+    "restrictedToSlot": "cargo",
     "cost": 1958680
   },
   {
@@ -6990,6 +6993,7 @@
     "restrictedToShips": [
       "PantherMkII"
     ],
+    "restrictedToSlot": "cargo",
     "cost": 4929317
   },
   {
@@ -7004,6 +7008,7 @@
     "restrictedToShips": [
       "LakonMiner"
     ],
+    "restrictedToSlot": "limpetController",
     "bootTime": 6,
     "cost": 2332800
   },
