@@ -194,19 +194,48 @@ not a sourced base value. No corpus build hits it today.
 This is why `fixtures/ships/builds/` pins its metrics **pre-engineering**: applying what
 those builds declare is not possible today.
 
-### 6. Four corrosion-resistant cargo racks have no price at all
+### 6. Three corrosion-resistant cargo racks have no price, and no registry publishes one
 
-`Int_CorrosionProofCargoRack_Size{1_Class2,5_Class1,6_Class1}` read `cost: 0` in
-coriolis-data itself — a gap upstream, not the duplicate-symbol defect fixed in this
-change, so there is no first occurrence to fall back on; `_Size2_Class1` never carried a
-price at all. They are not free: the size-4
-record is priced at 94 330, and the E-rated rack family follows a ×3.25 curve, putting
-sizes 5 and 6 near 306 000 and 996 000.
+Was four. `Int_CorrosionProofCargoRack_Size1_Class2` is now priced at **12 560**, from
+EDSY (`eddb.js` module `161`, annotated `// at Palin, Sedesi`); coriolis's `cost: 0` for
+it was coriolis's own gap. Take it as a 10-granular figure rather than a to-the-credit
+one — EDSY publishes module costs at 10-credit granularity: every cost in its outfitting
+table is a multiple of 10 bar one (`Int_ShieldGenerator_Size1_Class5`), and where
+coriolis prices the same module and the two differ, the difference is overwhelmingly
+EDSY carrying coriolis's figure rounded to 10. That bounds the rounding, not the
+accuracy: a few pairs where both registries publish a multiple of 10 still differ by 10,
+so only an in-game reading settles the last digits. See `data/ships/SOURCES.md` for the
+worked examples. The catalogue's other EDSY-sourced prices already carry that
+granularity. Two corpus builds
+(`empire-courier-exploration-2`, `asp-mining`) can therefore be priced again, which
+leaves **no** build in the corpus carrying an unpriced module.
 
-`cost` is now omitted on all four so a calculation can tell "free" from "unknown", and
-they are pinned in `fixtures/ships/module-stats.json` under `unpriced`. Since credits are
-quoted at retail, a build carrying one of these exports no `ModulesValue` or `Rebuy` at
-all until real prices are sourced from EDSY or Inara.
+**The other three are a different problem, and closing it is not a data-sourcing job.**
+`_Size2_Class1`, `_Size5_Class1` and `_Size6_Class1` are not sold anywhere: FDevIDs
+`outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN` and "never
+released" on size 2, `cost: 0 // TODO: cost // CG reward` on sizes 5 and 6. Sizes 5 and 6
+were Community Goal rewards; size 2 never shipped. So the upstream `0` is the absence of
+a price, not a dropped one, and no outfitting registry publishes one today — though EDSY
+writing `TODO: cost` rather than "none" means upstream treats the figure as pending, so
+do not read this as proof that no price exists.
+
+`cost` stays omitted on all three so a calculation can tell "free" from "unknown" — a
+reward module still has an insurance value, so reporting it free would understate a
+rebuy — and they stay pinned in `fixtures/ships/module-stats.json` under `unpriced`.
+Since credits are quoted at retail, a build carrying one still exports no `ModulesValue`
+or `Rebuy`. What would close it is an in-game observation rather than a registry: a
+journal `Loadout` module `Value`, a `StoredModules` entry's `BuyPrice`, or a `ModuleSell`
+on one.
+
+Do not interpolate one instead. The **standard** E-rated racks follow a clean ×3.25 curve
+(1000 → 3250 → 10 563 → 34 328 → 111 566 → 362 591 → 1 178 420 → 3 829 866), and applying
+it to the priced corrosion size-4 record would put sizes 5 and 6 near 306 000 and 996 000
+— but the corrosion racks do not follow that curve themselves: the two **E-rated** ones
+that are priced, 6250 at size 1 and 94 330 at size 4, work out at ×2.47 per size, which
+would instead put sizes 5 and 6 near 233 000 and 576 000. (The new 12 560 is the F-rated
+size-1 rack, a different rating line, so it does not settle the curve either.) Two
+defensible extrapolations that disagree by 31% at size 5 and 73% at size 6 are the
+argument for leaving the field absent, not for picking one.
 
 ### 7. Two experimental effects exist in the game that no public dataset carries
 

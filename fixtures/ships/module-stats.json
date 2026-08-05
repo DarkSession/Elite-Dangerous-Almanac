@@ -10,10 +10,10 @@
   },
   "priceCounts": {
     "core": 509,
-    "internal": 472,
+    "internal": 473,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1175
+    "all": 1176
   },
   "prices": [
     {
@@ -27,12 +27,16 @@
     {
       "symbol": "Anaconda_Armour_Grade1",
       "cost": 0
+    },
+    {
+      "symbol": "Int_CorrosionProofCargoRack_Size1_Class2",
+      "cost": 12560
     }
   ],
+  "unpricedNote": "The three Corrosion Resistant Cargo Racks left here are not sold at any station: FDevIDs `outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN` / \"never released\" on `Size2_Class1`, `cost: 0 // TODO: cost // CG reward` on sizes 5 and 6. coriolis-data carries 0 for sizes 5 and 6 and has no record at all for size 2. Sizes 5 and 6 were Community Goal rewards and size 2 never shipped, so there is no list price to publish rather than a price this catalogue failed to copy. `Size1_Class2` left this list once EDSY was found to price it at 12 560.",
   "unpriced": [
     "Int_ShieldGenerator_Size1_Class4",
     "Int_Hyperdrive_Size8_Class1",
-    "Int_CorrosionProofCargoRack_Size1_Class2",
     "Int_CorrosionProofCargoRack_Size2_Class1",
     "Int_CorrosionProofCargoRack_Size5_Class1",
     "Int_CorrosionProofCargoRack_Size6_Class1"
@@ -139,7 +143,7 @@
     ]
   },
   "freeModules": {
-    "note": "Every non-armour module priced at 0, pinned so a zero has to be deliberate. coriolis-data holds some symbols twice — a priced record and a 0 one — and the 'first occurrence wins' rule had been applied to mass but not to cost, leaving 16 modules silently free. Only the built-in cargo hatch survives: it is fitted to every hull and cannot be bought. Ship-specific armour is excluded — a hull's stock bulkhead really is free, and 56 of them are.",
+    "note": "Every non-armour module priced at 0, pinned so a zero has to be deliberate. coriolis-data holds some symbols twice — a priced record and a 0 one — and the 'first occurrence wins' rule had been applied to mass but not to cost, leaving 16 modules silently free. Only the built-in cargo hatch survives: it is fitted to every hull and cannot be bought. Ship-specific armour is excluded — a hull's stock bulkhead really is free, and 48 of them are, one per hull.",
     "symbols": ["ModularCargoBayDoor"]
   },
   "spot": [

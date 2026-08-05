@@ -4880,7 +4880,8 @@
     "rating": "F",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "mass": 0,
-    "cargoCapacity": 2
+    "cargoCapacity": 2,
+    "cost": 12560
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size2_Class1",

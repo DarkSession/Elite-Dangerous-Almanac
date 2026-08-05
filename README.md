@@ -642,12 +642,14 @@ These are the **undiscounted** list prices an outfitting screen quotes at 0%
 discount — stations apply their own discount or markup on top, which is live market
 state this library does not carry.
 
-All 48 hulls are priced, and 1175 of 1198 modules. The other 23 — the ten starter
+All 48 hulls are priced, and 1176 of 1198 modules. The other 22 — the ten starter
 `*_free` variants, the five size-8 frame shift drives, the three Mk II fighter hangars,
-the four Corrosion Resistant Cargo Racks and `Int_ShieldGenerator_Size1_Class4` — have no
-published price, so **`cost` is `undefined` rather than `0`**. That distinction is
-deliberate: `0` is a real price (the starter Lightweight Alloy bulkhead is free), so
-treat `undefined` as _unknown_ and decide for yourself whether to skip it or fail:
+the three unsold Corrosion Resistant Cargo Racks (two Community Goal rewards and one
+never-released variant, so no outfitting screen quotes them) and
+`Int_ShieldGenerator_Size1_Class4` — have no published price, so **`cost` is `undefined`
+rather than `0`**. That distinction is deliberate: `0` is a real price (the starter
+Lightweight Alloy bulkhead is free), so treat `undefined` as _unknown_ and decide for
+yourself whether to skip it or fail:
 
 ```ts
 const cost = getModuleBySymbol(symbol)?.cost;
@@ -1254,9 +1256,18 @@ against.
 
 ## Data freshness
 
-The checked-in catalogues are a snapshot dated **2026-07-24**, with three changes
-since:
+The checked-in catalogues are a snapshot dated **2026-07-24**, revised since. Each
+domain's `SOURCES.md` is the authoritative record of what changed and when — the
+larger passes below are a summary, not a complete list, and smaller corrections are
+recorded inline there beside the field they touch.
 
+- **2026-08-01** — a completeness pass over the outfitting and engineering
+  catalogues against EDSY and the in-game registries, adding three records the
+  earlier FDevIDs/coriolis-data join had dropped and restoring modifiers to four
+  experimental effects.
+- **2026-08-01** — the defence, power and weapon stats the build calculations need,
+  from coriolis-data; in the same pass each hull's bulkheads moved off `ships.jsonc`
+  onto its `<Hull>_Armour_*` module records.
 - **2026-08-02** — one market commodity added, `curatedcommodity` ("Curated
   Commodity Package"), from a player-journal observation rather than an upstream
   registry; its market category is a maintainer assignment.
@@ -1265,6 +1276,10 @@ since:
 - **2026-08-05** — no value changed: a module record whose missing stat means
   _unknown_ rather than _no such stat_ now says so in its own
   [`unknownStats`](#when-a-stat-is-missing) field.
+- **2026-08-05** — one module price filled from EDSY, the 1F Corrosion Resistant
+  Cargo Rack (`Int_CorrosionProofCargoRack_Size1_Class2`, 12 560), which
+  coriolis-data carries as `0`. The other three racks of that family stay unpriced:
+  no station sells them, so no registry quotes one.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
