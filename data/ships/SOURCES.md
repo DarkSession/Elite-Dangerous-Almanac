@@ -42,7 +42,7 @@ naming difference alone — no hull's layout, mount count or size changed.**
 - **Federal Dropship** `…Slot06_Size3`, then **`Slot09_Size2`, `Slot10_Size1`**.
 - **Vulture** `Slot01`, `Slot02`, `Slot03`, **`Slot05`**, `Slot06`, `Slot07`, `Slot08`.
 - **Type-7 Transporter** uses the number **`09` twice** (`Slot09_Size2` and
-  `Slot09_Size1` — distinct keys), and six of its ten suffixes misreport the size.
+  `Slot09_Size1` — distinct keys), and five of its ten suffixes misreport the size.
 - **Keelback** `Slot03_Size3` on a size-**4** mount; **Asp Scout** `Slot01_Size4` on a
   size-**5** one.
 - **Type-8 Transporter** *hardpoints* `…SmallHardpoint2`, **`SmallHardpoint4`**,
@@ -80,9 +80,10 @@ one; every slot key in both is now a mount the hull's enumerated layout declares
 numbering already produces — evidence for leaving that hull's optionals alone rather
 than assuming EDSY simply omitted them.
 
-**What moved and what did not.** The 45 corpus builds on these hulls were re-slotted onto
-the corrected keys — 151 slot keys across 35 files, each module staying in the *same
-physical mount*, so no build's fit changed and no pinned metric moved. All 13 hulls' full
+**What moved and what did not.** The corpus holds 45 builds on these 13 hulls; 35 of them
+had a module in a renamed mount and were re-slotted onto the corrected keys — 151 slot
+keys in all — each module staying in the *same physical mount*, so no build's fit changed
+and no pinned metric moved. The other 10 needed no edit. All 13 hulls' full
 enumerated key lists are pinned in `fixtures/ships/ship-slots.json` under `keys` (it held
 two before), and the `spot` layouts carry their `slotNames`, so a port produces the same
 vocabulary. The consequence this closes is one-directional and was
@@ -194,8 +195,9 @@ reproduced by `enumerateSlots`:
 
 Both hulls' full enumerated key lists are pinned in `fixtures/ships/ship-slots.json`
 under `keys` — which the 2026-08-05 revision above widened to all 13 hulls EDSY names —
-and the two hulls' layouts under `spot`, so a port produces the same vocabulary. **Which module families each restriction accepts is pinned there too**,
-under `restrictions`: one entry per restricted mount naming modules it must accept and
+and the two hulls' layouts under `spot`, so a port produces the same vocabulary.
+**Which module families each restriction accepts is pinned there too**, under
+`restrictions`: one entry per restricted mount naming modules it must accept and
 modules it must refuse, plus one unrestricted mount for contrast. That is a fact about
 the game rather than about any implementation, so it belongs in the shared fixtures and
 not only in the TypeScript prefix lists. The six corpus builds on these hulls

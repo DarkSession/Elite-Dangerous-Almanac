@@ -115,10 +115,11 @@ export interface Ship {
     /** Optional-internal mounts, largest first. */
     readonly optional?: readonly OptionalSlotSpec[];
     /**
-     * The hull's own journal slot keys, present only on the thirteen hulls whose names
-     * `enumerateSlots`' numbering rules do not reproduce — the Anaconda's
+     * The hull's own journal slot keys, present on thirteen hulls: the eleven whose
+     * names `enumerateSlots`' numbering rules do not reproduce — the Anaconda's
      * `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian Explorer's
-     * out-of-order mediums, and so on. See {@link ShipSlotNames}.
+     * out-of-order mediums, and so on — plus two the rules do reproduce, pinned so the
+     * stored table matches its source one for one. See {@link ShipSlotNames}.
      */
     readonly slotNames?: ShipSlotNames;
 }

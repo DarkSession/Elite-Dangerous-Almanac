@@ -469,7 +469,7 @@ getShipBySymbol("empire_trader")?.name; // -> 'Imperial Clipper' (lookups accept
 getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the record
 getShipSlots("anaconda")?.hardpoints; // -> [{ size: 4 }, { size: 3 }, ...] (slot layout, ready for the build editor)
 getShipSlots("LakonMiner")?.hardpoints[0]; // -> { size: 3, restriction: 'mining' } — a restricted mount
-getShipSlots("Anaconda")?.slotNames?.optional?.at(-2); // -> 'Slot14_Size1' — the hull's own key, on the 13 hulls that need one
+getShipSlots("Anaconda")?.slotNames?.optional?.at(-2); // -> 'Slot14_Size1' — the hull's own key, on the 13 hulls that carry them
 getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
 SHIPS.length; // -> 48
 ```
@@ -938,7 +938,7 @@ mount as the journal's `FrameShiftDrive` and `LargeMiningHardpoint1`. A build ke
 whatever spelling it was imported with — editing one of its mounts never renames it, so
 re-exporting returns the producer's own keys untouched.
 
-**Enumerate them; do not compute them.** The numbering looks regular and on 13 of the 48
+**Enumerate them; do not compute them.** The numbering looks regular and on 11 of the 48
 hulls is not, so a key you construct by counting will name a mount the game does not
 have. The Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1` — there is
 no 11 or 12; the Type-9 Heavy starts at `Slot00_Size8`; the Type-7 Transporter uses the

@@ -23,8 +23,9 @@
  * mounts 16 hulls have, and the planetary-approach-suite mount all but the Lynx
  * Highliner has.
  *
- * `slotNames` is the hull's own journal slot keys, present on the 13 hulls whose
- * names no numbering rule derives — the Anaconda's `Slot13_Size2`/`Slot14_Size1`
+ * `slotNames` is the hull's own journal slot keys, present on 13 hulls — the 11 whose
+ * names no numbering rule derives, plus 2 the rules do derive, pinned so the table
+ * matches its source one for one. The 11 are — the Anaconda's `Slot13_Size2`/`Slot14_Size1`
  * with no 11 or 12, the Type-9 Heavy starting at `Slot00_Size8`, the Type-8
  * Transporter skipping `SmallHardpoint3`, the Caspian Explorer's mediums running
  * 6, 5, 1, 2, 3, 4, the Lynx Highliner's `Passenger01`–`03`. Its `hardpoints` /
