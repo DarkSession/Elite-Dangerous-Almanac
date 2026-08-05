@@ -1175,19 +1175,19 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > share no id at all — a scanner's other four are `Sensor_FastScan` and the generic
 > `Misc_*` trio, none of which a sensor suite offers.
 >
-> **The menu and `ShipLoadout.applyBlueprint` do not yet agree.** `applyBlueprint` does
-> not read this catalogue — it maps the blueprint to a module family of its own — and it
-> refuses recipes the menu offers on 52 modules: the hatch-breaker controllers (21), the
-> Guardian shield reinforcement packages (10) and FSD boosters (5), the KWS/manifest/wake
-> scanners (5 each, for the generic `Misc_*` recipes) and the Caustic Sink Launcher, whose
-> family is `miscellaneous` rather than `heatSink`. It refuses the same generic recipes on
-> life support, limpet controllers, AFMUs and fuel scoops, which is what real builds
-> actually hit: 76 of the 1902 declared engineering entries in `fixtures/ships/builds/`
-> are refused for a family mismatch, across 54 builds, the Caustic Sink Launcher's two
-> among them. All of it is the same defect, tracked in
-> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14): until it is
-> fixed, take the menu as the answer to "what can I fit?" and expect `applyBlueprint` to
-> be narrower.
+> **This menu is also what `ShipLoadout.applyBlueprint` enforces.** The two questions —
+> "what can I fit?" and "may I fit this?" — read the same catalogue, so they cannot answer
+> differently. `applyBlueprint` refuses a recipe this menu does not list for that module,
+> and quotes the menu back when it does.
+>
+> It makes one accommodation, for the builds that spell a modification generically. Where a
+> recipe applies to several families the game writes a family-specific `BlueprintName` and
+> the menu lists that one, but an EDSY-authored build carries `Misc_LightWeight` where the
+> menu says `LifeSupport_LightWeight`. Those are the same recipe, so both are accepted — 70
+> of the corpus's declared entries are spelled that way. The alias runs only from the
+> ambiguous spelling to the menu's, never the reverse: `LifeSupport_LightWeight` stays off a
+> limpet controller, and a chaff launcher's Ammo Capacity stays off a heat sink launcher,
+> whose own roll is a different size.
 
 #### Modules you can buy already engineered
 

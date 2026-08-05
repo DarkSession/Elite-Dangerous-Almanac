@@ -5,11 +5,13 @@ import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js'
 import { getBlueprint, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import {
-    blueprintTargets,
-    experimentalTarget,
-    moduleEngineeringTarget,
-} from './engineering-compatibility.js';
+    blueprintAvailableFor,
+    experimentalAvailableFor,
+    isEngineerable,
+} from './loadout-engineering.js';
+import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
+import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { baseStats } from './module-stat-labels.js';
@@ -24,22 +26,95 @@ test('the catalogues hold the expected counts', () => {
     assert.equal(Object.keys(EXPERIMENTAL_EFFECTS).length, fixture.experimentalCount);
 });
 
-test('every engineering id has an explicit compatibility target', () => {
-    for (const id of Object.keys(BLUEPRINTS)) {
-        assert.notEqual(blueprintTargets(id), null, `blueprint target: ${id}`);
+test('the gate accepts every recipe the menu offers, for every module', () => {
+    // The contract: "what can this module take?" and "may I put this on it?" read the
+    // same catalogue, so no module can be offered a recipe that `applyBlueprint` refuses.
+    for (const module of ALL_MODULES) {
+        for (const fdname of getBlueprintsForModule(module.symbol)) {
+            assert.ok(
+                blueprintAvailableFor(module.symbol, fdname),
+                `${module.symbol} is offered ${fdname} but the gate refuses it`,
+            );
+        }
+        for (const effect of getExperimentalsForModule(module.symbol)) {
+            assert.ok(
+                experimentalAvailableFor(module.symbol, effect),
+                `${module.symbol} is offered ${effect} but the gate refuses it`,
+            );
+        }
     }
-    for (const id of Object.keys(EXPERIMENTAL_EFFECTS)) {
-        assert.notEqual(experimentalTarget(id), null, `experimental target: ${id}`);
-    }
-    assert.equal(moduleEngineeringTarget('Int_Hyperdrive_Size5_Class5'), 'frameShiftDrive');
-    assert.equal(moduleEngineeringTarget('Anaconda_Armour_Reactive'), 'armour');
-    assert.equal(moduleEngineeringTarget('Hpt_PulseLaser_Fixed_Small'), 'weapon');
-    assert.deepEqual(blueprintTargets('Misc_LightWeight'), [
-        'miscellaneous',
-        'chaff',
-        'heatSink',
-        'pointDefence',
+});
+
+test('a build that spells a modification generically is still engineered', () => {
+    // The menu lists the family-specific id; an EDSY-authored build carries the generic
+    // one. They are the same recipe, so both are accepted.
+    assert.deepEqual(getBlueprintsForModule('Int_LifeSupport_Size4_Class2'), [
+        'LifeSupport_LightWeight',
+        'LifeSupport_Reinforced',
+        'LifeSupport_Shielded',
     ]);
+    for (const generic of ['Misc_LightWeight', 'Misc_Reinforced', 'Misc_Shielded']) {
+        assert.ok(
+            blueprintAvailableFor('Int_LifeSupport_Size4_Class2', generic),
+            `life support must accept ${generic}`,
+        );
+    }
+    assert.ok(blueprintAvailableFor('Int_Repairer_Size3_Class5', 'Misc_Shielded'));
+    assert.ok(
+        blueprintAvailableFor('Int_DroneControl_Collection_Size3_Class3', 'Misc_LightWeight'),
+    );
+
+    // The alias runs one way only. `Misc_ChaffCapacity` and `Misc_HeatSinkCapacity` share
+    // a signature — both "Ammo capacity" over the same labels — but neither is a family
+    // spelling of the other, and their rolls differ.
+    assert.ok(!blueprintAvailableFor('Hpt_HeatSinkLauncher_Turret_Tiny', 'Misc_ChaffCapacity'));
+    assert.ok(!blueprintAvailableFor('Hpt_ChaffLauncher_Tiny', 'Misc_HeatSinkCapacity'));
+    // A weapon's Lightweight cuts distributor draw, so the signature keeps it apart.
+    assert.ok(!blueprintAvailableFor('Hpt_PulseLaser_Fixed_Small', 'Misc_LightWeight'));
+    // And a family-specific id never widens to another family.
+    assert.ok(
+        !blueprintAvailableFor(
+            'Int_DroneControl_Collection_Size3_Class3',
+            'LifeSupport_LightWeight',
+        ),
+    );
+});
+
+test('the gate accepts a spelling the menu omits only where the fixture pins an alias', () => {
+    // Every acceptance the menu itself does not explain has to be one of the aliases the
+    // shared fixture records — so the accommodation cannot quietly widen.
+    const pinned = new Set(
+        Object.entries(optionsFixture.corpus.blueprintAliases).flatMap(([generic, specific]) =>
+            specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
+        ),
+    );
+    const seen = new Set<string>();
+    for (const module of ALL_MODULES) {
+        const offered = getBlueprintsForModule(module.symbol);
+        if (offered.length === 0) continue;
+        for (const fdname of Object.keys(BLUEPRINTS)) {
+            if (offered.includes(fdname)) continue;
+            if (!blueprintAvailableFor(module.symbol, fdname)) continue;
+            const matched = offered.filter((id) =>
+                pinned.has(`${fdname.toLowerCase()}|${id.toLowerCase()}`),
+            );
+            assert.equal(
+                matched.length,
+                1,
+                `${module.symbol} accepts "${fdname}", which no pinned alias explains`,
+            );
+            seen.add(`${fdname.toLowerCase()}|${matched[0]!.toLowerCase()}`);
+        }
+    }
+    // ...and every alias the fixture pins is one the gate actually honours.
+    assert.deepEqual([...seen].sort(), [...pinned].sort());
+});
+
+test('a module no registry gives a menu takes no engineering', () => {
+    assert.ok(!isEngineerable('Int_FuelTank_Size5_Class3'));
+    assert.ok(!blueprintAvailableFor('Int_FuelTank_Size5_Class3', 'Misc_LightWeight'));
+    assert.ok(!isEngineerable('Hpt_MRAScanner_Size0_Class1'));
+    assert.ok(isEngineerable('Int_LifeSupport_Size4_Class2'));
 });
 
 test('computeModifiers reproduces the FSD Long Range G5 + Mass Manager anchor', () => {

@@ -206,9 +206,9 @@ claim in `builds.test.ts`.
   everywhere, because it is not a number: EDSY stores Anti-Guardian Zone Resistance as a
   flag the recipe *grants*, and this record shape has no field for it
   ([issue #27](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27)). Beyond
-  base stats, 76 corpus entries are still refused for a target-family mismatch, which is a
-  mapping defect rather than a data one
-  ([issue #14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14)).
+  base stats, 14 corpus entries are refused because the engineering menu does not offer
+  that recipe on that module — the residue recorded under §Engineering compatibility, not
+  a missing stat.
 - **A weapon with no maximum range now loses Long Range's falloff leg too.** That leg is
   stored upstream as an overwrite in `[0, 1]` — a flag meaning "damage falls off from
   maximum range" — which the calculator resolves to the weapon's own range. On the 33
@@ -1328,6 +1328,54 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Key form:** EDSY names the Anti-Guardian blueprint by its journal form
   (`GuardianModule_Sturdy`); this catalogue stores it under the `recipe_*` id the rest of
   `blueprints.jsonc` uses, so every id here joins directly.
+
+## Engineering compatibility (may this recipe go on this module?)
+
+Not a data file, and no longer a second opinion. `ShipLoadout.applyBlueprint` reads the
+menu above: a recipe it does not list for that module is refused. The two questions a
+consumer can ask — what a module takes, and whether a particular recipe may go on it —
+therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 modules.
+
+- **Why it is not a family map any more.** It was: `engineering-compatibility.ts` mapped a
+  blueprint id to a module *family* and a module symbol to the same, both by string prefix.
+  Two hand-maintained answers to one question drift, and this pair did — measured before
+  the change, the map refused recipes the menu offers on 47 modules, and 76 of the corpus's
+  1902 declared entries for a family mismatch it invented. Both defects were in the
+  inference, not in the data: the Hatch Breaker Limpet Controller's symbol is
+  `Int_DroneControl_ResourceSiphon`, which the prefix rule for "hatchbreaker" never matched,
+  and the Caustic Sink Launcher's said `causticsink` where its group is the heat sink
+  launchers'. A per-module menu has nothing to infer. The module is deleted.
+- **One accommodation: the generic spelling.** Where a modification applies to several
+  families the game writes a family-specific `BlueprintName` and this catalogue lists that
+  one, but a build authored elsewhere carries the generic `Misc_*` id — 70 corpus entries
+  do. Both are accepted, because both name the same recipe, and `blueprints.jsonc` shows
+  it: their grades touch the same labels by the same methods. The pairs are pinned in
+  `fixtures/ships/engineering-options.json` (`corpus.blueprintAliases`) and the gate derives
+  exactly that set, which a test asserts rather than trusting.
+- **The alias is directional, and that is what keeps it safe.** A generic id stands in for a
+  family's id, never for another generic one: `Misc_ChaffCapacity` and
+  `Misc_HeatSinkCapacity` are both "Ammo capacity" over the same three labels, but a chaff
+  launcher's roll is 50–80 rounds where a heat sink's is 40–60, so neither may substitute
+  for the other. An id **no menu lists anywhere** substitutes too, which covers
+  Anti-Guardian Zone Resistance: the game writes `recipe_guardianweapon_sturdy` on a weapon
+  and `recipe_guardianmodule_sturdy` on a module, and every group lists the module id.
+  `Weapon_LightWeight` is excluded by the labels instead — a weapon's Lightweight cuts
+  distributor draw, which the generic one does not touch.
+- **What the corpus still cannot engineer, and why that is the honest answer.** 14 of its
+  1902 entries declare a recipe no registry lists for that module: `Weapon_HighCapacity` on
+  a Guardian Gauss Cannon (5) and `special_super_penetrator_cooled` on a Guardian Shard
+  Cannon (6), which EDSY's `hexgg` group answers with Rapid Fire and Anti-Guardian Zone
+  Resistance alone; `Weapon_Efficient` on the Mk II Plasma Shock Autocannon (2), which EDSY
+  marks `noblueprints`; and `Sensor_LongRange` on a wake scanner (1), the scanner id
+  collision. They are recorded in the fixture and exempted by name, never by count, so a
+  new disagreement fails a test instead of hiding in an allowance. Tracked at
+  [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36) and
+  [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
+- **What it costs.** `ShipLoadout` now carries the options catalogue whether or not the
+  consumer opens a menu: measured on the shipped `dist/`, its import graph goes from 624 KB
+  to 681 KB, 74 KB to 79 KB gzipped. The `ships` barrel is unchanged at 711 KB, slightly
+  smaller than before because the family map went with it. That is the price of one answer
+  instead of two, and it was paid deliberately.
 
 ## Pre-engineered modules
 

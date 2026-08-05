@@ -609,9 +609,10 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
             }),
         RangeError,
     );
+    // A recipe the drive's own menu does not list, and the menu is quoted back.
     assert.throws(
         () => build.applyBlueprint('FrameShiftDrive', 'Armour_HeavyDuty', { grade: 5 }),
-        /targets armour, not frameShiftDrive/,
+        /is not offered blueprint "Armour_HeavyDuty"; it takes FSD_FastBoot, FSD_LongRange, FSD_Shielded/,
     );
     assert.throws(
         () =>
@@ -619,7 +620,7 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
                 grade: 5,
                 experimental: 'special_shieldbooster_toughened',
             }),
-        /targets shieldBooster, not frameShiftDrive/,
+        /is not offered experimental effect "special_shieldbooster_toughened"/,
     );
     assert.throws(
         () =>
@@ -746,13 +747,23 @@ test('engineering still refuses what cannot be answered', () => {
     //    Resistance is a capability a module either has or has not, not a number this
     //    record shape can hold — see
     //    https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27.
+    // A Guardian Hybrid Power Plant is the module the menu offers it on — an ordinary
+    // plant is refused a step earlier, by the menu, and the two groups are separate for
+    // exactly that reason.
     const plant = ShipLoadout.empty('Anaconda').setModule(
         'PowerPlant',
-        mod('Int_Powerplant_Size7_Class5'),
+        mod('Int_GuardianPowerplant_Size7', INTERNAL_MODULES),
     );
     assert.throws(
         () => plant.applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', { grade: 1 }),
         /missing base stats for GuardianModuleResistance/,
+    );
+    assert.throws(
+        () =>
+            ShipLoadout.empty('Anaconda')
+                .setModule('PowerPlant', mod('Int_Powerplant_Size7_Class5'))
+                .applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', { grade: 1 }),
+        /is not offered blueprint "recipe_guardianmodule_sturdy"/,
     );
 });
 
@@ -1237,9 +1248,10 @@ test('an engineered hull reinforcement package adds a share of the base armour',
 });
 
 test('engineering the burst pattern moves the rate of fire with it', () => {
+    // Double Shot is the fragment cannons' recipe — the only group whose menu lists it.
     const build = ShipLoadout.empty('Anaconda').setModule(
         'LargeHardpoint1',
-        mod('Hpt_MultiCannon_Gimbal_Large', HARDPOINT_MODULES),
+        mod('Hpt_Slugshot_Gimbal_Large', HARDPOINT_MODULES),
     );
     const before = build.weaponMetrics().total.damagePerSecond;
     // Double Shot names no rate of fire, but a two-round burst fires faster.

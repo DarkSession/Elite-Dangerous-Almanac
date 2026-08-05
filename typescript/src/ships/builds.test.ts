@@ -12,6 +12,7 @@ import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { baseStats, missingBaseLabels } from './loadout-engineering.js';
 import index from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
+import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
 
 /** One module as the corpus records it. */
 interface CorpusModule {
@@ -170,9 +171,8 @@ test('every declared engineering entry resolves against the base stats it needs'
     // its declared entries used to be refused for a base stat no record carried — a
     // thruster's heat rate, a scanner's range, a cell bank's reinforcement; sourcing
     // those closed it, and this is what says the hole stays shut. It checks the base
-    // stats only, which is the gap that was fixed: whether every recipe is also mapped to
-    // every family that accepts it is a separate question, tracked at
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14.
+    // stats only, which is the gap that was fixed; whether the module is *offered* the
+    // recipe at all is the next test's business.
     let checked = 0;
     for (const build of builds) {
         for (const entry of build.modules) {
@@ -193,6 +193,50 @@ test('every declared engineering entry resolves against the base stats it needs'
         }
     }
     assert.equal(checked, index.declaredEngineering);
+});
+
+test('every build engineers through applyBlueprint, bar the declarations upstream denies', () => {
+    // End to end, through the public API: the corpus is what real build tools wrote, so a
+    // refusal here is this library disagreeing with the game. The exemptions are the
+    // residue the options fixture already records — declarations no registry lists for
+    // that module — and they are asserted by identity, not merely counted, so a new
+    // refusal cannot hide inside the allowance.
+    const exempt = new Set(
+        [...optionsFixture.corpus.notOffered, ...optionsFixture.corpus.notGrouped].map(
+            (row) => `${row.symbol}|${'blueprint' in row ? row.blueprint : row.experimental}`,
+        ),
+    );
+    const refused = new Map<string, number>();
+    for (const build of builds) {
+        const loadout = assemble(build);
+        for (const entry of build.modules) {
+            const engineering = entry.engineering;
+            if (!engineering) continue;
+            try {
+                loadout.applyBlueprint(entry.slot, engineering.blueprint, {
+                    grade: engineering.grade,
+                    ...(engineering.experimental !== undefined
+                        ? { experimental: engineering.experimental }
+                        : {}),
+                });
+            } catch (error) {
+                const key = [
+                    `${entry.item}|${engineering.blueprint}`,
+                    `${entry.item}|${engineering.experimental}`,
+                ].find((candidate) => exempt.has(candidate));
+                assert.ok(
+                    key,
+                    `${build.id}: ${entry.item} + ${engineering.blueprint} — ${(error as Error).message}`,
+                );
+                refused.set(key, (refused.get(key) ?? 0) + 1);
+            }
+        }
+    }
+    // Every exemption is still needed, and for exactly as many entries as the fixture says.
+    for (const row of [...optionsFixture.corpus.notOffered, ...optionsFixture.corpus.notGrouped]) {
+        const key = `${row.symbol}|${'blueprint' in row ? row.blueprint : row.experimental}`;
+        assert.equal(refused.get(key), row.entries, key);
+    }
 });
 
 test('every build reproduces its pinned metrics', () => {
