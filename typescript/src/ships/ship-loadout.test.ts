@@ -12,6 +12,7 @@ import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with 
 import expected from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
 import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
+import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
@@ -773,22 +774,24 @@ test('a module sold pre-engineered can be taken further, menu or no menu', () =>
     // its recipe carries grades 2-5, which is the climb this route exists for. The ordering
     // of those two checks inside `applyBlueprint` is what this pins — the helper behind it
     // answers correctly either way round.
+    const climb = engineeringFixture.preEngineeredClimb;
     const build = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
-        mod('Int_ModuleReinforcement_Size5_Class2', INTERNAL_MODULES),
+        mod(climb.symbol, INTERNAL_MODULES),
     );
-    build.applyBlueprint('Slot01_Size7', 'recipe_modulereinforcement_heavyduty', { grade: 2 });
+    build.applyBlueprint('Slot01_Size7', climb.blueprint, { grade: climb.grade, quality: 1 });
     const engineered = build.getFittedModule('Slot01_Size7')!.Engineering!;
-    assert.equal(engineered.BlueprintName, 'recipe_modulereinforcement_heavyduty');
-    assert.equal(
-        engineered.Modifiers!.find((modifier) => modifier.Label === 'DamageProtection')?.Value,
-        64.98,
-    );
+    assert.equal(engineered.BlueprintName, climb.blueprint);
+    for (const [label, expected] of Object.entries(climb.expected)) {
+        const modifier = engineered.Modifiers!.find((entry) => entry.Label === label);
+        assert.equal(modifier?.OriginalValue, climb.base[label as keyof typeof climb.base], label);
+        assert.ok(Math.abs(modifier!.Value! - expected) < 1e-6, `${label}: ${modifier?.Value}`);
+    }
     // Grade 1 is what the module was bought with, so the recipe does not define it.
     assert.throws(
         () =>
-            build.applyBlueprint('Slot01_Size7', 'recipe_modulereinforcement_heavyduty', {
-                grade: 1,
+            build.applyBlueprint('Slot01_Size7', climb.blueprint, {
+                grade: climb.gradeUnavailable,
             }),
         RangeError,
     );

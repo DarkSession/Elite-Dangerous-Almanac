@@ -139,7 +139,10 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * {@link ShipLoadout.applyBlueprint} makes before it computes anything.
  *
  * The menu is `engineering-options`, so this answers exactly what the game offers on that
- * module, with one accommodation. Where a modification applies to several module families
+ * module, with two accommodations. The first is {@link isSoldWithBlueprint}: a module with
+ * no menu, or a menu that omits the recipe, still accepts one it is sold already carrying.
+ *
+ * The second is the generic spelling. Where a modification applies to several module families
  * Frontier writes a family-specific `BlueprintName` and the menu lists that one, but a
  * build authored elsewhere carries the generic spelling instead — a life support's
  * Lightweight is `LifeSupport_LightWeight` in the menu and `Misc_LightWeight` in an
@@ -151,13 +154,13 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * menu id that is not itself generic: `Misc_ChaffCapacity` and `Misc_HeatSinkCapacity`
  * share a signature — both are "Ammo capacity" over the same three labels — but neither is
  * a family spelling of the other, so a chaff launcher's ammo recipe stays off a heat sink
- * launcher, whose own roll is a different size. An id **no menu anywhere lists**
+ * launcher, whose roll is a smaller one. An id **no menu anywhere lists**
  * substitutes too, which is Anti-Guardian Zone Resistance: the game writes
  * `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a
  * module, and every group lists the module id.
  *
- * Everything else is excluded by the signature or by being a menu id in its own right.
- * `Weapon_LightWeight` fails the signature — a weapon's Lightweight cuts distributor draw,
+ * Everything else is excluded by the signature, by being a menu id in its own right, or by
+ * not being sold on that module. `Weapon_LightWeight` fails the signature — a weapon's Lightweight cuts distributor draw,
  * which the generic one does not touch — and `Armour_Explosive`, which rolls exactly like
  * `ShieldBooster_Explosive`, is listed by the armour menus, so it never stands in for one.
  *

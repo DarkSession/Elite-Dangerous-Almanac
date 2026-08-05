@@ -1346,7 +1346,7 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   `Int_DroneControl_ResourceSiphon`, which the prefix rule for "hatchbreaker" never matched,
   and the Caustic Sink Launcher's said `causticsink` where its group is the heat sink
   launchers'. A per-module menu has nothing to infer. The module is deleted.
-- **One accommodation: the generic spelling.** Where a modification applies to several
+- **First accommodation: the generic spelling.** Where a modification applies to several
   families the game writes a family-specific `BlueprintName` and this catalogue lists that
   one, but a build authored elsewhere carries the generic `Misc_*` id — 70 corpus entries
   do. Both are accepted, because both name the same recipe, and `blueprints.jsonc` shows
@@ -1378,9 +1378,9 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   test instead of hiding in the allowance. Tracked at
   [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36) and
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
-- **The pre-engineered route stays open.** A `recipe_*` key belongs to a module bought
-  already engineered, so no menu lists one and the menu check alone refused all 20 of them
-  everywhere — a capability the family map had. `pre-engineered.jsonc` names which module
+- **Second accommodation: the pre-engineered route.** A `recipe_*` key belongs to a module
+  bought already engineered, so no menu lists one and the menu check alone refused all 20
+  of them everywhere — a capability the family map had. `pre-engineered.jsonc` names which module
   each arrives on, so the gate accepts a recipe on the module that is sold carrying it and
   nowhere else: `recipe_railgun_longshot` resolves on the medium rail gun, not on the small
   one. That is narrower than the family map, which took any weapon recipe on any weapon,
@@ -1402,10 +1402,9 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   and [#39](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39) tracks it.
 - **What it costs.** `ShipLoadout` now carries the options catalogue whether or not the
   consumer opens a menu: measured on the shipped `dist/`, its import graph goes from 624 KB
-  to 708 KB, 74 KB to 82 KB gzipped — the options catalogue and, for the pre-engineered
-  route below, `pre-engineered`. The `ships` barrel went the other way, 716 KB to 711 KB,
-  the family map having gone with it. That is the price of one answer
-  instead of two, and it was paid deliberately.
+  to 708 KB, 74 KB to 82 KB gzipped — the options catalogue, plus `pre-engineered` for the
+  route above. The `ships` barrel went the other way, 716 KB to 711 KB, the family map
+  having gone with it. That is the price of one answer instead of two, paid deliberately.
 
 ## Pre-engineered modules
 
