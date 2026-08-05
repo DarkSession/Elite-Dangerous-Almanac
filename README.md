@@ -782,8 +782,8 @@ power.deployed; // -> draw with them out (weapons only draw deployed)
 power.headroom; // -> available - deployed; negative means over budget
 power.withinBudget; // -> true
 power.bands[4]?.poweredDeployed; // -> is priority group 5 still lit?
-power.unknownDraws; // -> [] — modules whose draw nobody publishes, if any: while this
-//    is non-empty every figure above is a lower bound
+power.unknownDraws; // -> [] — the consumer entries whose draw nobody publishes, if
+//    any: while this is non-empty every figure above is a lower bound
 
 // Shields: strength in MJ and what it is worth against each damage type
 const shields = build.shieldMetrics(); // null when no generator is fitted
