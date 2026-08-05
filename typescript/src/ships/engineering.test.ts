@@ -289,4 +289,25 @@ test('long range drops the falloff flag on a weapon with no maximum range', () =
     assert.ok(!modifiers.some((m) => m.Label === 'Range' || m.Label === 'MaximumRange'));
     // The legs the weapon does have still apply.
     assert.ok(modifiers.some((m) => m.Label === 'Mass'));
+
+    // Only the flag is ever dropped. A rangeless weapon that does carry a real falloff —
+    // a flak mortar reaches 100 km — keeps the stock distance rather than losing it.
+    const flak = getModuleBySymbol('Hpt_FlakMortar_Fixed_Medium', ALL_MODULES)!;
+    assert.equal(flak.maximumRange, undefined);
+    assert.equal(flak.falloffRange, 100000);
+    const flakMods = computeModifiers(
+        baseStats(flak),
+        getBlueprintGrade('Weapon_LongRange', 5)!,
+        1,
+    );
+    assert.ok(!flakMods.some((m) => m.Label === 'FalloffRange'));
+    assert.equal(effectiveFalloff(flak, flakMods), 100000);
 });
+
+/** The falloff a build would read: the modifier if one survives, else the base stat. */
+function effectiveFalloff(
+    module: { falloffRange?: number },
+    modifiers: readonly { Label: string; Value?: number }[],
+): number | undefined {
+    return modifiers.find((m) => m.Label === 'FalloffRange')?.Value ?? module.falloffRange;
+}

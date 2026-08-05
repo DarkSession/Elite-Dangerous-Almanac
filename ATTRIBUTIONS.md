@@ -125,7 +125,8 @@ in the doc comment of each ported module, and in long form in the domain
   rates, fuel scoop rate, the shield cell bank stats (reinforcement, heat, spin-up,
   duration), scanner range, scan angle and scan time on both the sensor suites and the
   utility scanners, the Detailed Surface Scanner's probe radius, and the FSD
-  interdictor's facing limit and range, from
+  interdictor's facing limit and range — plus the two Seismic Charge Launcher reload
+  times coriolis-data leaves blank — from
   [EDSY](https://github.com/taleden/EDSY) (`eddb.js`, taleden, **CC BY-NC 4.0**), which
   is the only one of the two registries that carries them — coriolis-data names several
   of these stats in `modifications/modifierActions.json` without holding a value for

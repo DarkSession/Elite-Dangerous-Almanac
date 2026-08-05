@@ -137,10 +137,12 @@ export const STAT_LABELS: readonly StatLabel[] = [
         scale: percent,
         multiplierBase: percent,
     },
-    // On an armour module this scales the bulkhead's own hull boost, which the
-    // catalogue carries. A hull reinforcement package has no base hull boost — the
-    // game's modifier *is* the bonus — so nothing resolves for it and the label stays
-    // uncomputable there rather than silently resolving to zero.
+    // On an armour module this scales the bulkhead's own hull boost, which the catalogue
+    // carries. A hull reinforcement package carries none, and because this is a
+    // percentage-of-a-multiplier stat that absence is itself a value — no hull boost is a
+    // ×1 multiplier, 0% — so it resolves from zero and the recipe's bonus *is* the
+    // result, which is how the game reads it and what a journal reports
+    // (`OriginalValue: 0`). See `multiplierBase` and {@link computeModifiers}.
     {
         label: 'DefenceModifierHealthMultiplier',
         field: 'hullBoost',

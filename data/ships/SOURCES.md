@@ -4,7 +4,7 @@
 
 **Revision 2026-08-05 (UTC), later the same day — the base stats blueprints modify are
 now carried, so a real build can be engineered.** `applyBlueprint` refuses a recipe whose
-base stats a module record does not hold, and 406 of the 1902 declared engineering entries
+base stats a module record does not hold, and 405 of the 1902 declared engineering entries
 in `fixtures/ships/builds/` were being refused for exactly that: the most-used blueprints
 in the game moved stats no record had. Thirteen stat fields are added and two backfilled;
 after this pass every one of those 1902 entries resolves. Counts and spot values are
@@ -77,25 +77,29 @@ claim in `builds.test.ts`.
   free twin of the first take `scanAngle: 10` and `scanTime: 5` from EDSY's row for them,
   which the file keeps but comments out — `/* removed, now built-in */`, the modules
   having left the game in 3.3. The same precedent as `special_feedback_cascade` below.
-  The values matter because these four are `scanner`-family, so `Sensor_FastScan` and
-  `Sensor_WideAngle` reach them: without a base the scan-angle and scan-time legs would
+  The values matter because these four are `scanner`-family, so `Scanner_WideAngle` (both
+  legs) and `Sensor_FastScan` (the scan time) reach them: without a base those legs would
   be silently dropped as "the module has no such stat", which is untrue of them.
   Their `activerng` / `passiverng` — a detection radius in light-seconds, and infinite on
   the Advanced — are a different quantity from `scannerRange` and are deliberately not
-  mapped, so `Scanner_LongRange` still refuses on them, as it should: their `powerDraw`
-  is unknown and declared so.
-- **`shotSpeed` and `reloadTime` needed almost nothing.** The 49 weapons with no
-  `shotSpeed` and the 43 that had no `reloadTime` are not gaps: they are the lasers, rail
-  guns, Gauss cannons and mine launchers, which have no projectile to speed up and no clip
-  to reload. Neither registry publishes a figure, and EDSY's per-family `modifiable` lists
-  say outright that the game does not move those stats on those weapons. The **two** real
-  omissions were the medium Seismic Charge Launchers, fixed and turreted, whose
-  `reloadTime` of 1 s EDSY carries (`rldtime`) and this catalogue had dropped; both are
-  filled, leaving 41 records with no `reloadTime`. Nothing was invented for the other 90.
+  mapped, so a discovery scanner has no scan *range* in the sense the label means.
+  `Scanner_LongRange` refuses on them regardless, on their unknown and declared
+  `powerDraw`.
+- **`shotSpeed` and `reloadTime` needed almost nothing.** Neither absence is a gap. The
+  49 weapons with no `shotSpeed` are the lasers, rail guns, Gauss cannons and mine
+  launchers — nothing there travels, so there is no projectile speed to move. The 43 that
+  had no `reloadTime` are a *different and smaller* family, the pulse, burst, beam and
+  mining lasers alone: they have no clip and never reload, while rail guns, Gauss cannons
+  and mine launchers all reload and all carry the stat. Neither registry publishes a
+  figure for either set, and EDSY's per-family `modifiable` lists say outright that the
+  game does not move those stats on those weapons. The **two** real omissions were the
+  medium Seismic Charge Launchers, fixed and turreted, whose `reloadTime` of 1 s EDSY
+  carries (`rldtime`) and this catalogue had dropped; both are filled, leaving 41 records
+  with no `reloadTime`. Nothing was invented for the other 90.
 - **`EnergyPerRegen` needed no data at all.** All 57 shield generators already carried
   `distributorDraw`, and EDSY (`genpwr`) and coriolis (`distdraw`) both confirm it is the
   same stat under the journal's other name. It was a missing line in the label map, not a
-  missing value, and it alone accounted for 36 of the 406 refusals.
+  missing value, and it alone accounted for 36 of the 405 refusals.
 - **`refuelRate` is not on issue #10's list**, which was measured from the corpus and no
   corpus build carries a fuel-scoop recipe. It is the same defect — `recipe_fuelscoop_efficiency`
   moves `RefuelRate` and no record held one — so it is closed here rather than left as the
@@ -113,11 +117,15 @@ claim in `builds.test.ts`.
   ([issue #14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14)).
 - **A weapon with no maximum range now loses Long Range's falloff leg too.** That leg is
   stored upstream as an overwrite in `[0, 1]` — a flag meaning "damage falls off from
-  maximum range" — which the calculator resolves to the weapon's own range. On a missile
-  rack, torpedo pylon or mine launcher there is no range to resolve against and no falloff
-  either, and the recipe's `Range` leg is inert there for the same reason; the flag is
-  dropped rather than published as a one-metre falloff. Before this pass the whole recipe
-  was refused on those 26 weapons, so the path was unreachable.
+  maximum range" — which the calculator resolves to the weapon's own range. On the 33
+  weapons `Weapon_LongRange` reaches that have no range at all (missile and torpedo racks,
+  mine launchers, flak mortars, the AX dumbfires) there is nothing to resolve against, and
+  the recipe's `Range` leg is inert there for the same reason; the flag is dropped rather
+  than published as a one-metre falloff. Seven of the 33 do carry a real `falloffRange` —
+  the flak mortars, the AX dumbfire missiles and the Disruptor pulse laser — and keep it
+  unchanged: only the sentinel is ever dropped, and no record's `falloffRange` is small
+  enough to be mistaken for one. Before this pass the whole recipe was refused on all 33,
+  so the path was unreachable.
 - **A hull reinforcement package's hull boost is computed, not stored.** Its
   `DefenceModifierHealthMultiplier` leg used to be refused as a missing base stat. It is
   not one: a percentage-of-a-multiplier stat has no absent state, because no hull boost is

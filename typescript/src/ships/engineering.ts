@@ -255,9 +255,12 @@ export function computeModifiers(
  * every falloff to that ceiling.
  *
  * A weapon with **no maximum range at all** — a missile rack, a torpedo pylon, a mine
- * launcher — has nothing for the flag to resolve against and no falloff either, so the
- * leg is dropped rather than shipped as the raw sentinel. Its own `Range` leg is already
- * inert on such a weapon for the same reason; this keeps the pair consistent.
+ * launcher, a flak mortar — has nothing for the flag to resolve against, so the leg is
+ * dropped rather than shipped as the raw sentinel. Its own `Range` leg is already inert
+ * on such a weapon for the same reason; this keeps the pair consistent. Most of those
+ * weapons carry no `falloffRange` either, but the few that do keep the stock distance:
+ * only the flag is dropped, never a real value, and a recipe that *scales* the falloff
+ * (Focused) is untouched by this.
  *
  * @remarks
  * Reference: Coriolis `Module.getFalloff` — `if (mods['fallofffromrange']) return

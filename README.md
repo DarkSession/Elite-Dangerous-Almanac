@@ -1115,7 +1115,7 @@ fixed Mining Laser is not one of them — it is grouped and does offer an effect
 > `miscellaneous`, so `Misc_HeatSinkCapacity` is refused on it.) Issues
 > [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13) and
 > [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14) track the two
-> remaining problems; the missing base stats that used to reject a further 406 entries
+> remaining problems; the missing base stats that used to reject a further 405 entries
 > — thruster and drive heat rates, the scanner and cell-bank stats, a shield generator's
 > energy per regen — are sourced.
 

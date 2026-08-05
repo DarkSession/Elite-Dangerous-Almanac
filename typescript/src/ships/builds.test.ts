@@ -166,7 +166,7 @@ test('every declared blueprint, grade and experimental effect is in the catalogu
 });
 
 test('every declared engineering entry resolves against the base stats it needs', () => {
-    // The corpus is the measure of whether a real build can be engineered at all. 406 of
+    // The corpus is the measure of whether a real build can be engineered at all. 405 of
     // its declared entries used to be refused for a base stat no record carried — a
     // thruster's heat rate, a scanner's range, a cell bank's reinforcement; sourcing
     // those closed it, and this is what says the hole stays shut. It checks the base
