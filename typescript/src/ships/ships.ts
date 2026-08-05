@@ -179,7 +179,7 @@ export function getShipByName(name: string): Ship | null {
  * getShipSlots('anaconda')?.hardpoints;
  * // -> [{ size: 4 }, { size: 3 }, { size: 3 }, { size: 3 }, { size: 2 }, ...]
  * getShipSlots('LakonMiner')?.hardpoints[0];
- * // -> { size: 3, restriction: 'mining' } — the Type-11's large mining mount
+ * // -> { size: 3, restriction: 'mining', name: 'LargeMiningHardpoint1' }
  * getShipSlots('Anaconda')?.optional?.at(-2);   // -> { size: 1, name: 'Slot14_Size1' }
  * getShipSlots('Sidewinder')?.optional?.at(-2); // -> { size: 1 } — the rules fit
  * ```

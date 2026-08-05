@@ -2,12 +2,13 @@
 
 **Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the per-hull slot names added on 2026-08-05, recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
-**Revision 2026-08-05 (UTC) — 13 hulls now carry the journal's own slot names.**
+**Revision 2026-08-05 (UTC) — the mounts of 13 hulls now carry the journal's own slot
+names.**
 `enumerateSlots` numbered a hull's unrestricted optionals `Slot01_SizeN`, `Slot02_SizeN`,
 … with no gaps and its hardpoints `1, 2, 3` within each size class. **On 11 hulls one of
 those two rules is not what the game does** — the optional rule on nine of them, the
 hardpoint rule on the Type-8 Transporter and Caspian Explorer — and the sequences have no
-derivable pattern, so a per-hull override is the only honest fix. Those 11 and the 2 more
+derivable pattern, so storing the game's name against the mount is the only honest fix. Those 11 and the 2 more
 EDSY names (see the last bullet below) each gain a `name` on the mounts themselves —
 `{ "size": 1, "name": "Slot14_Size1" }` — the same place the 2026-08-04 pass put
 `restriction`, and for the same reason: a fact about one mount belongs on that mount, not

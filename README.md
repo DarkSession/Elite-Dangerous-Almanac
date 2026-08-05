@@ -468,7 +468,7 @@ import {
 getShipBySymbol("empire_trader")?.name; // -> 'Imperial Clipper' (lookups accept either casing)
 getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the record
 getShipSlots("anaconda")?.hardpoints; // -> [{ size: 4 }, { size: 3 }, ...] (slot layout, ready for the build editor)
-getShipSlots("LakonMiner")?.hardpoints[0]; // -> { size: 3, restriction: 'mining' } — a restricted mount
+getShipSlots("LakonMiner")?.hardpoints[0]; // -> { size: 3, restriction: 'mining', name: 'LargeMiningHardpoint1' } — restricted, and named
 getShipSlots("Anaconda")?.optional?.at(-2); // -> { size: 1, name: 'Slot14_Size1' } — the mount's own journal key
 getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
 SHIPS.length; // -> 48
