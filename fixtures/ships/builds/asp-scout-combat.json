@@ -17,7 +17,7 @@
     { "slot": "SmallHardpoint2", "item": "Hpt_MultiCannon_Fixed_Small_Strong", "priority": 2, "engineering": { "blueprint": "Weapon_ShortRange", "grade": 4, "experimental": "special_incendiary_rounds" } },
     { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 1, "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_kinetic" } },
     { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 1, "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_kinetic" } },
-    { "slot": "Slot01_Size5", "item": "Int_GuardianShieldReinforcement_Size5_Class2", "priority": 1 },
+    { "slot": "Slot01_Size4", "item": "Int_GuardianShieldReinforcement_Size5_Class2", "priority": 1 },
     { "slot": "Slot02_Size4", "item": "Int_ShieldGenerator_Size4_Class5_Strong", "priority": 2, "engineering": { "blueprint": "ShieldGenerator_Thermic", "grade": 5, "experimental": "special_shield_regenerative" } },
     { "slot": "Slot03_Size3", "item": "Int_GuardianShieldReinforcement_Size3_Class2" },
     { "slot": "Slot04_Size3", "item": "Int_GuardianShieldReinforcement_Size3_Class2" },

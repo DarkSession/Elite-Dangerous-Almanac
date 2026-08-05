@@ -17,8 +17,8 @@
     { "slot": "Slot04_Size4", "item": "Int_ShieldGenerator_Size4_Class2", "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
     { "slot": "Slot05_Size3", "item": "Int_CargoRack_Size3_Class1" },
     { "slot": "Slot06_Size3", "item": "Int_DroneControl_Repair_Size1_Class2", "on": false },
-    { "slot": "Slot07_Size2", "item": "Int_BuggyBay_Size2_Class2", "on": false },
-    { "slot": "Slot08_Size1", "item": "Int_DetailedSurfaceScanner_Tiny" }
+    { "slot": "Slot09_Size2", "item": "Int_BuggyBay_Size2_Class2", "on": false },
+    { "slot": "Slot10_Size1", "item": "Int_DetailedSurfaceScanner_Tiny" }
   ],
   "metrics": {
     "unladenMass": 636.3,

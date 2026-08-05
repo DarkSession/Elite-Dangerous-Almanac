@@ -19,8 +19,8 @@
     { "slot": "Slot07_Size5", "item": "Int_Repairer_Size3_Class2", "priority": 1, "on": false },
     { "slot": "Slot08_Size4", "item": "Int_ShieldGenerator_Size4_Class2", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5, "experimental": "special_shield_lightweight" } },
     { "slot": "Slot09_Size4", "item": "Int_FuelTank_Size3_Class3", "priority": 1 },
-    { "slot": "Slot11_Size2", "item": "Int_DockingComputer_Advanced", "priority": 3 },
-    { "slot": "Slot12_Size1", "item": "Int_SupercruiseAssist", "priority": 3 }
+    { "slot": "Slot13_Size2", "item": "Int_DockingComputer_Advanced", "priority": 3 },
+    { "slot": "Slot14_Size1", "item": "Int_SupercruiseAssist", "priority": 3 }
   ],
   "metrics": {
     "unladenMass": 536.6,

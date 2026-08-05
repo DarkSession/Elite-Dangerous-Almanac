@@ -15,7 +15,13 @@
 
 import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
-import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from './slots.js';
+import type {
+    CoreSlots,
+    HardpointSlotSpec,
+    OptionalSlotSpec,
+    ShipSlotNames,
+    ShipSlots,
+} from './slots.js';
 
 /**
  * One ship hull — its **identity, stats and slot layout** in one record.
@@ -108,6 +114,13 @@ export interface Ship {
     readonly utility?: number;
     /** Optional-internal mounts, largest first. */
     readonly optional?: readonly OptionalSlotSpec[];
+    /**
+     * The hull's own journal slot keys, present only on the thirteen hulls whose names
+     * `enumerateSlots`' numbering rules do not reproduce — the Anaconda's
+     * `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian Explorer's
+     * out-of-order mediums, and so on. See {@link ShipSlotNames}.
+     */
+    readonly slotNames?: ShipSlotNames;
 }
 
 /**
@@ -175,6 +188,8 @@ export function getShipByName(name: string): Ship | null {
  * // -> [{ size: 4 }, { size: 3 }, { size: 3 }, { size: 3 }, { size: 2 }, ...]
  * getShipSlots('LakonMiner')?.hardpoints[0];
  * // -> { size: 3, restriction: 'mining' } — the Type-11's large mining mount
+ * getShipSlots('Anaconda')?.slotNames?.optional?.at(-2); // -> 'Slot14_Size1'
+ * getShipSlots('Sidewinder')?.slotNames;                 // -> undefined — the rules fit
  * ```
  */
 export function getShipSlots(symbol: string): ShipSlots | null {
@@ -188,5 +203,6 @@ export function getShipSlots(symbol: string): ShipSlots | null {
         hardpoints: ship.hardpoints,
         utility: ship.utility,
         optional: ship.optional,
+        ...(ship.slotNames ? { slotNames: ship.slotNames } : {}),
     };
 }

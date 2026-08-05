@@ -38,8 +38,8 @@
     { "slot": "Slot08_Size4", "item": "Int_Refinery_Size4_Class5" },
     { "slot": "Slot09_Size4", "item": "Int_BuggyBay_Size4_Class1" },
     { "slot": "Slot10_Size4", "item": "Int_DetailedSurfaceScanner_Tiny", "engineering": { "blueprint": "Sensor_Expanded", "grade": 1 } },
-    { "slot": "Slot11_Size2", "item": "Int_DockingComputer_Advanced" },
-    { "slot": "Slot12_Size1", "item": "Int_SupercruiseAssist" }
+    { "slot": "Slot13_Size2", "item": "Int_DockingComputer_Advanced" },
+    { "slot": "Slot14_Size1", "item": "Int_SupercruiseAssist" }
   ],
   "metrics": {
     "unladenMass": 1104.2,

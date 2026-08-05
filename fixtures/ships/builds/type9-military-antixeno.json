@@ -34,10 +34,10 @@
     { "slot": "Slot06_Size4", "item": "Int_DroneControl_Decontamination_Size3_Class1" },
     { "slot": "Slot07_Size3", "item": "Int_BuggyBay_Size2_Class2" },
     { "slot": "Slot08_Size3", "item": "Int_DetailedSurfaceScanner_Tiny" },
-    { "slot": "Slot09_Size2", "item": "Int_SupercruiseAssist" },
+    { "slot": "Slot11_Size2", "item": "Int_SupercruiseAssist" },
     { "slot": "Military01", "item": "Int_GuardianShieldReinforcement_Size5_Class2" },
     { "slot": "Military02", "item": "Int_GuardianHullReinforcement_Size5_Class2" },
-    { "slot": "Slot10_Size1", "item": "Int_DockingComputer_Advanced" }
+    { "slot": "Slot12_Size1", "item": "Int_DockingComputer_Advanced" }
   ],
   "metrics": {
     "unladenMass": 1800.7,

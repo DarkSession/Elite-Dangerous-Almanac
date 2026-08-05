@@ -38,8 +38,8 @@
     { "slot": "Slot08_Size4", "item": "Int_ModuleReinforcement_Size4_Class2" },
     { "slot": "Slot09_Size4", "item": "Int_Repairer_Size4_Class5" },
     { "slot": "Slot10_Size4", "item": "Int_SupercruiseAssist", "priority": 1 },
-    { "slot": "Slot11_Size2", "item": "Int_DetailedSurfaceScanner_Tiny", "engineering": { "blueprint": "Sensor_Expanded", "grade": 3 } },
-    { "slot": "Slot12_Size1", "item": "Int_DockingComputer_Advanced", "priority": 1 },
+    { "slot": "Slot13_Size2", "item": "Int_DetailedSurfaceScanner_Tiny", "engineering": { "blueprint": "Sensor_Expanded", "grade": 3 } },
+    { "slot": "Slot14_Size1", "item": "Int_DockingComputer_Advanced", "priority": 1 },
     { "slot": "PlanetaryApproachSuite", "item": "Int_PlanetApproachSuite_Advanced" }
   ],
   "metrics": {

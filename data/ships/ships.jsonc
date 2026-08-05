@@ -6,6 +6,8 @@
  *          https://github.com/EDCD/FDevIDs
  *          EDCD/coriolis-data, ships/*.json (stats + slot layout)
  *          https://github.com/EDCD/coriolis-data
+ *          EDSY, eddb.js `ship[…].slotnames` (the `slotNames` journal keys)
+ *          https://github.com/taleden/EDSY
  *          The stat/slot values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -20,6 +22,17 @@
  * optionals, the Panther Clipper Mk II's two cargo-only optionals, the military
  * mounts 16 hulls have, and the planetary-approach-suite mount all but the Lynx
  * Highliner has.
+ *
+ * `slotNames` is the hull's own journal slot keys, present on the 13 hulls whose
+ * names no numbering rule derives — the Anaconda's `Slot13_Size2`/`Slot14_Size1`
+ * with no 11 or 12, the Type-9 Heavy starting at `Slot00_Size8`, the Type-8
+ * Transporter skipping `SmallHardpoint3`, the Caspian Explorer's mediums running
+ * 6, 5, 1, 2, 3, 4, the Lynx Highliner's `Passenger01`–`03`. Its `hardpoints` /
+ * `optional` arrays are positionally parallel to the sibling layout arrays and name
+ * every mount of that kind, restricted ones included; an absent array means the
+ * rules already produce the right names. A key's `_SizeN` suffix is Frontier's own
+ * and on three hulls disagrees with the mount it names (the Keelback's
+ * `Slot03_Size3` is a size-4 mount) — the `optional` entry carries the real size.
  *
  * A hull's armour options are modules like any other: they live in
  * `modules-core.jsonc`, keyed to the hull by their `ship` field. Most come from coriolis-data; the Lynx Highliner
@@ -660,6 +673,21 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Slot01_Size6",
+        "Slot02_Size6",
+        "Slot03_Size5",
+        "Slot04_Size5",
+        "Slot05_Size4",
+        "Slot06_Size4",
+        "Slot07_Size2",
+        "Slot08_Size2",
+        "Slot09_Size2",
+        "Slot09_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 16783094,
     "retailCost": 17472252
   },
@@ -811,6 +839,19 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Slot01_Size5",
+        "Military01",
+        "Slot02_Size4",
+        "Slot03_Size2",
+        "Slot05_Size1",
+        "Slot06_Size1",
+        "Slot07_Size1",
+        "Slot08_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 4692214,
     "retailCost": 4925615
   },
@@ -975,6 +1016,21 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Slot01_Size6",
+        "Slot02_Size5",
+        "Slot03_Size5",
+        "Slot04_Size4",
+        "Military01",
+        "Military02",
+        "Slot05_Size3",
+        "Slot06_Size3",
+        "Slot09_Size2",
+        "Slot10_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 13510106,
     "retailCost": 14314210
   },
@@ -1137,6 +1193,22 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Slot00_Size8",
+        "Slot01_Size8",
+        "Slot02_Size7",
+        "Slot03_Size6",
+        "Slot04_Size5",
+        "Slot05_Size4",
+        "Slot06_Size4",
+        "Slot07_Size3",
+        "Slot08_Size3",
+        "Slot11_Size2",
+        "Slot12_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 72116858,
     "retailCost": 76555842
   },
@@ -1487,6 +1559,24 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Slot01_Size7",
+        "Slot02_Size6",
+        "Slot03_Size6",
+        "Slot04_Size6",
+        "Slot05_Size5",
+        "Slot06_Size5",
+        "Slot07_Size5",
+        "Military01",
+        "Slot08_Size4",
+        "Slot09_Size4",
+        "Slot10_Size4",
+        "Slot13_Size2",
+        "Slot14_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 142456440,
     "retailCost": 146969451
   },
@@ -2375,6 +2465,18 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Slot01_Size5",
+        "Slot02_Size5",
+        "Slot03_Size3",
+        "Slot04_Size3",
+        "Slot05_Size2",
+        "Slot06_Size2",
+        "Slot07_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 2946463,
     "retailCost": 3126154
   },
@@ -2447,6 +2549,18 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Slot01_Size4",
+        "Slot02_Size4",
+        "Slot03_Size3",
+        "Slot04_Size3",
+        "Slot05_Size2",
+        "Slot06_Size2",
+        "Slot07_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 3819823,
     "retailCost": 3961154
   },
@@ -2552,6 +2666,23 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Slot01_Size8",
+        "Slot02_Size7",
+        "Slot03_Size6",
+        "Slot04_Size5",
+        "Slot05_Size4",
+        "Slot06_Size4",
+        "Slot07_Size3",
+        "Slot08_Size3",
+        "Slot11_Size2",
+        "Military01",
+        "Military02",
+        "Slot12_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 121334619,
     "retailCost": 124755342
   },
@@ -3220,6 +3351,16 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "hardpoints": [
+        "MediumHardpoint1",
+        "SmallHardpoint1",
+        "SmallHardpoint2",
+        "SmallHardpoint4",
+        "SmallHardpoint5",
+        "SmallHardpoint6"
+      ]
+    },
     "hullCost": 34820576,
     "retailCost": 38453970
   },
@@ -3586,6 +3727,23 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Cargo01",
+        "Slot01_Size8",
+        "Cargo02",
+        "Slot02_Size7",
+        "Slot03_Size6",
+        "Slot04_Size6",
+        "Slot05_Size6",
+        "Slot06_Size5",
+        "Slot07_Size5",
+        "Slot08_Size4",
+        "Slot09_Size2",
+        "Slot10_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 286905678,
     "retailCost": 301348586
   },
@@ -3692,6 +3850,33 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "hardpoints": [
+        "LargeMiningHardpoint1",
+        "MediumMiningHardpoint1",
+        "MediumMiningHardpoint2",
+        "MediumHardpoint3",
+        "SmallMiningHardpoint1",
+        "SmallHardpoint2",
+        "SmallHardpoint3",
+        "SmallHardpoint4"
+      ],
+      "optional": [
+        "Slot01_Size6",
+        "Slot02_Size6",
+        "Slot03_Size6",
+        "Slot04_Size5",
+        "Slot05_Size5",
+        "LimpetController01",
+        "FighterBay01",
+        "Slot06_Size4",
+        "Slot07_Size3",
+        "Slot08_Size2",
+        "Slot09_Size1",
+        "Slot10_Size1",
+        "PlanetaryApproachSuite"
+      ]
+    },
     "hullCost": 66346710,
     "retailCost": 67861850
   },
@@ -3795,6 +3980,17 @@
         "restriction": "planetaryApproachSuite"
       }
     ],
+    "slotNames": {
+      "hardpoints": [
+        "LargeHardpoint1",
+        "MediumHardpoint6",
+        "MediumHardpoint5",
+        "MediumHardpoint1",
+        "MediumHardpoint2",
+        "MediumHardpoint3",
+        "MediumHardpoint4"
+      ]
+    },
     "hullCost": 189326510,
     "retailCost": 194861290
   },
@@ -3953,6 +4149,20 @@
         "size": 1
       }
     ],
+    "slotNames": {
+      "optional": [
+        "Slot01_Size6",
+        "Passenger01",
+        "Passenger02",
+        "Passenger03",
+        "Slot02_Size5",
+        "Slot03_Size4",
+        "Slot04_Size4",
+        "Slot05_Size3",
+        "Slot06_Size2",
+        "Slot07_Size1"
+      ]
+    },
     "hullCost": 67992080,
     "retailCost": 69289470
   }

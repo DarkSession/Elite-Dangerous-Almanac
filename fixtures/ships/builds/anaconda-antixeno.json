@@ -38,8 +38,8 @@
     { "slot": "Slot08_Size4", "item": "Int_DroneControl_Decontamination_Size3_Class1", "priority": 1 },
     { "slot": "Slot09_Size4", "item": "Int_GuardianHullReinforcement_Size4_Class2" },
     { "slot": "Slot10_Size4", "item": "Int_CorrosionProofCargoRack_Size4_Class1", "priority": 1 },
-    { "slot": "Slot11_Size2", "item": "Int_Repairer_Size2_Class5", "engineering": { "blueprint": "Misc_Shielded", "grade": 3 } },
-    { "slot": "Slot12_Size1", "item": "Int_DroneControl_Collection_Size1_Class2", "priority": 1 }
+    { "slot": "Slot13_Size2", "item": "Int_Repairer_Size2_Class5", "engineering": { "blueprint": "Misc_Shielded", "grade": 3 } },
+    { "slot": "Slot14_Size1", "item": "Int_DroneControl_Collection_Size1_Class2", "priority": 1 }
   ],
   "metrics": {
     "unladenMass": 1299.4,

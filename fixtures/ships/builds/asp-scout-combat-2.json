@@ -17,7 +17,7 @@
     { "slot": "SmallHardpoint2", "item": "Hpt_MultiCannon_Gimbal_Small" },
     { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5" },
     { "slot": "TinyHardpoint2", "item": "Hpt_ChaffLauncher_Tiny" },
-    { "slot": "Slot01_Size5", "item": "Int_ShieldGenerator_Size4_Class5" },
+    { "slot": "Slot01_Size4", "item": "Int_ShieldGenerator_Size4_Class5" },
     { "slot": "Slot02_Size4", "item": "Int_ShieldCellBank_Size4_Class4", "priority": 2 },
     { "slot": "Slot03_Size3", "item": "Int_HullReinforcement_Size3_Class2" },
     { "slot": "Slot04_Size3", "item": "Int_FuelScoop_Size3_Class4", "priority": 3 },

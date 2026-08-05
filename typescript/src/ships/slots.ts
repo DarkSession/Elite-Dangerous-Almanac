@@ -15,7 +15,8 @@
  *
  * It holds no data; {@link enumerateSlots} takes a {@link ShipSlots} layout (from a
  * hull's `Ship` record via `getShipSlots` in `./ships`) and expands it into keyed
- * {@link BuildSlot}s.
+ * {@link BuildSlot}s. Most hulls number their mounts by rule; thirteen do not, and
+ * carry the game's own names in {@link ShipSlotNames} instead.
  *
  * @packageDocumentation
  */
@@ -145,6 +146,12 @@ export interface BuildSlot {
      * `ShipLoadout.slots()` rather than typing them. Note a core slot's
      * {@link BuildSlot.core} function name is a *different* string (`thrusters` vs the
      * key `MainEngines`); see {@link CoreSlotType}.
+     *
+     * **Do not compute one.** The numbering looks regular and on thirteen hulls is
+     * not: the Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1`
+     * with no slots 11 or 12, the Type-9 Heavy starts at `Slot00_Size8`, the Type-7
+     * Transporter uses the number `09` twice, and the Keelback's `Slot03_Size3` sits
+     * on a size-**4** mount. Those names come from {@link ShipSlotNames}.
      */
     readonly key: string;
     /** Which kind of mount this is. */
@@ -220,6 +227,44 @@ export interface OptionalSlotSpec {
 }
 
 /**
+ * The journal slot keys a hull uses where the ordinary numbering rules do not
+ * reproduce them — one name per mount, positionally parallel to the hull's own
+ * {@link ShipSlots.hardpoints} / {@link ShipSlots.optional} arrays.
+ *
+ * @remarks
+ * {@link enumerateSlots} numbers unrestricted optionals `Slot01_SizeN`,
+ * `Slot02_SizeN`, … with no gaps and hardpoints `1, 2, 3` within each size class.
+ * **Thirteen hulls disagree**, and no rule derives what they do instead:
+ *
+ * | Hull | What the game names it |
+ * | --- | --- |
+ * | Anaconda | `Slot13_Size2`, `Slot14_Size1` — no 11 or 12 |
+ * | Type-9 Heavy | starts at `Slot00_Size8`; then jumps `Slot08` → `Slot11` |
+ * | Type-10 Defender, Federal Dropship, Vulture | a gap before the last mounts |
+ * | Type-7 Transporter | the number `09` twice, and six suffixes misreport the size |
+ * | Keelback, Asp Scout | one suffix misreports the size |
+ * | Type-8 Transporter | `SmallHardpoint2` then `SmallHardpoint4` |
+ * | Caspian Explorer | mediums run `6, 5, 1, 2, 3, 4` — out of order, not just gapped |
+ * | Lynx Highliner | its three passenger mounts are `Passenger01`–`03` |
+ * | Panther Clipper Mk II, Type-11 Prospector | what the rules already derive, pinned |
+ *
+ * A suffix that misreports the size is the game's, not a transcription slip: the
+ * Keelback's `Slot03_Size3` names a size-4 mount, and {@link BuildSlot.size} carries
+ * the mount's real size regardless. Read a name's size off the layout, never off the
+ * key.
+ *
+ * Either array may be absent, and an absent one means "the rules are right for this
+ * kind of mount on this hull". A present one covers **every** mount of that kind,
+ * restricted ones included, so what it lists is the hull's whole vocabulary.
+ */
+export interface ShipSlotNames {
+    /** One key per entry of {@link ShipSlots.hardpoints}, in the same order. */
+    readonly hardpoints?: readonly string[];
+    /** One key per entry of {@link ShipSlots.optional}, in the same order. */
+    readonly optional?: readonly string[];
+}
+
+/**
  * A hull's full slot layout — the slot-bearing fields of a `Ship`, as `getShipSlots`
  * returns.
  *
@@ -239,6 +284,12 @@ export interface ShipSlots {
     readonly utility: number;
     /** Optional-internal mounts, largest first. */
     readonly optional: readonly OptionalSlotSpec[];
+    /**
+     * The hull's own journal slot keys, on the thirteen hulls whose names the
+     * numbering rules do not reproduce; absent on the rest. See
+     * {@link ShipSlotNames}.
+     */
+    readonly slotNames?: ShipSlotNames;
 }
 
 /** What a journal slot key says about the mount, as {@link parseSlotName} reads it. */
@@ -329,7 +380,9 @@ const pad2 = (n: number): string => String(n).padStart(2, '0');
  * internals, then the optional internals, then the cargo hatch.
  *
  * The keys are journal-compatible, so the same key identifies a mount whether the
- * build was assembled from scratch or loaded from a SLEF export.
+ * build was assembled from scratch or loaded from a SLEF export. On the thirteen hulls
+ * that carry {@link ShipSlots.slotNames}, the hull's own names win over the numbering
+ * rules — that is what makes those two paths agree there.
  *
  * @param layout - The hull's slot layout.
  * @returns Every mount the hull offers, as {@link BuildSlot}s.
@@ -337,22 +390,27 @@ const pad2 = (n: number): string => String(n).padStart(2, '0');
  * ```ts
  * enumerateSlots(getShipSlots('Anaconda')!).filter((s) => s.kind === 'hardpoint');
  * // -> [{ key: 'HugeHardpoint1', size: 4, ... }, { key: 'LargeHardpoint1', size: 3, ... }, ...]
+ * enumerateSlots(getShipSlots('Anaconda')!).at(-2)?.key; // -> 'Slot14_Size1', not 'Slot12_Size1'
  * ```
  */
 export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
     const slots: BuildSlot[] = [];
+    // A hull's own names, where it has them, override the derived key mount for mount.
+    // An index the hull does not name falls back to the rules, so a partial list still
+    // yields a whole vocabulary.
+    const named = layout.slotNames;
 
     // Hardpoints, numbered within each size class in layout order. A restricted mount
     // shares that per-class numbering and takes an infix, so the Type-11's four medium
     // mounts run MediumMiningHardpoint1, MediumMiningHardpoint2, MediumHardpoint3.
     const hpCount: Record<number, number> = {};
-    for (const spec of layout.hardpoints) {
+    for (const [i, spec] of layout.hardpoints.entries()) {
         const cls = HARDPOINT_CLASS[spec.size];
         if (!cls) continue;
         const n = (hpCount[spec.size] = (hpCount[spec.size] ?? 0) + 1);
         const infix = spec.restriction ? HARDPOINT_INFIX[spec.restriction] : '';
         const slot: BuildSlot = {
-            key: `${cls}${infix}Hardpoint${n}`,
+            key: named?.hardpoints?.[i] ?? `${cls}${infix}Hardpoint${n}`,
             kind: 'hardpoint',
             size: spec.size,
             ...(spec.restriction ? { restriction: spec.restriction } : {}),
@@ -376,11 +434,12 @@ export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
     // so a restricted slot never consumes a `SlotNN` number.
     let slotN = 1;
     const restrictedN: Partial<Record<OptionalRestriction, number>> = {};
-    for (const spec of layout.optional) {
+    for (const [i, spec] of layout.optional.entries()) {
         const restriction = spec.restriction;
+        const override = named?.optional?.[i];
         if (restriction === 'planetaryApproachSuite') {
             slots.push({
-                key: 'PlanetaryApproachSuite',
+                key: override ?? 'PlanetaryApproachSuite',
                 kind: 'optional',
                 size: spec.size,
                 restriction,
@@ -388,14 +447,17 @@ export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
         } else if (restriction) {
             const n = (restrictedN[restriction] = (restrictedN[restriction] ?? 0) + 1);
             slots.push({
-                key: `${OPTIONAL_PREFIX[restriction]}${pad2(n)}`,
+                key: override ?? `${OPTIONAL_PREFIX[restriction]}${pad2(n)}`,
                 kind: 'optional',
                 size: spec.size,
                 restriction,
             });
         } else {
+            // `slotN` advances even when a name overrides it, so the rule stays the rule
+            // for any mount the hull leaves unnamed.
+            const derived = `Slot${pad2(slotN++)}_Size${spec.size}`;
             slots.push({
-                key: `Slot${pad2(slotN++)}_Size${spec.size}`,
+                key: override ?? derived,
                 kind: 'optional',
                 size: spec.size,
             });
@@ -425,6 +487,12 @@ export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
  * Inara writes `powerplant` and `largemininghardpoint1` — and both name the same
  * mount. The returned `core` and `restriction` values keep this library's own
  * camelCase spelling whatever the input looked like.
+ *
+ * **A `_SizeN` suffix is what the name says, not what the mount is.** On three hulls
+ * the game's own key disagrees with the mount it names — the Keelback's
+ * `Slot03_Size3` is a size-4 mount, the Asp Scout's `Slot01_Size4` a size-5 one, and
+ * six of the Type-7 Transporter's ten are off. To size a mount, find it in the hull's
+ * layout ({@link enumerateSlots}) rather than trusting the number returned here.
  * @example
  * ```ts
  * parseSlotName('Slot03_Size5'); // -> { kind: 'optional', size: 5 }
@@ -463,6 +531,11 @@ export function parseSlotName(slot: string): ParsedSlot | null {
         return { kind: 'optional', size: null, restriction: 'limpetController' };
     if (/^fighterbay\d+$/.test(key))
         return { kind: 'optional', size: null, restriction: 'vesselHangar' };
+    // The Lynx Highliner's three cabin mounts. Classified as the optionals they are,
+    // with no restriction: the game reserves them for passenger cabins, and this
+    // catalogue does not yet model that —
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11.
+    if (/^passenger\d+$/.test(key)) return { kind: 'optional', size: null };
 
     const optional = /^slot\d+_size(\d+)$/.exec(key);
     if (optional) return { kind: 'optional', size: Number(optional[1]) };

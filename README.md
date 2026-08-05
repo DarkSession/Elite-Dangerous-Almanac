@@ -469,6 +469,7 @@ getShipBySymbol("empire_trader")?.name; // -> 'Imperial Clipper' (lookups accept
 getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the record
 getShipSlots("anaconda")?.hardpoints; // -> [{ size: 4 }, { size: 3 }, ...] (slot layout, ready for the build editor)
 getShipSlots("LakonMiner")?.hardpoints[0]; // -> { size: 3, restriction: 'mining' } — a restricted mount
+getShipSlots("Anaconda")?.slotNames?.optional?.at(-2); // -> 'Slot14_Size1' — the hull's own key, on the 13 hulls that need one
 getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
 SHIPS.length; // -> 48
 ```
@@ -936,6 +937,21 @@ does: Inara writes `frameshiftdrive` and `largemininghardpoint1`, and both name 
 mount as the journal's `FrameShiftDrive` and `LargeMiningHardpoint1`. A build keeps
 whatever spelling it was imported with — editing one of its mounts never renames it, so
 re-exporting returns the producer's own keys untouched.
+
+**Enumerate them; do not compute them.** The numbering looks regular and on 13 of the 48
+hulls is not, so a key you construct by counting will name a mount the game does not
+have. The Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1` — there is
+no 11 or 12; the Type-9 Heavy starts at `Slot00_Size8`; the Type-7 Transporter uses the
+number `09` twice; the Type-8 Transporter has no `SmallHardpoint3`; the Caspian
+Explorer's medium hardpoints run 6, 5, 1, 2, 3, 4 in layout order, so the same key means
+a **different physical mount** than position would suggest; and the Lynx Highliner calls
+three of its optionals `Passenger01`–`03`. Those names are the game's, carried per hull
+in `getShipSlots(symbol)?.slotNames` and applied by `enumerateSlots`.
+
+A `_SizeN` suffix is part of the name, not a measurement: on the Keelback, Asp Scout and
+Type-7 Transporter, Frontier's own key disagrees with the mount it names (the Keelback's
+`Slot03_Size3` is a **size-4** mount). `slot.size` is always the mount's real size —
+read the size from the layout, never off the key.
 
 **Some mounts take one family of modules and nothing else**, and the journal gives each
 such mount a name of its own — so `slot.restriction` says what it takes and

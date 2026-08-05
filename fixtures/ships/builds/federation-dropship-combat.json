@@ -26,7 +26,7 @@
     { "slot": "Slot04_Size4", "item": "Int_HullReinforcement_Size4_Class2" },
     { "slot": "Slot05_Size3", "item": "Int_FuelScoop_Size3_Class5" },
     { "slot": "Slot06_Size3", "item": "Int_FSDInterdictor_Size3_Class3", "priority": 1 },
-    { "slot": "Slot07_Size2", "item": "Int_ShieldCellBank_Size2_Class5" }
+    { "slot": "Slot09_Size2", "item": "Int_ShieldCellBank_Size2_Class5" }
   ],
   "metrics": {
     "unladenMass": 926.1,

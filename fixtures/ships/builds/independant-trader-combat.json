@@ -20,7 +20,7 @@
     { "slot": "TinyHardpoint3", "item": "Hpt_ChaffLauncher_Tiny" },
     { "slot": "Slot01_Size5", "item": "Int_FighterBay_Size5_Class1" },
     { "slot": "Slot02_Size5", "item": "Int_HullReinforcement_Size5_Class2" },
-    { "slot": "Slot03_Size4", "item": "Int_ShieldGenerator_Size4_Class3" },
+    { "slot": "Slot03_Size3", "item": "Int_ShieldGenerator_Size4_Class3" },
     { "slot": "Slot04_Size3", "item": "Int_CargoRack_Size3_Class1" },
     { "slot": "Slot05_Size2", "item": "Int_FSDInterdictor_Size2_Class1" },
     { "slot": "Slot06_Size2", "item": "Int_HullReinforcement_Size2_Class2" },

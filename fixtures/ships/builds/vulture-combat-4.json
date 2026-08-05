@@ -21,10 +21,10 @@
     { "slot": "Slot01_Size5", "item": "Int_ShieldGenerator_Size5_Class3_Fast", "priority": 1 },
     { "slot": "Slot02_Size4", "item": "Int_FuelScoop_Size4_Class5", "priority": 4 },
     { "slot": "Slot03_Size2", "item": "Int_ModuleReinforcement_Size2_Class2", "priority": 4 },
-    { "slot": "Slot04_Size1", "item": "Int_Repairer_Size1_Class5", "on": false },
-    { "slot": "Slot05_Size1", "item": "Int_FSDInterdictor_Size1_Class5", "priority": 4 },
-    { "slot": "Slot06_Size1", "item": "Int_SupercruiseAssist", "priority": 4 },
-    { "slot": "Slot07_Size1", "item": "Int_DockingComputer_Advanced", "priority": 3 }
+    { "slot": "Slot05_Size1", "item": "Int_Repairer_Size1_Class5", "on": false },
+    { "slot": "Slot06_Size1", "item": "Int_FSDInterdictor_Size1_Class5", "priority": 4 },
+    { "slot": "Slot07_Size1", "item": "Int_SupercruiseAssist", "priority": 4 },
+    { "slot": "Slot08_Size1", "item": "Int_DockingComputer_Advanced", "priority": 3 }
   ],
   "metrics": {
     "unladenMass": 386.5,

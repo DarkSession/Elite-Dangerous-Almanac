@@ -768,3 +768,40 @@ test('every figure the Type-11 export needs is computable from it', () => {
     assert.equal(build.cargoCapacity, 208);
     assert.equal(build.weaponMetrics().weapons.length, 5);
 });
+
+test('a build assembled here exports the slot keys a game journal would use', () => {
+    // The whole point of the per-hull names: an export of a build assembled from scratch
+    // has to name mounts the game has. The Anaconda's smallest two optionals are 13 and
+    // 14, and it has no 11 or 12 at all.
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('Slot13_Size2', module('Int_DetailedSurfaceScanner_Tiny'))
+        .setModule('Slot14_Size1', module('Int_DockingComputer_Advanced'));
+    const slots = build.toLoadoutEvent().Modules.map((m) => m.Slot);
+    assert.deepEqual(slots, ['Slot13_Size2', 'Slot14_Size1']);
+    assert.throws(
+        () => build.setModule('Slot11_Size2', module('Int_DetailedSurfaceScanner_Tiny')),
+        /has no slot "Slot11_Size2"/,
+    );
+});
+
+test('a journal build on a renamed hull binds to the mounts it names', () => {
+    // Import is where the old numbering hurt least and the new one still has to hold:
+    // the key the game wrote must find the mount, not land beside it as an extra.
+    const event: LoadoutEvent = {
+        Ship: 'type9',
+        Modules: [
+            { Slot: 'Slot00_Size8', Item: 'int_cargorack_size8_class1' },
+            { Slot: 'Slot11_Size2', Item: 'int_cargorack_size2_class1' },
+        ],
+    };
+    const build = ShipLoadout.fromLoadout(event);
+    assert.equal(build.cargoCapacity, 260);
+    for (const slot of build.slots()) {
+        if (slot.key === 'Slot00_Size8' || slot.key === 'Slot11_Size2') {
+            assert.ok(slot.module, `${slot.key} bound no module`);
+        }
+    }
+    // Every fitted module sits in a mount the hull declares — nothing left over.
+    const keys = new Set(build.slots().map((s) => s.key));
+    for (const m of build.modules) assert.ok(keys.has(m.Slot), `stray slot ${m.Slot}`);
+});
