@@ -41,6 +41,7 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'experimental-effects.jsonc': 'experimentalCatalogue',
     'pre-engineered.jsonc': 'preEngineeredCatalogue',
     'engineering-options.jsonc': 'engineeringOptionCatalogue',
+    'unknown-stats.jsonc': 'unknownModuleStatsCatalogue',
 };
 
 // Ajv 6 is CommonJS; require it directly so Node's synchronous JSONC ESM hook does
@@ -61,8 +62,9 @@ test('data/ships holds the expected number of catalogues', () => {
     // and module now one record) + 2 engineering catalogues (blueprints — each grade
     // carrying its modifiers and its materials — and experimental-effects) + the
     // pre-engineered pairings joining a bought variant to the blueprint baked into it,
-    // and the engineering options each module group offers.
-    assert.equal(DATA_FILES.length, 9);
+    // the engineering options each module group offers, and the register of stats a
+    // module record omits because they are unknown rather than absent.
+    assert.equal(DATA_FILES.length, 10);
 });
 
 for (const name of DATA_FILES) {

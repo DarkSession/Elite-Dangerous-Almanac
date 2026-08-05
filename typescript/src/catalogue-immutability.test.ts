@@ -8,6 +8,7 @@ import { ALL_NEBULAE } from './astro/nebulae-all.js';
 import { ALL_MATERIALS } from './materials/materials-all.js';
 import { ALL_MICRO_RESOURCES } from './materials/micro-resources-all.js';
 import { ALL_MODULES } from './ships/modules-all.js';
+import { UNKNOWN_MODULE_STATS } from './ships/unknown-stats.js';
 import { SHIPS } from './ships/ships.js';
 import { SLOT_RESTRICTION_LABELS } from './ships/slots.js';
 import { ALL_COMMODITIES } from './commodities/commodities-all.js';
@@ -20,6 +21,7 @@ test('every exported object catalogue and all of its records are frozen', () => 
         ALL_MATERIALS,
         ALL_MICRO_RESOURCES,
         ALL_MODULES,
+        UNKNOWN_MODULE_STATS,
         SHIPS,
         ALL_COMMODITIES,
     ];
@@ -49,6 +51,8 @@ test('nested records and named origins are frozen', () => {
     const handAuthored = HAND_AUTHORED_REGIONS[0]!;
     assert.equal(Object.isFrozen(handAuthored.spheres), true);
     assert.ok(handAuthored.spheres.every((sphere) => Object.isFrozen(sphere)));
+
+    assert.equal(Object.isFrozen(UNKNOWN_MODULE_STATS[0]!.stats), true);
 
     const origin = getNamedRegionOrigin('Pleiades Sector');
     assert.ok(origin);

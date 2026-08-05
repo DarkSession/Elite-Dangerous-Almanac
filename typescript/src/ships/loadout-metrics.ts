@@ -25,6 +25,7 @@ import type {
     ModuleReinforcementParams,
 } from './armour.js';
 import { combinedRateOfFire, type WeaponStats } from './weapons.js';
+import { isStatUnknown } from './unknown-stats.js';
 
 /** Symbol prefixes that identify a module group, lower-cased. @internal */
 const PREFIX = {
@@ -146,23 +147,36 @@ export function effectiveModule(
     return merged as unknown as OutfittingModule;
 }
 
-/** One fitted module's claim on the power plant. */
+/**
+ * One fitted module's claim on the power plant, or `null` when it makes none.
+ *
+ * A module whose draw the catalogue knows it cannot supply (`./unknown-stats` — the
+ * withdrawn Discovery Scanners) is **not** `null`: it comes back flagged
+ * `drawUnknown`, so the budget reports it as unknown rather than as zero.
+ */
 export function powerConsumerFor(
     module: LoadoutModule,
     stats: OutfittingModule | null = statFor(module.Item),
 ): PowerConsumer | null {
     const draw = effectiveStat(module, 'powerDraw', stats);
-    if (draw === undefined || draw === 0) return null;
     // Weapons and most utility fittings only draw while the hardpoints are out; the
     // ones flagged `alwaysPowered` (shield boosters, chaff, heat sinks, …) always draw.
     const mounted = stats?.category === 'hardpoint' || stats?.category === 'utility';
-    return {
-        draw,
+    const common = {
         priority: priorityOf(module),
         enabled: isEnabled(module),
         deployedOnly: mounted && stats?.alwaysPowered !== true,
         label: module.Slot,
     };
+    if (draw === undefined) {
+        // The symbol is the catalogue's own where there is a record, so a build that
+        // supplied its own stats is still classified by the article that was fitted.
+        return isStatUnknown(stats?.symbol ?? module.Item, 'powerDraw')
+            ? { draw: 0, drawUnknown: true, ...common }
+            : null;
+    }
+    if (draw === 0) return null;
+    return { draw, ...common };
 }
 
 /** The build's power-plant capacity, post-engineering, or `0` when none is fitted. */

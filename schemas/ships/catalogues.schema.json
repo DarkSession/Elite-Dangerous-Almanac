@@ -402,6 +402,27 @@
           }
         }
       }
+    },
+    "unknownModuleStats": {
+      "description": "One module whose record omits a stat because the value is unknown, not because the module has none.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "stats"],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "stats": {
+          "description": "Fields of the module record whose absence means unknown. Each must be absent from that record.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/nonEmptyString" }
+        }
+      }
+    },
+    "unknownModuleStatsCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/unknownModuleStats" }
     }
   }
 }

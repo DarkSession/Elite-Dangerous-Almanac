@@ -587,6 +587,28 @@ A weapon's `damage` is per **round** and its `distributorDraw` and `thermalLoad`
 fragment cannon. The continuous-fire beam and mining lasers carry no `rateOfFire`,
 because all three stats are already per second on those.
 
+#### When a stat is missing
+
+Sparse means a missing stat is usually an answer: a cargo rack draws no power, a fuel
+tank has no rate of fire. For five records it is a **gap** instead — the module has the
+stat in game and no public registry publishes it — and adding those up as zero would
+quietly understate a build. `ships/unknown-stats` (under 1 KB minified, and it pulls no
+catalogue) tells the two apart:
+
+```ts
+import { isStatUnknown } from "@elite-dangerous-almanac/core/ships/unknown-stats";
+
+isStatUnknown("Int_StellarBodyDiscoveryScanner_Advanced", "powerDraw"); // -> true
+isStatUnknown("Int_CargoRack_Size4_Class1", "powerDraw"); // -> false, it draws nothing
+```
+
+The five are the four withdrawn Discovery Scanners (`powerDraw`) and the unsized Hatch
+Breaker Limpet Controller (`mass`). The library applies this itself: `unladenMass`
+returns `null` rather than a total missing a module's mass, and `powerBudget()` names
+such a module in `unknownDraws` rather than counting it as free. `TODO.md` tracks what
+would fill each. An absent `cost` needs no such lookup — see [Prices](#prices) — and
+this is not a claim that _every_ other absence is a stat the game does not have.
+
 #### Prices
 
 Standard list prices in credits sit on the same records — no second lookup:
@@ -758,6 +780,8 @@ power.deployed; // -> draw with them out (weapons only draw deployed)
 power.headroom; // -> available - deployed; negative means over budget
 power.withinBudget; // -> true
 power.bands[4]?.poweredDeployed; // -> is priority group 5 still lit?
+power.unknownDraws; // -> [] — modules whose draw nobody publishes, if any: while this
+//    is non-empty every figure above is a lower bound
 
 // Shields: strength in MJ and what it is worth against each damage type
 const shields = build.shieldMetrics(); // null when no generator is fitted

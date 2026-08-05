@@ -63,6 +63,13 @@ export interface PowerConsumer {
      * {@link OutfittingModule.alwaysPowered | always powered}. Defaults to `false`.
      */
     readonly deployedOnly?: boolean;
+    /**
+     * `true` for a module that draws power the catalogue cannot supply — the four
+     * withdrawn Discovery Scanners are the only ones today (see
+     * `./unknown-stats`). Its {@link PowerConsumer.draw | draw} is then ignored and it
+     * is named in {@link PowerBudget.unknownDraws} instead of being counted as `0`.
+     */
+    readonly drawUnknown?: boolean;
     /** Optional label carried through to the matching {@link PowerBand}; ignored by the maths. */
     readonly label?: string;
 }
@@ -111,6 +118,19 @@ export interface PowerBudget {
      * its own draw plus every higher-priority group's — fits in `available`.
      */
     readonly bands: readonly PowerBand[];
+    /**
+     * One entry per fitted module whose draw is unknown ({@link PowerConsumer.drawUnknown}),
+     * naming it by its {@link PowerConsumer.label | label} — `''` for a consumer with
+     * none, so the length is always the count. Normally empty.
+     *
+     * **While it is not empty, every other figure here is a lower bound.** The unknown
+     * draws contribute nothing to `retracted`, `deployed` or the bands, so `headroom`
+     * reads too high and `withinBudget` and `poweredDeployed` answer only for the draws
+     * that are known. The budget is still reported rather than refused — the per-band
+     * detail is worth having, and one unknown module is not a reason to withhold the
+     * other twenty — but a caller showing it should say so.
+     */
+    readonly unknownDraws: readonly string[];
 }
 
 /** Clamp a priority into `1`–`5`, defaulting an absent one to `1`. */
@@ -131,6 +151,10 @@ function bandIndex(priority: number | undefined): number {
  * @remarks
  * A group that draws *exactly* the power available stays online, matching the game —
  * only going over shuts anything down.
+ *
+ * A consumer flagged {@link PowerConsumer.drawUnknown} is left out of every total and
+ * listed in {@link PowerBudget.unknownDraws}, which makes the rest of the answer a
+ * lower bound rather than silently adding the module up as drawing nothing.
  * @example
  * ```ts
  * const budget = powerBudget(4.8, [
@@ -145,9 +169,16 @@ function bandIndex(priority: number | undefined): number {
 export function powerBudget(available: number, consumers: readonly PowerConsumer[]): PowerBudget {
     const retractedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const deployedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
+    const unknownDraws: string[] = [];
 
     for (const consumer of consumers) {
         if (consumer.enabled === false) continue;
+        if (consumer.drawUnknown) {
+            // Counting an unknown draw as 0 would report headroom the build may not
+            // have; it is named instead, and left out of every total.
+            unknownDraws.push(consumer.label ?? '');
+            continue;
+        }
         if (!Number.isFinite(consumer.draw) || consumer.draw === 0) continue;
         const index = bandIndex(consumer.priority);
         if (consumer.deployedOnly) deployedByBand[index]! += consumer.draw;
@@ -183,5 +214,6 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
         utilisation: available > 0 ? deployedTotal / available : deployedTotal > 0 ? Infinity : 0,
         withinBudget: deployedTotal <= available + EPSILON,
         bands,
+        unknownDraws,
     };
 }

@@ -1335,7 +1335,9 @@ export class ShipLoadout {
      * towards the deployed total.
      *
      * @returns The {@link PowerBudget}. With no power plant fitted, `available` is `0`
-     * and nothing is powered.
+     * and nothing is powered. A fitted module whose draw the catalogue cannot supply is
+     * named in {@link PowerBudget.unknownDraws} rather than counted as drawing nothing,
+     * which makes every total a lower bound while that list is non-empty.
      * @example
      * ```ts
      * const power = build.powerBudget();
