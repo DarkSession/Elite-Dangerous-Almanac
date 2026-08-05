@@ -112,7 +112,7 @@ in the doc comment of each ported module, and in long form in the domain
   derives (the Anaconda's `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian
   Explorer's out-of-order medium hardpoints, the Lynx Highliner's `Passenger01`–`03`),
   plus 2 more the rules do derive, pinned so the stored table matches its source one for
-  one. Stored per hull as `slotNames`, from [EDSY](https://github.com/taleden/EDSY)
+  one. Stored as a `name` on the mount itself, from [EDSY](https://github.com/taleden/EDSY)
   (`eddb.js` `ship[…].slotnames`, taleden, **CC BY-NC 4.0**), the only registry that
   models them — coriolis-data does not carry journal slot names at all. The names
   themselves are **Elite Dangerous game data, property of Frontier Developments plc**;

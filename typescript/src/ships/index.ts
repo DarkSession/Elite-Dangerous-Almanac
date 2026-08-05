@@ -181,7 +181,6 @@ export {
     type HardpointSlotSpec,
     type OptionalSlotSpec,
     type ShipSlots,
-    type ShipSlotNames,
     type ParsedSlot,
 } from './slots.js';
 

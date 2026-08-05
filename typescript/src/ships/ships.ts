@@ -15,13 +15,7 @@
 
 import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
-import type {
-    CoreSlots,
-    HardpointSlotSpec,
-    OptionalSlotSpec,
-    ShipSlotNames,
-    ShipSlots,
-} from './slots.js';
+import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from './slots.js';
 
 /**
  * One ship hull — its **identity, stats and slot layout** in one record.
@@ -112,16 +106,13 @@ export interface Ship {
     readonly hardpoints?: readonly HardpointSlotSpec[];
     /** Number of tiny utility mounts. */
     readonly utility?: number;
-    /** Optional-internal mounts, largest first. */
-    readonly optional?: readonly OptionalSlotSpec[];
     /**
-     * The hull's own journal slot keys, present on thirteen hulls: the eleven whose
-     * names `enumerateSlots`' numbering rules do not reproduce — the Anaconda's
-     * `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian Explorer's
-     * out-of-order mediums, and so on — plus two the rules do reproduce, pinned so the
-     * stored table matches its source one for one. See {@link ShipSlotNames}.
+     * Optional-internal mounts, largest first. A mount carries a `name` only where the
+     * game's slot key is not what `enumerateSlots` would number it — the Anaconda's
+     * `Slot14_Size1`, the Type-9 Heavy's `Slot00_Size8`, the Lynx Highliner's
+     * `Passenger01`.
      */
-    readonly slotNames?: ShipSlotNames;
+    readonly optional?: readonly OptionalSlotSpec[];
 }
 
 /**
@@ -189,8 +180,8 @@ export function getShipByName(name: string): Ship | null {
  * // -> [{ size: 4 }, { size: 3 }, { size: 3 }, { size: 3 }, { size: 2 }, ...]
  * getShipSlots('LakonMiner')?.hardpoints[0];
  * // -> { size: 3, restriction: 'mining' } — the Type-11's large mining mount
- * getShipSlots('Anaconda')?.slotNames?.optional?.at(-2); // -> 'Slot14_Size1'
- * getShipSlots('Sidewinder')?.slotNames;                 // -> undefined — the rules fit
+ * getShipSlots('Anaconda')?.optional?.at(-2);   // -> { size: 1, name: 'Slot14_Size1' }
+ * getShipSlots('Sidewinder')?.optional?.at(-2); // -> { size: 1 } — the rules fit
  * ```
  */
 export function getShipSlots(symbol: string): ShipSlots | null {
@@ -204,6 +195,5 @@ export function getShipSlots(symbol: string): ShipSlots | null {
         hardpoints: ship.hardpoints,
         utility: ship.utility,
         optional: ship.optional,
-        ...(ship.slotNames ? { slotNames: ship.slotNames } : {}),
     };
 }

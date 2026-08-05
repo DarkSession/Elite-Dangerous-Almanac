@@ -8,11 +8,12 @@
 those two rules is not what the game does** — the optional rule on nine of them, the
 hardpoint rule on the Type-8 Transporter and Caspian Explorer — and the sequences have no
 derivable pattern, so a per-hull override is the only honest fix. Those 11 and the 2 more
-EDSY names (see the last bullet below) each gain an optional `slotNames`
-alongside `hardpoints`/`optional` — `{ hardpoints?: string[], optional?: string[] }`,
-positionally parallel to the layout array of the same name, naming **every** mount of
-that kind including the restricted ones. An absent array means the rules already produce
-the right names for that kind of mount on that hull.
+EDSY names (see the last bullet below) each gain a `name` on the mounts themselves —
+`{ "size": 1, "name": "Slot14_Size1" }` — the same place the 2026-08-04 pass put
+`restriction`, and for the same reason: a fact about one mount belongs on that mount, not
+in a register beside it that has to be kept aligned by position. A mount with no `name`
+is one the rules already get right; a hull that names any mount of a kind names all of
+them, so a derived key and a name can never compete for the same string.
 
 **Source.** [EDSY](https://github.com/taleden/EDSY) `eddb.js` `ship[…].slotnames`,
 acquired 2026-08-05 (UTC) from `raw.githubusercontent.com/taleden/EDSY/master/eddb.js`.
@@ -87,7 +88,7 @@ had a module in a renamed mount and were re-slotted onto the corrected keys — 
 keys in all — each module staying in the *same physical mount*, so no build's fit changed
 and no pinned metric moved. The other 10 needed no edit. All 13 hulls' full
 enumerated key lists are pinned in `fixtures/ships/ship-slots.json` under `keys` (it held
-two before), and the `spot` layouts carry their `slotNames`, so a port produces the same
+two before), and the `spot` layouts carry their mount names, so a port produces the same
 vocabulary. The consequence this closes is one-directional and was
 [issue #15](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/15): a build
 assembled here emitted slot keys a game journal would not use, so its SLEF export named

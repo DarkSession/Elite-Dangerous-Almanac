@@ -39,6 +39,10 @@
         "size": { "type": "integer", "minimum": 1, "maximum": 4 },
         "restriction": {
           "enum": ["mining"]
+        },
+        "name": {
+          "description": "The mount's journal slot key, when the ordinary numbering rules do not reproduce it (the Anaconda's Slot13_Size2, the Type-9 Heavy's Slot00_Size8, the Caspian Explorer's out-of-order mediums, the Lynx Highliner's Passenger01). Absent when the rules are right. A _SizeN suffix is the game's own and may disagree with this mount's `size`, which is always the real one.",
+          "$ref": "#/definitions/nonEmptyString"
         }
       }
     },
@@ -57,24 +61,10 @@
             "limpetController",
             "vesselHangar"
           ]
-        }
-      }
-    },
-    "slotNames": {
-      "description": "The hull's own journal slot keys, where the ordinary numbering rules do not reproduce them (the Anaconda's Slot13_Size2, the Type-9 Heavy's Slot00_Size8, the Caspian Explorer's out-of-order mediums). Each array is positionally parallel to the sibling layout array of the same name and must have the same length; an absent array means the rules are right for that kind of mount. A key's _SizeN suffix is the game's own and may disagree with the mount's size.",
-      "type": "object",
-      "additionalProperties": false,
-      "minProperties": 1,
-      "properties": {
-        "hardpoints": {
-          "type": "array",
-          "minItems": 1,
-          "items": { "$ref": "#/definitions/nonEmptyString" }
         },
-        "optional": {
-          "type": "array",
-          "minItems": 1,
-          "items": { "$ref": "#/definitions/nonEmptyString" }
+        "name": {
+          "description": "The mount's journal slot key, when the ordinary numbering rules do not reproduce it (the Anaconda's Slot13_Size2, the Type-9 Heavy's Slot00_Size8, the Caspian Explorer's out-of-order mediums, the Lynx Highliner's Passenger01). Absent when the rules are right. A _SizeN suffix is the game's own and may disagree with this mount's `size`, which is always the real one.",
+          "$ref": "#/definitions/nonEmptyString"
         }
       }
     },
@@ -134,8 +124,7 @@
         "optional": {
           "type": "array",
           "items": { "$ref": "#/definitions/optionalSlot" }
-        },
-        "slotNames": { "$ref": "#/definitions/slotNames" }
+        }
       }
     },
     "shipCatalogue": {

@@ -169,12 +169,17 @@ counting will name a mount the game does not have. The Anaconda's smallest optio
 has no `SmallHardpoint3`; the Caspian Explorer's medium hardpoints run 6, 5, 1, 2, 3, 4
 in layout order, so the same key means a **different physical mount** than position would
 suggest; and the Lynx Highliner calls three of its optionals `Passenger01`–`03`. Those
-names are the game's, carried per hull in `getShipSlots(symbol)?.slotNames` and applied by
-`enumerateSlots`, so `slots()` is the list to read.
+names are the game's, carried on the mount itself —
+`getShipSlots(symbol)?.optional[i].name` — and applied by `enumerateSlots`, so `slots()`
+is the list to read. A mount without a `name` is one the rules get right.
 
 A `_SizeN` suffix is part of the name, not a measurement: on the Keelback, Asp Scout and
 Type-7 Transporter, Frontier's own key disagrees with the mount it names (the Keelback's
 `Slot03_Size3` is a **size-4** mount). `slot.size` is always the mount's real size.
+
+This matters for SLEF, not just for journals: **SLEF is the journal's `Loadout` event in
+an envelope**, so `data.Modules[].Slot` carries these exact strings and an export under a
+computed key names a mount the receiving app cannot match.
 
 ```ts
 import {

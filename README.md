@@ -469,7 +469,7 @@ getShipBySymbol("empire_trader")?.name; // -> 'Imperial Clipper' (lookups accept
 getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the record
 getShipSlots("anaconda")?.hardpoints; // -> [{ size: 4 }, { size: 3 }, ...] (slot layout, ready for the build editor)
 getShipSlots("LakonMiner")?.hardpoints[0]; // -> { size: 3, restriction: 'mining' } — a restricted mount
-getShipSlots("Anaconda")?.slotNames?.optional?.at(-2); // -> 'Slot14_Size1' — the hull's own key, on the 13 hulls that carry them
+getShipSlots("Anaconda")?.optional?.at(-2); // -> { size: 1, name: 'Slot14_Size1' } — the mount's own journal key
 getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
 SHIPS.length; // -> 48
 ```
@@ -946,12 +946,17 @@ number `09` twice; the Type-8 Transporter has no `SmallHardpoint3`; the Caspian
 Explorer's medium hardpoints run 6, 5, 1, 2, 3, 4 in layout order, so the same key means
 a **different physical mount** than position would suggest; and the Lynx Highliner calls
 three of its optionals `Passenger01`–`03`. Those names are the game's, carried per hull
-in `getShipSlots(symbol)?.slotNames` and applied by `enumerateSlots`.
+on the mount itself — `getShipSlots(symbol)?.optional[i].name` — and applied by
+`enumerateSlots`. A mount without a `name` is one the rules get right.
 
 A `_SizeN` suffix is part of the name, not a measurement: on the Keelback, Asp Scout and
 Type-7 Transporter, Frontier's own key disagrees with the mount it names (the Keelback's
 `Slot03_Size3` is a **size-4** mount). `slot.size` is always the mount's real size —
 read the size from the layout, never off the key.
+
+This is not a journal-only concern. **SLEF is the journal's `Loadout` event in an
+envelope** — `data.Modules[].Slot` carries these exact strings — so a build exported
+with `toSlef()` under a computed key names a mount the receiving app cannot match.
 
 **Some mounts take one family of modules and nothing else**, and the journal gives each
 such mount a name of its own — so `slot.restriction` says what it takes and

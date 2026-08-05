@@ -352,26 +352,61 @@ test("a slot key's _SizeN suffix is the game's, and the mount keeps its real siz
     assert.equal(type7.find((s) => s.key === 'Slot07_Size2')?.size, 3);
 });
 
+/** The same layout with every mount's own name stripped, so the rules alone apply. */
+const withoutNames = (layout: ShipSlots): ShipSlots => ({
+    symbol: layout.symbol,
+    core: layout.core,
+    utility: layout.utility,
+    hardpoints: layout.hardpoints.map((spec) => ({
+        size: spec.size,
+        ...(spec.restriction ? { restriction: spec.restriction } : {}),
+    })),
+    optional: layout.optional.map((spec) => ({
+        size: spec.size,
+        ...(spec.restriction ? { restriction: spec.restriction } : {}),
+    })),
+});
+
 test('the numbering rules still derive the two hulls whose names they already fit', () => {
-    // The Panther Clipper Mk II and Type-11 Prospector carry `slotNames` so the table
-    // matches EDSY's one for one — but the rules produce the same keys unaided, and
-    // dropping the override must not change a thing.
+    // The Panther Clipper Mk II and Type-11 Prospector name their mounts so the stored
+    // table matches EDSY's one for one — but the rules produce the same keys unaided,
+    // and stripping the names must not change a thing.
     for (const symbol of ['PantherMkII', 'LakonMiner']) {
         const layout = getShipSlots(symbol)!;
-        assert.ok(layout.slotNames, `${symbol} carries slotNames`);
-        const unnamed: ShipSlots = {
-            symbol: layout.symbol,
-            core: layout.core,
-            hardpoints: layout.hardpoints,
-            utility: layout.utility,
-            optional: layout.optional,
-        };
+        assert.ok(
+            [...layout.hardpoints, ...layout.optional].some((s) => s.name),
+            `${symbol} names its mounts`,
+        );
         assert.deepEqual(
-            enumerateSlots(unnamed).map((s) => s.key),
+            enumerateSlots(withoutNames(layout)).map((s) => s.key),
             enumerateSlots(layout).map((s) => s.key),
             symbol,
         );
     }
+});
+
+test('exactly eleven hulls need a name the numbering rules cannot derive', () => {
+    // The other two named hulls are pins. If a future data change makes the rules
+    // right (or wrong) for a hull, this is what says so out loud.
+    const diverging = SHIPS.filter((ship) => {
+        const layout = getShipSlots(ship.symbol);
+        if (!layout) return false;
+        const derived = enumerateSlots(withoutNames(layout)).map((s) => s.key);
+        return enumerateSlots(layout).some((slot, i) => slot.key !== derived[i]);
+    }).map((s) => s.symbol);
+    assert.deepEqual(diverging.sort(), [
+        'Anaconda',
+        'Asp_Scout',
+        'Explorer_NX',
+        'Federation_Dropship',
+        'Independant_Trader',
+        'MediumTransport01',
+        'Type7',
+        'Type8',
+        'Type9',
+        'Type9_Military',
+        'Vulture',
+    ]);
 });
 
 test('every hull enumerates keys that are unique, classifiable and agree with the mount', () => {
@@ -397,18 +432,23 @@ test('every hull enumerates keys that are unique, classifiable and agree with th
     }
 });
 
-test('a hull naming its mounts names all of them, in layout order', () => {
+test('a hull naming any mount of a kind names every mount of that kind', () => {
+    // Not a style rule. A part-named group would leave the rest deriving keys, and a
+    // derived key can collide with a name above it — the Vulture's mount 3 is named
+    // `Slot05_Size1`, which is exactly what mount 4 would derive.
     for (const ship of SHIPS) {
         const layout = getShipSlots(ship.symbol);
-        if (!layout?.slotNames) continue;
-        const { hardpoints, optional } = layout.slotNames;
-        if (hardpoints) {
-            assert.equal(hardpoints.length, layout.hardpoints.length, `${ship.symbol} hardpoints`);
+        if (!layout) continue;
+        for (const [kind, mounts] of [
+            ['hardpoints', layout.hardpoints],
+            ['optional', layout.optional],
+        ] as const) {
+            const named = mounts.filter((m) => m.name).length;
+            assert.ok(
+                named === 0 || named === mounts.length,
+                `${ship.symbol} ${kind}: ${named} of ${mounts.length} mounts named`,
+            );
         }
-        if (optional) {
-            assert.equal(optional.length, layout.optional.length, `${ship.symbol} optional`);
-        }
-        assert.ok(hardpoints ?? optional, `${ship.symbol} slotNames is empty`);
     }
 });
 
