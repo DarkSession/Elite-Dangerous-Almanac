@@ -78,7 +78,7 @@ import {
     type CoreSlotType,
     type SlotRestriction,
 } from './slots.js';
-import { computeModifiers } from './engineering.js';
+import { computeModifiers, type ExperimentalContribution } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import {
@@ -142,11 +142,21 @@ export interface ApplyBlueprintOptions {
      * An experimental effect belongs to the **blueprint** it was applied under, so
      * leaving this out is not the same as clearing it:
      *
-     * - **omitted**, re-applying the blueprint already on the module (a re-roll or a
-     *   grade change) — the effect already there is **kept**, as the game keeps it;
-     * - **omitted**, applying a *different* blueprint — the effect is **dropped**,
-     *   as the game drops it;
+     * - **omitted or `undefined`**, re-applying the blueprint already on the module (a
+     *   re-roll or a grade change) — the effect already there is **kept**, as the game
+     *   keeps it. Note that this reverses the earlier behaviour, where every call reset
+     *   the effect, so `experimental: form.effect || undefined` now preserves rather
+     *   than clears;
+     * - **omitted or `undefined`**, applying a *different* blueprint — the effect is
+     *   **dropped**, as the game drops it;
      * - **`null`** — the effect is removed whichever blueprint is applied.
+     *
+     * A named effect is an argument, and a bad one is an error. An effect merely
+     * **carried** across a re-roll is data the module arrived with — an import can name
+     * any effect at all — so one this library cannot model (an id the catalogue does not
+     * carry, an effect this blueprint does not offer, or one whose stats the module
+     * record lacks) is dropped rather than made into an error that would block the
+     * re-roll. Name it explicitly to get the error instead.
      */
     readonly experimental?: string | null;
 }
@@ -964,28 +974,24 @@ export class ShipLoadout {
         if (!module || key === null) {
             throw new RangeError(`ShipLoadout.applyBlueprint: slot "${slotKey}" is empty`);
         }
-        const quality = options.quality ?? 1;
-        if (!Number.isFinite(quality) || quality < 0 || quality > 1) {
-            throw new RangeError(
-                `ShipLoadout.applyBlueprint: quality must be a finite number in [0, 1]`,
-            );
-        }
         // An experimental effect belongs to the blueprint it was applied under: it
         // survives a re-roll or a grade change of the same blueprint and goes with the
         // old one when the module is re-engineered to a different blueprint.
         const carried = sameBlueprint(module.Engineering?.BlueprintName, blueprintName)
             ? module.Engineering?.ExperimentalEffect
             : undefined;
-        const effect =
-            options.experimental === null ? undefined : (options.experimental ?? carried);
+        const named = typeof options.experimental === 'string' ? options.experimental : undefined;
+        // `null` says "take it off"; only an absent option lets the carried one through.
+        const effect = options.experimental === null ? undefined : (named ?? carried);
         this.#engineer(
             'applyBlueprint',
             key,
             module,
             blueprintName,
             options.grade,
-            quality,
+            options.quality,
             effect,
+            named === undefined ? 'carried' : 'argument',
         );
         return this;
     }
@@ -1000,12 +1006,20 @@ export class ShipLoadout {
      * `"special_fsd_heavy"`. Replaces any effect already applied — a module carries at
      * most one.
      * @returns `this`, for chaining.
-     * @throws {RangeError} If the slot is empty, the effect is unknown, or the module
-     * carries no blueprint. **An experimental effect is applied to a blueprint**, so
-     * there is nowhere to put one on a stock module: engineer it first with
-     * {@link ShipLoadout.applyBlueprint}.
+     * @throws {RangeError} If the slot is empty, the effect is unknown, the stored
+     * quality is outside `[0, 1]`, or the module carries no blueprint. **An experimental
+     * effect is applied to a blueprint**, so there is nowhere to put one on a stock
+     * module: engineer it first with {@link ShipLoadout.applyBlueprint}.
      * @throws {TypeError} If the effect targets another module family, or the blueprint
      * on the module does not offer it, or the resulting modifiers cannot be computed.
+     *
+     * @remarks
+     * The blueprint, grade and quality are kept, but the whole
+     * `Engineering.Modifiers` block is **recomputed** from this library's model of that
+     * roll — it is not patched in place. On a build imported from a journal or a SLEF
+     * export that replaces the producer's own numbers with the library's, so every
+     * modifier can move slightly and journal-only fields on them (`LessIsGood`) are not
+     * reproduced. Nothing else about the module changes.
      *
      * @example
      * ```ts
@@ -1044,8 +1058,15 @@ export class ShipLoadout {
      * @param slotKey - The slot to change, matched case-insensitively (journal spelling).
      * @returns `this`, for chaining. A no-op if the slot is empty, the module is
      * un-engineered, or it carries no experimental effect.
+     * @throws {RangeError} If the blueprint or grade on the module is one the catalogue
+     * does not carry, or its stored quality is outside `[0, 1]` — an import can name
+     * anything, and the roll has to be recomputed to take the effect back off.
      * @throws {TypeError} If the blueprint on the module cannot be recomputed without
      * the effect — the same conditions {@link ShipLoadout.applyBlueprint} rejects.
+     *
+     * @remarks
+     * As with {@link ShipLoadout.setExperimentalEffect}, the `Engineering.Modifiers`
+     * block is recomputed from this library's model of the roll rather than patched.
      *
      * @example
      * ```ts
@@ -1072,7 +1093,15 @@ export class ShipLoadout {
     /**
      * Validate one blueprint/grade/quality/effect combination, compute its modifiers and
      * store the result. Shared by every public entry point that engineers a module, so
-     * they cannot drift apart on what they accept.
+     * they cannot drift apart on what they accept — grade and quality validation lives
+     * here too, not in the callers.
+     *
+     * `origin` says where the experimental effect came from. An effect the **caller**
+     * named is an argument and a bad one is an error; an effect **carried** from the
+     * module's own engineering is data this class never validated on the way in — an
+     * import can name any effect at all — so one the catalogue cannot model is dropped,
+     * exactly as it was before an effect survived a re-roll. Aborting the re-roll over
+     * it would make an imported build un-editable for a reason the caller cannot see.
      */
     #engineer(
         caller: string,
@@ -1080,27 +1109,25 @@ export class ShipLoadout {
         module: LoadoutModule,
         blueprintName: string,
         grade: number,
-        quality: number,
+        rawQuality: number | undefined,
         effectName: string | undefined,
+        origin: 'argument' | 'carried' = 'argument',
     ): void {
         const stats = this.#statsFor(module);
         if (!stats) {
             throw new TypeError(`ShipLoadout.${caller}: no stats for module "${module.Item}"`);
+        }
+        const quality = rawQuality ?? 1;
+        if (!Number.isFinite(quality) || quality < 0 || quality > 1) {
+            throw new RangeError(
+                `ShipLoadout.${caller}: quality must be a finite number in [0, 1]`,
+            );
         }
         const features = getBlueprintGrade(blueprintName, grade);
         if (!features) {
             throw new RangeError(
                 `ShipLoadout.${caller}: no blueprint "${blueprintName}" grade ${grade}`,
             );
-        }
-        let experimental;
-        if (effectName !== undefined) {
-            experimental = getExperimentalEffect(effectName);
-            if (!experimental) {
-                throw new RangeError(
-                    `ShipLoadout.${caller}: unknown experimental effect "${effectName}"`,
-                );
-            }
         }
         const moduleTarget = moduleEngineeringTarget(module.Item);
         const expectedTargets = blueprintTargets(blueprintName);
@@ -1109,14 +1136,28 @@ export class ShipLoadout {
                 `ShipLoadout.${caller}: blueprint "${blueprintName}" targets ${expectedTargets?.join('/') ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,
             );
         }
-        if (effectName !== undefined) {
-            const expectedExperimentalTarget = experimentalTarget(effectName);
-            if (
-                expectedExperimentalTarget === null ||
-                expectedExperimentalTarget !== moduleTarget
-            ) {
+        const base = baseStats(stats);
+
+        /**
+         * The effect to fold in, or `undefined` to engineer without one. Throws on a
+         * caller's bad argument; returns `undefined` for a carried effect this library
+         * cannot model.
+         */
+        const resolveEffect = (): readonly ExperimentalContribution[] | undefined => {
+            if (effectName === undefined) return undefined;
+            const carried = origin === 'carried';
+            const known = getExperimentalEffect(effectName);
+            if (!known) {
+                if (carried) return undefined;
+                throw new RangeError(
+                    `ShipLoadout.${caller}: unknown experimental effect "${effectName}"`,
+                );
+            }
+            const effectTarget = experimentalTarget(effectName);
+            if (effectTarget !== moduleTarget) {
+                if (carried) return undefined;
                 throw new TypeError(
-                    `ShipLoadout.${caller}: experimental effect "${effectName}" targets ${expectedExperimentalTarget ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,
+                    `ShipLoadout.${caller}: experimental effect "${effectName}" targets ${effectTarget ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,
                 );
             }
             // The experimental slot is the blueprint's, so the pairing is what decides —
@@ -1126,12 +1167,26 @@ export class ShipLoadout {
                 optionsCoverPairing(module.Item, blueprintName) &&
                 !blueprintOffersExperimental(module.Item, blueprintName, effectName)
             ) {
+                if (carried) return undefined;
                 throw new TypeError(
                     `ShipLoadout.${caller}: blueprint "${blueprintName}" does not offer experimental effect "${effectName}" on module "${module.Item}"`,
                 );
             }
-        }
-        const base = baseStats(stats);
+            // A carried effect whose own stats the module does not carry cannot be folded
+            // in, though the blueprint alone still can. A caller's is left to fail below,
+            // where the error names every label that is missing.
+            if (
+                carried &&
+                missingBaseLabels(base, features, known).length >
+                    missingBaseLabels(base, features).length
+            ) {
+                return undefined;
+            }
+            return known;
+        };
+
+        const experimental = resolveEffect();
+        const name = experimental === undefined ? undefined : effectName;
         const missing = missingBaseLabels(base, features, experimental);
         if (missing.length > 0) {
             throw new TypeError(
@@ -1142,7 +1197,7 @@ export class ShipLoadout {
             BlueprintName: blueprintName,
             Level: grade,
             Quality: quality,
-            ...(effectName !== undefined ? { ExperimentalEffect: effectName } : {}),
+            ...(name !== undefined ? { ExperimentalEffect: name } : {}),
             Modifiers: computeModifiers(base, features, quality, experimental),
         };
         this.#replaceModule(key, { ...module, Engineering: engineering });

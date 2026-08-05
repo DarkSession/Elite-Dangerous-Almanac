@@ -113,7 +113,7 @@ export function blueprintOffersExperimental(
     effect: string,
 ): boolean {
     const wanted = effect.trim().toLowerCase();
-    return getExperimentalsForBlueprint(blueprint, item).some((id) => id.toLowerCase() === wanted);
+    return getExperimentalsForBlueprint(item, blueprint).some((id) => id.toLowerCase() === wanted);
 }
 
 /**

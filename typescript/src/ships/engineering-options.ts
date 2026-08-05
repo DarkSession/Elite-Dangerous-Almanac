@@ -176,7 +176,8 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * take no experimental at all (every Mining Laser but the small fixed one, plus both
  * Abrasion Blasters).
  *
- * Both arguments are matched case-insensitively with surrounding whitespace trimmed.
+ * Both arguments are matched case-insensitively with surrounding whitespace trimmed, and
+ * the **module comes first**, as it does in every other function here.
  *
  * @remarks
  * **It can be wider than the game's, never narrower.** The stored lists are an expansion
@@ -185,27 +186,35 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * suspected case — that difference is not carried here yet:
  * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33.
  *
- * @param blueprint - A blueprint id, e.g. `"Weapon_Efficient"`.
  * @param symbol - The module symbol the blueprint would be applied to.
+ * @param blueprint - A blueprint id, e.g. `"Weapon_Efficient"`.
  * @returns A frozen array of experimental-effect ids, in catalogue order. Join to
  * `EXPERIMENTAL_EFFECTS`. Empty when the module is not grouped here, when the blueprint
  * is not one this module offers, or when the pairing genuinely has no experimental slot
  * — {@link getEngineeringGroup} and {@link getBlueprintsForModule} tell those apart.
+ * @throws {TypeError} If `blueprint` is missing. Every other empty answer here is a
+ * legitimate "nothing", so a one-argument call has to be told rather than silently
+ * joining the ranks of the ungrouped.
  *
  * @example
  * ```ts
- * getExperimentalsForBlueprint('FSD_LongRange', 'Int_Hyperdrive_Size5_Class5');
+ * getExperimentalsForBlueprint('Int_Hyperdrive_Size5_Class5', 'FSD_LongRange');
  * // -> ['special_fsd_cooled', 'special_fsd_fuelcapacity', 'special_fsd_heavy', ...]
  *
  * // The small Multi-cannon is one effect short — no Phasing Sequence.
- * getExperimentalsForBlueprint('Weapon_Efficient', 'Hpt_MultiCannon_Fixed_Medium').length; // -> 12
- * getExperimentalsForBlueprint('Weapon_Efficient', 'Hpt_MultiCannon_Fixed_Small').length; // -> 11
+ * getExperimentalsForBlueprint('Hpt_MultiCannon_Fixed_Medium', 'Weapon_Efficient').length; // -> 12
+ * getExperimentalsForBlueprint('Hpt_MultiCannon_Fixed_Small', 'Weapon_Efficient').length; // -> 11
  *
  * // A blueprint this module does not take.
- * getExperimentalsForBlueprint('Weapon_Efficient', 'Int_Hyperdrive_Size5_Class5'); // -> []
+ * getExperimentalsForBlueprint('Int_Hyperdrive_Size5_Class5', 'Weapon_Efficient'); // -> []
  * ```
  */
-export function getExperimentalsForBlueprint(blueprint: string, symbol: string): readonly string[] {
+export function getExperimentalsForBlueprint(symbol: string, blueprint: string): readonly string[] {
+    if (typeof blueprint !== 'string') {
+        throw new TypeError(
+            'getExperimentalsForBlueprint(symbol, blueprint): a blueprint id is required — an experimental effect is offered by a blueprint, not by a module',
+        );
+    }
     const group = groupFor(symbol);
     if (group === null) return EMPTY;
     const wanted = blueprint.trim().toLowerCase();

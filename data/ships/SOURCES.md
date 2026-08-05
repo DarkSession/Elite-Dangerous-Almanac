@@ -16,7 +16,7 @@ that blueprint's own effect list**, and the group-level array is gone.
 - **What moved.** All 22 groups, their names, the 428 `modules` entries and the 29
   `exclusions` are byte-for-byte what they were. Each group's blueprint ids keep their
   order, and each now carries the list its group used to carry: 107 blueprint entries
-  holding 893 effect ids, expanded from 154. A reconstruction of the old shape from the new
+  holding 893 effect ids, expanded from 159. A reconstruction of the old shape from the new
   one is identical to the old file, so nothing was dropped, duplicated or altered.
 - **Why the expansion is not a second acquisition, and what that costs.** Neither registry
   this domain uses publishes an experimental list per blueprint.

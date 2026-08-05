@@ -77,7 +77,7 @@ test('getEngineeringGroup normalises input and misses cleanly', () => {
 test('an experimental list is exact for a (module, blueprint) pair', () => {
     for (const { symbol, blueprint, experimentals } of fixture.blueprintExperimentals) {
         assert.deepEqual(
-            getExperimentalsForBlueprint(blueprint, symbol),
+            getExperimentalsForBlueprint(symbol, blueprint),
             experimentals,
             `${symbol} + ${blueprint}`,
         );
@@ -86,30 +86,45 @@ test('an experimental list is exact for a (module, blueprint) pair', () => {
 
 test('a pair the catalogue does not carry answers with nothing', () => {
     for (const { symbol, blueprint } of fixture.unknownPairs) {
-        assert.deepEqual(getExperimentalsForBlueprint(blueprint, symbol), [], symbol);
+        assert.deepEqual(getExperimentalsForBlueprint(symbol, blueprint), [], symbol);
     }
     // An unknown blueprint on a module that *is* grouped, and an unknown module.
     assert.deepEqual(
-        getExperimentalsForBlueprint('NoSuchBlueprint', 'Int_Hyperdrive_Size5_Class5'),
+        getExperimentalsForBlueprint('Int_Hyperdrive_Size5_Class5', 'NoSuchBlueprint'),
         [],
     );
-    assert.deepEqual(getExperimentalsForBlueprint('FSD_LongRange', 'No_Such_Module'), []);
+    assert.deepEqual(getExperimentalsForBlueprint('No_Such_Module', 'FSD_LongRange'), []);
 });
 
 test('getExperimentalsForBlueprint normalises both arguments', () => {
-    const expected = getExperimentalsForBlueprint('FSD_LongRange', 'Int_Hyperdrive_Size5_Class5');
+    const expected = getExperimentalsForBlueprint('Int_Hyperdrive_Size5_Class5', 'FSD_LongRange');
     assert.ok(expected.length > 0);
     assert.deepEqual(
-        getExperimentalsForBlueprint('  fsd_longrange  ', '  INT_HYPERDRIVE_SIZE5_CLASS5  '),
+        getExperimentalsForBlueprint('  INT_HYPERDRIVE_SIZE5_CLASS5  ', '  fsd_longrange  '),
         expected,
     );
 });
 
+test('a missing blueprint argument is named, not answered with an empty list', () => {
+    // Every other empty answer here is a legitimate "nothing", so a one-argument call
+    // has to be told rather than quietly reading as "this module is not grouped".
+    assert.throws(
+        () =>
+            (getExperimentalsForBlueprint as (symbol: string) => readonly string[])(
+                'Int_Hyperdrive_Size5_Class5',
+            ),
+        /a blueprint id is required/,
+    );
+});
+
 test('a module offers each blueprint whole unless it is explicitly excluded', () => {
+    // While `blueprintListsIdenticalWithinGroup` holds (see below) this loop asserts one
+    // fact per group several times over — the exclusion arithmetic is what it earns its
+    // place on. It becomes a real per-blueprint check the day a difference is sourced.
     for (const { symbol, excluded } of fixture.exclusions) {
         const group = ENGINEERING_OPTION_GROUPS[getEngineeringGroup(symbol)!]!;
         for (const [blueprint, effects] of Object.entries(group.blueprints)) {
-            const offered = getExperimentalsForBlueprint(blueprint, symbol);
+            const offered = getExperimentalsForBlueprint(symbol, blueprint);
             for (const effect of excluded) {
                 assert.ok(effects.includes(effect), `${symbol}: ${effect} not in ${blueprint}`);
                 assert.ok(!offered.includes(effect), `${symbol} still offers ${effect}`);
@@ -120,8 +135,8 @@ test('a module offers each blueprint whole unless it is explicitly excluded', ()
 });
 
 test('the small Multi-cannon is exactly one effect short of the medium one', () => {
-    const all = getExperimentalsForBlueprint('Weapon_Efficient', 'Hpt_MultiCannon_Fixed_Medium');
-    const small = getExperimentalsForBlueprint('Weapon_Efficient', 'Hpt_MultiCannon_Fixed_Small');
+    const all = getExperimentalsForBlueprint('Hpt_MultiCannon_Fixed_Medium', 'Weapon_Efficient');
+    const small = getExperimentalsForBlueprint('Hpt_MultiCannon_Fixed_Small', 'Weapon_Efficient');
     assert.equal(small.length, all.length - 1);
     assert.ok(all.includes('special_phasing_sequence'));
     assert.ok(!small.includes('special_phasing_sequence'));
@@ -135,7 +150,7 @@ test('an engineerable module with no experimental slot still has blueprints', ()
     const blueprints = getBlueprintsForModule(symbol);
     assert.ok(blueprints.length > 0);
     for (const blueprint of blueprints) {
-        assert.deepEqual(getExperimentalsForBlueprint(blueprint, symbol), []);
+        assert.deepEqual(getExperimentalsForBlueprint(symbol, blueprint), []);
     }
     assert.deepEqual(getExperimentalsForModule(symbol), []);
 });
@@ -165,15 +180,15 @@ test('every returned array is frozen, whether it is a hit or a miss', () => {
         getBlueprintsForModule('Int_Hyperdrive_Size5_Class5'),
         getBlueprintsForModule('Int_CargoRack_Size2_Class1'),
         // With exclusions applied and without — the two code paths.
-        getExperimentalsForBlueprint('Weapon_Efficient', 'Hpt_MultiCannon_Fixed_Small'),
-        getExperimentalsForBlueprint('FSD_LongRange', 'Int_Hyperdrive_Size5_Class5'),
-        getExperimentalsForBlueprint('FSD_LongRange', 'No_Such_Module'),
+        getExperimentalsForBlueprint('Hpt_MultiCannon_Fixed_Small', 'Weapon_Efficient'),
+        getExperimentalsForBlueprint('Int_Hyperdrive_Size5_Class5', 'FSD_LongRange'),
+        getExperimentalsForBlueprint('No_Such_Module', 'FSD_LongRange'),
         getExperimentalsForModule('Hpt_MultiCannon_Fixed_Small'),
         getExperimentalsForModule('Int_CargoRack_Size2_Class1'),
     ];
     for (const result of frozen) assert.ok(Object.isFrozen(result));
     assert.notEqual(
-        getExperimentalsForBlueprint('FSD_LongRange', 'Int_Hyperdrive_Size5_Class5'),
+        getExperimentalsForBlueprint('Int_Hyperdrive_Size5_Class5', 'FSD_LongRange'),
         ENGINEERING_OPTION_GROUPS['frameShiftDrives']!.blueprints['FSD_LongRange'],
     );
 });

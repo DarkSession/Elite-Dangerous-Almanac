@@ -796,14 +796,15 @@ test('the available experimental effects narrow to the blueprint', () => {
     const gun = build.getFittedModule('SmallHardpoint1')!;
 
     // Stock, with no blueprint named: the whole family's computable set — the union a
-    // menu shows before a blueprint has been picked.
+    // menu shows before a blueprint has been picked. The exact counts are the ones the
+    // README quotes, so the two cannot drift apart unnoticed.
     const union = gun.getAvailableExperimentalEffects();
-    assert.ok(union.length > 20, `union ${union.length}`);
+    assert.equal(union.length, 41);
     assert.ok(union.includes('special_phasing_sequence'));
 
     // Named blueprint: the exact list, and the small Multi-cannon's exclusion applied.
     const underEfficient = gun.getAvailableExperimentalEffects('Weapon_Efficient');
-    assert.ok(underEfficient.length < union.length);
+    assert.equal(underEfficient.length, 11);
     assert.ok(!underEfficient.includes('special_phasing_sequence'));
     for (const effect of underEfficient) assert.ok(union.includes(effect), effect);
 
@@ -832,6 +833,117 @@ test('a fitted-module handle stays valid across experimental-effect changes', ()
     assert.equal(fsd.engineering!.BlueprintName, 'FSD_LongRange');
     assert.equal(fsd.engineering!.ExperimentalEffect, undefined);
     assert.throws(() => fsd.setExperimentalEffect('special_nope'), RangeError);
+});
+
+/**
+ * A one-module journal event whose `Engineering` block says whatever the test wants —
+ * imports are never validated on the way in, so this is how a build arrives carrying an
+ * effect the catalogue cannot model.
+ */
+function importedDrive(engineering: Record<string, unknown>): ShipLoadout {
+    return ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        ShipID: 1,
+        Modules: [
+            {
+                Slot: 'FrameShiftDrive',
+                Item: 'Int_Hyperdrive_Size6_Class5',
+                Engineering: engineering,
+            },
+        ],
+    } as unknown as LoadoutEvent);
+}
+
+test('a carried effect the catalogue cannot model is dropped, not thrown over', () => {
+    // The caller asked for a re-roll, not for the effect; an import can name anything
+    // (a Frontier addition newer than the snapshot, say) and that must not make an
+    // imported build un-editable.
+    for (const effect of [
+        'special_totally_made_up', // no such id
+        'special_shieldbooster_toughened', // real, but another module family
+        'special_fsd_cooled', // real and this family's, but its stats are not carried
+    ]) {
+        const build = importedDrive({
+            BlueprintName: 'FSD_LongRange',
+            Level: 4,
+            Quality: 1,
+            ExperimentalEffect: effect,
+        });
+        build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
+        const engineering = build.moduleAt('FrameShiftDrive')!.Engineering!;
+        assert.equal(engineering.Level, 5, effect);
+        assert.equal(engineering.ExperimentalEffect, undefined, effect);
+    }
+
+    // Naming the same effect is an argument, and then it is an error.
+    const build = importedDrive({ BlueprintName: 'FSD_LongRange', Level: 4, Quality: 1 });
+    assert.throws(
+        () =>
+            build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+                grade: 5,
+                experimental: 'special_totally_made_up',
+            }),
+        RangeError,
+    );
+});
+
+test('a carried effect the blueprint does not offer is dropped', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        ShipID: 1,
+        Modules: [
+            {
+                Slot: 'SmallHardpoint1',
+                Item: 'Hpt_MultiCannon_Fixed_Small',
+                Engineering: {
+                    BlueprintName: 'Weapon_Efficient',
+                    Level: 5,
+                    Quality: 1,
+                    // The small Multi-cannon is excluded from this one.
+                    ExperimentalEffect: 'special_phasing_sequence',
+                },
+            },
+        ],
+    } as unknown as LoadoutEvent);
+    build.applyBlueprint('SmallHardpoint1', 'Weapon_Efficient', { grade: 5 });
+    assert.equal(build.moduleAt('SmallHardpoint1')!.Engineering!.ExperimentalEffect, undefined);
+});
+
+test('an import with no Quality is engineered at a full roll rather than a broken one', () => {
+    // SLEF requires Quality, but a producer can still omit it; the export must never
+    // carry an Engineering block without one.
+    const build = importedDrive({ BlueprintName: 'FSD_LongRange', Level: 5 });
+    build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy');
+    const engineering = build.moduleAt('FrameShiftDrive')!.Engineering!;
+    assert.equal(engineering.Quality, 1);
+    assert.equal(engineering.ExperimentalEffect, 'special_fsd_heavy');
+
+    // …and a stored quality outside [0, 1] is refused by name, not by the calculator.
+    const broken = importedDrive({ BlueprintName: 'FSD_LongRange', Level: 5, Quality: 9 });
+    assert.throws(
+        () => broken.setExperimentalEffect('FrameShiftDrive', 'special_fsd_heavy'),
+        /ShipLoadout\.setExperimentalEffect: quality/,
+    );
+});
+
+test('the localised effect name never outlives the effect it names', () => {
+    const build = importedDrive({
+        BlueprintName: 'FSD_LongRange',
+        Level: 5,
+        Quality: 1,
+        ExperimentalEffect: 'special_fsd_heavy',
+        ExperimentalEffect_Localised: 'Mass Manager',
+    });
+    // Untouched, the imported block is preserved byte for byte.
+    assert.equal(
+        build.moduleAt('FrameShiftDrive')!.Engineering!.ExperimentalEffect_Localised,
+        'Mass Manager',
+    );
+    // Changed, the label goes with the effect rather than mislabelling the new one.
+    build.setExperimentalEffect('FrameShiftDrive', 'special_fsd_toughened');
+    const engineering = build.moduleAt('FrameShiftDrive')!.Engineering!;
+    assert.equal(engineering.ExperimentalEffect, 'special_fsd_toughened');
+    assert.equal(engineering.ExperimentalEffect_Localised, undefined);
 });
 
 test('weapon and armour recipes engineer the stats the catalogue carries', () => {

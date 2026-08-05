@@ -956,7 +956,15 @@ So `experimental` omitted means "leave whatever is there", `experimental: null` 
 "take it off", and a blueprint change means "it is gone" — the three cases the game
 distinguishes. `setExperimentalEffect` / `clearExperimentalEffect` change only the effect
 and leave the blueprint, grade and quality alone; `setExperimentalEffect` throws on a
-module carrying no blueprint, because there is nowhere to put one.
+module carrying no blueprint, because there is nowhere to put one. Both **recompute** the
+whole `Engineering.Modifiers` block from the library's model of that roll rather than
+patching it, so on an imported build they replace the producer's own numbers with the
+library's.
+
+An effect named in the call is an argument, and a bad one is an error. An effect merely
+**carried** across a re-roll is data the build arrived with — an import can name any
+effect at all — so one this library cannot model is quietly dropped instead of blocking
+the re-roll. Name it explicitly if you want the error.
 
 Which effects are on offer follows from the same rule: pass the blueprint you mean to
 `getAvailableExperimentalEffects`, or leave it out to get the one already applied. On a
@@ -1148,13 +1156,13 @@ getBlueprintsForModule("Hpt_PulseLaser_Fixed_Small").includes(
 ); // -> true
 getBlueprintsForModule("Hpt_Railgun_Fixed_Small").includes("Weapon_Efficient"); // -> false
 
-// Blueprint first, then the module it goes on — the exact list.
-getExperimentalsForBlueprint("FSD_LongRange", "Int_Hyperdrive_Size5_Class5");
+// The module, then the blueprint going on it — the exact list.
+getExperimentalsForBlueprint("Int_Hyperdrive_Size5_Class5", "FSD_LongRange");
 // -> ['special_fsd_cooled', 'special_fsd_fuelcapacity', 'special_fsd_heavy', ...]
 
-getExperimentalsForBlueprint("Weapon_Efficient", "Hpt_MultiCannon_Fixed_Medium")
+getExperimentalsForBlueprint("Hpt_MultiCannon_Fixed_Medium", "Weapon_Efficient")
   .length; // -> 12
-getExperimentalsForBlueprint("Weapon_Efficient", "Hpt_MultiCannon_Fixed_Small")
+getExperimentalsForBlueprint("Hpt_MultiCannon_Fixed_Small", "Weapon_Efficient")
   .length; // -> 11
 ```
 
