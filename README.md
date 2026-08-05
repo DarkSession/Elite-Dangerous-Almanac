@@ -1126,29 +1126,42 @@ the exact list for any one module. Once you know the module, use
 
 A module the options catalogue does not group returns `[]` from both. To tell that apart
 from a module that _is_ grouped but has no experimental to offer, ask
-`getEngineeringGroup` — it returns `null` only for the former. Exactly six modules are in
-that second case: four Mining Laser variants and the two Abrasion Blasters. (The small
-fixed Mining Laser is not one of them — it is grouped and does offer an effect.)
+`getEngineeringGroup` — it returns `null` only for the former. The second case is the
+common one: 27 of the 50 groups offer no experimental at all — life support, sensors, the
+limpet controllers, the utility scanners, the Guardian weapons — so 389 of the 1063
+grouped modules take blueprints and nothing else. Six more are grouped, have blueprints,
+and are excluded from their group's only effect: four Mining Laser variants and the two
+Abrasion Blasters. (The small fixed Mining Laser is not one of them.)
 
-> **`[]` does not yet mean "cannot be engineered".** The options catalogue groups 428 of
-> the 1198 modules, so whole engineerable families — hull armour, sensors, life support,
-> heat sink and chaff launchers, the Detailed Surface Scanner, limpet controllers, AFMUs,
-> fuel scoops, FSD interdictors, the Guardian weapons — currently answer `[]` even though
-> real builds engineer them.
+The catalogue covers 1063 of the 1198 modules — every module EDSY or coriolis-data gives
+a recipe for. The other 135 take no engineering: fuel tanks, passenger cabins, the
+repair/recon/research/decontamination and multi-limpet controllers, meta-alloy hull
+reinforcement, the Pulse Wave Analyser, the mining launchers, Shock Cannons, Nanite
+Torpedo Pylons, fighter and vehicle hangars, the withdrawn discovery scanners and the AX
+utility modules.
+
+```ts
+getBlueprintsForModule("Int_LifeSupport_Size4_Class2");
+// -> ['LifeSupport_LightWeight', 'LifeSupport_Reinforced', 'LifeSupport_Shielded']
+
+getBlueprintsForModule("Anaconda_Armour_Grade3").length; // -> 5
+getExperimentalsForModule("Anaconda_Armour_Grade3").length; // -> 4
+
+getEngineeringGroup("Int_FuelTank_Size3_Class3"); // -> null, nothing engineers a fuel tank
+```
+
+> **One recipe can have two journal ids.** Where a modification applies to several module
+> families, `BLUEPRINTS` carries both a family-specific spelling and a generic one — a
+> life support's Lightweight is `LifeSupport_LightWeight` here and `Misc_LightWeight` in
+> an EDSY-authored build. The menus list the family-specific id, so compare ids knowing
+> the two are the same recipe. `Sensor_LongRange` and `Scanner_LongRange` are _not_ such a
+> pair: those are different recipes, and the utility scanners list the `Scanner_*` ones.
 >
-> For some of those families `ShipLoadout.applyBlueprint` also refuses the recipe: life
-> support, limpet controllers, AFMUs and fuel scoops, because `Misc_LightWeight` /
-> `Misc_Shielded` are mapped to too narrow a target family. Measured on the 181-build
-> corpus in `fixtures/ships/builds/`: 76 of its 1902 declared engineering entries are
-> rejected, across 54 builds. Armour, heat sink launchers, chaff and the Guardian weapons
-> engineer fine — for those it really is only the _menu_ that is missing. (The Caustic
-> Sink Launcher is the exception among the launchers: its engineering target is
-> `miscellaneous`, so `Misc_HeatSinkCapacity` is refused on it.) Issues
-> [#13](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/13) and
-> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14) track the two
-> remaining problems; the missing base stats that used to reject a further 405 entries
-> — thruster and drive heat rates, the scanner and cell-bank stats, a shield generator's
-> energy per regen — are sourced.
+> `ShipLoadout.applyBlueprint` does not read this catalogue — it checks the blueprint's
+> own target family — and it still refuses `Misc_LightWeight` / `Misc_Shielded` on life
+> support, limpet controllers, AFMUs and fuel scoops: 76 of the 1902 declared engineering
+> entries in `fixtures/ships/builds/`, across 54 builds, tracked in
+> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14).
 
 #### Modules you can buy already engineered
 

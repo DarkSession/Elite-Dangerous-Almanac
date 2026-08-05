@@ -1,6 +1,6 @@
 {
-  "description": "Ground truth for data/ships/engineering-options.jsonc — which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins the catalogue shape, `modules` that a module resolves to its group, `exclusions` the modules that are the exception to their group (a Multi-cannon cannot take Phasing Sequence; mining tools take no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it.",
-  "counts": { "groups": 22, "modules": 428, "exclusions": 29 },
+  "description": "Ground truth for data/ships/engineering-options.jsonc — which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins the catalogue shape, `modules` that a module resolves to its group, `exclusions` the modules that are the exception to their group (a Multi-cannon cannot take Phasing Sequence; mining tools take no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `corpus` measures the catalogue against the 181-build community corpus in `builds/`: every module those builds engineer is grouped, and every recipe they declare is one its module's group offers — bar the twelve declarations listed there, which no registry offers.",
+  "counts": { "groups": 50, "modules": 1063, "exclusions": 29 },
   "groups": [
     {
       "id": "beamLasers",
@@ -13,14 +13,72 @@
       "name": "Frame Shift Drives",
       "blueprintCount": 3,
       "experimentalCount": 5
+    },
+    {
+      "id": "bulkheads",
+      "name": "Bulkheads",
+      "blueprintCount": 5,
+      "experimentalCount": 4
+    },
+    {
+      "id": "lifeSupports",
+      "name": "Life Supports",
+      "blueprintCount": 3,
+      "experimentalCount": 0
+    },
+    {
+      "id": "killWarrantScanners",
+      "name": "Kill Warrant Scanners",
+      "blueprintCount": 6,
+      "experimentalCount": 0
+    },
+    {
+      "id": "surfaceScanners",
+      "name": "Surface Scanners",
+      "blueprintCount": 1,
+      "experimentalCount": 0
+    },
+    {
+      "id": "guardianShard",
+      "name": "Exp - Guardian Shard",
+      "blueprintCount": 2,
+      "experimentalCount": 0
     }
   ],
   "modules": [
     { "symbol": "Hpt_BeamLaser_Fixed_Small", "group": "beamLasers" },
     { "symbol": "Int_Hyperdrive_Size5_Class5", "group": "frameShiftDrives" },
-    { "symbol": "Int_Powerplant_Size2_Class1", "group": "powerPlants" }
+    { "symbol": "Int_Powerplant_Size2_Class1", "group": "powerPlants" },
+    { "symbol": "Anaconda_Armour_Grade3", "group": "bulkheads" },
+    { "symbol": "Int_LifeSupport_Size4_Class2", "group": "lifeSupports" },
+    { "symbol": "Int_Sensors_Size3_Class5", "group": "sensors" },
+    { "symbol": "Int_CargoRack_Size2_Class1", "group": "cargoRacks" },
+    { "symbol": "Int_DetailedSurfaceScanner_Tiny", "group": "surfaceScanners" },
+    { "symbol": "Int_Repairer_Size3_Class5", "group": "autoFieldMaintenanceUnits" },
+    { "symbol": "Int_FuelScoop_Size6_Class5", "group": "fuelScoops" },
+    { "symbol": "Int_FSDInterdictor_Size3_Class3", "group": "fsdInterdictors" },
+    {
+      "symbol": "Int_DroneControl_Collection_Size3_Class5",
+      "group": "collectionLimpets"
+    },
+    { "symbol": "Hpt_ChaffLauncher_Tiny", "group": "chaffLaunchers" },
+    { "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny", "group": "heatSinkLaunchers" },
+    { "symbol": "Hpt_ElectronicCountermeasure_Tiny", "group": "ecms" },
+    { "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny", "group": "pointDefence" },
+    { "symbol": "Hpt_CrimeScanner_Size0_Class3", "group": "killWarrantScanners" },
+    { "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium", "group": "guardianShard" },
+    { "symbol": "Int_GuardianFSDBooster_Size3", "group": "fsdBoosters" },
+    { "symbol": "Int_Hyperdrive_Size8_Class5", "group": "frameShiftDrives" }
   ],
-  "notEngineerable": ["Int_CargoRack_Size2_Class1", "ModularCargoBayDoor"],
+  "notEngineerable": [
+    "Int_FuelTank_Size3_Class3",
+    "ModularCargoBayDoor",
+    "Int_PassengerCabin_Size4_Class2",
+    "Int_DroneControl_Repair_Size3_Class3",
+    "Int_MetaAlloyHullReinforcement_Size1_Class1",
+    "Hpt_PlasmaShockCannon_Fixed_Medium",
+    "Int_StellarBodyDiscoveryScanner_Advanced"
+  ],
   "exclusions": [
     {
       "symbol": "Hpt_MultiCannon_Fixed_Small",
@@ -39,6 +97,55 @@
       "special_fsd_heavy",
       "special_fsd_lightweight",
       "special_fsd_toughened"
+    ]
+  },
+  "corpus": {
+    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total and `ungroupedModules` how many of those entries sit on a module this catalogue does not group — 497 before the families below were mapped, 0 now. `blueprintAliases` are one recipe under two journal spellings: the catalogue lists the family-specific id for these families, and a build declaring the generic one is engineering the same thing. `notOffered` is the residue: declarations neither EDSY nor coriolis lists for that module, kept here rather than bent into the catalogue.",
+    "declaredEngineering": 1902,
+    "ungroupedModules": 0,
+    "aliasSpellingsAccepted": 70,
+    "blueprintAliases": {
+      "Misc_LightWeight": [
+        "CollectionLimpet_LightWeight",
+        "FuelTransferLimpet_LightWeight",
+        "HatchBreakerLimpet_LightWeight",
+        "LifeSupport_LightWeight",
+        "ProspectingLimpet_LightWeight"
+      ],
+      "Misc_Reinforced": [
+        "CollectionLimpet_Reinforced",
+        "FuelTransferLimpet_Reinforced",
+        "HatchBreakerLimpet_Reinforced",
+        "LifeSupport_Reinforced",
+        "ProspectingLimpet_Reinforced"
+      ],
+      "Misc_Shielded": [
+        "AFM_Shielded",
+        "CollectionLimpet_Shielded",
+        "FuelScoop_Shielded",
+        "FuelTransferLimpet_Shielded",
+        "HatchBreakerLimpet_Shielded",
+        "LifeSupport_Shielded",
+        "ProspectingLimpet_Shielded",
+        "Refineries_Shielded"
+      ]
+    },
+    "notOffered": [
+      {
+        "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "entries": 5
+      },
+      {
+        "symbol": "Hpt_CloudScanner_Size0_Class5",
+        "blueprint": "Sensor_LongRange",
+        "entries": 1
+      },
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "experimental": "special_super_penetrator_cooled",
+        "entries": 6
+      }
     ]
   }
 }
