@@ -64,6 +64,10 @@ test('parseSlotName reads the Lynx Highliner cabin mounts as plain optionals', (
     // (issue #11), so they classify as the optional mounts they are and nothing more.
     assert.deepEqual(parseSlotName('Passenger01'), { kind: 'optional', size: null });
     assert.deepEqual(parseSlotName('Passenger03'), { kind: 'optional', size: null });
+    // The newest slot-name form has to obey the case rule the rest of them do — an
+    // Inara-sourced Lynx build writes them lower-cased like everything else.
+    assert.deepEqual(parseSlotName('passenger01'), parseSlotName('Passenger01'));
+    assert.deepEqual(parseSlotName('PASSENGER03'), parseSlotName('Passenger03'));
 });
 
 test('parseSlotName returns null for an unrecognised name', () => {

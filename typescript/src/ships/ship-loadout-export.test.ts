@@ -804,4 +804,15 @@ test('a journal build on a renamed hull binds to the mounts it names', () => {
     // Every fitted module sits in a mount the hull declares — nothing left over.
     const keys = new Set(build.slots().map((s) => s.key));
     for (const m of build.modules) assert.ok(keys.has(m.Slot), `stray slot ${m.Slot}`);
+
+    // …and the same holds for an Inara-style producer that lower-cases its keys, so a
+    // hull's own names are bound by the same case rule as every other slot key.
+    const lowered = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: [{ Slot: 'slot13_size2', Item: 'int_detailedsurfacescanner_tiny' }],
+    });
+    assert.ok(
+        lowered.slots().find((s) => s.key === 'Slot13_Size2')?.module,
+        'a lower-cased hull-specific key bound no module',
+    );
 });
