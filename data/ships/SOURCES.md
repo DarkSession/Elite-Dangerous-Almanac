@@ -1049,9 +1049,9 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
       reached players is not a player-facing outfitting record, so it goes the way of the
       other non-purchasable internal variants that rule already excludes —
       [#20](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/20) states the
-      same test for the same family: absence from FDevIDs is the evidence a variant is not
-      purchasable. The catalogue
-      drops from 1198 records to **1197** (`internal` 483 → 482), the
+      same test, over a different set of symbols: absence from FDevIDs is the evidence a
+      variant is not purchasable. The catalogue drops from 1198 records to **1197**
+      (`internal` 483 → 482), the
       engineering-options module map from 1029 to **1028** (`cargoRacks` 17 → 16), and
       the shared fixtures move with it in the same change. No build in
       `fixtures/ships/builds/` fitted one.
