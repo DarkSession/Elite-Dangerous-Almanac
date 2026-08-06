@@ -90,11 +90,16 @@ rules still produce those two unaided" now covers three hulls, the Lynx included
 standing Lynx Highliner entry under §Ships has been corrected in place rather than left
 to contradict this block.
 
-**The two rules still open** are the other half of issue #11 and stay there: no hull
-records that a hardpoint takes only one *mount* (fixed, gimballed or turret), and a
-size-0 utility mount cannot carry a restriction at all. Neither has a source that says
-what to store — for the utility mounts, no hull is even known to need one — so they are
-recorded as visible omissions rather than approximated.
+**The other two rules were never rules** (corrected 2026-08-06, closing issue #11).
+This block, and the `SlotRestriction` doc comment with it, recorded two omissions the
+catalogue was said to be carrying: that no hull records a hardpoint taking only one
+*mount* (fixed, gimballed or turret), and that a size-0 utility mount cannot carry a
+restriction. Neither is a rule the game has — there are no mount-type restrictions on
+hardpoints and no restricted utility mounts — so there was nothing to model in either
+case. That is why neither ever had a source saying what to store; the missing source
+was the evidence, read at the time as a gap in this catalogue rather than as the
+absence of the rule. `SlotRestriction`'s seven values are the complete set, not a
+subset the hull layouts happen to reach.
 
 **Revision 2026-08-05 (UTC) — the mounts of 13 hulls now carry the journal's own slot
 names.**

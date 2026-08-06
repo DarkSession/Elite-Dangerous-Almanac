@@ -77,10 +77,10 @@ export type OptionalRestriction =
  * exhaustive `switch` over a hardpoint's restriction still has to handle (or cast
  * away) the optional-only values; there is no `never` case to lean on.
  *
- * The list is what the hull layouts model, not every rule the game has: a hardpoint
- * that takes only one *mount* (fixed, gimballed or turret) cannot be expressed, and
- * neither can a restricted utility mount — see
- * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11.
+ * The list is complete. Two rules this comment once recorded as unmodelled do not
+ * exist in the game: no hardpoint takes only one *mount* (fixed, gimballed or
+ * turret), and no utility mount is restricted — which is why neither ever had a
+ * source saying what to store.
  *
  * The journal spells two of these differently from the value: `vesselHangar` mounts
  * are named `FighterBay01` (the game renamed the modules but not the slots), and
