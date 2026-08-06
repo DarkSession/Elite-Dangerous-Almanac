@@ -97,7 +97,8 @@ test('fine-grained package subpaths resolve', () => {
 
 test('generated public entries contain no redundant bare imports', async () => {
     for (const { file, specifier } of await publicEntries()) {
-        assert.doesNotMatch(await readFile(file, 'utf8'), /\bimport\s*['"]/, specifier);
+        const source = await readFile(file, 'utf8');
+        assert.equal(stripBareImports(source), source, specifier);
     }
 });
 
