@@ -179,11 +179,34 @@ export class FittedModule {
     }
 
     /**
-     * Apply engineering to this module.
+     * Apply engineering to this module — {@link ShipLoadout.applyBlueprint} for the slot
+     * this handle points at, with the same validation and the same errors. Read that
+     * method's documentation for what is refused and why.
      *
-     * @param blueprintName - Frontier blueprint `fdname`.
+     * Worth knowing here: **which recipe an `fdname` names can depend on the module.** The
+     * game writes `Sensor_LongRange` and `Sensor_WideAngle` for both a sensor suite's
+     * modification and a utility scanner's, and the two roll different stats in opposite
+     * directions. The id is resolved against this module before anything is computed — so a
+     * wake scanner engineered `Sensor_LongRange` gets the scanner's numbers — while the
+     * stored `Engineering.BlueprintName` keeps the id you passed. `resolveBlueprintForModule`
+     * in `ships/blueprint-journal` is that lookup, for reading one back.
+     *
+     * @param blueprintName - Frontier blueprint `fdname`, e.g. `"FSD_LongRange"`.
      * @param options - Grade, optional quality in `[0, 1]`, and experimental effect.
      * @returns This handle for chaining.
+     * @throws {RangeError} If the blueprint, grade or experimental effect is unknown, or
+     * `quality` falls outside `[0, 1]`.
+     * @throws {TypeError} If this handle has gone stale — its slot emptied or refitted since
+     * it was taken — or the fitted module has no stats to engineer; or this module is not
+     * offered the blueprint or the experimental effect; or the catalogue cannot answer a
+     * base stat the recipe modifies.
+     * @example
+     * ```ts
+     * build.getFittedModule('FrameShiftDrive')!.applyBlueprint('FSD_LongRange', {
+     *     grade: 5,
+     *     experimental: 'special_fsd_heavy',
+     * });
+     * ```
      */
     applyBlueprint(blueprintName: string, options: ApplyBlueprintOptions): this {
         this.#raw();

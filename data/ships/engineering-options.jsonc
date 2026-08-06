@@ -28,6 +28,18 @@
  * blueprints, an ordinary one the reverse, so `powerPlants` and `guardianPowerPlants` are
  * separate — as are the distributors and the hull reinforcement packages.
  *
+ * **A menu lists the id of the recipe it rolls, which is not always the id the game
+ * writes.** The three utility-scanner menus list `Scanner_LongRange` / `Scanner_WideAngle`,
+ * but the game writes `Sensor_LongRange` / `Sensor_WideAngle` on a scanner — the same ids
+ * it writes on a sensor suite, whose Long Range and Wide Angle are different recipes
+ * rolling different stats in different directions (Long Range costs the suite mass and
+ * the scanner power draw; Wide Angle the reverse). Nothing is stored here for that: the
+ * journal spelling belongs to the recipe, so it lives on the blueprint record as
+ * `journalName` in `blueprints.jsonc`. What this file contributes is the half only it
+ * knows — which of the two recipes a given module is offered. `resolveBlueprintForModule`
+ * reads a menu against those journal names, so resolution needs no second list to drift
+ * from this one.
+ *
  * `exclusions` handles what is left: the modules that take their group's blueprints but
  * not all of its experimental effects — a Multi-cannon cannot take Phasing Sequence, and
  * the Abrasion Blaster takes no experimental at all. Each entry lists the effect ids that

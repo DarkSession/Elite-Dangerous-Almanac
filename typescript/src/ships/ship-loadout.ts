@@ -82,6 +82,7 @@ import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
 import {
@@ -925,7 +926,17 @@ export class ShipLoadout {
      * an optional experimental effect, computing the resulting stat modifiers.
      *
      * The modifiers are stored as an `Engineering` block on the fitted module, so the
-     * build's jump-range and mass calculations pick them up automatically.
+     * build's jump-range and mass calculations pick them up automatically. The block keeps
+     * the `BlueprintName` you passed, so it reads back the way the build declared it.
+     *
+     * **Which recipe an id names can depend on the module.** The game writes
+     * `Sensor_LongRange` and `Sensor_WideAngle` for both a sensor suite's modification and a
+     * utility scanner's, and the two roll different stats in opposite directions — Long
+     * Range costs the suite mass and the scanner power draw. So the id is resolved against
+     * the module's menu before anything is computed, and a wake scanner engineered
+     * `Sensor_LongRange` gets the scanner's numbers, which `BLUEPRINTS` keys
+     * `Scanner_LongRange`. Reading a stored block back the same way means resolving it the
+     * same way: `resolveBlueprintForModule` in `ships/blueprint-journal` is that lookup.
      *
      * @param slotKey - The slot whose module to engineer, matched case-insensitively
      * (journal spelling).
@@ -936,8 +947,9 @@ export class ShipLoadout {
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
      * @throws {TypeError} If the fitted module has no stats to engineer; or is not offered
-     * the blueprint — by its engineering menu, by the generic spelling of a recipe that menu
-     * lists under a family's name, or by being sold already carrying it; or is not offered
+     * the blueprint — by its engineering menu, by the journal spelling of an entry on that
+     * menu, by the generic spelling of a recipe that menu lists under a family's name, or by
+     * being sold already carrying it; or is not offered
      * the experimental effect, which its menu alone decides; or the catalogue does not carry
      * every base stat the recipe modifies. Incomplete engineering is rejected rather than
      * stored as a partial journal modifier block.
@@ -965,10 +977,21 @@ export class ShipLoadout {
         if (!stats) {
             throw new TypeError(`ShipLoadout.applyBlueprint: no stats for module "${module.Item}"`);
         }
-        const features = getBlueprintGrade(blueprintName, options.grade);
+        // Which recipe an id names can depend on the module it is named for: the game
+        // writes `Sensor_LongRange` on a utility scanner and on a sensor suite, and the two
+        // roll different stats. Resolve before reading the grade, so the numbers folded are
+        // the ones this module rolls rather than the other family's.
+        const recipe = resolveBlueprintForModule(module.Item, blueprintName);
+        // Name both spellings once they differ, so an error about the recipe this module
+        // rolls cannot read as an error about the id the caller passed.
+        const named =
+            recipe === blueprintName
+                ? `"${blueprintName}"`
+                : `"${blueprintName}" (${recipe} on this module)`;
+        const features = getBlueprintGrade(recipe, options.grade);
         if (!features) {
             throw new RangeError(
-                `ShipLoadout.applyBlueprint: no blueprint "${blueprintName}" grade ${options.grade}`,
+                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${options.grade}`,
             );
         }
         let experimental;
@@ -993,7 +1016,7 @@ export class ShipLoadout {
         if (!blueprintAvailableFor(module.Item, blueprintName)) {
             throw new TypeError(
                 isEngineerable(module.Item)
-                    ? `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered blueprint "${blueprintName}"; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
+                    ? `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered blueprint ${named}; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
                     : `ShipLoadout.applyBlueprint: no registry lists an engineering menu for module "${module.Item}"`,
             );
         }
@@ -1010,7 +1033,7 @@ export class ShipLoadout {
         const missing = missingBaseLabels(stats, base, features, experimental);
         if (missing.length > 0) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: cannot compute "${blueprintName}" for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
+                `ShipLoadout.applyBlueprint: cannot compute ${named} for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
             );
         }
         const modifiers = computeModifiers(base, features, quality, experimental);

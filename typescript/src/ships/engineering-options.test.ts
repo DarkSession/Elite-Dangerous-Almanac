@@ -13,11 +13,13 @@ import {
     getExperimentalsForModule,
     getExperimentalsForBlueprint,
 } from './engineering-options.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { BLUEPRINTS } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import fixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
+import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import buildIndex from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
 
 test('the catalogue holds the expected groups, modules and exclusions', () => {
@@ -66,6 +68,92 @@ test('every group holds the modules, name and menu the fixture pins', () => {
         assert.deepEqual([...group.blueprints], expected.blueprints, expected.id);
         assert.deepEqual([...group.experimentals], expected.experimentals, expected.id);
     }
+});
+
+test('no menu offers two blueprints the game writes the same way', () => {
+    // Resolution reads a menu against `Blueprint.journalName`, so it is only well defined
+    // while each menu answers to a given journal id exactly once. A group that offered both
+    // `Sensor_LongRange` and `Scanner_LongRange` would make the id genuinely ambiguous, and
+    // this function would silently pick whichever came first.
+    for (const [id, group] of Object.entries(ENGINEERING_OPTION_GROUPS)) {
+        const seen = new Map<string, string>();
+        for (const fdname of group.blueprints) {
+            const journalName = (BLUEPRINTS[fdname]?.journalName ?? fdname).toLowerCase();
+            const clash = seen.get(journalName);
+            assert.equal(clash, undefined, `${id}: ${fdname} and ${clash} are both ${journalName}`);
+            seen.set(journalName, fdname);
+        }
+    }
+});
+
+test('a blueprint names a journal spelling only when its key is not one', () => {
+    // `journalName` is the exception, so it has to stay rare and stay meaningful: an id that
+    // is already what the game writes must not carry one, and a spelling it redirects to
+    // must not be this blueprint's own key.
+    const named = Object.entries(BLUEPRINTS).filter(([, blueprint]) => blueprint.journalName);
+    assert.deepEqual(
+        Object.fromEntries(named.map(([fdname, blueprint]) => [fdname, blueprint.journalName])),
+        engineeringFixture.scannerIdCollision.journalNames,
+    );
+    for (const [fdname, blueprint] of named) {
+        assert.notEqual(blueprint.journalName!.toLowerCase(), fdname.toLowerCase());
+        // The id it is written as is a real recipe in its own right — that is the collision.
+        assert.ok(BLUEPRINTS[blueprint.journalName!], `${fdname}: ${blueprint.journalName}`);
+    }
+});
+
+test('the same journal id resolves to a different recipe on a scanner and on a suite', () => {
+    // The game writes `Sensor_LongRange` for both, and the two roll different stats, so the
+    // module decides which recipe the id names.
+    assert.equal(
+        resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', 'Sensor_LongRange'),
+        'Scanner_LongRange',
+    );
+    assert.equal(
+        resolveBlueprintForModule('Int_Sensors_Size4_Class5', 'Sensor_LongRange'),
+        'Sensor_LongRange',
+    );
+    // Case and whitespace are matched the way every other lookup matches them, and when a
+    // journal name resolves, the answer is the catalogue's spelling rather than the caller's.
+    assert.equal(
+        resolveBlueprintForModule('  hpt_cloudscanner_size0_class5 ', ' sensor_wideangle '),
+        'Scanner_WideAngle',
+    );
+    // But an id the menu already lists comes back **byte for byte** as it was passed, never
+    // canonicalised. `applyBlueprint` compares the two by identity to decide whether an
+    // error should name both spellings, so rewriting a caller's own id here would make
+    // every mis-cased call report a resolution that never happened.
+    for (const spelling of ['Scanner_LongRange', 'scanner_longrange', ' Scanner_LongRange ']) {
+        assert.equal(
+            resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', spelling),
+            spelling,
+        );
+    }
+    // Resolution runs into a menu, never out of one. The menu's own id, an id no entry on
+    // this menu is written as, and a module with no menu at all all come back untouched —
+    // and coming back untouched is not the same as being offered.
+    assert.equal(
+        resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', 'Scanner_LongRange'),
+        'Scanner_LongRange',
+    );
+    assert.equal(
+        resolveBlueprintForModule('Int_Sensors_Size4_Class5', 'Scanner_LongRange'),
+        'Scanner_LongRange',
+    );
+    assert.ok(!getBlueprintsForModule('Int_Sensors_Size4_Class5').includes('Scanner_LongRange'));
+    assert.equal(
+        resolveBlueprintForModule('Int_Hyperdrive_Size5_Class5', 'FSD_LongRange'),
+        'FSD_LongRange',
+    );
+    assert.equal(
+        resolveBlueprintForModule('Int_FuelTank_Size5_Class3', 'Sensor_LongRange'),
+        'Sensor_LongRange',
+    );
+    // An id no blueprint answers to is not invented into one.
+    assert.equal(
+        resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', 'NoSuchBlueprint'),
+        'NoSuchBlueprint',
+    );
 });
 
 test('a Guardian group holds Guardian modules and its ordinary twin holds none', () => {
@@ -246,10 +334,11 @@ test('every recipe the build corpus declares is one its module offers', () => {
     // A recipe that applies to several module families is stored under each family's own
     // journal id; the catalogue lists the family-specific one, so a build spelling it the
     // generic way is declaring the same thing — and the alias must be one of *this*
-    // module's family, not merely some family's. `notOffered` is the real residue: twelve
+    // module's family, not merely some family's. The scanner ids are the other kind: one
+    // journal spelling, two different recipes, which only the module's own menu read
+    // against `Blueprint.journalName` can settle. `notOffered` is the real residue: eleven
     // declarations no registry lists for that module —
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36 for the eleven on
-    // the Guardian weapons, and issues/32 for the scanner id collision.
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36.
     const aliases: Record<string, readonly string[]> = fixture.corpus.blueprintAliases;
     const exempt = new Set(
         fixture.corpus.notOffered.map(
@@ -257,15 +346,21 @@ test('every recipe the build corpus declares is one its module offers', () => {
         ),
     );
     let viaAlias = 0;
+    let viaJournalSpelling = 0;
     for (const entry of declared) {
         const groupId = getEngineeringGroup(entry.symbol);
         if (groupId === null) continue; // pinned by the previous test
         const group = ENGINEERING_OPTION_GROUPS[groupId]!;
         const offered = getBlueprintsForModule(entry.symbol);
         if (!offered.includes(entry.blueprint)) {
+            const resolved = resolveBlueprintForModule(entry.symbol, entry.blueprint);
             const specific = aliases[entry.blueprint] ?? [];
             const matching = specific.filter((id) => offered.includes(id));
-            if (matching.length > 0) {
+            if (resolved !== entry.blueprint) {
+                assert.ok(offered.includes(resolved), `${entry.symbol}: ${resolved} not offered`);
+                assert.equal(matching.length, 0, `${entry.symbol}: two ways to read one id`);
+                viaJournalSpelling += 1;
+            } else if (matching.length > 0) {
                 assert.equal(matching.length, 1, `${entry.symbol}: ambiguous alias`);
                 viaAlias += 1;
             } else {
@@ -281,6 +376,7 @@ test('every recipe the build corpus declares is one its module offers', () => {
         }
     }
     assert.equal(viaAlias, fixture.corpus.aliasSpellingsAccepted);
+    assert.equal(viaJournalSpelling, fixture.corpus.journalSpellingsAccepted);
 });
 
 test('the exempted corpus declarations are exactly the ones the fixture names', () => {

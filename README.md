@@ -1179,27 +1179,58 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > families, `BLUEPRINTS` carries both a family-specific spelling and a generic one — a
 > life support's Lightweight is `LifeSupport_LightWeight` here and `Misc_LightWeight` in
 > an EDSY-authored build. The menus list the family-specific id, so compare ids knowing
-> the two are the same recipe. `Sensor_LongRange` and `Scanner_LongRange` are _not_ such a
-> pair: those are different recipes rolling different stats, and the utility scanners list
-> the `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The two menus
-> share no id at all — a scanner's other four are `Sensor_FastScan` and the generic
-> `Misc_*` trio, none of which a sensor suite offers.
+> the two are the same recipe.
 >
+> **And one journal id can name two recipes.** `Sensor_LongRange` and `Scanner_LongRange`
+> are _not_ the pair above: those are different recipes rolling different stats — Long
+> Range costs a sensor suite mass and a utility scanner power draw, Wide Angle the reverse
+> — and the scanner menus list the `Scanner_*` ones where the sensor suites list the
+> `Sensor_*` ones. The game writes `Sensor_LongRange` for both all the same — those two
+> scanner records say so in their own `journalName` — so which numbers apply is a fact
+> about the fitted module. `resolveBlueprintForModule` is that lookup, and `applyBlueprint`
+> makes it for you:
+>
+> ```ts
+> resolveBlueprintForModule(
+>   "Hpt_CloudScanner_Size0_Class5",
+>   "Sensor_LongRange",
+> );
+> // -> 'Scanner_LongRange' — the scanner's recipe, whatever the build called it
+> resolveBlueprintForModule("Int_Sensors_Size4_Class5", "Sensor_LongRange");
+> // -> 'Sensor_LongRange' — and the suite keeps its own
+> ```
+>
+> It resolves _into_ a menu and never out of one, so a sensor suite is still not offered
+> `Scanner_LongRange`. Every other id, on every other module, comes back unchanged. It is
+> It lives in its own module, `ships/blueprint-journal`, because it needs the menus **and**
+> the recipes — keeping it out of `ships/engineering-options` is what lets that stay 63 KB
+> of menus for everyone who only wants to know what a module takes.
+
+```ts
+import { resolveBlueprintForModule } from "@elite-dangerous-almanac/core/ships/blueprint-journal";
+```
+
 > **This menu is also what `ShipLoadout.applyBlueprint` enforces.** The two questions —
 > "what can I fit?" and "may I fit this?" — read the same catalogue, so they cannot answer
 > differently. `applyBlueprint` refuses a recipe this menu does not list for that module,
 > and quotes the menu back when it does.
 >
-> It makes two accommodations beyond the menu. The first is for builds that spell a
-> modification generically: where a recipe applies to several families the game writes a
-> family-specific `BlueprintName` and the menu lists that one, but an EDSY-authored build
+> It makes three accommodations beyond the menu. One is the journal spelling just
+> described, and it is the one applied first: a scanner's `Sensor_LongRange` is accepted
+> and folded as `Scanner_LongRange`. It is also the only one that changes _which_ recipe an
+> accepted id names; the two below merely widen what is accepted, so their order does not
+> matter.
+>
+> Another is for builds that spell a modification generically: where a recipe applies to
+> several families the game writes a family-specific `BlueprintName` and the menu lists
+> that one, but an EDSY-authored build
 > carries `Misc_LightWeight` where the menu says `LifeSupport_LightWeight`. Those are the
 > same recipe, so both are accepted — 70 of the corpus's declared entries are spelled that
 > way. The alias runs only from the ambiguous spelling to the menu's, never the reverse:
 > `LifeSupport_LightWeight` stays off a limpet controller, and a chaff launcher's Ammo
 > Capacity stays off a heat sink launcher, whose roll is a smaller one.
 >
-> The second is for the `recipe_*` keys of [modules sold already
+> The last is for the `recipe_*` keys of [modules sold already
 > engineered](#modules-you-can-buy-already-engineered). No menu lists one, so `applyBlueprint`
 > takes them from `ships/pre-engineered` instead, on the module that actually ships with the
 > recipe and no other — `recipe_railgun_longshot` on the medium rail gun, not the small one.
@@ -1409,6 +1440,18 @@ recorded inline there beside the field they touch.
   Autocannon); and the Guardian power plants, distributors and hull reinforcement
   packages moved to groups of their own, which also took `recipe_guardianmodule_sturdy`
   off the three ordinary menus that had wrongly offered it. See
+  [what a module can be engineered with](#what-a-module-can-be-engineered-with).
+- **2026-08-06** — `Scanner_LongRange` and `Scanner_WideAngle` gained a `journalName`,
+  because the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` — the ids it also
+  writes for the sensor suites' own Long Range and Wide Angle, which are different recipes
+  rolling different stats in opposite directions.
+  **Behaviour-visible two ways:** those two ids are now accepted on the 15 KWS, manifest
+  and wake scanners, where they were refused (nothing that was accepted became refused, on
+  any module); and on those modules they fold the scanner's recipe — `Scanner_LongRange` /
+  `Scanner_WideAngle` — so a wake scanner's Long Range costs power draw rather than mass.
+  A new `ships/blueprint-journal` module exposes `resolveBlueprintForModule`, the lookup
+  for reading a stored `BlueprintName` back. Blueprint **costs** are unaffected: both pairs charge the same materials at every
+  grade. See
   [what a module can be engineered with](#what-a-module-can-be-engineered-with).
 
 Values no source publishes are left **absent rather than guessed**, so some

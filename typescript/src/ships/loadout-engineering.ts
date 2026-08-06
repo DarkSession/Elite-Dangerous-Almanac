@@ -11,6 +11,7 @@ import {
     getEngineeringGroup,
     getExperimentalsForModule,
 } from './engineering-options.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { baseStats, fieldForLabel, isUnknown } from './module-stat-labels.js';
@@ -139,10 +140,29 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * {@link ShipLoadout.applyBlueprint} makes before it computes anything.
  *
  * The menu is `engineering-options`, so this answers exactly what the game offers on that
- * module, with two accommodations. The first is {@link isSoldWithBlueprint}: a module with
- * no menu, or a menu that omits the recipe, still accepts one it is sold already carrying.
+ * module, with three accommodations, applied in the order they are described here.
  *
- * The second is the generic spelling. Where a modification applies to several module families
+ * The first is the journal spelling, and it comes first because it is the one case where
+ * the id names a *different* recipe rather than the same one twice: the game writes
+ * `Sensor_LongRange` on a utility scanner as well as on a sensor suite, and the two roll
+ * different stats. {@link resolveBlueprintForModule} turns it into the menu's
+ * `Scanner_LongRange`, by asking which blueprint *this module is offered* declares that
+ * journal name. It reads stored facts rather than inferring, because nothing in the two
+ * recipes' shape says they belong together. Every id it does not recognise passes straight
+ * through, so the two checks below see what the caller wrote.
+ *
+ * The second is {@link isSoldWithBlueprint}: a module with no menu, or a menu that omits the
+ * recipe, still accepts one it is sold already carrying. It is asked about the id as written
+ * *and* about the resolved one, so resolution cannot **hide** a sale recorded under the
+ * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
+ * on one of the three scanner menus were ever recorded under a journal spelling, the gate
+ * would accept it here while `applyBlueprint` folded the resolved recipe. Nothing is
+ * recorded that way today — the only pre-engineered variants on those menus are the two
+ * Kill Warrant Scanners' `Sensor_FastScan`, which is its own journal id and which the menu
+ * offers anyway — so the question does not arise; it is written down because no test can
+ * catch it if it ever does.
+ *
+ * The third is the generic spelling. Where a modification applies to several module families
  * Frontier writes a family-specific `BlueprintName` and the menu lists that one, but a
  * build authored elsewhere carries the generic spelling instead — a life support's
  * Lightweight is `LifeSupport_LightWeight` in the menu and `Misc_LightWeight` in an
@@ -168,12 +188,15 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  */
 export function blueprintAvailableFor(item: string, fdname: string): boolean {
     const offered = getBlueprintsForModule(item);
-    const wanted = fdname.trim().toLowerCase();
+    const asWritten = fdname.trim().toLowerCase();
+    const resolved = resolveBlueprintForModule(item, fdname).trim();
+    const wanted = resolved.toLowerCase();
     if (offered.some((id) => id.toLowerCase() === wanted)) return true;
-    if (isSoldWithBlueprint(item, wanted)) return true;
+    // Both spellings, so resolving cannot hide a sale recorded under the other one.
+    if (isSoldWithBlueprint(item, wanted) || isSoldWithBlueprint(item, asWritten)) return true;
     const ambiguous = isGenericSpelling(wanted) || !MENU_IDS.has(wanted);
     if (!ambiguous) return false;
-    const signature = recipeSignature(fdname.trim());
+    const signature = recipeSignature(resolved);
     if (signature === null) return false;
     return offered.some(
         (id) =>

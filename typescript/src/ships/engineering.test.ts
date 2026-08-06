@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js';
-import { getBlueprint, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
+import { getBlueprint, getBlueprintCost, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import {
     blueprintAvailableFor,
@@ -14,6 +14,7 @@ import {
     getEngineeringGroup,
     getExperimentalsForModule,
 } from './engineering-options.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
@@ -86,14 +87,18 @@ test('a build that spells a modification generically is still engineered', () =>
 });
 
 test('the gate accepts what the menu omits only by a pinned alias or a pre-engineered sale', () => {
-    // Two things beyond the menu may explain an acceptance, and nothing else may: the
-    // generic spelling of a recipe the menu lists under a family's name, and a recipe the
-    // module is sold already carrying. Anything else means the gate has quietly widened.
+    // Three things beyond the menu may explain an acceptance, and nothing else may: the
+    // generic spelling of a recipe the menu lists under a family's name, the journal
+    // spelling an offered blueprint declares in its `journalName`, and a recipe the module
+    // is sold already carrying. Anything else means the gate has quietly widened.
     const pinned = new Set(
         Object.entries(optionsFixture.corpus.blueprintAliases).flatMap(([generic, specific]) =>
             specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
         ),
     );
+    for (const [fdname, journalName] of Object.entries(fixture.scannerIdCollision.journalNames)) {
+        pinned.add(`${journalName.toLowerCase()}|${fdname.toLowerCase()}`);
+    }
     const seen = new Set<string>();
     for (const module of ALL_MODULES) {
         const offered = getBlueprintsForModule(module.symbol);
@@ -120,6 +125,75 @@ test('the gate accepts what the menu omits only by a pinned alias or a pre-engin
     }
     // ...and every alias the fixture pins is one the gate actually honours.
     assert.deepEqual([...seen].sort(), [...pinned].sort());
+});
+
+test('one journal id rolls the recipe the fitted module actually takes', () => {
+    // Long Range and Wide Angle exist on the sensor suite and on the utility scanners, the
+    // game writes the same `BlueprintName` for both, and the two roll different stats in
+    // opposite directions. Reading the id alone would charge a wake scanner mass where the
+    // game charges power draw — so the module resolves it, and the fixture pins both sides.
+    const collision = fixture.scannerIdCollision;
+    for (const expected of collision.cases) {
+        const module = getModuleBySymbol(expected.symbol, ALL_MODULES)!;
+        const base = baseStats(module);
+        for (const [label, value] of Object.entries(expected.base)) {
+            assert.equal(base[label], value, `${expected.symbol}: ${label}`);
+        }
+        const resolved = resolveBlueprintForModule(expected.symbol, expected.blueprint);
+        assert.equal(resolved, expected.resolved, `${expected.symbol}: ${expected.blueprint}`);
+        assert.ok(
+            blueprintAvailableFor(expected.symbol, expected.blueprint),
+            `${expected.symbol} must accept ${expected.blueprint}`,
+        );
+        assert.deepEqual(
+            computeModifiers(
+                base,
+                getBlueprintGrade(resolved, collision.grade)!,
+                collision.quality,
+            ),
+            expected.modifiers,
+            `${expected.symbol}: ${expected.blueprint}`,
+        );
+    }
+    // The same id on the two families is not the same set of stats — which is the whole
+    // reason the resolution has to exist. Read from the library, not from the fixture rows
+    // above, so this fails on a regression rather than on a fixture edit.
+    const legsFor = (symbol: string, id: string) =>
+        getBlueprintGrade(resolveBlueprintForModule(symbol, id), collision.grade)!
+            .map((feature) => feature.label)
+            .sort();
+    assert.notDeepEqual(
+        legsFor('Int_Sensors_Size4_Class5', 'Sensor_LongRange'),
+        legsFor('Hpt_CloudScanner_Size0_Class5', 'Sensor_LongRange'),
+    );
+    assert.notDeepEqual(
+        legsFor('Int_Sensors_Size4_Class5', 'Sensor_WideAngle'),
+        legsFor('Hpt_CloudScanner_Size0_Class5', 'Sensor_WideAngle'),
+    );
+    // Resolution runs into a menu, never out of one: a sensor suite is not thereby offered
+    // the scanner's spelling.
+    for (const row of collision.refused) {
+        assert.ok(
+            !blueprintAvailableFor(row.symbol, row.blueprint),
+            `${row.symbol} must refuse ${row.blueprint}`,
+        );
+    }
+    // ...but the *cost* is the same on both families at every grade, which is why
+    // `getBlueprintCost` takes an id and no module: pricing the wrong one of the pair
+    // still bills correctly. If upstream ever splits the recipes, this fails and the
+    // cost API needs the module too.
+    for (const [suiteId, scannerId] of [
+        ['Sensor_LongRange', 'Scanner_LongRange'],
+        ['Sensor_WideAngle', 'Scanner_WideAngle'],
+    ]) {
+        for (const grade of [1, 2, 3, 4, 5]) {
+            assert.deepEqual(
+                getBlueprintCost(suiteId!, grade),
+                getBlueprintCost(scannerId!, grade),
+                `${suiteId} vs ${scannerId} G${grade}`,
+            );
+        }
+    }
 });
 
 test('a recipe sold on one module is not thereby available on its neighbours', () => {

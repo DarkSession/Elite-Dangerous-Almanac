@@ -29,22 +29,26 @@
  * Its own module (and data file) so a consumer who only reads it pays for nothing else —
  * 63 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
  * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, neither
- * of which this module pulls in.
+ * of which this module pulls in. That is why reading a journal `BlueprintName` against a
+ * module — `resolveBlueprintForModule`, which needs a menu *and* the recipes to see their
+ * journal spellings — lives in `ships/blueprint-journal` rather than here: it would take
+ * this module from 63 KB to 285 KB for every consumer who only wanted a menu.
  *
  * **This catalogue is also the gate.** {@link ShipLoadout.applyBlueprint} refuses a recipe
  * this module does not offer for that module, so "what can I put on this?" and "may I put
  * this on it?" cannot answer differently — they read the same menu. A `ShipLoadout`
  * therefore carries this module's weight whether or not the consumer calls it: its import
- * graph is 709 KB where it was 624 KB, 82 KB gzipped where it was 74 KB. That is a
+ * graph is 726 KB, 82 KB gzipped, where before that change it was 624 KB and 74 KB. That is a
  * deliberate trade, taken because the second hand-maintained map of the same fact drifted
  * from this one — §Engineering compatibility in
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
  * records what it cost. The gate
- * makes two accommodations beyond the menu: a build that spells a modification generically
- * — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
- * {@link getBlueprintsForModule} describes — and a `recipe_*` key belonging to a module
+ * makes three accommodations beyond the menu, in the order it applies them: a journal id
+ * the game writes for two different recipes, which `ships/blueprint-journal` settles by
+ * reading this menu against `Blueprint.journalName`; a `recipe_*` key belonging to a module
  * sold already engineered, which no menu lists and `ships/pre-engineered` resolves per
- * module.
+ * module; and a build that spells a modification generically — `Misc_LightWeight` where the
+ * menu lists `LifeSupport_LightWeight`, which {@link getBlueprintsForModule} describes.
  *
  * @packageDocumentation
  */
@@ -135,8 +139,10 @@ export function getEngineeringGroup(symbol: string): string | null {
  * family-specific id is the one listed, so compare ids with that in mind: the two are the
  * same recipe. `Sensor_LongRange` and `Scanner_LongRange` are **not** such a pair — those
  * are two different recipes rolling different stats, and the utility scanners list the
- * `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The two menus share
- * no id: a scanner's other four are `Sensor_FastScan` and the generic `Misc_*` trio.
+ * `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The game writes
+ * `Sensor_LongRange` for both all the same, so a journal id has to be read against the
+ * module it sits on: `resolveBlueprintForModule` in `ships/blueprint-journal` is that
+ * lookup.
  *
  * Anti-Guardian Zone Resistance is the other pair, and the reverse case: the game writes
  * `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a

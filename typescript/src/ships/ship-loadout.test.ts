@@ -924,6 +924,62 @@ test('engineering still refuses what cannot be answered', () => {
     );
 });
 
+test('a wake scanner engineered Long Range gets the scanner recipe, not the sensor suite one', () => {
+    // The game writes `Sensor_LongRange` on both, and the two roll different stats in
+    // opposite directions: the suite's costs mass, the scanner's power draw. An
+    // EDSY-authored build declares the scanner's that way, so `applyBlueprint` has to read
+    // the id against the module it is fitted to.
+    const collision = engineeringFixture.scannerIdCollision;
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('Radar', mod('Int_Sensors_Size8_Class5'))
+        .setModule('TinyHardpoint1', mod('Hpt_CloudScanner_Size0_Class5', UTILITY_MODULES))
+        .applyBlueprint('Radar', 'Sensor_LongRange', { grade: collision.grade })
+        .applyBlueprint('TinyHardpoint1', 'Sensor_LongRange', { grade: collision.grade });
+
+    const labels = (slot: string) =>
+        (build.getFittedModule(slot)!.Engineering!.Modifiers ?? [])
+            .map((modifier) => modifier.Label)
+            .sort();
+    assert.deepEqual(labels('Radar'), ['Mass', 'ScannerRange', 'SensorTargetScanAngle']);
+    assert.deepEqual(labels('TinyHardpoint1'), [
+        'PowerDraw',
+        'ScannerRange',
+        'SensorTargetScanAngle',
+    ]);
+
+    // The block keeps the id the build declared, so it reads back the way it came in.
+    assert.equal(
+        build.getFittedModule('TinyHardpoint1')!.Engineering!.BlueprintName,
+        'Sensor_LongRange',
+    );
+    // The scanner's own menu spelling reaches the same recipe.
+    const viaMenuId = ShipLoadout.empty('Anaconda')
+        .setModule('TinyHardpoint1', mod('Hpt_CloudScanner_Size0_Class5', UTILITY_MODULES))
+        .applyBlueprint('TinyHardpoint1', 'Scanner_LongRange', { grade: collision.grade });
+    assert.deepEqual(
+        build.getFittedModule('TinyHardpoint1')!.Engineering!.Modifiers,
+        viaMenuId.getFittedModule('TinyHardpoint1')!.Engineering!.Modifiers,
+    );
+    // And the resolution does not run the other way: the suite is not offered the
+    // scanner's id, and the error quotes the menu it checked.
+    assert.throws(
+        () => build.applyBlueprint('Radar', 'Scanner_LongRange', { grade: 3 }),
+        /is not offered blueprint "Scanner_LongRange"; it takes Sensor_LightWeight/,
+    );
+    // Once the two spellings differ, an error names both — the id the caller passed, and
+    // the recipe this module would have rolled. Reporting one as the other is how a
+    // resolved failure reads as a failure of something the caller never asked for.
+    assert.throws(
+        () => build.applyBlueprint('TinyHardpoint1', 'Sensor_LongRange', { grade: 9 }),
+        /no blueprint "Sensor_LongRange" \(Scanner_LongRange on this module\) grade 9/,
+    );
+    // ...and stays quiet when they do not.
+    assert.throws(
+        () => build.applyBlueprint('Radar', 'Sensor_LongRange', { grade: 9 }),
+        /no blueprint "Sensor_LongRange" grade 9/,
+    );
+});
+
 test('a module sold pre-engineered can be taken further, menu or no menu', () => {
     // The Mercenary Module Reinforcement Package has no engineering menu at all, so the
     // "no menu" refusal must not fire before the sold-with check: it arrives at grade 1 and

@@ -10,7 +10,11 @@
  *
  * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
  * `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display names.
- * Enumerate the 107 available blueprints with `Object.keys(BLUEPRINTS)`.
+ * **Two keys are the exception**, and say so in their own {@link Blueprint.journalName}:
+ * `Scanner_LongRange` and `Scanner_WideAngle` are coriolis keys for recipes the game writes
+ * as `Sensor_LongRange` / `Sensor_WideAngle`, the ids it also writes for the sensor suites'
+ * different recipes of the same name. `ships/blueprint-journal` reads one against a module.
+ * Enumerate the 108 available blueprints with `Object.keys(BLUEPRINTS)`.
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`): `features` from the
  * grade with journal Labels resolved via EDSY, `materials` from the grade's
@@ -129,6 +133,14 @@ export function getBlueprintGradeMaterials(
  * fold its {@link getExperimentalEffectMaterials} in with {@link sumMaterials} if you
  * want the grand total (kept apart so a consumer who never applies an experimental does
  * not bundle that catalogue).
+ *
+ * **It takes an id and no module, and that is safe for the one id that needs a module to
+ * read.** The game writes `Sensor_LongRange` / `Sensor_WideAngle` for two different recipes
+ * — a sensor suite's and a utility scanner's — which is why `ships/blueprint-journal`
+ * exposes `resolveBlueprintForModule` for the *stats*. The costs are identical across both
+ * pairs at every grade, so pricing either spelling bills correctly and this function needs
+ * no such lookup; `engineering.test.ts` holds upstream to that, and would fail here first
+ * if the two ever diverged.
  *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
  * @param grade - The target grade, `1`–`5`.
