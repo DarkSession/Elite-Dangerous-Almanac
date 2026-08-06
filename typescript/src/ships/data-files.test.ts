@@ -129,15 +129,22 @@ for (const name of DATA_FILES) {
             // The replacement for what dropping `category` cost. While each record
             // spelled its own category, a record filed into the wrong modules-*.jsonc
             // was caught by comparing the two; now the file *is* the category, so that
-            // comparison would only ever check the loader. These four rules discriminate
-            // the categories from the record alone, so a misfiled record still fails:
+            // comparison would only ever check the loader. These rules discriminate the
+            // categories from the record alone, so a misfiled record still fails:
             //
-            //   hardpoint  Hpt_ symbol, size 1-4     utility  Hpt_ symbol, size 0
-            //   core       carries `slot`            internal Int_ symbol, no `slot`*
+            //   hardpoint  Hpt_ symbol, size 1-4    utility   Hpt_ symbol, size 0
+            //   core       carries `slot`           internal  no `slot`, bar the hybrids
             //
-            // (*bar the Guardian hybrids, which the JSON Schema pins by symbol.) They are
-            // game facts, not conventions: a utility mount has no size, which is why its
-            // fittings are class 0 and a hardpoint weapon never is.
+            // They are game facts rather than conventions: a utility mount has no size,
+            // which is why its fittings are class 0 and a hardpoint weapon never is, and
+            // only a module built for one fixed mount has a `slot` to name.
+            //
+            // Two moves slip past these and are caught elsewhere, so neither is silent: a
+            // Guardian hybrid moved into `modules-core.jsonc` satisfies the core rule (it
+            // does carry a `slot`) and fails the per-file counts in
+            // `fixtures/ships/modules.json`; an armour record moved into
+            // `modules-internal.jsonc` fails the schema, which allows a `slot` there only
+            // on a Guardian symbol.
             const parsed: unknown = JSON.parse(
                 stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
             );
@@ -145,18 +152,23 @@ for (const name of DATA_FILES) {
             for (const record of parsed as readonly Record<string, unknown>[]) {
                 const symbol = String(record.symbol);
                 const mounted = symbol.toLowerCase().startsWith('hpt_');
+                const guardianHybrid = /^Int_GuardianPower(?:[Pp]lant|Distributor)_/.test(symbol);
                 const where = `${name}: ${symbol}`;
                 switch (name) {
                     case 'modules-hardpoint.jsonc':
                         assert.ok(mounted, `${where} is not a hardpoint symbol`);
                         assert.ok(
-                            record.class !== 0,
-                            `${where} is size 0 — that is a utility fitting`,
+                            typeof record.class === 'number' &&
+                                record.class >= 1 &&
+                                record.class <= 4,
+                            `${where} is not a hardpoint size (1-4) — size 0 is a utility fitting`,
                         );
+                        assert.ok(!('slot' in record), `${where} names a fixed mount`);
                         break;
                     case 'modules-utility.jsonc':
                         assert.ok(mounted, `${where} is not a utility-mount symbol`);
                         assert.equal(record.class, 0, `${where} is sized — utility mounts are not`);
+                        assert.ok(!('slot' in record), `${where} names a fixed mount`);
                         break;
                     case 'modules-core.jsonc':
                         assert.ok(!mounted, `${where} is a hardpoint symbol`);
@@ -164,7 +176,15 @@ for (const name of DATA_FILES) {
                         break;
                     case 'modules-internal.jsonc':
                         assert.ok(!mounted, `${where} is a hardpoint symbol`);
+                        assert.ok(
+                            !('slot' in record) || guardianHybrid,
+                            `${where} names a fixed mount but is not a Guardian hybrid`,
+                        );
                         break;
+                    default:
+                        assert.fail(
+                            `${name} is a module catalogue with no rule here — add one, or a record misfiled into it goes unnoticed`,
+                        );
                 }
             }
         });

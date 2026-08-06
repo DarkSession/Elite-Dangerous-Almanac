@@ -12,7 +12,7 @@ it says about the game. Two changes, in opposite directions.
 so on for all 1198 — a fact the four-way file split already carried, repeated once per
 record into every consumer's bundle. Each language's loader now adds it from the file it
 read, so every field a consumer reads still reads the same (the key order within a
-record does change: `category` now leads it). §Modules (outfitting) below records
+record does change: `category` moves to the end of it). §Modules (outfitting) below records
 the derivation, which is a rename of nothing: the CSV's `category` column is exactly
 which file a record was already sorted into.
 
@@ -1636,10 +1636,14 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   why the change went ahead rather than inventing a home for them, but it is a real loss
   and [#39](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39) tracks it.
 - **What it costs.** `ShipLoadout` now carries the options catalogue whether or not the
-  consumer opens a menu: measured on the shipped `dist/`, its import graph goes from 624 KB
-  to 709 KB, 74 KB to 82 KB gzipped — the options catalogue, plus `pre-engineered` for the
+  consumer opens a menu: measured on the shipped `dist/` **as this catalogue landed**, its
+  import graph went from 624 KB to 709 KB, 74 KB to 82 KB gzipped — the options catalogue,
+  plus `pre-engineered` for the
   route above. The `ships` barrel went the other way, 716 KB to 711 KB, the family map
   having gone with it. That is the price of one answer instead of two, paid deliberately.
+  Both ends have since shrunk by the same ~13 KB, the module records having stopped
+  repeating their category (see the 2026-08-06 revision at the top of this file); the
+  current figures are 611 KB to 696 KB, and `engineering-options.ts` carries them.
 
 ## Pre-engineered modules
 

@@ -134,7 +134,8 @@ export interface OutfittingModule {
      * @remarks
      * Derived from the catalogue the record was read from rather than stored on it —
      * `CORE_MODULES` is what makes a record `'core'` — so it is always present and
-     * always agrees with the catalogue you found the module in. It is also the first
+     * always agrees with the catalogue you found the module in — it is written after
+     * the record's own fields, so the file wins outright. That also makes it the last
      * key on the record, which is worth knowing only if you serialize one and compare
      * the resulting string.
      */

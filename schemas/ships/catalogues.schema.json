@@ -284,7 +284,65 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "allOf": [{ "$ref": "#/definitions/module" }, { "required": ["slot"] }]
+        "allOf": [
+          { "$ref": "#/definitions/module" },
+          { "required": ["slot"] },
+          {
+            "description": "And `slot` names the mount that module actually fills. Requiring the field only would let an FSD claim `sensors`; pairing each symbol family with its mount is what makes this file the contract rather than the code that reads it.",
+            "oneOf": [
+              {
+                "properties": {
+                  "symbol": { "pattern": "_Armour_" },
+                  "slot": { "const": "armour" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_Power[Pp]lant_" },
+                  "slot": { "const": "powerPlant" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": {
+                    "pattern": "^Int_(?:Engine|MkIIAgileBoost_Engine)_"
+                  },
+                  "slot": { "const": "thrusters" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_Hyperdrive_" },
+                  "slot": { "const": "frameShiftDrive" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_LifeSupport_" },
+                  "slot": { "const": "lifeSupport" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_PowerDistributor_" },
+                  "slot": { "const": "powerDistributor" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_Sensors_" },
+                  "slot": { "const": "sensors" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_FuelTank_" },
+                  "slot": { "const": "fuelTank" }
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     "internalModuleCatalogue": {

@@ -25,8 +25,11 @@ export function buildModuleCatalogue(
     records: readonly ModuleRecord[],
     category: ModuleCategory,
 ): readonly OutfittingModule[] {
-    // `category` leads the record, as `materials/material-catalogue.ts` builds its own:
-    // it is the first thing a reader of a dumped record wants, and it keeps the two
-    // catalogue builders in this package the same shape.
-    return deepFreeze(records.map((record) => ({ category, ...record })));
+    // Spread first, category last. The file a record came from is what decides its
+    // category, so writing it after the spread makes the file win outright, even if a
+    // payload were ever to grow a `category` of its own — which the schema, the type
+    // above and `data-files.test.ts` all forbid, but none of which this function can
+    // see. (`materials/material-catalogue.ts` reaches the same guarantee by naming
+    // every field explicitly; a module record has some sixty, so it spreads instead.)
+    return deepFreeze(records.map((record) => ({ ...record, category })));
 }

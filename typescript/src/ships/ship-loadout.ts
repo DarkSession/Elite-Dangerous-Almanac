@@ -1789,10 +1789,12 @@ export class ShipLoadout {
         const stats = statsOverride ?? this.#statsFor(module);
         if (stats?.[field] !== undefined) return stats[field];
         const symbol = module.Item.toLowerCase();
+        // A fuel tank names the mount it fills, so ask the record and let the symbol
+        // answer only for an `Item` no catalogue carries. A cargo rack has no such
+        // field — it fits any optional mount — so there the symbol is the only answer.
+        const isFuelTank = stats ? stats.slot === 'fuelTank' : symbol.startsWith(FUEL_TANK_PREFIX);
         const shouldCarryCapacity =
-            field === 'cargoCapacity'
-                ? symbol.includes('cargorack')
-                : symbol.startsWith(FUEL_TANK_PREFIX);
+            field === 'cargoCapacity' ? symbol.includes('cargorack') : isFuelTank;
         return shouldCarryCapacity ? null : 0;
     }
 

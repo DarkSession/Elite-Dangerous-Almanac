@@ -31,11 +31,15 @@ import { isStatUnknown } from './unknown-stats.js';
  * Symbol prefixes that identify a module group, lower-cased.
  *
  * @remarks
- * A fallback, not the first answer. Where the catalogue can resolve the module, its
- * record says what the module is — {@link OutfittingModule.slot} for the fixed mounts —
- * and that is what these functions read. A prefix is only consulted for an `Item` no
- * catalogue knows, which is the case these cannot simply drop: a build may name a
- * module newer than this snapshot.
+ * Classifying by symbol is the weaker way to do this, and `powerPlant` is the one entry
+ * that no longer needs it: a power plant's record names the mount it fills, so
+ * {@link powerAvailable} reads {@link OutfittingModule.slot} and falls back to this only
+ * for an `Item` no catalogue knows — a build may name a module newer than this snapshot.
+ *
+ * The other five have nothing better to read. A shield generator, shield booster or
+ * reinforcement package fits any mount of its kind that is large enough, so it fills no
+ * *one* mount and carries no `slot`; the group it belongs to is not a fact this record
+ * shape holds. Match on the prefix here and the record wherever the record can answer.
  *
  * @internal
  */

@@ -1490,11 +1490,14 @@ recorded inline there beside the field they touch.
   [`slot`](#ships-and-outfitting) naming the one mount it fills. **Every field you
   read still reads the same** — `category` is filled in as its catalogue loads, and
   `slot` is additive — so nothing that worked stops working. The one thing that did
-  change is key _order_: `category` now leads a record and `slot` follows `symbol`,
-  which matters only if you serialize a record and compare the string. It is behaviour-visible in one
-  place: a core module's fit is now decided by its record rather than by matching its
-  symbol, so a module record you assemble **by hand**, without a `slot`, no longer
-  goes into a core mount. Records resolved from a catalogue are unaffected.
+  change is key _order_: `slot` follows `symbol` and `category` moved to the end,
+  which matters only if you serialize a record and compare the string. It is
+  behaviour-visible only for a record you assemble **by hand**: a core module is now
+  recognised by its record rather than by matching its symbol, so one carrying no
+  `slot` is not a core module as far as the fit check, the power budget or the
+  jump-range drive lookup are concerned. `ShipLoadout` refuses such a record for a
+  core mount in the first place, which puts the latter two out of reach through it.
+  Records resolved from a catalogue are unaffected.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
