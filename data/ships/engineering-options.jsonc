@@ -11,6 +11,15 @@
  *          the same per-group lists keyed by the journal `BlueprintName`s this catalogue
  *          joins on, which is what settles the families EDSY records under one generic
  *          id. coriolis-data is (c) EDCD under the MIT License.
+ *          `aliases` alone rests on a third file: EDSY edsy.js, whose `Build.fromJournal`
+ *          resolves a journal `BlueprintName` through a per-module-type map
+ *          (`fdevmap.mtypeBlueprint[mtypeid][fdname]`) — the evidence that one id can name
+ *          two recipes, read alongside eddb.js's own `cs_lr` / `scan_lr` rows sharing the
+ *          fdname `Sensor_LongRange`. Acquired 2026-08-06 UTC from
+ *          raw.githubusercontent.com/taleden/EDSY/master/edsy.js, SHA-256
+ *          a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5; the eddb.js
+ *          read with it is byte-identical to the snapshot the earlier passes pin
+ *          (967834d6…, internal `db 20260428`). Same CC BY-NC 4.0 terms.
  *          The underlying game logic is Elite Dangerous data, property of Frontier
  *          Developments plc, under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/

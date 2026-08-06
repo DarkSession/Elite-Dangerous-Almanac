@@ -11,6 +11,7 @@ import { SHIPS } from './ships.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { baseStats, missingBaseLabels } from './loadout-engineering.js';
+import { resolveBlueprintForModule } from './engineering-options.js';
 import index from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
 import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
 
@@ -179,7 +180,13 @@ test('every declared engineering entry resolves against the base stats it needs'
             const engineering = entry.engineering;
             if (!engineering) continue;
             const stats = getModuleBySymbol(entry.item, ALL_MODULES)!;
-            const features = getBlueprintGrade(engineering.blueprint, engineering.grade)!;
+            // Which recipe the declared id names can depend on the module: a scanner's
+            // `Sensor_LongRange` is the scanner's recipe, whose legs are not the sensor
+            // suite's. Check the legs the build would actually fold, not the other
+            // family's — those happen to land on stats the scanner also has, so reading
+            // the id straight would pass while checking the wrong thing.
+            const recipe = resolveBlueprintForModule(entry.item, engineering.blueprint);
+            const features = getBlueprintGrade(recipe, engineering.grade)!;
             const experimental =
                 engineering.experimental === undefined
                     ? undefined

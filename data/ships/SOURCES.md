@@ -1,6 +1,6 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the restricted-mount pass of 2026-08-05 recorded in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the scanner-id pass of 2026-08-06, recorded under §Engineering options (what each module can take) in "Scanner Long Range and Wide Angle: one journal id, two recipes", and before it by the restricted-mount pass of 2026-08-05 in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 **Revision 2026-08-05 (UTC), the restricted-mount pass — a mount reserved to passenger
 cabins is now stored as one, and a module reserved to a mount says so itself.**
@@ -1380,6 +1380,16 @@ up straight through with no disambiguation at all. Both paths are evidence that
 
   Both keep their `SensorTargetScanAngle` leg. The catalogue keeps coriolis's split keys,
   because two recipes need two records and the menus have to name the one they roll; what
+  **Acquisition (2026-08-06 UTC).** `edsy.js` — the file carrying `Build.fromJournal` — is
+  new to this repository's provenance: read from
+  `raw.githubusercontent.com/taleden/EDSY/master/edsy.js`, SHA-256
+  `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5`, pinned by digest
+  because it was taken from the branch tip. The `eddb.js` read beside it is byte-identical
+  to the snapshot every pass above pins (`967834d6…`, internal `db 20260428`), so the group
+  tables did not move under this change; only the reading of them did. Same CC BY-NC 4.0
+  terms as the other EDSY reads.
+
+  What
   is added is an optional per-group **`aliases`** map on the three scanner groups, from the
   journal id to the entry of *that* menu it names. `resolveBlueprintForModule` reads it, and
   `ShipLoadout.applyBlueprint` resolves before it folds — so an EDSY-authored build

@@ -160,11 +160,19 @@ test('one journal id rolls the recipe the fitted module actually takes', () => {
         );
     }
     // The same id on the two families is not the same set of stats — which is the whole
-    // reason the resolution has to exist.
-    const [suite, scanner] = collision.cases;
+    // reason the resolution has to exist. Read from the library, not from the fixture rows
+    // above, so this fails on a regression rather than on a fixture edit.
+    const legsFor = (symbol: string, id: string) =>
+        getBlueprintGrade(resolveBlueprintForModule(symbol, id), collision.grade)!
+            .map((feature) => feature.label)
+            .sort();
     assert.notDeepEqual(
-        suite!.modifiers.map((m) => m.Label).sort(),
-        scanner!.modifiers.map((m) => m.Label).sort(),
+        legsFor('Int_Sensors_Size4_Class5', 'Sensor_LongRange'),
+        legsFor('Hpt_CloudScanner_Size0_Class5', 'Sensor_LongRange'),
+    );
+    assert.notDeepEqual(
+        legsFor('Int_Sensors_Size4_Class5', 'Sensor_WideAngle'),
+        legsFor('Hpt_CloudScanner_Size0_Class5', 'Sensor_WideAngle'),
     );
     // Resolution runs into a menu, never out of one: a sensor suite is not thereby offered
     // the scanner's spelling.

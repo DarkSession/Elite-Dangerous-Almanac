@@ -985,10 +985,16 @@ export class ShipLoadout {
         // roll different stats. Resolve before reading the grade, so the numbers folded are
         // the ones this module rolls rather than the other family's.
         const recipe = resolveBlueprintForModule(module.Item, blueprintName);
+        // Name both spellings once they differ, so an error about the recipe this module
+        // rolls cannot read as an error about the id the caller passed.
+        const named =
+            recipe === blueprintName
+                ? `"${blueprintName}"`
+                : `"${blueprintName}" (${recipe} on this module)`;
         const features = getBlueprintGrade(recipe, options.grade);
         if (!features) {
             throw new RangeError(
-                `ShipLoadout.applyBlueprint: no blueprint "${blueprintName}" grade ${options.grade}`,
+                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${options.grade}`,
             );
         }
         let experimental;
@@ -1030,7 +1036,7 @@ export class ShipLoadout {
         const missing = missingBaseLabels(stats, base, features, experimental);
         if (missing.length > 0) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: cannot compute "${blueprintName}" for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
+                `ShipLoadout.applyBlueprint: cannot compute ${named} for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
             );
         }
         const modifiers = computeModifiers(base, features, quality, experimental);

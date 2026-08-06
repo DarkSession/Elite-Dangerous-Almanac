@@ -130,6 +130,14 @@ export function getBlueprintGradeMaterials(
  * want the grand total (kept apart so a consumer who never applies an experimental does
  * not bundle that catalogue).
  *
+ * **It takes an id and no module, and that is safe for the one id that needs a module to
+ * read.** The game writes `Sensor_LongRange` / `Sensor_WideAngle` for two different recipes
+ * — a sensor suite's and a utility scanner's — which is why `ships/engineering-options`
+ * exposes `resolveBlueprintForModule` for the *stats*. The costs are identical across both
+ * pairs at every grade, so pricing either spelling bills correctly and this function needs
+ * no such lookup; `engineering.test.ts` holds upstream to that, and would fail here first
+ * if the two ever diverged.
+ *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
  * @param grade - The target grade, `1`–`5`.
  * @param currentGrade - The grade the module is already at (completed), default `0` for

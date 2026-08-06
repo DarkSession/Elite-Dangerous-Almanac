@@ -1431,6 +1431,17 @@ recorded inline there beside the field they touch.
   packages moved to groups of their own, which also took `recipe_guardianmodule_sturdy`
   off the three ordinary menus that had wrongly offered it. See
   [what a module can be engineered with](#what-a-module-can-be-engineered-with).
+- **2026-08-06** — the three utility-scanner menus gained an alias map, because the game
+  writes `Sensor_LongRange` and `Sensor_WideAngle` for two different recipes: a sensor
+  suite's and a scanner's, which roll different stats in opposite directions.
+  **Behaviour-visible two ways:** those two ids are now accepted on the 15 KWS, manifest
+  and wake scanners, where they were refused (nothing that was accepted became refused, on
+  any module); and on those modules they fold the scanner's recipe — `Scanner_LongRange` /
+  `Scanner_WideAngle` — so a wake scanner's Long Range costs power draw rather than mass.
+  A new `resolveBlueprintForModule` is the lookup, for reading a stored `BlueprintName`
+  back. Blueprint **costs** are unaffected: both pairs charge the same materials at every
+  grade. See
+  [what a module can be engineered with](#what-a-module-can-be-engineered-with).
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
