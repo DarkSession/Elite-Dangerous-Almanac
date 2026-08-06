@@ -27,7 +27,7 @@
  * reinforcement packages.
  *
  * Its own module (and data file) so a consumer who only reads it pays for nothing else —
- * 63 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
+ * 62 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
  * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, neither
  * of which this module pulls in. That is why reading a journal `BlueprintName` against a
  * module — `resolveBlueprintForModule`, which needs a menu *and* the recipes to see their

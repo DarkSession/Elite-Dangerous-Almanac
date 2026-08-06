@@ -117,7 +117,7 @@ It also validates module fits and engineering compatibility. When an imported SL
 build is edited, its supplied mass/capacity figures are adjusted when possible; an
 aggregate that cannot be updated safely is discarded and recomputed.
 
-`ShipLoadout` pulls in every catalogue (~606 KB minified, ~69 KB gzipped) because it
+`ShipLoadout` pulls in every catalogue (~696 KB minified, ~82 KB gzipped) because it
 must resolve any module id. When you only need one answer, the calculations are also
 data-free leaf modules of roughly 0.5–3 KB each: `ships/jump-range`, `ships/power`,
 `ships/shields`, `ships/armour`, `ships/weapons`, `ships/resistances`, and

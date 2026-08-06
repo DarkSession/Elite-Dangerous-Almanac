@@ -325,8 +325,9 @@ test('a core mount takes the module whose record names it, not one that looks th
     assert.throws(() => conda.setModule('PowerPlant', drive), /not a powerPlant module/);
     // A record assembled by hand carries no `slot`, so it names no mount — and the fit
     // rule reads the record rather than classifying the symbol, so this core mount turns
-    // it away. (It cuts the other way too on other mounts, which is the point: the record
-    // decides. The README changelog spells the directions out.)
+    // it away, whatever the symbol looks like. The armour and optional mounts read the
+    // record too; the two tests below pin those, since every catalogue record carries
+    // both signals and only a hand-made one can tell the old rule from the new.
     const handRolled: OutfittingModule = {
         symbol: drive.symbol,
         category: 'core',
@@ -337,6 +338,57 @@ test('a core mount takes the module whose record names it, not one that looks th
     assert.throws(
         () => conda.setModule('FrameShiftDrive', handRolled),
         /not a frameShiftDrive module/,
+    );
+});
+
+test('the armour mount reads `slot`, not the category the record claims', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    const armour = mod('Anaconda_Armour_Grade2');
+    assert.equal(armour.slot, 'armour');
+    assert.doesNotThrow(() => conda.setModule('Armour', armour));
+
+    // Named like armour, filed as armour, but declaring no mount: refused. Under the
+    // old category rule this fitted, which is what makes it worth pinning.
+    const unnamed: OutfittingModule = {
+        symbol: armour.symbol,
+        category: 'core',
+        name: armour.name,
+        ship: 'Anaconda',
+        class: armour.class,
+        rating: armour.rating,
+    };
+    assert.throws(() => conda.setModule('Armour', unnamed), /not a ship armour module/);
+
+    // And the mirror: the mount believes `slot`, so a mislabelled category no longer
+    // keeps a genuine armour record out.
+    const mislabelled: OutfittingModule = { ...armour, category: 'internal' };
+    assert.doesNotThrow(() => conda.setModule('Armour', mislabelled));
+
+    // A module that merely claims a hull is still not armour.
+    const plant: OutfittingModule = { ...mod('Int_PowerPlant_Size6_Class5'), ship: 'Anaconda' };
+    assert.throws(() => conda.setModule('Armour', plant), /not a ship armour module/);
+});
+
+test('an optional mount takes a fuel tank because its record says so, not its symbol', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    const tank = mod('Int_FuelTank_Size5_Class3');
+    assert.equal(tank.slot, 'fuelTank');
+    // The one module built for two kinds of mount: its own, and any optional slot.
+    assert.doesNotThrow(() => conda.setModule('Slot05_Size5', tank));
+    assert.doesNotThrow(() => conda.setModule('FuelTank', tank));
+
+    // Same symbol, no declared mount: it is no longer the fuel tank that earns the
+    // exception, so the ordinary "optional slots take internals" rule turns it away.
+    const unnamed: OutfittingModule = {
+        symbol: tank.symbol,
+        category: 'core',
+        name: tank.name,
+        class: tank.class,
+        rating: tank.rating,
+    };
+    assert.throws(
+        () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', unnamed),
+        /not an optional-internal module/,
     );
 });
 

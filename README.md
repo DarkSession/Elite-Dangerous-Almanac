@@ -1494,17 +1494,17 @@ recorded inline there beside the field they touch.
   which matters only if you serialize a record and compare the string. **Records
   resolved from a catalogue behave identically** — verified over every catalogue
   module against every mount of every hull, 1.6 M fit decisions, plus the 181 corpus
-  builds' metrics. The behaviour-visible difference is for a record you assemble **by
-  hand**, and it is one rule: `setModule` now asks the record which mount it is built
-  for, where it used to match the symbol. A hand-made record therefore fits by what it
-  _says_ rather than by what it is called, and that cuts both ways — one with no
-  `slot` is refused from a core mount, from the armour mount and (being no fuel tank)
-  from an optional slot, while one whose `slot` is absent or disagrees with its symbol
-  is now _accepted_ where the symbol rule refused it, an armour record labelled
-  `category: "internal"` into the armour mount among them. The other readers of `slot`
-  — the power budget, the jump-range drive lookup and fuel-tank capacity — fall back
-  to the symbol whenever a record names no mount, so a hand-made record reads there
-  exactly as it always has.
+  builds' metrics. The behaviour-visible difference is confined to records you
+  assemble **by hand**, and it is one rule: `setModule` decides which mount a module
+  is built for by reading its `slot`, where it used to match its symbol. Such a record
+  is therefore judged on what it declares rather than on what it is named, so one
+  whose `slot` is missing — or disagrees with its symbol — can now be accepted where
+  it was refused, or refused where it was accepted, on core, armour and optional
+  mounts alike. If you build records yourself and lean on `setModule` to validate
+  them, give them a `slot`; resolving them with `getModuleBySymbol` instead settles it
+  outright. The other three readers of `slot` — the power budget, the jump-range drive
+  lookup and fuel-tank capacity — fall back to the symbol whenever a record names no
+  mount, so a hand-made record reads there exactly as it always has.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

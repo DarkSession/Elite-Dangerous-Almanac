@@ -12,7 +12,7 @@
  * modules and apply engineering, and
  * answers the questions apps actually ask ({@link ShipLoadout.maxJumpRange},
  * {@link ShipLoadout.powerBudget}, {@link ShipLoadout.shieldMetrics}, `unladenMass`,
- * `rebuy`). It is the batteries-included facade and pulls in every catalogue (~589 KB
+ * `rebuy`). It is the batteries-included facade and pulls in every catalogue (~698 KB
  * minified); everything below is what it is built from, so drop to the pieces when you
  * need one answer rather than a whole ship.
  *
