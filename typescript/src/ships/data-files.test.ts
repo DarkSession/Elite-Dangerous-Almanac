@@ -31,6 +31,18 @@ const DATA_FILES = readdirSync(DATA_DIR)
 
 /** Payload keys that would put non-data prose back into the bundle. */
 const BANNED_KEYS = ['attribution', 'description'];
+
+/**
+ * The module files whose contents are checked record-by-record below. Kept as a set so
+ * a fifth `modules-*.jsonc` fails the check outright rather than being waved through —
+ * an empty one would never reach the per-record loop.
+ */
+const MODULE_FILE_RULES = new Set([
+    'modules-core.jsonc',
+    'modules-internal.jsonc',
+    'modules-hardpoint.jsonc',
+    'modules-utility.jsonc',
+]);
 const catalogueSchema = JSON.parse(readFileSync(SCHEMA_PATH, 'utf8')) as {
     readonly $id: string;
 };
@@ -139,16 +151,18 @@ for (const name of DATA_FILES) {
             // which is why its fittings are class 0 and a hardpoint weapon never is, and
             // only a module built for one fixed mount has a `slot` to name.
             //
-            // Two moves slip past these and are caught elsewhere, so neither is silent: a
-            // Guardian hybrid moved into `modules-core.jsonc` satisfies the core rule (it
-            // does carry a `slot`) and fails the per-file counts in
-            // `fixtures/ships/modules.json`; an armour record moved into
-            // `modules-internal.jsonc` fails the schema, which allows a `slot` there only
-            // on a Guardian symbol.
+            // One move satisfies the rules here and is caught next door rather than
+            // silently: a Guardian hybrid put in `modules-core.jsonc` does carry a
+            // `slot`, and fails the schema, whose core `oneOf` pairs each symbol family
+            // with its mount and has no branch for a Guardian one.
             const parsed: unknown = JSON.parse(
                 stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
             );
             assert.ok(Array.isArray(parsed));
+            assert.ok(
+                MODULE_FILE_RULES.has(name),
+                `${name} is a module catalogue with no rule below — add one, or a record misfiled into it goes unnoticed (an empty file would not even reach the loop)`,
+            );
             for (const record of parsed as readonly Record<string, unknown>[]) {
                 const symbol = String(record.symbol);
                 const mounted = symbol.toLowerCase().startsWith('hpt_');
@@ -181,10 +195,6 @@ for (const name of DATA_FILES) {
                             `${where} names a fixed mount but is not a Guardian hybrid`,
                         );
                         break;
-                    default:
-                        assert.fail(
-                            `${name} is a module catalogue with no rule here — add one, or a record misfiled into it goes unnoticed`,
-                        );
                 }
             }
         });

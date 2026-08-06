@@ -393,7 +393,7 @@ materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length; // -> 7 (one per raw
 ```
 
 That argument narrows _results_, not bundle size: importing any lookup pulls all
-three catalogues, since that is what it falls back to (~15 KB minified, ~3 KB gzipped).
+three catalogues, since that is what it falls back to (~16 KB minified, ~4 KB gzipped).
 `materialsInCategory` reaches the same subsets from a plain string, which is what you
 have when the category came from a dropdown rather than from your own source code.
 
@@ -1491,13 +1491,16 @@ recorded inline there beside the field they touch.
   read still reads the same** — `category` is filled in as its catalogue loads, and
   `slot` is additive — so nothing that worked stops working. The one thing that did
   change is key _order_: `slot` follows `symbol` and `category` moved to the end,
-  which matters only if you serialize a record and compare the string. It is
-  behaviour-visible only for a record you assemble **by hand**: a core module is now
-  recognised by its record rather than by matching its symbol, so one carrying no
-  `slot` is not a core module as far as the fit check, the power budget or the
-  jump-range drive lookup are concerned. `ShipLoadout` refuses such a record for a
-  core mount in the first place, which puts the latter two out of reach through it.
-  Records resolved from a catalogue are unaffected.
+  which matters only if you serialize a record and compare the string. **Records
+  resolved from a catalogue behave identically** — every mount, metric and refusal is
+  unchanged across all 181 corpus builds. The one behaviour-visible difference is for
+  a record you assemble **by hand**: which mount a module is built for is now read
+  off the record, so a hand-made record carrying no `slot` is not a core module to
+  `setModule`, and a core module you hand-label `category: "internal"` will now go
+  into an optional slot, where the old symbol rule refused it. The other readers of
+  `slot` — the power budget, the jump-range drive lookup and fuel-tank capacity —
+  fall back to the symbol when a record names no mount, so a hand-made record reads
+  there exactly as it always has.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

@@ -209,9 +209,11 @@ export function powerAvailable(
 ): number {
     for (const module of modules) {
         const stats = statsFor(module);
-        // The record names the mount it fills; the prefix is the fallback for an `Item`
-        // this snapshot's catalogue does not carry.
-        const isPlant = stats
+        // A record that names its mount is believed; the prefix answers when none does
+        // — an `Item` this snapshot's catalogue has no record for, or a record a caller
+        // assembled without a `slot`. Falling back on the *absent field* rather than on
+        // the absent record is what keeps a hand-built record reading as it always has.
+        const isPlant = stats?.slot
             ? stats.slot === 'powerPlant'
             : startsWithAny(module.Item, PREFIX.powerPlant);
         if (!isPlant) continue;

@@ -1789,10 +1789,12 @@ export class ShipLoadout {
         const stats = statsOverride ?? this.#statsFor(module);
         if (stats?.[field] !== undefined) return stats[field];
         const symbol = module.Item.toLowerCase();
-        // A fuel tank names the mount it fills, so ask the record and let the symbol
-        // answer only for an `Item` no catalogue carries. A cargo rack has no such
-        // field — it fits any optional mount — so there the symbol is the only answer.
-        const isFuelTank = stats ? stats.slot === 'fuelTank' : symbol.startsWith(FUEL_TANK_PREFIX);
+        // A record that names its mount is believed; the symbol answers when none does.
+        // A cargo rack has no mount to name — it fits any optional one — so on that side
+        // the symbol is the only answer there has ever been.
+        const isFuelTank = stats?.slot
+            ? stats.slot === 'fuelTank'
+            : symbol.startsWith(FUEL_TANK_PREFIX);
         const shouldCarryCapacity =
             field === 'cargoCapacity' ? symbol.includes('cargorack') : isFuelTank;
         return shouldCarryCapacity ? null : 0;
@@ -1801,11 +1803,11 @@ export class ShipLoadout {
     #resolveDrive(): FrameShiftDriveParams | null {
         let fsdModule: LoadoutModule | undefined;
         for (const m of this.#modules.values()) {
-            // The record names the mount it fills. The symbol is the fallback, for a
-            // drive this snapshot's catalogue does not carry — which is a case worth
-            // keeping, since the message below is written for exactly that build.
+            // A record that names its mount is believed; the symbol answers when none
+            // does — a drive this snapshot's catalogue has no record for, which is the
+            // case the error message below is written for.
             const stats = this.#statsFor(m);
-            const isDrive = stats
+            const isDrive = stats?.slot
                 ? stats.slot === 'frameShiftDrive'
                 : m.Item.toLowerCase().startsWith(FSD_PREFIX);
             if (isDrive) {
