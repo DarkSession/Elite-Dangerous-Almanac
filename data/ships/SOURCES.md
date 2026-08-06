@@ -1255,7 +1255,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **File:** `engineering-options.jsonc`, validated by `fixtures/ships/engineering-options.json`.
   Read it with `getEngineeringGroup` / `getBlueprintsForModule` /
   `getExperimentalsForModule` / `getExperimentalsForBlueprint` /
-  `resolveBlueprintForModule` in `typescript/src/ships/engineering-options.ts`.
+  `typescript/src/ships/engineering-options.ts`; `resolveBlueprintForModule`, which reads a
+  menu against `Blueprint.journalName`, is in `typescript/src/ships/blueprint-journal.ts`.
 - **Availability is a property of the module, not of the blueprint.** A Pulse Laser and a
   Rail Gun both take the Efficient blueprint but offer different experimental effects, so
   "which experimentals go with blueprint X" has no single answer. Modules are therefore
@@ -1420,10 +1421,18 @@ up straight through with no disambiguation at all. Both paths are evidence that
   blueprints written the same way, which a test asserts for all 53. Both directions are
   pinned in `fixtures/ships/engineering.json` (`scannerIdCollision`): the exact modifier
   block the same id produces on each family, and `journalNames`, the whole of the blueprint
-  side. **No bundle cost to a menu-only consumer**: `resolveBlueprintForModule` is the only
-  export here that reads `BLUEPRINTS`, so importing the menu functions alone leaves that
-  catalogue out — measured on the shipped `dist/`, 63 264 → 63 012 bytes, in fact 252 bytes
-  *smaller* than the alias map it replaced. This closed
+  side.
+
+  **No bundle cost to a menu-only consumer, which decided where the join lives.** The
+  function needs the menus *and* the recipes, so putting it in `engineering-options` would
+  have taken that module's import graph from 64 KB to 285 KB (7.2 KB to 25.3 KB gzipped)
+  for every consumer who only wanted to know what a module takes — measured the way
+  `README.md` defines a size, over a module and everything it imports, which is what
+  `package.test.mjs` walks. Tree-shaking recovers it, but the repo does not measure in
+  tree-shaken bundles and a plain ESM consumer would not get it. So it is its own module,
+  `ships/blueprint-journal`: `engineering-options` stays at 63 636 bytes with no recipe
+  data in its graph (a test asserts that), `blueprints` stays at 221 345, and the 284 853
+  is paid by callers who ask for the join. This closed
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
 
   **Acquisition (2026-08-06 UTC).** `edsy.js` — the file carrying `Build.fromJournal` — is

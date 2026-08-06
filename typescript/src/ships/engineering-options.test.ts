@@ -12,8 +12,8 @@ import {
     getBlueprintsForModule,
     getExperimentalsForModule,
     getExperimentalsForBlueprint,
-    resolveBlueprintForModule,
 } from './engineering-options.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { BLUEPRINTS } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getModuleBySymbol } from './modules.js';
@@ -113,12 +113,22 @@ test('the same journal id resolves to a different recipe on a scanner and on a s
         resolveBlueprintForModule('Int_Sensors_Size4_Class5', 'Sensor_LongRange'),
         'Sensor_LongRange',
     );
-    // Case and whitespace are matched the way every other lookup in this module matches
-    // them, and the answer is the catalogue's spelling rather than the caller's.
+    // Case and whitespace are matched the way every other lookup matches them, and when a
+    // journal name resolves, the answer is the catalogue's spelling rather than the caller's.
     assert.equal(
         resolveBlueprintForModule('  hpt_cloudscanner_size0_class5 ', ' sensor_wideangle '),
         'Scanner_WideAngle',
     );
+    // But an id the menu already lists comes back **byte for byte** as it was passed, never
+    // canonicalised. `applyBlueprint` compares the two by identity to decide whether an
+    // error should name both spellings, so rewriting a caller's own id here would make
+    // every mis-cased call report a resolution that never happened.
+    for (const spelling of ['Scanner_LongRange', 'scanner_longrange', ' Scanner_LongRange ']) {
+        assert.equal(
+            resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', spelling),
+            spelling,
+        );
+    }
     // Resolution runs into a menu, never out of one. The menu's own id, an id no entry on
     // this menu is written as, and a module with no menu at all all come back untouched —
     // and coming back untouched is not the same as being offered.
@@ -326,8 +336,9 @@ test('every recipe the build corpus declares is one its module offers', () => {
     // generic way is declaring the same thing — and the alias must be one of *this*
     // module's family, not merely some family's. The scanner ids are the other kind: one
     // journal spelling, two different recipes, which only the module's own menu read
-    // against `Blueprint.journalName` can settle. `notOffered` is the real residue: eleven declarations no registry lists for
-    // that module — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36.
+    // against `Blueprint.journalName` can settle. `notOffered` is the real residue: eleven
+    // declarations no registry lists for that module —
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36.
     const aliases: Record<string, readonly string[]> = fixture.corpus.blueprintAliases;
     const exempt = new Set(
         fixture.corpus.notOffered.map(

@@ -252,8 +252,8 @@ suite's and a utility scanner's, which roll different stats in opposite directio
 `Scanner_LongRange` and `Scanner_WideAngle` gained a `journalName` recording that. Those
 two ids are now accepted on the 15 KWS, manifest and wake scanners where they were
 refused, and on those modules they fold the scanner's recipe, so a wake scanner's Long
-Range costs power draw rather than mass; `resolveBlueprintForModule` is the lookup, and
-blueprint costs are unchanged. Smaller
+Range costs power draw rather than mass; `resolveBlueprintForModule`, in a new `ships/blueprint-journal`
+module, is the lookup, and blueprint costs are unchanged. Smaller
 corrections are not
 listed here — each domain's `SOURCES.md` is the authoritative record
 ([ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md),

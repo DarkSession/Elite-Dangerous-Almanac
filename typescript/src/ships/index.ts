@@ -218,9 +218,9 @@ export {
     getBlueprintsForModule,
     getExperimentalsForModule,
     getExperimentalsForBlueprint,
-    resolveBlueprintForModule,
     type EngineeringOptionGroup,
 } from './engineering-options.js';
+export { resolveBlueprintForModule } from './blueprint-journal.js';
 export {
     PRE_ENGINEERED_MODULES,
     getPreEngineeredVariants,

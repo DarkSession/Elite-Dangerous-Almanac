@@ -13,8 +13,8 @@ import {
     getBlueprintsForModule,
     getEngineeringGroup,
     getExperimentalsForModule,
-    resolveBlueprintForModule,
 } from './engineering-options.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };

@@ -1,7 +1,8 @@
 /*
  * Engineering **blueprints** — per grade, the stat modifiers a blueprint applies AND
- * the materials one roll costs. Keyed by the blueprint's Frontier `fdname` (as it
- * appears in a Loadout event's `Engineering.BlueprintName`).
+ * the materials one roll costs. Keyed by the blueprint's Frontier `fdname` — the string a
+ * Loadout event's `Engineering.BlueprintName` carries, for 106 of the 108. The two that
+ * are keyed otherwise carry a `journalName` saying so; see the note on it below.
  *
  * Sources: EDCD/coriolis-data, modifications/blueprints.json (commit 0db9234b5b9ce8c939ea84133d7ce336eea88e27)
  *          https://github.com/EDCD/coriolis-data

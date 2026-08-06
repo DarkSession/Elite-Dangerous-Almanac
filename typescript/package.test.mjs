@@ -105,6 +105,31 @@ test('reading and writing SLEF costs nothing but the wire format', async () => {
     }
 });
 
+test('the engineering menus do not bundle the blueprint catalogue', async () => {
+    // `engineering-options` is 63 KB because it holds menus and no recipes. Reading a
+    // journal `BlueprintName` against a module needs both, so it lives in
+    // `blueprint-journal`; putting it back here would take the menu module to 285 KB for
+    // every consumer who only wanted to know what a module can take.
+    const menus = await readReachableJs(
+        new URL('./dist/ships/engineering-options.js', import.meta.url),
+    );
+    assert.ok(menus.length < 96 * 1024, `expected a menus-only module, got ${menus.length} bytes`);
+    // Menu ids are strings, so `Sensor_LongRange` and the per-hull bulkhead symbols do
+    // appear here. A recipe's modifier labels, magnitudes and display names must not.
+    assert.match(menus, /beamLasers/);
+    assert.match(menus, /Sensor_LongRange/);
+    for (const marker of [/FSDOptimalMass/, /Increased range/, /multiplicative/]) {
+        assert.doesNotMatch(menus, marker);
+    }
+
+    // The join module is where that weight is paid, and it must genuinely pull both.
+    const join = await readReachableJs(
+        new URL('./dist/ships/blueprint-journal.js', import.meta.url),
+    );
+    assert.match(join, /FSDOptimalMass/);
+    assert.match(join, /beamLasers/);
+});
+
 test('a single module catalogue does not bundle the others', async () => {
     const graph = await readReachableJs(
         new URL('./dist/ships/modules-utility.js', import.meta.url),

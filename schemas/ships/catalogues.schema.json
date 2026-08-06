@@ -328,7 +328,8 @@
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "journalName": {
           "description": "The `BlueprintName` a journal writes for this recipe, when that is not the key it is stored under. Present only where the game spells one id for two different recipes, which the fitted module disambiguates.",
-          "$ref": "#/definitions/nonEmptyString"
+          "type": "string",
+          "minLength": 1
         },
         "grades": { "$ref": "#/definitions/blueprintGrades" }
       }

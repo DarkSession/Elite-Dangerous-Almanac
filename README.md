@@ -1112,7 +1112,6 @@ import {
   getBlueprintsForModule,
   getExperimentalsForModule,
   getExperimentalsForBlueprint,
-  resolveBlueprintForModule,
 } from "@elite-dangerous-almanac/core/ships/engineering-options";
 
 getBlueprintsForModule("Int_Hyperdrive_Size5_Class5");
@@ -1203,9 +1202,14 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 >
 > It resolves _into_ a menu and never out of one, so a sensor suite is still not offered
 > `Scanner_LongRange`. Every other id, on every other module, comes back unchanged. It is
-> the only export in `ships/engineering-options` that reads `BLUEPRINTS`, so importing just
-> the menu functions keeps that catalogue out of your bundle.
->
+> It lives in its own module, `ships/blueprint-journal`, because it needs the menus **and**
+> the recipes — keeping it out of `ships/engineering-options` is what lets that stay 63 KB
+> of menus for everyone who only wants to know what a module takes.
+
+```ts
+import { resolveBlueprintForModule } from "@elite-dangerous-almanac/core/ships/blueprint-journal";
+```
+
 > **This menu is also what `ShipLoadout.applyBlueprint` enforces.** The two questions —
 > "what can I fit?" and "may I fit this?" — read the same catalogue, so they cannot answer
 > differently. `applyBlueprint` refuses a recipe this menu does not list for that module,
@@ -1445,8 +1449,8 @@ recorded inline there beside the field they touch.
   and wake scanners, where they were refused (nothing that was accepted became refused, on
   any module); and on those modules they fold the scanner's recipe — `Scanner_LongRange` /
   `Scanner_WideAngle` — so a wake scanner's Long Range costs power draw rather than mass.
-  A new `resolveBlueprintForModule` is the lookup, for reading a stored `BlueprintName`
-  back. Blueprint **costs** are unaffected: both pairs charge the same materials at every
+  A new `ships/blueprint-journal` module exposes `resolveBlueprintForModule`, the lookup
+  for reading a stored `BlueprintName` back. Blueprint **costs** are unaffected: both pairs charge the same materials at every
   grade. See
   [what a module can be engineered with](#what-a-module-can-be-engineered-with).
 

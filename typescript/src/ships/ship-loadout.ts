@@ -81,11 +81,8 @@ import {
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
-import {
-    getBlueprintsForModule,
-    getExperimentalsForModule,
-    resolveBlueprintForModule,
-} from './engineering-options.js';
+import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
 import {
@@ -939,7 +936,7 @@ export class ShipLoadout {
      * the module's menu before anything is computed, and a wake scanner engineered
      * `Sensor_LongRange` gets the scanner's numbers, which `BLUEPRINTS` keys
      * `Scanner_LongRange`. Reading a stored block back the same way means resolving it the
-     * same way: `resolveBlueprintForModule` in `ships/engineering-options` is that lookup.
+     * same way: `resolveBlueprintForModule` in `ships/blueprint-journal` is that lookup.
      *
      * @param slotKey - The slot whose module to engineer, matched case-insensitively
      * (journal spelling).

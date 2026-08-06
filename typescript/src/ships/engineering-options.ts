@@ -28,25 +28,24 @@
  *
  * Its own module (and data file) so a consumer who only reads it pays for nothing else —
  * 63 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
- * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, and the
- * menu functions pull in neither. {@link resolveBlueprintForModule} is the one exception:
- * it reads `BLUEPRINTS` to see the journal spellings, so importing *it* costs the blueprint
- * catalogue too (275 KB, 23 KB gzipped, measured on the shipped `dist/`). Importing only
- * the menu functions leaves that out — the figure above is measured that way, with the
- * resolver present in the module and dropped by tree-shaking.
+ * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, neither
+ * of which this module pulls in. That is why reading a journal `BlueprintName` against a
+ * module — `resolveBlueprintForModule`, which needs a menu *and* the recipes to see their
+ * journal spellings — lives in `ships/blueprint-journal` rather than here: it would take
+ * this module from 63 KB to 285 KB for every consumer who only wanted a menu.
  *
  * **This catalogue is also the gate.** {@link ShipLoadout.applyBlueprint} refuses a recipe
  * this module does not offer for that module, so "what can I put on this?" and "may I put
  * this on it?" cannot answer differently — they read the same menu. A `ShipLoadout`
  * therefore carries this module's weight whether or not the consumer calls it: its import
- * graph is 709 KB where it was 624 KB, 82 KB gzipped where it was 74 KB. That is a
+ * graph is 726 KB, 82 KB gzipped, where before that change it was 624 KB and 74 KB. That is a
  * deliberate trade, taken because the second hand-maintained map of the same fact drifted
  * from this one — §Engineering compatibility in
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
  * records what it cost. The gate
  * makes three accommodations beyond the menu, in the order it applies them: a journal id
- * the game writes for two different recipes, which {@link resolveBlueprintForModule} settles
- * by reading this menu against `Blueprint.journalName`; a `recipe_*` key belonging to a module
+ * the game writes for two different recipes, which `ships/blueprint-journal` settles by
+ * reading this menu against `Blueprint.journalName`; a `recipe_*` key belonging to a module
  * sold already engineered, which no menu lists and `ships/pre-engineered` resolves per
  * module; and a build that spells a modification generically — `Misc_LightWeight` where the
  * menu lists `LifeSupport_LightWeight`, which {@link getBlueprintsForModule} describes.
@@ -56,7 +55,6 @@
 
 import optionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
-import { BLUEPRINTS } from './blueprints.js';
 
 /** What one group of modules can be engineered with. */
 export interface EngineeringOptionGroup {
@@ -143,7 +141,8 @@ export function getEngineeringGroup(symbol: string): string | null {
  * are two different recipes rolling different stats, and the utility scanners list the
  * `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The game writes
  * `Sensor_LongRange` for both all the same, so a journal id has to be read against the
- * module it sits on: {@link resolveBlueprintForModule} is that lookup.
+ * module it sits on: `resolveBlueprintForModule` in `ships/blueprint-journal` is that
+ * lookup.
  *
  * Anti-Guardian Zone Resistance is the other pair, and the reverse case: the game writes
  * `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a
@@ -164,85 +163,6 @@ export function getEngineeringGroup(symbol: string): string | null {
 export function getBlueprintsForModule(symbol: string): readonly string[] {
     const group = getEngineeringGroup(symbol);
     return group === null ? [] : ENGINEERING_OPTION_GROUPS[group]!.blueprints;
-}
-
-/**
- * The blueprint whose numbers a module actually rolls when a journal names `blueprint` on
- * it — the same id back, except where the game spells two different recipes alike.
- *
- * **One `BlueprintName`, two recipes.** Long Range and Wide Angle are offered on the
- * internal sensor suite and on the KWS/manifest/wake scanners, and the game writes the
- * same id for both families. The two roll different stats, in opposite directions:
- *
- * | On a sensor suite | On a utility scanner |
- * | --- | --- |
- * | Long Range: `Mass` ×1.20, `ScannerRange` +0…15% | Long Range: `PowerDraw` ×1.10, `ScannerRange` +0…24% |
- * | Wide Angle: `PowerDraw` ×1.10, `ScannerRange` −4% | Wide Angle: `Mass` ×1.20, `ScannerTimeToScan` +10% |
- *
- * (Grade 1 shown; both pairs share their `SensorTargetScanAngle` leg.) `BLUEPRINTS` keys
- * the scanner side under `Scanner_LongRange` / `Scanner_WideAngle`, which is the spelling
- * the scanner menus list — so on a scanner this resolves `Sensor_LongRange` to
- * `Scanner_LongRange`, and folding the id as written would charge the build mass where the
- * game charges power draw.
- *
- * **Nothing here lists the pairing.** Each of those two records names its own journal
- * spelling in {@link Blueprint.journalName}, because that is a fact about the recipe; this
- * function supplies the half only a menu knows, by asking which blueprint *this module is
- * offered* answers to the id. Two catalogues, one fact each, and no third list to drift
- * from either — which matters here, since a hand-written map would have to be repeated on
- * every scanner group and silently forgotten on the next one.
- *
- * Only the module can settle it, which is why this takes one. It resolves **into** a menu
- * and never out of one: a sensor suite's `Sensor_LongRange` is already its own menu's id
- * and comes back unchanged, and asking for `Scanner_LongRange` on a sensor suite returns
- * it unchanged too — unchanged is not the same as offered, and
- * {@link getBlueprintsForModule} still says a suite does not take it.
- *
- * **Only the numbers differ, not the price.** Both pairs cost the same materials at every
- * grade, so `getBlueprintCost` needs no module and either spelling bills correctly;
- * `engineering.test.ts` holds upstream to that. It is the stat block that has to be
- * resolved.
- *
- * **Not a generic-spelling resolver.** A generic `Misc_*` id — `Misc_Shielded` where a
- * life support's menu says `LifeSupport_Shielded` — comes back as it went in. That pair is
- * one recipe under two spellings, both published with their own numbers, so the id a
- * caller names is the one to roll. This function exists for the case where the id names no
- * recipe the module has: the game never rolls a sensor suite's Long Range on a scanner.
- *
- * @param symbol - A module symbol, e.g. `"Hpt_CloudScanner_Size0_Class5"`.
- * @param blueprint - A blueprint id, matched case-insensitively and trimmed.
- * @returns The id to join to `BLUEPRINTS`, in that catalogue's spelling when a journal
- * name resolved, and otherwise `blueprint` exactly as it was passed.
- * @remarks Unlike the rest of this module, this reads `BLUEPRINTS` — it has to, to see the
- * journal names. Importing only the menu functions leaves that catalogue out of the bundle;
- * see the note on bundle weight in the module overview.
- *
- * @example
- * ```ts
- * // A wake scanner's Long Range is the scanner recipe, whichever way the build spells it.
- * resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', 'Sensor_LongRange');
- * // -> 'Scanner_LongRange'
- * resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', 'Scanner_LongRange');
- * // -> 'Scanner_LongRange'
- *
- * // The sensor suite keeps its own, and every other module keeps whatever it was given.
- * resolveBlueprintForModule('Int_Sensors_Size4_Class5', 'Sensor_LongRange');
- * // -> 'Sensor_LongRange'
- * resolveBlueprintForModule('Int_Hyperdrive_Size5_Class5', 'FSD_LongRange');
- * // -> 'FSD_LongRange'
- * ```
- */
-export function resolveBlueprintForModule(symbol: string, blueprint: string): string {
-    const wanted = blueprint.trim().toLowerCase();
-    const offered = getBlueprintsForModule(symbol);
-    // An id the menu already lists is the recipe it names; hand back what the caller wrote,
-    // so a caller who never meets the collision never sees their own spelling rewritten.
-    if (offered.some((id) => id.toLowerCase() === wanted)) return blueprint;
-    for (const id of offered) {
-        const journalName = BLUEPRINTS[id]?.journalName;
-        if (journalName !== undefined && journalName.toLowerCase() === wanted) return id;
-    }
-    return blueprint;
 }
 
 /**

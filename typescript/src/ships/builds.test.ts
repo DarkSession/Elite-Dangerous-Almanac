@@ -11,7 +11,7 @@ import { SHIPS } from './ships.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { baseStats, missingBaseLabels } from './loadout-engineering.js';
-import { resolveBlueprintForModule } from './engineering-options.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import index from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
 import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
 

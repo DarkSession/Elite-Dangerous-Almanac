@@ -164,7 +164,7 @@ export interface Blueprint {
      * distinct keys and names its journal spelling here.
      *
      * **This does not make the id unambiguous on its own** — that is the point of it being
-     * shared. `resolveBlueprintForModule` in `ships/engineering-options` reads this against
+     * shared. `resolveBlueprintForModule` in `ships/blueprint-journal` reads this against
      * a module's menu, which is the only thing that can say which of the two a journal
      * meant.
      */

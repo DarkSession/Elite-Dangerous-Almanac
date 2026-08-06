@@ -10,8 +10,8 @@ import {
     getBlueprintsForModule,
     getEngineeringGroup,
     getExperimentalsForModule,
-    resolveBlueprintForModule,
 } from './engineering-options.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { baseStats, fieldForLabel, isUnknown } from './module-stat-labels.js';
@@ -155,11 +155,12 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * recipe, still accepts one it is sold already carrying. It is asked about the id as written
  * *and* about the resolved one, so resolution cannot **hide** a sale recorded under the
  * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
- * in an aliased group were ever recorded under an alias *key*, the gate would accept it here
- * while `applyBlueprint` folded the resolved recipe. Nothing is recorded that way today —
- * the only pre-engineered variants in an aliased group are the two Kill Warrant Scanners'
- * `Sensor_FastScan`, which has no alias and which the menu offers anyway — so the question
- * does not arise; it is written down because no test can catch it if it ever does.
+ * on one of the three scanner menus were ever recorded under a journal spelling, the gate
+ * would accept it here while `applyBlueprint` folded the resolved recipe. Nothing is
+ * recorded that way today — the only pre-engineered variants on those menus are the two
+ * Kill Warrant Scanners' `Sensor_FastScan`, which is its own journal id and which the menu
+ * offers anyway — so the question does not arise; it is written down because no test can
+ * catch it if it ever does.
  *
  * The third is the generic spelling. Where a modification applies to several module families
  * Frontier writes a family-specific `BlueprintName` and the menu lists that one, but a

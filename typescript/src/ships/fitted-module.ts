@@ -189,7 +189,7 @@ export class FittedModule {
      * directions. The id is resolved against this module before anything is computed — so a
      * wake scanner engineered `Sensor_LongRange` gets the scanner's numbers — while the
      * stored `Engineering.BlueprintName` keeps the id you passed. `resolveBlueprintForModule`
-     * in `ships/engineering-options` is that lookup, for reading one back.
+     * in `ships/blueprint-journal` is that lookup, for reading one back.
      *
      * @param blueprintName - Frontier blueprint `fdname`, e.g. `"FSD_LongRange"`.
      * @param options - Grade, optional quality in `[0, 1]`, and experimental effect.
