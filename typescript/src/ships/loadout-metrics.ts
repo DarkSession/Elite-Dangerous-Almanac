@@ -27,7 +27,23 @@ import type {
 import { combinedRateOfFire, type WeaponStats } from './weapons.js';
 import { isStatUnknown } from './unknown-stats.js';
 
-/** Symbol prefixes that identify a module group, lower-cased. @internal */
+/**
+ * Symbol prefixes that identify a module group, lower-cased.
+ *
+ * @remarks
+ * Classifying by symbol is the weaker way to do this, and `powerPlant` is the one entry
+ * that no longer needs it: a power plant's record names the mount it fills, so
+ * {@link powerAvailable} reads {@link OutfittingModule.slot} and falls back to this
+ * whenever no mount is named — an `Item` no catalogue knows (a build may name a module
+ * newer than this snapshot), or a record a caller assembled without a `slot`.
+ *
+ * The other five have nothing better to read. A shield generator, shield booster or
+ * reinforcement package fits any mount of its kind that is large enough, so it fills no
+ * *one* mount and carries no `slot`; the group it belongs to is not a fact this record
+ * shape holds. Match on the prefix here and the record wherever the record can answer.
+ *
+ * @internal
+ */
 const PREFIX = {
     powerPlant: ['int_powerplant', 'int_guardianpowerplant'],
     shieldGenerator: ['int_shieldgenerator'],
@@ -193,9 +209,17 @@ export function powerAvailable(
     statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) => statFor(module.Item),
 ): number {
     for (const module of modules) {
-        if (!startsWithAny(module.Item, PREFIX.powerPlant)) continue;
+        const stats = statsFor(module);
+        // A record that names its mount is believed; the prefix answers when none does
+        // — an `Item` this snapshot's catalogue has no record for, or a record a caller
+        // assembled without a `slot`. Falling back on the *absent field* rather than on
+        // the absent record is what keeps a hand-built record reading as it always has.
+        const isPlant = stats?.slot
+            ? stats.slot === 'powerPlant'
+            : startsWithAny(module.Item, PREFIX.powerPlant);
+        if (!isPlant) continue;
         if (!isEnabled(module)) return 0; // a switched-off plant powers nothing
-        return effectiveStat(module, 'powerCapacity', statsFor(module)) ?? 0;
+        return effectiveStat(module, 'powerCapacity', stats) ?? 0;
     }
     return 0;
 }

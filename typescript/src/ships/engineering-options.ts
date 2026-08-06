@@ -27,7 +27,7 @@
  * reinforcement packages.
  *
  * Its own module (and data file) so a consumer who only reads it pays for nothing else —
- * 63 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
+ * 62 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
  * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, neither
  * of which this module pulls in. That is why reading a journal `BlueprintName` against a
  * module — `resolveBlueprintForModule`, which needs a menu *and* the recipes to see their
@@ -38,7 +38,9 @@
  * this module does not offer for that module, so "what can I put on this?" and "may I put
  * this on it?" cannot answer differently — they read the same menu. A `ShipLoadout`
  * therefore carries this module's weight whether or not the consumer calls it: its import
- * graph is 726 KB, 82 KB gzipped, where before that change it was 624 KB and 74 KB. That is a
+ * graph is 696 KB, 82 KB gzipped. When this catalogue landed it took that graph from
+ * 624 KB to 709 KB, 74 KB to 82 KB gzipped; both ends have shrunk by about 13 KB since,
+ * the module records having stopped repeating their category. That is a
  * deliberate trade, taken because the second hand-maintained map of the same fact drifted
  * from this one — §Engineering compatibility in
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)

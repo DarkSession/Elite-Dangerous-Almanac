@@ -30,6 +30,9 @@ const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
 const IDENTITY_KEYS = new Set([
     'symbol',
     'category',
+    // Which mount the module fills is identity, not performance: armour names one and
+    // still carries no stats at all.
+    'slot',
     'name',
     'mount',
     'guidance',
@@ -78,6 +81,10 @@ test('module symbols are unique across all four catalogues', () => {
 });
 
 test('every module lands in the catalogue named by its own category', () => {
+    // The category is no longer on the record: it is the data file the catalogue was
+    // read from, filled in at load. So this asserts the loader fills it in, and nothing
+    // about the data — that a record sits in the right file is checked from the record
+    // itself, in data-files.test.ts.
     for (const [name, catalogue] of Object.entries(CATALOGUES)) {
         if (name === 'all') continue;
         assert.ok(
@@ -85,6 +92,44 @@ test('every module lands in the catalogue named by its own category', () => {
             `${name} holds a foreign category`,
         );
     }
+    assert.equal(new Set(ALL_MODULES.map((m) => m.category)).size, 4);
+});
+
+test('slot names the one fixed mount a module fills, and only there', () => {
+    const counts: Record<string, number> = {};
+    for (const module of ALL_MODULES)
+        counts[module.slot ?? 'none'] = (counts[module.slot ?? 'none'] ?? 0) + 1;
+    assert.deepEqual(counts, { ...modulesFixture.slotCounts });
+
+    // Every core record names its mount; no weapon or utility fitting does, because
+    // either fits any mount of its kind that is big enough.
+    assert.ok(CORE_MODULES.every((m) => m.slot !== undefined));
+    assert.ok(HARDPOINT_MODULES.every((m) => m.slot === undefined));
+    assert.ok(UTILITY_MODULES.every((m) => m.slot === undefined));
+    // In the internal catalogue it is the Guardian hybrids and nothing else: core
+    // mounts that Frontier's registry files as optional internals.
+    assert.deepEqual(
+        INTERNAL_MODULES.filter((m) => m.slot !== undefined).map((m) => m.slot),
+        [...Array<string>(8).fill('powerDistributor'), ...Array<string>(7).fill('powerPlant')],
+    );
+});
+
+test('slot is read off the record, not guessed from the symbol', () => {
+    // The Python Mk II's thrusters share their prefix with no other module, so a
+    // symbol-prefix rule had to carry a special case for them. The record just says.
+    assert.equal(
+        getModuleBySymbol('Int_MkIIAgileBoost_Engine_Size5_Class5', CORE_MODULES)?.slot,
+        'thrusters',
+    );
+    assert.equal(
+        getModuleBySymbol('Int_GuardianPowerplant_Size5', INTERNAL_MODULES)?.slot,
+        'powerPlant',
+    );
+    // An ordinary optional internal fits any optional mount, so it names none.
+    assert.equal(
+        getModuleBySymbol('Int_CargoRack_Size4_Class1', INTERNAL_MODULES)?.slot,
+        undefined,
+    );
 });
 
 test('fixture records resolve by symbol with the expected identity fields', () => {

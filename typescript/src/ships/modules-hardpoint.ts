@@ -17,13 +17,14 @@
 
 import type { OutfittingModule } from './modules.js';
 import hardpointModulesData from '../../../data/ships/modules-hardpoint.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { buildModuleCatalogue, type ModuleRecord } from './module-catalogue.js';
 
 /**
  * All 159 hardpoint modules, in Frontier's registry order.
  *
  * @remarks
- * Every record has `category: 'hardpoint'`. To keep the other three categories out of
+ * Every record has `category: 'hardpoint'`, added from the file it was read from
+ * rather than repeated on every record. To keep the other three categories out of
  * your bundle, search this array directly — `HARDPOINT_MODULES.find((m) =>
  * m.symbol.toLowerCase() === wanted)`, lower-cased because a journal's symbols are —
  * rather than with the lookups in `./modules`, which default to all 1198 modules.
@@ -34,6 +35,7 @@ import { deepFreeze } from '../deep-freeze.js';
  * HARDPOINT_MODULES.filter((m) => m.mount === 'Turreted').length; // turreted variants
  * ```
  */
-export const HARDPOINT_MODULES: readonly OutfittingModule[] = deepFreeze(
-    hardpointModulesData as readonly OutfittingModule[],
+export const HARDPOINT_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(
+    hardpointModulesData as readonly ModuleRecord[],
+    'hardpoint',
 );

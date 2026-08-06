@@ -136,13 +136,24 @@
       "items": { "$ref": "#/definitions/ship" }
     },
     "module": {
+      "description": "One outfitting module. The record carries no `category`: which of the four it is, is which modules-*.jsonc file it was read from, so a loader adds the category from the file rather than every record repeating it. The four `*ModuleCatalogue` definitions below say what each file additionally requires.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["symbol", "category", "name", "class", "rating"],
+      "required": ["symbol", "name", "class", "rating"],
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
-        "category": {
-          "enum": ["core", "internal", "hardpoint", "utility"]
+        "slot": {
+          "description": "The fixed mount this module fills: `armour` or one of the seven core functions. Required on every record in modules-core.jsonc; in modules-internal.jsonc it appears only on the Guardian Hybrid power plants and distributors, which Frontier files as internal modules yet which fill a core mount. Never present on a hardpoint or utility module.",
+          "enum": [
+            "armour",
+            "powerPlant",
+            "thrusters",
+            "frameShiftDrive",
+            "lifeSupport",
+            "powerDistributor",
+            "sensors",
+            "fuelTank"
+          ]
         },
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "class": {
@@ -268,10 +279,123 @@
         "cost": { "type": "integer", "minimum": 0 }
       }
     },
-    "moduleCatalogue": {
+    "coreModuleCatalogue": {
+      "description": "modules-core.jsonc — every record fills one of the eight core mounts and says which in `slot`.",
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/definitions/module" }
+      "items": {
+        "allOf": [
+          { "$ref": "#/definitions/module" },
+          { "required": ["slot"] },
+          {
+            "description": "And `slot` names the mount that module actually fills. Requiring the field only would let an FSD claim `sensors`; pairing each symbol family with its mount is what makes this file the contract rather than the code that reads it.",
+            "oneOf": [
+              {
+                "properties": {
+                  "symbol": { "pattern": "_Armour_" },
+                  "slot": { "const": "armour" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_Power[Pp]lant_" },
+                  "slot": { "const": "powerPlant" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": {
+                    "pattern": "^Int_(?:Engine|MkIIAgileBoost_Engine)_"
+                  },
+                  "slot": { "const": "thrusters" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_Hyperdrive_" },
+                  "slot": { "const": "frameShiftDrive" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_LifeSupport_" },
+                  "slot": { "const": "lifeSupport" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_PowerDistributor_" },
+                  "slot": { "const": "powerDistributor" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_Sensors_" },
+                  "slot": { "const": "sensors" }
+                }
+              },
+              {
+                "properties": {
+                  "symbol": { "pattern": "^Int_FuelTank_" },
+                  "slot": { "const": "fuelTank" }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "internalModuleCatalogue": {
+      "description": "modules-internal.jsonc — an optional internal fits any optional mount its size and carries no `slot`; the Guardian Hybrid power plants and distributors carry one because they fill a core mount instead.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          { "$ref": "#/definitions/module" },
+          {
+            "if": { "required": ["slot"] },
+            "then": {
+              "description": "A `slot` here belongs to a Guardian Hybrid, and names the mount that hybrid actually fills — matching the symbol alone would let one claim any of the eight.",
+              "oneOf": [
+                {
+                  "properties": {
+                    "symbol": { "pattern": "^Int_GuardianPower[Pp]lant_" },
+                    "slot": { "const": "powerPlant" }
+                  }
+                },
+                {
+                  "properties": {
+                    "symbol": { "pattern": "^Int_GuardianPowerDistributor_" },
+                    "slot": { "const": "powerDistributor" }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "hardpointModuleCatalogue": {
+      "description": "modules-hardpoint.jsonc — a weapon mount is not a fixed mount, so no record carries `slot`.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          { "$ref": "#/definitions/module" },
+          { "not": { "required": ["slot"] } }
+        ]
+      }
+    },
+    "utilityModuleCatalogue": {
+      "description": "modules-utility.jsonc — a utility mount is not a fixed mount, so no record carries `slot`.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          { "$ref": "#/definitions/module" },
+          { "not": { "required": ["slot"] } }
+        ]
+      }
     },
     "blueprintFeature": {
       "type": "object",

@@ -72,9 +72,9 @@ materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length; // 7, one per raw li
 ```
 
 That argument narrows results, not bundle size: a lookup imports the full registry it
-falls back to. The registries are small (~15 KB minified for all 146 materials, ~28 KB
+falls back to. The registries are small (~16 KB minified for all 146 materials, ~28 KB
 for all 399 commodities) — with two exceptions. `ships/modules` pulls all four module
-catalogues, about 290 KB minified (~30 KB gzipped); a build that must carry only one
+catalogues, about 288 KB minified (~31 KB gzipped); a build that must carry only one
 outfitting category should import that catalogue and search it with plain `Array`
 methods instead. And `astro/nebulae` keeps its catalogue argument **required**:
 `ALL_NEBULAE` is 682 KB, so there is no defensible default to fall back to.
@@ -117,7 +117,7 @@ It also validates module fits and engineering compatibility. When an imported SL
 build is edited, its supplied mass/capacity figures are adjusted when possible; an
 aggregate that cannot be updated safely is discarded and recomputed.
 
-`ShipLoadout` pulls in every catalogue (~606 KB minified, ~69 KB gzipped) because it
+`ShipLoadout` pulls in every catalogue (~696 KB minified, ~82 KB gzipped) because it
 must resolve any module id. When you only need one answer, the calculations are also
 data-free leaf modules of roughly 0.5–3 KB each: `ships/jump-range`, `ships/power`,
 `ships/shields`, `ships/armour`, `ships/weapons`, `ships/resistances`, and

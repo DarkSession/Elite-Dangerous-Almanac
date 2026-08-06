@@ -72,6 +72,7 @@
             "types": "./dist/materials/*.d.ts",
             "import": "./dist/materials/*.js"
         },
+        "./ships/module-catalogue": null,
         "./ships": {
             "types": "./dist/ships/index.d.ts",
             "import": "./dist/ships/index.js"

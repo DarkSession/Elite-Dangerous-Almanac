@@ -15,13 +15,14 @@
 
 import type { OutfittingModule } from './modules.js';
 import internalModulesData from '../../../data/ships/modules-internal.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { buildModuleCatalogue, type ModuleRecord } from './module-catalogue.js';
 
 /**
  * All 483 optional internal modules, in Frontier's registry order.
  *
  * @remarks
- * Every record has `category: 'internal'`. To keep the other three categories out of
+ * Every record has `category: 'internal'`, added from the file it was read from
+ * rather than repeated on every record. To keep the other three categories out of
  * your bundle, search this array directly — `INTERNAL_MODULES.find((m) =>
  * m.symbol.toLowerCase() === wanted)`, lower-cased because a journal's symbols are —
  * rather than with the lookups in `./modules`, which default to all 1198 modules.
@@ -31,6 +32,7 @@ import { deepFreeze } from '../deep-freeze.js';
  * INTERNAL_MODULES.length; // -> 483
  * ```
  */
-export const INTERNAL_MODULES: readonly OutfittingModule[] = deepFreeze(
-    internalModulesData as readonly OutfittingModule[],
+export const INTERNAL_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(
+    internalModulesData as readonly ModuleRecord[],
+    'internal',
 );

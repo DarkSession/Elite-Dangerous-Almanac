@@ -32,7 +32,7 @@
  *
  * @remarks
  * **This is the one default that costs real bundle weight.** A lookup imported from
- * here pulls all four catalogues — about 290 KB minified (~30 KB gzipped) — since
+ * here pulls all four catalogues — about 288 KB minified (~31 KB gzipped) — since
  * that is what it falls back to, and passing an explicit catalogue does not undo it.
  * A build that must carry only one category should import that catalogue and search
  * it directly:
@@ -53,7 +53,7 @@
  */
 
 import { ALL_MODULES } from './modules-all.js';
-import type { SlotRestriction } from './slots.js';
+import type { ModuleSlot, SlotRestriction } from './slots.js';
 
 /**
  * Frontier's outfitting category — which kind of slot a module fits.
@@ -128,8 +128,52 @@ export interface DamageDistribution {
 export interface OutfittingModule {
     /** Internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`. Unique — the module's key. */
     readonly symbol: string;
-    /** Which kind of slot the module fits. */
+    /**
+     * Which kind of slot the module fits.
+     *
+     * @remarks
+     * Derived from the catalogue the record was read from rather than stored on it —
+     * `CORE_MODULES` is what makes a record `'core'` — so it is always present and
+     * always agrees with the catalogue you found the module in — it is written after
+     * the record's own fields, so the file wins outright. That also makes it the last
+     * key on the record, which is worth knowing only if you serialize one and compare
+     * the resulting string.
+     */
     readonly category: ModuleCategory;
+    /**
+     * The one fixed mount this module fills, when it fills one: `'armour'` or one of
+     * the seven {@link CoreSlotType} core functions.
+     *
+     * @remarks
+     * Present on every `core` module, and on the fifteen Guardian Hybrid power plants
+     * and power distributors — which Frontier files under `internal`, but which go in
+     * a core mount. Absent on everything else, because there is no one mount to name:
+     * a weapon, a utility fitting or an ordinary optional internal fits any mount of
+     * its kind that is large enough.
+     *
+     * This is the module's half of the fit rule and `BuildSlot.core` is the mount's
+     * half; `ShipLoadout.setModule` matches the two. Read it rather than inferring a
+     * mount from the symbol — `Int_Engine_*` being thrusters is a naming habit, not a
+     * guarantee, and the Python Mk II's `Int_MkIIAgileBoost_*` thrusters already break
+     * it.
+     *
+     * A `fuelTank` is the one module that fits somewhere else as well: its own core
+     * mount *and* any optional slot large enough.
+     *
+     * **The rule is read off the record, not off the symbol** — the same way
+     * {@link OutfittingModule.restrictedToShips} behaves, and with the same
+     * consequence: a record you assemble yourself from a journal `Item` string, with
+     * no `slot` on it, will not go into a core mount. Resolve records from a catalogue
+     * ({@link getModuleBySymbol}) and the question does not arise.
+     *
+     * @example
+     * ```ts
+     * getModuleBySymbol('Int_Hyperdrive_Size5_Class5')?.slot; // -> 'frameShiftDrive'
+     * getModuleBySymbol('Anaconda_Armour_Grade1')?.slot;      // -> 'armour'
+     * getModuleBySymbol('Int_CargoRack_Size4_Class1')?.slot;  // -> undefined
+     * ```
+     */
+    readonly slot?: ModuleSlot;
     /**
      * Display name, e.g. `"Pulse Laser"`.
      *
@@ -192,6 +236,10 @@ export interface OutfittingModule {
      * {@link SlotRestriction}, and no unrestricted mount at all.
      *
      * @remarks
+     * Not to be confused with {@link OutfittingModule.slot}, which names *one* mount
+     * the module fills; this narrows a whole family of them, and the two never appear
+     * on the same record.
+     *
      * The mirror image of `BuildSlot.restriction`, and the other half of the same
      * rule: a mount's restriction says which modules it takes, this says which mounts
      * a module goes in. Most restricted families bind one way only — a cargo rack fits

@@ -183,6 +183,81 @@ test('a fitted drive with no stats-catalogue constants throws a distinct error',
     assert.throws(() => ShipLoadout.fromLoadout(unknownFsd).frameShiftDrive, /no jump constants/);
 });
 
+test('the power plant and fuel tank are found by `slot`, with the symbol as fallback', () => {
+    // The readers outside the fit check. Each believes a record that names a mount and
+    // consults the symbol only when none does. Both halves need a hand-made record to
+    // show: a catalogue record carries both signals, so it cannot tell the rules apart.
+    const plant = getModuleBySymbol('Int_PowerPlant_Size6_Class5', CORE_MODULES)!;
+    assert.ok(
+        ShipLoadout.empty('Anaconda').setModule('PowerPlant', plant).powerBudget().available > 0,
+    );
+
+    // Believed, even when wrong: this is a power plant by symbol, and the retired
+    // prefix rule counted it as one wherever it sat. Its record says thrusters, so the
+    // power budget no longer sees a plant at all.
+    const asThrusters: OutfittingModule = { ...plant, slot: 'thrusters' };
+    const miswired = ShipLoadout.empty('Anaconda').setModule('MainEngines', asThrusters);
+    assert.equal(miswired.powerBudget().available, 0);
+
+    // The fallback: an `Item` no catalogue carries names no mount, so the symbol
+    // answers — a build citing a module newer than this snapshot still finds its plant,
+    // and reads the capacity its own engineering declares.
+    const newer = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        UnladenMass: 400,
+        Modules: [
+            {
+                Slot: 'PowerPlant',
+                Item: 'int_powerplant_size9_class9_madeup',
+                On: true,
+                Engineering: { Modifiers: [{ Label: 'PowerCapacity', Value: 30 }] },
+            },
+        ],
+    } as unknown as LoadoutEvent);
+    assert.equal(newer.powerBudget().available, 30);
+
+    // Fuel capacity reads the same way: a cargo rack that declares the fuel-tank mount
+    // is taken at its word and counted as a tank, which the symbol rule never did.
+    const rack = getModuleBySymbol('Int_CargoRack_Size5_Class1', ALL_MODULES)!;
+    const imported = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        UnladenMass: 400,
+        FuelCapacity: { Main: 999, Reserve: 1.07 },
+        Modules: [{ Slot: 'Slot05_Size5', Item: rack.symbol, On: true }],
+    } as LoadoutEvent);
+    assert.equal(imported.fuelCapacity.main, 999);
+    imported.setModule('Slot05_Size5', { ...rack, slot: 'fuelTank' } as OutfittingModule);
+    assert.equal(imported.fuelCapacity.main, 0);
+});
+
+test('the drive is found by `slot` too, wherever the module is mounted', () => {
+    // The fourth reader. A hardpoint mount checks `category`, which this record answers
+    // honestly, so *both* the old rule and the new one accept the fit — and then the
+    // drive lookup, which scans every fitted module rather than the drive mount alone,
+    // takes the record at its word. The old symbol rule looked straight past a weapon.
+    const laser = getModuleBySymbol('Hpt_PulseLaser_Fixed_Large', ALL_MODULES)!;
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('HugeHardpoint1', { ...laser, slot: 'frameShiftDrive' } as OutfittingModule)
+        .setModule(
+            'FrameShiftDrive',
+            getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!,
+        )
+        .setModule('FuelTank', getModuleBySymbol('Int_FuelTank_Size5_Class3', CORE_MODULES)!);
+    // A pulse laser carries no jump constants, so the build says so rather than
+    // quietly answering with the real drive fitted alongside it.
+    assert.throws(() => build.maxJumpRange(), /no jump constants/);
+
+    // Left alone, the same build jumps on its actual drive.
+    const sane = ShipLoadout.empty('Anaconda')
+        .setModule('HugeHardpoint1', laser)
+        .setModule(
+            'FrameShiftDrive',
+            getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!,
+        )
+        .setModule('FuelTank', getModuleBySymbol('Int_FuelTank_Size5_Class3', CORE_MODULES)!);
+    assert.ok(sane.maxJumpRange() > 0);
+});
+
 test('fromSlef throws when the entry index is out of range', () => {
     assert.throws(() => ShipLoadout.fromSlef(slefString, 5), TypeError);
 });
@@ -302,14 +377,124 @@ test('Guardian core modules fit their core slot and are barred from optional slo
     const conda = ShipLoadout.empty('Anaconda');
     const gPlant = mod('Int_GuardianPowerplant_Size6', INTERNAL_MODULES);
     const gDist = mod('Int_GuardianPowerDistributor_Size6', INTERNAL_MODULES);
-    // Core slots accept them (they are core modules despite the `internal` category).
+    // Core slots accept them: their records name a core `slot` even though the
+    // registry files them under the `internal` category.
+    assert.equal(gPlant.slot, 'powerPlant');
+    assert.equal(gDist.slot, 'powerDistributor');
     assert.doesNotThrow(() => conda.setModule('PowerPlant', gPlant));
     assert.doesNotThrow(() => conda.setModule('PowerDistributor', gDist));
     // Optional slots reject them.
     assert.throws(() => conda.setModule('Slot02_Size6', gPlant), /core module only fits/);
     assert.throws(() => conda.setModule('Slot03_Size6', gDist), /core module only fits/);
-    // ...but a fuel tank (also core-prefixed) still fits an optional slot.
+    // ...but a fuel tank, the one module built for two kinds of mount, still fits an
+    // optional slot as well as its own.
     assert.doesNotThrow(() => conda.setModule('Slot05_Size5', mod('Int_FuelTank_Size5_Class3')));
+});
+
+test('a core mount takes the module whose record names it, not one that looks the part', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    const drive = mod('Int_Hyperdrive_Size6_Class5');
+    assert.equal(drive.slot, 'frameShiftDrive');
+    assert.doesNotThrow(() => conda.setModule('FrameShiftDrive', drive));
+    // Right shape, wrong mount.
+    assert.throws(() => conda.setModule('PowerPlant', drive), /not a powerPlant module/);
+    // A record assembled by hand carries no `slot`, so it names no mount — and the fit
+    // rule reads the record rather than classifying the symbol, so this core mount turns
+    // it away, whatever the symbol looks like. The armour and optional mounts read the
+    // record too; the two tests below pin those, since every catalogue record carries
+    // both signals and only a hand-made one can tell the old rule from the new.
+    const handRolled: OutfittingModule = {
+        symbol: drive.symbol,
+        category: 'core',
+        name: drive.name,
+        class: drive.class,
+        rating: drive.rating,
+    };
+    assert.throws(
+        () => conda.setModule('FrameShiftDrive', handRolled),
+        /not a frameShiftDrive module/,
+    );
+});
+
+test('the armour mount reads `slot`, not the category the record claims', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    const armour = mod('Anaconda_Armour_Grade2');
+    assert.equal(armour.slot, 'armour');
+    assert.doesNotThrow(() => conda.setModule('Armour', armour));
+
+    // Named like armour, filed as armour, but declaring no mount: refused. Under the
+    // old category rule this fitted, which is what makes it worth pinning.
+    const unnamed: OutfittingModule = {
+        symbol: armour.symbol,
+        category: 'core',
+        name: armour.name,
+        ship: 'Anaconda',
+        class: armour.class,
+        rating: armour.rating,
+    };
+    assert.throws(() => conda.setModule('Armour', unnamed), /not a ship armour module/);
+
+    // And the mirror: the mount believes `slot`, so a mislabelled category no longer
+    // keeps a genuine armour record out.
+    const mislabelled: OutfittingModule = { ...armour, category: 'internal' };
+    assert.doesNotThrow(() => conda.setModule('Armour', mislabelled));
+
+    // A module that merely claims a hull is still not armour.
+    const plant: OutfittingModule = { ...mod('Int_PowerPlant_Size6_Class5'), ship: 'Anaconda' };
+    assert.throws(() => conda.setModule('Armour', plant), /not a ship armour module/);
+});
+
+test('an optional mount takes a fuel tank because its record says so, not its symbol', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    const tank = mod('Int_FuelTank_Size5_Class3');
+    assert.equal(tank.slot, 'fuelTank');
+    // The one module built for two kinds of mount: its own, and any optional slot.
+    assert.doesNotThrow(() => conda.setModule('Slot05_Size5', tank));
+    assert.doesNotThrow(() => conda.setModule('FuelTank', tank));
+
+    // Same symbol, no declared mount: it is no longer the fuel tank that earns the
+    // exception, so the ordinary "optional slots take internals" rule turns it away.
+    const unnamed: OutfittingModule = {
+        symbol: tank.symbol,
+        category: 'core',
+        name: tank.name,
+        class: tank.class,
+        rating: tank.rating,
+    };
+    assert.throws(
+        () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', unnamed),
+        /not an optional-internal module/,
+    );
+});
+
+test('an optional mount turns away a core module because its record names a mount', () => {
+    // The other half of the optional rule, and the half no catalogue record can pin:
+    // "a core module only fits its core slot" reads `slot`, where it used to classify
+    // the symbol. Both records below are internals by category, so they get past the
+    // kind check and reach exactly that line.
+    const rack = mod('Int_CargoRack_Size4_Class1', INTERNAL_MODULES);
+    assert.equal(rack.slot, undefined);
+    assert.doesNotThrow(() => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', rack));
+
+    // A cargo rack that claims a core mount is taken at its word and refused, though
+    // its symbol is a rack's and the old symbol rule let it through.
+    const claimsCore: OutfittingModule = { ...rack, slot: 'powerPlant' };
+    assert.throws(
+        () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', claimsCore),
+        /a core module only fits its core slot/,
+    );
+
+    // And the mirror: a power plant that declares no mount is no longer recognised as
+    // a core module here, so this rule has nothing to say and it fits.
+    const plant = mod('Int_PowerPlant_Size5_Class5');
+    const unnamed: OutfittingModule = {
+        symbol: plant.symbol,
+        category: 'internal',
+        name: plant.name,
+        class: plant.class,
+        rating: plant.rating,
+    };
+    assert.doesNotThrow(() => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', unnamed));
 });
 
 test('a military slot only takes military-eligible modules', () => {

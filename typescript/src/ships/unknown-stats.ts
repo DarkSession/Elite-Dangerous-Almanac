@@ -89,7 +89,7 @@ export function isStatUnknown(
  * does this catalogue know it is missing?".
  *
  * @param catalogue - The modules to search. Required: this module holds no data, and
- * defaulting to the whole registry would pull all four catalogues (~290 KB) into any
+ * defaulting to the whole registry would pull all four catalogues (~288 KB) into any
  * bundle that imports the predicate above.
  * @returns The records carrying {@link OutfittingModule.unknownStats}, in catalogue
  * order.

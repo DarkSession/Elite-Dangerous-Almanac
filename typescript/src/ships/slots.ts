@@ -139,6 +139,26 @@ export type CoreSlotType =
     | 'sensors'
     | 'fuelTank';
 
+/**
+ * The fixed mount a module is built for — {@link OutfittingModule.slot}.
+ *
+ * @remarks
+ * The eight core-internal mounts every hull has: the seven {@link CoreSlotType}
+ * functions plus `armour`, which is a fixed mount too but is sized per hull rather
+ * than by class, and so is not one of the seven.
+ *
+ * A module carries this when it fills one particular mount and nothing else. Most do
+ * not: a hardpoint weapon, a utility fitting and an optional internal each fit any
+ * mount of their kind that is big enough, so there is no one mount to name.
+ *
+ * Two records bend a rule each. A fuel tank bends this one — it is `fuelTank` and fits
+ * any optional slot as well, the one module built for two kinds of mount. The Guardian
+ * Hybrid power plants and distributors bend "a core module lives in `CORE_MODULES`":
+ * they carry `powerPlant` / `powerDistributor` from `INTERNAL_MODULES`, which is where
+ * Frontier's registry files them.
+ */
+export type ModuleSlot = CoreSlotType | 'armour';
+
 /** One mount on a hull — its stable key, kind, and size. */
 export interface BuildSlot {
     /**

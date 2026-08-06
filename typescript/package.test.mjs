@@ -163,6 +163,12 @@ test('internal loadout metric adapters are not package exports', async () => {
     });
 });
 
+test('internal module construction helpers are not package exports', async () => {
+    await assert.rejects(import('@elite-dangerous-almanac/core/ships/module-catalogue'), {
+        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+    });
+});
+
 test('the internal journal-label table is not a package export', async () => {
     await assert.rejects(import('@elite-dangerous-almanac/core/ships/module-stat-labels'), {
         code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
@@ -176,6 +182,7 @@ test('the build does not emit entry artifacts for inaccessible internal modules'
         'ships/loadout-engineering',
         'ships/loadout-metrics',
         'ships/module-stat-labels',
+        'ships/module-catalogue',
     ];
     for (const entry of internalEntries) {
         for (const extension of ['js', 'd.ts']) {

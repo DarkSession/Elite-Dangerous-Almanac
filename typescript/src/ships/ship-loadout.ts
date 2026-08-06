@@ -75,7 +75,6 @@ import {
     SLOT_RESTRICTION_LABELS,
     type BuildSlot,
     type SlotKind,
-    type CoreSlotType,
     type SlotRestriction,
 } from './slots.js';
 import { computeModifiers } from './engineering.js';
@@ -240,24 +239,6 @@ const FSD_PREFIX = 'int_hyperdrive';
 const BOOSTER_PREFIX = 'int_guardianfsdbooster';
 const FUEL_TANK_PREFIX = 'int_fueltank';
 
-/**
- * Core-module symbol prefix → the core slot type it fills. Includes the Guardian
- * Hybrid power plant / distributor, which are core modules even though the registry
- * files them under the `internal` category.
- */
-const CORE_PREFIXES: readonly (readonly [string, CoreSlotType])[] = [
-    ['int_guardianpowerplant', 'powerPlant'],
-    ['int_guardianpowerdistributor', 'powerDistributor'],
-    ['int_powerplant', 'powerPlant'],
-    ['int_engine', 'thrusters'],
-    ['int_mkiiagileboost', 'thrusters'],
-    ['int_hyperdrive', 'frameShiftDrive'],
-    ['int_lifesupport', 'lifeSupport'],
-    ['int_powerdistributor', 'powerDistributor'],
-    ['int_sensors', 'sensors'],
-    ['int_fueltank', 'fuelTank'],
-];
-
 /** Optional-internal groups a military slot accepts (symbol prefixes). */
 const MILITARY_PREFIXES: readonly string[] = [
     'int_hullreinforcement',
@@ -420,13 +401,6 @@ const COSMETIC_SLOT_PATTERNS: readonly RegExp[] = [
 function isCosmeticSlot(slotKey: string): boolean {
     const key = slotKey.toLowerCase();
     return COSMETIC_SLOT_PATTERNS.some((pattern) => pattern.test(key));
-}
-
-/** The core slot type a standard module fills, or `null` if it is not a core module. */
-function coreTypeOf(symbol: string): CoreSlotType | null {
-    const s = symbol.toLowerCase();
-    for (const [prefix, type] of CORE_PREFIXES) if (s.startsWith(prefix)) return type;
-    return null;
 }
 
 /** Detach a journal module from caller-owned and returned mutable objects. */
@@ -1624,7 +1598,7 @@ export class ShipLoadout {
         }
         if (slot.kind === 'armour') {
             const hull = getShipBySymbol(this.#shipSymbol);
-            if (module.category !== 'core' || module.ship === undefined) {
+            if (module.slot !== 'armour' || module.ship === undefined) {
                 return 'not a ship armour module';
             }
             if (!hull || module.ship.toLowerCase() !== hull.name.toLowerCase()) {
@@ -1654,13 +1628,15 @@ export class ShipLoadout {
         const wrongMount = moduleSlotError(slot, module);
         if (wrongMount) return wrongMount;
         const sym = module.symbol.toLowerCase();
-        const coreType = coreTypeOf(sym);
+        // The mount the record says it fills. Reading it beats classifying the symbol:
+        // it is right for the Guardian power modules, which fill a core mount while the
+        // registry files them under `internal`, and for a hull-specific thruster whose
+        // symbol shares no prefix with any other (`Int_MkIIAgileBoost_*`).
+        const moduleSlot = module.slot;
 
         switch (slot.kind) {
             case 'core': {
-                // Match on the core type, not the category: the Guardian power modules
-                // are core but filed under `internal`.
-                if (coreType !== slot.core) return `not a ${slot.core} module`;
+                if (moduleSlot !== slot.core) return `not a ${slot.core} module`;
                 break;
             }
             case 'hardpoint': {
@@ -1674,13 +1650,13 @@ export class ShipLoadout {
                 return null; // utility mounts are all the same tiny size
             }
             case 'optional': {
-                const isFuelTank = sym.startsWith(FUEL_TANK_PREFIX);
+                const isFuelTank = moduleSlot === 'fuelTank';
                 if (module.category !== 'internal' && !isFuelTank) {
                     return 'not an optional-internal module';
                 }
-                // A core module (except a fuel tank, which also fits optional slots)
-                // belongs only in its core slot.
-                if (coreType && coreType !== 'fuelTank') {
+                // A module built for a fixed mount belongs in that mount — except a
+                // fuel tank, the one that fits an optional slot as well as its own.
+                if (moduleSlot && !isFuelTank) {
                     return 'a core module only fits its core slot';
                 }
                 const restricted = restrictionError(slot, sym);
@@ -1813,17 +1789,28 @@ export class ShipLoadout {
         const stats = statsOverride ?? this.#statsFor(module);
         if (stats?.[field] !== undefined) return stats[field];
         const symbol = module.Item.toLowerCase();
+        // A record that names its mount is believed; the symbol answers when none does.
+        // A cargo rack has no mount to name — it fits any optional one — so on that side
+        // the symbol is the only answer there has ever been.
+        const isFuelTank = stats?.slot
+            ? stats.slot === 'fuelTank'
+            : symbol.startsWith(FUEL_TANK_PREFIX);
         const shouldCarryCapacity =
-            field === 'cargoCapacity'
-                ? symbol.includes('cargorack')
-                : symbol.startsWith(FUEL_TANK_PREFIX);
+            field === 'cargoCapacity' ? symbol.includes('cargorack') : isFuelTank;
         return shouldCarryCapacity ? null : 0;
     }
 
     #resolveDrive(): FrameShiftDriveParams | null {
         let fsdModule: LoadoutModule | undefined;
         for (const m of this.#modules.values()) {
-            if (m.Item.toLowerCase().startsWith(FSD_PREFIX)) {
+            // A record that names its mount is believed; the symbol answers when none
+            // does — a drive this snapshot's catalogue has no record for, which is the
+            // case the error message below is written for.
+            const stats = this.#statsFor(m);
+            const isDrive = stats?.slot
+                ? stats.slot === 'frameShiftDrive'
+                : m.Item.toLowerCase().startsWith(FSD_PREFIX);
+            if (isDrive) {
                 fsdModule = m;
                 break;
             }
