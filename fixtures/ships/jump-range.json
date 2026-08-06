@@ -39,6 +39,27 @@
       "ladenJumpRange": 54.082242,
       "totalUnladenRange": 350.090753,
       "totalLadenRange": 329.156774
+    },
+    "viperMkIV": {
+      "build": "fixtures/ships/journal-viper-mkiv.json",
+      "note": "A real journal capture of a wholly UNENGINEERED build, so `sourceMaxJumpRange` is Frontier's own figure for a drive that performs exactly as the catalogue sells it. The Krait Phantom above agrees with the game only after Long Range and a Guardian booster are folded in; this one agrees with nothing folded in, which is what checks the base FSD stats and module masses themselves.",
+      "ship": "viper_mkiv",
+      "frameShiftDrive": {
+        "optMass": 525,
+        "maxFuel": 3,
+        "fuelMul": 0.012,
+        "fuelPower": 2.3,
+        "jumpBoost": 0
+      },
+      "unladenMass": 260.799988,
+      "mainFuel": 16,
+      "cargoCapacity": 0,
+      "sourceMaxJumpRange": 21.951651,
+      "maxJumpRange": 21.951649,
+      "unladenJumpRange": 20.920683,
+      "ladenJumpRange": 20.920683,
+      "totalUnladenRange": 120.666505,
+      "totalLadenRange": 120.666505
     }
   }
 }

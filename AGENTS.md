@@ -85,6 +85,16 @@ Much of the static data and many calculations derive from the Elite Dangerous co
 
 Whenever you add or change data, port an algorithm, or introduce a dependency that warrants credit, update **both** the in-source attribution and `ATTRIBUTIONS.md` in the same change. Respect each source's license terms (attribution text, share-alike, etc.).
 
+### A captured ship build is an exception to the redistribution test
+
+A `Loadout` event, a SLEF export or a decoded share link is **Frontier game output** — which parts a player put in which slots — travelling through whatever project you found it in. It is not that project's work, and it carries no licence of its own beyond Frontier's media-usage terms below. So a build is **not** rejected because the repository holding it states no licence, or states one that forbids redistributing *that repository*: those terms cover the project's own code and assets, not a game capture sitting in its example data.
+
+What still applies, every time:
+
+- **Credit the source if we have one.** Name the project, the file and its licence position in `data/ships/SOURCES.md` and `ATTRIBUTIONS.md`, exactly as for any other source. Where a build reaches us with no traceable origin — the 181 in `fixtures/ships/builds/` — that is fine and already recorded; it is not a reason to leave the build out.
+- **Scrub the person, keep the game** (see §Commit Identity), and store the capture verbatim otherwise, with its source checksum.
+- **Builds only.** Code, stat tables and derived catalogues are held to the licence they ship under, unchanged.
+
 > **Do not write a second copy of the credits or the licence.** `README.md` carries a short pointer, not a list. `typescript/THIRD_PARTY_NOTICES.md` and `typescript/LICENSE` are **generated, git-ignored** verbatim copies of the root `ATTRIBUTIONS.md` and `LICENSE` — npm can only pack files inside the package directory, and several upstream licences require the notice to travel with the distribution. `npm run build` writes both (`typescript/scripts/copy-notices.mjs`), `prepublishOnly` runs the build, and `package.test.mjs` asserts each copy is byte-identical to its source. Edit the root files; never the copies. Because the root `LICENSE` is packed verbatim, keep its wording readable from inside a consumer's `node_modules` as well as from the repository.
 
 ## Repository Layout
