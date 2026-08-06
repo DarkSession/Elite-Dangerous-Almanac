@@ -297,11 +297,21 @@
           {
             "if": { "required": ["slot"] },
             "then": {
-              "properties": {
-                "symbol": {
-                  "pattern": "^Int_GuardianPower(?:[Pp]lant|Distributor)_"
+              "description": "A `slot` here belongs to a Guardian Hybrid, and names the mount that hybrid actually fills — matching the symbol alone would let one claim any of the eight.",
+              "oneOf": [
+                {
+                  "properties": {
+                    "symbol": { "pattern": "^Int_GuardianPower[Pp]lant_" },
+                    "slot": { "const": "powerPlant" }
+                  }
+                },
+                {
+                  "properties": {
+                    "symbol": { "pattern": "^Int_GuardianPowerDistributor_" },
+                    "slot": { "const": "powerDistributor" }
+                  }
                 }
-              }
+              ]
             }
           }
         ]

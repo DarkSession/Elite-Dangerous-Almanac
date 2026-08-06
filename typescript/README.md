@@ -74,7 +74,7 @@ materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length; // 7, one per raw li
 That argument narrows results, not bundle size: a lookup imports the full registry it
 falls back to. The registries are small (~15 KB minified for all 146 materials, ~28 KB
 for all 399 commodities) — with two exceptions. `ships/modules` pulls all four module
-catalogues, about 290 KB minified (~30 KB gzipped); a build that must carry only one
+catalogues, about 288 KB minified (~31 KB gzipped); a build that must carry only one
 outfitting category should import that catalogue and search it with plain `Array`
 methods instead. And `astro/nebulae` keeps its catalogue argument **required**:
 `ALL_NEBULAE` is 682 KB, so there is no defensible default to fall back to.

@@ -1799,7 +1799,14 @@ export class ShipLoadout {
     #resolveDrive(): FrameShiftDriveParams | null {
         let fsdModule: LoadoutModule | undefined;
         for (const m of this.#modules.values()) {
-            if (m.Item.toLowerCase().startsWith(FSD_PREFIX)) {
+            // The record names the mount it fills. The symbol is the fallback, for a
+            // drive this snapshot's catalogue does not carry — which is a case worth
+            // keeping, since the message below is written for exactly that build.
+            const stats = this.#statsFor(m);
+            const isDrive = stats
+                ? stats.slot === 'frameShiftDrive'
+                : m.Item.toLowerCase().startsWith(FSD_PREFIX);
+            if (isDrive) {
                 fsdModule = m;
                 break;
             }

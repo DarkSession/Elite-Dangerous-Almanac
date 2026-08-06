@@ -27,7 +27,18 @@ import type {
 import { combinedRateOfFire, type WeaponStats } from './weapons.js';
 import { isStatUnknown } from './unknown-stats.js';
 
-/** Symbol prefixes that identify a module group, lower-cased. @internal */
+/**
+ * Symbol prefixes that identify a module group, lower-cased.
+ *
+ * @remarks
+ * A fallback, not the first answer. Where the catalogue can resolve the module, its
+ * record says what the module is — {@link OutfittingModule.slot} for the fixed mounts —
+ * and that is what these functions read. A prefix is only consulted for an `Item` no
+ * catalogue knows, which is the case these cannot simply drop: a build may name a
+ * module newer than this snapshot.
+ *
+ * @internal
+ */
 const PREFIX = {
     powerPlant: ['int_powerplant', 'int_guardianpowerplant'],
     shieldGenerator: ['int_shieldgenerator'],
@@ -193,9 +204,15 @@ export function powerAvailable(
     statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) => statFor(module.Item),
 ): number {
     for (const module of modules) {
-        if (!startsWithAny(module.Item, PREFIX.powerPlant)) continue;
+        const stats = statsFor(module);
+        // The record names the mount it fills; the prefix is the fallback for an `Item`
+        // this snapshot's catalogue does not carry.
+        const isPlant = stats
+            ? stats.slot === 'powerPlant'
+            : startsWithAny(module.Item, PREFIX.powerPlant);
+        if (!isPlant) continue;
         if (!isEnabled(module)) return 0; // a switched-off plant powers nothing
-        return effectiveStat(module, 'powerCapacity', statsFor(module)) ?? 0;
+        return effectiveStat(module, 'powerCapacity', stats) ?? 0;
     }
     return 0;
 }

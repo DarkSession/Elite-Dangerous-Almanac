@@ -82,8 +82,9 @@ test('module symbols are unique across all four catalogues', () => {
 
 test('every module lands in the catalogue named by its own category', () => {
     // The category is no longer on the record: it is the data file the catalogue was
-    // read from, filled in at load. So this checks two things at once — that every
-    // record still answers, and that it answers with the catalogue holding it.
+    // read from, filled in at load. So this asserts the loader fills it in, and nothing
+    // about the data — that a record sits in the right file is checked from the record
+    // itself, in data-files.test.ts.
     for (const [name, catalogue] of Object.entries(CATALOGUES)) {
         if (name === 'all') continue;
         assert.ok(

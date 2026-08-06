@@ -11,7 +11,8 @@ it says about the game. Two changes, in opposite directions.
 `"category": "core"`, every record in `modules-hardpoint.jsonc` said `"hardpoint"`, and
 so on for all 1198 — a fact the four-way file split already carried, repeated once per
 record into every consumer's bundle. Each language's loader now adds it from the file it
-read, so the record a consumer holds is unchanged. §Modules (outfitting) below records
+read, so every field a consumer reads still reads the same (the key order within a
+record does change: `category` now leads it). §Modules (outfitting) below records
 the derivation, which is a rename of nothing: the CSV's `category` column is exactly
 which file a record was already sorted into.
 

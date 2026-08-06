@@ -32,7 +32,7 @@
  *
  * @remarks
  * **This is the one default that costs real bundle weight.** A lookup imported from
- * here pulls all four catalogues — about 290 KB minified (~30 KB gzipped) — since
+ * here pulls all four catalogues — about 288 KB minified (~31 KB gzipped) — since
  * that is what it falls back to, and passing an explicit catalogue does not undo it.
  * A build that must carry only one category should import that catalogue and search
  * it directly:
@@ -134,7 +134,9 @@ export interface OutfittingModule {
      * @remarks
      * Derived from the catalogue the record was read from rather than stored on it —
      * `CORE_MODULES` is what makes a record `'core'` — so it is always present and
-     * always agrees with the catalogue you found the module in.
+     * always agrees with the catalogue you found the module in. It is also the first
+     * key on the record, which is worth knowing only if you serialize one and compare
+     * the resulting string.
      */
     readonly category: ModuleCategory;
     /**

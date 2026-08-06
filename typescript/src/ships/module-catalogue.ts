@@ -25,7 +25,8 @@ export function buildModuleCatalogue(
     records: readonly ModuleRecord[],
     category: ModuleCategory,
 ): readonly OutfittingModule[] {
-    // Spread first, category last: the file the record came from is what decides the
-    // category, so it wins even if a payload were ever to grow one of its own.
-    return deepFreeze(records.map((record) => ({ ...record, category })));
+    // `category` leads the record, as `materials/material-catalogue.ts` builds its own:
+    // it is the first thing a reader of a dumped record wants, and it keeps the two
+    // catalogue builders in this package the same shape.
+    return deepFreeze(records.map((record) => ({ category, ...record })));
 }

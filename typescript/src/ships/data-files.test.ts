@@ -124,6 +124,50 @@ for (const name of DATA_FILES) {
                 `${name} repeats "category" on ${repeated.length} records — the file is the category`,
             );
         });
+
+        test(`${name} holds only records that belong in it`, () => {
+            // The replacement for what dropping `category` cost. While each record
+            // spelled its own category, a record filed into the wrong modules-*.jsonc
+            // was caught by comparing the two; now the file *is* the category, so that
+            // comparison would only ever check the loader. These four rules discriminate
+            // the categories from the record alone, so a misfiled record still fails:
+            //
+            //   hardpoint  Hpt_ symbol, size 1-4     utility  Hpt_ symbol, size 0
+            //   core       carries `slot`            internal Int_ symbol, no `slot`*
+            //
+            // (*bar the Guardian hybrids, which the JSON Schema pins by symbol.) They are
+            // game facts, not conventions: a utility mount has no size, which is why its
+            // fittings are class 0 and a hardpoint weapon never is.
+            const parsed: unknown = JSON.parse(
+                stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
+            );
+            assert.ok(Array.isArray(parsed));
+            for (const record of parsed as readonly Record<string, unknown>[]) {
+                const symbol = String(record.symbol);
+                const mounted = symbol.toLowerCase().startsWith('hpt_');
+                const where = `${name}: ${symbol}`;
+                switch (name) {
+                    case 'modules-hardpoint.jsonc':
+                        assert.ok(mounted, `${where} is not a hardpoint symbol`);
+                        assert.ok(
+                            record.class !== 0,
+                            `${where} is size 0 — that is a utility fitting`,
+                        );
+                        break;
+                    case 'modules-utility.jsonc':
+                        assert.ok(mounted, `${where} is not a utility-mount symbol`);
+                        assert.equal(record.class, 0, `${where} is sized — utility mounts are not`);
+                        break;
+                    case 'modules-core.jsonc':
+                        assert.ok(!mounted, `${where} is a hardpoint symbol`);
+                        assert.ok('slot' in record, `${where} names no core mount`);
+                        break;
+                    case 'modules-internal.jsonc':
+                        assert.ok(!mounted, `${where} is a hardpoint symbol`);
+                        break;
+                }
+            }
+        });
     }
 
     test(`${name} has unique symbols when it is symbol-keyed`, () => {

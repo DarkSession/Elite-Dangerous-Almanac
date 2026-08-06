@@ -523,7 +523,7 @@ UTILITY_MODULES.find((m) => m.symbol.toLowerCase() === wanted); // stays this ch
 ```
 
 > **This is the one default that costs real bundle weight.** Importing a lookup from
-> `ships/modules` pulls all four catalogues — about 290 KB minified (~30 KB
+> `ships/modules` pulls all four catalogues — about 288 KB minified (~31 KB
 > gzipped) — because that is what it falls back to, and passing an explicit catalogue
 > does not undo it. A build that must carry only one category should import that
 > catalogue module and search it with plain `Array` methods
@@ -807,7 +807,7 @@ build.setModuleEnabled("TinyHardpoint6", false);
 ```
 
 > **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
-> currently reaches about 696 KB of minified JavaScript (~80 KB gzipped) because it must
+> currently reaches about 696 KB of minified JavaScript (~82 KB gzipped) because it must
 > resolve any ship/module id, plus blueprints and experimental effects, plus the
 > engineering menu it validates against and the pre-engineered catalogue. Prefer
 > `ships/slef`, `ships/jump-range`, the [build-metric
@@ -1487,9 +1487,11 @@ recorded inline there beside the field they touch.
 - **2026-08-06** — no value changed and no record moved: the module files stopped
   repeating `category` (the file they are in already said it, 1198 times over, into
   every consumer's bundle) and every core module gained a
-  [`slot`](#ships-and-outfitting) naming the one mount it fills. **The record you
-  read is unchanged** — `category` is filled in as its catalogue loads — and `slot`
-  is additive, so nothing that worked stops working. It is behaviour-visible in one
+  [`slot`](#ships-and-outfitting) naming the one mount it fills. **Every field you
+  read still reads the same** — `category` is filled in as its catalogue loads, and
+  `slot` is additive — so nothing that worked stops working. The one thing that did
+  change is key _order_: `category` now leads a record and `slot` follows `symbol`,
+  which matters only if you serialize a record and compare the string. It is behaviour-visible in one
   place: a core module's fit is now decided by its record rather than by matching its
   symbol, so a module record you assemble **by hand**, without a `slot`, no longer
   goes into a core mount. Records resolved from a catalogue are unaffected.
