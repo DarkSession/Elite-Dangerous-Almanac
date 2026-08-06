@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 
 import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-code';
@@ -40,6 +41,29 @@ async function readReachableJs(entry, seen = new Set()) {
     return modules.join('\n');
 }
 
+async function publicEntries(directory = new URL('./dist/', import.meta.url), subpath = '') {
+    const entries = [];
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+        if (entry.isDirectory()) {
+            entries.push(
+                ...(await publicEntries(
+                    new URL(`${entry.name}/`, directory),
+                    `${subpath}${entry.name}/`,
+                )),
+            );
+        } else if (entry.name.endsWith('.js') && !entry.name.startsWith('chunk-')) {
+            const relative = `${subpath}${entry.name}`;
+            const modulePath = relative.replace(/\.js$/, '');
+            const exported = modulePath === 'index' ? '' : modulePath.replace(/\/index$/, '');
+            entries.push({
+                file: fileURLToPath(new URL(entry.name, directory)),
+                specifier: `@elite-dangerous-almanac/core${exported ? `/${exported}` : ''}`,
+            });
+        }
+    }
+    return entries;
+}
+
 test('StarSystem excludes individually locked systems from its package graph', async () => {
     const graph = await readReachableJs(new URL('./dist/astro/star-system.js', import.meta.url));
     assert.doesNotMatch(graph, /10477373803/);
@@ -70,26 +94,30 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(parseSlef(slef)[0]?.data.Ship, 'sidewinder');
 });
 
-test('consumer bundles of root and feature barrels produce no warnings', async () => {
-    const cases = {
-        root: `import { massCodeToSizeClass } from '@elite-dangerous-almanac/core'; console.log(massCodeToSizeClass('d'));`,
-        astro: `import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro'; console.log(massCodeToSizeClass('d'));`,
-        ships: `import { powerBudget } from '@elite-dangerous-almanac/core/ships'; console.log(powerBudget(1, []));`,
-        materials: `import { MaterialGrade } from '@elite-dangerous-almanac/core/materials'; console.log(MaterialGrade.Rare);`,
-        commodities: `import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities'; console.log(COMMODITIES.length);`,
-    };
-    for (const [name, contents] of Object.entries(cases)) {
-        const result = await build({
-            stdin: { contents, resolveDir: process.cwd() },
-            bundle: true,
-            write: false,
-            minify: true,
-            format: 'esm',
-            platform: 'browser',
-            logLevel: 'silent',
-        });
-        assert.deepEqual(result.warnings, [], `${name} barrel emitted consumer build warnings`);
+test('generated public entries contain no redundant bare imports', async () => {
+    for (const { file, specifier } of await publicEntries()) {
+        assert.doesNotMatch(await readFile(file, 'utf8'), /\bimport\s*['"]/, specifier);
     }
+});
+
+test('a consumer bundle of every public entry produces no warnings', async () => {
+    const entries = await publicEntries();
+    const contents = entries
+        .map(({ specifier }, index) => `import * as entry${index} from '${specifier}';`)
+        .join('\n');
+    const result = await build({
+        stdin: {
+            contents: `${contents}\nconsole.log(${entries.map((_, index) => `entry${index}`).join(',')});`,
+            resolveDir: process.cwd(),
+        },
+        bundle: true,
+        write: false,
+        minify: true,
+        format: 'esm',
+        platform: 'browser',
+        logLevel: 'silent',
+    });
+    assert.deepEqual(result.warnings, []);
 });
 
 test('a journal address reaches every id64 entry point without conversion', async () => {
