@@ -193,6 +193,11 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * it unchanged too — unchanged is not the same as offered, and
  * {@link getBlueprintsForModule} still says a suite does not take it.
  *
+ * **Only the numbers differ, not the price.** Both pairs cost the same materials at every
+ * grade, so `getBlueprintCost` needs no module and either spelling bills correctly;
+ * `engineering.test.ts` holds upstream to that. It is the stat block that has to be
+ * resolved.
+ *
  * **Not a generic-spelling resolver.** A generic `Misc_*` id — `Misc_Shielded` where a
  * life support's menu says `LifeSupport_Shielded` — comes back as it went in. That pair is
  * one recipe under two spellings, both published with their own numbers, so the id a

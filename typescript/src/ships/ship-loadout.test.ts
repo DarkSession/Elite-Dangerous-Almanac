@@ -928,8 +928,7 @@ test('a wake scanner engineered Long Range gets the scanner recipe, not the sens
     // The game writes `Sensor_LongRange` on both, and the two roll different stats in
     // opposite directions: the suite's costs mass, the scanner's power draw. An
     // EDSY-authored build declares the scanner's that way, so `applyBlueprint` has to read
-    // the id against the module it is fitted to — see
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32.
+    // the id against the module it is fitted to.
     const collision = engineeringFixture.scannerIdCollision;
     const build = ShipLoadout.empty('Anaconda')
         .setModule('Radar', mod('Int_Sensors_Size8_Class5'))

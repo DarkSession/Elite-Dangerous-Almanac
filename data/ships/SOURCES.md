@@ -1390,7 +1390,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   The resolution runs into a menu and never out of one — a sensor suite is not thereby
   offered `Scanner_LongRange` — and both directions are pinned in
   `fixtures/ships/engineering.json` (`scannerIdCollision`), which holds the exact modifier
-  block the same id produces on each family. Closes
+  block the same id produces on each family. This closed
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
 - **Checked against the build corpus.** Of the 1902 declared engineering entries in
   `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups — the measure in

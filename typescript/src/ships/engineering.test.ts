@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js';
-import { getBlueprint, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
+import { getBlueprint, getBlueprintCost, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import {
     blueprintAvailableFor,
@@ -173,6 +173,22 @@ test('one journal id rolls the recipe the fitted module actually takes', () => {
             !blueprintAvailableFor(row.symbol, row.blueprint),
             `${row.symbol} must refuse ${row.blueprint}`,
         );
+    }
+    // ...but the *cost* is the same on both families at every grade, which is why
+    // `getBlueprintCost` takes an id and no module: pricing the wrong one of the pair
+    // still bills correctly. If upstream ever splits the recipes, this fails and the
+    // cost API needs the module too.
+    for (const [suiteId, scannerId] of [
+        ['Sensor_LongRange', 'Scanner_LongRange'],
+        ['Sensor_WideAngle', 'Scanner_WideAngle'],
+    ]) {
+        for (const grade of [1, 2, 3, 4, 5]) {
+            assert.deepEqual(
+                getBlueprintCost(suiteId!, grade),
+                getBlueprintCost(scannerId!, grade),
+                `${suiteId} vs ${scannerId} G${grade}`,
+            );
+        }
     }
 });
 
