@@ -36,6 +36,7 @@ export default defineConfig({
         '!src/ships/loadout-engineering.ts',
         '!src/ships/loadout-metrics.ts',
         '!src/ships/module-stat-labels.ts',
+        '!src/ships/module-catalogue.ts',
         'src/commodities/*.ts',
         '!src/commodities/*.test.ts',
         '!src/commodities/commodity-catalogue.ts',

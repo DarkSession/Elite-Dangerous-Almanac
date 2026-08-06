@@ -176,6 +176,7 @@ export {
     type HardpointRestriction,
     type OptionalRestriction,
     type CoreSlotType,
+    type ModuleSlot,
     type BuildSlot,
     type CoreSlots,
     type HardpointSlotSpec,

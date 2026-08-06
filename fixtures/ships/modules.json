@@ -1,5 +1,5 @@
 {
-  "description": "Ground truth for the outfitting catalogues (data/ships/modules-*.jsonc, from EDCD FDevIDs outfitting.csv). `counts` pins the size of each category catalogue; `records` pins individual modules across every category, including the retained removed Discovery Scanner (no entitlement) and DLC-gated modules; `shipArmour` pins that getModulesForShip returns a hull's five bulkhead variants. `class` is the module size (0-8) and `rating` the grade letter (A-I).",
+  "description": "Ground truth for the outfitting catalogues (data/ships/modules-*.jsonc, from EDCD FDevIDs outfitting.csv). `counts` pins the size of each category catalogue; `slotCounts` pins how many records name each fixed mount in `slot`, and how many name none, across all four catalogues — a record's `category` is the file it was read from, its `slot` is the one mount it fills. `records` pins individual modules across every category, including the retained removed Discovery Scanner (no entitlement) and DLC-gated modules; `shipArmour` pins that getModulesForShip returns a hull's five bulkhead variants. `class` is the module size (0-8) and `rating` the grade letter (A-I).",
   "counts": {
     "core": 521,
     "internal": 483,
@@ -7,10 +7,22 @@
     "utility": 35,
     "all": 1198
   },
+  "slotCounts": {
+    "armour": 241,
+    "powerPlant": 43,
+    "thrusters": 40,
+    "frameShiftDrive": 72,
+    "lifeSupport": 41,
+    "powerDistributor": 49,
+    "sensors": 41,
+    "fuelTank": 9,
+    "none": 662
+  },
   "records": [
     {
       "symbol": "Anaconda_Armour_Grade1",
       "category": "core",
+      "slot": "armour",
       "name": "Lightweight Alloy",
       "class": 1,
       "rating": "I",
@@ -98,6 +110,51 @@
       "class": 1,
       "rating": "I",
       "restrictedToSlot": "planetaryApproachSuite"
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size5_Class5",
+      "category": "core",
+      "slot": "frameShiftDrive",
+      "name": "Frame Shift Drive",
+      "class": 5,
+      "rating": "A"
+    },
+    {
+      "symbol": "Int_FuelTank_Size3_Class3",
+      "category": "core",
+      "slot": "fuelTank",
+      "name": "Fuel Tank",
+      "class": 3,
+      "rating": "C"
+    },
+    {
+      "symbol": "Int_MkIIAgileBoost_Engine_Size5_Class5",
+      "category": "core",
+      "slot": "thrusters",
+      "name": "Mk II Agile Boost Thrusters",
+      "class": 5,
+      "rating": "A",
+      "restrictedToShips": [
+        "SmallCombat01_NX"
+      ]
+    },
+    {
+      "symbol": "Int_GuardianPowerplant_Size5",
+      "category": "internal",
+      "slot": "powerPlant",
+      "name": "Guardian Hybrid Power Plant",
+      "class": 5,
+      "rating": "A",
+      "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERPLANT"
+    },
+    {
+      "symbol": "Int_GuardianPowerDistributor_Size5",
+      "category": "internal",
+      "slot": "powerDistributor",
+      "name": "Guardian Hybrid Power Distributor",
+      "class": 5,
+      "rating": "A",
+      "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
     }
   ],
   "shipArmour": {

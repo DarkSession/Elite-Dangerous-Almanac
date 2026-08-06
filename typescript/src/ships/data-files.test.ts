@@ -36,6 +36,13 @@ const catalogueSchema = JSON.parse(readFileSync(SCHEMA_PATH, 'utf8')) as {
 };
 
 const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
+    // One definition per module file, not one shared `moduleCatalogue`: with the
+    // category gone from the payload, the file *is* the category, and each file's
+    // own definition is what still pins the `slot` rule that goes with it.
+    'modules-core.jsonc': 'coreModuleCatalogue',
+    'modules-internal.jsonc': 'internalModuleCatalogue',
+    'modules-hardpoint.jsonc': 'hardpointModuleCatalogue',
+    'modules-utility.jsonc': 'utilityModuleCatalogue',
     'ships.jsonc': 'shipCatalogue',
     'blueprints.jsonc': 'blueprintCatalogue',
     'experimental-effects.jsonc': 'experimentalCatalogue',
@@ -50,7 +57,6 @@ const ajv = new AjvConstructor({ allErrors: true });
 ajv.addSchema(catalogueSchema);
 
 function schemaDefinition(name: string): string {
-    if (name.startsWith('modules-')) return 'moduleCatalogue';
     const definition = DEFINITION_BY_FILE[name];
     assert.ok(definition, `no JSON Schema definition mapped for ${name}`);
     return definition;
@@ -98,6 +104,27 @@ for (const name of DATA_FILES) {
             `${name}: ${ajv.errorsText(validate.errors, { separator: '\n' })}`,
         );
     });
+
+    if (name.startsWith('modules-')) {
+        test(`${name} states its category once, in its name`, () => {
+            // Every payload byte is inlined into consumers' bundles, and this one said
+            // nothing the file name did not: the loader adds `category` back from the
+            // file it read (src/ships/module-catalogue.ts).
+            const parsed: unknown = JSON.parse(
+                stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
+            );
+            assert.ok(Array.isArray(parsed));
+            const repeated = parsed.filter(
+                (record: unknown) =>
+                    typeof record === 'object' && record !== null && 'category' in record,
+            );
+            assert.equal(
+                repeated.length,
+                0,
+                `${name} repeats "category" on ${repeated.length} records — the file is the category`,
+            );
+        });
+    }
 
     test(`${name} has unique symbols when it is symbol-keyed`, () => {
         // `pre-engineered.jsonc` is exempt by design: its records are *pairings*, not

@@ -38,7 +38,7 @@
  * this module does not offer for that module, so "what can I put on this?" and "may I put
  * this on it?" cannot answer differently — they read the same menu. A `ShipLoadout`
  * therefore carries this module's weight whether or not the consumer calls it: its import
- * graph is 726 KB, 82 KB gzipped, where before that change it was 624 KB and 74 KB. That is a
+ * graph is 696 KB where it would be 611 KB, 80 KB gzipped where it would be 72 KB. That is a
  * deliberate trade, taken because the second hand-maintained map of the same fact drifted
  * from this one — §Engineering compatibility in
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)

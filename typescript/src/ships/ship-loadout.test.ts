@@ -302,14 +302,40 @@ test('Guardian core modules fit their core slot and are barred from optional slo
     const conda = ShipLoadout.empty('Anaconda');
     const gPlant = mod('Int_GuardianPowerplant_Size6', INTERNAL_MODULES);
     const gDist = mod('Int_GuardianPowerDistributor_Size6', INTERNAL_MODULES);
-    // Core slots accept them (they are core modules despite the `internal` category).
+    // Core slots accept them: their records name a core `slot` even though the
+    // registry files them under the `internal` category.
+    assert.equal(gPlant.slot, 'powerPlant');
+    assert.equal(gDist.slot, 'powerDistributor');
     assert.doesNotThrow(() => conda.setModule('PowerPlant', gPlant));
     assert.doesNotThrow(() => conda.setModule('PowerDistributor', gDist));
     // Optional slots reject them.
     assert.throws(() => conda.setModule('Slot02_Size6', gPlant), /core module only fits/);
     assert.throws(() => conda.setModule('Slot03_Size6', gDist), /core module only fits/);
-    // ...but a fuel tank (also core-prefixed) still fits an optional slot.
+    // ...but a fuel tank, the one module built for two kinds of mount, still fits an
+    // optional slot as well as its own.
     assert.doesNotThrow(() => conda.setModule('Slot05_Size5', mod('Int_FuelTank_Size5_Class3')));
+});
+
+test('a core mount takes the module whose record names it, not one that looks the part', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    const drive = mod('Int_Hyperdrive_Size6_Class5');
+    assert.equal(drive.slot, 'frameShiftDrive');
+    assert.doesNotThrow(() => conda.setModule('FrameShiftDrive', drive));
+    // Right shape, wrong mount.
+    assert.throws(() => conda.setModule('PowerPlant', drive), /not a powerPlant module/);
+    // A record assembled by hand carries no `slot`, so it names no mount and fits none
+    // — the fit rule reads the record rather than classifying the symbol.
+    const handRolled: OutfittingModule = {
+        symbol: drive.symbol,
+        category: 'core',
+        name: drive.name,
+        class: drive.class,
+        rating: drive.rating,
+    };
+    assert.throws(
+        () => conda.setModule('FrameShiftDrive', handRolled),
+        /not a frameShiftDrive module/,
+    );
 });
 
 test('a military slot only takes military-eligible modules', () => {

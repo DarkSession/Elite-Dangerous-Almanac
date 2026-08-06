@@ -4,8 +4,8 @@
  * The `utility` slice of Frontier's outfitting catalogue: each module's identity
  * AND its engineering/mechanical stats, joined on the Frontier `symbol`.
  *
- * Sources: EDCD FDevIDs, outfitting.csv (identity: symbol, category, name, class,
- *          rating, mount?, guidance?, ship?, entitlement?)
+ * Sources: EDCD FDevIDs, outfitting.csv (identity: symbol, name, class, rating,
+ *          mount?, guidance?, ship?, entitlement?)
  *          https://github.com/EDCD/FDevIDs
  *          EDCD/coriolis-data, modules/** (stats: mass, power, performance, …)
  *          https://github.com/EDCD/coriolis-data
@@ -22,10 +22,13 @@
  *
  * `symbol` is the internal identifier (e.g. `Hpt_PulseLaser_Fixed_Small`); `name`
  * the display name; `class` the module size (0-8) and `rating` its grade letter
- * (A-I) — the "5A" the outfitting screen shows. Identity fields always present;
- * every stat field is optional, present only where the module has it (masses in
- * tonnes, power in MW, jump ranges in LY). `restrictedToShips` lists the hull(s) a
- * non-armour module is limited to; armour's hull restriction is its `ship` field.
+ * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
+ * field: it is this file. Every record here is a `utility` module, so a loader adds
+ * `category: "utility"` from the file it read rather than repeating it 35 times.
+ * Identity fields are always present; every stat field is optional, present only
+ * where the module has it (masses in tonnes, power in MW, jump ranges in LY).
+ * `restrictedToShips` lists the hull(s) a non-armour module is limited to; armour's
+ * hull restriction is its `ship` field.
  *
  * Defence stats: `kineticResistance`, `thermalResistance`, `explosiveResistance` and
  * `causticResistance` are fractions of damage removed (negative = a weakness);
@@ -68,7 +71,6 @@
 [
   {
     "symbol": "Hpt_ChaffLauncher_Tiny",
-    "category": "utility",
     "name": "Chaff Launcher",
     "class": 0,
     "rating": "I",
@@ -88,7 +90,6 @@
   },
   {
     "symbol": "Hpt_ElectronicCountermeasure_Tiny",
-    "category": "utility",
     "name": "Electronic Countermeasure",
     "class": 0,
     "rating": "F",
@@ -103,7 +104,6 @@
   },
   {
     "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
-    "category": "utility",
     "name": "Heat Sink Launcher",
     "class": 0,
     "rating": "I",
@@ -122,7 +122,6 @@
   },
   {
     "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
-    "category": "utility",
     "name": "Point Defence",
     "class": 0,
     "rating": "I",
@@ -150,7 +149,6 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class1",
-    "category": "utility",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "E",
@@ -166,7 +164,6 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class2",
-    "category": "utility",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "D",
@@ -182,7 +179,6 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class3",
-    "category": "utility",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "C",
@@ -198,7 +194,6 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class4",
-    "category": "utility",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "B",
@@ -214,7 +209,6 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class5",
-    "category": "utility",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "A",
@@ -230,7 +224,6 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class1",
-    "category": "utility",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "E",
@@ -246,7 +239,6 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class2",
-    "category": "utility",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "D",
@@ -262,7 +254,6 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class3",
-    "category": "utility",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "C",
@@ -278,7 +269,6 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class4",
-    "category": "utility",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "B",
@@ -294,7 +284,6 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class5",
-    "category": "utility",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "A",
@@ -310,7 +299,6 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class1",
-    "category": "utility",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "E",
@@ -326,7 +314,6 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class2",
-    "category": "utility",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "D",
@@ -342,7 +329,6 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class3",
-    "category": "utility",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "C",
@@ -358,7 +344,6 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class4",
-    "category": "utility",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "B",
@@ -374,7 +359,6 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class5",
-    "category": "utility",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "A",
@@ -390,7 +374,6 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class1",
-    "category": "utility",
     "name": "Shield Booster",
     "class": 0,
     "rating": "E",
@@ -407,7 +390,6 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class2",
-    "category": "utility",
     "name": "Shield Booster",
     "class": 0,
     "rating": "D",
@@ -424,7 +406,6 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class3",
-    "category": "utility",
     "name": "Shield Booster",
     "class": 0,
     "rating": "C",
@@ -441,7 +422,6 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class4",
-    "category": "utility",
     "name": "Shield Booster",
     "class": 0,
     "rating": "B",
@@ -458,7 +438,6 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class5",
-    "category": "utility",
     "name": "Shield Booster",
     "class": 0,
     "rating": "A",
@@ -475,7 +454,6 @@
   },
   {
     "symbol": "Hpt_AntiUnknownShutdown_Tiny",
-    "category": "utility",
     "name": "Shutdown Field Neutraliser",
     "class": 0,
     "rating": "F",
@@ -490,7 +468,6 @@
   },
   {
     "symbol": "Hpt_XenoScanner_Basic_Tiny",
-    "category": "utility",
     "name": "Xeno Scanner",
     "class": 0,
     "rating": "E",
@@ -507,7 +484,6 @@
   },
   {
     "symbol": "Hpt_XenoScannerMk2_Basic_Tiny",
-    "category": "utility",
     "name": "Enhanced Xeno Scanner",
     "class": 0,
     "rating": "C",
@@ -524,7 +500,6 @@
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class1",
-    "category": "utility",
     "name": "Pulse Wave Analyser",
     "class": 0,
     "rating": "E",
@@ -539,7 +514,6 @@
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class2",
-    "category": "utility",
     "name": "Pulse Wave Analyser",
     "class": 0,
     "rating": "D",
@@ -554,7 +528,6 @@
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class3",
-    "category": "utility",
     "name": "Pulse Wave Analyser",
     "class": 0,
     "rating": "C",
@@ -569,7 +542,6 @@
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class4",
-    "category": "utility",
     "name": "Pulse Wave Analyser",
     "class": 0,
     "rating": "B",
@@ -584,7 +556,6 @@
   },
   {
     "symbol": "Hpt_MRAScanner_Size0_Class5",
-    "category": "utility",
     "name": "Pulse Wave Analyser",
     "class": 0,
     "rating": "A",
@@ -599,7 +570,6 @@
   },
   {
     "symbol": "Hpt_CausticSinkLauncher_Turret_Tiny",
-    "category": "utility",
     "name": "Caustic Sink Launcher",
     "class": 0,
     "rating": "I",
@@ -618,7 +588,6 @@
   },
   {
     "symbol": "Hpt_AntiUnknownShutdown_Tiny_V2",
-    "category": "utility",
     "name": "Thargoid Pulse Neutraliser",
     "class": 0,
     "rating": "E",
@@ -632,7 +601,6 @@
   },
   {
     "symbol": "Hpt_XenoScanner_Advanced_Tiny",
-    "category": "utility",
     "name": "Pulse Wave Xeno Scanner",
     "class": 0,
     "rating": "C",

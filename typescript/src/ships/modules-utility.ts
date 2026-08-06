@@ -16,13 +16,14 @@
 
 import type { OutfittingModule } from './modules.js';
 import utilityModulesData from '../../../data/ships/modules-utility.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { buildModuleCatalogue, type ModuleRecord } from './module-catalogue.js';
 
 /**
  * All 35 utility-mount modules, in Frontier's registry order.
  *
  * @remarks
- * Every record has `category: 'utility'`. To keep the other three categories out of
+ * Every record has `category: 'utility'`, added from the file it was read from
+ * rather than repeated on every record. To keep the other three categories out of
  * your bundle, search this array directly — `UTILITY_MODULES.find((m) =>
  * m.symbol.toLowerCase() === wanted)`, lower-cased because a journal's symbols are —
  * rather than with the lookups in `./modules`, which default to all 1198 modules.
@@ -32,6 +33,7 @@ import { deepFreeze } from '../deep-freeze.js';
  * UTILITY_MODULES.length; // -> 35
  * ```
  */
-export const UTILITY_MODULES: readonly OutfittingModule[] = deepFreeze(
-    utilityModulesData as readonly OutfittingModule[],
+export const UTILITY_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(
+    utilityModulesData as readonly ModuleRecord[],
+    'utility',
 );

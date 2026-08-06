@@ -1,6 +1,29 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the scanner-id pass of 2026-08-06, recorded under §Engineering options (what each module can take) in "Scanner Long Range and Wide Angle: one journal id, two recipes", and before it by the restricted-mount pass of 2026-08-05 in the revision block immediately below. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by two passes of 2026-08-06: the module-record pass in the revision block immediately below, and the scanner-id pass recorded under §Engineering options (what each module can take) in "Scanner Long Range and Wide Angle: one journal id, two recipes"; before them, the restricted-mount pass of 2026-08-05. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+
+**Revision 2026-08-06 (UTC), the module-record pass — the outfitting category is the
+file it is in, and a core module names the mount it fills.**
+No new upstream snapshot: this pass re-shapes what `modules-*.jsonc` stores, not what
+it says about the game. Two changes, in opposite directions.
+
+**`category` is gone from the payload.** Every record in `modules-core.jsonc` said
+`"category": "core"`, every record in `modules-hardpoint.jsonc` said `"hardpoint"`, and
+so on for all 1198 — a fact the four-way file split already carried, repeated once per
+record into every consumer's bundle. Each language's loader now adds it from the file it
+read, so the record a consumer holds is unchanged. §Modules (outfitting) below records
+the derivation, which is a rename of nothing: the CSV's `category` column is exactly
+which file a record was already sorted into.
+
+**`slot` is new, and covers what `category` never could.** `core` is not a mount, it is
+eight of them, so "which core modules fit this hull's FSD mount?" was a question this
+catalogue could not answer and every consumer had to answer for itself by matching
+symbol prefixes — as this library did, in a hard-coded table inside `ShipLoadout`. Every
+core record now names its mount (`armour`, or one of the seven core functions), as do
+the fifteen Guardian Hybrid power plants and distributors that live in
+`modules-internal.jsonc` because FDevIDs files them there. The classification, the
+records that carry no `slot` at all, and why a fuel tank is the exception, are recorded
+under §Modules (outfitting).
 
 **Revision 2026-08-05 (UTC), the restricted-mount pass — a mount reserved to passenger
 cabins is now stored as one, and a module reserved to a mount says so itself.**
@@ -744,6 +767,39 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   are stored only on the hardpoints that carry them; `ship` names the hull an armour
   variant belongs to (armour is the one ship-specific module, so only the 241 armour
   records carry it); `entitlement` is kept only where it is a real DLC/grant token.
+- **The CSV's `category` column is dropped, and the file replaces it** (revision
+  2026-08-06 UTC). It was the same string on every record of a file whose name already
+  said it — 1198 repetitions of a fact the split itself carries — and every payload byte
+  is inlined into consumers' bundles. Each language loader adds it back from the file it
+  read (TypeScript: `src/ships/module-catalogue.ts`), so a consumer's record is
+  unchanged; `schemas/ships/catalogues.schema.json` grew one catalogue definition per
+  file in place of the shared `moduleCatalogue`, which is what still pins the difference
+  between them. Nothing was re-derived from upstream: the CSV's category is exactly
+  which file a record was already in.
+- **`slot` — which fixed mount a module fills** (revision 2026-08-06 UTC). A category is
+  not a mount: `core` is eight of them, so a consumer wanting "the FSD tab" had to
+  classify symbols itself, and so did this library. Every record in `modules-core.jsonc`
+  now names its own mount — `armour`, or one of the seven core functions the ship
+  records' `core` block is keyed by (`powerPlant`, `thrusters`, `frameShiftDrive`,
+  `lifeSupport`, `powerDistributor`, `sensors`, `fuelTank`) — as do the fifteen Guardian
+  Hybrid power plants and distributors in `modules-internal.jsonc`, which fill a core
+  mount although FDevIDs files them as internal modules. No other record carries one: a
+  weapon, a utility fitting or an ordinary optional internal fits any mount of its kind
+  that is large enough, so there is no single mount to name.
+  - **Derivation:** the value is the mount the module is sold for in the outfitting
+    screen, assigned by symbol family — the 241 `*_Armour_*` records are `armour`, the
+    `Int_PowerPlant_*`/`Int_GuardianPowerplant_*` are `powerPlant`, and so on through
+    `Int_Engine_*` and `Int_MkIIAgileBoost_Engine_*` (`thrusters`), `Int_Hyperdrive_*`
+    (`frameShiftDrive`), `Int_LifeSupport_*`, `Int_PowerDistributor_*`/
+    `Int_GuardianPowerDistributor_*`, `Int_Sensors_*` and `Int_FuelTank_*`. This is the
+    same classification `ShipLoadout` previously held as a hard-coded prefix table and
+    applied at fit time; moving it into the data is what lets a consumer read the mount
+    without reimplementing the table, and what makes the odd ones out (the Guardian
+    hybrids, the Python Mk II's `Int_MkIIAgileBoost_Engine_*` thrusters) facts about a
+    record rather than special cases in code. Counts, per mount, are pinned in
+    `fixtures/ships/modules.json` (`slotCounts`).
+  - **A fuel tank is the one module built for two kinds of mount:** it is `fuelTank`
+    and also fits any optional slot large enough, exactly as the game sells it.
 - **Stats source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
   `modules/**`, **commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`** (`master`,
   acquired 2026-07-24 UTC). Coriolis-data's `LICENSE.md` releases only its _code_

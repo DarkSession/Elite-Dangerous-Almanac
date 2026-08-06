@@ -539,6 +539,35 @@ the one hull-specific module (which is what `getModulesForShip` returns). Module
 `name` is **not** unique — it repeats across sizes, ratings and hulls — so key on
 `symbol`; `getModulesByName` returns every match.
 
+A record's `category` is the catalogue it came from, filled in when the catalogue
+loads rather than stored on every record — so it is always there and always agrees
+with the catalogue you found it in.
+
+`slot` is the other half of that idea and answers a sharper question: **which one
+mount is this module built for?** A category is not a mount — `core` is eight of
+them — so every core record names its own, `"armour"` or one of the seven core
+functions (`powerPlant`, `thrusters`, `frameShiftDrive`, `lifeSupport`,
+`powerDistributor`, `sensors`, `fuelTank`), the same strings `slot.core` uses:
+
+```ts
+import { CORE_MODULES } from "@elite-dangerous-almanac/core/ships/modules-core";
+
+// An outfitting screen's "Frame Shift Drive" tab, without a symbol rule of your own
+CORE_MODULES.filter((m) => m.slot === "frameShiftDrive");
+getModuleBySymbol("Anaconda_Armour_Grade1")?.slot; // -> 'armour'
+getModuleBySymbol("Int_CargoRack_Size4_Class1")?.slot; // -> undefined
+```
+
+Everything else leaves it `undefined`, and that absence is the rule, not a gap: a
+weapon, a utility fitting and an ordinary optional internal each fit **any** mount of
+their kind that is big enough, so there is no single mount to name. Two records look
+like exceptions and are not — a fuel tank is `"fuelTank"` and fits an optional slot
+as well as its own, and the fifteen Guardian Hybrid power plants and distributors
+carry `"powerPlant"` / `"powerDistributor"` from `INTERNAL_MODULES`, which is where
+Frontier's registry files them despite their filling a core mount. Read `slot`
+instead of matching on the symbol: `Int_Engine_*` meaning thrusters is a naming
+habit, and the Python Mk II's `Int_MkIIAgileBoost_Engine_*` already departs from it.
+
 ### Ship and module stats
 
 The numbers behind the catalogues — hull masses, module masses, power draw, FSD
@@ -778,7 +807,7 @@ build.setModuleEnabled("TinyHardpoint6", false);
 ```
 
 > **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
-> currently reaches about 709 KB of minified JavaScript (~82 KB gzipped) because it must
+> currently reaches about 696 KB of minified JavaScript (~80 KB gzipped) because it must
 > resolve any ship/module id, plus blueprints and experimental effects, plus the
 > engineering menu it validates against and the pre-engineered catalogue. Prefer
 > `ships/slef`, `ships/jump-range`, the [build-metric
@@ -1009,8 +1038,10 @@ function name where a key is expected and you get nothing, `getFittedModule` ret
 on `slot.core`, pass `slot.key`, and the distinction never bites.
 A module lives in the catalogue for its outfitting **category**, which is not
 always the slot it occupies — a fuel tank is in `CORE_MODULES` even though it fits
-an optional slot — so pass `ALL_MODULES` to `modulesForSlot` when you want every
-candidate.
+an optional slot, and the Guardian Hybrid power plant is in `INTERNAL_MODULES`
+even though it fills a core mount — so pass `ALL_MODULES` to `modulesForSlot` when
+you want every candidate. The fit itself is decided by the record's own
+[`slot`](#ships-and-outfitting) against the mount's `slot.core`, never by its symbol.
 
 **Two ways to reach a hull's mounts.** For an editable build, start a `ShipLoadout` and
 use its live handles — `slots()`, `coreModules()`, `hardpoints()`, `utilityMounts()`,
@@ -1453,6 +1484,15 @@ recorded inline there beside the field they touch.
   for reading a stored `BlueprintName` back. Blueprint **costs** are unaffected: both pairs charge the same materials at every
   grade. See
   [what a module can be engineered with](#what-a-module-can-be-engineered-with).
+- **2026-08-06** — no value changed and no record moved: the module files stopped
+  repeating `category` (the file they are in already said it, 1198 times over, into
+  every consumer's bundle) and every core module gained a
+  [`slot`](#ships-and-outfitting) naming the one mount it fills. **The record you
+  read is unchanged** — `category` is filled in as its catalogue loads — and `slot`
+  is additive, so nothing that worked stops working. It is behaviour-visible in one
+  place: a core module's fit is now decided by its record rather than by matching its
+  symbol, so a module record you assemble **by hand**, without a `slot`, no longer
+  goes into a core mount. Records resolved from a catalogue are unaffected.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

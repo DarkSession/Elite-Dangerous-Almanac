@@ -4,8 +4,8 @@
  * The `hardpoint` slice of Frontier's outfitting catalogue: each module's identity
  * AND its engineering/mechanical stats, joined on the Frontier `symbol`.
  *
- * Sources: EDCD FDevIDs, outfitting.csv (identity: symbol, category, name, class,
- *          rating, mount?, guidance?, ship?, entitlement?)
+ * Sources: EDCD FDevIDs, outfitting.csv (identity: symbol, name, class, rating,
+ *          mount?, guidance?, ship?, entitlement?)
  *          https://github.com/EDCD/FDevIDs
  *          EDCD/coriolis-data, modules/** (stats: mass, power, performance, …)
  *          https://github.com/EDCD/coriolis-data
@@ -22,10 +22,13 @@
  *
  * `symbol` is the internal identifier (e.g. `Hpt_PulseLaser_Fixed_Small`); `name`
  * the display name; `class` the module size (0-8) and `rating` its grade letter
- * (A-I) — the "5A" the outfitting screen shows. Identity fields always present;
- * every stat field is optional, present only where the module has it (masses in
- * tonnes, power in MW, jump ranges in LY). `restrictedToShips` lists the hull(s) a
- * non-armour module is limited to; armour's hull restriction is its `ship` field.
+ * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
+ * field: it is this file. Every record here is a `hardpoint` module, so a loader adds
+ * `category: "hardpoint"` from the file it read rather than repeating it 159 times.
+ * Identity fields are always present; every stat field is optional, present only
+ * where the module has it (masses in tonnes, power in MW, jump ranges in LY).
+ * `restrictedToShips` lists the hull(s) a non-armour module is limited to; armour's
+ * hull restriction is its `ship` field.
  *
  * Defence stats: `kineticResistance`, `thermalResistance`, `explosiveResistance` and
  * `causticResistance` are fractions of damage removed (negative = a weakness);
@@ -68,7 +71,6 @@
 [
   {
     "symbol": "Hpt_PulseLaser_Fixed_Small",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Fixed",
     "class": 1,
@@ -92,7 +94,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Fixed",
     "class": 2,
@@ -116,7 +117,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Large",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Fixed",
     "class": 3,
@@ -140,7 +140,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Huge",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Fixed",
     "class": 4,
@@ -164,7 +163,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Small",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Gimballed",
     "class": 1,
@@ -188,7 +186,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Medium",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Gimballed",
     "class": 2,
@@ -212,7 +209,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Large",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Gimballed",
     "class": 3,
@@ -236,7 +232,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Turret_Small",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Turreted",
     "class": 1,
@@ -260,7 +255,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Turret_Medium",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Turreted",
     "class": 2,
@@ -284,7 +278,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Turret_Large",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Turreted",
     "class": 3,
@@ -308,7 +301,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Small",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Fixed",
     "class": 1,
@@ -334,7 +326,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Fixed",
     "class": 2,
@@ -360,7 +351,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Large",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Fixed",
     "class": 3,
@@ -386,7 +376,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Huge",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Fixed",
     "class": 4,
@@ -412,7 +401,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Small",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Gimballed",
     "class": 1,
@@ -438,7 +426,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Medium",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Gimballed",
     "class": 2,
@@ -464,7 +451,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Large",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Gimballed",
     "class": 3,
@@ -490,7 +476,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Turret_Small",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Turreted",
     "class": 1,
@@ -516,7 +501,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Turret_Medium",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Turreted",
     "class": 2,
@@ -542,7 +526,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Turret_Large",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Turreted",
     "class": 3,
@@ -568,7 +551,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Small",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Fixed",
     "class": 1,
@@ -590,7 +572,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Fixed",
     "class": 2,
@@ -612,7 +593,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Large",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Fixed",
     "class": 3,
@@ -634,7 +614,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Huge",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Fixed",
     "class": 4,
@@ -656,7 +635,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Small",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Gimballed",
     "class": 1,
@@ -678,7 +656,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Medium",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Gimballed",
     "class": 2,
@@ -700,7 +677,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Large",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Gimballed",
     "class": 3,
@@ -722,7 +698,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Turret_Small",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Turreted",
     "class": 1,
@@ -744,7 +719,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Turret_Medium",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Turreted",
     "class": 2,
@@ -766,7 +740,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Turret_Large",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Turreted",
     "class": 3,
@@ -788,7 +761,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Small",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Fixed",
     "class": 1,
@@ -816,7 +788,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Fixed",
     "class": 2,
@@ -844,7 +815,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Large",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Fixed",
     "class": 3,
@@ -872,7 +842,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Fixed_Huge",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Fixed",
     "class": 4,
@@ -900,7 +869,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Small",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Gimballed",
     "class": 1,
@@ -928,7 +896,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Medium",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Gimballed",
     "class": 2,
@@ -956,7 +923,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Huge",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Gimballed",
     "class": 4,
@@ -984,7 +950,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Turret_Small",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Turreted",
     "class": 1,
@@ -1012,7 +977,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Turret_Medium",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Turreted",
     "class": 2,
@@ -1040,7 +1004,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Turret_Large",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Turreted",
     "class": 3,
@@ -1068,7 +1031,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Small",
-    "category": "hardpoint",
     "name": "Fragment Cannon",
     "mount": "Fixed",
     "class": 1,
@@ -1098,7 +1060,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Fragment Cannon",
     "mount": "Fixed",
     "class": 2,
@@ -1128,7 +1089,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Large",
-    "category": "hardpoint",
     "name": "Fragment Cannon",
     "mount": "Fixed",
     "class": 3,
@@ -1158,7 +1118,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
-    "category": "hardpoint",
     "name": "Fragment Cannon",
     "mount": "Gimballed",
     "class": 1,
@@ -1188,7 +1147,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Medium",
-    "category": "hardpoint",
     "name": "Fragment Cannon",
     "mount": "Gimballed",
     "class": 2,
@@ -1218,7 +1176,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Turret_Small",
-    "category": "hardpoint",
     "name": "Fragment Cannon",
     "mount": "Turreted",
     "class": 1,
@@ -1248,7 +1205,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Turret_Medium",
-    "category": "hardpoint",
     "name": "Fragment Cannon",
     "mount": "Turreted",
     "class": 2,
@@ -1278,7 +1234,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Small",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Fixed",
     "class": 1,
@@ -1306,7 +1261,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Fixed",
     "class": 2,
@@ -1334,7 +1288,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Large",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Fixed",
     "class": 3,
@@ -1362,7 +1315,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Huge",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Fixed",
     "class": 4,
@@ -1391,7 +1343,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Small",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Gimballed",
     "class": 1,
@@ -1419,7 +1370,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Medium",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Gimballed",
     "class": 2,
@@ -1447,7 +1397,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Large",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Gimballed",
     "class": 3,
@@ -1475,7 +1424,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Turret_Small",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Turreted",
     "class": 1,
@@ -1503,7 +1451,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Turret_Medium",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Turreted",
     "class": 2,
@@ -1531,7 +1478,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Turret_Large",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Turreted",
     "class": 3,
@@ -1560,7 +1506,6 @@
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Plasma Accelerator",
     "mount": "Fixed",
     "class": 2,
@@ -1590,7 +1535,6 @@
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Large",
-    "category": "hardpoint",
     "name": "Plasma Accelerator",
     "mount": "Fixed",
     "class": 3,
@@ -1620,7 +1564,6 @@
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
-    "category": "hardpoint",
     "name": "Plasma Accelerator",
     "mount": "Fixed",
     "class": 4,
@@ -1650,7 +1593,6 @@
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Small",
-    "category": "hardpoint",
     "name": "Rail Gun",
     "mount": "Fixed",
     "class": 1,
@@ -1679,7 +1621,6 @@
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Rail Gun",
     "mount": "Fixed",
     "class": 2,
@@ -1708,7 +1649,6 @@
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Small",
-    "category": "hardpoint",
     "name": "Seeker Missile Rack",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -1735,7 +1675,6 @@
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Seeker Missile Rack",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -1762,7 +1701,6 @@
   },
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
-    "category": "hardpoint",
     "name": "Seeker Missile Rack",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -1790,7 +1728,6 @@
   },
   {
     "symbol": "Hpt_MineLauncher_Fixed_Small",
-    "category": "hardpoint",
     "name": "Mine Launcher",
     "mount": "Fixed",
     "class": 1,
@@ -1816,7 +1753,6 @@
   },
   {
     "symbol": "Hpt_MineLauncher_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Mine Launcher",
     "mount": "Fixed",
     "class": 2,
@@ -1842,7 +1778,6 @@
   },
   {
     "symbol": "Hpt_AdvancedTorpPylon_Fixed_Small",
-    "category": "hardpoint",
     "name": "Torpedo Pylon",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -1869,7 +1804,6 @@
   },
   {
     "symbol": "Hpt_AdvancedTorpPylon_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Torpedo Pylon",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -1896,7 +1830,6 @@
   },
   {
     "symbol": "Hpt_AdvancedTorpPylon_Fixed_Large",
-    "category": "hardpoint",
     "name": "Torpedo Pylon",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -1924,7 +1857,6 @@
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
-    "category": "hardpoint",
     "name": "Mining Laser",
     "mount": "Fixed",
     "class": 1,
@@ -1946,7 +1878,6 @@
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Mining Laser",
     "mount": "Fixed",
     "class": 2,
@@ -1968,7 +1899,6 @@
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Small",
-    "category": "hardpoint",
     "name": "Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -1995,7 +1925,6 @@
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -2022,7 +1951,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Large",
-    "category": "hardpoint",
     "name": "Cannon",
     "mount": "Gimballed",
     "class": 3,
@@ -2050,7 +1978,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
-    "category": "hardpoint",
     "name": "Fragment Cannon",
     "mount": "Gimballed",
     "class": 3,
@@ -2080,7 +2007,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Turret_Large",
-    "category": "hardpoint",
     "name": "Fragment Cannon",
     "mount": "Turreted",
     "class": 3,
@@ -2110,7 +2036,6 @@
   },
   {
     "symbol": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced",
-    "category": "hardpoint",
     "name": "Advanced Plasma Accelerator",
     "mount": "Fixed",
     "class": 3,
@@ -2141,7 +2066,6 @@
   },
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small_Advanced",
-    "category": "hardpoint",
     "name": "Mining Lance",
     "mount": "Fixed",
     "class": 1,
@@ -2164,7 +2088,6 @@
   },
   {
     "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
-    "category": "hardpoint",
     "name": "Imperial Hammer Rail Gun",
     "mount": "Fixed",
     "class": 2,
@@ -2196,7 +2119,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Fixed_Medium_Disruptor",
-    "category": "hardpoint",
     "name": "Pulse Disruptor Laser",
     "mount": "Fixed",
     "class": 2,
@@ -2220,7 +2142,6 @@
   },
   {
     "symbol": "Hpt_Slugshot_Fixed_Large_Range",
-    "category": "hardpoint",
     "name": "Pacifier Frag-Cannon",
     "mount": "Fixed",
     "class": 3,
@@ -2251,7 +2172,6 @@
   },
   {
     "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Pack-Hound Missile Rack",
     "mount": "Fixed",
     "guidance": "Swarm",
@@ -2280,7 +2200,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Small_Strong",
-    "category": "hardpoint",
     "name": "Enforcer Cannon",
     "mount": "Fixed",
     "class": 1,
@@ -2309,7 +2228,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Fixed_Small_Heat",
-    "category": "hardpoint",
     "name": "Retributor Beam Laser",
     "mount": "Fixed",
     "class": 1,
@@ -2332,7 +2250,6 @@
   },
   {
     "symbol": "Hpt_MineLauncher_Fixed_Small_Impulse",
-    "category": "hardpoint",
     "name": "Shock Mine Launcher",
     "mount": "Fixed",
     "class": 1,
@@ -2358,7 +2275,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
-    "category": "hardpoint",
     "name": "Cytoscrambler Burst Laser",
     "mount": "Fixed",
     "class": 1,
@@ -2386,7 +2302,6 @@
   },
   {
     "symbol": "Hpt_BeamLaser_Gimbal_Huge",
-    "category": "hardpoint",
     "name": "Beam Laser",
     "mount": "Gimballed",
     "class": 4,
@@ -2408,7 +2323,6 @@
   },
   {
     "symbol": "Hpt_PulseLaser_Gimbal_Huge",
-    "category": "hardpoint",
     "name": "Pulse Laser",
     "mount": "Gimballed",
     "class": 4,
@@ -2432,7 +2346,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Gimbal_Huge",
-    "category": "hardpoint",
     "name": "Multi-Cannon",
     "mount": "Gimballed",
     "class": 4,
@@ -2461,7 +2374,6 @@
   },
   {
     "symbol": "Hpt_PulseLaserBurst_Gimbal_Huge",
-    "category": "hardpoint",
     "name": "Burst Laser",
     "mount": "Gimballed",
     "class": 4,
@@ -2487,7 +2399,6 @@
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso",
-    "category": "hardpoint",
     "name": "Rocket Propelled FSD Disruptor",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -2515,7 +2426,6 @@
   },
   {
     "symbol": "Hpt_MiningLaser_Turret_Small",
-    "category": "hardpoint",
     "name": "Mining Laser",
     "mount": "Turreted",
     "class": 1,
@@ -2537,7 +2447,6 @@
   },
   {
     "symbol": "Hpt_MiningLaser_Turret_Medium",
-    "category": "hardpoint",
     "name": "Mining Laser",
     "mount": "Turreted",
     "class": 2,
@@ -2559,7 +2468,6 @@
   },
   {
     "symbol": "Hpt_FlakMortar_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Remote Release Flak Launcher",
     "mount": "Fixed",
     "class": 2,
@@ -2587,7 +2495,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
-    "category": "hardpoint",
     "name": "AX Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -2617,7 +2524,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Large",
-    "category": "hardpoint",
     "name": "AX Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -2647,7 +2553,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Medium",
-    "category": "hardpoint",
     "name": "AX Multi-Cannon",
     "mount": "Fixed",
     "class": 2,
@@ -2677,7 +2582,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Large",
-    "category": "hardpoint",
     "name": "AX Multi-Cannon",
     "mount": "Fixed",
     "class": 3,
@@ -2707,7 +2611,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Medium",
-    "category": "hardpoint",
     "name": "AX Missile Rack",
     "mount": "Turreted",
     "guidance": "Dumbfire",
@@ -2737,7 +2640,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Large",
-    "category": "hardpoint",
     "name": "AX Missile Rack",
     "mount": "Turreted",
     "guidance": "Dumbfire",
@@ -2767,7 +2669,6 @@
   },
   {
     "symbol": "Hpt_FlakMortar_Turret_Medium",
-    "category": "hardpoint",
     "name": "Remote Release Flak Launcher",
     "mount": "Turreted",
     "class": 2,
@@ -2795,7 +2696,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Medium",
-    "category": "hardpoint",
     "name": "AX Multi-Cannon",
     "mount": "Turreted",
     "class": 2,
@@ -2825,7 +2725,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Large",
-    "category": "hardpoint",
     "name": "AX Multi-Cannon",
     "mount": "Turreted",
     "class": 3,
@@ -2855,7 +2754,6 @@
   },
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Guardian Gauss Cannon",
     "mount": "Fixed",
     "class": 2,
@@ -2884,7 +2782,6 @@
   },
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Enzyme Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -2912,7 +2809,6 @@
   },
   {
     "symbol": "Hpt_FlechetteLauncher_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Remote Release Flechette Launcher",
     "mount": "Fixed",
     "class": 2,
@@ -2939,7 +2835,6 @@
   },
   {
     "symbol": "Hpt_FlechetteLauncher_Turret_Medium",
-    "category": "hardpoint",
     "name": "Remote Release Flechette Launcher",
     "mount": "Turreted",
     "class": 2,
@@ -2966,7 +2861,6 @@
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Guardian Plasma Charger",
     "mount": "Fixed",
     "class": 2,
@@ -2995,7 +2889,6 @@
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Medium",
-    "category": "hardpoint",
     "name": "Guardian Plasma Charger",
     "mount": "Turreted",
     "class": 2,
@@ -3024,7 +2917,6 @@
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Guardian Shard Cannon",
     "mount": "Fixed",
     "class": 2,
@@ -3055,7 +2947,6 @@
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Medium",
-    "category": "hardpoint",
     "name": "Guardian Shard Cannon",
     "mount": "Turreted",
     "class": 2,
@@ -3086,7 +2977,6 @@
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Shock Cannon",
     "mount": "Fixed",
     "class": 2,
@@ -3115,7 +3005,6 @@
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Gimbal_Medium",
-    "category": "hardpoint",
     "name": "Shock Cannon",
     "mount": "Gimballed",
     "class": 2,
@@ -3144,7 +3033,6 @@
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Turret_Medium",
-    "category": "hardpoint",
     "name": "Shock Cannon",
     "mount": "Turreted",
     "class": 2,
@@ -3174,7 +3062,6 @@
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Large",
-    "category": "hardpoint",
     "name": "Guardian Shard Cannon",
     "mount": "Fixed",
     "class": 3,
@@ -3205,7 +3092,6 @@
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Large",
-    "category": "hardpoint",
     "name": "Guardian Shard Cannon",
     "mount": "Turreted",
     "class": 3,
@@ -3236,7 +3122,6 @@
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Fixed_Large",
-    "category": "hardpoint",
     "name": "Shock Cannon",
     "mount": "Fixed",
     "class": 3,
@@ -3266,7 +3151,6 @@
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Gimbal_Large",
-    "category": "hardpoint",
     "name": "Shock Cannon",
     "mount": "Gimballed",
     "class": 3,
@@ -3295,7 +3179,6 @@
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Turret_Large",
-    "category": "hardpoint",
     "name": "Shock Cannon",
     "mount": "Turreted",
     "class": 3,
@@ -3324,7 +3207,6 @@
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Large",
-    "category": "hardpoint",
     "name": "Guardian Plasma Charger",
     "mount": "Fixed",
     "class": 3,
@@ -3353,7 +3235,6 @@
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Large",
-    "category": "hardpoint",
     "name": "Guardian Plasma Charger",
     "mount": "Turreted",
     "class": 3,
@@ -3382,7 +3263,6 @@
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Large",
-    "category": "hardpoint",
     "name": "Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -3410,7 +3290,6 @@
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Turret_Small",
-    "category": "hardpoint",
     "name": "Shock Cannon",
     "mount": "Turreted",
     "class": 1,
@@ -3439,7 +3318,6 @@
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Gimbal_Small",
-    "category": "hardpoint",
     "name": "Shock Cannon",
     "mount": "Gimballed",
     "class": 1,
@@ -3468,7 +3346,6 @@
   },
   {
     "symbol": "Hpt_PlasmaShockCannon_Fixed_Small",
-    "category": "hardpoint",
     "name": "Shock Cannon",
     "mount": "Fixed",
     "class": 1,
@@ -3497,7 +3374,6 @@
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Turret_Small",
-    "category": "hardpoint",
     "name": "Guardian Plasma Charger",
     "mount": "Turreted",
     "class": 1,
@@ -3526,7 +3402,6 @@
   },
   {
     "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Small",
-    "category": "hardpoint",
     "name": "Guardian Plasma Charger",
     "mount": "Fixed",
     "class": 1,
@@ -3555,7 +3430,6 @@
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Turret_Small",
-    "category": "hardpoint",
     "name": "Guardian Shard Cannon",
     "mount": "Turreted",
     "class": 1,
@@ -3586,7 +3460,6 @@
   },
   {
     "symbol": "Hpt_Guardian_ShardCannon_Fixed_Small",
-    "category": "hardpoint",
     "name": "Guardian Shard Cannon",
     "mount": "Fixed",
     "class": 1,
@@ -3617,7 +3490,6 @@
   },
   {
     "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
-    "category": "hardpoint",
     "name": "Guardian Gauss Cannon",
     "mount": "Fixed",
     "class": 1,
@@ -3645,7 +3517,6 @@
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Fixed_Small",
-    "category": "hardpoint",
     "name": "Sub-Surface Displacement Missile",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -3674,7 +3545,6 @@
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Turret_Small",
-    "category": "hardpoint",
     "name": "Sub-Surface Displacement Missile",
     "mount": "Turreted",
     "guidance": "Seeker",
@@ -3703,7 +3573,6 @@
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Sub-Surface Displacement Missile",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -3732,7 +3601,6 @@
   },
   {
     "symbol": "Hpt_Mining_SubSurfDispMisle_Turret_Medium",
-    "category": "hardpoint",
     "name": "Sub-Surface Displacement Missile",
     "mount": "Turreted",
     "guidance": "Seeker",
@@ -3761,7 +3629,6 @@
   },
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
-    "category": "hardpoint",
     "name": "Abrasion Blaster",
     "mount": "Fixed",
     "class": 1,
@@ -3788,7 +3655,6 @@
   },
   {
     "symbol": "Hpt_Mining_AbrBlstr_Turret_Small",
-    "category": "hardpoint",
     "name": "Abrasion Blaster",
     "mount": "Turreted",
     "class": 1,
@@ -3815,7 +3681,6 @@
   },
   {
     "symbol": "Hpt_Mining_SeismChrgWarhd_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Seismic Charge Launcher",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -3844,7 +3709,6 @@
   },
   {
     "symbol": "Hpt_Mining_SeismChrgWarhd_Turret_Medium",
-    "category": "hardpoint",
     "name": "Seismic Charge Launcher",
     "mount": "Turreted",
     "guidance": "Seeker",
@@ -3873,7 +3737,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium_Advanced",
-    "category": "hardpoint",
     "name": "Advanced Multi-Cannon",
     "mount": "Fixed",
     "class": 2,
@@ -3901,7 +3764,6 @@
   },
   {
     "symbol": "Hpt_MultiCannon_Fixed_Small_Advanced",
-    "category": "hardpoint",
     "name": "Advanced Multi-Cannon",
     "mount": "Fixed",
     "class": 1,
@@ -3929,7 +3791,6 @@
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Small_Advanced",
-    "category": "hardpoint",
     "name": "Advanced Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -3956,7 +3817,6 @@
   },
   {
     "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Advanced",
-    "category": "hardpoint",
     "name": "Advanced Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -3983,7 +3843,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Large_V2",
-    "category": "hardpoint",
     "name": "Enhanced AX Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -4012,7 +3871,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Medium_V2",
-    "category": "hardpoint",
     "name": "Enhanced AX Multi-Cannon",
     "mount": "Fixed",
     "class": 2,
@@ -4042,7 +3900,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium_V2",
-    "category": "hardpoint",
     "name": "Enhanced AX Missile Rack",
     "mount": "Fixed",
     "guidance": "Dumbfire",
@@ -4071,7 +3928,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Large_V2",
-    "category": "hardpoint",
     "name": "Enhanced AX Missile Rack",
     "mount": "Turreted",
     "guidance": "Dumbfire",
@@ -4100,7 +3956,6 @@
   },
   {
     "symbol": "Hpt_ATDumbfireMissile_Turret_Medium_V2",
-    "category": "hardpoint",
     "name": "Enhanced AX Missile Rack",
     "mount": "Turreted",
     "guidance": "Dumbfire",
@@ -4129,7 +3984,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Fixed_Large_V2",
-    "category": "hardpoint",
     "name": "Enhanced AX Multi-Cannon",
     "mount": "Fixed",
     "class": 3,
@@ -4159,7 +4013,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Large_V2",
-    "category": "hardpoint",
     "name": "Enhanced AX Multi-Cannon",
     "mount": "Turreted",
     "class": 3,
@@ -4189,7 +4042,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Turret_Medium_V2",
-    "category": "hardpoint",
     "name": "Enhanced AX Multi-Cannon",
     "mount": "Turreted",
     "class": 2,
@@ -4219,7 +4071,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
-    "category": "hardpoint",
     "name": "Enhanced AX Multi-Cannon",
     "mount": "Gimballed",
     "class": 3,
@@ -4249,7 +4100,6 @@
   },
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
-    "category": "hardpoint",
     "name": "Enhanced AX Multi-Cannon",
     "mount": "Gimballed",
     "class": 2,
@@ -4279,7 +4129,6 @@
   },
   {
     "symbol": "Hpt_Human_Extraction_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Sub-Surface Extraction Missile",
     "mount": "Fixed",
     "guidance": "Seeker",
@@ -4306,7 +4155,6 @@
   },
   {
     "symbol": "Hpt_ATVentDisruptorPylon_Fixed_Medium",
-    "category": "hardpoint",
     "name": "Guardian Nanite Torpedo Pylon",
     "mount": "Fixed",
     "class": 2,
@@ -4331,7 +4179,6 @@
   },
   {
     "symbol": "Hpt_ATVentDisruptorPylon_Fixed_Large",
-    "category": "hardpoint",
     "name": "Guardian Nanite Torpedo Pylon",
     "mount": "Fixed",
     "class": 3,
@@ -4356,7 +4203,6 @@
   },
   {
     "symbol": "Hpt_Cannon_Gimbal_Medium_Burst",
-    "category": "hardpoint",
     "name": "Concord Cannon",
     "mount": "Gimballed",
     "class": 2,
@@ -4387,7 +4233,6 @@
   },
   {
     "symbol": "Hpt_MiningToolV2_Fixed_Large",
-    "category": "hardpoint",
     "name": "Mining Volley Repeater",
     "mount": "Fixed",
     "class": 3,
@@ -4419,7 +4264,6 @@
   },
   {
     "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
-    "category": "hardpoint",
     "name": "Mk II Plasma Shock Accelerator",
     "mount": "Fixed",
     "class": 3,
