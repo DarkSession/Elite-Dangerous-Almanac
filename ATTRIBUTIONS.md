@@ -167,7 +167,7 @@ in the doc comment of each ported module, and in long form in the domain
   field-by-field joins, the units each source uses, and the handful of figures derived
   from a family rule rather than read from a registry.
 
-- **Ground-truth ship builds (test fixtures, not shipped)** — five real builds used to
+- **Ground-truth ship builds (test fixtures, not shipped)** — six real builds used to
   check the loadout maths against something other than itself.
   `fixtures/ships/slef-the-deep-black.json` is a real
   [EDSY](https://edsy.org/) export (taleden, **CC BY-NC 4.0**).
@@ -175,12 +175,21 @@ in the doc comment of each ported module, and in long form in the domain
   event, obtained from
   [adam-drewery/EliteAssist](https://github.com/adam-drewery/EliteAssist)
   (`src/example_data/loadout.json`, **WTFPL**).
+  `fixtures/ships/journal-viper-mkiv.json` is a real Frontier journal `Loadout` event
+  for an unengineered ship, obtained from
+  [UFO-Studios/EDDP](https://github.com/UFO-Studios/EDDP) (`exampleLogs.json`, a captured
+  journal log the project ships as example data). That repository's own code is under the
+  **UFO Licence 1.0**, which permits use with credit but not redistribution of the
+  project; the licence covers UFO Studios' project, not the Frontier journal line quoted
+  from its example data, which travels under Frontier's media-usage terms below like every
+  other build here. Credit to UFO Studios & AW2C Systems Ltd for capturing and publishing
+  the log. No code from that project is used.
   `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json` and
   `slef-inara-panther-mkii.json` are real [Inara](https://inara.cz/) SLEF exports,
   contributed by the repository owner from their own commander's fleet; the latter two
   are what a restricted mount's rules are checked against, and their headers keep only
   the producing app and version.
-  All five are Elite Dangerous game output and remain the property of Frontier
+  All six are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`

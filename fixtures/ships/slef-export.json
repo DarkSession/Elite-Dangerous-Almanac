@@ -224,6 +224,57 @@
       ]
     }
   },
+  "viperMkIV": {
+    "build": "fixtures/ships/journal-viper-mkiv.json",
+    "note": "A second real journal `Loadout` event, and the only ground-truth build here that carries no engineering at all: every module performs as the catalogue sells it, so Frontier's own `UnladenMass` and `MaxJumpRange` check the base stats directly instead of the engineered path the Krait Phantom exercises. Its credits are a purchase record like every other source's, but a uniform one — all 20 priced modules sit at 0.85 of list — which turns `discount` into a reading of the price table rather than a curiosity.",
+    "topLevelKeys": [
+      "event",
+      "Ship",
+      "ShipName",
+      "ShipIdent",
+      "HullValue",
+      "ModulesValue",
+      "UnladenMass",
+      "CargoCapacity",
+      "MaxJumpRange",
+      "FuelCapacity",
+      "Rebuy",
+      "Modules"
+    ],
+    "moduleCount": 27,
+    "nonOutfittingSlots": ["Decal1", "Decal2", "Decal3", "VesselVoice", "ShipCockpit"],
+    "recomputed": {
+      "Ship": "viper_mkiv",
+      "HullValue": 312797,
+      "ModulesValue": 5832089,
+      "UnladenMass": 260.8,
+      "CargoCapacity": 0,
+      "MaxJumpRange": 21.951648,
+      "FuelCapacity": {
+        "Main": 16,
+        "Reserve": 0.46
+      },
+      "Rebuy": 307244
+    },
+    "journalTolerance": {
+      "note": "The journal rounds; these are the source event's own figures, matched within 1e-4. Nothing on this build is engineered, so agreement here is agreement with the catalogue's own module masses and drive stats.",
+      "UnladenMass": 260.799988,
+      "MaxJumpRange": 21.951651
+    },
+    "discount": {
+      "note": "Every priced module was bought at a flat 0.85 of catalogue list — 20 of them, each within a credit of the ratio after the game's own rounding, which is the widest external check the price table gets from a single source. The hull is the counter-case to the Krait Phantom: there the game's HullValue was the hull WITH its stock fittings (coriolis `retailCost`) to the credit; here it is 246650, below even the bare `hullCost`, and 0.85 of neither convention. So a journal's HullValue is not a second reading of the price table, and none of these figures is carried through.",
+      "sourceHullValue": 246650,
+      "sourceModulesValue": 4957276,
+      "sourceRebuy": 260198,
+      "hullRetailCost": 437931,
+      "hullCost": 312797,
+      "moduleDiscount": 0.85,
+      "moduleDiscountToleranceCr": 1,
+      "pricedInSource": 20,
+      "rebuyFromOwnFigures": 260196,
+      "unpricedInSource": ["Armour", "CargoHatch"]
+    }
+  },
   "assembled": {
     "note": "ShipLoadout.empty('Sidewinder') with a 2A drive and a 1C tank fitted. Catalogue-cased symbols are lower-cased on the way out, and power state is omitted unless asked for.",
     "ship": "Sidewinder",

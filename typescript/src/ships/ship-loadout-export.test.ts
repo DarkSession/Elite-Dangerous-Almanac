@@ -7,6 +7,7 @@ import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
+import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
 import fixture from '../../../fixtures/ships/slef-export.json' with { type: 'json' };
 import jumpFixture from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
@@ -301,6 +302,115 @@ test('the jump figures for a real journal build match the fixture', () => {
     // …and the game's own MaxJumpRange, which is what makes the above trustworthy.
     assert.ok(Math.abs(summary.max - pinned.sourceMaxJumpRange) < 1e-4);
     assert.equal(pinned.sourceMaxJumpRange, krait.MaxJumpRange);
+});
+
+// ── A second journal capture, this one stock ─────────────────────────────────
+
+const viper = viperJournal as unknown as LoadoutEvent;
+
+test('a stock journal Loadout event reproduces every figure the game reported', () => {
+    const event = ShipLoadout.fromLoadout(viper).toLoadoutEvent();
+    assert.deepEqual(Object.keys(event), fixture.viperMkIV.topLevelKeys);
+    assert.deepEqual(figuresOf(event, fixture.viperMkIV.recomputed), fixture.viperMkIV.recomputed);
+
+    assert.equal(viper.Modules.length, fixture.viperMkIV.moduleCount);
+    const cosmetic = fixture.viperMkIV.nonOutfittingSlots;
+    assert.deepEqual(
+        viper.Modules.map((m) => m.Slot).filter((s) => cosmetic.includes(s)),
+        cosmetic,
+    );
+});
+
+test('an unengineered build agrees with Frontier with nothing folded in', () => {
+    // The Krait Phantom matches the game only once Long Range and a Guardian booster are
+    // applied, so it proves the engineered path. Nothing here is engineered: every module
+    // performs as the catalogue sells it, so the same agreement is a reading of the base
+    // module masses and drive stats themselves.
+    assert.deepEqual(
+        viper.Modules.filter((m) => m.Engineering !== undefined),
+        [],
+        'the fixture stopped being a stock build',
+    );
+
+    const event = ShipLoadout.fromLoadout(viper).toLoadoutEvent();
+    const { journalTolerance } = fixture.viperMkIV;
+    assert.ok(Math.abs(event.UnladenMass! - journalTolerance.UnladenMass) < 1e-4);
+    assert.ok(Math.abs(event.MaxJumpRange! - journalTolerance.MaxJumpRange) < 1e-4);
+    assert.equal(viper.CargoCapacity, fixture.viperMkIV.recomputed.CargoCapacity);
+});
+
+test('the jump figures for the stock journal build match the fixture', () => {
+    const build = ShipLoadout.fromLoadout(viper);
+    const pinned = jumpFixture.builds.viperMkIV;
+    assert.deepEqual(
+        {
+            optMass: round6(build.frameShiftDrive.optMass),
+            maxFuel: build.frameShiftDrive.maxFuel,
+            fuelMul: build.frameShiftDrive.fuelMul,
+            fuelPower: build.frameShiftDrive.fuelPower,
+            jumpBoost: build.frameShiftDrive.jumpBoost,
+        },
+        pinned.frameShiftDrive,
+    );
+
+    const summary = build.jumpRangeSummary();
+    assert.equal(round6(summary.max), pinned.maxJumpRange);
+    assert.equal(round6(summary.unladen), pinned.unladenJumpRange);
+    assert.equal(round6(summary.laden), pinned.ladenJumpRange);
+    assert.equal(round6(summary.totalUnladen), pinned.totalUnladenRange);
+    assert.equal(round6(summary.totalLaden), pinned.totalLadenRange);
+
+    // A build with no cargo rack cannot be loaded, so laden and unladen are the same jump.
+    assert.equal(summary.laden, summary.unladen);
+    assert.ok(Math.abs(summary.max - pinned.sourceMaxJumpRange) < 1e-4);
+    assert.equal(pinned.sourceMaxJumpRange, viper.MaxJumpRange);
+});
+
+test('the stock build was bought at one flat discount, and its hull at neither price', () => {
+    // 20 modules at the same fraction of list is the widest reading of the price table any
+    // single source gives — but it is still a purchase record, and the hull says so: the
+    // Krait's HullValue was the hull with its stock fittings, to the credit, while this one
+    // sits below even the bare hull. That is why no source's credits are carried through.
+    const { discount, recomputed } = fixture.viperMkIV;
+    assert.equal(discount.sourceHullValue, viper.HullValue);
+    assert.equal(discount.sourceModulesValue, viper.ModulesValue);
+    assert.equal(discount.sourceRebuy, viper.Rebuy);
+
+    const priced = viper.Modules.filter((m) => m.Value !== undefined);
+    assert.equal(priced.length, discount.pricedInSource);
+    for (const m of priced) {
+        const list = module(m.Item).cost!;
+        const paid = Math.abs(m.Value! - list * discount.moduleDiscount);
+        assert.ok(paid <= discount.moduleDiscountToleranceCr, `${m.Item} paid ${m.Value}`);
+    }
+
+    // The hull is quoted as the bare `hullCost`, which is above what the source paid and
+    // below the retail price the Krait's journal reported for its hull.
+    assert.equal(recomputed.HullValue, discount.hullCost);
+    assert.ok(discount.sourceHullValue < discount.hullCost);
+    assert.ok(discount.hullCost < discount.hullRetailCost);
+
+    // Its own Rebuy is not even 5% of its own figures, so it cannot be reconciled at all.
+    assert.equal(
+        Math.trunc((viper.HullValue! + viper.ModulesValue!) * fixture.rebuyFraction),
+        discount.rebuyFromOwnFigures,
+    );
+    assert.notEqual(discount.rebuyFromOwnFigures, discount.sourceRebuy);
+});
+
+test('the unpriced entries in a stock journal are the ones the hull came with', () => {
+    assert.deepEqual(
+        viper.Modules.filter(
+            (m) =>
+                m.Value === undefined &&
+                !/^(PaintJob|Ship|Bobble|Decal|Weapon|Engine|Vessel)/.test(m.Slot),
+        ).map((m) => m.Slot),
+        fixture.viperMkIV.discount.unpricedInSource,
+    );
+
+    // …and pricing them at list is what puts our ModulesValue above the source's.
+    const event = ShipLoadout.fromLoadout(viper).toLoadoutEvent();
+    assert.ok(event.ModulesValue! > viper.ModulesValue!);
 });
 
 test('every module is priced from the catalogue, whatever the source paid', () => {

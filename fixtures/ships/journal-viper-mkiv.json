@@ -1,0 +1,237 @@
+{
+  "timestamp": "2023-11-08T19:23:59Z",
+  "event": "Loadout",
+  "Ship": "viper_mkiv",
+  "ShipID": 5,
+  "ShipName": "NICEYFLY MK IV",
+  "ShipIdent": "N4CEY",
+  "HullValue": 246650,
+  "ModulesValue": 4957276,
+  "HullHealth": 1,
+  "Hot": true,
+  "UnladenMass": 260.799988,
+  "CargoCapacity": 0,
+  "MaxJumpRange": 21.951651,
+  "FuelCapacity": {
+    "Main": 16,
+    "Reserve": 0.46
+  },
+  "Rebuy": 260198,
+  "Modules": [
+    {
+      "Slot": "MediumHardpoint1",
+      "Item": "hpt_beamlaser_gimbal_medium",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 425510
+    },
+    {
+      "Slot": "MediumHardpoint2",
+      "Item": "hpt_multicannon_gimbal_medium",
+      "On": true,
+      "Priority": 0,
+      "AmmoInClip": 90,
+      "AmmoInHopper": 2100,
+      "Health": 1,
+      "Value": 48450
+    },
+    {
+      "Slot": "SmallHardpoint1",
+      "Item": "hpt_beamlaser_gimbal_small",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 63453
+    },
+    {
+      "Slot": "SmallHardpoint2",
+      "Item": "hpt_multicannon_gimbal_small",
+      "On": true,
+      "Priority": 0,
+      "AmmoInClip": 90,
+      "AmmoInHopper": 2100,
+      "Health": 1,
+      "Value": 12113
+    },
+    {
+      "Slot": "TinyHardpoint1",
+      "Item": "hpt_heatsinklauncher_turret_tiny",
+      "On": true,
+      "Priority": 0,
+      "AmmoInClip": 1,
+      "AmmoInHopper": 2,
+      "Health": 1,
+      "Value": 2975
+    },
+    {
+      "Slot": "TinyHardpoint2",
+      "Item": "hpt_shieldbooster_size0_class4",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 103700
+    },
+    {
+      "Slot": "Armour",
+      "Item": "viper_mkiv_armour_grade1",
+      "On": true,
+      "Priority": 1,
+      "Health": 1
+    },
+    {
+      "Slot": "PowerPlant",
+      "Item": "int_powerplant_size4_class5",
+      "On": true,
+      "Priority": 1,
+      "Health": 1,
+      "Value": 1225049
+    },
+    {
+      "Slot": "MainEngines",
+      "Item": "int_engine_size4_class5",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 1368568
+    },
+    {
+      "Slot": "FrameShiftDrive",
+      "Item": "int_hyperdrive_size4_class5",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 1368568
+    },
+    {
+      "Slot": "LifeSupport",
+      "Item": "int_lifesupport_size2_class1",
+      "On": true,
+      "Priority": 2,
+      "Health": 1,
+      "Value": 1230
+    },
+    {
+      "Slot": "PowerDistributor",
+      "Item": "int_powerdistributor_size3_class5",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 134582
+    },
+    {
+      "Slot": "Radar",
+      "Item": "int_sensors_size3_class1",
+      "On": true,
+      "Priority": 2,
+      "Health": 1,
+      "Value": 3445
+    },
+    {
+      "Slot": "FuelTank",
+      "Item": "int_fueltank_size4_class3",
+      "On": true,
+      "Priority": 1,
+      "Health": 1,
+      "Value": 21023
+    },
+    {
+      "Slot": "Decal1",
+      "Item": "decal_trade_peddler",
+      "On": true,
+      "Priority": 1,
+      "Health": 1
+    },
+    {
+      "Slot": "Decal2",
+      "Item": "decal_explorer_scout",
+      "On": true,
+      "Priority": 1,
+      "Health": 1
+    },
+    {
+      "Slot": "Decal3",
+      "Item": "decal_explorer_scout",
+      "On": true,
+      "Priority": 1,
+      "Health": 1
+    },
+    {
+      "Slot": "Slot01_Size4",
+      "Item": "int_shieldgenerator_size4_class1",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 16897
+    },
+    {
+      "Slot": "Slot02_Size4",
+      "Item": "int_fuelscoop_size4_class2",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 38016
+    },
+    {
+      "Slot": "Slot03_Size3",
+      "Item": "int_buggybay_size2_class2",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 18360
+    },
+    {
+      "Slot": "Slot04_Size2",
+      "Item": "int_fsdinterdictor_size2_class2",
+      "On": true,
+      "Priority": 0,
+      "Health": 1,
+      "Value": 85680
+    },
+    {
+      "Slot": "Slot07_Size1",
+      "Item": "int_supercruiseassist",
+      "On": true,
+      "Priority": 2,
+      "Health": 1,
+      "Value": 7752
+    },
+    {
+      "Slot": "Slot08_Size1",
+      "Item": "int_dockingcomputer_advanced",
+      "On": true,
+      "Priority": 2,
+      "Health": 1,
+      "Value": 11480
+    },
+    {
+      "Slot": "PlanetaryApproachSuite",
+      "Item": "int_planetapproachsuite_advanced",
+      "On": true,
+      "Priority": 1,
+      "Health": 1,
+      "Value": 425
+    },
+    {
+      "Slot": "VesselVoice",
+      "Item": "voicepack_victor",
+      "On": true,
+      "Priority": 1,
+      "Health": 1
+    },
+    {
+      "Slot": "ShipCockpit",
+      "Item": "viper_mkiv_cockpit",
+      "On": true,
+      "Priority": 1,
+      "Health": 1
+    },
+    {
+      "Slot": "CargoHatch",
+      "Item": "modularcargobaydoor",
+      "On": true,
+      "Priority": 2,
+      "Health": 1
+    }
+  ]
+}

@@ -1870,6 +1870,20 @@ where the build is used for metrics. The last two below are evidence for the out
 *rules* rather than for the maths: they pin no metric, and what is checked against them
 is which module the game put in which mount.
 
+**What may be taken, and from where.** A capture is Frontier game output — which parts a
+player put in which slots — and it is redistributed here under Frontier's media-usage
+terms, like every other value in this repository. It is *not* the work of the project it
+was found in, so that project's own licence is not the test of whether a build can be
+carried: a repository that states no licence, or one whose terms forbid redistributing
+its code, still holds a game capture that those terms do not reach. `../../AGENTS.md`
+states the rule; what it asks in return is the part that binds. Credit the source when
+there is one to credit — the entries below name project, file, revision and checksum —
+and scrub the person before storing anything. A build with no traceable origin is
+acceptable rather than excluded; the 181-build corpus below is exactly that case, and
+what it costs is written down there. The exception covers builds only: the stat tables
+and catalogues everything else here derives from are held to the licence they ship
+under, which is why several are cited above rather than copied.
+
 - **`fixtures/ships/slef-the-deep-black.json`** — a real EDSY export of an exploration
   Caspian Explorer. Acquired earlier; see the jump-range note above. Zero weapons, so it
   exercises jump range, fuel and power but not the combat metrics.
@@ -1886,6 +1900,46 @@ is which module the game put in which mount.
   Its credit figures are a purchase record rather than ground truth, and are pinned only
   as evidence of how far a build can sit from list price. Pinned by
   `fixtures/ships/slef-export.json` and `fixtures/ships/jump-range.json`.
+
+- **`fixtures/ships/journal-viper-mkiv.json`** — a real Frontier journal `Loadout` event
+  for a **wholly unengineered** Viper Mk IV (27 `Modules` entries: four gimballed
+  weapons, a heat sink, a shield booster, an SRV bay and an FSD interdictor, no cargo).
+  Acquired **2026-08-06 UTC** from
+  [UFO-Studios/EDDP](https://github.com/UFO-Studios/EDDP), `exampleLogs.json` at
+  `8904e5b0343c3521d2fa3f521f4490f4c1e7c8e4` — a captured journal log the project ships
+  as example data. That repository's own licence (UFO Licence 1.0, which GitHub reports
+  as `NOASSERTION`) forbids redistributing **the project**; it does not reach a Frontier
+  journal line inside it, which is the exception stated at the head of this section, and
+  is why this build is here now having been checked and left out on 2026-08-05. Source
+  log SHA-256 `15d9d79b7546968637bdaa4fb266b4847a1c23cc0203e7ad0285f5e5878e9304`; the
+  stored fixture is the log's **last** `Loadout` event, unwrapped from the line-delimited
+  log and re-indented, otherwise byte-for-byte. Its `ShipName`, `ShipIdent`, `ShipID` and
+  `timestamp` are kept, as the Krait Phantom capture's are — they describe a ship. Nothing
+  else from the log was taken: the surrounding events carry a commander.
+
+  It is **the only ground truth for the catalogue's own numbers**. The Krait Phantom
+  agrees with the game only once an engineered Long Range drive and a Guardian booster are
+  folded in, so it proves the *engineered* path; nothing on this build is modified, so its
+  `UnladenMass` 260.799988 (ours 260.8) and `MaxJumpRange` 21.951651 (ours 21.951648, both
+  within 1e-4) are Frontier reading back the base module masses and the base FSD's
+  `optMass` 525 / `maxFuel` 3 / `fuelMul` 0.012 / `fuelPower` 2.3 — the stats every other
+  figure in this repository is built on. `CargoCapacity` 0 is exact, and with no rack
+  fitted its laden and unladen jump are the same number.
+
+  **Its credits read the price table wider than any other source.** All 20 priced modules
+  sit at a flat **0.85** of catalogue list, each within a credit after the game's own
+  rounding — 20 independent prices confirmed at once, across hardpoints, core internals
+  and optionals. The hull is the counter-case that keeps the retail rule in place: the
+  Krait's `HullValue` was its hull *with* stock fittings to the credit, while this one is
+  246 650, **below** even the bare `hullCost` 312 797 and 0.85 of neither convention. Its
+  own `Rebuy` 260 198 is not 5% of its own `HullValue` plus `ModulesValue` either (that
+  truncates to 260 196). So a journal's credits are a purchase record however uniform they
+  look. Pinned by `fixtures/ships/slef-export.json` (`viperMkIV`) and
+  `fixtures/ships/jump-range.json`.
+
+  **What it does not close:** shields, armour and weapon DPS. It carries four weapons and
+  a shield generator, but a journal reports none of those figures — see
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12>.
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed
@@ -1977,7 +2031,8 @@ far that can be from list:
 
 - **Discounts are real and invisible.** The Deep Black's modules all sit at a uniform
   **0.8775** of list — a 12.25% outfitting discount — while its hull is at full price.
-  The Viper Mk IV's modules sit at exactly **0.85**. Nothing in the export says so.
+  The Viper Mk IV capture's 20 priced modules sit at exactly **0.85**, and its hull at
+  neither its bare nor its retail price. Nothing in either source says so.
 - **The two sources disagree about what `HullValue` means.** The game reports the hull
   *with its stock fittings* (coriolis `retailCost`, 37 472 252 for the Krait, matching
   its journal exactly), EDSY the bare hull (`hullCost`, 189 326 510 for the Caspian
@@ -1985,10 +2040,12 @@ far that can be from list:
   modules that came free with that hull, because their cost already sits inside
   `HullValue`. Quoting `hullCost` and pricing every fitted module keeps one convention
   and avoids double-counting either way.
-- **A build's own parts need not add up.** A real Viper Mk IV journal declares
-  `ModulesValue` 4 940 956 while its per-module `Value`s sum to 3 942 898: older journals
-  omit `Value` on modules that were nonetheless paid for, here an FSD interdictor. A
-  figure rebuilt from such a source would inherit the shortfall.
+- **A build's own parts need not add up.** Earlier `Loadout` events in the same Viper
+  Mk IV log declare `ModulesValue` 4 940 956 while their per-module `Value`s sum to
+  3 942 898: a journal omits `Value` on a module that was nonetheless paid for, here the
+  FSD interdictor bought minutes before. The event stored as the fixture is the last one,
+  by which point the interdictor is priced and the parts do add up — but a figure rebuilt
+  from either would inherit whatever that capture happened to know.
 
 The upside is that the export becomes a pure function of the hull and the fitted module
 symbols. Two builds with the same fit price identically whatever their owners paid; an
@@ -2005,7 +2062,8 @@ exactly — which is what shows the recomputation is right rather than merely
 self-consistent.
 
 **Still missing external ground truth:** shields, armour and weapon DPS. A journal never
-reports them, and every weaponed build here is checked against our own maths. An EDSY or
+reports them — not even the Viper Mk IV capture, which carries four weapons and a shield
+generator — and every weaponed build here is checked against our own maths. An EDSY or
 Coriolis *reading* of a weaponed build would close that gap; the build corpus below does
 not, because it pins figures this library computed rather than figures a tool published.
 
