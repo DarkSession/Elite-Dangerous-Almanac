@@ -230,7 +230,8 @@ export class FittedModule {
     /**
      * Return compatible blueprints and the grades computable from carried stats.
      *
-     * @returns Compatible blueprints in catalogue order.
+     * @returns The blueprints this module's engineering menu offers, in the menu's own
+     * (sorted) order, minus any whose modifiers the catalogue cannot compute.
      */
     getAvailableBlueprints(): AvailableBlueprint[] {
         return availableBlueprintsFor(this.#raw().Item);
@@ -239,7 +240,8 @@ export class FittedModule {
     /**
      * Return compatible experimental-effect identifiers.
      *
-     * @returns Frontier experimental-effect `fdname`s in catalogue order.
+     * @returns The experimental effects this module's engineering menu offers, in the
+     * menu's own order, minus any whose modifiers the catalogue cannot compute.
      */
     getAvailableExperimentalEffects(): string[] {
         return availableExperimentalsFor(this.#raw().Item);

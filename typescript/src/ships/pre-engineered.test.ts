@@ -9,6 +9,8 @@ import {
 } from './pre-engineered.js';
 import { BLUEPRINTS, getBlueprint, getBlueprintCost } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
+import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
+import { blueprintAvailableFor } from './loadout-engineering.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import fixture from '../../../fixtures/ships/pre-engineered.json' with { type: 'json' };
@@ -57,6 +59,32 @@ test('every variant joins to a real module, blueprint and experimental effect', 
                 `${variant.experimental} is not in the experimental catalogue`,
             );
         }
+    }
+});
+
+test('a variant never arrives with an experimental its module is not offered', () => {
+    // `applyBlueprint` gates experimental effects on the engineering menu alone, with no
+    // pre-engineered leg beside the one it has for blueprints — because it needs none:
+    // every effect a variant is sold carrying is one the module's own menu lists. This is
+    // what says that stays true. The blueprints are the other way round, which is why they
+    // do have that leg: 20 `recipe_*` keys are sold and never offered.
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        if (!variant.experimental) continue;
+        assert.ok(
+            getExperimentalsForModule(variant.symbol).includes(variant.experimental),
+            `${variant.symbol} is sold with "${variant.experimental}", which its menu does not offer`,
+        );
+    }
+    // The blueprint half of that contrast, so the asymmetry is pinned rather than asserted.
+    const sold = PRE_ENGINEERED_MODULES.filter(
+        (variant) => !getBlueprintsForModule(variant.symbol).includes(variant.blueprint),
+    );
+    assert.ok(sold.length > 0, 'no variant is sold with a recipe its menu omits');
+    for (const variant of sold) {
+        assert.ok(
+            blueprintAvailableFor(variant.symbol, variant.blueprint),
+            `${variant.symbol} is sold with "${variant.blueprint}" but the gate refuses it`,
+        );
     }
 });
 

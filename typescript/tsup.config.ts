@@ -33,7 +33,6 @@ export default defineConfig({
         '!src/materials/material-catalogue.ts',
         'src/ships/*.ts',
         '!src/ships/*.test.ts',
-        '!src/ships/engineering-compatibility.ts',
         '!src/ships/loadout-engineering.ts',
         '!src/ships/loadout-metrics.ts',
         '!src/ships/module-stat-labels.ts',

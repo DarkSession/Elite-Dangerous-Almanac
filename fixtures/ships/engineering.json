@@ -17,6 +17,17 @@
       "PowerDraw": 1.2075
     }
   },
+  "preEngineeredClimb": {
+    "description": "A module bought already engineered can be taken further at an engineer, and `applyBlueprint` accepts its `recipe_*` id on the module that is sold carrying it even though no engineering menu lists one. The Mercenary Module Reinforcement Package is the case that proves the route: it has no menu at all. It arrives at grade 1, so its recipe defines grades 2-5 only — asking for grade 1 is asking to recreate the purchase, which no recipe can do.",
+    "symbol": "Int_ModuleReinforcement_Size5_Class2",
+    "blueprint": "recipe_modulereinforcement_heavyduty",
+    "soldAtGrade": 1,
+    "gradeUnavailable": 1,
+    "grade": 2,
+    "quality": 1,
+    "base": { "DamageProtection": 60, "Integrity": 350, "Mass": 16 },
+    "expected": { "DamageProtection": 64.98, "Integrity": 379.05, "Mass": 21.328 }
+  },
   "blueprintCount": 108,
   "experimentalCount": 87
 }

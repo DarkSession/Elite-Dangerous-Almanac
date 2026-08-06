@@ -12,6 +12,7 @@ import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with 
 import expected from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
 import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
+import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
 import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.json' with { type: 'json' };
@@ -765,9 +766,10 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
             }),
         RangeError,
     );
+    // A recipe the drive's own menu does not list, and the menu is quoted back.
     assert.throws(
         () => build.applyBlueprint('FrameShiftDrive', 'Armour_HeavyDuty', { grade: 5 }),
-        /targets armour, not frameShiftDrive/,
+        /is not offered blueprint "Armour_HeavyDuty"; it takes FSD_FastBoot, FSD_LongRange, FSD_Shielded/,
     );
     assert.throws(
         () =>
@@ -775,7 +777,7 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
                 grade: 5,
                 experimental: 'special_shieldbooster_toughened',
             }),
-        /targets shieldBooster, not frameShiftDrive/,
+        /is not offered experimental effect "special_shieldbooster_toughened"/,
     );
     assert.throws(
         () =>
@@ -902,13 +904,72 @@ test('engineering still refuses what cannot be answered', () => {
     //    Resistance is a capability a module either has or has not, not a number this
     //    record shape can hold — see
     //    https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27.
+    // A Guardian Hybrid Power Plant is the module the menu offers it on — an ordinary
+    // plant is refused a step earlier, by the menu, and the two groups are separate for
+    // exactly that reason.
     const plant = ShipLoadout.empty('Anaconda').setModule(
         'PowerPlant',
-        mod('Int_Powerplant_Size7_Class5'),
+        mod('Int_GuardianPowerplant_Size7', INTERNAL_MODULES),
     );
     assert.throws(
         () => plant.applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', { grade: 1 }),
         /missing base stats for GuardianModuleResistance/,
+    );
+    assert.throws(
+        () =>
+            ShipLoadout.empty('Anaconda')
+                .setModule('PowerPlant', mod('Int_Powerplant_Size7_Class5'))
+                .applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', { grade: 1 }),
+        /is not offered blueprint "recipe_guardianmodule_sturdy"/,
+    );
+});
+
+test('a module sold pre-engineered can be taken further, menu or no menu', () => {
+    // The Mercenary Module Reinforcement Package has no engineering menu at all, so the
+    // "no menu" refusal must not fire before the sold-with check: it arrives at grade 1 and
+    // its recipe carries grades 2-5, which is the climb this route exists for. The ordering
+    // of those two checks inside `applyBlueprint` is what this pins — the helper behind it
+    // answers correctly either way round.
+    const climb = engineeringFixture.preEngineeredClimb;
+    const build = ShipLoadout.empty('Anaconda').setModule(
+        'Slot01_Size7',
+        mod(climb.symbol, INTERNAL_MODULES),
+    );
+    // The variant is sold at grade 1, which is why its recipe starts at 2.
+    const [sold] = getPreEngineeredVariants(climb.symbol);
+    assert.equal(sold?.grade, climb.soldAtGrade);
+    assert.equal(sold?.blueprint, climb.blueprint);
+    build.applyBlueprint('Slot01_Size7', climb.blueprint, {
+        grade: climb.grade,
+        quality: climb.quality,
+    });
+    const engineered = build.getFittedModule('Slot01_Size7')!.Engineering!;
+    assert.equal(engineered.BlueprintName, climb.blueprint);
+    for (const [label, expected] of Object.entries(climb.expected)) {
+        const modifier = engineered.Modifiers!.find((entry) => entry.Label === label);
+        assert.equal(modifier?.OriginalValue, climb.base[label as keyof typeof climb.base], label);
+        assert.ok(Math.abs(modifier!.Value! - expected) < 1e-6, `${label}: ${modifier?.Value}`);
+    }
+    // Grade 1 is what the module was bought with, so the recipe does not define it.
+    assert.throws(
+        () =>
+            build.applyBlueprint('Slot01_Size7', climb.blueprint, {
+                grade: climb.gradeUnavailable,
+            }),
+        RangeError,
+    );
+    // The sale is per module: a size-3 package is not sold with it, and has no menu either.
+    assert.throws(
+        () =>
+            ShipLoadout.empty('Anaconda')
+                .setModule(
+                    'Slot02_Size6',
+                    mod('Int_ModuleReinforcement_Size3_Class2', INTERNAL_MODULES),
+                )
+                .applyBlueprint('Slot02_Size6', 'recipe_modulereinforcement_heavyduty', {
+                    grade: 2,
+                }),
+        /no registry lists an engineering menu for module "Int_ModuleReinforcement_Size3_Class2"/,
     );
 });
 
@@ -1022,7 +1083,7 @@ test('applyBlueprint / clearEngineering work straight on the fitted module', () 
     assert.equal(build.frameShiftDrive.optMass, 4670); // base
 });
 
-test('getAvailableBlueprints / getAvailableExperimentalEffects match the module family', () => {
+test('getAvailableBlueprints / getAvailableExperimentalEffects answer the module menu', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'FrameShiftDrive',
         mod('Int_Hyperdrive_Size6_Class5'),
@@ -1393,9 +1454,10 @@ test('an engineered hull reinforcement package adds a share of the base armour',
 });
 
 test('engineering the burst pattern moves the rate of fire with it', () => {
+    // Double Shot is the fragment cannons' recipe — the only group whose menu lists it.
     const build = ShipLoadout.empty('Anaconda').setModule(
         'LargeHardpoint1',
-        mod('Hpt_MultiCannon_Gimbal_Large', HARDPOINT_MODULES),
+        mod('Hpt_Slugshot_Gimbal_Large', HARDPOINT_MODULES),
     );
     const before = build.weaponMetrics().total.damagePerSecond;
     // Double Shot names no rate of fire, but a two-round burst fires faster.

@@ -126,12 +126,6 @@ test('internal commodity construction helpers are not package exports', async ()
     });
 });
 
-test('internal engineering compatibility rules are not package exports', async () => {
-    await assert.rejects(import('@elite-dangerous-almanac/core/ships/engineering-compatibility'), {
-        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
-    });
-});
-
 test('internal loadout engineering adapters are not package exports', async () => {
     await assert.rejects(import('@elite-dangerous-almanac/core/ships/loadout-engineering'), {
         code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
@@ -154,7 +148,6 @@ test('the build does not emit entry artifacts for inaccessible internal modules'
     const internalEntries = [
         'commodities/commodity-catalogue',
         'materials/material-catalogue',
-        'ships/engineering-compatibility',
         'ships/loadout-engineering',
         'ships/loadout-metrics',
         'ships/module-stat-labels',

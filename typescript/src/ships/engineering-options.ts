@@ -26,14 +26,25 @@
  * and `guardianPowerPlants` are separate — likewise the distributors and the hull
  * reinforcement packages.
  *
- * Its own module (and data file) so consumers who never open an engineering menu do not
- * bundle it — 63 KB minified, 7 KB gzipped, of which the module→group map is most of the
- * weight. Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`,
- * neither of which this module pulls in.
+ * Its own module (and data file) so a consumer who only reads it pays for nothing else —
+ * 63 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
+ * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, neither
+ * of which this module pulls in.
  *
- * This complements `engineering-compatibility.ts`: that answers "may this blueprint be
- * applied to this module?" for a build already assembled, while this enumerates the
- * choices up front.
+ * **This catalogue is also the gate.** {@link ShipLoadout.applyBlueprint} refuses a recipe
+ * this module does not offer for that module, so "what can I put on this?" and "may I put
+ * this on it?" cannot answer differently — they read the same menu. A `ShipLoadout`
+ * therefore carries this module's weight whether or not the consumer calls it: its import
+ * graph is 709 KB where it was 624 KB, 82 KB gzipped where it was 74 KB. That is a
+ * deliberate trade, taken because the second hand-maintained map of the same fact drifted
+ * from this one — §Engineering compatibility in
+ * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
+ * records what it cost. The gate
+ * makes two accommodations beyond the menu: a build that spells a modification generically
+ * — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
+ * {@link getBlueprintsForModule} describes — and a `recipe_*` key belonging to a module
+ * sold already engineered, which no menu lists and `ships/pre-engineered` resolves per
+ * module.
  *
  * @packageDocumentation
  */

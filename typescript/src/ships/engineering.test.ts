@@ -5,11 +5,18 @@ import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js'
 import { getBlueprint, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import {
-    blueprintTargets,
-    experimentalTarget,
-    moduleEngineeringTarget,
-} from './engineering-compatibility.js';
+    blueprintAvailableFor,
+    experimentalAvailableFor,
+    isEngineerable,
+} from './loadout-engineering.js';
+import {
+    getBlueprintsForModule,
+    getEngineeringGroup,
+    getExperimentalsForModule,
+} from './engineering-options.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
+import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { baseStats } from './module-stat-labels.js';
@@ -24,22 +31,144 @@ test('the catalogues hold the expected counts', () => {
     assert.equal(Object.keys(EXPERIMENTAL_EFFECTS).length, fixture.experimentalCount);
 });
 
-test('every engineering id has an explicit compatibility target', () => {
-    for (const id of Object.keys(BLUEPRINTS)) {
-        assert.notEqual(blueprintTargets(id), null, `blueprint target: ${id}`);
+test('the gate accepts every recipe the menu offers, for every module', () => {
+    // The contract: "what can this module take?" and "may I put this on it?" read the
+    // same catalogue, so no module can be offered a recipe that `applyBlueprint` refuses.
+    for (const module of ALL_MODULES) {
+        for (const fdname of getBlueprintsForModule(module.symbol)) {
+            assert.ok(
+                blueprintAvailableFor(module.symbol, fdname),
+                `${module.symbol} is offered ${fdname} but the gate refuses it`,
+            );
+        }
+        for (const effect of getExperimentalsForModule(module.symbol)) {
+            assert.ok(
+                experimentalAvailableFor(module.symbol, effect),
+                `${module.symbol} is offered ${effect} but the gate refuses it`,
+            );
+        }
     }
-    for (const id of Object.keys(EXPERIMENTAL_EFFECTS)) {
-        assert.notEqual(experimentalTarget(id), null, `experimental target: ${id}`);
-    }
-    assert.equal(moduleEngineeringTarget('Int_Hyperdrive_Size5_Class5'), 'frameShiftDrive');
-    assert.equal(moduleEngineeringTarget('Anaconda_Armour_Reactive'), 'armour');
-    assert.equal(moduleEngineeringTarget('Hpt_PulseLaser_Fixed_Small'), 'weapon');
-    assert.deepEqual(blueprintTargets('Misc_LightWeight'), [
-        'miscellaneous',
-        'chaff',
-        'heatSink',
-        'pointDefence',
+});
+
+test('a build that spells a modification generically is still engineered', () => {
+    // The menu lists the family-specific id; an EDSY-authored build carries the generic
+    // one. They are the same recipe, so both are accepted.
+    assert.deepEqual(getBlueprintsForModule('Int_LifeSupport_Size4_Class2'), [
+        'LifeSupport_LightWeight',
+        'LifeSupport_Reinforced',
+        'LifeSupport_Shielded',
     ]);
+    for (const generic of ['Misc_LightWeight', 'Misc_Reinforced', 'Misc_Shielded']) {
+        assert.ok(
+            blueprintAvailableFor('Int_LifeSupport_Size4_Class2', generic),
+            `life support must accept ${generic}`,
+        );
+    }
+    assert.ok(blueprintAvailableFor('Int_Repairer_Size3_Class5', 'Misc_Shielded'));
+    assert.ok(
+        blueprintAvailableFor('Int_DroneControl_Collection_Size3_Class3', 'Misc_LightWeight'),
+    );
+
+    // The alias runs one way only. `Misc_ChaffCapacity` and `Misc_HeatSinkCapacity` share
+    // a signature — both "Ammo capacity" over the same labels — but neither is a family
+    // spelling of the other, and their rolls differ.
+    assert.ok(!blueprintAvailableFor('Hpt_HeatSinkLauncher_Turret_Tiny', 'Misc_ChaffCapacity'));
+    assert.ok(!blueprintAvailableFor('Hpt_ChaffLauncher_Tiny', 'Misc_HeatSinkCapacity'));
+    // A weapon's Lightweight cuts distributor draw, so the signature keeps it apart.
+    assert.ok(!blueprintAvailableFor('Hpt_PulseLaser_Fixed_Small', 'Misc_LightWeight'));
+    // And a family-specific id never widens to another family.
+    assert.ok(
+        !blueprintAvailableFor(
+            'Int_DroneControl_Collection_Size3_Class3',
+            'LifeSupport_LightWeight',
+        ),
+    );
+});
+
+test('the gate accepts what the menu omits only by a pinned alias or a pre-engineered sale', () => {
+    // Two things beyond the menu may explain an acceptance, and nothing else may: the
+    // generic spelling of a recipe the menu lists under a family's name, and a recipe the
+    // module is sold already carrying. Anything else means the gate has quietly widened.
+    const pinned = new Set(
+        Object.entries(optionsFixture.corpus.blueprintAliases).flatMap(([generic, specific]) =>
+            specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
+        ),
+    );
+    const seen = new Set<string>();
+    for (const module of ALL_MODULES) {
+        const offered = getBlueprintsForModule(module.symbol);
+        if (offered.length === 0) continue;
+        const sold = new Set(
+            getPreEngineeredVariants(module.symbol).map((variant) =>
+                variant.blueprint.toLowerCase(),
+            ),
+        );
+        for (const fdname of Object.keys(BLUEPRINTS)) {
+            if (offered.includes(fdname)) continue;
+            if (!blueprintAvailableFor(module.symbol, fdname)) continue;
+            if (sold.has(fdname.toLowerCase())) continue;
+            const matched = offered.filter((id) =>
+                pinned.has(`${fdname.toLowerCase()}|${id.toLowerCase()}`),
+            );
+            assert.equal(
+                matched.length,
+                1,
+                `${module.symbol} accepts "${fdname}", which neither a pinned alias nor a pre-engineered sale explains`,
+            );
+            seen.add(`${fdname.toLowerCase()}|${matched[0]!.toLowerCase()}`);
+        }
+    }
+    // ...and every alias the fixture pins is one the gate actually honours.
+    assert.deepEqual([...seen].sort(), [...pinned].sort());
+});
+
+test('a recipe sold on one module is not thereby available on its neighbours', () => {
+    // The pre-engineered route is per module, not per family: the Mercenary rail gun's
+    // recipe resolves on the rail gun that ships with it and on nothing else.
+    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'recipe_railgun_longshot'));
+    assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'recipe_railgun_longshot'));
+    assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'recipe_railgun_longshot'));
+    // A module with no engineering menu at all can still be sold carrying a recipe, and
+    // the menu check must not refuse it first: the Mercenary Module Reinforcement Package
+    // is the one such case, and reproducing its numbers is the whole point of this leg.
+    assert.equal(getEngineeringGroup('Int_ModuleReinforcement_Size5_Class2'), null);
+    assert.ok(
+        blueprintAvailableFor(
+            'Int_ModuleReinforcement_Size5_Class2',
+            'recipe_modulereinforcement_heavyduty',
+        ),
+    );
+    assert.ok(
+        !blueprintAvailableFor(
+            'Int_ModuleReinforcement_Size3_Class2',
+            'recipe_modulereinforcement_heavyduty',
+        ),
+    );
+});
+
+test('the gate matches an id the way every other lookup does', () => {
+    // `getBlueprint` has already accepted the id by the time the gate sees it, so the two
+    // must agree on casing and whitespace — including down the alias path, which resolves
+    // the id a second time.
+    for (const id of [
+        'Misc_LightWeight',
+        'misc_lightweight',
+        'MISC_LIGHTWEIGHT',
+        ' Misc_LightWeight ',
+    ]) {
+        assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', id), JSON.stringify(id));
+    }
+    assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'lifesupport_lightweight'));
+    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'RECIPE_RAILGUN_LONGSHOT'));
+    // An id that is only a property of `Object.prototype` is not a blueprint.
+    assert.ok(!blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'toString'));
+});
+
+test('a module no registry gives a menu takes no engineering', () => {
+    assert.ok(!isEngineerable('Int_FuelTank_Size5_Class3'));
+    assert.ok(!blueprintAvailableFor('Int_FuelTank_Size5_Class3', 'Misc_LightWeight'));
+    assert.ok(!isEngineerable('Hpt_MRAScanner_Size0_Class1'));
+    assert.ok(isEngineerable('Int_LifeSupport_Size4_Class2'));
 });
 
 test('computeModifiers reproduces the FSD Long Range G5 + Mass Manager anchor', () => {

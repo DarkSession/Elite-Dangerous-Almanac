@@ -778,8 +778,9 @@ build.setModuleEnabled("TinyHardpoint6", false);
 ```
 
 > **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
-> currently reaches about 606 KB of minified JavaScript (~69 KB gzipped) because it
-> must resolve any ship/module id plus blueprints and experimental effects. Prefer
+> currently reaches about 709 KB of minified JavaScript (~82 KB gzipped) because it must
+> resolve any ship/module id, plus blueprints and experimental effects, plus the
+> engineering menu it validates against and the pre-engineered catalogue. Prefer
 > `ships/slef`, `ships/jump-range`, the [build-metric
 > modules](#build-metrics-power-shields-armour-and-firepower) (1–3 KB each), and the
 > individual catalogue modules when you only need parsing, maths, or one outfitting
@@ -1018,11 +1019,13 @@ read-only** layout (to drive your own outfitting UI), call `getShipSlots(symbol)
 feed the result to `enumerateSlots`; the rest of the `ships/slots` exports
 (`BuildSlot`, `CoreSlots`, `parseSlotName`, …) are that low-level model.
 
-`applyBlueprint` also validates that the blueprint and experimental effect belong to
-the fitted module's engineering family, that quality is a finite value from 0 to 1,
-and that every stat the recipe changes can actually be answered for that module. An
-armour recipe, for example, cannot be applied to an FSD merely because both modify mass
-or integrity.
+`applyBlueprint` also validates that the module is actually offered the blueprint and the
+experimental effect, that quality is a finite value from 0 to 1, and that every stat the
+recipe changes can actually be answered for that module. What a module is offered comes
+from its [engineering menu](#what-a-module-can-be-engineered-with), not from a rule about
+what kind of module it is: an armour recipe cannot go on an FSD, but neither can
+`Weapon_HighCapacity` go on a Guardian Gauss Cannon, whose menu is Rapid Fire and
+Anti-Guardian Zone Resistance alone. The error names the menu it checked against.
 
 A recipe leg on a stat the module simply **does not have** is not a failure — it is
 inert, exactly as in the game. Long Range scales a projectile's shot speed and leaves a
@@ -1182,19 +1185,27 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > share no id at all — a scanner's other four are `Sensor_FastScan` and the generic
 > `Misc_*` trio, none of which a sensor suite offers.
 >
-> **The menu and `ShipLoadout.applyBlueprint` do not yet agree.** `applyBlueprint` does
-> not read this catalogue — it maps the blueprint to a module family of its own — and it
-> refuses recipes the menu offers on 52 modules: the hatch-breaker controllers (21), the
-> Guardian shield reinforcement packages (10) and FSD boosters (5), the KWS/manifest/wake
-> scanners (5 each, for the generic `Misc_*` recipes) and the Caustic Sink Launcher, whose
-> family is `miscellaneous` rather than `heatSink`. It refuses the same generic recipes on
-> life support, limpet controllers, AFMUs and fuel scoops, which is what real builds
-> actually hit: 76 of the 1902 declared engineering entries in `fixtures/ships/builds/`
-> are refused for a family mismatch, across 54 builds, the Caustic Sink Launcher's two
-> among them. All of it is the same defect, tracked in
-> [#14](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/14): until it is
-> fixed, take the menu as the answer to "what can I fit?" and expect `applyBlueprint` to
-> be narrower.
+> **This menu is also what `ShipLoadout.applyBlueprint` enforces.** The two questions —
+> "what can I fit?" and "may I fit this?" — read the same catalogue, so they cannot answer
+> differently. `applyBlueprint` refuses a recipe this menu does not list for that module,
+> and quotes the menu back when it does.
+>
+> It makes two accommodations beyond the menu. The first is for builds that spell a
+> modification generically: where a recipe applies to several families the game writes a
+> family-specific `BlueprintName` and the menu lists that one, but an EDSY-authored build
+> carries `Misc_LightWeight` where the menu says `LifeSupport_LightWeight`. Those are the
+> same recipe, so both are accepted — 70 of the corpus's declared entries are spelled that
+> way. The alias runs only from the ambiguous spelling to the menu's, never the reverse:
+> `LifeSupport_LightWeight` stays off a limpet controller, and a chaff launcher's Ammo
+> Capacity stays off a heat sink launcher, whose roll is a smaller one.
+>
+> The second is for the `recipe_*` keys of [modules sold already
+> engineered](#modules-you-can-buy-already-engineered). No menu lists one, so `applyBlueprint`
+> takes them from `ships/pre-engineered` instead, on the module that actually ships with the
+> recipe and no other — `recipe_railgun_longshot` on the medium rail gun, not the small one.
+> That is how you engineer a Mercenary module _further_: it arrives at grade 1 and its
+> recipe carries grades 2–5. It is not how you reproduce what you bought — grade 1 of those
+> recipes does not exist, because the first grade came with the module.
 
 #### Modules you can buy already engineered
 

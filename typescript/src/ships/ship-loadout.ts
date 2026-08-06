@@ -81,14 +81,17 @@ import {
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
-import {
-    blueprintTargets,
-    experimentalTarget,
-    moduleEngineeringTarget,
-} from './engineering-compatibility.js';
+import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
-import { baseStats, missingBaseLabels, statFor } from './loadout-engineering.js';
+import {
+    baseStats,
+    blueprintAvailableFor,
+    experimentalAvailableFor,
+    isEngineerable,
+    missingBaseLabels,
+    statFor,
+} from './loadout-engineering.js';
 import {
     armourInputFor,
     powerAvailable,
@@ -932,10 +935,16 @@ export class ShipLoadout {
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
-     * @throws {TypeError} If the fitted module has no stats to engineer, or the
-     * blueprint/experimental targets another module family, or the catalogue does
-     * not carry every base stat the recipe modifies. Incomplete engineering is
-     * rejected rather than stored as a partial journal modifier block.
+     * @throws {TypeError} If the fitted module has no stats to engineer; or is not offered
+     * the blueprint — by its engineering menu, by the generic spelling of a recipe that menu
+     * lists under a family's name, or by being sold already carrying it; or is not offered
+     * the experimental effect, which its menu alone decides; or the catalogue does not carry
+     * every base stat the recipe modifies. Incomplete engineering is rejected rather than
+     * stored as a partial journal modifier block.
+     * @remarks
+     * Six blueprint ids and one experimental effect are offered on no module at all, so
+     * naming one always throws — see
+     * {@link https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39 | issue #39}.
      * @example
      * ```ts
      * build.setModule('FrameShiftDrive', fsd)
@@ -977,23 +986,25 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: quality must be a finite number in [0, 1]`,
             );
         }
-        const moduleTarget = moduleEngineeringTarget(module.Item);
-        const expectedTargets = blueprintTargets(blueprintName);
-        if (expectedTargets === null || !expectedTargets.includes(moduleTarget)) {
+        // The engineering menu is the authority on what a module accepts, so the same
+        // catalogue answers `getBlueprintsForModule` and this gate. A module with no menu
+        // is not necessarily unengineerable: some are sold already carrying a recipe, and
+        // `blueprintAvailableFor` knows that, so ask it before blaming the module.
+        if (!blueprintAvailableFor(module.Item, blueprintName)) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: blueprint "${blueprintName}" targets ${expectedTargets?.join('/') ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,
+                isEngineerable(module.Item)
+                    ? `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered blueprint "${blueprintName}"; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
+                    : `ShipLoadout.applyBlueprint: no registry lists an engineering menu for module "${module.Item}"`,
             );
         }
-        if (options.experimental !== undefined) {
-            const expectedExperimentalTarget = experimentalTarget(options.experimental);
-            if (
-                expectedExperimentalTarget === null ||
-                expectedExperimentalTarget !== moduleTarget
-            ) {
-                throw new TypeError(
-                    `ShipLoadout.applyBlueprint: experimental effect "${options.experimental}" targets ${expectedExperimentalTarget ?? 'an unknown module family'}, not ${moduleTarget} module "${module.Item}"`,
-                );
-            }
+        if (
+            options.experimental !== undefined &&
+            !experimentalAvailableFor(module.Item, options.experimental)
+        ) {
+            const offered = getExperimentalsForModule(module.Item);
+            throw new TypeError(
+                `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered experimental effect "${options.experimental}"; it takes ${offered.length > 0 ? offered.join(', ') : 'no experimental effect'}`,
+            );
         }
         const base = baseStats(stats);
         const missing = missingBaseLabels(stats, base, features, experimental);
