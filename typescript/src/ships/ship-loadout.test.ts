@@ -392,6 +392,36 @@ test('an optional mount takes a fuel tank because its record says so, not its sy
     );
 });
 
+test('an optional mount turns away a core module because its record names a mount', () => {
+    // The other half of the optional rule, and the half no catalogue record can pin:
+    // "a core module only fits its core slot" reads `slot`, where it used to classify
+    // the symbol. Both records below are internals by category, so they get past the
+    // kind check and reach exactly that line.
+    const rack = mod('Int_CargoRack_Size4_Class1', INTERNAL_MODULES);
+    assert.equal(rack.slot, undefined);
+    assert.doesNotThrow(() => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', rack));
+
+    // A cargo rack that claims a core mount is taken at its word and refused, though
+    // its symbol is a rack's and the old symbol rule let it through.
+    const claimsCore: OutfittingModule = { ...rack, slot: 'powerPlant' };
+    assert.throws(
+        () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', claimsCore),
+        /a core module only fits its core slot/,
+    );
+
+    // And the mirror: a power plant that declares no mount is no longer recognised as
+    // a core module here, so this rule has nothing to say and it fits.
+    const plant = mod('Int_PowerPlant_Size5_Class5');
+    const unnamed: OutfittingModule = {
+        symbol: plant.symbol,
+        category: 'internal',
+        name: plant.name,
+        class: plant.class,
+        rating: plant.rating,
+    };
+    assert.doesNotThrow(() => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', unnamed));
+});
+
 test('a military slot only takes military-eligible modules', () => {
     const conda = ShipLoadout.empty('Anaconda');
     // A hull reinforcement package is military-eligible.

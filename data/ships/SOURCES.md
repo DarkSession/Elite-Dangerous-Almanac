@@ -1641,9 +1641,12 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   plus `pre-engineered` for the
   route above. The `ships` barrel went the other way, 716 KB to 711 KB, the family map
   having gone with it. That is the price of one answer instead of two, paid deliberately.
-  Both ends have since shrunk by the same ~13 KB, the module records having stopped
-  repeating their category (see the 2026-08-06 revision at the top of this file); the
-  current figures are 611 KB to 696 KB, and `engineering-options.ts` carries them.
+  Both ends have since shrunk by about 13 KB, the module records having stopped
+  repeating their category (see the 2026-08-06 revision at the top of this file), so the
+  graph carrying this catalogue measures 696 KB / 82 KB gzipped today. The figure it
+  would measure *without* it is no longer recoverable — the duplicate family map this
+  replaced is deleted, so only the pair above, taken when both existed, compares like
+  with like.
 
 ## Pre-engineered modules
 
