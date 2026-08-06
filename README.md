@@ -37,8 +37,9 @@ Licensing note: the package bundles game and community data under
 source-specific terms, including non-commercial terms. See [License](#license)
 before redistribution or commercial use.
 
-ESM-only, `"sideEffects": false`. Import the slice you need so bundlers drop the
-rest. Native ESM applications can use leaf subpaths (for example,
+ESM-only, Node.js 18+, and emitted as ES2022 for modern browser bundlers.
+`"sideEffects": false`. Import the slice you need so bundlers drop the rest. Native
+ESM applications can use leaf subpaths (for example,
 `@elite-dangerous-almanac/core/astro/star-system`) to avoid evaluating unrelated
 data modules:
 

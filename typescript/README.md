@@ -13,7 +13,8 @@ Licensing note: the package bundles game and community data under
 source-specific terms, including non-commercial terms. See [License](#license)
 before redistribution or commercial use.
 
-The package is ESM-only. Browser bundlers may import a feature barrel:
+The package is ESM-only and supports Node.js 18+; its ES2022 output targets modern
+browser bundlers. Browser bundlers may import a feature barrel:
 
 ```ts
 import { StarSystem } from '@elite-dangerous-almanac/core/astro';

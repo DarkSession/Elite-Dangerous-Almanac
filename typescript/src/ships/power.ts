@@ -45,7 +45,7 @@ const EPSILON = 1e-9;
 
 /** One fitted module's claim on the power plant. */
 export interface PowerConsumer {
-    /** Power draw, in megawatts, post-engineering. */
+    /** Power draw, in megawatts, post-engineering. Must be finite and non-negative. */
     readonly draw: number;
     /**
      * Priority group, `1`–`5`, as the outfitting panel numbers them. Defaults to `1`.
@@ -151,10 +151,13 @@ function bandIndex(priority: number | undefined): number {
  * retracted and deployed, and which priority groups survive.
  *
  * @param available - Power the plant generates, in megawatts (`0` when no plant is
- * fitted — every group then reads as unpowered).
+ * fitted — every group then reads as unpowered). Must be finite and non-negative.
  * @param consumers - One entry per fitted module. Modules with `enabled: false` are
  * skipped; the rest fall into their {@link PowerConsumer.priority | priority} group.
  * @returns The {@link PowerBudget}.
+ * @throws {RangeError} If `available`, or an enabled known consumer's `draw`, is not a
+ * finite non-negative number. Disabled consumers and consumers marked `drawUnknown`
+ * are skipped before their placeholder draw is validated.
  * @remarks
  * A group that draws *exactly* the power available stays online, matching the game —
  * only going over shuts anything down.
@@ -174,6 +177,10 @@ function bandIndex(priority: number | undefined): number {
  * ```
  */
 export function powerBudget(available: number, consumers: readonly PowerConsumer[]): PowerBudget {
+    if (!Number.isFinite(available) || available < 0) {
+        throw new RangeError('powerBudget: available power must be a finite non-negative number');
+    }
+
     const retractedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const deployedByBand = Array<number>(PRIORITY_GROUPS).fill(0);
     const unknownDraws: PowerConsumer[] = [];
@@ -186,7 +193,10 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
             unknownDraws.push(consumer);
             continue;
         }
-        if (!Number.isFinite(consumer.draw) || consumer.draw === 0) continue;
+        if (!Number.isFinite(consumer.draw) || consumer.draw < 0) {
+            throw new RangeError('powerBudget: consumer draw must be a finite non-negative number');
+        }
+        if (consumer.draw === 0) continue;
         const index = bandIndex(consumer.priority);
         if (consumer.deployedOnly) deployedByBand[index]! += consumer.draw;
         else retractedByBand[index]! += consumer.draw;

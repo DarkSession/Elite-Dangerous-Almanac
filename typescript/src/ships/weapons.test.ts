@@ -191,6 +191,13 @@ test('the shared fixture pins falloff, piercing and the sustained factor', () =>
     }
 });
 
+test('armour piercing rejects invalid ratings and permits zero', () => {
+    assert.equal(armourPiercingFactor(0, 65), 0);
+    for (const piercing of [-1, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => armourPiercingFactor(piercing, 65), RangeError);
+    }
+});
+
 test('a clip left fractional by engineering is loaded as whole rounds', () => {
     // A 6-round clip at +36% is 8.16 rounds; the game loads 9.
     const fractional = { rateOfFire: 1.5, clipSize: 8.16, reloadTime: 3 };

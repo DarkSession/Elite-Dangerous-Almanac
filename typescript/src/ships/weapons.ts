@@ -317,8 +317,10 @@ export function damageFalloff(weapon: WeaponStats, metres: number): number {
  *
  * @param armourPiercing - The weapon's piercing rating.
  * @param hardness - The target hull's {@link Ship.hardness}.
- * @returns A factor in `(0, 1]`: `1` when the weapon out-pierces the hull, otherwise
- * `armourPiercing / hardness`. Applies to hull damage only — shields do not care.
+ * @returns A factor in `[0, 1]`: `1` when the weapon out-pierces the hull, otherwise
+ * `armourPiercing / hardness`. A zero piercing rating returns `0`. Applies to hull
+ * damage only — shields do not care.
+ * @throws {RangeError} If `armourPiercing` is not a finite non-negative number.
  * @example
  * ```ts
  * armourPiercingFactor(22, 65); // -> 0.338…  a small multi-cannon against an Anaconda
@@ -326,6 +328,11 @@ export function damageFalloff(weapon: WeaponStats, metres: number): number {
  * ```
  */
 export function armourPiercingFactor(armourPiercing: number, hardness: number): number {
+    if (!Number.isFinite(armourPiercing) || armourPiercing < 0) {
+        throw new RangeError(
+            'armourPiercingFactor: armour piercing must be a finite non-negative number',
+        );
+    }
     if (!Number.isFinite(hardness) || hardness <= 0) return 1;
     return Math.min(1, armourPiercing / hardness);
 }

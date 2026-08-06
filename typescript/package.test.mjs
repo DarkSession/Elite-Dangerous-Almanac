@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { test } from 'node:test';
+import { build } from 'esbuild';
 
 import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-code';
 import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
@@ -67,6 +68,28 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(sectorNameFromGalacticCoords({ x: 751, y: -179, z: -91 }), 'Synuefe');
     const slef = stringifySlef(toSlef({ Ship: 'sidewinder', Modules: [] }));
     assert.equal(parseSlef(slef)[0]?.data.Ship, 'sidewinder');
+});
+
+test('consumer bundles of root and feature barrels produce no warnings', async () => {
+    const cases = {
+        root: `import { massCodeToSizeClass } from '@elite-dangerous-almanac/core'; console.log(massCodeToSizeClass('d'));`,
+        astro: `import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro'; console.log(massCodeToSizeClass('d'));`,
+        ships: `import { powerBudget } from '@elite-dangerous-almanac/core/ships'; console.log(powerBudget(1, []));`,
+        materials: `import { MaterialGrade } from '@elite-dangerous-almanac/core/materials'; console.log(MaterialGrade.Rare);`,
+        commodities: `import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities'; console.log(COMMODITIES.length);`,
+    };
+    for (const [name, contents] of Object.entries(cases)) {
+        const result = await build({
+            stdin: { contents, resolveDir: process.cwd() },
+            bundle: true,
+            write: false,
+            minify: true,
+            format: 'esm',
+            platform: 'browser',
+            logLevel: 'silent',
+        });
+        assert.deepEqual(result.warnings, [], `${name} barrel emitted consumer build warnings`);
+    }
 });
 
 test('a journal address reaches every id64 entry point without conversion', async () => {
