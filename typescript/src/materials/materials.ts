@@ -27,7 +27,7 @@
  * | `./materials-all` | `ALL_MATERIALS` | 146 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all three
- * catalogues, since that is what it falls back to — 15 KB minified for all 146.
+ * catalogues, since that is what it falls back to — 16 KB minified for all 146.
  * {@link materialsInCategory} reaches the same subsets from a plain string.
  *
  * Data originates from EDCD FDevIDs, with a handful of newer Thargoid materials

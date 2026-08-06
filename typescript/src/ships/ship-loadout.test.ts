@@ -323,8 +323,10 @@ test('a core mount takes the module whose record names it, not one that looks th
     assert.doesNotThrow(() => conda.setModule('FrameShiftDrive', drive));
     // Right shape, wrong mount.
     assert.throws(() => conda.setModule('PowerPlant', drive), /not a powerPlant module/);
-    // A record assembled by hand carries no `slot`, so it names no mount and fits none
-    // — the fit rule reads the record rather than classifying the symbol.
+    // A record assembled by hand carries no `slot`, so it names no mount — and the fit
+    // rule reads the record rather than classifying the symbol, so this core mount turns
+    // it away. (It cuts the other way too on other mounts, which is the point: the record
+    // decides. The README changelog spells the directions out.)
     const handRolled: OutfittingModule = {
         symbol: drive.symbol,
         category: 'core',

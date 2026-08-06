@@ -33,9 +33,11 @@ const DATA_FILES = readdirSync(DATA_DIR)
 const BANNED_KEYS = ['attribution', 'description'];
 
 /**
- * The module files whose contents are checked record-by-record below. Kept as a set so
- * a fifth `modules-*.jsonc` fails the check outright rather than being waved through —
- * an empty one would never reach the per-record loop.
+ * The module files the per-record rules below know about. A fifth `modules-*.jsonc`
+ * fails on this set before its records are looked at, so an *empty* new file cannot slip
+ * through the per-record loop by having nothing to loop over. The `switch` on the same
+ * names keeps its own `default: assert.fail`, so a name added here without a rule there
+ * fails too — the two lists guard each other rather than one replacing the other.
  */
 const MODULE_FILE_RULES = new Set([
     'modules-core.jsonc',
@@ -195,6 +197,10 @@ for (const name of DATA_FILES) {
                             `${where} names a fixed mount but is not a Guardian hybrid`,
                         );
                         break;
+                    default:
+                        assert.fail(
+                            `${name} is in MODULE_FILE_RULES with no rule here — add one, or a record misfiled into it goes unnoticed`,
+                        );
                 }
             }
         });

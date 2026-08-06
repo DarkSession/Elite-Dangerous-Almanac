@@ -149,11 +149,13 @@ export type CoreSlotType =
  *
  * A module carries this when it fills one particular mount and nothing else. Most do
  * not: a hardpoint weapon, a utility fitting and an optional internal each fit any
- * mount of their kind that is big enough, so there is no one mount to name. The two
- * exceptions to "core module lives in `CORE_MODULES`" are covered: a fuel tank is
- * `fuelTank` and also fits any optional slot, and the Guardian Hybrid power plants
- * and distributors carry `powerPlant` / `powerDistributor` from `INTERNAL_MODULES`,
- * which is where Frontier's registry files them.
+ * mount of their kind that is big enough, so there is no one mount to name.
+ *
+ * Two records bend a rule each. A fuel tank bends this one — it is `fuelTank` and fits
+ * any optional slot as well, the one module built for two kinds of mount. The Guardian
+ * Hybrid power plants and distributors bend "a core module lives in `CORE_MODULES`":
+ * they carry `powerPlant` / `powerDistributor` from `INTERNAL_MODULES`, which is where
+ * Frontier's registry files them.
  */
 export type ModuleSlot = CoreSlotType | 'armour';
 

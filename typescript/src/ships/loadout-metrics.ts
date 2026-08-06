@@ -33,8 +33,9 @@ import { isStatUnknown } from './unknown-stats.js';
  * @remarks
  * Classifying by symbol is the weaker way to do this, and `powerPlant` is the one entry
  * that no longer needs it: a power plant's record names the mount it fills, so
- * {@link powerAvailable} reads {@link OutfittingModule.slot} and falls back to this only
- * for an `Item` no catalogue knows — a build may name a module newer than this snapshot.
+ * {@link powerAvailable} reads {@link OutfittingModule.slot} and falls back to this
+ * whenever no mount is named — an `Item` no catalogue knows (a build may name a module
+ * newer than this snapshot), or a record a caller assembled without a `slot`.
  *
  * The other five have nothing better to read. A shield generator, shield booster or
  * reinforcement package fits any mount of its kind that is large enough, so it fills no

@@ -1492,15 +1492,19 @@ recorded inline there beside the field they touch.
   `slot` is additive — so nothing that worked stops working. The one thing that did
   change is key _order_: `slot` follows `symbol` and `category` moved to the end,
   which matters only if you serialize a record and compare the string. **Records
-  resolved from a catalogue behave identically** — every mount, metric and refusal is
-  unchanged across all 181 corpus builds. The one behaviour-visible difference is for
-  a record you assemble **by hand**: which mount a module is built for is now read
-  off the record, so a hand-made record carrying no `slot` is not a core module to
-  `setModule`, and a core module you hand-label `category: "internal"` will now go
-  into an optional slot, where the old symbol rule refused it. The other readers of
-  `slot` — the power budget, the jump-range drive lookup and fuel-tank capacity —
-  fall back to the symbol when a record names no mount, so a hand-made record reads
-  there exactly as it always has.
+  resolved from a catalogue behave identically** — verified over every catalogue
+  module against every mount of every hull, 1.6 M fit decisions, plus the 181 corpus
+  builds' metrics. The behaviour-visible difference is for a record you assemble **by
+  hand**, and it is one rule: `setModule` now asks the record which mount it is built
+  for, where it used to match the symbol. A hand-made record therefore fits by what it
+  _says_ rather than by what it is called, and that cuts both ways — one with no
+  `slot` is refused from a core mount, from the armour mount and (being no fuel tank)
+  from an optional slot, while one whose `slot` is absent or disagrees with its symbol
+  is now _accepted_ where the symbol rule refused it, an armour record labelled
+  `category: "internal"` into the armour mount among them. The other readers of `slot`
+  — the power budget, the jump-range drive lookup and fuel-tank capacity — fall back
+  to the symbol whenever a record names no mount, so a hand-made record reads there
+  exactly as it always has.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
