@@ -26,7 +26,7 @@ import { buildModuleCatalogue, type ModuleRecord } from './module-catalogue.js';
  * rather than repeated on every record. To keep the other three categories out of
  * your bundle, search this array directly — `CORE_MODULES.find((m) =>
  * m.symbol.toLowerCase() === wanted)`, lower-cased because a journal's symbols are —
- * rather than with the lookups in `./modules`, which default to all 1198 modules.
+ * rather than with the lookups in `./modules`, which default to all 1197 modules.
  *
  * @example
  * ```ts

@@ -3,10 +3,10 @@
   "countsNote": "Every module in every catalogue now carries at least one stat, so these equal the catalogue sizes and no longer fail independently of the catalogue counts in modules.json — they assert that no record regresses to identity-only. The 16 rows that used to have none were the ten `*_free` starter variants, `Int_Hyperdrive_Size8_Class{1..5}` and `Int_DroneControl_ResourceSiphon`. No row is left holding only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. `Int_DroneControl_ResourceSiphon` deliberately still has no `mass` — no source states one, so absent keeps meaning unknown, and its own record says so in `unknownStats` (pinned below). The `spot` entries below are what actually pins the backfilled and corrected values.",
   "counts": {
     "core": 521,
-    "internal": 483,
+    "internal": 482,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1198
+    "all": 1197
   },
   "priceCounts": {
     "core": 509,
@@ -33,11 +33,10 @@
       "cost": 12560
     }
   ],
-  "unpricedNote": "The three Corrosion Resistant Cargo Racks left here are not sold at any station: FDevIDs `outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN` / \"never released\" on `Size2_Class1`, `cost: 0 // TODO: cost // CG reward` on sizes 5 and 6. coriolis-data carries 0 for sizes 5 and 6 and has no record at all for size 2. Sizes 5 and 6 were Community Goal rewards and size 2 never shipped, so there is no list price to publish rather than a price this catalogue failed to copy. `Size1_Class2` left this list once EDSY was found to price it at 12 560.",
+  "unpricedNote": "The two Corrosion Resistant Cargo Racks left here were Community Goal rewards and cannot be bought: sizes 5 and 6 were handed out by the Community Goals that introduced them and are obtainable no other way, so there is no list price to publish rather than a price this catalogue failed to copy. No registry states one either — FDevIDs `outfitting.csv` lists neither, EDSY carries `cost: 0 // TODO: cost // CG reward`, and coriolis-data carries 0. A `Value` reported for one in a journal or SLEF export is not that price: `Value` is net of the station discount, and a reward module was never bought at a station. `Size1_Class2` left this list on 2026-08-05 when EDSY was found to price it at 12 560; `Size2_Class1` left it on 2026-08-06 when its record was dropped — that variant never existed in game.",
   "unpriced": [
     "Int_ShieldGenerator_Size1_Class4",
     "Int_Hyperdrive_Size8_Class1",
-    "Int_CorrosionProofCargoRack_Size2_Class1",
     "Int_CorrosionProofCargoRack_Size5_Class1",
     "Int_CorrosionProofCargoRack_Size6_Class1"
   ],
@@ -54,8 +53,8 @@
     ]
   },
   "withoutIntegrity": {
-    "note": "The 83 non-armour records that carry no integrity, pinned as a set. Not unknown values: no registry publishes an integrity for these families and the game's own module panel shows none, so the absence is the fact. They are the families with no other mechanical stat either — passenger cabins, hull and Guardian/meta-alloy reinforcement packages, fuel tanks, cargo racks, module stabilisers and planetary approach suites. A further 241 records without integrity are ship armour, a different shape, and are excluded by their 'ship' field. If a source ever supplies one of these, or a new record joins a family, this list changes and the test says so.",
-    "count": 83,
+    "note": "The 82 non-armour records that carry no integrity, pinned as a set. Not unknown values: no registry publishes an integrity for these families and the game's own module panel shows none, so the absence is the fact. They are the families with no other mechanical stat either — passenger cabins, hull and Guardian/meta-alloy reinforcement packages, fuel tanks, cargo racks, module stabilisers and planetary approach suites. A further 241 records without integrity are ship armour, a different shape, and are excluded by their 'ship' field. If a source ever supplies one of these, or a new record joins a family, this list changes and the test says so.",
+    "count": 82,
     "symbols": [
       "Int_FuelTank_Size1_Class3",
       "Int_FuelTank_Size2_Class3",
@@ -88,7 +87,6 @@
       "Int_PlanetApproachSuite",
       "Int_CorrosionProofCargoRack_Size1_Class1",
       "Int_CorrosionProofCargoRack_Size1_Class2",
-      "Int_CorrosionProofCargoRack_Size2_Class1",
       "Int_CorrosionProofCargoRack_Size5_Class1",
       "Int_CorrosionProofCargoRack_Size6_Class1",
       "Int_PassengerCabin_Size4_Class1",

@@ -18,18 +18,18 @@ import internalModulesData from '../../../data/ships/modules-internal.jsonc' wit
 import { buildModuleCatalogue, type ModuleRecord } from './module-catalogue.js';
 
 /**
- * All 483 optional internal modules, in Frontier's registry order.
+ * All 482 optional internal modules, in Frontier's registry order.
  *
  * @remarks
  * Every record has `category: 'internal'`, added from the file it was read from
  * rather than repeated on every record. To keep the other three categories out of
  * your bundle, search this array directly — `INTERNAL_MODULES.find((m) =>
  * m.symbol.toLowerCase() === wanted)`, lower-cased because a journal's symbols are —
- * rather than with the lookups in `./modules`, which default to all 1198 modules.
+ * rather than with the lookups in `./modules`, which default to all 1197 modules.
  *
  * @example
  * ```ts
- * INTERNAL_MODULES.length; // -> 483
+ * INTERNAL_MODULES.length; // -> 482
  * ```
  */
 export const INTERNAL_MODULES: readonly OutfittingModule[] = buildModuleCatalogue(

@@ -1,6 +1,6 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by two passes of 2026-08-06: the module-record pass in the revision block immediately below, and the scanner-id pass recorded under §Engineering options (what each module can take) in "Scanner Long Range and Wide Angle: one journal id, two recipes"; before them, the restricted-mount pass of 2026-08-05. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by three passes of 2026-08-06: the module-record pass in the revision block immediately below, the scanner-id pass recorded under §Engineering options (what each module can take) in "Scanner Long Range and Wide Angle: one journal id, two recipes", and the corrosion-rack pass recorded under §Modules (outfitting) in the bullet "`_Size2_Class1` is removed, and sizes 5 and 6 are confirmed Community Goal rewards"; before them, the restricted-mount pass of 2026-08-05. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 **Revision 2026-08-06 (UTC), the module-record pass — the outfitting category is the
 file it is in, and a core module names the mount it fills.**
@@ -9,7 +9,7 @@ it says about the game. Two changes, in opposite directions.
 
 **`category` is gone from the payload.** Every record in `modules-core.jsonc` said
 `"category": "core"`, every record in `modules-hardpoint.jsonc` said `"hardpoint"`, and
-so on for all 1198 — a fact the four-way file split already carried, repeated once per
+so on for all 1197 — a fact the four-way file split already carried, repeated once per
 record into every consumer's bundle. Each language's loader now adds it from the file it
 read, so every field a consumer reads still reads the same (the key order within a
 record does change: `category` moves to the end of it). §Modules (outfitting) below records
@@ -520,7 +520,7 @@ a value.
   on 6, the thruster and shield mass curves on 2 each, the distributor capacities and
   recharges on 1, and `powerCapacity`/`heatEfficiency` on 1, plus the three `*_free`
   completions described below. **Every module in every
-  catalogue now has at least one stat** (1198/1198), so `fixtures/ships/module-stats.json`
+  catalogue now has at least one stat** (1197/1197), so `fixtures/ships/module-stats.json`
   `counts` now equals the catalogue sizes — and no record is left holding only a lone
   `mass`.
 - **Closes the tracked gap "Modules still missing `mass`, deliberately" for all but one
@@ -630,7 +630,7 @@ heuristic does not keep rediscovering them:
   distributor integrity otherwise tracks 0.80× the A-rated standard ladder, which would
   put size 5 near 85; EDSY states 99 for both sizes. The duplicate is in the game data.
 - **`Int_DroneControl_Recon_Size5_Class1` `bootTime` really is 9.85** — the only
-  non-integer boot time in all 1198 records, where its three family siblings are exactly
+  non-integer boot time in all 1197 records, where its three family siblings are exactly
   10. EDSY gives `boottime:9.85`.
 
 Two display names were corrected, each one EDSY carries and this catalogue had wrong:
@@ -766,7 +766,7 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   same licence note as above.
 - **Identity derivation:** the 1190 FDevIDs modules are carried over in CSV order within
   each category file (the Operations/Lynx additions and the 1B shield generator below bring
-  the internal catalogue to 483, all four to 1198). The CSV's numeric `id` column is dropped — modules are keyed by
+  the internal catalogue to 482, all four to 1197). The CSV's numeric `id` column is dropped — modules are keyed by
   `symbol`. `class` is FDevIDs' `class` — the module size (0–8) — and `rating`
   its grade letter (A–I); together they are the "5A" the outfitting screen shows.
   `mount` (Fixed / Gimballed / Turreted) and `guidance` (Dumbfire / Seeker / Swarm)
@@ -775,7 +775,7 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   records carry it); `entitlement` is kept only where it is a real DLC/grant token.
 - **The CSV's `category` column is dropped, and the file replaces it** (revision
   2026-08-06 UTC). It was the same string on every record of a file whose name already
-  said it — 1198 repetitions of a fact the split itself carries — and every payload byte
+  said it — 1197 repetitions of a fact the split itself carries — and every payload byte
   is inlined into consumers' bundles. Each language loader adds it back from the file it
   read (TypeScript: `src/ships/module-catalogue.ts`), so a consumer's record is
   unchanged; `schemas/ships/catalogues.schema.json` grew one catalogue definition per
@@ -891,7 +891,8 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     priced, and the Deep Black's journal buys it at 82 775 = 94 330 less that export's
     12.25% discount. Carrying `0` made a build with one silently under-report instead of
     omitting the figure, so the field is omitted, matching `_Size2_Class1`, which never
-    had one. *Superseded for `_Size1_Class2` by the next bullet.*
+    had one. *Superseded for `_Size1_Class2` by the next bullet, and for `_Size2_Class1`
+    by the 2026-08-06 bullet below, which drops that record from the catalogue.*
   - **2026-08-05 (UTC) — `_Size1_Class2` is priced at 12 560, from EDSY.**
     Same EDSY snapshot the 2026-08-02 revision above pins (`eddb.js` SHA-256
     `967834d6…`, internal `db 20260428`), re-read for this change; the record is module
@@ -1035,6 +1036,51 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     itself annotates `// bug?`, so it is a weak counter-example, but it is enough to show
     the flag is not a statement about price). They are unpriced because no source states
     a figure — see the prices section for what each one actually says.
+    *`_Size2_Class1` was removed again on 2026-08-06 — next bullet.*
+  - **2026-08-06 (UTC) — `_Size2_Class1` is removed, and sizes 5 and 6 are confirmed
+    Community Goal rewards rather than modules whose price is merely unfound.**
+    The 2026-08-02 pass above added all three EDSY records together, on the strength of
+    the same `hidden:1` flag. That grouped two different things, and only one of them is
+    outfitting.
+    - **The size-2 rack is dropped: it never existed in game.** No registry lists it as
+      player-obtainable, which is the inclusion rule below failing rather than a price
+      gap — FDevIDs `outfitting.csv` has no row, coriolis-data has no record at all, and
+      EDSY carries it `cost: NaN` annotated "never released". A variant that never
+      reached players is not a player-facing outfitting record, so it goes the way of the
+      other non-purchasable internal variants that rule already excludes. The catalogue
+      drops from 1198 records to **1197** (`internal` 483 → 482), the
+      engineering-options module map from 1029 to **1028** (`cargoRacks` 17 → 16), and
+      the shared fixtures move with it in the same change. No build in
+      `fixtures/ships/builds/` fitted one.
+    - **Sizes 5 and 6 stay, and stay unpriced — but the absence now means *no list price
+      exists*, not *none was found*.** These are the opposite case: players do hold them,
+      so a journal can name them and the catalogue must resolve them. They were Community
+      Goal rewards and were sold nowhere. Frontier's own announcement of the **Rhea
+      Disaster** CG awards the size 6 to every participating commander (two to the top
+      50%), and the [Elite Dangerous
+      Wiki](https://elite-dangerous.fandom.com/wiki/Corrosion_Resistant_Cargo_Rack)
+      records that the class 5 and 6 modules "exist in limited numbers among CMDRs who
+      received them as a Community Goal reward, but they are otherwise neither
+      purchasable nor unlockable" — size 4 is the largest one obtainable, through a Human
+      Technology Broker. So EDSY's `TODO: cost` is upstream expecting a figure that
+      outfitting never quoted, and the earlier reading of it as a *pending* price is
+      withdrawn.
+    - **A capture reporting a `Value` was checked and rejected.** An Inara SLEF export of
+      an anti-xeno Imperial Cutter, contributed by the repository owner from their own
+      fleet and acquired 2026-08-06 (UTC), fits five of these racks. Its two size-6
+      records carry **no `Value` at all**; its size-5 carries `Value: 318174`. That is not
+      a list price, and the same export is what proves it: the two size-4 racks in it read
+      **82 774** and **91 970** against the one list price of 94 330 — about 12.25% and
+      2.5% off. `Value` is net of the station discount, one reading with an unknown
+      discount does not yield a list price, and a reward module was not bought at a
+      discount to begin with. (318 174 is within a credit of 362 591 less 12.25%, and
+      362 591 is the *standard* E-rated size-6 rack's price; that is arithmetic reaching
+      for a target with a free variable, not a source. It is recorded only so the next
+      reader does not redo it.) `cost` stays omitted on both records.
+    - **What would still close it** is an in-game reading that does not go through a
+      purchase: a `StoredModules` entry's `BuyPrice`, a `ModuleSell` on one, or the
+      insurance figure a rebuy screen quotes. A journal `Loadout` `Value` will not do it,
+      for the reason above.
   - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
     in the game: every other shield-generator size carries all five ratings, and size 1
     ran E/D/C/A with **B missing**. The module is real, so the record was added with the
@@ -1054,14 +1100,15 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   retained removed scanners) and supplying the Lynx Highliner, which has no coriolis
   entry. Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
   on hull + bulkhead name because those records carry no symbol upstream.
-  - **All 48 hulls are priced. 1176 of 1198 modules are.** The 22 without a price are the
+  - **All 48 hulls are priced. 1176 of 1197 modules are.** The 21 without a price are the
     ten starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
-    Vessel Hangars, the **three unsold** Corrosion Resistant Cargo Racks (two Community
-    Goal rewards and one never-released variant) and `Int_ShieldGenerator_Size1_Class4` —
+    Vessel Hangars, the **two unsold** Corrosion Resistant Cargo Racks (both Community
+    Goal rewards) and `Int_ShieldGenerator_Size1_Class4` —
     no registry publishes a figure for them. Three of
     the four racks joined the list in the 2026-08-02 revision described above (moving this
-    count from 1178/20), and `_Size1_Class2` left it again on 2026-08-05 when EDSY was
-    found to price it. **`cost` is omitted, never set to 0**:
+    count from 1178/20), `_Size1_Class2` left it again on 2026-08-05 when EDSY was
+    found to price it, and `_Size2_Class1` left it on 2026-08-06 with the removal of its
+    record. **`cost` is omitted, never set to 0**:
     `0` is a real price (the starter Lightweight Alloy bulkhead costs nothing), so a
     cost calculation must be able to tell "free" from "unknown".
   - **Still not modelled:** passenger capacity and fighter-bay/rebuild counts. The
@@ -1322,7 +1369,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Availability is a property of the module, not of the blueprint.** A Pulse Laser and a
   Rail Gun both take the Efficient blueprint but offer different experimental effects, so
   "which experimentals go with blueprint X" has no single answer. Modules are therefore
-  grouped (53 groups covering 1029 engineerable modules) and each group lists the
+  grouped (53 groups covering 1028 engineerable modules) and each group lists the
   `blueprints` and `experimentals` it offers. `getExperimentalsForBlueprint` is provided
   for convenience and returns the **union** across every group offering that blueprint —
   deliberately looser than the per-module answer, and a test pins that it is never
@@ -1550,7 +1597,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   though its experimental list resolves to empty — "engineerable with no experimental
   slot" and "not engineerable at all" are different answers, and `getEngineeringGroup`
   separates them. That distinction carries most of the catalogue: 27 of the 53 groups
-  offer no experimental at all, so 364 of the 1029 grouped modules answer `[]` while still
+  offer no experimental at all, so 363 of the 1028 grouped modules answer `[]` while still
   having blueprints.
 - **Key form:** EDSY names the Anti-Guardian blueprint by its journal form
   (`GuardianModule_Sturdy`); this catalogue stores it under the `recipe_*` id the rest of
@@ -1561,7 +1608,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
 Not a data file, and no longer a second opinion. `ShipLoadout.applyBlueprint` reads the
 menu above: a recipe it does not list for that module is refused. The two questions a
 consumer can ask — what a module takes, and whether a particular recipe may go on it —
-therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 modules.
+therefore cannot disagree, and `engineering.test.ts` asserts that for all 1197 modules.
 
 - **Why it is not a family map any more.** It was: `engineering-compatibility.ts` mapped a
   blueprint id to a module *family* and a module symbol to the same, both by string prefix.
@@ -2051,8 +2098,8 @@ The upside is that the export becomes a pure function of the hull and the fitted
 symbols. Two builds with the same fit price identically whatever their owners paid; an
 edit reprices exactly the module that changed; and a document always adds up, since each
 module carries the same list price the total counted. Where a fitted module has no
-published price the total is omitted rather than under-reported — 22 catalogue records
-can trigger that today: the three unsold corrosion-resistant racks, the three Mk II
+published price the total is omitted rather than under-reported — 21 catalogue records
+can trigger that today: the two unsold corrosion-resistant racks, the three Mk II
 vessel hangars, `Int_ShieldGenerator_Size1_Class4`, `Int_Hyperdrive_Size8_Class{1..5}`
 and the ten `*_free` starter variants.
 

@@ -129,6 +129,15 @@ in the doc comment of each ported module, and in long form in the domain
   its `Build.fromJournal` resolves a journal blueprint name through a per-module-type map,
   read alongside `eddb.js`'s own two rows sharing that fdname. Acquisition date and digest
   in `data/ships/SOURCES.md`.
+- **How the Corrosion Resistant Cargo Racks are obtained** — not a stored value but the
+  basis for two catalogue decisions: dropping the size-2 record as a variant that never
+  released, and recording the size-5 and size-6 records as Community Goal rewards whose
+  missing `cost` is the absence of a list price rather than an unfound one. From the
+  [Elite Dangerous Wiki](https://elite-dangerous.fandom.com/wiki/Corrosion_Resistant_Cargo_Rack)
+  (Fandom, **CC BY-SA 3.0**), alongside Frontier's own announcement of the Rhea Disaster
+  Community Goal. The availability facts are **Elite Dangerous game data, property of
+  Frontier Developments plc**; see the notice below. `data/ships/SOURCES.md` records what
+  each source states and the capture whose reported `Value` was checked and rejected.
 - **Per-hull journal slot names** — the slot keys 10 hulls use that no numbering rule
   derives (the Anaconda's `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian
   Explorer's out-of-order medium hardpoints), plus 3 more the rules do derive — the

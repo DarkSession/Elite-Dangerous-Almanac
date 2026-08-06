@@ -22,7 +22,7 @@
  *   lookups. One small catalogue; each {@link Ship} carries the
  *   hull's identity, stats and slot layout together.
  * - **Modules** — the {@link OutfittingModule} type and the lookups
- *   ({@link getModuleBySymbol} & co.), which search all 1198 modules unless you hand
+ *   ({@link getModuleBySymbol} & co.), which search all 1197 modules unless you hand
  *   them a narrower set. The catalogues are also exported split by Frontier's four
  *   outfitting categories ({@link CORE_MODULES}, {@link INTERNAL_MODULES},
  *   {@link HARDPOINT_MODULES}, {@link UTILITY_MODULES}, and {@link ALL_MODULES}); each
