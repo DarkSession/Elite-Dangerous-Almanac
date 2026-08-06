@@ -1499,13 +1499,17 @@ recorded inline there beside the field they touch.
   module it had been handed — from the symbol on core and optional mounts, from
   `category` on the armour mount — and now reads what the record declares, its `slot`.
   A hand-made record is therefore judged on what it says about itself rather than on
-  what it is named, so one whose declared fields do not line up with its symbol can be
-  accepted where it was refused, or refused where it was accepted, on core, armour and
-  optional mounts alike. If you build records yourself and lean on `setModule` to
+  what it is named — so any such record can be accepted where it was refused, or
+  refused where it was accepted, on core, armour and optional mounts alike. Its
+  declared fields need not contradict its symbol for that to happen; the retired rule
+  matched a list of symbol prefixes, so a record it did not recognise at all also
+  lands differently now. If you build records yourself and lean on `setModule` to
   validate them, give them an accurate `slot`; resolving them with
-  `getModuleBySymbol` instead settles it outright. The other three readers of `slot` — the power budget, the jump-range drive
-  lookup and fuel-tank capacity — fall back to the symbol whenever a record names no
-  mount, so a hand-made record reads there exactly as it always has.
+  `getModuleBySymbol` instead settles it outright. The other three readers of `slot` —
+  the power budget, the jump-range drive lookup and fuel-tank capacity — consult the
+  symbol only when a record names **no** mount, and believe the record when it names
+  one, right or wrong. So a hand-made record with no `slot` reads there exactly as it
+  always has; one that names the wrong mount is taken at its word.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

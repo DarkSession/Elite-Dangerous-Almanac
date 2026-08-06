@@ -183,6 +183,53 @@ test('a fitted drive with no stats-catalogue constants throws a distinct error',
     assert.throws(() => ShipLoadout.fromLoadout(unknownFsd).frameShiftDrive, /no jump constants/);
 });
 
+test('the power plant and fuel tank are found by `slot`, with the symbol as fallback', () => {
+    // The readers outside the fit check. Each believes a record that names a mount and
+    // consults the symbol only when none does. Both halves need a hand-made record to
+    // show: a catalogue record carries both signals, so it cannot tell the rules apart.
+    const plant = getModuleBySymbol('Int_PowerPlant_Size6_Class5', CORE_MODULES)!;
+    assert.ok(
+        ShipLoadout.empty('Anaconda').setModule('PowerPlant', plant).powerBudget().available > 0,
+    );
+
+    // Believed, even when wrong: this is a power plant by symbol, and the retired
+    // prefix rule counted it as one wherever it sat. Its record says thrusters, so the
+    // power budget no longer sees a plant at all.
+    const asThrusters: OutfittingModule = { ...plant, slot: 'thrusters' };
+    const miswired = ShipLoadout.empty('Anaconda').setModule('MainEngines', asThrusters);
+    assert.equal(miswired.powerBudget().available, 0);
+
+    // The fallback: an `Item` no catalogue carries names no mount, so the symbol
+    // answers — a build citing a module newer than this snapshot still finds its plant,
+    // and reads the capacity its own engineering declares.
+    const newer = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        UnladenMass: 400,
+        Modules: [
+            {
+                Slot: 'PowerPlant',
+                Item: 'int_powerplant_size9_class9_madeup',
+                On: true,
+                Engineering: { Modifiers: [{ Label: 'PowerCapacity', Value: 30 }] },
+            },
+        ],
+    } as unknown as LoadoutEvent);
+    assert.equal(newer.powerBudget().available, 30);
+
+    // Fuel capacity reads the same way: a cargo rack that declares the fuel-tank mount
+    // is taken at its word and counted as a tank, which the symbol rule never did.
+    const rack = getModuleBySymbol('Int_CargoRack_Size5_Class1', ALL_MODULES)!;
+    const imported = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        UnladenMass: 400,
+        FuelCapacity: { Main: 999, Reserve: 1.07 },
+        Modules: [{ Slot: 'Slot05_Size5', Item: rack.symbol, On: true }],
+    } as LoadoutEvent);
+    assert.equal(imported.fuelCapacity.main, 999);
+    imported.setModule('Slot05_Size5', { ...rack, slot: 'fuelTank' } as OutfittingModule);
+    assert.equal(imported.fuelCapacity.main, 0);
+});
+
 test('fromSlef throws when the entry index is out of range', () => {
     assert.throws(() => ShipLoadout.fromSlef(slefString, 5), TypeError);
 });

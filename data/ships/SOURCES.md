@@ -1643,10 +1643,12 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   having gone with it. That is the price of one answer instead of two, paid deliberately.
   Both ends have since shrunk by about 13 KB, the module records having stopped
   repeating their category (see the 2026-08-06 revision at the top of this file), so the
-  graph carrying this catalogue measures 696 KB / 82 KB gzipped today. The figure it
-  would measure *without* it is no longer recoverable — the duplicate family map this
-  replaced is deleted, so only the pair above, taken when both existed, compares like
-  with like.
+  graph carrying this catalogue measures 696 KB / 82 KB gzipped today. There is no
+  matching "without it" figure for today, and the pair above is the one to quote: the
+  duplicate family map is deleted, so any current counterfactual means reconstructing a
+  tree that never existed, and how much of the surrounding code you unwind with it moves
+  the answer by tens of kilobytes. The 624 → 709 pair was measured on two trees that
+  both really existed, which is what makes it worth keeping.
 
 ## Pre-engineered modules
 
