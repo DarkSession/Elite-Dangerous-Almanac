@@ -28,6 +28,84 @@
     "base": { "DamageProtection": 60, "Integrity": 350, "Mass": 16 },
     "expected": { "DamageProtection": 64.98, "Integrity": 379.05, "Mass": 21.328 }
   },
+  "scannerIdCollision": {
+    "description": "One journal `BlueprintName`, two recipes. The game writes `Sensor_LongRange` and `Sensor_WideAngle` for both the internal sensor suite's modification and the KWS/manifest/wake scanners', and the two roll different stats in opposite directions — Long Range costs the suite mass and the scanner power draw, Wide Angle the reverse. `blueprints.jsonc` keys the scanner side under `Scanner_LongRange` / `Scanner_WideAngle`, the spelling the scanner menus list, so which numbers apply is a fact about the fitted module and not about the id. Each case pins the same id on both families at the same grade and quality: `resolved` is the `BLUEPRINTS` key the module rolls, `modifiers` the exact `Engineering.Modifiers` block that follows. The corpus entry this comes from is a wake scanner declaring `Sensor_LongRange` at grade 3 (`type9-military-combat-3`, an EDSY-authored build). `refused` pins the direction the resolution does not run: a sensor suite is not thereby offered the scanner's id.",
+    "grade": 3,
+    "quality": 1,
+    "cases": [
+      {
+        "symbol": "Int_Sensors_Size4_Class5",
+        "blueprint": "Sensor_LongRange",
+        "resolved": "Sensor_LongRange",
+        "base": {
+          "Mass": 10,
+          "PowerDraw": 1.02,
+          "ScannerRange": 6720,
+          "SensorTargetScanAngle": 30
+        },
+        "modifiers": [
+          { "Label": "Mass", "Value": 16, "OriginalValue": 10 },
+          { "Label": "SensorTargetScanAngle", "Value": 24, "OriginalValue": 30 },
+          { "Label": "ScannerRange", "Value": 9744, "OriginalValue": 6720 }
+        ]
+      },
+      {
+        "symbol": "Hpt_CloudScanner_Size0_Class5",
+        "blueprint": "Sensor_LongRange",
+        "resolved": "Scanner_LongRange",
+        "base": {
+          "Mass": 1.3,
+          "PowerDraw": 3.2,
+          "ScannerRange": 4000,
+          "SensorTargetScanAngle": 15,
+          "ScannerTimeToScan": 10
+        },
+        "modifiers": [
+          { "Label": "PowerDraw", "Value": 4.16, "OriginalValue": 3.2 },
+          { "Label": "SensorTargetScanAngle", "Value": 12, "OriginalValue": 15 },
+          { "Label": "ScannerRange", "Value": 6880, "OriginalValue": 4000 }
+        ]
+      },
+      {
+        "symbol": "Int_Sensors_Size4_Class5",
+        "blueprint": "Sensor_WideAngle",
+        "resolved": "Sensor_WideAngle",
+        "base": {
+          "Mass": 10,
+          "PowerDraw": 1.02,
+          "ScannerRange": 6720,
+          "SensorTargetScanAngle": 30
+        },
+        "modifiers": [
+          { "Label": "PowerDraw", "Value": 1.326, "OriginalValue": 1.02 },
+          { "Label": "SensorTargetScanAngle", "Value": 66, "OriginalValue": 30 },
+          { "Label": "ScannerRange", "Value": 5913.6, "OriginalValue": 6720 }
+        ]
+      },
+      {
+        "symbol": "Hpt_CloudScanner_Size0_Class5",
+        "blueprint": "Sensor_WideAngle",
+        "resolved": "Scanner_WideAngle",
+        "base": {
+          "Mass": 1.3,
+          "PowerDraw": 3.2,
+          "ScannerRange": 4000,
+          "SensorTargetScanAngle": 15,
+          "ScannerTimeToScan": 10
+        },
+        "modifiers": [
+          { "Label": "Mass", "Value": 2.08, "OriginalValue": 1.3 },
+          { "Label": "SensorTargetScanAngle", "Value": 33, "OriginalValue": 15 },
+          { "Label": "ScannerTimeToScan", "Value": 13, "OriginalValue": 10 }
+        ]
+      }
+    ],
+    "refused": [
+      { "symbol": "Int_Sensors_Size4_Class5", "blueprint": "Scanner_LongRange" },
+      { "symbol": "Int_Sensors_Size4_Class5", "blueprint": "Scanner_WideAngle" },
+      { "symbol": "Hpt_CloudScanner_Size0_Class5", "blueprint": "Sensor_LightWeight" }
+    ]
+  },
   "blueprintCount": 108,
   "experimentalCount": 87
 }

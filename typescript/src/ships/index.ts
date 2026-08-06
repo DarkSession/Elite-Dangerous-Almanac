@@ -218,6 +218,7 @@ export {
     getBlueprintsForModule,
     getExperimentalsForModule,
     getExperimentalsForBlueprint,
+    resolveBlueprintForModule,
     type EngineeringOptionGroup,
 } from './engineering-options.js';
 export {

@@ -10,6 +10,7 @@ import {
     getBlueprintsForModule,
     getEngineeringGroup,
     getExperimentalsForModule,
+    resolveBlueprintForModule,
 } from './engineering-options.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
@@ -139,10 +140,17 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * {@link ShipLoadout.applyBlueprint} makes before it computes anything.
  *
  * The menu is `engineering-options`, so this answers exactly what the game offers on that
- * module, with two accommodations. The first is {@link isSoldWithBlueprint}: a module with
+ * module, with three accommodations. The first is {@link isSoldWithBlueprint}: a module with
  * no menu, or a menu that omits the recipe, still accepts one it is sold already carrying.
  *
- * The second is the generic spelling. Where a modification applies to several module families
+ * The second is the module's own alias map, and it is checked first because it is the one
+ * case where the id names a *different* recipe rather than the same one twice: the game
+ * writes `Sensor_LongRange` on a utility scanner as well as on a sensor suite, and the two
+ * roll different stats. `resolveBlueprintForModule` turns it into the menu's
+ * `Scanner_LongRange` — narrowly, per group, from pinned data, because nothing in the two
+ * recipes' shape says they belong together.
+ *
+ * The third is the generic spelling. Where a modification applies to several module families
  * Frontier writes a family-specific `BlueprintName` and the menu lists that one, but a
  * build authored elsewhere carries the generic spelling instead — a life support's
  * Lightweight is `LifeSupport_LightWeight` in the menu and `Misc_LightWeight` in an
@@ -168,12 +176,13 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  */
 export function blueprintAvailableFor(item: string, fdname: string): boolean {
     const offered = getBlueprintsForModule(item);
-    const wanted = fdname.trim().toLowerCase();
+    const resolved = resolveBlueprintForModule(item, fdname).trim();
+    const wanted = resolved.toLowerCase();
     if (offered.some((id) => id.toLowerCase() === wanted)) return true;
     if (isSoldWithBlueprint(item, wanted)) return true;
     const ambiguous = isGenericSpelling(wanted) || !MENU_IDS.has(wanted);
     if (!ambiguous) return false;
-    const signature = recipeSignature(fdname.trim());
+    const signature = recipeSignature(resolved);
     if (signature === null) return false;
     return offered.some(
         (id) =>

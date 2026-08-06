@@ -28,6 +28,18 @@
  * blueprints, an ordinary one the reverse, so `powerPlants` and `guardianPowerPlants` are
  * separate — as are the distributors and the hull reinforcement packages.
  *
+ * **`aliases` is the one place a menu id is not the id the game writes.** A group may
+ * carry an optional `aliases` map from a journal `BlueprintName` to the entry of *this*
+ * menu it names. Only the three utility-scanner groups need one: the game writes
+ * `Sensor_LongRange` / `Sensor_WideAngle` for both a sensor suite's modification and a
+ * scanner's — EDSY's `cs_lr` and `scan_lr` are two different recipes under one `fdname` —
+ * while coriolis splits the scanner side out under `Scanner_LongRange` /
+ * `Scanner_WideAngle`, which is how they are keyed in `blueprints.jsonc`. The two roll
+ * different stats in different directions (Long Range costs the suite mass and the
+ * scanner power draw; Wide Angle the reverse), so the id alone cannot say which numbers
+ * apply — the module's menu can, and this map is how it does. It resolves *into* the
+ * menu, never out of it: a sensor suite is not thereby offered `Scanner_LongRange`.
+ *
  * `exclusions` handles what is left: the modules that take their group's blueprints but
  * not all of its experimental effects — a Multi-cannon cannot take Phasing Sequence, and
  * the Abrasion Blaster takes no experimental at all. Each entry lists the effect ids that
@@ -680,7 +692,11 @@
         "Scanner_WideAngle",
         "Sensor_FastScan"
       ],
-      "experimentals": []
+      "experimentals": [],
+      "aliases": {
+        "Sensor_LongRange": "Scanner_LongRange",
+        "Sensor_WideAngle": "Scanner_WideAngle"
+      }
     },
     "manifestScanners": {
       "name": "Manifest Scanners",
@@ -692,7 +708,11 @@
         "Scanner_WideAngle",
         "Sensor_FastScan"
       ],
-      "experimentals": []
+      "experimentals": [],
+      "aliases": {
+        "Sensor_LongRange": "Scanner_LongRange",
+        "Sensor_WideAngle": "Scanner_WideAngle"
+      }
     },
     "pointDefence": {
       "name": "Point Defence",
@@ -714,7 +734,11 @@
         "Scanner_WideAngle",
         "Sensor_FastScan"
       ],
-      "experimentals": []
+      "experimentals": [],
+      "aliases": {
+        "Sensor_LongRange": "Scanner_LongRange",
+        "Sensor_WideAngle": "Scanner_WideAngle"
+      }
     },
     "experimentalWeapons": {
       "name": "Experimental Weapons",

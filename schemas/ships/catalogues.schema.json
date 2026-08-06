@@ -422,6 +422,12 @@
           "type": "array",
           "uniqueItems": true,
           "items": { "$ref": "#/definitions/nonEmptyString" }
+        },
+        "aliases": {
+          "description": "Journal `BlueprintName` -> the entry of this menu it names, for the ids the game spells the same on two module families that roll different numbers. Each value must appear in this group's `blueprints`.",
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
         }
       }
     },

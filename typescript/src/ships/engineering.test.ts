@@ -13,6 +13,7 @@ import {
     getBlueprintsForModule,
     getEngineeringGroup,
     getExperimentalsForModule,
+    resolveBlueprintForModule,
 } from './engineering-options.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
@@ -86,14 +87,22 @@ test('a build that spells a modification generically is still engineered', () =>
 });
 
 test('the gate accepts what the menu omits only by a pinned alias or a pre-engineered sale', () => {
-    // Two things beyond the menu may explain an acceptance, and nothing else may: the
-    // generic spelling of a recipe the menu lists under a family's name, and a recipe the
+    // Three things beyond the menu may explain an acceptance, and nothing else may: the
+    // generic spelling of a recipe the menu lists under a family's name, the journal
+    // spelling a group's own `aliases` maps onto one of its entries, and a recipe the
     // module is sold already carrying. Anything else means the gate has quietly widened.
     const pinned = new Set(
         Object.entries(optionsFixture.corpus.blueprintAliases).flatMap(([generic, specific]) =>
             specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
         ),
     );
+    for (const group of optionsFixture.groups as readonly {
+        readonly aliases?: Readonly<Record<string, string>>;
+    }[]) {
+        for (const [journalId, menuId] of Object.entries(group.aliases ?? {})) {
+            pinned.add(`${journalId.toLowerCase()}|${menuId.toLowerCase()}`);
+        }
+    }
     const seen = new Set<string>();
     for (const module of ALL_MODULES) {
         const offered = getBlueprintsForModule(module.symbol);
@@ -120,6 +129,51 @@ test('the gate accepts what the menu omits only by a pinned alias or a pre-engin
     }
     // ...and every alias the fixture pins is one the gate actually honours.
     assert.deepEqual([...seen].sort(), [...pinned].sort());
+});
+
+test('one journal id rolls the recipe the fitted module actually takes', () => {
+    // Long Range and Wide Angle exist on the sensor suite and on the utility scanners, the
+    // game writes the same `BlueprintName` for both, and the two roll different stats in
+    // opposite directions. Reading the id alone would charge a wake scanner mass where the
+    // game charges power draw — so the module resolves it, and the fixture pins both sides.
+    const collision = fixture.scannerIdCollision;
+    for (const expected of collision.cases) {
+        const module = getModuleBySymbol(expected.symbol, ALL_MODULES)!;
+        const base = baseStats(module);
+        for (const [label, value] of Object.entries(expected.base)) {
+            assert.equal(base[label], value, `${expected.symbol}: ${label}`);
+        }
+        const resolved = resolveBlueprintForModule(expected.symbol, expected.blueprint);
+        assert.equal(resolved, expected.resolved, `${expected.symbol}: ${expected.blueprint}`);
+        assert.ok(
+            blueprintAvailableFor(expected.symbol, expected.blueprint),
+            `${expected.symbol} must accept ${expected.blueprint}`,
+        );
+        assert.deepEqual(
+            computeModifiers(
+                base,
+                getBlueprintGrade(resolved, collision.grade)!,
+                collision.quality,
+            ),
+            expected.modifiers,
+            `${expected.symbol}: ${expected.blueprint}`,
+        );
+    }
+    // The same id on the two families is not the same set of stats — which is the whole
+    // reason the resolution has to exist.
+    const [suite, scanner] = collision.cases;
+    assert.notDeepEqual(
+        suite!.modifiers.map((m) => m.Label).sort(),
+        scanner!.modifiers.map((m) => m.Label).sort(),
+    );
+    // Resolution runs into a menu, never out of one: a sensor suite is not thereby offered
+    // the scanner's spelling.
+    for (const row of collision.refused) {
+        assert.ok(
+            !blueprintAvailableFor(row.symbol, row.blueprint),
+            `${row.symbol} must refuse ${row.blueprint}`,
+        );
+    }
 });
 
 test('a recipe sold on one module is not thereby available on its neighbours', () => {

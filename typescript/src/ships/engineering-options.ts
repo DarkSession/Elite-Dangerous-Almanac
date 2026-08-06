@@ -40,11 +40,12 @@
  * from this one — §Engineering compatibility in
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
  * records what it cost. The gate
- * makes two accommodations beyond the menu: a build that spells a modification generically
- * — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
- * {@link getBlueprintsForModule} describes — and a `recipe_*` key belonging to a module
- * sold already engineered, which no menu lists and `ships/pre-engineered` resolves per
- * module.
+ * makes three accommodations beyond the menu: a build that spells a modification
+ * generically — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
+ * {@link getBlueprintsForModule} describes; a journal id the game writes for two different
+ * recipes, which a group's `aliases` map resolves against the module
+ * ({@link resolveBlueprintForModule}); and a `recipe_*` key belonging to a module sold
+ * already engineered, which no menu lists and `ships/pre-engineered` resolves per module.
  *
  * @packageDocumentation
  */
@@ -60,6 +61,13 @@ export interface EngineeringOptionGroup {
     readonly blueprints: readonly string[];
     /** Experimental-effect ids the group accepts. Join to `EXPERIMENTAL_EFFECTS`. */
     readonly experimentals: readonly string[];
+    /**
+     * Journal `BlueprintName`s this menu answers to under another id, mapped to the
+     * {@link blueprints} entry each one names. Absent on all but the three utility-scanner
+     * groups — see {@link resolveBlueprintForModule} for what the collision is and why the
+     * id alone cannot settle it.
+     */
+    readonly aliases?: Readonly<Record<string, string>>;
 }
 
 interface EngineeringOptionData {
@@ -135,8 +143,9 @@ export function getEngineeringGroup(symbol: string): string | null {
  * family-specific id is the one listed, so compare ids with that in mind: the two are the
  * same recipe. `Sensor_LongRange` and `Scanner_LongRange` are **not** such a pair — those
  * are two different recipes rolling different stats, and the utility scanners list the
- * `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The two menus share
- * no id: a scanner's other four are `Sensor_FastScan` and the generic `Misc_*` trio.
+ * `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The game writes
+ * `Sensor_LongRange` for both all the same, so a journal id has to be read against the
+ * module it sits on: {@link resolveBlueprintForModule} is that lookup.
  *
  * Anti-Guardian Zone Resistance is the other pair, and the reverse case: the game writes
  * `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a
@@ -157,6 +166,69 @@ export function getEngineeringGroup(symbol: string): string | null {
 export function getBlueprintsForModule(symbol: string): readonly string[] {
     const group = getEngineeringGroup(symbol);
     return group === null ? [] : ENGINEERING_OPTION_GROUPS[group]!.blueprints;
+}
+
+/**
+ * The blueprint whose numbers a module actually rolls when a journal names `blueprint` on
+ * it — the same id back, except where the game spells two different recipes alike.
+ *
+ * **One `BlueprintName`, two recipes.** Long Range and Wide Angle are offered on the
+ * internal sensor suite and on the KWS/manifest/wake scanners, and the game writes the
+ * same id for both families. The two roll different stats, in opposite directions:
+ *
+ * | On a sensor suite | On a utility scanner |
+ * | --- | --- |
+ * | Long Range: `Mass` ×1.20, `ScannerRange` +0…15% | Long Range: `PowerDraw` ×1.10, `ScannerRange` +0…24% |
+ * | Wide Angle: `PowerDraw` ×1.10, `ScannerRange` −4% | Wide Angle: `Mass` ×1.20, `ScannerTimeToScan` +10% |
+ *
+ * (Grade 1 shown; both pairs share their `SensorTargetScanAngle` leg.) `BLUEPRINTS` keys
+ * the scanner side under `Scanner_LongRange` / `Scanner_WideAngle`, which is the spelling
+ * the scanner menus list — so on a scanner this resolves `Sensor_LongRange` to
+ * `Scanner_LongRange`, and folding the id as written would charge the build mass where the
+ * game charges power draw.
+ *
+ * Only the module can settle it, which is why this takes one. It resolves **into** a menu
+ * and never out of one: a sensor suite's `Sensor_LongRange` is already its own menu's id
+ * and comes back unchanged, and asking for `Scanner_LongRange` on a sensor suite returns
+ * it unchanged too — unchanged is not the same as offered, and
+ * {@link getBlueprintsForModule} still says a suite does not take it.
+ *
+ * **Not a generic-spelling resolver.** A generic `Misc_*` id — `Misc_Shielded` where a
+ * life support's menu says `LifeSupport_Shielded` — comes back as it went in. That pair is
+ * one recipe under two spellings, both published with their own numbers, so the id a
+ * caller names is the one to roll. This function exists for the case where the id names no
+ * recipe the module has: the game never rolls a sensor suite's Long Range on a scanner.
+ *
+ * @param symbol - A module symbol, e.g. `"Hpt_CloudScanner_Size0_Class5"`.
+ * @param blueprint - A blueprint id, matched case-insensitively and trimmed.
+ * @returns The id to join to `BLUEPRINTS`, in that catalogue's spelling when an alias
+ * applied, and otherwise `blueprint` exactly as it was passed.
+ *
+ * @example
+ * ```ts
+ * // A wake scanner's Long Range is the scanner recipe, whichever way the build spells it.
+ * resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', 'Sensor_LongRange');
+ * // -> 'Scanner_LongRange'
+ * resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', 'Scanner_LongRange');
+ * // -> 'Scanner_LongRange'
+ *
+ * // The sensor suite keeps its own, and every other module keeps whatever it was given.
+ * resolveBlueprintForModule('Int_Sensors_Size4_Class5', 'Sensor_LongRange');
+ * // -> 'Sensor_LongRange'
+ * resolveBlueprintForModule('Int_Hyperdrive_Size5_Class5', 'FSD_LongRange');
+ * // -> 'FSD_LongRange'
+ * ```
+ */
+export function resolveBlueprintForModule(symbol: string, blueprint: string): string {
+    const group = getEngineeringGroup(symbol);
+    if (group === null) return blueprint;
+    const aliases = ENGINEERING_OPTION_GROUPS[group]!.aliases;
+    if (aliases === undefined) return blueprint;
+    const wanted = blueprint.trim().toLowerCase();
+    for (const [journalId, menuId] of Object.entries(aliases)) {
+        if (journalId.toLowerCase() === wanted) return menuId;
+    }
+    return blueprint;
 }
 
 /**
