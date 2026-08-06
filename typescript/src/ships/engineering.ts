@@ -152,6 +152,23 @@ export type BlueprintGrades = Readonly<Record<string, BlueprintGrade>>;
 export interface Blueprint {
     /** The in-game display name, e.g. `"Increased range"`, `"Fuel Scoop — Scoop rate enhanced"`. */
     readonly name: string;
+    /**
+     * The `BlueprintName` a journal `Loadout` event writes for this recipe, when that is
+     * **not** the key it is stored under.
+     *
+     * Absent on 106 of the 108 blueprints, because their key is already what the game
+     * writes. It is present on `Scanner_LongRange` and `Scanner_WideAngle`, which the game
+     * writes as `Sensor_LongRange` and `Sensor_WideAngle` — the same ids it writes for the
+     * sensor suites' own Long Range and Wide Angle, which are different recipes rolling
+     * different stats. Two recipes need two records, so the scanner side keeps coriolis's
+     * distinct keys and names its journal spelling here.
+     *
+     * **This does not make the id unambiguous on its own** — that is the point of it being
+     * shared. `resolveBlueprintForModule` in `ships/engineering-options` reads this against
+     * a module's menu, which is the only thing that can say which of the two a journal
+     * meant.
+     */
+    readonly journalName?: string;
     /** The blueprint's grades, keyed by grade number as a string (`"1"`–`"5"`). */
     readonly grades: BlueprintGrades;
 }

@@ -142,11 +142,12 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * The menu is `engineering-options`, so this answers exactly what the game offers on that
  * module, with three accommodations, applied in the order they are described here.
  *
- * The first is the module's own alias map, and it comes first because it is the one case
- * where the id names a *different* recipe rather than the same one twice: the game writes
+ * The first is the journal spelling, and it comes first because it is the one case where
+ * the id names a *different* recipe rather than the same one twice: the game writes
  * `Sensor_LongRange` on a utility scanner as well as on a sensor suite, and the two roll
  * different stats. {@link resolveBlueprintForModule} turns it into the menu's
- * `Scanner_LongRange` — narrowly, per group, from pinned data, because nothing in the two
+ * `Scanner_LongRange`, by asking which blueprint *this module is offered* declares that
+ * journal name. It reads stored facts rather than inferring, because nothing in the two
  * recipes' shape says they belong together. Every id it does not recognise passes straight
  * through, so the two checks below see what the caller wrote.
  *

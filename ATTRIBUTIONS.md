@@ -117,16 +117,18 @@ in the doc comment of each ported module, and in long form in the domain
   generic recipe id, keyed by
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
   `modifications/modules.json` (**MIT** for its code; the values are game data). The
-  per-group `aliases` in `engineering-options.jsonc` — the journal `BlueprintName`s a menu
-  answers to under another id, which the three utility-scanner groups need because the game
-  writes `Sensor_LongRange` and `Sensor_WideAngle` for two different recipes — rest on a
-  second EDSY file, **`edsy.js`**: its `Build.fromJournal` resolves a journal blueprint name
-  through a per-module-type map, read alongside `eddb.js`'s own two rows sharing that
-  fdname. Same author and **CC BY-NC 4.0** terms. The availability rules are **Elite
-  Dangerous game data, property of Frontier Developments plc**; see the notice below.
-  `data/ships/SOURCES.md` records the group-by-group derivation, the two registries'
-  disagreements, the acquisition digests, and the modules bound by a family rule rather
-  than a source row.
+  availability rules are **Elite Dangerous game data, property of Frontier Developments
+  plc**; see the notice below. `data/ships/SOURCES.md` records the group-by-group
+  derivation, the two registries' disagreements, and the modules bound by a family rule
+  rather than a source row.
+- **The journal spelling of the two scanner blueprints** — the `journalName` on
+  `Scanner_LongRange` and `Scanner_WideAngle` in `data/ships/blueprints.jsonc`, recording
+  that the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` even though those
+  ids also name the sensor suites' different recipes. From a second
+  [EDSY](https://github.com/taleden/EDSY) file, **`edsy.js`** (taleden, **CC BY-NC 4.0**):
+  its `Build.fromJournal` resolves a journal blueprint name through a per-module-type map,
+  read alongside `eddb.js`'s own two rows sharing that fdname. Acquisition date and digest
+  in `data/ships/SOURCES.md`.
 - **Per-hull journal slot names** — the slot keys 10 hulls use that no numbering rule
   derives (the Anaconda's `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian
   Explorer's out-of-order medium hardpoints), plus 3 more the rules do derive — the

@@ -28,8 +28,12 @@
  *
  * Its own module (and data file) so a consumer who only reads it pays for nothing else —
  * 63 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
- * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, neither
- * of which this module pulls in.
+ * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, and the
+ * menu functions pull in neither. {@link resolveBlueprintForModule} is the one exception:
+ * it reads `BLUEPRINTS` to see the journal spellings, so importing *it* costs the blueprint
+ * catalogue too (275 KB, 23 KB gzipped, measured on the shipped `dist/`). Importing only
+ * the menu functions leaves that out — the figure above is measured that way, with the
+ * resolver present in the module and dropped by tree-shaking.
  *
  * **This catalogue is also the gate.** {@link ShipLoadout.applyBlueprint} refuses a recipe
  * this module does not offer for that module, so "what can I put on this?" and "may I put
@@ -41,8 +45,8 @@
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
  * records what it cost. The gate
  * makes three accommodations beyond the menu, in the order it applies them: a journal id
- * the game writes for two different recipes, which a group's `aliases` map resolves against
- * the module ({@link resolveBlueprintForModule}); a `recipe_*` key belonging to a module
+ * the game writes for two different recipes, which {@link resolveBlueprintForModule} settles
+ * by reading this menu against `Blueprint.journalName`; a `recipe_*` key belonging to a module
  * sold already engineered, which no menu lists and `ships/pre-engineered` resolves per
  * module; and a build that spells a modification generically — `Misc_LightWeight` where the
  * menu lists `LifeSupport_LightWeight`, which {@link getBlueprintsForModule} describes.
@@ -52,6 +56,7 @@
 
 import optionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
+import { BLUEPRINTS } from './blueprints.js';
 
 /** What one group of modules can be engineered with. */
 export interface EngineeringOptionGroup {
@@ -61,13 +66,6 @@ export interface EngineeringOptionGroup {
     readonly blueprints: readonly string[];
     /** Experimental-effect ids the group accepts. Join to `EXPERIMENTAL_EFFECTS`. */
     readonly experimentals: readonly string[];
-    /**
-     * Journal `BlueprintName`s this menu answers to under another id, mapped to the
-     * {@link blueprints} entry each one names. Absent on all but the three utility-scanner
-     * groups — see {@link resolveBlueprintForModule} for what the collision is and why the
-     * id alone cannot settle it.
-     */
-    readonly aliases?: Readonly<Record<string, string>>;
 }
 
 interface EngineeringOptionData {
@@ -187,6 +185,13 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * `Scanner_LongRange`, and folding the id as written would charge the build mass where the
  * game charges power draw.
  *
+ * **Nothing here lists the pairing.** Each of those two records names its own journal
+ * spelling in {@link Blueprint.journalName}, because that is a fact about the recipe; this
+ * function supplies the half only a menu knows, by asking which blueprint *this module is
+ * offered* answers to the id. Two catalogues, one fact each, and no third list to drift
+ * from either — which matters here, since a hand-written map would have to be repeated on
+ * every scanner group and silently forgotten on the next one.
+ *
  * Only the module can settle it, which is why this takes one. It resolves **into** a menu
  * and never out of one: a sensor suite's `Sensor_LongRange` is already its own menu's id
  * and comes back unchanged, and asking for `Scanner_LongRange` on a sensor suite returns
@@ -206,8 +211,11 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  *
  * @param symbol - A module symbol, e.g. `"Hpt_CloudScanner_Size0_Class5"`.
  * @param blueprint - A blueprint id, matched case-insensitively and trimmed.
- * @returns The id to join to `BLUEPRINTS`, in that catalogue's spelling when an alias
- * applied, and otherwise `blueprint` exactly as it was passed.
+ * @returns The id to join to `BLUEPRINTS`, in that catalogue's spelling when a journal
+ * name resolved, and otherwise `blueprint` exactly as it was passed.
+ * @remarks Unlike the rest of this module, this reads `BLUEPRINTS` — it has to, to see the
+ * journal names. Importing only the menu functions leaves that catalogue out of the bundle;
+ * see the note on bundle weight in the module overview.
  *
  * @example
  * ```ts
@@ -225,13 +233,14 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * ```
  */
 export function resolveBlueprintForModule(symbol: string, blueprint: string): string {
-    const group = getEngineeringGroup(symbol);
-    if (group === null) return blueprint;
-    const aliases = ENGINEERING_OPTION_GROUPS[group]!.aliases;
-    if (aliases === undefined) return blueprint;
     const wanted = blueprint.trim().toLowerCase();
-    for (const [journalId, menuId] of Object.entries(aliases)) {
-        if (journalId.toLowerCase() === wanted) return menuId;
+    const offered = getBlueprintsForModule(symbol);
+    // An id the menu already lists is the recipe it names; hand back what the caller wrote,
+    // so a caller who never meets the collision never sees their own spelling rewritten.
+    if (offered.some((id) => id.toLowerCase() === wanted)) return blueprint;
+    for (const id of offered) {
+        const journalName = BLUEPRINTS[id]?.journalName;
+        if (journalName !== undefined && journalName.toLowerCase() === wanted) return id;
     }
     return blueprint;
 }

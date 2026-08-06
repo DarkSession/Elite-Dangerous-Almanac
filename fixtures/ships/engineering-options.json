@@ -1,5 +1,5 @@
 {
-  "description": "Ground truth for data/ships/engineering-options.jsonc \u2014 which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins every group's menu by content, `modules` that a module resolves to its group, `exclusions` the modules that take their group's blueprints but not all of its experimental effects (a Multi-cannon cannot take Phasing Sequence; the Abrasion Blaster takes no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `splitFamilies` pins the families upstream splits in two by denying blueprints per module \u2014 a Guardian Power Plant and an ordinary one are the same kind of module with different menus, so they are different groups. `groupSizes` pins how many modules each group holds, so a module moving between groups fails a test rather than balancing out against the totals; `modules` pins one member of every group by name. A group's optional `aliases` pins the journal `BlueprintName`s that menu answers to under another id — only the three utility-scanner groups have one, because the game writes `Sensor_LongRange` / `Sensor_WideAngle` on a scanner as well as on a sensor suite and the two roll different numbers. `corpus` measures the catalogue against the 181-build community corpus in `builds/`.",
+  "description": "Ground truth for data/ships/engineering-options.jsonc \u2014 which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins every group's menu by content, `modules` that a module resolves to its group, `exclusions` the modules that take their group's blueprints but not all of its experimental effects (a Multi-cannon cannot take Phasing Sequence; the Abrasion Blaster takes no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `splitFamilies` pins the families upstream splits in two by denying blueprints per module \u2014 a Guardian Power Plant and an ordinary one are the same kind of module with different menus, so they are different groups. `groupSizes` pins how many modules each group holds, so a module moving between groups fails a test rather than balancing out against the totals; `modules` pins one member of every group by name. `corpus` measures the catalogue against the 181-build community corpus in `builds/`.",
   "counts": {
     "groups": 53,
     "modules": 1029,
@@ -680,11 +680,7 @@
         "Scanner_WideAngle",
         "Sensor_FastScan"
       ],
-      "experimentals": [],
-      "aliases": {
-        "Sensor_LongRange": "Scanner_LongRange",
-        "Sensor_WideAngle": "Scanner_WideAngle"
-      }
+      "experimentals": []
     },
     {
       "id": "manifestScanners",
@@ -697,11 +693,7 @@
         "Scanner_WideAngle",
         "Sensor_FastScan"
       ],
-      "experimentals": [],
-      "aliases": {
-        "Sensor_LongRange": "Scanner_LongRange",
-        "Sensor_WideAngle": "Scanner_WideAngle"
-      }
+      "experimentals": []
     },
     {
       "id": "pointDefence",
@@ -725,11 +717,7 @@
         "Scanner_WideAngle",
         "Sensor_FastScan"
       ],
-      "experimentals": [],
-      "aliases": {
-        "Sensor_LongRange": "Scanner_LongRange",
-        "Sensor_WideAngle": "Scanner_WideAngle"
-      }
+      "experimentals": []
     },
     {
       "id": "experimentalWeapons",

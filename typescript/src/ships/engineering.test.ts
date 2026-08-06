@@ -89,19 +89,15 @@ test('a build that spells a modification generically is still engineered', () =>
 test('the gate accepts what the menu omits only by a pinned alias or a pre-engineered sale', () => {
     // Three things beyond the menu may explain an acceptance, and nothing else may: the
     // generic spelling of a recipe the menu lists under a family's name, the journal
-    // spelling a group's own `aliases` maps onto one of its entries, and a recipe the
-    // module is sold already carrying. Anything else means the gate has quietly widened.
+    // spelling an offered blueprint declares in its `journalName`, and a recipe the module
+    // is sold already carrying. Anything else means the gate has quietly widened.
     const pinned = new Set(
         Object.entries(optionsFixture.corpus.blueprintAliases).flatMap(([generic, specific]) =>
             specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
         ),
     );
-    for (const group of optionsFixture.groups as readonly {
-        readonly aliases?: Readonly<Record<string, string>>;
-    }[]) {
-        for (const [journalId, menuId] of Object.entries(group.aliases ?? {})) {
-            pinned.add(`${journalId.toLowerCase()}|${menuId.toLowerCase()}`);
-        }
+    for (const [fdname, journalName] of Object.entries(fixture.scannerIdCollision.journalNames)) {
+        pinned.add(`${journalName.toLowerCase()}|${fdname.toLowerCase()}`);
     }
     const seen = new Set<string>();
     for (const module of ALL_MODULES) {

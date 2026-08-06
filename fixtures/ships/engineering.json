@@ -29,9 +29,13 @@
     "expected": { "DamageProtection": 64.98, "Integrity": 379.05, "Mass": 21.328 }
   },
   "scannerIdCollision": {
-    "description": "One journal `BlueprintName`, two recipes. The game writes `Sensor_LongRange` and `Sensor_WideAngle` for both the internal sensor suite's modification and the KWS/manifest/wake scanners', and the two roll different stats in opposite directions — Long Range costs the suite mass and the scanner power draw, Wide Angle the reverse. `blueprints.jsonc` keys the scanner side under `Scanner_LongRange` / `Scanner_WideAngle`, the spelling the scanner menus list, so which numbers apply is a fact about the fitted module and not about the id. Each case pins the same id on both families at the same grade and quality: `resolved` is the `BLUEPRINTS` key the module rolls, `modifiers` the exact `Engineering.Modifiers` block that follows. The corpus entry this comes from is a wake scanner declaring `Sensor_LongRange` at grade 3 (`type9-military-combat-3`, an EDSY-authored build). `refused` pins the direction the resolution does not run: a sensor suite is not thereby offered the scanner's id.",
+    "description": "One journal `BlueprintName`, two recipes. The game writes `Sensor_LongRange` and `Sensor_WideAngle` for both the internal sensor suite's modification and the KWS/manifest/wake scanners', and the two roll different stats in opposite directions — Long Range costs the suite mass and the scanner power draw, Wide Angle the reverse. `blueprints.jsonc` keys the scanner side under `Scanner_LongRange` / `Scanner_WideAngle`, the spelling the scanner menus list, so which numbers apply is a fact about the fitted module and not about the id. `journalNames` pins the whole of the blueprint side: the only two records that carry a `journalName`, and what it is — every other key in `BLUEPRINTS` is already the id the game writes. Resolution is those two facts read against a module's menu, so an implementation needs no third list. Each case pins the same id on both families at the same grade and quality: `resolved` is the `BLUEPRINTS` key the module rolls, `modifiers` the exact `Engineering.Modifiers` block that follows. The corpus entry this comes from is a wake scanner declaring `Sensor_LongRange` at grade 3 (`type9-military-combat-3`, an EDSY-authored build). `refused` pins the direction the resolution does not run: a sensor suite is not thereby offered the scanner's id.",
     "grade": 3,
     "quality": 1,
+    "journalNames": {
+      "Scanner_LongRange": "Sensor_LongRange",
+      "Scanner_WideAngle": "Sensor_WideAngle"
+    },
     "cases": [
       {
         "symbol": "Int_Sensors_Size4_Class5",

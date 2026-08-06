@@ -326,6 +326,10 @@
       "required": ["name", "grades"],
       "properties": {
         "name": { "$ref": "#/definitions/nonEmptyString" },
+        "journalName": {
+          "description": "The `BlueprintName` a journal writes for this recipe, when that is not the key it is stored under. Present only where the game spells one id for two different recipes, which the fitted module disambiguates.",
+          "$ref": "#/definitions/nonEmptyString"
+        },
         "grades": { "$ref": "#/definitions/blueprintGrades" }
       }
     },
@@ -422,12 +426,6 @@
           "type": "array",
           "uniqueItems": true,
           "items": { "$ref": "#/definitions/nonEmptyString" }
-        },
-        "aliases": {
-          "description": "Journal `BlueprintName` -> the entry of this menu it names, for the ids the game spells the same on two module families that roll different numbers. Each value must appear in this group's `blueprints`.",
-          "type": "object",
-          "minProperties": 1,
-          "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
         }
       }
     },

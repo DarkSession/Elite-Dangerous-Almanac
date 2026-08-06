@@ -19,19 +19,8 @@ import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import fixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
+import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import buildIndex from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
-
-/**
- * The `groups` rows, widened over the optional `aliases` map only the three utility-scanner
- * groups carry — without it the JSON import types the other 50 as not having the key at all.
- */
-const fixtureGroups: readonly {
-    readonly id: string;
-    readonly name: string;
-    readonly blueprints: readonly string[];
-    readonly experimentals: readonly string[];
-    readonly aliases?: Readonly<Record<string, string>>;
-}[] = fixture.groups;
 
 test('the catalogue holds the expected groups, modules and exclusions', () => {
     assert.equal(Object.keys(ENGINEERING_OPTION_GROUPS).length, fixture.counts.groups);
@@ -69,35 +58,48 @@ test('every group holds the modules, name and menu the fixture pins', () => {
     // Every group's menu, by content: a list that gains or loses an id fails here even
     // though the counts above would still balance.
     assert.deepEqual(
-        fixtureGroups.map((expected) => expected.id),
+        fixture.groups.map((expected) => expected.id),
         Object.keys(ENGINEERING_OPTION_GROUPS),
     );
-    for (const expected of fixtureGroups) {
+    for (const expected of fixture.groups) {
         const group = ENGINEERING_OPTION_GROUPS[expected.id];
         assert.ok(group, `missing group ${expected.id}`);
         assert.equal(group.name, expected.name);
         assert.deepEqual([...group.blueprints], expected.blueprints, expected.id);
         assert.deepEqual([...group.experimentals], expected.experimentals, expected.id);
-        assert.deepEqual(group.aliases, expected.aliases, expected.id);
     }
 });
 
-test('an alias resolves a journal id into its own menu, and only there', () => {
-    // A group's `aliases` is the one place a menu id is not the id the game writes. Every
-    // entry has to point at a blueprint that group actually offers, or the resolution would
-    // hand `applyBlueprint` a recipe the gate then refuses; and the id it resolves *from*
-    // must be a real blueprint too, or nothing would ever arrive spelled that way.
-    let aliased = 0;
+test('no menu offers two blueprints the game writes the same way', () => {
+    // Resolution reads a menu against `Blueprint.journalName`, so it is only well defined
+    // while each menu answers to a given journal id exactly once. A group that offered both
+    // `Sensor_LongRange` and `Scanner_LongRange` would make the id genuinely ambiguous, and
+    // this function would silently pick whichever came first.
     for (const [id, group] of Object.entries(ENGINEERING_OPTION_GROUPS)) {
-        for (const [journalId, menuId] of Object.entries(group.aliases ?? {})) {
-            assert.ok(BLUEPRINTS[journalId], `${id}: unknown blueprint ${journalId}`);
-            assert.ok(group.blueprints.includes(menuId), `${id}: ${menuId} is not on this menu`);
-            assert.ok(!group.blueprints.includes(journalId), `${id}: ${journalId} is on this menu`);
-            aliased += 1;
+        const seen = new Map<string, string>();
+        for (const fdname of group.blueprints) {
+            const journalName = (BLUEPRINTS[fdname]?.journalName ?? fdname).toLowerCase();
+            const clash = seen.get(journalName);
+            assert.equal(clash, undefined, `${id}: ${fdname} and ${clash} are both ${journalName}`);
+            seen.set(journalName, fdname);
         }
     }
-    // Six: Long Range and Wide Angle on each of the three utility-scanner groups.
-    assert.equal(aliased, 6);
+});
+
+test('a blueprint names a journal spelling only when its key is not one', () => {
+    // `journalName` is the exception, so it has to stay rare and stay meaningful: an id that
+    // is already what the game writes must not carry one, and a spelling it redirects to
+    // must not be this blueprint's own key.
+    const named = Object.entries(BLUEPRINTS).filter(([, blueprint]) => blueprint.journalName);
+    assert.deepEqual(
+        Object.fromEntries(named.map(([fdname, blueprint]) => [fdname, blueprint.journalName])),
+        engineeringFixture.scannerIdCollision.journalNames,
+    );
+    for (const [fdname, blueprint] of named) {
+        assert.notEqual(blueprint.journalName!.toLowerCase(), fdname.toLowerCase());
+        // The id it is written as is a real recipe in its own right — that is the collision.
+        assert.ok(BLUEPRINTS[blueprint.journalName!], `${fdname}: ${blueprint.journalName}`);
+    }
 });
 
 test('the same journal id resolves to a different recipe on a scanner and on a suite', () => {
@@ -117,9 +119,9 @@ test('the same journal id resolves to a different recipe on a scanner and on a s
         resolveBlueprintForModule('  hpt_cloudscanner_size0_class5 ', ' sensor_wideangle '),
         'Scanner_WideAngle',
     );
-    // Resolution runs into a menu, never out of one. The menu's own id, an id this group
-    // has no alias for, and a module with no menu at all all come back untouched — and
-    // coming back untouched is not the same as being offered.
+    // Resolution runs into a menu, never out of one. The menu's own id, an id no entry on
+    // this menu is written as, and a module with no menu at all all come back untouched —
+    // and coming back untouched is not the same as being offered.
     assert.equal(
         resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', 'Scanner_LongRange'),
         'Scanner_LongRange',
@@ -323,8 +325,8 @@ test('every recipe the build corpus declares is one its module offers', () => {
     // journal id; the catalogue lists the family-specific one, so a build spelling it the
     // generic way is declaring the same thing — and the alias must be one of *this*
     // module's family, not merely some family's. The scanner ids are the other kind: one
-    // journal spelling, two different recipes, which only the module's own `aliases` can
-    // settle. `notOffered` is the real residue: eleven declarations no registry lists for
+    // journal spelling, two different recipes, which only the module's own menu read
+    // against `Blueprint.journalName` can settle. `notOffered` is the real residue: eleven declarations no registry lists for
     // that module — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36.
     const aliases: Record<string, readonly string[]> = fixture.corpus.blueprintAliases;
     const exempt = new Set(

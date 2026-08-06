@@ -1186,9 +1186,10 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > are _not_ the pair above: those are different recipes rolling different stats — Long
 > Range costs a sensor suite mass and a utility scanner power draw, Wide Angle the reverse
 > — and the scanner menus list the `Scanner_*` ones where the sensor suites list the
-> `Sensor_*` ones. The game writes `Sensor_LongRange` for both all the same, so which
-> numbers apply is a fact about the fitted module. `resolveBlueprintForModule` is that
-> lookup, and `applyBlueprint` makes it for you:
+> `Sensor_*` ones. The game writes `Sensor_LongRange` for both all the same — those two
+> scanner records say so in their own `journalName` — so which numbers apply is a fact
+> about the fitted module. `resolveBlueprintForModule` is that lookup, and `applyBlueprint`
+> makes it for you:
 >
 > ```ts
 > resolveBlueprintForModule(
@@ -1201,7 +1202,9 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > ```
 >
 > It resolves _into_ a menu and never out of one, so a sensor suite is still not offered
-> `Scanner_LongRange`. Every other id, on every other module, comes back unchanged.
+> `Scanner_LongRange`. Every other id, on every other module, comes back unchanged. It is
+> the only export in `ships/engineering-options` that reads `BLUEPRINTS`, so importing just
+> the menu functions keeps that catalogue out of your bundle.
 >
 > **This menu is also what `ShipLoadout.applyBlueprint` enforces.** The two questions —
 > "what can I fit?" and "may I fit this?" — read the same catalogue, so they cannot answer
@@ -1434,9 +1437,10 @@ recorded inline there beside the field they touch.
   packages moved to groups of their own, which also took `recipe_guardianmodule_sturdy`
   off the three ordinary menus that had wrongly offered it. See
   [what a module can be engineered with](#what-a-module-can-be-engineered-with).
-- **2026-08-06** — the three utility-scanner menus gained an alias map, because the game
-  writes `Sensor_LongRange` and `Sensor_WideAngle` for two different recipes: a sensor
-  suite's and a scanner's, which roll different stats in opposite directions.
+- **2026-08-06** — `Scanner_LongRange` and `Scanner_WideAngle` gained a `journalName`,
+  because the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` — the ids it also
+  writes for the sensor suites' own Long Range and Wide Angle, which are different recipes
+  rolling different stats in opposite directions.
   **Behaviour-visible two ways:** those two ids are now accepted on the 15 KWS, manifest
   and wake scanners, where they were refused (nothing that was accepted became refused, on
   any module); and on those modules they fold the scanner's recipe — `Scanner_LongRange` /

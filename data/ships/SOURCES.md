@@ -1109,6 +1109,17 @@ up straight through with no disambiguation at all. Both paths are evidence that
     convention is house style, and switching to the panel strings would change every
     `getBlueprintName` return for no gain. Only the two names that were wrong in their
     own right were corrected (see the 2026-08-02 revision).
+- **`journalName` — added 2026-08-06, present on two records.** A blueprint's key *is* the
+  `BlueprintName` a journal writes, for 106 of the 108. The two that are not are
+  `Scanner_LongRange` and `Scanner_WideAngle`, coriolis keys for recipes the game writes as
+  `Sensor_LongRange` / `Sensor_WideAngle` — the same ids it writes for the sensor suites'
+  own Long Range and Wide Angle, which are different recipes. Each of the two names its
+  journal spelling in `journalName`, so a reader holding one of these records can get back
+  to the id a journal carries, and `resolveBlueprintForModule` can go the other way given a
+  module. The field is deliberately **not** a general alias mechanism: it says "the game
+  writes this recipe as X", nothing about equivalence, and a test holds it to exactly these
+  two records. Evidence, and why the split keys are kept at all, under §Engineering options
+  → "Scanner Long Range and Wide Angle: one journal id, two recipes".
 - **Blueprint source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
   `modifications/blueprints.json` (grade `features` + `components`) + `modifications.json`
   (apply method), same commit and Frontier media-usage terms as above. Each grade's
@@ -1213,9 +1224,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
     key whose display name points back at the canonical blueprint — for example the
     long-range sensor modification appears once for sensors and again for each scanner
     type. The blueprints they point at are already stored under their journal
-    `BlueprintName`s (`Sensor_LongRange`, `Scanner_WideAngle`, `Misc_LightWeight`, …),
-    which is what the journal actually writes. Storing the aliases would multiply one
-    blueprint into many identical records.
+    `BlueprintName`s (`Sensor_LongRange`, `Misc_LightWeight`, …). Storing the aliases would
+    multiply one blueprint into many identical records. **Two keys are the exception and
+    are not journal names**: `Scanner_LongRange` and `Scanner_WideAngle`, coriolis's split
+    of a recipe the game writes as `Sensor_LongRange` / `Sensor_WideAngle`. They are kept
+    because the scanner side genuinely rolls different numbers from the suite side, and
+    each carries a `journalName` saying so — see the next bullet, and §Scanner Long Range
+    and Wide Angle under Engineering options.
   - **Generic community-goal and tech-broker wrappers** ("Unique Modification", "Unique
     Enhancement") — reward placeholders that carry no grades or features, so there is
     nothing for the calculator to fold.
@@ -1379,18 +1394,36 @@ up straight through with no disambiguation at all. Both paths are evidence that
   | `…_WideAngle`      | `PowerDraw` ×1.10, `ScannerRange` −4%   | `Mass` ×1.20, `ScannerTimeToScan` +10%        |
 
   Both keep their `SensorTargetScanAngle` leg. The catalogue keeps coriolis's split keys,
-  because two recipes need two records and the menus have to name the one they roll; what
-  is added is an optional per-group **`aliases`** map on the three scanner groups, from the
-  journal id to the entry of *that* menu it names. `resolveBlueprintForModule` reads it, and
-  `ShipLoadout.applyBlueprint` resolves before it folds — so an EDSY-authored build
-  declaring `Sensor_LongRange` on a wake scanner now engineers, and engineers the scanner's
-  numbers. **Deliberately not derived by signature**, the way the generic `Misc_*`
-  spellings are: these two ids touch different labels by design, so a signature match would
-  never fire, and any looser rule would be inventing a pairing rather than reading one.
+  because two recipes need two records and the menus have to name the one they roll.
+
+  **The fix is two stored facts and no third list.** What the game writes for a recipe is a
+  property of the recipe, so it is stored on the recipe: `blueprints.jsonc` gives
+  `Scanner_LongRange` and `Scanner_WideAngle` a **`journalName`** naming the id a journal
+  carries. Two records out of 108; every other key already *is* that id, which is why the
+  field is absent everywhere else. Which of the two colliding recipes a given module rolls
+  is a property of the module, and `engineering-options.jsonc` already carries it — the
+  menu. `resolveBlueprintForModule` is the join: it asks which blueprint *this module is
+  offered* answers to the incoming id. `ShipLoadout.applyBlueprint` resolves before it
+  folds, so an EDSY-authored build declaring `Sensor_LongRange` on a wake scanner now
+  engineers, and engineers the scanner's numbers.
+
+  Storing it as a per-group alias map instead was tried first and is worse: the same two
+  entries would be repeated on every scanner group — three today — and silently missing
+  from the fourth if the game ever adds one, which is the hand-maintained-second-answer
+  failure §Engineering compatibility below was written about. Deriving it by *signature*,
+  the way the generic `Misc_*` spellings are derived, is not available either: these two
+  ids touch different labels by design, so a signature match could never fire, and any
+  looser rule would be inventing a pairing rather than reading one.
+
   The resolution runs into a menu and never out of one — a sensor suite is not thereby
-  offered `Scanner_LongRange` — and both directions are pinned in
-  `fixtures/ships/engineering.json` (`scannerIdCollision`), which holds the exact modifier
-  block the same id produces on each family. This closed
+  offered `Scanner_LongRange` — and it is only well defined while no menu offers two
+  blueprints written the same way, which a test asserts for all 53. Both directions are
+  pinned in `fixtures/ships/engineering.json` (`scannerIdCollision`): the exact modifier
+  block the same id produces on each family, and `journalNames`, the whole of the blueprint
+  side. **No bundle cost to a menu-only consumer**: `resolveBlueprintForModule` is the only
+  export here that reads `BLUEPRINTS`, so importing the menu functions alone leaves that
+  catalogue out — measured on the shipped `dist/`, 63 264 → 63 012 bytes, in fact 252 bytes
+  *smaller* than the alias map it replaced. This closed
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
 
   **Acquisition (2026-08-06 UTC).** `edsy.js` — the file carrying `Build.fromJournal` — is
@@ -1409,7 +1442,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   recipe (`Misc_LightWeight` on a life support, and so on) and count as offered; the shape
   of that judgement is pinned in the fixture as `corpus.blueprintAliases`. One more —
   `Sensor_LongRange` on a wake scanner, in `type9-military-combat-3` — is the journal
-  spelling resolved by the group's `aliases` above, counted separately as
+  spelling resolved against `journalName` above, counted separately as
   `corpus.journalSpellingsAccepted` because it is a different mechanism. The residue is
   **13 entries no registry supports**, left as explicit exemptions rather than folded in:
   - `corpus.notOffered` — five `Weapon_HighCapacity` on the Guardian Gauss Cannon and six

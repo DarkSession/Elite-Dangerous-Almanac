@@ -9,6 +9,15 @@
  *          journal Labels resolved via EDSY (github.com/taleden/EDSY, CC BY-NC 4.0).
  *          `materials` from the grade's `components`, display names resolved to
  *          material `symbol`s against the materials domain.
+ *          The two `journalName` fields rest on EDSY edsy.js, whose `Build.fromJournal`
+ *          resolves a journal `BlueprintName` through a per-module-type map
+ *          (`fdevmap.mtypeBlueprint[mtypeid][fdname]`) — the evidence that one id can
+ *          name two recipes, read alongside eddb.js's own `cs_lr` / `scan_lr` rows
+ *          sharing the fdname `Sensor_LongRange`. Acquired 2026-08-06 UTC from
+ *          raw.githubusercontent.com/taleden/EDSY/master/edsy.js, SHA-256
+ *          a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5; the eddb.js
+ *          read with it is byte-identical to the snapshot the other passes pin
+ *          (967834d6…, internal `db 20260428`). Same CC BY-NC 4.0 terms.
  *          The game logic is Elite Dangerous data, property of Frontier Developments
  *          plc, under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -21,6 +30,19 @@
  * `CargoRack_IncreasedCapacity` was corrected then, being the one name that was wrong
  * in its own right rather than short by convention. See the "Display names" note in
  * SOURCES.md.
+ * `journalName` is present on the two blueprints whose key is NOT what the game writes.
+ * Every other key IS the `BlueprintName` a Loadout event carries, which is why the
+ * field is absent from 106 of the 108 records. The exceptions are `Scanner_LongRange`
+ * and `Scanner_WideAngle`: the game writes `Sensor_LongRange` / `Sensor_WideAngle` for
+ * the utility scanners' Long Range and Wide Angle *and* for the sensor suites' own,
+ * which are different recipes rolling different stats — EDSY's `scan_lr` and `cs_lr`
+ * are two rows under one fdname, and its journal importer disambiguates by module type.
+ * coriolis splits the scanner side out under these keys and this file follows it,
+ * because two recipes need two records; `journalName` is how a reader gets back to the
+ * id a journal actually carries. Which of the two a given id means is a question only
+ * the fitted module can answer — see `resolveBlueprintForModule` in
+ * `ships/engineering-options`, and §Scanner Long Range and Wide Angle in SOURCES.md.
+ *
  * `grades` maps grade "1".."5" to { features, materials }.
  * A feature is { label, method, min, max }: `label` the journal Modifier Label, `method`
  * how it applies ("multiplicative" -> base*(1+v), "additive" -> base+v, "overwrite" -> v),
@@ -9614,6 +9636,7 @@
   },
   "Scanner_LongRange": {
     "name": "Long range",
+    "journalName": "Sensor_LongRange",
     "grades": {
       "1": {
         "features": [
@@ -9799,6 +9822,7 @@
   },
   "Scanner_WideAngle": {
     "name": "Wide angle",
+    "journalName": "Sensor_WideAngle",
     "grades": {
       "1": {
         "features": [
