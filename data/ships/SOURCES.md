@@ -1055,14 +1055,25 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     - **Sizes 5 and 6 stay, and stay unpriced — but the absence now means *no list price
       exists*, not *none was found*.** These are the opposite case: players do hold them,
       so a journal can name them and the catalogue must resolve them. They were Community
-      Goal rewards and were sold nowhere. Frontier's own announcement of the **Rhea
-      Disaster** CG awards the size 6 to every participating commander (two to the top
-      50%), and the [Elite Dangerous
+      Goal rewards and were sold nowhere. **Both sources acquired 2026-08-06 UTC.**
+      Frontier's own announcement of the **Rhea Disaster** CG states that "all
+      participating commanders will now receive the Size 6 Corrosion Resistant Cargo Rack
+      whilst the top 50% will now receive 2"
+      ([@EliteDangerous](https://x.com/EliteDangerous/status/1812792503776489745); the CG
+      itself ran on the [Frontier
+      forums](https://forums.frontier.co.uk/threads/deliver-critical-aid-for-the-rhea-disaster.626528/)).
+      The [Elite Dangerous
       Wiki](https://elite-dangerous.fandom.com/wiki/Corrosion_Resistant_Cargo_Rack)
       records that the class 5 and 6 modules "exist in limited numbers among CMDRs who
       received them as a Community Goal reward, but they are otherwise neither
       purchasable nor unlockable" — size 4 is the largest one obtainable, through a Human
-      Technology Broker. So EDSY's `TODO: cost` is upstream expecting a figure that
+      Technology Broker. **Neither is pinned to a revision**, and for the wiki one exists:
+      MediaWiki serves a stable `?oldid=`, but the host refuses automated requests from
+      this environment (HTTP 403), so neither the revision id nor a stored copy could be
+      captured, and `../SNAPSHOTS.md`'s checksum fallback is unavailable for the same
+      reason. The quotations above are therefore the preserved form. Recording the gap
+      rather than inventing a revision, as that file requires; a maintainer reading the
+      page in a browser can close it by adding the `oldid`. So EDSY's `TODO: cost` is upstream expecting a figure that
       outfitting never quoted, and the earlier reading of it as a *pending* price is
       withdrawn.
     - **A capture reporting a `Value` was checked and rejected.** An Inara SLEF export of

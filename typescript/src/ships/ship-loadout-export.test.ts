@@ -535,8 +535,9 @@ test('a real capture carrying a Community Goal rack exports no module total or r
     const source = capture[0]!.data as unknown as LoadoutEvent;
 
     // The two figures that need a price for *every* module are dropped rather than
-    // under-reported. `HullValue` needs only the hull, so it survives — at retail, which
-    // is a different number from the discounted one the capture declares.
+    // under-reported. `HullValue` needs only the hull, so it survives — quoted at retail,
+    // which is a different number from the one the capture declares. What convention that
+    // one follows is not worked out; see `data/ships/SOURCES.md`.
     for (const key of ['HullValue', 'ModulesValue', 'Rebuy'] as const) {
         assert.ok(Object.hasOwn(source, key), `the capture should declare ${key}`);
     }

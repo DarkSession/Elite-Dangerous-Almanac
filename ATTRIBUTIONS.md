@@ -134,10 +134,16 @@ in the doc comment of each ported module, and in long form in the domain
   released, and recording the size-5 and size-6 records as Community Goal rewards whose
   missing `cost` is the absence of a list price rather than an unfound one. From the
   [Elite Dangerous Wiki](https://elite-dangerous.fandom.com/wiki/Corrosion_Resistant_Cargo_Rack)
-  (Fandom, **CC BY-SA 3.0**), alongside Frontier's own announcement of the Rhea Disaster
-  Community Goal. The availability facts are **Elite Dangerous game data, property of
-  Frontier Developments plc**; see the notice below. `data/ships/SOURCES.md` records what
-  each source states and the capture whose reported `Value` was checked and rejected.
+  (Fandom, **CC BY-SA 3.0**), alongside Frontier Developments' own announcement of the
+  Rhea Disaster Community Goal
+  ([@EliteDangerous](https://x.com/EliteDangerous/status/1812792503776489745), with the
+  goal itself on the [Frontier
+  forums](https://forums.frontier.co.uk/threads/deliver-critical-aid-for-the-rhea-disaster.626528/)).
+  Both read **2026-08-06 UTC**; neither is pinned to a revision, and `data/ships/SOURCES.md`
+  records why the wiki's could not be captured. The availability facts are **Elite
+  Dangerous game data, property of Frontier Developments plc**; see the notice below.
+  `data/ships/SOURCES.md` records what each source states and the capture whose reported
+  `Value` was checked and rejected.
 - **Per-hull journal slot names** — the slot keys 10 hulls use that no numbering rule
   derives (the Anaconda's `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian
   Explorer's out-of-order medium hardpoints), plus 3 more the rules do derive — the
