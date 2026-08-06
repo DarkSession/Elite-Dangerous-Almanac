@@ -1047,7 +1047,10 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
       gap — FDevIDs `outfitting.csv` has no row, coriolis-data has no record at all, and
       EDSY carries it `cost: NaN` annotated "never released". A variant that never
       reached players is not a player-facing outfitting record, so it goes the way of the
-      other non-purchasable internal variants that rule already excludes. The catalogue
+      other non-purchasable internal variants that rule already excludes —
+      [#20](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/20) states the
+      same test for the same family: absence from FDevIDs is the evidence a variant is not
+      purchasable. The catalogue
       drops from 1198 records to **1197** (`internal` 483 → 482), the
       engineering-options module map from 1029 to **1028** (`cargoRacks` 17 → 16), and
       the shared fixtures move with it in the same change. No build in
@@ -1055,10 +1058,9 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     - **Sizes 5 and 6 stay, and stay unpriced — but the absence now means *no list price
       exists*, not *none was found*.** These are the opposite case: players do hold them,
       so a journal can name them and the catalogue must resolve them. They were Community
-      Goal rewards and were sold nowhere. **Both sources acquired 2026-08-06 UTC.**
-      Frontier's own announcement of the **Rhea Disaster** CG states that "all
-      participating commanders will now receive the Size 6 Corrosion Resistant Cargo Rack
-      whilst the top 50% will now receive 2"
+      Goal rewards and were sold nowhere. Frontier's own announcement of the **Rhea
+      Disaster** CG states that "all participating commanders will now receive the Size 6
+      Corrosion Resistant Cargo Rack whilst the top 50% will now receive 2"
       ([@EliteDangerous](https://x.com/EliteDangerous/status/1812792503776489745); the CG
       itself ran on the [Frontier
       forums](https://forums.frontier.co.uk/threads/deliver-critical-aid-for-the-rhea-disaster.626528/)).
@@ -1067,15 +1069,25 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
       records that the class 5 and 6 modules "exist in limited numbers among CMDRs who
       received them as a Community Goal reward, but they are otherwise neither
       purchasable nor unlockable" — size 4 is the largest one obtainable, through a Human
-      Technology Broker. **Neither is pinned to a revision**, and for the wiki one exists:
-      MediaWiki serves a stable `?oldid=`, but the host refuses automated requests from
-      this environment (HTTP 403), so neither the revision id nor a stored copy could be
-      captured, and `../SNAPSHOTS.md`'s checksum fallback is unavailable for the same
-      reason. The quotations above are therefore the preserved form. Recording the gap
-      rather than inventing a revision, as that file requires; a maintainer reading the
-      page in a browser can close it by adding the `oldid`. So EDSY's `TODO: cost` is upstream expecting a figure that
+      Technology Broker. So EDSY's `TODO: cost` is upstream expecting a figure that
       outfitting never quoted, and the earlier reading of it as a *pending* price is
       withdrawn.
+
+      **Both sources read 2026-08-06 UTC; the wiki alone is unpinned.** An X status id
+      names one immutable post, so the announcement is pinned by its URL. The wiki page is
+      mutable and MediaWiki serves a stable `?oldid=` for it, but the host refuses
+      automated requests from this environment (HTTP 403), so neither the revision id nor
+      a stored copy could be captured and `../SNAPSHOTS.md`'s checksum fallback is out of
+      reach for the same reason. The quotation above is the preserved form. The gap is
+      recorded rather than closed with an invented revision, as that file requires, and a
+      maintainer reading the page in a browser can close it by adding the `oldid`.
+
+      **What an unpinned source may carry: an interpretation, never a value or a record.**
+      Nothing in any payload here derives from either of these two. Dropping the size-2
+      record rests on FDevIDs, coriolis-data and the EDSY snapshot pinned above; these two
+      change only what an already-absent `cost` *means*, and `cost` is `undefined` to a
+      consumer either way. Using an unpinned page to add a price or a module would need
+      the pin first.
     - **A capture reporting a `Value` was checked and rejected.** An Inara SLEF export of
       an anti-xeno Imperial Cutter, contributed by the repository owner from their own
       fleet and acquired 2026-08-06 (UTC), fits five of these racks. Its two size-6
@@ -1091,7 +1103,12 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     - **What would still close it** is an in-game reading that does not go through a
       purchase: a `StoredModules` entry's `BuyPrice`, a `ModuleSell` on one, or the
       insurance figure a rebuy screen quotes. A journal `Loadout` `Value` will not do it,
-      for the reason above.
+      for the reason above. The gap is tracked on
+      [#18](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/18), which this
+      pass **supersedes on four points** and which needs updating alongside it: it counts
+      three racks rather than two, lists `_Size2_Class1` among them, reads EDSY's
+      `TODO: cost` as a price still pending, and offers a journal `Loadout` `Value` as a
+      route to closing it.
   - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
     in the game: every other shield-generator size carries all five ratings, and size 1
     ran E/D/C/A with **B missing**. The module is real, so the record was added with the
