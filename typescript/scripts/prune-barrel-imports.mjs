@@ -1,4 +1,5 @@
 import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { stripBareImports } from './strip-bare-imports.mjs';
 
 async function entryFiles(directory) {
     const files = [];
@@ -14,9 +15,11 @@ async function entryFiles(directory) {
 // in generated entry files. The source package has no side effects, so downstream
 // bundlers correctly discard these imports but warn while doing so. Shared chunks are
 // deliberately left untouched because they are implementation modules, not entries.
-// Remove only bare imports; imports that bind a value, and every re-export, remain.
+// Parse the generated ESM before removing bare imports so import-like text in string
+// literals or comments remains untouched. Imports that bind a value, and every
+// re-export, remain too.
 for (const entry of await entryFiles('dist')) {
     const source = await readFile(entry, 'utf8');
-    const cleaned = source.replace(/\bimport\s*['"][^'"]+['"];?/g, '');
+    const cleaned = stripBareImports(source);
     if (cleaned !== source) await writeFile(entry, cleaned);
 }

@@ -3,6 +3,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
+import { stripBareImports } from './scripts/strip-bare-imports.mjs';
 
 import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-code';
 import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
@@ -98,6 +99,14 @@ test('generated public entries contain no redundant bare imports', async () => {
     for (const { file, specifier } of await publicEntries()) {
         assert.doesNotMatch(await readFile(file, 'utf8'), /\bimport\s*['"]/, specifier);
     }
+});
+
+test('bare-import pruning preserves import-like text and value imports', () => {
+    const source = `const message="import './keep.js'";import value from'./value.js';import'./remove.js';export{message,value};`;
+    assert.equal(
+        stripBareImports(source),
+        `const message="import './keep.js'";import value from'./value.js';export{message,value};`,
+    );
 });
 
 test('a consumer bundle of every public entry produces no warnings', async () => {

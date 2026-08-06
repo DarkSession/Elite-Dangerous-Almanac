@@ -194,6 +194,7 @@ test('the shared fixture pins falloff, piercing and the sustained factor', () =>
 test('armour piercing rejects invalid ratings and permits zero sentinels', () => {
     assert.equal(armourPiercingFactor(0, 65), 0);
     assert.equal(armourPiercingFactor(22, 0), 1);
+    assert.equal(armourPiercingFactor(0, 0), 1);
     for (const piercing of [-1, Number.NaN, Number.POSITIVE_INFINITY]) {
         assert.throws(() => armourPiercingFactor(piercing, 65), RangeError);
     }
