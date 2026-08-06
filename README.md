@@ -1214,9 +1214,9 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > accepted id names; the two below merely widen what is accepted, so their order does not
 > matter.
 >
-> Another is for builds that spell a
-> modification generically: where a recipe applies to several families the game writes a
-> family-specific `BlueprintName` and the menu lists that one, but an EDSY-authored build
+> Another is for builds that spell a modification generically: where a recipe applies to
+> several families the game writes a family-specific `BlueprintName` and the menu lists
+> that one, but an EDSY-authored build
 > carries `Misc_LightWeight` where the menu says `LifeSupport_LightWeight`. Those are the
 > same recipe, so both are accepted — 70 of the corpus's declared entries are spelled that
 > way. The alias runs only from the ambiguous spelling to the menu's, never the reverse:

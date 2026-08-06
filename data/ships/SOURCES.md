@@ -1327,8 +1327,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     four ids are unaffected: `Sensor_FastScan` and the generic `Misc_*` trio, exactly as
     coriolis has them.) The shared fdname is not a defect in EDSY's table, and §Scanner
     Long Range and Wide Angle below is what follows from that. Eleven groups carry a
-    substitution; the substituted lists are then
-    checked against coriolis's own, as are the nine further groups it carries a list for —
+    substitution; the substituted lists are then checked against coriolis's own, as are
+    the nine further groups it carries a list for —
     20 in all, every one an exact match. Chaff, heat sink, point defence and ECMs keep the
     generic `Misc_*` ids: there coriolis agrees with EDSY.
   - **13 groups rest on EDSY alone**, because coriolis carries no blueprint list for
@@ -1468,11 +1468,12 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   `Int_DroneControl_ResourceSiphon`, which the prefix rule for "hatchbreaker" never matched,
   and the Caustic Sink Launcher's said `causticsink` where its group is the heat sink
   launchers'. A per-module menu has nothing to infer. The module is deleted.
-  Three accommodations sit beyond the menu. They are listed here as they are best
-  explained rather than as they run — the gate applies the journal spelling first, then
-  the pre-engineered route, then the generic spelling, and only the first can change
-  *which recipe* an accepted id names, so the other two cannot disagree whichever way
-  round they are asked. `loadout-engineering.ts` states the running order.
+
+Three accommodations sit beyond the menu, and the three bullets below are them. They are
+listed as they are best explained rather than as they run — the gate applies the journal
+spelling first, then the pre-engineered route, then the generic spelling, and only the
+first can change *which recipe* an accepted id names, so the other two cannot disagree
+whichever way round they are asked. `loadout-engineering.ts` states the running order.
 
 - **Accommodation: the journal spelling of a menu entry.** Where the game writes one
   `BlueprintName` for two different recipes, the module's own group carries the map from
