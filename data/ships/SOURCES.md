@@ -2072,9 +2072,14 @@ under, which is why several are cited above rather than copied.
   size-4. So the capture declares `HullValue`, `ModulesValue` and `Rebuy`, and this
   library's re-export of it drops **`ModulesValue` and `Rebuy`** — the two figures that
   cannot be built without a price for every module — while still quoting `HullValue`,
-  which needs only the hull and is unaffected: ours reads 200 493 413, the bare retail
-  `hullCost`, against the capture's discounted 180 435 868. `ship-loadout-export.test.ts`
-  pins the two omissions.
+  which needs only the hull and is unaffected. Ours reads 200 493 413, the bare retail
+  `hullCost`; the capture declares 180 435 868, which is neither that nor the
+  `retailCost` 208 969 451, so its hull figure is discarded like every other capture's.
+  What discount stands behind it is deliberately **not** worked out — 180 435 868 is
+  0.89996 of `hullCost`, near enough 10% to be tempting and 8204 credits short of it, and
+  the rule against reaching for a target with a free variable applies here exactly as it
+  does to the rack `Value` below. `ship-loadout-export.test.ts` pins the two omissions and
+  the retail hull figure.
 
   **It is also what settles that the reward racks' `Value` is not their list price.**
   Its size-5 rack reports `Value: 318174` and *both* size-6 racks report no `Value` at

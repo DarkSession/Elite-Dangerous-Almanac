@@ -524,7 +524,7 @@ test('a build we cannot price stays unpriced however many times it is re-exporte
     }
 });
 
-test('a real capture carrying a Community Goal rack exports no credits, and its own Value is not a list price', async () => {
+test('a real capture carrying a Community Goal rack exports no module total or rebuy, and its own Value is not a list price', async () => {
     // The hand-built case above, but from outside: a real Inara export of an anti-xeno
     // Cutter fitting five corrosion-resistant racks. Two size-6 and one size-5 are the
     // Community Goal rewards this catalogue leaves unpriced, so a total cannot be built.
