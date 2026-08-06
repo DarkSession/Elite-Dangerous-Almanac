@@ -1208,10 +1208,13 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > differently. `applyBlueprint` refuses a recipe this menu does not list for that module,
 > and quotes the menu back when it does.
 >
-> It makes three accommodations beyond the menu. The first is the journal spelling just
-> described: a scanner's `Sensor_LongRange` is accepted and folded as `Scanner_LongRange`.
+> It makes three accommodations beyond the menu. One is the journal spelling just
+> described, and it is the one applied first: a scanner's `Sensor_LongRange` is accepted
+> and folded as `Scanner_LongRange`. It is also the only one that changes _which_ recipe an
+> accepted id names; the two below merely widen what is accepted, so their order does not
+> matter.
 >
-> The second is for builds that spell a
+> Another is for builds that spell a
 > modification generically: where a recipe applies to several families the game writes a
 > family-specific `BlueprintName` and the menu lists that one, but an EDSY-authored build
 > carries `Misc_LightWeight` where the menu says `LifeSupport_LightWeight`. Those are the
@@ -1220,7 +1223,7 @@ getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 > `LifeSupport_LightWeight` stays off a limpet controller, and a chaff launcher's Ammo
 > Capacity stays off a heat sink launcher, whose roll is a smaller one.
 >
-> The third is for the `recipe_*` keys of [modules sold already
+> The last is for the `recipe_*` keys of [modules sold already
 > engineered](#modules-you-can-buy-already-engineered). No menu lists one, so `applyBlueprint`
 > takes them from `ships/pre-engineered` instead, on the module that actually ships with the
 > recipe and no other — `recipe_railgun_longshot` on the medium rail gun, not the small one.

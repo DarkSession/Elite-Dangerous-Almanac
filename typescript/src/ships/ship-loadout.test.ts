@@ -966,6 +966,18 @@ test('a wake scanner engineered Long Range gets the scanner recipe, not the sens
         () => build.applyBlueprint('Radar', 'Scanner_LongRange', { grade: 3 }),
         /is not offered blueprint "Scanner_LongRange"; it takes Sensor_LightWeight/,
     );
+    // Once the two spellings differ, an error names both — the id the caller passed, and
+    // the recipe this module would have rolled. Reporting one as the other is how a
+    // resolved failure reads as a failure of something the caller never asked for.
+    assert.throws(
+        () => build.applyBlueprint('TinyHardpoint1', 'Sensor_LongRange', { grade: 9 }),
+        /no blueprint "Sensor_LongRange" \(Scanner_LongRange on this module\) grade 9/,
+    );
+    // ...and stays quiet when they do not.
+    assert.throws(
+        () => build.applyBlueprint('Radar', 'Sensor_LongRange', { grade: 9 }),
+        /no blueprint "Sensor_LongRange" grade 9/,
+    );
 });
 
 test('a module sold pre-engineered can be taken further, menu or no menu', () => {

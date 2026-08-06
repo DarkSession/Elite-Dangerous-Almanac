@@ -1019,7 +1019,7 @@ export class ShipLoadout {
         if (!blueprintAvailableFor(module.Item, blueprintName)) {
             throw new TypeError(
                 isEngineerable(module.Item)
-                    ? `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered blueprint "${blueprintName}"; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
+                    ? `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered blueprint ${named}; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
                     : `ShipLoadout.applyBlueprint: no registry lists an engineering menu for module "${module.Item}"`,
             );
         }

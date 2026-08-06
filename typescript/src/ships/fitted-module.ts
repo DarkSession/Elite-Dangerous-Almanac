@@ -196,8 +196,10 @@ export class FittedModule {
      * @returns This handle for chaining.
      * @throws {RangeError} If the blueprint, grade or experimental effect is unknown, or
      * `quality` falls outside `[0, 1]`.
-     * @throws {TypeError} If this module is not offered the blueprint or the experimental
-     * effect, or the catalogue cannot answer a base stat the recipe modifies.
+     * @throws {TypeError} If this handle has gone stale — its slot emptied or refitted since
+     * it was taken — or the fitted module has no stats to engineer; or this module is not
+     * offered the blueprint or the experimental effect; or the catalogue cannot answer a
+     * base stat the recipe modifies.
      * @example
      * ```ts
      * build.getFittedModule('FrameShiftDrive')!.applyBlueprint('FSD_LongRange', {

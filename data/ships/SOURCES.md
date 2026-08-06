@@ -1380,16 +1380,6 @@ up straight through with no disambiguation at all. Both paths are evidence that
 
   Both keep their `SensorTargetScanAngle` leg. The catalogue keeps coriolis's split keys,
   because two recipes need two records and the menus have to name the one they roll; what
-  **Acquisition (2026-08-06 UTC).** `edsy.js` — the file carrying `Build.fromJournal` — is
-  new to this repository's provenance: read from
-  `raw.githubusercontent.com/taleden/EDSY/master/edsy.js`, SHA-256
-  `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5`, pinned by digest
-  because it was taken from the branch tip. The `eddb.js` read beside it is byte-identical
-  to the snapshot every pass above pins (`967834d6…`, internal `db 20260428`), so the group
-  tables did not move under this change; only the reading of them did. Same CC BY-NC 4.0
-  terms as the other EDSY reads.
-
-  What
   is added is an optional per-group **`aliases`** map on the three scanner groups, from the
   journal id to the entry of *that* menu it names. `resolveBlueprintForModule` reads it, and
   `ShipLoadout.applyBlueprint` resolves before it folds — so an EDSY-authored build
@@ -1402,6 +1392,15 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `fixtures/ships/engineering.json` (`scannerIdCollision`), which holds the exact modifier
   block the same id produces on each family. This closed
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
+
+  **Acquisition (2026-08-06 UTC).** `edsy.js` — the file carrying `Build.fromJournal` — is
+  new to this repository's provenance: read from
+  `raw.githubusercontent.com/taleden/EDSY/master/edsy.js`, SHA-256
+  `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5`, pinned by digest
+  because it was taken from the branch tip. The `eddb.js` read beside it is byte-identical
+  to the snapshot every pass above pins (`967834d6…`, internal `db 20260428`), so the group
+  tables did not move under this change; only the reading of them did. Same CC BY-NC 4.0
+  terms as the other EDSY reads.
 - **Checked against the build corpus.** Of the 1902 declared engineering entries in
   `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups — the measure in
   the issue was 497 of them ungrouped — and 1889 are clean end to end: the module is
@@ -1469,13 +1468,19 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   `Int_DroneControl_ResourceSiphon`, which the prefix rule for "hatchbreaker" never matched,
   and the Caustic Sink Launcher's said `causticsink` where its group is the heat sink
   launchers'. A per-module menu has nothing to infer. The module is deleted.
-- **First accommodation: the journal spelling of a menu entry.** Where the game writes one
+  Three accommodations sit beyond the menu. They are listed here as they are best
+  explained rather than as they run — the gate applies the journal spelling first, then
+  the pre-engineered route, then the generic spelling, and only the first can change
+  *which recipe* an accepted id names, so the other two cannot disagree whichever way
+  round they are asked. `loadout-engineering.ts` states the running order.
+
+- **Accommodation: the journal spelling of a menu entry.** Where the game writes one
   `BlueprintName` for two different recipes, the module's own group carries the map from
   that id to the entry of its menu it names — only the three utility-scanner groups need
-  one, and §Scanner Long Range and Wide Angle above is the whole of it. It is checked first
-  and it is pinned data, not inference, because unlike the generic spellings below the two
-  ids do *not* describe the same modification.
-- **Second accommodation: the generic spelling.** Where a modification applies to several
+  one, and §Scanner Long Range and Wide Angle above is the whole of it. It is pinned data,
+  not inference, because unlike the generic spellings below the two ids do *not* describe
+  the same modification.
+- **Accommodation: the generic spelling.** Where a modification applies to several
   families the game writes a family-specific `BlueprintName` and this catalogue lists that
   one, but a build authored elsewhere carries the generic `Misc_*` id — 70 corpus entries
   do. Both are accepted, because both name the same recipe, and `blueprints.jsonc` shows
@@ -1508,7 +1513,7 @@ therefore cannot disagree, and `engineering.test.ts` asserts that for all 1198 m
   scanner's `Sensor_LongRange` was the fourteenth until 2026-08-06, and was the one the
   family map refused too; it is now accepted and folded as the scanner's recipe — see
   §Scanner Long Range and Wide Angle above.
-- **Third accommodation: the pre-engineered route.** A `recipe_*` key belongs to a module
+- **Accommodation: the pre-engineered route.** A `recipe_*` key belongs to a module
   bought already engineered, so no menu lists one and the menu check alone refused all 20
   of them everywhere — a capability the family map had. `pre-engineered.jsonc` names which module
   each arrives on, so the gate accepts a recipe on the module that is sold carrying it and

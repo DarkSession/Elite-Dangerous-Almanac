@@ -152,9 +152,13 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  *
  * The second is {@link isSoldWithBlueprint}: a module with no menu, or a menu that omits the
  * recipe, still accepts one it is sold already carrying. It is asked about the id as written
- * *and* about the resolved one, so an alias can neither create nor destroy a match — no
- * pre-engineered variant in an aliased group is spelled either way today, and this keeps it
- * that way if one ever is.
+ * *and* about the resolved one, so resolution cannot **hide** a sale recorded under the
+ * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
+ * in an aliased group were ever recorded under an alias *key*, the gate would accept it here
+ * while `applyBlueprint` folded the resolved recipe. Nothing is recorded that way today —
+ * the only pre-engineered variants in an aliased group are the two Kill Warrant Scanners'
+ * `Sensor_FastScan`, which has no alias and which the menu offers anyway — so the question
+ * does not arise; it is written down because no test can catch it if it ever does.
  *
  * The third is the generic spelling. Where a modification applies to several module families
  * Frontier writes a family-specific `BlueprintName` and the menu lists that one, but a
