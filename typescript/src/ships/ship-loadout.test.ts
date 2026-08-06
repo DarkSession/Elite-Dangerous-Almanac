@@ -230,6 +230,34 @@ test('the power plant and fuel tank are found by `slot`, with the symbol as fall
     assert.equal(imported.fuelCapacity.main, 0);
 });
 
+test('the drive is found by `slot` too, wherever the module is mounted', () => {
+    // The fourth reader. A hardpoint mount checks `category`, which this record answers
+    // honestly, so *both* the old rule and the new one accept the fit — and then the
+    // drive lookup, which scans every fitted module rather than the drive mount alone,
+    // takes the record at its word. The old symbol rule looked straight past a weapon.
+    const laser = getModuleBySymbol('Hpt_PulseLaser_Fixed_Large', ALL_MODULES)!;
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('HugeHardpoint1', { ...laser, slot: 'frameShiftDrive' } as OutfittingModule)
+        .setModule(
+            'FrameShiftDrive',
+            getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!,
+        )
+        .setModule('FuelTank', getModuleBySymbol('Int_FuelTank_Size5_Class3', CORE_MODULES)!);
+    // A pulse laser carries no jump constants, so the build says so rather than
+    // quietly answering with the real drive fitted alongside it.
+    assert.throws(() => build.maxJumpRange(), /no jump constants/);
+
+    // Left alone, the same build jumps on its actual drive.
+    const sane = ShipLoadout.empty('Anaconda')
+        .setModule('HugeHardpoint1', laser)
+        .setModule(
+            'FrameShiftDrive',
+            getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!,
+        )
+        .setModule('FuelTank', getModuleBySymbol('Int_FuelTank_Size5_Class3', CORE_MODULES)!);
+    assert.ok(sane.maxJumpRange() > 0);
+});
+
 test('fromSlef throws when the entry index is out of range', () => {
     assert.throws(() => ShipLoadout.fromSlef(slefString, 5), TypeError);
 });
