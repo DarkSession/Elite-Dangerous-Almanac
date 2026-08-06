@@ -60,6 +60,22 @@ test('a switched-off module draws nothing', () => {
     assert.equal(budget.deployed, 2);
 });
 
+test('rejects invalid available power and known consumer draws', () => {
+    for (const available of [-1, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => powerBudget(available, []), RangeError);
+    }
+    for (const draw of [-1, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => powerBudget(10, [{ draw }]), RangeError);
+    }
+});
+
+test('does not validate irrelevant disabled or explicitly unknown placeholder draws', () => {
+    const unknown = { draw: Number.NaN, drawUnknown: true, label: 'unknown' };
+    const budget = powerBudget(10, [unknown, { draw: -1, enabled: false }]);
+    assert.deepEqual(budget.unknownDraws, [unknown]);
+    assert.equal(budget.deployed, 0);
+});
+
 test('priority groups are cumulative and the ones that overflow go dark', () => {
     const budget = powerBudget(6, [
         { draw: 4, priority: 1 },

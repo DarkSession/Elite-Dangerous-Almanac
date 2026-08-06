@@ -4,6 +4,9 @@
     "description": "Elite Dangerous static data and calculations: procedural system naming and id64 addresses, galactic regions, nebulae, ships and outfitting with build metrics (jump range, power, shields, armour, weapon DPS), engineering materials, and market commodities.",
     "type": "module",
     "sideEffects": false,
+    "engines": {
+        "node": ">=18"
+    },
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
@@ -95,7 +98,8 @@
         "THIRD_PARTY_NOTICES.md"
     ],
     "scripts": {
-        "build": "node scripts/copy-notices.mjs && tsup && node scripts/attach-barrel-docs.mjs",
+        "audit": "npm audit --audit-level=low",
+        "build": "node scripts/copy-notices.mjs && tsup && node scripts/prune-barrel-imports.mjs && node scripts/attach-barrel-docs.mjs",
         "check": "npm run lint && npm run format:check && npm run typecheck && npm test",
         "format": "prettier --write . ../README.md ../schemas/**/*.{json,md} ../.github/workflows/*.yml",
         "format:check": "prettier --check . ../README.md ../schemas/**/*.{json,md} ../.github/workflows/*.yml",
@@ -106,10 +110,16 @@
         "docs": "typedoc && node scripts/postprocess-wiki.mjs",
         "test:package": "node --test package.test.mjs"
     },
+    "overrides": {
+        "brace-expansion": "5.0.9",
+        "esbuild": "0.28.1"
+    },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@types/node": "^22.20.1",
         "ajv": "^6.15.0",
+        "esbuild": "0.28.1",
+        "es-module-lexer": "2.3.1",
         "eslint": "^10.7.0",
         "globals": "^17.7.0",
         "prettier": "^3.9.6",

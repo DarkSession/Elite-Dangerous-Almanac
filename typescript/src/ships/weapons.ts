@@ -316,9 +316,13 @@ export function damageFalloff(weapon: WeaponStats, metres: number): number {
  * How much of a weapon's damage a hull's hardness lets through.
  *
  * @param armourPiercing - The weapon's piercing rating.
- * @param hardness - The target hull's {@link Ship.hardness}.
- * @returns A factor in `(0, 1]`: `1` when the weapon out-pierces the hull, otherwise
- * `armourPiercing / hardness`. Applies to hull damage only — shields do not care.
+ * @param hardness - The target hull's finite, non-negative {@link Ship.hardness}.
+ * Pass `0` when the hardness is unknown, which disables hardness scaling.
+ * @returns A factor in `[0, 1]`: `1` when the weapon out-pierces the hull, otherwise
+ * `armourPiercing / hardness`. A zero piercing rating returns `0` when hardness is
+ * positive; zero hardness always returns `1` because it disables hardness scaling.
+ * Applies to hull damage only — shields do not care.
+ * @throws {RangeError} If either argument is not a finite non-negative number.
  * @example
  * ```ts
  * armourPiercingFactor(22, 65); // -> 0.338…  a small multi-cannon against an Anaconda
@@ -326,7 +330,15 @@ export function damageFalloff(weapon: WeaponStats, metres: number): number {
  * ```
  */
 export function armourPiercingFactor(armourPiercing: number, hardness: number): number {
-    if (!Number.isFinite(hardness) || hardness <= 0) return 1;
+    if (!Number.isFinite(armourPiercing) || armourPiercing < 0) {
+        throw new RangeError(
+            'armourPiercingFactor: armour piercing must be a finite non-negative number',
+        );
+    }
+    if (!Number.isFinite(hardness) || hardness < 0) {
+        throw new RangeError('armourPiercingFactor: hardness must be a finite non-negative number');
+    }
+    if (hardness === 0) return 1;
     return Math.min(1, armourPiercing / hardness);
 }
 

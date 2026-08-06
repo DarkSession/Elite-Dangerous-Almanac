@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Audit dependencies
+        run: npm run audit
+
       - name: Lint
         run: npm run lint
 
@@ -46,4 +49,12 @@ jobs:
         run: npm run build
 
       - name: Test package entry points
+        run: npm run test:package
+
+      - name: Setup minimum supported Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Test package on minimum supported Node.js
         run: npm run test:package
