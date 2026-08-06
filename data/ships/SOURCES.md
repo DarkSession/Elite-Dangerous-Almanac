@@ -359,7 +359,7 @@ registry carries the value. No source was re-acquired or fetched for this revisi
   reported in `PowerBudget.unknownDraws` and left out of every total, so the totals are
   an explicit lower bound instead of a confident understatement. Mass already behaved
   this way — one unknown module mass withholds `unladenMass` entirely — and is unchanged.
-- **`integrity` on the 83 non-armour records that lack it is *not* declared**, because
+- **`integrity` on the 82 non-armour records that lack it is *not* declared**, because
   the evidence says those families do not have the stat: no registry publishes one and
   the game's own module panel shows none. It is recorded instead as a pinned set,
   `fixtures/ships/module-stats.json` `withoutIntegrity`, which fails if the membership
@@ -1103,12 +1103,11 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   - **All 48 hulls are priced. 1176 of 1197 modules are.** The 21 without a price are the
     ten starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
     Vessel Hangars, the **two unsold** Corrosion Resistant Cargo Racks (both Community
-    Goal rewards) and `Int_ShieldGenerator_Size1_Class4` —
-    no registry publishes a figure for them. Three of
-    the four racks joined the list in the 2026-08-02 revision described above (moving this
-    count from 1178/20), `_Size1_Class2` left it again on 2026-08-05 when EDSY was
-    found to price it, and `_Size2_Class1` left it on 2026-08-06 with the removal of its
-    record. **`cost` is omitted, never set to 0**:
+    Goal rewards) and `Int_ShieldGenerator_Size1_Class4` — no registry publishes a figure
+    for them. Three of the four racks joined the list in the 2026-08-02 revision described
+    above (moving this count from 1178/20), `_Size1_Class2` left it again on 2026-08-05
+    when EDSY was found to price it, and `_Size2_Class1` left it on 2026-08-06 with the
+    removal of its record. **`cost` is omitted, never set to 0**:
     `0` is a real price (the starter Lightweight Alloy bulkhead costs nothing), so a
     cost calculation must be able to tell "free" from "unknown".
   - **Still not modelled:** passenger capacity and fighter-bay/rebuild counts. The
@@ -1916,7 +1915,7 @@ its own fixture, with the expected outputs in a sibling fixture that names it by
 where the build is used for metrics. The last three below pin no metric: two are evidence
 for the outfitting *rules*, and what is checked against them is which module the game put
 in which mount; the Cutter is evidence about *prices*, and what is checked against it is
-that a build fitting an unpriceable module exports no credits at all.
+that a build fitting an unpriceable module exports no module total and no rebuy.
 
 **What may be taken, and from where.** A capture is Frontier game output — which parts a
 player put in which slots — and it is redistributed here under Frontier's media-usage
@@ -2070,9 +2069,12 @@ under, which is why several are cited above rather than copied.
   first real evidence for the omit-rather-than-under-report rule, which until now only a
   hand-assembled build exercised. Five of its optionals are corrosion-resistant racks:
   two size-6 and one size-5 — the Community Goal rewards left unpriced above — plus two
-  size-4. So the capture declares `HullValue`, `ModulesValue` and `Rebuy` and this
-  library's re-export of it declares none of the three, which
-  `ship-loadout-export.test.ts` pins.
+  size-4. So the capture declares `HullValue`, `ModulesValue` and `Rebuy`, and this
+  library's re-export of it drops **`ModulesValue` and `Rebuy`** — the two figures that
+  cannot be built without a price for every module — while still quoting `HullValue`,
+  which needs only the hull and is unaffected: ours reads 200 493 413, the bare retail
+  `hullCost`, against the capture's discounted 180 435 868. `ship-loadout-export.test.ts`
+  pins the two omissions.
 
   **It is also what settles that the reward racks' `Value` is not their list price.**
   Its size-5 rack reports `Value: 318174` and *both* size-6 racks report no `Value` at

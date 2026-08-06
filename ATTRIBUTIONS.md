@@ -196,9 +196,12 @@ in the doc comment of each ported module, and in long form in the domain
   `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json`,
   `slef-inara-panther-mkii.json` and `slef-inara-cutter-antixeno.json` are real
   [Inara](https://inara.cz/) SLEF exports, contributed by the repository owner from their
-  own commander's fleet; two of them are what a restricted mount's rules are checked
-  against and the Cutter is what the omitted-price rule is, and their headers keep only
-  the producing app and version.
+  own commander's fleet. The Lynx Highliner and the Panther Clipper Mk II are what a
+  restricted mount's rules are checked against, and the Cutter is what the omitted-price
+  rule is checked against; the headers of **those three** keep only the producing app and
+  version. The Type-11 predates that scrubbing and still carries the Inara ids it was
+  received with — `data/ships/SOURCES.md` records the difference and that closing it is
+  the owner's call.
   All seven are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 

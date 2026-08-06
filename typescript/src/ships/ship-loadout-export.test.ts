@@ -534,13 +534,17 @@ test('a real capture carrying a Community Goal rack exports no credits, and its 
     );
     const source = capture[0]!.data as unknown as LoadoutEvent;
 
-    // The source declares all three figures; ours omits them rather than under-reporting.
-    for (const key of ['ModulesValue', 'Rebuy'] as const) {
+    // The two figures that need a price for *every* module are dropped rather than
+    // under-reported. `HullValue` needs only the hull, so it survives — at retail, which
+    // is a different number from the discounted one the capture declares.
+    for (const key of ['HullValue', 'ModulesValue', 'Rebuy'] as const) {
         assert.ok(Object.hasOwn(source, key), `the capture should declare ${key}`);
     }
     const event = ShipLoadout.fromLoadout(source).toLoadoutEvent();
     assert.ok(!Object.hasOwn(event, 'ModulesValue'), 'priced a build it cannot price');
     assert.ok(!Object.hasOwn(event, 'Rebuy'), 'invented a rebuy');
+    assert.equal(event.HullValue, 200493413);
+    assert.notEqual(event.HullValue, source.HullValue);
 
     // ...and the reason is the two reward racks specifically, not the hull or the rest.
     for (const symbol of [
@@ -555,19 +559,35 @@ test('a real capture carrying a Community Goal rack exports no credits, and its 
     // against itself. Its two size-4 racks are the same module at one list price, and
     // they read differently — so no single `Value` recovers a list price, and a reward
     // module was never bought at a station to begin with.
-    const valueOf = (slot: string) =>
-        source.Modules.find((m: LoadoutModule) => m.Slot === slot)?.Value;
+    // Resolve the mount, not the price: a bare `.find(...)?.Value` reads `undefined` both
+    // when the capture reports no `Value` and when the slot key is not there at all, so
+    // the "reward racks carry no Value" assertions below would pass on a fixture that had
+    // lost them entirely.
+    const entryFor = (slot: string): LoadoutModule => {
+        const entry = source.Modules.find((m: LoadoutModule) => m.Slot === slot);
+        assert.ok(entry, `the capture should fit something in ${slot}`);
+        return entry;
+    };
     const size4 = module('Int_CorrosionProofCargoRack_Size4_Class1').cost!;
     assert.equal(size4, 94330);
-    assert.deepEqual([valueOf('slot06_size5'), valueOf('slot07_size5')], [82774, 91970]);
-    assert.notEqual(valueOf('slot06_size5'), valueOf('slot07_size5'));
-    for (const paid of [82774, 91970]) {
-        assert.ok(paid < size4, `${paid} should sit below the ${size4} list price`);
-    }
-    // The size-5 reward carries one; both size-6 rewards carry none at all.
-    assert.equal(valueOf('slot05_size6'), 318174);
-    assert.equal(valueOf('slot03_size6'), undefined);
-    assert.equal(valueOf('slot04_size6'), undefined);
+
+    // The two size-4 racks are one module at one list price, and they report different
+    // figures — both below list. That is what makes `Value` a paid price rather than a
+    // list one, and it is read off the capture rather than restated as literals.
+    const paid = ['slot06_size5', 'slot07_size5'].map((slot) => {
+        const entry = entryFor(slot);
+        assert.equal(entry.Item, 'int_corrosionproofcargorack_size4_class1');
+        assert.ok(typeof entry.Value === 'number', `${slot} should report a Value`);
+        assert.ok(entry.Value < size4, `${slot}: ${entry.Value} is not below list ${size4}`);
+        return entry.Value;
+    });
+    assert.equal(new Set(paid).size, 2, 'the same module should report two paid figures');
+    assert.deepEqual(paid, [82774, 91970]);
+
+    // The size-5 reward reports a Value; both size-6 rewards report none at all.
+    assert.equal(entryFor('slot05_size6').Value, 318174);
+    assert.equal(entryFor('slot03_size6').Value, undefined);
+    assert.equal(entryFor('slot04_size6').Value, undefined);
 });
 
 test('an import whose own prices disagree with its total is corrected to retail', () => {

@@ -24,7 +24,7 @@
  * the display name; `class` the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is an `internal` module, so a loader adds
- * `category: "internal"` from the file it read rather than repeating it 483 times.
+ * `category: "internal"` from the file it read rather than repeating it 482 times.
  * `slot` is on fifteen records and no others: the Guardian Hybrid power plants and
  * power distributors, which Frontier files here yet which fill a *core* mount, and
  * which say so with the same `powerPlant` / `powerDistributor` values

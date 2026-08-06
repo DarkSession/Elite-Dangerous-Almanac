@@ -676,9 +676,8 @@ state this library does not carry.
 All 48 hulls are priced, and 1176 of 1197 modules. The other 21 — the ten starter
 `*_free` variants, the five size-8 frame shift drives, the three Mk II fighter hangars,
 the two unsold Corrosion Resistant Cargo Racks (both Community Goal rewards, so no
-outfitting screen quotes them) and
-`Int_ShieldGenerator_Size1_Class4` — have no published price, so **`cost` is `undefined`
-rather than `0`**. That distinction is deliberate: `0` is a real price (the starter
+outfitting screen quotes them) and `Int_ShieldGenerator_Size1_Class4` — have no published
+price, so **`cost` is `undefined` rather than `0`**. That distinction is deliberate: `0` is a real price (the starter
 Lightweight Alloy bulkhead is free), so treat `undefined` as _unknown_ and decide for
 yourself whether to skip it or fail:
 
@@ -1439,8 +1438,9 @@ recorded inline there beside the field they touch.
   [`unknownStats`](#when-a-stat-is-missing) field.
 - **2026-08-05** — one module price filled from EDSY, the 1F Corrosion Resistant
   Cargo Rack (`Int_CorrosionProofCargoRack_Size1_Class2`, 12 560), which
-  coriolis-data carries as `0`. The other three racks of that family stay unpriced:
-  no station sells them, so no registry quotes one.
+  coriolis-data carries as `0`. The other three racks of that family stayed unpriced:
+  no station sells them, so no registry quotes one. (Two of them still do; the third,
+  the size-2 rack, was removed outright on 2026-08-06 — see the last entry below.)
 - **2026-08-05** — two restricted-mount rules the catalogue could not express are now
   stored: the Lynx Highliner's `Passenger01`–`Passenger03` take **passenger cabins
   only** (a seventh `slot.restriction` value), and five module records name the mount
