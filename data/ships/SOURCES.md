@@ -1913,9 +1913,10 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
 Real builds whose figures came from the game or its tools rather than from this
 library, so the maths is checked against something external. Each is stored verbatim as
 its own fixture, with the expected outputs in a sibling fixture that names it by path —
-where the build is used for metrics. The last two below are evidence for the outfitting
-*rules* rather than for the maths: they pin no metric, and what is checked against them
-is which module the game put in which mount.
+where the build is used for metrics. The last three below pin no metric: two are evidence
+for the outfitting *rules*, and what is checked against them is which module the game put
+in which mount; the Cutter is evidence about *prices*, and what is checked against it is
+that a build fitting an unpriceable module exports no credits at all.
 
 **What may be taken, and from where.** A capture is Frontier game output — which parts a
 player put in which slots — and it is redistributed here under Frontier's media-usage
@@ -2057,6 +2058,29 @@ under, which is why several are cited above rather than copied.
   `cargo01` and `cargo02` while its unrestricted `slot01_size8` and `slot02_size7` carry
   ordinary `int_cargorack_*` racks of the same sizes — a build that cannot be explained
   by size or by hull, only by the mount.
+- **`fixtures/ships/slef-inara-cutter-antixeno.json`** — a real Inara SLEF export of an
+  engineered anti-xeno Imperial Cutter (33 `Modules` entries), contributed **2026-08-06
+  UTC** on the same terms, scrubbed the same way: the header reduced to `appName` and
+  `appVersion`, dropping the `appURL` fleet link and the `appCustomProperties` Inara
+  commander and ship ids. Stored-form SHA-256
+  `398558a45e3860b233c50caf4228de770dbeaf105ca9db1be035590d406b5287`. Its `ShipName`,
+  `ShipIdent` and `ShipID` are kept, as the Panther's are.
+
+  It is the **only capture that fits a module this catalogue cannot price**, and the
+  first real evidence for the omit-rather-than-under-report rule, which until now only a
+  hand-assembled build exercised. Five of its optionals are corrosion-resistant racks:
+  two size-6 and one size-5 — the Community Goal rewards left unpriced above — plus two
+  size-4. So the capture declares `HullValue`, `ModulesValue` and `Rebuy` and this
+  library's re-export of it declares none of the three, which
+  `ship-loadout-export.test.ts` pins.
+
+  **It is also what settles that the reward racks' `Value` is not their list price.**
+  Its size-5 rack reports `Value: 318174` and *both* size-6 racks report no `Value` at
+  all — but its two size-4 racks are one module at one list price (94 330) reporting
+  **82 774** and **91 970**, about 12.25% and 2.5% off. `Value` is therefore net of
+  whatever discount applied, so no single reading recovers a list price, and a reward
+  module was not bought at a station in the first place. The arithmetic is pinned in the
+  same test so the rejection is a regression rather than a paragraph.
 
 Two facts the Krait Phantom capture established that the EDSY export could not:
 

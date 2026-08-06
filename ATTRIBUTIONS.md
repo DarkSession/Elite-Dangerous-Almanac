@@ -193,12 +193,13 @@ in the doc comment of each ported module, and in long form in the domain
   from its example data, which travels under Frontier's media-usage terms below like every
   other build here. Credit to UFO Studios & AW2C Systems Ltd for capturing and publishing
   the log. No code from that project is used.
-  `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json` and
-  `slef-inara-panther-mkii.json` are real [Inara](https://inara.cz/) SLEF exports,
-  contributed by the repository owner from their own commander's fleet; the latter two
-  are what a restricted mount's rules are checked against, and their headers keep only
+  `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json`,
+  `slef-inara-panther-mkii.json` and `slef-inara-cutter-antixeno.json` are real
+  [Inara](https://inara.cz/) SLEF exports, contributed by the repository owner from their
+  own commander's fleet; two of them are what a restricted mount's rules are checked
+  against and the Cutter is what the omitted-price rule is, and their headers keep only
   the producing app and version.
-  All six are Elite Dangerous game output and remain the property of Frontier
+  All seven are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`

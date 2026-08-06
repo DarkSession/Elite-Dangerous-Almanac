@@ -279,6 +279,14 @@ test('the slot keys real captures use are mounts the hull actually has', async (
                 })
             ).default[0]!.data,
         ],
+        [
+            'inara-cutter-antixeno',
+            (
+                await import('../../../fixtures/ships/slef-inara-cutter-antixeno.json', {
+                    with: { type: 'json' },
+                })
+            ).default[0]!.data,
+        ],
     ];
     for (const [name, data] of captures) {
         const keys = new Set(

@@ -16,6 +16,7 @@ import engineeringFixture from '../../../fixtures/ships/engineering.json' with {
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
 import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.json' with { type: 'json' };
+import cutterCapture from '../../../fixtures/ships/slef-inara-cutter-antixeno.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
@@ -685,6 +686,7 @@ test('the restrictions accept what the game itself fitted in a real capture', ()
     const captures = [
         ['lynx-highliner', lynxCapture[0]!.data],
         ['panther-mkii', pantherCapture[0]!.data],
+        ['cutter-antixeno', cutterCapture[0]!.data],
         ['type-11', inaraFixture[0]!.data],
     ] as const;
     for (const [name, data] of captures) {

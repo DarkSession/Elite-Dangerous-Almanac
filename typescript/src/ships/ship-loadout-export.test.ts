@@ -524,6 +524,52 @@ test('a build we cannot price stays unpriced however many times it is re-exporte
     }
 });
 
+test('a real capture carrying a Community Goal rack exports no credits, and its own Value is not a list price', async () => {
+    // The hand-built case above, but from outside: a real Inara export of an anti-xeno
+    // Cutter fitting five corrosion-resistant racks. Two size-6 and one size-5 are the
+    // Community Goal rewards this catalogue leaves unpriced, so a total cannot be built.
+    const { default: capture } = await import(
+        '../../../fixtures/ships/slef-inara-cutter-antixeno.json',
+        { with: { type: 'json' } }
+    );
+    const source = capture[0]!.data as unknown as LoadoutEvent;
+
+    // The source declares all three figures; ours omits them rather than under-reporting.
+    for (const key of ['ModulesValue', 'Rebuy'] as const) {
+        assert.ok(Object.hasOwn(source, key), `the capture should declare ${key}`);
+    }
+    const event = ShipLoadout.fromLoadout(source).toLoadoutEvent();
+    assert.ok(!Object.hasOwn(event, 'ModulesValue'), 'priced a build it cannot price');
+    assert.ok(!Object.hasOwn(event, 'Rebuy'), 'invented a rebuy');
+
+    // ...and the reason is the two reward racks specifically, not the hull or the rest.
+    for (const symbol of [
+        'Int_CorrosionProofCargoRack_Size5_Class1',
+        'Int_CorrosionProofCargoRack_Size6_Class1',
+    ]) {
+        assert.equal(module(symbol).cost, undefined, `${symbol} should carry no cost`);
+    }
+
+    // Why the capture's own `Value` on the size-5 rack (318174) is not adopted as that
+    // missing price: `Value` is net of the station discount, which the capture proves
+    // against itself. Its two size-4 racks are the same module at one list price, and
+    // they read differently — so no single `Value` recovers a list price, and a reward
+    // module was never bought at a station to begin with.
+    const valueOf = (slot: string) =>
+        source.Modules.find((m: LoadoutModule) => m.Slot === slot)?.Value;
+    const size4 = module('Int_CorrosionProofCargoRack_Size4_Class1').cost!;
+    assert.equal(size4, 94330);
+    assert.deepEqual([valueOf('slot06_size5'), valueOf('slot07_size5')], [82774, 91970]);
+    assert.notEqual(valueOf('slot06_size5'), valueOf('slot07_size5'));
+    for (const paid of [82774, 91970]) {
+        assert.ok(paid < size4, `${paid} should sit below the ${size4} list price`);
+    }
+    // The size-5 reward carries one; both size-6 rewards carry none at all.
+    assert.equal(valueOf('slot05_size6'), 318174);
+    assert.equal(valueOf('slot03_size6'), undefined);
+    assert.equal(valueOf('slot04_size6'), undefined);
+});
+
 test('an import whose own prices disagree with its total is corrected to retail', () => {
     // Older journals omit `Value` on modules that were paid for, so a source's parts can
     // fall short of the total it declares. Neither figure is carried through, so the
