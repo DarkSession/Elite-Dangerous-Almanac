@@ -1471,6 +1471,14 @@ wiki. The language-neutral JSON Schemas in `schemas/` validate shared catalogue
 records — one schema per data domain — before an implementation builds them into
 a package. `AGENTS.md` documents the repository conventions in full.
 
+Releases go out from CI, never from a laptop: bump `version` in
+`typescript/package.json`, then publish a GitHub release tagged `v<version>`.
+`.github/workflows/publish-npm.yml` re-runs the full check, build and packaged
+entry-point suite against the tagged commit and publishes to npm with
+[provenance](https://docs.npmjs.com/generating-provenance-statements), so every
+release on npm is traceable back to the commit and the workflow run that built
+it. Prereleases publish under the `next` dist-tag rather than `latest`.
+
 ## Attributions
 
 Much of this data and several algorithms come from the Elite Dangerous community —

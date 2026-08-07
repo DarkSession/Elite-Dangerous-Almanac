@@ -206,6 +206,35 @@ node --import tsx --import ./scripts/register-jsonc.mjs --test src/ships/weapons
 
 `npm run check` does not build. When a change touches the export map, the bundler config, or anything a consumer imports, also run `npm run build && npm run test:package` — CI does, and `dist/` is what consumers actually get.
 
+## Releasing to npm
+
+`.github/workflows/publish-npm.yml` publishes `@elite-dangerous-almanac/core`. **Nobody publishes from a laptop** — a hand-run `npm publish` produces a tarball with no provenance, built from whatever happened to be in the working tree, and it cannot be undone once the version is taken.
+
+Releasing is two steps:
+
+1. Bump `version` in `typescript/package.json` and merge that to `main`.
+2. Publish a GitHub release whose tag names the same version — `v1.2.3`, or `typescript-v1.2.3` for the day a second implementation releases on its own cadence. Both forms are accepted; the workflow strips the prefix and the leading `v` and refuses to publish if what is left disagrees with the manifest.
+
+A tag in neither form leaves the job **unstarted**, rather than failing it. That is what keeps this workflow out of the way of a `python-v1.0.0` release: a foreign tag is not this package's release, and a red X on someone else's would be this workflow's bug. The cost is that a typo'd tag is silent, so read the release's checks rather than assuming a green repository means a publish happened.
+
+What the workflow does with that:
+
+- **Reruns everything.** `npm run audit`, then `npm run check && npm run build && npm run test:package` — lint, formatting, types, the coverage-gated suite, the tsup build and the built-`dist/` entry-point suite, all against the tagged commit. The release does not trust the CI run on the branch it came from.
+- **Publishes only from a tag.** A release event names its tag; a manual run has to be sitting on one. A version number is permanent, so it is only ever taken from a ref that cannot move.
+- **Refuses a version that already exists.** npm versions are immutable, so the check happens before the build rather than as a failed upload at the end. A registry that cannot be reached is not treated as a version that is free — only npm's own "no such package or version" passes.
+- **Picks the dist-tag from the version.** A SemVer prerelease suffix (`1.2.3-rc.1`) publishes under `next`; everything else under `latest`. A prerelease must never be what `npm install` hands someone by default. The corollary, if the first release of a *new* package is ever a prerelease: it publishes under `next` only, and a bare `npm install` of it fails until a non-prerelease follows.
+- **Attaches provenance.** `--provenance` needs `id-token: write`, and it is what puts the verified badge on the npm page linking the tarball to this commit and this workflow run. `--access public` is required because the package is scoped, and scoped packages default to restricted.
+
+**The checks run in their own step, and the publish step passes `--ignore-scripts`.** This is the one place the workflow deliberately departs from the obvious shape. Letting `prepublishOnly` do the work would run ESLint, `tsc`, the whole test suite and esbuild — that is, arbitrary code from every devDependency in the tree — in the same process environment as `NODE_AUTH_TOKEN`, a credential that can publish to the scope. Splitting them costs nothing and means the token exists only for the upload. A `prepack` or `prepare` script added to the package later has to be wired into the explicit step, because `--ignore-scripts` will skip it.
+
+Setup this needs once, in repository settings, **before the first release**:
+
+1. Create an environment named `npm` (Settings → Environments). The workflow would create it on first run, but an auto-created environment has no secrets and no protection rules, and that run then fails at the token check.
+2. Add `NPM_TOKEN` to **that environment**, not to the repository: an npm automation token with publish rights on the `@elite-dangerous-almanac` scope.
+3. Restrict the environment's deployment branches and tags to release tags, and add required reviewers if a release should need a human. Environment scoping alone does not isolate the secret — any job declaring `environment: npm` can read it — so the protection rules are what make it true that only a release can spend the token.
+
+`workflow_dispatch` runs the same job with **dry-run on by default**: the checks, the real build, and `npm publish --dry-run`, which prints the file list the tarball would carry without taking the version. Use it to rehearse a release, or to see what `files` currently packs. Two things a dry run does **not** cover: the token and already-published checks are skipped, and provenance is never generated — npm only mints an attestation on a real publish, so OIDC and the registry's own validation of it are first exercised for real. Unticking the input publishes for real, and is then subject to the same tag requirement as a release.
+
 ## How the shared assets flow into TypeScript
 
 ```
