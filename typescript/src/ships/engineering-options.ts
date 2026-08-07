@@ -230,8 +230,8 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * accounted for: 21 are the `recipe_*` keys of modules sold already engineered rather than
  * offered in a menu (see `ships/pre-engineered`), and the other two are the registry's
  * spellings of Anti-Guardian Zone Resistance, which every group lists under
- * `GuardianModule_Sturdy` — the id the game itself writes. All 22 answer `[]` here exactly as an
- * unknown id would, so read this function's empty answer with
+ * `GuardianModule_Sturdy` — the id the game itself writes. All 23 answer `[]` here exactly
+ * as an unknown id would, so read this function's empty answer with
  * {@link getExperimentalsForModule} rather than as a claim about the recipe.
  *
  * Four `recipe_*` keys **are** named by a group, because they are recipes a player applies

@@ -266,6 +266,7 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
     // the registries spell differently from the game. `GuardianModule_Sturdy` was one:
     // every menu listed a `recipe_*` key for it, so a genuine journal id resolved to
     // nothing and `applyBlueprint` refused it on the module the capture shows carrying it.
+    assert.ok(fixture.journalSpellings.cases.length, 'no spellings pinned');
     for (const row of fixture.journalSpellings.cases) {
         assert.equal(
             resolveBlueprintForModule(row.symbol, row.blueprint),

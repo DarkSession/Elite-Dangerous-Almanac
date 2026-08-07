@@ -184,7 +184,7 @@
     ]
   },
   "journalSpellings": {
-    "description": "Journal `EngineerModifications` spellings read off a real `StoredModules` capture (521 stored modules, contributed by the repository owner 2026-08-07 UTC; scrubbed of the commander, carrier and market it came from, which say nothing about the game). Every spelling in that capture resolves against `BLUEPRINTS` except the three `Decorative_*` ones, which https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53 tracks. These are the cases worth pinning: an id whose key is not what the game writes, and one whose journal spelling the catalogue had missed entirely. `resolved` is the `BLUEPRINTS` key the fitted module actually rolls.",
+    "description": "Journal `EngineerModifications` spellings read off a real `StoredModules` capture (521 stored modules, contributed by the repository owner 2026-08-07 UTC; scrubbed of the commander, carrier and market it came from, which say nothing about the game). Every spelling in that capture resolves against `BLUEPRINTS` except the three `Decorative_*` ones, which https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53 tracks. These are the cases worth pinning: an id whose key is not what the game writes, and one whose journal spelling the catalogue had missed entirely. `resolved` is what `resolveBlueprintForModule` answers \u2014 the `BLUEPRINTS` key the fitted module actually rolls, returned in the caller\u2019s own casing, since every lookup downstream matches case-insensitively.",
     "cases": [
       {
         "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
@@ -215,7 +215,7 @@
     ]
   },
   "journalNames": {
-    "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 108; the other 105 are already the journal id, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
+    "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 109; of the rest, 79 are already the journal id and 27 are registry `recipe_*` keys no journal writes, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
     "map": {
       "MC_Overcharged": "Weapon_Overcharged",
       "Scanner_LongRange": "Sensor_LongRange",

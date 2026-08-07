@@ -10,14 +10,19 @@
  *
  * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
  * `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display names.
- * **Three keys are the exception**, and say so in their own {@link Blueprint.journalName}:
+ * **Three keys collide**, and say so in their own {@link Blueprint.journalName} — each is
+ * a recipe the game writes under an id another record already answers to:
  * `Scanner_LongRange` and `Scanner_WideAngle` are coriolis keys for recipes the game writes
  * as `Sensor_LongRange` / `Sensor_WideAngle`, the ids it also writes for the sensor suites'
  * different recipes of the same name; `MC_Overcharged` is its multi-cannon Overcharged,
  * which cuts the clip by 3–15% where the `Weapon_Overcharged` the game writes for both
- * leaves it alone.
- * `ships/blueprint-journal` reads one against a module.
- * Enumerate the 109 available blueprints with `Object.keys(BLUEPRINTS)`.
+ * leaves it alone. `ships/blueprint-journal` reads one against a module.
+ *
+ * A further 27 keys are the registries' `recipe_*` ids, which no `Loadout` writes — 21 of
+ * them recipes a module is *sold* carrying (`ships/pre-engineered`), and two the community
+ * spellings of Anti-Guardian Zone Resistance, whose journal id `GuardianModule_Sturdy` is a
+ * key here in its own right. They carry no `journalName` because there is no journal
+ * spelling to name. Enumerate the 109 blueprints with `Object.keys(BLUEPRINTS)`.
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`): `features` from the
  * grade with journal Labels resolved via EDSY, `materials` from the grade's
