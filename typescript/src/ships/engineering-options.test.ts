@@ -14,6 +14,7 @@ import {
     getExperimentalsForBlueprint,
 } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
 import { BLUEPRINTS } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getModuleBySymbol } from './modules.js';
@@ -370,6 +371,7 @@ test('every recipe the build corpus declares is one its module offers', () => {
     );
     let viaAlias = 0;
     let viaJournalSpelling = 0;
+    let viaPreEngineeredSale = 0;
     for (const entry of declared) {
         const groupId = getEngineeringGroup(entry.symbol);
         if (groupId === null) continue; // pinned by the previous test
@@ -386,6 +388,17 @@ test('every recipe the build corpus declares is one its module offers', () => {
             } else if (matching.length > 0) {
                 assert.equal(matching.length, 1, `${entry.symbol}: ambiguous alias`);
                 viaAlias += 1;
+            } else if (
+                getPreEngineeredVariants(entry.symbol).some(
+                    (variant) => variant.blueprint.toLowerCase() === entry.blueprint.toLowerCase(),
+                )
+            ) {
+                // The fourth explanation, and the only one that is not about spelling: the
+                // module was *bought* carrying this recipe. Every Guardian weapon in a real
+                // capture that carries an ordinary weapon recipe is one of these — the menus
+                // offer such a weapon nothing but Anti-Guardian Zone Resistance, because an
+                // engineer will not roll the ordinary recipe onto it.
+                viaPreEngineeredSale += 1;
             } else {
                 assert.ok(exempt.has(`${entry.symbol}|${entry.blueprint}`), `${entry.symbol}`);
             }
@@ -400,6 +413,7 @@ test('every recipe the build corpus declares is one its module offers', () => {
     }
     assert.equal(viaAlias, fixture.corpus.aliasSpellingsAccepted);
     assert.equal(viaJournalSpelling, fixture.corpus.journalSpellingsAccepted);
+    assert.equal(viaPreEngineeredSale, fixture.corpus.preEngineeredSalesAccepted);
 });
 
 test('the exempted corpus declarations are exactly the ones the fixture names', () => {

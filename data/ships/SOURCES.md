@@ -1429,13 +1429,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     sufficient ("a capture of the in-game experimental list"). There is no upstream
     revision to pin, because no registry publishes the fact; neither contradicts the
     report either, both being silent.
-  - **Scope: the six Guardian *module* families, not the three Guardian weapons.** The
-    weapon groups `guardianGauss`, `guardianPlasma` and `guardianShard` offer no
-    experimental, but they do keep the ordinary weapon blueprint each of them also lists
-    (`Weapon_RapidFire`, `Weapon_Overcharged`, `Weapon_LongRange`), which the build corpus
-    engineers and which
-    [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36) tracks
-    separately.
+  - **Scope: all nine Guardian groups, weapons included.** `guardianGauss`,
+    `guardianPlasma` and `guardianShard` once also listed an ordinary weapon blueprint
+    (`Weapon_RapidFire`, `Weapon_Overcharged`, `Weapon_LongRange`). They no longer do:
+    those recipes reach a Guardian weapon only as a **purchase**. See "an ordinary recipe on
+    a Guardian weapon is a purchase" below.
   - **The corpus neither corroborates nor contradicts.** None of the 1902 declared
     engineering entries in `fixtures/ships/builds/` engineers a Guardian power plant,
     distributor or hull reinforcement package at all. The six
@@ -1497,6 +1495,30 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `fixtures/ships/engineering.json` as `overchargedIdCollision` — both modifier blocks in
     full, with the medium cannon as the control that takes the same journal id and no clip
     leg — and in `journalNames`.
+- **An ordinary recipe on a Guardian weapon is a purchase, not an engineer roll.** The
+  three Guardian weapon groups list **only** Anti-Guardian Zone Resistance, exactly as the
+  six Guardian *module* groups do. They previously also listed one ordinary weapon recipe
+  each — `Weapon_RapidFire` on `guardianGauss`, `Weapon_Overcharged` on `guardianPlasma`,
+  `Weapon_LongRange` on `guardianShard` — which claimed a player could roll it at an
+  engineer. Two independent bodies of real data say otherwise, and the repository owner
+  confirms it:
+  - A 521-module `StoredModules` capture (2026-08-07 UTC) holds **20** Guardian weapons
+    carrying an ordinary recipe. Every one is a **Fixed Small or Fixed Medium** variant that
+    `pre-engineered.jsonc` already records as *sold* carrying that exact recipe. No Large
+    and no Turret variant carries one, and exactly one Guardian weapon in the whole capture
+    carries `GuardianModule_Sturdy` — the only recipe a player can actually roll onto it.
+  - The 182-build community corpus adds **13** more of the same shape (5× and 2× Guardian
+    Plasma Launcher Fixed Medium/Small with `Weapon_Overcharged`, 6× Guardian Shard Cannon
+    Fixed Medium with `Weapon_LongRange`) and not one counter-example.
+
+  So the recipe reaches the weapon by the **pre-engineered route**, which already carries
+  every one of these rows, and the menu must not offer it — otherwise
+  `getBlueprintsForModule` promises a Guardian Plasma Turret an Overcharged roll that no
+  engineer will perform. `engineering-options.test.ts` counts a corpus declaration
+  explained this way as `preEngineeredSalesAccepted` (13), a fourth explanation beside the
+  generic alias, the journal spelling and the pinned residue — and the only one that is
+  about how a module was *obtained* rather than how a recipe was *spelled*.
+
 - **Four Operations recipes are listed by a menu.** Most `recipe_*` keys belong to modules
   bought already engineered and no menu names them, but `recipe_fuelscoop_efficiency` on
   `fuelScoops` and `recipe_{pulselaser,burstlaser,beamlaser}_thermalplasmaconversion` on the

@@ -39,8 +39,10 @@
  * is its whole menu and that recipe has no experimental slot, so its `experimentals` are
  * empty where its ordinary twin's are not. The same holds for the other Guardian module
  * families — FSD boosters, module and shield reinforcement — which were already empty.
- * (Guardian *weapons* are not covered by this: their groups each also offer an ordinary
- * weapon recipe, and they carry no experimental for reasons of their own.) An engineered
+ * Guardian *weapons* are the same shape: `guardianGauss`, `guardianPlasma` and
+ * `guardianShard` list that one recipe too. An ordinary weapon recipe on a Guardian weapon
+ * is always a **purchase**, never an engineer roll — see §Engineering options in
+ * SOURCES.md — so `pre-engineered.jsonc` carries it and no menu here does. An engineered
  * Guardian module that does carry an experimental was obtained already engineered — a
  * community-goal or tech-broker reward — rather than rolled at an engineer; no registry
  * publishes those variants and `pre-engineered.jsonc` does not carry them, so this
@@ -765,26 +767,17 @@
     },
     "guardianGauss": {
       "name": "Exp - Guardian Gauss",
-      "blueprints": [
-        "GuardianModule_Sturdy",
-        "Weapon_RapidFire"
-      ],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     "guardianPlasma": {
       "name": "Exp - Guardian Plasma",
-      "blueprints": [
-        "GuardianModule_Sturdy",
-        "Weapon_Overcharged"
-      ],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     "guardianShard": {
       "name": "Exp - Guardian Shard",
-      "blueprints": [
-        "GuardianModule_Sturdy",
-        "Weapon_LongRange"
-      ],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     }
   },
