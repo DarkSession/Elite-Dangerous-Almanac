@@ -918,7 +918,7 @@ calculator inverts it (`Module.js`: `if (name == 'rof') modValue = 1/(1+modValue
 while EDSY stores the same recipes outright as burst-interval modifiers
 (`bstint:[-8,-17,-26,-35,-44]`). Those ten features are therefore stored here under
 **`BurstInterval`**, the stat they actually move; a weapon's combined `rateOfFire`
-follows from the interval and its burst pattern. The Inara-sourced `recipe_*` totals are
+follows from the interval and its burst pattern. The Inara-sourced Operations totals are
 left as published: they are *displayed* rate-of-fire changes, so they keep the
 `RateOfFire` label and apply to the rate directly — which is the only reading that
 reproduces the published figure on a charged weapon such as the rail gun.
@@ -976,9 +976,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Display names:** each blueprint and experimental effect carries its `name`.
   Effect names are EDSY `expeffect[].name` (all 87); blueprint names are coriolis
   `blueprint.name` for the 81 blueprints coriolis carries, and the Operations dossier's
-  display label for the other 28 — the 27 `recipe_*` keys and `GuardianModule_Sturdy`,
+  display label for the other 28 — the 27 Operations keys and `GuardianModule_Sturdy`,
   which is journal-keyed but absent from coriolis, so its name comes from the same registry
-  as its two `recipe_*` aliases. Read them with `getBlueprintName` /
+  as its two `recipe_`-prefixed Inara aliases. Read them with `getBlueprintName` /
   `getExperimentalEffectName`.
   - **These are the short modifier labels, not the full outfitting-panel
     strings — deliberately.** The panel calls `Weapon_LongRange` "Long-Range Weapon",
@@ -995,7 +995,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   rename: a key carries one only when the id the game writes for it is a key some *other*
   record already answers to. The other 106 go without for two different reasons — 79
   because their key already is the id a journal writes (Anti-Guardian Zone Resistance is
-  now one of them, as `GuardianModule_Sturdy`), and 27 because they are registry `recipe_*`
+  now one of them, as `GuardianModule_Sturdy`), and 27 because they are Operations
   ids for which no journal spelling has been observed — 21 of them recipes a module is sold
   already carrying, four recipes a player rolls at an engineer, and two the community
   spellings of Anti-Guardian Zone Resistance, whose journal id is a key here in its own
@@ -1027,10 +1027,34 @@ up straight through with no disambiguation at all. Both paths are evidence that
   is an empty list (the grade still resolves) rather than being dropped.
 - **Operations pre-engineered blueprints — from the in-game / Inara blueprint registry**
   (not in coriolis at the acquired commit): the Merc-Coin weapon rewards and the
-  general/core/optional recipes (`recipe_*` keys, e.g. `recipe_fuelscoop_efficiency`,
-  `recipe_multicannon_rapid`) plus the Anti-Guardian `recipe_guardianmodule_sturdy`
-  (grade 1 only). These are **keyed by Frontier's compiled `recipe_*` key**, not a
-  journal `BlueprintName`. The registry exposes **one displayed total per grade**, not a
+  general/core/optional recipes (the **Operations keys**, e.g. `fuelscoop_efficiency`,
+  `multicannon_rapid`) plus the Anti-Guardian recipe (grade 1 only).
+  - **The registry's `recipe_` prefix is dropped.** Inara publishes these ids prefixed —
+    `recipe_fuelscoop_efficiency`, `recipe_modulereinforcement_heavyduty` — and the
+    catalogue once stored them that way, on the reading that the prefix was Frontier's own
+    compiled key. It is not. Neither menu registry uses it: coriolis's
+    `modifications/blueprints.json` has **81 keys and not one prefixed**, and `eddb.js`
+    contains no `recipe_` string at all (both checked 2026-08-07 UTC). Nor does real export
+    data: a SLEF export contributed by the repository owner carries the Mercenary Module
+    Reinforcement Package as **`modulereinforcement_heavyduty`** — the registry id minus the
+    prefix — and across the 182-build corpus **not one of 1902 declared engineering entries
+    is prefixed**. So the prefix is an Inara listing convention, and these keys are the id
+    with it removed.
+  - **The casing is left exactly as the registry publishes it — lower-case — because no
+    source establishes the real one.** The only observed spelling comes from an Inara
+    export, and Inara lower-cases every id it writes (`weapon_efficient`, `fsd_longrange`),
+    so it cannot settle capitalisation. Every lookup here matches case-insensitively, so an
+    Operations key answers to whatever casing a caller uses; inventing a PascalCase
+    spelling for 25 recipes on no evidence would repeat the mistake that kept Anti-Guardian
+    Zone Resistance keyed wrongly. If a raw journal ever shows the capitalisation, changing
+    it is cosmetic.
+  - **The two Anti-Guardian aliases keep their `recipe_` prefix**, and are the only keys
+    that do. For that recipe the real name *is* known — `GuardianModule_Sturdy` — so they
+    are not best guesses at a journal id but declared Inara-only spellings, kept so a build
+    carrying either still resolves; stripping `recipe_guardianmodule_sturdy` would also
+    collide with the real key.
+
+  The registry exposes **one displayed total per grade**, not a
   roll-bounded range, so each feature stores that total as a fixed value (`min == max`).
   Their per-roll `materials` are from the same registry (resolved to Frontier material
   `symbol`s against the `materials` domain); the per-roll **Merc-Coin** amount is also
@@ -1062,7 +1086,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     two registry
     spellings are stored beside it as aliases that still resolve — the journal name is the
     identity, a community name is the alias. That ordering is not cosmetic: while the menus
-    listed a `recipe_*` key, `getBlueprint('GuardianModule_Sturdy')` answered `null` and
+    listed an Inara `recipe_`-prefixed key, `getBlueprint('GuardianModule_Sturdy')` answered `null` and
     `applyBlueprint` refused the id on the very module the capture shows carrying it, so
     the inversion was a defect rather than a naming preference.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
@@ -1266,9 +1290,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
     lists coriolis's `MC_Overcharged`. See "Multi-cannon Overcharged: one journal id, two
     recipes" below for the evidence and for what the split costs.
   - **The groups name 86 of the 109 blueprints.** The other 23 are accounted for: 21 are
-    `recipe_*` keys of modules sold already engineered rather than offered in a menu, and
+    Operations keys of modules sold already engineered rather than offered in a menu, and
     the other two are the registry's spellings of Anti-Guardian Zone Resistance, which every
-    group lists under the journal id `GuardianModule_Sturdy`. Four `recipe_*` keys *are*
+    group lists under the journal id `GuardianModule_Sturdy`. Four Operations keys *are*
     named by a group, because they are recipes a player applies — see "Four Operations
     recipes are listed by a menu" below.
   - **14 modules are bound by the family rule, not by a source row.** EDSY has no live
@@ -1304,7 +1328,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `Scanner_LongRange` and `Scanner_WideAngle` a **`journalName`** naming the id a journal
   carries. Two of the three records that carry the field — `MC_Overcharged` is the third,
   below — out of 109; every other key either already *is* the id a journal writes or is a
-  registry `recipe_*` spelling, which is why the field is absent everywhere else. Which of
+  an Operations spelling, which is why the field is absent everywhere else. Which of
   the two colliding recipes a given module rolls
   is a property of the module, and `engineering-options.jsonc` already carries it — the
   menu. `resolveBlueprintForModule` is the join: it asks which blueprint *this module is
@@ -1519,26 +1543,26 @@ up straight through with no disambiguation at all. Both paths are evidence that
   generic alias, the journal spelling and the pinned residue — and the only one that is
   about how a module was *obtained* rather than how a recipe was *spelled*.
 
-- **Four Operations recipes are listed by a menu.** Most `recipe_*` keys belong to modules
-  bought already engineered and no menu names them, but `recipe_fuelscoop_efficiency` on
+- **Four Operations recipes are listed by a menu.** Most Operations keys belong to modules
+  bought already engineered and no menu names them, but `fuelscoop_efficiency` on
   `fuelScoops` and `recipe_{pulselaser,burstlaser,beamlaser}_thermalplasmaconversion` on the
   three laser groups are recipes a player applies. (Anti-Guardian Zone Resistance is the
   fifth menu recipe of that kind, listed under the journal spelling `GuardianModule_Sturdy`
-  rather than a `recipe_*` key.)
+  rather than an Operations key.)
   - **The grade range is what separates a recipe from a purchase.** A Merc-Coin
     weapon-reward recipe begins at grade 2 because the bought module already contains the
     grade-1 pre-engineering; a recipe defining a grade 1 has nothing pre-applied and is
     rolled at an engineer from stock. All 21 recipes bound to a pre-engineered row run 2–5;
-    these four run 1–5 and are the only `recipe_*` keys that do, apart from the grade-1-only
+    these four run 1–5 and are the only Operations keys that do, apart from the grade-1-only
     Anti-Guardian pair.
   - **The module family is a field this file already carries.** The Inara registry that
     supplied these recipes supplied their display names, and the name states the family:
     "Fuel Scoop — Scoop rate enhanced", "Beam Laser — Plasma conversion", and so on. That is
     the same reading already load-bearing in `pre-engineered.jsonc`, where
-    `recipe_seekermissilerackmedium_lockdown` binds to the medium rack. It is **not** the
+    `seekermissilerackmedium_lockdown` binds to the medium rack. It is **not** the
     prefix inference the family map used: that guessed a family from a *module symbol*,
     where this reads a family the registry names.
-  - **The modifier legs agree.** `recipe_fuelscoop_efficiency` moves `RefuelRate` and
+  - **The modifier legs agree.** `fuelscoop_efficiency` moves `RefuelRate` and
     `PowerDraw`, and a fuel scoop is the only module in the catalogues with a `RefuelRate`
     to move. The three plasma conversions move `PowerDraw` and `Damage`, which their names
     narrow to one laser family each.
@@ -1631,13 +1655,13 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   by name with their counts, never by a bare total, so a new disagreement fails a test
   instead of hiding in the allowance. Tracked at
   [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36).
-- **Accommodation: the pre-engineered route.** Most `recipe_*` keys belong to a module
+- **Accommodation: the pre-engineered route.** Most Operations keys belong to a module
   bought already engineered, so no menu lists one and the menu check alone would refuse
   all 21 of them everywhere. (The four a menu *does* list are recipes a player rolls from
   grade 1 and need no accommodation; see §Engineering options.)
   `pre-engineered.jsonc` names which module each arrives on, so
   the gate accepts a recipe on the module that is sold carrying it and nowhere else:
-  `recipe_railgun_longshot` resolves on the medium rail gun, not on the small one. What
+  `railgun_longshot` resolves on the medium rail gun, not on the small one. What
   that buys is the **climb**, not the purchase: a Mercenary module arrives at grade 1
   and its recipe publishes grades 2–5, the grades an engineer can still add. It cannot
   reproduce the grade the module was sold at — all 22 Mercenary rows are grade 1, none of
@@ -1695,9 +1719,9 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
       `Hpt_BasicMissileRack_Fixed_Large` at **900 MC**, taking the shop total to 13 900 MC.
       Four things agree, none of them a guess about a module symbol: the registry keys
       Lockdown by *size* and the twin `…rackmedium_lockdown` binds to the medium rack; the
-      large rack is already a Merc row for `recipe_seekermissilerack_drag`, so the shop
+      large rack is already a Merc row for `seekermissilerack_drag`, so the shop
       stocks it; both Lockdown recipes run grades 2–5, the weapon-reward range that marks a
-      module as bought pre-engineered; and it is the only grade-2–5 `recipe_*` in the file
+      module as bought pre-engineered; and it is the only grade-2–5 Operations recipe in the file
       that would otherwise have no row, all 20 others having one. Price and size confirmed
       2026-08-07 UTC against a web-search index of the Inara outfitting listing, which
       reports the MERC Lockdown Seeker Missile Rack [Fixed] at 900 MC for the 3A and 800 MC

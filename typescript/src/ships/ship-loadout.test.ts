@@ -1230,7 +1230,7 @@ test('a module sold pre-engineered can be taken further, menu or no menu', () =>
                     'Slot02_Size6',
                     mod('Int_ModuleReinforcement_Size3_Class2', INTERNAL_MODULES),
                 )
-                .applyBlueprint('Slot02_Size6', 'recipe_modulereinforcement_heavyduty', {
+                .applyBlueprint('Slot02_Size6', 'modulereinforcement_heavyduty', {
                     grade: 2,
                 }),
         /no registry lists an engineering menu for module "Int_ModuleReinforcement_Size3_Class2"/,

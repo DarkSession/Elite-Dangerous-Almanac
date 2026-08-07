@@ -264,7 +264,7 @@ test('one journal id rolls a clip penalty on a multi-cannon and none on a cannon
 test('the spellings a real journal writes all resolve to a recipe', () => {
     // Read off a `StoredModules` capture rather than off a registry, so it catches an id
     // the registries spell differently from the game. `GuardianModule_Sturdy` was one:
-    // every menu listed a `recipe_*` key for it, so a genuine journal id resolved to
+    // every menu listed an Inara `recipe_`-prefixed key for it, so a genuine journal id resolved to
     // nothing and `applyBlueprint` refused it on the module the capture shows carrying it.
     assert.ok(fixture.journalSpellings.cases.length, 'no spellings pinned');
     for (const row of fixture.journalSpellings.cases) {
@@ -291,6 +291,45 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
     assert.ok(getBlueprintsForModule(guardian).includes('GuardianModule_Sturdy'));
     for (const id of fixture.journalSpellings.alsoResolve) {
         assert.ok(!getBlueprintsForModule(guardian).includes(id), `menu should not list ${id}`);
+    }
+});
+
+test('no blueprint is keyed by the registry prefix no game data uses', () => {
+    // Inara publishes the Operations recipes prefixed (`recipe_fuelscoop_efficiency`);
+    // coriolis and EDSY use no such prefix, and neither does any observed build — a real
+    // SLEF export writes the Mercenary reinforcement as `modulereinforcement_heavyduty`.
+    // So the keys here are the registry id minus the prefix, and the only two that keep it
+    // are declared aliases for a recipe whose real name is a key in its own right.
+    const ops = fixture.journalSpellings.operationsKeys;
+    assert.deepEqual(
+        Object.keys(BLUEPRINTS).filter((k) => k.toLowerCase().startsWith('recipe_')),
+        ops.prefixed,
+    );
+    for (const id of ops.prefixed) {
+        assert.ok(getBlueprint(id), `${id} must still resolve`);
+    }
+    // The observed spelling resolves, is offered by no menu, and reaches its module by the
+    // sale — the route a bought-engineered recipe is supposed to take.
+    assert.ok(ops.observed.length, 'no observed Operations spelling pinned');
+    for (const row of ops.observed) {
+        assert.ok(getBlueprint(row.blueprint), `${row.blueprint} does not resolve`);
+        assert.ok(
+            getBlueprintGrade(row.blueprint, row.grade),
+            `${row.blueprint} has no grade ${row.grade}`,
+        );
+        assert.ok(
+            blueprintAvailableFor(row.symbol, row.blueprint),
+            `${row.symbol} must accept ${row.blueprint}`,
+        );
+        assert.ok(!getBlueprintsForModule(row.symbol).includes(row.blueprint));
+        assert.ok(
+            getPreEngineeredVariants(row.symbol).some(
+                (v) => v.blueprint.toLowerCase() === row.blueprint.toLowerCase(),
+            ),
+            `${row.symbol} is not sold carrying ${row.blueprint}`,
+        );
+        // Sold at grade 1, so the recipe recreates only what comes after the purchase.
+        assert.equal(getBlueprintGrade(row.blueprint, row.soldAtGrade), null);
     }
 });
 
@@ -326,9 +365,9 @@ test('a shared journal id costs the same whichever of its two recipes is priced'
 test('a recipe sold on one module is not thereby available on its neighbours', () => {
     // The pre-engineered route is per module, not per family: the Mercenary rail gun's
     // recipe resolves on the rail gun that ships with it and on nothing else.
-    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'recipe_railgun_longshot'));
-    assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'recipe_railgun_longshot'));
-    assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'recipe_railgun_longshot'));
+    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'railgun_longshot'));
+    assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'railgun_longshot'));
+    assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'railgun_longshot'));
     // A module with no engineering menu at all can still be sold carrying a recipe, and
     // the menu check must not refuse it first: the Mercenary Module Reinforcement Package
     // is the one such case, and reproducing its numbers is the whole point of this leg.
@@ -336,13 +375,13 @@ test('a recipe sold on one module is not thereby available on its neighbours', (
     assert.ok(
         blueprintAvailableFor(
             'Int_ModuleReinforcement_Size5_Class2',
-            'recipe_modulereinforcement_heavyduty',
+            'modulereinforcement_heavyduty',
         ),
     );
     assert.ok(
         !blueprintAvailableFor(
             'Int_ModuleReinforcement_Size3_Class2',
-            'recipe_modulereinforcement_heavyduty',
+            'modulereinforcement_heavyduty',
         ),
     );
 });
@@ -360,7 +399,7 @@ test('the gate matches an id the way every other lookup does', () => {
         assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', id), JSON.stringify(id));
     }
     assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'lifesupport_lightweight'));
-    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'RECIPE_RAILGUN_LONGSHOT'));
+    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'RAILGUN_LONGSHOT'));
     // An id that is only a property of `Object.prototype` is not a blueprint.
     assert.ok(!blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'toString'));
 });
@@ -511,13 +550,13 @@ test('Rapid Fire shortens the fire interval, and the rate of fire follows', () =
 });
 
 test('a tech-broker recipe raises the rate of fire directly, as its registry publishes it', () => {
-    // The Inara-sourced `recipe_*` totals are the displayed stat change, so a
+    // The Inara-sourced Operations totals are the displayed stat change, so a
     // rate-of-fire total is exactly that — including on a charged weapon, whose spin-up
     // is part of the published cycle.
     const railgun = getModuleBySymbol('Hpt_Railgun_Fixed_Medium', ALL_MODULES)!;
     const rate = computeModifiers(
         baseStats(railgun),
-        getBlueprintGrade('recipe_railgun_longshot', 5)!,
+        getBlueprintGrade('railgun_longshot', 5)!,
         1,
     ).find((m) => m.Label === 'RateOfFire')!;
     assert.ok(Math.abs(rate.Value! - railgun.rateOfFire! * 1.667) < 1e-5, `${rate.Value}`);

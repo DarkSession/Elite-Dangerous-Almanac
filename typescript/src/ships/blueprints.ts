@@ -18,7 +18,7 @@
  * which cuts the clip by 3–15% where the `Weapon_Overcharged` the game writes for both
  * leaves it alone. `ships/blueprint-journal` reads one against a module.
  *
- * A further 27 keys are the registries' `recipe_*` ids: 21 recipes a module is *sold*
+ * A further 27 keys are the **Operations** ids: 21 recipes a module is *sold*
  * carrying (`ships/pre-engineered`), four Operations recipes a player rolls at an engineer
  * (`ships/engineering-options`), and two the community spellings of Anti-Guardian Zone
  * Resistance, whose journal id `GuardianModule_Sturdy` is a key here in its own right. None

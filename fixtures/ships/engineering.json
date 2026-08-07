@@ -18,9 +18,9 @@
     }
   },
   "preEngineeredClimb": {
-    "description": "A module bought already engineered can be taken further at an engineer, and `applyBlueprint` accepts its `recipe_*` id on the module that is sold carrying it even though no engineering menu lists one. The Mercenary Module Reinforcement Package is the case that proves the route: it has no menu at all. It arrives at grade 1, so its recipe defines grades 2-5 only — asking for grade 1 is asking to recreate the purchase, which no recipe can do.",
+    "description": "A module bought already engineered can be taken further at an engineer, and `applyBlueprint` accepts its Operations id on the module that is sold carrying it even though no engineering menu lists one. The Mercenary Module Reinforcement Package is the case that proves the route: it has no menu at all. It arrives at grade 1, so its recipe defines grades 2-5 only — asking for grade 1 is asking to recreate the purchase, which no recipe can do.",
     "symbol": "Int_ModuleReinforcement_Size5_Class2",
-    "blueprint": "recipe_modulereinforcement_heavyduty",
+    "blueprint": "modulereinforcement_heavyduty",
     "soldAtGrade": 1,
     "gradeUnavailable": 1,
     "grade": 2,
@@ -212,10 +212,25 @@
     "alsoResolve": [
       "recipe_guardianmodule_sturdy",
       "recipe_guardianweapon_sturdy"
-    ]
+    ],
+    "operationsKeys": {
+      "description": "Operations blueprints are keyed as the registry publishes them minus Inara\u2019s `recipe_` prefix \u2014 neither coriolis (81 keys, none prefixed) nor EDSY (no `recipe_` string at all) uses it, and no observed build does either. `prefixed` is the whole of the exception: two declared Inara aliases for a recipe whose real name, `GuardianModule_Sturdy`, is a key in its own right. `observed` is a spelling read off a real Inara SLEF export contributed by the repository owner \u2014 a Mercenary Module Reinforcement Package taken to grade 5, which before the prefix was dropped resolved to nothing and made `applyBlueprint` throw on a genuine build.",
+      "prefixed": [
+        "recipe_guardianmodule_sturdy",
+        "recipe_guardianweapon_sturdy"
+      ],
+      "observed": [
+        {
+          "symbol": "Int_ModuleReinforcement_Size5_Class2",
+          "blueprint": "modulereinforcement_heavyduty",
+          "grade": 5,
+          "soldAtGrade": 1
+        }
+      ]
+    }
   },
   "journalNames": {
-    "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 109; of the rest, 79 are already the journal id and 27 are registry `recipe_*` keys for which no journal spelling has been observed, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
+    "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 109; of the rest, 79 are already the journal id and 27 are Operations keys for which no journal spelling has been observed, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
     "map": {
       "MC_Overcharged": "Weapon_Overcharged",
       "Scanner_LongRange": "Sensor_LongRange",
@@ -232,31 +247,31 @@
         "modules": 14
       },
       {
-        "id": "recipe_fuelscoop_efficiency",
+        "id": "fuelscoop_efficiency",
         "accepts": "Int_FuelScoop_Size6_Class5",
         "refuses": "Int_Hyperdrive_Size6_Class5",
         "modules": 40
       },
       {
-        "id": "recipe_beamlaser_thermalplasmaconversion",
+        "id": "beamlaser_thermalplasmaconversion",
         "accepts": "Hpt_BeamLaser_Fixed_Small",
         "refuses": "Hpt_PulseLaser_Fixed_Small",
         "modules": 12
       },
       {
-        "id": "recipe_burstlaser_thermalplasmaconversion",
+        "id": "burstlaser_thermalplasmaconversion",
         "accepts": "Hpt_PulseLaserBurst_Fixed_Small",
         "refuses": "Hpt_BeamLaser_Fixed_Small",
         "modules": 12
       },
       {
-        "id": "recipe_pulselaser_thermalplasmaconversion",
+        "id": "pulselaser_thermalplasmaconversion",
         "accepts": "Hpt_PulseLaser_Fixed_Small",
         "refuses": "Hpt_PulseLaserBurst_Fixed_Small",
         "modules": 12
       },
       {
-        "id": "recipe_seekermissileracklarge_lockdown",
+        "id": "seekermissileracklarge_lockdown",
         "accepts": "Hpt_BasicMissileRack_Fixed_Large",
         "refuses": "Hpt_BasicMissileRack_Fixed_Medium",
         "modules": 1

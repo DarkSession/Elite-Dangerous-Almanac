@@ -3,7 +3,7 @@
  * the materials one roll costs. Keyed by the blueprint's Frontier `fdname` — the string a
  * Loadout event's `Engineering.BlueprintName` carries, for 79 of the 109. The three that
  * share a journal id with another record carry a `journalName` saying so; the other 27 are
- * the registry's `recipe_*` keys, for which no journal spelling has been observed. See the
+ * the Operations keys, for which no journal spelling has been observed. See the
  * note below.
  *
  * Sources: EDCD/coriolis-data, modifications/blueprints.json (commit 0db9234b5b9ce8c939ea84133d7ce336eea88e27)
@@ -27,7 +27,7 @@
  *
  * Each blueprint is { name, grades }. `name` is the blueprint's short modifier label
  * (coriolis `blueprint.name` for the journal-keyed ones; the Operations dossier's
- * display label for the `recipe_*` ones), deliberately NOT the full outfitting-panel
+ * display label for the Operations ones), deliberately NOT the full outfitting-panel
  * string — the panel says "Long-Range Weapon" where this says "Long range", because
  * the name is read next to the module it applies to. `CargoRack_IncreasedCapacity` is
  * the one name that is short-by-nothing rather than short by convention: it reads
@@ -42,7 +42,7 @@
  * that is the key all nine offering menus list, and the registry's
  * `recipe_guardianmodule_sturdy` and
  * `recipe_guardianweapon_sturdy` are stored beside it so a build carrying either still
- * looks up. Of the remaining 25 `recipe_*` keys, 21 belong to modules sold already
+ * looks up. Of the remaining 25 Operations keys, 21 belong to modules sold already
  * engineered and four are Operations recipes a player rolls at an engineer
  * (§Operations recipes in SOURCES.md); no journal spelling has been observed for any of
  * them, which is not the same as knowing the game writes none. Two of the exceptions are
@@ -70,9 +70,9 @@
  * material's own grade and category. A grade may have an empty `materials` list
  * (CargoRack_IncreasedCapacity G5).
  *
- * The Operations pre-engineered blueprints (the `recipe_*` keys — Merc weapon rewards,
- * plus general/core/optional ones like `recipe_fuelscoop_efficiency`) and all three
- * Anti-Guardian records (`GuardianModule_Sturdy` and its two `recipe_*` aliases, which
+ * The Operations pre-engineered blueprints (Merc weapon rewards,
+ * plus general/core/optional ones like `fuelscoop_efficiency`) and all three
+ * Anti-Guardian records (`GuardianModule_Sturdy` and its two `recipe_`-prefixed Inara aliases, which
  * coriolis does not carry under any spelling) come from the current in-game / Inara
  * blueprint registry, which exposes one displayed total per grade rather than a
  * roll-bounded range: each such feature stores that total as a fixed value (min == max).
@@ -15411,7 +15411,7 @@
       }
     }
   },
-  "recipe_fuelscoop_efficiency": {
+  "fuelscoop_efficiency": {
     "name": "Fuel Scoop — Scoop rate enhanced",
     "grades": {
       "1": {
@@ -15581,7 +15581,7 @@
       }
     }
   },
-  "recipe_beamlaser_thermalplasmaconversion": {
+  "beamlaser_thermalplasmaconversion": {
     "name": "Beam Laser — Plasma conversion",
     "grades": {
       "1": {
@@ -15756,7 +15756,7 @@
       }
     }
   },
-  "recipe_burstlaser_thermalplasmaconversion": {
+  "burstlaser_thermalplasmaconversion": {
     "name": "Burst Laser — Plasma conversion",
     "grades": {
       "1": {
@@ -15931,7 +15931,7 @@
       }
     }
   },
-  "recipe_pulselaser_thermalplasmaconversion": {
+  "pulselaser_thermalplasmaconversion": {
     "name": "Pulse Laser — Plasma conversion",
     "grades": {
       "1": {
@@ -16106,7 +16106,7 @@
       }
     }
   },
-  "recipe_detailedsurfacescanner_longrange": {
+  "detailedsurfacescanner_longrange": {
     "name": "Detailed Surface Scanner — Long range detailed",
     "grades": {
       "2": {
@@ -16229,7 +16229,7 @@
       }
     }
   },
-  "recipe_cargoracks5c1_extended": {
+  "cargoracks5c1_extended": {
     "name": "Cargo Rack — Extended",
     "grades": {
       "2": {
@@ -16352,7 +16352,7 @@
       }
     }
   },
-  "recipe_cargoracks6c1_extended": {
+  "cargoracks6c1_extended": {
     "name": "Cargo Rack — Extended",
     "grades": {
       "2": {
@@ -16475,7 +16475,7 @@
       }
     }
   },
-  "recipe_modulereinforcement_heavyduty": {
+  "modulereinforcement_heavyduty": {
     "name": "Module Reinforcement Package — Heavy duty",
     "grades": {
       "2": {
@@ -16646,7 +16646,7 @@
       }
     }
   },
-  "recipe_powerdistributor_balanced": {
+  "powerdistributor_balanced": {
     "name": "Power Distributor — Balanced",
     "grades": {
       "2": {
@@ -16961,7 +16961,7 @@
       }
     }
   },
-  "recipe_powerdistributors3c2_supportfocused": {
+  "powerdistributors3c2_supportfocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17204,7 +17204,7 @@
       }
     }
   },
-  "recipe_powerdistributors3c5_supportfocused": {
+  "powerdistributors3c5_supportfocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17447,7 +17447,7 @@
       }
     }
   },
-  "recipe_powerdistributors4c2_supportfocused": {
+  "powerdistributors4c2_supportfocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17690,7 +17690,7 @@
       }
     }
   },
-  "recipe_powerdistributors4c5_supportfocused": {
+  "powerdistributors4c5_supportfocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17933,7 +17933,7 @@
       }
     }
   },
-  "recipe_powerdistributors6c5_supportfocused": {
+  "powerdistributors6c5_supportfocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -18176,7 +18176,7 @@
       }
     }
   },
-  "recipe_abrasionblaster_farreaching": {
+  "abrasionblaster_farreaching": {
     "name": "Abrasion Blaster — Far-reaching",
     "grades": {
       "2": {
@@ -18443,7 +18443,7 @@
       }
     }
   },
-  "recipe_fragmentcannonsmall_doublescreaming": {
+  "fragmentcannonsmall_doublescreaming": {
     "name": "Fragment Cannon — Double screaming",
     "grades": {
       "2": {
@@ -18734,7 +18734,7 @@
       }
     }
   },
-  "recipe_fragmentcannonlarge_doublescreaming": {
+  "fragmentcannonlarge_doublescreaming": {
     "name": "Fragment Cannon — Double screaming",
     "grades": {
       "2": {
@@ -19025,7 +19025,7 @@
       }
     }
   },
-  "recipe_railgun_longshot": {
+  "railgun_longshot": {
     "name": "Rail Gun — Enduring feedback",
     "grades": {
       "2": {
@@ -19340,7 +19340,7 @@
       }
     }
   },
-  "recipe_mininglaser_longrange": {
+  "mininglaser_longrange": {
     "name": "Mining Laser — Long range",
     "grades": {
       "2": {
@@ -19607,7 +19607,7 @@
       }
     }
   },
-  "recipe_multicannon_rapid": {
+  "multicannon_rapid": {
     "name": "Multi-cannon — Rapid phase",
     "grades": {
       "2": {
@@ -19892,7 +19892,7 @@
       }
     }
   },
-  "recipe_seekermissilerack_drag": {
+  "seekermissilerack_drag": {
     "name": "Seeker Missile Rack — Drag",
     "grades": {
       "2": {
@@ -20135,7 +20135,7 @@
       }
     }
   },
-  "recipe_seekermissilerack_lightweightthermal": {
+  "seekermissilerack_lightweightthermal": {
     "name": "Seeker Missile Rack — Lightweight thermal",
     "grades": {
       "2": {
@@ -20402,7 +20402,7 @@
       }
     }
   },
-  "recipe_seekermissilerackmedium_lockdown": {
+  "seekermissilerackmedium_lockdown": {
     "name": "Seeker Missile Rack — Lockdown",
     "grades": {
       "2": {
@@ -20717,7 +20717,7 @@
       }
     }
   },
-  "recipe_seekermissileracklarge_lockdown": {
+  "seekermissileracklarge_lockdown": {
     "name": "Seeker Missile Rack — Lockdown",
     "grades": {
       "2": {
@@ -21032,7 +21032,7 @@
       }
     }
   },
-  "recipe_enzymemissilerack_highyield": {
+  "enzymemissilerack_highyield": {
     "name": "Enzyme Missile Rack — High-yield",
     "grades": {
       "2": {

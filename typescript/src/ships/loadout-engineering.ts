@@ -112,13 +112,13 @@ const MENU_IDS: ReadonlySet<string> = new Set(
 /**
  * Whether a module is *sold* carrying this recipe, rather than offered it at an engineer.
  *
- * Most `recipe_*` keys belong to modules bought already engineered — the Mercenary shop's
+ * Most Operations keys belong to modules bought already engineered — the Mercenary shop's
  * rail gun, the community-goal and tech-broker rewards — so no engineering menu lists one
  * and the menu check alone would refuse every caller. (The four a menu *does* list are
  * recipes a player applies from grade 1, and reach the caller by the menu instead; see
  * `engineering-options`.) The pre-engineered catalogue names
  * which module each arrives on, which is the same question answered by purchase instead of
- * by a menu, and it is narrower than a family: `recipe_railgun_longshot` resolves on the
+ * by a menu, and it is narrower than a family: `railgun_longshot` resolves on the
  * rail gun that ships with it and nowhere else.
  *
  * What it buys is the **climb**, not the purchase. A Mercenary module arrives at grade 1

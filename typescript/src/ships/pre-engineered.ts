@@ -75,7 +75,7 @@ export interface PreEngineeredVariant {
     readonly symbol: string;
     /** The base module's display name, e.g. `"Rail Gun"`. */
     readonly name: string;
-    /** The blueprint baked in at purchase, e.g. `"recipe_railgun_longshot"`. Joins to `BLUEPRINTS`. */
+    /** The blueprint baked in at purchase, e.g. `"railgun_longshot"`. Joins to `BLUEPRINTS`. */
     readonly blueprint: string;
     /** The blueprint grade already applied (1–5). */
     readonly grade: number;
@@ -109,7 +109,7 @@ export interface PreEngineeredVariant {
  * PRE_ENGINEERED_MODULES.length; // -> 73
  * PRE_ENGINEERED_MODULES[0];
  * // -> { symbol: 'Hpt_Mining_AbrBlstr_Fixed_Small', name: 'Abrasion Blaster',
- * //      blueprint: 'recipe_abrasionblaster_farreaching', grade: 1,
+ * //      blueprint: 'abrasionblaster_farreaching', grade: 1,
  * //      acquisition: 'mercenary', mercCoinCost: 400 }
  * ```
  */
@@ -130,9 +130,9 @@ export const PRE_ENGINEERED_MODULES: readonly PreEngineeredVariant[] = deepFreez
  * @example
  * ```ts
  * getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Medium').map((v) => v.blueprint);
- * // -> ['recipe_seekermissilerack_drag',
- * //     'recipe_seekermissilerack_lightweightthermal',
- * //     'recipe_seekermissilerackmedium_lockdown',
+ * // -> ['seekermissilerack_drag',
+ * //     'seekermissilerack_lightweightthermal',
+ * //     'seekermissilerackmedium_lockdown',
  * //     'Weapon_HighCapacity', 'Weapon_HighCapacity', 'Weapon_HighCapacity']
  *
  * getPreEngineeredVariants('Int_Hyperdrive_Size2_Class1'); // -> []
@@ -151,15 +151,15 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
  * rack — so this returns an array. Matching is case-insensitive and trims whitespace,
  * and a miss is an empty array rather than `null`.
  *
- * @param blueprint - A blueprint id, e.g. `"recipe_railgun_longshot"`.
+ * @param blueprint - A blueprint id, e.g. `"railgun_longshot"`.
  * @returns Every variant sold with that blueprint, in catalogue order.
  *
  * @example
  * ```ts
- * getPreEngineeredByBlueprint('recipe_railgun_longshot').map((v) => v.symbol);
+ * getPreEngineeredByBlueprint('railgun_longshot').map((v) => v.symbol);
  * // -> ['Hpt_Railgun_Fixed_Medium']
  *
- * getPreEngineeredByBlueprint('recipe_seekermissilerack_drag').map((v) => v.symbol);
+ * getPreEngineeredByBlueprint('seekermissilerack_drag').map((v) => v.symbol);
  * // -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
  *
  * getPreEngineeredByBlueprint('NoSuchBlueprint'); // -> []

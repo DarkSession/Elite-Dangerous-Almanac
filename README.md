@@ -1294,11 +1294,11 @@ import { resolveBlueprintForModule } from "@elite-dangerous-almanac/core/ships/b
 > `LifeSupport_LightWeight` stays off a limpet controller, and a chaff launcher's Ammo
 > Capacity stays off a heat sink launcher, whose roll is a smaller one.
 >
-> The last is for the `recipe_*` keys of [modules sold already
-> engineered](#modules-you-can-buy-already-engineered) — 21 of the 27 `recipe_*` keys, none
+> The last is for the Operations keys of [modules sold already
+> engineered](#modules-you-can-buy-already-engineered) — 21 of the 27 Operations keys, none
 > of which a menu lists. For those `applyBlueprint` reads `ships/pre-engineered` instead,
 > on the module that actually ships with the recipe and no other —
-> `recipe_railgun_longshot` on the medium rail gun, not the small one.
+> `railgun_longshot` on the medium rail gun, not the small one.
 > That is how you engineer a Mercenary module _further_: it arrives at grade 1 and its
 > recipe carries grades 2–5. It is not how you reproduce what you bought — grade 1 of those
 > recipes does not exist, because the first grade came with the module.
@@ -1324,14 +1324,12 @@ isPreEngineered("Hpt_Railgun_Fixed_Medium"); // -> true
 
 // One module can carry several variants — here a Merc shop row and a CG reward…
 getPreEngineeredVariants("Hpt_Railgun_Fixed_Medium");
-// -> [{ blueprint: 'recipe_railgun_longshot', grade: 1, acquisition: 'mercenary' }, …
+// -> [{ blueprint: 'railgun_longshot', grade: 1, acquisition: 'mercenary' }, …
 //     { blueprint: 'Weapon_HighCapacity', grade: 5, acquisition: 'communityGoal',
 //       experimental: 'special_feedback_cascade_cooled' }]
 
 // …and one blueprint on several modules, so both lookups return arrays.
-getPreEngineeredByBlueprint("recipe_seekermissilerack_drag").map(
-  (v) => v.symbol,
-);
+getPreEngineeredByBlueprint("seekermissilerack_drag").map((v) => v.symbol);
 // -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
 ```
 
@@ -1339,7 +1337,7 @@ getPreEngineeredByBlueprint("recipe_seekermissilerack_drag").map(
 
 |                  | `mercenary` (22)    | `communityGoal` (30)  | `techBroker` (21)     |
 | ---------------- | ------------------- | --------------------- | --------------------- |
-| Blueprint id     | Merc `recipe_*` key | ordinary journal name | ordinary journal name |
+| Blueprint id     | Merc Operations key | ordinary journal name | ordinary journal name |
 | Grade on arrival | always 1            | 28 of 30 at grade 5   | 14 of 21 at grade 5   |
 | Experimental     | none                | 8 of 30 carry one     | 4 of 21 carry one     |
 | Price            | `mercCoinCost`      | not bought            | not bought            |
@@ -1395,7 +1393,7 @@ grade 2 — the first grade came with the module. Price the rest of the climb by
 grade you already have:
 
 ```ts
-const bought = getPreEngineeredByBlueprint("recipe_railgun_longshot")[0];
+const bought = getPreEngineeredByBlueprint("railgun_longshot")[0];
 getBlueprintCost(bought.blueprint, 5, bought.grade); // grades 2-5 only
 ```
 

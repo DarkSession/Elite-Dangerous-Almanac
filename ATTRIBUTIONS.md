@@ -147,7 +147,7 @@ in the doc comment of each ported module, and in long form in the domain
   four grade-1–5 Merc-Coin blueprints applies to (fuel scoop Scoop rate enhanced, and the
   pulse/burst/beam laser Plasma conversions), and the large Seeker Missile Rack's Lockdown
   variant with its 900 MC price. From the [Inara](https://inara.cz/) blueprint and
-  outfitting registries, the same source the rest of the `recipe_*` records come from,
+  outfitting registries, the same source the rest of the Operations records come from,
   reached **2026-08-07 UTC** through a web-search index rather than directly: the
   acquisition environment's network policy refuses `inara.cz`, so these are reads of an
   index of those pages and not captures of them, and `data/ships/SOURCES.md` records that

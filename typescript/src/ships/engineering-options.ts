@@ -55,8 +55,8 @@
  * records what it cost. The gate
  * makes three accommodations beyond the menu, in the order it applies them: a journal id
  * the game writes for two different recipes, which `ships/blueprint-journal` settles by
- * reading this menu against `Blueprint.journalName`; a `recipe_*` key belonging to a module
- * sold already engineered, which no menu lists — 21 of the 27 `recipe_*` keys — and
+ * reading this menu against `Blueprint.journalName`; an Operations key belonging to a module
+ * sold already engineered, which no menu lists — 21 of the 27 Operations keys — and
  * `ships/pre-engineered` resolves per module; and a build that spells a modification
  * generically — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
  * {@link getBlueprintsForModule} describes.
@@ -229,16 +229,16 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
  * The groups name 86 of the 109 blueprints in `BLUEPRINTS`, and the other 23 are all
- * accounted for: 21 are the `recipe_*` keys of modules sold already engineered rather than
+ * accounted for: 21 are the Operations keys of modules sold already engineered rather than
  * offered in a menu (see `ships/pre-engineered`), and the other two are the registry's
  * spellings of Anti-Guardian Zone Resistance, which the nine groups offering it list under
  * `GuardianModule_Sturdy` — the id the game itself writes. All 23 answer `[]` here exactly
  * as an unknown id would, so read this function's empty answer with
  * {@link getExperimentalsForModule} rather than as a claim about the recipe.
  *
- * Four `recipe_*` keys **are** named by a group, because they are recipes a player applies
+ * Four Operations keys **are** named by a group, because they are recipes a player applies
  * rather than a purchase: the Merc-Coin blueprints published with a full grade 1–5,
- * `recipe_fuelscoop_efficiency` and the three lasers' `*_thermalplasmaconversion`.
+ * `fuelscoop_efficiency` and the three lasers' `*_thermalplasmaconversion`.
  * Anti-Guardian Zone Resistance answers `[]`, and there that is the exact answer rather
  * than a miss: it has no experimental slot, on any of the nine groups that offer it.
  *

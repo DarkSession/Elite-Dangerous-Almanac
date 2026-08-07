@@ -13,7 +13,7 @@
  *          id, and which of the two Overcharged recipes the multi-cannons take.
  *          coriolis-data is (c) EDCD under the MIT License.
  *          Four rows come from neither registry: the Operations Merc-Coin blueprints
- *          `recipe_fuelscoop_efficiency` and the three lasers'
+ *          `fuelscoop_efficiency` and the three lasers'
  *          `*_thermalplasmaconversion`, whose module family comes from the Inara
  *          blueprint registry (https://inara.cz/elite/blueprints/) — the same source the
  *          recipes themselves came from. Neither EDSY nor coriolis-data publishes the
@@ -64,12 +64,12 @@
  * `MC_Overcharged`, the multi-cannon Overcharged that also cuts the clip by 3–15%, where
  * the game writes the `Weapon_Overcharged` every other weapon menu lists.
  *
- * **A menu may list an Operations recipe.** Most `recipe_*` ids belong to modules bought
+ * **A menu may list an Operations recipe.** Most Operations ids belong to modules bought
  * already engineered and no menu names them, but four are recipes a player applies: the
- * Merc-Coin blueprints published with a full grade 1–5 — `recipe_fuelscoop_efficiency` on
+ * Merc-Coin blueprints published with a full grade 1–5 — `fuelscoop_efficiency` on
  * the fuel scoops and the three lasers' `*_thermalplasmaconversion`. (Anti-Guardian Zone
  * Resistance is a fifth recipe of that kind, listed by the nine Guardian groups under the
- * journal id `GuardianModule_Sturdy` rather than under a `recipe_*` key.) A purchased
+ * journal id `GuardianModule_Sturdy` rather than under an Operations key.) A purchased
  * pre-engineered module's recipe starts at grade 2 because grade 1 is what the purchase
  * contains; these
  * four start at grade 1, so nothing is pre-applied and the whole recipe is rolled at an
@@ -258,7 +258,7 @@
         "Weapon_RapidFire",
         "Weapon_ShortRange",
         "Weapon_Sturdy",
-        "recipe_pulselaser_thermalplasmaconversion"
+        "pulselaser_thermalplasmaconversion"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -284,7 +284,7 @@
         "Weapon_RapidFire",
         "Weapon_ShortRange",
         "Weapon_Sturdy",
-        "recipe_burstlaser_thermalplasmaconversion"
+        "burstlaser_thermalplasmaconversion"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -308,7 +308,7 @@
         "Weapon_Overcharged",
         "Weapon_ShortRange",
         "Weapon_Sturdy",
-        "recipe_beamlaser_thermalplasmaconversion"
+        "beamlaser_thermalplasmaconversion"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -617,7 +617,7 @@
       "name": "Fuel Scoops",
       "blueprints": [
         "FuelScoop_Shielded",
-        "recipe_fuelscoop_efficiency"
+        "fuelscoop_efficiency"
       ],
       "experimentals": []
     },
