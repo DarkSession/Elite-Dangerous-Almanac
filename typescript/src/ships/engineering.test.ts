@@ -297,7 +297,7 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
 test('no blueprint is keyed by the registry prefix no game data uses', () => {
     // Inara publishes the Operations recipes prefixed (`recipe_fuelscoop_efficiency`);
     // coriolis and EDSY use no such prefix, and neither does any observed build — a real
-    // SLEF export writes the Mercenary reinforcement as `modulereinforcement_heavyduty`.
+    // SLEF export writes the Mercenary reinforcement as `ModuleReinforcement_HeavyDuty`.
     // So the keys here are the registry id minus the prefix, and the only two that keep it
     // are declared aliases for a recipe whose real name is a key in its own right.
     const ops = fixture.journalSpellings.operationsKeys;
@@ -365,9 +365,9 @@ test('a shared journal id costs the same whichever of its two recipes is priced'
 test('a recipe sold on one module is not thereby available on its neighbours', () => {
     // The pre-engineered route is per module, not per family: the Mercenary rail gun's
     // recipe resolves on the rail gun that ships with it and on nothing else.
-    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'railgun_longshot'));
-    assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'railgun_longshot'));
-    assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'railgun_longshot'));
+    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'RailGun_LongShot'));
+    assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'RailGun_LongShot'));
+    assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'RailGun_LongShot'));
     // A module with no engineering menu at all can still be sold carrying a recipe, and
     // the menu check must not refuse it first: the Mercenary Module Reinforcement Package
     // is the one such case, and reproducing its numbers is the whole point of this leg.
@@ -375,13 +375,13 @@ test('a recipe sold on one module is not thereby available on its neighbours', (
     assert.ok(
         blueprintAvailableFor(
             'Int_ModuleReinforcement_Size5_Class2',
-            'modulereinforcement_heavyduty',
+            'ModuleReinforcement_HeavyDuty',
         ),
     );
     assert.ok(
         !blueprintAvailableFor(
             'Int_ModuleReinforcement_Size3_Class2',
-            'modulereinforcement_heavyduty',
+            'ModuleReinforcement_HeavyDuty',
         ),
     );
 });
@@ -399,6 +399,8 @@ test('the gate matches an id the way every other lookup does', () => {
         assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', id), JSON.stringify(id));
     }
     assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'lifesupport_lightweight'));
+    // An Operations key too, whose casing this catalogue infers rather than observes — so
+    // a caller carrying any casing of it must still be understood.
     assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'RAILGUN_LONGSHOT'));
     // An id that is only a property of `Object.prototype` is not a blueprint.
     assert.ok(!blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'toString'));
@@ -556,7 +558,7 @@ test('a tech-broker recipe raises the rate of fire directly, as its registry pub
     const railgun = getModuleBySymbol('Hpt_Railgun_Fixed_Medium', ALL_MODULES)!;
     const rate = computeModifiers(
         baseStats(railgun),
-        getBlueprintGrade('railgun_longshot', 5)!,
+        getBlueprintGrade('RailGun_LongShot', 5)!,
         1,
     ).find((m) => m.Label === 'RateOfFire')!;
     assert.ok(Math.abs(rate.Value! - railgun.rateOfFire! * 1.667) < 1e-5, `${rate.Value}`);

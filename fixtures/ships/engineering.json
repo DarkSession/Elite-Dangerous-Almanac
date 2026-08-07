@@ -20,7 +20,7 @@
   "preEngineeredClimb": {
     "description": "A module bought already engineered can be taken further at an engineer, and `applyBlueprint` accepts its Operations id on the module that is sold carrying it even though no engineering menu lists one. The Mercenary Module Reinforcement Package is the case that proves the route: it has no menu at all. It arrives at grade 1, so its recipe defines grades 2-5 only — asking for grade 1 is asking to recreate the purchase, which no recipe can do.",
     "symbol": "Int_ModuleReinforcement_Size5_Class2",
-    "blueprint": "modulereinforcement_heavyduty",
+    "blueprint": "ModuleReinforcement_HeavyDuty",
     "soldAtGrade": 1,
     "gradeUnavailable": 1,
     "grade": 2,
@@ -222,7 +222,7 @@
       "observed": [
         {
           "symbol": "Int_ModuleReinforcement_Size5_Class2",
-          "blueprint": "modulereinforcement_heavyduty",
+          "blueprint": "ModuleReinforcement_HeavyDuty",
           "grade": 5,
           "soldAtGrade": 1
         }
@@ -247,31 +247,31 @@
         "modules": 14
       },
       {
-        "id": "fuelscoop_efficiency",
+        "id": "FuelScoop_Efficiency",
         "accepts": "Int_FuelScoop_Size6_Class5",
         "refuses": "Int_Hyperdrive_Size6_Class5",
         "modules": 40
       },
       {
-        "id": "beamlaser_thermalplasmaconversion",
+        "id": "BeamLaser_ThermalPlasmaConversion",
         "accepts": "Hpt_BeamLaser_Fixed_Small",
         "refuses": "Hpt_PulseLaser_Fixed_Small",
         "modules": 12
       },
       {
-        "id": "burstlaser_thermalplasmaconversion",
+        "id": "BurstLaser_ThermalPlasmaConversion",
         "accepts": "Hpt_PulseLaserBurst_Fixed_Small",
         "refuses": "Hpt_BeamLaser_Fixed_Small",
         "modules": 12
       },
       {
-        "id": "pulselaser_thermalplasmaconversion",
+        "id": "PulseLaser_ThermalPlasmaConversion",
         "accepts": "Hpt_PulseLaser_Fixed_Small",
         "refuses": "Hpt_PulseLaserBurst_Fixed_Small",
         "modules": 12
       },
       {
-        "id": "seekermissileracklarge_lockdown",
+        "id": "SeekerMissileRackLarge_Lockdown",
         "accepts": "Hpt_BasicMissileRack_Fixed_Large",
         "refuses": "Hpt_BasicMissileRack_Fixed_Medium",
         "modules": 1

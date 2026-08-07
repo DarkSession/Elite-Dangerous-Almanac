@@ -238,7 +238,7 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  *
  * Four Operations keys **are** named by a group, because they are recipes a player applies
  * rather than a purchase: the Merc-Coin blueprints published with a full grade 1–5,
- * `fuelscoop_efficiency` and the three lasers' `*_thermalplasmaconversion`.
+ * `FuelScoop_Efficiency` and the three lasers' `*_thermalplasmaconversion`.
  * Anti-Guardian Zone Resistance answers `[]`, and there that is the exact answer rather
  * than a miss: it has no experimental slot, on any of the nine groups that offer it.
  *

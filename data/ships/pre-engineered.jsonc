@@ -78,7 +78,7 @@
   {
     "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
     "name": "Abrasion Blaster",
-    "blueprint": "abrasionblaster_farreaching",
+    "blueprint": "AbrasionBlaster_FarReaching",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 400
@@ -86,7 +86,7 @@
   {
     "symbol": "Hpt_CausticMissile_Fixed_Medium",
     "name": "Enzyme Missile Rack",
-    "blueprint": "enzymemissilerack_highyield",
+    "blueprint": "EnzymeMissileRack_HighYield",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 850
@@ -94,7 +94,7 @@
   {
     "symbol": "Hpt_Slugshot_Gimbal_Small",
     "name": "Fragment Cannon",
-    "blueprint": "fragmentcannonsmall_doublescreaming",
+    "blueprint": "FragmentCannonSmall_DoubleScreaming",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 800
@@ -102,7 +102,7 @@
   {
     "symbol": "Hpt_Slugshot_Gimbal_Large",
     "name": "Fragment Cannon",
-    "blueprint": "fragmentcannonlarge_doublescreaming",
+    "blueprint": "FragmentCannonLarge_DoubleScreaming",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 950
@@ -110,7 +110,7 @@
   {
     "symbol": "Hpt_MiningLaser_Fixed_Small",
     "name": "Mining Laser",
-    "blueprint": "mininglaser_longrange",
+    "blueprint": "MiningLaser_LongRange",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 450
@@ -118,7 +118,7 @@
   {
     "symbol": "Hpt_MultiCannon_Fixed_Medium",
     "name": "Multi-Cannon",
-    "blueprint": "multicannon_rapid",
+    "blueprint": "MultiCannon_Rapid",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 850
@@ -126,7 +126,7 @@
   {
     "symbol": "Hpt_Railgun_Fixed_Medium",
     "name": "Rail Gun",
-    "blueprint": "railgun_longshot",
+    "blueprint": "RailGun_LongShot",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 950
@@ -134,7 +134,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Seeker Missile Rack",
-    "blueprint": "seekermissilerack_drag",
+    "blueprint": "SeekerMissileRack_Drag",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 800
@@ -142,7 +142,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
     "name": "Seeker Missile Rack",
-    "blueprint": "seekermissilerack_drag",
+    "blueprint": "SeekerMissileRack_Drag",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 900
@@ -150,7 +150,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Seeker Missile Rack",
-    "blueprint": "seekermissilerack_lightweightthermal",
+    "blueprint": "SeekerMissileRack_LightWeightThermal",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 800
@@ -158,7 +158,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "name": "Seeker Missile Rack",
-    "blueprint": "seekermissilerackmedium_lockdown",
+    "blueprint": "SeekerMissileRackMedium_Lockdown",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 800
@@ -166,7 +166,7 @@
   {
     "symbol": "Hpt_BasicMissileRack_Fixed_Large",
     "name": "Seeker Missile Rack",
-    "blueprint": "seekermissileracklarge_lockdown",
+    "blueprint": "SeekerMissileRackLarge_Lockdown",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 900
@@ -174,7 +174,7 @@
   {
     "symbol": "Int_CargoRack_Size5_Class1",
     "name": "Cargo Rack",
-    "blueprint": "cargoracks5c1_extended",
+    "blueprint": "CargoRackS5C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 550
@@ -182,7 +182,7 @@
   {
     "symbol": "Int_CargoRack_Size6_Class1",
     "name": "Cargo Rack",
-    "blueprint": "cargoracks6c1_extended",
+    "blueprint": "CargoRackS6C1_Extended",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 550
@@ -190,7 +190,7 @@
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
     "name": "Detailed Surface Scanner",
-    "blueprint": "detailedsurfacescanner_longrange",
+    "blueprint": "DetailedSurfaceScanner_LongRange",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 350
@@ -198,7 +198,7 @@
   {
     "symbol": "Int_ModuleReinforcement_Size5_Class2",
     "name": "Module Reinforcement Package",
-    "blueprint": "modulereinforcement_heavyduty",
+    "blueprint": "ModuleReinforcement_HeavyDuty",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 450
@@ -206,7 +206,7 @@
   {
     "symbol": "Int_PowerDistributor_Size3_Class2",
     "name": "Power Distributor",
-    "blueprint": "powerdistributors3c2_supportfocused",
+    "blueprint": "PowerDistributorS3C2_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 300
@@ -214,7 +214,7 @@
   {
     "symbol": "Int_PowerDistributor_Size3_Class5",
     "name": "Power Distributor",
-    "blueprint": "powerdistributors3c5_supportfocused",
+    "blueprint": "PowerDistributorS3C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 350
@@ -222,7 +222,7 @@
   {
     "symbol": "Int_PowerDistributor_Size4_Class2",
     "name": "Power Distributor",
-    "blueprint": "powerdistributors4c2_supportfocused",
+    "blueprint": "PowerDistributorS4C2_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 400
@@ -230,7 +230,7 @@
   {
     "symbol": "Int_PowerDistributor_Size4_Class5",
     "name": "Power Distributor",
-    "blueprint": "powerdistributors4c5_supportfocused",
+    "blueprint": "PowerDistributorS4C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 450
@@ -238,7 +238,7 @@
   {
     "symbol": "Int_PowerDistributor_Size5_Class5",
     "name": "Power Distributor",
-    "blueprint": "powerdistributor_balanced",
+    "blueprint": "PowerDistributor_Balanced",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 500
@@ -246,7 +246,7 @@
   {
     "symbol": "Int_PowerDistributor_Size6_Class5",
     "name": "Power Distributor",
-    "blueprint": "powerdistributors6c5_supportfocused",
+    "blueprint": "PowerDistributorS6C5_SupportFocused",
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 550

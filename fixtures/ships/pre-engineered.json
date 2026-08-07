@@ -190,7 +190,7 @@
     {
       "symbol": "Hpt_Railgun_Fixed_Medium",
       "name": "Rail Gun",
-      "blueprint": "railgun_longshot",
+      "blueprint": "RailGun_LongShot",
       "grade": 1,
       "acquisition": "mercenary",
       "mercCoinCost": 950
@@ -288,7 +288,7 @@
     {
       "symbol": "Int_PowerDistributor_Size5_Class5",
       "name": "Power Distributor",
-      "blueprint": "powerdistributor_balanced",
+      "blueprint": "PowerDistributor_Balanced",
       "grade": 1,
       "acquisition": "mercenary",
       "mercCoinCost": 500
@@ -390,9 +390,9 @@
   "multiVariant": {
     "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
     "blueprints": [
-      "seekermissilerack_drag",
-      "seekermissilerack_lightweightthermal",
-      "seekermissilerackmedium_lockdown",
+      "SeekerMissileRack_Drag",
+      "SeekerMissileRack_LightWeightThermal",
+      "SeekerMissileRackMedium_Lockdown",
       "Weapon_HighCapacity",
       "Weapon_HighCapacity",
       "Weapon_HighCapacity"

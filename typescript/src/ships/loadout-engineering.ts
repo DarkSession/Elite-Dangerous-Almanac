@@ -118,7 +118,7 @@ const MENU_IDS: ReadonlySet<string> = new Set(
  * recipes a player applies from grade 1, and reach the caller by the menu instead; see
  * `engineering-options`.) The pre-engineered catalogue names
  * which module each arrives on, which is the same question answered by purchase instead of
- * by a menu, and it is narrower than a family: `railgun_longshot` resolves on the
+ * by a menu, and it is narrower than a family: `RailGun_LongShot` resolves on the
  * rail gun that ships with it and nowhere else.
  *
  * What it buys is the **climb**, not the purchase. A Mercenary module arrives at grade 1

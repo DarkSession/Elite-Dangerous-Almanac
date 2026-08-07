@@ -1027,8 +1027,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   is an empty list (the grade still resolves) rather than being dropped.
 - **Operations pre-engineered blueprints — from the in-game / Inara blueprint registry**
   (not in coriolis at the acquired commit): the Merc-Coin weapon rewards and the
-  general/core/optional recipes (the **Operations keys**, e.g. `fuelscoop_efficiency`,
-  `multicannon_rapid`) plus the Anti-Guardian recipe (grade 1 only).
+  general/core/optional recipes (the **Operations keys**, e.g. `FuelScoop_Efficiency`,
+  `MultiCannon_Rapid`) plus the Anti-Guardian recipe (grade 1 only).
   - **The registry's `recipe_` prefix is dropped.** Inara publishes these ids prefixed —
     `recipe_fuelscoop_efficiency`, `recipe_modulereinforcement_heavyduty` — and the
     catalogue once stored them that way, on the reading that the prefix was Frontier's own
@@ -1036,18 +1036,22 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `modifications/blueprints.json` has **81 keys and not one prefixed**, and `eddb.js`
     contains no `recipe_` string at all (both checked 2026-08-07 UTC). Nor does real export
     data: a SLEF export contributed by the repository owner carries the Mercenary Module
-    Reinforcement Package as **`modulereinforcement_heavyduty`** — the registry id minus the
+    Reinforcement Package as **`ModuleReinforcement_HeavyDuty`** — the registry id minus the
     prefix — and across the 182-build corpus **not one of 1902 declared engineering entries
     is prefixed**. So the prefix is an Inara listing convention, and these keys are the id
     with it removed.
-  - **The casing is left exactly as the registry publishes it — lower-case — because no
-    source establishes the real one.** The only observed spelling comes from an Inara
-    export, and Inara lower-cases every id it writes (`weapon_efficient`, `fsd_longrange`),
-    so it cannot settle capitalisation. Every lookup here matches case-insensitively, so an
-    Operations key answers to whatever casing a caller uses; inventing a PascalCase
-    spelling for 25 recipes on no evidence would repeat the mistake that kept Anti-Guardian
-    Zone Resistance keyed wrongly. If a raw journal ever shows the capitalisation, changing
-    it is cosmetic.
+  - **The casing is Frontier's, taken from a raw journal.** Inara publishes these ids
+    lower-case, but Inara lower-cases *every* id it exports (`weapon_efficient`,
+    `fsd_longrange`), so its casing says nothing. A raw `Loadout` event contributed by the
+    repository owner (2026-08-07 UTC) settles it: the game writes `Armour_HeavyDuty`,
+    `HullReinforcement_HeavyDuty`, `PowerDistributor_HighFrequency`, `Sensor_LightWeight`,
+    `Misc_LightWeight`, `Weapon_HighCapacity` — PascalCase, with the compound words joined
+    and each part capitalised. The Operations keys follow that, so
+    `recipe_modulereinforcement_heavyduty` is `ModuleReinforcement_HeavyDuty` and
+    `recipe_railgun_longshot` is `RailGun_LongShot`. Only the case was changed: no letter
+    was added, removed or altered, and word boundaries come from each recipe's own display
+    name ("Module Reinforcement Package — Heavy duty"). Every lookup matches
+    case-insensitively regardless, so a caller carrying any casing is still understood.
   - **The two Anti-Guardian aliases keep their `recipe_` prefix**, and are the only keys
     that do. For that recipe the real name *is* known — `GuardianModule_Sturdy` — so they
     are not best guesses at a journal id but declared Inara-only spellings, kept so a build
@@ -1544,7 +1548,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   about how a module was *obtained* rather than how a recipe was *spelled*.
 
 - **Four Operations recipes are listed by a menu.** Most Operations keys belong to modules
-  bought already engineered and no menu names them, but `fuelscoop_efficiency` on
+  bought already engineered and no menu names them, but `FuelScoop_Efficiency` on
   `fuelScoops` and `recipe_{pulselaser,burstlaser,beamlaser}_thermalplasmaconversion` on the
   three laser groups are recipes a player applies. (Anti-Guardian Zone Resistance is the
   fifth menu recipe of that kind, listed under the journal spelling `GuardianModule_Sturdy`
@@ -1559,10 +1563,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     supplied these recipes supplied their display names, and the name states the family:
     "Fuel Scoop — Scoop rate enhanced", "Beam Laser — Plasma conversion", and so on. That is
     the same reading already load-bearing in `pre-engineered.jsonc`, where
-    `seekermissilerackmedium_lockdown` binds to the medium rack. It is **not** the
+    `SeekerMissileRackMedium_Lockdown` binds to the medium rack. It is **not** the
     prefix inference the family map used: that guessed a family from a *module symbol*,
     where this reads a family the registry names.
-  - **The modifier legs agree.** `fuelscoop_efficiency` moves `RefuelRate` and
+  - **The modifier legs agree.** `FuelScoop_Efficiency` moves `RefuelRate` and
     `PowerDraw`, and a fuel scoop is the only module in the catalogues with a `RefuelRate`
     to move. The three plasma conversions move `PowerDraw` and `Damage`, which their names
     narrow to one laser family each.
@@ -1661,7 +1665,7 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   grade 1 and need no accommodation; see §Engineering options.)
   `pre-engineered.jsonc` names which module each arrives on, so
   the gate accepts a recipe on the module that is sold carrying it and nowhere else:
-  `railgun_longshot` resolves on the medium rail gun, not on the small one. What
+  `RailGun_LongShot` resolves on the medium rail gun, not on the small one. What
   that buys is the **climb**, not the purchase: a Mercenary module arrives at grade 1
   and its recipe publishes grades 2–5, the grades an engineer can still add. It cannot
   reproduce the grade the module was sold at — all 22 Mercenary rows are grade 1, none of
@@ -1719,7 +1723,7 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
       `Hpt_BasicMissileRack_Fixed_Large` at **900 MC**, taking the shop total to 13 900 MC.
       Four things agree, none of them a guess about a module symbol: the registry keys
       Lockdown by *size* and the twin `…rackmedium_lockdown` binds to the medium rack; the
-      large rack is already a Merc row for `seekermissilerack_drag`, so the shop
+      large rack is already a Merc row for `SeekerMissileRack_Drag`, so the shop
       stocks it; both Lockdown recipes run grades 2–5, the weapon-reward range that marks a
       module as bought pre-engineered; and it is the only grade-2–5 Operations recipe in the file
       that would otherwise have no row, all 20 others having one. Price and size confirmed

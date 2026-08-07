@@ -1298,7 +1298,7 @@ import { resolveBlueprintForModule } from "@elite-dangerous-almanac/core/ships/b
 > engineered](#modules-you-can-buy-already-engineered) — 21 of the 27 Operations keys, none
 > of which a menu lists. For those `applyBlueprint` reads `ships/pre-engineered` instead,
 > on the module that actually ships with the recipe and no other —
-> `railgun_longshot` on the medium rail gun, not the small one.
+> `RailGun_LongShot` on the medium rail gun, not the small one.
 > That is how you engineer a Mercenary module _further_: it arrives at grade 1 and its
 > recipe carries grades 2–5. It is not how you reproduce what you bought — grade 1 of those
 > recipes does not exist, because the first grade came with the module.
@@ -1324,12 +1324,12 @@ isPreEngineered("Hpt_Railgun_Fixed_Medium"); // -> true
 
 // One module can carry several variants — here a Merc shop row and a CG reward…
 getPreEngineeredVariants("Hpt_Railgun_Fixed_Medium");
-// -> [{ blueprint: 'railgun_longshot', grade: 1, acquisition: 'mercenary' }, …
+// -> [{ blueprint: 'RailGun_LongShot', grade: 1, acquisition: 'mercenary' }, …
 //     { blueprint: 'Weapon_HighCapacity', grade: 5, acquisition: 'communityGoal',
 //       experimental: 'special_feedback_cascade_cooled' }]
 
 // …and one blueprint on several modules, so both lookups return arrays.
-getPreEngineeredByBlueprint("seekermissilerack_drag").map((v) => v.symbol);
+getPreEngineeredByBlueprint("SeekerMissileRack_Drag").map((v) => v.symbol);
 // -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
 ```
 
@@ -1393,7 +1393,7 @@ grade 2 — the first grade came with the module. Price the rest of the climb by
 grade you already have:
 
 ```ts
-const bought = getPreEngineeredByBlueprint("railgun_longshot")[0];
+const bought = getPreEngineeredByBlueprint("RailGun_LongShot")[0];
 getBlueprintCost(bought.blueprint, 5, bought.grade); // grades 2-5 only
 ```
 

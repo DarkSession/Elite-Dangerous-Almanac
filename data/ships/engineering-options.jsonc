@@ -13,7 +13,7 @@
  *          id, and which of the two Overcharged recipes the multi-cannons take.
  *          coriolis-data is (c) EDCD under the MIT License.
  *          Four rows come from neither registry: the Operations Merc-Coin blueprints
- *          `fuelscoop_efficiency` and the three lasers'
+ *          `FuelScoop_Efficiency` and the three lasers'
  *          `*_thermalplasmaconversion`, whose module family comes from the Inara
  *          blueprint registry (https://inara.cz/elite/blueprints/) — the same source the
  *          recipes themselves came from. Neither EDSY nor coriolis-data publishes the
@@ -66,7 +66,7 @@
  *
  * **A menu may list an Operations recipe.** Most Operations ids belong to modules bought
  * already engineered and no menu names them, but four are recipes a player applies: the
- * Merc-Coin blueprints published with a full grade 1–5 — `fuelscoop_efficiency` on
+ * Merc-Coin blueprints published with a full grade 1–5 — `FuelScoop_Efficiency` on
  * the fuel scoops and the three lasers' `*_thermalplasmaconversion`. (Anti-Guardian Zone
  * Resistance is a fifth recipe of that kind, listed by the nine Guardian groups under the
  * journal id `GuardianModule_Sturdy` rather than under an Operations key.) A purchased
@@ -258,7 +258,7 @@
         "Weapon_RapidFire",
         "Weapon_ShortRange",
         "Weapon_Sturdy",
-        "pulselaser_thermalplasmaconversion"
+        "PulseLaser_ThermalPlasmaConversion"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -284,7 +284,7 @@
         "Weapon_RapidFire",
         "Weapon_ShortRange",
         "Weapon_Sturdy",
-        "burstlaser_thermalplasmaconversion"
+        "BurstLaser_ThermalPlasmaConversion"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -308,7 +308,7 @@
         "Weapon_Overcharged",
         "Weapon_ShortRange",
         "Weapon_Sturdy",
-        "beamlaser_thermalplasmaconversion"
+        "BeamLaser_ThermalPlasmaConversion"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -617,7 +617,7 @@
       "name": "Fuel Scoops",
       "blueprints": [
         "FuelScoop_Shielded",
-        "fuelscoop_efficiency"
+        "FuelScoop_Efficiency"
       ],
       "experimentals": []
     },

@@ -212,7 +212,7 @@
         "Weapon_RapidFire",
         "Weapon_ShortRange",
         "Weapon_Sturdy",
-        "pulselaser_thermalplasmaconversion"
+        "PulseLaser_ThermalPlasmaConversion"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -239,7 +239,7 @@
         "Weapon_RapidFire",
         "Weapon_ShortRange",
         "Weapon_Sturdy",
-        "burstlaser_thermalplasmaconversion"
+        "BurstLaser_ThermalPlasmaConversion"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -264,7 +264,7 @@
         "Weapon_Overcharged",
         "Weapon_ShortRange",
         "Weapon_Sturdy",
-        "beamlaser_thermalplasmaconversion"
+        "BeamLaser_ThermalPlasmaConversion"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -571,7 +571,7 @@
     {
       "id": "fuelScoops",
       "name": "Fuel Scoops",
-      "blueprints": ["FuelScoop_Shielded", "fuelscoop_efficiency"],
+      "blueprints": ["FuelScoop_Shielded", "FuelScoop_Efficiency"],
       "experimentals": []
     },
     {

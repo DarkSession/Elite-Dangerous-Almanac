@@ -71,7 +71,7 @@
  * (CargoRack_IncreasedCapacity G5).
  *
  * The Operations pre-engineered blueprints (Merc weapon rewards,
- * plus general/core/optional ones like `fuelscoop_efficiency`) and all three
+ * plus general/core/optional ones like `FuelScoop_Efficiency`) and all three
  * Anti-Guardian records (`GuardianModule_Sturdy` and its two `recipe_`-prefixed Inara aliases, which
  * coriolis does not carry under any spelling) come from the current in-game / Inara
  * blueprint registry, which exposes one displayed total per grade rather than a
@@ -15411,7 +15411,7 @@
       }
     }
   },
-  "fuelscoop_efficiency": {
+  "FuelScoop_Efficiency": {
     "name": "Fuel Scoop — Scoop rate enhanced",
     "grades": {
       "1": {
@@ -15581,7 +15581,7 @@
       }
     }
   },
-  "beamlaser_thermalplasmaconversion": {
+  "BeamLaser_ThermalPlasmaConversion": {
     "name": "Beam Laser — Plasma conversion",
     "grades": {
       "1": {
@@ -15756,7 +15756,7 @@
       }
     }
   },
-  "burstlaser_thermalplasmaconversion": {
+  "BurstLaser_ThermalPlasmaConversion": {
     "name": "Burst Laser — Plasma conversion",
     "grades": {
       "1": {
@@ -15931,7 +15931,7 @@
       }
     }
   },
-  "pulselaser_thermalplasmaconversion": {
+  "PulseLaser_ThermalPlasmaConversion": {
     "name": "Pulse Laser — Plasma conversion",
     "grades": {
       "1": {
@@ -16106,7 +16106,7 @@
       }
     }
   },
-  "detailedsurfacescanner_longrange": {
+  "DetailedSurfaceScanner_LongRange": {
     "name": "Detailed Surface Scanner — Long range detailed",
     "grades": {
       "2": {
@@ -16229,7 +16229,7 @@
       }
     }
   },
-  "cargoracks5c1_extended": {
+  "CargoRackS5C1_Extended": {
     "name": "Cargo Rack — Extended",
     "grades": {
       "2": {
@@ -16352,7 +16352,7 @@
       }
     }
   },
-  "cargoracks6c1_extended": {
+  "CargoRackS6C1_Extended": {
     "name": "Cargo Rack — Extended",
     "grades": {
       "2": {
@@ -16475,7 +16475,7 @@
       }
     }
   },
-  "modulereinforcement_heavyduty": {
+  "ModuleReinforcement_HeavyDuty": {
     "name": "Module Reinforcement Package — Heavy duty",
     "grades": {
       "2": {
@@ -16646,7 +16646,7 @@
       }
     }
   },
-  "powerdistributor_balanced": {
+  "PowerDistributor_Balanced": {
     "name": "Power Distributor — Balanced",
     "grades": {
       "2": {
@@ -16961,7 +16961,7 @@
       }
     }
   },
-  "powerdistributors3c2_supportfocused": {
+  "PowerDistributorS3C2_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17204,7 +17204,7 @@
       }
     }
   },
-  "powerdistributors3c5_supportfocused": {
+  "PowerDistributorS3C5_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17447,7 +17447,7 @@
       }
     }
   },
-  "powerdistributors4c2_supportfocused": {
+  "PowerDistributorS4C2_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17690,7 +17690,7 @@
       }
     }
   },
-  "powerdistributors4c5_supportfocused": {
+  "PowerDistributorS4C5_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17933,7 +17933,7 @@
       }
     }
   },
-  "powerdistributors6c5_supportfocused": {
+  "PowerDistributorS6C5_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -18176,7 +18176,7 @@
       }
     }
   },
-  "abrasionblaster_farreaching": {
+  "AbrasionBlaster_FarReaching": {
     "name": "Abrasion Blaster — Far-reaching",
     "grades": {
       "2": {
@@ -18443,7 +18443,7 @@
       }
     }
   },
-  "fragmentcannonsmall_doublescreaming": {
+  "FragmentCannonSmall_DoubleScreaming": {
     "name": "Fragment Cannon — Double screaming",
     "grades": {
       "2": {
@@ -18734,7 +18734,7 @@
       }
     }
   },
-  "fragmentcannonlarge_doublescreaming": {
+  "FragmentCannonLarge_DoubleScreaming": {
     "name": "Fragment Cannon — Double screaming",
     "grades": {
       "2": {
@@ -19025,7 +19025,7 @@
       }
     }
   },
-  "railgun_longshot": {
+  "RailGun_LongShot": {
     "name": "Rail Gun — Enduring feedback",
     "grades": {
       "2": {
@@ -19340,7 +19340,7 @@
       }
     }
   },
-  "mininglaser_longrange": {
+  "MiningLaser_LongRange": {
     "name": "Mining Laser — Long range",
     "grades": {
       "2": {
@@ -19607,7 +19607,7 @@
       }
     }
   },
-  "multicannon_rapid": {
+  "MultiCannon_Rapid": {
     "name": "Multi-cannon — Rapid phase",
     "grades": {
       "2": {
@@ -19892,7 +19892,7 @@
       }
     }
   },
-  "seekermissilerack_drag": {
+  "SeekerMissileRack_Drag": {
     "name": "Seeker Missile Rack — Drag",
     "grades": {
       "2": {
@@ -20135,7 +20135,7 @@
       }
     }
   },
-  "seekermissilerack_lightweightthermal": {
+  "SeekerMissileRack_LightWeightThermal": {
     "name": "Seeker Missile Rack — Lightweight thermal",
     "grades": {
       "2": {
@@ -20402,7 +20402,7 @@
       }
     }
   },
-  "seekermissilerackmedium_lockdown": {
+  "SeekerMissileRackMedium_Lockdown": {
     "name": "Seeker Missile Rack — Lockdown",
     "grades": {
       "2": {
@@ -20717,7 +20717,7 @@
       }
     }
   },
-  "seekermissileracklarge_lockdown": {
+  "SeekerMissileRackLarge_Lockdown": {
     "name": "Seeker Missile Rack — Lockdown",
     "grades": {
       "2": {
@@ -21032,7 +21032,7 @@
       }
     }
   },
-  "enzymemissilerack_highyield": {
+  "EnzymeMissileRack_HighYield": {
     "name": "Enzyme Missile Rack — High-yield",
     "grades": {
       "2": {

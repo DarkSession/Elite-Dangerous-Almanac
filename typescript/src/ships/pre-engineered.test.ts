@@ -171,7 +171,7 @@ test('getPreEngineeredVariants normalises input and misses cleanly', () => {
 
 test('getPreEngineeredByBlueprint resolves case-insensitively and misses cleanly', () => {
     assert.deepEqual(
-        getPreEngineeredByBlueprint('  RAILGUN_LONGSHOT  ').map((v) => v.symbol),
+        getPreEngineeredByBlueprint('  railgun_LONGSHOT  ').map((v) => v.symbol),
         ['Hpt_Railgun_Fixed_Medium'],
     );
     assert.deepEqual(getPreEngineeredByBlueprint('NoSuchBlueprint'), []);
@@ -208,13 +208,13 @@ test('a (symbol, blueprint, grade, experimental) quadruple appears at most once'
 
 test('one blueprint can be sold on more than one base module', () => {
     assert.deepEqual(
-        getPreEngineeredByBlueprint('seekermissilerack_drag').map((v) => v.symbol),
+        getPreEngineeredByBlueprint('SeekerMissileRack_Drag').map((v) => v.symbol),
         ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large'],
     );
 });
 
 test('the remaining upgrade is priced from the grade already applied', () => {
-    const variant = getPreEngineeredByBlueprint('railgun_longshot')[0]!;
+    const variant = getPreEngineeredByBlueprint('RailGun_LongShot')[0]!;
     const total = (mats: readonly { count: number }[] | null) => {
         assert.ok(mats, 'the blueprint must price');
         return mats.reduce((sum, m) => sum + m.count, 0);
