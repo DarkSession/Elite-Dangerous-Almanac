@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 
 import { ShipLoadout } from './ship-loadout.js';
 import { parseSlef, type LoadoutEvent, type LoadoutModule } from './slef.js';
-import { parseSlotName } from './slots.js';
+import { enumerateSlots, parseSlotName } from './slots.js';
+import { getShipSlots, SHIPS } from './ships.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
@@ -263,7 +264,15 @@ test('the fixture’s mount patterns agree with the classification in force', ()
 
     // …and the patterns are the slot parser's own vocabulary, not a second copy of it
     // that could drift: every slot either implementation meets answers the same way.
-    for (const slot of [
+    // Driven by every mount every hull in the registry actually has, so the check cannot
+    // fall behind the patterns the way a hand-listed sample does — the restricted mounts
+    // (`Military01`, `Cargo01`, `LimpetController01`, `FighterBay01`, `Passenger01`)
+    // live on a handful of hulls and appear in no capture read here.
+    const everyMount = SHIPS.flatMap((ship) =>
+        enumerateSlots(getShipSlots(ship.symbol)!).map((s) => s.key),
+    );
+    const checked = [
+        ...everyMount,
         ...krait.Modules.map((m) => m.Slot),
         ...viperJournal.Modules.map((m) => m.Slot),
         ...fixture.classification.examples.map((e) => e.slot),
@@ -272,9 +281,19 @@ test('the fixture’s mount patterns agree with the classification in force', ()
         'Decal3',
         'Bobble10',
         'stringlights',
-    ]) {
+    ];
+    for (const slot of checked) {
         assert.equal(isMount(slot), parseSlotName(slot) !== null, slot);
     }
+
+    // A pattern nothing above matches is a pattern this test does not pin, and an
+    // unpinned one fails *silently*: the fixture names the mounts, so a pattern a port
+    // transcribes wrongly makes a fitted module weightless and free rather than unknown.
+    // Assert the sample exercises all of them rather than trusting that it does.
+    const unexercised = fixture.classification.outfittingSlotPatterns.filter(
+        (p) => !checked.some((slot) => new RegExp(p).test(slot.toLowerCase())),
+    );
+    assert.deepEqual(unexercised, []);
 });
 
 test('a decoration is recognised by naming no mount, not by appearing in a fixture', () => {
@@ -332,10 +351,11 @@ test('a stock journal Loadout event reproduces every figure the game reported', 
     assert.deepEqual(figuresOf(event, fixture.viperMkIV.recomputed), fixture.viperMkIV.recomputed);
 
     assert.equal(viper.Modules.length, fixture.viperMkIV.moduleCount);
-    const decorative = fixture.viperMkIV.nonOutfittingSlots;
+    // Filtered by the rule rather than by the fixture's own list, as the Krait capture
+    // is: `includes` alone would pass a fixture that had simply left a decoration out.
     assert.deepEqual(
-        viper.Modules.map((m) => m.Slot).filter((s) => decorative.includes(s)),
-        decorative,
+        viper.Modules.map((m) => m.Slot).filter((s) => parseSlotName(s) === null),
+        fixture.viperMkIV.nonOutfittingSlots,
     );
 });
 
