@@ -677,9 +677,9 @@ state this library does not carry.
 All 48 hulls are priced, and 1176 of 1197 modules. The other 21 — the ten starter
 `*_free` variants, the five size-8 frame shift drives, the three Mk II fighter hangars,
 the two unsold Corrosion Resistant Cargo Racks (both Community Goal rewards, so no
-outfitting screen quotes them; tracked on
-[#18](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/18), which predates
-this change and still counts three of them) and `Int_ShieldGenerator_Size1_Class4` — have
+outfitting screen quotes them —
+[#18](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/18)) and
+`Int_ShieldGenerator_Size1_Class4` — have
 no published price, so **`cost` is `undefined` rather than `0`**. That distinction is
 deliberate: `0` is a real price (the starter Lightweight Alloy bulkhead is free), so
 treat `undefined` as _unknown_ and decide for yourself whether to skip it or fail:
@@ -1249,7 +1249,7 @@ groups also offers one ordinary weapon recipe.
 > ```
 >
 > It resolves _into_ a menu and never out of one, so a sensor suite is still not offered
-> `Scanner_LongRange`. Every other id, on every other module, comes back unchanged. It is
+> `Scanner_LongRange`. Every other id, on every other module, comes back unchanged.
 > It lives in its own module, `ships/blueprint-journal`, because it needs the menus **and**
 > the recipes — keeping it out of `ships/engineering-options` is what lets that stay 63 KB
 > of menus for everyone who only wants to know what a module takes.
@@ -1435,136 +1435,24 @@ against.
 ## Data freshness
 
 The checked-in catalogues are a snapshot dated **2026-07-24**, revised since. Each
-domain's `SOURCES.md` is the authoritative record of what changed and when — the
-larger passes below are a summary, not a complete list, and smaller corrections are
-recorded inline there beside the field they touch.
-
-- **2026-08-01** — a completeness pass over the outfitting and engineering
-  catalogues against EDSY and the in-game registries, adding three records the
-  earlier FDevIDs/coriolis-data join had dropped and restoring modifiers to four
-  experimental effects.
-- **2026-08-01** — the defence, power and weapon stats the build calculations need,
-  from coriolis-data; in the same pass each hull's bulkheads moved off `ships.jsonc`
-  onto its `<Hull>_Armour_*` module records.
-- **2026-08-02** — one market commodity added, `curatedcommodity` ("Curated
-  Commodity Package"), from a player-journal observation rather than an upstream
-  registry; its market category is a maintainer assignment.
-- **2026-08-02** — a module-stat reconciliation against EDSY that left every
-  outfitting module carrying at least one stat and corrected 40 records.
-- **2026-08-05** — no value changed: a module record whose missing stat means
-  _unknown_ rather than _no such stat_ now says so in its own
-  [`unknownStats`](#when-a-stat-is-missing) field.
-- **2026-08-05** — one module price filled from EDSY, the 1F Corrosion Resistant
-  Cargo Rack (`Int_CorrosionProofCargoRack_Size1_Class2`, 12 560), which
-  coriolis-data carries as `0`. The other three racks of that family stayed unpriced:
-  no station sells them, so no registry quotes one. (Two of them still do; the third,
-  the size-2 rack, was removed outright on 2026-08-06 — see the last entry below.)
-- **2026-08-05** — two restricted-mount rules the catalogue could not express are now
-  stored: the Lynx Highliner's `Passenger01`–`Passenger03` take **passenger cabins
-  only** (a seventh `slot.restriction` value), and five module records name the mount
-  they fit _and no other_ in a new `restrictedToSlot` — the two Mk II Cargo Racks
-  (`cargo`), the Mk II Mining Multi-Limpet Controller (`limpetController`) and the two
-  planetary approach suites, whose rule stops being a special case in the fit check.
-  Sourced from two real Inara captures, of a Lynx and a Panther Clipper Mk II.
-  **Behaviour-visible three ways:** `setModule` and `modulesForSlot` now refuse those
-  modules on unrestricted mounts (a Panther's `Slot01_Size8` no longer takes a Mk II
-  rack) and refuse anything but a cabin on the Lynx's three; `OptionalRestriction`
-  gained a member, so an exhaustive `switch` over it needs a case; and the Lynx's
-  cabin mounts read `Passenger Slot 1` rather than `Passenger Slot 1 (Size 6)`, the
-  size staying on `slot.size` as it does for every other restricted mount. The hull
-  also left the group below whose keys no rule derives — 11 hulls became 10. One
-  refusal message changed with the special case that produced it: a suite in the wrong
-  mount now reads `module only fits a mount that takes planetary approach suites`.
-- **2026-08-05** — 13 hulls gained the journal's own slot keys, from EDSY, on 11 of
-  which the numbering rules were wrong. **This one is behaviour-visible:** the keys
-  `enumerateSlots` and `ShipLoadout.slots()` return changed on those 11 hulls (an
-  Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1`, not
-  `Slot11`/`Slot12`), so a build that hard-codes a computed key needs re-checking.
-  No hull's layout, mount count or size changed.
-- **2026-08-05** — the engineering-options catalogue went from 428 modules in 22
-  groups to 1029 in 53, covering every module EDSY's own eligibility rules allow a
-  recipe on. **Behaviour-visible three ways:** 601 more modules now answer a group
-  and a menu; 14 stop answering one, because upstream denies them every blueprint
-  (eight anti-xeno multi-cannons, five mining tools, the Mk II Plasma Shock
-  Autocannon); and the Guardian power plants, distributors and hull reinforcement
-  packages moved to groups of their own, which also took `recipe_guardianmodule_sturdy`
-  off the three ordinary menus that had wrongly offered it. See
-  [what a module can be engineered with](#what-a-module-can-be-engineered-with).
-- **2026-08-06** — `Scanner_LongRange` and `Scanner_WideAngle` gained a `journalName`,
-  because the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` — the ids it also
-  writes for the sensor suites' own Long Range and Wide Angle, which are different recipes
-  rolling different stats in opposite directions.
-  **Behaviour-visible two ways:** those two ids are now accepted on the 15 KWS, manifest
-  and wake scanners, where they were refused (nothing that was accepted became refused, on
-  any module); and on those modules they fold the scanner's recipe — `Scanner_LongRange` /
-  `Scanner_WideAngle` — so a wake scanner's Long Range costs power draw rather than mass.
-  A new `ships/blueprint-journal` module exposes `resolveBlueprintForModule`, the lookup
-  for reading a stored `BlueprintName` back. Blueprint **costs** are unaffected: both pairs charge the same materials at every
-  grade. See
-  [what a module can be engineered with](#what-a-module-can-be-engineered-with).
-- **2026-08-06** — no value changed and no record moved: the module files stopped
-  repeating `category` (the file they are in already said it, 1198 times over, into
-  every consumer's bundle) and every core module gained a
-  [`slot`](#ships-and-outfitting) naming the one mount it fills. **Every field you
-  read still reads the same** — `category` is filled in as its catalogue loads, and
-  `slot` is additive — so nothing that worked stops working. The one thing that did
-  change is key _order_: `slot` follows `symbol` and `category` moved to the end,
-  which matters only if you serialize a record and compare the string. **Records
-  resolved from a catalogue behave identically** — verified over every catalogue
-  module against every mount of every hull, 1.6 M fit decisions, plus the 181 corpus
-  builds' metrics. The behaviour-visible difference is confined to records you
-  assemble **by hand**, and it is one rule: `setModule` used to work out what kind of
-  module it had been handed — from the symbol on core and optional mounts, from
-  `category` on the armour mount — and now reads what the record declares, its `slot`.
-  A hand-made record is therefore judged on what it says about itself rather than on
-  what it is named — so any such record can be accepted where it was refused, or
-  refused where it was accepted, on core, armour and optional mounts alike. Its
-  declared fields need not contradict its symbol for that to happen; the retired rule
-  matched a list of symbol prefixes, so a record it did not recognise at all also
-  lands differently now. If you build records yourself and lean on `setModule` to
-  validate them, give them an accurate `slot`; resolving them with
-  `getModuleBySymbol` instead settles it outright. The other three readers of `slot` —
-  the power budget, the jump-range drive lookup and fuel-tank capacity — consult the
-  symbol only when a record names **no** mount, and believe the record when it names
-  one, right or wrong. So a hand-made record with no `slot` reads there exactly as it
-  always has; one that names the wrong mount is taken at its word.
-- **2026-08-06** — one module record was **removed**: the size-2 Corrosion Resistant
-  Cargo Rack (`Int_CorrosionProofCargoRack_Size2_Class1`), a variant that never
-  released. No registry lists it as player-obtainable, so it was never outfitting a
-  journal could name; `getModuleBySymbol` now returns `undefined` for it, and the
-  catalogue counts drop by one (`ALL_MODULES` 1198 → 1197, `INTERNAL_MODULES`
-  483 → 482, the engineering-options catalogue 1029 → 1028 grouped modules). The
-  size-5 and size-6 racks **stay**, still without a `cost`: both were Community Goal
-  rewards and were sold nowhere, so their absent price is now recorded as _no list
-  price exists_ rather than _none has been found_. A build fitting one still exports
-  no `ModulesValue` or `Rebuy`, exactly as before.
-- **2026-08-07** — the Guardian power plants, power distributors and hull
-  reinforcement packages offer **no experimental effect**. Anti-Guardian Zone
-  Resistance is their whole menu and that recipe has no experimental slot; the three
-  groups had inherited their ordinary twin's list on the 2026-08-05 split, because both
-  registries publish `expeffects` per module group and neither says a Guardian menu is
-  narrower. An engineered Guardian module carrying an experimental was obtained already
-  engineered — a community-goal or tech-broker reward — rather than rolled at an
-  engineer, and this menu answers only the latter. (Those reward variants are not in
-  `pre-engineered.jsonc` either, which carries seven Guardian **weapon** variants and no
-  Guardian module; nothing here claims to catalogue them.) **Behaviour-visible two ways:**
-  `getExperimentalsForModule` returns `[]` for those 25 modules where it listed four or
-  five effects, and `applyBlueprint` now refuses an `experimental` on them; and
-  `getExperimentalsForBlueprint('recipe_guardianmodule_sturdy')` returns `[]` rather than
-  the 13-effect union of the three families. Blueprints are unchanged, on every module —
-  including the Guardian weapons, whose groups each keep the ordinary weapon recipe they
-  also offer. Closes
-  [#33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33). See
-  [what a module can be engineered with](#what-a-module-can-be-engineered-with).
+domain's `SOURCES.md` is the authoritative record — for every catalogue, where its
+values came from, at which upstream revision, how they were derived, and why
+anything is absent:
+[ships](data/ships/SOURCES.md), [commodities](data/commodities/SOURCES.md),
+[materials](data/materials/SOURCES.md), [astro](data/astro/SOURCES.md).
+Release-by-release notes live with the
+[GitHub releases](https://github.com/DarkSession/Elite-Dangerous-Almanac/releases);
+this README describes the data as it stands.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
-_unknown_, never as zero. The
+_unknown_, never as zero. Where an absence means _unknown_ rather than _the module
+has no such stat_, the record says so in its own
+[`unknownStats`](#when-a-stat-is-missing) field. The
 [open issues](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues) are the
 short list of those gaps.
 [`data/SNAPSHOTS.md`](data/SNAPSHOTS.md) records the initial-snapshot limitation
-and the versioning metadata every future update must carry, and each
-`data/<domain>/SOURCES.md` carries that domain's full derivation.
+and the versioning metadata every future update must carry.
 
 ## Development
 

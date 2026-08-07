@@ -23,9 +23,9 @@
  *
  * Each effect is { name, modifiers, materials, description? }. `name` is the effect's
  * display name from EDSY `expeffect[].name`; where another registry differs it is only
- * in casing or hyphenation ("Multi-servos" vs "Multi-Servos"), and EDSY's form is kept.
- * Re-checked 2026-08-02; `special_choke_canister` was corrected to "Ion Disruption"
- * then, EDSY's spelling having been mistranscribed as "Ion Disruptor".
+ * in casing or hyphenation ("Multi-servos" vs "Multi-Servos"), and EDSY's form is kept
+ * — including `special_choke_canister`, which is "Ion Disruption" and not the
+ * easily-mistranscribed "Ion Disruptor".
  * A modifier is { label, method, value }:
  * `label` the journal Modifier Label, `method` how it applies, `value` the fixed
  * contribution (a fraction for percentage modifiers). A material is { symbol, name,
@@ -34,9 +34,9 @@
  * application (one roll). Weapon-combat effects are included for completeness; a
  * purely-qualitative one (a gameplay flag with no numeric magnitude, e.g. Auto Loader)
  * carries an empty `modifiers` list and a human-readable `description` instead. The
- * re-added combat effects' one-application material costs are sourced from the current
- * in-game / Inara registry (a Merc-Coin amount is also charged but is a currency, not a
- * material, so it is not stored).
+ * combat effects' one-application material costs are sourced from the current in-game /
+ * Inara registry (a Merc-Coin amount is also charged but is a currency, not a material,
+ * so it is not stored).
  *
  * Full provenance: data/ships/SOURCES.md.
  */

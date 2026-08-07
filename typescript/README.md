@@ -209,11 +209,6 @@ mount.fit(getModuleBySymbol('Hpt_PlasmaAccelerator_Fixed_Large', HARDPOINT_MODUL
 //   → LargeMiningHardpoint1: slot only takes mining tools
 ```
 
-> **Upgrading from 0.0.1 to 0.1.0:** `ShipSlots.hardpoints` (and `Ship.hardpoints`) changed from
-> `readonly number[]` to `readonly HardpointSlotSpec[]` — `{ size, restriction? }`
-> entries, matching `optional`. Read `hardpoints[i].size` where you read
-> `hardpoints[i]` before. TypeScript flags every site; **plain JavaScript will not**.
-
 See the [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#readme)
 and [generated GitHub Wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki)
 for the complete API guide. Report problems in the
@@ -221,49 +216,22 @@ for the complete API guide. Report problems in the
 
 ## Data freshness and credits
 
-The bundled catalogues are a snapshot dated **2026-07-24**, revised since. The larger
-passes: two on 2026-08-01, a completeness pass over the outfitting and engineering
-catalogues against EDSY, and the defence, power and weapon stats the build calculations
-need, from coriolis-data; two on 2026-08-02, one market commodity added
-(`curatedcommodity`, from a player-journal observation rather than an upstream registry,
-so its market category is a maintainer assignment) and a module-stat reconciliation that
-left every outfitting module carrying at least one stat and corrected 40 records; one on
-**2026-08-04**, every hull's mounts now recording any restriction they carry (see above),
-with the modules limited to particular hulls gaining the `restrictedToShips` values that
-were previously only documented; and five on **2026-08-05**, one changing no value — a
-module whose missing stat is unknown rather than absent because it has none now says so
-in its own `unknownStats` field — one pricing the 1F Corrosion Resistant Cargo Rack
-from EDSY at 12 560, which coriolis-data carries as `0`, one giving 13 hulls the
-journal's own slot keys, from EDSY, on 11 of which the numbering rules were wrong, one
-taking the engineering-options catalogue from 428 modules in 22 groups to 1029 in 53,
-and one storing two restricted-mount rules the catalogue could not express — the Lynx
-Highliner's three passenger-cabin-only mounts, and the five module records that name
-the mount they fit and no other (the Mk II Cargo Racks, the Mk II Mining Multi-Limpet
-Controller and the planetary approach suites), both sourced from real Inara captures.
-The last three are **behaviour-visible**: the keys `enumerateSlots` and
-`ShipLoadout.slots()` return changed on those 11 hulls (see above), while no hull's
-layout, mount count or size did; 601 more modules now answer an engineering group,
-14 stop answering one because upstream denies them every blueprint, and the Guardian
-power plants, distributors and hull reinforcement packages moved to groups of their own;
-and `setModule`/`modulesForSlot` now refuse a reserved module on an unrestricted mount,
-`OptionalRestriction` gained a member, and the Lynx's cabin mounts dropped the size
-suffix from their label. One more on **2026-08-06**, also behaviour-visible: the game
-writes `Sensor_LongRange` and `Sensor_WideAngle` for two different recipes — a sensor
-suite's and a utility scanner's, which roll different stats in opposite directions — so
-`Scanner_LongRange` and `Scanner_WideAngle` gained a `journalName` recording that. Those
-two ids are now accepted on the 15 KWS, manifest and wake scanners where they were
-refused, and on those modules they fold the scanner's recipe, so a wake scanner's Long
-Range costs power draw rather than mass; `resolveBlueprintForModule`, in a new `ships/blueprint-journal`
-module, is the lookup, and blueprint costs are unchanged. Smaller
-corrections are not
-listed here — each domain's `SOURCES.md` is the authoritative record
-([ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md),
+The bundled catalogues are a snapshot dated **2026-07-24**, revised since. Each data
+domain's `SOURCES.md` in the repository is the authoritative record — for every
+catalogue, where its values came from, at which upstream revision, how they were
+derived, and why anything is absent:
+[ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md),
 [commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md),
 [materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md),
-[astro](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md)).
+[astro](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).
+Reading them, you can judge the data's freshness independently of this package's
+version. What changed in a given release is on the
+[releases page](https://github.com/DarkSession/Elite-Dangerous-Almanac/releases).
 
 A value no source publishes is left **absent rather than guessed** — a handful of
-`integrity`, `powerDraw` and `mass` fields are `undefined` for that reason. The
+`integrity`, `powerDraw` and `mass` fields are `undefined` for that reason, and a
+record whose absent stat is _unknown_ rather than _not a stat that module has_ says so
+in its own `unknownStats` field. The
 [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#data-freshness)
 covers freshness in full,
 the [issue tracker](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues)

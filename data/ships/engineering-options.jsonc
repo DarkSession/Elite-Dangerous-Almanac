@@ -35,7 +35,7 @@
  * weapon recipe, and they carry no experimental for reasons of their own.) An engineered
  * Guardian module that does carry an experimental was obtained already engineered — a
  * community-goal or tech-broker reward — rather than rolled at an engineer; no registry
- * publishes those variants and `pre-engineered.jsonc` does not yet carry them, so this
+ * publishes those variants and `pre-engineered.jsonc` does not carry them, so this
  * catalogue's answer is about the engineering menu only. Neither registry publishes the
  * distinction either (`expeffects` is per module group, with no per-module denial on any
  * of them), so SOURCES.md records where it came from.

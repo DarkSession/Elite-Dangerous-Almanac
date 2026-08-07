@@ -27,10 +27,9 @@
  * (coriolis `blueprint.name` for the journal-keyed ones; the Operations dossier's
  * display label for the `recipe_*` ones), deliberately NOT the full outfitting-panel
  * string — the panel says "Long-Range Weapon" where this says "Long range", because
- * the name is read next to the module it applies to. Re-checked 2026-08-02;
- * `CargoRack_IncreasedCapacity` was corrected then, being the one name that was wrong
- * in its own right rather than short by convention. See the "Display names" note in
- * SOURCES.md.
+ * the name is read next to the module it applies to. `CargoRack_IncreasedCapacity` is
+ * the one name that is short-by-nothing rather than short by convention: it reads
+ * "Expanded Cargo Rack", EDSY's spelling. See the "Display names" note in SOURCES.md.
  * `journalName` is present on the two blueprints whose key is NOT what the game writes.
  * Every other key IS the `BlueprintName` a Loadout event carries, which is why the
  * field is absent from 106 of the 108 records. The exceptions are `Scanner_LongRange`

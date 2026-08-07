@@ -32,7 +32,7 @@ import { isStatUnknown } from './unknown-stats.js';
  *
  * @remarks
  * Classifying by symbol is the weaker way to do this, and `powerPlant` is the one entry
- * that no longer needs it: a power plant's record names the mount it fills, so
+ * that does not need it in the ordinary case: a power plant's record names the mount it fills, so
  * {@link powerAvailable} reads {@link OutfittingModule.slot} and falls back to this
  * whenever no mount is named — an `Item` no catalogue knows (a build may name a module
  * newer than this snapshot), or a record a caller assembled without a `slot`.
