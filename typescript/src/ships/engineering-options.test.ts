@@ -354,6 +354,30 @@ test('every module the build corpus engineers is grouped, bar the one upstream r
     }
 });
 
+test('every menu is sorted, because the API promises it is', () => {
+    // `getBlueprintsForModule` documents "Blueprint ids, sorted" and its `@example` quotes
+    // a menu's first element. Nothing enforced that: renaming a key moved it within four
+    // menus and silently falsified both. Sorted case-insensitively, which is also ASCII
+    // order for these ids, so the two readings cannot disagree.
+    for (const [id, group] of Object.entries(ENGINEERING_OPTION_GROUPS)) {
+        assert.deepEqual(
+            [...group.blueprints],
+            [...group.blueprints].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
+            `${id} blueprints are not sorted`,
+        );
+        assert.deepEqual(
+            [...group.experimentals],
+            [...group.experimentals].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
+            `${id} experimentals are not sorted`,
+        );
+    }
+    // And the shipped example is the menu it claims to be.
+    assert.equal(
+        getBlueprintsForModule('Hpt_BeamLaser_Fixed_Small')[0],
+        'BeamLaser_ThermalPlasmaConversion',
+    );
+});
+
 test('every recipe the build corpus declares is one its module offers', () => {
     // A recipe that applies to several module families is stored under each family's own
     // journal id; the catalogue lists the family-specific one, so a build spelling it the

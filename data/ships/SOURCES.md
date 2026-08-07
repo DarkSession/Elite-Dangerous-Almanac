@@ -1037,8 +1037,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     contains no `recipe_` string at all (both checked 2026-08-07 UTC). Nor does real export
     data: a SLEF export contributed by the repository owner carries the Mercenary Module
     Reinforcement Package as **`modulereinforcement_heavyduty`** — the registry id minus
-    the prefix, in the lower case Inara writes everything in — and across the 182-build corpus **not one of 1902 declared engineering entries
-    is prefixed**. So the prefix is an Inara listing convention, and these keys are the id
+    the prefix, in the lower case Inara writes everything in — and across the 181-build
+    corpus **not one of 1902 declared engineering entries is prefixed**. So the prefix is an Inara listing convention, and these keys are the id
     with it removed.
   - **The casing is Frontier's, taken from a raw journal.** Inara publishes these ids
     lower-case, but Inara lower-cases *every* id it exports (`weapon_efficient`,
@@ -1483,7 +1483,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `special_super_penetrator_cooled` entries on a Guardian Shard Cannon sit in
     `corpus.notOffered` under #36 for an unrelated reason.
   - **What a consumer sees:** `getExperimentalsForModule` answers `[]` for the 25 modules
-    in those three groups, `ShipLoadout.applyBlueprint` refuses an `experimental` on them,
+    in the three split families above — `guardianPowerPlants`, `guardianPowerDistributors`
+    and `guardianHullReinforcements` — `ShipLoadout.applyBlueprint` refuses an
+    `experimental` on them,
     and `getExperimentalsForBlueprint('GuardianModule_Sturdy')` answers `[]` rather
     than a union across the three families. Blueprints are unaffected on every module.
     Pinned in
@@ -1553,7 +1555,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `pre-engineered.jsonc` already records as *sold* carrying that exact recipe. No Large
     and no Turret variant carries one, and exactly one Guardian weapon in the whole capture
     carries `GuardianModule_Sturdy` — the only recipe a player can actually roll onto it.
-  - The 182-build community corpus adds **13** more of the same shape (5× and 2× Guardian
+  - The 181-build community corpus adds **13** more of the same shape (5× and 2× Guardian
     Plasma Launcher Fixed Medium/Small with `Weapon_Overcharged`, 6× Guardian Shard Cannon
     Fixed Medium with `Weapon_LongRange`), every one on a variant sold carrying that recipe.
     The corpus holds five further Guardian-weapon entries — `Weapon_HighCapacity` on a
