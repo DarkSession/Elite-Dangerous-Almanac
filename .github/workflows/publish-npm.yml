@@ -145,14 +145,19 @@ jobs:
           # build rather than at the start. A registry that cannot be asked is
           # not the same answer as a version that is free, so the two are told
           # apart: only npm's own "no such package or version" is a pass.
-          if answer=$(npm view --json "$SPEC" version 2>&1); then
+          #
+          # `--json` puts everything needed on stdout — the version when there is
+          # one, an error object when there is not — so stderr is discarded
+          # rather than merged, and a warning npm happens to print cannot read as
+          # a version that already exists.
+          if answer=$(npm view --json "$SPEC" version 2>/dev/null); then
             if [ -n "$answer" ] && [ "$answer" != null ]; then
               echo "::error::$SPEC is already on the registry — bump the version in typescript/package.json"
               exit 1
             fi
           else
             case "$answer" in
-              *E404*) : ;; # the expected answer for a version that is still free
+              *'"E404"'*) : ;; # the expected answer for a version that is still free
               *)
                 echo "::error::could not ask the registry about $SPEC: $answer"
                 exit 1
