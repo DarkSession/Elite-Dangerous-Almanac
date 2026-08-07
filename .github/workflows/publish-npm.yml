@@ -84,21 +84,10 @@ jobs:
 
           echo "$name@$version -> dist-tag $dist_tag" >>"$GITHUB_STEP_SUMMARY"
 
-      - name: Check the version is still unpublished
-        if: ${{ github.event_name == 'release' || !inputs.dry-run }}
-        env:
-          SPEC: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
-        run: |
-          set -euo pipefail
-
-          # npm versions are immutable, so a repeat publish fails halfway through
-          # the release instead of at the start. Fail here, before the build.
-          published=$(npm view "$SPEC" version 2>/dev/null || true)
-          if [ -n "$published" ]; then
-            echo "::error::$SPEC is already on the registry — bump the version in typescript/package.json"
-            exit 1
-          fi
-
+      # This runs before the registry lookup below, because that lookup wants the
+      # real token: `setup-node` writes an `.npmrc` reading `NODE_AUTH_TOKEN` and
+      # exports a placeholder value, so an npm command that does not pass the
+      # secret talks to the registry as nobody in particular.
       - name: Check the npm token is configured
         if: ${{ github.event_name == 'release' || !inputs.dry-run }}
         env:
@@ -108,6 +97,26 @@ jobs:
 
           if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
             echo "::error::secret NPM_TOKEN is not set for the npm environment — add an npm automation token"
+            exit 1
+          fi
+
+      - name: Check the version is still unpublished
+        if: ${{ github.event_name == 'release' || !inputs.dry-run }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          SPEC: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          # npm versions are immutable, so a repeat publish fails halfway through
+          # the release instead of at the start. Fail here, before the build. A
+          # lookup that fails for any other reason — the package does not exist
+          # yet, the registry is unreachable — prints nothing and lets the release
+          # continue; the publish itself is still the thing that refuses a
+          # duplicate, so the check only ever saves time, never grants permission.
+          published=$(npm view "$SPEC" version 2>/dev/null || true)
+          if [ -n "$published" ]; then
+            echo "::error::$SPEC is already on the registry — bump the version in typescript/package.json"
             exit 1
           fi
 
