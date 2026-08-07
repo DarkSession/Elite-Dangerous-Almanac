@@ -351,8 +351,10 @@ test('a stock journal Loadout event reproduces every figure the game reported', 
     assert.deepEqual(figuresOf(event, fixture.viperMkIV.recomputed), fixture.viperMkIV.recomputed);
 
     assert.equal(viper.Modules.length, fixture.viperMkIV.moduleCount);
-    // Filtered by the rule rather than by the fixture's own list, as the Krait capture
-    // is: `includes` alone would pass a fixture that had simply left a decoration out.
+    // Filtered by the rule rather than by the fixture's own list: `includes` alone would
+    // pass a fixture that had simply left a decoration out. The Krait capture asserts the
+    // same completeness one test up, off the fixture's patterns rather than the parser —
+    // the two are held equivalent there, so either side of that pin is a fair filter.
     assert.deepEqual(
         viper.Modules.map((m) => m.Slot).filter((s) => parseSlotName(s) === null),
         fixture.viperMkIV.nonOutfittingSlots,
