@@ -25,9 +25,12 @@
  * Zone Resistance and an ordinary one takes only the ordinary recipes, so `powerPlants`
  * and `guardianPowerPlants` are separate — likewise the distributors and the hull
  * reinforcement packages. The Guardian half of each pair takes **no experimental effect**:
- * Anti-Guardian Zone Resistance is the whole menu, and it has no experimental slot. A
- * Guardian module carrying one is a pre-engineered reward — a community-goal or tech-broker
- * unlock, sold already applied — which `ships/pre-engineered` covers rather than this menu.
+ * Anti-Guardian Zone Resistance is the whole menu, and it has no experimental slot. The
+ * other Guardian module families — FSD boosters, module and shield reinforcement — are the
+ * same. A Guardian module carrying an experimental was obtained already engineered, as a
+ * community-goal or tech-broker reward, rather than rolled at an engineer; this menu
+ * answers what a player may apply, so it does not list those. (Guardian **weapons** are a
+ * separate case: their groups each also offer an ordinary weapon recipe.)
  *
  * Its own module (and data file) so a consumer who only reads it pays for nothing else —
  * 62 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.

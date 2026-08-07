@@ -1568,8 +1568,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `package.test.mjs` walks. Tree-shaking recovers it, but the repo does not measure in
   tree-shaken bundles and a plain ESM consumer would not get it. So it is its own module,
   `ships/blueprint-journal`: `engineering-options` stayed at 63 636 bytes with no recipe
-  data in its graph (a test asserts the absence, and bounds the size at 96 KB rather than
-  pinning it — the 2026-08-07 Guardian correction below took it to 63 103), `blueprints`
+  data in its graph (a test asserts the absence and bounds the size at 96 KB rather than
+  pinning it, so later passes move the figure without moving the test — the 2026-08-07
+  Guardian correction below shed a few hundred bytes of experimental ids), `blueprints`
   stays at 221 345, and the 284 853 is paid by callers who ask for the join. This closed
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
 
@@ -1634,13 +1635,27 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **A Guardian module has no experimental slot (settled 2026-08-07).** This is the answer
   [#33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33) asked for, and it
   is a rule about the recipe rather than about any one module: **Anti-Guardian Zone
-  Resistance is the only recipe a player can apply to a Guardian module, and it carries no
-  experimental effect.** An engineered Guardian module that does carry one is a
-  **pre-engineered** module — a community-goal reward or a tech-broker unlock, sold with
-  the modification already applied — which is `pre-engineered.jsonc`'s subject, not this
-  file's. So `guardianPowerPlants`, `guardianPowerDistributors` and
+  Resistance carries no experimental effect, and on a Guardian *module* — power plant,
+  power distributor, hull/module/shield reinforcement package, FSD booster — it is the
+  whole menu.** An engineered Guardian module that does carry an experimental was obtained
+  **already engineered**, as a community-goal reward or a tech-broker unlock, rather than
+  rolled at an engineer; this file answers what a player may apply, so it does not list
+  those. So `guardianPowerPlants`, `guardianPowerDistributors` and
   `guardianHullReinforcements` now list `"experimentals": []`, and all nine groups offering
   `recipe_guardianmodule_sturdy` agree; the other six already did.
+  - **"Whole menu" is the module claim, not a weapon claim.** The Guardian *weapon* groups
+    also offer `recipe_guardianmodule_sturdy`, but it is not the whole of their menu —
+    each also lists one ordinary weapon recipe, which is why the sentence above is scoped
+    to modules. §Engineering compatibility's Guardian Gauss Cannon example ("Rapid Fire and
+    Anti-Guardian Zone Resistance alone") is that same two-recipe menu, and stands.
+  - **The reward variants are not catalogued anywhere here, and that is a gap.**
+    `pre-engineered.jsonc` carries seven Guardian rows and all seven are **weapons**
+    (Gauss, Plasma, Shard), each with a `blueprint` and no `experimental`; there is no
+    `Int_Guardian*` row at all. So a Guardian power plant that arrived from a community
+    goal with, say, `special_powerplant_lightweight` on it is recorded in neither file
+    after this change — the menu correctly refuses it, and the pre-engineered catalogue
+    does not yet describe it. No registry publishes those variants, which is why this pass
+    did not invent them. Nothing in this repository should be read as claiming otherwise.
   - **What was wrong, and why neither registry caught it.** The three groups inherited
     their ordinary twin's list when the `noblueprints` split created them, because
     `expeffects` is published **per module group** by both registries — EDSY has no

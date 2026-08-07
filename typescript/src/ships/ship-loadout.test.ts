@@ -1111,6 +1111,25 @@ test('engineering still refuses what cannot be answered', () => {
                 .applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', { grade: 1 }),
         /is not offered blueprint "recipe_guardianmodule_sturdy"/,
     );
+    // And the experimental slot is refused a step earlier still — before the missing base
+    // stat above — because a Guardian module has no experimental to roll. Its ordinary twin
+    // takes the same effect happily, which is the whole of the difference between them.
+    assert.throws(
+        () =>
+            plant.applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', {
+                grade: 1,
+                experimental: 'special_powerplant_lightweight',
+            }),
+        /is not offered experimental effect "special_powerplant_lightweight"; it takes no experimental effect/,
+    );
+    assert.ok(
+        ShipLoadout.empty('Anaconda')
+            .setModule('PowerPlant', mod('Int_Powerplant_Size7_Class5'))
+            .applyBlueprint('PowerPlant', 'PowerPlant_Armoured', {
+                grade: 1,
+                experimental: 'special_powerplant_lightweight',
+            }),
+    );
 });
 
 test('a wake scanner engineered Long Range gets the scanner recipe, not the sensor suite one', () => {

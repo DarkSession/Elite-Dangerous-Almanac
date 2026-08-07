@@ -1212,12 +1212,16 @@ getExperimentalsForModule("Int_Powerplant_Size5_Class5").length; // -> 4
 getExperimentalsForModule("Int_GuardianPowerplant_Size5"); // -> []
 ```
 
-That empty list is the whole rule for Guardian modules: Anti-Guardian Zone Resistance is
-the only recipe a player can apply to one, and it has no experimental slot. An engineered
-Guardian module that _does_ carry an experimental is a **pre-engineered** reward — a
-community-goal or tech-broker unlock, sold already applied — which
-[modules you can buy already engineered](#modules-you-can-buy-already-engineered) covers,
-not this menu.
+That empty list is the rule for every Guardian **module**: Anti-Guardian Zone Resistance
+is the whole menu — for the power plants, distributors and hull reinforcement packages as
+above, and for the FSD boosters, module and shield reinforcement packages too — and that
+recipe has no experimental slot. An engineered Guardian module that _does_ carry an
+experimental was obtained already engineered, as a community-goal or tech-broker reward,
+rather than rolled at an engineer; this menu answers what a player may apply, so it does
+not list those. (Those particular reward variants are not catalogued here either — see
+[modules you can buy already engineered](#modules-you-can-buy-already-engineered) for what
+is.) Guardian **weapons** are the exception to the first sentence: each of their three
+groups also offers one ordinary weapon recipe.
 
 > **One recipe can have two journal ids.** Where a modification applies to several module
 > families, `BLUEPRINTS` carries both a family-specific spelling and a generic one — a
@@ -1536,17 +1540,20 @@ recorded inline there beside the field they touch.
   no `ModulesValue` or `Rebuy`, exactly as before.
 - **2026-08-07** — the Guardian power plants, power distributors and hull
   reinforcement packages offer **no experimental effect**. Anti-Guardian Zone
-  Resistance is the only recipe a player can apply to a Guardian module and it has no
-  experimental slot; the three groups had inherited their ordinary twin's list on the
-  2026-08-05 split, because both registries publish `expeffects` per module group and
-  neither says a Guardian menu is narrower. An engineered Guardian module carrying an
-  experimental is a **pre-engineered** reward — a community-goal or tech-broker
-  unlock, sold already applied — which `ships/pre-engineered` has always covered.
-  **Behaviour-visible two ways:** `getExperimentalsForModule` returns `[]` for those
-  25 modules where it listed four or five effects, and `applyBlueprint` now refuses an
-  `experimental` on them; and `getExperimentalsForBlueprint('recipe_guardianmodule_sturdy')`
-  returns `[]` rather than the 13-effect union of the three families. Blueprints are
-  unchanged, on every module. Closes
+  Resistance is their whole menu and that recipe has no experimental slot; the three
+  groups had inherited their ordinary twin's list on the 2026-08-05 split, because both
+  registries publish `expeffects` per module group and neither says a Guardian menu is
+  narrower. An engineered Guardian module carrying an experimental was obtained already
+  engineered — a community-goal or tech-broker reward — rather than rolled at an
+  engineer, and this menu answers only the latter. (Those reward variants are not in
+  `pre-engineered.jsonc` either, which carries seven Guardian **weapon** variants and no
+  Guardian module; nothing here claims to catalogue them.) **Behaviour-visible two ways:**
+  `getExperimentalsForModule` returns `[]` for those 25 modules where it listed four or
+  five effects, and `applyBlueprint` now refuses an `experimental` on them; and
+  `getExperimentalsForBlueprint('recipe_guardianmodule_sturdy')` returns `[]` rather than
+  the 13-effect union of the three families. Blueprints are unchanged, on every module —
+  including the Guardian weapons, whose groups each keep the ordinary weapon recipe they
+  also offer. Closes
   [#33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33). See
   [what a module can be engineered with](#what-a-module-can-be-engineered-with).
 

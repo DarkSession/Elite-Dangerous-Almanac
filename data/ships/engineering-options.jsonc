@@ -27,13 +27,18 @@
  * Plant takes Anti-Guardian Zone Resistance and none of the ordinary power-plant
  * blueprints, an ordinary one the reverse, so `powerPlants` and `guardianPowerPlants` are
  * separate — as are the distributors and the hull reinforcement packages. The Guardian
- * halves also take **no experimental effect**: Anti-Guardian Zone Resistance is the whole
- * menu a Guardian module offers and it has no experimental slot, so their `experimentals`
- * are empty where their ordinary twins' are not. An engineered Guardian module that does
- * carry an experimental is a pre-engineered reward, sold already applied — that is
- * `pre-engineered.jsonc`'s subject, not this file's. Neither registry publishes the
- * distinction (`expeffects` is per module group, with no per-module denial on any of
- * them), so SOURCES.md records where it came from.
+ * half of each pair also takes **no experimental effect**: Anti-Guardian Zone Resistance
+ * is its whole menu and that recipe has no experimental slot, so its `experimentals` are
+ * empty where its ordinary twin's are not. The same holds for the other Guardian module
+ * families — FSD boosters, module and shield reinforcement — which were already empty.
+ * (Guardian *weapons* are not covered by this: their groups each also offer an ordinary
+ * weapon recipe, and they carry no experimental for reasons of their own.) An engineered
+ * Guardian module that does carry an experimental was obtained already engineered — a
+ * community-goal or tech-broker reward — rather than rolled at an engineer; no registry
+ * publishes those variants and `pre-engineered.jsonc` does not yet carry them, so this
+ * catalogue's answer is about the engineering menu only. Neither registry publishes the
+ * distinction either (`expeffects` is per module group, with no per-module denial on any
+ * of them), so SOURCES.md records where it came from.
  *
  * **A menu lists the id of the recipe it rolls, which is not always the id the game
  * writes.** The three utility-scanner menus list `Scanner_LongRange` / `Scanner_WideAngle`,
