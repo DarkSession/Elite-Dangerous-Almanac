@@ -117,9 +117,11 @@ test('parseSlotName classifies a key whatever its casing', () => {
     });
 });
 
-test('a cosmetic mount stays unclassified in either casing', () => {
-    // `parseSlotName` returns null for exactly the journal's cosmetic slots. Matching
-    // keys case-insensitively must not turn one of those into a recognised mount.
+test('a decorative slot stays unclassified in either casing', () => {
+    // `parseSlotName` returns null for the journal's decorative slots, and that answer
+    // is load-bearing: it is the whole test `ShipLoadout` uses to decide an unidentified
+    // article carries no mass and no price. Matching keys case-insensitively must not
+    // turn one of those into a recognised mount.
     for (const slot of ['ShipCockpit', 'shipcockpit', 'PaintJob', 'paintjob', 'decal1']) {
         assert.equal(parseSlotName(slot), null, slot);
     }

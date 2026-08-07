@@ -2192,6 +2192,24 @@ Two facts the Krait Phantom capture established that the EDSY export could not:
   None is an outfitting module — this catalogue deliberately does not carry them — and
   all weigh nothing and cost nothing. They are recognised by slot: `parseSlotName`
   returns `null` for exactly these, and only for these.
+
+  **That `null` is the whole test, and a second list was tried and dropped.**
+  `ship-loadout.ts` briefly carried its own `COSMETIC_SLOT_PATTERNS` — eleven families
+  named positively (cockpit, paint, decals, nameplates, bobbles, ship kits, colours,
+  voice packs, string lights) so that an unfamiliar key was unknown rather than free.
+  Only 15 of the 40 slots in this capture exercised it; the rest rested on the journal
+  documentation, and the whole list was a hand-maintained copy of knowledge
+  `parseSlotName` already holds in the other direction. It was removed: an article the
+  catalogue cannot identify is free and weightless exactly when its key names no mount.
+  The catalogue keeping the first say is what makes that safe — a fitted module it knows
+  is priced and weighed whatever its slot is called, so the negative test is only ever
+  reached by an article nothing recognises. What the change costs is a slot family the
+  game has not shipped yet: a *new outfitting* mount holding a module absent from this
+  catalogue now reads as free rather than unknown, where the pattern list would have
+  omitted the figures. That was judged the better exposure, because the list's own
+  failure mode — a decoration family added later silently taking `ModulesValue`,
+  `UnladenMass`, `MaxJumpRange` and `Rebuy` off every build wearing it — landed on
+  builds that are otherwise entirely computable, and needed a release to fix.
 - **The two sources disagree about `HullValue`** — the game counts the hull's stock
   fittings inside it, EDSY does not. See the credits note below, which is why neither
   reading is carried through.
