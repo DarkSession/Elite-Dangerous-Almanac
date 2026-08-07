@@ -10,10 +10,13 @@
  *
  * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
  * `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display names.
- * **Two keys are the exception**, and say so in their own {@link Blueprint.journalName}:
+ * **Three keys are the exception**, and say so in their own {@link Blueprint.journalName}:
  * `Scanner_LongRange` and `Scanner_WideAngle` are coriolis keys for recipes the game writes
  * as `Sensor_LongRange` / `Sensor_WideAngle`, the ids it also writes for the sensor suites'
- * different recipes of the same name. `ships/blueprint-journal` reads one against a module.
+ * different recipes of the same name; `MC_Overcharged` is its multi-cannon Overcharged,
+ * which cuts the clip by 3–15% where the `Weapon_Overcharged` the game writes for both
+ * leaves it alone.
+ * `ships/blueprint-journal` reads one against a module.
  * Enumerate the 108 available blueprints with `Object.keys(BLUEPRINTS)`.
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`): `features` from the

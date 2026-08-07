@@ -67,7 +67,7 @@ test('a variant never arrives with an experimental its module is not offered', (
     // pre-engineered leg beside the one it has for blueprints — because it needs none:
     // every effect a variant is sold carrying is one the module's own menu lists. This is
     // what says that stays true. The blueprints are the other way round, which is why they
-    // do have that leg: 20 `recipe_*` keys are sold and never offered.
+    // do have that leg: 21 `recipe_*` keys are sold and never offered.
     for (const variant of PRE_ENGINEERED_MODULES) {
         if (!variant.experimental) continue;
         assert.ok(

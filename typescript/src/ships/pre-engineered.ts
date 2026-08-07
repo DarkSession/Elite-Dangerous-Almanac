@@ -106,7 +106,7 @@ export interface PreEngineeredVariant {
  *
  * @example
  * ```ts
- * PRE_ENGINEERED_MODULES.length; // -> 72
+ * PRE_ENGINEERED_MODULES.length; // -> 73
  * PRE_ENGINEERED_MODULES[0];
  * // -> { symbol: 'Hpt_Mining_AbrBlstr_Fixed_Small', name: 'Abrasion Blaster',
  * //      blueprint: 'recipe_abrasionblaster_farreaching', grade: 1,

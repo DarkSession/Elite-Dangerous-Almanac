@@ -51,6 +51,38 @@ test('the gate accepts every recipe the menu offers, for every module', () => {
     }
 });
 
+test('every recipe in the catalogues reaches a module, bar the one both registries withdrew', () => {
+    // The sweep https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39 was
+    // opened on: every id in `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`
+    // against every module symbol, through the gate. Seven reached nothing when the gate
+    // started reading the per-module menu; six were gaps and are closed, so the residue is
+    // pinned as a whole list rather than as a count — an id stranded by a later change
+    // fails here instead of passing unnoticed.
+    const reach = fixture.reachability;
+    const strandedBlueprints = Object.keys(BLUEPRINTS).filter(
+        (id) => !ALL_MODULES.some((module) => blueprintAvailableFor(module.symbol, id)),
+    );
+    const strandedExperimentals = Object.keys(EXPERIMENTAL_EFFECTS).filter(
+        (id) => !ALL_MODULES.some((module) => experimentalAvailableFor(module.symbol, id)),
+    );
+    assert.deepEqual(strandedBlueprints, reach.unreachableBlueprints);
+    assert.deepEqual(strandedExperimentals, reach.unreachableExperimentals);
+
+    // And each id that was rescued is rescued on the modules it belongs to, not everywhere:
+    // reaching *something* satisfies the sweep above, so the count and a module that must
+    // still refuse are what catch a menu row that widened into a neighbouring family. All
+    // six are blueprints; an experimental has no route to a module but its group's menu.
+    for (const row of reach.reachable) {
+        assert.ok(blueprintAvailableFor(row.accepts, row.id), `${row.accepts}: ${row.id}`);
+        assert.ok(!blueprintAvailableFor(row.refuses, row.id), `${row.refuses}: ${row.id}`);
+        assert.equal(
+            ALL_MODULES.filter((module) => blueprintAvailableFor(module.symbol, row.id)).length,
+            row.modules,
+            row.id,
+        );
+    }
+});
+
 test('a build that spells a modification generically is still engineered', () => {
     // The menu lists the family-specific id; an EDSY-authored build carries the generic
     // one. They are the same recipe, so both are accepted.
@@ -96,7 +128,7 @@ test('the gate accepts what the menu omits only by a pinned alias or a pre-engin
             specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
         ),
     );
-    for (const [fdname, journalName] of Object.entries(fixture.scannerIdCollision.journalNames)) {
+    for (const [fdname, journalName] of Object.entries(fixture.journalNames.map)) {
         pinned.add(`${journalName.toLowerCase()}|${fdname.toLowerCase()}`);
     }
     const seen = new Set<string>();
@@ -178,19 +210,81 @@ test('one journal id rolls the recipe the fitted module actually takes', () => {
             `${row.symbol} must refuse ${row.blueprint}`,
         );
     }
-    // ...but the *cost* is the same on both families at every grade, which is why
-    // `getBlueprintCost` takes an id and no module: pricing the wrong one of the pair
-    // still bills correctly. If upstream ever splits the recipes, this fails and the
-    // cost API needs the module too.
-    for (const [suiteId, scannerId] of [
-        ['Sensor_LongRange', 'Scanner_LongRange'],
-        ['Sensor_WideAngle', 'Scanner_WideAngle'],
-    ]) {
-        for (const grade of [1, 2, 3, 4, 5]) {
+});
+
+test('one journal id rolls a clip penalty on a multi-cannon and none on a cannon', () => {
+    // The same mechanism as the scanner ids above, on the family that actually meets it.
+    // Pinned as whole modifier blocks rather than as availability, because the defect this
+    // guards against is the leg going quietly missing again: dropping `AmmoClipSize` from
+    // `MC_Overcharged` would leave every menu, count and reachability assertion passing.
+    const collision = fixture.overchargedIdCollision;
+    for (const expected of collision.cases) {
+        const module = getModuleBySymbol(expected.symbol, ALL_MODULES)!;
+        const base = baseStats(module);
+        for (const [label, value] of Object.entries(expected.base)) {
+            assert.equal(base[label], value, `${expected.symbol}: ${label}`);
+        }
+        const resolved = resolveBlueprintForModule(expected.symbol, expected.blueprint);
+        assert.equal(resolved, expected.resolved, `${expected.symbol}: ${expected.blueprint}`);
+        assert.ok(
+            blueprintAvailableFor(expected.symbol, expected.blueprint),
+            `${expected.symbol} must accept ${expected.blueprint}`,
+        );
+        assert.deepEqual(
+            computeModifiers(
+                base,
+                getBlueprintGrade(resolved, collision.grade)!,
+                collision.quality,
+            ),
+            expected.modifiers,
+            `${expected.symbol}: ${expected.blueprint}`,
+        );
+    }
+    // Both weapons carry a clip, so the difference is the recipe and not the module — which
+    // is the whole reason the two records exist. Read from the library, so this fails on a
+    // regression rather than on a fixture edit.
+    const legs = (symbol: string) =>
+        getBlueprintGrade(resolveBlueprintForModule(symbol, 'Weapon_Overcharged'), 5)!
+            .map((feature) => feature.label)
+            .sort();
+    assert.ok(
+        baseStats(getModuleBySymbol('Hpt_Cannon_Fixed_Medium', ALL_MODULES)!)['AmmoClipSize'],
+    );
+    assert.notDeepEqual(legs('Hpt_MultiCannon_Fixed_Medium'), legs('Hpt_Cannon_Fixed_Medium'));
+    // Resolution runs into a menu, never out of one: no other weapon is thereby offered the
+    // multi-cannon's spelling.
+    for (const row of collision.refused) {
+        assert.ok(
+            !blueprintAvailableFor(row.symbol, row.blueprint),
+            `${row.symbol} must refuse ${row.blueprint}`,
+        );
+    }
+});
+
+test('a shared journal id costs the same whichever of its two recipes is priced', () => {
+    // Why `getBlueprintCost` takes an id and no module: pricing the wrong one of a
+    // collided pair still bills correctly. If upstream ever splits the recipes' costs,
+    // this fails and the cost API needs the module too. Driven off the fixture's whole
+    // `journalNames` map rather than a hand-listed pair or two, so a fourth collision is
+    // covered the day it is recorded — the multi-cannon pair went uncovered for exactly
+    // that reason.
+    //
+    // It assumes more of `journalName` than the field promises: that the id it names is a
+    // record in its own right, and that the pair defines the same grades. Both hold for all
+    // three collisions, and both are properties of a *collision* rather than of the field —
+    // `journalName` says only "the game writes this recipe as X". A future record whose
+    // journal id names no twin belongs outside this loop, not inside it with the assertions
+    // relaxed.
+    for (const [fdname, journalName] of Object.entries(fixture.journalNames.map)) {
+        const shared = BLUEPRINTS[journalName];
+        assert.ok(shared, `${fdname}: ${journalName} is not a blueprint`);
+        const grades = Object.keys(BLUEPRINTS[fdname]!.grades);
+        assert.deepEqual(grades, Object.keys(shared.grades), `${fdname} vs ${journalName}`);
+        for (const grade of grades) {
             assert.deepEqual(
-                getBlueprintCost(suiteId!, grade),
-                getBlueprintCost(scannerId!, grade),
-                `${suiteId} vs ${scannerId} G${grade}`,
+                getBlueprintCost(fdname, Number(grade)),
+                getBlueprintCost(journalName, Number(grade)),
+                `${fdname} vs ${journalName} G${grade}`,
             );
         }
     }

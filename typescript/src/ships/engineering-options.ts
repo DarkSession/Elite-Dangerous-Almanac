@@ -54,9 +54,10 @@
  * makes three accommodations beyond the menu, in the order it applies them: a journal id
  * the game writes for two different recipes, which `ships/blueprint-journal` settles by
  * reading this menu against `Blueprint.journalName`; a `recipe_*` key belonging to a module
- * sold already engineered, which no menu lists and `ships/pre-engineered` resolves per
- * module; and a build that spells a modification generically — `Misc_LightWeight` where the
- * menu lists `LifeSupport_LightWeight`, which {@link getBlueprintsForModule} describes.
+ * sold already engineered, which no menu lists — 21 of the 27 `recipe_*` keys — and
+ * `ships/pre-engineered` resolves per module; and a build that spells a modification
+ * generically — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
+ * {@link getBlueprintsForModule} describes.
  *
  * @packageDocumentation
  */
@@ -150,7 +151,10 @@ export function getEngineeringGroup(symbol: string): string | null {
  * `Scanner_*` ones where the sensor suites list the `Sensor_*` ones. The game writes
  * `Sensor_LongRange` for both all the same, so a journal id has to be read against the
  * module it sits on: `resolveBlueprintForModule` in `ships/blueprint-journal` is that
- * lookup.
+ * lookup. `MC_Overcharged` is the third of that kind and the one most consumers will meet:
+ * the multi-cannon menus list it rather than the `Weapon_Overcharged` every other weapon
+ * menu lists, because a multi-cannon's Overcharged also cuts the clip by 3–15% — and the
+ * game writes `Weapon_Overcharged` for both.
  *
  * Anti-Guardian Zone Resistance is the other pair, and the reverse case: the game writes
  * `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a
@@ -221,18 +225,20 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * `Weapon_LongRange` does not offer every effect listed here, only its own group's. Use
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
- * The groups name 81 of the 108 blueprints in `BLUEPRINTS`. Of the other 27, 20 are the
- * `recipe_*` keys of modules sold already engineered rather than offered in a menu (see
- * `ships/pre-engineered`) and six are Operations recipes no registry lists a module group
- * for — the three laser Thermal Plasma Conversions, `recipe_fuelscoop_efficiency`,
- * `recipe_seekermissileracklarge_lockdown` and `recipe_guardianweapon_sturdy`, the weapon
- * spelling of Anti-Guardian Zone Resistance. The 27th is `MC_Overcharged`,
- * coriolis-data's multi-cannon Overcharged, one clip-size leg apart from the
- * `Weapon_Overcharged` the multi-cannon group lists. All 27 answer `[]` here exactly as an
- * unknown id would. `recipe_guardianmodule_sturdy` is the one `recipe_*` the groups do
- * name: Anti-Guardian Zone Resistance is applied at an engineer like any other recipe. It
- * answers `[]` all the same, and that is the exact answer rather than a miss — it has no
- * experimental slot, on any of the nine groups that offer it.
+ * The groups name 86 of the 108 blueprints in `BLUEPRINTS`, and the other 22 are all
+ * accounted for: 21 are the `recipe_*` keys of modules sold already engineered rather than
+ * offered in a menu (see `ships/pre-engineered`), and the 22nd is
+ * `recipe_guardianweapon_sturdy`, the weapon spelling of Anti-Guardian Zone Resistance,
+ * which every group lists under its module spelling. All 22 answer `[]` here exactly as an
+ * unknown id would, so read this function's empty answer with
+ * {@link getExperimentalsForModule} rather than as a claim about the recipe.
+ *
+ * Five `recipe_*` keys **are** named by a group, because they are recipes a player applies
+ * rather than a purchase: `recipe_guardianmodule_sturdy`, and the four Merc-Coin blueprints
+ * published with a full grade 1–5 — `recipe_fuelscoop_efficiency` and the three lasers'
+ * `*_thermalplasmaconversion`. Anti-Guardian Zone Resistance still answers `[]`, and there
+ * that is the exact answer rather than a miss: it has no experimental slot, on any of the
+ * nine groups that offer it.
  *
  * @param blueprint - A blueprint id, e.g. `"Weapon_Efficient"`.
  * @returns Experimental-effect ids, sorted and de-duplicated; empty when no group names

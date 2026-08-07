@@ -121,6 +121,20 @@ in the doc comment of each ported module, and in long form in the domain
   plc**; see the notice below. `data/ships/SOURCES.md` records the group-by-group
   derivation, the two registries' disagreements, and the modules bound by a family rule
   rather than a source row.
+- **The journal spelling of the multi-cannon Overcharged blueprint** — the `journalName`
+  on `MC_Overcharged` in `data/ships/blueprints.jsonc`, and the multi-cannon menus listing
+  that key rather than `Weapon_Overcharged`, from
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (**MIT** for its code; the
+  values are game data): `modifications/blueprints.json` gives both keys the fdname
+  `Weapon_Overcharged`, and `modifications/modules.json` lists the multi-cannon key on the
+  `mc` and `advmc` groups alone. Acquisition date and digests in
+  `data/ships/SOURCES.md` → §Engineering options, "Multi-cannon Overcharged".
+- **That `special_feedback_cascade` has been withdrawn upstream** — recorded in
+  `data/ships/SOURCES.md` rather than in a payload, from
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
+  `modifications/specials.json`, which names it "Feedback cascade (Legacy)" (**MIT** for
+  its code), and from [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden,
+  **CC BY-NC 4.0**), whose row for it is commented out.
 - **The journal spelling of the two scanner blueprints** — the `journalName` on
   `Scanner_LongRange` and `Scanner_WideAngle` in `data/ships/blueprints.jsonc`, recording
   that the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` even though those
@@ -129,6 +143,17 @@ in the doc comment of each ported module, and in long form in the domain
   its `Build.fromJournal` resolves a journal blueprint name through a per-module-type map,
   read alongside `eddb.js`'s own two rows sharing that fdname. Acquisition date and digest
   in `data/ships/SOURCES.md`.
+- **The Operations Merc-Coin blueprints and shop rows** — which module family each of the
+  four grade-1–5 Merc-Coin blueprints applies to (fuel scoop Scoop rate enhanced, and the
+  pulse/burst/beam laser Plasma conversions), and the large Seeker Missile Rack's Lockdown
+  variant with its 900 MC price. From the [Inara](https://inara.cz/) blueprint and
+  outfitting registries, the same source the rest of the `recipe_*` records come from,
+  reached **2026-08-07 UTC** through a web-search index rather than directly: the
+  acquisition environment's network policy refuses `inara.cz`, so these are reads of an
+  index of those pages and not captures of them, and `data/ships/SOURCES.md` records that
+  along with what each claim was corroborated against inside this repository. The values
+  are **Elite Dangerous game data, property of Frontier Developments plc**; see the notice
+  below.
 - **How the Corrosion Resistant Cargo Racks are obtained** — not a stored value but the
   basis for two catalogue decisions: dropping the size-2 record as a variant that never
   released, and recording the size-5 and size-6 records as Community Goal rewards whose

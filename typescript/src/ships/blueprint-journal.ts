@@ -2,9 +2,11 @@
  * **Reading a journal `BlueprintName` against the module it was written for** — the one
  * question that needs the blueprint catalogue and the engineering menus at the same time.
  *
- * Almost every blueprint id means one recipe wherever it appears, so almost nobody needs
- * this module: `getBlueprint(id)` is the answer. Two ids are not like that, and this is
- * where that is dealt with.
+ * Almost every blueprint id means one recipe wherever it appears, and for those
+ * `getBlueprint(id)` is the answer. Three ids are not like that, and this is where that is
+ * dealt with. One of the three is `Weapon_Overcharged` on a multi-cannon, so any consumer
+ * reading journals from combat ships meets this — it is not the corner case the two scanner
+ * ids alone would make it.
  *
  * Its own module because of what it costs. `ships/engineering-options` is 63 KB precisely
  * because it holds menus and no recipes, and `ships/blueprints` is 221 KB of recipes and no
@@ -38,7 +40,21 @@ import { getBlueprintsForModule } from './engineering-options.js';
  * `Scanner_LongRange`, and folding the id as written would charge the build mass where the
  * game charges power draw.
  *
- * **Nothing here lists the pairing.** Each of those two records names its own journal
+ * **One `BlueprintName`, two recipes — again, on the multi-cannons.** The game writes
+ * `Weapon_Overcharged` for every weapon's Overcharged, but a multi-cannon's also cuts the
+ * clip — 3% at grade 1 falling to 15% at grade 5 — which the recipe the other weapons take
+ * does not. `BLUEPRINTS` keys the multi-cannon side under `MC_Overcharged`, the spelling
+ * the multi-cannon menus list, so on a multi-cannon this resolves `Weapon_Overcharged` to
+ * `MC_Overcharged` and folding the id as written would report a clip the build does not
+ * have. This is the common case of the three: 70 of the build corpus's 1902 declared
+ * entries go through it, against one for the scanners.
+ *
+ * The clip penalty is folded on a multi-cannon and on nothing else. Whether the other
+ * clip-bearing weapons should take one too is
+ * {@link https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48 | issue #48}:
+ * the two registries do not agree, and this catalogue follows the one it is keyed on.
+ *
+ * **Nothing here lists the pairing.** Each of those three records names its own journal
  * spelling in {@link Blueprint.journalName}, because that is a fact about the recipe; this
  * function supplies the half only a menu knows, by asking which blueprint *this module is
  * offered* answers to the id. Two catalogues, one fact each, and no third list to drift
@@ -51,10 +67,10 @@ import { getBlueprintsForModule } from './engineering-options.js';
  * it unchanged too — unchanged is not the same as offered, and `getBlueprintsForModule`
  * still says a suite does not take it.
  *
- * **Only the numbers differ, not the price.** Both pairs cost the same materials at every
- * grade, so `getBlueprintCost` needs no module and either spelling bills correctly;
- * `engineering.test.ts` holds upstream to that. It is the stat block that has to be
- * resolved.
+ * **Only the numbers differ, not the price.** All three pairs cost the same materials at
+ * every grade, so `getBlueprintCost` needs no module and either spelling bills correctly;
+ * `engineering.test.ts` holds upstream to that for the scanners. It is the stat block that
+ * has to be resolved.
  *
  * **Not a generic-spelling resolver.** A generic `Misc_*` id — `Misc_Shielded` where a
  * life support's menu says `LifeSupport_Shielded` — comes back as it went in. That pair is
@@ -81,6 +97,12 @@ import { getBlueprintsForModule } from './engineering-options.js';
  * // -> 'Sensor_LongRange'
  * resolveBlueprintForModule('Int_Hyperdrive_Size5_Class5', 'FSD_LongRange');
  * // -> 'FSD_LongRange'
+ *
+ * // A multi-cannon's Overcharged is the multi-cannon recipe, clip penalty and all.
+ * resolveBlueprintForModule('Hpt_MultiCannon_Fixed_Medium', 'Weapon_Overcharged');
+ * // -> 'MC_Overcharged'
+ * resolveBlueprintForModule('Hpt_BeamLaser_Fixed_Small', 'Weapon_Overcharged');
+ * // -> 'Weapon_Overcharged'
  * ```
  */
 export function resolveBlueprintForModule(symbol: string, blueprint: string): string {

@@ -37,7 +37,7 @@
  * and experimental effects use — a journal Modifier `label`, a `method`
  * (`multiplicative` / `additive` / `overwrite`) and a `value`. It is what makes these
  * records fittable: apply them over the base module's stats to get the engineered
- * module. The 21 `mercenary` rows carry none — no registry publishes the grade-1
+ * module. The 22 `mercenary` rows carry none — no registry publishes the grade-1
  * pre-engineering they arrive with, and a guess is worse than an omission.
  *
  * Modifier values are the **authored decimals, recovered — not rounded by eye.** The
@@ -162,6 +162,14 @@
     "grade": 1,
     "acquisition": "mercenary",
     "mercCoinCost": 800
+  },
+  {
+    "symbol": "Hpt_BasicMissileRack_Fixed_Large",
+    "name": "Seeker Missile Rack",
+    "blueprint": "recipe_seekermissileracklarge_lockdown",
+    "grade": 1,
+    "acquisition": "mercenary",
+    "mercCoinCost": 900
   },
   {
     "symbol": "Int_CargoRack_Size5_Class1",

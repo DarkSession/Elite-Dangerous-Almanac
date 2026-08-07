@@ -1,7 +1,7 @@
 /*
  * Engineering **blueprints** — per grade, the stat modifiers a blueprint applies AND
  * the materials one roll costs. Keyed by the blueprint's Frontier `fdname` — the string a
- * Loadout event's `Engineering.BlueprintName` carries, for 106 of the 108. The two that
+ * Loadout event's `Engineering.BlueprintName` carries, for 105 of the 108. The three that
  * are keyed otherwise carry a `journalName` saying so; see the note on it below.
  *
  * Sources: EDCD/coriolis-data, modifications/blueprints.json (commit 0db9234b5b9ce8c939ea84133d7ce336eea88e27)
@@ -10,7 +10,7 @@
  *          journal Labels resolved via EDSY (github.com/taleden/EDSY, CC BY-NC 4.0).
  *          `materials` from the grade's `components`, display names resolved to
  *          material `symbol`s against the materials domain.
- *          The two `journalName` fields rest on EDSY edsy.js, whose `Build.fromJournal`
+ *          The two scanner `journalName` fields rest on EDSY edsy.js, whose `Build.fromJournal`
  *          resolves a journal `BlueprintName` through a per-module-type map
  *          (`fdevmap.mtypeBlueprint[mtypeid][fdname]`) — the evidence that one id can
  *          name two recipes, read alongside eddb.js's own `cs_lr` / `scan_lr` rows
@@ -30,18 +30,24 @@
  * the name is read next to the module it applies to. `CargoRack_IncreasedCapacity` is
  * the one name that is short-by-nothing rather than short by convention: it reads
  * "Expanded Cargo Rack", EDSY's spelling. See the "Display names" note in SOURCES.md.
- * `journalName` is present on the two blueprints whose key is NOT what the game writes.
+ * `journalName` is present on the three blueprints whose key is NOT what the game writes.
  * Every other key IS the `BlueprintName` a Loadout event carries, which is why the
- * field is absent from 106 of the 108 records. The exceptions are `Scanner_LongRange`
- * and `Scanner_WideAngle`: the game writes `Sensor_LongRange` / `Sensor_WideAngle` for
- * the utility scanners' Long Range and Wide Angle *and* for the sensor suites' own,
- * which are different recipes rolling different stats — EDSY's `scan_lr` and `cs_lr`
- * are two rows under one fdname, and its journal importer disambiguates by module type.
- * coriolis splits the scanner side out under these keys and this file follows it,
- * because two recipes need two records; `journalName` is how a reader gets back to the
- * id a journal actually carries. Which of the two a given id means is a question only
- * the fitted module can answer — see `resolveBlueprintForModule` in
- * `ships/engineering-options`, and §Scanner Long Range and Wide Angle in SOURCES.md.
+ * field is absent from 105 of the 108 records. Two of the exceptions are
+ * `Scanner_LongRange` and `Scanner_WideAngle`: the game writes `Sensor_LongRange` /
+ * `Sensor_WideAngle` for the utility scanners' Long Range and Wide Angle *and* for the
+ * sensor suites' own, which are different recipes rolling different stats — EDSY's
+ * `scan_lr` and `cs_lr` are two rows under one fdname, and its journal importer
+ * disambiguates by module type. coriolis splits the scanner side out under these keys and
+ * this file follows it, because two recipes need two records; `journalName` is how a
+ * reader gets back to the id a journal actually carries. Which of the two a given id
+ * means is a question only the fitted module can answer — see
+ * `resolveBlueprintForModule` in `ships/blueprint-journal`, and §Scanner Long Range and
+ * Wide Angle in SOURCES.md.
+ * The third is `MC_Overcharged`, the same shape on the multi-cannons: coriolis-data
+ * splits Overcharged into a multi-cannon key carrying an `AmmoClipSize` leg and the
+ * `Weapon_Overcharged` every other weapon takes, gives both the fdname
+ * `Weapon_Overcharged`, and lists the multi-cannon one on its `mc` and `advmc` groups
+ * alone. See §Multi-cannon Overcharged in SOURCES.md.
  *
  * `grades` maps grade "1".."5" to { features, materials }.
  * A feature is { label, method, min, max }: `label` the journal Modifier Label, `method`
@@ -14343,6 +14349,7 @@
   },
   "MC_Overcharged": {
     "name": "Overcharged",
+    "journalName": "Weapon_Overcharged",
     "grades": {
       "1": {
         "features": [

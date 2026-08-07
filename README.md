@@ -1248,6 +1248,22 @@ groups also offers one ordinary weapon recipe.
 > // -> 'Sensor_LongRange' — and the suite keeps its own
 > ```
 >
+> **The commonest case is Overcharged on a multi-cannon**, not the scanners. A
+> multi-cannon's Overcharged also cuts the clip — 3% at grade 1 to 15% at grade 5 — where
+> the recipe every other weapon takes leaves it alone, so the multi-cannon menus list
+> `MC_Overcharged` and the game writes `Weapon_Overcharged` for both. 70 of the build
+> corpus's declared entries need this resolution, against one for the scanners.
+>
+> ```ts
+> resolveBlueprintForModule(
+>   "Hpt_MultiCannon_Fixed_Medium",
+>   "Weapon_Overcharged",
+> );
+> // -> 'MC_Overcharged' — the multi-cannon's recipe, clip penalty and all
+> resolveBlueprintForModule("Hpt_BeamLaser_Fixed_Small", "Weapon_Overcharged");
+> // -> 'Weapon_Overcharged' — every other weapon keeps its own
+> ```
+>
 > It resolves _into_ a menu and never out of one, so a sensor suite is still not offered
 > `Scanner_LongRange`. Every other id, on every other module, comes back unchanged.
 > It lives in its own module, `ships/blueprint-journal`, because it needs the menus **and**
@@ -1279,9 +1295,10 @@ import { resolveBlueprintForModule } from "@elite-dangerous-almanac/core/ships/b
 > Capacity stays off a heat sink launcher, whose roll is a smaller one.
 >
 > The last is for the `recipe_*` keys of [modules sold already
-> engineered](#modules-you-can-buy-already-engineered). No menu lists one, so `applyBlueprint`
-> takes them from `ships/pre-engineered` instead, on the module that actually ships with the
-> recipe and no other — `recipe_railgun_longshot` on the medium rail gun, not the small one.
+> engineered](#modules-you-can-buy-already-engineered) — 21 of the 27 `recipe_*` keys, none
+> of which a menu lists. For those `applyBlueprint` reads `ships/pre-engineered` instead,
+> on the module that actually ships with the recipe and no other —
+> `recipe_railgun_longshot` on the medium rail gun, not the small one.
 > That is how you engineer a Mercenary module _further_: it arrives at grade 1 and its
 > recipe carries grades 2–5. It is not how you reproduce what you bought — grade 1 of those
 > recipes does not exist, because the first grade came with the module.
@@ -1320,7 +1337,7 @@ getPreEngineeredByBlueprint("recipe_seekermissilerack_drag").map(
 
 `acquisition` tells the three kinds apart, and they behave differently:
 
-|                  | `mercenary` (21)    | `communityGoal` (30)  | `techBroker` (21)     |
+|                  | `mercenary` (22)    | `communityGoal` (30)  | `techBroker` (21)     |
 | ---------------- | ------------------- | --------------------- | --------------------- |
 | Blueprint id     | Merc `recipe_*` key | ordinary journal name | ordinary journal name |
 | Grade on arrival | always 1            | 28 of 30 at grade 5   | 14 of 21 at grade 5   |
@@ -1369,7 +1386,7 @@ build.frameShiftDrive.optMass; // -> 1785; fitting preserves the reward's resolv
 > are not a recipe that recreates it, and `getBlueprintCost` on one prices ordinary
 > engineering instead.
 
-The 21 Merc shop rows carry a `mercCoinCost` (300–950 MC) but no `modifiers`: no registry
+The 22 Merc shop rows carry a `mercCoinCost` (300–950 MC) but no `modifiers`: no registry
 publishes the grade-1 pre-engineering they arrive with, so the catalogue omits it rather
 than guessing. Resolving one returns the stock record unchanged.
 

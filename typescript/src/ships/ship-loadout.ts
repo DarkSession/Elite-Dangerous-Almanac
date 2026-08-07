@@ -917,9 +917,11 @@ export class ShipLoadout {
      * every base stat the recipe modifies. Incomplete engineering is rejected rather than
      * stored as a partial journal modifier block.
      * @remarks
-     * Six blueprint ids and one experimental effect are offered on no module at all, so
-     * naming one always throws — see
-     * {@link https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39 | issue #39}.
+     * Every blueprint in `BLUEPRINTS` is accepted on at least one module. One experimental
+     * effect is not: `special_feedback_cascade`, which both upstream registries have
+     * withdrawn — coriolis-data names it "Feedback cascade (Legacy)" and EDSY's row for it
+     * is commented out — in favour of the `special_feedback_cascade_cooled` the rail gun
+     * menus list. Naming it always throws.
      * @example
      * ```ts
      * build.setModule('FrameShiftDrive', fsd)

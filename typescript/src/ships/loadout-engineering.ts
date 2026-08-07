@@ -112,9 +112,11 @@ const MENU_IDS: ReadonlySet<string> = new Set(
 /**
  * Whether a module is *sold* carrying this recipe, rather than offered it at an engineer.
  *
- * The `recipe_*` keys belong to modules bought already engineered — the Mercenary shop's
+ * Most `recipe_*` keys belong to modules bought already engineered — the Mercenary shop's
  * rail gun, the community-goal and tech-broker rewards — so no engineering menu lists one
- * and the menu check alone would refuse every caller. The pre-engineered catalogue names
+ * and the menu check alone would refuse every caller. (The five a menu *does* list are
+ * recipes a player applies from grade 1, and reach the caller by the menu instead; see
+ * `engineering-options`.) The pre-engineered catalogue names
  * which module each arrives on, which is the same question answered by purchase instead of
  * by a menu, and it is narrower than a family: `recipe_railgun_longshot` resolves on the
  * rail gun that ships with it and nowhere else.
@@ -122,7 +124,7 @@ const MENU_IDS: ReadonlySet<string> = new Set(
  * What it buys is the **climb**, not the purchase. A Mercenary module arrives at grade 1
  * and its recipe publishes grades 2–5 — the grades an engineer can still add — so folding
  * one is how a caller takes a bought module further. It cannot reproduce the grade the
- * module was sold at: all 21 Mercenary rows are grade 1, none of those recipes defines a
+ * module was sold at: all 22 Mercenary rows are grade 1, none of those recipes defines a
  * grade 1, and `getBlueprintGrade` refuses that call before this check is reached. Nothing
  * here recreates a reward variant either; `pre-engineered-stats` resolves those from their
  * own `modifiers`.

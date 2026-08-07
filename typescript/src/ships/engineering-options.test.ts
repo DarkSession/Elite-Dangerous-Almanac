@@ -93,7 +93,7 @@ test('a blueprint names a journal spelling only when its key is not one', () => 
     const named = Object.entries(BLUEPRINTS).filter(([, blueprint]) => blueprint.journalName);
     assert.deepEqual(
         Object.fromEntries(named.map(([fdname, blueprint]) => [fdname, blueprint.journalName])),
-        engineeringFixture.scannerIdCollision.journalNames,
+        engineeringFixture.journalNames.map,
     );
     for (const [fdname, blueprint] of named) {
         assert.notEqual(blueprint.journalName!.toLowerCase(), fdname.toLowerCase());

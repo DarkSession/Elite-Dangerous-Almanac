@@ -156,12 +156,15 @@ export interface Blueprint {
      * The `BlueprintName` a journal `Loadout` event writes for this recipe, when that is
      * **not** the key it is stored under.
      *
-     * Absent on 106 of the 108 blueprints, because their key is already what the game
+     * Absent on 105 of the 108 blueprints, because their key is already what the game
      * writes. It is present on `Scanner_LongRange` and `Scanner_WideAngle`, which the game
      * writes as `Sensor_LongRange` and `Sensor_WideAngle` — the same ids it writes for the
      * sensor suites' own Long Range and Wide Angle, which are different recipes rolling
      * different stats. Two recipes need two records, so the scanner side keeps coriolis's
-     * distinct keys and names its journal spelling here.
+     * distinct keys and names its journal spelling here. `MC_Overcharged` is the third and
+     * the same shape: a multi-cannon's Overcharged also cuts the clip by 3–15%, so coriolis
+     * keys it apart from the `Weapon_Overcharged` every other weapon takes, and the game
+     * writes `Weapon_Overcharged` for both.
      *
      * **This does not make the id unambiguous on its own** — that is the point of it being
      * shared. `resolveBlueprintForModule` in `ships/blueprint-journal` reads this against
