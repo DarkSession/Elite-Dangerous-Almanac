@@ -24,7 +24,13 @@
  * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian
  * Zone Resistance and an ordinary one takes only the ordinary recipes, so `powerPlants`
  * and `guardianPowerPlants` are separate — likewise the distributors and the hull
- * reinforcement packages.
+ * reinforcement packages. The Guardian half of each pair takes **no experimental effect**:
+ * Anti-Guardian Zone Resistance is the whole menu, and it has no experimental slot. The
+ * other Guardian module families — FSD boosters, module and shield reinforcement — are the
+ * same. A Guardian module carrying an experimental was obtained already engineered, as a
+ * community-goal or tech-broker reward, rather than rolled at an engineer; this menu
+ * answers what a player may apply, so it does not list those. (Guardian **weapons** are a
+ * separate case: their groups each also offer an ordinary weapon recipe.)
  *
  * Its own module (and data file) so a consumer who only reads it pays for nothing else —
  * 62 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
@@ -177,11 +183,11 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * Abrasion Blaster takes blueprints but no experimental at all. Those are applied here,
  * so the result is the exact set for this module.
  *
- * **An empty array is the common answer, and it usually means "blueprints only".** 363
- * of the 1028 grouped modules have no experimental slot: 362 sit in the 27 of 53 groups
+ * **An empty array is the common answer, and it usually means "blueprints only".** 388
+ * of the 1028 grouped modules have no experimental slot: 387 sit in the 30 of 53 groups
  * that offer none — life support, sensors, the limpet controllers, the utility scanners,
- * the Guardian weapons among them — and the Abrasion Blaster is excluded from its
- * group's only effect. An ungrouped module answers empty too;
+ * and every Guardian group, weapons and modules alike — and the Abrasion Blaster is
+ * excluded from its group's only effect. An ungrouped module answers empty too;
  * {@link getEngineeringGroup} tells the two apart: it is `null` only for that one.
  *
  * @param symbol - A module symbol.
@@ -224,7 +230,9 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * coriolis-data's multi-cannon Overcharged, one clip-size leg apart from the
  * `Weapon_Overcharged` the multi-cannon group lists. All 27 answer `[]` here exactly as an
  * unknown id would. `recipe_guardianmodule_sturdy` is the one `recipe_*` the groups do
- * name: Anti-Guardian Zone Resistance is applied at an engineer like any other recipe.
+ * name: Anti-Guardian Zone Resistance is applied at an engineer like any other recipe. It
+ * answers `[]` all the same, and that is the exact answer rather than a miss — it has no
+ * experimental slot, on any of the nine groups that offer it.
  *
  * @param blueprint - A blueprint id, e.g. `"Weapon_Efficient"`.
  * @returns Experimental-effect ids, sorted and de-duplicated; empty when no group names

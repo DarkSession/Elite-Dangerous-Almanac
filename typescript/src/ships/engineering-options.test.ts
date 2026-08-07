@@ -243,16 +243,39 @@ test('a Guardian variant and its ordinary twin are different groups, not one mer
         for (const half of [family.ordinary, family.guardian]) {
             assert.equal(getEngineeringGroup(half.symbol), half.group, half.symbol);
             assert.deepEqual([...getBlueprintsForModule(half.symbol)], half.blueprints);
+            assert.deepEqual([...getExperimentalsForModule(half.symbol)], half.experimentals);
         }
         const ordinary = new Set(getBlueprintsForModule(family.ordinary.symbol));
         for (const blueprint of getBlueprintsForModule(family.guardian.symbol)) {
             assert.ok(!ordinary.has(blueprint), `${family.guardian.group}: ${blueprint} shared`);
         }
-        // Same kind of module, so the experimental slot is unchanged by the split.
-        assert.deepEqual(
-            ENGINEERING_OPTION_GROUPS[family.guardian.group]!.experimentals,
-            ENGINEERING_OPTION_GROUPS[family.ordinary.group]!.experimentals,
-        );
+        // The experimental slot goes with the recipe, not with the kind of module: the
+        // ordinary half keeps the family's effects and the Guardian half has none, because
+        // Anti-Guardian Zone Resistance is the whole of its menu.
+        assert.deepEqual(ENGINEERING_OPTION_GROUPS[family.guardian.group]!.experimentals, []);
+        assert.ok(ENGINEERING_OPTION_GROUPS[family.ordinary.group]!.experimentals.length > 0);
+    }
+});
+
+test('the one recipe a Guardian module takes offers no experimental effect', () => {
+    // A Guardian module is engineered with Anti-Guardian Zone Resistance and nothing else,
+    // and that recipe has no experimental slot. Engineered Guardian modules that do carry
+    // one are pre-engineered rewards, sold already applied rather than rolled at an
+    // engineer — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33.
+    const { blueprint, experimentals, groups, modules } = fixture.antiGuardianZoneResistance;
+    const offering = Object.entries(ENGINEERING_OPTION_GROUPS)
+        .filter(([, group]) => group.blueprints.includes(blueprint))
+        .map(([id]) => id);
+    assert.deepEqual(offering, groups);
+    for (const id of offering) {
+        assert.deepEqual([...ENGINEERING_OPTION_GROUPS[id]!.experimentals], experimentals, id);
+    }
+    // So the blueprint-level union is empty too — the answer #33 asked for, and the one
+    // place a group's list used to leak the module family's effects onto this recipe.
+    assert.deepEqual(getExperimentalsForBlueprint(blueprint), experimentals);
+    for (const symbol of modules) {
+        assert.deepEqual([...getBlueprintsForModule(symbol)], [blueprint], symbol);
+        assert.deepEqual([...getExperimentalsForModule(symbol)], experimentals, symbol);
     }
 });
 

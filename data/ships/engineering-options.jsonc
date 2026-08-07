@@ -26,7 +26,19 @@
  * in two the split is stored as two groups rather than as an exception: a Guardian Power
  * Plant takes Anti-Guardian Zone Resistance and none of the ordinary power-plant
  * blueprints, an ordinary one the reverse, so `powerPlants` and `guardianPowerPlants` are
- * separate — as are the distributors and the hull reinforcement packages.
+ * separate — as are the distributors and the hull reinforcement packages. The Guardian
+ * half of each pair also takes **no experimental effect**: Anti-Guardian Zone Resistance
+ * is its whole menu and that recipe has no experimental slot, so its `experimentals` are
+ * empty where its ordinary twin's are not. The same holds for the other Guardian module
+ * families — FSD boosters, module and shield reinforcement — which were already empty.
+ * (Guardian *weapons* are not covered by this: their groups each also offer an ordinary
+ * weapon recipe, and they carry no experimental for reasons of their own.) An engineered
+ * Guardian module that does carry an experimental was obtained already engineered — a
+ * community-goal or tech-broker reward — rather than rolled at an engineer; no registry
+ * publishes those variants and `pre-engineered.jsonc` does not yet carry them, so this
+ * catalogue's answer is about the engineering menu only. Neither registry publishes the
+ * distinction either (`expeffects` is per module group, with no per-module denial on any
+ * of them), so SOURCES.md records where it came from.
  *
  * **A menu lists the id of the recipe it rolls, which is not always the id the game
  * writes.** The three utility-scanner menus list `Scanner_LongRange` / `Scanner_WideAngle`,
@@ -84,12 +96,7 @@
       "blueprints": [
         "recipe_guardianmodule_sturdy"
       ],
-      "experimentals": [
-        "special_powerplant_cooled",
-        "special_powerplant_highcharge",
-        "special_powerplant_lightweight",
-        "special_powerplant_toughened"
-      ]
+      "experimentals": []
     },
     "thrusters": {
       "name": "Thrusters",
@@ -144,13 +151,7 @@
       "blueprints": [
         "recipe_guardianmodule_sturdy"
       ],
-      "experimentals": [
-        "special_powerdistributor_capacity",
-        "special_powerdistributor_efficient",
-        "special_powerdistributor_fast",
-        "special_powerdistributor_lightweight",
-        "special_powerdistributor_toughened"
-      ]
+      "experimentals": []
     },
     "frameShiftDrivesSCO": {
       "name": "Frame Shift Drives (SCO)",
@@ -221,12 +222,7 @@
       "blueprints": [
         "recipe_guardianmodule_sturdy"
       ],
-      "experimentals": [
-        "special_hullreinforcement_chunky",
-        "special_hullreinforcement_explosive",
-        "special_hullreinforcement_kinetic",
-        "special_hullreinforcement_thermic"
-      ]
+      "experimentals": []
     },
     "pulseLasers": {
       "name": "Pulse Lasers",
