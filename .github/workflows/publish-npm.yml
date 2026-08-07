@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       dry-run:
-        description: Run every check and pack the tarball, but do not publish it
+        description: Run the checks and build and pack the tarball, but do not publish it
         type: boolean
         default: true
 
@@ -21,6 +21,14 @@ jobs:
   publish:
     name: Publish to npm
     runs-on: ubuntu-latest
+    # Not every release in this repository is a release of this package. A tag
+    # belonging to a second language implementation has to leave this job
+    # unstarted rather than fail it — a red X and a spent `npm` deployment on
+    # someone else's release would be this workflow's bug, not theirs.
+    if: >-
+      github.event_name != 'release'
+      || startsWith(github.event.release.tag_name, 'v')
+      || startsWith(github.event.release.tag_name, 'typescript-v')
     environment:
       name: npm
       url: https://www.npmjs.com/package/@elite-dangerous-almanac/core
@@ -30,6 +38,16 @@ jobs:
     defaults:
       run:
         working-directory: typescript
+    env:
+      # Every guard below asks the same question — is this run going to take a
+      # version number? A release always is; a manual run only when its dry-run
+      # input was unticked. Decided once, so no two steps can disagree about it.
+      #
+      # Compared as text on purpose: the input is a real boolean when the button
+      # is clicked, but a string when the run comes from the API or `gh workflow
+      # run`, and `!inputs.dry-run` reads every non-empty string as "not a dry
+      # run" — including the string `true`.
+      REAL_PUBLISH: ${{ github.event_name == 'release' || format('{0}', inputs.dry-run) != 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,29 +67,44 @@ jobs:
         id: package
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
           set -euo pipefail
 
           name=$(node -p 'require("./package.json").name')
           version=$(node -p 'require("./package.json").version')
 
-          # A release publishes the commit its tag points at, so the tag and the
-          # manifest have to agree — otherwise the GitHub release and the npm
-          # version drift apart and neither one tells you what shipped. Both
+          # A release event names its tag directly; a manual run has to be sitting
+          # on one. Nothing takes a version number off a branch: a real publish is
+          # permanent and has to be reproducible from a ref that cannot move.
+          tag=$RELEASE_TAG
+          if [ -z "$tag" ] && [ "$REF_TYPE" = tag ]; then
+            tag=$REF_NAME
+          fi
+          if [ "$REAL_PUBLISH" = true ] && [ -z "$tag" ]; then
+            echo "::error::a real publish must run from a tag, not from $REF_TYPE $REF_NAME"
+            exit 1
+          fi
+
+          # The tag and the manifest have to agree, or the GitHub release and the
+          # npm version drift apart and neither one tells you what shipped. Both
           # `v1.2.3` and `typescript-v1.2.3` name version 1.2.3; the prefixed form
           # is there for the day a second language implementation releases too.
-          if [ -n "$RELEASE_TAG" ]; then
-            tagged=${RELEASE_TAG#typescript-}
+          if [ -n "$tag" ]; then
+            tagged=${tag#typescript-}
             tagged=${tagged#v}
             if [ "$tagged" != "$version" ]; then
-              echo "::error::release tag $RELEASE_TAG does not name typescript/package.json version $version"
+              echo "::error::tag $tag does not name typescript/package.json version $version"
               exit 1
             fi
           fi
 
           # A prerelease must never become the version `npm install` picks by
-          # default, so anything carrying a SemVer prerelease suffix goes to `next`.
-          case "$version" in
+          # default, so anything carrying a SemVer prerelease suffix goes to
+          # `next`. Build metadata is dropped first: `1.2.3+build.7` has a hyphen
+          # nowhere near a prerelease, and `1.2.3-rc.1+build.7` has both.
+          case "${version%%+*}" in
             *-*) dist_tag=next ;;
             *) dist_tag=latest ;;
           esac
@@ -89,57 +122,75 @@ jobs:
       # exports a placeholder value, so an npm command that does not pass the
       # secret talks to the registry as nobody in particular.
       - name: Check the npm token is configured
-        if: ${{ github.event_name == 'release' || !inputs.dry-run }}
+        if: env.REAL_PUBLISH == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
 
           if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
-            echo "::error::secret NPM_TOKEN is not set for the npm environment — add an npm automation token"
+            echo "::error::secret NPM_TOKEN is not set on the npm environment — add an npm automation token"
             exit 1
           fi
 
       - name: Check the version is still unpublished
-        if: ${{ github.event_name == 'release' || !inputs.dry-run }}
+        if: env.REAL_PUBLISH == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           SPEC: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
         run: |
           set -euo pipefail
 
-          # npm versions are immutable, so a repeat publish fails halfway through
-          # the release instead of at the start. Fail here, before the build. A
-          # lookup that fails for any other reason — the package does not exist
-          # yet, the registry is unreachable — prints nothing and lets the release
-          # continue; the publish itself is still the thing that refuses a
-          # duplicate, so the check only ever saves time, never grants permission.
-          published=$(npm view "$SPEC" version 2>/dev/null || true)
-          if [ -n "$published" ]; then
-            echo "::error::$SPEC is already on the registry — bump the version in typescript/package.json"
-            exit 1
+          # npm versions are immutable, so a repeat publish fails after a full
+          # build rather than at the start. A registry that cannot be asked is
+          # not the same answer as a version that is free, so the two are told
+          # apart: only npm's own "no such package or version" is a pass.
+          if answer=$(npm view --json "$SPEC" version 2>&1); then
+            if [ -n "$answer" ] && [ "$answer" != null ]; then
+              echo "::error::$SPEC is already on the registry — bump the version in typescript/package.json"
+              exit 1
+            fi
+          else
+            case "$answer" in
+              *E404*) : ;; # the expected answer for a version that is still free
+              *)
+                echo "::error::could not ask the registry about $SPEC: $answer"
+                exit 1
+                ;;
+            esac
           fi
 
       - name: Audit dependencies
         run: npm run audit
 
-      # `prepublishOnly` runs `npm run check && npm run build && npm run
-      # test:package`, so lint, formatting, types, tests, the tsup build and the
-      # built-`dist/` entry-point suite all gate the publish — including the dry
-      # run, which is why a dry run is a real rehearsal and not just a pack.
+      # Deliberately its own step, with no token in the environment. These scripts
+      # run ESLint, tsc, the test suite and esbuild, so every devDependency in the
+      # tree gets to execute here — and none of them should be doing so alongside
+      # a credential that can publish to the scope. That is also why the publish
+      # step below passes `--ignore-scripts`: `prepublishOnly` would otherwise run
+      # this same work again, that time with the token exported.
+      - name: Check, build and verify the package
+        run: npm run check && npm run build && npm run test:package
+
       - name: Publish
+        if: env.REAL_PUBLISH == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DIST_TAG: ${{ steps.package.outputs.dist-tag }}
-          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run }}
-        run: |
-          set -euo pipefail
+        # `--access public` because the package is scoped and scoped packages
+        # default to restricted; `--provenance` links the tarball to this commit
+        # and this workflow run, which npm shows as a verified badge. Packing is
+        # `--ignore-scripts` on purpose — see the step above — so `dist/` and the
+        # generated legal files come from the build that just ran. A `prepack` or
+        # `prepare` script added to the package later would need adding there too.
+        run: npm publish --access public --tag "$DIST_TAG" --provenance --ignore-scripts
 
-          if [ "$DRY_RUN" = "true" ]; then
-            npm publish --access public --tag "$DIST_TAG" --dry-run
-          else
-            # `--access public` because the package is scoped and scoped packages
-            # default to restricted; `--provenance` links the tarball to this run
-            # and this commit, which npm shows as a verified badge.
-            npm publish --access public --tag "$DIST_TAG" --provenance
-          fi
+      - name: Pack without publishing
+        if: env.REAL_PUBLISH != 'true'
+        env:
+          DIST_TAG: ${{ steps.package.outputs.dist-tag }}
+        # No token: a dry run never authenticates. It also never exercises
+        # provenance — npm only generates an attestation on a real publish — so
+        # this rehearses the checks, the build and the tarball contents, and
+        # nothing about the upload.
+        run: npm publish --access public --tag "$DIST_TAG" --dry-run --ignore-scripts
