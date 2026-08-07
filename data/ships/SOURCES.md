@@ -1066,8 +1066,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     carrying either still resolves; stripping `recipe_guardianmodule_sturdy` would also
     collide with the real key.
 
-  The registry exposes **one displayed total per grade**, not a
-  roll-bounded range, so each feature stores that total as a fixed value (`min == max`).
+  The registry exposes **one displayed total per grade**, not a roll-bounded range, so each
+  feature stores that total as a fixed value (`min == max`).
   Their per-roll `materials` are from the same registry (resolved to Frontier material
   `symbol`s against the `materials` domain); the per-roll **Merc-Coin** amount is also
   charged but is a currency, not a material, so it is not stored. Some totals are
@@ -1340,8 +1340,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   carries. They are two of the three records that carry the field out of 109 —
   `MC_Overcharged`, below, is the third. Every other key either already *is* the id a
   journal writes or is an Operations spelling, which is why the field is absent everywhere
-  else. Which of the two colliding recipes a given module rolls
-  is a property of the module, and `engineering-options.jsonc` already carries it — the
+  else. Which of the two colliding recipes a given module rolls is a property of the module,
+  and `engineering-options.jsonc` already carries it — the
   menu. `resolveBlueprintForModule` is the join: it asks which blueprint *this module is
   offered* answers to the incoming id. `ShipLoadout.applyBlueprint` resolves before it
   folds, so an EDSY-authored build declaring `Sensor_LongRange` on a wake scanner
@@ -1573,8 +1573,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   bought already engineered and no menu names them, but `FuelScoop_Efficiency` on
   `fuelScoops` and, on the three laser groups, `PulseLaser_ThermalPlasmaConversion`,
   `BurstLaser_ThermalPlasmaConversion` and `BeamLaser_ThermalPlasmaConversion` are recipes
-  a player applies. (Anti-Guardian Zone Resistance is the
-  fifth menu recipe of that kind, listed under the journal spelling `GuardianModule_Sturdy`
+  a player applies. (Anti-Guardian Zone Resistance is the fifth menu recipe of that kind,
+  listed under the journal spelling `GuardianModule_Sturdy`
   rather than an Operations key.)
   - **The grade range is what separates a recipe from a purchase.** A Merc-Coin
     weapon-reward recipe begins at grade 2 because the bought module already contains the
@@ -1686,8 +1686,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   bought already engineered, so no menu lists one and the menu check alone would refuse
   all 21 of them everywhere. (The four a menu *does* list are recipes a player rolls from
   grade 1 and need no accommodation; see §Engineering options.)
-  `pre-engineered.jsonc` names which module each arrives on, so
-  the gate accepts a recipe on the module that is sold carrying it and nowhere else:
+  `pre-engineered.jsonc` names which module each arrives on, so the gate accepts a recipe on
+  the module that is sold carrying it and nowhere else:
   `RailGun_LongShot` resolves on the medium rail gun, not on the small one. What
   that buys is the **climb**, not the purchase: a Mercenary module arrives at grade 1
   and its recipe publishes grades 2–5, the grades an engineer can still add. It cannot
@@ -1748,8 +1748,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
       Lockdown by *size* and the twin `…rackmedium_lockdown` binds to the medium rack; the
       large rack is already a Merc row for `SeekerMissileRack_Drag`, so the shop
       stocks it; both Lockdown recipes run grades 2–5, the weapon-reward range that marks a
-      module as bought pre-engineered; and it is the only grade-2–5 Operations recipe in
-      the file
+      module as bought pre-engineered; and it is the only grade-2–5 Operations recipe in the
+      file
       that would otherwise have no row, all 20 others having one. Price and size confirmed
       2026-08-07 UTC against a web-search index of the Inara outfitting listing, which
       reports the MERC Lockdown Seeker Missile Rack [Fixed] at 900 MC for the 3A and 800 MC
