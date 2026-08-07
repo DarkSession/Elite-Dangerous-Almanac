@@ -14,8 +14,9 @@
  *          coriolis-data is (c) EDCD under the MIT License.
  *          Four rows come from neither registry: the Operations Merc-Coin blueprints
  *          `FuelScoop_Efficiency` and the three lasers'
- *          `*_thermalplasmaconversion`, whose module family comes from the Inara
- *          blueprint registry (https://inara.cz/elite/blueprints/) — the same source the
+ *          `{PulseLaser,BurstLaser,BeamLaser}_ThermalPlasmaConversion`, whose module
+ *          family comes from the Inara blueprint registry
+ *          (https://inara.cz/elite/blueprints/) — the same source the
  *          recipes themselves came from. Neither EDSY nor coriolis-data publishes the
  *          Operations family at all. See SOURCES.md for how that read was obtained and
  *          what it was corroborated against.
@@ -67,13 +68,14 @@
  * **A menu may list an Operations recipe.** Most Operations ids belong to modules bought
  * already engineered and no menu names them, but four are recipes a player applies: the
  * Merc-Coin blueprints published with a full grade 1–5 — `FuelScoop_Efficiency` on
- * the fuel scoops and the three lasers' `*_thermalplasmaconversion`. (Anti-Guardian Zone
+ * the fuel scoops and the three lasers'
+ * `{PulseLaser,BurstLaser,BeamLaser}_ThermalPlasmaConversion`. (Anti-Guardian Zone
  * Resistance is a fifth recipe of that kind, listed by the nine Guardian groups under the
  * journal id `GuardianModule_Sturdy` rather than under an Operations key.) A purchased
  * pre-engineered module's recipe starts at grade 2 because grade 1 is what the purchase
- * contains; these
- * four start at grade 1, so nothing is pre-applied and the whole recipe is rolled at an
- * engineer. See §Operations recipes in SOURCES.md.
+ * contains; these four start at grade 1, so nothing is pre-applied and the whole recipe
+ * is rolled at an
+ * engineer. See "Four Operations recipes are listed by a menu" in SOURCES.md.
  *
  * `exclusions` handles what is left: the modules that take their group's blueprints but
  * not all of its experimental effects — a Multi-cannon cannot take Phasing Sequence, and

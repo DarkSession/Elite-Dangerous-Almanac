@@ -40,12 +40,13 @@
  * kept only as an alias that still resolves: `GuardianModule_Sturdy` is what a Loadout
  * writes for Anti-Guardian Zone Resistance — on Guardian weapons as well as modules — so
  * that is the key all nine offering menus list, and the registry's
- * `recipe_guardianmodule_sturdy` and
- * `recipe_guardianweapon_sturdy` are stored beside it so a build carrying either still
+ * `recipe_guardianmodule_sturdy` and `recipe_guardianweapon_sturdy` are stored beside it
+ * so a build carrying either still
  * looks up. Of the remaining 25 Operations keys, 21 belong to modules sold already
  * engineered and four are Operations recipes a player rolls at an engineer
- * (§Operations recipes in SOURCES.md); no journal spelling has been observed for any of
- * them, which is not the same as knowing the game writes none. Two of the exceptions are
+ * ("Four Operations recipes are listed by a menu" in SOURCES.md); no journal spelling has
+ * been observed for any of them, which is not the same as knowing the game writes none.
+ * Two of the exceptions are
  * `Scanner_LongRange` and `Scanner_WideAngle`: the game writes `Sensor_LongRange` /
  * `Sensor_WideAngle` for the utility scanners' Long Range and Wide Angle *and* for the
  * sensor suites' own, which are different recipes rolling different stats — EDSY's
@@ -72,7 +73,8 @@
  *
  * The Operations pre-engineered blueprints (Merc weapon rewards,
  * plus general/core/optional ones like `FuelScoop_Efficiency`) and all three
- * Anti-Guardian records (`GuardianModule_Sturdy` and its two `recipe_`-prefixed Inara aliases, which
+ * Anti-Guardian records (`GuardianModule_Sturdy` and its two `recipe_`-prefixed Inara
+ * aliases, which
  * coriolis does not carry under any spelling) come from the current in-game / Inara
  * blueprint registry, which exposes one displayed total per grade rather than a
  * roll-bounded range: each such feature stores that total as a fixed value (min == max).

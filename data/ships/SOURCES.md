@@ -999,8 +999,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   ids for which no journal spelling has been observed — 21 of them recipes a module is sold
   already carrying, four recipes a player rolls at an engineer, and two the community
   spellings of Anti-Guardian Zone Resistance, whose journal id is a key here in its own
-  right. The three that do are
-  `Scanner_LongRange` and `Scanner_WideAngle`, coriolis keys for recipes the game writes as
+  right. The three that do are `Scanner_LongRange` and `Scanner_WideAngle`, coriolis keys
+  for recipes the game writes as
   `Sensor_LongRange` / `Sensor_WideAngle` — the same ids it writes for the sensor suites'
   own Long Range and Wide Angle, which are different recipes — and `MC_Overcharged`, its
   key for the multi-cannon Overcharged, which the game writes as `Weapon_Overcharged` like
@@ -1038,8 +1038,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     data: a SLEF export contributed by the repository owner carries the Mercenary Module
     Reinforcement Package as **`modulereinforcement_heavyduty`** — the registry id minus
     the prefix, in the lower case Inara writes everything in — and across the 181-build
-    corpus **not one of 1902 declared engineering entries is prefixed**. So the prefix is an Inara listing convention, and these keys are the id
-    with it removed.
+    corpus **not one of 1902 declared engineering entries is prefixed**. So the prefix is
+    an Inara listing convention, and these keys are the id with it removed.
   - **The casing is Frontier's, taken from a raw journal.** Inara publishes these ids
     lower-case, but Inara lower-cases *every* id it exports (`weapon_efficient`,
     `fsd_longrange`), so its casing says nothing. A raw `Loadout` event contributed by the
@@ -1095,11 +1095,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     whichever kind of module the recipe sits on, and there is no evidence the game ever
     writes a weapon spelling: `recipe_guardianweapon_sturdy` is a registry key, not an
     observed journal one. EDSY names the blueprint `GuardianModule_Sturdy` for the same
-    reason. **So `GuardianModule_Sturdy` is the key all nine offering menus list**, and the
-    two registry
-    spellings are stored beside it as aliases that still resolve — the journal name is the
+    reason. **So `GuardianModule_Sturdy` is the key all nine offering menus list**, and
+    the two registry spellings are stored beside it as aliases that still resolve — the
+    journal name is the
     identity, a community name is the alias. That ordering is not cosmetic: while the menus
-    listed an Inara `recipe_`-prefixed key, `getBlueprint('GuardianModule_Sturdy')` answered `null` and
+    listed an Inara `recipe_`-prefixed key, `getBlueprint('GuardianModule_Sturdy')`
+    answered `null` and
     `applyBlueprint` refused the id on the very module the capture shows carrying it, so
     the inversion was a defect rather than a naming preference.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
@@ -1483,11 +1484,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `special_super_penetrator_cooled` entries on a Guardian Shard Cannon sit in
     `corpus.notOffered` under #36 for an unrelated reason.
   - **What a consumer sees:** `getExperimentalsForModule` answers `[]` for the 25 modules
-    in the three split families above — `guardianPowerPlants`, `guardianPowerDistributors`
-    and `guardianHullReinforcements` — `ShipLoadout.applyBlueprint` refuses an
-    `experimental` on them,
-    and `getExperimentalsForBlueprint('GuardianModule_Sturdy')` answers `[]` rather
-    than a union across the three families. Blueprints are unaffected on every module.
+    in the three split families above (`guardianPowerPlants`, `guardianPowerDistributors`
+    and `guardianHullReinforcements`), `ShipLoadout.applyBlueprint` refuses an
+    `experimental` on them, and `getExperimentalsForBlueprint('GuardianModule_Sturdy')`
+    answers `[]` rather than a union across the nine groups that offer the recipe.
+    Blueprints are unaffected on every module.
     Pinned in
     `fixtures/ships/engineering-options.json` as `antiGuardianZoneResistance` (the nine
     groups, the empty list, six representative modules) and on each half of
@@ -1534,9 +1535,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     the only registry describing them says the clip drops. (It was 34 until the Guardian
     weapon menus stopped offering the ordinary recipes at all: the six Guardian plasma
     launchers left this set entirely, being sold with `Weapon_Overcharged` rather than
-    offered it.) The
-    three laser groups also list `Weapon_Overcharged` and are unaffected: no laser carries a
-    clip.
+    offered it.) The three laser groups also list `Weapon_Overcharged` and are
+    unaffected: no laser carries a clip.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14
     multi-cannons; `applyBlueprint` accepts either spelling, resolving the journal one
     against the menu, and folds the clip reduction. Pinned in
@@ -1668,7 +1668,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   Anti-Guardian Zone Resistance, whose two registry spellings
   (`recipe_guardianmodule_sturdy`, `recipe_guardianweapon_sturdy`) sit beside the
   `GuardianModule_Sturdy` the nine offering groups list — see §Engineering,
-  "Anti-Guardian Zone Resistance is keyed three times". The game writes only the last of the three, so the
+  "Anti-Guardian Zone Resistance is keyed three times". The game writes only the last of
+  the three, so the
   other two reach the recipe through this route.
   `Weapon_LightWeight` is excluded by the labels instead — a weapon's Lightweight cuts
   distributor draw, which the generic one does not touch.

@@ -47,7 +47,7 @@ import type { Blueprint, BlueprintFeature, EngineeringMaterial } from './enginee
  * @example
  * ```ts
  * BLUEPRINTS['FSD_LongRange'].name;               // -> 'Increased range'
- * BLUEPRINTS['FSD_LongRange'].grades['5'].features;  // -> [{ label: 'FSDOptimalMass', ... }, ...]
+ * BLUEPRINTS['FSD_LongRange'].grades['5'].features;  // -> [{ label: 'Integrity', ... }, ...]
  * BLUEPRINTS['FSD_LongRange'].grades['5'].materials; // -> [{ symbol: 'Arsenic', name: 'Arsenic', count: 1 }, ...]
  * ```
  */
@@ -90,7 +90,7 @@ export function getBlueprintName(fdname: string): string | null {
  * @returns The grade's features, or `null` if the blueprint or grade is unknown.
  * @example
  * ```ts
- * getBlueprintGrade('FSD_LongRange', 5); // -> [{ label: 'FSDOptimalMass', ... }, ...]
+ * getBlueprintGrade('FSD_LongRange', 5); // -> [{ label: 'Integrity', ... }, ...]
  * ```
  */
 export function getBlueprintGrade(
