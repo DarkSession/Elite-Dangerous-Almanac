@@ -16,6 +16,7 @@ import engineeringFixture from '../../../fixtures/ships/engineering.json' with {
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
 import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.json' with { type: 'json' };
+import cutterCapture from '../../../fixtures/ships/slef-inara-cutter-antixeno.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
@@ -679,12 +680,15 @@ test('the restrictions accept what the game itself fitted in a real capture', ()
     // that matters most: the game sold each of these builds, and re-fitting one module
     // by module must not refuse a single mount. A rule drawn too tightly — a cabin
     // family left out of the passenger prefixes, say — fails here and nowhere else.
-    // Between them the three cover `mining`, `cargo`, `limpetController`,
-    // `vesselHangar` and `passenger`; `military` and `planetaryApproachSuite` are not
-    // covered here, because Inara omits an empty mount and none of the three fills one.
+    // Between them the four cover `mining`, `cargo`, `limpetController`,
+    // `vesselHangar`, `passenger` and — since the Cutter joined them — `military`, whose
+    // two mounts it fills with hull reinforcement packages. Only
+    // `planetaryApproachSuite` is uncovered, because Inara omits an empty mount and none
+    // of the four fills one.
     const captures = [
         ['lynx-highliner', lynxCapture[0]!.data],
         ['panther-mkii', pantherCapture[0]!.data],
+        ['cutter-antixeno', cutterCapture[0]!.data],
         ['type-11', inaraFixture[0]!.data],
     ] as const;
     for (const [name, data] of captures) {

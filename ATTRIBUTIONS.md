@@ -129,6 +129,21 @@ in the doc comment of each ported module, and in long form in the domain
   its `Build.fromJournal` resolves a journal blueprint name through a per-module-type map,
   read alongside `eddb.js`'s own two rows sharing that fdname. Acquisition date and digest
   in `data/ships/SOURCES.md`.
+- **How the Corrosion Resistant Cargo Racks are obtained** — not a stored value but the
+  basis for two catalogue decisions: dropping the size-2 record as a variant that never
+  released, and recording the size-5 and size-6 records as Community Goal rewards whose
+  missing `cost` is the absence of a list price rather than an unfound one. From the
+  [Elite Dangerous Wiki](https://elite-dangerous.fandom.com/wiki/Corrosion_Resistant_Cargo_Rack)
+  (Fandom, **CC BY-SA 3.0**), alongside Frontier Developments' own announcement of the
+  Rhea Disaster Community Goal
+  ([@EliteDangerous](https://x.com/EliteDangerous/status/1812792503776489745), with the
+  goal itself on the [Frontier
+  forums](https://forums.frontier.co.uk/threads/deliver-critical-aid-for-the-rhea-disaster.626528/)).
+  Both read **2026-08-06 UTC**; neither is pinned to a revision, and `data/ships/SOURCES.md`
+  records why the wiki's could not be captured. The availability facts are **Elite
+  Dangerous game data, property of Frontier Developments plc**; see the notice below.
+  `data/ships/SOURCES.md` records what each source states and the capture whose reported
+  `Value` was checked and rejected.
 - **Per-hull journal slot names** — the slot keys 10 hulls use that no numbering rule
   derives (the Anaconda's `Slot13_Size2`, the Type-9 Heavy's `Slot00_Size8`, the Caspian
   Explorer's out-of-order medium hardpoints), plus 3 more the rules do derive — the
@@ -184,12 +199,16 @@ in the doc comment of each ported module, and in long form in the domain
   from its example data, which travels under Frontier's media-usage terms below like every
   other build here. Credit to UFO Studios & AW2C Systems Ltd for capturing and publishing
   the log. No code from that project is used.
-  `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json` and
-  `slef-inara-panther-mkii.json` are real [Inara](https://inara.cz/) SLEF exports,
-  contributed by the repository owner from their own commander's fleet; the latter two
-  are what a restricted mount's rules are checked against, and their headers keep only
-  the producing app and version.
-  All six are Elite Dangerous game output and remain the property of Frontier
+  `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json`,
+  `slef-inara-panther-mkii.json` and `slef-inara-cutter-antixeno.json` are real
+  [Inara](https://inara.cz/) SLEF exports, contributed by the repository owner from their
+  own commander's fleet. The Lynx Highliner and the Panther Clipper Mk II are what a
+  restricted mount's rules are checked against, and the Cutter is what the omitted-price
+  rule is checked against; the headers of **those three** keep only the producing app and
+  version. The Type-11 predates that scrubbing and still carries the Inara ids it was
+  received with — `data/ships/SOURCES.md` records the difference and that closing it is
+  the owner's call.
+  All seven are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`

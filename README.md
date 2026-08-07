@@ -480,7 +480,7 @@ The stored `symbol` is Frontier's own casing (`Empire_Trader`), while the journa
 matches case-insensitively, so either form resolves — but compare a record's `symbol`
 to a journal value case-insensitively rather than with `===`.
 
-The module lookups live in `ships/modules` and **search all 1198 modules by
+The module lookups live in `ships/modules` and **search all 1197 modules by
 default**. A journal `Item` string does not tell you which outfitting category it
 belongs to, so having to know that before you could look it up was backwards:
 
@@ -507,10 +507,10 @@ stats](#ship-and-module-stats) below); subpaths are relative to
 | Import                    | Export              | What's in it                                            | Entries |
 | ------------------------- | ------------------- | ------------------------------------------------------- | ------- |
 | `ships/modules-core`      | `CORE_MODULES`      | Core internals (armour, power plant, thrusters, FSD, …) | 521     |
-| `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 483     |
+| `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 482     |
 | `ships/modules-hardpoint` | `HARDPOINT_MODULES` | Hardpoint weapons and tools                             | 159     |
 | `ships/modules-utility`   | `UTILITY_MODULES`   | Utility-mount fittings (chaff, heat sinks, boosters, …) | 35      |
-| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated — the default                    | 1198    |
+| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated — the default                    | 1197    |
 
 ```ts
 import { UTILITY_MODULES } from "@elite-dangerous-almanac/core/ships/modules-utility";
@@ -674,14 +674,15 @@ These are the **undiscounted** list prices an outfitting screen quotes at 0%
 discount — stations apply their own discount or markup on top, which is live market
 state this library does not carry.
 
-All 48 hulls are priced, and 1176 of 1198 modules. The other 22 — the ten starter
+All 48 hulls are priced, and 1176 of 1197 modules. The other 21 — the ten starter
 `*_free` variants, the five size-8 frame shift drives, the three Mk II fighter hangars,
-the three unsold Corrosion Resistant Cargo Racks (two Community Goal rewards and one
-never-released variant, so no outfitting screen quotes them) and
-`Int_ShieldGenerator_Size1_Class4` — have no published price, so **`cost` is `undefined`
-rather than `0`**. That distinction is deliberate: `0` is a real price (the starter
-Lightweight Alloy bulkhead is free), so treat `undefined` as _unknown_ and decide for
-yourself whether to skip it or fail:
+the two unsold Corrosion Resistant Cargo Racks (both Community Goal rewards, so no
+outfitting screen quotes them; tracked on
+[#18](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/18), which predates
+this change and still counts three of them) and `Int_ShieldGenerator_Size1_Class4` — have
+no published price, so **`cost` is `undefined` rather than `0`**. That distinction is
+deliberate: `0` is a real price (the starter Lightweight Alloy bulkhead is free), so
+treat `undefined` as _unknown_ and decide for yourself whether to skip it or fail:
 
 ```ts
 const cost = getModuleBySymbol(symbol)?.cost;
@@ -1169,12 +1170,12 @@ the exact list for any one module. Once you know the module, use
 A module the options catalogue does not group returns `[]` from both. To tell that apart
 from a module that _is_ grouped but has no experimental to offer, ask
 `getEngineeringGroup` — it returns `null` only for the former. The second case is the
-common one: 364 of the 1029 grouped modules take blueprints and nothing else — 363 of
+common one: 363 of the 1028 grouped modules take blueprints and nothing else — 362 of
 them because their group offers no experimental at all (27 of the 53 groups: life
 support, sensors, the limpet controllers, the utility scanners, the Guardian weapons),
 and the small fixed Abrasion Blaster because it is excluded from its group's only effect.
 
-The catalogue covers 1029 of the 1198 modules — every module upstream allows a recipe
+The catalogue covers 1028 of the 1197 modules — every module upstream allows a recipe
 on. The other 169 take no engineering: whole families (fuel tanks, passenger cabins, the
 repair/recon/research/decontamination and multi-limpet controllers, meta-alloy and
 ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
@@ -1440,8 +1441,9 @@ recorded inline there beside the field they touch.
   [`unknownStats`](#when-a-stat-is-missing) field.
 - **2026-08-05** — one module price filled from EDSY, the 1F Corrosion Resistant
   Cargo Rack (`Int_CorrosionProofCargoRack_Size1_Class2`, 12 560), which
-  coriolis-data carries as `0`. The other three racks of that family stay unpriced:
-  no station sells them, so no registry quotes one.
+  coriolis-data carries as `0`. The other three racks of that family stayed unpriced:
+  no station sells them, so no registry quotes one. (Two of them still do; the third,
+  the size-2 rack, was removed outright on 2026-08-06 — see the last entry below.)
 - **2026-08-05** — two restricted-mount rules the catalogue could not express are now
   stored: the Lynx Highliner's `Passenger01`–`Passenger03` take **passenger cabins
   only** (a seventh `slot.restriction` value), and five module records name the mount
@@ -1511,6 +1513,16 @@ recorded inline there beside the field they touch.
   symbol only when a record names **no** mount, and believe the record when it names
   one, right or wrong. So a hand-made record with no `slot` reads there exactly as it
   always has; one that names the wrong mount is taken at its word.
+- **2026-08-06** — one module record was **removed**: the size-2 Corrosion Resistant
+  Cargo Rack (`Int_CorrosionProofCargoRack_Size2_Class1`), a variant that never
+  released. No registry lists it as player-obtainable, so it was never outfitting a
+  journal could name; `getModuleBySymbol` now returns `undefined` for it, and the
+  catalogue counts drop by one (`ALL_MODULES` 1198 → 1197, `INTERNAL_MODULES`
+  483 → 482, the engineering-options catalogue 1029 → 1028 grouped modules). The
+  size-5 and size-6 racks **stay**, still without a `cost`: both were Community Goal
+  rewards and were sold nowhere, so their absent price is now recorded as _no list
+  price exists_ rather than _none has been found_. A build fitting one still exports
+  no `ModulesValue` or `Rebuy`, exactly as before.
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

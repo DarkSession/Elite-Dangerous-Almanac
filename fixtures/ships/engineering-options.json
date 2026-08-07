@@ -2,9 +2,9 @@
   "description": "Ground truth for data/ships/engineering-options.jsonc \u2014 which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins every group's menu by content, `modules` that a module resolves to its group, `exclusions` the modules that take their group's blueprints but not all of its experimental effects (a Multi-cannon cannot take Phasing Sequence; the Abrasion Blaster takes no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `splitFamilies` pins the families upstream splits in two by denying blueprints per module \u2014 a Guardian Power Plant and an ordinary one are the same kind of module with different menus, so they are different groups. `groupSizes` pins how many modules each group holds, so a module moving between groups fails a test rather than balancing out against the totals; `modules` pins one member of every group by name. `corpus` measures the catalogue against the 181-build community corpus in `builds/`.",
   "counts": {
     "groups": 53,
-    "modules": 1029,
+    "modules": 1028,
     "exclusions": 24,
-    "modulesWithoutExperimental": 364,
+    "modulesWithoutExperimental": 363,
     "blueprintsOffered": 81
   },
   "groupSizes": {
@@ -37,7 +37,7 @@
     "lifeSupports": 41,
     "sensors": 41,
     "autoFieldMaintenanceUnits": 40,
-    "cargoRacks": 17,
+    "cargoRacks": 16,
     "collectionLimpets": 20,
     "fsdBoosters": 5,
     "fsdInterdictors": 20,

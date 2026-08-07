@@ -8,7 +8,7 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1029 of the 1198 modules — every module upstream allows a recipe
+ * The catalogue groups 1028 of the 1197 modules — every module upstream allows a recipe
  * on. The other 169 take no engineering: whole families (fuel tanks, passenger cabins,
  * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
  * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
@@ -177,8 +177,8 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * Abrasion Blaster takes blueprints but no experimental at all. Those are applied here,
  * so the result is the exact set for this module.
  *
- * **An empty array is the common answer, and it usually means "blueprints only".** 364
- * of the 1029 grouped modules have no experimental slot: 363 sit in the 27 of 53 groups
+ * **An empty array is the common answer, and it usually means "blueprints only".** 363
+ * of the 1028 grouped modules have no experimental slot: 362 sit in the 27 of 53 groups
  * that offer none — life support, sensors, the limpet controllers, the utility scanners,
  * the Guardian weapons among them — and the Abrasion Blaster is excluded from its
  * group's only effect. An ungrouped module answers empty too;
