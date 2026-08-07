@@ -1057,8 +1057,8 @@ experimental effect, that quality is a finite value from 0 to 1, and that every 
 recipe changes can actually be answered for that module. What a module is offered comes
 from its [engineering menu](#what-a-module-can-be-engineered-with), not from a rule about
 what kind of module it is: an armour recipe cannot go on an FSD, but neither can
-`Weapon_HighCapacity` go on a Guardian Gauss Cannon, whose menu is Rapid Fire and
-Anti-Guardian Zone Resistance alone. The error names the menu it checked against.
+`Weapon_HighCapacity` go on a Guardian Gauss Cannon, whose menu is Anti-Guardian Zone
+Resistance alone. The error names the menu it checked against.
 
 A recipe leg on a stat the module simply **does not have** is not a failure — it is
 inert, exactly as in the game. Long Range scales a projectile's shot speed and leaves a
@@ -1220,8 +1220,10 @@ experimental was obtained already engineered, as a community-goal or tech-broker
 rather than rolled at an engineer; this menu answers what a player may apply, so it does
 not list those. (Those particular reward variants are not catalogued here either — see
 [modules you can buy already engineered](#modules-you-can-buy-already-engineered) for what
-is.) Guardian **weapons** are the exception to the first sentence: each of their three
-groups also offers one ordinary weapon recipe.
+is.) Guardian **weapons** are the same: their three groups are menus of that one recipe
+too. An ordinary weapon recipe reaches a Guardian weapon only as a purchase, never as an
+engineer roll, so [modules you can buy already
+engineered](#modules-you-can-buy-already-engineered) is what carries it.
 
 > **One recipe can have two journal ids.** Where a modification applies to several module
 > families, `BLUEPRINTS` carries both a family-specific spelling and a generic one — a

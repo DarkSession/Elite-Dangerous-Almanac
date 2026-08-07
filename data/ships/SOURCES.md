@@ -1036,8 +1036,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `modifications/blueprints.json` has **81 keys and not one prefixed**, and `eddb.js`
     contains no `recipe_` string at all (both checked 2026-08-07 UTC). Nor does real export
     data: a SLEF export contributed by the repository owner carries the Mercenary Module
-    Reinforcement Package as **`ModuleReinforcement_HeavyDuty`** — the registry id minus the
-    prefix — and across the 182-build corpus **not one of 1902 declared engineering entries
+    Reinforcement Package as **`modulereinforcement_heavyduty`** — the registry id minus
+    the prefix, in the lower case Inara writes everything in — and across the 182-build corpus **not one of 1902 declared engineering entries
     is prefixed**. So the prefix is an Inara listing convention, and these keys are the id
     with it removed.
   - **The casing is Frontier's, taken from a raw journal.** Inara publishes these ids
@@ -1052,6 +1052,15 @@ up straight through with no disambiguation at all. Both paths are evidence that
     was added, removed or altered, and word boundaries come from each recipe's own display
     name ("Module Reinforcement Package — Heavy duty"). Every lookup matches
     case-insensitively regardless, so a caller carrying any casing is still understood.
+  - **Seven of these keys are almost certainly not journal ids in any casing.**
+    `PowerDistributorS3C2_SupportFocused` and its four siblings, and
+    `CargoRackS5C1_Extended` / `CargoRackS6C1_Extended`, embed a module size and class in
+    the id. No blueprint Frontier writes is named that way — a journal spells the *module*
+    `Int_CargoRack_Size5_Class1` and the *recipe* separately. They read as Inara SKU ids
+    for particular pre-engineered purchases. Dropping the prefix and casing them makes them
+    consistent with their neighbours; it does not make them right, and no observation
+    covers them either way. A consumer matching a journal `BlueprintName` should not expect
+    these seven to be what it carries.
   - **The two Anti-Guardian aliases keep their `recipe_` prefix**, and are the only keys
     that do. For that recipe the real name *is* known — `GuardianModule_Sturdy` — so they
     are not best guesses at a journal id but declared Inara-only spellings, kept so a build
@@ -1330,10 +1339,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   **The fix is two stored facts and no third list.** What the game writes for a recipe is a
   property of the recipe, so it is stored on the recipe: `blueprints.jsonc` gives
   `Scanner_LongRange` and `Scanner_WideAngle` a **`journalName`** naming the id a journal
-  carries. Two of the three records that carry the field — `MC_Overcharged` is the third,
-  below — out of 109; every other key either already *is* the id a journal writes or is a
-  an Operations spelling, which is why the field is absent everywhere else. Which of
-  the two colliding recipes a given module rolls
+  carries. They are two of the three records that carry the field out of 109 —
+  `MC_Overcharged`, below, is the third. Every other key either already *is* the id a
+  journal writes or is an Operations spelling, which is why the field is absent everywhere
+  else. Which of the two colliding recipes a given module rolls
   is a property of the module, and `engineering-options.jsonc` already carries it — the
   menu. `resolveBlueprintForModule` is the join: it asks which blueprint *this module is
   offered* answers to the incoming id. `ShipLoadout.applyBlueprint` resolves before it
@@ -1377,10 +1386,16 @@ up straight through with no disambiguation at all. Both paths are evidence that
   grouped, its group offers the blueprint, and where an experimental is declared the
   module can take it. 70 of the 1889 declare the generic spelling of a family-specific
   recipe (`Misc_LightWeight` on a life support, and so on) and count as offered; the shape
-  of that judgement is pinned in the fixture as `corpus.blueprintAliases`. One more —
-  `Sensor_LongRange` on a wake scanner, in `type9-military-combat-3` — is the journal
-  spelling resolved against `journalName` above, counted separately as
-  `corpus.journalSpellingsAccepted` because it is a different mechanism. The residue is
+  of that judgement is pinned in the fixture as `corpus.blueprintAliases`. A further **71**
+  are a journal spelling resolved against `journalName` above, counted separately as
+  `corpus.journalSpellingsAccepted` because it is a different mechanism — 70 of them
+  `Weapon_Overcharged` on a multi-cannon, which rolls `MC_Overcharged`, and the 71st
+  `Sensor_LongRange` on a wake scanner in `type9-military-combat-3`. And **13** are
+  explained by neither spelling rule but by the *sale*: the module was bought carrying the
+  recipe, so no menu lists it (`corpus.preEngineeredSalesAccepted`; every one is a Guardian
+  weapon — see "an ordinary recipe on a Guardian weapon is a purchase" in §Engineering
+  options). For those 13 the clause "its group offers the blueprint" does not hold, and is
+  not meant to. The residue is
   **13 entries no registry supports**, left as explicit exemptions rather than folded in:
   - `corpus.notOffered` — five `Weapon_HighCapacity` on the Guardian Gauss Cannon and six
     `special_super_penetrator_cooled` on the Guardian Shard Cannon
@@ -1430,11 +1445,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
   community-goal reward or a tech-broker unlock, rather than rolled at an engineer; this
   file answers what a player may apply, so it does not list those. All nine groups
   offering `GuardianModule_Sturdy` therefore list `"experimentals": []`.
-  - **"Whole menu" is the module claim, not a weapon claim.** The Guardian *weapon* groups
-    also offer `GuardianModule_Sturdy`, but it is not the whole of their menu —
-    each also lists one ordinary weapon recipe, which is why the sentence above is scoped
-    to modules. §Engineering compatibility's Guardian Gauss Cannon example ("Rapid Fire and
-    Anti-Guardian Zone Resistance alone") is that same two-recipe menu, and stands.
+  - **"Whole menu" holds for the weapon groups too.** It once did not: `guardianGauss`,
+    `guardianPlasma` and `guardianShard` each also listed one ordinary weapon recipe. They
+    no longer do — an ordinary recipe reaches a Guardian weapon only as a purchase, so it
+    is `pre-engineered.jsonc` that carries it (see "an ordinary recipe on a Guardian weapon
+    is a purchase" in §Engineering options). All nine groups are menus of one recipe.
   - **The reward variants are not catalogued anywhere here, and that is a gap.**
     `pre-engineered.jsonc` carries seven Guardian rows and all seven are **weapons**
     (Gauss, Plasma, Shard), each with a `blueprint` and no `experimental`; there is no
@@ -1509,12 +1524,15 @@ up straight through with no disambiguation at all. Both paths are evidence that
     whether the clip *leg* applies to an AX multi-cannon is a different question, EDSY is
     not silent on it, and it is
     [#48](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48) case B.
-  - **34 clip-bearing modules are still offered a clip-less Overcharged**, in two cases
+  - **28 clip-bearing modules are still offered a clip-less Overcharged**, in two cases
     needing different evidence, tracked at #48. 26 are a registry disagreement — 12
     cannons, 10 fragment cannons, four plasma accelerators, whose groups coriolis covers
-    and gives the clip-less key. The other 8 — two anti-xeno multi-cannons, six Guardian
-    plasma launchers — sit in groups coriolis leaves empty, so they are among the 13
-    resting on EDSY alone and the only registry describing them says the clip drops. The
+    and gives the clip-less key. The other two are the anti-xeno multi-cannons, which sit
+    in a group coriolis leaves empty, so they are among the 13 resting on EDSY alone and
+    the only registry describing them says the clip drops. (It was 34 until the Guardian
+    weapon menus stopped offering the ordinary recipes at all: the six Guardian plasma
+    launchers left this set entirely, being sold with `Weapon_Overcharged` rather than
+    offered it.) The
     three laser groups also list `Weapon_Overcharged` and are unaffected: no laser carries a
     clip.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14
@@ -1537,7 +1555,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     carries `GuardianModule_Sturdy` — the only recipe a player can actually roll onto it.
   - The 182-build community corpus adds **13** more of the same shape (5× and 2× Guardian
     Plasma Launcher Fixed Medium/Small with `Weapon_Overcharged`, 6× Guardian Shard Cannon
-    Fixed Medium with `Weapon_LongRange`) and not one counter-example.
+    Fixed Medium with `Weapon_LongRange`), every one on a variant sold carrying that recipe.
+    The corpus holds five further Guardian-weapon entries — `Weapon_HighCapacity` on a
+    Guardian Gauss Cannon — which the purchase account does *not* explain: no registry
+    lists that recipe for that module and `pre-engineered.jsonc` does not sell it. They are
+    the residue tracked as `corpus.notOffered`, unchanged by this reading and unexplained
+    by it.
 
   So the recipe reaches the weapon by the **pre-engineered route**, which already carries
   every one of these rows, and the menu must not offer it — otherwise
@@ -1549,7 +1572,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
 
 - **Four Operations recipes are listed by a menu.** Most Operations keys belong to modules
   bought already engineered and no menu names them, but `FuelScoop_Efficiency` on
-  `fuelScoops` and `recipe_{pulselaser,burstlaser,beamlaser}_thermalplasmaconversion` on the
+  `fuelScoops` and `{PulseLaser,BurstLaser,BeamLaser}_ThermalPlasmaConversion` on the
   three laser groups are recipes a player applies. (Anti-Guardian Zone Resistance is the
   fifth menu recipe of that kind, listed under the journal spelling `GuardianModule_Sturdy`
   rather than an Operations key.)

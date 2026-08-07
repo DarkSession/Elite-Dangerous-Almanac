@@ -250,6 +250,7 @@
     "pulseLasers": {
       "name": "Pulse Lasers",
       "blueprints": [
+        "PulseLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
         "Weapon_Focused",
         "Weapon_LightWeight",
@@ -257,8 +258,7 @@
         "Weapon_Overcharged",
         "Weapon_RapidFire",
         "Weapon_ShortRange",
-        "Weapon_Sturdy",
-        "PulseLaser_ThermalPlasmaConversion"
+        "Weapon_Sturdy"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -276,6 +276,7 @@
     "burstLasers": {
       "name": "Burst Lasers",
       "blueprints": [
+        "BurstLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
         "Weapon_Focused",
         "Weapon_LightWeight",
@@ -283,8 +284,7 @@
         "Weapon_Overcharged",
         "Weapon_RapidFire",
         "Weapon_ShortRange",
-        "Weapon_Sturdy",
-        "BurstLaser_ThermalPlasmaConversion"
+        "Weapon_Sturdy"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -302,13 +302,13 @@
     "beamLasers": {
       "name": "Beam Lasers",
       "blueprints": [
+        "BeamLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
         "Weapon_LightWeight",
         "Weapon_LongRange",
         "Weapon_Overcharged",
         "Weapon_ShortRange",
-        "Weapon_Sturdy",
-        "BeamLaser_ThermalPlasmaConversion"
+        "Weapon_Sturdy"
       ],
       "experimentals": [
         "special_concordant_sequence",
@@ -616,8 +616,8 @@
     "fuelScoops": {
       "name": "Fuel Scoops",
       "blueprints": [
-        "FuelScoop_Shielded",
-        "FuelScoop_Efficiency"
+        "FuelScoop_Efficiency",
+        "FuelScoop_Shielded"
       ],
       "experimentals": []
     },
@@ -767,17 +767,23 @@
     },
     "guardianGauss": {
       "name": "Exp - Guardian Gauss",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     "guardianPlasma": {
       "name": "Exp - Guardian Plasma",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     },
     "guardianShard": {
       "name": "Exp - Guardian Shard",
-      "blueprints": ["GuardianModule_Sturdy"],
+      "blueprints": [
+        "GuardianModule_Sturdy"
+      ],
       "experimentals": []
     }
   },

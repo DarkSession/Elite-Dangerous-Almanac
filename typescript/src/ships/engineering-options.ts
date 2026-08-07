@@ -29,10 +29,10 @@
  * other Guardian module families — FSD boosters, module and shield reinforcement — are the
  * same. A Guardian module carrying an experimental was obtained already engineered, as a
  * community-goal or tech-broker reward, rather than rolled at an engineer; this menu
- * answers what a player may apply, so it does not list those. (Guardian **weapons** are a
- * same shape: their menus are that one recipe too, because an ordinary weapon recipe on a
- * Guardian weapon is always a purchase rather than an engineer roll — `ships/pre-engineered`
- * carries those.)
+ * answers what a player may apply, so it does not list those. (Guardian **weapons** are
+ * the same shape: their menus are that one recipe too, because an ordinary weapon recipe
+ * on a Guardian weapon is always a purchase rather than an engineer roll —
+ * `ships/pre-engineered` carries those.)
  *
  * Its own module (and data file) so a consumer who only reads it pays for nothing else —
  * 62 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.

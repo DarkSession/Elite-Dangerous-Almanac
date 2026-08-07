@@ -297,7 +297,8 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
 test('no blueprint is keyed by the registry prefix no game data uses', () => {
     // Inara publishes the Operations recipes prefixed (`recipe_fuelscoop_efficiency`);
     // coriolis and EDSY use no such prefix, and neither does any observed build — a real
-    // SLEF export writes the Mercenary reinforcement as `ModuleReinforcement_HeavyDuty`.
+    // SLEF export writes the Mercenary reinforcement as `modulereinforcement_heavyduty`
+    // (Inara lower-cases everything; the raw journal supplies the casing used here).
     // So the keys here are the registry id minus the prefix, and the only two that keep it
     // are declared aliases for a recipe whose real name is a key in its own right.
     const ops = fixture.journalSpellings.operationsKeys;
