@@ -1,6 +1,6 @@
 # Data sources — `data/commodities/`
 
-**Library snapshot:** 2026-07-24, plus one record added 2026-08-02 (see Standard commodities below). **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24; one record comes from a player-journal observation instead, recorded under Standard commodities below. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 Attribution for the market-commodity data files in this directory. This file is the
 long form; each data file also repeats its own credit in a comment header, so the
@@ -28,7 +28,7 @@ See AGENTS.md §Attribution for how to consume them.
   Drugs`). The CSV's numeric `id` column is dropped — commodities are keyed by
   `symbol`. The `NonMarketable` group (its one member, symbol `Drones`, is Limpets) is
   retained: a registry must resolve every symbol the market can report.
-- **Manual addition (2026-08-02):** one record is **not** from FDevIDs —
+- **One record is not from FDevIDs** (acquired 2026-08-02 UTC) —
   `curatedcommodity` / "Curated Commodity Package". Acquired from a player-journal
   `MarketBuy` event timestamped `2026-08-01T16:12:01Z` (`MarketID` 128667761,
   `BuyPrice` 347), which supplies the `symbol` (`Type`) and `name` (`Type_Localised`)

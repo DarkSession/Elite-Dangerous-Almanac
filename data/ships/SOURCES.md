@@ -1,141 +1,162 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the Guardian experimental-slot correction of 2026-08-07, recorded inline under §Engineering options (what each module can take) in the bullet "A Guardian module has no experimental slot"; before it, three passes of 2026-08-06: the module-record pass in the revision block immediately below, the scanner-id pass recorded under §Engineering options (what each module can take) in "Scanner Long Range and Wide Angle: one journal id, two recipes", and the corrosion-rack pass recorded under §Modules (outfitting) in the bullet "`_Size2_Class1` is removed, and sizes 5 and 6 are confirmed Community Goal rewards"; before them, the restricted-mount pass of 2026-08-05. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised since. **Initial upstream revision:** not
+recorded. See `../SNAPSHOTS.md` for the update policy and that known limitation. Each
+section below carries the provenance of the catalogue it describes — the source, the
+revision it was read at, the derivation, and every value that came from somewhere else.
 
-**Revision 2026-08-06 (UTC), the module-record pass — the outfitting category is the
-file it is in, and a core module names the mount it fills.**
-No new upstream snapshot: this pass re-shapes what `modules-*.jsonc` stores, not what
-it says about the game. Two changes, in opposite directions.
+## Upstream snapshots this domain is pinned to
 
-**`category` is gone from the payload.** Every record in `modules-core.jsonc` said
-`"category": "core"`, every record in `modules-hardpoint.jsonc` said `"hardpoint"`, and
-so on for all 1197 — a fact the four-way file split already carried, repeated once per
-record into every consumer's bundle. Each language's loader now adds it from the file it
-read, so every field a consumer reads still reads the same (the key order within a
-record does change: `category` moves to the end of it). §Modules (outfitting) below records
-the derivation, which is a rename of nothing: the CSV's `category` column is exactly
-which file a record was already sorted into.
+Referred to throughout by source name; the pin is here, once.
 
-**`slot` is new, and covers what `category` never could.** `core` is not a mount, it is
-eight of them, so "which core modules fit this hull's FSD mount?" was a question this
-catalogue could not answer and every consumer had to answer for itself by matching
-symbol prefixes — as this library did, in a hard-coded table inside `ShipLoadout`. Every
-core record now names its mount (`armour`, or one of the seven core functions), as do
-the fifteen Guardian Hybrid power plants and distributors that live in
-`modules-internal.jsonc` because FDevIDs files them there. The classification, the
-records that carry no `slot` at all, and why a fuel tank is the exception, are recorded
-under §Modules (outfitting).
+| Source                                                                                                   | Pin                                                                                                                                                          | Acquired      |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
+| [EDCD FDevIDs](https://github.com/EDCD/FDevIDs) — `shipyard.csv`, `outfitting.csv`                       | no immutable revision recorded                                                                                                                               | 2026-07-24 UTC |
+| [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) — `ships/*.json`, `modules/**`, `modifications/*` | commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`                                                                                                            | 2026-07-24 UTC |
+| coriolis-data `modifications/modules.json`                                                               | SHA-256 `09b6427c86bc3cfb578a246f7c6be1791429bb67009b7adaa7909e30aadc160f` — read from the branch tip, so pinned by digest                                    | 2026-08-05 UTC |
+| [EDSY](https://github.com/taleden/EDSY) `eddb.js`                                                        | commit `cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, internal `db 20260428` / `version 423039901` | 2026-08-02 UTC |
+| [EDSY](https://github.com/taleden/EDSY) `edsy.js`                                                        | SHA-256 `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5` — read from the branch tip, so pinned by digest                                    | 2026-08-06 UTC |
+| [EDCD/Coriolis](https://github.com/EDCD/coriolis) — the application, for its formulas                     | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                            | 2026-08-01 UTC |
 
-**Revision 2026-08-05 (UTC), the restricted-mount pass — a mount reserved to passenger
-cabins is now stored as one, and a module reserved to a mount says so itself.**
-Two of the four rules
-[issue #11](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11) records are
-now modelled. The first adds a seventh `restriction` value, `passenger`, to the Lynx
-Highliner's three cabin mounts; the second adds a module-side field,
-`restrictedToSlot`, naming the mount a module fits *and no other* — the mirror of a
-mount's `restriction`, and the half `restrictedToShips` could not express. Both are
-rules the sources already carried and this catalogue approximated or dropped.
+Every read of `eddb.js` recorded here is of that one byte-identical snapshot; where a
+later section describes a field taken from it, that is the same file read for something
+the earlier ones did not take, not a new acquisition.
 
-**Sources.** No new registry snapshot: EDSY `eddb.js` and
-[EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) at the commits already
-recorded below (`967834d6…` / `db 20260428` and
-`0db9234b5b9ce8c939ea84133d7ce336eea88e27`). What is new is **two real captures**,
-`fixtures/ships/slef-inara-lynx-highliner.json` and `slef-inara-panther-mkii.json`,
-Inara SLEF exports contributed by the repository owner from their own fleet and scrubbed
-to the producing app and version — the commander link and account ids are gone from
-**these two**, the game data is not. (The Type-11 export acquired on 2026-08-04 still
-carries its header ids, recorded under §Ground-truth builds; this pass did not revisit
-it.) They are the ground truth the earlier revision said this rule needed.
+**Licence positions, once.** FDevIDs states none — consult the repository terms before
+redistributing the raw identifiers. coriolis-data's and Coriolis's MIT licence covers
+their *code*; their JSON values do not fall under it. EDSY is © taleden under
+[CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/). The stat, slot and
+price values in this directory are Elite Dangerous game data, the property of Frontier
+Developments plc, redistributed under [Frontier's media-usage
+terms](https://forums.frontier.co.uk/threads/510879/).
 
-- **`passenger`, on `Passenger01`–`Passenger03`.** EDSY reserves the Lynx's three
-  cabin mounts to `{ipc:1}`. That alone was not enough to store the rule: `PASSENGER`
-  is the one restricted family absent from EDSY's journal import map, and its `ipc`
-  eligibility check is commented out in `edsy.js`, so nothing confirmed the journal
-  spelling. **The Lynx capture settles it**: its `passenger01`, `passenger02` and
-  `passenger03` each hold an `int_mkii_passengercabin_*`, the keys spelled exactly as
-  the numbering rules and the stored names give them. A second, independent confirmation
-  comes from the catalogue itself — the Lynx's `Slot02_Size5` follows the three cabin
-  mounts, which only comes out right if a cabin mount is a *restricted* one and so
-  consumes no `SlotNN` number. That the game's own numbering needs the restriction to
-  make sense is why the hull now joins the two whose stored names the rules re-derive
-  unaided, and `slots.test.ts` asserts it.
-  **What the mount accepts** is both cabin families entire — the 14
-  `Int_PassengerCabin_*` records (sizes 2–6, economy through luxury, the higher classes
-  only on the larger sizes) and the 9 `Int_MkII_PassengerCabin_*` (sizes 2–6, economy
-  and business; the Mk II family has no first-class or luxury cabin). No fuel tank,
-  which every *other* optional mount takes.
-- **`restrictedToSlot`, on five module records.** The 2026-08-04 pass gave the two Mk II
-  Cargo Racks `restrictedToShips: ["PantherMkII"]` and noted the sources said something
-  stronger that the catalogue could not then express: EDSY refuses a reserved `icr`
-  outside a slot named `CARGO*`, and coriolis-data carries `"restriction": "Cargo"` on
-  the module. The same shape holds for the Mk II Mining Multi-Limpet Controller against
-  `LIMPETCONTROLLER*`. Both are now stored, and the **Panther capture** shows the game
-  agreeing: its two Mk II racks sit in `cargo01` and `cargo02` while its *unrestricted*
-  `slot01_size8` and `slot02_size7` carry ordinary racks — a build that could not exist
-  if the reservation were about size. The Type-11 capture already recorded below does
-  the same for the controller, in `limpetcontroller01`.
-  The two **planetary approach suites** take the field too. Nothing about them changed;
-  the rule was previously two hard-coded checks in `ShipLoadout`, and it is now the same
-  data as the other three, which is what the issue asked for.
-  The field is deliberately **narrow**: it says a module fits *only* mounts with that
-  restriction, so it is wrong on anything the game also sells for an ordinary optional.
-  A plain cargo rack fits a `cargo` mount *and* every unrestricted one, and does not
-  carry it. `modules.test.ts` pins the set of five so widening it is a deliberate act.
+**Some values come from no registry at all** — readings taken from the live game's own
+outfitting, module and engineering panels, and captures contributed by the repository
+owner from their own fleet. Each is named where it is used, because it cannot be
+re-derived from a public source: the shared fixtures pinning it are the only guard it
+has.
 
-**What this supersedes.** The slot-names revision immediately below says of the Lynx's
-three mounts that "this catalogue still stores them as ordinary optionals" and that
-"`parseSlotName` classifies `PassengerNN` as the optional it is, with no restriction";
-both were true when written and are now not. Its closing note that "a test asserts the
-rules still produce those two unaided" now covers three hulls, the Lynx included. The
-standing Lynx Highliner entry under §Ships has been corrected in place rather than left
-to contradict this block.
+This file is the long form of the attribution for the ship and outfitting data files in
+this directory; each data file also repeats its own credit in a comment header, so the
+provenance meets you where you meet the data.
 
-**The other two rules were never rules** (corrected 2026-08-06, closing issue #11).
-This block, and the `SlotRestriction` doc comment with it, recorded two omissions the
-catalogue was said to be carrying: that no hull records a hardpoint taking only one
-*mount* (fixed, gimballed or turret), and that a size-0 utility mount cannot carry a
-restriction. Neither is a rule the game has — there are no mount-type restrictions on
-hardpoints and no restricted utility mounts — so there was nothing to model in either
-case. That is why neither ever had a source saying what to store; the missing source
-was the evidence, read at the time as a gap in this catalogue rather than as the
-absence of the rule. `SlotRestriction`'s seven values are the complete set, not a
-subset the hull layouts happen to reach.
+The data files are **JSONC** (`.jsonc`): attribution lives in a comment so it
+documents the file without becoming part of the payload every consumer inlines
+into their bundle. Comments are the only JSONC extension used — no trailing commas —
+so stripping comments leaves strict JSON any language's standard parser accepts.
+See AGENTS.md §Attribution for how to consume them.
 
-**Revision 2026-08-05 (UTC) — the mounts of 13 hulls now carry the journal's own slot
-names.**
-`enumerateSlots` numbered a hull's unrestricted optionals `Slot01_SizeN`, `Slot02_SizeN`,
+## Ships
+
+Each hull is **one record** carrying its identity, its stats, and its slot layout —
+identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
+
+- **Files:** `ships.jsonc` (48 player-flyable hulls) and `fixtures/ships/ships.json`,
+  `ship-stats.json`, `ship-slots.json` (the stats and slots halves keep their own
+  parity fixtures).
+- **Identity source:** FDevIDs `shipyard.csv`, columns `id,symbol,name,entitlement`.
+- **Identity derivation:** records are carried over in shipyard order (roughly the
+  order hulls were introduced): internal `symbol` and display `name`. The CSV's
+  numeric ship-type `id` column is dropped — hulls are keyed by `symbol`.
+  `entitlement` is FDevIDs' DLC/grant token, kept only where the CSV gives one (28 of
+  the 48 hulls carry no entitlement, so the field is omitted rather than stored empty).
+- **Stats + slots source:** coriolis-data `ships/*.json` — `properties` for stats,
+  `slots` + `bulkheads` for the layout.
+- **Stats derivation:** acquisition normalisation looks up each hull's coriolis
+  record by display name (normalised; coriolis "Viper" ⇒ registry "Viper MkIII") and
+  copies a fixed whitelist of `properties` fields (`hullMass`, `speed`, `boost`,
+  `baseArmour`, …). The repository's
+  `scripts/data/ships/merge-normalized-catalogues.mjs` then performs the deterministic
+  symbol join, preserving registry order and rejecting duplicate or unmatched input.
+  Masses are tonnes, speeds m/s, rotation rates deg/s.
+- **Slots derivation:** coriolis's fixed-order `slots.standard` seven-array becomes
+  the seven named `core` sizes (power plant, thrusters, frame shift drive, life
+  support, power distributor, sensors, fuel tank); `slots.hardpoints` splits into
+  `hardpoints` (the non-zero weapon mounts) and `utility` (the count of zero
+  entries); `slots.internal` becomes `optional`. Both `hardpoints` and `optional` are
+  arrays of `{ size, restriction?, name? }` — the two fields below. Coriolis's per-hull
+  `bulkheads` are **not** kept on the hull: they are joined onto that hull's armour
+  modules instead (see "Modules"), because armour is a module and the catalogue keeps a
+  module's stats with the module. **Slot keys** are journal-compatible
+  (`FrameShiftDrive`, `HugeHardpoint1`, `TinyHardpoint2`, `Slot01_Size6`, `Military01`,
+  `PlanetaryApproachSuite`), so a build assembled from an empty hull and one loaded
+  from a SLEF export share one vocabulary. See `typescript/src/ships/slots.ts`.
+
+### `restriction` — a mount that takes one family of modules
+
+Seven values: `mining` on a hardpoint, and `military`, `planetaryApproachSuite`,
+`cargo`, `limpetController`, `vesselHangar` or `passenger` on an optional. Those seven
+are the complete set the game has, not a subset these layouts happen to reach: there
+are no mount-type restrictions on hardpoints (fixed/gimballed/turret) and no restricted
+utility mounts, so neither has a value here and neither is a gap.
+
+**Both registries carry the rule, and they agree mount-for-mount.**
+
+- **coriolis-data** writes a restricted mount as an object rather than a bare size:
+  `ships/type_11_prospector.json` has `{ "class": 3, "name": "Mining", "eligible": {
+  "abl": 1, "ml": 1, "mvr": 1, "pwa": 1, "scl": 1, "sdm": 1 } }` for the large mount and
+  `{ "class": 5, "name": "Limpets", … }` / `{ "class": 5, "name": "Fighter", "eligible":
+  { "fh": 1 } }` for two of its optionals, and `ships/panther_clipper.json` the same
+  `"name": "Cargo"` object with `"eligible": { "cr": 1, "crl": 1, "ft": 1 }` on its
+  first size-8 mount and on its first size-**7** — not on the two size-8s.
+- **EDSY** `eddb.js` carries it as a per-slot `reserved` map — `{hmtl:1,hmtm:1}` on the
+  Type-11's mounts 0, 1, 2 and 4, `{iclc,idlc,iftlc,ihblc,imlc,iplc,inlc,irlc,islc}` and
+  `{ifh:1}` on its two restricted optionals, `{cft:1,icr:1}` on the Panther's two, and
+  `{ipc:1}` on the Lynx Highliner's three cabin mounts.
+
+They differ on exactly one entry: coriolis lists `pwa` (the Pulse Wave Analyser) as
+eligible for a mining hardpoint. It is a **utility** fitting in both registries and in
+this catalogue, and no utility module fits a hardpoint of any kind, so the difference is
+a grouping artefact and is not stored. Coriolis's `sdm` group and EDSY's `hmtm` both
+include the Sub-Surface Extraction Missile (`Hpt_Human_Extraction_Fixed_Medium`)
+alongside the displacement missile it varies, so it counts as a mining tool despite its
+unrelated symbol.
+
+**`passenger` rests on a capture as well as on EDSY**, and needs to. `PASSENGER` is the
+one restricted family absent from EDSY's journal import map and its `ipc` eligibility
+check is commented out in `edsy.js`, so the reservation alone confirmed no journal
+spelling. `fixtures/ships/slef-inara-lynx-highliner.json` settles it: its `passenger01`,
+`passenger02` and `passenger03` each hold an `int_mkii_passengercabin_*`, spelled
+exactly as the numbering rules and the stored names give them. The catalogue itself
+corroborates independently — the Lynx's `Slot02_Size5` follows the three cabin mounts,
+which only comes out right if a cabin mount is a *restricted* one and so consumes no
+`SlotNN` number. `slots.test.ts` asserts that. What the mount accepts is both cabin
+families entire: the 14 `Int_PassengerCabin_*` records (sizes 2–6, economy through
+luxury, the higher classes only on the larger sizes) and the 9
+`Int_MkII_PassengerCabin_*` (sizes 2–6, economy and business; the Mk II family has no
+first-class or luxury cabin). No fuel tank, which every *other* optional mount takes.
+
+**Which module families each restriction accepts is pinned** in
+`fixtures/ships/ship-slots.json` under `restrictions`: one entry per restricted mount
+naming modules it must accept and modules it must refuse, plus one unrestricted mount
+for contrast. That is a fact about the game rather than about any implementation, so it
+belongs in the shared fixtures and not only in the TypeScript prefix lists.
+
+### `name` — the journal's own key for a mount, on the 13 hulls that need one
+
+`enumerateSlots` numbers a hull's unrestricted optionals `Slot01_SizeN`, `Slot02_SizeN`,
 … with no gaps and its hardpoints `1, 2, 3` within each size class. **On 11 hulls one of
 those two rules is not what the game does** — the optional rule on nine of them, the
-hardpoint rule on the Type-8 Transporter and Caspian Explorer — and the sequences have no
-derivable pattern, so storing the game's name against the mount is the only honest fix. Those 11 and the 2 more
-EDSY names (see the last bullet below) each gain a `name` on the mounts themselves —
-`{ "size": 1, "name": "Slot14_Size1" }` — the same place the 2026-08-04 pass put
-`restriction`, and for the same reason: a fact about one mount belongs on that mount, not
-in a register beside it that has to be kept aligned by position. A mount with no `name`
-is one the rules already get right; a hull that names any mount of a kind names all of
-them, so a derived key and a name can never compete for the same string.
+hardpoint rule on the Type-8 Transporter and Caspian Explorer — and the sequences have
+no derivable pattern, so the game's name is stored against the mount:
+`{ "size": 1, "name": "Slot14_Size1" }`. A mount with **no** `name` is one the rules
+already get right; a hull that names any mount of a kind names all of them, so a derived
+key and a stored name can never compete for the same string.
 
-**Source.** [EDSY](https://github.com/taleden/EDSY) `eddb.js` `ship[…].slotnames`,
-acquired 2026-08-05 (UTC) from `raw.githubusercontent.com/taleden/EDSY/master/eddb.js`.
-The file is **byte-identical to the one already recorded** in the 2026-08-02 revision
-below — SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`,
-internal `db 20260428`, `version 423039901`, commit
-`cd68edfba665719958ce038b6e5d9eb02d0d2b02` — so this is the same snapshot read for a
-field the earlier passes did not take, not a new acquisition. These are **journal**
-names rather than EDSY's own: `edsy.js` reads them in `Build.fromJournal()` and writes
-them in `exportJournal()`. Only EDSY carries them; coriolis-data does not model journal
-slot names at all, so the second source a value like this would normally want would have
-to be real journal captures. One is in hand and agrees — see "checked against a real
-capture" below.
+**Source:** EDSY `eddb.js` `ship[…].slotnames`. These are **journal** names rather than
+EDSY's own — `edsy.js` reads them in `Build.fromJournal()` and writes them in
+`exportJournal()`. Only EDSY carries them; coriolis-data does not model journal slot
+names at all, so the corroborating source has to be real journal captures, and two are
+in hand (below).
 
 **Derivation.** EDSY keeps `military` mounts in a group of their own and does not model
 the planetary approach suite; this catalogue keeps both inline in `optional`. The two
-lists were therefore walked in parallel: every mount consumed the next EDSY name except
-a `military` one (which takes `Military01`, `Military02` — the rule already in force)
-and the `planetaryApproachSuite` one (`PlanetaryApproachSuite`). Two facts were asserted
-for all 13 before anything was written, and both hold: EDSY's `slots` sizes equal this
-catalogue's mount-for-mount, and its name list is exactly consumed. **So this is a
-naming difference alone — no hull's layout, mount count or size changed.**
+lists are therefore walked in parallel: every mount consumes the next EDSY name except a
+`military` one (which takes `Military01`, `Military02`) and the `planetaryApproachSuite`
+one. Two facts hold for all 13 and are asserted before anything is written: EDSY's
+`slots` sizes equal this catalogue's mount-for-mount, and its name list is exactly
+consumed. **So this is a naming difference alone — no hull's layout, mount count or size
+differs from coriolis's.**
 
 - **Anaconda** `…Slot10_Size4`, then **`Slot13_Size2`, `Slot14_Size1`** — no 11 or 12.
 - **Type-9 Heavy** starts at **`Slot00_Size8`**, the only hull that does, then runs
@@ -152,20 +173,15 @@ naming difference alone — no hull's layout, mount count or size changed.**
   `SmallHardpoint5`, `SmallHardpoint6` — no `SmallHardpoint3`.
 - **Caspian Explorer** *hardpoints* `LargeHardpoint1`, **`MediumHardpoint6`**,
   **`MediumHardpoint5`**, `MediumHardpoint1`…`4` — out of order, not merely gapped, so
-  before this a weapon fitted here sat in a *different physical mount* than the same key
-  named in game. Its optionals are **not** overridden: EDSY gives none, and the real
-  capture below confirms the plain numbering is right for them.
-- **Lynx Highliner** `Slot01_Size6`, **`Passenger01`–`03`**, `Slot02_Size5`, … The three
-  are the passenger-cabin mounts EDSY marks `reserved:{ipc:1}`; this catalogue still
-  stores them as ordinary optionals, because the *restriction* is
-  [issue #11](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11) and this
-  revision is about names. `parseSlotName` classifies `PassengerNN` as the optional it
-  is, with no restriction.
+  the same key names a *different physical mount* than position would suggest. Its
+  optionals are **not** overridden: EDSY gives none, and the Caspian capture below
+  confirms the plain numbering is right for them.
+- **Lynx Highliner** `Slot01_Size6`, **`Passenger01`–`03`**, `Slot02_Size5`, …
 - **Panther Clipper Mk II** and **Type-11 Prospector** are carried too, though the
-  numbering rules already derive them exactly (the 2026-08-04 pass fixed that). They are
-  kept so the stored table matches EDSY's 13 entries one for one and re-deriving it is a
-  straight comparison; a test asserts the rules still produce those two unaided, so
-  neither the rule nor its coverage is weakened by the override sitting on top.
+  numbering rules derive them exactly. They are kept so the stored table matches EDSY's
+  13 entries one for one and re-deriving it is a straight comparison; a test asserts the
+  rules still produce those two unaided, so neither the rule nor its coverage is
+  weakened by the override sitting on top.
 
 **The `_SizeN` suffix is Frontier's, and on three hulls it is wrong.** The Keelback, Asp
 Scout and Type-7 name mounts with a class the hull does not have there. That is the
@@ -173,570 +189,49 @@ game's own text, not a transcription slip: `edsy.js` compensates for exactly thi
 importing, taking the greater of the name's size and the fitted module's class. This
 catalogue stores the name verbatim and keeps the mount's real size in the `optional`
 entry beside it, so `BuildSlot.size` is always the mount's. `parseSlotName` reads the
-size *off the name* by design and its doc now says so.
+size *off the name* by design, and its doc says so.
 
-**Checked against a real capture.** `fixtures/ships/slef-the-deep-black.json` is a
-Caspian Explorer journal export and `fixtures/ships/slef-inara-type-11.json` a Type-11
-one; every slot key in both is now a mount the hull's enumerated layout declares, which
-`slots.test.ts` asserts. The Caspian capture is the load-bearing one: its internals read
-`Slot01_Size7`…`Slot10_Size3`, `Slot13_Size1`, `Slot14_Size1`, all of which the plain
-numbering already produces — evidence for leaving that hull's optionals alone rather
-than assuming EDSY simply omitted them.
-
-**What moved and what did not.** The corpus holds 45 builds on these 13 hulls; 35 of them
-had a module in a renamed mount and were re-slotted onto the corrected keys — 151 slot
-keys in all — each module staying in the *same physical mount*, so no build's fit changed
-and no pinned metric moved. The other 10 needed no edit. All 13 hulls' full
-enumerated key lists are pinned in `fixtures/ships/ship-slots.json` under `keys` (it held
-two before), and the `spot` layouts carry their mount names, so a port produces the same
-vocabulary. The consequence this closes is one-directional and was
-[issue #15](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/15): a build
-assembled here emitted slot keys a game journal would not use, so its SLEF export named
-slots the game does not have. Import gains too — a journal key like `Slot13_Size2` now
-binds to the mount it names instead of sitting beside the layout as an extra.
-
-**Revision 2026-08-05 (UTC), later the same day — the base stats blueprints modify are
-now carried, so a real build can be engineered.** `applyBlueprint` refuses a recipe whose
-base stats a module record does not hold, and 405 of the 1902 declared engineering entries
-in `fixtures/ships/builds/` were being refused for exactly that: the most-used blueprints
-in the game moved stats no record had. Thirteen stat fields are added and two backfilled;
-after this pass every one of those 1902 entries resolves. Counts and spot values are
-pinned in `fixtures/ships/module-stats.json` (`statCounts`, `spot`) and the corpus-wide
-claim in `builds.test.ts`.
-
-- **Sources.** EDSY `eddb.js` is the primary source for every field here — it is the only
-  one of the two registries that carries the heat rates and the scanner stats at all. The
-  file was re-read from `master` on 2026-08-05 (UTC) and is **byte-identical to the
-  revision already recorded on this page**: SHA-256
-  `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, so the commit pin
-  `cd68edfba665719958ce038b6e5d9eb02d0d2b02` still describes it. EDSY is (c) taleden under
-  **CC BY-NC 4.0**; the values are Elite Dangerous game data, the property of Frontier
-  Developments plc, redistributed under Frontier's media-usage terms. Cross-checked
-  against [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) at the commit this
-  domain already uses, `0db9234b5b9ce8c939ea84133d7ce336eea88e27` (`modules/**`,
-  `modifications/modifierActions.json`, `modifications/blueprints.json`).
-- **Which upstream field is which.** coriolis's `modifications/modifierActions.json` maps
-  each journal Modifier Label to the field it moves, and is what settled the joins:
-  `EngineHeatRate`/`FSDHeatRate`/`ShieldBankHeat` → `thermload`, `EnergyPerRegen` →
-  `distdraw`, `ShieldBankReinforcement` → `shieldreinforcement`, `ShieldBankSpinUp` →
-  `spinup`, `ShieldBankDuration` → `duration`, `ScannerRange` → `range`,
-  `SensorTargetScanAngle`/`MaxAngle` → `angle`, `ScannerTimeToScan` → `scantime`,
-  `FSDInterdictorFacingLimit` → `facinglimit`, `FSDInterdictorRange` → `ranget`. EDSY's
-  own attribute table names the same stats `engheat`, `fsdheat`, `scbheat`, `genpwr`,
-  `shieldrnfps`, `spinup`, `scbdur`, `scanrng`/`typemis`, `maxangle`/`scanangle`,
-  `scantime`, `facinglim`, `timerng`, `scooprate` and `proberad`.
-- **The two registries agree everywhere both carry a value.** Shield cell banks, the
-  interdictors, the utility scanners, the sensor suites and the shield generators were
-  compared record by record; the one difference is a rounding, coriolis's `duration: 17`
-  against EDSY's `scbdur: 17.1` on the 8A cell bank, and EDSY's figure is kept as the more
-  precise. coriolis carries **no** `thermload` on thrusters or drives despite naming the
-  field in `modifierActions.json`, which is why EDSY is primary here.
-- **Units, where the two disagree about them.** `scannerRange` is stored in **metres**
-  throughout, which is what a journal reports and what EDSY stores; coriolis holds a
-  sensor suite's as kilometres (`5.76` for the 8D suite, `5760` here) and a utility
-  scanner's as metres. `probeRadius` is stored as a **percentage** (`20`), not a
-  fraction: that is EDSY's form, coriolis's `proberadius: 0.2` is the other, and the
-  journal capture already in this repository settles it — `fixtures/ships/journal-krait-phantom.json`
-  reports the Detailed Surface Scanner's `DSS_PatchRadius` as `20` → `28` for a grade-4
-  Expanded Probe Scanning Radius roll. `interdictorRange` is **seconds to intercept**, the
-  unit the game measures a supercruise separation in, not a distance.
-- **Two of the added stats duplicate a number the record already had, and that is
-  deliberate.** A utility scanner's `scannerRange` is the same distance as its
-  `maximumRange`, and a shield cell bank's `shieldBankHeat` the same figure as its
-  `thermalLoad` — one upstream field each, read under two names. Dropping either would
-  change what a consumer already reads, and dropping the new name would leave the sensor
-  suites (which have no `maximumRange`) and the Pulse Wave Analyser (which has none
-  either) modelled differently from their siblings. Both pairs are kept in step instead:
-  `ScannerRange` and `ShieldBankHeat` each map to both fields in `module-stat-labels.ts`,
-  so an engineered scanner or cell bank reads the same whichever field is asked.
-- **Values no third-party registry lists, derived from the family rule.** Eight records
-  carrying nine figures: the three `*_free` starter fittings (thrusters, drive, sensors —
-  the sensors contribute both a `scannerRange` and a `scanAngle`) and the five plain
-  size-8 drives. Each `*_free` record is byte-identical to its priced twin apart from the
-  missing `cost`, so it takes that twin's value. A drive's heat rate is a function of its
-  **size alone** across all 66 records EDSY does carry — 10, 14, 18, 27, 37, 43 for sizes
-  2 to 7, identical between the plain and SCO lines at every size — and the size-8 SCO
-  drives are 50, so the size-8 plain drives take 50. Stated here as derivation, not as a
-  reading: no registry publishes these nine figures.
-  - **The Mk II supercharge-optimised size-8 SCO drive is _not_ among them**, though an
-    earlier draft of this revision counted it as one. EDSY publishes its `fsdheat: 50`
-    outright; it was missed because EDSY spells the fdname
-    `Int_Hyperdrive_Overcharge_Size8_Class5_Overchargebooster_MkII` where the outfitting
-    registry this catalogue is keyed on capitalises the `B`. Matching case-insensitively,
-    as every lookup in this library already does, makes it a reading. The value is the
-    same either way; the provenance is not.
-- **Four records read from a commented-out upstream row.** The three withdrawn Discovery
-  Scanners (`Int_StellarBodyDiscoveryScanner_{Standard,Intermediate,Advanced}`) and the
-  free twin of the first take `scanAngle: 10` and `scanTime: 5` from EDSY's row for them,
-  which the file keeps but comments out — `/* removed, now built-in */`, the modules
-  having left the game in 3.3. The same precedent as `special_feedback_cascade` below.
-  The values matter because these four are `scanner`-family, so `Scanner_WideAngle` (both
-  legs) and `Sensor_FastScan` (the scan time) reach them: without a base those legs would
-  be silently dropped as "the module has no such stat", which is untrue of them.
-  Their `activerng` / `passiverng` — a detection radius in light-seconds, and infinite on
-  the Advanced — are a different quantity from `scannerRange` and are deliberately not
-  mapped, so a discovery scanner has no scan *range* in the sense the label means.
-  `Scanner_LongRange` refuses on them regardless, on their unknown and declared
-  `powerDraw`.
-- **`shotSpeed` and `reloadTime` needed almost nothing.** Neither absence is a gap. The
-  49 weapons with no `shotSpeed` are the lasers, rail guns, Gauss cannons and mine
-  launchers — nothing there travels, so there is no projectile speed to move. The 43 that
-  had no `reloadTime` are a *different and smaller* family, the pulse, burst, beam and
-  mining lasers alone: they have no clip and never reload, while rail guns, Gauss cannons
-  and mine launchers all reload and all carry the stat. Neither registry publishes a
-  figure for either set, and EDSY's per-family `modifiable` lists say outright that the
-  game does not move those stats on those weapons. The **two** real omissions were the
-  medium Seismic Charge Launchers, fixed and turreted, whose `reloadTime` of 1 s EDSY
-  carries (`rldtime`) and this catalogue had dropped; both are filled, leaving 41 records
-  with no `reloadTime`. Nothing was invented for the other 90.
-- **`EnergyPerRegen` needed no data at all.** All 57 shield generators already carried
-  `distributorDraw`, and EDSY (`genpwr`) and coriolis (`distdraw`) both confirm it is the
-  same stat under the journal's other name. It was a missing line in the label map, not a
-  missing value, and it alone accounted for 36 of the 405 refusals.
-- **`refuelRate` is not on issue #10's list**, which was measured from the corpus and no
-  corpus build carries a fuel-scoop recipe. It is the same defect — `recipe_fuelscoop_efficiency`
-  moves `RefuelRate` and no record held one — so it is closed here rather than left as the
-  last hole of its kind. Stored in tonnes per second (EDSY `scooprate`); coriolis's `rate`
-  is the same figure in kilograms.
-- **What is still refused, and why that is right.** Two things, after this pass. A stat a
-  record declares **unknown** — the Resource Siphon controller's mass, the withdrawn
-  Discovery Scanners' power draw — still refuses every recipe that scales it, because
-  nothing can be scaled from an unknown. And `GuardianModuleResistance` refuses
-  everywhere, because it is not a number: EDSY stores Anti-Guardian Zone Resistance as a
-  flag the recipe *grants*, and this record shape has no field for it
-  ([issue #27](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27)). Beyond
-  base stats, 14 corpus entries are refused because the engineering menu does not offer
-  that recipe on that module — the residue recorded under §Engineering compatibility, not
-  a missing stat.
-- **A weapon with no maximum range now loses Long Range's falloff leg too.** That leg is
-  stored upstream as an overwrite in `[0, 1]` — a flag meaning "damage falls off from
-  maximum range" — which the calculator resolves to the weapon's own range. On the 33
-  weapons `Weapon_LongRange` reaches that have no range at all (missile and torpedo racks,
-  mine launchers, flak mortars, the AX dumbfires) there is nothing to resolve against, and
-  the recipe's `Range` leg is inert there for the same reason; the flag is dropped rather
-  than published as a one-metre falloff. Seven of the 33 do carry a real `falloffRange` —
-  the flak mortars, the AX dumbfire missiles and the Disruptor pulse laser — and keep it
-  unchanged: only the sentinel is ever dropped, and no record's `falloffRange` is small
-  enough to be mistaken for one. Before this pass the whole recipe was refused on all 33,
-  so the path was unreachable.
-- **A hull reinforcement package's hull boost is computed, not stored.** Its
-  `DefenceModifierHealthMultiplier` leg used to be refused as a missing base stat. It is
-  not one: a percentage-of-a-multiplier stat has no absent state, because no hull boost is
-  a ×1 multiplier — 0% — and EDSY says so explicitly (`hullbst`, `default: 0`,
-  `modmod: 100`). The calculator now compounds from that zero, which is why a package can
-  be engineered to a hull boost it never had and why a journal reports the leg with
-  `OriginalValue: 0`. No value was added to any record for this.
-
-**Revision 2026-08-05 (UTC) — the stats no source carries are now stated as unknown.**
-No value was added, changed or removed: this revision is a *classification* of the three
-gaps the 2026-08-02 pass left open. Five module records gain an `unknownStats` field
-naming the stats they omit because the value is unknown, so a program can tell an
-absence that means "the module has no such stat" from one that means "nobody publishes
-it". Derivation is this repository's own reconciliation: each entry restates a finding
-the 2026-08-02 revision below already made against coriolis-data (commit
-`0db9234b5b9ce8c939ea84133d7ce336eea88e27`) and EDSY `eddb.js` (commit
-`cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256
-`967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`) — that neither
-registry carries the value. No source was re-acquired or fetched for this revision.
-
-- **Declared unknown (2 fields, 5 records).** `powerDraw` on the four
-  `Int_StellarBodyDiscoveryScanner_*` records, and `mass` on
-  `Int_DroneControl_ResourceSiphon`. Both are argued at length below and neither has a
-  source; the record names them so the absence is a statement rather than a silence.
-  Filling one means deleting its name in the same change — `unknown-stats.test.ts`
-  fails on a declared field that has a value.
-- **On the record, not in a register beside it.** An earlier draft of this revision put
-  the five in a payload of their own, `data/ships/unknown-stats.jsonc`, joined back by
-  symbol. That reintroduced exactly the join this domain removed when identity and stats
-  were merged into one record: a consumer holding the `undefined` had to know a second
-  file existed to interpret it, and the register could name a symbol the catalogue did
-  not carry. The field lives on the record instead, where the missing stat is, and the
-  schema's `module` definition carries it. `ships/unknown-stats` is now a data-free
-  predicate over that field rather than a catalogue.
-- **What that changes for a build.** `ShipLoadout.powerBudget()` used to skip a module
-  with no `powerDraw`, which is right for a cargo rack and wrong for a Discovery
-  Scanner: the build read as having headroom it may not have. Such a module is now
-  reported in `PowerBudget.unknownDraws` and left out of every total, so the totals are
-  an explicit lower bound instead of a confident understatement. Mass already behaved
-  this way — one unknown module mass withholds `unladenMass` entirely — and is unchanged.
-- **`integrity` on the 82 non-armour records that lack it is *not* declared**, because
-  the evidence says those families do not have the stat: no registry publishes one and
-  the game's own module panel shows none. It is recorded instead as a pinned set,
-  `fixtures/ships/module-stats.json` `withoutIntegrity`, which fails if the membership
-  ever changes. Guardian hull reinforcement packages are in that set and do draw power,
-  so "no integrity" is not a shorthand for "inert".
-- **`cost` is deliberately never declared.** Every module without a price has no
-  *published* price, so an absent `cost` is already unambiguous (README, list prices);
-  there is nothing to disambiguate.
-- **Scope.** The field can only name stats the record shape has. The base stats
-  blueprints modify that no record carried at all — `EngineHeatRate`, the scanner ranges
-  and the rest — were sourced by the revision above, which also made this distinction
-  load-bearing: a recipe that scales a stat a record simply omits is now inert, while one
-  that scales a stat named here is refused. One journal label is still unmodellable, and
-  it is a capability rather than a number:
-  [issue #27](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27).
-
-**Revision 2026-08-04 (UTC) — a restricted mount is now stored as one, and the journal
-names it by.** A hull's `hardpoints` was a bare array of sizes, so there was nowhere to
-record that four of the Type-11 Prospector's eight mounts take mining tools and nothing
-else; `optional` had the field but only two of its values. Both are now arrays of
-`{ size, restriction? }`, and `restriction` takes six values: `mining` on a hardpoint,
-and `military`, `planetaryApproachSuite`, `cargo`, `limpetController` or `vesselHangar`
-on an optional.
-
-**No value here was inferred from one source.** Both registries this domain already
-uses carry the rule, at the revisions already recorded above — nothing new was
-acquired, so no new snapshot metadata applies:
-
-- [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) **commit
-  `0db9234b5b9ce8c939ea84133d7ce336eea88e27`** writes a restricted mount as an object
-  rather than a bare size: `ships/type_11_prospector.json` has
-  `{ "class": 3, "name": "Mining", "eligible": { "abl": 1, "ml": 1, "mvr": 1, "pwa": 1,
-  "scl": 1, "sdm": 1 } }` for the large mount and `{ "class": 5, "name": "Limpets", … }`
-  / `{ "class": 5, "name": "Fighter", "eligible": { "fh": 1 } }` for two of its
-  optionals, and `ships/panther_clipper.json` has the same `"name": "Cargo"` object with
-  `"eligible": { "cr": 1, "crl": 1, "ft": 1 }` on its first size-8 mount and on its
-  first size-**7** — not on the two size-8s.
-- [EDSY](https://github.com/taleden/EDSY) `eddb.js` (the same file already used on
-  2026-08-02: internal `db 20260428`, SHA-256
-  `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`) carries the same
-  rule as a per-slot `reserved` map — `{hmtl:1,hmtm:1}` on the Type-11's mounts 0, 1, 2
-  and 4, `{iclc,idlc,iftlc,ihblc,imlc,iplc,inlc,irlc,islc}` and `{ifh:1}` on its two
-  restricted optionals, `{cft:1,icr:1}` on the Panther's two.
-
-The two agree mount-for-mount. They differ on exactly one entry: coriolis lists `pwa`
-(the Pulse Wave Analyser) as eligible for a mining hardpoint. It is a **utility**
-fitting in both registries and in this catalogue, and no utility module fits a
-hardpoint of any kind, so the difference is a grouping artefact and is not stored.
-Coriolis's `sdm` group and EDSY's `hmtm` both include the Sub-Surface Extraction
-Missile (`Hpt_Human_Extraction_Fixed_Medium`) alongside the displacement missile it
-varies, so it counts as a mining tool despite its unrelated symbol.
-
-**The journal names a restricted mount differently, which the earlier note assumed it
-did not.** EDSY's `ship[…].slotnames` gives the Type-11 `LargeMiningHardpoint1`,
-`MediumMiningHardpoint1`, `MediumMiningHardpoint2`, `MediumHardpoint3`,
-`SmallMiningHardpoint1`, `SmallHardpoint2..4` and, for its internals,
-`LimpetController01` and `FighterBay01`; the Panther Clipper Mk II gets `Cargo01` and
-`Cargo02`. These are journal names, not EDSY's own: `edsy.js` reads them in
-`Build.fromJournal()` and writes them in `exportJournal()`, and its journal import map
-lists `HUGEMININGHARDPOINT`, `LARGEMININGHARDPOINT`, `MEDIUMMININGHARDPOINT`,
-`SMALLMININGHARDPOINT`, `CARGO`, `LIMPETCONTROLLER` and `FIGHTERBAY` as slot-name
-prefixes it must recognise. Two numbering rules follow from the lists, and both are
-reproduced by `enumerateSlots`:
+**Two numbering rules for a restricted mount**, both derived from EDSY's name lists and
+both reproduced by `enumerateSlots`:
 
 - a restricted **hardpoint** shares the per-size-class numbering with the unrestricted
   ones and only takes an infix, so the Type-11's four medium mounts run
   `MediumMiningHardpoint1`, `MediumMiningHardpoint2`, `MediumHardpoint3`;
 - a restricted **optional** takes a name and number of its own and does **not** consume
-  a `SlotNN` number, exactly as `Military01` and `PlanetaryApproachSuite` already did —
-  so the Panther's column runs `Cargo01`, `Slot01_Size8`, `Cargo02`, `Slot02_Size7`, …
+  a `SlotNN` number, exactly as `Military01` and `PlanetaryApproachSuite` do — so the
+  Panther's column runs `Cargo01`, `Slot01_Size8`, `Cargo02`, `Slot02_Size7`, …
 
-Both hulls' full enumerated key lists are pinned in `fixtures/ships/ship-slots.json`
-under `keys` — which the 2026-08-05 revision above widened to all 13 hulls EDSY names —
-and the two hulls' layouts under `spot`, so a port produces the same vocabulary.
-**Which module families each restriction accepts is pinned there too**, under
-`restrictions`: one entry per restricted mount naming modules it must accept and
-modules it must refuse, plus one unrestricted mount for contrast. That is a fact about
-the game rather than about any implementation, so it belongs in the shared fixtures and
-not only in the TypeScript prefix lists. The six corpus builds on these hulls
-(`fixtures/ships/builds/lakonminer-mining*.json`, `panthermkii-trade*.json`) were
-re-slotted onto the corrected keys; every one of them already had its modules in
-mounts the restrictions allow, so no build's fit changed and no pinned metric moved.
+EDSY's journal import map lists `HUGEMININGHARDPOINT`, `LARGEMININGHARDPOINT`,
+`MEDIUMMININGHARDPOINT`, `SMALLMININGHARDPOINT`, `CARGO`, `LIMPETCONTROLLER` and
+`FIGHTERBAY` as slot-name prefixes it must recognise, which is the other half of the
+evidence that these are the game's strings.
 
-Alongside this, two families gained a `restrictedToShips` they should already have had.
-Both are missing values, not a new feature — `Int_MultiDroneControl_MiningV2_Size5_Class5`
-already carries the field the same way:
+**Checked against real captures.** `fixtures/ships/slef-the-deep-black.json` is a
+Caspian Explorer journal export and `fixtures/ships/slef-inara-type-11.json` a Type-11
+one; every slot key in both is a mount the hull's enumerated layout declares, which
+`slots.test.ts` asserts. The Caspian capture is the load-bearing one: its internals read
+`Slot01_Size7`…`Slot10_Size3`, `Slot13_Size1`, `Slot14_Size1`, all of which the plain
+numbering produces — evidence for leaving that hull's optionals alone rather than
+assuming EDSY simply omitted them.
 
-- the three **Mk II Vessel Hangars** → `["Explorer_NX", "PantherMkII", "LakonMiner"]`,
-  which this file had recorded in prose since the Operations pass. EDSY has no record
-  for the Mk II bays at all, so their hull restriction still rests on Frontier's update
-  notes and Inara, as it did when the records were added.
-- the two **Mk II Cargo Racks** (`Int_LargeCargoRack_Size{7,8}_Class1`) →
-  `["PantherMkII"]`, from both registries: EDSY marks them `reserved:{63:1}` (ship 63
-  is the Panther Clipper Mk II) and coriolis-data describes them as a "Panther Clipper
-  storage rack". Without it they fitted **any** hull's size-7 or size-8 optional, which
-  a review caught by building a Type-9 that carried one. The sources say something
-  stronger still — that they fit only a *cargo-restricted* mount, so even the Panther's
-  own unrestricted size-8 should refuse one — and that half needs a module-side field
-  this catalogue does not have; it is recorded in
-  [issue #11](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/11) rather
-  than approximated.
+**All 13 hulls' full enumerated key lists are pinned** in
+`fixtures/ships/ship-slots.json` under `keys`, and the `spot` layouts carry their mount
+names, so a port produces the same vocabulary.
 
-**Revision 2026-08-02 (UTC) — every module now carries stats, and 40 records were
-corrected.** The four module catalogues were reconciled against
-[EDSY](https://github.com/taleden/EDSY) `eddb.js` (commit
-`cd68edfba665719958ce038b6e5d9eb02d0d2b02`, its internal `db 20260428`, SHA-256
-`967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, acquired 2026-08-02
-UTC), which carries a mass, integrity, power draw and boot time for nearly every
-outfitting module that coriolis-data leaves blank. Every value applied here either comes
-from EDSY or was confirmed against it; where a candidate correction disagreed with EDSY,
-EDSY won and the change was dropped — three were **rejected** on that basis, listed
-below. The payloads touched are `data/ships/modules-*.jsonc`, plus one display name each
-in `blueprints.jsonc` and `experimental-effects.jsonc`.
+### Per-hull corrections and additions
 
-**Coverage, stated plainly.** EDSY carries 677 of the 717 `bootTime` values, 223 of 237
-`integrity`, 104 of 115 `powerDraw`, and **contradicts none of them** — every value it
-does supply matches what is stored here. That leaves **110 values across 50 records**
-EDSY does not supply. Two things count as "does not supply", and they are not the same:
-
-- **12 records have no EDSY entry at all** — nine of the ten `*_free` starter fittings
-  (`Int_PowerPlant_Size2_Class1_free`, `Int_Engine_Size2_Class1_free`,
-  `Int_Hyperdrive_Size2_Class1_free`, `Int_LifeSupport_Size1_Class1_free`,
-  `Int_PowerDistributor_Size1_Class1_free`, `Int_Sensors_Size1_Class1_free`,
-  `Int_FuelTank_Size1_Class3_free`, `Int_CargoRack_Size2_Class1_free`,
-  `Int_StellarBodyDiscoveryScanner_Standard_free`) and
-  `Int_FighterBayMk2_Size{5,6,7}_Class1`.
-- **38 records EDSY lists but leaves the particular field blank.** Blank is the operative
-  word: several of these entries are commented-out definitions with some values filled in
-  and others left empty, and the filled ones count. `Int_Hyperdrive_Size8_Class{1..5}`
-  state `boottime`, `fuelmul` and `fuelpower` — only mass, integrity, power draw,
-  optimal mass and max fuel are blank. `Int_DetailedSurfaceScanner_Tiny` is missing boot
-  time alone. The rest are `ModularCargoBayDoor`, `Int_ShieldGenerator_Size1_Class4` and
-  the Guardian hull, module and shield reinforcement families, all missing boot time.
-
-`Int_DroneControl_ResourceSiphon` is **not** in that set: EDSY gives it an integrity, a
-power draw *and* a boot time. Only its mass is unaccounted for, and that is left absent
-rather than guessed — see below. `Int_ShieldGenerator_Size2_Class1_free` is not in it
-either; EDSY carries that record in full, including its resistances and the distributor
-draw it spells `genpwr`.
-
-Of the 110, **108 were read from the live game's own outfitting and module panels**
-(2026-08-02 UTC), the same route this file already uses for the in-game blueprint and
-Operations registries. The remaining **two are derived, not read**:
-`Int_FuelTank_Size1_Class3_free`'s `fuelCapacity` and
-`Int_CargoRack_Size2_Class1_free`'s `cargoCapacity` follow from capacity being exactly
-2^size across all eight sizes of both families, with no exception.
-
-**All 110 are pinned individually** in `fixtures/ships/module-stats.json` `spot`, so a
-port validates against the same numbers and a silent drift fails a test — that is the
-only guard these values have, since they cannot be re-fetched from a public source. Each
-is also independently consistent with its own family's curve: the size-8 drives extend
-the size-7 ladder, and every `*_free` variant matches its paid twin wherever the twin has
-a value.
-
-- **Backfilled (a field the record did not have, so no value was overwritten):**
-  `bootTime` on 717 records, `integrity` on 237, `powerDraw` on 115, `mass` on 16, and
-  the family curves on the rows that had none — `optMass`/`maxFuel`/`fuelMul`/`fuelPower`
-  on 6, the thruster and shield mass curves on 2 each, the distributor capacities and
-  recharges on 1, and `powerCapacity`/`heatEfficiency` on 1, plus the three `*_free`
-  completions described below. **Every module in every
-  catalogue now has at least one stat** (1197/1197), so `fixtures/ships/module-stats.json`
-  `counts` now equals the catalogue sizes — and no record is left holding only a lone
-  `mass`.
-- **Closes the tracked gap "Modules still missing `mass`, deliberately" for all but one
-  record.** The ten `*_free` starter variants,
-  `Int_Hyperdrive_Size8_Class{1..5}` and `Int_ShieldGenerator_Size1_Class4` had `mass`
-  left absent because absent meant *unknown*. They are now sourced.
-  `Int_DroneControl_ResourceSiphon`, the eleventh, is **not** — see below. All but
-  `Int_ShieldGenerator_Size1_Class4` were identity-only rows; that one already carried a
-  12-field hand-filled curve, and it was **confirmed unchanged** — its `optMass` 25 /
-  `minMass` 13 / `maxMass` 63 and 0.6-1.1-1.6 multipliers match the reference figures
-  exactly, which retrospectively validates that hand-fill.
-- **Fills 102 of the 106 records in the tracked gap "106 modules are missing
-  `powerDraw` that upstream carries".** The fuel scoop, AFM unit, refinery and docking
-  computer families are complete. The four `Int_StellarBodyDiscoveryScanner_*` records
-  are **not** filled: no source carries a power draw for them — EDSY gives them only
-  `mass` and `integrity`, and coriolis-data has no record for them at all. They are withdrawn modules whose function is now built in, and
-  the absence is left as *unknown* rather than guessed at zero. Recorded in
-  [issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17).
-  The part that is closed is the defect the item was written about: the Deep Black's 7A
-  fuel scoop, 6A AFM unit and advanced docking computer now draw the 4.68 MW it
-  predicted, so its `retracted` budget moves 14.8159 → 19.4959 MW and its headroom
-  8.0321 → 3.3521 MW. `fixtures/ships/build-metrics.json` is re-pinned; the build stays
-  within budget.
-- **`Int_DroneControl_ResourceSiphon` keeps no `mass` — deliberately.** An earlier draft
-  of this revision set it to `0` on the grounds that EDSY omits the field and reads a
-  missing mass as zero, the same way this catalogue treats
-  `Int_DetailedSurfaceScanner_Tiny` and `Int_DockingComputer_Standard`. That was wrong to
-  apply here: no source states the zero, and unlike those two there is no uniformity to
-  appeal to — every sized limpet controller in the family has a real, non-zero mass. A
-  written-down inference is still an inference, and `absent` has to keep meaning
-  *unknown*. Its `integrity` 20 and `powerDraw` 0.4 do come from EDSY and are kept. The
-  outstanding mass is recorded in
-  [issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17).
-- **The three `*_free` starter fittings that were still hollow are now complete.**
-  `Int_ShieldGenerator_Size2_Class1_free` gains `shieldRegenRate` 1,
-  `shieldBrokenRegenRate` 1.6, the resistances 0.4 / −0.2 / 0.5 and `distributorDraw`
-  0.6 — **all six straight from EDSY**, which carries that record in full (as
-  `genrate`, `bgenrate`, `kinres`/`thmres`/`expres` as whole percentages, and `genpwr`
-  for the distributor draw). An earlier draft of this revision justified them by
-  rating-level uniformity instead, which produced identical numbers but understated the
-  provenance; the uniformity is real — all eight E-rated generators share those
-  resistances — but it is not what these values rest on.
-  `Int_FuelTank_Size1_Class3_free` gains `fuelCapacity: 2` and
-  `Int_CargoRack_Size2_Class1_free` `cargoCapacity: 4`, and **those two genuinely are
-  derived**: EDSY has no entry for either record, but capacity is exactly 2^size across
-  all eight sizes of both families with no exception, so the value follows from the
-  record's own `class`. Without all three a stock starter fit reported 0 t of fuel, 0 t
-  of cargo and 0/0/0 shield resistances.
-- **Cost:** the four catalogues grow about 24 KB of raw JSON (+5.6%), which is inlined
-  into every consumer's bundle. 244 of the 717 `bootTime` values are `0` (every hardpoint
-  among them). They are kept rather than omitted because this catalogue's convention is
-  that an absent field means *unknown* — collapsing a real zero into absence is the
-  defect the `cost` handling already guards against.
-
-**Corrected — 40 records, 43 fields.** In every case coriolis-data's value is the source
-of the error and EDSY carries the corrected figure:
-
-| Records | Field | Was | Now | Why the old value was wrong |
-| --- | --- | --- | --- | --- |
-| `Int_GuardianPowerDistributor_Size{1,4,5,6,7,8}` | `integrity` | 56 | 35/70/99/99/115/132 | 56 is size 3's value, repeated across six sizes |
-| `Int_GuardianPowerDistributor_Size3` | `weaponsCapacity`/`weaponsRecharge` | 13 / 3.1 | 17 / 3.9 | copied from an adjacent size |
-| `Int_GuardianPowerDistributor_Size4` | `systemsCapacity`/`systemsRecharge` | 14 / 1.7 | 17 / 2.5 | copied from an adjacent size |
-| `Int_Sensors_Size1_Class{1..5}` | `integrity` | 46/41/51/61/56 | 36/32/40/48/44 | coriolis's size-1 row is a verbatim copy of its size-2 row; size 1 is the only mismatching size in the family |
-| `Int_PowerDistributor_Size1_Class{1..5}` | `integrity` | 46/41/51/61/56 | 36/32/40/48/44 | same duplicated-row defect |
-| `Int_Hyperdrive_Overcharge_Size7_Class2` | `integrity` | 2700 | 150 | `optMass` copied into `integrity`; every sibling drive is 131–164 |
-| `Hpt_Slugshot_{Fixed,Gimbal,Turret}_Medium` | `integrity` | 80 | 51 | 80 is the huge-mount value |
-| `Hpt_Slugshot_{Fixed,Gimbal,Turret}_Large` | `integrity` | 80 | 64 | as above; the catalogue already had 64 on `Hpt_Slugshot_Fixed_Large_Range` |
-| `Hpt_PulseLaserBurst_Gimbal_Huge` | `integrity` | 80 | 64 | a real outlier, not the Fragment Cannon rule misapplied — see "Values that look wrong and are not" below |
-| `Hpt_HeatSinkLauncher_Turret_Tiny` | `integrity` | 20 | 45 | 20 is the chaff launcher's; the Caustic Sink Launcher, its analogue, is 45 in both sources. Same duplicate-record defect as the `cost` fix in the previous revision, which had been applied to `cost` and `mass` but not `integrity` |
-| `Hpt_MRAScanner_Size0_Class1` | `integrity` | 24 | 32 | every other size-0 scanner family runs 32/24/40/56/48; 24 had been duplicated into Class1 |
-| `Int_DroneControl_{FuelTransfer,Prospector,Repair}_Size5_Class4` | `powerDraw` | 0.97 | 0.72 | 0.97 is the size-7 B-rated value; 0.72 restores the Class4/Class1 ratio the family holds elsewhere (1.78 at sizes 1 and 3, 1.76 at size 7, 1.80 here) |
-| `Hpt_Mining_SubSurfDispMisle_Turret_Small` | `powerDraw` | 0.42 | 0.53 | |
-| `Int_ShieldGenerator_Size1_Class5_Strong` | `mass` | 2.5 | 2.6 | Prismatic is exactly 2× the base generator at every other size, so size 1 is 2×1.3, not half of size 2's 5.0 |
-| `Int_ShieldGenerator_Size2_Class5_Strong` | `minMass` | 23 | 28 | |
-| `Int_MetaAlloyHullReinforcement_Size1_Class2` | `mass` | 2 | 1 | |
-| `Int_Engine_Size3_Class5` | `integrity` | 72 | 70 | |
-| `Int_Powerplant_Size5_Class4` | `integrity` | 114 | 115 | |
-| `Int_FSDInterdictor_Size2_Class2` | `integrity` | 51 | 31 | |
-| `Int_StellarBodyDiscoveryScanner_{Standard,Intermediate,Advanced}` | `mass` | 0 | 2 | the previous revision set all three to 0 as part of the massless-modules pass. They are not massless: EDSY retains all three in its "removed, now built-in" block at `mass: 2.00`. Their `class` stays 1, per FDevIDs |
-
-**Rejected — three candidate corrections that cross-checking threw out.** Recorded so
-they are not "found" and applied again:
-
-- **`Int_GuardianShieldReinforcement_*` `integrity` is genuinely 36 on all ten records.**
-  A flat value across five sizes and two classes looks exactly like a placeholder, and a
-  reference figure suggested a rising 36→72 curve, but EDSY independently
-  carries 36 for all ten. Applying the curve would have corrupted correct data.
-- **`Int_Engine_Size{2,3}_Class5_Fast` multipliers stay 1.15 / 1.367.** EDSY stores
-  thruster multipliers as whole percentages (`engoptmul:115`), so it agrees on 1.15 and
-  cannot represent 1.367 at all; the catalogue's value is the more precise one.
-- **Thruster and FSD mass-curve fractions stay fractional (placeholder).** `Int_Engine_Size4_Class2`
-  `minMass` 157.5 / `maxMass` 472.5, `Int_Engine_Size4_Class4` 192.5 / 577.5 and
-  `Int_Hyperdrive_Size4_Class4` `optMass` 437.5 are exact — `optMass/2`, `optMass×1.5`
-  and `350×1.25`. The whole numbers are a rounding artefact of a source that stores these
-  fields as integers, so applying them would have *introduced* error.
-
-**Values that look wrong and are not.** Three records break the pattern their family
-follows, were challenged on exactly that basis during review, and were then confirmed
-outright by EDSY at the revision above. Recorded so the "breaks its family's curve"
-heuristic does not keep rediscovering them:
-
-- **`Hpt_PulseLaserBurst_Gimbal_Huge` `integrity` really is 64**, and it really is the
-  only huge (class-4, 16 t) hardpoint not at 80 — its own fixed sibling is 80. EDSY gives
-  `integ:64` for it and 80 for the other eleven. Note that EDSY also gives it
-  `maxbrc: 80`, which is max **breach** damage and is easy to misread as the integrity.
-- **`Int_GuardianPowerDistributor_Size{5,6}` `integrity` really are both 99.** Guardian
-  distributor integrity otherwise tracks 0.80× the A-rated standard ladder, which would
-  put size 5 near 85; EDSY states 99 for both sizes. The duplicate is in the game data.
-- **`Int_DroneControl_Recon_Size5_Class1` `bootTime` really is 9.85** — the only
-  non-integer boot time in all 1197 records, where its three family siblings are exactly
-  10. EDSY gives `boottime:9.85`.
-
-Two display names were corrected, each one EDSY carries and this catalogue had wrong:
-`CargoRack_IncreasedCapacity` "Expanded Capacity" → **"Expanded Cargo Rack"**, and
-`special_choke_canister` "Ion Disruptor" → **"Ion Disruption"**. The other blueprint
-names were checked and deliberately left alone — see "Display names" below.
-
-**Revision 2026-08-01 (UTC) — completeness pass over the outfitting and engineering
-catalogues.** The four module catalogues, `blueprints.jsonc` and
-`experimental-effects.jsonc` were re-checked against
-[EDSY](https://github.com/taleden/EDSY) `eddb.js` (commit
-`882a67ee03b69a05e139134a153d8c7c18e60250`, acquired 2026-08-01 UTC) and the in-game /
-[Inara](https://inara.cz/elite/blueprints/) blueprint and experimental-effect registries,
-looking for records those sources carry that the earlier FDevIDs/coriolis-data join had
-dropped. Every value below comes from EDSY or the in-game registry. Added:
-`Int_ShieldGenerator_Size1_Class4`, `recipe_guardianweapon_sturdy`,
-`special_feedback_cascade`. Corrected: `special_feedback_cascade_cooled`,
-`special_plasma_slug_cooled`, `special_super_penetrator_cooled` and
-`special_incendiary_rounds`, each of which had lost modifiers its EDSY source carries.
-Ship hulls were checked and needed no change.
-
-**Revision 2026-08-01 (UTC) — defence, power and weapon stats, and the bulkhead move.**
-The four module catalogues gained the stats the build calculations need: the four damage
-resistances, hull and shield reinforcement, module protection, the `alwaysPowered` flag,
-and the weapon stats (damage and its type split, rate of fire, clip and reload,
-distributor draw, thermal load, piercing, ranges, shot speed, jitter). Source:
-[EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) at the same commit
-`0db9234b5b9ce8c939ea84133d7ce336eea88e27` already used for the other stats (see
-"Modules" below for the field mapping, the derivations, and the three values filled by
-hand). In the same pass each hull's **`bulkheads` list moved
-out of `ships.jsonc` and onto its `<Hull>_Armour_*` records** in
-`modules-core.jsonc`: armour is a module like any other, so its mass, hull boost and
-resistances now live with every other module's stats instead of being duplicated on the
-hull.
-
-Attribution for the ship and outfitting data files in this directory. This file
-is the long form; each data file also repeats its own credit in a comment header,
-so the provenance meets you where you meet the data.
-
-The data files are **JSONC** (`.jsonc`): attribution lives in a comment so it
-documents the file without becoming part of the payload every consumer inlines
-into their bundle. Comments are the only JSONC extension used — no trailing commas —
-so stripping comments leaves strict JSON any language's standard parser accepts.
-See AGENTS.md §Attribution for how to consume them.
-
-## Ships
-
-Each hull is **one record** carrying its identity, its stats, and its slot layout —
-identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
-
-- **Files:** `ships.jsonc` (48 player-flyable hulls) and `fixtures/ships/ships.json`,
-  `ship-stats.json`, `ship-slots.json` (the stats and slots halves keep their own
-  parity fixtures).
-- **Identity source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), the
-  community-maintained registry of Frontier's internal ids and names (`shipyard.csv`,
-  columns `id,symbol,name,entitlement`). FDevIDs states no explicit licence; consult
-  the repository terms before redistributing the raw identifiers.
-- **Identity derivation:** records are carried over in shipyard order (roughly the
-  order hulls were introduced): internal `symbol` and display `name`. The CSV's
-  numeric ship-type `id` column is dropped — hulls are keyed by `symbol`.
-  `entitlement` is FDevIDs' DLC/grant token, kept only where the CSV gives one (28 of
-  the 48 hulls carry no entitlement, so the field is omitted rather than stored empty).
-- **Stats + slots source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
-  `ships/*.json` (`properties` for stats, `slots` + `bulkheads` for the layout),
-  **commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`** (`master`, acquired 2026-07-24
-  UTC). Coriolis-data's `LICENSE.md` releases only its _code_ under MIT; the JSON
-  **stat/slot values are Elite Dangerous game data, the property of Frontier
-  Developments plc**, redistributed here under Frontier's media-usage terms.
-- **Stats derivation:** acquisition normalisation looks up each hull's coriolis
-  record by display name (normalised; coriolis "Viper" ⇒ registry "Viper MkIII") and
-  copies a fixed whitelist of `properties` fields (`hullMass`, `speed`, `boost`,
-  `baseArmour`, …). The repository's
-  `scripts/data/ships/merge-normalized-catalogues.mjs` then performs the deterministic
-  symbol join, preserving registry order and rejecting duplicate or unmatched input.
-  Masses are tonnes, speeds m/s, rotation rates deg/s.
-- **Slots derivation:** coriolis's fixed-order `slots.standard` seven-array becomes
-  the seven named `core` sizes (power plant, thrusters, frame shift drive, life
-  support, power distributor, sensors, fuel tank); `slots.hardpoints` splits into
-  `hardpoints` (the non-zero weapon mounts) and `utility` (the count of zero
-  entries); `slots.internal` becomes `optional`. A `hardpoints` or `optional` entry is
-  a `{ size }` with an optional `restriction` — see the 2026-08-04 revision above for
-  the six restriction values and where each comes from. Coriolis's per-hull
-  `bulkheads` are **not** kept on the hull: they are joined onto that hull's armour
-  modules instead (see "Modules"), because armour is a module and the catalogue keeps a
-  module's stats with the module. **Slot keys** are journal-compatible
-  (`FrameShiftDrive`, `HugeHardpoint1`, `TinyHardpoint2`, `Slot01_Size6`, `Military01`,
-  `PlanetaryApproachSuite`), so a build assembled from an empty hull and one loaded
-  from a SLEF export share one vocabulary. See `typescript/src/ships/slots.ts`.
-- **Manual correction, 2026-08-02 — the Type-11 Prospector's four mining hardpoints.**
-  The hull carried `hardpoints: [2, 1, 1, 1]`; it has eight mounts, not four. Coriolis
-  writes a *restricted* hardpoint as an object (`{ "class": 3, "name": "Mining",
-  "eligible": {…} }`) rather than a bare size, and the Type-11 is the only hull in
-  coriolis-data that has any, so acquisition's "non-zero numbers are weapon mounts" rule
-  silently dropped its 3/2/2/1 mining mounts — leaving the game's dedicated mining hull
-  with nowhere to fit a mining tool, and no large mount at all for
-  `Hpt_MiningToolV2_Fixed_Large` — which is itself `restrictedToShips: ["LakonMiner"]`,
-  so it was unfittable on the only hull that may carry it. Corrected to
-  `[3, 2, 2, 2, 1, 1, 1, 1]`, which three sources agree on: coriolis-data (commit as
-  above), EDSY's `eddb.js` (database version `423039901`, last modified `20260428`;
-  `ship[…].slots.hardpoint = [3,2,2,2,1,1,1,1]`) and
-  [Inara's ship page](https://inara.cz/elite/ship/68/), read 2026-08-02, listing 1 Large
-  Mining, 1 Medium, 2 Medium Mining, 3 Small and 1 Small Mining. The four unrestricted
-  mounts are exactly the `[2, 1, 1, 1]` the record already had. The mining restriction
-  itself was **not** stored at the time — the slot schema had no hardpoint restriction —
-  so the catalogue said only that the mounts exist and how big they are. Closed by the
-  2026-08-04 revision above.
+- **Type-11 Prospector — eight hardpoints, not four.** The acquired record read
+  `hardpoints: [2, 1, 1, 1]`. Coriolis writes a *restricted* hardpoint as an object
+  rather than a bare size and the Type-11 is the only hull in coriolis-data that has
+  any, so acquisition's "non-zero numbers are weapon mounts" rule silently dropped its
+  3/2/2/1 mining mounts — leaving the game's dedicated mining hull with nowhere to fit a
+  mining tool, and no large mount at all for `Hpt_MiningToolV2_Fixed_Large`, which is
+  itself `restrictedToShips: ["LakonMiner"]` and so unfittable on the only hull that may
+  carry it. Stored as `[3, 2, 2, 2, 1, 1, 1, 1]`, which three sources agree on:
+  coriolis-data, EDSY `eddb.js` (`ship[…].slots.hardpoint = [3,2,2,2,1,1,1,1]`) and
+  [Inara's ship page](https://inara.cz/elite/ship/68/), read 2026-08-02 UTC, listing
+  1 Large Mining, 1 Medium, 2 Medium Mining, 3 Small and 1 Small Mining. The four
+  unrestricted mounts are exactly the `[2, 1, 1, 1]` the record already had.
 - **Lynx Highliner (`MediumTransport01`) — from EDSY + Frontier's Lynx update notes:**
   the Lynx has no coriolis hull entry, so its stats and slot layout are sourced instead
   from EDSY's ship data and Frontier's Lynx update notes (hull mass 260 t, 285/350 m/s,
@@ -746,71 +241,67 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   carried on the `MediumTransport01_Armour_*` module records). Values
   the static catalogue does not expose are omitted rather than invented: `masslock`,
   `heatCapacity`, `pipSpeed`, acceleration, and the min-pitch / boost-energy figures.
-  The two size-6 and one size-5 passenger-reserved optionals carry
-  `"restriction": "passenger"` — see the 2026-08-05 **restricted-mount pass** at the top
-  of this file, which sources them from a real Lynx capture and supersedes the notes
-  here and in the slot-names revision that stored them as plain optionals.
+  Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
+  the names `Passenger01`–`Passenger03`, sourced above.
 
 ## Modules (outfitting)
 
 Each module is **one record** carrying its identity and its stats — identity from
-FDevIDs, stats from coriolis-data, joined on `symbol`.
+FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
 
 - **Files:** `modules-core.jsonc`, `modules-internal.jsonc`,
   `modules-hardpoint.jsonc`, `modules-utility.jsonc`, and `fixtures/ships/modules.json`,
   `module-stats.json` (the stats half keeps its own parity fixture). Split along
   FDevIDs' four outfitting categories so an app that only wants weapons never bundles
   the 1003 core and optional internals; see AGENTS.md §Build.
-- **Identity source:** [EDCD FDevIDs](https://github.com/EDCD/FDevIDs), `outfitting.csv`
-  (columns `id,symbol,category,name,mount,guidance,ship,class,rating,entitlement`),
-  same licence note as above.
-- **Identity derivation:** the 1190 FDevIDs modules are carried over in CSV order within
-  each category file (the Operations/Lynx additions and the 1B shield generator below bring
-  the internal catalogue to 482, all four to 1197). The CSV's numeric `id` column is dropped — modules are keyed by
-  `symbol`. `class` is FDevIDs' `class` — the module size (0–8) — and `rating`
-  its grade letter (A–I); together they are the "5A" the outfitting screen shows.
-  `mount` (Fixed / Gimballed / Turreted) and `guidance` (Dumbfire / Seeker / Swarm)
-  are stored only on the hardpoints that carry them; `ship` names the hull an armour
-  variant belongs to (armour is the one ship-specific module, so only the 241 armour
-  records carry it); `entitlement` is kept only where it is a real DLC/grant token.
-- **The CSV's `category` column is dropped, and the file replaces it** (revision
-  2026-08-06 UTC). It was the same string on every record of a file whose name already
-  said it — 1197 repetitions of a fact the split itself carries — and every payload byte
-  is inlined into consumers' bundles. Each language loader adds it back from the file it
-  read (TypeScript: `src/ships/module-catalogue.ts`), so a consumer's record is
-  unchanged; `schemas/ships/catalogues.schema.json` grew one catalogue definition per
-  file in place of the shared `moduleCatalogue`, which is what still pins the difference
-  between them. Nothing was re-derived from upstream: the CSV's category is exactly
-  which file a record was already in.
-- **`slot` — which fixed mount a module fills** (revision 2026-08-06 UTC). A category is
-  not a mount: `core` is eight of them, so a consumer wanting "the FSD tab" had to
-  classify symbols itself, and so did this library. Every record in `modules-core.jsonc`
-  now names its own mount — `armour`, or one of the seven core functions the ship
-  records' `core` block is keyed by (`powerPlant`, `thrusters`, `frameShiftDrive`,
-  `lifeSupport`, `powerDistributor`, `sensors`, `fuelTank`) — as do the fifteen Guardian
-  Hybrid power plants and distributors in `modules-internal.jsonc`, which fill a core
-  mount although FDevIDs files them as internal modules. No other record carries one: a
-  weapon, a utility fitting or an ordinary optional internal fits any mount of its kind
-  that is large enough, so there is no single mount to name.
+- **Identity source:** FDevIDs `outfitting.csv`, columns
+  `id,symbol,category,name,mount,guidance,ship,class,rating,entitlement`.
+- **Identity derivation:** FDevIDs' 1190 modules are carried over in CSV order within
+  each category file; the Operations/Lynx additions and the 1B shield generator below
+  bring the internal catalogue to 482 and all four to **1197**. The CSV's numeric `id`
+  column is dropped — modules are keyed by `symbol`. `class` is FDevIDs' `class` — the
+  module size (0–8) — and `rating` its grade letter (A–I); together they are the "5A"
+  the outfitting screen shows. `mount` (Fixed / Gimballed / Turreted) and `guidance`
+  (Dumbfire / Seeker / Swarm) are stored only on the hardpoints that carry them; `ship`
+  names the hull an armour variant belongs to (armour is the one ship-specific module,
+  so only the 241 armour records carry it); `entitlement` is kept only where it is a
+  real DLC/grant token.
+- **The CSV's `category` column is not stored — the file states it.** It would be the
+  same string on every record of a file whose name already says it, 1197 repetitions of
+  a fact the four-way split carries, and every payload byte is inlined into consumers'
+  bundles. Each language loader adds it back from the file it read (TypeScript:
+  `src/ships/module-catalogue.ts`), so a consumer's record carries `category` all the
+  same; `schemas/ships/catalogues.schema.json` has one catalogue definition per file
+  rather than a shared `moduleCatalogue`, which is what pins the difference between
+  them. Nothing is derived from upstream for this: the CSV's category is exactly which
+  file a record is in.
+- **`slot` — which fixed mount a module fills.** A category is not a mount: `core` is
+  eight of them, so "which core modules fit this hull's FSD mount?" is a question a
+  category cannot answer and every consumer would have to answer for itself by matching
+  symbol prefixes. Every record in `modules-core.jsonc` names its own mount — `armour`,
+  or one of the seven core functions the ship records' `core` block is keyed by
+  (`powerPlant`, `thrusters`, `frameShiftDrive`, `lifeSupport`, `powerDistributor`,
+  `sensors`, `fuelTank`) — as do the fifteen Guardian Hybrid power plants and
+  distributors in `modules-internal.jsonc`, which fill a core mount although FDevIDs
+  files them as internal modules. No other record carries one: a weapon, a utility
+  fitting or an ordinary optional internal fits any mount of its kind that is large
+  enough, so there is no single mount to name.
   - **Derivation:** the value is the mount the module is sold for in the outfitting
     screen, assigned by symbol family — the 241 `*_Armour_*` records are `armour`, the
     `Int_PowerPlant_*`/`Int_GuardianPowerplant_*` are `powerPlant`, and so on through
     `Int_Engine_*` and `Int_MkIIAgileBoost_Engine_*` (`thrusters`), `Int_Hyperdrive_*`
     (`frameShiftDrive`), `Int_LifeSupport_*`, `Int_PowerDistributor_*`/
-    `Int_GuardianPowerDistributor_*`, `Int_Sensors_*` and `Int_FuelTank_*`. This is the
-    same classification `ShipLoadout` previously held as a hard-coded prefix table and
-    applied at fit time; moving it into the data is what lets a consumer read the mount
-    without reimplementing the table, and what makes the odd ones out (the Guardian
-    hybrids, the Python Mk II's `Int_MkIIAgileBoost_Engine_*` thrusters) facts about a
+    `Int_GuardianPowerDistributor_*`, `Int_Sensors_*` and `Int_FuelTank_*`. Holding the
+    classification in the data is what lets a consumer read the mount without
+    reimplementing a prefix table, and what makes the odd ones out — the Guardian
+    hybrids, the Python Mk II's `Int_MkIIAgileBoost_Engine_*` thrusters — facts about a
     record rather than special cases in code. Counts, per mount, are pinned in
     `fixtures/ships/modules.json` (`slotCounts`).
   - **A fuel tank is the one module built for two kinds of mount:** it is `fuelTank`
     and also fits any optional slot large enough, exactly as the game sells it.
-- **Stats source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
-  `modules/**`, **commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`** (`master`,
-  acquired 2026-07-24 UTC). Coriolis-data's `LICENSE.md` releases only its _code_
-  under MIT; the JSON **stat values are Elite Dangerous game data, the property of
-  Frontier Developments plc**, redistributed under Frontier's media-usage terms.
+- **Stats source:** coriolis-data `modules/**` for the mechanical, defence, power and
+  weapon stats; EDSY `eddb.js` for mass, integrity, power draw, boot time and the
+  engineering base stats coriolis does not carry, and for the corrections listed below.
 - **Stats derivation:** acquisition normalisation looks up each module's coriolis
   record by `symbol` (case-insensitively) and copies a fixed whitelist of fields under
   clearer names — e.g. coriolis `optmass`→`optMass`, `fuelmul`→`fuelMul`,
@@ -819,8 +310,8 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   symbol join. The stat fields are sparse (only the ones a module's group uses) and
   appended after the identity fields on the same record. Masses are tonnes, power
   megawatts, jump ranges light-years, weapon ranges metres.
-- **Defence, power and weapon stats (2026-08-01 revision):** the same coriolis-data
-  commit supplies the resistances (`kinres`/`thermres`/`explres`/`causres` →
+- **Defence, power and weapon stats:** coriolis-data supplies the resistances
+  (`kinres`/`thermres`/`explres`/`causres` →
   `kineticResistance`/`thermalResistance`/`explosiveResistance`/`causticResistance`),
   `hullreinforcement`→`hullReinforcement`, `shieldaddition`→`shieldAddition`,
   `protection`→`moduleProtection`, `passive`→`alwaysPowered`, and the weapon block
@@ -829,8 +320,7 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
   `burstrof`→`burstRateOfFire`, `charge`→`chargeTime`, `clip`→`clipSize`,
   `ammo`→`ammoMaximum`, `reload`→`reloadTime`, `distdraw`→`distributorDraw`,
   `thermload`→`thermalLoad`, `piercing`→`armourPiercing`, `range`→`maximumRange`,
-  `falloff`→`falloffRange`, `shotspeed`→`shotSpeed`, `jitter`). The join was additive:
-  no field the catalogue already carried was overwritten.
+  `falloff`→`falloffRange`, `shotspeed`→`shotSpeed`, `jitter`).
   - **`rateOfFire` is derived, not copied.** Upstream stores the fire interval; the
     journal (and this catalogue) report the combined shots per second, so it is
     computed as `burst / ((burst − 1) / burstRateOfFire + fireInterval + chargeTime)` —
@@ -846,69 +336,364 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     Shock Cannon variants (Coriolis itself reads the field as `roundspershot || 1`; a
     zero would zero their DPS) and `burstrof: 0` on the Mining Volley Repeater, whose
     burst is a single shot.
-  - **Massless modules now state `"mass": 0` instead of omitting the field**
-    (revision 2026-08-02 UTC; coriolis-data commit
-    `0db9234b5b9ce8c939ea84133d7ce336eea88e27`, re-read for this change). Upstream
-    carries **no `mass` key at all** for fuel scoops, refineries, AFM units and docking
-    computers, and Coriolis's own code reads a missing mass as zero
-    (`Module.getMass()` → `this.mass || 0`). This catalogue instead reads an absent
-    field as *unknown*, so a single such module made a whole hull's mass — and with it
-    its jump range — impossible to compute. The 106 affected records
-    (`Int_FuelScoop_*` ×40, `Int_Repairer_*` ×40, `Int_Refinery_*` ×20,
-    `Int_DockingComputer_{Standard,Advanced}`, the three removed
-    `Int_StellarBodyDiscoveryScanner_*` tiers, `ModularCargoBayDoor`) now say so
-    outright, matching upstream's own `"mass": 0` on `Int_DetailedSurfaceScanner_Tiny`.
-    **Verified, not assumed:** summing the Deep Black's module masses with these six
-    families excluded already gave exactly the 1237.3 t its journal reports, so the
-    game itself treats them as zero.
-    **Deliberately left absent** (unknown, not zero): the ten `*_free` starter
-    variants and `Int_Hyperdrive_Size8_Class{1..5}`, which are identity-only rows with
-    no stats whatsoever; `Int_ShieldGenerator_Size1_Class4`, whose omission is
-    documented below; and `Int_DroneControl_ResourceSiphon` — limpet controllers do
-    have mass, so that one is a genuine gap rather than a zero.
-  - **Sixteen duplicated symbols were priced at `0`** because the "first occurrence
-    wins" rule above had been applied to `mass` but not to `cost`: where coriolis-data
-    holds a symbol twice, the merge took the price from the *second*, unpriced record.
-    All sixteen now carry the first occurrence's price (revision 2026-08-02 UTC, same
-    commit `0db9234b`):
-    `Hpt_HeatSinkLauncher_Turret_Tiny` 3500 — confirmed independently against a real
-    journal, which prices the fitted module at 3071 = 3500 less the 12.25% outfitting
-    discount that export was taken at; `Int_Hyperdrive_Size5_Class5` 5 103 953;
-    `Int_CargoRack_Size5_Class1` 111 566 and `_Size6_Class1` 362 591;
-    `Int_DetailedSurfaceScanner_Tiny` 250 000; `Hpt_MultiCannon_Fixed_Medium` 38 000;
-    `Hpt_Railgun_Fixed_Medium` 412 800; `Hpt_BasicMissileRack_Fixed_Medium` 512 400;
-    `Hpt_MiningLaser_Fixed_Small` 6800; `Hpt_ATDumbfireMissile_Fixed_Large` 1 352 250;
-    and the six small/medium Guardian weapons (Gauss 167 250 / 543 801, Plasma
-    176 500 / 567 761, Shard 151 650 / 507 761).
-    **Still `0`, deliberately:** only `ModularCargoBayDoor`, which is built into every
-    hull and cannot be bought. `fixtures/ships/module-stats.json` pins that list under
-    `freeModules`, so a new zero has to be argued for rather than slipping in: a zero
-    price is otherwise indistinguishable from a dropped one.
-  - **Corrosion-resistant cargo racks are *unpriced* rather than `0`.**
-    `Int_CorrosionProofCargoRack_Size{1_Class2,5_Class1,6_Class1}` read `cost: 0`
-    upstream — a gap in coriolis, not the duplicate-symbol defect above, so there is no
-    first occurrence to fall back on. They are certainly not free: the size-4 record is
-    priced, and the Deep Black's journal buys it at 82 775 = 94 330 less that export's
-    12.25% discount. Carrying `0` made a build with one silently under-report instead of
-    omitting the figure, so the field is omitted, matching `_Size2_Class1`, which never
-    had one. *Superseded for `_Size1_Class2` by the next bullet, and for `_Size2_Class1`
-    by the 2026-08-06 bullet below, which drops that record from the catalogue.*
-  - **2026-08-05 (UTC) — `_Size1_Class2` is priced at 12 560, from EDSY.**
-    Same EDSY snapshot the 2026-08-02 revision above pins (`eddb.js` SHA-256
-    `967834d6…`, internal `db 20260428`), re-read for this change; the record is module
-    `161`, annotated `// at Palin, Sedesi`. Coriolis's `0` was coriolis's own gap, not a
-    shared one: on the two corrosion racks *both* registries price they agree exactly
-    (`_Size1_Class1` 6250, `_Size4_Class1` 94 330), and the only corrosion racks FDevIDs
-    `outfitting.csv` lists at all are those two plus `_Size1_Class2` itself — so this is
-    the last of the purchasable ones.
+  - **`shotSpeed` and `reloadTime` are absent on the weapons that have neither, and
+    that absence is an answer.** The 49 weapons with no `shotSpeed` are the lasers, rail
+    guns, Gauss cannons and mine launchers — nothing there travels, so there is no
+    projectile speed to move. The 41 with no `reloadTime` are a *different and smaller*
+    family, the pulse, burst, beam and mining lasers alone: they have no clip and never
+    reload, while rail guns, Gauss cannons and mine launchers all reload and all carry
+    the stat. Neither registry publishes a figure for either set, and EDSY's per-family
+    `modifiable` lists say outright that the game does not move those stats on those
+    weapons. The two medium Seismic Charge Launchers, fixed and turreted, *do* reload,
+    and take EDSY's `rldtime` of 1 s.
+  - **Module-breach stats** (`breachdmg`, `breachmin`, `breachmax`) are the one
+    deliberate omission from the weapon block — no calculation here reads them.
+- **Massless modules state `"mass": 0` rather than omitting the field.** Upstream
+  carries **no `mass` key at all** for fuel scoops, refineries, AFM units and docking
+  computers, and Coriolis's own code reads a missing mass as zero (`Module.getMass()` →
+  `this.mass || 0`). This catalogue reads an absent field as *unknown* instead, so a
+  single such module would make a whole hull's mass — and with it its jump range —
+  impossible to compute. The 106 affected records (`Int_FuelScoop_*` ×40,
+  `Int_Repairer_*` ×40, `Int_Refinery_*` ×20, `Int_DockingComputer_{Standard,Advanced}`,
+  the three withdrawn `Int_StellarBodyDiscoveryScanner_*` tiers, `ModularCargoBayDoor`)
+  say so outright, matching upstream's own `"mass": 0` on
+  `Int_DetailedSurfaceScanner_Tiny`. **Verified, not assumed:** summing the Deep Black's
+  module masses with these six families excluded gives exactly the 1237.3 t its journal
+  reports, so the game itself treats them as zero. `Int_DroneControl_ResourceSiphon` is
+  **not** among them — limpet controllers do have mass, so its absent `mass` is a
+  genuine gap, declared in `unknownStats` below.
+
+### Engineering base stats — the values a recipe scales
+
+`applyBlueprint` refuses a recipe whose base stats a module record does not hold, so a
+recipe that moves a stat needs that stat stored. Thirteen fields exist for that:
+`engineHeatRate`, `fsdHeatRate`, `refuelRate`, `shieldBankReinforcement`,
+`shieldBankHeat`, `shieldBankSpinUp`, `shieldBankDuration`, `scannerRange`, `scanAngle`,
+`scanTime`, `probeRadius`, `interdictorFacingLimit` and `interdictorRange`. With them,
+all 1902 declared engineering entries in `fixtures/ships/builds/` resolve. Counts and
+spot values are pinned in `fixtures/ships/module-stats.json` (`statCounts`, `spot`) and
+the corpus-wide claim in `builds.test.ts`.
+
+- **EDSY is primary here**, being the only one of the two registries that carries the
+  heat rates and the scanner stats at all. Cross-checked against coriolis-data
+  (`modules/**`, `modifications/modifierActions.json`, `modifications/blueprints.json`).
+- **Which upstream field is which.** coriolis's `modifierActions.json` maps each journal
+  Modifier Label to the field it moves, and is what settles the joins:
+  `EngineHeatRate`/`FSDHeatRate`/`ShieldBankHeat` → `thermload`, `EnergyPerRegen` →
+  `distdraw`, `ShieldBankReinforcement` → `shieldreinforcement`, `ShieldBankSpinUp` →
+  `spinup`, `ShieldBankDuration` → `duration`, `ScannerRange` → `range`,
+  `SensorTargetScanAngle`/`MaxAngle` → `angle`, `ScannerTimeToScan` → `scantime`,
+  `FSDInterdictorFacingLimit` → `facinglimit`, `FSDInterdictorRange` → `ranget`. EDSY's
+  own attribute table names the same stats `engheat`, `fsdheat`, `scbheat`, `genpwr`,
+  `shieldrnfps`, `spinup`, `scbdur`, `scanrng`/`typemis`, `maxangle`/`scanangle`,
+  `scantime`, `facinglim`, `timerng`, `scooprate` and `proberad`.
+- **The two registries agree everywhere both carry a value.** Shield cell banks, the
+  interdictors, the utility scanners, the sensor suites and the shield generators were
+  compared record by record; the one difference is a rounding, coriolis's `duration: 17`
+  against EDSY's `scbdur: 17.1` on the 8A cell bank, and EDSY's figure is kept as the
+  more precise. coriolis carries **no** `thermload` on thrusters or drives despite
+  naming the field in `modifierActions.json`, which is why EDSY is primary.
+- **Units, where the two disagree about them.** `scannerRange` is stored in **metres**
+  throughout, which is what a journal reports and what EDSY stores; coriolis holds a
+  sensor suite's as kilometres (`5.76` for the 8D suite, `5760` here) and a utility
+  scanner's as metres. `probeRadius` is stored as a **percentage** (`20`), not a
+  fraction: that is EDSY's form, coriolis's `proberadius: 0.2` the other, and
+  `fixtures/ships/journal-krait-phantom.json` settles it — the game reports the Detailed
+  Surface Scanner's `DSS_PatchRadius` as `20` → `28` for a grade-4 Expanded Probe
+  Scanning Radius roll. `interdictorRange` is **seconds to intercept**, the unit the
+  game measures a supercruise separation in, not a distance. `refuelRate` is tonnes per
+  second (EDSY `scooprate`); coriolis's `rate` is the same figure in kilograms.
+- **Two stats duplicate a number the record already has, deliberately.** A utility
+  scanner's `scannerRange` is the same distance as its `maximumRange`, and a shield cell
+  bank's `shieldBankHeat` the same figure as its `thermalLoad` — one upstream field each,
+  read under two names. Dropping either would change what a consumer reads, and dropping
+  the new name would leave the sensor suites (which have no `maximumRange`) and the Pulse
+  Wave Analyser (which has none either) modelled differently from their siblings. Both
+  pairs are kept in step instead: `ScannerRange` and `ShieldBankHeat` each map to both
+  fields in `module-stat-labels.ts`, so an engineered scanner or cell bank reads the same
+  whichever field is asked.
+- **`EnergyPerRegen` needs no stored value.** All 57 shield generators carry
+  `distributorDraw`, and EDSY (`genpwr`) and coriolis (`distdraw`) both confirm it is the
+  same stat under the journal's other name; the mapping lives in the label table.
+- **Nine figures no third-party registry lists, derived from the family rule.** Eight
+  records: the three `*_free` starter fittings (thrusters, drive, sensors — the sensors
+  contribute both a `scannerRange` and a `scanAngle`) and the five plain size-8 drives.
+  Each `*_free` record is byte-identical to its priced twin apart from the missing
+  `cost`, so it takes that twin's value. A drive's heat rate is a function of its **size
+  alone** across all 66 records EDSY does carry — 10, 14, 18, 27, 37, 43 for sizes 2 to
+  7, identical between the plain and SCO lines at every size — and the size-8 SCO drives
+  are 50, so the size-8 plain drives take 50. Stated as derivation, not as a reading.
+  The Mk II supercharge-optimised size-8 SCO drive is **not** among them: EDSY publishes
+  its `fsdheat: 50` outright, spelling the fdname
+  `Int_Hyperdrive_Overcharge_Size8_Class5_Overchargebooster_MkII` where the outfitting
+  registry this catalogue is keyed on capitalises the `B`. Matching case-insensitively,
+  as every lookup in this library does, makes it a reading.
+- **Four records read from a commented-out upstream row.** The three withdrawn Discovery
+  Scanners (`Int_StellarBodyDiscoveryScanner_{Standard,Intermediate,Advanced}`) and the
+  free twin of the first take `scanAngle: 10` and `scanTime: 5` from EDSY's row for them,
+  which the file keeps but comments out — `/* removed, now built-in */`, the modules
+  having left the game in 3.3. The same precedent as `special_feedback_cascade` under
+  §Engineering. The values matter because these four are `scanner`-family, so
+  `Scanner_WideAngle` (both legs) and `Sensor_FastScan` (the scan time) reach them:
+  without a base those legs would be silently dropped as "the module has no such stat",
+  which is untrue of them. Their `activerng` / `passiverng` — a detection radius in
+  light-seconds, and infinite on the Advanced — are a different quantity from
+  `scannerRange` and are deliberately not mapped, so a discovery scanner has no scan
+  *range* in the sense the label means. `Scanner_LongRange` refuses on them regardless,
+  on their unknown and declared `powerDraw`.
+- **A weapon with no maximum range carries no Long Range falloff leg.** That leg is
+  stored upstream as an overwrite in `[0, 1]` — a flag meaning "damage falls off from
+  maximum range" — which the calculator resolves to the weapon's own range. On the 33
+  weapons `Weapon_LongRange` reaches that have no range at all (missile and torpedo
+  racks, mine launchers, flak mortars, the AX dumbfires) there is nothing to resolve
+  against, and the recipe's `Range` leg is inert there for the same reason; the flag is
+  dropped rather than published as a one-metre falloff. Seven of the 33 do carry a real
+  `falloffRange` — the flak mortars, the AX dumbfire missiles and the Disruptor pulse
+  laser — and keep it unchanged: only the sentinel is ever dropped, and no record's
+  `falloffRange` is small enough to be mistaken for one.
+- **A hull reinforcement package's hull boost is computed, not stored.** A
+  percentage-of-a-multiplier stat has no absent state, because no hull boost is a ×1
+  multiplier — 0% — and EDSY says so explicitly (`hullbst`, `default: 0`, `modmod: 100`).
+  The calculator compounds `DefenceModifierHealthMultiplier` from that zero, which is why
+  a package can be engineered to a hull boost it never had and why a journal reports the
+  leg with `OriginalValue: 0`. No value is stored on any record for it.
+- **What is still refused, and why that is right.** A stat a record declares **unknown**
+  — the Resource Siphon controller's mass, the withdrawn Discovery Scanners' power draw —
+  refuses every recipe that scales it, because nothing can be scaled from an unknown. And
+  `GuardianModuleResistance` refuses everywhere, because it is not a number: EDSY stores
+  Anti-Guardian Zone Resistance as a flag the recipe *grants*, and this record shape has
+  no field for it
+  ([issue #27](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27)). Beyond
+  base stats, 14 corpus entries are refused because the engineering menu does not offer
+  that recipe on that module — the residue recorded under §Engineering compatibility, not
+  a missing stat.
+
+### `unknownStats` — an absence that means *nobody publishes it*
+
+A missing stat is usually an answer: a cargo rack draws no power, a fuel tank has no
+rate of fire. On five records it is a gap instead, and the record says so in its own
+`unknownStats` field, so a program can tell the two apart without a second lookup.
+
+- **Two fields, five records.** `powerDraw` on the four
+  `Int_StellarBodyDiscoveryScanner_*` records, and `mass` on
+  `Int_DroneControl_ResourceSiphon`. Both are argued at length below and neither has a
+  source. Filling one means deleting its name in the same change —
+  `unknown-stats.test.ts` fails on a declared field that has a value.
+- **On the record, not in a register beside it.** A separate `unknown-stats.jsonc`
+  joined back by symbol would reintroduce exactly the join this domain removed when
+  identity and stats were merged into one record: a consumer holding the `undefined`
+  would have to know a second file existed to interpret it, and the register could name a
+  symbol the catalogue does not carry. The field lives on the record, where the missing
+  stat is, and the schema's `module` definition carries it. `ships/unknown-stats` is a
+  data-free predicate over that field rather than a catalogue.
+- **What it means for a build.** A module with an unknown `powerDraw` is reported in
+  `PowerBudget.unknownDraws` and left out of every total, so the totals are an explicit
+  lower bound rather than a confident understatement. Mass behaves the same way: one
+  unknown module mass withholds `unladenMass` entirely.
+- **`integrity` on the 82 non-armour records that lack it is *not* declared**, because
+  the evidence says those families do not have the stat: no registry publishes one and
+  the game's own module panel shows none. It is recorded instead as a pinned set,
+  `fixtures/ships/module-stats.json` `withoutIntegrity`, which fails if the membership
+  ever changes. Guardian hull reinforcement packages are in that set and do draw power,
+  so "no integrity" is not a shorthand for "inert".
+- **`cost` is deliberately never declared.** Every module without a price has no
+  *published* price, so an absent `cost` is already unambiguous; there is nothing to
+  disambiguate.
+- **Scope.** The field can only name stats the record shape has. A recipe that scales a
+  stat a record simply omits is inert; one that scales a stat named here is refused. One
+  journal label is unmodellable, and it is a capability rather than a number:
+  [issue #27](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27).
+
+### Reconciliation against EDSY — coverage, corrections and rejections
+
+The four module catalogues are reconciled against EDSY `eddb.js`, which carries a mass,
+integrity, power draw and boot time for nearly every outfitting module coriolis-data
+leaves blank. Every value applied either comes from EDSY or was confirmed against it;
+where a candidate correction disagreed with EDSY, EDSY won.
+
+**Coverage, stated plainly.** EDSY carries 677 of the 717 `bootTime` values, 223 of 237
+`integrity`, 104 of 115 `powerDraw`, and **contradicts none of them**. That leaves
+**110 values across 50 records** EDSY does not supply. Two things count as "does not
+supply", and they are not the same:
+
+- **12 records have no EDSY entry at all** — nine of the ten `*_free` starter fittings
+  (`Int_PowerPlant_Size2_Class1_free`, `Int_Engine_Size2_Class1_free`,
+  `Int_Hyperdrive_Size2_Class1_free`, `Int_LifeSupport_Size1_Class1_free`,
+  `Int_PowerDistributor_Size1_Class1_free`, `Int_Sensors_Size1_Class1_free`,
+  `Int_FuelTank_Size1_Class3_free`, `Int_CargoRack_Size2_Class1_free`,
+  `Int_StellarBodyDiscoveryScanner_Standard_free`) and
+  `Int_FighterBayMk2_Size{5,6,7}_Class1`.
+- **38 records EDSY lists but leaves the particular field blank.** Blank is the
+  operative word: several of these entries are commented-out definitions with some
+  values filled in and others left empty, and the filled ones count.
+  `Int_Hyperdrive_Size8_Class{1..5}` state `boottime`, `fuelmul` and `fuelpower` — only
+  mass, integrity, power draw, optimal mass and max fuel are blank.
+  `Int_DetailedSurfaceScanner_Tiny` is missing boot time alone. The rest are
+  `ModularCargoBayDoor`, `Int_ShieldGenerator_Size1_Class4` and the Guardian hull,
+  module and shield reinforcement families, all missing boot time.
+
+`Int_DroneControl_ResourceSiphon` is **not** in that set: EDSY gives it an integrity, a
+power draw *and* a boot time. Only its mass is unaccounted for.
+`Int_ShieldGenerator_Size2_Class1_free` is not in it either; EDSY carries that record in
+full, including its resistances and the distributor draw it spells `genpwr`.
+
+Of the 110, **108 are read from the live game's own outfitting and module panels**
+(2026-08-02 UTC), the same route this file uses for the in-game blueprint and Operations
+registries. The remaining **two are derived, not read**:
+`Int_FuelTank_Size1_Class3_free`'s `fuelCapacity` and
+`Int_CargoRack_Size2_Class1_free`'s `cargoCapacity` follow from capacity being exactly
+2^size across all eight sizes of both families, with no exception.
+
+**All 110 are pinned individually** in `fixtures/ships/module-stats.json` `spot`, so a
+port validates against the same numbers and a silent drift fails a test — the only guard
+these values have, since they cannot be re-fetched from a public source. Each is also
+independently consistent with its own family's curve: the size-8 drives extend the
+size-7 ladder, and every `*_free` variant matches its paid twin wherever the twin has a
+value.
+
+**Every module in every catalogue carries at least one stat** (1197/1197), so
+`fixtures/ships/module-stats.json` `counts` equals the catalogue sizes and no record
+holds only a lone `mass`. 244 of the 717 `bootTime` values are `0` (every hardpoint
+among them); they are stored rather than omitted, because an absent field means
+*unknown* here and collapsing a real zero into absence is the defect the `cost` handling
+guards against. The four catalogues carry about 24 KB of raw JSON (+5.6%) for this,
+inlined into every consumer's bundle.
+
+**`Int_DroneControl_ResourceSiphon` keeps no `mass`, deliberately.** Setting it to `0`
+on the grounds that EDSY omits the field and reads a missing mass as zero — the way this
+catalogue treats `Int_DetailedSurfaceScanner_Tiny` and `Int_DockingComputer_Standard` —
+would be wrong here: no source states the zero, and unlike those two there is no
+uniformity to appeal to, since every sized limpet controller in the family has a real,
+non-zero mass. A written-down inference is still an inference, and `absent` has to keep
+meaning *unknown*. Its `integrity` 20 and `powerDraw` 0.4 do come from EDSY and are
+kept. The outstanding mass is recorded in
+[issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17).
+
+**The four `Int_StellarBodyDiscoveryScanner_*` records carry no `powerDraw`** for the
+same reason: no source carries one — EDSY gives them only `mass` and `integrity`, and
+coriolis-data has no record for them at all. They are withdrawn modules whose function
+is now built in, and the absence is left as *unknown* rather than guessed at zero. Also
+[#17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17).
+
+**The three `*_free` starter fittings that would otherwise be hollow.**
+`Int_ShieldGenerator_Size2_Class1_free` takes `shieldRegenRate` 1,
+`shieldBrokenRegenRate` 1.6, the resistances 0.4 / −0.2 / 0.5 and `distributorDraw` 0.6
+— **all six straight from EDSY**, which carries that record in full (as `genrate`,
+`bgenrate`, `kinres`/`thmres`/`expres` as whole percentages, and `genpwr` for the
+distributor draw). Rating-level uniformity gives the identical numbers — all eight
+E-rated generators share those resistances — but it is not what these values rest on.
+`Int_FuelTank_Size1_Class3_free` takes `fuelCapacity: 2` and
+`Int_CargoRack_Size2_Class1_free` `cargoCapacity: 4`, and those two genuinely are
+derived from the 2^size rule above. Without all three a stock starter fit reports 0 t of
+fuel, 0 t of cargo and 0/0/0 shield resistances.
+
+**Corrections — 40 records, 43 fields.** In every case coriolis-data's value is the
+source of the error and EDSY carries the corrected figure:
+
+| Records | Field | coriolis | Stored | Why coriolis's value is wrong |
+| --- | --- | --- | --- | --- |
+| `Int_GuardianPowerDistributor_Size{1,4,5,6,7,8}` | `integrity` | 56 | 35/70/99/99/115/132 | 56 is size 3's value, repeated across six sizes |
+| `Int_GuardianPowerDistributor_Size3` | `weaponsCapacity`/`weaponsRecharge` | 13 / 3.1 | 17 / 3.9 | copied from an adjacent size |
+| `Int_GuardianPowerDistributor_Size4` | `systemsCapacity`/`systemsRecharge` | 14 / 1.7 | 17 / 2.5 | copied from an adjacent size |
+| `Int_Sensors_Size1_Class{1..5}` | `integrity` | 46/41/51/61/56 | 36/32/40/48/44 | coriolis's size-1 row is a verbatim copy of its size-2 row; size 1 is the only mismatching size in the family |
+| `Int_PowerDistributor_Size1_Class{1..5}` | `integrity` | 46/41/51/61/56 | 36/32/40/48/44 | same duplicated-row defect |
+| `Int_Hyperdrive_Overcharge_Size7_Class2` | `integrity` | 2700 | 150 | `optMass` copied into `integrity`; every sibling drive is 131–164 |
+| `Hpt_Slugshot_{Fixed,Gimbal,Turret}_Medium` | `integrity` | 80 | 51 | 80 is the huge-mount value |
+| `Hpt_Slugshot_{Fixed,Gimbal,Turret}_Large` | `integrity` | 80 | 64 | as above; the catalogue already had 64 on `Hpt_Slugshot_Fixed_Large_Range` |
+| `Hpt_PulseLaserBurst_Gimbal_Huge` | `integrity` | 80 | 64 | a real outlier, not the Fragment Cannon rule misapplied — see "look wrong and are not" below |
+| `Hpt_HeatSinkLauncher_Turret_Tiny` | `integrity` | 20 | 45 | 20 is the chaff launcher's; the Caustic Sink Launcher, its analogue, is 45 in both sources — the same duplicate-record defect as its `cost` and `mass` |
+| `Hpt_MRAScanner_Size0_Class1` | `integrity` | 24 | 32 | every other size-0 scanner family runs 32/24/40/56/48; 24 is a duplicate of the Class2 row |
+| `Int_DroneControl_{FuelTransfer,Prospector,Repair}_Size5_Class4` | `powerDraw` | 0.97 | 0.72 | 0.97 is the size-7 B-rated value; 0.72 holds the Class4/Class1 ratio the family keeps elsewhere (1.78 at sizes 1 and 3, 1.76 at size 7, 1.80 here) |
+| `Hpt_Mining_SubSurfDispMisle_Turret_Small` | `powerDraw` | 0.42 | 0.53 | |
+| `Int_ShieldGenerator_Size1_Class5_Strong` | `mass` | 2.5 | 2.6 | Prismatic is exactly 2× the base generator at every other size, so size 1 is 2×1.3, not half of size 2's 5.0 |
+| `Int_ShieldGenerator_Size2_Class5_Strong` | `minMass` | 23 | 28 | |
+| `Int_MetaAlloyHullReinforcement_Size1_Class2` | `mass` | 2 | 1 | |
+| `Int_Engine_Size3_Class5` | `integrity` | 72 | 70 | |
+| `Int_Powerplant_Size5_Class4` | `integrity` | 114 | 115 | |
+| `Int_FSDInterdictor_Size2_Class2` | `integrity` | 51 | 31 | |
+| `Int_StellarBodyDiscoveryScanner_{Standard,Intermediate,Advanced}` | `mass` | 0 | 2 | they are not massless: EDSY retains all three in its "removed, now built-in" block at `mass: 2.00`. Their `class` stays 1, per FDevIDs |
+
+**Rejected — three candidate corrections cross-checking threw out.** Recorded so they
+are not "found" and applied again:
+
+- **`Int_GuardianShieldReinforcement_*` `integrity` is genuinely 36 on all ten records.**
+  A flat value across five sizes and two classes looks exactly like a placeholder, and a
+  reference figure suggests a rising 36→72 curve, but EDSY independently
+  carries 36 for all ten. Applying the curve would corrupt correct data.
+- **`Int_Engine_Size{2,3}_Class5_Fast` multipliers stay 1.15 / 1.367.** EDSY stores
+  thruster multipliers as whole percentages (`engoptmul:115`), so it agrees on 1.15 and
+  cannot represent 1.367 at all; the catalogue's value is the more precise one.
+- **Thruster and FSD mass-curve fractions stay fractional.** `Int_Engine_Size4_Class2`
+  `minMass` 157.5 / `maxMass` 472.5, `Int_Engine_Size4_Class4` 192.5 / 577.5 and
+  `Int_Hyperdrive_Size4_Class4` `optMass` 437.5 are exact — `optMass/2`, `optMass×1.5`
+  and `350×1.25`. The whole numbers are a rounding artefact of a source that stores these
+  fields as integers, so applying them would *introduce* error.
+
+**Values that look wrong and are not.** Three records break the pattern their family
+follows and are confirmed outright by EDSY. Recorded so the "breaks its family's curve"
+heuristic does not keep rediscovering them:
+
+- **`Hpt_PulseLaserBurst_Gimbal_Huge` `integrity` really is 64**, and it really is the
+  only huge (class-4, 16 t) hardpoint not at 80 — its own fixed sibling is 80. EDSY gives
+  `integ:64` for it and 80 for the other eleven. Note that EDSY also gives it
+  `maxbrc: 80`, which is max **breach** damage and is easy to misread as the integrity.
+- **`Int_GuardianPowerDistributor_Size{5,6}` `integrity` really are both 99.** Guardian
+  distributor integrity otherwise tracks 0.80× the A-rated standard ladder, which would
+  put size 5 near 85; EDSY states 99 for both sizes. The duplicate is in the game data.
+- **`Int_DroneControl_Recon_Size5_Class1` `bootTime` really is 9.85** — the only
+  non-integer boot time in all 1197 records, where its three family siblings are exactly
+  10. EDSY gives `boottime:9.85`.
+
+### Prices — `cost` on modules, `hullCost` / `retailCost` on hulls
+
+`cost` is the module's standard list price in credits, before any station discount or
+markup — the figure an outfitting screen quotes at 0% discount. On hulls, `hullCost` is
+the bare hull and `retailCost` the hull with its default module loadout (`retailCost` is
+never below `hullCost`, and a test asserts it). Sources are coriolis-data's `cost` per
+module and `properties.hullCost` / `retailCost` per ship, with EDSY filling the records
+coriolis does not price (the newer hulls' armour, the Operations additions, the retained
+withdrawn scanners) and supplying the Lynx Highliner, which has no coriolis entry.
+Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined on hull
++ bulkhead name because those records carry no symbol upstream.
+
+- **All 48 hulls are priced. 1176 of 1197 modules are.** The 21 without a price are the
+  ten starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
+  Vessel Hangars, the two unsold Corrosion Resistant Cargo Racks (both Community Goal
+  rewards) and `Int_ShieldGenerator_Size1_Class4` — no registry publishes a figure for
+  them. **`cost` is omitted, never set to 0**: `0` is a real price (the starter
+  Lightweight Alloy bulkhead costs nothing), so a cost calculation must be able to tell
+  "free" from "unknown".
+- **Sixteen duplicated symbols take the first occurrence's price.** Where coriolis-data
+  holds a symbol twice, the "first occurrence wins" rule that governs `mass` governs
+  `cost` too; taking the *second*, unpriced record would leave them at `0`. The sixteen:
+  `Hpt_HeatSinkLauncher_Turret_Tiny` 3500 — confirmed independently against a real
+  journal, which prices the fitted module at 3071 = 3500 less the 12.25% outfitting
+  discount that export was taken at; `Int_Hyperdrive_Size5_Class5` 5 103 953;
+  `Int_CargoRack_Size5_Class1` 111 566 and `_Size6_Class1` 362 591;
+  `Int_DetailedSurfaceScanner_Tiny` 250 000; `Hpt_MultiCannon_Fixed_Medium` 38 000;
+  `Hpt_Railgun_Fixed_Medium` 412 800; `Hpt_BasicMissileRack_Fixed_Medium` 512 400;
+  `Hpt_MiningLaser_Fixed_Small` 6800; `Hpt_ATDumbfireMissile_Fixed_Large` 1 352 250;
+  and the six small/medium Guardian weapons (Gauss 167 250 / 543 801, Plasma
+  176 500 / 567 761, Shard 151 650 / 507 761).
+- **Only one record is priced `0`:** `ModularCargoBayDoor`, which is built into every
+  hull and cannot be bought. `fixtures/ships/module-stats.json` pins that list under
+  `freeModules`, so a new zero has to be argued for rather than slipping in: a zero price
+  is otherwise indistinguishable from a dropped one.
+- **`Int_CorrosionProofCargoRack_Size1_Class2` is priced at 12 560, from EDSY**, where it
+  is module `161`, annotated `// at Palin, Sedesi`. Coriolis reads `cost: 0` for it,
+  which is coriolis's own gap and not a shared one: on the two corrosion racks *both*
+  registries price they agree exactly (`_Size1_Class1` 6250, `_Size4_Class1` 94 330), and
+  the only corrosion racks FDevIDs `outfitting.csv` lists at all are those two plus
+  `_Size1_Class2` itself — so it is the last of the purchasable ones. It is certainly not
+  free: the Deep Black's journal buys the size-4 at 82 775 = 94 330 less that export's
+  12.25% discount.
   - **Read that 12 560 as a 10-granular figure, not a to-the-credit one.** EDSY publishes
     module costs at **10-credit granularity**, which is measured rather than assumed. Two
-    observations,
-    both scoped to `eddb.module` — EDSY's outfitting table, where module `161` lives —
-    so they can be re-run. Totals across the whole of `eddb.js` are deliberately not
-    quoted: they move with how the scan treats commented-out records, the ship table's
-    own armour rows and case-mismatched symbols, whereas within the module table the
-    result is flat.
+    observations, both scoped to `eddb.module` — EDSY's outfitting table, where module
+    `161` lives — so they can be re-run. Totals across the whole of `eddb.js` are
+    deliberately not quoted: they move with how the scan treats commented-out records,
+    the ship table's own armour rows and case-mismatched symbols, whereas within the
+    module table the result is flat.
     - **Every cost in that table is a multiple of 10 but one:**
       `Int_ShieldGenerator_Size1_Class5`, at 88 075. (Take in the ship table's own armour
       rows as well and eight more appear — Python Mk II and Cobra Mk V — and the hull
@@ -933,66 +718,110 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     rounding explains: whatever the real price is, at least one of the two registries is
     wrong about it by five credits or more, and neither says which. So treat 12 560 as the
     best published figure at 10-credit resolution, not as an accuracy guarantee; only an
-    in-game reading settles the last digits. Every EDSY-sourced price already in this
-    catalogue carries the same granularity, so this record is no less exact than the rest
-    of them.
-  - **The remaining three racks have no list price to publish** (same revision).
-    `_Size2_Class1`, `_Size5_Class1` and `_Size6_Class1` are **not sold at any station**:
-    FDevIDs `outfitting.csv` lists none of them, and EDSY hides all three — `cost: NaN`
-    with the comment "never released" on size 2, `cost: 0 // TODO: cost // CG reward` on
-    sizes 5 and 6. Sizes 5 and 6 were handed out as Community Goal rewards and size 2
-    never shipped, so the `0` upstream is not a dropped figure but the absence of one.
-    That makes this a different gap from the one above: **no registry publishes a price
-    today**, and none is likely to, because no outfitting screen quotes these — though
-    EDSY's own `TODO: cost` says upstream considers the figure pending rather than
-    non-existent. Closing it takes an in-game observation rather than a registry — a
-    journal `Loadout` module `Value`, a `StoredModules` entry's `BuyPrice`, or a
-    `ModuleSell` on one — and until then `cost` stays omitted, since a reward module
-    still has an insurance value and reporting it as free would understate a rebuy.
-  - **Filled by hand, from a documented uniformity:** `Int_ShieldGenerator_Size1_Class4`
-    (added from EDSY in the earlier pass, so it has no coriolis record) takes the
-    resistances and distributor draw every one of the 55 shield generators coriolis does
-    carry shares — kinetic 0.4, thermal −0.2, explosive 0.5, draw 0.6. The cargo hatch
-    (`ModularCargoBayDoor`) takes the 0.6 MW draw Coriolis hard-codes for it
-    (`ModuleUtils.cargoHatch`), since it is fitted to every hull and cannot be removed.
+    in-game reading settles the last digits. Every EDSY-sourced price in this catalogue
+    carries the same granularity, so this record is no less exact than the rest of them.
+- **The size-5 and size-6 Corrosion Resistant Cargo Racks have no list price to
+  publish**, and their absent `cost` means *no list price exists*, not *none has been
+  found*. They are **not sold at any station**: FDevIDs `outfitting.csv` lists neither,
+  and EDSY hides both with `cost: 0 // TODO: cost // CG reward`. They were Community Goal
+  rewards and were sold nowhere. Frontier's own announcement of the **Rhea Disaster** CG
+  states that "all participating commanders will now receive the Size 6 Corrosion
+  Resistant Cargo Rack whilst the top 50% will now receive 2"
+  ([@EliteDangerous](https://x.com/EliteDangerous/status/1812792503776489745); the CG
+  itself ran on the [Frontier
+  forums](https://forums.frontier.co.uk/threads/deliver-critical-aid-for-the-rhea-disaster.626528/)).
+  The [Elite Dangerous
+  Wiki](https://elite-dangerous.fandom.com/wiki/Corrosion_Resistant_Cargo_Rack) records
+  that the class 5 and 6 modules "exist in limited numbers among CMDRs who received them
+  as a Community Goal reward, but they are otherwise neither purchasable nor
+  unlockable" — size 4 is the largest one obtainable, through a Human Technology Broker.
+  So EDSY's `TODO: cost` is upstream expecting a figure that outfitting never quoted.
+  Players do hold these racks, so a journal can name them and the catalogue must resolve
+  them; `cost` stays omitted, since a reward module still has an insurance value and
+  reporting it as free would understate a rebuy.
+  - **Both sources read 2026-08-06 UTC; the wiki alone is unpinned.** An X status id
+    names one immutable post, so the announcement is pinned by its URL. The wiki page is
+    mutable and MediaWiki serves a stable `?oldid=` for it, but the host refuses
+    automated requests from this environment (HTTP 403), so neither the revision id nor a
+    stored copy could be captured and `../SNAPSHOTS.md`'s checksum fallback is out of
+    reach for the same reason. The quotation above is the preserved form. The gap is
+    recorded rather than closed with an invented revision, as that file requires, and a
+    maintainer reading the page in a browser can close it by adding the `oldid`.
+  - **What an unpinned source may carry: an interpretation, never a value or a record.**
+    Nothing in any payload here derives from either of these two; they settle only what an
+    already-absent `cost` *means*, and `cost` is `undefined` to a consumer either way.
+    Using an unpinned page to add a price or a module would need the pin first.
+  - **A capture reporting a `Value` was checked and rejected.**
+    `fixtures/ships/slef-inara-cutter-antixeno.json` fits five of these racks. Its two
+    size-6 records carry **no `Value` at all**; its size-5 carries `Value: 318174`. That
+    is not a list price, and the same export is what proves it: the two size-4 racks in it
+    read **82 774** and **91 970** against the one list price of 94 330 — about 12.25% and
+    2.5% off. `Value` is net of the station discount, one reading with an unknown discount
+    does not yield a list price, and a reward module was not bought at a discount to begin
+    with. (318 174 is within a credit of 362 591 less 12.25%, and 362 591 is the
+    *standard* E-rated size-6 rack's price; that is arithmetic reaching for a target with
+    a free variable, not a source. It is recorded only so the next reader does not redo
+    it.)
+  - **What would close it** is an in-game reading that does not go through a purchase: a
+    `StoredModules` entry's `BuyPrice`, a `ModuleSell` on one, or the insurance figure a
+    rebuy screen quotes. A journal `Loadout` `Value` will not do it, for the reason above.
+    Tracked on [#18](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/18).
+- **Filled by hand, from a documented uniformity:** `Int_ShieldGenerator_Size1_Class4`
+  (added from EDSY, so it has no coriolis record) takes the resistances and distributor
+  draw every one of the 55 shield generators coriolis does carry shares — kinetic 0.4,
+  thermal −0.2, explosive 0.5, draw 0.6. The cargo hatch (`ModularCargoBayDoor`) takes
+  the 0.6 MW draw Coriolis hard-codes for it (`ModuleUtils.cargoHatch`), since it is
+  fitted to every hull and cannot be removed.
+- **Still not modelled:** passenger capacity and fighter-bay/rebuild counts. The
+  **Merc-Coin** price of the pre-engineered variants is carried, but on the variant
+  rather than the module — see `mercCoinCost` in the pre-engineered section.
+
+### Armour, and the fields kept deliberately
+
 - **Armour (bulkhead) stats:** coriolis keeps a hull's five (Caspian Explorer: six)
   armour options on the *hull* record; this catalogue keeps them on the matching
   `<Hull>_Armour_*` module records, joined by hull and by the symbol's grade suffix
   (`_Grade1`, `_Grade1_Default`, `_Grade2`, `_Grade3`, `_Mirrored`, `_Reactive`). Each
-  gains its added `mass` (t), `hullBoost` (the fraction of the hull's base armour it
-  adds on top) and the four resistances. The Lynx Highliner has no coriolis hull entry,
-  so its options take the per-grade hull boost and resistances that all 47 hulls coriolis
-  does carry share, with the masses already sourced from EDSY.
+  carries its added `mass` (t), `hullBoost` (the fraction of the hull's base armour it
+  adds on top) and the four resistances. Armour is a module like any other, so its stats
+  live with every other module's rather than being duplicated on the hull. The Lynx
+  Highliner has no coriolis hull entry, so its options take the per-grade hull boost and
+  resistances that all 47 hulls coriolis does carry share, with the masses from EDSY.
 - **Stats kept deliberately (do not "fix" back):**
   - **`restrictedToShips`** carries the hull symbol(s) a non-armour module is limited
     to (coriolis's `ship` field: the MkII Gravity Optimised thrusters → `Explorer_NX`,
     the MkII Agile Boost thrusters → `SmallCombat01_NX` "Kestrel", the MkII Mining
-    controller and Mining Volley Repeater → `LakonMiner`). **Armour's** hull
-    restriction is _not_ repeated here — it lives in the `ship` field
-    (`OutfittingModule.ship` / `getModulesForShip`).
-  - **`restrictedToSlot`** is the same idea one axis over: the slot restriction a
-    module requires, so it fits only mounts carrying it. Five records have one — the
-    two planetary approach suites, the two Mk II Cargo Racks and the Mk II Mining
-    Multi-Limpet Controller — and it composes with `restrictedToShips` rather than
-    replacing it: the racks name both the hull that can buy them and the mount they go
-    in. It is wrong on any module the game also sells for an ordinary optional, which
-    is why a plain cargo rack does not carry it. See the restricted-mount pass of
-    2026-08-05 at the top of this file.
-  - **Weapon combat stats are now carried too.** The original merge took only the
-    mechanical/engineering stats; the enrichment pass described under "Build metrics"
-    below added the combat side, so all 159 hardpoint records carry `damage` and
-    `thermalLoad`, 133 a `falloffRange` and 142 a `burstInterval`. Module-breach stats
-    (`breachdmg`, `breachmin`, `breachmax`) remain the one deliberate omission — no
-    calculation here reads them.
-  - **Ship-specific armour now carries its bulkhead stats.** These records were once
-    identity-only; the same enrichment pass moved each hull's per-bulkhead block off
-    `ships.jsonc` and onto the 241 `*_Armour_*` module records, which now carry `mass`,
-    `hullBoost` and the four resistances.
+    controller and Mining Volley Repeater → `LakonMiner`), plus the two Mk II Cargo Racks
+    → `["PantherMkII"]` (EDSY marks them `reserved:{63:1}`, ship 63 being the Panther
+    Clipper Mk II, and coriolis-data describes them as a "Panther Clipper storage rack")
+    and the three Mk II Vessel Hangars → `["Explorer_NX", "PantherMkII", "LakonMiner"]`
+    (EDSY has no record for the Mk II bays at all, so their restriction rests on
+    Frontier's update notes and Inara). **Armour's** hull restriction is _not_ repeated
+    here — it lives in the `ship` field (`OutfittingModule.ship` / `getModulesForShip`).
+  - **`restrictedToSlot`** is the same idea one axis over: the slot restriction a module
+    requires, so it fits only mounts carrying it — the mirror of a mount's `restriction`,
+    and the half `restrictedToShips` cannot express. Five records have one: the two
+    planetary approach suites, the two Mk II Cargo Racks and the Mk II Mining
+    Multi-Limpet Controller. It composes with `restrictedToShips` rather than replacing
+    it — the racks name both the hull that can buy them and the mount they go in.
+    - **Sources.** EDSY refuses a reserved `icr` outside a slot named `CARGO*`, and
+      coriolis-data carries `"restriction": "Cargo"` on the module; the same shape holds
+      for the Mk II Mining Multi-Limpet Controller against `LIMPETCONTROLLER*`.
+      `fixtures/ships/slef-inara-panther-mkii.json` shows the game agreeing: its two Mk II
+      racks sit in `cargo01` and `cargo02` while its *unrestricted* `slot01_size8` and
+      `slot02_size7` carry ordinary racks — a build that could not exist if the
+      reservation were about size. `fixtures/ships/slef-inara-type-11.json` does the same
+      for the controller, in `limpetcontroller01`.
+    - **The field is deliberately narrow.** It says a module fits *only* mounts with that
+      restriction, so it is wrong on anything the game also sells for an ordinary
+      optional: a plain cargo rack fits a `cargo` mount *and* every unrestricted one, and
+      does not carry it. `modules.test.ts` pins the set of five so widening it is a
+      deliberate act.
   - **Pre-engineered/duplicate drives share a `symbol`** in coriolis (e.g. the V1
     FSDs); the first (primary) occurrence wins, and any baked engineering is expected
     to arrive as SLEF `Engineering.Modifiers` instead.
 - **Identity kept as-is from the source (do not "fix" these back):**
-  - **The three removed Discovery Scanner tiers** (`Int_StellarBodyDiscoveryScanner_Standard`
+  - **The three withdrawn Discovery Scanner tiers** (`Int_StellarBodyDiscoveryScanner_Standard`
     / `_Intermediate` / `_Advanced`) are retained: a registry that maps a module
     symbol to a name must still resolve symbols that appear in older journals and
     saved builds.
@@ -1011,142 +840,56 @@ FDevIDs, stats from coriolis-data, joined on `symbol`.
     against EDSY looks like it disagrees. Lookups are case-insensitive so nothing
     breaks, but `module.symbol` is what an app renders and compares, so leave the
     casing alone until FDevIDs changes it.
-- **Operations / Lynx additions — from EDSY, Inara and Frontier's update notes** (not
-  in coriolis-data / FDevIDs at the acquired commit):
-  - **Mk II Vessel Hangars** (`Int_FighterBayMk2_Size{5,6,7}_Class1`) — new internal
-    records with the same operational stats as the Mk I bays at half the mass
-    (10/20/30 t, integrity 60/80/120, power 0.25/0.35/0.35 MW). The three Mk I
-    **Fighter Hangar** records were renamed to **Mk I Vessel Hangar** (same symbols and
-    stats; the Operations update renamed them and let them deploy the Nomad). The Mk II
-    bays' restriction to the Caspian Explorer / Panther Clipper Mk II / Type-11
-    Prospector was documented but not stored; it is now
-    `restrictedToShips: ["Explorer_NX", "PantherMkII", "LakonMiner"]` on all three
-    records (2026-08-04, above) — the hull symbols the registry does carry.
-  - **Mk II passenger cabins** (`Int_MkII_PassengerCabin_Size{2..6}_Class{1,2}`) already
-    existed as identity records; their mass was added (2.5/5/10/20/40 t by size) and the
-    two size-6 records' `class` was corrected from 5 to 6.
-  - **Corrosion Resistant Cargo Racks** `Int_CorrosionProofCargoRack_Size{2,5,6}_Class1`
-    (capacity 4/32/64) and the built-in **Cargo Hatch** `ModularCargoBayDoor`
-    (power 0.6 MW) were added — live EDSY records (not commented out, unlike the 1B
-    shield generator below) that the FDevIDs join had omitted. All three racks carry
-    EDSY's `hidden:1`, and they are also the three the prices section leaves unpriced,
-    but the flag is not the reason: `hidden:1` marks a record EDSY keeps out of its
-    pickers for assorted reasons, and of the nine such records in its module table one
-    does carry a price (`Int_DroneControl_ResourceSiphon`, `cost: 18040` — which EDSY
-    itself annotates `// bug?`, so it is a weak counter-example, but it is enough to show
-    the flag is not a statement about price). They are unpriced because no source states
-    a figure — see the prices section for what each one actually says.
-    *`_Size2_Class1` was removed again on 2026-08-06 — next bullet.*
-  - **2026-08-06 (UTC) — `_Size2_Class1` is removed, and sizes 5 and 6 are confirmed
-    Community Goal rewards rather than modules whose price is merely unfound.**
-    The 2026-08-02 pass above added all three EDSY records together, on the strength of
-    the same `hidden:1` flag. That grouped two different things, and only one of them is
-    outfitting.
-    - **The size-2 rack is dropped: it never existed in game.** No registry lists it as
-      player-obtainable, which is the inclusion rule below failing rather than a price
-      gap — FDevIDs `outfitting.csv` has no row, coriolis-data has no record at all, and
-      EDSY carries it `cost: NaN` annotated "never released". A variant that never
-      reached players is not a player-facing outfitting record, so it goes the way of the
-      other non-purchasable internal variants that rule already excludes —
-      [#20](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/20) states the
-      same test, over a different set of symbols: absence from FDevIDs is the evidence a
-      variant is not purchasable. The catalogue drops from 1198 records to **1197**
-      (`internal` 483 → 482), the
-      engineering-options module map from 1029 to **1028** (`cargoRacks` 17 → 16), and
-      the shared fixtures move with it in the same change. No build in
-      `fixtures/ships/builds/` fitted one.
-    - **Sizes 5 and 6 stay, and stay unpriced — but the absence now means *no list price
-      exists*, not *none was found*.** These are the opposite case: players do hold them,
-      so a journal can name them and the catalogue must resolve them. They were Community
-      Goal rewards and were sold nowhere. Frontier's own announcement of the **Rhea
-      Disaster** CG states that "all participating commanders will now receive the Size 6
-      Corrosion Resistant Cargo Rack whilst the top 50% will now receive 2"
-      ([@EliteDangerous](https://x.com/EliteDangerous/status/1812792503776489745); the CG
-      itself ran on the [Frontier
-      forums](https://forums.frontier.co.uk/threads/deliver-critical-aid-for-the-rhea-disaster.626528/)).
-      The [Elite Dangerous
-      Wiki](https://elite-dangerous.fandom.com/wiki/Corrosion_Resistant_Cargo_Rack)
-      records that the class 5 and 6 modules "exist in limited numbers among CMDRs who
-      received them as a Community Goal reward, but they are otherwise neither
-      purchasable nor unlockable" — size 4 is the largest one obtainable, through a Human
-      Technology Broker. So EDSY's `TODO: cost` is upstream expecting a figure that
-      outfitting never quoted, and the earlier reading of it as a *pending* price is
-      withdrawn.
 
-      **Both sources read 2026-08-06 UTC; the wiki alone is unpinned.** An X status id
-      names one immutable post, so the announcement is pinned by its URL. The wiki page is
-      mutable and MediaWiki serves a stable `?oldid=` for it, but the host refuses
-      automated requests from this environment (HTTP 403), so neither the revision id nor
-      a stored copy could be captured and `../SNAPSHOTS.md`'s checksum fallback is out of
-      reach for the same reason. The quotation above is the preserved form. The gap is
-      recorded rather than closed with an invented revision, as that file requires, and a
-      maintainer reading the page in a browser can close it by adding the `oldid`.
+### Operations / Lynx additions — from EDSY, Inara and Frontier's update notes
 
-      **What an unpinned source may carry: an interpretation, never a value or a record.**
-      Nothing in any payload here derives from either of these two. Dropping the size-2
-      record rests on FDevIDs, coriolis-data and the EDSY snapshot pinned above; these two
-      change only what an already-absent `cost` *means*, and `cost` is `undefined` to a
-      consumer either way. Using an unpinned page to add a price or a module would need
-      the pin first.
-    - **A capture reporting a `Value` was checked and rejected.** An Inara SLEF export of
-      an anti-xeno Imperial Cutter, contributed by the repository owner from their own
-      fleet and acquired 2026-08-06 (UTC), fits five of these racks. Its two size-6
-      records carry **no `Value` at all**; its size-5 carries `Value: 318174`. That is not
-      a list price, and the same export is what proves it: the two size-4 racks in it read
-      **82 774** and **91 970** against the one list price of 94 330 — about 12.25% and
-      2.5% off. `Value` is net of the station discount, one reading with an unknown
-      discount does not yield a list price, and a reward module was not bought at a
-      discount to begin with. (318 174 is within a credit of 362 591 less 12.25%, and
-      362 591 is the *standard* E-rated size-6 rack's price; that is arithmetic reaching
-      for a target with a free variable, not a source. It is recorded only so the next
-      reader does not redo it.) `cost` stays omitted on both records.
-    - **What would still close it** is an in-game reading that does not go through a
-      purchase: a `StoredModules` entry's `BuyPrice`, a `ModuleSell` on one, or the
-      insurance figure a rebuy screen quotes. A journal `Loadout` `Value` will not do it,
-      for the reason above. The gap is tracked on
-      [#18](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/18), which this
-      pass **supersedes on four points** and which needs updating alongside it: it counts
-      three racks rather than two, lists `_Size2_Class1` among them, reads EDSY's
-      `TODO: cost` as a price still pending, and offers a journal `Loadout` `Value` as a
-      route to closing it.
-  - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
-    in the game: every other shield-generator size carries all five ratings, and size 1
-    ran E/D/C/A with **B missing**. The module is real, so the record was added with the
-    stats its sources do expose — `optMass` 25 t, `minMass` 13 t, `maxMass` 63 t,
-    multipliers 0.6 / 1.1 / 1.6, regen 1.0 / 1.6 MJ/s. **`mass`, `integrity` and
-    `powerDraw` are deliberately omitted**: EDSY carries this variant commented out with
-    those three fields blank (identity `fdid` 128064261 and the multipliers only), and no
-    other registry publishes them. Omitted rather than interpolated from the neighbouring
-    ratings — see the Lynx note above for the same rule.
-- **Prices — `cost` on modules, `hullCost` / `retailCost` on hulls.** `cost` is the
-  module's standard list price in credits, before any station discount or markup — the
-  figure an outfitting screen quotes at 0% discount. On hulls, `hullCost` is the bare
-  hull and `retailCost` the hull with its default module loadout (`retailCost` is never
-  below `hullCost`, and a test asserts it). Sources are coriolis-data's `cost` per module
-  and `properties.hullCost` / `retailCost` per ship, with EDSY filling the records
-  coriolis does not price (the newer hulls' armour, the Operations additions, the
-  retained removed scanners) and supplying the Lynx Highliner, which has no coriolis
-  entry. Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
-  on hull + bulkhead name because those records carry no symbol upstream.
-  - **All 48 hulls are priced. 1176 of 1197 modules are.** The 21 without a price are the
-    ten starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
-    Vessel Hangars, the **two unsold** Corrosion Resistant Cargo Racks (both Community
-    Goal rewards) and `Int_ShieldGenerator_Size1_Class4` — no registry publishes a figure
-    for them. Three of the four racks joined the list in the 2026-08-02 revision described
-    above (moving this count from 1178/20), `_Size1_Class2` left it again on 2026-08-05
-    when EDSY was found to price it, and `_Size2_Class1` left it on 2026-08-06 with the
-    removal of its record. **`cost` is omitted, never set to 0**:
-    `0` is a real price (the starter Lightweight Alloy bulkhead costs nothing), so a
-    cost calculation must be able to tell "free" from "unknown".
-  - **Still not modelled:** passenger capacity and fighter-bay/rebuild counts. The
-    **Merc-Coin** price of the pre-engineered variants is now carried, but on the
-    variant rather than the module — see `mercCoinCost` in the pre-engineered section.
-- **Deliberately not modelled here:** the **Merc-Coin
-  pre-engineered weapon variants** are not separate module records: their base module
-  symbols already exist, and the pre-engineering is expressed as the Operations
-  blueprints below — the pairing between the two is `pre-engineered.jsonc` (next section). The **Nomad** (`Lander01`) is a ship-launched vehicle, not a
-  shipyard hull, and its `Vehicle_Lander01_*` weapons carry no category/class/rating the
-  module schema requires, so neither the vessel nor its modules are added.
+Records not in coriolis-data / FDevIDs at the acquired revisions:
+
+- **Mk II Vessel Hangars** (`Int_FighterBayMk2_Size{5,6,7}_Class1`) — internal records
+  with the same operational stats as the Mk I bays at half the mass (10/20/30 t,
+  integrity 60/80/120, power 0.25/0.35/0.35 MW). The three Mk I **Fighter Hangar**
+  records are named **Mk I Vessel Hangar** (same symbols and stats; the Operations update
+  renamed them and let them deploy the Nomad).
+- **Mk II passenger cabins** (`Int_MkII_PassengerCabin_Size{2..6}_Class{1,2}`) — identity
+  records from FDevIDs, with mass added (2.5/5/10/20/40 t by size) and the two size-6
+  records' `class` corrected from 5 to 6.
+- **Corrosion Resistant Cargo Racks** `Int_CorrosionProofCargoRack_Size{5,6}_Class1`
+  (capacity 32/64) and the built-in **Cargo Hatch** `ModularCargoBayDoor` (power 0.6 MW)
+  — live EDSY records (not commented out, unlike the 1B shield generator below) that the
+  FDevIDs join omits. Both racks carry EDSY's `hidden:1`, and they are also the two the
+  prices section leaves unpriced, but the flag is not the reason: `hidden:1` marks a
+  record EDSY keeps out of its pickers for assorted reasons, and of the nine such records
+  in its module table one does carry a price (`Int_DroneControl_ResourceSiphon`,
+  `cost: 18040` — which EDSY itself annotates `// bug?`, so it is a weak counter-example,
+  but enough to show the flag is not a statement about price).
+  - **`_Size2_Class1` is not carried: it never existed in game.** No registry lists it as
+    player-obtainable, which is the inclusion rule below failing rather than a price gap —
+    FDevIDs `outfitting.csv` has no row, coriolis-data has no record at all, and EDSY
+    carries it `cost: NaN` annotated "never released". A variant that never reached
+    players is not a player-facing outfitting record, so it goes the way of the other
+    non-purchasable internal variants that rule excludes;
+    [#20](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/20) states the
+    same test over a different set of symbols: absence from FDevIDs is the evidence a
+    variant is not purchasable.
+- **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
+  in the game: every other shield-generator size carries all five ratings, and size 1
+  ran E/D/C/A with **B missing**. The module is real, so the record is carried with the
+  stats its sources do expose — `optMass` 25 t, `minMass` 13 t, `maxMass` 63 t,
+  multipliers 0.6 / 1.1 / 1.6, regen 1.0 / 1.6 MJ/s. **`mass`, `integrity` and
+  `powerDraw` are deliberately omitted**: EDSY carries this variant commented out with
+  those three fields blank (identity `fdid` 128064261 and the multipliers only), and no
+  other registry publishes them. Omitted rather than interpolated from the neighbouring
+  ratings — see the Lynx note under §Ships for the same rule.
+
+### What is not carried, and why
+
+- **Deliberately not modelled here:** the **Merc-Coin pre-engineered weapon variants**
+  are not separate module records: their base module symbols already exist, and the
+  pre-engineering is expressed as the Operations blueprints below — the pairing between
+  the two is `pre-engineered.jsonc`. The **Nomad** (`Lander01`) is a ship-launched
+  vehicle, not a shipyard hull, and its `Vehicle_Lander01_*` weapons carry no
+  category/class/rating the module schema requires, so neither the vessel nor its modules
+  are added.
 - **Inclusion rule — a public registry has to corroborate the record.** A module symbol is
   carried here only when [FDevIDs](https://github.com/EDCD/FDevIDs),
   [coriolis-data](https://github.com/EDCD/coriolis-data) or
@@ -1180,19 +923,19 @@ left as published: they are *displayed* rate-of-fire changes, so they keep the
 `RateOfFire` label and apply to the rate directly — which is the only reading that
 reproduces the published figure on a charged weapon such as the rail gun.
 
-**Corrected 2026-08-01:** the four `special_hullreinforcement_*` experimental effects
-stored their `DefenceModifierHealthAddition` contribution as *additive*, which read as a
-flat 0.05 hull points rather than the percentage both sources give (coriolis's
-`modifierActions` treats `hullreinforcement` as a multiplicative percentage; EDSY stores
-`ihrpx_ap: { hullrnf: -5 }`). They are now `multiplicative`. The label was inert until
-this revision gave hull reinforcement packages a `hullReinforcement` base to apply to.
+**`special_hullreinforcement_*` stores its `DefenceModifierHealthAddition` leg as
+`multiplicative`, not `additive`.** Both sources give it as a percentage — coriolis's
+`modifierActions` treats `hullreinforcement` as a multiplicative percentage and EDSY
+stores `ihrpx_ap: { hullrnf: -5 }` — so reading it additively would apply a flat 0.05
+hull points. The label only bites at all because hull reinforcement packages carry a
+`hullReinforcement` base for it to apply to.
 
-**Completed 2026-08-01: six experimental-effect legs that recorded only the cost.** Four
-effects carried their drawback and not the benefit they are named for, so each looked
-complete while doing nothing a build would notice. Both references agree on every value,
-and each addition is now pinned by a test:
+**Four effects carry a benefit leg only one of the two sources spells out.** Each names
+a modification whose drawback is easy to find and whose benefit is not, so an effect
+holding the drawback alone looks complete while doing nothing a build would notice. Both
+references agree on every value below, and each is pinned by a test:
 
-| Effect                                                   | Was                                   | Added                                       |
+| Effect                                                   | Drawback leg                          | Benefit leg                                 |
 | -------------------------------------------------------- | ------------------------------------- | ------------------------------------------- |
 | `special_weapon_damage` (Oversized)                      | `PowerDraw +5%`                       | `Damage +3%`                                |
 | `special_weapon_rateoffire` (Multi-Servos)               | `PowerDraw +5%`                       | `BurstInterval −2.9126%`                    |
@@ -1241,11 +984,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `Armour_Advanced` "Lightweight Armour"; this catalogue says "Long range", "Heavy
     duty" and "Lightweight". Nearly all 81 differ that way, because a blueprint's name
     is read next to the module it is applied to, where repeating the module's own name
-    is noise. Re-checked on 2026-08-02 and left as-is: the
-    convention is house style, and switching to the panel strings would change every
-    `getBlueprintName` return for no gain. Only the two names that were wrong in their
-    own right were corrected (see the 2026-08-02 revision).
-- **`journalName` — added 2026-08-06, present on two records.** A blueprint's key *is* the
+    is noise. The convention is house style and is kept: switching to the panel strings
+    would change every `getBlueprintName` return for no gain. Two names were wrong in
+    their own right rather than short by convention, and take EDSY's spelling —
+    `CargoRack_IncreasedCapacity` is **"Expanded Cargo Rack"** (not "Expanded Capacity")
+    and `special_choke_canister` **"Ion Disruption"** (not "Ion Disruptor").
+- **`journalName` — on two records, and only two.** A blueprint's key *is* the
   `BlueprintName` a journal writes, for 106 of the 108. The two that are not are
   `Scanner_LongRange` and `Scanner_WideAngle`, coriolis keys for recipes the game writes as
   `Sensor_LongRange` / `Sensor_WideAngle` — the same ids it writes for the sensor suites'
@@ -1320,40 +1064,36 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `ammomax: -100` leg (stored here as `AmmoMaximum −1`, the "reloads from ship fuel"
     mechanic) that coriolis's `modifierActions` does not carry at all; and coriolis
     splits Plasma Slug by weapon family where EDSY does not, discussed next.
-- **Weapon-combat experimental effects — re-added for completeness:** the 29 effects
-  once dropped (Auto Loader, Corrosive Shell, Force Shell, FSD Interrupt, Plasma Slug, …)
-  are now present. A purely-qualitative one — a gameplay flag with no numeric magnitude
-  the data exposes — carries an **empty `modifiers` list and a human-readable
-  `description`** instead; effects that do have magnitudes carry them (e.g. Force Shell
-  shot speed −16.6667%, FSD Interrupt damage −30% / burst interval +50%). Their
-  one-application `materials` are from the same in-game / Inara registry (a Merc-Coin
-  amount is also charged but is not stored). Every one is a weapon effect, and the weapon
-  groups' menus list them.
-- **Feedback Cascade (`special_feedback_cascade`) — added.** The catalogue carried only
-  the pre-engineered rail-gun variant `special_feedback_cascade_cooled`; the plain effect
-  players apply themselves was missing. EDSY holds it commented out (`wpnx_feca`, marked
-  "verify mats"), which is why the earlier import skipped it. It is damage −20% with the
-  same one-application recipe as the cooled variant (5×`SymmetricKeys`,
-  5×`ShieldEmitters`, 5×`FilamentComposites`).
-- **Pre-engineered `_cooled` variants now keep their base effect's modifiers.** Each
-  `_cooled` rail-gun variant is its base effect **plus** a −40% thermal load, but three
-  had been stored carrying the thermal cut alone: `special_feedback_cascade_cooled` was
-  missing damage −20%, `special_plasma_slug_cooled` damage −10% and ammo −100%, and
-  `special_super_penetrator_cooled` reload +50%. All three now match EDSY's `hrgx_*`
-  entries. `special_incendiary_rounds` likewise regained its burst interval +5.2632%.
-  Damage-**type** splits (kinetic/thermal/explosive weights) stay in `description` rather
-  than `modifiers`, as they already do for High Yield Shell and Inertial Impact.
+- **Weapon-combat experimental effects are carried in full** — 29 of them (Auto Loader,
+  Corrosive Shell, Force Shell, FSD Interrupt, Plasma Slug, …). A purely-qualitative one —
+  a gameplay flag with no numeric magnitude the data exposes — carries an **empty
+  `modifiers` list and a human-readable `description`** instead; effects that do have
+  magnitudes carry them (e.g. Force Shell shot speed −16.6667%, FSD Interrupt damage −30%
+  / burst interval +50%). Their one-application `materials` are from the same in-game /
+  Inara registry (a Merc-Coin amount is also charged but is not stored). Every one is a
+  weapon effect, and the weapon groups' menus list them.
+- **Feedback Cascade (`special_feedback_cascade`) is easy to miss in EDSY**, which holds
+  it commented out (`wpnx_feca`, marked "verify mats") — the plain effect players apply
+  themselves, as against the pre-engineered rail-gun variant
+  `special_feedback_cascade_cooled` beside it. It is damage −20% with the same
+  one-application recipe as the cooled variant (5×`SymmetricKeys`, 5×`ShieldEmitters`,
+  5×`FilamentComposites`).
+- **A pre-engineered `_cooled` variant carries its base effect's modifiers as well as the
+  cut.** Each `_cooled` rail-gun variant is its base effect **plus** a −40% thermal load,
+  so `special_feedback_cascade_cooled` carries damage −20%, `special_plasma_slug_cooled`
+  damage −10% and ammo −100%, and `special_super_penetrator_cooled` reload +50% — all
+  matching EDSY's `hrgx_*` entries, and `special_incendiary_rounds` its burst interval
+  +5.2632%. Storing the thermal cut alone is the easy mistake here. Damage-**type** splits
+  (kinetic/thermal/explosive weights) stay in `description` rather than `modifiers`, as
+  they do for High Yield Shell and Inertial Impact.
 - **Journal Labels** for both sources are resolved via EDSY's own attribute table
   (`attr → fdattr`), the authority for the exact Label strings the game writes
   (e.g. coriolis `optmass` on an FSD → `FSDOptimalMass`, `maxfuel` → `MaxFuelPerJump`).
   Group-ambiguous keys (`optmass`, `optmul`, `thermload`) are disambiguated by the
   blueprint's target module group.
-- **Kept deliberately (do not "fix" back):** the module **stats** layer still carries
-  no weapon combat stats, but the weapon-combat **experimental effects** and the
-  Operations weapon **blueprints** are included as reference data (their combat labels
-  simply have no base value for the calculator to fold, so they are stored, not
-  computed). The dormant `Decorative_*` transformations EDSY also lists are **not**
-  included — internal visual/test entries, not obtainable engineering.
+- **Kept deliberately (do not "fix" back):** the dormant `Decorative_*` transformations
+  EDSY also lists are **not** included — internal visual/test entries, not obtainable
+  engineering.
 - **Blueprint keys deliberately left out:**
   - **Per-module-group aliases, not extra blueprints.** A blueprint that applies to several
     module groups is exposed once per group under a `recipe_sensor_<group>_<mod>`-style
@@ -1404,23 +1144,17 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`, whose module-group tables
   carry each group's `blueprints` and `expeffects` lists and which modules belong to each
   group, and whose module records carry the per-module `noblueprints` / `noexpeffects`
-  denials that narrow either list. Same CC BY-NC 4.0 licence note as the
-  experimental-effect section above. Acquired 2026-08-01 UTC; the 2026-08-05 extension
-  from 22 groups to 53 re-read the same snapshot the sections above pin (`eddb.js`
-  SHA-256 `967834d6…`, internal `db 20260428`) and added
-  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) `modifications/modules.json`
-  (MIT) as the second registry — acquired 2026-08-05 UTC from `master`, SHA-256
-  `09b6427c86bc3cfb578a246f7c6be1791429bb67009b7adaa7909e30aadc160f`. The file is pinned
-  by digest rather than by commit because it was read from the branch tip; the digest is
-  what a re-derivation must match.
-- **The extension to 53 groups (2026-08-05) closed the "428 of 1198 modules" gap.** Every
-  group EDSY's `mtype` table gives a `blueprints:` key is now carried: bulkheads (the 241
-  ship armour records), life support, sensors, the Detailed Surface Scanner, cargo racks,
-  refineries, AFMUs, fuel scoops, FSD interdictors and boosters, Guardian module and
-  shield reinforcement, the four engineerable limpet controllers, chaff, heat sink and
-  caustic sink launchers, point defence, ECMs, the KWS/manifest/wake scanners, the
-  Guardian Gauss/Plasma/Shard weapons, the AX missile racks and the Enzyme Missile Rack.
-  - **A group is one menu, so `noblueprints` can split a family in two.** EDSY denies
+  denials that narrow either list. Second registry: coriolis-data
+  `modifications/modules.json`, which carries the same per-group lists keyed by the
+  journal `BlueprintName`s this catalogue joins on.
+- **Coverage: every group EDSY's `mtype` table gives a `blueprints:` key.** That is 53
+  groups over 1028 modules, including bulkheads (the 241 ship armour records), life
+  support, sensors, the Detailed Surface Scanner, cargo racks, refineries, AFMUs, fuel
+  scoops, FSD interdictors and boosters, Guardian module and shield reinforcement, the
+  four engineerable limpet controllers, chaff, heat sink and caustic sink launchers,
+  point defence, ECMs, the KWS/manifest/wake scanners, the Guardian Gauss/Plasma/Shard
+  weapons, the AX missile racks and the Enzyme Missile Rack.
+  - **A group is one menu, so `noblueprints` splits a family in two.** EDSY denies
     blueprints per module as well as per group (`edsy.js` `setBlueprintID` refuses a
     denied id; `'*'` means the module is not modifiable at all), and for three families
     the denial is a clean two-way split: a Guardian Power Plant is denied all three
@@ -1429,29 +1163,22 @@ up straight through with no disambiguation at all. Both paths are evidence that
     packages. Those are stored as **two groups** — `powerPlants` /
     `guardianPowerPlants`, `powerDistributors` / `guardianPowerDistributors`,
     `hullReinforcements` / `guardianHullReinforcements` — rather than as a per-module
-    exception, because a group *is* a menu and these are two menus. Both halves initially
-    kept the family's experimental list, which is what EDSY publishes (`expeffects` is per
-    group, with no per-module denial on any of them); the Guardian halves lost it on
-    2026-08-07, below.
-  - **This corrected three groups that predate the extension.** `powerPlants`,
-    `powerDistributors` and `hullReinforcements` each offered
-    `recipe_guardianmodule_sturdy` to every ordinary module in them, which EDSY denies —
-    an Anti-Guardian recipe on a non-Guardian module. Those three lists lose that id, and
-    25 modules move to the new Guardian groups. A further 14 leave the catalogue entirely
-    because upstream denies them every blueprint: eight AX multi-cannons (all but the two
-    gimballed), five of the seven mining tools, and the Mk II Plasma Shock Autocannon,
-    which cost `antiXenoMultiCannons` 8 of its 10 modules, `miningToolsLasers` 5 of its 7
-    and `plasmaAccelerators` 1 of its 5. The ten plain Module Reinforcement Packages —
-    denied their family's only recipe — are not in the catalogue at all, which leaves
-    `moduleReinforcements` holding the ten Guardian packages.
-  - **Nine of the 22 pre-existing groups changed, and the other 13 are byte-identical.**
-    Three lost the Anti-Guardian recipe and their Guardian members to the split, three
-    lost members to a `noblueprints` denial, and three — `thrusters`,
-    `frameShiftDrives` and `shieldGenerators` — only *gained* the family-rule modules
-    described below (the size-8 drives, `Int_ShieldGenerator_Size1_Class4` and four
-    `*_free` starter fittings). No group's blueprint or experimental list changed except
-    those three losing `recipe_guardianmodule_sturdy`, and no module that stayed in the
-    catalogue moved to a group other than its family's Guardian half.
+    exception, because a group *is* a menu and these are two menus. Reading the
+    registries alone would give the Guardian halves their ordinary twin's experimental
+    list, since `expeffects` is published per group with no per-module denial on any of
+    them; that they carry none is recorded further down, under "A Guardian module has no
+    experimental slot".
+  - **The ordinary halves must not list `recipe_guardianmodule_sturdy`**, which is an
+    Anti-Guardian recipe on a non-Guardian module and EDSY denies it. `powerPlants`,
+    `powerDistributors` and `hullReinforcements` therefore hold ordinary modules only,
+    and the 25 Guardian ones sit in the three groups above.
+  - **14 modules are absent because upstream denies them every blueprint:** eight AX
+    multi-cannons (all but the two gimballed), five of the seven mining tools, and the
+    Mk II Plasma Shock Autocannon — which is why `antiXenoMultiCannons` holds 2 of that
+    family's 10 modules, `miningToolsLasers` 2 of its 7 and `plasmaAccelerators` 4 of its
+    5. The ten plain Module Reinforcement Packages are denied their family's only recipe
+    and are absent too, which leaves `moduleReinforcements` holding the ten Guardian
+    packages.
   - **The 169 modules absent take no engineering.** Whole families first, both registries
     agreeing: fuel tanks, passenger cabins, the repair/recon/research/decontamination and
     multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
@@ -1459,9 +1186,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
     vehicle hangars, the docking computers and Supercruise Assist, the module stabilisers,
     the planetary approach suites, the withdrawn discovery scanners, the cargo hatch and
     the AX utility modules (Xeno Scanners, Shutdown Field Neutralisers). Then the
-    individually denied modules described above. This is why `getEngineeringGroup`
-    returning `null` no longer means "not listed yet" — see the API note in
-    `engineering-options.ts`.
+    individually denied modules described above. `getEngineeringGroup` returning `null`
+    therefore means "the game engineers nothing here", not "not listed yet" — see the API
+    note in `engineering-options.ts`.
   - **EDSY's `_X_` prefix means "not applicable" and is honoured**, not stripped: the
     Detailed Surface Scanner's group lists only `iss_er` (`Sensor_Expanded`), because its
     three other entries are `_X_`-marked. The dormant `Decorative_*` entries on the
@@ -1488,8 +1215,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     them at all: the nine Guardian-only groups (`guardianPowerPlants`,
     `guardianPowerDistributors`, `guardianHullReinforcements`, `moduleReinforcements`,
     `shieldReinforcements`, `fsdBoosters`, `guardianGauss`, `guardianPlasma`,
-    `guardianShard`), `antiXenoMissileRacks`, `experimentalWeapons`, and the
-    pre-existing `miningToolsLasers` and `antiXenoMultiCannons`. That is coriolis being
+    `guardianShard`), `antiXenoMissileRacks`, `experimentalWeapons`,
+    `miningToolsLasers` and `antiXenoMultiCannons`. That is coriolis being
     silent rather than contradicting — its Guardian and anti-xeno groups are empty
     objects — but it means the second registry corroborates 40 of the 53 groups, not
     all of them, and the Guardian-weapon disagreement in
@@ -1497,8 +1224,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     one registry behind it.
   - **`MC_Overcharged` is left out on purpose.** coriolis carries a multi-cannon-specific
     Overcharged (one extra clip-size leg); the multi-cannon group lists EDSY's
-    `Weapon_Overcharged`, as it did before this change, and every Overcharged multi-cannon
-    in the build corpus is spelled that way. It is one of the 27 blueprint ids no group
+    `Weapon_Overcharged`, and every Overcharged multi-cannon in the build corpus is
+    spelled that way. It is one of the 27 blueprint ids no group
     names — the other 26 are the pre-engineered `recipe_*` variants, which are sold
     already applied rather than offered in a menu; `recipe_guardianmodule_sturdy` is the
     one `recipe_*` a group does name, because it is also a recipe players apply. It looks
@@ -1514,7 +1241,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     and a size-8 drive is a drive. `Int_FuelTank_Size1_Class3_free` and
     `Int_StellarBodyDiscoveryScanner_Standard_free` are not bound, because their twins are
     not engineerable either.
-- **Scanner Long Range and Wide Angle: one journal id, two recipes (settled 2026-08-06).**
+- **Scanner Long Range and Wide Angle: one journal id, two recipes.**
   These two modifications are offered on the internal sensor suite *and* on the
   KWS/manifest/wake scanners, and the game writes the same `BlueprintName` for both. EDSY
   is explicit about it — `cs_lr` (suite) and `scan_lr` (scanner) are two rows with
@@ -1542,13 +1269,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
   is a property of the module, and `engineering-options.jsonc` already carries it — the
   menu. `resolveBlueprintForModule` is the join: it asks which blueprint *this module is
   offered* answers to the incoming id. `ShipLoadout.applyBlueprint` resolves before it
-  folds, so an EDSY-authored build declaring `Sensor_LongRange` on a wake scanner now
+  folds, so an EDSY-authored build declaring `Sensor_LongRange` on a wake scanner
   engineers, and engineers the scanner's numbers.
 
-  Storing it as a per-group alias map instead was tried first and is worse: the same two
-  entries would be repeated on every scanner group — three today — and silently missing
-  from the fourth if the game ever adds one, which is the hand-maintained-second-answer
-  failure §Engineering compatibility below was written about. Deriving it by *signature*,
+  Storing it as a per-group alias map instead is worse: the same two entries would be
+  repeated on every scanner group — three today — and silently missing from the fourth if
+  the game ever adds one, which is the hand-maintained-second-answer failure
+  §Engineering compatibility below was written about. Deriving it by *signature*,
   the way the generic `Misc_*` spellings are derived, is not available either: these two
   ids touch different labels by design, so a signature match could never fire, and any
   looser rule would be inventing a pairing rather than reading one.
@@ -1560,31 +1287,25 @@ up straight through with no disambiguation at all. Both paths are evidence that
   block the same id produces on each family, and `journalNames`, the whole of the blueprint
   side.
 
-  **No bundle cost to a menu-only consumer, which decided where the join lives.** The
-  function needs the menus *and* the recipes, so putting it in `engineering-options` would
-  have taken that module's import graph from 64 KB to 285 KB (7.2 KB to 25.3 KB gzipped)
+  **The join lives in a module of its own so a menu-only consumer pays nothing for it.**
+  The function needs the menus *and* the recipes, so putting it in `engineering-options`
+  would take that module's import graph from 64 KB to 285 KB (7.2 KB to 25.3 KB gzipped)
   for every consumer who only wanted to know what a module takes — measured the way
   `README.md` defines a size, over a module and everything it imports, which is what
   `package.test.mjs` walks. Tree-shaking recovers it, but the repo does not measure in
-  tree-shaken bundles and a plain ESM consumer would not get it. So it is its own module,
-  `ships/blueprint-journal`: `engineering-options` stayed at 63 636 bytes with no recipe
-  data in its graph (a test asserts the absence and bounds the size at 96 KB rather than
-  pinning it, so later passes move the figure without moving the test — the 2026-08-07
-  Guardian correction below shed a few hundred bytes of experimental ids), `blueprints`
-  stays at 221 345, and the 284 853 is paid by callers who ask for the join. This closed
+  tree-shaken bundles and a plain ESM consumer would not get it. So it is
+  `ships/blueprint-journal`: `engineering-options` carries no recipe data in its graph (a
+  test asserts the absence and bounds the size at 96 KB rather than pinning it, so a data
+  change moves the figure without moving the test), `blueprints` is about 221 KB, and the
+  285 KB is paid by callers who ask for the join. This closed
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
 
-  **Acquisition (2026-08-06 UTC).** `edsy.js` — the file carrying `Build.fromJournal` — is
-  new to this repository's provenance: read from
-  `raw.githubusercontent.com/taleden/EDSY/master/edsy.js`, SHA-256
-  `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5`, pinned by digest
-  because it was taken from the branch tip. The `eddb.js` read beside it is byte-identical
-  to the snapshot every pass above pins (`967834d6…`, internal `db 20260428`), so the group
-  tables did not move under this change; only the reading of them did. Same CC BY-NC 4.0
-  terms as the other EDSY reads.
+  The evidence for the collision is in `edsy.js` — the file carrying `Build.fromJournal`
+  — rather than in the `eddb.js` tables the rest of this section reads, which is why both
+  EDSY files are pinned at the head of this document.
 - **Checked against the build corpus.** Of the 1902 declared engineering entries in
-  `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups — the measure in
-  the issue was 497 of them ungrouped — and 1889 are clean end to end: the module is
+  `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups, and 1889 are
+  clean end to end: the module is
   grouped, its group offers the blueprint, and where an experimental is declared the
   module can take it. 70 of the 1889 declare the generic spelling of a family-specific
   recipe (`Misc_LightWeight` on a life support, and so on) and count as offered; the shape
@@ -1606,11 +1327,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36).
 
   A corpus build's engineering is declared by its author, never read off an outfitting
-  screen, so it is evidence about the catalogue but not authority over it. Still, the
-  `noblueprints` pass moved or dropped **39 module bindings** and the corpus engineers
-  only one of those 39 modules at all — the Mk II above, twice. It offers no support for
-  any of the other 38 denials and no contradiction of them, which is the strongest check
-  available on data that only one registry publishes.
+  screen, so it is evidence about the catalogue but not authority over it. Of the **39
+  module bindings** that rest on a `noblueprints` denial, the corpus engineers exactly one
+  module at all — the Mk II above, twice. It offers no support for the other 38 denials
+  and no contradiction of them, which is the strongest check available on data that only
+  one registry publishes.
 - **File order is derivable:** `modules` is written group by group in the order `groups`
   declares them, and within a group in module-catalogue order, so a re-derivation from the
   same sources reproduces the file rather than reshuffling it.
@@ -1620,9 +1341,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   Penetrator Munitions or FSD Interrupt, and the small fixed Abrasion Blaster takes none
   at all. Upstream these are an exclusion map (with a wildcard for "none of them"); here
   the wildcard is **expanded to the explicit list** so a consumer never has to interpret
-  one. A module absent from `exclusions` takes its whole group's list. It was 29 before
-  the `noblueprints` pass; the five that went are mining tools that turned out to take no
-  blueprint either, so they left the catalogue rather than the exclusion list.
+  one. A module absent from `exclusions` takes its whole group's list. Five mining tools
+  that would otherwise be listed here are absent from the catalogue entirely, taking no
+  blueprint either.
 - **Kept deliberately:** the Abrasion Blaster stays in `modules` (it has a blueprint) even
   though its experimental list resolves to empty — "engineerable with no experimental
   slot" and "not engineerable at all" are different answers, and `getEngineeringGroup`
@@ -1632,17 +1353,14 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Key form:** EDSY names the Anti-Guardian blueprint by its journal form
   (`GuardianModule_Sturdy`); this catalogue stores it under the `recipe_*` id the rest of
   `blueprints.jsonc` uses, so every id here joins directly.
-- **A Guardian module has no experimental slot (settled 2026-08-07).** This is the answer
-  [#33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33) asked for, and it
-  is a rule about the recipe rather than about any one module: **Anti-Guardian Zone
-  Resistance carries no experimental effect, and on a Guardian *module* — power plant,
-  power distributor, hull/module/shield reinforcement package, FSD booster — it is the
-  whole menu.** An engineered Guardian module that does carry an experimental was obtained
-  **already engineered**, as a community-goal reward or a tech-broker unlock, rather than
-  rolled at an engineer; this file answers what a player may apply, so it does not list
-  those. So `guardianPowerPlants`, `guardianPowerDistributors` and
-  `guardianHullReinforcements` now list `"experimentals": []`, and all nine groups offering
-  `recipe_guardianmodule_sturdy` agree; the other six already did.
+- **A Guardian module has no experimental slot.** This is a rule about the recipe rather
+  than about any one module: **Anti-Guardian Zone Resistance carries no experimental
+  effect, and on a Guardian *module* — power plant, power distributor, hull/module/shield
+  reinforcement package, FSD booster — it is the whole menu.** An engineered Guardian
+  module that does carry an experimental was obtained **already engineered**, as a
+  community-goal reward or a tech-broker unlock, rather than rolled at an engineer; this
+  file answers what a player may apply, so it does not list those. All nine groups
+  offering `recipe_guardianmodule_sturdy` therefore list `"experimentals": []`.
   - **"Whole menu" is the module claim, not a weapon claim.** The Guardian *weapon* groups
     also offer `recipe_guardianmodule_sturdy`, but it is not the whole of their menu —
     each also lists one ordinary weapon recipe, which is why the sentence above is scoped
@@ -1652,68 +1370,60 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `pre-engineered.jsonc` carries seven Guardian rows and all seven are **weapons**
     (Gauss, Plasma, Shard), each with a `blueprint` and no `experimental`; there is no
     `Int_Guardian*` row at all. So a Guardian power plant that arrived from a community
-    goal with, say, `special_powerplant_lightweight` on it is recorded in neither file
-    after this change — the menu correctly refuses it, and the pre-engineered catalogue
-    does not yet describe it. No registry publishes those variants, which is why this pass
-    did not invent them. Nothing in this repository should be read as claiming otherwise.
-  - **What was wrong, and why neither registry caught it.** The three groups inherited
-    their ordinary twin's list when the `noblueprints` split created them, because
-    `expeffects` is published **per module group** by both registries — EDSY has no
-    per-blueprint field and coriolis-data's `specials` sits beside `blueprints` rather than
-    inside one — so a group that offers exactly one blueprint still names the whole family's
-    effects, and there is nothing in either file that says a Guardian menu is narrower.
-    That is the shape #33 described. It also means the correction cannot be re-derived from
-    the registries: it is a game fact recorded here, and a re-derivation that reads EDSY
-    alone will reproduce the pre-2026-08-07 lists.
+    goal with, say, `special_powerplant_lightweight` on it is recorded in neither file —
+    the menu correctly refuses it, and the pre-engineered catalogue does not describe it.
+    No registry publishes those variants, which is why none is invented here. Nothing in
+    this repository should be read as claiming otherwise.
+  - **Neither registry publishes this, and a re-derivation will not reproduce it.**
+    `expeffects` is published **per module group** by both — EDSY has no per-blueprint
+    field and coriolis-data's `specials` sits beside `blueprints` rather than inside one —
+    so a group offering exactly one blueprint still names the whole family's effects, and
+    nothing in either file says a Guardian menu is narrower. Read EDSY alone and the three
+    Guardian groups come back carrying their ordinary twin's list. This is a game fact
+    recorded here, and it has to be reapplied after any re-derivation.
   - **Source:** a maintainer report of the in-game engineering menu, recorded 2026-08-07
     UTC — the same standing as the module-price and restricted-mount observations recorded
-    above, and the kind of evidence #33 named as sufficient ("a capture of the in-game
-    experimental list"). There is no upstream revision to pin, because no registry
-    publishes the fact: EDSY `eddb.js` and coriolis-data
-    `modifications/modules.json` are unchanged from the snapshots pinned above
-    (`967834d6…` / `db 20260428` and `09b6427c…`), and neither was re-read for this pass.
-    No registry contradicts the report either; both are silent. Underlying game logic is
-    Elite Dangerous data, property of Frontier Developments plc, under Frontier's
-    media-usage terms.
+    above, and the kind of evidence
+    [#33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33) named as
+    sufficient ("a capture of the in-game experimental list"). There is no upstream
+    revision to pin, because no registry publishes the fact; neither contradicts the
+    report either, both being silent.
   - **Scope: the six Guardian *module* families, not the three Guardian weapons.** The
-    weapon groups `guardianGauss`, `guardianPlasma` and `guardianShard` are untouched —
-    they already offered no experimental, and they keep the ordinary weapon blueprint each
-    of them also lists (`Weapon_RapidFire`, `Weapon_Overcharged`, `Weapon_LongRange`), which
-    the build corpus engineers and which
+    weapon groups `guardianGauss`, `guardianPlasma` and `guardianShard` offer no
+    experimental, but they do keep the ordinary weapon blueprint each of them also lists
+    (`Weapon_RapidFire`, `Weapon_Overcharged`, `Weapon_LongRange`), which the build corpus
+    engineers and which
     [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36) tracks
-    separately. `fsdBoosters`, `moduleReinforcements` and `shieldReinforcements` — the other
-    three Guardian module families — were already `[]` and are unchanged.
+    separately.
   - **The corpus neither corroborates nor contradicts.** None of the 1902 declared
     engineering entries in `fixtures/ships/builds/` engineers a Guardian power plant,
-    distributor or hull reinforcement package at all, so no count in `corpus` moves. The
-    six `special_super_penetrator_cooled` entries on a Guardian Shard Cannon stay exactly
-    where they were, in `corpus.notOffered` under #36.
-  - **Consumer-visible:** `getExperimentalsForModule` answers `[]` for the 25 modules in
-    those three groups, where it listed four or five effects; `ShipLoadout.applyBlueprint`
-    refuses an `experimental` on them; and
-    `getExperimentalsForBlueprint('recipe_guardianmodule_sturdy')` answers `[]` rather than
-    the 13-effect union of the three families — which was the exact symptom #33 recorded.
-    Blueprints are unchanged on every module. Pinned in
+    distributor or hull reinforcement package at all. The six
+    `special_super_penetrator_cooled` entries on a Guardian Shard Cannon sit in
+    `corpus.notOffered` under #36 for an unrelated reason.
+  - **What a consumer sees:** `getExperimentalsForModule` answers `[]` for the 25 modules
+    in those three groups, `ShipLoadout.applyBlueprint` refuses an `experimental` on them,
+    and `getExperimentalsForBlueprint('recipe_guardianmodule_sturdy')` answers `[]` rather
+    than a union across the three families. Blueprints are unaffected on every module.
+    Pinned in
     `fixtures/ships/engineering-options.json` as `antiGuardianZoneResistance` (the nine
     groups, the empty list, six representative modules) and on each half of
     `splitFamilies`.
 
 ## Engineering compatibility (may this recipe go on this module?)
 
-Not a data file, and no longer a second opinion. `ShipLoadout.applyBlueprint` reads the
-menu above: a recipe it does not list for that module is refused. The two questions a
-consumer can ask — what a module takes, and whether a particular recipe may go on it —
-therefore cannot disagree, and `engineering.test.ts` asserts that for all 1197 modules.
+Not a data file, and not a second opinion. `ShipLoadout.applyBlueprint` reads the menu
+above: a recipe it does not list for that module is refused. The two questions a consumer
+can ask — what a module takes, and whether a particular recipe may go on it — therefore
+cannot disagree, and `engineering.test.ts` asserts that for all 1197 modules.
 
-- **Why it is not a family map any more.** It was: `engineering-compatibility.ts` mapped a
-  blueprint id to a module *family* and a module symbol to the same, both by string prefix.
-  Two hand-maintained answers to one question drift, and this pair did — measured before
-  the change, the map refused recipes the menu offers on 52 modules, and 76 of the corpus's
-  1902 declared entries for a family mismatch it invented. Both defects were in the
-  inference, not in the data: the Hatch Breaker Limpet Controller's symbol is
-  `Int_DroneControl_ResourceSiphon`, which the prefix rule for "hatchbreaker" never matched,
-  and the Caustic Sink Launcher's said `causticsink` where its group is the heat sink
-  launchers'. A per-module menu has nothing to infer. The module is deleted.
+**Do not reintroduce a family map.** Inferring a module's family and a blueprint's family
+from their symbols, and comparing the two, is the obvious alternative and it is worse:
+two hand-maintained answers to one question drift, and measured against the menu that
+inference refused recipes on 52 modules and mismatched 76 of the corpus's 1902 declared
+entries. Both failures were in the inference rather than in any data — the Hatch Breaker
+Limpet Controller's symbol is `Int_DroneControl_ResourceSiphon`, which a "hatchbreaker"
+prefix rule never matches, and the Caustic Sink Launcher's says `causticsink` where its
+group is the heat sink launchers'. A per-module menu has nothing to infer.
 
 Three accommodations sit beyond the menu, and the three bullets below are them. They are
 listed as they are best explained rather than as they run — the gate applies the journal
@@ -1749,24 +1459,19 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   a Guardian Gauss Cannon (5) and `special_super_penetrator_cooled` on a Guardian Shard
   Cannon (6), where EDSY's `hexgg` group answers Rapid Fire and Anti-Guardian Zone
   Resistance alone; and `Weapon_Efficient` on the Mk II Plasma Shock Autocannon (2), which
-  EDSY marks `noblueprints`. **All thirteen are newly refused** by the menu, because a
-  family map that classified all three as weapons could not see that the game offers those
-  weapons almost nothing. Trading 76 wrong refusals for 13 that each cite an upstream
-  denial is the point of reading a per-module menu, but it is a tightening on real
-  community builds, not continuity. They are recorded in the fixture and exempted by name
-  with their counts, never by a bare total, so a new disagreement fails a test instead of
-  hiding in the allowance. Tracked at
-  [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36). The wake
-  scanner's `Sensor_LongRange` was the fourteenth until 2026-08-06, and was the one the
-  family map refused too; it is now accepted and folded as the scanner's recipe — see
-  §Scanner Long Range and Wide Angle above.
+  EDSY marks `noblueprints`. All thirteen are refused, each citing an upstream denial —
+  which is a tightening on real community builds, and deliberate: an inference loose
+  enough to admit them classifies all three as weapons and cannot see that the game offers
+  those particular weapons almost nothing. They are recorded in the fixture and exempted
+  by name with their counts, never by a bare total, so a new disagreement fails a test
+  instead of hiding in the allowance. Tracked at
+  [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36).
 - **Accommodation: the pre-engineered route.** A `recipe_*` key belongs to a module
-  bought already engineered, so no menu lists one and the menu check alone refused all 20
-  of them everywhere — a capability the family map had. `pre-engineered.jsonc` names which module
-  each arrives on, so the gate accepts a recipe on the module that is sold carrying it and
-  nowhere else: `recipe_railgun_longshot` resolves on the medium rail gun, not on the small
-  one. That is narrower than the family map, which took any weapon recipe on any weapon,
-  and what it buys is the **climb**, not the purchase: a Mercenary module arrives at grade 1
+  bought already engineered, so no menu lists one and the menu check alone would refuse
+  all 20 of them everywhere. `pre-engineered.jsonc` names which module each arrives on, so
+  the gate accepts a recipe on the module that is sold carrying it and nowhere else:
+  `recipe_railgun_longshot` resolves on the medium rail gun, not on the small one. What
+  that buys is the **climb**, not the purchase: a Mercenary module arrives at grade 1
   and its recipe publishes grades 2–5, the grades an engineer can still add. It cannot
   reproduce the grade the module was sold at — all 21 Mercenary rows are grade 1, none of
   those recipes defines a grade 1, and the blueprint lookup refuses that call before the
@@ -1775,27 +1480,18 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   Mercenary Module Reinforcement Package, has no engineering menu at all, so the gate asks
   what a module is *sold* with before it concludes the module takes nothing.
 
-  Six blueprint ids and one experimental are left reachable on no module: `MC_Overcharged`,
-  `recipe_fuelscoop_efficiency`, the three laser `*_thermalplasmaconversion` recipes,
-  `recipe_seekermissileracklarge_lockdown` and `special_feedback_cascade`. Each applied
-  somewhere under the family map, so this is a capability the change gives up. No menu
-  lists them, no module is sold carrying one, and no corpus build declares one — which is
-  why the change went ahead rather than inventing a home for them, but it is a real loss
-  and [#39](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39) tracks it.
-- **What it costs.** `ShipLoadout` now carries the options catalogue whether or not the
-  consumer opens a menu: measured on the shipped `dist/` **as this catalogue landed**, its
-  import graph went from 624 KB to 709 KB, 74 KB to 82 KB gzipped — the options catalogue,
-  plus `pre-engineered` for the
-  route above. The `ships` barrel went the other way, 716 KB to 711 KB, the family map
-  having gone with it. That is the price of one answer instead of two, paid deliberately.
-  Both ends have since shrunk by about 13 KB, the module records having stopped
-  repeating their category (see the 2026-08-06 revision at the top of this file), so the
-  graph carrying this catalogue measures 696 KB / 82 KB gzipped today. There is no
-  matching "without it" figure for today, and the pair above is the one to quote: the
-  duplicate family map is deleted, so any current counterfactual means reconstructing a
-  tree that never existed, and how much of the surrounding code you unwind with it moves
-  the answer by tens of kilobytes. The 624 → 709 pair was measured on two trees that
-  both really existed, which is what makes it worth keeping.
+  **Six blueprint ids and one experimental are reachable on no module at all:**
+  `MC_Overcharged`, `recipe_fuelscoop_efficiency`, the three laser
+  `*_thermalplasmaconversion` recipes, `recipe_seekermissileracklarge_lockdown` and
+  `special_feedback_cascade`. No menu lists them, no module is sold carrying one, and no
+  corpus build declares one, so there is no evidence for a home to give them and none is
+  invented. [#39](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39) tracks
+  it.
+- **What it costs.** `ShipLoadout` carries the options catalogue whether or not the
+  consumer opens a menu, plus `pre-engineered` for the route above: measured on the
+  shipped `dist/`, its import graph is about 696 KB, 82 KB gzipped, against roughly
+  624 KB / 74 KB for the same tree without them. That is the price of one answer to the
+  two questions instead of two answers that can drift, paid deliberately.
 
 ## Pre-engineered modules
 
@@ -1807,8 +1503,9 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   own** — the game sells an ordinary module with engineering already applied, and a
   journal `Loadout` reports it as the base `symbol` plus an `Engineering` block. So the
   module catalogues already hold every one of these modules and `blueprints.jsonc`
-  already holds every one of these blueprints; what was missing was the **link** saying
-  which stock modules can be bought already engineered, and with what. Each record is a
+  already holds every one of these blueprints; what neither can hold is the **link**
+  saying which stock modules can be bought already engineered, and with what. That link
+  is this file. Each record is a
   pairing — `{ symbol, name, blueprint, grade, acquisition }` plus the stat block and
   price described below — not a module, which is also why it is exempt from the "unique
   symbols per catalogue" rule the other array-shaped files follow.
@@ -1898,8 +1595,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
     encoder's own one-unit rounding), the source cannot tell the two apart and the round
     stat is what was authored, so it is stored as an **`overwrite` of the stat** — exact,
     and the shape a journal reports a pre-engineered modifier in anyway. **14 modifiers**
-    across 7 modules were corrected this way; the file now holds 20 `overwrite` modifiers
-    over 11 modules, each pinned by a test to resolve to exactly its stored value.
+    across 7 modules are stored this way, and the file holds 20 `overwrite` modifiers
+    over 11 modules in all, each pinned by a test to resolve to exactly its stored value.
     Worth stating plainly, because the blueprint name invites the opposite reading: the
     Shard's `MaximumRange` ×1.7647 with `FalloffRange` ×0.88235 is **not** a Long Range
     roll of any grade. It is a bespoke stat block, as every reward variant's is.
@@ -1911,19 +1608,19 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
       under cover of a rounding fix. The two sources differ on the gauss cannons' stock
       damage by a constant factor (40 vs 22 small, 70 vs 38.5 medium); which is right is
       an open question about the *module* catalogue, recorded here and not settled.
-  - **Burst interval, dropped from 13 variants, is now restored.** EDSY carries no
+  - **Burst interval has to be added to the decoder's output by hand.** EDSY carries no
     journal Label for `bstint` — the journal reports the resulting `RateOfFire`, never the
-    interval it comes from — so the decoder skipped it, and the 13 variants that change a
-    burst pattern kept the *stock* cadence. Four of them (the two frag cannons and the two
-    Guardian gauss cannons) were left inconsistent as well as slow, carrying the engineered
-    `BurstSize` — and, on the gauss cannons, the engineered `BurstRateOfFire` — against a
-    stock interval. They are now stored under **`BurstInterval`**, the
-    same label the Rapid Fire and High Capacity blueprint features use (see the
-    Engineering section above), which is the only addition to the file: re-running the
+    interval it comes from — so a straight decode drops it, leaving the 13 variants that
+    change a burst pattern on the *stock* cadence, and four of them (the two frag cannons
+    and the two Guardian gauss cannons) inconsistent as well as slow, carrying the
+    engineered `BurstSize` — and, on the gauss cannons, the engineered `BurstRateOfFire` —
+    against a stock interval. All 13 are stored under **`BurstInterval`**, the same label
+    the Rapid Fire and High Capacity blueprint features use (see the Engineering section
+    above), and it is the file's one departure from what the decoder emits: re-running the
     decoder over the same EDSY revision reproduces every other byte. Nothing downstream
-    would have noticed the omission on its own — a stock cadence is a plausible number —
-    so `fixtures/ships/pre-engineered.json` now pins all 13 intervals and the rate each
-    derives, under `burstIntervalVariants`.
+    would catch the omission on its own — a stock cadence is a plausible number — so
+    `fixtures/ships/pre-engineered.json` pins all 13 intervals and the rate each derives,
+    under `burstIntervalVariants`.
   - **Where the two references disagree about a pre-engineered weapon, this file follows
     EDSY.** coriolis models 29 pre-engineered modules as separate module records with
     their own observed stats rather than as modifiers, so the two can be compared. On the
@@ -2052,9 +1749,8 @@ under, which is why several are cited above rather than copied.
   `8904e5b0343c3521d2fa3f521f4490f4c1e7c8e4` — a captured journal log the project ships
   as example data. That repository's own licence (UFO Licence 1.0, which GitHub reports
   as `NOASSERTION`) forbids redistributing **the project**; it does not reach a Frontier
-  journal line inside it, which is the exception stated at the head of this section, and
-  is why this build is here now having been checked and left out on 2026-08-05. Source
-  log SHA-256 `15d9d79b7546968637bdaa4fb266b4847a1c23cc0203e7ad0285f5e5878e9304`; the
+  journal line inside it, which is the exception stated at the head of this section and
+  the whole reason this build can be carried. Source log SHA-256 `15d9d79b7546968637bdaa4fb266b4847a1c23cc0203e7ad0285f5e5878e9304`; the
   stored fixture is the log's **last** `Loadout` event, unwrapped from the line-delimited
   log and re-indented, otherwise byte-for-byte. Its `ShipName`, `ShipIdent`, `ShipID` and
   `timestamp` are kept, as the Krait Phantom capture's are — they describe a ship. Nothing
@@ -2092,10 +1788,9 @@ under, which is why several are cited above rather than copied.
   redistributed under Frontier's media-usage terms. Source text SHA-256
   `3e008ea9b1226c49b6f7c080d897a4cbabbcbcc36ce83e58a293b397712279ee`; stored unmodified
   apart from re-indenting. The header's Inara commander and ship ids are kept as
-  received. That predates the scrubbing applied to the two 2026-08-05 captures below,
-  where the same fields were removed as a person's account details; bringing this one
-  into line is the owner's call, and until it is made the two forms differ deliberately
-  rather than by oversight.
+  received, where the other Inara captures below have them scrubbed as a person's account
+  details; bringing this one into line is the owner's call, so the two forms differ
+  deliberately rather than by oversight.
 
   It is the **only external source that exercises the restricted mounts**, and it
   settles what nothing else could: Inara independently writes
@@ -2103,8 +1798,8 @@ under, which is why several are cited above rather than copied.
   `mediumhardpoint3`, `smallmininghardpoint1`, `limpetcontroller01` and
   `fighterbay01` — this catalogue's keys character for character, once case is set
   aside. Its internals run `slot01_size6`…`slot05_size5`, then `slot06_size4`, so a
-  restricted optional really does consume no `SlotNN` number, exactly as the
-  2026-08-04 revision derived from EDSY. And its `mediumhardpoint3` carries a
+  restricted optional really does consume no `SlotNN` number, exactly as the numbering
+  rule derived from EDSY says under §Ships. And its `mediumhardpoint3` carries a
   sub-surface displacement missile, confirming an *unrestricted* mount takes mining
   tools too.
 
@@ -2115,15 +1810,14 @@ under, which is why several are cited above rather than copied.
   capture above is the authority on that convention, so this catalogue keeps
   truncating; the divergence is pinned as evidence rather than followed.
 
-  **One thing it exposed rather than confirmed:** Inara lower-cases every slot key, as
-  the SLEF specification's own example does, and slot binding here used to be
-  case-sensitive — so a build imported from Inara reported **no** occupied mounts and
-  `setModule` on one added a duplicate rather than replacing it. That was a defect of
-  the loadout facade rather than of this data, and nothing but an Inara-sourced export
-  would have shown it: the other two ground-truth fixtures are an EDSY export and a
-  journal capture, which both use Frontier's own casing. `ShipLoadout` and
-  `parseSlotName` now resolve a slot key whatever its casing. What was **not** done is
-  canonicalising keys on import: a build keeps its producer's spelling, so this fixture
+  **It is also the only fixture that exercises case-insensitive slot binding.** Inara
+  lower-cases every slot key, as the SLEF specification's own example does, so a
+  case-sensitive binding reports **no** occupied mounts on an Inara build and `setModule`
+  on one adds a duplicate rather than replacing it. Nothing but an Inara-sourced export
+  shows that: the other two ground-truth fixtures are an EDSY export and a journal
+  capture, which both use Frontier's own casing. `ShipLoadout` and `parseSlotName` resolve
+  a slot key whatever its casing. Keys are deliberately **not** canonicalised on import —
+  a build keeps its producer's spelling, so this fixture
   re-exports its slot keys byte for byte — its *credits* deliberately do not survive a
   round trip, per the retail rule below — and the tests over it compare slot keys
   case-insensitively because that is what the library itself does.
@@ -2288,9 +1982,10 @@ because both of its builds are pure traders.
   links afresh.
 - **Validation.** Every build was assembled through `ShipLoadout` before selection: each
   module must resolve in the catalogues, its slot must exist on that hull and accept it,
-  and all seven core internals must be filled. Builds that failed were dropped — the one
-  systematic failure, the Type-11's missing mining hardpoints, was a defect in this
-  catalogue and is corrected above. Near-duplicates (>85% identical fit) were collapsed,
+  and all seven core internals must be filled. Builds that failed were dropped; the one
+  systematic failure was the Type-11's missing mining hardpoints, a defect in this
+  catalogue rather than in the builds, corrected under §Ships. Near-duplicates (>85%
+  identical fit) were collapsed,
   and each hull's picks spread across the roles its builds cover.
 - **Layout.** One file per build, `fixtures/ships/builds/<id>.json`, named by the `id`
   it carries; `index.json` lists every id with its hull and role, and holds the corpus's
@@ -2304,9 +1999,10 @@ because both of its builds are pure traders.
   weapon DPS. **Engineering is recorded but not applied** — every pinned figure comes
   from stock module stats, so builds designed around an engineered plant read
   `withinBudget: false`. That keeps the numbers a pure function of the catalogues and
-  cheap for a port to reach, and it is a choice rather than a limitation: since the base
-  stats were sourced (revision above) all 1902 declared entries resolve, and `index.json`
-  carries `declaredEngineering` so `builds.test.ts` can assert exactly that on every run.
+  cheap for a port to reach, and it is a choice rather than a limitation: every one of
+  the 1902 declared entries resolves against the base stats recorded under §Modules, and
+  `index.json` carries `declaredEngineering` so `builds.test.ts` asserts exactly that on
+  every run.
   Applying them and re-pinning every metric would be a separate pass over the corpus.
 - **Not ground truth.** These figures are this implementation's own output, pinned so
   every future implementation must agree. Only the *builds* are external.
