@@ -18,11 +18,13 @@
  * which cuts the clip by 3–15% where the `Weapon_Overcharged` the game writes for both
  * leaves it alone. `ships/blueprint-journal` reads one against a module.
  *
- * A further 27 keys are the registries' `recipe_*` ids, which no `Loadout` writes — 21 of
- * them recipes a module is *sold* carrying (`ships/pre-engineered`), and two the community
- * spellings of Anti-Guardian Zone Resistance, whose journal id `GuardianModule_Sturdy` is a
- * key here in its own right. They carry no `journalName` because there is no journal
- * spelling to name. Enumerate the 109 blueprints with `Object.keys(BLUEPRINTS)`.
+ * A further 27 keys are the registries' `recipe_*` ids: 21 recipes a module is *sold*
+ * carrying (`ships/pre-engineered`), four Operations recipes a player rolls at an engineer
+ * (`ships/engineering-options`), and two the community spellings of Anti-Guardian Zone
+ * Resistance, whose journal id `GuardianModule_Sturdy` is a key here in its own right. None
+ * carries a `journalName`, because no journal spelling has been observed for any of them —
+ * which is a gap in the evidence, not a claim that the game writes none.
+ * Enumerate the 109 blueprints with `Object.keys(BLUEPRINTS)`.
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`): `features` from the
  * grade with journal Labels resolved via EDSY, `materials` from the grade's

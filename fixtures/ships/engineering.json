@@ -215,7 +215,7 @@
     ]
   },
   "journalNames": {
-    "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 109; of the rest, 79 are already the journal id and 27 are registry `recipe_*` keys no journal writes, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
+    "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 109; of the rest, 79 are already the journal id and 27 are registry `recipe_*` keys for which no journal spelling has been observed, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
     "map": {
       "MC_Overcharged": "Weapon_Overcharged",
       "Scanner_LongRange": "Sensor_LongRange",

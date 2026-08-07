@@ -68,8 +68,8 @@
  * the fuel scoops and the three lasers' `*_thermalplasmaconversion`. (Anti-Guardian Zone
  * Resistance is a fifth recipe of that kind, listed by the nine Guardian groups under the
  * journal id `GuardianModule_Sturdy` rather than under a `recipe_*` key.) A purchased
- * pre-engineered
- * module's recipe starts at grade 2 because grade 1 is what the purchase contains; these
+ * pre-engineered module's recipe starts at grade 2 because grade 1 is what the purchase
+ * contains; these
  * four start at grade 1, so nothing is pre-applied and the whole recipe is rolled at an
  * engineer. See §Operations recipes in SOURCES.md.
  *

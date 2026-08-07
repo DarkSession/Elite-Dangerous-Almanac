@@ -975,8 +975,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `{ name, modifiers, materials, description? }`.
 - **Display names:** each blueprint and experimental effect carries its `name`.
   Effect names are EDSY `expeffect[].name` (all 87); blueprint names are coriolis
-  `blueprint.name` for the 81 journal-keyed blueprints and the Operations dossier's
-  display label for the 27 `recipe_*` ones. Read them with `getBlueprintName` /
+  `blueprint.name` for the 81 blueprints coriolis carries, and the Operations dossier's
+  display label for the other 28 — the 27 `recipe_*` keys and `GuardianModule_Sturdy`,
+  which is journal-keyed but absent from coriolis, so its name comes from the same registry
+  as its two `recipe_*` aliases. Read them with `getBlueprintName` /
   `getExperimentalEffectName`.
   - **These are the short modifier labels, not the full outfitting-panel
     strings — deliberately.** The panel calls `Weapon_LongRange` "Long-Range Weapon",
@@ -994,7 +996,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   record already answers to. The other 106 go without for two different reasons — 79
   because their key already is the id a journal writes (Anti-Guardian Zone Resistance is
   now one of them, as `GuardianModule_Sturdy`), and 27 because they are registry `recipe_*`
-  ids no `Loadout` writes, so there is no journal spelling to name. The three that do are
+  ids for which no journal spelling has been observed — 21 of them recipes a module is sold
+  already carrying, four recipes a player rolls at an engineer, and two the community
+  spellings of Anti-Guardian Zone Resistance, whose journal id is a key here in its own
+  right. The three that do are
   `Scanner_LongRange` and `Scanner_WideAngle`, coriolis keys for recipes the game writes as
   `Sensor_LongRange` / `Sensor_WideAngle` — the same ids it writes for the sensor suites'
   own Long Range and Wide Angle, which are different recipes — and `MC_Overcharged`, its
@@ -1053,7 +1058,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     whichever kind of module the recipe sits on, and there is no evidence the game ever
     writes a weapon spelling: `recipe_guardianweapon_sturdy` is a registry key, not an
     observed journal one. EDSY names the blueprint `GuardianModule_Sturdy` for the same
-    reason. **So `GuardianModule_Sturdy` is the key every menu lists**, and the two registry
+    reason. **So `GuardianModule_Sturdy` is the key all nine offering menus list**, and the
+    two registry
     spellings are stored beside it as aliases that still resolve — the journal name is the
     identity, a community name is the alias. That ordering is not cosmetic: while the menus
     listed a `recipe_*` key, `getBlueprint('GuardianModule_Sturdy')` answered `null` and
@@ -1296,9 +1302,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   **The fix is two stored facts and no third list.** What the game writes for a recipe is a
   property of the recipe, so it is stored on the recipe: `blueprints.jsonc` gives
   `Scanner_LongRange` and `Scanner_WideAngle` a **`journalName`** naming the id a journal
-  carries. Two records out of 109; every other key either already *is* that id or is a
-  registry spelling no journal writes, which is why the
-  field is absent everywhere else. Which of the two colliding recipes a given module rolls
+  carries. Two of the three records that carry the field — `MC_Overcharged` is the third,
+  below — out of 109; every other key either already *is* the id a journal writes or is a
+  registry `recipe_*` spelling, which is why the field is absent everywhere else. Which of
+  the two colliding recipes a given module rolls
   is a property of the module, and `engineering-options.jsonc` already carries it — the
   menu. `resolveBlueprintForModule` is the join: it asks which blueprint *this module is
   offered* answers to the incoming id. `ShipLoadout.applyBlueprint` resolves before it
@@ -1585,8 +1592,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   substitute for the other. An id **no menu lists anywhere** substitutes too, which covers
   Anti-Guardian Zone Resistance, whose two registry spellings
   (`recipe_guardianmodule_sturdy`, `recipe_guardianweapon_sturdy`) sit beside the
-  `GuardianModule_Sturdy` every group lists — see §Engineering, "Anti-Guardian Zone
-  Resistance is keyed three times". The game writes only the last of the three, so the
+  `GuardianModule_Sturdy` the nine offering groups list — see §Engineering,
+  "Anti-Guardian Zone Resistance is keyed three times". The game writes only the last of the three, so the
   other two reach the recipe through this route.
   `Weapon_LightWeight` is excluded by the labels instead — a weapon's Lightweight cuts
   distributor draw, which the generic one does not touch.
@@ -1604,7 +1611,7 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36).
 - **Accommodation: the pre-engineered route.** Most `recipe_*` keys belong to a module
   bought already engineered, so no menu lists one and the menu check alone would refuse
-  all 21 of them everywhere. (The five a menu *does* list are recipes a player rolls from
+  all 21 of them everywhere. (The four a menu *does* list are recipes a player rolls from
   grade 1 and need no accommodation; see §Engineering options.)
   `pre-engineered.jsonc` names which module each arrives on, so
   the gate accepts a recipe on the module that is sold carrying it and nowhere else:

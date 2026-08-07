@@ -282,6 +282,7 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
     // The registry spellings stay usable as aliases — a community name that no longer
     // resolves is not an alias, it is a removal.
     const guardian = 'Hpt_Guardian_GaussCannon_Fixed_Medium';
+    assert.ok(fixture.journalSpellings.alsoResolve.length, 'no aliases pinned');
     for (const id of fixture.journalSpellings.alsoResolve) {
         assert.ok(getBlueprint(id), `${id} must still look up`);
         assert.ok(blueprintAvailableFor(guardian, id), `${guardian} must accept ${id}`);

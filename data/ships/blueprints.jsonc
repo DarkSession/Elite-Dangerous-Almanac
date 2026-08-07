@@ -3,7 +3,8 @@
  * the materials one roll costs. Keyed by the blueprint's Frontier `fdname` — the string a
  * Loadout event's `Engineering.BlueprintName` carries, for 79 of the 109. The three that
  * share a journal id with another record carry a `journalName` saying so; the other 27 are
- * the registry's `recipe_*` keys, which no Loadout writes. See the note below.
+ * the registry's `recipe_*` keys, for which no journal spelling has been observed. See the
+ * note below.
  *
  * Sources: EDCD/coriolis-data, modifications/blueprints.json (commit 0db9234b5b9ce8c939ea84133d7ce336eea88e27)
  *          https://github.com/EDCD/coriolis-data
@@ -38,10 +39,13 @@
  * **The journal spelling is the key wherever the game publishes one.** A registry name is
  * kept only as an alias that still resolves: `GuardianModule_Sturdy` is what a Loadout
  * writes for Anti-Guardian Zone Resistance — on Guardian weapons as well as modules — so
- * that is the key every menu lists, and the registry's `recipe_guardianmodule_sturdy` and
+ * that is the key all nine offering menus list, and the registry's
+ * `recipe_guardianmodule_sturdy` and
  * `recipe_guardianweapon_sturdy` are stored beside it so a build carrying either still
- * looks up. The remaining `recipe_*` keys belong to modules sold already engineered, for
- * which no journal spelling has been observed. Two of the exceptions are
+ * looks up. Of the remaining 25 `recipe_*` keys, 21 belong to modules sold already
+ * engineered and four are Operations recipes a player rolls at an engineer
+ * (§Operations recipes in SOURCES.md); no journal spelling has been observed for any of
+ * them, which is not the same as knowing the game writes none. Two of the exceptions are
  * `Scanner_LongRange` and `Scanner_WideAngle`: the game writes `Sensor_LongRange` /
  * `Sensor_WideAngle` for the utility scanners' Long Range and Wide Angle *and* for the
  * sensor suites' own, which are different recipes rolling different stats — EDSY's
@@ -67,8 +71,9 @@
  * (CargoRack_IncreasedCapacity G5).
  *
  * The Operations pre-engineered blueprints (the `recipe_*` keys — Merc weapon rewards,
- * plus general/core/optional ones like `recipe_fuelscoop_efficiency`) and the
- * Anti-Guardian `recipe_guardianmodule_sturdy` come from the current in-game / Inara
+ * plus general/core/optional ones like `recipe_fuelscoop_efficiency`) and all three
+ * Anti-Guardian records (`GuardianModule_Sturdy` and its two `recipe_*` aliases, which
+ * coriolis does not carry under any spelling) come from the current in-game / Inara
  * blueprint registry, which exposes one displayed total per grade rather than a
  * roll-bounded range: each such feature stores that total as a fixed value (min == max).
  * Their per-roll `materials` are from the same registry (a Merc-Coin amount is also

@@ -160,8 +160,8 @@ export interface Blueprint {
      * **collision** rather than a rename: a key carries one only when the id the game
      * writes for it is a key some *other* record already answers to. Where the game
      * publishes a spelling nothing else uses, that spelling is simply the key — and where
-     * a key is a registry's `recipe_*` id that no `Loadout` writes at all, there is no
-     * journal spelling to name.
+     * a key is a registry's `recipe_*` id, no journal spelling has been observed for it,
+     * so there is none to name.
      *
      * It is present on `Scanner_LongRange` and `Scanner_WideAngle`, which the game
      * writes as `Sensor_LongRange` and `Sensor_WideAngle` — the same ids it writes for the
