@@ -72,6 +72,7 @@ import {
 import { getShipBySymbol, getShipSlots } from './ships.js';
 import {
     enumerateSlots,
+    parseSlotName,
     SLOT_RESTRICTION_LABELS,
     type BuildSlot,
     type SlotKind,
@@ -362,45 +363,33 @@ function moduleSlotError(slot: BuildSlot, module: OutfittingModule): string | nu
 }
 
 /**
- * The journal's **cosmetic** slot families, matched against a lower-cased slot key.
+ * Whether a journal slot key names something other than an outfitting mount.
  *
  * @remarks
  * A real journal `Loadout` event lists far more than fitted modules: the cockpit, ship
  * kits, nameplates, decals, bobbles, paint jobs, engine and weapon colours, voice packs
  * and string lights. None is an outfitting module — the catalogues deliberately do not
  * carry them (see `data/ships/SOURCES.md`) — and all contribute neither mass nor credits.
- */
-const COSMETIC_SLOT_PATTERNS: readonly RegExp[] = [
-    /^shipcockpit$/,
-    /^paintjob$/,
-    /^decal\d*$/,
-    /^shipname\d*$/,
-    /^shipid\d*$/,
-    /^bobble\d*$/,
-    /^shipkit\w*$/,
-    /^enginecolour$/,
-    /^weaponcolour$/,
-    /^vesselvoice$/,
-    /^stringlights$/,
-];
-
-/**
- * Whether a journal slot key names a cosmetic mount rather than an outfitting one.
  *
- * @remarks
- * Recognised **positively**, from {@link COSMETIC_SLOT_PATTERNS}, rather than as "a name
- * `parseSlotName` does not know". The two are not the same thing: an unfamiliar name is
- * at least as likely to be a slot family the game has added, and calling that free and
- * weightless would understate a build's mass and credits without saying so. (Casing is
- * not what makes a name unfamiliar — the patterns are matched lower-cased, as
- * `parseSlotName` classifies a key lower-cased.)
- * An article the catalogue can identify is therefore counted whatever its slot is called,
- * and only a genuinely unidentifiable one is classified by slot at all — see
- * {@link ShipLoadout.toLoadoutEvent}.
+ * The test is {@link parseSlotName}: a key it cannot classify names no mount this
+ * library fits modules into, so nothing there can carry mass or a list price. There is
+ * no separate list of decoration slot families to keep in step with the game — a
+ * nameplate style or bobble Frontier ships next year is handled the day it appears.
+ *
+ * The catalogue is consulted **first**, which is what keeps this safe: an article the
+ * catalogue can identify contributes its mass and price whatever its slot is called, so
+ * this question is only ever asked about an article nothing recognises. It is reached by
+ * a genuinely new *outfitting* family — a new mount holding a module no catalogue here
+ * carries — and there such a module reads as weightless and free rather than unknown.
+ * That is the accepted cost of not hand-maintaining the other list; a fitted module the
+ * catalogue knows is unaffected either way. See {@link ShipLoadout.toLoadoutEvent}.
+ *
+ * Casing is not what makes a key unfamiliar: `parseSlotName` classifies lower-cased, so
+ * a producer that writes `frameshiftdrive` is read as a mount exactly as the journal's
+ * `FrameShiftDrive` is.
  */
-function isCosmeticSlot(slotKey: string): boolean {
-    const key = slotKey.toLowerCase();
-    return COSMETIC_SLOT_PATTERNS.some((pattern) => pattern.test(key));
+function isNonOutfittingSlot(slotKey: string): boolean {
+    return parseSlotName(slotKey) === null;
 }
 
 /** Detach a journal module from caller-owned and returned mutable objects. */
@@ -1263,8 +1252,9 @@ export class ShipLoadout {
     /**
      * What one fitted module costs at list price — or why it costs nothing.
      *
-     * @returns The price in credits; `'free'` for a cosmetic, which is not an outfitting
-     * module at all; `'unknown'` when it should have a price and the catalogue has none.
+     * @returns The price in credits; `'free'` when the slot is no outfitting mount at
+     * all, so nothing there was ever bought as a module; `'unknown'` when it should have
+     * a price and the catalogue has none.
      * @remarks
      * Deliberately ignores the module's own `Value`. That figure records what a
      * particular commander paid at a particular station, discount and all, which is not
@@ -1272,14 +1262,14 @@ export class ShipLoadout {
      *
      * The catalogue has the first say: an article it can identify is priced whatever its
      * slot is called. The slot is consulted only when the article is unidentifiable, and
-     * then only to recognise a cosmetic — see {@link isCosmeticSlot}.
+     * then only to ask whether it is a mount at all — see {@link isNonOutfittingSlot}.
      */
     #moduleValue(module: LoadoutModule): number | 'free' | 'unknown' {
         // Prefers the snapshot taken when the module was fitted, so a caller-supplied
         // record prices as the article that was actually fitted.
         const stats = this.#statsFor(module);
         if (stats !== null) return stats.cost ?? 'unknown';
-        return isCosmeticSlot(module.Slot) ? 'free' : 'unknown';
+        return isNonOutfittingSlot(module.Slot) ? 'free' : 'unknown';
     }
 
     /** `maxJumpRange()` when the build can answer it, else `null` — never throws. */
@@ -1756,7 +1746,7 @@ export class ShipLoadout {
      *
      * @remarks
      * Classified the same way as {@link #moduleValue}: the catalogue first, the slot only
-     * for an article it cannot identify, and then only to spot a cosmetic.
+     * for an article it cannot identify, and then only to ask whether it is a mount.
      */
     #moduleMass(module: LoadoutModule | null, statsOverride?: OutfittingModule): number | null {
         if (module === null) return 0;
@@ -1770,7 +1760,7 @@ export class ShipLoadout {
         ) {
             return 0;
         }
-        return stats === null && isCosmeticSlot(module.Slot) ? 0 : null;
+        return stats === null && isNonOutfittingSlot(module.Slot) ? 0 : null;
     }
 
     /**

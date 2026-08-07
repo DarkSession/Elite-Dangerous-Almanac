@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import { ShipLoadout } from './ship-loadout.js';
 import { parseSlef, type LoadoutEvent, type LoadoutModule } from './slef.js';
+import { parseSlotName } from './slots.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
@@ -136,7 +137,7 @@ test('rebuy is a flat 5% of hull plus modules, truncated', () => {
     assert.equal(Math.trunc((HullValue + ModulesValue) * fixture.rebuyFraction), Rebuy);
 });
 
-// ── A real journal capture, cosmetics and all ────────────────────────────────
+// ── A real journal capture, decorations and all ──────────────────────────────
 
 const krait = kraitJournal as unknown as LoadoutEvent;
 
@@ -185,28 +186,28 @@ test('the journal’s credits diverge from retail for three separate reasons', (
     assert.ok(recomputed.ModulesValue > discount.sourceModulesValue);
 });
 
-test('cosmetics and hull geometry weigh nothing and cost nothing', () => {
+test('decorations and hull geometry weigh nothing and cost nothing', () => {
     // A journal lists the cockpit, ship kit, nameplates, bobbles, paint and voice pack
     // alongside the fitted modules. None is an outfitting module, so none may be treated
     // as an unknown — that would make a whole build's mass and value incomputable.
     assert.equal(krait.Modules.length, fixture.kraitPhantom.moduleCount);
-    const cosmetic = fixture.kraitPhantom.nonOutfittingSlots;
+    const decorative = fixture.kraitPhantom.nonOutfittingSlots;
     assert.deepEqual(
-        krait.Modules.map((m) => m.Slot).filter((s) => cosmetic.includes(s)),
-        cosmetic,
+        krait.Modules.map((m) => m.Slot).filter((s) => decorative.includes(s)),
+        decorative,
     );
 
-    const withoutCosmetics: LoadoutEvent = {
+    const undressed: LoadoutEvent = {
         ...krait,
-        Modules: krait.Modules.filter((m) => !cosmetic.includes(m.Slot)),
+        Modules: krait.Modules.filter((m) => !decorative.includes(m.Slot)),
     };
-    const bare = ShipLoadout.fromLoadout(withoutCosmetics).toLoadoutEvent();
+    const bare = ShipLoadout.fromLoadout(undressed).toLoadoutEvent();
     const dressed = ShipLoadout.fromLoadout(krait).toLoadoutEvent();
     assert.equal(bare.UnladenMass, dressed.UnladenMass);
     assert.equal(bare.ModulesValue, dressed.ModulesValue);
 });
 
-// ── Outfitting, cosmetic or unknown ──────────────────────────────────────────
+// ── Outfitting, no mount at all, or unknown ──────────────────────────────────
 
 /** A bare hull with one module in one slot, exported. */
 const withOneModule = (slot: string, item: string): LoadoutEvent =>
@@ -217,8 +218,9 @@ const withOneModule = (slot: string, item: string): LoadoutEvent =>
 
 test('the classification examples in the fixture come out as the fixture says', () => {
     // The rule that governs every mass and credit figure: the catalogue first, the slot
-    // only for an article it cannot identify, and then only to recognise a cosmetic.
-    // Anything else is unknown, and an unknown omits figures rather than counting as 0.
+    // only for an article it cannot identify, and then only to ask whether the key names
+    // an outfitting mount at all. Anything else is unknown, and an unknown omits figures
+    // rather than counting as 0.
     const empty = ShipLoadout.fromLoadout({ Ship: 'krait_light', Modules: [] }).toLoadoutEvent();
     const dependent = ['ModulesValue', 'UnladenMass', 'MaxJumpRange', 'Rebuy'];
 
@@ -235,7 +237,7 @@ test('the classification examples in the fixture come out as the fixture says', 
             assert.equal(Object.hasOwn(exported, 'Value'), false, slot);
             continue;
         }
-        if (verdict === 'cosmetic') {
+        if (verdict === 'nonOutfitting') {
             assert.equal(Object.hasOwn(exported, 'Value'), false, slot);
             assert.equal(event.ModulesValue, empty.ModulesValue, slot);
             assert.equal(event.UnladenMass, empty.UnladenMass, slot);
@@ -248,19 +250,35 @@ test('the classification examples in the fixture come out as the fixture says', 
     }
 });
 
-test('the fixture’s cosmetic patterns agree with the classification in force', () => {
+test('the fixture’s mount patterns agree with the classification in force', () => {
     // Pins the patterns themselves, so a port reading the fixture draws the same line
-    // through a real journal's 40 slots as this implementation does.
-    const patterns = fixture.classification.cosmeticSlotPatterns.map((p) => new RegExp(p));
-    const matches = (slot: string) => patterns.some((p) => p.test(slot.toLowerCase()));
+    // through a real journal's 40 slots as this implementation does. The line is drawn
+    // by what the patterns do NOT claim: a key naming no mount holds no module.
+    const patterns = fixture.classification.outfittingSlotPatterns.map((p) => new RegExp(p));
+    const isMount = (slot: string) => patterns.some((p) => p.test(slot.toLowerCase()));
     assert.deepEqual(
-        krait.Modules.map((m) => m.Slot).filter(matches),
+        krait.Modules.map((m) => m.Slot).filter((s) => !isMount(s)),
         fixture.kraitPhantom.nonOutfittingSlots,
     );
+
+    // …and the patterns are the slot parser's own vocabulary, not a second copy of it
+    // that could drift: every slot either implementation meets answers the same way.
+    for (const slot of [
+        ...krait.Modules.map((m) => m.Slot),
+        ...viperJournal.Modules.map((m) => m.Slot),
+        ...fixture.classification.examples.map((e) => e.slot),
+        'slot03_size5',
+        'LargeMiningHardpoint1',
+        'Decal3',
+        'Bobble10',
+        'stringlights',
+    ]) {
+        assert.equal(isMount(slot), parseSlotName(slot) !== null, slot);
+    }
 });
 
-test('a cosmetic is recognised by its family, not by appearing in a fixture', () => {
-    // A third decal, a tenth bobble, a lower-cased slot key: all cosmetics the corpus
+test('a decoration is recognised by naming no mount, not by appearing in a fixture', () => {
+    // A third decal, a tenth bobble, a lower-cased slot key: all fittings the corpus
     // happens not to hold, and none of them may move a figure.
     const dressed: LoadoutEvent = {
         ...krait,
@@ -314,10 +332,10 @@ test('a stock journal Loadout event reproduces every figure the game reported', 
     assert.deepEqual(figuresOf(event, fixture.viperMkIV.recomputed), fixture.viperMkIV.recomputed);
 
     assert.equal(viper.Modules.length, fixture.viperMkIV.moduleCount);
-    const cosmetic = fixture.viperMkIV.nonOutfittingSlots;
+    const decorative = fixture.viperMkIV.nonOutfittingSlots;
     assert.deepEqual(
-        viper.Modules.map((m) => m.Slot).filter((s) => cosmetic.includes(s)),
-        cosmetic,
+        viper.Modules.map((m) => m.Slot).filter((s) => decorative.includes(s)),
+        decorative,
     );
 });
 

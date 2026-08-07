@@ -779,14 +779,14 @@ names this library. Two things worth knowing:
 - Anything that cannot be worked out is **left out** rather than emitted as a stale or
   zero value, which SLEF explicitly allows. An unrecognised hull or module id costs you
   the figures that depend on it, not a wrong answer.
-- **Cosmetics are recognised, not assumed.** A journal `Loadout` lists the cockpit, ship
-  kit, nameplates, decals, bobbles, paint, colours and voice pack alongside the fitted
-  modules — 15 of the Krait Phantom fixture's 40 entries. Those weigh nothing and cost
-  nothing, but they are matched against their own slot families rather than inferred from
-  "this slot name is unfamiliar". A module the catalogue can identify counts whatever its
-  slot is called, and anything neither the catalogue nor the cosmetic families recognise
-  is treated as unknown — so a slot family the game adds later costs you the figures
-  instead of quietly understating mass and credits.
+- **A slot that is no mount holds no module.** A journal `Loadout` lists the cockpit,
+  ship kit, nameplates, decals, bobbles, paint, colours and voice pack alongside the
+  fitted modules — 15 of the Krait Phantom fixture's 40 entries. Those weigh nothing and
+  cost nothing, and they are recognised by naming no outfitting mount `parseSlotName`
+  knows, so there is no list of decoration families to fall behind the game. A module the
+  catalogue can identify counts whatever its slot is called; an article it cannot
+  identify sitting in a mount it _does_ recognise is unknown, and an unknown costs you
+  the figures that depend on it rather than quietly understating mass and credits.
 - **Ship and module ids are lower-cased** on the way out, matching what the journal and
   every other SLEF producer write.
 
