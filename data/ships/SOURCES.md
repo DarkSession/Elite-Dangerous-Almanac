@@ -995,24 +995,23 @@ up straight through with no disambiguation at all. Both paths are evidence that
   rename: a key carries one only when the id the game writes for it is a key some *other*
   record already answers to. The other 106 go without for two different reasons — 79
   because their key already is the id a journal writes (Anti-Guardian Zone Resistance is
-  now one of them, as `GuardianModule_Sturdy`), and 27 because they are Operations
-  ids for which no journal spelling has been observed — 21 of them recipes a module is sold
+  now one of them, as `GuardianModule_Sturdy`), and 27 because they are Operations ids for
+  which no journal spelling has been observed — 21 of them recipes a module is sold
   already carrying, four recipes a player rolls at an engineer, and two the community
   spellings of Anti-Guardian Zone Resistance, whose journal id is a key here in its own
   right. The three that do are `Scanner_LongRange` and `Scanner_WideAngle`, coriolis keys
-  for recipes the game writes as
-  `Sensor_LongRange` / `Sensor_WideAngle` — the same ids it writes for the sensor suites'
-  own Long Range and Wide Angle, which are different recipes — and `MC_Overcharged`, its
-  key for the multi-cannon Overcharged, which the game writes as `Weapon_Overcharged` like
-  every other weapon's. Each of the three names its journal spelling in `journalName`, so a
-  reader holding one of these records can get back to the id a journal carries, and
-  `resolveBlueprintForModule` can go the other way given a module. The field is
-  deliberately **not** a general alias mechanism: it says "the game writes this recipe as
-  X", nothing about equivalence, and a test holds it to exactly these three records, pinned
-  in `fixtures/ships/engineering.json` under `journalNames`. Evidence, and why the split
-  keys are kept at all, under §Engineering options → "Scanner Long Range and Wide Angle:
-  one journal id, two recipes" and "Multi-cannon Overcharged: one journal id, two
-  recipes".
+  for recipes the game writes as `Sensor_LongRange` / `Sensor_WideAngle` — the same ids it
+  writes for the sensor suites' own Long Range and Wide Angle, which are different recipes
+  — and `MC_Overcharged`, its key for the multi-cannon Overcharged, which the game writes
+  as `Weapon_Overcharged` like every other weapon's. Each of the three names its journal
+  spelling in `journalName`, so a reader holding one of these records can get back to the
+  id a journal carries, and `resolveBlueprintForModule` can go the other way given a
+  module. The field is deliberately **not** a general alias mechanism: it says "the game
+  writes this recipe as X", nothing about equivalence, and a test holds it to exactly
+  these three records, pinned in `fixtures/ships/engineering.json` under `journalNames`.
+  Evidence, and why the split keys are kept at all, under §Engineering options → "Scanner
+  Long Range and Wide Angle: one journal id, two recipes" and "Multi-cannon Overcharged:
+  one journal id, two recipes".
 - **Blueprint source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
   `modifications/blueprints.json` (grade `features` + `components`) + `modifications.json`
   (apply method), same commit and Frontier media-usage terms as above. Each grade's
@@ -1097,12 +1096,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     observed journal one. EDSY names the blueprint `GuardianModule_Sturdy` for the same
     reason. **So `GuardianModule_Sturdy` is the key all nine offering menus list**, and
     the two registry spellings are stored beside it as aliases that still resolve — the
-    journal name is the
-    identity, a community name is the alias. That ordering is not cosmetic: while the menus
-    listed an Inara `recipe_`-prefixed key, `getBlueprint('GuardianModule_Sturdy')`
-    answered `null` and
-    `applyBlueprint` refused the id on the very module the capture shows carrying it, so
-    the inversion was a defect rather than a naming preference.
+    journal name is the identity, a community name is the alias. That ordering is not
+    cosmetic: while the menus listed an Inara `recipe_`-prefixed key,
+    `getBlueprint('GuardianModule_Sturdy')` answered `null` and `applyBlueprint` refused
+    the id on the very module the capture shows carrying it, so the inversion was a defect
+    rather than a naming preference.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
   `expeffect` is the primary source — one table holding each effect's modifiers and its
   recipe together, keyed the way this file is. EDSY is (c) taleden under a
@@ -1265,12 +1263,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     note in `engineering-options.ts`.
   - **EDSY's `_X_` prefix means "not applicable" and is honoured**, not stripped: the
     Detailed Surface Scanner's group lists only `iss_er` (`Sensor_Expanded`), because its
-    three other entries are `_X_`-marked. The `Decorative_*` entries on the
-    remote-release launchers are dropped for the same reason `blueprints.jsonc` does not
-    carry them, which
-    [#53](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53) reopens: if
-    those transformations are obtainable, a launcher left with only them is engineerable
-    after all and its `noblueprints` reading needs revisiting.
+    three other entries are `_X_`-marked. The `Decorative_*` entries on the remote-release
+    launchers are dropped for the same reason `blueprints.jsonc` does not carry them,
+    which [#53](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53) reopens:
+    if those transformations are obtainable, a launcher left with only them is
+    engineerable after all and its `noblueprints` reading needs revisiting.
   - **Where EDSY records one generic id and the journal writes a family-specific one,
     coriolis-data settles it.** EDSY collapses Lightweight, Reinforced and Shielded to
     `misc_lw` / `misc_rf` / `misc_sh` for eight families; coriolis keys the same lists by
@@ -1382,22 +1379,22 @@ up straight through with no disambiguation at all. Both paths are evidence that
   — rather than in the `eddb.js` tables the rest of this section reads, which is why both
   EDSY files are pinned at the head of this document.
 - **Checked against the build corpus.** Of the 1902 declared engineering entries in
-  `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups, and 1889 are
-  clean end to end: the module is
-  grouped, its group offers the blueprint, and where an experimental is declared the
-  module can take it. 70 of the 1889 declare the generic spelling of a family-specific
-  recipe (`Misc_LightWeight` on a life support, and so on) and count as offered; the shape
-  of that judgement is pinned in the fixture as `corpus.blueprintAliases`. A further **71**
-  are a journal spelling resolved against `journalName` above, counted separately as
-  `corpus.journalSpellingsAccepted` because it is a different mechanism — 70 of them
-  `Weapon_Overcharged` on a multi-cannon, which rolls `MC_Overcharged`, and the 71st
-  `Sensor_LongRange` on a wake scanner in `type9-military-combat-3`. And **13** are
-  explained by neither spelling rule but by the *sale*: the module was bought carrying the
-  recipe, so no menu lists it (`corpus.preEngineeredSalesAccepted`; every one is a Guardian
-  weapon — see "an ordinary recipe on a Guardian weapon is a purchase" in §Engineering
-  options). For those 13 the clause "its group offers the blueprint" does not hold, and is
-  not meant to. The residue is
-  **13 entries no registry supports**, left as explicit exemptions rather than folded in:
+  `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups, and 1889 are clean
+  end to end: the module is grouped, its group offers the blueprint, and where an
+  experimental is declared the module can take it. 70 of the 1889 declare the generic
+  spelling of a family-specific recipe (`Misc_LightWeight` on a life support, and so on)
+  and count as offered; the shape of that judgement is pinned in the fixture as
+  `corpus.blueprintAliases`. A further **71** are a journal spelling resolved against
+  `journalName` above, counted separately as `corpus.journalSpellingsAccepted` because it
+  is a different mechanism — 70 of them `Weapon_Overcharged` on a multi-cannon, which
+  rolls `MC_Overcharged`, and the 71st `Sensor_LongRange` on a wake scanner in
+  `type9-military-combat-3`. And **13** are explained by neither spelling rule but by the
+  *sale*: the module was bought carrying the recipe, so no menu lists it
+  (`corpus.preEngineeredSalesAccepted`; every one is a Guardian weapon — see "An ordinary
+  recipe on a Guardian weapon is a purchase, not an engineer roll" below). For those 13 the
+  clause "its group offers the blueprint" does not hold, and is not meant to. The residue
+  is **13 entries no registry supports**, left as explicit exemptions rather than folded
+  in:
   - `corpus.notOffered` — five `Weapon_HighCapacity` on the Guardian Gauss Cannon and six
     `special_super_penetrator_cooled` on the Guardian Shard Cannon
     ([#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36)).
@@ -1449,8 +1446,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   - **"Whole menu" holds for the weapon groups too.** It once did not: `guardianGauss`,
     `guardianPlasma` and `guardianShard` each also listed one ordinary weapon recipe. They
     no longer do — an ordinary recipe reaches a Guardian weapon only as a purchase, so it
-    is `pre-engineered.jsonc` that carries it (see "an ordinary recipe on a Guardian weapon
-    is a purchase" in §Engineering options). All nine groups are menus of one recipe.
+    is `pre-engineered.jsonc` that carries it (see "An ordinary recipe on a Guardian
+    weapon is a purchase, not an engineer roll" below). All nine groups are menus of one
+    recipe.
   - **The reward variants are not catalogued anywhere here, and that is a gap.**
     `pre-engineered.jsonc` carries seven Guardian rows and all seven are **weapons**
     (Gauss, Plasma, Shard), each with a `blueprint` and no `experimental`; there is no
@@ -1488,8 +1486,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     and `guardianHullReinforcements`), `ShipLoadout.applyBlueprint` refuses an
     `experimental` on them, and `getExperimentalsForBlueprint('GuardianModule_Sturdy')`
     answers `[]` rather than a union across the nine groups that offer the recipe.
-    Blueprints are unaffected on every module.
-    Pinned in
+    Blueprints are unaffected on every module. Pinned in
     `fixtures/ships/engineering-options.json` as `antiGuardianZoneResistance` (the nine
     groups, the empty list, six representative modules) and on each half of
     `splitFamilies`.
@@ -1523,9 +1520,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   - **`antiXenoMultiCannons` stays on `Weapon_Overcharged`.** coriolis keys the anti-xeno
     multi-cannons apart as `axmc` and gives that group no Overcharged at all, so it cannot
     say which of its two keys an AX multi-cannon takes, and picking one would be inference
-    over the only source that distinguishes them. That is a narrower refusal than it looks:
-    whether the clip *leg* applies to an AX multi-cannon is a different question, EDSY is
-    not silent on it, and it is
+    over the only source that distinguishes them. That is a narrower refusal than it
+    looks: whether the clip *leg* applies to an AX multi-cannon is a different question,
+    EDSY is not silent on it, and it is
     [#48](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48) case B.
   - **28 clip-bearing modules are still offered a clip-less Overcharged**, in two cases
     needing different evidence, tracked at #48. 26 are a registry disagreement — 12
@@ -1574,8 +1571,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
 
 - **Four Operations recipes are listed by a menu.** Most Operations keys belong to modules
   bought already engineered and no menu names them, but `FuelScoop_Efficiency` on
-  `fuelScoops` and `{PulseLaser,BurstLaser,BeamLaser}_ThermalPlasmaConversion` on the
-  three laser groups are recipes a player applies. (Anti-Guardian Zone Resistance is the
+  `fuelScoops` and, on the three laser groups, `PulseLaser_ThermalPlasmaConversion`,
+  `BurstLaser_ThermalPlasmaConversion` and `BeamLaser_ThermalPlasmaConversion` are recipes
+  a player applies. (Anti-Guardian Zone Resistance is the
   fifth menu recipe of that kind, listed under the journal spelling `GuardianModule_Sturdy`
   rather than an Operations key.)
   - **The grade range is what separates a recipe from a purchase.** A Merc-Coin
@@ -1661,18 +1659,17 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   exactly that set, which a test asserts rather than trusting.
 - **The alias is directional, and that is what keeps it safe.** A generic id stands in for a
   family's id, never for another generic one: `Misc_ChaffCapacity` and
-  `Misc_HeatSinkCapacity` are both "Ammo capacity" over the same three labels, but they roll
-  different amounts of different ammunition — the chaff recipe adds up to +50% of a chaff
-  launcher's 10 rounds, the heat sink's a flat +49% of a launcher's 3 — so neither may
-  substitute for the other. An id **no menu lists anywhere** substitutes too, which covers
-  Anti-Guardian Zone Resistance, whose two registry spellings
+  `Misc_HeatSinkCapacity` are both "Ammo capacity" over the same three labels, but they
+  roll different amounts of different ammunition — the chaff recipe adds up to +50% of a
+  chaff launcher's 10 rounds, the heat sink's a flat +49% of a launcher's 3 — so neither
+  may substitute for the other. An id **no menu lists anywhere** substitutes too, which
+  covers Anti-Guardian Zone Resistance, whose two registry spellings
   (`recipe_guardianmodule_sturdy`, `recipe_guardianweapon_sturdy`) sit beside the
-  `GuardianModule_Sturdy` the nine offering groups list — see §Engineering,
-  "Anti-Guardian Zone Resistance is keyed three times". The game writes only the last of
-  the three, so the
-  other two reach the recipe through this route.
-  `Weapon_LightWeight` is excluded by the labels instead — a weapon's Lightweight cuts
-  distributor draw, which the generic one does not touch.
+  `GuardianModule_Sturdy` the nine offering groups list — see §Engineering, "Anti-Guardian
+  Zone Resistance is keyed three times". The game writes only the last of the three, so
+  the other two reach the recipe through this route. `Weapon_LightWeight` is excluded by
+  the labels instead — a weapon's Lightweight cuts distributor draw, which the generic one
+  does not touch.
 - **What the corpus cannot engineer, and why refusing is the honest answer.** 13 of its
   1902 entries declare a recipe no registry lists for that module: `Weapon_HighCapacity` on
   a Guardian Gauss Cannon (5) and `special_super_penetrator_cooled` on a Guardian Shard
@@ -1751,7 +1748,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
       Lockdown by *size* and the twin `…rackmedium_lockdown` binds to the medium rack; the
       large rack is already a Merc row for `SeekerMissileRack_Drag`, so the shop
       stocks it; both Lockdown recipes run grades 2–5, the weapon-reward range that marks a
-      module as bought pre-engineered; and it is the only grade-2–5 Operations recipe in the file
+      module as bought pre-engineered; and it is the only grade-2–5 Operations recipe in
+      the file
       that would otherwise have no row, all 20 others having one. Price and size confirmed
       2026-08-07 UTC against a web-search index of the Inara outfitting listing, which
       reports the MERC Lockdown Seeker Missile Rack [Fixed] at 900 MC for the 3A and 800 MC
