@@ -989,8 +989,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     their own right rather than short by convention, and take EDSY's spelling —
     `CargoRack_IncreasedCapacity` is **"Expanded Cargo Rack"** (not "Expanded Capacity")
     and `special_choke_canister` **"Ion Disruption"** (not "Ion Disruptor").
-- **`journalName` — on three records, and only three.** A blueprint's key *is* the
-  `BlueprintName` a journal writes, for 105 of the 108. The three that are not are
+- **`journalName` — on three records, and only three.** It marks a **collision**, not a
+  rename: a key that is not the journal spelling carries one only when another record
+  already answers to that spelling. Where the game publishes a spelling nothing else uses,
+  that spelling is simply the key — which is why Anti-Guardian Zone Resistance is
+  `GuardianModule_Sturdy` and carries no `journalName`. The three that do are
   `Scanner_LongRange` and `Scanner_WideAngle`, coriolis keys for recipes the game writes as
   `Sensor_LongRange` / `Sensor_WideAngle` — the same ids it writes for the sensor suites'
   own Long Range and Wide Angle, which are different recipes — and `MC_Overcharged`, its
@@ -1032,15 +1035,28 @@ up straight through with no disambiguation at all. Both paths are evidence that
   recipes begin at grade 2 because the bought module already contains the grade-1
   pre-engineering; the general/core/optional recipes (fuel scoop, laser plasma-conversion)
   span grades 1–5, and the Anti-Guardian recipe is grade 1 only.
-- **Anti-Guardian Zone Resistance is keyed twice.** The registry exposes the one
-  player-facing blueprint under a module key and a weapon key —
-  `recipe_guardianmodule_sturdy` and **`recipe_guardianweapon_sturdy`** — with the same
-  display name, the same grade-1-only `GuardianModuleResistance` +100%, and the same
-  recipe (2×`TG_Abrasion03`, 1×`TG_CausticCrystal`). Both are stored so a journal or saved
-  build referencing either resolves; every engineering menu lists the module key, and the
-  compatibility gate accepts the weapon key as its other spelling (§Engineering
+- **Anti-Guardian Zone Resistance is keyed twice, and neither key is what the game
+  writes.** The registry exposes the one player-facing blueprint under a module key and a
+  weapon key — `recipe_guardianmodule_sturdy` and **`recipe_guardianweapon_sturdy`** — with
+  the same display name, the same grade-1-only `GuardianModuleResistance` +100%, and the
+  same recipe (2×`TG_Abrasion03`, 1×`TG_CausticCrystal`). Both are stored so a journal or
+  saved build referencing either resolves; every engineering menu lists the module key, and
+  the compatibility gate accepts the weapon key as its other spelling (§Engineering
   compatibility). The two are intentional duplicates, not a copy-paste slip — do not
   dedupe them.
+  - **The journal writes `GuardianModule_Sturdy`, on weapons as well as modules.** A
+    `StoredModules` capture contributed by the repository owner (2026-08-07 UTC) carries a
+    **Guardian Gauss Cannon** — a weapon — with `"EngineerModifications":
+    "GuardianModule_Sturdy"`, `Level` 1. So the module spelling is what the game writes
+    whichever kind of module the recipe sits on, and there is no evidence the game ever
+    writes a weapon spelling: `recipe_guardianweapon_sturdy` is a registry key, not an
+    observed journal one. EDSY names the blueprint `GuardianModule_Sturdy` for the same
+    reason. That the menus list a `recipe_*` key here rather than the journal spelling is a
+    reason. **So `GuardianModule_Sturdy` is the key every menu lists**, and the two registry
+    spellings are stored beside it as aliases that still resolve — the journal name is the
+    identity, a community name is the alias. Before that, `getBlueprint('GuardianModule_Sturdy')`
+    answered `null` and `applyBlueprint` refused the id on the very module the capture shows
+    carrying it, so this was a defect rather than a naming preference.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
   `expeffect` is the primary source — one table holding each effect's modifiers and its
   recipe together, keyed the way this file is. EDSY is (c) taleden under a
@@ -1095,9 +1111,14 @@ up straight through with no disambiguation at all. Both paths are evidence that
   (e.g. coriolis `optmass` on an FSD → `FSDOptimalMass`, `maxfuel` → `MaxFuelPerJump`).
   Group-ambiguous keys (`optmass`, `optmul`, `thermload`) are disambiguated by the
   blueprint's target module group.
-- **Kept deliberately (do not "fix" back):** the dormant `Decorative_*` transformations
-  EDSY also lists are **not** included — internal visual/test entries, not obtainable
-  engineering.
+- **The `Decorative_*` transformations EDSY lists are not included, and that is now known
+  to be wrong.** They were read as internal visual/test entries; a `StoredModules` capture
+  (2026-08-07 UTC) carries three medium turreted flak mortars in storage with
+  `Decorative_Green`, `Decorative_Red` and `Decorative_Yellow` applied, so they are
+  obtainable. They are the only three of the 46 `EngineerModifications` spellings in that
+  capture that do not resolve against `BLUEPRINTS`. Whether they belong in a blueprint
+  catalogue at all — they change no stat — and which modules offer them are both open at
+  [#53](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53).
 - **Blueprint keys deliberately left out:**
   - **Per-module-group aliases, not extra blueprints.** A blueprint that applies to several
     module groups is exposed once per group under a `recipe_sensor_<group>_<mod>`-style
@@ -1175,7 +1196,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     list, since `expeffects` is published per group with no per-module denial on any of
     them; that they carry none is recorded further down, under "A Guardian module has no
     experimental slot".
-  - **The ordinary halves must not list `recipe_guardianmodule_sturdy`**, which is an
+  - **The ordinary halves must not list `GuardianModule_Sturdy`**, which is an
     Anti-Guardian recipe on a non-Guardian module and EDSY denies it. `powerPlants`,
     `powerDistributors` and `hullReinforcements` therefore hold ordinary modules only,
     and the 25 Guardian ones sit in the three groups above.
@@ -1198,9 +1219,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     note in `engineering-options.ts`.
   - **EDSY's `_X_` prefix means "not applicable" and is honoured**, not stripped: the
     Detailed Surface Scanner's group lists only `iss_er` (`Sensor_Expanded`), because its
-    three other entries are `_X_`-marked. The dormant `Decorative_*` entries on the
+    three other entries are `_X_`-marked. The `Decorative_*` entries on the
     remote-release launchers are dropped for the same reason `blueprints.jsonc` does not
-    carry them — internal visual entries, not obtainable engineering.
+    carry them, which
+    [#53](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53) reopens: if
+    those transformations are obtainable, a launcher left with only them is engineerable
+    after all and its `noblueprints` reading needs revisiting.
   - **Where EDSY records one generic id and the journal writes a family-specific one,
     coriolis-data settles it.** EDSY collapses Lightweight, Reinforced and Shielded to
     `misc_lw` / `misc_rf` / `misc_sh` for eight families; coriolis keys the same lists by
@@ -1233,12 +1257,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     EDSY has a single Overcharged for every weapon; coriolis splits it, and `multiCannons`
     lists coriolis's `MC_Overcharged`. See "Multi-cannon Overcharged: one journal id, two
     recipes" below for the evidence and for what the split costs.
-  - **The groups name 86 of the 108 blueprints.** The other 22 are accounted for: 21 are
+  - **The groups name 86 of the 109 blueprints.** The other 23 are accounted for: 21 are
     `recipe_*` keys of modules sold already engineered rather than offered in a menu, and
-    the 22nd is `recipe_guardianweapon_sturdy`, the weapon spelling of Anti-Guardian Zone
-    Resistance, which every group lists under its module spelling. Five `recipe_*` keys
-    *are* named by a group, because they are recipes a player applies — see "Five
-    Operations recipes are listed by a menu" below.
+    the other two are the registry's spellings of Anti-Guardian Zone Resistance, which every
+    group lists under the journal id `GuardianModule_Sturdy`. Four `recipe_*` keys *are*
+    named by a group, because they are recipes a player applies — see "Four Operations
+    recipes are listed by a menu" below.
   - **14 modules are bound by the family rule, not by a source row.** EDSY has no live
     entry for `Int_Hyperdrive_Size8_Class{1..5}` or `Int_ShieldGenerator_Size1_Class4`
     (both present but commented out, and both naming their `mtype` — `cfsd` and `isg`),
@@ -1356,9 +1380,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   separates them. That distinction carries most of the catalogue: 30 of the 53 groups
   offer no experimental at all, so 388 of the 1028 grouped modules answer `[]` while still
   having blueprints.
-- **Key form:** EDSY names the Anti-Guardian blueprint by its journal form
-  (`GuardianModule_Sturdy`); this catalogue stores it under the `recipe_*` id the rest of
-  `blueprints.jsonc` uses, so every id here joins directly.
+- **Key form:** the Anti-Guardian blueprint is listed under `GuardianModule_Sturdy`, the id
+  a Loadout writes and the one EDSY uses. The registry's `recipe_guardianmodule_sturdy` and
+  `recipe_guardianweapon_sturdy` are stored in `blueprints.jsonc` beside it so a build
+  carrying either still resolves, but a menu lists the journal spelling.
 - **A Guardian module has no experimental slot.** This is a rule about the recipe rather
   than about any one module: **Anti-Guardian Zone Resistance carries no experimental
   effect, and on a Guardian *module* — power plant, power distributor, hull/module/shield
@@ -1366,9 +1391,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   module that does carry an experimental was obtained **already engineered**, as a
   community-goal reward or a tech-broker unlock, rather than rolled at an engineer; this
   file answers what a player may apply, so it does not list those. All nine groups
-  offering `recipe_guardianmodule_sturdy` therefore list `"experimentals": []`.
+  offering `GuardianModule_Sturdy` therefore list `"experimentals": []`.
   - **"Whole menu" is the module claim, not a weapon claim.** The Guardian *weapon* groups
-    also offer `recipe_guardianmodule_sturdy`, but it is not the whole of their menu —
+    also offer `GuardianModule_Sturdy`, but it is not the whole of their menu —
     each also lists one ordinary weapon recipe, which is why the sentence above is scoped
     to modules. §Engineering compatibility's Guardian Gauss Cannon example ("Rapid Fire and
     Anti-Guardian Zone Resistance alone") is that same two-recipe menu, and stands.
@@ -1408,7 +1433,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `corpus.notOffered` under #36 for an unrelated reason.
   - **What a consumer sees:** `getExperimentalsForModule` answers `[]` for the 25 modules
     in those three groups, `ShipLoadout.applyBlueprint` refuses an `experimental` on them,
-    and `getExperimentalsForBlueprint('recipe_guardianmodule_sturdy')` answers `[]` rather
+    and `getExperimentalsForBlueprint('GuardianModule_Sturdy')` answers `[]` rather
     than a union across the three families. Blueprints are unaffected on every module.
     Pinned in
     `fixtures/ships/engineering-options.json` as `antiGuardianZoneResistance` (the nine
@@ -1462,11 +1487,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `fixtures/ships/engineering.json` as `overchargedIdCollision` — both modifier blocks in
     full, with the medium cannon as the control that takes the same journal id and no clip
     leg — and in `journalNames`.
-- **Five Operations recipes are listed by a menu.** Most `recipe_*` keys belong to modules
-  bought already engineered and no menu names them, but `recipe_guardianmodule_sturdy`,
-  `recipe_fuelscoop_efficiency` on `fuelScoops` and
-  `recipe_{pulselaser,burstlaser,beamlaser}_thermalplasmaconversion` on the three laser
-  groups are recipes a player applies.
+- **Four Operations recipes are listed by a menu.** Most `recipe_*` keys belong to modules
+  bought already engineered and no menu names them, but `recipe_fuelscoop_efficiency` on
+  `fuelScoops` and `recipe_{pulselaser,burstlaser,beamlaser}_thermalplasmaconversion` on the
+  three laser groups are recipes a player applies. (Anti-Guardian Zone Resistance is the
+  fifth menu recipe of that kind, listed under the journal spelling `GuardianModule_Sturdy`
+  rather than a `recipe_*` key.)
   - **The grade range is what separates a recipe from a purchase.** A Merc-Coin
     weapon-reward recipe begins at grade 2 because the bought module already contains the
     grade-1 pre-engineering; a recipe defining a grade 1 has nothing pre-applied and is
@@ -1554,8 +1580,10 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   different amounts of different ammunition — the chaff recipe adds up to +50% of a chaff
   launcher's 10 rounds, the heat sink's a flat +49% of a launcher's 3 — so neither may
   substitute for the other. An id **no menu lists anywhere** substitutes too, which covers
-  Anti-Guardian Zone Resistance: the game writes `recipe_guardianweapon_sturdy` on a weapon
-  and `recipe_guardianmodule_sturdy` on a module, and every group lists the module id.
+  Anti-Guardian Zone Resistance, whose registry exposes a weapon key
+  (`recipe_guardianweapon_sturdy`) beside the module key every group lists. The game itself
+  writes `GuardianModule_Sturdy` for both — see §Engineering, "Anti-Guardian Zone Resistance
+  is keyed twice" — so all three spellings have to reach the same recipe.
   `Weapon_LightWeight` is excluded by the labels instead — a weapon's Lightweight cuts
   distributor draw, which the generic one does not touch.
 - **What the corpus cannot engineer, and why refusing is the honest answer.** 13 of its

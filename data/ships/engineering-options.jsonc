@@ -113,7 +113,7 @@
     "guardianPowerPlants": {
       "name": "Guardian Power Plants",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -168,7 +168,7 @@
     "guardianPowerDistributors": {
       "name": "Guardian Power Distributors",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -239,7 +239,7 @@
     "guardianHullReinforcements": {
       "name": "Guardian Hull Reinforcements",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -597,7 +597,7 @@
     "fsdBoosters": {
       "name": "FSD Boosters",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -638,7 +638,7 @@
     "moduleReinforcements": {
       "name": "Module Reinforcements",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -661,7 +661,7 @@
     "shieldReinforcements": {
       "name": "Shield Reinforcements",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -764,24 +764,24 @@
     "guardianGauss": {
       "name": "Exp - Guardian Gauss",
       "blueprints": [
-        "Weapon_RapidFire",
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy",
+        "Weapon_RapidFire"
       ],
       "experimentals": []
     },
     "guardianPlasma": {
       "name": "Exp - Guardian Plasma",
       "blueprints": [
-        "Weapon_Overcharged",
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy",
+        "Weapon_Overcharged"
       ],
       "experimentals": []
     },
     "guardianShard": {
       "name": "Exp - Guardian Shard",
       "blueprints": [
-        "Weapon_LongRange",
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy",
+        "Weapon_LongRange"
       ],
       "experimentals": []
     }

@@ -261,6 +261,37 @@ test('one journal id rolls a clip penalty on a multi-cannon and none on a cannon
     }
 });
 
+test('the spellings a real journal writes all resolve to a recipe', () => {
+    // Read off a `StoredModules` capture rather than off a registry, so it catches an id
+    // the registries spell differently from the game. `GuardianModule_Sturdy` was one:
+    // every menu listed a `recipe_*` key for it, so a genuine journal id resolved to
+    // nothing and `applyBlueprint` refused it on the module the capture shows carrying it.
+    for (const row of fixture.journalSpellings.cases) {
+        assert.equal(
+            resolveBlueprintForModule(row.symbol, row.blueprint),
+            row.resolved,
+            `${row.symbol}: ${row.blueprint}`,
+        );
+        assert.ok(getBlueprint(row.resolved), `${row.resolved} is not a blueprint`);
+        assert.ok(
+            blueprintAvailableFor(row.symbol, row.blueprint),
+            `${row.symbol} must accept ${row.blueprint}`,
+        );
+    }
+    // The registry spellings stay usable as aliases — a community name that no longer
+    // resolves is not an alias, it is a removal.
+    const guardian = 'Hpt_Guardian_GaussCannon_Fixed_Medium';
+    for (const id of fixture.journalSpellings.alsoResolve) {
+        assert.ok(getBlueprint(id), `${id} must still look up`);
+        assert.ok(blueprintAvailableFor(guardian, id), `${guardian} must accept ${id}`);
+    }
+    // ...but the menu answers with the id the game writes, not with a registry spelling.
+    assert.ok(getBlueprintsForModule(guardian).includes('GuardianModule_Sturdy'));
+    for (const id of fixture.journalSpellings.alsoResolve) {
+        assert.ok(!getBlueprintsForModule(guardian).includes(id), `menu should not list ${id}`);
+    }
+});
+
 test('a shared journal id costs the same whichever of its two recipes is priced', () => {
     // Why `getBlueprintCost` takes an id and no module: pricing the wrong one of a
     // collided pair still bills correctly. If upstream ever splits the recipes' costs,

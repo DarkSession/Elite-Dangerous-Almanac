@@ -17,7 +17,7 @@
  * which cuts the clip by 3–15% where the `Weapon_Overcharged` the game writes for both
  * leaves it alone.
  * `ships/blueprint-journal` reads one against a module.
- * Enumerate the 108 available blueprints with `Object.keys(BLUEPRINTS)`.
+ * Enumerate the 109 available blueprints with `Object.keys(BLUEPRINTS)`.
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`): `features` from the
  * grade with journal Labels resolved via EDSY, `materials` from the grade's

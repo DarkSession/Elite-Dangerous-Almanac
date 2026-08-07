@@ -1206,7 +1206,7 @@ hull reinforcement packages split the same way:
 getBlueprintsForModule("Int_Powerplant_Size5_Class5");
 // -> ['PowerPlant_Armoured', 'PowerPlant_Boosted', 'PowerPlant_Stealth']
 getBlueprintsForModule("Int_GuardianPowerplant_Size5");
-// -> ['recipe_guardianmodule_sturdy']
+// -> ['GuardianModule_Sturdy']
 
 getExperimentalsForModule("Int_Powerplant_Size5_Class5").length; // -> 4
 getExperimentalsForModule("Int_GuardianPowerplant_Size5"); // -> []

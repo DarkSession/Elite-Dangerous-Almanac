@@ -156,8 +156,12 @@ export interface Blueprint {
      * The `BlueprintName` a journal `Loadout` event writes for this recipe, when that is
      * **not** the key it is stored under.
      *
-     * Absent on 105 of the 108 blueprints, because their key is already what the game
-     * writes. It is present on `Scanner_LongRange` and `Scanner_WideAngle`, which the game
+     * Absent on 106 of the 109 blueprints. It marks a **collision** rather than a rename:
+     * a key that is not the journal spelling carries one only when another record already
+     * answers to that spelling — where the game publishes a spelling no other record uses,
+     * that spelling is simply the key.
+     *
+     * It is present on `Scanner_LongRange` and `Scanner_WideAngle`, which the game
      * writes as `Sensor_LongRange` and `Sensor_WideAngle` — the same ids it writes for the
      * sensor suites' own Long Range and Wide Angle, which are different recipes rolling
      * different stats. Two recipes need two records, so the scanner side keeps coriolis's

@@ -81,7 +81,7 @@
     {
       "id": "guardianPowerPlants",
       "name": "Guardian Power Plants",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -130,7 +130,7 @@
     {
       "id": "guardianPowerDistributors",
       "name": "Guardian Power Distributors",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -197,7 +197,7 @@
     {
       "id": "guardianHullReinforcements",
       "name": "Guardian Hull Reinforcements",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -559,7 +559,7 @@
     {
       "id": "fsdBoosters",
       "name": "FSD Boosters",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -597,7 +597,7 @@
     {
       "id": "moduleReinforcements",
       "name": "Module Reinforcements",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -619,7 +619,7 @@
     {
       "id": "shieldReinforcements",
       "name": "Shield Reinforcements",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -721,19 +721,19 @@
     {
       "id": "guardianGauss",
       "name": "Exp - Guardian Gauss",
-      "blueprints": ["Weapon_RapidFire", "recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy", "Weapon_RapidFire"],
       "experimentals": []
     },
     {
       "id": "guardianPlasma",
       "name": "Exp - Guardian Plasma",
-      "blueprints": ["Weapon_Overcharged", "recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy", "Weapon_Overcharged"],
       "experimentals": []
     },
     {
       "id": "guardianShard",
       "name": "Exp - Guardian Shard",
-      "blueprints": ["Weapon_LongRange", "recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy", "Weapon_LongRange"],
       "experimentals": []
     }
   ],
@@ -992,7 +992,7 @@
       "guardian": {
         "group": "guardianPowerPlants",
         "symbol": "Int_GuardianPowerplant_Size5",
-        "blueprints": ["recipe_guardianmodule_sturdy"],
+        "blueprints": ["GuardianModule_Sturdy"],
         "experimentals": []
       }
     },
@@ -1019,7 +1019,7 @@
       "guardian": {
         "group": "guardianPowerDistributors",
         "symbol": "Int_GuardianPowerDistributor_Size5",
-        "blueprints": ["recipe_guardianmodule_sturdy"],
+        "blueprints": ["GuardianModule_Sturdy"],
         "experimentals": []
       }
     },
@@ -1044,7 +1044,7 @@
       "guardian": {
         "group": "guardianHullReinforcements",
         "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
-        "blueprints": ["recipe_guardianmodule_sturdy"],
+        "blueprints": ["GuardianModule_Sturdy"],
         "experimentals": []
       }
     }
@@ -1071,7 +1071,7 @@
   },
   "antiGuardianZoneResistance": {
     "description": "Anti-Guardian Zone Resistance carries no experimental effect, and on a Guardian module (power plant, power distributor, hull/module/shield reinforcement, FSD booster) it is the whole menu — so every group offering it offers no experimental effect, and the blueprint-level union is empty rather than the module family's list. The three Guardian weapon groups also offer this recipe but are not menus of one: each also lists an ordinary weapon recipe, which is why `modules` below names only the six module families. A Guardian module carrying an experimental was obtained already engineered, as a community-goal or tech-broker reward, rather than rolled at an engineer; `pre-engineered.json` does not carry those variants either, so nothing here catalogues them.",
-    "blueprint": "recipe_guardianmodule_sturdy",
+    "blueprint": "GuardianModule_Sturdy",
     "experimentals": [],
     "groups": [
       "guardianPowerPlants",
@@ -1124,7 +1124,8 @@
         "ProspectingLimpet_Shielded",
         "Refineries_Shielded"
       ],
-      "recipe_guardianweapon_sturdy": ["recipe_guardianmodule_sturdy"]
+      "recipe_guardianmodule_sturdy": ["GuardianModule_Sturdy"],
+    "recipe_guardianweapon_sturdy": ["GuardianModule_Sturdy"]
     },
     "notOffered": [
       {

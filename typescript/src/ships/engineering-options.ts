@@ -157,8 +157,9 @@ export function getEngineeringGroup(symbol: string): string | null {
  * game writes `Weapon_Overcharged` for both.
  *
  * Anti-Guardian Zone Resistance is the other pair, and the reverse case: the game writes
- * `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a
- * module, and every group here — the Guardian weapons included — lists the module id.
+ * `GuardianModule_Sturdy` — on Guardian weapons as well as modules — and every group here
+ * lists that id. The registry's `recipe_guardianmodule_sturdy` and
+ * `recipe_guardianweapon_sturdy` are accepted as its other spellings.
  *
  * @param symbol - A module symbol.
  * @returns Blueprint ids, sorted. Join to `BLUEPRINTS`.
@@ -225,20 +226,19 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * `Weapon_LongRange` does not offer every effect listed here, only its own group's. Use
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
- * The groups name 86 of the 108 blueprints in `BLUEPRINTS`, and the other 22 are all
+ * The groups name 86 of the 109 blueprints in `BLUEPRINTS`, and the other 23 are all
  * accounted for: 21 are the `recipe_*` keys of modules sold already engineered rather than
- * offered in a menu (see `ships/pre-engineered`), and the 22nd is
- * `recipe_guardianweapon_sturdy`, the weapon spelling of Anti-Guardian Zone Resistance,
- * which every group lists under its module spelling. All 22 answer `[]` here exactly as an
+ * offered in a menu (see `ships/pre-engineered`), and the other two are the registry's
+ * spellings of Anti-Guardian Zone Resistance, which every group lists under
+ * `GuardianModule_Sturdy` — the id the game itself writes. All 22 answer `[]` here exactly as an
  * unknown id would, so read this function's empty answer with
  * {@link getExperimentalsForModule} rather than as a claim about the recipe.
  *
- * Five `recipe_*` keys **are** named by a group, because they are recipes a player applies
- * rather than a purchase: `recipe_guardianmodule_sturdy`, and the four Merc-Coin blueprints
- * published with a full grade 1–5 — `recipe_fuelscoop_efficiency` and the three lasers'
- * `*_thermalplasmaconversion`. Anti-Guardian Zone Resistance still answers `[]`, and there
- * that is the exact answer rather than a miss: it has no experimental slot, on any of the
- * nine groups that offer it.
+ * Four `recipe_*` keys **are** named by a group, because they are recipes a player applies
+ * rather than a purchase: the Merc-Coin blueprints published with a full grade 1–5,
+ * `recipe_fuelscoop_efficiency` and the three lasers' `*_thermalplasmaconversion`.
+ * Anti-Guardian Zone Resistance answers `[]`, and there that is the exact answer rather
+ * than a miss: it has no experimental slot, on any of the nine groups that offer it.
  *
  * @param blueprint - A blueprint id, e.g. `"Weapon_Efficient"`.
  * @returns Experimental-effect ids, sorted and de-duplicated; empty when no group names
