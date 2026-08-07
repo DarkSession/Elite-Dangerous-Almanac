@@ -188,6 +188,29 @@ node --import tsx --import ./scripts/register-jsonc.mjs --test src/ships/weapons
 
 `npm run check` does not build. When a change touches the export map, the bundler config, or anything a consumer imports, also run `npm run build && npm run test:package` — CI does, and `dist/` is what consumers actually get.
 
+## Releasing to npm
+
+`.github/workflows/publish-npm.yml` publishes `@elite-dangerous-almanac/core`. **Nobody publishes from a laptop** — a hand-run `npm publish` produces a tarball with no provenance, built from whatever happened to be in the working tree, and it cannot be undone once the version is taken.
+
+Releasing is two steps:
+
+1. Bump `version` in `typescript/package.json` and merge that to `main`.
+2. Publish a GitHub release whose tag names the same version — `v1.2.3`, or `typescript-v1.2.3` for the day a second implementation releases on its own cadence. Both forms are accepted; the workflow strips the prefix and the leading `v` and refuses to publish if what is left disagrees with the manifest.
+
+What the workflow does with that:
+
+- **Reruns everything.** `prepublishOnly` is `npm run check && npm run build && npm run test:package`, so lint, formatting, types, the coverage-gated suite, the tsup build and the built-`dist/` entry-point suite all run again against the tagged commit, on top of a fresh `npm run audit`. The release does not trust the CI run on the branch it came from.
+- **Refuses a version that already exists.** npm versions are immutable, so the check happens before the build rather than as a failed upload at the end.
+- **Picks the dist-tag from the version.** A SemVer prerelease suffix (`1.2.3-rc.1`) publishes under `next`; everything else under `latest`. A prerelease must never be what `npm install` hands someone by default.
+- **Attaches provenance.** `--provenance` needs `id-token: write`, and it is what puts the verified badge on the npm page linking the tarball to this commit and this workflow run. `--access public` is required because the package is scoped, and scoped packages default to restricted.
+
+Setup this needs once, in repository settings:
+
+- An **npm automation token** with publish rights on the `@elite-dangerous-almanac` scope, stored as the secret `NPM_TOKEN`. Put it on the `npm` environment rather than the repository, so only this job can read it; add required reviewers there if a release should need a human.
+- Nothing else. The environment is created on first run.
+
+`workflow_dispatch` runs the same job with **dry-run on by default**: every check, the real build, and `npm publish --dry-run`, which prints the file list the tarball would carry without taking the version. Use it to rehearse a release, or to see what `files` currently packs. Turning the input off publishes for real.
+
 ## How the shared assets flow into TypeScript
 
 ```
