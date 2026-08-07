@@ -1170,10 +1170,11 @@ the exact list for any one module. Once you know the module, use
 A module the options catalogue does not group returns `[]` from both. To tell that apart
 from a module that _is_ grouped but has no experimental to offer, ask
 `getEngineeringGroup` — it returns `null` only for the former. The second case is the
-common one: 363 of the 1028 grouped modules take blueprints and nothing else — 362 of
-them because their group offers no experimental at all (27 of the 53 groups: life
-support, sensors, the limpet controllers, the utility scanners, the Guardian weapons),
-and the small fixed Abrasion Blaster because it is excluded from its group's only effect.
+common one: 388 of the 1028 grouped modules take blueprints and nothing else — 387 of
+them because their group offers no experimental at all (30 of the 53 groups: life
+support, sensors, the limpet controllers, the utility scanners, and every Guardian
+group), and the small fixed Abrasion Blaster because it is excluded from its group's only
+effect.
 
 The catalogue covers 1028 of the 1197 modules — every module upstream allows a recipe
 on. The other 169 take no engineering: whole families (fuel tanks, passenger cabins, the
@@ -1206,7 +1207,17 @@ getBlueprintsForModule("Int_Powerplant_Size5_Class5");
 // -> ['PowerPlant_Armoured', 'PowerPlant_Boosted', 'PowerPlant_Stealth']
 getBlueprintsForModule("Int_GuardianPowerplant_Size5");
 // -> ['recipe_guardianmodule_sturdy']
+
+getExperimentalsForModule("Int_Powerplant_Size5_Class5").length; // -> 4
+getExperimentalsForModule("Int_GuardianPowerplant_Size5"); // -> []
 ```
+
+That empty list is the whole rule for Guardian modules: Anti-Guardian Zone Resistance is
+the only recipe a player can apply to one, and it has no experimental slot. An engineered
+Guardian module that _does_ carry an experimental is a **pre-engineered** reward — a
+community-goal or tech-broker unlock, sold already applied — which
+[modules you can buy already engineered](#modules-you-can-buy-already-engineered) covers,
+not this menu.
 
 > **One recipe can have two journal ids.** Where a modification applies to several module
 > families, `BLUEPRINTS` carries both a family-specific spelling and a generic one — a
@@ -1523,6 +1534,21 @@ recorded inline there beside the field they touch.
   rewards and were sold nowhere, so their absent price is now recorded as _no list
   price exists_ rather than _none has been found_. A build fitting one still exports
   no `ModulesValue` or `Rebuy`, exactly as before.
+- **2026-08-07** — the Guardian power plants, power distributors and hull
+  reinforcement packages offer **no experimental effect**. Anti-Guardian Zone
+  Resistance is the only recipe a player can apply to a Guardian module and it has no
+  experimental slot; the three groups had inherited their ordinary twin's list on the
+  2026-08-05 split, because both registries publish `expeffects` per module group and
+  neither says a Guardian menu is narrower. An engineered Guardian module carrying an
+  experimental is a **pre-engineered** reward — a community-goal or tech-broker
+  unlock, sold already applied — which `ships/pre-engineered` has always covered.
+  **Behaviour-visible two ways:** `getExperimentalsForModule` returns `[]` for those
+  25 modules where it listed four or five effects, and `applyBlueprint` now refuses an
+  `experimental` on them; and `getExperimentalsForBlueprint('recipe_guardianmodule_sturdy')`
+  returns `[]` rather than the 13-effect union of the three families. Blueprints are
+  unchanged, on every module. Closes
+  [#33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33). See
+  [what a module can be engineered with](#what-a-module-can-be-engineered-with).
 
 Values no source publishes are left **absent rather than guessed**, so some
 `integrity`, `powerDraw` and `mass` fields are `undefined` — read that as

@@ -1,10 +1,10 @@
 {
-  "description": "Ground truth for data/ships/engineering-options.jsonc \u2014 which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins every group's menu by content, `modules` that a module resolves to its group, `exclusions` the modules that take their group's blueprints but not all of its experimental effects (a Multi-cannon cannot take Phasing Sequence; the Abrasion Blaster takes no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `splitFamilies` pins the families upstream splits in two by denying blueprints per module \u2014 a Guardian Power Plant and an ordinary one are the same kind of module with different menus, so they are different groups. `groupSizes` pins how many modules each group holds, so a module moving between groups fails a test rather than balancing out against the totals; `modules` pins one member of every group by name. `corpus` measures the catalogue against the 181-build community corpus in `builds/`.",
+  "description": "Ground truth for data/ships/engineering-options.jsonc \u2014 which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins every group's menu by content, `modules` that a module resolves to its group, `exclusions` the modules that take their group's blueprints but not all of its experimental effects (a Multi-cannon cannot take Phasing Sequence; the Abrasion Blaster takes no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `splitFamilies` pins the families upstream splits in two by denying blueprints per module \u2014 a Guardian Power Plant and an ordinary one are the same kind of module with different menus, so they are different groups, and only the ordinary half has an experimental slot. `antiGuardianZoneResistance` pins the whole of that: the one recipe a player can apply to a Guardian module, offered by nine groups, none of which offers an experimental effect. `groupSizes` pins how many modules each group holds, so a module moving between groups fails a test rather than balancing out against the totals; `modules` pins one member of every group by name. `corpus` measures the catalogue against the 181-build community corpus in `builds/`.",
   "counts": {
     "groups": 53,
     "modules": 1028,
     "exclusions": 24,
-    "modulesWithoutExperimental": 363,
+    "modulesWithoutExperimental": 388,
     "blueprintsOffered": 81
   },
   "groupSizes": {
@@ -82,12 +82,7 @@
       "id": "guardianPowerPlants",
       "name": "Guardian Power Plants",
       "blueprints": ["recipe_guardianmodule_sturdy"],
-      "experimentals": [
-        "special_powerplant_cooled",
-        "special_powerplant_highcharge",
-        "special_powerplant_lightweight",
-        "special_powerplant_toughened"
-      ]
+      "experimentals": []
     },
     {
       "id": "thrusters",
@@ -136,13 +131,7 @@
       "id": "guardianPowerDistributors",
       "name": "Guardian Power Distributors",
       "blueprints": ["recipe_guardianmodule_sturdy"],
-      "experimentals": [
-        "special_powerdistributor_capacity",
-        "special_powerdistributor_efficient",
-        "special_powerdistributor_fast",
-        "special_powerdistributor_lightweight",
-        "special_powerdistributor_toughened"
-      ]
+      "experimentals": []
     },
     {
       "id": "frameShiftDrivesSCO",
@@ -209,12 +198,7 @@
       "id": "guardianHullReinforcements",
       "name": "Guardian Hull Reinforcements",
       "blueprints": ["recipe_guardianmodule_sturdy"],
-      "experimentals": [
-        "special_hullreinforcement_chunky",
-        "special_hullreinforcement_explosive",
-        "special_hullreinforcement_kinetic",
-        "special_hullreinforcement_thermic"
-      ]
+      "experimentals": []
     },
     {
       "id": "pulseLasers",
@@ -986,7 +970,7 @@
   ],
   "splitFamilies": [
     {
-      "description": "Upstream denies the ordinary recipes to the Guardian variant and Anti-Guardian Zone Resistance to the ordinary one, so each half is its own group.",
+      "description": "Upstream denies the ordinary recipes to the Guardian variant and Anti-Guardian Zone Resistance to the ordinary one, so each half is its own group. The Guardian half's menu is that one recipe and nothing else: `experimentals` is empty on every Guardian half, because Anti-Guardian Zone Resistance has no experimental slot and no other recipe reaches a Guardian module.",
       "ordinary": {
         "group": "powerPlants",
         "symbol": "Int_Powerplant_Size5_Class5",
@@ -994,12 +978,19 @@
           "PowerPlant_Armoured",
           "PowerPlant_Boosted",
           "PowerPlant_Stealth"
+        ],
+        "experimentals": [
+          "special_powerplant_cooled",
+          "special_powerplant_highcharge",
+          "special_powerplant_lightweight",
+          "special_powerplant_toughened"
         ]
       },
       "guardian": {
         "group": "guardianPowerPlants",
         "symbol": "Int_GuardianPowerplant_Size5",
-        "blueprints": ["recipe_guardianmodule_sturdy"]
+        "blueprints": ["recipe_guardianmodule_sturdy"],
+        "experimentals": []
       }
     },
     {
@@ -1013,12 +1004,20 @@
           "PowerDistributor_PrioritySystems",
           "PowerDistributor_PriorityWeapons",
           "PowerDistributor_Shielded"
+        ],
+        "experimentals": [
+          "special_powerdistributor_capacity",
+          "special_powerdistributor_efficient",
+          "special_powerdistributor_fast",
+          "special_powerdistributor_lightweight",
+          "special_powerdistributor_toughened"
         ]
       },
       "guardian": {
         "group": "guardianPowerDistributors",
         "symbol": "Int_GuardianPowerDistributor_Size5",
-        "blueprints": ["recipe_guardianmodule_sturdy"]
+        "blueprints": ["recipe_guardianmodule_sturdy"],
+        "experimentals": []
       }
     },
     {
@@ -1031,12 +1030,19 @@
           "HullReinforcement_HeavyDuty",
           "HullReinforcement_Kinetic",
           "HullReinforcement_Thermic"
+        ],
+        "experimentals": [
+          "special_hullreinforcement_chunky",
+          "special_hullreinforcement_explosive",
+          "special_hullreinforcement_kinetic",
+          "special_hullreinforcement_thermic"
         ]
       },
       "guardian": {
         "group": "guardianHullReinforcements",
         "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
-        "blueprints": ["recipe_guardianmodule_sturdy"]
+        "blueprints": ["recipe_guardianmodule_sturdy"],
+        "experimentals": []
       }
     }
   ],
@@ -1058,6 +1064,30 @@
       "special_fsd_heavy",
       "special_fsd_lightweight",
       "special_fsd_toughened"
+    ]
+  },
+  "antiGuardianZoneResistance": {
+    "description": "Anti-Guardian Zone Resistance is the only recipe a player can apply to a Guardian module, and it has no experimental slot — so every group offering it offers no experimental effect, and the blueprint-level union is empty rather than the module family's list. A Guardian module carrying an experimental is a pre-engineered reward, sold already applied (see `pre-engineered.json`), not something rolled at an engineer.",
+    "blueprint": "recipe_guardianmodule_sturdy",
+    "experimentals": [],
+    "groups": [
+      "guardianPowerPlants",
+      "guardianPowerDistributors",
+      "guardianHullReinforcements",
+      "fsdBoosters",
+      "moduleReinforcements",
+      "shieldReinforcements",
+      "guardianGauss",
+      "guardianPlasma",
+      "guardianShard"
+    ],
+    "modules": [
+      "Int_GuardianPowerplant_Size5",
+      "Int_GuardianPowerDistributor_Size5",
+      "Int_GuardianHullReinforcement_Size3_Class2",
+      "Int_GuardianFSDBooster_Size5",
+      "Int_GuardianModuleReinforcement_Size5_Class2",
+      "Int_GuardianShieldReinforcement_Size5_Class2"
     ]
   },
   "corpus": {

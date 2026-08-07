@@ -1,6 +1,6 @@
 # Data sources — `data/ships/`
 
-**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by three passes of 2026-08-06: the module-record pass in the revision block immediately below, the scanner-id pass recorded under §Engineering options (what each module can take) in "Scanner Long Range and Wide Angle: one journal id, two recipes", and the corrosion-rack pass recorded under §Modules (outfitting) in the bullet "`_Size2_Class1` is removed, and sizes 5 and 6 are confirmed Community Goal rewards"; before them, the restricted-mount pass of 2026-08-05. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Library snapshot:** 2026-07-24, revised repeatedly since — most recently by the Guardian experimental-slot correction of 2026-08-07, recorded inline under §Engineering options (what each module can take) in the bullet "A Guardian module has no experimental slot"; before it, three passes of 2026-08-06: the module-record pass in the revision block immediately below, the scanner-id pass recorded under §Engineering options (what each module can take) in "Scanner Long Range and Wide Angle: one journal id, two recipes", and the corrosion-rack pass recorded under §Modules (outfitting) in the bullet "`_Size2_Class1` is removed, and sizes 5 and 6 are confirmed Community Goal rewards"; before them, the restricted-mount pass of 2026-08-05. The dated `**Revision**` blocks below carry the larger passes; smaller corrections are recorded inline beside the field they touch, so this file rather than any count of it is the record. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
 
 **Revision 2026-08-06 (UTC), the module-record pass — the outfitting category is the
 file it is in, and a core module names the mount it fills.**
@@ -1429,9 +1429,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     packages. Those are stored as **two groups** — `powerPlants` /
     `guardianPowerPlants`, `powerDistributors` / `guardianPowerDistributors`,
     `hullReinforcements` / `guardianHullReinforcements` — rather than as a per-module
-    exception, because a group *is* a menu and these are two menus. Both halves keep the
-    family's experimental list, which is what EDSY publishes (`expeffects` is per group,
-    with no per-module denial on any of them).
+    exception, because a group *is* a menu and these are two menus. Both halves initially
+    kept the family's experimental list, which is what EDSY publishes (`expeffects` is per
+    group, with no per-module denial on any of them); the Guardian halves lost it on
+    2026-08-07, below.
   - **This corrected three groups that predate the extension.** `powerPlants`,
     `powerDistributors` and `hullReinforcements` each offered
     `recipe_guardianmodule_sturdy` to every ordinary module in them, which EDSY denies —
@@ -1566,9 +1567,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `README.md` defines a size, over a module and everything it imports, which is what
   `package.test.mjs` walks. Tree-shaking recovers it, but the repo does not measure in
   tree-shaken bundles and a plain ESM consumer would not get it. So it is its own module,
-  `ships/blueprint-journal`: `engineering-options` stays at 63 636 bytes with no recipe
-  data in its graph (a test asserts that), `blueprints` stays at 221 345, and the 284 853
-  is paid by callers who ask for the join. This closed
+  `ships/blueprint-journal`: `engineering-options` stayed at 63 636 bytes with no recipe
+  data in its graph (a test asserts the absence, and bounds the size at 96 KB rather than
+  pinning it — the 2026-08-07 Guardian correction below took it to 63 103), `blueprints`
+  stays at 221 345, and the 284 853 is paid by callers who ask for the join. This closed
   [#32](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/32).
 
   **Acquisition (2026-08-06 UTC).** `edsy.js` — the file carrying `Build.fromJournal` — is
@@ -1623,12 +1625,63 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Kept deliberately:** the Abrasion Blaster stays in `modules` (it has a blueprint) even
   though its experimental list resolves to empty — "engineerable with no experimental
   slot" and "not engineerable at all" are different answers, and `getEngineeringGroup`
-  separates them. That distinction carries most of the catalogue: 27 of the 53 groups
-  offer no experimental at all, so 363 of the 1028 grouped modules answer `[]` while still
+  separates them. That distinction carries most of the catalogue: 30 of the 53 groups
+  offer no experimental at all, so 388 of the 1028 grouped modules answer `[]` while still
   having blueprints.
 - **Key form:** EDSY names the Anti-Guardian blueprint by its journal form
   (`GuardianModule_Sturdy`); this catalogue stores it under the `recipe_*` id the rest of
   `blueprints.jsonc` uses, so every id here joins directly.
+- **A Guardian module has no experimental slot (settled 2026-08-07).** This is the answer
+  [#33](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33) asked for, and it
+  is a rule about the recipe rather than about any one module: **Anti-Guardian Zone
+  Resistance is the only recipe a player can apply to a Guardian module, and it carries no
+  experimental effect.** An engineered Guardian module that does carry one is a
+  **pre-engineered** module — a community-goal reward or a tech-broker unlock, sold with
+  the modification already applied — which is `pre-engineered.jsonc`'s subject, not this
+  file's. So `guardianPowerPlants`, `guardianPowerDistributors` and
+  `guardianHullReinforcements` now list `"experimentals": []`, and all nine groups offering
+  `recipe_guardianmodule_sturdy` agree; the other six already did.
+  - **What was wrong, and why neither registry caught it.** The three groups inherited
+    their ordinary twin's list when the `noblueprints` split created them, because
+    `expeffects` is published **per module group** by both registries — EDSY has no
+    per-blueprint field and coriolis-data's `specials` sits beside `blueprints` rather than
+    inside one — so a group that offers exactly one blueprint still names the whole family's
+    effects, and there is nothing in either file that says a Guardian menu is narrower.
+    That is the shape #33 described. It also means the correction cannot be re-derived from
+    the registries: it is a game fact recorded here, and a re-derivation that reads EDSY
+    alone will reproduce the pre-2026-08-07 lists.
+  - **Source:** a maintainer report of the in-game engineering menu, recorded 2026-08-07
+    UTC — the same standing as the module-price and restricted-mount observations recorded
+    above, and the kind of evidence #33 named as sufficient ("a capture of the in-game
+    experimental list"). There is no upstream revision to pin, because no registry
+    publishes the fact: EDSY `eddb.js` and coriolis-data
+    `modifications/modules.json` are unchanged from the snapshots pinned above
+    (`967834d6…` / `db 20260428` and `09b6427c…`), and neither was re-read for this pass.
+    No registry contradicts the report either; both are silent. Underlying game logic is
+    Elite Dangerous data, property of Frontier Developments plc, under Frontier's
+    media-usage terms.
+  - **Scope: the six Guardian *module* families, not the three Guardian weapons.** The
+    weapon groups `guardianGauss`, `guardianPlasma` and `guardianShard` are untouched —
+    they already offered no experimental, and they keep the ordinary weapon blueprint each
+    of them also lists (`Weapon_RapidFire`, `Weapon_Overcharged`, `Weapon_LongRange`), which
+    the build corpus engineers and which
+    [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36) tracks
+    separately. `fsdBoosters`, `moduleReinforcements` and `shieldReinforcements` — the other
+    three Guardian module families — were already `[]` and are unchanged.
+  - **The corpus neither corroborates nor contradicts.** None of the 1902 declared
+    engineering entries in `fixtures/ships/builds/` engineers a Guardian power plant,
+    distributor or hull reinforcement package at all, so no count in `corpus` moves. The
+    six `special_super_penetrator_cooled` entries on a Guardian Shard Cannon stay exactly
+    where they were, in `corpus.notOffered` under #36.
+  - **Consumer-visible:** `getExperimentalsForModule` answers `[]` for the 25 modules in
+    those three groups, where it listed four or five effects; `ShipLoadout.applyBlueprint`
+    refuses an `experimental` on them; and
+    `getExperimentalsForBlueprint('recipe_guardianmodule_sturdy')` answers `[]` rather than
+    the 13-effect union of the three families — which was the exact symptom #33 recorded.
+    Blueprints are unchanged on every module. Pinned in
+    `fixtures/ships/engineering-options.json` as `antiGuardianZoneResistance` (the nine
+    groups, the empty list, six representative modules) and on each half of
+    `splitFamilies`.
 
 ## Engineering compatibility (may this recipe go on this module?)
 
