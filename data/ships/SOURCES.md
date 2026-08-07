@@ -1745,8 +1745,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
     - **The large Seeker Missile Rack's Lockdown** is a `mercenary` row on
       `Hpt_BasicMissileRack_Fixed_Large` at **900 MC**, taking the shop total to 13 900 MC.
       Four things agree, none of them a guess about a module symbol: the registry keys
-      Lockdown by *size* and the twin `…rackmedium_lockdown` binds to the medium rack; the
-      large rack is already a Merc row for `SeekerMissileRack_Drag`, so the shop
+      Lockdown by *size* and the twin `SeekerMissileRackMedium_Lockdown` binds to the medium
+      rack; the large rack is already a Merc row for `SeekerMissileRack_Drag`, so the shop
       stocks it; both Lockdown recipes run grades 2–5, the weapon-reward range that marks a
       module as bought pre-engineered; and it is the only grade-2–5 Operations recipe in the
       file
