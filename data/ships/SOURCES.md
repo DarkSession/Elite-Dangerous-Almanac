@@ -2038,6 +2038,61 @@ under, which is why several are cited above rather than copied.
   a shield generator, but a journal reports none of those figures — see
   <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12>.
 
+- **`fixtures/ships/journal-python-mkii-antixeno.json`** — a real Frontier journal
+  `Loadout` event for a **wholly unengineered** anti-xeno Python MkII (22 `Modules`
+  entries: four large and two medium anti-xeno and Guardian hardpoints, no utilities, an
+  8t cargo rack). Contributed **2026-08-08 UTC** by the repository owner. No upstream
+  project or export tool is recorded for it — the same position as the 181 origin-less
+  builds in `fixtures/ships/builds/`, and not a reason to leave it out; the loadout is
+  Frontier game output redistributed under Frontier's media-usage terms. Stored SHA-256
+  `92e01bb62f1aede9c2cd28f5a789a8db1509f3a87c667077aa8402dcbab43b9c`; held byte-for-byte
+  as received apart from re-indenting. Its `ShipName` (empty), `ShipIdent`, `ShipID` and
+  `timestamp` are kept, as the other two captures' are — they describe a ship, and nothing
+  in the event names a person.
+
+  **It is the second ground truth for the catalogue's own numbers, on a hull and a drive
+  the Viper Mk IV does not reach.** Nothing here is engineered either, so `UnladenMass`
+  699 (ours 699, exact) and `MaxJumpRange` 17.495169 (ours 17.495170, within 1e-4) are
+  Frontier reading back the base module masses and a **size-5 class-3 SCO** drive's
+  `optMass` 1050 / `maxFuel` 5 / `fuelMul` 0.012 / `fuelPower` 2.45 — a drive class the
+  Viper's size-4 capture does not exercise, on a 699t hull rather than a 261t one.
+  `CargoCapacity` 8 is exact, and unlike the Viper this build carries a rack, so its laden
+  jump is the shorter one.
+
+  **It reads the anti-xeno weapons' ammunition, which no other source here does.** The
+  game reports `AmmoInClip` and `AmmoInHopper` for what is loaded, so the Enhanced AX
+  Multi-Cannon's 100/2100 and the Guardian Shard Cannon's 5/180 confirm `clipSize` and
+  `ammoMaximum` on two records directly. The other four weapons report zero on both
+  counts, which is this ship's rearm state and not a statement about the catalogue, so
+  they are not pinned. Four of its six weapons sit in families this catalogue gives no
+  engineering menu — the Enhanced AX pair among the eight AX multi-cannons upstream denies
+  every blueprint, plus the Guardian Nanite Torpedo Pylon and the Remote Release Flak
+  Launcher — so it also demonstrates that a build made largely of unengineerable modules
+  computes end to end.
+
+  **Its credits are a second reading of the 12.25% discount.** All 18 priced modules sit
+  at **0.8775** of catalogue list, each within a credit after the game's own rounding —
+  the same fraction as the Deep Black EDSY export, now confirmed from Frontier's own
+  journal rather than from a third-party calculator, and a third discount overall beside
+  the Viper's flat 0.85. The residual credit splits cleanly and is left unmodelled: the 12
+  internals land exactly on the floor of the ratio, the six hardpoints one credit above
+  it. The hull behaves as the Viper's does rather than the Krait's — `HullValue`
+  56 801 651 is **below** even the bare `hullCost` 64 743 724 and is 0.8775 of neither
+  convention — and its own `Rebuy` 3 268 938 is not 5% of its own figures either (that
+  truncates to 3 268 937). So a journal's credits remain a purchase record. Pinned by
+  `fixtures/ships/slef-export.json` (`pythonMkII`) and `fixtures/ships/jump-range.json`.
+
+  **What it does not close:** shields, armour and weapon DPS, exactly as the Viper Mk IV
+  does not — it carries six weapons and a shield generator, and a journal reports none of
+  those figures. See
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12>.
+
+  **What it uncovered:** `LoadoutModule` models no ammunition, so a journal round trip
+  drops `AmmoInClip` and `AmmoInHopper` on every weapon that carries them. The other two
+  captures report zero on every weapon, so this capture is the first to show it —
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/56>. The fixture reads
+  those two fields off the stored capture rather than off a parsed build for that reason.
+
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed
   **2026-08-04 UTC** by the repository owner from their own commander's fleet, which is
