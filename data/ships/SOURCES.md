@@ -1555,11 +1555,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
       keys a recipe on **(weapon type, blueprint, grade)** rather than on a recipe id — the
       shape the engineer menus themselves have — lists Overcharged on exactly the seven
       weapon types coriolis covers, and carries its `Clip Size` leg of −3% to −15% on the
-      multi-cannon alone. Its `CoriolisGuid` field is a name match rather than a join
-      (`Sturdy Mount` points at `CargoRack_IncreasedCapacity`), and all seven of its
-      Overcharged rows, the multi-cannon's included, point at coriolis's *clip-less*
-      record — so the clip leg on its multi-cannon row cannot have come from the record it
-      cites. It is not blind to the stat on the groups in question either: High Capacity
+      multi-cannon alone. Its `CoriolisGuid` field is an exact join into coriolis's
+      per-grade `uuid`, and coriolis gives its two Overcharged records ten distinct uuids
+      sharing none — yet **all 35** of EDEngineer's Overcharged rows, across all seven
+      types and every grade, carry the five belonging to the *clip-less*
+      `Weapon_Overcharged`. So the clip leg on its multi-cannon rows cannot have come from
+      the record those rows cite. It is not blind to the stat on the groups in question
+      either: High Capacity
       carries `Clip Size +100%` on the cannon and on the fragment cannon, and the fragment
       cannon's Double Shot sets a clip outright.
     - **EDSY is the outlier, and not for want of a way to say otherwise.** `eddb.js`'s

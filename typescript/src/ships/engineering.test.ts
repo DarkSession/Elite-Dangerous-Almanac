@@ -18,6 +18,7 @@ import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
+import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { baseStats } from './module-stat-labels.js';
@@ -714,16 +715,29 @@ test('the base stats a recipe scales come back in the journal spelling for the f
 });
 
 test('Overcharged leaves a cannon’s clip alone, as a real journal reports', () => {
-    // Ground truth: the Federation Corvette capture in
-    // fixtures/ships/journal-federation-corvette.json carries a large gimballed cannon
-    // under `Weapon_Overcharged` at grade 5, quality 1, with High Yield Shell. Frontier's
-    // Modifiers list `DamagePerSecond`, `Damage`, `DistributorDraw`, `ThermalLoad`,
-    // `RateOfFire` and the experimental's damage-type split — and no `AmmoClipSize`, with
-    // `AmmoInClip` 5 against a stock magazine of 5. So the multi-cannon's clip penalty is
-    // the multi-cannon's alone, which is the whole of the registry disagreement the two
-    // Overcharged records exist to hold apart.
-    const cannon = getModuleBySymbol('Hpt_Cannon_Gimbal_Large', ALL_MODULES)!;
+    // Ground truth, read from the capture rather than quoted from it: the Federation
+    // Corvette carries a large gimballed cannon under `Weapon_Overcharged` at grade 5,
+    // quality 1, with High Yield Shell. Frontier states no `AmmoClipSize` and leaves the
+    // magazine full. So the multi-cannon's clip penalty is the multi-cannon's alone, which
+    // is the whole of the registry disagreement the two Overcharged records exist to hold
+    // apart.
+    const fitted = corvetteJournal.Modules.find(
+        (m) =>
+            (m as { Engineering?: { BlueprintName: string } }).Engineering?.BlueprintName ===
+            'Weapon_Overcharged',
+    ) as {
+        Item: string;
+        AmmoInClip: number;
+        Engineering: { Level: number; Quality: number; Modifiers: { Label: string }[] };
+    };
+    const cannon = getModuleBySymbol(fitted.Item, ALL_MODULES)!;
+    assert.equal(cannon.symbol, 'Hpt_Cannon_Gimbal_Large');
+    assert.equal(fitted.Engineering.Level, 5);
+    assert.equal(fitted.Engineering.Quality, 1);
+    assert.ok(!fitted.Engineering.Modifiers.some((m) => m.Label === 'AmmoClipSize'));
+    // A full magazine, so the roll did not touch it: 5 × 0.85 would have loaded four.
     assert.equal(cannon.clipSize, 5);
+    assert.equal(fitted.AmmoInClip, cannon.clipSize);
     const modifiers = computeModifiers(
         baseStats(cannon),
         getBlueprintGrade('Weapon_Overcharged', 5)!,
@@ -757,8 +771,10 @@ test('Overcharged leaves a cannon’s clip alone, as a real journal reports', ()
         getBlueprintGrade('MC_Overcharged', 5)!,
         1,
     );
-    // 90 × 0.85 is 76.5, and a magazine holds whole rounds.
-    assert.equal(modFor(multiMods, 'AmmoClipSize'), Math.round(multi.clipSize! * 0.85));
+    // 90 × 0.85 is 76.5, and a magazine holds whole rounds — the figure
+    // `fixtures/ships/engineering.json` pins for this same module and grade.
+    assert.equal(multi.clipSize, 90);
+    assert.equal(modFor(multiMods, 'AmmoClipSize'), 77);
 });
 
 test('a heat-rate recipe reproduces the heat a real journal reports', () => {
