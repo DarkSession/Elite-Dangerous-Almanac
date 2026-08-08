@@ -1252,9 +1252,10 @@ engineered](#modules-you-can-buy-already-engineered) is what carries it.
 >
 > **The commonest case is Overcharged on a multi-cannon**, not the scanners. A
 > multi-cannon's Overcharged also cuts the clip — 3% at grade 1 to 15% at grade 5 — where
-> the recipe every other weapon takes leaves it alone, so the multi-cannon menus list
-> `MC_Overcharged` and the game writes `Weapon_Overcharged` for both. 70 of the build
-> corpus's declared entries need this resolution, against one for the scanners.
+> the recipe every other weapon takes leaves it alone, so the multi-cannon menus, anti-xeno
+> ones included, list `MC_Overcharged` and the game writes `Weapon_Overcharged` for both.
+> 70 of the build corpus's declared entries need this resolution, against one for the
+> scanners.
 >
 > ```ts
 > resolveBlueprintForModule(

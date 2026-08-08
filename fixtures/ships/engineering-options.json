@@ -475,7 +475,7 @@
     {
       "id": "antiXenoMultiCannons",
       "name": "Exp - Anti-Xeno Multi-Cannons",
-      "blueprints": ["Weapon_Overcharged"],
+      "blueprints": ["MC_Overcharged"],
       "experimentals": ["special_auto_loader"]
     },
     {

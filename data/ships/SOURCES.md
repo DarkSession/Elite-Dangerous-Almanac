@@ -1298,8 +1298,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     one registry behind it.
   - **The multi-cannon Overcharged is the one place a group follows coriolis over EDSY.**
     EDSY has a single Overcharged for every weapon; coriolis splits it, and `multiCannons`
-    lists coriolis's `MC_Overcharged`. See "Multi-cannon Overcharged: one journal id, two
-    recipes" below for the evidence and for what the split costs.
+    lists coriolis's `MC_Overcharged`. `antiXenoMultiCannons` lists that key too, but not
+    for that reason — coriolis describes no anti-xeno group, so it is EDSY being followed
+    into coriolis's spelling. See "Multi-cannon Overcharged: one journal id, two recipes"
+    below for the evidence and for what the split costs.
   - **The groups name 86 of the 109 blueprints.** The other 23 are accounted for: 21 are
     Operations keys of modules sold already engineered rather than offered in a menu, and
     the other two are the registry's spellings of Anti-Guardian Zone Resistance, which every
@@ -1490,11 +1492,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `fixtures/ships/engineering-options.json` as `antiGuardianZoneResistance` (the nine
     groups, the empty list, six representative modules) and on each half of
     `splitFamilies`.
-- **Multi-cannon Overcharged: one journal id, two recipes.** `multiCannons` lists
-  **`MC_Overcharged`** where every other weapon menu lists `Weapon_Overcharged`, and the
-  record carries `journalName: "Weapon_Overcharged"`. Same shape as the scanner ids above,
-  in the family far more consumers touch: 70 of the corpus's 1902 declared entries resolve
-  through it, against one for the scanners.
+- **Multi-cannon Overcharged: one journal id, two recipes.** `multiCannons` and
+  `antiXenoMultiCannons` list **`MC_Overcharged`** where every other weapon menu lists
+  `Weapon_Overcharged`, and the record carries `journalName: "Weapon_Overcharged"`. Same
+  shape as the scanner ids above, in the family far more consumers touch: 70 of the
+  corpus's 1902 declared entries resolve through it, against one for the scanners.
   - **Source: coriolis-data, which states it twice.** `modifications/modules.json` lists
     `MC_Overcharged` on exactly two groups — `mc` (multi-cannons) and `advmc` (Advanced
     Multi-cannons) — and `Weapon_Overcharged` on the other six weapon groups offering
@@ -1517,27 +1519,35 @@ up straight through with no disambiguation at all. Both paths are evidence that
     the comparison should not be pushed that far: the scanner pair is two recipes rolling
     different stats in opposite directions on two families, this pair differs by one leg on
     one family in the direction both sources give it.
-  - **`antiXenoMultiCannons` stays on `Weapon_Overcharged`.** coriolis keys the anti-xeno
-    multi-cannons apart as `axmc` and gives that group no Overcharged at all, so it cannot
-    say which of its two keys an AX multi-cannon takes, and picking one would be inference
-    over the only source that distinguishes them. That is a narrower refusal than it
-    looks: whether the clip *leg* applies to an AX multi-cannon is a different question,
-    EDSY is not silent on it, and it is
-    [#48](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48) case B.
-  - **28 clip-bearing modules are still offered a clip-less Overcharged**, in two cases
-    needing different evidence, tracked at #48. 26 are a registry disagreement — 12
-    cannons, 10 fragment cannons, four plasma accelerators, whose groups coriolis covers
-    and gives the clip-less key. The other two are the anti-xeno multi-cannons, which sit
-    in a group coriolis leaves empty, so they are among the 13 resting on EDSY alone and
-    the only registry describing them says the clip drops. (It was 34 until the Guardian
-    weapon menus stopped offering the ordinary recipes at all: the six Guardian plasma
-    launchers left this set entirely, being sold with `Weapon_Overcharged` rather than
-    offered it.) The three laser groups also list `Weapon_Overcharged` and are
-    unaffected: no laser carries a clip.
+  - **`antiXenoMultiCannons` takes `MC_Overcharged` on EDSY's word alone.** coriolis keys
+    the anti-xeno multi-cannons apart as `axmc` and gives that group no Overcharged at all,
+    so it cannot say which of its two keys an AX multi-cannon takes. That silence does not
+    leave the question open, because this is one of the 13 groups resting on EDSY alone,
+    where the standing rule is to follow the only registry that covers the group: EDSY's
+    single `wpn_oc` carries the clip leg on every group that lists it, `axmc` included, and
+    both AX multi-cannons carry a clip. Answering the leg answers the key too. coriolis's
+    two keys differ by exactly that leg and nothing else — same name, same three other
+    legs, same materials grade for grade — so the clip-carrying record is the only one
+    either registry could be describing, and naming it is reading EDSY rather than guessing
+    at coriolis. No registry writes this row down as it stands — coriolis does not describe
+    the group and EDSY does not use the key — so it is the one menu row assembled from one
+    registry's coverage and the other's spelling.
+  - **26 clip-bearing modules are still offered a clip-less Overcharged** — 12 cannons, 10
+    fragment cannons and four plasma accelerators — tracked at
+    [#48](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48). These are the
+    groups coriolis *does* cover and gives the clip-less key, so they are a registry
+    disagreement rather than a silence, and following EDSY on them would overrule the
+    registry this catalogue is keyed on rather than fill a hole in it. Settling it needs a
+    capture of the outfitting panel before and after a grade-5 Overcharged roll on a cannon
+    or a fragment cannon; whether Frontier ships one recipe or two is what decides between
+    a further key split and a clip leg on `Weapon_Overcharged` itself, and no laser can
+    answer it because none carries a clip. The six Guardian plasma launchers are not in
+    this set: they are sold carrying `Weapon_Overcharged` rather than offered it, so no
+    menu lists it for them. The three laser groups do list it and are unaffected.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14
-    multi-cannons; `applyBlueprint` accepts either spelling, resolving the journal one
-    against the menu, and folds the clip reduction. Pinned in
-    `fixtures/ships/engineering.json` as `overchargedIdCollision` — both modifier blocks in
+    multi-cannons and on both AX multi-cannons; `applyBlueprint` accepts either spelling,
+    resolving the journal one against the menu, and folds the clip reduction. Pinned in
+    `fixtures/ships/engineering.json` as `overchargedIdCollision` — three modifier blocks in
     full, with the medium cannon as the control that takes the same journal id and no clip
     leg — and in `journalNames`.
 - **An ordinary recipe on a Guardian weapon is a purchase, not an engineer roll.** The

@@ -60,9 +60,12 @@
  * `journalName` in `blueprints.jsonc`. What this file contributes is the half only it
  * knows — which of the two recipes a given module is offered. `resolveBlueprintForModule`
  * reads a menu against those journal names, so resolution needs no second list to drift
- * from this one. `multiCannons` is the third menu of that shape: it lists coriolis-data's
- * `MC_Overcharged`, the multi-cannon Overcharged that also cuts the clip by 3–15%, where
- * the game writes the `Weapon_Overcharged` every other weapon menu lists.
+ * from this one. The third id of that shape is coriolis-data's `MC_Overcharged`, the
+ * Overcharged that also cuts the clip by 3–15% where the game writes the
+ * `Weapon_Overcharged` every other weapon menu lists; `multiCannons` and
+ * `antiXenoMultiCannons` list it. The anti-xeno menu takes it on EDSY's word rather than
+ * coriolis's, which describes no anti-xeno group at all — see §Multi-cannon Overcharged
+ * in SOURCES.md.
  *
  * **A menu may list an Operations recipe.** Most Operations ids belong to modules bought
  * already engineered and no menu names them, but four are recipes a player applies: the
@@ -518,7 +521,7 @@
     "antiXenoMultiCannons": {
       "name": "Exp - Anti-Xeno Multi-Cannons",
       "blueprints": [
-        "Weapon_Overcharged"
+        "MC_Overcharged"
       ],
       "experimentals": [
         "special_auto_loader"

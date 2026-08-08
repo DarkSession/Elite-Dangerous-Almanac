@@ -154,9 +154,9 @@ export function getEngineeringGroup(symbol: string): string | null {
  * `Sensor_LongRange` for both all the same, so a journal id has to be read against the
  * module it sits on: `resolveBlueprintForModule` in `ships/blueprint-journal` is that
  * lookup. `MC_Overcharged` is the third of that kind and the one most consumers will meet:
- * the multi-cannon menus list it rather than the `Weapon_Overcharged` every other weapon
- * menu lists, because a multi-cannon's Overcharged also cuts the clip by 3–15% — and the
- * game writes `Weapon_Overcharged` for both.
+ * the multi-cannon menus — ordinary and anti-xeno — list it rather than the
+ * `Weapon_Overcharged` every other weapon menu lists, because a multi-cannon's Overcharged
+ * also cuts the clip by 3–15% — and the game writes `Weapon_Overcharged` for both.
  *
  * Anti-Guardian Zone Resistance is the other pair, and the reverse case: the game writes
  * `GuardianModule_Sturdy` — on Guardian weapons as well as modules — and every group here
