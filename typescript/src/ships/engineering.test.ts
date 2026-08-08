@@ -717,10 +717,11 @@ test('Overcharged leaves a cannon’s clip alone, as a real journal reports', ()
     // Ground truth: the Federation Corvette capture in
     // fixtures/ships/journal-federation-corvette.json carries a large gimballed cannon
     // under `Weapon_Overcharged` at grade 5, quality 1, with High Yield Shell. Frontier's
-    // Modifiers list `Damage`, `DistributorDraw`, `ThermalLoad` and the experimental's own
-    // legs — and no `AmmoClipSize`, with `AmmoInClip` 5 against a stock magazine of 5. So
-    // the multi-cannon's clip penalty is the multi-cannon's alone, which is the whole of
-    // the registry disagreement the two Overcharged records exist to hold apart.
+    // Modifiers list `DamagePerSecond`, `Damage`, `DistributorDraw`, `ThermalLoad`,
+    // `RateOfFire` and the experimental's damage-type split — and no `AmmoClipSize`, with
+    // `AmmoInClip` 5 against a stock magazine of 5. So the multi-cannon's clip penalty is
+    // the multi-cannon's alone, which is the whole of the registry disagreement the two
+    // Overcharged records exist to hold apart.
     const cannon = getModuleBySymbol('Hpt_Cannon_Gimbal_Large', ALL_MODULES)!;
     assert.equal(cannon.clipSize, 5);
     const modifiers = computeModifiers(
@@ -734,9 +735,14 @@ test('Overcharged leaves a cannon’s clip alone, as a real journal reports', ()
         'DistributorDraw',
         'ThermalLoad',
     ]);
-    // The two legs the capture states against an unrounded base reproduce exactly.
+    // `DistributorDraw` reproduces the capture's own figure, because the two agree on the
+    // base. `ThermalLoad` reproduces the multiplier and not the figure: the capture's base
+    // is 2.93 where this catalogue stores 2.9, which is
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/59 and not this
+    // recipe. Both are ×1.35 and ×1.15 of whatever base they are given, which is the part
+    // the recipe answers for.
     assert.ok(near(modFor(modifiers, 'DistributorDraw')!, 1.539, 1e-9));
-    assert.ok(near(modFor(modifiers, 'ThermalLoad')!, 2.9 * 1.15, 1e-9));
+    assert.ok(near(modFor(modifiers, 'ThermalLoad')!, cannon.thermalLoad! * 1.15, 1e-9));
 
     // The multi-cannon recipe the same journal id resolves to on a multi-cannon does cut
     // the clip, so the absence above is the recipe and not a dropped leg.

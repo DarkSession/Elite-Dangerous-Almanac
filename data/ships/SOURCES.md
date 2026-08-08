@@ -1536,18 +1536,21 @@ up straight through with no disambiguation at all. Both paths are evidence that
     modules the other groups hold — 12 cannons, 10 fragment cannons and four plasma
     accelerators — fold no clip change, and the game agrees.
     `fixtures/ships/journal-federation-corvette.json` carries a **large gimballed cannon
-    under `Weapon_Overcharged` at grade 5, quality 1**, with High Yield Shell. Its
-    `Modifiers` are `Damage`, `DistributorDraw`, `ThermalLoad`, `RateOfFire` and the
-    experimental's own damage-type split — and **no `AmmoClipSize`**. `AmmoInClip` is **5**
-    against the module's stock magazine of 5, so the roll left the magazine where it was; a
-    15% cut would have left four rounds, and the game writes that leg out whenever it
-    applies, as it does on every multi-cannon that takes one.
+    under `Weapon_Overcharged` at grade 5, quality 1**, with High Yield Shell. Its eight
+    `Modifiers` are `DamagePerSecond`, `Damage`, `DistributorDraw`, `ThermalLoad`,
+    `RateOfFire` and the experimental's three-part damage-type split — and **no
+    `AmmoClipSize`**. `AmmoInClip` is **5** against the module's stock magazine of 5, so
+    the roll left the magazine where it was; a 15% cut would have left four rounds, and a
+    journal writes the leg out wherever a recipe applies one — as this repository's other
+    captures show it doing for the `AmmoClipSize` and `AmmoMaximum` a High Capacity roll
+    charges.
     - **The roll is a full grade 5, so the missing leg is the recipe and not a partial
       craft.** `DistributorDraw` 1.14 → 1.539 is ×1.35 and `ThermalLoad` 2.93 → 3.3695 is
       ×1.15 — Overcharged's grade-5 figures exactly. `Damage` 37.421 → 41.350 is
-      ×1.70 × 0.65, the recipe's grade-5 damage against High Yield Shell's own −35%, and
-      `RateOfFire` 0.440529 → 0.396476 is that experimental's burst-interval leg. Every
-      number in the block is accounted for and none of them is a clip.
+      ×1.70 × 0.65, the recipe's grade-5 damage against High Yield Shell's own −35%;
+      `RateOfFire` 0.440529 → 0.396476 is that experimental's burst-interval leg; and
+      `DamagePerSecond` is the product of the two, as it is before the roll. Every number
+      in the block is accounted for and none of them is a clip.
     - **EDEngineer says it too, and not by reading coriolis.** EDEngineer `blueprints.json`
       keys a recipe on **(weapon type, blueprint, grade)** rather than on a recipe id — the
       shape the engineer menus themselves have — lists Overcharged on exactly the seven
@@ -1567,10 +1570,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
       is the position the capture contradicts. Reading it would report a cannon four rounds
       the game loads five of.
     - **What the capture does not reach** is the fragment cannon and the plasma
-      accelerator. Both groups take the same clip-less key from the same two registries and
-      neither has been captured under Overcharged, so they rest on the cannon reading plus
-      the registries rather than on a roll of their own. A capture that contradicted one of
-      them would split `Weapon_Overcharged` again rather than overturn this.
+      accelerator — 14 of the 26 — tracked at
+      [#60](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/60). Both groups
+      take the same clip-less key from the same two registries and neither has been
+      captured under Overcharged, so they rest on the cannon reading plus the registries
+      rather than on a roll of their own. A capture that contradicted one of them would
+      split `Weapon_Overcharged` again rather than overturn the cannon, which is now pinned
+      to a reading.
     - **None of the six Guardian plasma launchers is in this set** — their menu lists
       Anti-Guardian Zone Resistance and nothing else, and the Fixed Small and Fixed Medium
       are sold carrying `Weapon_Overcharged` rather than offered it. The three laser groups
@@ -2048,15 +2054,19 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   armour carries exactly those values. `typescript/src/ships/module-stat-labels.ts`
   holds the per-label unit and algebra table.
 - **Ammunition capacity is `clipSize` + `ammoMaximum`.** The reserve excludes the
-  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The three journal
-  captures carry **nine** non-zero readings across seven distinct modules, and they are the
-  only external check either stat gets. Eight sit exactly at the catalogue figure — the
+  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The five journal
+  captures carry **18** non-zero readings across twelve distinct modules, and they are the
+  only external check either stat gets. Seventeen sit exactly at capacity — among them the
   Python Mk II's Enhanced AX Multi-Cannon 100/2100 and Guardian Shard Cannon 5/180, the
   Viper's two gimballed multi-cannons 90/2100, the Krait's two flak launchers 1/32 and two
-  point-defence turrets 12/10000. The ninth is the Viper's heat-sink launcher at 1/2
+  point-defence turrets 12/10000, and the Corvette's large gimballed cannon 5/100 under a
+  grade-5 Overcharged. The eighteenth is the Viper's heat-sink launcher at 1/2
   against a capacity of 1/3, which is a launcher that has fired one sink, and is the shape
   of the whole distinction: a reading is a **lower bound** on a capacity and never a
-  reading of one, so a rearm state cannot be read back as a catalogue figure. Pinned by
+  reading of one, so a rearm state cannot be read back as a catalogue figure. On the
+  Corsair the capacity a reading is checked against is the **engineered** one, since four
+  of its five ammunition-bearing weapons state an `AmmoClipSize` or `AmmoMaximum`
+  modifier. Pinned by
   `fixtures/ships/build-metrics.json` §ammunition.journalReadings. A module carrying a
   magazine but no reserve figure — the two Abrasion Blasters, and nothing else — is
   reported as unlimited; one carrying neither (the lasers) has no capacity to report. A
@@ -2285,7 +2295,7 @@ under, which is why several are cited above rather than copied.
   heavily **engineered** Corsair (36 `Modules` entries: six hardpoints, three shield
   boosters, an engineered overcharge drive, 144 t of cargo). Contributed **2026-08-08 UTC**
   by the repository owner. No upstream project is recorded for it — the same position as
-  the three other journal captures, and not a reason to leave it out; the loadout is
+  the Python Mk II and Corvette captures, and not a reason to leave it out; the loadout is
   Frontier game output redistributed under Frontier's media-usage terms. Stored SHA-256
   `b26450197e4521144a2c6450c0e28e283c424e806d42b335e147852933381c4b`. Its `ShipName`,
   `ShipIdent`, `ShipID` and `timestamp` are kept, as the other captures' are — they
@@ -2298,8 +2308,10 @@ under, which is why several are cited above rather than copied.
   stored file rather than to a file Frontier wrote. A capture that arrives as a file should
   be preferred to this one if the two ever conflict.
 
-  **It is the first engineered ground truth for the build metrics.** The other three
-  captures are stock, so nothing checked an engineered mass or jump range before. With its
+  **It is the ground truth for the build metrics under engineering.** The Krait Phantom,
+  Viper Mk IV and Python Mk II captures are stock, so it is the only one that checks an
+  engineered mass or jump range; the Corvette below is engineered too but pins no
+  metric. With its
   own aggregates stripped, this build recomputes to `UnladenMass` 641.9 (journal 641.900024)
   and `MaxJumpRange` 41.191542 (journal 41.191536, within 1e-4) — through a size-5 class-4
   **overcharge** drive under `FSD_LongRange` grade 5 with Mass Manager, three shield
@@ -2350,12 +2362,15 @@ under, which is why several are cited above rather than copied.
   and a full magazine of 5. See §Multi-cannon Overcharged under Engineering options for what
   that decides and what it leaves open.
 
-  **It disagrees with three catalogue base values**, which is a separate matter and is
+  **It disagrees with four catalogue base values**, which is a separate matter and is
   tracked at
   [#59](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/59): the game gives
   `Hpt_Cannon_Gimbal_Large` `damage` 37.421001 and `thermalLoad` 2.93 where this catalogue
-  stores 37.39 and 2.9, and `Hpt_BeamLaser_Gimbal_Huge` `thermalLoad` 10.62 where it stores
-  10.6. The other 51 base values the capture states match exactly.
+  stores 37.39 and 2.9, `Hpt_BeamLaser_Gimbal_Huge` `thermalLoad` 10.62 where it stores
+  10.6, and `Int_ShieldGenerator_Size7_Class5_Strong` `shieldBrokenRegenRate` 4.25 where it
+  stores 4.2. The capture states 71 distinct (module, journal `Label`) base values, 64 of
+  which name a field this catalogue holds; of those, 52 agree to the digit and eight more
+  to within the game's own float noise (`20.000004` for 20, `-39.999996` for −40).
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed

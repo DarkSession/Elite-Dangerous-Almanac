@@ -188,9 +188,10 @@ test('a build reports the capacity of every weapon it carries', () => {
 });
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
-    // A rearm state is a lower bound on a capacity, never a reading of one. Eight of the
-    // nine counts across the three captures happen to sit at capacity — that is what makes
-    // them a check on the catalogue — and the ninth is a launcher that has fired once.
+    // A rearm state is a lower bound on a capacity, never a reading of one. Seventeen of
+    // the eighteen counts across the five captures happen to sit at capacity — that is
+    // what makes them a check on the catalogue — and the eighteenth is a launcher that has
+    // fired once.
     const pinned = fixture.ammunition.journalReadings;
     const below: Record<string, unknown>[] = [];
     let readings = 0;
