@@ -4,6 +4,7 @@
  * @packageDocumentation
  */
 
+import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { availableBlueprintsFor, availableExperimentalsFor } from './loadout-engineering.js';
 import { effectiveModule } from './loadout-metrics.js';
 import type { OutfittingModule } from './modules.js';
@@ -176,6 +177,28 @@ export class FittedModule {
      */
     get effectiveStats(): OutfittingModule | null {
         return effectiveModule(this.#raw(), this.#currentStats());
+    }
+
+    /**
+     * How much ammunition this module holds when fully rearmed, post-engineering.
+     *
+     * @returns The magazine, the reserve behind it and the two together
+     * ({@link AmmunitionCapacity}), or `null` for a module that carries no ammunition —
+     * and for one the catalogues do not know.
+     * @remarks
+     * This is a **capacity**, not a rearm state: a build says how much a weapon can carry,
+     * while `AmmoInClip` / `AmmoInHopper` in a journal say what was loaded at the moment of
+     * capture. Those two are not modelled — see {@link LoadoutModule}.
+     * @example
+     * ```ts
+     * const ax = build.getFittedModule('LargeHardpoint1')!;
+     * ax.ammunition?.clipSize; // -> 100 rounds in the magazine
+     * ax.ammunition?.hopper;   // -> 2100 in reserve
+     * ax.ammunition?.total;    // -> 2200 aboard when fully rearmed
+     * ```
+     */
+    get ammunition(): AmmunitionCapacity | null {
+        return ammunitionCapacity(this.effectiveStats);
     }
 
     /**

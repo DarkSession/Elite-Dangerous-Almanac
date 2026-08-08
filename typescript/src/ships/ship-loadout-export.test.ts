@@ -494,24 +494,48 @@ test("a journal's own ammo counts check the catalogue's clip and hopper figures"
     // at capture time say anything — a rearm state of zero is a fact about the ship.
     const loaded = fixture.pythonMkII.ammunition.loaded;
     assert.ok(loaded.length, 'no ammunition pinned');
+    const build = ShipLoadout.fromLoadout(python);
     for (const expected of loaded) {
-        // Read off the raw capture, not the parsed build: `LoadoutModule` does not model
-        // the ammunition fields, so a round trip drops them — see
-        // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/56.
+        // The counts themselves are read off the raw capture: a rearm state is not part of
+        // a build, so `LoadoutModule` does not carry it. What the build answers is the
+        // capacity those full weapons happen to be sitting at.
         const fitted = pythonJournal.Modules.find(
             (m) => m.Item.toLowerCase() === expected.symbol.toLowerCase(),
         );
         assert.ok(fitted, `${expected.symbol} is not in the capture`);
         assert.equal(fitted.AmmoInClip, expected.AmmoInClip, expected.symbol);
         assert.equal(fitted.AmmoInHopper, expected.AmmoInHopper, expected.symbol);
-        const catalogued = module(expected.symbol);
-        assert.equal(catalogued.clipSize, expected.AmmoInClip, `${expected.symbol} clipSize`);
-        assert.equal(
-            catalogued.ammoMaximum,
-            expected.AmmoInHopper,
-            `${expected.symbol} ammoMaximum`,
+
+        const capacity = build.getFittedModule(fitted.Slot)!.ammunition;
+        assert.deepEqual(
+            capacity,
+            {
+                clipSize: expected.AmmoInClip,
+                hopper: expected.AmmoInHopper,
+                total: expected.AmmoInClip + expected.AmmoInHopper,
+                unlimited: false,
+            },
+            expected.symbol,
         );
     }
+});
+
+test('importing a journal drops its ammunition state', () => {
+    // Deliberate: `AmmoInClip` / `AmmoInHopper` say what was loaded at the instant of
+    // capture, which the build is not a record of. The capacity is on the fitted module.
+    const build = ShipLoadout.fromLoadout(python);
+    const event = build.toLoadoutEvent();
+    for (const exported of event.Modules) {
+        assert.ok(!('AmmoInClip' in exported), exported.Slot);
+        assert.ok(!('AmmoInHopper' in exported), exported.Slot);
+    }
+    const armed = fixture.pythonMkII.ammunition.loaded[0]!;
+    const fitted = build.getFittedModule(
+        pythonJournal.Modules.find((m) => m.Item.toLowerCase() === armed.symbol.toLowerCase())!
+            .Slot,
+    )!;
+    assert.ok(!('AmmoInClip' in fitted.raw));
+    assert.equal(fitted.ammunition?.clipSize, armed.AmmoInClip);
 });
 
 test('the jump figures for the anti-xeno journal build match the fixture', () => {

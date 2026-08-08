@@ -1,5 +1,5 @@
 {
-  "description": "Parity fixture for the ship-build metrics: the power budget and its priority groups, the shield and armour metrics with their stacked resistances, and weapon DPS. Covers fixtures/ships/slef-the-deep-black.json and an Anaconda assembled from the catalogues, plus the pure functions each metric is built from. Cross-language validation.",
+  "description": "Parity fixture for the ship-build metrics: the power budget and its priority groups, the shield and armour metrics with their stacked resistances, weapon DPS, and ammunition capacity. Covers fixtures/ships/slef-the-deep-black.json and an Anaconda assembled from the catalogues, plus the pure functions each metric is built from. Cross-language validation.",
   "deepBlack": {
     "build": "fixtures/ships/slef-the-deep-black.json",
     "power": {
@@ -208,6 +208,83 @@
       "continuous": false
     }
   ],
+  "ammunition": {
+    "note": "What a module holds when fully rearmed — a capacity, not a rearm state. `hopper` is the reserve behind the magazine and excludes it, exactly as a journal's AmmoInHopper does, so `total` is the two added. JSON cannot write infinity: an unlimited reserve is `null` here, and an implementation reports its own infinity for it. It is not only weapons — a launcher, a point defence turret, a shield cell bank and an AFMU all carry a reserve and are read the same way.",
+    "catalogue": [
+      {
+        "symbol": "Hpt_MultiCannon_Fixed_Small",
+        "clipSize": 100,
+        "hopper": 2100,
+        "total": 2200,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_ATMultiCannon_Fixed_Large_V2",
+        "clipSize": 100,
+        "hopper": 2100,
+        "total": 2200,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Large",
+        "clipSize": 5,
+        "hopper": 180,
+        "total": 185,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_ChaffLauncher_Tiny",
+        "clipSize": 1,
+        "hopper": 10,
+        "total": 11,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
+        "clipSize": 12,
+        "hopper": 10000,
+        "total": 10012,
+        "unlimited": false
+      },
+      {
+        "symbol": "Int_ShieldCellBank_Size3_Class3",
+        "clipSize": 1,
+        "hopper": 3,
+        "total": 4,
+        "unlimited": false
+      },
+      {
+        "symbol": "Int_Repairer_Size3_Class1",
+        "clipSize": 0,
+        "hopper": 3600,
+        "total": 3600,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
+        "clipSize": 1,
+        "hopper": null,
+        "total": null,
+        "unlimited": true
+      }
+    ],
+    "noAmmunition": [
+      "Hpt_BeamLaser_Fixed_Small",
+      "Hpt_PulseLaser_Gimbal_Medium",
+      "Hpt_MiningLaser_Fixed_Small",
+      "Int_DroneControl_Collection_Size3_Class3"
+    ],
+    "engineered": {
+      "note": "A small fixed cannon under High Capacity, at full quality. Grade 5 doubles both figures exactly; grade 3 lands fractional and nothing rounds it, because no source says which way the game does — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
+      "module": "Hpt_Cannon_Fixed_Small",
+      "blueprint": "Weapon_HighCapacity",
+      "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
+      "rolls": [
+        { "grade": 5, "quality": 1, "clipSize": 12, "hopper": 240, "total": 252 },
+        { "grade": 3, "quality": 1, "clipSize": 10.08, "hopper": 201.6, "total": 211.68 }
+      ]
+    }
+  },
   "functions": {
     "powerBudget": {
       "available": 6,

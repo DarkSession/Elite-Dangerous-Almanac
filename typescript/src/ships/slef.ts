@@ -91,7 +91,18 @@ export interface ModuleEngineering {
     readonly Modifiers?: readonly EngineeringModifier[];
 }
 
-/** One fitted module in a `Loadout` event. */
+/**
+ * One fitted module in a `Loadout` event.
+ *
+ * @remarks
+ * **Ammunition state is not carried.** A journal writes `AmmoInClip` and `AmmoInHopper`
+ * on every weapon that takes ammunition; both are dropped on import and never written
+ * back out, because they are the ship's rearm state at the instant of capture rather than
+ * part of the build — the same reason a re-export recomputes a build's credit figures
+ * instead of echoing the ones the capture happened to carry. What a fitted weapon *can*
+ * hold is a property of the build, and `./ammunition` answers it: `ammunitionCapacity`,
+ * or `FittedModule.ammunition` for a fitted one, post-engineering.
+ */
 export interface LoadoutModule {
     /** The slot it occupies, e.g. `"FrameShiftDrive"`, `"Slot07_Size5"`. */
     readonly Slot: string;

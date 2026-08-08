@@ -38,8 +38,9 @@
  *   data-free module: {@link powerBudget} (what the plant makes against what the build
  *   draws, by priority group), {@link shieldMetrics} and {@link armourMetrics} (strength,
  *   hit points and the resistances behind them, stacked by {@link stackShieldResistance}
- *   / {@link stackArmourResistance}), and {@link weaponMetrics} (DPS, sustained DPS,
- *   capacitor draw and heat).
+ *   / {@link stackArmourResistance}), {@link weaponMetrics} (DPS, sustained DPS,
+ *   capacitor draw and heat) and {@link ammunitionCapacity} (the magazine and the reserve
+ *   behind it, for anything that carries rounds).
  * - **Engineering** — {@link computeModifiers} applies a {@link BLUEPRINTS} recipe and
  *   an {@link EXPERIMENTAL_EFFECTS} entry; {@link ENGINEERING_OPTION_GROUPS} answers
  *   what a module *can* be engineered with, and {@link PRE_ENGINEERED_MODULES} covers
@@ -168,6 +169,7 @@ export {
     type WeaponMetrics,
     type DamageSplit,
 } from './weapons.js';
+export { ammunitionCapacity, type AmmunitionStats, type AmmunitionCapacity } from './ammunition.js';
 
 // ── Build editor: slot model (per-hull slot layouts live on each `Ship`) ─────
 export {

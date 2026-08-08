@@ -79,6 +79,15 @@ export interface WeaponStats {
     readonly chargeTime?: number;
     /** Rounds in a clip. Absent means the weapon never stops to reload. */
     readonly clipSize?: number;
+    /**
+     * Reserve rounds behind the clip. Absent means nothing limits them.
+     *
+     * @remarks
+     * No per-second figure reads it — a reserve says how long a weapon can keep firing,
+     * not how hard. It is carried here so `weaponStatsFor` hands
+     * {@link ammunitionCapacity} everything it needs from one record.
+     */
+    readonly ammoMaximum?: number;
     /** Seconds to reload a clip. Defaults to `0`. */
     readonly reloadTime?: number;
     /** Weapons-capacitor draw per shot (per second when continuous), in MW. Defaults to `0`. */

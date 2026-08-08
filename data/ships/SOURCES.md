@@ -1984,8 +1984,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
 ## Build-metric algorithms (power, shields, armour, weapons)
 
 - **Files:** `typescript/src/ships/power.ts`, `shields.ts`, `armour.ts`,
-  `resistances.ts`, `weapons.ts` and the `ShipLoadout` methods that feed them, validated
-  by `fixtures/ships/build-metrics.json`.
+  `resistances.ts`, `weapons.ts`, `ammunition.ts` and the `ShipLoadout` methods that feed
+  them, validated by `fixtures/ships/build-metrics.json`.
 - **Source of the formulas:** [EDCD/Coriolis](https://github.com/EDCD/coriolis)
   (**commit `68c042ca6e3db62372cbbb2077cf972345511712`**, acquired 2026-08-01 UTC) —
   `src/app/shipyard/Calculations.js` (`shieldStrength`, `shieldMetrics`,
@@ -2015,6 +2015,18 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   it is verified against the shared `slef-the-deep-black.json` fixture, whose engineered
   armour carries exactly those values. `typescript/src/ships/module-stat-labels.ts`
   holds the per-label unit and algebra table.
+- **Ammunition capacity is `clipSize` + `ammoMaximum`, and neither is rounded.** The
+  reserve excludes the magazine, exactly as a journal's `AmmoInHopper` excludes
+  `AmmoInClip` — the Python Mk II capture reads 100/2100 on its Enhanced AX Multi-Cannon
+  against catalogue figures of the same pair, which is the only external check either stat
+  gets. Both are multiplicative under engineering, so a roll that is not a whole multiple
+  leaves a fraction (a small cannon under High Capacity at grade 3 holds 10.08), and the
+  game loads whole rounds. Nothing here rounds, because no source states which way the
+  game does; `sustainedFireFactor` in `weapons.ts` has to pick, and rounds the clip up.
+  A capture of an engineered, fully rearmed weapon would settle it —
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>. A module carrying a
+  magazine but no reserve figure (the mining Abrasion Blaster) is reported as unlimited
+  rather than as empty; one carrying neither (the lasers) has no capacity to report.
 
 ## Jump-range and fuel algorithm
 
@@ -2163,11 +2175,16 @@ under, which is why several are cited above rather than copied.
   those figures. See
   <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12>.
 
-  **What it uncovered:** `LoadoutModule` models no ammunition, so a journal round trip
-  drops `AmmoInClip` and `AmmoInHopper` on every weapon that carries them. The other two
-  captures report zero on every weapon, so this capture is the first to show it —
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/56>. The fixture reads
-  those two fields off the stored capture rather than off a parsed build for that reason.
+  **Its ammunition state is deliberately not carried.** `LoadoutModule` models neither
+  `AmmoInClip` nor `AmmoInHopper`, so importing this capture drops both and a re-export
+  never writes them: they say how much was left in the magazine at the instant of capture,
+  which is the ship's rearm state and not part of the build — the same footing as a
+  capture's own credit figures, which a re-export recomputes rather than echoes. Carrying
+  them was considered and rejected on those grounds; what a fitted weapon *can* hold is a
+  property of the build, and `ammunitionCapacity` in `ships/ammunition` reports it from
+  `clipSize` and `ammoMaximum`, post-engineering. The fixture therefore reads the two
+  counts off the stored capture, and checks them against the capacity a parsed build
+  reports for the same weapons — which agree here because both are fully rearmed.
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed

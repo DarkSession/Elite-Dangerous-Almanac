@@ -105,6 +105,7 @@ import { powerBudget, type PowerBudget, type PowerConsumer } from './power.js';
 import { shieldMetrics, type ShieldMetrics } from './shields.js';
 import { armourMetrics, type ArmourMetrics } from './armour.js';
 import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.js';
+import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { FittedModule } from './fitted-module.js';
 import { LoadoutSlot } from './loadout-slot.js';
 import { deepFreeze } from '../deep-freeze.js';
@@ -159,6 +160,11 @@ export interface FittedWeaponMetrics {
     readonly enabled: boolean;
     /** What this weapon does per second, post-engineering. */
     readonly metrics: WeaponMetrics;
+    /**
+     * How many rounds it holds when fully rearmed, post-engineering — `null` for a laser,
+     * which carries none. A capacity, not a rearm state: see {@link FittedModule.ammunition}.
+     */
+    readonly ammunition: AmmunitionCapacity | null;
 }
 
 /** A build's firepower: every fitted weapon, and the totals across the enabled ones. */
@@ -1539,6 +1545,7 @@ export class ShipLoadout {
      * guns.total.energyPerSecond;          // -> MW asked of the WEP capacitor
      * guns.total.powerDraw;                // -> MW asked of the power plant when deployed
      * guns.weapons[0]?.metrics.damageByType.thermal;
+     * guns.weapons[0]?.ammunition?.total;  // -> rounds aboard when fully rearmed
      * ```
      */
     weaponMetrics(): BuildWeaponMetrics {
@@ -1553,6 +1560,7 @@ export class ShipLoadout {
                 name: record?.name ?? module.Item,
                 enabled: module.On !== false,
                 metrics: weaponMetrics(stats),
+                ammunition: ammunitionCapacity(stats),
             });
         }
         return {

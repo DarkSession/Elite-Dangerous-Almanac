@@ -859,8 +859,18 @@ guns.total.energyPerSecond; // -> MW drawn from the WEP capacitor
 guns.total.heatPerSecond; // -> heat generated
 guns.total.powerDraw; // -> MW asked of the power plant when deployed
 guns.total.damageByType.thermal; // -> the thermal share of that DPS
-guns.weapons[0]; // -> { slot, symbol, name, enabled, metrics }
+guns.weapons[0]; // -> { slot, symbol, name, enabled, metrics, ammunition }
+guns.weapons[0]?.ammunition?.total; // -> rounds aboard when fully rearmed
 ```
+
+**Ammunition is a capacity, not a rearm state.** A build says what a weapon can hold —
+`ammunition` above, or `build.getFittedModule(slot)?.ammunition`, giving the magazine
+(`clipSize`), the reserve behind it (`hopper`, which excludes the magazine exactly as a
+journal's `AmmoInHopper` does) and the two together. A journal's `AmmoInClip` /
+`AmmoInHopper` say what was loaded at the instant of capture, which is not part of a
+build: they are dropped on import and never written back out. Launchers, point defence,
+shield cell banks and AFMUs answer the same way; a laser has nothing to count and reports
+`null`.
 
 **Shields scale with the hull's mass, not the build's** — fitting more modules never
 weakens them — and a generator will not engage at all around a hull heavier than its
@@ -877,6 +887,7 @@ import on its own:
 | `ships/shields`     | `shieldMetrics`, `shieldStrength`, `shieldMassCurveMultiplier`        |
 | `ships/armour`      | `armourMetrics` — hit points, reinforcement, resistances              |
 | `ships/weapons`     | `weaponMetrics`, `damagePerSecond`, `damageFalloff`, `splitDamage`    |
+| `ships/ammunition`  | `ammunitionCapacity` — magazine, reserve and the two together         |
 | `ships/resistances` | `stackShieldResistance`, `stackArmourResistance`, `systemsResistance` |
 
 ```ts
