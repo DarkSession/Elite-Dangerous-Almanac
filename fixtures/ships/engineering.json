@@ -204,6 +204,111 @@
       { "symbol": "Hpt_BeamLaser_Fixed_Small", "blueprint": "MC_Overcharged" }
     ]
   },
+  "clipRounding": {
+    "description": "A magazine holds whole rounds, and a weapon that fires in bursts holds whole bursts, so a computed clip is rounded up to a multiple of the burst size. That is EDSY's rule (`ceil(ammoclip / bstsize) * bstsize`, applied where the blueprint roll is stored), and it reduces to Coriolis's plain round-up (`Module.getClip`, \"Clip size is always rounded up\") wherever a weapon fires one round at a time. It belongs where the roll is computed rather than where a stat is read, because a journal states the engineered clip itself and that figure is the game's own. The reserve is rounded by neither registry and keeps its fraction — see the 302.4 below, and https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
+    "cases": [
+      {
+        "note": "A weapon that fires one round at a time: the burst step is inert and the clip simply rounds up.",
+        "symbol": "Hpt_Cannon_Fixed_Small",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 3,
+        "quality": 1,
+        "baseAmmoClipSize": 6,
+        "unroundedAmmoClipSize": 10.08,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 11,
+        "AmmoMaximum": 201.6
+      },
+      {
+        "note": "Double Shot scales the clip and gives the weapon a two-round burst in the same roll, so 4.02 rounds to a whole burst — 6, where a bare round-up would say 5. The burst is the recipe's own.",
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "blueprint": "Weapon_DoubleShot",
+        "grade": 1,
+        "quality": 1,
+        "baseAmmoClipSize": 3,
+        "unroundedAmmoClipSize": 4.02,
+        "burstSize": 2,
+        "burstFrom": "recipe",
+        "AmmoClipSize": 6
+      },
+      {
+        "note": "A Concord Cannon already fires three-round bursts and no recipe names them, so the burst comes from the weapon's own record: High Capacity's 12.24 becomes 15, where a bare round-up would say 13. This is the case that separates EDSY's rule from Coriolis's.",
+        "symbol": "Hpt_Cannon_Gimbal_Medium_Burst",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 1,
+        "quality": 1,
+        "baseAmmoClipSize": 9,
+        "unroundedAmmoClipSize": 12.24,
+        "burstSize": 3,
+        "burstFrom": "module",
+        "AmmoClipSize": 15,
+        "AmmoMaximum": 408
+      },
+      {
+        "note": "The same fragment cannon under High Capacity: the clip rounds up and the reserve does not.",
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 3,
+        "quality": 1,
+        "baseAmmoClipSize": 3,
+        "unroundedAmmoClipSize": 5.04,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 6,
+        "AmmoMaximum": 302.4
+      },
+      {
+        "note": "The registries state their multipliers to three decimals, so Drag Munitions' +66.7% computes 10.002 on a 6-round rack where the recipe means 10. A figure within that precision of a whole magazine is snapped to it before the round-up, or the transcription noise buys a whole extra round. The reserve carries the same noise and keeps it: nothing rounds a reserve, so nothing amplifies the noise there, and 30.006 is reported as it lands.",
+        "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+        "blueprint": "SeekerMissileRack_Drag",
+        "grade": 2,
+        "quality": 1,
+        "baseAmmoClipSize": 6,
+        "unroundedAmmoClipSize": 10.002,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 10,
+        "AmmoMaximum": 30.006
+      },
+      {
+        "note": "A quality roll between two published legs is a real number with no whole magazine behind it, so nothing is snapped and the round-up stands: 185.12 rounds load as 186. This is the case that separates recovering a published figure from swallowing a fraction the recipe means — the snap applies to a stated multiplier only.",
+        "symbol": "Hpt_MultiCannon_Fixed_Small",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "quality": 0.07,
+        "baseAmmoClipSize": 100,
+        "unroundedAmmoClipSize": 185.12,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 186
+      },
+      {
+        "note": "The round-up runs in one direction, not in the recipe's: a multi-cannon's Overcharged cuts the clip, and 76.5 rounds to 77 rather than to 76.",
+        "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+        "blueprint": "MC_Overcharged",
+        "grade": 5,
+        "quality": 1,
+        "baseAmmoClipSize": 90,
+        "unroundedAmmoClipSize": 76.5,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 77
+      },
+      {
+        "note": "A roll that moves the clip nowhere leaves it alone, even when the stock figure is not a whole number of bursts. High Capacity's grade-1 leg starts at +0%, and this accelerator's 18 rounds are 4.5 of its 4-round bursts; they stay 18. Reachable through `computeModifiers` only — no engineering menu offers this weapon anything, so `applyBlueprint` refuses it.",
+        "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 1,
+        "quality": 0,
+        "baseAmmoClipSize": 18,
+        "unroundedAmmoClipSize": 18,
+        "burstSize": 4,
+        "burstFrom": "module",
+        "AmmoClipSize": 18
+      }
+    ]
+  },
   "journalSpellings": {
     "description": "Journal `EngineerModifications` spellings read off a real `StoredModules` capture (521 stored modules, contributed by the repository owner 2026-08-07 UTC; scrubbed of the commander, carrier and market it came from, which say nothing about the game). Of the 46 distinct spellings in that capture, 43 resolve against `BLUEPRINTS` and the other three are the `Decorative_*` liveries, which name no recipe at all and are pinned in \u00a7decorativeModifications. These are the cases worth pinning: an id whose key is not what the game writes, and one whose journal spelling the catalogue had missed entirely. `resolved` is what `resolveBlueprintForModule` answers \u2014 the `BLUEPRINTS` key the fitted module actually rolls, returned in the caller\u2019s own casing, since every lookup downstream matches case-insensitively.",
     "cases": [

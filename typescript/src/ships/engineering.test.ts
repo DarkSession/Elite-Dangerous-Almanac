@@ -599,6 +599,84 @@ test('an overwrite recipe applies to a stat the module does not carry', () => {
     assert.equal(modifiers.find((m) => m.Label === 'BurstRateOfFire')?.Value, 14);
 });
 
+test('an engineered clip is rounded up to a whole burst, and the reserve is not rounded', () => {
+    for (const pinned of fixture.clipRounding.cases) {
+        const weapon = getModuleBySymbol(pinned.symbol, ALL_MODULES)!;
+        assert.equal(weapon.clipSize, pinned.baseAmmoClipSize, pinned.symbol);
+
+        const features = getBlueprintGrade(pinned.blueprint, pinned.grade)!;
+        const modifiers = computeModifiers(baseStats(weapon), features, pinned.quality);
+        const label = `${pinned.symbol} ${pinned.blueprint} g${pinned.grade}`;
+        assert.equal(modFor(modifiers, 'AmmoClipSize'), pinned.AmmoClipSize, label);
+
+        // The recipe's own arithmetic, before anything rounds it — the figure the fixture
+        // pins as `unroundedAmmoClipSize`, so the rounding is visibly doing work.
+        const scale = features.find((f) => f.label === 'AmmoClipSize')!;
+        const roll = scale.min + (scale.max - scale.min) * pinned.quality;
+        assert.ok(near(pinned.baseAmmoClipSize * (1 + roll), pinned.unroundedAmmoClipSize), label);
+
+        if (pinned.AmmoClipSize === pinned.baseAmmoClipSize) {
+            // A roll that moves the clip nowhere leaves it exactly where it was, whether or
+            // not that is a whole number of bursts.
+            assert.equal(pinned.unroundedAmmoClipSize, pinned.baseAmmoClipSize, label);
+        } else {
+            // What the rule says, stated independently of how it is implemented: a whole
+            // number of bursts, no smaller than the roll, and no further from it than the
+            // registries' own three-decimal precision can account for.
+            const bursts = pinned.AmmoClipSize / pinned.burstSize;
+            assert.equal(bursts, Math.round(bursts), `${label}: not a whole number of bursts`);
+            // Never below the roll, bar what the multiplier's own third decimal is worth
+            // on this weapon's clip — the only fraction a published figure may be out by.
+            assert.ok(
+                pinned.AmmoClipSize >=
+                    pinned.unroundedAmmoClipSize - pinned.baseAmmoClipSize * 5e-4,
+                `${label}: rounded below the roll`,
+            );
+            assert.ok(
+                pinned.AmmoClipSize - pinned.unroundedAmmoClipSize < pinned.burstSize,
+                `${label}: rounded up by a whole burst or more`,
+            );
+        }
+        // Where the burst comes from: the recipe writes one (Double Shot), the weapon
+        // already fires in bursts (a Concord Cannon), or nothing does and the step is inert.
+        const fromRecipe = modFor(modifiers, 'BurstSize');
+        const fromModule = weapon.burstRounds;
+        if (pinned.burstFrom === 'recipe') assert.equal(fromRecipe, pinned.burstSize, label);
+        if (pinned.burstFrom === 'module') {
+            assert.equal(fromRecipe, undefined, label);
+            assert.equal(fromModule, pinned.burstSize, label);
+        }
+        if (pinned.burstFrom === 'none') {
+            assert.equal(fromRecipe, undefined, label);
+            assert.equal(fromModule, undefined, label);
+            assert.equal(pinned.burstSize, 1, label);
+        }
+        if ('AmmoMaximum' in pinned) {
+            assert.equal(modFor(modifiers, 'AmmoMaximum'), pinned.AmmoMaximum, label);
+        }
+    }
+});
+
+test('a clip a recipe overwrites is published, not computed, and is left alone', () => {
+    // The two Guardian Plasma Launchers are the only ammunition overwrites in the
+    // catalogues and neither fires in bursts, so nothing in the data reaches this. It is
+    // the same exclusion the snap makes: a stated figure is not a product to be corrected.
+    const overwrite = [{ label: 'AmmoClipSize', method: 'overwrite', min: 20, max: 20 }] as const;
+    assert.equal(
+        modFor(computeModifiers({ AmmoClipSize: 12, BurstSize: 3 }, overwrite), 'AmmoClipSize'),
+        20,
+    );
+    // A clip the recipe *computes* on the same weapon still loads whole bursts: 12 × 1.36
+    // is 16.32, and three-round bursts make that 18.
+    const scaled = [
+        { label: 'AmmoClipSize', method: 'multiplicative', min: 0.36, max: 0.36 },
+    ] as const;
+    assert.equal(
+        modFor(computeModifiers({ AmmoClipSize: 12, BurstSize: 3 }, scaled), 'AmmoClipSize'),
+        18,
+    );
+});
+
 test('the base stats a recipe scales come back in the journal spelling for the family', () => {
     // One catalogue field can answer to more than one journal label, and which label a
     // stat arrives under is a fact about the module's family, not about the stat. A

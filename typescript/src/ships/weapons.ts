@@ -79,6 +79,15 @@ export interface WeaponStats {
     readonly chargeTime?: number;
     /** Rounds in a clip. Absent means the weapon never stops to reload. */
     readonly clipSize?: number;
+    /**
+     * Reserve rounds behind the clip. Absent means nothing limits them.
+     *
+     * @remarks
+     * No per-second figure reads it — a reserve says how long a weapon can keep firing,
+     * not how hard. It is carried here so `weaponStatsFor` hands
+     * {@link ammunitionCapacity} everything it needs from one record.
+     */
+    readonly ammoMaximum?: number;
     /** Seconds to reload a clip. Defaults to `0`. */
     readonly reloadTime?: number;
     /** Weapons-capacitor draw per shot (per second when continuous), in MW. Defaults to `0`. */
@@ -214,8 +223,12 @@ export function splitDamage(damage: number, distribution?: DamageDistribution): 
  *
  * @param weapon - The weapon's stats.
  * @returns A factor in `(0, 1]`: `1` for anything that never stops to reload, less for
- * a weapon whose clip runs dry. A fractional clip left by engineering is rounded **up**,
- * as the game loads whole rounds.
+ * a weapon whose clip runs dry. A fractional clip is held to whole rounds, rounding **up**
+ * — which only a hand-built or journal-stated figure can be, since an engineered clip is
+ * rounded to a whole *burst* where the roll is computed (`./engineering`). On a burst
+ * weapon the two rules can differ by a round; the reasoning is recorded under
+ * §Build-metric algorithms in
+ * [the ships provenance notes](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  * @remarks
  * A clip's worth of fire takes `(clip − burst) / rateOfFire` seconds plus the time to
  * finish the last burst, then the reload; the sustained rate is the clip divided by
@@ -228,7 +241,10 @@ export function splitDamage(damage: number, distribution?: DamageDistribution): 
  */
 export function sustainedFireFactor(weapon: WeaponStats): number {
     const rateOfFire = weapon.rateOfFire;
-    // Engineering can leave a fractional clip; the game loads whole rounds and rounds up.
+    // A stat that reaches here is already whole — an engineered clip is rounded up to a
+    // whole burst where the roll is computed (`./engineering`), and a journal states its
+    // own. This holds a hand-built fraction to whole rounds, the way Coriolis's `getClip`
+    // does, rather than letting it into the reload cycle.
     const clip = weapon.clipSize === undefined ? undefined : Math.ceil(weapon.clipSize);
     if (!rateOfFire || !clip || clip <= 0) return 1;
     const burst = weapon.burstRounds && weapon.burstRounds > 0 ? weapon.burstRounds : 1;

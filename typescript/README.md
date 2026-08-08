@@ -108,7 +108,8 @@ build.armourMetrics().hitPoints; // -> 819.72
 // Weapons are totalled the same way. The figures above are a real exploration build,
 // which carries no hardpoints, so its own weapon totals are 0 — an armed build reports:
 build.weaponMetrics().total.damagePerSecond; // -> DPS, engineering applied
-build.weaponMetrics().weapons; // -> the same figures per hardpoint
+build.weaponMetrics().weapons; // -> the same figures per hardpoint, plus `ammunition`
+build.weaponMetrics().weapons[0]?.ammunition?.total; // -> rounds aboard when fully rearmed
 ```
 
 Resistances come back as **fractions**, not percentages: `-0.2` is a 20% weakness, and
@@ -121,8 +122,15 @@ aggregate that cannot be updated safely is discarded and recomputed.
 `ShipLoadout` pulls in every catalogue (~696 KB minified, ~82 KB gzipped) because it
 must resolve any module id. When you only need one answer, the calculations are also
 data-free leaf modules of roughly 0.5–3 KB each: `ships/jump-range`, `ships/power`,
-`ships/shields`, `ships/armour`, `ships/weapons`, `ships/resistances`, and
-`ships/slef` for parsing alone.
+`ships/shields`, `ships/armour`, `ships/weapons`, `ships/ammunition`,
+`ships/resistances`, and `ships/slef` for parsing alone.
+
+**Ammunition is a capacity, not a rearm state.** `ammunition` gives the magazine, the
+reserve behind it (which excludes the magazine, as a journal's `AmmoInHopper` does) and
+the two together; a journal's own `AmmoInClip` / `AmmoInHopper` are dropped on import,
+because they say what was loaded at the instant of capture. An engineered clip holds
+whole rounds — whole bursts on a burst weapon — while an engineered reserve can come back
+fractional, so round it yourself if you are rendering `hopper` or `total`.
 
 ## Four things worth knowing before you start
 

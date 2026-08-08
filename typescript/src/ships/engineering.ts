@@ -191,7 +191,9 @@ const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;
  *
  * @param base - The module's base stat values, keyed by journal Modifier Label (only
  * the labels present here can be modified — a contribution to an absent stat is
- * skipped).
+ * skipped). Two labels are also *read* without being modified: `Range` resolves Long
+ * Range's falloff flag, and `BurstSize` rounds an engineered clip to whole bursts, so a
+ * partial `base` gets a plain round-up on a weapon that fires in bursts.
  * @param features - The blueprint grade's features (from {@link getBlueprintGrade}).
  * @param quality - The engineering quality roll, `0`–`1`. Defaults to `1` (best roll).
  * @param experimental - The experimental effect's contributions (from
@@ -212,16 +214,26 @@ export function computeModifiers(
     const roll = quality;
     // Gather every contribution per label, keeping each one's own method so a
     // blueprint and an experimental targeting the same label can apply differently.
-    const byLabel = new Map<string, { method: ModifierMethod; value: number }[]>();
-    const add = (label: string, method: ModifierMethod, value: number) => {
+    const byLabel = new Map<string, { method: ModifierMethod; value: number; stated: boolean }[]>();
+    const add = (label: string, method: ModifierMethod, value: number, stated: boolean) => {
         const list = byLabel.get(label) ?? [];
-        list.push({ method, value });
+        list.push({ method, value, stated });
         byLabel.set(label, list);
     };
-    for (const f of features) add(f.label, f.method, f.min + (f.max - f.min) * roll);
-    for (const e of experimental ?? []) add(e.label, e.method, e.value);
+    // `stated` marks a contribution the registry publishes as a number, rather than one
+    // interpolated between two of them — see `snapToStatedWhole`.
+    for (const f of features) {
+        add(
+            f.label,
+            f.method,
+            f.min + (f.max - f.min) * roll,
+            f.min === f.max || roll === 0 || roll === 1,
+        );
+    }
+    for (const e of experimental ?? []) add(e.label, e.method, e.value, true);
 
     const modifiers: EngineeringModifier[] = [];
+    let clipIsOverwritten = false;
     for (const [label, contributions] of byLabel) {
         const original = base[label];
         const overwrite = contributions.find((c) => c.method === 'overwrite');
@@ -260,6 +272,15 @@ export function computeModifiers(
             value = (factor - 1) * multiplierBase;
         }
         if (overwrite) value = overwrite.value;
+        // A count of rounds is where a published multiplier's own rounding shows. An
+        // overwrite is a published figure rather than a product, so it is left alone —
+        // by the round-up below as well as by the snap.
+        if (label === 'AmmoClipSize') {
+            if (overwrite) clipIsOverwritten = true;
+            else if (original !== undefined && contributions.every((c) => c.stated)) {
+                value = snapToStatedWhole(value, original);
+            }
+        }
         modifiers.push({
             Label: label,
             Value: round6(value),
@@ -271,7 +292,80 @@ export function computeModifiers(
                 : { OriginalValue: original ?? 0 }),
         });
     }
-    return resolveFalloffFromRange(modifiers, base);
+    const resolved = resolveFalloffFromRange(modifiers, base);
+    return clipIsOverwritten ? resolved : roundClipToWholeBursts(resolved, base);
+}
+
+/**
+ * Round an engineered clip **up** to a multiple of the burst size: a recipe scales the
+ * clip by an arbitrary factor — High Capacity at grade 3 takes a small cannon's 6 rounds
+ * to 10.08 — and 10.08 rounds is not something a ship can load.
+ *
+ * The burst size is the recipe's own where it sets one, and otherwise the weapon's:
+ * Double Shot gives a fragment cannon a two-round burst *and* scales the clip in the same
+ * roll, so its 3 rounds become 6 rather than the 5 a bare round-up gives, while a Concord
+ * Cannon's own three-round burst takes High Capacity's 12.24 to 15 rather than 13.
+ *
+ * Only a *computed* clip is rounded, and only in the direction the roll already moved it.
+ * A stock clip is untouched — the Mk II Plasma Shock Accelerator's 18 rounds are not a
+ * whole number of its 4-round bursts, and stay 18 — and so is a clip a recipe **overwrites**
+ * or a journal states, since either figure is published rather than computed.
+ *
+ * @remarks
+ * Reference: EDSY by taleden (CC BY-NC 4.0), `edsy.js` — "when modifying clip size, round
+ * up to a multiple of burst size", `ceil(ammoclip / bstsize) * bstsize`, applied when the
+ * blueprint roll is stored. Coriolis rounds the clip up too, without the burst step
+ * (`Module.getClip`, "Clip size is always rounded up"), so the two agree wherever a weapon
+ * fires one round at a time and EDSY is followed where they differ. The **reserve** is
+ * rounded by neither, and is not rounded or snapped here either — it is reported exactly as
+ * its multiplier gives it. No reading of Frontier's own behaviour backs any of this:
+ * <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
+ */
+function roundClipToWholeBursts(
+    modifiers: EngineeringModifier[],
+    base: Readonly<Record<string, number>>,
+): EngineeringModifier[] {
+    const clip = modifiers.find((m) => m.Label === 'AmmoClipSize');
+    // Nothing to round, and nothing to round *for*: a recipe leg that leaves the clip where
+    // it was — High Capacity's grade-1 minimum roll is +0% — is not a reason to move it.
+    if (!clip?.Value || clip.Value === clip.OriginalValue) return modifiers;
+    const burst = modifiers.find((m) => m.Label === 'BurstSize')?.Value || base['BurstSize'] || 1;
+    const rounded = Math.ceil(clip.Value / burst) * burst;
+    if (rounded === clip.Value) return modifiers;
+    return modifiers.map((m) => (m === clip ? { ...m, Value: rounded } : m));
+}
+
+/**
+ * Recover the whole magazine a **published** multiplier means, where its stated precision
+ * is all that stands between the two.
+ *
+ * A registry states a multiplier to three or four decimals, so a leg meant to add two
+ * thirds is written `0.667`: a 6-round Seeker Missile Rack under Drag Munitions computes
+ * 10.002 rounds, and the recipe means 10. That thousandth matters because the clip is then
+ * rounded **up** — it would buy a whole extra round, a whole extra *burst* on a burst
+ * weapon, and it grows the community-goal Fragment Cannon's shipped magazine from 8 to 10 (its authored `1.6667`
+ * scales a 3-round clip to 8.0001).
+ *
+ * **The clip alone is snapped, because the clip alone is rounded.** Nothing rounds a
+ * reserve, so nothing amplifies the same noise there and a reserve is reported exactly as
+ * its multiplier gives it — 30.006 rounds on that rack — which is what both registries do.
+ *
+ * Two things keep this from eating a fraction a recipe means:
+ *
+ * - **The tolerance is what the data's precision is worth**: half a unit in the third
+ *   decimal of the multiplier, scaled by the base clip it applies to. That is 0.003 rounds
+ *   on a 6-round clip, against the 0.02 that Double Shot's 4.02 really adds — and clips are
+ *   small enough (100 rounds at the widest) that the band stays a fraction of a round.
+ * - **Only a stated multiplier is snapped.** A quality roll between two published legs is a
+ *   real number with no whole magazine behind it: a small multi-cannon at High Capacity
+ *   grade 5 and quality 0.07 holds 185.12 rounds, which means 186 and is left to round up.
+ *   An overwrite is skipped for the same reason — it is a figure, not a product.
+ *
+ * Snapping is not rounding: it recovers what the registry published.
+ */
+function snapToStatedWhole(value: number, base: number): number {
+    const whole = Math.round(value);
+    return Math.abs(value - whole) <= Math.abs(base) * 5e-4 ? whole : value;
 }
 
 /**

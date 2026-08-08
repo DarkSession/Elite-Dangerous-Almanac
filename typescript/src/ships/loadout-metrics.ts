@@ -391,6 +391,7 @@ const WEAPON_FIELDS = [
     'burstRateOfFire',
     'chargeTime',
     'clipSize',
+    'ammoMaximum',
     'reloadTime',
     'distributorDraw',
     'thermalLoad',

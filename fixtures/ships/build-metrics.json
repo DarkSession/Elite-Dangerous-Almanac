@@ -1,5 +1,5 @@
 {
-  "description": "Parity fixture for the ship-build metrics: the power budget and its priority groups, the shield and armour metrics with their stacked resistances, and weapon DPS. Covers fixtures/ships/slef-the-deep-black.json and an Anaconda assembled from the catalogues, plus the pure functions each metric is built from. Cross-language validation.",
+  "description": "Parity fixture for the ship-build metrics: the power budget and its priority groups, the shield and armour metrics with their stacked resistances, weapon DPS, and ammunition capacity. Covers fixtures/ships/slef-the-deep-black.json and an Anaconda assembled from the catalogues, plus the pure functions each metric is built from. Cross-language validation.",
   "deepBlack": {
     "build": "fixtures/ships/slef-the-deep-black.json",
     "power": {
@@ -208,6 +208,311 @@
       "continuous": false
     }
   ],
+  "ammunition": {
+    "note": "What a module holds when fully rearmed — a capacity, not a rearm state. `hopper` is the reserve behind the magazine and excludes it, exactly as a journal's AmmoInHopper does, so `total` is the two added. JSON cannot write infinity: an unlimited reserve is `null` here and `unlimited` is true, and an implementation reports its own infinity for it — JavaScript's `JSON.stringify` writes that back as `null`, Python's `json.dumps` writes the non-standard token `Infinity`, so the two agree on the value and not on its serialization. A reserve of zero is a different answer and is written as zero. It is not only weapons — a launcher, a point defence turret, a shield cell bank and an AFMU all carry a reserve and are read the same way.",
+    "catalogue": [
+      {
+        "symbol": "Hpt_MultiCannon_Fixed_Small",
+        "clipSize": 100,
+        "hopper": 2100,
+        "total": 2200,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_ATMultiCannon_Fixed_Large_V2",
+        "clipSize": 100,
+        "hopper": 2100,
+        "total": 2200,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Large",
+        "clipSize": 5,
+        "hopper": 180,
+        "total": 185,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_ChaffLauncher_Tiny",
+        "clipSize": 1,
+        "hopper": 10,
+        "total": 11,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
+        "clipSize": 12,
+        "hopper": 10000,
+        "total": 10012,
+        "unlimited": false
+      },
+      {
+        "symbol": "Int_ShieldCellBank_Size3_Class3",
+        "clipSize": 1,
+        "hopper": 3,
+        "total": 4,
+        "unlimited": false
+      },
+      {
+        "symbol": "Int_Repairer_Size3_Class1",
+        "clipSize": 0,
+        "hopper": 3600,
+        "total": 3600,
+        "unlimited": false
+      },
+      {
+        "note": "A magazine the record states no reserve for. Both Abrasion Blasters are in this position and no other module is.",
+        "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
+        "clipSize": 1,
+        "hopper": null,
+        "total": null,
+        "unlimited": true
+      },
+      {
+        "symbol": "Hpt_Mining_AbrBlstr_Turret_Small",
+        "clipSize": 1,
+        "hopper": null,
+        "total": null,
+        "unlimited": true
+      },
+      {
+        "note": "A reserve of zero, which is not an unlimited one: this accelerator fires its magazine and has nothing to reload from. Its 18 rounds are also not a whole number of its 4-round bursts, and stay 18 — only an engineered clip is rounded.",
+        "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
+        "clipSize": 18,
+        "hopper": 0,
+        "total": 18,
+        "unlimited": false
+      },
+      {
+        "symbol": "Int_ShieldCellBank_Size1_Class2",
+        "clipSize": 1,
+        "hopper": 0,
+        "total": 1,
+        "unlimited": false
+      }
+    ],
+    "noAmmunition": [
+      "Hpt_BeamLaser_Fixed_Small",
+      "Hpt_PulseLaser_Gimbal_Medium",
+      "Hpt_MiningLaser_Fixed_Small",
+      "Int_DroneControl_Collection_Size3_Class3"
+    ],
+    "journalReadings": {
+      "note": "Every non-zero AmmoInClip / AmmoInHopper across the four journal captures — the only external readings of `clipSize` and `ammoMaximum` this repository holds. Thirteen of the fourteen sit exactly at capacity, on nine distinct modules — the gimballed medium multi-cannon appears in two captures. The fourteenth is the Viper's heat-sink launcher, reporting 2 in reserve against a capacity of 3: what a launcher that has fired one heat sink looks like. That is the whole reason a journal's ammunition is a rearm state and not a capacity — a reading is a lower bound on what the module holds, and only a bound, so no reading may be read back as a catalogue figure. On the Corsair the capacity is the engineered one, since four of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier.",
+      "readings": 14,
+      "distinctModules": 9,
+      "atCapacity": 13,
+      "belowCapacity": [
+        {
+          "capture": "journal-viper-mkiv.json",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "AmmoInClip": 1,
+          "AmmoInHopper": 2,
+          "clipSize": 1,
+          "ammoMaximum": 3
+        }
+      ]
+    },
+    "engineered": {
+      "note": "Every roll here is at full quality on an empty Viper, refitted per roll. An engineered clip is rounded up to a whole burst where the roll is computed; the reserve is rounded by neither registry and is reported as it lands, fraction and all — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
+      "rolls": [
+        {
+          "note": "A small fixed cannon under High Capacity. Grade 5 doubles both figures exactly.",
+          "slot": "SmallHardpoint1",
+          "module": "Hpt_Cannon_Fixed_Small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "stock": {
+            "clipSize": 6,
+            "hopper": 120,
+            "total": 126
+          },
+          "clipSize": 12,
+          "hopper": 240,
+          "total": 252
+        },
+        {
+          "note": "The same cannon at grade 3: the clip reaches 10.08 and loads 11, while the reserve keeps its fraction.",
+          "slot": "SmallHardpoint1",
+          "module": "Hpt_Cannon_Fixed_Small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 3,
+          "stock": {
+            "clipSize": 6,
+            "hopper": 120,
+            "total": 126
+          },
+          "clipSize": 11,
+          "hopper": 201.6,
+          "total": 212.6
+        },
+        {
+          "note": "Double Shot gives a fragment cannon a two-round burst and scales the clip by the same roll: 3 rounds become 4.02, and a whole burst makes it 6 rather than the 5 a bare round-up would give.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_Slugshot_Fixed_Medium",
+          "blueprint": "Weapon_DoubleShot",
+          "grade": 1,
+          "stock": {
+            "clipSize": 3,
+            "hopper": 180,
+            "total": 183
+          },
+          "burstRounds": 2,
+          "clipSize": 6,
+          "hopper": 180,
+          "total": 186
+        },
+        {
+          "note": "A Concord Cannon fires three-round bursts of its own, with no recipe naming them: High Capacity takes its 9 rounds to 12.24, and a whole burst makes that 15 rather than the 13 a bare round-up would give.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_Cannon_Gimbal_Medium_Burst",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 1,
+          "stock": {
+            "clipSize": 9,
+            "hopper": 300,
+            "total": 309
+          },
+          "burstRounds": 3,
+          "clipSize": 15,
+          "hopper": 408,
+          "total": 423
+        },
+        {
+          "note": "Ammo capacity on a chaff launcher: a utility module carries a reserve and is engineered like any other.",
+          "slot": "TinyHardpoint1",
+          "module": "Hpt_ChaffLauncher_Tiny",
+          "blueprint": "Misc_ChaffCapacity",
+          "grade": 1,
+          "stock": {
+            "clipSize": 1,
+            "hopper": 10,
+            "total": 11
+          },
+          "clipSize": 1,
+          "hopper": 15,
+          "total": 16
+        },
+        {
+          "note": "Plasma Slug empties the reserve because the weapon then reloads from ship fuel — a tank this does not model, which is why the answer is a reserve of zero and not an unlimited one.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_RailGun_Fixed_Medium",
+          "blueprint": "RailGun_LongShot",
+          "grade": 5,
+          "experimental": "special_plasma_slug_cooled",
+          "stock": {
+            "clipSize": 1,
+            "hopper": 80,
+            "total": 81
+          },
+          "clipSize": 1,
+          "hopper": 0,
+          "total": 1
+        },
+        {
+          "note": "Corrosive Shell costs a fifth of the reserve, after High Capacity has doubled it.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_MultiCannon_Fixed_Medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "experimental": "special_corrosive_shell",
+          "stock": {
+            "clipSize": 100,
+            "hopper": 2100,
+            "total": 2200
+          },
+          "clipSize": 200,
+          "hopper": 3360,
+          "total": 3560
+        }
+      ]
+    },
+    "engineeredGroundTruth": {
+      "note": "Frontier's own engineered ammunition figures, from fixtures/ships/journal-corsair.json — the only capture here whose weapons carry `AmmoClipSize` / `AmmoMaximum` modifiers, and the evidence https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 was opened for. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and quality; `imported` is what a parsed build reports, which uses the stated modifier verbatim and therefore always equals `game`. At full quality the two agree exactly, on both legs and through an experimental effect. At an interpolated quality they do not, and no single multiplier reproduces both of Frontier's figures under any monotone rounding: 87 needs a roll of 0.8125 (or at most 0.8333 rounding down) while 23 needs more than 0.8333, since 12 × 1.8333 is exactly 22. FSD Interrupt cannot account for it — it carries Damage and BurstInterval legs only. The registries' model, one quality-derived multiplier scaling both legs from identical bands, is therefore not what the game does. Pinned including the disagreement, so a change to the model has to face it.",
+      "cases": [
+        {
+          "slot": "MediumHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true,
+          "note": "Corrosive Shell's −20% compounding after High Capacity's doubling: 2100 × 2 × 0.8. The first external check that experimental has had."
+        },
+        {
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true,
+          "note": "The same recipe without an ammunition-moving experimental: a clean doubling of both legs."
+        },
+        {
+          "slot": "MediumHardpoint3",
+          "symbol": "hpt_dumbfiremissilerack_fixed_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 4,
+          "quality": 0.8931,
+          "experimental": "special_fsd_interrupt",
+          "base": {
+            "clipSize": 12,
+            "ammoMaximum": 48
+          },
+          "game": {
+            "clipSize": 23,
+            "ammoMaximum": 87,
+            "loadedClip": 23,
+            "loadedHopper": 87
+          },
+          "simulated": {
+            "clipSize": 22,
+            "ammoMaximum": 87.499008
+          },
+          "agrees": false,
+          "note": "The disagreement. Frontier's engineered reserve is a whole 87 where this library computes 87.499008, and its clip is one round above what a shared multiplier predicts. Importing this build is unaffected: the stated modifiers are used verbatim."
+        }
+      ],
+      "recomputed": {
+        "note": "The Corsair with its own aggregates stripped, so nothing can be echoed back. It is the first engineered capture whose recomputed figures agree with Frontier — the other three are stock builds — and it exercises an engineered overcharge drive under FSD_LongRange g5 with Mass Manager.",
+        "unladenMass": 641.9,
+        "journalUnladenMass": 641.900024,
+        "maxJumpRange": 41.191542,
+        "journalMaxJumpRange": 41.191536,
+        "cargoCapacity": 144
+      }
+    }
+  },
   "functions": {
     "powerBudget": {
       "available": 6,

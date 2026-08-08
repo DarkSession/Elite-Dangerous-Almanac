@@ -1242,7 +1242,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     and the 25 Guardian ones sit in the three groups above.
   - **14 modules are absent because upstream denies them every blueprint:** eight AX
     multi-cannons (all but the two gimballed), five of the seven mining tools, and the
-    Mk II Plasma Shock Autocannon — which is why `antiXenoMultiCannons` holds 2 of that
+    Mk II Plasma Shock Accelerator — which is why `antiXenoMultiCannons` holds 2 of that
     family's 10 modules, `miningToolsLasers` 2 of its 7 and `plasmaAccelerators` 4 of its
     5. The ten plain Module Reinforcement Packages are denied their family's only recipe
     and are absent too, which leaves `moduleReinforcements` holding the ten Guardian
@@ -1398,7 +1398,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `special_super_penetrator_cooled` on the Guardian Shard Cannon
     ([#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36)).
   - `corpus.notGrouped` — two `Weapon_Efficient` entries on the Mk II Plasma Shock
-    Autocannon (both in `smallcombat01-nx-combat`), which EDSY denies every blueprint
+    Accelerator (both in `smallcombat01-nx-combat`), which EDSY denies every blueprint
     (`noblueprints: {'*'}`). coriolis cannot corroborate either way: its
     `modifications/modules.json` is keyed by module *group*, so it says nothing about one
     module. This is the one case where the corpus engineers a module this catalogue calls
@@ -1774,7 +1774,7 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   1902 entries declare a recipe no registry lists for that module: `Weapon_HighCapacity` on
   a Guardian Gauss Cannon (5) and `special_super_penetrator_cooled` on a Guardian Shard
   Cannon (6), where EDSY's `hexgg` group answers Rapid Fire and Anti-Guardian Zone
-  Resistance alone; and `Weapon_Efficient` on the Mk II Plasma Shock Autocannon (2), which
+  Resistance alone; and `Weapon_Efficient` on the Mk II Plasma Shock Accelerator (2), which
   EDSY marks `noblueprints`. All thirteen are refused, each citing an upstream denial —
   which is a tightening on real community builds, and deliberate: an inference loose
   enough to admit them classifies all three as weapons and cannot see that the game offers
@@ -1984,8 +1984,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
 ## Build-metric algorithms (power, shields, armour, weapons)
 
 - **Files:** `typescript/src/ships/power.ts`, `shields.ts`, `armour.ts`,
-  `resistances.ts`, `weapons.ts` and the `ShipLoadout` methods that feed them, validated
-  by `fixtures/ships/build-metrics.json`.
+  `resistances.ts`, `weapons.ts`, `ammunition.ts` and the `ShipLoadout` methods that feed
+  them, validated by `fixtures/ships/build-metrics.json`.
 - **Source of the formulas:** [EDCD/Coriolis](https://github.com/EDCD/coriolis)
   (**commit `68c042ca6e3db62372cbbb2077cf972345511712`**, acquired 2026-08-01 UTC) —
   `src/app/shipyard/Calculations.js` (`shieldStrength`, `shieldMetrics`,
@@ -2015,6 +2015,82 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   it is verified against the shared `slef-the-deep-black.json` fixture, whose engineered
   armour carries exactly those values. `typescript/src/ships/module-stat-labels.ts`
   holds the per-label unit and algebra table.
+- **Ammunition capacity is `clipSize` + `ammoMaximum`.** The reserve excludes the
+  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The three journal
+  captures carry **nine** non-zero readings across seven distinct modules, and they are the
+  only external check either stat gets. Eight sit exactly at the catalogue figure — the
+  Python Mk II's Enhanced AX Multi-Cannon 100/2100 and Guardian Shard Cannon 5/180, the
+  Viper's two gimballed multi-cannons 90/2100, the Krait's two flak launchers 1/32 and two
+  point-defence turrets 12/10000. The ninth is the Viper's heat-sink launcher at 1/2
+  against a capacity of 1/3, which is a launcher that has fired one sink, and is the shape
+  of the whole distinction: a reading is a **lower bound** on a capacity and never a
+  reading of one, so a rearm state cannot be read back as a catalogue figure. Pinned by
+  `fixtures/ships/build-metrics.json` §ammunition.journalReadings. A module carrying a
+  magazine but no reserve figure — the two Abrasion Blasters, and nothing else — is
+  reported as unlimited; one carrying neither (the lasers) has no capacity to report. A
+  reserve of **zero** is a third answer and not an unlimited one: the Mk II Plasma Shock
+  Accelerator has nothing behind its magazine, and Plasma Slug empties a rail gun's reserve
+  because the weapon then reloads from ship fuel, which is a tank this does not model.
+- **An engineered clip is rounded up to a whole burst; the reserve is not rounded at
+  all.** Both stats are multiplicative under engineering, so a roll that is not a whole
+  multiple leaves a fraction, and a ship cannot load a tenth of a round. Only a computed
+  clip is rounded: a stock one is left alone, which matters because the Mk II Plasma Shock
+  Accelerator's 18 rounds are **not** a whole number of its 4-round bursts, so the rule is
+  the registries' treatment of a roll rather than a claim about how magazines are built.
+  EDSY rounds the
+  clip up to a multiple of the burst size — `ceil(ammoclip / bstsize) * bstsize`, with the
+  comment "when modifying clip size, round up to a multiple of burst size" — and Coriolis
+  rounds it up without the burst step (`Module.getClip`, "Clip size is always rounded up"),
+  so the two agree wherever a weapon fires one round at a time and EDSY is taken where they
+  differ, as everywhere else in this section. Neither rounds the reserve anywhere: EDSY's
+  own rearm-cost and ammo-time maths multiplies the fractional `ammomax` as it stands, so a
+  fragment cannon's High Capacity reserve of 302.4 is reported as 302.4. **Neither figure
+  is Frontier's**, and no capture here carries an engineered ammunition modifier to check
+  them against; one would settle it —
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>. The rounding is
+  applied in `computeModifiers` (`engineering.ts`), which is every place this library
+  computes an engineered stat — a blueprint roll and a pre-engineered variant's published
+  article alike — and nowhere else. **Three things it computes nothing for are left
+  alone**: a journal's own `Engineering.Modifiers`, which are never recomputed, so a clip
+  the game states passes through untouched; a recipe leg that *overwrites* the clip, which
+  is a registry's published figure rather than a product of one (the two Guardian Plasma
+  Launchers' 20 rounds); and a roll that leaves the clip where it was, so the Mk II Plasma
+  Shock Accelerator's 18 rounds survive a zero-magnitude roll — reachable only by calling
+  `computeModifiers` directly, since no engineering menu offers that weapon anything for
+  `applyBlueprint` to accept. EDSY draws the same line, rounding inside the branch that
+  stores a roll and never on a restored or built-in module. Pinned by
+  `fixtures/ships/engineering.json`
+  §clipRounding and, for the published article, `fixtures/ships/pre-engineered.json`
+  §resolved.fragmentCannonDoubleShot.
+- **A published multiplier is snapped to the precision it is stated at — on the clip
+  only, because the clip alone is rounded.** Both registries state a recipe's multiplier to
+  three or four decimals, so a leg meant to add two thirds is written `0.667`: Drag
+  Munitions computes 10.002 rounds on a 6-round Seeker Missile Rack, and the community-goal
+  Fragment Cannon's authored `1.6667` computes 8.0001 against two-round bursts. Left alone,
+  that thousandth becomes a whole extra round once the clip is rounded up — a whole extra
+  burst on a burst weapon. A clip within **half a unit in the multiplier's third decimal,
+  scaled by the base clip**, is therefore taken as the whole number it means: 0.003 rounds
+  on a 6-round clip, against the 0.02 that Double Shot's 4.02 genuinely adds, and clips are
+  small enough (100 rounds at the widest) that the band stays a fraction of a round. The
+  **reserve is neither rounded nor snapped**: nothing amplifies its noise, and the same band
+  on a 2100-round reserve would be a whole round wide and would swallow real fractions —
+  a High Capacity multi-cannon's 2822.4 is a genuine figure, not a mis-stated 2822. Snapping
+  applies to a **stated** multiplier only: a quality roll between two published legs is a
+  real number with no whole magazine behind it, so a small multi-cannon at High Capacity
+  grade 5 and quality 0.07 holds 185.12 rounds, which means 186 and rounds up.
+
+  **The game's own engineered reserve is a whole number**, which the Corsair capture shows
+  and neither registry does: it reads 87 where this library computes 87.499008. Nothing is
+  changed on that evidence — one capture cannot separate "the game rounds" from "Frontier's
+  multipliers land whole", and the same capture shows the clip disagreeing in the other
+  direction, so the mapping from `Quality` is the thing in question rather than a rounding
+  step. <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57> carries it.
+- **`sustainedFireFactor` rounds a clip up to a whole round, not to a whole burst**
+  (`weapons.ts`), matching Coriolis's own `getClip`, which is what its `getSustainedFactor`
+  reads. Nothing this library computes reaches it fractional, so the two rules can only
+  part on a clip a journal states as a fraction on a burst weapon — no capture here carries
+  one. Left as it is rather than aligned, because a reload cycle is Coriolis's algorithm end
+  to end and taking half of EDSY's rule into it would agree with neither.
 
 ## Jump-range and fuel algorithm
 
@@ -2163,11 +2239,67 @@ under, which is why several are cited above rather than copied.
   those figures. See
   <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12>.
 
-  **What it uncovered:** `LoadoutModule` models no ammunition, so a journal round trip
-  drops `AmmoInClip` and `AmmoInHopper` on every weapon that carries them. The other two
-  captures report zero on every weapon, so this capture is the first to show it —
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/56>. The fixture reads
-  those two fields off the stored capture rather than off a parsed build for that reason.
+  **Its ammunition state is deliberately not carried.** `LoadoutModule` models neither
+  `AmmoInClip` nor `AmmoInHopper`, so importing this capture drops both and a re-export
+  never writes them: they say how much was left in the magazine at the instant of capture,
+  which is the ship's rearm state and not part of the build — the same footing as a
+  capture's own credit figures, which a re-export recomputes rather than echoes. What a
+  fitted weapon *can* hold is a property of the build, and `ammunitionCapacity` in
+  `ships/ammunition` reports it from `clipSize` and `ammoMaximum`, post-engineering. The fixture therefore reads the two
+  counts off the stored capture, and checks them against the capacity a parsed build
+  reports for the same weapons — which agree here because both are fully rearmed.
+
+- **`fixtures/ships/journal-corsair.json`** — a real Frontier journal `Loadout` event for a
+  heavily **engineered** Corsair (36 `Modules` entries: six hardpoints, three shield
+  boosters, an engineered overcharge drive, 144 t of cargo). Contributed **2026-08-08 UTC**
+  by the repository owner. No upstream project is recorded for it — the same position as
+  the three other journal captures, and not a reason to leave it out; the loadout is
+  Frontier game output redistributed under Frontier's media-usage terms. Stored SHA-256
+  `b26450197e4521144a2c6450c0e28e283c424e806d42b335e147852933381c4b`. Its `ShipName`,
+  `ShipIdent`, `ShipID` and `timestamp` are kept, as the other captures' are — they
+  describe a ship, and nothing in the event names a person; the engineer names are the
+  game's own NPCs.
+
+  **One manual correction.** The capture reached this repository as pasted text, and the
+  transport had broken `int_powerplant_size7_class5` across a line inside the string. That
+  break is repaired and nothing else is altered, so the checksum above attests to the
+  stored file rather than to a file Frontier wrote. A capture that arrives as a file should
+  be preferred to this one if the two ever conflict.
+
+  **It is the first engineered ground truth for the build metrics.** The other three
+  captures are stock, so nothing checked an engineered mass or jump range before. With its
+  own aggregates stripped, this build recomputes to `UnladenMass` 641.9 (journal 641.900024)
+  and `MaxJumpRange` 41.191542 (journal 41.191536, within 1e-4) — through a size-5 class-4
+  **overcharge** drive under `FSD_LongRange` grade 5 with Mass Manager, three shield
+  boosters at 14 t each, a 48 t armoured power plant and a 0.6 t lightweight life support.
+  `CargoCapacity` 144 is exact.
+
+  **It is the only reading Frontier gives of an engineered clip or reserve**, which is what
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57> was opened for. Four of
+  its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier, and
+  every weapon is fully rearmed:
+
+  - **At full quality the computed figures agree exactly.** High Capacity grade 5 doubles a
+    gimballed medium multi-cannon's 90/2100 to 180/4200, and with Corrosive Shell the
+    reserve is 3360 — 2100 × 2 × 0.8, the first external check that experimental has had.
+  - **At an interpolated quality they do not.** A medium dumbfire rack at High Capacity
+    grade 4, quality 0.8931, reads 12 → **23** and 48 → **87** in the journal, where this
+    library computes 22 and 87.499008. No single multiplier reproduces both of Frontier's
+    figures under any monotone rounding: 87 needs a roll of 0.8125, or at most 0.8333 if the
+    game rounds down, while 23 needs more than 0.8333, since 12 × 1.8333 is exactly 22. FSD
+    Interrupt cannot account for it — it carries `Damage` and `BurstInterval` legs only. So
+    the registries' model, one quality-derived multiplier scaling both legs from identical
+    bands, is not what the game does, and **an engineered reserve is a whole number in game**
+    where this library can report a fraction.
+  - **Importing is unaffected**, which is the point of rounding only where a roll is
+    computed: the stated modifiers are used verbatim, so this build reads back 23/87.
+
+  Pinned by `fixtures/ships/build-metrics.json` §ammunition.engineeredGroundTruth, including
+  the disagreement, so a change to the model has to face it.
+
+  **What it does not close:** the mapping from `Quality` to a per-leg multiplier. One
+  capture is one equation in two unknowns; more captures at intermediate quality would solve
+  it.
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed

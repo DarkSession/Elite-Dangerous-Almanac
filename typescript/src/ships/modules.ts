@@ -527,9 +527,21 @@ export interface OutfittingModule {
     readonly burstRateOfFire?: number;
     /** Seconds spent charging before a shot (rail guns), if any. */
     readonly chargeTime?: number;
-    /** Rounds in a clip before reloading. Absent on weapons that never reload. */
+    /**
+     * Rounds in a clip before reloading. Absent on weapons that never reload.
+     *
+     * @remarks
+     * A capacity, and the largest `AmmoInClip` a journal can report for the module.
+     * `ammunitionCapacity` in `./ammunition` reads it together with
+     * {@link OutfittingModule.ammoMaximum}.
+     */
     readonly clipSize?: number;
-    /** Reserve rounds to reload from. */
+    /**
+     * Reserve rounds to reload from — the magazine is *not* counted in it, exactly as the
+     * journal's `AmmoInHopper` does not count it. Absent beside a {@link clipSize} means
+     * nothing limits the refills (the mining Abrasion Blaster); absent beside no clip
+     * either means the module takes no ammunition at all, as the lasers do.
+     */
     readonly ammoMaximum?: number;
     /** Seconds to reload a clip. */
     readonly reloadTime?: number;
