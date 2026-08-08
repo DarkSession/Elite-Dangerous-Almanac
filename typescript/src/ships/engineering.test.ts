@@ -713,6 +713,48 @@ test('the base stats a recipe scales come back in the journal spelling for the f
     assert.equal(dss['DSS_PatchRadius'], 20);
 });
 
+test('Overcharged leaves a cannon’s clip alone, as a real journal reports', () => {
+    // Ground truth: the Federation Corvette capture in
+    // fixtures/ships/journal-federation-corvette.json carries a large gimballed cannon
+    // under `Weapon_Overcharged` at grade 5, quality 1, with High Yield Shell. Frontier's
+    // Modifiers list `Damage`, `DistributorDraw`, `ThermalLoad` and the experimental's own
+    // legs — and no `AmmoClipSize`, with `AmmoInClip` 5 against a stock magazine of 5. So
+    // the multi-cannon's clip penalty is the multi-cannon's alone, which is the whole of
+    // the registry disagreement the two Overcharged records exist to hold apart.
+    const cannon = getModuleBySymbol('Hpt_Cannon_Gimbal_Large', ALL_MODULES)!;
+    assert.equal(cannon.clipSize, 5);
+    const modifiers = computeModifiers(
+        baseStats(cannon),
+        getBlueprintGrade('Weapon_Overcharged', 5)!,
+        1,
+    );
+    assert.ok(!modifiers.some((m) => m.Label === 'AmmoClipSize'));
+    assert.deepEqual(modifiers.map((m) => m.Label).sort(), [
+        'Damage',
+        'DistributorDraw',
+        'ThermalLoad',
+    ]);
+    // The two legs the capture states against an unrounded base reproduce exactly.
+    assert.ok(near(modFor(modifiers, 'DistributorDraw')!, 1.539, 1e-9));
+    assert.ok(near(modFor(modifiers, 'ThermalLoad')!, 2.9 * 1.15, 1e-9));
+
+    // The multi-cannon recipe the same journal id resolves to on a multi-cannon does cut
+    // the clip, so the absence above is the recipe and not a dropped leg.
+    const multi = getModuleBySymbol('Hpt_MultiCannon_Gimbal_Medium', ALL_MODULES)!;
+    assert.equal(resolveBlueprintForModule(multi.symbol, 'Weapon_Overcharged'), 'MC_Overcharged');
+    assert.equal(
+        resolveBlueprintForModule(cannon.symbol, 'Weapon_Overcharged'),
+        'Weapon_Overcharged',
+    );
+    const multiMods = computeModifiers(
+        baseStats(multi),
+        getBlueprintGrade('MC_Overcharged', 5)!,
+        1,
+    );
+    // 90 × 0.85 is 76.5, and a magazine holds whole rounds.
+    assert.equal(modFor(multiMods, 'AmmoClipSize'), Math.round(multi.clipSize! * 0.85));
+});
+
 test('a heat-rate recipe reproduces the heat a real journal reports', () => {
     // Ground truth: the Krait Phantom capture in fixtures/ships/journal-krait-phantom.json
     // carries `EngineHeatRate` 1.3 -> 1.95 for grade 4 Dirty Drive Tuning on a 6D thruster.

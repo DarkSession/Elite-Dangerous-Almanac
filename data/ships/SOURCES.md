@@ -1532,44 +1532,45 @@ up straight through with no disambiguation at all. Both paths are evidence that
     guessing at coriolis. No registry writes this row down as it stands — coriolis carries
     no blueprint list for the group and EDSY does not use the key — so it is the one menu
     row assembled from one registry's coverage and the other's spelling.
-  - **The clip leg stops at the multi-cannon, and a third registry is what settles it.**
-    The 26 clip-bearing modules the other groups hold — 12 cannons, 10 fragment cannons and
-    four plasma accelerators — fold no clip change. These are groups coriolis *does* cover
-    and gives the clip-less key, so EDSY's clip leg on them is a disagreement rather than a
-    hole, and it is broken by a registry that is keyed on neither side's shape. EDEngineer
-    `blueprints.json` keys a recipe on **(weapon type, blueprint, grade)** rather than on
-    an id — the shape the engineer menus themselves have. It lists Overcharged on exactly
-    the seven weapon types coriolis covers (beam, burst and pulse lasers, cannon, fragment
-    cannon, plasma accelerator, multi-cannon) and carries a `Clip Size` leg of −3% to −15%
-    on the **multi-cannon alone**.
-    - **It is not reading coriolis.** Its rows carry a `CoriolisGuid` cross-reference that
-      is a name match rather than a join — `Sturdy Mount` points at
-      `CargoRack_IncreasedCapacity` on every weapon type that offers it — and all seven of
-      its Overcharged rows, the multi-cannon's included, point at coriolis's *clip-less*
-      `Weapon_Overcharged` grade record. The clip leg on its multi-cannon row cannot have
-      come from the record it cites. Its per-type split shows up away from Overcharged too,
-      and in the other direction: Long Range carries `Shot Speed` on the cannon and the
-      plasma accelerator and on neither the multi-cannon nor the lasers, where coriolis
-      gives that leg to every weapon and EDSY's `wpn_lr` gives it to none.
-    - **It is not blind to the clip stat on the groups in question.** High Capacity carries
-      `Clip Size +100%` on the cannon and on the fragment cannon, and the fragment cannon's
-      Double Shot sets a clip outright. The absence of a clip leg on their Overcharged is a
-      statement, not a gap in coverage.
+  - **The clip leg stops at the multi-cannon, and Frontier says so.** The 26 clip-bearing
+    modules the other groups hold — 12 cannons, 10 fragment cannons and four plasma
+    accelerators — fold no clip change, and the game agrees.
+    `fixtures/ships/journal-federation-corvette.json` carries a **large gimballed cannon
+    under `Weapon_Overcharged` at grade 5, quality 1**, with High Yield Shell. Its
+    `Modifiers` are `Damage`, `DistributorDraw`, `ThermalLoad`, `RateOfFire` and the
+    experimental's own damage-type split — and **no `AmmoClipSize`**. `AmmoInClip` is **5**
+    against the module's stock magazine of 5, so the roll left the magazine where it was; a
+    15% cut would have left four rounds, and the game writes that leg out whenever it
+    applies, as it does on every multi-cannon that takes one.
+    - **The roll is a full grade 5, so the missing leg is the recipe and not a partial
+      craft.** `DistributorDraw` 1.14 → 1.539 is ×1.35 and `ThermalLoad` 2.93 → 3.3695 is
+      ×1.15 — Overcharged's grade-5 figures exactly. `Damage` 37.421 → 41.350 is
+      ×1.70 × 0.65, the recipe's grade-5 damage against High Yield Shell's own −35%, and
+      `RateOfFire` 0.440529 → 0.396476 is that experimental's burst-interval leg. Every
+      number in the block is accounted for and none of them is a clip.
+    - **EDEngineer says it too, and not by reading coriolis.** EDEngineer `blueprints.json`
+      keys a recipe on **(weapon type, blueprint, grade)** rather than on a recipe id — the
+      shape the engineer menus themselves have — lists Overcharged on exactly the seven
+      weapon types coriolis covers, and carries its `Clip Size` leg of −3% to −15% on the
+      multi-cannon alone. Its `CoriolisGuid` field is a name match rather than a join
+      (`Sturdy Mount` points at `CargoRack_IncreasedCapacity`), and all seven of its
+      Overcharged rows, the multi-cannon's included, point at coriolis's *clip-less*
+      record — so the clip leg on its multi-cannon row cannot have come from the record it
+      cites. It is not blind to the stat on the groups in question either: High Capacity
+      carries `Clip Size +100%` on the cannon and on the fragment cannon, and the fragment
+      cannon's Double Shot sets a clip outright.
     - **EDSY is the outlier, and not for want of a way to say otherwise.** `eddb.js`'s
       blueprint table is willing to hold two rows under one fdname: `Sensor_LongRange` and
       `Sensor_WideAngle` are the only fdnames among its 67 rows used twice, and they are
       used twice deliberately (§Scanner Long Range and Wide Angle). So the single `wpn_oc`
-      is a position, not a limitation — and it is a position the other two registries
-      contradict, one of them the registry this catalogue is keyed on and the other the
-      only one shaped to express a per-weapon-type difference without inventing a key.
-      **This paragraph is the one to overrule if you disagree**: `Weapon_Overcharged`'s
-      three legs follow from it and nothing else. What would overrule it is the capture
-      that was wanted before the third registry was read — an outfitting panel before and
-      after a grade-5 Overcharged roll on a cannon or a fragment cannon; no laser can
-      answer it, because none carries a clip. The magnitudes sit with the reading without
-      being evidence for it: these clips hold 3 to 9 rounds, and 20 on the Advanced Plasma
-      Accelerator, against a multi-cannon's 90 to 180, so grade 1's −3% is under a tenth of
-      a round on a fragment cannon.
+      carrying `ammoclip` for every weapon is a position rather than a limitation — and it
+      is the position the capture contradicts. Reading it would report a cannon four rounds
+      the game loads five of.
+    - **What the capture does not reach** is the fragment cannon and the plasma
+      accelerator. Both groups take the same clip-less key from the same two registries and
+      neither has been captured under Overcharged, so they rest on the cannon reading plus
+      the registries rather than on a roll of their own. A capture that contradicted one of
+      them would split `Weapon_Overcharged` again rather than overturn this.
     - **None of the six Guardian plasma launchers is in this set** — their menu lists
       Anti-Guardian Zone Resistance and nothing else, and the Fixed Small and Fixed Medium
       are sold carrying `Weapon_Overcharged` rather than offered it. The three laser groups
@@ -2331,6 +2332,30 @@ under, which is why several are cited above rather than copied.
   **What it does not close:** the mapping from `Quality` to a per-leg multiplier. One
   capture is one equation in two unknowns; more captures at intermediate quality would solve
   it.
+
+- **`fixtures/ships/journal-federation-corvette.json`** — a real Frontier journal `Loadout`
+  event for a heavily **engineered** combat Federal Corvette (45 `Modules` entries: two huge
+  beam lasers, a large cannon, a missile rack, eight shield boosters, four hull
+  reinforcements). Contributed **2026-08-08 UTC** by the repository owner, the same position
+  as the Corsair above: no upstream project, and the loadout is Frontier game output
+  redistributed under Frontier's media-usage terms. Stored SHA-256
+  `084e63b2dad5c59861ca32cc8925accf263d7b56816494a974a30b0d0815a731`. Its `ShipName`,
+  `ShipIdent`, `ShipID` and `timestamp` are kept for the reason the other captures' are, and
+  the engineer names are the game's own NPCs. The capture reached this repository as pasted
+  text and is stored re-indented and otherwise unaltered, so the checksum attests to the
+  stored file rather than to a file Frontier wrote.
+
+  **It is the reading that settles the Overcharged clip question** — its large gimballed
+  cannon carries `Weapon_Overcharged` at grade 5, quality 1, with no `AmmoClipSize` modifier
+  and a full magazine of 5. See §Multi-cannon Overcharged under Engineering options for what
+  that decides and what it leaves open.
+
+  **It disagrees with three catalogue base values**, which is a separate matter and is
+  tracked at
+  [#59](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/59): the game gives
+  `Hpt_Cannon_Gimbal_Large` `damage` 37.421001 and `thermalLoad` 2.93 where this catalogue
+  stores 37.39 and 2.9, and `Hpt_BeamLaser_Gimbal_Huge` `thermalLoad` 10.62 where it stores
+  10.6. The other 51 base values the capture states match exactly.
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed

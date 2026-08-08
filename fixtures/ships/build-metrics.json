@@ -298,10 +298,10 @@
       "Int_DroneControl_Collection_Size3_Class3"
     ],
     "journalReadings": {
-      "note": "Every non-zero AmmoInClip / AmmoInHopper across the four journal captures — the only external readings of `clipSize` and `ammoMaximum` this repository holds. Thirteen of the fourteen sit exactly at capacity, on nine distinct modules — the gimballed medium multi-cannon appears in two captures. The fourteenth is the Viper's heat-sink launcher, reporting 2 in reserve against a capacity of 3: what a launcher that has fired one heat sink looks like. That is the whole reason a journal's ammunition is a rearm state and not a capacity — a reading is a lower bound on what the module holds, and only a bound, so no reading may be read back as a catalogue figure. On the Corsair the capacity is the engineered one, since four of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier.",
-      "readings": 14,
-      "distinctModules": 9,
-      "atCapacity": 13,
+      "note": "Every non-zero AmmoInClip / AmmoInHopper across the five journal captures — the only external readings of `clipSize` and `ammoMaximum` this repository holds. Seventeen of the eighteen sit exactly at capacity, on twelve distinct modules — the gimballed medium multi-cannon appears in two captures. The eighteenth is the Viper's heat-sink launcher, reporting 2 in reserve against a capacity of 3: what a launcher that has fired one heat sink looks like. That is the whole reason a journal's ammunition is a rearm state and not a capacity — a reading is a lower bound on what the module holds, and only a bound, so no reading may be read back as a catalogue figure. On the Corsair the capacity is the engineered one, since four of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier. The Corvette's large gimballed cannon sits at capacity under a grade-5 Overcharged, which is Frontier's own reading that the recipe does not cut a cannon's clip: fold a 15% penalty here and its 5 loaded rounds would no longer fit.",
+      "readings": 18,
+      "distinctModules": 12,
+      "atCapacity": 17,
       "belowCapacity": [
         {
           "capture": "journal-viper-mkiv.json",

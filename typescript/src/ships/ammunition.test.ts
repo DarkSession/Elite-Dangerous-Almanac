@@ -10,6 +10,7 @@ import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' wi
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
+import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
 
 /** Every journal capture in the fixtures, by file name. */
 const JOURNALS = [
@@ -17,6 +18,7 @@ const JOURNALS = [
     ['journal-viper-mkiv.json', viperJournal],
     ['journal-python-mkii-antixeno.json', pythonJournal],
     ['journal-corsair.json', corsairJournal],
+    ['journal-federation-corvette.json', corvetteJournal],
 ] as const;
 
 const module = (symbol: string) => {
