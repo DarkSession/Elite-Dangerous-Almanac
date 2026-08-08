@@ -2041,9 +2041,32 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   is Frontier's**, and no capture here carries an engineered ammunition modifier to check
   them against; one would settle it —
   <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>. The rounding is
-  applied in `computeModifiers` (`engineering.ts`), where a roll is computed, not where a
-  stat is read: a journal states the engineered clip itself, and the game's own figure is
-  passed through untouched. Pinned by `fixtures/ships/engineering.json` §clipRounding.
+  applied in `computeModifiers` (`engineering.ts`), which is every place this library
+  computes an engineered stat — a blueprint roll and a pre-engineered variant's published
+  article alike — and nowhere else: a journal's own `Engineering.Modifiers` are never
+  recomputed, so a clip the game states is passed through untouched. A roll that leaves the
+  clip where it was rounds nothing, which is why the Mk II Plasma Shock Autocannon keeps its
+  18 rounds against 4-round bursts. Pinned by `fixtures/ships/engineering.json`
+  §clipRounding and, for the published article, `fixtures/ships/pre-engineered.json`
+  §resolved.fragmentCannonDoubleShot.
+- **A multiplier is snapped to the precision it is stated at before the clip is rounded
+  up.** Both registries state a recipe's multiplier to three decimals, so a roll meant to
+  land on a whole magazine lands a thousandth off one — Drag Munitions' `+66.7%` computes
+  10.002 rounds on a 6-round Seeker Missile Rack, and the community-goal Fragment Cannon's
+  authored `2.6667` computes 8.0001 against two-round bursts. Rounding those up buys a
+  whole extra round, or a whole extra burst, out of transcription noise. A figure within a
+  thousandth of a whole number is therefore treated as that number first; the smallest
+  genuine fraction any recipe produces is a fiftieth (Double Shot's 4.02), so the two
+  cannot be confused. The **reserve** is not rounded and so keeps the same noise where it
+  has it — that rack's reserve is 30.006 — which is the honest reading of data stated to
+  three decimals, and another reason a capture is wanted on
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
+- **`sustainedFireFactor` rounds a clip up to a whole round, not to a whole burst**
+  (`weapons.ts`), matching Coriolis's own `getClip`, which is what its `getSustainedFactor`
+  reads. Nothing this library computes reaches it fractional, so the two rules can only
+  part on a clip a journal states as a fraction on a burst weapon — no capture here carries
+  one. Left as it is rather than aligned, because a reload cycle is Coriolis's algorithm end
+  to end and taking half of EDSY's rule into it would agree with neither.
 
 ## Jump-range and fuel algorithm
 

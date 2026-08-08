@@ -69,6 +69,24 @@ test('a pre-engineered weapon resolves its damage-side stats too', () => {
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
 });
 
+test('a pre-engineered magazine holds whole bursts, and its reserve keeps its fraction', () => {
+    const { symbol, blueprint, grade, base, engineered } =
+        fixture.resolved.fragmentCannonDoubleShot;
+    const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
+    assert.equal(stock.clipSize, base.clipSize);
+    assert.equal(stock.ammoMaximum, base.ammoMaximum);
+    assert.equal(stock.burstRounds, undefined);
+
+    const fitted = getPreEngineeredStats(only({ symbol, blueprint, grade }))!;
+    // 3 × 2.6667 is 8.0001, and the article holds 8 — the stated multiplier's precision is
+    // snapped before the round-up, or the noise would buy a whole extra two-round burst.
+    assert.equal(fitted.clipSize, engineered.clipSize);
+    assert.equal(fitted.burstRounds, engineered.burstRounds);
+    assert.equal(fitted.clipSize! % fitted.burstRounds!, 0);
+    // The reserve is not rounded, so it keeps what its own multiplier gives.
+    assert.equal(fitted.ammoMaximum, engineered.ammoMaximum);
+});
+
 test('a stat the source authored as a value resolves to exactly that value', () => {
     // EDSY encodes a modifier as a multiplier in a 20-bit float, so a stat the game
     // authored as a round number comes back short however the multiplier is recovered —

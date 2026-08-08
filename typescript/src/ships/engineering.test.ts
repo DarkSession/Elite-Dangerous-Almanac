@@ -614,13 +614,27 @@ test('an engineered clip is rounded up to a whole burst, and the reserve is not 
         const scale = features.find((f) => f.label === 'AmmoClipSize')!;
         const roll = scale.min + (scale.max - scale.min) * pinned.quality;
         assert.ok(near(pinned.baseAmmoClipSize * (1 + roll), pinned.unroundedAmmoClipSize), label);
-        assert.ok(pinned.AmmoClipSize > pinned.unroundedAmmoClipSize, label);
 
-        assert.equal(
-            pinned.AmmoClipSize,
-            Math.ceil(pinned.unroundedAmmoClipSize / pinned.burstSize) * pinned.burstSize,
-            label,
-        );
+        if (pinned.AmmoClipSize === pinned.baseAmmoClipSize) {
+            // A roll that moves the clip nowhere leaves it exactly where it was, whether or
+            // not that is a whole number of bursts.
+            assert.equal(pinned.unroundedAmmoClipSize, pinned.baseAmmoClipSize, label);
+        } else {
+            // What the rule says, stated independently of how it is implemented: a whole
+            // number of bursts, no smaller than the roll, and no further from it than the
+            // registries' own three-decimal precision can account for.
+            const bursts = pinned.AmmoClipSize / pinned.burstSize;
+            assert.equal(bursts, Math.round(bursts), `${label}: not a whole number of bursts`);
+            assert.ok(
+                pinned.AmmoClipSize >=
+                    pinned.unroundedAmmoClipSize - pinned.unroundedAmmoClipSize / 1e3,
+                `${label}: rounded below the roll`,
+            );
+            assert.ok(
+                pinned.AmmoClipSize - pinned.unroundedAmmoClipSize < pinned.burstSize,
+                `${label}: rounded up by a whole burst or more`,
+            );
+        }
         // Where the burst comes from: the recipe writes one (Double Shot), the weapon
         // already fires in bursts (a Concord Cannon), or nothing does and the step is inert.
         const fromRecipe = modFor(modifiers, 'BurstSize');

@@ -223,8 +223,12 @@ export function splitDamage(damage: number, distribution?: DamageDistribution): 
  *
  * @param weapon - The weapon's stats.
  * @returns A factor in `(0, 1]`: `1` for anything that never stops to reload, less for
- * a weapon whose clip runs dry. A fractional clip left by engineering is rounded **up**,
- * as the game loads whole rounds.
+ * a weapon whose clip runs dry. A fractional clip is held to whole rounds, rounding **up**
+ * — which only a hand-built or journal-stated figure can be, since an engineered clip is
+ * rounded to a whole *burst* where the roll is computed (`./engineering`). On a burst
+ * weapon the two rules can differ by a round; the reasoning is recorded under
+ * §Build-metric algorithms in
+ * [the ships provenance notes](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  * @remarks
  * A clip's worth of fire takes `(clip − burst) / rateOfFire` seconds plus the time to
  * finish the last burst, then the reload; the sustained rate is the clip divided by

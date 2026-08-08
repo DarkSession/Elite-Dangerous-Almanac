@@ -306,11 +306,30 @@ function roundClipToWholeBursts(
     base: Readonly<Record<string, number>>,
 ): EngineeringModifier[] {
     const clip = modifiers.find((m) => m.Label === 'AmmoClipSize');
-    if (!clip?.Value) return modifiers;
+    // Nothing to round, and nothing to round *for*: a recipe leg that leaves the clip where
+    // it was — High Capacity's grade-1 minimum roll is +0% — is not a reason to move it.
+    if (!clip?.Value || clip.Value === clip.OriginalValue) return modifiers;
     const burst = modifiers.find((m) => m.Label === 'BurstSize')?.Value || base['BurstSize'] || 1;
-    const rounded = Math.ceil(clip.Value / burst) * burst;
+    const rounded = Math.ceil(snapToWhole(clip.Value / burst)) * burst;
     if (rounded === clip.Value) return modifiers;
     return modifiers.map((m) => (m === clip ? { ...m, Value: rounded } : m));
+}
+
+/**
+ * The registries state a recipe's multiplier to three decimals, so a roll meant to land on
+ * a whole magazine lands a thousandth off one: a 6-round Seeker Missile Rack at the Drag
+ * Munitions grade-2 leg of `+66.7%` computes 10.002, and the recipe means 10. Rounding
+ * *up* would turn that transcription noise into a whole extra round — and, on a burst
+ * weapon, a whole extra burst — so a figure within the data's own precision of a whole
+ * number is treated as that number.
+ *
+ * The tolerance is a thousandth, which is what three stated decimals are worth, and sits
+ * well clear of the smallest genuine fraction any recipe produces (Double Shot's 4.02
+ * rounds is a fiftieth over 4, and must round up).
+ */
+function snapToWhole(value: number): number {
+    const whole = Math.round(value);
+    return Math.abs(value - whole) <= Math.max(1e-6, Math.abs(value) * 1e-3) ? whole : value;
 }
 
 /**

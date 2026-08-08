@@ -503,7 +503,22 @@
       "unresolved": [],
       "note": "The tech-broker 'Modified Guardian Shard Cannon': 3000 m range with falloff starting at 1500 m. Not a Long Range grade — the blueprint named identifies the variant, it does not reproduce it."
     },
-    "guardianShardMediumLongRange": {
+    "fragmentCannonDoubleShot": {
+    "symbol": "Hpt_Slugshot_Gimbal_Small",
+    "blueprint": "Weapon_DoubleShot",
+    "grade": 5,
+    "base": {
+      "clipSize": 3,
+      "ammoMaximum": 180
+    },
+    "engineered": {
+      "clipSize": 8,
+      "burstRounds": 2,
+      "ammoMaximum": 301.9968
+    },
+    "note": "The community-goal Fragment Cannon. Its authored clip multiplier is 2.6667, so the clip computes as 8.0001 and the article holds 8 — the case that shows a stated multiplier's three-decimal precision must be snapped before an engineered clip is rounded up to a whole burst, or the noise buys a whole extra burst. Its reserve carries the same noise (180 × 1.67776 is 301.9968) and is not rounded, so it keeps the fraction the multiplier gives."
+  },
+  "guardianShardMediumLongRange": {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
       "blueprint": "Weapon_LongRange",
       "grade": 5,
