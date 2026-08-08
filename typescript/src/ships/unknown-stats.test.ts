@@ -11,7 +11,6 @@ const FIXTURE = statsFixture.unknownStats;
 /** The fixture's `unknownStats`, minus its prose, as field → symbols. */
 const BY_FIELD: Readonly<Record<string, readonly string[]>> = {
     powerDraw: FIXTURE.powerDraw,
-    mass: FIXTURE.mass,
 };
 
 test('the catalogue declares exactly the gaps the fixture pins', () => {
@@ -67,15 +66,14 @@ test('the four withdrawn Discovery Scanners are the whole of the power-draw gap'
     }
 });
 
-test('the unsized Hatch Breaker Limpet Controller is the whole of the mass gap', () => {
+test('every module mass is known, including the unsized Hatch Breaker controller', () => {
     const missing = ALL_MODULES.filter((m) => m.mass === undefined);
-    assert.deepEqual(
-        missing.map((m) => m.symbol),
-        ['Int_DroneControl_ResourceSiphon'],
-    );
-    assert.ok(isStatUnknown(missing[0], 'mass'));
-    // Every sized controller in the family has a real, non-zero mass — which is why the
-    // absent one cannot be read as zero.
+    assert.deepEqual(missing, []);
+    const unsized = getModuleBySymbol('Int_DroneControl_ResourceSiphon', ALL_MODULES);
+    assert.equal(unsized?.mass, 0);
+    assert.equal(isStatUnknown(unsized, 'mass'), false);
+    // The zero belongs only to the unsized record; every sized controller has a real,
+    // non-zero mass.
     const sized = ALL_MODULES.filter((m) =>
         m.symbol.toLowerCase().startsWith('int_dronecontrol_resourcesiphon_size'),
     );
@@ -115,8 +113,8 @@ test('a caller-supplied record is taken at its word about its own gaps', () => {
 });
 
 test('the declarations are reachable from the category catalogue alone', () => {
-    // All five are internal modules, so a consumer that never imports ALL_MODULES still
+    // All four are internal modules, so a consumer that never imports ALL_MODULES still
     // sees them — the point of the field living on the record.
-    assert.equal(modulesWithUnknownStats(INTERNAL_MODULES).length, 5);
-    assert.deepEqual(modulesWithUnknownStats(ALL_MODULES).length, 5);
+    assert.equal(modulesWithUnknownStats(INTERNAL_MODULES).length, 4);
+    assert.deepEqual(modulesWithUnknownStats(ALL_MODULES).length, 4);
 });

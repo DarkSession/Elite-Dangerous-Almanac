@@ -423,6 +423,16 @@
     "unreachableBlueprints": [],
     "unreachableExperimentals": ["special_feedback_cascade"]
   },
+  "experimentalNames": {
+    "description": "Current English in-game display names for the five effects whose exact casing, hyphenation or library-only qualifier is easy to normalize incorrectly.",
+    "map": {
+      "special_weapon_rateoffire": "Multi-servos",
+      "special_shield_efficient": "Lo-draw",
+      "special_shield_resistive": "Multi-weave",
+      "special_shiftlock_canister": "Shift-lock Canister",
+      "special_super_penetrator": "Super Penetrator"
+    }
+  },
   "blueprintCount": 109,
   "experimentalCount": 87
 }

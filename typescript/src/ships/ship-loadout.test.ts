@@ -1066,30 +1066,30 @@ test('a recipe leg on a stat the module does not have is inert, not a rejection'
     assert.ok(shot.Value! > shot.OriginalValue!);
 });
 
-test('engineering still refuses what cannot be answered', () => {
-    // Two things are not "the module has no such stat", and both still refuse rather
-    // than resolve to a guess.
-
-    // 1. The record declares the value *unknown*: nobody publishes the Resource Siphon
-    //    controller's mass, so there is nothing for Lightweight to scale.
+test('engineering accepts a sourced zero and refuses an unrepresentable stat', () => {
+    // A sourced zero is a real base value: Lightweight is offered and leaves it at zero.
     const siphon = getModuleBySymbol('Int_DroneControl_ResourceSiphon', ALL_MODULES)!;
-    assert.deepEqual(siphon.unknownStats, ['mass']);
+    assert.equal(siphon.mass, 0);
+    assert.equal(siphon.unknownStats, undefined);
     const build = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
         mod(siphon.symbol, INTERNAL_MODULES),
     );
     assert.ok(
-        !build
+        build
             .getFittedModule('Slot01_Size7')!
             .getAvailableBlueprints()
-            .some((blueprint) => blueprint.fdname === 'Misc_LightWeight'),
+            .some((blueprint) => blueprint.fdname === 'HatchBreakerLimpet_LightWeight'),
     );
-    assert.throws(
-        () => build.applyBlueprint('Slot01_Size7', 'Misc_LightWeight', { grade: 5 }),
-        /missing base stats for Mass/,
+    build.applyBlueprint('Slot01_Size7', 'HatchBreakerLimpet_LightWeight', { grade: 5 });
+    assert.equal(
+        build
+            .getFittedModule('Slot01_Size7')!
+            .Engineering!.Modifiers!.find((modifier) => modifier.Label === 'Mass')?.Value,
+        0,
     );
 
-    // 2. The catalogue models no field for the label at all. Anti-Guardian Zone
+    // The catalogue models no field for this label at all. Anti-Guardian Zone
     //    Resistance is a capability a module either has or has not, not a number this
     //    record shape can hold — see
     //    https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27.
@@ -1641,16 +1641,16 @@ test('a fitted module whose power draw is unknown is reported, not treated as fr
     );
 });
 
-test('a fitted module whose mass is unknown refuses to report a mass', () => {
-    // The one record with no mass. Summing the rest and calling it the build's mass
-    // would understate it, so the whole figure is withheld — and so is everything that
-    // depends on it.
+test('a fitted zero-mass module contributes zero to unladen mass', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
         mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES),
     );
-    assert.equal(build.unladenMass, null);
-    assert.ok(isStatUnknown(mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES), 'mass'));
+    assert.equal(build.unladenMass, 400);
+    assert.equal(
+        isStatUnknown(mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES), 'mass'),
+        false,
+    );
 
     // Its sized siblings all carry one, so the same build with any of them answers.
     build.setModule(

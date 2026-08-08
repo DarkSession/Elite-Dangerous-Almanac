@@ -15,13 +15,16 @@
  *          row. The few records no third-party registry lists (the size-8 frame
  *          shift drives and the `*_free` starter fittings) were read from the live
  *          game's own outfitting panels and are pinned in
- *          fixtures/ships/module-stats.json.
+ *          fixtures/ships/module-stats.json. The unsized Resource Siphon
+ *          controller's zero mass and the size-7 Prismatic Shield Generator's
+ *          broken-regeneration rate are read from current game module records.
  *          The stat values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
  * `symbol` is the internal identifier (e.g. `Hpt_PulseLaser_Fixed_Small`); `name`
- * the display name; `class` the module size (0-8) and `rating` its grade letter
+ * the stable descriptive English name (not byte-exact localized UI text); `class`
+ * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is an `internal` module, so a loader adds
  * `category: "internal"` from the file it read rather than repeating it 482 times.
@@ -1801,11 +1804,11 @@
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
     "rating": "I",
+    "mass": 0,
     "integrity": 20,
     "powerDraw": 0.4,
     "bootTime": 0,
-    "cost": 18040,
-    "unknownStats": ["mass"]
+    "cost": 18040
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class1",
@@ -4507,7 +4510,7 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1.1,
-    "shieldBrokenRegenRate": 4.2,
+    "shieldBrokenRegenRate": 4.25,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
     "explosiveResistance": 0.5,

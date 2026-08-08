@@ -112,6 +112,14 @@ in the doc comment of each ported module, and in long form in the domain
   `modules/**`, `modifications/**`, commit `0db9234`). Coriolis-data releases only
   its _code_ under MIT; the JSON stat values are **Elite Dangerous game data,
   property of Frontier Developments plc** — see the Frontier notice below.
+- **Current game module and English localization records** — the explicit 0 t mass on
+  `Int_DroneControl_ResourceSiphon`; unrounded Cannon damage and thermal load, Beam Laser
+  thermal load and Prismatic Shield Generator broken-regeneration rate; and the exact
+  display names of five experimental effects whose precise casing, hyphenation or lack
+  of a library qualifier matters.
+  These are **Elite Dangerous game data, property of Frontier
+  Developments plc**; the pinned game-asset digests and record-level derivation are in
+  `data/ships/SOURCES.md`.
 - **Experimental (special) effect modifiers, their material recipes, and journal
   Modifier Labels** — the numeric experimental-effect modifiers and their material
   costs, which coriolis-data does not carry, plus the attribute-to-journal-Label
@@ -226,7 +234,10 @@ in the doc comment of each ported module, and in long form in the domain
   [EDSY](https://github.com/taleden/EDSY) (`eddb.js`, taleden, **CC BY-NC 4.0**), which
   carries them for nearly every outfitting module. The remainder — the size-8 frame
   shift drives and the `*_free` starter fittings, which no third-party registry lists —
-  were read from the live game's own outfitting panels. Either way the values are
+  were read from the live game's own outfitting panels. Current game module records supply
+  the unsized Resource Siphon controller's mass and four unrounded weapon and shield values
+  for the large gimballed Cannon, huge gimballed Beam Laser and size-7 Prismatic Shield
+  Generator. In every case the values are
   **Elite Dangerous game data, property of Frontier Developments plc**; see the notice
   below. `data/ships/SOURCES.md` has the record-by-record derivation, the per-field
   coverage split, and the three candidate corrections that cross-checking **rejected**.

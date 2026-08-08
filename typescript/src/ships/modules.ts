@@ -175,9 +175,13 @@ export interface OutfittingModule {
      */
     readonly slot?: ModuleSlot;
     /**
-     * Display name, e.g. `"Pulse Laser"`.
+     * Stable, descriptive English name, e.g. `"Pulse Laser"`.
      *
      * @remarks
+     * This is a canonical library label, not a byte-exact copy of the game's current
+     * localized UI text: abbreviations such as FSD and AFM are expanded for readability.
+     * It is not localized and is not suitable as a localization key.
+     *
      * **Not unique** — the game shows most modules at several sizes and ratings, and
      * every hull's armour shares the same five names. Use {@link OutfittingModule.symbol}
      * as the key; {@link getModulesByName} returns every match.
@@ -284,7 +288,7 @@ export interface OutfittingModule {
      * "nothing to add" from "cannot be answered" instead of adding up a zero it cannot
      * justify — {@link isStatUnknown} is the predicate.
      *
-     * Present on five records today. A field named here is always absent from this
+     * Present on four records today. A field named here is always absent from this
      * record, so sourcing a value means deleting its name here in the same change.
      * Read its absence as "the module has no such stat" — that is what an undeclared
      * absence means, and the engineering calculator relies on it: a recipe that scales a
@@ -549,7 +553,7 @@ export interface OutfittingModule {
      * Weapons-capacitor draw, in megawatts — per shot, or per second on a
      * continuous-fire weapon. Shield generators carry it too, as the systems-capacitor
      * cost of one MJ per second of regeneration — the stat the journal calls
-     * `EnergyPerRegen` rather than `DistributorDraw`, and the one Hi-Cap, Lo-Draw and
+     * `EnergyPerRegen` rather than `DistributorDraw`, and the one Hi-Cap, Lo-draw and
      * Force Block move.
      */
     readonly distributorDraw?: number;
