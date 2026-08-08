@@ -5,11 +5,10 @@
  * `Engineering.BlueprintName` on a `Loadout` module).
  *
  * **A livery, not engineering.** A decorative modification has no grade, costs no
- * materials and changes no stat, and no engineer offers one: a module carrying one was
- * awarded already transformed. So these ids are **not** in {@link BLUEPRINTS} — there is
- * no recipe to store — and no menu in `ships/engineering-options` lists one, because that
- * catalogue answers what a player may apply. This module is what makes the id resolve to
- * something rather than to nothing.
+ * materials and changes no stat, and no engineer offers one. So these ids are **not** in
+ * {@link BLUEPRINTS} — there is no recipe to store — and no menu in
+ * `ships/engineering-options` lists one, because that catalogue answers what a player may
+ * apply. This module is what makes the id resolve to something rather than to nothing.
  *
  * That is the whole of its job, and it is why it is worth having. A consumer reading a
  * real journal meets `Decorative_Green` on a stored module and needs to tell "an id this
@@ -35,7 +34,7 @@
 import decorativeData from '../../../data/ships/decorative-modifications.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
 
-/** One cosmetic transformation a module can be awarded carrying. */
+/** One cosmetic transformation a module can carry in place of engineering. */
 export interface DecorativeModification {
     /**
      * The colour the id spells, e.g. `"Green"` — a display string, but a short one: no

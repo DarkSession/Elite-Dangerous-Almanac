@@ -1102,10 +1102,10 @@ getBlueprintGradeMaterials("FSD_LongRange", 5);
 //     { symbol: "DataminedWake", name: "Datamined Wake Exceptions", count: 1 }]
 ```
 
-`null` means the blueprint or grade is unknown; an empty array means a **known** recipe
-that costs nothing (only `CargoRack_IncreasedCapacity` grade 5). Blueprints are keyed
-only by the grades that have data, so iterating grades 1–5 can return `null` for a grade
-a blueprint doesn't define.
+`null` means the catalogue holds no such blueprint or grade; an empty array means a
+**known** recipe that costs nothing (only `CargoRack_IncreasedCapacity` grade 5).
+Blueprints are keyed only by the grades that have data, so iterating grades 1–5 can return
+`null` for a grade a blueprint doesn't define.
 
 Experimental (special) effects cost materials too, and carry them the same way: each
 effect in `ships/experimental-effects` is `{ modifiers, materials }`, so

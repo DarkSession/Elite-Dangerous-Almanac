@@ -1263,7 +1263,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     launchers are dropped for the same reason `blueprints.jsonc` does not carry them: a
     decorative transformation is a livery, not a recipe, and no engineer applies one. So a
     launcher left with only those entries is offering nothing, and its `noblueprints`
-    reading stands — being awarded one already transformed is not the same as being
+    reading holds — carrying one already transformed is not the same as being
     engineerable. §Decorative modifications has the evidence.
   - **Where EDSY records one generic id and the journal writes a family-specific one,
     coriolis-data settles it.** EDSY collapses Lightweight, Reinforced and Shielded to
@@ -1660,8 +1660,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   for these — EDSY carries the transformation, not a panel label — so `"Green"`, `"Red"`
   and `"Yellow"` are the ids read back rather than a wording sourced from anywhere. A
   fuller name would have to be invented, and is not.
-- **What a consumer gets.** `getBlueprint('Decorative_Green')` still answers `null`,
-  because it is still not a blueprint; `isDecorativeModification` is what tells that apart
+- **What a consumer gets.** `getBlueprint('Decorative_Green')` answers `null`, because it
+  is not a blueprint; `isDecorativeModification` is what tells that apart
   from an id the library has never heard of. `ShipLoadout.applyBlueprint` refuses a
   decorative id with a `TypeError` naming it as a livery, not with the `RangeError` a
   missing grade earns: the id is real, and the refusal has to read that way. Importing a
