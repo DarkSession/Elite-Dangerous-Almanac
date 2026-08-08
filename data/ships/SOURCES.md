@@ -1295,8 +1295,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     one registry behind it.
   - **The multi-cannon Overcharged is the one place a group follows coriolis over EDSY.**
     EDSY has a single Overcharged for every weapon; coriolis splits it, and `multiCannons`
-    lists coriolis's `MC_Overcharged`. See "Multi-cannon Overcharged: one journal id, two
-    recipes" below for the evidence and for what the split costs.
+    lists coriolis's `MC_Overcharged`. `antiXenoMultiCannons` lists that key too, but not
+    for that reason — coriolis carries no blueprint list for an anti-xeno group, so it is
+    EDSY being followed into coriolis's spelling. See "Multi-cannon Overcharged: one
+    journal id, two recipes" below for the evidence and for what the split costs.
   - **The groups name 86 of the 109 blueprints.** The other 23 are accounted for: 21 are
     Operations keys of modules sold already engineered rather than offered in a menu, and
     the other two are the registry's spellings of Anti-Guardian Zone Resistance, which every
@@ -1487,11 +1489,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `fixtures/ships/engineering-options.json` as `antiGuardianZoneResistance` (the nine
     groups, the empty list, six representative modules) and on each half of
     `splitFamilies`.
-- **Multi-cannon Overcharged: one journal id, two recipes.** `multiCannons` lists
-  **`MC_Overcharged`** where every other weapon menu lists `Weapon_Overcharged`, and the
-  record carries `journalName: "Weapon_Overcharged"`. Same shape as the scanner ids above,
-  in the family far more consumers touch: 70 of the corpus's 1902 declared entries resolve
-  through it, against one for the scanners.
+- **Multi-cannon Overcharged: one journal id, two recipes.** `multiCannons` and
+  `antiXenoMultiCannons` list **`MC_Overcharged`** where every other weapon menu lists
+  `Weapon_Overcharged`, and the record carries `journalName: "Weapon_Overcharged"`. Same
+  shape as the scanner ids above, in the family far more consumers touch: 70 of the
+  corpus's 1902 declared entries resolve through it, against one for the scanners.
   - **Source: coriolis-data, which states it twice.** `modifications/modules.json` lists
     `MC_Overcharged` on exactly two groups — `mc` (multi-cannons) and `advmc` (Advanced
     Multi-cannons) — and `Weapon_Overcharged` on the other six weapon groups offering
@@ -1514,29 +1516,51 @@ up straight through with no disambiguation at all. Both paths are evidence that
     the comparison should not be pushed that far: the scanner pair is two recipes rolling
     different stats in opposite directions on two families, this pair differs by one leg on
     one family in the direction both sources give it.
-  - **`antiXenoMultiCannons` stays on `Weapon_Overcharged`.** coriolis keys the anti-xeno
-    multi-cannons apart as `axmc` and gives that group no Overcharged at all, so it cannot
-    say which of its two keys an AX multi-cannon takes, and picking one would be inference
-    over the only source that distinguishes them. That is a narrower refusal than it
-    looks: whether the clip *leg* applies to an AX multi-cannon is a different question,
-    EDSY is not silent on it, and it is
-    [#48](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48) case B.
-  - **28 clip-bearing modules are still offered a clip-less Overcharged**, in two cases
-    needing different evidence, tracked at #48. 26 are a registry disagreement — 12
-    cannons, 10 fragment cannons, four plasma accelerators, whose groups coriolis covers
-    and gives the clip-less key. The other two are the anti-xeno multi-cannons, which sit
-    in a group coriolis leaves empty, so they are among the 13 resting on EDSY alone and
-    the only registry describing them says the clip drops. (It was 34 until the Guardian
-    weapon menus stopped offering the ordinary recipes at all: the six Guardian plasma
-    launchers left this set entirely, being sold with `Weapon_Overcharged` rather than
-    offered it.) The three laser groups also list `Weapon_Overcharged` and are
-    unaffected: no laser carries a clip.
+  - **`antiXenoMultiCannons` takes `MC_Overcharged` on EDSY's word alone.** coriolis keys
+    the anti-xeno multi-cannons apart as `axmc` and gives that group no Overcharged at all,
+    so it cannot say which of its two keys an AX multi-cannon takes. That silence does not
+    leave the question open, because this is one of the 13 groups resting on EDSY alone,
+    where the rule is to follow the only registry that covers the group unless a capture
+    contradicts it — as one does for the three Guardian weapon groups above, and none does
+    here. EDSY's single `wpn_oc` carries the clip leg on every group that lists it, `axmc`
+    included, and both AX multi-cannons carry a clip. Answering the leg answers the key
+    too. coriolis's two keys differ by exactly that leg and nothing else — same name, same
+    three other legs, same materials grade for grade — so the clip-carrying record is the
+    only one either registry could be describing, and naming it is reading EDSY rather than
+    guessing at coriolis. No registry writes this row down as it stands — coriolis carries
+    no blueprint list for the group and EDSY does not use the key — so it is the one menu
+    row assembled from one registry's coverage and the other's spelling.
+  - **26 clip-bearing modules are still offered a clip-less Overcharged** — 12 cannons, 10
+    fragment cannons and four plasma accelerators — tracked at
+    [#48](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48). These are the
+    groups coriolis *does* cover and gives the clip-less key, so they are a registry
+    disagreement rather than a silence, and following EDSY on them would overrule the
+    registry this catalogue is keyed on rather than fill a hole in it. Settling it needs a
+    capture of the outfitting panel before and after a grade-5 Overcharged roll on a cannon
+    or a fragment cannon; whether Frontier ships one recipe or two is what decides between
+    a further key split and a clip leg on `Weapon_Overcharged` itself, and no laser can
+    answer it because none carries a clip. None of the six Guardian plasma launchers is in
+    this set either: their menu lists Anti-Guardian Zone Resistance and nothing else, and
+    the Fixed Small and Fixed Medium are sold carrying `Weapon_Overcharged` rather than
+    offered it. The three laser groups do list it and are unaffected.
+  - **The sale rows follow the menu.** `pre-engineered.jsonc` sells both AX multi-cannons
+    as the tech-broker Enhanced AX Multi-Cannon with Overcharged already applied, and its
+    `blueprint` names the recipe rather than the id a journal writes, so those two rows
+    name `MC_Overcharged` as well. Nothing about the sale changes: a reward variant's stats
+    are its own stored block, never the recipe folded. What it keeps true is that no
+    pre-engineered row names a spelling that resolves, on its own module, to a different
+    recipe — the case `blueprintAvailableFor` describes, where the sale route accepts an id
+    the fold then reads as something else. `pre-engineered.test.ts` asserts it over all 73
+    rows, and both AX rows are pinned in `fixtures/ships/pre-engineered.json`, so a port
+    validates the same rule. The two Guardian plasma launchers sold under
+    `Weapon_Overcharged` are not exceptions: that id is their own recipe, and their menu
+    offers no Overcharged for it to resolve into.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14
-    multi-cannons; `applyBlueprint` accepts either spelling, resolving the journal one
-    against the menu, and folds the clip reduction. Pinned in
-    `fixtures/ships/engineering.json` as `overchargedIdCollision` — both modifier blocks in
-    full, with the medium cannon as the control that takes the same journal id and no clip
-    leg — and in `journalNames`.
+    multi-cannons and on both AX multi-cannons; `applyBlueprint` accepts either spelling,
+    resolving the journal one against the menu, and folds the clip reduction. Pinned in
+    `fixtures/ships/engineering.json` as `overchargedIdCollision` — three modifier blocks
+    in full, with the medium cannon as the control that takes the same journal id and no
+    clip leg — and in `journalNames`.
 - **An ordinary recipe on a Guardian weapon is a purchase, not an engineer roll.** The
   three Guardian weapon groups list **only** Anti-Guardian Zone Resistance, exactly as the
   six Guardian *module* groups do. They previously also listed one ordinary weapon recipe
@@ -2089,6 +2113,61 @@ under, which is why several are cited above rather than copied.
   **What it does not close:** shields, armour and weapon DPS. It carries four weapons and
   a shield generator, but a journal reports none of those figures — see
   <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12>.
+
+- **`fixtures/ships/journal-python-mkii-antixeno.json`** — a real Frontier journal
+  `Loadout` event for a **wholly unengineered** anti-xeno Python MkII (22 `Modules`
+  entries: four large and two medium anti-xeno and Guardian hardpoints, no utilities, an
+  8t cargo rack). Contributed **2026-08-08 UTC** by the repository owner. No upstream
+  project or export tool is recorded for it — the same position as the 181 origin-less
+  builds in `fixtures/ships/builds/`, and not a reason to leave it out; the loadout is
+  Frontier game output redistributed under Frontier's media-usage terms. Stored SHA-256
+  `92e01bb62f1aede9c2cd28f5a789a8db1509f3a87c667077aa8402dcbab43b9c`; held byte-for-byte
+  as received apart from re-indenting. Its `ShipName` (empty), `ShipIdent`, `ShipID` and
+  `timestamp` are kept, as the other two captures' are — they describe a ship, and nothing
+  in the event names a person.
+
+  **It is the second ground truth for the catalogue's own numbers, on a hull and a drive
+  the Viper Mk IV does not reach.** Nothing here is engineered either, so `UnladenMass`
+  699 (ours 699, exact) and `MaxJumpRange` 17.495169 (ours 17.495170, within 1e-4) are
+  Frontier reading back the base module masses and a **size-5 class-3 SCO** drive's
+  `optMass` 1050 / `maxFuel` 5 / `fuelMul` 0.012 / `fuelPower` 2.45 — a drive class the
+  Viper's size-4 capture does not exercise, on a 699t hull rather than a 261t one.
+  `CargoCapacity` 8 is exact, and unlike the Viper this build carries a rack, so its laden
+  jump is the shorter one.
+
+  **It reads the anti-xeno weapons' ammunition, which no other source here does.** The
+  game reports `AmmoInClip` and `AmmoInHopper` for what is loaded, so the Enhanced AX
+  Multi-Cannon's 100/2100 and the Guardian Shard Cannon's 5/180 confirm `clipSize` and
+  `ammoMaximum` on two records directly. The other four weapons report zero on both
+  counts, which is this ship's rearm state and not a statement about the catalogue, so
+  they are not pinned. Four of its six weapons sit in families this catalogue gives no
+  engineering menu — the Enhanced AX pair among the eight AX multi-cannons upstream denies
+  every blueprint, plus the Guardian Nanite Torpedo Pylon and the Remote Release Flak
+  Launcher — so it also demonstrates that a build made largely of unengineerable modules
+  computes end to end.
+
+  **Its credits are a second reading of the 12.25% discount.** All 18 priced modules sit
+  at **0.8775** of catalogue list, each within a credit after the game's own rounding —
+  the same fraction as the Deep Black EDSY export, now confirmed from Frontier's own
+  journal rather than from a third-party calculator, and a third discount overall beside
+  the Viper's flat 0.85. The residual credit splits cleanly and is left unmodelled: the 12
+  internals land exactly on the floor of the ratio, the six hardpoints one credit above
+  it. The hull behaves as the Viper's does rather than the Krait's — `HullValue`
+  56 801 651 is **below** even the bare `hullCost` 64 743 724 and is 0.8775 of neither
+  convention — and its own `Rebuy` 3 268 938 is not 5% of its own figures either (that
+  truncates to 3 268 937). So a journal's credits remain a purchase record. Pinned by
+  `fixtures/ships/slef-export.json` (`pythonMkII`) and `fixtures/ships/jump-range.json`.
+
+  **What it does not close:** shields, armour and weapon DPS, exactly as the Viper Mk IV
+  does not — it carries six weapons and a shield generator, and a journal reports none of
+  those figures. See
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12>.
+
+  **What it uncovered:** `LoadoutModule` models no ammunition, so a journal round trip
+  drops `AmmoInClip` and `AmmoInHopper` on every weapon that carries them. The other two
+  captures report zero on every weapon, so this capture is the first to show it —
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/56>. The fixture reads
+  those two fields off the stored capture rather than off a parsed build for that reason.
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed

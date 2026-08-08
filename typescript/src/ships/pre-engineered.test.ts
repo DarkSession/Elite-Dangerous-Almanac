@@ -11,6 +11,7 @@ import { BLUEPRINTS, getBlueprint, getBlueprintCost } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
 import { blueprintAvailableFor } from './loadout-engineering.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import fixture from '../../../fixtures/ships/pre-engineered.json' with { type: 'json' };
@@ -121,6 +122,23 @@ test('a reward variant records a real grade of a real blueprint', () => {
         assert.ok(
             grades.includes(String(variant.grade)),
             `${variant.symbol}: ${variant.blueprint} has no grade ${variant.grade}`,
+        );
+    }
+});
+
+test('every variant names the recipe its own module rolls, not a colliding spelling', () => {
+    // `blueprint` joins to `BLUEPRINTS`, so it must name the recipe rather than the id a
+    // journal writes — and on the three colliding ids those differ. A row recorded under
+    // the journal spelling would be accepted by `blueprintAvailableFor` through the sale
+    // route while `applyBlueprint` folded the *other* recipe, which
+    // `loadout-engineering.ts` calls out as reachable and otherwise uncatchable. Asserted
+    // over the whole catalogue rather than on the rows that meet it today, because the
+    // hazard arrives with the next row somebody transcribes from a journal.
+    for (const variant of PRE_ENGINEERED_MODULES) {
+        assert.equal(
+            resolveBlueprintForModule(variant.symbol, variant.blueprint),
+            variant.blueprint,
+            `${variant.symbol}: ${variant.blueprint} resolves to another recipe on its own module`,
         );
     }
 });

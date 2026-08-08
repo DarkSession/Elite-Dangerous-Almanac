@@ -1286,9 +1286,10 @@ engineered](#modules-you-can-buy-already-engineered) is what carries it.
 >
 > **The commonest case is Overcharged on a multi-cannon**, not the scanners. A
 > multi-cannon's Overcharged also cuts the clip — 3% at grade 1 to 15% at grade 5 — where
-> the recipe every other weapon takes leaves it alone, so the multi-cannon menus list
-> `MC_Overcharged` and the game writes `Weapon_Overcharged` for both. 70 of the build
-> corpus's declared entries need this resolution, against one for the scanners.
+> the recipe every other weapon takes leaves it alone, so the multi-cannon menus, anti-xeno
+> ones included, list `MC_Overcharged` and the game writes `Weapon_Overcharged` for both.
+> 70 of the build corpus's declared entries need this resolution, against one for the
+> scanners.
 >
 > ```ts
 > resolveBlueprintForModule(
@@ -1371,18 +1372,22 @@ getPreEngineeredByBlueprint("SeekerMissileRack_Drag").map((v) => v.symbol);
 
 `acquisition` tells the three kinds apart, and they behave differently:
 
-|                  | `mercenary` (22)    | `communityGoal` (30)  | `techBroker` (21)     |
-| ---------------- | ------------------- | --------------------- | --------------------- |
-| Blueprint id     | Merc Operations key | ordinary journal name | ordinary journal name |
-| Grade on arrival | always 1            | 28 of 30 at grade 5   | 14 of 21 at grade 5   |
-| Experimental     | none                | 8 of 30 carry one     | 4 of 21 carry one     |
-| Price            | `mercCoinCost`      | not bought            | not bought            |
-| Stat block       | not published       | `modifiers`           | `modifiers`           |
+|                  | `mercenary` (22)    | `communityGoal` (30) | `techBroker` (21)   |
+| ---------------- | ------------------- | -------------------- | ------------------- |
+| Blueprint id     | Merc Operations key | ordinary recipe key  | ordinary recipe key |
+| Grade on arrival | always 1            | 28 of 30 at grade 5  | 14 of 21 at grade 5 |
+| Experimental     | none                | 8 of 30 carry one    | 4 of 21 carry one   |
+| Price            | `mercCoinCost`      | not bought           | not bought          |
+| Stat block       | not published       | `modifiers`          | `modifiers`         |
 
-A variant's identity is the **`(symbol, blueprint, grade, experimental)` quadruple** — no
-narrower key holds. The medium Seeker Missile Rack has three High Capacity rewards that
-differ only in the effect applied, and the medium Guardian Shard Cannon carries Long
-Range with no experimental **twice**: grade 5 as a CG reward, grade 1 from a tech broker.
+`blueprint` names the recipe, so it joins straight to `BLUEPRINTS`. Where the game writes
+one id for two recipes, it is the key the module's **own** menu lists rather than the id a
+journal carries — and where that menu does not offer the recipe at all, the id the sale
+carries. A variant's identity is the **`(symbol, blueprint, grade, experimental)`
+quadruple** — no narrower key holds. The medium Seeker Missile Rack has three High
+Capacity rewards that differ only in the effect applied, and the medium Guardian Shard
+Cannon carries Long Range with no experimental **twice**: grade 5 as a CG reward, grade 1
+from a tech broker.
 
 ##### Building a ship with one
 

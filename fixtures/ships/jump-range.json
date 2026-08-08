@@ -60,6 +60,27 @@
       "ladenJumpRange": 20.920683,
       "totalUnladenRange": 120.666505,
       "totalLadenRange": 120.666505
+    },
+    "pythonMkII": {
+      "build": "fixtures/ships/journal-python-mkii-antixeno.json",
+      "note": "A second wholly UNENGINEERED journal capture, on a hull and a drive class the Viper MkIV does not reach: a size-5 class-3 SCO drive in a 699t anti-xeno Python MkII. `sourceMaxJumpRange` is Frontier's own figure for a drive performing exactly as the catalogue sells it, so agreement here checks the SCO drive constants and the module masses with nothing folded in. Unlike the Viper this build carries cargo, so laden and unladen are different jumps.",
+      "ship": "python_nx",
+      "frameShiftDrive": {
+        "optMass": 1050,
+        "maxFuel": 5,
+        "fuelMul": 0.012,
+        "fuelPower": 2.45,
+        "jumpBoost": 0
+      },
+      "unladenMass": 699.0,
+      "mainFuel": 16,
+      "cargoCapacity": 8,
+      "sourceMaxJumpRange": 17.495169,
+      "maxJumpRange": 17.49517,
+      "unladenJumpRange": 17.226014,
+      "ladenJumpRange": 17.035408,
+      "totalUnladenRange": 61.165878,
+      "totalLadenRange": 60.482891
     }
   }
 }

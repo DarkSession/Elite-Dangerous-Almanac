@@ -136,7 +136,7 @@
     ]
   },
   "overchargedIdCollision": {
-    "description": "The same shape as `scannerIdCollision` and by far the commoner case: the game writes `Weapon_Overcharged` for every weapon's Overcharged, but a multi-cannon's also cuts the clip 3-15% and the others' does not, so `blueprints.jsonc` keys the multi-cannon side under `MC_Overcharged` — the spelling the multi-cannon menus list. 70 of the build corpus's 1902 declared entries need this resolution, against one for the scanners. Each case pins the id as a journal writes it, the `BLUEPRINTS` key the fitted module actually rolls, and the exact `Engineering.Modifiers` block that follows at the pinned grade and quality. The cannon case is the control: same id, same three legs, and no `AmmoClipSize` — which is also where https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48 lives, EDSY holding that a cannon's clip should drop here too. If that is ever settled in EDSY's favour this case is what has to change, deliberately.",
+    "description": "The same shape as `scannerIdCollision` and by far the commoner case: the game writes `Weapon_Overcharged` for every weapon's Overcharged, but a multi-cannon's also cuts the clip 3-15% and a cannon's does not, so `blueprints.jsonc` keys the clip-carrying side under `MC_Overcharged` — the spelling the multi-cannon menus list. 70 of the build corpus's 1902 declared entries need this resolution, against one for the scanners. Each case pins the id as a journal writes it, the `BLUEPRINTS` key the fitted module actually rolls, and the exact `Engineering.Modifiers` block that follows at the pinned grade and quality. The anti-xeno multi-cannon is the case that rests on one registry: coriolis-data carries no blueprint list for an anti-xeno group, EDSY's single Overcharged carries the clip leg wherever it is offered, and following the sole covering registry is what puts this module on the clip-carrying record. The cannon case is the control: same id, same three legs, and no `AmmoClipSize` — which is where the whole of https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48 lives, EDSY holding that a cannon's clip should drop here too and coriolis-data, which this catalogue is keyed on, covering the group and saying it should not. If that is ever settled in EDSY's favour this case is what has to change, deliberately.",
     "grade": 5,
     "quality": 1,
     "cases": [
@@ -153,6 +153,27 @@
         "modifiers": [
           { "Label": "AmmoClipSize", "Value": 85, "OriginalValue": 100 },
           { "Label": "Damage", "Value": 3.723, "OriginalValue": 2.19 },
+          {
+            "Label": "DistributorDraw",
+            "Value": 0.1485,
+            "OriginalValue": 0.11
+          },
+          { "Label": "ThermalLoad", "Value": 0.207, "OriginalValue": 0.18 }
+        ]
+      },
+      {
+        "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
+        "blueprint": "Weapon_Overcharged",
+        "resolved": "MC_Overcharged",
+        "base": {
+          "Damage": 3.7,
+          "AmmoClipSize": 100,
+          "DistributorDraw": 0.11,
+          "ThermalLoad": 0.18
+        },
+        "modifiers": [
+          { "Label": "AmmoClipSize", "Value": 85, "OriginalValue": 100 },
+          { "Label": "Damage", "Value": 6.29, "OriginalValue": 3.7 },
           {
             "Label": "DistributorDraw",
             "Value": 0.1485,
@@ -261,7 +282,7 @@
         "id": "MC_Overcharged",
         "accepts": "Hpt_MultiCannon_Fixed_Small",
         "refuses": "Hpt_BeamLaser_Fixed_Small",
-        "modules": 14
+        "modules": 16
       },
       {
         "id": "FuelScoop_Efficiency",

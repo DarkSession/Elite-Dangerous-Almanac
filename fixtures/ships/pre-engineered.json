@@ -385,6 +385,56 @@
           "value": 0.15
         }
       ]
+    },
+    {
+      "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
+      "name": "Enhanced AX Multi-Cannon",
+      "blueprint": "MC_Overcharged",
+      "grade": 5,
+      "acquisition": "techBroker",
+      "experimental": "special_auto_loader",
+      "modifiers": [
+        {
+          "label": "Damage",
+          "method": "multiplicative",
+          "value": 0.1
+        },
+        {
+          "label": "PowerDraw",
+          "method": "multiplicative",
+          "value": 0.75
+        },
+        {
+          "label": "ThermalLoad",
+          "method": "multiplicative",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
+      "name": "Enhanced AX Multi-Cannon",
+      "blueprint": "MC_Overcharged",
+      "grade": 5,
+      "acquisition": "techBroker",
+      "experimental": "special_auto_loader",
+      "modifiers": [
+        {
+          "label": "Damage",
+          "method": "multiplicative",
+          "value": 0.1
+        },
+        {
+          "label": "PowerDraw",
+          "method": "multiplicative",
+          "value": 0.75
+        },
+        {
+          "label": "ThermalLoad",
+          "method": "multiplicative",
+          "value": 3
+        }
+      ]
     }
   ],
   "multiVariant": {

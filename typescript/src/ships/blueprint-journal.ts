@@ -49,10 +49,11 @@ import { getBlueprintsForModule } from './engineering-options.js';
  * have. This is the common case of the three: 70 of the build corpus's 1902 declared
  * entries go through it, against one for the scanners.
  *
- * The clip penalty is folded on a multi-cannon and on nothing else. Whether the other
- * clip-bearing weapons should take one too is
- * {@link https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48 | issue #48}:
- * the two registries do not agree, and this catalogue follows the one it is keyed on.
+ * The clip penalty is folded on a multi-cannon — anti-xeno ones included — and on nothing
+ * else. Whether the cannons, fragment cannons and plasma accelerators should take one too
+ * is {@link https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48 | issue #48}:
+ * the two registries do not agree on those, and this catalogue follows the one it is keyed
+ * on.
  *
  * **Nothing here lists the pairing.** Each of those three records names its own journal
  * spelling in {@link Blueprint.journalName}, because that is a fact about the recipe; this
@@ -100,6 +101,8 @@ import { getBlueprintsForModule } from './engineering-options.js';
  *
  * // A multi-cannon's Overcharged is the multi-cannon recipe, clip penalty and all.
  * resolveBlueprintForModule('Hpt_MultiCannon_Fixed_Medium', 'Weapon_Overcharged');
+ * // -> 'MC_Overcharged'
+ * resolveBlueprintForModule('Hpt_ATMultiCannon_Gimbal_Medium', 'Weapon_Overcharged');
  * // -> 'MC_Overcharged'
  * resolveBlueprintForModule('Hpt_BeamLaser_Fixed_Small', 'Weapon_Overcharged');
  * // -> 'Weapon_Overcharged'

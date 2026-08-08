@@ -10,17 +10,19 @@
  *          (github.com/EDCD/coriolis-data) modifications/modules.json — the same per-group
  *          lists keyed by the journal `BlueprintName`s this catalogue joins on, which is
  *          what settles the families EDSY records under one generic id, and which of the
- *          two Overcharged recipes the multi-cannons take. coriolis-data is (c) EDCD under
- *          the MIT License. Four rows come from neither registry: the Operations Merc-Coin
- *          blueprints `FuelScoop_Efficiency` and the three lasers'
+ *          two Overcharged recipes the ordinary multi-cannons take. coriolis-data is (c)
+ *          EDCD under the MIT License. Four rows come from neither registry: the
+ *          Operations Merc-Coin blueprints `FuelScoop_Efficiency` and the three lasers'
  *          `PulseLaser_ThermalPlasmaConversion`, `BurstLaser_ThermalPlasmaConversion`
  *          and `BeamLaser_ThermalPlasmaConversion`, whose module family comes from the
  *          Inara blueprint registry
  *          (https://inara.cz/elite/blueprints/) — the same source the recipes themselves
  *          came from. Neither EDSY nor coriolis-data publishes the Operations family at
  *          all. See SOURCES.md for how that read was obtained and what it was corroborated
- *          against. The underlying game logic is Elite Dangerous data, property of
- *          Frontier Developments plc, under Frontier's media-usage terms:
+ *          against. One further row comes from both registries rather than from neither —
+ *          the anti-xeno multi-cannons' Overcharged, EDSY's coverage under coriolis-data's
+ *          key, described below. The underlying game logic is Elite Dangerous data,
+ *          property of Frontier Developments plc, under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
  * Availability is a property of the **module**, not of the blueprint: a Pulse Laser and
@@ -60,9 +62,12 @@
  * `journalName` in `blueprints.jsonc`. What this file contributes is the half only it
  * knows — which of the two recipes a given module is offered. `resolveBlueprintForModule`
  * reads a menu against those journal names, so resolution needs no second list to drift
- * from this one. `multiCannons` is the third menu of that shape: it lists coriolis-data's
- * `MC_Overcharged`, the multi-cannon Overcharged that also cuts the clip by 3–15%, where
- * the game writes the `Weapon_Overcharged` every other weapon menu lists.
+ * from this one. The third id of that shape is coriolis-data's `MC_Overcharged`, the
+ * Overcharged that also cuts the clip by 3–15% where the game writes the
+ * `Weapon_Overcharged` every other weapon menu lists; `multiCannons` and
+ * `antiXenoMultiCannons` list it. The anti-xeno menu takes it on EDSY's word rather than
+ * coriolis's, which carries no blueprint list for an anti-xeno group — see §Multi-cannon
+ * Overcharged in SOURCES.md.
  *
  * **A menu may list an Operations recipe.** Most Operations ids belong to modules bought
  * already engineered and no menu names them, but four are recipes a player applies: the
@@ -519,7 +524,7 @@
     "antiXenoMultiCannons": {
       "name": "Exp - Anti-Xeno Multi-Cannons",
       "blueprints": [
-        "Weapon_Overcharged"
+        "MC_Overcharged"
       ],
       "experimentals": [
         "special_auto_loader"

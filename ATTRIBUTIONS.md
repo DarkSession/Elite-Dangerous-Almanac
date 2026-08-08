@@ -137,13 +137,18 @@ in the doc comment of each ported module, and in long form in the domain
   plc**; see the notice below. The capture itself is not redistributed —
   `data/ships/SOURCES.md` → §Decorative modifications records what was read from it.
 - **The journal spelling of the multi-cannon Overcharged blueprint** — the `journalName`
-  on `MC_Overcharged` in `data/ships/blueprints.jsonc`, and the multi-cannon menus listing
-  that key rather than `Weapon_Overcharged`, from
+  on `MC_Overcharged` in `data/ships/blueprints.jsonc`, and the ordinary multi-cannon menu
+  listing that key rather than `Weapon_Overcharged`, from
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (**MIT** for its code; the
   values are game data): `modifications/blueprints.json` gives both keys the fdname
   `Weapon_Overcharged`, and `modifications/modules.json` lists the multi-cannon key on the
-  `mc` and `advmc` groups alone. Acquisition date and digests in
-  `data/ships/SOURCES.md` → §Engineering options, "Multi-cannon Overcharged".
+  `mc` and `advmc` groups alone. The anti-xeno multi-cannon menu lists it on
+  [EDSY](https://github.com/taleden/EDSY)'s authority instead (`eddb.js`, taleden,
+  **CC BY-NC 4.0**), whose single Overcharged carries the clip penalty on every group
+  offering it — coriolis-data carries no blueprint list for an anti-xeno group, so that row
+  is credited to neither registry alone. coriolis-data's acquisition date and digest are in
+  `data/ships/SOURCES.md` → §Engineering options, "Multi-cannon Overcharged"; EDSY's are in
+  the source table at the head of that file.
 - **That `special_feedback_cascade` has been withdrawn upstream** — recorded in
   `data/ships/SOURCES.md` rather than in a payload, from
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)

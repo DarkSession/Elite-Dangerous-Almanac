@@ -10,6 +10,7 @@ import { ALL_MODULES } from './modules-all.js';
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
+import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
 import fixture from '../../../fixtures/ships/slef-export.json' with { type: 'json' };
 import jumpFixture from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
@@ -451,6 +452,132 @@ test('the unpriced entries in a stock journal are the ones the hull came with', 
     // …and pricing them at list is what puts our ModulesValue above the source's.
     const event = ShipLoadout.fromLoadout(viper).toLoadoutEvent();
     assert.ok(event.ModulesValue! > viper.ModulesValue!);
+});
+
+const python = pythonJournal as unknown as LoadoutEvent;
+
+test('an anti-xeno journal Loadout event reproduces every figure the game reported', () => {
+    const event = ShipLoadout.fromLoadout(python).toLoadoutEvent();
+    assert.deepEqual(Object.keys(event), fixture.pythonMkII.topLevelKeys);
+    assert.deepEqual(
+        figuresOf(event, fixture.pythonMkII.recomputed),
+        fixture.pythonMkII.recomputed,
+    );
+
+    assert.equal(python.Modules.length, fixture.pythonMkII.moduleCount);
+    assert.deepEqual(
+        python.Modules.map((m) => m.Slot).filter((s) => parseSlotName(s) === null),
+        fixture.pythonMkII.nonOutfittingSlots,
+    );
+});
+
+test('a stock anti-xeno build agrees with Frontier on a hull the other captures do not reach', () => {
+    // The second unengineered capture, and the only one on a Python MkII or an SCO drive.
+    // Nothing is folded in, so the agreement reads the base module masses and the drive
+    // constants themselves — on a 699t hull rather than the Viper's 261t.
+    assert.deepEqual(
+        python.Modules.filter((m) => m.Engineering !== undefined),
+        [],
+        'the fixture stopped being a stock build',
+    );
+
+    const event = ShipLoadout.fromLoadout(python).toLoadoutEvent();
+    const { journalTolerance } = fixture.pythonMkII;
+    assert.ok(Math.abs(event.UnladenMass! - journalTolerance.UnladenMass) < 1e-4);
+    assert.ok(Math.abs(event.MaxJumpRange! - journalTolerance.MaxJumpRange) < 1e-4);
+    assert.equal(python.CargoCapacity, fixture.pythonMkII.recomputed.CargoCapacity);
+});
+
+test("a journal's own ammo counts check the catalogue's clip and hopper figures", () => {
+    // The one external reading of `clipSize` / `ammoMaximum` a Loadout gives: the game
+    // reports what is actually in the magazine and the reserve. Only weapons carrying ammo
+    // at capture time say anything — a rearm state of zero is a fact about the ship.
+    const loaded = fixture.pythonMkII.ammunition.loaded;
+    assert.ok(loaded.length, 'no ammunition pinned');
+    for (const expected of loaded) {
+        // Read off the raw capture, not the parsed build: `LoadoutModule` does not model
+        // the ammunition fields, so a round trip drops them — see
+        // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/56.
+        const fitted = pythonJournal.Modules.find(
+            (m) => m.Item.toLowerCase() === expected.symbol.toLowerCase(),
+        );
+        assert.ok(fitted, `${expected.symbol} is not in the capture`);
+        assert.equal(fitted.AmmoInClip, expected.AmmoInClip, expected.symbol);
+        assert.equal(fitted.AmmoInHopper, expected.AmmoInHopper, expected.symbol);
+        const catalogued = module(expected.symbol);
+        assert.equal(catalogued.clipSize, expected.AmmoInClip, `${expected.symbol} clipSize`);
+        assert.equal(
+            catalogued.ammoMaximum,
+            expected.AmmoInHopper,
+            `${expected.symbol} ammoMaximum`,
+        );
+    }
+});
+
+test('the jump figures for the anti-xeno journal build match the fixture', () => {
+    const build = ShipLoadout.fromLoadout(python);
+    const pinned = jumpFixture.builds.pythonMkII;
+    assert.deepEqual(
+        {
+            optMass: round6(build.frameShiftDrive.optMass),
+            maxFuel: build.frameShiftDrive.maxFuel,
+            fuelMul: build.frameShiftDrive.fuelMul,
+            fuelPower: build.frameShiftDrive.fuelPower,
+            jumpBoost: build.frameShiftDrive.jumpBoost,
+        },
+        pinned.frameShiftDrive,
+    );
+
+    const summary = build.jumpRangeSummary();
+    assert.equal(round6(summary.max), pinned.maxJumpRange);
+    assert.equal(round6(summary.unladen), pinned.unladenJumpRange);
+    assert.equal(round6(summary.laden), pinned.ladenJumpRange);
+    assert.equal(round6(summary.totalUnladen), pinned.totalUnladenRange);
+    assert.equal(round6(summary.totalLaden), pinned.totalLadenRange);
+
+    // Unlike the Viper this build carries a cargo rack, so a laden jump is the shorter one.
+    assert.ok(summary.laden < summary.unladen);
+    assert.ok(Math.abs(summary.max - pinned.sourceMaxJumpRange) < 1e-4);
+    assert.equal(pinned.sourceMaxJumpRange, python.MaxJumpRange);
+});
+
+test('the anti-xeno build was bought at the same discount the Deep Black export was', () => {
+    // A second independent reading of the price table at 0.8775, from a different source
+    // kind — the Deep Black is an EDSY export, this is Frontier's own journal — and a third
+    // discount overall beside the Viper's flat 0.85. The hull agrees with the Viper rather
+    // than the Krait: below even the bare hullCost, and at neither convention's fraction.
+    const { discount, recomputed } = fixture.pythonMkII;
+    assert.equal(discount.sourceHullValue, python.HullValue);
+    assert.equal(discount.sourceModulesValue, python.ModulesValue);
+    assert.equal(discount.sourceRebuy, python.Rebuy);
+    assert.equal(discount.moduleDiscount, fixture.deepBlack.discount.moduleDiscount);
+
+    const priced = python.Modules.filter((m) => m.Value !== undefined);
+    assert.equal(priced.length, discount.pricedInSource);
+    for (const m of priced) {
+        const list = module(m.Item).cost!;
+        const paid = Math.abs(m.Value! - list * discount.moduleDiscount);
+        assert.ok(paid <= discount.moduleDiscountToleranceCr, `${m.Item} paid ${m.Value}`);
+    }
+
+    assert.equal(recomputed.HullValue, discount.hullCost);
+    assert.ok(discount.sourceHullValue < discount.hullCost);
+    assert.ok(discount.hullCost < discount.hullRetailCost);
+
+    assert.equal(
+        Math.trunc((python.HullValue! + python.ModulesValue!) * fixture.rebuyFraction),
+        discount.rebuyFromOwnFigures,
+    );
+    assert.notEqual(discount.rebuyFromOwnFigures, discount.sourceRebuy);
+
+    assert.deepEqual(
+        python.Modules.filter(
+            (m) =>
+                m.Value === undefined &&
+                !/^(PaintJob|Ship|Bobble|Decal|Weapon|Engine|Vessel)/.test(m.Slot),
+        ).map((m) => m.Slot),
+        discount.unpricedInSource,
+    );
 });
 
 test('every module is priced from the catalogue, whatever the source paid', () => {
