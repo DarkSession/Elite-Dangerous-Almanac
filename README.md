@@ -1077,6 +1077,16 @@ experimental effect (from `ships/experimental-effects`) into journal-style modif
 The calculator is validated against the real "Deep Black" export — its size-8 drive's
 optimal mass 4670 → 7528.04 at G5 Long Range + Mass Manager.
 
+**Not every id in that field is a recipe.** The game writes a handful of cosmetic
+transformations — `Decorative_Green`, `Decorative_Red`, `Decorative_Yellow` — in the same
+`BlueprintName` / `EngineerModifications` field, and they are a livery: no grade, no
+materials, no stat moved, and no engineer applies one. `getBlueprint` answers `null` for
+them because they are not blueprints; `isDecorativeModification` from
+`ships/decorative-modifications` is how you tell that apart from an id the library has
+never heard of, and `applyBlueprint` refuses one by name rather than as an unknown
+blueprint. Importing a build that carries one is unaffected — `fromLoadout` stores the
+`Engineering` block as the journal wrote it.
+
 **Material requirements** — what a roll _costs_ — sit alongside the modifiers in
 `ships/blueprints`: every grade is `{ features, materials }`, so `getBlueprintGrade`
 gives the modifiers and `getBlueprintGradeMaterials` the recipe. Each requirement is

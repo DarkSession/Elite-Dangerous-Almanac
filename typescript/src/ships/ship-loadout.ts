@@ -80,6 +80,7 @@ import {
 } from './slots.js';
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
+import { isDecorativeModification } from './decorative-modifications.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
@@ -909,7 +910,9 @@ export class ShipLoadout {
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
-     * @throws {TypeError} If the fitted module has no stats to engineer; or is not offered
+     * @throws {TypeError} If the fitted module has no stats to engineer; or the id names a
+     * decorative modification, which is a livery rather than a recipe (see
+     * {@link DECORATIVE_MODIFICATIONS}); or the module is not offered
      * the blueprint — by its engineering menu, by the journal spelling of an entry on that
      * menu, by the generic spelling of a recipe that menu lists under a family's name, or by
      * being sold already carrying it; or is not offered
@@ -953,6 +956,15 @@ export class ShipLoadout {
             recipe === blueprintName
                 ? `"${blueprintName}"`
                 : `"${blueprintName}" (${recipe} on this module)`;
+        // A decorative transformation reaches this method as a real id that names no
+        // recipe: the game writes it in the same field, but it has no grade, costs
+        // nothing and moves no stat, and no engineer applies one. Say that, rather than
+        // letting the grade lookup below report a genuine id as an unknown blueprint.
+        if (isDecorativeModification(recipe)) {
+            throw new TypeError(
+                `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; it has no grade and modifies nothing, and no engineer applies one`,
+            );
+        }
         const features = getBlueprintGrade(recipe, options.grade);
         if (!features) {
             throw new RangeError(

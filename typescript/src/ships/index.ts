@@ -43,7 +43,10 @@
  * - **Engineering** — {@link computeModifiers} applies a {@link BLUEPRINTS} recipe and
  *   an {@link EXPERIMENTAL_EFFECTS} entry; {@link ENGINEERING_OPTION_GROUPS} answers
  *   what a module *can* be engineered with, and {@link PRE_ENGINEERED_MODULES} covers
- *   the fixed-roll modules you cannot craft.
+ *   the fixed-roll modules you cannot craft. {@link DECORATIVE_MODIFICATIONS} is the
+ *   odd one out and the one to reach for when an id resolves to no recipe: the game
+ *   writes a handful of cosmetic transformations in the same field, and they are a
+ *   livery rather than engineering.
  *
  * Note that a hull's derived figures split by cost: cheap stored values are properties
  * ({@link ShipLoadout.unladenMass}), while anything that recomputes or takes options is
@@ -222,6 +225,13 @@ export {
     type EngineeringOptionGroup,
 } from './engineering-options.js';
 export { resolveBlueprintForModule } from './blueprint-journal.js';
+export {
+    DECORATIVE_MODIFICATIONS,
+    getDecorativeModification,
+    getDecorativeModificationsForModule,
+    isDecorativeModification,
+    type DecorativeModification,
+} from './decorative-modifications.js';
 export {
     PRE_ENGINEERED_MODULES,
     getPreEngineeredVariants,

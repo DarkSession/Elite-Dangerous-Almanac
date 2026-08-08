@@ -1,0 +1,45 @@
+/*
+ * **Decorative modifications** — the cosmetic transformations the game records in the
+ * same field as an engineering blueprint, keyed by the Frontier `fdname` a journal
+ * writes (`EngineerModifications` on a `StoredModules` entry, `Engineering.BlueprintName`
+ * on a `Loadout` module).
+ *
+ * These are a livery, not engineering, which is why they are here rather than in
+ * `blueprints.jsonc`: they have no grade, cost no materials and change no stat, and no
+ * engineer offers one — a module carrying one was awarded already transformed. They are
+ * absent from `engineering-options.jsonc` for the same reason, that file listing what a
+ * player may apply at an engineer. The ids are real all the same, and a build carrying
+ * one has to resolve to something rather than to nothing; that is what this file is for.
+ *
+ * Sources: the ids, and the module they sit on, are read off a `StoredModules` capture
+ *          contributed by the repository owner (521 stored modules, 2026-08-07 UTC,
+ *          scrubbed of the commander, carrier and market it came from), which holds three
+ *          medium turreted Remote Release Flak Launchers, one per colour, each awarded
+ *          already carrying its transformation. EDSY (github.com/taleden/EDSY, taleden,
+ *          CC BY-NC 4.0) lists the same three transformations and gives them no
+ *          modifiers, which is the corroboration that they move no stat. The transformations
+ *          themselves are Elite Dangerous data, property of Frontier Developments plc,
+ *          under Frontier's media-usage terms:
+ *          https://forums.frontier.co.uk/threads/510879/
+ *
+ * Each record is { name, modules }. `name` is the colour the id spells — no registry
+ * publishes a display string for these, and none is guessed. `modules` lists every module
+ * symbol observed carrying the transformation, joined to the module catalogues; it is
+ * what has been seen, not a claim about what the game could put one on.
+ *
+ * Full provenance: data/ships/SOURCES.md, §Decorative modifications.
+ */
+{
+  "Decorative_Green": {
+    "name": "Green",
+    "modules": ["Hpt_FlakMortar_Turret_Medium"]
+  },
+  "Decorative_Red": {
+    "name": "Red",
+    "modules": ["Hpt_FlakMortar_Turret_Medium"]
+  },
+  "Decorative_Yellow": {
+    "name": "Yellow",
+    "modules": ["Hpt_FlakMortar_Turret_Medium"]
+  }
+}
