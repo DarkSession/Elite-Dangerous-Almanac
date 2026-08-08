@@ -158,6 +158,19 @@ in the doc comment of each ported module, and in long form in the domain
   is credited to neither registry alone. coriolis-data's acquisition date and digest are in
   `data/ships/SOURCES.md` → §Engineering options, "Multi-cannon Overcharged"; EDSY's are in
   the source table at the head of that file.
+- **That Overcharged's clip penalty stops at the multi-cannon** — recorded in
+  `data/ships/SOURCES.md` rather than in a payload: the reason the 26 clip-bearing
+  cannons, fragment cannons and plasma accelerators offered `Weapon_Overcharged` fold no
+  `AmmoClipSize` leg, where [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden,
+  **CC BY-NC 4.0**) carries one for every weapon. Settled by a Frontier journal capture,
+  `fixtures/ships/journal-federation-corvette.json` (credited under Ground-truth ship
+  builds below), whose grade-5 cannon reports the recipe's other legs and no clip. The
+  same reading is carried by [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
+  and by [msarilar/EDEngineer](https://github.com/msarilar/EDEngineer)
+  `EDEngineer/Resources/Data/blueprints.json` (**MIT** for its code; the values are game
+  data), which keys a recipe on weapon type, blueprint and grade rather than on a recipe
+  id and gives the clip leg to the multi-cannon alone. EDEngineer's acquisition date and
+  digest are in `data/ships/SOURCES.md` → §Upstream snapshots.
 - **That `special_feedback_cascade` has been withdrawn upstream** — recorded in
   `data/ships/SOURCES.md` rather than in a payload, from
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
@@ -236,7 +249,7 @@ in the doc comment of each ported module, and in long form in the domain
   field-by-field joins, the units each source uses, and the handful of figures derived
   from a family rule rather than read from a registry.
 
-- **Ground-truth ship builds (test fixtures, not shipped)** — six real builds used to
+- **Ground-truth ship builds (test fixtures, not shipped)** — ten real builds used to
   check the loadout maths against something other than itself.
   `fixtures/ships/slef-the-deep-black.json` is a real
   [EDSY](https://edsy.org/) export (taleden, **CC BY-NC 4.0**).
@@ -253,6 +266,10 @@ in the doc comment of each ported module, and in long form in the domain
   from its example data, which travels under Frontier's media-usage terms below like every
   other build here. Credit to UFO Studios & AW2C Systems Ltd for capturing and publishing
   the log. No code from that project is used.
+  `fixtures/ships/journal-python-mkii-antixeno.json`, `journal-corsair.json` and
+  `journal-federation-corvette.json` are real Frontier journal `Loadout` events
+  contributed by the repository owner from their own fleet, with no upstream project to
+  credit; the Corvette is what says Overcharged does not cut a cannon's clip.
   `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json`,
   `slef-inara-panther-mkii.json` and `slef-inara-cutter-antixeno.json` are real
   [Inara](https://inara.cz/) SLEF exports, contributed by the repository owner from their
@@ -262,7 +279,7 @@ in the doc comment of each ported module, and in long form in the domain
   version. The Type-11 predates that scrubbing and still carries the Inara ids it was
   received with — `data/ships/SOURCES.md` records the difference and that closing it is
   the owner's call.
-  All seven are Elite Dangerous game output and remain the property of Frontier
+  All ten are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`

@@ -56,7 +56,11 @@
  * multi-cannons: coriolis-data splits Overcharged into a multi-cannon key carrying an
  * `AmmoClipSize` leg and the `Weapon_Overcharged` every other weapon takes, gives both the
  * fdname `Weapon_Overcharged`, and lists the multi-cannon one on its `mc` and `advmc`
- * groups alone. See §Multi-cannon Overcharged in SOURCES.md.
+ * groups alone. A journal capture holds the clip-less side down: a large gimballed cannon
+ * rolled to grade 5 under this id reports no `AmmoClipSize` modifier and a full magazine,
+ * where a recipe that charges a clip states the leg. EDSY's single Overcharged carries the
+ * clip leg on every weapon, and is the reading not followed here. See §Multi-cannon
+ * Overcharged in SOURCES.md.
  *
  * `grades` maps grade "1".."5" to { features, materials }.
  * A feature is { label, method, min, max }: `label` the journal Modifier Label, `method`

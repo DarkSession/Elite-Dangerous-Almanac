@@ -10,6 +10,7 @@ import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' wi
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
+import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
 
 /** Every journal capture in the fixtures, by file name. */
 const JOURNALS = [
@@ -17,6 +18,7 @@ const JOURNALS = [
     ['journal-viper-mkiv.json', viperJournal],
     ['journal-python-mkii-antixeno.json', pythonJournal],
     ['journal-corsair.json', corsairJournal],
+    ['journal-federation-corvette.json', corvetteJournal],
 ] as const;
 
 const module = (symbol: string) => {
@@ -186,9 +188,10 @@ test('a build reports the capacity of every weapon it carries', () => {
 });
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
-    // A rearm state is a lower bound on a capacity, never a reading of one. Eight of the
-    // nine counts across the three captures happen to sit at capacity — that is what makes
-    // them a check on the catalogue — and the ninth is a launcher that has fired once.
+    // A rearm state is a lower bound on a capacity, never a reading of one. Seventeen of
+    // the eighteen counts across the five captures happen to sit at capacity — that is
+    // what makes them a check on the catalogue — and the eighteenth is a launcher that has
+    // fired once.
     const pinned = fixture.ammunition.journalReadings;
     const below: Record<string, unknown>[] = [];
     let readings = 0;
@@ -289,8 +292,8 @@ test("Frontier's own engineered ammunition figures, against what this library co
 });
 
 test('the Corsair capture recomputes to the figures Frontier reports for it', () => {
-    // The first engineered capture whose own aggregates this library reproduces — the other
-    // three are stock builds, so nothing checked an engineered mass or jump range before.
+    // An engineered build whose own aggregates this library reproduces from its parts, so
+    // the mass and jump-range maths answer to Frontier and not only to themselves.
     const pinned = fixture.ammunition.engineeredGroundTruth.recomputed;
     const stripped = { ...corsairJournal } as Record<string, unknown>;
     delete stripped.UnladenMass;
