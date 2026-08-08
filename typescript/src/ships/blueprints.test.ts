@@ -26,9 +26,16 @@ test('getBlueprintName resolves case-insensitively and misses cleanly', () => {
     assert.equal(getBlueprintName('nope'), null);
 });
 
-test('Anti-Guardian Zone Resistance resolves under both of its keys', () => {
-    // The one blueprint is keyed once for modules and once for weapons.
-    for (const key of ['recipe_guardianmodule_sturdy', 'recipe_guardianweapon_sturdy']) {
+test('Anti-Guardian Zone Resistance resolves identically under all three of its keys', () => {
+    // One recipe, three spellings: the id the game writes, and the two the registries
+    // publish. They must not drift apart — a build resolving to a different roll depending
+    // on which spelling it happened to carry is the bug the duplication exists to avoid.
+    const keys = [
+        'GuardianModule_Sturdy',
+        'recipe_guardianmodule_sturdy',
+        'recipe_guardianweapon_sturdy',
+    ];
+    for (const key of keys) {
         const bp = getBlueprint(key);
         assert.ok(bp, `${key} is missing`);
         assert.equal(bp.name, 'Anti-Guardian Zone Resistance');
@@ -41,6 +48,10 @@ test('Anti-Guardian Zone Resistance resolves under both of its keys', () => {
             { symbol: 'tg_causticcrystal', name: 'Caustic Crystal', count: 1 },
         ]);
     }
+    // Assert equality between the records too, not just each against a literal, so a stat
+    // added to one and not the others fails here rather than silently diverging.
+    const [first, ...rest] = keys.map((k) => getBlueprint(k));
+    for (const other of rest) assert.deepEqual(other, first);
 });
 
 test('every grade carries both its features and its materials', () => {

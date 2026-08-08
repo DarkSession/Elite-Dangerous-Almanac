@@ -14,6 +14,7 @@ import {
     getExperimentalsForBlueprint,
 } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
 import { BLUEPRINTS } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getModuleBySymbol } from './modules.js';
@@ -93,7 +94,7 @@ test('a blueprint names a journal spelling only when its key is not one', () => 
     const named = Object.entries(BLUEPRINTS).filter(([, blueprint]) => blueprint.journalName);
     assert.deepEqual(
         Object.fromEntries(named.map(([fdname, blueprint]) => [fdname, blueprint.journalName])),
-        engineeringFixture.scannerIdCollision.journalNames,
+        engineeringFixture.journalNames.map,
     );
     for (const [fdname, blueprint] of named) {
         assert.notEqual(blueprint.journalName!.toLowerCase(), fdname.toLowerCase());
@@ -353,6 +354,30 @@ test('every module the build corpus engineers is grouped, bar the one upstream r
     }
 });
 
+test('every menu is sorted, because the API promises it is', () => {
+    // `getBlueprintsForModule` documents "Blueprint ids, sorted" and its `@example` quotes
+    // a menu's first element. Nothing enforced that: renaming a key moved it within four
+    // menus and silently falsified both. Sorted case-insensitively, which is also ASCII
+    // order for these ids, so the two readings cannot disagree.
+    for (const [id, group] of Object.entries(ENGINEERING_OPTION_GROUPS)) {
+        assert.deepEqual(
+            [...group.blueprints],
+            [...group.blueprints].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
+            `${id} blueprints are not sorted`,
+        );
+        assert.deepEqual(
+            [...group.experimentals],
+            [...group.experimentals].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())),
+            `${id} experimentals are not sorted`,
+        );
+    }
+    // And the shipped example is the menu it claims to be.
+    assert.equal(
+        getBlueprintsForModule('Hpt_BeamLaser_Fixed_Small')[0],
+        'BeamLaser_ThermalPlasmaConversion',
+    );
+});
+
 test('every recipe the build corpus declares is one its module offers', () => {
     // A recipe that applies to several module families is stored under each family's own
     // journal id; the catalogue lists the family-specific one, so a build spelling it the
@@ -370,6 +395,7 @@ test('every recipe the build corpus declares is one its module offers', () => {
     );
     let viaAlias = 0;
     let viaJournalSpelling = 0;
+    let viaPreEngineeredSale = 0;
     for (const entry of declared) {
         const groupId = getEngineeringGroup(entry.symbol);
         if (groupId === null) continue; // pinned by the previous test
@@ -386,6 +412,17 @@ test('every recipe the build corpus declares is one its module offers', () => {
             } else if (matching.length > 0) {
                 assert.equal(matching.length, 1, `${entry.symbol}: ambiguous alias`);
                 viaAlias += 1;
+            } else if (
+                getPreEngineeredVariants(entry.symbol).some(
+                    (variant) => variant.blueprint.toLowerCase() === entry.blueprint.toLowerCase(),
+                )
+            ) {
+                // The fourth explanation, and the only one that is not about spelling: the
+                // module was *bought* carrying this recipe. Every Guardian weapon in a real
+                // capture that carries an ordinary weapon recipe is one of these — the menus
+                // offer such a weapon nothing but Anti-Guardian Zone Resistance, because an
+                // engineer will not roll the ordinary recipe onto it.
+                viaPreEngineeredSale += 1;
             } else {
                 assert.ok(exempt.has(`${entry.symbol}|${entry.blueprint}`), `${entry.symbol}`);
             }
@@ -400,6 +437,7 @@ test('every recipe the build corpus declares is one its module offers', () => {
     }
     assert.equal(viaAlias, fixture.corpus.aliasSpellingsAccepted);
     assert.equal(viaJournalSpelling, fixture.corpus.journalSpellingsAccepted);
+    assert.equal(viaPreEngineeredSale, fixture.corpus.preEngineeredSalesAccepted);
 });
 
 test('the exempted corpus declarations are exactly the ones the fixture names', () => {

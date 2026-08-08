@@ -67,7 +67,7 @@ test('a variant never arrives with an experimental its module is not offered', (
     // pre-engineered leg beside the one it has for blueprints — because it needs none:
     // every effect a variant is sold carrying is one the module's own menu lists. This is
     // what says that stays true. The blueprints are the other way round, which is why they
-    // do have that leg: 20 `recipe_*` keys are sold and never offered.
+    // do have that leg: 21 Operations keys are sold and never offered.
     for (const variant of PRE_ENGINEERED_MODULES) {
         if (!variant.experimental) continue;
         assert.ok(
@@ -171,7 +171,7 @@ test('getPreEngineeredVariants normalises input and misses cleanly', () => {
 
 test('getPreEngineeredByBlueprint resolves case-insensitively and misses cleanly', () => {
     assert.deepEqual(
-        getPreEngineeredByBlueprint('  RECIPE_RAILGUN_LONGSHOT  ').map((v) => v.symbol),
+        getPreEngineeredByBlueprint('  railgun_LONGSHOT  ').map((v) => v.symbol),
         ['Hpt_Railgun_Fixed_Medium'],
     );
     assert.deepEqual(getPreEngineeredByBlueprint('NoSuchBlueprint'), []);
@@ -179,7 +179,7 @@ test('getPreEngineeredByBlueprint resolves case-insensitively and misses cleanly
 
 test('an ordinary journal blueprint can also arrive pre-engineered', () => {
     // The "V1" drives are Long Range, so a plain journal blueprint resolves here too —
-    // not just the Merc-shop recipe_* keys — and by two different routes.
+    // not just the Merc-shop Operations keys — and by two different routes.
     const drives = getPreEngineeredByBlueprint('FSD_LongRange');
     assert.ok(drives.length > 0);
     assert.ok(drives.every((v) => v.grade === 5));
@@ -208,13 +208,13 @@ test('a (symbol, blueprint, grade, experimental) quadruple appears at most once'
 
 test('one blueprint can be sold on more than one base module', () => {
     assert.deepEqual(
-        getPreEngineeredByBlueprint('recipe_seekermissilerack_drag').map((v) => v.symbol),
+        getPreEngineeredByBlueprint('SeekerMissileRack_Drag').map((v) => v.symbol),
         ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large'],
     );
 });
 
 test('the remaining upgrade is priced from the grade already applied', () => {
-    const variant = getPreEngineeredByBlueprint('recipe_railgun_longshot')[0]!;
+    const variant = getPreEngineeredByBlueprint('RailGun_LongShot')[0]!;
     const total = (mats: readonly { count: number }[] | null) => {
         assert.ok(mats, 'the blueprint must price');
         return mats.reduce((sum, m) => sum + m.count, 0);

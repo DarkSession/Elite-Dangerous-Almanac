@@ -1,11 +1,11 @@
 {
-  "description": "Ground truth for data/ships/engineering-options.jsonc \u2014 which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins every group's menu by content, `modules` that a module resolves to its group, `exclusions` the modules that take their group's blueprints but not all of its experimental effects (a Multi-cannon cannot take Phasing Sequence; the Abrasion Blaster takes no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `splitFamilies` pins the families upstream splits in two by denying blueprints per module \u2014 a Guardian Power Plant and an ordinary one are the same kind of module with different menus, so they are different groups, and only the ordinary half has an experimental slot. `antiGuardianZoneResistance` pins the whole of that: the recipe that is a Guardian module's entire menu, offered by nine groups, none of which offers an experimental effect. `groupSizes` pins how many modules each group holds, so a module moving between groups fails a test rather than balancing out against the totals; `modules` pins one member of every group by name. `corpus` measures the catalogue against the 181-build community corpus in `builds/`.",
+  "description": "Ground truth for data/ships/engineering-options.jsonc — which blueprints and experimental effects each module can take. Availability is per module, not per blueprint: `groups` pins every group's menu by content, `modules` that a module resolves to its group, `exclusions` the modules that take their group's blueprints but not all of its experimental effects (a Multi-cannon cannot take Phasing Sequence; the Abrasion Blaster takes no experimental at all), and `blueprintUnion` that a blueprint-level query returns the union across every group offering it. `splitFamilies` pins the families upstream splits in two by denying blueprints per module — a Guardian Power Plant and an ordinary one are the same kind of module with different menus, so they are different groups, and only the ordinary half has an experimental slot. `antiGuardianZoneResistance` pins the whole of that: the recipe that is a Guardian module's entire menu, offered by nine groups, none of which offers an experimental effect. `groupSizes` pins how many modules each group holds, so a module moving between groups fails a test rather than balancing out against the totals; `modules` pins one member of every group by name. `corpus` measures the catalogue against the 181-build community corpus in `builds/`.",
   "counts": {
     "groups": 53,
     "modules": 1028,
     "exclusions": 24,
     "modulesWithoutExperimental": 388,
-    "blueprintsOffered": 81
+    "blueprintsOffered": 86
   },
   "groupSizes": {
     "powerPlants": 36,
@@ -81,7 +81,7 @@
     {
       "id": "guardianPowerPlants",
       "name": "Guardian Power Plants",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -130,7 +130,7 @@
     {
       "id": "guardianPowerDistributors",
       "name": "Guardian Power Distributors",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -197,13 +197,14 @@
     {
       "id": "guardianHullReinforcements",
       "name": "Guardian Hull Reinforcements",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
       "id": "pulseLasers",
       "name": "Pulse Lasers",
       "blueprints": [
+        "PulseLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
         "Weapon_Focused",
         "Weapon_LightWeight",
@@ -230,6 +231,7 @@
       "id": "burstLasers",
       "name": "Burst Lasers",
       "blueprints": [
+        "BurstLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
         "Weapon_Focused",
         "Weapon_LightWeight",
@@ -256,6 +258,7 @@
       "id": "beamLasers",
       "name": "Beam Lasers",
       "blueprints": [
+        "BeamLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
         "Weapon_LightWeight",
         "Weapon_LongRange",
@@ -331,11 +334,11 @@
       "id": "multiCannons",
       "name": "Multi-Cannons",
       "blueprints": [
+        "MC_Overcharged",
         "Weapon_Efficient",
         "Weapon_HighCapacity",
         "Weapon_LightWeight",
         "Weapon_LongRange",
-        "Weapon_Overcharged",
         "Weapon_RapidFire",
         "Weapon_ShortRange",
         "Weapon_Sturdy"
@@ -556,7 +559,7 @@
     {
       "id": "fsdBoosters",
       "name": "FSD Boosters",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -568,7 +571,7 @@
     {
       "id": "fuelScoops",
       "name": "Fuel Scoops",
-      "blueprints": ["FuelScoop_Shielded"],
+      "blueprints": ["FuelScoop_Efficiency", "FuelScoop_Shielded"],
       "experimentals": []
     },
     {
@@ -594,7 +597,7 @@
     {
       "id": "moduleReinforcements",
       "name": "Module Reinforcements",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -616,7 +619,7 @@
     {
       "id": "shieldReinforcements",
       "name": "Shield Reinforcements",
-      "blueprints": ["recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
@@ -718,19 +721,19 @@
     {
       "id": "guardianGauss",
       "name": "Exp - Guardian Gauss",
-      "blueprints": ["Weapon_RapidFire", "recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
       "id": "guardianPlasma",
       "name": "Exp - Guardian Plasma",
-      "blueprints": ["Weapon_Overcharged", "recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     },
     {
       "id": "guardianShard",
       "name": "Exp - Guardian Shard",
-      "blueprints": ["Weapon_LongRange", "recipe_guardianmodule_sturdy"],
+      "blueprints": ["GuardianModule_Sturdy"],
       "experimentals": []
     }
   ],
@@ -989,7 +992,7 @@
       "guardian": {
         "group": "guardianPowerPlants",
         "symbol": "Int_GuardianPowerplant_Size5",
-        "blueprints": ["recipe_guardianmodule_sturdy"],
+        "blueprints": ["GuardianModule_Sturdy"],
         "experimentals": []
       }
     },
@@ -1016,7 +1019,7 @@
       "guardian": {
         "group": "guardianPowerDistributors",
         "symbol": "Int_GuardianPowerDistributor_Size5",
-        "blueprints": ["recipe_guardianmodule_sturdy"],
+        "blueprints": ["GuardianModule_Sturdy"],
         "experimentals": []
       }
     },
@@ -1041,7 +1044,7 @@
       "guardian": {
         "group": "guardianHullReinforcements",
         "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
-        "blueprints": ["recipe_guardianmodule_sturdy"],
+        "blueprints": ["GuardianModule_Sturdy"],
         "experimentals": []
       }
     }
@@ -1067,8 +1070,8 @@
     ]
   },
   "antiGuardianZoneResistance": {
-    "description": "Anti-Guardian Zone Resistance carries no experimental effect, and on a Guardian module (power plant, power distributor, hull/module/shield reinforcement, FSD booster) it is the whole menu — so every group offering it offers no experimental effect, and the blueprint-level union is empty rather than the module family's list. The three Guardian weapon groups also offer this recipe but are not menus of one: each also lists an ordinary weapon recipe, which is why `modules` below names only the six module families. A Guardian module carrying an experimental was obtained already engineered, as a community-goal or tech-broker reward, rather than rolled at an engineer; `pre-engineered.json` does not carry those variants either, so nothing here catalogues them.",
-    "blueprint": "recipe_guardianmodule_sturdy",
+    "description": "Anti-Guardian Zone Resistance carries no experimental effect, and on a Guardian module (power plant, power distributor, hull/module/shield reinforcement, FSD booster) it is the whole menu — so every group offering it offers no experimental effect, and the blueprint-level union is empty rather than the module family's list. The three Guardian weapon groups are the same: their menus are this recipe and nothing else. An ordinary weapon recipe on a Guardian weapon is always a pre-engineered purchase — in a 521-module capture every one of the 20 such weapons is a Fixed Small or Medium variant `pre-engineered.jsonc` records as sold carrying it, and the community corpus adds 13 more of the same shape — so an engineer will not roll one and no menu offers it. `modules` below names the six module families; the weapon groups are pinned in `groups`. A Guardian module carrying an experimental was obtained already engineered, as a community-goal or tech-broker reward, rather than rolled at an engineer; `pre-engineered.json` does not carry those variants either, so nothing here catalogues them.",
+    "blueprint": "GuardianModule_Sturdy",
     "experimentals": [],
     "groups": [
       "guardianPowerPlants",
@@ -1091,11 +1094,12 @@
     ]
   },
   "corpus": {
-    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total; `ungroupedEntries` how many of them sit on a module this catalogue does not group \u2014 497 before the missing families were mapped. `blueprintAliases` are one recipe under two journal spellings \u2014 including Anti-Guardian Zone Resistance, which the game writes `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a module, where every group here lists the module id: the catalogue lists the family-specific id for these families, and a build declaring the generic one is engineering the same thing. `journalSpellingsAccepted` counts the other kind, resolved against the `journalName` on a blueprint record rather than by signature: one entry spells a wake scanner's Long Range `Sensor_LongRange`, the id the game writes for the sensor suite's different recipe of the same name. `notOffered` is the residue: declarations no registry lists for that module, kept here rather than bent into the catalogue.",
+    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total; `ungroupedEntries` how many of them sit on a module this catalogue does not group — 497 before the missing families were mapped. `blueprintAliases` are one recipe reachable under more than one spelling. Most are a family's generic id: the catalogue lists the family-specific spelling and a build declaring the generic one is engineering the same thing. Anti-Guardian Zone Resistance is the other kind — its two registry spellings (`recipe_guardianmodule_sturdy`, `recipe_guardianweapon_sturdy`) both reach the `GuardianModule_Sturdy` the nine groups offering it list, that last being the only one of the three a journal has been observed to write. `journalSpellingsAccepted` counts the other kind, resolved against the `journalName` on a blueprint record rather than by signature — one journal id, two recipes, and only the fitted module says which. 70 of the 71 are `Weapon_Overcharged` on a multi-cannon, which rolls the `MC_Overcharged` the multi-cannon menu lists rather than the recipe every other weapon takes under that id; the 71st spells a wake scanner's Long Range `Sensor_LongRange`, the id the game writes for the sensor suite's different recipe of the same name. `notOffered` is the residue: declarations no registry lists for that module, kept here rather than bent into the catalogue.",
     "declaredEngineering": 1902,
     "ungroupedEntries": 2,
     "aliasSpellingsAccepted": 70,
-    "journalSpellingsAccepted": 1,
+    "journalSpellingsAccepted": 71,
+    "preEngineeredSalesAccepted": 13,
     "blueprintAliases": {
       "Misc_LightWeight": [
         "CollectionLimpet_LightWeight",
@@ -1121,7 +1125,8 @@
         "ProspectingLimpet_Shielded",
         "Refineries_Shielded"
       ],
-      "recipe_guardianweapon_sturdy": ["recipe_guardianmodule_sturdy"]
+      "recipe_guardianmodule_sturdy": ["GuardianModule_Sturdy"],
+      "recipe_guardianweapon_sturdy": ["GuardianModule_Sturdy"]
     },
     "notOffered": [
       {

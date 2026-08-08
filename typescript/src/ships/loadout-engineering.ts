@@ -112,17 +112,19 @@ const MENU_IDS: ReadonlySet<string> = new Set(
 /**
  * Whether a module is *sold* carrying this recipe, rather than offered it at an engineer.
  *
- * The `recipe_*` keys belong to modules bought already engineered — the Mercenary shop's
+ * Most Operations keys belong to modules bought already engineered — the Mercenary shop's
  * rail gun, the community-goal and tech-broker rewards — so no engineering menu lists one
- * and the menu check alone would refuse every caller. The pre-engineered catalogue names
+ * and the menu check alone would refuse every caller. (The four a menu *does* list are
+ * recipes a player applies from grade 1, and reach the caller by the menu instead; see
+ * `engineering-options`.) The pre-engineered catalogue names
  * which module each arrives on, which is the same question answered by purchase instead of
- * by a menu, and it is narrower than a family: `recipe_railgun_longshot` resolves on the
+ * by a menu, and it is narrower than a family: `RailGun_LongShot` resolves on the
  * rail gun that ships with it and nowhere else.
  *
  * What it buys is the **climb**, not the purchase. A Mercenary module arrives at grade 1
  * and its recipe publishes grades 2–5 — the grades an engineer can still add — so folding
  * one is how a caller takes a bought module further. It cannot reproduce the grade the
- * module was sold at: all 21 Mercenary rows are grade 1, none of those recipes defines a
+ * module was sold at: all 22 Mercenary rows are grade 1, none of those recipes defines a
  * grade 1, and `getBlueprintGrade` refuses that call before this check is reached. Nothing
  * here recreates a reward variant either; `pre-engineered-stats` resolves those from their
  * own `modifiers`.
@@ -175,9 +177,10 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * share a signature — both are "Ammo capacity" over the same three labels — but neither is
  * a family spelling of the other, so a chaff launcher's ammo recipe stays off a heat sink
  * launcher, whose roll is a smaller one. An id **no menu anywhere lists**
- * substitutes too, which is Anti-Guardian Zone Resistance: the game writes
- * `recipe_guardianweapon_sturdy` on a weapon and `recipe_guardianmodule_sturdy` on a
- * module, and every group lists the module id.
+ * substitutes too, which is Anti-Guardian Zone Resistance: the nine groups that offer it
+ * list `GuardianModule_Sturdy`, the id the game itself writes, and the registry's
+ * `recipe_guardianmodule_sturdy` and `recipe_guardianweapon_sturdy` reach the recipe by
+ * this route. Neither is a spelling any journal has been observed to write.
  *
  * Everything else is excluded by the signature, by being a menu id in its own right, or by
  * not being sold on that module. `Weapon_LightWeight` fails the signature — a weapon's Lightweight cuts distributor draw,

@@ -6,13 +6,21 @@
  *          `blueprints` and `expeffects` a group offers and which modules belong to it,
  *          and its module records carry the per-module `noblueprints` / `noexpeffects`
  *          denials that narrow either list. EDSY is (c) taleden under a CC BY-NC 4.0
- *          License (http://creativecommons.org/licenses/by-nc/4.0/).
- *          coriolis-data (github.com/EDCD/coriolis-data) modifications/modules.json —
- *          the same per-group lists keyed by the journal `BlueprintName`s this catalogue
- *          joins on, which is what settles the families EDSY records under one generic
- *          id. coriolis-data is (c) EDCD under the MIT License.
- *          The underlying game logic is Elite Dangerous data, property of Frontier
- *          Developments plc, under Frontier's media-usage terms:
+ *          License (http://creativecommons.org/licenses/by-nc/4.0/). coriolis-data
+ *          (github.com/EDCD/coriolis-data) modifications/modules.json — the same per-group
+ *          lists keyed by the journal `BlueprintName`s this catalogue joins on, which is
+ *          what settles the families EDSY records under one generic id, and which of the
+ *          two Overcharged recipes the multi-cannons take. coriolis-data is (c) EDCD under
+ *          the MIT License. Four rows come from neither registry: the Operations Merc-Coin
+ *          blueprints `FuelScoop_Efficiency` and the three lasers'
+ *          `PulseLaser_ThermalPlasmaConversion`, `BurstLaser_ThermalPlasmaConversion`
+ *          and `BeamLaser_ThermalPlasmaConversion`, whose module family comes from the
+ *          Inara blueprint registry
+ *          (https://inara.cz/elite/blueprints/) — the same source the recipes themselves
+ *          came from. Neither EDSY nor coriolis-data publishes the Operations family at
+ *          all. See SOURCES.md for how that read was obtained and what it was corroborated
+ *          against. The underlying game logic is Elite Dangerous data, property of
+ *          Frontier Developments plc, under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
  * Availability is a property of the **module**, not of the blueprint: a Pulse Laser and
@@ -31,8 +39,10 @@
  * is its whole menu and that recipe has no experimental slot, so its `experimentals` are
  * empty where its ordinary twin's are not. The same holds for the other Guardian module
  * families — FSD boosters, module and shield reinforcement — which were already empty.
- * (Guardian *weapons* are not covered by this: their groups each also offer an ordinary
- * weapon recipe, and they carry no experimental for reasons of their own.) An engineered
+ * Guardian *weapons* are the same shape: `guardianGauss`, `guardianPlasma` and
+ * `guardianShard` list that one recipe too. An ordinary weapon recipe on a Guardian weapon
+ * is always a **purchase**, never an engineer roll — see §Engineering options in
+ * SOURCES.md — so `pre-engineered.jsonc` carries it and no menu here does. An engineered
  * Guardian module that does carry an experimental was obtained already engineered — a
  * community-goal or tech-broker reward — rather than rolled at an engineer; no registry
  * publishes those variants and `pre-engineered.jsonc` does not carry them, so this
@@ -50,7 +60,21 @@
  * `journalName` in `blueprints.jsonc`. What this file contributes is the half only it
  * knows — which of the two recipes a given module is offered. `resolveBlueprintForModule`
  * reads a menu against those journal names, so resolution needs no second list to drift
- * from this one.
+ * from this one. `multiCannons` is the third menu of that shape: it lists coriolis-data's
+ * `MC_Overcharged`, the multi-cannon Overcharged that also cuts the clip by 3–15%, where
+ * the game writes the `Weapon_Overcharged` every other weapon menu lists.
+ *
+ * **A menu may list an Operations recipe.** Most Operations ids belong to modules bought
+ * already engineered and no menu names them, but four are recipes a player applies: the
+ * Merc-Coin blueprints published with a full grade 1–5 — `FuelScoop_Efficiency` on the
+ * fuel scoops and the three lasers' `PulseLaser_ThermalPlasmaConversion`,
+ * `BurstLaser_ThermalPlasmaConversion` and
+ * `BeamLaser_ThermalPlasmaConversion`. (Anti-Guardian Zone Resistance is a fifth recipe of
+ * that kind, listed by the nine Guardian groups under the journal id
+ * `GuardianModule_Sturdy` rather than under an Operations key.) A purchased
+ * pre-engineered module's recipe starts at grade 2 because grade 1 is what the purchase
+ * contains; these four start at grade 1, so nothing is pre-applied and the whole recipe is
+ * rolled at an engineer. See "Four Operations recipes are listed by a menu" in SOURCES.md.
  *
  * `exclusions` handles what is left: the modules that take their group's blueprints but
  * not all of its experimental effects — a Multi-cannon cannot take Phasing Sequence, and
@@ -94,7 +118,7 @@
     "guardianPowerPlants": {
       "name": "Guardian Power Plants",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -149,7 +173,7 @@
     "guardianPowerDistributors": {
       "name": "Guardian Power Distributors",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -220,13 +244,14 @@
     "guardianHullReinforcements": {
       "name": "Guardian Hull Reinforcements",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
     "pulseLasers": {
       "name": "Pulse Lasers",
       "blueprints": [
+        "PulseLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
         "Weapon_Focused",
         "Weapon_LightWeight",
@@ -252,6 +277,7 @@
     "burstLasers": {
       "name": "Burst Lasers",
       "blueprints": [
+        "BurstLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
         "Weapon_Focused",
         "Weapon_LightWeight",
@@ -277,6 +303,7 @@
     "beamLasers": {
       "name": "Beam Lasers",
       "blueprints": [
+        "BeamLaser_ThermalPlasmaConversion",
         "Weapon_Efficient",
         "Weapon_LightWeight",
         "Weapon_LongRange",
@@ -349,11 +376,11 @@
     "multiCannons": {
       "name": "Multi-Cannons",
       "blueprints": [
+        "MC_Overcharged",
         "Weapon_Efficient",
         "Weapon_HighCapacity",
         "Weapon_LightWeight",
         "Weapon_LongRange",
-        "Weapon_Overcharged",
         "Weapon_RapidFire",
         "Weapon_ShortRange",
         "Weapon_Sturdy"
@@ -575,7 +602,7 @@
     "fsdBoosters": {
       "name": "FSD Boosters",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -590,6 +617,7 @@
     "fuelScoops": {
       "name": "Fuel Scoops",
       "blueprints": [
+        "FuelScoop_Efficiency",
         "FuelScoop_Shielded"
       ],
       "experimentals": []
@@ -615,7 +643,7 @@
     "moduleReinforcements": {
       "name": "Module Reinforcements",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -638,7 +666,7 @@
     "shieldReinforcements": {
       "name": "Shield Reinforcements",
       "blueprints": [
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
@@ -741,24 +769,21 @@
     "guardianGauss": {
       "name": "Exp - Guardian Gauss",
       "blueprints": [
-        "Weapon_RapidFire",
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
     "guardianPlasma": {
       "name": "Exp - Guardian Plasma",
       "blueprints": [
-        "Weapon_Overcharged",
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     },
     "guardianShard": {
       "name": "Exp - Guardian Shard",
       "blueprints": [
-        "Weapon_LongRange",
-        "recipe_guardianmodule_sturdy"
+        "GuardianModule_Sturdy"
       ],
       "experimentals": []
     }

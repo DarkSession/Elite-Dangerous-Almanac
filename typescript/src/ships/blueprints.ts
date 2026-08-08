@@ -10,11 +10,21 @@
  *
  * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
  * `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display names.
- * **Two keys are the exception**, and say so in their own {@link Blueprint.journalName}:
+ * **Three keys collide**, and say so in their own {@link Blueprint.journalName} — each is
+ * a recipe the game writes under an id another record already answers to:
  * `Scanner_LongRange` and `Scanner_WideAngle` are coriolis keys for recipes the game writes
  * as `Sensor_LongRange` / `Sensor_WideAngle`, the ids it also writes for the sensor suites'
- * different recipes of the same name. `ships/blueprint-journal` reads one against a module.
- * Enumerate the 108 available blueprints with `Object.keys(BLUEPRINTS)`.
+ * different recipes of the same name; `MC_Overcharged` is its multi-cannon Overcharged,
+ * which cuts the clip by 3–15% where the `Weapon_Overcharged` the game writes for both
+ * leaves it alone. `ships/blueprint-journal` reads one against a module.
+ *
+ * A further 27 keys are the **Operations** ids: 21 recipes a module is *sold*
+ * carrying (`ships/pre-engineered`), four Operations recipes a player rolls at an engineer
+ * (`ships/engineering-options`), and two the community spellings of Anti-Guardian Zone
+ * Resistance, whose journal id `GuardianModule_Sturdy` is a key here in its own right. None
+ * carries a `journalName`, because no journal spelling has been observed for any of them —
+ * which is a gap in the evidence, not a claim that the game writes none.
+ * Enumerate the 109 blueprints with `Object.keys(BLUEPRINTS)`.
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`): `features` from the
  * grade with journal Labels resolved via EDSY, `materials` from the grade's
@@ -37,7 +47,7 @@ import type { Blueprint, BlueprintFeature, EngineeringMaterial } from './enginee
  * @example
  * ```ts
  * BLUEPRINTS['FSD_LongRange'].name;               // -> 'Increased range'
- * BLUEPRINTS['FSD_LongRange'].grades['5'].features;  // -> [{ label: 'FSDOptimalMass', ... }, ...]
+ * BLUEPRINTS['FSD_LongRange'].grades['5'].features;  // -> [{ label: 'Integrity', ... }, ...]
  * BLUEPRINTS['FSD_LongRange'].grades['5'].materials; // -> [{ symbol: 'Arsenic', name: 'Arsenic', count: 1 }, ...]
  * ```
  */
@@ -80,7 +90,7 @@ export function getBlueprintName(fdname: string): string | null {
  * @returns The grade's features, or `null` if the blueprint or grade is unknown.
  * @example
  * ```ts
- * getBlueprintGrade('FSD_LongRange', 5); // -> [{ label: 'FSDOptimalMass', ... }, ...]
+ * getBlueprintGrade('FSD_LongRange', 5); // -> [{ label: 'Integrity', ... }, ...]
  * ```
  */
 export function getBlueprintGrade(

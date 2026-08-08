@@ -1057,8 +1057,8 @@ experimental effect, that quality is a finite value from 0 to 1, and that every 
 recipe changes can actually be answered for that module. What a module is offered comes
 from its [engineering menu](#what-a-module-can-be-engineered-with), not from a rule about
 what kind of module it is: an armour recipe cannot go on an FSD, but neither can
-`Weapon_HighCapacity` go on a Guardian Gauss Cannon, whose menu is Rapid Fire and
-Anti-Guardian Zone Resistance alone. The error names the menu it checked against.
+`Weapon_HighCapacity` go on a Guardian Gauss Cannon, whose menu is Anti-Guardian Zone
+Resistance alone. The error names the menu it checked against.
 
 A recipe leg on a stat the module simply **does not have** is not a failure — it is
 inert, exactly as in the game. Long Range scales a projectile's shot speed and leaves a
@@ -1206,7 +1206,7 @@ hull reinforcement packages split the same way:
 getBlueprintsForModule("Int_Powerplant_Size5_Class5");
 // -> ['PowerPlant_Armoured', 'PowerPlant_Boosted', 'PowerPlant_Stealth']
 getBlueprintsForModule("Int_GuardianPowerplant_Size5");
-// -> ['recipe_guardianmodule_sturdy']
+// -> ['GuardianModule_Sturdy']
 
 getExperimentalsForModule("Int_Powerplant_Size5_Class5").length; // -> 4
 getExperimentalsForModule("Int_GuardianPowerplant_Size5"); // -> []
@@ -1220,8 +1220,10 @@ experimental was obtained already engineered, as a community-goal or tech-broker
 rather than rolled at an engineer; this menu answers what a player may apply, so it does
 not list those. (Those particular reward variants are not catalogued here either — see
 [modules you can buy already engineered](#modules-you-can-buy-already-engineered) for what
-is.) Guardian **weapons** are the exception to the first sentence: each of their three
-groups also offers one ordinary weapon recipe.
+is.) Guardian **weapons** are the same: their three groups are menus of that one recipe
+too. An ordinary weapon recipe reaches a Guardian weapon only as a purchase, never as an
+engineer roll, so [modules you can buy already
+engineered](#modules-you-can-buy-already-engineered) is what carries it.
 
 > **One recipe can have two journal ids.** Where a modification applies to several module
 > families, `BLUEPRINTS` carries both a family-specific spelling and a generic one — a
@@ -1246,6 +1248,22 @@ groups also offers one ordinary weapon recipe.
 > // -> 'Scanner_LongRange' — the scanner's recipe, whatever the build called it
 > resolveBlueprintForModule("Int_Sensors_Size4_Class5", "Sensor_LongRange");
 > // -> 'Sensor_LongRange' — and the suite keeps its own
+> ```
+>
+> **The commonest case is Overcharged on a multi-cannon**, not the scanners. A
+> multi-cannon's Overcharged also cuts the clip — 3% at grade 1 to 15% at grade 5 — where
+> the recipe every other weapon takes leaves it alone, so the multi-cannon menus list
+> `MC_Overcharged` and the game writes `Weapon_Overcharged` for both. 70 of the build
+> corpus's declared entries need this resolution, against one for the scanners.
+>
+> ```ts
+> resolveBlueprintForModule(
+>   "Hpt_MultiCannon_Fixed_Medium",
+>   "Weapon_Overcharged",
+> );
+> // -> 'MC_Overcharged' — the multi-cannon's recipe, clip penalty and all
+> resolveBlueprintForModule("Hpt_BeamLaser_Fixed_Small", "Weapon_Overcharged");
+> // -> 'Weapon_Overcharged' — every other weapon keeps its own
 > ```
 >
 > It resolves _into_ a menu and never out of one, so a sensor suite is still not offered
@@ -1278,10 +1296,11 @@ import { resolveBlueprintForModule } from "@elite-dangerous-almanac/core/ships/b
 > `LifeSupport_LightWeight` stays off a limpet controller, and a chaff launcher's Ammo
 > Capacity stays off a heat sink launcher, whose roll is a smaller one.
 >
-> The last is for the `recipe_*` keys of [modules sold already
-> engineered](#modules-you-can-buy-already-engineered). No menu lists one, so `applyBlueprint`
-> takes them from `ships/pre-engineered` instead, on the module that actually ships with the
-> recipe and no other — `recipe_railgun_longshot` on the medium rail gun, not the small one.
+> The last is for the Operations keys of [modules sold already
+> engineered](#modules-you-can-buy-already-engineered) — 21 of the 27 Operations keys, none
+> of which a menu lists. For those `applyBlueprint` reads `ships/pre-engineered` instead,
+> on the module that actually ships with the recipe and no other —
+> `RailGun_LongShot` on the medium rail gun, not the small one.
 > That is how you engineer a Mercenary module _further_: it arrives at grade 1 and its
 > recipe carries grades 2–5. It is not how you reproduce what you bought — grade 1 of those
 > recipes does not exist, because the first grade came with the module.
@@ -1307,22 +1326,20 @@ isPreEngineered("Hpt_Railgun_Fixed_Medium"); // -> true
 
 // One module can carry several variants — here a Merc shop row and a CG reward…
 getPreEngineeredVariants("Hpt_Railgun_Fixed_Medium");
-// -> [{ blueprint: 'recipe_railgun_longshot', grade: 1, acquisition: 'mercenary' }, …
+// -> [{ blueprint: 'RailGun_LongShot', grade: 1, acquisition: 'mercenary' }, …
 //     { blueprint: 'Weapon_HighCapacity', grade: 5, acquisition: 'communityGoal',
 //       experimental: 'special_feedback_cascade_cooled' }]
 
 // …and one blueprint on several modules, so both lookups return arrays.
-getPreEngineeredByBlueprint("recipe_seekermissilerack_drag").map(
-  (v) => v.symbol,
-);
+getPreEngineeredByBlueprint("SeekerMissileRack_Drag").map((v) => v.symbol);
 // -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
 ```
 
 `acquisition` tells the three kinds apart, and they behave differently:
 
-|                  | `mercenary` (21)    | `communityGoal` (30)  | `techBroker` (21)     |
+|                  | `mercenary` (22)    | `communityGoal` (30)  | `techBroker` (21)     |
 | ---------------- | ------------------- | --------------------- | --------------------- |
-| Blueprint id     | Merc `recipe_*` key | ordinary journal name | ordinary journal name |
+| Blueprint id     | Merc Operations key | ordinary journal name | ordinary journal name |
 | Grade on arrival | always 1            | 28 of 30 at grade 5   | 14 of 21 at grade 5   |
 | Experimental     | none                | 8 of 30 carry one     | 4 of 21 carry one     |
 | Price            | `mercCoinCost`      | not bought            | not bought            |
@@ -1369,7 +1386,7 @@ build.frameShiftDrive.optMass; // -> 1785; fitting preserves the reward's resolv
 > are not a recipe that recreates it, and `getBlueprintCost` on one prices ordinary
 > engineering instead.
 
-The 21 Merc shop rows carry a `mercCoinCost` (300–950 MC) but no `modifiers`: no registry
+The 22 Merc shop rows carry a `mercCoinCost` (300–950 MC) but no `modifiers`: no registry
 publishes the grade-1 pre-engineering they arrive with, so the catalogue omits it rather
 than guessing. Resolving one returns the stock record unchanged.
 
@@ -1378,7 +1395,7 @@ grade 2 — the first grade came with the module. Price the rest of the climb by
 grade you already have:
 
 ```ts
-const bought = getPreEngineeredByBlueprint("recipe_railgun_longshot")[0];
+const bought = getPreEngineeredByBlueprint("RailGun_LongShot")[0];
 getBlueprintCost(bought.blueprint, 5, bought.grade); // grades 2-5 only
 ```
 

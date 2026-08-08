@@ -51,6 +51,38 @@ test('the gate accepts every recipe the menu offers, for every module', () => {
     }
 });
 
+test('every recipe in the catalogues reaches a module, bar the one both registries withdrew', () => {
+    // The sweep https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39 was
+    // opened on: every id in `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`
+    // against every module symbol, through the gate. Seven reached nothing when the gate
+    // started reading the per-module menu; six were gaps and are closed, so the residue is
+    // pinned as a whole list rather than as a count — an id stranded by a later change
+    // fails here instead of passing unnoticed.
+    const reach = fixture.reachability;
+    const strandedBlueprints = Object.keys(BLUEPRINTS).filter(
+        (id) => !ALL_MODULES.some((module) => blueprintAvailableFor(module.symbol, id)),
+    );
+    const strandedExperimentals = Object.keys(EXPERIMENTAL_EFFECTS).filter(
+        (id) => !ALL_MODULES.some((module) => experimentalAvailableFor(module.symbol, id)),
+    );
+    assert.deepEqual(strandedBlueprints, reach.unreachableBlueprints);
+    assert.deepEqual(strandedExperimentals, reach.unreachableExperimentals);
+
+    // And each id that was rescued is rescued on the modules it belongs to, not everywhere:
+    // reaching *something* satisfies the sweep above, so the count and a module that must
+    // still refuse are what catch a menu row that widened into a neighbouring family. All
+    // six are blueprints; an experimental has no route to a module but its group's menu.
+    for (const row of reach.reachable) {
+        assert.ok(blueprintAvailableFor(row.accepts, row.id), `${row.accepts}: ${row.id}`);
+        assert.ok(!blueprintAvailableFor(row.refuses, row.id), `${row.refuses}: ${row.id}`);
+        assert.equal(
+            ALL_MODULES.filter((module) => blueprintAvailableFor(module.symbol, row.id)).length,
+            row.modules,
+            row.id,
+        );
+    }
+});
+
 test('a build that spells a modification generically is still engineered', () => {
     // The menu lists the family-specific id; an EDSY-authored build carries the generic
     // one. They are the same recipe, so both are accepted.
@@ -96,7 +128,7 @@ test('the gate accepts what the menu omits only by a pinned alias or a pre-engin
             specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
         ),
     );
-    for (const [fdname, journalName] of Object.entries(fixture.scannerIdCollision.journalNames)) {
+    for (const [fdname, journalName] of Object.entries(fixture.journalNames.map)) {
         pinned.add(`${journalName.toLowerCase()}|${fdname.toLowerCase()}`);
     }
     const seen = new Set<string>();
@@ -178,19 +210,154 @@ test('one journal id rolls the recipe the fitted module actually takes', () => {
             `${row.symbol} must refuse ${row.blueprint}`,
         );
     }
-    // ...but the *cost* is the same on both families at every grade, which is why
-    // `getBlueprintCost` takes an id and no module: pricing the wrong one of the pair
-    // still bills correctly. If upstream ever splits the recipes, this fails and the
-    // cost API needs the module too.
-    for (const [suiteId, scannerId] of [
-        ['Sensor_LongRange', 'Scanner_LongRange'],
-        ['Sensor_WideAngle', 'Scanner_WideAngle'],
-    ]) {
-        for (const grade of [1, 2, 3, 4, 5]) {
+});
+
+test('one journal id rolls a clip penalty on a multi-cannon and none on a cannon', () => {
+    // The same mechanism as the scanner ids above, on the family that actually meets it.
+    // Pinned as whole modifier blocks rather than as availability, because the defect this
+    // guards against is the leg going quietly missing again: dropping `AmmoClipSize` from
+    // `MC_Overcharged` would leave every menu, count and reachability assertion passing.
+    const collision = fixture.overchargedIdCollision;
+    for (const expected of collision.cases) {
+        const module = getModuleBySymbol(expected.symbol, ALL_MODULES)!;
+        const base = baseStats(module);
+        for (const [label, value] of Object.entries(expected.base)) {
+            assert.equal(base[label], value, `${expected.symbol}: ${label}`);
+        }
+        const resolved = resolveBlueprintForModule(expected.symbol, expected.blueprint);
+        assert.equal(resolved, expected.resolved, `${expected.symbol}: ${expected.blueprint}`);
+        assert.ok(
+            blueprintAvailableFor(expected.symbol, expected.blueprint),
+            `${expected.symbol} must accept ${expected.blueprint}`,
+        );
+        assert.deepEqual(
+            computeModifiers(
+                base,
+                getBlueprintGrade(resolved, collision.grade)!,
+                collision.quality,
+            ),
+            expected.modifiers,
+            `${expected.symbol}: ${expected.blueprint}`,
+        );
+    }
+    // Both weapons carry a clip, so the difference is the recipe and not the module — which
+    // is the whole reason the two records exist. Read from the library, so this fails on a
+    // regression rather than on a fixture edit.
+    const legs = (symbol: string) =>
+        getBlueprintGrade(resolveBlueprintForModule(symbol, 'Weapon_Overcharged'), 5)!
+            .map((feature) => feature.label)
+            .sort();
+    assert.ok(
+        baseStats(getModuleBySymbol('Hpt_Cannon_Fixed_Medium', ALL_MODULES)!)['AmmoClipSize'],
+    );
+    assert.notDeepEqual(legs('Hpt_MultiCannon_Fixed_Medium'), legs('Hpt_Cannon_Fixed_Medium'));
+    // Resolution runs into a menu, never out of one: no other weapon is thereby offered the
+    // multi-cannon's spelling.
+    for (const row of collision.refused) {
+        assert.ok(
+            !blueprintAvailableFor(row.symbol, row.blueprint),
+            `${row.symbol} must refuse ${row.blueprint}`,
+        );
+    }
+});
+
+test('the spellings a real journal writes all resolve to a recipe', () => {
+    // Read off a `StoredModules` capture rather than off a registry, so it catches an id
+    // the registries spell differently from the game. `GuardianModule_Sturdy` was one:
+    // every menu listed an Inara `recipe_`-prefixed key for it, so a genuine journal id resolved to
+    // nothing and `applyBlueprint` refused it on the module the capture shows carrying it.
+    assert.ok(fixture.journalSpellings.cases.length, 'no spellings pinned');
+    for (const row of fixture.journalSpellings.cases) {
+        assert.equal(
+            resolveBlueprintForModule(row.symbol, row.blueprint),
+            row.resolved,
+            `${row.symbol}: ${row.blueprint}`,
+        );
+        assert.ok(getBlueprint(row.resolved), `${row.resolved} is not a blueprint`);
+        assert.ok(
+            blueprintAvailableFor(row.symbol, row.blueprint),
+            `${row.symbol} must accept ${row.blueprint}`,
+        );
+    }
+    // The registry spellings stay usable as aliases — a community name that no longer
+    // resolves is not an alias, it is a removal.
+    const guardian = 'Hpt_Guardian_GaussCannon_Fixed_Medium';
+    assert.ok(fixture.journalSpellings.alsoResolve.length, 'no aliases pinned');
+    for (const id of fixture.journalSpellings.alsoResolve) {
+        assert.ok(getBlueprint(id), `${id} must still look up`);
+        assert.ok(blueprintAvailableFor(guardian, id), `${guardian} must accept ${id}`);
+    }
+    // ...but the menu answers with the id the game writes, not with a registry spelling.
+    assert.ok(getBlueprintsForModule(guardian).includes('GuardianModule_Sturdy'));
+    for (const id of fixture.journalSpellings.alsoResolve) {
+        assert.ok(!getBlueprintsForModule(guardian).includes(id), `menu should not list ${id}`);
+    }
+});
+
+test('only the two declared aliases carry the registry prefix no game data uses', () => {
+    // Inara publishes the Operations recipes prefixed (`recipe_fuelscoop_efficiency`);
+    // coriolis and EDSY use no such prefix, and neither does any observed build — a real
+    // SLEF export writes the Mercenary reinforcement as `modulereinforcement_heavyduty`
+    // (Inara lower-cases everything; the raw journal supplies the casing used here).
+    // So the keys here are the registry id minus the prefix, and the only two that keep it
+    // are declared aliases for a recipe whose real name is a key in its own right.
+    const ops = fixture.journalSpellings.operationsKeys;
+    assert.deepEqual(
+        Object.keys(BLUEPRINTS).filter((k) => k.toLowerCase().startsWith('recipe_')),
+        ops.prefixed,
+    );
+    for (const id of ops.prefixed) {
+        assert.ok(getBlueprint(id), `${id} must still resolve`);
+    }
+    // The observed spelling resolves, is offered by no menu, and reaches its module by the
+    // sale — the route a bought-engineered recipe is supposed to take.
+    assert.ok(ops.observed.length, 'no observed Operations spelling pinned');
+    for (const row of ops.observed) {
+        assert.ok(getBlueprint(row.blueprint), `${row.blueprint} does not resolve`);
+        assert.ok(
+            getBlueprintGrade(row.blueprint, row.grade),
+            `${row.blueprint} has no grade ${row.grade}`,
+        );
+        assert.ok(
+            blueprintAvailableFor(row.symbol, row.blueprint),
+            `${row.symbol} must accept ${row.blueprint}`,
+        );
+        assert.ok(!getBlueprintsForModule(row.symbol).includes(row.blueprint));
+        assert.ok(
+            getPreEngineeredVariants(row.symbol).some(
+                (v) => v.blueprint.toLowerCase() === row.blueprint.toLowerCase(),
+            ),
+            `${row.symbol} is not sold carrying ${row.blueprint}`,
+        );
+        // Sold at grade 1, so the recipe recreates only what comes after the purchase.
+        assert.equal(getBlueprintGrade(row.blueprint, row.soldAtGrade), null);
+    }
+});
+
+test('a shared journal id costs the same whichever of its two recipes is priced', () => {
+    // Why `getBlueprintCost` takes an id and no module: pricing the wrong one of a
+    // collided pair still bills correctly. If upstream ever splits the recipes' costs,
+    // this fails and the cost API needs the module too. Driven off the fixture's whole
+    // `journalNames` map rather than a hand-listed pair or two, so a fourth collision is
+    // covered the day it is recorded — the multi-cannon pair went uncovered for exactly
+    // that reason.
+    //
+    // It assumes more of `journalName` than the field promises: that the id it names is a
+    // record in its own right, and that the pair defines the same grades. Both hold for all
+    // three collisions, and both are properties of a *collision* rather than of the field —
+    // `journalName` says only "the game writes this recipe as X". A future record whose
+    // journal id names no twin belongs outside this loop, not inside it with the assertions
+    // relaxed.
+    for (const [fdname, journalName] of Object.entries(fixture.journalNames.map)) {
+        const shared = BLUEPRINTS[journalName];
+        assert.ok(shared, `${fdname}: ${journalName} is not a blueprint`);
+        const grades = Object.keys(BLUEPRINTS[fdname]!.grades);
+        assert.deepEqual(grades, Object.keys(shared.grades), `${fdname} vs ${journalName}`);
+        for (const grade of grades) {
             assert.deepEqual(
-                getBlueprintCost(suiteId!, grade),
-                getBlueprintCost(scannerId!, grade),
-                `${suiteId} vs ${scannerId} G${grade}`,
+                getBlueprintCost(fdname, Number(grade)),
+                getBlueprintCost(journalName, Number(grade)),
+                `${fdname} vs ${journalName} G${grade}`,
             );
         }
     }
@@ -199,9 +366,9 @@ test('one journal id rolls the recipe the fitted module actually takes', () => {
 test('a recipe sold on one module is not thereby available on its neighbours', () => {
     // The pre-engineered route is per module, not per family: the Mercenary rail gun's
     // recipe resolves on the rail gun that ships with it and on nothing else.
-    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'recipe_railgun_longshot'));
-    assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'recipe_railgun_longshot'));
-    assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'recipe_railgun_longshot'));
+    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'RailGun_LongShot'));
+    assert.ok(!blueprintAvailableFor('Hpt_Railgun_Fixed_Small', 'RailGun_LongShot'));
+    assert.ok(!blueprintAvailableFor('Hpt_MultiCannon_Fixed_Medium', 'RailGun_LongShot'));
     // A module with no engineering menu at all can still be sold carrying a recipe, and
     // the menu check must not refuse it first: the Mercenary Module Reinforcement Package
     // is the one such case, and reproducing its numbers is the whole point of this leg.
@@ -209,13 +376,13 @@ test('a recipe sold on one module is not thereby available on its neighbours', (
     assert.ok(
         blueprintAvailableFor(
             'Int_ModuleReinforcement_Size5_Class2',
-            'recipe_modulereinforcement_heavyduty',
+            'ModuleReinforcement_HeavyDuty',
         ),
     );
     assert.ok(
         !blueprintAvailableFor(
             'Int_ModuleReinforcement_Size3_Class2',
-            'recipe_modulereinforcement_heavyduty',
+            'ModuleReinforcement_HeavyDuty',
         ),
     );
 });
@@ -233,7 +400,9 @@ test('the gate matches an id the way every other lookup does', () => {
         assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', id), JSON.stringify(id));
     }
     assert.ok(blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'lifesupport_lightweight'));
-    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'RECIPE_RAILGUN_LONGSHOT'));
+    // An Operations key too, whose casing this catalogue infers rather than observes — so
+    // a caller carrying any casing of it must still be understood.
+    assert.ok(blueprintAvailableFor('Hpt_Railgun_Fixed_Medium', 'RAILGUN_LONGSHOT'));
     // An id that is only a property of `Object.prototype` is not a blueprint.
     assert.ok(!blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'toString'));
 });
@@ -384,13 +553,13 @@ test('Rapid Fire shortens the fire interval, and the rate of fire follows', () =
 });
 
 test('a tech-broker recipe raises the rate of fire directly, as its registry publishes it', () => {
-    // The Inara-sourced `recipe_*` totals are the displayed stat change, so a
+    // The Inara-sourced Operations totals are the displayed stat change, so a
     // rate-of-fire total is exactly that — including on a charged weapon, whose spin-up
     // is part of the published cycle.
     const railgun = getModuleBySymbol('Hpt_Railgun_Fixed_Medium', ALL_MODULES)!;
     const rate = computeModifiers(
         baseStats(railgun),
-        getBlueprintGrade('recipe_railgun_longshot', 5)!,
+        getBlueprintGrade('RailGun_LongShot', 5)!,
         1,
     ).find((m) => m.Label === 'RateOfFire')!;
     assert.ok(Math.abs(rate.Value! - railgun.rateOfFire! * 1.667) < 1e-5, `${rate.Value}`);

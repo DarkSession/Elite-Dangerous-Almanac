@@ -1,47 +1,62 @@
 /*
  * Engineering **blueprints** — per grade, the stat modifiers a blueprint applies AND
  * the materials one roll costs. Keyed by the blueprint's Frontier `fdname` — the string a
- * Loadout event's `Engineering.BlueprintName` carries, for 106 of the 108. The two that
- * are keyed otherwise carry a `journalName` saying so; see the note on it below.
+ * Loadout event's `Engineering.BlueprintName` carries, for 79 of the 109. The three that
+ * share a journal id with another record carry a `journalName` saying so; the other 27 are
+ * the Operations keys, for which no journal spelling has been observed. See the
+ * note below.
  *
  * Sources: EDCD/coriolis-data, modifications/blueprints.json (commit 0db9234b5b9ce8c939ea84133d7ce336eea88e27)
- *          https://github.com/EDCD/coriolis-data
- *          `features` from the blueprint grade + modifications.json apply method;
- *          journal Labels resolved via EDSY (github.com/taleden/EDSY, CC BY-NC 4.0).
- *          `materials` from the grade's `components`, display names resolved to
- *          material `symbol`s against the materials domain.
- *          The two `journalName` fields rest on EDSY edsy.js, whose `Build.fromJournal`
- *          resolves a journal `BlueprintName` through a per-module-type map
- *          (`fdevmap.mtypeBlueprint[mtypeid][fdname]`) — the evidence that one id can
- *          name two recipes, read alongside eddb.js's own `cs_lr` / `scan_lr` rows
- *          sharing the fdname `Sensor_LongRange`. Acquired 2026-08-06 UTC from
- *          raw.githubusercontent.com/taleden/EDSY/master/edsy.js, SHA-256
+ *          https://github.com/EDCD/coriolis-data `features` from the blueprint grade +
+ *          modifications.json apply method; journal Labels resolved via EDSY
+ *          (github.com/taleden/EDSY, CC BY-NC 4.0). `materials` from the grade's
+ *          `components`, display names resolved to material `symbol`s against the
+ *          materials domain. The two scanner `journalName` fields rest on EDSY edsy.js,
+ *          whose `Build.fromJournal` resolves a journal `BlueprintName` through a
+ *          per-module-type map (`fdevmap.mtypeBlueprint[mtypeid][fdname]`) — the evidence
+ *          that one id can name two recipes, read alongside eddb.js's own `cs_lr` /
+ *          `scan_lr` rows sharing the fdname `Sensor_LongRange`. Acquired 2026-08-06 UTC
+ *          from raw.githubusercontent.com/taleden/EDSY/master/edsy.js, SHA-256
  *          a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5; the eddb.js
- *          read with it is byte-identical to the snapshot the other passes pin
- *          (967834d6…, internal `db 20260428`). Same CC BY-NC 4.0 terms.
- *          The game logic is Elite Dangerous data, property of Frontier Developments
- *          plc, under Frontier's media-usage terms:
- *          https://forums.frontier.co.uk/threads/510879/
+ *          read with it is byte-identical to the snapshot the other passes pin (967834d6…,
+ *          internal `db 20260428`). Same CC BY-NC 4.0 terms. The game logic is Elite
+ *          Dangerous data, property of Frontier Developments plc, under Frontier's
+ *          media-usage terms: https://forums.frontier.co.uk/threads/510879/
  *
  * Each blueprint is { name, grades }. `name` is the blueprint's short modifier label
  * (coriolis `blueprint.name` for the journal-keyed ones; the Operations dossier's
- * display label for the `recipe_*` ones), deliberately NOT the full outfitting-panel
+ * display label for the Operations ones), deliberately NOT the full outfitting-panel
  * string — the panel says "Long-Range Weapon" where this says "Long range", because
  * the name is read next to the module it applies to. `CargoRack_IncreasedCapacity` is
  * the one name that is short-by-nothing rather than short by convention: it reads
  * "Expanded Cargo Rack", EDSY's spelling. See the "Display names" note in SOURCES.md.
- * `journalName` is present on the two blueprints whose key is NOT what the game writes.
- * Every other key IS the `BlueprintName` a Loadout event carries, which is why the
- * field is absent from 106 of the 108 records. The exceptions are `Scanner_LongRange`
- * and `Scanner_WideAngle`: the game writes `Sensor_LongRange` / `Sensor_WideAngle` for
- * the utility scanners' Long Range and Wide Angle *and* for the sensor suites' own,
- * which are different recipes rolling different stats — EDSY's `scan_lr` and `cs_lr`
- * are two rows under one fdname, and its journal importer disambiguates by module type.
- * coriolis splits the scanner side out under these keys and this file follows it,
- * because two recipes need two records; `journalName` is how a reader gets back to the
- * id a journal actually carries. Which of the two a given id means is a question only
- * the fitted module can answer — see `resolveBlueprintForModule` in
- * `ships/engineering-options`, and §Scanner Long Range and Wide Angle in SOURCES.md.
+ * `journalName` is present on the three blueprints whose key is not what the game writes
+ * **and whose journal spelling another record already uses** — it marks a collision, not
+ * merely a rename. It is absent from the other 106 records.
+ *
+ * **The journal spelling is the key wherever the game publishes one.** A registry name is
+ * kept only as an alias that still resolves: `GuardianModule_Sturdy` is what a Loadout
+ * writes for Anti-Guardian Zone Resistance — on Guardian weapons as well as modules — so
+ * that is the key all nine offering menus list, and the registry's
+ * `recipe_guardianmodule_sturdy` and `recipe_guardianweapon_sturdy` are stored beside it
+ * so a build carrying either still looks up. Of the remaining 25 Operations keys, 21
+ * belong to modules sold already engineered and four are Operations recipes a player rolls
+ * at an engineer ("Four Operations recipes are listed by a menu" in SOURCES.md); no
+ * journal spelling has been observed for any of them, which is not the same as knowing the
+ * game writes none. Two of the exceptions are `Scanner_LongRange` and `Scanner_WideAngle`:
+ * the game writes `Sensor_LongRange` / `Sensor_WideAngle` for the utility scanners' Long
+ * Range and Wide Angle *and* for the sensor suites' own, which are different recipes
+ * rolling different stats — EDSY's `scan_lr` and `cs_lr` are two rows under one fdname,
+ * and its journal importer disambiguates by module type. coriolis splits the scanner side
+ * out under these keys and this file follows it, because two recipes need two records;
+ * `journalName` is how a reader gets back to the id a journal actually carries. Which of
+ * the two a given id means is a question only the fitted module can answer — see
+ * `resolveBlueprintForModule` in `ships/blueprint-journal`, and §Scanner Long Range and
+ * Wide Angle in SOURCES.md. The third is `MC_Overcharged`, the same shape on the
+ * multi-cannons: coriolis-data splits Overcharged into a multi-cannon key carrying an
+ * `AmmoClipSize` leg and the `Weapon_Overcharged` every other weapon takes, gives both the
+ * fdname `Weapon_Overcharged`, and lists the multi-cannon one on its `mc` and `advmc`
+ * groups alone. See §Multi-cannon Overcharged in SOURCES.md.
  *
  * `grades` maps grade "1".."5" to { features, materials }.
  * A feature is { label, method, min, max }: `label` the journal Modifier Label, `method`
@@ -51,15 +66,16 @@
  * material's own grade and category. A grade may have an empty `materials` list
  * (CargoRack_IncreasedCapacity G5).
  *
- * The Operations pre-engineered blueprints (the `recipe_*` keys — Merc weapon rewards,
- * plus general/core/optional ones like `recipe_fuelscoop_efficiency`) and the
- * Anti-Guardian `recipe_guardianmodule_sturdy` come from the current in-game / Inara
+ * The Operations pre-engineered blueprints (Merc weapon rewards, plus
+ * general/core/optional ones like `FuelScoop_Efficiency`) and all three Anti-Guardian
+ * records (`GuardianModule_Sturdy` and its two `recipe_`-prefixed Inara aliases, which
+ * coriolis does not carry under any spelling) come from the current in-game / Inara
  * blueprint registry, which exposes one displayed total per grade rather than a
  * roll-bounded range: each such feature stores that total as a fixed value (min == max).
  * Their per-roll `materials` are from the same registry (a Merc-Coin amount is also
  * charged but is a currency, not a material, so it is not stored). Some of their totals
- * are non-monotonic (pre-engineered UI values, not primitive weights) and are preserved
- * as published, not "corrected".
+ * are non-monotonic (pre-engineered UI values, not primitive weights) and are preserved as
+ * published, not "corrected".
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -14343,6 +14359,7 @@
   },
   "MC_Overcharged": {
     "name": "Overcharged",
+    "journalName": "Weapon_Overcharged",
     "grades": {
       "1": {
         "features": [
@@ -15390,7 +15407,7 @@
       }
     }
   },
-  "recipe_fuelscoop_efficiency": {
+  "FuelScoop_Efficiency": {
     "name": "Fuel Scoop — Scoop rate enhanced",
     "grades": {
       "1": {
@@ -15560,7 +15577,7 @@
       }
     }
   },
-  "recipe_beamlaser_thermalplasmaconversion": {
+  "BeamLaser_ThermalPlasmaConversion": {
     "name": "Beam Laser — Plasma conversion",
     "grades": {
       "1": {
@@ -15735,7 +15752,7 @@
       }
     }
   },
-  "recipe_burstlaser_thermalplasmaconversion": {
+  "BurstLaser_ThermalPlasmaConversion": {
     "name": "Burst Laser — Plasma conversion",
     "grades": {
       "1": {
@@ -15910,7 +15927,7 @@
       }
     }
   },
-  "recipe_pulselaser_thermalplasmaconversion": {
+  "PulseLaser_ThermalPlasmaConversion": {
     "name": "Pulse Laser — Plasma conversion",
     "grades": {
       "1": {
@@ -16085,7 +16102,7 @@
       }
     }
   },
-  "recipe_detailedsurfacescanner_longrange": {
+  "DetailedSurfaceScanner_LongRange": {
     "name": "Detailed Surface Scanner — Long range detailed",
     "grades": {
       "2": {
@@ -16208,7 +16225,7 @@
       }
     }
   },
-  "recipe_cargoracks5c1_extended": {
+  "CargoRackS5C1_Extended": {
     "name": "Cargo Rack — Extended",
     "grades": {
       "2": {
@@ -16331,7 +16348,7 @@
       }
     }
   },
-  "recipe_cargoracks6c1_extended": {
+  "CargoRackS6C1_Extended": {
     "name": "Cargo Rack — Extended",
     "grades": {
       "2": {
@@ -16454,7 +16471,7 @@
       }
     }
   },
-  "recipe_modulereinforcement_heavyduty": {
+  "ModuleReinforcement_HeavyDuty": {
     "name": "Module Reinforcement Package — Heavy duty",
     "grades": {
       "2": {
@@ -16625,7 +16642,7 @@
       }
     }
   },
-  "recipe_powerdistributor_balanced": {
+  "PowerDistributor_Balanced": {
     "name": "Power Distributor — Balanced",
     "grades": {
       "2": {
@@ -16940,7 +16957,7 @@
       }
     }
   },
-  "recipe_powerdistributors3c2_supportfocused": {
+  "PowerDistributorS3C2_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17183,7 +17200,7 @@
       }
     }
   },
-  "recipe_powerdistributors3c5_supportfocused": {
+  "PowerDistributorS3C5_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17426,7 +17443,7 @@
       }
     }
   },
-  "recipe_powerdistributors4c2_supportfocused": {
+  "PowerDistributorS4C2_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17669,7 +17686,7 @@
       }
     }
   },
-  "recipe_powerdistributors4c5_supportfocused": {
+  "PowerDistributorS4C5_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -17912,7 +17929,7 @@
       }
     }
   },
-  "recipe_powerdistributors6c5_supportfocused": {
+  "PowerDistributorS6C5_SupportFocused": {
     "name": "Power Distributor — Support focused",
     "grades": {
       "2": {
@@ -18155,7 +18172,7 @@
       }
     }
   },
-  "recipe_abrasionblaster_farreaching": {
+  "AbrasionBlaster_FarReaching": {
     "name": "Abrasion Blaster — Far-reaching",
     "grades": {
       "2": {
@@ -18422,7 +18439,7 @@
       }
     }
   },
-  "recipe_fragmentcannonsmall_doublescreaming": {
+  "FragmentCannonSmall_DoubleScreaming": {
     "name": "Fragment Cannon — Double screaming",
     "grades": {
       "2": {
@@ -18713,7 +18730,7 @@
       }
     }
   },
-  "recipe_fragmentcannonlarge_doublescreaming": {
+  "FragmentCannonLarge_DoubleScreaming": {
     "name": "Fragment Cannon — Double screaming",
     "grades": {
       "2": {
@@ -19004,7 +19021,7 @@
       }
     }
   },
-  "recipe_railgun_longshot": {
+  "RailGun_LongShot": {
     "name": "Rail Gun — Enduring feedback",
     "grades": {
       "2": {
@@ -19319,7 +19336,7 @@
       }
     }
   },
-  "recipe_mininglaser_longrange": {
+  "MiningLaser_LongRange": {
     "name": "Mining Laser — Long range",
     "grades": {
       "2": {
@@ -19586,7 +19603,7 @@
       }
     }
   },
-  "recipe_multicannon_rapid": {
+  "MultiCannon_Rapid": {
     "name": "Multi-cannon — Rapid phase",
     "grades": {
       "2": {
@@ -19871,7 +19888,7 @@
       }
     }
   },
-  "recipe_seekermissilerack_drag": {
+  "SeekerMissileRack_Drag": {
     "name": "Seeker Missile Rack — Drag",
     "grades": {
       "2": {
@@ -20114,7 +20131,7 @@
       }
     }
   },
-  "recipe_seekermissilerack_lightweightthermal": {
+  "SeekerMissileRack_LightWeightThermal": {
     "name": "Seeker Missile Rack — Lightweight thermal",
     "grades": {
       "2": {
@@ -20381,7 +20398,7 @@
       }
     }
   },
-  "recipe_seekermissilerackmedium_lockdown": {
+  "SeekerMissileRackMedium_Lockdown": {
     "name": "Seeker Missile Rack — Lockdown",
     "grades": {
       "2": {
@@ -20696,7 +20713,7 @@
       }
     }
   },
-  "recipe_seekermissileracklarge_lockdown": {
+  "SeekerMissileRackLarge_Lockdown": {
     "name": "Seeker Missile Rack — Lockdown",
     "grades": {
       "2": {
@@ -21011,7 +21028,7 @@
       }
     }
   },
-  "recipe_enzymemissilerack_highyield": {
+  "EnzymeMissileRack_HighYield": {
     "name": "Enzyme Missile Rack — High-yield",
     "grades": {
       "2": {
@@ -21182,6 +21199,33 @@
           {
             "symbol": "MilitarySupercapacitors",
             "name": "Military Supercapacitors",
+            "count": 1
+          }
+        ]
+      }
+    }
+  },
+  "GuardianModule_Sturdy": {
+    "name": "Anti-Guardian Zone Resistance",
+    "grades": {
+      "1": {
+        "features": [
+          {
+            "label": "GuardianModuleResistance",
+            "method": "additive",
+            "min": 1,
+            "max": 1
+          }
+        ],
+        "materials": [
+          {
+            "symbol": "tg_abrasion03",
+            "name": "Hardened Surface Fragments",
+            "count": 2
+          },
+          {
+            "symbol": "tg_causticcrystal",
+            "name": "Caustic Crystal",
             "count": 1
           }
         ]
