@@ -296,7 +296,7 @@
         "AmmoClipSize": 77
       },
       {
-        "note": "A roll that moves the clip nowhere leaves it alone, even when the stock figure is not a whole number of bursts. High Capacity's grade-1 leg starts at +0%, and this autocannon's 18 rounds are 4.5 of its 4-round bursts; they stay 18. Reachable through `computeModifiers` only — no engineering menu offers this weapon anything, so `applyBlueprint` refuses it.",
+        "note": "A roll that moves the clip nowhere leaves it alone, even when the stock figure is not a whole number of bursts. High Capacity's grade-1 leg starts at +0%, and this accelerator's 18 rounds are 4.5 of its 4-round bursts; they stay 18. Reachable through `computeModifiers` only — no engineering menu offers this weapon anything, so `applyBlueprint` refuses it.",
         "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
         "blueprint": "Weapon_HighCapacity",
         "grade": 1,

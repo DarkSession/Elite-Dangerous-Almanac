@@ -117,7 +117,7 @@ const moduleExclusions = new Map(
  * denied modules listed in the module overview above. It stays worded as the catalogue's
  * answer rather than the game's because that is what it can honestly claim: a module
  * Frontier adds engineering for later reads `null` until a registry says so, and the
- * build corpus already has one such case (the Mk II Plasma Shock Autocannon, denied every
+ * build corpus already has one such case (the Mk II Plasma Shock Accelerator, denied every
  * blueprint upstream and engineered on both of a community build's large hardpoints).
  *
  * @param symbol - A module symbol, e.g. `"Hpt_BeamLaser_Fixed_Small"`.

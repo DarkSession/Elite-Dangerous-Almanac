@@ -233,6 +233,7 @@ export function computeModifiers(
     for (const e of experimental ?? []) add(e.label, e.method, e.value, true);
 
     const modifiers: EngineeringModifier[] = [];
+    let clipIsOverwritten = false;
     for (const [label, contributions] of byLabel) {
         const original = base[label];
         const overwrite = contributions.find((c) => c.method === 'overwrite');
@@ -271,9 +272,14 @@ export function computeModifiers(
             value = (factor - 1) * multiplierBase;
         }
         if (overwrite) value = overwrite.value;
-        // A count of rounds is where a published multiplier's own rounding shows.
-        if (label === 'AmmoClipSize' && original !== undefined && !overwrite) {
-            if (contributions.every((c) => c.stated)) value = snapToStatedWhole(value, original);
+        // A count of rounds is where a published multiplier's own rounding shows. An
+        // overwrite is a published figure rather than a product, so it is left alone —
+        // by the round-up below as well as by the snap.
+        if (label === 'AmmoClipSize') {
+            if (overwrite) clipIsOverwritten = true;
+            else if (original !== undefined && contributions.every((c) => c.stated)) {
+                value = snapToStatedWhole(value, original);
+            }
         }
         modifiers.push({
             Label: label,
@@ -286,7 +292,8 @@ export function computeModifiers(
                 : { OriginalValue: original ?? 0 }),
         });
     }
-    return roundClipToWholeBursts(resolveFalloffFromRange(modifiers, base), base);
+    const resolved = resolveFalloffFromRange(modifiers, base);
+    return clipIsOverwritten ? resolved : roundClipToWholeBursts(resolved, base);
 }
 
 /**
@@ -301,8 +308,8 @@ export function computeModifiers(
  *
  * Only a *computed* clip is rounded, and only in the direction the roll already moved it.
  * A stock clip is untouched — the Mk II Plasma Shock Accelerator's 18 rounds are not a
- * whole number of its 4-round bursts, and stay 18 — and so is a clip a journal states,
- * since that figure is the game's own.
+ * whole number of its 4-round bursts, and stay 18 — and so is a clip a recipe **overwrites**
+ * or a journal states, since either figure is published rather than computed.
  *
  * @remarks
  * Reference: EDSY by taleden (CC BY-NC 4.0), `edsy.js` — "when modifying clip size, round

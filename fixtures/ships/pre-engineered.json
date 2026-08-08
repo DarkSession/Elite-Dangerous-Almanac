@@ -516,7 +516,7 @@
         "burstRounds": 2,
         "ammoMaximum": 301.9968
       },
-      "note": "The community-goal Fragment Cannon. Its authored clip multiplier is 1.6667, so the clip computes as 3 × 2.6667 = 8.0001 and the article holds 8 — the case that shows a stated multiplier's three-decimal precision must be snapped before an engineered clip is rounded up to a whole burst, or the noise buys a whole extra burst. Its reserve carries the same noise and keeps it — 180 × 1.67776 is 301.9968 — because nothing rounds a reserve, so nothing amplifies it there."
+      "note": "The community-goal Fragment Cannon. Its authored clip multiplier is 1.6667, so the clip computes as 3 × 2.6667 = 8.0001 and the article holds 8 — the case that shows a stated multiplier's own precision must be snapped before an engineered clip is rounded up to a whole burst, or the noise buys a whole extra burst. Its reserve carries the same noise and keeps it — 180 × 1.67776 is 301.9968 — because nothing rounds a reserve, so nothing amplifies it there."
     },
     "guardianShardMediumLongRange": {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",

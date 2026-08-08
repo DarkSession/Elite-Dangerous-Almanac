@@ -43,6 +43,11 @@ export interface AmmunitionCapacity {
     /**
      * Rounds a full magazine holds — the catalogue's `clipSize`, and the largest
      * `AmmoInClip` a journal can report for this module.
+     *
+     * @remarks
+     * `0` on a module with **no magazine**, whose whole capacity is the reserve and is
+     * drawn from directly: an AFMU carries 3600 repair units and no clip to load them
+     * into, and reports `{ clipSize: 0, hopper: 3600 }`.
      */
     readonly clipSize: number;
     /**

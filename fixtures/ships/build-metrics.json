@@ -276,7 +276,7 @@
         "unlimited": true
       },
       {
-        "note": "A reserve of zero, which is not an unlimited one: this autocannon fires its magazine and has nothing to reload from. Its 18 rounds are also not a whole number of its 4-round bursts, and stay 18 — only an engineered clip is rounded.",
+        "note": "A reserve of zero, which is not an unlimited one: this accelerator fires its magazine and has nothing to reload from. Its 18 rounds are also not a whole number of its 4-round bursts, and stay 18 — only an engineered clip is rounded.",
         "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
         "clipSize": 18,
         "hopper": 0,
