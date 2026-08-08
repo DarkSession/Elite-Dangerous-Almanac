@@ -2064,10 +2064,9 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   against a capacity of 1/3, which is a launcher that has fired one sink, and is the shape
   of the whole distinction: a reading is a **lower bound** on a capacity and never a
   reading of one, so a rearm state cannot be read back as a catalogue figure. On the
-  Corsair the capacity a reading is checked against is the **engineered** one, since four
-  of its five ammunition-bearing weapons state an `AmmoClipSize` or `AmmoMaximum`
-  modifier. Pinned by
-  `fixtures/ships/build-metrics.json` §ammunition.journalReadings. A module carrying a
+  Corsair the capacity a reading is checked against is the **engineered** one, since three
+  of its five ammunition-bearing weapons state an `AmmoClipSize` or `AmmoMaximum` modifier.
+  Pinned by `fixtures/ships/build-metrics.json` §ammunition.journalReadings. A module carrying a
   magazine but no reserve figure — the two Abrasion Blasters, and nothing else — is
   reported as unlimited; one carrying neither (the lasers) has no capacity to report. A
   reserve of **zero** is a third answer and not an unlimited one: the Mk II Plasma Shock
@@ -2157,9 +2156,10 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
 Real builds whose figures came from the game or its tools rather than from this
 library, so the maths is checked against something external. Each is stored verbatim as
 its own fixture, with the expected outputs in a sibling fixture that names it by path —
-where the build is used for metrics. The last three below pin no metric: two are evidence
-for the outfitting *rules*, and what is checked against them is which module the game put
-in which mount; the Cutter is evidence about *prices*, and what is checked against it is
+where the build is used for metrics. Four below pin no metric. The Corvette is evidence
+about a *recipe*, and what is checked against it is which legs a blueprint folds; two are
+evidence for the outfitting *rules*, and what is checked against them is which module the
+game put in which mount; the Cutter is evidence about *prices*, and what is checked against it is
 that a build fitting an unpriceable module exports no module total and no rebuy.
 
 **What may be taken, and from where.** A capture is Frontier game output — which parts a
@@ -2308,10 +2308,7 @@ under, which is why several are cited above rather than copied.
   stored file rather than to a file Frontier wrote. A capture that arrives as a file should
   be preferred to this one if the two ever conflict.
 
-  **It is the ground truth for the build metrics under engineering.** The Krait Phantom,
-  Viper Mk IV and Python Mk II captures are stock, so it is the only one that checks an
-  engineered mass or jump range; the Corvette below is engineered too but pins no
-  metric. With its
+  **It recomputes to Frontier's own aggregates.** With its
   own aggregates stripped, this build recomputes to `UnladenMass` 641.9 (journal 641.900024)
   and `MaxJumpRange` 41.191542 (journal 41.191536, within 1e-4) — through a size-5 class-4
   **overcharge** drive under `FSD_LongRange` grade 5 with Mass Manager, three shield
@@ -2319,9 +2316,11 @@ under, which is why several are cited above rather than copied.
   `CargoCapacity` 144 is exact.
 
   **It is the only reading Frontier gives of an engineered clip or reserve**, which is what
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57> was opened for. Four of
-  its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier, and
-  every weapon is fully rearmed:
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57> was opened for. Three
+  of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier
+  — the two gimballed medium multi-cannons and the medium dumbfire rack, all three under
+  High Capacity, where the two plasma accelerators take Long Range and it charges neither
+  — and every weapon is fully rearmed:
 
   - **At full quality the computed figures agree exactly.** High Capacity grade 5 doubles a
     gimballed medium multi-cannon's 90/2100 to 180/4200, and with Corrosive Shell the
@@ -2402,12 +2401,12 @@ under, which is why several are cited above rather than copied.
   capture above is the authority on that convention, so this catalogue keeps
   truncating; the divergence is pinned as evidence rather than followed.
 
-  **It is also the only fixture that exercises case-insensitive slot binding.** Inara
-  lower-cases every slot key, as the SLEF specification's own example does, so a
+  **It is one of the four Inara exports that exercise case-insensitive slot binding.**
+  Inara lower-cases every slot key, as the SLEF specification's own example does, so a
   case-sensitive binding reports **no** occupied mounts on an Inara build and `setModule`
   on one adds a duplicate rather than replacing it. Nothing but an Inara-sourced export
-  shows that: the other two ground-truth fixtures are an EDSY export and a journal
-  capture, which both use Frontier's own casing. `ShipLoadout` and `parseSlotName` resolve
+  shows that: the EDSY export and the five journal captures all use Frontier's own
+  casing. `ShipLoadout` and `parseSlotName` resolve
   a slot key whatever its casing. Keys are deliberately **not** canonicalised on import —
   a build keeps its producer's spelling, so this fixture
   re-exports its slot keys byte for byte — its *credits* deliberately do not survive a

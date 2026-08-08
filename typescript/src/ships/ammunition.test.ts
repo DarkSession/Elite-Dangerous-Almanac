@@ -292,8 +292,8 @@ test("Frontier's own engineered ammunition figures, against what this library co
 });
 
 test('the Corsair capture recomputes to the figures Frontier reports for it', () => {
-    // The first engineered capture whose own aggregates this library reproduces — the other
-    // three are stock builds, so nothing checked an engineered mass or jump range before.
+    // An engineered build whose own aggregates this library reproduces from its parts, so
+    // the mass and jump-range maths answer to Frontier and not only to themselves.
     const pinned = fixture.ammunition.engineeredGroundTruth.recomputed;
     const stripped = { ...corsairJournal } as Record<string, unknown>;
     delete stripped.UnladenMass;
