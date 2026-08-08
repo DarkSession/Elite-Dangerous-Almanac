@@ -1541,9 +1541,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     capture of the outfitting panel before and after a grade-5 Overcharged roll on a cannon
     or a fragment cannon; whether Frontier ships one recipe or two is what decides between
     a further key split and a clip leg on `Weapon_Overcharged` itself, and no laser can
-    answer it because none carries a clip. The six Guardian plasma launchers are not in
-    this set: they are sold carrying `Weapon_Overcharged` rather than offered it, so no
-    menu lists it for them. The three laser groups do list it and are unaffected.
+    answer it because none carries a clip. None of the six Guardian plasma launchers is in
+    this set either: their menu lists Anti-Guardian Zone Resistance and nothing else, and
+    the two Fixed variants that carry `Weapon_Overcharged` are sold with it rather than
+    offered it. The three laser groups do list it and are unaffected.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14
     multi-cannons and on both AX multi-cannons; `applyBlueprint` accepts either spelling,
     resolving the journal one against the menu, and folds the clip reduction. Pinned in
