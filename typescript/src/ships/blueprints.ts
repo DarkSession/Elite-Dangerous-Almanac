@@ -59,7 +59,16 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
  * Look up a blueprint by its Frontier `fdname`, case-insensitively.
  *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
- * @returns The blueprint (its `name` and `grades`), or `null` if unknown.
+ * @returns The blueprint (its `name` and `grades`), or `null` if this catalogue stores no
+ * blueprint under that id.
+ * @remarks
+ * **`null` is not always an unknown id.** The game writes a handful of cosmetic
+ * transformations in the same `BlueprintName` / `EngineerModifications` field, and they
+ * name no recipe — no grade, no materials, and no engineer who applies one.
+ * {@link isDecorativeModification} from `ships/decorative-modifications` is what tells one
+ * of those apart from an id this library has never heard of. Note that such an id is not a
+ * claim that the module is unmodified: read a fitted one's stats from the journal's own
+ * `Engineering.Modifiers`.
  */
 export function getBlueprint(fdname: string): Blueprint | null {
     if (Object.hasOwn(BLUEPRINTS, fdname)) return BLUEPRINTS[fdname]!;
@@ -74,8 +83,9 @@ export function getBlueprint(fdname: string): Blueprint | null {
  * Look up a blueprint's in-game display name by its Frontier `fdname`, case-insensitively.
  *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
- * @returns The display name (e.g. `"Increased range"`), or `null` if the blueprint is
- * unknown.
+ * @returns The display name (e.g. `"Increased range"`), or `null` if this catalogue
+ * stores no blueprint under that id — see {@link getBlueprint} for what that can mean
+ * besides "unknown".
  */
 export function getBlueprintName(fdname: string): string | null {
     return getBlueprint(fdname)?.name ?? null;
@@ -87,7 +97,8 @@ export function getBlueprintName(fdname: string): string | null {
  *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
  * @param grade - The grade, `1`–`5`.
- * @returns The grade's features, or `null` if the blueprint or grade is unknown.
+ * @returns The grade's features, or `null` if the catalogue holds no such blueprint or
+ * grade — see {@link getBlueprint} for what that can mean besides "unknown".
  * @example
  * ```ts
  * getBlueprintGrade('FSD_LongRange', 5); // -> [{ label: 'Integrity', ... }, ...]
@@ -106,8 +117,8 @@ export function getBlueprintGrade(
  *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
  * @param grade - The grade, `1`–`5`.
- * @returns The grade's material requirements — possibly an empty list — or `null` if
- * the blueprint is unknown or defines no recipe for that grade.
+ * @returns The grade's material requirements — possibly an empty list — or `null` if the
+ * catalogue holds no such blueprint, or the blueprint defines no recipe for that grade.
  * @remarks
  * Distinguish the two "no materials" cases: `null` means the blueprint or grade is not
  * in the catalogue, while `[]` means a **known** recipe that costs nothing. Only
@@ -158,8 +169,8 @@ export function getBlueprintGradeMaterials(
  * an unengineered module. Only grades above it are charged; `currentGrade >= grade`
  * costs nothing (`[]`).
  * @returns One entry per distinct material with its summed `count`, or `null` if the
- * blueprint or the target grade is unknown, or `currentGrade` is negative or not an
- * integer. A grade the blueprint does not define is skipped (so a blueprint that starts
+ * catalogue holds no such blueprint or target grade, or `currentGrade` is negative or not
+ * an integer. A grade the blueprint does not define is skipped (so a blueprint that starts
  * above grade 1 costs only the grades it has); a grade whose recipe is empty contributes
  * nothing.
  * @example

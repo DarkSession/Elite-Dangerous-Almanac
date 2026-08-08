@@ -1155,14 +1155,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   (e.g. coriolis `optmass` on an FSD → `FSDOptimalMass`, `maxfuel` → `MaxFuelPerJump`).
   Group-ambiguous keys (`optmass`, `optmul`, `thermload`) are disambiguated by the
   blueprint's target module group.
-- **The `Decorative_*` transformations EDSY lists are not included, and that is now known
-  to be wrong.** They were read as internal visual/test entries; a `StoredModules` capture
-  (2026-08-07 UTC) carries three medium turreted flak mortars in storage with
-  `Decorative_Green`, `Decorative_Red` and `Decorative_Yellow` applied, so they are
-  obtainable. They are the only three of the 46 `EngineerModifications` spellings in that
-  capture that do not resolve against `BLUEPRINTS`. Whether they belong in a blueprint
-  catalogue at all — they change no stat — and which modules offer them are both open at
-  [#53](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53).
+- **The `Decorative_*` transformations EDSY lists are not blueprints, and are carried in
+  `decorative-modifications.jsonc` instead.** They are real ids the game writes in the
+  same field as a blueprint, and they name no recipe — see §Decorative modifications
+  below for what they are and why they are stored apart.
 - **Blueprint keys deliberately left out:**
   - **Per-module-group aliases, not extra blueprints.** A blueprint that applies to several
     module groups is exposed once per group under a `recipe_sensor_<group>_<mod>`-style
@@ -1264,10 +1260,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
   - **EDSY's `_X_` prefix means "not applicable" and is honoured**, not stripped: the
     Detailed Surface Scanner's group lists only `iss_er` (`Sensor_Expanded`), because its
     three other entries are `_X_`-marked. The `Decorative_*` entries on the remote-release
-    launchers are dropped for the same reason `blueprints.jsonc` does not carry them,
-    which [#53](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/53) reopens:
-    if those transformations are obtainable, a launcher left with only them is
-    engineerable after all and its `noblueprints` reading needs revisiting.
+    launchers are dropped for the same reason `blueprints.jsonc` does not carry them: a
+    decorative transformation names no recipe, and no engineer applies one. So a
+    launcher left with only those entries is offering nothing, and its `noblueprints`
+    reading holds — carrying one already transformed is not the same as being
+    engineerable. §Decorative modifications has the evidence.
   - **Where EDSY records one generic id and the journal writes a family-specific one,
     coriolis-data settles it.** EDSY collapses Lightweight, Reinforced and Shielded to
     `misc_lw` / `misc_rf` / `misc_sh` for eight families; coriolis keys the same lists by
@@ -1621,6 +1618,85 @@ up straight through with no disambiguation at all. Both paths are evidence that
     withdrawal can still name it, and a consumer holding one needs its modifiers to read the
     block. `applyBlueprint` refuses it on every module, which is the right answer to "may I
     apply this now".
+
+## Decorative modifications
+
+- **File:** `decorative-modifications.jsonc`, validated by the `decorativeModifications`
+  block in `fixtures/ships/engineering.json`. Read it with `getDecorativeModification` /
+  `isDecorativeModification` / `getDecorativeModificationsForModule` /
+  `typescript/src/ships/decorative-modifications.ts`. Three records —
+  `Decorative_Green`, `Decorative_Red`, `Decorative_Yellow` — each
+  `{ name, modules, modifiers }`.
+- **They are a festive transformation the game writes in an engineering field, which is the
+  whole of the problem they cause.** A `StoredModules` capture contributed by the repository owner
+  (521 stored modules, 2026-08-07 UTC) holds three medium turreted Remote Release Flak
+  Launchers, one per colour, in `EngineerModifications`. Those three are the only ones of
+  the capture's 46 distinct spellings that name no recipe: every other spelling, down to
+  the lower-case `weapon_longrange` the game writes on a Guardian Shard Cannon, resolves
+  against `BLUEPRINTS`. An id that resolves to nothing looks exactly like a catalogue gap
+  and is not one, which is what this catalogue exists to say.
+- **Why they are not in `blueprints.jsonc`.** There is no recipe to store: no grade, no
+  material cost, and no engineer who applies one. Giving them an empty grade 1 so the key
+  would exist would state a recipe the game does not have, and would make
+  `getBlueprintCost` price a roll nobody can make. A separate catalogue costs a few hundred
+  bytes and claims only what is known.
+- **They are not cosmetic-only: each carries a −99% `Damage` modifier.** A festive launcher
+  fires fireworks rather than flak, and the cut is what makes that true. It is the only
+  stat any of the three moves, and it is stored, so no record here may be read as "this
+  module is unmodified" — reading one that way overstates a fitted launcher's damage a
+  hundredfold. EDSY lists the three transformations with no modifiers, which the cut shows
+  to be an incomplete record rather than a second opinion.
+  - **The method is derived, not assumed.** The figures are the repository owner's
+    outfitting panel: the transformation at −99.0%, the resulting launcher at 0.3 damage
+    and 0.2/s. The panel rounds to one decimal, so no one of those pins the modifier —
+    together they do. −99.0% of the medium turreted launcher's 34 base damage is 0.34,
+    which displays as 0.3, and 0.34 × its 0.5 rate of fire is 0.17, which displays as
+    0.2/s. A flat `overwrite` to the displayed 0.3 would read −99.1% and 0.1/s, matching
+    neither of the other two. So the modifier is multiplicative and the panel's 0.3 is a
+    rounding of 0.34. `fixtures/ships/engineering.json` pins all three figures and the test
+    recomputes them, which is what would catch the stored value being re-entered as the
+    number the panel printed.
+  - **A moving stat is still not a reason to put them in `BLUEPRINTS`.** A modifier set
+    that arrives fixed with an awarded module is a pre-engineered variant in shape, not a
+    blueprint — no roll, no grade, no quality — which is why the records carry
+    `pre-engineered.jsonc`'s `{ label, method, value }` vocabulary rather than a
+    `BlueprintFeature`'s `min`/`max`. What does not work is a `PreEngineeredVariant` row
+    itself: that needs a `blueprint` joining to `BLUEPRINTS` and a `grade`, and these have
+    neither. The shared vocabulary is the useful half — read each value as its own `min`
+    and `max` and a decorative modifier goes through `computeModifiers` unchanged, exactly
+    as `pre-engineered-stats.ts` does for a bought variant.
+- **Why they are in no engineering menu.** No engineer applies one: the three launchers
+  were **awarded** already transformed, so the module arrives carrying the transformation
+  rather than being taken to an engineer for it — the same shape as the Guardian modules whose
+  community-goal experimental effects §Engineering options keeps out of the menus. **That
+  acquisition route is the contributor's account, not a reading of the capture**, which
+  records the transformation and nothing about how the module was obtained; it is stated
+  here because it is what the exclusion rests on, and no journal field can corroborate it.
+  It is also what makes EDSY's Decorative entries a `noblueprints` reading rather than an
+  engineerable one: a remote-release launcher left with only those entries is offering
+  nothing, so it stays ungrouped, `getEngineeringGroup` answers `null` for it, and
+  `applyBlueprint` refuses every recipe on it.
+- **`modules` is what has been observed, not what the game permits.** The medium turreted
+  Remote Release Flak Launcher (`Hpt_FlakMortar_Turret_Medium`) is the only module any
+  capture shows carrying a decorative transformation, and it is the only symbol stored.
+  A module absent from the list is one nothing has been seen on; the field is worded that
+  way in the API rather than as a permission.
+- **`name` pairs the festive naming with the id's colour** — `"Festive Green"`,
+  `"Festive Red"`, `"Festive Yellow"`. No registry publishes the outfitting panel's own
+  string: EDSY carries the transformation, not a label. The festive naming is the
+  repository owner's, recorded because it is what the transformation is known as and is
+  more use to a UI than a bare colour; if the panel wording is ever read off the game, it
+  replaces this verbatim.
+- **What a consumer gets.** `getBlueprint('Decorative_Green')` answers `null`, because it
+  is not a blueprint; `isDecorativeModification` is what tells that apart
+  from an id the library has never heard of. `ShipLoadout.applyBlueprint` refuses a
+  decorative id with a `TypeError` naming the transformation, not with the `RangeError` a
+  missing grade earns: the id is real, and the refusal has to read that way. Importing a
+  build is unaffected either way — `fromLoadout` stores the `Engineering` block as the
+  journal wrote it and never looks the id up. A build assembled by hand carries the cut
+  only if the consumer folds `modifiers` in themselves, which `computeModifiers` does in
+  three lines; a build imported from a journal already has it, the game's own
+  `Engineering.Modifiers` being exact.
 
 ## Engineering compatibility (may this recipe go on this module?)
 

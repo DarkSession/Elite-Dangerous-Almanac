@@ -92,8 +92,9 @@
  * the AX utility modules — plus the individual modules upstream denies every blueprint:
  * every anti-xeno multi-cannon but the two gimballed, both Enhanced anti-xeno missile
  * racks and every turreted plain one, five of the seven mining tools, the remote-release
- * launchers (three denied outright, the fourth left with only the dormant Decorative
- * entries) and the Mk II Plasma Shock Autocannon.
+ * launchers (three denied outright, the fourth left with only Decorative entries, which
+ * name no recipe — see SOURCES.md §Decorative modifications) and the
+ * Mk II Plasma Shock Autocannon.
  *
  * `modules` is ordered by group, in the order `groups` declares them, and within a group
  * in module-catalogue order.

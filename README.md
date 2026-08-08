@@ -1077,6 +1077,40 @@ experimental effect (from `ships/experimental-effects`) into journal-style modif
 The calculator is validated against the real "Deep Black" export — its size-8 drive's
 optimal mass 4670 → 7528.04 at G5 Long Range + Mass Manager.
 
+**Not every id in that field is a recipe.** The game writes a handful of festive
+transformations — `Decorative_Green`, `Decorative_Red`, `Decorative_Yellow` — in the same
+`BlueprintName` / `EngineerModifications` field, and they are not engineering: no grade, no
+materials, and no engineer applies one. `getBlueprint` answers `null` for them because they
+are not blueprints; `isDecorativeModification` from `ships/decorative-modifications` is how
+you tell that apart from an id the library has never heard of, and `applyBlueprint` refuses
+one by name rather than as an unknown blueprint.
+
+They are **not** cosmetic-only, though: a festive launcher fires fireworks rather than
+flak, and each transformation carries a single `Damage` modifier of −99% to match — on the
+medium turreted launcher, 34 damage down to 0.34. That is the one stat any of them moves,
+and each record carries it in the same `{ label, method, value }` shape a pre-engineered
+variant uses, so `computeModifiers` folds it exactly as it folds a bought variant's:
+
+```ts
+import { DECORATIVE_MODIFICATIONS } from "@elite-dangerous-almanac/core/ships/decorative-modifications";
+import { computeModifiers } from "@elite-dangerous-almanac/core/ships/engineering";
+
+// A fixed article, not a roll — each value is its own min and max.
+const features = DECORATIVE_MODIFICATIONS["Decorative_Green"].modifiers.map(
+  (m) => ({
+    label: m.label,
+    method: m.method,
+    min: m.value,
+    max: m.value,
+  }),
+);
+computeModifiers({ Damage: 34 }, features, 1);
+// -> [{ Label: "Damage", Value: 0.34, OriginalValue: 34 }]
+```
+
+Importing a build needs none of that: `fromLoadout` stores the `Engineering` block as the
+journal wrote it, and the game's own `Modifiers` are exact.
+
 **Material requirements** — what a roll _costs_ — sit alongside the modifiers in
 `ships/blueprints`: every grade is `{ features, materials }`, so `getBlueprintGrade`
 gives the modifiers and `getBlueprintGradeMaterials` the recipe. Each requirement is
@@ -1092,10 +1126,10 @@ getBlueprintGradeMaterials("FSD_LongRange", 5);
 //     { symbol: "DataminedWake", name: "Datamined Wake Exceptions", count: 1 }]
 ```
 
-`null` means the blueprint or grade is unknown; an empty array means a **known** recipe
-that costs nothing (only `CargoRack_IncreasedCapacity` grade 5). Blueprints are keyed
-only by the grades that have data, so iterating grades 1–5 can return `null` for a grade
-a blueprint doesn't define.
+`null` means the catalogue holds no such blueprint or grade; an empty array means a
+**known** recipe that costs nothing (only `CargoRack_IncreasedCapacity` grade 5).
+Blueprints are keyed only by the grades that have data, so iterating grades 1–5 can return
+`null` for a grade a blueprint doesn't define.
 
 Experimental (special) effects cost materials too, and carry them the same way: each
 effect in `ships/experimental-effects` is `{ modifiers, materials }`, so

@@ -194,10 +194,12 @@ export class FittedModule {
      * @param blueprintName - Frontier blueprint `fdname`, e.g. `"FSD_LongRange"`.
      * @param options - Grade, optional quality in `[0, 1]`, and experimental effect.
      * @returns This handle for chaining.
-     * @throws {RangeError} If the blueprint, grade or experimental effect is unknown, or
-     * `quality` falls outside `[0, 1]`.
+     * @throws {RangeError} If the catalogue holds no such blueprint, grade or experimental
+     * effect, or `quality` falls outside `[0, 1]`.
      * @throws {TypeError} If this handle has gone stale — its slot emptied or refitted since
-     * it was taken — or the fitted module has no stats to engineer; or this module is not
+     * it was taken — or the fitted module has no stats to engineer; or the id names a
+     * decorative modification, which names no recipe (see
+     * {@link DECORATIVE_MODIFICATIONS}); or this module is not
      * offered the blueprint or the experimental effect; or the catalogue cannot answer a
      * base stat the recipe modifies.
      * @example
