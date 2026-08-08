@@ -93,7 +93,10 @@ export interface AmmunitionCapacity {
  * grade 3 reaches 10.08 and loads 11 — because a ship cannot load a tenth of a round, and
  * because a journal states the engineered clip itself, which is passed through untouched.
  * The **reserve** is rounded by neither Coriolis nor EDSY, so a fractional one is reported
- * as it lands: <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
+ * as it lands — while the game's own engineered reserve is a whole number, so round it
+ * yourself before showing it. A roll simulated at an intermediate quality can also differ
+ * by a round from what the game gives, where a build imported from a journal carries the
+ * game's own figures: <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
  * @example
  * ```ts
  * ammunitionCapacity(getModuleBySymbol('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES)!);

@@ -875,10 +875,11 @@ shield cell banks and AFMUs answer the same way; a laser has nothing to count an
 An engineered clip is rounded up to a whole burst — a Concord Cannon's 12.24 rounds load
 as 15 — following EDSY, with Coriolis agreeing wherever a weapon fires one round at a
 time. **An engineered reserve is not rounded**, because neither registry rounds it, so a
-High-Capacity fragment cannon reports `hopper: 302.4` — and `total` with it. Neither rule
-is Frontier's own and no capture here can check them
-([#57](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57)); round `hopper`
-and `total` yourself if you are rendering them.
+High-Capacity fragment cannon reports `hopper: 302.4` — and `total` with it. The game's own
+engineered reserve is a whole number, so round `hopper` and `total` yourself if you are
+rendering them. A simulated roll at an intermediate quality can also differ by a round from what
+the game gives; a build imported from a journal always carries the game's own figures
+([#57](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57)).
 
 **Shields scale with the hull's mass, not the build's** — fitting more modules never
 weakens them — and a generator will not engage at all around a hull heavier than its

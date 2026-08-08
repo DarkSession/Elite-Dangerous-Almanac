@@ -9,6 +9,15 @@ import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'j
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
+import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
+
+/** Every journal capture in the fixtures, by file name. */
+const JOURNALS = [
+    ['journal-krait-phantom.json', kraitJournal],
+    ['journal-viper-mkiv.json', viperJournal],
+    ['journal-python-mkii-antixeno.json', pythonJournal],
+    ['journal-corsair.json', corsairJournal],
+] as const;
 
 const module = (symbol: string) => {
     const record = getModuleBySymbol(symbol, ALL_MODULES);
@@ -186,11 +195,8 @@ test('every ammo count a journal reports fits inside the capacity for that modul
     let atCapacity = 0;
     const modules = new Set<string>();
 
-    for (const [capture, event] of [
-        ['journal-krait-phantom.json', kraitJournal],
-        ['journal-viper-mkiv.json', viperJournal],
-        ['journal-python-mkii-antixeno.json', pythonJournal],
-    ] as const) {
+    for (const [capture, event] of JOURNALS) {
+        const build = ShipLoadout.fromLoadout(event as never);
         for (const fitted of event.Modules) {
             const clip = fitted.AmmoInClip ?? 0;
             const hopper = fitted.AmmoInHopper ?? 0;
@@ -198,7 +204,7 @@ test('every ammo count a journal reports fits inside the capacity for that modul
             readings++;
             modules.add(fitted.Item);
 
-            const capacity = ammunitionCapacity(module(fitted.Item))!;
+            const capacity = build.getFittedModule(fitted.Slot)!.ammunition!;
             assert.ok(clip <= capacity.clipSize, `${capture} ${fitted.Item} clip`);
             assert.ok(hopper <= capacity.hopper, `${capture} ${fitted.Item} hopper`);
             if (clip === capacity.clipSize && hopper === capacity.hopper) atCapacity++;
@@ -219,6 +225,84 @@ test('every ammo count a journal reports fits inside the capacity for that modul
     assert.equal(modules.size, pinned.distinctModules);
     assert.equal(atCapacity, pinned.atCapacity);
     assert.deepEqual(below, pinned.belowCapacity);
+});
+
+test("Frontier's own engineered ammunition figures, against what this library computes", () => {
+    // The Corsair capture is the only ground truth for an *engineered* clip or reserve. A
+    // parsed build always agrees with it, because a stated modifier is used verbatim; a
+    // simulated roll of the same recipe agrees only at full quality.
+    const build = ShipLoadout.fromLoadout(corsairJournal as never);
+    for (const pinned of fixture.ammunition.engineeredGroundTruth.cases) {
+        const fitted = corsairJournal.Modules.find((m) => m.Slot === pinned.slot)!;
+        const label = `${pinned.symbol} ${pinned.blueprint} g${pinned.grade} q${pinned.quality}`;
+        const stated = (name: string) =>
+            fitted.Engineering!.Modifiers.find((m) => m.Label === name)?.Value;
+
+        // The capture says what the fixture says it says.
+        assert.equal(fitted.Item, pinned.symbol, label);
+        assert.equal(fitted.Engineering!.Level, pinned.grade, label);
+        assert.equal(fitted.Engineering!.Quality, pinned.quality, label);
+        assert.equal(fitted.Engineering!.ExperimentalEffect ?? null, pinned.experimental, label);
+        assert.equal(stated('AmmoClipSize'), pinned.game.clipSize, label);
+        assert.equal(stated('AmmoMaximum'), pinned.game.ammoMaximum, label);
+        assert.equal(fitted.AmmoInClip, pinned.game.loadedClip, label);
+        assert.equal(fitted.AmmoInHopper, pinned.game.loadedHopper, label);
+
+        // A parsed build reports the game's own figures, engineering and all.
+        assert.deepEqual(
+            build.getFittedModule(pinned.slot)!.ammunition,
+            {
+                clipSize: pinned.game.clipSize,
+                hopper: pinned.game.ammoMaximum,
+                total: pinned.game.clipSize + pinned.game.ammoMaximum,
+                unlimited: false,
+            },
+            `${label}: imported`,
+        );
+
+        // Simulating the same roll from the catalogue is the part that can disagree, and
+        // the fixture pins what it currently produces — including where that is wrong.
+        const record = module(pinned.symbol);
+        assert.equal(record.clipSize, pinned.base.clipSize, `${label}: base clip`);
+        assert.equal(record.ammoMaximum, pinned.base.ammoMaximum, `${label}: base reserve`);
+
+        const simulated = ShipLoadout.empty('Corsair');
+        simulated.setModule(pinned.slot, record);
+        simulated.getFittedModule(pinned.slot)!.applyBlueprint(pinned.blueprint, {
+            grade: pinned.grade,
+            quality: pinned.quality,
+            ...(pinned.experimental ? { experimental: pinned.experimental } : {}),
+        });
+        const rolled = simulated.getFittedModule(pinned.slot)!.ammunition!;
+        assert.equal(rolled.clipSize, pinned.simulated.clipSize, `${label}: simulated clip`);
+        assert.equal(rolled.hopper, pinned.simulated.ammoMaximum, `${label}: simulated reserve`);
+
+        // Whether that simulation matches Frontier is the fixture's `agrees` flag, and the
+        // one `false` is https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.
+        const agrees =
+            rolled.clipSize === pinned.game.clipSize && rolled.hopper === pinned.game.ammoMaximum;
+        assert.equal(agrees, pinned.agrees, `${label}: agreement with the game`);
+    }
+    // Full quality agrees; the interpolated roll does not. If that ever changes, this count
+    // moves and the issue can be revisited rather than the fixture quietly rewritten.
+    assert.equal(fixture.ammunition.engineeredGroundTruth.cases.filter((c) => c.agrees).length, 2);
+});
+
+test('the Corsair capture recomputes to the figures Frontier reports for it', () => {
+    // The first engineered capture whose own aggregates this library reproduces — the other
+    // three are stock builds, so nothing checked an engineered mass or jump range before.
+    const pinned = fixture.ammunition.engineeredGroundTruth.recomputed;
+    const stripped = { ...corsairJournal } as Record<string, unknown>;
+    delete stripped.UnladenMass;
+    delete stripped.MaxJumpRange;
+    delete stripped.CargoCapacity;
+
+    const build = ShipLoadout.fromLoadout(stripped as never);
+    assert.ok(Math.abs(build.unladenMass! - pinned.unladenMass) < 1e-6);
+    assert.ok(Math.abs(build.unladenMass! - pinned.journalUnladenMass) < 1e-4);
+    assert.equal(Number(build.maxJumpRange().toFixed(6)), pinned.maxJumpRange);
+    assert.ok(Math.abs(build.maxJumpRange() - pinned.journalMaxJumpRange) < 1e-4);
+    assert.equal(build.cargoCapacity, pinned.cargoCapacity);
 });
 
 test('a module the catalogues do not know reports no capacity', () => {

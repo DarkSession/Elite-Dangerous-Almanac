@@ -298,10 +298,10 @@
       "Int_DroneControl_Collection_Size3_Class3"
     ],
     "journalReadings": {
-      "note": "Every non-zero AmmoInClip / AmmoInHopper across the three journal captures — the only external readings of `clipSize` and `ammoMaximum` this repository holds. Eight of the nine sit exactly at capacity, on seven distinct modules across all three captures. The ninth is the Viper's heat-sink launcher, reporting 2 in reserve against a capacity of 3: what a launcher that has fired one heat sink looks like. That is the whole reason a journal's ammunition is a rearm state and not a capacity — a reading is a lower bound on what the module holds, and only a bound, so no reading may be read back as a catalogue figure.",
-      "readings": 9,
-      "distinctModules": 7,
-      "atCapacity": 8,
+      "note": "Every non-zero AmmoInClip / AmmoInHopper across the four journal captures — the only external readings of `clipSize` and `ammoMaximum` this repository holds. Thirteen of the fourteen sit exactly at capacity, on nine distinct modules — the gimballed medium multi-cannon appears in two captures. The fourteenth is the Viper's heat-sink launcher, reporting 2 in reserve against a capacity of 3: what a launcher that has fired one heat sink looks like. That is the whole reason a journal's ammunition is a rearm state and not a capacity — a reading is a lower bound on what the module holds, and only a bound, so no reading may be read back as a catalogue figure. On the Corsair the capacity is the engineered one, since four of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier.",
+      "readings": 14,
+      "distinctModules": 9,
+      "atCapacity": 13,
       "belowCapacity": [
         {
           "capture": "journal-viper-mkiv.json",
@@ -322,7 +322,11 @@
           "module": "Hpt_Cannon_Fixed_Small",
           "blueprint": "Weapon_HighCapacity",
           "grade": 5,
-          "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
+          "stock": {
+            "clipSize": 6,
+            "hopper": 120,
+            "total": 126
+          },
           "clipSize": 12,
           "hopper": 240,
           "total": 252
@@ -333,7 +337,11 @@
           "module": "Hpt_Cannon_Fixed_Small",
           "blueprint": "Weapon_HighCapacity",
           "grade": 3,
-          "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
+          "stock": {
+            "clipSize": 6,
+            "hopper": 120,
+            "total": 126
+          },
           "clipSize": 11,
           "hopper": 201.6,
           "total": 212.6
@@ -344,7 +352,11 @@
           "module": "Hpt_Slugshot_Fixed_Medium",
           "blueprint": "Weapon_DoubleShot",
           "grade": 1,
-          "stock": { "clipSize": 3, "hopper": 180, "total": 183 },
+          "stock": {
+            "clipSize": 3,
+            "hopper": 180,
+            "total": 183
+          },
           "burstRounds": 2,
           "clipSize": 6,
           "hopper": 180,
@@ -356,7 +368,11 @@
           "module": "Hpt_Cannon_Gimbal_Medium_Burst",
           "blueprint": "Weapon_HighCapacity",
           "grade": 1,
-          "stock": { "clipSize": 9, "hopper": 300, "total": 309 },
+          "stock": {
+            "clipSize": 9,
+            "hopper": 300,
+            "total": 309
+          },
           "burstRounds": 3,
           "clipSize": 15,
           "hopper": 408,
@@ -368,7 +384,11 @@
           "module": "Hpt_ChaffLauncher_Tiny",
           "blueprint": "Misc_ChaffCapacity",
           "grade": 1,
-          "stock": { "clipSize": 1, "hopper": 10, "total": 11 },
+          "stock": {
+            "clipSize": 1,
+            "hopper": 10,
+            "total": 11
+          },
           "clipSize": 1,
           "hopper": 15,
           "total": 16
@@ -380,7 +400,11 @@
           "blueprint": "RailGun_LongShot",
           "grade": 5,
           "experimental": "special_plasma_slug_cooled",
-          "stock": { "clipSize": 1, "hopper": 80, "total": 81 },
+          "stock": {
+            "clipSize": 1,
+            "hopper": 80,
+            "total": 81
+          },
           "clipSize": 1,
           "hopper": 0,
           "total": 1
@@ -392,12 +416,101 @@
           "blueprint": "Weapon_HighCapacity",
           "grade": 5,
           "experimental": "special_corrosive_shell",
-          "stock": { "clipSize": 100, "hopper": 2100, "total": 2200 },
+          "stock": {
+            "clipSize": 100,
+            "hopper": 2100,
+            "total": 2200
+          },
           "clipSize": 200,
           "hopper": 3360,
           "total": 3560
         }
       ]
+    },
+    "engineeredGroundTruth": {
+      "note": "Frontier's own engineered ammunition figures, from fixtures/ships/journal-corsair.json — the only capture here whose weapons carry `AmmoClipSize` / `AmmoMaximum` modifiers, and the evidence https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 was opened for. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and quality; `imported` is what a parsed build reports, which uses the stated modifier verbatim and therefore always equals `game`. At full quality the two agree exactly, on both legs and through an experimental effect. At an interpolated quality they do not, and no single multiplier reproduces both of Frontier's figures under any monotone rounding: 87 needs a roll of 0.8125 (or at most 0.8333 rounding down) while 23 needs more than 0.8333, since 12 × 1.8333 is exactly 22. FSD Interrupt cannot account for it — it carries Damage and BurstInterval legs only. The registries' model, one quality-derived multiplier scaling both legs from identical bands, is therefore not what the game does. Pinned including the disagreement, so a change to the model has to face it.",
+      "cases": [
+        {
+          "slot": "MediumHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true,
+          "note": "Corrosive Shell's −20% compounding after High Capacity's doubling: 2100 × 2 × 0.8. The first external check that experimental has had."
+        },
+        {
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true,
+          "note": "The same recipe without an ammunition-moving experimental: a clean doubling of both legs."
+        },
+        {
+          "slot": "MediumHardpoint3",
+          "symbol": "hpt_dumbfiremissilerack_fixed_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 4,
+          "quality": 0.8931,
+          "experimental": "special_fsd_interrupt",
+          "base": {
+            "clipSize": 12,
+            "ammoMaximum": 48
+          },
+          "game": {
+            "clipSize": 23,
+            "ammoMaximum": 87,
+            "loadedClip": 23,
+            "loadedHopper": 87
+          },
+          "simulated": {
+            "clipSize": 22,
+            "ammoMaximum": 87.499008
+          },
+          "agrees": false,
+          "note": "The disagreement. Frontier's engineered reserve is a whole 87 where this library computes 87.499008, and its clip is one round above what a shared multiplier predicts. Importing this build is unaffected: the stated modifiers are used verbatim."
+        }
+      ],
+      "recomputed": {
+        "note": "The Corsair with its own aggregates stripped, so nothing can be echoed back. It is the first engineered capture whose recomputed figures agree with Frontier — the other three are stock builds — and it exercises an engineered overcharge drive under FSD_LongRange g5 with Mass Manager.",
+        "unladenMass": 641.9,
+        "journalUnladenMass": 641.900024,
+        "maxJumpRange": 41.191542,
+        "journalMaxJumpRange": 41.191536,
+        "cargoCapacity": 144
+      }
     }
   },
   "functions": {

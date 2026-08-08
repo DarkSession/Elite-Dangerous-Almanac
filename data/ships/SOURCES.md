@@ -2077,10 +2077,14 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   a High Capacity multi-cannon's 2822.4 is a genuine figure, not a mis-stated 2822. Snapping
   applies to a **stated** multiplier only: a quality roll between two published legs is a
   real number with no whole magazine behind it, so a small multi-cannon at High Capacity
-  grade 5 and quality 0.07 holds 185.12 rounds, which means 186 and rounds up. That a
-  reserve keeps a fraction its own transcription put there (30.006) is one more reason a
-  capture is wanted on
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
+  grade 5 and quality 0.07 holds 185.12 rounds, which means 186 and rounds up.
+
+  **The game's own engineered reserve is a whole number**, which the Corsair capture shows
+  and neither registry does: it reads 87 where this library computes 87.499008. Nothing is
+  changed on that evidence — one capture cannot separate "the game rounds" from "Frontier's
+  multipliers land whole", and the same capture shows the clip disagreeing in the other
+  direction, so the mapping from `Quality` is the thing in question rather than a rounding
+  step. <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57> carries it.
 - **`sustainedFireFactor` rounds a clip up to a whole round, not to a whole burst**
   (`weapons.ts`), matching Coriolis's own `getClip`, which is what its `getSustainedFactor`
   reads. Nothing this library computes reaches it fractional, so the two rules can only
@@ -2244,6 +2248,58 @@ under, which is why several are cited above rather than copied.
   `ships/ammunition` reports it from `clipSize` and `ammoMaximum`, post-engineering. The fixture therefore reads the two
   counts off the stored capture, and checks them against the capacity a parsed build
   reports for the same weapons — which agree here because both are fully rearmed.
+
+- **`fixtures/ships/journal-corsair.json`** — a real Frontier journal `Loadout` event for a
+  heavily **engineered** Corsair (36 `Modules` entries: six hardpoints, three shield
+  boosters, an engineered overcharge drive, 144 t of cargo). Contributed **2026-08-08 UTC**
+  by the repository owner. No upstream project is recorded for it — the same position as
+  the three other journal captures, and not a reason to leave it out; the loadout is
+  Frontier game output redistributed under Frontier's media-usage terms. Stored SHA-256
+  `b26450197e4521144a2c6450c0e28e283c424e806d42b335e147852933381c4b`. Its `ShipName`,
+  `ShipIdent`, `ShipID` and `timestamp` are kept, as the other captures' are — they
+  describe a ship, and nothing in the event names a person; the engineer names are the
+  game's own NPCs.
+
+  **One manual correction.** The capture reached this repository as pasted text, and the
+  transport had broken `int_powerplant_size7_class5` across a line inside the string. That
+  break is repaired and nothing else is altered, so the checksum above attests to the
+  stored file rather than to a file Frontier wrote. A capture that arrives as a file should
+  be preferred to this one if the two ever conflict.
+
+  **It is the first engineered ground truth for the build metrics.** The other three
+  captures are stock, so nothing checked an engineered mass or jump range before. With its
+  own aggregates stripped, this build recomputes to `UnladenMass` 641.9 (journal 641.900024)
+  and `MaxJumpRange` 41.191542 (journal 41.191536, within 1e-4) — through a size-5 class-4
+  **overcharge** drive under `FSD_LongRange` grade 5 with Mass Manager, three shield
+  boosters at 14 t each, a 48 t armoured power plant and a 0.6 t lightweight life support.
+  `CargoCapacity` 144 is exact.
+
+  **It is the only reading Frontier gives of an engineered clip or reserve**, which is what
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57> was opened for. Four of
+  its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier, and
+  every weapon is fully rearmed:
+
+  - **At full quality the computed figures agree exactly.** High Capacity grade 5 doubles a
+    gimballed medium multi-cannon's 90/2100 to 180/4200, and with Corrosive Shell the
+    reserve is 3360 — 2100 × 2 × 0.8, the first external check that experimental has had.
+  - **At an interpolated quality they do not.** A medium dumbfire rack at High Capacity
+    grade 4, quality 0.8931, reads 12 → **23** and 48 → **87** in the journal, where this
+    library computes 22 and 87.499008. No single multiplier reproduces both of Frontier's
+    figures under any monotone rounding: 87 needs a roll of 0.8125, or at most 0.8333 if the
+    game rounds down, while 23 needs more than 0.8333, since 12 × 1.8333 is exactly 22. FSD
+    Interrupt cannot account for it — it carries `Damage` and `BurstInterval` legs only. So
+    the registries' model, one quality-derived multiplier scaling both legs from identical
+    bands, is not what the game does, and **an engineered reserve is a whole number in game**
+    where this library can report a fraction.
+  - **Importing is unaffected**, which is the point of rounding only where a roll is
+    computed: the stated modifiers are used verbatim, so this build reads back 23/87.
+
+  Pinned by `fixtures/ships/build-metrics.json` §ammunition.engineeredGroundTruth, including
+  the disagreement, so a change to the model has to face it.
+
+  **What it does not close:** the mapping from `Quality` to a per-leg multiplier. One
+  capture is one equation in two unknowns; more captures at intermediate quality would solve
+  it.
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed
