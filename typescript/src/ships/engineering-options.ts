@@ -18,7 +18,7 @@
  * modules upstream denies every blueprint — every anti-xeno multi-cannon but the two
  * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, five of
  * the seven mining tools, the remote-release launchers and the Mk II Plasma Shock
- * Autocannon.
+ * Accelerator.
  *
  * **A group is one menu.** Where the same kind of module comes in two flavours with
  * different menus, they are two groups: a Guardian Power Plant takes only Anti-Guardian

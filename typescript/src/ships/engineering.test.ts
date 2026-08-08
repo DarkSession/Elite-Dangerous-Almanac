@@ -657,6 +657,26 @@ test('an engineered clip is rounded up to a whole burst, and the reserve is not 
     }
 });
 
+test('a clip a recipe overwrites is published, not computed, and is left alone', () => {
+    // The two Guardian Plasma Launchers are the only ammunition overwrites in the
+    // catalogues and neither fires in bursts, so nothing in the data reaches this. It is
+    // the same exclusion the snap makes: a stated figure is not a product to be corrected.
+    const overwrite = [{ label: 'AmmoClipSize', method: 'overwrite', min: 20, max: 20 }] as const;
+    assert.equal(
+        modFor(computeModifiers({ AmmoClipSize: 12, BurstSize: 3 }, overwrite), 'AmmoClipSize'),
+        20,
+    );
+    // A clip the recipe *computes* on the same weapon still loads whole bursts: 12 × 1.36
+    // is 16.32, and three-round bursts make that 18.
+    const scaled = [
+        { label: 'AmmoClipSize', method: 'multiplicative', min: 0.36, max: 0.36 },
+    ] as const;
+    assert.equal(
+        modFor(computeModifiers({ AmmoClipSize: 12, BurstSize: 3 }, scaled), 'AmmoClipSize'),
+        18,
+    );
+});
+
 test('the base stats a recipe scales come back in the journal spelling for the family', () => {
     // One catalogue field can answer to more than one journal label, and which label a
     // stat arrives under is a fact about the module's family, not about the stat. A

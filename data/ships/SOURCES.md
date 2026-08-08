@@ -2050,11 +2050,16 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>. The rounding is
   applied in `computeModifiers` (`engineering.ts`), which is every place this library
   computes an engineered stat — a blueprint roll and a pre-engineered variant's published
-  article alike — and nowhere else: a journal's own `Engineering.Modifiers` are never
-  recomputed, so a clip the game states is passed through untouched. A roll that leaves the
-  clip where it was rounds nothing, so the Mk II Plasma Shock Accelerator's 18 rounds
-  survive a zero-magnitude roll — reachable only by calling `computeModifiers` directly,
-  since no engineering menu offers that weapon anything for `applyBlueprint` to accept. Pinned by `fixtures/ships/engineering.json`
+  article alike — and nowhere else. **Three things it computes nothing for are left
+  alone**: a journal's own `Engineering.Modifiers`, which are never recomputed, so a clip
+  the game states passes through untouched; a recipe leg that *overwrites* the clip, which
+  is a registry's published figure rather than a product of one (the two Guardian Plasma
+  Launchers' 20 rounds); and a roll that leaves the clip where it was, so the Mk II Plasma
+  Shock Accelerator's 18 rounds survive a zero-magnitude roll — reachable only by calling
+  `computeModifiers` directly, since no engineering menu offers that weapon anything for
+  `applyBlueprint` to accept. EDSY draws the same line, rounding inside the branch that
+  stores a roll and never on a restored or built-in module. Pinned by
+  `fixtures/ships/engineering.json`
   §clipRounding and, for the published article, `fixtures/ships/pre-engineered.json`
   §resolved.fragmentCannonDoubleShot.
 - **A published multiplier is snapped to the precision it is stated at — on the clip
