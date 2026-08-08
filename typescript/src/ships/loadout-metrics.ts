@@ -405,11 +405,13 @@ const WEAPON_FIELDS = [
  * A fitted weapon's stats, post-engineering.
  *
  * @remarks
- * Two figures need more than a per-field read. The **rate of fire** is derived from the
- * firing cycle, so a recipe that changes the burst pattern (Double Shot gives a weapon a
- * two-round burst) moves it even when the build carries no `RateOfFire` modifier — it is
- * rebuilt from the parts whenever one of them has been engineered. And the **falloff
- * range** is held to the weapon's maximum range, as Coriolis's `getFalloff` does.
+ * Several values need more than a per-field read. The **rate of fire** is derived from
+ * the firing cycle, so a recipe that changes the burst pattern (Double Shot gives a
+ * weapon a two-round burst) moves it even when the build carries no `RateOfFire`
+ * modifier. The **falloff range** is held to the weapon's maximum range. Exact
+ * **damage components** scale by the effective/base damage ratio so engineering keeps
+ * their proportions, while **projectile boundary parameters** are copied unchanged
+ * because they are not ordinary engineerable range fields.
  */
 export function weaponStatsFor(
     module: LoadoutModule,
@@ -433,7 +435,31 @@ export function weaponStatsFor(
     // Engineering never redistributes damage across types, so the split is the
     // catalogue's own.
     if (stats.damageDistribution) weapon.damageDistribution = stats.damageDistribution;
+    if (stats.damageComponents) {
+        const scale =
+            stats.damage !== undefined && stats.damage !== 0 && weapon.damage !== undefined
+                ? Number(weapon.damage) / stats.damage
+                : 1;
+        weapon.damageComponents = scaleDamageComponents(stats.damageComponents, scale);
+    }
+    if (stats.projectileRange) weapon.projectileRange = { ...stats.projectileRange };
     return weapon as WeaponStats;
+}
+
+function scaleDamageComponents(
+    components: NonNullable<OutfittingModule['damageComponents']>,
+    scale: number,
+): NonNullable<OutfittingModule['damageComponents']> {
+    return {
+        ...(components.kinetic === undefined ? {} : { kinetic: components.kinetic * scale }),
+        ...(components.thermal === undefined ? {} : { thermal: components.thermal * scale }),
+        ...(components.explosive === undefined ? {} : { explosive: components.explosive * scale }),
+        ...(components.absolute === undefined ? {} : { absolute: components.absolute * scale }),
+        ...(components.antiXeno === undefined ? {} : { antiXeno: components.antiXeno * scale }),
+        ...(components.unclassified === undefined
+            ? {}
+            : { unclassified: components.unclassified.map((value) => value * scale) }),
+    };
 }
 
 /**

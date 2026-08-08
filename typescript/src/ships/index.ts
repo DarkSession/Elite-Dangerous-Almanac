@@ -75,6 +75,8 @@ export {
     type ModuleGuidance,
     type ModuleRating,
     type DamageDistribution,
+    type DamageComponents,
+    type ProjectileRangeBoundaries,
 } from './modules.js';
 
 // ── Module catalogues (one per outfitting category) ─────────────────────────

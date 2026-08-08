@@ -11,17 +11,18 @@
  *          https://github.com/EDCD/coriolis-data
  *          EDSY eddb.js (taleden, CC BY-NC 4.0): https://github.com/taleden/EDSY
  *          — mass, integrity, powerDraw and bootTime where coriolis-data carries
- *          none, and the corrections where its value is a duplicated or mis-copied
- *          row. The few records no third-party registry lists (the size-8 frame
- *          shift drives and the `*_free` starter fittings) were read from the live
- *          game's own outfitting panels and are pinned in
- *          fixtures/ships/module-stats.json.
+ *          none, and corrections where its value is a duplicated or mis-copied row.
+ *          In-game verification covers all identities and the numeric values on all
+ *          956 non-armour modules; exact corrections are pinned in
+ *          fixtures/ships/module-stats.json. The 241 ship-armour modules retain their
+ *          separately sourced numeric values.
  *          The stat values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
  * `symbol` is the internal identifier (e.g. `Hpt_PulseLaser_Fixed_Small`); `name`
- * the display name; `class` the module size (0-8) and `rating` its grade letter
+ * the stable descriptive English name (not byte-exact localized UI text); `class`
+ * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is an `internal` module, so a loader adds
  * `category: "internal"` from the file it read rather than repeating it 482 times.
@@ -697,7 +698,7 @@
     "optMultiplier": 0.9,
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
-    "shieldRegenRate": 1.3,
+    "shieldRegenRate": 1.33,
     "shieldBrokenRegenRate": 5.33,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -720,7 +721,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
-    "shieldRegenRate": 1.3,
+    "shieldRegenRate": 1.33,
     "shieldBrokenRegenRate": 5.33,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -743,7 +744,7 @@
     "optMultiplier": 1.1,
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
-    "shieldRegenRate": 1.3,
+    "shieldRegenRate": 1.33,
     "shieldBrokenRegenRate": 5.33,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -766,7 +767,7 @@
     "optMultiplier": 1.2,
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
-    "shieldRegenRate": 1.3,
+    "shieldRegenRate": 1.33,
     "shieldBrokenRegenRate": 5.33,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -789,7 +790,7 @@
     "optMultiplier": 0.8,
     "minMultiplier": 0.3,
     "maxMultiplier": 1.3,
-    "shieldRegenRate": 1.8,
+    "shieldRegenRate": 1.83,
     "shieldBrokenRegenRate": 7.33,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -812,7 +813,7 @@
     "optMultiplier": 0.9,
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
-    "shieldRegenRate": 1.8,
+    "shieldRegenRate": 1.83,
     "shieldBrokenRegenRate": 7.33,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -835,7 +836,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.5,
     "maxMultiplier": 1.5,
-    "shieldRegenRate": 1.8,
+    "shieldRegenRate": 1.83,
     "shieldBrokenRegenRate": 7.33,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -858,7 +859,7 @@
     "optMultiplier": 1.1,
     "minMultiplier": 0.6,
     "maxMultiplier": 1.6,
-    "shieldRegenRate": 1.8,
+    "shieldRegenRate": 1.83,
     "shieldBrokenRegenRate": 7.33,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -881,7 +882,7 @@
     "optMultiplier": 1.2,
     "minMultiplier": 0.7,
     "maxMultiplier": 1.7,
-    "shieldRegenRate": 1.8,
+    "shieldRegenRate": 1.83,
     "shieldBrokenRegenRate": 7.33,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -1032,7 +1033,7 @@
     "powerDraw": 0.55,
     "bootTime": 25,
     "clipSize": 1,
-    "ammoMaximum": 0,
+    "ammoMaximum": 1,
     "thermalLoad": 170,
     "shieldBankReinforcement": 16,
     "shieldBankHeat": 170,
@@ -1801,11 +1802,11 @@
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
     "rating": "I",
+    "mass": 0,
     "integrity": 20,
     "powerDraw": 0.4,
     "bootTime": 0,
-    "cost": 18040,
-    "unknownStats": ["mass"]
+    "cost": 18040
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class1",
@@ -2030,9 +2031,9 @@
   {
     "symbol": "Int_StellarBodyDiscoveryScanner_Standard",
     "name": "Basic Discovery Scanner",
-    "class": 1,
+    "class": 0,
     "rating": "E",
-    "mass": 2,
+    "mass": 0,
     "integrity": 40,
     "scanAngle": 10,
     "scanTime": 5,
@@ -2545,7 +2546,7 @@
     "integrity": 96,
     "powerDraw": 0.57,
     "bootTime": 4,
-    "refuelRate": 0.342,
+    "refuelRate": 0.343,
     "cost": 2862364
   },
   {
@@ -4435,7 +4436,7 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 1.7,
+    "shieldBrokenRegenRate": 1.66,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
     "explosiveResistance": 0.5,
@@ -4459,7 +4460,7 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1,
-    "shieldBrokenRegenRate": 2.3,
+    "shieldBrokenRegenRate": 2.34,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
     "explosiveResistance": 0.5,
@@ -4506,8 +4507,8 @@
     "optMultiplier": 1.5,
     "minMultiplier": 1,
     "maxMultiplier": 2,
-    "shieldRegenRate": 1.1,
-    "shieldBrokenRegenRate": 4.2,
+    "shieldRegenRate": 1.06,
+    "shieldBrokenRegenRate": 4.25,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
     "explosiveResistance": 0.5,
@@ -4530,7 +4531,7 @@
     "optMultiplier": 1.5,
     "minMultiplier": 1,
     "maxMultiplier": 2,
-    "shieldRegenRate": 1.4,
+    "shieldRegenRate": 1.35,
     "shieldBrokenRegenRate": 5.4,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -4645,8 +4646,8 @@
     "optMultiplier": 0.9,
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
-    "shieldRegenRate": 2.2,
-    "shieldBrokenRegenRate": 5.6,
+    "shieldRegenRate": 2.25,
+    "shieldBrokenRegenRate": 5.63,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
     "explosiveResistance": 0.5,
@@ -4714,7 +4715,7 @@
     "optMultiplier": 0.9,
     "minMultiplier": 0.4,
     "maxMultiplier": 1.4,
-    "shieldRegenRate": 5.8,
+    "shieldRegenRate": 5.76,
     "shieldBrokenRegenRate": 14.4,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
@@ -4962,11 +4963,7 @@
     "mass": 10,
     "integrity": 60,
     "powerDraw": 0.25,
-    "restrictedToShips": [
-      "Explorer_NX",
-      "PantherMkII",
-      "LakonMiner"
-    ],
+    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
     "bootTime": 5
   },
   {
@@ -4977,11 +4974,7 @@
     "mass": 20,
     "integrity": 80,
     "powerDraw": 0.35,
-    "restrictedToShips": [
-      "Explorer_NX",
-      "PantherMkII",
-      "LakonMiner"
-    ],
+    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
     "bootTime": 5
   },
   {
@@ -4992,11 +4985,7 @@
     "mass": 30,
     "integrity": 120,
     "powerDraw": 0.35,
-    "restrictedToShips": [
-      "Explorer_NX",
-      "PantherMkII",
-      "LakonMiner"
-    ],
+    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
     "bootTime": 5
   },
   {
@@ -5389,7 +5378,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 72,
     "cost": 7501
   },
@@ -5403,7 +5392,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 99,
     "cost": 22501
   },
@@ -5417,7 +5406,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 135,
     "cost": 18000
   },
@@ -5431,7 +5420,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 171,
     "cost": 54000
   },
@@ -5445,7 +5434,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 207,
     "cost": 42000
   },
@@ -5459,7 +5448,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 234,
     "cost": 126000
   },
@@ -5473,7 +5462,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 270,
     "cost": 97501
   },
@@ -5487,7 +5476,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 297,
     "cost": 292501
   },
@@ -5501,7 +5490,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 324,
     "cost": 225001
   },
@@ -5515,7 +5504,7 @@
     "kineticResistance": 0,
     "thermalResistance": 0,
     "explosiveResistance": 0,
-    "causticResistance": 0.03,
+    "causticResistance": 0.02,
     "hullReinforcement": 351,
     "cost": 675001
   },
@@ -5887,7 +5876,7 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 1,
-    "integrity": 36,
+    "integrity": 42,
     "powerDraw": 0.46,
     "bootTime": 0,
     "shieldAddition": 61,
@@ -5900,7 +5889,7 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 4,
-    "integrity": 36,
+    "integrity": 40,
     "powerDraw": 0.56,
     "bootTime": 0,
     "shieldAddition": 83,
@@ -5913,7 +5902,7 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 2,
-    "integrity": 36,
+    "integrity": 48,
     "powerDraw": 0.67,
     "bootTime": 0,
     "shieldAddition": 105,
@@ -5926,7 +5915,7 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 8,
-    "integrity": 36,
+    "integrity": 45,
     "powerDraw": 0.74,
     "bootTime": 0,
     "shieldAddition": 127,
@@ -5939,7 +5928,7 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 4,
-    "integrity": 36,
+    "integrity": 55,
     "powerDraw": 0.84,
     "bootTime": 0,
     "shieldAddition": 143,
@@ -5952,7 +5941,7 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 16,
-    "integrity": 36,
+    "integrity": 51,
     "powerDraw": 0.95,
     "bootTime": 0,
     "shieldAddition": 165,
@@ -5965,7 +5954,7 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 8,
-    "integrity": 36,
+    "integrity": 63,
     "powerDraw": 1.05,
     "bootTime": 0,
     "shieldAddition": 182,
@@ -5978,7 +5967,7 @@
     "rating": "E",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 32,
-    "integrity": 36,
+    "integrity": 58,
     "powerDraw": 1.16,
     "bootTime": 0,
     "shieldAddition": 198,
@@ -5991,7 +5980,7 @@
     "rating": "D",
     "entitlement": "ELITE_HORIZONS_V_GUARDIAN_SHIELDREINFORCEMENT",
     "mass": 16,
-    "integrity": 36,
+    "integrity": 72,
     "powerDraw": 1.26,
     "bootTime": 0,
     "shieldAddition": 215,
@@ -6518,9 +6507,7 @@
     "rating": "D",
     "mass": 0,
     "cargoCapacity": 192,
-    "restrictedToShips": [
-      "PantherMkII"
-    ],
+    "restrictedToShips": ["PantherMkII"],
     "restrictedToSlot": "cargo",
     "cost": 1958680
   },
@@ -6531,9 +6518,7 @@
     "rating": "D",
     "mass": 0,
     "cargoCapacity": 384,
-    "restrictedToShips": [
-      "PantherMkII"
-    ],
+    "restrictedToShips": ["PantherMkII"],
     "restrictedToSlot": "cargo",
     "cost": 4929317
   },
@@ -6545,9 +6530,7 @@
     "mass": 64,
     "integrity": 105,
     "powerDraw": 1.4,
-    "restrictedToShips": [
-      "LakonMiner"
-    ],
+    "restrictedToShips": ["LakonMiner"],
     "restrictedToSlot": "limpetController",
     "bootTime": 6,
     "cost": 2332800

@@ -84,19 +84,20 @@ export type ModuleRating = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I';
  * How a weapon's damage splits across the damage types, as fractions of one shot.
  *
  * @remarks
- * The four **physical** shares — {@link DamageDistribution.kinetic | kinetic},
+ * The conventional shares — {@link DamageDistribution.kinetic | kinetic},
  * {@link DamageDistribution.thermal | thermal},
- * {@link DamageDistribution.explosive | explosive} and
- * {@link DamageDistribution.absolute | absolute} — partition the damage and sum to
- * `1`; a type a weapon does not deal is absent rather than `0`. Each is met by the
- * defender's resistance of the same name, except `absolute`, which no shield or hull
- * resistance reduces.
+ * {@link DamageDistribution.explosive | explosive},
+ * {@link DamageDistribution.absolute | absolute}, and any
+ * {@link DamageDistribution.unclassified | unclassified} share — partition the damage and sum to
+ * `1`; a type a weapon does not deal is absent rather than `0`. Kinetic, thermal and
+ * explosive damage meet the defender's resistance of the same name. No shield or hull
+ * resistance reduces absolute damage; the type and mitigation of unclassified damage
+ * are not established by in-game verification.
  *
  * {@link DamageDistribution.antiXeno | antiXeno} is different: it **overlays** the
- * physical split instead of partitioning it, flagging the portion that is effective
- * against Thargoid targets. An AX multi-cannon is `{ kinetic: 1, antiXeno: 1 }` — all
- * of its damage is kinetic *and* all of it is anti-xeno, so a distribution's values
- * can sum past `1`.
+ * conventional split instead of partitioning it, flagging the portion that is effective
+ * against Thargoid targets. It is expressed relative to conventional damage and can
+ * exceed `1`, so a distribution's values can sum past `1`.
  */
 export interface DamageDistribution {
     /** Kinetic share of one shot's damage, `0`–`1`. */
@@ -107,11 +108,66 @@ export interface DamageDistribution {
     readonly explosive?: number;
     /** Absolute share — damage no resistance reduces — of one shot's damage, `0`–`1`. */
     readonly absolute?: number;
+    /** Share whose in-game damage type is not yet established, `0`–`1`. */
+    readonly unclassified?: number;
     /**
-     * Anti-xeno share: the portion effective against Thargoids. Overlays the physical
-     * shares rather than partitioning them (see the type's remarks).
+     * Anti-xeno ratio: the amount effective against Thargoids divided by conventional
+     * damage. Non-negative and potentially greater than `1`; see the type's remarks.
      */
     readonly antiXeno?: number;
+}
+
+/**
+ * Exact damage amounts carried by one round, or one second of continuous fire.
+ *
+ * @remarks
+ * Every amount is non-negative. Kinetic, thermal, explosive, absolute and all
+ * `unclassified` entries sum to the module's conventional {@link OutfittingModule.damage}.
+ * `antiXeno` overlays that conventional amount and is not added to it. The exact amounts
+ * are authoritative when present; {@link DamageDistribution} remains the compatible
+ * fractional projection.
+ *
+ * @example
+ * ```ts
+ * const components: DamageComponents = { explosive: 27, antiXeno: 43 };
+ * ```
+ */
+export interface DamageComponents {
+    /** Non-negative kinetic damage. */
+    readonly kinetic?: number;
+    /** Non-negative thermal damage. */
+    readonly thermal?: number;
+    /** Non-negative explosive damage. */
+    readonly explosive?: number;
+    /** Non-negative absolute damage, which no resistance reduces. */
+    readonly absolute?: number;
+    /** Non-negative damage effective against Thargoid targets, overlaid on conventional damage. */
+    readonly antiXeno?: number;
+    /** Non-negative damage amounts observed in-game whose type is not yet established. */
+    readonly unclassified?: readonly number[];
+}
+
+/**
+ * In-game projectile boundary parameters that are not effective weapon ranges.
+ *
+ * @remarks
+ * Values are non-negative boundary parameters. They are deliberately not stated in
+ * metres and must not be passed to a range attenuation calculation: projectile reach
+ * depends on projectile behaviour not represented by these two numbers.
+ *
+ * @example
+ * ```ts
+ * const boundaries: ProjectileRangeBoundaries = {
+ *   maximumBoundary: 0,
+ *   falloffBoundary: 100000,
+ * };
+ * ```
+ */
+export interface ProjectileRangeBoundaries {
+    /** Non-negative maximum boundary parameter observed in-game, when present. */
+    readonly maximumBoundary?: number;
+    /** Non-negative falloff boundary parameter observed in-game. */
+    readonly falloffBoundary: number;
 }
 
 /**
@@ -175,9 +231,13 @@ export interface OutfittingModule {
      */
     readonly slot?: ModuleSlot;
     /**
-     * Display name, e.g. `"Pulse Laser"`.
+     * Stable, descriptive English name, e.g. `"Pulse Laser"`.
      *
      * @remarks
+     * This is a canonical library label, not a byte-exact copy of the game's current
+     * localized UI text: abbreviations such as FSD and AFM are expanded for readability.
+     * It is not localized and is not suitable as a localization key.
+     *
      * **Not unique** — the game shows most modules at several sizes and ratings, and
      * every hull's armour shares the same five names. Use {@link OutfittingModule.symbol}
      * as the key; {@link getModulesByName} returns every match.
@@ -284,7 +344,7 @@ export interface OutfittingModule {
      * "nothing to add" from "cannot be answered" instead of adding up a zero it cannot
      * justify — {@link isStatUnknown} is the predicate.
      *
-     * Present on five records today. A field named here is always absent from this
+     * Present on four records today. A field named here is always absent from this
      * record, so sourcing a value means deleting its name here in the same change.
      * Read its absence as "the module has no such stat" — that is what an undeclared
      * absence means, and the engineering calculator relies on it: a recipe that scales a
@@ -504,6 +564,8 @@ export interface OutfittingModule {
     readonly damage?: number;
     /** How `damage` splits across the damage types. */
     readonly damageDistribution?: DamageDistribution;
+    /** Exact damage amounts when in-game verification exposes distinct components. */
+    readonly damageComponents?: DamageComponents;
     /**
      * Rounds fired per shot, for the weapons that fire several at once (fragment
      * cannons, shard cannons). Absent means one round per shot.
@@ -549,7 +611,7 @@ export interface OutfittingModule {
      * Weapons-capacitor draw, in megawatts — per shot, or per second on a
      * continuous-fire weapon. Shield generators carry it too, as the systems-capacitor
      * cost of one MJ per second of regeneration — the stat the journal calls
-     * `EnergyPerRegen` rather than `DistributorDraw`, and the one Hi-Cap, Lo-Draw and
+     * `EnergyPerRegen` rather than `DistributorDraw`, and the one Hi-Cap, Lo-draw and
      * Force Block move.
      */
     readonly distributorDraw?: number;
@@ -564,6 +626,8 @@ export interface OutfittingModule {
     readonly maximumRange?: number;
     /** Range at which damage starts to drop off, in metres. */
     readonly falloffRange?: number;
+    /** Projectile boundary parameters; these are not effective distances in metres. */
+    readonly projectileRange?: ProjectileRangeBoundaries;
     /**
      * Projectile speed, in metres per second.
      *

@@ -94,9 +94,9 @@
         "blueprint": "Weapon_HighCapacity",
         "grade": 5,
         "experimental": "special_super_penetrator",
-        "stockBurstInterval": 0.001,
-        "burstInterval": 0.000737,
-        "rateOfFire": 1.955582
+        "stockBurstInterval": 0.4,
+        "burstInterval": 0.2946,
+        "rateOfFire": 1.641198
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",

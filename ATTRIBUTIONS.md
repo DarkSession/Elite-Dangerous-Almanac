@@ -112,6 +112,10 @@ in the doc comment of each ported module, and in long form in the domain
   `modules/**`, `modifications/**`, commit `0db9234`). Coriolis-data releases only
   its _code_ under MIT; the JSON stat values are **Elite Dangerous game data,
   property of Frontier Developments plc** — see the Frontier notice below.
+- **In-game verification** — names and numeric values were checked directly in Elite
+  Dangerous. These are **Elite Dangerous game data, property of Frontier Developments
+  plc**; the observation date, field-level coverage, corrections and unresolved fields
+  are in `data/ships/SOURCES.md`.
 - **Experimental (special) effect modifiers, their material recipes, and journal
   Modifier Labels** — the numeric experimental-effect modifiers and their material
   costs, which coriolis-data does not carry, plus the attribute-to-journal-Label
@@ -226,10 +230,14 @@ in the doc comment of each ported module, and in long form in the domain
   [EDSY](https://github.com/taleden/EDSY) (`eddb.js`, taleden, **CC BY-NC 4.0**), which
   carries them for nearly every outfitting module. The remainder — the size-8 frame
   shift drives and the `*_free` starter fittings, which no third-party registry lists —
-  were read from the live game's own outfitting panels. Either way the values are
+  were observed in-game. In-game verification covers all
+  module identities and the numeric values on 956 non-armour modules, including the exact
+  corrections to structural, shield, reinforcement, shield-cell, scoop and weapon fields,
+  including exact damage components and projectile boundary parameters.
+  In every case the values are
   **Elite Dangerous game data, property of Frontier Developments plc**; see the notice
-  below. `data/ships/SOURCES.md` has the record-by-record derivation, the per-field
-  coverage split, and the three candidate corrections that cross-checking **rejected**.
+  below. `data/ships/SOURCES.md` has the per-field coverage split and the fields that
+  remain unavailable or semantically unclassified after in-game verification.
   Where neither registry nor panel yielded a figure, the module record says so itself,
   in its `unknownStats` field. That classification is this repository's own
   reconciliation work — no third-party figure is reproduced by it.

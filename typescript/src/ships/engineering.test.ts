@@ -749,14 +749,10 @@ test('Overcharged leaves a cannon’s clip alone, as a real journal reports', ()
         'DistributorDraw',
         'ThermalLoad',
     ]);
-    // `DistributorDraw` reproduces the capture's own figure, because the two agree on the
-    // base. `ThermalLoad` reproduces the multiplier and not the figure: the capture's base
-    // is 2.93 where this catalogue stores 2.9, which is
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/59 and not this
-    // recipe. Both are ×1.35 and ×1.15 of whatever base they are given, which is the part
-    // the recipe answers for.
+    // The base values observed in-game agree with the journal, so both engineered values
+    // reproduce the capture directly: ×1.35 distributor draw and ×1.15 thermal load.
     assert.ok(near(modFor(modifiers, 'DistributorDraw')!, 1.539, 1e-9));
-    assert.ok(near(modFor(modifiers, 'ThermalLoad')!, cannon.thermalLoad! * 1.15, 1e-9));
+    assert.ok(near(modFor(modifiers, 'ThermalLoad')!, 3.3695, 1e-9));
 
     // The multi-cannon recipe the same journal id resolves to on a multi-cannon does cut
     // the clip, so the absence above is the recipe and not a dropped leg.

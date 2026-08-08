@@ -146,7 +146,7 @@
       "damagePerSecond": 60.313334,
       "sustainedDamagePerSecond": 55.309156,
       "energyPerSecond": 9.856667,
-      "heatPerSecond": 12.166667,
+      "heatPerSecond": 12.196667,
       "powerDraw": 3.58,
       "kineticDamagePerSecond": 18.933334,
       "thermalDamagePerSecond": 41.38
@@ -164,11 +164,11 @@
     },
     {
       "symbol": "Hpt_BeamLaser_Fixed_Small",
-      "damagePerSecond": 9.8,
-      "sustainedDamagePerSecond": 9.8,
+      "damagePerSecond": 9.82,
+      "sustainedDamagePerSecond": 9.82,
       "sustainedFireFactor": 1,
       "energyPerSecond": 1.94,
-      "heatPerSecond": 3.5,
+      "heatPerSecond": 3.53,
       "continuous": true
     },
     {
@@ -182,8 +182,8 @@
     },
     {
       "symbol": "Hpt_Railgun_Fixed_Small",
-      "damagePerSecond": 12.704916,
-      "sustainedDamagePerSecond": 12.704916,
+      "damagePerSecond": 12.754096,
+      "sustainedDamagePerSecond": 12.754096,
       "sustainedFireFactor": 1,
       "energyPerSecond": 1.469945,
       "heatPerSecond": 6.557376,
@@ -191,11 +191,11 @@
     },
     {
       "symbol": "Hpt_Slugshot_Fixed_Medium",
-      "damagePerSecond": 180,
-      "sustainedDamagePerSecond": 20,
+      "damagePerSecond": 179.1,
+      "sustainedDamagePerSecond": 19.9,
       "sustainedFireFactor": 0.111111,
       "energyPerSecond": 1.85,
-      "heatPerSecond": 3.5,
+      "heatPerSecond": 3.7,
       "continuous": false
     },
     {
@@ -286,8 +286,8 @@
       {
         "symbol": "Int_ShieldCellBank_Size1_Class2",
         "clipSize": 1,
-        "hopper": 0,
-        "total": 1,
+        "hopper": 1,
+        "total": 2,
         "unlimited": false
       }
     ],

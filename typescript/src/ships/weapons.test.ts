@@ -16,6 +16,7 @@ import {
 } from './weapons.js';
 import { getModuleBySymbol } from './modules.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
+import { weaponStatsFor } from './loadout-metrics.js';
 import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 
 const near = (a: number, b: number, eps = 1e-6) => Math.abs(a - b) < eps;
@@ -102,7 +103,68 @@ test('damage splits by type, and anti-xeno overlays rather than partitions', () 
         getModuleBySymbol('Hpt_ATMultiCannon_Fixed_Medium', HARDPOINT_MODULES)!,
     );
     assert.ok(near(ax.damageByType.kinetic, ax.damagePerSecond));
-    assert.ok(near(ax.damageByType.antiXeno, ax.damagePerSecond));
+    assert.ok(ax.damageByType.antiXeno > ax.damagePerSecond);
+    assert.ok(near(ax.damageByType.antiXeno, 2.19 * ax.rateOfFire));
+});
+
+test('exact components preserve Guardian and unclassified damage without double-counting AX', () => {
+    const gauss = weaponMetrics(
+        getModuleBySymbol('Hpt_Guardian_GaussCannon_Fixed_Medium', HARDPOINT_MODULES)!,
+    );
+    assert.ok(near(gauss.damageByType.thermal, gauss.damagePerSecond));
+    assert.ok(near(gauss.damageByType.antiXeno, gauss.damagePerSecond));
+
+    const enzyme = weaponMetrics(
+        getModuleBySymbol('Hpt_CausticMissile_Fixed_Medium', HARDPOINT_MODULES)!,
+    );
+    assert.ok(near(enzyme.damageByType.explosive, 2));
+    assert.ok(near(enzyme.damageByType.unclassified ?? 0, 0.5));
+    assert.ok(
+        near(
+            enzyme.damageByType.explosive + (enzyme.damageByType.unclassified ?? 0),
+            enzyme.damagePerSecond,
+        ),
+    );
+
+    const mkII = weaponMetrics(
+        getModuleBySymbol('Hpt_MkIIPlasmaShockAutocannon_Fixed_Large', HARDPOINT_MODULES)!,
+    );
+    assert.ok(near(mkII.damageByType.unclassified ?? 0, mkII.damagePerSecond));
+});
+
+test('fitted engineering scales exact damage components with effective damage', () => {
+    const stock = weapon('Hpt_ATMultiCannon_Gimbal_Medium');
+    const stats = weaponStatsFor(
+        {
+            Slot: 'MediumHardpoint1',
+            Item: stock.symbol,
+            Engineering: {
+                BlueprintName: 'MC_Overcharged',
+                Level: 5,
+                Quality: 1,
+                Modifiers: [{ Label: 'Damage', OriginalValue: stock.damage!, Value: 1.232 }],
+            },
+        },
+        stock,
+    )!;
+    assert.equal(stats.damage, 1.232);
+    assert.deepEqual(stats.damageComponents, { kinetic: 1.232, antiXeno: 2.409 });
+
+    const zero = weaponStatsFor(
+        {
+            Slot: 'MediumHardpoint1',
+            Item: stock.symbol,
+            Engineering: {
+                BlueprintName: 'Test',
+                Level: 1,
+                Quality: 1,
+                Modifiers: [{ Label: 'Damage', OriginalValue: stock.damage!, Value: 0 }],
+            },
+        },
+        stock,
+    )!;
+    assert.equal(zero.damage, 0);
+    assert.deepEqual(zero.damageComponents, { kinetic: 0, antiXeno: 0 });
 });
 
 test('splitDamage treats an unknown distribution as absolute damage', () => {
@@ -135,6 +197,25 @@ test('damage tapers between the falloff range and maximum range', () => {
     assert.equal(damageFalloff({}, 100000), 1);
     // A weapon whose falloff sits at its maximum range never tapers.
     assert.equal(damageFalloff({ maximumRange: 3000, falloffRange: 3000 }, 3000), 1);
+});
+
+test('projectile boundaries are not treated as effective falloff distances', () => {
+    const missile = getModuleBySymbol('Hpt_ATDumbfireMissile_Fixed_Medium', HARDPOINT_MODULES)!;
+    assert.deepEqual(missile.projectileRange, {
+        maximumBoundary: 0,
+        falloffBoundary: 100000,
+    });
+    assert.equal(damageFalloff(missile, 1_000_000), 1);
+    const fitted = weaponStatsFor({ Slot: 'MediumHardpoint1', Item: missile.symbol }, missile)!;
+    assert.deepEqual(fitted.projectileRange, missile.projectileRange);
+    assert.notEqual(fitted.projectileRange, missile.projectileRange);
+
+    const turret = getModuleBySymbol('Hpt_ATDumbfireMissile_Turret_Medium', HARDPOINT_MODULES)!;
+    assert.deepEqual(turret.projectileRange, {
+        maximumBoundary: 5000,
+        falloffBoundary: 100000,
+    });
+    assert.equal(damageFalloff(turret, 6000), 1);
 });
 
 test("armour piercing is capped at the target's hardness", () => {
