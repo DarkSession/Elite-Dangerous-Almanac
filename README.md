@@ -1346,10 +1346,10 @@ getPreEngineeredByBlueprint("SeekerMissileRack_Drag").map((v) => v.symbol);
 | Price            | `mercCoinCost`      | not bought           | not bought          |
 | Stat block       | not published       | `modifiers`          | `modifiers`         |
 
-`blueprint` names the recipe, so it joins straight to `BLUEPRINTS` — never the id a journal
-carries, where the game writes one id for two recipes. On a module whose menu offers the
-recipe, that is the key the menu lists; on one sold a recipe no menu offers, it is the id
-the sale carries. A variant's identity is the **`(symbol, blueprint, grade, experimental)`
+`blueprint` names the recipe, so it joins straight to `BLUEPRINTS`. Where the game writes
+one id for two recipes, it is the key the module's **own** menu lists rather than the id a
+journal carries — and where that menu does not offer the recipe at all, the id the sale
+carries. A variant's identity is the **`(symbol, blueprint, grade, experimental)`
 quadruple** — no narrower key holds. The medium Seeker Missile Rack has three High
 Capacity rewards that differ only in the effect applied, and the medium Guardian Shard
 Cannon carries Long Range with no experimental **twice**: grade 5 as a CG reward, grade 1

@@ -18,11 +18,11 @@
  *          Inara blueprint registry
  *          (https://inara.cz/elite/blueprints/) — the same source the recipes themselves
  *          came from. Neither EDSY nor coriolis-data publishes the Operations family at
- *          all. One further row comes from both rather than from neither — the anti-xeno
- *          multi-cannons' Overcharged, EDSY's coverage under coriolis-data's key, below.
- *          See SOURCES.md for how that read was obtained and what it was corroborated
- *          against. The underlying game logic is Elite Dangerous data, property of
- *          Frontier Developments plc, under Frontier's media-usage terms:
+ *          all. See SOURCES.md for how that read was obtained and what it was corroborated
+ *          against. One further row comes from both registries rather than from neither —
+ *          the anti-xeno multi-cannons' Overcharged, EDSY's coverage under coriolis-data's
+ *          key, described below. The underlying game logic is Elite Dangerous data,
+ *          property of Frontier Developments plc, under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
  * Availability is a property of the **module**, not of the blueprint: a Pulse Laser and

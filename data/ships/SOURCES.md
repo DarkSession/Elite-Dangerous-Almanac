@@ -1299,9 +1299,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   - **The multi-cannon Overcharged is the one place a group follows coriolis over EDSY.**
     EDSY has a single Overcharged for every weapon; coriolis splits it, and `multiCannons`
     lists coriolis's `MC_Overcharged`. `antiXenoMultiCannons` lists that key too, but not
-    for that reason — coriolis describes no anti-xeno group, so it is EDSY being followed
-    into coriolis's spelling. See "Multi-cannon Overcharged: one journal id, two recipes"
-    below for the evidence and for what the split costs.
+    for that reason — coriolis carries no blueprint list for an anti-xeno group, so it is
+    EDSY being followed into coriolis's spelling. See "Multi-cannon Overcharged: one
+    journal id, two recipes" below for the evidence and for what the split costs.
   - **The groups name 86 of the 109 blueprints.** The other 23 are accounted for: 21 are
     Operations keys of modules sold already engineered rather than offered in a menu, and
     the other two are the registry's spellings of Anti-Guardian Zone Resistance, which every
@@ -1553,9 +1553,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
     are its own stored block, never the recipe folded. What it keeps true is that no
     pre-engineered row names a spelling that resolves, on its own module, to a different
     recipe — the case `blueprintAvailableFor` describes, where the sale route accepts an id
-    the fold then reads as something else. `pre-engineered.test.ts` now asserts it over all
-    73 rows rather than leaving it to the two that meet it, and both AX rows are pinned in
-    `fixtures/ships/pre-engineered.json`. The two Guardian plasma launchers sold under
+    the fold then reads as something else. `pre-engineered.test.ts` asserts it over all 73
+    rows, and both AX rows are pinned in `fixtures/ships/pre-engineered.json`, so a port
+    validates the same rule. The two Guardian plasma launchers sold under
     `Weapon_Overcharged` are not exceptions: that id is their own recipe, and their menu
     offers no Overcharged for it to resolve into.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14

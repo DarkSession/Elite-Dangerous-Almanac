@@ -161,9 +161,10 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * spelling, the gate would accept it here while `applyBlueprint` folded the resolved
  * recipe. Three of the five such menus have variants: the Kill Warrant Scanners'
  * `Sensor_FastScan` (its own journal id, and offered anyway), the anti-xeno multi-cannons'
- * Enhanced AX Multi-Cannon, and the ordinary multi-cannons' two Rapid Fire rows — the last
- * being where the hazard would most likely arrive, since `Weapon_Overcharged` on a
- * multi-cannon is the collision consumers actually meet. None is recorded that way:
+ * Enhanced AX Multi-Cannon, and the ordinary multi-cannons' two rows, `Weapon_RapidFire`
+ * and the Merc-Coin `MultiCannon_Rapid` — the last menu being where the hazard would most
+ * likely arrive, since `Weapon_Overcharged` on a multi-cannon is the collision consumers
+ * actually meet. None is recorded that way:
  * `pre-engineered.jsonc` names the recipe the module rolls, never a spelling that would
  * resolve to a different one, and `pre-engineered.test.ts` asserts exactly that over the
  * whole catalogue — each row's `blueprint`, resolved on its own module, comes back
