@@ -10,9 +10,9 @@
  *          (github.com/EDCD/coriolis-data) modifications/modules.json — the same per-group
  *          lists keyed by the journal `BlueprintName`s this catalogue joins on, which is
  *          what settles the families EDSY records under one generic id, and which of the
- *          two Overcharged recipes the ordinary multi-cannons take. coriolis-data is (c) EDCD under
- *          the MIT License. Four rows come from neither registry: the Operations Merc-Coin
- *          blueprints `FuelScoop_Efficiency` and the three lasers'
+ *          two Overcharged recipes the ordinary multi-cannons take. coriolis-data is (c)
+ *          EDCD under the MIT License. Four rows come from neither registry: the
+ *          Operations Merc-Coin blueprints `FuelScoop_Efficiency` and the three lasers'
  *          `PulseLaser_ThermalPlasmaConversion`, `BurstLaser_ThermalPlasmaConversion`
  *          and `BeamLaser_ThermalPlasmaConversion`, whose module family comes from the
  *          Inara blueprint registry

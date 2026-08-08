@@ -1523,9 +1523,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     the anti-xeno multi-cannons apart as `axmc` and gives that group no Overcharged at all,
     so it cannot say which of its two keys an AX multi-cannon takes. That silence does not
     leave the question open, because this is one of the 13 groups resting on EDSY alone,
-    where the standing rule is to follow the only registry that covers the group: EDSY's
-    single `wpn_oc` carries the clip leg on every group that lists it, `axmc` included, and
-    both AX multi-cannons carry a clip. Answering the leg answers the key too. coriolis's
+    where the rule is to follow the only registry that covers the group unless a capture
+    contradicts it — as one does for the three Guardian weapon groups above, and none does
+    here. EDSY's single `wpn_oc` carries the clip leg on every group that lists it, `axmc`
+    included, and both AX multi-cannons carry a clip. Answering the leg answers the key too. coriolis's
     two keys differ by exactly that leg and nothing else — same name, same three other
     legs, same materials grade for grade — so the clip-carrying record is the only one
     either registry could be describing, and naming it is reading EDSY rather than guessing
@@ -1543,7 +1544,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     a further key split and a clip leg on `Weapon_Overcharged` itself, and no laser can
     answer it because none carries a clip. None of the six Guardian plasma launchers is in
     this set either: their menu lists Anti-Guardian Zone Resistance and nothing else, and
-    the two Fixed variants that carry `Weapon_Overcharged` are sold with it rather than
+    the Fixed Small and Fixed Medium are sold carrying `Weapon_Overcharged` rather than
     offered it. The three laser groups do list it and are unaffected.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14
     multi-cannons and on both AX multi-cannons; `applyBlueprint` accepts either spelling,

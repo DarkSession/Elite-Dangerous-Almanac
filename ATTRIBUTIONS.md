@@ -122,12 +122,16 @@ in the doc comment of each ported module, and in long form in the domain
   derivation, the two registries' disagreements, and the modules bound by a family rule
   rather than a source row.
 - **The journal spelling of the multi-cannon Overcharged blueprint** — the `journalName`
-  on `MC_Overcharged` in `data/ships/blueprints.jsonc`, and the multi-cannon menus listing
-  that key rather than `Weapon_Overcharged`, from
+  on `MC_Overcharged` in `data/ships/blueprints.jsonc`, and the ordinary multi-cannon menu
+  listing that key rather than `Weapon_Overcharged`, from
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (**MIT** for its code; the
   values are game data): `modifications/blueprints.json` gives both keys the fdname
   `Weapon_Overcharged`, and `modifications/modules.json` lists the multi-cannon key on the
-  `mc` and `advmc` groups alone. Acquisition date and digests in
+  `mc` and `advmc` groups alone. The anti-xeno multi-cannon menu lists it on
+  [EDSY](https://github.com/taleden/EDSY)'s authority instead (`eddb.js`, taleden,
+  **CC BY-NC 4.0**), whose single Overcharged carries the clip penalty on every group
+  offering it — coriolis-data describes no anti-xeno group, so that row is credited to
+  neither registry alone. Acquisition dates and digests in
   `data/ships/SOURCES.md` → §Engineering options, "Multi-cannon Overcharged".
 - **That `special_feedback_cascade` has been withdrawn upstream** — recorded in
   `data/ships/SOURCES.md` rather than in a payload, from
