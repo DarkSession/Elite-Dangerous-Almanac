@@ -1086,10 +1086,30 @@ you tell that apart from an id the library has never heard of, and `applyBluepri
 one by name rather than as an unknown blueprint.
 
 They are **not** cosmetic-only, though: a festive launcher fires fireworks rather than
-flak, and the transformation cuts the module's damage heavily. That cut is not stored —
-nothing publishes the magnitude — so read a fitted one's real damage from the journal's own
-`Engineering.Modifiers` block, which is exact. Importing a build does exactly that:
-`fromLoadout` stores the block as the journal wrote it and never looks the id up.
+flak, and each transformation carries a single `Damage` modifier of −99% to match — on the
+medium turreted launcher, 34 damage down to 0.34. That is the one stat any of them moves,
+and each record carries it in the same `{ label, method, value }` shape a pre-engineered
+variant uses, so `computeModifiers` folds it exactly as it folds a bought variant's:
+
+```ts
+import { DECORATIVE_MODIFICATIONS } from "@elite-dangerous-almanac/core/ships/decorative-modifications";
+import { computeModifiers } from "@elite-dangerous-almanac/core/ships/engineering";
+
+// A fixed article, not a roll — each value is its own min and max.
+const features = DECORATIVE_MODIFICATIONS["Decorative_Green"].modifiers.map(
+  (m) => ({
+    label: m.label,
+    method: m.method,
+    min: m.value,
+    max: m.value,
+  }),
+);
+computeModifiers({ Damage: 34 }, features, 1);
+// -> [{ Label: "Damage", Value: 0.34, OriginalValue: 34 }]
+```
+
+Importing a build needs none of that: `fromLoadout` stores the `Engineering` block as the
+journal wrote it, and the game's own `Modifiers` are exact.
 
 **Material requirements** — what a roll _costs_ — sit alongside the modifiers in
 `ships/blueprints`: every grade is `{ features, materials }`, so `getBlueprintGrade`

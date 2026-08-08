@@ -1,5 +1,5 @@
 /**
- * The **decorative modification catalogue** — the cosmetic transformations the game
+ * The **decorative modification catalogue** — the festive transformations the game
  * records in the same field as an engineering blueprint, keyed by the Frontier `fdname`
  * a journal writes (`EngineerModifications` on a `StoredModules` entry,
  * `Engineering.BlueprintName` on a `Loadout` module).
@@ -11,14 +11,10 @@
  * rather than to nothing.
  *
  * **Not cosmetic-only, either.** A festive launcher fires fireworks rather than flak, and
- * the transformation carries a heavy cut to the module's `Damage` to match. That cut is
- * **not stored yet**: nothing published carries the magnitude, and this catalogue does not
- * guess one. So a build carrying a festive launcher computes its weapon metrics from the
- * base module's damage, which is far too high — read the module's stats through the
- * `Engineering.Modifiers` block the journal itself supplies, which is exact, rather than
- * through this catalogue. See
- * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
- * §Decorative modifications for what would fill the gap.
+ * the transformation cuts the module's `Damage` by 99% to match — the one stat any of them
+ * moves, carried in {@link DecorativeModification.modifiers}. So a record here is never a
+ * claim that the module is unmodified. Feed the modifiers to {@link computeModifiers} to
+ * resolve a fitted launcher, the same way a pre-engineered variant's are resolved.
  *
  * Resolving the id is the whole of its job, and it is why it is worth having. A consumer
  * reading a real journal meets `Decorative_Green` on a stored module and needs to tell "an
@@ -35,8 +31,9 @@
  * hold three records that belong to none of it.
  *
  * Ids and the module they sit on from a `StoredModules` capture contributed by the
- * repository owner; EDSY lists the same three transformations and gives them no modifiers,
- * which the damage cut shows to be an incomplete record. See
+ * repository owner, the `Damage` cut from the same contributor's outfitting panel; EDSY
+ * lists the same three transformations and gives them no modifiers, which the cut shows to
+ * be an incomplete record. See
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
@@ -44,6 +41,27 @@
 
 import decorativeData from '../../../data/ships/decorative-modifications.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
+
+/**
+ * One hand-set stat change a decorative modification arrives with.
+ *
+ * Deliberately the same shape as {@link PreEngineeredModifier}, and for the same reason: a
+ * transformation that arrives on the module is a fixed article, not a roll, so there is no
+ * `min`/`max` to bound it. The two are kept as separate types because a festive launcher is
+ * not a pre-engineered purchase — but anything that handles one handles the other, and
+ * {@link computeModifiers} takes both once each value is read as its own `min` and `max`.
+ */
+export interface DecorativeModifier {
+    /** Journal Modifier Label, e.g. `"Damage"`. */
+    readonly label: string;
+    /** How the value applies to the base stat. */
+    readonly method: 'multiplicative' | 'additive' | 'overwrite';
+    /**
+     * The modifier value: a fraction for `multiplicative` (`-0.99` is `−99%`), an absolute
+     * delta for `additive`, and the replacement value for `overwrite`.
+     */
+    readonly value: number;
+}
 
 /** One festive transformation a module can carry in place of engineering. */
 export interface DecorativeModification {
@@ -62,6 +80,22 @@ export interface DecorativeModification {
      * the transformation.
      */
     readonly modules: readonly string[];
+    /**
+     * The stat changes the transformation arrives with — for every one of these, a single
+     * `Damage` cut of −99%, which is what turns a flak launcher into a firework launcher.
+     *
+     * Never empty: a decorative modification names no engineering *recipe*, but it is not
+     * inert, and reading it as cosmetic-only would overstate a fitted launcher's damage a
+     * hundredfold.
+     *
+     * @example
+     * ```ts
+     * DECORATIVE_MODIFICATIONS['Decorative_Green'].modifiers;
+     * // -> [{ label: 'Damage', method: 'multiplicative', value: -0.99 }]
+     * // on the medium turreted launcher: 34 damage -> 0.34, 0.17 DPS
+     * ```
+     */
+    readonly modifiers: readonly DecorativeModifier[];
 }
 
 /**
@@ -73,6 +107,8 @@ export interface DecorativeModification {
  * // -> ['Decorative_Green', 'Decorative_Red', 'Decorative_Yellow']
  * DECORATIVE_MODIFICATIONS['Decorative_Green'].modules;
  * // -> ['Hpt_FlakMortar_Turret_Medium']
+ * DECORATIVE_MODIFICATIONS['Decorative_Green'].modifiers;
+ * // -> [{ label: 'Damage', method: 'multiplicative', value: -0.99 }]
  * ```
  */
 export const DECORATIVE_MODIFICATIONS: Readonly<Record<string, DecorativeModification>> =
@@ -82,8 +118,8 @@ export const DECORATIVE_MODIFICATIONS: Readonly<Record<string, DecorativeModific
  * Look up a decorative modification by its Frontier `fdname`, case-insensitively.
  *
  * @param fdname - The modification id, e.g. `"Decorative_Green"`.
- * @returns The modification (its `name` and the `modules` observed carrying it), or
- * `null` if the id is not a decorative modification.
+ * @returns The modification — its `name`, the `modules` observed carrying it and the
+ * `modifiers` it arrives with — or `null` if the id is not a decorative modification.
  * @example
  * ```ts
  * getDecorativeModification('decorative_red')?.name; // -> 'Festive Red'
@@ -105,9 +141,8 @@ export function getDecorativeModification(fdname: string): DecorativeModificatio
  * The question to ask of a journal `EngineerModifications` / `BlueprintName` value that
  * {@link getBlueprint} answered `null` for: `true` means the id is real and names no
  * recipe, and only a `false` here leaves "this library does not know the id" as the
- * remaining reading. It does **not** mean the module is unmodified — a festive
- * transformation cuts the launcher's damage heavily, and the journal's own
- * `Engineering.Modifiers` block is where that value is.
+ * remaining reading. It does **not** mean the module is unmodified — read
+ * {@link DecorativeModification.modifiers} for what it does change.
  *
  * @param fdname - The id to test, matched case-insensitively and trimmed.
  * @returns `true` when {@link getDecorativeModification} would find it.

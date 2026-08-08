@@ -231,6 +231,7 @@ export {
     getDecorativeModificationsForModule,
     isDecorativeModification,
     type DecorativeModification,
+    type DecorativeModifier,
 } from './decorative-modifications.js';
 export {
     PRE_ENGINEERED_MODULES,

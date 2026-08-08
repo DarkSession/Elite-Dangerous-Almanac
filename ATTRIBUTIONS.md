@@ -126,12 +126,13 @@ in the doc comment of each ported module, and in long form in the domain
   and the medium turreted Remote Release Flak Launcher observed carrying them, from a
   `StoredModules` journal capture contributed by the repository owner from their own
   commander's storage (521 stored modules, **2026-08-07 UTC**), scrubbed of the commander,
-  carrier and market it came from. Their festive naming, that the launchers were awarded
-  already transformed, and that the transformation cuts the module's damage are the same
-  contributor's account rather than readings of the capture, which carries none of the
-  three. [EDSY](https://github.com/taleden/EDSY) (taleden, **CC BY-NC 4.0**) lists the same
-  three transformations with no modifiers, which the damage cut shows to be an incomplete
-  record. The capture is Elite Dangerous game output and
+  carrier and market it came from. Their festive naming and that the launchers were awarded
+  already transformed are the same contributor's account rather than readings of the
+  capture, which carries neither; the stored −99% `Damage` modifier is derived from three
+  figures read off that contributor's own outfitting panel, as
+  `data/ships/SOURCES.md` sets out. [EDSY](https://github.com/taleden/EDSY) (taleden,
+  **CC BY-NC 4.0**) lists the same three transformations with no modifiers, which the
+  damage cut shows to be an incomplete record. The capture is Elite Dangerous game output and
   the transformations are **Elite Dangerous game data, property of Frontier Developments
   plc**; see the notice below. The capture itself is not redistributed —
   `data/ships/SOURCES.md` → §Decorative modifications records what was read from it.

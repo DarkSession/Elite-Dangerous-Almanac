@@ -585,7 +585,7 @@
     "decorativeModification": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "modules"],
+      "required": ["name", "modules", "modifiers"],
       "properties": {
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "modules": {
@@ -593,6 +593,11 @@
           "minItems": 1,
           "uniqueItems": true,
           "items": { "$ref": "#/definitions/nonEmptyString" }
+        },
+        "modifiers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/preEngineeredModifier" }
         }
       }
     },

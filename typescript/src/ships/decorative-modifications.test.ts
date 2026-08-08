@@ -17,6 +17,8 @@ import { blueprintAvailableFor } from './loadout-engineering.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
+import { computeModifiers } from './engineering.js';
+import { damagePerSecond } from './weapons.js';
 import { ShipLoadout } from './ship-loadout.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 
@@ -66,6 +68,39 @@ test('every module symbol stored is a module the catalogues carry', () => {
             );
         }
     }
+});
+
+test('the damage cut resolves to the figures the outfitting panel shows', () => {
+    // The panel rounds to one decimal, so it cannot pin the modifier on its own. These
+    // three figures together can: a flat overwrite to the displayed 0.3 would read -99.1%
+    // and 0.1/s, so recomputing them is what catches the stored value being re-entered as
+    // what the panel printed.
+    const { baseDamage, damage, damagePerSecond: damagePerSecond_, panel } = decorative.resolved;
+    const launcher = getModuleBySymbol(decorative.module, ALL_MODULES)!;
+    assert.equal(launcher.damage, baseDamage);
+
+    for (const record of Object.values(DECORATIVE_MODIFICATIONS)) {
+        assert.deepEqual([...record.modifiers], decorative.modifiers);
+        // A fixed article, not a roll: each value is its own min and max, which is what
+        // lets a decorative modifier go through the blueprint calculator unchanged.
+        const features = record.modifiers.map((m) => ({
+            label: m.label,
+            method: m.method,
+            min: m.value,
+            max: m.value,
+        }));
+        const applied = computeModifiers({ Damage: launcher.damage! }, features, 1);
+        const rolled = applied.find((m) => m.Label === 'Damage')!;
+        assert.ok(Math.abs(rolled.Value! - damage) < 1e-9, `${rolled.Value} != ${damage}`);
+        assert.equal(rolled.OriginalValue, baseDamage);
+        // The percentage the panel prints, and the DPS, both fall out of the same value.
+        const percent = Math.round(((rolled.Value! - baseDamage) / baseDamage) * 1000) / 10;
+        assert.equal(percent, panel.percent);
+        const dps = damagePerSecond({ ...launcher, damage: rolled.Value! });
+        assert.ok(Math.abs(dps - damagePerSecond_) < 1e-9, `${dps} != ${damagePerSecond_}`);
+        assert.equal(Number(dps.toFixed(1)), panel.damagePerSecond);
+    }
+    assert.equal(Number(damage.toFixed(1)), panel.damage);
 });
 
 test('the launcher observed carrying them is engineerable by nothing all the same', () => {

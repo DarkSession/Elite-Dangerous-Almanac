@@ -959,12 +959,12 @@ export class ShipLoadout {
         // A decorative transformation reaches this method as a real id that names no
         // recipe: the game writes it in the same field, but it has no grade, costs nothing
         // and no engineer applies one. Say that, rather than letting the grade lookup below
-        // report a genuine id as an unknown blueprint. It does move a stat — a festive
-        // launcher's damage — but no magnitude is published, so this cannot fold one, which
-        // is the second reason to refuse rather than to compute something wrong.
+        // report a genuine id as an unknown blueprint. It does move a stat, so the refusal
+        // names where that is — a caller wanting a festive launcher's damage wants
+        // `DECORATIVE_MODIFICATIONS`, not a grade this recipe never had.
         if (isDecorativeModification(recipe)) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; no engineer applies one, and the stat changes it arrives with are not published`,
+                `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; no engineer applies one, and the stat changes it arrives with are in DECORATIVE_MODIFICATIONS`,
             );
         }
         const features = getBlueprintGrade(recipe, options.grade);

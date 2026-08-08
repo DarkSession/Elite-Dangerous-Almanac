@@ -1625,7 +1625,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   block in `fixtures/ships/engineering.json`. Read it with `getDecorativeModification` /
   `isDecorativeModification` / `getDecorativeModificationsForModule` /
   `typescript/src/ships/decorative-modifications.ts`. Three records —
-  `Decorative_Green`, `Decorative_Red`, `Decorative_Yellow` — each `{ name, modules }`.
+  `Decorative_Green`, `Decorative_Red`, `Decorative_Yellow` — each
+  `{ name, modules, modifiers }`.
 - **They are a festive transformation the game writes in an engineering field, which is the
   whole of the problem they cause.** A `StoredModules` capture contributed by the repository owner
   (521 stored modules, 2026-08-07 UTC) holds three medium turreted Remote Release Flak
@@ -1639,24 +1640,31 @@ up straight through with no disambiguation at all. Both paths are evidence that
   would exist would state a recipe the game does not have, and would make
   `getBlueprintCost` price a roll nobody can make. A separate catalogue costs a few hundred
   bytes and claims only what is known.
-- **They are not cosmetic-only, and the `Damage` cut is not stored.** A festive launcher
-  fires fireworks rather than flak, and the transformation carries a heavy cut to the
-  module's `Damage` to match — the repository owner puts it near 99%. **No magnitude is
-  stored**, because none is published and an estimate is not a measurement: a
-  `StoredModules` entry has no `Modifiers` block at all, and EDSY lists the three
-  transformations with no modifiers, which the cut shows to be an incomplete record rather
-  than a second opinion. What would fill it is one `Loadout` event with a festive launcher
-  fitted: its `Engineering.Modifiers` carries the exact value and method, the way the
-  community-goal rows in `pre-engineered.jsonc` carry theirs. Until then the honest reading
-  of a record here is "this id is real and names no recipe", **not** "this module is
-  unmodified" — a consumer wanting the real damage must read the journal's own
-  `Engineering.Modifiers`, which is exact.
-  - **This is why they stay out of `BLUEPRINTS` even now that a stat is known to move.**
-    A modifier set that arrives fixed with an awarded module is a pre-engineered variant in
-    shape, not a blueprint — no roll, no grade, no quality. If the captured block turns out
-    to carry several legs, reusing `pre-engineered.jsonc`'s `modifiers` vocabulary here is
-    the change to make; what does not work is a `PreEngineeredVariant` row, which needs a
-    `blueprint` joining to `BLUEPRINTS` and a `grade`, and these have neither.
+- **They are not cosmetic-only: each carries a −99% `Damage` modifier.** A festive launcher
+  fires fireworks rather than flak, and the cut is what makes that true. It is the only
+  stat any of the three moves, and it is stored, so no record here may be read as "this
+  module is unmodified" — reading one that way overstates a fitted launcher's damage a
+  hundredfold. EDSY lists the three transformations with no modifiers, which the cut shows
+  to be an incomplete record rather than a second opinion.
+  - **The method is derived, not assumed.** The figures are the repository owner's
+    outfitting panel: the transformation at −99.0%, the resulting launcher at 0.3 damage
+    and 0.2/s. The panel rounds to one decimal, so no one of those pins the modifier —
+    together they do. −99.0% of the medium turreted launcher's 34 base damage is 0.34,
+    which displays as 0.3, and 0.34 × its 0.5 rate of fire is 0.17, which displays as
+    0.2/s. A flat `overwrite` to the displayed 0.3 would read −99.1% and 0.1/s, matching
+    neither of the other two. So the modifier is multiplicative and the panel's 0.3 is a
+    rounding of 0.34. `fixtures/ships/engineering.json` pins all three figures and the test
+    recomputes them, which is what would catch the stored value being re-entered as the
+    number the panel printed.
+  - **A moving stat is still not a reason to put them in `BLUEPRINTS`.** A modifier set
+    that arrives fixed with an awarded module is a pre-engineered variant in shape, not a
+    blueprint — no roll, no grade, no quality — which is why the records carry
+    `pre-engineered.jsonc`'s `{ label, method, value }` vocabulary rather than a
+    `BlueprintFeature`'s `min`/`max`. What does not work is a `PreEngineeredVariant` row
+    itself: that needs a `blueprint` joining to `BLUEPRINTS` and a `grade`, and these have
+    neither. The shared vocabulary is the useful half — read each value as its own `min`
+    and `max` and a decorative modifier goes through `computeModifiers` unchanged, exactly
+    as `pre-engineered-stats.ts` does for a bought variant.
 - **Why they are in no engineering menu.** No engineer applies one: the three launchers
   were **awarded** already transformed, so the module arrives carrying the transformation
   rather than being taken to an engineer for it — the same shape as the Guardian modules whose
@@ -1685,8 +1693,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   decorative id with a `TypeError` naming the transformation, not with the `RangeError` a
   missing grade earns: the id is real, and the refusal has to read that way. Importing a
   build is unaffected either way — `fromLoadout` stores the `Engineering` block as the
-  journal wrote it and never looks the id up, so a festive launcher imported from a journal
-  keeps its real damage while one assembled by hand does not.
+  journal wrote it and never looks the id up. A build assembled by hand carries the cut
+  only if the consumer folds `modifiers` in themselves, which `computeModifiers` does in
+  three lines; a build imported from a journal already has it, the game's own
+  `Engineering.Modifiers` being exact.
 
 ## Engineering compatibility (may this recipe go on this module?)
 

@@ -230,13 +230,21 @@
     }
   },
   "decorativeModifications": {
-    "description": "The festive transformations the game writes in the same journal field as an engineering blueprint, read off the same `StoredModules` capture as §journalSpellings — it holds three medium turreted Remote Release Flak Launchers, one per colour. They are not engineering: no grade, no materials, and no engineer offers one. So they are absent from `BLUEPRINTS` and from every menu in `engineering-options`, and `DECORATIVE_MODIFICATIONS` is what makes the id resolve to something rather than to nothing — the distinction between \"this id is real and names no recipe\" and \"this id is unknown\", which is the whole reason the catalogue exists. They are not cosmetic-only: a festive launcher fires fireworks rather than flak and the transformation cuts the module's `Damage` heavily, but no magnitude is published and none is stored, so nothing here may be read as \"this module is unmodified\" — see `data/ships/SOURCES.md` §Decorative modifications. `module` is the only module observed carrying one, and the catalogue groups it nowhere: a Remote Release Flak Launcher takes no engineering, and being awarded one already transformed does not make it engineerable. `name` pairs the festive naming with the id's colour; no registry publishes the outfitting panel's own string.",
+    "description": "The festive transformations the game writes in the same journal field as an engineering blueprint, read off the same `StoredModules` capture as §journalSpellings — it holds three medium turreted Remote Release Flak Launchers, one per colour. They are not engineering: no grade, no materials, and no engineer offers one. So they are absent from `BLUEPRINTS` and from every menu in `engineering-options`, and `DECORATIVE_MODIFICATIONS` is what makes the id resolve to something rather than to nothing — the distinction between \"this id is real and names no recipe\" and \"this id is unknown\", which is the whole reason the catalogue exists. They are not cosmetic-only either: a festive launcher fires fireworks rather than flak, and every one of them carries a single `Damage` modifier of -99%, so no record here may be read as \"this module is unmodified\". `module` is the only module observed carrying one, and the catalogue groups it nowhere: a Remote Release Flak Launcher takes no engineering, and being awarded one already transformed does not make it engineerable. `name` pairs the festive naming with the id's colour; no registry publishes the outfitting panel's own string.",
     "module": "Hpt_FlakMortar_Turret_Medium",
     "ids": [
       { "id": "Decorative_Green", "name": "Festive Green" },
       { "id": "Decorative_Red", "name": "Festive Red" },
       { "id": "Decorative_Yellow", "name": "Festive Yellow" }
-    ]
+    ],
+    "modifiers": [{ "label": "Damage", "method": "multiplicative", "value": -0.99 }],
+    "resolved": {
+      "description": "What the stored modifier makes of the medium turreted Remote Release Flak Launcher, and the outfitting-panel reading it was derived from. The panel is rounded to one decimal, so it does not pin the modifier on its own — but the three figures together do: -99.0% of the 34 base damage is 0.34, which displays as 0.3, and 0.34 x the 0.5 rate of fire is 0.17, which displays as 0.2/s. An overwrite to a flat 0.3 would read -99.1% and 0.1/s, so the modifier is multiplicative and the panel's 0.3 is a rounding. Recomputing these is what would catch the modifier being re-entered as the displayed value.",
+      "baseDamage": 34,
+      "damage": 0.34,
+      "damagePerSecond": 0.17,
+      "panel": { "percent": -99, "damage": 0.3, "damagePerSecond": 0.2 }
+    }
   },
   "journalNames": {
     "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 109; of the rest, 79 are already the journal id and 27 are Operations keys for which no journal spelling has been observed, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
