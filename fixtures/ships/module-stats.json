@@ -1764,5 +1764,556 @@
       "symbol": "Hpt_Mining_SeismChrgWarhd_Turret_Medium",
       "fields": ["maximumRange", "falloffRange"]
     }
-  ]
+  ],
+  "capturedBaseStats": {
+    "note": "What Frontier's own captures say about the base values in `data/ships/modules-*.jsonc`, joined through the library's own journal-label→field mapping rather than a hand-written one. This reaches fields the in-game audit could not — a hardpoint's reserve ammo, projectile speed, the shield-generator and booster resistances, an armour module's hull boost — because a `Loadout` states every engineered module's unmodified value alongside its modified one. `stated` counts the distinct (module, journal `Label`) pairs a capture gives an `OriginalValue` for; `mapped` is how many name a field the record holds, split into those agreeing digit for digit and those agreeing to within the game's own float noise (it writes 20.000004 for 20, 2.499998 for 2.5, -39.999996 for -40). Nothing may disagree beyond that: a capture is Frontier's own reading, so where one contradicts a base stat the catalogue is wrong.",
+    "floatNoiseTolerance": 1e-05,
+    "unmappedNote": "The three labels left that name no catalogue field, all by nature rather than by omission. `DamagePerSecond` is a product of four stored stats, checked in `weapons` below. `$Kinetic;` and `$Explosive;` are an experimental effect's split of a weapon's damage across types, which the catalogue holds as the nested `damageDistribution` — a shape this flat label→field mapping cannot address. That the conversion reaches no consumer either is https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/64. Pinned as a whole list, so a label the mapping ought to resolve cannot start being skipped in silence.",
+    "captures": [
+      {
+        "file": "journal-cobra-mkv.json",
+        "stated": 62,
+        "mapped": 58,
+        "exact": 51,
+        "withinFloatNoise": 7,
+        "unmapped": [
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Small",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Small",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
+        "file": "journal-corsair.json",
+        "stated": 65,
+        "mapped": 63,
+        "exact": 57,
+        "withinFloatNoise": 6,
+        "unmapped": [
+          {
+            "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
+        "file": "journal-federation-corvette-beams.json",
+        "stated": 86,
+        "mapped": 82,
+        "exact": 67,
+        "withinFloatNoise": 15,
+        "unmapped": [
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Large",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Small",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
+        "file": "journal-federation-corvette-multirole.json",
+        "stated": 79,
+        "mapped": 75,
+        "exact": 66,
+        "withinFloatNoise": 9,
+        "unmapped": [
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Small",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
+        "file": "journal-federation-corvette.json",
+        "stated": 71,
+        "mapped": 66,
+        "exact": 58,
+        "withinFloatNoise": 8,
+        "unmapped": [
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_Cannon_Gimbal_Large",
+            "label": "$Explosive;"
+          },
+          {
+            "symbol": "Hpt_Cannon_Gimbal_Large",
+            "label": "$Kinetic;"
+          },
+          {
+            "symbol": "Hpt_Cannon_Gimbal_Large",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
+        "file": "journal-kestrel-mkii.json",
+        "stated": 77,
+        "mapped": 76,
+        "exact": 64,
+        "withinFloatNoise": 12,
+        "unmapped": [
+          {
+            "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
+        "file": "journal-krait-phantom.json",
+        "stated": 39,
+        "mapped": 39,
+        "exact": 34,
+        "withinFloatNoise": 5,
+        "unmapped": []
+      },
+      {
+        "file": "journal-lynx-highliner.json",
+        "stated": 59,
+        "mapped": 57,
+        "exact": 52,
+        "withinFloatNoise": 5,
+        "unmapped": [
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Large",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
+        "file": "slef-the-deep-black.json",
+        "stated": 35,
+        "mapped": 35,
+        "exact": 35,
+        "withinFloatNoise": 0,
+        "unmapped": []
+      }
+    ],
+    "weaponsNote": "The `DamagePerSecond` a capture states for an engineered weapon's unmodified self — Frontier's own arithmetic over damage, rate of fire, rounds per shot and burst structure. These are the only external readings of an unmodified weapon's folded figure: in-game verification reads the stored inputs one at a time, and the one product it does hold, a decorative flak launcher's panel DPS in `fixtures/ships/engineering.json`, is a modified weapon read to one decimal. On a beam laser the fold is trivial, its damage being already per second, and `inGameVerifiedValues` pins that figure for six beams — but not for the huge or medium gimballed ones a capture reads, so on those this is the only check `damage` has, since no journal states `Damage` for a beam laser. A burst laser's figure folds the burst; a missile rack's counts the whole salvo. Each must reproduce to the same float-noise tolerance. See https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12.",
+    "weapons": [
+      {
+        "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+        "damagePerSecond": 32.68
+      },
+      {
+        "symbol": "Hpt_BeamLaser_Gimbal_Large",
+        "damagePerSecond": 20.299999
+      },
+      {
+        "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+        "damagePerSecond": 12.52
+      },
+      {
+        "symbol": "Hpt_BeamLaser_Gimbal_Small",
+        "damagePerSecond": 7.68
+      },
+      {
+        "symbol": "Hpt_Cannon_Gimbal_Large",
+        "damagePerSecond": 16.485022
+      },
+      {
+        "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
+        "damagePerSecond": 60
+      },
+      {
+        "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
+        "damagePerSecond": 25
+      },
+      {
+        "symbol": "Hpt_MultiCannon_Gimbal_Large",
+        "damagePerSecond": 18.933332
+      },
+      {
+        "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+        "damagePerSecond": 12.615385
+      },
+      {
+        "symbol": "Hpt_MultiCannon_Gimbal_Small",
+        "damagePerSecond": 6.833334
+      },
+      {
+        "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
+        "damagePerSecond": 27.428572
+      }
+    ],
+    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the ten is 9.8e-5 t of mass and 6.3e-6 ly — and not a margin for disagreement.",
+    "rebuildTolerance": 0.0001,
+    "rebuilds": [
+      {
+        "file": "journal-cobra-mkv.json",
+        "unladenMass": 275.200012,
+        "maxJumpRange": 46.401073
+      },
+      {
+        "file": "journal-corsair.json",
+        "unladenMass": 641.900024,
+        "maxJumpRange": 41.191536
+      },
+      {
+        "file": "journal-federation-corvette-beams.json",
+        "unladenMass": 2369.199951,
+        "maxJumpRange": 14.883002
+      },
+      {
+        "file": "journal-federation-corvette-multirole.json",
+        "unladenMass": 2117.199951,
+        "maxJumpRange": 27.147789
+      },
+      {
+        "file": "journal-federation-corvette.json",
+        "unladenMass": 2096.899902,
+        "maxJumpRange": 16.80834
+      },
+      {
+        "file": "journal-kestrel-mkii.json",
+        "unladenMass": 430.474976,
+        "maxJumpRange": 23.85914
+      },
+      {
+        "file": "journal-krait-phantom.json",
+        "unladenMass": 388.830017,
+        "maxJumpRange": 60.547791
+      },
+      {
+        "file": "journal-lynx-highliner.json",
+        "unladenMass": 710.899963,
+        "maxJumpRange": 30.513672
+      },
+      {
+        "file": "journal-python-mkii-antixeno.json",
+        "unladenMass": 699,
+        "maxJumpRange": 17.495169
+      },
+      {
+        "file": "journal-viper-mkiv.json",
+        "unladenMass": 260.799988,
+        "maxJumpRange": 21.951651
+      }
+    ],
+    "engineeredNote": "Every engineered result the captures state where the journal's label is not the field's own first name, or where it names a field the module's record does not carry — the two places a wrong label→field resolution hides, since `effectiveStats` drops a label that resolves to nothing rather than failing and a stat with two labels can be written to whichever is asked for. `field` is written out here rather than resolved, so it says where the value belongs independently of the mapping under test. One row per distinct (module, field); `value` is in the catalogue's units, which is the journal's figure ÷ 100 for the one percentage label among them, `ShieldGenStrength`. Each is read back from `FittedModule.effectiveStats` on the build parsed from that capture, and each equals the `Value` Frontier states beside the `OriginalValue`.",
+    "engineered": [
+      {
+        "file": "journal-cobra-mkv.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+        "field": "distributorDraw",
+        "value": 1.892
+      },
+      {
+        "file": "journal-cobra-mkv.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+        "field": "thermalLoad",
+        "value": 2.128
+      },
+      {
+        "file": "journal-cobra-mkv.json",
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_BeamLaser_Gimbal_Small",
+        "field": "distributorDraw",
+        "value": 1.1605
+      },
+      {
+        "file": "journal-cobra-mkv.json",
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_BeamLaser_Gimbal_Small",
+        "field": "thermalLoad",
+        "value": 1.46
+      },
+      {
+        "file": "journal-cobra-mkv.json",
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class5",
+        "field": "optMass",
+        "value": 367.5
+      },
+      {
+        "file": "journal-cobra-mkv.json",
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class2",
+        "field": "scannerRange",
+        "value": 8505
+      },
+      {
+        "file": "journal-cobra-mkv.json",
+        "slot": "Slot01_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class3_Fast",
+        "field": "optMultiplier",
+        "value": 1.24199997
+      },
+      {
+        "file": "journal-corsair.json",
+        "slot": "LargeHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Large",
+        "field": "maximumRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-corsair.json",
+        "slot": "LargeHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Large",
+        "field": "falloffRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-corsair.json",
+        "slot": "LargeHardpoint2",
+        "symbol": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced",
+        "field": "maximumRange",
+        "value": 7000
+      },
+      {
+        "file": "journal-corsair.json",
+        "slot": "LargeHardpoint2",
+        "symbol": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced",
+        "field": "falloffRange",
+        "value": 7000
+      },
+      {
+        "file": "journal-corsair.json",
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size7_Class5",
+        "field": "optMass",
+        "value": 1890
+      },
+      {
+        "file": "journal-corsair.json",
+        "slot": "Slot01_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class3_Fast",
+        "field": "optMultiplier",
+        "value": 1.24199997
+      },
+      {
+        "file": "journal-corsair.json",
+        "slot": "Slot08_Size3",
+        "symbol": "Int_DetailedSurfaceScanner_Tiny",
+        "field": "probeRadius",
+        "value": 24
+      },
+      {
+        "file": "journal-federation-corvette-beams.json",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+        "field": "distributorDraw",
+        "value": 4.9445
+      },
+      {
+        "file": "journal-federation-corvette-beams.json",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+        "field": "thermalLoad",
+        "value": 4.248
+      },
+      {
+        "file": "journal-federation-corvette-beams.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+        "field": "maximumRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-federation-corvette-beams.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+        "field": "falloffRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-federation-corvette-beams.json",
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_MultiCannon_Gimbal_Small",
+        "field": "thermalLoad",
+        "value": 0.2
+      },
+      {
+        "file": "journal-federation-corvette-beams.json",
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size8_Class5",
+        "field": "scannerRange",
+        "value": 13440
+      },
+      {
+        "file": "journal-federation-corvette-beams.json",
+        "slot": "Slot01_Size7",
+        "symbol": "Int_ShieldGenerator_Size7_Class3_Fast",
+        "field": "optMultiplier",
+        "value": 1.24199997
+      },
+      {
+        "file": "journal-federation-corvette.json",
+        "slot": "LargeHardpoint1",
+        "symbol": "Hpt_Cannon_Gimbal_Large",
+        "field": "distributorDraw",
+        "value": 1.539
+      },
+      {
+        "file": "journal-federation-corvette.json",
+        "slot": "LargeHardpoint1",
+        "symbol": "Hpt_Cannon_Gimbal_Large",
+        "field": "thermalLoad",
+        "value": 3.3695
+      },
+      {
+        "file": "journal-federation-corvette.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
+        "field": "distributorDraw",
+        "value": 0.156
+      },
+      {
+        "file": "journal-federation-corvette.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
+        "field": "jitter",
+        "value": 0.5
+      },
+      {
+        "file": "journal-federation-corvette.json",
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size8_Class2",
+        "field": "scannerRange",
+        "value": 10080
+      },
+      {
+        "file": "journal-federation-corvette.json",
+        "slot": "Slot01_Size7",
+        "symbol": "Int_ShieldGenerator_Size7_Class5_Strong",
+        "field": "optMultiplier",
+        "value": 2.19419983
+      },
+      {
+        "file": "journal-kestrel-mkii.json",
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
+        "field": "distributorDraw",
+        "value": 0.4185
+      },
+      {
+        "file": "journal-kestrel-mkii.json",
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
+        "field": "thermalLoad",
+        "value": 0.322
+      },
+      {
+        "file": "journal-kestrel-mkii.json",
+        "slot": "MainEngines",
+        "symbol": "Int_MkIIAgileBoost_Engine_Size5_Class5",
+        "field": "optMass",
+        "value": 735
+      },
+      {
+        "file": "journal-kestrel-mkii.json",
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size2_Class2",
+        "field": "scannerRange",
+        "value": 8190
+      },
+      {
+        "file": "journal-krait-phantom.json",
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class2",
+        "field": "optMass",
+        "value": 972
+      },
+      {
+        "file": "journal-krait-phantom.json",
+        "slot": "Slot03_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class5",
+        "field": "optMass",
+        "value": 388.799988
+      },
+      {
+        "file": "journal-krait-phantom.json",
+        "slot": "Slot03_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class5",
+        "field": "optMultiplier",
+        "value": 1.30800003
+      },
+      {
+        "file": "journal-lynx-highliner.json",
+        "slot": "MediumHardpoint4",
+        "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+        "field": "thermalLoad",
+        "value": 0.4
+      },
+      {
+        "file": "journal-lynx-highliner.json",
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class5",
+        "field": "optMass",
+        "value": 1260
+      },
+      {
+        "file": "journal-lynx-highliner.json",
+        "slot": "Slot02_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class5_Strong",
+        "field": "optMultiplier",
+        "value": 2.19419983
+      },
+      {
+        "file": "slef-the-deep-black.json",
+        "slot": "Slot06_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class2",
+        "field": "optMass",
+        "value": 380.7
+      },
+      {
+        "file": "slef-the-deep-black.json",
+        "slot": "Slot06_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class2",
+        "field": "optMultiplier",
+        "value": 1.035
+      }
+    ]
+  }
 }

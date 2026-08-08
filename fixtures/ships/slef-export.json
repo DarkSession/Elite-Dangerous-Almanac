@@ -340,7 +340,7 @@
       "MaxJumpRange": 17.495169
     },
     "ammunition": {
-      "note": "The game reports the loaded weapons' magazine and reserve, which is the only external check `clipSize` and `ammoMaximum` get from a journal. Both weapons are sitting at capacity, so each figure below is also what a parsed build reports for that weapon. Only the two weapons carrying ammo at capture time say anything — the other four report zero on both counts, which is a fact about this ship's rearm state and not about the catalogue, so they are not pinned. The counts themselves are read off the capture rather than off a parsed build, because a build carries no rearm state: `AmmoInClip` and `AmmoInHopper` are dropped on import by design, and what a weapon can hold is reported from the catalogue stats instead.",
+      "note": "The game reports the loaded weapons' magazine and reserve, which is one of two external checks on `clipSize` and `ammoMaximum` a journal gives; the other, stronger one is the `AmmoClipSize` / `AmmoMaximum` modifier an engineered module states. Both weapons are sitting at capacity, so each figure below is also what a parsed build reports for that weapon. Only the two weapons carrying ammo at capture time say anything — the other four report zero on both counts, which is a fact about this ship's rearm state and not about the catalogue, so they are not pinned. The counts themselves are read off the capture rather than off a parsed build, because a build carries no rearm state: `AmmoInClip` and `AmmoInHopper` are dropped on import by design, and what a weapon can hold is reported from the catalogue stats instead.",
       "loaded": [
         {
           "symbol": "Hpt_ATMultiCannon_Fixed_Large_V2",

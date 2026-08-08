@@ -194,16 +194,31 @@ export const STAT_LABELS: readonly StatLabel[] = [
     { label: 'DistributorDraw', field: 'distributorDraw' },
     { label: 'ThermalLoad', field: 'thermalLoad' },
     { label: 'ArmourPenetration', field: 'armourPiercing' },
+    // `Range` is a weapon's maximum range, and — on a sensor suite, which carries no such
+    // field — the journal's own spelling of `ScannerRange`. `Sensor_LongRange` is reported
+    // under this label, so a record resolves it to whichever field it holds, exactly as
+    // `ScannerRange` above resolves to whichever of its two the record holds.
     { label: 'Range', field: 'maximumRange' },
+    { label: 'Range', field: 'scannerRange' },
     { label: 'MaximumRange', field: 'maximumRange' },
     { label: 'FalloffRange', field: 'falloffRange' },
+    // A journal spells the same stat `DamageFalloffRange`, where a blueprint recipe says
+    // `FalloffRange`. Both resolve, as `ProbeRadius` / `DSS_PatchRadius` do.
+    { label: 'DamageFalloffRange', field: 'falloffRange' },
     { label: 'ShotSpeed', field: 'shotSpeed' },
-    { label: 'Jitter', field: 'jitter' },
+    // A weapon that carries no jitter fires true, and Rapid Fire, its multi-cannon spelling
+    // and Inertial Impact all give one — which a journal confirms, reporting
+    // `OriginalValue: 0` for a missile rack whose record holds no such field.
+    // {@link computeModifiers} already reaches the right result without this, because an
+    // additive leg starts from zero on its own; the default is what makes the *base*
+    // explicit, so a computed modifier states the same `OriginalValue` the game does
+    // instead of omitting it.
+    { label: 'Jitter', field: 'jitter', defaultBase: 0 },
 ];
 
 /**
- * Every entry for a label, in declaration order. Nearly always one; `ScannerRange` has
- * two, because the sensor suites and the utility scanners keep the same journal stat in
+ * Every entry for a label, in declaration order. Usually one; `ScannerRange`, `Range` and
+ * `ShieldBankHeat` have two each, because the modules that carry those stats keep them in
  * different catalogue fields. The first entry is the label's own answer for everything
  * that does not depend on which module is being asked about.
  */
@@ -268,8 +283,8 @@ export function isUnknown(stats: OutfittingModule, field: keyof OutfittingModule
  *
  * @param label - The journal Modifier Label.
  * @param stats - The record the label is being resolved against, when there is one.
- * The one label that maps to two fields, `ScannerRange`, answers with whichever of them
- * the record carries; without a record it answers with the first.
+ * A label that maps to two fields — `ScannerRange`, `Range`, `ShieldBankHeat` — answers
+ * with whichever of them the record carries; without a record it answers with the first.
  *
  * @internal
  */

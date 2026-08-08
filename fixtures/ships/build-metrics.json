@@ -298,20 +298,11 @@
       "Int_DroneControl_Collection_Size3_Class3"
     ],
     "journalReadings": {
-      "note": "Every non-zero AmmoInClip / AmmoInHopper across the five journal captures — the only external readings of `clipSize` and `ammoMaximum` this repository holds. Seventeen of the eighteen sit exactly at capacity, on twelve distinct modules — the gimballed medium multi-cannon appears in two captures. The eighteenth is the Viper's heat-sink launcher, reporting 2 in reserve against a capacity of 3: what a launcher that has fired one heat sink looks like. That is the whole reason a journal's ammunition is a rearm state and not a capacity — a reading is a lower bound on what the module holds, and only a bound, so no reading may be read back as a catalogue figure. On the Corsair the capacity is the engineered one, since three of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier; the two plasma accelerators take Long Range, which charges neither. The Corvette's large gimballed cannon sits at capacity under a grade-5 Overcharged, which is Frontier's own reading that the recipe does not cut a cannon's clip — a 15% penalty would have loaded four rounds. That reading is evidence and not a guard: a build parsed from a journal folds the modifiers the journal states, so adding a clip leg to the recipe would not move these counts. What fails on such a change is the engineering suite, which folds the recipe itself.",
-      "readings": 18,
-      "distinctModules": 12,
-      "atCapacity": 17,
-      "belowCapacity": [
-        {
-          "capture": "journal-viper-mkiv.json",
-          "symbol": "hpt_heatsinklauncher_turret_tiny",
-          "AmmoInClip": 1,
-          "AmmoInHopper": 2,
-          "clipSize": 1,
-          "ammoMaximum": 3
-        }
-      ]
+      "note": "Every non-zero AmmoInClip / AmmoInHopper across the ten journal captures — the only external readings of what a module had *loaded* that this repository holds. They are not the only external check on `clipSize` and `ammoMaximum`: the `AmmoClipSize` and `AmmoMaximum` modifiers a capture states on an engineered module are a second and stronger one, joined by `fixtures/ships/module-stats.json` `capturedBaseStats`, and in-game verification does not reach a *hardpoint's* reserve ammo. All forty-two sit exactly at capacity, on eighteen distinct modules, several of which appear in more than one capture. A reading is still only a lower bound on what a module holds and must never be read straight back as a catalogue figure: a journal's ammunition is the ship's rearm state at the instant of capture, so a partly spent launcher would report less than its capacity and say nothing about the catalogue. What does settle a capacity is the `AmmoMaximum` modifier a capture states on an engineered module, which gives the base and the engineered figure together — the Lynx Highliner's heat-sink launcher reports 3 in reserve under a grade-1 Heat Sink Capacity against a base of 2, so the reading alone would have been the engineered value. On the Corsair the capacity is likewise the engineered one, since three of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier; the two plasma accelerators take Long Range, which charges neither. The Corvette's large gimballed cannon sits at capacity under a grade-5 Overcharged, which is Frontier's own reading that the recipe does not cut a cannon's clip — a 15% penalty would have loaded four rounds. That reading is evidence and not a guard: a build parsed from a journal folds the modifiers the journal states, so adding a clip leg to the recipe would not move these counts. What fails on such a change is the engineering suite, which folds the recipe itself.",
+      "readings": 42,
+      "distinctModules": 18,
+      "atCapacity": 42,
+      "belowCapacity": []
     },
     "engineered": {
       "note": "Every roll here is at full quality on an empty Viper, refitted per roll. An engineered clip is rounded up to a whole burst where the roll is computed; the reserve is rounded by neither registry and is reported as it lands, fraction and all — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
@@ -428,9 +419,62 @@
       ]
     },
     "engineeredGroundTruth": {
-      "note": "Frontier's own engineered ammunition figures, from fixtures/ships/journal-corsair.json — the only capture here whose weapons carry `AmmoClipSize` / `AmmoMaximum` modifiers, and the evidence https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 was opened for. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and quality; `imported` is what a parsed build reports, which uses the stated modifier verbatim and therefore always equals `game`. At full quality the two agree exactly, on both legs and through an experimental effect. At an interpolated quality they do not, and no single multiplier reproduces both of Frontier's figures under any monotone rounding: 87 needs a roll of 0.8125 (or at most 0.8333 rounding down) while 23 needs more than 0.8333, since 12 × 1.8333 is exactly 22. FSD Interrupt cannot account for it — it carries Damage and BurstInterval legs only. The registries' model, one quality-derived multiplier scaling both legs from identical bands, is therefore not what the game does. Pinned including the disagreement, so a change to the model has to face it.",
+      "note": "Every engineered clip or reserve Frontier states across the ten journal captures — sixteen readings on five of them, and the evidence https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 was opened for. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and quality; an imported build uses the stated modifier verbatim and therefore always equals `game`. Twelve agree exactly, every one of them at quality 1. **The four that do not are what the issue is about, and together they rule out the simple explanations.** Both multi-cannons rolled at an interpolated quality state the *full-quality* reserve — 4200 at quality 0.9844 and again at 0.9438 — so the reserve is not scaled by quality the way the registries model it. The dumbfire rack's clip says the same thing from the other side: 23 is the full-quality figure where its stated quality computes 22. But its reserve, 87, is neither its stated-quality figure (87.499008) nor its full-quality one (88.32), and the heat-sink launcher's 3 is neither at any quality (2.98). So no single rule — ignore quality, round, truncate — reproduces all four, and nothing here is changed on the evidence. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
       "cases": [
         {
+          "capture": "journal-cobra-mkv.json",
+          "ship": "cobramkv",
+          "slot": "MediumHardpoint3",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 0.9844,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4194.7584
+          },
+          "agrees": false,
+          "note": "A disagreement, at an interpolated quality: the game states 4200, which is exactly the full-quality figure (2100 × 2), where quality 0.9844 computes 4194.7584."
+        },
+        {
+          "capture": "journal-cobra-mkv.json",
+          "ship": "cobramkv",
+          "slot": "SmallHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-corsair.json",
+          "ship": "corsair",
           "slot": "MediumHardpoint1",
           "symbol": "hpt_multicannon_gimbal_medium",
           "blueprint": "Weapon_HighCapacity",
@@ -452,9 +496,11 @@
             "ammoMaximum": 3360
           },
           "agrees": true,
-          "note": "Corrosive Shell's −20% compounding after High Capacity's doubling: 2100 × 2 × 0.8. The first external check that experimental has had."
+          "note": "Corrosive Shell's −20% compounding after High Capacity's doubling: 2100 × 2 × 0.8, which five captures state and all five agree on."
         },
         {
+          "capture": "journal-corsair.json",
+          "ship": "corsair",
           "slot": "MediumHardpoint2",
           "symbol": "hpt_multicannon_gimbal_medium",
           "blueprint": "Weapon_HighCapacity",
@@ -479,6 +525,8 @@
           "note": "The same recipe without an ammunition-moving experimental: a clean doubling of both legs."
         },
         {
+          "capture": "journal-corsair.json",
+          "ship": "corsair",
           "slot": "MediumHardpoint3",
           "symbol": "hpt_dumbfiremissilerack_fixed_medium",
           "blueprint": "Weapon_HighCapacity",
@@ -500,7 +548,282 @@
             "ammoMaximum": 87.499008
           },
           "agrees": false,
-          "note": "The disagreement. Frontier's engineered reserve is a whole 87 where this library computes 87.499008, and its clip is one round above what a shared multiplier predicts. Importing this build is unaffected: the stated modifiers are used verbatim."
+          "note": "A disagreement, at an interpolated quality. Frontier's reserve is a whole 87 where this library computes 87.499008, and its clip is 23 where the stated quality gives 22 — 23 is what the *full*-quality roll gives. Importing this build is unaffected: the stated modifiers are used verbatim."
+        },
+        {
+          "capture": "journal-federation-corvette-beams.json",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-beams.json",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_emissive_munitions",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-multirole.json",
+          "ship": "federation_corvette",
+          "slot": "LargeHardpoint1",
+          "symbol": "hpt_drunkmissilerack_fixed_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_drag_munitions",
+          "base": {
+            "clipSize": 12,
+            "ammoMaximum": 120
+          },
+          "game": {
+            "clipSize": 24,
+            "ammoMaximum": 240,
+            "loadedClip": 24,
+            "loadedHopper": 240
+          },
+          "simulated": {
+            "clipSize": 24,
+            "ammoMaximum": 240
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-multirole.json",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-multirole.json",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 0.9438,
+          "experimental": "special_emissive_munitions",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4181.1168
+          },
+          "agrees": false,
+          "note": "The same disagreement at a lower quality still: 4200 again, where quality 0.9438 computes 4181.1168. Two readings of one figure at two different qualities is what rules out a quality-scaled reserve."
+        },
+        {
+          "capture": "journal-lynx-highliner.json",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.json",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.json",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint3",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.json",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint4",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_emissive_munitions",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.json",
+          "ship": "mediumtransport01",
+          "slot": "LargeHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_large",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.json",
+          "ship": "mediumtransport01",
+          "slot": "TinyHardpoint2",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 2
+          },
+          "game": {
+            "ammoMaximum": 3,
+            "loadedClip": 1,
+            "loadedHopper": 3
+          },
+          "simulated": {
+            "ammoMaximum": 2.98
+          },
+          "agrees": false,
+          "note": "The reserve alone: the recipe carries no clip leg, so the magazine stands at 1. Frontier reports a whole 3 where 2 × 1.49 is 2.98, and here the roll is at full quality with the recipe's other legs landing exactly (mass 1.3 → 2.6, reload 10 → 15), so quality cannot be what explains it."
         }
       ],
       "recomputed": {

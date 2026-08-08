@@ -126,6 +126,12 @@ export interface ExperimentalEffect {
      * gameplay flag with no numeric magnitude the data exposes (e.g. Auto Loader
      * reloading while firing, Smart Rounds sparing untargeted ships). Such an effect
      * still carries a human-readable {@link ExperimentalEffect.description}.
+     *
+     * It is also empty for Overload Munitions, which is *not* qualitative: it converts a
+     * weapon's damage to 50/50 explosive/thermal, and no entry here can express that,
+     * because a damage split is a nested record rather than a scalar. High Yield Shell and
+     * Inertial Impact convert the same way alongside the legs they do carry. See
+     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/64
      */
     readonly modifiers: readonly ExperimentalContribution[];
     /** The materials one application of this effect consumes. */

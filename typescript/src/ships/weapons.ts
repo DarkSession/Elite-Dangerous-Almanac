@@ -152,9 +152,23 @@ export interface WeaponMetrics {
     readonly sustainedHeatPerSecond: number;
     /** Power draw, in megawatts — what the weapon asks of the power plant when deployed. */
     readonly powerDraw: number;
-    /** {@link damagePerSecond} split by damage type. */
+    /**
+     * {@link damagePerSecond} split by damage type.
+     *
+     * @remarks
+     * The split a weapon's record carries. Experimental effects that convert it are not
+     * modelled, so on a weapon carrying one this reports the unconverted split. High Yield
+     * Shell, Inertial Impact and Overload Munitions each state the resulting split in their
+     * `description`, and they are a lower bound rather than the list: eleven of the 40
+     * effects an engineer offers a weapon carry no `description` at all, so for those the
+     * data neither states a conversion nor rules one out:
+     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/64
+     */
     readonly damageByType: DamageSplit;
-    /** {@link sustainedDamagePerSecond} split by damage type. */
+    /**
+     * {@link sustainedDamagePerSecond} split by damage type — left unconverted for the same
+     * reason as {@link WeaponMetrics.damageByType}.
+     */
     readonly sustainedDamageByType: DamageSplit;
     /** Whether the weapon fires continuously (a beam or mining laser). */
     readonly continuous: boolean;

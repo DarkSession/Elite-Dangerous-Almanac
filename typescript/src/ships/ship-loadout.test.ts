@@ -1132,6 +1132,43 @@ test('engineering accepts a sourced zero and refuses an unrepresentable stat', (
     );
 });
 
+test('a scanner’s two range fields move together, under either label', () => {
+    // A utility scanner keeps its scan distance in two fields, `scannerRange` and
+    // `maximumRange`, from the same upstream figure; a sensor suite keeps only the first.
+    // So one stat has two catalogue homes on 18 records, and two journal spellings on top:
+    // a recipe says `ScannerRange`, a journal says `Range`. A reader that took the field
+    // the other label resolves to would get the base back on an engineered scanner, which
+    // is why both fields have to follow either label — and why the duplication is worth
+    // removing: https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/66
+    const twoFields = ALL_MODULES.filter(
+        (record) =>
+            typeof record.scannerRange === 'number' && typeof record.maximumRange === 'number',
+    );
+    assert.equal(twoFields.length, 18);
+    for (const record of twoFields) {
+        assert.equal(record.scannerRange, record.maximumRange, record.symbol);
+    }
+
+    // The recipe's own spelling, rolled rather than hand-written.
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('TinyHardpoint1', mod('Hpt_CargoScanner_Size0_Class5', UTILITY_MODULES))
+        .applyBlueprint('TinyHardpoint1', 'Scanner_LongRange', { grade: 5 });
+    const rolled = build.getFittedModule('TinyHardpoint1')!;
+    const range = rolled.Engineering!.Modifiers!.find((m) => m.Label === 'ScannerRange')!.Value!;
+    assert.ok(range > 4000);
+    assert.equal(rolled.effectiveStats?.scannerRange, range);
+    assert.equal(rolled.effectiveStats?.maximumRange, range);
+
+    // And the journal's spelling of the same modifier, read back through a `Loadout` event.
+    const event: LoadoutEvent = JSON.parse(JSON.stringify(build.toLoadoutEvent()));
+    for (const modifier of event.Modules[0]!.Engineering!.Modifiers!) {
+        if (modifier.Label === 'ScannerRange') (modifier as { Label: string }).Label = 'Range';
+    }
+    const asJournal = ShipLoadout.fromLoadout(event).getFittedModule('TinyHardpoint1')!;
+    assert.equal(asJournal.effectiveStats?.scannerRange, range);
+    assert.equal(asJournal.effectiveStats?.maximumRange, range);
+});
+
 test('a wake scanner engineered Long Range gets the scanner recipe, not the sensor suite one', () => {
     // The game writes `Sensor_LongRange` on both, and the two roll different stats in
     // opposite directions: the suite's costs mass, the scanner's power draw. An
