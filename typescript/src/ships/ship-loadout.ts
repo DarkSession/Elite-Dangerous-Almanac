@@ -911,7 +911,7 @@ export class ShipLoadout {
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
      * @throws {TypeError} If the fitted module has no stats to engineer; or the id names a
-     * decorative modification, which is a livery rather than a recipe (see
+     * decorative modification, which names no recipe (see
      * {@link DECORATIVE_MODIFICATIONS}); or the module is not offered the blueprint — by
      * its engineering menu, by the journal spelling of an entry on that menu, by the
      * generic spelling of a recipe that menu lists under a family's name, or by being sold
@@ -957,12 +957,14 @@ export class ShipLoadout {
                 ? `"${blueprintName}"`
                 : `"${blueprintName}" (${recipe} on this module)`;
         // A decorative transformation reaches this method as a real id that names no
-        // recipe: the game writes it in the same field, but it has no grade, costs
-        // nothing and moves no stat, and no engineer applies one. Say that, rather than
-        // letting the grade lookup below report a genuine id as an unknown blueprint.
+        // recipe: the game writes it in the same field, but it has no grade, costs nothing
+        // and no engineer applies one. Say that, rather than letting the grade lookup below
+        // report a genuine id as an unknown blueprint. It does move a stat — a festive
+        // launcher's damage — but no magnitude is published, so this cannot fold one, which
+        // is the second reason to refuse rather than to compute something wrong.
         if (isDecorativeModification(recipe)) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; it has no grade and modifies nothing, and no engineer applies one`,
+                `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; no engineer applies one, and the stat changes it arrives with are not published`,
             );
         }
         const features = getBlueprintGrade(recipe, options.grade);

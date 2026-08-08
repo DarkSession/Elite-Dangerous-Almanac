@@ -64,9 +64,11 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
  * @remarks
  * **`null` is not always an unknown id.** The game writes a handful of cosmetic
  * transformations in the same `BlueprintName` / `EngineerModifications` field, and they
- * name no recipe — no grade, no materials, no stat moved.
+ * name no recipe — no grade, no materials, and no engineer who applies one.
  * {@link isDecorativeModification} from `ships/decorative-modifications` is what tells one
- * of those apart from an id this library has never heard of.
+ * of those apart from an id this library has never heard of. Note that such an id is not a
+ * claim that the module is unmodified: read a fitted one's stats from the journal's own
+ * `Engineering.Modifiers`.
  */
 export function getBlueprint(fdname: string): Blueprint | null {
     if (Object.hasOwn(BLUEPRINTS, fdname)) return BLUEPRINTS[fdname]!;

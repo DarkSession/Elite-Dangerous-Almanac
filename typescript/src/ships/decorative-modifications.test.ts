@@ -23,7 +23,7 @@ import fixture from '../../../fixtures/ships/engineering.json' with { type: 'jso
 const decorative = fixture.decorativeModifications;
 const ids = decorative.ids.map((row) => row.id);
 
-test('the three ids a real journal writes all resolve, and carry the colour they spell', () => {
+test('the three ids a real journal writes all resolve, and carry their festive name', () => {
     // These are ids a commander's own storage carries, so resolving them is the whole
     // job: `getBlueprint` answering `null` for one is correct and is not the same answer
     // as "unknown id", and this catalogue is what separates the two.
@@ -39,7 +39,7 @@ test('the three ids a real journal writes all resolve, and carry the colour they
     assert.equal(isDecorativeModification('Weapon_Efficient'), false);
 });
 
-test('a decorative modification is a livery, so no recipe and no menu anywhere holds one', () => {
+test('a decorative modification names no recipe, so no menu anywhere holds one', () => {
     for (const id of ids) {
         assert.equal(getBlueprint(id), null, `${id} must not be a blueprint`);
         assert.ok(!Object.hasOwn(BLUEPRINTS, id));
@@ -54,8 +54,8 @@ test('a decorative modification is a livery, so no recipe and no menu anywhere h
 
 test('every module symbol stored is a module the catalogues carry', () => {
     // `modules` is what `getDecorativeModificationsForModule` joins on, so a symbol that
-    // matches nothing would make it answer `[]` for a module that does carry the livery —
-    // an empty answer being a legitimate one is exactly what hides the typo.
+    // matches nothing would make it answer `[]` for a module that does carry the
+    // transformation — an empty answer being a legitimate one is what would hide the typo.
     for (const [id, record] of Object.entries(DECORATIVE_MODIFICATIONS)) {
         assert.ok(record.modules.length > 0, `${id} names no module`);
         for (const symbol of record.modules) {
@@ -94,8 +94,8 @@ test('the engineering gate refuses a decorative id, and says what it is', () => 
         'MediumHardpoint1',
         getModuleBySymbol(symbol, ALL_MODULES)!,
     );
-    // A TypeError naming the livery, not a RangeError about a grade that never existed:
-    // the id is real, and the refusal has to read that way.
+    // A TypeError naming the transformation, not a RangeError about a grade that never
+    // existed: the id is real, and the refusal has to read that way.
     assert.throws(
         () => build.applyBlueprint('MediumHardpoint1', ids[0]!, { grade: 1 }),
         (error: unknown) => {

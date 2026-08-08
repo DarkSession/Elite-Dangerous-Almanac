@@ -1,47 +1,54 @@
 /*
- * **Decorative modifications** — the cosmetic transformations the game records in the
+ * **Decorative modifications** — the festive transformations the game records in the
  * same field as an engineering blueprint, keyed by the Frontier `fdname` a journal
  * writes (`EngineerModifications` on a `StoredModules` entry, `Engineering.BlueprintName`
  * on a `Loadout` module).
  *
- * These are a livery, not engineering, which is why they are here rather than in
- * `blueprints.jsonc`: they have no grade, cost no materials and change no stat, and no
- * engineer offers one — a module carrying one was awarded already transformed. They are
- * absent from `engineering-options.jsonc` for the same reason, that file listing what a
- * player may apply at an engineer. The ids are real all the same, and a build carrying
- * one has to resolve to something rather than to nothing; that is what this file is for.
+ * These are not engineering, which is why they are here rather than in `blueprints.jsonc`:
+ * they have no grade, cost no materials and no engineer offers one — a module carrying one
+ * was awarded already transformed. They are absent from `engineering-options.jsonc` for the
+ * same reason, that file listing what a player may apply at an engineer. The ids are real
+ * all the same, and a build carrying one has to resolve to something rather than to
+ * nothing; that is what this file is for.
+ *
+ * **They are not cosmetic-only.** A festive launcher fires fireworks rather than flak, and
+ * the transformation carries a heavy cut to the module's `Damage` to match. The magnitude
+ * is not stored yet — see SOURCES.md §Decorative modifications for what is known, what is
+ * missing, and what would fill it. Nothing here should be read as "this changes no stat".
  *
  * Sources: the ids, and the module they sit on, are read off a `StoredModules` capture
  *          contributed by the repository owner (521 stored modules, 2026-08-07 UTC,
  *          scrubbed of the commander, carrier and market it came from), which holds three
  *          medium turreted Remote Release Flak Launchers, one per colour. That they were
- *          awarded already transformed rather than engineered is the contributor's
- *          account, not something a `StoredModules` entry records — SOURCES.md says so
- *          where it rests on it. EDSY (github.com/taleden/EDSY, taleden,
- *          CC BY-NC 4.0) lists the same three transformations and gives them no
- *          modifiers, which is the corroboration that they move no stat. The transformations
+ *          awarded already transformed rather than engineered, that the game calls them
+ *          festive launchers, and that the transformation cuts damage are the
+ *          contributor's account — a `StoredModules` entry carries none of the three, and
+ *          it has no `Modifiers` block to read a magnitude out of. EDSY
+ *          (github.com/taleden/EDSY, taleden, CC BY-NC 4.0) lists the same three
+ *          transformations and gives them no modifiers, which is an incomplete record
+ *          rather than a second opinion. The transformations
  *          themselves are Elite Dangerous data, property of Frontier Developments plc,
  *          under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
- * Each record is { name, modules }. `name` is the colour the id spells — no registry
- * publishes a display string for these, and none is guessed. `modules` lists every module
- * symbol observed carrying the transformation, joined to the module catalogues; it is
- * what has been seen, not a claim about what the game could put one on.
+ * Each record is { name, modules }. `name` pairs the festive naming with the colour the id
+ * spells; no registry publishes the outfitting panel's own string. `modules` lists every
+ * module symbol observed carrying the transformation, joined to the module catalogues; it
+ * is what has been seen, not a claim about what the game could put one on.
  *
  * Full provenance: data/ships/SOURCES.md, §Decorative modifications.
  */
 {
   "Decorative_Green": {
-    "name": "Green",
+    "name": "Festive Green",
     "modules": ["Hpt_FlakMortar_Turret_Medium"]
   },
   "Decorative_Red": {
-    "name": "Red",
+    "name": "Festive Red",
     "modules": ["Hpt_FlakMortar_Turret_Medium"]
   },
   "Decorative_Yellow": {
-    "name": "Yellow",
+    "name": "Festive Yellow",
     "modules": ["Hpt_FlakMortar_Turret_Medium"]
   }
 }

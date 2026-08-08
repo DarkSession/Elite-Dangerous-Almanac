@@ -1261,7 +1261,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     Detailed Surface Scanner's group lists only `iss_er` (`Sensor_Expanded`), because its
     three other entries are `_X_`-marked. The `Decorative_*` entries on the remote-release
     launchers are dropped for the same reason `blueprints.jsonc` does not carry them: a
-    decorative transformation is a livery, not a recipe, and no engineer applies one. So a
+    decorative transformation names no recipe, and no engineer applies one. So a
     launcher left with only those entries is offering nothing, and its `noblueprints`
     reading holds — carrying one already transformed is not the same as being
     engineerable. §Decorative modifications has the evidence.
@@ -1626,23 +1626,40 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `isDecorativeModification` / `getDecorativeModificationsForModule` /
   `typescript/src/ships/decorative-modifications.ts`. Three records —
   `Decorative_Green`, `Decorative_Red`, `Decorative_Yellow` — each `{ name, modules }`.
-- **They are a livery the game writes in an engineering field, which is the whole of the
-  problem they cause.** A `StoredModules` capture contributed by the repository owner
+- **They are a festive transformation the game writes in an engineering field, which is the
+  whole of the problem they cause.** A `StoredModules` capture contributed by the repository owner
   (521 stored modules, 2026-08-07 UTC) holds three medium turreted Remote Release Flak
   Launchers, one per colour, in `EngineerModifications`. Those three are the only ones of
   the capture's 46 distinct spellings that name no recipe: every other spelling, down to
   the lower-case `weapon_longrange` the game writes on a Guardian Shard Cannon, resolves
   against `BLUEPRINTS`. An id that resolves to nothing looks exactly like a catalogue gap
   and is not one, which is what this catalogue exists to say.
-- **Why they are not in `blueprints.jsonc`.** There is no recipe to store. EDSY lists the
-  three transformations and gives them no modifiers, and nothing about them has the shape
-  a blueprint record needs: no grade, no material cost, no stat moved. Giving them an
-  empty grade 1 so the key would exist would state a recipe the game does not have, and
-  would make `getBlueprintCost` price a roll nobody can make. A separate catalogue costs
-  a few hundred bytes and claims only what is known.
+- **Why they are not in `blueprints.jsonc`.** There is no recipe to store: no grade, no
+  material cost, and no engineer who applies one. Giving them an empty grade 1 so the key
+  would exist would state a recipe the game does not have, and would make
+  `getBlueprintCost` price a roll nobody can make. A separate catalogue costs a few hundred
+  bytes and claims only what is known.
+- **They are not cosmetic-only, and the `Damage` cut is not stored.** A festive launcher
+  fires fireworks rather than flak, and the transformation carries a heavy cut to the
+  module's `Damage` to match — the repository owner puts it near 99%. **No magnitude is
+  stored**, because none is published and an estimate is not a measurement: a
+  `StoredModules` entry has no `Modifiers` block at all, and EDSY lists the three
+  transformations with no modifiers, which the cut shows to be an incomplete record rather
+  than a second opinion. What would fill it is one `Loadout` event with a festive launcher
+  fitted: its `Engineering.Modifiers` carries the exact value and method, the way the
+  community-goal rows in `pre-engineered.jsonc` carry theirs. Until then the honest reading
+  of a record here is "this id is real and names no recipe", **not** "this module is
+  unmodified" — a consumer wanting the real damage must read the journal's own
+  `Engineering.Modifiers`, which is exact.
+  - **This is why they stay out of `BLUEPRINTS` even now that a stat is known to move.**
+    A modifier set that arrives fixed with an awarded module is a pre-engineered variant in
+    shape, not a blueprint — no roll, no grade, no quality. If the captured block turns out
+    to carry several legs, reusing `pre-engineered.jsonc`'s `modifiers` vocabulary here is
+    the change to make; what does not work is a `PreEngineeredVariant` row, which needs a
+    `blueprint` joining to `BLUEPRINTS` and a `grade`, and these have neither.
 - **Why they are in no engineering menu.** No engineer applies one: the three launchers
-  were **awarded** already transformed, so the module arrives carrying the colour rather
-  than being taken to an engineer for it — the same shape as the Guardian modules whose
+  were **awarded** already transformed, so the module arrives carrying the transformation
+  rather than being taken to an engineer for it — the same shape as the Guardian modules whose
   community-goal experimental effects §Engineering options keeps out of the menus. **That
   acquisition route is the contributor's account, not a reading of the capture**, which
   records the transformation and nothing about how the module was obtained; it is stated
@@ -1656,17 +1673,20 @@ up straight through with no disambiguation at all. Both paths are evidence that
   capture shows carrying a decorative transformation, and it is the only symbol stored.
   A module absent from the list is one nothing has been seen on; the field is worded that
   way in the API rather than as a permission.
-- **`name` is the colour the id spells.** No registry publishes an in-game display string
-  for these — EDSY carries the transformation, not a panel label — so `"Green"`, `"Red"`
-  and `"Yellow"` are the ids read back rather than a wording sourced from anywhere. A
-  fuller name would have to be invented, and is not.
+- **`name` pairs the festive naming with the id's colour** — `"Festive Green"`,
+  `"Festive Red"`, `"Festive Yellow"`. No registry publishes the outfitting panel's own
+  string: EDSY carries the transformation, not a label. The festive naming is the
+  repository owner's, recorded because it is what the transformation is known as and is
+  more use to a UI than a bare colour; if the panel wording is ever read off the game, it
+  replaces this verbatim.
 - **What a consumer gets.** `getBlueprint('Decorative_Green')` answers `null`, because it
   is not a blueprint; `isDecorativeModification` is what tells that apart
   from an id the library has never heard of. `ShipLoadout.applyBlueprint` refuses a
-  decorative id with a `TypeError` naming it as a livery, not with the `RangeError` a
+  decorative id with a `TypeError` naming the transformation, not with the `RangeError` a
   missing grade earns: the id is real, and the refusal has to read that way. Importing a
   build is unaffected either way — `fromLoadout` stores the `Engineering` block as the
-  journal wrote it and never looks the id up.
+  journal wrote it and never looks the id up, so a festive launcher imported from a journal
+  keeps its real damage while one assembled by hand does not.
 
 ## Engineering compatibility (may this recipe go on this module?)
 

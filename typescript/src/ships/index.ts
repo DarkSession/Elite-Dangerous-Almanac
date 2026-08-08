@@ -45,8 +45,8 @@
  *   what a module *can* be engineered with, and {@link PRE_ENGINEERED_MODULES} covers
  *   the fixed-roll modules you cannot craft. {@link DECORATIVE_MODIFICATIONS} is the
  *   odd one out and the one to reach for when an id resolves to no recipe: the game
- *   writes a handful of cosmetic transformations in the same field, and they are a
- *   livery rather than engineering.
+ *   writes a handful of festive transformations in the same field, and no engineer
+ *   applies one.
  *
  * Note that a hull's derived figures split by cost: cheap stored values are properties
  * ({@link ShipLoadout.unladenMass}), while anything that recomputes or takes options is

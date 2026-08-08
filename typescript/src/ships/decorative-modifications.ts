@@ -4,15 +4,25 @@
  * a journal writes (`EngineerModifications` on a `StoredModules` entry,
  * `Engineering.BlueprintName` on a `Loadout` module).
  *
- * **A livery, not engineering.** A decorative modification has no grade, costs no
- * materials and changes no stat, and no engineer offers one. So these ids are **not** in
- * {@link BLUEPRINTS} — there is no recipe to store — and no menu in
- * `ships/engineering-options` lists one, because that catalogue answers what a player may
- * apply. This module is what makes the id resolve to something rather than to nothing.
+ * **Not engineering.** A decorative modification has no grade, costs no materials, and no
+ * engineer offers one. So these ids are **not** in {@link BLUEPRINTS} — there is no recipe
+ * to store — and no menu in `ships/engineering-options` lists one, because that catalogue
+ * answers what a player may apply. This module is what makes the id resolve to something
+ * rather than to nothing.
  *
- * That is the whole of its job, and it is why it is worth having. A consumer reading a
- * real journal meets `Decorative_Green` on a stored module and needs to tell "an id this
- * library has never heard of" from "an id that is real and carries no engineering"; only
+ * **Not cosmetic-only, either.** A festive launcher fires fireworks rather than flak, and
+ * the transformation carries a heavy cut to the module's `Damage` to match. That cut is
+ * **not stored yet**: nothing published carries the magnitude, and this catalogue does not
+ * guess one. So a build carrying a festive launcher computes its weapon metrics from the
+ * base module's damage, which is far too high — read the module's stats through the
+ * `Engineering.Modifiers` block the journal itself supplies, which is exact, rather than
+ * through this catalogue. See
+ * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
+ * §Decorative modifications for what would fill the gap.
+ *
+ * Resolving the id is the whole of its job, and it is why it is worth having. A consumer
+ * reading a real journal meets `Decorative_Green` on a stored module and needs to tell "an
+ * id this library has never heard of" from "an id that is real and names no recipe"; only
  * the second is true here. {@link ShipLoadout.applyBlueprint} reads it for the same
  * reason: it refuses a decorative id, but refuses it by name.
  *
@@ -25,7 +35,8 @@
  * hold three records that belong to none of it.
  *
  * Ids and the module they sit on from a `StoredModules` capture contributed by the
- * repository owner; EDSY lists the same three transformations with no modifiers. See
+ * repository owner; EDSY lists the same three transformations and gives them no modifiers,
+ * which the damage cut shows to be an incomplete record. See
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
@@ -34,11 +45,12 @@
 import decorativeData from '../../../data/ships/decorative-modifications.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
 
-/** One cosmetic transformation a module can carry in place of engineering. */
+/** One festive transformation a module can carry in place of engineering. */
 export interface DecorativeModification {
     /**
-     * The colour the id spells, e.g. `"Green"` — a display string, but a short one: no
-     * registry publishes the in-game panel wording for these, and none is invented.
+     * The festive naming paired with the colour the id spells, e.g. `"Festive Green"`. No
+     * registry publishes the outfitting panel's own string for these, so this is what the
+     * transformation is known as rather than a sourced label.
      */
     readonly name: string;
     /**
@@ -74,7 +86,7 @@ export const DECORATIVE_MODIFICATIONS: Readonly<Record<string, DecorativeModific
  * `null` if the id is not a decorative modification.
  * @example
  * ```ts
- * getDecorativeModification('decorative_red')?.name; // -> 'Red'
+ * getDecorativeModification('decorative_red')?.name; // -> 'Festive Red'
  * getDecorativeModification('FSD_LongRange');        // -> null
  * ```
  */
@@ -91,9 +103,11 @@ export function getDecorativeModification(fdname: string): DecorativeModificatio
  * Whether an id names a decorative modification rather than an engineering blueprint.
  *
  * The question to ask of a journal `EngineerModifications` / `BlueprintName` value that
- * {@link getBlueprint} answered `null` for: `true` means the id is real and carries no
- * engineering, and only a `false` here leaves "this library does not know the id" as the
- * remaining reading.
+ * {@link getBlueprint} answered `null` for: `true` means the id is real and names no
+ * recipe, and only a `false` here leaves "this library does not know the id" as the
+ * remaining reading. It does **not** mean the module is unmodified — a festive
+ * transformation cuts the launcher's damage heavily, and the journal's own
+ * `Engineering.Modifiers` block is where that value is.
  *
  * @param fdname - The id to test, matched case-insensitively and trimmed.
  * @returns `true` when {@link getDecorativeModification} would find it.

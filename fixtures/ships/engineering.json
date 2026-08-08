@@ -230,12 +230,12 @@
     }
   },
   "decorativeModifications": {
-    "description": "The cosmetic transformations the game writes in the same journal field as an engineering blueprint, read off the same `StoredModules` capture as §journalSpellings — it holds three medium turreted Remote Release Flak Launchers, one per colour. They are not engineering: no grade, no materials, no stat moved, and no engineer offers one. So they are absent from `BLUEPRINTS` and from every menu in `engineering-options`, and `DECORATIVE_MODIFICATIONS` is what makes the id resolve to something rather than to nothing — the distinction between \"this id is real and carries no engineering\" and \"this id is unknown\", which is the whole reason the catalogue exists. `module` is the only module observed carrying one, and the catalogue groups it nowhere: a Remote Release Flak Launcher takes no engineering, and a livery does not make it engineerable. `name` is the colour the id spells; no registry publishes an in-game display string for these.",
+    "description": "The festive transformations the game writes in the same journal field as an engineering blueprint, read off the same `StoredModules` capture as §journalSpellings — it holds three medium turreted Remote Release Flak Launchers, one per colour. They are not engineering: no grade, no materials, and no engineer offers one. So they are absent from `BLUEPRINTS` and from every menu in `engineering-options`, and `DECORATIVE_MODIFICATIONS` is what makes the id resolve to something rather than to nothing — the distinction between \"this id is real and names no recipe\" and \"this id is unknown\", which is the whole reason the catalogue exists. They are not cosmetic-only: a festive launcher fires fireworks rather than flak and the transformation cuts the module's `Damage` heavily, but no magnitude is published and none is stored, so nothing here may be read as \"this module is unmodified\" — see `data/ships/SOURCES.md` §Decorative modifications. `module` is the only module observed carrying one, and the catalogue groups it nowhere: a Remote Release Flak Launcher takes no engineering, and being awarded one already transformed does not make it engineerable. `name` pairs the festive naming with the id's colour; no registry publishes the outfitting panel's own string.",
     "module": "Hpt_FlakMortar_Turret_Medium",
     "ids": [
-      { "id": "Decorative_Green", "name": "Green" },
-      { "id": "Decorative_Red", "name": "Red" },
-      { "id": "Decorative_Yellow", "name": "Yellow" }
+      { "id": "Decorative_Green", "name": "Festive Green" },
+      { "id": "Decorative_Red", "name": "Festive Red" },
+      { "id": "Decorative_Yellow", "name": "Festive Yellow" }
     ]
   },
   "journalNames": {

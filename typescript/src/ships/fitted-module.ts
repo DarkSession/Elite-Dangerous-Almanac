@@ -198,7 +198,7 @@ export class FittedModule {
      * effect, or `quality` falls outside `[0, 1]`.
      * @throws {TypeError} If this handle has gone stale — its slot emptied or refitted since
      * it was taken — or the fitted module has no stats to engineer; or the id names a
-     * decorative modification, which is a livery rather than a recipe (see
+     * decorative modification, which names no recipe (see
      * {@link DECORATIVE_MODIFICATIONS}); or this module is not
      * offered the blueprint or the experimental effect; or the catalogue cannot answer a
      * base stat the recipe modifies.

@@ -1077,15 +1077,19 @@ experimental effect (from `ships/experimental-effects`) into journal-style modif
 The calculator is validated against the real "Deep Black" export — its size-8 drive's
 optimal mass 4670 → 7528.04 at G5 Long Range + Mass Manager.
 
-**Not every id in that field is a recipe.** The game writes a handful of cosmetic
+**Not every id in that field is a recipe.** The game writes a handful of festive
 transformations — `Decorative_Green`, `Decorative_Red`, `Decorative_Yellow` — in the same
-`BlueprintName` / `EngineerModifications` field, and they are a livery: no grade, no
-materials, no stat moved, and no engineer applies one. `getBlueprint` answers `null` for
-them because they are not blueprints; `isDecorativeModification` from
-`ships/decorative-modifications` is how you tell that apart from an id the library has
-never heard of, and `applyBlueprint` refuses one by name rather than as an unknown
-blueprint. Importing a build that carries one is unaffected — `fromLoadout` stores the
-`Engineering` block as the journal wrote it.
+`BlueprintName` / `EngineerModifications` field, and they are not engineering: no grade, no
+materials, and no engineer applies one. `getBlueprint` answers `null` for them because they
+are not blueprints; `isDecorativeModification` from `ships/decorative-modifications` is how
+you tell that apart from an id the library has never heard of, and `applyBlueprint` refuses
+one by name rather than as an unknown blueprint.
+
+They are **not** cosmetic-only, though: a festive launcher fires fireworks rather than
+flak, and the transformation cuts the module's damage heavily. That cut is not stored —
+nothing publishes the magnitude — so read a fitted one's real damage from the journal's own
+`Engineering.Modifiers` block, which is exact. Importing a build does exactly that:
+`fromLoadout` stores the block as the journal wrote it and never looks the id up.
 
 **Material requirements** — what a roll _costs_ — sit alongside the modifiers in
 `ships/blueprints`: every grade is `{ features, materials }`, so `getBlueprintGrade`

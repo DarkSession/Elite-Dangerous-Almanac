@@ -122,13 +122,16 @@ in the doc comment of each ported module, and in long form in the domain
   derivation, the two registries' disagreements, and the modules bound by a family rule
   rather than a source row.
 - **The decorative modifications and the module they sit on** — the three
-  `Decorative_*` cosmetic transformations in `data/ships/decorative-modifications.jsonc`,
+  `Decorative_*` festive transformations in `data/ships/decorative-modifications.jsonc`,
   and the medium turreted Remote Release Flak Launcher observed carrying them, from a
   `StoredModules` journal capture contributed by the repository owner from their own
   commander's storage (521 stored modules, **2026-08-07 UTC**), scrubbed of the commander,
-  carrier and market it came from. That they move no stat is corroborated by
-  [EDSY](https://github.com/taleden/EDSY) (taleden, **CC BY-NC 4.0**), which lists the same
-  three transformations with no modifiers. The capture is Elite Dangerous game output and
+  carrier and market it came from. Their festive naming, that the launchers were awarded
+  already transformed, and that the transformation cuts the module's damage are the same
+  contributor's account rather than readings of the capture, which carries none of the
+  three. [EDSY](https://github.com/taleden/EDSY) (taleden, **CC BY-NC 4.0**) lists the same
+  three transformations with no modifiers, which the damage cut shows to be an incomplete
+  record. The capture is Elite Dangerous game output and
   the transformations are **Elite Dangerous game data, property of Frontier Developments
   plc**; see the notice below. The capture itself is not redistributed —
   `data/ships/SOURCES.md` → §Decorative modifications records what was read from it.
