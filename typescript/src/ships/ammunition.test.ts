@@ -65,26 +65,36 @@ test('a reserve with no magazine stated is drawn from directly', () => {
     assert.equal(capacity.unlimited, false);
 });
 
-test('engineering moves both figures, and a fractional roll is left as it lands', () => {
-    const { module: symbol, blueprint, stock, rolls } = fixture.ammunition.engineered;
-    const build = ShipLoadout.empty('Viper');
-    build.setModule('SmallHardpoint1', module(symbol));
-    assert.deepEqual(build.getFittedModule('SmallHardpoint1')!.ammunition, {
-        ...stock,
-        unlimited: false,
-    });
+test('engineering loads whole rounds in the clip, and leaves the reserve as it lands', () => {
+    // The Viper takes a small cannon and a medium fragment cannon, so one hull covers both
+    // rolls; the slot is refitted per roll so nothing carries over.
+    const slotFor = (symbol: string) =>
+        symbol === 'Hpt_Slugshot_Fixed_Medium' ? 'MediumHardpoint1' : 'SmallHardpoint1';
 
-    for (const roll of rolls) {
-        const engineered = ShipLoadout.empty('Viper');
-        engineered.setModule('SmallHardpoint1', module(symbol));
-        engineered
-            .getFittedModule('SmallHardpoint1')!
-            .applyBlueprint(blueprint, { grade: roll.grade, quality: roll.quality });
+    for (const roll of fixture.ammunition.engineered.rolls) {
+        const slot = slotFor(roll.module);
+        const build = ShipLoadout.empty('Viper');
+        build.setModule(slot, module(roll.module));
         assert.deepEqual(
-            engineered.getFittedModule('SmallHardpoint1')!.ammunition,
-            { clipSize: roll.clipSize, hopper: roll.hopper, total: roll.total, unlimited: false },
-            `${blueprint} grade ${roll.grade}`,
+            build.getFittedModule(slot)!.ammunition,
+            { ...roll.stock, unlimited: false },
+            `${roll.module} stock`,
         );
+
+        build
+            .getFittedModule(slot)!
+            .applyBlueprint(roll.blueprint, { grade: roll.grade, quality: roll.quality });
+        const engineered = build.getFittedModule(slot)!;
+        assert.deepEqual(
+            engineered.ammunition,
+            { clipSize: roll.clipSize, hopper: roll.hopper, total: roll.total, unlimited: false },
+            `${roll.module} ${roll.blueprint} grade ${roll.grade}`,
+        );
+        if ('burstRounds' in roll) {
+            // The clip is a whole number of bursts, not merely a whole number.
+            assert.equal(engineered.effectiveStats?.burstRounds, roll.burstRounds);
+            assert.equal(roll.clipSize % roll.burstRounds, 0);
+        }
     }
 });
 

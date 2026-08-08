@@ -2015,18 +2015,28 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   it is verified against the shared `slef-the-deep-black.json` fixture, whose engineered
   armour carries exactly those values. `typescript/src/ships/module-stat-labels.ts`
   holds the per-label unit and algebra table.
-- **Ammunition capacity is `clipSize` + `ammoMaximum`, and neither is rounded.** The
-  reserve excludes the magazine, exactly as a journal's `AmmoInHopper` excludes
-  `AmmoInClip` — the Python Mk II capture reads 100/2100 on its Enhanced AX Multi-Cannon
-  against catalogue figures of the same pair, which is the only external check either stat
-  gets. Both are multiplicative under engineering, so a roll that is not a whole multiple
-  leaves a fraction (a small cannon under High Capacity at grade 3 holds 10.08), and the
-  game loads whole rounds. Nothing here rounds, because no source states which way the
-  game does; `sustainedFireFactor` in `weapons.ts` has to pick, and rounds the clip up.
-  A capture of an engineered, fully rearmed weapon would settle it —
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>. A module carrying a
+- **Ammunition capacity is `clipSize` + `ammoMaximum`.** The reserve excludes the
+  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip` — the Python Mk II
+  capture reads 100/2100 on its Enhanced AX Multi-Cannon against catalogue figures of the
+  same pair, which is the only external check either stat gets. A module carrying a
   magazine but no reserve figure (the mining Abrasion Blaster) is reported as unlimited
   rather than as empty; one carrying neither (the lasers) has no capacity to report.
+- **An engineered clip is rounded up to a whole burst; the reserve is not rounded at
+  all.** Both stats are multiplicative under engineering, so a roll that is not a whole
+  multiple leaves a fraction, and a ship cannot load a tenth of a round. EDSY rounds the
+  clip up to a multiple of the burst size — `ceil(ammoclip / bstsize) * bstsize`, with the
+  comment "when modifying clip size, round up to a multiple of burst size" — and Coriolis
+  rounds it up without the burst step (`Module.getClip`, "Clip size is always rounded up"),
+  so the two agree wherever a weapon fires one round at a time and EDSY is taken where they
+  differ, as everywhere else in this section. Neither rounds the reserve anywhere: EDSY's
+  own rearm-cost and ammo-time maths multiplies the fractional `ammomax` as it stands, so a
+  fragment cannon's High Capacity reserve of 302.4 is reported as 302.4. **Neither figure
+  is Frontier's**, and no capture here carries an engineered ammunition modifier to check
+  them against; one would settle it —
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>. The rounding is
+  applied in `computeModifiers` (`engineering.ts`), where a roll is computed, not where a
+  stat is read: a journal states the engineered clip itself, and the game's own figure is
+  passed through untouched. Pinned by `fixtures/ships/engineering.json` §clipRounding.
 
 ## Jump-range and fuel algorithm
 

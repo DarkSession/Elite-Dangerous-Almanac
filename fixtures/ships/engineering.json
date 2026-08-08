@@ -204,6 +204,44 @@
       { "symbol": "Hpt_BeamLaser_Fixed_Small", "blueprint": "MC_Overcharged" }
     ]
   },
+  "clipRounding": {
+    "description": "A magazine holds whole rounds, and a weapon that fires in bursts holds whole bursts, so a computed clip is rounded up to a multiple of the burst size. That is EDSY's rule (`ceil(ammoclip / bstsize) * bstsize`, applied where the blueprint roll is stored), and it reduces to Coriolis's plain round-up (`Module.getClip`, \"Clip size is always rounded up\") wherever a weapon fires one round at a time. It belongs where the roll is computed rather than where a stat is read, because a journal states the engineered clip itself and that figure is the game's own. The reserve is rounded by neither registry and keeps its fraction — see the 302.4 below, and https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
+    "cases": [
+      {
+        "note": "A weapon that fires one round at a time: the burst step is inert and the clip simply rounds up.",
+        "symbol": "Hpt_Cannon_Fixed_Small",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 3,
+        "quality": 1,
+        "baseAmmoClipSize": 6,
+        "unroundedAmmoClipSize": 10.08,
+        "AmmoClipSize": 11,
+        "AmmoMaximum": 201.6
+      },
+      {
+        "note": "Double Shot scales the clip and gives the weapon a two-round burst in the same roll, so 4.02 rounds to a whole burst — 6, where a bare round-up would say 5.",
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "blueprint": "Weapon_DoubleShot",
+        "grade": 1,
+        "quality": 1,
+        "baseAmmoClipSize": 3,
+        "unroundedAmmoClipSize": 4.02,
+        "BurstSize": 2,
+        "AmmoClipSize": 6
+      },
+      {
+        "note": "The same fragment cannon under High Capacity: the clip rounds up and the reserve does not.",
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 3,
+        "quality": 1,
+        "baseAmmoClipSize": 3,
+        "unroundedAmmoClipSize": 5.04,
+        "AmmoClipSize": 6,
+        "AmmoMaximum": 302.4
+      }
+    ]
+  },
   "journalSpellings": {
     "description": "Journal `EngineerModifications` spellings read off a real `StoredModules` capture (521 stored modules, contributed by the repository owner 2026-08-07 UTC; scrubbed of the commander, carrier and market it came from, which say nothing about the game). Of the 46 distinct spellings in that capture, 43 resolve against `BLUEPRINTS` and the other three are the `Decorative_*` liveries, which name no recipe at all and are pinned in \u00a7decorativeModifications. These are the cases worth pinning: an id whose key is not what the game writes, and one whose journal spelling the catalogue had missed entirely. `resolved` is what `resolveBlueprintForModule` answers \u2014 the `BLUEPRINTS` key the fitted module actually rolls, returned in the caller\u2019s own casing, since every lookup downstream matches case-insensitively.",
     "cases": [

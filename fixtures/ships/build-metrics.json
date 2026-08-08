@@ -275,13 +275,41 @@
       "Int_DroneControl_Collection_Size3_Class3"
     ],
     "engineered": {
-      "note": "A small fixed cannon under High Capacity, at full quality. Grade 5 doubles both figures exactly; grade 3 lands fractional and nothing rounds it, because no source says which way the game does — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
-      "module": "Hpt_Cannon_Fixed_Small",
-      "blueprint": "Weapon_HighCapacity",
-      "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
+      "note": "A magazine holds whole rounds and a weapon that fires in bursts holds whole bursts, so an engineered clip is rounded up to a multiple of the burst size when the roll is computed. The reserve is rounded by neither registry and is reported as it lands, fraction and all — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
       "rolls": [
-        { "grade": 5, "quality": 1, "clipSize": 12, "hopper": 240, "total": 252 },
-        { "grade": 3, "quality": 1, "clipSize": 10.08, "hopper": 201.6, "total": 211.68 }
+        {
+          "note": "A small fixed cannon under High Capacity at full quality. Grade 5 doubles both figures exactly; grade 3 takes the clip to 10.08 and loads 11.",
+          "module": "Hpt_Cannon_Fixed_Small",
+          "blueprint": "Weapon_HighCapacity",
+          "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
+          "grade": 5,
+          "quality": 1,
+          "clipSize": 12,
+          "hopper": 240,
+          "total": 252
+        },
+        {
+          "module": "Hpt_Cannon_Fixed_Small",
+          "blueprint": "Weapon_HighCapacity",
+          "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
+          "grade": 3,
+          "quality": 1,
+          "clipSize": 11,
+          "hopper": 201.6,
+          "total": 212.6
+        },
+        {
+          "note": "Double Shot gives a fragment cannon a two-round burst and scales the clip by the same roll: 3 rounds become 4.02, and a whole burst makes it 6 rather than the 5 a bare round-up would give.",
+          "module": "Hpt_Slugshot_Fixed_Medium",
+          "blueprint": "Weapon_DoubleShot",
+          "stock": { "clipSize": 3, "hopper": 180, "total": 183 },
+          "grade": 1,
+          "quality": 1,
+          "burstRounds": 2,
+          "clipSize": 6,
+          "hopper": 180,
+          "total": 186
+        }
       ]
     }
   },

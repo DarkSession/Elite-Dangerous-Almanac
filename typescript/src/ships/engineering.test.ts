@@ -599,6 +599,38 @@ test('an overwrite recipe applies to a stat the module does not carry', () => {
     assert.equal(modifiers.find((m) => m.Label === 'BurstRateOfFire')?.Value, 14);
 });
 
+test('an engineered clip is rounded up to a whole burst, and the reserve is not rounded', () => {
+    for (const pinned of fixture.clipRounding.cases) {
+        const weapon = getModuleBySymbol(pinned.symbol, ALL_MODULES)!;
+        assert.equal(weapon.clipSize, pinned.baseAmmoClipSize, pinned.symbol);
+
+        const features = getBlueprintGrade(pinned.blueprint, pinned.grade)!;
+        const modifiers = computeModifiers(baseStats(weapon), features, pinned.quality);
+        const label = `${pinned.symbol} ${pinned.blueprint} g${pinned.grade}`;
+        assert.equal(modFor(modifiers, 'AmmoClipSize'), pinned.AmmoClipSize, label);
+
+        // The recipe's own arithmetic, before anything rounds it — the figure the fixture
+        // pins as `unroundedAmmoClipSize`, so the rounding is visibly doing work.
+        const scale = features.find((f) => f.label === 'AmmoClipSize')!;
+        const roll = scale.min + (scale.max - scale.min) * pinned.quality;
+        assert.ok(near(pinned.baseAmmoClipSize * (1 + roll), pinned.unroundedAmmoClipSize), label);
+        assert.ok(pinned.AmmoClipSize > pinned.unroundedAmmoClipSize, label);
+
+        const burst = 'BurstSize' in pinned ? pinned.BurstSize : 1;
+        assert.equal(
+            pinned.AmmoClipSize,
+            Math.ceil(pinned.unroundedAmmoClipSize / burst) * burst,
+            label,
+        );
+        if ('BurstSize' in pinned) {
+            assert.equal(modFor(modifiers, 'BurstSize'), pinned.BurstSize, label);
+        }
+        if ('AmmoMaximum' in pinned) {
+            assert.equal(modFor(modifiers, 'AmmoMaximum'), pinned.AmmoMaximum, label);
+        }
+    }
+});
+
 test('the base stats a recipe scales come back in the journal spelling for the family', () => {
     // One catalogue field can answer to more than one journal label, and which label a
     // stat arrives under is a fact about the module's family, not about the stat. A

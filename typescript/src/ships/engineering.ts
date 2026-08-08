@@ -271,7 +271,39 @@ export function computeModifiers(
                 : { OriginalValue: original ?? 0 }),
         });
     }
-    return resolveFalloffFromRange(modifiers, base);
+    return roundClipToWholeBursts(resolveFalloffFromRange(modifiers, base), base);
+}
+
+/**
+ * A magazine holds whole rounds, and a weapon that fires in bursts holds whole bursts, so
+ * an engineered clip is rounded **up** to a multiple of the burst size.
+ *
+ * A recipe scales the clip by an arbitrary factor — High Capacity at grade 3 takes a small
+ * cannon's 6 rounds to 10.08 — and 10.08 rounds is not something a ship can load. Applied
+ * here, where the roll is computed, rather than where a stat is read: a journal states the
+ * engineered clip itself, and the game's own figure is passed through untouched.
+ *
+ * The burst size is the recipe's own where it sets one — Double Shot gives a weapon a
+ * two-round burst *and* scales the clip, so its 8.04 becomes 10 rather than 9.
+ *
+ * @remarks
+ * Reference: EDSY by taleden (CC BY-NC 4.0), `edsy.js` — "when modifying clip size, round
+ * up to a multiple of burst size", `ceil(ammoclip / bstsize) * bstsize`, applied when the
+ * blueprint roll is stored. Coriolis rounds the clip up too, without the burst step
+ * (`Module.getClip`, "Clip size is always rounded up"), so the two agree wherever a weapon
+ * fires one round at a time. The **reserve** is rounded by neither and is left as it lands:
+ * <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
+ */
+function roundClipToWholeBursts(
+    modifiers: EngineeringModifier[],
+    base: Readonly<Record<string, number>>,
+): EngineeringModifier[] {
+    const clip = modifiers.find((m) => m.Label === 'AmmoClipSize');
+    if (!clip || clip.Value === undefined || clip.Value <= 0) return modifiers;
+    const burst = modifiers.find((m) => m.Label === 'BurstSize')?.Value ?? base['BurstSize'] ?? 1;
+    const rounded = burst > 0 ? Math.ceil(clip.Value / burst) * burst : Math.ceil(clip.Value);
+    if (rounded === clip.Value) return modifiers;
+    return modifiers.map((m) => (m === clip ? { ...m, Value: round6(rounded) } : m));
 }
 
 /**
