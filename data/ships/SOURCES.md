@@ -1640,14 +1640,17 @@ up straight through with no disambiguation at all. Both paths are evidence that
   empty grade 1 so the key would exist would state a recipe the game does not have, and
   would make `getBlueprintCost` price a roll nobody can make. A separate catalogue costs
   a few hundred bytes and claims only what is known.
-- **Why they are in no engineering menu.** No engineer applies one. The three launchers in
-  the capture were **awarded** already transformed, so the module arrives carrying the
-  colour rather than being taken to an engineer for it — the same shape as the Guardian
-  modules whose community-goal experimental effects §Engineering options keeps out of the
-  menus. This is also what settles the reading that EDSY's Decorative entries put in
-  doubt: a remote-release launcher left with only those entries is offering nothing, so it
-  stays ungrouped, `getEngineeringGroup` still answers `null` for it, and
-  `applyBlueprint` still refuses every recipe on it.
+- **Why they are in no engineering menu.** No engineer applies one: the three launchers
+  were **awarded** already transformed, so the module arrives carrying the colour rather
+  than being taken to an engineer for it — the same shape as the Guardian modules whose
+  community-goal experimental effects §Engineering options keeps out of the menus. **That
+  acquisition route is the contributor's account, not a reading of the capture**, which
+  records the transformation and nothing about how the module was obtained; it is stated
+  here because it is what the exclusion rests on, and no journal field can corroborate it.
+  It is also what makes EDSY's Decorative entries a `noblueprints` reading rather than an
+  engineerable one: a remote-release launcher left with only those entries is offering
+  nothing, so it stays ungrouped, `getEngineeringGroup` answers `null` for it, and
+  `applyBlueprint` refuses every recipe on it.
 - **`modules` is what has been observed, not what the game permits.** The medium turreted
   Remote Release Flak Launcher (`Hpt_FlakMortar_Turret_Medium`) is the only module any
   capture shows carrying a decorative transformation, and it is the only symbol stored.

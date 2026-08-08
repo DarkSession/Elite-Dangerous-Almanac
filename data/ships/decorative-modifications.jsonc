@@ -14,8 +14,10 @@
  * Sources: the ids, and the module they sit on, are read off a `StoredModules` capture
  *          contributed by the repository owner (521 stored modules, 2026-08-07 UTC,
  *          scrubbed of the commander, carrier and market it came from), which holds three
- *          medium turreted Remote Release Flak Launchers, one per colour, each awarded
- *          already carrying its transformation. EDSY (github.com/taleden/EDSY, taleden,
+ *          medium turreted Remote Release Flak Launchers, one per colour. That they were
+ *          awarded already transformed rather than engineered is the contributor's
+ *          account, not something a `StoredModules` entry records — SOURCES.md says so
+ *          where it rests on it. EDSY (github.com/taleden/EDSY, taleden,
  *          CC BY-NC 4.0) lists the same three transformations and gives them no
  *          modifiers, which is the corroboration that they move no stat. The transformations
  *          themselves are Elite Dangerous data, property of Frontier Developments plc,

@@ -59,7 +59,14 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
  * Look up a blueprint by its Frontier `fdname`, case-insensitively.
  *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
- * @returns The blueprint (its `name` and `grades`), or `null` if unknown.
+ * @returns The blueprint (its `name` and `grades`), or `null` if this catalogue stores no
+ * blueprint under that id.
+ * @remarks
+ * **`null` is not always an unknown id.** The game writes a handful of cosmetic
+ * transformations in the same `BlueprintName` / `EngineerModifications` field, and they
+ * name no recipe — no grade, no materials, no stat moved. `isDecorativeModification` from
+ * `./decorative-modifications` is what tells one of those apart from an id this library
+ * has never heard of.
  */
 export function getBlueprint(fdname: string): Blueprint | null {
     if (Object.hasOwn(BLUEPRINTS, fdname)) return BLUEPRINTS[fdname]!;
@@ -74,8 +81,9 @@ export function getBlueprint(fdname: string): Blueprint | null {
  * Look up a blueprint's in-game display name by its Frontier `fdname`, case-insensitively.
  *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
- * @returns The display name (e.g. `"Increased range"`), or `null` if the blueprint is
- * unknown.
+ * @returns The display name (e.g. `"Increased range"`), or `null` if this catalogue
+ * stores no blueprint under that id — see {@link getBlueprint} for what that can mean
+ * besides "unknown".
  */
 export function getBlueprintName(fdname: string): string | null {
     return getBlueprint(fdname)?.name ?? null;

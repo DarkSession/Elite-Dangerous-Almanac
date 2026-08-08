@@ -16,7 +16,7 @@ import {
 import { blueprintAvailableFor } from './loadout-engineering.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getModuleBySymbol } from './modules.js';
-import { HARDPOINT_MODULES } from './modules-hardpoint.js';
+import { ALL_MODULES } from './modules-all.js';
 import { ShipLoadout } from './ship-loadout.js';
 import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 
@@ -24,8 +24,9 @@ const decorative = fixture.decorativeModifications;
 const ids = decorative.ids.map((row) => row.id);
 
 test('the three ids a real journal writes all resolve, and carry the colour they spell', () => {
-    // The gap this catalogue closes: `getBlueprint('Decorative_Green')` answering `null`
-    // read as "unknown id" for an id a commander's own storage carries.
+    // These are ids a commander's own storage carries, so resolving them is the whole
+    // job: `getBlueprint` answering `null` for one is correct and is not the same answer
+    // as "unknown id", and this catalogue is what separates the two.
     assert.deepEqual(Object.keys(DECORATIVE_MODIFICATIONS), ids);
     for (const row of decorative.ids) {
         assert.equal(getDecorativeModification(row.id)?.name, row.name);
@@ -51,13 +52,28 @@ test('a decorative modification is a livery, so no recipe and no menu anywhere h
     }
 });
 
+test('every module symbol stored is a module the catalogues carry', () => {
+    // `modules` is what `getDecorativeModificationsForModule` joins on, so a symbol that
+    // matches nothing would make it answer `[]` for a module that does carry the livery —
+    // an empty answer being a legitimate one is exactly what hides the typo.
+    for (const [id, record] of Object.entries(DECORATIVE_MODIFICATIONS)) {
+        assert.ok(record.modules.length > 0, `${id} names no module`);
+        for (const symbol of record.modules) {
+            assert.ok(getModuleBySymbol(symbol, ALL_MODULES), `${id}: ${symbol} is not a module`);
+            assert.ok(
+                getDecorativeModificationsForModule(symbol).includes(id),
+                `${symbol} does not join back to ${id}`,
+            );
+        }
+    }
+});
+
 test('the launcher observed carrying them is engineerable by nothing all the same', () => {
-    // The reading these ids put in doubt: EDSY leaves this launcher with its Decorative
-    // entries and no blueprint, which is `noblueprints` only if a Decorative entry is not
-    // a blueprint. It is not — no engineer applies one — so the launcher takes no
-    // engineering, and a livery on it does not make it engineerable.
+    // EDSY leaves this launcher with Decorative entries and no blueprint, which reads as
+    // `noblueprints` precisely because a Decorative entry is not a blueprint: no engineer
+    // applies one, so a launcher left with only those entries is offering nothing.
     const symbol = decorative.module;
-    assert.ok(getModuleBySymbol(symbol, HARDPOINT_MODULES), `${symbol} is not a module`);
+    assert.ok(getModuleBySymbol(symbol, ALL_MODULES), `${symbol} is not a module`);
     assert.equal(getEngineeringGroup(symbol), null);
     assert.deepEqual(getBlueprintsForModule(symbol), []);
     assert.deepEqual(getDecorativeModificationsForModule(symbol), ids);
@@ -76,7 +92,7 @@ test('the engineering gate refuses a decorative id, and says what it is', () => 
     }
     const build = ShipLoadout.empty('Anaconda').setModule(
         'MediumHardpoint1',
-        getModuleBySymbol(symbol, HARDPOINT_MODULES)!,
+        getModuleBySymbol(symbol, ALL_MODULES)!,
     );
     // A TypeError naming the livery, not a RangeError about a grade that never existed:
     // the id is real, and the refusal has to read that way.

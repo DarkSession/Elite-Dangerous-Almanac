@@ -912,13 +912,13 @@ export class ShipLoadout {
      * unknown, or `quality` is outside `[0, 1]`.
      * @throws {TypeError} If the fitted module has no stats to engineer; or the id names a
      * decorative modification, which is a livery rather than a recipe (see
-     * {@link DECORATIVE_MODIFICATIONS}); or the module is not offered
-     * the blueprint — by its engineering menu, by the journal spelling of an entry on that
-     * menu, by the generic spelling of a recipe that menu lists under a family's name, or by
-     * being sold already carrying it; or is not offered
-     * the experimental effect, which its menu alone decides; or the catalogue does not carry
-     * every base stat the recipe modifies. Incomplete engineering is rejected rather than
-     * stored as a partial journal modifier block.
+     * {@link DECORATIVE_MODIFICATIONS}); or the module is not offered the blueprint — by
+     * its engineering menu, by the journal spelling of an entry on that menu, by the
+     * generic spelling of a recipe that menu lists under a family's name, or by being sold
+     * already carrying it; or the module is not offered the experimental effect, which its
+     * menu alone decides; or the catalogue does not carry every base stat the recipe
+     * modifies. Incomplete engineering is rejected rather than stored as a partial journal
+     * modifier block.
      * @remarks
      * Every blueprint in `BLUEPRINTS` is accepted on at least one module. One experimental
      * effect is not: `special_feedback_cascade`, which both upstream registries have
