@@ -17,6 +17,7 @@ Referred to throughout by source name; the pin is here, once.
 | [EDSY](https://github.com/taleden/EDSY) `eddb.js`                                                        | commit `cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, internal `db 20260428` / `version 423039901` | 2026-08-02 UTC |
 | [EDSY](https://github.com/taleden/EDSY) `edsy.js`                                                        | SHA-256 `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5` — read from the branch tip, so pinned by digest                                    | 2026-08-06 UTC |
 | [EDCD/Coriolis](https://github.com/EDCD/coriolis) — the application, for its formulas                     | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                            | 2026-08-01 UTC |
+| [msarilar/EDEngineer](https://github.com/msarilar/EDEngineer) `EDEngineer/Resources/Data/blueprints.json` | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                    | 2026-08-08 UTC |
 
 Every read of `eddb.js` recorded here is of that one byte-identical snapshot; where a
 later section describes a field taken from it, that is the same file read for something
@@ -24,7 +25,8 @@ the earlier ones did not take, not a new acquisition.
 
 **Licence positions, once.** FDevIDs states none — consult the repository terms before
 redistributing the raw identifiers. coriolis-data's and Coriolis's MIT licence covers
-their *code*; their JSON values do not fall under it. EDSY is © taleden under
+their *code*; their JSON values do not fall under it, and EDEngineer's MIT licence sits
+the same way. EDSY is © taleden under
 [CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/). The stat, slot and
 price values in this directory are Elite Dangerous game data, the property of Frontier
 Developments plc, redistributed under [Frontier's media-usage
@@ -1530,19 +1532,48 @@ up straight through with no disambiguation at all. Both paths are evidence that
     guessing at coriolis. No registry writes this row down as it stands — coriolis carries
     no blueprint list for the group and EDSY does not use the key — so it is the one menu
     row assembled from one registry's coverage and the other's spelling.
-  - **26 clip-bearing modules are still offered a clip-less Overcharged** — 12 cannons, 10
-    fragment cannons and four plasma accelerators — tracked at
-    [#48](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48). These are the
-    groups coriolis *does* cover and gives the clip-less key, so they are a registry
-    disagreement rather than a silence, and following EDSY on them would overrule the
-    registry this catalogue is keyed on rather than fill a hole in it. Settling it needs a
-    capture of the outfitting panel before and after a grade-5 Overcharged roll on a cannon
-    or a fragment cannon; whether Frontier ships one recipe or two is what decides between
-    a further key split and a clip leg on `Weapon_Overcharged` itself, and no laser can
-    answer it because none carries a clip. None of the six Guardian plasma launchers is in
-    this set either: their menu lists Anti-Guardian Zone Resistance and nothing else, and
-    the Fixed Small and Fixed Medium are sold carrying `Weapon_Overcharged` rather than
-    offered it. The three laser groups do list it and are unaffected.
+  - **The clip leg stops at the multi-cannon, and a third registry is what settles it.**
+    The 26 clip-bearing modules the other groups hold — 12 cannons, 10 fragment cannons and
+    four plasma accelerators — fold no clip change. These are groups coriolis *does* cover
+    and gives the clip-less key, so EDSY's clip leg on them is a disagreement rather than a
+    hole, and it is broken by a registry that is keyed on neither side's shape. EDEngineer
+    `blueprints.json` keys a recipe on **(weapon type, blueprint, grade)** rather than on
+    an id — the shape the engineer menus themselves have. It lists Overcharged on exactly
+    the seven weapon types coriolis covers (beam, burst and pulse lasers, cannon, fragment
+    cannon, plasma accelerator, multi-cannon) and carries a `Clip Size` leg of −3% to −15%
+    on the **multi-cannon alone**.
+    - **It is not reading coriolis.** Its rows carry a `CoriolisGuid` cross-reference that
+      is a name match rather than a join — `Sturdy Mount` points at
+      `CargoRack_IncreasedCapacity` on every weapon type that offers it — and all seven of
+      its Overcharged rows, the multi-cannon's included, point at coriolis's *clip-less*
+      `Weapon_Overcharged` grade record. The clip leg on its multi-cannon row cannot have
+      come from the record it cites. Its per-type split shows up away from Overcharged too,
+      and in the other direction: Long Range carries `Shot Speed` on the cannon and the
+      plasma accelerator and on neither the multi-cannon nor the lasers, where coriolis
+      gives that leg to every weapon and EDSY's `wpn_lr` gives it to none.
+    - **It is not blind to the clip stat on the groups in question.** High Capacity carries
+      `Clip Size +100%` on the cannon and on the fragment cannon, and the fragment cannon's
+      Double Shot sets a clip outright. The absence of a clip leg on their Overcharged is a
+      statement, not a gap in coverage.
+    - **EDSY is the outlier, and not for want of a way to say otherwise.** `eddb.js`'s
+      blueprint table is willing to hold two rows under one fdname: `Sensor_LongRange` and
+      `Sensor_WideAngle` are the only fdnames among its 67 rows used twice, and they are
+      used twice deliberately (§Scanner Long Range and Wide Angle). So the single `wpn_oc`
+      is a position, not a limitation — and it is a position the other two registries
+      contradict, one of them the registry this catalogue is keyed on and the other the
+      only one shaped to express a per-weapon-type difference without inventing a key.
+      **This paragraph is the one to overrule if you disagree**: `Weapon_Overcharged`'s
+      three legs follow from it and nothing else. What would overrule it is the capture
+      that was wanted before the third registry was read — an outfitting panel before and
+      after a grade-5 Overcharged roll on a cannon or a fragment cannon; no laser can
+      answer it, because none carries a clip. The magnitudes sit with the reading without
+      being evidence for it: these clips hold 3 to 9 rounds, and 20 on the Advanced Plasma
+      Accelerator, against a multi-cannon's 90 to 180, so grade 1's −3% is under a tenth of
+      a round on a fragment cannon.
+    - **None of the six Guardian plasma launchers is in this set** — their menu lists
+      Anti-Guardian Zone Resistance and nothing else, and the Fixed Small and Fixed Medium
+      are sold carrying `Weapon_Overcharged` rather than offered it. The three laser groups
+      do list Overcharged and carry no clip, so the question never reached them.
   - **The sale rows follow the menu.** `pre-engineered.jsonc` sells both AX multi-cannons
     as the tech-broker Enhanced AX Multi-Cannon with Overcharged already applied, and its
     `blueprint` names the recipe rather than the id a journal writes, so those two rows

@@ -158,6 +158,17 @@ in the doc comment of each ported module, and in long form in the domain
   is credited to neither registry alone. coriolis-data's acquisition date and digest are in
   `data/ships/SOURCES.md` → §Engineering options, "Multi-cannon Overcharged"; EDSY's are in
   the source table at the head of that file.
+- **That Overcharged's clip penalty stops at the multi-cannon** — recorded in
+  `data/ships/SOURCES.md` rather than in a payload: the reason the 26 clip-bearing
+  cannons, fragment cannons and plasma accelerators offered `Weapon_Overcharged` fold no
+  `AmmoClipSize` leg, where [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden,
+  **CC BY-NC 4.0**) carries one for every weapon. From
+  [msarilar/EDEngineer](https://github.com/msarilar/EDEngineer)
+  `EDEngineer/Resources/Data/blueprints.json` (**MIT** for its code; the values are game
+  data), which keys a recipe on weapon type, blueprint and grade rather than on a recipe
+  id and gives the clip leg to the multi-cannon alone — the second registry behind a
+  reading [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) already carried.
+  Acquisition date and digest are in `data/ships/SOURCES.md` → §Upstream snapshots.
 - **That `special_feedback_cascade` has been withdrawn upstream** — recorded in
   `data/ships/SOURCES.md` rather than in a payload, from
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)

@@ -56,7 +56,10 @@
  * multi-cannons: coriolis-data splits Overcharged into a multi-cannon key carrying an
  * `AmmoClipSize` leg and the `Weapon_Overcharged` every other weapon takes, gives both the
  * fdname `Weapon_Overcharged`, and lists the multi-cannon one on its `mc` and `advmc`
- * groups alone. See §Multi-cannon Overcharged in SOURCES.md.
+ * groups alone. EDEngineer, whose blueprint table is keyed per weapon type rather than per
+ * recipe id, gives the clip leg to the multi-cannon alone as well; EDSY's single
+ * Overcharged carries it on every weapon, and is the reading not followed here. See
+ * §Multi-cannon Overcharged in SOURCES.md.
  *
  * `grades` maps grade "1".."5" to { features, materials }.
  * A feature is { label, method, min, max }: `label` the journal Modifier Label, `method`

@@ -50,10 +50,11 @@ import { getBlueprintsForModule } from './engineering-options.js';
  * entries go through it, against one for the scanners.
  *
  * The clip penalty is folded on a multi-cannon — anti-xeno ones included — and on nothing
- * else. Whether the cannons, fragment cannons and plasma accelerators should take one too
- * is {@link https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48 | issue #48}:
- * the two registries do not agree on those, and this catalogue follows the one it is keyed
- * on.
+ * else. The cannons, fragment cannons and plasma accelerators take no clip leg: the two
+ * registries that key a recipe per weapon type both stop the leg at the multi-cannon, and
+ * the one that keys it per recipe id carries it on every weapon. See
+ * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
+ * § "Multi-cannon Overcharged" for which registry is which and what would overturn it.
  *
  * **Nothing here lists the pairing.** Each of those three records names its own journal
  * spelling in {@link Blueprint.journalName}, because that is a fact about the recipe; this
