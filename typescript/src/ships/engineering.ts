@@ -191,7 +191,9 @@ const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;
  *
  * @param base - The module's base stat values, keyed by journal Modifier Label (only
  * the labels present here can be modified — a contribution to an absent stat is
- * skipped).
+ * skipped). Two labels are also *read* without being modified: `Range` resolves Long
+ * Range's falloff flag, and `BurstSize` rounds an engineered clip to whole bursts, so a
+ * partial `base` gets a plain round-up on a weapon that fires in bursts.
  * @param features - The blueprint grade's features (from {@link getBlueprintGrade}).
  * @param quality - The engineering quality roll, `0`–`1`. Defaults to `1` (best roll).
  * @param experimental - The experimental effect's contributions (from
@@ -275,23 +277,28 @@ export function computeModifiers(
 }
 
 /**
- * A magazine holds whole rounds, and a weapon that fires in bursts holds whole bursts, so
- * an engineered clip is rounded **up** to a multiple of the burst size.
+ * Round an engineered clip **up** to a multiple of the burst size: a recipe scales the
+ * clip by an arbitrary factor — High Capacity at grade 3 takes a small cannon's 6 rounds
+ * to 10.08 — and 10.08 rounds is not something a ship can load.
  *
- * A recipe scales the clip by an arbitrary factor — High Capacity at grade 3 takes a small
- * cannon's 6 rounds to 10.08 — and 10.08 rounds is not something a ship can load. Applied
- * here, where the roll is computed, rather than where a stat is read: a journal states the
- * engineered clip itself, and the game's own figure is passed through untouched.
+ * The burst size is the recipe's own where it sets one, and otherwise the weapon's:
+ * Double Shot gives a fragment cannon a two-round burst *and* scales the clip in the same
+ * roll, so its 3 rounds become 6 rather than the 5 a bare round-up gives, while a Concord
+ * Cannon's own three-round burst takes High Capacity's 12.24 to 15 rather than 13.
  *
- * The burst size is the recipe's own where it sets one — Double Shot gives a weapon a
- * two-round burst *and* scales the clip, so its 8.04 becomes 10 rather than 9.
+ * Only a *computed* clip is rounded, and only in the direction the roll already moved it.
+ * A stock clip is untouched — the Mk II Plasma Shock Autocannon's 18 rounds are not a
+ * whole number of its 4-round bursts, and stay 18 — and so is a clip a journal states,
+ * since that figure is the game's own.
  *
  * @remarks
  * Reference: EDSY by taleden (CC BY-NC 4.0), `edsy.js` — "when modifying clip size, round
  * up to a multiple of burst size", `ceil(ammoclip / bstsize) * bstsize`, applied when the
  * blueprint roll is stored. Coriolis rounds the clip up too, without the burst step
  * (`Module.getClip`, "Clip size is always rounded up"), so the two agree wherever a weapon
- * fires one round at a time. The **reserve** is rounded by neither and is left as it lands:
+ * fires one round at a time and EDSY is followed where they differ. The **reserve** is
+ * rounded by neither and is left as it lands, and no reading of Frontier's own behaviour
+ * backs either half:
  * <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
  */
 function roundClipToWholeBursts(
@@ -299,11 +306,11 @@ function roundClipToWholeBursts(
     base: Readonly<Record<string, number>>,
 ): EngineeringModifier[] {
     const clip = modifiers.find((m) => m.Label === 'AmmoClipSize');
-    if (!clip || clip.Value === undefined || clip.Value <= 0) return modifiers;
-    const burst = modifiers.find((m) => m.Label === 'BurstSize')?.Value ?? base['BurstSize'] ?? 1;
-    const rounded = burst > 0 ? Math.ceil(clip.Value / burst) * burst : Math.ceil(clip.Value);
+    if (!clip?.Value) return modifiers;
+    const burst = modifiers.find((m) => m.Label === 'BurstSize')?.Value || base['BurstSize'] || 1;
+    const rounded = Math.ceil(clip.Value / burst) * burst;
     if (rounded === clip.Value) return modifiers;
-    return modifiers.map((m) => (m === clip ? { ...m, Value: round6(rounded) } : m));
+    return modifiers.map((m) => (m === clip ? { ...m, Value: rounded } : m));
 }
 
 /**

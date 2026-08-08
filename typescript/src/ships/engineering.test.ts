@@ -616,14 +616,24 @@ test('an engineered clip is rounded up to a whole burst, and the reserve is not 
         assert.ok(near(pinned.baseAmmoClipSize * (1 + roll), pinned.unroundedAmmoClipSize), label);
         assert.ok(pinned.AmmoClipSize > pinned.unroundedAmmoClipSize, label);
 
-        const burst = 'BurstSize' in pinned ? pinned.BurstSize : 1;
         assert.equal(
             pinned.AmmoClipSize,
-            Math.ceil(pinned.unroundedAmmoClipSize / burst) * burst,
+            Math.ceil(pinned.unroundedAmmoClipSize / pinned.burstSize) * pinned.burstSize,
             label,
         );
-        if ('BurstSize' in pinned) {
-            assert.equal(modFor(modifiers, 'BurstSize'), pinned.BurstSize, label);
+        // Where the burst comes from: the recipe writes one (Double Shot), the weapon
+        // already fires in bursts (a Concord Cannon), or nothing does and the step is inert.
+        const fromRecipe = modFor(modifiers, 'BurstSize');
+        const fromModule = weapon.burstRounds;
+        if (pinned.burstFrom === 'recipe') assert.equal(fromRecipe, pinned.burstSize, label);
+        if (pinned.burstFrom === 'module') {
+            assert.equal(fromRecipe, undefined, label);
+            assert.equal(fromModule, pinned.burstSize, label);
+        }
+        if (pinned.burstFrom === 'none') {
+            assert.equal(fromRecipe, undefined, label);
+            assert.equal(fromModule, undefined, label);
+            assert.equal(pinned.burstSize, 1, label);
         }
         if ('AmmoMaximum' in pinned) {
             assert.equal(modFor(modifiers, 'AmmoMaximum'), pinned.AmmoMaximum, label);

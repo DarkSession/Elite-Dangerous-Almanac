@@ -237,7 +237,10 @@ export function splitDamage(damage: number, distribution?: DamageDistribution): 
  */
 export function sustainedFireFactor(weapon: WeaponStats): number {
     const rateOfFire = weapon.rateOfFire;
-    // Engineering can leave a fractional clip; the game loads whole rounds and rounds up.
+    // A stat that reaches here is already whole — an engineered clip is rounded up to a
+    // whole burst where the roll is computed (`./engineering`), and a journal states its
+    // own. This holds a hand-built fraction to whole rounds, the way Coriolis's `getClip`
+    // does, rather than letting it into the reload cycle.
     const clip = weapon.clipSize === undefined ? undefined : Math.ceil(weapon.clipSize);
     if (!rateOfFire || !clip || clip <= 0) return 1;
     const burst = weapon.burstRounds && weapon.burstRounds > 0 ? weapon.burstRounds : 1;

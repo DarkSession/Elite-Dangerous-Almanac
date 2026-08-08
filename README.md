@@ -872,6 +872,13 @@ build: they are dropped on import and never written back out. Launchers, point d
 shield cell banks and AFMUs answer the same way; a laser has nothing to count and reports
 `null`.
 
+An engineered clip is rounded up to a whole burst — a Concord Cannon's 12.24 rounds load
+as 15 — following EDSY, with Coriolis agreeing wherever a weapon fires one round at a
+time. **An engineered reserve is not rounded**, because neither registry rounds it, so a
+High-Capacity fragment cannon reports `hopper: 302.4`. Neither rule is Frontier's own and
+no capture here can check them ([#57](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57));
+round the reserve yourself if you are rendering it.
+
 **Shields scale with the hull's mass, not the build's** — fitting more modules never
 weakens them — and a generator will not engage at all around a hull heavier than its
 maximum mass. Resistances **stack with diminishing returns**: two 20% sources leave 36%,

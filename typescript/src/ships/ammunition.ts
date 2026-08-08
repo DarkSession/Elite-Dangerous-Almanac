@@ -56,7 +56,14 @@ export interface AmmunitionCapacity {
     readonly total: number;
     /**
      * Whether the reserve is unlimited — the record states a magazine but no reserve to
-     * refill it from, which in the catalogues is the mining Abrasion Blaster.
+     * refill it from, which in the catalogues is the mining Abrasion Blaster (both the
+     * fixed and the turreted record). Exactly `hopper === Infinity`.
+     *
+     * @remarks
+     * A reserve of **zero** is a different answer and reads as one: a Mk II Plasma Shock
+     * Autocannon carries no reserve behind its 18-round magazine, and Plasma Slug drives a
+     * rail gun's reserve to zero because the weapon then reloads from the ship's fuel —
+     * which is a tank this does not model, not an unlimited hopper.
      */
     readonly unlimited: boolean;
 }
@@ -66,8 +73,10 @@ export interface AmmunitionCapacity {
  *
  * @param stats - The module's stats. A catalogue record works as-is; pass a
  * post-engineering record (`FittedModule.effectiveStats`, `effectiveModule`) to get the
- * capacity a build actually flies with: fifteen blueprints move one figure or both, High
- * Capacity and the three launcher-capacity recipes among them. No experimental effect does.
+ * capacity a build actually flies with. Fifteen blueprints move one figure or both — High
+ * Capacity, the chaff, heat-sink and point-defence capacity recipes among them — and three
+ * experimental effects move the reserve: Corrosive Shell costs a fifth of it, and Plasma
+ * Slug (in both its forms) empties it, because the weapon then reloads from ship fuel.
  * @returns The {@link AmmunitionCapacity}, or `null` for a module that carries no
  * ammunition at all — the lasers, which state neither figure because they draw from the
  * weapons capacitor instead.
@@ -97,8 +106,9 @@ export function ammunitionCapacity(
     if (clipSize === undefined && ammoMaximum === undefined) return null;
     const clip = clipSize ?? 0;
     // A magazine with no reserve stated is one nothing stops refilling; a reserve with no
-    // magazine stated (an AFMU) is drawn from directly.
-    const unlimited = clipSize !== undefined && ammoMaximum === undefined;
-    const hopper = unlimited ? Number.POSITIVE_INFINITY : (ammoMaximum ?? 0);
+    // magazine stated (an AFMU) is drawn from directly. One of the two is always stated,
+    // so the reserve is a number wherever it is not unlimited.
+    const unlimited = ammoMaximum === undefined;
+    const hopper = unlimited ? Number.POSITIVE_INFINITY : ammoMaximum;
     return { clipSize: clip, hopper, total: clip + hopper, unlimited };
 }

@@ -215,19 +215,35 @@
         "quality": 1,
         "baseAmmoClipSize": 6,
         "unroundedAmmoClipSize": 10.08,
+        "burstSize": 1,
+        "burstFrom": "none",
         "AmmoClipSize": 11,
         "AmmoMaximum": 201.6
       },
       {
-        "note": "Double Shot scales the clip and gives the weapon a two-round burst in the same roll, so 4.02 rounds to a whole burst — 6, where a bare round-up would say 5.",
+        "note": "Double Shot scales the clip and gives the weapon a two-round burst in the same roll, so 4.02 rounds to a whole burst — 6, where a bare round-up would say 5. The burst is the recipe's own.",
         "symbol": "Hpt_Slugshot_Fixed_Medium",
         "blueprint": "Weapon_DoubleShot",
         "grade": 1,
         "quality": 1,
         "baseAmmoClipSize": 3,
         "unroundedAmmoClipSize": 4.02,
-        "BurstSize": 2,
+        "burstSize": 2,
+        "burstFrom": "recipe",
         "AmmoClipSize": 6
+      },
+      {
+        "note": "A Concord Cannon already fires three-round bursts and no recipe names them, so the burst comes from the weapon's own record: High Capacity's 12.24 becomes 15, where a bare round-up would say 13. This is the case that separates EDSY's rule from Coriolis's.",
+        "symbol": "Hpt_Cannon_Gimbal_Medium_Burst",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 1,
+        "quality": 1,
+        "baseAmmoClipSize": 9,
+        "unroundedAmmoClipSize": 12.24,
+        "burstSize": 3,
+        "burstFrom": "module",
+        "AmmoClipSize": 15,
+        "AmmoMaximum": 408
       },
       {
         "note": "The same fragment cannon under High Capacity: the clip rounds up and the reserve does not.",
@@ -237,6 +253,8 @@
         "quality": 1,
         "baseAmmoClipSize": 3,
         "unroundedAmmoClipSize": 5.04,
+        "burstSize": 1,
+        "burstFrom": "none",
         "AmmoClipSize": 6,
         "AmmoMaximum": 302.4
       }

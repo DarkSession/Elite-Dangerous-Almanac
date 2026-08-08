@@ -209,7 +209,7 @@
     }
   ],
   "ammunition": {
-    "note": "What a module holds when fully rearmed — a capacity, not a rearm state. `hopper` is the reserve behind the magazine and excludes it, exactly as a journal's AmmoInHopper does, so `total` is the two added. JSON cannot write infinity: an unlimited reserve is `null` here, and an implementation reports its own infinity for it. It is not only weapons — a launcher, a point defence turret, a shield cell bank and an AFMU all carry a reserve and are read the same way.",
+    "note": "What a module holds when fully rearmed — a capacity, not a rearm state. `hopper` is the reserve behind the magazine and excludes it, exactly as a journal's AmmoInHopper does, so `total` is the two added. JSON cannot write infinity: an unlimited reserve is `null` here and `unlimited` is true, and an implementation reports its own infinity for it — JavaScript's `JSON.stringify` writes that back as `null`, Python's `json.dumps` writes the non-standard token `Infinity`, so the two agree on the value and not on its serialization. A reserve of zero is a different answer and is written as zero. It is not only weapons — a launcher, a point defence turret, a shield cell bank and an AFMU all carry a reserve and are read the same way.",
     "catalogue": [
       {
         "symbol": "Hpt_MultiCannon_Fixed_Small",
@@ -261,11 +261,34 @@
         "unlimited": false
       },
       {
+        "note": "A magazine the record states no reserve for. Both Abrasion Blasters are in this position and no other module is.",
         "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
         "clipSize": 1,
         "hopper": null,
         "total": null,
         "unlimited": true
+      },
+      {
+        "symbol": "Hpt_Mining_AbrBlstr_Turret_Small",
+        "clipSize": 1,
+        "hopper": null,
+        "total": null,
+        "unlimited": true
+      },
+      {
+        "note": "A reserve of zero, which is not an unlimited one: this autocannon fires its magazine and has nothing to reload from. Its 18 rounds are also not a whole number of its 4-round bursts, and stay 18 — only an engineered clip is rounded.",
+        "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
+        "clipSize": 18,
+        "hopper": 0,
+        "total": 18,
+        "unlimited": false
+      },
+      {
+        "symbol": "Int_ShieldCellBank_Size1_Class2",
+        "clipSize": 1,
+        "hopper": 0,
+        "total": 1,
+        "unlimited": false
       }
     ],
     "noAmmunition": [
@@ -275,40 +298,88 @@
       "Int_DroneControl_Collection_Size3_Class3"
     ],
     "engineered": {
-      "note": "A magazine holds whole rounds and a weapon that fires in bursts holds whole bursts, so an engineered clip is rounded up to a multiple of the burst size when the roll is computed. The reserve is rounded by neither registry and is reported as it lands, fraction and all — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
+      "note": "Every roll here is at full quality on an empty Viper, refitted per roll. An engineered clip is rounded up to a whole burst where the roll is computed; the reserve is rounded by neither registry and is reported as it lands, fraction and all — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
       "rolls": [
         {
-          "note": "A small fixed cannon under High Capacity at full quality. Grade 5 doubles both figures exactly; grade 3 takes the clip to 10.08 and loads 11.",
+          "note": "A small fixed cannon under High Capacity. Grade 5 doubles both figures exactly.",
+          "slot": "SmallHardpoint1",
           "module": "Hpt_Cannon_Fixed_Small",
           "blueprint": "Weapon_HighCapacity",
-          "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
           "grade": 5,
-          "quality": 1,
+          "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
           "clipSize": 12,
           "hopper": 240,
           "total": 252
         },
         {
+          "note": "The same cannon at grade 3: the clip reaches 10.08 and loads 11, while the reserve keeps its fraction.",
+          "slot": "SmallHardpoint1",
           "module": "Hpt_Cannon_Fixed_Small",
           "blueprint": "Weapon_HighCapacity",
-          "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
           "grade": 3,
-          "quality": 1,
+          "stock": { "clipSize": 6, "hopper": 120, "total": 126 },
           "clipSize": 11,
           "hopper": 201.6,
           "total": 212.6
         },
         {
           "note": "Double Shot gives a fragment cannon a two-round burst and scales the clip by the same roll: 3 rounds become 4.02, and a whole burst makes it 6 rather than the 5 a bare round-up would give.",
+          "slot": "MediumHardpoint1",
           "module": "Hpt_Slugshot_Fixed_Medium",
           "blueprint": "Weapon_DoubleShot",
-          "stock": { "clipSize": 3, "hopper": 180, "total": 183 },
           "grade": 1,
-          "quality": 1,
+          "stock": { "clipSize": 3, "hopper": 180, "total": 183 },
           "burstRounds": 2,
           "clipSize": 6,
           "hopper": 180,
           "total": 186
+        },
+        {
+          "note": "A Concord Cannon fires three-round bursts of its own, with no recipe naming them: High Capacity takes its 9 rounds to 12.24, and a whole burst makes that 15 rather than the 13 a bare round-up would give.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_Cannon_Gimbal_Medium_Burst",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 1,
+          "stock": { "clipSize": 9, "hopper": 300, "total": 309 },
+          "burstRounds": 3,
+          "clipSize": 15,
+          "hopper": 408,
+          "total": 423
+        },
+        {
+          "note": "Ammo capacity on a chaff launcher: a utility module carries a reserve and is engineered like any other.",
+          "slot": "TinyHardpoint1",
+          "module": "Hpt_ChaffLauncher_Tiny",
+          "blueprint": "Misc_ChaffCapacity",
+          "grade": 1,
+          "stock": { "clipSize": 1, "hopper": 10, "total": 11 },
+          "clipSize": 1,
+          "hopper": 15,
+          "total": 16
+        },
+        {
+          "note": "Plasma Slug empties the reserve because the weapon then reloads from ship fuel — a tank this does not model, which is why the answer is a reserve of zero and not an unlimited one.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_RailGun_Fixed_Medium",
+          "blueprint": "RailGun_LongShot",
+          "grade": 5,
+          "experimental": "special_plasma_slug_cooled",
+          "stock": { "clipSize": 1, "hopper": 80, "total": 81 },
+          "clipSize": 1,
+          "hopper": 0,
+          "total": 1
+        },
+        {
+          "note": "Corrosive Shell costs a fifth of the reserve, after High Capacity has doubled it.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_MultiCannon_Fixed_Medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "experimental": "special_corrosive_shell",
+          "stock": { "clipSize": 100, "hopper": 2100, "total": 2200 },
+          "clipSize": 200,
+          "hopper": 3360,
+          "total": 3560
         }
       ]
     }

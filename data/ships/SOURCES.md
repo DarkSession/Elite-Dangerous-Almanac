@@ -2019,11 +2019,18 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip` — the Python Mk II
   capture reads 100/2100 on its Enhanced AX Multi-Cannon against catalogue figures of the
   same pair, which is the only external check either stat gets. A module carrying a
-  magazine but no reserve figure (the mining Abrasion Blaster) is reported as unlimited
-  rather than as empty; one carrying neither (the lasers) has no capacity to report.
+  magazine but no reserve figure — the two Abrasion Blasters, and nothing else — is
+  reported as unlimited; one carrying neither (the lasers) has no capacity to report. A
+  reserve of **zero** is a third answer and not an unlimited one: the Mk II Plasma Shock
+  Autocannon has nothing behind its magazine, and Plasma Slug empties a rail gun's reserve
+  because the weapon then reloads from ship fuel, which is a tank this does not model.
 - **An engineered clip is rounded up to a whole burst; the reserve is not rounded at
   all.** Both stats are multiplicative under engineering, so a roll that is not a whole
-  multiple leaves a fraction, and a ship cannot load a tenth of a round. EDSY rounds the
+  multiple leaves a fraction, and a ship cannot load a tenth of a round. Only a computed
+  clip is rounded: a stock one is left alone, which matters because the Mk II Plasma Shock
+  Autocannon's 18 rounds are **not** a whole number of its 4-round bursts, so the rule is
+  the registries' treatment of a roll rather than a claim about how magazines are built.
+  EDSY rounds the
   clip up to a multiple of the burst size — `ceil(ammoclip / bstsize) * bstsize`, with the
   comment "when modifying clip size, round up to a multiple of burst size" — and Coriolis
   rounds it up without the burst step (`Module.getClip`, "Clip size is always rounded up"),
