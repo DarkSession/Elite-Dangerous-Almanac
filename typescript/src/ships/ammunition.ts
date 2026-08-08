@@ -61,7 +61,7 @@ export interface AmmunitionCapacity {
      *
      * @remarks
      * A reserve of **zero** is a different answer and reads as one: a Mk II Plasma Shock
-     * Autocannon carries no reserve behind its 18-round magazine, and Plasma Slug drives a
+     * Accelerator carries no reserve behind its 18-round magazine, and Plasma Slug drives a
      * rail gun's reserve to zero because the weapon then reloads from the ship's fuel —
      * which is a tank this does not model, not an unlimited hopper.
      */

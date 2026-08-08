@@ -2057,21 +2057,25 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   since no engineering menu offers that weapon anything for `applyBlueprint` to accept. Pinned by `fixtures/ships/engineering.json`
   §clipRounding and, for the published article, `fixtures/ships/pre-engineered.json`
   §resolved.fragmentCannonDoubleShot.
-- **A published multiplier is snapped to the precision it is stated at, on both figures.**
-  Both registries state a recipe's multiplier to three or four decimals, so a leg meant to
-  add two thirds is written `0.667`: Drag Munitions computes 10.002 rounds on a 6-round
-  Seeker Missile Rack and 30.006 in its reserve, and the community-goal Fragment Cannon's
-  authored `2.6667` computes 8.0001 against two-round bursts. Left alone, the clip's noise
-  becomes a whole extra round once it is rounded up — a whole extra burst on a burst weapon
-  — and the reserve's is simply wrong. A figure within **half a unit of the multiplier's
-  last stated decimal, scaled by the base value**, is therefore taken as the whole number
-  it means: 0.003 rounds on a 6-round clip, against the 0.02 that Double Shot's 4.02
-  genuinely adds. Snapping is not rounding, and applies to a **stated** multiplier only —
-  a quality roll between two published legs is a real number with no whole magazine behind
-  it, so a small multi-cannon at High Capacity grade 5 and quality 0.07 holds 185.12 rounds,
-  which means 186 and rounds up. Only the clip is then rounded; a reserve that is genuinely
-  fractional keeps its fraction (201.6, 302.4), which is one more reason a capture is
-  wanted on <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
+- **A published multiplier is snapped to the precision it is stated at — on the clip
+  only, because the clip alone is rounded.** Both registries state a recipe's multiplier to
+  three or four decimals, so a leg meant to add two thirds is written `0.667`: Drag
+  Munitions computes 10.002 rounds on a 6-round Seeker Missile Rack, and the community-goal
+  Fragment Cannon's authored `1.6667` computes 8.0001 against two-round bursts. Left alone,
+  that thousandth becomes a whole extra round once the clip is rounded up — a whole extra
+  burst on a burst weapon. A clip within **half a unit in the multiplier's third decimal,
+  scaled by the base clip**, is therefore taken as the whole number it means: 0.003 rounds
+  on a 6-round clip, against the 0.02 that Double Shot's 4.02 genuinely adds, and clips are
+  small enough (100 rounds at the widest) that the band stays a fraction of a round. The
+  **reserve is neither rounded nor snapped**: nothing amplifies its noise, and the same band
+  on a 2100-round reserve would be a whole round wide and would swallow real fractions —
+  a High Capacity multi-cannon's 2822.4 is a genuine figure, not a mis-stated 2822. Snapping
+  applies to a **stated** multiplier only: a quality roll between two published legs is a
+  real number with no whole magazine behind it, so a small multi-cannon at High Capacity
+  grade 5 and quality 0.07 holds 185.12 rounds, which means 186 and rounds up. That a
+  reserve keeps a fraction its own transcription put there (30.006) is one more reason a
+  capture is wanted on
+  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
 - **`sustainedFireFactor` rounds a clip up to a whole round, not to a whole burst**
   (`weapons.ts`), matching Coriolis's own `getClip`, which is what its `getSustainedFactor`
   reads. Nothing this library computes reaches it fractional, so the two rules can only

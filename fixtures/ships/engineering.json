@@ -259,7 +259,7 @@
         "AmmoMaximum": 302.4
       },
       {
-        "note": "The registries state their multipliers to three decimals, so Drag Munitions' +66.7% computes 10.002 on a 6-round rack where the recipe means 10. A figure within that precision of a whole magazine is snapped to it before the round-up, or the transcription noise buys a whole extra round. The reserve carries the same noise and is snapped the same way — 18 × 1.667 is 30.006 and the leg means 30 — but it is never rounded up: only a magazine holds whole rounds.",
+        "note": "The registries state their multipliers to three decimals, so Drag Munitions' +66.7% computes 10.002 on a 6-round rack where the recipe means 10. A figure within that precision of a whole magazine is snapped to it before the round-up, or the transcription noise buys a whole extra round. The reserve carries the same noise and keeps it: nothing rounds a reserve, so nothing amplifies the noise there, and 30.006 is reported as it lands.",
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
         "blueprint": "SeekerMissileRack_Drag",
         "grade": 2,
@@ -269,7 +269,7 @@
         "burstSize": 1,
         "burstFrom": "none",
         "AmmoClipSize": 10,
-        "AmmoMaximum": 30
+        "AmmoMaximum": 30.006
       },
       {
         "note": "A quality roll between two published legs is a real number with no whole magazine behind it, so nothing is snapped and the round-up stands: 185.12 rounds load as 186. This is the case that separates recovering a published figure from swallowing a fraction the recipe means — the snap applies to a stated multiplier only.",

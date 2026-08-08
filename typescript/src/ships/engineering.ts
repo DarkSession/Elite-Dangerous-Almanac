@@ -272,7 +272,7 @@ export function computeModifiers(
         }
         if (overwrite) value = overwrite.value;
         // A count of rounds is where a published multiplier's own rounding shows.
-        if (AMMUNITION_LABELS.has(label) && original !== undefined) {
+        if (label === 'AmmoClipSize' && original !== undefined && !overwrite) {
             if (contributions.every((c) => c.stated)) value = snapToStatedWhole(value, original);
         }
         modifiers.push({
@@ -300,7 +300,7 @@ export function computeModifiers(
  * Cannon's own three-round burst takes High Capacity's 12.24 to 15 rather than 13.
  *
  * Only a *computed* clip is rounded, and only in the direction the roll already moved it.
- * A stock clip is untouched — the Mk II Plasma Shock Autocannon's 18 rounds are not a
+ * A stock clip is untouched — the Mk II Plasma Shock Accelerator's 18 rounds are not a
  * whole number of its 4-round bursts, and stay 18 — and so is a clip a journal states,
  * since that figure is the game's own.
  *
@@ -310,8 +310,8 @@ export function computeModifiers(
  * blueprint roll is stored. Coriolis rounds the clip up too, without the burst step
  * (`Module.getClip`, "Clip size is always rounded up"), so the two agree wherever a weapon
  * fires one round at a time and EDSY is followed where they differ. The **reserve** is
- * rounded by neither and is left as it lands, and no reading of Frontier's own behaviour
- * backs either half:
+ * rounded by neither, and is not rounded or snapped here either — it is reported exactly as
+ * its multiplier gives it. No reading of Frontier's own behaviour backs any of this:
  * <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
  */
 function roundClipToWholeBursts(
@@ -328,31 +328,33 @@ function roundClipToWholeBursts(
     return modifiers.map((m) => (m === clip ? { ...m, Value: rounded } : m));
 }
 
-/** Counts of rounds, where a published multiplier's own rounding shows. */
-const AMMUNITION_LABELS = new Set(['AmmoClipSize', 'AmmoMaximum']);
-
 /**
  * Recover the whole magazine a **published** multiplier means, where its stated precision
  * is all that stands between the two.
  *
- * The registries state a multiplier to three or four decimals, so a leg meant to add two
+ * A registry states a multiplier to three or four decimals, so a leg meant to add two
  * thirds is written `0.667`: a 6-round Seeker Missile Rack under Drag Munitions computes
- * 10.002 rounds, and the recipe means 10. Left alone, that thousandth becomes a whole extra
- * round once the clip is rounded up — a whole extra *burst* on a burst weapon — and the
- * community-goal Fragment Cannon's authored `2.6667` grows a shipped article's magazine
- * from 8 to 10.
+ * 10.002 rounds, and the recipe means 10. That thousandth matters because the clip is then
+ * rounded **up** — it would buy a whole extra round, a whole extra *burst* on a burst
+ * weapon, and it grows the community-goal Fragment Cannon's shipped magazine from 8 to 10 (its authored `1.6667`
+ * scales a 3-round clip to 8.0001).
+ *
+ * **The clip alone is snapped, because the clip alone is rounded.** Nothing rounds a
+ * reserve, so nothing amplifies the same noise there and a reserve is reported exactly as
+ * its multiplier gives it — 30.006 rounds on that rack — which is what both registries do.
  *
  * Two things keep this from eating a fraction a recipe means:
  *
- * - **The tolerance is the data's own precision**, half a unit in the third decimal of the
- *   multiplier — so it scales with the base value the multiplier is applied to, and is
- *   0.003 rounds on a 6-round clip against the 0.02 that Double Shot's 4.02 really adds.
+ * - **The tolerance is what the data's precision is worth**: half a unit in the third
+ *   decimal of the multiplier, scaled by the base clip it applies to. That is 0.003 rounds
+ *   on a 6-round clip, against the 0.02 that Double Shot's 4.02 really adds — and clips are
+ *   small enough (100 rounds at the widest) that the band stays a fraction of a round.
  * - **Only a stated multiplier is snapped.** A quality roll between two published legs is a
  *   real number with no whole magazine behind it: a small multi-cannon at High Capacity
  *   grade 5 and quality 0.07 holds 185.12 rounds, which means 186 and is left to round up.
+ *   An overwrite is skipped for the same reason — it is a figure, not a product.
  *
- * Snapping is not rounding: it recovers what the registry published. Only the clip is then
- * rounded up to a whole burst; a reserve keeps whatever its own multiplier gives.
+ * Snapping is not rounding: it recovers what the registry published.
  */
 function snapToStatedWhole(value: number, base: number): number {
     const whole = Math.round(value);
