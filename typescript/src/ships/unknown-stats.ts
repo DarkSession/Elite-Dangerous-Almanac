@@ -15,14 +15,13 @@
  *
  * ```ts
  * isStatUnknown(getModuleBySymbol('Int_DroneControl_ResourceSiphon'), 'mass');
- * // -> true  (a gap)
+ * // -> false (the current game record states 0 t)
  * isStatUnknown(getModuleBySymbol('Int_CargoRack_Size4_Class1'), 'powerDraw');
  * // -> false (it draws nothing)
  * ```
  *
- * Five records carry the field today: the four withdrawn Discovery Scanners, whose
- * `powerDraw` no registry carries, and the unsized Hatch Breaker Limpet Controller,
- * whose `mass` none carries. What would fill each is recorded in
+ * Four records carry the field today: the withdrawn Discovery Scanners, whose
+ * `powerDraw` no registry carries. What would fill them is recorded in
  * [the ships provenance notes](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @remarks
@@ -99,7 +98,7 @@ export function isStatUnknown(
  * import { INTERNAL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-internal';
  *
  * modulesWithUnknownStats(INTERNAL_MODULES).map((m) => [m.symbol, m.unknownStats]);
- * // -> the five records, four `['powerDraw']` and one `['mass']`
+ * // -> the four records, each carrying `['powerDraw']`
  * ```
  */
 export function modulesWithUnknownStats(

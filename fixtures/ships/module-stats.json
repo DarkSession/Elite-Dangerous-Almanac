@@ -1,6 +1,6 @@
 {
   "description": "Parity fixture for the stat fields merged into data/ships/modules-*.jsonc (engineering/mechanical stats, the defence stats — resistances, hull boost and reinforcement — and the weapon stats). Cross-language validation.",
-  "countsNote": "Every module in every catalogue now carries at least one stat, so these equal the catalogue sizes and no longer fail independently of the catalogue counts in modules.json — they assert that no record regresses to identity-only. The 16 rows that used to have none were the ten `*_free` starter variants, `Int_Hyperdrive_Size8_Class{1..5}` and `Int_DroneControl_ResourceSiphon`. No row is left holding only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. `Int_DroneControl_ResourceSiphon` deliberately still has no `mass` — no source states one, so absent keeps meaning unknown, and its own record says so in `unknownStats` (pinned below). The `spot` entries below are what actually pins the backfilled and corrected values.",
+  "countsNote": "Every module in every catalogue carries at least one stat, so these equal the catalogue sizes and assert that no record regresses to identity-only. No row holds only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. Zero masses are explicit, including the current game record's value for `Int_DroneControl_ResourceSiphon`; its sized siblings retain their non-zero masses. The `spot` entries below pin the backfilled and corrected values.",
   "counts": {
     "core": 521,
     "internal": 482,
@@ -47,9 +47,6 @@
       "Int_StellarBodyDiscoveryScanner_Intermediate",
       "Int_StellarBodyDiscoveryScanner_Advanced",
       "Int_StellarBodyDiscoveryScanner_Standard_free"
-    ],
-    "mass": [
-      "Int_DroneControl_ResourceSiphon"
     ]
   },
   "withoutIntegrity": {
@@ -235,9 +232,26 @@
     {
       "symbol": "Int_DroneControl_ResourceSiphon",
       "name": "Hatch Breaker Limpet Controller",
+      "mass": 0,
       "integrity": 20,
       "powerDraw": 0.4,
       "bootTime": 0
+    },
+    {
+      "symbol": "Hpt_Cannon_Gimbal_Large",
+      "name": "Cannon",
+      "damage": 37.421001,
+      "thermalLoad": 2.93
+    },
+    {
+      "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+      "name": "Beam Laser",
+      "thermalLoad": 10.62
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size7_Class5_Strong",
+      "name": "Prismatic Shield Generator",
+      "shieldBrokenRegenRate": 4.25
     },
     {
       "symbol": "Int_ShieldGenerator_Size2_Class1_free",

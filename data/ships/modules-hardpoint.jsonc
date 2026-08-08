@@ -16,12 +16,15 @@
  *          shift drives and the `*_free` starter fittings) were read from the live
  *          game's own outfitting panels and are pinned in
  *          fixtures/ships/module-stats.json.
+ *          Current game module records also supply the unrounded large gimballed
+ *          Cannon damage and thermal load and huge gimballed Beam Laser thermal load.
  *          The stat values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
  * `symbol` is the internal identifier (e.g. `Hpt_PulseLaser_Fixed_Small`); `name`
- * the display name; `class` the module size (0-8) and `rating` its grade letter
+ * the stable descriptive English name (not byte-exact localized UI text); `class`
+ * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is a `hardpoint` module, so a loader adds
  * `category: "hardpoint"` from the file it read rather than repeating it 159 times.
@@ -1959,7 +1962,7 @@
     "integrity": 64,
     "powerDraw": 0.75,
     "bootTime": 0,
-    "damage": 37.39,
+    "damage": 37.421001,
     "damageDistribution": {
       "kinetic": 1
     },
@@ -1969,7 +1972,7 @@
     "ammoMaximum": 100,
     "reloadTime": 4,
     "distributorDraw": 1.14,
-    "thermalLoad": 2.9,
+    "thermalLoad": 2.93,
     "armourPiercing": 70,
     "maximumRange": 4000,
     "falloffRange": 4000,
@@ -2315,7 +2318,7 @@
       "thermal": 1
     },
     "distributorDraw": 8.99,
-    "thermalLoad": 10.6,
+    "thermalLoad": 10.62,
     "armourPiercing": 60,
     "maximumRange": 3000,
     "falloffRange": 600,

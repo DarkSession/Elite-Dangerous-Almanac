@@ -18,6 +18,8 @@ Referred to throughout by source name; the pin is here, once.
 | [EDSY](https://github.com/taleden/EDSY) `edsy.js`                                                        | SHA-256 `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5` — read from the branch tip, so pinned by digest                                    | 2026-08-06 UTC |
 | [EDCD/Coriolis](https://github.com/EDCD/coriolis) — the application, for its formulas                     | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                            | 2026-08-01 UTC |
 | [msarilar/EDEngineer](https://github.com/msarilar/EDEngineer) `EDEngineer/Resources/Data/blueprints.json` | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                    | 2026-08-08 UTC |
+| Elite Dangerous current module records                                                                  | asset `f01b6304c69d32532e5d21ee8dfcca8bd9ba4adb`; encrypted SHA-256 `83304de18466cbd33d9b3ce91ee93a59daae9ce5bdb3f422544f316862269273`; FRES SHA-256 `2e73335028a47e29c94055aa5070f0e0045a1c8336fd7337db58a2edf24bdd69` | 2026-08-08 UTC |
+| Elite Dangerous current English localization records                                                    | asset `e00fa87d549ed5e5f46182d572f48f68d66532ff`; encrypted SHA-256 `d71cb5cb38ff0a834acc0f058c1610f4788d62614459615c70c33f607bc19208`; FRES SHA-256 `8ea458b9853899794039f7893ccd55cc11267aa32c7acfd38cecfa25541caa18` | 2026-08-08 UTC |
 
 Every read of `eddb.js` recorded here is of that one byte-identical snapshot; where a
 later section describes a field taken from it, that is the same file read for something
@@ -267,7 +269,11 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   (Dumbfire / Seeker / Swarm) are stored only on the hardpoints that carry them; `ship`
   names the hull an armour variant belongs to (armour is the one ship-specific module,
   so only the 241 armour records carry it); `entitlement` is kept only where it is a
-  real DLC/grant token.
+  real DLC/grant token. `name` is the stable descriptive English label from FDevIDs,
+  not a byte-exact localization field: readable expansions such as Frame Shift Drive and
+  Auto Field-Maintenance Unit are retained rather than shortened to the game's current
+  FSD and AFM strings. Consumers needing exact localized UI text must use a localization
+  source keyed by `symbol`.
 - **The CSV's `category` column is not stored — the file states it.** It would be the
   same string on every record of a file whose name already says it, 1197 repetitions of
   a fact the four-way split carries, and every payload byte is inlined into consumers'
@@ -303,7 +309,9 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     and also fits any optional slot large enough, exactly as the game sells it.
 - **Stats source:** coriolis-data `modules/**` for the mechanical, defence, power and
   weapon stats; EDSY `eddb.js` for mass, integrity, power draw, boot time and the
-  engineering base stats coriolis does not carry, and for the corrections listed below.
+  engineering base stats coriolis does not carry, and for the corrections listed below;
+  current game module records for the unsized Resource Siphon controller's mass and the
+  unrounded weapon and shield values listed in the corrections table.
 - **Stats derivation:** acquisition normalisation looks up each module's coriolis
   record by `symbol` (case-insensitively) and copies a fixed whitelist of fields under
   clearer names — e.g. coriolis `optmass`→`optMass`, `fuelmul`→`fuelMul`,
@@ -350,20 +358,20 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     and take EDSY's `rldtime` of 1 s.
   - **Module-breach stats** (`breachdmg`, `breachmin`, `breachmax`) are the one
     deliberate omission from the weapon block — no calculation here reads them.
-- **Massless modules state `"mass": 0` rather than omitting the field.** Upstream
-  carries **no `mass` key at all** for fuel scoops, refineries, AFM units and docking
+- **Massless modules state `"mass": 0` rather than omitting the field.** The registries
+  carry **no `mass` key at all** for fuel scoops, refineries, AFM units and docking
   computers, and Coriolis's own code reads a missing mass as zero (`Module.getMass()` →
   `this.mass || 0`). This catalogue reads an absent field as *unknown* instead, so a
   single such module would make a whole hull's mass — and with it its jump range —
-  impossible to compute. The 106 affected records (`Int_FuelScoop_*` ×40,
+  impossible to compute. The 107 affected records (`Int_FuelScoop_*` ×40,
   `Int_Repairer_*` ×40, `Int_Refinery_*` ×20, `Int_DockingComputer_{Standard,Advanced}`,
-  the three withdrawn `Int_StellarBodyDiscoveryScanner_*` tiers, `ModularCargoBayDoor`)
-  say so outright, matching upstream's own `"mass": 0` on
+  the three withdrawn `Int_StellarBodyDiscoveryScanner_*` tiers, `ModularCargoBayDoor`,
+  `Int_DroneControl_ResourceSiphon`) say so outright, matching upstream's own `"mass": 0` on
   `Int_DetailedSurfaceScanner_Tiny`. **Verified, not assumed:** summing the Deep Black's
-  module masses with these six families excluded gives exactly the 1237.3 t its journal
-  reports, so the game itself treats them as zero. `Int_DroneControl_ResourceSiphon` is
-  **not** among them — limpet controllers do have mass, so its absent `mass` is a
-  genuine gap, declared in `unknownStats` below.
+  module masses with these seven families excluded gives exactly the 1237.3 t its journal
+  reports, so the game itself treats them as zero. The Resource Siphon's current game
+  record independently states its zero; the value is not inferred from the other
+  massless families or from its sized siblings, which have non-zero masses.
 
 ### Engineering base stats — the values a recipe scales
 
@@ -460,8 +468,8 @@ the corpus-wide claim in `builds.test.ts`.
   a package can be engineered to a hull boost it never had and why a journal reports the
   leg with `OriginalValue: 0`. No value is stored on any record for it.
 - **What is still refused, and why that is right.** A stat a record declares **unknown**
-  — the Resource Siphon controller's mass, the withdrawn Discovery Scanners' power draw —
-  refuses every recipe that scales it, because nothing can be scaled from an unknown. And
+  — the withdrawn Discovery Scanners' power draw — refuses every recipe that scales it,
+  because nothing can be scaled from an unknown. And
   `GuardianModuleResistance` refuses everywhere, because it is not a number: EDSY stores
   Anti-Guardian Zone Resistance as a flag the recipe *grants*, and this record shape has
   no field for it
@@ -473,13 +481,12 @@ the corpus-wide claim in `builds.test.ts`.
 ### `unknownStats` — an absence that means *nobody publishes it*
 
 A missing stat is usually an answer: a cargo rack draws no power, a fuel tank has no
-rate of fire. On five records it is a gap instead, and the record says so in its own
+rate of fire. On four records it is a gap instead, and the record says so in its own
 `unknownStats` field, so a program can tell the two apart without a second lookup.
 
-- **Two fields, five records.** `powerDraw` on the four
-  `Int_StellarBodyDiscoveryScanner_*` records, and `mass` on
-  `Int_DroneControl_ResourceSiphon`. Both are argued at length below and neither has a
-  source. Filling one means deleting its name in the same change —
+- **One field, four records.** `powerDraw` on the four
+  `Int_StellarBodyDiscoveryScanner_*` records. The gap is argued at length below and has
+  no source. Filling one means deleting its name in the same change —
   `unknown-stats.test.ts` fails on a declared field that has a value.
 - **On the record, not in a register beside it.** A separate `unknown-stats.jsonc`
   joined back by symbol would reintroduce exactly the join this domain removed when
@@ -515,7 +522,7 @@ where a candidate correction disagreed with EDSY, EDSY won.
 
 **Coverage, stated plainly.** EDSY carries 677 of the 717 `bootTime` values, 223 of 237
 `integrity`, 104 of 115 `powerDraw`, and **contradicts none of them**. That leaves
-**110 values across 50 records** EDSY does not supply. Two things count as "does not
+**111 values across 51 records** EDSY does not supply. Two things count as "does not
 supply", and they are not the same:
 
 - **12 records have no EDSY entry at all** — nine of the ten `*_free` starter fittings
@@ -525,28 +532,29 @@ supply", and they are not the same:
   `Int_FuelTank_Size1_Class3_free`, `Int_CargoRack_Size2_Class1_free`,
   `Int_StellarBodyDiscoveryScanner_Standard_free`) and
   `Int_FighterBayMk2_Size{5,6,7}_Class1`.
-- **38 records EDSY lists but leaves the particular field blank.** Blank is the
+- **39 records EDSY lists but leaves the particular field blank.** Blank is the
   operative word: several of these entries are commented-out definitions with some
   values filled in and others left empty, and the filled ones count.
   `Int_Hyperdrive_Size8_Class{1..5}` state `boottime`, `fuelmul` and `fuelpower` — only
   mass, integrity, power draw, optimal mass and max fuel are blank.
   `Int_DetailedSurfaceScanner_Tiny` is missing boot time alone. The rest are
   `ModularCargoBayDoor`, `Int_ShieldGenerator_Size1_Class4` and the Guardian hull,
-  module and shield reinforcement families, all missing boot time.
+  module and shield reinforcement families, all missing boot time. The remaining record,
+  `Int_DroneControl_ResourceSiphon`, has integrity, power draw and boot time there but no
+  mass; its current game record gives the missing value as 0 t.
 
-`Int_DroneControl_ResourceSiphon` is **not** in that set: EDSY gives it an integrity, a
-power draw *and* a boot time. Only its mass is unaccounted for.
 `Int_ShieldGenerator_Size2_Class1_free` is not in it either; EDSY carries that record in
 full, including its resistances and the distributor draw it spells `genpwr`.
 
-Of the 110, **108 are read from the live game's own outfitting and module panels**
+Of the 111, **108 are read from the live game's own outfitting and module panels**
 (2026-08-02 UTC), the same route this file uses for the in-game blueprint and Operations
-registries. The remaining **two are derived, not read**:
+registries. One — the unsized Resource Siphon's zero mass — is read from its current game
+module record (2026-08-08 UTC). The remaining **two are derived, not read**:
 `Int_FuelTank_Size1_Class3_free`'s `fuelCapacity` and
 `Int_CargoRack_Size2_Class1_free`'s `cargoCapacity` follow from capacity being exactly
 2^size across all eight sizes of both families, with no exception.
 
-**All 110 are pinned individually** in `fixtures/ships/module-stats.json` `spot`, so a
+**All 111 are pinned individually** in `fixtures/ships/module-stats.json` `spot`, so a
 port validates against the same numbers and a silent drift fails a test — the only guard
 these values have, since they cannot be re-fetched from a public source. Each is also
 independently consistent with its own family's curve: the size-8 drives extend the
@@ -561,15 +569,12 @@ among them); they are stored rather than omitted, because an absent field means
 guards against. The four catalogues carry about 24 KB of raw JSON (+5.6%) for this,
 inlined into every consumer's bundle.
 
-**`Int_DroneControl_ResourceSiphon` keeps no `mass`, deliberately.** Setting it to `0`
-on the grounds that EDSY omits the field and reads a missing mass as zero — the way this
-catalogue treats `Int_DetailedSurfaceScanner_Tiny` and `Int_DockingComputer_Standard` —
-would be wrong here: no source states the zero, and unlike those two there is no
-uniformity to appeal to, since every sized limpet controller in the family has a real,
-non-zero mass. A written-down inference is still an inference, and `absent` has to keep
-meaning *unknown*. Its `integrity` 20 and `powerDraw` 0.4 do come from EDSY and are
-kept. The outstanding mass is recorded in
-[issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17).
+**`Int_DroneControl_ResourceSiphon` has a mass of 0 t.** The value is read directly from
+its current game module record: the record's mass field is an explicit zero, alongside
+integrity 20, power draw 0.4 MW and boot time 0 s. It is not inferred from EDSY's omitted
+field or from family uniformity; every sized limpet controller in the family retains its
+real, non-zero mass. The source record has SHA-256
+`22aa304b82ce91b6d27379fc16f8d5196f35296056a470f74eb81a83cbae288a`.
 
 **The four `Int_StellarBodyDiscoveryScanner_*` records carry no `powerDraw`** for the
 same reason: no source carries one — EDSY gives them only `mass` and `integrity`, and
@@ -589,8 +594,9 @@ E-rated generators share those resistances — but it is not what these values r
 derived from the 2^size rule above. Without all three a stock starter fit reports 0 t of
 fuel, 0 t of cargo and 0/0/0 shield resistances.
 
-**Corrections — 40 records, 43 fields.** In every case coriolis-data's value is the
-source of the error and EDSY carries the corrected figure:
+**Corrections — 43 records, 47 fields.** In every case coriolis-data's value is the
+source of the error. EDSY carries the corrected figure except for the final three
+precision rows, which are read from current game module records:
 
 | Records | Field | coriolis | Stored | Why coriolis's value is wrong |
 | --- | --- | --- | --- | --- |
@@ -614,6 +620,9 @@ source of the error and EDSY carries the corrected figure:
 | `Int_Powerplant_Size5_Class4` | `integrity` | 114 | 115 | |
 | `Int_FSDInterdictor_Size2_Class2` | `integrity` | 51 | 31 | |
 | `Int_StellarBodyDiscoveryScanner_{Standard,Intermediate,Advanced}` | `mass` | 0 | 2 | they are not massless: EDSY retains all three in its "removed, now built-in" block at `mass: 2.00`. Their `class` stays 1, per FDevIDs |
+| `Hpt_Cannon_Gimbal_Large` | `damage` / `thermalLoad` | 37.39 / 2.9 | 37.421001 / 2.93 | the current game module record retains the unrounded base floats reported by the journal |
+| `Hpt_BeamLaser_Gimbal_Huge` | `thermalLoad` | 10.6 | 10.62 | the current game module record and journal agree |
+| `Int_ShieldGenerator_Size7_Class5_Strong` | `shieldBrokenRegenRate` | 4.2 | 4.25 | the current game module record and journal agree |
 
 **Rejected — three candidate corrections cross-checking threw out.** Recorded so they
 are not "found" and applied again:
@@ -940,11 +949,11 @@ references agree on every value below, and each is pinned by a test:
 | Effect                                                   | Drawback leg                          | Benefit leg                                 |
 | -------------------------------------------------------- | ------------------------------------- | ------------------------------------------- |
 | `special_weapon_damage` (Oversized)                      | `PowerDraw +5%`                       | `Damage +3%`                                |
-| `special_weapon_rateoffire` (Multi-Servos)               | `PowerDraw +5%`                       | `BurstInterval −2.9126%`                    |
+| `special_weapon_rateoffire` (Multi-servos)               | `PowerDraw +5%`                       | `BurstInterval −2.9126%`                    |
 | `special_powerdistributor_capacity` (Cluster Capacitors) | three capacity legs, one recharge leg | `WeaponsRecharge` and `SystemsRecharge` −2% |
 | `special_powerdistributor_fast` (Super Conduits)         | three capacity legs, one recharge leg | `WeaponsRecharge` and `SystemsRecharge` +4% |
 
-Multi-Servos is stored under `BurstInterval` for the reason given above — EDSY writes it
+Multi-servos is stored under `BurstInterval` for the reason given above — EDSY writes it
 as `bstint: -2.9126…`, coriolis as `rof: -0.029126…` under its inverted convention, and
 both come to the same +3% rate of fire.
 
@@ -976,7 +985,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   (each grade `{ features, materials }`); each experimental effect is
   `{ name, modifiers, materials, description? }`.
 - **Display names:** each blueprint and experimental effect carries its `name`.
-  Effect names are EDSY `expeffect[].name` (all 87); blueprint names are coriolis
+  Effect names are the current game's English localization strings, joined to all 87
+  records by Frontier `fdname`; blueprint names are coriolis
   `blueprint.name` for the 81 blueprints coriolis carries, and the Operations dossier's
   display label for the other 28 — the 27 Operations keys and `GuardianModule_Sturdy`,
   which is journal-keyed but absent from coriolis, so its name comes from the same registry
@@ -2366,15 +2376,17 @@ under, which is why several are cited above rather than copied.
   and a full magazine of 5. See §Multi-cannon Overcharged under Engineering options for what
   that decides and what it leaves open.
 
-  **It disagrees with four catalogue base values**, which is a separate matter and is
-  tracked at
-  [#59](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/59): the game gives
-  `Hpt_Cannon_Gimbal_Large` `damage` 37.421001 and `thermalLoad` 2.93 where this catalogue
-  stores 37.39 and 2.9, `Hpt_BeamLaser_Gimbal_Huge` `thermalLoad` 10.62 where it stores
-  10.6, and `Int_ShieldGenerator_Size7_Class5_Strong` `shieldBrokenRegenRate` 4.25 where it
-  stores 4.2. The capture states 71 distinct (module, journal `Label`) base values, 64 of
-  which name a field this catalogue holds; of those, 52 agree to the digit and eight more
-  to within the game's own float noise (`20.000004` for 20, `-39.999996` for −40).
+  **Its base values cross-check the current game module records.** The exact values pinned
+  in the catalogue are `Hpt_Cannon_Gimbal_Large` `damage` 37.421001 and `thermalLoad` 2.93,
+  `Hpt_BeamLaser_Gimbal_Huge` `thermalLoad` 10.62, and
+  `Int_ShieldGenerator_Size7_Class5_Strong` `shieldBrokenRegenRate` 4.25. Their specialized
+  module blocks have SHA-256 digests
+  `850aa188729c2c2bd5bfb37c8b0acc55b1c51718f6afdee6221118062ff9aace`,
+  `edebbeb21ff4a383a098917777df6b19e86360ac9c15f68949ee47231a59e5ab`, and
+  `0ac7bf96ed365e9012b8f998f9a048ed7cd7cb01a43ebf7103f8e18d6fb14c95`, respectively.
+  The capture states 71 distinct (module, journal `Label`) base values, 64 of which name a
+  field this catalogue holds; 56 agree to the stored decimal and eight more agree within
+  the game's own float noise (`20.000004` for 20, `-39.999996` for −40).
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed

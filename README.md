@@ -621,7 +621,7 @@ because all three stats are already per second on those.
 #### When a stat is missing
 
 Sparse means a missing stat is usually an answer: a cargo rack draws no power, a fuel
-tank has no rate of fire. For five records it is a **gap** instead — the module has the
+tank has no rate of fire. For four records it is a **gap** instead — the module has the
 stat in game and no public registry publishes it — and adding those up as zero would
 quietly understate a build. **The record says which it is**, in `unknownStats`, so
 there is no second lookup:
@@ -646,16 +646,15 @@ import {
 import { INTERNAL_MODULES } from "@elite-dangerous-almanac/core/ships/modules-internal";
 
 isStatUnknown(scanner, "powerDraw"); // -> true
-modulesWithUnknownStats(INTERNAL_MODULES).length; // -> 5, the whole of it today
+modulesWithUnknownStats(INTERNAL_MODULES).length; // -> 4, the whole of it today
 ```
 
-The five are the four withdrawn Discovery Scanners (`powerDraw`) and the unsized Hatch
-Breaker Limpet Controller (`mass`). A whole build already answers safely without you
-checking: `powerBudget()` reports such a module in `unknownDraws` instead of counting
-it as free, and `unladenMass` returns `null` rather than a total missing a module's
-mass — the latter for _any_ absent mass, declared or not.
+The four are the withdrawn Discovery Scanners (`powerDraw`). A whole build already
+answers safely without you checking: `powerBudget()` reports one in `unknownDraws`
+instead of counting it as free. `unladenMass` likewise returns `null` for _any_ absent
+module mass, declared or not; every catalogue module currently has a mass value.
 [Issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17) tracks what
-would fill each. An absent `cost` is never declared — see [Prices](#prices), where absence
+would fill the scanner values. An absent `cost` is never declared — see [Prices](#prices), where absence
 already means unknown — and this is not a claim that _every_ other absence is a stat
 the game does not have.
 
