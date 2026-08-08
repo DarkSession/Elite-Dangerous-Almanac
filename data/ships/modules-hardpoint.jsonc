@@ -1959,7 +1959,7 @@
     "integrity": 64,
     "powerDraw": 0.75,
     "bootTime": 0,
-    "damage": 37.39,
+    "damage": 37.421,
     "damageDistribution": {
       "kinetic": 1
     },
@@ -1969,7 +1969,7 @@
     "ammoMaximum": 100,
     "reloadTime": 4,
     "distributorDraw": 1.14,
-    "thermalLoad": 2.9,
+    "thermalLoad": 2.93,
     "armourPiercing": 70,
     "maximumRange": 4000,
     "falloffRange": 4000,
@@ -2315,7 +2315,7 @@
       "thermal": 1
     },
     "distributorDraw": 8.99,
-    "thermalLoad": 10.6,
+    "thermalLoad": 10.62,
     "armourPiercing": 60,
     "maximumRange": 3000,
     "falloffRange": 600,

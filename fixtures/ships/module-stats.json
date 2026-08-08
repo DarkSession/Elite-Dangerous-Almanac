@@ -743,6 +743,22 @@
       "symbol": "Hpt_Mining_SeismChrgWarhd_Fixed_Medium",
       "name": "Seismic Charge Launcher",
       "reloadTime": 1
+    },
+    {
+      "symbol": "Hpt_Cannon_Gimbal_Large",
+      "name": "Cannon",
+      "damage": 37.421,
+      "thermalLoad": 2.93
+    },
+    {
+      "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+      "name": "Beam Laser",
+      "thermalLoad": 10.62
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size7_Class5_Strong",
+      "name": "Prismatic Shield Generator",
+      "shieldBrokenRegenRate": 4.25
     }
   ],
   "continuousFire": ["Hpt_BeamLaser_Fixed_Small", "Hpt_MiningLaser_Fixed_Small"],
@@ -763,5 +779,90 @@
       "interdictorFacingLimit": 20,
       "interdictorRange": 20
     }
+  },
+  "capturedBaseStats": {
+    "note": "Every base value a real capture states, joined to this catalogue through the library's own journal-label→field mapping rather than a hand-written one. `stated` counts the distinct (module, journal `Label`) pairs the capture gives an `OriginalValue` for; `mapped` is how many of them name a field the record holds, split into those that agree digit for digit and those that agree to within the game's own float noise — it writes 20.000004 for 20, 2.499998 for 2.5, -39.999996 for -40. Nothing may disagree beyond that: where a Frontier capture contradicts a base stat, the capture is right and this catalogue is wrong, which is what the four `spot` corrections above settle.",
+    "floatNoiseTolerance": 1e-05,
+    "unmappedNote": "A label the catalogue models no field for on that record: a derived product (`DamagePerSecond`, `DamageFalloffRange`), an experimental effect's per-damage-type split (`$Kinetic;` / `$Explosive;`), or a stat the record genuinely does not carry (`Jitter` on a missile rack; `Range` on a sensor suite, whose range is `scannerRange` under the journal's other spelling). Pinned so a label the mapping ought to resolve cannot start being skipped in silence.",
+    "captures": [
+      {
+        "file": "journal-corsair.json",
+        "stated": 65,
+        "mapped": 61,
+        "exact": 55,
+        "withinFloatNoise": 6,
+        "unmapped": [
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Large",
+            "label": "DamageFalloffRange"
+          },
+          {
+            "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced",
+            "label": "DamageFalloffRange"
+          }
+        ]
+      },
+      {
+        "file": "journal-federation-corvette.json",
+        "stated": 71,
+        "mapped": 64,
+        "exact": 55,
+        "withinFloatNoise": 9,
+        "unmapped": [
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_Cannon_Gimbal_Large",
+            "label": "$Explosive;"
+          },
+          {
+            "symbol": "Hpt_Cannon_Gimbal_Large",
+            "label": "$Kinetic;"
+          },
+          {
+            "symbol": "Hpt_Cannon_Gimbal_Large",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
+            "label": "Jitter"
+          },
+          {
+            "symbol": "Int_Sensors_Size8_Class2",
+            "label": "Range"
+          }
+        ]
+      },
+      {
+        "file": "journal-krait-phantom.json",
+        "stated": 39,
+        "mapped": 39,
+        "exact": 34,
+        "withinFloatNoise": 5,
+        "unmapped": []
+      },
+      {
+        "file": "slef-the-deep-black.json",
+        "stated": 35,
+        "mapped": 35,
+        "exact": 35,
+        "withinFloatNoise": 0,
+        "unmapped": []
+      }
+    ]
   }
 }

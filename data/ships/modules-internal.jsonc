@@ -4507,7 +4507,7 @@
     "minMultiplier": 1,
     "maxMultiplier": 2,
     "shieldRegenRate": 1.1,
-    "shieldBrokenRegenRate": 4.2,
+    "shieldBrokenRegenRate": 4.25,
     "kineticResistance": 0.4,
     "thermalResistance": -0.2,
     "explosiveResistance": 0.5,

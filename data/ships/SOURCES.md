@@ -589,7 +589,7 @@ E-rated generators share those resistances — but it is not what these values r
 derived from the 2^size rule above. Without all three a stock starter fit reports 0 t of
 fuel, 0 t of cargo and 0/0/0 shield resistances.
 
-**Corrections — 40 records, 43 fields.** In every case coriolis-data's value is the
+**Corrections — 43 records, 47 fields.** In every case coriolis-data's value is the
 source of the error and EDSY carries the corrected figure:
 
 | Records | Field | coriolis | Stored | Why coriolis's value is wrong |
@@ -614,6 +614,26 @@ source of the error and EDSY carries the corrected figure:
 | `Int_Powerplant_Size5_Class4` | `integrity` | 114 | 115 | |
 | `Int_FSDInterdictor_Size2_Class2` | `integrity` | 51 | 31 | |
 | `Int_StellarBodyDiscoveryScanner_{Standard,Intermediate,Advanced}` | `mass` | 0 | 2 | they are not massless: EDSY retains all three in its "removed, now built-in" block at `mass: 2.00`. Their `class` stays 1, per FDevIDs |
+| `Hpt_Cannon_Gimbal_Large` | `damage` / `thermalLoad` | 37.39 / 2.9 | 37.421 / 2.93 | Frontier states both in a `Loadout` capture, and EDSY carries the same two figures |
+| `Hpt_BeamLaser_Gimbal_Huge` | `thermalLoad` | 10.6 | 10.62 | as above |
+| `Int_ShieldGenerator_Size7_Class5_Strong` | `shieldBrokenRegenRate` | 4.2 | 4.25 | as above |
+
+**The last three are the only corrections a game reading forced, and it did not force
+them alone.** The Federation Corvette capture states 64 base values this catalogue holds a
+field for; 60 agreed already and four did not, and on all four EDSY independently carries
+the capture's figure. The reverse never happens: over the 101 base values that a capture
+and EDSY both state, there is no case where coriolis is right and EDSY wrong. Two look
+like one — `Hpt_MultiCannon_Gimbal_Medium` and `Hpt_Cannon_Gimbal_Large` `rateOfFire`,
+where the capture says 7.692308 and 0.440529 and EDSY says 7.692 and 0.441 — but that is
+EDSY publishing a rate of fire to three decimals, not a different value. `damage` is
+stored as EDSY's 37.421 rather than the capture's `37.421001`, which is the float noise
+the game writes for it, exactly as it writes `20.000004` for 20.
+
+**`fixtures/ships/module-stats.json` `capturedBaseStats` measures this**, over every
+capture the repository holds rather than the one that raised it: 199 (module, `Label`)
+pairs across four captures, all agreeing to the digit or to within that float noise. The
+join runs through the library's own label → field mapping, so a stat the mapping stops
+resolving shows up as an unmapped pair rather than as silent agreement.
 
 **Rejected — three candidate corrections cross-checking threw out.** Recorded so they
 are not "found" and applied again:
@@ -645,6 +665,23 @@ heuristic does not keep rediscovering them:
 - **`Int_DroneControl_Recon_Size5_Class1` `bootTime` really is 9.85** — the only
   non-integer boot time in all 1197 records, where its three family siblings are exactly
   10. EDSY gives `boottime:9.85`.
+
+**The two registries disagree far beyond the corrections above, and only on weapon
+performance.** Joined on `fdname` over the fields both state, coriolis-data and EDSY
+differ on 50 of 160 `damage` figures, 52 of 161 `thermalLoad`, 14 of 146 `rateOfFire`
+beyond the three decimals EDSY publishes it to, and a handful each of `distributorDraw`,
+`burstInterval`, `maximumRange`, `shieldBrokenRegenRate` and `ammoMaximum` — while
+`powerDraw` (813), `integrity` (856), `bootTime` (780), `optMass` (55), `armourPiercing`
+(154) and `shieldRegenRate` (55) agree on every record both carry. Most of the weapon
+differences are sub-1% and look like one source holding a rounded figure; a minority are
+structural and are the two sources modelling a stat differently — every Guardian shard and
+gauss cannon differs by ~45%, every Plasma Shock Cannon's rate of fire is 7.751938 here
+and 10.0 there, and the railguns differ by 50–65% on whether charge time is inside the
+figure. **This is why the four corrections above are made one at a time against a game
+reading and not by adopting EDSY's weapon table**: a wholesale switch would take the
+structural cases with it, and no source here says which convention the game uses. Tracked
+at <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/62>, which closes when
+each field has a stated leading registry or enough captures to settle it.
 
 ### Prices — `cost` on modules, `hullCost` / `retailCost` on hulls
 
@@ -2366,15 +2403,16 @@ under, which is why several are cited above rather than copied.
   and a full magazine of 5. See §Multi-cannon Overcharged under Engineering options for what
   that decides and what it leaves open.
 
-  **It disagrees with four catalogue base values**, which is a separate matter and is
-  tracked at
-  [#59](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/59): the game gives
-  `Hpt_Cannon_Gimbal_Large` `damage` 37.421001 and `thermalLoad` 2.93 where this catalogue
-  stores 37.39 and 2.9, `Hpt_BeamLaser_Gimbal_Huge` `thermalLoad` 10.62 where it stores
-  10.6, and `Int_ShieldGenerator_Size7_Class5_Strong` `shieldBrokenRegenRate` 4.25 where it
-  stores 4.2. The capture states 71 distinct (module, journal `Label`) base values, 64 of
-  which name a field this catalogue holds; of those, 52 agree to the digit and eight more
-  to within the game's own float noise (`20.000004` for 20, `-39.999996` for −40).
+  **It is also the source of four base values**, which is a separate matter from the
+  recipe: it states 71 distinct (module, journal `Label`) base values, 64 of which name a
+  field this catalogue holds, and on four of those Frontier's figure is not coriolis-data's
+  — `Hpt_Cannon_Gimbal_Large` `damage` 37.421 and `thermalLoad` 2.93,
+  `Hpt_BeamLaser_Gimbal_Huge` `thermalLoad` 10.62, and
+  `Int_ShieldGenerator_Size7_Class5_Strong` `shieldBrokenRegenRate` 4.25. All four are
+  taken from the game and corroborated by EDSY; see §Corrections under Module stats for
+  what that decides and what it deliberately leaves alone. The other 60 agree, 52 to the
+  digit and eight to within the game's own float noise (`20.000004` for 20,
+  `-39.999996` for −40).
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed
