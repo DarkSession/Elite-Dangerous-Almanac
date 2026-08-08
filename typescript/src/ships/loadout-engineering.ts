@@ -159,13 +159,17 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
  * on a menu carrying one of the three colliding ids were recorded under the journal
  * spelling, the gate would accept it here while `applyBlueprint` folded the resolved
- * recipe. Two menus have such variants — the scanners', whose only pre-engineered rows are
- * the two Kill Warrant Scanners' `Sensor_FastScan` (its own journal id, and offered
- * anyway), and the anti-xeno multi-cannons', sold as the Enhanced AX Multi-Cannon with
- * Overcharged applied. Neither is recorded that way: `pre-engineered.jsonc` names the
- * recipe each module's own menu lists, which `pre-engineered.test.ts` asserts over the
- * whole catalogue. So the question does not arise; it is written down because the gate
- * itself cannot catch it if it ever does.
+ * recipe. Three of the five such menus have variants: the Kill Warrant Scanners'
+ * `Sensor_FastScan` (its own journal id, and offered anyway), the anti-xeno multi-cannons'
+ * Enhanced AX Multi-Cannon, and the ordinary multi-cannons' two Rapid Fire rows — the last
+ * being where the hazard would most likely arrive, since `Weapon_Overcharged` on a
+ * multi-cannon is the collision consumers actually meet. None is recorded that way:
+ * `pre-engineered.jsonc` names the recipe the module rolls, never a spelling that would
+ * resolve to a different one, and `pre-engineered.test.ts` asserts exactly that over the
+ * whole catalogue — each row's `blueprint`, resolved on its own module, comes back
+ * unchanged. That is a narrower claim than menu membership, which 29 rows do not have and
+ * are not meant to: this leg exists for them. So the question does not arise; it is
+ * written down because the gate itself cannot catch it if it ever does.
  *
  * The third is the generic spelling. Where a modification applies to several module families
  * Frontier writes a family-specific `BlueprintName` and the menu lists that one, but a
