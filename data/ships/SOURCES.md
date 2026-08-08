@@ -1555,8 +1555,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
       keys a recipe on **(weapon type, blueprint, grade)** rather than on a recipe id — the
       shape the engineer menus themselves have — lists Overcharged on exactly the seven
       weapon types coriolis covers, and carries its `Clip Size` leg of −3% to −15% on the
-      multi-cannon alone. Its `CoriolisGuid` field is an exact join into coriolis's
-      per-grade `uuid`, and coriolis gives its two Overcharged records ten distinct uuids
+      multi-cannon alone. Its `CoriolisGuid` field is a uuid join into coriolis's per-grade
+      `uuid` — exact where it resolves, and it does not resolve everywhere — and coriolis
+      gives its two Overcharged records ten distinct uuids
       sharing none — yet **all 35** of EDEngineer's Overcharged rows, across all seven
       types and every grade, carry the five belonging to the *clip-less*
       `Weapon_Overcharged`. So the clip leg on its multi-cannon rows cannot have come from
