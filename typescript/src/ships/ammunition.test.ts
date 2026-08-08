@@ -6,6 +6,9 @@ import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { ShipLoadout } from './ship-loadout.js';
 import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
+import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
+import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
+import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
 
 const module = (symbol: string) => {
     const record = getModuleBySymbol(symbol, ALL_MODULES);
@@ -46,8 +49,10 @@ test('the reserve excludes the magazine, as the journal’s own hopper does', ()
     // The Enhanced AX Multi-Cannon the Python Mk II capture flies: 100 loaded, 2100 behind
     // it. The journal reports those two separately and so does this, so the total is the
     // sum rather than either figure on its own.
-    const capacity = ammunitionCapacity(module('Hpt_ATMultiCannon_Fixed_Large_V2'))!;
-    assert.equal(capacity.clipSize + capacity.hopper, capacity.total);
+    const record = module('Hpt_ATMultiCannon_Fixed_Large_V2');
+    const capacity = ammunitionCapacity(record)!;
+    assert.equal(capacity.clipSize, record.clipSize);
+    assert.equal(capacity.hopper, record.ammoMaximum);
     assert.equal(capacity.total, 2200);
 });
 
@@ -75,10 +80,13 @@ test('a magazine with no reserve stated is unlimited, and one with an empty rese
 });
 
 test('a reserve with no magazine stated is drawn from directly', () => {
-    // An AFMU carries repair units and no clip to load them into.
-    const capacity = ammunitionCapacity(module('Int_Repairer_Size3_Class1'))!;
+    // An AFMU carries repair units and no clip to load them into, so its whole capacity is
+    // the reserve — not an unlimited one, and not a magazine of unknown size.
+    const record = module('Int_Repairer_Size3_Class1');
+    assert.equal(record.clipSize, undefined);
+    const capacity = ammunitionCapacity(record)!;
     assert.equal(capacity.clipSize, 0);
-    assert.equal(capacity.total, capacity.hopper);
+    assert.equal(capacity.total, record.ammoMaximum);
     assert.equal(capacity.unlimited, false);
 });
 
@@ -156,10 +164,6 @@ test('a build reports the capacity of every weapon it carries', () => {
     // A beam laser draws from the capacitor, so it has nothing to count.
     assert.equal(byslot.get('SmallHardpoint2'), null);
 
-    // Capacity is a per-weapon answer: adding it left the totals as they were, and a
-    // capacity is nothing to add up across weapons anyway.
-    assert.equal('ammunition' in guns.total, false);
-
     // A weapon switched off is still a weapon that holds rounds: it keeps its capacity in
     // the report, and only the per-second totals leave it out.
     build.getFittedModule('SmallHardpoint1')!.setEnabled(false);
@@ -170,6 +174,51 @@ test('a build reports the capacity of every weapon it carries', () => {
     const laser = off.weapons.find((weapon) => weapon.slot === 'SmallHardpoint2')!;
     assert.equal(off.total.damagePerSecond, laser.metrics.damagePerSecond);
     assert.ok(off.total.damagePerSecond < guns.total.damagePerSecond);
+});
+
+test('every ammo count a journal reports fits inside the capacity for that module', () => {
+    // A rearm state is a lower bound on a capacity, never a reading of one. Eight of the
+    // nine counts across the three captures happen to sit at capacity — that is what makes
+    // them a check on the catalogue — and the ninth is a launcher that has fired once.
+    const pinned = fixture.ammunition.journalReadings;
+    const below: Record<string, unknown>[] = [];
+    let readings = 0;
+    let atCapacity = 0;
+    const modules = new Set<string>();
+
+    for (const [capture, event] of [
+        ['journal-krait-phantom.json', kraitJournal],
+        ['journal-viper-mkiv.json', viperJournal],
+        ['journal-python-mkii-antixeno.json', pythonJournal],
+    ] as const) {
+        for (const fitted of event.Modules) {
+            const clip = fitted.AmmoInClip ?? 0;
+            const hopper = fitted.AmmoInHopper ?? 0;
+            if (!clip && !hopper) continue;
+            readings++;
+            modules.add(fitted.Item);
+
+            const capacity = ammunitionCapacity(module(fitted.Item))!;
+            assert.ok(clip <= capacity.clipSize, `${capture} ${fitted.Item} clip`);
+            assert.ok(hopper <= capacity.hopper, `${capture} ${fitted.Item} hopper`);
+            if (clip === capacity.clipSize && hopper === capacity.hopper) atCapacity++;
+            else {
+                below.push({
+                    capture,
+                    symbol: fitted.Item,
+                    AmmoInClip: clip,
+                    AmmoInHopper: hopper,
+                    clipSize: capacity.clipSize,
+                    ammoMaximum: capacity.hopper,
+                });
+            }
+        }
+    }
+
+    assert.equal(readings, pinned.readings);
+    assert.equal(modules.size, pinned.distinctModules);
+    assert.equal(atCapacity, pinned.atCapacity);
+    assert.deepEqual(below, pinned.belowCapacity);
 });
 
 test('a module the catalogues do not know reports no capacity', () => {

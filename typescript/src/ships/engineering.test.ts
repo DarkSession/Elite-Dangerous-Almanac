@@ -625,9 +625,11 @@ test('an engineered clip is rounded up to a whole burst, and the reserve is not 
             // registries' own three-decimal precision can account for.
             const bursts = pinned.AmmoClipSize / pinned.burstSize;
             assert.equal(bursts, Math.round(bursts), `${label}: not a whole number of bursts`);
+            // Never below the roll, bar what the multiplier's own third decimal is worth
+            // on this weapon's clip — the only fraction a published figure may be out by.
             assert.ok(
                 pinned.AmmoClipSize >=
-                    pinned.unroundedAmmoClipSize - pinned.unroundedAmmoClipSize / 1e3,
+                    pinned.unroundedAmmoClipSize - pinned.baseAmmoClipSize * 5e-4,
                 `${label}: rounded below the roll`,
             );
             assert.ok(

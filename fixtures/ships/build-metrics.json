@@ -297,6 +297,22 @@
       "Hpt_MiningLaser_Fixed_Small",
       "Int_DroneControl_Collection_Size3_Class3"
     ],
+    "journalReadings": {
+      "note": "Every non-zero AmmoInClip / AmmoInHopper across the three journal captures — the only external readings of `clipSize` and `ammoMaximum` this repository holds. Eight of the nine sit exactly at capacity, on seven distinct modules across all three captures. The ninth is the Viper's heat-sink launcher, reporting 2 in reserve against a capacity of 3: what a launcher that has fired one heat sink looks like. That is the whole reason a journal's ammunition is a rearm state and not a capacity — a reading is a lower bound on what the module holds, and only a bound, so no reading may be read back as a catalogue figure.",
+      "readings": 9,
+      "distinctModules": 7,
+      "atCapacity": 8,
+      "belowCapacity": [
+        {
+          "capture": "journal-viper-mkiv.json",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "AmmoInClip": 1,
+          "AmmoInHopper": 2,
+          "clipSize": 1,
+          "ammoMaximum": 3
+        }
+      ]
+    },
     "engineered": {
       "note": "Every roll here is at full quality on an empty Viper, refitted per roll. An engineered clip is rounded up to a whole burst where the roll is computed; the reserve is rounded by neither registry and is reported as it lands, fraction and all — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
       "rolls": [

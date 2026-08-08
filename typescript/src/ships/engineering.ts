@@ -214,14 +214,23 @@ export function computeModifiers(
     const roll = quality;
     // Gather every contribution per label, keeping each one's own method so a
     // blueprint and an experimental targeting the same label can apply differently.
-    const byLabel = new Map<string, { method: ModifierMethod; value: number }[]>();
-    const add = (label: string, method: ModifierMethod, value: number) => {
+    const byLabel = new Map<string, { method: ModifierMethod; value: number; stated: boolean }[]>();
+    const add = (label: string, method: ModifierMethod, value: number, stated: boolean) => {
         const list = byLabel.get(label) ?? [];
-        list.push({ method, value });
+        list.push({ method, value, stated });
         byLabel.set(label, list);
     };
-    for (const f of features) add(f.label, f.method, f.min + (f.max - f.min) * roll);
-    for (const e of experimental ?? []) add(e.label, e.method, e.value);
+    // `stated` marks a contribution the registry publishes as a number, rather than one
+    // interpolated between two of them — see `snapToStatedWhole`.
+    for (const f of features) {
+        add(
+            f.label,
+            f.method,
+            f.min + (f.max - f.min) * roll,
+            f.min === f.max || roll === 0 || roll === 1,
+        );
+    }
+    for (const e of experimental ?? []) add(e.label, e.method, e.value, true);
 
     const modifiers: EngineeringModifier[] = [];
     for (const [label, contributions] of byLabel) {
@@ -262,6 +271,10 @@ export function computeModifiers(
             value = (factor - 1) * multiplierBase;
         }
         if (overwrite) value = overwrite.value;
+        // A count of rounds is where a published multiplier's own rounding shows.
+        if (AMMUNITION_LABELS.has(label) && original !== undefined) {
+            if (contributions.every((c) => c.stated)) value = snapToStatedWhole(value, original);
+        }
         modifiers.push({
             Label: label,
             Value: round6(value),
@@ -310,26 +323,40 @@ function roundClipToWholeBursts(
     // it was — High Capacity's grade-1 minimum roll is +0% — is not a reason to move it.
     if (!clip?.Value || clip.Value === clip.OriginalValue) return modifiers;
     const burst = modifiers.find((m) => m.Label === 'BurstSize')?.Value || base['BurstSize'] || 1;
-    const rounded = Math.ceil(snapToWhole(clip.Value / burst)) * burst;
+    const rounded = Math.ceil(clip.Value / burst) * burst;
     if (rounded === clip.Value) return modifiers;
     return modifiers.map((m) => (m === clip ? { ...m, Value: rounded } : m));
 }
 
+/** Counts of rounds, where a published multiplier's own rounding shows. */
+const AMMUNITION_LABELS = new Set(['AmmoClipSize', 'AmmoMaximum']);
+
 /**
- * The registries state a recipe's multiplier to three decimals, so a roll meant to land on
- * a whole magazine lands a thousandth off one: a 6-round Seeker Missile Rack at the Drag
- * Munitions grade-2 leg of `+66.7%` computes 10.002, and the recipe means 10. Rounding
- * *up* would turn that transcription noise into a whole extra round — and, on a burst
- * weapon, a whole extra burst — so a figure within the data's own precision of a whole
- * number is treated as that number.
+ * Recover the whole magazine a **published** multiplier means, where its stated precision
+ * is all that stands between the two.
  *
- * The tolerance is a thousandth, which is what three stated decimals are worth, and sits
- * well clear of the smallest genuine fraction any recipe produces (Double Shot's 4.02
- * rounds is a fiftieth over 4, and must round up).
+ * The registries state a multiplier to three or four decimals, so a leg meant to add two
+ * thirds is written `0.667`: a 6-round Seeker Missile Rack under Drag Munitions computes
+ * 10.002 rounds, and the recipe means 10. Left alone, that thousandth becomes a whole extra
+ * round once the clip is rounded up — a whole extra *burst* on a burst weapon — and the
+ * community-goal Fragment Cannon's authored `2.6667` grows a shipped article's magazine
+ * from 8 to 10.
+ *
+ * Two things keep this from eating a fraction a recipe means:
+ *
+ * - **The tolerance is the data's own precision**, half a unit in the third decimal of the
+ *   multiplier — so it scales with the base value the multiplier is applied to, and is
+ *   0.003 rounds on a 6-round clip against the 0.02 that Double Shot's 4.02 really adds.
+ * - **Only a stated multiplier is snapped.** A quality roll between two published legs is a
+ *   real number with no whole magazine behind it: a small multi-cannon at High Capacity
+ *   grade 5 and quality 0.07 holds 185.12 rounds, which means 186 and is left to round up.
+ *
+ * Snapping is not rounding: it recovers what the registry published. Only the clip is then
+ * rounded up to a whole burst; a reserve keeps whatever its own multiplier gives.
  */
-function snapToWhole(value: number): number {
+function snapToStatedWhole(value: number, base: number): number {
     const whole = Math.round(value);
-    return Math.abs(value - whole) <= Math.max(1e-6, Math.abs(value) * 1e-3) ? whole : value;
+    return Math.abs(value - whole) <= Math.abs(base) * 5e-4 ? whole : value;
 }
 
 /**
