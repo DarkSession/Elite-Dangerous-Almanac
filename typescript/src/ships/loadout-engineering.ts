@@ -157,12 +157,15 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * recipe, still accepts one it is sold already carrying. It is asked about the id as written
  * *and* about the resolved one, so resolution cannot **hide** a sale recorded under the
  * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
- * on one of the three scanner menus were ever recorded under a journal spelling, the gate
- * would accept it here while `applyBlueprint` folded the resolved recipe. Nothing is
- * recorded that way today — the only pre-engineered variants on those menus are the two
- * Kill Warrant Scanners' `Sensor_FastScan`, which is its own journal id and which the menu
- * offers anyway — so the question does not arise; it is written down because no test can
- * catch it if it ever does.
+ * on a menu carrying one of the three colliding ids were recorded under the journal
+ * spelling, the gate would accept it here while `applyBlueprint` folded the resolved
+ * recipe. Two menus have such variants — the scanners', whose only pre-engineered rows are
+ * the two Kill Warrant Scanners' `Sensor_FastScan` (its own journal id, and offered
+ * anyway), and the anti-xeno multi-cannons', sold as the Enhanced AX Multi-Cannon with
+ * Overcharged applied. Neither is recorded that way: `pre-engineered.jsonc` names the
+ * recipe each module's own menu lists, which `pre-engineered.test.ts` asserts over the
+ * whole catalogue. So the question does not arise; it is written down because the gate
+ * itself cannot catch it if it ever does.
  *
  * The third is the generic spelling. Where a modification applies to several module families
  * Frontier writes a family-specific `BlueprintName` and the menu lists that one, but a

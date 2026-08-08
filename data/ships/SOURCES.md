@@ -1551,9 +1551,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `blueprint` names the recipe rather than the id a journal writes, so those two rows
     name `MC_Overcharged` as well. Nothing about the sale changes: a reward variant's stats
     are its own stored block, never the recipe folded. What it keeps true is that no
-    pre-engineered row is recorded under a journal spelling its module's menu does not
-    list — the case `blueprintAvailableFor` documents as reachable and untested, which
-    holds only while the two catalogues name one recipe the same way.
+    pre-engineered row names a spelling that resolves, on its own module, to a different
+    recipe — the case `blueprintAvailableFor` describes, where the sale route accepts an id
+    the fold then reads as something else. `pre-engineered.test.ts` now asserts it over all
+    73 rows rather than leaving it to the two that meet it, and both AX rows are pinned in
+    `fixtures/ships/pre-engineered.json`. The two Guardian plasma launchers sold under
+    `Weapon_Overcharged` are not exceptions: that id is their own recipe, and their menu
+    offers no Overcharged for it to resolve into.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14
     multi-cannons and on both AX multi-cannons; `applyBlueprint` accepts either spelling,
     resolving the journal one against the menu, and folds the clip reduction. Pinned in

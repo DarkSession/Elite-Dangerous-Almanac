@@ -131,8 +131,9 @@ in the doc comment of each ported module, and in long form in the domain
   [EDSY](https://github.com/taleden/EDSY)'s authority instead (`eddb.js`, taleden,
   **CC BY-NC 4.0**), whose single Overcharged carries the clip penalty on every group
   offering it — coriolis-data describes no anti-xeno group, so that row is credited to
-  neither registry alone. Acquisition dates and digests in
-  `data/ships/SOURCES.md` → §Engineering options, "Multi-cannon Overcharged".
+  neither registry alone. coriolis-data's acquisition date and digest are in
+  `data/ships/SOURCES.md` → §Engineering options, "Multi-cannon Overcharged"; EDSY's are in
+  the source table at the head of that file.
 - **That `special_feedback_cascade` has been withdrawn upstream** — recorded in
   `data/ships/SOURCES.md` rather than in a payload, from
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
