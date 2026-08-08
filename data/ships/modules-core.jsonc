@@ -11,17 +11,18 @@
  *          https://github.com/EDCD/coriolis-data
  *          EDSY eddb.js (taleden, CC BY-NC 4.0): https://github.com/taleden/EDSY
  *          — mass, integrity, powerDraw and bootTime where coriolis-data carries
- *          none, and the corrections where its value is a duplicated or mis-copied
- *          row. The few records no third-party registry lists (the size-8 frame
- *          shift drives and the `*_free` starter fittings) were read from the live
- *          game's own outfitting panels and are pinned in
- *          fixtures/ships/module-stats.json.
+ *          none, and corrections where its value is a duplicated or mis-copied row.
+ *          In-game verification covers all identities and the numeric values on all
+ *          956 non-armour modules; exact corrections are pinned in
+ *          fixtures/ships/module-stats.json. The 241 ship-armour modules retain their
+ *          separately sourced numeric values.
  *          The stat values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
  * `symbol` is the internal identifier (e.g. `Hpt_PulseLaser_Fixed_Small`); `name`
- * the display name; `class` the module size (0-8) and `rating` its grade letter
+ * the stable descriptive English name (not byte-exact localized UI text); `class`
+ * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is a `core` module, so a loader adds
  * `category: "core"` from the file it read rather than repeating it 521 times.
@@ -2289,8 +2290,8 @@
     "powerDraw": 3.69,
     "bootTime": 0,
     "optMass": 315,
-    "minMass": 157.5,
-    "maxMass": 472.5,
+    "minMass": 158,
+    "maxMass": 473,
     "optMultiplier": 1,
     "minMultiplier": 0.86,
     "maxMultiplier": 1.06,
@@ -2327,8 +2328,8 @@
     "powerDraw": 4.51,
     "bootTime": 0,
     "optMass": 385,
-    "minMass": 192.5,
-    "maxMass": 577.5,
+    "minMass": 193,
+    "maxMass": 578,
     "optMultiplier": 1,
     "minMultiplier": 0.93,
     "maxMultiplier": 1.13,
@@ -2965,7 +2966,7 @@
     "integrity": 120,
     "powerDraw": 0.38,
     "bootTime": 10,
-    "optMass": 437.5,
+    "optMass": 438,
     "maxFuel": 2.5,
     "fuelMul": 0.01,
     "fuelPower": 2.3,
@@ -6022,9 +6023,9 @@
     "optMass": 90,
     "minMass": 70,
     "maxMass": 200,
-    "optMultiplier": 1.15,
+    "optMultiplier": 1.1,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.367,
+    "maxMultiplier": 1.2,
     "engineHeatRate": 1.3,
     "cost": 5103950
   },
@@ -6041,9 +6042,9 @@
     "optMass": 60,
     "minMass": 50,
     "maxMass": 120,
-    "optMultiplier": 1.15,
+    "optMultiplier": 1.1,
     "minMultiplier": 0.9,
-    "maxMultiplier": 1.367,
+    "maxMultiplier": 1.2,
     "engineHeatRate": 2,
     "cost": 1610080
   },
@@ -7891,9 +7892,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
-    "restrictedToShips": [
-      "Explorer_NX"
-    ],
+    "restrictedToShips": ["Explorer_NX"],
     "engineHeatRate": 1.3,
     "cost": 68368390
   },
@@ -7993,9 +7992,7 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
-    "restrictedToShips": [
-      "SmallCombat01_NX"
-    ],
+    "restrictedToShips": ["SmallCombat01_NX"],
     "engineHeatRate": 1.3,
     "cost": 6637629
   },

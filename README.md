@@ -611,6 +611,15 @@ const mc = getModuleBySymbol("Hpt_MultiCannon_Fixed_Small", HARDPOINT_MODULES)!;
 mc.damage; // -> 1.12   per round
 mc.rateOfFire; // -> 7.69   shots per second, bursts and charge time folded in
 mc.damageDistribution; // -> { kinetic: 1 }
+
+// Multi-channel weapons retain the exact amounts observed in-game; anti-xeno overlays rather
+// than inflates conventional damage.
+const ax = getModuleBySymbol(
+  "Hpt_ATDumbfireMissile_Fixed_Medium",
+  HARDPOINT_MODULES,
+)!;
+ax.damage; // -> 27
+ax.damageComponents; // -> { explosive: 27, antiXeno: 43 }
 ```
 
 A weapon's `damage` is per **round** and its `distributorDraw` and `thermalLoad` per
@@ -618,10 +627,13 @@ A weapon's `damage` is per **round** and its `distributorDraw` and `thermalLoad`
 fragment cannon. The continuous-fire beam and mining lasers carry no `rateOfFire`,
 because all three stats are already per second on those.
 
+For projectile-limited missile and mining tools, `projectileRange` preserves the
+boundary parameters observed in-game without presenting them as effective metre ranges.
+
 #### When a stat is missing
 
 Sparse means a missing stat is usually an answer: a cargo rack draws no power, a fuel
-tank has no rate of fire. For five records it is a **gap** instead — the module has the
+tank has no rate of fire. For four records it is a **gap** instead — the module has the
 stat in game and no public registry publishes it — and adding those up as zero would
 quietly understate a build. **The record says which it is**, in `unknownStats`, so
 there is no second lookup:
@@ -646,16 +658,15 @@ import {
 import { INTERNAL_MODULES } from "@elite-dangerous-almanac/core/ships/modules-internal";
 
 isStatUnknown(scanner, "powerDraw"); // -> true
-modulesWithUnknownStats(INTERNAL_MODULES).length; // -> 5, the whole of it today
+modulesWithUnknownStats(INTERNAL_MODULES).length; // -> 4, the whole of it today
 ```
 
-The five are the four withdrawn Discovery Scanners (`powerDraw`) and the unsized Hatch
-Breaker Limpet Controller (`mass`). A whole build already answers safely without you
-checking: `powerBudget()` reports such a module in `unknownDraws` instead of counting
-it as free, and `unladenMass` returns `null` rather than a total missing a module's
-mass — the latter for _any_ absent mass, declared or not.
+The four are the withdrawn Discovery Scanners (`powerDraw`). A whole build already
+answers safely without you checking: `powerBudget()` reports one in `unknownDraws`
+instead of counting it as free. `unladenMass` likewise returns `null` for _any_ absent
+module mass, declared or not; every catalogue module currently has a mass value.
 [Issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17) tracks what
-would fill each. An absent `cost` is never declared — see [Prices](#prices), where absence
+would fill the scanner values. An absent `cost` is never declared — see [Prices](#prices), where absence
 already means unknown — and this is not a claim that _every_ other absence is a stat
 the game does not have.
 

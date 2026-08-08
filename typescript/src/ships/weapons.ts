@@ -43,7 +43,7 @@
  * @packageDocumentation
  */
 
-import type { DamageDistribution } from './modules.js';
+import type { DamageComponents, DamageDistribution, ProjectileRangeBoundaries } from './modules.js';
 
 /**
  * The weapon stats a DPS calculation needs — all post-engineering.
@@ -58,6 +58,8 @@ export interface WeaponStats {
     readonly damage?: number;
     /** How the damage splits by type. Defaults to all-absolute if absent. */
     readonly damageDistribution?: DamageDistribution;
+    /** Exact damage amounts. When present, these are authoritative for damage splits. */
+    readonly damageComponents?: DamageComponents;
     /** Rounds fired per shot. Defaults to `1`. */
     readonly roundsPerShot?: number;
     /**
@@ -100,11 +102,16 @@ export interface WeaponStats {
     readonly maximumRange?: number;
     /** Range at which damage begins to drop off, in metres. */
     readonly falloffRange?: number;
+    /** Projectile boundary parameters, which are not effective distances. */
+    readonly projectileRange?: ProjectileRangeBoundaries;
     /** Armour piercing rating, against a hull's hardness. */
     readonly armourPiercing?: number;
 }
 
-/** Damage split across the five types, in the same unit as the figure it splits. */
+/**
+ * Damage split across the established, unclassified and anti-xeno types, in the same
+ * unit as the figure it splits (for example, damage per second when splitting DPS).
+ */
 export interface DamageSplit {
     /** Kinetic share. */
     readonly kinetic: number;
@@ -114,9 +121,11 @@ export interface DamageSplit {
     readonly explosive: number;
     /** Absolute share — the part no resistance reduces. */
     readonly absolute: number;
+    /** Damage whose in-game type is not yet established. Absent when zero. */
+    readonly unclassified?: number;
     /**
-     * The part effective against Thargoids. Overlays the four physical shares rather
-     * than partitioning them, so it is not part of the total.
+     * The part effective against Thargoids. Overlays conventional damage rather than
+     * partitioning it, so it is not part of the conventional total.
      */
     readonly antiXeno: number;
 }
@@ -198,9 +207,8 @@ const ZERO_SPLIT: DamageSplit = {
  * @param damage - The figure to split — DPS, sustained DPS, damage per shot, anything.
  * @param distribution - The weapon's damage distribution. Absent treats the whole
  * figure as absolute damage, which no resistance reduces.
- * @returns The share of `damage` in each type. `antiXeno` overlays the physical types
- * rather than partitioning them, so the four physical shares — not all five — sum back
- * to `damage`.
+ * @returns The share of `damage` in each type. `antiXeno` overlays conventional damage
+ * rather than partitioning it; the other returned amounts sum back to `damage`.
  * @example
  * ```ts
  * splitDamage(60, { kinetic: 1 / 3, thermal: 2 / 3 }); // -> { kinetic: 20, thermal: 40, ... }
@@ -213,7 +221,30 @@ export function splitDamage(damage: number, distribution?: DamageDistribution): 
         thermal: damage * (distribution.thermal ?? 0),
         explosive: damage * (distribution.explosive ?? 0),
         absolute: damage * (distribution.absolute ?? 0),
+        ...((distribution.unclassified ?? 0) === 0
+            ? {}
+            : { unclassified: damage * distribution.unclassified! }),
         antiXeno: damage * (distribution.antiXeno ?? 0),
+    };
+}
+
+function splitComponents(damage: number, components: DamageComponents): DamageSplit {
+    const unclassified = (components.unclassified ?? []).reduce((sum, value) => sum + value, 0);
+    const conventional =
+        (components.kinetic ?? 0) +
+        (components.thermal ?? 0) +
+        (components.explosive ?? 0) +
+        (components.absolute ?? 0) +
+        unclassified;
+    if (conventional <= 0) return { ...ZERO_SPLIT, absolute: damage };
+    const scale = damage / conventional;
+    return {
+        kinetic: (components.kinetic ?? 0) * scale,
+        thermal: (components.thermal ?? 0) * scale,
+        explosive: (components.explosive ?? 0) * scale,
+        absolute: (components.absolute ?? 0) * scale,
+        ...(unclassified === 0 ? {} : { unclassified: unclassified * scale }),
+        antiXeno: (components.antiXeno ?? 0) * scale,
     };
 }
 
@@ -309,7 +340,8 @@ export function heatPerSecond(weapon: WeaponStats): number {
  * @param metres - The range to the target, in metres.
  * @returns A factor in `[0, 1]`: `1` inside the falloff range, tapering linearly to
  * `0` at maximum range and staying there beyond it. A weapon with no falloff data
- * reports `1` up to its maximum range.
+ * reports `1` up to its maximum range. Projectile boundary parameters are deliberately
+ * ignored: this function calculates attenuation, not projectile reach.
  * @example
  * ```ts
  * const mc = { maximumRange: 4000, falloffRange: 2000 };
@@ -393,8 +425,12 @@ export function weaponMetrics(weapon: WeaponStats): WeaponMetrics {
         heatPerSecond: hps,
         sustainedHeatPerSecond: hps * factor,
         powerDraw: weapon.powerDraw ?? 0,
-        damageByType: splitDamage(dps, weapon.damageDistribution),
-        sustainedDamageByType: splitDamage(sdps, weapon.damageDistribution),
+        damageByType: weapon.damageComponents
+            ? splitComponents(dps, weapon.damageComponents)
+            : splitDamage(dps, weapon.damageDistribution),
+        sustainedDamageByType: weapon.damageComponents
+            ? splitComponents(sdps, weapon.damageComponents)
+            : splitDamage(sdps, weapon.damageDistribution),
         continuous,
     };
 }
@@ -414,13 +450,17 @@ export function weaponMetrics(weapon: WeaponStats): WeaponMetrics {
 export function sumWeaponMetrics(metrics: readonly WeaponMetrics[]): WeaponMetrics {
     const total = (pick: (m: WeaponMetrics) => number): number =>
         metrics.reduce((sum, m) => sum + pick(m), 0);
-    const totalSplit = (pick: (m: WeaponMetrics) => DamageSplit): DamageSplit => ({
-        kinetic: metrics.reduce((sum, m) => sum + pick(m).kinetic, 0),
-        thermal: metrics.reduce((sum, m) => sum + pick(m).thermal, 0),
-        explosive: metrics.reduce((sum, m) => sum + pick(m).explosive, 0),
-        absolute: metrics.reduce((sum, m) => sum + pick(m).absolute, 0),
-        antiXeno: metrics.reduce((sum, m) => sum + pick(m).antiXeno, 0),
-    });
+    const totalSplit = (pick: (m: WeaponMetrics) => DamageSplit): DamageSplit => {
+        const unclassified = metrics.reduce((sum, m) => sum + (pick(m).unclassified ?? 0), 0);
+        return {
+            kinetic: metrics.reduce((sum, m) => sum + pick(m).kinetic, 0),
+            thermal: metrics.reduce((sum, m) => sum + pick(m).thermal, 0),
+            explosive: metrics.reduce((sum, m) => sum + pick(m).explosive, 0),
+            absolute: metrics.reduce((sum, m) => sum + pick(m).absolute, 0),
+            ...(unclassified === 0 ? {} : { unclassified }),
+            antiXeno: metrics.reduce((sum, m) => sum + pick(m).antiXeno, 0),
+        };
+    };
 
     return {
         damagePerShot: total((m) => m.damagePerShot),

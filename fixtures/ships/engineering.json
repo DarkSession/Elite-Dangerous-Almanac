@@ -166,14 +166,14 @@
         "blueprint": "Weapon_Overcharged",
         "resolved": "MC_Overcharged",
         "base": {
-          "Damage": 3.7,
+          "Damage": 1.12,
           "AmmoClipSize": 100,
           "DistributorDraw": 0.11,
           "ThermalLoad": 0.18
         },
         "modifiers": [
           { "Label": "AmmoClipSize", "Value": 85, "OriginalValue": 100 },
-          { "Label": "Damage", "Value": 6.29, "OriginalValue": 3.7 },
+          { "Label": "Damage", "Value": 1.904, "OriginalValue": 1.12 },
           {
             "Label": "DistributorDraw",
             "Value": 0.1485,
@@ -187,15 +187,15 @@
         "blueprint": "Weapon_Overcharged",
         "resolved": "Weapon_Overcharged",
         "base": {
-          "Damage": 36.5,
+          "Damage": 36.875,
           "AmmoClipSize": 6,
           "DistributorDraw": 0.7,
-          "ThermalLoad": 2.1
+          "ThermalLoad": 2.11
         },
         "modifiers": [
-          { "Label": "Damage", "Value": 62.05, "OriginalValue": 36.5 },
+          { "Label": "Damage", "Value": 62.6875, "OriginalValue": 36.875 },
           { "Label": "DistributorDraw", "Value": 0.945, "OriginalValue": 0.7 },
-          { "Label": "ThermalLoad", "Value": 2.415, "OriginalValue": 2.1 }
+          { "Label": "ThermalLoad", "Value": 2.4265, "OriginalValue": 2.11 }
         ]
       }
     ],
@@ -422,6 +422,16 @@
     ],
     "unreachableBlueprints": [],
     "unreachableExperimentals": ["special_feedback_cascade"]
+  },
+  "experimentalNames": {
+    "description": "Current English in-game display names for the five effects whose exact casing, hyphenation or library-only qualifier is easy to normalize incorrectly.",
+    "map": {
+      "special_weapon_rateoffire": "Multi-servos",
+      "special_shield_efficient": "Lo-draw",
+      "special_shield_resistive": "Multi-weave",
+      "special_shiftlock_canister": "Shift-lock Canister",
+      "special_super_penetrator": "Super Penetrator"
+    }
   },
   "blueprintCount": 109,
   "experimentalCount": 87

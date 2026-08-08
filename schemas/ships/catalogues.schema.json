@@ -78,7 +78,7 @@
       "maximum": 1
     },
     "damageDistribution": {
-      "description": "How a weapon's damage splits by type. The four physical shares sum to 1; antiXeno overlays them rather than partitioning, flagging damage that is effective against Thargoids.",
+      "description": "How a weapon's conventional damage splits by type. The conventional shares sum to 1; antiXeno overlays them rather than partitioning and may exceed 1.",
       "type": "object",
       "additionalProperties": false,
       "minProperties": 1,
@@ -87,7 +87,36 @@
         "thermal": { "type": "number", "minimum": 0, "maximum": 1 },
         "explosive": { "type": "number", "minimum": 0, "maximum": 1 },
         "absolute": { "type": "number", "minimum": 0, "maximum": 1 },
-        "antiXeno": { "type": "number", "minimum": 0, "maximum": 1 }
+        "unclassified": { "type": "number", "minimum": 0, "maximum": 1 },
+        "antiXeno": { "type": "number", "minimum": 0 }
+      }
+    },
+    "damageComponents": {
+      "description": "Exact damage amounts per round, or per second for continuous fire.",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "kinetic": { "type": "number", "minimum": 0 },
+        "thermal": { "type": "number", "minimum": 0 },
+        "explosive": { "type": "number", "minimum": 0 },
+        "absolute": { "type": "number", "minimum": 0 },
+        "antiXeno": { "type": "number", "minimum": 0 },
+        "unclassified": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "projectileRange": {
+      "description": "Projectile boundary parameters observed in-game; not effective distances.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["falloffBoundary"],
+      "properties": {
+        "maximumBoundary": { "type": "number", "minimum": 0 },
+        "falloffBoundary": { "type": "number", "minimum": 0 }
       }
     },
     "ship": {
@@ -259,6 +288,7 @@
 
         "damage": { "type": "number", "minimum": 0 },
         "damageDistribution": { "$ref": "#/definitions/damageDistribution" },
+        "damageComponents": { "$ref": "#/definitions/damageComponents" },
         "roundsPerShot": { "type": "number", "minimum": 1 },
         "rateOfFire": { "type": "number", "exclusiveMinimum": 0 },
         "burstInterval": { "type": "number", "exclusiveMinimum": 0 },
@@ -273,6 +303,7 @@
         "armourPiercing": { "type": "number", "minimum": 0 },
         "maximumRange": { "type": "number", "minimum": 0 },
         "falloffRange": { "type": "number", "minimum": 0 },
+        "projectileRange": { "$ref": "#/definitions/projectileRange" },
         "shotSpeed": { "type": "number", "minimum": 0 },
         "jitter": { "type": "number", "minimum": 0 },
 

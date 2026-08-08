@@ -257,6 +257,65 @@ test('stats spot checks: each merged record carries the expected stat values', (
     }
 });
 
+test('in-game audit covers every module identity and pins every corrected value', () => {
+    const audit = statsFixture.inGameAudit;
+    assert.equal(ALL_MODULES.length, audit.identityMatches);
+    assert.equal(
+        ALL_MODULES.filter((module) => module.ship !== undefined).length,
+        audit.armourModulesOutsideNumericVerification,
+    );
+    assert.equal(
+        audit.numericModulesVerified + audit.armourModulesOutsideNumericVerification,
+        audit.identityMatches,
+    );
+    assert.equal(
+        new Set([
+            ...statsFixture.inGameVerifiedValues.map(({ symbol }) => symbol),
+            ...statsFixture.inGameVerifiedAbsentFields.map(({ symbol }) => symbol),
+        ]).size,
+        audit.verifiedRecords,
+    );
+    assert.equal(
+        statsFixture.inGameVerifiedValues.reduce(
+            (count, expected) => count + Object.keys(expected).length - 1,
+            0,
+        ),
+        audit.verifiedValueFields,
+    );
+    assert.equal(
+        statsFixture.inGameVerifiedAbsentFields.reduce(
+            (count, expected) => count + expected.fields.length,
+            0,
+        ),
+        audit.verifiedAbsentFields,
+    );
+    assert.equal(audit.verifiedValueFields + audit.verifiedAbsentFields, audit.verifiedFields);
+    for (const [field, expected] of Object.entries(audit.exactFieldCounts)) {
+        assert.equal(
+            ALL_MODULES.filter((module) => module[field as keyof OutfittingModule] !== undefined)
+                .length,
+            expected,
+            field,
+        );
+    }
+    for (const expected of statsFixture.inGameVerifiedValues) {
+        const record = getModuleBySymbol(expected.symbol, ALL_MODULES);
+        assert.ok(record, `missing ${expected.symbol}`);
+        assert.deepEqual(project(record, expected), expected);
+    }
+    for (const expected of statsFixture.inGameVerifiedAbsentFields) {
+        const record = getModuleBySymbol(expected.symbol, ALL_MODULES);
+        assert.ok(record, `missing ${expected.symbol}`);
+        for (const field of expected.fields) {
+            assert.equal(
+                record[field as keyof OutfittingModule],
+                undefined,
+                `${expected.symbol}.${field}`,
+            );
+        }
+    }
+});
+
 test('the stats a blueprint needs are carried by every module of the family', () => {
     // A count here is a whole family, so a single record losing its value fails. These
     // are the base stats a recipe scales; without them a blueprint cannot be applied at
@@ -414,7 +473,7 @@ test('a continuous-fire weapon carries damage per second and no rate of fire', (
     }
 });
 
-test("a weapon's physical damage shares sum to one", () => {
+test("a weapon's conventional damage shares sum to one", () => {
     for (const weapon of HARDPOINT_MODULES) {
         const split = weapon.damageDistribution;
         if (!split) continue;
@@ -422,9 +481,56 @@ test("a weapon's physical damage shares sum to one", () => {
             (split.kinetic ?? 0) +
             (split.thermal ?? 0) +
             (split.explosive ?? 0) +
-            (split.absolute ?? 0);
+            (split.absolute ?? 0) +
+            (split.unclassified ?? 0);
         assert.ok(Math.abs(physical - 1) < 1e-9, `${weapon.symbol}: ${String(physical)}`);
     }
+});
+
+test('verified damage components reproduce scalar damage and their compatibility projection', () => {
+    let checked = 0;
+    for (const weapon of HARDPOINT_MODULES) {
+        const components = weapon.damageComponents;
+        if (!components) continue;
+        checked += 1;
+        const unclassified = (components.unclassified ?? []).reduce((sum, value) => sum + value, 0);
+        const conventional =
+            (components.kinetic ?? 0) +
+            (components.thermal ?? 0) +
+            (components.explosive ?? 0) +
+            (components.absolute ?? 0) +
+            unclassified;
+        assert.equal(weapon.damage, conventional, weapon.symbol);
+        assert.ok(weapon.damageDistribution, weapon.symbol);
+        for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
+            assert.ok(
+                Math.abs(
+                    (weapon.damageDistribution[type] ?? 0) * conventional - (components[type] ?? 0),
+                ) < 1e-9,
+                `${weapon.symbol}.${type}`,
+            );
+        }
+        assert.ok(
+            Math.abs((weapon.damageDistribution.unclassified ?? 0) * conventional - unclassified) <
+                1e-9,
+            `${weapon.symbol}.unclassified`,
+        );
+        assert.ok(
+            Math.abs(
+                (weapon.damageDistribution.antiXeno ?? 0) * conventional -
+                    (components.antiXeno ?? 0),
+            ) < 1e-9,
+            weapon.symbol,
+        );
+    }
+    assert.equal(checked, 34);
+});
+
+test('projectile boundary parameters appear on exactly the ten verified hardpoints', () => {
+    assert.equal(
+        HARDPOINT_MODULES.filter((module) => module.projectileRange !== undefined).length,
+        10,
+    );
 });
 
 test("every weapon's carried rate of fire agrees with its own firing cycle", () => {

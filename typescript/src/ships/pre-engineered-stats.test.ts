@@ -13,7 +13,7 @@ import {
 } from './pre-engineered.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
-import { combinedRateOfFire } from './weapons.js';
+import { combinedRateOfFire, weaponMetrics } from './weapons.js';
 import { fieldForLabel, scaleForLabel } from './module-stat-labels.js';
 import fixture from '../../../fixtures/ships/pre-engineered.json' with { type: 'json' };
 
@@ -67,6 +67,22 @@ test('a pre-engineered weapon resolves its damage-side stats too', () => {
     assert.equal(fitted.armourPiercing, engineered.armourPiercing);
     // Every modifier this variant carries now has a base stat to apply to.
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
+});
+
+test('a pre-engineered damage modifier scales every exact damage component', () => {
+    const symbol = 'Hpt_ATMultiCannon_Gimbal_Medium';
+    const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
+    const fitted = getPreEngineeredStats(only({ symbol, blueprint: 'MC_Overcharged', grade: 5 }))!;
+    assert.ok(Math.abs(fitted.damage! - stock.damage! * 1.1) < 1e-9);
+    assert.ok(
+        Math.abs(fitted.damageComponents!.kinetic! - stock.damageComponents!.kinetic! * 1.1) < 1e-9,
+    );
+    assert.ok(
+        Math.abs(fitted.damageComponents!.antiXeno! - stock.damageComponents!.antiXeno! * 1.1) <
+            1e-9,
+    );
+    const metrics = weaponMetrics(fitted);
+    assert.ok(Math.abs(metrics.damageByType.antiXeno - 2.19 * 1.1 * metrics.rateOfFire) < 1e-6);
 });
 
 test('a pre-engineered magazine holds whole bursts, and its reserve keeps its fraction', () => {

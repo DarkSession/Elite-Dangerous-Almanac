@@ -95,6 +95,8 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
  * that the catalogue carries — replaced by its engineered value. `symbol`, `name`,
  * `class`, `rating` and `cost` are the base module's throughout: a pre-engineered
  * variant is the same article with different numbers, not a different module.
+ * Exact damage components scale with an engineered `damage` value so their proportions
+ * and the anti-xeno overlay remain coherent with the resolved scalar.
  *
  * A variant with no stat block (every `mercenary` row) resolves to the base record
  * unchanged, which is the honest answer — the pre-engineering those arrive with is not
@@ -146,6 +148,36 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
     ) {
         const rate = combinedRateOfFire(resolved);
         if (rate !== undefined) resolved.rateOfFire = rate;
+    }
+    if (module.damageComponents) {
+        const scale =
+            module.damage !== undefined && module.damage !== 0 && resolved.damage !== undefined
+                ? resolved.damage / module.damage
+                : 1;
+        resolved.damageComponents = {
+            ...(module.damageComponents.kinetic === undefined
+                ? {}
+                : { kinetic: module.damageComponents.kinetic * scale }),
+            ...(module.damageComponents.thermal === undefined
+                ? {}
+                : { thermal: module.damageComponents.thermal * scale }),
+            ...(module.damageComponents.explosive === undefined
+                ? {}
+                : { explosive: module.damageComponents.explosive * scale }),
+            ...(module.damageComponents.absolute === undefined
+                ? {}
+                : { absolute: module.damageComponents.absolute * scale }),
+            ...(module.damageComponents.antiXeno === undefined
+                ? {}
+                : { antiXeno: module.damageComponents.antiXeno * scale }),
+            ...(module.damageComponents.unclassified === undefined
+                ? {}
+                : {
+                      unclassified: module.damageComponents.unclassified.map(
+                          (value) => value * scale,
+                      ),
+                  }),
+        };
     }
     return resolved;
 }

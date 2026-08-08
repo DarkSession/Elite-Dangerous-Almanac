@@ -9,6 +9,7 @@ import {
 } from './experimental-effects.js';
 import { getMaterialBySymbol } from '../materials/materials.js';
 import { ALL_MATERIALS } from '../materials/materials-all.js';
+import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 
 test('every effect carries a display name, a recipe, and modifiers/materials arrays', () => {
     for (const [fdname, effect] of Object.entries(EXPERIMENTAL_EFFECTS)) {
@@ -24,6 +25,9 @@ test('getExperimentalEffectName resolves case-insensitively and misses cleanly',
     assert.equal(getExperimentalEffectName('special_fsd_heavy'), 'Mass Manager');
     assert.equal(getExperimentalEffectName('SPECIAL_FSD_HEAVY'), 'Mass Manager');
     assert.equal(getExperimentalEffectName('special_auto_loader'), 'Auto Loader');
+    for (const [fdname, name] of Object.entries(engineeringFixture.experimentalNames.map)) {
+        assert.equal(getExperimentalEffectName(fdname), name);
+    }
     assert.equal(getExperimentalEffectName('nope'), null);
 });
 
@@ -74,7 +78,7 @@ test('an effect either has numeric modifiers or a description (never neither)', 
 
 test('an effect named for a stat actually moves that stat', () => {
     // The cost leg alone is easy to record and leaves the effect looking complete while
-    // doing nothing: Oversized read as "+5% power draw" with no damage, and Multi-Servos
+    // doing nothing: Oversized read as "+5% power draw" with no damage, and Multi-servos
     // as "+5% power draw" with no change to the firing cycle.
     const named: [string, string, number][] = [
         ['special_weapon_damage', 'Damage', 0.03],
@@ -117,7 +121,7 @@ test('percentage contributions are stored as percentages, not flat amounts', () 
 });
 
 test('the canister effects stay qualitative, with no single-sourced magnitude', () => {
-    // coriolis-data gives Radiant Canister an ammunition cost and Shift-Lock Canister a
+    // coriolis-data gives Radiant Canister an ammunition cost and Shift-lock Canister a
     // damage cost that no other source carries a magnitude for. Their in-game
     // descriptions do say a cost exists, but a number one source asserts alone is worse
     // than the honest empty list plus a description this file uses for every other

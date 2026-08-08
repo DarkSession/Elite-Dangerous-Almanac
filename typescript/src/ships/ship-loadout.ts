@@ -483,6 +483,19 @@ function cloneModuleStats(module: OutfittingModule): OutfittingModule {
         ...(module.damageDistribution === undefined
             ? {}
             : { damageDistribution: { ...module.damageDistribution } }),
+        ...(module.damageComponents === undefined
+            ? {}
+            : {
+                  damageComponents: {
+                      ...module.damageComponents,
+                      ...(module.damageComponents.unclassified === undefined
+                          ? {}
+                          : { unclassified: [...module.damageComponents.unclassified] }),
+                  },
+              }),
+        ...(module.projectileRange === undefined
+            ? {}
+            : { projectileRange: { ...module.projectileRange } }),
     });
 }
 
