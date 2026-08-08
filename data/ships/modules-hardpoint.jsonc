@@ -643,12 +643,12 @@
     "integrity": 40,
     "powerDraw": 0.6,
     "bootTime": 0,
-    "damage": 7.66,
+    "damage": 7.68,
     "damageDistribution": {
       "thermal": 1
     },
     "distributorDraw": 2.11,
-    "thermalLoad": 3.6,
+    "thermalLoad": 3.65,
     "armourPiercing": 18,
     "maximumRange": 3000,
     "falloffRange": 600,
@@ -669,7 +669,7 @@
       "thermal": 1
     },
     "distributorDraw": 3.44,
-    "thermalLoad": 5.3,
+    "thermalLoad": 5.32,
     "armourPiercing": 35,
     "maximumRange": 3000,
     "falloffRange": 600,
@@ -685,7 +685,7 @@
     "integrity": 64,
     "powerDraw": 1.6,
     "bootTime": 0,
-    "damage": 20.28,
+    "damage": 20.3,
     "damageDistribution": {
       "thermal": 1
     },
@@ -2293,7 +2293,7 @@
     "burstRounds": 8,
     "burstRateOfFire": 20,
     "distributorDraw": 0.31,
-    "thermalLoad": 0.3,
+    "thermalLoad": 0.28,
     "armourPiercing": 1,
     "maximumRange": 1000,
     "falloffRange": 600,

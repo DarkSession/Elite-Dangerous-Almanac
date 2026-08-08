@@ -11,6 +11,11 @@ import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with 
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
+import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
+import corvetteMultiroleJournal from '../../../fixtures/ships/journal-federation-corvette-multirole.json' with { type: 'json' };
+import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
+import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
+import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
 
 /** Every journal capture in the fixtures, by file name. */
 const JOURNALS = [
@@ -19,6 +24,11 @@ const JOURNALS = [
     ['journal-python-mkii-antixeno.json', pythonJournal],
     ['journal-corsair.json', corsairJournal],
     ['journal-federation-corvette.json', corvetteJournal],
+    ['journal-federation-corvette-beams.json', corvetteBeamsJournal],
+    ['journal-federation-corvette-multirole.json', corvetteMultiroleJournal],
+    ['journal-cobra-mkv.json', cobraJournal],
+    ['journal-kestrel-mkii.json', kestrelJournal],
+    ['journal-lynx-highliner.json', lynxJournal],
 ] as const;
 
 const module = (symbol: string) => {

@@ -759,6 +759,48 @@
       "symbol": "Int_ShieldGenerator_Size7_Class5_Strong",
       "name": "Prismatic Shield Generator",
       "shieldBrokenRegenRate": 4.25
+    },
+    {
+      "symbol": "Hpt_BeamLaser_Gimbal_Large",
+      "name": "Beam Laser",
+      "damage": 20.3,
+      "thermalLoad": 7.6
+    },
+    {
+      "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+      "name": "Beam Laser",
+      "damage": 12.52,
+      "thermalLoad": 5.32
+    },
+    {
+      "symbol": "Hpt_BeamLaser_Gimbal_Small",
+      "name": "Beam Laser",
+      "damage": 7.68,
+      "thermalLoad": 3.65
+    },
+    {
+      "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
+      "name": "Cytoscrambler Burst Laser",
+      "damage": 3.6,
+      "thermalLoad": 0.28
+    },
+    {
+      "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
+      "name": "Heat Sink Launcher",
+      "clipSize": 1,
+      "ammoMaximum": 2,
+      "reloadTime": 10
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size5_Class3_Fast",
+      "name": "Bi-Weave Shield Generator",
+      "shieldRegenRate": 2.25,
+      "shieldBrokenRegenRate": 5.63
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size5_Class5_Strong",
+      "name": "Prismatic Shield Generator",
+      "shieldBrokenRegenRate": 2.34
     }
   ],
   "continuousFire": ["Hpt_BeamLaser_Fixed_Small", "Hpt_MiningLaser_Fixed_Small"],
@@ -781,10 +823,35 @@
     }
   },
   "capturedBaseStats": {
-    "note": "Every base value a real capture states, joined to this catalogue through the library's own journal-label→field mapping rather than a hand-written one. `stated` counts the distinct (module, journal `Label`) pairs the capture gives an `OriginalValue` for; `mapped` is how many of them name a field the record holds, split into those that agree digit for digit and those that agree to within the game's own float noise — it writes 20.000004 for 20, 2.499998 for 2.5, -39.999996 for -40. Nothing may disagree beyond that: where a Frontier capture contradicts a base stat, the capture is right and this catalogue is wrong, which is what the four `spot` corrections above settle.",
+    "note": "Every base value a real capture states, joined to this catalogue through the library's own journal-label→field mapping rather than a hand-written one. `stated` counts the distinct (module, journal `Label`) pairs the capture gives an `OriginalValue` for; `mapped` is how many of them name a field the record holds, split into those that agree digit for digit and those that agree to within the game's own float noise — it writes 20.000004 for 20, 2.499998 for 2.5, -39.999996 for -40. Nothing may disagree beyond that: where a Frontier capture contradicts a base stat, the capture is right and this catalogue is wrong, which is what the corrections pinned above in `spot` settle.",
     "floatNoiseTolerance": 1e-05,
-    "unmappedNote": "A label the catalogue models no field for on that record: a derived product (`DamagePerSecond`, `DamageFalloffRange`), an experimental effect's per-damage-type split (`$Kinetic;` / `$Explosive;`), or a stat the record genuinely does not carry (`Jitter` on a missile rack; `Range` on a sensor suite, whose range is `scannerRange` under the journal's other spelling). Pinned so a label the mapping ought to resolve cannot start being skipped in silence.",
+    "unmappedNote": "A label the catalogue models no field for on that record: a derived product (`DamagePerSecond`, checked in `weapons` below; `DamageFalloffRange`), an experimental effect's per-damage-type split (`$Kinetic;` / `$Explosive;`), or a stat the record genuinely does not carry (`Jitter` on a missile rack). Pinned so a label the mapping ought to resolve cannot start being skipped in silence.",
     "captures": [
+      {
+        "file": "journal-cobra-mkv.json",
+        "stated": 62,
+        "mapped": 58,
+        "exact": 51,
+        "withinFloatNoise": 7,
+        "unmapped": [
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Small",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Small",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
       {
         "file": "journal-corsair.json",
         "stated": 65,
@@ -811,10 +878,72 @@
         ]
       },
       {
+        "file": "journal-federation-corvette-beams.json",
+        "stated": 86,
+        "mapped": 80,
+        "exact": 65,
+        "withinFloatNoise": 15,
+        "unmapped": [
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Large",
+            "label": "DamageFalloffRange"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Large",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+            "label": "DamageFalloffRange"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Small",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
+        "file": "journal-federation-corvette-multirole.json",
+        "stated": 79,
+        "mapped": 74,
+        "exact": 65,
+        "withinFloatNoise": 9,
+        "unmapped": [
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+            "label": "DamageFalloffRange"
+          },
+          {
+            "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Small",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
         "file": "journal-federation-corvette.json",
         "stated": 71,
-        "mapped": 64,
-        "exact": 55,
+        "mapped": 65,
+        "exact": 56,
         "withinFloatNoise": 9,
         "unmapped": [
           {
@@ -840,10 +969,19 @@
           {
             "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
             "label": "Jitter"
-          },
+          }
+        ]
+      },
+      {
+        "file": "journal-kestrel-mkii.json",
+        "stated": 77,
+        "mapped": 76,
+        "exact": 64,
+        "withinFloatNoise": 12,
+        "unmapped": [
           {
-            "symbol": "Int_Sensors_Size8_Class2",
-            "label": "Range"
+            "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
+            "label": "DamagePerSecond"
           }
         ]
       },
@@ -856,12 +994,76 @@
         "unmapped": []
       },
       {
+        "file": "journal-lynx-highliner.json",
+        "stated": 59,
+        "mapped": 57,
+        "exact": 52,
+        "withinFloatNoise": 5,
+        "unmapped": [
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Large",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
         "file": "slef-the-deep-black.json",
         "stated": 35,
         "mapped": 35,
         "exact": 35,
         "withinFloatNoise": 0,
         "unmapped": []
+      }
+    ],
+    "weaponsNote": "The `DamagePerSecond` an engineered weapon's capture states for its unmodified self — Frontier's own arithmetic over damage, rate of fire, rounds per shot and burst structure, which is the only external check this library's `damagePerSecond` has. A beam laser's figure is its `damage`, since its damage is already per second; a burst laser's folds the burst; a missile rack's counts the whole salvo. Each must reproduce to the same float-noise tolerance.",
+    "weapons": [
+      {
+        "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+        "damagePerSecond": 32.68
+      },
+      {
+        "symbol": "Hpt_BeamLaser_Gimbal_Large",
+        "damagePerSecond": 20.299999
+      },
+      {
+        "symbol": "Hpt_BeamLaser_Gimbal_Medium",
+        "damagePerSecond": 12.52
+      },
+      {
+        "symbol": "Hpt_BeamLaser_Gimbal_Small",
+        "damagePerSecond": 7.68
+      },
+      {
+        "symbol": "Hpt_Cannon_Gimbal_Large",
+        "damagePerSecond": 16.485022
+      },
+      {
+        "symbol": "Hpt_DrunkMissileRack_Fixed_Medium",
+        "damagePerSecond": 60
+      },
+      {
+        "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
+        "damagePerSecond": 25
+      },
+      {
+        "symbol": "Hpt_MultiCannon_Gimbal_Large",
+        "damagePerSecond": 18.933332
+      },
+      {
+        "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+        "damagePerSecond": 12.615385
+      },
+      {
+        "symbol": "Hpt_MultiCannon_Gimbal_Small",
+        "damagePerSecond": 6.833334
+      },
+      {
+        "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
+        "damagePerSecond": 27.428572
       }
     ]
   }

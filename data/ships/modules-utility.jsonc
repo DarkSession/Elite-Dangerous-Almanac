@@ -115,7 +115,7 @@
     "rateOfFire": 0.2,
     "burstInterval": 5,
     "clipSize": 1,
-    "ammoMaximum": 3,
+    "ammoMaximum": 2,
     "reloadTime": 10,
     "distributorDraw": 2,
     "cost": 3500

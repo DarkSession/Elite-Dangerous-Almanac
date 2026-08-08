@@ -5,9 +5,15 @@ import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { baseStats } from './module-stat-labels.js';
 import { parseSlef, type LoadoutEvent } from './slef.js';
+import { damagePerSecond } from './weapons.js';
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
+import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
+import corvetteMultiroleJournal from '../../../fixtures/ships/journal-federation-corvette-multirole.json' with { type: 'json' };
+import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
+import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
+import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
@@ -16,15 +22,30 @@ import deepBlackSlef from '../../../fixtures/ships/slef-the-deep-black.json' wit
 // Every capture the repository holds that could state a base value, named by the file the
 // fixture names, so a new capture is joined here by adding it in both places.
 const CAPTURES: readonly { file: string; loadouts: readonly LoadoutEvent[] }[] = [
+    { file: 'journal-cobra-mkv.json', loadouts: [cobraJournal as LoadoutEvent] },
     { file: 'journal-corsair.json', loadouts: [corsairJournal as LoadoutEvent] },
+    {
+        file: 'journal-federation-corvette-beams.json',
+        loadouts: [corvetteBeamsJournal as LoadoutEvent],
+    },
+    {
+        file: 'journal-federation-corvette-multirole.json',
+        loadouts: [corvetteMultiroleJournal as LoadoutEvent],
+    },
     { file: 'journal-federation-corvette.json', loadouts: [corvetteJournal as LoadoutEvent] },
+    { file: 'journal-kestrel-mkii.json', loadouts: [kestrelJournal as LoadoutEvent] },
     { file: 'journal-krait-phantom.json', loadouts: [kraitJournal as LoadoutEvent] },
+    { file: 'journal-lynx-highliner.json', loadouts: [lynxJournal as LoadoutEvent] },
     { file: 'journal-python-mkii-antixeno.json', loadouts: [pythonJournal as LoadoutEvent] },
     { file: 'journal-viper-mkiv.json', loadouts: [viperJournal as LoadoutEvent] },
     { file: 'slef-the-deep-black.json', loadouts: parseSlef(deepBlackSlef).map((e) => e.data) },
 ];
 
-const { floatNoiseTolerance, captures: expected } = statsFixture.capturedBaseStats;
+const {
+    floatNoiseTolerance,
+    captures: expected,
+    weapons: capturedWeapons,
+} = statsFixture.capturedBaseStats;
 
 /**
  * One `(module, Label)` pair a capture states a base value for, deduplicated: a build can
@@ -128,4 +149,21 @@ test('the pinned captures are the ones that state base values', () => {
         expected.map((capture) => capture.file),
         CAPTURES.filter(({ loadouts }) => statedBases(loadouts).length > 0).map((c) => c.file),
     );
+});
+
+test('the captures reproduce this library’s damage per second, weapon for weapon', () => {
+    // `DamagePerSecond` is Frontier's own arithmetic over damage, rate of fire, rounds per
+    // shot and burst structure, stated for the weapon before its recipe. It is the only
+    // external check `damagePerSecond` has — see
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12 — and it catches a
+    // wrong base the per-stat join above cannot, because no journal states a beam laser's
+    // `Damage` at all: its damage is already per second, so the game reports it here.
+    for (const { symbol, damagePerSecond: captured } of capturedWeapons) {
+        const weapon = getModuleBySymbol(symbol, ALL_MODULES);
+        assert.ok(weapon, `missing ${symbol}`);
+        assert.ok(
+            withinFloatNoise(damagePerSecond(weapon), captured),
+            `${symbol}: computed ${damagePerSecond(weapon)}, capture ${captured}`,
+        );
+    }
 });

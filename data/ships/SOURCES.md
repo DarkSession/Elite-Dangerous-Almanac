@@ -589,8 +589,9 @@ E-rated generators share those resistances — but it is not what these values r
 derived from the 2^size rule above. Without all three a stock starter fit reports 0 t of
 fuel, 0 t of cargo and 0/0/0 shield resistances.
 
-**Corrections — 43 records, 47 fields.** In every case coriolis-data's value is the
-source of the error and EDSY carries the corrected figure:
+**Corrections — 50 records, 56 fields.** coriolis-data's value is the source of the error
+in every case, and EDSY carries the corrected figure in all but one — the exception is
+named under the table:
 
 | Records | Field | coriolis | Stored | Why coriolis's value is wrong |
 | --- | --- | --- | --- | --- |
@@ -617,23 +618,46 @@ source of the error and EDSY carries the corrected figure:
 | `Hpt_Cannon_Gimbal_Large` | `damage` / `thermalLoad` | 37.39 / 2.9 | 37.421 / 2.93 | Frontier states both in a `Loadout` capture, and EDSY carries the same two figures |
 | `Hpt_BeamLaser_Gimbal_Huge` | `thermalLoad` | 10.6 | 10.62 | as above |
 | `Int_ShieldGenerator_Size7_Class5_Strong` | `shieldBrokenRegenRate` | 4.2 | 4.25 | as above |
+| `Hpt_BeamLaser_Gimbal_Large` | `damage` | 20.28 | 20.3 | a beam laser's damage is per second, so a capture states it as `DamagePerSecond` rather than `Damage`; EDSY agrees |
+| `Hpt_BeamLaser_Gimbal_Medium` | `thermalLoad` | 5.3 | 5.32 | stated by three captures; EDSY agrees |
+| `Hpt_BeamLaser_Gimbal_Small` | `damage` / `thermalLoad` | 7.66 / 3.6 | 7.68 / 3.65 | `damage` as for the large above; EDSY agrees on both |
+| `Hpt_PulseLaserBurst_Fixed_Small_Scatter` | `thermalLoad` | 0.3 | 0.28 | EDSY agrees |
+| `Hpt_HeatSinkLauncher_Turret_Tiny` | `ammoMaximum` | 3 | 2 | a launcher holds two sinks, not three; EDSY agrees, and 3 is what a grade-1 Heat Sink Capacity makes of 2 |
+| `Int_ShieldGenerator_Size5_Class3_Fast` | `shieldRegenRate` / `shieldBrokenRegenRate` | 2.2 / 5.6 | 2.25 / 5.63 | EDSY agrees on the broken rate only — see below |
+| `Int_ShieldGenerator_Size5_Class5_Strong` | `shieldBrokenRegenRate` | 2.3 | 2.34 | EDSY agrees |
 
-**The last three are the only corrections a game reading forced, and it did not force
-them alone.** The Federation Corvette capture states 64 base values this catalogue holds a
-field for; 60 agreed already and four did not, and on all four EDSY independently carries
-the capture's figure. The reverse never happens: over the 101 base values that a capture
-and EDSY both state, there is no case where coriolis is right and EDSY wrong. Two look
-like one — `Hpt_MultiCannon_Gimbal_Medium` and `Hpt_Cannon_Gimbal_Large` `rateOfFire`,
-where the capture says 7.692308 and 0.440529 and EDSY says 7.692 and 0.441 — but that is
-EDSY publishing a rate of fire to three decimals, not a different value. `damage` is
-stored as EDSY's 37.421 rather than the capture's `37.421001`, which is the float noise
-the game writes for it, exactly as it writes `20.000004` for 20.
+**These thirteen figures are the ones a game reading forced, and it rarely forced them
+alone.** Across the nine captures this repository holds, 545 (module, journal `Label`)
+base values resolve to a field in this catalogue, and every one now agrees to the digit or
+to within the game's own float noise. Eleven of the thirteen surfaced there; the other two
+are the beam lasers' `damage`, which no journal states directly and the `DamagePerSecond`
+check below convicts. On twelve of the thirteen EDSY independently carries the capture's
+figure; the reverse never happens,
+because over the base values a capture and EDSY both state there is no case where
+coriolis is right and EDSY wrong. Two look like one — `Hpt_MultiCannon_Gimbal_Medium` and
+`Hpt_Cannon_Gimbal_Large` `rateOfFire`, where the capture says 7.692308 and 0.440529 and
+EDSY says 7.692 and 0.441 — but that is EDSY publishing a rate of fire to three decimals,
+not a different value. Where the two sources agree to more digits than the game states,
+the registry's figure is stored: `damage` is EDSY's 37.421, not the capture's
+`37.421001`, which is the float noise the game writes for it exactly as it writes
+`20.000004` for 20.
 
-**`fixtures/ships/module-stats.json` `capturedBaseStats` measures this**, over every
-capture the repository holds rather than the one that raised it: 199 (module, `Label`)
-pairs across four captures, all agreeing to the digit or to within that float noise. The
-join runs through the library's own label → field mapping, so a stat the mapping stops
-resolving shows up as an unmapped pair rather than as silent agreement.
+**`Int_ShieldGenerator_Size5_Class3_Fast` `shieldRegenRate` 2.25 is the one correction no
+registry supports.** Both coriolis-data and EDSY publish 2.2; the Cobra Mk V and Kestrel
+Mk II captures each state 2.25, and 2.25 × 1.15 is the 2.5875 the game then reports under
+a grade-5 Reinforced with Fast Charge, so the reading is internally consistent as well as
+duplicated. Frontier's own figure outranks a registry that rounds — which is the whole
+principle these corrections rest on, here with nothing to corroborate it but a second
+capture.
+
+**Two checks in `fixtures/ships/module-stats.json` hold this**, over every capture the
+repository holds rather than the one that raised it. `capturedBaseStats.captures` joins
+each capture's stated base values to the catalogue through the library's own label →
+field mapping, so a stat the mapping stops resolving surfaces as an unmapped pair instead
+of as silent agreement. `capturedBaseStats.weapons` pins the eleven `DamagePerSecond`
+readings the captures state and requires this library's `damagePerSecond` to reproduce
+each — the check that catches a wrong beam-laser `damage`, since a journal never states
+one directly.
 
 **Rejected — three candidate corrections cross-checking threw out.** Recorded so they
 are not "found" and applied again:
@@ -668,7 +692,7 @@ heuristic does not keep rediscovering them:
 
 **The two registries disagree far beyond the corrections above, and only on weapon
 performance.** Joined on `fdname` over the fields both state, coriolis-data and EDSY
-differ on 50 of 160 `damage` figures, 52 of 161 `thermalLoad`, 14 of 146 `rateOfFire`
+differ on 48 of 160 `damage` figures, 49 of 161 `thermalLoad`, 14 of 146 `rateOfFire`
 beyond the three decimals EDSY publishes it to, and a handful each of `distributorDraw`,
 `burstInterval`, `maximumRange`, `shieldBrokenRegenRate` and `ammoMaximum` — while
 `powerDraw` (813), `integrity` (856), `bootTime` (780), `optMass` (55), `armourPiercing`
@@ -2404,15 +2428,43 @@ under, which is why several are cited above rather than copied.
   that decides and what it leaves open.
 
   **It is also the source of four base values**, which is a separate matter from the
-  recipe: it states 71 distinct (module, journal `Label`) base values, 64 of which name a
+  recipe: it states 71 distinct (module, journal `Label`) base values, 65 of which name a
   field this catalogue holds, and on four of those Frontier's figure is not coriolis-data's
   — `Hpt_Cannon_Gimbal_Large` `damage` 37.421 and `thermalLoad` 2.93,
   `Hpt_BeamLaser_Gimbal_Huge` `thermalLoad` 10.62, and
   `Int_ShieldGenerator_Size7_Class5_Strong` `shieldBrokenRegenRate` 4.25. All four are
   taken from the game and corroborated by EDSY; see §Corrections under Module stats for
-  what that decides and what it deliberately leaves alone. The other 60 agree, 52 to the
-  digit and eight to within the game's own float noise (`20.000004` for 20,
+  what that decides and what it deliberately leaves alone. The other 61 agree, 56 to the
+  digit and nine to within the game's own float noise (`20.000004` for 20,
   `-39.999996` for −40).
+
+- **Five further `Loadout` captures**, contributed **2026-08-08 UTC** by the repository
+  owner from their own fleet, in the same licence position as the Corvette above: no
+  upstream project, Frontier game output redistributed under Frontier's media-usage terms.
+  Each reached this repository as pasted text and is stored re-indented and otherwise
+  unaltered, so the checksum attests to the text received rather than to a file Frontier
+  wrote. Each keeps its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` for the reason
+  the other captures' are kept, and the engineer names are the game's own NPCs.
+
+  | File | Build | Source text SHA-256 |
+  | --- | --- | --- |
+  | `journal-federation-corvette-beams.json` | an all-laser Federal Corvette (54 `Modules`): two huge and one large gimballed beam laser under Efficient and Long Range, eight shield boosters, four shield cell banks | `e1951cde0b39757f2e3a9aec828044531f333ad786655e231e43d667d9eee280` |
+  | `journal-federation-corvette-multirole.json` | a Federal Corvette carrying a fuel scoop, fighter bay and FSD interdictor alongside its beam lasers and a drunk missile rack (54 `Modules`) | `cf6483297cd079a511cadb7f963a838f22caa1448c4951f7903d3f9f660ce60a` |
+  | `journal-cobra-mkv.json` | a Cobra Mk V gunship (39 `Modules`): gimballed beam lasers at three sizes and a Bi-Weave generator | `fdb00339609b4f734727521d8b117bf72bf991667817d50259b204388fdd2d90` |
+  | `journal-kestrel-mkii.json` | a Kestrel Mk II (29 `Modules`) with three Mk II Plasma Shock Autocannons, two Cytoscrambler burst lasers and the Mk II agile-boost thrusters | `c659d717206867e19e71f4184724ab73b0c34a6d681e61bd7bee1e5665f7dd89` |
+  | `journal-lynx-highliner.json` | a Lynx Highliner rescue fit (36 `Modules`): five gimballed multi-cannons, a heat-sink launcher, Mk II passenger cabins | `9d7c9c1d02223be143b518d1300ab75eb0df747b6923af253b756dd2f3a3e777` |
+
+  Between them they state 363 further base values, and they are what convicts nine of the
+  thirteen figures in §Corrections. Three hulls are the reason to keep them individually
+  rather than as one more Corvette: the **Kestrel Mk II** is the only reading of the Mk II
+  Plasma Shock Autocannon, the Cytoscrambler and `Int_MkIIAgileBoost_Engine_*`, and the
+  **Lynx Highliner** — which coriolis-data does not carry at all — is the only reading of
+  the Mk II passenger cabins and of a heat-sink launcher's true reserve.
+
+  **Each reproduces its own `UnladenMass` to the digit and its own `MaxJumpRange` to
+  within 10⁻⁵ ly** when this library rebuilds it, which is what says the stored text is
+  faithful: every module mass, every engineered mass modifier and the drive's whole
+  fuel-curve have to be right for those two figures to land.
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed

@@ -194,7 +194,12 @@ export const STAT_LABELS: readonly StatLabel[] = [
     { label: 'DistributorDraw', field: 'distributorDraw' },
     { label: 'ThermalLoad', field: 'thermalLoad' },
     { label: 'ArmourPenetration', field: 'armourPiercing' },
+    // `Range` is a weapon's maximum range, and — on a sensor suite, which carries no such
+    // field — the journal's other spelling of `ScannerRange`. `Sensor_LongRange` is
+    // reported under this label, so a record resolves it to whichever field it holds, the
+    // same way `ScannerRange` resolves.
     { label: 'Range', field: 'maximumRange' },
+    { label: 'Range', field: 'scannerRange' },
     { label: 'MaximumRange', field: 'maximumRange' },
     { label: 'FalloffRange', field: 'falloffRange' },
     { label: 'ShotSpeed', field: 'shotSpeed' },
