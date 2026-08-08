@@ -1450,7 +1450,7 @@
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
     "name": "Enhanced AX Multi-Cannon",
-    "blueprint": "Weapon_Overcharged",
+    "blueprint": "MC_Overcharged",
     "grade": 5,
     "acquisition": "techBroker",
     "experimental": "special_auto_loader",
@@ -1475,7 +1475,7 @@
   {
     "symbol": "Hpt_ATMultiCannon_Gimbal_Large",
     "name": "Enhanced AX Multi-Cannon",
-    "blueprint": "Weapon_Overcharged",
+    "blueprint": "MC_Overcharged",
     "grade": 5,
     "acquisition": "techBroker",
     "experimental": "special_auto_loader",

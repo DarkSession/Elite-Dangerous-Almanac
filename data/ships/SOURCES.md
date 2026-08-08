@@ -1526,13 +1526,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
     where the rule is to follow the only registry that covers the group unless a capture
     contradicts it — as one does for the three Guardian weapon groups above, and none does
     here. EDSY's single `wpn_oc` carries the clip leg on every group that lists it, `axmc`
-    included, and both AX multi-cannons carry a clip. Answering the leg answers the key too. coriolis's
-    two keys differ by exactly that leg and nothing else — same name, same three other
-    legs, same materials grade for grade — so the clip-carrying record is the only one
-    either registry could be describing, and naming it is reading EDSY rather than guessing
-    at coriolis. No registry writes this row down as it stands — coriolis does not describe
-    the group and EDSY does not use the key — so it is the one menu row assembled from one
-    registry's coverage and the other's spelling.
+    included, and both AX multi-cannons carry a clip. Answering the leg answers the key
+    too. coriolis's two keys differ by exactly that leg and nothing else — same name, same
+    three other legs, same materials grade for grade — so the clip-carrying record is the
+    only one either registry could be describing, and naming it is reading EDSY rather than
+    guessing at coriolis. No registry writes this row down as it stands — coriolis carries
+    no blueprint list for the group and EDSY does not use the key — so it is the one menu
+    row assembled from one registry's coverage and the other's spelling.
   - **26 clip-bearing modules are still offered a clip-less Overcharged** — 12 cannons, 10
     fragment cannons and four plasma accelerators — tracked at
     [#48](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/48). These are the
@@ -1546,12 +1546,20 @@ up straight through with no disambiguation at all. Both paths are evidence that
     this set either: their menu lists Anti-Guardian Zone Resistance and nothing else, and
     the Fixed Small and Fixed Medium are sold carrying `Weapon_Overcharged` rather than
     offered it. The three laser groups do list it and are unaffected.
+  - **The sale rows follow the menu.** `pre-engineered.jsonc` sells both AX multi-cannons
+    as the tech-broker Enhanced AX Multi-Cannon with Overcharged already applied, and its
+    `blueprint` names the recipe rather than the id a journal writes, so those two rows
+    name `MC_Overcharged` as well. Nothing about the sale changes: a reward variant's stats
+    are its own stored block, never the recipe folded. What it keeps true is that no
+    pre-engineered row is recorded under a journal spelling its module's menu does not
+    list — the case `blueprintAvailableFor` documents as reachable and untested, which
+    holds only while the two catalogues name one recipe the same way.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14
     multi-cannons and on both AX multi-cannons; `applyBlueprint` accepts either spelling,
     resolving the journal one against the menu, and folds the clip reduction. Pinned in
-    `fixtures/ships/engineering.json` as `overchargedIdCollision` — three modifier blocks in
-    full, with the medium cannon as the control that takes the same journal id and no clip
-    leg — and in `journalNames`.
+    `fixtures/ships/engineering.json` as `overchargedIdCollision` — three modifier blocks
+    in full, with the medium cannon as the control that takes the same journal id and no
+    clip leg — and in `journalNames`.
 - **An ordinary recipe on a Guardian weapon is a purchase, not an engineer roll.** The
   three Guardian weapon groups list **only** Anti-Guardian Zone Resistance, exactly as the
   six Guardian *module* groups do. They previously also listed one ordinary weapon recipe

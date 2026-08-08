@@ -64,8 +64,8 @@
  * Overcharged that also cuts the clip by 3–15% where the game writes the
  * `Weapon_Overcharged` every other weapon menu lists; `multiCannons` and
  * `antiXenoMultiCannons` list it. The anti-xeno menu takes it on EDSY's word rather than
- * coriolis's, which describes no anti-xeno group at all — see §Multi-cannon Overcharged
- * in SOURCES.md.
+ * coriolis's, which carries no blueprint list for an anti-xeno group — see §Multi-cannon
+ * Overcharged in SOURCES.md.
  *
  * **A menu may list an Operations recipe.** Most Operations ids belong to modules bought
  * already engineered and no menu names them, but four are recipes a player applies: the
