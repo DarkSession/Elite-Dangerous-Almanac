@@ -2156,11 +2156,13 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
 Real builds whose figures came from the game or its tools rather than from this
 library, so the maths is checked against something external. Each is stored verbatim as
 its own fixture, with the expected outputs in a sibling fixture that names it by path —
-where the build is used for metrics. Four below pin no metric. The Corvette is evidence
-about a *recipe*, and what is checked against it is which legs a blueprint folds; two are
-evidence for the outfitting *rules*, and what is checked against them is which module the
-game put in which mount; the Cutter is evidence about *prices*, and what is checked against it is
-that a build fitting an unpriceable module exports no module total and no rebuy.
+where the build is used for metrics. Several pin no metric and are evidence about
+something else. The Corvette is evidence about a *recipe*, and what is checked against it
+is which legs a blueprint folds; the Inara exports are evidence for the outfitting
+*rules*, and what is checked against them is which module the game put in which mount and
+under which slot spelling; the Cutter is evidence about *prices*, and what is checked
+against it is that a build fitting an unpriceable module exports no module total and no
+rebuy.
 
 **What may be taken, and from where.** A capture is Frontier game output — which parts a
 player put in which slots — and it is redistributed here under Frontier's media-usage
@@ -2241,7 +2243,7 @@ under, which is why several are cited above rather than copied.
   Frontier game output redistributed under Frontier's media-usage terms. Stored SHA-256
   `92e01bb62f1aede9c2cd28f5a789a8db1509f3a87c667077aa8402dcbab43b9c`; held byte-for-byte
   as received apart from re-indenting. Its `ShipName` (empty), `ShipIdent`, `ShipID` and
-  `timestamp` are kept, as the other two captures' are — they describe a ship, and nothing
+  `timestamp` are kept, as the other captures' are — they describe a ship, and nothing
   in the event names a person.
 
   **It is the second ground truth for the catalogue's own numbers, on a hull and a drive
