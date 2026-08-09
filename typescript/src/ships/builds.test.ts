@@ -265,7 +265,7 @@ test('every build reproduces its pinned metrics', () => {
         assert.notEqual(loadout.unladenMass, null, `${build.id}: mass`);
         close(loadout.unladenMass!, expected.unladenMass!, `${build.id} unladenMass`);
         assert.equal(loadout.cargoCapacity, expected.cargoCapacity, `${build.id} cargoCapacity`);
-        close(loadout.fuelCapacity.main, expected.fuelCapacity, `${build.id} fuelCapacity`);
+        close(loadout.fuelCapacity!.main, expected.fuelCapacity, `${build.id} fuelCapacity`);
         close(loadout.maxJumpRange(), expected.maxJumpRange!, `${build.id} maxJumpRange`);
 
         const power = loadout.powerBudget();

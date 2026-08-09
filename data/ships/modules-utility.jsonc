@@ -28,6 +28,7 @@
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is a `utility` module, so a loader adds
  * `category: "utility"` from the file it read rather than repeating it 35 times.
+ * `kind` repeats this module's stable engineering-options group when one is published.
  * Identity fields are always present; every stat field is optional, present only
  * where the module has it (masses in tonnes, power in MW, jump ranges in LY).
  * `restrictedToShips` lists the hull(s) a non-armour module is limited to; armour's
@@ -67,6 +68,7 @@
 [
   {
     "symbol": "Hpt_ChaffLauncher_Tiny",
+    "kind": "chaffLaunchers",
     "name": "Chaff Launcher",
     "class": 0,
     "rating": "I",
@@ -86,6 +88,7 @@
   },
   {
     "symbol": "Hpt_ElectronicCountermeasure_Tiny",
+    "kind": "ecms",
     "name": "Electronic Countermeasure",
     "class": 0,
     "rating": "F",
@@ -100,6 +103,7 @@
   },
   {
     "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
+    "kind": "heatSinkLaunchers",
     "name": "Heat Sink Launcher",
     "class": 0,
     "rating": "I",
@@ -118,6 +122,7 @@
   },
   {
     "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
+    "kind": "pointDefence",
     "name": "Point Defence",
     "class": 0,
     "rating": "I",
@@ -145,6 +150,7 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class1",
+    "kind": "manifestScanners",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "E",
@@ -159,6 +165,7 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class2",
+    "kind": "manifestScanners",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "D",
@@ -173,6 +180,7 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class3",
+    "kind": "manifestScanners",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "C",
@@ -187,6 +195,7 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class4",
+    "kind": "manifestScanners",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "B",
@@ -201,6 +210,7 @@
   },
   {
     "symbol": "Hpt_CargoScanner_Size0_Class5",
+    "kind": "manifestScanners",
     "name": "Cargo Scanner",
     "class": 0,
     "rating": "A",
@@ -215,6 +225,7 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class1",
+    "kind": "wakeScanners",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "E",
@@ -229,6 +240,7 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class2",
+    "kind": "wakeScanners",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "D",
@@ -243,6 +255,7 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class3",
+    "kind": "wakeScanners",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "C",
@@ -257,6 +270,7 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class4",
+    "kind": "wakeScanners",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "B",
@@ -271,6 +285,7 @@
   },
   {
     "symbol": "Hpt_CloudScanner_Size0_Class5",
+    "kind": "wakeScanners",
     "name": "Frame Shift Wake Scanner",
     "class": 0,
     "rating": "A",
@@ -285,6 +300,7 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class1",
+    "kind": "killWarrantScanners",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "E",
@@ -299,6 +315,7 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class2",
+    "kind": "killWarrantScanners",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "D",
@@ -313,6 +330,7 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class3",
+    "kind": "killWarrantScanners",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "C",
@@ -327,6 +345,7 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class4",
+    "kind": "killWarrantScanners",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "B",
@@ -341,6 +360,7 @@
   },
   {
     "symbol": "Hpt_CrimeScanner_Size0_Class5",
+    "kind": "killWarrantScanners",
     "name": "Kill Warrant Scanner",
     "class": 0,
     "rating": "A",
@@ -355,6 +375,7 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class1",
+    "kind": "shieldBoosters",
     "name": "Shield Booster",
     "class": 0,
     "rating": "E",
@@ -371,6 +392,7 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class2",
+    "kind": "shieldBoosters",
     "name": "Shield Booster",
     "class": 0,
     "rating": "D",
@@ -387,6 +409,7 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class3",
+    "kind": "shieldBoosters",
     "name": "Shield Booster",
     "class": 0,
     "rating": "C",
@@ -403,6 +426,7 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class4",
+    "kind": "shieldBoosters",
     "name": "Shield Booster",
     "class": 0,
     "rating": "B",
@@ -419,6 +443,7 @@
   },
   {
     "symbol": "Hpt_ShieldBooster_Size0_Class5",
+    "kind": "shieldBoosters",
     "name": "Shield Booster",
     "class": 0,
     "rating": "A",
@@ -549,6 +574,7 @@
   },
   {
     "symbol": "Hpt_CausticSinkLauncher_Turret_Tiny",
+    "kind": "heatSinkLaunchers",
     "name": "Caustic Sink Launcher",
     "class": 0,
     "rating": "I",

@@ -12,16 +12,22 @@ import {
     getBlueprintsForModule,
     getExperimentalsForModule,
     getExperimentalsForBlueprint,
+    type EngineeringOptionGroup,
 } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { BLUEPRINTS } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
-import { getModuleBySymbol } from './modules.js';
+import { getModuleBySymbol, type ModuleKind } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
 import fixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import buildIndex from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
+
+function optionGroup(id: string): EngineeringOptionGroup {
+    assert.ok(Object.hasOwn(ENGINEERING_OPTION_GROUPS, id), `unknown group ${id}`);
+    return ENGINEERING_OPTION_GROUPS[id as ModuleKind];
+}
 
 test('the catalogue holds the expected groups, modules and exclusions', () => {
     assert.equal(Object.keys(ENGINEERING_OPTION_GROUPS).length, fixture.counts.groups);
@@ -63,8 +69,7 @@ test('every group holds the modules, name and menu the fixture pins', () => {
         Object.keys(ENGINEERING_OPTION_GROUPS),
     );
     for (const expected of fixture.groups) {
-        const group = ENGINEERING_OPTION_GROUPS[expected.id];
-        assert.ok(group, `missing group ${expected.id}`);
+        const group = optionGroup(expected.id);
         assert.equal(group.name, expected.name);
         assert.deepEqual([...group.blueprints], expected.blueprints, expected.id);
         assert.deepEqual([...group.experimentals], expected.experimentals, expected.id);
@@ -205,10 +210,10 @@ test('every module in the catalogue is a real module in a real group', () => {
                 'utf8',
             ),
         ),
-    ) as { modules: Record<string, string>; exclusions: Record<string, readonly string[]> };
+    ) as { modules: Record<string, ModuleKind>; exclusions: Record<string, readonly string[]> };
     for (const [symbol, group] of Object.entries(payload.modules)) {
         assert.ok(getModuleBySymbol(symbol, ALL_MODULES), `${symbol} is not a module`);
-        assert.ok(ENGINEERING_OPTION_GROUPS[group], `${symbol}: unknown group ${group}`);
+        assert.equal(optionGroup(group), ENGINEERING_OPTION_GROUPS[group], symbol);
     }
     for (const symbol of Object.keys(payload.exclusions)) {
         assert.ok(payload.modules[symbol], `${symbol} is excluded but not grouped`);
@@ -253,8 +258,8 @@ test('a Guardian variant and its ordinary twin are different groups, not one mer
         // The experimental slot goes with the recipe, not with the kind of module: the
         // ordinary half keeps the family's effects and the Guardian half has none, because
         // Anti-Guardian Zone Resistance is the whole of its menu.
-        assert.deepEqual(ENGINEERING_OPTION_GROUPS[family.guardian.group]!.experimentals, []);
-        assert.ok(ENGINEERING_OPTION_GROUPS[family.ordinary.group]!.experimentals.length > 0);
+        assert.deepEqual(optionGroup(family.guardian.group).experimentals, []);
+        assert.ok(optionGroup(family.ordinary.group).experimentals.length > 0);
     }
 });
 
@@ -269,7 +274,7 @@ test('the one recipe a Guardian module takes offers no experimental effect', () 
         .map(([id]) => id);
     assert.deepEqual(offering, groups);
     for (const id of offering) {
-        assert.deepEqual([...ENGINEERING_OPTION_GROUPS[id]!.experimentals], experimentals, id);
+        assert.deepEqual([...optionGroup(id).experimentals], experimentals, id);
     }
     // The blueprint-level union is empty too, matching the group menus.
     assert.deepEqual(getExperimentalsForBlueprint(blueprint), experimentals);
@@ -310,7 +315,7 @@ test('the blueprint union is a superset of each of its modules', () => {
             string
         >,
     )) {
-        for (const blueprint of ENGINEERING_OPTION_GROUPS[group]!.blueprints) {
+        for (const blueprint of optionGroup(group).blueprints) {
             const union = getExperimentalsForBlueprint(blueprint);
             for (const effect of getExperimentalsForModule(symbol)) {
                 assert.ok(union.includes(effect), `${blueprint}: union misses ${effect}`);

@@ -62,6 +62,7 @@
 
 import optionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
+import type { ModuleKind } from './modules.js';
 
 /** What one group of modules can be engineered with. */
 export interface EngineeringOptionGroup {
@@ -74,8 +75,8 @@ export interface EngineeringOptionGroup {
 }
 
 interface EngineeringOptionData {
-    readonly groups: Readonly<Record<string, EngineeringOptionGroup>>;
-    readonly modules: Readonly<Record<string, string>>;
+    readonly groups: Readonly<Record<ModuleKind, EngineeringOptionGroup>>;
+    readonly modules: Readonly<Record<string, ModuleKind>>;
     readonly exclusions: Readonly<Record<string, readonly string[]>>;
 }
 
@@ -91,7 +92,7 @@ const DATA: EngineeringOptionData = deepFreeze(optionsData as EngineeringOptionD
  * ENGINEERING_OPTION_GROUPS['beamLasers'].experimentals.length; // -> 9
  * ```
  */
-export const ENGINEERING_OPTION_GROUPS: Readonly<Record<string, EngineeringOptionGroup>> =
+export const ENGINEERING_OPTION_GROUPS: Readonly<Record<ModuleKind, EngineeringOptionGroup>> =
     DATA.groups;
 
 const moduleGroup = new Map(
@@ -128,7 +129,7 @@ const moduleExclusions = new Map(
  * getEngineeringGroup('Int_FuelTank_Size3_Class3'); // -> null
  * ```
  */
-export function getEngineeringGroup(symbol: string): string | null {
+export function getEngineeringGroup(symbol: string): ModuleKind | null {
     return moduleGroup.get(symbol.trim().toLowerCase()) ?? null;
 }
 

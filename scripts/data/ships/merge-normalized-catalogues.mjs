@@ -11,6 +11,7 @@ const usage = `Usage:
     --internal-identities <jsonc> --internal-stats <jsonc> \\
     --hardpoint-identities <jsonc> --hardpoint-stats <jsonc> \\
     --utility-identities <jsonc> --utility-stats <jsonc> \\
+    --engineering-options <jsonc> \\
     --out <data/ships>
 
 Inputs are the normalized identity/stat/slot arrays described in
@@ -34,6 +35,15 @@ async function readArray(path) {
   );
   if (!Array.isArray(parsed))
     throw new TypeError(`${path}: expected a top-level array`);
+  return parsed;
+}
+
+async function readObject(path) {
+  const parsed = JSON.parse(
+    stripJsonComments(await readFile(resolve(path), "utf8")),
+  );
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
+    throw new TypeError(`${path}: expected a top-level object`);
   return parsed;
 }
 
@@ -108,6 +118,7 @@ const required = [
   "hardpoint-stats",
   "utility-identities",
   "utility-stats",
+  "engineering-options",
   "out",
 ];
 for (const name of required) {
@@ -126,11 +137,60 @@ const ships = join(
 );
 await writeJsonc(resolve(out, "ships.jsonc"), ships);
 
+const engineeringOptions = await readObject(args.get("engineering-options"));
+if (
+  typeof engineeringOptions.groups !== "object" ||
+  engineeringOptions.groups === null ||
+  Array.isArray(engineeringOptions.groups) ||
+  typeof engineeringOptions.modules !== "object" ||
+  engineeringOptions.modules === null ||
+  Array.isArray(engineeringOptions.modules)
+) {
+  throw new TypeError(
+    `${args.get("engineering-options")}: expected object groups and modules maps`,
+  );
+}
+const kinds = new Map();
+for (const [symbol, kind] of Object.entries(engineeringOptions.modules)) {
+  if (
+    typeof kind !== "string" ||
+    !Object.hasOwn(engineeringOptions.groups, kind)
+  ) {
+    throw new TypeError(
+      `engineering options: ${symbol} names unknown group ${kind}`,
+    );
+  }
+  const key = symbol.toLowerCase();
+  if (kinds.has(key))
+    throw new Error(`engineering options: duplicate symbol ${symbol}`);
+  kinds.set(key, kind);
+}
+
+const moduleOutputs = [];
+const matchedKinds = new Set();
 for (const category of ["core", "internal", "hardpoint", "utility"]) {
   const identities = await readArray(args.get(`${category}-identities`));
   const stats = await readArray(args.get(`${category}-stats`));
-  await writeJsonc(
-    resolve(out, `modules-${category}.jsonc`),
-    join(identities, [stats], [`${category} module stats`]),
+  const records = join(identities, [stats], [`${category} module stats`]).map(
+    (record) => {
+      const kind = kinds.get(record.symbol.toLowerCase());
+      const fields = Object.fromEntries(
+        Object.entries(record).filter(
+          ([field]) => field !== "symbol" && field !== "kind",
+        ),
+      );
+      if (kind === undefined) return { symbol: record.symbol, ...fields };
+      matchedKinds.add(record.symbol.toLowerCase());
+      return { symbol: record.symbol, kind, ...fields };
+    },
   );
+  moduleOutputs.push({ category, records });
+}
+for (const symbol of kinds.keys()) {
+  if (!matchedKinds.has(symbol)) {
+    throw new Error(`engineering options: unmatched module symbol ${symbol}`);
+  }
+}
+for (const { category, records } of moduleOutputs) {
+  await writeJsonc(resolve(out, `modules-${category}.jsonc`), records);
 }

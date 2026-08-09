@@ -180,6 +180,16 @@ test('rebuy is a flat 5% of hull plus modules, truncated', () => {
 
 const krait = kraitJournal as unknown as LoadoutEvent;
 
+test('journal cosmetics are valid non-outfitting entries', () => {
+    const build = ShipLoadout.fromLoadout(krait);
+    assert.equal(build.valid, true);
+    assert.equal(build.complete, true);
+    assert.equal(
+        build.validation.issues.some((issue) => issue.code === 'unknownSlot'),
+        false,
+    );
+});
+
 test('a real journal Loadout event reproduces every figure the game reported', () => {
     const event = ShipLoadout.fromLoadout(krait).toLoadoutEvent();
     assert.deepEqual(Object.keys(event), fixture.kraitPhantom.topLevelKeys);
@@ -289,12 +299,12 @@ test('the classification examples in the fixture come out as the fixture says', 
     }
 });
 
-test('the fixture’s mount patterns agree with the classification in force', () => {
-    // Pins the patterns themselves, so a port reading the fixture draws the same line
-    // through a real journal's 40 slots as this implementation does. The line is drawn
-    // by what the patterns do NOT claim: a key naming no mount holds no module.
+test('the fixture’s mount and non-outfitting patterns agree with the classification', () => {
+    // Pins both sides explicitly: a new slot family matches neither and is unknown.
     const patterns = fixture.classification.outfittingSlotPatterns.map((p) => new RegExp(p));
     const isMount = (slot: string) => patterns.some((p) => p.test(slot.toLowerCase()));
+    const isNonOutfitting = (slot: string) =>
+        new RegExp(fixture.classification.nonOutfittingSlotPattern).test(slot.toLowerCase());
     assert.deepEqual(
         krait.Modules.map((m) => m.Slot).filter((s) => !isMount(s)),
         fixture.kraitPhantom.nonOutfittingSlots,
@@ -323,6 +333,11 @@ test('the fixture’s mount patterns agree with the classification in force', ()
     for (const slot of checked) {
         assert.equal(isMount(slot), parseSlotName(slot) !== null, slot);
     }
+    for (const slot of fixture.kraitPhantom.nonOutfittingSlots) {
+        assert.equal(isNonOutfitting(slot), true, slot);
+    }
+    assert.equal(isMount('FutureMount'), false);
+    assert.equal(isNonOutfitting('FutureMount'), false);
 
     // A pattern nothing above matches is a pattern this test does not pin, and an
     // unpinned one fails *silently*: the fixture names the mounts, so a pattern a port
@@ -334,7 +349,7 @@ test('the fixture’s mount patterns agree with the classification in force', ()
     assert.deepEqual(unexercised, []);
 });
 
-test('a decoration is recognised by naming no mount, not by appearing in a fixture', () => {
+test('open-ended decoration families recognise slots not appearing in a fixture', () => {
     // A third decal, a tenth bobble, a lower-cased slot key: all fittings the corpus
     // happens not to hold, and none of them may move a figure.
     const dressed: LoadoutEvent = {

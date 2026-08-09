@@ -71,6 +71,74 @@ import type { ModuleSlot, SlotRestriction } from './slots.js';
  */
 export type ModuleCategory = 'core' | 'internal' | 'hardpoint' | 'utility';
 
+/**
+ * A stable gameplay family for an engineerable module.
+ *
+ * @remarks
+ * These ids are the keys used by the shared engineering-options catalogue. They are
+ * more precise than {@link ModuleCategory}: a category says which outfitting tab a
+ * module appears under, while a kind identifies the family whose stats and engineering
+ * menu it shares. Guardian variants are separate kinds when their menus differ.
+ *
+ * A module with no published engineering family carries `kind: null`; do not infer a
+ * kind from its symbol. This explicit absence distinguishes an unclassified module from
+ * a misspelled or newly introduced id.
+ */
+export type ModuleKind =
+    | 'powerPlants'
+    | 'guardianPowerPlants'
+    | 'thrusters'
+    | 'frameShiftDrives'
+    | 'powerDistributors'
+    | 'guardianPowerDistributors'
+    | 'frameShiftDrivesSCO'
+    | 'shieldGenerators'
+    | 'shieldCellBanks'
+    | 'hullReinforcements'
+    | 'guardianHullReinforcements'
+    | 'pulseLasers'
+    | 'burstLasers'
+    | 'beamLasers'
+    | 'cannons'
+    | 'fragmentCannons'
+    | 'multiCannons'
+    | 'plasmaAccelerators'
+    | 'railGuns'
+    | 'missiles'
+    | 'mines'
+    | 'torpedoes'
+    | 'miningToolsLasers'
+    | 'antiXenoMultiCannons'
+    | 'shieldBoosters'
+    | 'bulkheads'
+    | 'lifeSupports'
+    | 'sensors'
+    | 'autoFieldMaintenanceUnits'
+    | 'cargoRacks'
+    | 'collectionLimpets'
+    | 'fsdBoosters'
+    | 'fsdInterdictors'
+    | 'fuelScoops'
+    | 'fuelTransferLimpets'
+    | 'hatchBreakerLimpets'
+    | 'moduleReinforcements'
+    | 'prospectingLimpets'
+    | 'refineries'
+    | 'shieldReinforcements'
+    | 'surfaceScanners'
+    | 'chaffLaunchers'
+    | 'ecms'
+    | 'heatSinkLaunchers'
+    | 'killWarrantScanners'
+    | 'manifestScanners'
+    | 'pointDefence'
+    | 'wakeScanners'
+    | 'experimentalWeapons'
+    | 'antiXenoMissileRacks'
+    | 'guardianGauss'
+    | 'guardianPlasma'
+    | 'guardianShard';
+
 /** How a hardpoint weapon is aimed. Only hardpoint modules carry a mount. */
 export type ModuleMount = 'Fixed' | 'Gimballed' | 'Turreted';
 
@@ -196,6 +264,11 @@ export interface OutfittingModule {
      * the resulting string.
      */
     readonly category: ModuleCategory;
+    /**
+     * Stable gameplay family, or `null` when no source classifies this module in an
+     * engineering family. See {@link ModuleKind}.
+     */
+    readonly kind: ModuleKind | null;
     /**
      * The one fixed mount this module fills, when it fills one: `'armour'` or one of
      * the seven {@link CoreSlotType} core functions.

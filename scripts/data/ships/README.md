@@ -12,6 +12,9 @@ per catalogue in `data/ships/SOURCES.md`.
 the checked-in ship and module catalogues. It keeps identity order and identity
 fields authoritative, joins case-insensitively on `symbol`, rejects duplicate or
 unmatched records, and preserves each output JSONC file's attribution header.
+It also projects the engineering-options module-group map into each grouped module's
+`kind` field; ungrouped modules omit the field and the TypeScript loader exposes it as
+`null`.
 
 Every input is an array of objects carrying a string `symbol`, and nothing else is
 required of them. The identity array fixes the output order, and each stat or slot
@@ -34,6 +37,10 @@ stat record whose symbol no identity carries, is an error rather than a silent d
   distributors, and nowhere else. See `data/ships/SOURCES.md` §Modules (outfitting);
 - module stats (`--<category>-stats`): `{ symbol, mass?, integrity?, powerDraw?, … }`
   — sparse, each record carrying only the stats its module group uses.
+- engineering options (`--engineering-options`): the checked-in
+  `data/ships/engineering-options.jsonc`; every `modules` value must name a `groups`
+  key, and every mapped symbol must match one module identity. Its group id becomes
+  that module's `kind`.
 
 `data/ships/SOURCES.md` records where each field came from and how it was normalized;
 this file describes only the join.
@@ -54,6 +61,7 @@ node scripts/data/ships/merge-normalized-catalogues.mjs \
   --hardpoint-stats tmp/module-stats-hardpoint.json \
   --utility-identities tmp/modules-utility.json \
   --utility-stats tmp/module-stats-utility.json \
+  --engineering-options data/ships/engineering-options.jsonc \
   --out data/ships
 ```
 

@@ -1,5 +1,6 @@
 /**
- * **SLEF** — the Ship Loadout Export Format — types and a tolerant parser.
+ * **SLEF** — the Ship Loadout Export Format — types, a strict parser and a tolerant
+ * inspector.
  *
  * SLEF is the community interchange format for a fitted ship, used by EDSY,
  * Coriolis, Inara and others. It is nothing more than the game journal's `Loadout`
@@ -216,82 +217,261 @@ const isOptionalIntegerInRange = (
     );
 };
 
-function isEngineeringModifier(value: unknown): value is EngineeringModifier {
-    if (!isRecord(value) || typeof value.Label !== 'string') return false;
-    return (
-        isOptionalFiniteNumber(value.Value) &&
-        isOptionalFiniteNumber(value.OriginalValue) &&
-        isOptionalString(value.ValueStr) &&
-        isOptionalIntegerInRange(value.LessIsGood, 0, 1)
-    );
+interface InvalidSlefField {
+    readonly code: Exclude<SlefDiagnosticCode, 'duplicateSlot'>;
+    readonly path: string;
+    readonly reason: string;
 }
 
-function isModuleEngineering(value: unknown): value is ModuleEngineering {
-    if (!isRecord(value)) return false;
-    return (
-        typeof value.BlueprintName === 'string' &&
-        isOptionalIntegerInRange(value.Level, 1, 5) &&
-        value.Level !== undefined &&
-        isOptionalNumberInRange(value.Quality, 0, 1) &&
-        value.Quality !== undefined &&
-        isOptionalString(value.ExperimentalEffect) &&
-        isOptionalString(value.ExperimentalEffect_Localised) &&
-        // Not required by SLEF — see ModuleEngineering.Modifiers. Rejecting a block
-        // without one would make this parser unable to read the spec's own example.
-        (value.Modifiers === undefined ||
-            (Array.isArray(value.Modifiers) && value.Modifiers.every(isEngineeringModifier)))
-    );
+const invalid = (
+    code: InvalidSlefField['code'],
+    path: string,
+    reason: string,
+): InvalidSlefField => ({ code, path, reason });
+
+function diagnoseEngineering(value: unknown, path: string): InvalidSlefField | null {
+    if (!isRecord(value)) return invalid('invalidEngineering', path, 'must be an object');
+    if (typeof value.BlueprintName !== 'string')
+        return invalid('invalidEngineering', `${path}.BlueprintName`, 'must be a string');
+    if (!isOptionalIntegerInRange(value.Level, 1, 5) || value.Level === undefined)
+        return invalid('invalidEngineering', `${path}.Level`, 'must be an integer from 1 to 5');
+    if (!isOptionalNumberInRange(value.Quality, 0, 1) || value.Quality === undefined)
+        return invalid('invalidEngineering', `${path}.Quality`, 'must be a number from 0 to 1');
+    if (!isOptionalString(value.ExperimentalEffect))
+        return invalid('invalidEngineering', `${path}.ExperimentalEffect`, 'must be a string');
+    if (!isOptionalString(value.ExperimentalEffect_Localised))
+        return invalid(
+            'invalidEngineering',
+            `${path}.ExperimentalEffect_Localised`,
+            'must be a string',
+        );
+    if (value.Modifiers !== undefined) {
+        if (!Array.isArray(value.Modifiers))
+            return invalid('invalidEngineering', `${path}.Modifiers`, 'must be an array');
+        for (let index = 0; index < value.Modifiers.length; index += 1) {
+            const modifier = value.Modifiers[index];
+            const modifierPath = `${path}.Modifiers[${index}]`;
+            if (!isRecord(modifier))
+                return invalid('invalidEngineering', modifierPath, 'must be an object');
+            if (typeof modifier.Label !== 'string')
+                return invalid('invalidEngineering', `${modifierPath}.Label`, 'must be a string');
+            if (!isOptionalFiniteNumber(modifier.Value))
+                return invalid(
+                    'invalidEngineering',
+                    `${modifierPath}.Value`,
+                    'must be a finite number',
+                );
+            if (!isOptionalFiniteNumber(modifier.OriginalValue))
+                return invalid(
+                    'invalidEngineering',
+                    `${modifierPath}.OriginalValue`,
+                    'must be a finite number',
+                );
+            if (!isOptionalString(modifier.ValueStr))
+                return invalid(
+                    'invalidEngineering',
+                    `${modifierPath}.ValueStr`,
+                    'must be a string',
+                );
+            if (!isOptionalIntegerInRange(modifier.LessIsGood, 0, 1))
+                return invalid(
+                    'invalidEngineering',
+                    `${modifierPath}.LessIsGood`,
+                    'must be 0 or 1',
+                );
+        }
+    }
+    return null;
 }
 
-function isLoadoutModule(value: unknown): value is LoadoutModule {
-    if (!isRecord(value)) return false;
-    return (
-        typeof value.Slot === 'string' &&
-        typeof value.Item === 'string' &&
-        (value.On === undefined || typeof value.On === 'boolean') &&
-        isOptionalIntegerInRange(value.Priority, 0, 4) &&
-        isOptionalNumberInRange(value.Health, 0, 1) &&
-        isOptionalNumberInRange(value.Value, 0) &&
-        (value.Engineering === undefined || isModuleEngineering(value.Engineering))
-    );
+function diagnoseModule(value: unknown, path: string): InvalidSlefField | null {
+    if (!isRecord(value)) return invalid('invalidModule', path, 'must be an object');
+    if (typeof value.Slot !== 'string')
+        return invalid('invalidModule', `${path}.Slot`, 'must be a string');
+    if (typeof value.Item !== 'string')
+        return invalid('invalidModule', `${path}.Item`, 'must be a string');
+    if (value.On !== undefined && typeof value.On !== 'boolean')
+        return invalid('invalidModule', `${path}.On`, 'must be a boolean');
+    if (!isOptionalIntegerInRange(value.Priority, 0, 4))
+        return invalid('invalidModule', `${path}.Priority`, 'must be an integer from 0 to 4');
+    if (!isOptionalNumberInRange(value.Health, 0, 1))
+        return invalid('invalidModule', `${path}.Health`, 'must be a number from 0 to 1');
+    if (!isOptionalNumberInRange(value.Value, 0))
+        return invalid('invalidModule', `${path}.Value`, 'must be a non-negative number');
+    if (value.Engineering !== undefined)
+        return diagnoseEngineering(value.Engineering, `${path}.Engineering`);
+    return null;
 }
 
+function diagnoseHeader(value: unknown, path: string): InvalidSlefField | null {
+    if (!isRecord(value)) return invalid('invalidHeader', path, 'must be an object');
+    if (typeof value.appName !== 'string')
+        return invalid('invalidHeader', `${path}.appName`, 'must be a string');
+    if (
+        typeof value.appVersion !== 'string' &&
+        !(typeof value.appVersion === 'number' && Number.isFinite(value.appVersion))
+    )
+        return invalid('invalidHeader', `${path}.appVersion`, 'must be a string or finite number');
+    if (!isOptionalString(value.appURL))
+        return invalid('invalidHeader', `${path}.appURL`, 'must be a string');
+    if (value.appCustomProperties !== undefined && !isRecord(value.appCustomProperties))
+        return invalid('invalidHeader', `${path}.appCustomProperties`, 'must be an object');
+    return null;
+}
+
+function diagnoseLoadout(value: unknown, path: string): InvalidSlefField | null {
+    if (!isRecord(value)) return invalid('invalidLoadout', path, 'must be an object');
+    if (typeof value.Ship !== 'string')
+        return invalid('invalidLoadout', `${path}.Ship`, 'must be a string');
+    if (!Array.isArray(value.Modules))
+        return invalid('invalidLoadout', `${path}.Modules`, 'must be an array');
+    if (value.event !== undefined && value.event !== 'Loadout')
+        return invalid('invalidLoadout', `${path}.event`, 'must be "Loadout"');
+    for (const field of ['ShipName', 'ShipIdent'] as const) {
+        if (!isOptionalString(value[field]))
+            return invalid('invalidLoadout', `${path}.${field}`, 'must be a string');
+    }
+    for (const field of [
+        'HullValue',
+        'ModulesValue',
+        'UnladenMass',
+        'CargoCapacity',
+        'MaxJumpRange',
+        'Rebuy',
+    ] as const) {
+        if (!isOptionalNumberInRange(value[field], 0))
+            return invalid('invalidLoadout', `${path}.${field}`, 'must be a non-negative number');
+    }
+    if (value.FuelCapacity !== undefined) {
+        if (!isRecord(value.FuelCapacity))
+            return invalid('invalidLoadout', `${path}.FuelCapacity`, 'must be an object');
+        for (const field of ['Main', 'Reserve'] as const) {
+            if (
+                !isOptionalNumberInRange(value.FuelCapacity[field], 0) ||
+                value.FuelCapacity[field] === undefined
+            )
+                return invalid(
+                    'invalidLoadout',
+                    `${path}.FuelCapacity.${field}`,
+                    'must be a non-negative number',
+                );
+        }
+    }
+    for (let index = 0; index < value.Modules.length; index += 1) {
+        const moduleDiagnostic = diagnoseModule(value.Modules[index], `${path}.Modules[${index}]`);
+        if (moduleDiagnostic !== null) return moduleDiagnostic;
+    }
+    return null;
+}
+
+/** Boolean acceptance is derived from the same diagnostics exposed to consumers. */
 function isSlefHeader(value: unknown): value is SlefHeader {
-    if (!isRecord(value)) return false;
-    return (
-        typeof value.appName === 'string' &&
-        (typeof value.appVersion === 'string' ||
-            (typeof value.appVersion === 'number' && Number.isFinite(value.appVersion))) &&
-        isOptionalString(value.appURL) &&
-        (value.appCustomProperties === undefined || isRecord(value.appCustomProperties))
-    );
+    return diagnoseHeader(value, 'header') === null;
 }
 
+/** Boolean acceptance is derived from the same diagnostics exposed to consumers. */
 function isLoadout(value: unknown): value is LoadoutEvent {
-    if (!isRecord(value)) return false;
-    const fuel = value.FuelCapacity;
-    const validFuel =
-        fuel === undefined ||
-        (isRecord(fuel) &&
-            isOptionalNumberInRange(fuel.Main, 0) &&
-            fuel.Main !== undefined &&
-            isOptionalNumberInRange(fuel.Reserve, 0) &&
-            fuel.Reserve !== undefined);
-    return (
-        typeof value.Ship === 'string' &&
-        Array.isArray(value.Modules) &&
-        value.Modules.every(isLoadoutModule) &&
-        (value.event === undefined || value.event === 'Loadout') &&
-        isOptionalString(value.ShipName) &&
-        isOptionalString(value.ShipIdent) &&
-        isOptionalNumberInRange(value.HullValue, 0) &&
-        isOptionalNumberInRange(value.ModulesValue, 0) &&
-        isOptionalNumberInRange(value.UnladenMass, 0) &&
-        isOptionalNumberInRange(value.CargoCapacity, 0) &&
-        isOptionalNumberInRange(value.MaxJumpRange, 0) &&
-        validFuel &&
-        isOptionalNumberInRange(value.Rebuy, 0)
-    );
+    return diagnoseLoadout(value, 'loadout') === null;
+}
+
+function duplicateSlot(loadout: LoadoutEvent): { slot: string; moduleIndex: number } | null {
+    const seen = new Set<string>();
+    for (let moduleIndex = 0; moduleIndex < loadout.Modules.length; moduleIndex += 1) {
+        const module = loadout.Modules[moduleIndex]!;
+        const slot = module.Slot.toLowerCase();
+        if (seen.has(slot)) return { slot: module.Slot, moduleIndex };
+        seen.add(slot);
+    }
+    return null;
+}
+
+/** Stable machine-readable reason an entry was rejected. */
+export type SlefDiagnosticCode =
+    'invalidHeader' | 'invalidLoadout' | 'invalidModule' | 'invalidEngineering' | 'duplicateSlot';
+
+/** One entry rejected by {@link inspectSlef}. */
+export interface SlefDiagnostic {
+    /** Zero-based entry index in the top-level array. */
+    readonly index: number;
+    /** Stable machine-readable category. */
+    readonly code: SlefDiagnosticCode;
+    /** Property path to the rejected value, including entry and module indexes. */
+    readonly path: string;
+    /** Human-readable reason the entry was rejected. */
+    readonly message: string;
+}
+
+/** Tolerant SLEF inspection result. */
+export interface SlefInspection {
+    /** Valid entries, retaining their input order. */
+    readonly entries: readonly SlefEntry[];
+    /** Rejected entries, retaining their input order. */
+    readonly diagnostics: readonly SlefDiagnostic[];
+}
+
+/**
+ * Inspect a potentially mixed SLEF payload without silently losing malformed entries.
+ *
+ * @param input - A JSON string, SLEF envelope/array, or bare `Loadout` event.
+ * @returns Every valid entry and an indexed diagnostic for every rejected entry.
+ * @throws {SyntaxError} If a string is not valid JSON.
+ * @example
+ * ```ts
+ * const result = inspectSlef([{ Ship: 'sidewinder', Modules: [{ Slot: 'PowerPlant' }] }]);
+ * result.diagnostics[0]?.path; // -> 'entries[0].Modules[0].Item'
+ * ```
+ */
+export function inspectSlef(input: string | object): SlefInspection {
+    const root: unknown = typeof input === 'string' ? JSON.parse(input) : input;
+    const rawEntries: unknown[] = Array.isArray(root) ? root : [root];
+    const entries: SlefEntry[] = [];
+    const diagnostics: SlefDiagnostic[] = [];
+
+    rawEntries.forEach((raw, index) => {
+        const entryPath = `entries[${index}]`;
+        let header: SlefHeader | null = null;
+        let loadout: LoadoutEvent | null = null;
+        if (isLoadout(raw)) {
+            header = SYNTHETIC_HEADER;
+            loadout = raw;
+        } else if (isRecord(raw) && isLoadout(raw.data)) {
+            if (isSlefHeader(raw.header)) {
+                header = raw.header;
+                loadout = raw.data;
+            }
+        }
+
+        if (header === null || loadout === null) {
+            const envelope = isRecord(raw) && ('header' in raw || 'data' in raw);
+            const detail = envelope
+                ? (diagnoseHeader(isRecord(raw) ? raw.header : null, `${entryPath}.header`) ??
+                  diagnoseLoadout(isRecord(raw) ? raw.data : null, `${entryPath}.data`))
+                : diagnoseLoadout(raw, entryPath);
+            diagnostics.push({
+                index,
+                code: detail?.code ?? 'invalidLoadout',
+                path: detail?.path ?? entryPath,
+                message: `${detail?.path ?? entryPath} ${detail?.reason ?? 'is not a valid Loadout event'}`,
+            });
+            return;
+        }
+        const duplicate = duplicateSlot(loadout);
+        if (duplicate !== null) {
+            diagnostics.push({
+                index,
+                code: 'duplicateSlot',
+                path: `${entryPath}${isLoadout(raw) ? '' : '.data'}.Modules[${duplicate.moduleIndex}].Slot`,
+                message: `Entry ${index} contains duplicate slot "${duplicate.slot}"`,
+            });
+            return;
+        }
+        entries.push({ header, data: loadout });
+    });
+
+    return Object.freeze({
+        entries: Object.freeze(entries),
+        diagnostics: Object.freeze(diagnostics),
+    });
 }
 
 /**
@@ -304,12 +484,13 @@ function isLoadout(value: unknown): value is LoadoutEvent {
  * - a bare journal `Loadout` event (`{ Ship, Modules, ... }`) — wrapped in an entry
  *   with an empty synthetic header.
  * Every returned header, loadout, module and engineering modifier is runtime-checked
- * against the public record shape; malformed entries are skipped.
+ * against the public record shape. Parsing is strict: one malformed entry rejects the
+ * whole payload. Use {@link inspectSlef} to recover valid entries from a mixed payload.
  * @returns The entries, in export order — never empty (a parse that finds no valid
  * entry throws instead).
  * @throws {SyntaxError} If `input` is a string that is not valid JSON.
- * @throws {TypeError} If nothing in `input` is a usable loadout (no `Ship` /
- * `Modules`).
+ * @throws {TypeError} If the payload is empty or any entry, header, loadout, module or
+ * engineering field is malformed.
  * @example
  * ```ts
  * const [entry] = parseSlef(slefJsonString);
@@ -317,25 +498,14 @@ function isLoadout(value: unknown): value is LoadoutEvent {
  * ```
  */
 export function parseSlef(input: string | object): SlefEntry[] {
-    const root: unknown = typeof input === 'string' ? JSON.parse(input) : input;
-    const rawEntries: unknown[] = Array.isArray(root) ? root : [root];
-
-    const entries: SlefEntry[] = [];
-    for (const raw of rawEntries) {
-        if (isLoadout(raw)) {
-            entries.push({ header: SYNTHETIC_HEADER, data: raw });
-            continue;
-        }
-        if (isRecord(raw) && isLoadout(raw.data)) {
-            const header = raw.header ?? SYNTHETIC_HEADER;
-            if (isSlefHeader(header)) entries.push({ header, data: raw.data });
-        }
+    const inspected = inspectSlef(input);
+    if (inspected.diagnostics.length > 0) {
+        throw new TypeError(`parseSlef: ${inspected.diagnostics[0]!.message}`);
     }
-
-    if (entries.length === 0) {
-        throw new TypeError('parseSlef: input holds no Loadout (needs a `Ship` and `Modules`)');
+    if (inspected.entries.length === 0) {
+        throw new TypeError('parseSlef: input holds no entries');
     }
-    return entries;
+    return [...inspected.entries];
 }
 
 /** Options for {@link stringifySlef}. */
@@ -393,6 +563,10 @@ export function toSlef(data: LoadoutEvent | readonly LoadoutEvent[], header?: Sl
             throw new TypeError(
                 `toSlef: entry ${index} is not a valid Loadout (needs a \`Ship\` and \`Modules\`)`,
             );
+        }
+        const duplicate = duplicateSlot(event);
+        if (duplicate !== null) {
+            throw new TypeError(`toSlef: entry ${index} contains duplicate slot "${duplicate}"`);
         }
         return { header: chosen, data: event };
     });

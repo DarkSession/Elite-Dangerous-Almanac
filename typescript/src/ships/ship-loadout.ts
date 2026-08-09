@@ -115,10 +115,39 @@ import { FittedModule } from './fitted-module.js';
 import { LoadoutSlot } from './loadout-slot.js';
 import { SourcePurchaseRecord } from './source-purchase.js';
 import { deepFreeze } from '../deep-freeze.js';
+import {
+    calculateCargoCapacity,
+    calculateFuelCapacity,
+    calculateUnladenMass,
+    type CalculationResult,
+    type LoadoutCalculationModule,
+} from './loadout-calculations.js';
+import {
+    validateLoadout,
+    type LoadoutValidation,
+    type ValidationModule,
+} from './loadout-validation.js';
 
 export { FittedModule } from './fitted-module.js';
 export { LoadoutSlot } from './loadout-slot.js';
 export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
+export {
+    calculateCargoCapacity,
+    calculateFuelCapacity,
+    calculateUnladenMass,
+    type CalculationIssue,
+    type CalculationResult,
+    type CalculatedFuelCapacity,
+    type LoadoutCalculationModule,
+} from './loadout-calculations.js';
+export {
+    validateLoadout,
+    type LoadoutIssue,
+    type LoadoutIssueCode,
+    type LoadoutValidation,
+    type LoadoutValidationInput,
+    type ValidationModule,
+} from './loadout-validation.js';
 
 /** A ship's fuel-tank capacities, in tonnes. */
 export interface FuelCapacity {
@@ -127,6 +156,8 @@ export interface FuelCapacity {
     /** Reserve tank capacity — the small emergency reserve. */
     readonly reserve: number;
 }
+
+const NO_CALCULATION_ISSUES: readonly [] = Object.freeze([]);
 
 /** Optional mass overrides for a single calculation. */
 export interface JumpOptions {
@@ -415,25 +446,30 @@ function moduleSlotError(slot: BuildSlot, module: OutfittingModule): string | nu
  * and string lights. None is an outfitting module — the catalogues deliberately do not
  * carry them (see `data/ships/SOURCES.md`) — and all contribute neither mass nor credits.
  *
- * The test is {@link parseSlotName}: a key it cannot classify names no mount this
- * library fits modules into, so nothing there can carry mass or a list price. There is
- * no separate list of decoration slot families to keep in step with the game — a
- * nameplate style or bobble Frontier ships next year is handled the day it appears.
+ * The families are explicit so a genuinely new outfitting mount is unknown rather than
+ * silently weightless and free. Numbered decals, bobbles and nameplates remain open-ended
+ * within their known families.
  *
  * The catalogue is consulted **first**, which is what keeps this safe: an article the
  * catalogue can identify contributes its mass and price whatever its slot is called, so
  * this question is only ever asked about an article nothing recognises. It is reached by
- * a genuinely new *outfitting* family — a new mount holding a module no catalogue here
- * carries — and there such a module reads as weightless and free rather than unknown.
- * That is the accepted cost of not hand-maintaining the other list; a fitted module the
- * catalogue knows is unaffected either way. See {@link ShipLoadout.toLoadoutEvent}.
+ * a genuinely new fitting family and the slot is not one of these known cosmetic/hull
+ * families, the module is unknown. See {@link ShipLoadout.toLoadoutEvent}.
  *
- * Casing is not what makes a key unfamiliar: `parseSlotName` classifies lower-cased, so
- * a producer that writes `frameshiftdrive` is read as a mount exactly as the journal's
- * `FrameShiftDrive` is.
+ * Matching is case-insensitive, like every slot API in this module.
  */
 function isNonOutfittingSlot(slotKey: string): boolean {
-    return parseSlotName(slotKey) === null;
+    return /^(paintjob|shipname\d+|shipid\d+|bobble\d+|decal\d+|shipkit.+|weaponcolour|enginecolour|vesselvoice|shipcockpit|stringlights)$/i.test(
+        slotKey,
+    );
+}
+
+/** The zero-mass, zero-price cargo hatch built into every hull. */
+function isBuiltInHullModule(module: LoadoutModule): boolean {
+    return (
+        module.Slot.toLowerCase() === 'cargohatch' &&
+        module.Item.toLowerCase().startsWith('modularcargobaydoor')
+    );
 }
 
 /** Detach a journal module from caller-owned and returned mutable objects. */
@@ -607,7 +643,15 @@ export class ShipLoadout {
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
         const modules = new Map<string, LoadoutModule>();
-        for (const m of event.Modules) modules.set(m.Slot, cloneLoadoutModule(m));
+        const slots = new Set<string>();
+        for (const m of event.Modules) {
+            const normalizedSlot = m.Slot.toLowerCase();
+            if (slots.has(normalizedSlot)) {
+                throw new TypeError(`ShipLoadout.fromLoadout: duplicate slot "${m.Slot}"`);
+            }
+            slots.add(normalizedSlot);
+            modules.set(m.Slot, cloneLoadoutModule(m));
+        }
         const top: TopFigures = {};
         if (event.ShipName !== undefined) top.ShipName = event.ShipName;
         if (event.ShipIdent !== undefined) top.ShipIdent = event.ShipIdent;
@@ -684,8 +728,8 @@ export class ShipLoadout {
 
     /**
      * Hull + modules mass with an empty tank and no cargo, in tonnes, or `null` if it
-     * cannot be determined (no `UnladenMass` in the export and the hull's mass is not
-     * in the stats catalogue).
+     * cannot be determined (no `UnladenMass` in the export and either the hull or a
+     * fitted module has no known mass).
      *
      * @remarks
      * A SLEF export's `UnladenMass` is trusted verbatim. Otherwise the mass is the
@@ -693,7 +737,27 @@ export class ShipLoadout {
      * at the zero-mass lightweight default.
      */
     get unladenMass(): number | null {
-        return this.#top.UnladenMass ?? this.#computedUnladenMass();
+        return this.unladenMassResult.value;
+    }
+
+    /**
+     * Unladen mass with diagnostics for every missing input.
+     *
+     * @returns A complete imported or computed mass, otherwise `null` plus the hull or
+     * module fields that prevented the calculation.
+     */
+    get unladenMassResult(): CalculationResult<number> {
+        if (this.#top.UnladenMass !== undefined) {
+            return Object.freeze({
+                value: this.#top.UnladenMass,
+                complete: true,
+                issues: NO_CALCULATION_ISSUES,
+            });
+        }
+        return calculateUnladenMass(
+            getShipBySymbol(this.#shipSymbol)?.hullMass ?? null,
+            this.#calculationModules(),
+        );
     }
 
     /**
@@ -701,35 +765,66 @@ export class ShipLoadout {
      * an import supplied. `null` when the hull's mass or any module's is unknown.
      */
     #computedUnladenMass(): number | null {
-        const hull = getShipBySymbol(this.#shipSymbol);
-        if (!hull || hull.hullMass === undefined) return null;
-        let mass = hull.hullMass;
-        for (const m of this.#modules.values()) {
-            const moduleMass = this.#moduleMass(m);
-            if (moduleMass === null) return null;
-            mass += moduleMass;
-        }
-        return mass;
+        return calculateUnladenMass(
+            getShipBySymbol(this.#shipSymbol)?.hullMass ?? null,
+            this.#calculationModules(),
+        ).value;
     }
 
     /**
-     * Fuel-tank capacities, in tonnes. A SLEF export's `FuelCapacity` is used when
-     * present; otherwise the main capacity is the sum of the fitted fuel tanks and the
-     * reserve comes from the hull's stats.
+     * Fuel-tank capacities, in tonnes, or `null` when a tank or the hull's reserve
+     * capacity is unknown. A SLEF export's `FuelCapacity` is used when present;
+     * otherwise the main capacity is the sum of the fitted fuel tanks and the reserve
+     * comes from the hull's stats.
      */
-    get fuelCapacity(): FuelCapacity {
+    get fuelCapacity(): FuelCapacity | null {
+        return this.fuelCapacityResult.value;
+    }
+
+    /** Fuel capacity with diagnostics instead of unknown tanks collapsing to zero. */
+    get fuelCapacityResult(): CalculationResult<FuelCapacity> {
         const cap = this.#top.FuelCapacity;
-        const main = cap?.Main ?? this.#sumFuelTanks();
-        const reserve = cap?.Reserve ?? getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity ?? 0;
-        return { main, reserve };
+        if (cap?.Main !== undefined && cap.Reserve !== undefined) {
+            return Object.freeze({
+                value: Object.freeze({ main: cap.Main, reserve: cap.Reserve }),
+                complete: true,
+                issues: NO_CALCULATION_ISSUES,
+            });
+        }
+        const computed = calculateFuelCapacity(
+            getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity ?? null,
+            this.#calculationModules(),
+        );
+        if (computed.value === null) return computed;
+        return Object.freeze({
+            value: Object.freeze({
+                main: cap?.Main ?? computed.value.main,
+                reserve: cap?.Reserve ?? computed.value.reserve,
+            }),
+            complete: true,
+            issues: NO_CALCULATION_ISSUES,
+        });
     }
 
     /**
-     * Cargo capacity, in tonnes. A SLEF export's `CargoCapacity` is used when present;
-     * otherwise it is the sum of the fitted cargo racks.
+     * Cargo capacity, in tonnes, or `null` when a fitted optional module cannot be
+     * classified. A SLEF export's `CargoCapacity` is used when present; otherwise it is
+     * the sum of the fitted cargo racks.
      */
-    get cargoCapacity(): number {
-        return this.#top.CargoCapacity ?? this.#computedCargoCapacity() ?? 0;
+    get cargoCapacity(): number | null {
+        return this.cargoCapacityResult.value;
+    }
+
+    /** Cargo capacity with diagnostics instead of unknown racks collapsing to zero. */
+    get cargoCapacityResult(): CalculationResult<number> {
+        if (this.#top.CargoCapacity !== undefined) {
+            return Object.freeze({
+                value: this.#top.CargoCapacity,
+                complete: true,
+                issues: NO_CALCULATION_ISSUES,
+            });
+        }
+        return calculateCargoCapacity(this.#calculationModules());
     }
 
     /**
@@ -738,13 +833,7 @@ export class ShipLoadout {
      * would understate it.
      */
     #computedCargoCapacity(): number | null {
-        let sum = 0;
-        for (const m of this.#modules.values()) {
-            const capacity = this.#moduleCapacity(m, 'CargoCapacity', 'cargoCapacity');
-            if (capacity === null) return null;
-            sum += capacity;
-        }
-        return sum;
+        return calculateCargoCapacity(this.#calculationModules()).value;
     }
 
     /**
@@ -752,15 +841,10 @@ export class ShipLoadout {
      * if a tank is unknown or the hull's reserve is (an unrecognised hull).
      */
     #computedFuelCapacity(): FuelCapacity | null {
-        const reserve = getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity;
-        if (reserve === undefined) return null;
-        let main = 0;
-        for (const m of this.#modules.values()) {
-            const capacity = this.#moduleCapacity(m, 'FuelCapacity', 'fuelCapacity');
-            if (capacity === null) return null;
-            main += capacity;
-        }
-        return { main, reserve };
+        return calculateFuelCapacity(
+            getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity ?? null,
+            this.#calculationModules(),
+        ).value;
     }
 
     /**
@@ -831,6 +915,44 @@ export class ShipLoadout {
     /** The fitted modules, in the order they were added / exported. */
     get modules(): readonly LoadoutModule[] {
         return [...this.#modules.values()].map(cloneLoadoutModule);
+    }
+
+    /**
+     * Structural validity and operational completeness of this build.
+     *
+     * @remarks
+     * Optional, hardpoint and utility mounts may be empty. Armour and all seven core
+     * mounts must be filled for `complete` to be true. An unknown hull or module is
+     * incomplete; a module in a nonexistent or incompatible slot is invalid.
+     */
+    get validation(): LoadoutValidation {
+        const layout = getShipSlots(this.#shipSymbol);
+        const slots = layout ? enumerateSlots(layout) : null;
+        const byKey = new Map(slots?.map((slot) => [slot.key.toLowerCase(), slot]) ?? []);
+        const modules: ValidationModule[] = [...this.#modules.values()].map((module) => {
+            const stats = this.#statsFor(module);
+            const slot = byKey.get(module.Slot.toLowerCase());
+            const builtIn =
+                (stats === null && isNonOutfittingSlot(module.Slot)) || isBuiltInHullModule(module);
+            return {
+                slot: module.Slot,
+                symbol: module.Item,
+                known: stats !== null || builtIn,
+                requiresKnownSlot: !builtIn,
+                fitError: stats && slot && !builtIn ? this.#fitError(slot, stats) : null,
+            };
+        });
+        return validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
+    }
+
+    /** Whether the build contains no structurally invalid fit. */
+    get valid(): boolean {
+        return this.validation.valid;
+    }
+
+    /** Whether the build is valid, has every operational mount, and is fully classified. */
+    get complete(): boolean {
+        return this.validation.complete;
     }
 
     /**
@@ -1489,7 +1611,7 @@ export class ShipLoadout {
         // record prices as the article that was actually fitted.
         const stats = this.#statsFor(module);
         if (stats !== null) return stats.cost ?? 'unknown';
-        return isNonOutfittingSlot(module.Slot) ? 'free' : 'unknown';
+        return isNonOutfittingSlot(module.Slot) || isBuiltInHullModule(module) ? 'free' : 'unknown';
     }
 
     /**
@@ -1568,8 +1690,8 @@ export class ShipLoadout {
      * The resolved frame-shift-drive constants for this build — post-engineering,
      * with any Guardian FSD Booster folded into `jumpBoost`.
      *
-     * @throws {TypeError} If the build has no frame shift drive, or the drive's id is
-     * not in the stats catalogue.
+     * @throws {TypeError} If the build has no frame shift drive, or its required jump
+     * constants are missing from the stats catalogue.
      */
     get frameShiftDrive(): FrameShiftDriveParams {
         const drive = this.#resolveDrive();
@@ -1586,12 +1708,12 @@ export class ShipLoadout {
      * Returns `0` when no fuel is available — an assembled build with no fuel tank
      * fitted has an empty main tank, so there is nothing to jump on.
      * @returns The best single jump, in light-years.
-     * @throws {TypeError} If the build has no frame shift drive, or the mass cannot be
-     * determined.
+     * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
+     * fuel capacity cannot be determined.
      */
     maxJumpRange(): number {
         const fsd = this.frameShiftDrive;
-        const fuel = Math.min(this.fuelCapacity.main, fsd.maxFuel);
+        const fuel = Math.min(this.#requireFuelCapacity().main, fsd.maxFuel);
         return singleJumpRange(this.#requireMass(0), fuel, fsd);
     }
 
@@ -1601,12 +1723,13 @@ export class ShipLoadout {
      * @param options - {@link JumpOptions}. `fuel` defaults to a full main tank,
      * `cargo` to `0`.
      * @returns The jump's range, in light-years.
-     * @throws {TypeError} If the build has no frame shift drive, or the mass cannot be
-     * determined.
+     * @throws {TypeError} If the build has no usable frame shift drive or its mass
+     * cannot be determined; also if fuel capacity is unknown and `options.fuel` is
+     * omitted.
      */
     jumpRange(options: JumpOptions = {}): number {
         const fsd = this.frameShiftDrive;
-        const fuel = options.fuel ?? this.fuelCapacity.main;
+        const fuel = options.fuel ?? this.#requireFuelCapacity().main;
         return singleJumpRange(this.#requireMass(options.cargo ?? 0), fuel, fsd);
     }
 
@@ -1614,8 +1737,8 @@ export class ShipLoadout {
      * Single-jump range on a full tank with no cargo, in light-years.
      *
      * @returns The jump's range, in light-years.
-     * @throws {TypeError} If the build has no frame shift drive, or the mass cannot be
-     * determined.
+     * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
+     * fuel capacity cannot be determined.
      */
     unladenJumpRange(): number {
         return this.jumpRange();
@@ -1625,11 +1748,11 @@ export class ShipLoadout {
      * Single-jump range on a full tank with a full cargo hold, in light-years.
      *
      * @returns The jump's range, in light-years.
-     * @throws {TypeError} If the build has no frame shift drive, or the mass cannot be
-     * determined.
+     * @throws {TypeError} If the build has no usable frame shift drive, or its mass,
+     * fuel capacity or cargo capacity cannot be determined.
      */
     ladenJumpRange(): number {
-        return this.jumpRange({ cargo: this.cargoCapacity });
+        return this.jumpRange({ cargo: this.#requireCargoCapacity() });
     }
 
     /**
@@ -1639,12 +1762,13 @@ export class ShipLoadout {
      * @param options - {@link JumpOptions}. `fuel` defaults to a full main tank,
      * `cargo` to `0`.
      * @returns Fuel used, in tonnes (capped at the drive's max fuel per jump).
-     * @throws {TypeError} If the build has no frame shift drive, or the mass cannot be
-     * determined.
+     * @throws {TypeError} If the build has no usable frame shift drive or its mass
+     * cannot be determined; also if fuel capacity is unknown and `options.fuel` is
+     * omitted.
      */
     fuelPerJump(distance: number, options: JumpOptions = {}): number {
         const fsd = this.frameShiftDrive;
-        const fuel = options.fuel ?? this.fuelCapacity.main;
+        const fuel = options.fuel ?? this.#requireFuelCapacity().main;
         return fuelPerJump(distance, this.#requireMass(options.cargo ?? 0), fuel, fsd);
     }
 
@@ -1654,13 +1778,13 @@ export class ShipLoadout {
      *
      * @param options - `cargo` aboard, in tonnes; defaults to `0`.
      * @returns The summed range of every jump on one full tank, in light-years.
-     * @throws {TypeError} If the build has no frame shift drive, or the mass cannot be
-     * determined.
+     * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
+     * fuel capacity cannot be determined.
      */
     totalRange(options: { cargo?: number } = {}): number {
         return totalRange(
             this.#requireMass(options.cargo ?? 0),
-            this.fuelCapacity.main,
+            this.#requireFuelCapacity().main,
             this.frameShiftDrive,
         );
     }
@@ -1670,19 +1794,20 @@ export class ShipLoadout {
      *
      * @returns The {@link JumpRangeSummary}, in light-years. For a partial load, call
      * {@link jumpRange} with the `fuel` and `cargo` you actually have.
-     * @throws {TypeError} If the build has no frame shift drive, or the mass cannot be
-     * determined.
+     * @throws {TypeError} If the build has no usable frame shift drive, or its mass,
+     * fuel capacity or cargo capacity cannot be determined.
      * @example
      * ```ts
      * const jumps = build.jumpRangeSummary();
      * jumps.max;    // -> 89.41  (one jump's fuel, empty hold)
      * jumps.laden;  // -> the range with the hold full
-     * // Half a tank and 32 t aboard:
-     * build.jumpRange({ fuel: build.fuelCapacity.main / 2, cargo: 32 });
+     * // Half a tank and 32 t aboard, once the tank is known:
+     * const fuel = build.fuelCapacityResult;
+     * if (fuel.complete) build.jumpRange({ fuel: fuel.value.main / 2, cargo: 32 });
      * ```
      */
     jumpRangeSummary(): JumpRangeSummary {
-        const cargo = this.cargoCapacity;
+        const cargo = this.#requireCargoCapacity();
         return {
             max: this.maxJumpRange(),
             unladen: this.jumpRange(),
@@ -1939,21 +2064,80 @@ export class ShipLoadout {
 
     /** Unladen mass plus the given cargo, or throw if the mass is unknown. */
     #requireMass(cargo: number): number {
-        const unladen = this.unladenMass;
-        if (unladen === null) {
+        const result = this.unladenMassResult;
+        if (result.value === null) {
             throw new TypeError(
-                'ShipLoadout: cannot determine mass (no UnladenMass, unknown hull)',
+                `ShipLoadout: cannot determine mass (${result.issues.map((i) => i.message).join('; ')})`,
             );
         }
-        return unladen + cargo;
+        return result.value + cargo;
     }
 
-    #sumFuelTanks(): number {
-        let sum = 0;
-        for (const m of this.#modules.values()) {
-            sum += this.#moduleCapacity(m, 'FuelCapacity', 'fuelCapacity') ?? 0;
+    /** Require the complete fuel capacity for a calculation that cannot omit it. */
+    #requireFuelCapacity(): FuelCapacity {
+        const result = this.fuelCapacityResult;
+        if (result.value === null) {
+            throw new TypeError(
+                `ShipLoadout: cannot determine fuel capacity (${result.issues.map((i) => i.message).join('; ')})`,
+            );
         }
-        return sum;
+        return result.value;
+    }
+
+    /** Require the complete cargo capacity for a calculation that cannot omit it. */
+    #requireCargoCapacity(): number {
+        const result = this.cargoCapacityResult;
+        if (result.value === null) {
+            throw new TypeError(
+                `ShipLoadout: cannot determine cargo capacity (${result.issues.map((i) => i.message).join('; ')})`,
+            );
+        }
+        return result.value;
+    }
+
+    /** Resolve fitted modules once into the data-free aggregate-calculation shape. */
+    #calculationModules(): LoadoutCalculationModule[] {
+        return [...this.#modules.values()].map((module) => {
+            const stats = this.#statsFor(module);
+            const symbol = module.Item.toLowerCase();
+            const parsedSlot = parseSlotName(module.Slot);
+            const unresolvedOutfitting =
+                stats === null && !isNonOutfittingSlot(module.Slot) && !isBuiltInHullModule(module);
+            const isCargoRack =
+                stats?.cargoCapacity !== undefined ||
+                stats?.kind === 'cargoRacks' ||
+                symbol.includes('cargorack');
+            const isFuelTank =
+                stats?.fuelCapacity !== undefined ||
+                stats?.slot === 'fuelTank' ||
+                symbol.startsWith(FUEL_TANK_PREFIX);
+            const mayCarryCapacity =
+                unresolvedOutfitting && (parsedSlot === null || parsedSlot.kind === 'optional');
+            const mayCarryFuel =
+                mayCarryCapacity ||
+                (unresolvedOutfitting &&
+                    parsedSlot?.kind === 'core' &&
+                    parsedSlot.core === 'fuelTank');
+            return {
+                slot: module.Slot,
+                symbol: module.Item,
+                mass: this.#moduleMass(module),
+                ...(isCargoRack || mayCarryCapacity
+                    ? {
+                          cargoCapacity: isCargoRack
+                              ? this.#moduleCapacity(module, 'CargoCapacity', 'cargoCapacity')
+                              : null,
+                      }
+                    : {}),
+                ...(isFuelTank || mayCarryFuel
+                    ? {
+                          fuelCapacity: isFuelTank
+                              ? this.#moduleCapacity(module, 'FuelCapacity', 'fuelCapacity')
+                              : null,
+                      }
+                    : {}),
+            };
+        });
     }
 
     /** Replace one fitted module and keep imported aggregate figures coherent. */
@@ -2039,12 +2223,7 @@ export class ShipLoadout {
         // `ModularCargoBayDoor`. Matching the family rather than the one id is what lets a
         // capture of such a hull compute a mass at all — Frontier's own `UnladenMass` for
         // that capture agrees once the hatch contributes zero.
-        if (
-            module.Slot.toLowerCase() === 'cargohatch' &&
-            module.Item.toLowerCase().startsWith('modularcargobaydoor')
-        ) {
-            return 0;
-        }
+        if (isBuiltInHullModule(module)) return 0;
         return stats === null && isNonOutfittingSlot(module.Slot) ? 0 : null;
     }
 
@@ -2101,8 +2280,17 @@ export class ShipLoadout {
             );
         }
 
-        const optMass = getLoadoutModifier(fsdModule, 'FSDOptimalMass') ?? base.optMass ?? 0;
-        const maxFuel = getLoadoutModifier(fsdModule, 'MaxFuelPerJump') ?? base.maxFuel ?? 0;
+        const optMass = getLoadoutModifier(fsdModule, 'FSDOptimalMass') ?? base.optMass;
+        const maxFuel = getLoadoutModifier(fsdModule, 'MaxFuelPerJump') ?? base.maxFuel;
+        if (optMass === undefined || maxFuel === undefined) {
+            const missing = [
+                ...(optMass === undefined ? ['optMass'] : []),
+                ...(maxFuel === undefined ? ['maxFuel'] : []),
+            ];
+            throw new TypeError(
+                `ShipLoadout: frame shift drive "${fsdModule.Item}" has no ${missing.join(' or ')} in the stats catalogue`,
+            );
+        }
 
         return {
             optMass,
@@ -2116,9 +2304,17 @@ export class ShipLoadout {
     /** The active Guardian FSD Booster's jump bonus, in LY (`0` if none/powered off). */
     #resolveJumpBoost(): number {
         for (const m of this.#modules.values()) {
-            if (!m.Item.toLowerCase().startsWith(BOOSTER_PREFIX)) continue;
+            const stats = this.#statsFor(m);
+            if (stats?.kind !== 'fsdBoosters' && !m.Item.toLowerCase().startsWith(BOOSTER_PREFIX)) {
+                continue;
+            }
             if (m.On === false) continue; // an unpowered booster gives no bonus
-            return this.#statsFor(m)?.jumpBoost ?? 0;
+            if (stats?.jumpBoost === undefined) {
+                throw new TypeError(
+                    `ShipLoadout: FSD booster "${m.Item}" has no jumpBoost in the stats catalogue`,
+                );
+            }
+            return stats.jumpBoost;
         }
         return 0;
     }

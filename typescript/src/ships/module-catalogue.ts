@@ -12,7 +12,9 @@ import { deepFreeze } from '../deep-freeze.js';
  * read from, so the payload states it nowhere and {@link buildModuleCatalogue} adds
  * it back. Every other field is on the record.
  */
-export type ModuleRecord = Omit<OutfittingModule, 'category'>;
+export type ModuleRecord = Omit<OutfittingModule, 'category' | 'kind'> & {
+    readonly kind?: OutfittingModule['kind'];
+};
 
 /**
  * Build and freeze one outfitting category's catalogue.
@@ -31,5 +33,7 @@ export function buildModuleCatalogue(
     // above and `data-files.test.ts` all forbid, but none of which this function can
     // see. (`materials/material-catalogue.ts` reaches the same guarantee by naming
     // every field explicitly; a module record has some sixty, so it spreads instead.)
-    return deepFreeze(records.map((record) => ({ ...record, category })));
+    return deepFreeze(
+        records.map((record) => ({ ...record, kind: record.kind ?? null, category })),
+    );
 }
