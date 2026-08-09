@@ -556,12 +556,12 @@ export interface OutfittingModule {
      */
     readonly roundsPerShot?: number;
     /**
-     * Shots per second, with the burst pattern and any charge time folded in — the
-     * journal's `RateOfFire`.
+     * Shots per second with the burst pattern folded in — the journal's `RateOfFire`.
      *
      * @remarks
      * Absent on continuous-fire weapons (beam and mining lasers), whose `damage` is
-     * already per second. Excludes reload time; {@link OutfittingModule.clipSize} and
+     * already per second. Excludes charge and reload time; {@link OutfittingModule.chargeTime}
+     * is the delay before a shot lands, while {@link OutfittingModule.clipSize} and
      * {@link OutfittingModule.reloadTime} give the sustained rate.
      */
     readonly rateOfFire?: number;

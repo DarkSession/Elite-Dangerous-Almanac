@@ -77,7 +77,7 @@ export interface WeaponStats {
     readonly burstRounds?: number;
     /** Shots per second within a burst. Defaults to `1`. */
     readonly burstRateOfFire?: number;
-    /** Seconds spent charging before a shot (rail guns). Defaults to `0`. */
+    /** Seconds spent charging before a shot (rail guns); not part of `rateOfFire`. */
     readonly chargeTime?: number;
     /** Rounds in a clip. Absent means the weapon never stops to reload. */
     readonly clipSize?: number;
@@ -172,8 +172,9 @@ export interface WeaponMetrics {
  * The combined rate of fire a weapon's firing cycle implies — the journal's own
  * `RateOfFire`, rebuilt from its parts.
  *
- * A cycle fires `burstRounds` shots `1 / burstRateOfFire` apart, spends any
- * `chargeTime` winding up, then waits out the `burstInterval` before the next one.
+ * A cycle fires `burstRounds` shots `1 / burstRateOfFire` apart, then waits out the
+ * `burstInterval` before the next one. `chargeTime` is the delay before a shot lands,
+ * not part of the cadence Frontier reports as `RateOfFire`.
  *
  * @param weapon - The weapon's stats, post-engineering.
  * @returns Shots per second, or `undefined` for a continuous-fire weapon (no
@@ -197,7 +198,7 @@ export function combinedRateOfFire(weapon: WeaponStats): number | undefined {
     // does, so the two never disagree about the same weapon.
     const burstRate =
         weapon.burstRateOfFire && weapon.burstRateOfFire > 0 ? weapon.burstRateOfFire : 1;
-    const cycle = (burst > 1 ? (burst - 1) / burstRate : 0) + interval + (weapon.chargeTime ?? 0);
+    const cycle = (burst > 1 ? (burst - 1) / burstRate : 0) + interval;
     return cycle > 0 ? burst / cycle : undefined;
 }
 

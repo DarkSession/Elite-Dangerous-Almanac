@@ -571,8 +571,7 @@ test('Rapid Fire shortens the fire interval, and the rate of fire follows', () =
 
 test('a tech-broker recipe raises the rate of fire directly, as its registry publishes it', () => {
     // The Inara-sourced Operations totals are the displayed stat change, so a
-    // rate-of-fire total is exactly that — including on a charged weapon, whose spin-up
-    // is part of the published cycle.
+    // rate-of-fire total is exactly that, including on a charged weapon.
     const railgun = getModuleBySymbol('Hpt_Railgun_Fixed_Medium', ALL_MODULES)!;
     const rate = computeModifiers(
         baseStats(railgun),

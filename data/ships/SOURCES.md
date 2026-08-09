@@ -359,8 +359,12 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   value are pinned in `fixtures/ships/module-stats.json`.
   - **`rateOfFire` is derived, not copied.** Upstream stores the fire interval; the
     journal (and this catalogue) report the combined shots per second, so it is
-    computed as `burst / ((burst − 1) / burstRateOfFire + fireInterval + chargeTime)` —
-    the same derivation Coriolis (`Module.getRoF`) and EDSY (`rof = fpc / spc`) use.
+    computed as `burst / ((burst − 1) / burstRateOfFire + fireInterval)`. Coriolis
+    (`Module.getRoF`) and EDSY (`rof = fpc / spc`) also fold `chargeTime` into this
+    figure, but Frontier does not: `journal-federation-corvette-mixed.json` states
+    `RateOfFire` base values of 1.587302 for the small rail gun and 1.204819 for the
+    medium, exactly `1 / burstInterval` in both cases. Charge time is therefore kept as
+    the delay before impact but excluded from the reported firing cadence.
     Continuous-fire weapons (beam and mining lasers) have no fire interval upstream and
     so carry no `rateOfFire`; their `damage`, `distributorDraw` and `thermalLoad` are
     already per second.
@@ -558,15 +562,15 @@ the modified one, so a capture reads base stats straight out of Frontier's own
 arithmetic — including a hardpoint's reserve ammo and projectile speed, which the
 in-game audit above lists as unreached, the shield-generator and shield-booster
 resistances, which it lists as unsettled, and the ship-specific armour modules, which it
-excludes from numeric verification altogether. Of the ten journal captures and the EDSY
-export stored here, **nine state base values**; between them they state **551** that
-name a field this catalogue holds, and every one agrees — 484 to the stored decimal and
-67 to within the game's own float noise.
+excludes from numeric verification altogether. Of the eleven journal captures and the EDSY
+export stored here, **ten state base values**; between them they state **637** that name a
+field this catalogue holds, and every one agrees — 559 to the stored decimal and 78 to
+within the game's own float noise.
 
 Counted as distinct (module, label) pairs rather than per capture, that reaches 18
 modules on their resistances (five shield generators, two shield boosters, four hull
 reinforcement packages and seven armour modules), those seven armour modules' hull
-boosts, six reserve-ammo and five clip-size readings, and one projectile speed.
+boosts, eight reserve-ammo and seven clip-size readings, and one projectile speed.
 
 **`Hpt_HeatSinkLauncher_Turret_Tiny` holds a reserve of 2**, which is a capture's figure
 rather than a registry's. The Lynx Highliner states it under a grade-1 Heat Sink Capacity
@@ -580,7 +584,7 @@ above lists as unreached, which is why a capture is the source here.
 `Range` is a scanner's `scannerRange` — a weapon's `maximumRange` under the same label,
 resolved per record — and `DamageFalloffRange` is the
 `falloffRange` a blueprint recipe calls `FalloffRange`, the same pairing as
-`ProbeRadius` / `DSS_PatchRadius`. The fourteen readings behind the two agree. Both also
+`ProbeRadius` / `DSS_PatchRadius`. The seventeen readings behind the two agree. Both also
 reach a consumer: a sensor's engineered range resolves to the field a sensor actually
 carries, so `effectiveStats` reports the 13 440 m
 `journal-federation-corvette-beams.json` states rather than writing it to a
@@ -589,7 +593,7 @@ distance also lives only in `scannerRange`. That read-back is swept rather than 
 Wherever a
 capture spells a stat by something other than the field's own first name, or names a
 field the record does not carry — the two shapes a wrong resolution hides in — the result
-is pinned at a field written out by hand rather than resolved: **39** of them, one per
+is pinned at a field written out by hand rather than resolved: **51** of them, one per
 module and field, in `capturedBaseStats.engineered`.
 
 A third label, `Jitter`, already resolved to `jitter`. A capture states it as
@@ -607,7 +611,7 @@ which no menu offers — see
 
 **`fixtures/ships/module-stats.json` `capturedBaseStats` holds all of this**, per
 capture, so no port and no later change can quietly stop agreeing. Its `weapons` half
-pins the eleven weapons the captures state a `DamagePerSecond` for and requires
+pins the fifteen weapons the captures state a `DamagePerSecond` for and requires
 `damagePerSecond` to reproduce each. They are the only external readings of an
 **unmodified** weapon's folded figure: in-game verification reads the stored inputs one
 at a time, and the one product it does hold — a decorative flak launcher's panel DPS, in
@@ -2132,11 +2136,11 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   armour carries exactly those values. `typescript/src/ships/module-stat-labels.ts`
   holds the per-label unit and algebra table.
 - **Ammunition capacity is `clipSize` + `ammoMaximum`.** The reserve excludes the
-  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The ten journal
-  captures carry **42** non-zero readings across eighteen distinct modules. They are not
+  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The eleven journal
+  captures carry **50** non-zero readings across twenty-one distinct modules. They are not
   the only external check either stat gets — the `AmmoClipSize` and `AmmoMaximum`
   modifiers a capture states on an engineered module are a second and stronger one, and
-  in-game verification does not reach a *hardpoint's* reserve ammo. All forty-two sit
+  in-game verification does not reach a *hardpoint's* reserve ammo. All fifty sit
   exactly at capacity — among them the Python Mk II's Enhanced AX Multi-Cannon 100/2100
   and Guardian Shard Cannon 5/180, the Viper's two gimballed multi-cannons 90/2100, the
   Krait's two flak launchers 1/32 and two point-defence turrets 12/10000, and the
@@ -2170,8 +2174,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   differ, as everywhere else in this section. Neither rounds the reserve anywhere: EDSY's
   own rearm-cost and ammo-time maths multiplies the fractional `ammomax` as it stands, so a
   fragment cannon's High Capacity reserve of 302.4 is reported as 302.4.
-  **Neither figure is Frontier's**. Five captures state an engineered clip or reserve,
-  sixteen readings between them, and twelve agree exactly — every one of those at
+  **Neither figure is Frontier's**. Six captures state an engineered clip or reserve,
+  nineteen readings between them, and fifteen agree exactly — every one of those at
   quality 1. The four that do not rule out the simple explanations rather than choosing
   between them: two multi-cannons rolled at quality 0.9844 and 0.9438 both state the
   **full**-quality reserve of 4200, so the reserve is not scaled by quality as the
@@ -2179,7 +2183,7 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   23 where its own quality computes 22. But that rack's reserve, 87, is neither its
   stated-quality figure (87.499008) nor its full-quality one (88.32), and a heat-sink
   launcher's 3 is neither at any quality (2.98). No single rule — ignore quality, round,
-  truncate — reproduces all four. Nothing is changed on that evidence, and all sixteen
+  truncate — reproduces all four. Nothing is changed on that evidence, and all nineteen
   are pinned in `fixtures/ships/build-metrics.json` §ammunition.engineeredGroundTruth so
   a change to the model has to face them:
   <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>. The rounding is
@@ -2504,7 +2508,7 @@ under, which is why several are cited above rather than copied.
   the stored text is faithful: both figures are dropped and recomputed from the modules
   alone, so every module mass, every engineered mass modifier and the drive's whole fuel
   curve have to be right for them to land. The residue is the game's own float32
-  arithmetic — at worst 9.8 × 10⁻⁵ t and 6.3 × 10⁻⁶ ly across all ten journal
+  arithmetic — at worst 9.8 × 10⁻⁵ t and 6.3 × 10⁻⁶ ly across all eleven journal
   captures, not these five alone. Pinned by `fixtures/ships/module-stats.json`
   `capturedBaseStats.rebuilds`.
 
@@ -2514,6 +2518,29 @@ under, which is why several are cited above rather than copied.
   reads the whole `modularcargobaydoor*` family as massless in the cargo-hatch slot;
   without that a capture of such a hull has an unknown mass and no jump range at all. The
   built-in hatch remains deliberately uncatalogued.
+
+- **`fixtures/ships/journal-federation-corvette-mixed.json`** — a real Frontier journal
+  `Loadout` event for a mixed-weapon Federal Corvette (48 `Modules`: two huge plasma
+  accelerators, one large burst laser, three small and one medium rail gun, eight shield
+  boosters and four hull reinforcements). Contributed **2026-08-09 UTC** by the repository
+  owner from their own fleet, with no upstream project; the loadout is Frontier game output
+  redistributed under Frontier's media-usage terms. It reached this repository as pasted
+  text and is stored re-indented and otherwise unaltered. Stored SHA-256
+  `55dad081b44f214a95a6483b08ca3c9b0ddb8632b2ec815f906a5ff516603fe0`.
+  Its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` are kept for the same reason as the
+  other captures', and the engineer names are the game's own NPCs.
+
+  **It settles how charge time relates to rate of fire.** Frontier states the small rail
+  gun's unmodified `RateOfFire` as 1.587302 and the medium's as 1.204819, exactly the
+  reciprocals of their 0.63 s and 0.83 s burst intervals. Their 1.2 s `chargeTime` is
+  therefore a delay before impact, not part of the displayed firing cadence. The catalogue
+  stores those two captured rates and derives the Imperial Hammer's corrected 4.090909 from
+  its three-round burst (`3 / (2 / 6 + 0.4)`) under the same family rule. These three values
+  are manual corrections to the Coriolis/EDSY derivation, which includes charge time.
+  The capture's base `DamagePerSecond` values independently close the fold: 23.34 ×
+  1.587302 = 37.047619 for the small rail gun and 41.53 × 1.204819 = 50.036144 for the
+  medium. Its 88 distinct base values, 84 mapped catalogue readings and full mass/jump-range
+  rebuild are pinned in `fixtures/ships/module-stats.json`.
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed
@@ -2548,7 +2575,7 @@ under, which is why several are cited above rather than copied.
   Inara lower-cases every slot key, as the SLEF specification's own example does, so a
   case-sensitive binding reports **no** occupied mounts on an Inara build and `setModule`
   on one adds a duplicate rather than replacing it. Nothing but an Inara-sourced export
-  shows that: the EDSY export and the ten journal captures all use Frontier's own
+  shows that: the EDSY export and the eleven journal captures all use Frontier's own
   casing. `ShipLoadout` and `parseSlotName` resolve
   a slot key whatever its casing. Keys are deliberately **not** canonicalised on import —
   a build keeps its producer's spelling, so this fixture
@@ -2677,7 +2704,7 @@ add up to, so every such figure is checked against our own maths. An EDSY or Cor
 _reading_ of a fitted build would close that gap; the build corpus below does not,
 because it pins figures this library computed rather than figures a tool published. The
 module-level inputs are read: a capture states an engineered weapon's own unmodified
-`DamagePerSecond`, Frontier's fold of the four stored stats, for eleven weapons, and
+`DamagePerSecond`, Frontier's fold of the four stored stats, for fifteen weapons, and
 states the resistances and hull boost the same way — see §Reconciliation and in-game
 audit, and <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12> for what
 remains.

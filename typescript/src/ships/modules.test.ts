@@ -516,8 +516,8 @@ test('projectile boundary parameters appear on exactly the ten verified hardpoin
 });
 
 test("every weapon's carried rate of fire agrees with its own firing cycle", () => {
-    // `rateOfFire` is derived from the interval, burst pattern and charge time at
-    // acquisition time; if the two ever disagree, an engineered build would jump.
+    // `rateOfFire` is derived from the interval and burst pattern at acquisition time;
+    // charge time delays impact but is not part of Frontier's reported cadence.
     let checked = 0;
     for (const weapon of ALL_MODULES) {
         if (weapon.rateOfFire === undefined) continue;

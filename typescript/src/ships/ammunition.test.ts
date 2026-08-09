@@ -15,6 +15,7 @@ import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with {
 import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
 import corvetteMultiroleJournal from '../../../fixtures/ships/journal-federation-corvette-multirole.json' with { type: 'json' };
+import corvetteMixedJournal from '../../../fixtures/ships/journal-federation-corvette-mixed.json' with { type: 'json' };
 import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
@@ -43,6 +44,7 @@ const JOURNALS = [
     ['journal-federation-corvette.json', corvetteJournal],
     ['journal-federation-corvette-beams.json', corvetteBeamsJournal],
     ['journal-federation-corvette-multirole.json', corvetteMultiroleJournal],
+    ['journal-federation-corvette-mixed.json', corvetteMixedJournal],
     ['journal-cobra-mkv.json', cobraJournal],
     ['journal-kestrel-mkii.json', kestrelJournal],
     ['journal-lynx-highliner.json', lynxJournal],
@@ -215,8 +217,8 @@ test('a build reports the capacity of every weapon it carries', () => {
 });
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
-    // A rearm state is a lower bound on a capacity, never a reading of one. All 42 counts
-    // across the ten captures happen to sit at capacity — that is what makes them a check
+    // A rearm state is a lower bound on a capacity, never a reading of one. All 50 counts
+    // across the eleven captures happen to sit at capacity — that is what makes them a check
     // on the catalogue — but a partly spent launcher would report less and say nothing.
     const pinned = fixture.ammunition.journalReadings;
     const below: Record<string, unknown>[] = [];
@@ -257,9 +259,9 @@ test('every ammo count a journal reports fits inside the capacity for that modul
 });
 
 test("Frontier's own engineered ammunition figures, against what this library computes", () => {
-    // Five captures state an engineered clip or reserve. A parsed build always agrees with
+    // Six captures state an engineered clip or reserve. A parsed build always agrees with
     // the capture, because a stated modifier is used verbatim; a simulated roll of the same
-    // recipe agrees on twelve of the sixteen, every one of those at quality 1.
+    // recipe agrees on fifteen of the nineteen, every one of those at quality 1.
     for (const pinned of fixture.ammunition.engineeredGroundTruth.cases) {
         const capture = JOURNALS.find(([file]) => file === pinned.capture)?.[1];
         assert.ok(capture, `${pinned.capture} is pinned but not read`);
@@ -322,7 +324,7 @@ test("Frontier's own engineered ammunition figures, against what this library co
         const agrees = rolled.clipSize === gameClip && rolled.hopper === pinned.game.ammoMaximum;
         assert.equal(agrees, pinned.agrees, `${label}: agreement with the game`);
     }
-    // Twelve of the sixteen agree, every one at quality 1. The four that do not are what
+    // Fifteen of the nineteen agree, every one at quality 1. The four that do not are what
     // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 is about, and the
     // fixture's note says what they jointly rule out. Counting them is not the guard — the
     // sweep below is, because a case list that quietly shrinks is how the evidence would be

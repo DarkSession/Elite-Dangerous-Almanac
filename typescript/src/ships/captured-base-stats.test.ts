@@ -20,6 +20,7 @@ import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with {
 import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
 import corvetteMultiroleJournal from '../../../fixtures/ships/journal-federation-corvette-multirole.json' with { type: 'json' };
+import corvetteMixedJournal from '../../../fixtures/ships/journal-federation-corvette-mixed.json' with { type: 'json' };
 import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
@@ -40,6 +41,10 @@ const CAPTURES: readonly { file: string; loadouts: readonly LoadoutEvent[] }[] =
     {
         file: 'journal-federation-corvette-multirole.json',
         loadouts: [corvetteMultiroleJournal as LoadoutEvent],
+    },
+    {
+        file: 'journal-federation-corvette-mixed.json',
+        loadouts: [corvetteMixedJournal as LoadoutEvent],
     },
     { file: 'journal-federation-corvette.json', loadouts: [corvetteJournal as LoadoutEvent] },
     { file: 'journal-kestrel-mkii.json', loadouts: [kestrelJournal as LoadoutEvent] },
