@@ -392,7 +392,7 @@
         "kinetic": 0.3333333333333333,
         "thermal": 0.6666666666666666
       },
-      "rateOfFire": 0.546448,
+      "rateOfFire": 1.587302,
       "chargeTime": 1.2,
       "clipSize": 1,
       "reloadTime": 1
@@ -1296,7 +1296,7 @@
     {
       "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
       "damage": 15,
-      "rateOfFire": 1.551724,
+      "rateOfFire": 4.090909,
       "burstInterval": 0.4
     },
     {
@@ -1905,6 +1905,31 @@
         ]
       },
       {
+        "file": "journal-federation-corvette-mixed.json",
+        "stated": 88,
+        "mapped": 84,
+        "exact": 73,
+        "withinFloatNoise": 11,
+        "unmapped": [
+          {
+            "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_PulseLaserBurst_Gimbal_Large",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_Railgun_Fixed_Medium",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_Railgun_Fixed_Small",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
         "file": "journal-federation-corvette.json",
         "stated": 71,
         "mapped": 68,
@@ -2015,11 +2040,27 @@
         "damagePerSecond": 6.833334
       },
       {
+        "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
+        "damagePerSecond": 31.3125
+      },
+      {
         "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
         "damagePerSecond": 27.428572
+      },
+      {
+        "symbol": "Hpt_PulseLaserBurst_Gimbal_Large",
+        "damagePerSecond": 16.605484
+      },
+      {
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "damagePerSecond": 50.036144
+      },
+      {
+        "symbol": "Hpt_Railgun_Fixed_Small",
+        "damagePerSecond": 37.047619
       }
     ],
-    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the ten is 9.8e-5 t of mass and 6.3e-6 ly — and not a margin for disagreement.",
+    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the eleven is 9.8e-5 t of mass and 6.3e-6 ly — and not a margin for disagreement.",
     "rebuildTolerance": 0.0001,
     "rebuilds": [
       {
@@ -2041,6 +2082,11 @@
         "file": "journal-federation-corvette-multirole.json",
         "unladenMass": 2117.199951,
         "maxJumpRange": 27.147789
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "unladenMass": 2106.5,
+        "maxJumpRange": 16.732027
       },
       {
         "file": "journal-federation-corvette.json",
@@ -2221,6 +2267,90 @@
         "symbol": "Int_ShieldGenerator_Size7_Class3_Fast",
         "field": "optMultiplier",
         "value": 1.24199997
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
+        "field": "distributorDraw",
+        "value": 11.572001
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
+        "field": "thermalLoad",
+        "value": 11.783998
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "HugeHardpoint2",
+        "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
+        "field": "maximumRange",
+        "value": 1750
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "LargeHardpoint1",
+        "symbol": "Hpt_PulseLaserBurst_Gimbal_Large",
+        "field": "distributorDraw",
+        "value": 0.6695
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "LargeHardpoint1",
+        "symbol": "Hpt_PulseLaserBurst_Gimbal_Large",
+        "field": "jitter",
+        "value": 0.5
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "field": "thermalLoad",
+        "value": 12
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "field": "maximumRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "field": "falloffRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_Railgun_Fixed_Small",
+        "field": "thermalLoad",
+        "value": 7.2
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_Railgun_Fixed_Small",
+        "field": "maximumRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_Railgun_Fixed_Small",
+        "field": "falloffRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-federation-corvette-mixed.json",
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_Railgun_Fixed_Small",
+        "field": "distributorDraw",
+        "value": 1.7485
       },
       {
         "file": "journal-federation-corvette.json",

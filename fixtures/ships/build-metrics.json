@@ -182,11 +182,11 @@
     },
     {
       "symbol": "Hpt_Railgun_Fixed_Small",
-      "damagePerSecond": 12.754096,
-      "sustainedDamagePerSecond": 12.754096,
-      "sustainedFireFactor": 1,
-      "energyPerSecond": 1.469945,
-      "heatPerSecond": 6.557376,
+      "damagePerSecond": 37.047629,
+      "sustainedDamagePerSecond": 23.34,
+      "sustainedFireFactor": 0.63,
+      "energyPerSecond": 4.269842,
+      "heatPerSecond": 19.047624,
       "continuous": false
     },
     {
@@ -298,10 +298,10 @@
       "Int_DroneControl_Collection_Size3_Class3"
     ],
     "journalReadings": {
-      "note": "Every non-zero AmmoInClip / AmmoInHopper across the ten journal captures — the only external readings of what a module had *loaded* that this repository holds. They are not the only external check on `clipSize` and `ammoMaximum`: the `AmmoClipSize` and `AmmoMaximum` modifiers a capture states on an engineered module are a second and stronger one, joined by `fixtures/ships/module-stats.json` `capturedBaseStats`, and in-game verification does not reach a *hardpoint's* reserve ammo. All forty-two sit exactly at capacity, on eighteen distinct modules, several of which appear in more than one capture. A reading is still only a lower bound on what a module holds and must never be read straight back as a catalogue figure: a journal's ammunition is the ship's rearm state at the instant of capture, so a partly spent launcher would report less than its capacity and say nothing about the catalogue. What does settle a capacity is the `AmmoMaximum` modifier a capture states on an engineered module, which gives the base and the engineered figure together — the Lynx Highliner's heat-sink launcher reports 3 in reserve under a grade-1 Heat Sink Capacity against a base of 2, so the reading alone would have been the engineered value. On the Corsair the capacity is likewise the engineered one, since three of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier; the two plasma accelerators take Long Range, which charges neither. The Corvette's large gimballed cannon sits at capacity under a grade-5 Overcharged, which is Frontier's own reading that the recipe does not cut a cannon's clip — a 15% penalty would have loaded four rounds. That reading is evidence and not a guard: a build parsed from a journal folds the modifiers the journal states, so adding a clip leg to the recipe would not move these counts. What fails on such a change is the engineering suite, which folds the recipe itself.",
-      "readings": 42,
-      "distinctModules": 18,
-      "atCapacity": 42,
+      "note": "Every non-zero AmmoInClip / AmmoInHopper across the eleven journal captures — the only external readings of what a module had *loaded* that this repository holds. They are not the only external check on `clipSize` and `ammoMaximum`: the `AmmoClipSize` and `AmmoMaximum` modifiers a capture states on an engineered module are a second and stronger one, joined by `fixtures/ships/module-stats.json` `capturedBaseStats`, and in-game verification does not reach a *hardpoint's* reserve ammo. All fifty sit exactly at capacity, on twenty-one distinct modules, several of which appear in more than one capture. A reading is still only a lower bound on what a module holds and must never be read straight back as a catalogue figure: a journal's ammunition is the ship's rearm state at the instant of capture, so a partly spent launcher would report less than its capacity and say nothing about the catalogue. What does settle a capacity is the `AmmoMaximum` modifier a capture states on an engineered module, which gives the base and the engineered figure together — the Lynx Highliner's heat-sink launcher reports 3 in reserve under a grade-1 Heat Sink Capacity against a base of 2, so the reading alone would have been the engineered value. On the Corsair the capacity is likewise the engineered one, since three of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier; the two plasma accelerators take Long Range, which charges neither. The Corvette's large gimballed cannon sits at capacity under a grade-5 Overcharged, which is Frontier's own reading that the recipe does not cut a cannon's clip — a 15% penalty would have loaded four rounds. That reading is evidence and not a guard: a build parsed from a journal folds the modifiers the journal states, so adding a clip leg to the recipe would not move these counts. What fails on such a change is the engineering suite, which folds the recipe itself.",
+      "readings": 50,
+      "distinctModules": 21,
+      "atCapacity": 50,
       "belowCapacity": []
     },
     "engineered": {
@@ -419,7 +419,7 @@
       ]
     },
     "engineeredGroundTruth": {
-      "note": "Every engineered clip or reserve Frontier states across the ten journal captures — sixteen readings on five of them, and the evidence https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 was opened for. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and quality; an imported build uses the stated modifier verbatim and therefore always equals `game`. Twelve agree exactly, every one of them at quality 1. **The four that do not are what the issue is about, and together they rule out the simple explanations.** Both multi-cannons rolled at an interpolated quality state the *full-quality* reserve — 4200 at quality 0.9844 and again at 0.9438 — so the reserve is not scaled by quality the way the registries model it. The dumbfire rack's clip says the same thing from the other side: 23 is the full-quality figure where its stated quality computes 22. But its reserve, 87, is neither its stated-quality figure (87.499008) nor its full-quality one (88.32), and the heat-sink launcher's 3 is neither at any quality (2.98). So no single rule — ignore quality, round, truncate — reproduces all four, and nothing here is changed on the evidence. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
+      "note": "Every engineered clip or reserve Frontier states across the eleven journal captures — nineteen readings on six of them, and the evidence https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 was opened for. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and quality; an imported build uses the stated modifier verbatim and therefore always equals `game`. Fifteen agree exactly, every one of them at quality 1. **The four that do not are what the issue is about, and together they rule out the simple explanations.** Both multi-cannons rolled at an interpolated quality state the *full-quality* reserve — 4200 at quality 0.9844 and again at 0.9438 — so the reserve is not scaled by quality the way the registries model it. The dumbfire rack's clip says the same thing from the other side: 23 is the full-quality figure where its stated quality computes 22. But its reserve, 87, is neither its stated-quality figure (87.499008) nor its full-quality one (88.32), and the heat-sink launcher's 3 is neither at any quality (2.98). So no single rule — ignore quality, round, truncate — reproduces all four, and nothing here is changed on the evidence. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
       "cases": [
         {
           "capture": "journal-cobra-mkv.json",
@@ -675,6 +675,79 @@
           },
           "agrees": false,
           "note": "The same disagreement at a lower quality still: 4200 again, where quality 0.9438 computes 4181.1168. Two readings of one figure at two different qualities is what rules out a quality-scaled reserve."
+        },
+        {
+          "capture": "journal-federation-corvette-mixed.json",
+          "ship": "federation_corvette",
+          "slot": "MediumHardpoint1",
+          "symbol": "hpt_railgun_fixed_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_feedback_cascade_cooled",
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 80
+          },
+          "game": {
+            "clipSize": 2,
+            "ammoMaximum": 160,
+            "loadedClip": 2,
+            "loadedHopper": 160
+          },
+          "simulated": {
+            "clipSize": 2,
+            "ammoMaximum": 160
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-mixed.json",
+          "ship": "federation_corvette",
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_railgun_fixed_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_weapon_damage",
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 80
+          },
+          "game": {
+            "clipSize": 2,
+            "ammoMaximum": 160,
+            "loadedClip": 2,
+            "loadedHopper": 160
+          },
+          "simulated": {
+            "clipSize": 2,
+            "ammoMaximum": 160
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-mixed.json",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint2",
+          "symbol": "hpt_railgun_fixed_small",
+          "blueprint": "Weapon_LightWeight",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_plasma_slug_cooled",
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 80
+          },
+          "game": {
+            "ammoMaximum": 0,
+            "loadedClip": 1,
+            "loadedHopper": 0
+          },
+          "simulated": {
+            "ammoMaximum": 0
+          },
+          "agrees": true
         },
         {
           "capture": "journal-lynx-highliner.json",

@@ -49,7 +49,8 @@
  * observed in-game whose damage type is not established. `projectileRange` carries
  * boundary parameters that are not effective distances and therefore do not appear as
  * ordinary `maximumRange` / `falloffRange` values.
- * `rateOfFire` is shots per second with the burst pattern and charge time folded in,
+ * `rateOfFire` is shots per second with the burst pattern folded in; `chargeTime` is
+ * the delay before impact and is not part of Frontier's reported cadence,
  * `distributorDraw` (MW) and `thermalLoad` are per shot, and `maximumRange` /
  * `falloffRange` / `shotSpeed` are metres and metres per second. `shotSpeed` is absent
  * on the weapons with no projectile at all (the lasers, rail guns, Gauss cannons and
@@ -1608,7 +1609,7 @@
       "kinetic": 0.3333333333333333,
       "thermal": 0.6666666666666666
     },
-    "rateOfFire": 0.546448,
+    "rateOfFire": 1.587302,
     "burstInterval": 0.63,
     "chargeTime": 1.2,
     "clipSize": 1,
@@ -1636,7 +1637,7 @@
       "kinetic": 0.3333333333333333,
       "thermal": 0.6666666666666666
     },
-    "rateOfFire": 0.492611,
+    "rateOfFire": 1.204819,
     "burstInterval": 0.83,
     "chargeTime": 1.2,
     "clipSize": 1,
@@ -2104,7 +2105,7 @@
       "kinetic": 0.3333333333333333,
       "thermal": 0.6666666666666666
     },
-    "rateOfFire": 1.551724,
+    "rateOfFire": 4.090909,
     "burstInterval": 0.4,
     "burstRounds": 3,
     "burstRateOfFire": 6,

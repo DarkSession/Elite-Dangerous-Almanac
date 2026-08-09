@@ -46,6 +46,12 @@ test('DPS is damage x rounds x rate of fire', () => {
     );
 });
 
+test("charge time delays impact but does not change Frontier's firing cadence", () => {
+    // Frontier states 1.587302/s for this 0.63 s rail gun beside its 1.2 s charge time.
+    // The charge must remain available to consumers without being folded into the rate.
+    assert.ok(near(combinedRateOfFire({ burstInterval: 0.63, chargeTime: 1.2 })!, 1 / 0.63));
+});
+
 test('a continuous-fire weapon reports its per-second stats unchanged', () => {
     const beam = weapon('Hpt_BeamLaser_Fixed_Small');
     const metrics = weaponMetrics(beam);

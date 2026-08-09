@@ -87,7 +87,7 @@
         "experimental": "special_feedback_cascade_cooled",
         "stockBurstInterval": 0.83,
         "burstInterval": 0.322496,
-        "rateOfFire": 0.656816
+        "rateOfFire": 3.100814
       },
       {
         "symbol": "Hpt_Railgun_Fixed_Medium_Burst",
@@ -96,7 +96,7 @@
         "experimental": "special_super_penetrator",
         "stockBurstInterval": 0.4,
         "burstInterval": 0.2946,
-        "rateOfFire": 1.641198
+        "rateOfFire": 4.777577
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
