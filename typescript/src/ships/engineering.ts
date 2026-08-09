@@ -12,6 +12,11 @@
  * - `additive` — `final = base + Σ v` (flat reinforcement)
  * - `overwrite` — `final = v` (the value replaces the base)
  *
+ * A capability-granting label is the non-numeric exception: Anti-Guardian Zone
+ * Resistance produces `{ Label: 'GuardianModuleResistance', ValueStr: 'Active' }` and
+ * effective module stats expose the granted boolean. Its source's displayed `+100%` is
+ * not folded as a number.
+ *
  * A handful of stats are **percentages of a multiplier** and compound on that
  * multiplier instead, whichever method the recipe names: hull boost and shield boost on
  * `1 + v`, and the four resistances on their damage multiplier `1 − v`. That is why a
@@ -48,7 +53,7 @@
 
 import type { EngineeringModifier } from './slef.js';
 import type { DamageDistribution } from './modules.js';
-import { multiplierBaseForLabel } from './module-stat-labels.js';
+import { capabilityValueForLabel, multiplierBaseForLabel } from './module-stat-labels.js';
 
 /** How a modifier value is applied to a base stat. */
 export type ModifierMethod = 'multiplicative' | 'additive' | 'overwrite';
@@ -63,6 +68,8 @@ export interface BlueprintFeature {
      * that shorten a weapon's fire interval carry `"BurstInterval"`, the stat they
      * change, where a journal reports the resulting `"RateOfFire"` instead. See
      * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+     * `"GuardianModuleResistance"` is the other non-scalar case: it grants the
+     * `guardianZoneResistance` capability, and its displayed bounds are not arithmetic.
      */
     readonly label: string;
     /** How the value applies. */
@@ -215,8 +222,8 @@ const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;
  * @param quality - The engineering quality roll, `0`–`1`. Defaults to `1` (best roll).
  * @param experimental - The experimental effect's contributions (from
  * {@link getExperimentalEffect}), if any.
- * @returns One {@link EngineeringModifier} per modified label, each carrying the
- * computed `Value` and the `OriginalValue`.
+ * @returns One {@link EngineeringModifier} per modified label. Numeric stats carry the
+ * computed `Value` and `OriginalValue`; a granted capability carries `ValueStr`.
  * @throws {RangeError} If `quality` is not a finite number in `[0, 1]`.
  */
 export function computeModifiers(
@@ -252,6 +259,11 @@ export function computeModifiers(
     const modifiers: EngineeringModifier[] = [];
     let clipIsOverwritten = false;
     for (const [label, contributions] of byLabel) {
+        const capabilityValue = capabilityValueForLabel(label);
+        if (capabilityValue !== null) {
+            modifiers.push({ Label: label, ValueStr: capabilityValue });
+            continue;
+        }
         const original = base[label];
         const overwrite = contributions.find((c) => c.method === 'overwrite');
         const multiplierBase = multiplierBaseForLabel(label);

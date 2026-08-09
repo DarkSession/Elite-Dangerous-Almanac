@@ -260,6 +260,10 @@
         "thermalResistance": { "$ref": "#/definitions/resistance" },
         "explosiveResistance": { "$ref": "#/definitions/resistance" },
         "causticResistance": { "$ref": "#/definitions/resistance" },
+        "guardianZoneResistance": {
+          "description": "True when Anti-Guardian Zone Resistance grants protection from Thargoid anti-Guardian fields; absent when not granted.",
+          "type": "boolean"
+        },
         "hullBoost": { "type": "number", "minimum": 0 },
         "hullReinforcement": { "type": "number", "minimum": 0 },
         "shieldAddition": { "type": "number", "minimum": 0 },

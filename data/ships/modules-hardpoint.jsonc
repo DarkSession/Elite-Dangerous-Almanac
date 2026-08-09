@@ -38,8 +38,9 @@
  * `hullBoost` is an armour variant's bonus as a fraction of the hull's base armour
  * (0.8 means base armour x 1.8), `hullReinforcement` is hull points added,
  * `shieldAddition` shield megajoules added, `moduleProtection` the fraction of module
- * damage absorbed. `alwaysPowered` marks a hardpoint-mounted module that draws its
- * power even with hardpoints retracted.
+ * damage absorbed. `guardianZoneResistance` marks the two Guardian Nanite Torpedo
+ * Pylons whose EDSY `agzresist` flag is inherently `Active`. `alwaysPowered` marks a
+ * hardpoint-mounted module that draws its power even with hardpoints retracted.
  * Weapon stats: `damage` is per round (per second on continuous-fire beam and mining
  * lasers, which carry no `rateOfFire`), `damageDistribution` splits its conventional
  * amount by type, and `damageComponents` preserves exact amounts when several in-game
@@ -4335,6 +4336,7 @@
     "integrity": 50,
     "powerDraw": 0.4,
     "bootTime": 0,
+    "guardianZoneResistance": true,
     "damage": 0,
     "damageDistribution": {
       "explosive": 1
@@ -4359,6 +4361,7 @@
     "integrity": 80,
     "powerDraw": 0.7,
     "bootTime": 0,
+    "guardianZoneResistance": true,
     "damage": 0,
     "damageDistribution": {
       "explosive": 1

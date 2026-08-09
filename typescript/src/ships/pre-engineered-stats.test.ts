@@ -46,6 +46,25 @@ test('a pre-engineered drive resolves to its known in-game stats', () => {
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
 });
 
+test('a string-valued capability resolves to the boolean module field', () => {
+    // A caller may use the resolver with a variant outside the bundled sale catalogue.
+    // Keep capability handling consistent with a rolled blueprint without claiming this
+    // particular article is sold pre-engineered in game.
+    const variant: PreEngineeredVariant = {
+        symbol: 'Int_GuardianPowerplant_Size7',
+        name: 'Guardian Hybrid Power Plant',
+        blueprint: 'GuardianModule_Sturdy',
+        grade: 1,
+        acquisition: 'communityGoal',
+        modifiers: [{ label: 'GuardianModuleResistance', method: 'additive', value: 1 }],
+    };
+    assert.deepEqual(getPreEngineeredModifiers(variant), [
+        { Label: 'GuardianModuleResistance', ValueStr: 'Active' },
+    ]);
+    assert.deepEqual(unresolvedModifiers(variant), []);
+    assert.equal(getPreEngineeredStats(variant)?.guardianZoneResistance, true);
+});
+
 test('a pre-engineered weapon resolves its damage-side stats too', () => {
     const { symbol, blueprint, grade, base, engineered, unresolved } =
         fixture.resolved.guardianShardMediumG1;

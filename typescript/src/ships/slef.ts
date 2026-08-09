@@ -48,9 +48,9 @@ export interface SlefHeader {
  *
  * @remarks
  * `Value` is the post-engineering figure, `OriginalValue` the stock one. Some
- * modifiers carry a string (`ValueStr`) instead of a number. **Do not trust
- * `LessIsGood`** — Frontier is known to set it wrongly for some stats; decide a
- * stat's direction yourself.
+ * modifiers carry a string (`ValueStr`) instead of a number — generated Anti-Guardian
+ * Zone Resistance uses `"Active"`. **Do not trust `LessIsGood`** — Frontier is known to
+ * set it wrongly for some stats; decide a stat's direction yourself.
  */
 export interface EngineeringModifier {
     /** The stat's journal name, e.g. `"FSDOptimalMass"`, `"Mass"`, `"PowerDraw"`. */
