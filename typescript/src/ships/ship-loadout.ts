@@ -1791,9 +1791,14 @@ export class ShipLoadout {
         if (modified !== null) return modified;
         const stats = statsOverride ?? this.#statsFor(module);
         if (stats?.mass !== undefined) return stats.mass;
+        // The cargo hatch is built into the hull and weighs nothing, and its id varies by
+        // hull family: a Lynx Highliner fits `ModularCargoBayDoorFDL` where most hulls fit
+        // `ModularCargoBayDoor`. Matching the family rather than the one id is what lets a
+        // capture of such a hull compute a mass at all — Frontier's own `UnladenMass` for
+        // that capture agrees once the hatch contributes zero.
         if (
             module.Slot.toLowerCase() === 'cargohatch' &&
-            module.Item.toLowerCase() === 'modularcargobaydoor'
+            module.Item.toLowerCase().startsWith('modularcargobaydoor')
         ) {
             return 0;
         }

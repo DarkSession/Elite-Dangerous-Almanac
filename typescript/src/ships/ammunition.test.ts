@@ -1,5 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 import { ammunitionCapacity } from './ammunition.js';
 import { getModuleBySymbol } from './modules.js';
@@ -11,6 +13,26 @@ import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with 
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
+import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
+import corvetteMultiroleJournal from '../../../fixtures/ships/journal-federation-corvette-multirole.json' with { type: 'json' };
+import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
+import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
+import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
+
+/** The shape this file reads off a capture — a journal states more than the library models. */
+interface JournalAmmoModule {
+    Slot: string;
+    Item: string;
+    AmmoInClip?: number;
+    AmmoInHopper?: number;
+    Engineering?: {
+        BlueprintName: string;
+        Level: number;
+        Quality: number;
+        ExperimentalEffect?: string;
+        Modifiers: { Label: string; Value?: number }[];
+    };
+}
 
 /** Every journal capture in the fixtures, by file name. */
 const JOURNALS = [
@@ -19,6 +41,11 @@ const JOURNALS = [
     ['journal-python-mkii-antixeno.json', pythonJournal],
     ['journal-corsair.json', corsairJournal],
     ['journal-federation-corvette.json', corvetteJournal],
+    ['journal-federation-corvette-beams.json', corvetteBeamsJournal],
+    ['journal-federation-corvette-multirole.json', corvetteMultiroleJournal],
+    ['journal-cobra-mkv.json', cobraJournal],
+    ['journal-kestrel-mkii.json', kestrelJournal],
+    ['journal-lynx-highliner.json', lynxJournal],
 ] as const;
 
 const module = (symbol: string) => {
@@ -188,10 +215,9 @@ test('a build reports the capacity of every weapon it carries', () => {
 });
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
-    // A rearm state is a lower bound on a capacity, never a reading of one. Seventeen of
-    // the eighteen counts across the five captures happen to sit at capacity — that is
-    // what makes them a check on the catalogue — and the eighteenth is a launcher that has
-    // fired once.
+    // A rearm state is a lower bound on a capacity, never a reading of one. All 42 counts
+    // across the ten captures happen to sit at capacity — that is what makes them a check
+    // on the catalogue — but a partly spent launcher would report less and say nothing.
     const pinned = fixture.ammunition.journalReadings;
     const below: Record<string, unknown>[] = [];
     let readings = 0;
@@ -231,15 +257,22 @@ test('every ammo count a journal reports fits inside the capacity for that modul
 });
 
 test("Frontier's own engineered ammunition figures, against what this library computes", () => {
-    // The Corsair capture is the only ground truth for an *engineered* clip or reserve. A
-    // parsed build always agrees with it, because a stated modifier is used verbatim; a
-    // simulated roll of the same recipe agrees only at full quality.
-    const build = ShipLoadout.fromLoadout(corsairJournal as never);
+    // Five captures state an engineered clip or reserve. A parsed build always agrees with
+    // the capture, because a stated modifier is used verbatim; a simulated roll of the same
+    // recipe agrees on twelve of the sixteen, every one of those at quality 1.
     for (const pinned of fixture.ammunition.engineeredGroundTruth.cases) {
-        const fitted = corsairJournal.Modules.find((m) => m.Slot === pinned.slot)!;
+        const capture = JOURNALS.find(([file]) => file === pinned.capture)?.[1];
+        assert.ok(capture, `${pinned.capture} is pinned but not read`);
+        const build = ShipLoadout.fromLoadout(capture as never);
+        const fitted = (capture as { Modules: JournalAmmoModule[] }).Modules.find(
+            (m) => m.Slot === pinned.slot,
+        )!;
         const label = `${pinned.symbol} ${pinned.blueprint} g${pinned.grade} q${pinned.quality}`;
         const stated = (name: string) =>
             fitted.Engineering!.Modifiers.find((m) => m.Label === name)?.Value;
+        // A recipe need not touch the magazine: the heat-sink launcher's only ammunition
+        // leg is its reserve, so its clip stands at the catalogue's figure.
+        const gameClip = pinned.game.clipSize ?? pinned.base.clipSize;
 
         // The capture says what the fixture says it says.
         assert.equal(fitted.Item, pinned.symbol, label);
@@ -255,9 +288,9 @@ test("Frontier's own engineered ammunition figures, against what this library co
         assert.deepEqual(
             build.getFittedModule(pinned.slot)!.ammunition,
             {
-                clipSize: pinned.game.clipSize,
+                clipSize: gameClip,
                 hopper: pinned.game.ammoMaximum,
-                total: pinned.game.clipSize + pinned.game.ammoMaximum,
+                total: gameClip + pinned.game.ammoMaximum,
                 unlimited: false,
             },
             `${label}: imported`,
@@ -269,7 +302,7 @@ test("Frontier's own engineered ammunition figures, against what this library co
         assert.equal(record.clipSize, pinned.base.clipSize, `${label}: base clip`);
         assert.equal(record.ammoMaximum, pinned.base.ammoMaximum, `${label}: base reserve`);
 
-        const simulated = ShipLoadout.empty('Corsair');
+        const simulated = ShipLoadout.empty(pinned.ship);
         simulated.setModule(pinned.slot, record);
         simulated.getFittedModule(pinned.slot)!.applyBlueprint(pinned.blueprint, {
             grade: pinned.grade,
@@ -277,18 +310,25 @@ test("Frontier's own engineered ammunition figures, against what this library co
             ...(pinned.experimental ? { experimental: pinned.experimental } : {}),
         });
         const rolled = simulated.getFittedModule(pinned.slot)!.ammunition!;
-        assert.equal(rolled.clipSize, pinned.simulated.clipSize, `${label}: simulated clip`);
+        assert.equal(
+            rolled.clipSize,
+            pinned.simulated.clipSize ?? pinned.base.clipSize,
+            `${label}: simulated clip`,
+        );
         assert.equal(rolled.hopper, pinned.simulated.ammoMaximum, `${label}: simulated reserve`);
 
         // Whether that simulation matches Frontier is the fixture's `agrees` flag, and the
-        // one `false` is https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.
-        const agrees =
-            rolled.clipSize === pinned.game.clipSize && rolled.hopper === pinned.game.ammoMaximum;
+        // four `false`s are https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.
+        const agrees = rolled.clipSize === gameClip && rolled.hopper === pinned.game.ammoMaximum;
         assert.equal(agrees, pinned.agrees, `${label}: agreement with the game`);
     }
-    // Full quality agrees; the interpolated roll does not. If that ever changes, this count
-    // moves and the issue can be revisited rather than the fixture quietly rewritten.
-    assert.equal(fixture.ammunition.engineeredGroundTruth.cases.filter((c) => c.agrees).length, 2);
+    // Twelve of the sixteen agree, every one at quality 1. The four that do not are what
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 is about, and the
+    // fixture's note says what they jointly rule out. Counting them is not the guard — the
+    // sweep below is, because a case list that quietly shrinks is how the evidence would be
+    // dropped rather than faced.
+    const { cases } = fixture.ammunition.engineeredGroundTruth;
+    assert.equal(cases.filter((c) => !c.agrees).length, 4);
 });
 
 test('the Corsair capture recomputes to the figures Frontier reports for it', () => {
@@ -318,4 +358,40 @@ test('a module the catalogues do not know reports no capacity', () => {
     const fitted = build.getFittedModule('SmallHardpoint1')!;
     assert.equal(fitted.stats, null);
     assert.equal(fitted.ammunition, null);
+});
+
+test('every journal capture in the fixtures is read for its ammunition', () => {
+    // The list above is hand-maintained, and a capture's ammunition readings are the only
+    // external readings of what a module had loaded, so a capture missing from it is ground
+    // truth the repository holds and never looks at.
+    const onDisk = readdirSync(fileURLToPath(new URL('../../../fixtures/ships/', import.meta.url)))
+        .filter((file) => file.startsWith('journal-') && file.endsWith('.json'))
+        .sort();
+    assert.deepEqual(
+        JOURNALS.map(([file]) => file)
+            .slice()
+            .sort(),
+        onDisk,
+    );
+});
+
+test('every engineered clip or reserve a capture states is pinned', () => {
+    // The one list on this fixture that a magic number cannot guard: a reading dropped from
+    // it is evidence the repository holds and stops looking at, which is exactly what the
+    // four disagreements make costly.
+    const stated: { capture: string; slot: string }[] = [];
+    for (const [file, event] of JOURNALS) {
+        for (const fitted of (event as { Modules: JournalAmmoModule[] }).Modules) {
+            const carries = (fitted.Engineering?.Modifiers ?? []).some(
+                (modifier) => modifier.Label === 'AmmoClipSize' || modifier.Label === 'AmmoMaximum',
+            );
+            if (carries) stated.push({ capture: file, slot: fitted.Slot });
+        }
+    }
+    // Compared as a set: the fixture reads in capture order, the sweep in list order.
+    const key = ({ capture, slot }: { capture: string; slot: string }) => `${capture}|${slot}`;
+    assert.deepEqual(
+        fixture.ammunition.engineeredGroundTruth.cases.map(key).sort(),
+        stated.map(key).sort(),
+    );
 });

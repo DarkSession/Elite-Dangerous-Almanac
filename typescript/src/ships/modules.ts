@@ -509,7 +509,8 @@ export interface OutfittingModule {
      * The scanner records also carry {@link OutfittingModule.maximumRange}, which is the
      * same distance from the same upstream field; the sensor suites carry only this one.
      * Both follow a `ScannerRange` modifier, so an engineered scanner reads the same
-     * either way.
+     * either way. What the duplication costs:
+     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/66
      */
     readonly scannerRange?: number;
     /**
