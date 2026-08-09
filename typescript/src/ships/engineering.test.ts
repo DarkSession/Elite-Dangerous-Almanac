@@ -39,6 +39,17 @@ test('the catalogues hold the expected counts', () => {
     assert.equal(Object.keys(EXPERIMENTAL_EFFECTS).length, fixture.experimentalCount);
 });
 
+test('blueprint-only modifications never resolve as experimental effects', () => {
+    for (const [effectId, classification] of Object.entries(
+        fixture.blueprintOnlyModifications.excludedExperimentalIds,
+    )) {
+        assert.equal(getExperimentalEffect(effectId), null, `${effectId} became an effect`);
+        for (const [blueprintId, expectedName] of Object.entries(classification.blueprints)) {
+            assert.equal(getBlueprint(blueprintId)?.name, expectedName, blueprintId);
+        }
+    }
+});
+
 test('the gate accepts every recipe the menu offers, for every module', () => {
     // The contract: "what can this module take?" and "may I put this on it?" read the
     // same catalogue, so no module can be offered a recipe that `applyBlueprint` refuses.

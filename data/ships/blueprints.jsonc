@@ -22,6 +22,9 @@
  *          internal `db 20260428`). Same CC BY-NC 4.0 terms. The game logic is Elite
  *          Dangerous data, property of Frontier Developments plc, under Frontier's
  *          media-usage terms: https://forums.frontier.co.uk/threads/510879/
+ *          Frontier's Operations update notes classify Thermal Plasma Conversion under
+ *          "Blueprints"; acquired 2026-08-09 UTC from
+ *          https://forums.frontier.co.uk/threads/648012/ (no immutable revision exposed).
  *
  * Each blueprint is { name, grades }. `name` is the blueprint's short modifier label
  * (coriolis `blueprint.name` for the journal-keyed ones; the Operations dossier's
