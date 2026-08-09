@@ -153,10 +153,10 @@ names at all, so the corroborating source has to be captures, and five are in ha
 four SLEF exports and one journal — covering four of the 13 hulls with names of their
 own (below). One is a journal rather
 than an export: `journal-lynx-highliner.json` gives Frontier's own casing for a hull the
-Inara export already covers in lower case, and one thing that export does not — its other
-28 outfitting keys all bind, and the one mount it fits that the hull does not declare is
-the planetary approach suite, a gap in the layout rather than in the names,
-<https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/65>.
+Inara export already covers in lower case, and one thing that export does not — its
+`PlanetaryApproachSuite` mount. All 29 outfitting keys bind to the stored layout; its
+seven cosmetic slots (`WeaponColour`, `Decal1`–`3`, `EngineColour`, `VesselVoice`,
+`ShipCockpit`) are not outfitting mounts and remain outside the export-only sweep.
 
 **Derivation.** EDSY keeps `military` mounts in a group of their own and does not model
 the planetary approach suite; this catalogue keeps both inline in `optional`. The two
@@ -223,10 +223,10 @@ capture is the load-bearing one: its internals read `Slot01_Size7`…`Slot10_Siz
 `Slot13_Size1`, `Slot14_Size1`, all of which the plain numbering produces — evidence for
 leaving that hull's optionals alone rather than assuming EDSY simply omitted them. The
 journal captures are not in that test: a journal states cosmetic slots (`Decal1`,
-`WeaponColour`, `ShipCockpit`, …) that no hull layout declares — and, on the Lynx, the
-approach-suite mount that hull does not declare either
-(<https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/65>) — so the assertion
-is written for exports that carry outfitting mounts alone.
+`WeaponColour`, `ShipCockpit`, …) that no hull layout declares, so the assertion is
+written for exports that carry outfitting mounts alone. The Lynx journal's 29
+outfitting keys, including its approach suite, are pinned separately by the full layout
+and targeted fit assertions.
 
 **All 13 hulls' full enumerated key lists are pinned** in
 `fixtures/ships/ship-slots.json` under `keys`, and the `spot` layouts carry their mount
@@ -246,17 +246,23 @@ names, so a port produces the same vocabulary.
   [Inara's ship page](https://inara.cz/elite/ship/68/), read 2026-08-02 UTC, listing
   1 Large Mining, 1 Medium, 2 Medium Mining, 3 Small and 1 Small Mining. The four
   unrestricted mounts are exactly the `[2, 1, 1, 1]` the record already had.
-- **Lynx Highliner (`MediumTransport01`) — from EDSY + Frontier's Lynx update notes:**
+- **Lynx Highliner (`MediumTransport01`) — from EDSY, Frontier's Lynx update notes and
+  a Frontier journal capture:**
   the Lynx has no coriolis hull entry, so its stats and slot layout are sourced instead
   from EDSY's ship data and Frontier's Lynx update notes (hull mass 260 t, 285/350 m/s,
   200/350 base shield/armour, hardness 55, 2 crew, rotation 26/60/19 deg/s, min thrust
   73.75%; core PP5/thr6/FSD5/LS6/dist5/sen3/tank5; hardpoints 1 large + 4 medium;
-  4 utilities; optionals 6/6/6/5/5/4/4/3/2/1; its five armour options at 0/26/53/53/53 t,
-  carried on the `MediumTransport01_Armour_*` module records). Values
+  4 utilities; unrestricted/passenger optionals 6/6/6/5/5/4/4/3/2/1; its five armour
+  options at 0/26/53/53/53 t, carried on the `MediumTransport01_Armour_*` module
+  records). Values
   the static catalogue does not expose are omitted rather than invented: `masslock`,
   `heatCapacity`, `pipSpeed`, acceleration, and the min-pitch / boost-energy figures.
   Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
-  the names `Passenger01`–`Passenger03`, sourced above.
+  the names `Passenger01`–`Passenger03`, sourced above. A final size-1
+  `planetaryApproachSuite` mount named `PlanetaryApproachSuite` comes directly from
+  `fixtures/ships/journal-lynx-highliner.json`, which fits
+  `int_planetapproachsuite_advanced` there. The capture's acquisition date and checksum
+  are recorded under Ground-truth ship builds.
 
 ## Modules (outfitting)
 
@@ -2580,7 +2586,8 @@ under, which is why several are cited above rather than copied.
   individually rather than as two more Corvettes: the **Kestrel Mk II** is the only reading
   of the Cytoscrambler Burst Laser and of `Int_MkIIAgileBoost_Engine_Size5_Class5`, and the
   **Lynx Highliner** — a hull coriolis-data does not carry at all — is the only reading of a
-  heat-sink launcher's *base* reserve, the one catalogue figure these five correct. A
+  heat-sink launcher's *base* reserve and directly states the hull's size-1
+  `PlanetaryApproachSuite` mount by fitting its advanced suite there. A
   capture reads only the modules a player engineered: the Kestrel's three Mk II Plasma
   Shock Autocannons and the Lynx's Mk II passenger cabins are fitted stock, so they
   state no base value and are not evidence about those records.

@@ -15,6 +15,7 @@ import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 
 import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
+import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
 import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.json' with { type: 'json' };
 import cutterCapture from '../../../fixtures/ships/slef-inara-cutter-antixeno.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
@@ -675,6 +676,19 @@ test('the planetary approach suite states its own mount instead of being special
             ),
         /slot only takes planetary approach suites/,
     );
+
+    // Frontier's Lynx capture is the source for this hull's mount: it fits the advanced
+    // suite under this exact key. Rebuilding that fit from an empty hull must therefore
+    // accept the article the game states.
+    const captured = lynxJournal.Modules.find((module) => module.Slot === 'PlanetaryApproachSuite');
+    assert.ok(captured);
+    assert.equal(captured.Item, 'int_planetapproachsuite_advanced');
+    assert.doesNotThrow(() =>
+        ShipLoadout.empty(lynxJournal.Ship).setModule(
+            captured.Slot,
+            mod(captured.Item, INTERNAL_MODULES),
+        ),
+    );
 });
 
 test('the restrictions accept what the game itself fitted in a real capture', () => {
@@ -684,9 +698,8 @@ test('the restrictions accept what the game itself fitted in a real capture', ()
     // family left out of the passenger prefixes, say — fails here and nowhere else.
     // Between them the four cover `mining`, `cargo`, `limpetController`,
     // `vesselHangar`, `passenger` and — since the Cutter joined them — `military`, whose
-    // two mounts it fills with hull reinforcement packages. Only
-    // `planetaryApproachSuite` is uncovered, because Inara omits an empty mount and none
-    // of the four fills one.
+    // two mounts it fills with hull reinforcement packages. The Frontier Lynx capture
+    // exercises `planetaryApproachSuite` separately above; Inara omits that empty mount.
     const captures = [
         ['lynx-highliner', lynxCapture[0]!.data],
         ['panther-mkii', pantherCapture[0]!.data],

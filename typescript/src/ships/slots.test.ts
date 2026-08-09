@@ -179,6 +179,15 @@ test('the hulls with names of their own enumerate the journal keys the fixture p
     }
 });
 
+test(`all ${slotsFixture.planetaryApproachSuiteCount} hulls declare an approach-suite mount`, () => {
+    const carried = SHIPS.filter((ship) =>
+        getShipSlots(ship.symbol)?.optional.some(
+            (slot) => slot.restriction === 'planetaryApproachSuite',
+        ),
+    );
+    assert.equal(carried.length, slotsFixture.planetaryApproachSuiteCount);
+});
+
 test("the Type-11's mining mounts share the per-class numbering", () => {
     const hardpoints = enumerateSlots(getShipSlots('LakonMiner')!).filter(
         (s) => s.kind === 'hardpoint',
