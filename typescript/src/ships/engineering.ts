@@ -219,7 +219,10 @@ const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;
  * Range's falloff flag, and `BurstSize` rounds an engineered clip to whole bursts, so a
  * partial `base` gets a plain round-up on a weapon that fires in bursts.
  * @param features - The blueprint grade's features (from {@link getBlueprintGrade}).
- * @param quality - The engineering quality roll, `0`–`1`. Defaults to `1` (best roll).
+ * @param quality - The current engineering system's shared quality roll, `0`–`1`. Defaults
+ * to `1` (best roll). Legacy-engineered modules advanced each attribute independently and
+ * cannot be reconstructed from their single reported quality; import their journal-stated
+ * modifiers instead.
  * @param experimental - The experimental effect's contributions (from
  * {@link getExperimentalEffect}), if any.
  * @returns One {@link EngineeringModifier} per modified label. Numeric stats carry the

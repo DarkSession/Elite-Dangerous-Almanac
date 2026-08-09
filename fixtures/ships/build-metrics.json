@@ -419,7 +419,7 @@
       ]
     },
     "engineeredGroundTruth": {
-      "note": "Every engineered clip or reserve Frontier states across the twelve journal captures — twenty-one readings on seven of them. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and corrected quality; an imported build uses the stated modifier verbatim and therefore always equals `game`. Twenty agree exactly, including a fragment cannon's Corrosive Shell reserve at quality 0.826, where the leg is the experimental's flat −20% rather than a quality-rolled one. The two multi-cannon captures report stale fractional qualities even though the modules are fully engineered, so `reportedQuality` preserves the verbatim journal value while `quality` records the manually verified value used for simulation. Nearest-integer reserve rounding reproduces the Corsair's 87 rounds and the Lynx Highliner's 3 heat sinks. The remaining one-round disagreement is the Corsair dumbfire rack's clip: Frontier states 23 where the registry-derived roll rounds up to 22. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
+      "note": "Every engineered clip or reserve Frontier states across the twelve journal captures — twenty-one readings on seven of them. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and corrected quality; an imported build uses the stated modifier verbatim and therefore always equals `game`. Twenty agree exactly, including a fragment cannon's Corrosive Shell reserve at quality 0.826, where the leg is the experimental's flat −20% rather than a quality-rolled one. The two multi-cannon captures report stale fractional qualities even though the modules are fully engineered, so `reportedQuality` preserves the verbatim journal value while `quality` records the manually verified value used for simulation. Nearest-integer reserve rounding reproduces the Corsair's 87 rounds and the Lynx Highliner's 3 heat sinks. The Corsair dumbfire rack is the deliberate exception: it was engineered under the legacy system, where attributes advanced independently, so its one reported `Quality` cannot reproduce both per-leg values through the current shared-quality model. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
       "cases": [
         {
           "capture": "journal-cobra-mkv.json",
@@ -549,7 +549,8 @@
             "ammoMaximum": 87
           },
           "agrees": false,
-          "note": "The computed reserve of 87.499008 rounds to Frontier's 87 whole missiles. The clip remains one round apart: Frontier states 23 where the registry-derived roll rounds up to 22. Importing this build is unaffected because the stated modifiers are used verbatim."
+          "legacyEngineering": true,
+          "note": "This module was engineered under the legacy system, where attributes advanced independently. Its single reported quality therefore cannot reproduce both per-leg values through the current shared-quality model: the computed reserve of 87.499008 rounds to Frontier's 87 whole missiles, while the clip rounds up to 22 rather than the stated 23. Importing the build is exact because the stated modifiers are used verbatim."
         },
         {
           "capture": "journal-federation-corvette-beams.json",
