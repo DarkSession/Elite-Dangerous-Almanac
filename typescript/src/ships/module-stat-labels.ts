@@ -10,7 +10,7 @@
  * @internal
  */
 
-import type { OutfittingModule } from './modules.js';
+import type { DamageDistribution, OutfittingModule } from './modules.js';
 
 /** One journal modifier label and how it relates to the catalogue field behind it. */
 export interface StatLabel {
@@ -22,6 +22,11 @@ export interface StatLabel {
     readonly label: string;
     /** The catalogue field holding the base value. */
     readonly field: keyof OutfittingModule;
+    /**
+     * Member within {@link DamageDistribution} when `field` is `damageDistribution`.
+     * Absent for ordinary scalar module stats.
+     */
+    readonly damageType?: keyof DamageDistribution;
     /**
      * Journal value ÷ catalogue value. `1` for the stats both express the same way
      * (mass in tonnes, power in MW); `100` for the ones the journal reports as a
@@ -206,6 +211,30 @@ export const STAT_LABELS: readonly StatLabel[] = [
     // `FalloffRange`. Both resolve, as `ProbeRadius` / `DSS_PatchRadius` do.
     { label: 'DamageFalloffRange', field: 'falloffRange' },
     { label: 'ShotSpeed', field: 'shotSpeed' },
+    // Damage-type shares are percentages in a journal and fractions in the catalogue.
+    // They live one level below the module record, so `damageType` names the member the
+    // otherwise-flat label mapping reads and writes.
+    {
+        label: '$Kinetic;',
+        field: 'damageDistribution',
+        damageType: 'kinetic',
+        scale: percent,
+        defaultBase: 0,
+    },
+    {
+        label: '$Thermal;',
+        field: 'damageDistribution',
+        damageType: 'thermal',
+        scale: percent,
+        defaultBase: 0,
+    },
+    {
+        label: '$Explosive;',
+        field: 'damageDistribution',
+        damageType: 'explosive',
+        scale: percent,
+        defaultBase: 0,
+    },
     // A weapon that carries no jitter fires true, and Rapid Fire, its multi-cannon spelling
     // and Inertial Impact all give one — which a journal confirms, reporting
     // `OriginalValue: 0` for a missile rack whose record holds no such field.
@@ -235,6 +264,10 @@ const BY_LABEL: ReadonlyMap<string, readonly StatLabel[]> = (() => {
 const LABELS_BY_FIELD: ReadonlyMap<keyof OutfittingModule, readonly string[]> = (() => {
     const labels = new Map<keyof OutfittingModule, string[]>();
     for (const entry of STAT_LABELS) {
+        // Nested damage shares are read together by `damageDistributionFor`; exposing
+        // them as scalar field labels would make `effectiveStat` return one share where
+        // callers expect the whole record.
+        if (entry.damageType !== undefined) continue;
         const fieldLabels = labels.get(entry.field) ?? [];
         fieldLabels.push(entry.label);
         labels.set(entry.field, fieldLabels);
@@ -251,9 +284,10 @@ const LABELS_BY_FIELD: ReadonlyMap<keyof OutfittingModule, readonly string[]> = 
  */
 export function baseStats(stats: OutfittingModule): Record<string, number> {
     const base: Record<string, number> = {};
-    for (const { label, field, scale, defaultBase } of STAT_LABELS) {
+    for (const { label, field, damageType, scale, defaultBase } of STAT_LABELS) {
         if (base[label] !== undefined) continue; // an earlier entry already answered
-        const value = stats[field];
+        const value =
+            damageType === undefined ? stats[field] : stats.damageDistribution?.[damageType];
         if (typeof value === 'number') base[label] = value * (scale ?? 1);
         // A stat the module leaves out but the game still assumes a value for can be
         // engineered from that assumed value.
@@ -299,6 +333,25 @@ export function fieldForLabel(
         if (carried) return carried.field;
     }
     return entries[0]!.field;
+}
+
+/**
+ * The damage-distribution member a journal modifier label names, or `null` for an
+ * ordinary scalar stat or an unknown label.
+ *
+ * @internal
+ */
+export function damageTypeForLabel(label: string): keyof DamageDistribution | null {
+    return BY_LABEL.get(label)?.[0]?.damageType ?? null;
+}
+
+/**
+ * Journal labels that name one damage-distribution member, in declaration order.
+ *
+ * @internal
+ */
+export function labelsForDamageType(type: keyof DamageDistribution): readonly string[] {
+    return STAT_LABELS.filter((entry) => entry.damageType === type).map((entry) => entry.label);
 }
 
 /**

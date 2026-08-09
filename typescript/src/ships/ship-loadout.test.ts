@@ -1008,6 +1008,83 @@ test('weapon and armour recipes engineer the stats the catalogue carries', () =>
     assert.equal(boost.Value, 362);
 });
 
+test('damage-converting experimentals replace the weapon split and export journal labels', () => {
+    const cases = [
+        {
+            symbol: 'Hpt_Cannon_Fixed_Small',
+            experimental: 'special_high_yield_shell',
+        },
+        {
+            symbol: 'Hpt_PulseLaserBurst_Fixed_Small',
+            experimental: 'special_distortion_field',
+        },
+        {
+            symbol: 'Hpt_DumbfireMissileRack_Fixed_Small',
+            experimental: 'special_overload_munitions',
+        },
+    ] as const;
+    const expected = engineeringFixture.experimentalDamageDistributions.map;
+
+    for (const { symbol, experimental } of cases) {
+        const build = ShipLoadout.empty('Sidewinder').setModule(
+            'SmallHardpoint1',
+            mod(symbol, HARDPOINT_MODULES),
+        );
+        build.applyBlueprint('SmallHardpoint1', 'Weapon_Sturdy', {
+            grade: 5,
+            experimental,
+        });
+
+        const fitted = build.getFittedModule('SmallHardpoint1')!;
+        assert.deepEqual(fitted.effectiveStats?.damageDistribution, expected[experimental]);
+        const metrics = build.weaponMetrics().weapons[0]!.metrics;
+        for (const [type, share] of Object.entries(expected[experimental])) {
+            assert.ok(
+                near(
+                    metrics.damageByType[type as 'kinetic' | 'thermal' | 'explosive'],
+                    metrics.damagePerSecond * share,
+                    1e-6,
+                ),
+                `${experimental} ${type}`,
+            );
+        }
+
+        const modifiers = fitted.Engineering?.Modifiers ?? [];
+        for (const type of Object.keys(expected[experimental])) {
+            const label = `$${type[0]!.toUpperCase()}${type.slice(1)};`;
+            assert.ok(
+                modifiers.some((modifier) => modifier.Label === label),
+                label,
+            );
+        }
+    }
+});
+
+test('a damage conversion supersedes exact stock damage components', () => {
+    const stock = mod('Hpt_Cannon_Fixed_Small', HARDPOINT_MODULES);
+    const withExactComponents: OutfittingModule = {
+        ...stock,
+        damageDistribution: { kinetic: 1 },
+        damageComponents: { kinetic: stock.damage! },
+    };
+    const build = ShipLoadout.empty('Sidewinder').setModule('SmallHardpoint1', withExactComponents);
+    build.applyBlueprint('SmallHardpoint1', 'Weapon_Sturdy', {
+        grade: 5,
+        experimental: 'special_high_yield_shell',
+    });
+
+    const effective = build.getFittedModule('SmallHardpoint1')!.effectiveStats!;
+    assert.equal(effective.damageComponents, undefined);
+    assert.deepEqual(
+        effective.damageDistribution,
+        engineeringFixture.experimentalDamageDistributions.map.special_high_yield_shell,
+    );
+
+    const metrics = build.weaponMetrics().weapons[0]!.metrics;
+    assert.ok(near(metrics.damageByType.kinetic, metrics.damagePerSecond / 2, 1e-6));
+    assert.ok(near(metrics.damageByType.explosive, metrics.damagePerSecond / 2, 1e-6));
+});
+
 test('a hull reinforcement package engineers a hull boost it never had', () => {
     // A reinforcement package carries no base hull boost, and unlike an ordinary stat
     // that absence is not "nothing to scale": a percentage-of-a-multiplier stat has a

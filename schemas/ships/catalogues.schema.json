@@ -518,6 +518,7 @@
           "type": "array",
           "items": { "$ref": "#/definitions/experimentalContribution" }
         },
+        "damageDistribution": { "$ref": "#/definitions/damageDistribution" },
         "materials": {
           "type": "array",
           "items": { "$ref": "#/definitions/blueprintMaterial" }

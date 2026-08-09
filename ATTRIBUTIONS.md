@@ -116,11 +116,13 @@ in the doc comment of each ported module, and in long form in the domain
   Dangerous. These are **Elite Dangerous game data, property of Frontier Developments
   plc**; the observation date, field-level coverage, corrections and unresolved fields
   are in `data/ships/SOURCES.md`.
-- **Experimental (special) effect modifiers, their material recipes, and journal
-  Modifier Labels** — the numeric experimental-effect modifiers and their material
-  costs, which coriolis-data does not carry, plus the attribute-to-journal-Label
-  mapping, from [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**,
-  whose code is licensed **CC BY-NC 4.0**.
+- **Experimental (special) effect modifiers, damage-type conversions, their material
+  recipes, and journal Modifier Labels** — the numeric experimental-effect modifiers,
+  fixed converted damage splits and material costs, which coriolis-data does not carry
+  in one complete record, plus the attribute-to-journal-Label mapping, from
+  [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**, whose code is
+  licensed **CC BY-NC 4.0**. High Yield Shell's split and nested journal labels are also
+  checked against the Frontier `Loadout` capture described in `data/ships/SOURCES.md`.
 - **Which blueprints and experimental effects each module can take** — the module-group
   menus in `data/ships/engineering-options.jsonc`: which modules form a group, the
   blueprint and experimental-effect lists each group offers, and the per-module

@@ -10,9 +10,15 @@
  */
 
 import { getLoadoutModifier, type LoadoutModule } from './slef.js';
-import { fieldForLabel, labelsForField, scaleForLabel } from './module-stat-labels.js';
-import type { OutfittingModule } from './modules.js';
+import {
+    damageTypeForLabel,
+    fieldForLabel,
+    labelsForField,
+    scaleForLabel,
+} from './module-stat-labels.js';
+import type { DamageDistribution, OutfittingModule } from './modules.js';
 import { getModulesForShip } from './modules.js';
+import { getExperimentalEffectDamageDistribution } from './experimental-effects.js';
 import { CORE_MODULES } from './modules-core.js';
 import { getShipBySymbol } from './ships.js';
 import { statFor } from './loadout-engineering.js';
@@ -91,6 +97,41 @@ export function effectiveStat(
     return typeof base === 'number' ? base : undefined;
 }
 
+/** A fitted weapon's damage split after an effect or journal modifiers convert it. */
+function effectiveDamageDistribution(
+    module: LoadoutModule,
+    stats: OutfittingModule,
+): DamageDistribution | undefined {
+    const fromEffect = module.Engineering?.ExperimentalEffect
+        ? getExperimentalEffectDamageDistribution(module.Engineering.ExperimentalEffect)
+        : null;
+    const distribution: Record<string, number> = {
+        ...(fromEffect ?? stats.damageDistribution),
+    };
+    let resolved = fromEffect !== null || stats.damageDistribution !== undefined;
+    for (const modifier of module.Engineering?.Modifiers ?? []) {
+        if (modifier.Value === undefined) continue;
+        const type = damageTypeForLabel(modifier.Label);
+        if (type === null) continue;
+        distribution[type] = modifier.Value / scaleForLabel(modifier.Label);
+        resolved = true;
+    }
+    return resolved ? (distribution as DamageDistribution) : undefined;
+}
+
+/** Whether engineering replaces exact base damage components with a converted split. */
+function convertsDamage(module: LoadoutModule): boolean {
+    if (
+        module.Engineering?.ExperimentalEffect &&
+        getExperimentalEffectDamageDistribution(module.Engineering.ExperimentalEffect)
+    ) {
+        return true;
+    }
+    return (module.Engineering?.Modifiers ?? []).some(
+        (modifier) => damageTypeForLabel(modifier.Label) !== null,
+    );
+}
+
 /**
  * How far engineering has moved one stat, as a ratio of its base value — `1` when the
  * build carries no modifier for it, or when the catalogue has no base to compare with.
@@ -156,6 +197,11 @@ export function effectiveModule(
         const value = effectiveStat(module, key, stats);
         if (value !== undefined) merged[key] = value;
     }
+    const damageDistribution = effectiveDamageDistribution(module, stats);
+    if (damageDistribution) merged.damageDistribution = damageDistribution;
+    // Exact components describe the stock types. Once engineering converts them, the
+    // resulting fractional split is authoritative instead.
+    if (convertsDamage(module)) delete merged.damageComponents;
     // The rate of fire is derived from the firing cycle, so an engineered burst pattern
     // moves it even when nothing names it — same rule the weapon metrics use.
     const rate = burstAdjustedRateOfFire(module, merged);
@@ -409,9 +455,11 @@ const WEAPON_FIELDS = [
  * the firing cycle, so a recipe that changes the burst pattern (Double Shot gives a
  * weapon a two-round burst) moves it even when the build carries no `RateOfFire`
  * modifier. The **falloff range** is held to the weapon's maximum range. Exact
- * **damage components** scale by the effective/base damage ratio so engineering keeps
- * their proportions, while **projectile boundary parameters** are copied unchanged
- * because they are not ordinary engineerable range fields.
+ * **damage components** scale by the effective/base damage ratio so ordinary engineering
+ * keeps their proportions; a damage-converting experimental replaces them with its fixed
+ * distribution, and journal damage-type modifiers override that catalogue split.
+ * **Projectile boundary parameters** are copied unchanged because they are not ordinary
+ * engineerable range fields.
  */
 export function weaponStatsFor(
     module: LoadoutModule,
@@ -432,10 +480,9 @@ export function weaponStatsFor(
         weapon.falloffRange = maximumRange;
     }
 
-    // Engineering never redistributes damage across types, so the split is the
-    // catalogue's own.
-    if (stats.damageDistribution) weapon.damageDistribution = stats.damageDistribution;
-    if (stats.damageComponents) {
+    const damageDistribution = effectiveDamageDistribution(module, stats);
+    if (damageDistribution) weapon.damageDistribution = damageDistribution;
+    if (stats.damageComponents && !convertsDamage(module)) {
         const scale =
             stats.damage !== undefined && stats.damage !== 0 && weapon.damage !== undefined
                 ? Number(weapon.damage) / stats.damage

@@ -1768,7 +1768,17 @@
   "capturedBaseStats": {
     "note": "What Frontier's own captures say about the base values in `data/ships/modules-*.jsonc`, joined through the library's own journal-label→field mapping rather than a hand-written one. This reaches fields the in-game audit could not — a hardpoint's reserve ammo, projectile speed, the shield-generator and booster resistances, an armour module's hull boost — because a `Loadout` states every engineered module's unmodified value alongside its modified one. `stated` counts the distinct (module, journal `Label`) pairs a capture gives an `OriginalValue` for; `mapped` is how many name a field the record holds, split into those agreeing digit for digit and those agreeing to within the game's own float noise (it writes 20.000004 for 20, 2.499998 for 2.5, -39.999996 for -40). Nothing may disagree beyond that: a capture is Frontier's own reading, so where one contradicts a base stat the catalogue is wrong.",
     "floatNoiseTolerance": 1e-05,
-    "unmappedNote": "The three labels left that name no catalogue field, all by nature rather than by omission. `DamagePerSecond` is a product of four stored stats, checked in `weapons` below. `$Kinetic;` and `$Explosive;` are an experimental effect's split of a weapon's damage across types, which the catalogue holds as the nested `damageDistribution` — a shape this flat label→field mapping cannot address. That the conversion reaches no consumer either is https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/64. Pinned as a whole list, so a label the mapping ought to resolve cannot start being skipped in silence.",
+    "unmappedNote": "Every label left unmapped is `DamagePerSecond`, a product of four stored stats checked in `weapons` below rather than a catalogue field of its own. Pinned as a whole list, so a label the mapping ought to resolve cannot start being skipped in silence.",
+    "convertedDamageDistributions": [
+      {
+        "file": "journal-federation-corvette.json",
+        "slot": "LargeHardpoint1",
+        "symbol": "Hpt_Cannon_Gimbal_Large",
+        "experimental": "special_high_yield_shell",
+        "base": { "kinetic": 1 },
+        "effective": { "kinetic": 0.5, "explosive": 0.5 }
+      }
+    ],
     "captures": [
       {
         "file": "journal-cobra-mkv.json",
@@ -1865,21 +1875,13 @@
       {
         "file": "journal-federation-corvette.json",
         "stated": 71,
-        "mapped": 66,
-        "exact": 58,
+        "mapped": 68,
+        "exact": 60,
         "withinFloatNoise": 8,
         "unmapped": [
           {
             "symbol": "Hpt_BeamLaser_Gimbal_Huge",
             "label": "DamagePerSecond"
-          },
-          {
-            "symbol": "Hpt_Cannon_Gimbal_Large",
-            "label": "$Explosive;"
-          },
-          {
-            "symbol": "Hpt_Cannon_Gimbal_Large",
-            "label": "$Kinetic;"
           },
           {
             "symbol": "Hpt_Cannon_Gimbal_Large",

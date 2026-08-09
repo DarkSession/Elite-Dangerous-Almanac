@@ -81,11 +81,15 @@ import {
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
 import { isDecorativeModification } from './decorative-modifications.js';
-import { getExperimentalEffect } from './experimental-effects.js';
+import {
+    getExperimentalEffect,
+    getExperimentalEffectDamageDistribution,
+} from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
+import { labelsForDamageType, scaleForLabel } from './module-stat-labels.js';
 import {
     baseStats,
     blueprintAvailableFor,
@@ -1035,6 +1039,23 @@ export class ShipLoadout {
             );
         }
         const modifiers = computeModifiers(base, features, quality, experimental);
+        const damageDistribution =
+            options.experimental === undefined
+                ? null
+                : getExperimentalEffectDamageDistribution(options.experimental);
+        if (damageDistribution) {
+            for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
+                const value = damageDistribution[type];
+                if (value === undefined) continue;
+                const label = labelsForDamageType(type)[0];
+                if (label === undefined) continue;
+                modifiers.push({
+                    Label: label,
+                    Value: value * scaleForLabel(label),
+                    OriginalValue: (stats.damageDistribution?.[type] ?? 0) * scaleForLabel(label),
+                });
+            }
+        }
         const engineering: ModuleEngineering = {
             BlueprintName: blueprintName,
             Level: options.grade,

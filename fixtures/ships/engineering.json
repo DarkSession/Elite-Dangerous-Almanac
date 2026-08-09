@@ -433,6 +433,14 @@
       "special_super_penetrator": "Super Penetrator"
     }
   },
+  "experimentalDamageDistributions": {
+    "description": "The fixed post-effect damage splits stated by the three converting experimental effects. Shares are fractions of conventional damage and sum to 1. High Yield Shell is also independently pinned by the Frontier Loadout capture in `module-stats.json`; the other two are pinned to the effects' in-game descriptions until a capture carrying either one is available.",
+    "map": {
+      "special_high_yield_shell": { "kinetic": 0.5, "explosive": 0.5 },
+      "special_distortion_field": { "kinetic": 0.5, "thermal": 0.5 },
+      "special_overload_munitions": { "thermal": 0.5, "explosive": 0.5 }
+    }
+  },
   "blueprintCount": 109,
   "experimentalCount": 87
 }
