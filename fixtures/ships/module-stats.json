@@ -171,6 +171,16 @@
       "jumpBoost": 10.5
     },
     {
+      "symbol": "Hpt_ATVentDisruptorPylon_Fixed_Medium",
+      "name": "Guardian Nanite Torpedo Pylon",
+      "guardianZoneResistance": true
+    },
+    {
+      "symbol": "Hpt_ATVentDisruptorPylon_Fixed_Large",
+      "name": "Guardian Nanite Torpedo Pylon",
+      "guardianZoneResistance": true
+    },
+    {
       "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
       "name": "Mk II Gravity Optimised Thrusters",
       "mass": 80,

@@ -351,6 +351,12 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   `thermload`→`thermalLoad`, `piercing`→`armourPiercing`, weapon/non-scanner utility
   `range`→`maximumRange`, scanner `range`→`scannerRange`, `falloff`→`falloffRange`,
   `shotspeed`→`shotSpeed`, `jitter`).
+  EDSY's `agzresist` enum supplies `guardianZoneResistance: true` on
+  `Hpt_ATVentDisruptorPylon_Fixed_Medium` and
+  `Hpt_ATVentDisruptorPylon_Fixed_Large`, the two Guardian Nanite Torpedo Pylons and the
+  only stock records whose value is `Active` in the pinned snapshot; the empty value on
+  every other record remains an omitted sparse field. Both records and their boolean
+  value are pinned in `fixtures/ships/module-stats.json`.
   - **`rateOfFire` is derived, not copied.** Upstream stores the fire interval; the
     journal (and this catalogue) report the combined shots per second, so it is
     computed as `burst / ((burst − 1) / burstRateOfFire + fireInterval + chargeTime)` —
@@ -478,9 +484,11 @@ the corpus-wide claim in `builds.test.ts`.
   treating that as an additive number would invent a base value the game does not have.
   The label mapping therefore writes a non-numeric, journal-compatible modifier
   `{ Label: 'GuardianModuleResistance', ValueStr: 'Active' }`; a fitted module's effective
-  record exposes `guardianZoneResistance: true`. Stock catalogue records omit the sparse
-  flag, meaning the capability is not granted. The shared `guardianZoneResistanceCapability`
-  fixture pins the same result on a Guardian power plant and a Guardian weapon, the SLEF
+  record exposes `guardianZoneResistance: true`. Apart from the two Guardian Nanite
+  Torpedo Pylons that EDSY marks inherently `Active`, stock catalogue records omit the
+  sparse flag, meaning the capability is not granted. The shared
+  `guardianZoneResistanceCapability` fixture pins the same result on a Guardian power
+  plant and a Guardian weapon, the string and numeric import representations, the SLEF
   round trip, and the ordinary power plant that remains outside the blueprint's menu.
   No raw `Loadout` capture in this repository states this modifier: `ValueStr: 'Active'`
   is the library's projection of EDSY's enum into the string-valued modifier shape SLEF

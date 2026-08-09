@@ -424,13 +424,18 @@
     "unreachableExperimentals": []
   },
   "guardianZoneResistanceCapability": {
-    "description": "Anti-Guardian Zone Resistance grants a boolean capability rather than scaling a numeric stat. Stock records omit the flag; applying either registry spelling emits the same non-numeric journal modifier and makes the fitted module's effective `guardianZoneResistance` true. The ordinary power plant case pins the compatibility boundary separately.",
+    "description": "Anti-Guardian Zone Resistance is a boolean capability rather than a numeric stat. The two Guardian Nanite Torpedo Pylons carry it inherently; other stock records omit the flag. Applying either registry spelling emits the same non-numeric journal modifier and makes the fitted module's effective `guardianZoneResistance` strictly true. Imports also grant it by label presence when a producer uses the numeric display value. The ordinary power plant case pins the compatibility boundary separately.",
     "field": "guardianZoneResistance",
     "offeredAs": "GuardianModule_Sturdy",
     "grade": 1,
     "modifier": {
       "Label": "GuardianModuleResistance",
       "ValueStr": "Active"
+    },
+    "numericImportedModifier": {
+      "Label": "GuardianModuleResistance",
+      "Value": 1,
+      "OriginalValue": 0
     },
     "cases": [
       {

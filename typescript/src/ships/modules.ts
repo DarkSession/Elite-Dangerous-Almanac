@@ -450,10 +450,10 @@ export interface OutfittingModule {
      * Thargoid anti-Guardian field.
      *
      * @remarks
-     * A sparse capability flag rather than a percentage: `true` means the grade-1
-     * blueprint grants the protection, while absence means it is not granted. Stock
-     * catalogue records omit it; read it from a fitted module's
-     * {@link FittedModule.effectiveStats} after engineering.
+     * A sparse capability flag rather than a percentage: `true` means the protection is
+     * inherent or the grade-1 blueprint grants it, while absence means it is not granted.
+     * The two Guardian Nanite Torpedo Pylons carry it inherently; read engineered
+     * protection from a fitted module's {@link FittedModule.effectiveStats}.
      */
     readonly guardianZoneResistance?: boolean;
     /**

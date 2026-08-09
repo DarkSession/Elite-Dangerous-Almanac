@@ -1232,6 +1232,27 @@ test('Anti-Guardian Zone Resistance grants a capability to modules and weapons',
         assert.equal(imported.effectiveStats?.guardianZoneResistance, true, `${symbol} round trip`);
     }
 
+    // Producers that serialize the displayed +100% as a number still grant the same
+    // boolean capability. The label is authoritative; its representation cannot leak a
+    // number into the public module shape.
+    const numericImport = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: [
+            {
+                Slot: 'PowerPlant',
+                Item: capability.cases[0]!.symbol,
+                Engineering: {
+                    BlueprintName: capability.offeredAs,
+                    Level: capability.grade,
+                    Quality: 1,
+                    Modifiers: [capability.numericImportedModifier],
+                },
+            },
+        ],
+    } as unknown as LoadoutEvent).getFittedModule('PowerPlant')!;
+    assert.equal(numericImport.effectiveStats?.guardianZoneResistance, true);
+    assert.equal(typeof numericImport.effectiveStats?.guardianZoneResistance, 'boolean');
+
     // An ordinary plant still refuses the recipe at the menu boundary: representing the
     // capability does not widen which modules can receive it.
     const refused = capability.refused;

@@ -90,6 +90,9 @@ export function effectiveStat(
     stats: OutfittingModule | null = statFor(module.Item),
 ): number | undefined {
     for (const label of labelsForField(field)) {
+        // Capability labels share the modifier collection but never represent numbers,
+        // even when an importer serializes the UI's displayed +100% as `Value: 1`.
+        if (capabilityValueForLabel(label) !== null) continue;
         const modified = getLoadoutModifier(module, label);
         if (modified !== null) return modified / scaleForLabel(label);
     }
@@ -214,12 +217,13 @@ export function effectiveModule(
         if (field) fields.add(field);
     }
     for (const key of fields) {
+        const capability = effectiveCapability(module, key, stats);
+        if (capability !== undefined) {
+            merged[key] = capability;
+            continue;
+        }
         const value = effectiveStat(module, key, stats);
         if (value !== undefined) merged[key] = value;
-        else {
-            const capability = effectiveCapability(module, key, stats);
-            if (capability !== undefined) merged[key] = capability;
-        }
     }
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) merged.damageDistribution = damageDistribution;
