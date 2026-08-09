@@ -1,11 +1,11 @@
 {
-  "description": "Ground truth for the outfitting catalogues (data/ships/modules-*.jsonc, from EDCD FDevIDs outfitting.csv). `counts` pins the size of each category catalogue; `slotCounts` pins how many records name each fixed mount in `slot`, and how many name none, across all four catalogues — a record's `category` is the file it was read from, its `slot` is the one mount it fills. `records` pins individual modules across every category, including DLC-gated modules; `shipArmour` pins that getModulesForShip returns a hull's five bulkhead variants. `class` is the module size (0-8) and `rating` the grade letter (A-I).",
+  "description": "Ground truth for the outfitting catalogues (data/ships/modules-*.jsonc, primarily from EDCD FDevIDs outfitting.csv, with supplemental identities documented in data/ships/SOURCES.md). `counts` pins the size of each category catalogue; `slotCounts` pins how many records name each fixed mount in `slot`, and how many name none, across all four catalogues — a record's `category` is the file it was read from, its `slot` is the one mount it fills. `records` pins individual modules across every category, including DLC- and grant-gated modules; `shipArmour` pins that getModulesForShip returns a hull's five bulkhead variants. `class` is the module size (0-8) and `rating` the grade letter (A-I).",
   "counts": {
     "core": 521,
-    "internal": 478,
+    "internal": 484,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1193
+    "all": 1199
   },
   "slotCounts": {
     "armour": 241,
@@ -16,7 +16,7 @@
     "powerDistributor": 49,
     "sensors": 41,
     "fuelTank": 9,
-    "none": 657
+    "none": 663
   },
   "records": [
     {
@@ -73,6 +73,69 @@
       "name": "Shield Generator",
       "class": 1,
       "rating": "B"
+    },
+    {
+      "symbol": "Int_FighterBay_Size5_Class1_Free",
+      "category": "internal",
+      "name": "Mk I Vessel Hangar",
+      "class": 5,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIFIGHTERBAY_FREE"
+    },
+    {
+      "symbol": "Int_FighterBay_Size6_Class1_Free",
+      "category": "internal",
+      "name": "Mk I Vessel Hangar",
+      "class": 6,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIFIGHTERBAY_FREE"
+    },
+    {
+      "symbol": "Int_FighterBay_Size7_Class1_Free",
+      "category": "internal",
+      "name": "Mk I Vessel Hangar",
+      "class": 7,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIFIGHTERBAY_FREE"
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size5_Class1_Free",
+      "category": "internal",
+      "name": "Mk II Vessel Hangar",
+      "class": 5,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIIFIGHTERBAY_FREE",
+      "restrictedToShips": [
+        "Explorer_NX",
+        "PantherMkII",
+        "LakonMiner"
+      ]
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size6_Class1_Free",
+      "category": "internal",
+      "name": "Mk II Vessel Hangar",
+      "class": 6,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIIFIGHTERBAY_FREE",
+      "restrictedToShips": [
+        "Explorer_NX",
+        "PantherMkII",
+        "LakonMiner"
+      ]
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size7_Class1_Free",
+      "category": "internal",
+      "name": "Mk II Vessel Hangar",
+      "class": 7,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIIFIGHTERBAY_FREE",
+      "restrictedToShips": [
+        "Explorer_NX",
+        "PantherMkII",
+        "LakonMiner"
+      ]
     },
     {
       "symbol": "Int_LargeCargoRack_Size8_class1",

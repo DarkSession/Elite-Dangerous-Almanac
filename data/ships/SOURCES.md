@@ -8,18 +8,21 @@ derivation and manual corrections for the catalogue it describes. See
 
 Referred to throughout by source name; the pin is here, once.
 
-| Source                                                                                                        | Pin                                                                                                                                                                                                                     | Acquired       |
-| ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| [EDCD FDevIDs](https://github.com/EDCD/FDevIDs) — `shipyard.csv`, `outfitting.csv`                            | no immutable revision recorded                                                                                                                                                                                          | 2026-07-24 UTC |
-| [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) — `ships/*.json`, `modules/**`, `modifications/*` | commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`                                                                                                                                                                       | 2026-07-24 UTC |
-| coriolis-data `modifications/modules.json`                                                                    | SHA-256 `09b6427c86bc3cfb578a246f7c6be1791429bb67009b7adaa7909e30aadc160f` — read from the branch tip, so pinned by digest                                                                                              | 2026-08-05 UTC |
-| [EDSY](https://github.com/taleden/EDSY) `eddb.js`                                                             | commit `cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, internal `db 20260428` / `version 423039901`                                             | 2026-08-02 UTC |
-| [EDSY](https://github.com/taleden/EDSY) `edsy.js`                                                             | SHA-256 `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5` — read from the branch tip, so pinned by digest                                                                                              | 2026-08-06 UTC |
-| [EDCD/Coriolis](https://github.com/EDCD/coriolis) — the application, for its formulas                         | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                                                                       | 2026-08-01 UTC |
-| [msarilar/EDEngineer](https://github.com/msarilar/EDEngineer) `EDEngineer/Resources/Data/blueprints.json`     | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                                                              | 2026-08-08 UTC |
-| Elite Dangerous in-game verification                                                                          | observed in-game                                                                                                                                         | 2026-08-08 UTC |
+| Source                                                                                                                                                   | Pin                                                                                                                                                                         | Acquired       |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| [EDCD FDevIDs](https://github.com/EDCD/FDevIDs) — `shipyard.csv`, `outfitting.csv`                                                                       | no immutable revision recorded                                                                                                                                              | 2026-07-24 UTC |
+| [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) — `ships/*.json`, `modules/**`, `modifications/*`                                            | commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`                                                                                                                           | 2026-07-24 UTC |
+| coriolis-data `modifications/modules.json`                                                                                                               | SHA-256 `09b6427c86bc3cfb578a246f7c6be1791429bb67009b7adaa7909e30aadc160f` — read from the branch tip, so pinned by digest                                                  | 2026-08-05 UTC |
+| [EDSY](https://github.com/taleden/EDSY) `eddb.js`                                                                                                        | commit `cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, internal `db 20260428` / `version 423039901` | 2026-08-02 UTC |
+| EDSY `eddb.js` — Vessel Hangar variants                                                                                                                  | commit `510468167e0ef3b895e39391a8c56b5cdd5c3282`, SHA-256 `0574db06f796cdf7dfbe20a5f89f8a378e692873ae49133e9b49557fe8d8cba3`                                               | 2026-08-09 UTC |
+| [EDSY](https://github.com/taleden/EDSY) `edsy.js`                                                                                                        | SHA-256 `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5` — read from the branch tip, so pinned by digest                                                  | 2026-08-06 UTC |
+| [Odyssey Materials Helper](https://github.com/jixxed/ed-odyssey-materials-helper) CAPI fixture `application/src/test/resources/parser/capifc/test9.json` | commit `2c652a2349b754f1dde1a58b6daaac5a04e421a6`                                                                                                                           | 2026-08-09 UTC |
+| [EDCD/Coriolis](https://github.com/EDCD/coriolis) — the application, for its formulas                                                                    | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
+| [msarilar/EDEngineer](https://github.com/msarilar/EDEngineer) `EDEngineer/Resources/Data/blueprints.json`                                                | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
+| Elite Dangerous in-game verification                                                                                                                     | observed in-game                                                                                                                                                            | 2026-08-08 UTC |
 
-Every `eddb.js` derivation in this document uses the byte-identical snapshot pinned above.
+Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
+the Vessel Hangar snapshot.
 
 **Licence positions, once.** FDevIDs states none — consult the repository terms before
 redistributing the raw identifiers. coriolis-data's and Coriolis's MIT licence covers
@@ -29,6 +32,8 @@ the same way. EDSY is © taleden under
 price values in this directory are Elite Dangerous game data, the property of Frontier
 Developments plc, redistributed under [Frontier's media-usage
 terms](https://forums.frontier.co.uk/threads/510879/).
+Odyssey Materials Helper is MIT-licensed; the CAPI response used here is factual game
+output rather than project-authored code.
 
 **Some values come from no registry at all** — readings taken from the live game's own
 outfitting, module and engineering panels, and captures contributed by the repository
@@ -270,11 +275,12 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   `modules-hardpoint.jsonc`, `modules-utility.jsonc`, and `fixtures/ships/modules.json`,
   `module-stats.json` (the stats half keeps its own parity fixture). Split along
   FDevIDs' four outfitting categories so an app that only wants weapons never bundles
-  the 999 core and optional internals; see AGENTS.md §Build.
+  the 1005 core and optional internals; see AGENTS.md §Build.
 - **Identity source:** FDevIDs `outfitting.csv`, columns
-  `id,symbol,category,name,mount,guidance,ship,class,rating,entitlement`.
+  `id,symbol,category,name,mount,guidance,ship,class,rating,entitlement`, supplemented
+  for the six bundle-granted Vessel Hangars by the pinned CAPI response below.
 - **Identity derivation:** the acquired FDevIDs module records are kept in CSV order
-  within each category file. The catalogue contains 478 internal records and **1193**
+  within each category file. The catalogue contains 484 internal records and **1199**
   records across all four categories. The CSV's numeric `id`
   column is dropped — modules are keyed by `symbol` — and rows marked `removed` are
   excluded because they are not current outfitting modules. `class` is FDevIDs' `class` — the
@@ -289,7 +295,7 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   FSD and AFM strings. Consumers needing exact localized UI text must use a localization
   source keyed by `symbol`.
 - **The CSV's `category` column is not stored — the file states it.** It would be the
-  same string on every record of a file whose name already says it, 1193 repetitions of
+  same string on every record of a file whose name already says it, 1199 repetitions of
   a fact the four-way split carries, and every payload byte is inlined into consumers'
   bundles. Each language loader adds it back from the file it read (TypeScript:
   `src/ships/module-catalogue.ts`), so a consumer's record carries `category` all the
@@ -500,15 +506,17 @@ Two starter capacities are derived rather than read:
 `Int_CargoRack_Size2_Class1_free`'s `cargoCapacity` follow from capacity being exactly
 2^size across all eight sizes of both families, with no exception.
 
-**In-game coverage, stated separately from registry coverage.** All **1193/1193**
-catalogue identities were verified in-game. Numeric verification covered **952/1193**,
-which is every non-armour module. The other **241/1193** are the ship-specific armour
-modules; their class, mass, hull boost and resistances retain their registry provenance
-rather than being described as game-verified.
+**In-game coverage, stated separately from registry coverage.** In-game verification
+covers **1193/1199** catalogue identities. Numeric verification covers **952/1199**
+non-armour modules, and the other **241/1199** verified identities are the ship-specific
+armour modules; their class, mass, hull boost and resistances retain their registry
+provenance rather than being described as game-verified. The six bundle-granted Vessel
+Hangars rely on the public registry and CAPI evidence below. Their stats match their
+ordinary twins, but they have not been independently checked in the module panel.
 
 Every numeric field available through in-game verification was compared. Exact
 full-field coverage includes `powerDraw`
-831/831, `bootTime` 827/827, power-plant output and efficiency 43/43 each, every FSD
+831/837, `bootTime` 827/833, power-plant output and efficiency 43/43 each, every FSD
 field 72/72, every thruster heat-rate record 40/40, all six distributor fields 49/49,
 sensor range and angle 41/41, shield mass/strength curves 57/57, shield regeneration
 57/57, shield-cell timing/reinforcement/heat 40/40, fuel-scoop rate 40/40,
@@ -598,9 +606,9 @@ Every value supplied outside the primary registry is pinned individually in
 `fixtures/ships/module-stats.json` `spot`, so all implementations validate against the
 same numbers. Derived size-8 drive and `*_free` values also follow their family's curve.
 
-**Every module in every catalogue carries at least one stat** (1193/1193), so
+**Every module in every catalogue carries at least one stat** (1199/1199), so
 `fixtures/ships/module-stats.json` `counts` equals the catalogue sizes and no record
-holds only a lone `mass`. 244 of the 827 `bootTime` values are `0` (every hardpoint
+holds only a lone `mass`. 244 of the 833 `bootTime` values are `0` (every hardpoint
 among them); they are stored rather than omitted, because an absent field means
 absent. The fixture distinguishes explicit zeroes from omitted fields.
 
@@ -685,7 +693,7 @@ heuristic does not keep rediscovering them:
   distributor integrity otherwise tracks 0.80× the A-rated standard ladder, which would
   put size 5 near 85; EDSY states 99 for both sizes. The duplicate is in the game data.
 - **`Int_DroneControl_Recon_Size5_Class1` `bootTime` really is 9.85** — the only
-  non-integer boot time in all 1193 records, where its three family siblings are exactly 10. EDSY gives `boottime:9.85`.
+  non-integer boot time in all 1199 records, where its three family siblings are exactly 10. EDSY gives `boottime:9.85`.
 
 ### Prices — `cost` on modules, `hullCost` / `retailCost` on hulls
 
@@ -700,8 +708,8 @@ Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
 
 - bulkhead name because those records carry no symbol upstream.
 
-* **All 48 hulls are priced. 1173 of 1193 modules are.** The 20 without a price are the
-  nine starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
+* **All 48 hulls are priced. 1173 of 1199 modules are.** The 26 without a price are the
+  fifteen grant/starter `*_free` variants, the five size-8 frame shift drives, the three Mk II
   Vessel Hangars, the two unsold Corrosion Resistant Cargo Racks (both Community Goal
   rewards) and `Int_ShieldGenerator_Size1_Class4` — no registry publishes a figure for
   them. **`cost` is omitted, never set to 0**: `0` is a real price (the starter
@@ -881,11 +889,23 @@ Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
 
 Records not in coriolis-data / FDevIDs at the acquired revisions:
 
-- **Mk II Vessel Hangars** (`Int_FighterBayMk2_Size{5,6,7}_Class1`) — internal records
-  with the same operational stats as the Mk I bays at half the mass (10/20/30 t,
-  integrity 60/80/120, power 0.25/0.35/0.35 MW). The three Mk I **Fighter Hangar**
-  records are named **Mk I Vessel Hangar** (same symbols and stats; the Operations update
-  renamed them and let them deploy the Nomad).
+- **Vessel Hangars** — the three Mk II records
+  (`Int_FighterBayMk2_Size{5,6,7}_Class1`) have the same operational stats as the Mk I
+  bays at half the mass (10/20/30 t, integrity 60/80/120, power
+  0.25/0.35/0.35 MW). The three Mk I **Fighter Hangar** records are named **Mk I Vessel
+  Hangar** (same symbols and stats; the Operations update renamed them and let them
+  deploy the Nomad).
+  - **Six bundle-granted variants are separate identities.** The pinned CAPI response
+    lists `Int_FighterBay{,Mk2}_Size{5,6,7}_Class1_Free` as modules with `bundle: true`
+    and the grant tokens `ELITE_V_MKIFIGHTERBAY_FREE` / `ELITE_V_MKIIFIGHTERBAY_FREE`.
+    That is direct player-facing evidence that they are obtainable, so they pass the
+    inclusion rule below despite remaining absent from FDevIDs. The later EDSY snapshot
+    independently lists all six and supplies the same mass, integrity, power draw and
+    boot time as their ordinary twins. The Mk II grant variants retain the ordinary Mk
+    II restriction to `Explorer_NX`, `PantherMkII` and `LakonMiner`; the Mk I variants
+    remain unrestricted like their ordinary twins. `cost` is omitted: the CAPI response's
+    zero is the bundle charge, not a standard purchase price for a separately sold
+    module.
 - **Mk II passenger cabins** (`Int_MkII_PassengerCabin_Size{2..6}_Class{1,2}`) — identity
   records from FDevIDs, with mass added (2.5/5/10/20/40 t by size) and the two size-6
   records' `class` corrected from 5 to 6.
@@ -903,10 +923,7 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
     FDevIDs `outfitting.csv` has no row, coriolis-data has no record at all, and EDSY
     carries it `cost: NaN` annotated "never released". A variant that never reached
     players is not a player-facing outfitting record, so it goes the way of the other
-    non-purchasable internal variants that rule excludes;
-    [#20](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/20) states the
-    same test over a different set of symbols: absence from FDevIDs is the evidence a
-    variant is not purchasable.
+    non-purchasable internal variants that rule excludes.
 - **1B Shield Generator** (`Int_ShieldGenerator_Size1_Class4`) — a gap in FDevIDs, not
   in the game: every other shield-generator size carries all five ratings, and size 1
   ran E/D/C/A with **B missing**. The module is real, so the record is carried with the
@@ -919,6 +936,22 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
 
 ### What is not carried, and why
 
+- **Issue #20's 536-identity comparison set includes the six bundle-granted variants
+  carried here; 530 remain outside the catalogue.** Four are the withdrawn discovery
+  scanners deliberately removed from the current player-facing catalogue, and one is the
+  never-released size-2 Corrosion Resistant Cargo Rack documented above. The rest appear
+  in none of FDevIDs, coriolis-data or EDSY as current player-obtainable outfitting. Most
+  are hull geometry,
+  ship-launched-fighter internals, station or NPC fittings, and unreleased or withdrawn
+  variants. Notable outfitting-like examples remain
+  `Int_MetaAlloyHullReinforcementMk2_Size{1..5}_Class2`,
+  `Int_ShieldGenerator_Size{1..8}_Class2_AntiCaustic`,
+  `Int_Cloud_Resistant_Sensors_Size{1..8}_Class3`, `Hpt_Cannon_Turret_Huge` and the
+  Lynx's built-in `ModularCargoBayDoorFDL`. Issue
+  [#20](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/20) tracks the
+  unresolved set; none is added without evidence that it is obtainable and enough stats
+  to make the record useful.
+
 - **Deliberately not modelled here:** the **Merc-Coin pre-engineered weapon variants**
   are not separate module records: their base module symbols already exist, and the
   pre-engineering is expressed as the Operations blueprints below — the pairing between
@@ -926,12 +959,13 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
   vehicle, not a shipyard hull, and its `Vehicle_Lander01_*` weapons carry no
   category/class/rating the module schema requires, so neither the vessel nor its modules
   are added.
-- **Inclusion rule — a public registry has to corroborate the record.** A module symbol is
+- **Inclusion rule — a public registry or direct capture has to corroborate the record.** A module symbol is
   carried here only when [FDevIDs](https://github.com/EDCD/FDevIDs),
   [coriolis-data](https://github.com/EDCD/coriolis-data) or
-  [EDSY](https://github.com/taleden/EDSY) lists it as player-obtainable outfitting. That
-  keeps `getModuleBySymbol` and `getModulesForShip` a player-facing outfitting view rather
-  than an inventory of every symbol the game has ever used. Two consequences worth knowing
+  [EDSY](https://github.com/taleden/EDSY) lists it as player-obtainable outfitting, or a
+  direct player-facing capture establishes the same thing. That keeps
+  `getModuleBySymbol` and `getModulesForShip` a player-facing outfitting view rather than
+  an inventory of every symbol the game has ever used. Two consequences worth knowing
   before "fixing" an apparent omission:
   - **Symbols outside outfitting are not stored** — hull geometry, ship-launched-fighter
     weapons and internals, station fittings, and non-purchasable internal or test variants.
@@ -1316,7 +1350,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     family's 10 modules, `miningToolsLasers` 2 of its 7 and `plasmaAccelerators` 4 of its 5. The ten plain Module Reinforcement Packages are denied their family's only recipe
     and are absent too, which leaves `moduleReinforcements` holding the ten Guardian
     packages.
-  - **The 165 modules absent take no engineering.** Whole families first, both registries
+  - **The 171 modules absent take no engineering.** Whole families first, both registries
     agreeing: fuel tanks, passenger cabins, the repair/recon/research/decontamination and
     multi-limpet controllers, meta-alloy and ordinary module reinforcement, the Pulse Wave
     Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons, fighter and
@@ -1800,7 +1834,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
 Not a data file, and not a second opinion. `ShipLoadout.applyBlueprint` reads the menu
 above: a recipe it does not list for that module is refused. The two questions a consumer
 can ask — what a module takes, and whether a particular recipe may go on it — therefore
-cannot disagree, and `engineering.test.ts` asserts that for all 1193 modules.
+cannot disagree, and `engineering.test.ts` asserts that for all 1199 modules.
 
 **Do not reintroduce a family map.** Inferring a module's family and a blueprint's family
 from their symbols, and comparing the two, is the obvious alternative and it is worse:
@@ -1873,7 +1907,7 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
 
   **Every blueprint and experimental effect reaches at least one module.** The sweep
   behind the claim — every id in `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS` against all
-  1193 module symbols, through the gate — is pinned whole in
+  1199 module symbols, through the gate — is pinned whole in
   `fixtures/ships/engineering.json` under `reachability`, residue included, so an id
   stranded by a catalogue change fails a test rather than passing unnoticed.
 
@@ -2610,10 +2644,10 @@ The upside is that the export becomes a pure function of the hull and the fitted
 symbols. Two builds with the same fit price identically whatever their owners paid; an
 edit reprices exactly the module that changed; and a document always adds up, since each
 module carries the same list price the total counted. Where a fitted module has no
-published price the total is omitted rather than under-reported — 20 catalogue records
+published price the total is omitted rather than under-reported — 26 catalogue records
 can trigger that today: the two unsold corrosion-resistant racks, the three Mk II
 vessel hangars, `Int_ShieldGenerator_Size1_Class4`, `Int_Hyperdrive_Size8_Class{1..5}`
-and the nine `*_free` starter variants.
+and the fifteen grant/starter `*_free` variants.
 
 Physical figures (`UnladenMass`, `CargoCapacity`, `FuelCapacity`, `MaxJumpRange`) are
 recomputed too, and unlike the credits they **do** reproduce each source's own figures

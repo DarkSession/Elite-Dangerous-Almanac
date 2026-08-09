@@ -3,10 +3,10 @@
   "countsNote": "Every module in every catalogue carries at least one stat, so these equal the catalogue sizes and assert that no record regresses to identity-only. No row holds only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. Zero masses are explicit, including the in-game value for `Int_DroneControl_ResourceSiphon`; its sized siblings retain their non-zero masses. The `spot` entries below pin the backfilled and corrected values.",
   "counts": {
     "core": 521,
-    "internal": 478,
+    "internal": 484,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1193
+    "all": 1199
   },
   "priceCounts": {
     "core": 509,
@@ -38,7 +38,13 @@
     "Int_ShieldGenerator_Size1_Class4",
     "Int_Hyperdrive_Size8_Class1",
     "Int_CorrosionProofCargoRack_Size5_Class1",
-    "Int_CorrosionProofCargoRack_Size6_Class1"
+    "Int_CorrosionProofCargoRack_Size6_Class1",
+    "Int_FighterBay_Size5_Class1_Free",
+    "Int_FighterBay_Size6_Class1_Free",
+    "Int_FighterBay_Size7_Class1_Free",
+    "Int_FighterBayMk2_Size5_Class1_Free",
+    "Int_FighterBayMk2_Size6_Class1_Free",
+    "Int_FighterBayMk2_Size7_Class1_Free"
   ],
   "withoutIntegrity": {
     "note": "The 82 non-armour records that carry no integrity, pinned as a set. Not unknown values: no registry publishes an integrity for these families and the game's own module panel shows none, so the absence is the fact. They are the families with no other mechanical stat either — passenger cabins, hull and Guardian/meta-alloy reinforcement packages, fuel tanks, cargo racks, module stabilisers and planetary approach suites. A further 241 records without integrity are ship armour, a different shape, and are excluded by their 'ship' field. If a source ever supplies one of these, or a new record joins a family, this list changes and the test says so.",
@@ -494,6 +500,54 @@
       "bootTime": 5
     },
     {
+      "symbol": "Int_FighterBay_Size5_Class1_Free",
+      "name": "Mk I Vessel Hangar",
+      "mass": 20,
+      "integrity": 60,
+      "powerDraw": 0.25,
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_FighterBay_Size6_Class1_Free",
+      "name": "Mk I Vessel Hangar",
+      "mass": 40,
+      "integrity": 80,
+      "powerDraw": 0.35,
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_FighterBay_Size7_Class1_Free",
+      "name": "Mk I Vessel Hangar",
+      "mass": 60,
+      "integrity": 120,
+      "powerDraw": 0.35,
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size5_Class1_Free",
+      "name": "Mk II Vessel Hangar",
+      "mass": 10,
+      "integrity": 60,
+      "powerDraw": 0.25,
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size6_Class1_Free",
+      "name": "Mk II Vessel Hangar",
+      "mass": 20,
+      "integrity": 80,
+      "powerDraw": 0.35,
+      "bootTime": 5
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size7_Class1_Free",
+      "name": "Mk II Vessel Hangar",
+      "mass": 30,
+      "integrity": 120,
+      "powerDraw": 0.35,
+      "bootTime": 5
+    },
+    {
       "symbol": "Int_GuardianHullReinforcement_Size1_Class1",
       "name": "Guardian Hull Reinforcement",
       "bootTime": 0
@@ -753,16 +807,18 @@
     }
   },
   "inGameAudit": {
+    "catalogueIdentities": 1199,
     "identityMatches": 1193,
+    "registryOnlyIdentities": 6,
     "numericModulesVerified": 952,
     "armourModulesOutsideNumericVerification": 241,
     "verifiedRecords": 135,
     "verifiedFields": 300,
-    "exactFieldCounts": {
-      "powerDraw": 831,
-      "bootTime": 827
+    "catalogueFieldCounts": {
+      "powerDraw": 837,
+      "bootTime": 833
     },
-    "note": "Every module identity was verified in-game. Numeric verification covers every non-armour module; the 241 ship-armour modules retain separately sourced numeric values. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
+    "note": "In-game verification covers 1193 catalogue identities: 952 non-armour modules numerically and 241 ship-armour identities whose numeric values retain their separate provenance. Six bundle-granted Vessel Hangar variants rely on public registry and CAPI evidence; their stats match their ordinary twins but have not been checked independently in the module panel. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
     "verifiedValueFields": 284,
     "verifiedAbsentFields": 16
   },

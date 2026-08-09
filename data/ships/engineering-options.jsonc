@@ -88,7 +88,7 @@
  * get the exact set. Modules absent from `exclusions` take their whole group's list.
  *
  * Only modules the game lets you engineer appear at all; everything else is absent. That
- * is 1028 of the 1193 modules. The other 165 are the families no blueprint reaches — fuel
+ * is 1028 of the 1199 modules. The other 171 are the families no blueprint reaches — fuel
  * tanks, passenger cabins, the repair, recon, research, decontamination and multi-limpet
  * controllers, meta-alloy hull reinforcement, the plain module reinforcement packages,
  * the Pulse Wave Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons,

@@ -94,7 +94,13 @@ in the doc comment of each ported module, and in long form in the domain
   sizes, ratings, mounts and entitlement tokens, from
   [EDCD FDevIDs](https://github.com/EDCD/FDevIDs) (`shipyard.csv`,
   `outfitting.csv`), which states no explicit licence; consult the repository
-  terms.
+  terms. The six bundle-granted Mk I/Mk II Vessel Hangar variants absent from that
+  snapshot are corroborated by the
+  [Odyssey Materials Helper](https://github.com/jixxed/ed-odyssey-materials-helper)
+  CAPI fixture (`application/src/test/resources/parser/capifc/test9.json`, commit
+  `2c652a2349b754f1dde1a58b6daaac5a04e421a6`) published by **Jixxed** under the
+  **MIT licence**. The response itself is factual Elite Dangerous game output; only
+  the module identities, bundle flags and grant tokens are used.
 - **Market commodities** — standard and rare commodity names, symbols and market
   categories, from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
   (`commodity.csv`, `rare_commodity.csv`), which states no explicit licence;
@@ -111,7 +117,11 @@ in the doc comment of each ported module, and in long form in the domain
   [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) (`ships/*.json`,
   `modules/**`, `modifications/**`, commit `0db9234`). Coriolis-data releases only
   its _code_ under MIT; the JSON stat values are **Elite Dangerous game data,
-  property of Frontier Developments plc** — see the Frontier notice below.
+  property of Frontier Developments plc** — see the Frontier notice below. Values and
+  newer records missing there are supplemented from
+  [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**, whose code is
+  **CC BY-NC 4.0**; `data/ships/SOURCES.md` pins the exact snapshots and field-level
+  derivation.
 - **In-game verification** — names and numeric values were checked directly in Elite
   Dangerous. These are **Elite Dangerous game data, property of Frontier Developments
   plc**; the observation date, field-level coverage, corrections and unresolved fields

@@ -12,8 +12,12 @@
  *          EDSY eddb.js (taleden, CC BY-NC 4.0): https://github.com/taleden/EDSY
  *          — mass, integrity, powerDraw and bootTime where coriolis-data carries
  *          none, and corrections where its value is a duplicated or mis-copied row.
- *          In-game verification covers all identities and the numeric values on all
- *          952 non-armour modules; exact corrections are pinned in
+ *          Odyssey Materials Helper CAPI fixture (Jixxed, MIT):
+ *          https://github.com/jixxed/ed-odyssey-materials-helper
+ *          — the six bundle-granted Vessel Hangar identities and their grant tokens.
+ *          In-game verification covers 1193 identities and the numeric values on 952
+ *          non-armour modules; the six bundle-granted Vessel Hangar identities above
+ *          are registry/CAPI-sourced. Exact corrections are pinned in
  *          fixtures/ships/module-stats.json. The 241 ship-armour modules retain their
  *          separately sourced numeric values.
  *          The stat values are Elite Dangerous game data, property of Frontier
@@ -25,7 +29,7 @@
  * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is an `internal` module, so a loader adds
- * `category: "internal"` from the file it read rather than repeating it 478 times.
+ * `category: "internal"` from the file it read rather than repeating it 484 times.
  * `slot` is on fifteen records and no others: the Guardian Hybrid power plants and
  * power distributors, which Frontier files here yet which fill a *core* mount, and
  * which say so with the same `powerPlant` / `powerDistributor` values
@@ -4901,6 +4905,39 @@
     "cost": 2369320
   },
   {
+    "symbol": "Int_FighterBay_Size5_Class1_Free",
+    "name": "Mk I Vessel Hangar",
+    "class": 5,
+    "rating": "D",
+    "entitlement": "ELITE_V_MKIFIGHTERBAY_FREE",
+    "mass": 20,
+    "integrity": 60,
+    "powerDraw": 0.25,
+    "bootTime": 5
+  },
+  {
+    "symbol": "Int_FighterBay_Size6_Class1_Free",
+    "name": "Mk I Vessel Hangar",
+    "class": 6,
+    "rating": "D",
+    "entitlement": "ELITE_V_MKIFIGHTERBAY_FREE",
+    "mass": 40,
+    "integrity": 80,
+    "powerDraw": 0.35,
+    "bootTime": 5
+  },
+  {
+    "symbol": "Int_FighterBay_Size7_Class1_Free",
+    "name": "Mk I Vessel Hangar",
+    "class": 7,
+    "rating": "D",
+    "entitlement": "ELITE_V_MKIFIGHTERBAY_FREE",
+    "mass": 60,
+    "integrity": 120,
+    "powerDraw": 0.35,
+    "bootTime": 5
+  },
+  {
     "symbol": "Int_FighterBayMk2_Size5_Class1",
     "name": "Mk II Vessel Hangar",
     "class": 5,
@@ -4927,6 +4964,42 @@
     "name": "Mk II Vessel Hangar",
     "class": 7,
     "rating": "D",
+    "mass": 30,
+    "integrity": 120,
+    "powerDraw": 0.35,
+    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
+    "bootTime": 5
+  },
+  {
+    "symbol": "Int_FighterBayMk2_Size5_Class1_Free",
+    "name": "Mk II Vessel Hangar",
+    "class": 5,
+    "rating": "D",
+    "entitlement": "ELITE_V_MKIIFIGHTERBAY_FREE",
+    "mass": 10,
+    "integrity": 60,
+    "powerDraw": 0.25,
+    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
+    "bootTime": 5
+  },
+  {
+    "symbol": "Int_FighterBayMk2_Size6_Class1_Free",
+    "name": "Mk II Vessel Hangar",
+    "class": 6,
+    "rating": "D",
+    "entitlement": "ELITE_V_MKIIFIGHTERBAY_FREE",
+    "mass": 20,
+    "integrity": 80,
+    "powerDraw": 0.35,
+    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
+    "bootTime": 5
+  },
+  {
+    "symbol": "Int_FighterBayMk2_Size7_Class1_Free",
+    "name": "Mk II Vessel Hangar",
+    "class": 7,
+    "rating": "D",
+    "entitlement": "ELITE_V_MKIIFIGHTERBAY_FREE",
     "mass": 30,
     "integrity": 120,
     "powerDraw": 0.35,
