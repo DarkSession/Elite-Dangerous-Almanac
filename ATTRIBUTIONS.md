@@ -297,7 +297,8 @@ in the doc comment of each ported module, and in long form in the domain
   upstream project to credit; the Corvette is what says Overcharged does not cut a cannon's
   clip, and seven of them — every one but the unengineered Python Mk II — together with the
   Krait Phantom capture and the EDSY export are what the module catalogue's base stats are
-  checked against.
+  checked against. The Lynx capture also supplies that hull's size-1
+  `PlanetaryApproachSuite` mount by fitting the advanced suite there.
   `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json`,
   `slef-inara-panther-mkii.json` and `slef-inara-cutter-antixeno.json` are real
   [Inara](https://inara.cz/) SLEF exports, contributed by the repository owner from their

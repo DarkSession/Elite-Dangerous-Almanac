@@ -1,5 +1,6 @@
 {
   "count": 48,
+  "planetaryApproachSuiteCount": 48,
   "spot": [
     {
       "symbol": "SideWinder",
@@ -518,6 +519,11 @@
         {
           "size": 1,
           "name": "Slot07_Size1"
+        },
+        {
+          "size": 1,
+          "restriction": "planetaryApproachSuite",
+          "name": "PlanetaryApproachSuite"
         }
       ]
     }
@@ -949,6 +955,7 @@
       "Slot05_Size3",
       "Slot06_Size2",
       "Slot07_Size1",
+      "PlanetaryApproachSuite",
       "CargoHatch"
     ]
   },
@@ -1051,11 +1058,12 @@
       ]
     },
     {
-      "ship": "Anaconda",
+      "ship": "MediumTransport01",
       "slot": "PlanetaryApproachSuite",
       "restriction": "planetaryApproachSuite",
       "accepts": [
-        "Int_PlanetApproachSuite"
+        "Int_PlanetApproachSuite",
+        "Int_PlanetApproachSuite_Advanced"
       ],
       "rejects": [
         "Int_CargoRack_Size1_Class1"
