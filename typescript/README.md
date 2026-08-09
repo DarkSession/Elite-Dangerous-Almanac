@@ -93,6 +93,9 @@ large combined dataset is never an implicit dependency.
 - Slot keys come from the game and are not reliably derivable from position. Enumerate
   them with `ShipLoadout.slots()` or `enumerateSlots`.
 - Resistances are fractions, not percentages.
+- Build credits are quoted at catalogue retail. What a capture says it paid is kept
+  apart, unedited, as `ShipLoadout.sourcePurchase`, and is exported only when asked for
+  by name with `{ credits: 'source' }`.
 - Absent catalogue fields are omitted rather than represented by zero. Catalogue
   provenance records unresolved data gaps.
 - Lookups return `null`; malformed inputs throw `TypeError`; unsupported ranges throw

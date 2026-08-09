@@ -107,8 +107,8 @@ export interface ModuleEngineering {
  * **Ammunition state is not carried.** A journal writes `AmmoInClip` and `AmmoInHopper`
  * on every weapon that takes ammunition; both are dropped on import and never written
  * back out, because they are the ship's rearm state at the instant of capture rather than
- * part of the build — the same reason a re-export recomputes a build's credit figures
- * instead of echoing the ones the capture happened to carry. What a fitted weapon *can*
+ * part of the build — the same reason a re-export recomputes a build's credit figures by
+ * default instead of echoing the ones the capture carried. What a fitted weapon *can*
  * hold is a property of the build, and `./ammunition` answers it: `ammunitionCapacity`,
  * or `FittedModule.ammunition` for a fitted one, post-engineering.
  */
@@ -123,7 +123,13 @@ export interface LoadoutModule {
     readonly Priority?: number;
     /** Module health, 0–1. */
     readonly Health?: number;
-    /** The module's credit value. */
+    /**
+     * What the capture says was paid for this module, in credits — net of whatever
+     * discount its owner had, and not the catalogue's list price. Absent where the
+     * capture said nothing, which is not the same as free.
+     * `ShipLoadout.sourcePurchase` keeps these figures as a stable record; the library's
+     * own exports quote list price.
+     */
     readonly Value?: number;
     /** Engineering, present only when the module is modified. */
     readonly Engineering?: ModuleEngineering;
