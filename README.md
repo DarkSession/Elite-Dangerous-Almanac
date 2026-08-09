@@ -194,7 +194,7 @@ JSONC; they do not generate or commit duplicate JSON files.
 Run TypeScript commands from `typescript/`:
 
 ```bash
-npm install
+npm ci
 npm run check
 npm run build
 npm run test:package
@@ -208,6 +208,9 @@ package tests.
 API documentation is generated from TSDoc. Catalogue provenance belongs in the
 matching `data/<domain>/SOURCES.md`; open data gaps are tracked in
 [GitHub issues](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the complete development and pull-request
+guide. Report suspected vulnerabilities privately as described in
+[SECURITY.md](SECURITY.md).
 
 ## Data provenance and licensing
 
