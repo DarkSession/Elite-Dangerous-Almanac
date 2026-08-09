@@ -6,7 +6,7 @@ import { build } from 'esbuild';
 import { stripBareImports } from './scripts/strip-bare-imports.mjs';
 
 import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-code';
-import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
+import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
 import { nearestNebulae } from '@elite-dangerous-almanac/core/astro/nebulae';
 import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
 import { permitLockForSystemName } from '@elite-dangerous-almanac/core/astro/permit-locks';
@@ -22,7 +22,7 @@ import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-uti
 import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities';
 import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-rare';
 import { toSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address-input';
-import { sectorNameFromGalacticCoords } from '@elite-dangerous-almanac/core/astro/galaxy-grid';
+import { sectorNameFromGalacticPosition } from '@elite-dangerous-almanac/core/astro/galaxy-grid';
 import { parseSlef, toSlef, stringifySlef } from '@elite-dangerous-almanac/core/ships/slef';
 
 async function readReachableJs(entry, seen = new Set()) {
@@ -65,8 +65,10 @@ async function publicEntries(directory = new URL('./dist/', import.meta.url), su
     return entries;
 }
 
-test('StarSystem excludes individually locked systems from its package graph', async () => {
-    const graph = await readReachableJs(new URL('./dist/astro/star-system.js', import.meta.url));
+test('ProceduralSystem excludes individually locked systems from its package graph', async () => {
+    const graph = await readReachableJs(
+        new URL('./dist/astro/procedural-system.js', import.meta.url),
+    );
     assert.doesNotMatch(graph, /10477373803/);
     assert.match(graph, /Col 70 Sector/);
 });
@@ -74,7 +76,7 @@ test('StarSystem excludes individually locked systems from its package graph', a
 test('fine-grained package subpaths resolve', () => {
     assert.equal(massCodeToSizeClass('d'), 3);
     assert.equal(
-        StarSystem.fromName('pleiades sector hr-w d1-79')?.name,
+        ProceduralSystem.fromName('pleiades sector hr-w d1-79')?.name,
         'Pleiades Sector HR-W d1-79',
     );
     assert.equal(nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 1)[0]?.name, 'Pleiades');
@@ -90,7 +92,7 @@ test('fine-grained package subpaths resolve', () => {
     );
     assert.equal(getCommodityBySymbol('lavianbrandy', RARE_COMMODITIES)?.name, 'Lavian Brandy');
     assert.equal(toSystemAddress(10_477_373_803), 10_477_373_803n);
-    assert.equal(sectorNameFromGalacticCoords({ x: 751, y: -179, z: -91 }), 'Synuefe');
+    assert.equal(sectorNameFromGalacticPosition({ x: 751, y: -179, z: -91 }), 'Synuefe');
     const slef = stringifySlef(toSlef({ Ship: 'sidewinder', Modules: [] }));
     assert.equal(parseSlef(slef)[0]?.data.Ship, 'sidewinder');
 });
@@ -132,15 +134,16 @@ test('a consumer bundle of every public entry produces no warnings', async () =>
 
 test('a journal address reaches every id64 entry point without conversion', async () => {
     // JSON.parse of a journal event yields a plain number, not a bigint.
-    const { StarSystem: SS } = await import('@elite-dangerous-almanac/core/astro/star-system');
+    const { ProceduralSystem: PS } =
+        await import('@elite-dangerous-almanac/core/astro/procedural-system');
     const { decodeSystemAddress } =
         await import('@elite-dangerous-almanac/core/astro/system-address');
-    const { findRegionForBoxel } =
-        await import('@elite-dangerous-almanac/core/astro/galactic-region-lookup');
-    assert.equal(SS.fromSystemAddress(3_309_179_996_515).name, 'Synuefe EN-H d11-96');
+    const { findCodexRegionForBoxel } =
+        await import('@elite-dangerous-almanac/core/astro/codex-region-lookup');
+    assert.equal(PS.fromSystemAddress(3_309_179_996_515).name, 'Synuefe EN-H d11-96');
     assert.equal(decodeSystemAddress(3_309_179_996_515).sizeClass, 3);
-    assert.equal(findRegionForBoxel(3_309_179_996_515).region?.name, 'Inner Orion Spur');
-    assert.throws(() => SS.fromSystemAddress(2 ** 53 + 2), TypeError);
+    assert.equal(findCodexRegionForBoxel(3_309_179_996_515).region?.name, 'Inner Orion Spur');
+    assert.throws(() => PS.fromSystemAddress(2 ** 53 + 2), TypeError);
 });
 
 test('converting an address costs nothing but the conversion', async () => {

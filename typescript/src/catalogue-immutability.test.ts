@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { GALACTIC_REGIONS } from './astro/galactic-region.js';
+import { CODEX_REGIONS } from './astro/codex-region.js';
 import { HAND_AUTHORED_REGIONS } from './astro/hand-authored-regions.js';
-import { getNamedRegionOrigin } from './astro/named-regions.js';
+import { getHandAuthoredRegionOrigin } from './astro/naming-region-origins.js';
 import { ALL_NEBULAE } from './astro/nebulae-all.js';
 import { ALL_MATERIALS } from './materials/materials-all.js';
 import { ALL_MICRO_RESOURCES } from './materials/micro-resources-all.js';
@@ -14,7 +14,7 @@ import { ALL_COMMODITIES } from './commodities/commodities-all.js';
 
 test('every exported object catalogue and all of its records are frozen', () => {
     const catalogues: readonly (readonly object[])[] = [
-        GALACTIC_REGIONS,
+        CODEX_REGIONS,
         HAND_AUTHORED_REGIONS,
         ALL_NEBULAE,
         ALL_MATERIALS,
@@ -42,7 +42,7 @@ test('exported lookup records are frozen too, not only the array catalogues', ()
 });
 
 test('nested records and named origins are frozen', () => {
-    const region = GALACTIC_REGIONS[0]!;
+    const region = CODEX_REGIONS[0]!;
     assert.equal(Object.isFrozen(region.bounds), true);
     assert.equal(Object.isFrozen(region.centroid), true);
 
@@ -50,7 +50,7 @@ test('nested records and named origins are frozen', () => {
     assert.equal(Object.isFrozen(handAuthored.spheres), true);
     assert.ok(handAuthored.spheres.every((sphere) => Object.isFrozen(sphere)));
 
-    const origin = getNamedRegionOrigin('Pleiades Sector');
+    const origin = getHandAuthoredRegionOrigin('Pleiades Sector');
     assert.ok(origin);
     assert.equal(Object.isFrozen(origin), true);
 });

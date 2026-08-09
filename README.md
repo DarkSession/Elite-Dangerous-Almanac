@@ -30,7 +30,7 @@ Each public module is also available as a leaf subpath. Prefer leaf imports when
 you do not need an entire feature area, especially in native ESM applications:
 
 ```ts
-import { StarSystem } from "@elite-dangerous-almanac/core/astro/star-system";
+import { ProceduralSystem } from "@elite-dangerous-almanac/core/astro/procedural-system";
 import { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
 ```
 
@@ -42,13 +42,13 @@ whose bundler performs tree shaking.
 ### Systems and regions
 
 ```ts
-import { StarSystem } from "@elite-dangerous-almanac/core/astro/star-system";
+import { ProceduralSystem } from "@elite-dangerous-almanac/core/astro/procedural-system";
 
-const system = StarSystem.fromName("Synuefe EN-H d11-96");
+const system = ProceduralSystem.fromName("Synuefe EN-H d11-96");
 system?.systemAddress; // 3309179996515n
-system?.sectorName; // "Synuefe"
+system?.namingRegionName; // "Synuefe"
 
-StarSystem.fromSystemAddress(3309179996515n).name;
+ProceduralSystem.fromSystemAddress(3309179996515n).name;
 // "Synuefe EN-H d11-96"
 ```
 
@@ -56,20 +56,20 @@ Address inputs accept `bigint`, a safe integer `number`, or a decimal string.
 Addresses are returned as `bigint`. A JavaScript number above `2^53 - 1` is
 rejected because it cannot represent the address exactly.
 
-Most coordinates use `GalacticCoords`: light-years from Sol. Procedural-sector
-functions that take `SectorCoords` instead use integer grid indices from 0 to 127.
-Use `sectorNameFromGalacticCoords` when starting from an ordinary galactic
-position.
+Most positions use `GalacticPosition`: `{x, y, z}` light-years from Sol.
+Procedural-sector functions instead use `SectorGridPosition` with the distinct
+axes `{sectorX, sectorY, sectorZ}`, so the two spaces cannot be mixed accidentally.
+Use `sectorNameFromGalacticPosition` when starting from an ordinary galactic position.
 
 Elite Dangerous uses “region” for several different concepts:
 
-| Concept                    | Entry point                                            |
-| -------------------------- | ------------------------------------------------------ |
-| Procedural sector name     | `sectorNameFromGalacticCoords`, `sectorNameFromCoords` |
-| Sector origin used by id64 | `resolveRegionOrigin`                                  |
-| Hand-authored named sector | `handAuthoredRegionForCoords`                          |
-| Galactic codex region      | `findRegionAt`, `findRegionForBoxel`                   |
-| Nebula catalogue entry     | `nearestNebulae`, `nebulaeWithin`, `getNebulaByName`   |
+| Concept                           | Entry point                                                    |
+| --------------------------------- | -------------------------------------------------------------- |
+| Procedural sector name            | `sectorNameFromGalacticPosition`, `sectorNameFromGridPosition` |
+| Naming-region origin used by id64 | `resolveNamingRegionOrigin`                                    |
+| Hand-authored named sector        | `findHandAuthoredRegionAt`                                     |
+| Galactic codex region             | `findCodexRegionAt`, `findCodexRegionForBoxel`                 |
+| Nebula catalogue entry            | `nearestNebulae`, `nebulaeWithin`, `getNebulaByName`           |
 
 Nebula query functions require an explicit catalogue. Import `REAL_NEBULAE`,
 `PROCGEN_NEBULAE`, `PLANETARY_NEBULAE`, or `ALL_NEBULAE` according to the data

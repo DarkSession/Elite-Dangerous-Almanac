@@ -66,7 +66,7 @@ standard parser accepts. See AGENTS.md §Attribution for how to consume them.
   by `type` into one file per class and sorted by name. `regionId` is the galactic
   codex region id from the source CSV — a column the canonn-signals JSON drops —
   and all 5835 values were verified to agree with this project's own
-  `findRegionAt` lookup, which the test suite re-checks on every run.
+  `findCodexRegionAt` lookup, which the test suite re-checks on every run.
 - **Caveat:** a nebula is a volume, but the dataset records a single point — the
   position of the system it is catalogued at.
 
@@ -97,7 +97,7 @@ standard parser accepts. See AGENTS.md §Attribution for how to consume them.
   with no disagreement in address or coordinates. The remaining 16 are absent from
   EDSM entirely, which is expected of systems no commander can enter to report.
   `Plaa Ain HA-Z d46` is in neither service; it is procedurally named, so its
-  address is encoded by this project's own `StarSystem`, whose output was confirmed
+  address is encoded by this project's own `ProceduralSystem`, whose output was confirmed
   against Spansh on the other two procedural entries in the list
   (`Dryio Flyuae IC-B c1-377`, `Scheau Bli NB-O d6-1409`). Values are stored as
   decimal strings so every target language parses them without IEEE-754 loss.
@@ -112,7 +112,7 @@ standard parser accepts. See AGENTS.md §Attribution for how to consume them.
   asserts the name route and the coordinate route agree on each.
 - **Caveat:** region membership is inferred from the system name, since no
   per-system region-permit flag is published; resolving a permit from coordinates
-  (`handAuthoredRegionForCoords`) is exact and should be preferred where
+  (`findHandAuthoredRegionAt`) is exact and should be preferred where
   coordinates are available. Permit-locked *bodies* inside otherwise-open systems
   (Diso 5 C, Lave 2, Sol's Moon and Triton) are out of scope — a system-level flag
   would misreport their systems.
@@ -136,5 +136,6 @@ standard parser accepts. See AGENTS.md §Attribution for how to consume them.
   galactic plane, origin corner at `(x0, y0, z0) = (-49985, -40985, -24105)` ly.
   Original region-boundary research: Frontier forums,
   [Determining the region of a system](https://forums.frontier.co.uk/threads/determining-the-region-of-a-system.537845/).
-- **Ported algorithm:** `typescript/src/astro/galactic-region-lookup.ts` ports
-  `findRegion` / `findRegionForBoxel` from the upstream `RegionMap.js`.
+- **Ported algorithm:** `typescript/src/astro/codex-region-lookup.ts` ports the
+  algorithms exposed as `findCodexRegionAt` and `findCodexRegionForBoxel` from
+  the upstream `RegionMap.js`.

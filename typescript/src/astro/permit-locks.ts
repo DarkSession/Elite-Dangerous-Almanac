@@ -21,7 +21,7 @@
  * {@link isPermitLockedRegionName} is how the geometric route asks the question:
  *
  * ```ts
- * const region = handAuthoredRegionForCoords(coords);
+ * const region = findHandAuthoredRegionAt(position);
  * const needsPermit = region !== null && isPermitLockedRegionName(region.name);
  * ```
  *

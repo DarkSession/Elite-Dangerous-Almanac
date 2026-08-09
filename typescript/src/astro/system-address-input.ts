@@ -60,7 +60,7 @@ export function tryToSystemAddress(address: SystemAddressInput): bigint | null {
  * Use this at the edge of your own code when you want the failure to be loud;
  * the library's address entry points call it for you, so
  * `decodeSystemAddress(event.SystemAddress)` and
- * `StarSystem.fromSystemAddress(event.SystemAddress)` accept a journal number
+ * `ProceduralSystem.fromSystemAddress(event.SystemAddress)` accept a journal number
  * directly.
  *
  * @param address - A `bigint`, a non-negative safe-integer `number` (a normally

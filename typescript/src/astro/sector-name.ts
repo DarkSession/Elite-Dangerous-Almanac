@@ -10,8 +10,8 @@
  * - **Class 2 (C2)** — two words, e.g. `Blae Eock`, `Hypheasms Ni`.
  *   Built as `prefix₁suffix₁ prefix₂suffix₂`.
  *
- * This module implements the forward map ({@link sectorNameFromCoords}) and its
- * inverse ({@link sectorCoordsFromName}) as pure functions. The fragment tables
+ * This module implements the forward map ({@link sectorNameFromGridPosition}) and its
+ * inverse ({@link sectorGridPositionFromName}) as pure functions. The fragment tables
  * and the run-length/offset lookups derived from them are computed once as module
  * constants; nothing here mutates observable state between calls.
  *
@@ -29,14 +29,19 @@
  * Each axis indexes a 1280 ly cube. `x` and `z` span the full 7-bit range
  * (0–127); `y` only reaches 0–63 for real systems (the system-address format has
  * a 6-bit y field), but the naming algorithm itself treats all three as 7-bit.
+ *
+ * @example
+ * ```ts
+ * const sector: SectorGridPosition = { sectorX: 39, sectorY: 31, sectorZ: 18 };
+ * ```
  */
-export interface SectorCoords {
+export interface SectorGridPosition {
     /** Sector index along the galactic X axis (0–127). */
-    x: number;
+    sectorX: number;
     /** Sector index along the galactic Y axis (0–63 for addressable systems). */
-    y: number;
+    sectorY: number;
     /** Sector index along the galactic Z axis (0–127). */
-    z: number;
+    sectorZ: number;
 }
 
 // --- Fragment tables (verbatim from the EDTS reference) -------------------------
@@ -714,7 +719,7 @@ function c2Name(offset: number): string {
 /**
  * The procedural sector name for a grid position.
  *
- * @param coords - Integer sector position on the galaxy grid. Each axis must be
+ * @param position - Integer sector position on the galaxy grid. Each axis must be
  *   an integer in 0–127 (the 7-bit sector grid); the packed offset would
  *   otherwise bleed one axis into the next and produce a wrong or empty name.
  * @returns The canonically-cased sector name (e.g. `Synuefe`, `Blae Eock`).
@@ -722,21 +727,23 @@ function c2Name(offset: number): string {
  * slot is outside the procedural generator's assigned name range.
  * @example
  * ```ts
- * sectorNameFromCoords({ x: 39, y: 30, z: 20 }); // -> a procedural name
+ * sectorNameFromGridPosition({ sectorX: 39, sectorY: 30, sectorZ: 20 }); // -> a procedural name
  * ```
  */
-export function sectorNameFromCoords(coords: SectorCoords): string {
-    for (const v of [coords.x, coords.y, coords.z]) {
+export function sectorNameFromGridPosition(position: SectorGridPosition): string {
+    for (const v of [position.sectorX, position.sectorY, position.sectorZ]) {
         if (!Number.isInteger(v) || v < 0 || v > 127) {
             throw new RangeError(
-                `Sector coordinate out of range (expected integer 0–127): ${JSON.stringify(coords)}`,
+                `Sector grid position out of range (expected integer 0–127): ${JSON.stringify(position)}`,
             );
         }
     }
-    const offset = (coords.z << 14) + (coords.y << 7) + coords.x;
+    const offset = (position.sectorZ << 14) + (position.sectorY << 7) + position.sectorX;
     const name = isC1Sector(offset) ? c1Name(offset) : c2Name(offset);
     if (name === null) {
-        throw new RangeError(`Sector coordinate has no procedural name: ${JSON.stringify(coords)}`);
+        throw new RangeError(
+            `Sector grid position has no procedural name: ${JSON.stringify(position)}`,
+        );
     }
     return name;
 }
@@ -808,11 +815,15 @@ function c1ProcessPrefix(frag: FragmentInfo, offset: number): number {
     return out;
 }
 
-function coordsFromOffset(offset: number): SectorCoords {
-    return { x: offset & 0x7f, y: (offset >> 7) & 0x7f, z: (offset >> 14) & 0x7f };
+function coordsFromOffset(offset: number): SectorGridPosition {
+    return {
+        sectorX: offset & 0x7f,
+        sectorY: (offset >> 7) & 0x7f,
+        sectorZ: (offset >> 14) & 0x7f,
+    };
 }
 
-function c2SectorCoords(f: FragmentInfo[]): SectorCoords | null {
+function c2SectorGridPosition(f: FragmentInfo[]): SectorGridPosition | null {
     if (
         f[0]!.isC2VowelPrefix === f[1]!.isVowelSuffix ||
         f[2]!.isC2VowelPrefix === f[3]!.isVowelSuffix
@@ -824,7 +835,7 @@ function c2SectorCoords(f: FragmentInfo[]): SectorCoords | null {
     return coordsFromOffset(interleave2(idx0, idx1));
 }
 
-function c1SectorCoords3(f: FragmentInfo[]): SectorCoords | null {
+function c1SectorGridPosition3(f: FragmentInfo[]): SectorGridPosition | null {
     if (
         f[0]!.isC1VowelPrefix === f[1]!.isVowelInfix ||
         f[1]!.isVowelInfix === f[2]!.isVowelSuffix
@@ -837,7 +848,7 @@ function c1SectorCoords3(f: FragmentInfo[]): SectorCoords | null {
     return coordsFromOffset(offset);
 }
 
-function c1SectorCoords4(f: FragmentInfo[]): SectorCoords | null {
+function c1SectorGridPosition4(f: FragmentInfo[]): SectorGridPosition | null {
     if (
         f[0]!.isC1VowelPrefix === f[1]!.isVowelInfix ||
         f[1]!.isVowelInfix === f[2]!.isVowelInfix ||
@@ -856,18 +867,18 @@ function c1SectorCoords4(f: FragmentInfo[]): SectorCoords | null {
  * The grid position a procedural sector name maps to, or `null` if the name is
  * not a valid procedural sector name.
  *
- * Every assigned name produced by {@link sectorNameFromCoords} round-trips through
+ * Every assigned name produced by {@link sectorNameFromGridPosition} round-trips through
  * this function. A valid fragment sequence that is not the canonical name emitted for
  * its coordinates is rejected.
  *
  * @param name - A procedural sector name in any casing (e.g. `blae eock`).
  * @returns The sector grid position, or `null` when the name is not procedural.
  */
-export function sectorCoordsFromName(name: string): SectorCoords | null {
+export function sectorGridPositionFromName(name: string): SectorGridPosition | null {
     const candidates = splitFragmentCandidates(name);
     const normalizedName = name.trim().toLowerCase().replace(/\s+/g, ' ');
     for (const f of candidates) {
-        let coords: SectorCoords | null = null;
+        let coords: SectorGridPosition | null = null;
         if (
             f.length === 4 &&
             f[0]!.isPrefix &&
@@ -875,9 +886,9 @@ export function sectorCoordsFromName(name: string): SectorCoords | null {
             f[2]!.isPrefix &&
             f[3]!.isSuffix
         ) {
-            coords = c2SectorCoords(f);
+            coords = c2SectorGridPosition(f);
         } else if (f.length === 3 && f[0]!.isPrefix && f[1]!.isInfix && f[2]!.isSuffix) {
-            coords = c1SectorCoords3(f);
+            coords = c1SectorGridPosition3(f);
         } else if (
             f.length === 4 &&
             f[0]!.isPrefix &&
@@ -885,14 +896,14 @@ export function sectorCoordsFromName(name: string): SectorCoords | null {
             f[2]!.isInfix &&
             f[3]!.isSuffix
         ) {
-            coords = c1SectorCoords4(f);
+            coords = c1SectorGridPosition4(f);
         }
         if (!coords) continue;
 
         // Fragment strings overlap ("Aoe" can be A+oe or Ao+e), so accept only the
         // interpretation that reproduces the supplied name.
         try {
-            const canonicalName = sectorNameFromCoords(coords);
+            const canonicalName = sectorNameFromGridPosition(coords);
             if (canonicalName.toLowerCase() === normalizedName) return coords;
         } catch (error) {
             if (!(error instanceof RangeError)) throw error;
@@ -908,8 +919,8 @@ export function sectorCoordsFromName(name: string): SectorCoords | null {
  * @param name - A procedural sector name in any casing.
  */
 export function canonicalizeSectorName(name: string): string | null {
-    const coords = sectorCoordsFromName(name);
-    return coords ? sectorNameFromCoords(coords) : null;
+    const position = sectorGridPositionFromName(name);
+    return position ? sectorNameFromGridPosition(position) : null;
 }
 
 // --- Morton (bit-interleave) helpers for the C2 scheme --------------------------

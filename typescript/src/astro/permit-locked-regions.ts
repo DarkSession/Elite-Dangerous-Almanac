@@ -1,7 +1,7 @@
 /**
  * Whole permit-locked regions, kept separate from individually locked systems.
  *
- * Importing this leaf module costs only the 28 region names. `StarSystem` uses it
+ * Importing this leaf module costs only the 28 region names. `ProceduralSystem` uses it
  * to preserve the library's fine-grained tree-shaking boundary.
  *
  * @packageDocumentation

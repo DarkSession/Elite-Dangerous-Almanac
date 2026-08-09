@@ -18,8 +18,8 @@
  * @packageDocumentation
  */
 
-import { canonicalizeSectorName, sectorCoordsFromName } from './sector-name.js';
-import { getNamedRegionOrigin } from './named-regions.js';
+import { canonicalizeSectorName, sectorGridPositionFromName } from './sector-name.js';
+import { getHandAuthoredRegionOrigin } from './naming-region-origins.js';
 
 /**
  * The parsed parts of a procedural system name. Letters and mass code are stored
@@ -101,7 +101,7 @@ export function boxelCodeToLetters(boxelCode: number): {
  * the input (`parseSystemName('synuefe …').regionName === 'synuefe'`). The letters
  * and mass code become numeric indices, so re-formatting them is always canonical,
  * but the region is not — use {@link canonicalizeSystemName} (or build a
- * {@link StarSystem} via `StarSystem.fromName`) if you need the region re-cased too.
+ * {@link ProceduralSystem} via `ProceduralSystem.fromName`) if you need the region re-cased too.
  *
  * @param name - A system name in any casing, e.g. `blae eock kc-c d0`.
  * @returns The parsed parts, or `null` if the name is malformed.
@@ -170,7 +170,7 @@ export function parseSystemName(name: string): SystemNameParts | null {
  * `formatSystemName` does not re-case it. Round-tripping a lower-cased name through
  * {@link parseSystemName} → `formatSystemName` therefore keeps the region's original
  * casing (`synuefe EN-H d11-96`); for a fully canonical name use
- * {@link canonicalizeSystemName} or `StarSystem.fromName(...).name`.
+ * {@link canonicalizeSystemName} or `ProceduralSystem.fromName(...).name`.
  *
  * @param parts - The system-name parts to render.
  * @returns The system name, e.g. `Synuefe EN-H d11-96`.
@@ -202,7 +202,7 @@ export function canonicalizeSystemName(name: string): string | null {
         ...parts,
         regionName:
             canonicalizeSectorName(parts.regionName) ??
-            getNamedRegionOrigin(parts.regionName)?.name ??
+            getHandAuthoredRegionOrigin(parts.regionName)?.name ??
             parts.regionName,
     });
 }
@@ -237,5 +237,5 @@ export function isProceduralSystemName(
 ): boolean {
     const parts = parseSystemName(name?.trim());
     if (!parts) return false;
-    return options.strict ? sectorCoordsFromName(parts.regionName) !== null : true;
+    return options.strict ? sectorGridPositionFromName(parts.regionName) !== null : true;
 }

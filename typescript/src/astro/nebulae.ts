@@ -38,7 +38,7 @@
  * @packageDocumentation
  */
 
-import type { GalacticCoords } from './coords.js';
+import type { GalacticPosition } from './galactic-position.js';
 
 /**
  * How a nebula is classified by the source catalogue.
@@ -81,9 +81,9 @@ export interface Nebula {
      * Id of the galactic codex region the nebula sits in, 1–42.
      *
      * @remarks
-     * Resolve it to a name with `getGalacticRegion` from `./galactic-region` — that
+     * Resolve it to a name with `getCodexRegion` from `./codex-region` — that
      * costs ~9 KB of region metadata rather than the ~267 KB lookup grid
-     * `findRegionAt` needs.
+     * `findCodexRegionAt` needs.
      */
     readonly regionId: number;
 }
@@ -95,7 +95,7 @@ export interface NebulaWithDistance extends Nebula {
 }
 
 /** Squared distance between a point and a nebula's catalogued system, in ly². */
-function distanceSquared(coords: GalacticCoords, nebula: Nebula): number {
+function distanceSquared(coords: GalacticPosition, nebula: Nebula): number {
     const dx = coords.x - nebula.x;
     const dy = coords.y - nebula.y;
     const dz = coords.z - nebula.z;
@@ -106,8 +106,8 @@ function distanceSquared(coords: GalacticCoords, nebula: Nebula): number {
  * The nebulae closest to a point, nearest first.
  *
  * @param coords - The point to measure from, in light-years (Sol at origin). A
- * `StarSystem.coords` value fits once you have narrowed it — it is
- * `GalacticCoords | null`, and is `null` unless that system was built from an address
+ * `ProceduralSystem.position` value fits once you have narrowed it — it is
+ * `GalacticPosition | null`, and is `null` unless that system was built from an address
  * *and* you supplied its coordinates, so null-check it first.
  * @param nebulae - The catalogue to search — `REAL_NEBULAE`, `PLANETARY_NEBULAE`,
  * `PROCGEN_NEBULAE`, `ALL_NEBULAE`, or any subset you have filtered yourself.
@@ -125,7 +125,7 @@ function distanceSquared(coords: GalacticCoords, nebula: Nebula): number {
  * ```
  */
 export function nearestNebulae(
-    coords: GalacticCoords,
+    coords: GalacticPosition,
     nebulae: readonly Nebula[],
     count = 3,
 ): NebulaWithDistance[] {
@@ -157,7 +157,7 @@ export function nearestNebulae(
  * ```
  */
 export function nebulaeWithin(
-    coords: GalacticCoords,
+    coords: GalacticPosition,
     nebulae: readonly Nebula[],
     radiusLy: number,
 ): NebulaWithDistance[] {

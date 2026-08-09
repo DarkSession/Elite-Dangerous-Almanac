@@ -17,18 +17,25 @@
  * @remarks
  * "Region" is overloaded in this galaxy. A {@link HandAuthoredRegion} is a *hand-authored
  * named sector* (Pleiades, Coalsack, …) — not to be confused with a **procedural
- * sector** (`./sector-name`) or a **galactic codex region** (`./galactic-region`,
- * the 42 codex zones). Use {@link handAuthoredRegionForCoords} here for the first, and
- * `findRegionAt` from `./galactic-region-lookup` for the third.
+ * sector** (`./sector-name`) or a **galactic codex region** (`./codex-region`,
+ * the 42 codex zones). Use {@link findHandAuthoredRegionAt} here for the first, and
+ * `findCodexRegionAt` from `./codex-region-lookup` for the third.
  *
  * @packageDocumentation
  */
 
-import type { GalacticCoords } from './coords.js';
+import type { GalacticPosition } from './galactic-position.js';
 import handAuthoredData from '../../../data/astro/hand-authored-regions.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
 
-/** One sphere of a hand-authored region (centre and radius in light-years). */
+/**
+ * One sphere of a hand-authored region (centre and radius in light-years).
+ *
+ * @example
+ * ```ts
+ * const sphere: HandAuthoredSphere = { cx: -80.6, cy: -146.7, cz: -343.3, r: 100 };
+ * ```
+ */
 export interface HandAuthoredSphere {
     /** Sphere centre X in light-years (Sol at origin). */
     readonly cx: number;
@@ -47,6 +54,11 @@ export interface HandAuthoredSphere {
  * Whether the region needs a permit is not stored here — 28 of these regions are
  * permit-locked, and `isPermitLockedRegionName` in `./permit-locks` is the single
  * place that knows which. Pass {@link HandAuthoredRegion.name} to it.
+ *
+ * @example
+ * ```ts
+ * const pleiades = HAND_AUTHORED_REGIONS.find((region) => region.name === 'Pleiades Sector');
+ * ```
  */
 export interface HandAuthoredRegion {
     /** Canonically-cased region name, e.g. `Pleiades Sector`. */
@@ -55,7 +67,14 @@ export interface HandAuthoredRegion {
     readonly spheres: readonly HandAuthoredSphere[];
 }
 
-/** All hand-authored regions, sorted smallest-radius-first (overlap priority). */
+/**
+ * All hand-authored regions, sorted smallest-radius-first (overlap priority).
+ *
+ * @example
+ * ```ts
+ * HAND_AUTHORED_REGIONS[0]?.name;
+ * ```
+ */
 export const HAND_AUTHORED_REGIONS: readonly HandAuthoredRegion[] = deepFreeze(
     handAuthoredData as readonly HandAuthoredRegion[],
 );
@@ -70,15 +89,16 @@ export const HAND_AUTHORED_REGIONS: readonly HandAuthoredRegion[] = deepFreeze(
  *
  * @remarks
  * This resolves a *hand-authored named sector* only. For the codex region a point
- * falls in, use `findRegionAt` from `./galactic-region-lookup` instead.
+ * falls in, use `findCodexRegionAt` from `./codex-region-lookup` instead.
  *
- * @param coords - Galactic position in light-years (Sol at origin). All three axes
+ * @param position - Galactic position in light-years (Sol at origin). All three axes
  * are used — hand-authored regions are 3-D spheres, so `y` matters here (unlike the
- * flat `findRegionAt`). A {@link StarSystem.coords} value can be passed directly.
+ * flat `findCodexRegionAt`). A {@link ProceduralSystem.position} value can be passed directly.
  * @returns The containing region, or `null` if the point is in procedural space.
  * @example
  * ```ts
- * handAuthoredRegionForCoords({ x: -80.6, y: -146.7, z: -343.3 })?.name; // -> 'Pleiades Sector'
+ * findHandAuthoredRegionAt({ x: -80.6, y: -146.7, z: -343.3 })?.name;
+ * // -> 'Pleiades Sector'
  * ```
  * @example
  * Resolving a permit lock from a position — the exact route, since it does not
@@ -86,12 +106,12 @@ export const HAND_AUTHORED_REGIONS: readonly HandAuthoredRegion[] = deepFreeze(
  * ```ts
  * import { isPermitLockedRegionName } from './permit-locked-regions.js';
  *
- * const region = handAuthoredRegionForCoords(coords);
+ * const region = findHandAuthoredRegionAt(position);
  * const needsPermit = region !== null && isPermitLockedRegionName(region.name);
  * ```
  */
-export function handAuthoredRegionForCoords(coords: GalacticCoords): HandAuthoredRegion | null {
-    const { x, y, z } = coords;
+export function findHandAuthoredRegionAt(position: GalacticPosition): HandAuthoredRegion | null {
+    const { x, y, z } = position;
     for (const region of HAND_AUTHORED_REGIONS) {
         for (const s of region.spheres) {
             const dx = x - s.cx;

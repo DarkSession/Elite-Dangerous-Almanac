@@ -4,35 +4,35 @@
  * This entry point re-exports the astro feature area. Every symbol is also
  * reachable from its own module, so bundlers can drop anything you do not use.
  *
- * **Start with {@link StarSystem}** — it composes the pieces below into one
+ * **Start with {@link ProceduralSystem}** — it composes the pieces below into one
  * immutable handle (name ⇄ `id64`, sector, mass code, hand-authored regions). Drop
  * to the individual functions when you need just one calculation.
  *
  * **A note on the word "region".** It means four different things here; the
  * exports are grouped to keep them apart:
- * - *procedural sector* — {@link sectorNameFromCoords} & co. (the boxel grid name).
- * - *region origin* — {@link resolveRegionOrigin} (a sector's corner, for `id64`).
- * - *hand-authored region* — {@link handAuthoredRegionForCoords} (Pleiades, Coalsack, …).
- * - *galactic codex region* — {@link findRegionAt} (one of the 42 codex zones).
+ * - *procedural sector* — {@link sectorNameFromGridPosition} & co. (the boxel grid name).
+ * - *naming-region origin* — {@link resolveNamingRegionOrigin} (a sector's corner, for `id64`).
+ * - *hand-authored region* — {@link findHandAuthoredRegionAt} (Pleiades, Coalsack, …).
+ * - *galactic codex region* — {@link findCodexRegionAt} (one of the 42 codex zones).
  *
  * None of those is the **nebula catalogue** — the nebulae themselves, and where
  * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE} and its sibling
  * catalogues.
  *
- * **Two `{x, y, z}` conventions, so check which one a function wants.**
- * {@link GalacticCoords} is light-years with Sol at the origin — what the journal,
- * EDSM and Spansh report, and what {@link handAuthoredRegionForCoords} and
+ * **Coordinate spaces have different shapes.**
+ * {@link GalacticPosition} is `{x, y, z}` in light-years with Sol at the origin — what the journal,
+ * EDSM and Spansh report, and what {@link findHandAuthoredRegionAt} and
  * {@link nearestNebulae} take.
- * {@link SectorCoords} is an integer *sector index* (0–127 per axis) on the 1280 ly
- * naming grid, which is what {@link sectorNameFromCoords} takes. They are the same
- * shape, so nothing stops you passing one for the other — convert a real position
- * with {@link sectorCoordsFromGalacticCoords} (or go straight to
- * {@link sectorNameFromGalacticCoords}).
+ * {@link SectorGridPosition} uses `{sectorX, sectorY, sectorZ}` integer indices on the
+ * 1280 ly naming grid, which is what {@link sectorNameFromGridPosition} takes. The
+ * distinct axis names prevent accidentally passing light-years as sector indices.
+ * Convert a real position with {@link sectorGridPositionFromGalacticPosition} (or go
+ * straight to {@link sectorNameFromGalacticPosition}).
  *
- * {@link findRegionAt} is the odd one out: it takes a flat {@link PlanePoint}
+ * {@link findCodexRegionAt} is the odd one out: it takes a flat {@link GalacticPlanePosition}
  * (`{x, z}` in light-years), because the region map is an X/Z projection. A
- * `GalacticCoords` **variable** passes straight through, but an inline
- * `{ x, y, z }` literal is a compile error — see {@link findRegionAt}.
+ * `GalacticPosition` **variable** passes straight through, but an inline
+ * `{ x, y, z }` literal is a compile error — see {@link findCodexRegionAt}.
  *
  * **Permit locks** are six similarly-named lookups; {@link permitLockForSystemName}
  * is the one to start from (it answers for both kinds of lock, from a name alone).
@@ -42,10 +42,10 @@
 
 // ── Start here ──────────────────────────────────────────────────────────────
 // High-level facade over everything below.
-export { StarSystem } from './star-system.js';
+export { ProceduralSystem } from './procedural-system.js';
 
 // ── Shared types ────────────────────────────────────────────────────────────
-export type { GalacticCoords } from './coords.js';
+export type { GalacticPosition } from './galactic-position.js';
 
 // ── System names: parse / format / classify ─────────────────────────────────
 export {
@@ -75,18 +75,18 @@ export {
 } from './system-address-input.js';
 
 // ── Procedural sectors: name ⇄ grid coordinates ─────────────────────────────
-// `SectorCoords` are **sector grid indices** (0–127), not light-years. Convert a
-// real position with `sectorCoordsFromGalacticCoords` / `sectorNameFromGalacticCoords`.
+// `SectorGridPosition` uses named sector indices, not light-years. Convert a real
+// position with the galaxy-grid helpers below.
 export {
-    sectorNameFromCoords,
-    sectorCoordsFromName,
+    sectorNameFromGridPosition,
+    sectorGridPositionFromName,
     canonicalizeSectorName,
-    type SectorCoords,
+    type SectorGridPosition,
 } from './sector-name.js';
 
 export {
-    sectorCoordsFromGalacticCoords,
-    sectorNameFromGalacticCoords,
+    sectorGridPositionFromGalacticPosition,
+    sectorNameFromGalacticPosition,
     GALAXY_ORIGIN,
     SECTOR_EDGE_LY,
 } from './galaxy-grid.js';
@@ -101,11 +101,15 @@ export {
 } from './mass-code.js';
 
 // ── Named-region origins (needed to encode a name to an id64) ────────────────
-export { getNamedRegionOrigin, resolveRegionOrigin, type RegionOrigin } from './named-regions.js';
+export {
+    getHandAuthoredRegionOrigin,
+    resolveNamingRegionOrigin,
+    type NamingRegionOrigin,
+} from './naming-region-origins.js';
 
 // ── Hand-authored regions (nebula / cluster named sectors) ──────────────────
 export {
-    handAuthoredRegionForCoords,
+    findHandAuthoredRegionAt,
     HAND_AUTHORED_REGIONS,
     type HandAuthoredRegion,
     type HandAuthoredSphere,
@@ -136,27 +140,27 @@ export {
 
 // ── Galactic codex regions (the 42 codex zones) ─────────────────────────────
 export {
-    GALACTIC_REGIONS,
-    getGalacticRegion,
-    getGalacticRegionByName,
-    type GalacticRegion,
-    type PlaneBounds,
-    type PlanePoint,
-} from './galactic-region.js';
+    CODEX_REGIONS,
+    getCodexRegion,
+    getCodexRegionByName,
+    type CodexRegion,
+    type CodexRegionBounds,
+    type GalacticPlanePosition,
+} from './codex-region.js';
 
-// The two lookups return different shapes on purpose: `findRegionAt` answers with the
-// region alone (`GalacticRegion | null`), while `findRegionForBoxel` also hands back
+// The two lookups return different shapes on purpose: `findCodexRegionAt` answers with the
+// region alone (`CodexRegion | null`), while `findCodexRegionForBoxel` also hands back
 // the boxel-corner coordinates it had to derive, so its region sits at `.region`.
 export {
-    findRegionAt,
-    findRegionForBoxel,
-    REGION_MAP_X0,
-    REGION_MAP_Y0,
-    REGION_MAP_Z0,
-    REGION_MAP_LY_PER_CELL,
-    type RegionLookup,
-    type BoxelRegion,
-} from './galactic-region-lookup.js';
+    findCodexRegionAt,
+    findCodexRegionForBoxel,
+    CODEX_REGION_MAP_X0,
+    CODEX_REGION_MAP_Y0,
+    CODEX_REGION_MAP_Z0,
+    CODEX_REGION_MAP_LY_PER_CELL,
+    type CodexRegionLookup,
+    type BoxelCodexRegionLookup,
+} from './codex-region-lookup.js';
 
 // ── Nebulae (where the catalogued nebulae are) ──────────────────────────────
 // Not the same thing as a hand-authored region: these are the nebulae themselves.
