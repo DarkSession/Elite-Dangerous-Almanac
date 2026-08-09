@@ -704,7 +704,6 @@
     {
       "symbol": "Hpt_CrimeScanner_Size0_Class5",
       "name": "Kill Warrant Scanner",
-      "maximumRange": 4000,
       "scannerRange": 4000,
       "scanAngle": 15,
       "scanTime": 10

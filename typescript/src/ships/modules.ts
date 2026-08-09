@@ -506,11 +506,9 @@ export interface OutfittingModule {
      * "typical sensor range" the outfitting panel shows in kilometres and the journal
      * reports in metres, not the suite's absolute detection ceiling.
      *
-     * The scanner records also carry {@link OutfittingModule.maximumRange}, which is the
-     * same distance from the same upstream field; the sensor suites carry only this one.
-     * Both follow a `ScannerRange` modifier, so an engineered scanner reads the same
-     * either way. What the duplication costs:
-     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/66
+     * This is the sole distance field on utility scanners and sensor suites. A journal
+     * may spell its modifier `ScannerRange` or `Range`; both labels resolve here. Weapon
+     * distance is the separate {@link OutfittingModule.maximumRange} field.
      */
     readonly scannerRange?: number;
     /**
@@ -623,7 +621,10 @@ export interface OutfittingModule {
      * `min(1, armourPiercing / hardness)` against a hull of that {@link Ship.hardness}.
      */
     readonly armourPiercing?: number;
-    /** Maximum range, in metres — beyond it the weapon does nothing. */
+    /**
+     * Maximum effective range, in metres. A weapon does no damage beyond it; on a
+     * non-scanner utility module, it is the effect's reach.
+     */
     readonly maximumRange?: number;
     /** Range at which damage starts to drop off, in metres. */
     readonly falloffRange?: number;

@@ -338,8 +338,9 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   `roundspershot`→`roundsPerShot`, `fireint`→`burstInterval`, `burst`→`burstRounds`,
   `burstrof`→`burstRateOfFire`, `charge`→`chargeTime`, `clip`→`clipSize`,
   `ammo`→`ammoMaximum`, `reload`→`reloadTime`, `distdraw`→`distributorDraw`,
-  `thermload`→`thermalLoad`, `piercing`→`armourPiercing`, `range`→`maximumRange`,
-  `falloff`→`falloffRange`, `shotspeed`→`shotSpeed`, `jitter`).
+  `thermload`→`thermalLoad`, `piercing`→`armourPiercing`, weapon/non-scanner utility
+  `range`→`maximumRange`, scanner `range`→`scannerRange`, `falloff`→`falloffRange`,
+  `shotspeed`→`shotSpeed`, `jitter`).
   - **`rateOfFire` is derived, not copied.** Upstream stores the fire interval; the
     journal (and this catalogue) report the combined shots per second, so it is
     computed as `burst / ((burst − 1) / burstRateOfFire + fireInterval + chargeTime)` —
@@ -347,10 +348,12 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     Continuous-fire weapons (beam and mining lasers) have no fire interval upstream and
     so carry no `rateOfFire`; their `damage`, `distributorDraw` and `thermalLoad` are
     already per second.
-  - **`maximumRange`/`falloffRange` are limited to the hardpoint and utility
-    categories.** Upstream's `range` is metres for anything hardpoint-mounted but
-    kilometres for sensors and its own units for limpet controllers, so the range
-    fields are only carried where the unit is unambiguous.
+  - **`maximumRange`/`falloffRange` describe weapons and non-scanner utility
+    effects.** A utility scanner's distance lives only in `scannerRange`; it is not
+    also exposed as a weapon range. Upstream's `range` is metres for anything
+    hardpoint-mounted but kilometres for sensors and its own units for limpet
+    controllers, so a value is carried only under the field whose meaning and unit are
+    unambiguous.
   - **Two upstream zeroes are dropped rather than copied:** `roundspershot: 0` on two
     Shock Cannon variants (Coriolis itself reads the field as `roundspershot || 1`; a
     zero would zero their DPS) and `burstrof: 0` on the Mining Volley Repeater, whose
@@ -422,15 +425,13 @@ the corpus-wide claim in `builds.test.ts`.
   Scanning Radius roll. `interdictorRange` is **seconds to intercept**, the unit the
   game measures a supercruise separation in, not a distance. `refuelRate` is tonnes per
   second (EDSY `scooprate`); coriolis's `rate` is the same figure in kilograms.
-- **Two stats duplicate a number the record already has, deliberately.** A utility
-  scanner's `scannerRange` is the same distance as its `maximumRange`, and a shield cell
-  bank's `shieldBankHeat` the same figure as its `thermalLoad` — one upstream field each,
-  read under two names. Dropping either would change what a consumer reads, and dropping
-  the new name would leave the sensor suites (which have no `maximumRange`) and the Pulse
-  Wave Analyser (which has none either) modelled differently from their siblings. Both
-  pairs are kept in step instead: `ScannerRange` and `ShieldBankHeat` each map to both
-  fields in `module-stat-labels.ts`, so an engineered scanner or cell bank reads the same
-  whichever field is asked.
+- **A shield cell bank duplicates its heat under two stat names deliberately.** Its
+  `shieldBankHeat` is the same figure as its `thermalLoad` — one upstream field read
+  under two names. `ShieldBankHeat` maps to both fields in `module-stat-labels.ts`, so
+  an engineered cell bank reads the same whichever field is asked. Scanner distance
+  has one catalogue home instead: every utility scanner and sensor suite carries
+  `scannerRange`, while `maximumRange` is reserved for weapons and non-scanner utility
+  effects.
 - **`EnergyPerRegen` needs no stored value.** All 57 shield generators carry
   `distributorDraw`, and EDSY (`genpwr`) and coriolis (`distdraw`) both confirm it is the
   same stat under the journal's other name; the mapping lives in the label table.
@@ -615,17 +616,16 @@ corrections table below rejects. A hardpoint's reserve ammo is one of the fields
 above lists as unreached, which is why a capture is the source here.
 
 **Two journal spellings reach a field only because a capture spells them that way.**
-`Range` is a sensor suite's `scannerRange` — a weapon's `maximumRange` under the same
-label, resolved per record as `ScannerRange` already is — and `DamageFalloffRange` is the
+`Range` is a scanner's `scannerRange` — a weapon's `maximumRange` under the same label,
+resolved per record — and `DamageFalloffRange` is the
 `falloffRange` a blueprint recipe calls `FalloffRange`, the same pairing as
 `ProbeRadius` / `DSS_PatchRadius`. The fourteen readings behind the two agree. Both also
 reach a consumer: a sensor's engineered range resolves to the field a sensor actually
 carries, so `effectiveStats` reports the 13 440 m
 `journal-federation-corvette-beams.json` states rather than writing it to a
-`maximumRange` no sensor has. A utility scanner, unlike a suite, carries both fields
-holding the same distance, and both follow either spelling — what that duplication costs
-is <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/66>. That read-back is
-swept rather than sampled. Wherever a
+`maximumRange` no scanner has. The same resolution covers utility scanners, whose
+distance also lives only in `scannerRange`. That read-back is swept rather than sampled.
+Wherever a
 capture spells a stat by something other than the field's own first name, or names a
 field the record does not carry — the two shapes a wrong resolution hides in — the result
 is pinned at a field written out by hand rather than resolved: **39** of them, one per

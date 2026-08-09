@@ -1260,22 +1260,17 @@ test('engineering accepts a sourced zero and refuses an unrepresentable stat', (
     );
 });
 
-test('a scanner’s two range fields move together, under either label', () => {
-    // A utility scanner keeps its scan distance in two fields, `scannerRange` and
-    // `maximumRange`, from the same upstream figure; a sensor suite keeps only the first.
-    // So one stat has two catalogue homes on 18 records, and two journal spellings on top:
-    // a recipe says `ScannerRange`, a journal says `Range`. A reader that took the field
-    // the other label resolves to would get the base back on an engineered scanner, which
-    // is why both fields have to follow either label — and why the duplication is worth
-    // removing: https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/66
-    const twoFields = ALL_MODULES.filter(
-        (record) =>
-            typeof record.scannerRange === 'number' && typeof record.maximumRange === 'number',
+test('a scanner has one range field and either journal label moves it', () => {
+    // Utility scanners and sensor suites keep their distance only in `scannerRange`.
+    // A recipe says `ScannerRange` while a journal may say `Range`; both must reach that
+    // field without creating the separate `maximumRange` field.
+    assert.equal(
+        ALL_MODULES.filter(
+            (record) =>
+                typeof record.scannerRange === 'number' && typeof record.maximumRange === 'number',
+        ).length,
+        0,
     );
-    assert.equal(twoFields.length, 18);
-    for (const record of twoFields) {
-        assert.equal(record.scannerRange, record.maximumRange, record.symbol);
-    }
 
     // The recipe's own spelling, rolled rather than hand-written.
     const build = ShipLoadout.empty('Anaconda')
@@ -1285,7 +1280,7 @@ test('a scanner’s two range fields move together, under either label', () => {
     const range = rolled.Engineering!.Modifiers!.find((m) => m.Label === 'ScannerRange')!.Value!;
     assert.ok(range > 4000);
     assert.equal(rolled.effectiveStats?.scannerRange, range);
-    assert.equal(rolled.effectiveStats?.maximumRange, range);
+    assert.equal(rolled.effectiveStats?.maximumRange, undefined);
 
     // And the journal's spelling of the same modifier, read back through a `Loadout` event.
     const event: LoadoutEvent = JSON.parse(JSON.stringify(build.toLoadoutEvent()));
@@ -1294,7 +1289,7 @@ test('a scanner’s two range fields move together, under either label', () => {
     }
     const asJournal = ShipLoadout.fromLoadout(event).getFittedModule('TinyHardpoint1')!;
     assert.equal(asJournal.effectiveStats?.scannerRange, range);
-    assert.equal(asJournal.effectiveStats?.maximumRange, range);
+    assert.equal(asJournal.effectiveStats?.maximumRange, undefined);
 });
 
 test('a wake scanner engineered Long Range gets the scanner recipe, not the sensor suite one', () => {

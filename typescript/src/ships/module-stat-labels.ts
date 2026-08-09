@@ -119,11 +119,9 @@ export const STAT_LABELS: readonly StatLabel[] = [
     { label: 'ShieldBankDuration', field: 'shieldBankDuration' },
 
     // ── Scanning, and the FSD interdictor ───────────────────────────────────
-    // `ScannerRange` names the sensor suites' own field first and falls back to the
-    // range field the utility scanners already carried; `baseStats` takes whichever the
-    // record has, and `fieldForLabel` can be handed the record to pick the same one.
+    // Utility scanners and sensor suites share one range field. The weapon range below
+    // remains separate even though a journal can spell either kind `Range`.
     { label: 'ScannerRange', field: 'scannerRange' },
-    { label: 'ScannerRange', field: 'maximumRange' },
     { label: 'SensorTargetScanAngle', field: 'scanAngle' },
     // The utility scanners' scan cone is the same stat under the journal's other name.
     { label: 'MaxAngle', field: 'scanAngle' },
@@ -199,10 +197,8 @@ export const STAT_LABELS: readonly StatLabel[] = [
     { label: 'DistributorDraw', field: 'distributorDraw' },
     { label: 'ThermalLoad', field: 'thermalLoad' },
     { label: 'ArmourPenetration', field: 'armourPiercing' },
-    // `Range` is a weapon's maximum range, and — on a sensor suite, which carries no such
-    // field — the journal's own spelling of `ScannerRange`. `Sensor_LongRange` is reported
-    // under this label, so a record resolves it to whichever field it holds, exactly as
-    // `ScannerRange` above resolves to whichever of its two the record holds.
+    // `Range` is a weapon's maximum range and the journal's alternate spelling of a
+    // scanner's `ScannerRange`. A record resolves it to the field that family carries.
     { label: 'Range', field: 'maximumRange' },
     { label: 'Range', field: 'scannerRange' },
     { label: 'MaximumRange', field: 'maximumRange' },
@@ -253,10 +249,10 @@ export const STAT_LABELS: readonly StatLabel[] = [
 ];
 
 /**
- * Every entry for a label, in declaration order. Usually one; `ScannerRange`, `Range` and
- * `ShieldBankHeat` have two each, because the modules that carry those stats keep them in
- * different catalogue fields. The first entry is the label's own answer for everything
- * that does not depend on which module is being asked about.
+ * Every entry for a label, in declaration order. Usually one; `Range` and
+ * `ShieldBankHeat` have two each, because the modules that carry those stats keep them
+ * in different catalogue fields. The first entry is the label's own answer for
+ * everything that does not depend on which module is being asked about.
  */
 const BY_LABEL: ReadonlyMap<string, readonly StatLabel[]> = (() => {
     const entries = new Map<string, StatLabel[]>();
@@ -324,8 +320,8 @@ export function isUnknown(stats: OutfittingModule, field: keyof OutfittingModule
  *
  * @param label - The journal Modifier Label.
  * @param stats - The record the label is being resolved against, when there is one.
- * A label that maps to two fields — `ScannerRange`, `Range`, `ShieldBankHeat` — answers
- * with whichever of them the record carries; without a record it answers with the first.
+ * A label that maps to two fields — `Range` or `ShieldBankHeat` — answers with whichever
+ * of them the record carries; without a record it answers with the first.
  *
  * @internal
  */

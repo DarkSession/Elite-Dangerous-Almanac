@@ -704,7 +704,7 @@ test('the base stats a recipe scales come back in the journal spelling for the f
     // stat arrives under is a fact about the module's family, not about the stat. A
     // shield generator's distributor draw is `EnergyPerRegen`; a cell bank's heat is
     // `ShieldBankHeat` as well as `ThermalLoad`; a utility scanner's range is
-    // `ScannerRange` as well as `MaximumRange`.
+    // `ScannerRange` as well as `Range`.
     const generator = baseStats(
         getModuleBySymbol('Int_ShieldGenerator_Size3_Class5', ALL_MODULES)!,
     );
@@ -725,6 +725,7 @@ test('the base stats a recipe scales come back in the journal spelling for the f
     );
     const scanner = baseStats(getModuleBySymbol('Hpt_CrimeScanner_Size0_Class5', ALL_MODULES)!);
     assert.equal(scanner['ScannerRange'], 4000);
+    assert.equal(scanner['Range'], 4000);
     assert.equal(scanner['SensorTargetScanAngle'], 15);
     assert.equal(scanner['ScannerTimeToScan'], 10);
 
