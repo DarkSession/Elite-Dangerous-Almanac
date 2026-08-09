@@ -89,6 +89,43 @@ test('engineering survives the round trip intact', () => {
     assert.deepEqual(exported.Engineering, original.Engineering);
 });
 
+test('journal-only metadata is excluded from a loadout and SLEF round trip', () => {
+    const { topLevel, engineering } = fixture.journalFieldExclusions;
+    const sourceTop = viperJournal as unknown as Record<string, unknown>;
+    const viperRoundTrip = parseSlef(ShipLoadout.fromSlef(viperJournal).toSlefString())[0]!
+        .data as unknown as Record<string, unknown>;
+
+    for (const key of topLevel) {
+        assert.ok(Object.hasOwn(sourceTop, key), `real capture does not carry ${key}`);
+        assert.ok(!Object.hasOwn(viperRoundTrip, key), `${key} survived the round trip`);
+    }
+
+    const sourceModule = kraitJournal.Modules.find((module) => module.Engineering !== undefined)!;
+    const sourceEngineering = sourceModule.Engineering as unknown as Record<string, unknown>;
+    const kraitBuild = ShipLoadout.fromSlef(kraitJournal);
+    const fittedEngineering = kraitBuild.getFittedModule(sourceModule.Slot)!
+        .engineering as unknown as Record<string, unknown>;
+    const kraitRoundTrip = parseSlef(kraitBuild.toSlefString())[0]!.data.Modules.find(
+        (module) => module.Slot === sourceModule.Slot,
+    )!;
+    const roundTripEngineering = kraitRoundTrip.Engineering as unknown as Record<string, unknown>;
+
+    for (const key of engineering) {
+        assert.ok(Object.hasOwn(sourceEngineering, key), `real capture does not carry ${key}`);
+        assert.ok(!Object.hasOwn(fittedEngineering, key), `Engineering.${key} entered the build`);
+        assert.ok(
+            !Object.hasOwn(roundTripEngineering, key),
+            `Engineering.${key} survived the round trip`,
+        );
+    }
+
+    const durableKeys = Object.keys(sourceEngineering).filter((key) => !engineering.includes(key));
+    assert.deepEqual(Object.keys(roundTripEngineering), durableKeys);
+    for (const key of durableKeys) {
+        assert.deepEqual(roundTripEngineering[key], sourceEngineering[key], key);
+    }
+});
+
 // ── The recomputed figures reproduce the game's own ──────────────────────────
 
 test(`the export emits ${fixture.deepBlack.topLevelKeys.length} top-level keys, in journal order`, () => {
