@@ -15,9 +15,10 @@ import type { LoadoutModule, ModuleEngineering } from './slef.js';
  * A live handle on the module fitted in one slot, as returned by
  * {@link ShipLoadout.getFittedModule} and `LoadoutSlot.module`.
  *
- * Journal fields are available under both camel-case and original journal
- * spellings. The handle remains valid across its own engineering changes; once
- * the slot is emptied or replaced, access throws instead of returning stale data.
+ * Journal fields use the library's camel-case names. The original journal record is
+ * available from {@link FittedModule.raw}. The handle remains valid across its own
+ * engineering changes; once the slot is emptied or replaced, access throws instead of
+ * returning stale data.
  *
  * @example
  * ```ts
@@ -78,26 +79,14 @@ export class FittedModule {
         return this.#slotKey;
     }
 
-    /** Journal-field alias of {@link slot}. */
-    get Slot(): string {
-        return this.#slotKey;
-    }
-
     /**
      * The module's Frontier symbol, e.g. `"Int_Hyperdrive_Size6_Class5"` — the same
      * string {@link getModuleBySymbol} takes and `OutfittingModule.symbol` carries.
      *
-     * @remarks
-     * The journal calls this field `Item`, and {@link FittedModule.Item} is that
-     * spelling; this one is named for what the rest of the library calls it, so a
-     * handle and a catalogue record answer to the same word.
+     * The underlying journal record calls this field `Item`; use {@link raw} when that
+     * shape is required.
      */
     get symbol(): string {
-        return this.#raw().Item;
-    }
-
-    /** Journal-spelling alias of {@link symbol}. */
-    get Item(): string {
         return this.#raw().Item;
     }
 
@@ -106,18 +95,8 @@ export class FittedModule {
         return this.#raw().On;
     }
 
-    /** Journal-spelling alias of {@link on}. */
-    get On(): boolean | undefined {
-        return this.#raw().On;
-    }
-
     /** Power-priority group, or `undefined` when unspecified. */
     get priority(): number | undefined {
-        return this.#raw().Priority;
-    }
-
-    /** Journal-spelling alias of {@link priority}. */
-    get Priority(): number | undefined {
         return this.#raw().Priority;
     }
 
@@ -126,28 +105,13 @@ export class FittedModule {
         return this.#raw().Health;
     }
 
-    /** Journal-spelling alias of {@link health}. */
-    get Health(): number | undefined {
-        return this.#raw().Health;
-    }
-
     /** Credit value, or `undefined` when unspecified. */
     get value(): number | undefined {
         return this.#raw().Value;
     }
 
-    /** Journal-spelling alias of {@link value}. */
-    get Value(): number | undefined {
-        return this.#raw().Value;
-    }
-
     /** Applied engineering, or `undefined` when the module is stock. */
     get engineering(): ModuleEngineering | undefined {
-        return this.#raw().Engineering;
-    }
-
-    /** Journal-spelling alias of {@link engineering}. */
-    get Engineering(): ModuleEngineering | undefined {
         return this.#raw().Engineering;
     }
 
@@ -252,8 +216,7 @@ export class FittedModule {
      * Switch this module on or off.
      *
      * @param on - `true` to power it, `false` to switch it off.
-     * @returns This handle for chaining — it stays valid, unlike after
-     * {@link applyBlueprint}, because the module record is patched rather than replaced.
+     * @returns This live handle for chaining.
      */
     setEnabled(on: boolean): this {
         this.#raw();

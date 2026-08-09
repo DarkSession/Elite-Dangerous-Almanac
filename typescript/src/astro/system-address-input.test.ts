@@ -39,8 +39,7 @@ test('names the offending value so the failure is diagnosable', () => {
 });
 
 test('every address entry point takes a journal number', () => {
-    // A journal event parsed with JSON.parse yields a plain number; that used to
-    // fail with an opaque "Cannot mix BigInt and other types".
+    // A journal event parsed with JSON.parse yields a plain number.
     const journalAddress = 3309179996515;
 
     assert.equal(StarSystem.fromSystemAddress(journalAddress).name, 'Synuefe EN-H d11-96');

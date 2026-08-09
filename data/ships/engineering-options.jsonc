@@ -40,7 +40,7 @@
  * half of each pair also takes **no experimental effect**: Anti-Guardian Zone Resistance
  * is its whole menu and that recipe has no experimental slot, so its `experimentals` are
  * empty where its ordinary twin's are not. The same holds for the other Guardian module
- * families — FSD boosters, module and shield reinforcement — which were already empty.
+ * families — FSD boosters, module and shield reinforcement — whose menus are empty.
  * Guardian *weapons* are the same shape: `guardianGauss`, `guardianPlasma` and
  * `guardianShard` list that one recipe too. An ordinary weapon recipe on a Guardian weapon
  * is always a **purchase**, never an engineer roll — see §Engineering options in
@@ -88,12 +88,12 @@
  * get the exact set. Modules absent from `exclusions` take their whole group's list.
  *
  * Only modules the game lets you engineer appear at all; everything else is absent. That
- * is 1028 of the 1197 modules. The other 169 are the families no blueprint reaches — fuel
+ * is 1028 of the 1193 modules. The other 165 are the families no blueprint reaches — fuel
  * tanks, passenger cabins, the repair, recon, research, decontamination and multi-limpet
  * controllers, meta-alloy hull reinforcement, the plain module reinforcement packages,
  * the Pulse Wave Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons,
  * fighter and vehicle hangars, docking computers and Supercruise Assist, the module
- * stabilisers, the planetary approach suites, the discovery scanners, the cargo hatch and
+ * stabilisers, the planetary approach suites, the cargo hatch and
  * the AX utility modules — plus the individual modules upstream denies every blueprint:
  * every anti-xeno multi-cannon but the two gimballed, both Enhanced anti-xeno missile
  * racks and every turreted plain one, five of the seven mining tools, the remote-release

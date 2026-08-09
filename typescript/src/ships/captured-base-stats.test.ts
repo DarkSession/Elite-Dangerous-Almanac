@@ -82,7 +82,7 @@ function statedBases(loadouts: readonly LoadoutEvent[]): StatedBase[] {
             if (modifiers.length === 0) continue;
             // The catalogue's own spelling, so the fixture reads as the catalogue does —
             // a journal lower-cases every `Item`. Looked up once per module, not once per
-            // modifier: the catalogue scan is over 1197 records.
+            // modifier: the catalogue scan covers every module record.
             const record = getModuleBySymbol(fitted.Item, ALL_MODULES);
             assert.ok(record, `no catalogue record for ${fitted.Item}`);
             for (const modifier of modifiers) {
@@ -338,7 +338,7 @@ test('captured damage-type conversions reach effective stats and weapon metrics'
         const build = ShipLoadout.fromLoadout(capture.loadouts[0]);
         const fitted = build.getFittedModule(slot);
         assert.ok(fitted, `${file}: no module in ${slot}`);
-        assert.equal(fitted.Engineering?.ExperimentalEffect, experimental);
+        assert.equal(fitted.engineering?.ExperimentalEffect, experimental);
         assert.deepEqual(fitted.effectiveStats?.damageDistribution, effective);
 
         const weapon = build.weaponMetrics().weapons.find((entry) => entry.slot === slot);

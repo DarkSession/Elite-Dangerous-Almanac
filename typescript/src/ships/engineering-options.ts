@@ -8,13 +8,13 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1028 of the 1197 modules — every module upstream allows a recipe
- * on. The other 169 take no engineering: whole families (fuel tanks, passenger cabins,
+ * The catalogue groups 1028 of the 1193 modules — every module upstream allows a recipe
+ * on. The other 165 take no engineering: whole families (fuel tanks, passenger cabins,
  * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
  * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
  * Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
- * Supercruise Assist, the module stabilisers, the planetary approach suites, the
- * discovery scanners, the cargo hatch and the AX utility modules), plus the individual
+ * Supercruise Assist, the module stabilisers, the planetary approach suites, the cargo
+ * hatch and the AX utility modules), plus the individual
  * modules upstream denies every blueprint — every anti-xeno multi-cannon but the two
  * gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, five of
  * the seven mining tools, the remote-release launchers and the Mk II Plasma Shock
@@ -34,26 +34,22 @@
  * on a Guardian weapon is always a purchase rather than an engineer roll —
  * `ships/pre-engineered` carries those.)
  *
- * Its own module (and data file) so a consumer who only reads it pays for nothing else —
- * 62 KB minified, 7 KB gzipped, of which the module→group map is most of the weight.
+ * It has its own module and data file so a consumer who only reads menus pays for
+ * nothing else.
  * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, neither
  * of which this module pulls in. That is why reading a journal `BlueprintName` against a
  * module — `resolveBlueprintForModule`, which needs a menu *and* the recipes to see their
- * journal spellings — lives in `ships/blueprint-journal` rather than here: it would take
- * this module from 63 KB to 285 KB for every consumer who only wanted a menu.
+ * journal spellings — lives in `ships/blueprint-journal` rather than here.
  *
  * **This catalogue is also the gate.** {@link ShipLoadout.applyBlueprint} refuses a recipe
  * this module does not offer for that module, so "what can I put on this?" and "may I put
  * this on it?" cannot answer differently — they read the same menu. A `ShipLoadout`
- * therefore carries this module's weight whether or not the consumer calls it: its import
- * graph is 696 KB, 82 KB gzipped. When this catalogue landed it took that graph from
- * 624 KB to 709 KB, 74 KB to 82 KB gzipped; both ends have shrunk by about 13 KB since,
- * the module records having stopped repeating their category. That is a
- * deliberate trade, taken because the second hand-maintained map of the same fact drifted
- * from this one — §Engineering compatibility in
+ * therefore carries this module's weight whether or not the consumer calls it. This is a
+ * deliberate tradeoff: the editor and the menu use one catalogue, so their answers cannot
+ * drift. §Engineering compatibility in
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
- * records what it cost. The gate
- * makes three accommodations beyond the menu, in the order it applies them: a journal id
+ * records the validation. The gate makes three accommodations beyond the menu, in the
+ * order it applies them: a journal id
  * the game writes for two different recipes, which `ships/blueprint-journal` settles by
  * reading this menu against `Blueprint.journalName`; an Operations key belonging to a module
  * sold already engineered, which no menu lists — 21 of the 27 Operations keys — and
@@ -112,7 +108,7 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"no source gives this module a recipe"**, which for the 169 ungrouped
+ * `null` means **"no source gives this module a recipe"**, which for the 165 ungrouped
  * modules is the same as "cannot be engineered" — the families and the individually
  * denied modules listed in the module overview above. It stays worded as the catalogue's
  * answer rather than the game's because that is what it can honestly claim: a module

@@ -168,12 +168,8 @@ test('every declared blueprint, grade and experimental effect is in the catalogu
 });
 
 test('every declared engineering entry resolves against the base stats it needs', () => {
-    // The corpus is the measure of whether a real build can be engineered at all. 405 of
-    // its declared entries used to be refused for a base stat no record carried — a
-    // thruster's heat rate, a scanner's range, a cell bank's reinforcement; sourcing
-    // those closed it, and this is what says the hole stays shut. It checks the base
-    // stats only, which is the gap that was fixed; whether the module is *offered* the
-    // recipe at all is the next test's business.
+    // Check every corpus entry against the base stats needed to calculate its recipe.
+    // Whether the module is offered the recipe is tested separately.
     let checked = 0;
     for (const build of builds) {
         for (const entry of build.modules) {

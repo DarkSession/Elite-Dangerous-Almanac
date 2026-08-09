@@ -305,16 +305,6 @@ function isWeapon(stats: OutfittingModule): boolean {
 }
 
 /**
- * Whether a record's silence about a field means "nobody publishes this", rather than
- * "the module has no such stat" — see {@link OutfittingModule.unknownStats}.
- *
- * @internal
- */
-export function isUnknown(stats: OutfittingModule, field: keyof OutfittingModule): boolean {
-    return stats.unknownStats?.includes(field) === true;
-}
-
-/**
  * The catalogue field a journal modifier label writes back to, or `null` when the
  * catalogue models no field for that label at all.
  *

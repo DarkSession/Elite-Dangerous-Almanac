@@ -83,8 +83,8 @@ in the doc comment of each ported module, and in long form in the domain
 - **Engineering materials** — raw, manufactured and encoded material names, ids,
   symbols, grades and groups, from [EDCD FDevIDs](https://github.com/EDCD/FDevIDs)
   (`material.csv`), the community-maintained registry of Frontier's internal ids.
-  FDevIDs states no explicit licence; consult the repository terms. The newest
-  Thargoid caustic/Titan materials it does not yet list are supplemented from
+  FDevIDs states no explicit licence; consult the repository terms. Thargoid
+  caustic/Titan materials absent from the pinned source are supplemented from
   [INARA](https://inara.cz/elite/components/) and keyed by their journal symbols.
 - **Odyssey micro resources** — on-foot component, data, consumable and item
   names, symbols and categories, from
@@ -185,12 +185,6 @@ in the doc comment of each ported module, and in long form in the domain
   figure. [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden, **CC BY-NC 4.0**)
   reads the same, against [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)'s 3
   (**MIT** for its code; the values are game data).
-- **That `special_feedback_cascade` has been withdrawn upstream** — recorded in
-  `data/ships/SOURCES.md` rather than in a payload, from
-  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
-  `modifications/specials.json`, which names it "Feedback cascade (Legacy)" (**MIT** for
-  its code), and from [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden,
-  **CC BY-NC 4.0**), whose row for it is commented out.
 - **The journal spelling of the two scanner blueprints** — the `journalName` on
   `Scanner_LongRange` and `Scanner_WideAngle` in `data/ships/blueprints.jsonc`, recording
   that the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` even though those
@@ -246,16 +240,13 @@ in the doc comment of each ported module, and in long form in the domain
   carries them for nearly every outfitting module. The remainder — the size-8 frame
   shift drives and the `*_free` starter fittings, which no third-party registry lists —
   were observed in-game. In-game verification covers all
-  module identities and the numeric values on 956 non-armour modules, including the exact
+  module identities and the numeric values on 952 non-armour modules, including the exact
   corrections to structural, shield, reinforcement, shield-cell, scoop and weapon fields,
   including exact damage components and projectile boundary parameters.
   In every case the values are
   **Elite Dangerous game data, property of Frontier Developments plc**; see the notice
   below. `data/ships/SOURCES.md` has the per-field coverage split and the fields that
   remain unavailable or semantically unclassified after in-game verification.
-  Where neither registry nor panel yielded a figure, the module record says so itself,
-  in its `unknownStats` field. That classification is this repository's own
-  reconciliation work — no third-party figure is reproduced by it.
 - **The base stats engineering blueprints modify** — thruster and frame shift drive heat
   rates, fuel scoop rate, the shield cell bank stats (reinforcement, heat, spin-up,
   duration), scanner range, scan angle and scan time on both the sensor suites and the
@@ -272,8 +263,8 @@ in the doc comment of each ported module, and in long form in the domain
   field-by-field joins, the units each source uses, and the handful of figures derived
   from a family rule rather than read from a registry.
 
-- **Ground-truth ship builds (test fixtures, not shipped)** — fifteen real builds used to
-  check the loadout maths against something other than itself.
+- **Ground-truth ship builds (test fixtures, not shipped)** — fifteen real builds that
+  check the loadout maths against external captures.
   `fixtures/ships/slef-the-deep-black.json` is a real
   [EDSY](https://edsy.org/) export (taleden, **CC BY-NC 4.0**).
   `fixtures/ships/journal-krait-phantom.json` is a real Frontier journal `Loadout`
@@ -304,10 +295,7 @@ in the doc comment of each ported module, and in long form in the domain
   [Inara](https://inara.cz/) SLEF exports, contributed by the repository owner from their
   own commander's fleet. The Lynx Highliner and the Panther Clipper Mk II are what a
   restricted mount's rules are checked against, and the Cutter is what the omitted-price
-  rule is checked against; the headers of **those three** keep only the producing app and
-  version. The Type-11 predates that scrubbing and still carries the Inara ids it was
-  received with — `data/ships/SOURCES.md` records the difference and that closing it is
-  the owner's call.
+  rule is checked against. Their headers keep only the producing app and version.
   All fifteen are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 

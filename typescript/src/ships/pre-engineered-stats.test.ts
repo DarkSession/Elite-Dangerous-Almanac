@@ -65,7 +65,7 @@ test('a pre-engineered weapon resolves its damage-side stats too', () => {
     assert.equal(fitted.falloffRange, engineered.falloffRange);
     assert.equal(fitted.thermalLoad, engineered.thermalLoad);
     assert.equal(fitted.armourPiercing, engineered.armourPiercing);
-    // Every modifier this variant carries now has a base stat to apply to.
+    // Every modifier this variant carries has a base stat to apply to.
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
 });
 
@@ -152,10 +152,8 @@ test('a variant with no stat block resolves to the base record itself', () => {
 });
 
 test('a reward variant changes a carried stat unless it only touches uncarried ones', () => {
-    // Every reward variant now moves a stat the catalogues carry. The last hold-out was
-    // the Detailed Surface Scanner, whose variant only touches the probe radius; that is
-    // sourced now, so the set is empty. Pinned rather than dropped: a regression that
-    // stops resolving a variant would put it back, and this says so.
+    // Every reward variant moves a stat the catalogues carry. Pin the empty set so a
+    // variant that stops resolving is reported explicitly.
     const noOps: string[] = [];
     for (const variant of PRE_ENGINEERED_MODULES) {
         if (variant.acquisition === 'mercenary') continue;

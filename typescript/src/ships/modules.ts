@@ -6,7 +6,7 @@
  * together — and the functions that find one ({@link getModuleBySymbol},
  * {@link getModulesByName}, {@link getModulesForShip}).
  *
- * **Every lookup searches all 1197 modules by default.** A journal `Item` string
+ * **Every lookup searches all 1193 modules by default.** A journal `Item` string
  * does not tell you which outfitting category it belongs to, so needing to know that
  * before you could look it up was backwards:
  *
@@ -21,10 +21,10 @@
  * | Module | Export | Entries |
  * | --- | --- | --- |
  * | `./modules-core` | `CORE_MODULES` | 521 |
- * | `./modules-internal` | `INTERNAL_MODULES` | 482 |
+ * | `./modules-internal` | `INTERNAL_MODULES` | 478 |
  * | `./modules-hardpoint` | `HARDPOINT_MODULES` | 159 |
  * | `./modules-utility` | `UTILITY_MODULES` | 35 |
- * | `./modules-all` | `ALL_MODULES` | 1197 (the default) |
+ * | `./modules-all` | `ALL_MODULES` | 1193 (the default) |
  *
  * Those four are for **listing** a category — an outfitting screen's hardpoint tab.
  * They make poor narrowing arguments: no module symbol or display name is shared
@@ -333,32 +333,6 @@ export interface OutfittingModule {
      * ```
      */
     readonly restrictedToSlot?: SlotRestriction;
-    /**
-     * The stat fields this record omits because the value is **unknown**, rather than
-     * because the module has no such stat.
-     *
-     * @remarks
-     * Every stat below is optional, and a missing one reads as `undefined` either way:
-     * a cargo rack draws no power, while a withdrawn Discovery Scanner draws power
-     * nobody publishes. Only the second kind is named here, so a calculation can tell
-     * "nothing to add" from "cannot be answered" instead of adding up a zero it cannot
-     * justify — {@link isStatUnknown} is the predicate.
-     *
-     * Present on four records today. A field named here is always absent from this
-     * record, so sourcing a value means deleting its name here in the same change.
-     * Read its absence as "the module has no such stat" — that is what an undeclared
-     * absence means, and the engineering calculator relies on it: a recipe that scales a
-     * stat the module does not have leaves it alone, while one that scales a stat named
-     * here is refused, because nothing can be scaled from an unknown.
-     *
-     * @example
-     * ```ts
-     * const scanner = getModuleBySymbol('Int_StellarBodyDiscoveryScanner_Advanced');
-     * scanner?.powerDraw;    // -> undefined
-     * scanner?.unknownStats; // -> ['powerDraw'] — don't budget it as 0 MW
-     * ```
-     */
-    readonly unknownStats?: readonly ModuleStatField[];
     /** Mass, in tonnes. */
     readonly mass?: number;
     /** Integrity (hit points against module damage). */
@@ -658,21 +632,12 @@ export interface OutfittingModule {
 }
 
 /**
- * A field of an {@link OutfittingModule} record — what
- * {@link OutfittingModule.unknownStats} names and {@link isStatUnknown} takes.
- *
- * The whole record shape, not a stats-only subset: identity fields (`symbol`, `name`,
- * `category`) are never unknown, so asking about one simply answers `false`.
- */
-export type ModuleStatField = keyof OutfittingModule;
-
-/**
  * Look up a module by its internal symbol, case-insensitively.
  *
  * @param symbol - The internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`.
  * Leading/trailing whitespace and case are ignored, so the journal's lower-cased
  * form resolves too.
- * @param modules - Optional subset to search instead of all 1197 modules —
+ * @param modules - Optional subset to search instead of all 1193 modules —
  * `CORE_MODULES`, `INTERNAL_MODULES`, `HARDPOINT_MODULES`, `UTILITY_MODULES`, or any
  * array you have filtered yourself. Omit it unless you specifically want to exclude
  * the other categories; a symbol is unique across all four.

@@ -1,1598 +1,198 @@
 # Elite Dangerous Almanac
 
-Ready-to-go static data and calculations for Elite Dangerous community apps and
-researchers. Batteries-included, tree-shakeable, and validated against
-language-neutral fixtures so every language port behaves identically.
+Static Elite Dangerous data and calculations for community applications and
+research. The repository currently provides an ESM TypeScript package backed by
+shared JSONC data, JSON fixtures and JSON Schemas.
 
-The library is a monorepo with one folder per language implementation over shared
-data. **TypeScript** is available today (`typescript/`); Python is planned.
-
-## What's in it
-
-Four feature areas, each its own import subpath, each with leaf modules so you
-bundle only the catalogues you touch:
-
-| Feature area                         | What it answers                                                                                                                         | Start with                       |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| [`astro`](#quick-start)              | System name ⇄ `id64`, sectors, galactic regions, 5835 nebulae, permit locks                                                             | `StarSystem`                     |
-| [`ships`](#ships-and-outfitting)     | 48 hulls and ~1200 modules with stats, slots and prices, SLEF builds, jump range, power, shields, armour, weapon DPS, engineering costs | `ShipLoadout`, `getShipBySymbol` |
-| [`materials`](#materials)            | 146 engineering materials (grade = rarity) and 196 Odyssey micro resources                                                              | `getMaterialByName`              |
-| [`commodities`](#market-commodities) | 257 standard and 142 rare market goods                                                                                                  | `getCommodityBySymbol`           |
-
-Also here: [the four kinds of "region"](#the-four-kinds-of-region) (the one thing
-that trips everyone up), [nebulae](#nebulae), [permit
-locks](#permit-locks), [ship and module stats](#ship-and-module-stats), [SLEF and
-jump range](#ship-builds-jump-range-the-journal-and-slef), [build editing and
-engineering](#building-and-engineering-a-loadout), [data
-freshness](#data-freshness), [attributions](#attributions) and
-[licensing](#license).
-
-## Install (TypeScript)
+## Install
 
 ```bash
 npm install @elite-dangerous-almanac/core
 ```
 
-Licensing note: the package bundles game and community data under
-source-specific terms, including non-commercial terms. See [License](#license)
-before redistribution or commercial use.
+The package supports Node.js 18+ and modern browser bundlers. It is ESM-only and
+marks every module as side-effect free.
 
-ESM-only, Node.js 18+, and emitted as ES2022 for modern browser bundlers.
-`"sideEffects": false`. Import the slice you need so bundlers drop the rest. Native
-ESM applications can use leaf subpaths (for example,
-`@elite-dangerous-almanac/core/astro/star-system`) to avoid evaluating unrelated
-data modules:
+The bundled game and community data has source-specific licensing, including
+non-commercial terms. Review [LICENSE](LICENSE) and
+[ATTRIBUTIONS.md](ATTRIBUTIONS.md) before redistribution or commercial use.
+
+## Feature areas
+
+| Import                                      | Provides                                                                                           |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `@elite-dangerous-almanac/core/astro`       | Procedural system names, id64 addresses, sectors, galactic regions, nebulae and permit locks       |
+| `@elite-dangerous-almanac/core/ships`       | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour and weapon metrics |
+| `@elite-dangerous-almanac/core/materials`   | Ship engineering materials and Odyssey micro resources                                             |
+| `@elite-dangerous-almanac/core/commodities` | Standard and rare market commodities                                                               |
+
+Each public module is also available as a leaf subpath. Prefer leaf imports when
+you do not need an entire feature area, especially in native ESM applications:
 
 ```ts
 import { StarSystem } from "@elite-dangerous-almanac/core/astro/star-system";
+import { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
 ```
+
+The root entry point re-exports every feature area and is intended for consumers
+whose bundler performs tree shaking.
 
 ## Quick start
 
-The `astro` feature area covers Elite Dangerous **procedural naming**, the
-**`id64` system address**, the **galactic codex regions** and the **nebula
-catalogues**. Start with `StarSystem` — one immutable handle that composes the
-lower-level naming functions:
+### Systems and regions
 
 ```ts
-// The leaf entry is the cheap one: ~101 KB minified, against ~995 KB for the
-// `/astro` barrel, which re-exports every catalogue in the area. A bundler will
-// tree-shake the barrel down; Node evaluates whatever you import, so prefer leaves.
 import { StarSystem } from "@elite-dangerous-almanac/core/astro/star-system";
 
-// Name  ->  id64
-const sys = StarSystem.fromName("Synuefe EN-H d11-96");
-sys?.systemAddress; // 3309179996515n
-sys?.sectorName; // 'Synuefe'
-sys?.massCode; // 'd'
+const system = StarSystem.fromName("Synuefe EN-H d11-96");
+system?.systemAddress; // 3309179996515n
+system?.sectorName; // "Synuefe"
 
-// id64  ->  name
-StarSystem.fromSystemAddress(3309179996515n).name; // 'Synuefe EN-H d11-96'
-
-// A journal address is a plain number after JSON.parse — that works too,
-// as does a decimal string from a database or URL.
-StarSystem.fromSystemAddress(event.SystemAddress).name;
-
-// id64 + coordinates  ->  the name the game actually shows
-// (a system inside a hand-authored region renders under that region's name)
-const address = 2724879894859n;
-const coords = { x: -80.625, y: -146.65625, z: -343.25 };
-
-StarSystem.fromSystemAddress(address).name; // 'Synuefai XU-M d8-79'   <- procedural
-StarSystem.fromSystemAddress(address, coords).name; // 'Pleiades Sector HR-W d1-79'  <- what the game shows
+StarSystem.fromSystemAddress(3309179996515n).name;
+// "Synuefe EN-H d11-96"
 ```
 
-**Why `coords`?** An `id64` encodes only the boxel, not the exact position, so on
-its own it can't tell whether a system sits inside a hand-authored region
-(Pleiades, Coalsack, …) — as the two lines above show, the same address renders
-under two different names. Pass the coordinates you already have alongside the
-`id64` — from the player journal, [EDSM](https://www.edsm.net) or
-[Spansh](https://spansh.co.uk), in light-years with Sol at the origin — to get the
-name the game displays. Without them you get the procedural name.
-
-**Which types an address accepts.** Every entry point that takes an `id64` —
-`StarSystem.fromSystemAddress`, `decodeSystemAddress`, `findRegionForBoxel`,
-`permitLockedSystemForAddress` — accepts a `bigint`, a `number` (a normally parsed
-journal event), or a decimal string. A number beyond `2^53 - 1` has already been
-rounded by `JSON.parse`, so it is rejected with a `TypeError` rather than resolving
-the wrong system; convert those yourself with `toSystemAddress`. Addresses come
-back as `bigint`, because the fields reach bit 55.
-
-Prefer a single calculation? Skip the class and import the pure function:
-
-```ts
-import { sectorNameFromCoords } from "@elite-dangerous-almanac/core/astro/sector-name";
-import { decodeSystemAddress } from "@elite-dangerous-almanac/core/astro/system-address";
-import {
-  findRegionForBoxel,
-  findRegionAt,
-} from "@elite-dangerous-almanac/core/astro/galactic-region-lookup";
-
-sectorNameFromCoords({ x: 39, y: 30, z: 20 }); // 'Blae Eock' (sector indices, not light-years)
-decodeSystemAddress(3309179996515n); // { sizeClass, sectorCoords, boxelCode, ... }
-findRegionForBoxel(3309179996515n).region?.name; // 'Inner Orion Spur' (a system's codex region)
-findRegionAt({ x: 0, z: 0 })?.name; // 'Inner Orion Spur' (codex region at coords, in light-years)
-```
-
-`findRegionAt` takes a flat `{ x, z }` — the region map is an X/Z projection, so the
-vertical `y` is ignored. Coordinates you already hold as a `GalacticCoords` variable
-pass straight through, but writing the `y` inline (`findRegionAt({ x, y, z })`) is a
-compile error: TypeScript rejects excess properties on fresh object literals.
-
-> **"Modulated" addresses.** Alongside the `id64`, a few community tools and data dumps
-> use a _modulated_ address: the same system, a different bit layout. `decodeSystemAddress`
-> and `StarSystem.fromSystemAddress` are for the ordinary `id64` that the journal, EDSM,
-> EDDN and Spansh all report; reach for the `…Mod…` variants only when a source hands you
-> the modulated form. They routinely exceed `2^53`, so keep them as `bigint`.
-
-> **Codex region and bundle size.** `StarSystem` deliberately has no
-> `galacticRegion` member: wiring the region lookup into the facade would pull the
-> ~267 KB region-cell grid into _every_ `StarSystem` import (a class getter can't be
-> tree-shaken away when unused). Get a system's region from its address with the
-> standalone `findRegionForBoxel` instead, so only code that needs the grid pays for it.
-
-### Error model
-
-Failures are split by cause so you know what to catch:
-
-| Call                                                                | On bad input                                                                                                                                                                                                    |
-| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `StarSystem.fromName(name)`                                         | returns `null` when the string is not a **procedural** name — a real but hand-named system (`Sol`, `Maia`) also yields `null`, since it has no algorithmic address                                              |
-| `StarSystem.fromSystemAddress(id64)` / `fromModSystemAddress(id64)` | throws `TypeError` when the value cannot be an address (non-integer, or a `number` past `2^53` that `JSON.parse` already rounded); throws `RangeError` when it is outside 64 bits or names an unnamed grid slot |
-| `sys.systemAddress` / `sys.modSystemAddress`                        | throws on access — `Error` (unknown region) or `RangeError` (field out of range)                                                                                                                                |
-| `sectorNameFromCoords(coords)`                                      | throws `RangeError` unless each axis is an integer 0–127 — those are **sector indices**, not light-years ([see below](#the-four-kinds-of-region))                                                               |
-
-Reading `.name`, `.sectorName`, `.massCode`, `.coords` never throws. Every lookup in
-the library returns `null` when there is nothing to return — including `sys.coords`,
-which is `null` unless you supplied coordinates.
-
-## The four kinds of "region"
-
-Elite Dangerous overloads the word _region_. The API keeps them separate — this
-table is the map:
-
-| Concept                   | What it is                                              | Entry point                                                                                  | Takes                        |
-| ------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------- |
-| **Procedural sector**     | The boxel-grid name (`Synuefe`, `Blae Eock`)            | `sectorNameFromGalacticCoords` / `sectorNameFromCoords` / `sectorCoordsFromName`             | light-years / sector indices |
-| **Region origin**         | A sector's corner, needed to encode a name to an `id64` | `resolveRegionOrigin`                                                                        | a sector name                |
-| **Hand-authored region**  | A named nebula/cluster sector (Pleiades, Coalsack)      | `handAuthoredRegionForCoords` / `HAND_AUTHORED_REGIONS`                                      | light-years                  |
-| **Galactic codex region** | One of the 42 codex zones (Inner Orion Spur, …)         | `findRegionAt` (a position) / `findRegionForBoxel` (an `id64`) / `getGalacticRegion` (an id) | light-years / `id64`         |
-
-Note the shapes differ: `findRegionAt` hands back the region (or `null`), while
-`findRegionForBoxel` hands back `{ x, y, z, region }` — the boxel corner **and** the
-region there, because it had to compute the position to answer at all.
-
-None of these is the _nebula catalogue_. A hand-authored region is a named **sector
-volume** the game names systems after (some happen to be nebulae); if you want
-nebulae themselves — where they are and what they're called — see
-[Nebulae](#nebulae) below.
-
-One sample of each:
-
-```ts
-import {
-  sectorNameFromGalacticCoords, // procedural sector, from a position
-  sectorNameFromCoords, // procedural sector, from a grid index
-  resolveRegionOrigin, // region origin
-  handAuthoredRegionForCoords, // hand-authored region
-  findRegionAt, // galactic codex region
-} from "@elite-dangerous-almanac/core/astro";
-
-// Procedural sector — from a real position (light-years, Sol at origin)
-sectorNameFromGalacticCoords({ x: 751, y: -179, z: -91 }); // 'Synuefe'
-
-// …or from a sector index, if that is what you hold (integers 0–127, NOT light-years)
-sectorNameFromCoords({ x: 39, y: 30, z: 20 }); // 'Blae Eock'
-
-// Region origin — a sector's corner in internal units (32 per light-year, measured
-// from the galaxy's corner), used to encode an id64
-resolveRegionOrigin("Synuefe");
-// { name: 'Synuefe', x0: 1597440, y0: 1269760, z0: 737280, sizeX: 40960, sizeY: 40960, sizeZ: 40960 }
-
-// Hand-authored region — a named nebula/cluster sector, by galactic coordinates (light-years)
-handAuthoredRegionForCoords({ x: -80.6, y: -146.7, z: -343.3 })?.name; // 'Pleiades Sector'
-
-// Galactic codex region — one of the 42 codex zones, by a point on the galactic plane (light-years)
-findRegionAt({ x: 0, z: 0 })?.name; // 'Inner Orion Spur'
-```
-
-> **Three coordinate conventions, one `{ x, y, z }` shape.** Light-years with Sol at
-> the origin (`GalacticCoords`) is what the journal, EDSM and Spansh give you and what
-> most functions here take. A **sector index** (`SectorCoords`) is a position on the
-> 128³ grid of 1280 ly cubes — `sectorNameFromCoords` wants those, and TypeScript
-> cannot tell the two apart, so convert with `sectorCoordsFromGalacticCoords` (or skip
-> the step with `sectorNameFromGalacticCoords`). **Internal units** are 1/32 light-year
-> from the galaxy's corner, and appear only in `RegionOrigin` and the boxel maths.
-> `GALAXY_ORIGIN` and `SECTOR_EDGE_LY` are exported if you want to do the arithmetic
-> yourself.
-
-**Coordinates from an `id64`, approximately.** No `id64` carries an exact position, but
-`findRegionForBoxel` returns the corner of the system's boxel in light-years — accurate
-to one boxel edge (10 ly at mass code `a`, 1280 ly at `h`):
-
-```ts
-import { findRegionForBoxel } from "@elite-dangerous-almanac/core/astro/galactic-region-lookup";
-
-const { x, y, z, region } = findRegionForBoxel(3309179996515n);
-// { x: 735, y: -185, z: -105, region: … }   the real system is at (751, -179, -91)
-```
-
-## Nebulae
-
-5835 catalogued nebulae, each with the system it is catalogued at, its galactic
-coordinates and its codex region id. They ship as **one module per class**, so you
-pay only for the catalogue you import (subpaths below are relative to
-`@elite-dangerous-almanac/core`):
-
-| Import                    | Export              | What's in it                                                          | Entries | Minified | Gzipped |
-| ------------------------- | ------------------- | --------------------------------------------------------------------- | ------- | -------- | ------- |
-| `astro/nebulae-real`      | `REAL_NEBULAE`      | Real-world nebulae and dark regions (Witch Head, Horsehead, Coalsack) | 180     | 19 KB    | 5 KB    |
-| `astro/nebulae-procgen`   | `PROCGEN_NEBULAE`   | Procedurally generated nebulae (`Agnairt AA-A h36`)                   | 166     | 19 KB    | 6 KB    |
-| `astro/nebulae-planetary` | `PLANETARY_NEBULAE` | Planetary nebulae, at the system each surrounds                       | 5489    | 645 KB   | 140 KB  |
-| `astro/nebulae-all`       | `ALL_NEBULAE`       | All three, concatenated                                               | 5835    | 682 KB   | 151 KB  |
-
-Every size in this README is the published **minified** ESM as npm ships it, measured
-over a module and everything it imports; the gzipped figure is what a server sends.
-
-The query functions live in `astro/nebulae` and hold no data — hand them whichever
-catalogue you imported. **Nebulae are the one registry whose catalogue argument stays
-required**: the [material](#materials), [commodity](#market-commodities) and
-[module](#ships-and-outfitting) lookups all default to their whole registry, but
-`ALL_NEBULAE` is 682 KB — 94% of it planetary nebulae most apps never touch — so
-there is no defensible default to fall back to.
-
-```ts
-import {
-  nearestNebulae,
-  nebulaeWithin,
-  getNebulaByName,
-} from "@elite-dangerous-almanac/core/astro/nebulae";
-import { REAL_NEBULAE } from "@elite-dangerous-almanac/core/astro/nebulae-real";
-
-nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 3).map((n) => n.name);
-// -> [ 'Pleiades', 'R Cra', 'Lupus Dark Region B' ]   (nearest first)
-
-nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 1)[0].distanceLy; // -> ≈383.31
-nebulaeWithin({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 400).length; // -> 1
-getNebulaByName("witch head nebula", REAL_NEBULAE)?.system; // -> 'Witch Head Sector RY-R b4-0'
-```
-
-Each record carries a `regionId` (1–42), so you can label a nebula's codex region
-with `getGalacticRegion` (~9 KB of region metadata) instead of `findRegionAt`
-(~267 KB lookup grid). Note that the catalogue stores one point per nebula — the
-position of its catalogued system — not the nebula's extent, so `distanceLy` is
-the distance to that system.
-
-> **Not the same as a hand-authored region.** `REAL_NEBULAE` and friends are a
-> _catalogue of nebulae and where they are_. A **hand-authored region** (previous
-> section) is a _named sector volume_ the game names systems after — some are
-> nebulae, some are clusters, and the two lists neither match nor line up
-> one-to-one. `StarSystem` has no nebula member for the same reason it has no
-> `galacticRegion` one: a class getter would drag a catalogue into every import.
-
-## Permit locks
-
-Which systems a commander cannot jump to without a permit. Nothing in the game's
-data or in any API reports this — even Sol, permit-locked since launch, returns no
-permit flag — so it is a community-maintained list with two halves:
-
-| Import                        | Export                    | What's in it                                                                          | Entries |
-| ----------------------------- | ------------------------- | ------------------------------------------------------------------------------------- | ------- |
-| `astro/permit-locked-systems` | `PERMIT_LOCKED_SYSTEMS`   | Individually locked systems, each with its `id64` (Sol, Shinrarta Dezhra, Achenar, …) | 54      |
-| `astro/permit-locked-regions` | `PERMIT_LOCKED_REGIONS`   | Whole regions behind one permit (Col 70 Sector, Bleia1, the Cone Sector, …)           | 28      |
-| `astro/permit-locks`          | `permitLockForSystemName` | Combined exact-system and region-prefix lookup                                        | —       |
-
-These modules are the **only** place permit state lives — `HandAuthoredRegion`
-carries no permit flag. Import either leaf to avoid loading the other catalogue;
-`permitLockForSystemName` checks both halves from a name alone and
-tells you which one applied (~4 KB minified).
-
-Six lookups answer this question and their names are close together, so pick by what
-you hold and what you want back:
-
-| You have                                           | You want                              | Call                                   |
-| -------------------------------------------------- | ------------------------------------- | -------------------------------------- |
-| a system name                                      | either kind of lock, and which        | `permitLockForSystemName` ← start here |
-| a system name                                      | just yes/no (either kind)             | `isPermitLockedSystemName`             |
-| a system name                                      | only its _own_ lock, ignoring regions | `permitLockedSystemForName`            |
-| an `id64` / journal address                        | the individually locked system        | `permitLockedSystemForAddress`         |
-| a **region** name (e.g. resolved from coordinates) | whether that region is locked         | `isPermitLockedRegionName`             |
-| a system name                                      | the locked region it sits in          | `permitLockedRegionForSystemName`      |
-
-Note `isPermitLockedSystemName` is _not_ the boolean twin of
-`permitLockedSystemForName`: it reports `true` for a region lock too, while
-`permitLockedSystemForName` only ever consults the exact-system list.
-
-```ts
-import {
-  permitLockForSystemName,
-  isPermitLockedSystemName,
-  permitLockedSystemForAddress,
-} from "@elite-dangerous-almanac/core/astro/permit-locks";
-
-permitLockForSystemName("sol"); // { kind: 'system', name: 'Sol', id64: 10477373803n }
-permitLockForSystemName("Col 70 Sector AA-D b17-0"); // { kind: 'region', name: 'Col 70 Sector' }
-permitLockForSystemName("Maia"); // null
-
-isPermitLockedSystemName("Cone Sector GW-W c1-5"); // true
-
-// A normally parsed journal address is a number; bigint and decimal strings work too
-permitLockedSystemForAddress(event.SystemAddress); // PermitLockedSystem | null
-```
-
-Region membership comes from the **system name**, since no per-system
-region-permit flag exists anywhere: the game names every system in a region after
-it, so each entry of `PERMIT_LOCKED_REGIONS` is both the region's name and the
-prefix to match. The match is whole-token, so `Col 70 Sector` never catches
-`Col 700 Sector …` and `Horsehead Dark Region` never catches the unlocked
-`Horsehead Sector …`.
-
-**If you have coordinates, prefer them** — resolving a region from a position is
-exact, where matching the start of a name is best-effort:
-
-```ts
-import { handAuthoredRegionForCoords } from "@elite-dangerous-almanac/core/astro/hand-authored-regions";
-import { isPermitLockedRegionName } from "@elite-dangerous-almanac/core/astro/permit-locked-regions";
-
-const region = handAuthoredRegionForCoords(coords);
-const needsPermit = region !== null && isPermitLockedRegionName(region.name);
-```
-
-Both routes read the same 28 names, so they cannot drift; the test suite checks
-they agree on real systems from EDSM.
-
-Scope: systems only. Permit-locked _bodies_ in otherwise-open systems (Diso 5 C,
-Lave 2, Sol's Moon and Triton) are deliberately excluded, since a system-level flag
-would be wrong for them.
-
-## Materials
-
-The `materials` feature area covers the 146 engineering **materials** — raw,
-manufactured and encoded — each with its grade (1–5, which **is** its rarity, from
-Very Common to Very Rare) and in-game line. Guardian and Thargoid materials are
-included.
-
-**Every lookup searches all 146 by default**, so finding a material takes one import
-and one argument:
-
-```ts
-import {
-  getMaterialBySymbol,
-  getMaterialByName,
-  materialsByGrade,
-  materialsInCategory,
-  materialsInLine,
-  MaterialGrade,
-  MaterialLine,
-} from "@elite-dangerous-almanac/core/materials";
-
-const iron = getMaterialByName("iron");
-iron?.grade; // -> MaterialGrade.VeryCommon
-iron && MaterialGrade[iron.grade]; // -> 'VeryCommon' (rarity tier)
-getMaterialBySymbol("temperedalloys")?.name; // -> 'Tempered Alloys'
-materialsInLine(MaterialLine.EmissionData).length; // -> 5 (grades 1–5)
-materialsInCategory("raw").length; // -> 28
-getMaterialByElementSymbol("fe")?.name; // -> 'Iron' (raw materials only)
-```
-
-Every lookup takes an optional trailing argument that **narrows** the search to a
-subset — one category's catalogue, or any array you have filtered yourself (subpaths
-below are relative to `@elite-dangerous-almanac/core`):
-
-| Import                             | Export                   | What's in it                                         | Entries |
-| ---------------------------------- | ------------------------ | ---------------------------------------------------- | ------- |
-| `materials/materials-raw`          | `RAW_MATERIALS`          | The 28 elements, seven lines of grades 1–4           | 28      |
-| `materials/materials-manufactured` | `MANUFACTURED_MATERIALS` | Ten five-grade lines plus Guardian & Thargoid        | 71      |
-| `materials/materials-encoded`      | `ENCODED_MATERIALS`      | Seven five-grade data lines plus Guardian & Thargoid | 47      |
-| `materials/materials-all`          | `ALL_MATERIALS`          | All three, concatenated — the default                | 146     |
-
-```ts
-import { materialsByGrade } from "@elite-dangerous-almanac/core/materials";
-import { RAW_MATERIALS } from "@elite-dangerous-almanac/core/materials/materials-raw";
-
-materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length; // -> 7 (one per raw line)
-```
-
-That argument narrows _results_, not bundle size: importing any lookup pulls all
-three catalogues, since that is what it falls back to (~16 KB minified, ~4 KB gzipped).
-`materialsInCategory` reaches the same subsets from a plain string, which is what you
-have when the category came from a dropdown rather than from your own source code.
-
-Each material carries a stable Frontier `symbol`; the journal names materials by
-the lower-cased symbol, so `getMaterialBySymbol` accepts either casing. Every lookup in
-the library — by symbol, name, category or line — ignores case and surrounding
-whitespace, so a value that arrived from a journal line or a dropdown resolves as it is. A
-material's **grade is its rarity** — the `MaterialGrade` enum's member names are
-the tiers (`VeryCommon` … `VeryRare`), so there is no separate rarity field; read
-`MaterialGrade[grade]` if you need the tier as a string. Raw materials stop at
-grade 4 — there is no grade-5 raw element.
-
-> **Newest Thargoid materials.** The caustic/Titan materials are not yet in the
-> community `material.csv` registry; their grade is sourced from INARA. They are
-> catalogued here by their journal `symbol`, like every other material. See
-> `data/materials/SOURCES.md` for the list.
-
-### Odyssey micro resources
-
-The same `materials` feature area also carries the 196 on-foot **micro resources**
-introduced by Odyssey — the components, data, consumables and items a Commander
-carries on foot. These are a separate registry from the ship-side engineering
-materials above: a micro resource is a plain `{ symbol, category, name }` record
-with **no grade and no line**. Like the materials, every lookup searches all 196 by
-default:
-
-```ts
-import {
-  getMicroResourceBySymbol,
-  getMicroResourceByName,
-  microResourcesInCategory,
-} from "@elite-dangerous-almanac/core/materials";
-
-getMicroResourceBySymbol("graphene")?.name; // -> 'Graphene'
-getMicroResourceByName("circuit board")?.symbol; // -> 'circuitboard'
-microResourcesInCategory("consumable").length; // -> 6
-```
-
-The same optional trailing argument narrows the search to one category's catalogue,
-or to any array you have filtered yourself:
-
-| Import                                 | Export                       | What's in it                                | Entries |
-| -------------------------------------- | ---------------------------- | ------------------------------------------- | ------- |
-| `materials/micro-resources-component`  | `COMPONENT_MICRO_RESOURCES`  | Parts spent upgrading suits and weapons     | 33      |
-| `materials/micro-resources-consumable` | `CONSUMABLE_MICRO_RESOURCES` | Deployable field tools (medkits, grenades…) | 6       |
-| `materials/micro-resources-data`       | `DATA_MICRO_RESOURCES`       | Intel and files traded on foot              | 114     |
-| `materials/micro-resources-item`       | `ITEM_MICRO_RESOURCES`       | Physical goods collected and traded on foot | 43      |
-| `materials/micro-resources-all`        | `ALL_MICRO_RESOURCES`        | All four, concatenated — the default        | 196     |
-
-## Ships and outfitting
-
-The `ships` feature area covers Frontier's 48 player-flyable **hulls** and the ~1200
-fittable **modules** — each as **one record carrying identity, stats, price and (for
-hulls) slot layout together** — plus **jump-range calculations** you can drive straight from
-a [SLEF](#ship-builds-jump-range-the-journal-and-slef) export. Modules are also
-exported split by outfitting category, so an app that never searches outside one
-category can import just that catalogue and skip the rest.
-
-Ships are one small catalogue, so the lookups carry the data. Each `Ship` carries the
-hull's identity, its stats (`hullMass`, `speed`, …) and its slot layout (`core`,
-`hardpoints`, …). Most mechanical data comes from coriolis-data; the Lynx Highliner's
-equivalent fields come from EDSY and Frontier's update notes:
-
-```ts
-import {
-  SHIPS,
-  getShipBySymbol,
-  getShipByName,
-  getShipSlots,
-} from "@elite-dangerous-almanac/core/ships/ships";
-
-getShipBySymbol("empire_trader")?.name; // -> 'Imperial Clipper' (lookups accept either casing)
-getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes) — stats are on the record
-getShipSlots("anaconda")?.hardpoints; // -> [{ size: 4 }, { size: 3 }, ...] (slot layout, ready for the build editor)
-getShipSlots("LakonMiner")?.hardpoints[0]; // -> { size: 3, restriction: 'mining', name: 'LargeMiningHardpoint1' } — restricted, and named
-getShipSlots("Anaconda")?.optional?.at(-2); // -> { size: 1, name: 'Slot14_Size1' } — the mount's own journal key
-getShipByName("Anaconda")?.symbol; // -> 'Anaconda'
-SHIPS.length; // -> 48
-```
-
-The stored `symbol` is Frontier's own casing (`Empire_Trader`), while the journal's
-`Ship` field carries it lower-cased (`empire_trader`). Every `*BySymbol` lookup here
-matches case-insensitively, so either form resolves — but compare a record's `symbol`
-to a journal value case-insensitively rather than with `===`.
-
-The module lookups live in `ships/modules` and **search all 1197 modules by
-default**. A journal `Item` string does not tell you which outfitting category it
-belongs to, so having to know that before you could look it up was backwards:
-
-```ts
-import {
-  getModuleBySymbol,
-  getModulesByName,
-  getModulesForShip,
-} from "@elite-dangerous-almanac/core/ships/modules";
-
-getModuleBySymbol("Hpt_PulseLaser_Fixed_Small")?.name; // -> 'Pulse Laser'
-getModulesByName("Pulse Laser").length; // every size/mount variant
-getModulesForShip("Anaconda").length; // -> 5 (its bulkhead set)
-```
-
-Modules are also exported split by Frontier's four outfitting **categories** —
-useful for _listing_ a category (an outfitting screen's hardpoint tab), rather than
-for narrowing a lookup: no module name or symbol is shared across categories, so
-passing one to a lookup can only make it fail to find something. Each record carries
-the module's **identity and its stats together** (see [Module
-stats](#ship-and-module-stats) below); subpaths are relative to
-`@elite-dangerous-almanac/core`:
-
-| Import                    | Export              | What's in it                                            | Entries |
-| ------------------------- | ------------------- | ------------------------------------------------------- | ------- |
-| `ships/modules-core`      | `CORE_MODULES`      | Core internals (armour, power plant, thrusters, FSD, …) | 521     |
-| `ships/modules-internal`  | `INTERNAL_MODULES`  | Optional internals (cargo, shields, scoops, cabins, …)  | 482     |
-| `ships/modules-hardpoint` | `HARDPOINT_MODULES` | Hardpoint weapons and tools                             | 159     |
-| `ships/modules-utility`   | `UTILITY_MODULES`   | Utility-mount fittings (chaff, heat sinks, boosters, …) | 35      |
-| `ships/modules-all`       | `ALL_MODULES`       | All four, concatenated — the default                    | 1197    |
-
-```ts
-import { UTILITY_MODULES } from "@elite-dangerous-almanac/core/ships/modules-utility";
-
-// Listing a category: import just that catalogue and read it. This pulls no other
-// category, where a lookup from `ships/modules` would pull all four.
-UTILITY_MODULES.length; // -> 35, the whole utility tab
-// Catalogue symbols are mixed-case, journal ones are not — hence `toLowerCase()`.
-const wanted = journalItem.toLowerCase();
-UTILITY_MODULES.find((m) => m.symbol.toLowerCase() === wanted); // stays this cheap
-```
-
-> **This is the one default that costs real bundle weight.** Importing a lookup from
-> `ships/modules` pulls all four catalogues — about 288 KB minified (~31 KB
-> gzipped) — because that is what it falls back to, and passing an explicit catalogue
-> does not undo it. A build that must carry only one category should import that
-> catalogue module and search it with plain `Array` methods
-> (`UTILITY_MODULES.find((m) => m.symbol.toLowerCase() === wanted)`), which pulls no other
-> category. Every record carries its `category`, so filtering _results_ by category
-> never needs a separate catalogue.
-
-Each module carries a `class` (the module **size**, 0–8) and a `rating` (the grade
-letter, A–I) — together the "5A" the outfitting screen shows. `mount`
-(Fixed / Gimballed / Turreted) and `guidance` (Dumbfire / Seeker / Swarm) are
-present only on the hardpoints that have them; `ship` is present only on armour,
-the one hull-specific module (which is what `getModulesForShip` returns). Module
-`name` is **not** unique — it repeats across sizes, ratings and hulls — so key on
-`symbol`; `getModulesByName` returns every match.
-
-A record's `category` is the catalogue it came from, filled in when the catalogue
-loads rather than stored on every record — so it is always there and always agrees
-with the catalogue you found it in.
-
-`slot` is the other half of that idea and answers a sharper question: **which one
-mount is this module built for?** A category is not a mount — `core` is eight of
-them — so every core record names its own, `"armour"` or one of the seven core
-functions (`powerPlant`, `thrusters`, `frameShiftDrive`, `lifeSupport`,
-`powerDistributor`, `sensors`, `fuelTank`), the same strings `slot.core` uses:
-
-```ts
-import { CORE_MODULES } from "@elite-dangerous-almanac/core/ships/modules-core";
-
-// An outfitting screen's "Frame Shift Drive" tab, without a symbol rule of your own
-CORE_MODULES.filter((m) => m.slot === "frameShiftDrive");
-getModuleBySymbol("Anaconda_Armour_Grade1")?.slot; // -> 'armour'
-getModuleBySymbol("Int_CargoRack_Size4_Class1")?.slot; // -> undefined
-```
-
-Everything else leaves it `undefined`, and that absence is the rule, not a gap: a
-weapon, a utility fitting and an ordinary optional internal each fit **any** mount of
-their kind that is big enough, so there is no single mount to name. Two records look
-like exceptions and are not — a fuel tank is `"fuelTank"` and fits an optional slot
-as well as its own, and the fifteen Guardian Hybrid power plants and distributors
-carry `"powerPlant"` / `"powerDistributor"` from `INTERNAL_MODULES`, which is where
-Frontier's registry files them despite their filling a core mount. Read `slot`
-instead of matching on the symbol: `Int_Engine_*` meaning thrusters is a naming
-habit, and the Python Mk II's `Int_MkIIAgileBoost_Engine_*` already departs from it.
-
-### Ship and module stats
-
-The numbers behind the catalogues — hull masses, module masses, power draw, FSD
-constants, thruster/shield/distributor performance — are **fields on the very same
-record**, so once you resolve a module or hull you already have its stats:
-
-```ts
-import { getModuleBySymbol } from "@elite-dangerous-almanac/core/ships/modules";
-import { CORE_MODULES } from "@elite-dangerous-almanac/core/ships/modules-core";
-import { getShipBySymbol } from "@elite-dangerous-almanac/core/ships/ships";
-
-getShipBySymbol("anaconda")?.hullMass; // -> 400 (tonnes)
-getModuleBySymbol("int_hyperdrive_size5_class5", CORE_MODULES)?.optMass; // -> 1050
-```
-
-The stat fields are **sparse** — a module carries only the ones its group uses.
-`restrictedToShips` appears on the few non-armour modules limited to particular hulls
-(e.g. the Python Mk II's MkII Gravity Optimised thrusters → `["Explorer_NX"]`);
-armour's hull restriction stays in its `ship` field. Masses are tonnes, power
-megawatts, jump ranges light-years, weapon ranges metres.
-
-Alongside the mechanical stats, records carry what the [build
-metrics](#build-metrics-power-shields-armour-and-firepower) need:
-
-```ts
-import { INTERNAL_MODULES } from "@elite-dangerous-almanac/core/ships/modules-internal";
-import { HARDPOINT_MODULES } from "@elite-dangerous-almanac/core/ships/modules-hardpoint";
-
-// Defence: resistances as fractions (negative is a weakness)
-getModuleBySymbol("Int_ShieldGenerator_Size5_Class5", INTERNAL_MODULES)
-  ?.thermalResistance; // -> -0.2
-getModuleBySymbol("Int_HullReinforcement_Size3_Class2", INTERNAL_MODULES)
-  ?.hullReinforcement; // -> 260
-
-// Armour is a module too: each hull's variants carry that hull's mass and hull boost
-getModuleBySymbol("Anaconda_Armour_Reactive", CORE_MODULES)?.hullBoost; // -> 2.5 (base armour x 3.5)
-
-// Weapons: damage per round, its type split, and the rate that turns it into DPS
-const mc = getModuleBySymbol("Hpt_MultiCannon_Fixed_Small", HARDPOINT_MODULES)!;
-mc.damage; // -> 1.12   per round
-mc.rateOfFire; // -> 7.69   shots per second, bursts and charge time folded in
-mc.damageDistribution; // -> { kinetic: 1 }
-
-// Multi-channel weapons retain the exact amounts observed in-game; anti-xeno overlays rather
-// than inflates conventional damage.
-const ax = getModuleBySymbol(
-  "Hpt_ATDumbfireMissile_Fixed_Medium",
-  HARDPOINT_MODULES,
-)!;
-ax.damage; // -> 27
-ax.damageComponents; // -> { explosive: 27, antiXeno: 43 }
-```
-
-A weapon's `damage` is per **round** and its `distributorDraw` and `thermalLoad` per
-**shot** — the two differ on a weapon that fires several rounds at once, like a
-fragment cannon. The continuous-fire beam and mining lasers carry no `rateOfFire`,
-because all three stats are already per second on those.
-
-For projectile-limited missile and mining tools, `projectileRange` preserves the
-boundary parameters observed in-game without presenting them as effective metre ranges.
-
-#### When a stat is missing
-
-Sparse means a missing stat is usually an answer: a cargo rack draws no power, a fuel
-tank has no rate of fire. For four records it is a **gap** instead — the module has the
-stat in game and no public registry publishes it — and adding those up as zero would
-quietly understate a build. **The record says which it is**, in `unknownStats`, so
-there is no second lookup:
-
-```ts
-const scanner = getModuleBySymbol("Int_StellarBodyDiscoveryScanner_Advanced");
-scanner?.powerDraw; // -> undefined
-scanner?.unknownStats; // -> ["powerDraw"]  — a gap, not "draws nothing"
-
-getModuleBySymbol("Int_CargoRack_Size4_Class1")?.unknownStats; // -> undefined
-```
-
-`ships/unknown-stats` is the predicate over that field for when a `?.includes()` reads
-poorly, plus the roster of everything a catalogue knows it is missing. It holds no data
-and pulls no catalogue, so it takes the record (or the catalogue) you already have:
-
-```ts
-import {
-  isStatUnknown,
-  modulesWithUnknownStats,
-} from "@elite-dangerous-almanac/core/ships/unknown-stats";
-import { INTERNAL_MODULES } from "@elite-dangerous-almanac/core/ships/modules-internal";
-
-isStatUnknown(scanner, "powerDraw"); // -> true
-modulesWithUnknownStats(INTERNAL_MODULES).length; // -> 4, the whole of it today
-```
-
-The four are the withdrawn Discovery Scanners (`powerDraw`). A whole build already
-answers safely without you checking: `powerBudget()` reports one in `unknownDraws`
-instead of counting it as free. `unladenMass` likewise returns `null` for _any_ absent
-module mass, declared or not; every catalogue module currently has a mass value.
-[Issue #17](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/17) tracks what
-would fill the scanner values. An absent `cost` is never declared — see [Prices](#prices), where absence
-already means unknown — and this is not a claim that _every_ other absence is a stat
-the game does not have.
-
-#### Prices
-
-Standard list prices in credits sit on the same records — no second lookup:
-
-```ts
-getModuleBySymbol("int_powerplant_size8_class1", CORE_MODULES)?.cost; // -> 1441233
-
-getShipBySymbol("anaconda")?.hullCost; // -> 142456440  (bare hull)
-getShipBySymbol("anaconda")?.retailCost; // -> 146969451  (hull + default modules)
-```
-
-These are the **undiscounted** list prices an outfitting screen quotes at 0%
-discount — stations apply their own discount or markup on top, which is live market
-state this library does not carry.
-
-All 48 hulls are priced, and 1176 of 1197 modules. The other 21 — the ten starter
-`*_free` variants, the five size-8 frame shift drives, the three Mk II fighter hangars,
-the two unsold Corrosion Resistant Cargo Racks (both Community Goal rewards, so no
-outfitting screen quotes them —
-[#18](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/18)) and
-`Int_ShieldGenerator_Size1_Class4` — have
-no published price, so **`cost` is `undefined` rather than `0`**. That distinction is
-deliberate: `0` is a real price (the starter Lightweight Alloy bulkhead is free), so
-treat `undefined` as _unknown_ and decide for yourself whether to skip it or fail:
-
-```ts
-const cost = getModuleBySymbol(symbol)?.cost;
-if (cost === undefined) {
-  // no published price — don't silently add 0 to a build total
-}
-```
-
-### Ship builds, jump range, the journal and SLEF
-
-A build comes in from either of the two formats the game and its tools speak, and goes
-back out the same way:
-
-| Source                                                          | Call                                              |
-| --------------------------------------------------------------- | ------------------------------------------------- |
-| A **journal `Loadout` event**, straight out of a player journal | `ShipLoadout.fromLoadout(event)`                  |
-| A **SLEF** export, as EDSY, Coriolis and Inara produce          | `ShipLoadout.fromSlef(json)`                      |
-| Back out again                                                  | `build.toLoadoutEvent()` / `build.toSlefString()` |
-
-SLEF is nothing more than that same journal event wrapped in a `{ header, data }`
-envelope recording which app exported it, so the two are the same data with different
-packaging.
-
-#### From the game journal
-
-The `Loadout` event the game writes whenever you board or refit a ship needs no
-unwrapping — hand it over as it comes out of `JSON.parse`:
+Address inputs accept `bigint`, a safe integer `number`, or a decimal string.
+Addresses are returned as `bigint`. A JavaScript number above `2^53 - 1` is
+rejected because it cannot represent the address exactly.
+
+Most coordinates use `GalacticCoords`: light-years from Sol. Procedural-sector
+functions that take `SectorCoords` instead use integer grid indices from 0 to 127.
+Use `sectorNameFromGalacticCoords` when starting from an ordinary galactic
+position.
+
+Elite Dangerous uses “region” for several different concepts:
+
+| Concept                    | Entry point                                            |
+| -------------------------- | ------------------------------------------------------ |
+| Procedural sector name     | `sectorNameFromGalacticCoords`, `sectorNameFromCoords` |
+| Sector origin used by id64 | `resolveRegionOrigin`                                  |
+| Hand-authored named sector | `handAuthoredRegionForCoords`                          |
+| Galactic codex region      | `findRegionAt`, `findRegionForBoxel`                   |
+| Nebula catalogue entry     | `nearestNebulae`, `nebulaeWithin`, `getNebulaByName`   |
+
+Nebula query functions require an explicit catalogue. Import `REAL_NEBULAE`,
+`PROCGEN_NEBULAE`, `PLANETARY_NEBULAE`, or `ALL_NEBULAE` according to the data
+you need; the complete catalogue is intentionally not loaded by default.
+
+### Ships and loadouts
 
 ```ts
 import { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
 
-const event = JSON.parse(journalLine); // { "event": "Loadout", "Ship": "explorer_nx", … }
-const build = ShipLoadout.fromLoadout(event);
-
-build.shipName; // -> 'The Deep Black'
-build.maxJumpRange(); // -> 89.41
-```
-
-`parseSlef` accepts a bare `Loadout` event too, so code that already handles SLEF needs
-no separate path for journal input.
-
-#### From a SLEF export
-
-```ts
-const build = ShipLoadout.fromSlef(slefJsonString); // string or parsed value
-
-build.shipName; // -> 'The Deep Black'
-build.maxJumpRange(); // -> 89.41  best single jump (one jump's fuel, no cargo)
-build.unladenJumpRange(); // full tank, no cargo
-build.ladenJumpRange(); // full tank, full cargo
-build.jumpRange({ fuel: 32, cargo: 16 }); // any partial load you like
-build.totalRange(); // -> multi-jump range as the tank drains
-build.fuelPerJump(50); // -> tonnes of fuel a 50 LY jump costs
-
-build.jumpRangeSummary(); // all five at once:
-// -> { max, unladen, laden, totalUnladen, totalLaden }
-```
-
-Exports are read to the **specification** rather than to the journal, which is stricter:
-SLEF requires only `Ship`, `Modules`, `Slot` and `Item`, and an `Engineering` block may
-name a blueprint without listing what it changed. `ModuleEngineering.Modifiers` is
-therefore optional — absent means _not stated_, not _changed nothing_, so the module
-performs as sold and `getLoadoutModifier` returns `null` for every label.
-
-`ShipLoadout` resolves the drive's constants from the module stats and applies the
-export's engineering (a Long Range blueprint's `FSDOptimalMass`, a Guardian FSD
-Booster's bonus). Need just the maths? Skip the class and import the pure functions
-from `ships/jump-range` (`singleJumpRange`, `fuelPerJump`, `totalRange`), or parse a
-SLEF export yourself with `parseSlef` from `ships/slef`. The port is validated
-against EDSY: it reproduces the sample build's exported `MaxJumpRange` of 89.414678.
-
-#### Exporting a build
-
-Hand the build back to EDSY, Coriolis or Inara — or write it to a file:
-
-```ts
-build.toSlefString({ header: { appName: "MyApp", appVersion: "1.0.0" } });
-// -> '[{"header":{"appName":"MyApp",…},"data":{"event":"Loadout",…}}]'
-
-build.toLoadoutEvent(); // the journal event on its own, unwrapped
-build.toSlef(); // the envelope as an object, for composing
-```
-
-SLEF's header credits the **exporting application**, so pass your own; the default
-names this library. Two things worth knowing:
-
-- **Every figure is recomputed** from the hull and the fitted modules, so an edited build
-  exports numbers that match its current fit.
-- **Credits are quoted at retail** — the bare hull's list price plus every fitted
-  module's, with `Rebuy` 5% of the two. A source's own `HullValue`, `ModulesValue` and
-  per-module `Value` are deliberately **ignored**: they record what one commander paid at
-  one station, discount and all, which is not a property of the build. The Deep Black's
-  modules were bought 12.25% under list; the same build exports at list either way.
-- Anything that cannot be worked out is **left out** rather than emitted as a stale or
-  zero value, which SLEF explicitly allows. An unrecognised hull or module id costs you
-  the figures that depend on it, not a wrong answer.
-- **A slot that is no mount holds no module.** A journal `Loadout` lists the cockpit,
-  ship kit, nameplates, decals, bobbles, paint, colours and voice pack alongside the
-  fitted modules — 15 of the Krait Phantom fixture's 40 entries. Those weigh nothing and
-  cost nothing, and they are recognised by naming no outfitting mount `parseSlotName`
-  knows, so there is no list of decoration families to fall behind the game. A module the
-  catalogue can identify counts whatever its slot is called; an article it cannot
-  identify sitting in a mount it _does_ recognise is unknown, and an unknown costs you
-  the figures that depend on it rather than quietly understating mass and credits.
-- **Ship and module ids are lower-cased** on the way out, matching what the journal and
-  every other SLEF producer write.
-
-Several builds travel in one export via the standalone `toSlef` from `ships/slef`:
-
-```ts
-import {
-  toSlef,
-  stringifySlef,
-} from "@elite-dangerous-almanac/core/ships/slef";
-
-stringifySlef(toSlef([a.toLoadoutEvent(), b.toLoadoutEvent()]), { indent: 2 });
-```
-
-Power state is part of a faithful export, so it is settable:
-
-```ts
-build.setModulePriority("PowerPlant", 2); // journal groups are 0-4; the panel shows 1-5
-build.setModuleEnabled("TinyHardpoint6", false);
-```
-
-> **Bundle size:** `ShipLoadout` is a batteries-included facade. Its leaf import
-> currently reaches about 696 KB of minified JavaScript (~82 KB gzipped) because it must
-> resolve any ship/module id, plus blueprints and experimental effects, plus the
-> engineering menu it validates against and the pre-engineered catalogue. Prefer
-> `ships/slef`, `ships/jump-range`, the [build-metric
-> modules](#build-metrics-power-shields-armour-and-firepower) (1–3 KB each), and the
-> individual catalogue modules when you only need parsing, maths, or one outfitting
-> category.
-
-#### Build metrics: power, shields, armour and firepower
-
-The same handle answers the rest of what an outfitting screen shows. Every figure is
-**post-engineering** — journal modifiers on the fitted modules are applied first — and
-modules switched off in the build are left out:
-
-```ts
 const build = ShipLoadout.fromSlef(slefJsonString);
 
-// Power: what the plant makes against what the build draws
-const power = build.powerBudget();
-power.available; // -> 22.85 MW generated
-power.retracted; // -> draw with the hardpoints stowed
-power.deployed; // -> draw with them out (weapons only draw deployed)
-power.headroom; // -> available - deployed; negative means over budget
-power.withinBudget; // -> true
-power.bands[4]?.poweredDeployed; // -> is priority group 5 still lit?
-power.unknownDraws; // -> [] — the consumer entries whose draw nobody publishes, if
-//    any: while this is non-empty every figure above is a lower bound
+build.maxJumpRange();
+build.powerBudget();
+build.shieldMetrics();
+build.armourMetrics();
+build.weaponMetrics();
 
-// Shields: strength in MJ and what it is worth against each damage type
-const shields = build.shieldMetrics(); // null when no generator is fitted
-shields?.strength; // -> 230.65 MJ  (generator + boosters + Guardian reinforcement)
-shields?.resistances.thermal; // -> -0.2  a stock generator is thermally weak
-shields?.effectiveHitPoints.kinetic; // -> kinetic damage the shields can soak
-build.shieldMetrics({ systemsPips: 4 })?.resistances.thermal; // -> with 4 pips to SYS
-
-// Armour: hull hit points and the bulkhead's resistances
-const hull = build.armourMetrics();
-hull.hitPoints; // -> 819.72  (base armour x bulkhead, plus reinforcement packages)
-hull.resistances.explosive; // -> -0.33
-hull.effectiveHitPoints.thermal; // -> thermal damage the hull can soak
-
-// Firepower: per weapon and totalled (this exploration build carries none, so its
-// own totals are zero — the lines below are what an armed build reports)
-const guns = build.weaponMetrics();
-guns.total.damagePerSecond; // -> DPS while the trigger is held
-guns.total.sustainedDamagePerSecond; // -> with reloads folded in
-guns.total.energyPerSecond; // -> MW drawn from the WEP capacitor
-guns.total.heatPerSecond; // -> heat generated
-guns.total.powerDraw; // -> MW asked of the power plant when deployed
-guns.total.damageByType.thermal; // -> the thermal share of that DPS
-guns.weapons[0]; // -> { slot, symbol, name, enabled, metrics, ammunition }
-guns.weapons[0]?.ammunition?.total; // -> rounds aboard when fully rearmed
+const exported = build.toSlefString({
+  header: { appName: "MyApp", appVersion: "1.0.0" },
+});
 ```
 
-**Ammunition is a capacity, not a rearm state.** A build says what a weapon can hold —
-`ammunition` above, or `build.getFittedModule(slot)?.ammunition`, giving the magazine
-(`clipSize`), the reserve behind it (`hopper`, which excludes the magazine exactly as a
-journal's `AmmoInHopper` does) and the two together. A journal's `AmmoInClip` /
-`AmmoInHopper` say what was loaded at the instant of capture, which is not part of a
-build: they are dropped on import and never written back out. Launchers, point defence,
-shield cell banks and AFMUs answer the same way; a laser has nothing to count and reports
-`null`.
+`ShipLoadout` resolves a whole build, applies its engineering and validates module
+fits. It imports the complete ship and module catalogues. The calculation modules
+under `ships/jump-range`, `ships/power`, `ships/shields`, `ships/armour`,
+`ships/weapons`, `ships/ammunition` and `ships/resistances` are data-free alternatives
+when only one calculation is needed.
 
-An engineered clip is rounded up to a whole burst — a Concord Cannon's 12.24 rounds load
-as 15 — following EDSY, with Coriolis agreeing wherever a weapon fires one round at a
-time. **An engineered reserve is not rounded**, because neither registry rounds it, so a
-High-Capacity fragment cannon reports `hopper: 302.4` — and `total` with it. The game's own
-engineered reserve is a whole number, so round `hopper` and `total` yourself if you are
-rendering them. A simulated roll at an intermediate quality can also differ by a round from what
-the game gives; a build imported from a journal always carries the game's own figures
-([#57](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57)).
+Slot keys come from the game and are not reliably derivable from slot position.
+Read them from `ShipLoadout.slots()` or `enumerateSlots(getShipSlots(symbol))`.
+Some slots and modules also carry restrictions; `modulesForSlot` returns only the
+modules that fit.
 
-**Shields scale with the hull's mass, not the build's** — fitting more modules never
-weakens them — and a generator will not engage at all around a hull heavier than its
-maximum mass. Resistances **stack with diminishing returns**: two 20% sources leave 36%,
-not 40%, and past a threshold each further point is worth half as much. Armour hit
-points are `baseArmour × (1 + hullBoost)` plus each hull reinforcement package.
-
-Need just the maths, without a build? Each calculation is a data-free module you can
-import on its own:
-
-| Import              | What it does                                                          |
-| ------------------- | --------------------------------------------------------------------- |
-| `ships/power`       | `powerBudget(available, consumers)` — totals and the priority groups  |
-| `ships/shields`     | `shieldMetrics`, `shieldStrength`, `shieldMassCurveMultiplier`        |
-| `ships/armour`      | `armourMetrics` — hit points, reinforcement, resistances              |
-| `ships/weapons`     | `weaponMetrics`, `damagePerSecond`, `damageFalloff`, `splitDamage`    |
-| `ships/ammunition`  | `ammunitionCapacity` — magazine, reserve and the two together         |
-| `ships/resistances` | `stackShieldResistance`, `stackArmourResistance`, `systemsResistance` |
-
-```ts
-import { weaponMetrics } from "@elite-dangerous-almanac/core/ships/weapons";
-import { getModuleBySymbol } from "@elite-dangerous-almanac/core/ships/modules";
-import { HARDPOINT_MODULES } from "@elite-dangerous-almanac/core/ships/modules-hardpoint";
-
-// A catalogue record is already a valid weapon input
-const mc = getModuleBySymbol("Hpt_MultiCannon_Fixed_Small", HARDPOINT_MODULES)!;
-weaponMetrics(mc).damagePerSecond; // -> 8.62
-weaponMetrics(mc).sustainedDamagePerSecond; // -> 6.64, with the 4 s reload
-```
-
-The models are ported from [Coriolis](https://github.com/EDCD/coriolis) and
-cross-checked against [EDSY](https://github.com/taleden/EDSY); see
-[`data/ships/SOURCES.md`](data/ships/SOURCES.md) for the exact functions and commits.
-
-#### Building and engineering a loadout
-
-The same class assembles a build from scratch. Start an **empty** hull, enumerate its
-mounts (core, hardpoint, utility, optional and armour — occupied or empty, with size
-and any restriction), fit and remove modules, and engineer supported modules with a
-blueprint calculator. Armour fits are checked against the hull; the built-in cargo
-hatch is fixed.
-Mass, fuel and jump range are computed from the fitted modules and the hull's stats.
-Editing an imported SLEF build adjusts its supplied mass and capacity aggregates by
-the changed module's contribution. If a contribution is unknown, the affected
-aggregate is discarded and recomputed rather than returned stale.
+Registry lookups ignore case and surrounding whitespace:
 
 ```ts
 import {
-  ShipLoadout,
   getModuleBySymbol,
-  ALL_MODULES,
-  CORE_MODULES,
+  getShipBySymbol,
 } from "@elite-dangerous-almanac/core/ships";
 
-const build = ShipLoadout.empty("Anaconda");
-
-build.optionalModules(); // every optional mount as a live slot handle: { key, name, size, occupied, ... }
-build.coreModules(); // the seven core mounts; also hardpoints(), utilityMounts()
-
-build
-  .setModule(
-    "FrameShiftDrive",
-    getModuleBySymbol("Int_Hyperdrive_Size6_Class5", CORE_MODULES)!,
-  )
-  // A fuel tank is what a jump draws from — without one, maxJumpRange() is 0.
-  .setModule(
-    "Slot01_Size7",
-    getModuleBySymbol("Int_FuelTank_Size6_Class3", CORE_MODULES)!,
-  )
-  .applyBlueprint("FrameShiftDrive", "FSD_LongRange", {
-    grade: 5,
-    experimental: "special_fsd_heavy",
-  });
-
-build.maxJumpRange(); // -> ~76.9, reflecting the engineered optimal mass
+getShipBySymbol("empire_trader")?.name; // "Imperial Clipper"
+getModuleBySymbol("Int_Hyperdrive_Size6_Class5")?.name;
 ```
 
-**Or work fluently through the slot and module handles**, so you never repeat a slot
-key. `coreModules()` / `hardpoints()` / `utilityMounts()` / `optionalModules()` (and the
-general `slots()` / `slotsOfKind()`) return **live `LoadoutSlot` views** that know their
-own key; each fits, lists candidates and reaches its module in place. `getFittedModule()`
-and `slot.module` return a **live `FittedModule` handle** you engineer directly:
+### Materials and commodities
 
 ```ts
-const conda = ShipLoadout.empty("Anaconda");
-const drive = conda.coreModules().find((s) => s.core === "frameShiftDrive")!;
+import { getMaterialByName } from "@elite-dangerous-almanac/core/materials/materials";
+import { getCommodityByName } from "@elite-dangerous-almanac/core/commodities/commodities";
 
-drive.modulesForSlot(CORE_MODULES); // what fits *this* slot — no key argument
-drive
-  .fit(getModuleBySymbol("Int_Hyperdrive_Size6_Class5", CORE_MODULES)!) // -> FittedModule
-  .applyBlueprint("FSD_LongRange", { grade: 5 }); // engineer it, still no key
-
-const fsd = conda.getFittedModule("FrameShiftDrive")!;
-fsd.getAvailableBlueprints(); // -> [{ fdname: "FSD_LongRange", grades: [1,2,3,4,5] }, ...]
-fsd.getAvailableExperimentalEffects(); // -> ["special_fsd_heavy", ...] valid for this family
-fsd.clearEngineering(); // back to base stats; fsd.remove() empties the slot
+getMaterialByName("iron")?.grade;
+getCommodityByName("lavian brandy")?.rare; // true
 ```
 
-`setModule` (and `slot.fit`) validates the fit (module size ≤ slot size, right category,
-slot and hull restrictions) and throws otherwise. **Slot keys
-are the journal names** (`FrameShiftDrive`, `MainEngines` for thrusters, `Radar` for
-sensors, `HugeHardpoint1`, `Slot01_Size7`, `Military01`, …), so a SLEF-loaded build and
-one assembled here share one vocabulary — enumerate them with `slots()` rather than
-guessing. They are matched **case-insensitively** and otherwise exactly, because a SLEF
-producer may lower-case the game's own spelling as the specification's own example
-does: Inara writes `frameshiftdrive` and `largemininghardpoint1`, and both name the same
-mount as the journal's `FrameShiftDrive` and `LargeMiningHardpoint1`. A build keeps
-whatever spelling it was imported with — editing one of its mounts never renames it, so
-re-exporting returns the producer's own keys untouched.
+These lookups search their complete registry by default and accept an optional
+catalogue argument to narrow the search. The argument narrows results, not bundle
+size, because the default registry remains a static import. Import a split catalogue
+and use ordinary array operations when bundle size is the priority.
 
-**Enumerate them; do not compute them.** The numbering looks regular and on 10 of the 48
-hulls is not, so a key you construct by counting will name a mount the game does not
-have. The Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1` — there is
-no 11 or 12; the Type-9 Heavy starts at `Slot00_Size8`; the Type-7 Transporter uses the
-number `09` twice; the Type-8 Transporter has no `SmallHardpoint3`; and the Caspian
-Explorer's medium hardpoints run 6, 5, 1, 2, 3, 4 in layout order, so the same key means
-a **different physical mount** than position would suggest. Those names are the game's,
-carried per hull on the mount itself — `getShipSlots(symbol)?.optional[i].name` — and
-applied by `enumerateSlots`. A mount without a `name` is one the rules get right.
+## Data behavior
 
-A `_SizeN` suffix is part of the name, not a measurement: on the Keelback, Asp Scout and
-Type-7 Transporter, Frontier's own key disagrees with the mount it names (the Keelback's
-`Slot03_Size3` is a **size-4** mount). `slot.size` is always the mount's real size —
-read the size from the layout, never off the key.
+- Exported catalogues are deeply frozen. Consumers cannot mutate the shared module
+  singleton seen by later lookups.
+- Units are documented on the exported types and functions. Resistances are fractions,
+  masses are tonnes, power is megawatts, distances are light-years and shield strength
+  is megajoules unless a symbol says otherwise.
+- Absent catalogue fields are omitted rather than represented by zero. Catalogue
+  provenance records unresolved data gaps.
+- Lookups return `null` when no record matches. Malformed inputs throw `TypeError`, and
+  values outside a supported range throw `RangeError`.
+- Shared fixtures in `fixtures/` define language-neutral expected behavior.
 
-This is not a journal-only concern. **SLEF is the journal's `Loadout` event in an
-envelope** — `data.Modules[].Slot` carries these exact strings — so a build exported
-with `toSlef()` under a computed key names a mount the receiving app cannot match.
+The generated [GitHub Wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki)
+contains the complete API reference from source documentation.
 
-**Some mounts take one family of modules and nothing else**, and the journal gives each
-such mount a name of its own — so `slot.restriction` says what it takes and
-`modulesForSlot` lists exactly that. `PlanetaryApproachSuite` is on all but one hull
-(the Lynx Highliner), `Military01…` (reinforcement packages and shield cell banks) on
-16 of the 48; three hulls add more. The Type-11 Prospector's
-`LargeMiningHardpoint1`, `MediumMiningHardpoint1`,
-`MediumMiningHardpoint2` and `SmallMiningHardpoint1` take **mining tools only** (its
-other four mounts, `MediumHardpoint3` and `SmallHardpoint2…4`, take any weapon), while
-its `LimpetController01` and `FighterBay01` take limpet controllers and vessel hangars;
-the Panther Clipper Mk II's `Cargo01` and `Cargo02` take cargo racks and fuel tanks; and
-the Lynx Highliner's `Passenger01`–`Passenger03` take passenger cabins alone.
+## Repository layout
 
-**A few modules are restricted the other way round** — they fit one kind of mount and
-nothing else, not even an unrestricted slot of the right size. Those carry
-`restrictedToSlot`, the mirror of `slot.restriction`: the two Mk II Cargo Racks and the
-Mk II Mining Multi-Limpet Controller (which also name their hull in `restrictedToShips`,
-and a build must satisfy both), and the planetary approach suites. A plain cargo rack
-has no such field — it fits a `cargo` mount _and_ every unrestricted one.
-
-```ts
-import {
-  ShipLoadout,
-  HARDPOINT_MODULES,
-  SLOT_RESTRICTION_LABELS,
-  getModuleBySymbol,
-} from "@elite-dangerous-almanac/core/ships";
-
-const miner = ShipLoadout.empty("LakonMiner");
-miner.hardpoints().map((s) => [s.key, s.restriction]);
-// -> [['LargeMiningHardpoint1', 'mining'], ..., ['MediumHardpoint3', undefined], ...]
-SLOT_RESTRICTION_LABELS.mining; // -> 'mining tools' — what to show a user
-miner.modulesForSlot("LargeMiningHardpoint1", HARDPOINT_MODULES); // mining tools only
-miner.setModule(
-  "LargeMiningHardpoint1",
-  getModuleBySymbol("Hpt_PlasmaAccelerator_Fixed_Large", HARDPOINT_MODULES)!,
-); // throws: slot only takes mining tools
+```text
+data/        shared JSONC catalogues and per-domain provenance
+fixtures/    shared plain-JSON behavioral fixtures
+schemas/     shared JSON Schemas for catalogue payloads
+scripts/     repository-only data tooling
+typescript/  @elite-dangerous-almanac/core
 ```
 
-Careful with the two names a _core_ mount has: `slot.key` is the journal slot
-(`MainEngines`, `Radar`) and is what every `slotKey` argument takes, while `slot.core` is
-the camelCase function (`thrusters`, `sensors`) you filter on. That is why the example
-above matches `s.core === "frameShiftDrive"` but calls
-`getFittedModule("FrameShiftDrive")`. Five of the seven differ from their key by case
-alone, so case-insensitive matching lets them through —
-`getFittedModule("frameShiftDrive")` finds the drive. **The two that do not are
-`thrusters` and `sensors`**, whose keys are `MainEngines` and `Radar`: pass either
-function name where a key is expected and you get nothing, `getFittedModule` returning
-`null` and `setModule` throwing a `RangeError` naming the slot it could not find. Filter
-on `slot.core`, pass `slot.key`, and the distinction never bites.
-A module lives in the catalogue for its outfitting **category**, which is not
-always the slot it occupies — a fuel tank is in `CORE_MODULES` even though it fits
-an optional slot, and the Guardian Hybrid power plant is in `INTERNAL_MODULES`
-even though it fills a core mount — so pass `ALL_MODULES` to `modulesForSlot` when
-you want every candidate. The fit itself is decided by the record's own
-[`slot`](#ships-and-outfitting) against the mount's `slot.core`, never by its symbol.
-
-**Two ways to reach a hull's mounts.** For an editable build, start a `ShipLoadout` and
-use its live handles — `slots()`, `coreModules()`, `hardpoints()`, `utilityMounts()`,
-`optionalModules()` — which is what most consumers want. If you only need the **raw,
-read-only** layout (to drive your own outfitting UI), call `getShipSlots(symbol)` and
-feed the result to `enumerateSlots`; the rest of the `ships/slots` exports
-(`BuildSlot`, `CoreSlots`, `parseSlotName`, …) are that low-level model.
-
-`applyBlueprint` also validates that the module is actually offered the blueprint and the
-experimental effect, that quality is a finite value from 0 to 1, and that every stat the
-recipe changes can actually be answered for that module. What a module is offered comes
-from its [engineering menu](#what-a-module-can-be-engineered-with), not from a rule about
-what kind of module it is: an armour recipe cannot go on an FSD, but neither can
-`Weapon_HighCapacity` go on a Guardian Gauss Cannon, whose menu is Anti-Guardian Zone
-Resistance alone. The error names the menu it checked against.
-
-A recipe leg on a stat the module simply **does not have** is not a failure — it is
-inert, exactly as in the game. Long Range scales a projectile's shot speed and leaves a
-beam laser's alone, because a beam laser has no projectile; Rapid Fire shortens a reload
-only on a weapon that reloads. What is rejected is a stat that _cannot be answered_:
-one the record declares **unknown** (`isStatUnknown`), or one this record shape models no
-field for at all. Those throw rather than silently emitting a partial
-`Engineering.Modifiers` block.
-
-**Blueprint and experimental ids are Frontier `fdname`s** — the same strings a journal
-`Loadout` event carries in `Engineering.BlueprintName` / `ExperimentalEffect` (e.g.
-`FSD_LongRange`, `special_fsd_heavy`). Enumerate them with `Object.keys(BLUEPRINTS)` and
-`Object.keys(EXPERIMENTAL_EFFECTS)`. Need only the engineering maths? `computeModifiers`
-from `ships/engineering` turns a blueprint grade (from `ships/blueprints`) and an
-experimental effect (from `ships/experimental-effects`) into journal-style modifiers.
-The calculator is validated against the real "Deep Black" export — its size-8 drive's
-optimal mass 4670 → 7528.04 at G5 Long Range + Mass Manager.
-
-**Not every id in that field is a recipe.** The game writes a handful of festive
-transformations — `Decorative_Green`, `Decorative_Red`, `Decorative_Yellow` — in the same
-`BlueprintName` / `EngineerModifications` field, and they are not engineering: no grade, no
-materials, and no engineer applies one. `getBlueprint` answers `null` for them because they
-are not blueprints; `isDecorativeModification` from `ships/decorative-modifications` is how
-you tell that apart from an id the library has never heard of, and `applyBlueprint` refuses
-one by name rather than as an unknown blueprint.
-
-They are **not** cosmetic-only, though: a festive launcher fires fireworks rather than
-flak, and each transformation carries a single `Damage` modifier of −99% to match — on the
-medium turreted launcher, 34 damage down to 0.34. That is the one stat any of them moves,
-and each record carries it in the same `{ label, method, value }` shape a pre-engineered
-variant uses, so `computeModifiers` folds it exactly as it folds a bought variant's:
-
-```ts
-import { DECORATIVE_MODIFICATIONS } from "@elite-dangerous-almanac/core/ships/decorative-modifications";
-import { computeModifiers } from "@elite-dangerous-almanac/core/ships/engineering";
-
-// A fixed article, not a roll — each value is its own min and max.
-const features = DECORATIVE_MODIFICATIONS["Decorative_Green"].modifiers.map(
-  (m) => ({
-    label: m.label,
-    method: m.method,
-    min: m.value,
-    max: m.value,
-  }),
-);
-computeModifiers({ Damage: 34 }, features, 1);
-// -> [{ Label: "Damage", Value: 0.34, OriginalValue: 34 }]
-```
-
-Importing a build needs none of that: `fromLoadout` stores the `Engineering` block as the
-journal wrote it, and the game's own `Modifiers` are exact.
-
-**Material requirements** — what a roll _costs_ — sit alongside the modifiers in
-`ships/blueprints`: every grade is `{ features, damageDistribution?, materials }`, so
-`getBlueprintGrade` gives the modifiers, `getBlueprintGradeDamageDistribution` gives a
-converted weapon split when present, and `getBlueprintGradeMaterials` gives the recipe.
-Each requirement is `{ symbol, name, count }`; join `symbol` to the
-[`materials`](#materials) domain for the material's own grade and category:
-
-```ts
-import { getBlueprintGradeMaterials } from "@elite-dangerous-almanac/core/ships/blueprints";
-
-getBlueprintGradeMaterials("FSD_LongRange", 5);
-// -> [{ symbol: "Arsenic", name: "Arsenic", count: 1 },
-//     { symbol: "ChemicalManipulators", name: "Chemical Manipulators", count: 1 },
-//     { symbol: "DataminedWake", name: "Datamined Wake Exceptions", count: 1 }]
-```
-
-`null` means the catalogue holds no such blueprint or grade; an empty array means a
-**known** recipe that costs nothing (only `CargoRack_IncreasedCapacity` grade 5).
-Blueprints are keyed only by the grades that have data, so iterating grades 1–5 can return
-`null` for a grade a blueprint doesn't define.
-
-Experimental (special) effects cost materials too, and carry them the same way: each
-effect in `ships/experimental-effects` is `{ modifiers, materials }`, so
-`getExperimentalEffect` gives the modifiers and `getExperimentalEffectMaterials` the
-recipe. An experimental effect is a single application (one roll), so its `materials` is
-the whole cost.
-
-**Total cost to a grade** — engineering a blueprint to a grade means rolling up through
-the grades: grade `g` takes `g` rolls (grade 1 → 1 roll … grade 5 → 5 rolls), and each
-roll consumes that grade's materials. So a grade-5-only material like Datamined Wake
-Exceptions (1 per roll) costs 5 to complete grade 5. `getBlueprintCost` totals it for you.
-Pass a **current grade** to price only what is left from a module that already sits at a
-grade (default `0`, unengineered); set it to `grade − 1` to price a single grade alone.
-Fold in an experimental effect with `sumMaterials` for the grand total:
-
-```ts
-import { getBlueprintCost } from "@elite-dangerous-almanac/core/ships/blueprints";
-import { getExperimentalEffectMaterials } from "@elite-dangerous-almanac/core/ships/experimental-effects";
-import { sumMaterials } from "@elite-dangerous-almanac/core/ships/engineering";
-
-// Every material to take an FSD to G5 Long Range from scratch (1+2+3+4+5 rolls):
-getBlueprintCost("FSD_LongRange", 5);
-// -> includes { symbol: "DataminedWake", name: "Datamined Wake Exceptions", count: 5 }, ...
-
-// Only what is left when the drive is already at grade 3 (grades 4 and 5):
-getBlueprintCost("FSD_LongRange", 5, 3);
-
-// …plus the Mass Manager experimental (one application):
-sumMaterials(
-  getBlueprintCost("FSD_LongRange", 5)!,
-  getExperimentalEffectMaterials("special_fsd_heavy")!,
-);
-```
-
-The two data modules stay decoupled — `getBlueprintCost` never pulls in the experimental
-catalogue — so combine them yourself with `sumMaterials` only when you need both.
-
-#### What a module can be engineered with
-
-Before you pick a blueprint, you usually need the menu, and the menu differs per
-**module**: a Pulse Laser takes Efficient, a Rail Gun does not, and the two offer
-different experimental effects even where their blueprints overlap (Long Range,
-Lightweight, Short Range, Sturdy):
-
-```ts
-import {
-  getBlueprintsForModule,
-  getExperimentalsForModule,
-  getExperimentalsForBlueprint,
-} from "@elite-dangerous-almanac/core/ships/engineering-options";
-
-getBlueprintsForModule("Int_Hyperdrive_Size5_Class5");
-// -> ['FSD_FastBoot', 'FSD_LongRange', 'FSD_Shielded']
-
-getBlueprintsForModule("Hpt_PulseLaser_Fixed_Small").includes(
-  "Weapon_Efficient",
-); // -> true
-getBlueprintsForModule("Hpt_Railgun_Fixed_Small").includes("Weapon_Efficient"); // -> false
-
-getExperimentalsForModule("Hpt_MultiCannon_Fixed_Medium").length; // -> 12
-getExperimentalsForModule("Hpt_MultiCannon_Fixed_Small").length; // -> 11
-```
-
-That one-effect difference is not a bug: the small Multi-cannon cannot take Phasing
-Sequence. 24 modules are exceptions like this, and they are applied for you.
-
-`getExperimentalsForBlueprint` answers the blueprint-first question, but it returns the
-**union** across every module group offering that blueprint — so it is a superset, not
-the exact list for any one module. Once you know the module, use
-`getExperimentalsForModule`.
-
-A module the options catalogue does not group returns `[]` from both. To tell that apart
-from a module that _is_ grouped but has no experimental to offer, ask
-`getEngineeringGroup` — it returns `null` only for the former. The second case is the
-common one: 388 of the 1028 grouped modules take blueprints and nothing else — 387 of
-them because their group offers no experimental at all (30 of the 53 groups: life
-support, sensors, the limpet controllers, the utility scanners, and every Guardian
-group), and the small fixed Abrasion Blaster because it is excluded from its group's only
-effect.
-
-The catalogue covers 1028 of the 1197 modules — every module upstream allows a recipe
-on. The other 169 take no engineering: whole families (fuel tanks, passenger cabins, the
-repair/recon/research/decontamination and multi-limpet controllers, meta-alloy and
-ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
-Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
-Supercruise Assist, the module stabilisers, the planetary approach suites, the withdrawn
-discovery scanners, the cargo hatch and the AX utility modules), plus individual modules
-their family's blueprints do not reach — every anti-xeno multi-cannon but the two
-gimballed, both Enhanced anti-xeno missile racks and every turreted plain one, five of the
-seven mining tools and the remote-release launchers among them.
-
-```ts
-getBlueprintsForModule("Int_LifeSupport_Size4_Class2");
-// -> ['LifeSupport_LightWeight', 'LifeSupport_Reinforced', 'LifeSupport_Shielded']
-
-getBlueprintsForModule("Anaconda_Armour_Grade3").length; // -> 5
-getExperimentalsForModule("Anaconda_Armour_Grade3").length; // -> 4
-
-getEngineeringGroup("Int_FuelTank_Size3_Class3"); // -> null, nothing engineers a fuel tank
-```
-
-**A group is one menu**, so a module family whose flavours have different menus is more
-than one group. A Guardian Power Plant takes Anti-Guardian Zone Resistance and none of
-the ordinary power-plant recipes; an ordinary one is the reverse. The distributors and
-hull reinforcement packages split the same way:
-
-```ts
-getBlueprintsForModule("Int_Powerplant_Size5_Class5");
-// -> ['PowerPlant_Armoured', 'PowerPlant_Boosted', 'PowerPlant_Stealth']
-getBlueprintsForModule("Int_GuardianPowerplant_Size5");
-// -> ['GuardianModule_Sturdy']
-
-getExperimentalsForModule("Int_Powerplant_Size5_Class5").length; // -> 4
-getExperimentalsForModule("Int_GuardianPowerplant_Size5"); // -> []
-```
-
-That empty list is the rule for every Guardian **module**: Anti-Guardian Zone Resistance
-is the whole menu — for the power plants, distributors and hull reinforcement packages as
-above, and for the FSD boosters, module and shield reinforcement packages too — and that
-recipe has no experimental slot. An engineered Guardian module that _does_ carry an
-experimental was obtained already engineered, as a community-goal or tech-broker reward,
-rather than rolled at an engineer; this menu answers what a player may apply, so it does
-not list those. (Those particular reward variants are not catalogued here either — see
-[modules you can buy already engineered](#modules-you-can-buy-already-engineered) for what
-is.) Guardian **weapons** are the same: their three groups are menus of that one recipe
-too. An ordinary weapon recipe reaches a Guardian weapon only as a purchase, never as an
-engineer roll, so [modules you can buy already
-engineered](#modules-you-can-buy-already-engineered) is what carries it.
-
-> **One recipe can have two journal ids.** Where a modification applies to several module
-> families, `BLUEPRINTS` carries both a family-specific spelling and a generic one — a
-> life support's Lightweight is `LifeSupport_LightWeight` here and `Misc_LightWeight` in
-> an EDSY-authored build. The menus list the family-specific id, so compare ids knowing
-> the two are the same recipe.
->
-> **And one journal id can name two recipes.** `Sensor_LongRange` and `Scanner_LongRange`
-> are _not_ the pair above: those are different recipes rolling different stats — Long
-> Range costs a sensor suite mass and a utility scanner power draw, Wide Angle the reverse
-> — and the scanner menus list the `Scanner_*` ones where the sensor suites list the
-> `Sensor_*` ones. The game writes `Sensor_LongRange` for both all the same — those two
-> scanner records say so in their own `journalName` — so which numbers apply is a fact
-> about the fitted module. `resolveBlueprintForModule` is that lookup, and `applyBlueprint`
-> makes it for you:
->
-> ```ts
-> resolveBlueprintForModule(
->   "Hpt_CloudScanner_Size0_Class5",
->   "Sensor_LongRange",
-> );
-> // -> 'Scanner_LongRange' — the scanner's recipe, whatever the build called it
-> resolveBlueprintForModule("Int_Sensors_Size4_Class5", "Sensor_LongRange");
-> // -> 'Sensor_LongRange' — and the suite keeps its own
-> ```
->
-> **The commonest case is Overcharged on a multi-cannon**, not the scanners. A
-> multi-cannon's Overcharged also cuts the clip — 3% at grade 1 to 15% at grade 5 — where
-> the recipe every other weapon takes leaves it alone, so the multi-cannon menus, anti-xeno
-> ones included, list `MC_Overcharged` and the game writes `Weapon_Overcharged` for both.
-> 70 of the build corpus's declared entries need this resolution, against one for the
-> scanners.
->
-> ```ts
-> resolveBlueprintForModule(
->   "Hpt_MultiCannon_Fixed_Medium",
->   "Weapon_Overcharged",
-> );
-> // -> 'MC_Overcharged' — the multi-cannon's recipe, clip penalty and all
-> resolveBlueprintForModule("Hpt_BeamLaser_Fixed_Small", "Weapon_Overcharged");
-> // -> 'Weapon_Overcharged' — every other weapon keeps its own
-> ```
->
-> It resolves _into_ a menu and never out of one, so a sensor suite is still not offered
-> `Scanner_LongRange`. Every other id, on every other module, comes back unchanged.
-> It lives in its own module, `ships/blueprint-journal`, because it needs the menus **and**
-> the recipes — keeping it out of `ships/engineering-options` is what lets that stay 63 KB
-> of menus for everyone who only wants to know what a module takes.
-
-```ts
-import { resolveBlueprintForModule } from "@elite-dangerous-almanac/core/ships/blueprint-journal";
-```
-
-> **This menu is also what `ShipLoadout.applyBlueprint` enforces.** The two questions —
-> "what can I fit?" and "may I fit this?" — read the same catalogue, so they cannot answer
-> differently. `applyBlueprint` refuses a recipe this menu does not list for that module,
-> and quotes the menu back when it does.
->
-> It makes three accommodations beyond the menu. One is the journal spelling just
-> described, and it is the one applied first: a scanner's `Sensor_LongRange` is accepted
-> and folded as `Scanner_LongRange`. It is also the only one that changes _which_ recipe an
-> accepted id names; the two below merely widen what is accepted, so their order does not
-> matter.
->
-> Another is for builds that spell a modification generically: where a recipe applies to
-> several families the game writes a family-specific `BlueprintName` and the menu lists
-> that one, but an EDSY-authored build
-> carries `Misc_LightWeight` where the menu says `LifeSupport_LightWeight`. Those are the
-> same recipe, so both are accepted — 70 of the corpus's declared entries are spelled that
-> way. The alias runs only from the ambiguous spelling to the menu's, never the reverse:
-> `LifeSupport_LightWeight` stays off a limpet controller, and a chaff launcher's Ammo
-> Capacity stays off a heat sink launcher, whose roll is a smaller one.
->
-> The last is for the Operations keys of [modules sold already
-> engineered](#modules-you-can-buy-already-engineered) — 21 of the 27 Operations keys, none
-> of which a menu lists. For those `applyBlueprint` reads `ships/pre-engineered` instead,
-> on the module that actually ships with the recipe and no other —
-> `RailGun_LongShot` on the medium rail gun, not the small one.
-> That is how you engineer a Mercenary module _further_: it arrives at grade 1 and its
-> recipe carries grades 2–5. It is not how you reproduce what you bought — grade 1 of those
-> recipes does not exist, because the first grade came with the module.
-
-#### Modules you can buy already engineered
-
-Some modules arrive **already engineered** — the Mercenary shop's rail gun, missile racks
-and power distributors, the modules awarded for community goals, and the tech-broker
-unlocks (the "V1" drives, the Guardian weapons). These have **no symbol of their own**:
-the game hands you an ordinary module with engineering already applied, so a journal
-reports the base symbol plus an `Engineering` block. `ships/pre-engineered` supplies the
-link the module and blueprint catalogues cannot: which stock modules come pre-engineered,
-and with what.
-
-```ts
-import {
-  getPreEngineeredVariants,
-  getPreEngineeredByBlueprint,
-  isPreEngineered,
-} from "@elite-dangerous-almanac/core/ships/pre-engineered";
-
-isPreEngineered("Hpt_Railgun_Fixed_Medium"); // -> true
-
-// One module can carry several variants — here a Merc shop row and a CG reward…
-getPreEngineeredVariants("Hpt_Railgun_Fixed_Medium");
-// -> [{ blueprint: 'RailGun_LongShot', grade: 1, acquisition: 'mercenary' }, …
-//     { blueprint: 'Weapon_HighCapacity', grade: 5, acquisition: 'communityGoal',
-//       experimental: 'special_feedback_cascade_cooled' }]
-
-// …and one blueprint on several modules, so both lookups return arrays.
-getPreEngineeredByBlueprint("SeekerMissileRack_Drag").map((v) => v.symbol);
-// -> ['Hpt_BasicMissileRack_Fixed_Medium', 'Hpt_BasicMissileRack_Fixed_Large']
-```
-
-`acquisition` tells the three kinds apart, and they behave differently:
-
-|                  | `mercenary` (22)    | `communityGoal` (30) | `techBroker` (21)   |
-| ---------------- | ------------------- | -------------------- | ------------------- |
-| Blueprint id     | Merc Operations key | ordinary recipe key  | ordinary recipe key |
-| Grade on arrival | always 1            | 28 of 30 at grade 5  | 14 of 21 at grade 5 |
-| Experimental     | none                | 8 of 30 carry one    | 4 of 21 carry one   |
-| Price            | `mercCoinCost`      | not bought           | not bought          |
-| Stat block       | not published       | `modifiers`          | `modifiers`         |
-
-`blueprint` names the recipe, so it joins straight to `BLUEPRINTS`. Where the game writes
-one id for two recipes, it is the key the module's **own** menu lists rather than the id a
-journal carries — and where that menu does not offer the recipe at all, the id the sale
-carries. A variant's identity is the **`(symbol, blueprint, grade, experimental)`
-quadruple** — no narrower key holds. The medium Seeker Missile Rack has three High
-Capacity rewards that differ only in the effect applied, and the medium Guardian Shard
-Cannon carries Long Range with no experimental **twice**: grade 5 as a CG reward, grade 1
-from a tech broker.
-
-##### Building a ship with one
-
-A reward variant carries `modifiers` — the hand-set stat changes it actually arrives
-with, in the same vocabulary blueprints use. `ships/pre-engineered-stats` resolves those
-against the base module so the result can be fitted and budgeted:
-
-```ts
-import { getPreEngineeredVariants } from "@elite-dangerous-almanac/core/ships/pre-engineered";
-import {
-  getPreEngineeredStats,
-  unresolvedModifiers,
-} from "@elite-dangerous-almanac/core/ships/pre-engineered-stats";
-import { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
-
-const [fsdV1] = getPreEngineeredVariants("Int_Hyperdrive_Size5_Class5");
-const resolvedFsd = getPreEngineeredStats(fsdV1)!;
-// -> { …, optMass: 1785, mass: 26, integrity: 84, … }
-// the stock 5A drive has optMass 1050 — this is the "V1" drive's known 1785
-
-const build = ShipLoadout.empty("Anaconda").setModule(
-  "FrameShiftDrive",
-  resolvedFsd,
-);
-build.frameShiftDrive.optMass; // -> 1785; fitting preserves the reward's resolved stats
-```
-
-> **Weapon stats resolve too.** The module catalogues carry damage, range, rate-of-fire
-> and ammunition stats, so weapon variants resolve those alongside mass, integrity and
-> power draw. The few labels for which no catalogue has a base value (such as scanner
-> probe radius) are reported by `unresolvedModifiers` rather than dropped silently.
-
-> **A reward variant is not reproducible by engineering.** Those hand-set modifiers are
-> what make it a reward. The recorded blueprint/grade/experimental **identify** it; they
-> are not a recipe that recreates it, and `getBlueprintCost` on one prices ordinary
-> engineering instead.
-
-The 22 Merc shop rows carry a `mercCoinCost` (300–950 MC) but no `modifiers`: no registry
-publishes the grade-1 pre-engineering they arrive with, so the catalogue omits it rather
-than guessing. Resolving one returns the stock record unchanged.
-
-Merc rows arrive at **grade 1**, which is why those blueprints' own recipes start at
-grade 2 — the first grade came with the module. Price the rest of the climb by passing the
-grade you already have:
-
-```ts
-const bought = getPreEngineeredByBlueprint("RailGun_LongShot")[0];
-getBlueprintCost(bought.blueprint, 5, bought.grade); // grades 2-5 only
-```
-
-## Market commodities
-
-The `commodities` feature area is Frontier's commodity-market registry: the 257
-**standard** goods traded at station markets and the 142 **rare** goods each
-produced at a single station. Every entry is a symbol/name/category record (not a
-price sheet — no buy/sell price, supply or demand, which the source registry does
-not carry). The two registries share a shape, and **every lookup searches both by
-default** — so you do not have to know whether a good is standard or rare before you
-can find it:
-
-```ts
-import {
-  getCommodityBySymbol,
-  getCommodityByName,
-  commoditiesInCategory,
-} from "@elite-dangerous-almanac/core/commodities";
-
-getCommodityBySymbol("platinum")?.category; // -> 'Metals' (either casing resolves)
-getCommodityByName("lavian brandy")?.rare; // -> true
-commoditiesInCategory("Metals").length; // -> every metal, standard and rare
-```
-
-The optional trailing argument narrows the search to one registry, or to any array
-you have filtered yourself (subpaths below are relative to
-`@elite-dangerous-almanac/core`):
-
-| Import                             | Export             | What's in it                                     | Entries |
-| ---------------------------------- | ------------------ | ------------------------------------------------ | ------- |
-| `commodities/commodities-standard` | `COMMODITIES`      | Standard market goods, all sixteen market groups | 257     |
-| `commodities/commodities-rare`     | `RARE_COMMODITIES` | Location-specific rare/luxury goods              | 142     |
-| `commodities/commodities-all`      | `ALL_COMMODITIES`  | Both, standard then rare — the default           | 399     |
-
-```ts
-import { commoditiesInCategory } from "@elite-dangerous-almanac/core/commodities";
-import { COMMODITIES } from "@elite-dangerous-almanac/core/commodities/commodities-standard";
-
-commoditiesInCategory("Metals", COMMODITIES).length; // -> the standard ones only
-```
-
-Every record carries the `rare` flag, so a subset is also one `.filter()` away.
-
-Each commodity carries a stable Frontier `symbol` (the journal names commodities by
-its lower-cased form, so `getCommodityBySymbol` accepts either casing), a display
-`name`, and a `category` — the market group it sells under (`Metals`, `Foods`,
-`Legal Drugs`, …). A `rare` flag distinguishes the two registries; it is derived
-from which catalogue a record lives in, so it stays correct through
-`ALL_COMMODITIES`. A rare's origin station is **not** carried — the source's
-`market_id` is dropped, since the library has no station registry to resolve it
-against.
-
-## Data freshness
-
-The checked-in catalogues are a snapshot dated **2026-07-24**, revised since. Each
-domain's `SOURCES.md` is the authoritative record — for every catalogue, where its
-values came from, at which upstream revision, how they were derived, and why
-anything is absent:
-[ships](data/ships/SOURCES.md), [commodities](data/commodities/SOURCES.md),
-[materials](data/materials/SOURCES.md), [astro](data/astro/SOURCES.md).
-Release-by-release notes live with the
-[GitHub releases](https://github.com/DarkSession/Elite-Dangerous-Almanac/releases);
-this README describes the data as it stands.
-
-Values no source publishes are left **absent rather than guessed**, so some
-`integrity`, `powerDraw` and `mass` fields are `undefined` — read that as
-_unknown_, never as zero. Where an absence means _unknown_ rather than _the module
-has no such stat_, the record says so in its own
-[`unknownStats`](#when-a-stat-is-missing) field. The
-[open issues](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues) are the
-short list of those gaps.
-[`data/SNAPSHOTS.md`](data/SNAPSHOTS.md) records the initial-snapshot limitation
-and the versioning metadata every future update must carry.
+`data/` is the single source of truth. Implementations strip comments while loading
+JSONC; they do not generate or commit duplicate JSON files.
 
 ## Development
 
+Run TypeScript commands from `typescript/`:
+
 ```bash
-cd typescript
 npm install
-npm run check          # lint -> format:check -> typecheck -> test; run before finishing
-npm test               # shared fixtures + enforced 80% line/branch/function coverage
-npm run build          # tsup -> dist/ (ESM + d.ts, per-subpath)
-npm run test:package   # imports the built dist/ and checks every export subpath
-npm run docs           # typedoc -> GitHub Wiki markdown
+npm run check
+npm run build
+npm run test:package
+npm run docs
 ```
 
-Full API documentation is generated from source and published to the repository
-wiki. The language-neutral JSON Schemas in `schemas/` validate shared catalogue
-records — one schema per data domain — before an implementation builds them into
-a package. `AGENTS.md` documents the repository conventions in full.
+`npm run check` runs linting, formatting checks, type checking and the coverage-gated
+test suite. Changes to exports or consumer-facing modules also require the build and
+package tests.
 
-Releases go out from CI, never from a laptop: bump `version` in
-`typescript/package.json`, then publish a GitHub release tagged `v<version>`.
-`.github/workflows/publish-npm.yml` re-runs the full check, build and packaged
-entry-point suite against the tagged commit and publishes to npm with
-[provenance](https://docs.npmjs.com/generating-provenance-statements), so every
-release on npm is traceable back to the commit and the workflow run that built
-it. Prereleases publish under the `next` dist-tag rather than `latest`.
+API documentation is generated from TSDoc. Catalogue provenance belongs in the
+matching `data/<domain>/SOURCES.md`; open data gaps are tracked in
+[GitHub issues](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues).
 
-## Attributions
+## Data provenance and licensing
 
-Much of this data and several algorithms come from the Elite Dangerous community —
-EDTS, Coriolis, EDSY, EDCD FDevIDs, EliteDangerousRegionMap, EDAstro, Canonn,
-EDSM, Spansh, INARA — and the ship and module stat values are the property of
-Frontier Developments plc, used under their media-usage rules.
+Each data file starts with a short attribution comment. Detailed sources, acquisition
+dates, immutable revisions or checksums, derivation and manual corrections live in:
 
-**Every credit, licence and non-commercial restriction is in
-[ATTRIBUTIONS.md](ATTRIBUTIONS.md).** Read it before redistributing the data or
-using it commercially. It is the single canonical list, and it is what ships to
-npm consumers as `THIRD_PARTY_NOTICES.md`.
+- [Astro sources](data/astro/SOURCES.md)
+- [Ship sources](data/ships/SOURCES.md)
+- [Material sources](data/materials/SOURCES.md)
+- [Commodity sources](data/commodities/SOURCES.md)
 
-The same credit also lives next to each thing being credited: as a comment header
-on every data file — with the long form in its domain's `SOURCES.md` — and in the
-doc comment of each ported module. (Attribution sits in a comment rather than an
-`attribution` field so it documents the data without being inlined into your
-bundle.)
+[data/SNAPSHOTS.md](data/SNAPSHOTS.md) defines the required provenance metadata.
+[ATTRIBUTIONS.md](ATTRIBUTIONS.md) is the canonical list of third-party credits and
+licence terms.
 
-## License
-
-The project's own code and documentation are MIT-licensed. Bundled Elite Dangerous
-and third-party data remains under its source-specific terms, including
-non-commercial restrictions. [LICENSE](LICENSE) states both halves and
-[ATTRIBUTIONS.md](ATTRIBUTIONS.md) lists them source by source; review both before
-redistribution or commercial use.
-
-There is one licence file, at the repository root. The npm package's `LICENSE` and
-`THIRD_PARTY_NOTICES.md` are verbatim copies written at build time, so a consumer's
-`node_modules` carries the same terms.
+The project's code and documentation are MIT-licensed. Bundled game and third-party
+data remains under its source-specific terms; it is not relicensed under MIT.

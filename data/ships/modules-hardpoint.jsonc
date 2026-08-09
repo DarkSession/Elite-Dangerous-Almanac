@@ -13,7 +13,7 @@
  *          — mass, integrity, powerDraw and bootTime where coriolis-data carries
  *          none, and corrections where its value is a duplicated or mis-copied row.
  *          In-game verification covers all identities and the numeric values on all
- *          956 non-armour modules; exact corrections are pinned in
+ *          952 non-armour modules; exact corrections are pinned in
  *          fixtures/ships/module-stats.json. Distinct damage amounts observed in-game are
  *          retained in `damageComponents`; projectile boundary parameters observed in-game
  *          that are not effective ranges are retained in `projectileRange`.
@@ -66,14 +66,6 @@
  * regeneration, the stat a journal labels `EnergyPerRegen`.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
- * `unknownStats` names the stat fields this record omits because the value is
- * *unknown* rather than because the module has none — a cargo rack has no
- * `powerDraw`, but a Discovery Scanner has one nobody publishes. Present only where
- * an absence needs that said; a field named here is always absent from the record,
- * so sourcing a value means deleting its name here in the same change. The difference
- * is load-bearing for engineering: a recipe that scales a stat the module does not have
- * is inert, while one that scales a stat named here is refused outright.
- *
  * Full provenance: data/ships/SOURCES.md.
  */
 [

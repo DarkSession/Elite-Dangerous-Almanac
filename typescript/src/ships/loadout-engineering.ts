@@ -14,7 +14,7 @@ import {
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
-import { baseStats, fieldForLabel, isUnknown } from './module-stat-labels.js';
+import { baseStats, fieldForLabel } from './module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
 import type { OutfittingModule } from './modules.js';
 import type { AvailableBlueprint } from './ship-loadout.js';
@@ -36,17 +36,10 @@ export function statFor(item: string): OutfittingModule | null {
  * that make {@link ShipLoadout.applyBlueprint} refuse the recipe rather than store it
  * half-applied.
  *
- * A label with no base value is not automatically one of them. The catalogue's rule is
- * that an absent stat means *the module has no such stat* unless the record names it in
- * {@link OutfittingModule.unknownStats}, and a recipe leg on a stat that is not there is
- * simply inert: Long Range scales the shot speed of a weapon that fires a projectile and
- * leaves a beam laser's alone, exactly as the game does. So a label is missing only when
- *
- * - the catalogue models **no field at all** for it, so there would be nowhere to put
- *   the result — an engineered stat this record shape cannot express; or
- * - the record declares that field **unknown**, so a value exists and nobody publishes
- *   it. Nothing can be scaled from an unknown, and guessing would be worse than
- *   refusing.
+ * A label with no base value is not automatically missing. A recipe leg on a stat the
+ * module does not have is inert: Long Range scales the shot speed of a projectile weapon
+ * and leaves a beam laser alone. A label is missing only when the catalogue models no
+ * field for it, so there is nowhere to store the result.
  *
  * @internal
  */
@@ -63,8 +56,7 @@ export function missingBaseLabels(
                 .map((contribution) => contribution.label)
                 .filter((label) => {
                     if (base[label] !== undefined) return false;
-                    const field = fieldForLabel(label, stats);
-                    return field === null || isUnknown(stats, field);
+                    return fieldForLabel(label, stats) === null;
                 }),
         ),
     ];

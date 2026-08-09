@@ -50,9 +50,6 @@ test('nested records and named origins are frozen', () => {
     assert.equal(Object.isFrozen(handAuthored.spheres), true);
     assert.ok(handAuthored.spheres.every((sphere) => Object.isFrozen(sphere)));
 
-    const declaring = ALL_MODULES.find((module) => module.unknownStats !== undefined)!;
-    assert.equal(Object.isFrozen(declaring.unknownStats), true);
-
     const origin = getNamedRegionOrigin('Pleiades Sector');
     assert.ok(origin);
     assert.equal(Object.isFrozen(origin), true);

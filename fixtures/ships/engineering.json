@@ -340,7 +340,7 @@
       "recipe_guardianweapon_sturdy"
     ],
     "operationsKeys": {
-      "description": "Operations blueprints are keyed as the registry publishes them minus Inara\u2019s `recipe_` prefix \u2014 neither coriolis (81 keys, none prefixed) nor EDSY (no `recipe_` string at all) uses it, and no observed build does either. `prefixed` is the whole of the exception: two declared Inara aliases for a recipe whose real name, `GuardianModule_Sturdy`, is a key in its own right. `observed` records a spelling read off a real Inara SLEF export contributed by the repository owner \u2014 a Mercenary Module Reinforcement Package taken to grade 5, which before the prefix was dropped resolved to nothing and made `applyBlueprint` throw on a genuine build. The export writes it `modulereinforcement_heavyduty`; `blueprint` below is the catalogue key that id resolves to, whose casing comes from a raw journal rather than from Inara, which lower-cases everything it exports. Every lookup matches case-insensitively, so both forms reach the same record.",
+      "description": "Operations blueprints are keyed as the registry publishes them minus Inara\u2019s `recipe_` prefix \u2014 neither coriolis (81 keys, none prefixed) nor EDSY (no `recipe_` string at all) uses it, and no observed build does either. `prefixed` is the whole of the exception: two declared Inara aliases for a recipe whose real name, `GuardianModule_Sturdy`, is a key in its own right. `observed` records a spelling read off a real Inara SLEF export contributed by the repository owner \u2014 a Mercenary Module Reinforcement Package taken to grade 5. The export writes it `modulereinforcement_heavyduty`; `blueprint` below is the catalogue key that id resolves to, whose casing comes from a raw journal rather than from Inara, which lower-cases everything it exports. Every lookup matches case-insensitively, so both forms reach the same record.",
       "prefixed": [
         "recipe_guardianmodule_sturdy",
         "recipe_guardianweapon_sturdy"
@@ -381,7 +381,7 @@
     }
   },
   "reachability": {
-    "description": "Which ids `applyBlueprint` accepts on at least one module, swept over every id in `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS` against all 1197 module symbols. Every blueprint reaches a module; one experimental effect reaches none, and `unreachableBlueprints` / `unreachableExperimentals` are that residue in full — whole lists rather than spot checks, so an id stranded by a later change fails a test instead of passing unnoticed. `reachable` pins the six blueprints whose route to a module is narrow enough to lose by accident: each on a module that accepts it, one that must refuse it, and the exact count that takes it, so a menu row widened into a neighbouring family fails here rather than satisfying the sweep by reaching everything.",
+    "description": "Which ids `applyBlueprint` accepts on at least one module, swept over every id in `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS` against all 1193 module symbols. Every blueprint and experimental effect reaches a module; `unreachableBlueprints` and `unreachableExperimentals` pin that empty residue. `reachable` pins the six blueprints whose route to a module is narrow enough to lose by accident: each on a module that accepts it, one that must refuse it, and the exact count that takes it.",
     "reachable": [
       {
         "id": "MC_Overcharged",
@@ -421,7 +421,7 @@
       }
     ],
     "unreachableBlueprints": [],
-    "unreachableExperimentals": ["special_feedback_cascade"]
+    "unreachableExperimentals": []
   },
   "experimentalNames": {
     "description": "Current English in-game display names for the five effects whose exact casing, hyphenation or library-only qualifier is easy to normalize incorrectly.",
@@ -457,5 +457,5 @@
     }
   },
   "blueprintCount": 109,
-  "experimentalCount": 87
+  "experimentalCount": 86
 }

@@ -70,8 +70,7 @@ test('parseSlotName reads the Lynx Highliner cabin mounts as cabin-only', () => 
     const cabin = { kind: 'optional', size: null, restriction: 'passenger' };
     assert.deepEqual(parseSlotName('Passenger01'), cabin);
     assert.deepEqual(parseSlotName('Passenger03'), cabin);
-    // The newest slot-name form has to obey the case rule the rest of them do — an
-    // Inara-sourced Lynx build writes them lower-cased like everything else.
+    // An Inara-sourced Lynx build writes these lower-cased like every other slot name.
     assert.deepEqual(parseSlotName('passenger01'), parseSlotName('Passenger01'));
     assert.deepEqual(parseSlotName('PASSENGER03'), parseSlotName('Passenger03'));
 });

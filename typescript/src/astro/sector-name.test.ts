@@ -72,12 +72,6 @@ test('rejects non-procedural sector names', () => {
     assert.equal(sectorCoordsFromName('Pleiades Sector'), null);
     assert.equal(canonicalizeSectorName('Pleiades Sector'), null);
     assert.equal(sectorCoordsFromName('Zzzz'), null);
-});
-
-test('short names that fit the grammar parse but are not canonical', () => {
-    // "Sol" coincidentally matches prefix+infix+suffix, so it parses — but it is a
-    // non-canonical alias whose boxel canonicalises to a different spelling. This
-    // mirrors the reference algorithm and is a property of the PG grammar itself.
-    assert.notEqual(sectorCoordsFromName('Sol'), null);
-    assert.notEqual(canonicalizeSectorName('Sol'), 'Sol');
+    assert.equal(sectorCoordsFromName('Sol'), null);
+    assert.equal(canonicalizeSectorName('Sol'), null);
 });

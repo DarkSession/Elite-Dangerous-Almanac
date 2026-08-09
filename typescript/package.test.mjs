@@ -167,10 +167,9 @@ test('reading and writing SLEF costs nothing but the wire format', async () => {
 });
 
 test('the engineering menus do not bundle the blueprint catalogue', async () => {
-    // `engineering-options` is 63 KB because it holds menus and no recipes. Reading a
-    // journal `BlueprintName` against a module needs both, so it lives in
-    // `blueprint-journal`; putting it back here would take the menu module to 285 KB for
-    // every consumer who only wanted to know what a module can take.
+    // Reading a journal `BlueprintName` against a module needs both menus and recipes,
+    // so that join lives in `blueprint-journal`. Menu-only consumers should not import
+    // the recipe catalogue.
     const menus = await readReachableJs(
         new URL('./dist/ships/engineering-options.js', import.meta.url),
     );

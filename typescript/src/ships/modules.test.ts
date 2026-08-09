@@ -13,7 +13,6 @@ import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { UTILITY_MODULES } from './modules-utility.js';
 import { ALL_MODULES } from './modules-all.js';
 import { combinedRateOfFire } from './weapons.js';
-import { isStatUnknown } from './unknown-stats.js';
 import { SHIPS, getShipSlots } from './ships.js';
 import modulesFixture from '../../../fixtures/ships/modules.json' with { type: 'json' };
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
@@ -45,7 +44,6 @@ const IDENTITY_KEYS = new Set([
     'cost',
     // A statement *about* this record's stats rather than one of them: naming a stat
     // as unknown is the opposite of carrying it.
-    'unknownStats',
 ]);
 
 /** Whether a merged record carries any stats (vs. identity only, like armour). */
@@ -81,8 +79,8 @@ test('module symbols are unique across all four catalogues', () => {
 });
 
 test('every module lands in the catalogue named by its own category', () => {
-    // The category is no longer on the record: it is the data file the catalogue was
-    // read from, filled in at load. So this asserts the loader fills it in, and nothing
+    // Category comes from the data file and is filled in at load. This asserts the
+    // loader fills it in, and nothing
     // about the data — that a record sits in the right file is checked from the record
     // itself, in data-files.test.ts.
     for (const [name, catalogue] of Object.entries(CATALOGUES)) {
@@ -190,13 +188,6 @@ test('getModulesForShip returns a hull armour set, and nothing outside core', ()
     assert.deepEqual(getModulesForShip(ship, HARDPOINT_MODULES), []);
 });
 
-test('the removed Discovery Scanner is retained without a fabricated entitlement', () => {
-    const scanner = getModuleBySymbol('Int_StellarBodyDiscoveryScanner_Advanced', INTERNAL_MODULES);
-    assert.ok(scanner);
-    assert.equal(scanner.name, 'Advanced Discovery Scanner');
-    assert.equal(scanner.entitlement, undefined);
-});
-
 test('class is a 0-8 size and rating an A-I letter across the whole catalogue', () => {
     for (const module of ALL_MODULES) {
         assert.ok(Number.isInteger(module.class) && module.class >= 0 && module.class <= 8);
@@ -230,10 +221,10 @@ for (const [name, expected] of Object.entries(statsFixture.counts)) {
     });
 }
 
-test('the records with no integrity are the same set they have always been', () => {
+test('the records with no integrity match the fixture', () => {
     // Not a gap in the data: no registry publishes an integrity for these families and
     // the game's own module panel shows none, so the absence is the answer — which is
-    // why they are pinned as a set here rather than declaring `unknownStats`. Ship
+    // why they are pinned as a set here. Ship
     // armour is excluded: 241 records, a different shape, and counted with the hulls.
     const withoutIntegrity = ALL_MODULES.filter(
         (m) => m.integrity === undefined && m.ship === undefined,
@@ -243,10 +234,6 @@ test('the records with no integrity are the same set they have always been', () 
         withoutIntegrity.map((m) => m.symbol).sort(),
         [...statsFixture.withoutIntegrity.symbols].sort(),
     );
-    // And none of them calls it a gap, which is what says so in code.
-    for (const module of withoutIntegrity) {
-        assert.equal(isStatUnknown(module, 'integrity'), false, module.symbol);
-    }
 });
 
 test('stats spot checks: each merged record carries the expected stat values', () => {
@@ -319,17 +306,12 @@ test('in-game audit covers every module identity and pins every corrected value'
 test('the stats a blueprint needs are carried by every module of the family', () => {
     // A count here is a whole family, so a single record losing its value fails. These
     // are the base stats a recipe scales; without them a blueprint cannot be applied at
-    // all, which is the state the catalogue used to be in.
+    // all.
     for (const [field, expected] of Object.entries(statsFixture.statCounts.counts)) {
         const carried = ALL_MODULES.filter(
             (module) => module[field as keyof OutfittingModule] !== undefined,
         );
         assert.equal(carried.length, expected, field);
-        // Sourced, not conjured: a value that is present must never also be declared a
-        // gap on the same record.
-        for (const module of carried) {
-            assert.equal(isStatUnknown(module, field as keyof OutfittingModule), false, field);
-        }
     }
 });
 
@@ -361,9 +343,8 @@ test('an unpriced record omits cost rather than reporting it as free', () => {
 });
 
 test('only the modules that really are free are priced at 0', () => {
-    // A zero cost is indistinguishable from a merge that dropped the price, and that is
-    // exactly how 16 modules once ended up free. Pin the survivors so a new zero has to
-    // be argued for. Ship-specific armour is excluded: a stock bulkhead is genuinely free.
+    // Pin deliberate zeroes so an accidental one is visible. Ship-specific armour is
+    // excluded because a stock bulkhead is genuinely free.
     const free = ALL_MODULES.filter((m) => m.cost === 0 && !/_Armour_/i.test(m.symbol)).map(
         (m) => m.symbol,
     );

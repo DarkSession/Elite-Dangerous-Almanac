@@ -45,20 +45,11 @@ test('damage-converting effects expose their fixed resulting splits', () => {
     assert.equal(getExperimentalEffectDamageDistribution('nope'), null);
 });
 
-test('Feedback Cascade ships as both the plain and the pre-engineered cooled effect', () => {
-    assert.deepEqual(getExperimentalEffect('special_feedback_cascade'), [
-        { label: 'Damage', method: 'multiplicative', value: -0.2 },
-    ]);
-    // The cooled rail-gun variant keeps that damage penalty and adds its thermal cut.
+test('the pre-engineered cooled Feedback Cascade exposes both modifiers', () => {
     assert.deepEqual(getExperimentalEffect('special_feedback_cascade_cooled'), [
         { label: 'Damage', method: 'multiplicative', value: -0.2 },
         { label: 'ThermalLoad', method: 'multiplicative', value: -0.4 },
     ]);
-    // Both are one application of the same recipe.
-    assert.deepEqual(
-        getExperimentalEffectMaterials('special_feedback_cascade'),
-        getExperimentalEffectMaterials('special_feedback_cascade_cooled'),
-    );
 });
 
 test('pre-engineered cooled effects keep every modifier of their base effect', () => {
