@@ -626,7 +626,7 @@ test('an overwrite recipe applies to a stat the module does not carry', () => {
     assert.equal(modifiers.find((m) => m.Label === 'BurstRateOfFire')?.Value, 14);
 });
 
-test('an engineered clip is rounded up to a whole burst, and the reserve is not rounded', () => {
+test('engineered ammunition is rounded to whole rounds', () => {
     for (const pinned of fixture.clipRounding.cases) {
         const weapon = getModuleBySymbol(pinned.symbol, ALL_MODULES)!;
         assert.equal(weapon.clipSize, pinned.baseAmmoClipSize, pinned.symbol);

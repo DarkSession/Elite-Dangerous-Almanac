@@ -104,7 +104,7 @@ test('a pre-engineered damage modifier scales every exact damage component', () 
     assert.ok(Math.abs(metrics.damageByType.antiXeno - 2.19 * 1.1 * metrics.rateOfFire) < 1e-6);
 });
 
-test('a pre-engineered magazine holds whole bursts, and its reserve keeps its fraction', () => {
+test('pre-engineered ammunition is rounded to whole rounds', () => {
     const { symbol, blueprint, grade, base, engineered } =
         fixture.resolved.fragmentCannonDoubleShot;
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
@@ -118,7 +118,7 @@ test('a pre-engineered magazine holds whole bursts, and its reserve keeps its fr
     assert.equal(fitted.clipSize, engineered.clipSize);
     assert.equal(fitted.burstRounds, engineered.burstRounds);
     assert.equal(fitted.clipSize! % fitted.burstRounds!, 0);
-    // The reserve is not rounded, so it keeps what its own multiplier gives.
+    // The reserve's multiplier gives 301.9968, which is nearest to 302 whole rounds.
     assert.equal(fitted.ammoMaximum, engineered.ammoMaximum);
 });
 

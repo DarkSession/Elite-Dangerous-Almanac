@@ -132,7 +132,7 @@ test('a reserve with no magazine stated is drawn from directly', () => {
     assert.equal(capacity.unlimited, false);
 });
 
-test('engineering loads whole rounds in the clip, and leaves the reserve as it lands', () => {
+test('engineering loads whole rounds in the clip and reserve', () => {
     // Every roll is fitted to the slot the fixture names, on a hull refitted per roll so
     // nothing carries over. Utility and hardpoint modules go through the same two calls.
     for (const roll of fixture.ammunition.engineered.rolls) {
@@ -263,8 +263,9 @@ test('every ammo count a journal reports fits inside the capacity for that modul
 
 test("Frontier's own engineered ammunition figures, against what this library computes", () => {
     // Seven captures state an engineered clip or reserve. A parsed build always agrees
-    // with the capture, because a stated modifier is used verbatim; a simulated roll of the
-    // same recipe agrees on seventeen of the twenty-one.
+    // with the capture, because a stated modifier is used verbatim. Two captures carry
+    // stale quality metadata; the fixture preserves it as `reportedQuality` and uses the
+    // manually verified quality for simulation.
     for (const pinned of fixture.ammunition.engineeredGroundTruth.cases) {
         const capture = JOURNALS.find(([file]) => file === pinned.capture)?.[1];
         assert.ok(capture, `${pinned.capture} is pinned but not read`);
@@ -282,7 +283,11 @@ test("Frontier's own engineered ammunition figures, against what this library co
         // The capture says what the fixture says it says.
         assert.equal(fitted.Item, pinned.symbol, label);
         assert.equal(fitted.Engineering!.Level, pinned.grade, label);
-        assert.equal(fitted.Engineering!.Quality, pinned.quality, label);
+        assert.equal(
+            fitted.Engineering!.Quality,
+            'reportedQuality' in pinned ? pinned.reportedQuality : pinned.quality,
+            label,
+        );
         assert.equal(fitted.Engineering!.ExperimentalEffect ?? null, pinned.experimental, label);
         assert.equal(stated('AmmoClipSize'), pinned.game.clipSize, label);
         assert.equal(stated('AmmoMaximum'), pinned.game.ammoMaximum, label);
@@ -301,8 +306,8 @@ test("Frontier's own engineered ammunition figures, against what this library co
             `${label}: imported`,
         );
 
-        // Simulating the same roll from the catalogue is the part that can disagree, and
-        // the fixture pins what it currently produces — including where that is wrong.
+        // Simulating the corrected roll from the catalogue is the part that can disagree,
+        // and the fixture pins what it currently produces — including where that is wrong.
         const record = module(pinned.symbol);
         assert.equal(record.clipSize, pinned.base.clipSize, `${label}: base clip`);
         assert.equal(record.ammoMaximum, pinned.base.ammoMaximum, `${label}: base reserve`);
@@ -322,20 +327,16 @@ test("Frontier's own engineered ammunition figures, against what this library co
         );
         assert.equal(rolled.hopper, pinned.simulated.ammoMaximum, `${label}: simulated reserve`);
 
-        // Whether that simulation matches Frontier is the fixture's `agrees` flag, and the
-        // four `false`s are https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.
+        // Whether that simulation matches Frontier is the fixture's `agrees` flag.
         const agrees = rolled.clipSize === gameClip && rolled.hopper === pinned.game.ammoMaximum;
         assert.equal(agrees, pinned.agrees, `${label}: agreement with the game`);
     }
-    // Seventeen of the twenty-one agree — sixteen at quality 1, and one at 0.826 whose leg
-    // is an experimental's flat percentage rather than a quality-rolled one. The four that
-    // do not are what
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 is about, and the
-    // fixture's note says what they jointly rule out. Counting them is not the guard — the
-    // sweep below is, because a case list that quietly shrinks is how the evidence would be
-    // dropped rather than faced.
+    // The only remaining disagreement is the Corsair clip, where the registry-derived
+    // intermediate roll is one missile below Frontier's stated value. Counting it is not
+    // the guard — the sweep below is, because a case list that quietly shrinks is how the
+    // evidence would be dropped rather than faced.
     const { cases } = fixture.ammunition.engineeredGroundTruth;
-    assert.equal(cases.filter((c) => !c.agrees).length, 4);
+    assert.equal(cases.filter((c) => !c.agrees).length, 1);
 });
 
 test('the Corsair capture recomputes to the figures Frontier reports for it', () => {

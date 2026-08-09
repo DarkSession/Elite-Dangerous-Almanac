@@ -35,14 +35,16 @@ in the doc comment of each ported module, and in long form in the domain
   the formulas come from; `data/ships/SOURCES.md` records the exact functions,
   commits and threads.
 - **Engineered ammunition rounding** — a computed clip is rounded up to a whole
-  multiple of the burst size, and the reserve is not rounded. Ported as fact (our
-  own implementation) from [EDSY](https://github.com/taleden/EDSY) by **taleden**
+  multiple of the burst size. Ported as fact (our own implementation) from
+  [EDSY](https://github.com/taleden/EDSY) by **taleden**
   (**CC BY-NC 4.0**), `edsy.js` — "when modifying clip size, round up to a multiple
   of burst size" — cross-checked against
   [EDCD/Coriolis](https://github.com/EDCD/coriolis) by the **Coriolis contributors**
   (**MIT**), `src/app/shipyard/Module.js` commit `68c042ca`, whose `getClip` rounds
-  the clip up without the burst step and whose `getAmmo` leaves the reserve alone.
-  `data/ships/SOURCES.md` records what each registry says and what neither answers.
+  the clip up without the burst step. Both registries leave the reserve fractional;
+  Frontier journal captures credited under Ground-truth ship builds establish the
+  library's nearest-whole-round treatment. `data/ships/SOURCES.md` records the
+  evidence and the remaining one-round clip disagreement.
 - **Jump-range and fuel algorithm** — the hyperspace formula, ported as fact (our
   own implementation) from [EDSY](https://github.com/taleden/EDSY) by **taleden**
   (**CC BY-NC 4.0**), derived from Frontier's "mass effect on hyperspace range"

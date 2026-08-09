@@ -305,7 +305,7 @@
       "belowCapacity": []
     },
     "engineered": {
-      "note": "Every roll here is at full quality on an empty Viper, refitted per roll. An engineered clip is rounded up to a whole burst where the roll is computed; the reserve is rounded by neither registry and is reported as it lands, fraction and all — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
+      "note": "Every roll here is at full quality on an empty Viper, refitted per roll. An engineered clip is rounded up to a whole burst where the roll is computed; the reserve is rounded to the nearest whole round after every contribution is applied.",
       "rolls": [
         {
           "note": "A small fixed cannon under High Capacity. Grade 5 doubles both figures exactly.",
@@ -323,7 +323,7 @@
           "total": 252
         },
         {
-          "note": "The same cannon at grade 3: the clip reaches 10.08 and loads 11, while the reserve keeps its fraction.",
+          "note": "The same cannon at grade 3: the clip reaches 10.08 and loads 11, while the 201.6-round reserve rounds to 202.",
           "slot": "SmallHardpoint1",
           "module": "Hpt_Cannon_Fixed_Small",
           "blueprint": "Weapon_HighCapacity",
@@ -334,8 +334,8 @@
             "total": 126
           },
           "clipSize": 11,
-          "hopper": 201.6,
-          "total": 212.6
+          "hopper": 202,
+          "total": 213
         },
         {
           "note": "Double Shot gives a fragment cannon a two-round burst and scales the clip by the same roll: 3 rounds become 4.02, and a whole burst makes it 6 rather than the 5 a bare round-up would give.",
@@ -419,7 +419,7 @@
       ]
     },
     "engineeredGroundTruth": {
-      "note": "Every engineered clip or reserve Frontier states across the twelve journal captures — twenty-one readings on seven of them, and the evidence https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57 was opened for. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and quality; an imported build uses the stated modifier verbatim and therefore always equals `game`. Seventeen agree exactly, sixteen of them at quality 1 and the seventeenth — a fragment cannon's Corrosive Shell reserve — at quality 0.826, where the leg is the experimental's flat −20% rather than a quality-rolled one. **The four that do not are what the issue is about, and together they rule out the simple explanations.** Both multi-cannons rolled at an interpolated quality state the *full-quality* reserve — 4200 at quality 0.9844 and again at 0.9438 — so the reserve is not scaled by quality the way the registries model it. The dumbfire rack's clip says the same thing from the other side: 23 is the full-quality figure where its stated quality computes 22. But its reserve, 87, is neither its stated-quality figure (87.499008) nor its full-quality one (88.32), and the heat-sink launcher's 3 is neither at any quality (2.98). So no single rule — ignore quality, round, truncate — reproduces all four, and nothing here is changed on the evidence. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
+      "note": "Every engineered clip or reserve Frontier states across the twelve journal captures — twenty-one readings on seven of them. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and corrected quality; an imported build uses the stated modifier verbatim and therefore always equals `game`. Twenty agree exactly, including a fragment cannon's Corrosive Shell reserve at quality 0.826, where the leg is the experimental's flat −20% rather than a quality-rolled one. The two multi-cannon captures report stale fractional qualities even though the modules are fully engineered, so `reportedQuality` preserves the verbatim journal value while `quality` records the manually verified value used for simulation. Nearest-integer reserve rounding reproduces the Corsair's 87 rounds and the Lynx Highliner's 3 heat sinks. The remaining one-round disagreement is the Corsair dumbfire rack's clip: Frontier states 23 where the registry-derived roll rounds up to 22. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
       "cases": [
         {
           "capture": "journal-cobra-mkv.json",
@@ -428,7 +428,8 @@
           "symbol": "hpt_multicannon_gimbal_medium",
           "blueprint": "Weapon_HighCapacity",
           "grade": 5,
-          "quality": 0.9844,
+          "quality": 1,
+          "reportedQuality": 0.9844,
           "experimental": "special_auto_loader",
           "base": {
             "clipSize": 90,
@@ -442,10 +443,10 @@
           },
           "simulated": {
             "clipSize": 180,
-            "ammoMaximum": 4194.7584
+            "ammoMaximum": 4200
           },
-          "agrees": false,
-          "note": "A disagreement, at an interpolated quality: the game states 4200, which is exactly the full-quality figure (2100 × 2), where quality 0.9844 computes 4194.7584."
+          "agrees": true,
+          "note": "The journal reports quality 0.9844, but the module is manually verified as fully engineered. Simulation therefore applies the corrected quality 1 and reproduces 4200."
         },
         {
           "capture": "journal-cobra-mkv.json",
@@ -545,10 +546,10 @@
           },
           "simulated": {
             "clipSize": 22,
-            "ammoMaximum": 87.499008
+            "ammoMaximum": 87
           },
           "agrees": false,
-          "note": "A disagreement, at an interpolated quality. Frontier's reserve is a whole 87 where this library computes 87.499008, and its clip is 23 where the stated quality gives 22 — 23 is what the *full*-quality roll gives. Importing this build is unaffected: the stated modifiers are used verbatim."
+          "note": "The computed reserve of 87.499008 rounds to Frontier's 87 whole missiles. The clip remains one round apart: Frontier states 23 where the registry-derived roll rounds up to 22. Importing this build is unaffected because the stated modifiers are used verbatim."
         },
         {
           "capture": "journal-federation-corvette-beams.json",
@@ -657,7 +658,8 @@
           "symbol": "hpt_multicannon_gimbal_small",
           "blueprint": "Weapon_HighCapacity",
           "grade": 5,
-          "quality": 0.9438,
+          "quality": 1,
+          "reportedQuality": 0.9438,
           "experimental": "special_emissive_munitions",
           "base": {
             "clipSize": 90,
@@ -671,10 +673,10 @@
           },
           "simulated": {
             "clipSize": 180,
-            "ammoMaximum": 4181.1168
+            "ammoMaximum": 4200
           },
-          "agrees": false,
-          "note": "The same disagreement at a lower quality still: 4200 again, where quality 0.9438 computes 4181.1168. Two readings of one figure at two different qualities is what rules out a quality-scaled reserve."
+          "agrees": true,
+          "note": "The journal reports quality 0.9438, but the module is manually verified as fully engineered. Simulation therefore applies the corrected quality 1 and reproduces 4200."
         },
         {
           "capture": "journal-federation-corvette-mixed.json",
@@ -941,10 +943,10 @@
             "loadedHopper": 3
           },
           "simulated": {
-            "ammoMaximum": 2.98
+            "ammoMaximum": 3
           },
-          "agrees": false,
-          "note": "The reserve alone: the recipe carries no clip leg, so the magazine stands at 1. Frontier reports a whole 3 where 2 × 1.49 is 2.98, and here the roll is at full quality with the recipe's other legs landing exactly (mass 1.3 → 2.6, reload 10 → 15), so quality cannot be what explains it."
+          "agrees": true,
+          "note": "The reserve alone: the recipe carries no clip leg, so the magazine stands at 1. The computed 2.98 reserve rounds to Frontier's 3 whole heat sinks."
         }
       ],
       "recomputed": {
