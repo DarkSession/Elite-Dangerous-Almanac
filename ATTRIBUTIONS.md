@@ -125,10 +125,12 @@ in the doc comment of each ported module, and in long form in the domain
   [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**, whose code is
   **CC BY-NC 4.0**; `data/ships/SOURCES.md` pins the exact snapshots and field-level
   derivation.
-- **In-game verification** — names and numeric values were checked directly in Elite
-  Dangerous. These are **Elite Dangerous game data, property of Frontier Developments
-  plc**; the observation date, field-level coverage, corrections and unresolved fields
-  are in `data/ships/SOURCES.md`.
+- **In-game verification** — names, numeric values and engineering restrictions were
+  checked directly in Elite Dangerous. This includes the fact that stock Guardian
+  weapons accept only Anti-Guardian Zone Resistance while pre-engineered Guardian
+  weapons are final and accept no further engineering. These are **Elite Dangerous game
+  data, property of Frontier Developments plc**; observation dates, field-level coverage,
+  corrections and unresolved fields are in `data/ships/SOURCES.md`.
 - **Experimental (special) effect modifiers, damage-type conversions, their material
   recipes, and journal Modifier Labels** — the numeric experimental-effect modifiers,
   fixed converted damage splits and material costs, which coriolis-data does not carry

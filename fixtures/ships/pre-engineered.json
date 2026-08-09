@@ -1,5 +1,5 @@
 {
-  "description": "Ground truth for data/ships/pre-engineered.jsonc — the module variants that arrive already engineered, whether bought from the Merc-Coin shop, awarded for a community goal, or unlocked at a tech broker. A pre-engineered module has no symbol of its own, so each record pairs a base module `symbol` (joins to the module catalogues) with the `blueprint` baked in, the `grade` already applied, and an optional `experimental`. No narrower key than the (symbol, blueprint, grade, experimental) quadruple is unique — the medium Guardian Shard Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the catalogue size and its split by acquisition; `records` pins individual pairings; `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable; `burstIntervalVariants` pins the variants that change a burst pattern, so the modifier that drives their rate of fire cannot be dropped again; `resolved` pins whole stat blocks against known in-game values; `mercCoin` pins shop prices; `joins` pins that every record resolves against the module, blueprint and experimental catalogues.",
+  "description": "Ground truth for data/ships/pre-engineered.jsonc — the module variants that arrive already engineered, whether bought from the Merc-Coin shop, awarded for a community goal, or unlocked at a tech broker. A pre-engineered module has no symbol of its own, so each record pairs a base module `symbol` (joins to the module catalogues) with the `blueprint` baked in, the `grade` already applied, and an optional `experimental`. `engineeringLocked` marks the seven Guardian-weapon articles that are final and accept no further engineering. No narrower key than the (symbol, blueprint, grade, experimental) quadruple is unique — the medium Guardian Shard Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the catalogue size and its split by acquisition; `records` pins individual pairings; `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable; `burstIntervalVariants` pins the variants that change a burst pattern, so the modifier that drives their rate of fire cannot be dropped again; `resolved` pins whole stat blocks against known in-game values; `mercCoin` pins shop prices; `joins` pins that every record resolves against the module, blueprint and experimental catalogues.",
   "count": 73,
   "counts": {
     "mercenary": 22,
@@ -10,6 +10,17 @@
     "withModifiers": 51,
     "withoutModifiers": 22,
     "withMercCoinCost": 22
+  },
+  "engineeringLocked": {
+    "count": 7,
+    "symbols": [
+      "Hpt_Guardian_GaussCannon_Fixed_Medium",
+      "Hpt_Guardian_GaussCannon_Fixed_Small",
+      "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
+      "Hpt_Guardian_PlasmaLauncher_Fixed_Small",
+      "Hpt_Guardian_ShardCannon_Fixed_Medium",
+      "Hpt_Guardian_ShardCannon_Fixed_Small"
+    ]
   },
   "modifierLabels": [
     "AmmoClipSize",
@@ -299,6 +310,7 @@
       "blueprint": "Weapon_LongRange",
       "grade": 1,
       "acquisition": "techBroker",
+      "engineeringLocked": true,
       "modifiers": [
         {
           "label": "ArmourPenetration",

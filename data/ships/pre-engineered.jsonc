@@ -8,6 +8,8 @@
  *          The community-goal and tech-broker rewards come from EDSY's stored-module
  *          presets (github.com/taleden/EDSY), (c) taleden under a CC BY-NC 4.0 License
  *          (http://creativecommons.org/licenses/by-nc/4.0/).
+ *          The final-engineering restriction on the seven Guardian-weapon rows is an
+ *          in-game report from the repository maintainer, observed 2026-08-09 UTC.
  *          The underlying values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -27,6 +29,10 @@
  *     and seeker racks; the Guardian weapon rows come from the Salvation, Azimuth and
  *     Sirius brokers. Several are recorded elsewhere as having *also* been community-goal
  *     rewards; this field records the one route the source states, not every route.
+ *
+ * `engineeringLocked: true` marks the seven pre-engineered Guardian weapons as final.
+ * Their stock counterparts can take Anti-Guardian Zone Resistance; these bought or
+ * awarded articles accept no blueprint or experimental effect at all.
  *
  * `mercCoinCost` is the shop price in **Merc Coin**, a separate currency with no credit
  * equivalent — which is why it is its own field rather than the `cost` modules carry.
@@ -58,7 +64,8 @@
  * module already contains; `getBlueprintCost(bp, target, 1)` prices taking one of those
  * the rest of the way. Community-goal and tech-broker rewards are mostly already at
  * grade 5 — but not always: the Guardian weapon rows record grade 1, and there the
- * blueprint's own grade 1 exists, so the grade is a real grade of a real recipe.
+ * blueprint's own grade 1 exists, so the grade is a real grade of a real recipe. That
+ * identity does not make the final Guardian articles engineerable.
  *
  * **A reward variant is not reproducible by engineering the same blueprint.** Its stat
  * block also carries hand-set modifier overrides that no blueprint grants, which is
@@ -420,6 +427,7 @@
     "blueprint": "Weapon_LongRange",
     "grade": 5,
     "acquisition": "communityGoal",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "ArmourPenetration",
@@ -1503,6 +1511,7 @@
     "blueprint": "Weapon_RapidFire",
     "grade": 1,
     "acquisition": "techBroker",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -1557,6 +1566,7 @@
     "blueprint": "Weapon_RapidFire",
     "grade": 1,
     "acquisition": "techBroker",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -1611,6 +1621,7 @@
     "blueprint": "Weapon_Overcharged",
     "grade": 1,
     "acquisition": "techBroker",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -1650,6 +1661,7 @@
     "blueprint": "Weapon_Overcharged",
     "grade": 1,
     "acquisition": "techBroker",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "AmmoClipSize",
@@ -1689,6 +1701,7 @@
     "blueprint": "Weapon_LongRange",
     "grade": 1,
     "acquisition": "techBroker",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "ArmourPenetration",
@@ -1743,6 +1756,7 @@
     "blueprint": "Weapon_LongRange",
     "grade": 1,
     "acquisition": "techBroker",
+    "engineeringLocked": true,
     "modifiers": [
       {
         "label": "ArmourPenetration",

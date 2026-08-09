@@ -133,11 +133,11 @@ test('a build that spells a modification generically is still engineered', () =>
     );
 });
 
-test('the gate accepts what the menu omits only by a pinned alias or a pre-engineered sale', () => {
+test('the gate accepts what the menu omits only by a pinned alias or a non-final sale', () => {
     // Three things beyond the menu may explain an acceptance, and nothing else may: the
     // generic spelling of a recipe the menu lists under a family's name, the journal
     // spelling an offered blueprint declares in its `journalName`, and a recipe the module
-    // is sold already carrying. Anything else means the gate has quietly widened.
+    // is sold already carrying and is not final. Anything else means the gate has quietly widened.
     const pinned = new Set(
         Object.entries(optionsFixture.corpus.blueprintAliases).flatMap(([generic, specific]) =>
             specific.map((id) => `${generic.toLowerCase()}|${id.toLowerCase()}`),
@@ -151,9 +151,9 @@ test('the gate accepts what the menu omits only by a pinned alias or a pre-engin
         const offered = getBlueprintsForModule(module.symbol);
         if (offered.length === 0) continue;
         const sold = new Set(
-            getPreEngineeredVariants(module.symbol).map((variant) =>
-                variant.blueprint.toLowerCase(),
-            ),
+            getPreEngineeredVariants(module.symbol)
+                .filter((variant) => !variant.engineeringLocked)
+                .map((variant) => variant.blueprint.toLowerCase()),
         );
         for (const fdname of Object.keys(BLUEPRINTS)) {
             if (offered.includes(fdname)) continue;
@@ -165,7 +165,7 @@ test('the gate accepts what the menu omits only by a pinned alias or a pre-engin
             assert.equal(
                 matched.length,
                 1,
-                `${module.symbol} accepts "${fdname}", which neither a pinned alias nor a pre-engineered sale explains`,
+                `${module.symbol} accepts "${fdname}", which neither a pinned alias nor a non-final pre-engineered sale explains`,
             );
             seen.add(`${fdname.toLowerCase()}|${matched[0]!.toLowerCase()}`);
         }
@@ -297,9 +297,15 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
             `${row.symbol}: ${row.blueprint}`,
         );
         assert.ok(getBlueprint(row.resolved), `${row.resolved} is not a blueprint`);
-        assert.ok(
+        const final = getPreEngineeredVariants(row.symbol).some(
+            (variant) =>
+                variant.engineeringLocked &&
+                variant.blueprint.toLowerCase() === row.blueprint.toLowerCase(),
+        );
+        assert.equal(
             blueprintAvailableFor(row.symbol, row.blueprint),
-            `${row.symbol} must accept ${row.blueprint}`,
+            !final,
+            `${row.symbol}: ${row.blueprint}`,
         );
     }
     // The two registry spellings resolve as explicit aliases.
@@ -407,6 +413,18 @@ test('a recipe sold on one module is not thereby available on its neighbours', (
             'ModuleReinforcement_HeavyDuty',
         ),
     );
+});
+
+test('a final Guardian sale does not widen the stock module menu', () => {
+    const guardian = 'Hpt_Guardian_ShardCannon_Fixed_Medium';
+    assert.deepEqual(getBlueprintsForModule(guardian), ['GuardianModule_Sturdy']);
+    assert.ok(
+        getPreEngineeredVariants(guardian).some(
+            (variant) => variant.blueprint === 'Weapon_LongRange' && variant.engineeringLocked,
+        ),
+    );
+    assert.ok(!blueprintAvailableFor(guardian, 'Weapon_LongRange'));
+    assert.ok(blueprintAvailableFor(guardian, 'GuardianModule_Sturdy'));
 });
 
 test('the gate matches an id the way every other lookup does', () => {

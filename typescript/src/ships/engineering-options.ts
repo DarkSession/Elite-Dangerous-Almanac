@@ -31,8 +31,8 @@
  * community-goal or tech-broker reward, rather than rolled at an engineer; this menu
  * answers what a player may apply, so it does not list those. (Guardian **weapons** are
  * the same shape: their menus are that one recipe too, because an ordinary weapon recipe
- * on a Guardian weapon is always a purchase rather than an engineer roll —
- * `ships/pre-engineered` carries those.)
+ * on a Guardian weapon identifies a final purchase rather than an engineer roll —
+ * `ships/pre-engineered` carries those, and they accept no further engineering.)
  *
  * It has its own module and data file so a consumer who only reads menus pays for
  * nothing else.
@@ -51,8 +51,8 @@
  * records the validation. The gate makes three accommodations beyond the menu, in the
  * order it applies them: a journal id
  * the game writes for two different recipes, which `ships/blueprint-journal` settles by
- * reading this menu against `Blueprint.journalName`; an Operations key belonging to a module
- * sold already engineered, which no menu lists — 21 of the 27 Operations keys — and
+ * reading this menu against `Blueprint.journalName`; an Operations key belonging to a
+ * non-final module sold already engineered, which no menu lists, and
  * `ships/pre-engineered` resolves per module; and a build that spells a modification
  * generically — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
  * {@link getBlueprintsForModule} describes.

@@ -98,7 +98,9 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
  * Returns the base module's catalogue record with every stat the variant modifies — and
  * that the catalogue carries — replaced by its engineered value. `symbol`, `name`,
  * `class`, `rating` and `cost` are the base module's throughout: a pre-engineered
- * variant is the same article with different numbers, not a different module.
+ * variant is the same article with different numbers, not a different module. A final
+ * variant also carries `engineeringLocked: true`, so fitting the resolved article keeps
+ * that restriction.
  * Exact damage components scale with an engineered `damage` value so their proportions
  * and the anti-xeno overlay remain coherent with the resolved scalar.
  *
@@ -122,13 +124,15 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
 export function getPreEngineeredStats(variant: PreEngineeredVariant): OutfittingModule | null {
     const module = getModuleBySymbol(variant.symbol, ALL_MODULES);
     if (!module) return null;
-    if (!variant.modifiers?.length) return module;
+    if (!variant.modifiers?.length && !variant.engineeringLocked) return module;
+    const modifiers = variant.modifiers ?? [];
     const resolved: { -readonly [K in keyof OutfittingModule]: OutfittingModule[K] } = {
         ...module,
+        ...(variant.engineeringLocked ? { engineeringLocked: true } : {}),
     };
     for (const { Label, Value, ValueStr } of computeModifiers(
         baseStats(module),
-        asFeatures(variant.modifiers),
+        asFeatures(modifiers),
     )) {
         const field = fieldForLabel(Label, module);
         // Numeric values return to the catalogue's units (a journal reports a resistance
@@ -144,8 +148,8 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
     // though the recipe never names it — the rate is derived from the firing cycle.
     if (
         resolved.rateOfFire !== undefined &&
-        !variant.modifiers.some((m) => m.label === 'RateOfFire') &&
-        variant.modifiers.some(
+        !modifiers.some((m) => m.label === 'RateOfFire') &&
+        modifiers.some(
             (m) =>
                 m.label === 'BurstSize' ||
                 m.label === 'BurstRateOfFire' ||

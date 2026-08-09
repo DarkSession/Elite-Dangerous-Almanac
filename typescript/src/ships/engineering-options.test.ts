@@ -14,11 +14,11 @@ import {
     getExperimentalsForBlueprint,
 } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
-import { getPreEngineeredVariants } from './pre-engineered.js';
 import { BLUEPRINTS } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
+import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
 import fixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import buildIndex from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
@@ -338,15 +338,15 @@ const declared = corpus.flatMap((build) =>
         .map((module) => ({ symbol: module.item, ...module.engineering! })),
 );
 
-test('every module the build corpus engineers is grouped, bar the one upstream refuses', () => {
+test('every module the build corpus declares as engineered is grouped, bar the Mk II weapon', () => {
     assert.equal(declared.length, fixture.corpus.declaredEngineering);
     const ungrouped = declared.filter((entry) => getEngineeringGroup(entry.symbol) === null);
     assert.deepEqual(
         [...new Set(ungrouped.map((entry) => entry.symbol))].sort(),
-        fixture.corpus.notGrouped.map((row) => row.symbol).sort(),
+        fixture.corpus.notEngineerable.map((row) => row.symbol).sort(),
     );
     assert.equal(ungrouped.length, fixture.corpus.ungroupedEntries);
-    for (const row of fixture.corpus.notGrouped) {
+    for (const row of fixture.corpus.notEngineerable) {
         const entries = declared.filter((entry) => entry.symbol === row.symbol);
         assert.equal(entries.length, row.entries, row.symbol);
         for (const entry of entries) assert.equal(entry.blueprint, row.blueprint, row.symbol);
@@ -377,28 +377,32 @@ test('every menu is sorted, because the API promises it is', () => {
     );
 });
 
-test('every recipe the build corpus declares is one its module offers', () => {
+test('every applicable corpus recipe is one its module offers', () => {
     // A recipe that applies to several module families is stored under each family's own
     // journal id; the catalogue lists the family-specific one, so a build spelling it the
     // generic way is declaring the same thing — and the alias must be one of *this*
     // module's family, not merely some family's. The scanner ids are the other kind: one
     // journal spelling, two different recipes, which only the module's own menu read
-    // against `Blueprint.journalName` can settle. `notOffered` is the real residue: eleven
-    // declarations no registry lists for that module —
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36.
+    // against `Blueprint.journalName` can settle. Guardian entries describing final
+    // pre-engineered articles are classified before this menu check: their Engineering
+    // blocks identify what was bought, not a recipe a player can apply.
     const aliases: Record<string, readonly string[]> = fixture.corpus.blueprintAliases;
-    const exempt = new Set(
-        fixture.corpus.notOffered.map(
-            (row) => `${row.symbol}|${'blueprint' in row ? row.blueprint : row.experimental}`,
-        ),
-    );
     let viaAlias = 0;
     let viaJournalSpelling = 0;
-    let viaPreEngineeredSale = 0;
+    let finalPreEngineered = 0;
     for (const entry of declared) {
         const groupId = getEngineeringGroup(entry.symbol);
         if (groupId === null) continue; // pinned by the previous test
-        const group = ENGINEERING_OPTION_GROUPS[groupId]!;
+        const final = fixture.corpus.finalPreEngineered.find(
+            (row) =>
+                row.symbol === entry.symbol &&
+                row.blueprint === entry.blueprint &&
+                (row.experimental ?? null) === (entry.experimental ?? null),
+        );
+        if (final) {
+            finalPreEngineered += 1;
+            continue;
+        }
         const offered = getBlueprintsForModule(entry.symbol);
         if (!offered.includes(entry.blueprint)) {
             const resolved = resolveBlueprintForModule(entry.symbol, entry.blueprint);
@@ -411,50 +415,37 @@ test('every recipe the build corpus declares is one its module offers', () => {
             } else if (matching.length > 0) {
                 assert.equal(matching.length, 1, `${entry.symbol}: ambiguous alias`);
                 viaAlias += 1;
-            } else if (
-                getPreEngineeredVariants(entry.symbol).some(
-                    (variant) => variant.blueprint.toLowerCase() === entry.blueprint.toLowerCase(),
-                )
-            ) {
-                // The fourth explanation, and the only one that is not about spelling: the
-                // module was *bought* carrying this recipe. Every Guardian weapon in a real
-                // capture that carries an ordinary weapon recipe is one of these — the menus
-                // offer such a weapon nothing but Anti-Guardian Zone Resistance, because an
-                // engineer will not roll the ordinary recipe onto it.
-                viaPreEngineeredSale += 1;
             } else {
-                assert.ok(exempt.has(`${entry.symbol}|${entry.blueprint}`), `${entry.symbol}`);
+                assert.fail(`${entry.symbol}: ${entry.blueprint} is not offered`);
             }
         }
         if (
             entry.experimental &&
             !getExperimentalsForModule(entry.symbol).includes(entry.experimental)
         ) {
-            assert.ok(exempt.has(`${entry.symbol}|${entry.experimental}`), `${entry.symbol}`);
-            assert.ok(!group.experimentals.includes(entry.experimental));
+            assert.fail(`${entry.symbol}: ${entry.experimental} is not offered`);
         }
     }
     assert.equal(viaAlias, fixture.corpus.aliasSpellingsAccepted);
     assert.equal(viaJournalSpelling, fixture.corpus.journalSpellingsAccepted);
-    assert.equal(viaPreEngineeredSale, fixture.corpus.preEngineeredSalesAccepted);
+    assert.equal(finalPreEngineered, fixture.corpus.finalPreEngineeredEntries);
 });
 
-test('the exempted corpus declarations are exactly the ones the fixture names', () => {
-    // Pinned so the exemption cannot quietly grow: each row is a declaration the corpus
-    // makes and the catalogue does not offer, with the number of entries that make it.
-    for (const row of fixture.corpus.notOffered) {
-        const recipe = 'blueprint' in row ? row.blueprint : row.experimental;
+test('the final pre-engineered corpus entries are exactly the ones the fixture names', () => {
+    for (const row of fixture.corpus.finalPreEngineered) {
         const matches = declared.filter(
             (entry) =>
                 entry.symbol === row.symbol &&
-                (entry.blueprint === recipe || entry.experimental === recipe),
+                entry.blueprint === row.blueprint &&
+                (entry.experimental ?? null) === (row.experimental ?? null),
         );
-        assert.equal(matches.length, row.entries, `${row.symbol}: ${recipe}`);
-        const offered =
-            'blueprint' in row
-                ? getBlueprintsForModule(row.symbol)
-                : getExperimentalsForModule(row.symbol);
-        assert.ok(!offered.includes(recipe!), `${row.symbol} does offer ${recipe}`);
+        assert.equal(matches.length, row.entries, `${row.symbol}: ${row.blueprint}`);
+        assert.deepEqual(getBlueprintsForModule(row.symbol), ['GuardianModule_Sturdy']);
+        assert.deepEqual(getExperimentalsForModule(row.symbol), []);
+        assert.ok(
+            isFinalGuardianWeaponEngineering(row.symbol, row.blueprint),
+            `${row.symbol}: ${row.blueprint} is not recognised as a final article`,
+        );
     }
 });
 

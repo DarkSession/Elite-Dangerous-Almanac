@@ -94,6 +94,7 @@ import {
     baseStats,
     blueprintAvailableFor,
     experimentalAvailableFor,
+    isFinalGuardianWeaponEngineering,
     isEngineerable,
     missingBaseLabels,
     statFor,
@@ -561,6 +562,9 @@ export class ShipLoadout {
      * Capture/instance state (`timestamp`, `ShipID`, `HullHealth`, `Hot`) and engineering
      * provenance (`Engineer`, `EngineerID`, `BlueprintID`) are deliberately excluded
      * from the durable build. See {@link LoadoutEvent} and {@link ModuleEngineering}.
+     * An ordinary weapon recipe on a Guardian weapon identifies a final pre-engineered
+     * article; the import preserves that identity, exposes no engineering options for it,
+     * and refuses attempts to engineer it further.
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
         const modules = new Map<string, LoadoutModule>();
@@ -574,7 +578,28 @@ export class ShipLoadout {
         if (event.UnladenMass !== undefined) top.UnladenMass = event.UnladenMass;
         if (event.CargoCapacity !== undefined) top.CargoCapacity = event.CargoCapacity;
         if (event.FuelCapacity !== undefined) top.FuelCapacity = { ...event.FuelCapacity };
-        return new ShipLoadout(event.Ship, modules, top);
+        const loadout = new ShipLoadout(event.Ship, modules, top);
+        // Guardian weapon captures use an ordinary recipe to identify a bought or awarded
+        // pre-engineered article. The article has no distinct module symbol, so preserve
+        // its final-engineering restriction alongside the otherwise stock base record.
+        // Its Engineering modifiers remain authoritative for effective stats.
+        for (const module of modules.values()) {
+            const engineering = module.Engineering;
+            if (
+                !engineering ||
+                !isFinalGuardianWeaponEngineering(module.Item, engineering.BlueprintName)
+            ) {
+                continue;
+            }
+            const stats = statFor(module.Item);
+            if (stats) {
+                loadout.#moduleStats.set(
+                    module.Slot,
+                    cloneModuleStats({ ...stats, engineeringLocked: true }),
+                );
+            }
+        }
+        return loadout;
     }
 
     /**
@@ -945,7 +970,8 @@ export class ShipLoadout {
      * {@link DECORATIVE_MODIFICATIONS}); or the module is not offered the blueprint — by
      * its engineering menu, by the journal spelling of an entry on that menu, by the
      * generic spelling of a recipe that menu lists under a family's name, or by being sold
-     * already carrying it; or the module is not offered the experimental effect, which its
+     * already carrying it; the fitted article is final and accepts no further engineering;
+     * or the module is not offered the experimental effect, which its
      * menu alone decides; or the catalogue does not carry every base stat the recipe
      * modifies. Incomplete engineering is rejected rather than stored as a partial journal
      * modifier block.
@@ -1010,6 +1036,11 @@ export class ShipLoadout {
         if (!Number.isFinite(quality) || quality < 0 || quality > 1) {
             throw new RangeError(
                 `ShipLoadout.applyBlueprint: quality must be a finite number in [0, 1]`,
+            );
+        }
+        if (stats.engineeringLocked) {
+            throw new TypeError(
+                `ShipLoadout.applyBlueprint: module "${module.Item}" is a final pre-engineered article and accepts no further engineering`,
             );
         }
         // The engineering menu is the authority on what a module accepts, so the same
@@ -1082,10 +1113,17 @@ export class ShipLoadout {
      * @param slotKey - The slot to de-engineer, matched case-insensitively (journal
      * spelling).
      * @returns `this`, for chaining. A no-op if the slot is empty or un-engineered.
+     * @throws {TypeError} If the fitted article is final pre-engineered and its baked
+     * engineering cannot be removed.
      */
     clearEngineering(slotKey: string): this {
         const key = this.#fittedKey(slotKey);
         const module = key === null ? undefined : this.#modules.get(key);
+        if (module && this.#statsFor(module)?.engineeringLocked) {
+            throw new TypeError(
+                `ShipLoadout.clearEngineering: module "${module.Item}" is a final pre-engineered article and its engineering cannot be removed`,
+            );
+        }
         if (key !== null && module?.Engineering) {
             const bare: LoadoutModule = { Slot: module.Slot, Item: module.Item };
             if (module.On !== undefined) (bare as { On?: boolean }).On = module.On;
