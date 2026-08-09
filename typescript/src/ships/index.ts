@@ -211,12 +211,14 @@ export {
     getBlueprint,
     getBlueprintName,
     getBlueprintGrade,
+    getBlueprintGradeDamageDistribution,
     getBlueprintGradeMaterials,
     getBlueprintCost,
 } from './blueprints.js';
 export {
     EXPERIMENTAL_EFFECTS,
     getExperimentalEffect,
+    getExperimentalEffectDamageDistribution,
     getExperimentalEffectName,
     getExperimentalEffectMaterials,
 } from './experimental-effects.js';

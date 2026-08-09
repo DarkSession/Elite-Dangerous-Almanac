@@ -6,6 +6,7 @@ import {
     getBlueprint,
     getBlueprintName,
     getBlueprintGrade,
+    getBlueprintGradeDamageDistribution,
     getBlueprintGradeMaterials,
     getBlueprintCost,
 } from './blueprints.js';
@@ -73,6 +74,16 @@ test('getBlueprintGrade returns the grade features; getBlueprintGradeMaterials t
         { symbol: 'ChemicalManipulators', name: 'Chemical Manipulators', count: 1 },
         { symbol: 'DataminedWake', name: 'Datamined Wake Exceptions', count: 1 },
     ]);
+});
+
+test('getBlueprintGradeDamageDistribution returns only converted blueprint grades', () => {
+    assert.deepEqual(getBlueprintGradeDamageDistribution('beamlaser_thermalplasmaconversion', 5), {
+        thermal: 0.845,
+        absolute: 0.155,
+    });
+    assert.equal(getBlueprintGradeDamageDistribution('FSD_LongRange', 5), null);
+    assert.equal(getBlueprintGradeDamageDistribution('nope', 5), null);
+    assert.equal(getBlueprintGradeDamageDistribution('BeamLaser_ThermalPlasmaConversion', 9), null);
 });
 
 test('getBlueprintGradeMaterials resolves case-insensitively and misses cleanly', () => {

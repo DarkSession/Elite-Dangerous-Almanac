@@ -22,7 +22,11 @@
  *          used under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
  *
- * Each effect is { name, modifiers, materials, description? }. `name` is the effect's
+ * Each effect is { name, modifiers, damageDistribution?, materials, description? }.
+ * `damageDistribution` is the fixed fractional split produced by a damage-converting
+ * effect; the three stored conversions come from the effects' in-game descriptions,
+ * with High Yield Shell independently pinned by a Frontier `Loadout` capture.
+ * `name` is the effect's
  * current English in-game display name. `special_choke_canister` is "Ion Disruption",
  * not the easily-mistranscribed "Ion Disruptor".
  * A modifier is { label, method, value }:
@@ -2163,6 +2167,10 @@
         "value": 0.111111
       }
     ],
+    "damageDistribution": {
+      "kinetic": 0.5,
+      "explosive": 0.5
+    },
     "materials": [
       {
         "symbol": "MechanicalScrap",
@@ -2201,6 +2209,10 @@
         "value": 3
       }
     ],
+    "damageDistribution": {
+      "kinetic": 0.5,
+      "thermal": 0.5
+    },
     "materials": [
       {
         "symbol": "UncutFocusCrystals",
@@ -2272,6 +2284,10 @@
   "special_overload_munitions": {
     "name": "Overload Munitions",
     "modifiers": [],
+    "damageDistribution": {
+      "thermal": 0.5,
+      "explosive": 0.5
+    },
     "materials": [
       {
         "symbol": "FilamentComposites",

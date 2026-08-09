@@ -29,6 +29,8 @@ const mod = (symbol: string, catalogue = CORE_MODULES) => getModuleBySymbol(symb
 
 const slefString = JSON.stringify(slefFixture);
 const near = (a: number, b: number, eps = 1e-3) => Math.abs(a - b) < eps;
+const modFor = (mods: readonly { Label: string; Value?: number }[], label: string) =>
+    mods.find((modifier) => modifier.Label === label)?.Value;
 /** Per-damage-type figures rounded to the six decimals the shared fixture stores. */
 const rounded = (r: DamageTypeValues) => ({
     kinetic: Math.round(r.kinetic * 1e6) / 1e6,
@@ -1006,6 +1008,132 @@ test('weapon and armour recipes engineer the stats the catalogue carries', () =>
     // x4.62, i.e. 362%.
     assert.equal(boost.OriginalValue, 250);
     assert.equal(boost.Value, 362);
+});
+
+test('damage-converting experimentals replace the weapon split and export journal labels', () => {
+    const cases = [
+        {
+            symbol: 'Hpt_Cannon_Fixed_Small',
+            experimental: 'special_high_yield_shell',
+        },
+        {
+            symbol: 'Hpt_PulseLaserBurst_Fixed_Small',
+            experimental: 'special_distortion_field',
+        },
+        {
+            symbol: 'Hpt_DumbfireMissileRack_Fixed_Small',
+            experimental: 'special_overload_munitions',
+        },
+    ] as const;
+    const expected = engineeringFixture.experimentalDamageDistributions.map;
+
+    for (const { symbol, experimental } of cases) {
+        const build = ShipLoadout.empty('Sidewinder').setModule(
+            'SmallHardpoint1',
+            mod(symbol, HARDPOINT_MODULES),
+        );
+        build.applyBlueprint('SmallHardpoint1', 'Weapon_Sturdy', {
+            grade: 5,
+            experimental,
+        });
+
+        const fitted = build.getFittedModule('SmallHardpoint1')!;
+        assert.deepEqual(fitted.effectiveStats?.damageDistribution, expected[experimental]);
+        const metrics = build.weaponMetrics().weapons[0]!.metrics;
+        for (const [type, share] of Object.entries(expected[experimental])) {
+            assert.ok(
+                near(
+                    metrics.damageByType[type as 'kinetic' | 'thermal' | 'explosive'],
+                    metrics.damagePerSecond * share,
+                    1e-6,
+                ),
+                `${experimental} ${type}`,
+            );
+        }
+
+        const modifiers = fitted.Engineering?.Modifiers ?? [];
+        for (const type of Object.keys(expected[experimental])) {
+            const label = `$${type[0]!.toUpperCase()}${type.slice(1)};`;
+            assert.ok(
+                modifiers.some((modifier) => modifier.Label === label),
+                label,
+            );
+        }
+    }
+});
+
+test('thermal plasma conversion blueprints expose their absolute damage split', () => {
+    const conversion = engineeringFixture.thermalPlasmaConversions;
+    const expected = conversion.grades['5'];
+    for (const [blueprint, symbol] of Object.entries(conversion.blueprints)) {
+        const build = ShipLoadout.empty('Sidewinder').setModule(
+            'SmallHardpoint1',
+            mod(symbol, HARDPOINT_MODULES),
+        );
+        build.applyBlueprint('SmallHardpoint1', blueprint, { grade: 5 });
+
+        const fitted = build.getFittedModule('SmallHardpoint1')!;
+        assert.deepEqual(fitted.effectiveStats?.damageDistribution, expected, blueprint);
+        assert.equal(fitted.effectiveStats?.damageComponents, undefined, blueprint);
+
+        const modifiers = fitted.Engineering?.Modifiers ?? [];
+        assert.equal(modFor(modifiers, '$Thermal;'), expected.thermal * 100, blueprint);
+        assert.equal(modFor(modifiers, '$Absolute;'), expected.absolute * 100, blueprint);
+
+        const weapon = build.weaponMetrics().weapons[0]!.metrics;
+        assert.ok(
+            near(weapon.damageByType.thermal, weapon.damagePerSecond * expected.thermal, 1e-6),
+            `${blueprint} thermal`,
+        );
+        assert.ok(
+            near(weapon.damageByType.absolute, weapon.damagePerSecond * expected.absolute, 1e-6),
+            `${blueprint} absolute`,
+        );
+    }
+});
+
+test('a converting experimental supersedes a plasma-conversion blueprint split', () => {
+    const build = ShipLoadout.empty('Sidewinder').setModule(
+        'SmallHardpoint1',
+        mod('Hpt_PulseLaserBurst_Fixed_Small', HARDPOINT_MODULES),
+    );
+    build.applyBlueprint('SmallHardpoint1', 'BurstLaser_ThermalPlasmaConversion', {
+        grade: 5,
+        experimental: 'special_distortion_field',
+    });
+
+    const fitted = build.getFittedModule('SmallHardpoint1')!;
+    assert.deepEqual(
+        fitted.effectiveStats?.damageDistribution,
+        engineeringFixture.experimentalDamageDistributions.map.special_distortion_field,
+    );
+    assert.ok(!('absolute' in fitted.effectiveStats!.damageDistribution!));
+    assert.equal(modFor(fitted.Engineering?.Modifiers ?? [], '$Absolute;'), undefined);
+});
+
+test('a damage conversion supersedes exact stock damage components', () => {
+    const stock = mod('Hpt_Cannon_Fixed_Small', HARDPOINT_MODULES);
+    const withExactComponents: OutfittingModule = {
+        ...stock,
+        damageDistribution: { kinetic: 1 },
+        damageComponents: { kinetic: stock.damage! },
+    };
+    const build = ShipLoadout.empty('Sidewinder').setModule('SmallHardpoint1', withExactComponents);
+    build.applyBlueprint('SmallHardpoint1', 'Weapon_Sturdy', {
+        grade: 5,
+        experimental: 'special_high_yield_shell',
+    });
+
+    const effective = build.getFittedModule('SmallHardpoint1')!.effectiveStats!;
+    assert.equal(effective.damageComponents, undefined);
+    assert.deepEqual(
+        effective.damageDistribution,
+        engineeringFixture.experimentalDamageDistributions.map.special_high_yield_shell,
+    );
+
+    const metrics = build.weaponMetrics().weapons[0]!.metrics;
+    assert.ok(near(metrics.damageByType.kinetic, metrics.damagePerSecond / 2, 1e-6));
+    assert.ok(near(metrics.damageByType.explosive, metrics.damagePerSecond / 2, 1e-6));
 });
 
 test('a hull reinforcement package engineers a hull boost it never had', () => {

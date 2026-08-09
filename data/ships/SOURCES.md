@@ -1099,8 +1099,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   modifiers **and** material cost), validated by `fixtures/ships/engineering.json`.
   Modifiers are resolved to journal Modifier **Labels** so the computed modifiers read
   back like a real `Engineering.Modifiers` block. Each blueprint is `{ name, grades }`
-  (each grade `{ features, materials }`); each experimental effect is
-  `{ name, modifiers, materials, description? }`.
+  (each grade `{ features, damageDistribution?, materials }`); each experimental effect is
+  `{ name, modifiers, damageDistribution?, materials, description? }`.
 - **Display names:** each blueprint and experimental effect carries its `name`.
   Effect names are the English strings observed in-game. Blueprint names are coriolis
   `blueprint.name` for the 81 blueprints coriolis carries, and the Operations dossier's
@@ -1196,6 +1196,21 @@ up straight through with no disambiguation at all. Both paths are evidence that
 
   The registry exposes **one displayed total per grade**, not a roll-bounded range, so each
   feature stores that total as a fixed value (`min == max`).
+  The three Plasma conversion recipes also expose equal and opposite damage-share totals.
+  Inara labels those player-facing rows **Thermal** and **Plasma**, not with journal
+  modifier labels: Thermal decreases by 3.9, 6.6, 9.4, 12.4 and 15.5 percentage points
+  across grades 1–5, while Plasma increases by the same amount. This library represents
+  the resistance-ignoring ship-damage member as `absolute`, matching EDSY's `abswgt`
+  **Absolute Damage** member; a
+  [contemporary community description](https://www.reddit.com/r/EliteDangerous/comments/1uk2zhp/plasma_laser_theorycrafting_following_new/)
+  by **u/Techno3020** likewise identifies this specific conversion's Plasma share as
+  absolute damage. The post states no redistribution licence and is linked only as
+  corroboration; none of its text or media is redistributed. Because every eligible laser
+  is 100% thermal before conversion, each grade stores the resulting
+  `damageDistribution`: from 96.1/3.9 thermal/absolute at grade 1 through 84.5/15.5 at
+  grade 5. `$Thermal;` and `$Absolute;` are the journal labels synthesized from that
+  distribution by the TypeScript implementation; Inara does not publish those spellings,
+  and no raw `Loadout` capture of this blueprint is currently in the repository.
   Their per-roll `materials` are from the same registry (resolved to Frontier material
   `symbol`s against the `materials` domain); the per-roll **Merc-Coin** amount is also
   charged but is a currency, not a material, so it is not stored. Some totals are
@@ -1262,24 +1277,27 @@ up straight through with no disambiguation at all. Both paths are evidence that
   a gameplay flag with no numeric magnitude the data exposes — carries an **empty
   `modifiers` list and a human-readable `description`** instead; effects that do have
   magnitudes carry them (e.g. Force Shell shot speed −16.6667%, FSD Interrupt damage −30%
-  / burst interval +50%). Their one-application `materials` are from the same in-game /
-  Inara registry (a Merc-Coin amount is also charged but is not stored). Every one is a
-  weapon effect, and the weapon groups' menus list them.
-- **Three of them state a converted damage type, and nothing models the conversion.**
-  High Yield Shell, Inertial Impact and Overload Munitions each state a fixed resulting
-  split in their `description` — 50/50 kinetic/explosive, kinetic/thermal and
-  explosive/thermal — and none carries a modifier for it, so a weapon's
-  `damageDistribution` is unchanged by applying one and every by-type figure derived
-  from it is the unconverted split. Overload Munitions carries no modifiers at all, so
-  applying it currently does nothing. `journal-federation-corvette.json` is the only
-  ground truth here, stating `$Kinetic;` 100 → 50 and `$Explosive;` 0 → 50 for its large
-  gimballed cannon under High Yield Shell. Those two labels are the only ones
-  `capturedBaseStats` cannot map for want of a *flat* field: `damageDistribution` is a
-  nested record where the label table addresses flat ones. Three is a lower bound rather
-  than a count: **eleven** of the 40 effects an engineer offers a weapon carry no
-  `description` at all — `special_incendiary_rounds` and `special_emissive_munitions`
-  among them — so for those the data neither states a conversion nor rules one out.
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/64>
+  / burst interval +50%). A fixed damage-type conversion is carried separately as
+  `damageDistribution`, because it is a nested split rather than a scalar modifier.
+  Their one-application `materials` are from the same in-game / Inara registry (a
+  Merc-Coin amount is also charged but is not stored). Every one is a weapon effect, and
+  the weapon groups' menus list them.
+- **Three effects state a fixed converted damage type.** High Yield Shell, Inertial
+  Impact and Overload Munitions produce 50/50 kinetic/explosive, kinetic/thermal and
+  explosive/thermal respectively. Applying one replaces the weapon's conventional
+  `damageDistribution`; `weaponMetrics` and `effectiveStats` therefore expose the
+  converted by-type damage. Generated engineering writes the same journal-shaped
+  `$Kinetic;`, `$Thermal;` and `$Explosive;` percentage modifiers, and an imported
+  journal's own values take precedence over the effect catalogue. The nested label
+  mapping treats an absent base share as 0%.
+
+  `journal-federation-corvette.json` independently settles High Yield Shell, stating
+  `$Kinetic;` 100 → 50 and `$Explosive;` 0 → 50 for its large gimballed cannon. The
+  shared `capturedBaseStats.convertedDamageDistributions` fixture pins that import through
+  effective stats and weapon metrics. Three remains a lower bound rather than a count:
+  **eleven** of the 40 effects an engineer offers a weapon carry no `description` at all —
+  `special_incendiary_rounds` and `special_emissive_munitions` among them — so for those
+  the data neither states a conversion nor rules one out.
 - **Feedback Cascade (`special_feedback_cascade`) is easy to miss in EDSY**, which holds
   it commented out (`wpnx_feca`, marked "verify mats") — the plain effect players apply
   themselves, as against the pre-engineered rail-gun variant
@@ -1795,17 +1813,18 @@ up straight through with no disambiguation at all. Both paths are evidence that
     where this reads a family the registry names.
   - **The modifier legs agree.** `FuelScoop_Efficiency` moves `RefuelRate` and
     `PowerDraw`, and a fuel scoop is the only module in the catalogues with a `RefuelRate`
-    to move. The three plasma conversions move `PowerDraw` and `Damage`, which their names
-    narrow to one laser family each.
+    to move. The three plasma conversions move `PowerDraw` and `Damage`; their names
+    narrow them to one laser family each. Their player-facing Thermal / Plasma source legs
+    become the grade's complete thermal/absolute `damageDistribution` rather than scalar
+    features; the mapping and its evidence are recorded with the catalogue source above.
   - **Neither menu registry lists them, which is expected rather than a conflict.**
     `eddb.js` contains no `recipe_` string at all and coriolis's group tables carry only
     journal-keyed ids, so both are silent on the whole Operations family; these recipes have
-    never come from either. Corroborated 2026-08-07 UTC against a web-search index of the
-    Inara blueprint pages for Plasma conversion (`/elite/blueprint/202/`, `/203/`), which
-    publish a per-roll material cost **plus a Merc-Coin amount** — the shape of a blueprint
-    rolled at an engineer, not of a module bought ready-made. `inara.cz` is refused by the
-    acquisition environment's network policy, so that is a read of an index of those pages
-    rather than a capture of them.
+    never come from either. The live Inara Plasma conversion pages, acquired directly
+    2026-08-09 UTC (no immutable revision is exposed), publish a per-roll material cost
+    **plus a Merc-Coin amount** — the shape of a blueprint rolled at an engineer, not of a
+    module bought ready-made. The Burst and Beam pages are `/elite/blueprint/202/` and
+    `/elite/blueprint/203/`; the Pulse page exposes the same five damage-share totals.
   - **What a consumer sees:** one more id on 40 fuel scoops and on 12 modules in each laser
     group. No experimental list moves.
 - **`special_feedback_cascade` is offered by nothing, and correctly.** It is the one id in

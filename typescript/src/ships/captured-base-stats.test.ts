@@ -5,7 +5,13 @@ import { fileURLToPath } from 'node:url';
 
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
-import { baseStats, fieldForLabel, labelsForField, scaleForLabel } from './module-stat-labels.js';
+import {
+    baseStats,
+    damageTypeForLabel,
+    fieldForLabel,
+    labelsForField,
+    scaleForLabel,
+} from './module-stat-labels.js';
 import { parseSlef, type LoadoutEvent } from './slef.js';
 import { ShipLoadout } from './ship-loadout.js';
 import { damagePerSecond } from './weapons.js';
@@ -48,6 +54,7 @@ const {
     floatNoiseTolerance,
     captures: expected,
     weapons: capturedWeapons,
+    convertedDamageDistributions,
     rebuildTolerance,
     rebuilds,
     engineered,
@@ -306,10 +313,55 @@ test('every journal capture is pinned for rebuild', () => {
  * hand-kept list decides what the sweep below looks at.
  */
 function needsReadingBack(record: OutfittingModule, label: string): boolean {
+    // Nested damage-type labels have their own fixture and consumer assertion below.
+    if (damageTypeForLabel(label) !== null) return false;
     const field = fieldForLabel(label, record);
     if (!field) return false;
     return labelsForField(field)[0] !== label || record[field] === undefined;
 }
+
+test('captured damage-type conversions reach effective stats and weapon metrics', () => {
+    for (const {
+        file,
+        slot,
+        symbol,
+        experimental,
+        base,
+        effective,
+    } of convertedDamageDistributions) {
+        const capture = CAPTURES.find((entry) => entry.file === file);
+        assert.ok(capture?.loadouts[0], `${file} is pinned but not read`);
+        const record = getModuleBySymbol(symbol, ALL_MODULES);
+        assert.ok(record, `no catalogue record for ${symbol}`);
+        assert.deepEqual(record.damageDistribution, base);
+
+        const build = ShipLoadout.fromLoadout(capture.loadouts[0]);
+        const fitted = build.getFittedModule(slot);
+        assert.ok(fitted, `${file}: no module in ${slot}`);
+        assert.equal(fitted.Engineering?.ExperimentalEffect, experimental);
+        assert.deepEqual(fitted.effectiveStats?.damageDistribution, effective);
+
+        const weapon = build.weaponMetrics().weapons.find((entry) => entry.slot === slot);
+        assert.ok(weapon, `${file}: no weapon metrics for ${slot}`);
+        const total = weapon.metrics.damagePerSecond;
+        assert.ok(withinFloatNoise(weapon.metrics.damageByType.kinetic, total * effective.kinetic));
+        assert.ok(
+            withinFloatNoise(weapon.metrics.damageByType.explosive, total * effective.explosive),
+        );
+
+        // Import/export keeps Frontier's own nested modifier labels intact.
+        const exported = build.toLoadoutEvent().Modules.find((module) => module.Slot === slot)
+            ?.Engineering?.Modifiers;
+        for (const label of ['$Kinetic;', '$Explosive;']) {
+            assert.deepEqual(
+                exported?.find((modifier) => modifier.Label === label),
+                capture.loadouts[0].Modules.find(
+                    (module) => module.Slot === slot,
+                )?.Engineering?.Modifiers?.find((modifier) => modifier.Label === label),
+            );
+        }
+    }
+});
 
 test('every engineered result that needs reading back is pinned', () => {
     // One row per distinct (module, field) — a build fits the same weapon twice and two

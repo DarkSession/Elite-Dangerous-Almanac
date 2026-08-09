@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
     EXPERIMENTAL_EFFECTS,
     getExperimentalEffect,
+    getExperimentalEffectDamageDistribution,
     getExperimentalEffectName,
     getExperimentalEffectMaterials,
 } from './experimental-effects.js';
@@ -29,6 +30,19 @@ test('getExperimentalEffectName resolves case-insensitively and misses cleanly',
         assert.equal(getExperimentalEffectName(fdname), name);
     }
     assert.equal(getExperimentalEffectName('nope'), null);
+});
+
+test('damage-converting effects expose their fixed resulting splits', () => {
+    for (const [fdname, expected] of Object.entries(
+        engineeringFixture.experimentalDamageDistributions.map,
+    )) {
+        assert.deepEqual(getExperimentalEffectDamageDistribution(fdname), expected);
+        assert.deepEqual(getExperimentalEffectDamageDistribution(fdname.toUpperCase()), expected);
+        const conventional = Object.values(expected).reduce((sum, share) => sum + share, 0);
+        assert.equal(conventional, 1, `${fdname} does not partition conventional damage`);
+    }
+    assert.equal(getExperimentalEffectDamageDistribution('special_fsd_heavy'), null);
+    assert.equal(getExperimentalEffectDamageDistribution('nope'), null);
 });
 
 test('Feedback Cascade ships as both the plain and the pre-engineered cooled effect', () => {

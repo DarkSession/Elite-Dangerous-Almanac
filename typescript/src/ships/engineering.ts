@@ -47,6 +47,7 @@
  */
 
 import type { EngineeringModifier } from './slef.js';
+import type { DamageDistribution } from './modules.js';
 import { multiplierBaseForLabel } from './module-stat-labels.js';
 
 /** How a modifier value is applied to a base stat. */
@@ -103,6 +104,12 @@ export interface BlueprintGrade {
     /** The stat modifiers this grade applies (feed to {@link computeModifiers}). */
     readonly features: readonly BlueprintFeature[];
     /**
+     * Fixed damage-type split produced at this grade, when the blueprint converts a
+     * weapon's damage. Shares are fractions (`0.155` = 15.5%); absent types deal no
+     * damage after conversion.
+     */
+    readonly damageDistribution?: DamageDistribution;
+    /**
      * The materials one roll at this grade consumes — possibly empty (a known recipe
      * that costs nothing). Join each `symbol` to the `materials` domain for its grade
      * and category.
@@ -127,13 +134,16 @@ export interface ExperimentalEffect {
      * reloading while firing, Smart Rounds sparing untargeted ships). Such an effect
      * still carries a human-readable {@link ExperimentalEffect.description}.
      *
-     * It is also empty for Overload Munitions, which is *not* qualitative: it converts a
-     * weapon's damage to 50/50 explosive/thermal, and no entry here can express that,
-     * because a damage split is a nested record rather than a scalar. High Yield Shell and
-     * Inertial Impact convert the same way alongside the legs they do carry. See
-     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/64
+     * A damage-type conversion is represented separately by
+     * {@link ExperimentalEffect.damageDistribution}, because a split is a nested record
+     * rather than a scalar contribution.
      */
     readonly modifiers: readonly ExperimentalContribution[];
+    /**
+     * Fixed damage-type split produced by the effect, when it converts a weapon's damage.
+     * Shares are fractions (`0.5` = 50%); absent types deal no damage after conversion.
+     */
+    readonly damageDistribution?: DamageDistribution;
     /** The materials one application of this effect consumes. */
     readonly materials: readonly EngineeringMaterial[];
     /**
@@ -152,8 +162,9 @@ export type BlueprintGrades = Readonly<Record<string, BlueprintGrade>>;
  *
  * @remarks
  * A blueprint is keyed in {@link BLUEPRINTS} by its Frontier `fdname`; this is the record
- * that key maps to. `grades` carries the modifier `features` and material cost of each
- * grade the blueprint defines (a blueprint need not define every grade `1`–`5`).
+ * that key maps to. `grades` carries the modifier `features`, optional converted damage
+ * distribution, and material cost of each grade the blueprint defines (a blueprint need
+ * not define every grade `1`–`5`).
  */
 export interface Blueprint {
     /** The in-game display name, e.g. `"Increased range"`, `"Fuel Scoop — Scoop rate enhanced"`. */

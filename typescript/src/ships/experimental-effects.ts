@@ -6,8 +6,9 @@
  * Its own module (and data file) so consumers who never engineer a build do not bundle
  * it. Each effect is an {@link ExperimentalEffect} — its `modifiers` (pass to
  * {@link computeModifiers} alongside a blueprint grade, or read via
- * {@link getExperimentalEffect}) and its `materials` (what one application costs, via
- * {@link getExperimentalEffectMaterials}).
+ * {@link getExperimentalEffect}), optional fixed damage-type conversion (read via
+ * {@link getExperimentalEffectDamageDistribution}), and its `materials` (what one
+ * application costs, via {@link getExperimentalEffectMaterials}).
  *
  * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
  * `Engineering.ExperimentalEffect` (e.g. `"special_fsd_heavy"`), not the in-game
@@ -21,6 +22,7 @@
 
 import experimentalData from '../../../data/ships/experimental-effects.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
+import type { DamageDistribution } from './modules.js';
 import type {
     ExperimentalContribution,
     ExperimentalEffect,
@@ -52,6 +54,23 @@ export const EXPERIMENTAL_EFFECTS: Readonly<Record<string, ExperimentalEffect>> 
  */
 export function getExperimentalEffect(fdname: string): readonly ExperimentalContribution[] | null {
     return resolveEffect(fdname)?.modifiers ?? null;
+}
+
+/**
+ * Look up the fixed damage-type split an experimental effect applies, by its Frontier
+ * `fdname`, case-insensitively.
+ *
+ * @param fdname - The effect id, e.g. `"special_high_yield_shell"`.
+ * @returns The resulting fractional damage distribution, or `null` when the effect is
+ * unknown or does not convert damage.
+ * @example
+ * ```ts
+ * getExperimentalEffectDamageDistribution('special_high_yield_shell');
+ * // -> { kinetic: 0.5, explosive: 0.5 }
+ * ```
+ */
+export function getExperimentalEffectDamageDistribution(fdname: string): DamageDistribution | null {
+    return resolveEffect(fdname)?.damageDistribution ?? null;
 }
 
 /**
