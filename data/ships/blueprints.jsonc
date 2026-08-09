@@ -62,7 +62,7 @@
  * clip leg on every weapon, and is the reading not followed here. See §Multi-cannon
  * Overcharged in SOURCES.md.
  *
- * `grades` maps grade "1".."5" to { features, materials }.
+ * `grades` maps grade "1".."5" to { features, damageDistribution?, materials }.
  * A feature is { label, method, min, max }: `label` the journal Modifier Label, `method`
  * how it applies ("multiplicative" -> base*(1+v), "additive" -> base+v, "overwrite" -> v),
  * [min, max] bounding the value by the quality roll (v = min + (max-min)*quality). A
@@ -76,6 +76,10 @@
  * coriolis does not carry under any spelling) come from the current in-game / Inara
  * blueprint registry, which exposes one displayed total per grade rather than a
  * roll-bounded range: each such feature stores that total as a fixed value (min == max).
+ * The three Plasma conversion recipes project the registry's player-facing Thermal /
+ * Plasma percentage-point legs into each grade's resulting `damageDistribution`, with
+ * Plasma represented by this library's `absolute` damage member. Scalar damage and power
+ * changes remain features.
  * Their per-roll `materials` are from the same registry (a Merc-Coin amount is also
  * charged but is a currency, not a material, so it is not stored). Some of their totals
  * are non-monotonic (pre-engineered UI values, not primitive weights) and are preserved as
@@ -15599,6 +15603,10 @@
             "max": -0.03
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.961,
+          "absolute": 0.039
+        },
         "materials": [
           {
             "symbol": "Phosphorus",
@@ -15627,6 +15635,10 @@
             "max": -0.05
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.934,
+          "absolute": 0.066
+        },
         "materials": [
           {
             "symbol": "Arsenic",
@@ -15660,6 +15672,10 @@
             "max": -0.07
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.906,
+          "absolute": 0.094
+        },
         "materials": [
           {
             "symbol": "Arsenic",
@@ -15693,6 +15709,10 @@
             "max": -0.09
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.876,
+          "absolute": 0.124
+        },
         "materials": [
           {
             "symbol": "HeatDispersionPlate",
@@ -15731,6 +15751,10 @@
             "max": -0.11
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.845,
+          "absolute": 0.155
+        },
         "materials": [
           {
             "symbol": "Technetium",
@@ -15774,6 +15798,10 @@
             "max": -0.03
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.961,
+          "absolute": 0.039
+        },
         "materials": [
           {
             "symbol": "Phosphorus",
@@ -15802,6 +15830,10 @@
             "max": -0.05
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.934,
+          "absolute": 0.066
+        },
         "materials": [
           {
             "symbol": "Arsenic",
@@ -15835,6 +15867,10 @@
             "max": -0.07
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.906,
+          "absolute": 0.094
+        },
         "materials": [
           {
             "symbol": "Arsenic",
@@ -15868,6 +15904,10 @@
             "max": -0.09
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.876,
+          "absolute": 0.124
+        },
         "materials": [
           {
             "symbol": "HeatDispersionPlate",
@@ -15906,6 +15946,10 @@
             "max": -0.11
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.845,
+          "absolute": 0.155
+        },
         "materials": [
           {
             "symbol": "Technetium",
@@ -15949,6 +15993,10 @@
             "max": -0.03
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.961,
+          "absolute": 0.039
+        },
         "materials": [
           {
             "symbol": "Phosphorus",
@@ -15977,6 +16025,10 @@
             "max": -0.05
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.934,
+          "absolute": 0.066
+        },
         "materials": [
           {
             "symbol": "Arsenic",
@@ -16010,6 +16062,10 @@
             "max": -0.07
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.906,
+          "absolute": 0.094
+        },
         "materials": [
           {
             "symbol": "Arsenic",
@@ -16043,6 +16099,10 @@
             "max": -0.09
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.876,
+          "absolute": 0.124
+        },
         "materials": [
           {
             "symbol": "HeatDispersionPlate",
@@ -16081,6 +16141,10 @@
             "max": -0.11
           }
         ],
+        "damageDistribution": {
+          "thermal": 0.845,
+          "absolute": 0.155
+        },
         "materials": [
           {
             "symbol": "Technetium",

@@ -104,6 +104,12 @@ export interface BlueprintGrade {
     /** The stat modifiers this grade applies (feed to {@link computeModifiers}). */
     readonly features: readonly BlueprintFeature[];
     /**
+     * Fixed damage-type split produced at this grade, when the blueprint converts a
+     * weapon's damage. Shares are fractions (`0.155` = 15.5%); absent types deal no
+     * damage after conversion.
+     */
+    readonly damageDistribution?: DamageDistribution;
+    /**
      * The materials one roll at this grade consumes — possibly empty (a known recipe
      * that costs nothing). Join each `symbol` to the `materials` domain for its grade
      * and category.
@@ -156,8 +162,9 @@ export type BlueprintGrades = Readonly<Record<string, BlueprintGrade>>;
  *
  * @remarks
  * A blueprint is keyed in {@link BLUEPRINTS} by its Frontier `fdname`; this is the record
- * that key maps to. `grades` carries the modifier `features` and material cost of each
- * grade the blueprint defines (a blueprint need not define every grade `1`–`5`).
+ * that key maps to. `grades` carries the modifier `features`, optional converted damage
+ * distribution, and material cost of each grade the blueprint defines (a blueprint need
+ * not define every grade `1`–`5`).
  */
 export interface Blueprint {
     /** The in-game display name, e.g. `"Increased range"`, `"Fuel Scoop — Scoop rate enhanced"`. */

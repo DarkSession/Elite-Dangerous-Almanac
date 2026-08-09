@@ -29,6 +29,8 @@ const mod = (symbol: string, catalogue = CORE_MODULES) => getModuleBySymbol(symb
 
 const slefString = JSON.stringify(slefFixture);
 const near = (a: number, b: number, eps = 1e-3) => Math.abs(a - b) < eps;
+const modFor = (mods: readonly { Label: string; Value?: number }[], label: string) =>
+    mods.find((modifier) => modifier.Label === label)?.Value;
 /** Per-damage-type figures rounded to the six decimals the shared fixture stores. */
 const rounded = (r: DamageTypeValues) => ({
     kinetic: Math.round(r.kinetic * 1e6) / 1e6,
@@ -1058,6 +1060,55 @@ test('damage-converting experimentals replace the weapon split and export journa
             );
         }
     }
+});
+
+test('thermal plasma conversion blueprints expose their absolute damage split', () => {
+    const conversion = engineeringFixture.thermalPlasmaConversions;
+    const expected = conversion.grades['5'];
+    for (const [blueprint, symbol] of Object.entries(conversion.blueprints)) {
+        const build = ShipLoadout.empty('Sidewinder').setModule(
+            'SmallHardpoint1',
+            mod(symbol, HARDPOINT_MODULES),
+        );
+        build.applyBlueprint('SmallHardpoint1', blueprint, { grade: 5 });
+
+        const fitted = build.getFittedModule('SmallHardpoint1')!;
+        assert.deepEqual(fitted.effectiveStats?.damageDistribution, expected, blueprint);
+        assert.equal(fitted.effectiveStats?.damageComponents, undefined, blueprint);
+
+        const modifiers = fitted.Engineering?.Modifiers ?? [];
+        assert.equal(modFor(modifiers, '$Thermal;'), expected.thermal * 100, blueprint);
+        assert.equal(modFor(modifiers, '$Absolute;'), expected.absolute * 100, blueprint);
+
+        const weapon = build.weaponMetrics().weapons[0]!.metrics;
+        assert.ok(
+            near(weapon.damageByType.thermal, weapon.damagePerSecond * expected.thermal, 1e-6),
+            `${blueprint} thermal`,
+        );
+        assert.ok(
+            near(weapon.damageByType.absolute, weapon.damagePerSecond * expected.absolute, 1e-6),
+            `${blueprint} absolute`,
+        );
+    }
+});
+
+test('a converting experimental supersedes a plasma-conversion blueprint split', () => {
+    const build = ShipLoadout.empty('Sidewinder').setModule(
+        'SmallHardpoint1',
+        mod('Hpt_PulseLaserBurst_Fixed_Small', HARDPOINT_MODULES),
+    );
+    build.applyBlueprint('SmallHardpoint1', 'BurstLaser_ThermalPlasmaConversion', {
+        grade: 5,
+        experimental: 'special_distortion_field',
+    });
+
+    const fitted = build.getFittedModule('SmallHardpoint1')!;
+    assert.deepEqual(
+        fitted.effectiveStats?.damageDistribution,
+        engineeringFixture.experimentalDamageDistributions.map.special_distortion_field,
+    );
+    assert.ok(!('absolute' in fitted.effectiveStats!.damageDistribution!));
+    assert.equal(modFor(fitted.Engineering?.Modifiers ?? [], '$Absolute;'), undefined);
 });
 
 test('a damage conversion supersedes exact stock damage components', () => {

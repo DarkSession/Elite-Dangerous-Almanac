@@ -5,8 +5,9 @@
  *
  * Its own module (and data file) so consumers who never engineer a build do not bundle
  * it. Each grade is a {@link BlueprintGrade} — its `features` (feed to
- * {@link computeModifiers} from `./engineering`, or read via {@link getBlueprintGrade})
- * and its `materials` (what a roll costs, via {@link getBlueprintGradeMaterials}).
+ * {@link computeModifiers} from `./engineering`, or read via {@link getBlueprintGrade}),
+ * optional converted `damageDistribution`, and `materials` (what a roll costs, via
+ * {@link getBlueprintGradeMaterials}).
  *
  * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
  * `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display names.
@@ -38,17 +39,21 @@ import blueprintsData from '../../../data/ships/blueprints.jsonc' with { type: '
 import { deepFreeze } from '../deep-freeze.js';
 import { rollsForGrade, sumMaterials } from './engineering.js';
 import type { Blueprint, BlueprintFeature, EngineeringMaterial } from './engineering.js';
+import type { DamageDistribution } from './modules.js';
 
 /**
  * Every blueprint, keyed by Frontier `fdname` (e.g. `"FSD_LongRange"`). Each is a
  * {@link Blueprint} — its display `name` and its per-grade `grades`, where each grade
- * carries its `features` (modifiers) and its `materials` (recipe).
+ * carries its `features` (modifiers), optional converted `damageDistribution`, and its
+ * `materials` (recipe).
  *
  * @example
  * ```ts
  * BLUEPRINTS['FSD_LongRange'].name;               // -> 'Increased range'
  * BLUEPRINTS['FSD_LongRange'].grades['5'].features;  // -> [{ label: 'Integrity', ... }, ...]
  * BLUEPRINTS['FSD_LongRange'].grades['5'].materials; // -> [{ symbol: 'Arsenic', name: 'Arsenic', count: 1 }, ...]
+ * BLUEPRINTS['BeamLaser_ThermalPlasmaConversion'].grades['5'].damageDistribution;
+ * // -> { thermal: 0.845, absolute: 0.155 }
  * ```
  */
 export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
@@ -109,6 +114,27 @@ export function getBlueprintGrade(
     grade: number,
 ): readonly BlueprintFeature[] | null {
     return getBlueprint(fdname)?.grades[String(grade)]?.features ?? null;
+}
+
+/**
+ * Look up the fixed damage-type split produced by one blueprint grade,
+ * case-insensitively.
+ *
+ * @param fdname - The blueprint id, e.g. `"BeamLaser_ThermalPlasmaConversion"`.
+ * @param grade - The grade, `1`–`5`.
+ * @returns The resulting damage distribution, or `null` when the blueprint or grade is
+ * unknown or that grade does not convert damage.
+ * @example
+ * ```ts
+ * getBlueprintGradeDamageDistribution('BeamLaser_ThermalPlasmaConversion', 5);
+ * // -> { thermal: 0.845, absolute: 0.155 }
+ * ```
+ */
+export function getBlueprintGradeDamageDistribution(
+    fdname: string,
+    grade: number,
+): DamageDistribution | null {
+    return getBlueprint(fdname)?.grades[String(grade)]?.damageDistribution ?? null;
 }
 
 /**

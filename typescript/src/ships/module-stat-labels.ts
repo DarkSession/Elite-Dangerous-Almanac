@@ -235,6 +235,13 @@ export const STAT_LABELS: readonly StatLabel[] = [
         scale: percent,
         defaultBase: 0,
     },
+    {
+        label: '$Absolute;',
+        field: 'damageDistribution',
+        damageType: 'absolute',
+        scale: percent,
+        defaultBase: 0,
+    },
     // A weapon that carries no jitter fires true, and Rapid Fire, its multi-cannon spelling
     // and Inertial Impact all give one — which a journal confirms, reporting
     // `OriginalValue: 0` for a missile rack whose record holds no such field.

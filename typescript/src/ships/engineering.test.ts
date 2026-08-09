@@ -2,7 +2,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js';
-import { getBlueprint, getBlueprintCost, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
+import {
+    getBlueprint,
+    getBlueprintCost,
+    getBlueprintGrade,
+    getBlueprintGradeDamageDistribution,
+    BLUEPRINTS,
+} from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import {
     blueprintAvailableFor,
@@ -568,6 +574,21 @@ test('a tech-broker recipe raises the rate of fire directly, as its registry pub
         1,
     ).find((m) => m.Label === 'RateOfFire')!;
     assert.ok(Math.abs(rate.Value! - railgun.rateOfFire! * 1.667) < 1e-5, `${rate.Value}`);
+});
+
+test('thermal plasma conversion blueprints publish their damage split at every grade', () => {
+    const conversion = fixture.thermalPlasmaConversions;
+    for (const [blueprint, symbol] of Object.entries(conversion.blueprints)) {
+        const weapon = getModuleBySymbol(symbol, ALL_MODULES)!;
+        assert.deepEqual(weapon.damageDistribution, { thermal: 1 }, symbol);
+        for (const [grade, expected] of Object.entries(conversion.grades)) {
+            assert.deepEqual(
+                getBlueprintGradeDamageDistribution(blueprint, Number(grade)),
+                expected,
+                `${blueprint} G${grade}`,
+            );
+        }
+    }
 });
 
 test('a long-range recipe pushes the damage falloff out to the new maximum range', () => {

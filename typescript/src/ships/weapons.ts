@@ -157,9 +157,9 @@ export interface WeaponMetrics {
      *
      * @remarks
      * Uses the split supplied in {@link WeaponStats}. {@link ShipLoadout.weaponMetrics}
-     * resolves a damage-converting experimental effect and a journal's own damage-type
-     * modifiers before calling this calculation, so fitted High Yield Shell, Inertial
-     * Impact and Overload Munitions weapons report their converted split.
+     * resolves damage-converting experimental effects, Plasma Conversion blueprints and
+     * a journal's own damage-type modifiers before calling this calculation, so fitted
+     * conversions report their resulting split.
      */
     readonly damageByType: DamageSplit;
     /** {@link sustainedDamagePerSecond} split by damage type. */

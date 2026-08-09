@@ -1143,10 +1143,11 @@ Importing a build needs none of that: `fromLoadout` stores the `Engineering` blo
 journal wrote it, and the game's own `Modifiers` are exact.
 
 **Material requirements** — what a roll _costs_ — sit alongside the modifiers in
-`ships/blueprints`: every grade is `{ features, materials }`, so `getBlueprintGrade`
-gives the modifiers and `getBlueprintGradeMaterials` the recipe. Each requirement is
-`{ symbol, name, count }`; join `symbol` to the [`materials`](#materials) domain for the
-material's own grade and category:
+`ships/blueprints`: every grade is `{ features, damageDistribution?, materials }`, so
+`getBlueprintGrade` gives the modifiers, `getBlueprintGradeDamageDistribution` gives a
+converted weapon split when present, and `getBlueprintGradeMaterials` gives the recipe.
+Each requirement is `{ symbol, name, count }`; join `symbol` to the
+[`materials`](#materials) domain for the material's own grade and category:
 
 ```ts
 import { getBlueprintGradeMaterials } from "@elite-dangerous-almanac/core/ships/blueprints";

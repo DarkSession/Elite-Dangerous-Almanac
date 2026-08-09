@@ -461,6 +461,7 @@
           "minItems": 1,
           "items": { "$ref": "#/definitions/blueprintFeature" }
         },
+        "damageDistribution": { "$ref": "#/definitions/damageDistribution" },
         "materials": {
           "type": "array",
           "items": { "$ref": "#/definitions/blueprintMaterial" }

@@ -211,6 +211,7 @@ export {
     getBlueprint,
     getBlueprintName,
     getBlueprintGrade,
+    getBlueprintGradeDamageDistribution,
     getBlueprintGradeMaterials,
     getBlueprintCost,
 } from './blueprints.js';

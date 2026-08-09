@@ -201,14 +201,19 @@ in the doc comment of each ported module, and in long form in the domain
   in `data/ships/SOURCES.md`.
 - **The Operations Merc-Coin blueprints and shop rows** — which module family each of the
   four grade-1–5 Merc-Coin blueprints applies to (fuel scoop Scoop rate enhanced, and the
-  pulse/burst/beam laser Plasma conversions), and the large Seeker Missile Rack's Lockdown
+  pulse/burst/beam laser Plasma conversions), the Plasma conversions' player-facing
+  Thermal / Plasma damage-share modifiers, and the large Seeker Missile Rack's Lockdown
   variant with its 900 MC price. From the [Inara](https://inara.cz/) blueprint and
-  outfitting registries, the same source the rest of the Operations records come from,
-  reached **2026-08-07 UTC** through a web-search index rather than directly: the
-  acquisition environment's network policy refuses `inara.cz`, so these are reads of an
-  index of those pages and not captures of them, and `data/ships/SOURCES.md` records that
-  along with what each claim was corroborated against inside this repository. The values
-  are **Elite Dangerous game data, property of Frontier Developments plc**; see the notice
+  outfitting registries, the same source the rest of the Operations records come from;
+  the live Plasma conversion pages were acquired directly **2026-08-09 UTC** and expose no
+  immutable revision. The catalogue maps their Plasma share to its `absolute` damage
+  member, corroborated by EDSY's resistance-ignoring **Absolute Damage** member and a
+  [contemporary community description](https://www.reddit.com/r/EliteDangerous/comments/1uk2zhp/plasma_laser_theorycrafting_following_new/)
+  by **u/Techno3020** describing this conversion's Plasma share as absolute damage. That
+  post states no redistribution licence and is linked only as corroboration; none of its
+  text or media is redistributed. `data/ships/SOURCES.md` records the distinction between
+  Inara's labels and the journal labels synthesized by the implementation. The values are
+  **Elite Dangerous game data, property of Frontier Developments plc**; see the notice
   below.
 - **How the Corrosion Resistant Cargo Racks are obtained** — not a stored value but the
   basis for two catalogue decisions: dropping the size-2 record as a variant that never

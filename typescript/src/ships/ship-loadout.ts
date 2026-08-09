@@ -79,7 +79,7 @@ import {
     type SlotRestriction,
 } from './slots.js';
 import { computeModifiers } from './engineering.js';
-import { getBlueprintGrade } from './blueprints.js';
+import { getBlueprintGrade, getBlueprintGradeDamageDistribution } from './blueprints.js';
 import { isDecorativeModification } from './decorative-modifications.js';
 import {
     getExperimentalEffect,
@@ -1038,11 +1038,17 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: cannot compute ${named} for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
             );
         }
-        const modifiers = computeModifiers(base, features, quality, experimental);
-        const damageDistribution =
+        const experimentalDamageDistribution =
             options.experimental === undefined
                 ? null
                 : getExperimentalEffectDamageDistribution(options.experimental);
+        // A converting experimental supersedes a blueprint conversion, just as it
+        // supersedes the stock split. Both catalogue shapes feed the same journal-label
+        // synthesis below.
+        const damageDistribution =
+            experimentalDamageDistribution ??
+            getBlueprintGradeDamageDistribution(recipe, options.grade);
+        const modifiers = computeModifiers(base, features, quality, experimental);
         if (damageDistribution) {
             for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
                 const value = damageDistribution[type];

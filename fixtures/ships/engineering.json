@@ -441,6 +441,21 @@
       "special_overload_munitions": { "thermal": 0.5, "explosive": 0.5 }
     }
   },
+  "thermalPlasmaConversions": {
+    "description": "The three laser-family Plasma conversion blueprints share the same fixed per-grade shift from thermal damage to absolute plasma damage. Shares are fractions of conventional damage and sum to 1.",
+    "blueprints": {
+      "BeamLaser_ThermalPlasmaConversion": "Hpt_BeamLaser_Fixed_Small",
+      "BurstLaser_ThermalPlasmaConversion": "Hpt_PulseLaserBurst_Fixed_Small",
+      "PulseLaser_ThermalPlasmaConversion": "Hpt_PulseLaser_Fixed_Small"
+    },
+    "grades": {
+      "1": { "thermal": 0.961, "absolute": 0.039 },
+      "2": { "thermal": 0.934, "absolute": 0.066 },
+      "3": { "thermal": 0.906, "absolute": 0.094 },
+      "4": { "thermal": 0.876, "absolute": 0.124 },
+      "5": { "thermal": 0.845, "absolute": 0.155 }
+    }
+  },
   "blueprintCount": 109,
   "experimentalCount": 87
 }

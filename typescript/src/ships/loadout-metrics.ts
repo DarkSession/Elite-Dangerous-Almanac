@@ -457,7 +457,8 @@ const WEAPON_FIELDS = [
  * modifier. The **falloff range** is held to the weapon's maximum range. Exact
  * **damage components** scale by the effective/base damage ratio so ordinary engineering
  * keeps their proportions; a damage-converting experimental replaces them with its fixed
- * distribution, and journal damage-type modifiers override that catalogue split.
+ * distribution. A Plasma Conversion blueprint supplies its grade's converted split, and
+ * journal damage-type modifiers can override the catalogue result.
  * **Projectile boundary parameters** are copied unchanged because they are not ordinary
  * engineerable range fields.
  */
