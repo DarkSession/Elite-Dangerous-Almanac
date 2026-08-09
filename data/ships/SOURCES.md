@@ -936,14 +936,22 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
 
 ### What is not carried, and why
 
-- **Issue #20's 536-identity comparison set includes the six bundle-granted variants
-  carried here; 530 remain outside the catalogue.** Four are the withdrawn discovery
-  scanners deliberately removed from the current player-facing catalogue, and one is the
-  never-released size-2 Corrosion Resistant Cargo Rack documented above. The rest appear
-  in none of FDevIDs, coriolis-data or EDSY as current player-obtainable outfitting. Most
-  are hull geometry,
-  ship-launched-fighter internals, station or NPC fittings, and unreleased or withdrawn
-  variants. Notable outfitting-like examples remain
+- **The preserved 534-identity exclusion snapshot is stored in
+  `fixtures/ships/module-exclusions.json`.** It dispositions every symbol: four withdrawn
+  discovery scanners, one never-released Corrosion Resistant Cargo Rack, and 529
+  unresolved identities without enough public evidence to enter the player-facing
+  catalogue. The symbols are normalized to lowercase, sorted within each disposition,
+  and pinned by SHA-256
+  `92aa3033dd508b23b43c0dd9a23654be480e423c4c8431543329eef847c37e65` over the
+  sorted newline-delimited union. The snapshot was acquired on 2026-08-09 UTC and is the
+  retained comparison inventory minus all 1199 player-facing catalogue symbols, compared
+  case-insensitively. **No independently regenerable upstream snapshot is recorded.** The
+  checked-in fixture preserves the acquired comparison set and its digest, but cannot
+  establish identities introduced outside it; future reconciliation therefore requires a
+  new public registry or direct player-facing capture. The 529 unresolved identities
+  appear in none of FDevIDs, coriolis-data or EDSY as current player-obtainable
+  outfitting. Most are hull geometry, ship-launched-fighter internals, station or NPC
+  fittings, and unreleased variants. Notable outfitting-like examples remain
   `Int_MetaAlloyHullReinforcementMk2_Size{1..5}_Class2`,
   `Int_ShieldGenerator_Size{1..8}_Class2_AntiCaustic`,
   `Int_Cloud_Resistant_Sensors_Size{1..8}_Class3`, `Hpt_Cannon_Turret_Huge` and the

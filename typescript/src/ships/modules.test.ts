@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 
 import {
     getModuleBySymbol,
@@ -16,6 +17,7 @@ import { combinedRateOfFire } from './weapons.js';
 import { SHIPS, getShipSlots } from './ships.js';
 import modulesFixture from '../../../fixtures/ships/modules.json' with { type: 'json' };
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
+import exclusionsFixture from '../../../fixtures/ships/module-exclusions.json' with { type: 'json' };
 
 const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
     core: CORE_MODULES,
@@ -76,6 +78,48 @@ test('ALL_MODULES is exactly the four category catalogues concatenated', () => {
 test('module symbols are unique across all four catalogues', () => {
     const symbols = ALL_MODULES.map((module) => module.symbol.toLowerCase());
     assert.equal(new Set(symbols).size, symbols.length);
+});
+
+test('issue #20 exclusions are normalized, stable and outside the catalogue', () => {
+    const { withdrawn, neverReleased, unresolved } = exclusionsFixture.dispositions;
+    assert.equal(withdrawn.symbols.length, 4);
+    assert.equal(neverReleased.symbols.length, 1);
+    assert.equal(unresolved.symbols.length, 529);
+
+    for (const disposition of Object.values(exclusionsFixture.dispositions)) {
+        assert.deepEqual(disposition.symbols, [...disposition.symbols].sort());
+    }
+
+    const symbols = Object.values(exclusionsFixture.dispositions)
+        .flatMap((disposition) => disposition.symbols)
+        .sort();
+    assert.equal(symbols.length, exclusionsFixture.count);
+    assert.equal(new Set(symbols).size, symbols.length);
+    assert.ok(symbols.every((symbol) => symbol === symbol.toLowerCase()));
+
+    const catalogue = new Set(ALL_MODULES.map((module) => module.symbol.toLowerCase()));
+    for (const symbol of symbols) assert.ok(!catalogue.has(symbol), symbol);
+
+    const digest = createHash('sha256')
+        .update(`${symbols.join('\n')}\n`)
+        .digest('hex');
+    assert.equal(digest, exclusionsFixture.sha256);
+});
+
+test('issue #20 exclusions pin the notable outfitting-like families', () => {
+    const symbols = new Set(exclusionsFixture.dispositions.unresolved.symbols);
+    for (const symbol of [
+        'int_metaalloyhullreinforcementmk2_size1_class2',
+        'int_metaalloyhullreinforcementmk2_size5_class2',
+        'int_shieldgenerator_size1_class2_anticaustic',
+        'int_shieldgenerator_size8_class2_anticaustic',
+        'int_cloud_resistant_sensors_size1_class3',
+        'int_cloud_resistant_sensors_size8_class3',
+        'hpt_cannon_turret_huge',
+        'modularcargobaydoorfdl',
+    ]) {
+        assert.ok(symbols.has(symbol), symbol);
+    }
 });
 
 test('every module lands in the catalogue named by its own category', () => {
