@@ -21,13 +21,13 @@ redistribution or commercial use.
 Use a feature barrel when a bundler will tree-shake it:
 
 ```ts
-import { StarSystem } from '@elite-dangerous-almanac/core/astro';
+import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro';
 ```
 
 Use leaf subpaths to avoid evaluating unrelated data modules in native ESM:
 
 ```ts
-import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
+import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 ```
 
@@ -41,11 +41,11 @@ The package has four feature areas:
 ## Examples
 
 ```ts
-import { StarSystem } from '@elite-dangerous-almanac/core/astro/star-system';
+import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
 
-const system = StarSystem.fromName('Synuefe EN-H d11-96');
+const system = ProceduralSystem.fromName('Synuefe EN-H d11-96');
 system?.systemAddress; // 3309179996515n
-StarSystem.fromSystemAddress(3309179996515n).name;
+ProceduralSystem.fromSystemAddress(3309179996515n).name;
 // "Synuefe EN-H d11-96"
 ```
 

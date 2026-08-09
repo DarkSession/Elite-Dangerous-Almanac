@@ -8,8 +8,8 @@ import {
     PERMIT_LOCKED_SYSTEMS,
     PERMIT_LOCKED_REGIONS,
 } from './permit-locks.js';
-import { handAuthoredRegionForCoords, HAND_AUTHORED_REGIONS } from './hand-authored-regions.js';
-import { StarSystem } from './star-system.js';
+import { findHandAuthoredRegionAt, HAND_AUTHORED_REGIONS } from './hand-authored-regions.js';
+import { ProceduralSystem } from './procedural-system.js';
 import permitFixture from '../../../fixtures/astro/permit-locks.json' with { type: 'json' };
 
 for (const c of permitFixture.cases) {
@@ -35,7 +35,7 @@ for (const c of permitFixture.cases) {
         // the same verdict as the name route — both describe the same 28 regions, so
         // they may never disagree about a real system.
         if (!('coords' in c) || !c.coords) return;
-        const region = handAuthoredRegionForCoords(c.coords);
+        const region = findHandAuthoredRegionAt(c.coords);
         const byCoords = region && isPermitLockedRegionName(region.name) ? region.name : null;
         const byName = c.lock?.kind === 'region' ? c.lock.name : null;
         assert.equal(byCoords, byName, `coords and name disagree for ${c.name}`);
@@ -64,7 +64,7 @@ test('recorded addresses agree with the encoder for procedural permit systems', 
     ]) {
         const recorded = PERMIT_LOCKED_SYSTEMS.find((s) => s.name === name);
         assert.ok(recorded, `${name} missing from the list`);
-        assert.equal(StarSystem.fromName(name)?.systemAddress, recorded.id64);
+        assert.equal(ProceduralSystem.fromName(name)?.systemAddress, recorded.id64);
     }
 });
 

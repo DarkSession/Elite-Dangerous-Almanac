@@ -1,5 +1,5 @@
 /**
- * Origins of Elite Dangerous **named regions** and the fallback that synthesises
+ * Origins of Elite Dangerous **naming regions** and the fallback that synthesises
  * an origin for any procedural sector.
  *
  * Encoding a system name to an `id64` needs its region's origin (in internal
@@ -21,15 +21,24 @@
  * @packageDocumentation
  */
 
-import { sectorCoordsFromName } from './sector-name.js';
+import { sectorGridPositionFromName, sectorNameFromGridPosition } from './sector-name.js';
 import originsData from '../../../data/astro/named-region-origins.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
 
 /**
  * A region's origin and extent, in internal units (32 per light-year, measured
  * from the galaxy corner).
+ *
+ * @example
+ * ```ts
+ * const origin: NamingRegionOrigin = {
+ *   name: 'Example Sector',
+ *   x0: 0, y0: 0, z0: 0,
+ *   sizeX: 40960, sizeY: 40960, sizeZ: 40960,
+ * };
+ * ```
  */
-export interface RegionOrigin {
+export interface NamingRegionOrigin {
     /** The region name, as catalogued. */
     readonly name: string;
     /** Origin X in internal units. */
@@ -49,8 +58,8 @@ export interface RegionOrigin {
 /** Internal units per procedural-sector edge (1280 ly × 32 units/ly). */
 export const SECTOR_INTERNAL_SIZE = 40960;
 
-const CATALOGUE: ReadonlyMap<string, RegionOrigin> = new Map(
-    deepFreeze(originsData as readonly RegionOrigin[]).map((r) => [r.name.toLowerCase(), r]),
+const CATALOGUE: ReadonlyMap<string, NamingRegionOrigin> = new Map(
+    deepFreeze(originsData as readonly NamingRegionOrigin[]).map((r) => [r.name.toLowerCase(), r]),
 );
 
 /**
@@ -58,8 +67,13 @@ const CATALOGUE: ReadonlyMap<string, RegionOrigin> = new Map(
  *
  * @param name - A named region in any casing, with optional surrounding whitespace.
  * @returns Its canonical origin record, or `null` when it is not catalogued.
+ * @example
+ * ```ts
+ * getHandAuthoredRegionOrigin('  PLEIADES SECTOR ')?.name; // -> 'Pleiades Sector'
+ * getHandAuthoredRegionOrigin('Synuefe');                  // -> null
+ * ```
  */
-export function getNamedRegionOrigin(name: string): RegionOrigin | null {
+export function getHandAuthoredRegionOrigin(name: string): NamingRegionOrigin | null {
     return CATALOGUE.get(name.trim().toLowerCase()) ?? null;
 }
 
@@ -72,19 +86,25 @@ export function getNamedRegionOrigin(name: string): RegionOrigin | null {
  *
  * @param name - A region (sector) name in any casing.
  * @returns The region origin, or `null` if the name cannot be resolved.
+ * @example
+ * ```ts
+ * resolveNamingRegionOrigin('Pleiades Sector'); // catalogued, hand-authored origin
+ * resolveNamingRegionOrigin('Synuefe');         // origin derived from its grid position
+ * resolveNamingRegionOrigin('not a region');    // -> null
+ * ```
  */
-export function resolveRegionOrigin(name: string): RegionOrigin | null {
-    const namedOrigin = getNamedRegionOrigin(name);
+export function resolveNamingRegionOrigin(name: string): NamingRegionOrigin | null {
+    const namedOrigin = getHandAuthoredRegionOrigin(name);
     if (namedOrigin) return namedOrigin;
 
-    const coords = sectorCoordsFromName(name);
-    if (!coords) return null;
+    const position = sectorGridPositionFromName(name);
+    if (!position) return null;
 
     return {
-        name,
-        x0: coords.x * SECTOR_INTERNAL_SIZE,
-        y0: coords.y * SECTOR_INTERNAL_SIZE,
-        z0: coords.z * SECTOR_INTERNAL_SIZE,
+        name: sectorNameFromGridPosition(position),
+        x0: position.sectorX * SECTOR_INTERNAL_SIZE,
+        y0: position.sectorY * SECTOR_INTERNAL_SIZE,
+        z0: position.sectorZ * SECTOR_INTERNAL_SIZE,
         sizeX: SECTOR_INTERNAL_SIZE,
         sizeY: SECTOR_INTERNAL_SIZE,
         sizeZ: SECTOR_INTERNAL_SIZE,

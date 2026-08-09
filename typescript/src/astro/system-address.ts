@@ -9,18 +9,18 @@
  * "modulated" layout ({@link encodeModSystemAddress}) is used by some tools and
  * regroups the same information.
  *
- * These functions are pure bit arithmetic over {@link RegionOrigin} values that
+ * These functions are pure bit arithmetic over {@link NamingRegionOrigin} values that
  * the caller supplies; resolving a region name to an origin lives in
- * `./named-regions`. All packing uses `BigInt`, since fields reach bit 55 and JS
+ * `./naming-region-origins`. All packing uses `BigInt`, since fields reach bit 55 and JS
  * number bitwise operators truncate to 32 bits.
  *
  * @packageDocumentation
  */
 
 import { lettersToBoxelCode, type SystemNameParts } from './system-name.js';
-import type { RegionOrigin } from './named-regions.js';
-export { SECTOR_INTERNAL_SIZE } from './named-regions.js';
-import type { SectorCoords } from './sector-name.js';
+import type { NamingRegionOrigin } from './naming-region-origins.js';
+export { SECTOR_INTERNAL_SIZE } from './naming-region-origins.js';
+import type { SectorGridPosition } from './sector-name.js';
 import { toSystemAddress, type SystemAddressInput } from './system-address-input.js';
 
 /**
@@ -48,7 +48,7 @@ export interface DecodedAddress {
     /** Size class 0–7 (mass code `a`–`h`). */
     sizeClass: number;
     /** The sector's position on the galaxy grid. */
-    sectorCoords: SectorCoords;
+    sectorGridPosition: SectorGridPosition;
     /** The boxel's base-26 index within the sector (the "boxel code"). */
     boxelCode: number;
     /** The system sequence number (`N2`). */
@@ -77,7 +77,7 @@ export interface DecodedAddress {
 export function boxelCodeToAbsoluteBoxel(
     sizeClass: number,
     boxelCode: number,
-    origin: RegionOrigin,
+    origin: NamingRegionOrigin,
 ): { x: number; y: number; z: number } {
     const boxelSize = boxelInternalSize(sizeClass);
 
@@ -130,19 +130,19 @@ export function boxelCodeToAbsoluteBoxel(
  * @param absoluteBoxel - The boxel's absolute grid indices, as
  * {@link decodeSystemAddress} returns in `absoluteBoxel`.
  * @param origin - The region origin to measure against (internal units, 32 per
- * light-year), from `./named-regions`.
+ * light-year), from `./naming-region-origins`.
  * @returns The base-26 boxel code within that region, or `null` when the boxel lies
  * outside the region or the region origin is unknown.
  * @example
  * ```ts
  * const { sizeClass, absoluteBoxel } = decodeSystemAddress(id64);
- * absoluteBoxelToBoxelCode(sizeClass, absoluteBoxel, resolveRegionOrigin('Pleiades Sector')!);
+ * absoluteBoxelToBoxelCode(sizeClass, absoluteBoxel, resolveNamingRegionOrigin('Pleiades Sector')!);
  * ```
  */
 export function absoluteBoxelToBoxelCode(
     sizeClass: number,
     absoluteBoxel: { x: number; y: number; z: number },
-    origin: RegionOrigin,
+    origin: NamingRegionOrigin,
 ): number | null {
     const boxelSize = boxelInternalSize(sizeClass);
     if (
@@ -189,7 +189,7 @@ function assertAddressRange(id64: bigint): void {
  * @example
  * ```ts
  * decodeSystemAddress(3309179996515n);
- * // -> { sizeClass: 3, sectorCoords: { x: 39, y: 31, z: 18 }, boxelCode: …, sequence: 96, … }
+ * // -> { sizeClass: 3, sectorGridPosition: { sectorX: 39, sectorY: 31, sectorZ: 18 }, … }
  *
  * decodeSystemAddress(event.SystemAddress); // a journal number works too
  * ```
@@ -212,7 +212,7 @@ export function decodeSystemAddress(id64: SystemAddressInput): DecodedAddress {
 
     return {
         sizeClass: sc,
-        sectorCoords: { x: x2, y: y2, z: z2 },
+        sectorGridPosition: { sectorX: x2, sectorY: y2, sectorZ: z2 },
         boxelCode: x1 | (y1 << 7) | (z1 << 14),
         sequence: seq,
         absoluteBoxel: { x: x0, y: y0, z: z0 },
@@ -229,16 +229,18 @@ export function decodeSystemAddress(id64: SystemAddressInput): DecodedAddress {
  * {@link decodeSystemAddress} instead; use this only when a source specifically
  * hands you a modulated address.
  *
- * @param id64 - The 64-bit modulated system address, as a `bigint` or a decimal
- * `string` (see {@link SystemAddressInput}). A modulated address packs the sector
- * into the high bits, so it routinely exceeds `2^53` — a JS `number` cannot carry
- * one and is rejected rather than silently rounded.
+ * @param id64 - The 64-bit modulated system address, as a `bigint`, a safe-integer
+ * `number`, or a decimal `string` (see {@link SystemAddressInput}). A modulated
+ * address packs the sector into the high bits, so it routinely exceeds `2^53`;
+ * those values must be supplied as a `bigint` or string because a JS `number` has
+ * already lost precision.
  * @returns The decoded components (same shape as {@link decodeSystemAddress}).
  * @throws {TypeError} If `id64` is not a usable address representation.
  * @throws {RangeError} If `id64` is negative or does not fit in 64 bits.
  * @example
  * ```ts
- * decodeModSystemAddress(modAddressFromSomeTool).sectorCoords; // -> { x, y, z }
+ * decodeModSystemAddress(modAddressFromSomeTool).sectorGridPosition;
+ * // -> { sectorX, sectorY, sectorZ }
  * ```
  */
 export function decodeModSystemAddress(id64: SystemAddressInput): DecodedAddress {
@@ -257,7 +259,7 @@ export function decodeModSystemAddress(id64: SystemAddressInput): DecodedAddress
     const boxelMask = 0x7f >> sc;
     return {
         sizeClass: sc,
-        sectorCoords: { x: x2, y: y2, z: z2 },
+        sectorGridPosition: { sectorX: x2, sectorY: y2, sectorZ: z2 },
         boxelCode,
         sequence: seq,
         absoluteBoxel: {
@@ -273,18 +275,18 @@ export function decodeModSystemAddress(id64: SystemAddressInput): DecodedAddress
  *
  * @param parts - The parsed system-name parts, as {@link parseSystemName} returns
  * (letters and mass code are zero-based numeric indices, not characters).
- * @param origin - The region origin (internal units), from `resolveRegionOrigin` in
- * `./named-regions`.
+ * @param origin - The region origin (internal units), from
+ * `resolveNamingRegionOrigin` in `./naming-region-origins`.
  * @returns The 64-bit system address.
  * @throws {Error} If the region origin is unknown.
  * @throws {RangeError} If the sequence does not fit its size-class-dependent field.
  * @example
  * ```ts
  * const parts = parseSystemName('Synuefe EN-H d11-96')!;
- * encodeSystemAddress(parts, resolveRegionOrigin(parts.regionName)!); // -> 3309179996515n
+ * encodeSystemAddress(parts, resolveNamingRegionOrigin(parts.regionName)!); // -> 3309179996515n
  * ```
  */
-export function encodeSystemAddress(parts: SystemNameParts, origin: RegionOrigin): bigint {
+export function encodeSystemAddress(parts: SystemNameParts, origin: NamingRegionOrigin): bigint {
     const sc = parts.massCode;
     const boxelCode = lettersToBoxelCode(parts.l1, parts.l2, parts.l3, parts.n1);
     const { x, y, z } = boxelCodeToAbsoluteBoxel(sc, boxelCode, origin);
@@ -313,7 +315,7 @@ export function encodeSystemAddress(parts: SystemNameParts, origin: RegionOrigin
  * form only when a tool you are feeding expects that specific layout.
  *
  * @param parts - The parsed system-name parts, as {@link parseSystemName} returns.
- * @param origin - The region origin (internal units), from `resolveRegionOrigin`.
+ * @param origin - The region origin (internal units), from `resolveNamingRegionOrigin`.
  * @returns The 64-bit modulated system address. These routinely exceed `2^53`, so
  * keep them as `bigint` (or a decimal string) rather than a JS `number`.
  * @throws {Error} If the region origin is unknown.
@@ -321,10 +323,10 @@ export function encodeSystemAddress(parts: SystemNameParts, origin: RegionOrigin
  * @example
  * ```ts
  * const parts = parseSystemName('Synuefe EN-H d11-96')!;
- * encodeModSystemAddress(parts, resolveRegionOrigin(parts.regionName)!).toString();
+ * encodeModSystemAddress(parts, resolveNamingRegionOrigin(parts.regionName)!).toString();
  * ```
  */
-export function encodeModSystemAddress(parts: SystemNameParts, origin: RegionOrigin): bigint {
+export function encodeModSystemAddress(parts: SystemNameParts, origin: NamingRegionOrigin): bigint {
     const sc = parts.massCode;
     const bps = 7 - sc;
     const boxelMask = 0x7f >> sc;

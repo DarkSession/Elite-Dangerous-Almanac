@@ -4,10 +4,10 @@
  *
  * Every star system in the galaxy belongs to exactly one of 42 named regions (plus
  * an implicit "outside the map"). This module exposes each region as a
- * {@link GalacticRegion} object carrying its id, name and pre-computed footprint —
+ * {@link CodexRegion} object carrying its id, name and pre-computed footprint —
  * area, axis-aligned bounds and centroid on the galactic plane — so consumers can
  * read per-region facts without touching the (much larger) lookup geometry.
- * Resolving a *coordinate or `id64`* to a region lives in `./galactic-region-lookup`,
+ * Resolving a *coordinate or `id64`* to a region lives in `./codex-region-lookup`,
  * which loads the separate cell grid.
  *
  * The region ids and names come from klightspeed's EliteDangerousRegionMap; the
@@ -16,7 +16,7 @@
  *
  * @remarks
  * Region ids are 1–42; id `0` means "outside the mapped region grid" and has no
- * {@link GalacticRegion} object.
+ * {@link CodexRegion} object.
  *
  * @packageDocumentation
  */
@@ -24,8 +24,16 @@
 import regionData from '../../../data/astro/galactic-regions.jsonc' with { type: 'json' };
 import { deepFreeze } from '../deep-freeze.js';
 
-/** A 2-D point on the galactic plane (X east/west, Z toward/away from the core), in light-years. */
-export interface PlanePoint {
+/**
+ * A 2-D point on the galactic plane (X east/west, Z toward/away from the core),
+ * in light-years.
+ *
+ * @example
+ * ```ts
+ * const point: GalacticPlanePosition = { x: 0, z: 0 };
+ * ```
+ */
+export interface GalacticPlanePosition {
     /** Galactic X coordinate, in light-years. */
     readonly x: number;
     /** Galactic Z coordinate, in light-years. */
@@ -38,8 +46,15 @@ export interface PlanePoint {
  * @remarks
  * The region map is two-dimensional (X/Z only); the vertical Y axis is not encoded,
  * so regions have no Y extent here.
+ *
+ * @example
+ * ```ts
+ * const bounds: CodexRegionBounds = {
+ *   minX: -100, maxX: 100, minZ: -200, maxZ: 200,
+ * };
+ * ```
  */
-export interface PlaneBounds {
+export interface CodexRegionBounds {
     /** Minimum galactic X, in light-years. */
     readonly minX: number;
     /** Maximum galactic X, in light-years. */
@@ -54,11 +69,16 @@ export interface PlaneBounds {
  * A single Elite Dangerous galactic codex region.
  *
  * @remarks
- * Footprint fields ({@link GalacticRegion.areaLy2}, {@link GalacticRegion.bounds},
- * {@link GalacticRegion.centroid}) are approximations derived from the ≈49.35 ly
+ * Footprint fields ({@link CodexRegion.areaLy2}, {@link CodexRegion.bounds},
+ * {@link CodexRegion.centroid}) are approximations derived from the ≈49.35 ly
  * region grid, not survey-precise figures.
+ *
+ * @example
+ * ```ts
+ * const innerOrionSpur: CodexRegion | null = getCodexRegionByName('Inner Orion Spur');
+ * ```
  */
-export interface GalacticRegion {
+export interface CodexRegion {
     /** Region id, 1–42. Stable across releases; matches the codex region ordering. */
     readonly id: number;
     /** Human-readable region name, e.g. `"Inner Orion Spur"`. */
@@ -74,9 +94,9 @@ export interface GalacticRegion {
     /** Approximate footprint area on the galactic plane, in square light-years. */
     readonly areaLy2: number;
     /** Axis-aligned bounds on the galactic plane, in light-years. */
-    readonly bounds: PlaneBounds;
+    readonly bounds: CodexRegionBounds;
     /** Cell-weighted centroid on the galactic plane, in light-years. */
-    readonly centroid: PlanePoint;
+    readonly centroid: GalacticPlanePosition;
 }
 
 /**
@@ -88,32 +108,32 @@ export interface GalacticRegion {
  *
  * @example
  * ```ts
- * GALACTIC_REGIONS.length; // -> 42
- * GALACTIC_REGIONS[0].name; // -> 'Galactic Centre'
+ * CODEX_REGIONS.length; // -> 42
+ * CODEX_REGIONS[0].name; // -> 'Galactic Centre'
  * ```
  */
-export const GALACTIC_REGIONS: readonly GalacticRegion[] = deepFreeze(
-    regionData as readonly GalacticRegion[],
+export const CODEX_REGIONS: readonly CodexRegion[] = deepFreeze(
+    regionData as readonly CodexRegion[],
 );
 
-const BY_ID: ReadonlyMap<number, GalacticRegion> = new Map(GALACTIC_REGIONS.map((r) => [r.id, r]));
+const BY_ID: ReadonlyMap<number, CodexRegion> = new Map(CODEX_REGIONS.map((r) => [r.id, r]));
 
-const BY_NAME: ReadonlyMap<string, GalacticRegion> = new Map(
-    GALACTIC_REGIONS.map((r) => [r.name.toLowerCase(), r]),
+const BY_NAME: ReadonlyMap<string, CodexRegion> = new Map(
+    CODEX_REGIONS.map((r) => [r.name.toLowerCase(), r]),
 );
 
 /**
  * Look up a region by its id.
  *
  * @param id - Region id, 1–42.
- * @returns The {@link GalacticRegion}, or `null` if `id` is `0` (outside the map)
+ * @returns The {@link CodexRegion}, or `null` if `id` is `0` (outside the map)
  * or otherwise unknown.
  * @example
  * ```ts
- * getGalacticRegion(18)?.name; // -> 'Inner Orion Spur'
+ * getCodexRegion(18)?.name; // -> 'Inner Orion Spur'
  * ```
  */
-export function getGalacticRegion(id: number): GalacticRegion | null {
+export function getCodexRegion(id: number): CodexRegion | null {
     return BY_ID.get(id) ?? null;
 }
 
@@ -122,12 +142,12 @@ export function getGalacticRegion(id: number): GalacticRegion | null {
  *
  * @param name - The region name, e.g. `"Inner Orion Spur"`. Matching ignores case
  * and surrounding whitespace.
- * @returns The {@link GalacticRegion}, or `null` if no region has that name.
+ * @returns The {@link CodexRegion}, or `null` if no region has that name.
  * @example
  * ```ts
- * getGalacticRegionByName('the void')?.id; // -> 42
+ * getCodexRegionByName('the void')?.id; // -> 42
  * ```
  */
-export function getGalacticRegionByName(name: string): GalacticRegion | null {
+export function getCodexRegionByName(name: string): CodexRegion | null {
     return BY_NAME.get(name.trim().toLowerCase()) ?? null;
 }

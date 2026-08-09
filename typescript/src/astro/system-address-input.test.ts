@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 
 import { toSystemAddress, tryToSystemAddress } from './system-address-input.js';
 import { decodeSystemAddress, decodeModSystemAddress } from './system-address.js';
-import { StarSystem } from './star-system.js';
-import { findRegionForBoxel } from './galactic-region-lookup.js';
+import { ProceduralSystem } from './procedural-system.js';
+import { findCodexRegionForBoxel } from './codex-region-lookup.js';
 import { permitLockedSystemForAddress } from './permit-locked-systems.js';
 
 const SYNUEFE = 3309179996515n;
@@ -19,8 +19,8 @@ test('accepts the three representations a caller may hold', () => {
 test('passes a bigint through so the decoder owns the range check', () => {
     // Out-of-range is a RangeError from the decoder, not a conversion TypeError.
     assert.equal(tryToSystemAddress(-1n), -1n);
-    assert.throws(() => StarSystem.fromSystemAddress(-1n), RangeError);
-    assert.throws(() => StarSystem.fromSystemAddress(1n << 64n), RangeError);
+    assert.throws(() => ProceduralSystem.fromSystemAddress(-1n), RangeError);
+    assert.throws(() => ProceduralSystem.fromSystemAddress(1n << 64n), RangeError);
 });
 
 test('refuses values that cannot be a trustworthy address', () => {
@@ -42,35 +42,39 @@ test('every address entry point takes a journal number', () => {
     // A journal event parsed with JSON.parse yields a plain number.
     const journalAddress = 3309179996515;
 
-    assert.equal(StarSystem.fromSystemAddress(journalAddress).name, 'Synuefe EN-H d11-96');
-    assert.equal(StarSystem.fromSystemAddress('3309179996515').name, 'Synuefe EN-H d11-96');
+    assert.equal(ProceduralSystem.fromSystemAddress(journalAddress).name, 'Synuefe EN-H d11-96');
+    assert.equal(ProceduralSystem.fromSystemAddress('3309179996515').name, 'Synuefe EN-H d11-96');
     assert.deepEqual(
         decodeSystemAddress(journalAddress),
         decodeSystemAddress(SYNUEFE),
         'number and bigint must decode identically',
     );
-    assert.deepEqual(findRegionForBoxel(journalAddress), findRegionForBoxel(SYNUEFE));
+    assert.deepEqual(findCodexRegionForBoxel(journalAddress), findCodexRegionForBoxel(SYNUEFE));
     assert.equal(permitLockedSystemForAddress(10_477_373_803)?.name, 'Sol');
 
     // A modulated address packs the sector into the high bits, so it routinely
     // exceeds 2^53 — a `number` cannot carry one, but a decimal string can.
-    const mod = StarSystem.fromName('Synuefe EN-H d11-96')!.modSystemAddress;
+    const mod = ProceduralSystem.fromName('Synuefe EN-H d11-96')!.modSystemAddress;
+    assert.ok(mod !== null);
     assert.ok(mod > BigInt(Number.MAX_SAFE_INTEGER));
     assert.deepEqual(decodeModSystemAddress(mod.toString()), decodeModSystemAddress(mod));
-    assert.equal(StarSystem.fromModSystemAddress(mod.toString()).name, 'Synuefe EN-H d11-96');
-    assert.throws(() => StarSystem.fromModSystemAddress(Number(mod)), TypeError);
+    assert.equal(ProceduralSystem.fromModSystemAddress(mod.toString()).name, 'Synuefe EN-H d11-96');
+    assert.throws(() => ProceduralSystem.fromModSystemAddress(Number(mod)), TypeError);
 });
 
 test('rejects a rounded address instead of resolving the wrong system', () => {
-    assert.throws(() => StarSystem.fromSystemAddress(2 ** 53 + 2), TypeError);
+    assert.throws(() => ProceduralSystem.fromSystemAddress(2 ** 53 + 2), TypeError);
     assert.equal(permitLockedSystemForAddress(2 ** 53 + 2), null);
 });
 
-test('coords are null, not undefined, when unknown', () => {
-    assert.equal(StarSystem.fromName('Synuefe EN-H d11-96')?.coords, null);
-    assert.deepEqual(StarSystem.fromSystemAddress(SYNUEFE, { x: 751, y: -179, z: -91 }).coords, {
-        x: 751,
-        y: -179,
-        z: -91,
-    });
+test('position is null, not undefined, when unknown', () => {
+    assert.equal(ProceduralSystem.fromName('Synuefe EN-H d11-96')?.position, null);
+    assert.deepEqual(
+        ProceduralSystem.fromSystemAddress(SYNUEFE, { x: 751, y: -179, z: -91 }).position,
+        {
+            x: 751,
+            y: -179,
+            z: -91,
+        },
+    );
 });

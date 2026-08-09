@@ -6,8 +6,8 @@ import { REAL_NEBULAE } from './nebulae-real.js';
 import { PLANETARY_NEBULAE } from './nebulae-planetary.js';
 import { PROCGEN_NEBULAE } from './nebulae-procgen.js';
 import { ALL_NEBULAE } from './nebulae-all.js';
-import { findRegionAt } from './galactic-region-lookup.js';
-import { getGalacticRegion } from './galactic-region.js';
+import { findCodexRegionAt } from './codex-region-lookup.js';
+import { getCodexRegion } from './codex-region.js';
 import nebulaeFixture from '../../../fixtures/astro/nebulae.json' with { type: 'json' };
 
 const CATALOGUES: Record<string, readonly Nebula[]> = {
@@ -60,14 +60,14 @@ test('every nebula record is well-formed', () => {
             assert.ok(Number.isFinite(axis), `non-finite coordinate for ${nebula.name}`);
         }
         assert.ok(nebula.regionId >= 1 && nebula.regionId <= 42, `bad regionId for ${nebula.name}`);
-        assert.ok(getGalacticRegion(nebula.regionId), `unknown region ${nebula.regionId}`);
+        assert.ok(getCodexRegion(nebula.regionId), `unknown region ${nebula.regionId}`);
     }
 });
 
 test("each nebula's regionId agrees with this library's own region lookup", () => {
     for (const nebula of ALL_NEBULAE) {
         assert.equal(
-            findRegionAt({ x: nebula.x, z: nebula.z })?.id ?? 0,
+            findCodexRegionAt({ x: nebula.x, z: nebula.z })?.id ?? 0,
             nebula.regionId,
             `region mismatch for ${nebula.name}`,
         );

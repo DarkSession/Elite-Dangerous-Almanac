@@ -1,5 +1,5 @@
 /**
- * Shared galactic coordinate type.
+ * Shared galactic position type.
  *
  * A single point in the Elite Dangerous galaxy, in **light-years with Sol at the
  * origin** — the same frame the game journal and community APIs (EDSM, Spansh)
@@ -9,8 +9,15 @@
  * @packageDocumentation
  */
 
-/** A point in the galaxy, in light-years, with Sol at the origin. */
-export interface GalacticCoords {
+/**
+ * A point in the galaxy, in light-years, with Sol at the origin.
+ *
+ * @example
+ * ```ts
+ * const position: GalacticPosition = { x: 751, y: -179, z: -91 };
+ * ```
+ */
+export interface GalacticPosition {
     /** Galactic X in light-years (Sol at origin). */
     x: number;
     /** Galactic Y in light-years (Sol at origin). */
