@@ -301,14 +301,17 @@ export function computeModifiers(
             value = (factor - 1) * multiplierBase;
         }
         if (overwrite) value = overwrite.value;
-        // A count of rounds is where a published multiplier's own rounding shows. An
-        // overwrite is a published figure rather than a product, so it is left alone —
-        // by the round-up below as well as by the snap.
+        // Ammunition is counted in whole rounds. A computed reserve rounds to the nearest
+        // round, matching Frontier's stated values; a computed clip is handled below
+        // because its rule is to round up to a whole burst. An overwrite is already a
+        // published figure rather than a product, so it is left alone.
         if (label === 'AmmoClipSize') {
             if (overwrite) clipIsOverwritten = true;
             else if (original !== undefined && contributions.every((c) => c.stated)) {
                 value = snapToStatedWhole(value, original);
             }
+        } else if (label === 'AmmoMaximum' && !overwrite) {
+            value = Math.round(value);
         }
         modifiers.push({
             Label: label,
@@ -345,10 +348,9 @@ export function computeModifiers(
  * up to a multiple of burst size", `ceil(ammoclip / bstsize) * bstsize`, applied when the
  * blueprint roll is stored. Coriolis rounds the clip up too, without the burst step
  * (`Module.getClip`, "Clip size is always rounded up"), so the two agree wherever a weapon
- * fires one round at a time and EDSY is followed where they differ. The **reserve** is
- * rounded by neither, and is not rounded or snapped here either — it is reported exactly as
- * its multiplier gives it. No reading of Frontier's own behaviour backs any of this:
- * <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
+ * fires one round at a time and EDSY is followed where they differ. Neither registry
+ * rounds the reserve, but Frontier's own journal values establish that it is a whole-round
+ * count; {@link computeModifiers} therefore rounds a computed reserve to the nearest round.
  */
 function roundClipToWholeBursts(
     modifiers: EngineeringModifier[],
@@ -375,9 +377,9 @@ function roundClipToWholeBursts(
  * weapon, and it grows the community-goal Fragment Cannon's shipped magazine from 8 to 10 (its authored `1.6667`
  * scales a 3-round clip to 8.0001).
  *
- * **The clip alone is snapped, because the clip alone is rounded.** Nothing rounds a
- * reserve, so nothing amplifies the same noise there and a reserve is reported exactly as
- * its multiplier gives it — 30.006 rounds on that rack — which is what both registries do.
+ * **The clip alone is snapped before its directional round-up.** A reserve uses ordinary
+ * nearest-integer rounding after every contribution has been folded, so the same
+ * transcription noise disappears there without affecting which way the result moves.
  *
  * Two things keep this from eating a fraction a recipe means:
  *

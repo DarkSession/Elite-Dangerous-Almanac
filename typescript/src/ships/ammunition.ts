@@ -86,17 +86,11 @@ export interface AmmunitionCapacity {
  * ammunition at all — the lasers, which state neither figure because they draw from the
  * weapons capacitor instead.
  * @remarks
- * **Figures are reported as the stats give them, and only the clip is a whole number.**
- * Every recipe that moves ammunition is multiplicative, so a roll that is not a whole
- * multiple leaves a fraction. A clip is rounded up to a whole burst where the roll is
- * computed (`computeModifiers` in `./engineering`) — a small cannon under High Capacity at
- * grade 3 reaches 10.08 and loads 11 — because a ship cannot load a tenth of a round, and
- * because a journal states the engineered clip itself, which is passed through untouched.
- * The **reserve** is rounded by neither Coriolis nor EDSY, so a fractional one is reported
- * as it lands — while the game's own engineered reserve is a whole number, so round it
- * yourself before showing it. A roll simulated at an intermediate quality can also differ
- * by a round from what the game gives, where a build imported from a journal carries the
- * game's own figures: <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
+ * **Figures are reported as the stats give them.** When engineering is simulated, its
+ * calculator makes both ammunition figures whole: a clip rounds up to a whole burst and a
+ * reserve rounds to the nearest whole round. A small cannon under High Capacity at grade 3
+ * therefore loads an 11-round clip and carries a 202-round reserve. A journal states the
+ * engineered figures themselves, so imported values pass through untouched.
  * @example
  * ```ts
  * ammunitionCapacity(getModuleBySymbol('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES)!);

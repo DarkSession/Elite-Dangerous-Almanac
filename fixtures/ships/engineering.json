@@ -222,7 +222,7 @@
     ]
   },
   "clipRounding": {
-    "description": "A magazine holds whole rounds, and a weapon that fires in bursts holds whole bursts, so a computed clip is rounded up to a multiple of the burst size. That is EDSY's rule (`ceil(ammoclip / bstsize) * bstsize`, applied where the blueprint roll is stored), and it reduces to Coriolis's plain round-up (`Module.getClip`, \"Clip size is always rounded up\") wherever a weapon fires one round at a time. It belongs where the roll is computed rather than where a stat is read, because a journal states the engineered clip itself and that figure is the game's own. The reserve is rounded by neither registry and keeps its fraction — see the 302.4 below, and https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57.",
+    "description": "A magazine holds whole rounds, and a weapon that fires in bursts holds whole bursts, so a computed clip is rounded up to a multiple of the burst size. That is EDSY's rule (`ceil(ammoclip / bstsize) * bstsize`, applied where the blueprint roll is stored), and it reduces to Coriolis's plain round-up (`Module.getClip`, \"Clip size is always rounded up\") wherever a weapon fires one round at a time. It belongs where the roll is computed rather than where a stat is read, because a journal states the engineered clip itself and that figure is the game's own. A computed reserve rounds to the nearest whole round after all contributions are applied, matching Frontier's stated ammunition values.",
     "cases": [
       {
         "note": "A weapon that fires one round at a time: the burst step is inert and the clip simply rounds up.",
@@ -235,7 +235,7 @@
         "burstSize": 1,
         "burstFrom": "none",
         "AmmoClipSize": 11,
-        "AmmoMaximum": 201.6
+        "AmmoMaximum": 202
       },
       {
         "note": "Double Shot scales the clip and gives the weapon a two-round burst in the same roll, so 4.02 rounds to a whole burst — 6, where a bare round-up would say 5. The burst is the recipe's own.",
@@ -263,7 +263,7 @@
         "AmmoMaximum": 408
       },
       {
-        "note": "The same fragment cannon under High Capacity: the clip rounds up and the reserve does not.",
+        "note": "The same fragment cannon under High Capacity: the clip rounds up and the reserve rounds to the nearest whole round.",
         "symbol": "Hpt_Slugshot_Fixed_Medium",
         "blueprint": "Weapon_HighCapacity",
         "grade": 3,
@@ -273,10 +273,10 @@
         "burstSize": 1,
         "burstFrom": "none",
         "AmmoClipSize": 6,
-        "AmmoMaximum": 302.4
+        "AmmoMaximum": 302
       },
       {
-        "note": "The registries state their multipliers to three decimals, so Drag Munitions' +66.7% computes 10.002 on a 6-round rack where the recipe means 10. A figure within that precision of a whole magazine is snapped to it before the round-up, or the transcription noise buys a whole extra round. The reserve carries the same noise and keeps it: nothing rounds a reserve, so nothing amplifies the noise there, and 30.006 is reported as it lands.",
+        "note": "The registries state their multipliers to three decimals, so Drag Munitions' +66.7% computes 10.002 on a 6-round rack where the recipe means 10. A figure within that precision of a whole magazine is snapped to it before the round-up, or the transcription noise buys a whole extra round. The reserve's 30.006 rounds normally to 30.",
         "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
         "blueprint": "SeekerMissileRack_Drag",
         "grade": 2,
@@ -286,7 +286,7 @@
         "burstSize": 1,
         "burstFrom": "none",
         "AmmoClipSize": 10,
-        "AmmoMaximum": 30.006
+        "AmmoMaximum": 30
       },
       {
         "note": "A quality roll between two published legs is a real number with no whole magazine behind it, so nothing is snapped and the round-up stands: 185.12 rounds load as 186. This is the case that separates recovering a published figure from swallowing a fraction the recipe means — the snap applies to a stated multiplier only.",

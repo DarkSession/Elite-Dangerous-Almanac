@@ -2183,33 +2183,35 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   Plasma Shock Accelerator has nothing behind its magazine, and Plasma Slug empties a
   rail gun's reserve because the weapon then reloads from ship fuel, which is a tank
   this does not model.
-- **An engineered clip is rounded up to a whole burst; the reserve is not rounded at
-  all.** Both stats are multiplicative under engineering, so a roll that is not a whole
-  multiple leaves a fraction, and a ship cannot load a tenth of a round. Only a computed
-  clip is rounded: a stock one is left alone, which matters because the Mk II Plasma Shock
+- **Engineered ammunition is reported in whole rounds: a clip rounds up to a whole burst,
+  and a reserve rounds to the nearest round.** Both stats are multiplicative under
+  engineering, so a roll that is not a whole multiple leaves a fraction, and a ship cannot
+  load a tenth of a round. Only a computed clip is rounded: a stock one is left alone,
+  which matters because the Mk II Plasma Shock
   Accelerator's 18 rounds are **not** a whole number of its 4-round bursts, so the rule is
   the registries' treatment of a roll rather than a claim about how magazines are built.
-  EDSY rounds the
-  clip up to a multiple of the burst size — `ceil(ammoclip / bstsize) * bstsize`, with the
+  EDSY rounds the clip up to a multiple of the burst size —
+  `ceil(ammoclip / bstsize) * bstsize`, with the
   comment "when modifying clip size, round up to a multiple of burst size" — and Coriolis
   rounds it up without the burst step (`Module.getClip`, "Clip size is always rounded up"),
   so the two agree wherever a weapon fires one round at a time and EDSY is taken where they
   differ, as everywhere else in this section. Neither rounds the reserve anywhere: EDSY's
-  own rearm-cost and ammo-time maths multiplies the fractional `ammomax` as it stands, so a
-  fragment cannon's High Capacity reserve of 302.4 is reported as 302.4.
-  **Neither figure is Frontier's**. Seven captures state an engineered clip or reserve,
-  twenty-one readings between them, and seventeen agree exactly — sixteen of those at
-  quality 1, and the seventeenth at 0.826, where the leg is an experimental's flat −20%
-  rather than a quality-rolled one. The four that do not rule out the simple
-  explanations rather than choosing between them: two multi-cannons rolled at quality
-  0.9844 and 0.9438 both state the **full**-quality reserve of 4200, so the reserve is
-  not scaled by quality as the registries model it, and the dumbfire rack's clip says
-  the same from the other side — 23 where its own quality computes 22. But that rack's
-  reserve, 87, is neither its stated-quality figure (87.499008) nor its full-quality one
-  (88.32), and a heat-sink launcher's 3 is neither at any quality (2.98). No single rule
-  — ignore quality, round, truncate — reproduces all four. Nothing is changed on that
-  evidence, and all twenty-one are pinned in `fixtures/ships/build-metrics.json`
-  §ammunition.engineeredGroundTruth so a change to the model has to face them:
+  own rearm-cost and ammo-time maths multiplies the fractional `ammomax` as it stands, and
+  Coriolis returns the same kind of product. Frontier's own values settle the library's
+  rule instead. A grade-1 Heat Sink Capacity roll computes 2 × 1.49 = 2.98 and the journal
+  states **3**; the Corsair's intermediate High Capacity roll computes 87.499008 and the
+  journal states **87**. Nearest-integer rounding reproduces both, so it runs after the
+  blueprint and experimental contributions have all compounded.
+
+  Seven captures state an engineered clip or reserve, twenty-one readings between them,
+  and twenty agree exactly under those rules and the two manual quality corrections
+  recorded below. One of them is a fragment cannon's Corrosive Shell reserve at quality
+  0.826, where the ammunition leg is the experimental's flat −20% rather than a
+  quality-rolled one. The remaining one-round disagreement is the Corsair's dumbfire-rack
+  clip: Frontier states 23 where the registry-derived intermediate roll rounds up to 22.
+  One point cannot solve a different per-leg band, so the shared registry band stays and
+  the discrepancy remains pinned in `fixtures/ships/build-metrics.json`
+  §ammunition.engineeredGroundTruth and tracked at
   <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>. The rounding is
   applied in `computeModifiers` (`engineering.ts`), which is every place this library
   computes an engineered stat — a blueprint roll and a pre-engineered variant's published
@@ -2225,8 +2227,8 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   `fixtures/ships/engineering.json`
   §clipRounding and, for the published article, `fixtures/ships/pre-engineered.json`
   §resolved.fragmentCannonDoubleShot.
-- **A published multiplier is snapped to the precision it is stated at — on the clip
-  only, because the clip alone is rounded.** Both registries state a recipe's multiplier to
+- **A published multiplier is snapped to the precision it is stated at before a clip's
+  directional round-up.** Both registries state a recipe's multiplier to
   three or four decimals, so a leg meant to add two thirds is written `0.667`: Drag
   Munitions computes 10.002 rounds on a 6-round Seeker Missile Rack, and the community-goal
   Fragment Cannon's authored `1.6667` computes 8.0001 against two-round bursts. Left alone,
@@ -2234,20 +2236,12 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   burst on a burst weapon. A clip within **half a unit in the multiplier's third decimal,
   scaled by the base clip**, is therefore taken as the whole number it means: 0.003 rounds
   on a 6-round clip, against the 0.02 that Double Shot's 4.02 genuinely adds, and clips are
-  small enough (100 rounds at the widest) that the band stays a fraction of a round. The
-  **reserve is neither rounded nor snapped**: nothing amplifies its noise, and the same band
-  on a 2100-round reserve would be a whole round wide and would swallow real fractions —
-  a High Capacity multi-cannon's 2822.4 is a genuine figure, not a mis-stated 2822. Snapping
-  applies to a **stated** multiplier only: a quality roll between two published legs is a
-  real number with no whole magazine behind it, so a small multi-cannon at High Capacity
+  small enough (100 rounds at the widest) that the band stays a fraction of a round. A
+  reserve needs no separate snap because its ordinary nearest-round step absorbs the same
+  transcription noise. Snapping applies to a **stated** multiplier only: a quality roll
+  between two published legs is a real number with no whole magazine behind it, so a small
+  multi-cannon at High Capacity
   grade 5 and quality 0.07 holds 185.12 rounds, which means 186 and rounds up.
-
-  **The game's own engineered reserve is a whole number**, which the Corsair capture shows
-  and neither registry does: it reads 87 where this library computes 87.499008. Nothing is
-  changed on that evidence — one capture cannot separate "the game rounds" from "Frontier's
-  multipliers land whole", and the same capture shows the clip disagreeing in the other
-  direction, so the mapping from `Quality` is the thing in question rather than a rounding
-  step. <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57> carries it.
 
 - **`sustainedFireFactor` rounds a clip up to a whole round, not to a whole burst**
   (`weapons.ts`), matching Coriolis's own `getClip`, which is what its `getSustainedFactor`
@@ -2442,13 +2436,8 @@ under, which is why several are cited above rather than copied.
   boosters at 14 t each, a 48 t armoured power plant and a 0.6 t lightweight life support.
   `CargoCapacity` 144 is exact.
 
-  **It states the only engineered clip this library cannot reproduce**, which is what
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57> was opened for.
-  Sixteen of the seventeen clips a capture states agree exactly, but only fourteen of those
-  are evidence: they are rolled at quality 1. The two at an interpolated quality agree
-  because the round-up to a whole burst absorbs the difference — 179.775 and 179.191
-  both become 180 — so a clip says nothing about the quality mapping unless the round-up
-  cannot bridge it, which on this rack it cannot. Three of its five ammunition-bearing
+  **It states the only engineered clip this library cannot reproduce.** Sixteen of the
+  seventeen clips a capture states agree exactly. Three of its five ammunition-bearing
   weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier — the two gimballed medium
   multi-cannons and the medium dumbfire rack, all three under High Capacity, where the
   two plasma accelerators take Long Range and it charges neither — and every weapon is
@@ -2457,24 +2446,18 @@ under, which is why several are cited above rather than copied.
   - **At full quality this capture's figures agree exactly.** High Capacity grade 5 doubles a
     gimballed medium multi-cannon's 90/2100 to 180/4200, and with Corrosive Shell the
     reserve is 3360 — 2100 × 2 × 0.8, which five captures state and all five agree on.
-  - **At an interpolated quality they do not.** A medium dumbfire rack at High Capacity
-    grade 4, quality 0.8931, reads 12 → **23** and 48 → **87** in the journal, where this
-    library computes 22 and 87.499008. No single multiplier reproduces both of Frontier's
-    figures under any monotone rounding: 87 needs a roll of 0.8125, or at most 0.8333 if the
-    game rounds down, while 23 needs more than 0.8333, since 12 × 1.8333 is exactly 22. FSD
-    Interrupt cannot account for it — it carries `Damage` and `BurstInterval` legs only. So
-    the registries' model, one quality-derived multiplier scaling both legs from identical
-    bands, is not what the game does, and **an engineered reserve is a whole number in game**
-    where this library can report a fraction.
+  - **At an interpolated quality the clip differs by one.** A medium dumbfire rack at High
+    Capacity grade 4, quality 0.8931, reads 12 → **23** and 48 → **87** in the journal. The
+    library's computed reserve of 87.499008 rounds to the stated 87, while the computed clip
+    still rounds up to 22. FSD Interrupt cannot account for it — it carries `Damage` and
+    `BurstInterval` legs only. One point cannot solve a different per-leg quality band, so
+    the registry-derived band is retained and the discrepancy remains tracked at
+    <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
   - **Importing is unaffected**, which is the point of rounding only where a roll is
     computed: the stated modifiers are used verbatim, so this build reads back 23/87.
 
   Pinned by `fixtures/ships/build-metrics.json` §ammunition.engineeredGroundTruth, including
   the disagreement, so a change to the model has to face it.
-
-  **What it does not close:** the mapping from `Quality` to a per-leg multiplier. Two other
-  readings sit at an interpolated quality, and between the three they say what the mapping
-  is *not* rather than what it is — see the engineered-ammunition bullet under §Ammunition.
 
 - **`fixtures/ships/journal-federation-corvette.json`** — a real Frontier journal `Loadout`
   event for a heavily **engineered** combat Federal Corvette (45 `Modules` entries: two huge
@@ -2517,6 +2500,15 @@ under, which is why several are cited above rather than copied.
   | `journal-cobra-mkv.json` | a Cobra Mk V gunship (39 `Modules`): two medium and one small gimballed beam laser, two multi-cannons and a Bi-Weave generator | `8b0a632ad05eb312dee94161aa7205ca4f2ee7dfea0c297d6614051977d95bbe` |
   | `journal-kestrel-mkii.json` | a Kestrel Mk II (29 `Modules`) with three Mk II Plasma Shock Autocannons, two Cytoscrambler burst lasers and the Mk II agile-boost thrusters | `da2cb25e82e1c6a9408b5db3dd4d0faf192d64dcf9c2ab1e6bdbad8efd129451` |
   | `journal-lynx-highliner.json` | a Lynx Highliner rescue fit (36 `Modules`): five gimballed multi-cannons, a heat-sink launcher, Mk II passenger cabins | `6bc9e3a43834336686bfb5115c69222c258b7b6b3bd67f9c53cfd420fbdfce67` |
+
+  **Two journal quality fields are manually corrected when the captures are used to test a
+  simulated roll.** The repository owner confirms that every blueprint on the Cobra Mk V
+  and the multirole Federal Corvette is fully engineered. The Cobra's `MediumHardpoint3`
+  nevertheless reports `Quality` 0.9844, and the Corvette's `SmallHardpoint2` reports
+  0.9438; both are treated as quality **1**. The captures stay verbatim and keep their
+  checksums. `fixtures/ships/build-metrics.json` records the journal number as
+  `reportedQuality` beside the corrected `quality`, and the ammunition test asserts both
+  sides so the correction cannot silently become a fixture rewrite.
 
   Between them they state 363 further base values. Two hulls are the reason to keep them
   individually rather than as two more Corvettes: the **Kestrel Mk II** is the only reading
