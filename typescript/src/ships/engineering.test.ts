@@ -226,7 +226,7 @@ test('one journal id rolls the recipe the fitted module actually takes', () => {
     }
 });
 
-test('one journal id rolls a clip penalty on a multi-cannon and none on a cannon', () => {
+test('one journal id rolls a clip penalty on a multi-cannon and none on the other weapons', () => {
     // The same mechanism as the scanner ids above, on the family that actually meets it.
     // Pinned as whole modifier blocks rather than as availability, because the defect this
     // guards against is the leg going quietly missing again: dropping `AmmoClipSize` from
@@ -254,17 +254,17 @@ test('one journal id rolls a clip penalty on a multi-cannon and none on a cannon
             `${expected.symbol}: ${expected.blueprint}`,
         );
     }
-    // Both weapons carry a clip, so the difference is the recipe and not the module — which
-    // is the whole reason the two records exist. Read from the library, so this fails on a
-    // regression rather than on a fixture edit.
+    // Every one of these weapons carries a clip, so the difference is the recipe and not
+    // the module — which is the whole reason the two blueprint records exist. Read from the
+    // library, so this fails on a regression rather than on a fixture edit.
     const legs = (symbol: string) =>
         getBlueprintGrade(resolveBlueprintForModule(symbol, 'Weapon_Overcharged'), 5)!
             .map((feature) => feature.label)
             .sort();
-    assert.ok(
-        baseStats(getModuleBySymbol('Hpt_Cannon_Fixed_Medium', ALL_MODULES)!)['AmmoClipSize'],
-    );
-    assert.notDeepEqual(legs('Hpt_MultiCannon_Fixed_Medium'), legs('Hpt_Cannon_Fixed_Medium'));
+    for (const symbol of ['Hpt_Cannon_Fixed_Medium', 'Hpt_Slugshot_Fixed_Medium']) {
+        assert.ok(baseStats(getModuleBySymbol(symbol, ALL_MODULES)!)['AmmoClipSize'], symbol);
+        assert.notDeepEqual(legs('Hpt_MultiCannon_Fixed_Medium'), legs(symbol), symbol);
+    }
     // An anti-xeno multi-cannon rolls the same recipe as an ordinary one. coriolis-data
     // carries no blueprint list for an anti-xeno group, so this row is EDSY's alone — its
     // single Overcharged carries the clip leg wherever it is offered.

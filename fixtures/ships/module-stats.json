@@ -1930,6 +1930,39 @@
         ]
       },
       {
+        "file": "journal-federation-corvette-plasma.json",
+        "stated": 89,
+        "mapped": 83,
+        "exact": 73,
+        "withinFloatNoise": 10,
+        "unmapped": [
+          {
+            "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_PulseLaserBurst_Fixed_Small_Scatter",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_PulseLaserBurst_Gimbal_Large",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_Railgun_Fixed_Small",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_Slugshot_Fixed_Medium",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
         "file": "journal-federation-corvette.json",
         "stated": 71,
         "mapped": 68,
@@ -2028,6 +2061,10 @@
         "damagePerSecond": 25
       },
       {
+        "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso",
+        "damagePerSecond": 13.333334
+      },
+      {
         "symbol": "Hpt_MultiCannon_Gimbal_Large",
         "damagePerSecond": 18.933332
       },
@@ -2058,9 +2095,13 @@
       {
         "symbol": "Hpt_Railgun_Fixed_Small",
         "damagePerSecond": 37.047619
+      },
+      {
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "damagePerSecond": 179.099991
       }
     ],
-    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the eleven is 9.8e-5 t of mass and 6.3e-6 ly — and not a margin for disagreement.",
+    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the twelve is 9.8e-5 t of mass and 6.3e-6 ly — and not a margin for disagreement.",
     "rebuildTolerance": 0.0001,
     "rebuilds": [
       {
@@ -2087,6 +2128,11 @@
         "file": "journal-federation-corvette-mixed.json",
         "unladenMass": 2106.5,
         "maxJumpRange": 16.732027
+      },
+      {
+        "file": "journal-federation-corvette-plasma.json",
+        "unladenMass": 2103.100098,
+        "maxJumpRange": 16.758976
       },
       {
         "file": "journal-federation-corvette.json",
@@ -2351,6 +2397,34 @@
         "symbol": "Hpt_Railgun_Fixed_Small",
         "field": "distributorDraw",
         "value": 1.7485
+      },
+      {
+        "file": "journal-federation-corvette-plasma.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso",
+        "field": "distributorDraw",
+        "value": 0.156
+      },
+      {
+        "file": "journal-federation-corvette-plasma.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium_Lasso",
+        "field": "jitter",
+        "value": 0.5
+      },
+      {
+        "file": "journal-federation-corvette-plasma.json",
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "field": "distributorDraw",
+        "value": 0.481
+      },
+      {
+        "file": "journal-federation-corvette-plasma.json",
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "field": "thermalLoad",
+        "value": 0.8288
       },
       {
         "file": "journal-federation-corvette.json",
