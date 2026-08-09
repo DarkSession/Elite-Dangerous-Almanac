@@ -327,6 +327,17 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     `fixtures/ships/modules.json` (`slotCounts`).
   - **A fuel tank is the one module built for two kinds of mount:** it is `fuelTank`
     and also fits any optional slot large enough, exactly as the game sells it.
+- **`kind` — the stable engineering family already present in the shared data.** The
+  1028 records mapped by `engineering-options.jsonc` repeat that map's group key on the
+  module itself, so consumers can discriminate module families without importing a
+  second catalogue or maintaining symbol-prefix tables. The remaining 171 records carry
+  no `kind` in JSON because the pinned sources publish no engineering family for them;
+  language loaders expose that deliberate absence as `null`. The group source,
+  derivation, split Guardian families and coverage are documented under Engineering
+  options below; this field is a byte-for-byte projection of that existing map, not a
+  new classification source. The final merge tool reads that catalogue through its
+  required `--engineering-options` input, validates every mapped symbol and group, and
+  performs the projection while joining the normalized identities and stats.
 - **Stats source:** coriolis-data `modules/**` for the mechanical, defence, power and
   weapon stats; EDSY `eddb.js` for mass, integrity, power draw, boot time and the
   engineering base stats coriolis does not carry; and in-game verification for the
@@ -557,7 +568,7 @@ projectile-limited hardpoints carry their boundary parameters observed in-game i
 `projectileRange`; those parameters are not presented as effective ranges.
 
 **A journal capture is a third source, and it reaches fields in-game verification does
-not.** Every engineered module in a `Loadout` states its own *unmodified* value beside
+not.** Every engineered module in a `Loadout` states its own _unmodified_ value beside
 the modified one, so a capture reads base stats straight out of Frontier's own
 arithmetic — including a hardpoint's reserve ammo and projectile speed, which the
 in-game audit above lists as unreached, the shield-generator and shield-booster
@@ -676,29 +687,29 @@ or where no corresponding in-game value was available:
 | `Int_Engine_Size3_Class5`                                        | `integrity`                         | 72             | 70                  |                                                                                                                                                        |
 | `Int_Powerplant_Size5_Class4`                                    | `integrity`                         | 114            | 115                 |                                                                                                                                                        |
 | `Int_FSDInterdictor_Size2_Class2`                                | `integrity`                         | 51             | 31                  |                                                                                                                                                        |
-| `Hpt_Cannon_Gimbal_Large`                                        | `damage` / `thermalLoad`            | 37.39 / 2.9    | 37.421001 / 2.93    | observed in-game; the journal agrees                                                                                                                    |
-| `Hpt_BeamLaser_Gimbal_Huge`                                      | `thermalLoad`                       | 10.6           | 10.62               | observed in-game; the journal agrees                                                                                                                    |
-| `Int_ShieldGenerator_Size7_Class5_Strong`                        | `shieldBrokenRegenRate`             | 4.2            | 4.25                | observed in-game; the journal agrees                                                                                                                    |
-| `Hpt_HeatSinkLauncher_Turret_Tiny`                               | `ammoMaximum`                       | 3              | 2                   | a journal states the base as 2, and EDSY agrees; in-game verification does not reach hardpoint reserve ammo                                             |
+| `Hpt_Cannon_Gimbal_Large`                                        | `damage` / `thermalLoad`            | 37.39 / 2.9    | 37.421001 / 2.93    | observed in-game; the journal agrees                                                                                                                   |
+| `Hpt_BeamLaser_Gimbal_Huge`                                      | `thermalLoad`                       | 10.6           | 10.62               | observed in-game; the journal agrees                                                                                                                   |
+| `Int_ShieldGenerator_Size7_Class5_Strong`                        | `shieldBrokenRegenRate`             | 4.2            | 4.25                | observed in-game; the journal agrees                                                                                                                   |
+| `Hpt_HeatSinkLauncher_Turret_Tiny`                               | `ammoMaximum`                       | 3              | 2                   | a journal states the base as 2, and EDSY agrees; in-game verification does not reach hardpoint reserve ammo                                            |
 
 **In-game corrections.** Values are stored at the observed in-game precision; the
 fixture's `inGameVerifiedValues` array pins every
 corrected symbol and field individually. These groups account for 300 fields on 135
 modules in addition to the Resource Siphon and four additional values pinned in `spot`:
 
-| Records                                                                                                           | Fields                                                            | Stored in-game values                                                |
-| ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `Int_Engine_Size4_Class{2,4}`, `Int_Hyperdrive_Size4_Class4`                                                      | thruster min/max mass; FSD optimal mass                           | 158/473, 193/578 and 438 t                                          |
-| `Int_Engine_Size{2,3}_Class5_Fast`                                                                                | optimal/maximum multiplier                                        | 1.1 / 1.2 on both                                                   |
-| `Int_GuardianShieldReinforcement_Size{1..5}_Class{1,2}`                                                           | integrity                                                         | 36/42, 40/48, 45/55, 51/63, 58/72                                   |
-| `Int_MetaAlloyHullReinforcement_Size{1..5}_Class{1,2}`                                                            | caustic resistance                                                | 0.02 on all ten                                                     |
-| shield generators                                                                                                 | regeneration / broken regeneration                                | exact 1.06–5.76 values pinned per symbol in the fixture             |
-| `Int_ShieldCellBank_Size1_Class2`; `Int_FuelScoop_Size4_Class5`                                                   | reserve ammo; scoop rate                                          | 1; 0.343 t/s                                                        |
-| Beam Laser, Cannon, Fragment Cannon, Multi-Cannon, Plasma Accelerator, Rail Gun, Shock Cannon and Point Defence records | damage / thermal load                                        | 34 scalar damage and 55 thermal-load corrections, pinned per symbol |
-| Advanced Plasma Accelerator, Imperial Hammer, Shock Cannons and Mk II Plasma Shock Accelerator                    | burst interval / combined rate of fire                            | exact cycle values derived with the catalogue's documented formula  |
-| mining, utility and Guardian hardpoints                                                                           | clip, distributor draw, reload, jitter, falloff and maximum range | exact values pinned per symbol                                      |
-| anti-xeno, Guardian and special weapons                                                                                | scalar, distribution and exact damage components                  | 34 component records pinned per symbol                              |
-| AX missiles, subsurface displacement missiles and seismic charge launchers                                             | projectile boundary parameters; misleading ordinary ranges absent | ten records and 16 absences pinned                                  |
+| Records                                                                                                                 | Fields                                                            | Stored in-game values                                               |
+| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `Int_Engine_Size4_Class{2,4}`, `Int_Hyperdrive_Size4_Class4`                                                            | thruster min/max mass; FSD optimal mass                           | 158/473, 193/578 and 438 t                                          |
+| `Int_Engine_Size{2,3}_Class5_Fast`                                                                                      | optimal/maximum multiplier                                        | 1.1 / 1.2 on both                                                   |
+| `Int_GuardianShieldReinforcement_Size{1..5}_Class{1,2}`                                                                 | integrity                                                         | 36/42, 40/48, 45/55, 51/63, 58/72                                   |
+| `Int_MetaAlloyHullReinforcement_Size{1..5}_Class{1,2}`                                                                  | caustic resistance                                                | 0.02 on all ten                                                     |
+| shield generators                                                                                                       | regeneration / broken regeneration                                | exact 1.06–5.76 values pinned per symbol in the fixture             |
+| `Int_ShieldCellBank_Size1_Class2`; `Int_FuelScoop_Size4_Class5`                                                         | reserve ammo; scoop rate                                          | 1; 0.343 t/s                                                        |
+| Beam Laser, Cannon, Fragment Cannon, Multi-Cannon, Plasma Accelerator, Rail Gun, Shock Cannon and Point Defence records | damage / thermal load                                             | 34 scalar damage and 55 thermal-load corrections, pinned per symbol |
+| Advanced Plasma Accelerator, Imperial Hammer, Shock Cannons and Mk II Plasma Shock Accelerator                          | burst interval / combined rate of fire                            | exact cycle values derived with the catalogue's documented formula  |
+| mining, utility and Guardian hardpoints                                                                                 | clip, distributor draw, reload, jitter, falloff and maximum range | exact values pinned per symbol                                      |
+| anti-xeno, Guardian and special weapons                                                                                 | scalar, distribution and exact damage components                  | 34 component records pinned per symbol                              |
+| AX missiles, subsurface displacement missiles and seismic charge launchers                                              | projectile boundary parameters; misleading ordinary ranges absent | ten records and 16 absences pinned                                  |
 
 In-game verification gives the integer thruster/FSD masses, 1.1/1.2 enhanced-thruster
 multipliers and the rising Guardian Shield Reinforcement integrity ladder. These values
@@ -1271,6 +1282,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   **eleven** of the 40 effects an engineer offers a weapon carry no `description` at all —
   `special_incendiary_rounds` and `special_emissive_munitions` among them — so for those
   the data neither states a conversion nor rules one out.
+
 - **A pre-engineered `_cooled` variant carries its base effect's modifiers as well as the
   cut.** Each `_cooled` rail-gun variant is its base effect **plus** a −40% thermal load,
   so `special_feedback_cascade_cooled` carries damage −20%, `special_plasma_slug_cooled`
@@ -1813,6 +1825,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `/elite/blueprint/203/`; the Pulse page exposes the same five damage-share totals.
   - **What a consumer sees:** one more id on 40 fuel scoops and on 12 modules in each laser
     group. No experimental list moves.
+
 ## Decorative modifications
 
 - **File:** `decorative-modifications.jsonc`, validated by the `decorativeModifications`
@@ -2187,7 +2200,7 @@ order.
   They are not
   the only external check either stat gets — the `AmmoClipSize` and `AmmoMaximum`
   modifiers a capture states on an engineered module are a second and stronger one, and
-  in-game verification does not reach a *hardpoint's* reserve ammo. All sixty sit
+  in-game verification does not reach a _hardpoint's_ reserve ammo. All sixty sit
   exactly at capacity — among them the Python Mk II's Enhanced AX Multi-Cannon 100/2100
   and Guardian Shard Cannon 5/180, the Viper's two gimballed multi-cannons 90/2100, the
   Krait's two flak launchers 1/32 and two point-defence turrets 12/10000, and the
@@ -2251,6 +2264,7 @@ order.
   `fixtures/ships/engineering.json`
   §clipRounding and, for the published article, `fixtures/ships/pre-engineered.json`
   §resolved.fragmentCannonDoubleShot.
+
 - **A published multiplier is snapped to the precision it is stated at before a clip's
   directional round-up.** Both registries state a recipe's multiplier to
   three or four decimals, so a leg meant to add two thirds is written `0.667`: Drag
@@ -2518,13 +2532,13 @@ under, which is why several are cited above rather than copied.
   `ShipIdent`, `ShipID` and `timestamp` for the reason the other captures' are kept, and
   the engineer names are the game's own NPCs.
 
-  | File | Build | Stored SHA-256 |
-  | --- | --- | --- |
-  | `journal-federation-corvette-beams.json` | a beam-heavy Federal Corvette (54 `Modules`): two huge, one large and two medium gimballed beam lasers under Efficient and Long Range, two small multi-cannons, eight shield boosters, four shield cell banks | `793ba6c0c34a946b537c6c2612d08df28ae9b21d9538b3d3df3ea530d1ba0c80` |
-  | `journal-federation-corvette-multirole.json` | a Federal Corvette carrying a fuel scoop, fighter bay and FSD interdictor alongside its beam lasers and a drunk missile rack (54 `Modules`) | `1ee184d1a16467371d04297a9584c91882f08c7cdbf1173a2867e201dacb90b3` |
-  | `journal-cobra-mkv.json` | a Cobra Mk V gunship (39 `Modules`): two medium and one small gimballed beam laser, two multi-cannons and a Bi-Weave generator | `8b0a632ad05eb312dee94161aa7205ca4f2ee7dfea0c297d6614051977d95bbe` |
-  | `journal-kestrel-mkii.json` | a Kestrel Mk II (29 `Modules`) with three Mk II Plasma Shock Autocannons, two Cytoscrambler burst lasers and the Mk II agile-boost thrusters | `da2cb25e82e1c6a9408b5db3dd4d0faf192d64dcf9c2ab1e6bdbad8efd129451` |
-  | `journal-lynx-highliner.json` | a Lynx Highliner rescue fit (36 `Modules`): five gimballed multi-cannons, a heat-sink launcher, Mk II passenger cabins | `6bc9e3a43834336686bfb5115c69222c258b7b6b3bd67f9c53cfd420fbdfce67` |
+  | File                                         | Build                                                                                                                                                                                                         | Stored SHA-256                                                     |
+  | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+  | `journal-federation-corvette-beams.json`     | a beam-heavy Federal Corvette (54 `Modules`): two huge, one large and two medium gimballed beam lasers under Efficient and Long Range, two small multi-cannons, eight shield boosters, four shield cell banks | `793ba6c0c34a946b537c6c2612d08df28ae9b21d9538b3d3df3ea530d1ba0c80` |
+  | `journal-federation-corvette-multirole.json` | a Federal Corvette carrying a fuel scoop, fighter bay and FSD interdictor alongside its beam lasers and a drunk missile rack (54 `Modules`)                                                                   | `1ee184d1a16467371d04297a9584c91882f08c7cdbf1173a2867e201dacb90b3` |
+  | `journal-cobra-mkv.json`                     | a Cobra Mk V gunship (39 `Modules`): two medium and one small gimballed beam laser, two multi-cannons and a Bi-Weave generator                                                                                | `8b0a632ad05eb312dee94161aa7205ca4f2ee7dfea0c297d6614051977d95bbe` |
+  | `journal-kestrel-mkii.json`                  | a Kestrel Mk II (29 `Modules`) with three Mk II Plasma Shock Autocannons, two Cytoscrambler burst lasers and the Mk II agile-boost thrusters                                                                  | `da2cb25e82e1c6a9408b5db3dd4d0faf192d64dcf9c2ab1e6bdbad8efd129451` |
+  | `journal-lynx-highliner.json`                | a Lynx Highliner rescue fit (36 `Modules`): five gimballed multi-cannons, a heat-sink launcher, Mk II passenger cabins                                                                                        | `6bc9e3a43834336686bfb5115c69222c258b7b6b3bd67f9c53cfd420fbdfce67` |
 
   **Two journal quality fields are manually corrected when the captures are used to test a
   simulated roll.** The repository owner confirms that every blueprint on the Cobra Mk V
@@ -2539,7 +2553,7 @@ under, which is why several are cited above rather than copied.
   individually rather than as two more Corvettes: the **Kestrel Mk II** is the only reading
   of the Cytoscrambler Burst Laser and of `Int_MkIIAgileBoost_Engine_Size5_Class5`, and the
   **Lynx Highliner** — a hull coriolis-data does not carry at all — is the only reading of a
-  heat-sink launcher's *base* reserve and directly states the hull's size-1
+  heat-sink launcher's _base_ reserve and directly states the hull's size-1
   `PlanetaryApproachSuite` mount by fitting its advanced suite there. A
   capture reads only the modules a player engineered: the Kestrel's three Mk II Plasma
   Shock Autocannons and the Lynx's Mk II passenger cabins are fitted stock, so they
@@ -2760,14 +2774,18 @@ Two facts the Krait Phantom capture established that the EDSY export could not:
 - **A journal lists far more than fitted modules.** 15 of its 40 entries are the
   cockpit, ship kit, nameplates, bobbles, paint, engine/weapon colours and voice pack.
   None is an outfitting module — this catalogue deliberately does not carry them — and
-  all weigh nothing and cost nothing. They are recognised by slot: `parseSlotName`
-  returns `null` for exactly these, and only for these.
+  all weigh nothing and cost nothing. They are recognised by explicit, open-ended slot
+  families: paint, cockpit, ship-kit parts, numbered nameplates/decals/bobbles, engine and
+  weapon colours, voice pack and string lights. Known catalogue modules are priced and
+  weighed regardless of their slot spelling, and the built-in cargo hatch is explicitly
+  zero-mass and unpriced.
 
-  `parseSlotName` is the single classifier: an article absent from the module catalogues
-  is free and weightless only when its key names no outfitting mount. Known catalogue
-  modules are priced and weighed regardless of their slot spelling. A new outfitting
-  mount containing an unknown module remains a deliberate gap because neither the module
-  nor its physical values can be resolved.
+  Anything else absent from the module catalogues is **unknown**, whether its slot is a
+  recognised outfitting mount or a family this snapshot has never seen. Dependent totals
+  are omitted and the calculation result names the missing input. This explicit boundary
+  costs one small family list, but it prevents a genuinely new outfitting mount from being
+  silently treated as free and weightless. The shared export fixture pins the complete
+  pattern and a future-family control.
 
 - **The two sources disagree about `HullValue`** — the game counts the hull's stock
   fittings inside it, EDSY does not. See the credits note below, which is why neither

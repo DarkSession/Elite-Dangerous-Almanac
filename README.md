@@ -99,6 +99,13 @@ under `ships/jump-range`, `ships/power`, `ships/shields`, `ships/armour`,
 `ships/weapons`, `ships/ammunition` and `ships/resistances` are data-free alternatives
 when only one calculation is needed.
 
+`build.validation` distinguishes a structurally invalid fit from an operationally
+incomplete one. Aggregate values that may depend on missing catalogue data expose both a
+nullable convenience property and a diagnostic result: for example,
+`build.cargoCapacity` is `number | null`, while `build.cargoCapacityResult` names every
+unknown rack. `parseSlef` rejects any malformed entry; use `inspectSlef` when importing an
+untrusted mixed file and you need valid entries plus indexed diagnostics.
+
 Slot keys come from the game and are not reliably derivable from slot position.
 Read them from `ShipLoadout.slots()` or `enumerateSlots(getShipSlots(symbol))`.
 Some slots and modules also carry restrictions; `modulesForSlot` returns only the

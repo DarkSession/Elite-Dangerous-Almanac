@@ -51,6 +51,98 @@ test('fromSlef reads the ship identity and top-level figures', () => {
     assert.equal(build.modules.length, slefFixture[0]!.data.Modules.length);
 });
 
+test('aggregate results distinguish unknown capacity from zero and explain it', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [{ Slot: 'Slot01_Size2', Item: 'Int_CargoRack_Future' }],
+    });
+    assert.equal(build.cargoCapacity, null);
+    assert.equal(build.cargoCapacityResult.complete, false);
+    assert.deepEqual(
+        build.cargoCapacityResult.issues.map((issue) => issue.field),
+        ['cargoCapacity'],
+    );
+
+    const empty = ShipLoadout.empty('SideWinder');
+    assert.equal(empty.cargoCapacity, 0);
+    assert.equal(empty.cargoCapacityResult.complete, true);
+
+    const unclassified = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [{ Slot: 'Slot01_Size2', Item: 'Int_FutureModule' }],
+    });
+    assert.equal(unclassified.cargoCapacityResult.complete, false);
+    assert.equal(unclassified.fuelCapacityResult.complete, false);
+
+    const unknownTank = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [{ Slot: 'FuelTank', Item: 'Int_FutureTank' }],
+    });
+    assert.equal(unknownTank.fuelCapacityResult.complete, false);
+});
+
+test('loadout validation makes empty and unknown builds explicit', () => {
+    const captured = ShipLoadout.fromSlef(slefString);
+    assert.equal(captured.valid, true);
+    assert.equal(captured.complete, true);
+    assert.deepEqual(captured.validation.issues, []);
+
+    const empty = ShipLoadout.empty('SideWinder');
+    assert.equal(empty.valid, true);
+    assert.equal(empty.complete, false);
+    assert.ok(empty.validation.issues.some((issue) => issue.code === 'missingRequiredSlot'));
+
+    const unknown = ShipLoadout.fromLoadout({ Ship: 'FutureShip', Modules: [] });
+    assert.equal(unknown.valid, true);
+    assert.equal(unknown.complete, false);
+    assert.equal(unknown.validation.issues[0]?.code, 'unknownHull');
+
+    const drive = getModuleBySymbol('Int_Hyperdrive_Size2_Class5', CORE_MODULES)!;
+    const disguised = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [{ Slot: 'PaintJob', Item: drive.symbol }],
+    });
+    assert.equal(disguised.valid, false);
+    assert.ok(disguised.validation.issues.some((issue) => issue.code === 'unknownSlot'));
+});
+
+test('caller-supplied capacity fields classify custom modules', () => {
+    const rack = getModuleBySymbol('Int_CargoRack_Size2_Class1', INTERNAL_MODULES)!;
+    const build = ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', {
+        ...rack,
+        symbol: 'CustomHold',
+        kind: null,
+        cargoCapacity: 42,
+    });
+    assert.deepEqual(build.cargoCapacityResult, { value: 42, complete: true, issues: [] });
+
+    const customTank: OutfittingModule = {
+        name: 'Custom tank',
+        symbol: 'CustomTank',
+        category: 'internal',
+        kind: null,
+        class: 2,
+        rating: 'E',
+        fuelCapacity: 7,
+    };
+    const withTank = ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', customTank);
+    assert.equal(withTank.fuelCapacityResult.value?.main, 7);
+});
+
+test('fromLoadout rejects duplicate slot keys before its map can overwrite one', () => {
+    assert.throws(
+        () =>
+            ShipLoadout.fromLoadout({
+                Ship: 'sidewinder',
+                Modules: [
+                    { Slot: 'PowerPlant', Item: 'a' },
+                    { Slot: 'powerplant', Item: 'b' },
+                ],
+            }),
+        /duplicate slot "powerplant"/,
+    );
+});
+
 test('maxJumpRange reproduces the EDSY-exported MaxJumpRange', () => {
     const build = ShipLoadout.fromSlef(slefString);
     assert.ok(
@@ -231,7 +323,8 @@ test('the power plant and fuel tank are found by `slot`, with the symbol as fall
     assert.equal(unknownModule.powerBudget().available, 30);
 
     // Fuel capacity reads the same way: a cargo rack that declares the fuel-tank mount
-    // is taken at its word and counted as a tank, which the symbol rule never did.
+    // is taken at its word and counted as a tank. Because it carries no fuel-capacity
+    // stat, the result becomes unknown rather than pretending the tank holds zero.
     const rack = getModuleBySymbol('Int_CargoRack_Size5_Class1', ALL_MODULES)!;
     const imported = ShipLoadout.fromLoadout({
         Ship: 'anaconda',
@@ -239,9 +332,10 @@ test('the power plant and fuel tank are found by `slot`, with the symbol as fall
         FuelCapacity: { Main: 999, Reserve: 1.07 },
         Modules: [{ Slot: 'Slot05_Size5', Item: rack.symbol, On: true }],
     } as LoadoutEvent);
-    assert.equal(imported.fuelCapacity.main, 999);
+    assert.equal(imported.fuelCapacity!.main, 999);
     imported.setModule('Slot05_Size5', { ...rack, slot: 'fuelTank' } as OutfittingModule);
-    assert.equal(imported.fuelCapacity.main, 0);
+    assert.equal(imported.fuelCapacity, null);
+    assert.equal(imported.fuelCapacityResult.issues[0]?.field, 'fuelCapacity');
 });
 
 test('the drive is found by `slot` too, wherever the module is mounted', () => {
@@ -296,7 +390,21 @@ test('fallback mass resolves bulkheads and rejects unknown module masses', () =>
         Ship: 'anaconda',
         Modules: [{ Slot: 'Slot01_Size7', Item: 'int_future_module_without_stats' }],
     };
-    assert.equal(ShipLoadout.fromLoadout(unresolved).unladenMass, null);
+    const unresolvedBuild = ShipLoadout.fromLoadout(unresolved);
+    assert.equal(unresolvedBuild.unladenMass, null);
+
+    const diagnosable = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        FuelCapacity: { Main: 2, Reserve: 0.3 },
+        Modules: [
+            { Slot: 'FrameShiftDrive', Item: 'int_hyperdrive_size2_class5' },
+            { Slot: 'Slot01_Size2', Item: 'int_future_module_without_stats' },
+        ],
+    });
+    assert.throws(
+        () => diagnosable.maxJumpRange(),
+        /Slot01_Size2: int_future_module_without_stats has no known mass/,
+    );
 });
 
 // ── Build editor ────────────────────────────────────────────────────────────
@@ -416,6 +524,7 @@ test('a core mount takes the module whose record names it, not one that looks th
     const handRolled: OutfittingModule = {
         symbol: drive.symbol,
         category: 'core',
+        kind: null,
         name: drive.name,
         class: drive.class,
         rating: drive.rating,
@@ -436,6 +545,7 @@ test('the armour mount reads `slot`, not the category the record claims', () => 
     const unnamed: OutfittingModule = {
         symbol: armour.symbol,
         category: 'core',
+        kind: null,
         name: armour.name,
         ship: 'Anaconda',
         class: armour.class,
@@ -464,6 +574,7 @@ test('an optional mount takes a fuel tank because its record says so, not its sy
     const unnamed: OutfittingModule = {
         symbol: tank.symbol,
         category: 'core',
+        kind: null,
         name: tank.name,
         class: tank.class,
         rating: tank.rating,
@@ -492,6 +603,7 @@ test('an optional mount turns away a core module because its record names a moun
     const unnamed: OutfittingModule = {
         symbol: plant.symbol,
         category: 'internal',
+        kind: null,
         name: plant.name,
         class: plant.class,
         rating: plant.rating,
@@ -847,6 +959,7 @@ test('fit checks use restrictions carried by caller-supplied module records', ()
     const restricted: OutfittingModule = {
         symbol: 'CustomRestrictedLaser',
         category: 'hardpoint',
+        kind: null,
         name: 'Custom Restricted Laser',
         class: 1,
         rating: 'A',
@@ -1861,13 +1974,13 @@ test('jumpRangeSummary gathers the loads that matter', () => {
     assert.ok(near(summary.unladen, build.unladenJumpRange()));
     assert.ok(near(summary.laden, build.ladenJumpRange()));
     assert.ok(near(summary.totalUnladen, build.totalRange()));
-    assert.ok(near(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity })));
+    assert.ok(near(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity! })));
     // Best single jump beats a full tank, which beats a full tank and a full hold.
     assert.ok(summary.max > summary.unladen);
     assert.ok(summary.unladen > summary.laden);
     assert.ok(summary.totalUnladen > summary.totalLaden);
     // A partial load sits between the two.
-    const partial = build.jumpRange({ cargo: build.cargoCapacity / 2 });
+    const partial = build.jumpRange({ cargo: build.cargoCapacity! / 2 });
     assert.ok(partial < summary.unladen && partial > summary.laden);
 });
 
@@ -2190,70 +2303,4 @@ test("a core mount's function name reaches its slot only where casing is the dif
             core,
         );
     }
-});
-
-test('two spellings of one mount resolve to the same entry everywhere', () => {
-    // A producer writing both spellings is pathological, but it must not make the
-    // readers and the editors disagree about which of the two they mean.
-    const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
-    const build = ShipLoadout.fromLoadout({
-        ...data,
-        // `tinyhardpoint1` (a shield booster) is already in there; this is the same
-        // mount spelled the journal's way, added after it.
-        Modules: [...data.Modules, { Slot: 'TinyHardpoint1', Item: 'hpt_chafflauncher_tiny' }],
-    });
-    assert.equal(build.modules.length, 28);
-
-    // An exactly spelled key wins, so both of these name the journal-spelled entry.
-    assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_chafflauncher_tiny');
-    assert.equal(build.getFittedModule('TinyHardpoint1')?.slot, 'TinyHardpoint1');
-    // Ordering for export picks that same entry — the loser keeps its own slot in the
-    // export rather than being dropped, so no module is ever lost to a duplicate.
-    const ordered = build.toLoadoutEvent({ moduleOrder: 'slots' }).Modules;
-    const tiny = ordered.filter((m) => m.Slot.toLowerCase() === 'tinyhardpoint1');
-    assert.deepEqual(
-        tiny.map((m) => m.Slot),
-        ['TinyHardpoint1', 'tinyhardpoint1'],
-    );
-    assert.equal(ordered.length, 28);
-
-    // An exact spelling still addresses its own entry, so each of the two is
-    // individually removable and neither is stranded.
-    build.removeModule('tinyhardpoint1');
-    assert.equal(build.modules.length, 27);
-    assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_chafflauncher_tiny');
-    // With the duplicate gone, the survivor answers to either spelling again.
-    assert.equal(build.moduleAt('tinyhardpoint1')?.Item, 'hpt_chafflauncher_tiny');
-});
-
-test('when neither spelling of a duplicated mount is exact, the earlier one wins', () => {
-    // The other half of the tie-break: with no exact match to prefer, insertion order
-    // decides — and every part of the class has to decide the same way.
-    const data = structuredClone(inaraFixture[0]!.data) as unknown as LoadoutEvent;
-    const build = ShipLoadout.fromLoadout({
-        ...data,
-        // Both name the layout's `TinyHardpoint1`; neither is spelled the way it is.
-        Modules: [...data.Modules, { Slot: 'TINYHARDPOINT1', Item: 'hpt_chafflauncher_tiny' }],
-    });
-
-    // `tinyhardpoint1` came first, so it is the entry the readers name...
-    assert.equal(build.moduleAt('TinyHardpoint1')?.Item, 'hpt_shieldbooster_size0_class5');
-    assert.equal(build.getFittedModule('TinyHardpoint1')?.slot, 'tinyhardpoint1');
-    // ...the one the utility mount reports as fitted...
-    const mount = build.utilityMounts().find((s) => s.key === 'TinyHardpoint1')!;
-    assert.equal(mount.module?.symbol, 'hpt_shieldbooster_size0_class5');
-    // ...and the one that takes the mount's place in a slot-ordered export, leaving the
-    // later spelling in the tail rather than dropping it.
-    const ordered = build.toLoadoutEvent({ moduleOrder: 'slots' }).Modules.map((m) => m.Slot);
-    assert.deepEqual(
-        ordered.filter((slot) => slot.toLowerCase() === 'tinyhardpoint1'),
-        ['tinyhardpoint1', 'TINYHARDPOINT1'],
-    );
-    assert.equal(ordered.at(-1), 'TINYHARDPOINT1');
-    assert.equal(ordered.length, 28);
-
-    // The editors agree with the readers: this replaces, and does not add a third.
-    build.setModule('TinyHardpoint1', mod('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES));
-    assert.equal(build.modules.length, 28);
-    assert.equal(build.moduleAt('tinyhardpoint1')?.Item, 'Hpt_ChaffLauncher_Tiny');
 });

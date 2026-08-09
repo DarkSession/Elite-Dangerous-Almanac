@@ -71,6 +71,7 @@ export {
     getModulesForShip,
     type OutfittingModule,
     type ModuleCategory,
+    type ModuleKind,
     type ModuleMount,
     type ModuleGuidance,
     type ModuleRating,
@@ -89,6 +90,7 @@ export { ALL_MODULES } from './modules-all.js';
 // ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
 export {
     parseSlef,
+    inspectSlef,
     toSlef,
     stringifySlef,
     getLoadoutModifier,
@@ -97,6 +99,9 @@ export {
     type SlefEntry,
     type SlefHeader,
     type SlefStringifyOptions,
+    type SlefDiagnostic,
+    type SlefDiagnosticCode,
+    type SlefInspection,
     type LoadoutEvent,
     type LoadoutModule,
     type ModuleEngineering,
@@ -112,6 +117,10 @@ export {
     ShipLoadout,
     LoadoutSlot,
     FittedModule,
+    calculateCargoCapacity,
+    calculateFuelCapacity,
+    calculateUnladenMass,
+    validateLoadout,
     type FuelCapacity,
     type JumpOptions,
     type JumpRangeSummary,
@@ -122,6 +131,15 @@ export {
     type ApplyBlueprintOptions,
     type LoadoutExportOptions,
     type SlefExportOptions,
+    type CalculationIssue,
+    type CalculationResult,
+    type CalculatedFuelCapacity,
+    type LoadoutCalculationModule,
+    type LoadoutIssue,
+    type LoadoutIssueCode,
+    type LoadoutValidation,
+    type LoadoutValidationInput,
+    type ValidationModule,
 } from './ship-loadout.js';
 export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
 

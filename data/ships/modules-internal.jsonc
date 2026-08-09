@@ -35,6 +35,7 @@
  * which say so with the same `powerPlant` / `powerDistributor` values
  * `modules-core.jsonc` uses. An ordinary optional internal carries no `slot` — it
  * fits any optional mount its size.
+ * `kind` repeats this module's stable engineering-options group when one is published.
  * Identity fields are always present; every stat field is optional, present only
  * where the module has it (masses in tonnes, power in MW, jump ranges in LY).
  * `restrictedToShips` lists the hull(s) a non-armour module is limited to; armour's
@@ -85,6 +86,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class1",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 1,
     "rating": "E",
@@ -108,6 +110,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class2",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 1,
     "rating": "D",
@@ -131,6 +134,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class3",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 1,
     "rating": "C",
@@ -154,6 +158,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class4",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 1,
     "rating": "B",
@@ -176,6 +181,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class5",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 1,
     "rating": "A",
@@ -199,6 +205,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class1",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 2,
     "rating": "E",
@@ -222,6 +229,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class2",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 2,
     "rating": "D",
@@ -245,6 +253,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class3",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 2,
     "rating": "C",
@@ -268,6 +277,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class4",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 2,
     "rating": "B",
@@ -291,6 +301,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class5",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 2,
     "rating": "A",
@@ -314,6 +325,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class1",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 3,
     "rating": "E",
@@ -337,6 +349,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class2",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 3,
     "rating": "D",
@@ -360,6 +373,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class3",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 3,
     "rating": "C",
@@ -383,6 +397,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class4",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 3,
     "rating": "B",
@@ -406,6 +421,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class5",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 3,
     "rating": "A",
@@ -429,6 +445,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class1",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 4,
     "rating": "E",
@@ -452,6 +469,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class2",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 4,
     "rating": "D",
@@ -475,6 +493,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class3",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 4,
     "rating": "C",
@@ -498,6 +517,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class4",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 4,
     "rating": "B",
@@ -521,6 +541,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class5",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 4,
     "rating": "A",
@@ -544,6 +565,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class1",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 5,
     "rating": "E",
@@ -567,6 +589,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class2",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 5,
     "rating": "D",
@@ -590,6 +613,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class3",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 5,
     "rating": "C",
@@ -613,6 +637,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class4",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 5,
     "rating": "B",
@@ -636,6 +661,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class5",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 5,
     "rating": "A",
@@ -659,6 +685,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class1",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 6,
     "rating": "E",
@@ -682,6 +709,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class2",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 6,
     "rating": "D",
@@ -705,6 +733,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class3",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 6,
     "rating": "C",
@@ -728,6 +757,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class4",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 6,
     "rating": "B",
@@ -751,6 +781,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class5",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 6,
     "rating": "A",
@@ -774,6 +805,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class1",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 7,
     "rating": "E",
@@ -797,6 +829,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class2",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 7,
     "rating": "D",
@@ -820,6 +853,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class3",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 7,
     "rating": "C",
@@ -843,6 +877,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class4",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 7,
     "rating": "B",
@@ -866,6 +901,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class5",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 7,
     "rating": "A",
@@ -889,6 +925,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class1",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 8,
     "rating": "E",
@@ -912,6 +949,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class2",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 8,
     "rating": "D",
@@ -935,6 +973,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class3",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 8,
     "rating": "C",
@@ -958,6 +997,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class4",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 8,
     "rating": "B",
@@ -981,6 +1021,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class5",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 8,
     "rating": "A",
@@ -1004,6 +1045,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class1",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 1,
     "rating": "E",
@@ -1022,6 +1064,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class2",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 1,
     "rating": "D",
@@ -1040,6 +1083,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class3",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 1,
     "rating": "C",
@@ -1058,6 +1102,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class4",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 1,
     "rating": "B",
@@ -1076,6 +1121,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size1_Class5",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 1,
     "rating": "A",
@@ -1094,6 +1140,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class1",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 2,
     "rating": "E",
@@ -1112,6 +1159,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class2",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 2,
     "rating": "D",
@@ -1130,6 +1178,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class3",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 2,
     "rating": "C",
@@ -1148,6 +1197,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class4",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 2,
     "rating": "B",
@@ -1166,6 +1216,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size2_Class5",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 2,
     "rating": "A",
@@ -1184,6 +1235,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class1",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 3,
     "rating": "E",
@@ -1202,6 +1254,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class2",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 3,
     "rating": "D",
@@ -1220,6 +1273,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class3",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 3,
     "rating": "C",
@@ -1238,6 +1292,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class4",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 3,
     "rating": "B",
@@ -1256,6 +1311,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size3_Class5",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 3,
     "rating": "A",
@@ -1274,6 +1330,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class1",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 4,
     "rating": "E",
@@ -1292,6 +1349,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class2",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 4,
     "rating": "D",
@@ -1310,6 +1368,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class3",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 4,
     "rating": "C",
@@ -1328,6 +1387,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class4",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 4,
     "rating": "B",
@@ -1346,6 +1406,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size4_Class5",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 4,
     "rating": "A",
@@ -1364,6 +1425,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class1",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 5,
     "rating": "E",
@@ -1382,6 +1444,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class2",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 5,
     "rating": "D",
@@ -1400,6 +1463,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class3",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 5,
     "rating": "C",
@@ -1418,6 +1482,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class4",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 5,
     "rating": "B",
@@ -1436,6 +1501,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size5_Class5",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 5,
     "rating": "A",
@@ -1454,6 +1520,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class1",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 6,
     "rating": "E",
@@ -1472,6 +1539,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class2",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 6,
     "rating": "D",
@@ -1490,6 +1558,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class3",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 6,
     "rating": "C",
@@ -1508,6 +1577,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class4",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 6,
     "rating": "B",
@@ -1526,6 +1596,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size6_Class5",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 6,
     "rating": "A",
@@ -1544,6 +1615,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class1",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 7,
     "rating": "E",
@@ -1562,6 +1634,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class2",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 7,
     "rating": "D",
@@ -1580,6 +1653,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class3",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 7,
     "rating": "C",
@@ -1598,6 +1672,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class4",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 7,
     "rating": "B",
@@ -1616,6 +1691,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size7_Class5",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 7,
     "rating": "A",
@@ -1634,6 +1710,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class1",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 8,
     "rating": "E",
@@ -1652,6 +1729,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class2",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 8,
     "rating": "D",
@@ -1670,6 +1748,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class3",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 8,
     "rating": "C",
@@ -1688,6 +1767,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class4",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 8,
     "rating": "B",
@@ -1706,6 +1786,7 @@
   },
   {
     "symbol": "Int_ShieldCellBank_Size8_Class5",
+    "kind": "shieldCellBanks",
     "name": "Shield Cell Bank",
     "class": 8,
     "rating": "A",
@@ -1724,6 +1805,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size1_Class1",
+    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 1,
     "rating": "E",
@@ -1733,6 +1815,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size2_Class1",
+    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 2,
     "rating": "E",
@@ -1742,6 +1825,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size3_Class1",
+    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 3,
     "rating": "E",
@@ -1751,6 +1835,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size4_Class1",
+    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 4,
     "rating": "E",
@@ -1760,6 +1845,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size5_Class1",
+    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 5,
     "rating": "E",
@@ -1769,6 +1855,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size6_Class1",
+    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 6,
     "rating": "E",
@@ -1778,6 +1865,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size7_Class1",
+    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 7,
     "rating": "E",
@@ -1787,6 +1875,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size8_Class1",
+    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 8,
     "rating": "E",
@@ -1796,6 +1885,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
     "rating": "I",
@@ -1807,6 +1897,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class1",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
     "rating": "E",
@@ -1818,6 +1909,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class2",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
     "rating": "D",
@@ -1829,6 +1921,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class3",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
     "rating": "C",
@@ -1840,6 +1933,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class4",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
     "rating": "B",
@@ -1851,6 +1945,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size1_Class5",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 1,
     "rating": "A",
@@ -1862,6 +1957,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class1",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 3,
     "rating": "E",
@@ -1873,6 +1969,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class2",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 3,
     "rating": "D",
@@ -1884,6 +1981,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class3",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 3,
     "rating": "C",
@@ -1895,6 +1993,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class4",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 3,
     "rating": "B",
@@ -1906,6 +2005,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size3_Class5",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 3,
     "rating": "A",
@@ -1917,6 +2017,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class1",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 5,
     "rating": "E",
@@ -1928,6 +2029,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class2",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 5,
     "rating": "D",
@@ -1939,6 +2041,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class3",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 5,
     "rating": "C",
@@ -1950,6 +2053,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class4",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 5,
     "rating": "B",
@@ -1961,6 +2065,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size5_Class5",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 5,
     "rating": "A",
@@ -1972,6 +2077,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class1",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 7,
     "rating": "E",
@@ -1983,6 +2089,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class2",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 7,
     "rating": "D",
@@ -1994,6 +2101,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class3",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 7,
     "rating": "C",
@@ -2005,6 +2113,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class4",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 7,
     "rating": "B",
@@ -2016,6 +2125,7 @@
   },
   {
     "symbol": "Int_DroneControl_ResourceSiphon_Size7_Class5",
+    "kind": "hatchBreakerLimpets",
     "name": "Hatch Breaker Limpet Controller",
     "class": 7,
     "rating": "A",
@@ -2027,6 +2137,7 @@
   },
   {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
+    "kind": "surfaceScanners",
     "name": "Detailed Surface Scanner",
     "class": 1,
     "rating": "I",
@@ -2039,6 +2150,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class1_free",
+    "kind": "shieldGenerators",
     "name": "Shield Generator",
     "class": 2,
     "rating": "E",
@@ -2061,6 +2173,7 @@
   },
   {
     "symbol": "Int_CargoRack_Size2_Class1_free",
+    "kind": "cargoRacks",
     "name": "Cargo Rack",
     "class": 2,
     "rating": "E",
@@ -2069,6 +2182,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class1",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "E",
@@ -2081,6 +2195,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class1",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "E",
@@ -2093,6 +2208,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class1",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "E",
@@ -2105,6 +2221,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class1",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "E",
@@ -2117,6 +2234,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class1",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "E",
@@ -2129,6 +2247,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class1",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "E",
@@ -2141,6 +2260,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class1",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "E",
@@ -2153,6 +2273,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class1",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "E",
@@ -2165,6 +2286,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class2",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "D",
@@ -2177,6 +2299,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class2",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "D",
@@ -2189,6 +2312,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class2",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "D",
@@ -2201,6 +2325,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class2",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "D",
@@ -2213,6 +2338,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class2",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "D",
@@ -2225,6 +2351,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class2",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "D",
@@ -2237,6 +2364,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class2",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "D",
@@ -2249,6 +2377,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class2",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "D",
@@ -2261,6 +2390,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class3",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "C",
@@ -2273,6 +2403,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class3",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "C",
@@ -2285,6 +2416,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class3",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "C",
@@ -2297,6 +2429,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class3",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "C",
@@ -2309,6 +2442,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class3",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "C",
@@ -2321,6 +2455,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class3",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "C",
@@ -2333,6 +2468,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class3",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "C",
@@ -2345,6 +2481,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class3",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "C",
@@ -2357,6 +2494,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class4",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "B",
@@ -2369,6 +2507,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class4",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "B",
@@ -2381,6 +2520,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class4",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "B",
@@ -2393,6 +2533,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class4",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "B",
@@ -2405,6 +2546,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class4",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "B",
@@ -2417,6 +2559,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class4",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "B",
@@ -2429,6 +2572,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class4",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "B",
@@ -2441,6 +2585,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class4",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "B",
@@ -2453,6 +2598,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size1_Class5",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 1,
     "rating": "A",
@@ -2465,6 +2611,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size2_Class5",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 2,
     "rating": "A",
@@ -2477,6 +2624,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size3_Class5",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 3,
     "rating": "A",
@@ -2489,6 +2637,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size4_Class5",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 4,
     "rating": "A",
@@ -2501,6 +2650,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size5_Class5",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 5,
     "rating": "A",
@@ -2513,6 +2663,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size6_Class5",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 6,
     "rating": "A",
@@ -2525,6 +2676,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size7_Class5",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 7,
     "rating": "A",
@@ -2537,6 +2689,7 @@
   },
   {
     "symbol": "Int_FuelScoop_Size8_Class5",
+    "kind": "fuelScoops",
     "name": "Fuel Scoop",
     "class": 8,
     "rating": "A",
@@ -2549,6 +2702,7 @@
   },
   {
     "symbol": "Int_Refinery_Size1_Class1",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 1,
     "rating": "E",
@@ -2560,6 +2714,7 @@
   },
   {
     "symbol": "Int_Refinery_Size2_Class1",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 2,
     "rating": "E",
@@ -2571,6 +2726,7 @@
   },
   {
     "symbol": "Int_Refinery_Size3_Class1",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 3,
     "rating": "E",
@@ -2582,6 +2738,7 @@
   },
   {
     "symbol": "Int_Refinery_Size4_Class1",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 4,
     "rating": "E",
@@ -2593,6 +2750,7 @@
   },
   {
     "symbol": "Int_Refinery_Size1_Class2",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 1,
     "rating": "D",
@@ -2604,6 +2762,7 @@
   },
   {
     "symbol": "Int_Refinery_Size2_Class2",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 2,
     "rating": "D",
@@ -2615,6 +2774,7 @@
   },
   {
     "symbol": "Int_Refinery_Size3_Class2",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 3,
     "rating": "D",
@@ -2626,6 +2786,7 @@
   },
   {
     "symbol": "Int_Refinery_Size4_Class2",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 4,
     "rating": "D",
@@ -2637,6 +2798,7 @@
   },
   {
     "symbol": "Int_Refinery_Size1_Class3",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 1,
     "rating": "C",
@@ -2648,6 +2810,7 @@
   },
   {
     "symbol": "Int_Refinery_Size2_Class3",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 2,
     "rating": "C",
@@ -2659,6 +2822,7 @@
   },
   {
     "symbol": "Int_Refinery_Size3_Class3",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 3,
     "rating": "C",
@@ -2670,6 +2834,7 @@
   },
   {
     "symbol": "Int_Refinery_Size4_Class3",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 4,
     "rating": "C",
@@ -2681,6 +2846,7 @@
   },
   {
     "symbol": "Int_Refinery_Size1_Class4",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 1,
     "rating": "B",
@@ -2692,6 +2858,7 @@
   },
   {
     "symbol": "Int_Refinery_Size2_Class4",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 2,
     "rating": "B",
@@ -2703,6 +2870,7 @@
   },
   {
     "symbol": "Int_Refinery_Size3_Class4",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 3,
     "rating": "B",
@@ -2714,6 +2882,7 @@
   },
   {
     "symbol": "Int_Refinery_Size4_Class4",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 4,
     "rating": "B",
@@ -2725,6 +2894,7 @@
   },
   {
     "symbol": "Int_Refinery_Size1_Class5",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 1,
     "rating": "A",
@@ -2736,6 +2906,7 @@
   },
   {
     "symbol": "Int_Refinery_Size2_Class5",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 2,
     "rating": "A",
@@ -2747,6 +2918,7 @@
   },
   {
     "symbol": "Int_Refinery_Size3_Class5",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 3,
     "rating": "A",
@@ -2758,6 +2930,7 @@
   },
   {
     "symbol": "Int_Refinery_Size4_Class5",
+    "kind": "refineries",
     "name": "Refinery",
     "class": 4,
     "rating": "A",
@@ -2769,6 +2942,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class1",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 1,
     "rating": "E",
@@ -2782,6 +2956,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class1",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 2,
     "rating": "E",
@@ -2795,6 +2970,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class1",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 3,
     "rating": "E",
@@ -2808,6 +2984,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class1",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 4,
     "rating": "E",
@@ -2821,6 +2998,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class2",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 1,
     "rating": "D",
@@ -2834,6 +3012,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class2",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 2,
     "rating": "D",
@@ -2847,6 +3026,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class2",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 3,
     "rating": "D",
@@ -2860,6 +3040,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class2",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 4,
     "rating": "D",
@@ -2873,6 +3054,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class3",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 1,
     "rating": "C",
@@ -2886,6 +3068,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class3",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 2,
     "rating": "C",
@@ -2899,6 +3082,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class3",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 3,
     "rating": "C",
@@ -2912,6 +3096,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class3",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 4,
     "rating": "C",
@@ -2925,6 +3110,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class4",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 1,
     "rating": "B",
@@ -2938,6 +3124,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class4",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 2,
     "rating": "B",
@@ -2951,6 +3138,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class4",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 3,
     "rating": "B",
@@ -2964,6 +3152,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class4",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 4,
     "rating": "B",
@@ -2977,6 +3166,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size1_Class5",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 1,
     "rating": "A",
@@ -2990,6 +3180,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size2_Class5",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 2,
     "rating": "A",
@@ -3003,6 +3194,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size3_Class5",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 3,
     "rating": "A",
@@ -3016,6 +3208,7 @@
   },
   {
     "symbol": "Int_FSDInterdictor_Size4_Class5",
+    "kind": "fsdInterdictors",
     "name": "Frame Shift Drive Interdictor",
     "class": 4,
     "rating": "A",
@@ -3029,6 +3222,7 @@
   },
   {
     "symbol": "Int_Repairer_Size1_Class1",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "E",
@@ -3041,6 +3235,7 @@
   },
   {
     "symbol": "Int_Repairer_Size2_Class1",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "E",
@@ -3053,6 +3248,7 @@
   },
   {
     "symbol": "Int_Repairer_Size3_Class1",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "E",
@@ -3065,6 +3261,7 @@
   },
   {
     "symbol": "Int_Repairer_Size4_Class1",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "E",
@@ -3077,6 +3274,7 @@
   },
   {
     "symbol": "Int_Repairer_Size5_Class1",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "E",
@@ -3089,6 +3287,7 @@
   },
   {
     "symbol": "Int_Repairer_Size6_Class1",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "E",
@@ -3101,6 +3300,7 @@
   },
   {
     "symbol": "Int_Repairer_Size7_Class1",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "E",
@@ -3113,6 +3313,7 @@
   },
   {
     "symbol": "Int_Repairer_Size8_Class1",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "E",
@@ -3125,6 +3326,7 @@
   },
   {
     "symbol": "Int_Repairer_Size1_Class2",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "D",
@@ -3137,6 +3339,7 @@
   },
   {
     "symbol": "Int_Repairer_Size2_Class2",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "D",
@@ -3149,6 +3352,7 @@
   },
   {
     "symbol": "Int_Repairer_Size3_Class2",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "D",
@@ -3161,6 +3365,7 @@
   },
   {
     "symbol": "Int_Repairer_Size4_Class2",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "D",
@@ -3173,6 +3378,7 @@
   },
   {
     "symbol": "Int_Repairer_Size5_Class2",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "D",
@@ -3185,6 +3391,7 @@
   },
   {
     "symbol": "Int_Repairer_Size6_Class2",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "D",
@@ -3197,6 +3404,7 @@
   },
   {
     "symbol": "Int_Repairer_Size7_Class2",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "D",
@@ -3209,6 +3417,7 @@
   },
   {
     "symbol": "Int_Repairer_Size8_Class2",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "D",
@@ -3221,6 +3430,7 @@
   },
   {
     "symbol": "Int_Repairer_Size1_Class3",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "C",
@@ -3233,6 +3443,7 @@
   },
   {
     "symbol": "Int_Repairer_Size2_Class3",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "C",
@@ -3245,6 +3456,7 @@
   },
   {
     "symbol": "Int_Repairer_Size3_Class3",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "C",
@@ -3257,6 +3469,7 @@
   },
   {
     "symbol": "Int_Repairer_Size4_Class3",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "C",
@@ -3269,6 +3482,7 @@
   },
   {
     "symbol": "Int_Repairer_Size5_Class3",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "C",
@@ -3281,6 +3495,7 @@
   },
   {
     "symbol": "Int_Repairer_Size6_Class3",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "C",
@@ -3293,6 +3508,7 @@
   },
   {
     "symbol": "Int_Repairer_Size7_Class3",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "C",
@@ -3305,6 +3521,7 @@
   },
   {
     "symbol": "Int_Repairer_Size8_Class3",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "C",
@@ -3317,6 +3534,7 @@
   },
   {
     "symbol": "Int_Repairer_Size1_Class4",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "B",
@@ -3329,6 +3547,7 @@
   },
   {
     "symbol": "Int_Repairer_Size2_Class4",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "B",
@@ -3341,6 +3560,7 @@
   },
   {
     "symbol": "Int_Repairer_Size3_Class4",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "B",
@@ -3353,6 +3573,7 @@
   },
   {
     "symbol": "Int_Repairer_Size4_Class4",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "B",
@@ -3365,6 +3586,7 @@
   },
   {
     "symbol": "Int_Repairer_Size5_Class4",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "B",
@@ -3377,6 +3599,7 @@
   },
   {
     "symbol": "Int_Repairer_Size6_Class4",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "B",
@@ -3389,6 +3612,7 @@
   },
   {
     "symbol": "Int_Repairer_Size7_Class4",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "B",
@@ -3401,6 +3625,7 @@
   },
   {
     "symbol": "Int_Repairer_Size8_Class4",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "B",
@@ -3413,6 +3638,7 @@
   },
   {
     "symbol": "Int_Repairer_Size1_Class5",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 1,
     "rating": "A",
@@ -3425,6 +3651,7 @@
   },
   {
     "symbol": "Int_Repairer_Size2_Class5",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 2,
     "rating": "A",
@@ -3437,6 +3664,7 @@
   },
   {
     "symbol": "Int_Repairer_Size3_Class5",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 3,
     "rating": "A",
@@ -3449,6 +3677,7 @@
   },
   {
     "symbol": "Int_Repairer_Size4_Class5",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 4,
     "rating": "A",
@@ -3461,6 +3690,7 @@
   },
   {
     "symbol": "Int_Repairer_Size5_Class5",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 5,
     "rating": "A",
@@ -3473,6 +3703,7 @@
   },
   {
     "symbol": "Int_Repairer_Size6_Class5",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 6,
     "rating": "A",
@@ -3485,6 +3716,7 @@
   },
   {
     "symbol": "Int_Repairer_Size7_Class5",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 7,
     "rating": "A",
@@ -3497,6 +3729,7 @@
   },
   {
     "symbol": "Int_Repairer_Size8_Class5",
+    "kind": "autoFieldMaintenanceUnits",
     "name": "Auto Field-Maintenance Unit",
     "class": 8,
     "rating": "A",
@@ -3509,6 +3742,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size1_Class1",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 1,
     "rating": "E",
@@ -3522,6 +3756,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size1_Class2",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 1,
     "rating": "D",
@@ -3535,6 +3770,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size2_Class1",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 2,
     "rating": "E",
@@ -3548,6 +3784,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size2_Class2",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 2,
     "rating": "D",
@@ -3561,6 +3798,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size3_Class1",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 3,
     "rating": "E",
@@ -3574,6 +3812,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size3_Class2",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 3,
     "rating": "D",
@@ -3587,6 +3826,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size4_Class1",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 4,
     "rating": "E",
@@ -3600,6 +3840,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size4_Class2",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 4,
     "rating": "D",
@@ -3613,6 +3854,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size5_Class1",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 5,
     "rating": "E",
@@ -3626,6 +3868,7 @@
   },
   {
     "symbol": "Int_HullReinforcement_Size5_Class2",
+    "kind": "hullReinforcements",
     "name": "Hull Reinforcement Package",
     "class": 5,
     "rating": "D",
@@ -3639,6 +3882,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class1",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 1,
     "rating": "E",
@@ -3650,6 +3894,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class2",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 1,
     "rating": "D",
@@ -3661,6 +3906,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class3",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 1,
     "rating": "C",
@@ -3672,6 +3918,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class4",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 1,
     "rating": "B",
@@ -3683,6 +3930,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size1_Class5",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 1,
     "rating": "A",
@@ -3694,6 +3942,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class1",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 3,
     "rating": "E",
@@ -3705,6 +3954,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class2",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 3,
     "rating": "D",
@@ -3716,6 +3966,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class3",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 3,
     "rating": "C",
@@ -3727,6 +3978,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class4",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 3,
     "rating": "B",
@@ -3738,6 +3990,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size3_Class5",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 3,
     "rating": "A",
@@ -3749,6 +4002,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class1",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 5,
     "rating": "E",
@@ -3760,6 +4014,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class2",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 5,
     "rating": "D",
@@ -3771,6 +4026,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class3",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 5,
     "rating": "C",
@@ -3782,6 +4038,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class4",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 5,
     "rating": "B",
@@ -3793,6 +4050,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size5_Class5",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 5,
     "rating": "A",
@@ -3804,6 +4062,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class1",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 7,
     "rating": "E",
@@ -3815,6 +4074,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class2",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 7,
     "rating": "D",
@@ -3826,6 +4086,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class3",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 7,
     "rating": "C",
@@ -3837,6 +4098,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class4",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 7,
     "rating": "B",
@@ -3848,6 +4110,7 @@
   },
   {
     "symbol": "Int_DroneControl_Collection_Size7_Class5",
+    "kind": "collectionLimpets",
     "name": "Collector Limpet Controller",
     "class": 7,
     "rating": "A",
@@ -3859,6 +4122,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class1",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 1,
     "rating": "E",
@@ -3870,6 +4134,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class2",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 1,
     "rating": "D",
@@ -3881,6 +4146,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class3",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 1,
     "rating": "C",
@@ -3892,6 +4158,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class4",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 1,
     "rating": "B",
@@ -3903,6 +4170,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size1_Class5",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 1,
     "rating": "A",
@@ -3914,6 +4182,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class1",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 3,
     "rating": "E",
@@ -3925,6 +4194,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class2",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 3,
     "rating": "D",
@@ -3936,6 +4206,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class3",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 3,
     "rating": "C",
@@ -3947,6 +4218,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class4",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 3,
     "rating": "B",
@@ -3958,6 +4230,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size3_Class5",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 3,
     "rating": "A",
@@ -3969,6 +4242,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class1",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 5,
     "rating": "E",
@@ -3980,6 +4254,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class2",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 5,
     "rating": "D",
@@ -3991,6 +4266,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class3",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 5,
     "rating": "C",
@@ -4002,6 +4278,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class4",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 5,
     "rating": "B",
@@ -4013,6 +4290,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size5_Class5",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 5,
     "rating": "A",
@@ -4024,6 +4302,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class1",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 7,
     "rating": "E",
@@ -4035,6 +4314,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class2",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 7,
     "rating": "D",
@@ -4046,6 +4326,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class3",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 7,
     "rating": "C",
@@ -4057,6 +4338,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class4",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 7,
     "rating": "B",
@@ -4068,6 +4350,7 @@
   },
   {
     "symbol": "Int_DroneControl_FuelTransfer_Size7_Class5",
+    "kind": "fuelTransferLimpets",
     "name": "Fuel Transfer Limpet Controller",
     "class": 7,
     "rating": "A",
@@ -4079,6 +4362,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class1",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 1,
     "rating": "E",
@@ -4090,6 +4374,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class2",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 1,
     "rating": "D",
@@ -4101,6 +4386,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class3",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 1,
     "rating": "C",
@@ -4112,6 +4398,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class4",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 1,
     "rating": "B",
@@ -4123,6 +4410,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size1_Class5",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 1,
     "rating": "A",
@@ -4134,6 +4422,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class1",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 3,
     "rating": "E",
@@ -4145,6 +4434,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class2",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 3,
     "rating": "D",
@@ -4156,6 +4446,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class3",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 3,
     "rating": "C",
@@ -4167,6 +4458,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class4",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 3,
     "rating": "B",
@@ -4178,6 +4470,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size3_Class5",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 3,
     "rating": "A",
@@ -4189,6 +4482,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class1",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 5,
     "rating": "E",
@@ -4200,6 +4494,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class2",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 5,
     "rating": "D",
@@ -4211,6 +4506,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class3",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 5,
     "rating": "C",
@@ -4222,6 +4518,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class4",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 5,
     "rating": "B",
@@ -4233,6 +4530,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size5_Class5",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 5,
     "rating": "A",
@@ -4244,6 +4542,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class1",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 7,
     "rating": "E",
@@ -4255,6 +4554,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class2",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 7,
     "rating": "D",
@@ -4266,6 +4566,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class3",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 7,
     "rating": "C",
@@ -4277,6 +4578,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class4",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 7,
     "rating": "B",
@@ -4288,6 +4590,7 @@
   },
   {
     "symbol": "Int_DroneControl_Prospector_Size7_Class5",
+    "kind": "prospectingLimpets",
     "name": "Prospector Limpet Controller",
     "class": 7,
     "rating": "A",
@@ -4299,6 +4602,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class5_Strong",
+    "kind": "shieldGenerators",
     "name": "Prismatic Shield Generator",
     "class": 1,
     "rating": "A",
@@ -4323,6 +4627,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class5_Strong",
+    "kind": "shieldGenerators",
     "name": "Prismatic Shield Generator",
     "class": 2,
     "rating": "A",
@@ -4347,6 +4652,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class5_Strong",
+    "kind": "shieldGenerators",
     "name": "Prismatic Shield Generator",
     "class": 3,
     "rating": "A",
@@ -4371,6 +4677,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class5_Strong",
+    "kind": "shieldGenerators",
     "name": "Prismatic Shield Generator",
     "class": 4,
     "rating": "A",
@@ -4395,6 +4702,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class5_Strong",
+    "kind": "shieldGenerators",
     "name": "Prismatic Shield Generator",
     "class": 5,
     "rating": "A",
@@ -4419,6 +4727,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class5_Strong",
+    "kind": "shieldGenerators",
     "name": "Prismatic Shield Generator",
     "class": 6,
     "rating": "A",
@@ -4443,6 +4752,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class5_Strong",
+    "kind": "shieldGenerators",
     "name": "Prismatic Shield Generator",
     "class": 7,
     "rating": "A",
@@ -4467,6 +4777,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class5_Strong",
+    "kind": "shieldGenerators",
     "name": "Prismatic Shield Generator",
     "class": 8,
     "rating": "A",
@@ -4491,6 +4802,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size1_Class3_Fast",
+    "kind": "shieldGenerators",
     "name": "Bi-Weave Shield Generator",
     "class": 1,
     "rating": "C",
@@ -4514,6 +4826,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size2_Class3_Fast",
+    "kind": "shieldGenerators",
     "name": "Bi-Weave Shield Generator",
     "class": 2,
     "rating": "C",
@@ -4537,6 +4850,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size3_Class3_Fast",
+    "kind": "shieldGenerators",
     "name": "Bi-Weave Shield Generator",
     "class": 3,
     "rating": "C",
@@ -4560,6 +4874,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size4_Class3_Fast",
+    "kind": "shieldGenerators",
     "name": "Bi-Weave Shield Generator",
     "class": 4,
     "rating": "C",
@@ -4583,6 +4898,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size5_Class3_Fast",
+    "kind": "shieldGenerators",
     "name": "Bi-Weave Shield Generator",
     "class": 5,
     "rating": "C",
@@ -4606,6 +4922,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size6_Class3_Fast",
+    "kind": "shieldGenerators",
     "name": "Bi-Weave Shield Generator",
     "class": 6,
     "rating": "C",
@@ -4629,6 +4946,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size7_Class3_Fast",
+    "kind": "shieldGenerators",
     "name": "Bi-Weave Shield Generator",
     "class": 7,
     "rating": "C",
@@ -4652,6 +4970,7 @@
   },
   {
     "symbol": "Int_ShieldGenerator_Size8_Class3_Fast",
+    "kind": "shieldGenerators",
     "name": "Bi-Weave Shield Generator",
     "class": 8,
     "rating": "C",
@@ -4758,6 +5077,7 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size1_Class1",
+    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 1,
     "rating": "E",
@@ -4768,6 +5088,7 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size1_Class2",
+    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 1,
     "rating": "F",
@@ -4778,6 +5099,7 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size5_Class1",
+    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 5,
     "rating": "E",
@@ -4787,6 +5109,7 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size6_Class1",
+    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 6,
     "rating": "E",
@@ -4946,7 +5269,11 @@
     "mass": 10,
     "integrity": 60,
     "powerDraw": 0.25,
-    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
+    "restrictedToShips": [
+      "Explorer_NX",
+      "PantherMkII",
+      "LakonMiner"
+    ],
     "bootTime": 5
   },
   {
@@ -4957,7 +5284,11 @@
     "mass": 20,
     "integrity": 80,
     "powerDraw": 0.35,
-    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
+    "restrictedToShips": [
+      "Explorer_NX",
+      "PantherMkII",
+      "LakonMiner"
+    ],
     "bootTime": 5
   },
   {
@@ -4968,7 +5299,11 @@
     "mass": 30,
     "integrity": 120,
     "powerDraw": 0.35,
-    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
+    "restrictedToShips": [
+      "Explorer_NX",
+      "PantherMkII",
+      "LakonMiner"
+    ],
     "bootTime": 5
   },
   {
@@ -4980,7 +5315,11 @@
     "mass": 10,
     "integrity": 60,
     "powerDraw": 0.25,
-    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
+    "restrictedToShips": [
+      "Explorer_NX",
+      "PantherMkII",
+      "LakonMiner"
+    ],
     "bootTime": 5
   },
   {
@@ -4992,7 +5331,11 @@
     "mass": 20,
     "integrity": 80,
     "powerDraw": 0.35,
-    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
+    "restrictedToShips": [
+      "Explorer_NX",
+      "PantherMkII",
+      "LakonMiner"
+    ],
     "bootTime": 5
   },
   {
@@ -5004,7 +5347,11 @@
     "mass": 30,
     "integrity": 120,
     "powerDraw": 0.35,
-    "restrictedToShips": ["Explorer_NX", "PantherMkII", "LakonMiner"],
+    "restrictedToShips": [
+      "Explorer_NX",
+      "PantherMkII",
+      "LakonMiner"
+    ],
     "bootTime": 5
   },
   {
@@ -5577,6 +5924,7 @@
   },
   {
     "symbol": "Int_CorrosionProofCargoRack_Size4_Class1",
+    "kind": "cargoRacks",
     "name": "Corrosion Resistant Cargo Rack",
     "class": 4,
     "rating": "E",
@@ -5587,6 +5935,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size1_Class1",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 1,
     "rating": "E",
@@ -5603,6 +5952,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size1_Class2",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 1,
     "rating": "D",
@@ -5619,6 +5969,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size2_Class1",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 2,
     "rating": "E",
@@ -5635,6 +5986,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size2_Class2",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 2,
     "rating": "D",
@@ -5651,6 +6003,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size3_Class1",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 3,
     "rating": "E",
@@ -5667,6 +6020,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size3_Class2",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 3,
     "rating": "D",
@@ -5683,6 +6037,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size4_Class1",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 4,
     "rating": "E",
@@ -5699,6 +6054,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size4_Class2",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 4,
     "rating": "D",
@@ -5715,6 +6071,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size5_Class1",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 5,
     "rating": "E",
@@ -5731,6 +6088,7 @@
   },
   {
     "symbol": "Int_GuardianHullReinforcement_Size5_Class2",
+    "kind": "guardianHullReinforcements",
     "name": "Guardian Hull Reinforcement",
     "class": 5,
     "rating": "D",
@@ -5747,6 +6105,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size1_Class1",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 1,
     "rating": "E",
@@ -5760,6 +6119,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size1_Class2",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 1,
     "rating": "D",
@@ -5773,6 +6133,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size2_Class1",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 2,
     "rating": "E",
@@ -5786,6 +6147,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size2_Class2",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 2,
     "rating": "D",
@@ -5799,6 +6161,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size3_Class1",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 3,
     "rating": "E",
@@ -5812,6 +6175,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size3_Class2",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 3,
     "rating": "D",
@@ -5825,6 +6189,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size4_Class1",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 4,
     "rating": "E",
@@ -5838,6 +6203,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size4_Class2",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 4,
     "rating": "D",
@@ -5851,6 +6217,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size5_Class1",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 5,
     "rating": "E",
@@ -5864,6 +6231,7 @@
   },
   {
     "symbol": "Int_GuardianModuleReinforcement_Size5_Class2",
+    "kind": "moduleReinforcements",
     "name": "Guardian Module Reinforcement",
     "class": 5,
     "rating": "D",
@@ -5877,6 +6245,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size1_Class1",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 1,
     "rating": "E",
@@ -5890,6 +6259,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size1_Class2",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 1,
     "rating": "D",
@@ -5903,6 +6273,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size2_Class1",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 2,
     "rating": "E",
@@ -5916,6 +6287,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size2_Class2",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 2,
     "rating": "D",
@@ -5929,6 +6301,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size3_Class1",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 3,
     "rating": "E",
@@ -5942,6 +6315,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size3_Class2",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 3,
     "rating": "D",
@@ -5955,6 +6329,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size4_Class1",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 4,
     "rating": "E",
@@ -5968,6 +6343,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size4_Class2",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 4,
     "rating": "D",
@@ -5981,6 +6357,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size5_Class1",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 5,
     "rating": "E",
@@ -5994,6 +6371,7 @@
   },
   {
     "symbol": "Int_GuardianShieldReinforcement_Size5_Class2",
+    "kind": "shieldReinforcements",
     "name": "Guardian Shield Reinforcement",
     "class": 5,
     "rating": "D",
@@ -6007,6 +6385,7 @@
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size1",
+    "kind": "fsdBoosters",
     "name": "Guardian FSD Booster",
     "class": 1,
     "rating": "H",
@@ -6020,6 +6399,7 @@
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size2",
+    "kind": "fsdBoosters",
     "name": "Guardian FSD Booster",
     "class": 2,
     "rating": "H",
@@ -6033,6 +6413,7 @@
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size3",
+    "kind": "fsdBoosters",
     "name": "Guardian FSD Booster",
     "class": 3,
     "rating": "H",
@@ -6046,6 +6427,7 @@
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size4",
+    "kind": "fsdBoosters",
     "name": "Guardian FSD Booster",
     "class": 4,
     "rating": "H",
@@ -6059,6 +6441,7 @@
   },
   {
     "symbol": "Int_GuardianFSDBooster_Size5",
+    "kind": "fsdBoosters",
     "name": "Guardian FSD Booster",
     "class": 5,
     "rating": "H",
@@ -6072,6 +6455,7 @@
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size1",
+    "kind": "guardianPowerDistributors",
     "slot": "powerDistributor",
     "name": "Guardian Hybrid Power Distributor",
     "class": 1,
@@ -6091,6 +6475,7 @@
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size2",
+    "kind": "guardianPowerDistributors",
     "slot": "powerDistributor",
     "name": "Guardian Hybrid Power Distributor",
     "class": 2,
@@ -6110,6 +6495,7 @@
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size3",
+    "kind": "guardianPowerDistributors",
     "slot": "powerDistributor",
     "name": "Guardian Hybrid Power Distributor",
     "class": 3,
@@ -6129,6 +6515,7 @@
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size4",
+    "kind": "guardianPowerDistributors",
     "slot": "powerDistributor",
     "name": "Guardian Hybrid Power Distributor",
     "class": 4,
@@ -6148,6 +6535,7 @@
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size5",
+    "kind": "guardianPowerDistributors",
     "slot": "powerDistributor",
     "name": "Guardian Hybrid Power Distributor",
     "class": 5,
@@ -6167,6 +6555,7 @@
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size6",
+    "kind": "guardianPowerDistributors",
     "slot": "powerDistributor",
     "name": "Guardian Hybrid Power Distributor",
     "class": 6,
@@ -6186,6 +6575,7 @@
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size7",
+    "kind": "guardianPowerDistributors",
     "slot": "powerDistributor",
     "name": "Guardian Hybrid Power Distributor",
     "class": 7,
@@ -6205,6 +6595,7 @@
   },
   {
     "symbol": "Int_GuardianPowerDistributor_Size8",
+    "kind": "guardianPowerDistributors",
     "slot": "powerDistributor",
     "name": "Guardian Hybrid Power Distributor",
     "class": 8,
@@ -6224,6 +6615,7 @@
   },
   {
     "symbol": "Int_GuardianPowerplant_Size2",
+    "kind": "guardianPowerPlants",
     "slot": "powerPlant",
     "name": "Guardian Hybrid Power Plant",
     "class": 2,
@@ -6237,6 +6629,7 @@
   },
   {
     "symbol": "Int_GuardianPowerplant_Size3",
+    "kind": "guardianPowerPlants",
     "slot": "powerPlant",
     "name": "Guardian Hybrid Power Plant",
     "class": 3,
@@ -6250,6 +6643,7 @@
   },
   {
     "symbol": "Int_GuardianPowerplant_Size4",
+    "kind": "guardianPowerPlants",
     "slot": "powerPlant",
     "name": "Guardian Hybrid Power Plant",
     "class": 4,
@@ -6263,6 +6657,7 @@
   },
   {
     "symbol": "Int_GuardianPowerplant_Size5",
+    "kind": "guardianPowerPlants",
     "slot": "powerPlant",
     "name": "Guardian Hybrid Power Plant",
     "class": 5,
@@ -6276,6 +6671,7 @@
   },
   {
     "symbol": "Int_GuardianPowerplant_Size6",
+    "kind": "guardianPowerPlants",
     "slot": "powerPlant",
     "name": "Guardian Hybrid Power Plant",
     "class": 6,
@@ -6289,6 +6685,7 @@
   },
   {
     "symbol": "Int_GuardianPowerplant_Size7",
+    "kind": "guardianPowerPlants",
     "slot": "powerPlant",
     "name": "Guardian Hybrid Power Plant",
     "class": 7,
@@ -6302,6 +6699,7 @@
   },
   {
     "symbol": "Int_GuardianPowerplant_Size8",
+    "kind": "guardianPowerPlants",
     "slot": "powerPlant",
     "name": "Guardian Hybrid Power Plant",
     "class": 8,
@@ -6521,23 +6919,29 @@
   },
   {
     "symbol": "Int_LargeCargoRack_Size7_Class1",
+    "kind": "cargoRacks",
     "name": "Mk II Cargo Rack",
     "class": 7,
     "rating": "D",
     "mass": 0,
     "cargoCapacity": 192,
-    "restrictedToShips": ["PantherMkII"],
+    "restrictedToShips": [
+      "PantherMkII"
+    ],
     "restrictedToSlot": "cargo",
     "cost": 1958680
   },
   {
     "symbol": "Int_LargeCargoRack_Size8_class1",
+    "kind": "cargoRacks",
     "name": "Mk II Cargo Rack",
     "class": 8,
     "rating": "D",
     "mass": 0,
     "cargoCapacity": 384,
-    "restrictedToShips": ["PantherMkII"],
+    "restrictedToShips": [
+      "PantherMkII"
+    ],
     "restrictedToSlot": "cargo",
     "cost": 4929317
   },
@@ -6549,7 +6953,9 @@
     "mass": 64,
     "integrity": 105,
     "powerDraw": 1.4,
-    "restrictedToShips": ["LakonMiner"],
+    "restrictedToShips": [
+      "LakonMiner"
+    ],
     "restrictedToSlot": "limpetController",
     "bootTime": 6,
     "cost": 2332800

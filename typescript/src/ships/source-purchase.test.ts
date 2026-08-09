@@ -143,6 +143,12 @@ for (const [name, { event, record }] of Object.entries(fixture.syntheticCaptures
         }
         assert.ok(captured);
         assert.deepEqual(shapeOf(captured), record);
+        if (name === 'repeatedSlotKey') {
+            // The source-record extractor can inspect malformed source data directly,
+            // but a loadout cannot represent two modules in one mount and rejects it.
+            assert.throws(() => ShipLoadout.fromLoadout(event), /duplicate slot/);
+            return;
+        }
         assert.deepEqual(shapeOf(ShipLoadout.fromLoadout(event).sourcePurchase!), record);
     });
 }
@@ -216,9 +222,7 @@ test('a slot the source left unpriced is null, and so is a slot it never named',
     assert.equal(record.valueForSlot('NoSuchSlot42'), null);
 });
 
-test('a capture spelling one mount two ways resolves as the build itself does', () => {
-    // Malformed, and no capture in the corpus does it — but the record and the build must
-    // not disagree about which entry a key names, or a price lands on the wrong module.
+test('a capture spelling one mount two ways is rejected before prices become ambiguous', () => {
     const event: LoadoutEvent = {
         Ship: 'sidewinder',
         Modules: [
@@ -226,12 +230,7 @@ test('a capture spelling one mount two ways resolves as the build itself does', 
             { Slot: 'powerplant', Item: 'int_powerplant_size2_class3', Value: 30 },
         ],
     };
-    const build = ShipLoadout.fromLoadout(event);
-    const record = build.sourcePurchase!;
-    for (const key of ['PowerPlant', 'powerplant']) {
-        assert.equal(record.entryForSlot(key)!.item, build.moduleAt(key)!.Item);
-        assert.equal(record.valueForSlot(key), build.moduleAt(key)!.Value);
-    }
+    assert.throws(() => ShipLoadout.fromLoadout(event), /duplicate slot "powerplant"/);
 });
 
 // ── The record is fixed at import ───────────────────────────────────────────

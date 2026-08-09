@@ -12,6 +12,7 @@ import { INTERNAL_MODULES } from './modules-internal.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { UTILITY_MODULES } from './modules-utility.js';
 import { ALL_MODULES } from './modules-all.js';
+import { getEngineeringGroup } from './engineering-options.js';
 import { combinedRateOfFire } from './weapons.js';
 import { SHIPS, getShipSlots } from './ships.js';
 import modulesFixture from '../../../fixtures/ships/modules.json' with { type: 'json' };
@@ -29,6 +30,7 @@ const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
 const IDENTITY_KEYS = new Set([
     'symbol',
     'category',
+    'kind',
     // Which mount the module fills is identity, not performance: armour names one and
     // still carries no stats at all.
     'slot',
@@ -76,6 +78,13 @@ test('ALL_MODULES is exactly the four category catalogues concatenated', () => {
 test('module symbols are unique across all four catalogues', () => {
     const symbols = ALL_MODULES.map((module) => module.symbol.toLowerCase());
     assert.equal(new Set(symbols).size, symbols.length);
+});
+
+test('kind is the stable engineering family already carried by the shared data', () => {
+    for (const module of ALL_MODULES) {
+        assert.equal(module.kind, getEngineeringGroup(module.symbol), module.symbol);
+    }
+    assert.equal(ALL_MODULES.filter((module) => module.kind !== null).length, 1028);
 });
 
 test('every module lands in the catalogue named by its own category', () => {

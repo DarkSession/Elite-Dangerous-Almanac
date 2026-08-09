@@ -32,6 +32,7 @@
  * `lifeSupport`, `powerDistributor`, `sensors`, `fuelTank`). It is on every record
  * here, so a consumer reads the mount instead of guessing it from the symbol.
  * A fuel tank fits an optional slot as well as its own; nothing else does.
+ * `kind` repeats this module's stable engineering-options group when one is published.
  * Identity fields are always present; every stat field is optional, present only
  * where the module has it (masses in tonnes, power in MW, jump ranges in LY).
  * `restrictedToShips` lists the hull(s) a non-armour module is limited to; armour's
@@ -71,6 +72,7 @@
 [
   {
     "symbol": "SideWinder_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Sidewinder",
@@ -86,6 +88,7 @@
   },
   {
     "symbol": "SideWinder_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Sidewinder",
@@ -101,6 +104,7 @@
   },
   {
     "symbol": "SideWinder_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Sidewinder",
@@ -116,6 +120,7 @@
   },
   {
     "symbol": "SideWinder_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Sidewinder",
@@ -131,6 +136,7 @@
   },
   {
     "symbol": "SideWinder_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Sidewinder",
@@ -146,6 +152,7 @@
   },
   {
     "symbol": "Eagle_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Eagle",
@@ -161,6 +168,7 @@
   },
   {
     "symbol": "Eagle_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Eagle",
@@ -176,6 +184,7 @@
   },
   {
     "symbol": "Eagle_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Eagle",
@@ -191,6 +200,7 @@
   },
   {
     "symbol": "Eagle_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Eagle",
@@ -206,6 +216,7 @@
   },
   {
     "symbol": "Eagle_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Eagle",
@@ -221,6 +232,7 @@
   },
   {
     "symbol": "Hauler_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Hauler",
@@ -236,6 +248,7 @@
   },
   {
     "symbol": "Hauler_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Hauler",
@@ -251,6 +264,7 @@
   },
   {
     "symbol": "Hauler_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Hauler",
@@ -266,6 +280,7 @@
   },
   {
     "symbol": "Hauler_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Hauler",
@@ -281,6 +296,7 @@
   },
   {
     "symbol": "Hauler_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Hauler",
@@ -296,6 +312,7 @@
   },
   {
     "symbol": "Adder_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Adder",
@@ -311,6 +328,7 @@
   },
   {
     "symbol": "Adder_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Adder",
@@ -326,6 +344,7 @@
   },
   {
     "symbol": "Adder_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Adder",
@@ -341,6 +360,7 @@
   },
   {
     "symbol": "Adder_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Adder",
@@ -356,6 +376,7 @@
   },
   {
     "symbol": "Adder_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Adder",
@@ -371,6 +392,7 @@
   },
   {
     "symbol": "Viper_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Viper MkIII",
@@ -386,6 +408,7 @@
   },
   {
     "symbol": "Viper_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Viper MkIII",
@@ -401,6 +424,7 @@
   },
   {
     "symbol": "Viper_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Viper MkIII",
@@ -416,6 +440,7 @@
   },
   {
     "symbol": "Viper_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Viper MkIII",
@@ -431,6 +456,7 @@
   },
   {
     "symbol": "Viper_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Viper MkIII",
@@ -446,6 +472,7 @@
   },
   {
     "symbol": "CobraMkIII_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Cobra MkIII",
@@ -461,6 +488,7 @@
   },
   {
     "symbol": "CobraMkIII_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Cobra MkIII",
@@ -476,6 +504,7 @@
   },
   {
     "symbol": "CobraMkIII_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Cobra MkIII",
@@ -491,6 +520,7 @@
   },
   {
     "symbol": "CobraMkIII_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Cobra MkIII",
@@ -506,6 +536,7 @@
   },
   {
     "symbol": "CobraMkIII_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Cobra MkIII",
@@ -521,6 +552,7 @@
   },
   {
     "symbol": "Type6_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Type-6 Transporter",
@@ -536,6 +568,7 @@
   },
   {
     "symbol": "Type6_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Type-6 Transporter",
@@ -551,6 +584,7 @@
   },
   {
     "symbol": "Type6_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Type-6 Transporter",
@@ -566,6 +600,7 @@
   },
   {
     "symbol": "Type6_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Type-6 Transporter",
@@ -581,6 +616,7 @@
   },
   {
     "symbol": "Type6_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Type-6 Transporter",
@@ -596,6 +632,7 @@
   },
   {
     "symbol": "Dolphin_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Dolphin",
@@ -611,6 +648,7 @@
   },
   {
     "symbol": "Dolphin_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Dolphin",
@@ -626,6 +664,7 @@
   },
   {
     "symbol": "Dolphin_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Dolphin",
@@ -641,6 +680,7 @@
   },
   {
     "symbol": "Dolphin_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Dolphin",
@@ -656,6 +696,7 @@
   },
   {
     "symbol": "Dolphin_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Dolphin",
@@ -671,6 +712,7 @@
   },
   {
     "symbol": "Type7_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Type-7 Transporter",
@@ -686,6 +728,7 @@
   },
   {
     "symbol": "Type7_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Type-7 Transporter",
@@ -701,6 +744,7 @@
   },
   {
     "symbol": "Type7_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Type-7 Transporter",
@@ -716,6 +760,7 @@
   },
   {
     "symbol": "Type7_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Type-7 Transporter",
@@ -731,6 +776,7 @@
   },
   {
     "symbol": "Type7_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Type-7 Transporter",
@@ -746,6 +792,7 @@
   },
   {
     "symbol": "Asp_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Asp Explorer",
@@ -761,6 +808,7 @@
   },
   {
     "symbol": "Asp_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Asp Explorer",
@@ -776,6 +824,7 @@
   },
   {
     "symbol": "Asp_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Asp Explorer",
@@ -791,6 +840,7 @@
   },
   {
     "symbol": "Asp_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Asp Explorer",
@@ -806,6 +856,7 @@
   },
   {
     "symbol": "Asp_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Asp Explorer",
@@ -821,6 +872,7 @@
   },
   {
     "symbol": "Vulture_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Vulture",
@@ -836,6 +888,7 @@
   },
   {
     "symbol": "Vulture_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Vulture",
@@ -851,6 +904,7 @@
   },
   {
     "symbol": "Vulture_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Vulture",
@@ -866,6 +920,7 @@
   },
   {
     "symbol": "Vulture_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Vulture",
@@ -881,6 +936,7 @@
   },
   {
     "symbol": "Vulture_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Vulture",
@@ -896,6 +952,7 @@
   },
   {
     "symbol": "Empire_Trader_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Imperial Clipper",
@@ -911,6 +968,7 @@
   },
   {
     "symbol": "Empire_Trader_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Imperial Clipper",
@@ -926,6 +984,7 @@
   },
   {
     "symbol": "Empire_Trader_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Imperial Clipper",
@@ -941,6 +1000,7 @@
   },
   {
     "symbol": "Empire_Trader_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Imperial Clipper",
@@ -956,6 +1016,7 @@
   },
   {
     "symbol": "Empire_Trader_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Imperial Clipper",
@@ -971,6 +1032,7 @@
   },
   {
     "symbol": "Federation_Dropship_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Federal Dropship",
@@ -986,6 +1048,7 @@
   },
   {
     "symbol": "Federation_Dropship_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Federal Dropship",
@@ -1001,6 +1064,7 @@
   },
   {
     "symbol": "Federation_Dropship_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Federal Dropship",
@@ -1016,6 +1080,7 @@
   },
   {
     "symbol": "Federation_Dropship_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Federal Dropship",
@@ -1031,6 +1096,7 @@
   },
   {
     "symbol": "Federation_Dropship_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Federal Dropship",
@@ -1046,6 +1112,7 @@
   },
   {
     "symbol": "Orca_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Orca",
@@ -1061,6 +1128,7 @@
   },
   {
     "symbol": "Orca_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Orca",
@@ -1076,6 +1144,7 @@
   },
   {
     "symbol": "Orca_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Orca",
@@ -1091,6 +1160,7 @@
   },
   {
     "symbol": "Orca_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Orca",
@@ -1106,6 +1176,7 @@
   },
   {
     "symbol": "Orca_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Orca",
@@ -1121,6 +1192,7 @@
   },
   {
     "symbol": "Type9_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Type-9 Heavy",
@@ -1136,6 +1208,7 @@
   },
   {
     "symbol": "Type9_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Type-9 Heavy",
@@ -1151,6 +1224,7 @@
   },
   {
     "symbol": "Type9_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Type-9 Heavy",
@@ -1166,6 +1240,7 @@
   },
   {
     "symbol": "Type9_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Type-9 Heavy",
@@ -1181,6 +1256,7 @@
   },
   {
     "symbol": "Type9_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Type-9 Heavy",
@@ -1196,6 +1272,7 @@
   },
   {
     "symbol": "Python_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Python",
@@ -1211,6 +1288,7 @@
   },
   {
     "symbol": "Python_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Python",
@@ -1226,6 +1304,7 @@
   },
   {
     "symbol": "Python_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Python",
@@ -1241,6 +1320,7 @@
   },
   {
     "symbol": "Python_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Python",
@@ -1256,6 +1336,7 @@
   },
   {
     "symbol": "Python_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Python",
@@ -1271,6 +1352,7 @@
   },
   {
     "symbol": "BelugaLiner_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Beluga Liner",
@@ -1286,6 +1368,7 @@
   },
   {
     "symbol": "BelugaLiner_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Beluga Liner",
@@ -1301,6 +1384,7 @@
   },
   {
     "symbol": "BelugaLiner_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Beluga Liner",
@@ -1316,6 +1400,7 @@
   },
   {
     "symbol": "BelugaLiner_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Beluga Liner",
@@ -1331,6 +1416,7 @@
   },
   {
     "symbol": "BelugaLiner_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Beluga Liner",
@@ -1346,6 +1432,7 @@
   },
   {
     "symbol": "FerDeLance_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Fer-de-Lance",
@@ -1361,6 +1448,7 @@
   },
   {
     "symbol": "FerDeLance_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Fer-de-Lance",
@@ -1376,6 +1464,7 @@
   },
   {
     "symbol": "FerDeLance_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Fer-de-Lance",
@@ -1391,6 +1480,7 @@
   },
   {
     "symbol": "FerDeLance_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Fer-de-Lance",
@@ -1406,6 +1496,7 @@
   },
   {
     "symbol": "FerDeLance_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Fer-de-Lance",
@@ -1421,6 +1512,7 @@
   },
   {
     "symbol": "Anaconda_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Anaconda",
@@ -1436,6 +1528,7 @@
   },
   {
     "symbol": "Anaconda_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Anaconda",
@@ -1451,6 +1544,7 @@
   },
   {
     "symbol": "Anaconda_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Anaconda",
@@ -1466,6 +1560,7 @@
   },
   {
     "symbol": "Anaconda_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Anaconda",
@@ -1481,6 +1576,7 @@
   },
   {
     "symbol": "Anaconda_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Anaconda",
@@ -1496,6 +1592,7 @@
   },
   {
     "symbol": "Federation_Corvette_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Federal Corvette",
@@ -1511,6 +1608,7 @@
   },
   {
     "symbol": "Federation_Corvette_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Federal Corvette",
@@ -1526,6 +1624,7 @@
   },
   {
     "symbol": "Federation_Corvette_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Federal Corvette",
@@ -1541,6 +1640,7 @@
   },
   {
     "symbol": "Federation_Corvette_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Federal Corvette",
@@ -1556,6 +1656,7 @@
   },
   {
     "symbol": "Federation_Corvette_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Federal Corvette",
@@ -1571,6 +1672,7 @@
   },
   {
     "symbol": "Cutter_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Imperial Cutter",
@@ -1586,6 +1688,7 @@
   },
   {
     "symbol": "Cutter_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Imperial Cutter",
@@ -1601,6 +1704,7 @@
   },
   {
     "symbol": "Cutter_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Imperial Cutter",
@@ -1616,6 +1720,7 @@
   },
   {
     "symbol": "Cutter_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Imperial Cutter",
@@ -1631,6 +1736,7 @@
   },
   {
     "symbol": "Cutter_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Imperial Cutter",
@@ -1646,6 +1752,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size2_Class1",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 2,
@@ -1658,6 +1765,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size2_Class2",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 2,
@@ -1670,6 +1778,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size2_Class3",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 2,
@@ -1682,6 +1791,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size2_Class4",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 2,
@@ -1694,6 +1804,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size2_Class5",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 2,
@@ -1706,6 +1817,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size3_Class1",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 3,
@@ -1718,6 +1830,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size3_Class2",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 3,
@@ -1730,6 +1843,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size3_Class3",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 3,
@@ -1742,6 +1856,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size3_Class4",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 3,
@@ -1754,6 +1869,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size3_Class5",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 3,
@@ -1766,6 +1882,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size4_Class1",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 4,
@@ -1778,6 +1895,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size4_Class2",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 4,
@@ -1790,6 +1908,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size4_Class3",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 4,
@@ -1802,6 +1921,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size4_Class4",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 4,
@@ -1814,6 +1934,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size4_Class5",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 4,
@@ -1826,6 +1947,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size5_Class1",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 5,
@@ -1838,6 +1960,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size5_Class2",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 5,
@@ -1850,6 +1973,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size5_Class3",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 5,
@@ -1862,6 +1986,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size5_Class4",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 5,
@@ -1874,6 +1999,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size5_Class5",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 5,
@@ -1886,6 +2012,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size6_Class1",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 6,
@@ -1898,6 +2025,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size6_Class2",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 6,
@@ -1910,6 +2038,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size6_Class3",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 6,
@@ -1922,6 +2051,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size6_Class4",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 6,
@@ -1934,6 +2064,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size6_Class5",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 6,
@@ -1946,6 +2077,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size7_Class1",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 7,
@@ -1958,6 +2090,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size7_Class2",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 7,
@@ -1970,6 +2103,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size7_Class3",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 7,
@@ -1982,6 +2116,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size7_Class4",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 7,
@@ -1994,6 +2129,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size7_Class5",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 7,
@@ -2006,6 +2142,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size8_Class1",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 8,
@@ -2018,6 +2155,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size8_Class2",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 8,
@@ -2030,6 +2168,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size8_Class3",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 8,
@@ -2042,6 +2181,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size8_Class4",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 8,
@@ -2054,6 +2194,7 @@
   },
   {
     "symbol": "Int_Powerplant_Size8_Class5",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 8,
@@ -2066,6 +2207,7 @@
   },
   {
     "symbol": "Int_Engine_Size2_Class1",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 2,
@@ -2085,6 +2227,7 @@
   },
   {
     "symbol": "Int_Engine_Size2_Class2",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 2,
@@ -2104,6 +2247,7 @@
   },
   {
     "symbol": "Int_Engine_Size2_Class3",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 2,
@@ -2123,6 +2267,7 @@
   },
   {
     "symbol": "Int_Engine_Size2_Class4",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 2,
@@ -2142,6 +2287,7 @@
   },
   {
     "symbol": "Int_Engine_Size2_Class5",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 2,
@@ -2161,6 +2307,7 @@
   },
   {
     "symbol": "Int_Engine_Size3_Class1",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 3,
@@ -2180,6 +2327,7 @@
   },
   {
     "symbol": "Int_Engine_Size3_Class2",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 3,
@@ -2199,6 +2347,7 @@
   },
   {
     "symbol": "Int_Engine_Size3_Class3",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 3,
@@ -2218,6 +2367,7 @@
   },
   {
     "symbol": "Int_Engine_Size3_Class4",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 3,
@@ -2237,6 +2387,7 @@
   },
   {
     "symbol": "Int_Engine_Size3_Class5",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 3,
@@ -2256,6 +2407,7 @@
   },
   {
     "symbol": "Int_Engine_Size4_Class1",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 4,
@@ -2275,6 +2427,7 @@
   },
   {
     "symbol": "Int_Engine_Size4_Class2",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 4,
@@ -2294,6 +2447,7 @@
   },
   {
     "symbol": "Int_Engine_Size4_Class3",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 4,
@@ -2313,6 +2467,7 @@
   },
   {
     "symbol": "Int_Engine_Size4_Class4",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 4,
@@ -2332,6 +2487,7 @@
   },
   {
     "symbol": "Int_Engine_Size4_Class5",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 4,
@@ -2351,6 +2507,7 @@
   },
   {
     "symbol": "Int_Engine_Size5_Class1",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 5,
@@ -2370,6 +2527,7 @@
   },
   {
     "symbol": "Int_Engine_Size5_Class2",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 5,
@@ -2389,6 +2547,7 @@
   },
   {
     "symbol": "Int_Engine_Size5_Class3",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 5,
@@ -2408,6 +2567,7 @@
   },
   {
     "symbol": "Int_Engine_Size5_Class4",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 5,
@@ -2427,6 +2587,7 @@
   },
   {
     "symbol": "Int_Engine_Size5_Class5",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 5,
@@ -2446,6 +2607,7 @@
   },
   {
     "symbol": "Int_Engine_Size6_Class1",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 6,
@@ -2465,6 +2627,7 @@
   },
   {
     "symbol": "Int_Engine_Size6_Class2",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 6,
@@ -2484,6 +2647,7 @@
   },
   {
     "symbol": "Int_Engine_Size6_Class3",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 6,
@@ -2503,6 +2667,7 @@
   },
   {
     "symbol": "Int_Engine_Size6_Class4",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 6,
@@ -2522,6 +2687,7 @@
   },
   {
     "symbol": "Int_Engine_Size6_Class5",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 6,
@@ -2541,6 +2707,7 @@
   },
   {
     "symbol": "Int_Engine_Size7_Class1",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 7,
@@ -2560,6 +2727,7 @@
   },
   {
     "symbol": "Int_Engine_Size7_Class2",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 7,
@@ -2579,6 +2747,7 @@
   },
   {
     "symbol": "Int_Engine_Size7_Class3",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 7,
@@ -2598,6 +2767,7 @@
   },
   {
     "symbol": "Int_Engine_Size7_Class4",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 7,
@@ -2617,6 +2787,7 @@
   },
   {
     "symbol": "Int_Engine_Size7_Class5",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 7,
@@ -2636,6 +2807,7 @@
   },
   {
     "symbol": "Int_Engine_Size8_Class1",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 8,
@@ -2655,6 +2827,7 @@
   },
   {
     "symbol": "Int_Engine_Size8_Class2",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 8,
@@ -2674,6 +2847,7 @@
   },
   {
     "symbol": "Int_Engine_Size8_Class3",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 8,
@@ -2693,6 +2867,7 @@
   },
   {
     "symbol": "Int_Engine_Size8_Class4",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 8,
@@ -2712,6 +2887,7 @@
   },
   {
     "symbol": "Int_Engine_Size8_Class5",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 8,
@@ -2731,6 +2907,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class1",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 2,
@@ -2748,6 +2925,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class2",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 2,
@@ -2765,6 +2943,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class3",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 2,
@@ -2782,6 +2961,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class4",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 2,
@@ -2799,6 +2979,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class5",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 2,
@@ -2816,6 +2997,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class1",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 3,
@@ -2833,6 +3015,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class2",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 3,
@@ -2850,6 +3033,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class3",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 3,
@@ -2867,6 +3051,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class4",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 3,
@@ -2884,6 +3069,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size3_Class5",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 3,
@@ -2901,6 +3087,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class1",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 4,
@@ -2918,6 +3105,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class2",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 4,
@@ -2935,6 +3123,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class3",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 4,
@@ -2952,6 +3141,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class4",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 4,
@@ -2969,6 +3159,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size4_Class5",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 4,
@@ -2986,6 +3177,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class1",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 5,
@@ -3003,6 +3195,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class2",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 5,
@@ -3020,6 +3213,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class3",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 5,
@@ -3037,6 +3231,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class4",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 5,
@@ -3054,6 +3249,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size5_Class5",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 5,
@@ -3071,6 +3267,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class1",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 6,
@@ -3088,6 +3285,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class2",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 6,
@@ -3105,6 +3303,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class3",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 6,
@@ -3122,6 +3321,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class4",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 6,
@@ -3139,6 +3339,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size6_Class5",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 6,
@@ -3156,6 +3357,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class1",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 7,
@@ -3173,6 +3375,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class2",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 7,
@@ -3190,6 +3393,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class3",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 7,
@@ -3207,6 +3411,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class4",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 7,
@@ -3224,6 +3429,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size7_Class5",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 7,
@@ -3241,6 +3447,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class1",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 8,
@@ -3257,6 +3464,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class2",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 8,
@@ -3273,6 +3481,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class3",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 8,
@@ -3289,6 +3498,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class4",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 8,
@@ -3305,6 +3515,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size8_Class5",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 8,
@@ -3321,6 +3532,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class1",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 1,
@@ -3333,6 +3545,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class2",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 1,
@@ -3345,6 +3558,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class3",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 1,
@@ -3357,6 +3571,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class4",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 1,
@@ -3369,6 +3584,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class5",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 1,
@@ -3381,6 +3597,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class1",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 2,
@@ -3393,6 +3610,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class2",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 2,
@@ -3405,6 +3623,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class3",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 2,
@@ -3417,6 +3636,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class4",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 2,
@@ -3429,6 +3649,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size2_Class5",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 2,
@@ -3441,6 +3662,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class1",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 3,
@@ -3453,6 +3675,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class2",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 3,
@@ -3465,6 +3688,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class3",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 3,
@@ -3477,6 +3701,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class4",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 3,
@@ -3489,6 +3714,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size3_Class5",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 3,
@@ -3501,6 +3727,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class1",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 4,
@@ -3513,6 +3740,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class2",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 4,
@@ -3525,6 +3753,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class3",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 4,
@@ -3537,6 +3766,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class4",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 4,
@@ -3549,6 +3779,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size4_Class5",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 4,
@@ -3561,6 +3792,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class1",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 5,
@@ -3573,6 +3805,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class2",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 5,
@@ -3585,6 +3818,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class3",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 5,
@@ -3597,6 +3831,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class4",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 5,
@@ -3609,6 +3844,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size5_Class5",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 5,
@@ -3621,6 +3857,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class1",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 6,
@@ -3633,6 +3870,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class2",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 6,
@@ -3645,6 +3883,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class3",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 6,
@@ -3657,6 +3896,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class4",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 6,
@@ -3669,6 +3909,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size6_Class5",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 6,
@@ -3681,6 +3922,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class1",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 7,
@@ -3693,6 +3935,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class2",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 7,
@@ -3705,6 +3948,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class3",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 7,
@@ -3717,6 +3961,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class4",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 7,
@@ -3729,6 +3974,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size7_Class5",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 7,
@@ -3741,6 +3987,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class1",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 8,
@@ -3753,6 +4000,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class2",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 8,
@@ -3765,6 +4013,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class3",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 8,
@@ -3777,6 +4026,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class4",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 8,
@@ -3789,6 +4039,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size8_Class5",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 8,
@@ -3801,6 +4052,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class1",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 1,
@@ -3819,6 +4071,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class2",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 1,
@@ -3837,6 +4090,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class3",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 1,
@@ -3855,6 +4109,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class4",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 1,
@@ -3873,6 +4128,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class5",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 1,
@@ -3891,6 +4147,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class1",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 2,
@@ -3909,6 +4166,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class2",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 2,
@@ -3927,6 +4185,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class3",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 2,
@@ -3945,6 +4204,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class4",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 2,
@@ -3963,6 +4223,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size2_Class5",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 2,
@@ -3981,6 +4242,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class1",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 3,
@@ -3999,6 +4261,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class2",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 3,
@@ -4017,6 +4280,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class3",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 3,
@@ -4035,6 +4299,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class4",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 3,
@@ -4053,6 +4318,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size3_Class5",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 3,
@@ -4071,6 +4337,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class1",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 4,
@@ -4089,6 +4356,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class2",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 4,
@@ -4107,6 +4375,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class3",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 4,
@@ -4125,6 +4394,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class4",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 4,
@@ -4143,6 +4413,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size4_Class5",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 4,
@@ -4161,6 +4432,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class1",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 5,
@@ -4179,6 +4451,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class2",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 5,
@@ -4197,6 +4470,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class3",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 5,
@@ -4215,6 +4489,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class4",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 5,
@@ -4233,6 +4508,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size5_Class5",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 5,
@@ -4251,6 +4527,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class1",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 6,
@@ -4269,6 +4546,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class2",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 6,
@@ -4287,6 +4565,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class3",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 6,
@@ -4305,6 +4584,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class4",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 6,
@@ -4323,6 +4603,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size6_Class5",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 6,
@@ -4341,6 +4622,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class1",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 7,
@@ -4359,6 +4641,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class2",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 7,
@@ -4377,6 +4660,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class3",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 7,
@@ -4395,6 +4679,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class4",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 7,
@@ -4413,6 +4698,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size7_Class5",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 7,
@@ -4431,6 +4717,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class1",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 8,
@@ -4449,6 +4736,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class2",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 8,
@@ -4467,6 +4755,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class3",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 8,
@@ -4485,6 +4774,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class4",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 8,
@@ -4503,6 +4793,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size8_Class5",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 8,
@@ -4521,6 +4812,7 @@
   },
   {
     "symbol": "Int_Sensors_Size1_Class1",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 1,
@@ -4535,6 +4827,7 @@
   },
   {
     "symbol": "Int_Sensors_Size1_Class2",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 1,
@@ -4549,6 +4842,7 @@
   },
   {
     "symbol": "Int_Sensors_Size1_Class3",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 1,
@@ -4563,6 +4857,7 @@
   },
   {
     "symbol": "Int_Sensors_Size1_Class4",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 1,
@@ -4577,6 +4872,7 @@
   },
   {
     "symbol": "Int_Sensors_Size1_Class5",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 1,
@@ -4591,6 +4887,7 @@
   },
   {
     "symbol": "Int_Sensors_Size2_Class1",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 2,
@@ -4605,6 +4902,7 @@
   },
   {
     "symbol": "Int_Sensors_Size2_Class2",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 2,
@@ -4619,6 +4917,7 @@
   },
   {
     "symbol": "Int_Sensors_Size2_Class3",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 2,
@@ -4633,6 +4932,7 @@
   },
   {
     "symbol": "Int_Sensors_Size2_Class4",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 2,
@@ -4647,6 +4947,7 @@
   },
   {
     "symbol": "Int_Sensors_Size2_Class5",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 2,
@@ -4661,6 +4962,7 @@
   },
   {
     "symbol": "Int_Sensors_Size3_Class1",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 3,
@@ -4675,6 +4977,7 @@
   },
   {
     "symbol": "Int_Sensors_Size3_Class2",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 3,
@@ -4689,6 +4992,7 @@
   },
   {
     "symbol": "Int_Sensors_Size3_Class3",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 3,
@@ -4703,6 +5007,7 @@
   },
   {
     "symbol": "Int_Sensors_Size3_Class4",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 3,
@@ -4717,6 +5022,7 @@
   },
   {
     "symbol": "Int_Sensors_Size3_Class5",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 3,
@@ -4731,6 +5037,7 @@
   },
   {
     "symbol": "Int_Sensors_Size4_Class1",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 4,
@@ -4745,6 +5052,7 @@
   },
   {
     "symbol": "Int_Sensors_Size4_Class2",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 4,
@@ -4759,6 +5067,7 @@
   },
   {
     "symbol": "Int_Sensors_Size4_Class3",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 4,
@@ -4773,6 +5082,7 @@
   },
   {
     "symbol": "Int_Sensors_Size4_Class4",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 4,
@@ -4787,6 +5097,7 @@
   },
   {
     "symbol": "Int_Sensors_Size4_Class5",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 4,
@@ -4801,6 +5112,7 @@
   },
   {
     "symbol": "Int_Sensors_Size5_Class1",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 5,
@@ -4815,6 +5127,7 @@
   },
   {
     "symbol": "Int_Sensors_Size5_Class2",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 5,
@@ -4829,6 +5142,7 @@
   },
   {
     "symbol": "Int_Sensors_Size5_Class3",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 5,
@@ -4843,6 +5157,7 @@
   },
   {
     "symbol": "Int_Sensors_Size5_Class4",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 5,
@@ -4857,6 +5172,7 @@
   },
   {
     "symbol": "Int_Sensors_Size5_Class5",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 5,
@@ -4871,6 +5187,7 @@
   },
   {
     "symbol": "Int_Sensors_Size6_Class1",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 6,
@@ -4885,6 +5202,7 @@
   },
   {
     "symbol": "Int_Sensors_Size6_Class2",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 6,
@@ -4899,6 +5217,7 @@
   },
   {
     "symbol": "Int_Sensors_Size6_Class3",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 6,
@@ -4913,6 +5232,7 @@
   },
   {
     "symbol": "Int_Sensors_Size6_Class4",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 6,
@@ -4927,6 +5247,7 @@
   },
   {
     "symbol": "Int_Sensors_Size6_Class5",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 6,
@@ -4941,6 +5262,7 @@
   },
   {
     "symbol": "Int_Sensors_Size7_Class1",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 7,
@@ -4955,6 +5277,7 @@
   },
   {
     "symbol": "Int_Sensors_Size7_Class2",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 7,
@@ -4969,6 +5292,7 @@
   },
   {
     "symbol": "Int_Sensors_Size7_Class3",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 7,
@@ -4983,6 +5307,7 @@
   },
   {
     "symbol": "Int_Sensors_Size7_Class4",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 7,
@@ -4997,6 +5322,7 @@
   },
   {
     "symbol": "Int_Sensors_Size7_Class5",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 7,
@@ -5011,6 +5337,7 @@
   },
   {
     "symbol": "Int_Sensors_Size8_Class1",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 8,
@@ -5025,6 +5352,7 @@
   },
   {
     "symbol": "Int_Sensors_Size8_Class2",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 8,
@@ -5039,6 +5367,7 @@
   },
   {
     "symbol": "Int_Sensors_Size8_Class3",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 8,
@@ -5053,6 +5382,7 @@
   },
   {
     "symbol": "Int_Sensors_Size8_Class4",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 8,
@@ -5067,6 +5397,7 @@
   },
   {
     "symbol": "Int_Sensors_Size8_Class5",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 8,
@@ -5161,6 +5492,7 @@
   },
   {
     "symbol": "Int_PowerPlant_Size2_Class1_free",
+    "kind": "powerPlants",
     "slot": "powerPlant",
     "name": "Power Plant",
     "class": 2,
@@ -5172,6 +5504,7 @@
   },
   {
     "symbol": "Int_Engine_Size2_Class1_free",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Thrusters",
     "class": 2,
@@ -5190,6 +5523,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Size2_Class1_free",
+    "kind": "frameShiftDrives",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive",
     "class": 2,
@@ -5206,6 +5540,7 @@
   },
   {
     "symbol": "Int_LifeSupport_Size1_Class1_free",
+    "kind": "lifeSupports",
     "slot": "lifeSupport",
     "name": "Life Support",
     "class": 1,
@@ -5217,6 +5552,7 @@
   },
   {
     "symbol": "Int_PowerDistributor_Size1_Class1_free",
+    "kind": "powerDistributors",
     "slot": "powerDistributor",
     "name": "Power Distributor",
     "class": 1,
@@ -5234,6 +5570,7 @@
   },
   {
     "symbol": "Int_Sensors_Size1_Class1_free",
+    "kind": "sensors",
     "slot": "sensors",
     "name": "Sensors",
     "class": 1,
@@ -5256,6 +5593,7 @@
   },
   {
     "symbol": "DiamondBack_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Diamondback Scout",
@@ -5271,6 +5609,7 @@
   },
   {
     "symbol": "DiamondBack_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Diamondback Scout",
@@ -5286,6 +5625,7 @@
   },
   {
     "symbol": "DiamondBack_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Diamondback Scout",
@@ -5301,6 +5641,7 @@
   },
   {
     "symbol": "DiamondBack_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Diamondback Scout",
@@ -5316,6 +5657,7 @@
   },
   {
     "symbol": "DiamondBack_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Diamondback Scout",
@@ -5331,6 +5673,7 @@
   },
   {
     "symbol": "Empire_Courier_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Imperial Courier",
@@ -5346,6 +5689,7 @@
   },
   {
     "symbol": "Empire_Courier_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Imperial Courier",
@@ -5361,6 +5705,7 @@
   },
   {
     "symbol": "Empire_Courier_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Imperial Courier",
@@ -5376,6 +5721,7 @@
   },
   {
     "symbol": "Empire_Courier_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Imperial Courier",
@@ -5391,6 +5737,7 @@
   },
   {
     "symbol": "Empire_Courier_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Imperial Courier",
@@ -5406,6 +5753,7 @@
   },
   {
     "symbol": "DiamondBackXL_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Diamondback Explorer",
@@ -5421,6 +5769,7 @@
   },
   {
     "symbol": "DiamondBackXL_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Diamondback Explorer",
@@ -5436,6 +5785,7 @@
   },
   {
     "symbol": "DiamondBackXL_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Diamondback Explorer",
@@ -5451,6 +5801,7 @@
   },
   {
     "symbol": "DiamondBackXL_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Diamondback Explorer",
@@ -5466,6 +5817,7 @@
   },
   {
     "symbol": "DiamondBackXL_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Diamondback Explorer",
@@ -5481,6 +5833,7 @@
   },
   {
     "symbol": "Empire_Eagle_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Imperial Eagle",
@@ -5496,6 +5849,7 @@
   },
   {
     "symbol": "Empire_Eagle_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Imperial Eagle",
@@ -5511,6 +5865,7 @@
   },
   {
     "symbol": "Empire_Eagle_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Imperial Eagle",
@@ -5526,6 +5881,7 @@
   },
   {
     "symbol": "Empire_Eagle_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Imperial Eagle",
@@ -5541,6 +5897,7 @@
   },
   {
     "symbol": "Empire_Eagle_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Imperial Eagle",
@@ -5556,6 +5913,7 @@
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Federal Assault Ship",
@@ -5571,6 +5929,7 @@
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Federal Assault Ship",
@@ -5586,6 +5945,7 @@
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Federal Assault Ship",
@@ -5601,6 +5961,7 @@
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Federal Assault Ship",
@@ -5616,6 +5977,7 @@
   },
   {
     "symbol": "Federation_Dropship_MkII_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Federal Assault Ship",
@@ -5631,6 +5993,7 @@
   },
   {
     "symbol": "Federation_Gunship_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Federal Gunship",
@@ -5646,6 +6009,7 @@
   },
   {
     "symbol": "Federation_Gunship_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Federal Gunship",
@@ -5661,6 +6025,7 @@
   },
   {
     "symbol": "Federation_Gunship_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Federal Gunship",
@@ -5676,6 +6041,7 @@
   },
   {
     "symbol": "Federation_Gunship_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Federal Gunship",
@@ -5691,6 +6057,7 @@
   },
   {
     "symbol": "Federation_Gunship_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Federal Gunship",
@@ -5706,6 +6073,7 @@
   },
   {
     "symbol": "Viper_MkIV_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Viper MkIV",
@@ -5721,6 +6089,7 @@
   },
   {
     "symbol": "Viper_MkIV_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Viper MkIV",
@@ -5736,6 +6105,7 @@
   },
   {
     "symbol": "Viper_MkIV_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Viper MkIV",
@@ -5751,6 +6121,7 @@
   },
   {
     "symbol": "Viper_MkIV_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Viper MkIV",
@@ -5766,6 +6137,7 @@
   },
   {
     "symbol": "Viper_MkIV_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Viper MkIV",
@@ -5781,6 +6153,7 @@
   },
   {
     "symbol": "CobraMkIV_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Cobra MkIV",
@@ -5796,6 +6169,7 @@
   },
   {
     "symbol": "CobraMkIV_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Cobra MkIV",
@@ -5811,6 +6185,7 @@
   },
   {
     "symbol": "CobraMkIV_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Cobra MkIV",
@@ -5826,6 +6201,7 @@
   },
   {
     "symbol": "CobraMkIV_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Cobra MkIV",
@@ -5841,6 +6217,7 @@
   },
   {
     "symbol": "CobraMkIV_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Cobra MkIV",
@@ -5856,6 +6233,7 @@
   },
   {
     "symbol": "Independant_Trader_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Keelback",
@@ -5871,6 +6249,7 @@
   },
   {
     "symbol": "Independant_Trader_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Keelback",
@@ -5886,6 +6265,7 @@
   },
   {
     "symbol": "Independant_Trader_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Keelback",
@@ -5901,6 +6281,7 @@
   },
   {
     "symbol": "Independant_Trader_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Keelback",
@@ -5916,6 +6297,7 @@
   },
   {
     "symbol": "Independant_Trader_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Keelback",
@@ -5931,6 +6313,7 @@
   },
   {
     "symbol": "Asp_Scout_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Asp Scout",
@@ -5946,6 +6329,7 @@
   },
   {
     "symbol": "Asp_Scout_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Asp Scout",
@@ -5961,6 +6345,7 @@
   },
   {
     "symbol": "Asp_Scout_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Asp Scout",
@@ -5976,6 +6361,7 @@
   },
   {
     "symbol": "Asp_Scout_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Asp Scout",
@@ -5991,6 +6377,7 @@
   },
   {
     "symbol": "Asp_Scout_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Asp Scout",
@@ -6006,6 +6393,7 @@
   },
   {
     "symbol": "Int_Engine_Size3_Class5_Fast",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Enhanced Performance Thrusters",
     "class": 3,
@@ -6025,6 +6413,7 @@
   },
   {
     "symbol": "Int_Engine_Size2_Class5_Fast",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Enhanced Performance Thrusters",
     "class": 2,
@@ -6044,6 +6433,7 @@
   },
   {
     "symbol": "Type9_Military_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Type-10 Defender",
@@ -6060,6 +6450,7 @@
   },
   {
     "symbol": "Type9_Military_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Type-10 Defender",
@@ -6076,6 +6467,7 @@
   },
   {
     "symbol": "Type9_Military_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Type-10 Defender",
@@ -6092,6 +6484,7 @@
   },
   {
     "symbol": "Type9_Military_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Type-10 Defender",
@@ -6108,6 +6501,7 @@
   },
   {
     "symbol": "Type9_Military_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Type-10 Defender",
@@ -6124,6 +6518,7 @@
   },
   {
     "symbol": "Krait_MkII_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Krait MkII",
@@ -6140,6 +6535,7 @@
   },
   {
     "symbol": "Krait_MkII_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Krait MkII",
@@ -6156,6 +6552,7 @@
   },
   {
     "symbol": "Krait_MkII_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Krait MkII",
@@ -6172,6 +6569,7 @@
   },
   {
     "symbol": "Krait_MkII_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Krait MkII",
@@ -6188,6 +6586,7 @@
   },
   {
     "symbol": "Krait_MkII_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Krait MkII",
@@ -6204,6 +6603,7 @@
   },
   {
     "symbol": "TypeX_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Alliance Chieftain",
@@ -6220,6 +6620,7 @@
   },
   {
     "symbol": "TypeX_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Alliance Chieftain",
@@ -6236,6 +6637,7 @@
   },
   {
     "symbol": "TypeX_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Alliance Chieftain",
@@ -6252,6 +6654,7 @@
   },
   {
     "symbol": "TypeX_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Alliance Chieftain",
@@ -6268,6 +6671,7 @@
   },
   {
     "symbol": "TypeX_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Alliance Chieftain",
@@ -6284,6 +6688,7 @@
   },
   {
     "symbol": "TypeX_2_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Alliance Crusader",
@@ -6300,6 +6705,7 @@
   },
   {
     "symbol": "TypeX_2_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Alliance Crusader",
@@ -6316,6 +6722,7 @@
   },
   {
     "symbol": "TypeX_2_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Alliance Crusader",
@@ -6332,6 +6739,7 @@
   },
   {
     "symbol": "TypeX_2_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Alliance Crusader",
@@ -6348,6 +6756,7 @@
   },
   {
     "symbol": "TypeX_2_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Alliance Crusader",
@@ -6364,6 +6773,7 @@
   },
   {
     "symbol": "TypeX_3_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Alliance Challenger",
@@ -6380,6 +6790,7 @@
   },
   {
     "symbol": "TypeX_3_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Alliance Challenger",
@@ -6396,6 +6807,7 @@
   },
   {
     "symbol": "TypeX_3_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Alliance Challenger",
@@ -6412,6 +6824,7 @@
   },
   {
     "symbol": "TypeX_3_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Alliance Challenger",
@@ -6428,6 +6841,7 @@
   },
   {
     "symbol": "TypeX_3_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Alliance Challenger",
@@ -6444,6 +6858,7 @@
   },
   {
     "symbol": "Krait_Light_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Krait Phantom",
@@ -6460,6 +6875,7 @@
   },
   {
     "symbol": "Krait_Light_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Krait Phantom",
@@ -6476,6 +6892,7 @@
   },
   {
     "symbol": "Krait_Light_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Krait Phantom",
@@ -6492,6 +6909,7 @@
   },
   {
     "symbol": "Krait_Light_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Krait Phantom",
@@ -6508,6 +6926,7 @@
   },
   {
     "symbol": "Krait_Light_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Krait Phantom",
@@ -6524,6 +6943,7 @@
   },
   {
     "symbol": "Mamba_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Mamba",
@@ -6540,6 +6960,7 @@
   },
   {
     "symbol": "Mamba_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Mamba",
@@ -6556,6 +6977,7 @@
   },
   {
     "symbol": "Mamba_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Mamba",
@@ -6572,6 +6994,7 @@
   },
   {
     "symbol": "Mamba_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Mamba",
@@ -6588,6 +7011,7 @@
   },
   {
     "symbol": "Mamba_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Mamba",
@@ -6604,6 +7028,7 @@
   },
   {
     "symbol": "Python_NX_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Python MkII",
@@ -6620,6 +7045,7 @@
   },
   {
     "symbol": "Python_NX_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Python MkII",
@@ -6636,6 +7062,7 @@
   },
   {
     "symbol": "Python_NX_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Python MkII",
@@ -6652,6 +7079,7 @@
   },
   {
     "symbol": "Python_NX_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Python MkII",
@@ -6668,6 +7096,7 @@
   },
   {
     "symbol": "Python_NX_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Python MkII",
@@ -6684,6 +7113,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class3",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 5,
@@ -6701,6 +7131,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class3",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 7,
@@ -6718,6 +7149,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class3",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 6,
@@ -6735,6 +7167,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class3",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 4,
@@ -6752,6 +7185,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class3",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 3,
@@ -6769,6 +7203,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class3",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 2,
@@ -6786,6 +7221,7 @@
   },
   {
     "symbol": "Type8_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Type-8 Transporter",
@@ -6802,6 +7238,7 @@
   },
   {
     "symbol": "Type8_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Type-8 Transporter",
@@ -6818,6 +7255,7 @@
   },
   {
     "symbol": "Type8_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Type-8 Transporter",
@@ -6834,6 +7272,7 @@
   },
   {
     "symbol": "Type8_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Type-8 Transporter",
@@ -6850,6 +7289,7 @@
   },
   {
     "symbol": "Type8_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Type-8 Transporter",
@@ -6866,6 +7306,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class1",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 2,
@@ -6883,6 +7324,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class2",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 2,
@@ -6900,6 +7342,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class4",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 2,
@@ -6917,6 +7360,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size2_Class5",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 2,
@@ -6934,6 +7378,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class1",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 3,
@@ -6951,6 +7396,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class2",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 3,
@@ -6968,6 +7414,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class4",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 3,
@@ -6985,6 +7432,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size3_Class5",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 3,
@@ -7002,6 +7450,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class1",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 4,
@@ -7019,6 +7468,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class2",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 4,
@@ -7036,6 +7486,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class4",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 4,
@@ -7053,6 +7504,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size4_Class5",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 4,
@@ -7070,6 +7522,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class1",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 5,
@@ -7087,6 +7540,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class2",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 5,
@@ -7104,6 +7558,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class4",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 5,
@@ -7121,6 +7576,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size5_Class5",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 5,
@@ -7138,6 +7594,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class1",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 6,
@@ -7155,6 +7612,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class2",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 6,
@@ -7172,6 +7630,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class4",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 6,
@@ -7189,6 +7648,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size6_Class5",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 6,
@@ -7206,6 +7666,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class1",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 7,
@@ -7223,6 +7684,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class2",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 7,
@@ -7240,6 +7702,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class4",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 7,
@@ -7257,6 +7720,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 7,
@@ -7274,6 +7738,7 @@
   },
   {
     "symbol": "Mandalay_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Mandalay",
@@ -7290,6 +7755,7 @@
   },
   {
     "symbol": "Mandalay_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Mandalay",
@@ -7306,6 +7772,7 @@
   },
   {
     "symbol": "Mandalay_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Mandalay",
@@ -7322,6 +7789,7 @@
   },
   {
     "symbol": "Mandalay_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Mandalay",
@@ -7338,6 +7806,7 @@
   },
   {
     "symbol": "Mandalay_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Mandalay",
@@ -7354,6 +7823,7 @@
   },
   {
     "symbol": "CobraMkV_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Cobra MkV",
@@ -7370,6 +7840,7 @@
   },
   {
     "symbol": "CobraMkV_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Cobra MkV",
@@ -7386,6 +7857,7 @@
   },
   {
     "symbol": "CobraMkV_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Cobra MkV",
@@ -7402,6 +7874,7 @@
   },
   {
     "symbol": "CobraMkV_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Cobra MkV",
@@ -7418,6 +7891,7 @@
   },
   {
     "symbol": "CobraMkV_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Cobra MkV",
@@ -7434,6 +7908,7 @@
   },
   {
     "symbol": "Corsair_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Corsair",
@@ -7450,6 +7925,7 @@
   },
   {
     "symbol": "Corsair_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Corsair",
@@ -7466,6 +7942,7 @@
   },
   {
     "symbol": "Corsair_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Corsair",
@@ -7482,6 +7959,7 @@
   },
   {
     "symbol": "Corsair_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Corsair",
@@ -7498,6 +7976,7 @@
   },
   {
     "symbol": "Corsair_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Corsair",
@@ -7514,6 +7993,7 @@
   },
   {
     "symbol": "PantherMkII_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Panther Clipper MkII",
@@ -7530,6 +8010,7 @@
   },
   {
     "symbol": "PantherMkII_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Panther Clipper MkII",
@@ -7546,6 +8027,7 @@
   },
   {
     "symbol": "PantherMkII_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Panther Clipper MkII",
@@ -7562,6 +8044,7 @@
   },
   {
     "symbol": "PantherMkII_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Panther Clipper MkII",
@@ -7578,6 +8061,7 @@
   },
   {
     "symbol": "PantherMkII_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Panther Clipper MkII",
@@ -7594,6 +8078,7 @@
   },
   {
     "symbol": "LakonMiner_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Type-11 Prospector",
@@ -7610,6 +8095,7 @@
   },
   {
     "symbol": "LakonMiner_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Type-11 Prospector",
@@ -7626,6 +8112,7 @@
   },
   {
     "symbol": "LakonMiner_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Type-11 Prospector",
@@ -7642,6 +8129,7 @@
   },
   {
     "symbol": "LakonMiner_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Type-11 Prospector",
@@ -7658,6 +8146,7 @@
   },
   {
     "symbol": "LakonMiner_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Type-11 Prospector",
@@ -7674,6 +8163,7 @@
   },
   {
     "symbol": "Explorer_NX_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mk II Ablative Lightweight Alloys",
     "ship": "Caspian Explorer",
@@ -7690,6 +8180,7 @@
   },
   {
     "symbol": "Explorer_NX_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mk II Ablative Reinforced Alloys",
     "ship": "Caspian Explorer",
@@ -7706,6 +8197,7 @@
   },
   {
     "symbol": "Explorer_NX_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mk II Ablative Military Grade Composite",
     "ship": "Caspian Explorer",
@@ -7722,6 +8214,7 @@
   },
   {
     "symbol": "Explorer_NX_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mk II Ablative Mirrored Surface Composite",
     "ship": "Caspian Explorer",
@@ -7738,6 +8231,7 @@
   },
   {
     "symbol": "Explorer_NX_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mk II Ablative Reactive Surface Composite",
     "ship": "Caspian Explorer",
@@ -7754,6 +8248,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class1",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 8,
@@ -7771,6 +8266,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class2",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 8,
@@ -7788,6 +8284,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class3",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 8,
@@ -7805,6 +8302,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class4",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 8,
@@ -7822,6 +8320,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Frame Shift Drive (SCO)",
     "class": 8,
@@ -7839,6 +8338,7 @@
   },
   {
     "symbol": "Explorer_NX_Armour_Grade1_Default",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Caspian Explorer",
@@ -7855,6 +8355,7 @@
   },
   {
     "symbol": "Int_Hyperdrive_Overcharge_Size8_Class5_OverchargeBooster_MkII",
+    "kind": "frameShiftDrivesSCO",
     "slot": "frameShiftDrive",
     "name": "Mk II Supercharge Optimised Frame Shift Drive (SCO)",
     "class": 8,
@@ -7872,6 +8373,7 @@
   },
   {
     "symbol": "Int_Engine_Size7_Class5_GravityOptimised_MkII",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Mk II Gravity Optimised Thrusters",
     "class": 7,
@@ -7886,12 +8388,15 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
-    "restrictedToShips": ["Explorer_NX"],
+    "restrictedToShips": [
+      "Explorer_NX"
+    ],
     "engineHeatRate": 1.3,
     "cost": 68368390
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Kestrel Mk II",
@@ -7908,6 +8413,7 @@
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Kestrel Mk II",
@@ -7924,6 +8430,7 @@
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Kestrel Mk II",
@@ -7940,6 +8447,7 @@
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Kestrel Mk II",
@@ -7956,6 +8464,7 @@
   },
   {
     "symbol": "SmallCombat01_NX_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Kestrel Mk II",
@@ -7972,6 +8481,7 @@
   },
   {
     "symbol": "Int_MkIIAgileBoost_Engine_Size5_Class5",
+    "kind": "thrusters",
     "slot": "thrusters",
     "name": "Mk II Agile Boost Thrusters",
     "class": 5,
@@ -7986,12 +8496,15 @@
     "optMultiplier": 1,
     "minMultiplier": 0.96,
     "maxMultiplier": 1.16,
-    "restrictedToShips": ["SmallCombat01_NX"],
+    "restrictedToShips": [
+      "SmallCombat01_NX"
+    ],
     "engineHeatRate": 1.3,
     "cost": 6637629
   },
   {
     "symbol": "MediumTransport01_Armour_Grade1",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Lightweight Alloy",
     "ship": "Lynx Highliner",
@@ -8008,6 +8521,7 @@
   },
   {
     "symbol": "MediumTransport01_Armour_Grade2",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reinforced Alloy",
     "ship": "Lynx Highliner",
@@ -8024,6 +8538,7 @@
   },
   {
     "symbol": "MediumTransport01_Armour_Grade3",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Military Grade Composite",
     "ship": "Lynx Highliner",
@@ -8040,6 +8555,7 @@
   },
   {
     "symbol": "MediumTransport01_Armour_Mirrored",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Mirrored Surface Composite",
     "ship": "Lynx Highliner",
@@ -8056,6 +8572,7 @@
   },
   {
     "symbol": "MediumTransport01_Armour_Reactive",
+    "kind": "bulkheads",
     "slot": "armour",
     "name": "Reactive Surface Composite",
     "ship": "Lynx Highliner",

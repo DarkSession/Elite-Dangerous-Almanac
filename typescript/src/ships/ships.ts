@@ -54,65 +54,65 @@ export interface Ship {
     // ── Stats (primarily from coriolis-data; see the module remarks for exceptions). ──
 
     /** Empty-hull mass, in tonnes. A build's unladen mass is this plus every fitted module. */
-    readonly hullMass?: number;
+    readonly hullMass: number;
     /** Top speed at 4 pips to engines, in metres per second. */
-    readonly speed?: number;
+    readonly speed: number;
     /** Boost speed, in metres per second. */
-    readonly boost?: number;
+    readonly boost: number;
     /** Base shield strength, in megajoules, before generator and boosters. */
-    readonly baseShieldStrength?: number;
+    readonly baseShieldStrength: number;
     /** Base armour (hull hit points) before reinforcement. */
-    readonly baseArmour?: number;
+    readonly baseArmour: number;
     /** Hull hardness — resistance to armour piercing. */
-    readonly hardness?: number;
+    readonly hardness: number;
     /** Mass-lock factor — how strongly the hull impedes a smaller ship's FSD. */
     readonly masslock?: number;
     /** Number of crew seats (SLF/multicrew). */
-    readonly crew?: number;
+    readonly crew: number;
     /** Heat capacity — how much heat the hull absorbs before taking damage. */
     readonly heatCapacity?: number;
     /** Reserve tank capacity, in tonnes (feeds the main tank from empty). */
-    readonly reserveFuelCapacity?: number;
+    readonly reserveFuelCapacity: number;
     /**
      * Standard price of the **hull alone**, in credits, before any discount. This is
      * the figure a shipyard quotes when you already own the modules.
      */
-    readonly hullCost?: number;
+    readonly hullCost: number;
     /**
      * Standard price of the hull **with its default module loadout**, in credits — the
      * "retail" price a shipyard shows for a ready-to-fly ship. Always ≥ {@link hullCost}.
      */
-    readonly retailCost?: number;
+    readonly retailCost: number;
     /** Pitch rate, in degrees per second. */
-    readonly pitch?: number;
+    readonly pitch: number;
     /** Roll rate, in degrees per second. */
-    readonly roll?: number;
+    readonly roll: number;
     /** Yaw rate, in degrees per second. */
-    readonly yaw?: number;
+    readonly yaw: number;
     /** Minimum thrust as a percentage — the throttle floor. */
-    readonly minThrust?: number;
+    readonly minThrust: number;
     /** Speed gained per pip to engines, as a fraction of base speed. */
     readonly pipSpeed?: number;
 
     // ── Slot layout (from coriolis-data) — present alongside the stats. ──
 
     /** The seven core-internal mount sizes. */
-    readonly core?: CoreSlots;
+    readonly core: CoreSlots;
     /**
      * Weapon hardpoints, largest first (1 Small – 4 Huge). A mount carries a
      * `restriction` only when it takes one family of weapons and nothing else — on
      * the Type-11 Prospector's four mining mounts alone.
      */
-    readonly hardpoints?: readonly HardpointSlotSpec[];
+    readonly hardpoints: readonly HardpointSlotSpec[];
     /** Number of tiny utility mounts. */
-    readonly utility?: number;
+    readonly utility: number;
     /**
      * Optional-internal mounts, largest first. A mount carries a `name` only where the
      * game's slot key is not what `enumerateSlots` would number it — the Anaconda's
      * `Slot14_Size1`, the Type-9 Heavy's `Slot00_Size8`, the Keelback's
      * `Slot03_Size3`.
      */
-    readonly optional?: readonly OptionalSlotSpec[];
+    readonly optional: readonly OptionalSlotSpec[];
 }
 
 /**
@@ -186,9 +186,7 @@ export function getShipByName(name: string): Ship | null {
  */
 export function getShipSlots(symbol: string): ShipSlots | null {
     const ship = getShipBySymbol(symbol);
-    if (!ship || !ship.core || !ship.hardpoints || ship.utility === undefined || !ship.optional) {
-        return null;
-    }
+    if (!ship) return null;
     return {
         symbol: ship.symbol,
         core: ship.core,

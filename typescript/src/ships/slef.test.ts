@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
     parseSlef,
+    inspectSlef,
     getLoadoutModifier,
     toSlef,
     stringifySlef,
@@ -42,6 +43,17 @@ test('parseSlef accepts a bare Loadout event and synthesises a header', () => {
     assert.equal(entries[0]!.data.Ship, 'explorer_nx');
 });
 
+test('only a bare Loadout receives a synthetic header', () => {
+    const data = { Ship: 'sidewinder', Modules: [] };
+    for (const envelope of [{ data }, { header: null, data }]) {
+        assert.throws(() => parseSlef(envelope), /entries\[0\]\.header/);
+        assert.deepEqual(
+            inspectSlef(envelope).diagnostics.map(({ code, path }) => ({ code, path })),
+            [{ code: 'invalidHeader', path: 'entries[0].header' }],
+        );
+    }
+});
+
 test('the synthetic header cannot leak mutations between parses', () => {
     const bare = slefFixture[0]!.data;
     const first = parseSlef(bare);
@@ -59,6 +71,92 @@ test('parseSlef throws SyntaxError on invalid JSON', () => {
 test('parseSlef throws TypeError when nothing is a loadout', () => {
     assert.throws(() => parseSlef({ foo: 'bar' }), TypeError);
     assert.throws(() => parseSlef([]), TypeError);
+});
+
+test('parseSlef is strict while inspectSlef recovers valid entries with diagnostics', () => {
+    const mixed = [
+        { Ship: 'sidewinder', Modules: [] },
+        { Ship: 'sidewinder', Modules: [{ Slot: 'PowerPlant', Item: 42 }] },
+    ];
+    assert.throws(() => parseSlef(mixed), /entries\[1\]\.Modules\[0\]\.Item/);
+    const inspected = inspectSlef(mixed);
+    assert.equal(inspected.entries.length, 1);
+    assert.deepEqual(inspected.diagnostics, [
+        {
+            index: 1,
+            code: 'invalidModule',
+            path: 'entries[1].Modules[0].Item',
+            message: 'entries[1].Modules[0].Item must be a string',
+        },
+    ]);
+});
+
+test('inspectSlef pinpoints invalid envelope and engineering fields', () => {
+    const inspected = inspectSlef([
+        { header: { appName: 3, appVersion: '1' }, data: { Ship: 'sidewinder', Modules: [] } },
+        {
+            Ship: 'sidewinder',
+            Modules: [
+                {
+                    Slot: 'MainEngines',
+                    Item: 'x',
+                    Engineering: { BlueprintName: 'Engine_Dirty', Level: 6, Quality: 1 },
+                },
+            ],
+        },
+    ]);
+    assert.deepEqual(
+        inspected.diagnostics.map(({ code, path }) => ({ code, path })),
+        [
+            { code: 'invalidHeader', path: 'entries[0].header.appName' },
+            { code: 'invalidEngineering', path: 'entries[1].Modules[0].Engineering.Level' },
+        ],
+    );
+});
+
+test('inspectSlef pinpoints every invalid modifier field', () => {
+    const invalidFields = [
+        ['Value', Number.NaN],
+        ['OriginalValue', Number.POSITIVE_INFINITY],
+        ['ValueStr', 4],
+        ['LessIsGood', 2],
+    ] as const;
+    for (const [field, value] of invalidFields) {
+        const diagnostic = inspectSlef({
+            Ship: 'sidewinder',
+            Modules: [
+                {
+                    Slot: 'MainEngines',
+                    Item: 'x',
+                    Engineering: {
+                        BlueprintName: 'Engine_Dirty',
+                        Level: 5,
+                        Quality: 1,
+                        Modifiers: [{ Label: 'Mass', [field]: value }],
+                    },
+                },
+            ],
+        }).diagnostics[0];
+        assert.equal(diagnostic?.code, 'invalidEngineering');
+        assert.equal(diagnostic?.path, `entries[0].Modules[0].Engineering.Modifiers[0].${field}`);
+    }
+});
+
+test('duplicate slot keys are rejected case-insensitively', () => {
+    const duplicate = {
+        Ship: 'sidewinder',
+        Modules: [
+            { Slot: 'PowerPlant', Item: 'a' },
+            { Slot: 'powerplant', Item: 'b' },
+        ],
+    };
+    assert.throws(() => parseSlef(duplicate), /duplicate slot "powerplant"/);
+    assert.deepEqual(inspectSlef(duplicate).diagnostics[0], {
+        index: 0,
+        code: 'duplicateSlot',
+        path: 'entries[0].Modules[1].Slot',
+        message: 'Entry 0 contains duplicate slot "powerplant"',
+    });
 });
 
 test('parseSlef rejects envelopes and modules that violate its returned types', () => {

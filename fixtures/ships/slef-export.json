@@ -2,7 +2,7 @@
   "description": "Expected ShipLoadout export output — the journal `Loadout` event and SLEF envelope a build serialises to. Pins the decisions rather than whole blobs: which top-level keys an export emits and which it leaves out, module order, and the lower-cased journal casing. This is the DEFAULT export: every top-level figure is recomputed from the hull and the fitted modules, never echoed from the import. Credits are quoted at RETAIL — the bare hull's `hullCost` plus every module's catalogue list price — so they deliberately differ from what a source build reports, since that records one commander's purchase at one station. Each build's `discount` section pins the ratio, which is how the retail figures are shown to be right; `fixtures/ships/source-purchase.json` pins the same source totals and the opt-in export that quotes them. Cross-language validation.",
   "rebuyFraction": 0.05,
   "classification": {
-    "note": "How an entry in `Modules` is decided to be an outfitting module, a non-outfitting fitting, or unknown — the rule that governs every mass and credit figure below. The catalogue has the FIRST say: an article it can identify contributes its mass and list price whatever its slot is called, which matters because slot names are not a closed set (the game adds families, and the SLEF specification's own example lower-cases them). Only an article the catalogue cannot identify is classified by slot, and then the question is simply whether the key names an outfitting MOUNT at all: the patterns below are the whole set an implementation's slot parser recognises, and a key matching none of them holds no module, so it is free and weightless. There is deliberately no second list of decoration families to maintain — the cockpit, paint jobs, decals, nameplates, bobbles, ship kits, colours, voice packs and string lights are non-outfitting because no mount pattern claims them, so a family the game adds later needs no change here. The cost is that an article the catalogue cannot identify sitting in a genuinely NEW outfitting mount reads as free rather than unknown; an article the catalogue knows is unaffected, which is what keeps the exposure to slot families the game has not shipped yet. UNKNOWN is what remains — an unidentifiable article in a recognised mount — and an unknown omits the figures that depend on it rather than being counted as free and weightless, since guessing would understate a build's mass and credits without saying so.",
+    "note": "How an entry in `Modules` is decided to be an outfitting module, a non-outfitting fitting, or unknown — the rule that governs every mass and credit figure below. The catalogue has the FIRST say: an article it can identify contributes its mass and list price whatever its slot is called. Only an unidentifiable article is classified by slot. Known cosmetic/hull families are explicitly non-outfitting and contribute no mass or list price; a recognised outfitting mount, or any unfamiliar family, is unknown. Unknown omits the figures that depend on it rather than being counted as free and weightless, so a genuinely new mount cannot silently understate a build. Numbered decals, bobbles and nameplates remain open-ended inside their established families.",
     "outfittingSlotPatterns": [
       "^powerplant$",
       "^mainengines$",
@@ -23,6 +23,7 @@
       "^passenger\\d+$",
       "^slot\\d+_size\\d+$"
     ],
+    "nonOutfittingSlotPattern": "^(paintjob|shipname\\d+|shipid\\d+|bobble\\d+|decal\\d+|shipkit.+|weaponcolour|enginecolour|vesselvoice|shipcockpit|stringlights)$",
     "patternsMatchLowerCasedSlot": true,
     "examples": [
       {
@@ -41,13 +42,19 @@
         "slot": "Bobble10",
         "item": "bobble_christmastree",
         "verdict": "nonOutfitting",
-        "why": "No mount pattern claims the key, so it holds no module — decided without any list of decoration families, and without the slot appearing in a fixture."
+        "why": "The open-ended bobble family is explicitly non-outfitting, without this numbered slot appearing in a capture."
       },
       {
         "slot": "Slot99_Size4",
         "item": "int_something_we_have_never_seen",
         "verdict": "unknown",
         "why": "The key names an optional mount, so something outfitting-like is fitted there, but no catalogue can price or weigh it — ModulesValue, UnladenMass, MaxJumpRange and Rebuy are all omitted."
+      },
+      {
+        "slot": "FutureMount",
+        "item": "int_something_we_have_never_seen",
+        "verdict": "unknown",
+        "why": "Neither the article nor the slot family is known, so the library refuses to call it free and weightless."
       }
     ]
   },
