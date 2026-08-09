@@ -136,7 +136,7 @@
     ]
   },
   "overchargedIdCollision": {
-    "description": "The same shape as `scannerIdCollision` and by far the commoner case: the game writes `Weapon_Overcharged` for every weapon's Overcharged, but a multi-cannon's also cuts the clip 3-15% and a cannon's does not, so `blueprints.jsonc` keys the clip-carrying side under `MC_Overcharged` — the spelling the multi-cannon menus list. 70 of the build corpus's 1902 declared entries need this resolution, against one for the scanners. Each case pins the id as a journal writes it, the `BLUEPRINTS` key the fitted module actually rolls, and the exact `Engineering.Modifiers` block that follows at the pinned grade and quality. The anti-xeno multi-cannon is the case that rests on one registry: coriolis-data carries no blueprint list for an anti-xeno group, EDSY's single Overcharged carries the clip leg wherever it is offered, and following the sole covering registry is what puts this module on the clip-carrying record. The cannon case is the control: same id, same three legs, and no `AmmoClipSize`. Frontier's own reading backs it — `journal-federation-corvette.json` carries a large gimballed cannon rolled to grade 5 under this id with no `AmmoClipSize` modifier and its stock magazine of 5 still loaded, where a 15% cut would have left four rounds. EDSY holds that a cannon's clip should drop here; coriolis-data and EDEngineer, which key a recipe per weapon type rather than per recipe id, stop the leg at the multi-cannon, and the capture agrees with them.",
+    "description": "The same shape as `scannerIdCollision` and by far the commoner case: the game writes `Weapon_Overcharged` for every weapon's Overcharged, but a multi-cannon's also cuts the clip 3-15% and a cannon's does not, so `blueprints.jsonc` keys the clip-carrying side under `MC_Overcharged` — the spelling the multi-cannon menus list. 70 of the build corpus's 1902 declared entries need this resolution, against one for the scanners. Each case pins the id as a journal writes it, the `BLUEPRINTS` key the fitted module actually rolls, and the exact `Engineering.Modifiers` block that follows at the pinned grade and quality. The anti-xeno multi-cannon is the case that rests on one registry: coriolis-data carries no blueprint list for an anti-xeno group, EDSY's single Overcharged carries the clip leg wherever it is offered, and following the sole covering registry is what puts this module on the clip-carrying record. The cannon and the fragment cannon are the controls: same id, same three legs, and no `AmmoClipSize`, on two groups that both carry a clip. Frontier's own reading backs each — `journal-federation-corvette.json` carries a large gimballed cannon rolled to grade 5 under this id with no `AmmoClipSize` modifier and its stock magazine of 5 still loaded, where a 15% cut would have left four rounds, and `journal-federation-corvette-plasma.json` carries a medium fragment cannon rolled to grade 4 whose modifier block likewise has none, on a magazine too small for the count to corroborate it (a −12% cut leaves 3 × 0.88 = 2.64, which rounds back to 3). EDSY holds that a cannon's clip should drop here; coriolis-data and EDEngineer, which key a recipe per weapon type rather than per recipe id, stop the leg at the multi-cannon, and both captures agree with them.",
     "grade": 5,
     "quality": 1,
     "cases": [
@@ -197,10 +197,27 @@
           { "Label": "DistributorDraw", "Value": 0.945, "OriginalValue": 0.7 },
           { "Label": "ThermalLoad", "Value": 2.4265, "OriginalValue": 2.11 }
         ]
+      },
+      {
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "blueprint": "Weapon_Overcharged",
+        "resolved": "Weapon_Overcharged",
+        "base": {
+          "Damage": 2.985,
+          "AmmoClipSize": 3,
+          "DistributorDraw": 0.37,
+          "ThermalLoad": 0.74
+        },
+        "modifiers": [
+          { "Label": "Damage", "Value": 5.0745, "OriginalValue": 2.985 },
+          { "Label": "DistributorDraw", "Value": 0.4995, "OriginalValue": 0.37 },
+          { "Label": "ThermalLoad", "Value": 0.851, "OriginalValue": 0.74 }
+        ]
       }
     ],
     "refused": [
       { "symbol": "Hpt_Cannon_Fixed_Medium", "blueprint": "MC_Overcharged" },
+      { "symbol": "Hpt_Slugshot_Fixed_Medium", "blueprint": "MC_Overcharged" },
       { "symbol": "Hpt_BeamLaser_Fixed_Small", "blueprint": "MC_Overcharged" }
     ]
   },

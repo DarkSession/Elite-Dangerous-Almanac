@@ -179,11 +179,14 @@ in the doc comment of each ported module, and in long form in the domain
   `data/ships/SOURCES.md` rather than in a payload: the reason the 26 clip-bearing
   cannons, fragment cannons and plasma accelerators offered `Weapon_Overcharged` fold no
   `AmmoClipSize` leg, where [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden,
-  **CC BY-NC 4.0**) carries one for every weapon. Settled by a Frontier journal capture,
-  `fixtures/ships/journal-federation-corvette.json` (credited under Ground-truth ship
-  builds below), whose grade-5 cannon reports the recipe's other legs and no clip. The
-  same reading is carried by [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)
-  and by [msarilar/EDEngineer](https://github.com/msarilar/EDEngineer)
+  **CC BY-NC 4.0**) carries one for every weapon. Settled on two of the three groups by
+  Frontier journal captures (both credited under Ground-truth ship builds below):
+  `fixtures/ships/journal-federation-corvette.json`, whose grade-5 cannon reports the
+  recipe's other legs and no clip, and
+  `fixtures/ships/journal-federation-corvette-plasma.json`, whose grade-4 fragment cannon
+  does the same. The same reading is carried by
+  [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) and by
+  [msarilar/EDEngineer](https://github.com/msarilar/EDEngineer)
   `EDEngineer/Resources/Data/blueprints.json` (**MIT** for its code; the values are game
   data), which keys a recipe on weapon type, blueprint and grade rather than on a recipe
   id and gives the clip leg to the multi-cannon alone. EDEngineer's acquisition date and
@@ -278,7 +281,7 @@ in the doc comment of each ported module, and in long form in the domain
   field-by-field joins, the units each source uses, and the handful of figures derived
   from a family rule rather than read from a registry.
 
-- **Ground-truth ship builds (test fixtures, not shipped)** — sixteen real builds that
+- **Ground-truth ship builds (test fixtures, not shipped)** — seventeen real builds that
   check the loadout maths against external captures.
   `fixtures/ships/slef-the-deep-black.json` is a real
   [EDSY](https://edsy.org/) export (taleden, **CC BY-NC 4.0**).
@@ -298,14 +301,15 @@ in the doc comment of each ported module, and in long form in the domain
   `fixtures/ships/journal-python-mkii-antixeno.json`, `journal-corsair.json`,
   `journal-federation-corvette.json`, `journal-federation-corvette-beams.json`,
   `journal-federation-corvette-multirole.json`, `journal-federation-corvette-mixed.json`,
-  `journal-cobra-mkv.json`, `journal-kestrel-mkii.json` and
-  `journal-lynx-highliner.json` are real Frontier journal
+  `journal-federation-corvette-plasma.json`, `journal-cobra-mkv.json`,
+  `journal-kestrel-mkii.json` and `journal-lynx-highliner.json` are real Frontier journal
   `Loadout` events contributed by the repository owner from their own fleet, with no
-  upstream project to credit; the Corvette is what says Overcharged does not cut a cannon's
-  clip, the mixed Corvette settles that a rail gun's charge delay is excluded from
-  Frontier's `RateOfFire`, and eight of them — every one but the unengineered Python Mk II —
-  together with the Krait Phantom capture and the EDSY export are what the module
-  catalogue's base stats are checked against. The Lynx capture also supplies that hull's size-1
+  upstream project to credit; the Corvette is what says Overcharged does not cut a
+  cannon's clip and the plasma Corvette what says the same for a fragment cannon, the
+  mixed Corvette settles that a rail gun's charge delay is excluded from Frontier's
+  `RateOfFire`, and nine of them — every one but the unengineered Python Mk II — together
+  with the Krait Phantom capture and the EDSY export are what the module catalogue's base
+  stats are checked against. The Lynx capture also supplies that hull's size-1
   `PlanetaryApproachSuite` mount by fitting the advanced suite there.
   `fixtures/ships/slef-inara-type-11.json`, `slef-inara-lynx-highliner.json`,
   `slef-inara-panther-mkii.json` and `slef-inara-cutter-antixeno.json` are real
@@ -313,7 +317,7 @@ in the doc comment of each ported module, and in long form in the domain
   own commander's fleet. The Lynx Highliner and the Panther Clipper Mk II are what a
   restricted mount's rules are checked against, and the Cutter is what the omitted-price
   rule is checked against. Their headers keep only the producing app and version.
-  All sixteen are Elite Dangerous game output and remain the property of Frontier
+  All seventeen are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`
