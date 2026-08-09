@@ -156,6 +156,20 @@ test('editing a SLEF build keeps imported aggregate figures coherent', () => {
     assert.equal(build.rebuy, null);
 });
 
+test("re-fitting a lower-cased import's same module preserves its credit figures", () => {
+    const build = ShipLoadout.fromSlef(slefString);
+    const imported = build.moduleAt('FrameShiftDrive')!;
+    const drive = mod(imported.Item);
+    const modulesValue = build.modulesValue;
+    const rebuy = build.rebuy;
+    assert.notEqual(imported.Item, drive.symbol, 'fixture should exercise different casing');
+
+    build.setModule('FrameShiftDrive', drive);
+
+    assert.equal(build.modulesValue, modulesValue);
+    assert.equal(build.rebuy, rebuy);
+});
+
 test('an unpowered Guardian booster contributes no jump bonus', () => {
     const withBooster = ShipLoadout.fromSlef(slefString).frameShiftDrive.jumpBoost;
     const off: LoadoutEvent = {

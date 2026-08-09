@@ -1797,6 +1797,10 @@ export class ShipLoadout {
             }
         }
 
+        // Re-fitting the same article does not change its purchase price, even when the
+        // supplied stats replace or remove its engineering details.
+        if (previous?.Item.trim().toLowerCase() === next?.Item.trim().toLowerCase()) return;
+
         // No catalogue carries post-purchase module value or rebuy changes.
         delete this.#top.ModulesValue;
         delete this.#top.Rebuy;
