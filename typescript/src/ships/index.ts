@@ -22,7 +22,7 @@
  *   lookups. One small catalogue; each {@link Ship} carries the
  *   hull's identity, stats and slot layout together.
  * - **Modules** — the {@link OutfittingModule} type and the lookups
- *   ({@link getModuleBySymbol} & co.), which search all 1193 modules unless you hand
+ *   ({@link getModuleBySymbol} & co.), which search all 1199 modules unless you hand
  *   them a narrower set. The catalogues are also exported split by Frontier's four
  *   outfitting categories ({@link CORE_MODULES}, {@link INTERNAL_MODULES},
  *   {@link HARDPOINT_MODULES}, {@link UTILITY_MODULES}, and {@link ALL_MODULES}); each
@@ -51,8 +51,9 @@
  * ({@link ShipLoadout.unladenMass}), while anything that recomputes or takes options is
  * a method ({@link ShipLoadout.maxJumpRange}).
  *
- * Identity from EDCD FDevIDs (`shipyard.csv`, `outfitting.csv`); stats and slot
- * layouts from EDCD/coriolis-data; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * Identity primarily from EDCD FDevIDs (`shipyard.csv`, `outfitting.csv`), with
+ * supplemental module identities documented in the source record; stats and slot
+ * layouts from EDCD/coriolis-data and EDSY. See [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */

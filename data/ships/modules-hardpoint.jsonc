@@ -12,8 +12,9 @@
  *          EDSY eddb.js (taleden, CC BY-NC 4.0): https://github.com/taleden/EDSY
  *          — mass, integrity, powerDraw and bootTime where coriolis-data carries
  *          none, and corrections where its value is a duplicated or mis-copied row.
- *          In-game verification covers all identities and the numeric values on all
- *          952 non-armour modules; exact corrections are pinned in
+ *          In-game verification covers 1193 identities and the numeric values on 952
+ *          non-armour modules; six bundle-granted Vessel Hangar identities are
+ *          registry/CAPI-sourced. Exact corrections are pinned in
  *          fixtures/ships/module-stats.json. Distinct damage amounts observed in-game are
  *          retained in `damageComponents`; projectile boundary parameters observed in-game
  *          that are not effective ranges are retained in `projectileRange`.

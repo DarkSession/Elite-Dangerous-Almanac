@@ -244,9 +244,10 @@ test('stats spot checks: each merged record carries the expected stat values', (
     }
 });
 
-test('in-game audit covers every module identity and pins every corrected value', () => {
+test('the verification audit accounts for every module and pins every corrected value', () => {
     const audit = statsFixture.inGameAudit;
-    assert.equal(ALL_MODULES.length, audit.identityMatches);
+    assert.equal(ALL_MODULES.length, audit.catalogueIdentities);
+    assert.equal(audit.identityMatches + audit.registryOnlyIdentities, audit.catalogueIdentities);
     assert.equal(
         ALL_MODULES.filter((module) => module.ship !== undefined).length,
         audit.armourModulesOutsideNumericVerification,
@@ -277,7 +278,7 @@ test('in-game audit covers every module identity and pins every corrected value'
         audit.verifiedAbsentFields,
     );
     assert.equal(audit.verifiedValueFields + audit.verifiedAbsentFields, audit.verifiedFields);
-    for (const [field, expected] of Object.entries(audit.exactFieldCounts)) {
+    for (const [field, expected] of Object.entries(audit.catalogueFieldCounts)) {
         assert.equal(
             ALL_MODULES.filter((module) => module[field as keyof OutfittingModule] !== undefined)
                 .length,

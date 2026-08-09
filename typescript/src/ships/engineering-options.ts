@@ -8,8 +8,8 @@
  * this module?" is the question the game actually answers. So modules are grouped, and
  * each group lists what it offers.
  *
- * The catalogue groups 1028 of the 1193 modules — every module upstream allows a recipe
- * on. The other 165 take no engineering: whole families (fuel tanks, passenger cabins,
+ * The catalogue groups 1028 of the 1199 modules — every module upstream allows a recipe
+ * on. The other 171 take no engineering: whole families (fuel tanks, passenger cabins,
  * the repair, recon, research, decontamination and multi-limpet controllers, meta-alloy
  * and ordinary module reinforcement, the Pulse Wave Analyser, the mining launchers, Shock
  * Cannons, Nanite Torpedo Pylons, fighter and vehicle hangars, docking computers and
@@ -108,7 +108,7 @@ const moduleExclusions = new Map(
  * The group id a module is engineered as, or `null` when this catalogue does not group
  * it.
  *
- * `null` means **"no source gives this module a recipe"**, which for the 165 ungrouped
+ * `null` means **"no source gives this module a recipe"**, which for the 171 ungrouped
  * modules is the same as "cannot be engineered" — the families and the individually
  * denied modules listed in the module overview above. It stays worded as the catalogue's
  * answer rather than the game's because that is what it can honestly claim: a module

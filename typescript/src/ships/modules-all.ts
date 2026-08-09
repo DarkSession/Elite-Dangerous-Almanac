@@ -4,13 +4,14 @@
  *
  * @remarks
  * **This module pulls in every module catalogue** — it exists for consumers that
- * really do want to search all 1193 modules (a "resolve any module id" lookup, say).
+ * really do want to search all 1199 modules (a "resolve any module id" lookup, say).
  * If you only need one category, import that catalogue's module
  * (`./modules-core`, `./modules-internal`, `./modules-hardpoint`,
  * `./modules-utility`) and nothing else gets bundled.
  *
- * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,
- * joined on `symbol`; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * Identity primarily from EDCD FDevIDs (`outfitting.csv`), with supplemental module
+ * identities documented in the source record; stats from EDCD/coriolis-data and EDSY,
+ * joined on `symbol`. See [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  *
  * @packageDocumentation
  */
@@ -33,7 +34,7 @@ import { UTILITY_MODULES } from './modules-utility.js';
  *
  * @example
  * ```ts
- * ALL_MODULES.length;                                          // -> 1193
+ * ALL_MODULES.length;                                          // -> 1199
  * ALL_MODULES.filter((m) => m.category === 'utility').length;  // -> 35
  * ```
  */
