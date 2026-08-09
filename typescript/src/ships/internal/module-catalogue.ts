@@ -1,7 +1,7 @@
 /** Internal construction helpers for the public outfitting-module catalogues. */
 
-import type { ModuleCategory, OutfittingModule } from './modules.js';
-import { deepFreeze } from '../deep-freeze.js';
+import type { ModuleCategory, OutfittingModule } from '../modules.js';
+import { deepFreeze } from '../../internal/deep-freeze.js';
 
 /**
  * The on-disk module shape: an {@link OutfittingModule} minus the one field the data
@@ -31,8 +31,9 @@ export function buildModuleCatalogue(
     // category, so writing it after the spread makes the file win outright, even if a
     // payload were ever to grow a `category` of its own — which the schema, the type
     // above and `data-files.test.ts` all forbid, but none of which this function can
-    // see. (`materials/material-catalogue.ts` reaches the same guarantee by naming
-    // every field explicitly; a module record has some sixty, so it spreads instead.)
+    // see. (`materials/internal/material-catalogue.ts` reaches the same guarantee by
+    // naming every field explicitly; a module record has some sixty, so it spreads
+    // instead.)
     return deepFreeze(
         records.map((record) => ({ ...record, kind: record.kind ?? null, category })),
     );

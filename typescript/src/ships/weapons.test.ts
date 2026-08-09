@@ -16,7 +16,7 @@ import {
 } from './weapons.js';
 import { getModuleBySymbol } from './modules.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
-import { weaponStatsFor } from './loadout-metrics.js';
+import { weaponStatsFor } from './internal/loadout-metrics.js';
 import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 
 const near = (a: number, b: number, eps = 1e-6) => Math.abs(a - b) < eps;

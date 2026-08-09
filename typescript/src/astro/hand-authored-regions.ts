@@ -26,7 +26,7 @@
 
 import type { GalacticPosition } from './galactic-position.js';
 import handAuthoredData from '../../../data/astro/hand-authored-regions.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * One sphere of a hand-authored region (centre and radius in light-years).

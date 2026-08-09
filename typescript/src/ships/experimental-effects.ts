@@ -21,7 +21,7 @@
  */
 
 import experimentalData from '../../../data/ships/experimental-effects.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 import type { DamageDistribution } from './modules.js';
 import type {
     ExperimentalContribution,

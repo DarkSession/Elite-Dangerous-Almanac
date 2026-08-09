@@ -1,6 +1,6 @@
 /** Internal construction helpers for the public commodity catalogues. */
 
-import type { Commodity, CommodityCategory } from './commodities.js';
+import type { Commodity, CommodityCategory } from '../commodities.js';
 
 /** The on-disk commodity shape before its catalogue-derived `rare` flag is added. */
 export interface CommodityRecord {

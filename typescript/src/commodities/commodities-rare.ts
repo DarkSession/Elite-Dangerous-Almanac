@@ -12,7 +12,7 @@
  */
 
 import type { Commodity } from './commodities.js';
-import { buildCommodityCatalogue, type CommodityRecord } from './commodity-catalogue.js';
+import { buildCommodityCatalogue, type CommodityRecord } from './internal/commodity-catalogue.js';
 import rareData from '../../../data/commodities/rare-commodities.jsonc' with { type: 'json' };
 
 /**

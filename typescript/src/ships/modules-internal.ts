@@ -16,7 +16,7 @@
 
 import type { OutfittingModule } from './modules.js';
 import internalModulesData from '../../../data/ships/modules-internal.jsonc' with { type: 'json' };
-import { buildModuleCatalogue, type ModuleRecord } from './module-catalogue.js';
+import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catalogue.js';
 
 /**
  * All 484 optional internal modules, in registry order.

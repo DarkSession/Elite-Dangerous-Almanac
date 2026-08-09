@@ -11,7 +11,7 @@
 
 import type { MicroResource } from './micro-resources.js';
 import componentData from '../../../data/materials/micro-resources-component.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * All 33 component micro resources, in Frontier's registry order.

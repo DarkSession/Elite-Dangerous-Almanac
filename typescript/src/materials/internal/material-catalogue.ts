@@ -1,6 +1,6 @@
 /** Internal construction helpers for the public material catalogues. */
 
-import type { Material, MaterialCategory, MaterialGrade, MaterialLine } from './materials.js';
+import type { Material, MaterialCategory, MaterialGrade, MaterialLine } from '../materials.js';
 
 /** The on-disk material shape before its catalogue-derived category is added. */
 export interface MaterialRecord {

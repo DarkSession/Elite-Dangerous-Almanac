@@ -126,7 +126,7 @@ for (const name of DATA_FILES) {
         test(`${name} states its category once, in its name`, () => {
             // Every payload byte is inlined into consumers' bundles, and this one said
             // nothing the file name did not: the loader adds `category` back from the
-            // file it read (src/ships/module-catalogue.ts).
+            // file it read (src/ships/internal/module-catalogue.ts).
             const parsed: unknown = JSON.parse(
                 stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
             );

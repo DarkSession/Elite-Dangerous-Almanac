@@ -16,7 +16,7 @@
 
 import type { OutfittingModule } from './modules.js';
 import coreModulesData from '../../../data/ships/modules-core.jsonc' with { type: 'json' };
-import { buildModuleCatalogue, type ModuleRecord } from './module-catalogue.js';
+import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catalogue.js';
 
 /**
  * All 521 core internal modules, in Frontier's registry order.

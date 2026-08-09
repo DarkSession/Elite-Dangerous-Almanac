@@ -11,7 +11,7 @@
 
 import type { MicroResource } from './micro-resources.js';
 import consumableData from '../../../data/materials/micro-resources-consumable.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * All 6 consumable micro resources, in Frontier's registry order.

@@ -21,7 +21,7 @@
  * @packageDocumentation
  */
 
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /** The kind of mount a slot is. */
 export type SlotKind = 'core' | 'hardpoint' | 'utility' | 'optional' | 'armour' | 'cargoHatch';

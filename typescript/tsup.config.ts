@@ -21,25 +21,20 @@ import { stripJsonComments } from './scripts/jsonc.mjs';
  * esbuild's `json` loader rejects comments, hence the `jsonc` plugin below.
  */
 export default defineConfig({
-    // Each public module is its own entry; tests and export-map-blocked implementation
-    // details are excluded. The latter are still bundled into public modules that use
-    // them, but do not get misleading standalone JavaScript/declaration artifacts.
+    // Each public module is its own entry. Tests are excluded, while implementation
+    // details live below `src/**/internal/`; the top-level globs therefore cannot emit
+    // misleading standalone JavaScript/declaration artifacts for them. They are still
+    // bundled into the public modules that use them.
     entry: [
         'src/index.ts',
         'src/astro/*.ts',
         '!src/astro/*.test.ts',
         'src/materials/*.ts',
         '!src/materials/*.test.ts',
-        '!src/materials/material-catalogue.ts',
         'src/ships/*.ts',
         '!src/ships/*.test.ts',
-        '!src/ships/loadout-engineering.ts',
-        '!src/ships/loadout-metrics.ts',
-        '!src/ships/module-stat-labels.ts',
-        '!src/ships/module-catalogue.ts',
         'src/commodities/*.ts',
         '!src/commodities/*.test.ts',
-        '!src/commodities/commodity-catalogue.ts',
     ],
     format: ['esm'],
     dts: true,

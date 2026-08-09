@@ -28,7 +28,7 @@ import {
     capabilityValueForLabel,
     fieldForLabel,
     scaleForLabel,
-} from './module-stat-labels.js';
+} from './internal/module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import type { PreEngineeredModifier, PreEngineeredVariant } from './pre-engineered.js';

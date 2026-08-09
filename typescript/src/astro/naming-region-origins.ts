@@ -23,7 +23,7 @@
 
 import { sectorGridPositionFromName, sectorNameFromGridPosition } from './sector-name.js';
 import originsData from '../../../data/astro/named-region-origins.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * A region's origin and extent, in internal units (32 per light-year, measured

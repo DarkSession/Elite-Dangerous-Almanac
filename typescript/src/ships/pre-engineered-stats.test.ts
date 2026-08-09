@@ -14,7 +14,7 @@ import {
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { combinedRateOfFire, weaponMetrics } from './weapons.js';
-import { fieldForLabel, scaleForLabel } from './module-stat-labels.js';
+import { fieldForLabel, scaleForLabel } from './internal/module-stat-labels.js';
 import fixture from '../../../fixtures/ships/pre-engineered.json' with { type: 'json' };
 
 /** The rounding `computeModifiers` applies, so a pin means the same thing to a port. */

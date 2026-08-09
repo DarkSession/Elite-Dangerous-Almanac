@@ -89,7 +89,7 @@ import { getBlueprintsForModule, getExperimentalsForModule } from './engineering
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
-import { labelsForDamageType, scaleForLabel } from './module-stat-labels.js';
+import { labelsForDamageType, scaleForLabel } from './internal/module-stat-labels.js';
 import {
     baseStats,
     blueprintAvailableFor,
@@ -98,14 +98,14 @@ import {
     isEngineerable,
     missingBaseLabels,
     statFor,
-} from './loadout-engineering.js';
+} from './internal/loadout-engineering.js';
 import {
     armourInputFor,
     powerAvailable,
     powerConsumerFor,
     shieldInputFor,
     weaponStatsFor,
-} from './loadout-metrics.js';
+} from './internal/loadout-metrics.js';
 import { powerBudget, type PowerBudget, type PowerConsumer } from './power.js';
 import { shieldMetrics, type ShieldMetrics } from './shields.js';
 import { armourMetrics, type ArmourMetrics } from './armour.js';
@@ -114,7 +114,7 @@ import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { FittedModule } from './fitted-module.js';
 import { LoadoutSlot } from './loadout-slot.js';
 import { SourcePurchaseRecord } from './source-purchase.js';
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 import {
     calculateCargoCapacity,
     calculateFuelCapacity,

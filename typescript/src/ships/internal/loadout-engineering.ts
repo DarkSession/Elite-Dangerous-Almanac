@@ -4,20 +4,20 @@
  * @internal
  */
 
-import { BLUEPRINTS, getBlueprint } from './blueprints.js';
+import { BLUEPRINTS, getBlueprint } from '../blueprints.js';
 import {
     ENGINEERING_OPTION_GROUPS,
     getBlueprintsForModule,
     getEngineeringGroup,
     getExperimentalsForModule,
-} from './engineering-options.js';
-import { resolveBlueprintForModule } from './blueprint-journal.js';
-import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
-import { getPreEngineeredVariants } from './pre-engineered.js';
+} from '../engineering-options.js';
+import { resolveBlueprintForModule } from '../blueprint-journal.js';
+import { EXPERIMENTAL_EFFECTS } from '../experimental-effects.js';
+import { getPreEngineeredVariants } from '../pre-engineered.js';
 import { baseStats, fieldForLabel } from './module-stat-labels.js';
-import { ALL_MODULES } from './modules-all.js';
-import type { OutfittingModule } from './modules.js';
-import type { AvailableBlueprint } from './ship-loadout.js';
+import { ALL_MODULES } from '../modules-all.js';
+import type { OutfittingModule } from '../modules.js';
+import type { AvailableBlueprint } from '../ship-loadout.js';
 
 export { baseStats };
 

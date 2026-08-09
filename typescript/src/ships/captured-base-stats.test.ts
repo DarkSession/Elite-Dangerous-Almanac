@@ -11,7 +11,7 @@ import {
     fieldForLabel,
     labelsForField,
     scaleForLabel,
-} from './module-stat-labels.js';
+} from './internal/module-stat-labels.js';
 import { parseSlef, type LoadoutEvent } from './slef.js';
 import { ShipLoadout } from './ship-loadout.js';
 import { damagePerSecond } from './weapons.js';

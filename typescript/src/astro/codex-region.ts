@@ -22,7 +22,7 @@
  */
 
 import regionData from '../../../data/astro/galactic-regions.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * A 2-D point on the galactic plane (X east/west, Z toward/away from the core),

@@ -298,7 +298,8 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
   same string on every record of a file whose name already says it, 1199 repetitions of
   a fact the four-way split carries, and every payload byte is inlined into consumers'
   bundles. Each language loader adds it back from the file it read (TypeScript:
-  `src/ships/module-catalogue.ts`), so a consumer's record carries `category` all the
+  `typescript/src/ships/internal/module-catalogue.ts`), so a consumer's record carries
+  `category` all the
   same; `schemas/ships/catalogues.schema.json` has one catalogue definition per file
   rather than a shared `moduleCatalogue`, which is what pins the difference between
   them. Nothing is derived from upstream for this: the CSV's category is exactly which
@@ -2192,8 +2193,9 @@ order.
   `−14%` (`1.2 × 0.95` in damage-multiplier space). This is Frontier's `modmod`
   convention as EDSY documents it (`eddb.js` attribute table, `modmod: 100` / `-100`);
   it is verified against the shared `slef-the-deep-black.json` fixture, whose engineered
-  armour carries exactly those values. `typescript/src/ships/module-stat-labels.ts`
-  holds the per-label unit and algebra table.
+  armour carries exactly those values.
+  `typescript/src/ships/internal/module-stat-labels.ts` holds the per-label unit and
+  algebra table.
 - **Ammunition capacity is `clipSize` + `ammoMaximum`.** The reserve excludes the
   magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The thirteen
   journal captures carry **60** non-zero readings across twenty-four distinct modules.

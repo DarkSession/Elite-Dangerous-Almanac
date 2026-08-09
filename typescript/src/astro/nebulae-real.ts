@@ -15,7 +15,7 @@
 
 import type { Nebula } from './nebulae.js';
 import realNebulaeData from '../../../data/astro/nebulae-real.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * All 180 real-world nebulae and dark regions, sorted by name.

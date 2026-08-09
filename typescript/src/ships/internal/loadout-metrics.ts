@@ -9,7 +9,7 @@
  * @internal
  */
 
-import { getLoadoutModifier, type LoadoutModule } from './slef.js';
+import { getLoadoutModifier, type LoadoutModule } from '../slef.js';
 import {
     capabilityValueForLabel,
     damageTypeForLabel,
@@ -17,21 +17,21 @@ import {
     labelsForField,
     scaleForLabel,
 } from './module-stat-labels.js';
-import type { DamageDistribution, OutfittingModule } from './modules.js';
-import { getModulesForShip } from './modules.js';
-import { getExperimentalEffectDamageDistribution } from './experimental-effects.js';
-import { CORE_MODULES } from './modules-core.js';
-import { getShipBySymbol } from './ships.js';
+import type { DamageDistribution, OutfittingModule } from '../modules.js';
+import { getModulesForShip } from '../modules.js';
+import { getExperimentalEffectDamageDistribution } from '../experimental-effects.js';
+import { CORE_MODULES } from '../modules-core.js';
+import { getShipBySymbol } from '../ships.js';
 import { statFor } from './loadout-engineering.js';
-import type { PowerConsumer } from './power.js';
-import type { ShieldBoosterParams, ShieldGeneratorParams, ShieldInput } from './shields.js';
+import type { PowerConsumer } from '../power.js';
+import type { ShieldBoosterParams, ShieldGeneratorParams, ShieldInput } from '../shields.js';
 import type {
     ArmourInput,
     BulkheadParams,
     HullReinforcementParams,
     ModuleReinforcementParams,
-} from './armour.js';
-import { combinedRateOfFire, type WeaponStats } from './weapons.js';
+} from '../armour.js';
+import { combinedRateOfFire, type WeaponStats } from '../weapons.js';
 
 /**
  * Symbol prefixes that identify a module group, lower-cased.

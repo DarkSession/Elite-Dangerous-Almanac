@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-import { LIBRARY_NAME, LIBRARY_VERSION } from './version.js';
+import { LIBRARY_NAME, LIBRARY_VERSION } from './internal/version.js';
 
 // Read the manifest rather than importing it: an `import … with { type: 'json' }` here
 // would inline the whole of package.json into any bundle that reaches this module.
