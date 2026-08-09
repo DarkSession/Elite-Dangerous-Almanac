@@ -857,8 +857,8 @@ function c1SectorCoords4(f: FragmentInfo[]): SectorCoords | null {
  * not a valid procedural sector name.
  *
  * Every assigned name produced by {@link sectorNameFromCoords} round-trips through
- * this function. Fragment-grammar aliases that the game does not emit may resolve
- * to the same coordinates and canonicalize to the emitted spelling.
+ * this function. A valid fragment sequence that is not the canonical name emitted for
+ * its coordinates is rejected.
  *
  * @param name - A procedural sector name in any casing (e.g. `blae eock`).
  * @returns The sector grid position, or `null` when the name is not procedural.
@@ -866,8 +866,6 @@ function c1SectorCoords4(f: FragmentInfo[]): SectorCoords | null {
 export function sectorCoordsFromName(name: string): SectorCoords | null {
     const candidates = splitFragmentCandidates(name);
     const normalizedName = name.trim().toLowerCase().replace(/\s+/g, ' ');
-    let fallback: SectorCoords | null = null;
-
     for (const f of candidates) {
         let coords: SectorCoords | null = null;
         if (
@@ -891,18 +889,16 @@ export function sectorCoordsFromName(name: string): SectorCoords | null {
         }
         if (!coords) continue;
 
-        // Fragment strings overlap ("Aoe" can be A+oe or Ao+e), so prefer the
-        // interpretation that reproduces the supplied name. Keep the reference
-        // parser's historical alias behaviour as a fallback (e.g. "Sol").
+        // Fragment strings overlap ("Aoe" can be A+oe or Ao+e), so accept only the
+        // interpretation that reproduces the supplied name.
         try {
             const canonicalName = sectorNameFromCoords(coords);
-            fallback ??= coords;
             if (canonicalName.toLowerCase() === normalizedName) return coords;
         } catch (error) {
             if (!(error instanceof RangeError)) throw error;
         }
     }
-    return fallback;
+    return null;
 }
 
 /**

@@ -58,13 +58,9 @@ test('the gate accepts every recipe the menu offers, for every module', () => {
     }
 });
 
-test('every recipe in the catalogues reaches a module, bar the one both registries withdrew', () => {
-    // The sweep https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/39 was
-    // opened on: every id in `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`
-    // against every module symbol, through the gate. Seven reached nothing when the gate
-    // started reading the per-module menu; six were gaps and are closed, so the residue is
-    // pinned as a whole list rather than as a count — an id stranded by a later change
-    // fails here instead of passing unnoticed.
+test('every recipe in the catalogues reaches a module', () => {
+    // Sweep every recipe id against every module through the compatibility gate. The
+    // fixture pins both empty residues so a stranded id fails explicitly.
     const reach = fixture.reachability;
     const strandedBlueprints = Object.keys(BLUEPRINTS).filter(
         (id) => !ALL_MODULES.some((module) => blueprintAvailableFor(module.symbol, id)),
@@ -290,8 +286,7 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
             `${row.symbol} must accept ${row.blueprint}`,
         );
     }
-    // The registry spellings stay usable as aliases — a community name that no longer
-    // resolves is not an alias, it is a removal.
+    // The two registry spellings resolve as explicit aliases.
     const guardian = 'Hpt_Guardian_GaussCannon_Fixed_Medium';
     assert.ok(fixture.journalSpellings.alsoResolve.length, 'no aliases pinned');
     for (const id of fixture.journalSpellings.alsoResolve) {

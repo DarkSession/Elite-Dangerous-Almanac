@@ -31,7 +31,6 @@ import type {
     ModuleReinforcementParams,
 } from './armour.js';
 import { combinedRateOfFire, type WeaponStats } from './weapons.js';
-import { isStatUnknown } from './unknown-stats.js';
 
 /**
  * Symbol prefixes that identify a module group, lower-cased.
@@ -40,8 +39,8 @@ import { isStatUnknown } from './unknown-stats.js';
  * Classifying by symbol is the weaker way to do this, and `powerPlant` is the one entry
  * that does not need it in the ordinary case: a power plant's record names the mount it fills, so
  * {@link powerAvailable} reads {@link OutfittingModule.slot} and falls back to this
- * whenever no mount is named — an `Item` no catalogue knows (a build may name a module
- * newer than this snapshot), or a record a caller assembled without a `slot`.
+ * whenever no mount is named — an `Item` absent from the catalogue, or a record a caller
+ * assembled without a `slot`.
  *
  * The other five have nothing better to read. A shield generator, shield booster or
  * reinforcement package fits any mount of its kind that is large enough, so it fills no
@@ -206,26 +205,10 @@ export function effectiveModule(
     // moves it even when nothing names it — same rule the weapon metrics use.
     const rate = burstAdjustedRateOfFire(module, merged);
     if (rate !== undefined) merged.rateOfFire = rate;
-    // A build that carries a modifier for a stat the catalogue calls unknown has just
-    // supplied it, so the record must stop saying it is missing — `unknownStats` names
-    // only fields that are absent.
-    if (stats.unknownStats) {
-        const stillUnknown = stats.unknownStats.filter((field) => merged[field] === undefined);
-        if (stillUnknown.length === 0) delete merged.unknownStats;
-        else if (stillUnknown.length !== stats.unknownStats.length) {
-            merged.unknownStats = stillUnknown;
-        }
-    }
     return merged as unknown as OutfittingModule;
 }
 
-/**
- * One fitted module's claim on the power plant, or `null` when it makes none.
- *
- * A module whose draw the catalogue knows it cannot supply (`./unknown-stats` — the
- * withdrawn Discovery Scanners) is **not** `null`: it comes back flagged
- * `drawUnknown`, so the budget reports it as unknown rather than as zero.
- */
+/** One fitted module's claim on the power plant, or `null` when it makes none. */
 export function powerConsumerFor(
     module: LoadoutModule,
     stats: OutfittingModule | null = statFor(module.Item),
@@ -240,11 +223,7 @@ export function powerConsumerFor(
         deployedOnly: mounted && stats?.alwaysPowered !== true,
         label: module.Slot,
     };
-    if (draw === undefined) {
-        // The record the module was fitted as has the last word, so a build that
-        // supplied its own stats is classified by the article it actually carries.
-        return isStatUnknown(stats, 'powerDraw') ? { draw: 0, drawUnknown: true, ...common } : null;
-    }
+    if (draw === undefined) return null;
     if (draw === 0) return null;
     return { draw, ...common };
 }

@@ -37,9 +37,9 @@
  * application (one roll). Weapon-combat effects are included for completeness; a
  * purely-qualitative one (a gameplay flag with no numeric magnitude, e.g. Auto Loader)
  * carries an empty `modifiers` list and a human-readable `description` instead. The
- * combat effects' one-application material costs are sourced from the current in-game /
- * Inara registry (a Merc-Coin amount is also charged but is a currency, not a material,
- * so it is not stored).
+ * combat effects' one-application material costs are sourced from the pinned Inara
+ * registry described in SOURCES.md (a Merc-Coin amount is also charged but is a
+ * currency, not a material, so it is not stored).
  *
  * Full provenance: data/ships/SOURCES.md.
  */
@@ -129,34 +129,6 @@
         "count": 3
       }
     ]
-  },
-  "special_feedback_cascade": {
-    "name": "Feedback Cascade",
-    "modifiers": [
-      {
-        "label": "Damage",
-        "method": "multiplicative",
-        "value": -0.2
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "SymmetricKeys",
-        "name": "Open Symmetric Keys",
-        "count": 5
-      },
-      {
-        "symbol": "ShieldEmitters",
-        "name": "Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "FilamentComposites",
-        "name": "Filament Composites",
-        "count": 5
-      }
-    ],
-    "description": "Damages the target's shield cell bank and reduces shield restoration when it deploys a shield cell."
   },
   "special_feedback_cascade_cooled": {
     "name": "Feedback Cascade",

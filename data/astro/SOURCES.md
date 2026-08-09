@@ -1,6 +1,7 @@
 # Data sources — `data/astro/`
 
-**Library snapshot:** 2026-07-24. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Acquired:** 2026-07-24. **Upstream revision:** unavailable. See
+`../SNAPSHOTS.md` for the provenance requirements.
 
 Attribution for the astrophysical data files in this directory. This file is the
 long form; each data file also repeats its own credit in a comment header, so the
@@ -21,13 +22,12 @@ standard parser accepts. See AGENTS.md §Attribution for how to consume them.
   reverse-engineering of Elite Dangerous's procedural generator.
 - **Author/License:** Andy Martin (Esvandiary),
   [bitbucket.org/Esvandiary/edts](https://bitbucket.org/Esvandiary/edts),
-  BSD 3-Clause License, © 2016 Andy Martin. (EDTS moved from GitHub to Bitbucket;
-  the old GitHub URL now 404s. The full BSD 3-Clause text is reproduced in
-  `ATTRIBUTIONS.md`.)
+  BSD 3-Clause License, © 2016 Andy Martin. The full BSD 3-Clause text is reproduced in
+  `ATTRIBUTIONS.md`.
 - **Derivation:** named-region origins are stored in the game's internal coordinate
   frame (32 units per light-year from the galaxy corner). Where a region is defined
   by a single sphere, its origin and extent are the sphere's axis-aligned bounds in
-  that frame. The NGC 2392 record was restored from its catalogued 100 ly sphere and
+  that frame. The NGC 2392 record is derived from its catalogued 100 ly sphere and
   verified by encoding the EDSM system `NGC 2392 Sector UJ-Q b5-0` (id64
   `674176509065`, EDSM system id 21224).
 
@@ -49,9 +49,8 @@ standard parser accepts. See AGENTS.md §Attribution for how to consume them.
 - **Files:** `nebulae-real.jsonc` (180 catalogued real-world nebulae and dark
   regions), `nebulae-procgen.jsonc` (166 procedurally generated nebulae),
   `nebulae-planetary.jsonc` (5489 planetary nebulae), and
-  `fixtures/astro/nebulae.json`. Split by nebula class so an app that only wants
-  the recognisable named nebulae (~25 KB) never bundles the planetary catalogue
-  (~820 KB); see AGENTS.md §Build.
+  `fixtures/astro/nebulae.json`. The class split lets consumers import recognisable
+  named nebulae without bundling the planetary catalogue; see AGENTS.md §Build.
 - **Source:** the EDAstro nebulae coordinates dataset
   (`nebulae-coordinates.csv`, columns `Name,System,X,Y,Z,Type,RegionID`),
   published at [EDAstro](https://edastro.com/mapcharts/) by **CMDR Orvidius**.

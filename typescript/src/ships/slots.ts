@@ -50,8 +50,7 @@ export type HardpointRestriction = 'mining';
  *   `Cargo01` and `Cargo02`).
  * - `limpetController` — any limpet controller, single-purpose or multi (the Type-11
  *   Prospector's size-5 optional; journal `LimpetController01`).
- * - `vesselHangar` — Mk I and Mk II vessel hangars, the modules the game called
- *   fighter hangars before the Operations update (the Type-11 Prospector's other
+ * - `vesselHangar` — Mk I and Mk II vessel hangars (the Type-11 Prospector's other
  *   size-5 optional; journal `FighterBay01`).
  * - `passenger` — passenger cabins, Mk I and Mk II, at every class either family
  *   offers (the Lynx Highliner's two size-6 and one size-5 optionals; journal
@@ -77,8 +76,7 @@ export type OptionalRestriction =
  * exhaustive `switch` over a hardpoint's restriction still has to handle (or cast
  * away) the optional-only values; there is no `never` case to lean on.
  *
- * The list is complete. Two rules this comment once recorded as unmodelled do not
- * exist in the game: no hardpoint takes only one *mount* (fixed, gimballed or
+ * The list is complete. No hardpoint takes only one *mount* (fixed, gimballed or
  * turret), and no utility mount is restricted — which is why neither ever had a
  * source saying what to store.
  *

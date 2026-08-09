@@ -143,11 +143,8 @@ for (const name of DATA_FILES) {
         });
 
         test(`${name} holds only records that belong in it`, () => {
-            // The replacement for what dropping `category` cost. While each record
-            // spelled its own category, a record filed into the wrong modules-*.jsonc
-            // was caught by comparing the two; now the file *is* the category, so that
-            // comparison would only ever check the loader. These rules discriminate the
-            // categories from the record alone, so a misfiled record still fails:
+            // The file defines the category. These independent rules discriminate the
+            // categories from the record alone, so a misfiled record fails:
             //
             //   hardpoint  Hpt_ symbol, size 1-4    utility   Hpt_ symbol, size 0
             //   core       carries `slot`           internal  no `slot`, bar the hybrids

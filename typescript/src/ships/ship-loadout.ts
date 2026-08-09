@@ -483,7 +483,6 @@ function cloneModuleStats(module: OutfittingModule): OutfittingModule {
         ...(module.restrictedToShips === undefined
             ? {}
             : { restrictedToShips: [...module.restrictedToShips] }),
-        ...(module.unknownStats === undefined ? {} : { unknownStats: [...module.unknownStats] }),
         ...(module.damageDistribution === undefined
             ? {}
             : { damageDistribution: { ...module.damageDistribution } }),
@@ -942,12 +941,6 @@ export class ShipLoadout {
      * menu alone decides; or the catalogue does not carry every base stat the recipe
      * modifies. Incomplete engineering is rejected rather than stored as a partial journal
      * modifier block.
-     * @remarks
-     * Every blueprint in `BLUEPRINTS` is accepted on at least one module. One experimental
-     * effect is not: `special_feedback_cascade`, which both upstream registries have
-     * withdrawn — coriolis-data names it "Feedback cascade (Legacy)" and EDSY's row for it
-     * is commented out — in favour of the `special_feedback_cascade_cooled` the rail gun
-     * menus list. Naming it always throws.
      * @example
      * ```ts
      * build.setModule('FrameShiftDrive', fsd)
@@ -1877,8 +1870,8 @@ export class ShipLoadout {
         if (!fsdModule) return null;
         const base = this.#statsFor(fsdModule);
         if (!base || base.fuelMul === undefined || base.fuelPower === undefined) {
-            // A drive is fitted, but the stats catalogue has no jump constants for it
-            // (an unrecognised / newer drive id). Fail with a diagnosable message
+            // A drive is fitted, but the stats catalogue has no jump constants for its
+            // unrecognised id. Fail with a diagnosable message
             // rather than the "no frame shift drive" one the caller would otherwise get.
             throw new TypeError(
                 `ShipLoadout: no jump constants in the stats catalogue for frame shift drive "${fsdModule.Item}"`,

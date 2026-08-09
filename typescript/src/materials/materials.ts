@@ -30,8 +30,8 @@
  * catalogues, since that is what it falls back to — 16 KB minified for all 146.
  * {@link materialsInCategory} reaches the same subsets from a plain string.
  *
- * Data originates from EDCD FDevIDs, with a handful of newer Thargoid materials
- * from INARA; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
+ * Data originates from EDCD FDevIDs, with Thargoid materials absent from that
+ * pinned source supplied by INARA; see [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md).
  *
  * @example
  * ```ts

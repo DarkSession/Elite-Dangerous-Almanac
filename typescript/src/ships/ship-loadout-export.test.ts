@@ -1017,9 +1017,8 @@ test('a restricted mount survives a SLEF round trip under its journal name', () 
     );
 });
 
-test('a SLEF producer that does not know the mining names still imports', () => {
-    // Another app may write a Type-11's mounts the old way. Import is deliberately
-    // tolerant: the module is kept under the key it arrived with, counts towards the
+test('a SLEF producer with generic Type-11 mount names still imports', () => {
+    // Import preserves a producer's generic mount key: the module counts towards the
     // build's figures, and is re-exported unchanged — it is simply not one of the
     // hull's own mounts, so `slots()` does not report it as occupied.
     const foreign: LoadoutEvent = {
@@ -1153,8 +1152,7 @@ test('a build assembled here exports the slot keys a game journal would use', ()
 });
 
 test('a journal build on a renamed hull binds to the mounts it names', () => {
-    // Import is where the old numbering hurt least and the new one still has to hold:
-    // the key the game wrote must find the mount, not land beside it as an extra.
+    // The key written by the game must find the mount, not land beside it as an extra.
     const event: LoadoutEvent = {
         Ship: 'type9',
         Modules: [

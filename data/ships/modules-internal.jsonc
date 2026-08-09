@@ -13,7 +13,7 @@
  *          — mass, integrity, powerDraw and bootTime where coriolis-data carries
  *          none, and corrections where its value is a duplicated or mis-copied row.
  *          In-game verification covers all identities and the numeric values on all
- *          956 non-armour modules; exact corrections are pinned in
+ *          952 non-armour modules; exact corrections are pinned in
  *          fixtures/ships/module-stats.json. The 241 ship-armour modules retain their
  *          separately sourced numeric values.
  *          The stat values are Elite Dangerous game data, property of Frontier
@@ -25,7 +25,7 @@
  * the module size (0-8) and `rating` its grade letter
  * (A-I) — the "5A" the outfitting screen shows. The outfitting category is not a
  * field: it is this file. Every record here is an `internal` module, so a loader adds
- * `category: "internal"` from the file it read rather than repeating it 482 times.
+ * `category: "internal"` from the file it read rather than repeating it 478 times.
  * `slot` is on fifteen records and no others: the Guardian Hybrid power plants and
  * power distributors, which Frontier files here yet which fill a *core* mount, and
  * which say so with the same `powerPlant` / `powerDistributor` values
@@ -64,14 +64,6 @@
  * regeneration, the stat a journal labels `EnergyPerRegen`.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
- * `unknownStats` names the stat fields this record omits because the value is
- * *unknown* rather than because the module has none — a cargo rack has no
- * `powerDraw`, but a Discovery Scanner has one nobody publishes. Present only where
- * an absence needs that said; a field named here is always absent from the record,
- * so sourcing a value means deleting its name here in the same change. The difference
- * is load-bearing for engineering: a recipe that scales a stat the module does not have
- * is inert, while one that scales a stat named here is refused outright.
- *
  * Full provenance: data/ships/SOURCES.md.
  */
 [
@@ -2029,42 +2021,6 @@
     "cost": 6998400
   },
   {
-    "symbol": "Int_StellarBodyDiscoveryScanner_Standard",
-    "name": "Basic Discovery Scanner",
-    "class": 0,
-    "rating": "E",
-    "mass": 0,
-    "integrity": 40,
-    "scanAngle": 10,
-    "scanTime": 5,
-    "cost": 1000,
-    "unknownStats": ["powerDraw"]
-  },
-  {
-    "symbol": "Int_StellarBodyDiscoveryScanner_Intermediate",
-    "name": "Intermediate Discovery Scanner",
-    "class": 1,
-    "rating": "D",
-    "mass": 2,
-    "integrity": 40,
-    "scanAngle": 10,
-    "scanTime": 5,
-    "cost": 505000,
-    "unknownStats": ["powerDraw"]
-  },
-  {
-    "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
-    "name": "Advanced Discovery Scanner",
-    "class": 1,
-    "rating": "C",
-    "mass": 2,
-    "integrity": 40,
-    "scanAngle": 10,
-    "scanTime": 5,
-    "cost": 1545000,
-    "unknownStats": ["powerDraw"]
-  },
-  {
     "symbol": "Int_DetailedSurfaceScanner_Tiny",
     "name": "Detailed Surface Scanner",
     "class": 1,
@@ -2097,17 +2053,6 @@
     "thermalResistance": -0.2,
     "explosiveResistance": 0.5,
     "distributorDraw": 0.6
-  },
-  {
-    "symbol": "Int_StellarBodyDiscoveryScanner_Standard_free",
-    "name": "Basic Discovery Scanner",
-    "class": 1,
-    "rating": "E",
-    "mass": 2,
-    "integrity": 40,
-    "scanAngle": 10,
-    "scanTime": 5,
-    "unknownStats": ["powerDraw"]
   },
   {
     "symbol": "Int_CargoRack_Size2_Class1_free",

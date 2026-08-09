@@ -1,6 +1,8 @@
 # Data sources — `data/commodities/`
 
-**Library snapshot:** 2026-07-24; one record comes from a player-journal observation instead, recorded under Standard commodities below. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Acquired:** 2026-07-24. **Upstream revision:** unavailable. One record comes from
+a player-journal observation documented under Standard commodities. See
+`../SNAPSHOTS.md` for the provenance requirements.
 
 Attribution for the market-commodity data files in this directory. This file is the
 long form; each data file also repeats its own credit in a comment header, so the

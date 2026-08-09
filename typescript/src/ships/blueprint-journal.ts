@@ -8,12 +8,9 @@
  * reading journals from combat ships meets this — it is not the corner case the two scanner
  * ids alone would make it.
  *
- * Its own module because of what it costs. `ships/engineering-options` is 63 KB precisely
- * because it holds menus and no recipes, and `ships/blueprints` is 221 KB of recipes and no
- * menus; a function needing both belongs in neither, or the cheap one stops being cheap for
- * every consumer who only wanted a menu. Importing this pulls both — 285 KB minified, 25 KB
- * gzipped — which is the honest price of the join and is paid only by callers who ask for
- * it. `package.test.mjs` asserts the menu module stays clear of recipe data.
+ * It lives in its own module because the join depends on both menus and recipes. Keeping
+ * it separate lets menu-only and recipe-only consumers avoid the other catalogue.
+ * `package.test.mjs` asserts that the menu module stays clear of recipe data.
  *
  * @packageDocumentation
  */

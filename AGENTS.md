@@ -70,17 +70,11 @@ This is a library, so documentation is a first-class deliverable:
 
 ### Documentation states the present, not the history
 
-**Nothing in this repository is a changelog.** Git carries the history and GitHub releases carry the release notes; a reader of `README.md`, a doc comment or a `SOURCES.md` wants to know what is true *now*. Every one of these is the pattern to avoid, in every file:
+Documentation describes current behavior. Git and GitHub releases carry project history.
+Edit or delete statements that a change makes false; do not append dated change logs,
+migration stories, superseded behavior or comparisons with earlier implementations.
 
-- a dated list of what changed — "**2026-08-05** — the engineering catalogue went from 428 modules to 1029";
-- a paragraph framed as a revision, a pass or an upgrade note — "**Revision 2026-08-06**, the module-record pass", "**Behaviour-visible three ways**", "**Upgrading from 0.0.1 to 0.1.0**";
-- text kept alive only to say it is no longer true — "*superseded by the bullet below*", "an earlier draft of this revision", "this used to be a hard-coded table", "before this pass the recipe was refused";
-- a figure qualified by when it was measured rather than simply stated — "moving this count from 1178/20", "which predates this change and still counts three of them";
-- a cross-reference by date instead of by subject — "see the 2026-08-04 revision above".
-
-Write the current state, and **delete what it replaces**. When a change makes a sentence wrong, edit that sentence rather than appending a newer one beside it: two paragraphs disagreeing about one fact are worse than either alone, because a reader cannot tell which won. The test to apply before committing a paragraph: *would this read as sensible to someone who has never seen the previous version of this file?* If it only makes sense as a diff, it belongs in the commit message.
-
-Three things read like history and are not, so keep them:
+Keep historical facts only when they explain the current state:
 
 - **Provenance.** `data/<domain>/SOURCES.md` must record, per catalogue, the source, its immutable revision or checksum, the acquisition date, the derivation and every manual correction with the reasoning behind it — that is what `data/SNAPSHOTS.md` requires, and a date there is a fact about the *source*, not about this repository's history. Record it under the catalogue it describes, in the present tense ("`Int_Sensors_Size1_Class{1..5}` `integrity` is 36/32/40/48/44; coriolis-data's size-1 row is a verbatim copy of its size-2 row, so EDSY's figures are used"), never as a dated entry in a log at the top of the file.
 - **A rejected alternative**, where writing it down stops it being rediscovered and reapplied — "these three values look wrong and are not", "storing it as a per-group alias map is worse, because …". State the standing conclusion, not the episode that produced it.
@@ -128,11 +122,12 @@ typescript/    # TypeScript library (package.json, src/, tests, typedoc.json)
 python/        # (future) Python library — same features, same fixtures
 ```
 
-`data/` and `fixtures/` are owned by no implementation; language folders consume them. Never copy shared data into a language folder. `data/SNAPSHOTS.md` states the snapshot date and the metadata every update must record; each `data/<domain>/SOURCES.md` carries the long-form provenance for that domain — source, revision, derivation, manual corrections, and known gaps — organised by catalogue and written in the present tense, never as a revision log (see §Documentation states the present). **GitHub issues** are the short actionable list of those gaps — see §Tracking known gaps.
+`data/` and `fixtures/` are owned by no implementation; language folders consume them. Never copy shared data into a language folder. `data/SNAPSHOTS.md` defines the metadata every update must record; each `data/<domain>/SOURCES.md` carries the long-form provenance for that domain — source, revision, derivation, manual corrections, and known gaps — organised by catalogue and written in the present tense. **GitHub issues** are the short actionable list of those gaps — see §Tracking known gaps.
 
 ## Tracking known gaps
 
-**Open gaps live in GitHub issues, not in a file in the repository.** There is no `TODO.md`; the list it used to hold was migrated to issues on `DarkSession/Elite-Dangerous-Almanac`, one per gap.
+**Open gaps live in GitHub issues**, one issue per gap on
+`DarkSession/Elite-Dangerous-Almanac`.
 
 When a change uncovers a gap it cannot fix in scope:
 

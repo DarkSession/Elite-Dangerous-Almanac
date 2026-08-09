@@ -177,7 +177,7 @@
     "note": "Modifiers stored as an `overwrite` of the resulting stat rather than a multiplier, because that is what the game authored — see SOURCES.md. Each must resolve to exactly its stored value."
   },
   "fullyUnresolved": {
-    "note": "Reward variants whose modifiers all land on stats the catalogues hold no base value for, so resolving one is necessarily a no-op. Empty since the scanner and heat-rate stats were sourced: every reward variant now moves at least one carried stat. Pinned as a set so a regression that quietly stops resolving a variant is a failure rather than silence.",
+    "note": "Every reward variant moves at least one stat with a catalogued base value. This empty set is pinned so a variant that stops resolving fails explicitly.",
     "count": 0,
     "symbols": []
   },

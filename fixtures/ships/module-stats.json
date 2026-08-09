@@ -3,17 +3,17 @@
   "countsNote": "Every module in every catalogue carries at least one stat, so these equal the catalogue sizes and assert that no record regresses to identity-only. No row holds only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. Zero masses are explicit, including the in-game value for `Int_DroneControl_ResourceSiphon`; its sized siblings retain their non-zero masses. The `spot` entries below pin the backfilled and corrected values.",
   "counts": {
     "core": 521,
-    "internal": 482,
+    "internal": 478,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1197
+    "all": 1193
   },
   "priceCounts": {
     "core": 509,
-    "internal": 473,
+    "internal": 470,
     "hardpoint": 159,
     "utility": 35,
-    "all": 1176
+    "all": 1173
   },
   "prices": [
     {
@@ -40,15 +40,6 @@
     "Int_CorrosionProofCargoRack_Size5_Class1",
     "Int_CorrosionProofCargoRack_Size6_Class1"
   ],
-  "unknownStats": {
-    "note": "The absences in data/ships/modules-*.jsonc that mean *unknown*, not *the module has no such stat*. The record itself says so, in its own `unknownStats` field; this pins which records carry which, so a port validates the same set. Every symbol here must be missing the field named — a value that gets sourced is filled into the record and its name dropped from that record's `unknownStats` in the same change.",
-    "powerDraw": [
-      "Int_StellarBodyDiscoveryScanner_Standard",
-      "Int_StellarBodyDiscoveryScanner_Intermediate",
-      "Int_StellarBodyDiscoveryScanner_Advanced",
-      "Int_StellarBodyDiscoveryScanner_Standard_free"
-    ]
-  },
   "withoutIntegrity": {
     "note": "The 82 non-armour records that carry no integrity, pinned as a set. Not unknown values: no registry publishes an integrity for these families and the game's own module panel shows none, so the absence is the fact. They are the families with no other mechanical stat either — passenger cabins, hull and Guardian/meta-alloy reinforcement packages, fuel tanks, cargo racks, module stabilisers and planetary approach suites. A further 241 records without integrity are ship armour, a different shape, and are excluded by their 'ship' field. If a source ever supplies one of these, or a new record joins a family, this list changes and the test says so.",
     "count": 82,
@@ -138,7 +129,7 @@
     ]
   },
   "freeModules": {
-    "note": "Every non-armour module priced at 0, pinned so a zero has to be deliberate. coriolis-data holds some symbols twice — a priced record and a 0 one — and the 'first occurrence wins' rule had been applied to mass but not to cost, leaving 16 modules silently free. Only the built-in cargo hatch survives: it is fitted to every hull and cannot be bought. Ship-specific armour is excluded — a hull's stock bulkhead really is free, and 48 of them are, one per hull.",
+    "note": "Every non-armour module priced at 0, pinned so a zero has to be deliberate. Only the built-in cargo hatch is listed: it is fitted to every hull and cannot be bought. Ship-specific armour is excluded because a hull's stock bulkhead is free, one per hull.",
     "symbols": ["ModularCargoBayDoor"]
   },
   "spot": [
@@ -303,12 +294,6 @@
       "name": "Fragment Cannon",
       "integrity": 64,
       "bootTime": 0
-    },
-    {
-      "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
-      "name": "Advanced Discovery Scanner",
-      "mass": 2,
-      "integrity": 40
     },
     {
       "symbol": "Anaconda_Armour_Reactive",
@@ -486,12 +471,6 @@
       "symbol": "Int_DetailedSurfaceScanner_Tiny",
       "name": "Detailed Surface Scanner",
       "bootTime": 0
-    },
-    {
-      "symbol": "Int_StellarBodyDiscoveryScanner_Standard_free",
-      "name": "Basic Discovery Scanner",
-      "mass": 2,
-      "integrity": 40
     },
     {
       "symbol": "ModularCargoBayDoor",
@@ -721,13 +700,6 @@
       "probeRadius": 20
     },
     {
-      "symbol": "Int_StellarBodyDiscoveryScanner_Advanced",
-      "name": "Advanced Discovery Scanner",
-      "scanAngle": 10,
-      "scanTime": 5,
-      "unknownStats": ["powerDraw"]
-    },
-    {
       "symbol": "Int_ShieldCellBank_Size8_Class5",
       "name": "Shield Cell Bank",
       "shieldBankReinforcement": 65,
@@ -763,7 +735,7 @@
     "Hpt_MiningLaser_Fixed_Small"
   ],
   "statCounts": {
-    "note": "How many records carry each of the base stats a blueprint recipe scales — the values that have to be present before the recipe can be applied at all. A count is a whole family: every thruster has a heat rate, every drive (plain and SCO) has one, every shield cell bank has all four cell stats, every sensor suite and utility scanner has a range and a scan cone. A drop here means a record lost a value, which is what made the recipes uncomputable in the first place.",
+    "note": "How many records carry each base stat scaled by a blueprint recipe. A count covers a whole family: every thruster has a heat rate, every drive (plain and SCO) has one, every shield cell bank has all four cell stats, and every sensor suite and utility scanner has a range and scan cone. A drop means a record lost a value required to compute its recipe.",
     "counts": {
       "engineHeatRate": 40,
       "fsdHeatRate": 72,
@@ -773,25 +745,25 @@
       "shieldBankSpinUp": 40,
       "shieldBankDuration": 40,
       "scannerRange": 64,
-      "scanAngle": 68,
-      "scanTime": 27,
+      "scanAngle": 64,
+      "scanTime": 23,
       "probeRadius": 1,
       "interdictorFacingLimit": 20,
       "interdictorRange": 20
     }
   },
   "inGameAudit": {
-    "identityMatches": 1197,
-    "numericModulesVerified": 956,
+    "identityMatches": 1193,
+    "numericModulesVerified": 952,
     "armourModulesOutsideNumericVerification": 241,
-    "verifiedRecords": 136,
-    "verifiedFields": 302,
+    "verifiedRecords": 135,
+    "verifiedFields": 300,
     "exactFieldCounts": {
       "powerDraw": 831,
       "bootTime": 827
     },
     "note": "Every module identity was verified in-game. Numeric verification covers every non-armour module; the 241 ship-armour modules retain separately sourced numeric values. Exact component amounts and projectile boundary parameters preserve the remaining weapon values observed in-game without assigning semantics that in-game verification does not establish.",
-    "verifiedValueFields": 286,
+    "verifiedValueFields": 284,
     "verifiedAbsentFields": 16
   },
   "inGameVerifiedValues": [
@@ -1469,11 +1441,6 @@
     {
       "symbol": "Int_ShieldGenerator_Size8_Class5_Strong",
       "shieldRegenRate": 1.35
-    },
-    {
-      "symbol": "Int_StellarBodyDiscoveryScanner_Standard",
-      "class": 0,
-      "mass": 0
     },
     {
       "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",

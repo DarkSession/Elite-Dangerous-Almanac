@@ -12,8 +12,8 @@
  * modules and apply engineering, and
  * answers the questions apps actually ask ({@link ShipLoadout.maxJumpRange},
  * {@link ShipLoadout.powerBudget}, {@link ShipLoadout.shieldMetrics}, `unladenMass`,
- * `rebuy`). It is the batteries-included facade and pulls in every catalogue (~698 KB
- * minified); everything below is what it is built from, so drop to the pieces when you
+ * `rebuy`). It is the batteries-included facade and pulls in every catalogue;
+ * everything below is what it is built from, so drop to the pieces when you
  * need one answer rather than a whole ship.
  *
  * The area has five layers:
@@ -22,13 +22,11 @@
  *   lookups. One small catalogue; each {@link Ship} carries the
  *   hull's identity, stats and slot layout together.
  * - **Modules** — the {@link OutfittingModule} type and the lookups
- *   ({@link getModuleBySymbol} & co.), which search all 1197 modules unless you hand
+ *   ({@link getModuleBySymbol} & co.), which search all 1193 modules unless you hand
  *   them a narrower set. The catalogues are also exported split by Frontier's four
  *   outfitting categories ({@link CORE_MODULES}, {@link INTERNAL_MODULES},
  *   {@link HARDPOINT_MODULES}, {@link UTILITY_MODULES}, and {@link ALL_MODULES}); each
- *   record carries the module's identity and its stats. Where a stat is missing because
- *   nobody publishes it rather than because the module has none, {@link isStatUnknown}
- *   says so.
+ *   record carries the module's identity and its stats.
  * - **Jump range & SLEF** — {@link singleJumpRange}, {@link fuelPerJump} and
  *   {@link totalRange} are pure maths over {@link FrameShiftDriveParams} and cost
  *   nothing but the function; {@link parseSlef} reads an Inara SLEF export — or a bare
@@ -69,7 +67,6 @@ export {
     getModulesByName,
     getModulesForShip,
     type OutfittingModule,
-    type ModuleStatField,
     type ModuleCategory,
     type ModuleMount,
     type ModuleGuidance,
@@ -85,9 +82,6 @@ export { INTERNAL_MODULES } from './modules-internal.js';
 export { HARDPOINT_MODULES } from './modules-hardpoint.js';
 export { UTILITY_MODULES } from './modules-utility.js';
 export { ALL_MODULES } from './modules-all.js';
-
-// ── Which missing stats are gaps rather than stats the module does not have ──
-export { isStatUnknown, modulesWithUnknownStats } from './unknown-stats.js';
 
 // ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
 export {

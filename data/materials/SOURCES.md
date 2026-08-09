@@ -1,6 +1,7 @@
 # Data sources — `data/materials/`
 
-**Library snapshot:** 2026-07-24. **Initial upstream revision:** not recorded. See `../SNAPSHOTS.md` for the update policy and known limitation.
+**Acquired:** 2026-07-24. **Upstream revision:** unavailable. See
+`../SNAPSHOTS.md` for the provenance requirements.
 
 Attribution for the engineering-materials data files in this directory. This file
 is the long form; each data file also repeats its own credit in a comment header,
@@ -42,10 +43,10 @@ See AGENTS.md §Attribution for how to consume them.
     Rhenium, Lead** — the convention the in-game raw grid columns follow.
   - The rarity is the `grade` itself, so no separate rarity is stored in JSON.
 
-## Secondary source — newer Thargoid caustic / Titan materials
+## Secondary source — Thargoid caustic / Titan materials absent from FDevIDs
 
-Frontier added several Thargoid caustic and Titan materials that FDevIDs' `material.csv`
-has not yet catalogued. Their grade comes from
+Several Thargoid caustic and Titan materials are absent from the pinned FDevIDs
+`material.csv`. Their grade comes from
 [INARA](https://inara.cz/elite/components/) (rarity tier mapped Very common → 1 …
 Very rare → 5); their `symbol` is the identifier the player journal reports (e.g.
 `tg_causticshard`, `unknowncorechip`), matched case-insensitively like every other

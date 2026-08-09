@@ -64,10 +64,9 @@ export interface PowerConsumer {
      */
     readonly deployedOnly?: boolean;
     /**
-     * `true` for a module that draws power the catalogue cannot supply — the four
-     * withdrawn Discovery Scanners are the only ones today (see
-     * `./unknown-stats`). Its {@link PowerConsumer.draw | draw} is then ignored and it
-     * is named in {@link PowerBudget.unknownDraws} instead of being counted as `0`.
+     * `true` when the caller knows the module draws power but cannot supply the value.
+     * Its {@link PowerConsumer.draw | draw} is ignored and the consumer is named in
+     * {@link PowerBudget.unknownDraws} instead of being counted as `0`.
      */
     readonly drawUnknown?: boolean;
     /**

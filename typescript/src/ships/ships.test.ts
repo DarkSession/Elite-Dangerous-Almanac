@@ -103,7 +103,7 @@ test('getShipSlots resolves case-insensitively and returns null for the unknown'
     assert.equal(getShipSlots('anaconda')?.core.frameShiftDrive, 6);
     assert.deepEqual(getShipSlots('ANACONDA'), getShipSlots('Anaconda'));
     assert.equal(getShipSlots('not_a_ship'), null);
-    // The Lynx Highliner now carries a full slot layout (added from EDSY / update notes).
+    // The Lynx Highliner carries a full slot layout.
     assert.equal(getShipSlots('MediumTransport01')?.core.frameShiftDrive, 5);
 });
 

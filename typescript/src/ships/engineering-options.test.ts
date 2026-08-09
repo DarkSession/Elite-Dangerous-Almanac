@@ -193,8 +193,8 @@ test('every module in the catalogue is a real module in a real group', () => {
         assert.ok(getModuleBySymbol(expected.symbol, ALL_MODULES), expected.symbol);
         assert.equal(getEngineeringGroup(expected.symbol), expected.group);
     }
-    // Read the payload itself, not just the lookups over it: a symbol that no longer
-    // names a module — a typo, or one dropped from the module catalogues — is invisible
+    // Read the payload itself, not just the lookups over it: a symbol that does not name
+    // a module — a typo or stale entry — is invisible
     // to `getEngineeringGroup`, which is only ever asked about symbols that do exist.
     const payload = JSON.parse(
         stripJsonComments(
@@ -262,7 +262,7 @@ test('the one recipe a Guardian module takes offers no experimental effect', () 
     // A Guardian module is engineered with Anti-Guardian Zone Resistance and nothing else,
     // and that recipe has no experimental slot. Engineered Guardian modules that do carry
     // one are pre-engineered rewards, sold already applied rather than rolled at an
-    // engineer — https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/33.
+    // engineer.
     const { blueprint, experimentals, groups, modules } = fixture.antiGuardianZoneResistance;
     const offering = Object.entries(ENGINEERING_OPTION_GROUPS)
         .filter(([, group]) => group.blueprints.includes(blueprint))
@@ -271,8 +271,7 @@ test('the one recipe a Guardian module takes offers no experimental effect', () 
     for (const id of offering) {
         assert.deepEqual([...ENGINEERING_OPTION_GROUPS[id]!.experimentals], experimentals, id);
     }
-    // So the blueprint-level union is empty too — the answer #33 asked for, and the one
-    // place a group's list used to leak the module family's effects onto this recipe.
+    // The blueprint-level union is empty too, matching the group menus.
     assert.deepEqual(getExperimentalsForBlueprint(blueprint), experimentals);
     for (const symbol of modules) {
         assert.deepEqual([...getBlueprintsForModule(symbol)], [blueprint], symbol);

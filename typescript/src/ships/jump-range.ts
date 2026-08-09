@@ -27,7 +27,7 @@
  * some effects change `maxFuel`); `fuelMul` and `fuelPower` are intrinsic to the
  * drive and never modified. Read these off the drive's module record from
  * `./modules-core` (and, for a Guardian FSD Booster's `jumpBoost`,
- * `./modules-internal`), whose records now carry their stats.
+ * `./modules-internal`), whose records carry their stats.
  */
 export interface FrameShiftDriveParams {
     /** Optimised mass, in tonnes — the mass at which the drive performs to spec. */

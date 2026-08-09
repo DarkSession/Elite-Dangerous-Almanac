@@ -24,7 +24,6 @@ import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff } from './weapons.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats } from './pre-engineered-stats.js';
-import { isStatUnknown } from './unknown-stats.js';
 
 const mod = (symbol: string, catalogue = CORE_MODULES) => getModuleBySymbol(symbol, catalogue)!;
 
@@ -196,17 +195,14 @@ test('the power plant and fuel tank are found by `slot`, with the symbol as fall
         ShipLoadout.empty('Anaconda').setModule('PowerPlant', plant).powerBudget().available > 0,
     );
 
-    // Believed, even when wrong: this is a power plant by symbol, and the retired
-    // prefix rule counted it as one wherever it sat. Its record says thrusters, so the
-    // power budget no longer sees a plant at all.
+    // The declared mount is authoritative even when the symbol suggests another family.
     const asThrusters: OutfittingModule = { ...plant, slot: 'thrusters' };
     const miswired = ShipLoadout.empty('Anaconda').setModule('MainEngines', asThrusters);
     assert.equal(miswired.powerBudget().available, 0);
 
     // The fallback: an `Item` no catalogue carries names no mount, so the symbol
-    // answers — a build citing a module newer than this snapshot still finds its plant,
-    // and reads the capacity its own engineering declares.
-    const newer = ShipLoadout.fromLoadout({
+    // identifies its family and its own engineering supplies the capacity.
+    const unknownModule = ShipLoadout.fromLoadout({
         Ship: 'anaconda',
         UnladenMass: 400,
         Modules: [
@@ -218,7 +214,7 @@ test('the power plant and fuel tank are found by `slot`, with the symbol as fall
             },
         ],
     } as unknown as LoadoutEvent);
-    assert.equal(newer.powerBudget().available, 30);
+    assert.equal(unknownModule.powerBudget().available, 30);
 
     // Fuel capacity reads the same way: a cargo rack that declares the fuel-tank mount
     // is taken at its word and counted as a tank, which the symbol rule never did.
@@ -235,10 +231,7 @@ test('the power plant and fuel tank are found by `slot`, with the symbol as fall
 });
 
 test('the drive is found by `slot` too, wherever the module is mounted', () => {
-    // The fourth reader. A hardpoint mount checks `category`, which this record answers
-    // honestly, so *both* the old rule and the new one accept the fit — and then the
-    // drive lookup, which scans every fitted module rather than the drive mount alone,
-    // takes the record at its word. The old symbol rule looked straight past a weapon.
+    // Drive lookup scans every fitted module and trusts the declared mount.
     const laser = getModuleBySymbol('Hpt_PulseLaser_Fixed_Large', ALL_MODULES)!;
     const build = ShipLoadout.empty('Anaconda')
         .setModule('HugeHardpoint1', { ...laser, slot: 'frameShiftDrive' } as OutfittingModule)
@@ -318,8 +311,8 @@ test('setModule fits a module and slots() reflects occupancy', () => {
     build.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size2_Class5'));
     const fsdSlot = build.slots().find((s) => s.key === 'FrameShiftDrive');
     assert.equal(fsdSlot?.occupied, true);
-    assert.equal(fsdSlot?.module?.Item, 'Int_Hyperdrive_Size2_Class5');
-    assert.equal(build.getFittedModule('FrameShiftDrive')?.Item, 'Int_Hyperdrive_Size2_Class5');
+    assert.equal(fsdSlot?.module?.symbol, 'Int_Hyperdrive_Size2_Class5');
+    assert.equal(build.getFittedModule('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size2_Class5');
     assert.equal(build.modules.length, 1);
 });
 
@@ -405,8 +398,7 @@ test('a core mount takes the module whose record names it, not one that looks th
     // A record assembled by hand carries no `slot`, so it names no mount — and the fit
     // rule reads the record rather than classifying the symbol, so this core mount turns
     // it away, whatever the symbol looks like. The armour and optional mounts read the
-    // record too; the two tests below pin those, since every catalogue record carries
-    // both signals and only a hand-made one can tell the old rule from the new.
+    // record too; the hand-made record isolates that invariant.
     const handRolled: OutfittingModule = {
         symbol: drive.symbol,
         category: 'core',
@@ -426,8 +418,7 @@ test('the armour mount reads `slot`, not the category the record claims', () => 
     assert.equal(armour.slot, 'armour');
     assert.doesNotThrow(() => conda.setModule('Armour', armour));
 
-    // Named like armour, filed as armour, but declaring no mount: refused. Under the
-    // old category rule this fitted, which is what makes it worth pinning.
+    // Named and filed like armour but declaring no armour mount: refused.
     const unnamed: OutfittingModule = {
         symbol: armour.symbol,
         category: 'core',
@@ -438,8 +429,7 @@ test('the armour mount reads `slot`, not the category the record claims', () => 
     };
     assert.throws(() => conda.setModule('Armour', unnamed), /not a ship armour module/);
 
-    // And the mirror: the mount believes `slot`, so a mislabelled category no longer
-    // keeps a genuine armour record out.
+    // The declared armour mount remains authoritative when category is mislabelled.
     const mislabelled: OutfittingModule = { ...armour, category: 'internal' };
     assert.doesNotThrow(() => conda.setModule('Armour', mislabelled));
 
@@ -456,8 +446,7 @@ test('an optional mount takes a fuel tank because its record says so, not its sy
     assert.doesNotThrow(() => conda.setModule('Slot05_Size5', tank));
     assert.doesNotThrow(() => conda.setModule('FuelTank', tank));
 
-    // Same symbol, no declared mount: it is no longer the fuel tank that earns the
-    // exception, so the ordinary "optional slots take internals" rule turns it away.
+    // The symbol alone does not earn the fuel-tank exception.
     const unnamed: OutfittingModule = {
         symbol: tank.symbol,
         category: 'core',
@@ -472,24 +461,19 @@ test('an optional mount takes a fuel tank because its record says so, not its sy
 });
 
 test('an optional mount turns away a core module because its record names a mount', () => {
-    // The other half of the optional rule, and the half no catalogue record can pin:
-    // "a core module only fits its core slot" reads `slot`, where it used to classify
-    // the symbol. Both records below are internals by category, so they get past the
-    // kind check and reach exactly that line.
+    // "A core module only fits its core slot" reads the declared `slot`.
     const rack = mod('Int_CargoRack_Size4_Class1', INTERNAL_MODULES);
     assert.equal(rack.slot, undefined);
     assert.doesNotThrow(() => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', rack));
 
-    // A cargo rack that claims a core mount is taken at its word and refused, though
-    // its symbol is a rack's and the old symbol rule let it through.
+    // A cargo rack that claims a core mount is taken at its word and refused.
     const claimsCore: OutfittingModule = { ...rack, slot: 'powerPlant' };
     assert.throws(
         () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', claimsCore),
         /a core module only fits its core slot/,
     );
 
-    // And the mirror: a power plant that declares no mount is no longer recognised as
-    // a core module here, so this rule has nothing to say and it fits.
+    // A record with no declared core mount does not trigger the fixed-mount rule.
     const plant = mod('Int_PowerPlant_Size5_Class5');
     const unnamed: OutfittingModule = {
         symbol: plant.symbol,
@@ -652,8 +636,7 @@ test('a module reserved to one kind of mount fits no other mount on its own hull
 });
 
 test('the planetary approach suite states its own mount instead of being special-cased', () => {
-    // This rule used to be two hard-coded checks in `#fitError`; it is now the same
-    // `restrictedToSlot` the racks and the controller use, and behaves identically.
+    // The suite uses the same `restrictedToSlot` rule as racks and controllers.
     const suite = mod('Int_PlanetApproachSuite', INTERNAL_MODULES);
     assert.equal(suite.restrictedToSlot, 'planetaryApproachSuite');
     assert.equal(
@@ -801,16 +784,13 @@ test('a restricted mount reports a human-readable name', () => {
     assert.equal(named('FighterBay01'), 'Vessel Hangar Slot 1');
     const panther = ShipLoadout.empty('PantherMkII');
     assert.equal(panther.slots().find((s) => s.key === 'Cargo02')?.name, 'Cargo Slot 2');
-    // The military and approach-suite labels went through the same rewrite.
     const conda = ShipLoadout.empty('Anaconda');
     const condaName = (key: string) => conda.slots().find((s) => s.key === key)?.name;
     assert.equal(condaName('Military01'), 'Military Slot 1');
     assert.equal(condaName('PlanetaryApproachSuite'), 'Planetary Approach Suite');
     assert.equal(condaName('HugeHardpoint1'), 'Huge Hardpoint 1');
-    // Every mount a hull declares gets a label — a key with no case of its own would
-    // show up raw among its labelled neighbours, which is what the Lynx Highliner's
-    // `PassengerNN` mounts did when they were first named. They now read like every
-    // other restricted mount, size left to `slot.size` as `Cargo02` leaves it.
+    // Every mount a hull declares gets a label. Restricted mounts leave size to
+    // `slot.size`, just as `Cargo02` does.
     const lynx = ShipLoadout.empty('MediumTransport01');
     const lynxName = (key: string) => lynx.slots().find((s) => s.key === key)?.name;
     assert.equal(lynxName('Passenger01'), 'Passenger Slot 1');
@@ -873,7 +853,7 @@ test('armour is hull-specific while the cargo hatch remains fixed', () => {
         'Armour',
         armour.find((module) => module.symbol.endsWith('_Grade2'))!,
     );
-    assert.equal(conda.getFittedModule('Armour')?.Item, 'Anaconda_Armour_Grade2');
+    assert.equal(conda.getFittedModule('Armour')?.symbol, 'Anaconda_Armour_Grade2');
     assert.throws(
         () =>
             conda.setModule('Armour', getModuleBySymbol('SideWinder_Armour_Grade2', CORE_MODULES)!),
@@ -924,7 +904,7 @@ test('applyBlueprint reproduces the Deep Black FSD modifiers and lifts jump rang
     // The exact figures the real Deep Black export carries.
     const fsd = build.frameShiftDrive;
     assert.ok(Math.abs(fsd.optMass - 7528.04) < 1e-2, `optMass ${fsd.optMass}`);
-    const engineered = build.getFittedModule('FrameShiftDrive')!.Engineering!;
+    const engineered = build.getFittedModule('FrameShiftDrive')!.engineering!;
     assert.equal(engineered.BlueprintName, 'FSD_LongRange');
     assert.equal(engineered.Level, 5);
     assert.equal(engineered.ExperimentalEffect, 'special_fsd_heavy');
@@ -1005,7 +985,7 @@ test('weapon and armour recipes engineer the stats the catalogue carries', () =>
             .some((blueprint) => blueprint.fdname === 'Weapon_Overcharged'),
     );
     weapon.applyBlueprint('SmallHardpoint1', 'Weapon_Overcharged', { grade: 5 });
-    const overcharged = weapon.getFittedModule('SmallHardpoint1')!.Engineering!.Modifiers!;
+    const overcharged = weapon.getFittedModule('SmallHardpoint1')!.engineering!.Modifiers!;
     const damage = overcharged.find((m) => m.Label === 'Damage')!;
     assert.ok(damage.Value! > damage.OriginalValue!, 'Overcharged raises damage');
 
@@ -1015,7 +995,7 @@ test('weapon and armour recipes engineer the stats the catalogue carries', () =>
     conda.applyBlueprint('Armour', 'Armour_HeavyDuty', { grade: 5 });
     const boost = conda
         .getFittedModule('Armour')!
-        .Engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthMultiplier')!;
+        .engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthMultiplier')!;
     // The journal reports hull boost as a percentage, and it compounds on the armour
     // multiplier: a 250% bulkhead (x3.5 armour) at a full grade-5 roll (+32%) becomes
     // x4.62, i.e. 362%.
@@ -1064,7 +1044,7 @@ test('damage-converting experimentals replace the weapon split and export journa
             );
         }
 
-        const modifiers = fitted.Engineering?.Modifiers ?? [];
+        const modifiers = fitted.engineering?.Modifiers ?? [];
         for (const type of Object.keys(expected[experimental])) {
             const label = `$${type[0]!.toUpperCase()}${type.slice(1)};`;
             assert.ok(
@@ -1089,7 +1069,7 @@ test('thermal plasma conversion blueprints expose their absolute damage split', 
         assert.deepEqual(fitted.effectiveStats?.damageDistribution, expected, blueprint);
         assert.equal(fitted.effectiveStats?.damageComponents, undefined, blueprint);
 
-        const modifiers = fitted.Engineering?.Modifiers ?? [];
+        const modifiers = fitted.engineering?.Modifiers ?? [];
         assert.equal(modFor(modifiers, '$Thermal;'), expected.thermal * 100, blueprint);
         assert.equal(modFor(modifiers, '$Absolute;'), expected.absolute * 100, blueprint);
 
@@ -1121,7 +1101,7 @@ test('a converting experimental supersedes a plasma-conversion blueprint split',
         engineeringFixture.experimentalDamageDistributions.map.special_distortion_field,
     );
     assert.ok(!('absolute' in fitted.effectiveStats!.damageDistribution!));
-    assert.equal(modFor(fitted.Engineering?.Modifiers ?? [], '$Absolute;'), undefined);
+    assert.equal(modFor(fitted.engineering?.Modifiers ?? [], '$Absolute;'), undefined);
 });
 
 test('a damage conversion supersedes exact stock damage components', () => {
@@ -1166,7 +1146,7 @@ test('a hull reinforcement package engineers a hull boost it never had', () => {
     build.applyBlueprint('Slot01_Size7', 'HullReinforcement_Advanced', { grade: 5 });
     const boost = build
         .getFittedModule('Slot01_Size7')!
-        .Engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthMultiplier')!;
+        .engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthMultiplier')!;
     // Grade 5 Lightweight is +24% at a full roll, compounded on a x1 multiplier.
     assert.equal(boost.OriginalValue, 0);
     assert.equal(boost.Value, 24);
@@ -1174,7 +1154,7 @@ test('a hull reinforcement package engineers a hull boost it never had', () => {
     build.applyBlueprint('Slot01_Size7', 'HullReinforcement_HeavyDuty', { grade: 5 });
     const added = build
         .getFittedModule('Slot01_Size7')!
-        .Engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthAddition')!;
+        .engineering!.Modifiers!.find((m) => m.Label === 'DefenceModifierHealthAddition')!;
     assert.ok(added.Value! > added.OriginalValue!);
 });
 
@@ -1184,14 +1164,13 @@ test('a recipe leg on a stat the module does not have is inert, not a rejection'
     // applies, and simply emits no ShotSpeed modifier.
     const beam = getModuleBySymbol('Hpt_BeamLaser_Fixed_Medium', ALL_MODULES)!;
     assert.equal(beam.shotSpeed, undefined);
-    assert.equal(beam.unknownStats, undefined); // absent means "has none", not "unknown"
 
     const build = ShipLoadout.empty('Anaconda').setModule(
         'MediumHardpoint1',
         mod(beam.symbol, HARDPOINT_MODULES),
     );
     build.applyBlueprint('MediumHardpoint1', 'Weapon_LongRange', { grade: 5 });
-    const modifiers = build.getFittedModule('MediumHardpoint1')!.Engineering!.Modifiers!;
+    const modifiers = build.getFittedModule('MediumHardpoint1')!.engineering!.Modifiers!;
     assert.ok(!modifiers.some((m) => m.Label === 'ShotSpeed'));
     assert.ok(modifiers.some((m) => m.Label === 'MaximumRange' || m.Label === 'Range'));
 
@@ -1203,7 +1182,7 @@ test('a recipe leg on a stat the module does not have is inert, not a rejection'
     cannon.applyBlueprint('MediumHardpoint1', 'Weapon_LongRange', { grade: 5 });
     const shot = cannon
         .getFittedModule('MediumHardpoint1')!
-        .Engineering!.Modifiers!.find((m) => m.Label === 'ShotSpeed')!;
+        .engineering!.Modifiers!.find((m) => m.Label === 'ShotSpeed')!;
     assert.ok(shot.Value! > shot.OriginalValue!);
 });
 
@@ -1211,7 +1190,6 @@ test('engineering accepts a sourced zero and refuses an unrepresentable stat', (
     // A sourced zero is a real base value: Lightweight is offered and leaves it at zero.
     const siphon = getModuleBySymbol('Int_DroneControl_ResourceSiphon', ALL_MODULES)!;
     assert.equal(siphon.mass, 0);
-    assert.equal(siphon.unknownStats, undefined);
     const build = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
         mod(siphon.symbol, INTERNAL_MODULES),
@@ -1226,7 +1204,7 @@ test('engineering accepts a sourced zero and refuses an unrepresentable stat', (
     assert.equal(
         build
             .getFittedModule('Slot01_Size7')!
-            .Engineering!.Modifiers!.find((modifier) => modifier.Label === 'Mass')?.Value,
+            .engineering!.Modifiers!.find((modifier) => modifier.Label === 'Mass')?.Value,
         0,
     );
 
@@ -1290,7 +1268,7 @@ test('a scanner has one range field and either journal label moves it', () => {
         .setModule('TinyHardpoint1', mod('Hpt_CargoScanner_Size0_Class5', UTILITY_MODULES))
         .applyBlueprint('TinyHardpoint1', 'Scanner_LongRange', { grade: 5 });
     const rolled = build.getFittedModule('TinyHardpoint1')!;
-    const range = rolled.Engineering!.Modifiers!.find((m) => m.Label === 'ScannerRange')!.Value!;
+    const range = rolled.engineering!.Modifiers!.find((m) => m.Label === 'ScannerRange')!.Value!;
     assert.ok(range > 4000);
     assert.equal(rolled.effectiveStats?.scannerRange, range);
     assert.equal(rolled.effectiveStats?.maximumRange, undefined);
@@ -1318,7 +1296,7 @@ test('a wake scanner engineered Long Range gets the scanner recipe, not the sens
         .applyBlueprint('TinyHardpoint1', 'Sensor_LongRange', { grade: collision.grade });
 
     const labels = (slot: string) =>
-        (build.getFittedModule(slot)!.Engineering!.Modifiers ?? [])
+        (build.getFittedModule(slot)!.engineering!.Modifiers ?? [])
             .map((modifier) => modifier.Label)
             .sort();
     assert.deepEqual(labels('Radar'), ['Mass', 'ScannerRange', 'SensorTargetScanAngle']);
@@ -1330,7 +1308,7 @@ test('a wake scanner engineered Long Range gets the scanner recipe, not the sens
 
     // The block keeps the id the build declared, so it reads back the way it came in.
     assert.equal(
-        build.getFittedModule('TinyHardpoint1')!.Engineering!.BlueprintName,
+        build.getFittedModule('TinyHardpoint1')!.engineering!.BlueprintName,
         'Sensor_LongRange',
     );
     // The scanner's own menu spelling reaches the same recipe.
@@ -1338,8 +1316,8 @@ test('a wake scanner engineered Long Range gets the scanner recipe, not the sens
         .setModule('TinyHardpoint1', mod('Hpt_CloudScanner_Size0_Class5', UTILITY_MODULES))
         .applyBlueprint('TinyHardpoint1', 'Scanner_LongRange', { grade: collision.grade });
     assert.deepEqual(
-        build.getFittedModule('TinyHardpoint1')!.Engineering!.Modifiers,
-        viaMenuId.getFittedModule('TinyHardpoint1')!.Engineering!.Modifiers,
+        build.getFittedModule('TinyHardpoint1')!.engineering!.Modifiers,
+        viaMenuId.getFittedModule('TinyHardpoint1')!.engineering!.Modifiers,
     );
     // And the resolution does not run the other way: the suite is not offered the
     // scanner's id, and the error quotes the menu it checked.
@@ -1380,7 +1358,7 @@ test('a module sold pre-engineered can be taken further, menu or no menu', () =>
         grade: climb.grade,
         quality: climb.quality,
     });
-    const engineered = build.getFittedModule('Slot01_Size7')!.Engineering!;
+    const engineered = build.getFittedModule('Slot01_Size7')!.engineering!;
     assert.equal(engineered.BlueprintName, climb.blueprint);
     for (const [label, expected] of Object.entries(climb.expected)) {
         const modifier = engineered.Modifiers!.find((entry) => entry.Label === label);
@@ -1418,7 +1396,7 @@ test('clearEngineering restores base stats', () => {
     build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
     const engineered = build.frameShiftDrive.optMass;
     build.clearEngineering('FrameShiftDrive');
-    assert.equal(build.getFittedModule('FrameShiftDrive')?.Engineering, undefined);
+    assert.equal(build.getFittedModule('FrameShiftDrive')?.engineering, undefined);
     assert.ok(build.frameShiftDrive.optMass < engineered); // back to base 1800
     assert.equal(build.frameShiftDrive.optMass, 1800);
 });
@@ -1448,9 +1426,8 @@ test('fitting a caller-supplied record leaves the caller its own arrays', () => 
     // freezing one in place would make a caller's own array immutable behind its back,
     // and the next push would throw.
     const supplied: OutfittingModule = {
-        ...mod('Int_StellarBodyDiscoveryScanner_Advanced', INTERNAL_MODULES),
+        ...mod('Int_CargoRack_Size7_Class1', INTERNAL_MODULES),
         restrictedToShips: ['Anaconda'],
-        unknownStats: ['powerDraw'],
         damageComponents: { explosive: 4, unclassified: [1] },
         projectileRange: { maximumBoundary: 0, falloffBoundary: 100000 },
     };
@@ -1458,11 +1435,9 @@ test('fitting a caller-supplied record leaves the caller its own arrays', () => 
 
     assert.equal(Object.isFrozen(supplied), false);
     assert.equal(Object.isFrozen(supplied.restrictedToShips), false);
-    assert.equal(Object.isFrozen(supplied.unknownStats), false);
     assert.equal(Object.isFrozen(supplied.damageComponents), false);
     assert.equal(Object.isFrozen(supplied.damageComponents?.unclassified), false);
     assert.equal(Object.isFrozen(supplied.projectileRange), false);
-    assert.doesNotThrow(() => (supplied.unknownStats as string[]).push('mass'));
     assert.doesNotThrow(() => (supplied.damageComponents!.unclassified as number[]).push(2));
 });
 
@@ -1497,8 +1472,8 @@ test('a slot handle is a live view and fits/lists/clears without repeating its k
     // fit() returns a live FittedModule handle; the slot view updates in place.
     const fitted = drive.fit(mod('Int_Hyperdrive_Size6_Class5'));
     assert.equal(drive.occupied, true);
-    assert.equal(drive.module !== null && drive.module.Item, 'Int_Hyperdrive_Size6_Class5');
-    assert.equal(fitted.Item, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(drive.module !== null && drive.module.symbol, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(fitted.symbol, 'Int_Hyperdrive_Size6_Class5');
     assert.equal(fitted.slot, 'FrameShiftDrive');
 
     drive.clear();
@@ -1519,10 +1494,10 @@ test('applyBlueprint / clearEngineering work straight on the fitted module', () 
         experimental: 'special_fsd_heavy',
     });
     assert.ok(Math.abs(build.frameShiftDrive.optMass - 7528.04) < 1e-2);
-    assert.equal(fsd.Engineering?.BlueprintName, 'FSD_LongRange');
+    assert.equal(fsd.engineering?.BlueprintName, 'FSD_LongRange');
 
     fsd.clearEngineering();
-    assert.equal(fsd.Engineering, undefined);
+    assert.equal(fsd.engineering, undefined);
     assert.equal(build.frameShiftDrive.optMass, 4670); // base
 });
 
@@ -1553,7 +1528,7 @@ test('getFittedModule returns null for an empty slot and a live handle otherwise
     handle.remove();
     assert.equal(build.getFittedModule('FrameShiftDrive'), null);
     // Reading a removed handle's live fields throws rather than lying.
-    assert.throws(() => handle.Item, /no longer contains/);
+    assert.throws(() => handle.symbol, /no longer contains/);
 });
 
 test('a fitted-module handle cannot operate on a replacement module', () => {
@@ -1563,7 +1538,7 @@ test('a fitted-module handle cannot operate on a replacement module', () => {
     );
     const oldHandle = build.getFittedModule('FrameShiftDrive')!;
     build.setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size5_Class5'));
-    assert.throws(() => oldHandle.Item, /no longer contains/);
+    assert.throws(() => oldHandle.symbol, /no longer contains/);
     assert.throws(
         () => oldHandle.applyBlueprint('FSD_LongRange', { grade: 5 }),
         /no longer contains/,
@@ -1777,60 +1752,12 @@ test('a module the catalogues do not carry reports no stats', () => {
     assert.equal(build.powerBudget().deployed, 0);
 });
 
-test('a fitted module whose power draw is unknown is reported, not treated as free', () => {
-    // The withdrawn Basic/Intermediate/Advanced Discovery Scanners: no registry carries
-    // a power draw and the game's function is built in now, so the record has none.
-    // Counting that as 0 MW would hand the build headroom it may not have.
-    const build = ShipLoadout.empty('Anaconda')
-        .setModule('PowerPlant', mod('Int_Powerplant_Size8_Class5'))
-        .setModule(
-            'Slot01_Size7',
-            mod('Int_StellarBodyDiscoveryScanner_Advanced', INTERNAL_MODULES),
-        )
-        .setModule('Slot02_Size6', mod('Int_FuelScoop_Size6_Class5', INTERNAL_MODULES));
-    const budget = build.powerBudget();
-    assert.deepEqual(
-        budget.unknownDraws.map((consumer) => consumer.label),
-        ['Slot01_Size7'],
-    );
-    // The known draws are still added up, and the scanner adds nothing to them.
-    assert.ok(
-        near(budget.retracted, mod('Int_FuelScoop_Size6_Class5', INTERNAL_MODULES).powerDraw!),
-    );
-
-    // A cargo rack in the same slot draws nothing and is not a gap: the list stays empty.
-    build.setModule('Slot01_Size7', mod('Int_CargoRack_Size7_Class1', INTERNAL_MODULES));
-    assert.deepEqual(build.powerBudget().unknownDraws, []);
-
-    // The fitted record has the last say, not the symbol: a caller that sources the
-    // draw itself and supplies its own stats gets it counted like any other.
-    const sourced: Record<string, unknown> = {
-        ...mod('Int_StellarBodyDiscoveryScanner_Advanced', INTERNAL_MODULES),
-        powerDraw: 0.2,
-    };
-    delete sourced.unknownStats;
-    build.setModule('Slot01_Size7', sourced as unknown as OutfittingModule);
-    const sourcedBudget = build.powerBudget();
-    assert.deepEqual(sourcedBudget.unknownDraws, []);
-    assert.ok(
-        near(
-            sourcedBudget.retracted,
-            mod('Int_FuelScoop_Size6_Class5', INTERNAL_MODULES).powerDraw! + 0.2,
-        ),
-    );
-});
-
 test('a fitted zero-mass module contributes zero to unladen mass', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'Slot01_Size7',
         mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES),
     );
     assert.equal(build.unladenMass, 400);
-    assert.equal(
-        isStatUnknown(mod('Int_DroneControl_ResourceSiphon', INTERNAL_MODULES), 'mass'),
-        false,
-    );
-
     // Its sized siblings all carry one, so the same build with any of them answers.
     build.setModule(
         'Slot01_Size7',
@@ -1977,8 +1904,8 @@ test('a fitted module answers to the same word a catalogue record does', () => {
     assert.equal(fitted.symbol, 'Int_Hyperdrive_Size6_Class5');
     assert.equal(getModuleBySymbol(fitted.symbol, CORE_MODULES)?.class, 6);
     // The journal spelling is still there, as it is for slot / on / priority.
-    assert.equal(fitted.Item, fitted.symbol);
-    assert.equal(fitted.Slot, fitted.slot);
+    assert.equal(fitted.raw.Item, fitted.symbol);
+    assert.equal(fitted.raw.Slot, fitted.slot);
 });
 
 // ── Slot keys are matched case-insensitively ────────────────────────────────
@@ -1993,10 +1920,10 @@ test('a build imported from Inara binds every one of its lower-cased slots', () 
     // ...reached by the journal's own spelling, which is not the one it wrote.
     assert.equal(build.moduleAt('LargeMiningHardpoint1')?.Item, 'hpt_miningtoolv2_fixed_large');
     assert.equal(
-        build.getFittedModule('FrameShiftDrive')?.Item,
+        build.getFittedModule('FrameShiftDrive')?.symbol,
         'int_hyperdrive_overcharge_size5_class5',
     );
-    assert.equal(build.hardpoints()[0]?.module?.Item, 'hpt_miningtoolv2_fixed_large');
+    assert.equal(build.hardpoints()[0]?.module?.symbol, 'hpt_miningtoolv2_fixed_large');
     assert.equal(build.coreModules().find((s) => s.core === 'powerPlant')?.occupied, true);
 
     // A handle reports the build's own spelling rather than the one it was asked with.
@@ -2096,14 +2023,14 @@ test('a lower-cased build exports in slot order', () => {
 
 test("a core mount's function name reaches its slot only where casing is the difference", () => {
     // Five of the seven `CoreSlotType` values differ from their slot key by case alone,
-    // so matching case-insensitively lets them through where it used to reject them.
+    // so case-insensitive matching resolves them.
     // `thrusters` and `sensors` are different words — `MainEngines` and `Radar` — and
     // still miss. This is what the README promises a consumer; pin it so it cannot drift.
     const build = ShipLoadout.empty('Anaconda').setModule(
         'FrameShiftDrive',
         mod('Int_Hyperdrive_Size6_Class5'),
     );
-    assert.equal(build.getFittedModule('frameShiftDrive')?.Item, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(build.getFittedModule('frameShiftDrive')?.symbol, 'Int_Hyperdrive_Size6_Class5');
     for (const core of ['powerPlant', 'lifeSupport', 'powerDistributor', 'fuelTank'] as const) {
         assert.doesNotThrow(() => build.modulesForSlot(core, CORE_MODULES), core);
     }
@@ -2167,7 +2094,7 @@ test('when neither spelling of a duplicated mount is exact, the earlier one wins
     assert.equal(build.getFittedModule('TinyHardpoint1')?.slot, 'tinyhardpoint1');
     // ...the one the utility mount reports as fitted...
     const mount = build.utilityMounts().find((s) => s.key === 'TinyHardpoint1')!;
-    assert.equal(mount.module?.Item, 'hpt_shieldbooster_size0_class5');
+    assert.equal(mount.module?.symbol, 'hpt_shieldbooster_size0_class5');
     // ...and the one that takes the mount's place in a slot-ordered export, leaving the
     // later spelling in the tail rather than dropping it.
     const ordered = build.toLoadoutEvent({ moduleOrder: 'slots' }).Modules.map((m) => m.Slot);

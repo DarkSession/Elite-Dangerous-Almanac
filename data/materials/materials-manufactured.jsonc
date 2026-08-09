@@ -5,15 +5,15 @@
  *               https://github.com/EDCD/FDevIDs
  *               Community-maintained Frontier id/name registry. No explicit
  *               licence is stated; consult the repository terms.
- * Secondary:    INARA (https://inara.cz/elite/components/) for the newer
- *               caustic / Titan Thargoid materials not yet in FDevIDs.
+ * Secondary:    INARA (https://inara.cz/elite/components/) for the caustic /
+ *               Titan Thargoid materials absent from the pinned FDevIDs source.
  *
  * Each record is { symbol, name, elementSymbol, grade, line }. `symbol` is
  * Frontier's internal id (matched case-insensitively, as the journal reports
  * it); `name` is the display name. `grade` is 1-5 (raw tops out at 4) and is
  * itself the rarity. `line` is the in-game group.
  * `elementSymbol` is null — only raw materials (elements) have one.
- * The newer caustic / Titan Thargoid materials are not in FDevIDs; their grade
+ * The caustic / Titan Thargoid materials absent from FDevIDs have grades that
  * comes from INARA (see data/materials/SOURCES.md).
  *
  * Full provenance: data/materials/SOURCES.md.

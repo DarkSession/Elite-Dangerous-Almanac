@@ -151,7 +151,7 @@ test('every material line value is a member of the MaterialLine enum', () => {
     }
 });
 
-test('the newer Thargoid materials not in FDevIDs are present and resolve by symbol', () => {
+test('the Thargoid materials absent from FDevIDs are present and resolve by symbol', () => {
     for (const name of materialsFixture.notInFdevIds) {
         const material = getMaterialByName(name, ALL_MATERIALS);
         assert.ok(material, `missing ${name}`);

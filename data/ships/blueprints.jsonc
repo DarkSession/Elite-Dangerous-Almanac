@@ -73,9 +73,10 @@
  * The Operations pre-engineered blueprints (Merc weapon rewards, plus
  * general/core/optional ones like `FuelScoop_Efficiency`) and all three Anti-Guardian
  * records (`GuardianModule_Sturdy` and its two `recipe_`-prefixed Inara aliases, which
- * coriolis does not carry under any spelling) come from the current in-game / Inara
- * blueprint registry, which exposes one displayed total per grade rather than a
- * roll-bounded range: each such feature stores that total as a fixed value (min == max).
+ * coriolis does not carry under any spelling) come from the pinned Inara blueprint
+ * registry described in SOURCES.md, which exposes one displayed total per grade rather
+ * than a roll-bounded range: each such feature stores that total as a fixed value
+ * (min == max).
  * The three Plasma conversion recipes project the registry's player-facing Thermal /
  * Plasma percentage-point legs into each grade's resulting `damageDistribution`, with
  * Plasma represented by this library's `absolute` damage member. Scalar damage and power
