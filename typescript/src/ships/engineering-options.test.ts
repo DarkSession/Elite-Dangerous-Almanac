@@ -19,7 +19,7 @@ import { BLUEPRINTS } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getModuleBySymbol, type ModuleKind } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
-import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
+import { isFinalGuardianWeaponEngineering } from './internal/loadout-engineering.js';
 import fixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
 import buildIndex from '../../../fixtures/ships/builds/index.json' with { type: 'json' };

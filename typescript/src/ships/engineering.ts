@@ -53,7 +53,7 @@
 
 import type { EngineeringModifier } from './slef.js';
 import type { DamageDistribution } from './modules.js';
-import { capabilityValueForLabel, multiplierBaseForLabel } from './module-stat-labels.js';
+import { capabilityValueForLabel, multiplierBaseForLabel } from './internal/module-stat-labels.js';
 
 /** How a modifier value is applied to a base stat. */
 export type ModifierMethod = 'multiplicative' | 'additive' | 'overwrite';

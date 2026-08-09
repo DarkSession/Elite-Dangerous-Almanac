@@ -16,7 +16,7 @@
 
 import type { OutfittingModule } from './modules.js';
 import utilityModulesData from '../../../data/ships/modules-utility.jsonc' with { type: 'json' };
-import { buildModuleCatalogue, type ModuleRecord } from './module-catalogue.js';
+import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catalogue.js';
 
 /**
  * All 35 utility-mount modules, in Frontier's registry order.

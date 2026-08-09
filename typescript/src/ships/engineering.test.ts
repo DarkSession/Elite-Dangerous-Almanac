@@ -14,7 +14,7 @@ import {
     blueprintAvailableFor,
     experimentalAvailableFor,
     isEngineerable,
-} from './loadout-engineering.js';
+} from './internal/loadout-engineering.js';
 import {
     getBlueprintsForModule,
     getEngineeringGroup,
@@ -28,7 +28,7 @@ import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette
 import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
-import { baseStats } from './module-stat-labels.js';
+import { baseStats } from './internal/module-stat-labels.js';
 import { combinedRateOfFire } from './weapons.js';
 
 const near = (a: number, b: number, eps = 1e-3) => Math.abs(a - b) < eps;

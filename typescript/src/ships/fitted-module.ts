@@ -5,8 +5,11 @@
  */
 
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
-import { availableBlueprintsFor, availableExperimentalsFor } from './loadout-engineering.js';
-import { effectiveModule } from './loadout-metrics.js';
+import {
+    availableBlueprintsFor,
+    availableExperimentalsFor,
+} from './internal/loadout-engineering.js';
+import { effectiveModule } from './internal/loadout-metrics.js';
 import type { OutfittingModule } from './modules.js';
 import type { ApplyBlueprintOptions, AvailableBlueprint, ShipLoadout } from './ship-loadout.js';
 import type { LoadoutModule, ModuleEngineering } from './slef.js';

@@ -10,7 +10,7 @@
  * @internal
  */
 
-import type { DamageDistribution, OutfittingModule } from './modules.js';
+import type { DamageDistribution, OutfittingModule } from '../modules.js';
 
 /** One journal modifier label and how it relates to the catalogue field behind it. */
 export interface StatLabel {

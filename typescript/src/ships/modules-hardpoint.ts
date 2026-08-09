@@ -17,7 +17,7 @@
 
 import type { OutfittingModule } from './modules.js';
 import hardpointModulesData from '../../../data/ships/modules-hardpoint.jsonc' with { type: 'json' };
-import { buildModuleCatalogue, type ModuleRecord } from './module-catalogue.js';
+import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catalogue.js';
 
 /**
  * All 159 hardpoint modules, in Frontier's registry order.

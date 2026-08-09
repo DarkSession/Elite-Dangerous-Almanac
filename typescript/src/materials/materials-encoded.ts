@@ -12,7 +12,7 @@
  */
 
 import type { Material } from './materials.js';
-import { buildMaterialCatalogue, type MaterialRecord } from './material-catalogue.js';
+import { buildMaterialCatalogue, type MaterialRecord } from './internal/material-catalogue.js';
 import encodedData from '../../../data/materials/materials-encoded.jsonc' with { type: 'json' };
 
 /**

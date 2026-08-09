@@ -14,7 +14,7 @@
  */
 
 import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from './slots.js';
 
 /**

@@ -10,7 +10,7 @@ import {
 import { BLUEPRINTS, getBlueprint, getBlueprintCost } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
-import { blueprintAvailableFor } from './loadout-engineering.js';
+import { blueprintAvailableFor } from './internal/loadout-engineering.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';

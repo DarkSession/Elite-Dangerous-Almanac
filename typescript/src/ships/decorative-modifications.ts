@@ -40,7 +40,7 @@
  */
 
 import decorativeData from '../../../data/ships/decorative-modifications.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * One hand-set stat change a decorative modification arrives with.

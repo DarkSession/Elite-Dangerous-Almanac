@@ -14,7 +14,7 @@
 
 import type { Nebula } from './nebulae.js';
 import procgenNebulaeData from '../../../data/astro/nebulae-procgen.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * All 166 procedurally generated nebulae, sorted by name.

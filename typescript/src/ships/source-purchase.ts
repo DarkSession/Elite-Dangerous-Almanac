@@ -37,7 +37,7 @@
  * @packageDocumentation
  */
 
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 import type { LoadoutEvent } from './slef.js';
 
 /** One slot's captured purchase price, exactly as the source stated it. */

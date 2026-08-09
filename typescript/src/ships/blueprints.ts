@@ -36,7 +36,7 @@
  */
 
 import blueprintsData from '../../../data/ships/blueprints.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 import { rollsForGrade, sumMaterials } from './engineering.js';
 import type { Blueprint, BlueprintFeature, EngineeringMaterial } from './engineering.js';
 import type { DamageDistribution } from './modules.js';

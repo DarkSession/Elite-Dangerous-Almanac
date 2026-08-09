@@ -61,7 +61,7 @@
  */
 
 import optionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 import type { ModuleKind } from './modules.js';
 
 /** What one group of modules can be engineered with. */

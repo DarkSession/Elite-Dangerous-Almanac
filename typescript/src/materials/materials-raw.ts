@@ -11,7 +11,7 @@
  */
 
 import type { Material } from './materials.js';
-import { buildMaterialCatalogue, type MaterialRecord } from './material-catalogue.js';
+import { buildMaterialCatalogue, type MaterialRecord } from './internal/material-catalogue.js';
 import rawData from '../../../data/materials/materials-raw.jsonc' with { type: 'json' };
 
 /**

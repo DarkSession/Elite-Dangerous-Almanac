@@ -65,6 +65,24 @@ async function publicEntries(directory = new URL('./dist/', import.meta.url), su
     return entries;
 }
 
+async function internalSourceEntries(directory = new URL('./src/', import.meta.url), subpath = '') {
+    const entries = [];
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+        const relative = `${subpath}${entry.name}`;
+        if (entry.isDirectory()) {
+            entries.push(
+                ...(await internalSourceEntries(
+                    new URL(`${entry.name}/`, directory),
+                    `${relative}/`,
+                )),
+            );
+        } else if (entry.name.endsWith('.ts') && relative.split('/').includes('internal')) {
+            entries.push(relative.replace(/\.ts$/, ''));
+        }
+    }
+    return entries.sort();
+}
+
 test('ProceduralSystem excludes individually locked systems from its package graph', async () => {
     const graph = await readReachableJs(
         new URL('./dist/astro/procedural-system.js', import.meta.url),
@@ -202,52 +220,18 @@ test('a single module catalogue does not bundle the others', async () => {
     assert.match(graph, /Chaff Launcher/);
 });
 
-test('internal material construction helpers are not package exports', async () => {
-    await assert.rejects(import('@elite-dangerous-almanac/core/materials/material-catalogue'), {
-        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
-    });
-});
-
-test('internal commodity construction helpers are not package exports', async () => {
-    await assert.rejects(import('@elite-dangerous-almanac/core/commodities/commodity-catalogue'), {
-        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
-    });
-});
-
-test('internal loadout engineering adapters are not package exports', async () => {
-    await assert.rejects(import('@elite-dangerous-almanac/core/ships/loadout-engineering'), {
-        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
-    });
-});
-
-test('internal loadout metric adapters are not package exports', async () => {
-    await assert.rejects(import('@elite-dangerous-almanac/core/ships/loadout-metrics'), {
-        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
-    });
-});
-
-test('internal module construction helpers are not package exports', async () => {
-    await assert.rejects(import('@elite-dangerous-almanac/core/ships/module-catalogue'), {
-        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
-    });
-});
-
-test('the internal journal-label table is not a package export', async () => {
-    await assert.rejects(import('@elite-dangerous-almanac/core/ships/module-stat-labels'), {
-        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
-    });
+test('every internal source module is outside the package export map', async () => {
+    const entries = await internalSourceEntries();
+    assert.ok(entries.length > 0, 'expected internal source modules');
+    for (const entry of entries) {
+        await assert.rejects(import(`@elite-dangerous-almanac/core/${entry}`), {
+            code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+        });
+    }
 });
 
 test('the build does not emit entry artifacts for inaccessible internal modules', async () => {
-    const internalEntries = [
-        'commodities/commodity-catalogue',
-        'materials/material-catalogue',
-        'ships/loadout-engineering',
-        'ships/loadout-metrics',
-        'ships/module-stat-labels',
-        'ships/module-catalogue',
-    ];
-    for (const entry of internalEntries) {
+    for (const entry of await internalSourceEntries()) {
         for (const extension of ['js', 'd.ts']) {
             await assert.rejects(
                 readFile(new URL(`./dist/${entry}.${extension}`, import.meta.url)),

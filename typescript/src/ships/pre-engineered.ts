@@ -36,7 +36,7 @@
  */
 
 import preEngineeredData from '../../../data/ships/pre-engineered.jsonc' with { type: 'json' };
-import { deepFreeze } from '../deep-freeze.js';
+import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * Where a pre-engineered variant is obtained.

@@ -27,7 +27,7 @@
  * @packageDocumentation
  */
 
-import { LIBRARY_NAME, LIBRARY_VERSION } from '../version.js';
+import { LIBRARY_NAME, LIBRARY_VERSION } from '../internal/version.js';
 
 /** The envelope header — which app produced the export. */
 export interface SlefHeader {
