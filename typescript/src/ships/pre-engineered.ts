@@ -28,6 +28,9 @@
  * computed. Resolve them against the base module with `getPreEngineeredStats` from
  * `./pre-engineered-stats.js`; it lives in its own module so that consumers who only
  * want the catalogue do not bundle the module and engineering tables.
+ * The seven pre-engineered Guardian-weapon records are final articles and carry
+ * {@link PreEngineeredVariant.engineeringLocked}; their stock counterparts can take
+ * Anti-Guardian Zone Resistance, but the resolved pre-engineered articles cannot.
  *
  * @packageDocumentation
  */
@@ -86,6 +89,16 @@ export interface PreEngineeredVariant {
     readonly experimental?: string;
     /** Where the variant comes from. */
     readonly acquisition: PreEngineeredAcquisition;
+    /**
+     * Whether the article is final and accepts no further engineering.
+     *
+     * @remarks
+     * Present as `true` on the pre-engineered Guardian weapons. Their stock counterparts
+     * can take Anti-Guardian Zone Resistance, but the pre-engineered articles cannot:
+     * neither that recipe nor any ordinary weapon recipe may be applied to them.
+     * Absence means this catalogue does not lock further engineering.
+     */
+    readonly engineeringLocked?: true;
     /**
      * The shop price in Merc Coin. Present only on `mercenary` rows — the other routes
      * are not bought with a currency. Merc Coin has no credit equivalent, which is why

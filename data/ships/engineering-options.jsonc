@@ -43,8 +43,9 @@
  * families — FSD boosters, module and shield reinforcement — whose menus are empty.
  * Guardian *weapons* are the same shape: `guardianGauss`, `guardianPlasma` and
  * `guardianShard` list that one recipe too. An ordinary weapon recipe on a Guardian weapon
- * is always a **purchase**, never an engineer roll — see §Engineering options in
- * SOURCES.md — so `pre-engineered.jsonc` carries it and no menu here does. An engineered
+ * identifies a final **purchase**, never an engineer roll — see §Engineering options in
+ * SOURCES.md — so `pre-engineered.jsonc` carries it and no menu here does. Those final
+ * articles accept no further engineering, including Anti-Guardian Zone Resistance. An engineered
  * Guardian module that does carry an experimental was obtained already engineered — a
  * community-goal or tech-broker reward — rather than rolled at an engineer; no registry
  * publishes those variants and `pre-engineered.jsonc` does not carry them, so this

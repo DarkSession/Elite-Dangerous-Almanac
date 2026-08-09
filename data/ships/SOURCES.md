@@ -611,9 +611,7 @@ on that rack either way. What the default adds is the base itself — the modifi
 `OriginalValue: 0`, the figure Frontier states, where it would otherwise carry none. It
 is visible on the **66** weapons an engineer offers Rapid Fire, its multi-cannon
 spelling or Inertial Impact (`special_distortion_field`) and which hold no jitter of
-their own. (The gate accepts two more, the small and medium Guardian Gauss Cannons,
-which no menu offers — see
-<https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36>.)
+their own.
 
 **`fixtures/ships/module-stats.json` `capturedBaseStats` holds all of this**, per
 capture, so no port and no later change can quietly stop agreeing. Its `weapons` half
@@ -1420,9 +1418,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `miningToolsLasers` and `antiXenoMultiCannons`. That is coriolis being
     silent rather than contradicting — its Guardian and anti-xeno groups are empty
     objects — but it means the second registry corroborates 40 of the 53 groups, not
-    all of them, and the Guardian-weapon disagreement in
-    [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36) has only
-    one registry behind it.
+    all of them. The Guardian-weapon menus are independently settled by the in-game
+    observations below: stock weapons take Anti-Guardian Zone Resistance alone, while
+    the pre-engineered articles are final.
   - **The multi-cannon Overcharged is the one place a group follows coriolis over EDSY.**
     EDSY has a single Overcharged for every weapon; coriolis splits it, and `multiCannons`
     lists coriolis's `MC_Overcharged`. `antiXenoMultiCannons` lists that key too, but not
@@ -1500,33 +1498,30 @@ up straight through with no disambiguation at all. Both paths are evidence that
   EDSY files are pinned at the head of this document.
 
 - **Checked against the build corpus.** Of the 1902 declared engineering entries in
-  `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups, and 1889 are clean
-  end to end: the module is grouped, its group offers the blueprint, and where an
-  experimental is declared the module can take it. 70 of the 1889 declare the generic
+  `fixtures/ships/builds/`, 1900 sit on a module this catalogue groups, and 1882 are
+  applicable end to end: the module is grouped, its group offers the blueprint, and where
+  an experimental is declared the module can take it. 70 of the 1882 declare the generic
   spelling of a family-specific recipe (`Misc_LightWeight` on a life support, and so on)
   and count as offered; the shape of that judgement is pinned in the fixture as
   `corpus.blueprintAliases`. A further **71** are a journal spelling resolved against
   `journalName` above, counted separately as `corpus.journalSpellingsAccepted` because it
   is a different mechanism — 70 of them `Weapon_Overcharged` on a multi-cannon, which
   rolls `MC_Overcharged`, and the 71st `Sensor_LongRange` on a wake scanner in
-  `type9-military-combat-3`. And **13** are explained by neither spelling rule but by the
-  _sale_: the module was bought carrying the recipe, so no menu lists it
-  (`corpus.preEngineeredSalesAccepted`; every one is a Guardian weapon — see "An ordinary
-  recipe on a Guardian weapon is a purchase, not an engineer roll" below). For those 13 the
-  clause "its group offers the blueprint" does not hold, and is not meant to. The residue
-  is **13 entries no registry supports**, left as explicit exemptions rather than folded
-  in:
-  - `corpus.notOffered` — five `Weapon_HighCapacity` on the Guardian Gauss Cannon and six
-    `special_super_penetrator_cooled` on the Guardian Shard Cannon
-    ([#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36)).
-  - `corpus.notGrouped` — two `Weapon_Efficient` entries on the Mk II Plasma Shock
-    Accelerator (both in `smallcombat01-nx-combat`), which EDSY denies every blueprint
-    (`noblueprints: {'*'}`). coriolis cannot corroborate either way: its
-    `modifications/modules.json` is keyed by module _group_, so it says nothing about one
-    module. This is the one case where the corpus engineers a module this catalogue calls
-    unengineerable. The Mk II weapon is absent from the pinned upstream engineering data,
-    so the catalogue does not infer a menu from the corpus declaration. Also tracked in
-    [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36).
+  `type9-military-combat-3`. Another **18** describe final pre-engineered Guardian
+  weapons rather than recipes a player may apply: 5 Guardian Gauss Cannons declaring
+  `Weapon_HighCapacity`, 5 medium and 2 small Guardian Plasma Chargers declaring
+  `Weapon_Overcharged`, and 6 Guardian Shard Cannons declaring `Weapon_LongRange` plus
+  `special_super_penetrator_cooled`. Their stock counterparts offer only Anti-Guardian
+  Zone Resistance; the final articles offer nothing. The fixture pins those four shapes
+  under `corpus.finalPreEngineered`.
+
+  The remaining two are `corpus.notEngineerable`: `Weapon_Efficient` on the Mk II Plasma
+  Shock Accelerator (both in `smallcombat01-nx-combat`), which EDSY denies every blueprint
+  (`noblueprints: {'*'}`). coriolis cannot corroborate either way: its
+  `modifications/modules.json` is keyed by module _group_, so it says nothing about one
+  module. This is the one case where the corpus declares engineering on a module the game
+  does not let a player engineer. The Mk II weapon is absent from the pinned upstream
+  engineering data, so the catalogue does not infer a menu from the corpus.
 
   A corpus build's engineering is declared by its author, never read off an outfitting
   screen, so it is evidence about the catalogue but not authority over it. Of the **39
@@ -1589,11 +1584,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
     above. There is no upstream
     revision to pin, because no registry publishes the fact; neither contradicts the
     report either, both being silent.
-  - **The corpus neither corroborates nor contradicts.** None of the 1902 declared
-    engineering entries in `fixtures/ships/builds/` engineers a Guardian power plant,
-    distributor or hull reinforcement package at all. The six
-    `special_super_penetrator_cooled` entries on a Guardian Shard Cannon sit in
-    `corpus.notOffered` under #36 for an unrelated reason.
+  - **The corpus neither corroborates nor contradicts the Guardian-module families.** None
+    of the 1902 declared engineering entries in `fixtures/ships/builds/` engineers a
+    Guardian power plant, distributor or hull reinforcement package at all. Its
+    Guardian-weapon entries are final pre-engineered articles, a separate case recorded
+    below.
   - **What a consumer sees:** `getExperimentalsForModule` answers `[]` for the 25 modules
     in the three split families above (`guardianPowerPlants`, `guardianPowerDistributors`
     and `guardianHullReinforcements`), `ShipLoadout.applyBlueprint` refuses an
@@ -1741,12 +1736,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
     name `MC_Overcharged` as well. Nothing about the sale changes: a reward variant's stats
     are its own stored block, never the recipe folded. What it keeps true is that no
     pre-engineered row names a spelling that resolves, on its own module, to a different
-    recipe — the case `blueprintAvailableFor` describes, where the sale route accepts an id
-    the fold then reads as something else. `pre-engineered.test.ts` asserts it over all 73
+    recipe — the case `blueprintAvailableFor` describes, where the non-final sale route
+    accepts an id the fold then reads as something else. `pre-engineered.test.ts` asserts it over all 73
     rows, and both AX rows are pinned in `fixtures/ships/pre-engineered.json`, so a port
     validates the same rule. The two Guardian plasma launchers sold under
-    `Weapon_Overcharged` are not exceptions: that id is their own recipe, and their menu
-    offers no Overcharged for it to resolve into.
+    `Weapon_Overcharged` are final and never take the sale route; that id is still their
+    own recipe, and their menu offers no Overcharged for it to resolve into.
   - **What a consumer sees:** `getBlueprintsForModule` answers `MC_Overcharged` on all 14
     multi-cannons and on both AX multi-cannons; `applyBlueprint` accepts either spelling,
     resolving the journal one against the menu, and folds the clip reduction. Pinned in
@@ -1754,33 +1749,33 @@ up straight through with no disambiguation at all. Both paths are evidence that
     in full, with the medium cannon, the medium fragment cannon and the medium plasma
     accelerator as the controls that take the same journal id and no clip leg — and in
     `journalNames`.
-- **An ordinary recipe on a Guardian weapon is a purchase, not an engineer roll.** The
-  three Guardian weapon groups list **only** Anti-Guardian Zone Resistance, exactly as the
-  six Guardian _module_ groups do. `Weapon_RapidFire` on `guardianGauss`,
+- **An ordinary recipe on a Guardian weapon identifies a final purchase, not an engineer
+  roll.** The three Guardian weapon groups list **only** Anti-Guardian Zone Resistance,
+  exactly as the six Guardian _module_ groups do. `Weapon_RapidFire` on `guardianGauss`,
   `Weapon_Overcharged` on `guardianPlasma` and `Weapon_LongRange` on `guardianShard`
-  describe sold variants, not recipes a player can roll at an engineer. Two independent
-  bodies of real data and the repository owner's verification support that distinction:
+  describe sold variants, not recipes a player can roll at an engineer. The bought or
+  awarded articles are final: unlike their stock counterparts, they cannot even take
+  Anti-Guardian Zone Resistance. Two independent bodies of real data and the repository
+  owner's in-game verification (2026-08-09 UTC; no immutable revision) support that
+  distinction:
   - A 521-module `StoredModules` capture (2026-08-07 UTC) holds **20** Guardian weapons
     carrying an ordinary recipe. Every one is a **Fixed Small or Fixed Medium** variant that
     `pre-engineered.jsonc` already records as _sold_ carrying that exact recipe. No Large
     and no Turret variant carries one, and exactly one Guardian weapon in the whole capture
     carries `GuardianModule_Sturdy` — the only recipe a player can actually roll onto it.
-  - The 181-build community corpus adds **13** more of the same shape (5× and 2× Guardian
-    Plasma Launcher Fixed Medium/Small with `Weapon_Overcharged`, 6× Guardian Shard Cannon
-    Fixed Medium with `Weapon_LongRange`), every one on a variant sold carrying that recipe.
-    The corpus holds five further Guardian-weapon entries — `Weapon_HighCapacity` on a
-    Guardian Gauss Cannon — which the purchase account does _not_ explain: no registry
-    lists that recipe for that module and `pre-engineered.jsonc` does not sell it. They are
-    the residue tracked as `corpus.notOffered`, unchanged by this reading and unexplained
-    by it.
+  - The 181-build community corpus adds **18** final articles: 5× and 2× Guardian Plasma
+    Launcher Fixed Medium/Small with `Weapon_Overcharged`, 6× Guardian Shard Cannon Fixed
+    Medium with `Weapon_LongRange` and `special_super_penetrator_cooled`, and 5× Guardian
+    Gauss Cannon Fixed Medium with `Weapon_HighCapacity`. The declarations describe the
+    pre-engineered articles as exported by the build tools; they do not expand either
+    stock weapon's engineering menu.
 
-  So the recipe reaches the weapon by the **pre-engineered route**, which already carries
-  every one of these rows, and the menu must not offer it — otherwise
+  So these recipes reach the weapons only as **pre-engineered identities**, and the menu
+  must not offer them — otherwise
   `getBlueprintsForModule` promises a Guardian Plasma Turret an Overcharged roll that no
-  engineer will perform. `engineering-options.test.ts` counts a corpus declaration
-  explained this way as `preEngineeredSalesAccepted` (13), a fourth explanation beside the
-  generic alias, the journal spelling and the pinned residue — and the only one that is
-  about how a module was _obtained_ rather than how a recipe was _spelled_.
+  engineer will perform. `engineering-options.test.ts` classifies the 18 corpus entries as
+  `finalPreEngineered` before checking applicable recipes, and `pre-engineered.jsonc`
+  marks all seven catalogued Guardian-weapon variants `engineeringLocked: true`.
 
 - **Four Operations recipes are listed by a menu.** Most Operations keys belong to modules
   bought already engineered and no menu names them, but `FuelScoop_Efficiency` on
@@ -1915,9 +1910,10 @@ group is the heat sink launchers'. A per-module menu has nothing to infer.
 
 Three accommodations sit beyond the menu, and the three bullets below are them. They are
 listed as they are best explained rather than as they run — the gate applies the journal
-spelling first, then the pre-engineered route, then the generic spelling, and only the
-first can change _which recipe_ an accepted id names, so the other two cannot disagree
-whichever way round they are asked. `loadout-engineering.ts` states the running order.
+spelling first, then the non-final pre-engineered route, then the generic spelling, and
+only the first can change _which recipe_ an accepted id names, so the other two cannot
+disagree whichever way round they are asked. `loadout-engineering.ts` states the running
+order.
 
 - **Accommodation: the journal spelling of a menu entry.** Where the game writes one
   `BlueprintName` for two different recipes, the module's own group carries the map from
@@ -1945,31 +1941,26 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   the other two reach the recipe through this route. `Weapon_LightWeight` is excluded by
   the labels instead — a weapon's Lightweight cuts distributor draw, which the generic one
   does not touch.
-- **What the corpus cannot engineer, and why refusing is the honest answer.** 13 of its
-  1902 entries declare a recipe no registry lists for that module: `Weapon_HighCapacity` on
-  a Guardian Gauss Cannon (5) and `special_super_penetrator_cooled` on a Guardian Shard
-  Cannon (6), where EDSY's `hexgg` group answers Rapid Fire and Anti-Guardian Zone
-  Resistance alone; and `Weapon_Efficient` on the Mk II Plasma Shock Accelerator (2), which
-  EDSY marks `noblueprints`. All thirteen are refused, each citing an upstream denial —
-  which is a tightening on real community builds, and deliberate: an inference loose
-  enough to admit them classifies all three as weapons and cannot see that the game offers
-  those particular weapons almost nothing. They are recorded in the fixture and exempted
-  by name with their counts, never by a bare total, so a new disagreement fails a test
-  instead of hiding in the allowance. Tracked at
-  [#36](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/36).
+- **What the corpus cannot engineer, and why refusing is the honest answer.** Two entries
+  put `Weapon_Efficient` on the Mk II Plasma Shock Accelerator, which EDSY marks
+  `noblueprints`. They are recorded under `corpus.notEngineerable` by identity and count,
+  so a new disagreement cannot hide in the allowance. The 18 Guardian-weapon entries are
+  refused for a different reason: they describe final pre-engineered articles, pinned
+  under `corpus.finalPreEngineered`, rather than recipes a player may apply.
 - **Accommodation: the pre-engineered route.** Most Operations keys belong to a module
   bought already engineered, so no menu lists one and the menu check alone would refuse
   all 21 of them everywhere. (The four a menu _does_ list are recipes a player rolls from
   grade 1 and need no accommodation; see §Engineering options.)
   `pre-engineered.jsonc` names which module each arrives on, so the gate accepts a recipe on
-  the module that is sold carrying it and nowhere else:
+  the non-final module that is sold carrying it and nowhere else:
   `RailGun_LongShot` resolves on the medium rail gun, not on the small one. What
   that buys is the **climb**, not the purchase: a Mercenary module arrives at grade 1
   and its recipe publishes grades 2–5, the grades an engineer can still add. It cannot
   reproduce the grade the module was sold at — all 22 Mercenary rows are grade 1, none of
   those recipes defines a grade 1, and the blueprint lookup refuses that call before the
   gate is reached — and it is not how a reward variant is recreated either, which
-  `pre-engineered-stats` does from the variant's own `modifiers`. One of the 22, the
+  `pre-engineered-stats` does from the variant's own `modifiers`. A row marked
+  `engineeringLocked` never takes this route. One of the 22 Mercenary rows, the
   Mercenary Module Reinforcement Package, has no engineering menu at all, so the gate asks
   what a module is _sold_ with before it concludes the module takes nothing.
 
@@ -2044,6 +2035,14 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
     and several rows are annotated as having been obtainable both ways — the six SCO "V1"
     drives most obviously. `acquisition` records the tag; it is not a claim that no other
     route ever existed.
+- **`engineeringLocked: true` marks all seven pre-engineered Guardian-weapon rows as
+  final.** Their stock Gauss, Plasma and Shard counterparts offer Anti-Guardian Zone
+  Resistance and nothing else; the bought or awarded articles accept no further
+  blueprint or experimental effect, including that resistance. Source: the repository
+  maintainer's in-game verification on 2026-08-09 UTC; there is no immutable upstream
+  revision because neither engineering registry publishes the final-article restriction.
+  `getPreEngineeredStats` carries the flag onto the resolved module so fitting one keeps
+  the restriction.
 - **A reward variant is not reproducible by engineering the same blueprint.** Alongside
   its blueprint and effect, each reward carries hand-set modifier overrides no blueprint
   grants — that is what makes it a reward rather than a shortcut. The `blueprint` /

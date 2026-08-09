@@ -26,6 +26,13 @@ const MODULE_BY_SYMBOL: ReadonlyMap<string, OutfittingModule> = new Map(
     ALL_MODULES.map((module) => [module.symbol.toLowerCase(), module]),
 );
 
+/** Engineering groups whose non-menu recipes identify final bought articles. */
+const GUARDIAN_WEAPON_GROUPS: ReadonlySet<string> = new Set([
+    'guardianGauss',
+    'guardianPlasma',
+    'guardianShard',
+]);
+
 /** Resolve a module's complete catalogue record across every category. @internal */
 export function statFor(item: string): OutfittingModule | null {
     return MODULE_BY_SYMBOL.get(item.trim().toLowerCase()) ?? null;
@@ -102,7 +109,7 @@ const MENU_IDS: ReadonlySet<string> = new Set(
 );
 
 /**
- * Whether a module is *sold* carrying this recipe, rather than offered it at an engineer.
+ * Whether a module is sold carrying this recipe in a form that can still be engineered.
  *
  * Most Operations keys belong to modules bought already engineered — the Mercenary shop's
  * rail gun, the community-goal and tech-broker rewards — so no engineering menu lists one
@@ -119,13 +126,15 @@ const MENU_IDS: ReadonlySet<string> = new Set(
  * module was sold at: all 22 Mercenary rows are grade 1, none of those recipes defines a
  * grade 1, and `getBlueprintGrade` refuses that call before this check is reached. Nothing
  * here recreates a reward variant either; `pre-engineered-stats` resolves those from their
- * own `modifiers`.
+ * own `modifiers`. Final pre-engineered Guardian weapons are deliberately excluded: their
+ * stock module offers Anti-Guardian Zone Resistance, but the bought article accepts no
+ * further engineering at all.
  *
  * @internal
  */
 function isSoldWithBlueprint(item: string, wanted: string): boolean {
     return getPreEngineeredVariants(item).some(
-        (variant) => variant.blueprint.toLowerCase() === wanted,
+        (variant) => !variant.engineeringLocked && variant.blueprint.toLowerCase() === wanted,
     );
 }
 
@@ -145,8 +154,9 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * recipes' shape says they belong together. Every id it does not recognise passes straight
  * through, so the two checks below see what the caller wrote.
  *
- * The second is {@link isSoldWithBlueprint}: a module with no menu, or a menu that omits the
- * recipe, still accepts one it is sold already carrying. It is asked about the id as written
+ * The second is {@link isSoldWithBlueprint}: a non-final module with no menu, or a menu
+ * that omits the recipe, still accepts one it is sold already carrying. It is asked about
+ * the id as written
  * *and* about the resolved one, so resolution cannot **hide** a sale recorded under the
  * other spelling. That is deliberately the widening direction, not a symmetry: if a variant
  * on a menu carrying one of the three colliding ids were recorded under the journal
@@ -230,10 +240,31 @@ export function isEngineerable(item: string): boolean {
     return getEngineeringGroup(item) !== null;
 }
 
-/** Blueprints the module's menu offers whose modifiers can also be computed. @internal */
-export function availableBlueprintsFor(item: string): AvailableBlueprint[] {
-    const stats = statFor(item);
+/**
+ * Whether captured engineering identifies a final pre-engineered Guardian weapon.
+ *
+ * Guardian weapon stock modules offer only Anti-Guardian Zone Resistance. A journal or
+ * build that instead names a real ordinary weapon recipe is describing the bought or
+ * awarded article carrying that recipe, including articles not present in the narrower
+ * pre-engineered catalogue. Those articles accept no further engineering.
+ *
+ * @internal
+ */
+export function isFinalGuardianWeaponEngineering(item: string, blueprint: string): boolean {
+    const group = getEngineeringGroup(item);
+    if (group === null || !GUARDIAN_WEAPON_GROUPS.has(group)) return false;
+    const resolved = resolveBlueprintForModule(item, blueprint);
+    return getBlueprint(resolved) !== null && !blueprintAvailableFor(item, blueprint);
+}
+
+/** Blueprints the fitted article's menu offers whose modifiers can also be computed. @internal */
+export function availableBlueprintsFor(
+    item: string,
+    statsOverride?: OutfittingModule | null,
+): AvailableBlueprint[] {
+    const stats = statsOverride ?? statFor(item);
     if (!stats) return [];
+    if (stats.engineeringLocked) return [];
     const base = baseStats(stats);
     const available: AvailableBlueprint[] = [];
     for (const fdname of getBlueprintsForModule(item)) {
@@ -249,10 +280,14 @@ export function availableBlueprintsFor(item: string): AvailableBlueprint[] {
     return available;
 }
 
-/** Experimental effects the menu offers whose modifiers can also be computed. @internal */
-export function availableExperimentalsFor(item: string): string[] {
-    const stats = statFor(item);
+/** Experimental effects the fitted article offers whose modifiers can also be computed. @internal */
+export function availableExperimentalsFor(
+    item: string,
+    statsOverride?: OutfittingModule | null,
+): string[] {
+    const stats = statsOverride ?? statFor(item);
     if (!stats) return [];
+    if (stats.engineeringLocked) return [];
     const base = baseStats(stats);
     return getExperimentalsForModule(item).filter((fdname) => {
         const effect = EXPERIMENTAL_EFFECTS[fdname];

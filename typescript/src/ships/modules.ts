@@ -457,6 +457,15 @@ export interface OutfittingModule {
      */
     readonly guardianZoneResistance?: boolean;
     /**
+     * Whether this particular resolved article accepts no further engineering.
+     *
+     * @remarks
+     * Stock module catalogues omit this field. `getPreEngineeredStats` sets it on final
+     * pre-engineered Guardian weapons so a fitted article exposes an empty engineering
+     * menu and rejects both blueprints and experimental effects.
+     */
+    readonly engineeringLocked?: boolean;
+    /**
      * Armour: the hull hit points this bulkhead adds, as a fraction of the hull's
      * {@link Ship.baseArmour} on top of it — `0.8` (lightweight alloy) means
      * `baseArmour × 1.8`, `2.5` means `baseArmour × 3.5`.

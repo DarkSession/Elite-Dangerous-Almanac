@@ -212,7 +212,12 @@ export class FittedModule {
         return this;
     }
 
-    /** Remove engineering and return this handle for chaining. */
+    /**
+     * Remove engineering and return this handle for chaining.
+     *
+     * @throws {TypeError} If this is a final pre-engineered article whose baked
+     * engineering cannot be removed.
+     */
     clearEngineering(): this {
         this.#raw();
         this.#loadout.clearEngineering(this.#slotKey);
@@ -253,7 +258,7 @@ export class FittedModule {
      * (sorted) order, minus any whose modifiers the catalogue cannot compute.
      */
     getAvailableBlueprints(): AvailableBlueprint[] {
-        return availableBlueprintsFor(this.#raw().Item);
+        return availableBlueprintsFor(this.#raw().Item, this.#currentStats());
     }
 
     /**
@@ -263,7 +268,7 @@ export class FittedModule {
      * menu's own order, minus any whose modifiers the catalogue cannot compute.
      */
     getAvailableExperimentalEffects(): string[] {
-        return availableExperimentalsFor(this.#raw().Item);
+        return availableExperimentalsFor(this.#raw().Item, this.#currentStats());
     }
 
     /**

@@ -1439,6 +1439,102 @@ test('a module sold pre-engineered can be taken further, menu or no menu', () =>
     );
 });
 
+test('a final pre-engineered Guardian weapon exposes no engineering', () => {
+    const variant = getPreEngineeredVariants('Hpt_Guardian_GaussCannon_Fixed_Medium')[0]!;
+    const resolved = getPreEngineeredStats(variant)!;
+    const build = ShipLoadout.empty('Anaconda').setModule('MediumHardpoint1', resolved);
+    const fitted = build.getFittedModule('MediumHardpoint1')!;
+
+    assert.equal(resolved.engineeringLocked, true);
+    assert.deepEqual(fitted.getAvailableBlueprints(), []);
+    assert.deepEqual(fitted.getAvailableExperimentalEffects(), []);
+    for (const blueprint of ['GuardianModule_Sturdy', variant.blueprint]) {
+        assert.throws(
+            () => fitted.applyBlueprint(blueprint, { grade: 1 }),
+            /is a final pre-engineered article and accepts no further engineering/,
+        );
+    }
+});
+
+test('imported Guardian purchase identities remain final articles', () => {
+    // The first two identities occur in the build corpus but are not rows in the narrower
+    // pre-engineered catalogue. The Engineering tuple itself still identifies a final
+    // article because an ordinary recipe cannot be rolled onto a stock Guardian weapon.
+    const articles = [
+        {
+            symbol: 'Hpt_Guardian_GaussCannon_Fixed_Medium',
+            blueprint: 'Weapon_HighCapacity',
+            grade: 5,
+        },
+        {
+            symbol: 'Hpt_Guardian_ShardCannon_Fixed_Medium',
+            blueprint: 'Weapon_LongRange',
+            grade: 5,
+            experimental: 'special_super_penetrator_cooled',
+        },
+        {
+            symbol: 'Hpt_Guardian_PlasmaLauncher_Fixed_Medium',
+            blueprint: 'Weapon_Overcharged',
+            grade: 1,
+        },
+    ] as const;
+
+    for (const article of articles) {
+        const build = ShipLoadout.fromLoadout({
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'MediumHardpoint1',
+                    Item: article.symbol,
+                    Engineering: {
+                        BlueprintName: article.blueprint,
+                        Level: article.grade,
+                        Quality: 1,
+                        ...('experimental' in article
+                            ? { ExperimentalEffect: article.experimental }
+                            : {}),
+                    },
+                },
+            ],
+        });
+        const fitted = build.getFittedModule('MediumHardpoint1')!;
+        assert.equal(fitted.stats?.engineeringLocked, true, article.symbol);
+        assert.deepEqual(fitted.getAvailableBlueprints(), [], article.symbol);
+        assert.deepEqual(fitted.getAvailableExperimentalEffects(), [], article.symbol);
+        assert.throws(
+            () => fitted.applyBlueprint('GuardianModule_Sturdy', { grade: 1 }),
+            /is a final pre-engineered article and accepts no further engineering/,
+        );
+        assert.throws(
+            () => fitted.clearEngineering(),
+            /is a final pre-engineered article and its engineering cannot be removed/,
+        );
+    }
+});
+
+test('imported Anti-Guardian Zone Resistance remains an engineerable stock article', () => {
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            {
+                Slot: 'MediumHardpoint1',
+                Item: 'Hpt_Guardian_GaussCannon_Fixed_Medium',
+                Engineering: {
+                    BlueprintName: 'GuardianModule_Sturdy',
+                    Level: 1,
+                    Quality: 1,
+                },
+            },
+        ],
+    });
+    const fitted = build.getFittedModule('MediumHardpoint1')!;
+    assert.equal(fitted.stats?.engineeringLocked, undefined);
+    assert.deepEqual(
+        fitted.getAvailableBlueprints().map((blueprint) => blueprint.fdname),
+        ['GuardianModule_Sturdy'],
+    );
+});
+
 test('clearEngineering restores base stats', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'FrameShiftDrive',

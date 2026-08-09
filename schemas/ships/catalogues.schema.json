@@ -552,6 +552,10 @@
         "grade": { "type": "integer", "minimum": 1, "maximum": 5 },
         "experimental": { "$ref": "#/definitions/nonEmptyString" },
         "acquisition": { "enum": ["mercenary", "communityGoal", "techBroker"] },
+        "engineeringLocked": {
+          "description": "True when this final pre-engineered article accepts no further engineering; absent otherwise.",
+          "const": true
+        },
         "mercCoinCost": { "type": "integer", "exclusiveMinimum": 0 },
         "modifiers": {
           "type": "array",

@@ -63,7 +63,7 @@ test('every variant joins to a real module, blueprint and experimental effect', 
     }
 });
 
-test('a variant never arrives with an experimental its module is not offered', () => {
+test('pre-engineered variants distinguish menu compatibility from final articles', () => {
     // `applyBlueprint` gates experimental effects on the engineering menu alone, with no
     // pre-engineered leg beside the one it has for blueprints — because it needs none:
     // every effect a variant is sold carrying is one the module's own menu lists. This is
@@ -76,16 +76,33 @@ test('a variant never arrives with an experimental its module is not offered', (
             `${variant.symbol} is sold with "${variant.experimental}", which its menu does not offer`,
         );
     }
-    // The blueprint half of that contrast, so the asymmetry is pinned rather than asserted.
+    // The blueprint half of that contrast. A non-final sale may open the remaining grades
+    // of its recipe; a final Guardian article is evidence of what was bought, never
+    // permission to roll that recipe at an engineer.
     const sold = PRE_ENGINEERED_MODULES.filter(
         (variant) => !getBlueprintsForModule(variant.symbol).includes(variant.blueprint),
     );
     assert.ok(sold.length > 0, 'no variant is sold with a recipe its menu omits');
     for (const variant of sold) {
-        assert.ok(
+        assert.equal(
             blueprintAvailableFor(variant.symbol, variant.blueprint),
-            `${variant.symbol} is sold with "${variant.blueprint}" but the gate refuses it`,
+            !variant.engineeringLocked,
+            `${variant.symbol}: ${variant.blueprint}`,
         );
+    }
+});
+
+test('the pinned pre-engineered Guardian weapons are final', () => {
+    const locked = PRE_ENGINEERED_MODULES.filter((variant) => variant.engineeringLocked);
+    assert.equal(locked.length, fixture.engineeringLocked.count);
+    assert.deepEqual(
+        [...new Set(locked.map((variant) => variant.symbol))].sort(),
+        fixture.engineeringLocked.symbols,
+    );
+    for (const variant of locked) {
+        assert.deepEqual(getBlueprintsForModule(variant.symbol), ['GuardianModule_Sturdy']);
+        assert.deepEqual(getExperimentalsForModule(variant.symbol), []);
+        assert.ok(!blueprintAvailableFor(variant.symbol, variant.blueprint));
     }
 });
 

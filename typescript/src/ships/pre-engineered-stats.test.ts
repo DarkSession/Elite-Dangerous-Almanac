@@ -88,6 +88,12 @@ test('a pre-engineered weapon resolves its damage-side stats too', () => {
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
 });
 
+test('a final pre-engineered Guardian weapon stays locked when resolved', () => {
+    const variant = getPreEngineeredVariants('Hpt_Guardian_GaussCannon_Fixed_Medium')[0]!;
+    assert.equal(variant.engineeringLocked, true);
+    assert.equal(getPreEngineeredStats(variant)?.engineeringLocked, true);
+});
+
 test('a pre-engineered damage modifier scales every exact damage component', () => {
     const symbol = 'Hpt_ATMultiCannon_Gimbal_Medium';
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;

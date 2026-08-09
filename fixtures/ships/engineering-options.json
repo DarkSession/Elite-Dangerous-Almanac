@@ -1093,12 +1093,12 @@
     ]
   },
   "corpus": {
-    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total; `ungroupedEntries` counts declarations on modules this catalogue does not group. `blueprintAliases` are recipes reachable under more than one current spelling. Most are a family's generic id: the catalogue lists the family-specific spelling and a build declaring the generic one is engineering the same thing. Anti-Guardian Zone Resistance is the other kind — its two registry spellings (`recipe_guardianmodule_sturdy`, `recipe_guardianweapon_sturdy`) both reach the `GuardianModule_Sturdy` the nine groups offering it list, that last being the only one of the three a journal has been observed to write. `journalSpellingsAccepted` counts declarations resolved against a blueprint record's `journalName` rather than by signature — one journal id, two recipes, and only the fitted module says which. 70 of the 71 are `Weapon_Overcharged` on a multi-cannon, which rolls the `MC_Overcharged` the multi-cannon menu lists rather than the recipe every other weapon takes under that id; the 71st spells a wake scanner's Long Range `Sensor_LongRange`, the id the game writes for the sensor suite's different recipe of the same name. `notOffered` is the residue: declarations no registry lists for that module, kept here rather than bent into the catalogue.",
+    "description": "The catalogue measured against `fixtures/ships/builds/`. `declaredEngineering` is the corpus total; `ungroupedEntries` counts declarations on modules this catalogue does not group. `blueprintAliases` are recipes reachable under more than one current spelling. Most are a family's generic id: the catalogue lists the family-specific spelling and a build declaring the generic one is engineering the same thing. Anti-Guardian Zone Resistance is the other kind — its two registry spellings (`recipe_guardianmodule_sturdy`, `recipe_guardianweapon_sturdy`) both reach the `GuardianModule_Sturdy` the nine groups offering it list, that last being the only one of the three a journal has been observed to write. `journalSpellingsAccepted` counts declarations resolved against a blueprint record's `journalName` rather than by signature — one journal id, two recipes, and only the fitted module says which. 70 of the 71 are `Weapon_Overcharged` on a multi-cannon, which rolls the `MC_Overcharged` the multi-cannon menu lists rather than the recipe every other weapon takes under that id; the 71st spells a wake scanner's Long Range `Sensor_LongRange`, the id the game writes for the sensor suite's different recipe of the same name. `finalPreEngineered` pins the 18 Guardian-weapon entries that describe final pre-engineered articles rather than recipes a player may apply. `notEngineerable` pins the two Mk II Plasma Shock Accelerator declarations whose module accepts no engineering.",
     "declaredEngineering": 1902,
     "ungroupedEntries": 2,
     "aliasSpellingsAccepted": 70,
     "journalSpellingsAccepted": 71,
-    "preEngineeredSalesAccepted": 13,
+    "finalPreEngineeredEntries": 18,
     "blueprintAliases": {
       "Misc_LightWeight": [
         "CollectionLimpet_LightWeight",
@@ -1127,19 +1127,30 @@
       "recipe_guardianmodule_sturdy": ["GuardianModule_Sturdy"],
       "recipe_guardianweapon_sturdy": ["GuardianModule_Sturdy"]
     },
-    "notOffered": [
+    "finalPreEngineered": [
       {
         "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
         "blueprint": "Weapon_HighCapacity",
         "entries": 5
       },
       {
+        "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
+        "blueprint": "Weapon_Overcharged",
+        "entries": 5
+      },
+      {
         "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "blueprint": "Weapon_LongRange",
         "experimental": "special_super_penetrator_cooled",
         "entries": 6
+      },
+      {
+        "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Small",
+        "blueprint": "Weapon_Overcharged",
+        "entries": 2
       }
     ],
-    "notGrouped": [
+    "notEngineerable": [
       {
         "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
         "blueprint": "Weapon_Efficient",
