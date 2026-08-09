@@ -22,6 +22,7 @@ import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-cor
 import corvetteMultiroleJournal from '../../../fixtures/ships/journal-federation-corvette-multirole.json' with { type: 'json' };
 import corvetteMixedJournal from '../../../fixtures/ships/journal-federation-corvette-mixed.json' with { type: 'json' };
 import corvettePlasmaJournal from '../../../fixtures/ships/journal-federation-corvette-plasma.json' with { type: 'json' };
+import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
 import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
@@ -33,6 +34,7 @@ import deepBlackSlef from '../../../fixtures/ships/slef-the-deep-black.json' wit
 // Every capture the repository holds that could state a base value, named by the file the
 // fixture names, so a new capture is joined here by adding it in both places.
 const CAPTURES: readonly { file: string; loadouts: readonly LoadoutEvent[] }[] = [
+    { file: 'journal-caspian-explorer.json', loadouts: [caspianJournal as LoadoutEvent] },
     { file: 'journal-cobra-mkv.json', loadouts: [cobraJournal as LoadoutEvent] },
     { file: 'journal-corsair.json', loadouts: [corsairJournal as LoadoutEvent] },
     {

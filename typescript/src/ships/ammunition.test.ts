@@ -20,6 +20,7 @@ import corvettePlasmaJournal from '../../../fixtures/ships/journal-federation-co
 import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
+import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
 
 /** The shape this file reads off a capture — a journal states more than the library models. */
 interface JournalAmmoModule {
@@ -50,6 +51,7 @@ const JOURNALS = [
     ['journal-cobra-mkv.json', cobraJournal],
     ['journal-kestrel-mkii.json', kestrelJournal],
     ['journal-lynx-highliner.json', lynxJournal],
+    ['journal-caspian-explorer.json', caspianJournal],
 ] as const;
 
 const module = (symbol: string) => {
@@ -219,8 +221,8 @@ test('a build reports the capacity of every weapon it carries', () => {
 });
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
-    // A rearm state is a lower bound on a capacity, never a reading of one. All 57 counts
-    // across the twelve captures happen to sit at capacity — that is what makes them a
+    // A rearm state is a lower bound on a capacity, never a reading of one. All 60 counts
+    // across the thirteen captures happen to sit at capacity — that is what makes them a
     // check on the catalogue — but a partly spent launcher would report less and say
     // nothing.
     const pinned = fixture.ammunition.journalReadings;
