@@ -553,6 +553,10 @@ export class ShipLoadout {
      *
      * @param event - A `Loadout` event object.
      * @returns The loadout.
+     * @remarks
+     * Capture/instance state (`timestamp`, `ShipID`, `HullHealth`, `Hot`) and engineering
+     * provenance (`Engineer`, `EngineerID`, `BlueprintID`) are deliberately excluded
+     * from the durable build. See {@link LoadoutEvent} and {@link ModuleEngineering}.
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
         const modules = new Map<string, LoadoutModule>();

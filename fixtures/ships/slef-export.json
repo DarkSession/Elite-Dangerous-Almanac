@@ -56,6 +56,13 @@
     "modifiersRequired": false,
     "exportInventsEmptyArray": false
   },
+  "journalFieldExclusions": {
+    "note": "Fields a real journal capture may carry but the durable build deliberately does not. timestamp identifies the capture; ShipID identifies that journal's ship instance; HullHealth and Hot are transient ship state. Engineer and EngineerID record who applied engineering, and BlueprintID is redundant with BlueprintName. A journal -> ShipLoadout -> SLEF round trip drops these fields while retaining the engineering recipe, grade, quality, experimental effect and modifiers.",
+    "topLevelBuild": "fixtures/ships/journal-viper-mkiv.json",
+    "topLevel": ["timestamp", "ShipID", "HullHealth", "Hot"],
+    "engineeringBuild": "fixtures/ships/journal-krait-phantom.json",
+    "engineering": ["Engineer", "EngineerID", "BlueprintID"]
+  },
   "deepBlack": {
     "build": "fixtures/ships/slef-the-deep-black.json",
     "note": "Round-trip of a real EDSY export. The physical figures reproduce the export's own exactly, which is what makes recomputation trustworthy. The credit figures do not, and should not: this export was taken at a 12.25% outfitting discount.",

@@ -65,7 +65,16 @@ export interface EngineeringModifier {
     readonly LessIsGood?: number;
 }
 
-/** The engineering applied to one module. */
+/**
+ * The durable engineering applied to one module.
+ *
+ * @remarks
+ * A journal capture may also name `Engineer`, `EngineerID` and `BlueprintID`.
+ * They are deliberately outside this type: the engineer fields record who applied a
+ * modification, while the numeric blueprint id is redundant with {@link BlueprintName};
+ * none changes the fitted module. {@link ShipLoadout.fromLoadout} therefore drops them
+ * and subsequent loadout/SLEF exports never write them.
+ */
 export interface ModuleEngineering {
     /** The blueprint's journal name, e.g. `"FSD_LongRange"`. */
     readonly BlueprintName: string;
@@ -125,8 +134,12 @@ export interface LoadoutModule {
  *
  * @remarks
  * Only `Ship` and `Modules` are strictly required by SLEF; every other field is
- * copied from the journal event when the exporter has it. Masses are in tonnes,
- * ranges in light-years, values in credits.
+ * optional. Masses are in tonnes, ranges in light-years, values in credits.
+ *
+ * `timestamp`, `ShipID`, `HullHealth` and `Hot` are deliberately outside the durable
+ * loadout shape. They describe the capture or the ship instance/state rather than its
+ * fit, so {@link ShipLoadout.fromLoadout} drops them and subsequent loadout/SLEF exports
+ * never write them. A tolerant parse still accepts an input object carrying those keys.
  */
 export interface LoadoutEvent {
     /** Always `"Loadout"`. */

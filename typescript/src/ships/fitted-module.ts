@@ -15,10 +15,12 @@ import type { LoadoutModule, ModuleEngineering } from './slef.js';
  * A live handle on the module fitted in one slot, as returned by
  * {@link ShipLoadout.getFittedModule} and `LoadoutSlot.module`.
  *
- * Journal fields use the library's camel-case names. The original journal record is
- * available from {@link FittedModule.raw}. The handle remains valid across its own
- * engineering changes; once the slot is emptied or replaced, access throws instead of
- * returning stale data.
+ * Journal fields use the library's camel-case names. A detached copy of the durable,
+ * journal-shaped record is available from {@link FittedModule.raw}; capture-only state
+ * and engineering provenance are excluded as {@link LoadoutModule} and
+ * {@link ModuleEngineering} describe. The handle remains valid across its own engineering
+ * changes; once the slot is emptied or replaced, access throws instead of returning stale
+ * data.
  *
  * @example
  * ```ts
@@ -115,7 +117,13 @@ export class FittedModule {
         return this.#raw().Engineering;
     }
 
-    /** A detached copy of the underlying journal module record. */
+    /**
+     * A detached copy of the durable journal-shaped module record.
+     *
+     * @remarks
+     * Capture-only ammunition state and engineering provenance are deliberately absent;
+     * see {@link LoadoutModule} and {@link ModuleEngineering}.
+     */
     get raw(): LoadoutModule {
         return this.#raw();
     }
