@@ -23,7 +23,12 @@
  */
 
 import { computeModifiers, type BlueprintFeature } from './engineering.js';
-import { baseStats, fieldForLabel, scaleForLabel } from './module-stat-labels.js';
+import {
+    baseStats,
+    capabilityValueForLabel,
+    fieldForLabel,
+    scaleForLabel,
+} from './module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import type { PreEngineeredModifier, PreEngineeredVariant } from './pre-engineered.js';
@@ -67,11 +72,10 @@ export function getPreEngineeredModifiers(variant: PreEngineeredVariant): Engine
 /**
  * The labels a variant modifies that cannot be computed for its particular base module.
  *
- * This includes both labels the catalogues do not model at all (Anti-Guardian Zone
- * Resistance, which is a granted capability rather than a number) and known fields whose
- * base value is absent from this particular module. Reported rather than dropped so a
- * consumer can distinguish "this variant changes nothing else" from "this catalogue
- * cannot say". Empty for every variant in the catalogue today.
+ * This includes labels the catalogues do not model at all and known fields whose base
+ * value is absent from this particular module. Reported rather than dropped so a consumer
+ * can distinguish "this variant changes nothing else" from "this catalogue cannot say".
+ * Empty for every variant in the catalogue today.
  *
  * @param variant - A pre-engineered variant.
  * @returns The unresolvable labels, in the variant's own order.
@@ -122,16 +126,18 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
     const resolved: { -readonly [K in keyof OutfittingModule]: OutfittingModule[K] } = {
         ...module,
     };
-    for (const { Label, Value } of computeModifiers(
+    for (const { Label, Value, ValueStr } of computeModifiers(
         baseStats(module),
         asFeatures(variant.modifiers),
     )) {
         const field = fieldForLabel(Label, module);
-        // Every field a label maps to holds a number, so the computed value fits —
-        // once it is back in the catalogue's units (a journal reports a resistance as
-        // `40` where the catalogue stores `0.4`).
+        // Numeric values return to the catalogue's units (a journal reports a resistance
+        // as `40` where the catalogue stores `0.4`). A string-valued capability is stored
+        // as the boolean it grants.
         if (field && Value !== undefined) {
             Object.assign(resolved, { [field]: Value / scaleForLabel(Label) });
+        } else if (field && ValueStr !== undefined && capabilityValueForLabel(Label) !== null) {
+            Object.assign(resolved, { [field]: true });
         }
     }
     // A variant that changes the burst pattern changes the rate of fire with it, even

@@ -56,6 +56,11 @@ export interface StatLabel {
      * values {@link computeModifiers} folds.
      */
     readonly defaultBase?: number;
+    /**
+     * String written to a non-numeric journal modifier when the label grants a boolean
+     * capability. Presence of that modifier makes `field` true in effective module stats.
+     */
+    readonly capabilityValue?: string;
 }
 
 const percent = 100;
@@ -154,6 +159,11 @@ export const STAT_LABELS: readonly StatLabel[] = [
     },
     { label: 'DefenceModifierHealthAddition', field: 'hullReinforcement' },
     { label: 'DefenceModifierShieldAddition', field: 'shieldAddition' },
+    {
+        label: 'GuardianModuleResistance',
+        field: 'guardianZoneResistance',
+        capabilityValue: 'Active',
+    },
     {
         label: 'KineticResistance',
         field: 'kineticResistance',
@@ -365,6 +375,21 @@ export function scaleForLabel(label: string): number {
  */
 export function multiplierBaseForLabel(label: string): number | null {
     return BY_LABEL.get(label)?.[0]?.multiplierBase ?? null;
+}
+
+/**
+ * The string a capability-granting label writes to a journal modifier, or `null` for a
+ * numeric stat.
+ *
+ * @remarks
+ * EDSY by taleden (CC BY-NC 4.0) stores Anti-Guardian Zone Resistance as the enumerated
+ * `agzresist` flag with values `''` / `'Active'`, no unit and no magnitude. The mapping
+ * preserves that shape rather than treating Inara's displayed `+100%` as arithmetic.
+ *
+ * @internal
+ */
+export function capabilityValueForLabel(label: string): string | null {
+    return BY_LABEL.get(label)?.[0]?.capabilityValue ?? null;
 }
 
 /**

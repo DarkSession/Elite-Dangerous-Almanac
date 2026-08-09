@@ -472,14 +472,24 @@ the corpus-wide claim in `builds.test.ts`.
   The calculator compounds `DefenceModifierHealthMultiplier` from that zero, which is why
   a package can be engineered to a hull boost it never had and why a journal reports the
   leg with `OriginalValue: 0`. No value is stored on any record for it.
-- **What is still refused, and why that is right.** `GuardianModuleResistance` refuses
-  everywhere because it is not a number: EDSY stores
-  Anti-Guardian Zone Resistance as a flag the recipe _grants_, and this record shape has
-  no field for it
-  ([issue #27](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27)). Beyond
-  base stats, 14 corpus entries are refused because the engineering menu does not offer
-  that recipe on that module — the residue recorded under §Engineering compatibility, not
-  a missing stat.
+- **`GuardianModuleResistance` grants a capability rather than scaling a stat.** EDSY
+  stores Anti-Guardian Zone Resistance as `agzresist`, an enumerated flag with values
+  `''` / `'Active'`, no unit and no magnitude. Inara displays the activation as +100%, but
+  treating that as an additive number would invent a base value the game does not have.
+  The label mapping therefore writes a non-numeric, journal-compatible modifier
+  `{ Label: 'GuardianModuleResistance', ValueStr: 'Active' }`; a fitted module's effective
+  record exposes `guardianZoneResistance: true`. Stock catalogue records omit the sparse
+  flag, meaning the capability is not granted. The shared `guardianZoneResistanceCapability`
+  fixture pins the same result on a Guardian power plant and a Guardian weapon, the SLEF
+  round trip, and the ordinary power plant that remains outside the blueprint's menu.
+  No raw `Loadout` capture in this repository states this modifier: `ValueStr: 'Active'`
+  is the library's projection of EDSY's enum into the string-valued modifier shape SLEF
+  already supports. On import, the presence of the mapped label grants the capability
+  regardless of the producer's `ValueStr`, so this representation is not mistaken for a
+  claim about Frontier's exact serialization.
+  Separately, 14 corpus entries are refused because the engineering menu does not offer
+  their recipe on that module — the residue recorded under §Engineering compatibility,
+  not a missing stat.
 
 ### Deliberately absent fields
 
@@ -489,9 +499,6 @@ the corpus-wide claim in `builds.test.ts`.
   ever changes. Guardian hull reinforcement packages are in that set and do draw power,
   so "no integrity" is not a shorthand for "inert".
 - **`cost` is absent** when no published price exists; `undefined` never means free.
-- **One journal label remains unmodellable** because it is a capability rather than a
-  number:
-  [issue #27](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27).
 
 ### Reconciliation and in-game audit
 
@@ -1165,8 +1172,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   **`GuardianModule_Sturdy`** — the id a journal writes, and the only one any engineering
   menu lists — and again under the registry's `recipe_guardianmodule_sturdy` and
   `recipe_guardianweapon_sturdy`, so a journal or saved build referencing any of the three
-  resolves. All three carry the same display name, the same grade-1-only
-  `GuardianModuleResistance` +100%, and the same recipe (2×`TG_Abrasion03`,
+  resolves. All three carry the same display name, define grade 1 only, expose the
+  `GuardianModuleResistance` activation Inara displays as +100%, and carry the same recipe
+  (2×`TG_Abrasion03`,
   1×`TG_CausticCrystal`); the compatibility gate accepts the two registry spellings as the
   journal id's other names (§Engineering compatibility). They are intentional duplicates,
   not a copy-paste slip — do not dedupe them.

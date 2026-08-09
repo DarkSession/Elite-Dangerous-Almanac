@@ -11,6 +11,7 @@
 
 import { getLoadoutModifier, type LoadoutModule } from './slef.js';
 import {
+    capabilityValueForLabel,
     damageTypeForLabel,
     fieldForLabel,
     labelsForField,
@@ -94,6 +95,26 @@ export function effectiveStat(
     }
     const base = stats?.[field];
     return typeof base === 'number' ? base : undefined;
+}
+
+/** A fitted module's effective boolean capability, when `field` is capability-backed. */
+function effectiveCapability(
+    module: LoadoutModule,
+    field: keyof OutfittingModule,
+    stats: OutfittingModule,
+): boolean | undefined {
+    for (const label of labelsForField(field)) {
+        if (capabilityValueForLabel(label) === null) continue;
+        if (
+            module.Engineering?.Modifiers?.some(
+                (modifier) => modifier.Label.toLowerCase() === label.toLowerCase(),
+            )
+        ) {
+            return true;
+        }
+    }
+    const base = stats[field];
+    return typeof base === 'boolean' ? base : undefined;
 }
 
 /** A fitted weapon's damage split after an effect or journal modifiers convert it. */
@@ -195,6 +216,10 @@ export function effectiveModule(
     for (const key of fields) {
         const value = effectiveStat(module, key, stats);
         if (value !== undefined) merged[key] = value;
+        else {
+            const capability = effectiveCapability(module, key, stats);
+            if (capability !== undefined) merged[key] = capability;
+        }
     }
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) merged.damageDistribution = damageDistribution;

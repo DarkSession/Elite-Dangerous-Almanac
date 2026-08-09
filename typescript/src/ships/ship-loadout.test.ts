@@ -1186,7 +1186,7 @@ test('a recipe leg on a stat the module does not have is inert, not a rejection'
     assert.ok(shot.Value! > shot.OriginalValue!);
 });
 
-test('engineering accepts a sourced zero and refuses an unrepresentable stat', () => {
+test('engineering accepts a sourced zero', () => {
     // A sourced zero is a real base value: Lightweight is offered and leaves it at zero.
     const siphon = getModuleBySymbol('Int_DroneControl_ResourceSiphon', ALL_MODULES)!;
     assert.equal(siphon.mass, 0);
@@ -1207,32 +1207,48 @@ test('engineering accepts a sourced zero and refuses an unrepresentable stat', (
             .engineering!.Modifiers!.find((modifier) => modifier.Label === 'Mass')?.Value,
         0,
     );
+});
 
-    // The catalogue models no field for this label at all. Anti-Guardian Zone
-    //    Resistance is a capability a module either has or has not, not a number this
-    //    record shape can hold — see
-    //    https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/27.
-    // A Guardian Hybrid Power Plant is the module the menu offers it on — an ordinary
-    // plant is refused a step earlier, by the menu, and the two groups are separate for
-    // exactly that reason.
+test('Anti-Guardian Zone Resistance grants a capability to modules and weapons', () => {
+    const capability = engineeringFixture.guardianZoneResistanceCapability;
+    assert.equal(capability.field, 'guardianZoneResistance');
+    for (const { slot, symbol, blueprint } of capability.cases) {
+        const stock = mod(symbol, ALL_MODULES);
+        assert.equal(stock.guardianZoneResistance, undefined, `${symbol} is stock`);
+        const build = ShipLoadout.empty('Anaconda').setModule(slot, stock);
+        assert.ok(
+            build
+                .getFittedModule(slot)!
+                .getAvailableBlueprints()
+                .some(({ fdname }) => fdname === capability.offeredAs),
+            `${symbol} is not offered the capability`,
+        );
+        build.applyBlueprint(slot, blueprint, { grade: capability.grade });
+        const fitted = build.getFittedModule(slot)!;
+        assert.deepEqual(fitted.engineering?.Modifiers, [capability.modifier], symbol);
+        assert.equal(fitted.effectiveStats?.guardianZoneResistance, true, symbol);
+
+        const imported = ShipLoadout.fromSlef(build.toSlefString()).getFittedModule(slot)!;
+        assert.equal(imported.effectiveStats?.guardianZoneResistance, true, `${symbol} round trip`);
+    }
+
+    // An ordinary plant still refuses the recipe at the menu boundary: representing the
+    // capability does not widen which modules can receive it.
+    const refused = capability.refused;
+    assert.throws(
+        () =>
+            ShipLoadout.empty('Anaconda')
+                .setModule(refused.slot, mod(refused.symbol))
+                .applyBlueprint(refused.slot, refused.blueprint, { grade: capability.grade }),
+        /is not offered blueprint "recipe_guardianmodule_sturdy"/,
+    );
+
+    // A Guardian module still has no experimental slot. Its ordinary twin takes an
+    // experimental normally; the capability changes neither menu.
     const plant = ShipLoadout.empty('Anaconda').setModule(
         'PowerPlant',
         mod('Int_GuardianPowerplant_Size7', INTERNAL_MODULES),
     );
-    assert.throws(
-        () => plant.applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', { grade: 1 }),
-        /missing base stats for GuardianModuleResistance/,
-    );
-    assert.throws(
-        () =>
-            ShipLoadout.empty('Anaconda')
-                .setModule('PowerPlant', mod('Int_Powerplant_Size7_Class5'))
-                .applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', { grade: 1 }),
-        /is not offered blueprint "recipe_guardianmodule_sturdy"/,
-    );
-    // And the experimental slot is refused a step earlier still — before the missing base
-    // stat above — because a Guardian module has no experimental to roll. Its ordinary twin
-    // takes the same effect happily, which is the whole of the difference between them.
     assert.throws(
         () =>
             plant.applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', {

@@ -423,6 +423,33 @@
     "unreachableBlueprints": [],
     "unreachableExperimentals": []
   },
+  "guardianZoneResistanceCapability": {
+    "description": "Anti-Guardian Zone Resistance grants a boolean capability rather than scaling a numeric stat. Stock records omit the flag; applying either registry spelling emits the same non-numeric journal modifier and makes the fitted module's effective `guardianZoneResistance` true. The ordinary power plant case pins the compatibility boundary separately.",
+    "field": "guardianZoneResistance",
+    "offeredAs": "GuardianModule_Sturdy",
+    "grade": 1,
+    "modifier": {
+      "Label": "GuardianModuleResistance",
+      "ValueStr": "Active"
+    },
+    "cases": [
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_GuardianPowerplant_Size7",
+        "blueprint": "recipe_guardianmodule_sturdy"
+      },
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
+        "blueprint": "recipe_guardianweapon_sturdy"
+      }
+    ],
+    "refused": {
+      "slot": "PowerPlant",
+      "symbol": "Int_Powerplant_Size7_Class5",
+      "blueprint": "recipe_guardianmodule_sturdy"
+    }
+  },
   "blueprintOnlyModifications": {
     "description": "These two modification families are rollable blueprints, not experimental effects. The `special_*` keys are speculative identifiers and remain absent from every experimental-effect catalogue; the listed blueprint keys catalogue the corresponding modification families.",
     "excludedExperimentalIds": {

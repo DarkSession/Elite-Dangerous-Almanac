@@ -118,7 +118,8 @@ in the doc comment of each ported module, and in long form in the domain
   `modules/**`, `modifications/**`, commit `0db9234`). Coriolis-data releases only
   its _code_ under MIT; the JSON stat values are **Elite Dangerous game data,
   property of Frontier Developments plc** — see the Frontier notice below. Values and
-  newer records missing there are supplemented from
+  newer records missing there, including Anti-Guardian Zone Resistance's non-numeric
+  `agzresist` capability shape, are supplemented from
   [EDSY](https://github.com/taleden/EDSY) (`eddb.js`) by **taleden**, whose code is
   **CC BY-NC 4.0**; `data/ships/SOURCES.md` pins the exact snapshots and field-level
   derivation.

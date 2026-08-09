@@ -84,6 +84,11 @@
  * Plasma percentage-point legs into each grade's resulting `damageDistribution`, with
  * Plasma represented by this library's `absolute` damage member. Scalar damage and power
  * changes remain features.
+ * Anti-Guardian Zone Resistance is the non-numeric exception: the registry displays its
+ * activation as +100%, while EDSY stores it as the `agzresist` flag with the enumerated
+ * value `Active`. The TypeScript calculator therefore emits a string-valued
+ * `GuardianModuleResistance` modifier and exposes `guardianZoneResistance: true` on the
+ * fitted module's effective stats instead of adding one to a fictitious base number.
  * Their per-roll `materials` are from the same registry (a Merc-Coin amount is also
  * charged but is a currency, not a material, so it is not stored). Some of their totals
  * are non-monotonic (pre-engineered UI values, not primitive weights) and are preserved as

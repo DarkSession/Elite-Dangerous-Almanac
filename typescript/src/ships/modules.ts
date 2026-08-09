@@ -446,6 +446,17 @@ export interface OutfittingModule {
     /** Caustic resistance, as a fraction (negative is a weakness). */
     readonly causticResistance?: number;
     /**
+     * Whether Anti-Guardian Zone Resistance protects this Guardian module from a
+     * Thargoid anti-Guardian field.
+     *
+     * @remarks
+     * A sparse capability flag rather than a percentage: `true` means the grade-1
+     * blueprint grants the protection, while absence means it is not granted. Stock
+     * catalogue records omit it; read it from a fitted module's
+     * {@link FittedModule.effectiveStats} after engineering.
+     */
+    readonly guardianZoneResistance?: boolean;
+    /**
      * Armour: the hull hit points this bulkhead adds, as a fraction of the hull's
      * {@link Ship.baseArmour} on top of it — `0.8` (lightweight alloy) means
      * `baseArmour × 1.8`, `2.5` means `baseArmour × 3.5`.
