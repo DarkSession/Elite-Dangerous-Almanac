@@ -1180,6 +1180,18 @@ up straight through with no disambiguation at all. Both paths are evidence that
     reason. **So `GuardianModule_Sturdy` is the key all nine offering menus list**, and
     the two registry spellings are stored beside it as aliases that resolve to the same
     recipe. The observed journal name is the identity and the community names are aliases.
+- **Anti-Guardian Zone Resistance and Plasma conversion are blueprints, not experimental
+  effects.** The Anti-Guardian journal observation puts `GuardianModule_Sturdy` in the
+  module's `EngineerModifications` / blueprint position with `Level` 1, and Inara publishes
+  it as a grade-1 blueprint with a per-roll material recipe and no experimental-effect slot.
+  Frontier's Operations update notes place **Thermal Plasma Conversion** under
+  **Blueprints**, and the live Inara pages publish grades 1–5, per-roll materials and the
+  ordinary laser experimental effects that can be applied alongside it. Consequently
+  `special_guardian_module_resistance` and `special_plasma_rounds` are not incomplete
+  effect identities: neither belongs in `experimental-effects.jsonc`. The shared
+  `blueprintOnlyModifications` fixture pins both absences and the corresponding blueprint
+  records. Frontier's update notes were acquired 2026-08-09 UTC from
+  <https://forums.frontier.co.uk/threads/648012/>; the page exposes no immutable revision.
 - **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
   `expeffect` is the primary source — one table holding each effect's modifiers and its
   recipe together, keyed the way this file is. EDSY is (c) taleden under a

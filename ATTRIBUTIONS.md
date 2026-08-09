@@ -210,8 +210,12 @@ in the doc comment of each ported module, and in long form in the domain
   variant with its 900 MC price. From the [Inara](https://inara.cz/) blueprint and
   outfitting registries, the same source the rest of the Operations records come from;
   the live Plasma conversion pages were acquired directly **2026-08-09 UTC** and expose no
-  immutable revision. The catalogue maps their Plasma share to its `absolute` damage
-  member, corroborated by EDSY's resistance-ignoring **Absolute Damage** member and a
+  immutable revision. Frontier's
+  [Operations update notes](https://forums.frontier.co.uk/threads/648012/) independently
+  classify Thermal Plasma Conversion under **Blueprints**; the page was acquired
+  **2026-08-09 UTC** and exposes no immutable revision. The catalogue maps their Plasma
+  share to its `absolute` damage member, corroborated by EDSY's resistance-ignoring
+  **Absolute Damage** member and a
   [contemporary community description](https://www.reddit.com/r/EliteDangerous/comments/1uk2zhp/plasma_laser_theorycrafting_following_new/)
   by **u/Techno3020** describing this conversion's Plasma share as absolute damage. That
   post states no redistribution licence and is linked only as corroboration; none of its

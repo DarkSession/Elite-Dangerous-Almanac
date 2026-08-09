@@ -16,7 +16,11 @@
  *          Where the two disagree, a magnitude only one of them carries is not stored:
  *          the effect keeps the empty `modifiers` list and `description` this file uses
  *          for every qualitative effect.
- *          English display names were observed in-game.
+ *          English display names were observed in-game. Anti-Guardian Zone Resistance
+ *          and the three laser-family Plasma conversion modifications are blueprints,
+ *          not experimental effects; they live in blueprints.jsonc and never under the
+ *          speculative `special_guardian_module_resistance` or `special_plasma_rounds`
+ *          keys. See SOURCES.md for the classification evidence.
  *          coriolis-data's MIT licence covers its *code* only — its JSON, like EDSY's
  *          tables, is Elite Dangerous data, the property of Frontier Developments plc,
  *          used under Frontier's media-usage terms:

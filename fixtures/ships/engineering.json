@@ -423,6 +423,25 @@
     "unreachableBlueprints": [],
     "unreachableExperimentals": []
   },
+  "blueprintOnlyModifications": {
+    "description": "These two modification families are rollable blueprints, not experimental effects. The `special_*` keys are speculative identifiers and remain absent from every experimental-effect catalogue; the listed blueprint keys catalogue the corresponding modification families.",
+    "excludedExperimentalIds": {
+      "special_guardian_module_resistance": {
+        "blueprints": {
+          "GuardianModule_Sturdy": "Anti-Guardian Zone Resistance",
+          "recipe_guardianmodule_sturdy": "Anti-Guardian Zone Resistance",
+          "recipe_guardianweapon_sturdy": "Anti-Guardian Zone Resistance"
+        }
+      },
+      "special_plasma_rounds": {
+        "blueprints": {
+          "BeamLaser_ThermalPlasmaConversion": "Beam Laser — Plasma conversion",
+          "BurstLaser_ThermalPlasmaConversion": "Burst Laser — Plasma conversion",
+          "PulseLaser_ThermalPlasmaConversion": "Pulse Laser — Plasma conversion"
+        }
+      }
+    }
+  },
   "experimentalNames": {
     "description": "Current English in-game display names for the five effects whose exact casing, hyphenation or library-only qualifier is easy to normalize incorrectly.",
     "map": {
