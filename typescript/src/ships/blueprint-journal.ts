@@ -48,11 +48,11 @@ import { getBlueprintsForModule } from './engineering-options.js';
  *
  * The clip penalty is folded on a multi-cannon — anti-xeno ones included — and on nothing
  * else. The cannons, fragment cannons and plasma accelerators take no clip leg, which is
- * the game's own answer on two of those three groups: journal captures of a large gimballed
- * cannon at grade 5 and of a medium fragment cannon at grade 4, both rolled under this id,
- * report no `AmmoClipSize` modifier. See
+ * the game's own answer on all three groups: journal captures of a large gimballed cannon
+ * at grade 5, of a medium fragment cannon at grade 4 and of a medium plasma accelerator at
+ * grade 1, each rolled under this id, report no `AmmoClipSize` modifier. See
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
- * § "Multi-cannon Overcharged" for the captures and for what they leave open.
+ * § "Multi-cannon Overcharged" for the captures.
  *
  * **Nothing here lists the pairing.** Each of those three records names its own journal
  * spelling in {@link Blueprint.journalName}, because that is a fact about the recipe; this

@@ -105,6 +105,9 @@ export const STAT_LABELS: readonly StatLabel[] = [
     { label: 'WeaponsCapacity', field: 'weaponsCapacity' },
     { label: 'WeaponsRecharge', field: 'weaponsRecharge' },
     { label: 'RefuelRate', field: 'refuelRate' },
+    // A journal spells a fuel scoop's rate `FuelScoopRate`, where the recipe that moves it
+    // says `RefuelRate`. Both resolve, as `FalloffRange` / `DamageFalloffRange` do.
+    { label: 'FuelScoopRate', field: 'refuelRate' },
     { label: 'FuelCapacity', field: 'fuelCapacity' },
     { label: 'CargoCapacity', field: 'cargoCapacity' },
     { label: 'RegenRate', field: 'shieldRegenRate' },
