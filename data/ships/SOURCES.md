@@ -936,29 +936,10 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
 
 ### What is not carried, and why
 
-- **The preserved 534-identity exclusion snapshot is stored in
-  `fixtures/ships/module-exclusions.json`.** It dispositions every symbol: four withdrawn
-  discovery scanners, one never-released Corrosion Resistant Cargo Rack, and 529
-  unresolved identities without enough public evidence to enter the player-facing
-  catalogue. The symbols are normalized to lowercase, sorted within each disposition,
-  and pinned by SHA-256
-  `92aa3033dd508b23b43c0dd9a23654be480e423c4c8431543329eef847c37e65` over the
-  sorted newline-delimited union. The snapshot was acquired on 2026-08-09 UTC and is the
-  retained comparison inventory minus all 1199 player-facing catalogue symbols, compared
-  case-insensitively. **No independently regenerable upstream snapshot is recorded.** The
-  checked-in fixture preserves the acquired comparison set and its digest, but cannot
-  establish identities introduced outside it; future reconciliation therefore requires a
-  new public registry or direct player-facing capture. The 529 unresolved identities
-  appear in none of FDevIDs, coriolis-data or EDSY as current player-obtainable
-  outfitting. Most are hull geometry, ship-launched-fighter internals, station or NPC
-  fittings, and unreleased variants. Notable outfitting-like examples remain
-  `Int_MetaAlloyHullReinforcementMk2_Size{1..5}_Class2`,
-  `Int_ShieldGenerator_Size{1..8}_Class2_AntiCaustic`,
-  `Int_Cloud_Resistant_Sensors_Size{1..8}_Class3`, `Hpt_Cannon_Turret_Huge` and the
-  Lynx's built-in `ModularCargoBayDoorFDL`. Issue
-  [#20](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/20) tracks the
-  unresolved set; none is added without evidence that it is obtainable and enough stats
-  to make the record useful.
+- **Only player-obtainable outfitting is carried.** Built-in hull geometry,
+  ship-launched-fighter internals, station and NPC fittings, and withdrawn or unreleased
+  variants cannot be equipped by a player and are deliberately absent. Their symbols
+  resolve to `null` rather than exposing records that look usable but are not.
 
 - **Deliberately not modelled here:** the **Merc-Coin pre-engineered weapon variants**
   are not separate module records: their base module symbols already exist, and the
@@ -2504,8 +2485,7 @@ under, which is why several are cited above rather than copied.
   hatch is built into every hull, cannot be bought and weighs nothing, so `#moduleMass`
   reads the whole `modularcargobaydoor*` family as massless in the cargo-hatch slot;
   without that a capture of such a hull has an unknown mass and no jump range at all. The
-  ids the catalogue does not hold are recorded under
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/20>.
+  built-in hatch remains deliberately uncatalogued.
 
 - **`fixtures/ships/slef-inara-type-11.json`** — a real [Inara](https://inara.cz/) SLEF
   export of an engineered mining Type-11 Prospector (27 `Modules` entries), contributed
