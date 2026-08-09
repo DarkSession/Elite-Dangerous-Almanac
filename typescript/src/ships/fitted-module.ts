@@ -107,7 +107,17 @@ export class FittedModule {
         return this.#raw().Health;
     }
 
-    /** Credit value, or `undefined` when unspecified. */
+    /**
+     * What the capture said was paid for this module, in credits, or `undefined` when it
+     * said nothing.
+     *
+     * @remarks
+     * A **source** figure, discount and purchase history included, not a list price — and
+     * a volatile one: it belongs to the article that was fitted, so replacing the module
+     * leaves the new one with no value at all. For a stable record of what the capture
+     * paid, which no edit changes, read `ShipLoadout.sourcePurchase`. For what the module
+     * costs to buy, read `stats?.cost`.
+     */
     get value(): number | undefined {
         return this.#raw().Value;
     }

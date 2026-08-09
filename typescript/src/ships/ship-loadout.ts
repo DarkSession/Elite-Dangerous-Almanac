@@ -113,10 +113,12 @@ import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.j
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { FittedModule } from './fitted-module.js';
 import { LoadoutSlot } from './loadout-slot.js';
+import { SourcePurchaseRecord } from './source-purchase.js';
 import { deepFreeze } from '../deep-freeze.js';
 
 export { FittedModule } from './fitted-module.js';
 export { LoadoutSlot } from './loadout-slot.js';
+export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
 
 /** A ship's fuel-tank capacities, in tonnes. */
 export interface FuelCapacity {
@@ -224,6 +226,32 @@ export interface LoadoutExportOptions {
      * SLEF's "require what is necessary, do not force the rest".
      */
     readonly explicitPower?: boolean;
+    /**
+     * Which credits to quote. `'retail'` — the default — prices the build from the
+     * catalogue: the bare hull's `hullCost`, every fitted module's list price, and a
+     * `Rebuy` of 5% of the two.
+     *
+     * `'source'` quotes the build's {@link ShipLoadout.sourcePurchase | source purchase
+     * record} instead — `HullValue`, `ModulesValue`, `Rebuy` and the per-module `Value`
+     * figures exactly as the capture stated them, and nothing where it stated nothing.
+     * An unedited capture therefore re-exports its own credits unchanged.
+     *
+     * Each captured figure is pinned to what it was paid for, so an edit narrows the
+     * export rather than staling it. A slot whose module has been swapped is left
+     * unpriced, because the figure was paid for the article that *was* fitted; and
+     * `ModulesValue` and `Rebuy` are dropped once any priced module has been swapped or
+     * removed, since they then cover an article no longer aboard. Removing a module the
+     * capture listed but never priced is the one case this cannot detect: only the
+     * capture ever knew which unpriced modules its total counted.
+     *
+     * `HullValue` always stands: a captured hull figure names no slot, so no edit
+     * narrows it. Note that on a game capture it counts the hull *with* its stock
+     * fittings, and removing one of those leaves it overstating what is aboard.
+     *
+     * A build with no source record — one assembled here, or a capture that quoted no
+     * credits — exports no credit figure at all rather than falling back to retail.
+     */
+    readonly credits?: 'retail' | 'source';
 }
 
 /** As {@link LoadoutExportOptions}, plus the SLEF envelope — see {@link ShipLoadout.toSlef}. */
@@ -523,11 +551,18 @@ export class ShipLoadout {
     readonly #moduleStats = new Map<string, OutfittingModule>();
     readonly #top: TopFigures;
     readonly #slotVersions = new Map<string, number>();
+    readonly #sourcePurchase: SourcePurchaseRecord | null;
 
-    private constructor(shipSymbol: string, modules: Map<string, LoadoutModule>, top: TopFigures) {
+    private constructor(
+        shipSymbol: string,
+        modules: Map<string, LoadoutModule>,
+        top: TopFigures,
+        sourcePurchase: SourcePurchaseRecord | null = null,
+    ) {
         this.#shipSymbol = shipSymbol;
         this.#modules = modules;
         this.#top = top;
+        this.#sourcePurchase = sourcePurchase;
     }
 
     /**
@@ -565,6 +600,10 @@ export class ShipLoadout {
      * An ordinary weapon recipe on a Guardian weapon identifies a final pre-engineered
      * article; the import preserves that identity, exposes no engineering options for it,
      * and refuses attempts to engineer it further.
+     *
+     * The event's credit figures are kept twice over: as the live `hullValue` /
+     * `modulesValue` / `rebuy`, which an edit may invalidate, and as the immutable
+     * {@link sourcePurchase} record, which no edit touches.
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
         const modules = new Map<string, LoadoutModule>();
@@ -578,7 +617,12 @@ export class ShipLoadout {
         if (event.UnladenMass !== undefined) top.UnladenMass = event.UnladenMass;
         if (event.CargoCapacity !== undefined) top.CargoCapacity = event.CargoCapacity;
         if (event.FuelCapacity !== undefined) top.FuelCapacity = { ...event.FuelCapacity };
-        const loadout = new ShipLoadout(event.Ship, modules, top);
+        const loadout = new ShipLoadout(
+            event.Ship,
+            modules,
+            top,
+            SourcePurchaseRecord.fromLoadout(event),
+        );
         // Guardian weapon captures use an ordinary recipe to identify a bought or awarded
         // pre-engineered article. The article has no distinct module symbol, so preserve
         // its final-engineering restriction alongside the otherwise stock base record.
@@ -719,19 +763,69 @@ export class ShipLoadout {
         return { main, reserve };
     }
 
-    /** Hull cost in credits, or `null` if unknown. */
+    /**
+     * Hull cost in credits as the build currently states it, or `null` if unknown.
+     *
+     * @remarks
+     * This is the live figure, kept coherent with edits: an import's own `HullValue`
+     * until something invalidates it. For the capture's figure as captured — which no
+     * edit changes — read {@link sourcePurchase}.
+     */
     get hullValue(): number | null {
         return this.#top.HullValue ?? null;
     }
 
-    /** Fitted-modules cost in credits, or `null` if unknown. */
+    /**
+     * Fitted-modules cost in credits as the build currently states it, or `null` if
+     * unknown — including after an edit discarded an import's figure, since no catalogue
+     * records what a replaced module was bought for. {@link sourcePurchase} keeps the
+     * captured figure regardless.
+     */
     get modulesValue(): number | null {
         return this.#top.ModulesValue ?? null;
     }
 
-    /** Insurance rebuy cost in credits, or `null` if unknown. */
+    /**
+     * Insurance rebuy cost in credits as the build currently states it, or `null` if
+     * unknown. Discarded by an edit for the same reason as {@link modulesValue}, and
+     * likewise preserved by {@link sourcePurchase}.
+     */
     get rebuy(): number | null {
         return this.#top.Rebuy ?? null;
+    }
+
+    /**
+     * What the capture this build came from said was **paid** for it — a read-only
+     * {@link SourcePurchaseRecord}, or `null` for a build assembled here or imported
+     * from a capture that quoted no credits at all.
+     *
+     * @remarks
+     * The record is provenance about the source, so it is fixed at import and **survives
+     * every edit**: fit, remove or engineer whatever you like and it still reports the
+     * figures the capture carried, for the modules the capture carried them for. That is
+     * what {@link hullValue}, {@link modulesValue} and {@link rebuy} cannot do — they
+     * describe the build in hand, so an edit that invalidates one drops it.
+     *
+     * The two answer different questions and neither substitutes for the other. A
+     * captured price is one commander's purchase at one station, discounts and history
+     * included; the library's own figures are catalogue retail. Export picks between them
+     * explicitly, and quotes retail unless asked otherwise — see
+     * {@link LoadoutExportOptions.credits}.
+     *
+     * @example
+     * ```ts
+     * const build = ShipLoadout.fromSlef(slefJson);
+     * const paid = build.sourcePurchase!;
+     * paid.hullValue;                     // -> 189326510, as captured
+     * paid.valueForSlot('powerplant');    // -> what that plant cost its owner
+     *
+     * build.removeModule('Slot05_Size4');
+     * build.modulesValue;                 // -> null   (the live figure is now unknowable)
+     * paid.modulesValue;                  // -> 192625195, still what the capture said
+     * ```
+     */
+    get sourcePurchase(): SourcePurchaseRecord | null {
+        return this.#sourcePurchase;
     }
 
     /** The fitted modules, in the order they were added / exported. */
@@ -1199,19 +1293,25 @@ export class ShipLoadout {
      *
      * @param options - Module ordering and how sparse to be about power state.
      * @returns A fresh event. Every top-level figure is **recomputed** from the hull and
-     * the fitted modules rather than echoed from whatever an import supplied, and any
-     * figure that cannot be worked out is **left out** rather than emitted as a stale or
-     * zero value — SLEF requires nothing beyond `Ship` and `Modules`.
+     * the fitted modules rather than echoed from whatever an import supplied — the one
+     * exception being the credits, when `credits: 'source'` asks for the capture's own.
+     * Any figure that cannot be worked out is **left out** rather than emitted as a stale
+     * or zero value — SLEF requires nothing beyond `Ship` and `Modules`.
      *
-     * Credits are quoted at **retail**: the bare hull's `hullCost` plus every fitted
-     * module's catalogue list price, with `Rebuy` 5% of the two. A source's own
-     * `HullValue` / `ModulesValue` / `Value` figures are deliberately ignored, because
-     * they record one commander's purchase at one station — the Deep Black's modules are
-     * all 12.25% off list — and a station discount is not a property of the build.
+     * Credits are quoted at **retail** by default: the bare hull's `hullCost` plus every
+     * fitted module's catalogue list price, with `Rebuy` 5% of the two. A source's own
+     * `HullValue` / `ModulesValue` / `Value` figures are deliberately not quoted here,
+     * because they record one commander's purchase at one station — the Deep Black's
+     * modules are all 12.25% off list — and a station discount is not a property of the
+     * build. They are not lost either: pass `credits: 'source'` to export the
+     * {@link sourcePurchase} record instead, as provenance rather than as a price.
      * @example
      * ```ts
      * const event = build.toLoadoutEvent();
      * event.MaxJumpRange; // recomputed, not the exporter's claim
+     * event.HullValue;    // the catalogue's list price
+     *
+     * build.toLoadoutEvent({ credits: 'source' }).HullValue; // what the capture paid
      * ```
      */
     toLoadoutEvent(options: LoadoutExportOptions = {}): LoadoutEvent {
@@ -1224,15 +1324,29 @@ export class ShipLoadout {
         // paid at one station: the Deep Black's modules all sit at 0.8775 of list, a
         // 12.25% outfitting discount, and the game and EDSY do not even agree on whether
         // `HullValue` means the bare hull or the hull with its stock fittings. None of
-        // that is a property of the build, so none of it is carried through.
-        const hullValue = hull?.hullCost ?? null;
-        const modulesValue = this.#computedModulesValue();
-        const modules = this.#exportModules(options);
+        // that is a property of the build, so it is quoted only when the caller names it.
+        const fromSource = options.credits === 'source';
+        const source = fromSource ? this.#sourcePurchase : null;
+        // A captured `HullValue` names no slot, so no edit narrows it and it stands for as
+        // long as the record does. The module totals do name slots, and once they stop
+        // describing the fit they are dropped rather than emitted over a module list they
+        // no longer match — see `#sourceTotalsHold`.
+        const totals = source !== null && this.#sourceTotalsHold(source) ? source : null;
+        const hullValue = fromSource ? (source?.hullValue ?? null) : (hull?.hullCost ?? null);
+        const modulesValue = fromSource
+            ? (totals?.modulesValue ?? null)
+            : this.#computedModulesValue();
+        const modules = this.#exportModules(options, fromSource);
         const maxJumpRange = this.#exportableJumpRange(unladenMass);
-        const rebuy =
-            hullValue === null || modulesValue === null
-                ? null
-                : Math.trunc((hullValue + modulesValue) * REBUY_FRACTION);
+        // A captured rebuy is quoted as captured, not rebuilt: it is one more thing the
+        // source said, and recomputing 5% of two figures it may not even agree with would
+        // make it this library's claim rather than the capture's. It covers the modules,
+        // so it goes when they no longer add up to what was captured.
+        const rebuy = fromSource
+            ? (totals?.rebuy ?? null)
+            : hullValue === null || modulesValue === null
+              ? null
+              : Math.trunc((hullValue + modulesValue) * REBUY_FRACTION);
 
         return {
             event: 'Loadout',
@@ -1275,8 +1389,13 @@ export class ShipLoadout {
         return stringifySlef(this.toSlef(options), { indent: options.indent ?? 0 });
     }
 
-    /** The fitted modules as journal records, in the requested order. */
-    #exportModules(options: LoadoutExportOptions): LoadoutModule[] {
+    /**
+     * The fitted modules as journal records, in the requested order.
+     *
+     * @param fromSource - Quote each module's captured purchase price rather than its
+     * list price — see {@link LoadoutExportOptions.credits}.
+     */
+    #exportModules(options: LoadoutExportOptions, fromSource: boolean): LoadoutModule[] {
         const ordered =
             options.moduleOrder === 'slots'
                 ? this.#slotOrderedModules()
@@ -1287,7 +1406,7 @@ export class ShipLoadout {
             // The module's list price, so the parts add up to the build's `ModulesValue`.
             // Something with no price of its own — a decal, the cockpit — keeps no
             // `Value`, exactly as the game writes it.
-            const value = this.#moduleValue(m);
+            const value = fromSource ? this.#sourceModuleValue(m) : this.#moduleValue(m);
             return {
                 Slot: m.Slot,
                 // The journal and every SLEF producer write lower-case ids; a build
@@ -1371,6 +1490,60 @@ export class ShipLoadout {
         const stats = this.#statsFor(module);
         if (stats !== null) return stats.cost ?? 'unknown';
         return isNonOutfittingSlot(module.Slot) ? 'free' : 'unknown';
+    }
+
+    /**
+     * What the capture said was paid for the module now in this slot, or `'unknown'`
+     * when it said nothing about it.
+     *
+     * @remarks
+     * The captured figure is pinned to the article it was paid for, not to the mount:
+     * swap the drive and the old drive's price no longer describes anything, so the slot
+     * exports unpriced rather than carrying the previous fitting's cost forward. Refit
+     * the same article and the price applies again, which is also what makes an
+     * unedited build re-export its capture's figures unchanged.
+     */
+    #sourceModuleValue(module: LoadoutModule): number | 'unknown' {
+        const entry = this.#sourcePurchase?.entryForSlot(module.Slot) ?? null;
+        if (entry === null) return 'unknown';
+        return entry.item.trim().toLowerCase() === module.Item.trim().toLowerCase()
+            ? entry.value
+            : 'unknown';
+    }
+
+    /**
+     * Whether a capture's `ModulesValue` and `Rebuy` still describe the modules this
+     * build would export.
+     *
+     * @remarks
+     * They do for as long as every module the capture priced is still fitted, unchanged,
+     * in the slot it was priced in — engineering one does not change what was paid for
+     * it, and fitting something into a slot the capture never priced adds an unpriced
+     * module, which is what a partial capture looks like anyway. Swap or remove a priced
+     * module, though, and the stated total covers an article that is no longer aboard.
+     *
+     * Emitting it regardless would forge the very signal the record exists to expose:
+     * re-import such a document and its `ModulesValue` disagrees with the sum of its
+     * parts, exactly as a genuinely partial capture's does, except that this library
+     * would have manufactured the disagreement. So the total goes and the per-slot
+     * figures — each still true of the article it was paid for — stay.
+     *
+     * **One case this cannot catch.** A capture whose total exceeds its priced parts
+     * counted a module it never priced — the Viper Mk IV log's freshly bought FSD
+     * interdictor, in the corpus. Remove *that* module and the total again covers
+     * something no longer aboard, but nothing here can tell: the record knows which
+     * modules were priced, and only the capture ever knew which ones the total counted.
+     * The test is the sharpest one the record supports, not a guarantee that an exported
+     * total adds up.
+     */
+    #sourceTotalsHold(source: SourcePurchaseRecord): boolean {
+        for (const entry of source.moduleValues) {
+            const key = this.#fittedKey(entry.slot);
+            const fitted = key === null ? undefined : this.#modules.get(key);
+            if (!fitted) return false;
+            if (fitted.Item.trim().toLowerCase() !== entry.item.trim().toLowerCase()) return false;
+        }
+        return true;
     }
 
     /** `maxJumpRange()` when the build can answer it, else `null` — never throws. */

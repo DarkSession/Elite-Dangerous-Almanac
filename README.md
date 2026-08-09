@@ -104,6 +104,28 @@ Read them from `ShipLoadout.slots()` or `enumerateSlots(getShipSlots(symbol))`.
 Some slots and modules also carry restrictions; `modulesForSlot` returns only the
 modules that fit.
 
+Credits come in two kinds and are kept apart. Everything the library computes is
+catalogue **retail**, which is a property of the fit. What a capture states it **paid**
+is provenance about that capture — it carries station discounts and can price only some
+of the build — so it is preserved as supplied in a read-only source purchase record that
+no edit changes, and it is exported only when asked for by name:
+
+```ts
+const paid = build.sourcePurchase; // null for a build assembled here
+paid?.modulesValue; // as the capture stated it
+paid?.valueForSlot("PowerPlant"); // null where the capture priced nothing
+
+build.toLoadoutEvent(); // retail: hull cost plus every module's list price
+build.toLoadoutEvent({ credits: "source" }); // the capture's own figures
+```
+
+Each captured figure stays pinned to the article it was paid for, so editing narrows the
+source export rather than staling it: a swapped or removed module exports unpriced and
+takes `ModulesValue` and `Rebuy` with it, while engineering a module or filling an empty
+mount leaves them standing. `HullValue` always stands, naming no slot for an edit to
+narrow. What a capture never priced it also never explains, so removing an unpriced
+module cannot be detected; `data/ships/SOURCES.md` records both limits.
+
 Registry lookups ignore case and surrounding whitespace:
 
 ```ts

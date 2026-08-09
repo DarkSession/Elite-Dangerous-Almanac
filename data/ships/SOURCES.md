@@ -2333,9 +2333,10 @@ under, which is why several are cited above rather than copied.
   stored unmodified apart from unwrapping the single-element array and re-indenting.
   Its `UnladenMass`, `CargoCapacity` and `MaxJumpRange` are **Frontier's own figures** —
   the strongest ground truth available, since no third-party calculator sits in between.
-  Its credit figures are a purchase record rather than ground truth, and are pinned only
-  as evidence of how far a build can sit from list price. Pinned by
-  `fixtures/ships/slef-export.json` and `fixtures/ships/jump-range.json`.
+  Its credit figures are a purchase record rather than ground truth: they are pinned as
+  evidence of how far a build can sit from list price, and as the source purchase record
+  itself. Pinned by `fixtures/ships/slef-export.json`,
+  `fixtures/ships/source-purchase.json` and `fixtures/ships/jump-range.json`.
 
 - **`fixtures/ships/journal-viper-mkiv.json`** — a real Frontier journal `Loadout` event
   for a **wholly unengineered** Viper Mk IV (27 `Modules` entries: four gimballed
@@ -2368,8 +2369,8 @@ under, which is why several are cited above rather than copied.
   246 650, **below** even the bare `hullCost` 312 797 and 0.85 of neither convention. Its
   own `Rebuy` 260 198 is not 5% of its own `HullValue` plus `ModulesValue` either (that
   truncates to 260 196). So a journal's credits are a purchase record however uniform they
-  look. Pinned by `fixtures/ships/slef-export.json` (`viperMkIV`) and
-  `fixtures/ships/jump-range.json`.
+  look. Pinned by `fixtures/ships/slef-export.json` (`viperMkIV`),
+  `fixtures/ships/source-purchase.json` and `fixtures/ships/jump-range.json`.
 
   **What it does not close:** shields, armour and weapon DPS. It carries four weapons and
   a shield generator, and states no figure for any of them: a `Loadout` states a stat only
@@ -2430,7 +2431,8 @@ under, which is why several are cited above rather than copied.
   `AmmoInClip` nor `AmmoInHopper`, so importing this capture drops both and a re-export
   never writes them: they say how much was left in the magazine at the instant of capture,
   which is the ship's rearm state and not part of the build — the same footing as a
-  capture's own credit figures, which a re-export recomputes rather than echoes. What a
+  capture's own credit figures, which a re-export recomputes by default rather than
+  echoes. What a
   fitted weapon _can_ hold is a property of the build, and `ammunitionCapacity` in
   `ships/ammunition` reports it from `clipSize` and `ammoMaximum`, post-engineering. The fixture therefore reads the two
   counts off the stored capture, and checks them against the capacity a parsed build
@@ -2625,7 +2627,8 @@ under, which is why several are cited above rather than copied.
   `b6c738bfc0672019d340805f9a2775fd41e058633b4b3aa25fe93c354756eeae`. Its `ShipName`,
   `ShipIdent`, `ShipID` and `timestamp` are kept for the same reason as the other captures',
   and the engineer names are the game's own NPCs. The event carries no `HullValue`, which is
-  stored as it arrived rather than filled in.
+  stored as it arrived rather than filled in. That, with only 19 of its 35 entries priced,
+  makes it the partially priced capture in `fixtures/ships/source-purchase.json`.
 
   **What it is kept for is the plasma accelerator** — see §Multi-cannon Overcharged under
   Engineering options for what its grade-1 `Weapon_Overcharged` roll settles. It is the
@@ -2770,10 +2773,10 @@ Two facts the Krait Phantom capture established that the EDSY export could not:
   fittings inside it, EDSY does not. See the credits note below, which is why neither
   reading is carried through.
 
-**Credits are quoted at retail, and a build's own figures are discarded.** `HullValue`
+**Credits are quoted at retail, and a build's own figures are kept apart.** `HullValue`
 is the bare hull's `hullCost`, `ModulesValue` the sum of every fitted module's catalogue
 list price, and `Rebuy` a flat 5% of the two, truncated. Nothing a source claims to have
-paid is carried through, because what a build reports is one commander's purchase at one
+paid is priced into that, because what a build reports is one commander's purchase at one
 station rather than a property of the build. Three observations from the corpus show how
 far that can be from list:
 
@@ -2795,14 +2798,63 @@ far that can be from list:
   by which point the interdictor is priced and the parts do add up — but a figure rebuilt
   from either would inherit whatever that capture happened to know.
 
-The upside is that the export becomes a pure function of the hull and the fitted module
-symbols. Two builds with the same fit price identically whatever their owners paid; an
-edit reprices exactly the module that changed; and a document always adds up, since each
-module carries the same list price the total counted. Where a fitted module has no
+The upside is that the default export becomes a pure function of the hull and the fitted
+module symbols. Two builds with the same fit price identically whatever their owners paid;
+an edit reprices exactly the module that changed; and such a document always adds up,
+since each module carries the same list price the total counted. Where a fitted module has no
 published price the total is omitted rather than under-reported — 26 catalogue records
 can trigger that today: the two unsold corrosion-resistant racks, the three Mk II
 vessel hangars, `Int_ShieldGenerator_Size1_Class4`, `Int_Hyperdrive_Size8_Class{1..5}`
 and the fifteen grant/starter `*_free` variants.
+
+**What the source paid is preserved, as provenance rather than as a price.** The three
+observations above are reasons not to let a capture's figures set the price of a fit;
+they are not reasons to lose them. So each import keeps them verbatim in a read-only
+source purchase record — the stated `HullValue`, `ModulesValue` and `Rebuy`, and every
+slot the capture priced, each with the module symbol that price was paid for. The record
+is fixed at import and survives every edit, unlike the live figures, which an edit
+discards because no catalogue records what a replaced module was bought for.
+
+It is exported only when a caller names it, and then **every captured figure stays pinned
+to what it was paid for**. A slot whose module has been swapped or removed exports
+unpriced — the figure belongs to the article that was fitted, not to the mount — and
+`ModulesValue` and `Rebuy` go with it, because they counted that article. Emitting the
+module totals anyway would forge the very signal this record exists to expose: re-import
+such a document and its declared total disagrees with the sum of its parts,
+indistinguishable from a genuinely partial capture like the Viper Mk IV events above,
+except that this library would have manufactured the disagreement. Engineering a module
+changes nothing here — it is not a purchase — and filling a mount the capture never
+priced leaves the totals standing, since an unpriced module beside a stated total is what
+a partial capture looks like anyway.
+
+Two limits of that test are worth stating, because both look like bugs and neither is
+fixable from the record:
+
+- **A total built on an unpriced module outlives it.** Where a capture's total exceeds
+  its priced parts, it counted a module it never priced — the Viper Mk IV log's freshly
+  bought FSD interdictor. Remove that module and the total again covers something no
+  longer aboard, and nothing can tell: the record knows which modules were priced, and
+  only the capture ever knew which ones the total counted. The article test is the
+  sharpest one the record supports, not a guarantee that an exported total adds up.
+- **`HullValue` always stands**, because a captured hull figure names no slot and no edit
+  narrows it. On a game capture it counts the hull _with_ its stock fittings, though, so
+  removing one of those five leaves it overstating what is aboard — the same ambiguity
+  about what `HullValue` includes that the retail export sidesteps by quoting `hullCost`.
+
+`fixtures/ships/source-purchase.json` pins the record and that export for four captures,
+spanning a uniform 12.25% discount, fully priced (Deep Black); a different discount, 15%
+(Viper Mk IV); a capture that states no `HullValue` and prices only 19 of its 35 entries
+(Caspian Explorer); and one whose `HullValue` counts the hull's stock fittings, so the
+five modules that came with it carry no `Value` (Krait Phantom). Its `editedExports`
+section pins what each kind of edit does to the export.
+
+**No single discount is derived from it, and none should be.** Dividing a stated total by
+the retail total looks like it recovers the station's outfitting discount — 0.8775 on the
+Deep Black, 0.85 on the Viper Mk IV — and for those two captures it does. It is not one
+number in general: a capture can omit `Value` on a module that was paid for, hold modules
+bought at different stations at different discounts, and disagree with its own parts. A
+derived percentage would read as a fact about the build and be wrong for most of them, so
+what a source stated is offered as stated and nothing is computed from it.
 
 Physical figures (`UnladenMass`, `CargoCapacity`, `FuelCapacity`, `MaxJumpRange`) are
 recomputed too, and unlike the credits they **do** reproduce each source's own figures

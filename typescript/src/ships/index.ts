@@ -12,7 +12,9 @@
  * modules and apply engineering, and
  * answers the questions apps actually ask ({@link ShipLoadout.maxJumpRange},
  * {@link ShipLoadout.powerBudget}, {@link ShipLoadout.shieldMetrics}, `unladenMass`,
- * `rebuy`). It is the batteries-included facade and pulls in every catalogue;
+ * `rebuy`) — and keeps what a capture said it *paid* apart from what the build is worth
+ * at retail ({@link ShipLoadout.sourcePurchase}, a {@link SourcePurchaseRecord}). It is
+ * the batteries-included facade and pulls in every catalogue;
  * everything below is what it is built from, so drop to the pieces when you
  * need one answer rather than a whole ship.
  *
@@ -121,6 +123,7 @@ export {
     type LoadoutExportOptions,
     type SlefExportOptions,
 } from './ship-loadout.js';
+export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
 
 // ── Build metrics: power, shields, armour and weapons (all data-free) ────────
 export { powerBudget, type PowerConsumer, type PowerBand, type PowerBudget } from './power.js';
