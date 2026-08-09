@@ -331,12 +331,14 @@ test("Frontier's own engineered ammunition figures, against what this library co
         const agrees = rolled.clipSize === gameClip && rolled.hopper === pinned.game.ammoMaximum;
         assert.equal(agrees, pinned.agrees, `${label}: agreement with the game`);
     }
-    // The only remaining disagreement is the Corsair clip, where the registry-derived
-    // intermediate roll is one missile below Frontier's stated value. Counting it is not
-    // the guard — the sweep below is, because a case list that quietly shrinks is how the
-    // evidence would be dropped rather than faced.
+    // The only non-matching simulation is explicitly a legacy roll, whose attributes
+    // advanced independently and cannot be reconstructed from one shared quality. Counting
+    // it is not the guard — the sweep below is, because a case list that quietly shrinks is
+    // how the evidence would be dropped rather than faced.
     const { cases } = fixture.ammunition.engineeredGroundTruth;
-    assert.equal(cases.filter((c) => !c.agrees).length, 1);
+    const legacy = cases.filter((c) => !c.agrees);
+    assert.equal(legacy.length, 1);
+    assert.equal('legacyEngineering' in legacy[0]! && legacy[0].legacyEngineering, true);
 });
 
 test('the Corsair capture recomputes to the figures Frontier reports for it', () => {

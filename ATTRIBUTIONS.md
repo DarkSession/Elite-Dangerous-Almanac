@@ -44,7 +44,7 @@ in the doc comment of each ported module, and in long form in the domain
   the clip up without the burst step. Both registries leave the reserve fractional;
   Frontier journal captures credited under Ground-truth ship builds establish the
   library's nearest-whole-round treatment. `data/ships/SOURCES.md` records the
-  evidence and the remaining one-round clip disagreement.
+  evidence and the legacy-engineering exception among the captures.
 - **Jump-range and fuel algorithm** — the hyperspace formula, ported as fact (our
   own implementation) from [EDSY](https://github.com/taleden/EDSY) by **taleden**
   (**CC BY-NC 4.0**), derived from Frontier's "mass effect on hyperspace range"

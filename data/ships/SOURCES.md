@@ -2207,12 +2207,12 @@ whichever way round they are asked. `loadout-engineering.ts` states the running 
   and twenty agree exactly under those rules and the two manual quality corrections
   recorded below. One of them is a fragment cannon's Corrosive Shell reserve at quality
   0.826, where the ammunition leg is the experimental's flat −20% rather than a
-  quality-rolled one. The remaining one-round disagreement is the Corsair's dumbfire-rack
-  clip: Frontier states 23 where the registry-derived intermediate roll rounds up to 22.
-  One point cannot solve a different per-leg band, so the shared registry band stays and
-  the discrepancy remains pinned in `fixtures/ships/build-metrics.json`
-  §ammunition.engineeredGroundTruth and tracked at
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>. The rounding is
+  quality-rolled one. The twenty-first is the Corsair's dumbfire rack, a **legacy
+  engineering** roll from the system in which attributes advanced independently. Its one
+  reported `Quality` cannot reconstruct both per-leg values through the current
+  shared-quality model: Frontier states a clip of 23 where that model rounds up to 22. This
+  is not evidence for changing the current recipe band. The exception remains pinned in
+  `fixtures/ships/build-metrics.json` §ammunition.engineeredGroundTruth. The rounding is
   applied in `computeModifiers` (`engineering.ts`), which is every place this library
   computes an engineered stat — a blueprint roll and a pre-engineered variant's published
   article alike — and nowhere else. **Three things it computes nothing for are left
@@ -2446,18 +2446,17 @@ under, which is why several are cited above rather than copied.
   - **At full quality this capture's figures agree exactly.** High Capacity grade 5 doubles a
     gimballed medium multi-cannon's 90/2100 to 180/4200, and with Corrosive Shell the
     reserve is 3360 — 2100 × 2 × 0.8, which five captures state and all five agree on.
-  - **At an interpolated quality the clip differs by one.** A medium dumbfire rack at High
-    Capacity grade 4, quality 0.8931, reads 12 → **23** and 48 → **87** in the journal. The
-    library's computed reserve of 87.499008 rounds to the stated 87, while the computed clip
-    still rounds up to 22. FSD Interrupt cannot account for it — it carries `Damage` and
-    `BurstInterval` legs only. One point cannot solve a different per-leg quality band, so
-    the registry-derived band is retained and the discrepancy remains tracked at
-    <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/57>.
+  - **The dumbfire rack is a legacy-engineering roll.** Under that older system its
+    attributes advanced independently, so the single `Quality` 0.8931 cannot be used as one
+    shared interpolation for both ammunition legs. Frontier states 12 → **23** and 48 →
+    **87**; the current model produces 22 and a reserve that rounds to 87. FSD Interrupt
+    cannot account for the split — it carries `Damage` and `BurstInterval` legs only — and
+    the legacy provenance is why the current recipe band is not changed to fit it.
   - **Importing is unaffected**, which is the point of rounding only where a roll is
     computed: the stated modifiers are used verbatim, so this build reads back 23/87.
 
   Pinned by `fixtures/ships/build-metrics.json` §ammunition.engineeredGroundTruth, including
-  the disagreement, so a change to the model has to face it.
+  the legacy exception, so a change to the model has to face it.
 
 - **`fixtures/ships/journal-federation-corvette.json`** — a real Frontier journal `Loadout`
   event for a heavily **engineered** combat Federal Corvette (45 `Modules` entries: two huge

@@ -137,7 +137,11 @@ export interface JumpOptions {
 export interface ApplyBlueprintOptions {
     /** The blueprint grade, `1`–`5`. */
     readonly grade: number;
-    /** The engineering quality roll, `0`–`1`. Defaults to `1` (best roll). */
+    /**
+     * The current engineering system's shared quality roll, `0`–`1`. Defaults to `1`
+     * (best roll). A legacy-engineered module's independently advanced attributes cannot be
+     * reconstructed from its single reported quality; import its stated modifiers instead.
+     */
     readonly quality?: number;
     /** The experimental (special) effect's Frontier `fdname`, if any. */
     readonly experimental?: string;
