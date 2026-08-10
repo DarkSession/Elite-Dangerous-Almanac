@@ -73,7 +73,8 @@ Elite Dangerous uses “region” for several different concepts:
 
 Nebula query functions require an explicit catalogue. Import `REAL_NEBULAE`,
 `PROCGEN_NEBULAE`, `PLANETARY_NEBULAE`, or `ALL_NEBULAE` according to the data
-you need; the complete catalogue is intentionally not loaded by default.
+you need from its `astro/nebulae-*` subpath; the heavyweight planetary and combined
+catalogues are not exported by the general barrels.
 
 ### Ships and loadouts
 

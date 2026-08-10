@@ -4,9 +4,9 @@
  * support, power distributor, sensors, fuel tank).
  *
  * The armour variants here are the one ship-specific module, so this is also where
- * {@link getBulkheadsForShip} finds a hull's bulkheads. The other categories live in
- * `./modules-internal`, `./modules-hardpoint` and `./modules-utility`, so importing
- * this module never bundles them.
+ * `getBulkheadsForShip` from `./modules` finds a hull's bulkheads. The other categories
+ * live in `./modules-internal`, `./modules-hardpoint` and `./modules-utility`, so
+ * importing this module never bundles them.
  *
  * Identity from EDCD FDevIDs (`outfitting.csv`), stats from EDCD/coriolis-data,
  * joined on `symbol`; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).

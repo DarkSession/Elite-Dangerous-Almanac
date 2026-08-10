@@ -25,10 +25,10 @@
  *   hull's identity, stats and slot layout together.
  * - **Modules** — the {@link OutfittingModule} type and the lookups
  *   ({@link getModuleBySymbol} & co.), which search all 1199 modules unless you hand
- *   them a narrower set. The catalogues are also exported split by Frontier's four
- *   outfitting categories ({@link CORE_MODULES}, {@link INTERNAL_MODULES},
- *   {@link HARDPOINT_MODULES}, {@link UTILITY_MODULES}, and {@link ALL_MODULES}); each
- *   record carries the module's identity and its stats.
+ *   them a narrower set. The catalogues live on explicit subpaths split by Frontier's
+ *   four outfitting categories (`./modules-core`, `./modules-internal`,
+ *   `./modules-hardpoint`, `./modules-utility`, and `./modules-all`); each record
+ *   carries the module's identity and its stats.
  * - **Jump range & SLEF** — {@link singleJumpRange}, {@link fuelPerJump} and
  *   {@link totalRange} are pure maths over {@link FrameShiftDriveParams} and cost
  *   nothing but the function; {@link parseSlef} reads an Inara SLEF export — or a bare
@@ -79,13 +79,6 @@ export {
     type DamageComponents,
     type ProjectileRangeBoundaries,
 } from './modules.js';
-
-// ── Module catalogues (one per outfitting category) ─────────────────────────
-export { CORE_MODULES } from './modules-core.js';
-export { INTERNAL_MODULES } from './modules-internal.js';
-export { HARDPOINT_MODULES } from './modules-hardpoint.js';
-export { UTILITY_MODULES } from './modules-utility.js';
-export { ALL_MODULES } from './modules-all.js';
 
 // ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
 export {
