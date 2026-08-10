@@ -62,8 +62,8 @@ export interface DecodedAddress {
  *
  * This is the inverse of the decode split: it turns the base-26 boxel code back
  * into a grid position by adding the region origin (snapped down to the boxel
- * grid). It throws rather than emit a wrong address when the region origin is
- * unknown, when N1 overflows the code, when the boxel code falls outside the
+ * grid). It throws rather than emit a wrong address when the origin has a negative
+ * coordinate, when N1 overflows the code, when the boxel code falls outside the
  * region, or when the resulting sector cannot be represented by the address bits.
  *
  * @param sizeClass - Size class 0–7 (mass code `a`–`h`).
@@ -71,8 +71,8 @@ export interface DecodedAddress {
  * @param origin - The resolved region origin (internal units, 32 per light-year).
  * @returns The boxel's absolute indices on the per-size-class boxel grid, measured
  * from the galaxy corner.
- * @throws {Error} If the region origin is unknown.
- * @throws {RangeError} If the code or the resulting sector is out of range.
+ * @throws {RangeError} If `sizeClass` is outside 0–7, the origin has a negative
+ * coordinate, or the code or the resulting sector is out of range.
  */
 export function boxelCodeToAbsoluteBoxel(
     sizeClass: number,
@@ -82,7 +82,10 @@ export function boxelCodeToAbsoluteBoxel(
     const boxelSize = boxelInternalSize(sizeClass);
 
     if (origin.x0 < 0 || origin.y0 < 0 || origin.z0 < 0) {
-        throw new Error(`Unknown sector: ${origin.name}`);
+        // An origin from the catalogue never has a negative coordinate, so reaching
+        // this means the caller built the origin; the message names the coordinate so
+        // they check the origin rather than the region catalogue.
+        throw new RangeError(`Region origin "${origin.name}" has a negative coordinate`);
     }
     if (!Number.isInteger(boxelCode) || boxelCode < 0 || boxelCode > 0x1fffff) {
         throw new RangeError(`System index N1 out of range in ${origin.name}`);
@@ -132,7 +135,7 @@ export function boxelCodeToAbsoluteBoxel(
  * @param origin - The region origin to measure against (internal units, 32 per
  * light-year), from `./naming-region-origins`.
  * @returns The base-26 boxel code within that region, or `null` when the boxel lies
- * outside the region or the region origin is unknown.
+ * outside the region or the origin has a negative coordinate.
  * @example
  * ```ts
  * const { sizeClass, absoluteBoxel } = decodeSystemAddress(id64);
@@ -278,8 +281,9 @@ export function decodeModSystemAddress(id64: SystemAddressInput): DecodedAddress
  * @param origin - The region origin (internal units), from
  * `resolveNamingRegionOrigin` in `./naming-region-origins`.
  * @returns The 64-bit system address.
- * @throws {Error} If the region origin is unknown.
- * @throws {RangeError} If the sequence does not fit its size-class-dependent field.
+ * @throws {RangeError} If the mass code is outside 0–7, the origin has a negative
+ * coordinate, the name's boxel code or sector falls outside the address layout, or the
+ * sequence does not fit its size-class-dependent field.
  * @example
  * ```ts
  * const parts = parseSystemName('Synuefe EN-H d11-96')!;
@@ -318,8 +322,9 @@ export function encodeSystemAddress(parts: SystemNameParts, origin: NamingRegion
  * @param origin - The region origin (internal units), from `resolveNamingRegionOrigin`.
  * @returns The 64-bit modulated system address. These routinely exceed `2^53`, so
  * keep them as `bigint` (or a decimal string) rather than a JS `number`.
- * @throws {Error} If the region origin is unknown.
- * @throws {RangeError} If the sequence does not fit the 15-bit modulated field.
+ * @throws {RangeError} If the mass code is outside 0–7, the origin has a negative
+ * coordinate, the name's boxel code or sector falls outside the address layout, or the
+ * sequence does not fit the 15-bit modulated field.
  * @example
  * ```ts
  * const parts = parseSystemName('Synuefe EN-H d11-96')!;

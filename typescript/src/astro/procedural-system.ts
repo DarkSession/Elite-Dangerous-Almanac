@@ -48,6 +48,13 @@ function tryEncodeModAddress(parts: SystemNameParts): bigint | null {
     try {
         return encodeModSystemAddress(parts, origin);
     } catch (error) {
+        // `null` means "this sequence has no modulated form", a normal answer, so the
+        // filter must not flatten anything else through it. Nothing else can arrive:
+        // the origin is from `resolveNamingRegionOrigin` and is never negative, and
+        // every caller already constrains the mass code, boxel code and origin to what
+        // `boxelCodeToAbsoluteBoxel` accepts — `fromName` via the `encodeSystemAddress`
+        // evaluated before it, `#fromDecoded` via a decode that takes the mass code
+        // from three bits and masks each axis to it.
         if (error instanceof RangeError) return null;
         throw error;
     }
@@ -103,8 +110,9 @@ function applyHaOverride(
  * - {@link ProceduralSystem.fromModSystemAddress} also throws `RangeError` when the
  *   modulated layout's sequence cannot fit the normal layout. Every constructed
  *   instance guarantees a normal {@link ProceduralSystem.systemAddress}.
- * - {@link ProceduralSystem.fromName} throws immediately when a syntactically valid
- *   name cannot be encoded (unknown naming region, or an address field out of range).
+ * - {@link ProceduralSystem.fromName} throws `RangeError` immediately when a
+ *   syntactically valid name cannot be encoded (unknown naming region, or an address
+ *   field out of range).
  *
  * For the galactic codex region of a system, pass its address to the standalone
  * `findCodexRegionForBoxel` (from `./codex-region-lookup`) — kept off this facade so
@@ -171,8 +179,8 @@ export class ProceduralSystem {
      * system. Hand-named systems (`Sol`, `Maia`, `Shinrarta Dezhra`) have no
      * algorithmic address and so yield `null` too — that is a "not covered by the
      * scheme" answer, not "your string was malformed".
-     * @throws {Error} If a syntactically valid name has no known naming-region origin.
-     * @throws {RangeError} If a name field cannot fit the normal system-address layout.
+     * @throws {RangeError} If a syntactically valid name has no known naming-region
+     * origin, or a name field cannot fit the normal system-address layout.
      * @example
      * ```ts
      * ProceduralSystem.fromName('blae eock kc-c d0')?.name; // -> 'Blae Eock KC-C d0'
@@ -191,7 +199,7 @@ export class ProceduralSystem {
             : (namedOrigin?.name ?? parts.regionName);
         const canonicalParts = { ...parts, regionName };
         const origin = resolveNamingRegionOrigin(regionName);
-        if (!origin) throw new Error(`Unknown sector: ${regionName}`);
+        if (!origin) throw new RangeError(`Unknown sector: ${regionName}`);
         return new ProceduralSystem(canonicalParts, {
             id64: encodeSystemAddress(canonicalParts, origin),
             modId64: tryEncodeModAddress(canonicalParts),
@@ -290,7 +298,10 @@ export class ProceduralSystem {
         };
         const overridden = applyHaOverride(base, decoded, position);
         const origin = resolveNamingRegionOrigin(overridden.parts.regionName);
-        if (!origin) throw new Error(`Unknown sector: ${overridden.parts.regionName}`);
+        // Defensive: every name `sectorNameFromGridPosition` emits resolves, and an
+        // override name is proven resolvable before it is applied, so no decoded
+        // address reaches this. It stands so a future grid change fails loudly.
+        if (!origin) throw new RangeError(`Unknown sector: ${overridden.parts.regionName}`);
         const normalAddress = id64 ?? encodeSystemAddress(overridden.parts, origin);
         const opts = {
             id64: normalAddress,

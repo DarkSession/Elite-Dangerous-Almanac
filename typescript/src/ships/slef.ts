@@ -566,7 +566,9 @@ export function toSlef(data: LoadoutEvent | readonly LoadoutEvent[], header?: Sl
         }
         const duplicate = duplicateSlot(event);
         if (duplicate !== null) {
-            throw new TypeError(`toSlef: entry ${index} contains duplicate slot "${duplicate}"`);
+            throw new TypeError(
+                `toSlef: entry ${index} contains duplicate slot "${duplicate.slot}"`,
+            );
         }
         return { header: chosen, data: event };
     });

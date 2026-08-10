@@ -2,7 +2,11 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { ProceduralSystem } from './procedural-system.js';
-import { absoluteBoxelToBoxelCode, decodeModSystemAddress } from './system-address.js';
+import {
+    absoluteBoxelToBoxelCode,
+    boxelCodeToAbsoluteBoxel,
+    decodeModSystemAddress,
+} from './system-address.js';
 import { parseSystemName } from './system-name.js';
 import { sectorGridPositionFromName } from './sector-name.js';
 import { massCodeToSizeClass } from './mass-code.js';
@@ -92,8 +96,33 @@ test('rejects decoding an out-of-range system address', () => {
     assert.throws(() => ProceduralSystem.fromModSystemAddress(-5n), RangeError);
 });
 
+test('a negative origin coordinate is refused as out of range, naming the coordinate', () => {
+    // A caller-built origin is the only way here: every catalogued and synthesised
+    // origin is non-negative. The message must name the coordinate rather than call
+    // the region unknown, or a caller who mistyped one goes looking for a missing
+    // region instead of at the origin they wrote.
+    const negativeOrigin = {
+        name: 'Test Region',
+        x0: -1,
+        y0: 0,
+        z0: 0,
+        sizeX: 320,
+        sizeY: 320,
+        sizeZ: 320,
+    };
+    assert.throws(() => boxelCodeToAbsoluteBoxel(0, 0, negativeOrigin), {
+        name: 'RangeError',
+        message: /negative coordinate/,
+    });
+});
+
 test('factories reject encoding immediately instead of creating a partially usable system', () => {
-    assert.throws(() => ProceduralSystem.fromName('Totally Made Up XY-Z d1-2'), /Unknown sector/);
+    // Out of range, not malformed: the name parses, but nothing maps its region to an
+    // origin. README.md pins the class, so assert it alongside the message.
+    assert.throws(() => ProceduralSystem.fromName('Totally Made Up XY-Z d1-2'), {
+        name: 'RangeError',
+        message: /Unknown sector/,
+    });
 
     // h-class sector holds a single boxel; only AA-A is valid.
     assert.throws(() => ProceduralSystem.fromName('Blae Eock KC-C h0-0'), RangeError);
