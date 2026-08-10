@@ -21,6 +21,7 @@ import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'j
 
 const near = (a: number, b: number, eps = 1e-6) => Math.abs(a - b) < eps;
 const weapon = (symbol: string) => getModuleBySymbol(symbol, HARDPOINT_MODULES)!;
+const displayed = (value: number, decimals: number) => Number(value.toFixed(decimals));
 
 test("catalogue weapons reproduce the fixture's DPS, EPS and heat", () => {
     for (const expected of fixture.weapons) {
@@ -44,6 +45,38 @@ test('DPS is damage x rounds x rate of fire', () => {
     assert.ok(
         near(damagePerSecond(shard), shard.damage! * shard.roundsPerShot! * shard.rateOfFire!),
     );
+});
+
+test('current fixed Guardian Shard Cannons reproduce their individual panels', () => {
+    const observed = fixture.observedGuardianShardCannons;
+    assert.equal(observed.blueprint, 'Anti-Guardian Zone Resistance');
+    assert.equal(observed.grade, 1);
+    assert.equal(observed.active, true);
+
+    for (const expected of observed.records) {
+        const stats = weapon(expected.symbol);
+        assert.equal(stats.class, expected.class, expected.symbol);
+        assert.equal(stats.mass, expected.mass, expected.symbol);
+        assert.equal(stats.integrity, expected.integrity, expected.symbol);
+        assert.equal(stats.powerDraw, expected.powerDraw, expected.symbol);
+        assert.equal(
+            displayed(damagePerSecond(stats), 1),
+            expected.damagePerSecond,
+            expected.symbol,
+        );
+        assert.equal(displayed(stats.damage!, 1), expected.damage, expected.symbol);
+        assert.equal(stats.distributorDraw, expected.distributorDraw, expected.symbol);
+        assert.equal(stats.thermalLoad, expected.thermalLoad, expected.symbol);
+        assert.equal(stats.armourPiercing, expected.armourPiercing, expected.symbol);
+        assert.equal(stats.maximumRange, expected.maximumRange, expected.symbol);
+        assert.equal(displayed(stats.shotSpeed!, 0), expected.shotSpeed, expected.symbol);
+        assert.equal(displayed(stats.rateOfFire!, 1), expected.rateOfFire, expected.symbol);
+        assert.equal(stats.clipSize, expected.clipSize, expected.symbol);
+        assert.equal(stats.ammoMaximum, expected.ammoMaximum, expected.symbol);
+        assert.deepEqual(stats.damageDistribution, { thermal: 1, antiXeno: 1 });
+        assert.equal(expected.damageType, 'Thermal');
+        assert.equal(stats.falloffRange, expected.falloffRange, expected.symbol);
+    }
 });
 
 test("charge time delays impact but does not change Frontier's firing cadence", () => {

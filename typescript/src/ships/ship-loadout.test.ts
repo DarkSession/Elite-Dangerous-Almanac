@@ -2346,7 +2346,7 @@ test('the Corsair reproduces the externally observed in-game build totals', () =
     );
 });
 
-test('Spire Ops reproduces the observed totals except the Guardian shard offense', () => {
+test('Spire Ops reproduces the observed totals', () => {
     const expected = metrics.inGame.spireOps;
     const event = spireOpsJournal as LoadoutEvent;
     const build = ShipLoadout.fromLoadout(event);
@@ -2367,11 +2367,7 @@ test('Spire Ops reproduces the observed totals except the Guardian shard offense
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
     const weapons = installedBuild.weaponMetrics();
-    assert.equal(
-        displayed(weapons.total.damagePerSecond, 1),
-        expected.offense.calculatedDamagePerSecond,
-    );
-    assert.notEqual(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
     const panel = offensePanelTotals(installedBuild);
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);

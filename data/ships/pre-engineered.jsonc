@@ -11,9 +11,9 @@
  *          The final-engineering restriction on the seven Guardian-weapon rows is an
  *          in-game report from the repository maintainer, observed 2026-08-09 UTC.
  *          Frontier's journal-anaconda-slapaconda.json capture directly states the
- *          tech-broker medium Guardian Shard Cannon's projectile speed, and the
- *          repository owner's current outfitting-panel reading supplies its displayed
- *          damage and damage-per-second figures (observed 2026-08-10 UTC).
+ *          tech-broker medium Guardian Shard Cannon's projectile speed; current
+ *          outfitting-panel readings for its base module supply the damage input
+ *          (observed 2026-08-10 UTC).
  *          The underlying values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -1768,11 +1768,6 @@
         "label": "ArmourPenetration",
         "method": "multiplicative",
         "value": 1.02
-      },
-      {
-        "label": "Damage",
-        "method": "multiplicative",
-        "value": 0.1
       },
       {
         "label": "DistributorDraw",

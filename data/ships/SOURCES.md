@@ -2119,10 +2119,10 @@ order.
     Frontier's `journal-anaconda-slapaconda.json` capture directly reads the medium
     variant's projectile speed as 6299.208984 m/s. The stored overwrite is the authored
     decimal **6299.209 m/s**, with the journal residue treated as float noise, and supersedes
-    EDSY's 3568.6 m/s preset-derived result for that one field. The repository owner's
-    current outfitting-panel reading supplies the same article's missing **Damage +10%**:
-    exact damage 3.7235 displays as 3.7, and its 12 projectiles at 1.666667 shots/s display
-    as 74.5 damage/s.
+    EDSY's 3568.6 m/s preset-derived result for that one field. The current fixed-medium
+    base damage of 3.7235 reproduces the same article's panel without a separate damage
+    modifier: it displays as 3.7, and its 12 projectiles at 1.666667 shots/s display as
+    74.5 damage/s.
     - **The guard that matters:** an `overwrite` is absolute, so it is only applied where
       _this repo's_ base agrees with the one the stat was inverted against. One candidate
       failed that check and was left as a multiplier — the medium Guardian Gauss Cannon's
@@ -2182,7 +2182,7 @@ order.
     and `FittedModule.preEngineeredVariant` exposes the result. The shared fixture also
     pins the important negative: Spire Ops reports only Anti-Guardian Zone Resistance on
     its medium shards, which is not evidence for either fixed Shard Cannon variant; the
-    stock Guardian shard damage gap remains tracked in #97.
+    resistance capability alone still does not identify a pre-engineered article.
 - **Not included:** engineered modules that are one-off mission or salvage rewards rather
   than a repeatable outfitting row. Those arrive in a build as their base symbol plus an
   `Engineering.Modifiers` block, which `ShipLoadout` already applies directly; there is no
@@ -2508,14 +2508,14 @@ under, which is why several are cited above rather than copied.
   modifier, also fully loaded. Across the capture, 58 distinct base-stat readings map to
   catalogue fields: 46 agree exactly and 12 agree within Frontier's float noise.
 
-  **Its Guardian shard damage is preserved as a data gap.** The six weapons calculate
-  515.4 damage/s while the panel reports 566.9 damage/s. Distributor draw does reproduce:
+  **Its Guardian shard damage is independently reproduced.** The six weapons calculate
+  the panel's 566.9 damage/s from the current fixed-medium and fixed-large inputs below.
+  Distributor draw also reproduces:
   the hardpoints' 6.9 MW plus the two caustic sinks and one heat sink at 2 MW each give the
   displayed 12.9 MW; the 11.2 heat/s total agrees too. Their
   `GuardianModule_Sturdy` engineering carries only the string-valued active
-  `GuardianModuleResistance` capability in the journal, so no unsupported numeric modifier
-  is inferred. [#97](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/97)
-  tracks the current individual weapon readings needed to settle the damage input.
+  `GuardianModuleResistance` capability in the journal; damage therefore comes from the
+  module catalogue rather than an invented numeric engineering modifier.
 
 - **`fixtures/ships/journal-anaconda-slapaconda.json`** — a real Frontier journal
   `Loadout` event for an engineered shieldless Anaconda combat build (54 `Modules`
@@ -2549,14 +2549,13 @@ under, which is why several are cited above rather than copied.
   distributor draw, 19.800001 thermal load, 90.900002 armour piercing, 2999.998291 m
   maximum range, 1499.999146 m falloff and 1.5° jitter.
 
-  **A current outfitting-panel reading completes the Modified shard's damage stat.** The
+  **A current outfitting-panel reading corroborates the corrected base damage.** The
   repository owner read the individual tech-broker article on **2026-08-10 UTC**: 3.7
   displayed thermal damage, 74.5 damage/s and 1.7 shots/s, alongside the same rounded
-  stats as the journal capture and its unchanged 5/180 ammunition capacity. The observed
-  `+10%` damage makes the exact base 3.385 become 3.7235; across 12 projectiles per shot
-  at 1.666667 shots/s that calculates 74.4700149 damage/s, reproducing both displayed
-  figures. The pre-engineered record stores the exact `Damage` +0.1 multiplier and the
-  parity fixture separately pins the rounded panel values.
+  stats as the journal capture and its unchanged 5/180 ammunition capacity. The current
+  fixed-medium base of 3.7235 calculates 74.4700149 damage/s across 12 projectiles at
+  1.666667 shots/s, reproducing both displayed figures without a separate pre-engineered
+  damage modifier. The parity fixture pins the rounded panel values.
 
   **Its ammunition and offence extend two existing ground truths.** The Caustic Sink is
   fully loaded at 1/7 under ordinary grade-1 Ammo Capacity, and all five pre-engineered
@@ -2565,8 +2564,7 @@ under, which is why several are cited above rather than copied.
   Modified shards contribute 446.8 damage/s before display rounding, the two beams
   contribute 15.36, and their exact total rounds to 462.2. Distributor draw is the
   weapons' 24.8 MW plus 12 MW from the caustic sink and five heat sinks. The independent
-  +10% result corroborates Spire Ops without establishing which stock large and medium
-  shard input carries that build's still-unresolved difference.
+  result independently corroborates the fixed-medium input used by Spire Ops.
 
 - **`fixtures/ships/journal-lynx-highliner-rescue.json`** — a real Frontier journal
   `Loadout` event for an engineered weaponless Lynx Highliner passenger build (27
@@ -3122,23 +3120,29 @@ that the panel's combined offense inputs include utility mounts as well as hardp
 
 Spire Ops is a current capture of the same fit whose panel was observed. Its six Guardian
 Shard Cannons report **566.9 damage/s, 12.9 MW distributor draw and 11.2 heat/s**. The
-catalogue reproduces heat and distributor draw exactly once the two caustic sinks and heat
-sink are included, but calculates **515.4 damage/s**. The damage difference is exactly
-+10%; it is not encoded in
-the capture's string-valued Anti-Guardian Zone Resistance capability. Both the observed
-and calculated damage values remain
-pinned without correction while
-[#97](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/97) tracks the current
-individual large and medium shard-cannon readings needed to settle their inputs.
+catalogue reproduces all three totals. Current individual panels observed **2026-08-10
+UTC** support a uniform correction to the two damage inputs while both weapons carry
+grade-1 Anti-Guardian Zone Resistance: the fixed large displays **5.2 damage and 104.5
+damage/s**, and the fixed
+medium **3.7 damage and 74.5 damage/s**. The panel exposes only rounded values, so it
+does not uniquely reveal the underlying decimals. The stored **5.225** and **3.7235**
+damage per projectile are derived by applying the uniform 10% correction indicated by
+all three panel readings to the older registry figures 4.75 and 3.385; at 12 projectiles
+and 1.666667 shots/s they reproduce both individual displays and the mixed build total.
+The remaining supplied fields agree with the catalogue: 8/4 t mass, 51/42 integrity,
+1.68/1.21 MW power, 1.4/0.65 MW distributor draw, 2.2/1.2 thermal
+load, 60/45 armour piercing, 1700 m maximum and falloff ranges, 5/180 ammunition, and
+1133/1133.333374 m/s projectile speed. This is a direct in-game observation with no
+upstream immutable revision; `fixtures/ships/module-stats.json` pins both corrected
+damage records and `fixtures/ships/build-metrics.json` pins the complete displayed rows.
 
 Slapaconda independently shows the same shard damage rule on six tech-broker Modified
-medium cannons. Each article's individual panel now confirms **Damage +10%**: exact 3.7235
-damage displays as 3.7, and 12 projectiles at 1.666667 shots/s display as 74.5 damage/s.
+medium cannons. Each article's individual panel is consistent with the current derived
+base damage: 3.7235 displays as 3.7, and 12 projectiles at 1.666667 shots/s display as
+74.5 damage/s. The article therefore needs no separate damage modifier.
 The six shards plus the two beams therefore reproduce the build's 462.2 damage/s. Its
 126.1 heat/s reproduces too, and the panel's 36.8 MW distributor draw is the weapons' 24.8
-MW plus 12 MW from its six sink launchers. This settles the Modified article and
-corroborates the still-open stock-shard behaviour tracked under
-[#97](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/97).
+MW plus 12 MW from its six sink launchers.
 
 The Panther's current capture reproduces **4 damage/s, 2 MW distributor draw and 0.1
 heat/s** from its utility mounts: two point-defence turrets supply the damage and heat,

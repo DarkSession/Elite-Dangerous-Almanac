@@ -1706,26 +1706,26 @@
     },
     {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
-      "damage": 3.385,
+      "damage": 3.7235,
       "damageDistribution": {
         "thermal": 1,
         "antiXeno": 1
       },
       "damageComponents": {
-        "thermal": 3.385,
-        "antiXeno": 3.385
+        "thermal": 3.7235,
+        "antiXeno": 3.7235
       }
     },
     {
       "symbol": "Hpt_Guardian_ShardCannon_Fixed_Large",
-      "damage": 4.75,
+      "damage": 5.225,
       "damageDistribution": {
         "thermal": 1,
         "antiXeno": 1
       },
       "damageComponents": {
-        "thermal": 4.75,
-        "antiXeno": 4.75
+        "thermal": 5.225,
+        "antiXeno": 5.225
       }
     },
     {

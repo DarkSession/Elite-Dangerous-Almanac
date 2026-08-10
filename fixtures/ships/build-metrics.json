@@ -391,7 +391,7 @@
     },
     "spireOps": {
       "build": "fixtures/ships/journal-python-mkii-spire-ops.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 0.83 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Shield, armour, mass, jump, distributor draw, thermal load and power all reproduce. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the six Guardian shard cannons contribute 6.9 MW and the two caustic-sink launchers plus heat-sink launcher contribute 6 MW, reproducing the displayed 12.9 MW. The shards calculate 515.4 damage/s rather than the panel's 566.9 damage/s; see issue #97. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 0.83 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Shield, armour, mass, jump, offense, distributor draw, thermal load and power all reproduce. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the six Guardian shard cannons contribute 6.9 MW and the two caustic-sink launchers plus heat-sink launcher contribute 6 MW, reproducing the displayed 12.9 MW. The individual class-2 and class-3 fixed Shard Cannon panels support the uniform 10% correction applied to the older registry damage inputs; their one-decimal displays do not uniquely expose the underlying decimals. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
       "jumpRange": {
         "fullTank": 25.14
       },
@@ -410,7 +410,6 @@
       },
       "offense": {
         "damagePerSecond": 566.9,
-        "calculatedDamagePerSecond": 515.4,
         "distributorDraw": 12.9,
         "thermalLoad": 11.2
       },
@@ -441,7 +440,7 @@
     },
     "slapaconda": {
       "build": "fixtures/ships/journal-anaconda-slapaconda.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 1.07 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Armour, mass, jump, offense and power all reproduce, and the zero shield follows from having no generator fitted. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the weapons contribute 24.8 MW and the caustic-sink plus five heat-sink launchers contribute 12 MW, reproducing the displayed 36.8 MW. Each tech-broker Modified Guardian Shard Cannon independently displays 74.5 damage/s from 3.7 displayed damage at 1.7 shots/s; its exact 3.7235 damage is the stock 3.385 with the observed +10% modifier. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 1.07 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Armour, mass, jump, offense and power all reproduce, and the zero shield follows from having no generator fitted. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the weapons contribute 24.8 MW and the caustic-sink plus five heat-sink launchers contribute 12 MW, reproducing the displayed 36.8 MW. Each tech-broker Modified Guardian Shard Cannon independently displays 74.5 damage/s from 3.7 displayed damage at 1.7 shots/s, consistent with the corrected 3.7235 stock base and requiring no separate damage modifier. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
       "jumpRange": {
         "fullTank": 27.63
       },
@@ -688,6 +687,52 @@
       "continuous": false
     }
   ],
+  "observedGuardianShardCannons": {
+    "note": "Current individual outfitting-panel readings observed on the Spire Ops build with grade-1 Anti-Guardian Zone Resistance active. The one-decimal displays do not uniquely reveal the underlying inputs. The catalogue values apply a uniform 10% correction to the older registry figures, a derivation consistent with both individual readings and the mixed build's 566.9 damage/s.",
+    "blueprint": "Anti-Guardian Zone Resistance",
+    "grade": 1,
+    "active": true,
+    "records": [
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "class": 2,
+        "mass": 4,
+        "integrity": 42,
+        "powerDraw": 1.21,
+        "damagePerSecond": 74.5,
+        "damage": 3.7,
+        "distributorDraw": 0.65,
+        "thermalLoad": 1.2,
+        "armourPiercing": 45,
+        "maximumRange": 1700,
+        "shotSpeed": 1133,
+        "rateOfFire": 1.7,
+        "clipSize": 5,
+        "ammoMaximum": 180,
+        "damageType": "Thermal",
+        "falloffRange": 1700
+      },
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Large",
+        "class": 3,
+        "mass": 8,
+        "integrity": 51,
+        "powerDraw": 1.68,
+        "damagePerSecond": 104.5,
+        "damage": 5.2,
+        "distributorDraw": 1.4,
+        "thermalLoad": 2.2,
+        "armourPiercing": 60,
+        "maximumRange": 1700,
+        "shotSpeed": 1133,
+        "rateOfFire": 1.7,
+        "clipSize": 5,
+        "ammoMaximum": 180,
+        "damageType": "Thermal",
+        "falloffRange": 1700
+      }
+    ]
+  },
   "ammunition": {
     "note": "What a module holds when fully rearmed — a capacity, not a rearm state. `hopper` is the reserve behind the magazine and excludes it, exactly as a journal's AmmoInHopper does, so `total` is the two added. JSON cannot write infinity: an unlimited reserve is `null` here and `unlimited` is true, and an implementation reports its own infinity for it — JavaScript's `JSON.stringify` writes that back as `null`, Python's `json.dumps` writes the non-standard token `Infinity`, so the two agree on the value and not on its serialization. A reserve of zero is a different answer and is written as zero. It is not only weapons — a launcher, a point defence turret, a shield cell bank and an AFMU all carry a reserve and are read the same way.",
     "catalogue": [
