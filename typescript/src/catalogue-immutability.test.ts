@@ -6,22 +6,52 @@ import { HAND_AUTHORED_REGIONS } from './astro/hand-authored-regions.js';
 import { getHandAuthoredRegionOrigin } from './astro/naming-region-origins.js';
 import { ALL_NEBULAE } from './astro/nebulae-all.js';
 import { ALL_MATERIALS } from './materials/materials-all.js';
+import { RAW_MATERIALS } from './materials/materials-raw.js';
+import { MANUFACTURED_MATERIALS } from './materials/materials-manufactured.js';
+import { ENCODED_MATERIALS } from './materials/materials-encoded.js';
 import { ALL_MICRO_RESOURCES } from './materials/micro-resources-all.js';
+import { COMPONENT_MICRO_RESOURCES } from './materials/micro-resources-component.js';
+import { CONSUMABLE_MICRO_RESOURCES } from './materials/micro-resources-consumable.js';
+import { DATA_MICRO_RESOURCES } from './materials/micro-resources-data.js';
+import { ITEM_MICRO_RESOURCES } from './materials/micro-resources-item.js';
 import { ALL_MODULES } from './ships/modules-all.js';
+import { CORE_MODULES } from './ships/modules-core.js';
+import { INTERNAL_MODULES } from './ships/modules-internal.js';
+import { HARDPOINT_MODULES } from './ships/modules-hardpoint.js';
+import { UTILITY_MODULES } from './ships/modules-utility.js';
 import { SHIPS } from './ships/ships.js';
 import { SLOT_RESTRICTION_LABELS } from './ships/slots.js';
 import { ALL_COMMODITIES } from './commodities/commodities-all.js';
+import { COMMODITIES } from './commodities/commodities-standard.js';
+import { RARE_COMMODITIES } from './commodities/commodities-rare.js';
 
 test('every exported object catalogue and all of its records are frozen', () => {
+    // Every published catalogue, not only the combined ones: a lookup indexes a
+    // catalogue exactly when the array and all of its records are frozen, so a subset
+    // that stopped being frozen would quietly drop to a linear scan, and one that was
+    // frozen only shallowly would be indexed on keys its records could still change.
     const catalogues: readonly (readonly object[])[] = [
         CODEX_REGIONS,
         HAND_AUTHORED_REGIONS,
         ALL_NEBULAE,
         ALL_MATERIALS,
+        RAW_MATERIALS,
+        MANUFACTURED_MATERIALS,
+        ENCODED_MATERIALS,
         ALL_MICRO_RESOURCES,
+        COMPONENT_MICRO_RESOURCES,
+        CONSUMABLE_MICRO_RESOURCES,
+        DATA_MICRO_RESOURCES,
+        ITEM_MICRO_RESOURCES,
         ALL_MODULES,
+        CORE_MODULES,
+        INTERNAL_MODULES,
+        HARDPOINT_MODULES,
+        UTILITY_MODULES,
         SHIPS,
         ALL_COMMODITIES,
+        COMMODITIES,
+        RARE_COMMODITIES,
     ];
 
     for (const catalogue of catalogues) {

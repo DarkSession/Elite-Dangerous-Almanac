@@ -27,7 +27,7 @@
  * | `./materials-all` | `ALL_MATERIALS` | 146 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all three
- * catalogues, since that is what it falls back to — 16 KB minified for all 146.
+ * catalogues, since that is what it falls back to — 17 KB minified for all 146.
  * {@link materialsInCategory} reaches the same subsets from a plain string.
  *
  * Data originates from EDCD FDevIDs, with Thargoid materials absent from that
@@ -45,6 +45,7 @@
  */
 
 import { ALL_MATERIALS } from './materials-all.js';
+import { findByKey, filterByKey } from '../internal/registry-index.js';
 
 /** Which of the three engineering-material categories a material belongs to. */
 export type MaterialCategory = 'raw' | 'manufactured' | 'encoded';
@@ -169,11 +170,6 @@ export interface Material {
     readonly line: MaterialLine;
 }
 
-/** Case- and whitespace-insensitive key for name, symbol, category and group matching. */
-function normalize(value: string): string {
-    return value.trim().toLowerCase();
-}
-
 /**
  * Look up a material by its Frontier symbol / journal id (case-insensitive).
  *
@@ -195,8 +191,7 @@ export function getMaterialBySymbol(
     symbol: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
-    const wanted = normalize(symbol);
-    return materials.find((material) => normalize(material.symbol) === wanted) ?? null;
+    return findByKey(materials, 'symbol', (material) => material.symbol, symbol);
 }
 
 /**
@@ -214,8 +209,7 @@ export function getMaterialByName(
     name: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
-    const wanted = normalize(name);
-    return materials.find((material) => normalize(material.name) === wanted) ?? null;
+    return findByKey(materials, 'name', (material) => material.name, name);
 }
 
 /**
@@ -234,12 +228,11 @@ export function getMaterialByElementSymbol(
     elementSymbol: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
-    const wanted = normalize(elementSymbol);
-    return (
-        materials.find(
-            (material) =>
-                material.elementSymbol !== null && normalize(material.elementSymbol) === wanted,
-        ) ?? null
+    return findByKey(
+        materials,
+        'elementSymbol',
+        (material) => material.elementSymbol,
+        elementSymbol,
     );
 }
 
@@ -281,8 +274,7 @@ export function materialsInLine(
     line: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material[] {
-    const wanted = normalize(line);
-    return materials.filter((material) => normalize(material.line) === wanted);
+    return filterByKey(materials, 'line', (material) => material.line, line);
 }
 
 /**
@@ -312,6 +304,5 @@ export function materialsInCategory(
     category: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material[] {
-    const wanted = normalize(category);
-    return materials.filter((material) => normalize(material.category) === wanted);
+    return filterByKey(materials, 'category', (material) => material.category, category);
 }

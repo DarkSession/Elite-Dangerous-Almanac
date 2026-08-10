@@ -53,6 +53,7 @@
  */
 
 import { ALL_MODULES } from './modules-all.js';
+import { findByKey, filterByKey } from '../internal/registry-index.js';
 import type { ModuleSlot, SlotRestriction } from './slots.js';
 
 /**
@@ -745,8 +746,7 @@ export function getModuleBySymbol(
     symbol: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule | null {
-    const wanted = symbol.trim().toLowerCase();
-    return modules.find((module) => module.symbol.toLowerCase() === wanted) ?? null;
+    return findByKey(modules, 'symbol', (module) => module.symbol, symbol);
 }
 
 /**
@@ -767,8 +767,7 @@ export function getModulesByName(
     name: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule[] {
-    const wanted = name.trim().toLowerCase();
-    return modules.filter((module) => module.name.toLowerCase() === wanted);
+    return filterByKey(modules, 'name', (module) => module.name, name);
 }
 
 /**
@@ -796,6 +795,5 @@ export function getModulesForShip(
     ship: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule[] {
-    const wanted = ship.trim().toLowerCase();
-    return modules.filter((module) => module.ship?.toLowerCase() === wanted);
+    return filterByKey(modules, 'ship', (module) => module.ship, ship);
 }
