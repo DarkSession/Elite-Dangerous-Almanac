@@ -69,12 +69,9 @@ export type OptionalRestriction =
  * restricted mount can carry.
  *
  * @remarks
- * In practice a {@link BuildSlot} of kind `hardpoint` only ever carries a
- * {@link HardpointRestriction} and one of kind `optional` only ever carries an
- * {@link OptionalRestriction} — but `BuildSlot` is a flat interface, not a
- * discriminated union, so **checking `slot.kind` does not narrow this type**. An
- * exhaustive `switch` over a hardpoint's restriction still has to handle (or cast
- * away) the optional-only values; there is no `never` case to lean on.
+ * A {@link BuildSlot} is discriminated by `kind`: a `hardpoint` only carries a
+ * {@link HardpointRestriction}, an `optional` only an {@link OptionalRestriction}, and
+ * a `core` carries no restriction. Checking `slot.kind` narrows these fields.
  *
  * The list is complete. No hardpoint takes only one *mount* (fixed, gimballed or
  * turret), and no utility mount is restricted — which is why neither ever had a
@@ -157,8 +154,14 @@ export type CoreSlotType =
  */
 export type ModuleSlot = CoreSlotType | 'armour';
 
-/** One mount on a hull — its stable key, kind, and size. */
-export interface BuildSlot {
+/**
+ * The stable identity and size shared by every hull mount.
+ *
+ * Use {@link BuildSlot} when the mount kind and its narrowed `core` or `restriction`
+ * field matter. This base is useful for consumers that only display or persist a slot
+ * key and size.
+ */
+export interface BuildSlotBase {
     /**
      * Stable, journal-compatible slot key, e.g. `"PowerPlant"`, `"HugeHardpoint1"`,
      * `"TinyHardpoint2"`, `"Slot01_Size6"`, `"Military01"`,
@@ -171,9 +174,9 @@ export interface BuildSlot {
      * **case-insensitively** and otherwise exactly — no surrounding whitespace, no
      * abbreviation — because a SLEF producer may lower-case the game's own identifier,
      * as the specification's own example does. Enumerate keys with
-     * `ShipLoadout.slots()` rather than typing them. Note a core slot's
-     * {@link BuildSlot.core} function name is a *different* string (`thrusters` vs the
-     * key `MainEngines`); see {@link CoreSlotType}.
+     * `ShipLoadout.slots()` rather than typing them. Note a core {@link BuildSlot}'s
+     * `core` function name is a *different* string (`thrusters` vs the key
+     * `MainEngines`); see {@link CoreSlotType}.
      *
      * **Do not compute one.** The numbering looks regular and on ten hulls is
      * not: the Anaconda's smallest optionals are `Slot13_Size2` and `Slot14_Size1`
@@ -183,31 +186,70 @@ export interface BuildSlot {
      * {@link enumerateSlots}.
      */
     readonly key: string;
-    /** Which kind of mount this is. */
-    readonly kind: SlotKind;
     /**
      * Slot size (class). Core/optional/hardpoint slots are 1–8; utility and armour
      * use `0` placeholders because their fit rules are not size-based, while the
      * fixed cargo hatch uses `1`.
      */
     readonly size: number;
-    /**
-     * The restriction, when the mount is a restricted one — a
-     * {@link HardpointRestriction} on a `hardpoint` slot, an
-     * {@link OptionalRestriction} on an `optional` one. Absent on every other kind.
-     *
-     * @remarks
-     * {@link SLOT_RESTRICTION_LABELS} turns this into a phrase to show a user;
-     * `ShipLoadout.modulesForSlot` turns it into the modules that actually fit.
-     */
-    readonly restriction?: SlotRestriction;
-    /**
-     * For a core slot, which core module type it accepts — the camelCase *function*
-     * name, not the slot key (see {@link CoreSlotType}). Absent on every other kind
-     * of mount.
-     */
-    readonly core?: CoreSlotType;
 }
+
+/** A core-internal mount, which always names the one module function it accepts. */
+export interface CoreBuildSlot extends BuildSlotBase {
+    /** Discriminator for a core-internal mount. */
+    readonly kind: 'core';
+    /** The core module function this mount accepts. */
+    readonly core: CoreSlotType;
+    /** Core mounts are never family-restricted. */
+    readonly restriction?: never;
+}
+
+/** A weapon hardpoint, optionally restricted to a weapon family. */
+export interface HardpointBuildSlot extends BuildSlotBase {
+    /** Discriminator for a weapon hardpoint. */
+    readonly kind: 'hardpoint';
+    /** The weapon family this hardpoint requires, when restricted. */
+    readonly restriction?: HardpointRestriction;
+    /** Hardpoints never name a core module function. */
+    readonly core?: never;
+}
+
+/** An optional-internal mount, optionally restricted to a module family. */
+export interface OptionalBuildSlot extends BuildSlotBase {
+    /** Discriminator for an optional-internal mount. */
+    readonly kind: 'optional';
+    /** The module family this optional mount requires, when restricted. */
+    readonly restriction?: OptionalRestriction;
+    /** Optional internals never name a core module function. */
+    readonly core?: never;
+}
+
+/** A utility, armour, or cargo-hatch mount with no kind-specific fields. */
+export interface SimpleBuildSlot extends BuildSlotBase {
+    /** The exact simple mount kind. */
+    readonly kind: 'utility' | 'armour' | 'cargoHatch';
+    /** These mounts are never family-restricted. */
+    readonly restriction?: never;
+    /** These mounts never name a core module function. */
+    readonly core?: never;
+}
+
+/**
+ * One mount on a hull — its stable key, kind-specific fields, and size.
+ *
+ * Checking `kind` narrows `core` and `restriction`: core mounts always name their
+ * {@link CoreSlotType}; hardpoint and optional restrictions cannot be mixed; utility,
+ * armour, and cargo-hatch mounts carry neither field.
+ *
+ * @example
+ * ```ts
+ * const slot = enumerateSlots(getShipSlots('Anaconda')!)[0]!;
+ * if (slot.kind === 'hardpoint') {
+ *   slot.restriction; // HardpointRestriction | undefined
+ * }
+ * ```
+ */
+export type BuildSlot = CoreBuildSlot | HardpointBuildSlot | OptionalBuildSlot | SimpleBuildSlot;
 
 /**
  * The size of each of a hull's seven core-internal mounts.
@@ -308,7 +350,7 @@ export interface ParsedSlot {
      * @remarks
      * `null` is not the only "no size here" answer. A mount whose fit rules are not
      * size-based reads `0` rather than `null` — `TinyHardpoint1` and `Armour` both do,
-     * matching {@link BuildSlot.size} — and `CargoHatch` reads `1`. So test
+     * matching the `size` on a {@link BuildSlot} — and `CargoHatch` reads `1`. So test
      * `parsed.size` for falsiness, or against the {@link ParsedSlot.kind} you expect;
      * `=== null` alone treats a utility mount as a sized slot.
      */

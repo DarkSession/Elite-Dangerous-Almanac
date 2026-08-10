@@ -627,11 +627,6 @@ export class ShipLoadout {
         return this.#sourcePurchase;
     }
 
-    /** The fitted modules, in the order they were added / exported. */
-    get modules(): readonly LoadoutModule[] {
-        return [...this.#modules.values()].map(cloneLoadoutModule);
-    }
-
     /**
      * Structural validity and operational completeness of this build.
      *
@@ -664,16 +659,6 @@ export class ShipLoadout {
         const value = validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
         this.#validationCache = { version: this.#version, value };
         return value;
-    }
-
-    /** Whether the build contains no structurally invalid fit. */
-    get valid(): boolean {
-        return this.validation.valid;
-    }
-
-    /** Whether the build is valid, has every operational mount, and is fully classified. */
-    get complete(): boolean {
-        return this.validation.complete;
     }
 
     /**
@@ -785,20 +770,6 @@ export class ShipLoadout {
         return deepFreeze(
             module ? availableExperimentalsFor(module.Item, this.#statsFor(module)) : [],
         );
-    }
-
-    /**
-     * The raw journal `Loadout` module object in a slot, or `null` if empty. The
-     * low-level counterpart to {@link fittedModuleAt} for journal-shaped data.
-     *
-     * @param slotKey - The slot key, matched case-insensitively (journal spelling).
-     * @returns The raw module object, or `null` when the slot is empty. Its `Slot` field
-     * carries the build's own spelling of the key.
-     */
-    moduleAt(slotKey: string): LoadoutModule | null {
-        const key = this.#fittedKey(slotKey);
-        const module = key === null ? undefined : this.#modules.get(key);
-        return module ? cloneLoadoutModule(module) : null;
     }
 
     /**
@@ -1285,7 +1256,7 @@ export class ShipLoadout {
         const ordered: LoadoutModule[] = [];
         for (const slot of layout) {
             // Resolved exactly as `#fittedKey` resolves it, so the entry this orders is
-            // the one `moduleAt` and `setModule` bind to — a lower-casing producer's
+            // the one `fittedModuleAt` and `setModule` bind to — a lower-casing producer's
             // build orders by slot exactly as a journal's does.
             const key = remaining.has(slot.key)
                 ? slot.key
@@ -1456,17 +1427,6 @@ export class ShipLoadout {
         const fsd = this.frameShiftDrive;
         const fuel = options.fuel ?? this.#requireFuelCapacity().main;
         return singleJumpRange(this.#requireMass(options.cargo ?? 0), fuel, fsd);
-    }
-
-    /**
-     * Single-jump range on a full tank with no cargo, in light-years.
-     *
-     * @returns The jump's range, in light-years.
-     * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
-     * fuel capacity cannot be determined.
-     */
-    unladenJumpRange(): number {
-        return this.jumpRange();
     }
 
     /**

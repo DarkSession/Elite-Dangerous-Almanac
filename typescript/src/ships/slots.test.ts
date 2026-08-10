@@ -1,7 +1,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { parseSlotName, enumerateSlots, SLOT_RESTRICTION_LABELS, type ShipSlots } from './slots.js';
+import {
+    parseSlotName,
+    enumerateSlots,
+    SLOT_RESTRICTION_LABELS,
+    type CoreSlotType,
+    type HardpointRestriction,
+    type OptionalRestriction,
+    type ShipSlots,
+} from './slots.js';
 import { getShipSlots, SHIPS } from './ships.js';
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 
@@ -166,6 +174,27 @@ test('enumerateSlots expands the Anaconda layout into keyed mounts', () => {
     });
     const pas = slots.find((s) => s.restriction === 'planetaryApproachSuite');
     assert.equal(pas?.key, 'PlanetaryApproachSuite');
+});
+
+test('BuildSlot kind narrows its kind-specific fields', () => {
+    for (const slot of enumerateSlots(getShipSlots('LakonMiner')!)) {
+        if (slot.kind === 'core') {
+            const core: CoreSlotType = slot.core;
+            assert.ok(core);
+            assert.equal(slot.restriction, undefined);
+        } else if (slot.kind === 'hardpoint') {
+            const restriction: HardpointRestriction | undefined = slot.restriction;
+            assert.ok(restriction === undefined || restriction === 'mining');
+            assert.equal(slot.core, undefined);
+        } else if (slot.kind === 'optional') {
+            const restriction: OptionalRestriction | undefined = slot.restriction;
+            if (restriction) assert.ok(SLOT_RESTRICTION_LABELS[restriction]);
+            assert.equal(slot.core, undefined);
+        } else {
+            assert.equal(slot.restriction, undefined);
+            assert.equal(slot.core, undefined);
+        }
+    }
 });
 
 test('the hulls with names of their own enumerate the journal keys the fixture pins', () => {
