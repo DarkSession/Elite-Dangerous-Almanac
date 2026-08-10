@@ -16,6 +16,7 @@ import engineeringFixture from '../../../fixtures/ships/engineering.json' with {
 import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
+import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
 import cobraMkVJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
@@ -2129,6 +2130,77 @@ test('the Lynx Highliner reproduces the observed totals except its distributor d
         expected.shields.resistances,
     );
     const generator = build.getFittedModule('Slot02_Size5')!.effectiveStats!;
+    assert.equal(displayed(generator.shieldRegenRate!, 1), expected.shields.regeneration.standard);
+    assert.equal(
+        displayed(generator.shieldBrokenRegenRate!, 1),
+        expected.shields.regeneration.broken,
+    );
+
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
+    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 0), expected.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 2),
+            thermal: displayed(armour.resistances.thermal, 2),
+            explosive: displayed(armour.resistances.explosive, 2),
+        },
+        expected.armour.resistances,
+    );
+});
+
+test('the weaponless Rescue Lynx Highliner reproduces every observed calculated total', () => {
+    const expected = metrics.inGame.rescue;
+    const event = lynxRescueJournal as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+    assert.equal(build.shipName, '[KPV] Rescue');
+
+    assert.equal(
+        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        expected.jumpRange.fullTank,
+    );
+
+    const installedBuild = withAllModulesEnabled(event);
+    const power = installedBuild.powerBudget();
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.available, 2), expected.power.available);
+    assert.equal(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 2), expected.power.deployed);
+
+    const weapons = installedBuild.weaponMetrics();
+    assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    const offensePanelTotals = installedBuild.hardpoints().reduce(
+        (totals, slot) => ({
+            distributorDraw:
+                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
+            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
+        }),
+        { distributorDraw: 0, thermalLoad: 0 },
+    );
+    assert.equal(
+        displayed(offensePanelTotals.distributorDraw, 1),
+        expected.offense.distributorDraw,
+    );
+    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+
+    const shields = build.shieldMetrics()!;
+    assert.equal(displayed(shields.strength, 0), expected.shields.strength);
+    assert.deepEqual(
+        {
+            kinetic: displayed(shields.resistances.kinetic, 3),
+            thermal: displayed(shields.resistances.thermal, 3),
+            explosive: displayed(shields.resistances.explosive, 3),
+        },
+        expected.shields.resistances,
+    );
+    const generator = build.getFittedModule('Slot04_Size4')!.effectiveStats!;
     assert.equal(displayed(generator.shieldRegenRate!, 1), expected.shields.regeneration.standard);
     assert.equal(
         displayed(generator.shieldBrokenRegenRate!, 1),

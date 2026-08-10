@@ -574,13 +574,13 @@ the modified one, so a capture reads base stats straight out of Frontier's own
 arithmetic — including a hardpoint's reserve ammo and projectile speed, which the
 in-game audit above lists as unreached, the shield-generator and shield-booster
 resistances, which it lists as unsettled, and the ship-specific armour modules, which it
-excludes from numeric verification altogether. Of the fifteen journal captures and the
-EDSY export stored here, **fourteen state base values**; between them they state **887**
-that name a field this catalogue holds, and every one agrees — 772 to the stored decimal
-and 115 to within the game's own float noise.
+excludes from numeric verification altogether. Of the sixteen journal captures and the
+EDSY export stored here, **fifteen state base values**; between them they state **929**
+that name a field this catalogue holds, and every one agrees — 809 to the stored decimal
+and 120 to within the game's own float noise.
 
-Counted as distinct (module, label) pairs rather than per capture, that reaches 18
-modules on their resistances (five shield generators, two shield boosters, four hull
+Counted as distinct (module, label) pairs rather than per capture, that reaches 19
+modules on their resistances (six shield generators, two shield boosters, four hull
 reinforcement packages and seven armour modules), those seven armour modules' hull
 boosts, nine reserve-ammo and seven clip-size readings, and two projectile speeds.
 
@@ -611,7 +611,7 @@ rather than sampled.
 Wherever a
 capture spells a stat by something other than the field's own first name, or names a
 field the record does not carry — the two shapes a wrong resolution hides in — the result
-is pinned at a field written out by hand rather than resolved: **66** of them, one per
+is pinned at a field written out by hand rather than resolved: **67** of them, one per
 module and field, in `capturedBaseStats.engineered`.
 
 A fourth label, `Jitter`, already resolved to `jitter`. A capture states it as
@@ -2202,7 +2202,7 @@ order.
   `typescript/src/ships/internal/module-stat-labels.ts` holds the per-label unit and
   algebra table.
 - **Ammunition capacity is `clipSize` + `ammoMaximum`.** The reserve excludes the
-  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The fifteen
+  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The sixteen
   journal captures carry **81** non-zero readings across twenty-six distinct modules.
   They are not
   the only external check either stat gets — the `AmmoClipSize` and `AmmoMaximum`
@@ -2537,6 +2537,38 @@ under, which is why several are cited above rather than copied.
   [#97](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/97) tracks the
   missing individual readings.
 
+- **`fixtures/ships/journal-lynx-highliner-rescue.json`** — a real Frontier journal
+  `Loadout` event for an engineered weaponless Lynx Highliner passenger build (27
+  `Modules` entries: four engineered shield boosters, five Mk II passenger cabins in
+  ordinary slots, three more in restricted passenger mounts, and a size-4 Prismatic
+  Shield Generator). Contributed **2026-08-10 UTC** by the repository owner alongside
+  the in-game statistics-panel readings pinned in `fixtures/ships/build-metrics.json`
+  §`inGame.rescue`. No upstream project is recorded; the loadout is Frontier game output
+  redistributed under Frontier's media-usage terms. The pasted source's raw JSON line has
+  SHA-256 `1de9f2485f1a7df90434ee681519b26998476f5c2092ff56e892ef41143bbdf6`;
+  the stored, re-indented fixture has SHA-256
+  `e7486df0f380ab96cc291134fa56172f1236889bea20934d54b71e5ed6407315` and is otherwise
+  unchanged. Its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` are kept because they
+  describe the ship, and the engineer names are the game's own NPCs.
+
+  **It is distinct from the earlier Rescue 01 Lynx Highliner.** The captures have
+  different `ShipID` values and different fits: this ship has no weapons, carries a
+  smaller shield generator and omits the heat sink, cargo rack, fuel scoop and limpet
+  controller. With its stated aggregates stripped, the modules recompute to
+  `UnladenMass` 663.799994 t against Frontier's 663.799988 t and `MaxJumpRange` 31.405720
+  ly against 31.405712 ly, both within float noise. It states 42 catalogue base values:
+  37 agree exactly and five within Frontier's float noise. Its size-4 Prismatic generator
+  also supplies the previously uncaptured engineered `ShieldGenStrength` read-back,
+  219.419983% in the journal and `optMultiplier` 2.19419983 in catalogue units.
+
+  **Every calculated panel metric reproduces.** The panel's 30.16 ly full-tank display
+  follows when the 0.75 t reserve tank counts as ship mass but not jump fuel. Its
+  all-module power, zero weapon output, shield strength and resistances, shield
+  regeneration, armour and resistances, current full-fuel mass and engineered thruster
+  maximum mass all land at displayed precision. The supplied 579 m/s top speed exceeds
+  its 472 m/s boost speed; both are preserved without correction because speed is not
+  calculated by this library.
+
 - **`fixtures/ships/journal-corsair.json`** — a real Frontier journal `Loadout` event for a
   heavily **engineered** Corsair (36 `Modules` entries: six hardpoints, three shield
   boosters, an engineered overcharge drive, 144 t of cargo). Contributed **2026-08-08 UTC**
@@ -2648,7 +2680,7 @@ under, which is why several are cited above rather than copied.
   the stored text is faithful: both figures are dropped and recomputed from the modules
   alone, so every module mass, every engineered mass modifier and the drive's whole fuel
   curve have to be right for them to land. The residue is the game's own float32
-  arithmetic — at worst 1.22 × 10⁻⁴ t and 6.4 × 10⁻⁶ ly across all fifteen journal
+  arithmetic — at worst 1.22 × 10⁻⁴ t and 7.94 × 10⁻⁶ ly across all sixteen journal
   captures, not these five alone. Pinned by `fixtures/ships/module-stats.json`
   `capturedBaseStats.rebuilds`.
 
@@ -2792,7 +2824,7 @@ under, which is why several are cited above rather than copied.
   Inara lower-cases every slot key, as the SLEF specification's own example does, so a
   case-sensitive binding reports **no** occupied mounts on an Inara build and `setModule`
   on one adds a duplicate rather than replacing it. Nothing but an Inara-sourced export
-  shows that: the EDSY export and the fifteen journal captures all use Frontier's own
+  shows that: the EDSY export and the sixteen journal captures all use Frontier's own
   casing. `ShipLoadout` and `parseSlotName` resolve
   a slot key whatever its casing. Keys are deliberately **not** canonicalised on import —
   a build keeps its producer's spelling, so this fixture
@@ -2970,8 +3002,9 @@ self-consistent.
 **Externally observed build totals.** The in-game ship statistics displays for the
 beam-heavy Federal Corvette in `journal-federation-corvette-beams.json`, the Cobra Mk V
 in `journal-cobra-mkv.json`, the Kestrel Mk II in `journal-kestrel-mkii.json`, The Deep
-Black in `slef-the-deep-black.json`, and the Lynx Highliner in
-`journal-lynx-highliner.json`, the Panther Clipper Mk II in
+Black in `slef-the-deep-black.json`, the Rescue 01 Lynx Highliner in
+`journal-lynx-highliner.json`, the Rescue Lynx Highliner in
+`journal-lynx-highliner-rescue.json`, the Panther Clipper Mk II in
 `slef-inara-panther-mkii.json`, the Corsair in `journal-corsair.json`, Spire Ops in
 `journal-python-mkii-spire-ops.json`, and Slapaconda in
 `journal-anaconda-slapaconda.json` were read on
@@ -2982,15 +3015,15 @@ available); the displays themselves expose no immutable revision or export, so t
 fixture preserves the manually transcribed values at the game's displayed precision. No
 correction is applied. The Kestrel capture predates its displayed name and therefore
 retains a blank `ShipName`; the separately observed `[KDF] Slippery Fudge` name is
-metadata on the calculated-values fixture, not a rewrite of that source capture. Seven
+metadata on the calculated-values fixture, not a rewrite of that source capture. Eight
 builds externally check shield strength and resistance stacking and armour hit points and
 resistance stacking; Slapaconda additionally checks that a build with no generator reports
 zero shields while its armour still reproduces. The Panther observation belongs to a later
 refit than its same-named capture and is not counted as validation of the old build. Every
 matching build except The Deep Black also checks full-tank jump range without a known
-discrepancy. All nine observations record speed and rotation, full-fuel and
+discrepancy. All ten observations record speed and rotation, full-fuel and
 thruster-maximum masses, and power figures for APIs that can consume them now or later;
-the eight shielded observations also record shield regeneration.
+the nine shielded observations also record shield regeneration.
 
 The power display totals every fitted module regardless of whether it is powered on. Its
 39.76 MW retracted / 47.46 MW deployed figures therefore include the cargo hatch's 0.6
@@ -3062,13 +3095,19 @@ substituting recharge for draw would contradict the two armed builds. The observ
 kept without correction and the unresolved empty-hardpoint semantics are tracked in
 [#94](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/94).
 
-The Cobra, Kestrel, Spire Ops and Slapaconda also make the in-game full-tank jump display's
-reserve-fuel treatment visible. The physical calculation excludes reserve fuel from usable FSD fuel
-and jump mass. The panel includes it in mass only: the Cobra's 0.49 t reserve changes
+The weaponless Rescue Lynx reports **0 damage/s, 0 MW distributor draw and 0 heat/s**,
+and all three reproduce from its empty hardpoints. That independent clean result narrows
+the Deep Black's non-zero distributor display to that observation rather than a general
+rule for weaponless builds.
+
+The Cobra, Kestrel, Spire Ops, Slapaconda and Rescue also make the in-game full-tank jump
+display's reserve-fuel treatment visible. The physical calculation excludes reserve fuel
+from usable FSD fuel and jump mass. The panel includes it in mass only: the Cobra's 0.49 t reserve changes
 44.8089 ly to 44.7491 ly, displayed as 44.75; the Kestrel's 0.61 t reserve changes
 23.1922 ly to 23.1606 ly, displayed as 23.16; Spire Ops' 0.83 t reserve changes 25.1640 ly
-to 25.1375 ly, displayed as 25.14; and Slapaconda's 1.07 t reserve changes 27.6513 ly to
-27.6282 ly, displayed as 27.63. The fixture pins the display readings while
+to 25.1375 ly, displayed as 25.14; Slapaconda's 1.07 t reserve changes 27.6513 ly to
+27.6282 ly, displayed as 27.63; and Rescue's 0.75 t reserve changes 30.1961 ly to 30.1636
+ly, displayed as 30.16. The fixture pins the display readings while
 `ShipLoadout.unladenJumpRange()` keeps the physical answers.
 
 The Deep Black does not reproduce its **84.95 ly** observed full-tank display from the

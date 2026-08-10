@@ -26,6 +26,7 @@ import corvettePlasmaJournal from '../../../fixtures/ships/journal-federation-co
 import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
 import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
+import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
@@ -59,6 +60,7 @@ const CAPTURES: readonly { file: string; loadouts: readonly LoadoutEvent[] }[] =
     { file: 'journal-federation-corvette.json', loadouts: [corvetteJournal as LoadoutEvent] },
     { file: 'journal-kestrel-mkii.json', loadouts: [kestrelJournal as LoadoutEvent] },
     { file: 'journal-krait-phantom.json', loadouts: [kraitJournal as LoadoutEvent] },
+    { file: 'journal-lynx-highliner-rescue.json', loadouts: [lynxRescueJournal as LoadoutEvent] },
     { file: 'journal-lynx-highliner.json', loadouts: [lynxJournal as LoadoutEvent] },
     { file: 'journal-python-mkii-antixeno.json', loadouts: [pythonJournal as LoadoutEvent] },
     { file: 'journal-python-mkii-spire-ops.json', loadouts: [spireOpsJournal as LoadoutEvent] },

@@ -315,21 +315,22 @@ in the doc comment of each ported module, and in long form in the domain
   `journal-federation-corvette.json`, `journal-federation-corvette-beams.json`,
   `journal-federation-corvette-multirole.json`, `journal-federation-corvette-mixed.json`,
   `journal-federation-corvette-plasma.json`, `journal-cobra-mkv.json`,
-  `journal-kestrel-mkii.json`, `journal-lynx-highliner.json` and
+  `journal-kestrel-mkii.json`, `journal-lynx-highliner.json`,
+  `journal-lynx-highliner-rescue.json` and
   `journal-caspian-explorer.json` are real Frontier journal
   `Loadout` events contributed by the repository owner from their own fleet, with no
   upstream project to credit; the Corvette is what says Overcharged does not cut a
   cannon's clip, the plasma Corvette what says the same for a fragment cannon and the
   Caspian Explorer what says it for a plasma accelerator, the
   mixed Corvette settles that a rail gun's charge delay is excluded from Frontier's
-  `RateOfFire`, and twelve of them — every one but the unengineered Python Mk II — together
+  `RateOfFire`, and thirteen of them — every one but the unengineered Python Mk II — together
   with the Krait Phantom capture and the EDSY export are what the module catalogue's base
   stats are checked against. The beam-heavy Corvette, Cobra Mk V, Kestrel Mk II, The Deep
-  Black, Lynx Highliner, Panther Clipper Mk II, Corsair, Spire Ops and Slapaconda also
+  Black, the two Lynx Highliners, Panther Clipper Mk II, Corsair, Spire Ops and Slapaconda also
   have directly observed in-game statistics-panel readings for jump, power, speed, mass,
-  shield and armour figures. The Cobra, Kestrel, Lynx, Panther, Corsair, Spire Ops and
-  Slapaconda observations add combined-weapon output, while The Deep Black records the
-  weaponless panel. The Panther
+  shield and armour figures. The Cobra, Kestrel, Rescue 01, Panther, Corsair, Spire Ops
+  and Slapaconda observations add combined-weapon output, while The Deep Black and Rescue
+  record weaponless panels. The Panther
   observation is a later refit than its same-named SLEF capture, so the two are preserved
   separately. The Kestrel's separately observed name is recorded without rewriting the
   older unnamed capture. They are pinned in
@@ -343,7 +344,7 @@ in the doc comment of each ported module, and in long form in the domain
   own commander's fleet. The Lynx Highliner and the Panther Clipper Mk II are what a
   restricted mount's rules are checked against, and the Cutter is what the omitted-price
   rule is checked against. Their headers keep only the producing app and version.
-  All twenty are Elite Dangerous game output and remain the property of Frontier
+  All twenty-one are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`

@@ -2026,6 +2026,14 @@
         "unmapped": []
       },
       {
+        "file": "journal-lynx-highliner-rescue.json",
+        "stated": 42,
+        "mapped": 42,
+        "exact": 37,
+        "withinFloatNoise": 5,
+        "unmapped": []
+      },
+      {
         "file": "journal-lynx-highliner.json",
         "stated": 59,
         "mapped": 57,
@@ -2134,7 +2142,7 @@
         "damagePerSecond": 179.099991
       }
     ],
-    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the fifteen is 1.22e-4 t of mass and 6.4e-6 ly — and not a margin for disagreement.",
+    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the sixteen is 1.22e-4 t of mass and 7.94e-6 ly — and not a margin for disagreement.",
     "rebuildTolerance": 0.0002,
     "rebuilds": [
       {
@@ -2191,6 +2199,11 @@
         "file": "journal-krait-phantom.json",
         "unladenMass": 388.830017,
         "maxJumpRange": 60.547791
+      },
+      {
+        "file": "journal-lynx-highliner-rescue.json",
+        "unladenMass": 663.799988,
+        "maxJumpRange": 31.405712
       },
       {
         "file": "journal-lynx-highliner.json",
@@ -2627,6 +2640,13 @@
         "symbol": "Int_ShieldGenerator_Size5_Class5",
         "field": "optMultiplier",
         "value": 1.30800003
+      },
+      {
+        "file": "journal-lynx-highliner-rescue.json",
+        "slot": "Slot04_Size4",
+        "symbol": "Int_ShieldGenerator_Size4_Class5_Strong",
+        "field": "optMultiplier",
+        "value": 2.19419983
       },
       {
         "file": "journal-lynx-highliner.json",

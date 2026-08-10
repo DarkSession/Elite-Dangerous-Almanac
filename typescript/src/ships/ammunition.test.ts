@@ -23,6 +23,7 @@ import corvetteMixedJournal from '../../../fixtures/ships/journal-federation-cor
 import corvettePlasmaJournal from '../../../fixtures/ships/journal-federation-corvette-plasma.json' with { type: 'json' };
 import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
+import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
 import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
 
@@ -56,6 +57,7 @@ const JOURNALS = [
     ['journal-federation-corvette-plasma.json', corvettePlasmaJournal],
     ['journal-cobra-mkv.json', cobraJournal],
     ['journal-kestrel-mkii.json', kestrelJournal],
+    ['journal-lynx-highliner-rescue.json', lynxRescueJournal],
     ['journal-lynx-highliner.json', lynxJournal],
     ['journal-caspian-explorer.json', caspianJournal],
 ] as const;
@@ -228,7 +230,7 @@ test('a build reports the capacity of every weapon it carries', () => {
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
     // A rearm state is a lower bound on a capacity, never a reading of one. All 81 counts
-    // across the fifteen captures happen to sit at capacity — that is what makes them a
+    // across the sixteen captures happen to sit at capacity — that is what makes them a
     // check on the catalogue — but a partly spent launcher would report less and say
     // nothing.
     const pinned = fixture.ammunition.journalReadings;
@@ -239,7 +241,7 @@ test('every ammo count a journal reports fits inside the capacity for that modul
 
     for (const [capture, event] of JOURNALS) {
         const build = ShipLoadout.fromLoadout(event as never);
-        for (const fitted of event.Modules) {
+        for (const fitted of event.Modules as readonly JournalAmmoModule[]) {
             const clip = fitted.AmmoInClip ?? 0;
             const hopper = fitted.AmmoInHopper ?? 0;
             if (!clip && !hopper) continue;
