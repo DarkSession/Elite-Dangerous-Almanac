@@ -32,7 +32,7 @@
  *
  * @remarks
  * **This is the one default that costs real bundle weight.** A lookup imported from
- * here pulls all four catalogues — about 288 KB minified (~31 KB gzipped) — since
+ * here pulls all four catalogues — 311.9 KiB minified (30.5 KiB gzipped) — since
  * that is what it falls back to, and passing an explicit catalogue does not undo it.
  * A build that must carry only one category should import that catalogue and search
  * it directly:

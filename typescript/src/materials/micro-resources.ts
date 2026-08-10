@@ -27,7 +27,7 @@
  * | `./micro-resources-all` | `ALL_MICRO_RESOURCES` | 196 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all four
- * catalogues, since that is what it falls back to — 15 KB minified for all 196.
+ * catalogues, since that is what it falls back to — 14.9 KiB minified for all 196.
  * {@link microResourcesInCategory} reaches the same subsets from a plain string.
  *
  * Data originates from EDCD FDevIDs (`microresources.csv`); see
