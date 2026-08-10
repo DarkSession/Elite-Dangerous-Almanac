@@ -2,9 +2,16 @@
     "$schema": "https://typedoc.org/schema.json",
     "entryPoints": [
         "src/astro/index.ts",
+        "src/astro/nebulae-all.ts",
+        "src/astro/nebulae-planetary.ts",
         "src/commodities/index.ts",
         "src/materials/index.ts",
-        "src/ships/index.ts"
+        "src/ships/index.ts",
+        "src/ships/modules-all.ts",
+        "src/ships/modules-core.ts",
+        "src/ships/modules-hardpoint.ts",
+        "src/ships/modules-internal.ts",
+        "src/ships/modules-utility.ts"
     ],
     "out": "docs/wiki",
     "plugin": ["typedoc-plugin-markdown", "typedoc-github-wiki-theme"],
