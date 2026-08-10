@@ -366,6 +366,25 @@ test('toSlef rejects an empty export, which would not parse back', () => {
     assert.throws(() => toSlef([]), TypeError);
 });
 
+test('toSlef names the duplicate slot in its refusal', () => {
+    // The two spellings differ from each other *and* from the normalised key, so the
+    // assertion pins which string reaches the message: the second module's own
+    // casing. A lower-cased fixture would pass whether the refusal reported the raw
+    // slot or the comparison key, and reporting the record whole would say
+    // `[object Object]`.
+    const duplicate: LoadoutEvent = {
+        Ship: 'sidewinder',
+        Modules: [
+            { Slot: 'PowerPlant', Item: 'a' },
+            { Slot: 'PowerPLANT', Item: 'b' },
+        ],
+    };
+    assert.throws(() => toSlef(duplicate), {
+        name: 'TypeError',
+        message: /duplicate slot "PowerPLANT"/,
+    });
+});
+
 test('toSlef rejects a malformed header', () => {
     assert.throws(() => toSlef(minimal, { appName: 'x' } as unknown as SlefHeader), TypeError);
 });
