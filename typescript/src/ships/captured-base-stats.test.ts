@@ -426,7 +426,12 @@ test('every engineered result reaches a consumer at the field the fixture names'
         assert.ok(fitted, `${file}: no module in ${slot}`);
         // A journal lower-cases every `Item`; the fixture reads as the catalogue spells it.
         assert.equal(fitted.symbol.toLowerCase(), symbol.toLowerCase());
-        assert.equal(fitted.effectiveStats?.[field as keyof OutfittingModule], value);
+        const effective = fitted.effectiveStats?.[field as keyof OutfittingModule];
+        assert.ok(typeof effective === 'number', `${file} ${slot}: ${field} is not numeric`);
+        assert.ok(
+            withinFloatNoise(effective, value),
+            `${file} ${slot}: effective ${String(effective)}, pinned ${value}`,
+        );
         // And the pinned figure is Frontier's, not this library's: the capture states it as
         // the `Value` beside the base the join above checks.
         // Whichever of the field's labels this capture spells it with — `falloffRange` is
@@ -438,6 +443,9 @@ test('every engineered result reaches a consumer at the field the fixture names'
         // In the catalogue's units: a journal states a shield generator's strength as the
         // percentage the panel shows, where the record holds the multiplier.
         const stated = modifier && modifier.Value! / scaleForLabel(modifier.Label);
-        assert.equal(stated, value, `${file} ${slot}: the capture states ${String(stated)}`);
+        assert.ok(
+            stated !== undefined && withinFloatNoise(stated, value),
+            `${file} ${slot}: the capture states ${String(stated)}, pinned ${value}`,
+        );
     }
 });
