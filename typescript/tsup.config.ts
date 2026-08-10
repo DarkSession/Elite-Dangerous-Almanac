@@ -41,17 +41,13 @@ export default defineConfig({
     splitting: true, // dedupe shared modules into chunks; keeps per-module entries independent
     treeshake: true,
     clean: true,
-    // The data modules are the bulk of the package, and esbuild inlines their JSONC
-    // payloads as object literals — so minification is what strips the whitespace and
-    // shortens the keys in the shipped catalogues, not just in the hand-written code.
-    // Public export names survive (they are named exports, not renameable locals), and
-    // nothing here dispatches on a function or class `name` at runtime.
-    minify: true,
-    // The published package does not include the TypeScript/JSONC sources, so
-    // external maps could not display their source and more than doubled the
-    // unpacked package size. Keep the distributable focused on executable ESM and
-    // declarations; repository builds remain directly debuggable from `src/`.
-    sourcemap: false,
+    // Keep the library output readable. Applications can still minify their final
+    // bundles, while stack traces and files opened from node_modules retain useful
+    // function names and line numbers during development.
+    minify: false,
+    // External maps include the original TypeScript/JSONC in `sourcesContent`, so a
+    // debugger can show the real source without publishing a second source tree.
+    sourcemap: true,
     outDir: 'dist',
     esbuildPlugins: [
         {

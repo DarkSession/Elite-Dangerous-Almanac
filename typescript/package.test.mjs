@@ -44,6 +44,19 @@ async function readReachableJs(entry, seen = new Set()) {
     return modules.join('\n');
 }
 
+async function reachableJsFiles(entry, seen = new Map()) {
+    if (seen.has(entry.href)) return seen;
+
+    const source = await readFile(entry, 'utf8');
+    seen.set(entry.href, entry);
+    const importPattern = /(?:from\s*|import\s*)['"](\.\.?\/[^'"]+\.js)['"]/g;
+    for (const match of source.matchAll(importPattern)) {
+        const specifier = match[1];
+        if (specifier) await reachableJsFiles(new URL(specifier, entry), seen);
+    }
+    return seen;
+}
+
 async function publicEntries(directory = new URL('./dist/', import.meta.url), subpath = '') {
     const entries = [];
     for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -172,9 +185,10 @@ test('generated public entries contain no redundant bare imports', async () => {
 
 test('bare-import pruning preserves import-like text and value imports', () => {
     const source = `const message="import './keep.js'";import value from'./value.js';import'./remove.js';export{message,value};`;
+    const bareImport = `import'./remove.js';`;
     assert.equal(
         stripBareImports(source),
-        `const message="import './keep.js'";import value from'./value.js';export{message,value};`,
+        `const message="import './keep.js'";import value from'./value.js';${' '.repeat(bareImport.length)}export{message,value};`,
     );
 });
 
@@ -239,7 +253,7 @@ test('reading and writing SLEF costs nothing but the wire format', async () => {
     // tools must not pay for the catalogues. Serialising is the easy way to break this,
     // since the obvious implementation reaches for ShipLoadout.
     const graph = await readReachableJs(new URL('./dist/ships/slef.js', import.meta.url));
-    assert.ok(graph.length < 8192, `expected a tiny module, got ${graph.length} bytes`);
+    assert.ok(graph.length < 16 * 1024, `expected a tiny module, got ${graph.length} bytes`);
     for (const marker of [/Anaconda/, /Chaff Launcher/, /FSD_LongRange/, /Witch Head/]) {
         assert.doesNotMatch(graph, marker);
     }
@@ -379,8 +393,46 @@ test('data provenance references in the declarations are followable off-package'
     assert.ok(checked.length > 20, `expected many provenance references, found ${checked.length}`);
 });
 
-test('the package omits unusable source maps whose sources are not published', async () => {
-    await assert.rejects(readFile(new URL('./dist/ships/ship-loadout.js.map', import.meta.url)));
+test('the package ships source maps with embedded original sources', async () => {
+    const files = await reachableJsFiles(new URL('./dist/ships/ship-loadout.js', import.meta.url));
+    const maps = await Promise.all(
+        [...files.values()].map(async (file) =>
+            JSON.parse(await readFile(new URL(`${file.pathname}.map`, 'file:'), 'utf8')),
+        ),
+    );
+    const implementationMap = maps.find((map) =>
+        map.sources.some((source) => source.endsWith('/src/ships/ship-loadout.ts')),
+    );
+    assert.ok(implementationMap, 'expected a reachable map for ship-loadout.ts');
+    assert.equal(implementationMap.version, 3);
+    assert.equal(implementationMap.sources.length, implementationMap.sourcesContent.length);
+    assert.ok(implementationMap.sourcesContent.every((source) => typeof source === 'string'));
+});
+
+test('the build omits JavaScript artifacts with no runtime API', async () => {
+    for (const file of [
+        'astro/galactic-position.js',
+        'ships/fitted-module.js',
+        'ships/loadout-slot.js',
+    ]) {
+        await assert.rejects(readFile(new URL(`./dist/${file}`, import.meta.url)), {
+            code: 'ENOENT',
+        });
+        assert.ok(
+            (await readFile(new URL(`./dist/${file.replace(/\.js$/, '.d.ts')}`, import.meta.url)))
+                .length > 0,
+        );
+    }
+
+    const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
+    for (const subpath of [
+        './astro/galactic-position',
+        './ships/fitted-module',
+        './ships/loadout-slot',
+    ]) {
+        assert.ok(pkg.exports[subpath].types);
+        assert.ok(!('import' in pkg.exports[subpath]));
+    }
 });
 
 test('the publication manifest includes consumer documentation and notices', async () => {
