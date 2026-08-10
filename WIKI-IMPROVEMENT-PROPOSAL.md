@@ -9,6 +9,11 @@ Measured against `d5cace1` (`typescript/docs/wiki`, regenerated with `npm run do
 The measurement is named next to each claim so it can be re-run. Where a claim is about
 prose rather than a count, it is marked as editorial rather than measured.
 
+The package has no published consumers yet, so breaking changes and URL churn are cheap.
+Every option below is therefore judged on the documentation it produces, not on what it
+would break — see section 4 for the one recommendation that reverses under that rule, and
+the one big restructuring that still does not earn its cost.
+
 ---
 
 ## 1. What the wiki looks like today
@@ -243,11 +248,24 @@ Proposed initial guide set:
 | Systems, sectors and regions  | the four meanings of "region", both coordinate spaces, id64 round-trip, permit locks                                         |
 | Failure model                 | `null` against `TypeError` against `RangeError`, the `…Result` diagnostic pairs, `validation` against `complete`             |
 
-**Do not use TypeDoc's `readme` option to enrich `Home`.** An earlier draft proposed it;
-testing shows it _replaces_ `Home` rather than adding to it — the module index moves to a
-new orphan page `modules.md`, and the breadcrumb on **all 307 pages** is rewritten from
-`../wiki/Home` to `../wiki/modules`. Let the Getting started guide sit first under
-**Documents** instead.
+**Use TypeDoc's `readme` option for `Home`, pointed at a small `docs/wiki-home.md`.** Two
+earlier drafts got this wrong in opposite directions — the first called it an addition to
+`Home`, the second rejected it outright for orphaning the module index. Measured, it is
+neither. Setting `readme`:
+
+- makes `Home.md` **become** that file — install line, first snippet, orientation;
+- moves the module index to a new page `modules.md`, which is **not orphaned**: it has
+  **305 inbound links**, because every symbol page's breadcrumb points at it;
+- leaves `_Sidebar.md` unchanged, still listing the four feature areas;
+- rewrites the breadcrumb on all 307 pages from `../wiki/Home` to `../wiki/modules`.
+
+The last point is pure churn with no reader-visible cost, and this repository has no
+published consumers to churn. Write the onward link in `wiki-home.md` as an **absolute**
+URL (`https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules`) — a relative
+`../wiki/modules` renders correctly but emits "the relative path … is not a file", which
+would fail the build once Gap 6 lands. Verified: absolute URL plus
+`treatWarningsAsErrors: true` exits 0, and the whole output passes
+`postprocess-wiki.mjs`'s link check with zero broken links.
 
 ### Gap 6 — Nothing fails when a cross-link breaks
 
@@ -269,6 +287,7 @@ where noted.
 | 1   | Top-level `@example` on `ShipLoadout`, `SourcePurchaseRecord`, `LoadoutSlot`                   | `src/**/*.ts`                              |
 | 2   | Code samples in the `astro` and `ships` barrel `@packageDocumentation`                         | `src/astro/index.ts`, `src/ships/index.ts` |
 | 3   | `treatWarningsAsErrors: true` (free today — zero warnings)                                     | `typedoc.json`                             |
+| 3a  | `readme: "docs/wiki-home.md"` — install line and first snippet on `Home`                       | `typedoc.json`, `docs/wiki-home.md`        |
 | 4   | `projectDocuments` wired up; Getting started (with the subpath map) + Reading a player journal | `typedoc.json`, `docs/guides/`             |
 | 5   | Examples on the ~20 members that document a trap; fill the 24 example-less functions           | `src/**/*.ts`                              |
 | 6   | Give the 7 orphaned catalogue pages a route in from `astro.md`/`ships.md`                      | `src/astro/index.ts`, `src/ships/index.ts` |
@@ -304,11 +323,48 @@ it tells them to start with.
 So the Gap 2 examples must be rescued into the barrels and guides. That is an argument
 about _collision_, not about entry points as such.
 
-**Related repo defect, worth fixing regardless of this proposal:** `AGENTS.md:85` still
-says `typedoc.json` lists "one entry point per feature module (`src/astro/index.ts`,
-`src/commodities/index.ts`, `src/materials/index.ts`, `src/ships/index.ts`)". Since
-`87d3e9c` it lists eleven. `AGENTS.md` was not updated by #113/#114 and now documents a
-configuration that no longer exists.
+### The wholesale variant, tested
+
+The package has no published consumers, so URL churn and API breakage are acceptable
+costs here. That removes the compatibility objection to the obvious big move — make
+**every** leaf module an entry point, so all 66 orientation blocks and all 16 unpublished
+examples get their own page. It was worth testing rather than assuming, so I generated it:
+70 entry points, 366 pages.
+
+What it buys: **16 module pages gain the `## Example` that is invisible today**, and every
+leaf gets a page carrying its orientation prose — `ships.ship-loadout.md` appears complete
+with its Remarks, its Example and its own symbol index.
+
+What it costs, measured:
+
+|                               |                                     Baseline |                          Every leaf as an entry point |
+| ----------------------------- | -------------------------------------------: | ----------------------------------------------------: |
+| `ships.md` length             |                                    257 lines |                                        **1137 lines** |
+| `ships.md` symbol index       | categorised Classes / Interfaces / Functions |                         one flat `## References` list |
+| `Home.md` modules listed      |                                           11 |                                                **70** |
+| `_Sidebar.md`                 |                                      4 areas | still 4 areas — the 66 leaves are unreachable from it |
+| Unresolved `{@link}` warnings |                                            0 |                                               **115** |
+
+`ships.md` quadruples because every re-export renders as a five-line
+`### symbol / Re-exports [link]` stanza. The two best pages in the wiki are degraded to buy
+pages for modules that nobody navigates to, `Home` becomes a 70-item flat list, and the
+sidebar does not improve at all.
+
+**Rejected — on documentation quality, not compatibility.** The relaxed constraint does not
+rescue this trade; it just removes the objection that was never the real one. The 16
+examples are worth having, and Gap 2's fix gets them for free by moving them onto the
+barrel or the symbol, which costs nothing anywhere else.
+
+**Where the relaxed constraint does change the answer:** the `readme` option in Gap 5. Its
+only real cost was rewriting the breadcrumb on all 307 pages, which is churn and nothing
+else. It is now recommended (step 3a) rather than rejected.
+
+**Related repo defect — fixed in this branch.** `AGENTS.md:85` said `typedoc.json` lists
+"one entry point per feature module (`src/astro/index.ts`, `src/commodities/index.ts`,
+`src/materials/index.ts`, `src/ships/index.ts`)". Since `87d3e9c` it lists eleven; #113 and
+#114 changed the config without updating the guidance. That line now describes the real
+config and states the collision rule above, so the next person to add an entry point has
+the rule in front of them.
 
 ## 5. Explicitly not proposed
 
