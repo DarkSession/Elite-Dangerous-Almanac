@@ -18,7 +18,7 @@ import {
     scaleForLabel,
 } from './module-stat-labels.js';
 import type { DamageDistribution, OutfittingModule } from '../modules.js';
-import { getModulesForShip } from '../modules.js';
+import { getBulkheadsForShip } from '../modules.js';
 import { getExperimentalEffectDamageDistribution } from '../experimental-effects.js';
 import { CORE_MODULES } from '../modules-core.js';
 import { getShipBySymbol } from '../ships.js';
@@ -370,7 +370,7 @@ export function shieldInputFor(
 function stockBulkhead(shipSymbol: string): OutfittingModule | null {
     const hull = getShipBySymbol(shipSymbol);
     if (!hull) return null;
-    const variants = getModulesForShip(hull.name, CORE_MODULES);
+    const variants = getBulkheadsForShip(hull.name, CORE_MODULES);
     // The Caspian Explorer's stock alloy is spelled `..._Grade1_Default`; every other
     // hull's is the zero-mass first entry.
     return (

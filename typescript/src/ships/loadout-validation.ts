@@ -6,7 +6,16 @@
 
 import type { BuildSlot } from './slots.js';
 
-/** Stable machine-readable reason a loadout is invalid or incomplete. */
+/**
+ * Stable machine-readable reason a loadout is invalid or incomplete.
+ *
+ * @remarks
+ * `duplicateSlot` only ever comes from calling {@link validateLoadout} directly on a
+ * module list you assembled yourself. A `ShipLoadout` cannot report it, because it
+ * refuses to hold two modules in one slot in the first place: `fromLoadout` throws a
+ * `TypeError` on a duplicate, and every edit is keyed by slot. Switch on it when you
+ * validate your own list; skip it when the input came from a build.
+ */
 export type LoadoutIssueCode =
     | 'unknownHull'
     | 'duplicateSlot'

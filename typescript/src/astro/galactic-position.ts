@@ -19,9 +19,9 @@
  */
 export interface GalacticPosition {
     /** Galactic X in light-years (Sol at origin). */
-    x: number;
+    readonly x: number;
     /** Galactic Y in light-years (Sol at origin). */
-    y: number;
+    readonly y: number;
     /** Galactic Z in light-years (Sol at origin). */
-    z: number;
+    readonly z: number;
 }

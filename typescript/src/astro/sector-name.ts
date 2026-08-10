@@ -37,11 +37,11 @@
  */
 export interface SectorGridPosition {
     /** Sector index along the galactic X axis (0–127). */
-    sectorX: number;
+    readonly sectorX: number;
     /** Sector index along the galactic Y axis (0–63 for addressable systems). */
-    sectorY: number;
+    readonly sectorY: number;
     /** Sector index along the galactic Z axis (0–127). */
-    sectorZ: number;
+    readonly sectorZ: number;
 }
 
 // --- Fragment tables (verbatim from the EDTS reference) -------------------------

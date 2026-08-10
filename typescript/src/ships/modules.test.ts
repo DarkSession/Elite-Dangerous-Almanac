@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {
     getModuleBySymbol,
     getModulesByName,
-    getModulesForShip,
+    getBulkheadsForShip,
     type OutfittingModule,
 } from './modules.js';
 import { CORE_MODULES } from './modules-core.js';
@@ -183,9 +183,9 @@ test('getModulesByName returns every size/rating variant, catalogue only', () =>
     assert.deepEqual(getModulesByName('Pulse Laser', UTILITY_MODULES), []);
 });
 
-test('getModulesForShip returns a hull armour set, and nothing outside core', () => {
+test('getBulkheadsForShip returns a hull armour set, and nothing outside core', () => {
     const { ship, count, names } = modulesFixture.shipArmour;
-    const armour = getModulesForShip(ship, CORE_MODULES);
+    const armour = getBulkheadsForShip(ship, CORE_MODULES);
     assert.equal(armour.length, count);
     assert.deepEqual(
         armour.map((m) => m.name),
@@ -193,8 +193,8 @@ test('getModulesForShip returns a hull armour set, and nothing outside core', ()
     );
     assert.ok(armour.every((m) => m.ship === ship && m.category === 'core'));
     // Case-insensitive, and no ship-specific modules live outside core.
-    assert.equal(getModulesForShip(ship.toLowerCase(), CORE_MODULES).length, count);
-    assert.deepEqual(getModulesForShip(ship, HARDPOINT_MODULES), []);
+    assert.equal(getBulkheadsForShip(ship.toLowerCase(), CORE_MODULES).length, count);
+    assert.deepEqual(getBulkheadsForShip(ship, HARDPOINT_MODULES), []);
 });
 
 test('class is a 0-8 size and rating an A-I letter across the whole catalogue', () => {
@@ -210,7 +210,7 @@ test('lookups ignore surrounding whitespace', () => {
         'Chaff Launcher',
     );
     assert.equal(getModulesByName('  Pulse Laser  ', HARDPOINT_MODULES).length > 1, true);
-    assert.equal(getModulesForShip(' Anaconda ', CORE_MODULES).length, 5);
+    assert.equal(getBulkheadsForShip(' Anaconda ', CORE_MODULES).length, 5);
 });
 
 test('missing modules resolve to null', () => {
@@ -445,7 +445,7 @@ test('ship armour carries its hull-specific bulkhead stats', () => {
 
 test('every hull offers a full armour set, all of it priced and stat-bearing', () => {
     for (const ship of SHIPS) {
-        const armour = getModulesForShip(ship.name, CORE_MODULES);
+        const armour = getBulkheadsForShip(ship.name, CORE_MODULES);
         assert.ok(armour.length >= 5, `${ship.symbol} armour set`);
         for (const variant of armour) {
             assert.equal(typeof variant.mass, 'number', variant.symbol);
@@ -549,8 +549,8 @@ test('every lookup searches all modules when no catalogue is given', () => {
     assert.equal(getModuleBySymbol('hpt_chafflauncher_tiny')?.category, 'utility');
     assert.deepEqual(getModulesByName('pulse laser'), getModulesByName('pulse laser', ALL_MODULES));
     assert.deepEqual(
-        getModulesForShip('Anaconda').map((m) => m.symbol),
-        getModulesForShip('Anaconda', CORE_MODULES).map((m) => m.symbol),
+        getBulkheadsForShip('Anaconda').map((m) => m.symbol),
+        getBulkheadsForShip('Anaconda', CORE_MODULES).map((m) => m.symbol),
     );
     // One record from each of the four categories resolves without naming its
     // catalogue (`all` is excluded — its first record is CORE_MODULES[0]).
@@ -569,5 +569,5 @@ test('an explicit catalogue still narrows the search', () => {
     );
     assert.deepEqual(getModulesByName('pulse laser', INTERNAL_MODULES), []);
     // Armour is core-only, so any other category yields nothing for a hull.
-    assert.deepEqual(getModulesForShip('Anaconda', HARDPOINT_MODULES), []);
+    assert.deepEqual(getBulkheadsForShip('Anaconda', HARDPOINT_MODULES), []);
 });

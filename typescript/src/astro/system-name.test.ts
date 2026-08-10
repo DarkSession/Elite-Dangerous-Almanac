@@ -78,4 +78,9 @@ test('boxel code <-> letters is a bijection', () => {
         const boxelCode = lettersToBoxelCode(l1!, l2!, l3!, n1!);
         assert.deepEqual(boxelCodeToLetters(boxelCode), { l1, l2, l3, n1 });
     }
+
+    // The 'EN-H …11' boxel both modules use as their worked example, pinned so the
+    // documented code and the documented letters cannot drift apart.
+    assert.equal(lettersToBoxelCode(4, 13, 7, 11), 198_410);
+    assert.deepEqual(boxelCodeToLetters(198_410), { l1: 4, l2: 13, l3: 7, n1: 11 });
 });

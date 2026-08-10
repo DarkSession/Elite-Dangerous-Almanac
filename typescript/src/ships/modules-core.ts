@@ -4,7 +4,7 @@
  * support, power distributor, sensors, fuel tank).
  *
  * The armour variants here are the one ship-specific module, so this is also where
- * {@link getModulesForShip} finds a hull's bulkheads. The other categories live in
+ * {@link getBulkheadsForShip} finds a hull's bulkheads. The other categories live in
  * `./modules-internal`, `./modules-hardpoint` and `./modules-utility`, so importing
  * this module never bundles them.
  *

@@ -884,7 +884,7 @@ Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
     and the three Mk II Vessel Hangars → `["Explorer_NX", "PantherMkII", "LakonMiner"]`
     (EDSY has no record for the Mk II bays at all, so their restriction rests on
     Frontier's update notes and Inara). **Armour's** hull restriction is _not_ repeated
-    here — it lives in the `ship` field (`OutfittingModule.ship` / `getModulesForShip`).
+    here — it lives in the `ship` field (`OutfittingModule.ship` / `getBulkheadsForShip`).
   - **`restrictedToSlot`** is the same idea one axis over: the slot restriction a module
     requires, so it fits only mounts carrying it — the mirror of a mount's `restriction`,
     and the half `restrictedToShips` cannot express. Five records have one: the two
@@ -989,7 +989,7 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
   [coriolis-data](https://github.com/EDCD/coriolis-data) or
   [EDSY](https://github.com/taleden/EDSY) lists it as player-obtainable outfitting, or a
   direct player-facing capture establishes the same thing. That keeps
-  `getModuleBySymbol` and `getModulesForShip` a player-facing outfitting view rather than
+  `getModuleBySymbol` and `getBulkheadsForShip` a player-facing outfitting view rather than
   an inventory of every symbol the game has ever used. Two consequences worth knowing
   before "fixing" an apparent omission:
   - **Symbols outside outfitting are not stored** — hull geometry, ship-launched-fighter

@@ -54,7 +54,10 @@ test('copies positions to keep ProceduralSystem instances immutable', () => {
 
     const exposed = sys.position;
     assert.ok(exposed);
-    exposed.x = 500;
+    // `readonly` is erased at runtime, so a JavaScript consumer can still write to what
+    // the getter handed back. The cast stands in for one; the copy is what protects the
+    // instance.
+    (exposed as { x: number }).x = 500;
     assert.equal(sys.position?.x, -80.625);
 });
 

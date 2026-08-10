@@ -7,7 +7,6 @@ import {
     boxelCodeToAbsoluteBoxel,
     decodeModSystemAddress,
 } from './system-address.js';
-import { parseSystemName } from './system-name.js';
 import { sectorGridPositionFromName } from './sector-name.js';
 import { massCodeToSizeClass } from './mass-code.js';
 import fixture from '../../../fixtures/astro/system-addresses.json' with { type: 'json' };
@@ -52,9 +51,6 @@ for (const s of fixture.systems) {
 
 test('round-trips a sequence wider than 15 bits', () => {
     // Mass code d has a 20-bit sequence field, so 40000 must survive re-encode.
-    const parts = parseSystemName('Blae Eock KC-C d0-0');
-    assert.ok(parts);
-    parts.n2 = 40000;
     const sys = ProceduralSystem.fromName('Blae Eock KC-C d0-40000');
     assert.ok(sys);
     assert.equal(sys.modSystemAddress, null);

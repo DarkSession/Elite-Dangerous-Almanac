@@ -281,7 +281,7 @@ export interface OptionalSlotSpec {
  * @remarks
  * The armour mount is not listed here because it is not sized: a hull's armour options
  * are ordinary modules in `CORE_MODULES`, tied to the hull by their
- * {@link OutfittingModule.ship} field. List them with `getModulesForShip`.
+ * {@link OutfittingModule.ship} field. List them with `getBulkheadsForShip`.
  */
 export interface ShipSlots {
     /** Hull symbol, matching the registry's `Ship.symbol`. */

@@ -28,19 +28,19 @@ import { getHandAuthoredRegionOrigin } from './naming-region-origins.js';
  */
 export interface SystemNameParts {
     /** The region (sector) name, as written — casing is fixed up on canonicalize. */
-    regionName: string;
+    readonly regionName: string;
     /** First boxel letter, 0–25 (`A`–`Z`). */
-    l1: number;
+    readonly l1: number;
     /** Second boxel letter, 0–25. */
-    l2: number;
+    readonly l2: number;
     /** Third boxel letter, 0–25. */
-    l3: number;
+    readonly l3: number;
     /** Mass code as a 0–7 size class (`a`–`h`). */
-    massCode: number;
+    readonly massCode: number;
     /** High boxel index (the `N1` before the hyphen); 0 when the name omits it. */
-    n1: number;
+    readonly n1: number;
     /** System sequence number (`N2`). */
-    n2: number;
+    readonly n2: number;
 }
 
 const CODE_A_UPPER = 'A'.charCodeAt(0);
@@ -65,6 +65,30 @@ export function lettersToBoxelCode(l1: number, l2: number, l3: number, n1: numbe
 }
 
 /**
+ * A boxel's letter code unpacked — the `EN-H …11` half of a procedural name.
+ *
+ * @remarks
+ * The same four fields {@link SystemNameParts} carries, without the region name, mass
+ * code and sequence that complete a name.
+ *
+ * @example
+ * ```ts
+ * const code: BoxelLetters = boxelCodeToLetters(198_410);
+ * // -> { l1: 4, l2: 13, l3: 7, n1: 11 }, the 'EN-H …11' boxel
+ * ```
+ */
+export interface BoxelLetters {
+    /** First letter as a zero-based index, `0`–`25`. */
+    readonly l1: number;
+    /** Second letter as a zero-based index, `0`–`25`. */
+    readonly l2: number;
+    /** Third letter as a zero-based index, `0`–`25`. */
+    readonly l3: number;
+    /** The boxel number that follows the letters (`d11-96` → `11`). */
+    readonly n1: number;
+}
+
+/**
  * Unpack a base-26 boxel code into its `(l1, l2, l3, n1)` letter code — the inverse
  * of {@link lettersToBoxelCode}.
  *
@@ -75,12 +99,7 @@ export function lettersToBoxelCode(l1: number, l2: number, l3: number, n1: numbe
  * boxelCodeToLetters(lettersToBoxelCode(4, 13, 7, 11)); // -> { l1: 4, l2: 13, l3: 7, n1: 11 }
  * ```
  */
-export function boxelCodeToLetters(boxelCode: number): {
-    l1: number;
-    l2: number;
-    l3: number;
-    n1: number;
-} {
+export function boxelCodeToLetters(boxelCode: number): BoxelLetters {
     return {
         l1: boxelCode % 26,
         l2: Math.trunc(boxelCode / 26) % 26,
@@ -214,7 +233,7 @@ export interface IsProceduralSystemNameOptions {
      * hand-authored region names (e.g. `Pleiades Sector HR-W d1-79`) are rejected.
      * Defaults to `false`.
      */
-    strict?: boolean;
+    readonly strict?: boolean;
 }
 
 /**

@@ -68,7 +68,7 @@ export { SHIPS, getShipBySymbol, getShipByName, getShipSlots, type Ship } from '
 export {
     getModuleBySymbol,
     getModulesByName,
-    getModulesForShip,
+    getBulkheadsForShip,
     type OutfittingModule,
     type ModuleCategory,
     type ModuleKind,
