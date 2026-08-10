@@ -29,10 +29,8 @@
  * Convert a real position with {@link sectorGridPositionFromGalacticPosition} (or go
  * straight to {@link sectorNameFromGalacticPosition}).
  *
- * {@link findCodexRegionAt} is the odd one out: it takes a flat {@link GalacticPlanePosition}
- * (`{x, z}` in light-years), because the region map is an X/Z projection. A
- * `GalacticPosition` **variable** passes straight through, but an inline
- * `{ x, y, z }` literal is a compile error — see {@link findCodexRegionAt}.
+ * {@link findCodexRegionAt} reads only `{x, z}`, because the region map is an X/Z
+ * projection; it takes a `GalacticPosition` as it comes and ignores the `y`.
  *
  * **Permit locks** are six similarly-named lookups; {@link permitLockForSystemName}
  * is the one to start from (it answers for both kinds of lock, from a name alone).
@@ -66,6 +64,7 @@ export {
     encodeSystemAddress,
     encodeModSystemAddress,
     type DecodedAddress,
+    type AbsoluteBoxel,
 } from './system-address.js';
 
 export {
@@ -158,7 +157,7 @@ export {
     CODEX_REGION_MAP_Y0,
     CODEX_REGION_MAP_Z0,
     CODEX_REGION_MAP_LY_PER_CELL,
-    type CodexRegionLookup,
+    type CodexRegionPoint,
     type BoxelCodexRegionLookup,
 } from './codex-region-lookup.js';
 
@@ -182,7 +181,7 @@ export { ALL_NEBULAE } from './nebulae-all.js';
 
 // ── Low-level boxel primitives ──────────────────────────────────────────────
 // Building blocks the encoders use; most consumers never need these directly.
-export { lettersToBoxelCode, boxelCodeToLetters } from './system-name.js';
+export { lettersToBoxelCode, boxelCodeToLetters, type BoxelLetters } from './system-name.js';
 
 export {
     boxelCodeToAbsoluteBoxel,

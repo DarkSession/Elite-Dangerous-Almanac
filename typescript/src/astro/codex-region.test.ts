@@ -7,6 +7,7 @@ import {
     findCodexRegionForBoxel,
     CODEX_REGION_MAP_LY_PER_CELL,
 } from './codex-region-lookup.js';
+import type { GalacticPosition } from './galactic-position.js';
 import fixture from '../../../fixtures/astro/galactic-region.json' with { type: 'json' };
 
 test('there are exactly 42 galactic regions with contiguous ids 1..42', () => {
@@ -49,6 +50,20 @@ for (const c of fixture.coords) {
         assert.equal(hit?.name ?? null, c.region);
     });
 }
+
+test('findCodexRegionAt takes a full galactic position, inline or held, and ignores y', () => {
+    const flat = findCodexRegionAt({ x: 0, z: 0 });
+    assert.equal(flat?.name, 'Inner Orion Spur');
+
+    // The reason `CodexRegionPoint` exists: an inline `{ x, y, z }` is what a consumer
+    // writes, and excess-property checking would reject a plain `{ x, z }` parameter.
+    assert.equal(findCodexRegionAt({ x: 0, y: 0, z: 0 })?.id, flat?.id);
+    assert.equal(findCodexRegionAt({ x: 0, y: 40_000, z: 0 })?.id, flat?.id);
+
+    // A position from elsewhere in the library passes straight through.
+    const held: GalacticPosition = { x: 0, y: -1234.5, z: 25_900 };
+    assert.equal(findCodexRegionAt(held)?.name, 'Galactic Centre');
+});
 
 for (const b of fixture.boxels) {
     test(`findCodexRegionForBoxel(${b.id64}) -> ${b.region ?? 'outside map'} (${b.name})`, () => {

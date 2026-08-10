@@ -4,7 +4,7 @@
  * Elite Dangerous has ~1200 fittable modules. This module holds the
  * {@link OutfittingModule} record shape — a module's **identity and its stats**
  * together — and the functions that find one ({@link getModuleBySymbol},
- * {@link getModulesByName}, {@link getModulesForShip}).
+ * {@link getModulesByName}, {@link getBulkheadsForShip}).
  *
  * **Every lookup searches all 1199 modules by default.** A journal `Item` string
  * does not tell you which outfitting category it belongs to, so needing to know that
@@ -361,7 +361,7 @@ export interface OutfittingModule {
      * @remarks
      * Present only on the handful of non-armour modules limited to particular hulls.
      * Armour is ship-specific too, but that restriction lives in
-     * {@link OutfittingModule.ship} / {@link getModulesForShip}, not here. Symbols
+     * {@link OutfittingModule.ship} / {@link getBulkheadsForShip}, not here. Symbols
      * match {@link Ship.symbol}.
      */
     readonly restrictedToShips?: readonly string[];
@@ -547,7 +547,7 @@ export interface OutfittingModule {
      * @remarks
      * Carried by the ship-specific armour modules, which are the `core`-category
      * records with a {@link OutfittingModule.ship}. List a hull's five (or, on the
-     * Caspian Explorer, six) options with {@link getModulesForShip}.
+     * Caspian Explorer, six) options with {@link getBulkheadsForShip}.
      */
     readonly hullBoost?: number;
     /** Hull reinforcement package: hull hit points added. */
@@ -771,27 +771,30 @@ export function getModulesByName(
 }
 
 /**
- * Every armour variant fitted to a given ship, in catalogue order.
+ * Every bulkhead (armour) variant a given hull can be fitted with, in catalogue order.
  *
  * @param ship - The hull's display name as the registry spells it, e.g.
  * `"Anaconda"`. Leading/trailing whitespace and case are ignored, but matching is
  * otherwise exact.
- * @param modules - Optional subset to search (see {@link getModuleBySymbol}). Armour
- * lives in `CORE_MODULES`; narrowing to any other category returns an empty array.
- * @returns The ship's armour modules — the five bulkhead variants — or an empty
- * array if none are carried for that hull. The input array is not modified.
+ * @param modules - Optional subset to search (see {@link getModuleBySymbol}). Bulkheads
+ * live in `CORE_MODULES`; narrowing to any other category returns an empty array.
+ * @returns The hull's bulkhead modules — five variants, or six on the Caspian Explorer —
+ * or an empty array if none are carried for that hull. The input array is not modified.
  * @remarks
- * Armour is the only module tied to a specific hull; every other module fits by slot
- * size, so "modules for a ship" beyond armour is a question of slot layout, which
- * this registry does not carry.
+ * Bulkheads are the only hull-specific module; everything else fits by slot size, so
+ * this does *not* answer "what else can this hull carry" — that is slot layout, which the
+ * hull's own record carries. Reach it with {@link getShipByName}, which takes the same
+ * display name as this function; {@link getShipSlots} is the same layout keyed by
+ * {@link Ship.symbol} instead, and the two differ for most hulls (`"Viper MkIII"` is the
+ * record `"Viper"`).
  * @example
  * ```ts
- * getModulesForShip('Anaconda').map((m) => m.name);
+ * getBulkheadsForShip('Anaconda').map((m) => m.name);
  * // -> [ 'Lightweight Alloy', 'Reinforced Alloy', 'Military Grade Composite',
  * //      'Mirrored Surface Composite', 'Reactive Surface Composite' ]
  * ```
  */
-export function getModulesForShip(
+export function getBulkheadsForShip(
     ship: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule[] {

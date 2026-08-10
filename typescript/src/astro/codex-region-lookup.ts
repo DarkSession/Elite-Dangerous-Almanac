@@ -116,14 +116,23 @@ export const CODEX_REGION_MAP_Z0 = projection.z0;
 export const CODEX_REGION_MAP_LY_PER_CELL = projection.lyPerCell;
 
 /**
- * The outcome of a region lookup: the resolved region, or `null` when outside the map.
+ * A point to resolve a region at: a {@link GalacticPlanePosition}, or a full
+ * {@link GalacticPosition} — from the journal, EDSM, Spansh or `ProceduralSystem.position`
+ * — passed straight through, whether it comes from a variable or is written out inline.
  *
  * @example
  * ```ts
- * const region: CodexRegionLookup = findCodexRegionAt({ x: 0, z: 0 });
+ * findCodexRegionAt({ x: 0, z: 0 });        // the plane position the map is indexed by
+ * findCodexRegionAt({ x: 0, y: 0, z: 0 });  // a full position, `y` and all
  * ```
  */
-export type CodexRegionLookup = CodexRegion | null;
+export interface CodexRegionPoint extends GalacticPlanePosition {
+    /**
+     * Galactic Y, in light-years. Accepted and ignored: the region map is a flat X/Z
+     * projection, so a region has no vertical extent to test against.
+     */
+    readonly y?: number;
+}
 
 /**
  * A system's boxel `0/0/0` corner (galactic coordinates, in light-years) and the
@@ -136,13 +145,13 @@ export type CodexRegionLookup = CodexRegion | null;
  */
 export interface BoxelCodexRegionLookup {
     /** Galactic X of the boxel corner, in light-years. */
-    x: number;
+    readonly x: number;
     /** Galactic Y of the boxel corner, in light-years. */
-    y: number;
+    readonly y: number;
     /** Galactic Z of the boxel corner, in light-years. */
-    z: number;
+    readonly z: number;
     /** The region at the boxel corner, or `null` if it lies outside the mapped grid. */
-    region: CodexRegionLookup;
+    readonly region: CodexRegion | null;
 }
 
 /** Region id at grid cell (px, pz), or `0` when the cell is outside every region. */
@@ -165,16 +174,8 @@ function regionIdAtCell(px: number, pz: number): number {
  * This is the region the game records a codex discovery against, and the region
  * name shown when jumping *into* a system.
  *
- * @param point - Galactic position, in light-years. Only {@link GalacticPlanePosition.x} and
- * {@link GalacticPlanePosition.z} are read — the vertical `y` is ignored, because the region map
- * is a flat X/Z projection.
- *
- * A {@link GalacticPosition} you already hold in a variable (e.g. a
- * `ProceduralSystem.position`)
- * passes straight through: `GalacticPlanePosition` is a structural subset, so the extra `y` is
- * fine. Writing the `y` inline is not — TypeScript applies excess-property checking to
- * fresh object literals, so `findCodexRegionAt({ x, y, z })` is a compile error. Drop the
- * `y`, or pass the variable.
+ * @param point - Galactic position, in light-years. Only `x` and `z` are read — the
+ * vertical `y` is accepted but ignored, because the region map is a flat X/Z projection.
  * @returns The {@link CodexRegion} containing the point, or `null` if the point
  * lies outside the mapped region grid.
  * @example
@@ -182,12 +183,11 @@ function regionIdAtCell(px: number, pz: number): number {
  * findCodexRegionAt({ x: 0, z: 0 })?.name;      // -> 'Inner Orion Spur' (near Sol)
  * findCodexRegionAt({ x: 0, z: 25900 })?.name;  // -> 'Galactic Centre'
  *
- * // From coordinates you already have, pass the variable — not an inline `{ x, y, z }`:
- * const coords = { x: 0, y: 0, z: 0 };
- * findCodexRegionAt(coords)?.name;              // -> 'Inner Orion Spur'
+ * // A full position works as it comes — no need to strip the `y` first:
+ * findCodexRegionAt({ x: 0, y: 0, z: 0 })?.name; // -> 'Inner Orion Spur'
  * ```
  */
-export function findCodexRegionAt(point: GalacticPlanePosition): CodexRegionLookup {
+export function findCodexRegionAt(point: CodexRegionPoint): CodexRegion | null {
     const px = Math.floor(
         ((point.x - projection.x0) * projection.scaleNumerator) / projection.scaleDenominator,
     );

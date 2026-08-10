@@ -1810,7 +1810,7 @@ export class ShipLoadout {
      * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
      * fuel capacity cannot be determined.
      */
-    totalRange(options: { cargo?: number } = {}): number {
+    totalRange(options: { readonly cargo?: number } = {}): number {
         return totalRange(
             this.#requireMass(options.cargo ?? 0),
             this.#requireFuelCapacity().main,

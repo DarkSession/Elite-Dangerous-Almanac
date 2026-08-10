@@ -43,18 +43,39 @@ export function boxelInternalSize(sizeClass: number): number {
     return 320 << sizeClass;
 }
 
+/**
+ * A boxel's position on the per-size-class boxel grid, counted from the galaxy corner.
+ *
+ * @remarks
+ * These are grid indices, not light-years: one step is one boxel edge, which depends on
+ * the size class ({@link boxelEdgeLy} from `./mass-code` converts).
+ *
+ * @example
+ * ```ts
+ * const boxel: AbsoluteBoxel = decodeSystemAddress(3309179996515n).absoluteBoxel;
+ * ```
+ */
+export interface AbsoluteBoxel {
+    /** Boxel index along the galactic X axis. */
+    readonly x: number;
+    /** Boxel index along the galactic Y axis. */
+    readonly y: number;
+    /** Boxel index along the galactic Z axis. */
+    readonly z: number;
+}
+
 /** A system address decoded into its geometric components. */
 export interface DecodedAddress {
     /** Size class 0–7 (mass code `a`–`h`). */
-    sizeClass: number;
+    readonly sizeClass: number;
     /** The sector's position on the galaxy grid. */
-    sectorGridPosition: SectorGridPosition;
+    readonly sectorGridPosition: SectorGridPosition;
     /** The boxel's base-26 index within the sector (the "boxel code"). */
-    boxelCode: number;
+    readonly boxelCode: number;
     /** The system sequence number (`N2`). */
-    sequence: number;
+    readonly sequence: number;
     /** The boxel's absolute position on the per-size-class boxel grid. */
-    absoluteBoxel: { x: number; y: number; z: number };
+    readonly absoluteBoxel: AbsoluteBoxel;
 }
 
 /**
@@ -78,7 +99,7 @@ export function boxelCodeToAbsoluteBoxel(
     sizeClass: number,
     boxelCode: number,
     origin: NamingRegionOrigin,
-): { x: number; y: number; z: number } {
+): AbsoluteBoxel {
     const boxelSize = boxelInternalSize(sizeClass);
 
     if (origin.x0 < 0 || origin.y0 < 0 || origin.z0 < 0) {
@@ -144,7 +165,7 @@ export function boxelCodeToAbsoluteBoxel(
  */
 export function absoluteBoxelToBoxelCode(
     sizeClass: number,
-    absoluteBoxel: { x: number; y: number; z: number },
+    absoluteBoxel: AbsoluteBoxel,
     origin: NamingRegionOrigin,
 ): number | null {
     const boxelSize = boxelInternalSize(sizeClass);
