@@ -1081,8 +1081,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `blueprint.name` for the 81 blueprints coriolis carries, and the Operations dossier's
   display label for the other 28 — the 27 Operations keys and `GuardianModule_Sturdy`,
   which is journal-keyed but absent from coriolis, so its name comes from the same registry
-  as its two `recipe_`-prefixed Inara aliases. Read them with `getBlueprintName` /
-  `getExperimentalEffectName`.
+  as its two `recipe_`-prefixed Inara aliases. Read them from
+  `getBlueprint(fdname)?.name` / `getExperimentalEffect(fdname)?.name`.
   - **These are the short modifier labels, not the full outfitting-panel
     strings — deliberately.** The panel calls `Weapon_LongRange` "Long-Range Weapon",
     `ShieldBooster_HeavyDuty` "Heavy Duty Shield Booster" and
@@ -1090,7 +1090,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     duty" and "Lightweight". Nearly all 81 differ that way, because a blueprint's name
     is read next to the module it is applied to, where repeating the module's own name
     is noise. The convention is house style and is kept: switching to the panel strings
-    would change every `getBlueprintName` return for no gain. Two names were wrong in
+    would change every blueprint record's `name` for no gain. Two names were wrong in
     their own right rather than short by convention, and take EDSY's spelling —
     `CargoRack_IncreasedCapacity` is **"Expanded Cargo Rack"** (not "Expanded Capacity")
     and `special_choke_canister` **"Ion Disruption"** (not "Ion Disruptor").
@@ -1334,8 +1334,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   (`rollsForGrade`), so the total is `Σ g ·` (grade `g`'s recipe) over every grade from
   `currentGrade + 1` to the target. `currentGrade` defaults to 0 (unengineered); set it to
   `grade − 1` to price a single grade alone. Fold in an experimental effect's
-  `getExperimentalEffectMaterials` with `sumMaterials` for the grand total; the two data
-  modules stay decoupled so neither pulls the other into a bundle.
+  `getExperimentalEffect(fdname).materials` with `sumMaterials` for the grand total; the
+  two data modules stay decoupled so neither pulls the other into a bundle.
 
 ## Engineering options (what each module can take)
 

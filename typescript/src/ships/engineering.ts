@@ -218,22 +218,25 @@ const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;
  * skipped). Two labels are also *read* without being modified: `Range` resolves Long
  * Range's falloff flag, and `BurstSize` rounds an engineered clip to whole bursts, so a
  * partial `base` gets a plain round-up on a weapon that fires in bursts.
- * @param features - The blueprint grade's features (from {@link getBlueprintGrade}).
+ * @param grade - A complete blueprint grade (from {@link getBlueprintGrade}). A raw
+ * feature list is also accepted for callers synthesising modifiers without a catalogue
+ * record.
  * @param quality - The current engineering system's shared quality roll, `0`–`1`. Defaults
  * to `1` (best roll). Legacy-engineered modules advanced each attribute independently and
  * cannot be reconstructed from their single reported quality; import their journal-stated
  * modifiers instead.
- * @param experimental - The experimental effect's contributions (from
- * {@link getExperimentalEffect}), if any.
+ * @param experimental - A complete experimental effect (from
+ * {@link getExperimentalEffect}), if any. A raw contribution list is also accepted for
+ * callers synthesising effects without a catalogue record.
  * @returns One {@link EngineeringModifier} per modified label. Numeric stats carry the
  * computed `Value` and `OriginalValue`; a granted capability carries `ValueStr`.
  * @throws {RangeError} If `quality` is not a finite number in `[0, 1]`.
  */
 export function computeModifiers(
     base: Readonly<Record<string, number>>,
-    features: readonly BlueprintFeature[],
+    grade: BlueprintGrade | readonly BlueprintFeature[],
     quality = 1,
-    experimental?: readonly ExperimentalContribution[],
+    experimental?: ExperimentalEffect | readonly ExperimentalContribution[],
 ): EngineeringModifier[] {
     if (!Number.isFinite(quality) || quality < 0 || quality > 1) {
         throw new RangeError(`computeModifiers: quality must be a finite number in [0, 1]`);
@@ -249,6 +252,7 @@ export function computeModifiers(
     };
     // `stated` marks a contribution the registry publishes as a number, rather than one
     // interpolated between two of them — see `snapToStatedWhole`.
+    const features = 'features' in grade ? grade.features : grade;
     for (const f of features) {
         add(
             f.label,
@@ -257,7 +261,9 @@ export function computeModifiers(
             f.min === f.max || roll === 0 || roll === 1,
         );
     }
-    for (const e of experimental ?? []) add(e.label, e.method, e.value, true);
+    const experimentalModifiers =
+        experimental && 'modifiers' in experimental ? experimental.modifiers : experimental;
+    for (const e of experimentalModifiers ?? []) add(e.label, e.method, e.value, true);
 
     const modifiers: EngineeringModifier[] = [];
     let clipIsOverwritten = false;
@@ -469,7 +475,7 @@ export function rollsForGrade(grade: number): number {
  * ```ts
  * sumMaterials(
  *   getBlueprintCost('FSD_LongRange', 5)!,
- *   getExperimentalEffectMaterials('special_fsd_heavy')!,
+ *   getExperimentalEffect('special_fsd_heavy')!.materials,
  * );
  * ```
  *

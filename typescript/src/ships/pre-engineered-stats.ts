@@ -26,10 +26,7 @@
  */
 
 import { computeModifiers, type BlueprintFeature } from './engineering.js';
-import {
-    getExperimentalEffect,
-    getExperimentalEffectDamageDistribution,
-} from './experimental-effects.js';
+import { getExperimentalEffect } from './experimental-effects.js';
 import {
     baseStats,
     capabilityValueForLabel,
@@ -258,8 +255,8 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         }
     }
     const experimentalDamageDistribution = variant.experimental
-        ? getExperimentalEffectDamageDistribution(variant.experimental)
-        : null;
+        ? getExperimentalEffect(variant.experimental)?.damageDistribution
+        : undefined;
     if (experimentalDamageDistribution) {
         resolved.damageDistribution = { ...experimentalDamageDistribution };
         delete resolved.damageComponents;

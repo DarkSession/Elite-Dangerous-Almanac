@@ -2,13 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js';
-import {
-    getBlueprint,
-    getBlueprintCost,
-    getBlueprintGrade,
-    getBlueprintGradeDamageDistribution,
-    BLUEPRINTS,
-} from './blueprints.js';
+import { getBlueprint, getBlueprintCost, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import {
     blueprintAvailableFor,
@@ -207,7 +201,7 @@ test('one journal id rolls the recipe the fitted module actually takes', () => {
     // above, so this fails on a regression rather than on a fixture edit.
     const legsFor = (symbol: string, id: string) =>
         getBlueprintGrade(resolveBlueprintForModule(symbol, id), collision.grade)!
-            .map((feature) => feature.label)
+            .features.map((feature) => feature.label)
             .sort();
     assert.notDeepEqual(
         legsFor('Int_Sensors_Size4_Class5', 'Sensor_LongRange'),
@@ -260,7 +254,7 @@ test('one journal id rolls a clip penalty on a multi-cannon and none on the othe
     // library, so this fails on a regression rather than on a fixture edit.
     const legs = (symbol: string) =>
         getBlueprintGrade(resolveBlueprintForModule(symbol, 'Weapon_Overcharged'), 5)!
-            .map((feature) => feature.label)
+            .features.map((feature) => feature.label)
             .sort();
     for (const symbol of [
         'Hpt_Cannon_Fixed_Medium',
@@ -611,7 +605,7 @@ test('thermal plasma conversion blueprints publish their damage split at every g
         assert.deepEqual(weapon.damageDistribution, { thermal: 1 }, symbol);
         for (const [grade, expected] of Object.entries(conversion.grades)) {
             assert.deepEqual(
-                getBlueprintGradeDamageDistribution(blueprint, Number(grade)),
+                getBlueprintGrade(blueprint, Number(grade))?.damageDistribution,
                 expected,
                 `${blueprint} G${grade}`,
             );
@@ -654,14 +648,14 @@ test('engineered ammunition is rounded to whole rounds', () => {
         const weapon = getModuleBySymbol(pinned.symbol, ALL_MODULES)!;
         assert.equal(weapon.clipSize, pinned.baseAmmoClipSize, pinned.symbol);
 
-        const features = getBlueprintGrade(pinned.blueprint, pinned.grade)!;
-        const modifiers = computeModifiers(baseStats(weapon), features, pinned.quality);
+        const grade = getBlueprintGrade(pinned.blueprint, pinned.grade)!;
+        const modifiers = computeModifiers(baseStats(weapon), grade, pinned.quality);
         const label = `${pinned.symbol} ${pinned.blueprint} g${pinned.grade}`;
         assert.equal(modFor(modifiers, 'AmmoClipSize'), pinned.AmmoClipSize, label);
 
         // The recipe's own arithmetic, before anything rounds it — the figure the fixture
         // pins as `unroundedAmmoClipSize`, so the rounding is visibly doing work.
-        const scale = features.find((f) => f.label === 'AmmoClipSize')!;
+        const scale = grade.features.find((feature) => feature.label === 'AmmoClipSize')!;
         const roll = scale.min + (scale.max - scale.min) * pinned.quality;
         assert.ok(near(pinned.baseAmmoClipSize * (1 + roll), pinned.unroundedAmmoClipSize), label);
 
@@ -878,7 +872,9 @@ test('Overcharged leaves a plasma accelerator’s clip alone, as a real journal 
         'Weapon_Overcharged',
     );
     assert.ok(
-        getBlueprintGrade('MC_Overcharged', 1)!.some((feature) => feature.label === 'AmmoClipSize'),
+        getBlueprintGrade('MC_Overcharged', 1)!.features.some(
+            (feature) => feature.label === 'AmmoClipSize',
+        ),
     );
 });
 
