@@ -25,7 +25,7 @@
  * | `./commodities-all` | `ALL_COMMODITIES` | 399 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls both catalogues,
- * since that is what it falls back to — 28 KB minified for all 399. Every record
+ * since that is what it falls back to — 29.5 KB minified for all 399. Every record
  * carries a {@link Commodity.rare} flag, so a subset is one `.filter()` away.
  *
  * Data from EDCD FDevIDs (`commodity.csv`, `rare_commodity.csv`), plus one standard
@@ -44,6 +44,7 @@
  */
 
 import { ALL_COMMODITIES } from './commodities-all.js';
+import { findByKey, filterByKey } from '../internal/registry-index.js';
 
 /**
  * A market group — the shelf a commodity sits on at the commodity market.
@@ -105,11 +106,6 @@ export interface Commodity {
     readonly rare: boolean;
 }
 
-/** Case- and whitespace-insensitive key for name, symbol, category and group matching. */
-function normalize(value: string): string {
-    return value.trim().toLowerCase();
-}
-
 /**
  * Look up a commodity by its Frontier symbol / journal id (case-insensitive).
  *
@@ -131,8 +127,7 @@ export function getCommodityBySymbol(
     symbol: string,
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
-    const wanted = normalize(symbol);
-    return commodities.find((commodity) => normalize(commodity.symbol) === wanted) ?? null;
+    return findByKey(commodities, 'symbol', (commodity) => commodity.symbol, symbol);
 }
 
 /**
@@ -151,8 +146,7 @@ export function getCommodityByName(
     name: string,
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
-    const wanted = normalize(name);
-    return commodities.find((commodity) => normalize(commodity.name) === wanted) ?? null;
+    return findByKey(commodities, 'name', (commodity) => commodity.name, name);
 }
 
 /**
@@ -182,6 +176,5 @@ export function commoditiesInCategory(
     category: string,
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity[] {
-    const wanted = normalize(category);
-    return commodities.filter((commodity) => normalize(commodity.category) === wanted);
+    return filterByKey(commodities, 'category', (commodity) => commodity.category, category);
 }

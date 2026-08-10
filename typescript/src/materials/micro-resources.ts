@@ -27,7 +27,7 @@
  * | `./micro-resources-all` | `ALL_MICRO_RESOURCES` | 196 (the default) |
  *
  * It narrows *results*, not bundle size: importing a lookup pulls all four
- * catalogues, since that is what it falls back to — 14 KB minified for all 196.
+ * catalogues, since that is what it falls back to — 15 KB minified for all 196.
  * {@link microResourcesInCategory} reaches the same subsets from a plain string.
  *
  * Data originates from EDCD FDevIDs (`microresources.csv`); see
@@ -44,6 +44,7 @@
  */
 
 import { ALL_MICRO_RESOURCES } from './micro-resources-all.js';
+import { findByKey, filterByKey } from '../internal/registry-index.js';
 
 /**
  * Frontier's micro-resource category — which on-foot inventory a micro resource
@@ -78,11 +79,6 @@ export interface MicroResource {
     readonly name: string;
 }
 
-/** Case- and whitespace-insensitive key for name, symbol, category and group matching. */
-function normalize(value: string): string {
-    return value.trim().toLowerCase();
-}
-
 /**
  * Look up a micro resource by its Frontier symbol / journal id (case-insensitive).
  *
@@ -106,8 +102,7 @@ export function getMicroResourceBySymbol(
     symbol: string,
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource | null {
-    const wanted = normalize(symbol);
-    return microResources.find((resource) => normalize(resource.symbol) === wanted) ?? null;
+    return findByKey(microResources, 'symbol', (resource) => resource.symbol, symbol);
 }
 
 /**
@@ -127,8 +122,7 @@ export function getMicroResourceByName(
     name: string,
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource | null {
-    const wanted = normalize(name);
-    return microResources.find((resource) => normalize(resource.name) === wanted) ?? null;
+    return findByKey(microResources, 'name', (resource) => resource.name, name);
 }
 
 /**
@@ -156,6 +150,5 @@ export function microResourcesInCategory(
     category: string,
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource[] {
-    const wanted = normalize(category);
-    return microResources.filter((resource) => normalize(resource.category) === wanted);
+    return filterByKey(microResources, 'category', (resource) => resource.category, category);
 }
