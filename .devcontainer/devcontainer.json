@@ -27,7 +27,8 @@
         "esbenp.prettier-vscode",
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "anthropic.claude-code"
+        "anthropic.claude-code",
+        "openai.chatgpt"
       ]
     }
   },
