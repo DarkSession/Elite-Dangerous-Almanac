@@ -30,19 +30,64 @@
  * `./modules-internal`), whose records carry their stats.
  */
 export interface FrameShiftDriveParams {
-    /** Optimised mass, in tonnes — the mass at which the drive performs to spec. */
+    /** Optimised mass, in tonnes — finite and positive. */
     readonly optMass: number;
-    /** Maximum fuel drawn for a single jump, in tonnes. */
+    /** Maximum fuel drawn for a single jump, in tonnes — finite and non-negative. */
     readonly maxFuel: number;
-    /** The drive's rating (linear) fuel constant. */
+    /** The drive's finite, positive rating (linear) fuel constant. */
     readonly fuelMul: number;
-    /** The drive's size (power) fuel constant. */
+    /** The drive's finite, positive size (power) fuel constant. */
     readonly fuelPower: number;
     /**
      * Flat bonus added to every jump, in light-years, from a Guardian FSD Booster.
-     * Defaults to `0` (no booster).
+     * Finite and non-negative. Defaults to `0` (no booster).
      */
     readonly jumpBoost?: number;
+}
+
+/** Maximum work accepted by {@link totalRange} in one call. */
+const MAX_TOTAL_RANGE_JUMPS = 100_000;
+
+/** Reject a quantity that cannot represent a physical non-negative input. */
+function requireNonNegative(scope: string, name: string, value: number): void {
+    if (!Number.isFinite(value) || value < 0) {
+        throw new RangeError(`${scope}: ${name} must be a finite non-negative number`);
+    }
+}
+
+/** Reject a drive constant that would make the jump equation undefined. */
+function requirePositive(scope: string, name: string, value: number): void {
+    if (!Number.isFinite(value) || value <= 0) {
+        throw new RangeError(`${scope}: fsd.${name} must be a finite positive number`);
+    }
+}
+
+/** Validate the common drive-parameter contract. */
+function validateFsd(scope: string, fsd: FrameShiftDriveParams): void {
+    requirePositive(scope, 'optMass', fsd.optMass);
+    requireNonNegative(scope, 'fsd.maxFuel', fsd.maxFuel);
+    requirePositive(scope, 'fuelMul', fsd.fuelMul);
+    requirePositive(scope, 'fuelPower', fsd.fuelPower);
+    if (fsd.jumpBoost !== undefined) {
+        requireNonNegative(scope, 'fsd.jumpBoost', fsd.jumpBoost);
+    }
+}
+
+/** The jump equation after its public caller has validated every input. */
+function singleJumpRangeUnchecked(
+    mass: number,
+    fuel: number,
+    fsd: FrameShiftDriveParams,
+    scope: string,
+): number {
+    const burn = Math.min(fuel, fsd.maxFuel);
+    if (burn <= 0 || mass + fuel <= 0) return 0;
+    const base = Math.pow(burn / fsd.fuelMul, 1 / fsd.fuelPower) * (fsd.optMass / (mass + fuel));
+    const range = base + (fsd.jumpBoost ?? 0);
+    if (!Number.isFinite(range)) {
+        throw new RangeError(`${scope}: parameters produce a non-finite range`);
+    }
+    return range;
 }
 
 /**
@@ -54,11 +99,13 @@ export interface FrameShiftDriveParams {
  * `maxFuel` is burned, but the full amount still adds to the mass being moved.
  * @param fsd - The drive constants.
  * @returns The jump distance in light-years, including any `jumpBoost`. `0` if the
- * drive cannot jump (`maxFuel` or `fuel` ≤ 0).
+ * drive cannot jump (`maxFuel` or `fuel` = 0).
  * @remarks
  * Lighter ships and larger `optMass` jump farther; carrying more fuel than one jump
  * needs only weighs you down, which is why {@link ShipLoadout.maxJumpRange} loads
  * exactly one jump's worth.
+ * @throws {RangeError} If a quantity is negative or non-finite, or a required drive
+ * constant is not positive.
  * @example
  * ```ts
  * singleJumpRange(1237.3, 6.8, { optMass: 7528.04, maxFuel: 6.8, fuelMul: 0.011,
@@ -66,10 +113,11 @@ export interface FrameShiftDriveParams {
  * ```
  */
 export function singleJumpRange(mass: number, fuel: number, fsd: FrameShiftDriveParams): number {
-    const burn = Math.min(fuel, fsd.maxFuel);
-    if (burn <= 0 || mass + fuel <= 0) return 0;
-    const base = Math.pow(burn / fsd.fuelMul, 1 / fsd.fuelPower) * (fsd.optMass / (mass + fuel));
-    return base + (fsd.jumpBoost ?? 0);
+    const scope = 'singleJumpRange';
+    requireNonNegative(scope, 'mass', mass);
+    requireNonNegative(scope, 'fuel', fuel);
+    validateFsd(scope, fsd);
+    return singleJumpRangeUnchecked(mass, fuel, fsd, scope);
 }
 
 /**
@@ -93,6 +141,8 @@ export function singleJumpRange(mass: number, fuel: number, fsd: FrameShiftDrive
  * proportionally (as EDSY does) rather than subtracted, so interior distances are a
  * close approximation rather than the exact inverse. It matches the fuel figures
  * EDSY reports.
+ * @throws {RangeError} If a quantity is negative or non-finite, or a required drive
+ * constant is not positive.
  */
 export function fuelPerJump(
     distance: number,
@@ -100,9 +150,14 @@ export function fuelPerJump(
     fuel: number,
     fsd: FrameShiftDriveParams,
 ): number {
+    const scope = 'fuelPerJump';
+    requireNonNegative(scope, 'distance', distance);
+    requireNonNegative(scope, 'mass', mass);
+    requireNonNegative(scope, 'fuel', fuel);
+    validateFsd(scope, fsd);
     if (distance <= 0) return 0;
     const burn = Math.min(fuel, fsd.maxFuel);
-    const maxDistance = singleJumpRange(mass, fuel, fsd);
+    const maxDistance = singleJumpRangeUnchecked(mass, fuel, fsd, scope);
     if (maxDistance <= 0) return 0;
     const cost = Math.pow(distance / maxDistance, fsd.fuelPower) * burn;
     return Math.min(cost, burn);
@@ -120,15 +175,31 @@ export function fuelPerJump(
  * Each jump burns up to `maxFuel`; the sum runs until the tank is empty. `mass`
  * (hull + modules + cargo) stays fixed, while the decreasing `remaining` fuel is
  * included by {@link singleJumpRange}, so the ship becomes lighter after each jump.
+ * At most 100,000 jumps are evaluated; larger workloads throw instead of returning a
+ * silently truncated range.
+ * @throws {RangeError} If a quantity is negative or non-finite, a required drive
+ * constant is not positive, or the tank would require more than 100,000 jumps.
  */
 export function totalRange(mass: number, fuel: number, fsd: FrameShiftDriveParams): number {
+    const scope = 'totalRange';
+    requireNonNegative(scope, 'mass', mass);
+    requireNonNegative(scope, 'fuel', fuel);
+    validateFsd(scope, fsd);
     if (fsd.maxFuel <= 0) return 0;
+    const jumps = fuel > 0 ? Math.max(1, Math.ceil(fuel / fsd.maxFuel)) : 0;
+    if (!Number.isFinite(jumps) || jumps > MAX_TOTAL_RANGE_JUMPS) {
+        throw new RangeError(
+            `${scope}: fuel and fsd.maxFuel require more than ${MAX_TOTAL_RANGE_JUMPS} jumps`,
+        );
+    }
     let range = 0;
     let remaining = fuel;
-    // Guard against a pathological maxFuel producing a huge loop.
-    for (let i = 0; remaining > 1e-6 && i < 100000; i++) {
-        range += singleJumpRange(mass, remaining, fsd);
-        remaining -= fsd.maxFuel;
+    for (let i = 0; i < jumps; i++) {
+        range += singleJumpRangeUnchecked(mass, remaining, fsd, scope);
+        if (!Number.isFinite(range)) {
+            throw new RangeError(`${scope}: parameters produce a non-finite total range`);
+        }
+        remaining = Math.max(0, remaining - fsd.maxFuel);
     }
     return range;
 }

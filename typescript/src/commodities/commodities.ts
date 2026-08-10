@@ -127,7 +127,7 @@ export function getCommodityBySymbol(
     symbol: string,
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
-    return findByKey(commodities, 'symbol', (commodity) => commodity.symbol, symbol);
+    return findByKey(commodities, 'symbol', symbol);
 }
 
 /**
@@ -146,7 +146,7 @@ export function getCommodityByName(
     name: string,
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
-    return findByKey(commodities, 'name', (commodity) => commodity.name, name);
+    return findByKey(commodities, 'name', name);
 }
 
 /**
@@ -165,16 +165,8 @@ export function getCommodityByName(
  * ```
  */
 export function commoditiesInCategory(
-    category: CommodityCategory,
-    commodities?: readonly Commodity[],
-): Commodity[];
-export function commoditiesInCategory(
-    category: string,
-    commodities?: readonly Commodity[],
-): Commodity[];
-export function commoditiesInCategory(
     category: string,
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity[] {
-    return filterByKey(commodities, 'category', (commodity) => commodity.category, category);
+    return filterByKey(commodities, 'category', category);
 }

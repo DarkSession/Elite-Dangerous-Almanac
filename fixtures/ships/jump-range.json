@@ -18,6 +18,66 @@
   "ladenJumpRange": 81.576342,
   "totalRange": 1625.166,
   "fuelPerJump50Ly": 1.9474,
+  "invalidInputs": [
+    {
+      "function": "singleJumpRange",
+      "field": "mass",
+      "value": -1
+    },
+    {
+      "function": "singleJumpRange",
+      "field": "fuel",
+      "value": "NaN"
+    },
+    {
+      "function": "singleJumpRange",
+      "field": "optMass",
+      "value": 0
+    },
+    {
+      "function": "fuelPerJump",
+      "field": "distance",
+      "value": "Infinity"
+    },
+    {
+      "function": "fuelPerJump",
+      "field": "fuelPower",
+      "value": 0
+    },
+    {
+      "function": "totalRange",
+      "field": "fuel",
+      "value": -1
+    },
+    {
+      "function": "totalRange",
+      "field": "jumpBoost",
+      "value": -1
+    }
+  ],
+  "excessiveJumpCount": {
+    "mass": 1000,
+    "fuel": 100001,
+    "maxFuel": 1,
+    "error": "workload-limit"
+  },
+  "tinyFuel": {
+    "mass": 1000,
+    "fuel": 5e-324,
+    "minimumRange": 10.5
+  },
+  "overflowingTotal": {
+    "mass": 0,
+    "fuel": 2,
+    "frameShiftDrive": {
+      "optMass": 1.3e308,
+      "maxFuel": 1,
+      "fuelMul": 1,
+      "fuelPower": 1,
+      "jumpBoost": 0
+    },
+    "error": "non-finite-result"
+  },
   "builds": {
     "kraitPhantom": {
       "build": "fixtures/ships/journal-krait-phantom.json",

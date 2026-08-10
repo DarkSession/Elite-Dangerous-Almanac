@@ -191,7 +191,7 @@ export function getMaterialBySymbol(
     symbol: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
-    return findByKey(materials, 'symbol', (material) => material.symbol, symbol);
+    return findByKey(materials, 'symbol', symbol);
 }
 
 /**
@@ -209,7 +209,7 @@ export function getMaterialByName(
     name: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
-    return findByKey(materials, 'name', (material) => material.name, name);
+    return findByKey(materials, 'name', name);
 }
 
 /**
@@ -228,12 +228,7 @@ export function getMaterialByElementSymbol(
     elementSymbol: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
-    return findByKey(
-        materials,
-        'elementSymbol',
-        (material) => material.elementSymbol,
-        elementSymbol,
-    );
+    return findByKey(materials, 'elementSymbol', elementSymbol);
 }
 
 /**
@@ -268,13 +263,11 @@ export function materialsByGrade(
  * materialsInLine(MaterialLine.Chemical).map((m) => m.grade); // -> [1, 2, 3, 4, 5]
  * ```
  */
-export function materialsInLine(line: MaterialLine, materials?: readonly Material[]): Material[];
-export function materialsInLine(line: string, materials?: readonly Material[]): Material[];
 export function materialsInLine(
     line: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material[] {
-    return filterByKey(materials, 'line', (material) => material.line, line);
+    return filterByKey(materials, 'line', line);
 }
 
 /**
@@ -296,13 +289,8 @@ export function materialsInLine(
  * ```
  */
 export function materialsInCategory(
-    category: MaterialCategory,
-    materials?: readonly Material[],
-): Material[];
-export function materialsInCategory(category: string, materials?: readonly Material[]): Material[];
-export function materialsInCategory(
     category: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material[] {
-    return filterByKey(materials, 'category', (material) => material.category, category);
+    return filterByKey(materials, 'category', category);
 }

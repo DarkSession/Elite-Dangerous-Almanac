@@ -81,3 +81,61 @@ test('totalRange matches the fixture and exceeds a single jump', () => {
 test('totalRange returns 0 for a drive with no fuel per jump', () => {
     assert.equal(totalRange(1000, 32, { ...fsd, maxFuel: 0 }), 0);
 });
+
+test('jump calculations reject the shared invalid-input cases', () => {
+    const decode = (value: number | string): number => {
+        if (value === 'NaN') return Number.NaN;
+        if (value === 'Infinity') return Number.POSITIVE_INFINITY;
+        return Number(value);
+    };
+    for (const row of expected.invalidInputs) {
+        let mass = 1000;
+        let fuel = 5;
+        let distance = 10;
+        const params: Record<string, number> = { ...fsd };
+        const value = decode(row.value);
+        if (row.field === 'mass') mass = value;
+        else if (row.field === 'fuel') fuel = value;
+        else if (row.field === 'distance') distance = value;
+        else params[row.field] = value;
+
+        const invoke = () => {
+            if (row.function === 'singleJumpRange') {
+                return singleJumpRange(mass, fuel, params as unknown as FrameShiftDriveParams);
+            }
+            if (row.function === 'fuelPerJump') {
+                return fuelPerJump(
+                    distance,
+                    mass,
+                    fuel,
+                    params as unknown as FrameShiftDriveParams,
+                );
+            }
+            return totalRange(mass, fuel, params as unknown as FrameShiftDriveParams);
+        };
+        assert.throws(invoke, RangeError, `${row.function}.${row.field}`);
+    }
+});
+
+test('totalRange rejects an excessive workload instead of returning a partial range', () => {
+    const row = expected.excessiveJumpCount;
+    assert.equal(row.error, 'workload-limit');
+    assert.throws(
+        () => totalRange(row.mass, row.fuel, { ...fsd, maxFuel: row.maxFuel }),
+        /more than 100000 jumps/,
+    );
+});
+
+test('totalRange spends even the smallest positive fuel amount', () => {
+    const row = expected.tinyFuel;
+    assert.ok(totalRange(row.mass, row.fuel, fsd) >= row.minimumRange);
+});
+
+test('totalRange rejects a non-finite accumulated result', () => {
+    const row = expected.overflowingTotal;
+    assert.equal(row.error, 'non-finite-result');
+    assert.throws(
+        () => totalRange(row.mass, row.fuel, row.frameShiftDrive),
+        /non-finite total range/,
+    );
+});
