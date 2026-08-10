@@ -30,6 +30,15 @@
  * They make poor narrowing arguments: no module symbol or display name is shared
  * across categories, so passing one to a lookup can only make it miss.
  *
+ * The record shape is intentionally sparse. Use the data-free guards in
+ * `./module-capabilities` to narrow a lookup result before reading a complete stat group:
+ *
+ * ```ts
+ * const module = getModuleBySymbol(journalItem);
+ * if (hasFrameShiftDriveJumpStats(module)) module.maxFuel; // required here, in tonnes
+ * if (hasWeaponDamageStats(module)) weaponMetrics(module);
+ * ```
+ *
  * @remarks
  * **This is the one default that costs real bundle weight.** A lookup imported from
  * here pulls all four catalogues — 311.9 KiB minified (30.5 KiB gzipped) — since
@@ -424,9 +433,9 @@ export interface OutfittingModule {
     readonly maxMass?: number;
     /** Performance multiplier at `optMass` — thruster speed or shield strength. */
     readonly optMultiplier?: number;
-    /** Performance multiplier at `minMass`. */
+    /** Minimum performance multiplier, reached at `maxMass`. */
     readonly minMultiplier?: number;
-    /** Performance multiplier at `maxMass`. */
+    /** Maximum performance multiplier, reached at `minMass`. */
     readonly maxMultiplier?: number;
 
     /**

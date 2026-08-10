@@ -14,23 +14,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
-import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
-import type { Ajv } from 'ajv';
-
-import { stripJsonComments } from '../../scripts/jsonc.mjs';
-
-const DATA_DIR = fileURLToPath(new URL('../../../data/ships/', import.meta.url));
-const SCHEMA_PATH = fileURLToPath(
-    new URL('../../../schemas/ships/catalogues.schema.json', import.meta.url),
-);
-const DATA_FILES = readdirSync(DATA_DIR)
-    .filter((name) => name.endsWith('.jsonc'))
-    .sort();
-
-/** Payload keys that would put non-data prose back into the bundle. */
-const BANNED_KEYS = ['attribution', 'description'];
+import { registerCatalogueDataTests } from '../internal/catalogue-data-tests.js';
 
 /**
  * The module files the per-record rules below know about. A fifth `modules-*.jsonc`
@@ -45,10 +29,6 @@ const MODULE_FILE_RULES = new Set([
     'modules-hardpoint.jsonc',
     'modules-utility.jsonc',
 ]);
-const catalogueSchema = JSON.parse(readFileSync(SCHEMA_PATH, 'utf8')) as {
-    readonly $id: string;
-};
-
 const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     // One definition per module file, not one shared `moduleCatalogue`: with the
     // category gone from the payload, the file *is* the category, and each file's
@@ -65,76 +45,18 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'decorative-modifications.jsonc': 'decorativeCatalogue',
 };
 
-// Ajv is CommonJS; require it directly so Node's synchronous JSONC ESM hook does
-// not have to forward a CommonJS module through tsx's loader chain. `module.exports`
-// is the class itself, but Ajv 8's declarations describe an ES module, so a *default*
-// import would be typed as the namespace under NodeNext — hence the named `Ajv` type.
-const AjvConstructor = createRequire(import.meta.url)('ajv') as typeof Ajv;
-// `strictTypes` wants every `allOf`/`oneOf`/`then` branch to restate the `type` its
-// parent already fixed. That is an Ajv house rule, not draft-07, and `schemas/` stays
-// language-neutral for the other implementations that read it — so validate without it.
-const ajv = new AjvConstructor({ allErrors: true, strictTypes: false });
-ajv.addSchema(catalogueSchema);
-
-function schemaDefinition(name: string): string {
-    const definition = DEFINITION_BY_FILE[name];
-    assert.ok(definition, `no JSON Schema definition mapped for ${name}`);
-    return definition;
-}
-
-test('data/ships holds the expected number of catalogues', () => {
-    // 5 catalogues carrying identity + stats (ships + 4 module categories, each hull
-    // and module now one record) + 2 engineering catalogues (blueprints — each grade
-    // carrying its modifiers and its materials — and experimental-effects) + the
-    // pre-engineered pairings joining a bought variant to the blueprint baked into it,
-    // the engineering options each module group offers, and the decorative
-    // modifications, which are written in the same journal field as a blueprint and are
-    // a livery rather than a recipe.
-    assert.equal(DATA_FILES.length, 10);
+const DATA_FILES = registerCatalogueDataTests({
+    domain: 'ships',
+    definitions: DEFINITION_BY_FILE,
 });
 
-for (const name of DATA_FILES) {
-    test(`${name} parses as strict JSON once comments are stripped`, () => {
-        const raw = readFileSync(DATA_DIR + name, 'utf8');
-        assert.match(raw, /^\/\*/, `${name} must open with an attribution comment header`);
-        // Throws with the original line number — comments are blanked, not deleted.
-        JSON.parse(stripJsonComments(raw));
-    });
-
-    test(`${name} keeps its attribution out of the parsed payload`, () => {
-        const parsed: unknown = JSON.parse(
-            stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
-        );
-        if (Array.isArray(parsed)) return;
-        for (const key of BANNED_KEYS) {
-            assert.ok(
-                !Object.hasOwn(parsed as object, key),
-                `${name} has a top-level "${key}" — move it into the comment header`,
-            );
-        }
-    });
-
-    test(`${name} matches the shared JSON Schema`, () => {
-        const parsed: unknown = JSON.parse(
-            stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
-        );
-        const reference = `${catalogueSchema.$id}#/definitions/${schemaDefinition(name)}`;
-        const validate = ajv.compile({ $ref: reference });
-        assert.equal(
-            validate(parsed),
-            true,
-            `${name}: ${ajv.errorsText(validate.errors, { separator: '\n' })}`,
-        );
-    });
-
+for (const { name, readPayload } of DATA_FILES) {
     if (name.startsWith('modules-')) {
         test(`${name} states its category once, in its name`, () => {
             // Every payload byte is inlined into consumers' bundles, and this one said
             // nothing the file name did not: the loader adds `category` back from the
             // file it read (src/ships/internal/module-catalogue.ts).
-            const parsed: unknown = JSON.parse(
-                stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
-            );
+            const parsed = readPayload();
             assert.ok(Array.isArray(parsed));
             const repeated = parsed.filter(
                 (record: unknown) =>
@@ -162,9 +84,7 @@ for (const name of DATA_FILES) {
             // silently: a Guardian hybrid put in `modules-core.jsonc` does carry a
             // `slot`, and fails the schema, whose core `oneOf` pairs each symbol family
             // with its mount and has no branch for a Guardian one.
-            const parsed: unknown = JSON.parse(
-                stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
-            );
+            const parsed = readPayload();
             assert.ok(Array.isArray(parsed));
             assert.ok(
                 MODULE_FILE_RULES.has(name),
@@ -218,9 +138,7 @@ for (const name of DATA_FILES) {
         // that holds is on the (symbol, blueprint) pair, asserted in
         // pre-engineered.test.ts.
         if (name === 'pre-engineered.jsonc') return;
-        const parsed: unknown = JSON.parse(
-            stripJsonComments(readFileSync(DATA_DIR + name, 'utf8')),
-        );
+        const parsed = readPayload();
         if (!Array.isArray(parsed)) return;
         const symbols = parsed.flatMap((record: unknown) => {
             if (typeof record !== 'object' || record === null || !('symbol' in record)) return [];

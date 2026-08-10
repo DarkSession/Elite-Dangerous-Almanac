@@ -25,7 +25,9 @@
  *   hull's identity, stats and slot layout together.
  * - **Modules** — the {@link OutfittingModule} type and the lookups
  *   ({@link getModuleBySymbol} & co.), which search all 1199 modules unless you hand
- *   them a narrower set. The catalogues live on explicit subpaths split by Frontier's
+ *   them a narrower set. Capability guards such as {@link hasFrameShiftDriveJumpStats}
+ *   and {@link hasWeaponDamageStats} narrow the sparse record before stat access. The
+ *   catalogues live on explicit subpaths split by Frontier's
  *   four outfitting categories (`./modules-core`, `./modules-internal`,
  *   `./modules-hardpoint`, `./modules-utility`, and `./modules-all`); each record
  *   carries the module's identity and its stats.
@@ -80,6 +82,20 @@ export {
     type ProjectileRangeBoundaries,
 } from './modules.js';
 
+export {
+    hasFrameShiftDriveJumpStats,
+    hasPowerGenerationStats,
+    hasPowerDistributorStats,
+    hasMassCurveStats,
+    hasShieldRegenerationStats,
+    hasWeaponDamageStats,
+    type FrameShiftDriveJumpStats,
+    type PowerGenerationStats,
+    type PowerDistributorStats,
+    type MassCurveStats,
+    type ShieldRegenerationStats,
+    type WeaponDamageStats,
+} from './module-capabilities.js';
 // ── SLEF loadouts + jump-range / fuel calculations ──────────────────────────
 export {
     parseSlef,
