@@ -2997,3 +2997,181 @@ test("a core mount's function name reaches its slot only where casing is the dif
         );
     }
 });
+
+// ── Derived-view caching ────────────────────────────────────────────────────
+// `unladenMass`, `validation` and the slot layout are memoised, so every edit that
+// changes what a fitted module *is* has to move the version they hang off. These tests
+// compare a build whose caches were filled before an edit against one that had the same
+// edit applied as its first action — any missed invalidation shows up as a difference.
+
+/** Every memoised view, flattened so two builds can be compared in one assertion. */
+const derivedViews = (build: ShipLoadout) => ({
+    unladenMass: build.unladenMass,
+    cargoCapacity: build.cargoCapacity,
+    fuelCapacity: build.fuelCapacity,
+    valid: build.valid,
+    complete: build.complete,
+    issues: build.validation.issues.map((issue) => `${issue.code}:${issue.slot ?? ''}`),
+    slots: build.slots().map((slot) => `${slot.key}=${slot.module?.symbol ?? ''}`),
+});
+
+const anaconda = (): ShipLoadout => {
+    const build = ShipLoadout.empty('Anaconda');
+    for (const key of ['PowerPlant', 'FrameShiftDrive', 'FuelTank']) {
+        build.setModule(key, build.modulesForSlot(key, ALL_MODULES)[0]!);
+    }
+    return build;
+};
+
+/**
+ * The same hull as an *imported* build. Its `UnladenMass` / `CargoCapacity` /
+ * `FuelCapacity` short-circuit the calculation cache until an edit discards them, so
+ * an assembled build alone never enters that interaction.
+ */
+const importedAnaconda = (): ShipLoadout => ShipLoadout.fromLoadout(anaconda().toLoadoutEvent());
+
+/**
+ * A rack that actually carries cargo. The first module that merely *fits* the slot is
+ * a docking computer — zero mass, no capacity — so an edit fitting it would move only
+ * the symbol, and the mass and capacity views would agree either way.
+ */
+const cargoRack = (build: ShipLoadout): OutfittingModule =>
+    build
+        .modulesForSlot(
+            build.slotsOfKind('optional').find((slot) => !slot.restriction)!.key,
+            INTERNAL_MODULES,
+        )
+        .find((module) => module.cargoCapacity !== undefined)!;
+
+test('a derived view never survives the edit that invalidates it', () => {
+    // Read the key off the hull rather than typing one: the Anaconda is one of the ten
+    // hulls whose optional numbering the rules do not reproduce.
+    const cargoSlot = anaconda()
+        .slotsOfKind('optional')
+        .find((slot) => !slot.restriction)!.key;
+    const edits: readonly (readonly [string, (build: ShipLoadout) => void])[] = [
+        ['setModule', (build) => void build.setModule(cargoSlot, cargoRack(build))],
+        [
+            'setModule replacing an occupied slot',
+            (build) => {
+                const fits = build
+                    .modulesForSlot(cargoSlot, INTERNAL_MODULES)
+                    .filter((module) => module.cargoCapacity !== undefined);
+                build.setModule(cargoSlot, fits[0]!).setModule(cargoSlot, fits[1]!);
+            },
+        ],
+        [
+            'removeModule',
+            (build) => {
+                build.setModule(cargoSlot, cargoRack(build));
+                build.removeModule(cargoSlot);
+            },
+        ],
+        [
+            // Fitting and emptying a *required* mount is what moves `validation`: the
+            // cargo-slot edits above leave `valid`, `complete` and the issue list
+            // untouched, so on their own they cannot catch a stale validation cache.
+            'setModule filling a required core mount',
+            (build) =>
+                void build.setModule(
+                    'MainEngines',
+                    build.modulesForSlot('MainEngines', ALL_MODULES)[0]!,
+                ),
+        ],
+        [
+            'removeModule emptying a required core mount',
+            (build) => void build.removeModule('PowerPlant'),
+        ],
+        [
+            'applyBlueprint',
+            (build) => void build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 }),
+        ],
+        [
+            // The handle paths reach the same private mutators; nothing else pins that.
+            'LoadoutSlot.fit',
+            (build) => {
+                const slot = build.slots().find((candidate) => candidate.key === cargoSlot)!;
+                slot.fit(
+                    slot
+                        .modulesForSlot(INTERNAL_MODULES)
+                        .find((module) => module.cargoCapacity !== undefined)!,
+                );
+            },
+        ],
+        [
+            'FittedModule.remove',
+            (build) => {
+                build.setModule(cargoSlot, cargoRack(build));
+                build.getFittedModule(cargoSlot)!.remove();
+            },
+        ],
+        [
+            'FittedModule.applyBlueprint',
+            (build) =>
+                void build
+                    .getFittedModule('FrameShiftDrive')!
+                    .applyBlueprint('FSD_LongRange', { grade: 5 }),
+        ],
+        [
+            'clearEngineering',
+            (build) => {
+                build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
+                build.clearEngineering('FrameShiftDrive');
+            },
+        ],
+    ];
+
+    for (const [origin, make] of [
+        ['assembled', anaconda],
+        ['imported', importedAnaconda],
+    ] as const) {
+        for (const [name, edit] of edits) {
+            const warmed = make();
+            derivedViews(warmed); // fill every cache before the edit
+            edit(warmed);
+
+            const cold = make();
+            edit(cold); // same edit, nothing cached beforehand
+
+            assert.deepEqual(derivedViews(warmed), derivedViews(cold), `${origin}: ${name}`);
+        }
+    }
+});
+
+test('powering a module up or down leaves the cached views alone and still moves the budget', () => {
+    // The one edit that deliberately does not invalidate: `On` and `Priority` are read
+    // by `powerBudget`, which is not cached, and by none of the memoised views.
+    const build = anaconda();
+    const before = derivedViews(build);
+    const deployedBefore = build.powerBudget().deployed;
+
+    build.setModuleEnabled('FrameShiftDrive', false);
+    assert.deepEqual(derivedViews(build), before);
+    assert.ok(build.powerBudget().deployed < deployedBefore);
+
+    build.setModulePriority('FrameShiftDrive', 4);
+    assert.deepEqual(derivedViews(build), before);
+
+    build.setModuleEnabled('FrameShiftDrive', true);
+    assert.equal(build.powerBudget().deployed, deployedBefore);
+});
+
+test('slots() hands back a fresh array of fresh handles on every call', () => {
+    // The layout behind these is now resolved once and shared, so what a caller gets
+    // has to keep being their own to edit. (The shared array itself is frozen, but no
+    // reference to it escapes the class, so that freeze is not observable from here.)
+    const build = anaconda();
+    const first = build.slots();
+    first.length = 0;
+    assert.ok(build.slots().length > 0);
+    assert.notEqual(build.slots()[0], build.slots()[0]);
+});
+
+test('a memoised validation cannot be edited through by one consumer', () => {
+    // The result is now shared between reads, so a mutable issue would let one caller
+    // rewrite what every later reader of the same build sees.
+    const build = ShipLoadout.empty('Anaconda');
+    const issue = build.validation.issues[0]!;
+    assert.throws(() => Object.assign(issue, { message: 'rewritten' }), TypeError);
+    assert.notEqual(build.validation.issues[0]!.message, 'rewritten');
+});

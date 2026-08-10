@@ -590,6 +590,28 @@ export class ShipLoadout {
     readonly #top: TopFigures;
     readonly #slotVersions = new Map<string, number>();
     readonly #sourcePurchase: SourcePurchaseRecord | null;
+    /**
+     * Bumped by every edit that changes what a fitted module *is* — which slots are
+     * filled, by which article, with which engineering. The derived views below are
+     * rebuilt when it moves and reused when it does not.
+     *
+     * @remarks
+     * `#patchModule` deliberately does not bump it. Powering a module up or down, or
+     * moving it between priority groups, changes no slot key, symbol or modifier, and
+     * neither view keyed on this reads `On` or `Priority` — `powerBudget` and
+     * `toLoadoutEvent`, which do, read `#modules` directly and are not cached. (The
+     * layout cache is not a view of module state at all and hangs off nothing.)
+     */
+    #version = 0;
+    /**
+     * The hull's expanded mounts: `undefined` until first asked, `null` for a hull
+     * with no known layout. Needs no version — `#shipSymbol` is `readonly`, so a
+     * build's layout is fixed for its whole life.
+     */
+    #layoutCache: readonly BuildSlot[] | null | undefined;
+    #calculationCache: { version: number; value: readonly LoadoutCalculationModule[] } | null =
+        null;
+    #validationCache: { version: number; value: LoadoutValidation } | null = null;
 
     private constructor(
         shipSymbol: string,
@@ -707,6 +729,10 @@ export class ShipLoadout {
                     cloneModuleStats({ ...stats, engineeringLocked: true }),
                 );
         }
+        // Nothing above reads a derived view, so no cache can have been filled yet.
+        // This holds the invariant rather than fixing a fault: every write to
+        // `#modules` or `#moduleStats` moves the version, with no exception to carry.
+        loadout.#invalidate();
         return loadout;
     }
 
@@ -946,8 +972,9 @@ export class ShipLoadout {
      * incomplete; a module in a nonexistent or incompatible slot is invalid.
      */
     get validation(): LoadoutValidation {
-        const layout = getShipSlots(this.#shipSymbol);
-        const slots = layout ? enumerateSlots(layout) : null;
+        const cached = this.#validationCache;
+        if (cached !== null && cached.version === this.#version) return cached.value;
+        const slots = this.#layoutOrNull();
         const byKey = new Map(slots?.map((slot) => [slot.key.toLowerCase(), slot]) ?? []);
         const modules: ValidationModule[] = [...this.#modules.values()].map((module) => {
             const stats = this.#statsFor(module);
@@ -962,7 +989,9 @@ export class ShipLoadout {
                 fitError: stats && slot && !builtIn ? this.#fitError(slot, stats) : null,
             };
         });
-        return validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
+        const value = validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
+        this.#validationCache = { version: this.#version, value };
+        return value;
     }
 
     /** Whether the build contains no structurally invalid fit. */
@@ -1570,7 +1599,7 @@ export class ShipLoadout {
      * layout does not describe keeps its relative order at the end — never dropped.
      */
     #slotOrderedModules(): LoadoutModule[] {
-        const layout = getShipSlots(this.#shipSymbol);
+        const layout = this.#layoutOrNull();
         if (!layout) {
             throw new TypeError(
                 `ShipLoadout.toLoadoutEvent: no slot layout for hull "${this.#shipSymbol}", so modules cannot be ordered by slot`,
@@ -1578,7 +1607,7 @@ export class ShipLoadout {
         }
         const remaining = new Map(this.#modules);
         const ordered: LoadoutModule[] = [];
-        for (const slot of enumerateSlots(layout)) {
+        for (const slot of layout) {
             // Resolved exactly as `#fittedKey` resolves it, so the entry this orders is
             // the one `moduleAt` and `setModule` bind to — a lower-casing producer's
             // build orders by slot exactly as a journal's does.
@@ -1968,12 +1997,35 @@ export class ShipLoadout {
         };
     }
 
-    #layout(): BuildSlot[] {
-        const layout = getShipSlots(this.#shipSymbol);
+    /**
+     * The hull's mounts, or `null` when its layout is unknown. Expanded once per build:
+     * `#requireSlot` alone asks for it on every `setModule`, so assembling a 38-module
+     * ship re-derived all 39 mounts 38 times over.
+     *
+     * The array is frozen because it is now shared between callers rather than built
+     * fresh for each. That is a tripwire against a future caller sorting or splicing it
+     * in place, not a consumer guarantee: no element and no reference to this array
+     * escapes the class, so nothing outside can observe the freeze.
+     */
+    #layoutOrNull(): readonly BuildSlot[] | null {
+        if (this.#layoutCache === undefined) {
+            const layout = getShipSlots(this.#shipSymbol);
+            this.#layoutCache = layout === null ? null : Object.freeze(enumerateSlots(layout));
+        }
+        return this.#layoutCache;
+    }
+
+    /** Discard the derived views: something a fitted module *is* has changed. */
+    #invalidate(): void {
+        this.#version++;
+    }
+
+    #layout(): readonly BuildSlot[] {
+        const layout = this.#layoutOrNull();
         if (!layout) {
             throw new TypeError(`ShipLoadout: no slot layout for hull "${this.#shipSymbol}"`);
         }
-        return enumerateSlots(layout);
+        return layout;
     }
 
     #requireSlot(slotKey: string): BuildSlot {
@@ -2116,7 +2168,15 @@ export class ShipLoadout {
     }
 
     /** Resolve fitted modules once into the data-free aggregate-calculation shape. */
-    #calculationModules(): LoadoutCalculationModule[] {
+    #calculationModules(): readonly LoadoutCalculationModule[] {
+        const cached = this.#calculationCache;
+        if (cached !== null && cached.version === this.#version) return cached.value;
+        const value = this.#resolveCalculationModules();
+        this.#calculationCache = { version: this.#version, value };
+        return value;
+    }
+
+    #resolveCalculationModules(): readonly LoadoutCalculationModule[] {
         return [...this.#modules.values()].map((module) => {
             const stats = this.#statsFor(module);
             const symbol = module.Item.toLowerCase();
@@ -2176,6 +2236,7 @@ export class ShipLoadout {
             if (replacementStats !== undefined) this.#moduleStats.set(slotKey, replacementStats);
         }
         this.#slotVersions.set(slotKey, (this.#slotVersions.get(slotKey) ?? 0) + 1);
+        this.#invalidate();
     }
 
     /**
