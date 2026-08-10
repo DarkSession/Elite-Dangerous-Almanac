@@ -17,7 +17,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
-import type Ajv from 'ajv';
+import type { Ajv } from 'ajv';
 
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
@@ -65,10 +65,15 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'decorative-modifications.jsonc': 'decorativeCatalogue',
 };
 
-// Ajv 6 is CommonJS; require it directly so Node's synchronous JSONC ESM hook does
-// not have to forward a CommonJS module through tsx's loader chain.
+// Ajv is CommonJS; require it directly so Node's synchronous JSONC ESM hook does
+// not have to forward a CommonJS module through tsx's loader chain. `module.exports`
+// is the class itself, but Ajv 8's declarations describe an ES module, so a *default*
+// import would be typed as the namespace under NodeNext — hence the named `Ajv` type.
 const AjvConstructor = createRequire(import.meta.url)('ajv') as typeof Ajv;
-const ajv = new AjvConstructor({ allErrors: true });
+// `strictTypes` wants every `allOf`/`oneOf`/`then` branch to restate the `type` its
+// parent already fixed. That is an Ajv house rule, not draft-07, and `schemas/` stays
+// language-neutral for the other implementations that read it — so validate without it.
+const ajv = new AjvConstructor({ allErrors: true, strictTypes: false });
 ajv.addSchema(catalogueSchema);
 
 function schemaDefinition(name: string): string {
