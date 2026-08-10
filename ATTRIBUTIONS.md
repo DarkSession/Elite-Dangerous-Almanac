@@ -204,6 +204,12 @@ in the doc comment of each ported module, and in long form in the domain
   figure. [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden, **CC BY-NC 4.0**)
   reads the same, against [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)'s 3
   (**MIT** for its code; the values are game data).
+- **The medium fixed Guardian Shard Cannon's projectile speed** — the
+  `shotSpeed` of 1133.333374 m/s on `Hpt_Guardian_ShardCannon_Fixed_Medium` and the
+  6299.209 m/s overwrite on its tech-broker Modified variant. From Frontier's own
+  `OriginalValue` and engineered `Value` in
+  `fixtures/ships/journal-anaconda-slapaconda.json` (credited under Ground-truth ship
+  builds below), replacing the registry-derived 1133 and 3568.6 m/s figures.
 - **The journal spelling of the two scanner blueprints** — the `journalName` on
   `Scanner_LongRange` and `Scanner_WideAngle` in `data/ships/blueprints.jsonc`, recording
   that the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` even though those
@@ -304,7 +310,8 @@ in the doc comment of each ported module, and in long form in the domain
   other build here. Credit to UFO Studios & AW2C Systems Ltd for capturing and publishing
   the log. No code from that project is used.
   `fixtures/ships/journal-python-mkii-antixeno.json`,
-  `journal-python-mkii-spire-ops.json`, `journal-corsair.json`,
+  `journal-python-mkii-spire-ops.json`, `journal-anaconda-slapaconda.json`,
+  `journal-corsair.json`,
   `journal-federation-corvette.json`, `journal-federation-corvette-beams.json`,
   `journal-federation-corvette-multirole.json`, `journal-federation-corvette-mixed.json`,
   `journal-federation-corvette-plasma.json`, `journal-cobra-mkv.json`,
@@ -315,13 +322,14 @@ in the doc comment of each ported module, and in long form in the domain
   cannon's clip, the plasma Corvette what says the same for a fragment cannon and the
   Caspian Explorer what says it for a plasma accelerator, the
   mixed Corvette settles that a rail gun's charge delay is excluded from Frontier's
-  `RateOfFire`, and eleven of them — every one but the unengineered Python Mk II — together
+  `RateOfFire`, and twelve of them — every one but the unengineered Python Mk II — together
   with the Krait Phantom capture and the EDSY export are what the module catalogue's base
   stats are checked against. The beam-heavy Corvette, Cobra Mk V, Kestrel Mk II, The Deep
-  Black, Lynx Highliner, Panther Clipper Mk II, Corsair and Spire Ops also have directly
-  observed in-game statistics-panel readings for jump, power, speed, mass, shield and
-  armour figures. The Cobra, Kestrel, Lynx, Panther, Corsair and Spire Ops observations add
-  combined-weapon output, while The Deep Black records the weaponless panel. The Panther
+  Black, Lynx Highliner, Panther Clipper Mk II, Corsair, Spire Ops and Slapaconda also
+  have directly observed in-game statistics-panel readings for jump, power, speed, mass,
+  shield and armour figures. The Cobra, Kestrel, Lynx, Panther, Corsair, Spire Ops and
+  Slapaconda observations add combined-weapon output, while The Deep Black records the
+  weaponless panel. The Panther
   observation is a later refit than its same-named SLEF capture, so the two are preserved
   separately. The Kestrel's separately observed name is recorded without rewriting the
   older unnamed capture. They are pinned in
@@ -335,7 +343,7 @@ in the doc comment of each ported module, and in long form in the domain
   own commander's fleet. The Lynx Highliner and the Panther Clipper Mk II are what a
   restricted mount's rules are checked against, and the Cutter is what the omitted-price
   rule is checked against. Their headers keep only the producing app and version.
-  All eighteen are Elite Dangerous game output and remain the property of Frontier
+  All twenty are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`

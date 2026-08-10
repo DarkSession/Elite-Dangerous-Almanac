@@ -574,15 +574,15 @@ the modified one, so a capture reads base stats straight out of Frontier's own
 arithmetic — including a hardpoint's reserve ammo and projectile speed, which the
 in-game audit above lists as unreached, the shield-generator and shield-booster
 resistances, which it lists as unsettled, and the ship-specific armour modules, which it
-excludes from numeric verification altogether. Of the fourteen journal captures and the
-EDSY export stored here, **thirteen state base values**; between them they state **820**
-that name a field this catalogue holds, and every one agrees — 716 to the stored decimal
-and 104 to within the game's own float noise.
+excludes from numeric verification altogether. Of the fifteen journal captures and the
+EDSY export stored here, **fourteen state base values**; between them they state **887**
+that name a field this catalogue holds, and every one agrees — 772 to the stored decimal
+and 115 to within the game's own float noise.
 
 Counted as distinct (module, label) pairs rather than per capture, that reaches 18
 modules on their resistances (five shield generators, two shield boosters, four hull
 reinforcement packages and seven armour modules), those seven armour modules' hull
-boosts, nine reserve-ammo and seven clip-size readings, and one projectile speed.
+boosts, nine reserve-ammo and seven clip-size readings, and two projectile speeds.
 
 **`Hpt_HeatSinkLauncher_Turret_Tiny` holds a reserve of 2**, which is a capture's figure
 rather than a registry's. The Lynx Highliner states it under a grade-1 Heat Sink Capacity
@@ -611,7 +611,7 @@ rather than sampled.
 Wherever a
 capture spells a stat by something other than the field's own first name, or names a
 field the record does not carry — the two shapes a wrong resolution hides in — the result
-is pinned at a field written out by hand rather than resolved: **58** of them, one per
+is pinned at a field written out by hand rather than resolved: **66** of them, one per
 module and field, in `capturedBaseStats.engineered`.
 
 A fourth label, `Jitter`, already resolved to `jitter`. A capture states it as
@@ -692,6 +692,7 @@ or where no corresponding in-game value was available:
 | `Hpt_BeamLaser_Gimbal_Huge`                                      | `thermalLoad`                       | 10.6           | 10.62               | observed in-game; the journal agrees                                                                                                                   |
 | `Int_ShieldGenerator_Size7_Class5_Strong`                        | `shieldBrokenRegenRate`             | 4.2            | 4.25                | observed in-game; the journal agrees                                                                                                                   |
 | `Hpt_HeatSinkLauncher_Turret_Tiny`                               | `ammoMaximum`                       | 3              | 2                   | a journal states the base as 2, and EDSY agrees; in-game verification does not reach hardpoint reserve ammo                                            |
+| `Hpt_Guardian_ShardCannon_Fixed_Medium`                          | `shotSpeed`                         | 1133           | 1133.333374         | Frontier's journal states the base beside the tech-broker Modified variant's engineered value                                                          |
 
 **In-game corrections.** Values are stored at the observed in-game precision; the
 fixture's `inGameVerifiedValues` array pins every
@@ -2115,6 +2116,10 @@ order.
     Worth stating plainly, because the blueprint name invites the opposite reading: the
     Shard's `MaximumRange` ×1.7647 with `FalloffRange` ×0.88235 is **not** a Long Range
     roll of any grade. It is a bespoke stat block, as every reward variant's is.
+    Frontier's `journal-anaconda-slapaconda.json` capture directly reads the medium
+    variant's projectile speed as 6299.208984 m/s. The stored overwrite is the authored
+    decimal **6299.209 m/s**, with the journal residue treated as float noise, and supersedes
+    EDSY's 3568.6 m/s preset-derived result for that one field.
     - **The guard that matters:** an `overwrite` is absolute, so it is only applied where
       _this repo's_ base agrees with the one the stat was inverted against. One candidate
       failed that check and was left as a multiplier — the medium Guardian Gauss Cannon's
@@ -2197,12 +2202,12 @@ order.
   `typescript/src/ships/internal/module-stat-labels.ts` holds the per-label unit and
   algebra table.
 - **Ammunition capacity is `clipSize` + `ammoMaximum`.** The reserve excludes the
-  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The fourteen
-  journal captures carry **69** non-zero readings across twenty-six distinct modules.
+  magazine, exactly as a journal's `AmmoInHopper` excludes `AmmoInClip`. The fifteen
+  journal captures carry **81** non-zero readings across twenty-six distinct modules.
   They are not
   the only external check either stat gets — the `AmmoClipSize` and `AmmoMaximum`
   modifiers a capture states on an engineered module are a second and stronger one, and
-  in-game verification does not reach a _hardpoint's_ reserve ammo. All sixty-nine sit
+  in-game verification does not reach a _hardpoint's_ reserve ammo. All eighty-one sit
   exactly at capacity — among them the Python Mk II's Enhanced AX Multi-Cannon 100/2100
   and Guardian Shard Cannon 5/180, the Viper's two gimballed multi-cannons 90/2100, the
   Krait's two flak launchers 1/32 and two point-defence turrets 12/10000, and the
@@ -2242,8 +2247,8 @@ order.
   journal states **87**. Nearest-integer rounding reproduces both, so it runs after the
   blueprint and experimental contributions have all compounded.
 
-  Eight captures state an engineered clip or reserve, twenty-four readings between them,
-  and twenty-three agree exactly under those rules and the two manual quality corrections
+  Nine captures state an engineered clip or reserve, thirty readings between them,
+  and twenty-nine agree exactly under those rules and the two manual quality corrections
   recorded below. One of them is a fragment cannon's Corrosive Shell reserve at quality
   0.826, where the ammunition leg is the experimental's flat −20% rather than a
   quality-rolled one. The one exception is the Corsair's dumbfire rack, a **legacy
@@ -2490,6 +2495,48 @@ under, which is why several are cited above rather than copied.
   is inferred. [#97](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/97)
   tracks the current individual weapon readings needed to settle both inputs.
 
+- **`fixtures/ships/journal-anaconda-slapaconda.json`** — a real Frontier journal
+  `Loadout` event for an engineered shieldless Anaconda combat build (54 `Modules`
+  entries: six medium fixed tech-broker Modified Guardian Shard Cannons, two small
+  gimballed beam lasers, one Caustic Sink launcher, five pre-engineered Heat Sink
+  launchers and extensive hull reinforcement). Contributed **2026-08-10 UTC** by the
+  repository owner alongside the in-game statistics-panel readings pinned in
+  `fixtures/ships/build-metrics.json` §`inGame.slapaconda`. No upstream project is
+  recorded; the loadout is Frontier game output redistributed under Frontier's
+  media-usage terms. The pasted source's raw JSON line has SHA-256
+  `3d7f5bcf13a8b5e9d2f98f6b6afdecc485acc54236b377db17444af23dd32325`; the stored,
+  re-indented fixture has SHA-256
+  `d5a6438c713143dd2c29a3bb44feddbcc44cc83a4c5e2c7d4d50bc2e1e769c5e` and is otherwise
+  unchanged. Its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` are kept because they
+  describe the ship, and the engineer names are the game's own NPCs.
+
+  **The capture is exact ground truth for the shieldless build.** With its stated
+  aggregates stripped, the modules recompute to `UnladenMass` 1247.500000 t against
+  Frontier's 1247.499878 t and `MaxJumpRange` 28.179909 ly against 28.179903 ly, both
+  within float noise. The panel's 27.63 ly full-tank display follows when the 1.07 t
+  reserve tank counts as ship mass but not jump fuel. Its all-module power figures,
+  zero shield strength, armour and resistances, current full-fuel mass and engineered
+  thruster maximum mass all reproduce at displayed precision. The capture states 67
+  catalogue base values: 56 agree exactly and 11 within Frontier's float noise.
+
+  **It directly corrects both projectile-speed inputs for the medium fixed shard
+  cannon.** Frontier states the stock `OriginalValue` as 1133.333374 m/s, stored verbatim
+  in the module catalogue, and the Modified article's engineered `Value` as 6299.208984
+  m/s, recovered to the authored 6299.209 m/s in the pre-engineered catalogue. The same
+  six blocks independently pin the variant's 3.43 MW distributor draw, 19.800001 thermal
+  load, 2999.998291 m maximum range and 1499.999146 m falloff readings.
+
+  **Its ammunition and offence extend two existing ground truths.** The Caustic Sink is
+  fully loaded at 1/7 under ordinary grade-1 Ammo Capacity, and all five pre-engineered
+  Heat Sink launchers are fully loaded at 1/4. The panel reports 462.2 damage/s, 36.8 MW
+  distributor draw and 126.1 heat/s. Heat reproduces exactly. After subtracting the two
+  beams' 15.36 damage/s, adding 10% to the six shards' calculated contribution reproduces
+  the panel at displayed precision, independently corroborating Spire Ops; distributor
+  draw differs by 2 MW per Modified shard rather than Spire Ops' 1 MW per stock shard. Both unresolved
+  totals remain pinned without inventing modifiers while
+  [#97](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/97) tracks the
+  missing individual readings.
+
 - **`fixtures/ships/journal-corsair.json`** — a real Frontier journal `Loadout` event for a
   heavily **engineered** Corsair (36 `Modules` entries: six hardpoints, three shield
   boosters, an engineered overcharge drive, 144 t of cargo). Contributed **2026-08-08 UTC**
@@ -2601,7 +2648,7 @@ under, which is why several are cited above rather than copied.
   the stored text is faithful: both figures are dropped and recomputed from the modules
   alone, so every module mass, every engineered mass modifier and the drive's whole fuel
   curve have to be right for them to land. The residue is the game's own float32
-  arithmetic — at worst 9.8 × 10⁻⁵ t and 6.3 × 10⁻⁶ ly across all fourteen journal
+  arithmetic — at worst 1.22 × 10⁻⁴ t and 6.4 × 10⁻⁶ ly across all fifteen journal
   captures, not these five alone. Pinned by `fixtures/ships/module-stats.json`
   `capturedBaseStats.rebuilds`.
 
@@ -2745,7 +2792,7 @@ under, which is why several are cited above rather than copied.
   Inara lower-cases every slot key, as the SLEF specification's own example does, so a
   case-sensitive binding reports **no** occupied mounts on an Inara build and `setModule`
   on one adds a duplicate rather than replacing it. Nothing but an Inara-sourced export
-  shows that: the EDSY export and the fourteen journal captures all use Frontier's own
+  shows that: the EDSY export and the fifteen journal captures all use Frontier's own
   casing. `ShipLoadout` and `parseSlotName` resolve
   a slot key whatever its casing. Keys are deliberately **not** canonicalised on import —
   a build keeps its producer's spelling, so this fixture
@@ -2925,8 +2972,9 @@ beam-heavy Federal Corvette in `journal-federation-corvette-beams.json`, the Cob
 in `journal-cobra-mkv.json`, the Kestrel Mk II in `journal-kestrel-mkii.json`, The Deep
 Black in `slef-the-deep-black.json`, and the Lynx Highliner in
 `journal-lynx-highliner.json`, the Panther Clipper Mk II in
-`slef-inara-panther-mkii.json`, the Corsair in `journal-corsair.json`, and Spire Ops in
-`journal-python-mkii-spire-ops.json` were read on
+`slef-inara-panther-mkii.json`, the Corsair in `journal-corsair.json`, Spire Ops in
+`journal-python-mkii-spire-ops.json`, and Slapaconda in
+`journal-anaconda-slapaconda.json` were read on
 **2026-08-10 UTC** and transcribed into `fixtures/ships/build-metrics.json` §`inGame`.
 The complete loadouts are the source
 revisions for the fitted modules (stored SHA-256 above where an immutable revision is
@@ -2936,11 +2984,13 @@ correction is applied. The Kestrel capture predates its displayed name and there
 retains a blank `ShipName`; the separately observed `[KDF] Slippery Fudge` name is
 metadata on the calculated-values fixture, not a rewrite of that source capture. Seven
 builds externally check shield strength and resistance stacking and armour hit points and
-resistance stacking; the Panther observation belongs to a later refit than its same-named
-capture and is not counted as validation of the old build. Every matching build except
-The Deep Black also checks full-tank jump range without a known discrepancy. All eight
-observations record speed and rotation, shield regeneration, full-fuel and
-thruster-maximum masses, and power figures for APIs that can consume them now or later.
+resistance stacking; Slapaconda additionally checks that a build with no generator reports
+zero shields while its armour still reproduces. The Panther observation belongs to a later
+refit than its same-named capture and is not counted as validation of the old build. Every
+matching build except The Deep Black also checks full-tank jump range without a known
+discrepancy. All nine observations record speed and rotation, full-fuel and
+thruster-maximum masses, and power figures for APIs that can consume them now or later;
+the eight shielded observations also record shield regeneration.
 
 The power display totals every fitted module regardless of whether it is powered on. Its
 39.76 MW retracted / 47.46 MW deployed figures therefore include the cargo hatch's 0.6
@@ -2986,6 +3036,16 @@ pinned without correction while
 [#97](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/97) tracks the current
 individual large and medium shard-cannon readings needed to settle their inputs.
 
+Slapaconda independently shows the same shard damage rule on six tech-broker Modified
+medium cannons. The catalogue calculates 421.6 damage/s for the entire build against the
+panel's 462.2; after subtracting the two beams' reproduced 15.36 damage/s, a +10% shard
+contribution reproduces the panel at displayed precision. Its 126.1 heat/s reproduces,
+while the panel's 36.8 MW distributor draw is 12 MW above the calculated 24.8 MW — 2 MW
+per Modified shard, unlike
+the 1 MW per stock shard in Spire Ops. This corroborates the damage behaviour but shows
+that the distributor discrepancy depends on the fitted article. Both remain pinned under
+[#97](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/97).
+
 The Panther observation reports **4 damage/s, 2 MW distributor draw and 0.1 heat/s**, but
 the same-named SLEF capture has empty hardpoints. The divergence is broader than weapons:
 the capture has stock shields, bulkheads and thrusters and calculates 22.53 ly full-tank
@@ -3002,12 +3062,13 @@ substituting recharge for draw would contradict the two armed builds. The observ
 kept without correction and the unresolved empty-hardpoint semantics are tracked in
 [#94](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/94).
 
-The Cobra, Kestrel and Spire Ops also make the in-game full-tank jump display's reserve-fuel
-treatment visible. The physical calculation excludes reserve fuel from usable FSD fuel
+The Cobra, Kestrel, Spire Ops and Slapaconda also make the in-game full-tank jump display's
+reserve-fuel treatment visible. The physical calculation excludes reserve fuel from usable FSD fuel
 and jump mass. The panel includes it in mass only: the Cobra's 0.49 t reserve changes
 44.8089 ly to 44.7491 ly, displayed as 44.75; the Kestrel's 0.61 t reserve changes
 23.1922 ly to 23.1606 ly, displayed as 23.16; Spire Ops' 0.83 t reserve changes 25.1640 ly
-to 25.1375 ly, displayed as 25.14. The fixture pins the display readings while
+to 25.1375 ly, displayed as 25.14; and Slapaconda's 1.07 t reserve changes 27.6513 ly to
+27.6282 ly, displayed as 27.63. The fixture pins the display readings while
 `ShipLoadout.unladenJumpRange()` keeps the physical answers.
 
 The Deep Black does not reproduce its **84.95 ly** observed full-tank display from the

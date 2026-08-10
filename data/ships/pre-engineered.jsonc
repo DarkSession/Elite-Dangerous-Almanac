@@ -10,6 +10,8 @@
  *          (http://creativecommons.org/licenses/by-nc/4.0/).
  *          The final-engineering restriction on the seven Guardian-weapon rows is an
  *          in-game report from the repository maintainer, observed 2026-08-09 UTC.
+ *          Frontier's journal-anaconda-slapaconda.json capture directly states the
+ *          tech-broker medium Guardian Shard Cannon's projectile speed.
  *          The underlying values are Elite Dangerous game data, property of Frontier
  *          Developments plc, redistributed under Frontier's media-usage terms:
  *          https://forums.frontier.co.uk/threads/510879/
@@ -50,8 +52,10 @@
  * source encodes them in a custom 20-bit float, which carries about fifteen significant
  * bits, so decoding a change the game states as `+20%` yields `0.199997`. Each value
  * stored here is the *shortest decimal that re-encodes to the identical bits*, so it is
- * the figure the encoder was given, and every one of the 51 stat blocks recovers
- * exactly. Nothing is approximated: a value with no short form would have been left as
+ * the figure the encoder was given, and every EDSY-derived value in the 51 stat blocks
+ * recovers exactly. The medium tech-broker shard cannon's projectile speed instead
+ * recovers the authored 6299.209 m/s from Frontier's direct 6299.208984 float reading.
+ * Nothing is approximated: an EDSY value with no short form would have been left as
  * decoded, and none needed it. The recovery is why the 5A "FSD V1" resolves to a whole
  * 1785 optimal mass from `+0.7` rather than to 1785.0126 from `0.699988`.
  *
@@ -1796,7 +1800,7 @@
       {
         "label": "ShotSpeed",
         "method": "overwrite",
-        "value": 3568.6
+        "value": 6299.209
       },
       {
         "label": "ThermalLoad",

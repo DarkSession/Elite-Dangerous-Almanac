@@ -15,7 +15,9 @@
  *          In-game verification covers 1193 identities and the numeric values on 952
  *          non-armour modules; six bundle-granted Vessel Hangar identities are
  *          registry/CAPI-sourced. Exact corrections are pinned in
- *          fixtures/ships/module-stats.json. Distinct damage amounts observed in-game are
+ *          fixtures/ships/module-stats.json. Frontier journal captures there also state
+ *          otherwise-unreached base stats, including the medium fixed Guardian Shard
+ *          Cannon's projectile speed. Distinct damage amounts observed in-game are
  *          retained in `damageComponents`; projectile boundary parameters observed in-game
  *          that are not effective ranges are retained in `projectileRange`.
  *          The stat values are Elite Dangerous game data, property of Frontier
@@ -3109,7 +3111,7 @@
     "armourPiercing": 45,
     "maximumRange": 1700,
     "falloffRange": 1700,
-    "shotSpeed": 1133,
+    "shotSpeed": 1133.333374,
     "jitter": 5,
     "cost": 507761,
     "damageComponents": {

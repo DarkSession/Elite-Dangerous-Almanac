@@ -16,6 +16,7 @@ import { parseSlef, type LoadoutEvent } from './slef.js';
 import { ShipLoadout } from './ship-loadout.js';
 import { damagePerSecond } from './weapons.js';
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
+import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
@@ -35,6 +36,7 @@ import deepBlackSlef from '../../../fixtures/ships/slef-the-deep-black.json' wit
 // Every capture the repository holds that could state a base value, named by the file the
 // fixture names, so a new capture is joined here by adding it in both places.
 const CAPTURES: readonly { file: string; loadouts: readonly LoadoutEvent[] }[] = [
+    { file: 'journal-anaconda-slapaconda.json', loadouts: [slapacondaJournal as LoadoutEvent] },
     { file: 'journal-caspian-explorer.json', loadouts: [caspianJournal as LoadoutEvent] },
     { file: 'journal-cobra-mkv.json', loadouts: [cobraJournal as LoadoutEvent] },
     { file: 'journal-corsair.json', loadouts: [corsairJournal as LoadoutEvent] },
@@ -274,7 +276,7 @@ test('every capture rebuilds to the mass and jump range it states', () => {
     // `MaxJumpRange`, and both are dropped before the rebuild so the library computes them
     // from the modules alone. Every module mass, every engineered mass modifier and the
     // drive's whole fuel curve have to be right for the two figures to land. What is left
-    // is the game's own float32 arithmetic, not a disagreement — the widest is 9.8e-5 t.
+    // is the game's own float32 arithmetic, not a disagreement — the widest is 1.22e-4 t.
     for (const { file, unladenMass, maxJumpRange } of rebuilds) {
         const capture = CAPTURES.find((entry) => entry.file === file);
         assert.ok(capture, `${file} is pinned for rebuild but not read`);

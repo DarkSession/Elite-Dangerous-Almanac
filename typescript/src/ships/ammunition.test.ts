@@ -10,6 +10,7 @@ import { ShipLoadout } from './ship-loadout.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats } from './pre-engineered-stats.js';
 import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
+import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
@@ -42,6 +43,7 @@ interface JournalAmmoModule {
 
 /** Every journal capture in the fixtures, by file name. */
 const JOURNALS = [
+    ['journal-anaconda-slapaconda.json', slapacondaJournal],
     ['journal-krait-phantom.json', kraitJournal],
     ['journal-viper-mkiv.json', viperJournal],
     ['journal-python-mkii-antixeno.json', pythonJournal],
@@ -225,8 +227,8 @@ test('a build reports the capacity of every weapon it carries', () => {
 });
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
-    // A rearm state is a lower bound on a capacity, never a reading of one. All 69 counts
-    // across the fourteen captures happen to sit at capacity — that is what makes them a
+    // A rearm state is a lower bound on a capacity, never a reading of one. All 81 counts
+    // across the fifteen captures happen to sit at capacity — that is what makes them a
     // check on the catalogue — but a partly spent launcher would report less and say
     // nothing.
     const pinned = fixture.ammunition.journalReadings;

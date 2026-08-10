@@ -1813,6 +1813,14 @@
     ],
     "captures": [
       {
+        "file": "journal-anaconda-slapaconda.json",
+        "stated": 67,
+        "mapped": 67,
+        "exact": 56,
+        "withinFloatNoise": 11,
+        "unmapped": []
+      },
+      {
         "file": "journal-caspian-explorer.json",
         "stated": 43,
         "mapped": 42,
@@ -2126,9 +2134,14 @@
         "damagePerSecond": 179.099991
       }
     ],
-    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the fourteen is 9.8e-5 t of mass and 6.3e-6 ly — and not a margin for disagreement.",
-    "rebuildTolerance": 0.0001,
+    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the fifteen is 1.22e-4 t of mass and 6.4e-6 ly — and not a margin for disagreement.",
+    "rebuildTolerance": 0.0002,
     "rebuilds": [
+      {
+        "file": "journal-anaconda-slapaconda.json",
+        "unladenMass": 1247.499878,
+        "maxJumpRange": 28.179903
+      },
       {
         "file": "journal-caspian-explorer.json",
         "unladenMass": 1251.300049,
@@ -2202,6 +2215,48 @@
     ],
     "engineeredNote": "Every engineered result the captures state where the journal's label is not the field's own first name, or where it names a field the module's record does not carry — the two places a wrong label→field resolution hides, since `effectiveStats` drops a label that resolves to nothing rather than failing and a stat with two labels can be written to whichever is asked for. `field` is written out here rather than resolved, so it says where the value belongs independently of the mapping under test. One row per distinct (module, field); `value` is in the catalogue's units, which is the journal's figure ÷ 100 for the one percentage label among them, `ShieldGenStrength`. Each is read back from `FittedModule.effectiveStats` on the build parsed from that capture, and each equals the `Value` Frontier states beside the `OriginalValue`.",
     "engineered": [
+      {
+        "file": "journal-anaconda-slapaconda.json",
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Small",
+        "field": "maximumRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-anaconda-slapaconda.json",
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Small",
+        "field": "falloffRange",
+        "value": 6000
+      },
+      {
+        "file": "journal-anaconda-slapaconda.json",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "field": "distributorDraw",
+        "value": 3.43
+      },
+      {
+        "file": "journal-anaconda-slapaconda.json",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "field": "thermalLoad",
+        "value": 19.800001
+      },
+      {
+        "file": "journal-anaconda-slapaconda.json",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "field": "maximumRange",
+        "value": 2999.998291
+      },
+      {
+        "file": "journal-anaconda-slapaconda.json",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "field": "falloffRange",
+        "value": 1499.999146
+      },
       {
         "file": "journal-caspian-explorer.json",
         "slot": "MediumHardpoint6",

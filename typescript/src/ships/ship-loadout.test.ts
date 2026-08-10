@@ -13,6 +13,7 @@ import expected from '../../../fixtures/ships/jump-range.json' with { type: 'jso
 import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
+import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
@@ -2349,6 +2350,72 @@ test('Spire Ops reproduces the observed totals except the Guardian shard offense
         displayed(generator.shieldBrokenRegenRate!, 1),
         expected.shields.regeneration.broken,
     );
+
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
+    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 3),
+            thermal: displayed(armour.resistances.thermal, 3),
+            explosive: displayed(armour.resistances.explosive, 3),
+        },
+        expected.armour.resistances,
+    );
+});
+
+test('Slapaconda reproduces the observed totals except the Guardian shard offense', () => {
+    const expected = metrics.inGame.slapaconda;
+    const event = slapacondaJournal as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+    assert.equal(build.shipName, '[KAXF] Slapaconda');
+
+    assert.equal(
+        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        expected.jumpRange.fullTank,
+    );
+
+    const installedBuild = withAllModulesEnabled(event);
+    const power = installedBuild.powerBudget();
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.available, 2), expected.power.available);
+    assert.equal(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 2), expected.power.deployed);
+
+    const weapons = installedBuild.weaponMetrics();
+    assert.equal(
+        displayed(weapons.total.damagePerSecond, 1),
+        expected.offense.calculatedDamagePerSecond,
+    );
+    assert.notEqual(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    const offensePanelTotals = installedBuild.hardpoints().reduce(
+        (totals, slot) => ({
+            distributorDraw:
+                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
+            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
+        }),
+        { distributorDraw: 0, thermalLoad: 0 },
+    );
+    assert.equal(
+        displayed(offensePanelTotals.distributorDraw, 1),
+        expected.offense.calculatedDistributorDraw,
+    );
+    assert.notEqual(
+        displayed(offensePanelTotals.distributorDraw, 1),
+        expected.offense.distributorDraw,
+    );
+    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+    assert.equal(build.getFittedModule('HugeHardpoint1')!.effectiveStats!.shotSpeed, 6299.208984);
+
+    assert.equal(expected.shields.strength, 0);
+    assert.equal(build.shieldMetrics(), null);
 
     assert.equal(
         displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
