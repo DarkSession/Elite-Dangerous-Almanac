@@ -73,14 +73,7 @@ import {
     type FrameShiftDriveParams,
 } from './jump-range.js';
 import { getShipBySymbol, getShipSlots } from './ships.js';
-import {
-    enumerateSlots,
-    parseSlotName,
-    SLOT_RESTRICTION_LABELS,
-    type BuildSlot,
-    type SlotKind,
-    type SlotRestriction,
-} from './slots.js';
+import { enumerateSlots, parseSlotName, type BuildSlot, type SlotKind } from './slots.js';
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade, getBlueprintGradeDamageDistribution } from './blueprints.js';
 import { isDecorativeModification } from './decorative-modifications.js';
@@ -106,7 +99,6 @@ import {
     baseStats,
     blueprintAvailableFor,
     experimentalAvailableFor,
-    isFinalGuardianWeaponEngineering,
     isEngineerable,
     missingBaseLabels,
     statFor,
@@ -124,12 +116,16 @@ import { shieldMetrics, type ShieldMetrics } from './shields.js';
 import { armourMetrics, type ArmourMetrics } from './armour.js';
 import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.js';
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
-import { getPreEngineeredVariants } from './pre-engineered.js';
-import { getPreEngineeredStats, identifyPreEngineeredVariant } from './pre-engineered-stats.js';
+import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
 import type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
-import { SourcePurchaseRecord } from './source-purchase.js';
+import { moduleFitError } from './internal/loadout-fitting.js';
+import {
+    normalizeLoadoutEvent,
+    type ImportedTopFigures as TopFigures,
+} from './internal/loadout-import.js';
+import type { SourcePurchaseRecord } from './source-purchase.js';
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { completeResult } from './internal/calculation-result.js';
 import {
@@ -315,143 +311,9 @@ export interface SlefExportOptions extends LoadoutExportOptions {
 /** Insurance rebuy is a flat 5% of the hull-plus-modules value, truncated. */
 const REBUY_FRACTION = 0.05;
 
-/** Top-level figures a SLEF export carries, trusted over the computed fallbacks. */
-interface TopFigures {
-    ShipName?: string;
-    ShipIdent?: string;
-    HullValue?: number;
-    ModulesValue?: number;
-    Rebuy?: number;
-    UnladenMass?: number;
-    CargoCapacity?: number;
-    FuelCapacity?: { Main?: number; Reserve?: number };
-}
-
 const FSD_PREFIX = 'int_hyperdrive';
 const BOOSTER_PREFIX = 'int_guardianfsdbooster';
 const FUEL_TANK_PREFIX = 'int_fueltank';
-
-/** Optional-internal groups a military slot accepts (symbol prefixes). */
-const MILITARY_PREFIXES: readonly string[] = [
-    'int_hullreinforcement',
-    'int_metaalloyhullreinforcement',
-    'int_modulereinforcement',
-    'int_shieldcellbank',
-    'int_guardianhullreinforcement',
-    'int_guardianmodulereinforcement',
-    'int_guardianshieldreinforcement',
-];
-
-/**
- * Weapon groups a **mining** hardpoint accepts (symbol prefixes) — the Type-11
- * Prospector's four mining mounts.
- *
- * @remarks
- * The Sub-Surface Extraction Missile is here because both source registries file it
- * with the displacement missile it is a variant of, despite its unrelated symbol.
- * The Pulse Wave Analyser, which coriolis-data also lists as eligible, is not: it is
- * a utility fitting, and no utility module fits a hardpoint of any kind.
- */
-const MINING_PREFIXES: readonly string[] = [
-    'hpt_mininglaser', // Mining Laser, Mining Lance
-    'hpt_mining_abrblstr', // Abrasion Blaster
-    'hpt_mining_seismchrgwarhd', // Seismic Charge Launcher
-    'hpt_mining_subsurfdispmisle', // Sub-Surface Displacement Missile
-    'hpt_human_extraction', // Sub-Surface Extraction Missile
-    'hpt_miningtoolv2', // Mining Volley Repeater
-];
-
-/**
- * Optional-internal groups a **cargo** slot accepts (symbol prefixes) — the Panther
- * Clipper Mk II's `Cargo01` and `Cargo02`, which are its first size-8 and first size-7
- * mounts rather than its two largest. A fuel tank counts, as it does everywhere.
- */
-const CARGO_PREFIXES: readonly string[] = [
-    'int_cargorack',
-    'int_largecargorack',
-    'int_corrosionproofcargorack',
-    'int_fueltank',
-];
-
-/**
- * Optional-internal groups a **limpet-controller** slot accepts (symbol prefixes) —
- * the Type-11 Prospector's size-5 controller mount. Both prefixes are needed: the
- * multi-limpet controllers are a separate family, not a `DroneControl` variant.
- */
-const LIMPET_CONTROLLER_PREFIXES: readonly string[] = ['int_dronecontrol', 'int_multidronecontrol'];
-
-/**
- * Optional-internal groups a **vessel-hangar** slot accepts (symbol prefixes) — the
- * Type-11 Prospector's size-5 hangar mount. The one prefix covers the Mk I and Mk II
- * bays alike; the game renamed them from fighter hangars but kept the symbols.
- */
-const VESSEL_HANGAR_PREFIXES: readonly string[] = ['int_fighterbay'];
-
-/**
- * Optional-internal groups a **passenger** slot accepts (symbol prefixes) — the Lynx
- * Highliner's `Passenger01`–`Passenger03`. Both cabin families count, at every class
- * each offers (economy through luxury for the Mk I cabins, economy and business for
- * the Mk II ones); the Mk II cabins are a separate symbol family rather than a
- * `PassengerCabin` variant, which is why there are two prefixes and not one.
- */
-const PASSENGER_PREFIXES: readonly string[] = ['int_passengercabin', 'int_mkii_passengercabin'];
-
-/**
- * Optional-internal groups a **planetary-approach-suite** slot accepts (symbol
- * prefixes) — the ordinary suite and the advanced one, and nothing else. This is the
- * restriction that binds both ways: the suites in turn declare
- * `restrictedToSlot: 'planetaryApproachSuite'`, so neither half is a special case.
- */
-const PLANETARY_APPROACH_PREFIXES: readonly string[] = ['int_planetapproachsuite'];
-
-/**
- * Slot restriction → the module symbol prefixes it accepts.
- *
- * @remarks
- * This is the **mount's** half of a restriction: which modules it takes. The
- * module's half — which mounts a module goes in, when it goes in only one kind — is
- * {@link OutfittingModule.restrictedToSlot}, carried by the catalogue rather than
- * listed here. What each restriction accepts *in words* is not repeated either: the
- * refusal message is built from the exported {@link SLOT_RESTRICTION_LABELS}, so a
- * label an app shows and the error it may have to explain cannot drift apart.
- */
-const RESTRICTED_SLOT_PREFIXES: Record<SlotRestriction, readonly string[]> = {
-    mining: MINING_PREFIXES,
-    military: MILITARY_PREFIXES,
-    cargo: CARGO_PREFIXES,
-    limpetController: LIMPET_CONTROLLER_PREFIXES,
-    vesselHangar: VESSEL_HANGAR_PREFIXES,
-    passenger: PASSENGER_PREFIXES,
-    planetaryApproachSuite: PLANETARY_APPROACH_PREFIXES,
-};
-
-/**
- * Why a module symbol fails a slot's restriction, or `null` if it satisfies it (or
- * the slot has none).
- */
-function restrictionError(slot: BuildSlot, symbol: string): string | null {
-    const restriction = slot.restriction;
-    if (!restriction) return null;
-    if (RESTRICTED_SLOT_PREFIXES[restriction].some((prefix) => symbol.startsWith(prefix))) {
-        return null;
-    }
-    return `slot only takes ${SLOT_RESTRICTION_LABELS[restriction]}`;
-}
-
-/**
- * Why a module's own {@link OutfittingModule.restrictedToSlot} refuses `slot`, or
- * `null` if it is satisfied (or the module requires no particular mount).
- *
- * @remarks
- * The message names the mount the module *does* fit rather than what the mount it was
- * offered takes, because that is the half a caller got wrong: they have a Mk II Cargo
- * Rack in hand and need to be told it goes in a cargo mount.
- */
-function moduleSlotError(slot: BuildSlot, module: OutfittingModule): string | null {
-    const required = module.restrictedToSlot;
-    if (!required || slot.restriction === required) return null;
-    return `module only fits a mount that takes ${SLOT_RESTRICTION_LABELS[required]}`;
-}
 
 /**
  * A fitted ship — read a SLEF export, or assemble a hull from scratch.
@@ -466,7 +328,7 @@ function moduleSlotError(slot: BuildSlot, module: OutfittingModule): string | nu
 export class ShipLoadout {
     readonly #shipSymbol: string;
     readonly #modules: Map<string, LoadoutModule>;
-    readonly #moduleStats = new Map<string, OutfittingModule>();
+    readonly #moduleStats: Map<string, OutfittingModule>;
     readonly #top: TopFigures;
     readonly #sourcePurchase: SourcePurchaseRecord | null;
     /**
@@ -497,11 +359,13 @@ export class ShipLoadout {
         modules: Map<string, LoadoutModule>,
         top: TopFigures,
         sourcePurchase: SourcePurchaseRecord | null = null,
+        moduleStats = new Map<string, OutfittingModule>(),
     ) {
         this.#shipSymbol = shipSymbol;
         this.#modules = modules;
         this.#top = top;
         this.#sourcePurchase = sourcePurchase;
+        this.#moduleStats = moduleStats;
     }
 
     /**
@@ -552,67 +416,14 @@ export class ShipLoadout {
      * {@link sourcePurchase} record, which no edit touches.
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
-        const modules = new Map<string, LoadoutModule>();
-        const slots = new Set<string>();
-        for (const m of event.Modules) {
-            const normalizedSlot = m.Slot.toLowerCase();
-            if (slots.has(normalizedSlot)) {
-                throw new TypeError(`ShipLoadout.fromLoadout: duplicate slot "${m.Slot}"`);
-            }
-            slots.add(normalizedSlot);
-            modules.set(m.Slot, cloneLoadoutModule(m));
-        }
-        const top: TopFigures = {};
-        if (event.ShipName !== undefined) top.ShipName = event.ShipName;
-        if (event.ShipIdent !== undefined) top.ShipIdent = event.ShipIdent;
-        if (event.HullValue !== undefined) top.HullValue = event.HullValue;
-        if (event.ModulesValue !== undefined) top.ModulesValue = event.ModulesValue;
-        if (event.Rebuy !== undefined) top.Rebuy = event.Rebuy;
-        if (event.UnladenMass !== undefined) top.UnladenMass = event.UnladenMass;
-        if (event.CargoCapacity !== undefined) top.CargoCapacity = event.CargoCapacity;
-        if (event.FuelCapacity !== undefined) top.FuelCapacity = { ...event.FuelCapacity };
-        const loadout = new ShipLoadout(
-            event.Ship,
-            modules,
-            top,
-            SourcePurchaseRecord.fromLoadout(event),
+        const imported = normalizeLoadoutEvent(event);
+        return new ShipLoadout(
+            imported.shipSymbol,
+            imported.modules,
+            imported.top,
+            imported.sourcePurchase,
+            imported.moduleStats,
         );
-        // A reward has no distinct module symbol. Identify its hand-set stat signature so
-        // derived and newly established values absent from the capture still come from the
-        // right article; the capture's own modifiers remain authoritative when present.
-        // Guardian weapons retain the recipe-based fallback because captures without a
-        // modifier block can still prove that their bought article is final.
-        for (const module of modules.values()) {
-            const engineering = module.Engineering;
-            const variant = identifyPreEngineeredVariant(module);
-            const variantStats = variant ? getPreEngineeredStats(variant) : null;
-            if (variantStats) loadout.#moduleStats.set(module.Slot, cloneModuleStats(variantStats));
-            if (
-                variantStats?.engineeringLocked ||
-                !engineering ||
-                !isFinalGuardianWeaponEngineering(module.Item, engineering.BlueprintName)
-            )
-                continue;
-            const normalizedBlueprint = engineering.BlueprintName.trim().toLowerCase();
-            const normalizedExperimental = engineering.ExperimentalEffect?.trim().toLowerCase();
-            const exact = getPreEngineeredVariants(module.Item).find(
-                (candidate) =>
-                    candidate.blueprint.toLowerCase() === normalizedBlueprint &&
-                    candidate.grade === engineering.Level &&
-                    candidate.experimental?.toLowerCase() === normalizedExperimental,
-            );
-            const stats = exact ? getPreEngineeredStats(exact) : statFor(module.Item);
-            if (stats)
-                loadout.#moduleStats.set(
-                    module.Slot,
-                    cloneModuleStats({ ...stats, engineeringLocked: true }),
-                );
-        }
-        // Nothing above reads a derived view, so no cache can have been filled yet.
-        // This holds the invariant rather than fixing a fault: every write to
-        // `#modules` or `#moduleStats` moves the version, with no exception to carry.
-        loadout.#invalidate();
-        return loadout;
     }
 
     /**
@@ -847,7 +658,10 @@ export class ShipLoadout {
                 symbol: module.Item,
                 known: stats !== null || builtIn,
                 requiresKnownSlot: !builtIn,
-                fitError: stats && slot && !builtIn ? this.#fitError(slot, stats) : null,
+                fitError:
+                    stats && slot && !builtIn
+                        ? moduleFitError(this.#shipSymbol, slot, stats)
+                        : null,
             };
         });
         const value = validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
@@ -1011,7 +825,9 @@ export class ShipLoadout {
      */
     modulesForSlot(slotKey: string, catalogue: readonly OutfittingModule[]): OutfittingModule[] {
         const slot = this.#requireSlot(slotKey);
-        return catalogue.filter((m) => this.#fitError(slot, m) === null);
+        return catalogue.filter(
+            (module) => moduleFitError(this.#shipSymbol, slot, module) === null,
+        );
     }
 
     /**
@@ -1046,7 +862,7 @@ export class ShipLoadout {
                 `ShipLoadout.setModule: no module supplied for "${slotKey}" (did the module lookup return undefined?)`,
             );
         }
-        const problem = this.#fitError(slot, module);
+        const problem = moduleFitError(this.#shipSymbol, slot, module);
         if (problem) {
             throw new TypeError(`ShipLoadout.setModule: ${module.symbol} → ${slotKey}: ${problem}`);
         }
@@ -1921,86 +1737,6 @@ export class ShipLoadout {
     #fittedKey(slotKey: string): string | null {
         if (this.#modules.has(slotKey)) return slotKey;
         return firstKeyMatchingCase(this.#modules.keys(), slotKey);
-    }
-
-    /** Why `module` cannot go in `slot`, or `null` if it fits. */
-    #fitError(slot: BuildSlot, module: OutfittingModule): string | null {
-        if (slot.kind === 'cargoHatch') {
-            return 'the cargoHatch slot cannot be changed';
-        }
-        if (slot.kind === 'armour') {
-            const hull = getShipBySymbol(this.#shipSymbol);
-            if (module.slot !== 'armour' || module.ship === undefined) {
-                return 'not a ship armour module';
-            }
-            if (!hull || module.ship.toLowerCase() !== hull.name.toLowerCase()) {
-                return `armour belongs to ${module.ship}, not ${hull?.name ?? this.#shipSymbol}`;
-            }
-            return null; // armour size is hull-specific rather than slot-sized
-        }
-        // A module restricted to another hull never fits. The registry's `ship`
-        // field is unreliable here (a "None" sentinel on these modules), so use
-        // the normalized stats field carried by the module record itself.
-        const restricted = module.restrictedToShips;
-        if (
-            restricted &&
-            !restricted.some((s) => s.toLowerCase() === this.#shipSymbol.toLowerCase())
-        ) {
-            // Name the hulls the way a player would recognise them, keeping the
-            // symbol so the message is still greppable against journal data.
-            const hulls = restricted.map((s) => {
-                const hull = getShipBySymbol(s);
-                return hull ? `${hull.name} (${s})` : s;
-            });
-            return `module is restricted to ${hulls.join(', ')}`;
-        }
-        // The other half of the same idea: a module the game sells for one kind of
-        // mount fits no other, restricted or not. Checked before the per-kind rules
-        // because it holds whatever kind of mount is on offer.
-        const wrongMount = moduleSlotError(slot, module);
-        if (wrongMount) return wrongMount;
-        const sym = module.symbol.toLowerCase();
-        // The mount the record says it fills. Reading it beats classifying the symbol:
-        // it is right for the Guardian power modules, which fill a core mount while the
-        // registry files them under `internal`, and for a hull-specific thruster whose
-        // symbol shares no prefix with any other (`Int_MkIIAgileBoost_*`).
-        const moduleSlot = module.slot;
-
-        switch (slot.kind) {
-            case 'core': {
-                if (moduleSlot !== slot.core) return `not a ${slot.core} module`;
-                break;
-            }
-            case 'hardpoint': {
-                if (module.category !== 'hardpoint') return 'not a hardpoint weapon';
-                const restricted = restrictionError(slot, sym);
-                if (restricted) return restricted;
-                break;
-            }
-            case 'utility': {
-                if (module.category !== 'utility') return 'not a utility module';
-                return null; // utility mounts are all the same tiny size
-            }
-            case 'optional': {
-                const isFuelTank = moduleSlot === 'fuelTank';
-                if (module.category !== 'internal' && !isFuelTank) {
-                    return 'not an optional-internal module';
-                }
-                // A module built for a fixed mount belongs in that mount — except a
-                // fuel tank, the one that fits an optional slot as well as its own.
-                if (moduleSlot && !isFuelTank) {
-                    return 'a core module only fits its core slot';
-                }
-                const restricted = restrictionError(slot, sym);
-                if (restricted) return restricted;
-                break;
-            }
-        }
-
-        if (module.class > slot.size) {
-            return `module size ${module.class} exceeds slot size ${slot.size}`;
-        }
-        return null;
     }
 
     /** Unladen mass plus the given cargo, or throw if the mass is unknown. */
