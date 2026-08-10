@@ -28,6 +28,7 @@ import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' w
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
+import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.json' with { type: 'json' };
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
 import deepBlackSlef from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 
@@ -58,6 +59,7 @@ const CAPTURES: readonly { file: string; loadouts: readonly LoadoutEvent[] }[] =
     { file: 'journal-krait-phantom.json', loadouts: [kraitJournal as LoadoutEvent] },
     { file: 'journal-lynx-highliner.json', loadouts: [lynxJournal as LoadoutEvent] },
     { file: 'journal-python-mkii-antixeno.json', loadouts: [pythonJournal as LoadoutEvent] },
+    { file: 'journal-python-mkii-spire-ops.json', loadouts: [spireOpsJournal as LoadoutEvent] },
     { file: 'journal-viper-mkiv.json', loadouts: [viperJournal as LoadoutEvent] },
     { file: 'slef-the-deep-black.json', loadouts: parseSlef(deepBlackSlef).map((e) => e.data) },
 ];

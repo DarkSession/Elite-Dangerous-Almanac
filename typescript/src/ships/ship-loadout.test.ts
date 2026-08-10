@@ -21,6 +21,7 @@ import cobraMkVJournal from '../../../fixtures/ships/journal-cobra-mkv.json' wit
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import kestrelMkIIJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
 import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.json' with { type: 'json' };
+import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.json' with { type: 'json' };
 import cutterCapture from '../../../fixtures/ships/slef-inara-cutter-antixeno.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
@@ -2283,6 +2284,85 @@ test('the Corsair reproduces the externally observed in-game build totals', () =
             kinetic: displayed(armour.resistances.kinetic, 2),
             thermal: displayed(armour.resistances.thermal, 2),
             explosive: displayed(armour.resistances.explosive, 2),
+        },
+        expected.armour.resistances,
+    );
+});
+
+test('Spire Ops reproduces the observed totals except the Guardian shard offense', () => {
+    const expected = metrics.inGame.spireOps;
+    const event = spireOpsJournal as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+    assert.equal(build.shipName, '[KAXF] Spire Ops');
+
+    assert.equal(
+        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        expected.jumpRange.fullTank,
+    );
+
+    const installedBuild = withAllModulesEnabled(event);
+    const power = installedBuild.powerBudget();
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.available, 2), expected.power.available);
+    assert.equal(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 2), expected.power.deployed);
+
+    const weapons = installedBuild.weaponMetrics();
+    assert.equal(
+        displayed(weapons.total.damagePerSecond, 1),
+        expected.offense.calculatedDamagePerSecond,
+    );
+    assert.notEqual(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    const offensePanelTotals = installedBuild.hardpoints().reduce(
+        (totals, slot) => ({
+            distributorDraw:
+                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
+            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
+        }),
+        { distributorDraw: 0, thermalLoad: 0 },
+    );
+    assert.equal(
+        displayed(offensePanelTotals.distributorDraw, 1),
+        expected.offense.calculatedDistributorDraw,
+    );
+    assert.notEqual(
+        displayed(offensePanelTotals.distributorDraw, 1),
+        expected.offense.distributorDraw,
+    );
+    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+
+    const shields = build.shieldMetrics()!;
+    assert.equal(displayed(shields.strength, 1), expected.shields.strength);
+    assert.deepEqual(
+        {
+            kinetic: displayed(shields.resistances.kinetic, 3),
+            thermal: displayed(shields.resistances.thermal, 3),
+            explosive: displayed(shields.resistances.explosive, 3),
+        },
+        expected.shields.resistances,
+    );
+    const generator = build.getFittedModule('Slot02_Size4')!.effectiveStats!;
+    assert.equal(displayed(generator.shieldRegenRate!, 1), expected.shields.regeneration.standard);
+    assert.equal(
+        displayed(generator.shieldBrokenRegenRate!, 1),
+        expected.shields.regeneration.broken,
+    );
+
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
+    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 3),
+            thermal: displayed(armour.resistances.thermal, 3),
+            explosive: displayed(armour.resistances.explosive, 3),
         },
         expected.armour.resistances,
     );

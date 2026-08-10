@@ -286,7 +286,7 @@ in the doc comment of each ported module, and in long form in the domain
   field-by-field joins, the units each source uses, and the handful of figures derived
   from a family rule rather than read from a registry.
 
-- **Ground-truth ship builds (test fixtures, not shipped)** — eighteen real builds that
+- **Ground-truth ship builds (test fixtures, not shipped)** — nineteen real builds that
   check the loadout maths against external captures.
   `fixtures/ships/slef-the-deep-black.json` is a real
   [EDSY](https://edsy.org/) export (taleden, **CC BY-NC 4.0**).
@@ -303,7 +303,8 @@ in the doc comment of each ported module, and in long form in the domain
   from its example data, which travels under Frontier's media-usage terms below like every
   other build here. Credit to UFO Studios & AW2C Systems Ltd for capturing and publishing
   the log. No code from that project is used.
-  `fixtures/ships/journal-python-mkii-antixeno.json`, `journal-corsair.json`,
+  `fixtures/ships/journal-python-mkii-antixeno.json`,
+  `journal-python-mkii-spire-ops.json`, `journal-corsair.json`,
   `journal-federation-corvette.json`, `journal-federation-corvette-beams.json`,
   `journal-federation-corvette-multirole.json`, `journal-federation-corvette-mixed.json`,
   `journal-federation-corvette-plasma.json`, `journal-cobra-mkv.json`,
@@ -314,15 +315,16 @@ in the doc comment of each ported module, and in long form in the domain
   cannon's clip, the plasma Corvette what says the same for a fragment cannon and the
   Caspian Explorer what says it for a plasma accelerator, the
   mixed Corvette settles that a rail gun's charge delay is excluded from Frontier's
-  `RateOfFire`, and ten of them — every one but the unengineered Python Mk II — together
+  `RateOfFire`, and eleven of them — every one but the unengineered Python Mk II — together
   with the Krait Phantom capture and the EDSY export are what the module catalogue's base
   stats are checked against. The beam-heavy Corvette, Cobra Mk V, Kestrel Mk II, The Deep
-  Black, Lynx Highliner, Panther Clipper Mk II and Corsair also have directly observed
-  in-game statistics-panel readings for jump, power, speed, mass, shield and armour
-  figures. The Cobra, Kestrel, Lynx, Panther and Corsair observations add combined-weapon
-  output, while The Deep Black records the weaponless panel. The Panther observation is a later refit than its
-  same-named SLEF capture, so the two are preserved separately. The Kestrel's separately
-  observed name is recorded without rewriting the older unnamed capture. They are pinned in
+  Black, Lynx Highliner, Panther Clipper Mk II, Corsair and Spire Ops also have directly
+  observed in-game statistics-panel readings for jump, power, speed, mass, shield and
+  armour figures. The Cobra, Kestrel, Lynx, Panther, Corsair and Spire Ops observations add
+  combined-weapon output, while The Deep Black records the weaponless panel. The Panther
+  observation is a later refit than its same-named SLEF capture, so the two are preserved
+  separately. The Kestrel's separately observed name is recorded without rewriting the
+  older unnamed capture. They are pinned in
   `fixtures/ships/build-metrics.json`. The Caspian Explorer is also the only capture of a
   scoop-rate roll, and is what says Frontier writes that stat as `FuelScoopRate` where
   the recipe says `RefuelRate`. The Lynx capture also supplies that hull's size-1

@@ -7,10 +7,13 @@ import { ammunitionCapacity } from './ammunition.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { ShipLoadout } from './ship-loadout.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
+import { getPreEngineeredStats } from './pre-engineered-stats.js';
 import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
+import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
@@ -42,6 +45,7 @@ const JOURNALS = [
     ['journal-krait-phantom.json', kraitJournal],
     ['journal-viper-mkiv.json', viperJournal],
     ['journal-python-mkii-antixeno.json', pythonJournal],
+    ['journal-python-mkii-spire-ops.json', spireOpsJournal],
     ['journal-corsair.json', corsairJournal],
     ['journal-federation-corvette.json', corvetteJournal],
     ['journal-federation-corvette-beams.json', corvetteBeamsJournal],
@@ -221,8 +225,8 @@ test('a build reports the capacity of every weapon it carries', () => {
 });
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
-    // A rearm state is a lower bound on a capacity, never a reading of one. All 60 counts
-    // across the thirteen captures happen to sit at capacity — that is what makes them a
+    // A rearm state is a lower bound on a capacity, never a reading of one. All 69 counts
+    // across the fourteen captures happen to sit at capacity — that is what makes them a
     // check on the catalogue — but a partly spent launcher would report less and say
     // nothing.
     const pinned = fixture.ammunition.journalReadings;
@@ -315,12 +319,20 @@ test("Frontier's own engineered ammunition figures, against what this library co
         assert.equal(record.ammoMaximum, pinned.base.ammoMaximum, `${label}: base reserve`);
 
         const simulated = ShipLoadout.empty(pinned.ship);
-        simulated.setModule(pinned.slot, record);
-        simulated.getFittedModule(pinned.slot)!.applyBlueprint(pinned.blueprint, {
-            grade: pinned.grade,
-            quality: pinned.quality,
-            ...(pinned.experimental ? { experimental: pinned.experimental } : {}),
-        });
+        if ('preEngineered' in pinned && pinned.preEngineered) {
+            const variant = getPreEngineeredVariants(pinned.symbol).find(
+                (candidate) => candidate.blueprint === pinned.blueprint,
+            );
+            assert.ok(variant, `${label}: missing pre-engineered variant`);
+            simulated.setModule(pinned.slot, getPreEngineeredStats(variant)!);
+        } else {
+            simulated.setModule(pinned.slot, record);
+            simulated.getFittedModule(pinned.slot)!.applyBlueprint(pinned.blueprint, {
+                grade: pinned.grade,
+                quality: pinned.quality,
+                ...(pinned.experimental ? { experimental: pinned.experimental } : {}),
+            });
+        }
         const rolled = simulated.getFittedModule(pinned.slot)!.ammunition!;
         assert.equal(
             rolled.clipSize,

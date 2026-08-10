@@ -2035,6 +2035,14 @@
         ]
       },
       {
+        "file": "journal-python-mkii-spire-ops.json",
+        "stated": 58,
+        "mapped": 58,
+        "exact": 46,
+        "withinFloatNoise": 12,
+        "unmapped": []
+      },
+      {
         "file": "slef-the-deep-black.json",
         "stated": 35,
         "mapped": 35,
@@ -2118,7 +2126,7 @@
         "damagePerSecond": 179.099991
       }
     ],
-    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the thirteen is 9.8e-5 t of mass and 6.3e-6 ly — and not a margin for disagreement.",
+    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the fourteen is 9.8e-5 t of mass and 6.3e-6 ly — and not a margin for disagreement.",
     "rebuildTolerance": 0.0001,
     "rebuilds": [
       {
@@ -2180,6 +2188,11 @@
         "file": "journal-python-mkii-antixeno.json",
         "unladenMass": 699,
         "maxJumpRange": 17.495169
+      },
+      {
+        "file": "journal-python-mkii-spire-ops.json",
+        "unladenMass": 773,
+        "maxJumpRange": 25.519737
       },
       {
         "file": "journal-viper-mkiv.json",
@@ -2580,6 +2593,20 @@
         "symbol": "Int_ShieldGenerator_Size5_Class5_Strong",
         "field": "optMultiplier",
         "value": 2.19419983
+      },
+      {
+        "file": "journal-python-mkii-spire-ops.json",
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size5_Class2",
+        "field": "scannerRange",
+        "value": 9135
+      },
+      {
+        "file": "journal-python-mkii-spire-ops.json",
+        "slot": "Slot02_Size4",
+        "symbol": "Int_ShieldGenerator_Size4_Class3_Fast",
+        "field": "optMultiplier",
+        "value": 1.24199997
       },
       {
         "file": "slef-the-deep-black.json",
