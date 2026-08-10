@@ -75,12 +75,9 @@ import {
 import { getShipBySymbol, getShipSlots } from './ships.js';
 import { enumerateSlots, parseSlotName, type BuildSlot, type SlotKind } from './slots.js';
 import { computeModifiers } from './engineering.js';
-import { getBlueprintGrade, getBlueprintGradeDamageDistribution } from './blueprints.js';
+import { getBlueprintGrade } from './blueprints.js';
 import { isDecorativeModification } from './decorative-modifications.js';
-import {
-    getExperimentalEffect,
-    getExperimentalEffectDamageDistribution,
-} from './experimental-effects.js';
+import { getExperimentalEffect } from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
@@ -968,8 +965,8 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; no engineer applies one, and the stat changes it arrives with are in DECORATIVE_MODIFICATIONS`,
             );
         }
-        const features = getBlueprintGrade(recipe, options.grade);
-        if (!features) {
+        const grade = getBlueprintGrade(recipe, options.grade);
+        if (!grade) {
             throw new RangeError(
                 `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${options.grade}`,
             );
@@ -1015,23 +1012,17 @@ export class ShipLoadout {
             );
         }
         const base = baseStats(stats);
-        const missing = missingBaseLabels(stats, base, features, experimental);
+        const missing = missingBaseLabels(stats, base, grade.features, experimental?.modifiers);
         if (missing.length > 0) {
             throw new TypeError(
                 `ShipLoadout.applyBlueprint: cannot compute ${named} for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
             );
         }
-        const experimentalDamageDistribution =
-            options.experimental === undefined
-                ? null
-                : getExperimentalEffectDamageDistribution(options.experimental);
         // A converting experimental supersedes a blueprint conversion, just as it
         // supersedes the stock split. Both catalogue shapes feed the same journal-label
         // synthesis below.
-        const damageDistribution =
-            experimentalDamageDistribution ??
-            getBlueprintGradeDamageDistribution(recipe, options.grade);
-        const modifiers = computeModifiers(base, features, quality, experimental);
+        const damageDistribution = experimental?.damageDistribution ?? grade.damageDistribution;
+        const modifiers = computeModifiers(base, grade, quality, experimental);
         if (damageDistribution) {
             for (const type of ['kinetic', 'thermal', 'explosive', 'absolute'] as const) {
                 const value = damageDistribution[type];

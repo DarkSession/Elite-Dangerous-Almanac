@@ -1,15 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-    BLUEPRINTS,
-    getBlueprint,
-    getBlueprintName,
-    getBlueprintGrade,
-    getBlueprintGradeDamageDistribution,
-    getBlueprintGradeMaterials,
-    getBlueprintCost,
-} from './blueprints.js';
+import { BLUEPRINTS, getBlueprint, getBlueprintGrade, getBlueprintCost } from './blueprints.js';
 import { getMaterialBySymbol } from '../materials/materials.js';
 import { ALL_MATERIALS } from '../materials/materials-all.js';
 
@@ -20,11 +12,14 @@ test('every blueprint carries a display name and grades', () => {
     }
 });
 
-test('getBlueprintName resolves case-insensitively and misses cleanly', () => {
-    assert.equal(getBlueprintName('FSD_LongRange'), 'Increased range');
-    assert.equal(getBlueprintName('fsd_longrange'), 'Increased range');
-    assert.equal(getBlueprintName('recipe_guardianmodule_sturdy'), 'Anti-Guardian Zone Resistance');
-    assert.equal(getBlueprintName('nope'), null);
+test('getBlueprint resolves case-insensitively and misses cleanly', () => {
+    assert.equal(getBlueprint('FSD_LongRange')?.name, 'Increased range');
+    assert.equal(getBlueprint('fsd_longrange')?.name, 'Increased range');
+    assert.equal(
+        getBlueprint('recipe_guardianmodule_sturdy')?.name,
+        'Anti-Guardian Zone Resistance',
+    );
+    assert.equal(getBlueprint('nope'), null);
 });
 
 test('Anti-Guardian Zone Resistance resolves identically under all three of its keys', () => {
@@ -41,10 +36,10 @@ test('Anti-Guardian Zone Resistance resolves identically under all three of its 
         assert.ok(bp, `${key} is missing`);
         assert.equal(bp.name, 'Anti-Guardian Zone Resistance');
         assert.deepEqual(Object.keys(bp.grades), ['1'], `${key} is grade 1 only`);
-        assert.deepEqual(getBlueprintGrade(key, 1), [
+        assert.deepEqual(getBlueprintGrade(key, 1)?.features, [
             { label: 'GuardianModuleResistance', method: 'additive', min: 1, max: 1 },
         ]);
-        assert.deepEqual(getBlueprintGradeMaterials(key, 1), [
+        assert.deepEqual(getBlueprintGrade(key, 1)?.materials, [
             { symbol: 'tg_abrasion03', name: 'Hardened Surface Fragments', count: 2 },
             { symbol: 'tg_causticcrystal', name: 'Caustic Crystal', count: 1 },
         ]);
@@ -65,34 +60,25 @@ test('every grade carries both its features and its materials', () => {
     }
 });
 
-test('getBlueprintGrade returns the grade features; getBlueprintGradeMaterials the recipe', () => {
-    const features = getBlueprintGrade('FSD_LongRange', 5);
-    assert.ok(features && features.some((f) => f.label === 'FSDOptimalMass'));
-    const materials = getBlueprintGradeMaterials('FSD_LongRange', 5);
-    assert.deepEqual(materials, [
+test('getBlueprintGrade returns the complete grade record', () => {
+    const grade = getBlueprintGrade('FSD_LongRange', 5);
+    assert.ok(grade?.features.some((feature) => feature.label === 'FSDOptimalMass'));
+    assert.deepEqual(grade?.materials, [
         { symbol: 'Arsenic', name: 'Arsenic', count: 1 },
         { symbol: 'ChemicalManipulators', name: 'Chemical Manipulators', count: 1 },
         { symbol: 'DataminedWake', name: 'Datamined Wake Exceptions', count: 1 },
     ]);
 });
 
-test('getBlueprintGradeDamageDistribution returns only converted blueprint grades', () => {
-    assert.deepEqual(getBlueprintGradeDamageDistribution('beamlaser_thermalplasmaconversion', 5), {
-        thermal: 0.845,
-        absolute: 0.155,
-    });
-    assert.equal(getBlueprintGradeDamageDistribution('FSD_LongRange', 5), null);
-    assert.equal(getBlueprintGradeDamageDistribution('nope', 5), null);
-    assert.equal(getBlueprintGradeDamageDistribution('BeamLaser_ThermalPlasmaConversion', 9), null);
-});
-
-test('getBlueprintGradeMaterials resolves case-insensitively and misses cleanly', () => {
+test('getBlueprintGrade resolves case-insensitively and misses cleanly', () => {
+    assert.deepEqual(getBlueprintGrade('fsd_longrange', 5), getBlueprintGrade('FSD_LongRange', 5));
+    assert.equal(getBlueprintGrade('nope', 5), null);
+    assert.equal(getBlueprintGrade('FSD_LongRange', 9), null);
     assert.deepEqual(
-        getBlueprintGradeMaterials('fsd_longrange', 5),
-        getBlueprintGradeMaterials('FSD_LongRange', 5),
+        getBlueprintGrade('beamlaser_thermalplasmaconversion', 5)?.damageDistribution,
+        { thermal: 0.845, absolute: 0.155 },
     );
-    assert.equal(getBlueprintGradeMaterials('nope', 5), null);
-    assert.equal(getBlueprintGradeMaterials('FSD_LongRange', 9), null);
+    assert.equal(getBlueprintGrade('FSD_LongRange', 5)?.damageDistribution, undefined);
 });
 
 test('every material requirement joins to a real material in the materials domain', () => {
@@ -125,7 +111,7 @@ test('no grade lists a material twice', () => {
 });
 
 test('the one empty recipe (CargoRack_IncreasedCapacity G5) is preserved as [] not null', () => {
-    assert.deepEqual(getBlueprintGradeMaterials('CargoRack_IncreasedCapacity', 5), []);
+    assert.deepEqual(getBlueprintGrade('CargoRack_IncreasedCapacity', 5)?.materials, []);
     // It is the only empty recipe across the whole catalogue.
     const empties = Object.entries(BLUEPRINTS).flatMap(([fd, { grades }]) =>
         Object.entries(grades)
@@ -147,7 +133,7 @@ const countFor = (mats: readonly { symbol: string; count: number }[] | null, sym
 test('getBlueprintCost for grade 1 is just one roll of the grade-1 recipe', () => {
     assert.deepEqual(
         getBlueprintCost('FSD_LongRange', 1),
-        getBlueprintGradeMaterials('FSD_LongRange', 1),
+        getBlueprintGrade('FSD_LongRange', 1)?.materials,
     );
 });
 
@@ -168,7 +154,7 @@ test('getBlueprintCost charges only the grades above currentGrade', () => {
     // Already at G4: only G5 remains (5 rolls of the grade-5 recipe).
     assert.deepEqual(
         getBlueprintCost('FSD_LongRange', 5, 4),
-        getBlueprintGradeMaterials('FSD_LongRange', 5)!.map((m) => ({
+        getBlueprintGrade('FSD_LongRange', 5)!.materials.map((m) => ({
             symbol: m.symbol,
             name: m.name,
             count: m.count * 5,

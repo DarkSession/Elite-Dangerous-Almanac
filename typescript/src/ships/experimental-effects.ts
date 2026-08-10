@@ -5,10 +5,9 @@
  *
  * Its own module (and data file) so consumers who never engineer a build do not bundle
  * it. Each effect is an {@link ExperimentalEffect} — its `modifiers` (pass to
- * {@link computeModifiers} alongside a blueprint grade, or read via
- * {@link getExperimentalEffect}), optional fixed damage-type conversion (read via
- * {@link getExperimentalEffectDamageDistribution}), and its `materials` (what one
- * application costs, via {@link getExperimentalEffectMaterials}).
+ * {@link computeModifiers} alongside a blueprint grade), optional fixed damage-type
+ * conversion, and its `materials` (what one application costs). Read the complete record
+ * with {@link getExperimentalEffect}.
  *
  * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
  * `Engineering.ExperimentalEffect` (e.g. `"special_fsd_heavy"`), not the in-game
@@ -22,12 +21,7 @@
 
 import experimentalData from '../../../data/ships/experimental-effects.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
-import type { DamageDistribution } from './modules.js';
-import type {
-    ExperimentalContribution,
-    ExperimentalEffect,
-    EngineeringMaterial,
-} from './engineering.js';
+import type { ExperimentalEffect } from './engineering.js';
 
 /**
  * Every experimental effect, keyed by Frontier `fdname` (e.g. `"special_fsd_heavy"`).
@@ -46,69 +40,20 @@ export const EXPERIMENTAL_EFFECTS: Readonly<Record<string, ExperimentalEffect>> 
 );
 
 /**
- * Look up an experimental effect's stat modifiers by its Frontier `fdname`,
- * case-insensitively — what it changes, ready for {@link computeModifiers}.
+ * Look up a complete experimental effect by its Frontier `fdname`, case-insensitively.
  *
  * @param fdname - The effect id, e.g. `"special_fsd_heavy"`.
- * @returns The effect's modifier contributions, or `null` if unknown.
- */
-export function getExperimentalEffect(fdname: string): readonly ExperimentalContribution[] | null {
-    return resolveEffect(fdname)?.modifiers ?? null;
-}
-
-/**
- * Look up the fixed damage-type split an experimental effect applies, by its Frontier
- * `fdname`, case-insensitively.
- *
- * @param fdname - The effect id, e.g. `"special_high_yield_shell"`.
- * @returns The resulting fractional damage distribution, or `null` when the effect is
- * unknown or does not convert damage.
+ * @returns The effect record — its display `name`, modifier contributions, optional
+ * `damageDistribution`, and material recipe — or `null` if unknown.
  * @example
  * ```ts
- * getExperimentalEffectDamageDistribution('special_high_yield_shell');
- * // -> { kinetic: 0.5, explosive: 0.5 }
+ * const effect = getExperimentalEffect('special_fsd_heavy');
+ * effect?.name;      // -> 'Mass Manager'
+ * effect?.modifiers; // -> [{ label: 'Integrity', ... }, ...]
+ * effect?.materials; // -> [{ symbol: 'DisruptedWakeEchoes', ... }, ...]
  * ```
  */
-export function getExperimentalEffectDamageDistribution(fdname: string): DamageDistribution | null {
-    return resolveEffect(fdname)?.damageDistribution ?? null;
-}
-
-/**
- * Look up the materials one application of an experimental effect costs, by its Frontier
- * `fdname`, case-insensitively — what it costs.
- *
- * An experimental effect is a single application (one roll), so this is the whole cost.
- * Fold it in with a blueprint's {@link getBlueprintCost} via
- * {@link sumMaterials} for the grand total of an engineered module.
- *
- * @param fdname - The effect id, e.g. `"special_fsd_heavy"`.
- * @returns The effect's material requirements, or `null` if the effect is unknown. Join
- * each material's `symbol` to the `materials` domain for its own grade and category.
- * @example
- * ```ts
- * getExperimentalEffectMaterials('special_fsd_heavy');
- * // -> [{ symbol: 'DisruptedWakeEchoes', name: 'Atypical Disrupted Wake Echoes', count: 5 }, ...]
- * ```
- */
-export function getExperimentalEffectMaterials(
-    fdname: string,
-): readonly EngineeringMaterial[] | null {
-    return resolveEffect(fdname)?.materials ?? null;
-}
-
-/**
- * Look up an experimental effect's in-game display name by its Frontier `fdname`,
- * case-insensitively.
- *
- * @param fdname - The effect id, e.g. `"special_fsd_heavy"`.
- * @returns The display name (e.g. `"Mass Manager"`), or `null` if the effect is unknown.
- */
-export function getExperimentalEffectName(fdname: string): string | null {
-    return resolveEffect(fdname)?.name ?? null;
-}
-
-/** Resolve an effect record by `fdname`, case-insensitively (shared by the lookups). */
-function resolveEffect(fdname: string): ExperimentalEffect | null {
+export function getExperimentalEffect(fdname: string): ExperimentalEffect | null {
     if (Object.hasOwn(EXPERIMENTAL_EFFECTS, fdname)) return EXPERIMENTAL_EFFECTS[fdname]!;
     const wanted = fdname.trim().toLowerCase();
     for (const key of Object.keys(EXPERIMENTAL_EFFECTS)) {

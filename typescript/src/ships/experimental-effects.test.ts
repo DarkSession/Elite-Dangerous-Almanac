@@ -1,13 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-    EXPERIMENTAL_EFFECTS,
-    getExperimentalEffect,
-    getExperimentalEffectDamageDistribution,
-    getExperimentalEffectName,
-    getExperimentalEffectMaterials,
-} from './experimental-effects.js';
+import { EXPERIMENTAL_EFFECTS, getExperimentalEffect } from './experimental-effects.js';
 import { getMaterialBySymbol } from '../materials/materials.js';
 import { ALL_MATERIALS } from '../materials/materials-all.js';
 import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
@@ -22,31 +16,31 @@ test('every effect carries a display name, a recipe, and modifiers/materials arr
     }
 });
 
-test('getExperimentalEffectName resolves case-insensitively and misses cleanly', () => {
-    assert.equal(getExperimentalEffectName('special_fsd_heavy'), 'Mass Manager');
-    assert.equal(getExperimentalEffectName('SPECIAL_FSD_HEAVY'), 'Mass Manager');
-    assert.equal(getExperimentalEffectName('special_auto_loader'), 'Auto Loader');
+test('getExperimentalEffect resolves case-insensitively and misses cleanly', () => {
+    assert.equal(getExperimentalEffect('special_fsd_heavy')?.name, 'Mass Manager');
+    assert.equal(getExperimentalEffect('SPECIAL_FSD_HEAVY')?.name, 'Mass Manager');
+    assert.equal(getExperimentalEffect('special_auto_loader')?.name, 'Auto Loader');
     for (const [fdname, name] of Object.entries(engineeringFixture.experimentalNames.map)) {
-        assert.equal(getExperimentalEffectName(fdname), name);
+        assert.equal(getExperimentalEffect(fdname)?.name, name);
     }
-    assert.equal(getExperimentalEffectName('nope'), null);
+    assert.equal(getExperimentalEffect('nope'), null);
 });
 
 test('damage-converting effects expose their fixed resulting splits', () => {
     for (const [fdname, expected] of Object.entries(
         engineeringFixture.experimentalDamageDistributions.map,
     )) {
-        assert.deepEqual(getExperimentalEffectDamageDistribution(fdname), expected);
-        assert.deepEqual(getExperimentalEffectDamageDistribution(fdname.toUpperCase()), expected);
+        assert.deepEqual(getExperimentalEffect(fdname)?.damageDistribution, expected);
+        assert.deepEqual(getExperimentalEffect(fdname.toUpperCase())?.damageDistribution, expected);
         const conventional = Object.values(expected).reduce((sum, share) => sum + share, 0);
         assert.equal(conventional, 1, `${fdname} does not partition conventional damage`);
     }
-    assert.equal(getExperimentalEffectDamageDistribution('special_fsd_heavy'), null);
-    assert.equal(getExperimentalEffectDamageDistribution('nope'), null);
+    assert.equal(getExperimentalEffect('special_fsd_heavy')?.damageDistribution, undefined);
+    assert.equal(getExperimentalEffect('nope'), null);
 });
 
 test('the pre-engineered cooled Feedback Cascade exposes both modifiers', () => {
-    assert.deepEqual(getExperimentalEffect('special_feedback_cascade_cooled'), [
+    assert.deepEqual(getExperimentalEffect('special_feedback_cascade_cooled')?.modifiers, [
         { label: 'Damage', method: 'multiplicative', value: -0.2 },
         { label: 'ThermalLoad', method: 'multiplicative', value: -0.4 },
     ]);
@@ -57,13 +51,16 @@ test('pre-engineered cooled effects keep every modifier of their base effect', (
     for (const base of ['special_plasma_slug', 'special_super_penetrator']) {
         const plain = getExperimentalEffect(base)!;
         const cooled = getExperimentalEffect(`${base}_cooled`)!;
-        for (const modifier of plain) {
+        for (const modifier of plain.modifiers) {
             assert.ok(
-                cooled.some((c) => c.label === modifier.label && c.value === modifier.value),
+                cooled.modifiers.some(
+                    (candidate) =>
+                        candidate.label === modifier.label && candidate.value === modifier.value,
+                ),
                 `${base}_cooled drops ${modifier.label}`,
             );
         }
-        assert.ok(cooled.some((c) => c.label === 'ThermalLoad' && c.value === -0.4));
+        assert.ok(cooled.modifiers.some((c) => c.label === 'ThermalLoad' && c.value === -0.4));
     }
 });
 
@@ -95,7 +92,7 @@ test('an effect named for a stat actually moves that stat', () => {
         ['special_shieldcell_oversized', 'ShieldBankReinforcement', 0.05],
     ];
     for (const [fdname, label, value] of named) {
-        const modifier = getExperimentalEffect(fdname)?.find((m) => m.label === label);
+        const modifier = getExperimentalEffect(fdname)?.modifiers.find((m) => m.label === label);
         assert.ok(modifier, `${fdname} does not move ${label}`);
         assert.equal(modifier.value, value, fdname);
     }
@@ -118,7 +115,7 @@ test('percentage contributions are stored as percentages, not flat amounts', () 
         ['special_engine_haulage', 'EngineOptimalMass'],
     ];
     for (const [fdname, label] of percentages) {
-        const modifier = getExperimentalEffect(fdname)?.find((m) => m.label === label);
+        const modifier = getExperimentalEffect(fdname)?.modifiers.find((m) => m.label === label);
         assert.ok(modifier, `${fdname} does not carry ${label}`);
         assert.equal(modifier.method, 'multiplicative', `${fdname} ${label}`);
         assert.ok(Math.abs(modifier.value) < 1, `${fdname} ${label} is not a fraction`);
@@ -132,7 +129,7 @@ test('the canister effects stay qualitative, with no single-sourced magnitude', 
     // than the honest empty list plus a description this file uses for every other
     // qualitative effect.
     for (const fdname of ['special_radiant_canister', 'special_shiftlock_canister']) {
-        assert.deepEqual(getExperimentalEffect(fdname), [], fdname);
+        assert.deepEqual(getExperimentalEffect(fdname)?.modifiers, [], fdname);
         assert.ok(EXPERIMENTAL_EFFECTS[fdname]?.description, `${fdname} needs a description`);
     }
 });
@@ -144,7 +141,7 @@ test('the power-distributor effects move all three banks, capacity and recharge 
         ['special_powerdistributor_capacity', 0.08, -0.02],
         ['special_powerdistributor_fast', -0.04, 0.04],
     ] as const) {
-        const modifiers = getExperimentalEffect(fdname)!;
+        const modifiers = getExperimentalEffect(fdname)!.modifiers;
         for (const bank of ['Systems', 'Engines', 'Weapons']) {
             assert.deepEqual(
                 modifiers.find((m) => m.label === `${bank}Capacity`),
@@ -158,24 +155,22 @@ test('the power-distributor effects move all three banks, capacity and recharge 
     }
 });
 
-test('getExperimentalEffect returns the modifiers; getExperimentalEffectMaterials the recipe', () => {
-    const modifiers = getExperimentalEffect('special_fsd_heavy');
-    assert.ok(modifiers && modifiers.some((m) => m.label === 'FSDOptimalMass'));
-    assert.deepEqual(getExperimentalEffectMaterials('special_fsd_heavy'), [
+test('getExperimentalEffect returns the complete effect record', () => {
+    const effect = getExperimentalEffect('special_fsd_heavy');
+    assert.ok(effect?.modifiers.some((modifier) => modifier.label === 'FSDOptimalMass'));
+    assert.deepEqual(effect?.materials, [
         { symbol: 'DisruptedWakeEchoes', name: 'Atypical Disrupted Wake Echoes', count: 5 },
         { symbol: 'GalvanisingAlloys', name: 'Galvanising Alloys', count: 3 },
         { symbol: 'HyperspaceTrajectories', name: 'Eccentric Hyperspace Trajectories', count: 1 },
     ]);
 });
 
-test('both lookups resolve case-insensitively and miss cleanly', () => {
+test('the complete record resolves case-insensitively and misses cleanly', () => {
     assert.deepEqual(
-        getExperimentalEffectMaterials('SPECIAL_FSD_HEAVY'),
-        getExperimentalEffectMaterials('special_fsd_heavy'),
+        getExperimentalEffect('SPECIAL_FSD_HEAVY'),
+        getExperimentalEffect('special_fsd_heavy'),
     );
-    assert.ok(getExperimentalEffect('SPECIAL_FSD_HEAVY'));
     assert.equal(getExperimentalEffect('nope'), null);
-    assert.equal(getExperimentalEffectMaterials('nope'), null);
 });
 
 test('every material requirement joins to a real material in the materials domain', () => {

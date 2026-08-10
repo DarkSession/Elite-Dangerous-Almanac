@@ -5,9 +5,9 @@
  *
  * Its own module (and data file) so consumers who never engineer a build do not bundle
  * it. Each grade is a {@link BlueprintGrade} — its `features` (feed to
- * {@link computeModifiers} from `./engineering`, or read via {@link getBlueprintGrade}),
- * optional converted `damageDistribution`, and `materials` (what a roll costs, via
- * {@link getBlueprintGradeMaterials}).
+ * {@link computeModifiers} from `./engineering`), optional converted
+ * `damageDistribution`, and `materials` (what a roll costs). Read the complete record
+ * with {@link getBlueprintGrade}.
  *
  * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
  * `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display names.
@@ -38,8 +38,7 @@
 import blueprintsData from '../../../data/ships/blueprints.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { rollsForGrade, sumMaterials } from './engineering.js';
-import type { Blueprint, BlueprintFeature, EngineeringMaterial } from './engineering.js';
-import type { DamageDistribution } from './modules.js';
+import type { Blueprint, BlueprintGrade, EngineeringMaterial } from './engineering.js';
 
 /**
  * Every blueprint, keyed by Frontier `fdname` (e.g. `"FSD_LongRange"`). Each is a
@@ -85,84 +84,23 @@ export function getBlueprint(fdname: string): Blueprint | null {
 }
 
 /**
- * Look up a blueprint's in-game display name by its Frontier `fdname`, case-insensitively.
+ * Look up one complete grade of a blueprint, case-insensitively.
  *
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
- * @returns The display name (e.g. `"Increased range"`), or `null` if this catalogue
- * stores no blueprint under that id — see {@link getBlueprint} for what that can mean
+ * @param grade - The grade, `1`–`5`.
+ * @returns The grade record — its modifier `features`, optional converted
+ * `damageDistribution`, and material recipe — or `null` if the catalogue holds no such
+ * blueprint or grade. See {@link getBlueprint} for what an absent blueprint can mean
  * besides "unknown".
- */
-export function getBlueprintName(fdname: string): string | null {
-    return getBlueprint(fdname)?.name ?? null;
-}
-
-/**
- * Look up the modifier features of one grade of a blueprint — what it changes, ready
- * for {@link computeModifiers}.
- *
- * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
- * @param grade - The grade, `1`–`5`.
- * @returns The grade's features, or `null` if the catalogue holds no such blueprint or
- * grade — see {@link getBlueprint} for what that can mean besides "unknown".
  * @example
  * ```ts
- * getBlueprintGrade('FSD_LongRange', 5); // -> [{ label: 'Integrity', ... }, ...]
+ * const grade = getBlueprintGrade('FSD_LongRange', 5);
+ * grade?.features;  // -> [{ label: 'Integrity', ... }, ...]
+ * grade?.materials; // -> [{ symbol: 'Arsenic', ... }, ...]
  * ```
  */
-export function getBlueprintGrade(
-    fdname: string,
-    grade: number,
-): readonly BlueprintFeature[] | null {
-    return getBlueprint(fdname)?.grades[String(grade)]?.features ?? null;
-}
-
-/**
- * Look up the fixed damage-type split produced by one blueprint grade,
- * case-insensitively.
- *
- * @param fdname - The blueprint id, e.g. `"BeamLaser_ThermalPlasmaConversion"`.
- * @param grade - The grade, `1`–`5`.
- * @returns The resulting damage distribution, or `null` when the blueprint or grade is
- * unknown or that grade does not convert damage.
- * @example
- * ```ts
- * getBlueprintGradeDamageDistribution('BeamLaser_ThermalPlasmaConversion', 5);
- * // -> { thermal: 0.845, absolute: 0.155 }
- * ```
- */
-export function getBlueprintGradeDamageDistribution(
-    fdname: string,
-    grade: number,
-): DamageDistribution | null {
-    return getBlueprint(fdname)?.grades[String(grade)]?.damageDistribution ?? null;
-}
-
-/**
- * Look up the materials one roll of a blueprint costs at a given grade — what it
- * costs.
- *
- * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`.
- * @param grade - The grade, `1`–`5`.
- * @returns The grade's material requirements — possibly an empty list — or `null` if the
- * catalogue holds no such blueprint, or the blueprint defines no recipe for that grade.
- * @remarks
- * Distinguish the two "no materials" cases: `null` means the blueprint or grade is not
- * in the catalogue, while `[]` means a **known** recipe that costs nothing. Only
- * `CargoRack_IncreasedCapacity` grade 5 returns `[]`. Blueprints are keyed only by the
- * grades that have data, so iterating grades `1`–`5` can return `null` for a grade a
- * blueprint does not define — treat that as "no such grade", not an error. Join each
- * material's `symbol` to the `materials` domain for its own grade and category.
- * @example
- * ```ts
- * getBlueprintGradeMaterials('FSD_LongRange', 5);
- * // -> [{ symbol: 'Arsenic', name: 'Arsenic', count: 1 }, ...]
- * ```
- */
-export function getBlueprintGradeMaterials(
-    fdname: string,
-    grade: number,
-): readonly EngineeringMaterial[] | null {
-    return getBlueprint(fdname)?.grades[String(grade)]?.materials ?? null;
+export function getBlueprintGrade(fdname: string, grade: number): BlueprintGrade | null {
+    return getBlueprint(fdname)?.grades[String(grade)] ?? null;
 }
 
 /**
@@ -176,10 +114,10 @@ export function getBlueprintGradeMaterials(
  * grade in isolation, set `currentGrade` to `grade − 1` — e.g. grade 5 alone is 5 rolls
  * of the grade-5 recipe.
  *
- * This is blueprint cost only; an experimental effect is a separate single application —
- * fold its {@link getExperimentalEffectMaterials} in with {@link sumMaterials} if you
- * want the grand total (kept apart so a consumer who never applies an experimental does
- * not bundle that catalogue).
+ * This is blueprint cost only; an experimental effect is a separate single application.
+ * Fold the effect record's `materials` in with {@link sumMaterials} if you want the grand
+ * total (kept apart so a consumer who never applies an experimental does not bundle that
+ * catalogue).
  *
  * **It takes an id and no module, and that is safe for the one id that needs a module to
  * read.** The game writes `Sensor_LongRange` / `Sensor_WideAngle` for two different recipes

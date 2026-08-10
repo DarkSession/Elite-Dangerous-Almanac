@@ -235,22 +235,8 @@ export {
     type BlueprintGrades,
     type Blueprint,
 } from './engineering.js';
-export {
-    BLUEPRINTS,
-    getBlueprint,
-    getBlueprintName,
-    getBlueprintGrade,
-    getBlueprintGradeDamageDistribution,
-    getBlueprintGradeMaterials,
-    getBlueprintCost,
-} from './blueprints.js';
-export {
-    EXPERIMENTAL_EFFECTS,
-    getExperimentalEffect,
-    getExperimentalEffectDamageDistribution,
-    getExperimentalEffectName,
-    getExperimentalEffectMaterials,
-} from './experimental-effects.js';
+export { BLUEPRINTS, getBlueprint, getBlueprintGrade, getBlueprintCost } from './blueprints.js';
+export { EXPERIMENTAL_EFFECTS, getExperimentalEffect } from './experimental-effects.js';
 export {
     ENGINEERING_OPTION_GROUPS,
     getEngineeringGroup,

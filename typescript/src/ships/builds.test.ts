@@ -180,13 +180,13 @@ test('every declared engineering entry resolves against the base stats it needs'
             // family's — those happen to land on stats the scanner also has, so reading
             // the id straight would pass while checking the wrong thing.
             const recipe = resolveBlueprintForModule(entry.item, engineering.blueprint);
-            const features = getBlueprintGrade(recipe, engineering.grade)!;
+            const grade = getBlueprintGrade(recipe, engineering.grade)!;
             const experimental =
                 engineering.experimental === undefined
                     ? undefined
                     : getExperimentalEffect(engineering.experimental)!;
             assert.deepEqual(
-                missingBaseLabels(stats, baseStats(stats), features, experimental),
+                missingBaseLabels(stats, baseStats(stats), grade.features, experimental?.modifiers),
                 [],
                 `${build.id}: ${entry.item} + ${engineering.blueprint}`,
             );

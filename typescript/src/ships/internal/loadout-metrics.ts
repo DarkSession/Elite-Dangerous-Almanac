@@ -19,7 +19,7 @@ import {
 } from './module-stat-labels.js';
 import type { DamageDistribution, OutfittingModule } from '../modules.js';
 import { getBulkheadsForShip } from '../modules.js';
-import { getExperimentalEffectDamageDistribution } from '../experimental-effects.js';
+import { getExperimentalEffect } from '../experimental-effects.js';
 import { CORE_MODULES } from '../modules-core.js';
 import { getShipBySymbol } from '../ships.js';
 import { statFor } from './loadout-engineering.js';
@@ -126,12 +126,12 @@ function effectiveDamageDistribution(
     stats: OutfittingModule,
 ): DamageDistribution | undefined {
     const fromEffect = module.Engineering?.ExperimentalEffect
-        ? getExperimentalEffectDamageDistribution(module.Engineering.ExperimentalEffect)
-        : null;
+        ? getExperimentalEffect(module.Engineering.ExperimentalEffect)?.damageDistribution
+        : undefined;
     const distribution: Record<string, number> = {
         ...(fromEffect ?? stats.damageDistribution),
     };
-    let resolved = fromEffect !== null || stats.damageDistribution !== undefined;
+    let resolved = fromEffect !== undefined || stats.damageDistribution !== undefined;
     for (const modifier of module.Engineering?.Modifiers ?? []) {
         if (modifier.Value === undefined) continue;
         const type = damageTypeForLabel(modifier.Label);
@@ -146,7 +146,7 @@ function effectiveDamageDistribution(
 function convertsDamage(module: LoadoutModule): boolean {
     if (
         module.Engineering?.ExperimentalEffect &&
-        getExperimentalEffectDamageDistribution(module.Engineering.ExperimentalEffect)
+        getExperimentalEffect(module.Engineering.ExperimentalEffect)?.damageDistribution
     ) {
         return true;
     }
