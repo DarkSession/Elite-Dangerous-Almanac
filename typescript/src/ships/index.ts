@@ -267,5 +267,6 @@ export {
 export {
     getPreEngineeredStats,
     getPreEngineeredModifiers,
+    identifyPreEngineeredVariant,
     unresolvedModifiers,
 } from './pre-engineered-stats.js';

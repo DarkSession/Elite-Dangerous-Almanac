@@ -124,8 +124,8 @@
         "grade": 5,
         "experimental": "special_fsd_interrupt",
         "stockBurstInterval": 3,
-        "burstInterval": 2.7,
-        "rateOfFire": 0.37037
+        "burstInterval": 4.05,
+        "rateOfFire": 0.246914
       },
       {
         "symbol": "Hpt_BasicMissileRack_Fixed_Large",
@@ -133,8 +133,8 @@
         "grade": 5,
         "experimental": "special_fsd_interrupt",
         "stockBurstInterval": 3,
-        "burstInterval": 2.7,
-        "rateOfFire": 0.37037
+        "burstInterval": 4.05,
+        "rateOfFire": 0.246914
       },
       {
         "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
@@ -589,6 +589,75 @@
         "falloffRange": 1700,
         "shotSpeed": 1258.89
       }
+    }
+  },
+  "identification": {
+    "description": "Representative Frontier Loadout modules whose reported stat signatures identify a fixed variant without relying on its blueprint tuple. `journal-anaconda-slapaconda.json` omits the Modified Guardian Shard Cannon's later-established Damage modifier; `journal-federation-corvette-mixed.json` reports the rail gun's derived rate rather than its authored burst interval; `journal-panther-mkii-fat-arse.json` proves both a one-stat signature and an experimental effect added to a V1 FSD. The Spire Ops shard is deliberately negative: Anti-Guardian Zone Resistance alone carries no evidence that it is either fixed Shard variant.",
+    "matches": [
+      {
+        "source": "journal-anaconda-slapaconda.json",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "blueprint": "Weapon_LongRange",
+        "grade": 1,
+        "acquisition": "techBroker"
+      },
+      {
+        "source": "journal-anaconda-slapaconda.json",
+        "slot": "TinyHardpoint4",
+        "symbol": "Hpt_HeatSinkLauncher_Turret_Tiny",
+        "blueprint": "Misc_HeatSinkCapacity",
+        "grade": 1,
+        "acquisition": "techBroker"
+      },
+      {
+        "source": "journal-federation-corvette-mixed.json",
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_Railgun_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "experimental": "special_feedback_cascade_cooled",
+        "acquisition": "communityGoal"
+      },
+      {
+        "source": "journal-panther-mkii-fat-arse.json",
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size7_Class5",
+        "blueprint": "FSD_LongRange",
+        "grade": 5,
+        "appliedExperimental": "special_fsd_heavy",
+        "acquisition": "techBroker"
+      },
+      {
+        "source": "journal-panther-mkii-fat-arse.json",
+        "slot": "Slot04_Size6",
+        "symbol": "Int_CargoRack_Size6_Class1",
+        "blueprint": "CargoRack_IncreasedCapacity",
+        "grade": 5,
+        "acquisition": "communityGoal"
+      }
+    ],
+    "notMatches": [
+      {
+        "source": "journal-python-mkii-spire-ops.json",
+        "slot": "MediumHardpoint1"
+      },
+      {
+        "source": "journal-krait-phantom.json",
+        "slot": "FrameShiftDrive"
+      }
+    ],
+    "omittedBakedExperimental": {
+      "source": "journal-federation-corvette-mixed.json",
+      "slot": "MediumHardpoint1",
+      "reportedInstead": {
+        "Label": "BurstInterval",
+        "Value": 0.322496,
+        "OriginalValue": 0.83
+      },
+      "omitted": "ThermalLoad",
+      "expectedThermalLoad": 12,
+      "note": "A SLEF producer may state the authored burst interval while omitting one other prediction. Identification still succeeds, and the resolved fixed article supplies Feedback Cascade's baked ThermalLoad value rather than falling back to stock."
     }
   },
   "notPreEngineered": [

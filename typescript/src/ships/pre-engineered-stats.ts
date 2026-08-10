@@ -11,6 +11,9 @@
  * Split from `./pre-engineered.js` on purpose: reading the catalogue costs one small
  * data file, while resolving stats pulls in every module record. Consumers who only list
  * variants should not pay for the module catalogues.
+ * A journal or SLEF module can instead be classified with
+ * {@link identifyPreEngineeredVariant}: it matches the article's reported stat signature
+ * and composes an experimental effect added after purchase before comparing values.
  *
  * **What is resolved, and what is not.** The module catalogues carry the mechanical
  * stats (mass, integrity, power, capacities, optimal mass), the defence stats and the
@@ -24,6 +27,10 @@
 
 import { computeModifiers, type BlueprintFeature } from './engineering.js';
 import {
+    getExperimentalEffect,
+    getExperimentalEffectDamageDistribution,
+} from './experimental-effects.js';
+import {
     baseStats,
     capabilityValueForLabel,
     fieldForLabel,
@@ -31,8 +38,12 @@ import {
 } from './internal/module-stat-labels.js';
 import { ALL_MODULES } from './modules-all.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
-import type { PreEngineeredModifier, PreEngineeredVariant } from './pre-engineered.js';
-import type { EngineeringModifier } from './slef.js';
+import {
+    getPreEngineeredVariants,
+    type PreEngineeredModifier,
+    type PreEngineeredVariant,
+} from './pre-engineered.js';
+import type { EngineeringModifier, LoadoutModule } from './slef.js';
 import { combinedRateOfFire } from './weapons.js';
 
 /** A pre-engineered modifier is a fixed article, so its min and max are the same value. */
@@ -45,12 +56,31 @@ function asFeatures(modifiers: readonly PreEngineeredModifier[]): BlueprintFeatu
     }));
 }
 
+/** Compute a variant's fixed block together with an experimental added to the article. */
+function modifiersWithExperimental(
+    variant: PreEngineeredVariant,
+    experimental?: string,
+): EngineeringModifier[] | null {
+    const module = getModuleBySymbol(variant.symbol, ALL_MODULES);
+    const effectName = experimental ?? variant.experimental;
+    if (!module || (!variant.modifiers?.length && effectName === undefined)) return null;
+    const effect = effectName === undefined ? undefined : getExperimentalEffect(effectName);
+    if (effectName !== undefined && !effect) return null;
+    return computeModifiers(
+        baseStats(module),
+        asFeatures(variant.modifiers ?? []),
+        1,
+        effect ?? undefined,
+    );
+}
+
 /**
  * The journal-style modifiers a pre-engineered variant applies to its base module.
  *
- * Only labels the module catalogues carry a base value for can be computed; the rest are
- * listed by {@link unresolvedModifiers}. The result is the same shape a journal
- * `Loadout` reports under `Engineering.Modifiers`, so it can be used to construct one.
+ * Includes the variant's baked experimental effect. Only labels the module catalogues
+ * carry a base value for can be computed; unsupported hand-set labels are listed by
+ * {@link unresolvedModifiers}. The result is the same shape a journal `Loadout` reports
+ * under `Engineering.Modifiers`, so it can be used to construct one.
  *
  * @param variant - A pre-engineered variant.
  * @returns One modifier per computable label, or an empty array when the variant carries
@@ -64,9 +94,90 @@ function asFeatures(modifiers: readonly PreEngineeredModifier[]): BlueprintFeatu
  * ```
  */
 export function getPreEngineeredModifiers(variant: PreEngineeredVariant): EngineeringModifier[] {
-    const module = getModuleBySymbol(variant.symbol, ALL_MODULES);
-    if (!module || !variant.modifiers?.length) return [];
-    return computeModifiers(baseStats(module), asFeatures(variant.modifiers));
+    return modifiersWithExperimental(variant) ?? [];
+}
+
+/** Numeric equality at the precision of Frontier's journal float values. */
+function sameJournalNumber(actual: number, expected: number): boolean {
+    return Math.abs(actual - expected) <= Math.max(1e-5, Math.abs(expected) * 1e-6);
+}
+
+/** One stable comparison key for recipe and journal spellings of the same stat. */
+function modifierKey(modifier: EngineeringModifier, module: OutfittingModule): string {
+    return fieldForLabel(modifier.Label, module) ?? `label:${modifier.Label.trim().toLowerCase()}`;
+}
+
+/** Whether a captured modifier agrees with the value a candidate article predicts. */
+function sameModifier(actual: EngineeringModifier, expected: EngineeringModifier): boolean {
+    if (expected.Value !== undefined) {
+        return actual.Value !== undefined && sameJournalNumber(actual.Value, expected.Value);
+    }
+    // Capability values are localized inconsistently (`Active`, a `$...;` token, or both).
+    // Their presence is the durable fact; a candidate capability must remain string-valued.
+    return expected.ValueStr !== undefined && actual.ValueStr !== undefined;
+}
+
+/**
+ * Identify the fixed pre-engineered/reward variant described by a fitted loadout module.
+ *
+ * Matching uses the reported post-engineering stat values rather than trusting the
+ * blueprint tuple alone: reward variants carry hand-set values that an ordinary roll of
+ * the named blueprint does not reproduce. A captured experimental effect is composed
+ * with each candidate before comparison, because some fixed articles accept an effect
+ * after purchase (the V1 frame-shift drives are the common example).
+ *
+ * Frontier journals omit some derived modifiers and older captures can predate a newly
+ * established stat, so one predicted value may be absent. Every predicted value the
+ * capture *does* state must agree within journal float noise, and all but at most one must
+ * be present. Ambiguous or incomplete evidence returns `null` rather than guessing.
+ * Variants without a published stat block cannot be identified this way.
+ *
+ * @param module - A module from a journal `Loadout` event or SLEF export.
+ * @returns The uniquely matching catalogue variant, or `null` when the stats do not
+ * identify one.
+ *
+ * @example
+ * ```ts
+ * const fitted = loadoutEvent.Modules.find((m) => m.Slot === 'FrameShiftDrive')!;
+ * identifyPreEngineeredVariant(fitted)?.acquisition; // -> 'techBroker', or null
+ * ```
+ */
+export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineeredVariant | null {
+    const engineering = module.Engineering;
+    if (!engineering?.Modifiers?.length) return null;
+    const stock = getModuleBySymbol(module.Item, ALL_MODULES);
+    if (!stock) return null;
+
+    const actualByKey = new Map<string, EngineeringModifier>();
+    for (const modifier of engineering.Modifiers) {
+        actualByKey.set(modifierKey(modifier, stock), modifier);
+    }
+    const capturedExperimental = engineering.ExperimentalEffect?.trim().toLowerCase();
+    const matches: PreEngineeredVariant[] = [];
+    for (const candidate of getPreEngineeredVariants(module.Item)) {
+        if (!candidate.modifiers?.length) continue;
+        if (
+            candidate.experimental !== undefined &&
+            candidate.experimental.toLowerCase() !== capturedExperimental
+        ) {
+            continue;
+        }
+        const expected = modifiersWithExperimental(candidate, engineering.ExperimentalEffect);
+        if (!expected?.length) continue;
+        let matched = 0;
+        let disagrees = false;
+        for (const predicted of expected) {
+            const actual = actualByKey.get(modifierKey(predicted, stock));
+            if (!actual) continue;
+            if (!sameModifier(actual, predicted)) {
+                disagrees = true;
+                break;
+            }
+            matched++;
+        }
+        if (!disagrees && matched >= Math.max(1, expected.length - 1)) matches.push(candidate);
+    }
+    return matches.length === 1 ? matches[0]! : null;
 }
 
 /**
@@ -124,25 +235,34 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
 export function getPreEngineeredStats(variant: PreEngineeredVariant): OutfittingModule | null {
     const module = getModuleBySymbol(variant.symbol, ALL_MODULES);
     if (!module) return null;
-    if (!variant.modifiers?.length && !variant.engineeringLocked) return module;
+    if (
+        !variant.modifiers?.length &&
+        !variant.engineeringLocked &&
+        variant.experimental === undefined
+    )
+        return module;
     const modifiers = variant.modifiers ?? [];
     const resolved: { -readonly [K in keyof OutfittingModule]: OutfittingModule[K] } = {
         ...module,
         ...(variant.engineeringLocked ? { engineeringLocked: true } : {}),
     };
-    for (const { Label, Value, ValueStr } of computeModifiers(
-        baseStats(module),
-        asFeatures(modifiers),
-    )) {
+    for (const { Label, Value, ValueStr } of getPreEngineeredModifiers(variant)) {
         const field = fieldForLabel(Label, module);
         // Numeric values return to the catalogue's units (a journal reports a resistance
         // as `40` where the catalogue stores `0.4`). A string-valued capability is stored
         // as the boolean it grants.
-        if (field && Value !== undefined) {
+        if (field && field !== 'damageDistribution' && Value !== undefined) {
             Object.assign(resolved, { [field]: Value / scaleForLabel(Label) });
         } else if (field && ValueStr !== undefined && capabilityValueForLabel(Label) !== null) {
             Object.assign(resolved, { [field]: true });
         }
+    }
+    const experimentalDamageDistribution = variant.experimental
+        ? getExperimentalEffectDamageDistribution(variant.experimental)
+        : null;
+    if (experimentalDamageDistribution) {
+        resolved.damageDistribution = { ...experimentalDamageDistribution };
+        delete resolved.damageComponents;
     }
     // A variant that changes the burst pattern changes the rate of fire with it, even
     // though the recipe never names it — the rate is derived from the firing cycle.
@@ -159,7 +279,7 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         const rate = combinedRateOfFire(resolved);
         if (rate !== undefined) resolved.rateOfFire = rate;
     }
-    if (module.damageComponents) {
+    if (module.damageComponents && !experimentalDamageDistribution) {
         const scale =
             module.damage !== undefined && module.damage !== 0 && resolved.damage !== undefined
                 ? resolved.damage / module.damage
