@@ -172,7 +172,7 @@ export function getShipByName(name: string): Ship | null {
  * This is the **read-only** layout, for your own outfitting UI (feed it to
  * `enumerateSlots`). To assemble and edit an actual build — fit modules, engineer
  * them, read jump range — start a `ShipLoadout` instead and use its live
- * `slots()` / `coreModules()` handles.
+ * `slots()` / `slots('core')` views.
  * @example
  * ```ts
  * getShipSlots('anaconda')?.hardpoints;

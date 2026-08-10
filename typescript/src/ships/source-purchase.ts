@@ -209,7 +209,7 @@ export class SourcePurchaseRecord {
      * @example
      * ```ts
      * const entry = paid.entryForSlot('FrameShiftDrive');
-     * entry?.item === build.getFittedModule('FrameShiftDrive')?.symbol.toLowerCase();
+     * entry?.item === build.fittedModuleAt('FrameShiftDrive')?.symbol.toLowerCase();
      * // -> false once the drive has been swapped: the price is the old drive's
      * ```
      */

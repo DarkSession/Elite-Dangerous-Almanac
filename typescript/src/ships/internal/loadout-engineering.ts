@@ -1,5 +1,5 @@
 /**
- * Internal catalogue adapters used by the loadout facade and fitted-module handle.
+ * Internal catalogue adapters used by the loadout facade and its immutable views.
  *
  * @internal
  */

@@ -155,17 +155,17 @@ test('engineering loads whole rounds in the clip and reserve', () => {
         const build = ShipLoadout.empty('Viper');
         build.setModule(roll.slot, module(roll.module));
         assert.deepEqual(
-            build.getFittedModule(roll.slot)!.ammunition,
+            build.fittedModuleAt(roll.slot)!.ammunition,
             { ...roll.stock, unlimited: false },
             `${roll.module} stock`,
         );
 
-        build.getFittedModule(roll.slot)!.applyBlueprint(roll.blueprint, {
+        build.applyBlueprint(roll.slot, roll.blueprint, {
             grade: roll.grade,
             quality: 1,
             ...('experimental' in roll ? { experimental: roll.experimental } : {}),
         });
-        const engineered = build.getFittedModule(roll.slot)!;
+        const engineered = build.fittedModuleAt(roll.slot)!;
         const label = `${roll.module} ${roll.blueprint} grade ${roll.grade}`;
         assert.deepEqual(
             engineered.ammunition,
@@ -188,12 +188,12 @@ test('the two capacity paths agree, on a weapon and on a utility module', () => 
     const build = ShipLoadout.empty('Viper');
     build.setModule('MediumHardpoint1', module('Hpt_MultiCannon_Fixed_Medium'));
     build.setModule('TinyHardpoint1', module('Hpt_ChaffLauncher_Tiny'));
-    build.getFittedModule('MediumHardpoint1')!.applyBlueprint('Weapon_HighCapacity', { grade: 5 });
-    build.getFittedModule('TinyHardpoint1')!.applyBlueprint('Misc_ChaffCapacity', { grade: 1 });
+    build.applyBlueprint('MediumHardpoint1', 'Weapon_HighCapacity', { grade: 5 });
+    build.applyBlueprint('TinyHardpoint1', 'Misc_ChaffCapacity', { grade: 1 });
 
     const gun = build.weaponMetrics().weapons.find((weapon) => weapon.slot === 'MediumHardpoint1');
-    assert.deepEqual(gun?.ammunition, build.getFittedModule('MediumHardpoint1')!.ammunition);
-    assert.deepEqual(build.getFittedModule('TinyHardpoint1')!.ammunition, {
+    assert.deepEqual(gun?.ammunition, build.fittedModuleAt('MediumHardpoint1')!.ammunition);
+    assert.deepEqual(build.fittedModuleAt('TinyHardpoint1')!.ammunition, {
         clipSize: 1,
         hopper: 15,
         total: 16,
@@ -224,7 +224,7 @@ test('a build reports the capacity of every weapon it carries', () => {
 
     // A weapon switched off is still a weapon that holds rounds: it keeps its capacity in
     // the report, and only the per-second totals leave it out.
-    build.getFittedModule('SmallHardpoint1')!.setEnabled(false);
+    build.setModuleEnabled('SmallHardpoint1', false);
     const off = build.weaponMetrics();
     const disabled = off.weapons.find((weapon) => weapon.slot === 'SmallHardpoint1')!;
     assert.equal(disabled.enabled, false);
@@ -254,7 +254,7 @@ test('every ammo count a journal reports fits inside the capacity for that modul
             readings++;
             modules.add(fitted.Item);
 
-            const capacity = build.getFittedModule(fitted.Slot)!.ammunition!;
+            const capacity = build.fittedModuleAt(fitted.Slot)!.ammunition!;
             assert.ok(clip <= capacity.clipSize, `${capture} ${fitted.Item} clip`);
             assert.ok(hopper <= capacity.hopper, `${capture} ${fitted.Item} hopper`);
             if (clip === capacity.clipSize && hopper === capacity.hopper) atCapacity++;
@@ -312,7 +312,7 @@ test("Frontier's own engineered ammunition figures, against what this library co
 
         // A parsed build reports the game's own figures, engineering and all.
         assert.deepEqual(
-            build.getFittedModule(pinned.slot)!.ammunition,
+            build.fittedModuleAt(pinned.slot)!.ammunition,
             {
                 clipSize: gameClip,
                 hopper: pinned.game.ammoMaximum,
@@ -337,13 +337,13 @@ test("Frontier's own engineered ammunition figures, against what this library co
             simulated.setModule(pinned.slot, getPreEngineeredStats(variant)!);
         } else {
             simulated.setModule(pinned.slot, record);
-            simulated.getFittedModule(pinned.slot)!.applyBlueprint(pinned.blueprint, {
+            simulated.applyBlueprint(pinned.slot, pinned.blueprint, {
                 grade: pinned.grade,
                 quality: pinned.quality,
                 ...(pinned.experimental ? { experimental: pinned.experimental } : {}),
             });
         }
-        const rolled = simulated.getFittedModule(pinned.slot)!.ammunition!;
+        const rolled = simulated.fittedModuleAt(pinned.slot)!.ammunition!;
         assert.equal(
             rolled.clipSize,
             pinned.simulated.clipSize ?? pinned.base.clipSize,
@@ -389,7 +389,7 @@ test('a module the catalogues do not know reports no capacity', () => {
         Ship: 'viper',
         Modules: [{ Slot: 'SmallHardpoint1', Item: 'hpt_not_a_real_module' }],
     });
-    const fitted = build.getFittedModule('SmallHardpoint1')!;
+    const fitted = build.fittedModuleAt('SmallHardpoint1')!;
     assert.equal(fitted.stats, null);
     assert.equal(fitted.ammunition, null);
 });

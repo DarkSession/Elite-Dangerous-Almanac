@@ -71,7 +71,7 @@ test('a blueprint that states no modifiers leaves the catalogue stats standing',
             },
         ],
     });
-    const fitted = build.getFittedModule('HugeHardpoint1')!;
+    const fitted = build.fittedModuleAt('HugeHardpoint1')!;
     assert.equal(fitted.effectiveStats?.mass, laser.mass);
     assert.equal(fitted.effectiveStats?.damage, laser.damage);
     // …and it exports exactly as it came in, without an empty Modifiers array appearing.
@@ -105,7 +105,7 @@ test('journal-only metadata is excluded from a loadout and SLEF round trip', () 
     const sourceModule = kraitJournal.Modules.find((module) => module.Engineering !== undefined)!;
     const sourceEngineering = sourceModule.Engineering as unknown as Record<string, unknown>;
     const kraitBuild = ShipLoadout.fromSlef(kraitJournal);
-    const fittedEngineering = kraitBuild.getFittedModule(sourceModule.Slot)!
+    const fittedEngineering = kraitBuild.fittedModuleAt(sourceModule.Slot)!
         .engineering as unknown as Record<string, unknown>;
     const kraitRoundTrip = parseSlef(
         kraitBuild.toSlefString(TEST_SLEF_OPTIONS),
@@ -560,7 +560,7 @@ test("a journal's own ammo counts check the catalogue's clip and hopper figures"
         assert.equal(fitted.AmmoInClip, expected.AmmoInClip, expected.symbol);
         assert.equal(fitted.AmmoInHopper, expected.AmmoInHopper, expected.symbol);
 
-        const capacity = build.getFittedModule(fitted.Slot)!.ammunition;
+        const capacity = build.fittedModuleAt(fitted.Slot)!.ammunition;
         assert.deepEqual(
             capacity,
             {
@@ -584,7 +584,7 @@ test('importing a journal drops its ammunition state', () => {
         assert.ok(!('AmmoInHopper' in exported), exported.Slot);
     }
     const armed = fixture.pythonMkII.ammunition.loaded[0]!;
-    const fitted = build.getFittedModule(
+    const fitted = build.fittedModuleAt(
         pythonJournal.Modules.find((m) => m.Item.toLowerCase() === armed.symbol.toLowerCase())!
             .Slot,
     )!;
@@ -1017,12 +1017,16 @@ test('the power setters reject an empty slot', () => {
     assert.throws(() => build.setModuleEnabled('Slot04_Size5', false), RangeError);
 });
 
-test('a live FittedModule handle survives a power change and sees it', () => {
+test('fitted-module snapshots preserve their point-in-time power state', () => {
     const build = ShipLoadout.fromSlef(slefString);
-    const plant = build.getFittedModule('PowerPlant')!;
-    plant.setPriority(4).setEnabled(false);
-    assert.equal(plant.priority, 4);
-    assert.equal(plant.on, false);
+    const before = build.fittedModuleAt('PowerPlant')!;
+    build.setModulePriority(before.slot, 4).setModuleEnabled(before.slot, false);
+    const after = build.fittedModuleAt(before.slot)!;
+    assert.notEqual(after, before);
+    assert.notEqual(before.priority, 4);
+    assert.notEqual(before.on, false);
+    assert.equal(after.priority, 4);
+    assert.equal(after.on, false);
 });
 
 test('switching off a Guardian FSD Booster changes the exported jump range', () => {
@@ -1064,7 +1068,7 @@ test('a restricted mount survives a SLEF round trip under its journal name', () 
     );
     const mount = back.slots().find((s) => s.key === 'MediumMiningHardpoint1');
     assert.equal(mount?.restriction, 'mining');
-    assert.ok(mount?.occupied);
+    assert.ok(mount?.module);
     assert.throws(
         () => back.setModule('MediumMiningHardpoint1', module('Hpt_MultiCannon_Fixed_Medium')),
         /only takes mining tools/,

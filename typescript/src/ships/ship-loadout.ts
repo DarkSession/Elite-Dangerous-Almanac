@@ -1,5 +1,5 @@
 /**
- * {@link ShipLoadout} — a handle on a fitted ship that both **answers questions**
+ * {@link ShipLoadout} — a mutable fitted-ship model that both **answers questions**
  * about a build and **edits** it.
  *
  * Load one from a SLEF export (or a journal `Loadout` event) to read back the ship's
@@ -20,6 +20,8 @@
  * `setModule` snapshots the complete record it receives, including resolved
  * pre-engineered or caller-supplied stats, so every later metric uses the article that
  * was actually fitted rather than resolving its symbol back to a stock module.
+ * Slot and fitted-module queries return deeply frozen point-in-time values; edits are
+ * made only through this facade, then observed by querying again.
  *
  * **Slot keys are matched case-insensitively.** Frontier writes `FrameShiftDrive` and
  * `LargeMiningHardpoint1`, but a SLEF producer may lower-case every key as the
@@ -48,7 +50,7 @@
  * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
  * const conda = ShipLoadout.empty('Anaconda');
  * conda.setModule('FrameShiftDrive', getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!);
- * conda.slotsOfKind('optional'); // every optional mount, occupied or empty, with size
+ * conda.slots('optional'); // every optional mount, occupied or empty, with size
  * ```
  *
  * @packageDocumentation
@@ -92,6 +94,15 @@ import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
 import { labelsForDamageType, scaleForLabel } from './internal/module-stat-labels.js';
 import {
+    cloneLoadoutModule,
+    cloneModuleStats,
+    firstKeyMatchingCase,
+    isBuiltInHullModule,
+    isNonOutfittingSlot,
+} from './internal/loadout-state.js';
+import {
+    availableBlueprintsFor,
+    availableExperimentalsFor,
     baseStats,
     blueprintAvailableFor,
     experimentalAvailableFor,
@@ -102,6 +113,7 @@ import {
 } from './internal/loadout-engineering.js';
 import {
     armourInputFor,
+    effectiveModule,
     powerAvailable,
     powerConsumerFor,
     shieldInputFor,
@@ -114,8 +126,9 @@ import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.j
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats, identifyPreEngineeredVariant } from './pre-engineered-stats.js';
-import { FittedModule } from './fitted-module.js';
-import { LoadoutSlot } from './loadout-slot.js';
+import type { FittedModule } from './fitted-module.js';
+import type { LoadoutSlot } from './loadout-slot.js';
+import { loadoutSlotName } from './internal/loadout-views.js';
 import { SourcePurchaseRecord } from './source-purchase.js';
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { completeResult } from './internal/calculation-result.js';
@@ -139,8 +152,8 @@ import {
 // modules — so use the `ships` barrel to name everything from one import. That barrel
 // does not read this list; it names each symbol at the module that declares it, so a
 // type missing from here still reaches consumers.
-export { FittedModule } from './fitted-module.js';
-export { LoadoutSlot } from './loadout-slot.js';
+export type { FittedModule } from './fitted-module.js';
+export type { LoadoutSlot } from './loadout-slot.js';
 export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
 export {
     calculateCargoCapacity,
@@ -441,140 +454,6 @@ function moduleSlotError(slot: BuildSlot, module: OutfittingModule): string | nu
 }
 
 /**
- * Whether a journal slot key names something other than an outfitting mount.
- *
- * @remarks
- * A real journal `Loadout` event lists far more than fitted modules: the cockpit, ship
- * kits, nameplates, decals, bobbles, paint jobs, engine and weapon colours, voice packs
- * and string lights. None is an outfitting module — the catalogues deliberately do not
- * carry them (see `data/ships/SOURCES.md`) — and all contribute neither mass nor credits.
- *
- * The families are explicit so a genuinely new outfitting mount is unknown rather than
- * silently weightless and free. Numbered decals, bobbles and nameplates remain open-ended
- * within their known families.
- *
- * The catalogue is consulted **first**, which is what keeps this safe: an article the
- * catalogue can identify contributes its mass and price whatever its slot is called, so
- * this question is only ever asked about an article nothing recognises. It is reached by
- * a genuinely new fitting family and the slot is not one of these known cosmetic/hull
- * families, the module is unknown. See {@link ShipLoadout.toLoadoutEvent}.
- *
- * Matching is case-insensitive, like every slot API in this module.
- */
-function isNonOutfittingSlot(slotKey: string): boolean {
-    return /^(paintjob|shipname\d+|shipid\d+|bobble\d+|decal\d+|shipkit.+|weaponcolour|enginecolour|vesselvoice|shipcockpit|stringlights)$/i.test(
-        slotKey,
-    );
-}
-
-/** The zero-mass, zero-price cargo hatch built into every hull. */
-function isBuiltInHullModule(module: LoadoutModule): boolean {
-    return (
-        module.Slot.toLowerCase() === 'cargohatch' &&
-        module.Item.toLowerCase().startsWith('modularcargobaydoor')
-    );
-}
-
-/** Detach a journal module from caller-owned and returned mutable objects. */
-function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
-    return {
-        Slot: module.Slot,
-        Item: module.Item,
-        ...(module.On === undefined ? {} : { On: module.On }),
-        ...(module.Priority === undefined ? {} : { Priority: module.Priority }),
-        ...(module.Health === undefined ? {} : { Health: module.Health }),
-        ...(module.Value === undefined ? {} : { Value: module.Value }),
-        ...(module.Engineering === undefined
-            ? {}
-            : {
-                  Engineering: {
-                      BlueprintName: module.Engineering.BlueprintName,
-                      Level: module.Engineering.Level,
-                      Quality: module.Engineering.Quality,
-                      ...(module.Engineering.ExperimentalEffect === undefined
-                          ? {}
-                          : { ExperimentalEffect: module.Engineering.ExperimentalEffect }),
-                      ...(module.Engineering.ExperimentalEffect_Localised === undefined
-                          ? {}
-                          : {
-                                ExperimentalEffect_Localised:
-                                    module.Engineering.ExperimentalEffect_Localised,
-                            }),
-                      ...(module.Engineering.Modifiers === undefined
-                          ? {}
-                          : {
-                                Modifiers: module.Engineering.Modifiers.map((modifier) => ({
-                                    ...modifier,
-                                })),
-                            }),
-                  },
-              }),
-    };
-}
-
-/**
- * The first of `keys` that names the same mount as `slotKey`, ignoring case, or `null`
- * if none does.
- *
- * @remarks
- * A build's own spelling of a slot key is authoritative and is never rewritten — an
- * import keeps its producer's slot keys, so they re-export byte for byte. That spelling
- * is not the caller's to know, though: Inara lower-cases every key, as the SLEF
- * specification's own example does, so `LargeMiningHardpoint1` and
- * `largemininghardpoint1` are one mount and either must find it.
- *
- * Every caller checks for an exact match first, so **an exactly spelled key always
- * wins**; this settles only the case where none matches exactly, and then the earlier
- * entry wins. A well-formed build has one entry per mount, so the two rules agree and
- * reading, editing and ordering for export all reach the same module.
- *
- * A malformed producer that wrote *both* spellings leaves two entries for one mount,
- * and there they can part: `#fittedKey` prefers a key spelled exactly as the **caller**
- * typed it, while the slot-ordered export prefers one spelled exactly as the **hull
- * layout** has it. Editing through the caller's own non-canonical spelling can
- * therefore land on the entry the export puts in its unrecognised-slot tail. Neither
- * entry is ever dropped, which is what matters; a build that names one mount twice has
- * no right answer to give.
- *
- * A linear scan is enough: the largest build in the corpus fits 40 modules.
- */
-function firstKeyMatchingCase(keys: Iterable<string>, slotKey: string): string | null {
-    const wanted = slotKey.toLowerCase();
-    for (const key of keys) {
-        if (key.toLowerCase() === wanted) return key;
-    }
-    return null;
-}
-
-/** Snapshot caller-supplied stats so later caller mutation cannot alter the build. */
-function cloneModuleStats(module: OutfittingModule): OutfittingModule {
-    return deepFreeze({
-        ...module,
-        // Every nested value needs its own copy: `deepFreeze` recurses, so one left
-        // shared would freeze the caller's own array or object in place.
-        ...(module.restrictedToShips === undefined
-            ? {}
-            : { restrictedToShips: [...module.restrictedToShips] }),
-        ...(module.damageDistribution === undefined
-            ? {}
-            : { damageDistribution: { ...module.damageDistribution } }),
-        ...(module.damageComponents === undefined
-            ? {}
-            : {
-                  damageComponents: {
-                      ...module.damageComponents,
-                      ...(module.damageComponents.unclassified === undefined
-                          ? {}
-                          : { unclassified: [...module.damageComponents.unclassified] }),
-                  },
-              }),
-        ...(module.projectileRange === undefined
-            ? {}
-            : { projectileRange: { ...module.projectileRange } }),
-    });
-}
-
-/**
  * A fitted ship — read a SLEF export, or assemble a hull from scratch.
  *
  * @remarks
@@ -589,7 +468,6 @@ export class ShipLoadout {
     readonly #modules: Map<string, LoadoutModule>;
     readonly #moduleStats = new Map<string, OutfittingModule>();
     readonly #top: TopFigures;
-    readonly #slotVersions = new Map<string, number>();
     readonly #sourcePurchase: SourcePurchaseRecord | null;
     /**
      * Bumped by every edit that changes what a fitted module *is* — which slots are
@@ -747,7 +625,7 @@ export class ShipLoadout {
      * @throws {TypeError} If no hull with that symbol has a known slot layout.
      * @example
      * ```ts
-     * ShipLoadout.empty('Sidewinder').slotsOfKind('hardpoint').length; // -> 2
+     * ShipLoadout.empty('Sidewinder').slots('hardpoint').length; // -> 2
      * ```
      */
     static empty(shipSymbol: string): ShipLoadout {
@@ -988,111 +866,119 @@ export class ShipLoadout {
     }
 
     /**
-     * Every mount the hull offers, each a live {@link LoadoutSlot} handle that knows its
-     * own key and reports the module fitted in it, in outfitting-panel order.
+     * Frozen point-in-time views of the hull's mounts in outfitting-panel order.
      *
-     * The handles are **live views**: fit or clear a module and the same handle's
-     * {@link LoadoutSlot.module | `module`} / {@link LoadoutSlot.occupied | `occupied`}
-     * update to match. You can fit, clear, list candidates and engineer straight from a
-     * slot without ever repeating its key.
-     *
+     * @param kind - Optionally keep only one mount kind. Omit it for every mount.
+     * @returns Detached slot views. Fetch again after an edit to observe new state.
      * @throws {TypeError} If the hull has no known slot layout.
      * @example
      * ```ts
-     * ShipLoadout.empty('Anaconda').slots().filter((s) => s.occupied); // -> [] (empty build)
+     * const emptyHardpoints = ShipLoadout.empty('Sidewinder').slots('hardpoint');
+     * emptyHardpoints.every((slot) => slot.module === null); // true
      * ```
-     * @returns Every mount on the hull, in layout order: core, hardpoints, utility,
-     * optional, armour and the cargo hatch.
      */
-    slots(): LoadoutSlot[] {
-        return this.#layout().map((slot) => new LoadoutSlot(this, slot));
+    slots(kind?: SlotKind): readonly LoadoutSlot[] {
+        const slots =
+            kind === undefined ? this.#layout() : this.#layout().filter((s) => s.kind === kind);
+        return deepFreeze(
+            slots.map((slot) => ({
+                ...slot,
+                name: loadoutSlotName(slot),
+                module: this.fittedModuleAt(slot.key),
+            })),
+        );
     }
 
     /**
-     * The hull's mounts of one kind, each a live {@link LoadoutSlot} handle.
+     * A deeply frozen, point-in-time view of the module in a slot.
      *
-     * @param kind - Which kind of mount to list.
-     * @returns The hull's mounts of that kind, in layout order (empty if it has none).
-     * @throws {TypeError} If the hull has no known slot layout.
+     * @param slotKey - Slot key, matched case-insensitively.
+     * @returns A detached view, or `null` when the slot is empty or unknown.
      */
-    slotsOfKind(kind: SlotKind): LoadoutSlot[] {
-        return this.slots().filter((s) => s.kind === kind);
-    }
-
-    /**
-     * The hull's seven core-internal mounts (power plant, thrusters, FSD, life support,
-     * power distributor, sensors, fuel tank), as live {@link LoadoutSlot} handles.
-     *
-     * @returns The seven core mounts, in layout order.
-     * @throws {TypeError} If the hull has no known slot layout.
-     */
-    coreModules(): LoadoutSlot[] {
-        return this.slotsOfKind('core');
-    }
-
-    /**
-     * The hull's weapon hardpoints, as live {@link LoadoutSlot} handles.
-     *
-     * @returns The hardpoint mounts, largest first.
-     * @throws {TypeError} If the hull has no known slot layout.
-     */
-    hardpoints(): LoadoutSlot[] {
-        return this.slotsOfKind('hardpoint');
-    }
-
-    /**
-     * The hull's tiny utility mounts, as live {@link LoadoutSlot} handles.
-     *
-     * @returns The utility mounts (empty if the hull has none).
-     * @throws {TypeError} If the hull has no known slot layout.
-     */
-    utilityMounts(): LoadoutSlot[] {
-        return this.slotsOfKind('utility');
-    }
-
-    /**
-     * The hull's optional-internal mounts (including any military and planetary-approach
-     * slots), as live {@link LoadoutSlot} handles.
-     *
-     * @returns The optional-internal mounts, largest first.
-     * @throws {TypeError} If the hull has no known slot layout.
-     */
-    optionalModules(): LoadoutSlot[] {
-        return this.slotsOfKind('optional');
-    }
-
-    /**
-     * A live {@link FittedModule} handle for the module in a slot, or `null` if the slot
-     * is empty.
-     *
-     * The handle carries its slot key, so you can engineer, de-engineer or remove the
-     * module — and ask which blueprints it accepts — without repeating the key:
-     * `build.getFittedModule('FrameShiftDrive')?.applyBlueprint('FSD_LongRange', { grade: 5 })`.
-     *
-     * @param slotKey - The slot key, e.g. `"FrameShiftDrive"`, `"Slot01_Size6"`. Matched
-     * case-insensitively, otherwise in the journal's own spelling — enumerate keys with
-     * {@link slots} rather than typing them (a core slot's `core` function name, e.g.
-     * `thrusters`, is not its key, `MainEngines`).
-     * @returns A live handle on the fitted module, or `null` when the slot is empty or
-     * the key is not a slot on this hull. The handle reports the build's own spelling
-     * of the key, not the one you asked with.
-     */
-    getFittedModule(slotKey: string): FittedModule | null {
+    fittedModuleAt(slotKey: string): FittedModule | null {
         const key = this.#fittedKey(slotKey);
-        if (key === null) return null;
-        return new FittedModule(
-            this,
-            key,
-            this.#slotVersions.get(key) ?? 0,
-            () => this.#slotVersions.get(key) ?? 0,
-            () => this.#statsFor(this.#modules.get(key) ?? null),
+        const module = key === null ? undefined : this.#modules.get(key);
+        if (!module || key === null) return null;
+        const raw = cloneLoadoutModule(module);
+        const stats = this.#statsFor(module);
+        const effective = effectiveModule(raw, stats);
+        return deepFreeze({
+            slot: key,
+            symbol: raw.Item,
+            on: raw.On,
+            priority: raw.Priority,
+            health: raw.Health,
+            value: raw.Value,
+            engineering: raw.Engineering,
+            raw,
+            stats: stats === null ? null : cloneModuleStats(stats),
+            effectiveStats: effective === null ? null : cloneModuleStats(effective),
+            ammunition: ammunitionCapacity(effective),
+            preEngineeredVariant: identifyPreEngineeredVariant(raw),
+        });
+    }
+
+    /**
+     * Every fitted module as a deeply frozen point-in-time view.
+     *
+     * @returns Detached module snapshots in the order the build carries them. The array
+     * and every nested record are frozen; query again after an edit for current state.
+     * @example
+     * ```ts
+     * build.fittedModules().map((module) => `${module.slot}: ${module.symbol}`);
+     * ```
+     */
+    fittedModules(): readonly FittedModule[] {
+        return deepFreeze(
+            [...this.#modules.keys()].flatMap((key) => {
+                const fitted = this.fittedModuleAt(key);
+                return fitted === null ? [] : [fitted];
+            }),
+        );
+    }
+
+    /**
+     * Return the computable blueprints offered to a fitted module.
+     *
+     * @param slotKey - Slot key, matched case-insensitively.
+     * @returns Frozen blueprint descriptors in engineering-menu order, or an empty
+     * array when the slot is empty, unresolved, final, or has no engineering menu.
+     * @example
+     * ```ts
+     * build.availableBlueprints('FrameShiftDrive').map(({ fdname }) => fdname);
+     * ```
+     */
+    availableBlueprints(slotKey: string): readonly AvailableBlueprint[] {
+        const key = this.#fittedKey(slotKey);
+        const module = key === null ? undefined : this.#modules.get(key);
+        return deepFreeze(
+            module ? availableBlueprintsFor(module.Item, this.#statsFor(module)) : [],
+        );
+    }
+
+    /**
+     * Return the computable experimental effects offered to a fitted module.
+     *
+     * @param slotKey - Slot key, matched case-insensitively.
+     * @returns Frozen Frontier effect ids in engineering-menu order, or an empty array
+     * when the slot is empty, unresolved, final, or has no experimental menu.
+     * @example
+     * ```ts
+     * build.availableExperimentalEffects('FrameShiftDrive');
+     * // -> ['special_fsd_heavy', ...]
+     * ```
+     */
+    availableExperimentalEffects(slotKey: string): readonly string[] {
+        const key = this.#fittedKey(slotKey);
+        const module = key === null ? undefined : this.#modules.get(key);
+        return deepFreeze(
+            module ? availableExperimentalsFor(module.Item, this.#statsFor(module)) : [],
         );
     }
 
     /**
      * The raw journal `Loadout` module object in a slot, or `null` if empty. The
-     * low-level counterpart to {@link getFittedModule} for when you want the plain data
-     * rather than a handle.
+     * low-level counterpart to {@link fittedModuleAt} for journal-shaped data.
      *
      * @param slotKey - The slot key, matched case-insensitively (journal spelling).
      * @returns The raw module object, or `null` when the slot is empty. Its `Slot` field
@@ -1430,9 +1316,8 @@ export class ShipLoadout {
      * @remarks
      * Deliberately **not** routed through `#replaceModule`: powering a module up or down
      * changes no mass, capacity, value or rebuy, so running the aggregate adjustment
-     * would wrongly discard `ModulesValue` and `Rebuy`. It also leaves `#slotVersions`
-     * alone, so live {@link FittedModule} handles stay valid and see the change — they
-     * re-read through {@link moduleAt} on every access.
+     * would wrongly discard `ModulesValue` and `Rebuy`. Existing immutable snapshots
+     * intentionally keep their earlier power state; a fresh query observes the patch.
      */
     #patchModule(slotKey: string, patch: Pick<Partial<LoadoutModule>, 'On' | 'Priority'>): void {
         const key = this.#fittedKey(slotKey);
@@ -2219,7 +2104,6 @@ export class ShipLoadout {
             this.#modules.set(slotKey, cloneLoadoutModule(replacement));
             if (replacementStats !== undefined) this.#moduleStats.set(slotKey, replacementStats);
         }
-        this.#slotVersions.set(slotKey, (this.#slotVersions.get(slotKey) ?? 0) + 1);
         this.#invalidate();
     }
 

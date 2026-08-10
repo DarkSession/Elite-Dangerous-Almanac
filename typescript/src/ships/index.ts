@@ -135,8 +135,8 @@ export {
     type LoadoutExportOptions,
     type SlefExportOptions,
 } from './ship-loadout.js';
-export { FittedModule } from './fitted-module.js';
-export { LoadoutSlot } from './loadout-slot.js';
+export type { FittedModule } from './fitted-module.js';
+export type { LoadoutSlot } from './loadout-slot.js';
 export {
     calculateCargoCapacity,
     calculateFuelCapacity,
