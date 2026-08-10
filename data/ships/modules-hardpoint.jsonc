@@ -17,7 +17,8 @@
  *          registry/CAPI-sourced. Exact corrections are pinned in
  *          fixtures/ships/module-stats.json. Frontier journal captures there also state
  *          otherwise-unreached base stats, including the medium fixed Guardian Shard
- *          Cannon's projectile speed. Distinct damage amounts observed in-game are
+ *          Cannon's projectile speed and the current fixed medium/large Shard Cannon
+ *          damage. Distinct damage amounts observed in-game are
  *          retained in `damageComponents`; projectile boundary parameters observed in-game
  *          that are not effective ranges are retained in `projectileRange`.
  *          The stat values are Elite Dangerous game data, property of Frontier
@@ -3095,7 +3096,7 @@
     "integrity": 42,
     "powerDraw": 1.21,
     "bootTime": 0,
-    "damage": 3.385,
+    "damage": 3.7235,
     "damageDistribution": {
       "thermal": 1,
       "antiXeno": 1
@@ -3115,8 +3116,8 @@
     "jitter": 5,
     "cost": 507761,
     "damageComponents": {
-      "thermal": 3.385,
-      "antiXeno": 3.385
+      "thermal": 3.7235,
+      "antiXeno": 3.7235
     }
   },
   {
@@ -3252,7 +3253,7 @@
     "integrity": 51,
     "powerDraw": 1.68,
     "bootTime": 0,
-    "damage": 4.75,
+    "damage": 5.225,
     "damageDistribution": {
       "thermal": 1,
       "antiXeno": 1
@@ -3272,8 +3273,8 @@
     "jitter": 5,
     "cost": 1461350,
     "damageComponents": {
-      "thermal": 4.75,
-      "antiXeno": 4.75
+      "thermal": 5.225,
+      "antiXeno": 5.225
     }
   },
   {

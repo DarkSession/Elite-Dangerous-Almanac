@@ -204,16 +204,19 @@ in the doc comment of each ported module, and in long form in the domain
   figure. [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden, **CC BY-NC 4.0**)
   reads the same, against [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)'s 3
   (**MIT** for its code; the values are game data).
-- **The medium fixed Guardian Shard Cannon's projectile speed and Modified damage** —
-  the `shotSpeed` of 1133.333374 m/s on
-  `Hpt_Guardian_ShardCannon_Fixed_Medium`, the 6299.209 m/s overwrite on its tech-broker
-  Modified variant, and that variant's `Damage` +10%. The speeds come from Frontier's
-  own `OriginalValue` and engineered `Value` in
-  `fixtures/ships/journal-anaconda-slapaconda.json`; the damage comes from the repository
-  owner's current individual outfitting-panel reading (2026-08-10 UTC), which reports
-  3.7 damage and 74.5 damage/s. The capture is credited under Ground-truth ship builds
-  below. These replace the registry-derived 1133 and 3568.6 m/s speeds and complete the
-  previously absent damage modifier.
+- **The fixed Guardian Shard Cannons' current damage and projectile speeds** — the
+  `damage` of 3.7235 and 5.225 on the medium and large fixed variants, the medium's
+  `shotSpeed` of 1133.333374 m/s, and the 6299.209 m/s overwrite on its tech-broker
+  Modified variant. The damage values are derived by applying a uniform 10% correction
+  to the older registry figures. Current individual outfitting-panel readings observed
+  on 2026-08-10 UTC with grade-1 Anti-Guardian Zone Resistance active are consistent
+  with that derivation: 3.7 damage / 74.5 damage/s on the medium and 5.2 / 104.5 on the
+  large, joined by the mixed build's 566.9 damage/s. The one-decimal readings do not
+  uniquely expose the underlying decimals. The speeds come from Frontier's own
+  `OriginalValue` and engineered `Value` in
+  `fixtures/ships/journal-anaconda-slapaconda.json`; that capture is credited under
+  Ground-truth ship builds below. These replace the registry-derived 3.385/4.75 damage
+  and 1133/3568.6 m/s speeds.
 - **The journal spelling of the two scanner blueprints** — the `journalName` on
   `Scanner_LongRange` and `Scanner_WideAngle` in `data/ships/blueprints.jsonc`, recording
   that the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` even though those
