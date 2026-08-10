@@ -321,6 +321,62 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * `FSDOptimalMass`, for instance). For a SLEF build, mass comes from the export's
  * `UnladenMass`; for an assembled build it is the hull mass plus every fitted module's
  * mass (armour defaults to the zero-mass lightweight alloy).
+ *
+ * @example
+ * Read a build a player already flies, and ask it what an outfitting screen shows.
+ * Every figure below is this build's, computed from the capture.
+ *
+ * ```ts
+ * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * // A `Loadout` line lifted from a player journal, parsed.
+ * declare const event: LoadoutEvent;
+ *
+ * const build = ShipLoadout.fromLoadout(event);
+ *
+ * build.shipSymbol; // -> 'krait_light'
+ * build.shipName; // -> 'Jenny Longuet'
+ * build.unladenMass; // -> 388.830017   (tonnes)
+ *
+ * build.maxJumpRange(); // -> 60.5478   (ly, best single jump)
+ * build.powerBudget().withinBudget; // -> true
+ * build.shieldMetrics()?.strength; // -> 743.12  (MJ)
+ * build.armourMetrics().hitPoints; // -> 307.8
+ * ```
+ *
+ * @example
+ * Assemble a hull instead. `empty` starts from the shipyard layout, `slots` enumerates
+ * the mounts, and `setModule` fits one — chainable, because the build is mutable.
+ *
+ * ```ts
+ * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+ *
+ * const conda = ShipLoadout.empty('Anaconda');
+ * conda.slots().length; // -> 39   (every mount, occupied or not)
+ * conda.slots('optional').length; // -> 14
+ * conda.complete; // -> false  (nothing fitted yet)
+ *
+ * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES);
+ * if (fsd) conda.setModule('FrameShiftDrive', fsd);
+ * ```
+ *
+ * @example
+ * Write a build back out. Retail credits are what the catalogue prices the fit at; pass
+ * `credits: 'source'` to export the figures a capture stated it paid instead — see
+ * {@link ShipLoadout.sourcePurchase}.
+ *
+ * ```ts
+ * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ *
+ * declare const build: ShipLoadout;
+ *
+ * build.toLoadoutEvent(); // retail: hull cost plus every module's list price
+ * build.toLoadoutEvent({ credits: 'source' }); // the capture's own figures
+ * build.toSlefString({ header: { appName: 'MyApp', appVersion: '1.0.0' } });
+ * ```
  */
 export class ShipLoadout {
     readonly #shipSymbol: string;

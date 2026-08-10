@@ -65,6 +65,42 @@ export interface SourceModuleValue {
  * slot missing from {@link moduleValues} was not priced by the source; that is not the
  * same as free — decorations never carry a price, and a journal also omits `Value` on
  * modules that came with the hull and on some that were genuinely bought.
+ *
+ * @example
+ * What a capture *paid* and what the build is *worth* are different questions, and
+ * editing the build only answers the second one differently.
+ *
+ * ```ts
+ * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * declare const event: LoadoutEvent;
+ *
+ * const build = ShipLoadout.fromLoadout(event);
+ * const paid = build.sourcePurchase; // null for a build assembled here
+ *
+ * paid?.hullValue; // -> 37472252   as the capture stated it
+ * paid?.modulesValue; // -> 50785509
+ * paid?.moduleCount; // -> 40
+ * paid?.valueForSlot('FrameShiftDrive'); // -> 4976355
+ *
+ * // Removing a module makes the live figure unknowable, and leaves the capture alone.
+ * build.removeModule('Slot01_Size6');
+ * build.modulesValue; // -> null
+ * paid?.modulesValue; // -> 50785509, still what the capture said
+ * ```
+ *
+ * @example
+ * A slot the capture never priced reads `null`, which does not mean it was free.
+ *
+ * ```ts
+ * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+ *
+ * declare const paid: SourcePurchaseRecord;
+ *
+ * paid.valueForSlot('ShipCockpit'); // -> null, the journal priced no cockpit
+ * paid.entryForSlot('ShipCockpit'); // -> null, so nothing to attribute either
+ * ```
  */
 export class SourcePurchaseRecord {
     /** Hull cost in credits as the source stated it, or `null` if it stated none. */
