@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
     getPreEngineeredStats,
     getPreEngineeredModifiers,
+    identifyPreEngineeredVariant,
     unresolvedModifiers,
 } from './pre-engineered-stats.js';
 import {
@@ -16,6 +17,12 @@ import { ALL_MODULES } from './modules-all.js';
 import { combinedRateOfFire, weaponMetrics } from './weapons.js';
 import { fieldForLabel, scaleForLabel } from './internal/module-stat-labels.js';
 import fixture from '../../../fixtures/ships/pre-engineered.json' with { type: 'json' };
+import slapaconda from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
+import corvette from '../../../fixtures/ships/journal-federation-corvette-mixed.json' with { type: 'json' };
+import panther from '../../../fixtures/ships/journal-panther-mkii-fat-arse.json' with { type: 'json' };
+import spireOps from '../../../fixtures/ships/journal-python-mkii-spire-ops.json' with { type: 'json' };
+import krait from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
+import type { LoadoutEvent, LoadoutModule } from './slef.js';
 
 /** The rounding `computeModifiers` applies, so a pin means the same thing to a port. */
 const round6 = (value: number): number => Math.round(value * 1e6) / 1e6;
@@ -28,6 +35,97 @@ function only(match: Partial<PreEngineeredVariant>): PreEngineeredVariant {
     assert.equal(found.length, 1, `expected exactly one variant for ${JSON.stringify(match)}`);
     return found[0]!;
 }
+
+const captures: Readonly<Record<string, LoadoutEvent>> = {
+    'journal-anaconda-slapaconda.json': slapaconda as LoadoutEvent,
+    'journal-federation-corvette-mixed.json': corvette as LoadoutEvent,
+    'journal-panther-mkii-fat-arse.json': panther as LoadoutEvent,
+    'journal-python-mkii-spire-ops.json': spireOps as LoadoutEvent,
+    'journal-krait-phantom.json': krait as LoadoutEvent,
+};
+
+const capturedModule = (source: string, slot: string): LoadoutModule => {
+    const module = captures[source]?.Modules.find((candidate) => candidate.Slot === slot);
+    assert.ok(module, `${source}: no module in ${slot}`);
+    return module;
+};
+
+test('captured stat signatures identify fixed variants, including an added experimental', () => {
+    for (const expected of fixture.identification.matches) {
+        const actual = identifyPreEngineeredVariant(capturedModule(expected.source, expected.slot));
+        assert.ok(actual, `${expected.source}: ${expected.slot} was not identified`);
+        assert.equal(actual.symbol, expected.symbol);
+        assert.equal(actual.blueprint, expected.blueprint);
+        assert.equal(actual.grade, expected.grade);
+        assert.equal(
+            actual.experimental,
+            'experimental' in expected ? expected.experimental : undefined,
+        );
+        assert.equal(actual.acquisition, expected.acquisition);
+    }
+});
+
+test('ordinary and under-specified engineering is not guessed to be pre-engineered', () => {
+    for (const expected of fixture.identification.notMatches) {
+        assert.equal(
+            identifyPreEngineeredVariant(capturedModule(expected.source, expected.slot)),
+            null,
+            `${expected.source}: ${expected.slot}`,
+        );
+    }
+
+    const matched = capturedModule('journal-panther-mkii-fat-arse.json', 'FrameShiftDrive');
+    const modifiers = matched.Engineering!.Modifiers!;
+    assert.equal(
+        identifyPreEngineeredVariant({
+            ...matched,
+            Engineering: { ...matched.Engineering!, Modifiers: modifiers.slice(0, -2) },
+        }),
+        null,
+        'two missing predictions are insufficient evidence',
+    );
+    assert.equal(
+        identifyPreEngineeredVariant({
+            ...matched,
+            Engineering: {
+                ...matched.Engineering!,
+                ExperimentalEffect: 'not_a_real_effect',
+            },
+        }),
+        null,
+        'an unknown added effect cannot be composed safely',
+    );
+    assert.equal(identifyPreEngineeredVariant({ Slot: 'x', Item: matched.Item }), null);
+    assert.equal(
+        identifyPreEngineeredVariant({
+            Slot: 'x',
+            Item: 'not_a_real_module',
+            Engineering: matched.Engineering!,
+        }),
+        null,
+    );
+});
+
+test('resolved fallback stats include a baked experimental effect omitted by the capture', () => {
+    const expected = fixture.identification.omittedBakedExperimental;
+    const captured = capturedModule(expected.source, expected.slot);
+    const module: LoadoutModule = {
+        ...captured,
+        Engineering: {
+            ...captured.Engineering!,
+            Modifiers: [
+                ...captured.Engineering!.Modifiers!.filter(
+                    (modifier) => modifier.Label !== expected.omitted,
+                ),
+                expected.reportedInstead,
+            ],
+        },
+    };
+    const variant = identifyPreEngineeredVariant(module);
+    assert.ok(variant);
+    assert.equal(variant.experimental, 'special_feedback_cascade_cooled');
+    assert.equal(getPreEngineeredStats(variant)?.thermalLoad, expected.expectedThermalLoad);
+});
 
 test('a pre-engineered drive resolves to its known in-game stats', () => {
     const { symbol, blueprint, base, engineered, unresolved } = fixture.resolved.fsdV1Size5;
@@ -324,7 +422,10 @@ test('getPreEngineeredModifiers reports journal shape with the original value', 
 
 test('every authored modifier is either computed or reported unresolved', () => {
     for (const variant of PRE_ENGINEERED_MODULES) {
-        const computed = getPreEngineeredModifiers(variant).map((modifier) => modifier.Label);
+        const authored = new Set((variant.modifiers ?? []).map((modifier) => modifier.label));
+        const computed = getPreEngineeredModifiers(variant)
+            .map((modifier) => modifier.Label)
+            .filter((label) => authored.has(label));
         const unresolved = unresolvedModifiers(variant);
         assert.deepEqual(
             [...computed, ...unresolved].sort(),

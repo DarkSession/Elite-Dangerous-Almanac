@@ -11,6 +11,8 @@ import {
 } from './internal/loadout-engineering.js';
 import { effectiveModule } from './internal/loadout-metrics.js';
 import type { OutfittingModule } from './modules.js';
+import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
+import type { PreEngineeredVariant } from './pre-engineered.js';
 import type { ApplyBlueprintOptions, AvailableBlueprint, ShipLoadout } from './ship-loadout.js';
 import type { LoadoutModule, ModuleEngineering } from './slef.js';
 
@@ -128,6 +130,22 @@ export class FittedModule {
     /** Applied engineering, or `undefined` when the module is stock. */
     get engineering(): ModuleEngineering | undefined {
         return this.#raw().Engineering;
+    }
+
+    /**
+     * The fixed pre-engineered/reward variant this imported module's reported stats
+     * identify, or `null` when they do not uniquely identify one.
+     *
+     * @remarks
+     * Identification uses the stat signature, including an experimental effect added to
+     * a fixed article, rather than trusting the blueprint name and grade alone. It is
+     * intentionally conservative: a SLEF entry without enough modifier values remains
+     * unidentified. A module fitted directly from `getPreEngineeredStats` has no journal
+     * signature to inspect, so retain the variant used to resolve it if that identity is
+     * needed later.
+     */
+    get preEngineeredVariant(): PreEngineeredVariant | null {
+        return identifyPreEngineeredVariant(this.#raw());
     }
 
     /**

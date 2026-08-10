@@ -112,7 +112,7 @@ import { armourMetrics, type ArmourMetrics } from './armour.js';
 import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.js';
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
-import { getPreEngineeredStats } from './pre-engineered-stats.js';
+import { getPreEngineeredStats, identifyPreEngineeredVariant } from './pre-engineered-stats.js';
 import { FittedModule } from './fitted-module.js';
 import { LoadoutSlot } from './loadout-slot.js';
 import { SourcePurchaseRecord } from './source-purchase.js';
@@ -635,6 +635,11 @@ export class ShipLoadout {
      * Capture/instance state (`timestamp`, `ShipID`, `HullHealth`, `Hot`) and engineering
      * provenance (`Engineer`, `EngineerID`, `BlueprintID`) are deliberately excluded
      * from the durable build. See {@link LoadoutEvent} and {@link ModuleEngineering}.
+     * A pre-engineered/reward module is identified from its reported stat signature when
+     * the evidence uniquely matches a catalogue variant. Its complete fixed stat block is
+     * then used as the fitted record, including values the capture omits; a separately
+     * applied experimental effect is included when matching and remains authoritative in
+     * the captured modifiers. Under-specified or ambiguous evidence stays unidentified.
      * An ordinary weapon recipe on a Guardian weapon identifies a final pre-engineered
      * article; the import preserves that identity, uses the catalogue's complete hand-set
      * stat block when the exact article is known, exposes no engineering options for it,
@@ -671,33 +676,36 @@ export class ShipLoadout {
             top,
             SourcePurchaseRecord.fromLoadout(event),
         );
-        // Guardian weapon captures use an ordinary recipe to identify a bought or awarded
-        // pre-engineered article. The article has no distinct module symbol, so preserve
-        // its final-engineering restriction alongside the otherwise stock base record.
-        // Its Engineering modifiers remain authoritative for effective stats.
+        // A reward has no distinct module symbol. Identify its hand-set stat signature so
+        // derived and newly established values absent from the capture still come from the
+        // right article; the capture's own modifiers remain authoritative when present.
+        // Guardian weapons retain the recipe-based fallback because captures without a
+        // modifier block can still prove that their bought article is final.
         for (const module of modules.values()) {
             const engineering = module.Engineering;
+            const variant = identifyPreEngineeredVariant(module);
+            const variantStats = variant ? getPreEngineeredStats(variant) : null;
+            if (variantStats) loadout.#moduleStats.set(module.Slot, cloneModuleStats(variantStats));
             if (
+                variantStats?.engineeringLocked ||
                 !engineering ||
                 !isFinalGuardianWeaponEngineering(module.Item, engineering.BlueprintName)
-            ) {
+            )
                 continue;
-            }
             const normalizedBlueprint = engineering.BlueprintName.trim().toLowerCase();
             const normalizedExperimental = engineering.ExperimentalEffect?.trim().toLowerCase();
-            const variant = getPreEngineeredVariants(module.Item).find(
+            const exact = getPreEngineeredVariants(module.Item).find(
                 (candidate) =>
                     candidate.blueprint.toLowerCase() === normalizedBlueprint &&
                     candidate.grade === engineering.Level &&
                     candidate.experimental?.toLowerCase() === normalizedExperimental,
             );
-            const stats = variant ? getPreEngineeredStats(variant) : statFor(module.Item);
-            if (stats) {
+            const stats = exact ? getPreEngineeredStats(exact) : statFor(module.Item);
+            if (stats)
                 loadout.#moduleStats.set(
                     module.Slot,
                     cloneModuleStats({ ...stats, engineeringLocked: true }),
                 );
-            }
         }
         return loadout;
     }

@@ -2159,11 +2159,30 @@ order.
     not one introduced by restoring the interval — they already disagreed on that
     variant's damage, clip size and ammunition.
   - **Resolution.** The module catalogues carry the weapon and scanner base stats needed
-    by every reward variant. `getPreEngineeredStats` applies the supported modifiers and
-    `unresolvedModifiers` reports any field the catalogue cannot model rather than
-    dropping it silently. Every current reward variant changes at least one carried stat;
-    the fixture pins the empty fully-unresolved set. As an external check, the 5A "FSD V1"
-    resolves to 1785 optimal mass from the stock drive's 1050.
+    by every reward variant. `getPreEngineeredStats` applies the supported hand-set
+    modifiers together with the variant's baked experimental effect, and
+    `unresolvedModifiers` reports any hand-set field the catalogue cannot model rather
+    than dropping it silently. Every current reward variant changes at least one carried
+    stat; the fixture pins the empty fully-unresolved set. As an external check, the 5A
+    "FSD V1" resolves to 1785 optimal mass from the stock drive's 1050. Effects compound
+    when they touch the same value: the FSD Interrupt missile rewards' authored −10%
+    burst interval and the effect's +50% interval resolve together to +35%, or 4.05 s on
+    the stock 3 s rack.
+  - **Loadout identification follows the stat block.**
+    `identifyPreEngineeredVariant` compares a journal/SLEF module's post-engineering
+    values with each fixed variant of that symbol, rather than treating a blueprint id
+    and grade as proof: an ordinary roll can carry the same tuple without carrying the
+    reward's hand-set values. The comparison composes the capture's experimental effect
+    over the candidate first, which is what identifies the Panther Mk II capture's V1
+    frame-shift drive after Mass Manager was applied. Frontier float residue is tolerated;
+    every stated predicted value must agree, and at most one prediction may be absent for
+    a derived journal value or a stat established after the capture. Anything weaker or
+    ambiguous stays unidentified. `ShipLoadout.fromLoadout` uses the identified article
+    as its fitted stat record, while the capture's explicit modifiers remain authoritative,
+    and `FittedModule.preEngineeredVariant` exposes the result. The shared fixture also
+    pins the important negative: Spire Ops reports only Anti-Guardian Zone Resistance on
+    its medium shards, which is not evidence for either fixed Shard Cannon variant; the
+    stock Guardian shard damage gap remains tracked in #97.
 - **Not included:** engineered modules that are one-off mission or salvage rewards rather
   than a repeatable outfitting row. Those arrive in a build as their base symbol plus an
   `Engineering.Modifiers` block, which `ShipLoadout` already applies directly; there is no
@@ -2588,11 +2607,11 @@ under, which is why several are cited above rather than copied.
   `timestamp` and game NPC engineer names are retained because they describe the captured
   ship and game state. The source and stored SHA-256 values are:
 
-  | File                                                   | Ship / fit                                                                                      | Raw pasted line                                                   | Stored fixture                                                    |
-  | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- |
-  | `journal-the-deep-black.json`                          | Explorer, 34 modules, two heat-sink launchers                                                    | `dc6ead5c6fbd0ceea835770f6056fd59f6dc5db470c823fef527a93b29ba3398` | `c4c4734b4bb332d235115666842939fb4a38743d4573ad25cb731c3a3c022dc8` |
-  | `journal-lynx-highliner-rescue01-current.json`         | Lynx Highliner, 36 modules, five multi-cannons and one heat-sink launcher                        | `ea0df24861d2f7358666500e91e9945d16601b2fc8a508beff07e16a61d9b378` | `82def80bf262c2786a813c290b52d11d9f7eb57000d4602d36ee07df80082cbf` |
-  | `journal-panther-mkii-fat-arse.json`                   | Panther Clipper Mk II, 37 modules, one heat sink and two point-defence turrets, empty hardpoints | `0102aa352c6796ce72e56ec0edc6d7a7f80703defd8712005a30f6ecbb8a097e` | `14b18643c2655f36216dc09badc2ffc0e003952fa95003478b71ca1385dcc748` |
+  | File                                           | Ship / fit                                                                                       | Raw pasted line                                                    | Stored fixture                                                     |
+  | ---------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------------ |
+  | `journal-the-deep-black.json`                  | Explorer, 34 modules, two heat-sink launchers                                                    | `dc6ead5c6fbd0ceea835770f6056fd59f6dc5db470c823fef527a93b29ba3398` | `c4c4734b4bb332d235115666842939fb4a38743d4573ad25cb731c3a3c022dc8` |
+  | `journal-lynx-highliner-rescue01-current.json` | Lynx Highliner, 36 modules, five multi-cannons and one heat-sink launcher                        | `ea0df24861d2f7358666500e91e9945d16601b2fc8a508beff07e16a61d9b378` | `82def80bf262c2786a813c290b52d11d9f7eb57000d4602d36ee07df80082cbf` |
+  | `journal-panther-mkii-fat-arse.json`           | Panther Clipper Mk II, 37 modules, one heat sink and two point-defence turrets, empty hardpoints | `0102aa352c6796ce72e56ec0edc6d7a7f80703defd8712005a30f6ecbb8a097e` | `14b18643c2655f36216dc09badc2ffc0e003952fa95003478b71ca1385dcc748` |
 
   **All three rebuild from their fitted modules.** With the stated totals removed, The
   Deep Black recomputes to 1247.300000 t / 88.785420 ly against Frontier's 1247.299927 t /

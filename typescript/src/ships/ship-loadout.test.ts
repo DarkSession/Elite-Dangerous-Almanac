@@ -13,12 +13,14 @@ import expected from '../../../fixtures/ships/jump-range.json' with { type: 'jso
 import metrics from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
+import preEngineeredFixture from '../../../fixtures/ships/pre-engineered.json' with { type: 'json' };
 import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
 import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue01-current.json' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
+import corvetteMixedJournal from '../../../fixtures/ships/journal-federation-corvette-mixed.json' with { type: 'json' };
 import cobraMkVJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import kestrelMkIIJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
@@ -2405,6 +2407,10 @@ test('Slapaconda reproduces every observed calculated total', () => {
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
     const shard = build.getFittedModule('HugeHardpoint1')!.effectiveStats!;
+    assert.equal(
+        build.getFittedModule('HugeHardpoint1')!.preEngineeredVariant?.acquisition,
+        'techBroker',
+    );
     assert.equal(shard.damage, 3.7235);
     assert.equal(displayed(damagePerSecond(shard), 1), 74.5);
     assert.equal(shard.shotSpeed, 6299.208984);
@@ -2428,6 +2434,44 @@ test('Slapaconda reproduces every observed calculated total', () => {
         },
         expected.armour.resistances,
     );
+});
+
+test('an imported V1 drive is resolved before its added experimental is folded in', () => {
+    const drive = ShipLoadout.fromLoadout(pantherJournal as LoadoutEvent).getFittedModule(
+        'FrameShiftDrive',
+    )!;
+    assert.equal(drive.preEngineeredVariant?.acquisition, 'techBroker');
+    assert.equal(drive.preEngineeredVariant?.experimental, undefined);
+    assert.equal(drive.engineering?.ExperimentalEffect, 'special_fsd_heavy');
+    assert.equal(drive.stats?.optMass, 5100);
+    assert.equal(drive.effectiveStats?.optMass, 5304);
+});
+
+test('an identified reward supplies an omitted baked-experimental stat', () => {
+    const expected = preEngineeredFixture.identification.omittedBakedExperimental;
+    const source = corvetteMixedJournal as LoadoutEvent;
+    const modules = source.Modules.map((module) =>
+        module.Slot !== expected.slot
+            ? module
+            : {
+                  ...module,
+                  Engineering: {
+                      ...module.Engineering!,
+                      Modifiers: [
+                          ...module.Engineering!.Modifiers!.filter(
+                              (modifier) => modifier.Label !== expected.omitted,
+                          ),
+                          expected.reportedInstead,
+                      ],
+                  },
+              },
+    );
+    const rail = ShipLoadout.fromLoadout({ ...source, Modules: modules }).getFittedModule(
+        expected.slot,
+    )!;
+    assert.equal(rail.preEngineeredVariant?.experimental, 'special_feedback_cascade_cooled');
+    assert.equal(rail.stats?.thermalLoad, expected.expectedThermalLoad);
+    assert.equal(rail.effectiveStats?.thermalLoad, expected.expectedThermalLoad);
 });
 
 /** The fixture's Anaconda, assembled from the catalogues. */
