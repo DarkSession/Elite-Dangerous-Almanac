@@ -117,6 +117,25 @@ test('nearestNebulae returns nothing for a non-positive count', () => {
     assert.deepEqual(nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, -1), []);
 });
 
+test('nearestNebulae retains catalogue order when distances tie', () => {
+    const tied: readonly Nebula[] = [
+        { name: 'first', system: 'first', x: -1, y: 0, z: 0, type: 'real', regionId: 1 },
+        { name: 'far', system: 'far', x: 2, y: 0, z: 0, type: 'real', regionId: 1 },
+        { name: 'second', system: 'second', x: 1, y: 0, z: 0, type: 'real', regionId: 1 },
+    ];
+    assert.deepEqual(
+        nearestNebulae({ x: 0, y: 0, z: 0 }, tied, 2).map(({ name }) => name),
+        ['first', 'second'],
+    );
+});
+
+test('nearestNebulae treats count like Array.slice', () => {
+    const origin = { x: 0, y: 0, z: 0 };
+    assert.equal(nearestNebulae(origin, REAL_NEBULAE, 2.9).length, 2);
+    assert.deepEqual(nearestNebulae(origin, REAL_NEBULAE, Number.NaN), []);
+    assert.equal(nearestNebulae(origin, REAL_NEBULAE, Number.POSITIVE_INFINITY).length, 180);
+});
+
 test('nebulaeWithin includes the boundary and rejects a negative radius', () => {
     const target = REAL_NEBULAE[0]!;
     const from = { x: target.x, y: target.y, z: target.z };

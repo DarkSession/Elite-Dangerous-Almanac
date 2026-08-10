@@ -102,6 +102,46 @@ function distanceSquared(coords: GalacticPosition, nebula: Nebula): number {
     return dx * dx + dy * dy + dz * dz;
 }
 
+interface RankedNebula {
+    nebula: Nebula;
+    distanceSquared: number;
+    catalogueIndex: number;
+}
+
+function compareRank(a: RankedNebula, b: RankedNebula): number {
+    return a.distanceSquared - b.distanceSquared || a.catalogueIndex - b.catalogueIndex;
+}
+
+function withDistance({ nebula, distanceSquared }: RankedNebula): NebulaWithDistance {
+    return { ...nebula, distanceLy: Math.sqrt(distanceSquared) };
+}
+
+function pushMaxHeap(heap: RankedNebula[], ranked: RankedNebula): void {
+    heap.push(ranked);
+    let index = heap.length - 1;
+    while (index > 0) {
+        const parent = Math.floor((index - 1) / 2);
+        if (compareRank(heap[parent]!, heap[index]!) >= 0) return;
+        [heap[parent], heap[index]] = [heap[index]!, heap[parent]!];
+        index = parent;
+    }
+}
+
+function replaceMaxHeapRoot(heap: RankedNebula[], ranked: RankedNebula): void {
+    heap[0] = ranked;
+    let index = 0;
+    while (true) {
+        const left = index * 2 + 1;
+        if (left >= heap.length) return;
+        const right = left + 1;
+        const worseChild =
+            right < heap.length && compareRank(heap[right]!, heap[left]!) > 0 ? right : left;
+        if (compareRank(heap[index]!, heap[worseChild]!) >= 0) return;
+        [heap[index], heap[worseChild]] = [heap[worseChild]!, heap[index]!];
+        index = worseChild;
+    }
+}
+
 /**
  * The nebulae closest to a point, nearest first.
  *
@@ -111,8 +151,9 @@ function distanceSquared(coords: GalacticPosition, nebula: Nebula): number {
  * *and* you supplied its coordinates, so null-check it first.
  * @param nebulae - The catalogue to search — `REAL_NEBULAE`, `PLANETARY_NEBULAE`,
  * `PROCGEN_NEBULAE`, `ALL_NEBULAE`, or any subset you have filtered yourself.
- * @param count - How many to return. Defaults to `3`. Values `<= 0` yield an empty
- * array; a `count` larger than the catalogue returns the whole catalogue.
+ * @param count - How many to return. Defaults to `3`. Fractional values are truncated
+ * towards zero, values `<= 0` and `NaN` yield an empty array, and a count larger than
+ * the catalogue returns the whole catalogue.
  * @returns Up to `count` nebulae sorted by ascending {@link NebulaWithDistance.distanceLy}.
  * Ties keep catalogue order. The input array is not modified.
  * @example
@@ -129,14 +170,40 @@ export function nearestNebulae(
     nebulae: readonly Nebula[],
     count = 3,
 ): NebulaWithDistance[] {
-    if (count <= 0) return [];
-    // Rank on squared distances (no sqrt per comparison), then take the square root
-    // only for the handful of records actually returned.
-    const ranked = nebulae.map((nebula) => ({ nebula, d2: distanceSquared(coords, nebula) }));
-    ranked.sort((a, b) => a.d2 - b.d2);
-    return ranked
-        .slice(0, count)
-        .map(({ nebula, d2 }) => ({ ...nebula, distanceLy: Math.sqrt(d2) }));
+    const limit = Math.min(Math.max(Math.trunc(count), 0), nebulae.length);
+    if (!(limit > 0)) return [];
+
+    if (limit === nebulae.length) {
+        const ranked = nebulae.map((nebula) => ({
+            nebula,
+            distanceSquared: distanceSquared(coords, nebula),
+        }));
+        ranked.sort((a, b) => a.distanceSquared - b.distanceSquared);
+        return ranked.map(({ nebula, distanceSquared }) => ({
+            ...nebula,
+            distanceLy: Math.sqrt(distanceSquared),
+        }));
+    }
+
+    // Keep only the closest `limit` entries in a max-heap. This avoids allocating and
+    // sorting the whole catalogue for the usual small query while retaining catalogue
+    // order for equal distances.
+    const nearest: RankedNebula[] = [];
+    nebulae.forEach((nebula, catalogueIndex) => {
+        const ranked = {
+            nebula,
+            distanceSquared: distanceSquared(coords, nebula),
+            catalogueIndex,
+        };
+        if (nearest.length < limit) {
+            pushMaxHeap(nearest, ranked);
+        } else if (compareRank(ranked, nearest[0]!) < 0) {
+            replaceMaxHeapRoot(nearest, ranked);
+        }
+    });
+
+    nearest.sort(compareRank);
+    return nearest.map(withDistance);
 }
 
 /**
