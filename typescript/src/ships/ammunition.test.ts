@@ -25,6 +25,9 @@ import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with {
 import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
 import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
+import lynxCurrentJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue01-current.json' with { type: 'json' };
+import pantherJournal from '../../../fixtures/ships/journal-panther-mkii-fat-arse.json' with { type: 'json' };
+import deepBlackJournal from '../../../fixtures/ships/journal-the-deep-black.json' with { type: 'json' };
 import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
 
 /** The shape this file reads off a capture — a journal states more than the library models. */
@@ -59,6 +62,9 @@ const JOURNALS = [
     ['journal-kestrel-mkii.json', kestrelJournal],
     ['journal-lynx-highliner-rescue.json', lynxRescueJournal],
     ['journal-lynx-highliner.json', lynxJournal],
+    ['journal-lynx-highliner-rescue01-current.json', lynxCurrentJournal],
+    ['journal-panther-mkii-fat-arse.json', pantherJournal],
+    ['journal-the-deep-black.json', deepBlackJournal],
     ['journal-caspian-explorer.json', caspianJournal],
 ] as const;
 
@@ -229,8 +235,8 @@ test('a build reports the capacity of every weapon it carries', () => {
 });
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
-    // A rearm state is a lower bound on a capacity, never a reading of one. All 81 counts
-    // across the sixteen captures happen to sit at capacity — that is what makes them a
+    // A rearm state is a lower bound on a capacity, never a reading of one. All 92 counts
+    // across the nineteen captures happen to sit at capacity — that is what makes them a
     // check on the catalogue — but a partly spent launcher would report less and say
     // nothing.
     const pinned = fixture.ammunition.journalReadings;

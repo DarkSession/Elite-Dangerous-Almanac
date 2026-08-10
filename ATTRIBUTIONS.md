@@ -316,14 +316,15 @@ in the doc comment of each ported module, and in long form in the domain
   `journal-federation-corvette-multirole.json`, `journal-federation-corvette-mixed.json`,
   `journal-federation-corvette-plasma.json`, `journal-cobra-mkv.json`,
   `journal-kestrel-mkii.json`, `journal-lynx-highliner.json`,
-  `journal-lynx-highliner-rescue.json` and
+  `journal-lynx-highliner-rescue.json`, `journal-lynx-highliner-rescue01-current.json`,
+  `journal-panther-mkii-fat-arse.json`, `journal-the-deep-black.json` and
   `journal-caspian-explorer.json` are real Frontier journal
   `Loadout` events contributed by the repository owner from their own fleet, with no
   upstream project to credit; the Corvette is what says Overcharged does not cut a
   cannon's clip, the plasma Corvette what says the same for a fragment cannon and the
   Caspian Explorer what says it for a plasma accelerator, the
   mixed Corvette settles that a rail gun's charge delay is excluded from Frontier's
-  `RateOfFire`, and thirteen of them — every one but the unengineered Python Mk II — together
+  `RateOfFire`, and sixteen of them — every one but the unengineered Python Mk II — together
   with the Krait Phantom capture and the EDSY export are what the module catalogue's base
   stats are checked against. The beam-heavy Corvette, Cobra Mk V, Kestrel Mk II, The Deep
   Black, the two Lynx Highliners, Panther Clipper Mk II, Corsair, Spire Ops and Slapaconda also
@@ -344,7 +345,7 @@ in the doc comment of each ported module, and in long form in the domain
   own commander's fleet. The Lynx Highliner and the Panther Clipper Mk II are what a
   restricted mount's rules are checked against, and the Cutter is what the omitted-price
   rule is checked against. Their headers keep only the producing app and version.
-  All twenty-one are Elite Dangerous game output and remain the property of Frontier
+  All twenty-four are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`

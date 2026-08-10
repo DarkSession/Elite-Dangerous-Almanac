@@ -2051,11 +2051,44 @@
         ]
       },
       {
+        "file": "journal-lynx-highliner-rescue01-current.json",
+        "stated": 59,
+        "mapped": 57,
+        "exact": 52,
+        "withinFloatNoise": 5,
+        "unmapped": [
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Large",
+            "label": "DamagePerSecond"
+          },
+          {
+            "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+            "label": "DamagePerSecond"
+          }
+        ]
+      },
+      {
+        "file": "journal-panther-mkii-fat-arse.json",
+        "stated": 45,
+        "mapped": 45,
+        "exact": 39,
+        "withinFloatNoise": 6,
+        "unmapped": []
+      },
+      {
         "file": "journal-python-mkii-spire-ops.json",
         "stated": 58,
         "mapped": 58,
         "exact": 46,
         "withinFloatNoise": 12,
+        "unmapped": []
+      },
+      {
+        "file": "journal-the-deep-black.json",
+        "stated": 39,
+        "mapped": 39,
+        "exact": 36,
+        "withinFloatNoise": 3,
         "unmapped": []
       },
       {
@@ -2142,7 +2175,7 @@
         "damagePerSecond": 179.099991
       }
     ],
-    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the sixteen is 1.22e-4 t of mass and 7.94e-6 ly — and not a margin for disagreement.",
+    "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the nineteen is 1.22e-4 t of mass and 1.98e-5 ly — and not a margin for disagreement.",
     "rebuildTolerance": 0.0002,
     "rebuilds": [
       {
@@ -2211,6 +2244,16 @@
         "maxJumpRange": 30.513672
       },
       {
+        "file": "journal-lynx-highliner-rescue01-current.json",
+        "unladenMass": 710.900024,
+        "maxJumpRange": 30.513668
+      },
+      {
+        "file": "journal-panther-mkii-fat-arse.json",
+        "unladenMass": 1539.900024,
+        "maxJumpRange": 42.223217
+      },
+      {
         "file": "journal-python-mkii-antixeno.json",
         "unladenMass": 699,
         "maxJumpRange": 17.495169
@@ -2224,6 +2267,11 @@
         "file": "journal-viper-mkiv.json",
         "unladenMass": 260.799988,
         "maxJumpRange": 21.951651
+      },
+      {
+        "file": "journal-the-deep-black.json",
+        "unladenMass": 1247.299927,
+        "maxJumpRange": 88.7854
       }
     ],
     "engineeredNote": "Every engineered result the captures state where the journal's label is not the field's own first name, or where it names a field the module's record does not carry — the two places a wrong label→field resolution hides, since `effectiveStats` drops a label that resolves to nothing rather than failing and a stat with two labels can be written to whichever is asked for. `field` is written out here rather than resolved, so it says where the value belongs independently of the mapping under test. One row per distinct (module, field); `value` is in the catalogue's units, which is the journal's figure ÷ 100 for the one percentage label among them, `ShieldGenStrength`. Each is read back from `FittedModule.effectiveStats` on the build parsed from that capture, and each equals the `Value` Frontier states beside the `OriginalValue`.",
@@ -2682,6 +2730,20 @@
         "symbol": "Int_ShieldGenerator_Size4_Class3_Fast",
         "field": "optMultiplier",
         "value": 1.24199997
+      },
+      {
+        "file": "journal-panther-mkii-fat-arse.json",
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size8_Class5",
+        "field": "optMass",
+        "value": 2940
+      },
+      {
+        "file": "journal-panther-mkii-fat-arse.json",
+        "slot": "Slot03_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class2",
+        "field": "optMultiplier",
+        "value": 1.3165199300000001
       },
       {
         "file": "slef-the-deep-black.json",

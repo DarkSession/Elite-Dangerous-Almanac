@@ -1,5 +1,5 @@
 {
-  "description": "Parity fixture for the ship-build metrics: externally observed in-game totals, the power budget and its priority groups, the shield and armour metrics with their stacked resistances, weapon DPS, and ammunition capacity. Covers fixtures/ships/journal-anaconda-slapaconda.json, fixtures/ships/journal-federation-corvette-beams.json, fixtures/ships/journal-cobra-mkv.json, fixtures/ships/journal-corsair.json, fixtures/ships/journal-kestrel-mkii.json, fixtures/ships/journal-lynx-highliner.json, fixtures/ships/journal-lynx-highliner-rescue.json, fixtures/ships/journal-python-mkii-spire-ops.json, fixtures/ships/slef-the-deep-black.json, fixtures/ships/slef-inara-panther-mkii.json and an Anaconda assembled from the catalogues, plus the pure functions each metric is built from. Cross-language validation.",
+  "description": "Parity fixture for the ship-build metrics: externally observed in-game totals, the power budget and its priority groups, the shield and armour metrics with their stacked resistances, weapon DPS, and ammunition capacity. Covers fixtures/ships/journal-anaconda-slapaconda.json, fixtures/ships/journal-federation-corvette-beams.json, fixtures/ships/journal-cobra-mkv.json, fixtures/ships/journal-corsair.json, fixtures/ships/journal-kestrel-mkii.json, fixtures/ships/journal-lynx-highliner-rescue01-current.json, fixtures/ships/journal-lynx-highliner-rescue.json, fixtures/ships/journal-panther-mkii-fat-arse.json, fixtures/ships/journal-python-mkii-spire-ops.json, fixtures/ships/journal-the-deep-black.json, fixtures/ships/slef-the-deep-black.json, fixtures/ships/slef-inara-panther-mkii.json and an Anaconda assembled from the catalogues, plus the pure functions each metric is built from. Cross-language validation.",
   "inGame": {
     "federalCorvetteBeams": {
       "build": "fixtures/ships/journal-federation-corvette-beams.json",
@@ -145,11 +145,11 @@
       }
     },
     "deepBlack": {
-      "build": "fixtures/ships/slef-the-deep-black.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state; the 23.6059 MW installed draw is displayed to the nearest whole MW. The observed mass is consistent with the captured unladen mass, both fuel tanks and 10 t of cargo. The observed 84.95 ly full-tank range does not reproduce from the older SLEF capture, which gives 82.35 ly when reserve fuel is counted as mass; see issue #93. The weaponless build's 4 MW distributor draw does not reproduce from the fitted hardpoints; see issue #94. `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "build": "fixtures/ships/journal-the-deep-black.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state; the 24.0014 MW installed draw is displayed to the nearest whole MW. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: this weaponless fit's two heat-sink launchers account for its 4 MW distributor draw. The fresh capture reproduces every calculated metric except the observed 84.95 ly full-tank range, giving 81.83 ly when reserve fuel is counted as mass; see issue #93. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
       "jumpRange": {
         "fullTank": 84.95,
-        "calculatedFromCapture": 82.35
+        "calculatedFromCapture": 81.83
       },
       "speed": {
         "top": 238,
@@ -167,8 +167,7 @@
       "offense": {
         "damagePerSecond": 0,
         "distributorDraw": 4,
-        "thermalLoad": 0,
-        "calculatedDistributorDraw": 0
+        "thermalLoad": 0
       },
       "shields": {
         "strength": 230.7,
@@ -184,7 +183,6 @@
       },
       "mass": {
         "current": 1376.4,
-        "inferredCargo": 10,
         "maximum": 1490.4
       },
       "armour": {
@@ -246,8 +244,8 @@
       }
     },
     "rescue01": {
-      "build": "fixtures/ships/journal-lynx-highliner.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW `ModularCargoBayDoorFDL`. The displayed full-tank jump range counts the 0.75 t reserve tank as ship mass even though that fuel is unavailable to the FSD. The observed distributor draw does not reproduce from the multicannons' stored per-shot values, which total 0.81 MW; see issue #95. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "build": "fixtures/ships/journal-lynx-highliner-rescue01-current.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW `ModularCargoBayDoorFDL`. The displayed full-tank jump range counts the 0.75 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the five multicannons contribute 0.81 MW and the heat-sink launcher contributes 2 MW, reproducing the displayed 2.81 MW. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass. All calculated metrics reproduce at displayed precision.",
       "jumpRange": {
         "fullTank": 29.38
       },
@@ -267,7 +265,6 @@
       "offense": {
         "damagePerSecond": 77.1,
         "distributorDraw": 2.81,
-        "calculatedDistributorDraw": 0.81,
         "thermalLoad": 1.3
       },
       "shields": {
@@ -296,10 +293,11 @@
       }
     },
     "fatArse": {
-      "build": "fixtures/ships/slef-inara-panther-mkii.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The same-named SLEF capture is an older loadout: it has empty hardpoints and stock shields, bulkheads and thrusters, so its composed values differ throughout. The observation is preserved without attributing those differences to the calculations; see issue #96. The power figures include every fitted module regardless of its powered-on state. `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "build": "fixtures/ships/journal-panther-mkii-fat-arse.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state. The offense totals include utility mounts: this fit's two point-defence turrets account for its 4 damage/s and 0.1/s thermal load, while its heat-sink launcher accounts for the 2 MW distributor draw. The fresh capture reproduces every calculated metric except the observed 31.96 ly full-tank range, giving 39.29 ly when reserve fuel is counted as mass; see issue #96. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass. The older same-named SLEF capture remains separately preserved.",
       "jumpRange": {
-        "fullTank": 31.96
+        "fullTank": 31.96,
+        "calculatedFromCapture": 39.29
       },
       "speed": {
         "top": 296,
@@ -341,43 +339,6 @@
           "kinetic": -0.14,
           "thermal": 0.05,
           "explosive": -0.33
-        }
-      },
-      "calculatedFromCapture": {
-        "jumpRangeFullTank": 22.53,
-        "power": {
-          "available": 25.2,
-          "retracted": 19.25,
-          "deployed": 19.25
-        },
-        "offense": {
-          "damagePerSecond": 0,
-          "distributorDraw": 0,
-          "thermalLoad": 0
-        },
-        "shields": {
-          "strength": 200.2,
-          "resistances": {
-            "kinetic": 0.4,
-            "thermal": -0.2,
-            "explosive": 0.5
-          },
-          "regeneration": {
-            "standard": 1.3,
-            "broken": 5.3
-          }
-        },
-        "mass": {
-          "fullFuelNoCargo": 1646.5,
-          "maximum": 5040
-        },
-        "armour": {
-          "hitPoints": 1116,
-          "resistances": {
-            "kinetic": -0.2,
-            "thermal": 0,
-            "explosive": -0.4
-          }
         }
       }
     },
@@ -432,7 +393,7 @@
     },
     "spireOps": {
       "build": "fixtures/ships/journal-python-mkii-spire-ops.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 0.83 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Shield, armour, mass, jump, thermal load and power all reproduce. The six Guardian shard cannons calculate 515.4 damage/s and 6.9 MW of summed per-shot distributor draw rather than the panel's 566.9 damage/s and 12.9 MW; see issue #97. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 0.83 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Shield, armour, mass, jump, distributor draw, thermal load and power all reproduce. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the six Guardian shard cannons contribute 6.9 MW and the two caustic-sink launchers plus heat-sink launcher contribute 6 MW, reproducing the displayed 12.9 MW. The shards calculate 515.4 damage/s rather than the panel's 566.9 damage/s; see issue #97. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
       "jumpRange": {
         "fullTank": 25.14
       },
@@ -453,7 +414,6 @@
         "damagePerSecond": 566.9,
         "calculatedDamagePerSecond": 515.4,
         "distributorDraw": 12.9,
-        "calculatedDistributorDraw": 6.9,
         "thermalLoad": 11.2
       },
       "shields": {
@@ -483,7 +443,7 @@
     },
     "slapaconda": {
       "build": "fixtures/ships/journal-anaconda-slapaconda.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 1.07 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Armour, mass, jump, thermal load and power all reproduce, and the zero shield follows from having no generator fitted. After the two beam lasers' known 15.36 damage/s is removed, adding 10% to the six modified medium Guardian Shard Cannons' calculated damage reproduces the panel at displayed precision, corroborating Spire Ops across a different shard variant. They calculate 421.6 total damage/s and 24.8 MW of summed per-shot distributor draw rather than the panel's 462.2 damage/s and 36.8 MW; see issue #97. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 1.07 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Armour, mass, jump, distributor draw, thermal load and power all reproduce, and the zero shield follows from having no generator fitted. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the weapons contribute 24.8 MW and the caustic-sink plus five heat-sink launchers contribute 12 MW, reproducing the displayed 36.8 MW. After the two beam lasers' known 15.36 damage/s is removed, adding 10% to the six modified medium Guardian Shard Cannons' calculated damage reproduces the panel at displayed precision, corroborating Spire Ops across a different shard variant. The build calculates 421.6 total damage/s rather than the panel's 462.2 damage/s; see issue #97. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
       "jumpRange": {
         "fullTank": 27.63
       },
@@ -504,7 +464,6 @@
         "damagePerSecond": 462.2,
         "calculatedDamagePerSecond": 421.6,
         "distributorDraw": 36.8,
-        "calculatedDistributorDraw": 24.8,
         "thermalLoad": 126.1
       },
       "shields": {
@@ -822,10 +781,10 @@
       "Int_DroneControl_Collection_Size3_Class3"
     ],
     "journalReadings": {
-      "note": "Every non-zero AmmoInClip / AmmoInHopper across the sixteen journal captures — the only external readings of what a module had *loaded* that this repository holds. They are not the only external check on `clipSize` and `ammoMaximum`: the `AmmoClipSize` and `AmmoMaximum` modifiers a capture states on an engineered module are a second and stronger one, joined by `fixtures/ships/module-stats.json` `capturedBaseStats`, and in-game verification does not reach a *hardpoint's* reserve ammo. All eighty-one sit exactly at capacity, on twenty-six distinct modules, several of which appear in more than one capture. A reading is still only a lower bound on what a module holds and must never be read straight back as a catalogue figure: a journal's ammunition is the ship's rearm state at the instant of capture, so a partly spent launcher would report less than its capacity and say nothing about the catalogue. What does settle a capacity is the `AmmoMaximum` modifier a capture states on an engineered module, which gives the base and the engineered figure together — the Lynx Highliner's heat-sink launcher reports 3 in reserve under a grade-1 Heat Sink Capacity against a base of 2, so the reading alone would have been the engineered value. Spire Ops and Slapaconda add three Caustic Sink launcher readings at 1/7 and six pre-engineered Heat Sink launcher readings at 1/4, all with their base and fitted reserves stated. On the Corsair the capacity is likewise the engineered one, since three of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier; the two plasma accelerators take Long Range, which charges neither. The Corvette's large gimballed cannon sits at capacity under a grade-5 Overcharged, which is Frontier's own reading that the recipe does not cut a cannon's clip — a 15% penalty would have loaded four rounds. The plasma Corvette's medium fragment cannon sits at its magazine of 3 under a grade-4 Overcharged, which is consistent with that group's absent clip leg without being evidence of it: a −12% cut leaves 3 × 0.88 = 2.64, which rounds back to 3, so there the modifier list is what says the leg is absent and the loaded count says nothing. The Caspian Explorer's medium plasma accelerator says the same again at grade 1, where the cut would be −3% and 5 × 0.97 = 4.85 rounds back to 5. That reading is evidence and not a guard: a build parsed from a journal folds the modifiers the journal states, so adding a clip leg to the recipe would not move these counts. What fails on such a change is the engineering suite, which folds the recipe itself.",
-      "readings": 81,
+      "note": "Every non-zero AmmoInClip / AmmoInHopper across the nineteen journal captures — the only external readings of what a module had *loaded* that this repository holds. They are not the only external check on `clipSize` and `ammoMaximum`: the `AmmoClipSize` and `AmmoMaximum` modifiers a capture states on an engineered module are a second and stronger one, joined by `fixtures/ships/module-stats.json` `capturedBaseStats`, and in-game verification does not reach a *hardpoint's* reserve ammo. All ninety-two sit exactly at capacity, on twenty-six distinct modules, several of which appear in more than one capture. A reading is still only a lower bound on what a module holds and must never be read straight back as a catalogue figure: a journal's ammunition is the ship's rearm state at the instant of capture, so a partly spent launcher would report less than its capacity and say nothing about the catalogue. What does settle a capacity is the `AmmoMaximum` modifier a capture states on an engineered module, which gives the base and the engineered figure together — the Lynx Highliner's heat-sink launcher reports 3 in reserve under a grade-1 Heat Sink Capacity against a base of 2, so the reading alone would have been the engineered value. Spire Ops and Slapaconda add three Caustic Sink launcher readings at 1/7 and six pre-engineered Heat Sink launcher readings at 1/4, all with their base and fitted reserves stated. On the Corsair the capacity is likewise the engineered one, since three of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier; the two plasma accelerators take Long Range, which charges neither. The Corvette's large gimballed cannon sits at capacity under a grade-5 Overcharged, which is Frontier's own reading that the recipe does not cut a cannon's clip — a 15% penalty would have loaded four rounds. The plasma Corvette's medium fragment cannon sits at its magazine of 3 under a grade-4 Overcharged, which is consistent with that group's absent clip leg without being evidence of it: a −12% cut leaves 3 × 0.88 = 2.64, which rounds back to 3, so there the modifier list is what says the leg is absent and the loaded count says nothing. The Caspian Explorer's medium plasma accelerator says the same again at grade 1, where the cut would be −3% and 5 × 0.97 = 4.85 rounds back to 5. That reading is evidence and not a guard: a build parsed from a journal folds the modifiers the journal states, so adding a clip leg to the recipe would not move these counts. What fails on such a change is the engineering suite, which folds the recipe itself.",
+      "readings": 92,
       "distinctModules": 26,
-      "atCapacity": 81,
+      "atCapacity": 92,
       "belowCapacity": []
     },
     "engineered": {
@@ -943,7 +902,7 @@
       ]
     },
     "engineeredGroundTruth": {
-      "note": "Every engineered clip or reserve Frontier states across the sixteen journal captures — thirty readings on nine of them. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and corrected quality, or what the fixed pre-engineered variant supplies when `preEngineered` is true; an imported build uses the stated modifier verbatim and therefore always equals `game`. Twenty-nine agree exactly, including a fragment cannon's Corrosive Shell reserve at quality 0.826, where the leg is the experimental's flat −20% rather than a quality-rolled one, and the Spire Ops and Slapaconda Caustic Sink rolls and tech-broker Heat Sink variants. The two multi-cannon captures report stale fractional qualities even though the modules are fully engineered, so `reportedQuality` preserves the verbatim journal value while `quality` records the manually verified value used for simulation. Nearest-integer reserve rounding reproduces the Corsair's 87 rounds and the Lynx Highliner's 3 heat sinks. The Corsair dumbfire rack is the deliberate exception: it was engineered under the legacy system, where attributes advanced independently, so its one reported `Quality` cannot reproduce both per-leg values through the current shared-quality model. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
+      "note": "Every engineered clip or reserve Frontier states across the nineteen journal captures — thirty-seven readings on eleven of them. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and corrected quality, or what the fixed pre-engineered variant supplies when `preEngineered` is true; an imported build uses the stated modifier verbatim and therefore always equals `game`. Thirty-six agree exactly, including a fragment cannon's Corrosive Shell reserve at quality 0.826, where the leg is the experimental's flat −20% rather than a quality-rolled one, and the Spire Ops and Slapaconda Caustic Sink rolls and tech-broker Heat Sink variants. The two multi-cannon captures report stale fractional qualities even though the modules are fully engineered, so `reportedQuality` preserves the verbatim journal value while `quality` records the manually verified value used for simulation. Nearest-integer reserve rounding reproduces the Corsair's 87 rounds and the Lynx Highliners' and Panther's 3 heat sinks. The Corsair dumbfire rack is the deliberate exception: it was engineered under the legacy system, where attributes advanced independently, so its one reported `Quality` cannot reproduce both per-leg values through the current shared-quality model. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
       "cases": [
         {
           "capture": "journal-anaconda-slapaconda.json",
@@ -1615,6 +1574,129 @@
           },
           "agrees": true,
           "note": "The reserve alone: the recipe carries no clip leg, so the magazine stands at 1. The computed 2.98 reserve rounds to Frontier's 3 whole heat sinks."
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.json",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 4200 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.json",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 4200 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.json",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint3",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 3360 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.json",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint4",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_emissive_munitions",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 4200 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.json",
+          "ship": "mediumtransport01",
+          "slot": "LargeHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_large",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 4200 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.json",
+          "ship": "mediumtransport01",
+          "slot": "TinyHardpoint2",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "base": { "clipSize": 1, "ammoMaximum": 2 },
+          "game": { "ammoMaximum": 3, "loadedClip": 1, "loadedHopper": 3 },
+          "simulated": { "ammoMaximum": 3 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-panther-mkii-fat-arse.json",
+          "ship": "panthermkii",
+          "slot": "TinyHardpoint1",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "base": { "clipSize": 1, "ammoMaximum": 2 },
+          "game": { "ammoMaximum": 3, "loadedClip": 1, "loadedHopper": 3 },
+          "simulated": { "ammoMaximum": 3 },
+          "agrees": true
         },
         {
           "capture": "journal-python-mkii-spire-ops.json",

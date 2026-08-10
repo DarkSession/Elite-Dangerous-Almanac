@@ -17,18 +17,20 @@ import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapacon
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
 import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.json' with { type: 'json' };
-import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
+import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue01-current.json' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
 import cobraMkVJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import kestrelMkIIJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
 import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.json' with { type: 'json' };
+import pantherJournal from '../../../fixtures/ships/journal-panther-mkii-fat-arse.json' with { type: 'json' };
+import deepBlackJournal from '../../../fixtures/ships/journal-the-deep-black.json' with { type: 'json' };
 import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.json' with { type: 'json' };
 import cutterCapture from '../../../fixtures/ships/slef-inara-cutter-antixeno.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
-import { damageFalloff } from './weapons.js';
+import { damageFalloff, damagePerSecond } from './weapons.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats } from './pre-engineered-stats.js';
 
@@ -1825,6 +1827,23 @@ const withAllModulesEnabled = (event: LoadoutEvent): ShipLoadout =>
         Modules: event.Modules.map((module) => ({ ...module, On: true })),
     });
 
+/** Read the statistics panel's combined hardpoint-and-utility offense totals. */
+const offensePanelTotals = (build: ShipLoadout) => ({
+    damagePerSecond:
+        build.weaponMetrics().total.damagePerSecond +
+        build
+            .utilityMounts()
+            .reduce((total, slot) => total + damagePerSecond(slot.module?.effectiveStats ?? {}), 0),
+    distributorDraw: [...build.hardpoints(), ...build.utilityMounts()].reduce(
+        (total, slot) => total + (slot.module?.effectiveStats?.distributorDraw ?? 0),
+        0,
+    ),
+    thermalLoad: [...build.hardpoints(), ...build.utilityMounts()].reduce(
+        (total, slot) => total + (slot.module?.effectiveStats?.thermalLoad ?? 0),
+        0,
+    ),
+});
+
 test('the beam Corvette reproduces the externally observed in-game build totals', () => {
     const expected = metrics.inGame.federalCorvetteBeams;
     const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
@@ -1895,19 +1914,9 @@ test('the Cobra Mk V reproduces the externally observed in-game build totals', (
 
     const weapons = installedBuild.weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
-    const offensePanelTotals = installedBuild.hardpoints().reduce(
-        (totals, slot) => ({
-            distributorDraw:
-                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
-            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
-        }),
-        { distributorDraw: 0, thermalLoad: 0 },
-    );
-    assert.equal(
-        displayed(offensePanelTotals.distributorDraw, 2),
-        expected.offense.distributorDraw,
-    );
-    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+    const panel = offensePanelTotals(installedBuild);
+    assert.equal(displayed(panel.distributorDraw, 2), expected.offense.distributorDraw);
+    assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
     const shields = build.shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
@@ -1965,19 +1974,9 @@ test('the Kestrel Mk II reproduces the externally observed in-game build totals'
 
     const weapons = installedBuild.weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
-    const offensePanelTotals = installedBuild.hardpoints().reduce(
-        (totals, slot) => ({
-            distributorDraw:
-                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
-            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
-        }),
-        { distributorDraw: 0, thermalLoad: 0 },
-    );
-    assert.equal(
-        displayed(offensePanelTotals.distributorDraw, 1),
-        expected.offense.distributorDraw,
-    );
-    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+    const panel = offensePanelTotals(installedBuild);
+    assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
+    assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
     const shields = build.shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
@@ -2012,9 +2011,9 @@ test('the Kestrel Mk II reproduces the externally observed in-game build totals'
     );
 });
 
-test('The Deep Black preserves the observed totals and its two calculation discrepancies', () => {
+test('The Deep Black reproduces every observed calculated total except jump range', () => {
     const expected = metrics.inGame.deepBlack;
-    const event = slefFixture[0]!.data as LoadoutEvent;
+    const event = deepBlackJournal as LoadoutEvent;
     const build = ShipLoadout.fromLoadout(event);
     const fuel = build.fuelCapacity;
     assert.ok(fuel);
@@ -2034,26 +2033,22 @@ test('The Deep Black preserves the observed totals and its two calculation discr
     assert.equal(displayed(power.retracted, 0), expected.power.retracted);
     assert.equal(displayed(power.deployed, 0), expected.power.deployed);
 
-    const weapons = installedBuild.weaponMetrics();
-    assert.equal(displayed(weapons.total.damagePerSecond, 0), expected.offense.damagePerSecond);
-    assert.equal(displayed(weapons.total.heatPerSecond, 0), expected.offense.thermalLoad);
-    assert.equal(
-        displayed(weapons.total.energyPerSecond, 0),
-        expected.offense.calculatedDistributorDraw,
-    );
-    assert.notEqual(displayed(weapons.total.energyPerSecond, 0), expected.offense.distributorDraw);
+    const panel = offensePanelTotals(installedBuild);
+    assert.equal(displayed(panel.damagePerSecond, 0), expected.offense.damagePerSecond);
+    assert.equal(displayed(panel.distributorDraw, 0), expected.offense.distributorDraw);
+    assert.equal(displayed(panel.thermalLoad, 0), expected.offense.thermalLoad);
 
     const shields = build.shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
-            kinetic: displayed(shields.resistances.kinetic, 1),
-            thermal: displayed(shields.resistances.thermal, 1),
-            explosive: displayed(shields.resistances.explosive, 1),
+            kinetic: displayed(shields.resistances.kinetic, 3),
+            thermal: displayed(shields.resistances.thermal, 3),
+            explosive: displayed(shields.resistances.explosive, 3),
         },
         expected.shields.resistances,
     );
-    const generator = build.getFittedModule('Slot06_Size5')!.effectiveStats!;
+    const generator = build.getFittedModule('Slot04_Size5')!.effectiveStats!;
     assert.equal(generator.shieldRegenRate, expected.shields.regeneration.standard);
     // The catalogue's exact 3.75/s lies on the boundary displayed by the game as 3.7/s.
     assert.equal(generator.shieldBrokenRegenRate, 3.75);
@@ -2062,11 +2057,11 @@ test('The Deep Black preserves the observed totals and its two calculation discr
     );
 
     assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve + expected.mass.inferredCargo, 1),
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
         expected.mass.current,
     );
     const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
-    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    assert.equal(displayed(thrusters.maxMass!, 1), expected.mass.maximum);
     const armour = build.armourMetrics();
     assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
@@ -2079,7 +2074,7 @@ test('The Deep Black preserves the observed totals and its two calculation discr
     );
 });
 
-test('the Lynx Highliner reproduces the observed totals except its distributor display', () => {
+test('the Rescue 01 Lynx Highliner reproduces every observed calculated total', () => {
     const expected = metrics.inGame.rescue01;
     const event = lynxJournal as LoadoutEvent;
     const build = ShipLoadout.fromLoadout(event);
@@ -2099,25 +2094,10 @@ test('the Lynx Highliner reproduces the observed totals except its distributor d
     assert.equal(displayed(power.retracted, 2), expected.power.retracted);
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const weapons = installedBuild.weaponMetrics();
-    assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
-    const offensePanelTotals = installedBuild.hardpoints().reduce(
-        (totals, slot) => ({
-            distributorDraw:
-                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
-            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
-        }),
-        { distributorDraw: 0, thermalLoad: 0 },
-    );
-    assert.equal(
-        displayed(offensePanelTotals.distributorDraw, 2),
-        expected.offense.calculatedDistributorDraw,
-    );
-    assert.notEqual(
-        displayed(offensePanelTotals.distributorDraw, 2),
-        expected.offense.distributorDraw,
-    );
-    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+    const panel = offensePanelTotals(installedBuild);
+    assert.equal(displayed(panel.damagePerSecond, 1), expected.offense.damagePerSecond);
+    assert.equal(displayed(panel.distributorDraw, 2), expected.offense.distributorDraw);
+    assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
     const shields = build.shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
@@ -2136,10 +2116,10 @@ test('the Lynx Highliner reproduces the observed totals except its distributor d
         expected.shields.regeneration.broken,
     );
 
-    assert.equal(
-        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        expected.mass.current,
-    );
+    const currentMass = build.unladenMass! + fuel.main + fuel.reserve;
+    // Frontier's float32 total lies 0.000024 t over the half-tenth boundary but its
+    // statistics panel displays the lower tenth.
+    assert.ok(Math.abs(currentMass - expected.mass.current) <= 0.0501, `${currentMass}`);
     const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
     assert.equal(thrusters.maxMass, expected.mass.maximum);
     const armour = build.armourMetrics();
@@ -2176,19 +2156,9 @@ test('the weaponless Rescue Lynx Highliner reproduces every observed calculated 
 
     const weapons = installedBuild.weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
-    const offensePanelTotals = installedBuild.hardpoints().reduce(
-        (totals, slot) => ({
-            distributorDraw:
-                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
-            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
-        }),
-        { distributorDraw: 0, thermalLoad: 0 },
-    );
-    assert.equal(
-        displayed(offensePanelTotals.distributorDraw, 1),
-        expected.offense.distributorDraw,
-    );
-    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+    const panel = offensePanelTotals(installedBuild);
+    assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
+    assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
     const shields = build.shieldMetrics()!;
     assert.equal(displayed(shields.strength, 0), expected.shields.strength);
@@ -2225,70 +2195,63 @@ test('the weaponless Rescue Lynx Highliner reproduces every observed calculated 
     );
 });
 
-test('the Panther observation remains distinct from its older same-named capture', () => {
+test('Fat Arse reproduces every observed calculated total except jump range', () => {
     const expected = metrics.inGame.fatArse;
-    const captured = expected.calculatedFromCapture;
-    const event = pantherCapture[0]!.data as LoadoutEvent;
+    const event = pantherJournal as LoadoutEvent;
     const build = ShipLoadout.fromLoadout(event);
     const fuel = build.fuelCapacity;
     assert.ok(fuel);
     assert.equal(build.shipName, '[KLD] Fat Arse');
 
     const jumpRange = displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2);
-    assert.equal(jumpRange, captured.jumpRangeFullTank);
+    assert.equal(jumpRange, expected.jumpRange.calculatedFromCapture);
     assert.notEqual(jumpRange, expected.jumpRange.fullTank);
 
     const installedBuild = withAllModulesEnabled(event);
     const power = installedBuild.powerBudget();
     assert.equal(expected.power.includesDisabledModules, true);
-    assert.equal(displayed(power.available, 1), captured.power.available);
-    assert.equal(power.available, expected.power.available);
-    assert.equal(displayed(power.retracted, 2), captured.power.retracted);
-    assert.equal(displayed(power.deployed, 2), captured.power.deployed);
-    assert.notEqual(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.available, 1), expected.power.available);
+    assert.equal(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
-    const weapons = installedBuild.weaponMetrics();
-    assert.equal(displayed(weapons.total.damagePerSecond, 0), captured.offense.damagePerSecond);
-    assert.equal(displayed(weapons.total.energyPerSecond, 0), captured.offense.distributorDraw);
-    assert.equal(displayed(weapons.total.heatPerSecond, 0), captured.offense.thermalLoad);
-    assert.notEqual(weapons.total.damagePerSecond, expected.offense.damagePerSecond);
+    const panel = offensePanelTotals(installedBuild);
+    assert.equal(displayed(panel.damagePerSecond, 0), expected.offense.damagePerSecond);
+    assert.equal(displayed(panel.distributorDraw, 0), expected.offense.distributorDraw);
+    assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
     const shields = build.shieldMetrics()!;
-    assert.equal(displayed(shields.strength, 1), captured.shields.strength);
+    assert.equal(displayed(shields.strength, 1), expected.shields.strength);
     assert.deepEqual(
         {
-            kinetic: displayed(shields.resistances.kinetic, 1),
-            thermal: displayed(shields.resistances.thermal, 1),
-            explosive: displayed(shields.resistances.explosive, 1),
+            kinetic: displayed(shields.resistances.kinetic, 3),
+            thermal: displayed(shields.resistances.thermal, 3),
+            explosive: displayed(shields.resistances.explosive, 3),
         },
-        captured.shields.resistances,
+        expected.shields.resistances,
     );
     const generator = build.getFittedModule('Slot03_Size6')!.effectiveStats!;
-    assert.equal(displayed(generator.shieldRegenRate!, 1), captured.shields.regeneration.standard);
+    assert.equal(displayed(generator.shieldRegenRate!, 1), expected.shields.regeneration.standard);
     assert.equal(
         displayed(generator.shieldBrokenRegenRate!, 1),
-        captured.shields.regeneration.broken,
+        expected.shields.regeneration.broken,
     );
-    assert.notEqual(displayed(shields.strength, 1), expected.shields.strength);
 
     assert.equal(
         displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
-        captured.mass.fullFuelNoCargo,
+        expected.mass.current,
     );
     const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
-    assert.equal(thrusters.maxMass, captured.mass.maximum);
-    assert.notEqual(thrusters.maxMass, expected.mass.maximum);
+    assert.equal(thrusters.maxMass, expected.mass.maximum);
     const armour = build.armourMetrics();
-    assert.equal(displayed(armour.hitPoints, 0), captured.armour.hitPoints);
+    assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
     assert.deepEqual(
         {
-            kinetic: displayed(armour.resistances.kinetic, 1),
-            thermal: displayed(armour.resistances.thermal, 1),
-            explosive: displayed(armour.resistances.explosive, 1),
+            kinetic: displayed(armour.resistances.kinetic, 2),
+            thermal: displayed(armour.resistances.thermal, 2),
+            explosive: displayed(armour.resistances.explosive, 2),
         },
-        captured.armour.resistances,
+        expected.armour.resistances,
     );
-    assert.notEqual(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
 });
 
 test('the Corsair reproduces the externally observed in-game build totals', () => {
@@ -2313,19 +2276,9 @@ test('the Corsair reproduces the externally observed in-game build totals', () =
 
     const weapons = installedBuild.weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
-    const offensePanelTotals = installedBuild.hardpoints().reduce(
-        (totals, slot) => ({
-            distributorDraw:
-                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
-            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
-        }),
-        { distributorDraw: 0, thermalLoad: 0 },
-    );
-    assert.equal(
-        displayed(offensePanelTotals.distributorDraw, 1),
-        expected.offense.distributorDraw,
-    );
-    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+    const panel = offensePanelTotals(installedBuild);
+    assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
+    assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
     const shields = build.shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
@@ -2388,23 +2341,9 @@ test('Spire Ops reproduces the observed totals except the Guardian shard offense
         expected.offense.calculatedDamagePerSecond,
     );
     assert.notEqual(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
-    const offensePanelTotals = installedBuild.hardpoints().reduce(
-        (totals, slot) => ({
-            distributorDraw:
-                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
-            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
-        }),
-        { distributorDraw: 0, thermalLoad: 0 },
-    );
-    assert.equal(
-        displayed(offensePanelTotals.distributorDraw, 1),
-        expected.offense.calculatedDistributorDraw,
-    );
-    assert.notEqual(
-        displayed(offensePanelTotals.distributorDraw, 1),
-        expected.offense.distributorDraw,
-    );
-    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+    const panel = offensePanelTotals(installedBuild);
+    assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
+    assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
 
     const shields = build.shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
@@ -2467,23 +2406,9 @@ test('Slapaconda reproduces the observed totals except the Guardian shard offens
         expected.offense.calculatedDamagePerSecond,
     );
     assert.notEqual(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
-    const offensePanelTotals = installedBuild.hardpoints().reduce(
-        (totals, slot) => ({
-            distributorDraw:
-                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
-            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
-        }),
-        { distributorDraw: 0, thermalLoad: 0 },
-    );
-    assert.equal(
-        displayed(offensePanelTotals.distributorDraw, 1),
-        expected.offense.calculatedDistributorDraw,
-    );
-    assert.notEqual(
-        displayed(offensePanelTotals.distributorDraw, 1),
-        expected.offense.distributorDraw,
-    );
-    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+    const panel = offensePanelTotals(installedBuild);
+    assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
+    assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
     assert.equal(build.getFittedModule('HugeHardpoint1')!.effectiveStats!.shotSpeed, 6299.208984);
 
     assert.equal(expected.shields.strength, 0);
