@@ -22,9 +22,10 @@
  * record frozen. Freezing the array alone fixes which records are in it and says
  * nothing about their key values, so a caller's `Object.freeze([...records])` over
  * mutable records would be indexed and then answer from keys the records no longer
- * carry. Anything that fails the test is scanned linearly, exactly as before. Every
- * catalogue this package exports is deeply frozen, so every default argument and every
- * published subset takes the fast path.
+ * carry. A field is cached only when every record owns it as a data property; sparse,
+ * inherited and accessor fields stay on the scan path because freezing the record does
+ * not pin the value they may later expose. The package's required identity fields take
+ * the indexed path, while sparse fields such as a module's optional `ship` do not.
  *
  * @internal
  */
@@ -61,6 +62,9 @@ const INDEXES = new WeakMap<readonly object[], Map<string, Map<string, readonly 
  */
 const UNINDEXABLE = new WeakSet<readonly object[]>();
 
+/** Fields found to be absent, inherited or accessors, and therefore unsafe to cache. */
+const UNINDEXABLE_FIELDS = new WeakMap<readonly object[], Set<string>>();
+
 /**
  * Whether `catalogue` is immutable enough to index: the array frozen so its membership
  * cannot change, and every record frozen so the key read off it cannot change either.
@@ -69,9 +73,8 @@ const UNINDEXABLE = new WeakSet<readonly object[]>();
  * is a string **data** property read straight off the record, so freezing the record
  * pins it, and what a record's *nested* values do cannot affect the index. It does not
  * pin a key reached any other way: `Object.freeze` leaves an accessor in place, so a
- * record whose key is a getter, or a `keyOf` that reads through a nested value, reports
- * frozen and can still answer differently. Every call site here reads an own data
- * property.
+ * record whose key is a getter reports frozen and can still answer differently. The
+ * per-field check in {@link bucketsFor} rejects those cases before caching.
  */
 function indexable(catalogue: readonly object[]): boolean {
     if (INDEXES.has(catalogue)) return true;
@@ -85,12 +88,11 @@ function indexable(catalogue: readonly object[]): boolean {
 
 /**
  * The records of `catalogue` grouped by `field`, in catalogue order within each bucket,
- * or `null` when `catalogue` can still change and so cannot be safely cached.
+ * or `null` when the catalogue or requested field cannot be safely cached.
  */
 function bucketsFor<T extends object>(
     catalogue: readonly T[],
-    field: keyof T & string,
-    keyOf: (record: T) => string | null | undefined,
+    field: StringField<T>,
 ): Map<string, readonly T[]> | null {
     if (!indexable(catalogue)) return null;
     let byField = INDEXES.get(catalogue);
@@ -101,9 +103,24 @@ function bucketsFor<T extends object>(
     const cached = byField.get(field);
     if (cached !== undefined) return cached as Map<string, readonly T[]>;
 
+    let unindexableFields = UNINDEXABLE_FIELDS.get(catalogue);
+    if (unindexableFields?.has(field) === true) return null;
+    const fieldIsStable = catalogue.every((record) => {
+        const descriptor = Object.getOwnPropertyDescriptor(record, field);
+        return descriptor !== undefined && 'value' in descriptor;
+    });
+    if (!fieldIsStable) {
+        if (unindexableFields === undefined) {
+            unindexableFields = new Set();
+            UNINDEXABLE_FIELDS.set(catalogue, unindexableFields);
+        }
+        unindexableFields.add(field);
+        return null;
+    }
+
     const buckets = new Map<string, T[]>();
     for (const record of catalogue) {
-        const raw = keyOf(record);
+        const raw = stringField(record, field);
         // A record that does not carry the field joins no bucket, so it can never be
         // returned for any key — including the empty string.
         if (raw === null || raw === undefined) continue;
@@ -121,6 +138,18 @@ function matches(raw: string | null | undefined, key: string): boolean {
     return raw !== null && raw !== undefined && normalizeKey(raw) === key;
 }
 
+/** Keys whose non-null values are strings. */
+type StringField<T extends object> = {
+    [K in keyof T]-?: Exclude<T[K], null | undefined> extends string ? K : never;
+}[keyof T] &
+    string;
+
+/** Read a string lookup field; absent nullable fields join no bucket. */
+function stringField<T extends object>(record: T, field: StringField<T>): string | null {
+    const value = record[field];
+    return typeof value === 'string' ? value : null;
+}
+
 /**
  * The first record whose `field` matches `wanted`, or `null` if none does.
  *
@@ -128,24 +157,21 @@ function matches(raw: string | null | undefined, key: string): boolean {
  * carried one key twice must keep answering with the earlier record.
  *
  * @param catalogue - The records to search.
- * @param field - The record property `keyOf` reads. Names the cached index, so two
- * fields of one catalogue do not share one; passing a name that disagrees with `keyOf`
- * would file the wrong values under it.
- * @param keyOf - Reads the key off a record; `null`/`undefined` means "no key".
+ * @param field - The string-valued record property to index. Two fields of one
+ * catalogue receive separate indexes; `null`/`undefined` values join no bucket.
  * @param wanted - The key to match, normalised the same way as the records'.
  * @returns The matching record, or `null`.
  * @internal
  */
 export function findByKey<T extends object>(
     catalogue: readonly T[],
-    field: keyof T & string,
-    keyOf: (record: T) => string | null | undefined,
+    field: StringField<T>,
     wanted: string,
 ): T | null {
     const key = normalizeKey(wanted);
-    const buckets = bucketsFor(catalogue, field, keyOf);
+    const buckets = bucketsFor(catalogue, field);
     if (buckets === null) {
-        return catalogue.find((record) => matches(keyOf(record), key)) ?? null;
+        return catalogue.find((record) => matches(stringField(record, field), key)) ?? null;
     }
     return buckets.get(key)?.[0] ?? null;
 }
@@ -154,8 +180,7 @@ export function findByKey<T extends object>(
  * Every record whose `field` matches `wanted`, in catalogue order.
  *
  * @param catalogue - The records to search.
- * @param field - The record property `keyOf` reads; see {@link findByKey}.
- * @param keyOf - Reads the key off a record; `null`/`undefined` means "no key".
+ * @param field - The string-valued record property to match; see {@link findByKey}.
  * @param wanted - The key to match, normalised the same way as the records'.
  * @returns A new array each call, so a caller cannot reach the cached bucket and
  * mutate a later caller's answer. Empty when nothing matches.
@@ -163,14 +188,13 @@ export function findByKey<T extends object>(
  */
 export function filterByKey<T extends object>(
     catalogue: readonly T[],
-    field: keyof T & string,
-    keyOf: (record: T) => string | null | undefined,
+    field: StringField<T>,
     wanted: string,
 ): T[] {
     const key = normalizeKey(wanted);
-    const buckets = bucketsFor(catalogue, field, keyOf);
+    const buckets = bucketsFor(catalogue, field);
     if (buckets === null) {
-        return catalogue.filter((record) => matches(keyOf(record), key));
+        return catalogue.filter((record) => matches(stringField(record, field), key));
     }
     const bucket = buckets.get(key);
     return bucket === undefined ? [] : [...bucket];

@@ -755,7 +755,7 @@ export function getModuleBySymbol(
     symbol: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule | null {
-    return findByKey(modules, 'symbol', (module) => module.symbol, symbol);
+    return findByKey(modules, 'symbol', symbol);
 }
 
 /**
@@ -776,7 +776,7 @@ export function getModulesByName(
     name: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule[] {
-    return filterByKey(modules, 'name', (module) => module.name, name);
+    return filterByKey(modules, 'name', name);
 }
 
 /**
@@ -807,5 +807,5 @@ export function getBulkheadsForShip(
     ship: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule[] {
-    return filterByKey(modules, 'ship', (module) => module.ship, ship);
+    return filterByKey(modules, 'ship', ship);
 }

@@ -141,7 +141,7 @@ export const SHIPS: readonly Ship[] = deepFreeze(shipsData as readonly Ship[]);
  * ```
  */
 export function getShipBySymbol(symbol: string): Ship | null {
-    return findByKey(SHIPS, 'symbol', (ship) => ship.symbol, symbol);
+    return findByKey(SHIPS, 'symbol', symbol);
 }
 
 /**
@@ -157,7 +157,7 @@ export function getShipBySymbol(symbol: string): Ship | null {
  * ```
  */
 export function getShipByName(name: string): Ship | null {
-    return findByKey(SHIPS, 'name', (ship) => ship.name, name);
+    return findByKey(SHIPS, 'name', name);
 }
 
 /**

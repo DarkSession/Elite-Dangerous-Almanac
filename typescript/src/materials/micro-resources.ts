@@ -102,7 +102,7 @@ export function getMicroResourceBySymbol(
     symbol: string,
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource | null {
-    return findByKey(microResources, 'symbol', (resource) => resource.symbol, symbol);
+    return findByKey(microResources, 'symbol', symbol);
 }
 
 /**
@@ -122,7 +122,7 @@ export function getMicroResourceByName(
     name: string,
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource | null {
-    return findByKey(microResources, 'name', (resource) => resource.name, name);
+    return findByKey(microResources, 'name', name);
 }
 
 /**
@@ -139,16 +139,8 @@ export function getMicroResourceByName(
  * ```
  */
 export function microResourcesInCategory(
-    category: MicroResourceCategory,
-    microResources?: readonly MicroResource[],
-): MicroResource[];
-export function microResourcesInCategory(
-    category: string,
-    microResources?: readonly MicroResource[],
-): MicroResource[];
-export function microResourcesInCategory(
     category: string,
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource[] {
-    return filterByKey(microResources, 'category', (resource) => resource.category, category);
+    return filterByKey(microResources, 'category', category);
 }
