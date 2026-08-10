@@ -53,6 +53,9 @@
             "types": "./dist/astro/index.d.ts",
             "import": "./dist/astro/index.js"
         },
+        "./astro/galactic-position": {
+            "types": "./dist/astro/galactic-position.d.ts"
+        },
         "./astro/*": {
             "types": "./dist/astro/*.d.ts",
             "import": "./dist/astro/*.js"
@@ -78,6 +81,12 @@
         "./ships": {
             "types": "./dist/ships/index.d.ts",
             "import": "./dist/ships/index.js"
+        },
+        "./ships/fitted-module": {
+            "types": "./dist/ships/fitted-module.d.ts"
+        },
+        "./ships/loadout-slot": {
+            "types": "./dist/ships/loadout-slot.d.ts"
         },
         "./ships/*": {
             "types": "./dist/ships/*.d.ts",
