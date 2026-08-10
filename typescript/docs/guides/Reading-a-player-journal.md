@@ -19,6 +19,8 @@ Each line is one event. Read it, parse it, and switch on `event`.
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
 
+declare const journalPath: string;
+
 const lines = createInterface({ input: createReadStream(journalPath), crlfDelay: Infinity });
 
 for await (const line of lines) {
@@ -59,9 +61,11 @@ build.shieldMetrics()?.strength; // -> 743.12     MJ
 build.armourMetrics().hitPoints; // -> 307.8
 ```
 
-Values the event already computed — `UnladenMass`, `FuelCapacity`, `MaxJumpRange` — are
-trusted verbatim rather than recomputed, so what you read back matches what the player
-sees in game.
+Figures the event already stated — `UnladenMass`, `FuelCapacity` — are trusted verbatim
+rather than recomputed, so what you read back matches what the player sees in game.
+`MaxJumpRange` is the exception: it is recomputed from the drive rather than taken from
+the event, so it may differ in the last decimal places from the number the capture
+carried.
 
 ### Walking the modules
 
@@ -69,8 +73,12 @@ sees in game.
 and are not derivable from position, so read them rather than composing them.
 
 ```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout;
+
 for (const slot of build.slots()) {
-    slot.key; // -> 'FrameShiftDrive', 'Slot01_Size6', 'HugeHardpoint1', …
+    slot.key; // -> 'FrameShiftDrive', 'Slot01_Size6', 'LargeHardpoint1', …
     slot.name; // -> 'Frame Shift Drive'
     slot.module?.symbol; // -> undefined when the mount is empty
 }
@@ -88,6 +96,10 @@ sometimes pricing only part of the build. That is provenance about the capture, 
 property of the fit, so it is kept separate and never edited.
 
 ```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout;
+
 const paid = build.sourcePurchase; // null for a build you assembled yourself
 
 paid?.hullValue; // -> 37472252   as the capture stated it
@@ -137,6 +149,7 @@ declare const starPos: readonly [number, number, number];
 
 const position = { x: starPos[0], y: starPos[1], z: starPos[2] };
 
+// Answered here for StarPos [-81.625, -151.3125, -376.0625], in the Pleiades:
 findHandAuthoredRegionAt(position)?.name; // -> 'Pleiades Sector'
 findCodexRegionAt(position)?.name; // -> 'Inner Orion Spur'
 nearestNebulae(position, REAL_NEBULAE, 1)[0]?.name; // -> 'Pleiades'
@@ -164,6 +177,10 @@ them, so write the consumer to expect gaps rather than to assume completeness.
   `…Result` property names what was missing:
 
 ```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout;
+
 build.cargoCapacity; // -> null when a fitted optional module is unclassifiable
 build.cargoCapacityResult; // -> names every rack it could not classify
 ```
@@ -172,8 +189,10 @@ build.cargoCapacityResult; // -> names every rack it could not classify
   incomplete one, and `build.complete` is true only when the build is valid, has every
   operational mount, and is fully classified.
 
-For an untrusted mixed SLEF file, `inspectSlef` returns the valid entries plus indexed
-diagnostics, where `parseSlef` rejects the whole input on any malformed entry.
+For a mixed SLEF file, `inspectSlef` returns the valid entries plus indexed diagnostics,
+where `parseSlef` rejects the whole input on any malformed entry. Both parse the JSON
+first, so both throw `SyntaxError` on input that is not JSON at all — catch that
+separately when the bytes come from somewhere you do not control.
 
 ## Next
 

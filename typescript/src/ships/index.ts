@@ -70,11 +70,12 @@
  *
  * declare const event: LoadoutEvent;
  *
+ * // Figures below are one build's — a Krait Phantom explorer.
  * const build = ShipLoadout.fromLoadout(event);
  * build.maxJumpRange(); // -> 60.5478  (ly)
  * build.powerBudget().withinBudget; // -> true
  * build.shieldMetrics()?.strength; // -> 743.12   (MJ)
- * build.weaponMetrics().total.damagePerSecond; // -> 137.04
+ * build.weaponMetrics().total.damagePerSecond; // -> 34
  * ```
  *
  * @example
@@ -96,7 +97,7 @@
  *
  * The catalogues live on their own subpaths (`./modules-core`, `./modules-internal`,
  * `./modules-hardpoint`, `./modules-utility`, `./modules-all`) precisely so importing
- * one does not bundle the rest — `./modules-all` is 311.9 KiB.
+ * one does not bundle the rest — `./modules-all` is 310.8 KiB.
  *
  * @example
  * **The data-free layer.** Each calculation is its own module over plain constants, so

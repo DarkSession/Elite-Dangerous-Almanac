@@ -26,6 +26,7 @@
 
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { readdir, readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -81,6 +82,13 @@ function exampleSnippets(source) {
         const tag = line.trimStart();
 
         if (fence === null) {
+            // The end of the comment block closes the example section too. Without this
+            // an `@example` leaks into the next symbol, and a fence in that symbol's
+            // description is harvested as if it were an example.
+            if (raw.includes('*/')) {
+                inExample = false;
+                continue;
+            }
             if (tag.startsWith('@example')) {
                 inExample = true;
                 continue;
@@ -115,23 +123,83 @@ function exampleSnippets(source) {
 function localiseImports(code) {
     return code.replaceAll(
         new RegExp(`(['"])${PACKAGE}(/[^'"]+)?\\1`, 'g'),
-        (_match, quote, subpath) =>
-            `${quote}${join(sourceRoot, `${subpath ?? '/index'}.js`)}${quote}`,
+        (_match, quote, subpath) => {
+            // A subpath naming a directory (the root barrel, or a feature area such as
+            // `/ships`) resolves to that directory's `index`; anything else is a leaf.
+            const path = subpath ?? '';
+            const target = existsSync(join(sourceRoot, path, 'index.ts'))
+                ? join(sourceRoot, path, 'index.js')
+                : join(sourceRoot, `${path}.js`);
+            return `${quote}${target}${quote}`;
+        },
     );
 }
 
-const files = await sourceFiles(sourceRoot);
+/**
+ * Every Markdown page published to the wiki: the `Home` readme and the guides.
+ *
+ * These become wiki pages exactly as the generated API pages do, so their snippets are
+ * the same promise to a reader and get the same check. Their fences are plain Markdown,
+ * with no `@example` tag and no ` * ` prefix.
+ *
+ * @returns Absolute file paths, or an empty list when the directory is absent.
+ */
+async function documentFiles() {
+    const roots = [join(packageRoot, 'docs'), join(packageRoot, 'docs', 'guides')];
+    const found = [];
+    for (const root of roots) {
+        if (!existsSync(root)) continue;
+        for (const entry of await readdir(root, { withFileTypes: true })) {
+            if (entry.isFile() && entry.name.endsWith('.md')) found.push(join(root, entry.name));
+        }
+    }
+    return found;
+}
+
+/**
+ * Extract the fenced TypeScript snippets from a Markdown page.
+ *
+ * @param source - Markdown text.
+ * @returns One entry per snippet, with the 1-based line the fence opens on.
+ */
+function markdownSnippets(source) {
+    const snippets = [];
+    let fence = null;
+    for (const [index, line] of source.split('\n').entries()) {
+        if (fence === null) {
+            if (/^```(ts|typescript)\s*$/.test(line.trim())) fence = { line: index + 1, body: [] };
+            continue;
+        }
+        if (line.trim().startsWith('```')) {
+            snippets.push({ line: fence.line, code: fence.body.join('\n') });
+            fence = null;
+            continue;
+        }
+        fence.body.push(line);
+    }
+    return snippets;
+}
+
 const scratch = await mkdtemp(join(tmpdir(), 'almanac-examples-'));
 const cases = [];
 
-try {
+/**
+ * Run the check.
+ *
+ * @returns The process exit code.
+ */
+async function main() {
+    const files = await sourceFiles(sourceRoot);
+    const documents = await documentFiles();
+
     await mkdir(join(scratch, 'snippets'), { recursive: true });
 
-    for (const file of files) {
+    for (const file of [...files, ...documents]) {
         const source = await readFile(file, 'utf8');
         const relativePath = relative(packageRoot, file);
-        for (const [index, snippet] of exampleSnippets(source).entries()) {
-            const name = `${relativePath.replaceAll('/', '__').replace(/\.ts$/, '')}__${index}.ts`;
+        const found = file.endsWith('.md') ? markdownSnippets(source) : exampleSnippets(source);
+        for (const [index, snippet] of found.entries()) {
+            const name = `${relativePath.replaceAll('/', '__').replace(/\.(ts|md)$/, '')}__${index}.ts`;
             const target = join(scratch, 'snippets', name);
             await writeFile(target, `export {};\n${localiseImports(snippet.code)}\n`);
             cases.push({ file: relativePath, line: snippet.line, target, name });
@@ -140,7 +208,7 @@ try {
 
     if (cases.length === 0) {
         console.log('check-examples: no @example snippets found');
-        process.exit(0);
+        return 0;
     }
 
     // `verbatimModuleSyntax` reads the nearest package.json to decide whether a file may
@@ -157,48 +225,89 @@ try {
             noUnusedParameters: false,
             typeRoots: [resolve(packageRoot, 'node_modules', '@types')],
         },
-        include: ['snippets/**/*.ts'],
+        // `src/jsonc.d.ts` types the catalogue `.jsonc` imports. Without it every
+        // catalogue module in the library fails to resolve, and those diagnostics land
+        // outside `snippets/` where the parser below would drop them.
+        include: ['snippets/**/*.ts', resolve(sourceRoot, '**/*.d.ts')],
     };
     await writeFile(join(scratch, 'tsconfig.json'), JSON.stringify(tsconfig, null, 2));
 
-    // Run from the scratch root so tsc reports `snippets/<name>.ts` rather than a path
-    // relative to this process's cwd, which the parser below would silently miss.
-    const result = spawnSync(
-        process.execPath,
-        [
-            join(packageRoot, 'node_modules', 'typescript', 'bin', 'tsc'),
-            '--project',
-            '.',
-            '--pretty',
-            'false',
-        ],
-        { encoding: 'utf8', cwd: scratch },
-    );
+    const tscBin = join(packageRoot, 'node_modules', 'typescript', 'bin', 'tsc');
 
-    const output = `${result.stdout}${result.stderr}`;
-    const failures = new Map();
-    for (const line of output.split('\n')) {
-        const match = /^snippets[/\\]([^(]+)\((\d+),\d+\): (error .+)$/.exec(line.trim());
-        if (!match) continue;
-        const [, name, row, message] = match;
-        if (!failures.has(name)) failures.set(name, []);
-        failures.get(name).push({ row: Number(row), message });
+    /**
+     * Compile the snippet set, skipping the named files.
+     *
+     * Run from the scratch root so tsc reports `snippets/<name>.ts` rather than a path
+     * relative to this process's cwd, which the parser below would silently miss.
+     *
+     * @param skip - Snippet file names to exclude from this pass.
+     * @returns The exit status, the diagnostics keyed by snippet, and any diagnostic
+     *   that did not belong to a snippet at all.
+     */
+    function compile(skip) {
+        const args = [tscBin, '--project', '.', '--pretty', 'false'];
+        const result = spawnSync(process.execPath, args, { encoding: 'utf8', cwd: scratch });
+        const output = `${result.stdout}${result.stderr}`;
+
+        const diagnostics = new Map();
+        const foreign = [];
+        for (const raw of output.split('\n')) {
+            const line = raw.trim();
+            if (!/error TS\d+:/.test(line)) continue;
+            const match = /^snippets[/\\]([^(]+)\((\d+),\d+\): error (TS\d+): (.+)$/.exec(line);
+            if (!match) {
+                foreign.push(line);
+                continue;
+            }
+            const [, name, row, code, message] = match;
+            if (skip.has(name)) continue;
+            if (!diagnostics.has(name)) diagnostics.set(name, []);
+            diagnostics.get(name).push({ row: Number(row), code, message });
+        }
+        return { status: result.status, output, diagnostics, foreign };
     }
 
-    // A config or crash failure produces a non-zero exit with no parsable diagnostic.
-    // Reporting "all snippets compile" in that case would be worse than reporting
-    // nothing, so fail loudly instead.
-    if (result.status !== 0 && failures.size === 0) {
+    // tsc abandons semantic checking for the whole program as soon as any file has a
+    // syntactic error, so a single unparseable snippet silently hides every type error
+    // in the run. Drop the unparseable ones and compile again until none remain; only
+    // then are the semantic results trustworthy.
+    const broken = new Map();
+    const skip = new Set();
+    let pass = compile(skip);
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+        const syntactic = [...pass.diagnostics].filter(([, problems]) =>
+            problems.some((problem) => /^TS1\d{3}$/.test(problem.code)),
+        );
+        if (syntactic.length === 0) break;
+        for (const [name, problems] of syntactic) {
+            broken.set(name, problems);
+            skip.add(name);
+            await rm(join(scratch, 'snippets', name), { force: true });
+        }
+        pass = compile(skip);
+    }
+
+    const failures = new Map([...pass.diagnostics, ...broken]);
+
+    // A diagnostic outside `snippets/`, or a non-zero exit with nothing parsable, means
+    // the harness itself is wrong. Reporting a pass count from a broken compile would be
+    // worse than reporting nothing, so fail loudly instead.
+    if (pass.foreign.length > 0) {
+        console.error('check-examples: tsc reported errors outside the snippet set:\n');
+        console.error(pass.foreign.slice(0, 10).join('\n'));
+        return 1;
+    }
+    if (pass.status !== 0 && failures.size === 0) {
         console.error('check-examples: tsc failed without a parsable diagnostic:\n');
-        console.error(output.trim() || `(no output, exit ${result.status})`);
-        process.exit(1);
+        console.error(pass.output.trim() || `(no output, exit ${pass.status})`);
+        return 1;
     }
 
     const failed = cases.filter((entry) => failures.has(entry.name));
     for (const entry of failed) {
         console.log(`\n${entry.file}:${entry.line}`);
         for (const problem of failures.get(entry.name)) {
-            console.log(`  ${problem.message}`);
+            console.log(`  error ${problem.code}: ${problem.message}`);
         }
     }
 
@@ -208,7 +317,11 @@ try {
             (failed.length > 0 ? ` — ${failed.length} failing` : ''),
     );
 
-    if (failed.length > 0 && strict) process.exit(1);
+    return failed.length > 0 && strict ? 1 : 0;
+}
+
+try {
+    process.exitCode = await main();
 } finally {
     await rm(scratch, { recursive: true, force: true });
 }

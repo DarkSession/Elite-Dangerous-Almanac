@@ -16,28 +16,40 @@ module is marked side-effect free, so a bundler can drop whatever you do not use
 There are three levels, and the difference is how much data you pull in.
 
 ```ts
-// 1. Root — everything. Convenient; relies on your bundler tree-shaking.
-import { ShipLoadout } from '@elite-dangerous-almanac/core';
+// 1. Root — every feature area's general API (not the bulk catalogues).
+import { ShipLoadout as FromRoot } from '@elite-dangerous-almanac/core';
 
 // 2. Feature area — one domain's general API.
-import { ShipLoadout } from '@elite-dangerous-almanac/core/ships';
+import { ShipLoadout as FromArea } from '@elite-dangerous-almanac/core/ships';
 
 // 3. Leaf module — exactly one module. Prefer this in native ESM apps.
-import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import { ShipLoadout as FromLeaf } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+FromRoot === FromArea && FromArea === FromLeaf; // -> true, the same class
 ```
+
+(The aliases are only so all three can appear in one snippet; write
+`import { ShipLoadout } from '…'` in real code.)
 
 All three give you the same object. Prefer the leaf import when you know what you want:
 it is the only form that is unambiguous about what gets bundled, and it never depends on
-tree-shaking working.
+tree-shaking working. The root barrel is the largest — a 1150.6 KiB import graph.
 
-**Some catalogues are only reachable by leaf import.** The bulk data catalogues were
-deliberately taken off the feature-area barrels, because a barrel that re-exported them
-would pull hundreds of kilobytes into every consumer:
+**The bulk catalogues are reachable only by leaf import.** They were deliberately taken
+off the barrels, because a barrel that re-exported them would pull hundreds of kilobytes
+into every consumer. None of the following is on the root or feature-area barrel:
 
 ```ts
 import { ALL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-all';
+import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+// …and INTERNAL_MODULES, HARDPOINT_MODULES, UTILITY_MODULES likewise.
+
 import { ALL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-all';
+import { PLANETARY_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-planetary';
 ```
+
+`REAL_NEBULAE` and `PROCGEN_NEBULAE` are the exception among the nebula catalogues — both
+are still on the `astro` barrel.
 
 ## Where does a symbol live?
 
@@ -76,12 +88,12 @@ Two imports dominate everything else, and both are deliberate:
   module ids and engineering recipes needs the complete ship, module, blueprint and
   experimental-effect catalogues, so it pulls them all in. Import a data-free
   calculation module instead when you need one answer rather than a whole ship.
-- `astro/nebulae-all` is ~682 KB. That is why the nebula query functions take an
+- `astro/nebulae-all` is 682.3 KiB. That is why the nebula query functions take an
   explicit catalogue argument rather than defaulting to the complete one — importing
   all 5835 records has to be your decision, not a default you did not notice.
 
-Everything else is small: materials ~16.9 KiB, micro resources ~14.9 KiB, commodities
-~29.5 KiB, `ships/modules` 311.9 KiB (30.5 KiB gzipped).
+Everything else is small: materials 16.9 KiB, micro resources 14.9 KiB, commodities
+29.5 KiB. `ships/modules` is 311.9 KiB raw, and `ships/modules-all` 310.8 KiB.
 
 ## First calls
 
@@ -108,12 +120,14 @@ line works without normalising it first.
 
 ## What happens when something is wrong
 
-The library distinguishes three outcomes, and the distinction is deliberate:
+The library distinguishes four outcomes, and the distinction is deliberate:
 
 - **`null`** — a lookup found no match, or a parse did not recognise the input. This is
   an ordinary answer, not an error.
 - **`TypeError`** — the input was malformed.
 - **`RangeError`** — the input was well-formed but outside a supported range.
+- **`SyntaxError`** — the text was not JSON. `parseSlef` and `inspectSlef` call
+  `JSON.parse` on the string you hand them, so this is what a bad file yields first.
 
 Aggregate figures that may depend on missing catalogue data come in pairs: a nullable
 convenience property, and a result object that names what was missing.

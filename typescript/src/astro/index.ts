@@ -67,7 +67,7 @@
  * sectorNameFromGalacticPosition(position); // -> 'Synuefai'          procedural sector
  * findHandAuthoredRegionAt(position)?.name; // -> 'Pleiades Sector'   hand-authored region
  * findCodexRegionAt(position)?.name; // -> 'Inner Orion Spur'  codex region
- * resolveNamingRegionOrigin('Synuefe')?.x0; // -> 1597440             naming-region origin
+ * resolveNamingRegionOrigin('Synuefai')?.x0; // -> 1556480            naming-region origin
  * ```
  *
  * And the nebula catalogue, which is none of those — it answers "what is *near* here":

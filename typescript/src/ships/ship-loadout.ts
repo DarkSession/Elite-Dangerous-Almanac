@@ -324,7 +324,9 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  *
  * @example
  * Read a build a player already flies, and ask it what an outfitting screen shows.
- * Every figure below is this build's, computed from the capture.
+ * Every figure below is one build's — a Krait Phantom explorer. Figures the capture
+ * already stated (`UnladenMass`, `FuelCapacity`) are trusted verbatim; the rest are
+ * computed from the fit.
  *
  * ```ts
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

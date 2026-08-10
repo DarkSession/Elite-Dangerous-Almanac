@@ -25,17 +25,17 @@ import type { BuildSlot } from './slots.js';
  *
  * declare const event: LoadoutEvent;
  *
+ * // Figures below are one build's — a Federal Corvette.
  * const build = ShipLoadout.fromLoadout(event);
  *
- * build.slots().length; // -> 27   every mount on the hull
- * build.slots('hardpoint').length; // -> 4
+ * build.slots().length; // -> 38   every mount on the hull
+ * build.slots('hardpoint').length; // -> 7
  *
- * for (const slot of build.slots('hardpoint')) {
- *     slot.key; // -> 'HugeHardpoint1'      what ShipLoadout.setModule takes
- *     slot.name; // -> 'Huge Hardpoint 1'   what a UI shows
- *     slot.size; // -> 4
- *     slot.module?.symbol; // -> 'hpt_beamlaser_gimbal_huge', or undefined when empty
- * }
+ * const first = build.slots('hardpoint')[0];
+ * first?.key; // -> 'HugeHardpoint1'      what ShipLoadout.setModule takes
+ * first?.name; // -> 'Huge Hardpoint 1'   what a UI shows
+ * first?.size; // -> 4
+ * first?.module?.symbol; // -> 'hpt_beamlaser_gimbal_huge'; undefined when the mount is empty
  * ```
  *
  * @example
@@ -43,14 +43,19 @@ import type { BuildSlot } from './slots.js';
  *
  * ```ts
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
  *
  * const build = ShipLoadout.empty('Sidewinder');
  * const before = build.slots('hardpoint')[0];
+ * before?.key; // -> 'SmallHardpoint1'
  * before?.module; // -> null
  *
- * build.removeModule('TinyHardpoint1');
- * before?.module; // -> still null; `before` describes the build as it was
- * build.slots('hardpoint')[0]?.module; // -> the current view
+ * const pulse = getModuleBySymbol('Hpt_PulseLaser_Fixed_Small', HARDPOINT_MODULES);
+ * if (pulse) build.setModule('SmallHardpoint1', pulse);
+ *
+ * before?.module; // -> still null — `before` describes the build as it was
+ * build.slots('hardpoint')[0]?.module?.symbol; // -> 'Hpt_PulseLaser_Fixed_Small'
  * ```
  */
 export type LoadoutSlot = BuildSlot & {

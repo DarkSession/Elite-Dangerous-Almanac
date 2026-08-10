@@ -17,11 +17,13 @@ ESM-only, Node.js 18+ and modern browser bundlers, every module side-effect free
 ```ts
 import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
 
 ProceduralSystem.fromName('Synuefe EN-H d11-96')?.systemAddress; // -> 3309179996515n
 
-const build = ShipLoadout.fromLoadout(journalLoadoutEvent);
-build.maxJumpRange(); // -> 60.5478
+declare const event: LoadoutEvent; // a `Loadout` line from a player journal
+
+ShipLoadout.fromLoadout(event).maxJumpRange(); // -> 60.5478
 ```
 
 ## Start here
@@ -33,12 +35,15 @@ build.maxJumpRange(); // -> 60.5478
 
 ## The four feature areas
 
-| Import | Provides |
-| --- | --- |
-| `@elite-dangerous-almanac/core/astro` | Procedural system names, `id64` addresses, sectors, galactic regions, nebulae, permit locks |
-| `@elite-dangerous-almanac/core/ships` | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour, weapons |
-| `@elite-dangerous-almanac/core/materials` | Ship engineering materials and Odyssey micro resources |
-| `@elite-dangerous-almanac/core/commodities` | Standard and rare market commodities |
+| Area | Import | Provides |
+| --- | --- | --- |
+| [astro](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/astro) | `@elite-dangerous-almanac/core/astro` | Procedural system names, `id64` addresses, sectors, galactic regions, nebulae, permit locks |
+| [ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/ships) | `@elite-dangerous-almanac/core/ships` | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour, weapons |
+| [materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/materials) | `@elite-dangerous-almanac/core/materials` | Ship engineering materials and Odyssey micro resources |
+| [commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/commodities) | `@elite-dangerous-almanac/core/commodities` | Standard and rare market commodities |
+
+The bulk data catalogues live on their own subpaths and are listed in full on the
+[API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules).
 
 **[Browse the complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)**
 — every module, class, function and type, generated from the source documentation.
