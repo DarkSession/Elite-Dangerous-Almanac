@@ -44,7 +44,8 @@
  * build.maxJumpRange();  // -> 89.41  (best single jump, one jump's fuel, no cargo)
  *
  * // Assemble one:
- * import { CORE_MODULES, getModuleBySymbol } from '@elite-dangerous-almanac/core/ships';
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
  * const conda = ShipLoadout.empty('Anaconda');
  * conda.setModule('FrameShiftDrive', getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!);
  * conda.slotsOfKind('optional'); // every optional mount, occupied or empty, with size
@@ -1116,7 +1117,7 @@ export class ShipLoadout {
      * unrecognised hull).
      * @example
      * ```ts
-     * import { ALL_MODULES } from '@elite-dangerous-almanac/core/ships';
+     * import { ALL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-all';
      * // Pass ALL_MODULES to search every category (a fuel tank, say, is a STANDARD
      * // module yet fits optional slots); pass one category to narrow the bundle.
      * ShipLoadout.empty('Anaconda').modulesForSlot('FrameShiftDrive', ALL_MODULES);
@@ -1144,7 +1145,8 @@ export class ShipLoadout {
      * on an unrecognised hull).
      * @example
      * ```ts
-     * import { CORE_MODULES, getModuleBySymbol } from '@elite-dangerous-almanac/core/ships';
+     * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+     * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
      * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
      * const tank = getModuleBySymbol('Int_FuelTank_Size6_Class3', CORE_MODULES)!;
      * build.setModule('FrameShiftDrive', fsd).setModule('Slot01_Size7', tank);

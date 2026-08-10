@@ -120,6 +120,36 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(parseSlef(slef)[0]?.data.Ship, 'sidewinder');
 });
 
+test('heavy catalogues stay on explicit subpaths', async () => {
+    const [root, astro, ships, planetary, nebulae, modules] = await Promise.all([
+        import('@elite-dangerous-almanac/core'),
+        import('@elite-dangerous-almanac/core/astro'),
+        import('@elite-dangerous-almanac/core/ships'),
+        import('@elite-dangerous-almanac/core/astro/nebulae-planetary'),
+        import('@elite-dangerous-almanac/core/astro/nebulae-all'),
+        import('@elite-dangerous-almanac/core/ships/modules-all'),
+    ]);
+
+    for (const catalogue of ['PLANETARY_NEBULAE', 'ALL_NEBULAE']) {
+        assert.ok(!(catalogue in root), `${catalogue} leaked into the root barrel`);
+        assert.ok(!(catalogue in astro), `${catalogue} leaked into the astro barrel`);
+    }
+    for (const catalogue of [
+        'CORE_MODULES',
+        'INTERNAL_MODULES',
+        'HARDPOINT_MODULES',
+        'UTILITY_MODULES',
+        'ALL_MODULES',
+    ]) {
+        assert.ok(!(catalogue in root), `${catalogue} leaked into the root barrel`);
+        assert.ok(!(catalogue in ships), `${catalogue} leaked into the ships barrel`);
+    }
+
+    assert.equal(planetary.PLANETARY_NEBULAE.length, 5489);
+    assert.equal(nebulae.ALL_NEBULAE.length, 5835);
+    assert.equal(modules.ALL_MODULES.length, 1199);
+});
+
 test('generated public entries contain no redundant bare imports', async () => {
     for (const { file, specifier } of await publicEntries()) {
         const source = await readFile(file, 'utf8');

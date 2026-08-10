@@ -16,8 +16,8 @@
  * - *galactic codex region* — {@link findCodexRegionAt} (one of the 42 codex zones).
  *
  * None of those is the **nebula catalogue** — the nebulae themselves, and where
- * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE} and its sibling
- * catalogues.
+ * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE} and the catalogues
+ * on the `./nebulae-*` subpaths.
  *
  * **Coordinate spaces have different shapes.**
  * {@link GalacticPosition} is `{x, y, z}` in light-years with Sol at the origin — what the journal,
@@ -175,9 +175,7 @@ export {
 } from './nebulae.js';
 
 export { REAL_NEBULAE } from './nebulae-real.js';
-export { PLANETARY_NEBULAE } from './nebulae-planetary.js';
 export { PROCGEN_NEBULAE } from './nebulae-procgen.js';
-export { ALL_NEBULAE } from './nebulae-all.js';
 
 // ── Low-level boxel primitives ──────────────────────────────────────────────
 // Building blocks the encoders use; most consumers never need these directly.
