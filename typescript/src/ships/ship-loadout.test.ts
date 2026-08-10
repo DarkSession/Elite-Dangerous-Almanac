@@ -2011,7 +2011,7 @@ test('the Kestrel Mk II reproduces the externally observed in-game build totals'
     );
 });
 
-test('The Deep Black reproduces every observed calculated total except jump range', () => {
+test('The Deep Black reproduces every observed calculated total', () => {
     const expected = metrics.inGame.deepBlack;
     const event = deepBlackJournal as LoadoutEvent;
     const build = ShipLoadout.fromLoadout(event);
@@ -2019,12 +2019,10 @@ test('The Deep Black reproduces every observed calculated total except jump rang
     assert.ok(fuel);
     assert.equal(build.shipName, 'The Deep Black');
 
-    const calculatedFullTank = displayed(
-        build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }),
-        2,
+    assert.equal(
+        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        expected.jumpRange.fullTank,
     );
-    assert.equal(calculatedFullTank, expected.jumpRange.calculatedFromCapture);
-    assert.notEqual(calculatedFullTank, expected.jumpRange.fullTank);
 
     const installedBuild = withAllModulesEnabled(event);
     const power = installedBuild.powerBudget();
@@ -2195,7 +2193,7 @@ test('the weaponless Rescue Lynx Highliner reproduces every observed calculated 
     );
 });
 
-test('Fat Arse reproduces every observed calculated total except jump range', () => {
+test('Fat Arse reproduces every observed calculated total', () => {
     const expected = metrics.inGame.fatArse;
     const event = pantherJournal as LoadoutEvent;
     const build = ShipLoadout.fromLoadout(event);
@@ -2203,9 +2201,10 @@ test('Fat Arse reproduces every observed calculated total except jump range', ()
     assert.ok(fuel);
     assert.equal(build.shipName, '[KLD] Fat Arse');
 
-    const jumpRange = displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2);
-    assert.equal(jumpRange, expected.jumpRange.calculatedFromCapture);
-    assert.notEqual(jumpRange, expected.jumpRange.fullTank);
+    assert.equal(
+        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        expected.jumpRange.fullTank,
+    );
 
     const installedBuild = withAllModulesEnabled(event);
     const power = installedBuild.powerBudget();

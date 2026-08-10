@@ -146,10 +146,9 @@
     },
     "deepBlack": {
       "build": "fixtures/ships/journal-the-deep-black.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state; the 24.0014 MW installed draw is displayed to the nearest whole MW. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: this weaponless fit's two heat-sink launchers account for its 4 MW distributor draw. The fresh capture reproduces every calculated metric except the observed 84.95 ly full-tank range, giving 81.83 ly when reserve fuel is counted as mass; see issue #93. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state; the 24.0014 MW installed draw is displayed to the nearest whole MW. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: this weaponless fit's two heat-sink launchers account for its 4 MW distributor draw. The displayed full-tank jump range counts the 1.14 t reserve tank as ship mass even though that fuel is unavailable to the FSD. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass. All calculated metrics reproduce at displayed precision.",
       "jumpRange": {
-        "fullTank": 84.95,
-        "calculatedFromCapture": 81.83
+        "fullTank": 81.83
       },
       "speed": {
         "top": 238,
@@ -294,10 +293,9 @@
     },
     "fatArse": {
       "build": "fixtures/ships/journal-panther-mkii-fat-arse.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state. The offense totals include utility mounts: this fit's two point-defence turrets account for its 4 damage/s and 0.1/s thermal load, while its heat-sink launcher accounts for the 2 MW distributor draw. The fresh capture reproduces every calculated metric except the observed 31.96 ly full-tank range, giving 39.29 ly when reserve fuel is counted as mass; see issue #96. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass. The older same-named SLEF capture remains separately preserved.",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state. The offense totals include utility mounts: this fit's two point-defence turrets account for its 4 damage/s and 0.1/s thermal load, while its heat-sink launcher accounts for the 2 MW distributor draw. The displayed full-tank jump range counts the 1.11 t reserve tank as ship mass even though that fuel is unavailable to the FSD. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass. All calculated metrics reproduce at displayed precision. The older same-named SLEF capture remains separately preserved.",
       "jumpRange": {
-        "fullTank": 31.96,
-        "calculatedFromCapture": 39.29
+        "fullTank": 39.29
       },
       "speed": {
         "top": 296,

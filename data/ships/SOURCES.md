@@ -2598,13 +2598,12 @@ under, which is why several are cited above rather than copied.
   totals: their sink launchers supply the exact 6 MW and 12 MW previously absent when only
   hardpoints were summed.
 
-  **The current captures narrow two jump discrepancies without resolving them.** Under
-  the panel's established reserve-as-mass semantics The Deep Black calculates 81.83 ly,
-  not its observed 84.95 ly, and Fat Arse calculates 39.29 ly, not 31.96 ly. Their current
-  power, offense, shield, armour and mass figures otherwise reproduce at displayed
-  precision. [#93](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/93) and
-  [#96](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/96) track only those
-  remaining jump-range discrepancies.
+  **The current captures reproduce the corrected jump displays.** Under the panel's
+  established reserve-as-mass semantics The Deep Black calculates and displays 81.83 ly,
+  while Fat Arse calculates and displays 39.29 ly. The repository owner re-read both
+  current panels and confirmed those figures; they supersede the earlier 84.95 ly and
+  31.96 ly transcriptions. Power, offense, shield, armour and mass reproduce at displayed
+  precision too.
 
 - **`fixtures/ships/journal-corsair.json`** — a real Frontier journal `Loadout` event for a
   heavily **engineered** Corsair (36 `Modules` entries: six hardpoints, three shield
@@ -3056,8 +3055,8 @@ metadata on the calculated-values fixture, not a rewrite of that source capture.
 builds externally check shield strength and resistance stacking and armour hit points and
 resistance stacking; Slapaconda additionally checks that a build with no generator reports
 zero shields while its armour still reproduces. The older same-named Panther SLEF remains
-separate from the current journal. Every build except The Deep Black and Fat Arse also
-checks full-tank jump range without a known discrepancy. All ten observations record speed and rotation, full-fuel and
+separate from the current journal. All ten builds check full-tank jump range without a
+known discrepancy. All ten observations record speed and rotation, full-fuel and
 thruster-maximum masses, and power figures for APIs that can consume them now or later;
 the nine shielded observations also record shield regeneration.
 
@@ -3113,10 +3112,8 @@ The damage discrepancy remains pinned under
 The Panther's current capture reproduces **4 damage/s, 2 MW distributor draw and 0.1
 heat/s** from its utility mounts: two point-defence turrets supply the damage and heat,
 and its heat-sink launcher supplies the draw. Power, shields, armour and mass reproduce as
-well. Only its full-tank jump remains discrepant: the capture calculates **39.29 ly** under
-the panel semantics, not the observed **31.96 ly**. The older same-named SLEF is preserved
-as a distinct historical refit, and
-[#96](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/96) tracks the jump gap.
+well. Its **39.29 ly** full-tank display follows from the current capture under the panel's
+reserve-as-mass semantics. The older same-named SLEF is preserved as a distinct refit.
 
 The weaponless Deep Black reports **0 damage/s, 4 MW distributor draw and 0 heat/s**.
 All three reproduce: its empty hardpoints contribute nothing and its two heat-sink
@@ -3127,23 +3124,22 @@ and all three reproduce from its empty hardpoints. That independent clean result
 the Deep Black's non-zero distributor display to that observation rather than a general
 rule for weaponless builds.
 
-The Cobra, Kestrel, Spire Ops, Slapaconda and Rescue also make the in-game full-tank jump
-display's reserve-fuel treatment visible. The physical calculation excludes reserve fuel
-from usable FSD fuel and jump mass. The panel includes it in mass only: the Cobra's 0.49 t reserve changes
+The Cobra, Kestrel, Spire Ops, Slapaconda, both Rescue Lynxes, The Deep Black and Fat Arse
+also make the in-game full-tank jump display's reserve-fuel treatment visible. The physical
+calculation excludes reserve fuel from usable FSD fuel and jump mass. The panel includes it in mass only: the Cobra's 0.49 t reserve changes
 44.8089 ly to 44.7491 ly, displayed as 44.75; the Kestrel's 0.61 t reserve changes
 23.1922 ly to 23.1606 ly, displayed as 23.16; Spire Ops' 0.83 t reserve changes 25.1640 ly
 to 25.1375 ly, displayed as 25.14; Slapaconda's 1.07 t reserve changes 27.6513 ly to
-27.6282 ly, displayed as 27.63; and Rescue's 0.75 t reserve changes 30.1961 ly to 30.1636
-ly, displayed as 30.16. The fixture pins the display readings while
+27.6282 ly, displayed as 27.63; Rescue's 0.75 t reserve changes 30.1961 ly to 30.1636
+ly, displayed as 30.16; Rescue 01's same reserve gives 29.38 ly; The Deep Black's 1.14 t
+reserve changes 81.8864 ly to 81.8273 ly, displayed as 81.83; and Fat Arse's 1.11 t
+reserve changes 39.3145 ly to 39.2884 ly, displayed as 39.29. The fixture pins the display readings while
 `ShipLoadout.unladenJumpRange()` keeps the physical answers.
 
-The Deep Black does not reproduce its **84.95 ly** observed full-tank display from the
-fresh journal capture. The captured FSD, booster and mass rebuild its own 88.785400 ly
-maximum range, but yield 81.8273 ly under the panel's reserve-as-mass semantics, displayed
-as 81.83. Its observed 1,376.4 t mass reproduces from the captured unladen mass and both
-fuel tanks with no cargo. The fixture preserves both jump figures, and
-[#93](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/93) records what is
-needed to distinguish a later loadout change from a stale calculation input or rule.
+The Deep Black's captured FSD, booster and mass rebuild its own 88.785400 ly maximum
+range and yield 81.8273 ly under the panel's reserve-as-mass semantics, reproducing the
+**81.83 ly** full-tank display. Its observed 1,376.4 t mass likewise reproduces from the
+captured unladen mass and both fuel tanks with no cargo.
 
 Its **1,490.4 t** thruster-maximum mass does reproduce and settles a related-stat rule:
 the captured grade-4 Clean Drive roll moves `EngineOptimalMass` from 1,080 t to 993.6 t,
