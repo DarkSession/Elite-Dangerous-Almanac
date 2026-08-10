@@ -34,7 +34,7 @@ function trailingDigits(key: string): string | null {
 export function loadoutSlotName(slot: BuildSlot): string {
     switch (slot.kind) {
         case 'core':
-            return slot.core ? CORE_NAMES[slot.core] : slot.key;
+            return CORE_NAMES[slot.core];
         case 'hardpoint': {
             const match = /^(Small|Medium|Large|Huge)(Mining)?Hardpoint(\d+)$/.exec(slot.key);
             if (!match) return slot.key;

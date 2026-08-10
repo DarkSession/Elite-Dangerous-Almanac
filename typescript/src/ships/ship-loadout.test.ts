@@ -61,7 +61,7 @@ test('fromSlef reads the ship identity and top-level figures', () => {
     assert.deepEqual(build.fuelCapacity, { main: 128, reserve: 1.14 });
     assert.equal(build.cargoCapacity, 16);
     assert.equal(build.hullValue, 189326510);
-    assert.equal(build.modules.length, slefFixture[0]!.data.Modules.length);
+    assert.equal(build.fittedModules().length, slefFixture[0]!.data.Modules.length);
 });
 
 test('aggregate results distinguish unknown capacity from zero and explain it', () => {
@@ -96,18 +96,18 @@ test('aggregate results distinguish unknown capacity from zero and explain it', 
 
 test('loadout validation makes empty and unknown builds explicit', () => {
     const captured = ShipLoadout.fromSlef(slefString);
-    assert.equal(captured.valid, true);
-    assert.equal(captured.complete, true);
+    assert.equal(captured.validation.valid, true);
+    assert.equal(captured.validation.complete, true);
     assert.deepEqual(captured.validation.issues, []);
 
     const empty = ShipLoadout.empty('SideWinder');
-    assert.equal(empty.valid, true);
-    assert.equal(empty.complete, false);
+    assert.equal(empty.validation.valid, true);
+    assert.equal(empty.validation.complete, false);
     assert.ok(empty.validation.issues.some((issue) => issue.code === 'missingRequiredSlot'));
 
     const unknown = ShipLoadout.fromLoadout({ Ship: 'FutureShip', Modules: [] });
-    assert.equal(unknown.valid, true);
-    assert.equal(unknown.complete, false);
+    assert.equal(unknown.validation.valid, true);
+    assert.equal(unknown.validation.complete, false);
     assert.equal(unknown.validation.issues[0]?.code, 'unknownHull');
 
     const drive = getModuleBySymbol('Int_Hyperdrive_Size2_Class5', CORE_MODULES)!;
@@ -115,7 +115,7 @@ test('loadout validation makes empty and unknown builds explicit', () => {
         Ship: 'sidewinder',
         Modules: [{ Slot: 'PaintJob', Item: drive.symbol }],
     });
-    assert.equal(disguised.valid, false);
+    assert.equal(disguised.validation.valid, false);
     assert.ok(disguised.validation.issues.some((issue) => issue.code === 'unknownSlot'));
 });
 
@@ -250,10 +250,7 @@ test('the resolved frame shift drive folds in engineering and the booster', () =
 
 test('unladen / laden / total range and per-jump fuel match the fixture', () => {
     const build = ShipLoadout.fromSlef(slefString);
-    assert.ok(
-        near(build.unladenJumpRange(), expected.unladenJumpRange),
-        `unladen ${build.unladenJumpRange()}`,
-    );
+    assert.ok(near(build.jumpRange(), expected.unladenJumpRange), `unladen ${build.jumpRange()}`);
     assert.ok(
         near(build.ladenJumpRange(), expected.ladenJumpRange),
         `laden ${build.ladenJumpRange()}`,
@@ -267,8 +264,8 @@ test('unladen / laden / total range and per-jump fuel match the fixture', () => 
 
 test('jumpRange honours explicit fuel and cargo', () => {
     const build = ShipLoadout.fromSlef(slefString);
-    // full main tank, no cargo == unladenJumpRange
-    assert.ok(near(build.jumpRange({ fuel: 128, cargo: 0 }), build.unladenJumpRange()));
+    // The default is a full main tank with no cargo.
+    assert.ok(near(build.jumpRange({ fuel: 128, cargo: 0 }), build.jumpRange()));
     // more cargo -> shorter jump
     assert.ok(build.jumpRange({ cargo: 100 }) < build.jumpRange({ cargo: 0 }));
 });
@@ -300,21 +297,27 @@ test('loadout inputs and returned raw records cannot mutate internal state', () 
 
     source.Modules[0]!.Item = 'int_hyperdrive_size99_class9_madeup';
     source.Modules[0]!.Engineering.Modifiers[0]!.Value = 1;
-    assert.equal(build.moduleAt('FrameShiftDrive')?.Item, 'Int_Hyperdrive_Size6_Class5');
+    assert.equal(build.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size6_Class5');
     assert.equal(build.frameShiftDrive.optMass, 1980);
 
-    const exposed = build.moduleAt('FrameShiftDrive') as unknown as {
+    const exposed = build.fittedModuleAt('FrameShiftDrive')!.raw as unknown as {
         Item: string;
         Engineering?: { Modifiers: { Value?: number }[] };
     };
-    exposed.Item = 'int_hyperdrive_size99_class9_madeup';
-    exposed.Engineering!.Modifiers[0]!.Value = 2;
-    assert.equal(build.moduleAt('FrameShiftDrive')?.Item, 'Int_Hyperdrive_Size6_Class5');
+    assert.throws(() => {
+        exposed.Item = 'int_hyperdrive_size99_class9_madeup';
+    }, TypeError);
+    assert.throws(() => {
+        exposed.Engineering!.Modifiers[0]!.Value = 2;
+    }, TypeError);
+    assert.equal(build.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size6_Class5');
     assert.equal(build.frameShiftDrive.optMass, 1980);
 
-    const listed = build.modules[0] as { Item: string };
-    listed.Item = 'another_fake_module';
-    assert.equal(build.moduleAt('FrameShiftDrive')?.Item, 'Int_Hyperdrive_Size6_Class5');
+    const listed = build.fittedModules()[0]!.raw as { Item: string };
+    assert.throws(() => {
+        listed.Item = 'another_fake_module';
+    }, TypeError);
+    assert.equal(build.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size6_Class5');
     assert.equal(build.unladenMass, 500);
 });
 
@@ -340,7 +343,7 @@ test('editing a SLEF build keeps imported aggregate figures coherent', () => {
 
 test("re-fitting a lower-cased import's same module preserves its credit figures", () => {
     const build = ShipLoadout.fromSlef(slefString);
-    const imported = build.moduleAt('FrameShiftDrive')!;
+    const imported = build.fittedModuleAt('FrameShiftDrive')!.raw;
     const drive = mod(imported.Item);
     const modulesValue = build.modulesValue;
     const rebuy = build.rebuy;
@@ -502,7 +505,7 @@ test('fallback mass resolves bulkheads and rejects unknown module masses', () =>
 test("empty starts a hull with no modules and the hull's declared slots", () => {
     const conda = ShipLoadout.empty('Anaconda');
     assert.equal(conda.shipSymbol, 'Anaconda');
-    assert.equal(conda.modules.length, 0);
+    assert.equal(conda.fittedModules().length, 0);
     assert.equal(conda.slots('hardpoint').length, 8);
     assert.equal(conda.slots('utility').length, 8);
     assert.equal(conda.slots('core').length, 7);
@@ -525,17 +528,17 @@ test('setModule fits a module and slots() reflects occupancy', () => {
     assert.ok(fsdSlot?.module);
     assert.equal(fsdSlot?.module?.symbol, 'Int_Hyperdrive_Size2_Class5');
     assert.equal(build.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size2_Class5');
-    assert.equal(build.modules.length, 1);
+    assert.equal(build.fittedModules().length, 1);
 });
 
 test('setModule chains and removeModule clears', () => {
     const build = ShipLoadout.empty('Anaconda')
         .setModule('FrameShiftDrive', mod('Int_Hyperdrive_Size6_Class5'))
         .setModule('Slot01_Size7', mod('Int_FuelTank_Size6_Class3'));
-    assert.equal(build.modules.length, 2);
+    assert.equal(build.fittedModules().length, 2);
     build.removeModule('Slot01_Size7');
     assert.equal(build.fittedModuleAt('Slot01_Size7'), null);
-    assert.equal(build.modules.length, 1);
+    assert.equal(build.fittedModules().length, 1);
     // removing an empty slot is a no-op
     assert.doesNotThrow(() => build.removeModule('Slot02_Size6'));
 });
@@ -1111,10 +1114,10 @@ test('armour is hull-specific while the cargo hatch remains fixed', () => {
     );
 
     const imported = ShipLoadout.fromSlef(slefString);
-    const cargoHatch = imported.moduleAt('CargoHatch');
+    const cargoHatch = imported.fittedModuleAt('CargoHatch')?.raw;
     assert.ok(cargoHatch);
     assert.throws(() => imported.removeModule('CargoHatch'), /cargoHatch slot cannot be changed/);
-    assert.deepEqual(imported.moduleAt('CargoHatch'), cargoHatch);
+    assert.deepEqual(imported.fittedModuleAt('CargoHatch')?.raw, cargoHatch);
     assert.ok(imported.slots().find((slot) => slot.key === 'CargoHatch')?.module);
 });
 
@@ -1154,8 +1157,8 @@ test('assembled builds include engineered cargo capacity in their aggregates', (
     assert.equal(build.cargoCapacity, 43.008);
     assert.equal(
         build
-            .moduleAt('Slot05_Size5')
-            ?.Engineering?.Modifiers?.find((modifier) => modifier.Label === 'CargoCapacity')?.Value,
+            .fittedModuleAt('Slot05_Size5')
+            ?.engineering?.Modifiers?.find((modifier) => modifier.Label === 'CargoCapacity')?.Value,
         43.008,
     );
 });
@@ -1843,7 +1846,7 @@ test('slot views are immutable point-in-time values', () => {
 
     conda.removeModule(drive.key);
     assert.equal(fitted.symbol, 'Int_Hyperdrive_Size6_Class5', 'the old module stays readable');
-    assert.equal(conda.modules.length, 0);
+    assert.equal(conda.fittedModules().length, 0);
     assert.throws(() => Object.assign(drive, { name: 'changed' }), TypeError);
     assert.throws(() => Object.assign(fitted.raw, { Item: 'changed' }), TypeError);
 });
@@ -1944,7 +1947,7 @@ test('the beam Corvette reproduces the externally observed in-game build totals'
     const expected = metrics.inGame.federalCorvetteBeams;
     const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
 
-    assert.equal(displayed(build.unladenJumpRange(), 2), expected.jumpRange.fullTank);
+    assert.equal(displayed(build.jumpRange(), 2), expected.jumpRange.fullTank);
 
     const installedPowerBuild = withAllModulesEnabled(corvetteBeamsJournal as LoadoutEvent);
     const power = installedPowerBuild.powerBudget();
@@ -2692,7 +2695,7 @@ test('switched-off modules drop out of every metric', () => {
 
     const off = ShipLoadout.fromLoadout({
         Ship: 'anaconda',
-        Modules: build.modules.map((m) => ({ ...m, On: false })),
+        Modules: build.fittedModules().map(({ raw }) => ({ ...raw, On: false })),
     });
     assert.equal(off.shieldMetrics(), null); // the generator is off
     assert.equal(off.powerBudget().available, 0); // so is the plant
@@ -2728,7 +2731,7 @@ test('jumpRangeSummary gathers the loads that matter', () => {
     const build = ShipLoadout.fromSlef(slefString);
     const summary = build.jumpRangeSummary();
     assert.ok(near(summary.max, build.maxJumpRange()));
-    assert.ok(near(summary.unladen, build.unladenJumpRange()));
+    assert.ok(near(summary.unladen, build.jumpRange()));
     assert.ok(near(summary.laden, build.ladenJumpRange()));
     assert.ok(near(summary.totalUnladen, build.totalRange()));
     assert.ok(near(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity! })));
@@ -2931,11 +2934,14 @@ test('a build imported from Inara binds every one of its lower-cased slots', () 
     // Inara lower-cases every slot key, as the SLEF specification's own example does.
     // The build is otherwise ordinary, so every mount it names must bind.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    assert.equal(build.modules.length, 27);
+    assert.equal(build.fittedModules().length, 27);
     assert.equal(build.slots().filter((s) => s.module !== null).length, 27);
 
     // ...reached by the journal's own spelling, which is not the one it wrote.
-    assert.equal(build.moduleAt('LargeMiningHardpoint1')?.Item, 'hpt_miningtoolv2_fixed_large');
+    assert.equal(
+        build.fittedModuleAt('LargeMiningHardpoint1')?.symbol,
+        'hpt_miningtoolv2_fixed_large',
+    );
     assert.equal(
         build.fittedModuleAt('FrameShiftDrive')?.symbol,
         'int_hyperdrive_overcharge_size5_class5',
@@ -2945,10 +2951,10 @@ test('a build imported from Inara binds every one of its lower-cased slots', () 
 
     // A snapshot reports the build's own spelling rather than the one it was asked with.
     assert.equal(build.fittedModuleAt('LargeMiningHardpoint1')?.slot, 'largemininghardpoint1');
-    assert.equal(build.moduleAt('LargeMiningHardpoint1')?.Slot, 'largemininghardpoint1');
+    assert.equal(build.fittedModuleAt('LargeMiningHardpoint1')?.raw.Slot, 'largemininghardpoint1');
 
     // A key the hull genuinely has no mount for is still a miss, not a near-match.
-    assert.equal(build.moduleAt('HugeHardpoint1'), null);
+    assert.equal(build.fittedModuleAt('HugeHardpoint1'), null);
     assert.equal(build.fittedModuleAt('Military01'), null);
 });
 
@@ -2956,11 +2962,14 @@ test('editing a lower-cased slot replaces its module rather than adding one', ()
     // The defect this pins: an unbound slot made `setModule` an *insert*, so the build
     // grew a second large mining hardpoint and its mass, draw and credits with it.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    const before = { modules: build.modules.length, mass: build.unladenMass! };
+    const before = { modules: build.fittedModules().length, mass: build.unladenMass! };
 
     build.setModule('LargeMiningHardpoint1', mod('Hpt_MiningLaser_Fixed_Medium', ALL_MODULES));
-    assert.equal(build.modules.length, before.modules);
-    assert.equal(build.moduleAt('largemininghardpoint1')?.Item, 'Hpt_MiningLaser_Fixed_Medium');
+    assert.equal(build.fittedModules().length, before.modules);
+    assert.equal(
+        build.fittedModuleAt('largemininghardpoint1')?.symbol,
+        'Hpt_MiningLaser_Fixed_Medium',
+    );
     assert.equal(build.weaponMetrics().weapons.length, 5);
     // Replacing a 4 t mining tool with a 2 t laser takes 2 t off, rather than adding 2 t.
     assert.ok(build.unladenMass! < before.mass, `${build.unladenMass} !< ${before.mass}`);
@@ -2972,29 +2981,29 @@ test('editing a lower-cased slot replaces its module rather than adding one', ()
     );
 
     build.removeModule('LARGEMININGHARDPOINT1');
-    assert.equal(build.modules.length, before.modules - 1);
-    assert.equal(build.moduleAt('largemininghardpoint1'), null);
+    assert.equal(build.fittedModules().length, before.modules - 1);
+    assert.equal(build.fittedModuleAt('largemininghardpoint1'), null);
 });
 
 test('every editor and reader on the facade takes a lower-cased key', () => {
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
 
     build.setModuleEnabled('FrameShiftDrive', false);
-    assert.equal(build.moduleAt('frameshiftdrive')?.On, false);
+    assert.equal(build.fittedModuleAt('frameshiftdrive')?.on, false);
     build.setModulePriority('FrameShiftDrive', 2);
-    assert.equal(build.moduleAt('frameshiftdrive')?.Priority, 2);
+    assert.equal(build.fittedModuleAt('frameshiftdrive')?.priority, 2);
 
     build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 });
-    assert.ok(build.moduleAt('frameshiftdrive')?.Engineering);
+    assert.ok(build.fittedModuleAt('frameshiftdrive')?.engineering);
     build.clearEngineering('FrameShiftDrive');
-    assert.equal(build.moduleAt('frameshiftdrive')?.Engineering, undefined);
+    assert.equal(build.fittedModuleAt('frameshiftdrive')?.engineering, undefined);
 
     // ...and so does a slot the build has not filled, whose key comes from the layout.
     assert.ok(build.modulesForSlot('tinyhardpoint2', UTILITY_MODULES).length > 0);
     assert.equal(build.fittedModuleAt('TinyHardpoint2'), null);
     build.setModule('tinyhardpoint2', mod('Hpt_ShieldBooster_Size0_Class5', UTILITY_MODULES));
     // A fresh fit takes the layout's canonical key, having no existing one to keep.
-    assert.equal(build.moduleAt('TinyHardpoint2')?.Slot, 'TinyHardpoint2');
+    assert.equal(build.fittedModuleAt('TinyHardpoint2')?.slot, 'TinyHardpoint2');
 
     // The cargo hatch is protected however it is spelled.
     assert.throws(() => build.removeModule('cargohatch'), TypeError);
@@ -3073,8 +3082,8 @@ const derivedViews = (build: ShipLoadout) => ({
     unladenMass: build.unladenMass,
     cargoCapacity: build.cargoCapacity,
     fuelCapacity: build.fuelCapacity,
-    valid: build.valid,
-    complete: build.complete,
+    valid: build.validation.valid,
+    complete: build.validation.complete,
     issues: build.validation.issues.map((issue) => `${issue.code}:${issue.slot ?? ''}`),
     slots: build.slots().map((slot) => `${slot.key}=${slot.module?.symbol ?? ''}`),
 });

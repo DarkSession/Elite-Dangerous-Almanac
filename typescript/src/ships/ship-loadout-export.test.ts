@@ -184,8 +184,8 @@ const krait = kraitJournal as unknown as LoadoutEvent;
 
 test('journal cosmetics are valid non-outfitting entries', () => {
     const build = ShipLoadout.fromLoadout(krait);
-    assert.equal(build.valid, true);
-    assert.equal(build.complete, true);
+    assert.equal(build.validation.valid, true);
+    assert.equal(build.validation.complete, true);
     assert.equal(
         build.validation.issues.some((issue) => issue.code === 'unknownSlot'),
         false,
@@ -1032,9 +1032,9 @@ test('fitted-module snapshots preserve their point-in-time power state', () => {
 test('switching off a Guardian FSD Booster changes the exported jump range', () => {
     const build = ShipLoadout.fromSlef(slefString);
     const boosted = build.toLoadoutEvent().MaxJumpRange!;
-    const boosterSlot = build.modules.find((m) =>
-        m.Item.toLowerCase().startsWith('int_guardianfsdbooster'),
-    )!.Slot;
+    const boosterSlot = build
+        .fittedModules()
+        .find((module) => module.symbol.toLowerCase().startsWith('int_guardianfsdbooster'))!.slot;
     build.setModuleEnabled(boosterSlot, false);
     assert.ok(build.toLoadoutEvent().MaxJumpRange! < boosted);
 });
@@ -1063,8 +1063,14 @@ test('a restricted mount survives a SLEF round trip under its journal name', () 
     // still knows what it takes — so an edit after a round trip is still checked.
     const back = ShipLoadout.fromSlef(exported);
     assert.deepEqual(
-        back.modules.map((m) => m.Slot).sort(),
-        build.modules.map((m) => m.Slot).sort(),
+        back
+            .fittedModules()
+            .map((module) => module.slot)
+            .sort(),
+        build
+            .fittedModules()
+            .map((module) => module.slot)
+            .sort(),
     );
     const mount = back.slots().find((s) => s.key === 'MediumMiningHardpoint1');
     assert.equal(mount?.restriction, 'mining');
@@ -1088,9 +1094,9 @@ test('a SLEF producer with generic Type-11 mount names still imports', () => {
         ],
     };
     const build = ShipLoadout.fromLoadout(foreign);
-    assert.equal(build.modules.length, 3);
+    assert.equal(build.fittedModules().length, 3);
     assert.equal(
-        build.moduleAt('MediumHardpoint1')?.Item,
+        build.fittedModuleAt('MediumHardpoint1')?.symbol,
         'hpt_mining_subsurfdispmisle_fixed_medium',
     );
     assert.equal(build.weaponMetrics().weapons.length, 1);
@@ -1179,7 +1185,7 @@ test('every figure the Type-11 export needs is computable from it', () => {
     // A build carrying an unpriced or unrecognised module exports no credits at all, so
     // this doubles as a check that all 27 of its modules resolve in the catalogues.
     const build = ShipLoadout.fromSlef(JSON.stringify(inaraFixture));
-    assert.equal(build.modules.length, 27);
+    assert.equal(build.fittedModules().length, 27);
     const ours = build.toLoadoutEvent();
     for (const key of [
         'UnladenMass',
@@ -1227,7 +1233,9 @@ test('a journal build on a renamed hull binds to the mounts it names', () => {
     }
     // Every fitted module sits in a mount the hull declares — nothing left over.
     const keys = new Set(build.slots().map((s) => s.key));
-    for (const m of build.modules) assert.ok(keys.has(m.Slot), `stray slot ${m.Slot}`);
+    for (const module of build.fittedModules()) {
+        assert.ok(keys.has(module.slot), `stray slot ${module.slot}`);
+    }
 
     // …and the same holds for an Inara-style producer that lower-cases its keys, so a
     // hull's own names are bound by the same case rule as every other slot key.

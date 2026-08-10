@@ -3168,8 +3168,8 @@ to 25.1375 ly, displayed as 25.14; Slapaconda's 1.07 t reserve changes 27.6513 l
 27.6282 ly, displayed as 27.63; Rescue's 0.75 t reserve changes 30.1961 ly to 30.1636
 ly, displayed as 30.16; Rescue 01's same reserve gives 29.38 ly; The Deep Black's 1.14 t
 reserve changes 81.8864 ly to 81.8273 ly, displayed as 81.83; and Fat Arse's 1.11 t
-reserve changes 39.3145 ly to 39.2884 ly, displayed as 39.29. The fixture pins the display readings while
-`ShipLoadout.unladenJumpRange()` keeps the physical answers.
+reserve changes 39.3145 ly to 39.2884 ly, displayed as 39.29. The fixture pins the display
+readings while `ShipLoadout.jumpRange()` keeps the physical answers.
 
 The Deep Black's captured FSD, booster and mass rebuild its own 88.785400 ly maximum
 range and yield 81.8273 ly under the panel's reserve-as-mass semantics, reproducing the

@@ -12,12 +12,12 @@ import type { BuildSlot } from './slots.js';
  *
  * The view is detached from its {@link ShipLoadout}; after fitting or removing a
  * module, call {@link ShipLoadout.slots} again for the current view. Mutations and
- * candidate filtering stay on `ShipLoadout` and take {@link key}, leaving this value
+ * candidate filtering stay on `ShipLoadout` and take the slot `key`, leaving this value
  * serializable and free of lifecycle rules.
  */
-export interface LoadoutSlot extends BuildSlot {
+export type LoadoutSlot = BuildSlot & {
     /** Human-readable label, e.g. `"Frame Shift Drive"`. */
     readonly name: string;
     /** Frozen fitted-module snapshot, or `null` when this mount is empty. */
     readonly module: FittedModule | null;
-}
+};
