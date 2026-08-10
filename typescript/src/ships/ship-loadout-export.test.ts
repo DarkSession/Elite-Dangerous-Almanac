@@ -17,6 +17,7 @@ import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with 
 
 const slefString = JSON.stringify(slefFixture);
 const source = slefFixture[0]!.data as unknown as LoadoutEvent;
+const TEST_SLEF_OPTIONS = { header: { appName: 'Test', appVersion: '1.0.0' } } as const;
 
 const round6 = (v: number): number => Math.round(v * 1e6) / 1e6;
 const module = (symbol: string) => getModuleBySymbol(symbol, ALL_MODULES)!;
@@ -35,7 +36,7 @@ const figuresOf = (event: LoadoutEvent, wanted: Record<string, unknown>) => {
 
 test('a SLEF export survives a round trip through toSlef', () => {
     const event = ShipLoadout.fromSlef(slefString).toLoadoutEvent();
-    const parsed = parseSlef(ShipLoadout.fromSlef(slefString).toSlefString());
+    const parsed = parseSlef(ShipLoadout.fromSlef(slefString).toSlefString(TEST_SLEF_OPTIONS));
 
     assert.equal(parsed.length, 1);
     assert.equal(parsed[0]!.data.Ship, source.Ship);
@@ -92,8 +93,9 @@ test('engineering survives the round trip intact', () => {
 test('journal-only metadata is excluded from a loadout and SLEF round trip', () => {
     const { topLevel, engineering } = fixture.journalFieldExclusions;
     const sourceTop = viperJournal as unknown as Record<string, unknown>;
-    const viperRoundTrip = parseSlef(ShipLoadout.fromSlef(viperJournal).toSlefString())[0]!
-        .data as unknown as Record<string, unknown>;
+    const viperRoundTrip = parseSlef(
+        ShipLoadout.fromSlef(viperJournal).toSlefString(TEST_SLEF_OPTIONS),
+    )[0]!.data as unknown as Record<string, unknown>;
 
     for (const key of topLevel) {
         assert.ok(Object.hasOwn(sourceTop, key), `real capture does not carry ${key}`);
@@ -105,9 +107,9 @@ test('journal-only metadata is excluded from a loadout and SLEF round trip', () 
     const kraitBuild = ShipLoadout.fromSlef(kraitJournal);
     const fittedEngineering = kraitBuild.getFittedModule(sourceModule.Slot)!
         .engineering as unknown as Record<string, unknown>;
-    const kraitRoundTrip = parseSlef(kraitBuild.toSlefString())[0]!.data.Modules.find(
-        (module) => module.Slot === sourceModule.Slot,
-    )!;
+    const kraitRoundTrip = parseSlef(
+        kraitBuild.toSlefString(TEST_SLEF_OPTIONS),
+    )[0]!.data.Modules.find((module) => module.Slot === sourceModule.Slot)!;
     const roundTripEngineering = kraitRoundTrip.Engineering as unknown as Record<string, unknown>;
 
     for (const key of engineering) {
@@ -863,7 +865,7 @@ test('an import whose own prices disagree with its total is corrected to retail'
 
 test('a journal build round-trips through SLEF unchanged', () => {
     const build = ShipLoadout.fromLoadout(krait);
-    const reimported = ShipLoadout.fromSlef(build.toSlefString());
+    const reimported = ShipLoadout.fromSlef(build.toSlefString(TEST_SLEF_OPTIONS));
     assert.deepEqual(reimported.toLoadoutEvent(), build.toLoadoutEvent());
 });
 
@@ -933,7 +935,7 @@ test('a build assembled from scratch exports every figure it can compute', () =>
 });
 
 test('an assembled build round-trips through parseSlef', () => {
-    const parsed = parseSlef(assembledBuild().toSlefString());
+    const parsed = parseSlef(assembledBuild().toSlefString(TEST_SLEF_OPTIONS));
     assert.equal(parsed[0]!.data.Ship, fixture.assembled.recomputed.Ship);
 });
 

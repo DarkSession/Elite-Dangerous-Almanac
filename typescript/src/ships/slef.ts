@@ -19,15 +19,15 @@
  *
  * ```ts
  * const build = ShipLoadout.fromSlef(exported);       // in
- * const text = stringifySlef(build.toSlef());         // and back out
+ * const text = stringifySlef(
+ *     build.toSlef({ header: { appName: 'MyApp', appVersion: '1.0.0' } }),
+ * );                                                  // and back out
  * ```
  *
  * Reference: the Inara SLEF specification, <https://inara.cz/elite/inara-impexp-slef/>.
  *
  * @packageDocumentation
  */
-
-import { LIBRARY_NAME, LIBRARY_VERSION } from '../internal/version.js';
 
 /** The envelope header — which app produced the export. */
 export interface SlefHeader {
@@ -421,7 +421,7 @@ export interface SlefInspection {
  * result.diagnostics[0]?.path; // -> 'entries[0].Modules[0].Item'
  * ```
  */
-export function inspectSlef(input: string | object): SlefInspection {
+export function inspectSlef(input: unknown): SlefInspection {
     const root: unknown = typeof input === 'string' ? JSON.parse(input) : input;
     const rawEntries: unknown[] = Array.isArray(root) ? root : [root];
     const entries: SlefEntry[] = [];
@@ -497,7 +497,7 @@ export function inspectSlef(input: string | object): SlefInspection {
  * entry.data.Ship; // -> 'explorer_nx'
  * ```
  */
-export function parseSlef(input: string | object): SlefEntry[] {
+export function parseSlef(input: unknown): SlefEntry[] {
     const inspected = inspectSlef(input);
     if (inspected.diagnostics.length > 0) {
         throw new TypeError(`parseSlef: ${inspected.diagnostics[0]!.message}`);
@@ -518,24 +518,12 @@ export interface SlefStringifyOptions {
 }
 
 /**
- * The header a SLEF export made by this library carries when the caller supplies none.
- *
- * @remarks
- * SLEF's header names the **exporting application**, so an app building on this library
- * should pass its own rather than shipping this one.
- */
-export const LIBRARY_SLEF_HEADER: SlefHeader = Object.freeze({
-    appName: LIBRARY_NAME,
-    appVersion: LIBRARY_VERSION,
-});
-
-/**
  * Wrap one or more loadouts in SLEF envelopes.
  *
  * @param data - A single `Loadout` event or several. Several travel in one export as
  * separate entries, which is what the format's array top level is for.
- * @param header - Which app to credit. Defaults to {@link LIBRARY_SLEF_HEADER}; pass
- * your own app's name and version.
+ * @param header - Which exporting app to credit. SLEF attribution belongs to the
+ * application producing the export, so callers must provide its name and version.
  * @returns The export, one entry per loadout, in the order given.
  * @throws {TypeError} If `data` is empty, or the header or any loadout does not match
  * the record shape. Every entry is checked with the same guards {@link parseSlef}
@@ -546,9 +534,8 @@ export const LIBRARY_SLEF_HEADER: SlefHeader = Object.freeze({
  * stringifySlef(slef); // -> '[{"header":{...},"data":{...}}]'
  * ```
  */
-export function toSlef(data: LoadoutEvent | readonly LoadoutEvent[], header?: SlefHeader): Slef {
-    const chosen = header ?? LIBRARY_SLEF_HEADER;
-    if (!isSlefHeader(chosen)) {
+export function toSlef(data: LoadoutEvent | readonly LoadoutEvent[], header: SlefHeader): Slef {
+    if (!isSlefHeader(header)) {
         throw new TypeError('toSlef: header needs a string `appName` and an `appVersion`');
     }
 
@@ -570,7 +557,7 @@ export function toSlef(data: LoadoutEvent | readonly LoadoutEvent[], header?: Sl
                 `toSlef: entry ${index} contains duplicate slot "${duplicate.slot}"`,
             );
         }
-        return { header: chosen, data: event };
+        return { header, data: event };
     });
 }
 

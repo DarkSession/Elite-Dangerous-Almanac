@@ -94,7 +94,6 @@ export {
     toSlef,
     stringifySlef,
     getLoadoutModifier,
-    LIBRARY_SLEF_HEADER,
     type Slef,
     type SlefEntry,
     type SlefHeader,

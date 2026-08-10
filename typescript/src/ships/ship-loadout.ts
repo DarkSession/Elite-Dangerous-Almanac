@@ -288,10 +288,12 @@ export interface LoadoutExportOptions {
 /** As {@link LoadoutExportOptions}, plus the SLEF envelope — see {@link ShipLoadout.toSlef}. */
 export interface SlefExportOptions extends LoadoutExportOptions {
     /**
-     * The envelope header. Defaults to one naming this library; an app built on it
-     * should pass its own, since SLEF's header credits the *exporting application*.
+     * The envelope header identifying the exporting application.
+     *
+     * SLEF attribution belongs to the application producing the export, not to this
+     * calculation library, so callers must provide it.
      */
-    readonly header?: SlefHeader;
+    readonly header: SlefHeader;
     /** Spaces per indent for {@link ShipLoadout.toSlefString}. `0` (the default) is compact. */
     readonly indent?: number;
 }
@@ -635,7 +637,7 @@ export class ShipLoadout {
      * @throws {TypeError} If the export holds no usable loadout, or `index` is out of
      * range.
      */
-    static fromSlef(input: string | object, index = 0): ShipLoadout {
+    static fromSlef(input: unknown, index = 0): ShipLoadout {
         const entries = parseSlef(input);
         const entry = entries[index];
         if (!entry) {
@@ -1523,7 +1525,7 @@ export class ShipLoadout {
      * `toSlef([a.toLoadoutEvent(), b.toLoadoutEvent()])` using the function of the same
      * name from `./slef`.
      */
-    toSlef(options: SlefExportOptions = {}): Slef {
+    toSlef(options: SlefExportOptions): Slef {
         return toSlefEnvelope(this.toLoadoutEvent(options), options.header);
     }
 
@@ -1536,7 +1538,7 @@ export class ShipLoadout {
      * build.toSlefString({ header: { appName: 'MyApp', appVersion: '1.0.0' } });
      * ```
      */
-    toSlefString(options: SlefExportOptions = {}): string {
+    toSlefString(options: SlefExportOptions): string {
         return stringifySlef(this.toSlef(options), { indent: options.indent ?? 0 });
     }
 

@@ -111,7 +111,12 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(getCommodityBySymbol('lavianbrandy', RARE_COMMODITIES)?.name, 'Lavian Brandy');
     assert.equal(toSystemAddress(10_477_373_803), 10_477_373_803n);
     assert.equal(sectorNameFromGalacticPosition({ x: 751, y: -179, z: -91 }), 'Synuefe');
-    const slef = stringifySlef(toSlef({ Ship: 'sidewinder', Modules: [] }));
+    const slef = stringifySlef(
+        toSlef(
+            { Ship: 'sidewinder', Modules: [] },
+            { appName: 'Package test', appVersion: '1.0.0' },
+        ),
+    );
     assert.equal(parseSlef(slef)[0]?.data.Ship, 'sidewinder');
 });
 
