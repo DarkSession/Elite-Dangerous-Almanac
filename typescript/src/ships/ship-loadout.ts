@@ -117,11 +117,13 @@ import { FittedModule } from './fitted-module.js';
 import { LoadoutSlot } from './loadout-slot.js';
 import { SourcePurchaseRecord } from './source-purchase.js';
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { completeResult } from './internal/calculation-result.js';
 import {
     calculateCargoCapacity,
     calculateFuelCapacity,
     calculateUnladenMass,
     type CalculationResult,
+    type FuelCapacity,
     type LoadoutCalculationModule,
 } from './loadout-calculations.js';
 import {
@@ -130,6 +132,12 @@ import {
     type ValidationModule,
 } from './loadout-validation.js';
 
+// The calculation and validation companions, re-exported so that reaching for
+// `ShipLoadout` on its own subpath can still name what its results are made of. It is
+// not the whole of its signatures — the metrics and catalogue types come from their own
+// modules — so use the `ships` barrel to name everything from one import. That barrel
+// does not read this list; it names each symbol at the module that declares it, so a
+// type missing from here still reaches consumers.
 export { FittedModule } from './fitted-module.js';
 export { LoadoutSlot } from './loadout-slot.js';
 export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
@@ -139,7 +147,7 @@ export {
     calculateUnladenMass,
     type CalculationIssue,
     type CalculationResult,
-    type CalculatedFuelCapacity,
+    type FuelCapacity,
     type LoadoutCalculationModule,
 } from './loadout-calculations.js';
 export {
@@ -150,16 +158,6 @@ export {
     type LoadoutValidationInput,
     type ValidationModule,
 } from './loadout-validation.js';
-
-/** A ship's fuel-tank capacities, in tonnes. */
-export interface FuelCapacity {
-    /** Main tank capacity — the fuel jumps and supercruise draw from. */
-    readonly main: number;
-    /** Reserve tank capacity — the small emergency reserve. */
-    readonly reserve: number;
-}
-
-const NO_CALCULATION_ISSUES: readonly [] = Object.freeze([]);
 
 /** Optional mass overrides for a single calculation. */
 export interface JumpOptions {
@@ -793,13 +791,7 @@ export class ShipLoadout {
      * module fields that prevented the calculation.
      */
     get unladenMassResult(): CalculationResult<number> {
-        if (this.#top.UnladenMass !== undefined) {
-            return Object.freeze({
-                value: this.#top.UnladenMass,
-                complete: true,
-                issues: NO_CALCULATION_ISSUES,
-            });
-        }
+        if (this.#top.UnladenMass !== undefined) return completeResult(this.#top.UnladenMass);
         return calculateUnladenMass(
             getShipBySymbol(this.#shipSymbol)?.hullMass ?? null,
             this.#calculationModules(),
@@ -831,25 +823,19 @@ export class ShipLoadout {
     get fuelCapacityResult(): CalculationResult<FuelCapacity> {
         const cap = this.#top.FuelCapacity;
         if (cap?.Main !== undefined && cap.Reserve !== undefined) {
-            return Object.freeze({
-                value: Object.freeze({ main: cap.Main, reserve: cap.Reserve }),
-                complete: true,
-                issues: NO_CALCULATION_ISSUES,
-            });
+            return completeResult(Object.freeze({ main: cap.Main, reserve: cap.Reserve }));
         }
         const computed = calculateFuelCapacity(
             getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity ?? null,
             this.#calculationModules(),
         );
         if (computed.value === null) return computed;
-        return Object.freeze({
-            value: Object.freeze({
+        return completeResult(
+            Object.freeze({
                 main: cap?.Main ?? computed.value.main,
                 reserve: cap?.Reserve ?? computed.value.reserve,
             }),
-            complete: true,
-            issues: NO_CALCULATION_ISSUES,
-        });
+        );
     }
 
     /**
@@ -863,13 +849,7 @@ export class ShipLoadout {
 
     /** Cargo capacity with diagnostics instead of unknown racks collapsing to zero. */
     get cargoCapacityResult(): CalculationResult<number> {
-        if (this.#top.CargoCapacity !== undefined) {
-            return Object.freeze({
-                value: this.#top.CargoCapacity,
-                complete: true,
-                issues: NO_CALCULATION_ISSUES,
-            });
-        }
+        if (this.#top.CargoCapacity !== undefined) return completeResult(this.#top.CargoCapacity);
         return calculateCargoCapacity(this.#calculationModules());
     }
 
