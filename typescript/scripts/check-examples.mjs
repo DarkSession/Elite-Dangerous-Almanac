@@ -1,27 +1,31 @@
 #!/usr/bin/env node
 
 /**
- * Type-check every `@example` snippet in the public source.
+ * Type-check every documented code snippet: each `@example` in the public source, and
+ * each fenced block in the Markdown pages published to the wiki.
  *
  * A doc example is a promise that the code in it works. TypeDoc copies it into the wiki
  * verbatim and no other check ever reads it, so a snippet that names a symbol the API
  * dropped, or omits the import a reader needs, stays wrong indefinitely and is only
  * discovered by the consumer who pastes it.
  *
- * This extracts each ` ```ts ` fence from an `@example` block into its own scratch file,
- * rewrites `@elite-dangerous-almanac/core/<subpath>` to the matching source module, and
- * runs one `tsc --noEmit` over the set. Each snippet compiles as an isolated module, so
+ * This extracts each ` ```ts ` fence into its own scratch file, resolves every
+ * `@elite-dangerous-almanac/core/<subpath>` specifier through the package's own
+ * `exports` map — so a snippet importing a private path fails rather than passing — and
+ * runs `tsc --noEmit` over the set. Each snippet compiles as an isolated module, so
  * it must declare what it uses — that is the point, since a reader pastes it into an
  * empty file too. Use `declare const x: T` for an input the snippet receives rather than
  * builds, and a `// ->` comment for the value an expression evaluates to.
  *
- * Report-only by default: it prints the failures and exits 0, so it can run while the
- * back catalogue is still being rewritten. Pass `--strict` (as `npm run check` does once
- * the catalogue is clean) to exit non-zero on any failure.
+ * Report-only by default, because most of the back catalogue does not yet compile.
+ * `--max-failures <n>` is the ratchet CI uses: it fails when the count rises above the
+ * agreed number, so the corpus can only improve. `--strict` fails on any failure at all,
+ * and is what replaces the ratchet once the count reaches zero.
  *
  * Usage:
- *   node scripts/check-examples.mjs           # report, always exit 0
- *   node scripts/check-examples.mjs --strict  # exit 1 if any snippet fails
+ *   node scripts/check-examples.mjs                    # report, always exit 0
+ *   node scripts/check-examples.mjs --max-failures 189 # exit 1 if it gets worse
+ *   node scripts/check-examples.mjs --strict           # exit 1 on any failure
  */
 
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
@@ -35,6 +39,11 @@ import { spawnSync } from 'node:child_process';
 const packageRoot = fileURLToPath(new URL('../', import.meta.url));
 const sourceRoot = join(packageRoot, 'src');
 const strict = process.argv.includes('--strict');
+const maxFailuresFlag = process.argv.indexOf('--max-failures');
+const maxFailures = maxFailuresFlag === -1 ? null : Number(process.argv[maxFailuresFlag + 1]);
+
+/** The package's published entry points, as a consumer's resolver sees them. */
+const exportsMap = JSON.parse(await readFile(join(packageRoot, 'package.json'), 'utf8')).exports;
 
 /** The package's public subpath prefix, as a consumer writes it. */
 const PACKAGE = '@elite-dangerous-almanac/core';
@@ -121,18 +130,68 @@ function exampleSnippets(source) {
  * @returns The snippet with every `@elite-dangerous-almanac/core…` specifier localised.
  */
 function localiseImports(code) {
-    return code.replaceAll(
+    const problems = [];
+    const localised = code.replaceAll(
         new RegExp(`(['"])${PACKAGE}(/[^'"]+)?\\1`, 'g'),
-        (_match, quote, subpath) => {
-            // A subpath naming a directory (the root barrel, or a feature area such as
-            // `/ships`) resolves to that directory's `index`; anything else is a leaf.
-            const path = subpath ?? '';
-            const target = existsSync(join(sourceRoot, path, 'index.ts'))
-                ? join(sourceRoot, path, 'index.js')
-                : join(sourceRoot, `${path}.js`);
-            return `${quote}${target}${quote}`;
+        (match, quote, subpath) => {
+            const specifier = `.${subpath ?? ''}`;
+            const resolved = resolveExport(specifier);
+            if (resolved === null) {
+                // Resolving against `src/` rather than the `exports` map would let a
+                // snippet import a path no consumer can reach — the private
+                // `./internal/*` subpaths especially — and call it verified.
+                problems.push({
+                    code: 'TSX001',
+                    message: `${match.slice(1, -1)} is not a published entry point (see package.json "exports")`,
+                });
+                return match;
+            }
+            return `${quote}${resolved}${quote}`;
         },
     );
+    return { code: localised, problems };
+}
+
+/**
+ * Resolve a public subpath through the package's own `exports` map.
+ *
+ * @param specifier - The subpath as `exports` spells it, e.g. `.` or `./ships/slef`.
+ * @returns The absolute source path, or `null` when `exports` does not publish it.
+ */
+function resolveExport(specifier) {
+    let best = null;
+    for (const [pattern, target] of Object.entries(exportsMap)) {
+        const star = pattern.indexOf('*');
+        if (star === -1) {
+            if (pattern === specifier) best = { pattern, target, fill: null, weight: Infinity };
+            continue;
+        }
+        const head = pattern.slice(0, star);
+        const tail = pattern.slice(star + 1);
+        if (!specifier.startsWith(head) || !specifier.endsWith(tail)) continue;
+        if (specifier.length < head.length + tail.length) continue;
+        const fill = specifier.slice(head.length, specifier.length - tail.length || undefined);
+        // Node picks the longest matching prefix, which is how `./ships/internal/*`
+        // (explicitly `null`) wins over `./ships/*` for a private path.
+        if (best === null || head.length > best.weight) {
+            best = { pattern, target, fill, weight: head.length };
+        }
+    }
+    if (best === null) return null;
+
+    const entry = best.target;
+    if (entry === null) return null;
+    const dist = typeof entry === 'string' ? entry : entry.import;
+    if (typeof dist !== 'string') return null;
+
+    const filled = best.fill === null ? dist : dist.replace('*', best.fill);
+    // `./dist/ships/index.js` → `<src>/ships/index.ts`
+    const relativeToSrc = filled.replace(/^\.\/dist\//, '').replace(/\.js$/, '');
+    const asFile = join(sourceRoot, `${relativeToSrc}.ts`);
+    if (existsSync(asFile)) return join(sourceRoot, `${relativeToSrc}.js`);
+    const asIndex = join(sourceRoot, relativeToSrc, 'index.ts');
+    if (existsSync(asIndex)) return join(sourceRoot, relativeToSrc, 'index.js');
+    return null;
 }
 
 /**
@@ -201,13 +260,14 @@ async function main() {
         for (const [index, snippet] of found.entries()) {
             const name = `${relativePath.replaceAll('/', '__').replace(/\.(ts|md)$/, '')}__${index}.ts`;
             const target = join(scratch, 'snippets', name);
-            await writeFile(target, `export {};\n${localiseImports(snippet.code)}\n`);
-            cases.push({ file: relativePath, line: snippet.line, target, name });
+            const { code, problems } = localiseImports(snippet.code);
+            await writeFile(target, `export {};\n${code}\n`);
+            cases.push({ file: relativePath, line: snippet.line, target, name, problems });
         }
     }
 
     if (cases.length === 0) {
-        console.log('check-examples: no @example snippets found');
+        console.log('check-examples: no documented snippets found');
         return 0;
     }
 
@@ -287,7 +347,25 @@ async function main() {
         pass = compile(skip);
     }
 
+    // Convergence is judged from `pass.diagnostics`, which has already had `skip`
+    // filtered out of it. If a snippet failed to delete, or the attempt cap were ever
+    // exhausted, tsc would still be abandoning semantic checking while the filtered
+    // view looked clean — and every pass count below would be unjustified. Ask the raw
+    // output instead.
+    if (/error TS1\d{3}:/.test(pass.output)) {
+        console.error(
+            'check-examples: tsc still reports a syntactic error after pruning, so semantic\n' +
+                'results for this run are not trustworthy. Raw output:\n',
+        );
+        console.error(pass.output.trim());
+        return 1;
+    }
+
     const failures = new Map([...pass.diagnostics, ...broken]);
+    for (const entry of cases) {
+        if (entry.problems.length === 0) continue;
+        failures.set(entry.name, [...(failures.get(entry.name) ?? []), ...entry.problems]);
+    }
 
     // A diagnostic outside `snippets/`, or a non-zero exit with nothing parsable, means
     // the harness itself is wrong. Reporting a pass count from a broken compile would be
@@ -317,7 +395,29 @@ async function main() {
             (failed.length > 0 ? ` — ${failed.length} failing` : ''),
     );
 
-    return failed.length > 0 && strict ? 1 : 0;
+    if (strict) return failed.length > 0 ? 1 : 0;
+
+    if (maxFailures !== null) {
+        if (!Number.isInteger(maxFailures) || maxFailures < 0) {
+            console.error('check-examples: --max-failures needs a non-negative integer');
+            return 1;
+        }
+        if (failed.length > maxFailures) {
+            console.error(
+                `\ncheck-examples: ${failed.length} failing snippets, above the agreed ` +
+                    `ceiling of ${maxFailures}. Fix the new one, or lower the ceiling if you ` +
+                    `have fixed others.`,
+            );
+            return 1;
+        }
+        if (failed.length < maxFailures) {
+            console.log(
+                `check-examples: ${failed.length} failing, below the ceiling of ` +
+                    `${maxFailures} — lower it in package.json to lock the gain in.`,
+            );
+        }
+    }
+    return 0;
 }
 
 try {

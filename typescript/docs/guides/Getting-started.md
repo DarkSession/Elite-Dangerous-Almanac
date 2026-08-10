@@ -15,21 +15,23 @@ module is marked side-effect free, so a bundler can drop whatever you do not use
 
 There are three levels, and the difference is how much data you pull in.
 
+**1. Root** — every feature area's general API, but not the bulk catalogues.
+
 ```ts
-// 1. Root — every feature area's general API (not the bulk catalogues).
-import { ShipLoadout as FromRoot } from '@elite-dangerous-almanac/core';
-
-// 2. Feature area — one domain's general API.
-import { ShipLoadout as FromArea } from '@elite-dangerous-almanac/core/ships';
-
-// 3. Leaf module — exactly one module. Prefer this in native ESM apps.
-import { ShipLoadout as FromLeaf } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-
-FromRoot === FromArea && FromArea === FromLeaf; // -> true, the same class
+import { ShipLoadout } from '@elite-dangerous-almanac/core';
 ```
 
-(The aliases are only so all three can appear in one snippet; write
-`import { ShipLoadout } from '…'` in real code.)
+**2. Feature area** — one domain's general API.
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships';
+```
+
+**3. Leaf module** — exactly one module. Prefer this in native ESM apps.
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+```
 
 All three give you the same object. Prefer the leaf import when you know what you want:
 it is the only form that is unambiguous about what gets bundled, and it never depends on

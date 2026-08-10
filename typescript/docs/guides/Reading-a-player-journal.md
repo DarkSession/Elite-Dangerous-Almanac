@@ -74,8 +74,7 @@ and are not derivable from position, so read them rather than composing them.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-
-declare const build: ShipLoadout;
+declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from above
 
 for (const slot of build.slots()) {
     slot.key; // -> 'FrameShiftDrive', 'Slot01_Size6', 'LargeHardpoint1', …
@@ -97,8 +96,7 @@ property of the fit, so it is kept separate and never edited.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-
-declare const build: ShipLoadout;
+declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from above
 
 const paid = build.sourcePurchase; // null for a build you assembled yourself
 
@@ -178,8 +176,7 @@ them, so write the consumer to expect gaps rather than to assume completeness.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-
-declare const build: ShipLoadout;
+declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from above
 
 build.cargoCapacity; // -> null when a fitted optional module is unclassifiable
 build.cargoCapacityResult; // -> names every rack it could not classify

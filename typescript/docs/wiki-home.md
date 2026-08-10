@@ -21,9 +21,11 @@ import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
 
 ProceduralSystem.fromName('Synuefe EN-H d11-96')?.systemAddress; // -> 3309179996515n
 
-declare const event: LoadoutEvent; // a `Loadout` line from a player journal
-
-ShipLoadout.fromLoadout(event).maxJumpRange(); // -> 60.5478
+// One `Loadout` line from a player journal.
+function jumpRangeOf(journalLine: string) {
+    const event = JSON.parse(journalLine) as LoadoutEvent;
+    return ShipLoadout.fromLoadout(event).maxJumpRange(); // -> 60.5478
+}
 ```
 
 ## Start here
