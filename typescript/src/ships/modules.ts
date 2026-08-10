@@ -207,6 +207,8 @@ export interface DamageDistribution {
  *
  * @example
  * ```ts
+ * import type { DamageComponents } from '@elite-dangerous-almanac/core/ships/modules';
+ *
  * const components: DamageComponents = { explosive: 27, antiXeno: 43 };
  * ```
  */
@@ -235,6 +237,8 @@ export interface DamageComponents {
  *
  * @example
  * ```ts
+ * import type { ProjectileRangeBoundaries } from '@elite-dangerous-almanac/core/ships/modules';
+ *
  * const boundaries: ProjectileRangeBoundaries = {
  *   maximumBoundary: 0,
  *   falloffBoundary: 100000,
@@ -307,6 +311,8 @@ export interface OutfittingModule {
      *
      * @example
      * ```ts
+     * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+     *
      * getModuleBySymbol('Int_Hyperdrive_Size5_Class5')?.slot; // -> 'frameShiftDrive'
      * getModuleBySymbol('Anaconda_Armour_Grade1')?.slot;      // -> 'armour'
      * getModuleBySymbol('Int_CargoRack_Size4_Class1')?.slot;  // -> undefined
@@ -407,6 +413,10 @@ export interface OutfittingModule {
      * catalogue and the question does not arise.
      * @example
      * ```ts
+     * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+     * import { INTERNAL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-internal';
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
      * const rack = getModuleBySymbol('Int_LargeCargoRack_Size8_class1', INTERNAL_MODULES)!;
      * rack.restrictedToSlot; // -> 'cargo'
      * ShipLoadout.empty('PantherMkII').setModule('Cargo01', rack); // fits
@@ -748,6 +758,8 @@ export interface OutfittingModule {
  * symbol.
  * @example
  * ```ts
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ *
  * getModuleBySymbol('hpt_pulselaser_fixed_small')?.class; // -> 1
  * ```
  */
@@ -769,6 +781,8 @@ export function getModuleBySymbol(
  * not modified.
  * @example
  * ```ts
+ * import { getModulesByName } from '@elite-dangerous-almanac/core/ships/modules';
+ *
  * getModulesByName('pulse laser').length; // -> every size/mount variant
  * ```
  */
@@ -798,6 +812,8 @@ export function getModulesByName(
  * record `"Viper"`).
  * @example
  * ```ts
+ * import { getBulkheadsForShip } from '@elite-dangerous-almanac/core/ships/modules';
+ *
  * getBulkheadsForShip('Anaconda').map((m) => m.name);
  * // -> [ 'Lightweight Alloy', 'Reinforced Alloy', 'Military Grade Composite',
  * //      'Mirrored Surface Composite', 'Reactive Surface Composite' ]

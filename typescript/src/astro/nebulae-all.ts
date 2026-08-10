@@ -31,6 +31,8 @@ import { PROCGEN_NEBULAE } from './nebulae-procgen.js';
  *
  * @example
  * ```ts
+ * import { ALL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-all';
+ *
  * ALL_NEBULAE.length;                                        // -> 5835
  * ALL_NEBULAE.filter((n) => n.type === 'procgen').length;    // -> 166
  * ```

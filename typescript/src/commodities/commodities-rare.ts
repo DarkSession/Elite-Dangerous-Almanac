@@ -25,6 +25,8 @@ import rareData from '../../../data/commodities/rare-commodities.jsonc' with { t
  *
  * @example
  * ```ts
+ * import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-rare';
+ *
  * RARE_COMMODITIES.length; // -> 142
  * RARE_COMMODITIES.find((c) => c.symbol === 'LavianBrandy')?.name; // -> 'Lavian Brandy'
  * ```

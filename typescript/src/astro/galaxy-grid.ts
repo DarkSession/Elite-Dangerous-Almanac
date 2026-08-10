@@ -54,6 +54,8 @@ export const SECTOR_EDGE_LY = 1280;
  * (i.e. outside the addressable galaxy). The message names the offending position.
  * @example
  * ```ts
+ * import { sectorGridPositionFromGalacticPosition } from '@elite-dangerous-almanac/core/astro/galaxy-grid';
+ *
  * // Synuefe EN-H d11-96 sits at (751, -179, -91) per EDSM
  * sectorGridPositionFromGalacticPosition({ x: 751, y: -179, z: -91 });
  * // -> { sectorX: 39, sectorY: 31, sectorZ: 18 }
@@ -94,6 +96,8 @@ export function sectorGridPositionFromGalacticPosition(
  * {@link findHandAuthoredRegionAt} from `./hand-authored-regions`.
  * @example
  * ```ts
+ * import { sectorNameFromGalacticPosition } from '@elite-dangerous-almanac/core/astro/galaxy-grid';
+ *
  * sectorNameFromGalacticPosition({ x: 751, y: -179, z: -91 }); // -> 'Synuefe'
  * ```
  */

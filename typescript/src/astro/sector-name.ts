@@ -32,6 +32,8 @@
  *
  * @example
  * ```ts
+ * import type { SectorGridPosition } from '@elite-dangerous-almanac/core/astro/sector-name';
+ *
  * const sector: SectorGridPosition = { sectorX: 39, sectorY: 31, sectorZ: 18 };
  * ```
  */
@@ -727,6 +729,8 @@ function c2Name(offset: number): string {
  * slot is outside the procedural generator's assigned name range.
  * @example
  * ```ts
+ * import { sectorNameFromGridPosition } from '@elite-dangerous-almanac/core/astro/sector-name';
+ *
  * sectorNameFromGridPosition({ sectorX: 39, sectorY: 30, sectorZ: 20 }); // -> a procedural name
  * ```
  */

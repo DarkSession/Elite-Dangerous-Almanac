@@ -417,8 +417,10 @@ export interface SlefInspection {
  * @throws {SyntaxError} If a string is not valid JSON.
  * @example
  * ```ts
+ * import { inspectSlef } from '@elite-dangerous-almanac/core/ships/slef';
+ *
  * const result = inspectSlef([{ Ship: 'sidewinder', Modules: [{ Slot: 'PowerPlant' }] }]);
- * result.diagnostics[0]?.path; // -> 'entries[0].Modules[0].Item'
+ * result.diagnostics[0]?.path; // -> 'entries[0]?.Modules[0]?.Item'
  * ```
  */
 export function inspectSlef(input: unknown): SlefInspection {
@@ -493,8 +495,12 @@ export function inspectSlef(input: unknown): SlefInspection {
  * engineering field is malformed.
  * @example
  * ```ts
+ * import { parseSlef } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * declare const slefJsonString: string;
+ *
  * const [entry] = parseSlef(slefJsonString);
- * entry.data.Ship; // -> 'explorer_nx'
+ * entry?.data.Ship; // -> 'explorer_nx'
  * ```
  */
 export function parseSlef(input: unknown): SlefEntry[] {
@@ -530,6 +536,11 @@ export interface SlefStringifyOptions {
  * applies, so anything this returns is guaranteed to parse back.
  * @example
  * ```ts
+ * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import { stringifySlef, toSlef } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * declare const build: ShipLoadout;
+ *
  * const slef = toSlef(build.toLoadoutEvent(), { appName: 'MyApp', appVersion: '1.2.0' });
  * stringifySlef(slef); // -> '[{"header":{...},"data":{...}}]'
  * ```
@@ -569,6 +580,11 @@ export function toSlef(data: LoadoutEvent | readonly LoadoutEvent[], header: Sle
  * @returns The JSON text.
  * @example
  * ```ts
+ * import { stringifySlef } from '@elite-dangerous-almanac/core/ships/slef';
+ * import type { Slef } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * declare const slef: Slef;
+ *
  * stringifySlef(slef, { indent: 2 }); // human-readable, for writing to a file
  * ```
  */
@@ -587,6 +603,11 @@ export function stringifySlef(slef: Slef, options: SlefStringifyOptions = {}): s
  * non-numeric.
  * @example
  * ```ts
+ * import { getLoadoutModifier } from '@elite-dangerous-almanac/core/ships/slef';
+ * import type { LoadoutModule } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * declare const fsdModule: LoadoutModule;
+ *
  * getLoadoutModifier(fsdModule, 'FSDOptimalMass'); // -> 7528.04, or null if stock
  * ```
  */

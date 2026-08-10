@@ -23,6 +23,8 @@
  *
  * @example
  * ```ts
+ * declare const slefJson: string;
+ *
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
  *
  * const build = ShipLoadout.fromSlef(slefJson);
@@ -153,6 +155,11 @@ export class SourcePurchaseRecord {
      * the build about which module occupies a slot would price the one that is not there.
      * @example
      * ```ts
+     * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+     * import { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+     *
+     * declare const event: LoadoutEvent;
+     *
      * SourcePurchaseRecord.fromLoadout(event)?.rebuy; // -> 19097585
      * ```
      */
@@ -197,6 +204,10 @@ export class SourcePurchaseRecord {
      * not, rather than being handed one number that hides it.
      * @example
      * ```ts
+     * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+     *
+     * declare const paid: SourcePurchaseRecord;
+     *
      * // Do this capture's parts add up to the total it declares?
      * paid.modulesValue !== null && paid.modulesValue !== paid.pricedModulesValue;
      * // -> true on a capture that priced fewer modules than its total counted
@@ -219,6 +230,10 @@ export class SourcePurchaseRecord {
      * the capture said nothing about, not one that cost nothing.
      * @example
      * ```ts
+     * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+     *
+     * declare const paid: SourcePurchaseRecord;
+     *
      * paid.valueForSlot('PowerPlant'); // -> 20692437
      * paid.valueForSlot('frameshiftdrive'); // the same mount, either spelling
      * ```
@@ -244,6 +259,12 @@ export class SourcePurchaseRecord {
      * exactly that.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+     *
+     * declare const build: ShipLoadout;
+     * declare const paid: SourcePurchaseRecord;
+     *
      * const entry = paid.entryForSlot('FrameShiftDrive');
      * entry?.item === build.fittedModuleAt('FrameShiftDrive')?.symbol.toLowerCase();
      * // -> false once the drive has been swapped: the price is the old drive's

@@ -24,6 +24,8 @@ import standardData from '../../../data/commodities/commodities.jsonc' with { ty
  *
  * @example
  * ```ts
+ * import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-standard';
+ *
  * COMMODITIES.length; // -> 257
  * COMMODITIES.find((c) => c.symbol === 'Gold')?.category; // -> 'Metals'
  * ```

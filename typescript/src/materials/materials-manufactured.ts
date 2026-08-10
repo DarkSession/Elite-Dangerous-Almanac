@@ -23,6 +23,8 @@ import manufacturedData from '../../../data/materials/materials-manufactured.jso
  *
  * @example
  * ```ts
+ * import { MANUFACTURED_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-manufactured';
+ *
  * MANUFACTURED_MATERIALS.find((m) => m.name === 'Imperial Shielding')?.grade;
  * // -> MaterialGrade.VeryRare (5)
  * ```

@@ -184,6 +184,8 @@ export interface Material {
  * @returns The matching {@link Material}, or `null` if no material has that symbol.
  * @example
  * ```ts
+ * import { getMaterialBySymbol } from '@elite-dangerous-almanac/core/materials/materials';
+ *
  * getMaterialBySymbol('temperedalloys')?.name; // -> 'Tempered Alloys'
  * ```
  */
@@ -202,6 +204,8 @@ export function getMaterialBySymbol(
  * @returns The matching {@link Material}, or `null` if no material has that name.
  * @example
  * ```ts
+ * import { getMaterialByName } from '@elite-dangerous-almanac/core/materials/materials';
+ *
  * getMaterialByName('imperial shielding')?.grade; // -> 5
  * ```
  */
@@ -221,6 +225,8 @@ export function getMaterialByName(
  * element symbol, so a manufactured or encoded subset never matches.
  * @example
  * ```ts
+ * import { getMaterialByElementSymbol } from '@elite-dangerous-almanac/core/materials/materials';
+ *
  * getMaterialByElementSymbol('fe')?.name; // -> 'Iron'
  * ```
  */
@@ -239,6 +245,9 @@ export function getMaterialByElementSymbol(
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
+ * import { MaterialGrade, materialsByGrade } from '@elite-dangerous-almanac/core/materials/materials';
+ * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+ *
  * materialsByGrade(MaterialGrade.VeryRare).length;                 // -> across every category
  * materialsByGrade(MaterialGrade.Rare, RAW_MATERIALS).length;      // -> 7, one per raw line
  * ```
@@ -260,6 +269,8 @@ export function materialsByGrade(
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
+ * import { MaterialLine, materialsInLine } from '@elite-dangerous-almanac/core/materials/materials';
+ *
  * materialsInLine(MaterialLine.Chemical).map((m) => m.grade); // -> [1, 2, 3, 4, 5]
  * ```
  */
@@ -284,6 +295,8 @@ export function materialsInLine(
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
+ * import { materialsInCategory } from '@elite-dangerous-almanac/core/materials/materials';
+ *
  * materialsInCategory('raw').length;          // -> 28
  * materialsInCategory('Encoded').length;      // -> 47; case is ignored
  * ```

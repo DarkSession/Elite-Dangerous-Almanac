@@ -22,6 +22,8 @@ import rawData from '../../../data/materials/materials-raw.jsonc' with { type: '
  *
  * @example
  * ```ts
+ * import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-raw';
+ *
  * RAW_MATERIALS.length; // -> 28
  * RAW_MATERIALS.find((m) => m.name === 'Iron')?.elementSymbol; // -> 'Fe'
  * ```

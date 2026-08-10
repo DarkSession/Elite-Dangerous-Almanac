@@ -26,8 +26,10 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  *
  * @example
  * ```ts
+ * import { PROCGEN_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-procgen';
+ *
  * PROCGEN_NEBULAE.length;    // -> 166
- * PROCGEN_NEBULAE[0].name;   // -> 'Agnairt AA-A h36'
+ * PROCGEN_NEBULAE[0]?.name;   // -> 'Agnairt AA-A h36'
  * ```
  */
 export const PROCGEN_NEBULAE: readonly Nebula[] = deepFreeze(

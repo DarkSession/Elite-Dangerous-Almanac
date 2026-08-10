@@ -26,6 +26,8 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  *
  * @example
  * ```ts
+ * import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
+ *
  * REAL_NEBULAE.length; // -> 180
  * REAL_NEBULAE.find((n) => n.name === 'Horsehead Nebula')?.system;
  * // -> 'Horsehead Dark Region IR-V c2-9'

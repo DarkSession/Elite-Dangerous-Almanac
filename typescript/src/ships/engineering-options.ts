@@ -88,6 +88,8 @@ const DATA: EngineeringOptionData = deepFreeze(optionsData as EngineeringOptionD
  *
  * @example
  * ```ts
+ * import { ENGINEERING_OPTION_GROUPS } from '@elite-dangerous-almanac/core/ships/engineering-options';
+ *
  * ENGINEERING_OPTION_GROUPS['beamLasers'].name; // -> 'Beam Lasers'
  * ENGINEERING_OPTION_GROUPS['beamLasers'].experimentals.length; // -> 9
  * ```
@@ -122,6 +124,8 @@ const moduleExclusions = new Map(
  *
  * @example
  * ```ts
+ * import { getEngineeringGroup } from '@elite-dangerous-almanac/core/ships/engineering-options';
+ *
  * getEngineeringGroup('Hpt_BeamLaser_Fixed_Small'); // -> 'beamLasers'
  * getEngineeringGroup('Int_CargoRack_Size2_Class1'); // -> 'cargoRacks'
  *
@@ -165,6 +169,8 @@ export function getEngineeringGroup(symbol: string): ModuleKind | null {
  *
  * @example
  * ```ts
+ * import { getBlueprintsForModule } from '@elite-dangerous-almanac/core/ships/engineering-options';
+ *
  * getBlueprintsForModule('Hpt_BeamLaser_Fixed_Small');
  * // -> ['BeamLaser_ThermalPlasmaConversion', 'Weapon_Efficient', 'Weapon_LightWeight', ...]
  *
@@ -199,6 +205,8 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  *
  * @example
  * ```ts
+ * import { getExperimentalsForModule } from '@elite-dangerous-almanac/core/ships/engineering-options';
+ *
  * getExperimentalsForModule('Hpt_MultiCannon_Fixed_Medium').length; // -> 12
  *
  * // The small Multi-cannon is one effect short — no Phasing Sequence.
@@ -247,6 +255,8 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  *
  * @example
  * ```ts
+ * import { getExperimentalsForBlueprint } from '@elite-dangerous-almanac/core/ships/engineering-options';
+ *
  * getExperimentalsForBlueprint('FSD_LongRange');
  * // -> ['special_fsd_cooled', 'special_fsd_fuelcapacity', 'special_fsd_heavy', ...]
  * ```

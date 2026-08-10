@@ -17,10 +17,10 @@
  * empty file too. Use `declare const x: T` for an input the snippet receives rather than
  * builds, and a `// ->` comment for the value an expression evaluates to.
  *
- * Report-only by default, because most of the back catalogue does not yet compile.
- * `--max-failures <n>` is the ratchet CI uses: it fails when the count rises above the
- * agreed number, so the corpus can only improve. `--strict` fails on any failure at all,
- * and is what replaces the ratchet once the count reaches zero.
+ * Every documented snippet compiles today, so `npm run check` runs this with `--strict`
+ * and a snippet that stops compiling fails the build. `--max-failures <n>` remains as a
+ * ratchet for the case where a batch of new documentation lands mid-rewrite: it fails
+ * only when the count rises above the agreed number.
  *
  * Usage:
  *   node scripts/check-examples.mjs                    # report, always exit 0

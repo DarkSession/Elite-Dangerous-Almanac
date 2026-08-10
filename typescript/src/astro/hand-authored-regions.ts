@@ -33,6 +33,8 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  *
  * @example
  * ```ts
+ * import type { HandAuthoredSphere } from '@elite-dangerous-almanac/core/astro/hand-authored-regions';
+ *
  * const sphere: HandAuthoredSphere = { cx: -80.6, cy: -146.7, cz: -343.3, r: 100 };
  * ```
  */
@@ -57,6 +59,8 @@ export interface HandAuthoredSphere {
  *
  * @example
  * ```ts
+ * import { HAND_AUTHORED_REGIONS } from '@elite-dangerous-almanac/core/astro/hand-authored-regions';
+ *
  * const pleiades = HAND_AUTHORED_REGIONS.find((region) => region.name === 'Pleiades Sector');
  * ```
  */
@@ -72,6 +76,8 @@ export interface HandAuthoredRegion {
  *
  * @example
  * ```ts
+ * import { HAND_AUTHORED_REGIONS } from '@elite-dangerous-almanac/core/astro/hand-authored-regions';
+ *
  * HAND_AUTHORED_REGIONS[0]?.name;
  * ```
  */
@@ -97,6 +103,8 @@ export const HAND_AUTHORED_REGIONS: readonly HandAuthoredRegion[] = deepFreeze(
  * @returns The containing region, or `null` if the point is in procedural space.
  * @example
  * ```ts
+ * import { findHandAuthoredRegionAt } from '@elite-dangerous-almanac/core/astro/hand-authored-regions';
+ *
  * findHandAuthoredRegionAt({ x: -80.6, y: -146.7, z: -343.3 })?.name;
  * // -> 'Pleiades Sector'
  * ```
@@ -104,7 +112,12 @@ export const HAND_AUTHORED_REGIONS: readonly HandAuthoredRegion[] = deepFreeze(
  * Resolving a permit lock from a position — the exact route, since it does not
  * depend on how the system is named:
  * ```ts
- * import { isPermitLockedRegionName } from './permit-locked-regions.js';
+ * import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro/galactic-position';
+ * import { findHandAuthoredRegionAt } from '@elite-dangerous-almanac/core/astro/hand-authored-regions';
+ *
+ * declare const position: GalacticPosition;
+ *
+ * import { isPermitLockedRegionName } from '@elite-dangerous-almanac/core/astro/permit-locked-regions';
  *
  * const region = findHandAuthoredRegionAt(position);
  * const needsPermit = region !== null && isPermitLockedRegionName(region.name);

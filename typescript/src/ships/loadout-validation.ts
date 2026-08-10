@@ -79,6 +79,8 @@ export interface LoadoutValidationInput {
  * @returns Structural validity, operational completeness, and diagnostics.
  * @example
  * ```ts
+ * import { validateLoadout } from '@elite-dangerous-almanac/core/ships/loadout-validation';
+ *
  * const result = validateLoadout({ shipSymbol: 'FutureShip', slots: null, modules: [] });
  * result.valid;    // -> true: no impossible fit was claimed
  * result.complete; // -> false: the hull layout is unknown

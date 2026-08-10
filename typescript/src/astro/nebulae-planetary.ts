@@ -27,8 +27,10 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  *
  * @example
  * ```ts
+ * import { PLANETARY_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-planetary';
+ *
  * PLANETARY_NEBULAE.length;  // -> 5489
- * PLANETARY_NEBULAE[0].name; // -> 'Aemonz EQ-Y e1899'
+ * PLANETARY_NEBULAE[0]?.name; // -> 'Aemonz EQ-Y e1899'
  * ```
  */
 export const PLANETARY_NEBULAE: readonly Nebula[] = deepFreeze(

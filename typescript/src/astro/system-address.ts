@@ -32,6 +32,8 @@ import { toSystemAddress, type SystemAddressInput } from './system-address-input
  * @throws {RangeError} If `sizeClass` is outside 0–7.
  * @example
  * ```ts
+ * import { boxelInternalSize } from '@elite-dangerous-almanac/core/astro/system-address';
+ *
  * boxelInternalSize(3);      // -> 2560 internal units
  * boxelInternalSize(3) / 32; // -> 80 ly, the edge of a d-class boxel
  * ```
@@ -52,6 +54,9 @@ export function boxelInternalSize(sizeClass: number): number {
  *
  * @example
  * ```ts
+ * import { decodeSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address';
+ * import type { AbsoluteBoxel } from '@elite-dangerous-almanac/core/astro/system-address';
+ *
  * const boxel: AbsoluteBoxel = decodeSystemAddress(3309179996515n).absoluteBoxel;
  * ```
  */
@@ -159,6 +164,11 @@ export function boxelCodeToAbsoluteBoxel(
  * outside the region or the origin has a negative coordinate.
  * @example
  * ```ts
+ * import { resolveNamingRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
+ * import { absoluteBoxelToBoxelCode, decodeSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address';
+ *
+ * declare const id64: bigint;
+ *
  * const { sizeClass, absoluteBoxel } = decodeSystemAddress(id64);
  * absoluteBoxelToBoxelCode(sizeClass, absoluteBoxel, resolveNamingRegionOrigin('Pleiades Sector')!);
  * ```
@@ -212,6 +222,9 @@ function assertAddressRange(id64: bigint): void {
  * @throws {RangeError} If `id64` is negative or does not fit in 64 bits.
  * @example
  * ```ts
+ * import { decodeSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address';
+ * declare const event: { SystemAddress: number }; // an `FSDJump` line, parsed
+ *
  * decodeSystemAddress(3309179996515n);
  * // -> { sizeClass: 3, sectorGridPosition: { sectorX: 39, sectorY: 31, sectorZ: 18 }, … }
  *
@@ -263,6 +276,10 @@ export function decodeSystemAddress(id64: SystemAddressInput): DecodedAddress {
  * @throws {RangeError} If `id64` is negative or does not fit in 64 bits.
  * @example
  * ```ts
+ * import { decodeModSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address';
+ *
+ * declare const modAddressFromSomeTool: bigint;
+ *
  * decodeModSystemAddress(modAddressFromSomeTool).sectorGridPosition;
  * // -> { sectorX, sectorY, sectorZ }
  * ```
@@ -307,6 +324,10 @@ export function decodeModSystemAddress(id64: SystemAddressInput): DecodedAddress
  * sequence does not fit its size-class-dependent field.
  * @example
  * ```ts
+ * import { resolveNamingRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
+ * import { encodeSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address';
+ * import { parseSystemName } from '@elite-dangerous-almanac/core/astro/system-name';
+ *
  * const parts = parseSystemName('Synuefe EN-H d11-96')!;
  * encodeSystemAddress(parts, resolveNamingRegionOrigin(parts.regionName)!); // -> 3309179996515n
  * ```
@@ -348,6 +369,10 @@ export function encodeSystemAddress(parts: SystemNameParts, origin: NamingRegion
  * sequence does not fit the 15-bit modulated field.
  * @example
  * ```ts
+ * import { resolveNamingRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
+ * import { encodeModSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address';
+ * import { parseSystemName } from '@elite-dangerous-almanac/core/astro/system-name';
+ *
  * const parts = parseSystemName('Synuefe EN-H d11-96')!;
  * encodeModSystemAddress(parts, resolveNamingRegionOrigin(parts.regionName)!).toString();
  * ```

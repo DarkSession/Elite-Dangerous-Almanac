@@ -32,7 +32,7 @@
  * import { nearestNebulae } from '@elite-dangerous-almanac/core/astro/nebulae';
  * import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
  *
- * nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 1)[0].name; // -> 'Pleiades'
+ * nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 1)[0]?.name; // -> 'Pleiades'
  * ```
  *
  * @packageDocumentation
@@ -158,11 +158,14 @@ function replaceMaxHeapRoot(heap: RankedNebula[], ranked: RankedNebula): void {
  * Ties keep catalogue order. The input array is not modified.
  * @example
  * ```ts
+ * import { nearestNebulae } from '@elite-dangerous-almanac/core/astro/nebulae';
+ * import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
+ *
  * // The three real nebulae nearest Sol
  * nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE).map((n) => n.name);
  * // -> [ 'Pleiades', 'R Cra', 'Lupus Dark Region B' ]  (nearest first)
  *
- * nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 1)[0].distanceLy; // -> ≈383.31
+ * nearestNebulae({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 1)[0]?.distanceLy; // -> ≈383.31
  * ```
  */
 export function nearestNebulae(
@@ -218,6 +221,9 @@ export function nearestNebulae(
  * is not modified.
  * @example
  * ```ts
+ * import { nebulaeWithin } from '@elite-dangerous-almanac/core/astro/nebulae';
+ * import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
+ *
  * // Real nebulae within 400 ly of Sol
  * nebulaeWithin({ x: 0, y: 0, z: 0 }, REAL_NEBULAE, 400).map((n) => n.name);
  * // -> [ 'Pleiades' ]
@@ -252,6 +258,9 @@ export function nebulaeWithin(
  * be found in `PLANETARY_NEBULAE`.
  * @example
  * ```ts
+ * import { getNebulaByName } from '@elite-dangerous-almanac/core/astro/nebulae';
+ * import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
+ *
  * getNebulaByName('witch head nebula', REAL_NEBULAE)?.system;
  * // -> 'Witch Head Sector RY-R b4-0'
  * ```

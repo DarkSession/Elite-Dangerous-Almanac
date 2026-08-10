@@ -30,6 +30,8 @@ import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catal
  *
  * @example
  * ```ts
+ * import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
+ *
  * UTILITY_MODULES.length; // -> 35
  * ```
  */

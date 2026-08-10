@@ -112,6 +112,8 @@ export function stackShieldMultiplier(generator: number, boosters: readonly numb
  * that type the shields remove.
  * @example
  * ```ts
+ * import { stackShieldResistance } from '@elite-dangerous-almanac/core/ships/resistances';
+ *
  * stackShieldResistance(0.4);                 // -> 0.4   (generator alone)
  * stackShieldResistance(-0.2, [0.1, 0.1]);    // -> a thermal weakness, partly patched
  * ```
@@ -153,6 +155,8 @@ export function stackArmourMultiplier(
  * @returns The effective resistance, as a fraction.
  * @example
  * ```ts
+ * import { stackArmourResistance } from '@elite-dangerous-almanac/core/ships/resistances';
+ *
  * // Reactive surface composite (+25% kinetic) with three 1.5% hull reinforcements
  * stackArmourResistance(0.25, [0.015, 0.015, 0.015]); // -> 0.28…
  * ```
@@ -178,6 +182,8 @@ export function stackArmourResistance(
  * `(1 − shieldResistance) × (1 − sysResistance)`.
  * @example
  * ```ts
+ * import { systemsResistance } from '@elite-dangerous-almanac/core/ships/resistances';
+ *
  * systemsResistance(0); // -> 0
  * systemsResistance(2); // -> 0.333…
  * systemsResistance(4); // -> 0.6

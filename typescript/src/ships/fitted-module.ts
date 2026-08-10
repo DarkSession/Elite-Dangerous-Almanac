@@ -19,6 +19,10 @@ import type { LoadoutModule, ModuleEngineering } from './slef.js';
  *
  * @example
  * ```ts
+ * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ *
+ * declare const build: ShipLoadout;
+ *
  * const before = build.fittedModuleAt('FrameShiftDrive')!;
  * build.applyBlueprint(before.slot, 'FSD_LongRange', { grade: 5 });
  * const after = build.fittedModuleAt(before.slot)!;

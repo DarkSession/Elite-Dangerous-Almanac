@@ -22,6 +22,8 @@ import { ITEM_MICRO_RESOURCES } from './micro-resources-item.js';
  *
  * @example
  * ```ts
+ * import { ALL_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-all';
+ *
  * ALL_MICRO_RESOURCES.length; // -> 196
  * ```
  */

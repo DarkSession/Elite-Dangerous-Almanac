@@ -90,7 +90,9 @@ export interface DecorativeModification {
      *
      * @example
      * ```ts
-     * DECORATIVE_MODIFICATIONS['Decorative_Green'].modifiers;
+     * import { DECORATIVE_MODIFICATIONS } from '@elite-dangerous-almanac/core/ships/decorative-modifications';
+     *
+     * DECORATIVE_MODIFICATIONS['Decorative_Green']?.modifiers;
      * // -> [{ label: 'Damage', method: 'multiplicative', value: -0.99 }]
      * // on the medium turreted launcher: 34 damage -> 0.34, 0.17 DPS
      * ```
@@ -103,11 +105,13 @@ export interface DecorativeModification {
  *
  * @example
  * ```ts
+ * import { DECORATIVE_MODIFICATIONS } from '@elite-dangerous-almanac/core/ships/decorative-modifications';
+ *
  * Object.keys(DECORATIVE_MODIFICATIONS);
  * // -> ['Decorative_Green', 'Decorative_Red', 'Decorative_Yellow']
- * DECORATIVE_MODIFICATIONS['Decorative_Green'].modules;
+ * DECORATIVE_MODIFICATIONS['Decorative_Green']?.modules;
  * // -> ['Hpt_FlakMortar_Turret_Medium']
- * DECORATIVE_MODIFICATIONS['Decorative_Green'].modifiers;
+ * DECORATIVE_MODIFICATIONS['Decorative_Green']?.modifiers;
  * // -> [{ label: 'Damage', method: 'multiplicative', value: -0.99 }]
  * ```
  */
@@ -122,6 +126,8 @@ export const DECORATIVE_MODIFICATIONS: Readonly<Record<string, DecorativeModific
  * `modifiers` it arrives with — or `null` if the id is not a decorative modification.
  * @example
  * ```ts
+ * import { getDecorativeModification } from '@elite-dangerous-almanac/core/ships/decorative-modifications';
+ *
  * getDecorativeModification('decorative_red')?.name; // -> 'Festive Red'
  * getDecorativeModification('FSD_LongRange');        // -> null
  * ```
@@ -148,6 +154,8 @@ export function getDecorativeModification(fdname: string): DecorativeModificatio
  * @returns `true` when {@link getDecorativeModification} would find it.
  * @example
  * ```ts
+ * import { isDecorativeModification } from '@elite-dangerous-almanac/core/ships/decorative-modifications';
+ *
  * isDecorativeModification('Decorative_Yellow'); // -> true
  * isDecorativeModification('Weapon_Efficient');  // -> false
  * ```
@@ -169,6 +177,8 @@ export function isDecorativeModification(fdname: string): boolean {
  * {@link DECORATIVE_MODIFICATIONS}.
  * @example
  * ```ts
+ * import { getDecorativeModificationsForModule } from '@elite-dangerous-almanac/core/ships/decorative-modifications';
+ *
  * getDecorativeModificationsForModule('Hpt_FlakMortar_Turret_Medium');
  * // -> ['Decorative_Green', 'Decorative_Red', 'Decorative_Yellow']
  * getDecorativeModificationsForModule('Hpt_BeamLaser_Fixed_Small'); // -> []
