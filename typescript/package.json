@@ -117,15 +117,15 @@
         "ajv": "^6.15.0",
         "esbuild": "0.28.1",
         "es-module-lexer": "2.3.1",
-        "eslint": "^10.7.0",
-        "globals": "^17.7.0",
+        "eslint": "^10.8.0",
+        "globals": "^17.9.0",
         "prettier": "^3.9.6",
         "tsup": "^8.5.1",
-        "tsx": "^4.19.2",
+        "tsx": "^4.23.10",
         "typedoc": "^0.28.1",
         "typedoc-github-wiki-theme": "^2.1.0",
         "typedoc-plugin-markdown": "^4.4.1",
         "typescript": "^5.7.2",
-        "typescript-eslint": "^8.65.0"
+        "typescript-eslint": "^8.66.0"
     }
 }
