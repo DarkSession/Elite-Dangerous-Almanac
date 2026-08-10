@@ -7,10 +7,14 @@ import { ammunitionCapacity } from './ammunition.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { ShipLoadout } from './ship-loadout.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
+import { getPreEngineeredStats } from './pre-engineered-stats.js';
 import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
+import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
+import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
@@ -19,7 +23,11 @@ import corvetteMixedJournal from '../../../fixtures/ships/journal-federation-cor
 import corvettePlasmaJournal from '../../../fixtures/ships/journal-federation-corvette-plasma.json' with { type: 'json' };
 import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
+import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
+import lynxCurrentJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue01-current.json' with { type: 'json' };
+import pantherJournal from '../../../fixtures/ships/journal-panther-mkii-fat-arse.json' with { type: 'json' };
+import deepBlackJournal from '../../../fixtures/ships/journal-the-deep-black.json' with { type: 'json' };
 import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
 
 /** The shape this file reads off a capture — a journal states more than the library models. */
@@ -39,9 +47,11 @@ interface JournalAmmoModule {
 
 /** Every journal capture in the fixtures, by file name. */
 const JOURNALS = [
+    ['journal-anaconda-slapaconda.json', slapacondaJournal],
     ['journal-krait-phantom.json', kraitJournal],
     ['journal-viper-mkiv.json', viperJournal],
     ['journal-python-mkii-antixeno.json', pythonJournal],
+    ['journal-python-mkii-spire-ops.json', spireOpsJournal],
     ['journal-corsair.json', corsairJournal],
     ['journal-federation-corvette.json', corvetteJournal],
     ['journal-federation-corvette-beams.json', corvetteBeamsJournal],
@@ -50,7 +60,11 @@ const JOURNALS = [
     ['journal-federation-corvette-plasma.json', corvettePlasmaJournal],
     ['journal-cobra-mkv.json', cobraJournal],
     ['journal-kestrel-mkii.json', kestrelJournal],
+    ['journal-lynx-highliner-rescue.json', lynxRescueJournal],
     ['journal-lynx-highliner.json', lynxJournal],
+    ['journal-lynx-highliner-rescue01-current.json', lynxCurrentJournal],
+    ['journal-panther-mkii-fat-arse.json', pantherJournal],
+    ['journal-the-deep-black.json', deepBlackJournal],
     ['journal-caspian-explorer.json', caspianJournal],
 ] as const;
 
@@ -221,8 +235,8 @@ test('a build reports the capacity of every weapon it carries', () => {
 });
 
 test('every ammo count a journal reports fits inside the capacity for that module', () => {
-    // A rearm state is a lower bound on a capacity, never a reading of one. All 60 counts
-    // across the thirteen captures happen to sit at capacity — that is what makes them a
+    // A rearm state is a lower bound on a capacity, never a reading of one. All 92 counts
+    // across the nineteen captures happen to sit at capacity — that is what makes them a
     // check on the catalogue — but a partly spent launcher would report less and say
     // nothing.
     const pinned = fixture.ammunition.journalReadings;
@@ -233,7 +247,7 @@ test('every ammo count a journal reports fits inside the capacity for that modul
 
     for (const [capture, event] of JOURNALS) {
         const build = ShipLoadout.fromLoadout(event as never);
-        for (const fitted of event.Modules) {
+        for (const fitted of event.Modules as readonly JournalAmmoModule[]) {
             const clip = fitted.AmmoInClip ?? 0;
             const hopper = fitted.AmmoInHopper ?? 0;
             if (!clip && !hopper) continue;
@@ -315,12 +329,20 @@ test("Frontier's own engineered ammunition figures, against what this library co
         assert.equal(record.ammoMaximum, pinned.base.ammoMaximum, `${label}: base reserve`);
 
         const simulated = ShipLoadout.empty(pinned.ship);
-        simulated.setModule(pinned.slot, record);
-        simulated.getFittedModule(pinned.slot)!.applyBlueprint(pinned.blueprint, {
-            grade: pinned.grade,
-            quality: pinned.quality,
-            ...(pinned.experimental ? { experimental: pinned.experimental } : {}),
-        });
+        if ('preEngineered' in pinned && pinned.preEngineered) {
+            const variant = getPreEngineeredVariants(pinned.symbol).find(
+                (candidate) => candidate.blueprint === pinned.blueprint,
+            );
+            assert.ok(variant, `${label}: missing pre-engineered variant`);
+            simulated.setModule(pinned.slot, getPreEngineeredStats(variant)!);
+        } else {
+            simulated.setModule(pinned.slot, record);
+            simulated.getFittedModule(pinned.slot)!.applyBlueprint(pinned.blueprint, {
+                grade: pinned.grade,
+                quality: pinned.quality,
+                ...(pinned.experimental ? { experimental: pinned.experimental } : {}),
+            });
+        }
         const rolled = simulated.getFittedModule(pinned.slot)!.ammunition!;
         assert.equal(
             rolled.clipSize,

@@ -111,6 +111,8 @@ import { shieldMetrics, type ShieldMetrics } from './shields.js';
 import { armourMetrics, type ArmourMetrics } from './armour.js';
 import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.js';
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
+import { getPreEngineeredVariants } from './pre-engineered.js';
+import { getPreEngineeredStats } from './pre-engineered-stats.js';
 import { FittedModule } from './fitted-module.js';
 import { LoadoutSlot } from './loadout-slot.js';
 import { SourcePurchaseRecord } from './source-purchase.js';
@@ -634,8 +636,10 @@ export class ShipLoadout {
      * provenance (`Engineer`, `EngineerID`, `BlueprintID`) are deliberately excluded
      * from the durable build. See {@link LoadoutEvent} and {@link ModuleEngineering}.
      * An ordinary weapon recipe on a Guardian weapon identifies a final pre-engineered
-     * article; the import preserves that identity, exposes no engineering options for it,
-     * and refuses attempts to engineer it further.
+     * article; the import preserves that identity, uses the catalogue's complete hand-set
+     * stat block when the exact article is known, exposes no engineering options for it,
+     * and refuses attempts to engineer it further. Explicit journal modifiers remain
+     * authoritative over that stat block.
      *
      * The event's credit figures are kept twice over: as the live `hullValue` /
      * `modulesValue` / `rebuy`, which an edit may invalidate, and as the immutable
@@ -679,7 +683,15 @@ export class ShipLoadout {
             ) {
                 continue;
             }
-            const stats = statFor(module.Item);
+            const normalizedBlueprint = engineering.BlueprintName.trim().toLowerCase();
+            const normalizedExperimental = engineering.ExperimentalEffect?.trim().toLowerCase();
+            const variant = getPreEngineeredVariants(module.Item).find(
+                (candidate) =>
+                    candidate.blueprint.toLowerCase() === normalizedBlueprint &&
+                    candidate.grade === engineering.Level &&
+                    candidate.experimental?.toLowerCase() === normalizedExperimental,
+            );
+            const stats = variant ? getPreEngineeredStats(variant) : statFor(module.Item);
             if (stats) {
                 loadout.#moduleStats.set(
                     module.Slot,
@@ -2322,6 +2334,11 @@ export class ShipLoadout {
     /** Resolve the snapshotted fitted record, or fall back to the built-in catalogue. */
     #statsFor(module: LoadoutModule | null): OutfittingModule | null {
         if (module === null) return null;
-        return this.#moduleStats.get(module.Slot) ?? statFor(module.Item);
+        const stats = this.#moduleStats.get(module.Slot) ?? statFor(module.Item);
+        if (stats) return stats;
+        // Frontier gives some hull families their own cargo-hatch symbol even though the
+        // fitted article has the standard hatch's stats. Resolve that family here so its
+        // power draw is available as well as its already-known zero mass and price.
+        return isBuiltInHullModule(module) ? statFor('ModularCargoBayDoor') : null;
     }
 }

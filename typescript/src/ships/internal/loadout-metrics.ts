@@ -171,15 +171,15 @@ function modifierRatio(
 }
 
 /**
- * A stat that the game moves in step with another: a shield generator's minimum and
- * maximum mass follow its optimal mass, and its minimum and maximum strength follow its
- * optimal strength. An explicit modifier for the stat itself still wins.
+ * A stat that the game moves in step with another: thruster and shield-generator minimum
+ * and maximum mass follow optimal mass, and a generator's minimum and maximum strength
+ * follow optimal strength. An explicit modifier for the stat itself still wins.
  *
  * @remarks
- * Reference: EDSY's `getRelatedAttrModifier` (`genminmass`, `genmaxmass`, `genminmul`,
- * `genmaxmul` all return the optimal stat's modifier). Blueprint recipes only name the
- * optimal figure, so without this an engineered generator's curve would be built from a
- * moved optimum and stock endpoints.
+ * Reference: EDSY's `getRelatedAttrModifier` (`engminmass`, `engmaxmass`, `genminmass`,
+ * `genmaxmass`, `genminmul`, and `genmaxmul` return the relevant optimal stat's
+ * modifier). Blueprint recipes only name the optimal figure, so without this an
+ * engineered performance curve would be built from a moved optimum and stock endpoints.
  */
 function relatedStat(
     module: LoadoutModule,
@@ -224,6 +224,13 @@ export function effectiveModule(
         }
         const value = effectiveStat(module, key, stats);
         if (value !== undefined) merged[key] = value;
+    }
+    if (stats.kind === 'thrusters') {
+        const massRatio = modifierRatio(module, stats, 'optMass');
+        const minMass = relatedStat(module, stats, 'minMass', massRatio);
+        const maxMass = relatedStat(module, stats, 'maxMass', massRatio);
+        if (minMass !== undefined) merged.minMass = minMass;
+        if (maxMass !== undefined) merged.maxMass = maxMass;
     }
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) merged.damageDistribution = damageDistribution;
@@ -466,7 +473,11 @@ const WEAPON_FIELDS = [
  * **damage components** scale by the effective/base damage ratio so ordinary engineering
  * keeps their proportions; a damage-converting experimental replaces them with its fixed
  * distribution. A Plasma Conversion blueprint supplies its grade's converted split, and
- * journal damage-type modifiers can override the catalogue result.
+ * journal damage-type modifiers can override the catalogue result. A journal's derived
+ * `DamagePerSecond` modifier is authoritative for the fitted article; it is divided by
+ * the effective rounds and firing rate to recover the per-round `damage` consumed by the
+ * data-free weapon functions. This matters especially for engineered beam lasers, whose
+ * journal block states no separate `Damage` modifier.
  * **Projectile boundary parameters** are copied unchanged because they are not ordinary
  * engineerable range fields.
  */
@@ -483,6 +494,12 @@ export function weaponStatsFor(
 
     const rate = burstAdjustedRateOfFire(module, weapon);
     if (rate !== undefined) weapon.rateOfFire = rate;
+
+    const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
+    const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
+    if (statedDamagePerSecond !== null && firingFactor > 0) {
+        weapon.damage = statedDamagePerSecond / firingFactor;
+    }
 
     const { maximumRange, falloffRange } = weapon as WeaponStats;
     if (maximumRange !== undefined && falloffRange !== undefined && falloffRange > maximumRange) {

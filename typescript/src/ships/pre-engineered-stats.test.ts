@@ -66,24 +66,84 @@ test('a string-valued capability resolves to the boolean module field', () => {
 });
 
 test('a pre-engineered weapon resolves its damage-side stats too', () => {
-    const { symbol, blueprint, grade, base, engineered, unresolved } =
+    const { symbol, blueprint, grade, base, engineered, displayed, displayedChanges, unresolved } =
         fixture.resolved.guardianShardMediumG1;
     const variant = only({ symbol, blueprint, grade });
     const stock = getModuleBySymbol(symbol, ALL_MODULES)!;
     assert.equal(stock.mass, base.mass);
     assert.equal(stock.powerDraw, base.powerDraw);
+    assert.equal(stock.damage, base.damage);
+    assert.equal(stock.distributorDraw, base.distributorDraw);
     assert.equal(stock.maximumRange, base.maximumRange);
+    assert.equal(stock.falloffRange, base.falloffRange);
+    assert.equal(stock.shotSpeed, base.shotSpeed);
+    assert.equal(stock.jitter, base.jitter);
     assert.equal(stock.thermalLoad, base.thermalLoad);
     assert.equal(stock.armourPiercing, base.armourPiercing);
+    assert.equal(stock.rateOfFire, base.rateOfFire);
+    assert.equal(stock.roundsPerShot, base.roundsPerShot);
+    assert.equal(stock.clipSize, base.clipSize);
+    assert.equal(stock.ammoMaximum, base.ammoMaximum);
 
     const fitted = getPreEngineeredStats(variant)!;
     assert.equal(fitted.mass, engineered.mass);
     assert.equal(fitted.powerDraw, engineered.powerDraw);
+    assert.equal(fitted.damage, engineered.damage);
+    assert.equal(fitted.distributorDraw, engineered.distributorDraw);
     // Whole metres, not 2999.99: see the authored-stat note below.
     assert.equal(fitted.maximumRange, engineered.maximumRange);
     assert.equal(fitted.falloffRange, engineered.falloffRange);
+    assert.equal(fitted.shotSpeed, engineered.shotSpeed);
+    assert.equal(fitted.jitter, engineered.jitter);
     assert.equal(fitted.thermalLoad, engineered.thermalLoad);
     assert.equal(fitted.armourPiercing, engineered.armourPiercing);
+    assert.equal(fitted.rateOfFire, engineered.rateOfFire);
+    assert.equal(fitted.roundsPerShot, engineered.roundsPerShot);
+    assert.equal(fitted.clipSize, engineered.clipSize);
+    assert.equal(fitted.ammoMaximum, engineered.ammoMaximum);
+    const metrics = weaponMetrics(fitted);
+    assert.equal(Math.round(metrics.damagePerSecond * 10) / 10, displayed.damagePerSecond);
+    assert.equal(Math.round(fitted.damage! * 10) / 10, displayed.damage);
+    assert.equal(Math.round(fitted.powerDraw! * 100) / 100, displayed.powerDraw);
+    assert.equal(fitted.distributorDraw, displayed.distributorDraw);
+    assert.equal(fitted.thermalLoad, displayed.thermalLoad);
+    assert.equal(Math.round(fitted.armourPiercing!), displayed.armourPiercing);
+    assert.equal(fitted.maximumRange, displayed.maximumRange);
+    assert.equal(Math.round(fitted.shotSpeed!), displayed.shotSpeed);
+    assert.equal(fitted.jitter, displayed.jitter);
+    assert.equal(fitted.falloffRange, displayed.falloffRange);
+    assert.equal(Math.round(fitted.rateOfFire! * 10) / 10, displayed.rateOfFire);
+    assert.equal(fitted.clipSize, displayed.clipSize);
+    assert.equal(fitted.ammoMaximum, displayed.ammoMaximum);
+    assert.ok(metrics.damageByType.thermal > 0);
+    assert.equal(displayed.damageType, 'Thermal');
+
+    const percent = (value: number, original: number): number =>
+        Math.round((value / original - 1) * 1000) / 10;
+    assert.equal(percent(fitted.mass!, stock.mass!), displayedChanges.massPercent);
+    assert.equal(percent(fitted.powerDraw!, stock.powerDraw!), displayedChanges.powerDrawPercent);
+    assert.equal(
+        percent(fitted.distributorDraw!, stock.distributorDraw!),
+        displayedChanges.distributorDrawPercent,
+    );
+    assert.equal(
+        percent(fitted.thermalLoad!, stock.thermalLoad!),
+        displayedChanges.thermalLoadPercent,
+    );
+    assert.equal(
+        percent(fitted.armourPiercing!, stock.armourPiercing!),
+        displayedChanges.armourPiercingPercent,
+    );
+    assert.equal(
+        percent(fitted.maximumRange!, stock.maximumRange!),
+        displayedChanges.maximumRangePercent,
+    );
+    assert.equal(percent(fitted.shotSpeed!, stock.shotSpeed!), displayedChanges.shotSpeedPercent);
+    assert.equal(fitted.jitter! - stock.jitter!, displayedChanges.jitterDegrees);
+    assert.equal(
+        percent(fitted.falloffRange!, stock.falloffRange!),
+        displayedChanges.falloffRangePercent,
+    );
     // Every modifier this variant carries has a base stat to apply to.
     assert.deepEqual(unresolvedModifiers(variant), unresolved);
 });

@@ -16,6 +16,7 @@ import { parseSlef, type LoadoutEvent } from './slef.js';
 import { ShipLoadout } from './ship-loadout.js';
 import { damagePerSecond } from './weapons.js';
 import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
+import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
 import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
 import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
 import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
@@ -25,15 +26,21 @@ import corvettePlasmaJournal from '../../../fixtures/ships/journal-federation-co
 import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
 import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
 import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
+import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
+import lynxCurrentJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue01-current.json' with { type: 'json' };
+import pantherJournal from '../../../fixtures/ships/journal-panther-mkii-fat-arse.json' with { type: 'json' };
+import deepBlackJournal from '../../../fixtures/ships/journal-the-deep-black.json' with { type: 'json' };
 import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
 import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
+import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.json' with { type: 'json' };
 import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
 import deepBlackSlef from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 
 // Every capture the repository holds that could state a base value, named by the file the
 // fixture names, so a new capture is joined here by adding it in both places.
 const CAPTURES: readonly { file: string; loadouts: readonly LoadoutEvent[] }[] = [
+    { file: 'journal-anaconda-slapaconda.json', loadouts: [slapacondaJournal as LoadoutEvent] },
     { file: 'journal-caspian-explorer.json', loadouts: [caspianJournal as LoadoutEvent] },
     { file: 'journal-cobra-mkv.json', loadouts: [cobraJournal as LoadoutEvent] },
     { file: 'journal-corsair.json', loadouts: [corsairJournal as LoadoutEvent] },
@@ -56,9 +63,17 @@ const CAPTURES: readonly { file: string; loadouts: readonly LoadoutEvent[] }[] =
     { file: 'journal-federation-corvette.json', loadouts: [corvetteJournal as LoadoutEvent] },
     { file: 'journal-kestrel-mkii.json', loadouts: [kestrelJournal as LoadoutEvent] },
     { file: 'journal-krait-phantom.json', loadouts: [kraitJournal as LoadoutEvent] },
+    { file: 'journal-lynx-highliner-rescue.json', loadouts: [lynxRescueJournal as LoadoutEvent] },
     { file: 'journal-lynx-highliner.json', loadouts: [lynxJournal as LoadoutEvent] },
+    {
+        file: 'journal-lynx-highliner-rescue01-current.json',
+        loadouts: [lynxCurrentJournal as LoadoutEvent],
+    },
+    { file: 'journal-panther-mkii-fat-arse.json', loadouts: [pantherJournal as LoadoutEvent] },
     { file: 'journal-python-mkii-antixeno.json', loadouts: [pythonJournal as LoadoutEvent] },
+    { file: 'journal-python-mkii-spire-ops.json', loadouts: [spireOpsJournal as LoadoutEvent] },
     { file: 'journal-viper-mkiv.json', loadouts: [viperJournal as LoadoutEvent] },
+    { file: 'journal-the-deep-black.json', loadouts: [deepBlackJournal as LoadoutEvent] },
     { file: 'slef-the-deep-black.json', loadouts: parseSlef(deepBlackSlef).map((e) => e.data) },
 ];
 
@@ -149,6 +164,11 @@ function withinFloatNoise(ours: number, captured: number): boolean {
         : Math.abs(ours - captured) / scale < floatNoiseTolerance;
 }
 
+/** Whether two semantic decimals differ only in their JavaScript binary representation. */
+function withinBinaryRounding(a: number, b: number): boolean {
+    return Math.abs(a - b) <= Number.EPSILON * Math.max(1, Math.abs(a), Math.abs(b));
+}
+
 for (const { file, loadouts } of CAPTURES) {
     const pinned = expected.find((capture) => capture.file === file);
 
@@ -235,7 +255,6 @@ test('the captures reproduce this library’s damage per second, weapon for weap
     // launcher's panel DPS, a modified weapon at one decimal. On the huge and medium
     // gimballed beam lasers it is also the only check `damage` has, since `inGameVerified`
     // does not pin those two and no journal states `Damage` for a beam laser at all.
-    // See https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12.
     for (const { symbol, damagePerSecond: captured } of capturedWeapons) {
         const weapon = getModuleBySymbol(symbol, ALL_MODULES);
         assert.ok(weapon, `missing ${symbol}`);
@@ -273,7 +292,7 @@ test('every capture rebuilds to the mass and jump range it states', () => {
     // `MaxJumpRange`, and both are dropped before the rebuild so the library computes them
     // from the modules alone. Every module mass, every engineered mass modifier and the
     // drive's whole fuel curve have to be right for the two figures to land. What is left
-    // is the game's own float32 arithmetic, not a disagreement — the widest is 9.8e-5 t.
+    // is the game's own float32 arithmetic, not a disagreement — the widest is 1.22e-4 t.
     for (const { file, unladenMass, maxJumpRange } of rebuilds) {
         const capture = CAPTURES.find((entry) => entry.file === file);
         assert.ok(capture, `${file} is pinned for rebuild but not read`);
@@ -412,7 +431,12 @@ test('every engineered result reaches a consumer at the field the fixture names'
         assert.ok(fitted, `${file}: no module in ${slot}`);
         // A journal lower-cases every `Item`; the fixture reads as the catalogue spells it.
         assert.equal(fitted.symbol.toLowerCase(), symbol.toLowerCase());
-        assert.equal(fitted.effectiveStats?.[field as keyof OutfittingModule], value);
+        const effective = fitted.effectiveStats?.[field as keyof OutfittingModule];
+        assert.ok(typeof effective === 'number', `${file} ${slot}: ${field} is not numeric`);
+        assert.ok(
+            withinBinaryRounding(effective, value),
+            `${file} ${slot}: effective ${String(effective)}, pinned ${value}`,
+        );
         // And the pinned figure is Frontier's, not this library's: the capture states it as
         // the `Value` beside the base the join above checks.
         // Whichever of the field's labels this capture spells it with — `falloffRange` is
@@ -424,6 +448,9 @@ test('every engineered result reaches a consumer at the field the fixture names'
         // In the catalogue's units: a journal states a shield generator's strength as the
         // percentage the panel shows, where the record holds the multiplier.
         const stated = modifier && modifier.Value! / scaleForLabel(modifier.Label);
-        assert.equal(stated, value, `${file} ${slot}: the capture states ${String(stated)}`);
+        assert.ok(
+            stated !== undefined && withinBinaryRounding(stated, value),
+            `${file} ${slot}: the capture states ${String(stated)}, pinned ${value}`,
+        );
     }
 });

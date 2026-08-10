@@ -204,6 +204,16 @@ in the doc comment of each ported module, and in long form in the domain
   figure. [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden, **CC BY-NC 4.0**)
   reads the same, against [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)'s 3
   (**MIT** for its code; the values are game data).
+- **The medium fixed Guardian Shard Cannon's projectile speed and Modified damage** —
+  the `shotSpeed` of 1133.333374 m/s on
+  `Hpt_Guardian_ShardCannon_Fixed_Medium`, the 6299.209 m/s overwrite on its tech-broker
+  Modified variant, and that variant's `Damage` +10%. The speeds come from Frontier's
+  own `OriginalValue` and engineered `Value` in
+  `fixtures/ships/journal-anaconda-slapaconda.json`; the damage comes from the repository
+  owner's current individual outfitting-panel reading (2026-08-10 UTC), which reports
+  3.7 damage and 74.5 damage/s. The capture is credited under Ground-truth ship builds
+  below. These replace the registry-derived 1133 and 3568.6 m/s speeds and complete the
+  previously absent damage modifier.
 - **The journal spelling of the two scanner blueprints** — the `journalName` on
   `Scanner_LongRange` and `Scanner_WideAngle` in `data/ships/blueprints.jsonc`, recording
   that the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` even though those
@@ -286,7 +296,7 @@ in the doc comment of each ported module, and in long form in the domain
   field-by-field joins, the units each source uses, and the handful of figures derived
   from a family rule rather than read from a registry.
 
-- **Ground-truth ship builds (test fixtures, not shipped)** — eighteen real builds that
+- **Ground-truth ship builds (test fixtures, not shipped)** — twenty-four real builds that
   check the loadout maths against external captures.
   `fixtures/ships/slef-the-deep-black.json` is a real
   [EDSY](https://edsy.org/) export (taleden, **CC BY-NC 4.0**).
@@ -303,20 +313,33 @@ in the doc comment of each ported module, and in long form in the domain
   from its example data, which travels under Frontier's media-usage terms below like every
   other build here. Credit to UFO Studios & AW2C Systems Ltd for capturing and publishing
   the log. No code from that project is used.
-  `fixtures/ships/journal-python-mkii-antixeno.json`, `journal-corsair.json`,
+  `fixtures/ships/journal-python-mkii-antixeno.json`,
+  `journal-python-mkii-spire-ops.json`, `journal-anaconda-slapaconda.json`,
+  `journal-corsair.json`,
   `journal-federation-corvette.json`, `journal-federation-corvette-beams.json`,
   `journal-federation-corvette-multirole.json`, `journal-federation-corvette-mixed.json`,
   `journal-federation-corvette-plasma.json`, `journal-cobra-mkv.json`,
-  `journal-kestrel-mkii.json`, `journal-lynx-highliner.json` and
+  `journal-kestrel-mkii.json`, `journal-lynx-highliner.json`,
+  `journal-lynx-highliner-rescue.json`, `journal-lynx-highliner-rescue01-current.json`,
+  `journal-panther-mkii-fat-arse.json`, `journal-the-deep-black.json` and
   `journal-caspian-explorer.json` are real Frontier journal
   `Loadout` events contributed by the repository owner from their own fleet, with no
   upstream project to credit; the Corvette is what says Overcharged does not cut a
   cannon's clip, the plasma Corvette what says the same for a fragment cannon and the
   Caspian Explorer what says it for a plasma accelerator, the
   mixed Corvette settles that a rail gun's charge delay is excluded from Frontier's
-  `RateOfFire`, and ten of them — every one but the unengineered Python Mk II — together
+  `RateOfFire`, and sixteen of them — every one but the unengineered Python Mk II — together
   with the Krait Phantom capture and the EDSY export are what the module catalogue's base
-  stats are checked against. The Caspian Explorer is also the only capture of a
+  stats are checked against. The beam-heavy Corvette, Cobra Mk V, Kestrel Mk II, The Deep
+  Black, the two Lynx Highliners, Panther Clipper Mk II, Corsair, Spire Ops and Slapaconda also
+  have directly observed in-game statistics-panel readings for jump, power, speed, mass,
+  shield and armour figures. The Cobra, Kestrel, Rescue 01, Panther, Corsair, Spire Ops
+  and Slapaconda observations add combined-weapon output, while The Deep Black and Rescue
+  record weaponless panels. The Panther
+  observation is a later refit than its same-named SLEF capture, so the two are preserved
+  separately. The Kestrel's separately observed name is recorded without rewriting the
+  older unnamed capture. They are pinned in
+  `fixtures/ships/build-metrics.json`. The Caspian Explorer is also the only capture of a
   scoop-rate roll, and is what says Frontier writes that stat as `FuelScoopRate` where
   the recipe says `RefuelRate`. The Lynx capture also supplies that hull's size-1
   `PlanetaryApproachSuite` mount by fitting the advanced suite there.
@@ -326,7 +349,7 @@ in the doc comment of each ported module, and in long form in the domain
   own commander's fleet. The Lynx Highliner and the Panther Clipper Mk II are what a
   restricted mount's rules are checked against, and the Cutter is what the omitted-price
   rule is checked against. Their headers keep only the producing app and version.
-  All eighteen are Elite Dangerous game output and remain the property of Frontier
+  All twenty-four are Elite Dangerous game output and remain the property of Frontier
   Developments plc — see the notice below. None is bundled into the published package.
 
 - **Community build corpus (test fixtures, not shipped)** — `fixtures/ships/builds/`

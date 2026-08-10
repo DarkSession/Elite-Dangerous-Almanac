@@ -318,6 +318,11 @@
           "value": 1.02
         },
         {
+          "label": "Damage",
+          "method": "multiplicative",
+          "value": 0.1
+        },
+        {
           "label": "DistributorDraw",
           "method": "overwrite",
           "value": 3.43
@@ -350,7 +355,7 @@
         {
           "label": "ShotSpeed",
           "method": "overwrite",
-          "value": 3568.6
+          "value": 6299.209
         },
         {
           "label": "ThermalLoad",
@@ -500,20 +505,65 @@
       "base": {
         "mass": 4,
         "powerDraw": 1.21,
+        "damage": 3.385,
+        "distributorDraw": 0.65,
         "maximumRange": 1700,
+        "falloffRange": 1700,
+        "shotSpeed": 1133.333374,
+        "jitter": 5,
         "thermalLoad": 1.2,
-        "armourPiercing": 45
+        "armourPiercing": 45,
+        "rateOfFire": 1.666667,
+        "roundsPerShot": 12,
+        "clipSize": 5,
+        "ammoMaximum": 180
       },
       "engineered": {
         "mass": 6,
         "powerDraw": 2.783,
+        "damage": 3.7235,
+        "distributorDraw": 3.43,
         "maximumRange": 3000,
         "falloffRange": 1500,
+        "shotSpeed": 6299.209,
+        "jitter": 1.5,
         "thermalLoad": 19.8,
-        "armourPiercing": 90.9
+        "armourPiercing": 90.9,
+        "rateOfFire": 1.666667,
+        "roundsPerShot": 12,
+        "clipSize": 5,
+        "ammoMaximum": 180
+      },
+      "displayed": {
+        "mass": 6,
+        "powerDraw": 2.78,
+        "distributorDraw": 3.43,
+        "thermalLoad": 19.8,
+        "armourPiercing": 91,
+        "maximumRange": 3000,
+        "shotSpeed": 6299,
+        "jitter": 1.5,
+        "falloffRange": 1500,
+        "damagePerSecond": 74.5,
+        "damage": 3.7,
+        "rateOfFire": 1.7,
+        "clipSize": 5,
+        "ammoMaximum": 180,
+        "damageType": "Thermal"
+      },
+      "displayedChanges": {
+        "massPercent": 50,
+        "powerDrawPercent": 130,
+        "distributorDrawPercent": 427.7,
+        "thermalLoadPercent": 1550,
+        "armourPiercingPercent": 102,
+        "maximumRangePercent": 76.5,
+        "shotSpeedPercent": 455.8,
+        "jitterDegrees": -3.5,
+        "falloffRangePercent": -11.8
       },
       "unresolved": [],
-      "note": "The tech-broker 'Modified Guardian Shard Cannon': 3000 m range with falloff starting at 1500 m. Not a Long Range grade — the blueprint named identifies the variant, it does not reproduce it."
+      "note": "The tech-broker 'Modified Guardian Shard Cannon'. `engineered` carries exact calculation inputs, while `displayed` and `displayedChanges` preserve its rounded outfitting-panel readings. Its 3000 m range with falloff starting at 1500 m is not a Long Range grade — the blueprint named identifies the variant, it does not reproduce it."
     },
     "fragmentCannonDoubleShot": {
       "symbol": "Hpt_Slugshot_Gimbal_Small",
