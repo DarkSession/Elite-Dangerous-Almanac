@@ -141,6 +141,83 @@ test('caller-supplied capacity fields classify custom modules', () => {
     assert.equal(withTank.fuelCapacityResult.value?.main, 7);
 });
 
+test('a figure an import stated is handed back in the same shape as a calculated one', () => {
+    // The three accessors short-circuit when the capture already carries the figure.
+    // They build the result through the same constructor the calculations use, so a
+    // consumer cannot tell a stated answer from a summed one by its shape — and cannot
+    // mutate either.
+    const imported = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [],
+        UnladenMass: 45,
+        CargoCapacity: 4,
+        FuelCapacity: { Main: 2, Reserve: 0.3 },
+    });
+    // The fourth site: a capture whose `Main` an edit discarded but whose `Reserve`
+    // survived, so the main capacity is recalculated and merged with the stated
+    // reserve. It is the one complete result built when there *was* something left to
+    // calculate, and it takes two edits to reach — fitting a tank of unknown capacity
+    // drops `Main`, and fitting a known one back makes the recalculation complete while
+    // `Reserve` stays as captured (9.99, which no Sidewinder hull would give).
+    const tank = getModuleBySymbol('Int_FuelTank_Size1_Class3', CORE_MODULES)!;
+    // The same tank with no known capacity — a model the catalogue has not caught up
+    // with, which is what makes the edit discard the captured `Main`.
+    const mysteryTank: OutfittingModule = {
+        name: 'Mystery tank',
+        symbol: 'Int_MysteryTank',
+        category: tank.category,
+        kind: tank.kind,
+        // `slot` is what marks it as a fuel tank; `kind` is null on the real record too.
+        ...(tank.slot === undefined ? {} : { slot: tank.slot }),
+        class: tank.class,
+        rating: tank.rating,
+    };
+    const merged = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [{ Slot: 'FuelTank', Item: tank.symbol }],
+        FuelCapacity: { Main: 8, Reserve: 9.99 },
+    })
+        .setModule('FuelTank', mysteryTank)
+        .setModule('FuelTank', tank);
+    const calculated = ShipLoadout.empty('SideWinder').cargoCapacityResult;
+
+    // The figure itself survives the trip, not just the wrapper's shape.
+    assert.equal(imported.unladenMassResult.value, 45);
+    assert.equal(imported.cargoCapacityResult.value, 4);
+    assert.deepEqual(imported.fuelCapacityResult.value, { main: 2, reserve: 0.3 });
+    // Main recalculated from the refitted tank; reserve still the captured figure.
+    assert.deepEqual(merged.fuelCapacityResult.value, { main: 2, reserve: 9.99 });
+
+    // The mirror image, and the reason the merge reads the capture for *both* fields:
+    // `fromLoadout` takes a journal line as parsed, so a producer that wrote only
+    // `Main` — or any JavaScript caller, who has no types at all — reaches the same
+    // branch with the halves swapped. A tankless Sidewinder computes `main: 0`, so a
+    // merge that ignored the stated `Main` would silently zero the build's fuel and
+    // with it its jump range.
+    const mainOnly = ShipLoadout.fromLoadout({
+        Ship: 'sidewinder',
+        Modules: [],
+        FuelCapacity: { Main: 9 },
+    } as unknown as LoadoutEvent);
+    assert.deepEqual(mainOnly.fuelCapacityResult.value, { main: 9, reserve: 0.3 });
+
+    for (const result of [
+        imported.unladenMassResult,
+        imported.cargoCapacityResult,
+        imported.fuelCapacityResult,
+        merged.fuelCapacityResult,
+    ]) {
+        assert.equal(result.complete, true);
+        assert.equal(Object.isFrozen(result), true);
+        assert.deepEqual(result.issues, []);
+        // The one shared empty tuple, not a per-call copy that could arrive unfrozen.
+        assert.equal(result.issues, calculated.issues);
+    }
+    // Both fuel sites hand back a frozen value object, not only the wrapper around it.
+    assert.equal(Object.isFrozen(imported.fuelCapacityResult.value), true);
+    assert.equal(Object.isFrozen(merged.fuelCapacityResult.value), true);
+});
+
 test('fromLoadout rejects duplicate slot keys before its map can overwrite one', () => {
     assert.throws(
         () =>

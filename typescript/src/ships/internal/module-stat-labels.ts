@@ -13,7 +13,7 @@
 import type { DamageDistribution, OutfittingModule } from '../modules.js';
 
 /** One journal modifier label and how it relates to the catalogue field behind it. */
-export interface StatLabel {
+interface StatLabel {
     /**
      * The Modifier Label, e.g. `"FSDOptimalMass"` — a journal's own spelling, except for
      * `"BurstInterval"`, which blueprint recipes use for the stat a journal reports as
@@ -73,7 +73,7 @@ const percent = 100;
  *
  * @internal
  */
-export const STAT_LABELS: readonly StatLabel[] = [
+const STAT_LABELS: readonly StatLabel[] = [
     { label: 'Mass', field: 'mass' },
     { label: 'Integrity', field: 'integrity' },
     { label: 'PowerDraw', field: 'powerDraw' },

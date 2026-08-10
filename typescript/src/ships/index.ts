@@ -113,15 +113,10 @@ export {
     totalRange,
     type FrameShiftDriveParams,
 } from './jump-range.js';
+
+// ── The build facade and the modules it composes, each named at its source ──
 export {
     ShipLoadout,
-    LoadoutSlot,
-    FittedModule,
-    calculateCargoCapacity,
-    calculateFuelCapacity,
-    calculateUnladenMass,
-    validateLoadout,
-    type FuelCapacity,
     type JumpOptions,
     type JumpRangeSummary,
     type DefenceOptions,
@@ -131,16 +126,26 @@ export {
     type ApplyBlueprintOptions,
     type LoadoutExportOptions,
     type SlefExportOptions,
+} from './ship-loadout.js';
+export { FittedModule } from './fitted-module.js';
+export { LoadoutSlot } from './loadout-slot.js';
+export {
+    calculateCargoCapacity,
+    calculateFuelCapacity,
+    calculateUnladenMass,
     type CalculationIssue,
     type CalculationResult,
-    type CalculatedFuelCapacity,
+    type FuelCapacity,
     type LoadoutCalculationModule,
+} from './loadout-calculations.js';
+export {
+    validateLoadout,
     type LoadoutIssue,
     type LoadoutIssueCode,
     type LoadoutValidation,
     type LoadoutValidationInput,
     type ValidationModule,
-} from './ship-loadout.js';
+} from './loadout-validation.js';
 export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
 
 // ── Build metrics: power, shields, armour and weapons (all data-free) ────────

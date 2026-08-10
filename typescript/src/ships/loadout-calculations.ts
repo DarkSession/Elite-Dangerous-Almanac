@@ -10,6 +10,8 @@
  * @packageDocumentation
  */
 
+import { completeResult } from './internal/calculation-result.js';
+
 /** A dependency that prevented a loadout calculation from producing a complete value. */
 export interface CalculationIssue {
     /** Field whose value is missing, using the public catalogue spelling. */
@@ -59,15 +61,13 @@ export interface LoadoutCalculationModule {
     readonly fuelCapacity?: number | null;
 }
 
-/** Main and reserve fuel capacity, in tonnes. */
-export interface CalculatedFuelCapacity {
-    /** Fuel used for jumps and supercruise. */
+/** A ship's fuel-tank capacities, in tonnes. */
+export interface FuelCapacity {
+    /** Main tank capacity — the fuel jumps and supercruise draw from. */
     readonly main: number;
-    /** Emergency reserve. */
+    /** Reserve tank capacity — the small emergency reserve. */
     readonly reserve: number;
 }
-
-const NO_ISSUES: readonly [] = Object.freeze([]);
 
 function moduleIssue(
     module: LoadoutCalculationModule,
@@ -81,13 +81,14 @@ function moduleIssue(
     };
 }
 
-function result<T>(value: T | null, issues: readonly CalculationIssue[]): CalculationResult<T> {
+function result<T>(
+    value: (T & {}) | null,
+    issues: readonly CalculationIssue[],
+): CalculationResult<T> {
     const frozenIssues = Object.freeze(
         issues.map((issue) => Object.freeze({ ...issue })),
     ) as readonly CalculationIssue[];
-    if (value !== null && frozenIssues.length === 0) {
-        return Object.freeze({ value, complete: true, issues: NO_ISSUES });
-    }
+    if (value !== null && frozenIssues.length === 0) return completeResult(value);
     if (frozenIssues.length === 0) {
         throw new TypeError('CalculationResult: an incomplete result needs at least one issue');
     }
@@ -168,7 +169,7 @@ export function calculateCargoCapacity(
 export function calculateFuelCapacity(
     reserveFuelCapacity: number | null,
     modules: readonly LoadoutCalculationModule[],
-): CalculationResult<CalculatedFuelCapacity> {
+): CalculationResult<FuelCapacity> {
     const issues: CalculationIssue[] = [];
     let main = 0;
     if (reserveFuelCapacity === null) {

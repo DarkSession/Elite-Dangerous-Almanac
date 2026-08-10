@@ -67,12 +67,12 @@ const startsWithAny = (symbol: string, prefixes: readonly string[]): boolean =>
     prefixes.some((prefix) => symbol.toLowerCase().startsWith(prefix));
 
 /** Whether a fitted module is switched on (the journal's `On`, defaulting to `true`). */
-export function isEnabled(module: LoadoutModule): boolean {
+function isEnabled(module: LoadoutModule): boolean {
     return module.On !== false;
 }
 
 /** The outfitting-panel priority group (1–5) of a fitted module. */
-export function priorityOf(module: LoadoutModule): number {
+function priorityOf(module: LoadoutModule): number {
     // The journal's Priority is zero-based; the panel numbers the groups from 1.
     return (module.Priority ?? 0) + 1;
 }
