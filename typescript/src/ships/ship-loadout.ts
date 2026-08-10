@@ -2322,6 +2322,11 @@ export class ShipLoadout {
     /** Resolve the snapshotted fitted record, or fall back to the built-in catalogue. */
     #statsFor(module: LoadoutModule | null): OutfittingModule | null {
         if (module === null) return null;
-        return this.#moduleStats.get(module.Slot) ?? statFor(module.Item);
+        const stats = this.#moduleStats.get(module.Slot) ?? statFor(module.Item);
+        if (stats) return stats;
+        // Frontier gives some hull families their own cargo-hatch symbol even though the
+        // fitted article has the standard hatch's stats. Resolve that family here so its
+        // power draw is available as well as its already-known zero mass and price.
+        return isBuiltInHullModule(module) ? statFor('ModularCargoBayDoor') : null;
     }
 }

@@ -16,6 +16,10 @@ import engineeringFixture from '../../../fixtures/ships/engineering.json' with {
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.json' with { type: 'json' };
 import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
+import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
+import cobraMkVJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
+import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
+import kestrelMkIIJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
 import pantherCapture from '../../../fixtures/ships/slef-inara-panther-mkii.json' with { type: 'json' };
 import cutterCapture from '../../../fixtures/ships/slef-inara-cutter-antixeno.json' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
@@ -1806,6 +1810,483 @@ test('a fitted-module handle cannot operate on a replacement module', () => {
 });
 
 // ── Build metrics: power, shields, armour, weapons ───────────────────────────
+
+/** Round the way the in-game statistics panel displays a calculated value. */
+const displayed = (value: number, decimalPlaces: number): number =>
+    Number(value.toFixed(decimalPlaces));
+
+/** Read the in-game statistics panel's installed-module power semantics. */
+const withAllModulesEnabled = (event: LoadoutEvent): ShipLoadout =>
+    ShipLoadout.fromLoadout({
+        ...event,
+        Modules: event.Modules.map((module) => ({ ...module, On: true })),
+    });
+
+test('the beam Corvette reproduces the externally observed in-game build totals', () => {
+    const expected = metrics.inGame.federalCorvetteBeams;
+    const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
+
+    assert.equal(displayed(build.unladenJumpRange(), 2), expected.jumpRange.fullTank);
+
+    const installedPowerBuild = withAllModulesEnabled(corvetteBeamsJournal as LoadoutEvent);
+    const power = installedPowerBuild.powerBudget();
+    assert.equal(displayed(power.available, 1), expected.power.available);
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 2), expected.power.deployed);
+
+    const shields = build.shieldMetrics()!;
+    assert.equal(displayed(shields.strength, 1), expected.shields.strength);
+    assert.deepEqual(
+        {
+            kinetic: displayed(shields.resistances.kinetic, 3),
+            thermal: displayed(shields.resistances.thermal, 3),
+            explosive: displayed(shields.resistances.explosive, 3),
+        },
+        expected.shields.resistances,
+    );
+    const generator = build.getFittedModule('Slot01_Size7')!.effectiveStats!;
+    assert.equal(displayed(generator.shieldRegenRate!, 1), expected.shields.regeneration.standard);
+    assert.equal(
+        displayed(generator.shieldBrokenRegenRate!, 1),
+        expected.shields.regeneration.broken,
+    );
+
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 3),
+            thermal: displayed(armour.resistances.thermal, 3),
+            explosive: displayed(armour.resistances.explosive, 3),
+        },
+        expected.armour.resistances,
+    );
+});
+
+test('the Cobra Mk V reproduces the externally observed in-game build totals', () => {
+    const expected = metrics.inGame.cobraMkV;
+    const event = cobraMkVJournal as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+
+    // The in-game panel counts reserve fuel as mass but cannot use it for the jump.
+    assert.equal(
+        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        expected.jumpRange.fullTank,
+    );
+
+    const installedBuild = withAllModulesEnabled(event);
+    const power = installedBuild.powerBudget();
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.available, 2), expected.power.available);
+    assert.equal(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 2), expected.power.deployed);
+
+    const weapons = installedBuild.weaponMetrics();
+    assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    const offensePanelTotals = installedBuild.hardpoints().reduce(
+        (totals, slot) => ({
+            distributorDraw:
+                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
+            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
+        }),
+        { distributorDraw: 0, thermalLoad: 0 },
+    );
+    assert.equal(
+        displayed(offensePanelTotals.distributorDraw, 2),
+        expected.offense.distributorDraw,
+    );
+    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+
+    const shields = build.shieldMetrics()!;
+    assert.equal(displayed(shields.strength, 1), expected.shields.strength);
+    assert.deepEqual(
+        {
+            kinetic: displayed(shields.resistances.kinetic, 3),
+            thermal: displayed(shields.resistances.thermal, 3),
+            explosive: displayed(shields.resistances.explosive, 3),
+        },
+        expected.shields.resistances,
+    );
+    const generator = build.getFittedModule('Slot01_Size5')!.effectiveStats!;
+    assert.equal(displayed(generator.shieldRegenRate!, 1), expected.shields.regeneration.standard);
+    assert.equal(
+        displayed(generator.shieldBrokenRegenRate!, 1),
+        expected.shields.regeneration.broken,
+    );
+
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 3),
+            thermal: displayed(armour.resistances.thermal, 3),
+            explosive: displayed(armour.resistances.explosive, 3),
+        },
+        expected.armour.resistances,
+    );
+});
+
+test('the Kestrel Mk II reproduces the externally observed in-game build totals', () => {
+    const expected = metrics.inGame.kestrelMkII;
+    const event = kestrelMkIIJournal as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+    assert.equal(event.ShipName, '');
+    assert.equal(expected.observedShipName, '[KDF] Slippery Fudge');
+
+    assert.equal(
+        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        expected.jumpRange.fullTank,
+    );
+
+    const installedBuild = withAllModulesEnabled(event);
+    const power = installedBuild.powerBudget();
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.available, 2), expected.power.available);
+    assert.equal(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 2), expected.power.deployed);
+
+    const weapons = installedBuild.weaponMetrics();
+    assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    const offensePanelTotals = installedBuild.hardpoints().reduce(
+        (totals, slot) => ({
+            distributorDraw:
+                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
+            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
+        }),
+        { distributorDraw: 0, thermalLoad: 0 },
+    );
+    assert.equal(
+        displayed(offensePanelTotals.distributorDraw, 1),
+        expected.offense.distributorDraw,
+    );
+    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+
+    const shields = build.shieldMetrics()!;
+    assert.equal(displayed(shields.strength, 1), expected.shields.strength);
+    assert.deepEqual(
+        {
+            kinetic: displayed(shields.resistances.kinetic, 3),
+            thermal: displayed(shields.resistances.thermal, 3),
+            explosive: displayed(shields.resistances.explosive, 3),
+        },
+        expected.shields.resistances,
+    );
+    const generator = build.getFittedModule('Slot01_Size5')!.effectiveStats!;
+    assert.equal(displayed(generator.shieldRegenRate!, 1), expected.shields.regeneration.standard);
+    assert.equal(
+        displayed(generator.shieldBrokenRegenRate!, 1),
+        expected.shields.regeneration.broken,
+    );
+
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 3),
+            thermal: displayed(armour.resistances.thermal, 3),
+            explosive: displayed(armour.resistances.explosive, 3),
+        },
+        expected.armour.resistances,
+    );
+});
+
+test('The Deep Black preserves the observed totals and its two calculation discrepancies', () => {
+    const expected = metrics.inGame.deepBlack;
+    const event = slefFixture[0]!.data as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+    assert.equal(build.shipName, 'The Deep Black');
+
+    const calculatedFullTank = displayed(
+        build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }),
+        2,
+    );
+    assert.equal(calculatedFullTank, expected.jumpRange.calculatedFromCapture);
+    assert.notEqual(calculatedFullTank, expected.jumpRange.fullTank);
+
+    const installedBuild = withAllModulesEnabled(event);
+    const power = installedBuild.powerBudget();
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.available, 2), expected.power.available);
+    assert.equal(displayed(power.retracted, 0), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 0), expected.power.deployed);
+
+    const weapons = installedBuild.weaponMetrics();
+    assert.equal(displayed(weapons.total.damagePerSecond, 0), expected.offense.damagePerSecond);
+    assert.equal(displayed(weapons.total.heatPerSecond, 0), expected.offense.thermalLoad);
+    assert.equal(
+        displayed(weapons.total.energyPerSecond, 0),
+        expected.offense.calculatedDistributorDraw,
+    );
+    assert.notEqual(displayed(weapons.total.energyPerSecond, 0), expected.offense.distributorDraw);
+
+    const shields = build.shieldMetrics()!;
+    assert.equal(displayed(shields.strength, 1), expected.shields.strength);
+    assert.deepEqual(
+        {
+            kinetic: displayed(shields.resistances.kinetic, 1),
+            thermal: displayed(shields.resistances.thermal, 1),
+            explosive: displayed(shields.resistances.explosive, 1),
+        },
+        expected.shields.resistances,
+    );
+    const generator = build.getFittedModule('Slot06_Size5')!.effectiveStats!;
+    assert.equal(generator.shieldRegenRate, expected.shields.regeneration.standard);
+    // The catalogue's exact 3.75/s lies on the boundary displayed by the game as 3.7/s.
+    assert.equal(generator.shieldBrokenRegenRate, 3.75);
+    assert.ok(
+        Math.abs(generator.shieldBrokenRegenRate - expected.shields.regeneration.broken) <= 0.05,
+    );
+
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve + expected.mass.inferredCargo, 1),
+        expected.mass.current,
+    );
+    const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
+    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 2),
+            thermal: displayed(armour.resistances.thermal, 2),
+            explosive: displayed(armour.resistances.explosive, 2),
+        },
+        expected.armour.resistances,
+    );
+});
+
+test('the Lynx Highliner reproduces the observed totals except its distributor display', () => {
+    const expected = metrics.inGame.rescue01;
+    const event = lynxJournal as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+    assert.equal(build.shipName, '[KPV] Rescue 01');
+
+    assert.equal(
+        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        expected.jumpRange.fullTank,
+    );
+
+    const installedBuild = withAllModulesEnabled(event);
+    const power = installedBuild.powerBudget();
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.available, 2), expected.power.available);
+    assert.equal(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 2), expected.power.deployed);
+
+    const weapons = installedBuild.weaponMetrics();
+    assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    const offensePanelTotals = installedBuild.hardpoints().reduce(
+        (totals, slot) => ({
+            distributorDraw:
+                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
+            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
+        }),
+        { distributorDraw: 0, thermalLoad: 0 },
+    );
+    assert.equal(
+        displayed(offensePanelTotals.distributorDraw, 2),
+        expected.offense.calculatedDistributorDraw,
+    );
+    assert.notEqual(
+        displayed(offensePanelTotals.distributorDraw, 2),
+        expected.offense.distributorDraw,
+    );
+    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+
+    const shields = build.shieldMetrics()!;
+    assert.equal(displayed(shields.strength, 1), expected.shields.strength);
+    assert.deepEqual(
+        {
+            kinetic: displayed(shields.resistances.kinetic, 3),
+            thermal: displayed(shields.resistances.thermal, 3),
+            explosive: displayed(shields.resistances.explosive, 3),
+        },
+        expected.shields.resistances,
+    );
+    const generator = build.getFittedModule('Slot02_Size5')!.effectiveStats!;
+    assert.equal(displayed(generator.shieldRegenRate!, 1), expected.shields.regeneration.standard);
+    assert.equal(
+        displayed(generator.shieldBrokenRegenRate!, 1),
+        expected.shields.regeneration.broken,
+    );
+
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
+    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 0), expected.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 2),
+            thermal: displayed(armour.resistances.thermal, 2),
+            explosive: displayed(armour.resistances.explosive, 2),
+        },
+        expected.armour.resistances,
+    );
+});
+
+test('the Panther observation remains distinct from its older same-named capture', () => {
+    const expected = metrics.inGame.fatArse;
+    const captured = expected.calculatedFromCapture;
+    const event = pantherCapture[0]!.data as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+    assert.equal(build.shipName, '[KLD] Fat Arse');
+
+    const jumpRange = displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2);
+    assert.equal(jumpRange, captured.jumpRangeFullTank);
+    assert.notEqual(jumpRange, expected.jumpRange.fullTank);
+
+    const installedBuild = withAllModulesEnabled(event);
+    const power = installedBuild.powerBudget();
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.available, 1), captured.power.available);
+    assert.equal(power.available, expected.power.available);
+    assert.equal(displayed(power.retracted, 2), captured.power.retracted);
+    assert.equal(displayed(power.deployed, 2), captured.power.deployed);
+    assert.notEqual(displayed(power.retracted, 2), expected.power.retracted);
+
+    const weapons = installedBuild.weaponMetrics();
+    assert.equal(displayed(weapons.total.damagePerSecond, 0), captured.offense.damagePerSecond);
+    assert.equal(displayed(weapons.total.energyPerSecond, 0), captured.offense.distributorDraw);
+    assert.equal(displayed(weapons.total.heatPerSecond, 0), captured.offense.thermalLoad);
+    assert.notEqual(weapons.total.damagePerSecond, expected.offense.damagePerSecond);
+
+    const shields = build.shieldMetrics()!;
+    assert.equal(displayed(shields.strength, 1), captured.shields.strength);
+    assert.deepEqual(
+        {
+            kinetic: displayed(shields.resistances.kinetic, 1),
+            thermal: displayed(shields.resistances.thermal, 1),
+            explosive: displayed(shields.resistances.explosive, 1),
+        },
+        captured.shields.resistances,
+    );
+    const generator = build.getFittedModule('Slot03_Size6')!.effectiveStats!;
+    assert.equal(displayed(generator.shieldRegenRate!, 1), captured.shields.regeneration.standard);
+    assert.equal(
+        displayed(generator.shieldBrokenRegenRate!, 1),
+        captured.shields.regeneration.broken,
+    );
+    assert.notEqual(displayed(shields.strength, 1), expected.shields.strength);
+
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
+        captured.mass.fullFuelNoCargo,
+    );
+    const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
+    assert.equal(thrusters.maxMass, captured.mass.maximum);
+    assert.notEqual(thrusters.maxMass, expected.mass.maximum);
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 0), captured.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 1),
+            thermal: displayed(armour.resistances.thermal, 1),
+            explosive: displayed(armour.resistances.explosive, 1),
+        },
+        captured.armour.resistances,
+    );
+    assert.notEqual(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
+});
+
+test('the Corsair reproduces the externally observed in-game build totals', () => {
+    const expected = metrics.inGame.theFixer;
+    const event = corsairJournal as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const fuel = build.fuelCapacity;
+    assert.ok(fuel);
+    assert.equal(build.shipName, '[KDF] The Fixer');
+
+    assert.equal(
+        displayed(build.jumpRange({ fuel: fuel.main, cargo: fuel.reserve }), 2),
+        expected.jumpRange.fullTank,
+    );
+
+    const installedBuild = withAllModulesEnabled(event);
+    const power = installedBuild.powerBudget();
+    assert.equal(expected.power.includesDisabledModules, true);
+    assert.equal(displayed(power.available, 1), expected.power.available);
+    assert.equal(displayed(power.retracted, 2), expected.power.retracted);
+    assert.equal(displayed(power.deployed, 2), expected.power.deployed);
+
+    const weapons = installedBuild.weaponMetrics();
+    assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    const offensePanelTotals = installedBuild.hardpoints().reduce(
+        (totals, slot) => ({
+            distributorDraw:
+                totals.distributorDraw + (slot.module?.effectiveStats?.distributorDraw ?? 0),
+            thermalLoad: totals.thermalLoad + (slot.module?.effectiveStats?.thermalLoad ?? 0),
+        }),
+        { distributorDraw: 0, thermalLoad: 0 },
+    );
+    assert.equal(
+        displayed(offensePanelTotals.distributorDraw, 1),
+        expected.offense.distributorDraw,
+    );
+    assert.equal(displayed(offensePanelTotals.thermalLoad, 1), expected.offense.thermalLoad);
+
+    const shields = build.shieldMetrics()!;
+    assert.equal(displayed(shields.strength, 1), expected.shields.strength);
+    assert.deepEqual(
+        {
+            kinetic: displayed(shields.resistances.kinetic, 3),
+            thermal: displayed(shields.resistances.thermal, 3),
+            explosive: displayed(shields.resistances.explosive, 3),
+        },
+        expected.shields.resistances,
+    );
+    const generator = build.getFittedModule('Slot01_Size6')!.effectiveStats!;
+    assert.equal(displayed(generator.shieldRegenRate!, 1), expected.shields.regeneration.standard);
+    assert.equal(
+        displayed(generator.shieldBrokenRegenRate!, 1),
+        expected.shields.regeneration.broken,
+    );
+
+    assert.equal(
+        displayed(build.unladenMass! + fuel.main + fuel.reserve, 1),
+        expected.mass.current,
+    );
+    const thrusters = build.getFittedModule('MainEngines')!.effectiveStats!;
+    assert.equal(thrusters.maxMass, expected.mass.maximum);
+    const armour = build.armourMetrics();
+    assert.equal(displayed(armour.hitPoints, 1), expected.armour.hitPoints);
+    assert.deepEqual(
+        {
+            kinetic: displayed(armour.resistances.kinetic, 2),
+            thermal: displayed(armour.resistances.thermal, 2),
+            explosive: displayed(armour.resistances.explosive, 2),
+        },
+        expected.armour.resistances,
+    );
+});
 
 /** The fixture's Anaconda, assembled from the catalogues. */
 function fixtureAnaconda(): ShipLoadout {

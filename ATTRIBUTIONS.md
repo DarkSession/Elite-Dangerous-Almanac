@@ -316,7 +316,14 @@ in the doc comment of each ported module, and in long form in the domain
   mixed Corvette settles that a rail gun's charge delay is excluded from Frontier's
   `RateOfFire`, and ten of them — every one but the unengineered Python Mk II — together
   with the Krait Phantom capture and the EDSY export are what the module catalogue's base
-  stats are checked against. The Caspian Explorer is also the only capture of a
+  stats are checked against. The beam-heavy Corvette, Cobra Mk V, Kestrel Mk II, The Deep
+  Black, Lynx Highliner, Panther Clipper Mk II and Corsair also have directly observed
+  in-game statistics-panel readings for jump, power, speed, mass, shield and armour
+  figures. The Cobra, Kestrel, Lynx, Panther and Corsair observations add combined-weapon
+  output, while The Deep Black records the weaponless panel. The Panther observation is a later refit than its
+  same-named SLEF capture, so the two are preserved separately. The Kestrel's separately
+  observed name is recorded without rewriting the older unnamed capture. They are pinned in
+  `fixtures/ships/build-metrics.json`. The Caspian Explorer is also the only capture of a
   scoop-rate roll, and is what says Frontier writes that stat as `FuelScoopRate` where
   the recipe says `RefuelRate`. The Lynx capture also supplies that hull's size-1
   `PlanetaryApproachSuite` mount by fitting the advanced suite there.

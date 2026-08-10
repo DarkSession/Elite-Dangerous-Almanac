@@ -235,7 +235,6 @@ test('the captures reproduce this library’s damage per second, weapon for weap
     // launcher's panel DPS, a modified weapon at one decimal. On the huge and medium
     // gimballed beam lasers it is also the only check `damage` has, since `inGameVerified`
     // does not pin those two and no journal states `Damage` for a beam laser at all.
-    // See https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12.
     for (const { symbol, damagePerSecond: captured } of capturedWeapons) {
         const weapon = getModuleBySymbol(symbol, ALL_MODULES);
         assert.ok(weapon, `missing ${symbol}`);

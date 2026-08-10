@@ -1,5 +1,387 @@
 {
-  "description": "Parity fixture for the ship-build metrics: the power budget and its priority groups, the shield and armour metrics with their stacked resistances, weapon DPS, and ammunition capacity. Covers fixtures/ships/slef-the-deep-black.json and an Anaconda assembled from the catalogues, plus the pure functions each metric is built from. Cross-language validation.",
+  "description": "Parity fixture for the ship-build metrics: externally observed in-game totals, the power budget and its priority groups, the shield and armour metrics with their stacked resistances, weapon DPS, and ammunition capacity. Covers fixtures/ships/journal-federation-corvette-beams.json, fixtures/ships/journal-cobra-mkv.json, fixtures/ships/journal-corsair.json, fixtures/ships/journal-kestrel-mkii.json, fixtures/ships/journal-lynx-highliner.json, fixtures/ships/slef-the-deep-black.json, fixtures/ships/slef-inara-panther-mkii.json and an Anaconda assembled from the catalogues, plus the pure functions each metric is built from. Cross-language validation.",
+  "inGame": {
+    "federalCorvetteBeams": {
+      "build": "fixtures/ships/journal-federation-corvette-beams.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state; the stored Loadout event marks the 0.6 MW cargo hatch off, so its active-state budget is 0.6 MW lower. `mass.current` is the ship with both fuel tanks full and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 14.73
+      },
+      "speed": {
+        "top": 281,
+        "boost": 366,
+        "pitch": 39.4,
+        "roll": 105.55,
+        "yaw": 11.26
+      },
+      "power": {
+        "available": 50.4,
+        "retracted": 39.76,
+        "deployed": 47.46,
+        "includesDisabledModules": true
+      },
+      "shields": {
+        "strength": 3940.4,
+        "resistances": {
+          "kinetic": 0.556,
+          "thermal": 0.425,
+          "explosive": 0.63
+        },
+        "regeneration": {
+          "standard": 5.1,
+          "broken": 11.4
+        }
+      },
+      "mass": {
+        "current": 2402.3,
+        "maximum": 2835
+      },
+      "armour": {
+        "hitPoints": 5062.6,
+        "resistances": {
+          "kinetic": 0.391,
+          "thermal": 0.434,
+          "explosive": 0.348
+        }
+      }
+    },
+    "cobraMkV": {
+      "build": "fixtures/ships/journal-cobra-mkv.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state. The displayed full-tank jump range counts the 0.49 t reserve tank as ship mass even though that fuel is unavailable to the FSD; the library's physical full-tank range excludes it from both sides and is therefore slightly longer. `offense.distributorDraw` and `offense.thermalLoad` are the display's sums of the fitted weapons' per-shot values (already per-second on continuous-fire beams), not the library's rate-scaled `energyPerSecond` and `heatPerSecond`. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 44.75
+      },
+      "speed": {
+        "top": 443,
+        "boost": 627,
+        "pitch": 68.77,
+        "roll": 183.38,
+        "yaw": 50.43
+      },
+      "power": {
+        "available": 21.84,
+        "retracted": 18.87,
+        "deployed": 21.44,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 62.2,
+        "distributorDraw": 5.15,
+        "thermalLoad": 6
+      },
+      "shields": {
+        "strength": 698.2,
+        "resistances": {
+          "kinetic": 0.534,
+          "thermal": 0.317,
+          "explosive": 0.612
+        },
+        "regeneration": {
+          "standard": 2.6,
+          "broken": 5.8
+        }
+      },
+      "mass": {
+        "current": 291.7,
+        "maximum": 551.2
+      },
+      "armour": {
+        "hitPoints": 427.7,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    },
+    "kestrelMkII": {
+      "build": "fixtures/ships/journal-kestrel-mkii.json",
+      "observedShipName": "[KDF] Slippery Fudge",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The earlier immutable Loadout capture has a blank `ShipName`; the observed name records the ship's later name without rewriting that capture. The power figures include every fitted module regardless of its powered-on state. The displayed full-tank jump range counts the 0.61 t reserve tank as ship mass even though that fuel is unavailable to the FSD. `offense.distributorDraw` and `offense.thermalLoad` are the display's sums of the fitted weapons' per-shot values, not the library's rate-scaled `energyPerSecond` and `heatPerSecond`. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 23.16
+      },
+      "speed": {
+        "top": 438,
+        "boost": 584,
+        "pitch": 81.07,
+        "roll": 194.57,
+        "yaw": 38.91
+      },
+      "power": {
+        "available": 27.13,
+        "retracted": 21.92,
+        "deployed": 28.13,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 424.1,
+        "distributorDraw": 3.6,
+        "thermalLoad": 5.6
+      },
+      "shields": {
+        "strength": 1486,
+        "resistances": {
+          "kinetic": 0.428,
+          "thermal": 0.196,
+          "explosive": 0.523
+        },
+        "regeneration": {
+          "standard": 2.6,
+          "broken": 5.8
+        }
+      },
+      "mass": {
+        "current": 447.1,
+        "maximum": 1102.5
+      },
+      "armour": {
+        "hitPoints": 1200.7,
+        "resistances": {
+          "kinetic": 0.139,
+          "thermal": 0.282,
+          "explosive": -0.005
+        }
+      }
+    },
+    "deepBlack": {
+      "build": "fixtures/ships/slef-the-deep-black.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state; the 23.6059 MW installed draw is displayed to the nearest whole MW. The observed mass is consistent with the captured unladen mass, both fuel tanks and 10 t of cargo. The observed 84.95 ly full-tank range does not reproduce from the older SLEF capture, which gives 82.35 ly when reserve fuel is counted as mass; see issue #93. The weaponless build's 4 MW distributor draw does not reproduce from the fitted hardpoints; see issue #94. `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 84.95,
+        "calculatedFromCapture": 82.35
+      },
+      "speed": {
+        "top": 238,
+        "boost": 328,
+        "pitch": 33.98,
+        "roll": 84.95,
+        "yaw": 15.86
+      },
+      "power": {
+        "available": 22.85,
+        "retracted": 24,
+        "deployed": 24,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 0,
+        "distributorDraw": 4,
+        "thermalLoad": 0,
+        "calculatedDistributorDraw": 0
+      },
+      "shields": {
+        "strength": 230.7,
+        "resistances": {
+          "kinetic": 0.4,
+          "thermal": -0.2,
+          "explosive": 0.5
+        },
+        "regeneration": {
+          "standard": 1,
+          "broken": 3.7
+        }
+      },
+      "mass": {
+        "current": 1376.4,
+        "inferredCargo": 10,
+        "maximum": 1490.4
+      },
+      "armour": {
+        "hitPoints": 819.7,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    },
+    "rescue01": {
+      "build": "fixtures/ships/journal-lynx-highliner.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW `ModularCargoBayDoorFDL`. The displayed full-tank jump range counts the 0.75 t reserve tank as ship mass even though that fuel is unavailable to the FSD. The observed distributor draw does not reproduce from the multicannons' stored per-shot values, which total 0.81 MW; see issue #95. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 29.38
+      },
+      "speed": {
+        "top": 465,
+        "boost": 571,
+        "pitch": 42.43,
+        "roll": 97.92,
+        "yaw": 31.01
+      },
+      "power": {
+        "available": 29.99,
+        "retracted": 22.44,
+        "deployed": 26.68,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 77.1,
+        "distributorDraw": 2.81,
+        "calculatedDistributorDraw": 0.81,
+        "thermalLoad": 1.3
+      },
+      "shields": {
+        "strength": 1472.4,
+        "resistances": {
+          "kinetic": 0.447,
+          "thermal": 0.224,
+          "explosive": 0.539
+        },
+        "regeneration": {
+          "standard": 1,
+          "broken": 2.1
+        }
+      },
+      "mass": {
+        "current": 743.6,
+        "maximum": 1890
+      },
+      "armour": {
+        "hitPoints": 1617,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    },
+    "fatArse": {
+      "build": "fixtures/ships/slef-inara-panther-mkii.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The same-named SLEF capture is an older loadout: it has empty hardpoints and stock shields, bulkheads and thrusters, so its composed values differ throughout. The observation is preserved without attributing those differences to the calculations; see issue #96. The power figures include every fitted module regardless of its powered-on state. `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 31.96
+      },
+      "speed": {
+        "top": 296,
+        "boost": 411,
+        "pitch": 29.62,
+        "roll": 32.91,
+        "yaw": 16.45
+      },
+      "power": {
+        "available": 25.2,
+        "retracted": 21.83,
+        "deployed": 21.83,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 4,
+        "distributorDraw": 2,
+        "thermalLoad": 0.1
+      },
+      "shields": {
+        "strength": 403.1,
+        "resistances": {
+          "kinetic": 0.469,
+          "thermal": 0.269,
+          "explosive": 0.557
+        },
+        "regeneration": {
+          "standard": 1.3,
+          "broken": 4.8
+        }
+      },
+      "mass": {
+        "current": 1669,
+        "maximum": 4410
+      },
+      "armour": {
+        "hitPoints": 1473.1,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      },
+      "calculatedFromCapture": {
+        "jumpRangeFullTank": 22.53,
+        "power": {
+          "available": 25.2,
+          "retracted": 19.25,
+          "deployed": 19.25
+        },
+        "offense": {
+          "damagePerSecond": 0,
+          "distributorDraw": 0,
+          "thermalLoad": 0
+        },
+        "shields": {
+          "strength": 200.2,
+          "resistances": {
+            "kinetic": 0.4,
+            "thermal": -0.2,
+            "explosive": 0.5
+          },
+          "regeneration": {
+            "standard": 1.3,
+            "broken": 5.3
+          }
+        },
+        "mass": {
+          "fullFuelNoCargo": 1646.5,
+          "maximum": 5040
+        },
+        "armour": {
+          "hitPoints": 1116,
+          "resistances": {
+            "kinetic": -0.2,
+            "thermal": 0,
+            "explosive": -0.4
+          }
+        }
+      }
+    },
+    "theFixer": {
+      "build": "fixtures/ships/journal-corsair.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.3 MW supercruise assist. The displayed full-tank jump range counts the 0.41 t reserve tank as ship mass even though that fuel is unavailable to the FSD. `offense.distributorDraw` and `offense.thermalLoad` are the display's sums of the fitted weapons' per-shot values, not the library's rate-scaled `energyPerSecond` and `heatPerSecond`. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 39.94
+      },
+      "speed": {
+        "top": 473,
+        "boost": 600,
+        "pitch": 43.91,
+        "roll": 135.12,
+        "yaw": 16.89
+      },
+      "power": {
+        "available": 33.6,
+        "retracted": 24.48,
+        "deployed": 34.18,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 118.3,
+        "distributorDraw": 17.1,
+        "thermalLoad": 33.6
+      },
+      "shields": {
+        "strength": 1242.9,
+        "resistances": {
+          "kinetic": 0.447,
+          "thermal": 0.224,
+          "explosive": 0.539
+        },
+        "regeneration": {
+          "standard": 3.2,
+          "broken": 7.2
+        }
+      },
+      "mass": {
+        "current": 674.3,
+        "maximum": 2835
+      },
+      "armour": {
+        "hitPoints": 641.5,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    }
+  },
   "deepBlack": {
     "build": "fixtures/ships/slef-the-deep-black.json",
     "power": {
@@ -1074,48 +1456,29 @@
       },
       {
         "generator": 0,
-        "boosters": [
-          0.1,
-          0.1
-        ],
+        "boosters": [0.1, 0.1],
         "expected": 0.19
       },
       {
         "generator": 0.4,
-        "boosters": [
-          0.2,
-          0.2,
-          0.2,
-          0.2
-        ],
+        "boosters": [0.2, 0.2, 0.2, 0.2],
         "expected": 0.66712
       }
     ],
     "stackArmourResistance": [
       {
         "bulkhead": 0.25,
-        "reinforcements": [
-          0.025
-        ],
+        "reinforcements": [0.025],
         "expected": 0.26875
       },
       {
         "bulkhead": 0.25,
-        "reinforcements": [
-          0.05,
-          0.05,
-          0.05,
-          0.05,
-          0.05,
-          0.05
-        ],
+        "reinforcements": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
         "expected": 0.374341
       },
       {
         "bulkhead": -0.2,
-        "reinforcements": [
-          0.005
-        ],
+        "reinforcements": [0.005],
         "expected": -0.194
       }
     ],

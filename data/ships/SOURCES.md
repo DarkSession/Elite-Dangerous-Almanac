@@ -2337,8 +2337,10 @@ under, which is why several are cited above rather than copied.
 
 - **`fixtures/ships/slef-the-deep-black.json`** — a real EDSY export of an exploration
   Caspian Explorer. Its acquisition date and immutable source revision are not recorded;
-  see the jump-range note above. Zero weapons, so it
-  exercises jump range, fuel and power but not the combat metrics.
+  see the jump-range note above. It has zero weapons, so it exercises jump range, fuel and
+  power; its later in-game offense-panel observation is also useful precisely because the
+  empty hardpoints expose the unexplained distributor figure tracked in issue
+  [#94](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/94).
 - **`fixtures/ships/journal-krait-phantom.json`** — a real Frontier journal `Loadout`
   event for an engineered combat Krait Phantom (40 `Modules` entries, 6 hardpoints and
   utilities). Acquired **2026-08-02 UTC** from
@@ -2388,11 +2390,9 @@ under, which is why several are cited above rather than copied.
   look. Pinned by `fixtures/ships/slef-export.json` (`viperMkIV`),
   `fixtures/ships/source-purchase.json` and `fixtures/ships/jump-range.json`.
 
-  **What it does not close:** shields, armour and weapon DPS. It carries four weapons and
-  a shield generator, and states no figure for any of them: a `Loadout` states a stat only
-  as the `OriginalValue` beside an engineered one, and nothing on this build is
-  engineered — see
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12>.
+  This capture itself states no composed shield, armour or weapon figure: a `Loadout`
+  states a stat only as the `OriginalValue` beside an engineered one, and nothing on this
+  build is engineered.
 
 - **`fixtures/ships/journal-python-mkii-antixeno.json`** — a real Frontier journal
   `Loadout` event for a **wholly unengineered** anti-xeno Python MkII (22 `Modules`
@@ -2438,10 +2438,9 @@ under, which is why several are cited above rather than copied.
   truncates to 3 268 937). So a journal's credits remain a purchase record. Pinned by
   `fixtures/ships/slef-export.json` (`pythonMkII`) and `fixtures/ships/jump-range.json`.
 
-  **What it does not close:** shields, armour and weapon DPS, exactly as the Viper Mk IV
-  does not — it carries six weapons and a shield generator, and being unengineered it
-  states no `OriginalValue` for any of them. See
-  <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12>.
+  This capture itself states no composed shield, armour or weapon figure, exactly as the
+  Viper Mk IV does not: it carries six weapons and a shield generator, and being
+  unengineered it states no `OriginalValue` for any of them.
 
   **Its ammunition state is deliberately not carried.** `LoadoutModule` models neither
   `AmmoInClip` nor `AmmoInHopper`, so importing this capture drops both and a re-export
@@ -2573,8 +2572,11 @@ under, which is why several are cited above rather than copied.
   most hulls fit `ModularCargoBayDoor` — and only the latter has a catalogue record. The
   hatch is built into every hull, cannot be bought and weighs nothing, so `#moduleMass`
   reads the whole `modularcargobaydoor*` family as massless in the cargo-hatch slot;
-  without that a capture of such a hull has an unknown mass and no jump range at all. The
-  built-in hatch remains deliberately uncatalogued.
+  without that a capture of such a hull has an unknown mass and no jump range at all. For
+  the same reason, `#statsFor` resolves the family-specific symbol to the standard hatch's
+  record: its 0.6 MW draw is what makes the Lynx's externally observed all-module power
+  totals reproduce. The variant remains deliberately absent from the catalogue because
+  it is not a distinct purchasable article.
 
 - **`fixtures/ships/journal-federation-corvette-mixed.json`** — a real Frontier journal
   `Loadout` event for a mixed-weapon Federal Corvette (48 `Modules`: two huge plasma
@@ -2881,17 +2883,106 @@ recomputed too, and unlike the credits they **do** reproduce each source's own f
 exactly — which is what shows the recomputation is right rather than merely
 self-consistent.
 
-**Still missing external ground truth:** what a build's modules compose to — its
-shield strength, its hull total, and its combined damage per second, `sumWeaponMetrics`
-and `sustainedDamagePerSecond` among them. A journal states the modules, not what they
-add up to, so every such figure is checked against our own maths. An EDSY or Coriolis
-_reading_ of a fitted build would close that gap; the build corpus below does not,
-because it pins figures this library computed rather than figures a tool published. The
-module-level inputs are read: a capture states an engineered weapon's own unmodified
-`DamagePerSecond`, Frontier's fold of the four stored stats, for eighteen weapons, and
-states the resistances and hull boost the same way — see §Reconciliation and in-game
-audit, and <https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12> for what
-remains.
+**Externally observed build totals.** The in-game ship statistics displays for the
+beam-heavy Federal Corvette in `journal-federation-corvette-beams.json`, the Cobra Mk V
+in `journal-cobra-mkv.json`, the Kestrel Mk II in `journal-kestrel-mkii.json`, The Deep
+Black in `slef-the-deep-black.json`, and the Lynx Highliner in
+`journal-lynx-highliner.json`, and the Panther Clipper Mk II in
+`slef-inara-panther-mkii.json`, and the Corsair in `journal-corsair.json` were read on
+**2026-08-10 UTC** and transcribed into `fixtures/ships/build-metrics.json` §`inGame`.
+The complete loadouts are the source
+revisions for the fitted modules (stored SHA-256 above where an immutable revision is
+available); the displays themselves expose no immutable revision or export, so the
+fixture preserves the manually transcribed values at the game's displayed precision. No
+correction is applied. The Kestrel capture predates its displayed name and therefore
+retains a blank `ShipName`; the separately observed `[KDF] Slippery Fudge` name is
+metadata on the calculated-values fixture, not a rewrite of that source capture. Six
+builds externally check shield strength and resistance stacking and armour hit points and
+resistance stacking; the Panther observation belongs to a later refit than its same-named
+capture and is not counted as validation of the old build. Every matching build except
+The Deep Black also checks full-tank jump range without a known discrepancy. All seven
+observations record speed and rotation, shield regeneration, full-fuel and
+thruster-maximum masses, and power figures for APIs that can consume them now or later.
+
+The power display totals every fitted module regardless of whether it is powered on. Its
+39.76 MW retracted / 47.46 MW deployed figures therefore include the cargo hatch's 0.6
+MW draw; the earlier journal capture records `CargoHatch` as `On: false`, so
+`ShipLoadout.powerBudget()` reports the active-state totals 0.6 MW lower. The fixture and
+test keep both semantics visible rather than rewriting the capture. The Deep Black gives
+the same result at coarser display precision: its all-module 23.6059 MW draw is displayed
+as 24 MW retracted and deployed, while its plant supplies 22.848 MW, displayed as 22.85
+MW. Speed and rotation are not currently calculated by the library.
+
+The Cobra, Kestrel and Corsair offense displays are external readings of fitted builds'
+combined weapon output: respectively **62.2 damage/s, 5.15 MW distributor draw and 6.0
+heat/s**, **424.1 damage/s, 3.6 MW distributor draw and 5.6 heat/s**, and **118.3 damage/s,
+17.1 MW distributor draw and 33.6 heat/s**. The Cobra's three
+engineered beams demonstrate that a journal's derived `DamagePerSecond` `Value` is
+authoritative for the fitted article: the two mediums each state 15.5248 and the small
+9.5232, where reading only the catalogue's stock `damage` understated the build at 54.3
+damage/s. `weaponStatsFor` now divides that stated total by the effective rounds and rate
+to recover the per-round input consumed by the data-free weapon formulas; the build then
+lands at 62.1825, displayed as 62.2. The distributor and heat totals are a different
+display quantity from `energyPerSecond` and `heatPerSecond`: the game sums each weapon's
+stored per-shot figure, already per-second for a continuous beam, rather than multiplying
+the multi-cannons by their firing rates. The shared fixture names those values
+`distributorDraw` and `thermalLoad` to preserve that distinction.
+
+The Lynx's five engineered multicannons reproduce **77.1 damage/s** and **1.3 heat/s**,
+but their catalogue per-shot distributor inputs sum to **0.81 MW**, not the observed
+**2.81 MW**. The rate-scaled total is 6.6382 MW/s, so the panel is not displaying that
+existing metric either. Both values remain pinned without correction while
+[#95](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/95) tracks the missing
+individual weapon readings needed to settle the input or composition rule.
+The Corsair's exact 17.1 MW total includes two of the same engineered class-2 gimballed
+multicannons at 0.14 MW each, which confirms those catalogue inputs and narrows the Lynx
+gap to that observation rather than the general multicannon data.
+
+The Panther observation reports **4 damage/s, 2 MW distributor draw and 0.1 heat/s**, but
+the same-named SLEF capture has empty hardpoints. The divergence is broader than weapons:
+the capture has stock shields, bulkheads and thrusters and calculates 22.53 ly full-tank
+range, 19.25 MW draw, 200.2 shields, 1,116 armour and 5,040 t maximum thruster mass; the
+observation reports 31.96 ly, 21.83 MW, 403.1, 1,473.1 and 4,410 t. Only the 25.2 MW power
+plant output is unchanged. The fixture preserves the observed and captured values
+separately, and [#96](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/96)
+tracks the fresh loadout needed to validate the refit.
+
+The weaponless Deep Black reports **0 damage/s, 4 MW distributor draw and 0 heat/s**.
+Damage and heat reproduce, but its empty hardpoints calculate zero distributor draw. The
+fitted distributor's 3.705 MW/s weapon recharge is close to the whole-number display, but
+substituting recharge for draw would contradict the two armed builds. The observation is
+kept without correction and the unresolved empty-hardpoint semantics are tracked in
+[#94](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/94).
+
+The Cobra and Kestrel also make the in-game full-tank jump display's reserve-fuel
+treatment visible. The physical calculation excludes reserve fuel from usable FSD fuel
+and jump mass. The panel includes it in mass only: the Cobra's 0.49 t reserve changes
+44.8089 ly to 44.7491 ly, displayed as 44.75; the Kestrel's 0.61 t reserve changes
+23.1922 ly to 23.1606 ly, displayed as 23.16. The fixture pins the display readings while
+`ShipLoadout.unladenJumpRange()` keeps the physical answers.
+
+The Deep Black does not reproduce its **84.95 ly** observed full-tank display from the
+older SLEF capture. That capture and the library agree exactly on its own 89.414678 ly
+maximum-range export, but the same captured FSD, booster and mass yield 82.3493 ly under
+the panel's reserve-as-mass semantics, displayed as 82.35. Its observed 1,376.4 t mass is
+consistent with the captured unladen mass, both fuel tanks and 10 t of cargo. The fixture
+preserves both jump figures, and
+[#93](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/93) records what is
+needed to distinguish a later loadout change from a stale calculation input or rule.
+
+Its **1,490.4 t** thruster-maximum mass does reproduce and settles a related-stat rule:
+the captured grade-4 Clean Drive roll moves `EngineOptimalMass` from 1,080 t to 993.6 t,
+and maximum mass follows by the same ×0.92, from 1,620 t to 1,490.4 t. `effectiveModule`
+therefore scales a thruster's minimum and maximum mass with its engineered optimal mass,
+while still preferring an explicit modifier for either endpoint if a capture supplies
+one.
+
+**Sustained weapon DPS and its reload model** remain externally unchecked; the game
+observation supplied no sustained total. The module-level inputs are read: a capture
+states an engineered weapon's own unmodified `DamagePerSecond`, Frontier's fold of the
+four stored stats, for eighteen weapons, and states the resistances and hull boost the
+same way — see §Reconciliation and in-game audit, and
+<https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/12> for what remains.
 
 ## Build corpus — `fixtures/ships/builds/`
 
