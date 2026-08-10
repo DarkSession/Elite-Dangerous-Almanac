@@ -40,6 +40,26 @@ const RESTRICTED_OPTIONAL_NAMES: Partial<Record<SlotRestriction, string>> = {
     passenger: 'Passenger Slot',
 };
 
+/**
+ * The run of digits a key ends with, or `null` when it does not end in one.
+ *
+ * Scanned from the end rather than matched with `/(\d+)$/`: that pattern has no
+ * start anchor, so the engine retries the digit run from every position in the key
+ * and one long digit-heavy key costs quadratic time. Every key a {@link ShipLoadout}
+ * builds comes from the bundled hull catalogue, so this is not an untrusted-input
+ * path — but an app holding the constructor can name a mount anything, and the scan
+ * is linear in the key's length for nothing.
+ */
+function trailingDigits(key: string): string | null {
+    let start = key.length;
+    while (start > 0) {
+        const code = key.charCodeAt(start - 1);
+        if (code < 0x30 || code > 0x39) break;
+        start--;
+    }
+    return start === key.length ? null : key.slice(start);
+}
+
 /** A human-readable label for a slot, derived from its key and kind. */
 function slotDisplayName(slot: BuildSlot): string {
     switch (slot.kind) {
@@ -58,9 +78,9 @@ function slotDisplayName(slot: BuildSlot): string {
         case 'optional': {
             if (slot.restriction === 'planetaryApproachSuite') return 'Planetary Approach Suite';
             if (slot.restriction) {
-                const numbered = /(\d+)$/.exec(slot.key);
+                const numbered = trailingDigits(slot.key);
                 const label = RESTRICTED_OPTIONAL_NAMES[slot.restriction];
-                return label && numbered ? `${label} ${Number(numbered[1])}` : slot.key;
+                return label && numbered ? `${label} ${Number(numbered)}` : slot.key;
             }
             const optional = /^Slot(\d+)_Size(\d+)$/.exec(slot.key);
             return optional
