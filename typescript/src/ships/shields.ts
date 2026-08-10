@@ -5,7 +5,7 @@
  * A generator's strength multiplier is read off a curve against the ship's **hull
  * mass** — the bare hull, *not* the loaded ship, so fitting more modules never weakens
  * your shields. The curve runs through three points the generator declares (`minMass`
- * → `minMultiplier`, `optMass` → `optMultiplier`, `maxMass` → `maxMultiplier`); past
+ * → `maxMultiplier`, `optMass` → `optMultiplier`, `maxMass` → `minMultiplier`); past
  * `maxMass` the generator will not raise a shield at all.
  *
  * ```text
@@ -63,17 +63,17 @@ import {
  * raises no shield ({@link shieldMassCurveMultiplier} returns `0`).
  */
 export interface ShieldGeneratorParams {
-    /** Hull mass at which the generator performs at `minMultiplier`, in tonnes. */
+    /** Hull mass at which the generator performs at `maxMultiplier`, in tonnes. */
     readonly minMass?: number;
     /** Hull mass at which the generator performs to spec, in tonnes. */
     readonly optMass?: number;
     /** Hull mass beyond which the generator cannot raise a shield, in tonnes. */
     readonly maxMass?: number;
-    /** Strength multiplier at `minMass` (the heaviest performance). */
+    /** Minimum strength multiplier, reached at `maxMass` (the heaviest hull). */
     readonly minMultiplier?: number;
     /** Strength multiplier at `optMass`. */
     readonly optMultiplier?: number;
-    /** Strength multiplier at `maxMass`. */
+    /** Maximum strength multiplier, reached at `minMass` (the lightest hull). */
     readonly maxMultiplier?: number;
     /** Kinetic resistance, as a fraction. Defaults to `0`. */
     readonly kineticResistance?: number;
