@@ -15,7 +15,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
-import type Ajv from 'ajv';
+import type { Ajv } from 'ajv';
 
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
@@ -39,7 +39,7 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
 };
 
 const AjvConstructor = createRequire(import.meta.url)('ajv') as typeof Ajv;
-const ajv = new AjvConstructor({ allErrors: true });
+const ajv = new AjvConstructor({ allErrors: true, strictTypes: false });
 ajv.addSchema(catalogueSchema);
 
 test('data/commodities holds the expected number of catalogues', () => {
