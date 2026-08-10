@@ -1,0 +1,175 @@
+---
+title: Building an outfitting screen
+---
+
+# Building an outfitting screen
+
+Everything a shipyard screen shows, end to end: enumerate the hull's mounts, offer only
+what fits, fit it, and report what the build now does. All of it hangs off
+{@link ships!ShipLoadout}.
+
+## Start from a hull, or from a capture
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+
+// An empty hull straight from the shipyard layout…
+const fresh = ShipLoadout.empty('Anaconda');
+
+// …or the build a commander is already flying.
+declare const event: LoadoutEvent;
+const owned = ShipLoadout.fromLoadout(event);
+```
+
+## Enumerate the mounts
+
+`slots()` returns every mount on the hull, occupied or not, in layout order. Pass a kind
+to narrow it.
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+const build = ShipLoadout.empty('Anaconda');
+
+build.slots().length; // -> 39
+build.slots('optional').length; // -> 14
+build.slots('hardpoint').length; // -> 8
+
+const slot = build.slots('optional')[0];
+slot?.key; // the identifier every mutation takes
+slot?.name; // the label to render
+slot?.size; // the class of module it accepts
+slot?.module; // null while the mount is empty
+```
+
+**Slot keys come from the game and are not derivable from position.** Frontier writes
+`FrameShiftDrive`, `Slot01_Size6`, `HugeHardpoint1`; a SLEF producer may lower-case them.
+Read the key rather than composing one — matching is case-insensitive either way.
+
+The views are snapshots. After an edit, call `slots()` again rather than re-reading a
+value you captured earlier.
+
+## Offer only what fits
+
+`modulesForSlot` filters a catalogue down to the modules that mount will actually accept,
+by size and by restriction.
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+
+const build = ShipLoadout.empty('Anaconda');
+
+const drives = build.modulesForSlot('FrameShiftDrive', CORE_MODULES);
+drives.map((m) => m.symbol); // every drive that fits, largest class included
+```
+
+Pass the narrowest catalogue you can: it bounds both the result and what your bundle
+carries. `ALL_MODULES` searches all 1199 across every category, at 310.8 KiB;
+`CORE_MODULES` is 521 records. A fuel tank is a core module that also fits optional
+mounts, so use `ALL_MODULES` when a mount can take more than one category.
+
+## Fit, remove, engineer
+
+Mutations return `this`, so they chain. The build is mutable — this is the one place in
+the library that is.
+
+```ts
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+
+const build = ShipLoadout.empty('Anaconda');
+const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
+
+build.setModule('FrameShiftDrive', fsd).applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+    grade: 5,
+    experimental: 'special_fsd_heavy',
+});
+
+build.removeModule('Slot01_Size7');
+build.setModuleEnabled('FrameShiftDrive', true);
+build.setModulePriority('FrameShiftDrive', 1);
+```
+
+`availableBlueprints(slotKey)` and `availableExperimentalEffects(slotKey)` answer what a
+given mount can be engineered with, so the menu never offers a recipe the module cannot
+take.
+
+## Report what the build does
+
+Each metric is one call. The figures below are one build's — a Federal Corvette.
+
+```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout; // a Federal Corvette
+
+build.powerBudget().available; // -> 50.4     MW the plant makes
+build.powerBudget().deployed; // -> 46.8597  MW drawn, hardpoints out
+build.powerBudget().withinBudget; // -> true
+build.powerBudget().bands.length; // -> 5        the five priority groups
+
+build.shieldMetrics()?.strength; // -> 3940.4   MJ
+build.armourMetrics().hitPoints; // -> 5062.6
+
+build.weaponMetrics().total.damagePerSecond; // -> 137.04
+build.weaponMetrics().total.sustainedDamagePerSecond; // -> 133.98
+build.weaponMetrics().weapons.length; // -> 7
+```
+
+Jump range comes in the loads that matter, so a screen does not have to compute them:
+
+```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout;
+
+const jumps = build.jumpRangeSummary();
+jumps.max; // best single jump: one jump's fuel, empty hold
+jumps.unladen; // full tank, empty hold
+jumps.laden; // full tank, full hold
+jumps.totalUnladen; // every jump on one tank, empty
+jumps.totalLaden; // every jump on one tank, full
+```
+
+`powerBudget().bands` is what drives a priority-group table: a group is powered when its
+running total — its own draw plus every higher-priority group's — fits in `available`.
+
+## Tell the user what is wrong
+
+Two different questions, deliberately kept apart:
+
+```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout;
+
+build.validation.valid; // is the fit structurally legal?
+build.validation.complete; // does it have every operational mount, fully classified?
+build.validation.issues; // what specifically, with a stable code per issue
+```
+
+An issue carries `severity: 'error' | 'incomplete'` — an error is a fit the game would
+reject, while *incomplete* means the library could not classify something, usually a
+module newer than the catalogue. Render them differently: the first is the user's
+problem, the second is ours.
+
+Aggregate figures that depend on unclassified modules follow the same split — a nullable
+convenience property, and a result that names what was missing:
+
+```ts
+import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const build: ShipLoadout;
+
+build.cargoCapacity; // number | null
+build.cargoCapacityResult; // names every rack it could not classify
+```
+
+## Next
+
+- [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)
+- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+- [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)

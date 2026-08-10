@@ -28,9 +28,13 @@
  *   them a narrower set. Capability guards such as {@link hasFrameShiftDriveJumpStats}
  *   and {@link hasWeaponDamageStats} narrow the sparse record before stat access. The
  *   catalogues live on explicit subpaths split by Frontier's
- *   four outfitting categories (`./modules-core`, `./modules-internal`,
- *   `./modules-hardpoint`, `./modules-utility`, and `./modules-all`); each record
- *   carries the module's identity and its stats.
+ *   four outfitting categories — {@link ships/modules-core!CORE_MODULES | CORE_MODULES},
+ *   {@link ships/modules-internal!INTERNAL_MODULES | INTERNAL_MODULES},
+ *   {@link ships/modules-hardpoint!HARDPOINT_MODULES | HARDPOINT_MODULES},
+ *   {@link ships/modules-utility!UTILITY_MODULES | UTILITY_MODULES} and
+ *   {@link ships/modules-all!ALL_MODULES | ALL_MODULES}; each record carries the
+ *   module's identity and its stats. They are reachable only by their own subpath, so
+ *   importing one never bundles the rest.
  * - **Jump range & SLEF** — {@link singleJumpRange}, {@link fuelPerJump} and
  *   {@link totalRange} are pure maths over {@link FrameShiftDriveParams} and cost
  *   nothing but the function; {@link parseSlef} reads an Inara SLEF export — or a bare

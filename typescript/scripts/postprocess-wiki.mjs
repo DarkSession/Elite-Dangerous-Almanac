@@ -34,4 +34,18 @@ for (const file of files) {
     if (fixed.includes('](../wiki/#')) {
         throw new Error(`${file}: generated a broken wiki-home member link`);
     }
+
+    // The hand-written pages under `docs/` link between wiki pages with absolute URLs,
+    // because a relative `../wiki/…` in a `projectDocuments` page makes TypeDoc warn
+    // about a path it cannot copy. Those links are outside the check above, so a page
+    // renamed by its front-matter title — a comma in a title is enough — would break
+    // them silently. Hold them to the same standard.
+    for (const match of fixed.matchAll(
+        /\]\(https:\/\/github\.com\/DarkSession\/Elite-Dangerous-Almanac\/wiki\/([^#)]+)(?:#[^)]+)?\)/g,
+    )) {
+        const target = decodeURIComponent(match[1]);
+        if (!pageNames.has(target)) {
+            throw new Error(`${file}: absolute wiki link targets missing page "${target}"`);
+        }
+    }
 }

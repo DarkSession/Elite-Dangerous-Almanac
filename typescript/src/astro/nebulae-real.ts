@@ -3,7 +3,7 @@
  * Elite Dangerous models under their catalogue name (Horsehead, Witch Head,
  * Barnard's Loop, the Coalsack and Aquila dark regions, …).
  *
- * This is the small, human-recognisable slice of the nebula catalogue (~19 KB
+ * This is the small, human-recognisable slice of the nebula catalogue (~19 KiB
  * bundled) and the one most apps want. The much larger planetary and procedurally
  * generated classes live in `./nebulae-planetary` and `./nebulae-procgen`, so
  * importing this module never bundles them.

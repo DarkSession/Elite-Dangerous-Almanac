@@ -16,8 +16,10 @@
  * - *galactic codex region* — {@link findCodexRegionAt} (one of the 42 codex zones).
  *
  * None of those is the **nebula catalogue** — the nebulae themselves, and where
- * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE} and the catalogues
- * on the `./nebulae-*` subpaths.
+ * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE},
+ * {@link PROCGEN_NEBULAE}, and — on their own subpaths, so importing one never bundles
+ * the rest — {@link astro/nebulae-planetary!PLANETARY_NEBULAE | PLANETARY_NEBULAE} and
+ * {@link astro/nebulae-all!ALL_NEBULAE | ALL_NEBULAE}.
  *
  * **Coordinate spaces have different shapes.**
  * {@link GalacticPosition} is `{x, y, z}` in light-years with Sol at the origin — what the journal,

@@ -28,12 +28,20 @@ function jumpRangeOf(journalLine: string) {
 }
 ```
 
-## Start here
+## Guides
 
 - **[Getting started](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Getting-started)**
   — install, which import to use, and the symbol-to-subpath map.
 - **[Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal)**
   — turning `Loadout` and `FSDJump` events into library objects.
+- **[Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Building-an-outfitting-screen)**
+  — mounts, what fits, fitting it, and every metric a shipyard shows.
+- **[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)**
+  — reading and writing loadout exports, and retail against captured credits.
+- **[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Systems-and-regions)**
+  — the `id64` round trip, both coordinate spaces, and the four meanings of "region".
+- **[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)**
+  — `null` against the three errors, and the diagnostic-result pairs.
 
 ## The four feature areas
 
