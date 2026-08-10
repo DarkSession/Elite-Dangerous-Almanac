@@ -1473,7 +1473,9 @@ test('Anti-Guardian Zone Resistance grants a capability to modules and weapons',
         assert.deepEqual(fitted.engineering?.Modifiers, [capability.modifier], symbol);
         assert.equal(fitted.effectiveStats?.guardianZoneResistance, true, symbol);
 
-        const imported = ShipLoadout.fromSlef(build.toSlefString()).getFittedModule(slot)!;
+        const imported = ShipLoadout.fromSlef(
+            build.toSlefString({ header: { appName: 'Test', appVersion: '1.0.0' } }),
+        ).getFittedModule(slot)!;
         assert.equal(imported.effectiveStats?.guardianZoneResistance, true, `${symbol} round trip`);
     }
 

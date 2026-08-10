@@ -7,7 +7,6 @@ import {
     getLoadoutModifier,
     toSlef,
     stringifySlef,
-    LIBRARY_SLEF_HEADER,
     type LoadoutEvent,
     type LoadoutModule,
     type SlefHeader,
@@ -15,6 +14,7 @@ import {
 import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
 
 const slefString = JSON.stringify(slefFixture);
+const TEST_HEADER: SlefHeader = { appName: 'Test', appVersion: '1.0.0' };
 
 test('parseSlef accepts the SLEF JSON string', () => {
     const entries = parseSlef(slefString);
@@ -24,8 +24,9 @@ test('parseSlef accepts the SLEF JSON string', () => {
     assert.ok(entries[0]!.data.Modules.length > 0);
 });
 
-test('parseSlef accepts an already-parsed SLEF array', () => {
-    const entries = parseSlef(slefFixture);
+test('parseSlef accepts unknown parser input', () => {
+    const input: unknown = slefFixture;
+    const entries = parseSlef(input);
     assert.equal(entries.length, 1);
     assert.equal(entries[0]!.data.ShipName, 'The Deep Black');
 });
@@ -239,10 +240,9 @@ test('parseSlef rejects a non-Loadout journal event discriminator', () => {
 
 const minimal: LoadoutEvent = { Ship: 'sidewinder', Modules: [] };
 
-test('toSlef wraps a loadout with a header identifying this library', () => {
-    const [entry] = toSlef(minimal);
-    assert.equal(entry!.header.appName, LIBRARY_SLEF_HEADER.appName);
-    assert.equal(entry!.header.appVersion, LIBRARY_SLEF_HEADER.appVersion);
+test('toSlef wraps a loadout with the required exporter header', () => {
+    const [entry] = toSlef(minimal, TEST_HEADER);
+    assert.deepEqual(entry!.header, TEST_HEADER);
     assert.equal(entry!.data.Ship, 'sidewinder');
 });
 
@@ -252,7 +252,7 @@ test('toSlef credits a caller-supplied app', () => {
 });
 
 test('toSlef carries several builds in one export, in order', () => {
-    const slef = toSlef([minimal, { Ship: 'anaconda', Modules: [] }]);
+    const slef = toSlef([minimal, { Ship: 'anaconda', Modules: [] }], TEST_HEADER);
     assert.deepEqual(
         slef.map((e) => e.data.Ship),
         ['sidewinder', 'anaconda'],
@@ -261,13 +261,13 @@ test('toSlef carries several builds in one export, in order', () => {
 
 test('everything toSlef produces parses back', () => {
     const parsed = parseSlef(
-        stringifySlef(toSlef(slefFixture[0]!.data as unknown as LoadoutEvent)),
+        stringifySlef(toSlef(slefFixture[0]!.data as unknown as LoadoutEvent, TEST_HEADER)),
     );
     assert.deepEqual(parsed[0]!.data, slefFixture[0]!.data);
 });
 
 test('stringifySlef is compact by default and indents on request', () => {
-    const slef = toSlef(minimal);
+    const slef = toSlef(minimal, TEST_HEADER);
     assert.doesNotMatch(stringifySlef(slef), /\n/);
     assert.match(stringifySlef(slef, { indent: 2 }), /\n {2}/);
 });
@@ -294,7 +294,7 @@ test('toSlef rejects a loadout that parseSlef would not accept', () => {
         },
     ];
     for (const loadout of invalid) {
-        assert.throws(() => toSlef(loadout as LoadoutEvent), TypeError);
+        assert.throws(() => toSlef(loadout as LoadoutEvent, TEST_HEADER), TypeError);
     }
 });
 
@@ -343,7 +343,7 @@ test('the specification’s own example parses, Modifiers and all', () => {
 
 test('a blueprint that states no Modifiers survives toSlef and a round trip', () => {
     const loadout = SPEC_EXAMPLE[0]!.data as unknown as LoadoutEvent;
-    const wrapped = toSlef(loadout);
+    const wrapped = toSlef(loadout, TEST_HEADER);
     assert.deepEqual(parseSlef(stringifySlef(wrapped))[0]!.data, loadout);
     // Absent, not an invented empty array — "not stated" is not "changed nothing".
     assert.equal(
@@ -363,7 +363,7 @@ test('getLoadoutModifier returns null when the blueprint states no modifiers', (
 });
 
 test('toSlef rejects an empty export, which would not parse back', () => {
-    assert.throws(() => toSlef([]), TypeError);
+    assert.throws(() => toSlef([], TEST_HEADER), TypeError);
 });
 
 test('toSlef names the duplicate slot in its refusal', () => {
@@ -379,7 +379,7 @@ test('toSlef names the duplicate slot in its refusal', () => {
             { Slot: 'PowerPLANT', Item: 'b' },
         ],
     };
-    assert.throws(() => toSlef(duplicate), {
+    assert.throws(() => toSlef(duplicate, TEST_HEADER), {
         name: 'TypeError',
         message: /duplicate slot "PowerPLANT"/,
     });

@@ -418,7 +418,12 @@ test('the default export still quotes retail on a build that has a record', () =
 
 test('a source-record SLEF string carries the captured figures', () => {
     const build = ShipLoadout.fromLoadout(kraitEvent);
-    const written = JSON.parse(build.toSlefString({ credits: 'source' })) as {
+    const written = JSON.parse(
+        build.toSlefString({
+            credits: 'source',
+            header: { appName: 'Test', appVersion: '1.0.0' },
+        }),
+    ) as {
         data: LoadoutEvent;
     }[];
     assert.equal(written[0]!.data.HullValue, kraitEvent.HullValue);
