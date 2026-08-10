@@ -181,12 +181,14 @@ function resolveExport(specifier) {
 
     const entry = best.target;
     if (entry === null) return null;
-    const dist = typeof entry === 'string' ? entry : entry.import;
+    // A type-only entry point publishes `types` with no `import`; a consumer reaches it
+    // with `import type`, so it is resolvable here even though it ships no runtime code.
+    const dist = typeof entry === 'string' ? entry : (entry.import ?? entry.types);
     if (typeof dist !== 'string') return null;
 
     const filled = best.fill === null ? dist : dist.replace('*', best.fill);
     // `./dist/ships/index.js` → `<src>/ships/index.ts`
-    const relativeToSrc = filled.replace(/^\.\/dist\//, '').replace(/\.js$/, '');
+    const relativeToSrc = filled.replace(/^\.\/dist\//, '').replace(/\.d\.ts$|\.js$/, '');
     const asFile = join(sourceRoot, `${relativeToSrc}.ts`);
     if (existsSync(asFile)) return join(sourceRoot, `${relativeToSrc}.js`);
     const asIndex = join(sourceRoot, relativeToSrc, 'index.ts');

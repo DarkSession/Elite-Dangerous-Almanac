@@ -17,7 +17,7 @@ import type { BuildSlot } from './slots.js';
  *
  * @example
  * Walking a build's mounts. Slot keys come from the game and are not derivable from
- * position, so read {@link key} rather than composing one.
+ * position, so read the slot's `key` rather than composing one.
  *
  * ```ts
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

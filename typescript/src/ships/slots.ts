@@ -246,6 +246,9 @@ export interface SimpleBuildSlot extends BuildSlotBase {
  *
  * @example
  * ```ts
+ * import { getShipSlots } from '@elite-dangerous-almanac/core/ships/ships';
+ * import { enumerateSlots } from '@elite-dangerous-almanac/core/ships/slots';
+ *
  * const slot = enumerateSlots(getShipSlots('Anaconda')!)[0]!;
  * if (slot.kind === 'hardpoint') {
  *   slot.restriction; // HardpointRestriction | undefined

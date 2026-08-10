@@ -361,7 +361,7 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * const conda = ShipLoadout.empty('Anaconda');
  * conda.slots().length; // -> 39   (every mount, occupied or not)
  * conda.slots('optional').length; // -> 14
- * conda.complete; // -> false  (nothing fitted yet)
+ * conda.validation.complete; // -> false  (nothing fitted yet)
  *
  * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES);
  * if (fsd) conda.setModule('FrameShiftDrive', fsd);

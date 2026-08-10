@@ -29,9 +29,11 @@ import type { ExperimentalEffect } from './engineering.js';
  *
  * @example
  * ```ts
- * EXPERIMENTAL_EFFECTS['special_fsd_heavy'].modifiers;
+ * import { EXPERIMENTAL_EFFECTS } from '@elite-dangerous-almanac/core/ships/experimental-effects';
+ *
+ * EXPERIMENTAL_EFFECTS['special_fsd_heavy']?.modifiers;
  * // -> [{ label: 'Integrity', ... }, { label: 'FSDOptimalMass', ... }]
- * EXPERIMENTAL_EFFECTS['special_fsd_heavy'].materials;
+ * EXPERIMENTAL_EFFECTS['special_fsd_heavy']?.materials;
  * // -> [{ symbol: 'DisruptedWakeEchoes', ... }, ...]
  * ```
  */
@@ -47,6 +49,8 @@ export const EXPERIMENTAL_EFFECTS: Readonly<Record<string, ExperimentalEffect>> 
  * `damageDistribution`, and material recipe — or `null` if unknown.
  * @example
  * ```ts
+ * import { getExperimentalEffect } from '@elite-dangerous-almanac/core/ships/experimental-effects';
+ *
  * const effect = getExperimentalEffect('special_fsd_heavy');
  * effect?.name;      // -> 'Mass Manager'
  * effect?.modifiers; // -> [{ label: 'Integrity', ... }, ...]

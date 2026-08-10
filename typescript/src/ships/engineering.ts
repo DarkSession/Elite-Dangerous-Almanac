@@ -475,7 +475,7 @@ export function rollsForGrade(grade: number): number {
  * ```ts
  * import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprints';
  * import { sumMaterials } from '@elite-dangerous-almanac/core/ships/engineering';
- * import { getExperimentalEffectMaterials } from '@elite-dangerous-almanac/core/ships/experimental-effects';
+ * import { getExperimentalEffect } from '@elite-dangerous-almanac/core/ships/experimental-effects';
  *
  * sumMaterials(
  *   getBlueprintCost('FSD_LongRange', 5)!,
