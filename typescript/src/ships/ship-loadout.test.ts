@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { ShipLoadout } from './ship-loadout.js';
+import { LoadoutSlot } from './loadout-slot.js';
 import type { LoadoutEvent } from './slef.js';
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { CORE_MODULES } from './modules-core.js';
@@ -944,6 +945,35 @@ test('a restricted mount reports a human-readable name', () => {
             assert.notEqual(slot.name, slot.key, `${ship.symbol}: ${slot.key} has no label`);
         }
     }
+});
+
+test('a restricted mount labels an odd key without scanning it quadratically', () => {
+    // The one test that constructs a slot directly: a hull's own layout can only
+    // name a mount sanely, so a hostile key has to be handed straight to the
+    // constructor. It reads the key and nothing else, so the loadout can be absent.
+    const label = (key: string) =>
+        new LoadoutSlot(undefined as unknown as ShipLoadout, {
+            key,
+            kind: 'optional',
+            size: 4,
+            restriction: 'military',
+        }).name;
+    // Ship data can name a mount whatever it likes, so the trailing number is read
+    // off any key shape — and an unnumbered one falls back to the key.
+    assert.equal(label('Military01'), 'Military Slot 1');
+    assert.equal(label('Slot02_Size5'), 'Military Slot 5');
+    assert.equal(label('MilitaryReserve'), 'MilitaryReserve');
+    assert.equal(label('42'), 'Military Slot 42'); // digits all the way to the start
+    // A long run of digits that does not reach the end of the key used to be retried
+    // from every start position, costing seconds; both this and the all-digit key it
+    // scans end to end are linear, so they stay well under a second. Compared with
+    // `ok` rather than `equal` to keep a failure from printing an 80k-char diff.
+    const trailing = `${'9'.repeat(80_000)}x`;
+    const digits = '9'.repeat(80_000);
+    const started = performance.now();
+    assert.ok(label(trailing) === trailing, 'a long key ending in a non-digit lost its label');
+    assert.ok(label(digits) === `Military Slot ${Number(digits)}`, 'a long digit key mislabelled');
+    assert.ok(performance.now() - started < 1_000, 'labelling a long key took too long');
 });
 
 test('setModule throws a clear error when handed an undefined module', () => {
