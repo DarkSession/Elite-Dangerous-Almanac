@@ -164,6 +164,11 @@ function withinFloatNoise(ours: number, captured: number): boolean {
         : Math.abs(ours - captured) / scale < floatNoiseTolerance;
 }
 
+/** Whether two semantic decimals differ only in their JavaScript binary representation. */
+function withinBinaryRounding(a: number, b: number): boolean {
+    return Math.abs(a - b) <= Number.EPSILON * Math.max(1, Math.abs(a), Math.abs(b));
+}
+
 for (const { file, loadouts } of CAPTURES) {
     const pinned = expected.find((capture) => capture.file === file);
 
@@ -429,7 +434,7 @@ test('every engineered result reaches a consumer at the field the fixture names'
         const effective = fitted.effectiveStats?.[field as keyof OutfittingModule];
         assert.ok(typeof effective === 'number', `${file} ${slot}: ${field} is not numeric`);
         assert.ok(
-            withinFloatNoise(effective, value),
+            withinBinaryRounding(effective, value),
             `${file} ${slot}: effective ${String(effective)}, pinned ${value}`,
         );
         // And the pinned figure is Frontier's, not this library's: the capture states it as
@@ -444,7 +449,7 @@ test('every engineered result reaches a consumer at the field the fixture names'
         // percentage the panel shows, where the record holds the multiplier.
         const stated = modifier && modifier.Value! / scaleForLabel(modifier.Label);
         assert.ok(
-            stated !== undefined && withinFloatNoise(stated, value),
+            stated !== undefined && withinBinaryRounding(stated, value),
             `${file} ${slot}: the capture states ${String(stated)}, pinned ${value}`,
         );
     }
