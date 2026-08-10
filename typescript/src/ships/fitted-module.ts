@@ -1,314 +1,54 @@
 /**
- * A live fitted-module handle for {@link ShipLoadout}.
+ * Immutable fitted-module snapshots returned by {@link ShipLoadout}.
  *
  * @packageDocumentation
  */
 
-import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
-import {
-    availableBlueprintsFor,
-    availableExperimentalsFor,
-} from './internal/loadout-engineering.js';
-import { effectiveModule } from './internal/loadout-metrics.js';
+import type { AmmunitionCapacity } from './ammunition.js';
 import type { OutfittingModule } from './modules.js';
-import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
 import type { PreEngineeredVariant } from './pre-engineered.js';
-import type { ApplyBlueprintOptions, AvailableBlueprint, ShipLoadout } from './ship-loadout.js';
 import type { LoadoutModule, ModuleEngineering } from './slef.js';
 
 /**
- * A live handle on the module fitted in one slot, as returned by
- * {@link ShipLoadout.getFittedModule} and `LoadoutSlot.module`.
+ * A point-in-time, deeply frozen view of the module fitted in one slot.
  *
- * Journal fields use the library's camel-case names. A detached copy of the durable,
- * journal-shaped record is available from {@link FittedModule.raw}; capture-only state
- * and engineering provenance are excluded as {@link LoadoutModule} and
- * {@link ModuleEngineering} describe. The handle remains valid across its own engineering
- * changes; once the slot is emptied or replaced, access throws instead of returning stale
- * data.
+ * The view is detached from its {@link ShipLoadout}: later edits do not change it, and
+ * mutating it throws. Fetch a new view with {@link ShipLoadout.fittedModuleAt} after an
+ * edit. All mutations live on `ShipLoadout`, keyed by {@link slot}; this avoids the
+ * stale-handle lifecycle that a live proxy would otherwise need.
  *
  * @example
  * ```ts
- * const fsd = build.getFittedModule('FrameShiftDrive')!;
- * fsd.applyBlueprint('FSD_LongRange', { grade: 5 });
- * fsd.clearEngineering();
+ * const before = build.fittedModuleAt('FrameShiftDrive')!;
+ * build.applyBlueprint(before.slot, 'FSD_LongRange', { grade: 5 });
+ * const after = build.fittedModuleAt(before.slot)!;
+ * before.engineering; // unchanged
+ * after.engineering;  // the applied blueprint
  * ```
  */
-export class FittedModule {
-    readonly #loadout: ShipLoadout;
-    readonly #slotKey: string;
-    #slotVersion: number;
-    readonly #currentSlotVersion: () => number;
-    readonly #currentStats: () => OutfittingModule | null;
-
-    /** @internal Constructed by {@link ShipLoadout}; not part of the public API. */
-    constructor(
-        loadout: ShipLoadout,
-        slotKey: string,
-        slotVersion: number,
-        currentSlotVersion: () => number,
-        currentStats: () => OutfittingModule | null,
-    ) {
-        this.#loadout = loadout;
-        this.#slotKey = slotKey;
-        this.#slotVersion = slotVersion;
-        this.#currentSlotVersion = currentSlotVersion;
-        this.#currentStats = currentStats;
-    }
-
-    #raw(): LoadoutModule {
-        if (this.#slotVersion !== this.#currentSlotVersion()) {
-            throw new TypeError(
-                `FittedModule: slot "${this.#slotKey}" no longer contains this fitted module`,
-            );
-        }
-        const module = this.#loadout.moduleAt(this.#slotKey);
-        if (!module) {
-            throw new TypeError(
-                `FittedModule: slot "${this.#slotKey}" is now empty (the module was removed)`,
-            );
-        }
-        return module;
-    }
-
-    /**
-     * The slot key this module occupies, in the **build's own spelling**.
-     *
-     * @remarks
-     * That is the journal's spelling on a build assembled here or imported from a
-     * journal capture, but a SLEF producer may lower-case its keys as the
-     * specification's own example does, and an import keeps whatever it wrote. So a
-     * handle fetched with `getFittedModule('FrameShiftDrive')` reports
-     * `frameshiftdrive` on an Inara build. Every `slotKey` argument in the library
-     * accepts either, so the value is always safe to pass back.
-     */
-    get slot(): string {
-        return this.#slotKey;
-    }
-
-    /**
-     * The module's Frontier symbol, e.g. `"Int_Hyperdrive_Size6_Class5"` — the same
-     * string {@link getModuleBySymbol} takes and `OutfittingModule.symbol` carries.
-     *
-     * The underlying journal record calls this field `Item`; use {@link raw} when that
-     * shape is required.
-     */
-    get symbol(): string {
-        return this.#raw().Item;
-    }
-
-    /** Whether the module is powered on, or `undefined` when unspecified. */
-    get on(): boolean | undefined {
-        return this.#raw().On;
-    }
-
-    /** Power-priority group, or `undefined` when unspecified. */
-    get priority(): number | undefined {
-        return this.#raw().Priority;
-    }
-
+export interface FittedModule {
+    /** Slot key in the build's own spelling. */
+    readonly slot: string;
+    /** Frontier module symbol, e.g. `"Int_Hyperdrive_Size6_Class5"`. */
+    readonly symbol: string;
+    /** Whether the module was powered on, or `undefined` when unspecified. */
+    readonly on: boolean | undefined;
+    /** Zero-based power-priority group, or `undefined` when unspecified. */
+    readonly priority: number | undefined;
     /** Module health in `[0, 1]`, or `undefined` when unspecified. */
-    get health(): number | undefined {
-        return this.#raw().Health;
-    }
-
-    /**
-     * What the capture said was paid for this module, in credits, or `undefined` when it
-     * said nothing.
-     *
-     * @remarks
-     * A **source** figure, discount and purchase history included, not a list price — and
-     * a volatile one: it belongs to the article that was fitted, so replacing the module
-     * leaves the new one with no value at all. For a stable record of what the capture
-     * paid, which no edit changes, read `ShipLoadout.sourcePurchase`. For what the module
-     * costs to buy, read `stats?.cost`.
-     */
-    get value(): number | undefined {
-        return this.#raw().Value;
-    }
-
-    /** Applied engineering, or `undefined` when the module is stock. */
-    get engineering(): ModuleEngineering | undefined {
-        return this.#raw().Engineering;
-    }
-
-    /**
-     * The fixed pre-engineered/reward variant this imported module's reported stats
-     * identify, or `null` when they do not uniquely identify one.
-     *
-     * @remarks
-     * Identification uses the stat signature, including an experimental effect added to
-     * a fixed article, rather than trusting the blueprint name and grade alone. It is
-     * intentionally conservative: a SLEF entry without enough modifier values remains
-     * unidentified. A module fitted directly from `getPreEngineeredStats` has no journal
-     * signature to inspect, so retain the variant used to resolve it if that identity is
-     * needed later.
-     */
-    get preEngineeredVariant(): PreEngineeredVariant | null {
-        return identifyPreEngineeredVariant(this.#raw());
-    }
-
-    /**
-     * A detached copy of the durable journal-shaped module record.
-     *
-     * @remarks
-     * Capture-only ammunition state and engineering provenance are deliberately absent;
-     * see {@link LoadoutModule} and {@link ModuleEngineering}.
-     */
-    get raw(): LoadoutModule {
-        return this.#raw();
-    }
-
-    /** The snapshotted record fitted into this build, or `null` if unknown. */
-    get stats(): OutfittingModule | null {
-        this.#raw();
-        return this.#currentStats();
-    }
-
-    /**
-     * The same record with this build's engineering folded in — the module as it
-     * actually performs, rather than as it left the shipyard.
-     *
-     * @returns The post-engineering record, or `null` if the module is not in the
-     * catalogues. Identical to {@link stats} on a stock module.
-     * @example
-     * ```ts
-     * const laser = build.getFittedModule('LargeHardpoint1')!;
-     * laser.stats?.damage;          // -> as sold
-     * laser.effectiveStats?.damage; // -> with the Overcharged blueprint applied
-     * ```
-     */
-    get effectiveStats(): OutfittingModule | null {
-        return effectiveModule(this.#raw(), this.#currentStats());
-    }
-
-    /**
-     * How much ammunition this module holds when fully rearmed, post-engineering.
-     *
-     * @returns The magazine, the reserve behind it and the two together
-     * ({@link AmmunitionCapacity}), or `null` for a module that carries no ammunition —
-     * and for one the catalogues do not know.
-     * @remarks
-     * This is a **capacity**, not a rearm state: a build says how much a weapon can carry,
-     * while `AmmoInClip` / `AmmoInHopper` in a journal say what was loaded at the moment of
-     * capture. Those two are not modelled — see {@link LoadoutModule}.
-     * @example
-     * ```ts
-     * const ax = build.getFittedModule('LargeHardpoint1')!;
-     * ax.ammunition?.clipSize; // -> 100 rounds in the magazine
-     * ax.ammunition?.hopper;   // -> 2100 in reserve
-     * ax.ammunition?.total;    // -> 2200 aboard when fully rearmed
-     * ```
-     */
-    get ammunition(): AmmunitionCapacity | null {
-        return ammunitionCapacity(this.effectiveStats);
-    }
-
-    /**
-     * Apply engineering to this module — {@link ShipLoadout.applyBlueprint} for the slot
-     * this handle points at, with the same validation and the same errors. Read that
-     * method's documentation for what is refused and why.
-     *
-     * Worth knowing here: **which recipe an `fdname` names can depend on the module.** The
-     * game writes `Sensor_LongRange` and `Sensor_WideAngle` for both a sensor suite's
-     * modification and a utility scanner's, and the two roll different stats in opposite
-     * directions. The id is resolved against this module before anything is computed — so a
-     * wake scanner engineered `Sensor_LongRange` gets the scanner's numbers — while the
-     * stored `Engineering.BlueprintName` keeps the id you passed. `resolveBlueprintForModule`
-     * in `ships/blueprint-journal` is that lookup, for reading one back.
-     *
-     * @param blueprintName - Frontier blueprint `fdname`, e.g. `"FSD_LongRange"`.
-     * @param options - Grade, optional quality in `[0, 1]`, and experimental effect.
-     * @returns This handle for chaining.
-     * @throws {RangeError} If the catalogue holds no such blueprint, grade or experimental
-     * effect, or `quality` falls outside `[0, 1]`.
-     * @throws {TypeError} If this handle has gone stale — its slot emptied or refitted since
-     * it was taken — or the fitted module has no stats to engineer; or the id names a
-     * decorative modification, which names no recipe (see
-     * {@link DECORATIVE_MODIFICATIONS}); or this module is not
-     * offered the blueprint or the experimental effect; or the catalogue cannot answer a
-     * base stat the recipe modifies.
-     * @example
-     * ```ts
-     * build.getFittedModule('FrameShiftDrive')!.applyBlueprint('FSD_LongRange', {
-     *     grade: 5,
-     *     experimental: 'special_fsd_heavy',
-     * });
-     * ```
-     */
-    applyBlueprint(blueprintName: string, options: ApplyBlueprintOptions): this {
-        this.#raw();
-        this.#loadout.applyBlueprint(this.#slotKey, blueprintName, options);
-        this.#slotVersion = this.#currentSlotVersion();
-        return this;
-    }
-
-    /**
-     * Remove engineering and return this handle for chaining.
-     *
-     * @throws {TypeError} If this is a final pre-engineered article whose baked
-     * engineering cannot be removed.
-     */
-    clearEngineering(): this {
-        this.#raw();
-        this.#loadout.clearEngineering(this.#slotKey);
-        this.#slotVersion = this.#currentSlotVersion();
-        return this;
-    }
-
-    /**
-     * Switch this module on or off.
-     *
-     * @param on - `true` to power it, `false` to switch it off.
-     * @returns This live handle for chaining.
-     */
-    setEnabled(on: boolean): this {
-        this.#raw();
-        this.#loadout.setModuleEnabled(this.#slotKey, on);
-        return this;
-    }
-
-    /**
-     * Set this module's power-priority group.
-     *
-     * @param priority - The journal's **zero-based** group, `0`–`4`. The outfitting
-     * panel numbers the same five groups `1`–`5`.
-     * @returns This handle for chaining.
-     * @throws {RangeError} If `priority` is not an integer in `[0, 4]`.
-     */
-    setPriority(priority: number): this {
-        this.#raw();
-        this.#loadout.setModulePriority(this.#slotKey, priority);
-        return this;
-    }
-
-    /**
-     * Return compatible blueprints and the grades computable from carried stats.
-     *
-     * @returns The blueprints this module's engineering menu offers, in the menu's own
-     * (sorted) order, minus any whose modifiers the catalogue cannot compute.
-     */
-    getAvailableBlueprints(): AvailableBlueprint[] {
-        return availableBlueprintsFor(this.#raw().Item, this.#currentStats());
-    }
-
-    /**
-     * Return compatible experimental-effect identifiers.
-     *
-     * @returns The experimental effects this module's engineering menu offers, in the
-     * menu's own order, minus any whose modifiers the catalogue cannot compute.
-     */
-    getAvailableExperimentalEffects(): string[] {
-        return availableExperimentalsFor(this.#raw().Item, this.#currentStats());
-    }
-
-    /**
-     * Remove this module from its slot, invalidating the handle.
-     *
-     * @throws {TypeError} For the fixed cargo hatch.
-     */
-    remove(): void {
-        this.#raw();
-        this.#loadout.removeModule(this.#slotKey);
-    }
+    readonly health: number | undefined;
+    /** Captured purchase value in credits, or `undefined` when unspecified. */
+    readonly value: number | undefined;
+    /** Applied engineering, or `undefined` for a stock module. */
+    readonly engineering: ModuleEngineering | undefined;
+    /** Detached, journal-shaped fitted record. */
+    readonly raw: LoadoutModule;
+    /** Snapshotted base module stats, or `null` when unresolved. */
+    readonly stats: OutfittingModule | null;
+    /** Post-engineering module stats, or `null` when unresolved. */
+    readonly effectiveStats: OutfittingModule | null;
+    /** Fully rearmed ammunition capacity, or `null` for modules without ammunition. */
+    readonly ammunition: AmmunitionCapacity | null;
+    /** Identified fixed pre-engineered variant, or `null` when not uniquely identified. */
+    readonly preEngineeredVariant: PreEngineeredVariant | null;
 }

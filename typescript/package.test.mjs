@@ -18,6 +18,7 @@ import { getMicroResourceBySymbol } from '@elite-dangerous-almanac/core/material
 import { COMPONENT_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-component';
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
 import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
 import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities';
 import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-rare';
@@ -104,6 +105,17 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(getMaterialByName('iron', RAW_MATERIALS)?.name, 'Iron');
     assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
     assert.equal(getShipBySymbol('empire_trader')?.name, 'Imperial Clipper');
+    const loadout = ShipLoadout.empty('Sidewinder').setModule(
+        'FrameShiftDrive',
+        getModuleBySymbol('Int_Hyperdrive_Size2_Class5'),
+    );
+    const drive = loadout.fittedModuleAt('FrameShiftDrive');
+    assert.equal(drive?.symbol, 'Int_Hyperdrive_Size2_Class5');
+    assert.equal(
+        loadout.slots('core').find((slot) => slot.core === 'frameShiftDrive')?.module?.symbol,
+        drive?.symbol,
+    );
+    assert.ok(Object.isFrozen(drive));
     assert.equal(
         getModuleBySymbol('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES)?.name,
         'Chaff Launcher',

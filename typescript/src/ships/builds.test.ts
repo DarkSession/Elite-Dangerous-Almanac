@@ -74,10 +74,8 @@ function assemble(build: CorpusBuild): ShipLoadout {
         const module = getModuleBySymbol(entry.item, ALL_MODULES);
         assert.ok(module, `${build.id}: no module "${entry.item}"`);
         loadout.setModule(entry.slot, module);
-        loadout
-            .getFittedModule(entry.slot)
-            ?.setEnabled(entry.on ?? true)
-            .setPriority(entry.priority ?? 0);
+        loadout.setModuleEnabled(entry.slot, entry.on ?? true);
+        loadout.setModulePriority(entry.slot, entry.priority ?? 0);
     }
     return loadout;
 }
@@ -133,7 +131,7 @@ test('the corpus covers every hull with 2-5 builds and unique ids', () => {
 test('every build fits: each module exists and its slot accepts it', () => {
     for (const build of builds) {
         const loadout = assemble(build);
-        const occupied = loadout.slots().filter((slot) => slot.occupied);
+        const occupied = loadout.slots().filter((slot) => slot.module !== null);
         assert.equal(
             occupied.length,
             build.modules.length,
@@ -141,7 +139,7 @@ test('every build fits: each module exists and its slot accepts it', () => {
         );
         // A build always fills its seven core internals; that is what makes it flyable.
         assert.equal(
-            loadout.slotsOfKind('core').filter((slot) => slot.occupied).length,
+            loadout.slots('core').filter((slot) => slot.module !== null).length,
             7,
             `${build.id}: core internals must all be filled`,
         );

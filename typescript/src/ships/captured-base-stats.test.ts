@@ -367,7 +367,7 @@ test('captured damage-type conversions reach effective stats and weapon metrics'
         assert.deepEqual(record.damageDistribution, base);
 
         const build = ShipLoadout.fromLoadout(capture.loadouts[0]);
-        const fitted = build.getFittedModule(slot);
+        const fitted = build.fittedModuleAt(slot);
         assert.ok(fitted, `${file}: no module in ${slot}`);
         assert.equal(fitted.engineering?.ExperimentalEffect, experimental);
         assert.deepEqual(fitted.effectiveStats?.damageDistribution, effective);
@@ -427,7 +427,7 @@ test('every engineered result reaches a consumer at the field the fixture names'
     for (const { file, slot, symbol, field, value } of engineered) {
         const capture = CAPTURES.find((entry) => entry.file === file);
         assert.ok(capture?.loadouts[0], `${file} is pinned but not read`);
-        const fitted = ShipLoadout.fromLoadout(capture.loadouts[0]).getFittedModule(slot);
+        const fitted = ShipLoadout.fromLoadout(capture.loadouts[0]).fittedModuleAt(slot);
         assert.ok(fitted, `${file}: no module in ${slot}`);
         // A journal lower-cases every `Item`; the fixture reads as the catalogue spells it.
         assert.equal(fitted.symbol.toLowerCase(), symbol.toLowerCase());

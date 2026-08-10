@@ -96,7 +96,7 @@ export type SlotRestriction = HardpointRestriction | OptionalRestriction;
  * `ShipLoadout.modulesForSlot` with the catalogue you care about.
  * @example
  * ```ts
- * const slot = ShipLoadout.empty('LakonMiner').hardpoints()[0]!;
+ * const slot = ShipLoadout.empty('LakonMiner').slots('hardpoint')[0]!;
  * slot.restriction && SLOT_RESTRICTION_LABELS[slot.restriction]; // -> 'mining tools'
  * ```
  */
