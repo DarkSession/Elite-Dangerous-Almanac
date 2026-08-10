@@ -18,6 +18,7 @@ import { getMicroResourceBySymbol } from '@elite-dangerous-almanac/core/material
 import { COMPONENT_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-component';
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
 import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+import { hasWeaponDamageStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
 import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
 import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities';
 import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-rare';
@@ -104,10 +105,10 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(getMaterialByName('iron', RAW_MATERIALS)?.name, 'Iron');
     assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
     assert.equal(getShipBySymbol('empire_trader')?.name, 'Imperial Clipper');
-    assert.equal(
-        getModuleBySymbol('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES)?.name,
-        'Chaff Launcher',
-    );
+    const chaff = getModuleBySymbol('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES);
+    assert.equal(chaff?.name, 'Chaff Launcher');
+    assert.equal(hasWeaponDamageStats(chaff), false);
+    assert.equal(hasWeaponDamageStats(getModuleBySymbol('Hpt_PulseLaser_Fixed_Small')), true);
     assert.equal(getCommodityBySymbol('lavianbrandy', RARE_COMMODITIES)?.name, 'Lavian Brandy');
     assert.equal(toSystemAddress(10_477_373_803), 10_477_373_803n);
     assert.equal(sectorNameFromGalacticPosition({ x: 751, y: -179, z: -91 }), 'Synuefe');
@@ -177,6 +178,16 @@ test('converting an address costs nothing but the conversion', async () => {
     );
     assert.ok(graph.length < 4096, `expected a tiny module, got ${graph.length} bytes`);
     for (const marker of [/Witch Head/, /Col 70 Sector/, /scaleNumerator/, /Anaconda/]) {
+        assert.doesNotMatch(graph, marker);
+    }
+});
+
+test('module capability guards do not pull the outfitting catalogues', async () => {
+    const graph = await readReachableJs(
+        new URL('./dist/ships/module-capabilities.js', import.meta.url),
+    );
+    assert.ok(graph.length < 4096, `expected a tiny module, got ${graph.length} bytes`);
+    for (const marker of [/Hpt_PulseLaser/, /Int_Hyperdrive/, /Anaconda_Armour/]) {
         assert.doesNotMatch(graph, marker);
     }
 });

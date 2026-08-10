@@ -7,6 +7,14 @@ import {
     getBulkheadsForShip,
     type OutfittingModule,
 } from './modules.js';
+import {
+    hasFrameShiftDriveJumpStats,
+    hasPowerGenerationStats,
+    hasPowerDistributorStats,
+    hasMassCurveStats,
+    hasShieldRegenerationStats,
+    hasWeaponDamageStats,
+} from './module-capabilities.js';
 import { CORE_MODULES } from './modules-core.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
@@ -557,6 +565,142 @@ test('every lookup searches all modules when no catalogue is given', () => {
     for (const category of ['core', 'internal', 'hardpoint', 'utility'] as const) {
         const first = CATALOGUES[category]![0]!;
         assert.deepEqual(getModuleBySymbol(first.symbol), first, category);
+    }
+});
+
+test('capability guards narrow catalogue modules to required stats', () => {
+    const fsd = getModuleBySymbol('Int_Hyperdrive_Size5_Class5');
+    assert.ok(hasFrameShiftDriveJumpStats(fsd));
+    const maxFuel: number = fsd.maxFuel;
+    assert.ok(maxFuel > 0);
+
+    const plant = getModuleBySymbol('Int_PowerPlant_Size5_Class5');
+    assert.ok(hasPowerGenerationStats(plant));
+    const powerCapacity: number = plant.powerCapacity;
+    assert.ok(powerCapacity > 0);
+
+    const distributor = getModuleBySymbol('Int_PowerDistributor_Size5_Class5');
+    assert.ok(hasPowerDistributorStats(distributor));
+    const weaponsRecharge: number = distributor.weaponsRecharge;
+    assert.ok(weaponsRecharge > 0);
+
+    const thrusters = getModuleBySymbol('Int_Engine_Size5_Class5');
+    assert.ok(hasMassCurveStats(thrusters));
+    const optMultiplier: number = thrusters.optMultiplier;
+    assert.ok(optMultiplier > 0);
+
+    const shield = getModuleBySymbol('Int_ShieldGenerator_Size5_Class5');
+    assert.ok(hasShieldRegenerationStats(shield));
+    const shieldRegenRate: number = shield.shieldRegenRate;
+    assert.ok(shieldRegenRate > 0);
+
+    const weapon = getModuleBySymbol('Hpt_PulseLaser_Fixed_Small');
+    assert.ok(hasWeaponDamageStats(weapon));
+    const damage: number = weapon.damage;
+    assert.ok(damage > 0);
+});
+
+test('capabilities map cleanly to the current catalogue groups', () => {
+    for (const module of ALL_MODULES) {
+        assert.equal(
+            hasFrameShiftDriveJumpStats(module),
+            module.kind === 'frameShiftDrives' || module.kind === 'frameShiftDrivesSCO',
+            module.symbol,
+        );
+        assert.equal(
+            hasPowerGenerationStats(module),
+            module.kind === 'powerPlants' || module.kind === 'guardianPowerPlants',
+            module.symbol,
+        );
+        assert.equal(
+            hasPowerDistributorStats(module),
+            module.kind === 'powerDistributors' || module.kind === 'guardianPowerDistributors',
+            module.symbol,
+        );
+        assert.equal(
+            hasMassCurveStats(module),
+            module.kind === 'thrusters' || module.kind === 'shieldGenerators',
+            module.symbol,
+        );
+        assert.equal(
+            hasShieldRegenerationStats(module),
+            module.kind === 'shieldGenerators',
+            module.symbol,
+        );
+        assert.equal(
+            hasWeaponDamageStats(module),
+            module.category === 'hardpoint' || module.kind === 'pointDefence',
+            module.symbol,
+        );
+    }
+});
+
+test('capability guards require every field in the stat group', () => {
+    const fsd = getModuleBySymbol('Int_Hyperdrive_Size5_Class5')!;
+    const plant = getModuleBySymbol('Int_PowerPlant_Size5_Class5')!;
+    const distributor = getModuleBySymbol('Int_PowerDistributor_Size5_Class5')!;
+    const thrusters = getModuleBySymbol('Int_Engine_Size5_Class5')!;
+    const shield = getModuleBySymbol('Int_ShieldGenerator_Size5_Class5')!;
+    const weapon = getModuleBySymbol('Hpt_PulseLaser_Fixed_Small')!;
+    const cases: readonly {
+        sample: OutfittingModule;
+        guard: (module: OutfittingModule | null | undefined) => boolean;
+        fields: readonly (keyof OutfittingModule)[];
+    }[] = [
+        {
+            sample: fsd,
+            guard: hasFrameShiftDriveJumpStats,
+            fields: ['optMass', 'maxFuel', 'fuelMul', 'fuelPower'],
+        },
+        {
+            sample: plant,
+            guard: hasPowerGenerationStats,
+            fields: ['powerCapacity', 'heatEfficiency'],
+        },
+        {
+            sample: distributor,
+            guard: hasPowerDistributorStats,
+            fields: [
+                'weaponsCapacity',
+                'weaponsRecharge',
+                'enginesCapacity',
+                'enginesRecharge',
+                'systemsCapacity',
+                'systemsRecharge',
+            ],
+        },
+        {
+            sample: thrusters,
+            guard: hasMassCurveStats,
+            fields: [
+                'optMass',
+                'minMass',
+                'maxMass',
+                'optMultiplier',
+                'minMultiplier',
+                'maxMultiplier',
+            ],
+        },
+        {
+            sample: shield,
+            guard: hasShieldRegenerationStats,
+            fields: ['shieldRegenRate', 'shieldBrokenRegenRate'],
+        },
+        { sample: weapon, guard: hasWeaponDamageStats, fields: ['damage'] },
+    ];
+
+    const rack = getModuleBySymbol('Int_CargoRack_Size4_Class1')!;
+    for (const { sample, guard, fields } of cases) {
+        assert.equal(guard(null), false);
+        assert.equal(guard(rack), false);
+        assert.equal(guard({ ...sample, kind: null }), true);
+        for (const field of fields) {
+            assert.equal(
+                guard({ ...sample, [field]: undefined } as unknown as OutfittingModule),
+                false,
+                field,
+            );
+        }
     }
 });
 
