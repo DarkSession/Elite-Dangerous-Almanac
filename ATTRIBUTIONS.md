@@ -204,12 +204,16 @@ in the doc comment of each ported module, and in long form in the domain
   figure. [EDSY](https://github.com/taleden/EDSY) `eddb.js` (taleden, **CC BY-NC 4.0**)
   reads the same, against [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data)'s 3
   (**MIT** for its code; the values are game data).
-- **The medium fixed Guardian Shard Cannon's projectile speed** — the
-  `shotSpeed` of 1133.333374 m/s on `Hpt_Guardian_ShardCannon_Fixed_Medium` and the
-  6299.209 m/s overwrite on its tech-broker Modified variant. From Frontier's own
-  `OriginalValue` and engineered `Value` in
-  `fixtures/ships/journal-anaconda-slapaconda.json` (credited under Ground-truth ship
-  builds below), replacing the registry-derived 1133 and 3568.6 m/s figures.
+- **The medium fixed Guardian Shard Cannon's projectile speed and Modified damage** —
+  the `shotSpeed` of 1133.333374 m/s on
+  `Hpt_Guardian_ShardCannon_Fixed_Medium`, the 6299.209 m/s overwrite on its tech-broker
+  Modified variant, and that variant's `Damage` +10%. The speeds come from Frontier's
+  own `OriginalValue` and engineered `Value` in
+  `fixtures/ships/journal-anaconda-slapaconda.json`; the damage comes from the repository
+  owner's current individual outfitting-panel reading (2026-08-10 UTC), which reports
+  3.7 damage and 74.5 damage/s. The capture is credited under Ground-truth ship builds
+  below. These replace the registry-derived 1133 and 3568.6 m/s speeds and complete the
+  previously absent damage modifier.
 - **The journal spelling of the two scanner blueprints** — the `journalName` on
   `Scanner_LongRange` and `Scanner_WideAngle` in `data/ships/blueprints.jsonc`, recording
   that the game writes both as `Sensor_LongRange` / `Sensor_WideAngle` even though those

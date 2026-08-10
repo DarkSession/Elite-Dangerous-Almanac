@@ -441,7 +441,7 @@
     },
     "slapaconda": {
       "build": "fixtures/ships/journal-anaconda-slapaconda.json",
-      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 1.07 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Armour, mass, jump, distributor draw, thermal load and power all reproduce, and the zero shield follows from having no generator fitted. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the weapons contribute 24.8 MW and the caustic-sink plus five heat-sink launchers contribute 12 MW, reproducing the displayed 36.8 MW. After the two beam lasers' known 15.36 damage/s is removed, adding 10% to the six modified medium Guardian Shard Cannons' calculated damage reproduces the panel at displayed precision, corroborating Spire Ops across a different shard variant. The build calculates 421.6 total damage/s rather than the panel's 462.2 damage/s; see issue #97. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 1.07 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Armour, mass, jump, offense and power all reproduce, and the zero shield follows from having no generator fitted. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the weapons contribute 24.8 MW and the caustic-sink plus five heat-sink launchers contribute 12 MW, reproducing the displayed 36.8 MW. Each tech-broker Modified Guardian Shard Cannon independently displays 74.5 damage/s from 3.7 displayed damage at 1.7 shots/s; its exact 3.7235 damage is the stock 3.385 with the observed +10% modifier. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
       "jumpRange": {
         "fullTank": 27.63
       },
@@ -460,7 +460,6 @@
       },
       "offense": {
         "damagePerSecond": 462.2,
-        "calculatedDamagePerSecond": 421.6,
         "distributorDraw": 36.8,
         "thermalLoad": 126.1
       },

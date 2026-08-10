@@ -2379,7 +2379,7 @@ test('Spire Ops reproduces the observed totals except the Guardian shard offense
     );
 });
 
-test('Slapaconda reproduces the observed totals except the Guardian shard offense', () => {
+test('Slapaconda reproduces every observed calculated total', () => {
     const expected = metrics.inGame.slapaconda;
     const event = slapacondaJournal as LoadoutEvent;
     const build = ShipLoadout.fromLoadout(event);
@@ -2400,15 +2400,14 @@ test('Slapaconda reproduces the observed totals except the Guardian shard offens
     assert.equal(displayed(power.deployed, 2), expected.power.deployed);
 
     const weapons = installedBuild.weaponMetrics();
-    assert.equal(
-        displayed(weapons.total.damagePerSecond, 1),
-        expected.offense.calculatedDamagePerSecond,
-    );
-    assert.notEqual(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
     const panel = offensePanelTotals(installedBuild);
     assert.equal(displayed(panel.distributorDraw, 1), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
-    assert.equal(build.getFittedModule('HugeHardpoint1')!.effectiveStats!.shotSpeed, 6299.208984);
+    const shard = build.getFittedModule('HugeHardpoint1')!.effectiveStats!;
+    assert.equal(shard.damage, 3.7235);
+    assert.equal(displayed(damagePerSecond(shard), 1), 74.5);
+    assert.equal(shard.shotSpeed, 6299.208984);
 
     assert.equal(expected.shields.strength, 0);
     assert.equal(build.shieldMetrics(), null);
