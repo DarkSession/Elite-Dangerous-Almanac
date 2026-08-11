@@ -232,10 +232,9 @@ export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
  * `Weapon_Overcharged` every other weapon menu lists, because a multi-cannon's Overcharged
  * also cuts the clip by 3–15% — and the game writes `Weapon_Overcharged` for both.
  *
- * Anti-Guardian Zone Resistance is the other pair, and the reverse case: the game writes
- * `GuardianModule_Sturdy` — on Guardian weapons as well as modules — and every group here
- * lists that id. The registry's `recipe_guardianmodule_sturdy` and
- * `recipe_guardianweapon_sturdy` are accepted as its other spellings.
+ * Anti-Guardian Zone Resistance is neither: the game writes `GuardianModule_Sturdy` — on
+ * Guardian weapons as well as modules — every group here lists that id, and `BLUEPRINTS`
+ * keys the recipe under it alone.
  *
  * @param symbol - A module symbol.
  * @returns Blueprint ids, sorted. Join to `BLUEPRINTS`.
@@ -306,11 +305,9 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * `Weapon_LongRange` does not offer every effect listed here, only its own group's. Use
  * {@link getExperimentalsForModule} once you know the module — that is the exact answer.
  *
- * The groups name 86 of the 109 blueprints in `BLUEPRINTS`, and the other 23 are all
- * accounted for: 21 are the Operations keys of modules sold already engineered rather than
- * offered in a menu (see `ships/pre-engineered`), and the other two are the registry's
- * spellings of Anti-Guardian Zone Resistance, which the nine groups offering it list under
- * `GuardianModule_Sturdy` — the id the game itself writes. All 23 answer `[]` here exactly
+ * The groups name 86 of the 107 blueprints in `BLUEPRINTS`, and the other 21 are all
+ * accounted for: they are the Operations keys of modules sold already engineered rather
+ * than offered in a menu (see `ships/pre-engineered`). All 21 answer `[]` here exactly
  * as an unknown id would, so read this function's empty answer with
  * {@link getExperimentalsForModule} rather than as a claim about the recipe.
  *

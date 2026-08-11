@@ -6,7 +6,6 @@
 
 import { BLUEPRINTS, getBlueprint } from '../blueprints.js';
 import {
-    ENGINEERING_OPTION_GROUPS,
     getBlueprintsForModule,
     getEngineeringGroup,
     getExperimentalsForModule,
@@ -96,13 +95,6 @@ function recipeSignature(fdname: string): string | null {
 /** Frontier's family-agnostic spelling of a modification, e.g. `Misc_LightWeight`. */
 const isGenericSpelling = (fdname: string): boolean => fdname.toLowerCase().startsWith('misc_');
 
-/** Every id any group's menu names, so an id no menu offers can be told from one it does. */
-const MENU_IDS: ReadonlySet<string> = new Set(
-    Object.values(ENGINEERING_OPTION_GROUPS).flatMap((group) =>
-        group.blueprints.map((id) => id.toLowerCase()),
-    ),
-);
-
 /**
  * Whether a module is sold carrying this recipe in a form that can still be engineered.
  *
@@ -176,21 +168,21 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * EDSY-authored build. So a generic id is accepted when the menu offers a *family-specific*
  * id of the same {@link recipeSignature}.
  *
- * That the alias must run *from* the ambiguous spelling *to* the menu's is what keeps it
- * honest, and there are two ambiguous kinds. A generic `Misc_*` id substitutes only for a
- * menu id that is not itself generic: `Misc_ChaffCapacity` and `Misc_HeatSinkCapacity`
- * share a signature — both are "Ammo capacity" over the same three labels — but neither is
- * a family spelling of the other, so a chaff launcher's ammo recipe stays off a heat sink
- * launcher, whose roll is a smaller one. An id **no menu anywhere lists**
- * substitutes too, which is Anti-Guardian Zone Resistance: the nine groups that offer it
- * list `GuardianModule_Sturdy`, the id the game itself writes, and the registry's
- * `recipe_guardianmodule_sturdy` and `recipe_guardianweapon_sturdy` reach the recipe by
- * this route. Neither is a spelling any journal has been observed to write.
+ * That the alias must run *from* the generic spelling *to* the menu's is what keeps it
+ * honest: a `Misc_*` id substitutes only for a menu id that is not itself generic.
+ * `Misc_ChaffCapacity` and `Misc_HeatSinkCapacity` share a signature — both are "Ammo
+ * capacity" over the same three labels — but neither is a family spelling of the other, so
+ * a chaff launcher's ammo recipe stays off a heat sink launcher, whose roll is a smaller
+ * one. Anti-Guardian Zone Resistance needs no leg of its own: `GuardianModule_Sturdy` is
+ * the id the game writes on Guardian weapons as well as modules, the nine groups offering
+ * the recipe list it, and `BLUEPRINTS` keys it under nothing else.
  *
- * Everything else is excluded by the signature, by being a menu id in its own right, or by
- * not being sold on that module. `Weapon_LightWeight` fails the signature — a weapon's Lightweight cuts distributor draw,
- * which the generic one does not touch — and `Armour_Explosive`, which rolls exactly like
- * `ShieldBooster_Explosive`, is listed by the armour menus, so it never stands in for one.
+ * Everything else is excluded by not being a generic spelling, by the signature, or by
+ * not being sold on that module. `Armour_Explosive` shares `ShieldBooster_Explosive`'s
+ * signature and still never stands in for it, because it is a family's own id rather than
+ * a generic one. `Misc_LightWeight` is generic, so the signature is what stops it: a
+ * weapon's Lightweight is `Weapon_LightWeight`, which cuts distributor draw where the
+ * generic recipe touches only integrity and mass.
  *
  * @internal
  */
@@ -202,16 +194,11 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
     if (offered.some((id) => id.toLowerCase() === wanted)) return true;
     // Both spellings, so resolving cannot hide a sale recorded under the other one.
     if (isSoldWithBlueprint(item, wanted) || isSoldWithBlueprint(item, asWritten)) return true;
-    const ambiguous = isGenericSpelling(wanted) || !MENU_IDS.has(wanted);
-    if (!ambiguous) return false;
+    if (!isGenericSpelling(wanted)) return false;
     const signature = recipeSignature(resolved);
     if (signature === null) return false;
-    return offered.some(
-        (id) =>
-            recipeSignature(id) === signature &&
-            // A generic spelling stands in for a family's id, never for another generic.
-            (!isGenericSpelling(wanted) || !isGenericSpelling(id)),
-    );
+    // A generic spelling stands in for a family's id, never for another generic.
+    return offered.some((id) => recipeSignature(id) === signature && !isGenericSpelling(id));
 }
 
 /**

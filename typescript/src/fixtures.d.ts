@@ -1137,8 +1137,6 @@ declare module '*/fixtures/ships/engineering-options.jsonc' {
                 Misc_LightWeight: string[];
                 Misc_Reinforced: string[];
                 Misc_Shielded: string[];
-                recipe_guardianmodule_sturdy: string[];
-                recipe_guardianweapon_sturdy: string[];
             };
             finalPreEngineered: {
                 symbol: string;
@@ -1270,7 +1268,6 @@ declare module '*/fixtures/ships/engineering.jsonc' {
                 resolved: string;
                 note?: string;
             }[];
-            alsoResolve: string[];
             operationsKeys: {
                 description: string;
                 prefixed: string[];
@@ -1356,8 +1353,6 @@ declare module '*/fixtures/ships/engineering.jsonc' {
                 special_guardian_module_resistance: {
                     blueprints: {
                         GuardianModule_Sturdy: string;
-                        recipe_guardianmodule_sturdy: string;
-                        recipe_guardianweapon_sturdy: string;
                     };
                 };
                 special_plasma_rounds: {

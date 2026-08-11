@@ -126,6 +126,8 @@ test('a build that spells a modification generically is still engineered', () =>
             'LifeSupport_LightWeight',
         ),
     );
+    // A generic spelling of no recipe at all is refused rather than compared to anything.
+    assert.ok(!blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'Misc_Nonsense'));
 });
 
 test('the gate accepts what the menu omits only by a pinned alias or a non-final sale', () => {
@@ -303,35 +305,27 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
             `${row.symbol}: ${row.blueprint}`,
         );
     }
-    // The two registry spellings resolve as explicit aliases.
-    const guardian = 'Hpt_Guardian_GaussCannon_Fixed_Medium';
-    assert.ok(fixture.journalSpellings.alsoResolve.length, 'no aliases pinned');
-    for (const id of fixture.journalSpellings.alsoResolve) {
-        assert.ok(getBlueprint(id), `${id} must still look up`);
-        assert.ok(blueprintAvailableFor(guardian, id), `${guardian} must accept ${id}`);
-    }
-    // ...but the menu answers with the id the game writes, not with a registry spelling.
-    assert.ok(getBlueprintsForModule(guardian).includes('GuardianModule_Sturdy'));
-    for (const id of fixture.journalSpellings.alsoResolve) {
-        assert.ok(!getBlueprintsForModule(guardian).includes(id), `menu should not list ${id}`);
-    }
+    // The Guardian weapon's menu answers with that same id — the recipe's one key.
+    assert.ok(
+        getBlueprintsForModule('Hpt_Guardian_GaussCannon_Fixed_Medium').includes(
+            'GuardianModule_Sturdy',
+        ),
+    );
 });
 
-test('only the two declared aliases carry the registry prefix no game data uses', () => {
+test('no key carries the registry prefix no game data uses', () => {
     // Inara publishes the Operations recipes prefixed (`recipe_fuelscoop_efficiency`);
     // coriolis and EDSY use no such prefix, and neither does any observed build — a real
     // SLEF export writes the Mercenary reinforcement as `modulereinforcement_heavyduty`
     // (Inara lower-cases everything; the raw journal supplies the casing used here).
-    // So the keys here are the registry id minus the prefix, and the only two that keep it
-    // are declared aliases for a recipe whose real name is a key in its own right.
+    // So every key here is the registry id minus the prefix, with no exception: Inara's two
+    // spellings of Anti-Guardian Zone Resistance are not stored, because that recipe's real
+    // name is a key in its own right.
     const ops = fixture.journalSpellings.operationsKeys;
     assert.deepEqual(
         Object.keys(BLUEPRINTS).filter((k) => k.toLowerCase().startsWith('recipe_')),
         ops.prefixed,
     );
-    for (const id of ops.prefixed) {
-        assert.ok(getBlueprint(id), `${id} must still resolve`);
-    }
     // The observed spelling resolves, is offered by no menu, and reaches its module by the
     // sale — the route a bought-engineered recipe is supposed to take.
     assert.ok(ops.observed.length, 'no observed Operations spelling pinned');

@@ -358,7 +358,7 @@
         "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
         "blueprint": "GuardianModule_Sturdy",
         "resolved": "GuardianModule_Sturdy",
-        "note": "The game writes the module spelling on a Guardian *weapon*. Both registry spellings resolve to the same recipe."
+        "note": "The game writes the module spelling on a Guardian *weapon*, so there is no second recipe for the weapon half and no second key for it."
       },
       {
         "symbol": "Hpt_MultiCannon_Gimbal_Huge",
@@ -377,16 +377,9 @@
         "note": "The game writes this one lower-case. Every lookup matches case-insensitively, so it resolves to `Weapon_LongRange` without being rewritten."
       }
     ],
-    "alsoResolve": [
-      "recipe_guardianmodule_sturdy",
-      "recipe_guardianweapon_sturdy"
-    ],
     "operationsKeys": {
-      "description": "Operations blueprints are keyed as the registry publishes them minus Inara\u2019s `recipe_` prefix \u2014 neither coriolis (81 keys, none prefixed) nor EDSY (no `recipe_` string at all) uses it, and no observed build does either. `prefixed` is the whole of the exception: two declared Inara aliases for a recipe whose real name, `GuardianModule_Sturdy`, is a key in its own right. `observed` records a spelling read off a real Inara SLEF export contributed by the repository owner \u2014 a Mercenary Module Reinforcement Package taken to grade 5. The export writes it `modulereinforcement_heavyduty`; `blueprint` below is the catalogue key that id resolves to, whose casing comes from a raw journal rather than from Inara, which lower-cases everything it exports. Every lookup matches case-insensitively, so both forms reach the same record.",
-      "prefixed": [
-        "recipe_guardianmodule_sturdy",
-        "recipe_guardianweapon_sturdy"
-      ],
+      "description": "Operations blueprints are keyed as the registry publishes them minus Inara\u2019s `recipe_` prefix \u2014 neither coriolis (81 keys, none prefixed) nor EDSY (no `recipe_` string at all) uses it, and no observed build does either. `prefixed` is empty and pins that there is no exception: the two Inara spellings of Anti-Guardian Zone Resistance are not stored, because that recipe's real name, `GuardianModule_Sturdy`, is a key in its own right and is what the game writes on Guardian weapons as well as modules. `observed` records a spelling read off a real Inara SLEF export contributed by the repository owner \u2014 a Mercenary Module Reinforcement Package taken to grade 5. The export writes it `modulereinforcement_heavyduty`; `blueprint` below is the catalogue key that id resolves to, whose casing comes from a raw journal rather than from Inara, which lower-cases everything it exports. Every lookup matches case-insensitively, so both forms reach the same record.",
+      "prefixed": [],
       "observed": [
         {
           "symbol": "Int_ModuleReinforcement_Size5_Class2",
@@ -415,7 +408,7 @@
     }
   },
   "journalNames": {
-    "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 109; of the rest, 79 are already the journal id and 27 are Operations keys for which no journal spelling has been observed, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
+    "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 107; of the rest, 79 are already the journal id and 25 are Operations keys for which no journal spelling has been observed, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
     "map": {
       "MC_Overcharged": "Weapon_Overcharged",
       "Scanner_LongRange": "Sensor_LongRange",
@@ -466,7 +459,7 @@
     "unreachableExperimentals": []
   },
   "guardianZoneResistanceCapability": {
-    "description": "Anti-Guardian Zone Resistance is a boolean capability rather than a numeric stat. The two Guardian Nanite Torpedo Pylons carry it inherently; other stock records omit the flag. Applying either registry spelling emits the same non-numeric journal modifier and makes the fitted module's effective `guardianZoneResistance` strictly true. Imports also grant it by label presence when a producer uses the numeric display value. The ordinary power plant case pins the compatibility boundary separately.",
+    "description": "Anti-Guardian Zone Resistance is a boolean capability rather than a numeric stat. The two Guardian Nanite Torpedo Pylons carry it inherently; other stock records omit the flag. Applying the recipe — on a Guardian module or on a Guardian weapon, which the game spells the same way — emits the same non-numeric journal modifier and makes the fitted module's effective `guardianZoneResistance` strictly true. The weapon case carries a different casing of that id, pinning that a lookup matches case-insensitively. Imports also grant it by label presence when a producer uses the numeric display value. The ordinary power plant case pins the compatibility boundary separately.",
     "field": "guardianZoneResistance",
     "offeredAs": "GuardianModule_Sturdy",
     "grade": 1,
@@ -483,18 +476,18 @@
       {
         "slot": "PowerPlant",
         "symbol": "Int_GuardianPowerplant_Size7",
-        "blueprint": "recipe_guardianmodule_sturdy"
+        "blueprint": "GuardianModule_Sturdy"
       },
       {
         "slot": "MediumHardpoint1",
         "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
-        "blueprint": "recipe_guardianweapon_sturdy"
+        "blueprint": "guardianmodule_sturdy"
       }
     ],
     "refused": {
       "slot": "PowerPlant",
       "symbol": "Int_Powerplant_Size7_Class5",
-      "blueprint": "recipe_guardianmodule_sturdy"
+      "blueprint": "GuardianModule_Sturdy"
     }
   },
   "blueprintOnlyModifications": {
@@ -502,9 +495,7 @@
     "excludedExperimentalIds": {
       "special_guardian_module_resistance": {
         "blueprints": {
-          "GuardianModule_Sturdy": "Anti-Guardian Zone Resistance",
-          "recipe_guardianmodule_sturdy": "Anti-Guardian Zone Resistance",
-          "recipe_guardianweapon_sturdy": "Anti-Guardian Zone Resistance"
+          "GuardianModule_Sturdy": "Anti-Guardian Zone Resistance"
         }
       },
       "special_plasma_rounds": {
@@ -589,6 +580,6 @@
       "5": { "thermal": 0.845, "absolute": 0.155 }
     }
   },
-  "blueprintCount": 109,
+  "blueprintCount": 107,
   "experimentalCount": 86
 }

@@ -13,35 +13,26 @@ test('every blueprint carries a display name and grades', () => {
 test('getBlueprint resolves case-insensitively and misses cleanly', () => {
     assert.equal(getBlueprint('FSD_LongRange')?.name, 'Increased range');
     assert.equal(getBlueprint('fsd_longrange')?.name, 'Increased range');
-    assert.equal(
-        getBlueprint('recipe_guardianmodule_sturdy')?.name,
-        'Anti-Guardian Zone Resistance',
-    );
+    assert.equal(getBlueprint('guardianmodule_sturdy')?.name, 'Anti-Guardian Zone Resistance');
     assert.equal(getBlueprint('nope'), null);
 });
 
-test('Anti-Guardian Zone Resistance resolves identically under all three of its keys', () => {
-    // One recipe, three spellings: the id the game writes, and the two the registries
-    // publish. They must not drift apart — a build resolving to a different roll depending
-    // on which spelling it happened to carry is the bug the duplication exists to avoid.
-    const keys = [
-        'GuardianModule_Sturdy',
-        'recipe_guardianmodule_sturdy',
-        'recipe_guardianweapon_sturdy',
-    ];
-    for (const key of keys) {
-        const bp = getBlueprint(key);
-        assert.ok(bp, `${key} is missing`);
-        assert.equal(bp.name, 'Anti-Guardian Zone Resistance');
-        assert.deepEqual(Object.keys(bp.grades), ['1'], `${key} is grade 1 only`);
-        assert.deepEqual(getBlueprintGrade(key, 1)?.features, [
-            { label: 'GuardianModuleResistance', method: 'additive', min: 1, max: 1 },
-        ]);
-    }
-    // Assert equality between the records too, not just each against a literal, so a stat
-    // added to one and not the others fails here rather than silently diverging.
-    const [first, ...rest] = keys.map((k) => getBlueprint(k));
-    for (const other of rest) assert.deepEqual(other, first);
+test('Anti-Guardian Zone Resistance is keyed once, under the id the game writes', () => {
+    // The game writes `GuardianModule_Sturdy` on Guardian weapons as well as on Guardian
+    // modules, so the recipe has one key. The registry's `recipe_`-prefixed spellings of it
+    // are not stored: a second copy of one record is a roll that can drift from the first.
+    const bp = getBlueprint('GuardianModule_Sturdy');
+    assert.ok(bp, 'GuardianModule_Sturdy is missing');
+    assert.equal(bp.name, 'Anti-Guardian Zone Resistance');
+    assert.deepEqual(Object.keys(bp.grades), ['1'], 'it is grade 1 only');
+    assert.deepEqual(getBlueprintGrade('GuardianModule_Sturdy', 1)?.features, [
+        { label: 'GuardianModuleResistance', method: 'additive', min: 1, max: 1 },
+    ]);
+    assert.deepEqual(
+        Object.keys(BLUEPRINTS).filter((key) => BLUEPRINTS[key]!.name === bp.name),
+        ['GuardianModule_Sturdy'],
+        'the keys holding a record under this name are not the one expected',
+    );
 });
 
 test('every grade carries its modifier features', () => {

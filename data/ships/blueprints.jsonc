@@ -22,10 +22,11 @@
  * this mechanics payload means calculating or editing a build does not bundle it.
  *
  * A key is the Frontier `fdname` a Loadout event's `Engineering.BlueprintName` carries
- * for 79 of the 109. Three recipe ids whose journal spelling collides with another recipe
- * live in `blueprint-journal-names.jsonc`. The remaining 27 keys are Operations ids for
- * which no journal spelling has been observed; two are Anti-Guardian Zone Resistance
- * aliases stored beside the `GuardianModule_Sturdy` the game does write.
+ * for 79 of the 107. Three recipe ids whose journal spelling collides with another recipe
+ * live in `blueprint-journal-names.jsonc`. The remaining 25 keys are Operations ids for
+ * which no journal spelling has been observed. Every recipe is keyed once: Anti-Guardian
+ * Zone Resistance is `GuardianModule_Sturdy`, the id the game writes on Guardian weapons
+ * as well as modules, and the registry's `recipe_`-prefixed spellings of it are not stored.
  */
 {
   "AFM_Shielded": {
@@ -13815,36 +13816,6 @@
     }
   },
   "GuardianModule_Sturdy": {
-    "name": "Anti-Guardian Zone Resistance",
-    "grades": {
-      "1": {
-        "features": [
-          {
-            "label": "GuardianModuleResistance",
-            "method": "additive",
-            "min": 1,
-            "max": 1
-          }
-        ]
-      }
-    }
-  },
-  "recipe_guardianmodule_sturdy": {
-    "name": "Anti-Guardian Zone Resistance",
-    "grades": {
-      "1": {
-        "features": [
-          {
-            "label": "GuardianModuleResistance",
-            "method": "additive",
-            "min": 1,
-            "max": 1
-          }
-        ]
-      }
-    }
-  },
-  "recipe_guardianweapon_sturdy": {
     "name": "Anti-Guardian Zone Resistance",
     "grades": {
       "1": {
