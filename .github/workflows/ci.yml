@@ -38,6 +38,9 @@ jobs:
       - name: Audit dependencies
         run: npm run audit
 
+      - name: Check generated fixture contracts
+        run: npm run check:fixtures
+
       - name: Lint
         run: npm run lint
 
