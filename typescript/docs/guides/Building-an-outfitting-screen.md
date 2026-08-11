@@ -150,12 +150,14 @@ build.validation.complete; // does it have every operational mount, fully classi
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
-Each issue's `severity` decides how it should read: an `error` is the user's problem and
-belongs on the offending mount, while an `incomplete` is ours and should not be dressed
-up as a mistake they made — the build may be perfectly fine in game.
+Each issue's `severity` decides how it should read: an `error` is the user's problem, and
+every one of them names a `slot` you can mark — except `unknownSlot`, whose whole point
+is that the key is not a mount on this hull, so keep somewhere off-panel to say so. An
+`incomplete` is ours and should not be dressed up as a mistake they made: the build may
+be flying perfectly well in game, with only the catalogue behind.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-sets out what falls under each, and the nullable/`…Result` pairs the aggregate figures
-above come in.
+sets out what falls under each, and the nullable/`…Result` pairs that `unladenMass`,
+`fuelCapacity` and `cargoCapacity` come in.
 
 ## Next
 

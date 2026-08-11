@@ -173,7 +173,8 @@ them, so write the consumer to expect gaps rather than to assume completeness.
 A lookup that finds nothing returns `null` — check it. An aggregate that depends on a
 module the catalogue cannot classify is `null` too, with the matching `…Result` property
 naming what was missing, and `build.validation` separates a fit the game would reject
-from one that is merely not ready to fly:
+from one the library cannot fully account for — an empty core or armour mount, or a hull
+or module newer than the catalogue:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -187,8 +188,11 @@ build.validation.issues; // -> each with a stable code and a severity
 sets both patterns out in full — including why an `incomplete` issue should read
 differently in your UI from an `error`.
 
-A journal line is one `Loadout` event, so it parses or it does not. A SLEF *file* can
-hold several builds and be part-good, which is its own question —
+A journal line is one `Loadout` event, and it is taken whole or refused: bad JSON throws
+`SyntaxError`, and a structurally impossible event — two slot keys differing only in
+case, say — throws `TypeError` from `fromLoadout`. Catch both when the bytes come from
+somewhere you do not control. A SLEF *file* holds several builds and can be part-good,
+which is its own question —
 [Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)
 covers `parseSlef` against `inspectSlef` and what each does with a bad entry.
 

@@ -227,21 +227,11 @@ the drive's own engineering are already folded in by the time `ShipLoadout` call
 ## When a metric cannot be computed
 
 A build can contain a module the catalogue cannot classify — usually one newer than the
-data. Metrics that depend on it follow the library's standard split rather than guessing:
-a nullable convenience property, and a result that names what was missing.
-
-```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-
-declare const build: ShipLoadout;
-
-build.cargoCapacity; // number | null
-build.cargoCapacityResult; // names every rack it could not classify
-```
-
+data. No metric guesses past it: each names what it could not read, in the shape its own
+section above describes.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-covers that pattern in full, including how it differs from the errors a malformed input
-raises.
+covers the nullable-property-beside-a-diagnostic-result split the aggregate figures use,
+including how it differs from the errors a malformed input raises.
 
 ## Next
 
