@@ -41,6 +41,7 @@
 
 import blueprintsData from '../../../data/ships/blueprints.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { findByRawKey } from '../internal/registry-index.js';
 import type { Blueprint, BlueprintGrade } from './engineering.js';
 
 /**
@@ -78,12 +79,7 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
  * `Engineering.Modifiers`.
  */
 export function getBlueprint(fdname: string): Blueprint | null {
-    if (Object.hasOwn(BLUEPRINTS, fdname)) return BLUEPRINTS[fdname]!;
-    const wanted = fdname.trim().toLowerCase();
-    for (const key of Object.keys(BLUEPRINTS)) {
-        if (key.toLowerCase() === wanted) return BLUEPRINTS[key]!;
-    }
-    return null;
+    return findByRawKey(BLUEPRINTS, fdname);
 }
 
 /**

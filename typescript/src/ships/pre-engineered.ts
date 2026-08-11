@@ -37,6 +37,7 @@
 
 import preEngineeredData from '../../../data/ships/pre-engineered.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { filterByKey } from '../internal/registry-index.js';
 
 /**
  * Where a pre-engineered variant is obtained.
@@ -168,8 +169,7 @@ export const PRE_ENGINEERED_MODULES: readonly PreEngineeredVariant[] = deepFreez
  * ```
  */
 export function getPreEngineeredVariants(symbol: string): readonly PreEngineeredVariant[] {
-    const normalized = symbol.trim().toLowerCase();
-    return PRE_ENGINEERED_MODULES.filter((v) => v.symbol.toLowerCase() === normalized);
+    return filterByKey(PRE_ENGINEERED_MODULES, 'symbol', symbol);
 }
 
 /**
@@ -197,8 +197,7 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
  * ```
  */
 export function getPreEngineeredByBlueprint(blueprint: string): readonly PreEngineeredVariant[] {
-    const normalized = blueprint.trim().toLowerCase();
-    return PRE_ENGINEERED_MODULES.filter((v) => v.blueprint.toLowerCase() === normalized);
+    return filterByKey(PRE_ENGINEERED_MODULES, 'blueprint', blueprint);
 }
 
 /**

@@ -22,6 +22,7 @@
 
 import experimentalData from '../../../data/ships/experimental-effects.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { findByRawKey } from '../internal/registry-index.js';
 import type { ExperimentalEffect } from './engineering.js';
 
 /**
@@ -57,10 +58,5 @@ export const EXPERIMENTAL_EFFECTS: Readonly<Record<string, ExperimentalEffect>> 
  * ```
  */
 export function getExperimentalEffect(fdname: string): ExperimentalEffect | null {
-    if (Object.hasOwn(EXPERIMENTAL_EFFECTS, fdname)) return EXPERIMENTAL_EFFECTS[fdname]!;
-    const wanted = fdname.trim().toLowerCase();
-    for (const key of Object.keys(EXPERIMENTAL_EFFECTS)) {
-        if (key.toLowerCase() === wanted) return EXPERIMENTAL_EFFECTS[key]!;
-    }
-    return null;
+    return findByRawKey(EXPERIMENTAL_EFFECTS, fdname);
 }

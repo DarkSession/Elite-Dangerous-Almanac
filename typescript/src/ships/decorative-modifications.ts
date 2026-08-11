@@ -41,6 +41,7 @@
 
 import decorativeData from '../../../data/ships/decorative-modifications.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { findByRawKey } from '../internal/registry-index.js';
 
 /**
  * One hand-set stat change a decorative modification arrives with.
@@ -133,12 +134,7 @@ export const DECORATIVE_MODIFICATIONS: Readonly<Record<string, DecorativeModific
  * ```
  */
 export function getDecorativeModification(fdname: string): DecorativeModification | null {
-    if (Object.hasOwn(DECORATIVE_MODIFICATIONS, fdname)) return DECORATIVE_MODIFICATIONS[fdname]!;
-    const wanted = fdname.trim().toLowerCase();
-    for (const key of Object.keys(DECORATIVE_MODIFICATIONS)) {
-        if (key.toLowerCase() === wanted) return DECORATIVE_MODIFICATIONS[key]!;
-    }
-    return null;
+    return findByRawKey(DECORATIVE_MODIFICATIONS, fdname);
 }
 
 /**
