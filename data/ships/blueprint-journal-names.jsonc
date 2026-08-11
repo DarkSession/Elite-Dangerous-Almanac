@@ -1,0 +1,14 @@
+/*
+ * Blueprint recipe ids whose journal `BlueprintName` is also the id of a different
+ * recipe. The fitted module's engineering menu disambiguates the collision.
+ *
+ * Sources: EDCD/coriolis-data and captured Frontier journal loadouts.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
+ */
+{
+  "MC_Overcharged": "Weapon_Overcharged",
+  "Scanner_LongRange": "Sensor_LongRange",
+  "Scanner_WideAngle": "Sensor_WideAngle"
+}

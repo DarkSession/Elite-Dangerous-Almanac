@@ -27,9 +27,9 @@
  * **A menu lists the id of the recipe it rolls, which is not always the id the game
  * writes.** The three utility-scanner menus list `Scanner_LongRange` /
  * `Scanner_WideAngle`, and `multiCannons` / `antiXenoMultiCannons` list `MC_Overcharged`;
- * the journal spelling of each belongs to the recipe, so it is carried as `journalName` on
- * the blueprint record. What this file contributes is which of the two recipes sharing an
- * id a given module is offered.
+ * their three colliding journal spellings live once in `blueprint-journal-names.jsonc`.
+ * What this file contributes is which of the two recipes sharing an id a given module is
+ * offered.
  *
  * **A menu may list an Operations recipe.** Most Operations ids belong to modules bought
  * already engineered and no menu names them, but four are recipes a player applies from

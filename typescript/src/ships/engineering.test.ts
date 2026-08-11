@@ -130,7 +130,7 @@ test('a build that spells a modification generically is still engineered', () =>
 test('the gate accepts what the menu omits only by a pinned alias or a non-final sale', () => {
     // Three things beyond the menu may explain an acceptance, and nothing else may: the
     // generic spelling of a recipe the menu lists under a family's name, the journal
-    // spelling an offered blueprint declares in its `journalName`, and a recipe the module
+    // colliding journal spelling of an offered blueprint, and a recipe the module
     // is sold already carrying and is not final. Anything else means the gate has quietly widened.
     const pinned = new Set(
         Object.entries(optionsFixture.corpus.blueprintAliases).flatMap(([generic, specific]) =>
@@ -364,12 +364,9 @@ test('a shared journal id costs the same whichever of its two recipes is priced'
     // covered the day it is recorded — the multi-cannon pair went uncovered for exactly
     // that reason.
     //
-    // It assumes more of `journalName` than the field promises: that the id it names is a
-    // record in its own right, and that the pair defines the same grades. Both hold for all
-    // three collisions, and both are properties of a *collision* rather than of the field —
-    // `journalName` says only "the game writes this recipe as X". A future record whose
-    // journal id names no twin belongs outside this loop, not inside it with the assertions
-    // relaxed.
+    // Each mapped journal id is a record in its own right and the pair defines the same
+    // grades. Both are properties of these collisions; a future spelling that names no
+    // twin belongs outside this loop rather than weakening the assertions.
     for (const [fdname, journalName] of Object.entries(fixture.journalNames.map)) {
         const shared = BLUEPRINTS[journalName];
         assert.ok(shared, `${fdname}: ${journalName} is not a blueprint`);

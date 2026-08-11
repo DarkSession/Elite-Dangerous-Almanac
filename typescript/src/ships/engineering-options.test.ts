@@ -20,6 +20,7 @@ import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getModuleBySymbol } from './modules.js';
 import type { EngineeringGroupId } from './engineering-options.js';
 import { ALL_MODULES } from './modules-all.js';
+import { BLUEPRINT_JOURNAL_NAMES } from './internal/blueprint-journal-names.js';
 import { isFinalGuardianWeaponEngineering } from './internal/loadout-engineering.js';
 import fixture from '../../../fixtures/ships/engineering-options.jsonc' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
@@ -78,14 +79,14 @@ test('every group holds the modules, name and menu the fixture pins', () => {
 });
 
 test('no menu offers two blueprints the game writes the same way', () => {
-    // Resolution reads a menu against `Blueprint.journalName`, so it is only well defined
+    // Resolution reads a menu against the journal-name catalogue, so it is only well defined
     // while each menu answers to a given journal id exactly once. A group that offered both
     // `Sensor_LongRange` and `Scanner_LongRange` would make the id genuinely ambiguous, and
     // this function would silently pick whichever came first.
     for (const [id, group] of Object.entries(ENGINEERING_OPTION_GROUPS)) {
         const seen = new Map<string, string>();
         for (const fdname of group.blueprints) {
-            const journalName = (BLUEPRINTS[fdname]?.journalName ?? fdname).toLowerCase();
+            const journalName = (BLUEPRINT_JOURNAL_NAMES[fdname] ?? fdname).toLowerCase();
             const clash = seen.get(journalName);
             assert.equal(clash, undefined, `${id}: ${fdname} and ${clash} are both ${journalName}`);
             seen.set(journalName, fdname);
@@ -93,19 +94,14 @@ test('no menu offers two blueprints the game writes the same way', () => {
     }
 });
 
-test('a blueprint names a journal spelling only when its key is not one', () => {
-    // `journalName` is the exception, so it has to stay rare and stay meaningful: an id that
-    // is already what the game writes must not carry one, and a spelling it redirects to
-    // must not be this blueprint's own key.
-    const named = Object.entries(BLUEPRINTS).filter(([, blueprint]) => blueprint.journalName);
-    assert.deepEqual(
-        Object.fromEntries(named.map(([fdname, blueprint]) => [fdname, blueprint.journalName])),
-        engineeringFixture.journalNames.map,
-    );
-    for (const [fdname, blueprint] of named) {
-        assert.notEqual(blueprint.journalName!.toLowerCase(), fdname.toLowerCase());
+test('the journal-name catalogue contains only real recipe collisions', () => {
+    assert.deepEqual(BLUEPRINT_JOURNAL_NAMES, engineeringFixture.journalNames.map);
+    assert.ok(Object.isFrozen(BLUEPRINT_JOURNAL_NAMES));
+    for (const [fdname, journalName] of Object.entries(BLUEPRINT_JOURNAL_NAMES)) {
+        assert.notEqual(journalName.toLowerCase(), fdname.toLowerCase());
+        assert.ok(BLUEPRINTS[fdname], `${fdname} is not a blueprint`);
         // The id it is written as is a real recipe in its own right — that is the collision.
-        assert.ok(BLUEPRINTS[blueprint.journalName!], `${fdname}: ${blueprint.journalName}`);
+        assert.ok(BLUEPRINTS[journalName], `${fdname}: ${journalName}`);
     }
 });
 
@@ -394,7 +390,7 @@ test('every applicable corpus recipe is one its module offers', () => {
     // generic way is declaring the same thing — and the alias must be one of *this*
     // module's family, not merely some family's. The scanner ids are the other kind: one
     // journal spelling, two different recipes, which only the module's own menu read
-    // against `Blueprint.journalName` can settle. Guardian entries describing final
+    // against the journal-name catalogue can settle. Guardian entries describing final
     // pre-engineered articles are classified before this menu check: their Engineering
     // blocks identify what was bought, not a recipe a player can apply.
     const aliases: Record<string, readonly string[]> = fixture.corpus.blueprintAliases;

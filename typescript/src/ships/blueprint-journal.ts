@@ -1,6 +1,7 @@
 /**
  * **Reading a journal `BlueprintName` against the module it was written for** — the one
- * question that needs the blueprint catalogue and the engineering menus at the same time.
+ * question that needs the journal-collision catalogue and the engineering menus at the
+ * same time.
  *
  * Almost every blueprint id means one recipe wherever it appears, and for those
  * `getBlueprint(id)` is the answer. Three ids are not like that, and this is where that is
@@ -8,15 +9,16 @@
  * reading journals from combat ships meets this — it is not the corner case the two scanner
  * ids alone would make it.
  *
- * It lives in its own module because the join depends on both menus and recipes. Keeping
- * it separate lets menu-only and recipe-only consumers avoid the other catalogue.
- * `package.test.mjs` asserts that the menu module stays clear of recipe data.
+ * It lives in its own module because the join depends on both menus and the three
+ * colliding journal spellings. Keeping those spellings in a tiny purpose-specific
+ * catalogue means this resolver does not load every blueprint grade, modifier and
+ * material. `package.test.mjs` guards that package boundary.
  *
  * @packageDocumentation
  */
 
-import { BLUEPRINTS } from './blueprints.js';
 import { getBlueprintsForModule } from './engineering-options.js';
+import { BLUEPRINT_JOURNAL_NAMES } from './internal/blueprint-journal-names.js';
 
 /**
  * The blueprint whose numbers a module actually rolls when a journal names `blueprint` on
@@ -54,12 +56,11 @@ import { getBlueprintsForModule } from './engineering-options.js';
  * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
  * § "Multi-cannon Overcharged" for the captures.
  *
- * **Nothing here lists the pairing.** Each of those three records names its own journal
- * spelling in {@link Blueprint.journalName}, because that is a fact about the recipe; this
- * function supplies the half only a menu knows, by asking which blueprint *this module is
- * offered* answers to the id. Two catalogues, one fact each, and no third list to drift
- * from either — which matters here, since a hand-written map would have to be repeated on
- * every scanner group and silently forgotten on the next one.
+ * **The pairing is global, not repeated per menu.** A purpose-specific catalogue maps
+ * each of the three recipe ids to the colliding id the journal writes. This function
+ * supplies the half only a menu knows, by asking which mapped recipe *this module is
+ * offered*. Keeping one global map avoids repeating aliases on every scanner or
+ * multi-cannon group and silently forgetting the next one.
  *
  * Only the module can settle it, which is why this takes one. It resolves **into** a menu
  * and never out of one: a sensor suite's `Sensor_LongRange` is already its own menu's id
@@ -116,7 +117,7 @@ export function resolveBlueprintForModule(symbol: string, blueprint: string): st
     // so a caller who never meets the collision never sees their own spelling rewritten.
     if (offered.some((id) => id.toLowerCase() === wanted)) return blueprint;
     for (const id of offered) {
-        const journalName = BLUEPRINTS[id]?.journalName;
+        const journalName = BLUEPRINT_JOURNAL_NAMES[id];
         if (journalName !== undefined && journalName.toLowerCase() === wanted) return id;
     }
     return blueprint;

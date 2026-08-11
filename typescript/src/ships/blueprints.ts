@@ -9,22 +9,23 @@
  * `damageDistribution`, and `materials` (what a roll costs). Read the complete record
  * with {@link getBlueprintGrade}.
  *
- * Keys are Frontier `fdname`s — the exact strings a journal `Loadout` event carries in
- * `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display names.
- * **Three keys collide**, and say so in their own {@link Blueprint.journalName} — each is
- * a recipe the game writes under an id another record already answers to:
+ * Keys are Frontier `fdname`s — normally the exact strings a journal `Loadout` event
+ * carries in `Engineering.BlueprintName` (e.g. `"FSD_LongRange"`), not the in-game display
+ * names. **Three keys collide**: each is a recipe the game writes under an id another
+ * record already answers to:
  * `Scanner_LongRange` and `Scanner_WideAngle` are coriolis keys for recipes the game writes
  * as `Sensor_LongRange` / `Sensor_WideAngle`, the ids it also writes for the sensor suites'
  * different recipes of the same name; `MC_Overcharged` is its multi-cannon Overcharged,
  * which cuts the clip by 3–15% where the `Weapon_Overcharged` the game writes for both
- * leaves it alone. `ships/blueprint-journal` reads one against a module.
+ * leaves it alone. `ships/blueprint-journal` keeps those three spellings apart from this
+ * full mechanics catalogue and resolves one against a module.
  *
  * A further 27 keys are the **Operations** ids: 21 recipes a module is *sold*
  * carrying (`ships/pre-engineered`), four Operations recipes a player rolls at an engineer
  * (`ships/engineering-options`), and two the community spellings of Anti-Guardian Zone
- * Resistance, whose journal id `GuardianModule_Sturdy` is a key here in its own right. None
- * carries a `journalName`, because no journal spelling has been observed for any of them —
- * which is a gap in the evidence, not a claim that the game writes none.
+ * Resistance, whose journal id `GuardianModule_Sturdy` is a key here in its own right. No
+ * journal spelling has been observed for those Operations ids — a gap in the evidence,
+ * not a claim that the game writes none.
  * Enumerate the 109 blueprints with `Object.keys(BLUEPRINTS)`.
  *
  * Data from EDCD/coriolis-data (`modifications/blueprints.json`): `features` from the

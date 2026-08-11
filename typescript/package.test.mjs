@@ -279,10 +279,8 @@ test('reading and writing SLEF costs nothing but the wire format', async () => {
     }
 });
 
-test('the engineering menus do not bundle the blueprint catalogue', async () => {
-    // Reading a journal `BlueprintName` against a module needs both menus and recipes,
-    // so that join lives in `blueprint-journal`. Menu-only consumers should not import
-    // the recipe catalogue.
+test('engineering menus and journal resolution do not bundle blueprint mechanics', async () => {
+    // Menu-only consumers should not import the recipe catalogue.
     const menus = await readReachableJs(
         new URL('./dist/ships/engineering-options.js', import.meta.url),
     );
@@ -295,12 +293,16 @@ test('the engineering menus do not bundle the blueprint catalogue', async () => 
         assert.doesNotMatch(menus, marker);
     }
 
-    // The join module is where that weight is paid, and it must genuinely pull both.
+    // Resolution needs the menus and three colliding journal spellings, not every recipe's
+    // grades, modifiers and materials.
     const join = await readReachableJs(
         new URL('./dist/ships/blueprint-journal.js', import.meta.url),
     );
-    assert.match(join, /FSDOptimalMass/);
+    assert.ok(join.length < 96 * 1024, `expected a resolver-only module, got ${join.length} bytes`);
     assert.match(join, /beamLasers/);
+    for (const marker of [/FSDOptimalMass/, /Increased range/, /multiplicative/]) {
+        assert.doesNotMatch(join, marker);
+    }
 });
 
 test('a single module catalogue does not bundle the others', async () => {
