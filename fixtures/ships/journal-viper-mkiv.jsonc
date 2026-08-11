@@ -6,8 +6,8 @@
  *
  * Acquired 2026-08-06 UTC from UFO-Studios/EDDP, `exampleLogs.json` at
  * `8904e5b0343c3521d2fa3f521f4490f4c1e7c8e4` — a captured journal log the project ships as example
- * data. That repository's own licence (UFO Licence 1.0) forbids redistributing the project; it
- * does not reach a Frontier journal line inside its example data. Source log SHA-256
+ * data. That project's licence position, and why it does not reach a Frontier journal line inside
+ * its example data, is in ATTRIBUTIONS.md. Source log SHA-256
  * `15d9d79b7546968637bdaa4fb266b4847a1c23cc0203e7ad0285f5e5878e9304`; the stored fixture is the
  * log's last `Loadout` event, unwrapped from the line-delimited log and re-indented, otherwise
  * byte-for-byte. Nothing else was taken from the log: the surrounding events carry a commander.
@@ -20,6 +20,10 @@
  *
  * The capture is Elite Dangerous game output and remains the property of Frontier Developments
  * plc, redistributed under Frontier's media-usage terms; see ATTRIBUTIONS.md.
+
+ *
+ * A stored checksum here is of the payload alone, taken with this header comment removed; a source
+ * checksum is of the upstream file as it was received.
  */
 {
   "timestamp": "2023-11-08T19:23:59Z",

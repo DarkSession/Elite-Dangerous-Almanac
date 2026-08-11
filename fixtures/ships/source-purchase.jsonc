@@ -14,7 +14,7 @@
 {
   "captures": {
     "deepBlack": {
-      "build": "fixtures/ships/slef-the-deep-black.json",
+      "build": "fixtures/ships/slef-the-deep-black.jsonc",
       "note": "Fully priced and uniformly discounted: every one of the 20 priced modules sits at 0.8775 of its catalogue list price -- a 12.25% outfitting discount -- while the hull is at full price. Nothing in the export says so, which is why the record is preserved as stated rather than reduced to one discount figure.",
       "record": {
         "hullValue": 189326510,
@@ -157,7 +157,7 @@
       }
     },
     "viperMkIV": {
-      "build": "fixtures/ships/journal-viper-mkiv.json",
+      "build": "fixtures/ships/journal-viper-mkiv.jsonc",
       "note": "Discounted differently: the 20 priced modules sit at exactly 0.85 of list, and the hull at neither its bare nor its retail price. Seven of the 27 listed entries carry no Value.",
       "record": {
         "hullValue": 246650,
@@ -300,7 +300,7 @@
       }
     },
     "caspianExplorer": {
-      "build": "fixtures/ships/journal-caspian-explorer.json",
+      "build": "fixtures/ships/journal-caspian-explorer.jsonc",
       "note": "The partially priced case: an EDSY export stating no HullValue at all, with only 19 of its 35 listed entries priced. A null total and a partial slot list is a normal record, not a defect.",
       "record": {
         "hullValue": null,
@@ -436,7 +436,7 @@
       }
     },
     "kraitPhantom": {
-      "build": "fixtures/ships/journal-krait-phantom.json",
+      "build": "fixtures/ships/journal-krait-phantom.jsonc",
       "note": "A game capture, where HullValue counts the hull with its stock fittings. The five modules that came with the hull carry no Value, because their cost already sits inside that total.",
       "record": {
         "hullValue": 37472252,

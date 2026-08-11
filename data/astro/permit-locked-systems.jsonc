@@ -9,13 +9,9 @@
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/astro/SOURCES.md.
  *
- * Permit locks are published in no game data file or API, so this is a
- * hand-maintained community list and is best-effort.
- *
  * Each system address is a decimal string so every language can parse it without
- * IEEE-754 loss. Addresses come from Spansh (https://spansh.co.uk), cross-checked
- * against EDSM (https://www.edsm.net) for the 38 systems EDSM holds; no
- * disagreement. Plaa Ain HA-Z d46 is absent from both and is encoded from its
+ * IEEE-754 loss. Addresses come from Spansh, cross-checked against EDSM
+ * for the 38 systems EDSM holds; no disagreement. Plaa Ain HA-Z d46 is absent from both and is encoded from its
  * procedural name by this project.
  */
 [

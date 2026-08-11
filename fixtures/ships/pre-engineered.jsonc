@@ -604,7 +604,7 @@
     }
   },
   "identification": {
-    "description": "Representative Frontier Loadout modules whose reported stat signatures identify a fixed variant without relying on its blueprint tuple. `journal-anaconda-slapaconda.json` identifies the Modified Guardian Shard Cannon from its other hand-set values; its damage is the corrected stock base rather than a separate modifier. `journal-federation-corvette-mixed.json` reports the rail gun's derived rate rather than its authored burst interval; `journal-panther-mkii-fat-arse.json` proves both a one-stat signature and an experimental effect added to a V1 FSD. The Spire Ops shard is deliberately negative: Anti-Guardian Zone Resistance alone carries no evidence that it is either fixed Shard variant.",
+    "description": "Representative Frontier Loadout modules whose reported stat signatures identify a fixed variant without relying on its blueprint tuple. `journal-anaconda-slapaconda.jsonc` identifies the Modified Guardian Shard Cannon from its other hand-set values; its damage is the corrected stock base rather than a separate modifier. `journal-federation-corvette-mixed.jsonc` reports the rail gun's derived rate rather than its authored burst interval; `journal-panther-mkii-fat-arse.jsonc` proves both a one-stat signature and an experimental effect added to a V1 FSD. The Spire Ops shard is deliberately negative: Anti-Guardian Zone Resistance alone carries no evidence that it is either fixed Shard variant.",
     "matches": [
       {
         "source": "journal-anaconda-slapaconda.jsonc",

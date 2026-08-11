@@ -9,9 +9,6 @@
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/astro/SOURCES.md.
- *
- * Where a region is defined by a single sphere, its origin and extent are that
- * sphere's axis-aligned bounds in the internal frame.
  */
 [
   {

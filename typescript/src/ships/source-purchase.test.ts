@@ -155,7 +155,7 @@ for (const [name, { event, record }] of Object.entries(fixture.syntheticCaptures
 
 test("the two fixtures that hold a capture's source totals agree", () => {
     // `slef-export.jsonc` states them to show how far retail is from what was paid;
-    // `source-purchase.json` states them as the record itself. Nothing else stops the
+    // `source-purchase.jsonc` states them as the record itself. Nothing else stops the
     // pair drifting apart.
     const discounts = exportFixture as unknown as Record<
         string,

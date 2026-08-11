@@ -8,9 +8,6 @@
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/astro/SOURCES.md.
  *
- * Permit locks are published in no game data file or API, so this is a
- * hand-maintained community list and is best-effort.
- *
  * Each entry is a region name in hand-authored-regions.jsonc and also the
  * whole-token prefix of every system name inside that region. Permit-locked
  * bodies inside otherwise-open systems (e.g. Diso 5 C, Lave 2) are out of scope.

@@ -1,8 +1,8 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * Ground truth for the nebula catalogues (data/astro/nebulae-*.json, from the EDAstro
- * nebulae-coordinates dataset by CMDR Orvidius). `counts` pins the size of each catalogue;
+ * Ground truth for the nebula catalogues (data/astro/nebulae-*.jsonc, from the EDAstro
+ * nebulae-coordinates dataset). `counts` pins the size of each catalogue;
  * `records` pins individual entries; `nearest` and `within` pin the proximity queries. Coordinates
  * and distances are galactic light-years with Sol at the origin; distances are rounded to 6
  * decimal places, so compare with a small tolerance. `regionId` is the galactic codex region id

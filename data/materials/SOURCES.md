@@ -38,17 +38,17 @@ common → 1 … Very rare → 5); their `symbol` is the identifier the player j
 (e.g. `tg_causticshard`, `unknowncorechip`), matched case-insensitively like every other
 material.
 
-| Material                       | Category     | Grade | Symbol (journal)           |
-| ------------------------------ | ------------ | ----- | -------------------------- |
-| Hardened Surface Fragments     | Manufactured | 1     | `tg_abrasion03`            |
-| Caustic Shard                  | Manufactured | 2     | `tg_causticshard`          |
-| Tactical Core Chip             | Manufactured | 2     | `unknowncorechip`          |
-| Corrosive Mechanisms           | Manufactured | 3     | `tg_causticgeneratorparts` |
-| Phasing Membrane Residue       | Manufactured | 3     | `tg_abrasion02`            |
-| Caustic Crystal                | Manufactured | 4     | `tg_causticcrystal`        |
-| Heat Exposure Specimen         | Manufactured | 5     | `tg_abrasion01`            |
-| Massive Energy Surge Analytics | Encoded      | 3     | `tg_shutdowndata`          |
-| Thargoid Interdiction Telemetry | Encoded     | 3     | `tg_interdictiondata`      |
+| Material                        | Category     | Grade | Symbol (journal)           |
+| ------------------------------- | ------------ | ----- | -------------------------- |
+| Hardened Surface Fragments      | Manufactured | 1     | `tg_abrasion03`            |
+| Caustic Shard                   | Manufactured | 2     | `tg_causticshard`          |
+| Tactical Core Chip              | Manufactured | 2     | `unknowncorechip`          |
+| Corrosive Mechanisms            | Manufactured | 3     | `tg_causticgeneratorparts` |
+| Phasing Membrane Residue        | Manufactured | 3     | `tg_abrasion02`            |
+| Caustic Crystal                 | Manufactured | 4     | `tg_causticcrystal`        |
+| Heat Exposure Specimen          | Manufactured | 5     | `tg_abrasion01`            |
+| Massive Energy Surge Analytics  | Encoded      | 3     | `tg_shutdowndata`          |
+| Thargoid Interdiction Telemetry | Encoded      | 3     | `tg_interdictiondata`      |
 
 Inara agreed with FDevIDs on every material the two share (e.g. Bio-Mechanical Conduits =
 grade 3), which is why it is used to fill the gap.

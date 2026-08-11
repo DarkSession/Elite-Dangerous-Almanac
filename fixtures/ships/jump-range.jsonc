@@ -2,7 +2,7 @@
  * Shared test fixture — not shipped in any package.
  *
  * Expected ShipLoadout jump/fuel outputs. The flat keys below cover
- * fixtures/ships/slef-the-deep-black.json and match EDSY's own MaxJumpRange; `builds` adds further
+ * fixtures/ships/slef-the-deep-black.jsonc and match EDSY's own MaxJumpRange; `builds` adds further
  * hulls, each naming the artifact it reads and the figure its source asserts. Cross-language
  * validation target.
  */
@@ -87,7 +87,7 @@
   },
   "builds": {
     "kraitPhantom": {
-      "build": "fixtures/ships/journal-krait-phantom.json",
+      "build": "fixtures/ships/journal-krait-phantom.jsonc",
       "note": "A real journal capture, so `sourceMaxJumpRange` is Frontier's own figure rather than a third-party calculator's. Engineered Long Range drive plus a Guardian FSD Booster.",
       "ship": "krait_light",
       "frameShiftDrive": {
@@ -108,7 +108,7 @@
       "totalLadenRange": 329.156774
     },
     "viperMkIV": {
-      "build": "fixtures/ships/journal-viper-mkiv.json",
+      "build": "fixtures/ships/journal-viper-mkiv.jsonc",
       "note": "A real journal capture of a wholly UNENGINEERED build, so `sourceMaxJumpRange` is Frontier's own figure for a drive that performs exactly as the catalogue sells it. The Krait Phantom above agrees with the game only after Long Range and a Guardian booster are folded in; this one agrees with nothing folded in, which is what checks the base FSD stats and module masses themselves.",
       "ship": "viper_mkiv",
       "frameShiftDrive": {
@@ -129,7 +129,7 @@
       "totalLadenRange": 120.666505
     },
     "pythonMkII": {
-      "build": "fixtures/ships/journal-python-mkii-antixeno.json",
+      "build": "fixtures/ships/journal-python-mkii-antixeno.jsonc",
       "note": "A second wholly UNENGINEERED journal capture, on a hull and a drive class the Viper MkIV does not reach: a size-5 class-3 SCO drive in a 699t anti-xeno Python MkII. `sourceMaxJumpRange` is Frontier's own figure for a drive performing exactly as the catalogue sells it, so agreement here checks the SCO drive constants and the module masses with nothing folded in. Unlike the Viper this build carries cargo, so laden and unladen are different jumps.",
       "ship": "python_nx",
       "frameShiftDrive": {

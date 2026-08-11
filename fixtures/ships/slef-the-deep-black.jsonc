@@ -1,7 +1,7 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * A real EDSY (taleden) SLEF export of an exploration Caspian Explorer. Its acquisition date and
+ * A real EDSY SLEF export of an exploration Caspian Explorer. Its acquisition date and
  * immutable source revision are not recorded.
  *
  * It has zero weapons, so it exercises jump range, fuel and power; the port reproduces EDSY's own

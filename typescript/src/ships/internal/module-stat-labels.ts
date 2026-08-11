@@ -385,7 +385,7 @@ export function multiplierBaseForLabel(label: string): number | null {
  * numeric stat.
  *
  * @remarks
- * EDSY by taleden (CC BY-NC 4.0) stores Anti-Guardian Zone Resistance as the enumerated
+ * EDSY stores Anti-Guardian Zone Resistance as the enumerated
  * `agzresist` flag with values `''` / `'Active'`, no unit and no magnitude. The mapping
  * preserves that shape rather than treating Inara's displayed `+100%` as arithmetic.
  *

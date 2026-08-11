@@ -19,7 +19,7 @@
  * data file's attribution.
  *
  * Algorithm ported from klightspeed's EliteDangerousRegionMap (`RegionMap.js`),
- * MIT © Ben Peddell. See [`data/astro/galactic-region-cells.jsonc`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/galactic-region-cells.jsonc) for attribution.
+ * See [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
  *
  * @packageDocumentation
  */

@@ -4,8 +4,9 @@
  * A real Frontier journal `Loadout` event for an engineered combat Krait Phantom (40 `Modules`
  * entries).
  *
- * Acquired 2026-08-02 UTC from adam-drewery/EliteAssist, `src/example_data/loadout.json`
- * (repository licence WTFPL; the loadout itself is Frontier game output). Source file SHA-256
+ * Acquired 2026-08-02 UTC from adam-drewery/EliteAssist, `src/example_data/loadout.json`; that
+ * project's licence position, and why it does not reach a Frontier journal line in its example
+ * data, is in ATTRIBUTIONS.md. Source file SHA-256
  * `509db62ac63fe1a07eb41d1840435f1e775fbb687e03629aa8856adefae64312`; stored unmodified apart from
  * unwrapping the single-element array and re-indenting.
  *
@@ -18,6 +19,10 @@
  *
  * The capture is Elite Dangerous game output and remains the property of Frontier Developments
  * plc, redistributed under Frontier's media-usage terms; see ATTRIBUTIONS.md.
+
+ *
+ * A stored checksum here is of the payload alone, taken with this header comment removed; a source
+ * checksum is of the upstream file as it was received.
  */
 {
   "timestamp": "2025-07-29T22:34:40Z",

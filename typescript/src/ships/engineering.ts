@@ -353,7 +353,7 @@ export function computeModifiers(
  * or a journal states, since either figure is published rather than computed.
  *
  * @remarks
- * Reference: EDSY by taleden (CC BY-NC 4.0), `edsy.js` — "when modifying clip size, round
+ * Reference: EDSY, `edsy.js` — "when modifying clip size, round
  * up to a multiple of burst size", `ceil(ammoclip / bstsize) * bstsize`, applied when the
  * blueprint roll is stored. Coriolis rounds the clip up too, without the burst step
  * (`Module.getClip`, "Clip size is always rounded up"), so the two agree wherever a weapon

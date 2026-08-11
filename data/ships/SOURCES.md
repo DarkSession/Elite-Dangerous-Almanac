@@ -12,15 +12,15 @@ Referred to throughout by source name; the pin is here, once.
 
 | Source                                                                                                                                                   | Pin                                                                                                                                                                         | Acquired       |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| [EDCD FDevIDs](https://github.com/EDCD/FDevIDs) — `shipyard.csv`, `outfitting.csv`                                                                       | no immutable revision recorded                                                                                                                                              | 2026-07-24 UTC |
-| [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data) — `ships/*.json`, `modules/**`, `modifications/*`                                            | commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`                                                                                                                           | 2026-07-24 UTC |
+| EDCD FDevIDs — `shipyard.csv`, `outfitting.csv`                                                                       | no immutable revision recorded                                                                                                                                              | 2026-07-24 UTC |
+| EDCD/coriolis-data — `ships/*.json`, `modules/**`, `modifications/*`                                            | commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`                                                                                                                           | 2026-07-24 UTC |
 | coriolis-data `modifications/modules.json`                                                                                                               | SHA-256 `09b6427c86bc3cfb578a246f7c6be1791429bb67009b7adaa7909e30aadc160f` — read from the branch tip, so pinned by digest                                                  | 2026-08-05 UTC |
-| [EDSY](https://github.com/taleden/EDSY) `eddb.js`                                                                                                        | commit `cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, internal `db 20260428` / `version 423039901` | 2026-08-02 UTC |
+| EDSY `eddb.js`                                                                                                        | commit `cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, internal `db 20260428` / `version 423039901` | 2026-08-02 UTC |
 | EDSY `eddb.js` — Vessel Hangar variants                                                                                                                  | commit `510468167e0ef3b895e39391a8c56b5cdd5c3282`, SHA-256 `0574db06f796cdf7dfbe20a5f89f8a378e692873ae49133e9b49557fe8d8cba3`                                               | 2026-08-09 UTC |
-| [EDSY](https://github.com/taleden/EDSY) `edsy.js`                                                                                                        | SHA-256 `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5` — read from the branch tip, so pinned by digest                                                  | 2026-08-06 UTC |
-| [Odyssey Materials Helper](https://github.com/jixxed/ed-odyssey-materials-helper) CAPI fixture `application/src/test/resources/parser/capifc/test9.json` | commit `2c652a2349b754f1dde1a58b6daaac5a04e421a6`                                                                                                                           | 2026-08-09 UTC |
-| [EDCD/Coriolis](https://github.com/EDCD/coriolis) — the application, for its formulas                                                                    | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
-| [msarilar/EDEngineer](https://github.com/msarilar/EDEngineer) `EDEngineer/Resources/Data/blueprints.json`                                                | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
+| EDSY `edsy.js`                                                                                                        | SHA-256 `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5` — read from the branch tip, so pinned by digest                                                  | 2026-08-06 UTC |
+| Odyssey Materials Helper CAPI fixture `application/src/test/resources/parser/capifc/test9.json` | commit `2c652a2349b754f1dde1a58b6daaac5a04e421a6`                                                                                                                           | 2026-08-09 UTC |
+| EDCD/Coriolis — the application, for its formulas                                                                    | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
+| msarilar/EDEngineer `EDEngineer/Resources/Data/blueprints.json`                                                | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
 | Elite Dangerous in-game verification                                                                                                                     | observed in-game                                                                                                                                                            | 2026-08-10 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
@@ -218,7 +218,7 @@ and targeted fit assertions.
   itself `restrictedToShips: ["LakonMiner"]` and so unfittable on the only hull that may
   carry it. Stored as `[3, 2, 2, 2, 1, 1, 1, 1]`, which three sources agree on:
   coriolis-data, EDSY `eddb.js` (`ship[…].slots.hardpoint = [3,2,2,2,1,1,1,1]`) and
-  [Inara's ship page](https://inara.cz/elite/ship/68/), read 2026-08-02 UTC, listing
+  Inara's ship page, read 2026-08-02 UTC, listing
   1 Large Mining, 1 Medium, 2 Medium Mining, 3 Small and 1 Small Mining. The four
   unrestricted mounts are exactly the `[2, 1, 1, 1]` the record already had.
 - **Lynx Highliner (`MediumTransport01`) — from EDSY, Frontier's Lynx update notes and
@@ -679,6 +679,21 @@ In-game verification gives the integer thruster/FSD masses, 1.1/1.2 enhanced-thr
 multipliers and the rising Guardian Shield Reinforcement integrity ladder. These values
 take precedence over family-shaped inference and registry agreement.
 
+**The two fixed Guardian Shard Cannons' damage is derived from a panel reading, not read
+off one.** Individual outfitting panels observed **2026-08-10 UTC**, with grade-1
+Anti-Guardian Zone Resistance active on both weapons, display **5.2 damage / 104.5
+damage/s** on the fixed large and **3.7 damage / 74.5 damage/s** on the fixed medium; a
+six-shard build's panel adds a 566.9 damage/s total. The panel exposes only rounded
+values, so it does not uniquely reveal the underlying decimals. The stored **5.225** and
+**3.7235** damage per projectile apply the uniform 10% correction all three readings
+indicate to the older registry figures 4.75 and 3.385; at 12 projectiles and 1.666667
+shots/s they reproduce both individual displays and the build total. The remaining fields
+those panels state agree with the catalogue as stored (8/4 t mass, 51/42 integrity,
+1.68/1.21 MW power, 1.4/0.65 MW distributor draw, 2.2/1.2 thermal load, 60/45 armour
+piercing, 1700 m maximum and falloff ranges, 5/180 ammunition, 1133/1133.333374 m/s
+projectile speed). A panel reading has no upstream immutable revision, so the shared
+fixtures pinning both corrected records are the only guard these two values have.
+
 **Values that look wrong and are not.** Three records break the pattern their family
 follows and are confirmed outright by EDSY. Recorded so the "breaks its family's curve"
 heuristic does not keep rediscovering them:
@@ -776,11 +791,11 @@ Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
   rewards and were sold nowhere. Frontier's own announcement of the **Rhea Disaster** CG
   states that "all participating commanders will now receive the Size 6 Corrosion
   Resistant Cargo Rack whilst the top 50% will now receive 2"
-  ([@EliteDangerous](https://x.com/EliteDangerous/status/1812792503776489745); the CG
+  (Frontier's own announcement, pinned by its post id `1812792503776489745`; the CG
   itself ran on the [Frontier
-  forums](https://forums.frontier.co.uk/threads/deliver-critical-aid-for-the-rhea-disaster.626528/)).
+  forums, thread `626528`).
   The [Elite Dangerous
-  Wiki](https://elite-dangerous.fandom.com/wiki/Corrosion_Resistant_Cargo_Rack) records
+  Wiki's Corrosion Resistant Cargo Rack page records
   that the class 5 and 6 modules "exist in limited numbers among CMDRs who received them
   as a Community Goal reward, but they are otherwise neither purchasable nor
   unlockable" — size 4 is the largest one obtainable, through a Human Technology Broker.
@@ -945,9 +960,9 @@ Records not in coriolis-data / FDevIDs at the acquired revisions:
   category/class/rating the module schema requires, so neither the vessel nor its modules
   are added.
 - **Inclusion rule — a public registry or direct capture has to corroborate the record.** A module symbol is
-  carried here only when [FDevIDs](https://github.com/EDCD/FDevIDs),
-  [coriolis-data](https://github.com/EDCD/coriolis-data) or
-  [EDSY](https://github.com/taleden/EDSY) lists it as player-obtainable outfitting, or a
+  carried here only when FDevIDs,
+  coriolis-data or
+  EDSY lists it as player-obtainable outfitting, or a
   direct player-facing capture establishes the same thing. That keeps
   `getModuleBySymbol` and `getBulkheadsForShip` a player-facing outfitting view rather than
   an inventory of every symbol the game has ever used. Two consequences worth knowing
@@ -1074,7 +1089,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   three records. Evidence, and why the split keys are kept at all, under §Engineering options → "Scanner
   Long Range and Wide Angle: one journal id, two recipes" and "Multi-cannon Overcharged:
   one journal id, two recipes".
-- **Blueprint source:** [EDCD/coriolis-data](https://github.com/EDCD/coriolis-data),
+- **Blueprint source:** EDCD/coriolis-data,
   `modifications/blueprints.json` (grade `features` + `components`) + `modifications.json`
   (apply method), same commit and Frontier media-usage terms as above. Each grade's
   `features` is a list of `{ label, method, min, max }`; the modifier value is bounded
@@ -1135,11 +1150,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   modifier labels: Thermal decreases by 3.9, 6.6, 9.4, 12.4 and 15.5 percentage points
   across grades 1–5, while Plasma increases by the same amount. This library represents
   the resistance-ignoring ship-damage member as `absolute`, matching EDSY's `abswgt`
-  **Absolute Damage** member; a
-  [contemporary community description](https://www.reddit.com/r/EliteDangerous/comments/1uk2zhp/plasma_laser_theorycrafting_following_new/)
-  by **u/Techno3020** likewise identifies this specific conversion's Plasma share as
-  absolute damage. The post states no redistribution licence and is linked only as
-  corroboration; none of its text or media is redistributed. Because every eligible laser
+  **Absolute Damage** member; the contemporary community description credited in
+  `ATTRIBUTIONS.md` likewise identifies this specific conversion's Plasma share as absolute
+  damage, and is read as corroboration only — none of its text or media is redistributed. Because every eligible laser
   is 100% thermal before conversion, each grade stores the resulting
   `damageDistribution`: from 96.1/3.9 thermal/absolute at grade 1 through 84.5/15.5 at
   grade 5. `$Thermal;` and `$Absolute;` are the journal labels synthesized from that
@@ -1187,13 +1200,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   effect identities: neither belongs in `experimental-effects.jsonc`. The shared
   `blueprintOnlyModifications` fixture pins both absences and the corresponding blueprint
   records. Frontier's update notes were acquired 2026-08-09 UTC from
-  <https://forums.frontier.co.uk/threads/648012/>; the page exposes no immutable revision.
-- **Experimental-effect source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`
+  Frontier's Operations update notes, thread `648012`; the page exposes no immutable revision.
+- **Experimental-effect source:** EDSY `eddb.js`
   `expeffect` is the primary source — one table holding each effect's modifiers and its
-  recipe together, keyed the way this file is. EDSY is (c) taleden under a
-  **CC BY-NC 4.0** License (<http://creativecommons.org/licenses/by-nc/4.0/>). The
-  underlying game logic is Elite Dangerous data, the property of Frontier Developments
-  plc, under Frontier's media-usage terms. Each effect is `{ modifiers, materials }`:
+  recipe together, keyed the way this file is. Each effect is `{ modifiers, materials }`:
   `modifiers` a list of `{ label, method, value }`, `materials` its `mats` map resolved
   from EDSY's material short-codes to Frontier material `symbol`s against the `materials`
   domain, emitting `{ symbol, name, count }` per requirement. An experimental effect is a
@@ -1303,7 +1313,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   for convenience and returns the **union** across every group offering that blueprint —
   deliberately looser than the per-module answer, and a test pins that it is never
   narrower.
-- **Source:** [EDSY](https://github.com/taleden/EDSY) `eddb.js`, whose module-group tables
+- **Source:** EDSY `eddb.js`, whose module-group tables
   carry each group's `blueprints` and `expeffects` lists and which modules belong to each
   group, and whose module records carry the per-module `noblueprints` / `noexpeffects`
   denials that narrow either list. Second registry: coriolis-data
@@ -1858,8 +1868,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   30 `communityGoal` and 21 `techBroker`.
   - **`mercenary`** — the Merc-Coin shop rows. Source: the in-game outfitting and
     blueprint registries, cross-checked against the current
-    [Inara outfitting](https://inara.cz/elite/outfitting/) and
-    [blueprint](https://inara.cz/elite/blueprints/) registries and Frontier's update
+    Inara outfitting and blueprint registries and Frontier's update
     notes. All 22 are grade 1, and that is the point: the purchased module already
     contains the grade-1 pre-engineering, which is exactly why these blueprints' own
     recipes start at grade 2 (see the Operations section above). The two facts are
@@ -1882,7 +1891,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
       medium is 2B and its Lockdown row is 800 MC — and that corroboration is what carries
       the weight.
   - **`communityGoal`** — modules awarded for taking part in a community goal. Source:
-    [EDSY](https://github.com/taleden/EDSY)'s stored-module presets, which record each
+    EDSY's stored-module presets, which record each
     reward as an encoded module state; the blueprint, grade and experimental effect were
     decoded from that state rather than inferred from its display label, and every
     resulting id is asserted to join to `blueprints.jsonc`,
@@ -1926,7 +1935,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   community-goal reward and at grade 1 from the Salvation broker.
 - **`mercCoinCost` is the shop price in Merc Coin**, on the 22 `mercenary` rows and
   nowhere else. Source: the in-game outfitting registry, with the variants and prices
-  corroborated by the current [Inara outfitting registry](https://inara.cz/elite/outfitting/).
+  corroborated by the current Inara outfitting registry.
   Merc Coin is a separate currency with no credit equivalent, which is why it is its own
   field rather than the `cost` modules carry. Tech-broker unlocks have no equivalent
   number: they are paid in materials and commodities, so nothing is stored for them.

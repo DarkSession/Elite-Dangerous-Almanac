@@ -1,9 +1,9 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * Ground truth generated from the klightspeed/EliteDangerousRegionMap RegionMap.js algorithm (MIT
- * (c) Ben Peddell). coords[] uses real EDSM coordinates; boxels[] uses documented real id64s. See
- * data/astro/galactic-region-map.json for attribution.
+ * Ground truth generated from EliteDangerousRegionMap's own RegionMap.js algorithm; coords[]
+ * uses real EDSM coordinates and boxels[] documented real id64s. Credit and licence terms for
+ * every source are in ATTRIBUTIONS.md.
  */
 {
   "coords": [

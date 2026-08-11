@@ -15,6 +15,10 @@
  *
  * The capture is Elite Dangerous game output and remains the property of Frontier Developments
  * plc, redistributed under Frontier's media-usage terms; see ATTRIBUTIONS.md.
+
+ *
+ * A stored checksum here is of the payload alone, taken with this header comment removed; a source
+ * checksum is of the upstream file as it was received.
  */
 [
   {

@@ -5,9 +5,10 @@ galaxy data. The project's own implementation is MIT-licensed; upstream material
 remains subject to its own terms, several of which are **non-commercial**. Read
 this file and `LICENSE` before redistributing the data or using it commercially.
 
-**This is the one place a source is described.** Every entry below names the source,
-its author, its link and its licence position, once. Nothing else in the repository
-repeats that: a data file's comment header names the source and points here, and each
+**This is the one place a source is described.** Each source is described in one of the
+sections below — its author, its link and its licence position — and where an entry names
+a source another section covers, it does so as a cross-reference rather than a second
+description. Nothing else in the repository repeats that: a data file's comment header names the source and points here, and each
 `data/<domain>/SOURCES.md` records what was taken from it — the acquisition date, the
 pinned revision, the derivation and every manual correction — referring to it by name
 alone. Test fixtures carry their own provenance in their file header.
@@ -39,6 +40,10 @@ a verbatim copy produced at build time — edit this file, never the copy.
   (**CC BY-NC 4.0**), derived from Frontier's "mass effect on hyperspace range"
   description, and cross-checked against
   [EDCD/Coriolis](https://github.com/EDCD/coriolis) (**MIT**).
+- **Galactic codex region lookup** — resolving a region from galactic coordinates or from a
+  boxel, ported as fact (our own implementation) from `RegionMap.js` in
+  [EliteDangerousRegionMap](https://github.com/klightspeed/EliteDangerousRegionMap) by
+  **Ben Peddell** (**MIT**), whose region tables are credited under Data below.
 - **SLEF parsing and writing** — both follow the
   [Inara Ship Loadout Export Format specification](https://inara.cz/elite/inara-impexp-slef/)
   published by **Inara** (Artie).

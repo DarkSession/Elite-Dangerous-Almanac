@@ -15,10 +15,9 @@
  * and the run-length/offset lookups derived from them are computed once as module
  * constants; nothing here mutates observable state between calls.
  *
- * Ported and restructured from the EDTS reference algorithm by Andy Martin
- * (Esvandiary), `edtslib/pgdata.py` at https://bitbucket.org/Esvandiary/edts,
- * BSD 3-Clause © 2016 Andy Martin (see ATTRIBUTIONS.md), via
- * the canonn-signals TypeScript port.
+ * Ported and restructured from the EDTS reference algorithm (`edtslib/pgdata.py`), via
+ * the canonn-signals TypeScript port. Credit and licence terms, including the BSD
+ * 3-Clause text EDTS requires be reproduced, are in [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
  *
  * @packageDocumentation
  */
