@@ -62,7 +62,8 @@
  */
 
 import { ALL_MODULES } from './modules-all.js';
-import { findByKey, filterByKey } from '../internal/registry-index.js';
+import { filterByKey, findByKey } from '../internal/registry-index.js';
+import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
 import type { ModuleSlot, SlotRestriction } from './slots.js';
 
 /**
@@ -767,7 +768,9 @@ export function getModuleBySymbol(
     symbol: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule | null {
-    return findByKey(modules, 'symbol', symbol);
+    return modules === ALL_MODULES
+        ? builtInModuleBySymbol(symbol)
+        : findByKey(modules, 'symbol', symbol);
 }
 
 /**

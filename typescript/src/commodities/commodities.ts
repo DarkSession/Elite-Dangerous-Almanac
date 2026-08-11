@@ -44,7 +44,12 @@
  */
 
 import { ALL_COMMODITIES } from './commodities-all.js';
-import { findByKey, filterByKey } from '../internal/registry-index.js';
+import {
+    createKeyIndex,
+    filterByKey,
+    findByKey,
+    findInKeyIndex,
+} from '../internal/registry-index.js';
 
 /**
  * A market group — the shelf a commodity sits on at the commodity market.
@@ -106,6 +111,9 @@ export interface Commodity {
     readonly rare: boolean;
 }
 
+const COMMODITIES_BY_SYMBOL = /* @__PURE__ */ createKeyIndex(ALL_COMMODITIES, 'symbol');
+const COMMODITIES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_COMMODITIES, 'name');
+
 /**
  * Look up a commodity by its Frontier symbol / journal id (case-insensitive).
  *
@@ -129,7 +137,9 @@ export function getCommodityBySymbol(
     symbol: string,
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
-    return findByKey(commodities, 'symbol', symbol);
+    return commodities === ALL_COMMODITIES
+        ? findInKeyIndex(COMMODITIES_BY_SYMBOL, symbol)
+        : findByKey(commodities, 'symbol', symbol);
 }
 
 /**
@@ -150,7 +160,9 @@ export function getCommodityByName(
     name: string,
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
-    return findByKey(commodities, 'name', name);
+    return commodities === ALL_COMMODITIES
+        ? findInKeyIndex(COMMODITIES_BY_NAME, name)
+        : findByKey(commodities, 'name', name);
 }
 
 /**

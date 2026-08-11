@@ -45,7 +45,12 @@
  */
 
 import { ALL_MATERIALS } from './materials-all.js';
-import { findByKey, filterByKey } from '../internal/registry-index.js';
+import {
+    createKeyIndex,
+    filterByKey,
+    findByKey,
+    findInKeyIndex,
+} from '../internal/registry-index.js';
 
 /** Which of the three engineering-material categories a material belongs to. */
 export type MaterialCategory = 'raw' | 'manufactured' | 'encoded';
@@ -170,6 +175,10 @@ export interface Material {
     readonly line: MaterialLine;
 }
 
+const MATERIALS_BY_SYMBOL = /* @__PURE__ */ createKeyIndex(ALL_MATERIALS, 'symbol');
+const MATERIALS_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_MATERIALS, 'name');
+const MATERIALS_BY_ELEMENT = /* @__PURE__ */ createKeyIndex(ALL_MATERIALS, 'elementSymbol');
+
 /**
  * Look up a material by its Frontier symbol / journal id (case-insensitive).
  *
@@ -193,7 +202,9 @@ export function getMaterialBySymbol(
     symbol: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
-    return findByKey(materials, 'symbol', symbol);
+    return materials === ALL_MATERIALS
+        ? findInKeyIndex(MATERIALS_BY_SYMBOL, symbol)
+        : findByKey(materials, 'symbol', symbol);
 }
 
 /**
@@ -213,7 +224,9 @@ export function getMaterialByName(
     name: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
-    return findByKey(materials, 'name', name);
+    return materials === ALL_MATERIALS
+        ? findInKeyIndex(MATERIALS_BY_NAME, name)
+        : findByKey(materials, 'name', name);
 }
 
 /**
@@ -234,7 +247,9 @@ export function getMaterialByElementSymbol(
     elementSymbol: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
-    return findByKey(materials, 'elementSymbol', elementSymbol);
+    return materials === ALL_MATERIALS
+        ? findInKeyIndex(MATERIALS_BY_ELEMENT, elementSymbol)
+        : findByKey(materials, 'elementSymbol', elementSymbol);
 }
 
 /**

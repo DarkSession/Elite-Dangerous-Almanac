@@ -15,7 +15,7 @@
 
 import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
-import { findByKey } from '../internal/registry-index.js';
+import { createKeyIndex, findInKeyIndex } from '../internal/registry-index.js';
 import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from './slots.js';
 
 /**
@@ -130,6 +130,9 @@ export interface Ship {
  */
 export const SHIPS: readonly Ship[] = deepFreeze(shipsData as readonly Ship[]);
 
+const SHIPS_BY_SYMBOL = /* @__PURE__ */ createKeyIndex(SHIPS, 'symbol');
+const SHIPS_BY_NAME = /* @__PURE__ */ createKeyIndex(SHIPS, 'name');
+
 /**
  * Look up a ship by its internal symbol, case-insensitively.
  *
@@ -145,7 +148,7 @@ export const SHIPS: readonly Ship[] = deepFreeze(shipsData as readonly Ship[]);
  * ```
  */
 export function getShipBySymbol(symbol: string): Ship | null {
-    return findByKey(SHIPS, 'symbol', symbol);
+    return findInKeyIndex(SHIPS_BY_SYMBOL, symbol);
 }
 
 /**
@@ -163,7 +166,7 @@ export function getShipBySymbol(symbol: string): Ship | null {
  * ```
  */
 export function getShipByName(name: string): Ship | null {
-    return findByKey(SHIPS, 'name', name);
+    return findInKeyIndex(SHIPS_BY_NAME, name);
 }
 
 /**
