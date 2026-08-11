@@ -29,6 +29,8 @@
  * @packageDocumentation
  */
 
+import { normalizeKey } from '../internal/registry-index.js';
+
 /** The envelope header — which app produced the export. */
 export interface SlefHeader {
     /** Exporting app's name, e.g. `"EDSY"`. */
@@ -612,7 +614,7 @@ export function stringifySlef(slef: Slef, options: SlefStringifyOptions = {}): s
  * ```
  */
 export function getLoadoutModifier(module: LoadoutModule, label: string): number | null {
-    const wanted = label.trim().toLowerCase();
+    const wanted = normalizeKey(label);
     const mod = module.Engineering?.Modifiers?.find((m) => m.Label.toLowerCase() === wanted);
     return typeof mod?.Value === 'number' ? mod.Value : null;
 }

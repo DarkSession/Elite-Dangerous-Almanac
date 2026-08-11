@@ -43,6 +43,7 @@ import {
 import type { EngineeringModifier, LoadoutModule } from './slef.js';
 import { combinedRateOfFire } from './weapons.js';
 import { scaleDamageComponents } from './internal/damage-components.js';
+import { normalizeKey } from '../internal/registry-index.js';
 
 /** A pre-engineered modifier is a fixed article, so its min and max are the same value. */
 function asFeatures(modifiers: readonly PreEngineeredModifier[]): BlueprintFeature[] {
@@ -105,7 +106,7 @@ function sameJournalNumber(actual: number, expected: number): boolean {
 
 /** One stable comparison key for recipe and journal spellings of the same stat. */
 function modifierKey(modifier: EngineeringModifier, module: OutfittingModule): string {
-    return fieldForLabel(modifier.Label, module) ?? `label:${modifier.Label.trim().toLowerCase()}`;
+    return fieldForLabel(modifier.Label, module) ?? `label:${normalizeKey(modifier.Label)}`;
 }
 
 /** Whether a captured modifier agrees with the value a candidate article predicts. */
@@ -158,7 +159,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
     for (const modifier of engineering.Modifiers) {
         actualByKey.set(modifierKey(modifier, stock), modifier);
     }
-    const capturedExperimental = engineering.ExperimentalEffect?.trim().toLowerCase();
+    const capturedExperimental = normalizeKey(engineering.ExperimentalEffect);
     const matches: PreEngineeredVariant[] = [];
     for (const candidate of getPreEngineeredVariants(module.Item)) {
         if (!candidate.modifiers?.length) continue;

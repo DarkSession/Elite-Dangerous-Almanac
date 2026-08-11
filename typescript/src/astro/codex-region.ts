@@ -23,6 +23,7 @@
 
 import regionData from '../../../data/astro/galactic-regions.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { normalizeKey } from '../internal/registry-index.js';
 
 /**
  * A 2-D point on the galactic plane (X east/west, Z toward/away from the core),
@@ -162,5 +163,5 @@ export function getCodexRegion(id: number): CodexRegion | null {
  * ```
  */
 export function getCodexRegionByName(name: string): CodexRegion | null {
-    return BY_NAME.get(name.trim().toLowerCase()) ?? null;
+    return BY_NAME.get(normalizeKey(name)) ?? null;
 }
