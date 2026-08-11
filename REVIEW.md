@@ -492,22 +492,30 @@ maintainer's time will go, and C1's proposed fix would add a fourth pass.
 
 ## 5. Recommendations, highest impact first
 
-| # | Change | Effect | Risk |
-| --- | --- | --- | --- |
-| 1 | Fix the wrong documented value at `slef.ts:425` — **F5** | removes a shipped doc bug | none |
-| 2 | Delete the seven dead defaults + the stray `export` in `loadout-metrics.ts` — **C5** | removes a silent-wrong-answer footgun; function coverage +0.54pp | none; proven with 1917/1917 |
-| 3 | `minifyWhitespace: true` — **C2** | −33% shipped JS; 6.45 → 4.95 MB unpacked | re-baseline `package.test.mjs:301` |
-| 4 | Stamp `type`/`system` for nebulae and `category` for micro-resources — **C3** | −273 KB (−252 KB after #3); makes five data domains consistent | schema + test changes needed |
-| 5 | Correct the README error contract; guard `lettersToBoxelCode` — **F7** | stops a documented rule being wrong about `SyntaxError` | low |
-| 6 | Execute `// ->` claims in `check-examples.mjs`, incl. both READMEs — **F5** | ~280 unpinned doc promises become tests | none |
-| 7 | Stamp data snapshot dates into `THIRD_PARTY_NOTICES.md` — **F4** | package can answer its own currency offline | none |
-| 8 | Narrow the "every catalogue" sentence; document the two id spaces; unify the recipe-id spelling — **F2** | removes a self-contradiction and three redundant spellings | low |
-| 9 | Extract `#require<T>` and `#fittedModuleFor` in `ship-loadout.ts` — **C7** | −21 lines, one error format instead of three | none |
-| 10 | Prune `.jsonc` mappings from the source maps — **C1** | maps 2.98 → 0.27 MiB; 6.5 → 3.6 MB unpacked | conflicts with `package.test.mjs:654`; adds a fourth build pass |
-| 11 | Restore a root entry — **F1** | removes the first-five-minutes stumble | breaks 2 tests, 2 README lines; 5.6× worst case on bundlers ignoring `sideEffects` |
-| 12 | Unify the engineering catalogues on `readonly T[]` — **F3** | one catalogue shape; retires `findByRawKey` | breaking; six catalogues |
+| # | Issue | Change | Effect | Risk |
+| --- | --- | --- | --- | --- |
+| 1 | [#177](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/177) | Fix the wrong documented value at `slef.ts:425` — **F5** | removes a shipped doc bug | none |
+| 2 | [#178](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/178) | Delete the seven dead defaults + the stray `export` — **C5** | removes a silent-wrong-answer footgun; function coverage +0.54pp | none; proven with 1917/1917 |
+| 3 | [#184](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/184) | `minifyWhitespace: true` — **C2** | −33% shipped JS; 6.45 → 4.95 MB unpacked | re-baseline `package.test.mjs:301` |
+| 4 | [#185](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/185) | Stamp nebula `type`/`system` and micro-resource `category` — **C3** | −273 kB (−252 kB after #3) | schema + test changes needed |
+| 5 | [#179](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/179) | Correct the README error contract (`SyntaxError`) — **F7** | a documented rule stops being wrong | none |
+| 6 | [#180](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/180) | Range-guard `lettersToBoxelCode` / `boxelCodeToLetters` — **F7** | out-of-range input throws instead of answering | low |
+| 7 | [#181](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/181) | Guard non-string input at the string entry points — **F7** | errors name the offending value | low |
+| 8 | [#186](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/186) | Execute `// ->` claims, incl. both READMEs — **F5** | ~280 unpinned doc promises become tests | none |
+| 9 | [#187](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/187) | Stamp data snapshot dates into `THIRD_PARTY_NOTICES.md` — **F4** | package answers its own currency offline | none |
+| 10 | [#189](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/189) | Extract `#require<T>` and `#fittedModuleFor` — **C7** | −21 lines, one error format instead of three | none |
+| 11 | [#188](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/188) | Narrow the "every catalogue" sentence; document the two id spaces — **F2** | removes a self-contradiction and three spellings | low |
+| 12 | [#183](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/183) | State the five missing `WeaponStats` defaults — **P3** | the header stops over-promising | none |
+| 13 | [#182](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/182) | De-duplicate the `sourceMappingURL` comment — **C8** | ~5 kB; artifacts end in a newline | none |
+| 14 | [#191](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/191) | Explain why `getShipBySymbol` takes no catalogue — **P2** | removes an apparent oversight | none |
+| 15 | [#192](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/192) | Settle the `SystemAddressInput` re-export rule — **P1** | one rule across five leaves | none |
+| 16 | [#190](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/190) | Tie `WeaponStats` to `OutfittingModuleStats` — **C4** | a missed field fails the build | low |
+| 17 | [#193](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/193) | Prune `.jsonc` mappings from the source maps — **C1** | maps 2.98 → 0.27 MiB; 6.5 → 3.6 MB unpacked | conflicts with `package.test.mjs:654`; fourth build pass |
+| 18 | [#194](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/194) | Restore a root entry — **F1** | removes the first-five-minutes stumble | breaks 2 tests + 2 README lines; 5.6× worst case without `sideEffects` |
+| 19 | [#195](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/195) | Document or unify the two catalogue shapes — **F3** | one shape, or a stated rule | breaking if unified; six catalogues |
 
-Items 1, 2, 6, 7 and 9 are unambiguous and carry no trade-off. Item 3 is the largest
-single byte win and costs one threshold update. Items 10, 11 and 12 each reverse a
-decision the project made deliberately and tested for — they may still be right,
-but they should be taken as decisions rather than cleanups.
+Items 1, 2, 5, 8, 9, 10, 12, 13, 14 and 15 are unambiguous and carry no trade-off.
+Item 3 is the largest single byte win and costs one threshold update. Items 17, 18
+and 19 each reverse a decision the project made deliberately and wrote a test for —
+they may still be right, but they are decisions rather than cleanups, and each issue
+sets out the conflict rather than assuming the answer.
