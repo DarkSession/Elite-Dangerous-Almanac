@@ -70,7 +70,7 @@ test('rejects invalid available power and known consumer draws', () => {
 });
 
 test('does not validate irrelevant disabled or explicitly unknown placeholder draws', () => {
-    const unknown = { draw: Number.NaN, drawUnknown: true, label: 'unknown' };
+    const unknown = { drawUnknown: true, label: 'unknown' };
     const budget = powerBudget(10, [unknown, { draw: -1, enabled: false }]);
     assert.deepEqual(budget.unknownDraws, [unknown]);
     assert.equal(budget.deployed, 0);

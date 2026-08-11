@@ -45,8 +45,11 @@ const EPSILON = 1e-9;
 
 /** One fitted module's claim on the power plant. */
 export interface PowerConsumer {
-    /** Power draw, in megawatts, post-engineering. Must be finite and non-negative. */
-    readonly draw: number;
+    /**
+     * Power draw, in megawatts, post-engineering. Required and finite non-negative
+     * unless {@link drawUnknown} is `true`; ignored when the draw is unknown.
+     */
+    readonly draw?: number;
     /**
      * Priority group, `1`–`5`, as the outfitting panel numbers them. Defaults to `1`.
      *
@@ -60,12 +63,15 @@ export interface PowerConsumer {
     /**
      * `true` for a module that only draws while the hardpoints are deployed — every
      * weapon, and the utility fittings that are not
-     * {@link OutfittingModule.alwaysPowered | always powered}. Defaults to `false`.
+     * {@link OutfittingModule.alwaysPowered | always powered}. Defaults to `false` for
+     * a known draw. An unresolved utility consumer may omit this along with `draw`,
+     * because whether that fitting is always powered cannot be determined either;
+     * {@link powerBudget} ignores both fields when {@link drawUnknown} is `true`.
      */
     readonly deployedOnly?: boolean;
     /**
-     * `true` when the caller knows the module draws power but cannot supply the value.
-     * Its {@link PowerConsumer.draw | draw} is ignored and the consumer is named in
+     * `true` when the module's power draw cannot be determined. Its
+     * {@link PowerConsumer.draw | draw} is ignored and the consumer is named in
      * {@link PowerBudget.unknownDraws} instead of being counted as `0`.
      */
     readonly drawUnknown?: boolean;
@@ -194,13 +200,14 @@ export function powerBudget(available: number, consumers: readonly PowerConsumer
             unknownDraws.push(consumer);
             continue;
         }
-        if (!Number.isFinite(consumer.draw) || consumer.draw < 0) {
+        const draw = consumer.draw;
+        if (draw === undefined || !Number.isFinite(draw) || draw < 0) {
             throw new RangeError('powerBudget: consumer draw must be a finite non-negative number');
         }
-        if (consumer.draw === 0) continue;
+        if (draw === 0) continue;
         const index = bandIndex(consumer.priority);
-        if (consumer.deployedOnly) deployedByBand[index]! += consumer.draw;
-        else retractedByBand[index]! += consumer.draw;
+        if (consumer.deployedOnly) deployedByBand[index]! += draw;
+        else retractedByBand[index]! += draw;
     }
 
     const bands: PowerBand[] = [];

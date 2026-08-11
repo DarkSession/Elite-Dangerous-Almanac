@@ -34,6 +34,8 @@ import type {
 import type { DamageType } from '../resistances.js';
 import { combinedRateOfFire, type WeaponStats } from '../weapons.js';
 import { scaleDamageComponents } from './damage-components.js';
+import { isNonOutfittingSlot } from './loadout-state.js';
+import { parseSlotName } from '../slots.js';
 
 /**
  * Symbol prefixes that identify a module group, lower-cased.
@@ -251,22 +253,42 @@ export function effectiveModule(
     return merged as unknown as OutfittingModule;
 }
 
-/** One fitted module's claim on the power plant, or `null` when it makes none. */
+/** One fitted module's claim on the power plant, or `null` when it legitimately makes none. */
 export function powerConsumerFor(
     module: LoadoutModule,
     stats: OutfittingModule | null = statFor(module.Item),
 ): PowerConsumer | null {
     const draw = effectiveStat(module, 'powerDraw', stats);
+    const parsedSlot = parseSlotName(module.Slot);
     // Weapons and most utility fittings only draw while the hardpoints are out; the
     // ones flagged `alwaysPowered` (shield boosters, chaff, heat sinks, …) always draw.
     const mounted = stats?.category === 'hardpoint' || stats?.category === 'utility';
+    const deployedOnly =
+        stats !== null
+            ? mounted && stats.alwaysPowered !== true
+            : parsedSlot?.kind === 'hardpoint'
+              ? true
+              : parsedSlot?.kind === 'utility'
+                ? undefined
+                : false;
     const common = {
         priority: priorityOf(module),
         enabled: isEnabled(module),
-        deployedOnly: mounted && stats?.alwaysPowered !== true,
+        ...(deployedOnly === undefined ? {} : { deployedOnly }),
         label: module.Slot,
     };
-    if (draw === undefined) return null;
+    if (draw === undefined) {
+        // A known record without a draw is a passive fitting (bulkheads, cargo racks,
+        // cabins, reinforcement packages, …). Unknown modules in recognised powered
+        // mounts are different: omitting them would make the budget quietly optimistic.
+        const inherentlyPassiveSlot =
+            parsedSlot?.kind === 'armour' ||
+            (parsedSlot?.kind === 'core' &&
+                (parsedSlot.core === 'powerPlant' || parsedSlot.core === 'fuelTank'));
+        if (stats !== null || inherentlyPassiveSlot || isNonOutfittingSlot(module.Slot))
+            return null;
+        return { drawUnknown: true, ...common };
+    }
     if (draw === 0) return null;
     return { draw, ...common };
 }
