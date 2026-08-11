@@ -2689,6 +2689,14 @@ declare module '*/fixtures/ships/module-stats.jsonc' {
                 symbol: string;
                 damagePerSecond: number;
             }[];
+            effectiveWeapons: {
+                file: string;
+                slot: string;
+                symbol: string;
+                damage: number;
+                maximumRange?: number;
+                falloffRange?: number;
+            }[];
             rebuildNote: string;
             rebuildTolerance: number;
             rebuilds: {
