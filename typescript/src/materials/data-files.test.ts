@@ -1,8 +1,8 @@
 /**
  * Guards the shared `data/materials/*.jsonc` files themselves, independently of the
  * modules that consume them. The sibling `src/astro/data-files.test.ts` explains the
- * shared invariants in full — portable strict JSON, attribution kept out of the payload,
- * and schema conformance — and the same ones apply here, against
+ * shared invariants in full — portable strict JSON, attribution kept in the comment
+ * header, a schema definition mapped to every file, and conformance to
  * `schemas/materials/catalogues.schema.json`.
  */
 
