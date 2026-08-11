@@ -96,13 +96,10 @@ total** — its own draw plus every higher-priority group's — fits in `availab
 shuts off the first group that would go over and everything below it, rather than the
 individual module that broke the budget.
 
-{@link ships!PowerBudget.unknownDraws | unknownDraws} is where a module whose draw the
-library cannot determine is meant to be named rather than counted as zero. A budget built
-by `ShipLoadout` does not yet fill it — such a module is left out of the consumer list
-altogether, so the budget reads as though it drew nothing:
-[#161](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/161). Until that
-closes, treat a build carrying a module newer than the catalogue as unbudgeted rather
-than as within budget.
+A module whose draw the library cannot determine is named in
+{@link ships!PowerBudget.unknownDraws | unknownDraws} rather than counted as zero, so a
+budget is never quietly optimistic about a module newer than the catalogue. While that
+list is non-empty every other figure is a lower bound, so show it alongside them.
 
 ## Shields and armour share a resistance model
 
@@ -234,6 +231,7 @@ A build can contain a module the catalogue cannot classify — usually one newer
 data — and what each metric does about it differs, so do not assume a figure is
 load-bearing:
 
+- `powerBudget()` names it, in the `unknownDraws` the Power section above describes.
 - `unladenMass`, `fuelCapacity` and `cargoCapacity` are the three that come in
   nullable/`…Result` pairs: the property is `null` and the result names what was missing.
   [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)

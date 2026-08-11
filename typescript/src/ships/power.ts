@@ -79,10 +79,6 @@ export interface PowerConsumer {
      * Optional label for the module — the journal slot key when
      * {@link ShipLoadout.powerBudget} builds the consumer. Ignored by the maths, but it
      * is how a consumer reported in {@link PowerBudget.unknownDraws} names itself.
-     *
-     * @remarks
-     * Only a caller who assembles the consumer list can put anything in that report
-     * today; see {@link PowerBudget.unknownDraws}.
      */
     readonly label?: string;
 }
@@ -134,15 +130,10 @@ export interface PowerBudget {
     /**
      * The **enabled** consumers whose draw is unknown ({@link PowerConsumer.drawUnknown}),
      * handed straight back so a caller can name them — by
-     * {@link PowerConsumer.label | label} where one was supplied, or by identity. A
-     * switched-off module is skipped before the flag is read, so it never appears here.
-     * Normally empty.
-     *
-     * Only a caller who assembles the consumer list themselves can populate this today.
-     * `ShipLoadout.powerBudget` never sets `drawUnknown`: a module whose draw it cannot
-     * resolve is left out of the list entirely, so this stays empty and the totals read
-     * as though that module drew nothing —
-     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/161
+     * {@link PowerConsumer.label | label}, which is the journal slot key when
+     * {@link ShipLoadout.powerBudget} built the list, or by identity for a
+     * hand-assembled one. A switched-off module is skipped before the flag is read, so
+     * it never appears here. Normally empty.
      *
      * **While it is not empty, every other figure here is a lower bound.** The unknown
      * draws contribute nothing to `retracted`, `deployed` or the bands, so `headroom`
