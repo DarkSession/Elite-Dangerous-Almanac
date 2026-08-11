@@ -214,6 +214,11 @@ test('fine-grained package subpaths resolve', () => {
     );
 });
 
+test('the ship-loadout subpath exports only its owning facade', async () => {
+    const loadout = await import('@elite-dangerous-almanac/core/ships/ship-loadout');
+    assert.deepEqual(Object.keys(loadout), ['ShipLoadout']);
+});
+
 test('heavy catalogues stay on explicit subpaths', async () => {
     const [astro, ships, planetary, nebulae, modules] = await Promise.all([
         import('@elite-dangerous-almanac/core/astro'),
@@ -718,8 +723,7 @@ test('types are exposed by owning runtime entries, not type-only subpaths', asyn
             [
                 "import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro';",
                 "import type { FittedModule, LoadoutSlot } from '@elite-dangerous-almanac/core/ships';",
-                "import type { FittedModule as LeafModule, LoadoutSlot as LeafSlot } from '@elite-dangerous-almanac/core/ships/ship-loadout';",
-                'declare const values: [GalacticPosition, FittedModule, LoadoutSlot, LeafModule, LeafSlot];',
+                'declare const values: [GalacticPosition, FittedModule, LoadoutSlot];',
                 'void values;',
             ].join('\n'),
         );
