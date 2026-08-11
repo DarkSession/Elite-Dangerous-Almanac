@@ -121,11 +121,16 @@ export interface ShieldInput {
      *
      * @remarks
      * This addition is not multiplied by the generator's curve or the boosters — it is
-     * a flat top-up, and it is added even when the boosters are the only other source.
+     * a flat top-up, and it stands alone when the generator's curve contributes nothing,
+     * as it does for a hull past the generator's maximum mass. With **no** generator
+     * fitted it is dropped entirely, and the reported
+     * {@link ShieldMetrics.reinforcement} is `0`.
      */
     readonly reinforcement?: number;
     /**
-     * Pips to the systems capacitor, `0`–`4`, folded into the reported resistances.
+     * Pips to the systems capacitor, `0`–`4`, folded into the reported resistances when
+     * a generator is fitted; with none, they are reported only as
+     * {@link ShieldMetrics.systemsResistance}.
      * Defaults to `0` — the bare shield, as an outfitting screen shows it.
      */
     readonly systemsPips?: number;
@@ -139,15 +144,23 @@ export interface ShieldMetrics {
     readonly generator: number;
     /** What the boosters add on top of the generator, in megajoules. */
     readonly boosters: number;
-    /** What Guardian shield reinforcement packages add, in megajoules. */
+    /**
+     * What Guardian shield reinforcement packages add, in megajoules. `0` with no
+     * generator, whatever `reinforcement` was passed — a package has no shield to
+     * reinforce.
+     */
     readonly reinforcement: number;
-    /** The generator's strength multiplier at this hull mass. */
+    /** The generator's strength multiplier at this hull mass. `0` with no generator. */
     readonly massCurveMultiplier: number;
-    /** The boosters' combined multiplier, `1` with none fitted (`1.6` = +60%). */
+    /**
+     * The boosters' combined multiplier, `1` with none fitted (`1.6` = +60%). `1` with
+     * no generator, whatever boosters are fitted — there is nothing for them to multiply.
+     */
     readonly boostMultiplier: number;
     /**
      * Effective resistances, generator and boosters stacked with diminishing returns,
-     * and the SYS pips folded in.
+     * and the SYS pips folded in. `0` for every damage type when no generator is fitted;
+     * the pips are then reported only in {@link ShieldMetrics.systemsResistance}.
      */
     readonly resistances: DamageResistances;
     /**
@@ -245,9 +258,15 @@ const boosterResistances = (boosters: readonly ShieldBoosterParams[], type: Dama
  *
  * @param input - The hull's mass and base shield strength, the fitted generator, and
  * any powered boosters, Guardian reinforcement and SYS pips.
- * @returns The {@link ShieldMetrics}. With no generator fitted every figure is `0`
- * and the resistances are the SYS pips alone — a hull with no shields still gets no
- * benefit from them, but the numbers stay well-defined.
+ * @returns The {@link ShieldMetrics}. With no generator fitted there is no shield for
+ * a resistance to apply to: every strength figure is `0` — any `reinforcement` passed is
+ * dropped, since a Guardian package has no shield to reinforce — and `resistances` and
+ * `effectiveHitPoints` are `0` for every damage type, so a hull with no shields gets no
+ * benefit from the SYS pips. The pips are still reported on their own, as
+ * `systemsResistance`. `massCurveMultiplier` is `0` and `boostMultiplier` is `1`,
+ * whatever boosters are fitted, since there is no generator strength to multiply.
+ * @throws {RangeError} If `systemsPips` is not a finite number in `[0, 4]`. The pips are
+ * checked before the generator, so this applies with no generator fitted too.
  * @example
  * ```ts
  * import { shieldMetrics } from '@elite-dangerous-almanac/core/ships/shields';
