@@ -12,7 +12,9 @@ tarball into a scratch project and running it. `npm run check` is green
 **Headline:** there is almost nothing to delete. This is a disciplined codebase
 with essentially no dead code and essentially no duplication. The available wins
 are in **what gets shipped** (build output and data encoding) and in **one
-vocabulary inconsistency**, not in removing source.
+vocabulary inconsistency**, not in removing source. The build-output wins are about
+redundant *mappings and whitespace*, not about dropping source maps — those are
+worth keeping, and the review shows why.
 
 ---
 
@@ -24,8 +26,8 @@ and the error contract, null-on-miss rule and "omit, never zero" rule hold
 everywhere I probed. The barrel documentation does something most data libraries
 skip: it teaches the domain before the API. I would adopt it as-is.
 
-The friction that remains is not structural. It is that the package ships about
-three times more bytes than it needs to, that one catalogue family (nebulae)
+The friction that remains is not structural. It is that the package ships two and a
+half times more bytes than it needs to, that one catalogue family (nebulae)
 skips the project's own data-derivation convention, and that blueprints speak a
 different dialect (`fdname`) from the rest of the library (`symbol`).
 
@@ -186,32 +188,51 @@ further, consider promoting the layers to sub-barrels (`ships/metrics`,
 
 ## 4. Code perspective — optimisations and simplifications
 
-### C1 — Ship no source maps *(3.05 MiB, 47% of the unpacked package)*
+### C1 — Keep the source maps; drop the 94% of them that maps into data
 
-`tsup.config.ts:58` sets `sourcemap: true` with `sourcesContent: false`, and
-`files` ships `dist` but neither `src/` nor `data/`. The maps therefore point at
-files that are not in the package:
+**Keep `sourcemap: true`.** The maps earn their place, and I confirmed it rather
+than assuming. Running a consumer under `--enable-source-maps` against the shipped
+tarball:
 
 ```
-chunk-57TOTKOV.js.map  sources: ["../../data/astro/nebulae-planetary.jsonc",
-                                 "../src/astro/nebulae-planetary.ts"]
-                       sourcesContent: absent
+without:  at #requireSlot (…/dist/chunk-WGJWNMGR.js:1914:13)
+with:     at _ShipLoadout.#requireSlot (…/src/ships/ship-loadout.ts:1619:19)
 ```
 
-No consumer can resolve them. They are 3.05 MiB of the 6.5 MB unpacked package —
-for output that is deliberately unminified and readable as-is.
+A hashed chunk name and a meaningless line number become the real source file and
+line. `sourcesContent: false` costs only the inline code frame, not the remapping —
+so this works even though `src/` is not published.
 
-Measured, excluding `*.map` from `files`:
+The finding is narrower, and it is about *what* the 2.96 MiB of mappings describes.
+Decoding every map in `dist` and attributing each mapping segment to its source:
+
+| Segments map into | Count | Mapping bytes |
+| --- | --- | --- |
+| `.jsonc` data literals | 574,129 (94%) | **2.79 MiB** |
+| `.ts` source | 35,313 (6%) | **0.17 MiB** |
+
+Every stack frame a consumer will ever see lands in the second row. The first row
+describes positions inside frozen object literals — `nebulae-planetary.jsonc`,
+`galactic-region-cells.jsonc`, `blueprints.jsonc` — where no frame can land. The
+debug value of the maps costs 0.17 MiB; the other 2.79 MiB buys nothing.
+
+I prototyped a post-build pass that drops `.jsonc` sources and their segments and
+re-encodes the mappings (~25 lines, using the `@jridgewell/sourcemap-codec` already
+in `devDependencies`), then rebuilt, repacked and re-ran the trace:
 
 | | before | after |
 | --- | --- | --- |
-| unpacked | 6.5 MB | **3.3 MB** |
-| tarball | 629.8 kB | **525.7 kB** |
-| files | 345 | 210 |
+| maps | 2.96 MiB | **0.27 MiB** (−91%) |
+| unpacked | 6.5 MB | **3.6 MB** |
+| tarball | 629.8 kB | 562.6 kB |
+| remapped stack frame | `ship-loadout.ts:1619:19` | **identical** |
 
-*Fix: either drop `sourcemap`, or narrow `files` to `dist/**/*.js` and
-`dist/**/*.d.ts`.* Note `package.test.mjs:620` currently asserts every artifact
-references a map, so that test encodes the decision and would move with it.
+*Fix: add the pruning pass, keep `sourcemap: true`.* The honest cost is that this
+is a **fourth** post-`tsup` pass on a pipeline that already has three (see C7); if
+that is the wrong trade, the alternative is to leave the maps exactly as they are —
+they are correct, and the weight is unpacked size rather than tarball size.
+`package.test.mjs:620` asserts every artifact references a map without embedded
+sources, and would still pass.
 
 ### C2 — Stop pretty-printing the inlined data *(−33% of shipped JS)*
 
@@ -233,9 +254,10 @@ stack-trace names survive):
 | unpacked | 6.5 MB | 5.0 MB |
 
 I rebuilt and re-ran the consumer checks against this build: all documented values
-still correct, import timings unchanged. **Combined with C1, the package goes from
-6.5 MB to roughly 2.2 MB unpacked**, and every downstream bundler processes a
-third less input.
+still correct, import timings unchanged. **Combined with C1 the package goes from
+6.5 MB to 2.6 MB unpacked** (tarball 629.8 → 522.2 kB) with the remapped stack
+frame still landing on `ship-loadout.ts:1619:19` — and every downstream bundler
+processes a third less input.
 
 ### C3 — Nebula records carry 37% redundancy, against the project's own convention
 
@@ -330,7 +352,7 @@ redundant bare imports esbuild emits.
 
 | # | Change | Effect | Risk |
 | --- | --- | --- | --- |
-| 1 | Exclude `*.map` from `files` (or drop `sourcemap`) — **C1** | 6.5 → 3.3 MB unpacked; maps were unresolvable anyway | none; update `package.test.mjs:620` |
+| 1 | Prune `.jsonc` mappings from the maps, keeping `sourcemap: true` — **C1** | maps 2.96 → 0.27 MiB; 6.5 → 3.6 MB unpacked; stack traces unchanged | low; adds a fourth build pass |
 | 2 | `minifyWhitespace: true` in `tsup.config.ts` — **C2** | −33% shipped JS; verified behaviour-identical | none |
 | 3 | Add `buildNebulaCatalogue`; drop `type` and redundant `system` from the data — **C3** | −280 KB on the largest chunk; makes the fourth data domain match the other three | low; public type unchanged |
 | 4 | Rename `fdname` → `symbol` across the engineering catalogues — **F2** | one word for one concept across the whole API | breaking, and welcome per the brief |
@@ -340,7 +362,9 @@ redundant bare imports esbuild emits.
 | 8 | Derive `WeaponStats` via `Pick<>` — **C4** | removes the library's only real duplication and its live doc drift | low |
 | 9 | Unify the engineering catalogues on `readonly T[]` — **F3** | one catalogue shape to learn; retires `findByRawKey` | breaking |
 
-Items 1–3 are pure wins and independent of each other: together they take the
-published package from 6.5 MB to under 2 MB unpacked with no API change at all.
+Items 1–3 are independent of each other and need no API change: together they take
+the published package from 6.5 MB to 2.6 MB unpacked (measured for 1+2; 3 is
+additional) while leaving stack traces, documented values and import timings
+exactly as they are.
 Items 4, 5 and 9 are the breaking changes worth taking now, while nobody depends
 on the package.
