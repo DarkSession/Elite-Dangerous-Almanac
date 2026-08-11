@@ -89,22 +89,29 @@ symbols you are most likely to reach for first:
 
 ## What it costs to import
 
-Three imports dominate everything else, and all are deliberate:
+Sizes below are what a module's import graph weighs once your bundler has minified it,
+before any transport compression — the published package is not minified itself, so its
+own files on disk are larger. The heaviest imports are all deliberate:
 
-- `ships/ship-loadout` is the batteries-included facade. Resolving arbitrary journal
-  module ids and engineering recipes needs the complete ship, module, blueprint-mechanics
-  and experimental-effect-mechanics catalogues. Material shopping lists stay on the
-  explicit `ships/blueprint-costs` and `ships/experimental-effect-costs` subpaths. Import a
-  data-free calculation module instead when you need one answer rather than a whole ship.
+- `ships/ship-loadout` is about 632 KiB, the batteries-included facade. Resolving
+  arbitrary journal module ids and engineering recipes needs the complete ship, module,
+  blueprint-mechanics and experimental-effect-mechanics catalogues. Material shopping
+  lists stay on the explicit `ships/blueprint-costs` and `ships/experimental-effect-costs`
+  subpaths. Import a data-free calculation module instead when you need one answer rather
+  than a whole ship.
 - `astro/nebulae-all` is 682.3 KiB. That is why the nebula query functions take an
   explicit catalogue argument rather than defaulting to the complete one — importing
-  all 5835 records has to be your decision, not a default you did not notice.
-- `astro/codex-region-lookup` is about 473 KiB raw. Its 42-region cell geometry answers
+  all 5835 records has to be your decision, not a default you did not notice. Almost all
+  of that weight is `astro/nebulae-planetary` (645.2 KiB); the sibling catalogues are
+  small, `astro/nebulae-real` being 18.5 KiB, so pick the one that answers your question.
+- `astro/codex-region-lookup` is about 208 KiB. Its 42-region cell geometry answers
   coordinate and id64 lookups, while the separate `astro/codex-region` metadata module is
-  about 14 KiB. The geometry-backed lookup therefore stays off the root and astro barrels.
+  about 9 KiB. The geometry-backed lookup therefore stays off the root and astro barrels.
 
-Everything else is small: materials 16.9 KiB, micro resources 14.9 KiB, commodities
-29.5 KiB. `ships/modules` is 311.9 KiB raw, and `ships/modules-all` 310.8 KiB.
+`ships/modules` is 311.9 KiB and `ships/modules-all` 310.8 KiB — heavier than the codex
+geometry above. It is also the one fallback that costs real weight: of the four
+catalogues a lookup searches when you pass no argument, the other three are small —
+materials 16.9 KiB, micro resources 14.9 KiB, commodities 29.5 KiB.
 
 ## First calls
 

@@ -8,8 +8,9 @@
  * catalogues themselves live in sibling modules, one per class, so you only bundle
  * the ones you ask for:
  *
- * Sizes are the published minified ESM, before any transport compression; the gzipped
- * figure is roughly a fifth of it.
+ * Sizes are each module's import graph once your bundler has minified it — the
+ * published package itself is not minified — before any transport compression; the
+ * gzipped figure is roughly a fifth of it.
  *
  * | Module | Export | Entries | Minified | Gzipped |
  * | --- | --- | --- | --- | --- |
