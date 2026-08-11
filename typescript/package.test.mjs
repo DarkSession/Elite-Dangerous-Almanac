@@ -230,6 +230,89 @@ test('heavy catalogues stay on explicit subpaths', async () => {
     assert.equal(modules.ALL_MODULES.length, 1199);
 });
 
+test('codex-region geometry stays on its explicit lookup subpath', async () => {
+    const [root, astro, lookup] = await Promise.all([
+        import('@elite-dangerous-almanac/core'),
+        import('@elite-dangerous-almanac/core/astro'),
+        import('@elite-dangerous-almanac/core/astro/codex-region-lookup'),
+    ]);
+    const runtimeSymbols = [
+        'findCodexRegionAt',
+        'findCodexRegionForBoxel',
+        'CODEX_REGION_MAP_X0',
+        'CODEX_REGION_MAP_Y0',
+        'CODEX_REGION_MAP_Z0',
+        'CODEX_REGION_MAP_LY_PER_CELL',
+    ];
+    for (const symbol of runtimeSymbols) {
+        assert.ok(!(symbol in root), `${symbol} leaked into the root barrel`);
+        assert.ok(!(symbol in astro), `${symbol} leaked into the astro barrel`);
+        assert.ok(symbol in lookup, `${symbol} is missing from the direct lookup leaf`);
+    }
+    assert.equal(lookup.findCodexRegionAt({ x: 0, z: 0 })?.name, 'Inner Orion Spur');
+    assert.equal(
+        lookup.findCodexRegionForBoxel(3_309_179_996_515).region?.name,
+        'Inner Orion Spur',
+    );
+
+    const [rootTypes, astroTypes, lookupTypes] = await Promise.all([
+        readFile(new URL('./dist/index.d.ts', import.meta.url), 'utf8'),
+        readFile(new URL('./dist/astro/index.d.ts', import.meta.url), 'utf8'),
+        readFile(new URL('./dist/astro/codex-region-lookup.d.ts', import.meta.url), 'utf8'),
+    ]);
+    const declarationsOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const symbol of [...runtimeSymbols, 'CodexRegionPoint', 'BoxelCodexRegionLookup']) {
+        const name = new RegExp(`\\b${symbol}\\b`);
+        assert.doesNotMatch(
+            declarationsOnly(rootTypes),
+            name,
+            `${symbol} leaked into root declarations`,
+        );
+        assert.doesNotMatch(
+            declarationsOnly(astroTypes),
+            name,
+            `${symbol} leaked into astro declarations`,
+        );
+        assert.match(
+            declarationsOnly(lookupTypes),
+            name,
+            `${symbol} is missing from lookup declarations`,
+        );
+    }
+
+    const [rootGraph, astroGraph, lookupGraph] = await Promise.all([
+        readReachableJs(new URL('./dist/index.js', import.meta.url)),
+        readReachableJs(new URL('./dist/astro/index.js', import.meta.url)),
+        readReachableJs(new URL('./dist/astro/codex-region-lookup.js', import.meta.url)),
+    ]);
+    assert.ok(rootGraph.length < 1.5 * 1024 * 1024, `root graph is ${rootGraph.length} bytes`);
+    assert.ok(astroGraph.length < 256 * 1024, `astro graph is ${astroGraph.length} bytes`);
+    assert.ok(lookupGraph.length > 400 * 1024, 'lookup traversal missed its geometry');
+    assert.doesNotMatch(rootGraph, /scaleNumerator/);
+    assert.doesNotMatch(astroGraph, /scaleNumerator/);
+    assert.match(lookupGraph, /scaleNumerator/);
+
+    const files = await reachableJsFiles(
+        new URL('./dist/astro/codex-region-lookup.js', import.meta.url),
+    );
+    const maps = await Promise.all(
+        [...files.values()].map(async (file) =>
+            JSON.parse(await readFile(new URL(`${file.pathname}.map`, 'file:'), 'utf8')),
+        ),
+    );
+    for (const suffix of [
+        'src/astro/codex-region-lookup.ts',
+        'data/astro/galactic-region-cells.jsonc',
+    ]) {
+        const map = maps.find((candidate) =>
+            candidate.sources.some((source) => source.endsWith(suffix)),
+        );
+        assert.ok(map, `codex lookup has no source map entry for ${suffix}`);
+        const index = map.sources.findIndex((source) => source.endsWith(suffix));
+        assert.equal(typeof map.sourcesContent[index], 'string', suffix);
+    }
+});
+
 test('generated public entries contain no redundant bare imports', async () => {
     for (const { file, specifier } of await publicEntries()) {
         const source = await readFile(file, 'utf8');

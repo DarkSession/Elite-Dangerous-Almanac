@@ -35,11 +35,13 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 All three give you the same object. Prefer the leaf import when you know what you want:
 it is the only form that is unambiguous about what gets bundled, and it never depends on
-tree-shaking working. The root barrel is the largest — a 1150.6 KiB import graph.
+tree-shaking working. The root barrel is the largest — about a 1.4 MiB native ESM import
+graph even after its heaviest optional data is excluded.
 
-**The bulk catalogues are reachable only by leaf import.** They were deliberately taken
-off the barrels, because a barrel that re-exported them would pull hundreds of kilobytes
-into every consumer. None of the following is on the root or feature-area barrel:
+**Heavy data-backed modules are reachable only by leaf import.** They were deliberately
+taken off the barrels, because a barrel that re-exported them would pull hundreds of
+kilobytes into native ESM and namespace consumers. None of the following is on the root
+or feature-area barrel:
 
 ```ts
 import { ALL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-all';
@@ -48,6 +50,8 @@ import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
 
 import { ALL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-all';
 import { PLANETARY_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-planetary';
+
+import { findCodexRegionAt } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
 ```
 
 `REAL_NEBULAE` and `PROCGEN_NEBULAE` are the exception among the nebula catalogues — both
@@ -85,7 +89,7 @@ symbols you are most likely to reach for first:
 
 ## What it costs to import
 
-Two imports dominate everything else, and both are deliberate:
+Three imports dominate everything else, and all are deliberate:
 
 - `ships/ship-loadout` is the batteries-included facade. Resolving arbitrary journal
   module ids and engineering recipes needs the complete ship, module, blueprint-mechanics
@@ -95,6 +99,9 @@ Two imports dominate everything else, and both are deliberate:
 - `astro/nebulae-all` is 682.3 KiB. That is why the nebula query functions take an
   explicit catalogue argument rather than defaulting to the complete one — importing
   all 5835 records has to be your decision, not a default you did not notice.
+- `astro/codex-region-lookup` is about 473 KiB raw. Its 42-region cell geometry answers
+  coordinate and id64 lookups, while the separate `astro/codex-region` metadata module is
+  about 14 KiB. The geometry-backed lookup therefore stays off the root and astro barrels.
 
 Everything else is small: materials 16.9 KiB, micro resources 14.9 KiB, commodities
 29.5 KiB. `ships/modules` is 311.9 KiB raw, and `ships/modules-all` 310.8 KiB.

@@ -31,8 +31,9 @@ import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 ```
 
-The heavyweight module registries and planetary/combined nebula catalogues are only
-exported from their leaf subpaths, not the root or feature barrels.
+The heavyweight module registries, planetary/combined nebula catalogues and codex-region
+coordinate lookup are only exported from their leaf subpaths, not the root or feature
+barrels.
 
 The package has four feature areas:
 

@@ -63,18 +63,22 @@ Use `sectorNameFromGalacticPosition` when starting from an ordinary galactic pos
 
 Elite Dangerous uses “region” for several different concepts:
 
-| Concept                           | Entry point                                                    |
-| --------------------------------- | -------------------------------------------------------------- |
-| Procedural sector name            | `sectorNameFromGalacticPosition`, `sectorNameFromGridPosition` |
-| Naming-region origin used by id64 | `resolveNamingRegionOrigin`                                    |
-| Hand-authored named sector        | `findHandAuthoredRegionAt`                                     |
-| Galactic codex region             | `findCodexRegionAt`, `findCodexRegionForBoxel`                 |
-| Nebula catalogue entry            | `nearestNebulae`, `nebulaeWithin`, `getNebulaByName`           |
+| Concept                           | Entry point                                                                                |
+| --------------------------------- | ------------------------------------------------------------------------------------------ |
+| Procedural sector name            | `sectorNameFromGalacticPosition`, `sectorNameFromGridPosition`                             |
+| Naming-region origin used by id64 | `resolveNamingRegionOrigin`                                                                |
+| Hand-authored named sector        | `findHandAuthoredRegionAt`                                                                 |
+| Galactic codex region             | `findCodexRegionAt`, `findCodexRegionForBoxel` (direct `astro/codex-region-lookup` import) |
+| Nebula catalogue entry            | `nearestNebulae`, `nebulaeWithin`, `getNebulaByName`                                       |
 
 Nebula query functions require an explicit catalogue. Import `REAL_NEBULAE`,
 `PROCGEN_NEBULAE`, `PLANETARY_NEBULAE`, or `ALL_NEBULAE` according to the data
 you need from its `astro/nebulae-*` subpath; the heavyweight planetary and combined
 catalogues are not exported by the general barrels.
+
+The codex-region coordinate lookup likewise stays on its explicit
+`astro/codex-region-lookup` subpath because its map geometry is large. Lightweight codex
+metadata and id/name lookups remain on the general astro and root barrels.
 
 ### Ships and loadouts
 
