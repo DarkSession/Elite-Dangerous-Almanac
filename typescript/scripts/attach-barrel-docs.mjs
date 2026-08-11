@@ -4,7 +4,7 @@
  * Re-attach each barrel's `@packageDocumentation` block to its generated
  * declaration file.
  *
- * The barrels (`src/index.ts`, `src/astro/index.ts`, …) carry the library's
+ * The feature barrels (`src/astro/index.ts`, `src/ships/index.ts`, …) carry the library's
  * orientation documentation: what the feature area is for, which symbol to start
  * with, and the domain traps a consumer walks into otherwise (the four meanings of
  * "region", the two `{x, y, z}` conventions, what `ShipLoadout` costs to import).
@@ -35,7 +35,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 /** Barrels whose `@packageDocumentation` must reach the published declarations. */
-const BARRELS = ['index', 'astro/index', 'ships/index', 'materials/index', 'commodities/index'];
+const BARRELS = ['astro/index', 'ships/index', 'materials/index', 'commodities/index'];
 
 /**
  * Read the leading block comment of a source file.

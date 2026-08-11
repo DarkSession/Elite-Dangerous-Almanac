@@ -45,10 +45,6 @@
         "typescript"
     ],
     "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
-        },
         "./astro": {
             "types": "./dist/astro/index.d.ts",
             "import": "./dist/astro/index.js"
@@ -330,9 +326,6 @@
         },
         "./ships/internal/*": null
     },
-    "main": "./dist/index.js",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts",
     "files": [
         "dist",
         "README.md",

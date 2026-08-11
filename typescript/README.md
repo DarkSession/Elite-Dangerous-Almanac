@@ -24,6 +24,8 @@ Use a feature barrel when a bundler will tree-shake it:
 import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro';
 ```
 
+There is no package-wide root entry; choose one of the four feature areas or a leaf.
+
 Use leaf subpaths to avoid evaluating unrelated data modules in native ESM:
 
 ```ts
@@ -32,8 +34,7 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 ```
 
 The heavyweight module registries, planetary/combined nebula catalogues and codex-region
-coordinate lookup are only exported from their leaf subpaths, not the root or feature
-barrels.
+coordinate lookup are only exported from their leaf subpaths, not the feature barrels.
 
 The package has four feature areas:
 
