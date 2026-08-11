@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { decode } from '@jridgewell/sourcemap-codec';
 import { build } from 'esbuild';
 import { stripBareImports } from './scripts/strip-bare-imports.mjs';
 
@@ -60,6 +61,29 @@ async function reachableJsFiles(entry, seen = new Map()) {
         if (specifier) await reachableJsFiles(new URL(specifier, entry), seen);
     }
     return seen;
+}
+
+async function builtFilesEndingWith(
+    suffix,
+    directory = new URL('./dist/', import.meta.url),
+    files = [],
+) {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+        if (entry.isDirectory()) {
+            await builtFilesEndingWith(suffix, new URL(`${entry.name}/`, directory), files);
+        } else if (entry.name.endsWith(suffix)) {
+            files.push(new URL(entry.name, directory));
+        }
+    }
+    return files;
+}
+
+function referencedSourceIndexes(map) {
+    return new Set(
+        decode(map.mappings).flatMap((line) =>
+            line.filter((segment) => segment.length >= 4).map((segment) => segment[1]),
+        ),
+    );
 }
 
 async function publicEntries(directory = new URL('./dist/', import.meta.url), subpath = '') {
@@ -309,7 +333,7 @@ test('codex-region geometry stays on its explicit lookup subpath', async () => {
         );
         assert.ok(map, `codex lookup has no source map entry for ${suffix}`);
         const index = map.sources.findIndex((source) => source.endsWith(suffix));
-        assert.equal(typeof map.sourcesContent[index], 'string', suffix);
+        assert.ok(referencedSourceIndexes(map).has(index), `${suffix} has no mapped segment`);
     }
 });
 
@@ -598,23 +622,41 @@ test('data provenance references in the declarations are followable off-package'
     assert.ok(checked.length > 20, `expected many provenance references, found ${checked.length}`);
 });
 
-test('the package ships source maps with embedded original sources', async () => {
-    const files = await reachableJsFiles(new URL('./dist/ships/ship-loadout.js', import.meta.url));
-    const maps = await Promise.all(
-        [...files.values()].map(async (file) =>
-            JSON.parse(await readFile(new URL(`${file.pathname}.map`, 'file:'), 'utf8')),
-        ),
-    );
-    const implementationMap = maps.find((map) =>
-        map.sources.some((source) => source.endsWith('/src/ships/ship-loadout.ts')),
-    );
-    assert.ok(implementationMap, 'expected a reachable map for ship-loadout.ts');
-    assert.equal(implementationMap.version, 3);
-    assert.equal(implementationMap.sources.length, implementationMap.sourcesContent.length);
-    assert.ok(implementationMap.sourcesContent.every((source) => typeof source === 'string'));
+test('every JavaScript artifact references a source map without embedded sources', async () => {
+    const [javascriptFiles, mapFiles] = await Promise.all([
+        builtFilesEndingWith('.js'),
+        builtFilesEndingWith('.js.map'),
+    ]);
+    assert.ok(javascriptFiles.length > 100, 'expected the complete built package');
+    assert.equal(mapFiles.length, javascriptFiles.length);
+
+    const mapUrls = new Set(mapFiles.map((file) => file.href));
+    for (const javascriptFile of javascriptFiles) {
+        const mapFile = new URL(`${javascriptFile.href}.map`);
+        assert.ok(mapUrls.has(mapFile.href), `${javascriptFile.pathname} has no source map`);
+
+        const [javascript, map] = await Promise.all([
+            readFile(javascriptFile, 'utf8'),
+            readFile(mapFile, 'utf8').then(JSON.parse),
+        ]);
+        const mapName = mapFile.pathname.split('/').at(-1);
+        assert.ok(
+            javascript.trimEnd().endsWith(`//# sourceMappingURL=${mapName}`),
+            `${javascriptFile.pathname} does not reference its source map`,
+        );
+        assert.equal(map.version, 3, mapFile.pathname);
+        assert.ok(!Object.hasOwn(map, 'sourcesContent'), `${mapFile.pathname} embeds sources`);
+        if (map.sources.length > 0) {
+            assert.ok(map.mappings.length > 0, `${mapFile.pathname} has no mappings`);
+            assert.ok(
+                referencedSourceIndexes(map).size > 0,
+                `${mapFile.pathname} maps no original source`,
+            );
+        }
+    }
 });
 
-test('engineering cost source maps embed their TypeScript and JSONC sources', async () => {
+test('engineering cost source maps retain TypeScript and JSONC source paths', async () => {
     for (const [entry, expected] of [
         ['blueprint-costs', ['src/ships/blueprint-costs.ts', 'data/ships/blueprint-costs.jsonc']],
         [
@@ -637,7 +679,7 @@ test('engineering cost source maps embed their TypeScript and JSONC sources', as
             );
             assert.ok(map, `${entry} has no source map entry for ${suffix}`);
             const index = map.sources.findIndex((source) => source.endsWith(suffix));
-            assert.equal(typeof map.sourcesContent[index], 'string', suffix);
+            assert.ok(referencedSourceIndexes(map).has(index), `${suffix} has no mapped segment`);
         }
     }
 });
