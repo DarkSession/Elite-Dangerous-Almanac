@@ -75,6 +75,13 @@ The reason for the pair is that the alternative is worse: an unclassifiable carg
 counted as zero would produce a plausible, wrong total that no one would question. A
 `null` with a list of what was missing cannot be mistaken for an answer.
 
+**A figure the import already stated wins, and comes back complete.** These three are
+computed only when the source did not supply them, so a build read from a `Loadout` event
+— which states `UnladenMass`, `CargoCapacity` and `FuelCapacity` — reports the game's own
+numbers with no issues, whatever the catalogue made of the modules. The pair engages for a
+build you assembled yourself, or one whose source left the figure out. On an imported
+build, `validation` is what tells you a module went unrecognised.
+
 **Absent is not zero, anywhere in the library.** A catalogue field the source did not
 carry is omitted rather than defaulted, and a capture that priced no module for a slot
 reports `null` rather than `0` — a cockpit no journal prices was not free.
