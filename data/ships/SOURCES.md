@@ -99,7 +99,7 @@ unrelated symbol.
 **`passenger` rests on a capture as well as on EDSY**, and needs to. `PASSENGER` is the
 one restricted family absent from EDSY's journal import map and its `ipc` eligibility
 check is commented out in `edsy.js`, so the reservation alone confirmed no journal
-spelling. `fixtures/ships/slef-inara-lynx-highliner.json` settles it: its `passenger01`,
+spelling. `fixtures/ships/slef-inara-lynx-highliner.jsonc` settles it: its `passenger01`,
 `passenger02` and `passenger03` each hold an `int_mkii_passengercabin_*`, spelled
 exactly as the numbering rules and the stored names give them. The catalogue itself
 corroborates independently — the Lynx's `Slot02_Size5` follows the three cabin mounts,
@@ -131,7 +131,7 @@ EDSY's own — `edsy.js` reads them in `Build.fromJournal()` and writes them in
 names at all, so the corroborating source has to be captures, and five are in hand —
 four SLEF exports and one journal — covering four of the 13 hulls with names of their
 own (below). One is a journal rather
-than an export: `journal-lynx-highliner.json` gives Frontier's own casing for a hull the
+than an export: `journal-lynx-highliner.jsonc` gives Frontier's own casing for a hull the
 Inara export already covers in lower case, and one thing that export does not — its
 `PlanetaryApproachSuite` mount. All 29 outfitting keys bind to the stored layout; its
 seven cosmetic slots (`WeaponColour`, `Decal1`–`3`, `EngineColour`, `VesselVoice`,
@@ -195,9 +195,9 @@ EDSY's journal import map lists `HUGEMININGHARDPOINT`, `LARGEMININGHARDPOINT`,
 evidence that these are the game's strings.
 
 **Checked against real captures.** Five exports are asserted key by key against the
-hull's enumerated layout in `slots.test.ts`: `slef-the-deep-black.json` (Caspian
-Explorer), `slef-inara-type-11.json`, `slef-inara-lynx-highliner.json`,
-`slef-inara-panther-mkii.json` and `slef-inara-cutter-antixeno.json`. The Caspian
+hull's enumerated layout in `slots.test.ts`: `slef-the-deep-black.jsonc` (Caspian
+Explorer), `slef-inara-type-11.jsonc`, `slef-inara-lynx-highliner.jsonc`,
+`slef-inara-panther-mkii.jsonc` and `slef-inara-cutter-antixeno.jsonc`. The Caspian
 capture is the load-bearing one: its internals read `Slot01_Size7`…`Slot10_Size3`,
 `Slot13_Size1`, `Slot14_Size1`, all of which the plain numbering produces — evidence for
 leaving that hull's optionals alone rather than assuming EDSY simply omitted them. The
@@ -235,7 +235,7 @@ and targeted fit assertions.
   Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
   the names `Passenger01`–`Passenger03`, sourced above. A final size-1
   `planetaryApproachSuite` mount named `PlanetaryApproachSuite` comes directly from
-  `fixtures/ships/journal-lynx-highliner.json`, which fits
+  `fixtures/ships/journal-lynx-highliner.jsonc`, which fits
   `int_planetapproachsuite_advanced` there; that capture carries its own provenance in
   its file header.
 
@@ -345,7 +345,7 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     journal (and this catalogue) report the combined shots per second, so it is
     computed as `burst / ((burst − 1) / burstRateOfFire + fireInterval)`. Coriolis
     (`Module.getRoF`) and EDSY (`rof = fpc / spc`) also fold `chargeTime` into this
-    figure, but Frontier does not: `journal-federation-corvette-mixed.json` states
+    figure, but Frontier does not: `journal-federation-corvette-mixed.jsonc` states
     `RateOfFire` base values of 1.587302 for the small rail gun and 1.204819 for the
     medium, exactly `1 / burstInterval` in both cases. Charge time is therefore kept as
     the delay before impact but excluded from the reported firing cadence.
@@ -420,7 +420,7 @@ all 1902 declared engineering entries in the build corpus resolve.
   sensor suite's as kilometres (`5.76` for the 8D suite, `5760` here) and a utility
   scanner's as metres. `probeRadius` is stored as a **percentage** (`20`), not a
   fraction: that is EDSY's form, coriolis's `proberadius: 0.2` the other, and
-  `fixtures/ships/journal-krait-phantom.json` settles it — the game reports the Detailed
+  `fixtures/ships/journal-krait-phantom.jsonc` settles it — the game reports the Detailed
   Surface Scanner's `DSS_PatchRadius` as `20` → `28` for a grade-4 Expanded Probe
   Scanning Radius roll. `interdictorRange` is **seconds to intercept**, the unit the
   game measures a supercruise separation in, not a distance. `refuelRate` is tonnes per
@@ -567,7 +567,7 @@ resolved per record; `DamageFalloffRange` is the
 `FuelScoop_Efficiency` recipe calls `RefuelRate`. The nineteen readings behind the three
 agree. Each also reaches a consumer: a sensor's engineered range resolves to the field a
 sensor actually carries, so `effectiveStats` reports the 13 440 m
-`journal-federation-corvette-beams.json` states rather than writing it to a
+`journal-federation-corvette-beams.jsonc` states rather than writing it to a
 `maximumRange` no scanner has. The same resolution covers utility scanners, whose
 distance also lives only in `scannerRange`. Without the fuel-scoop pairing a journal's
 scoop-rate roll resolved to nothing and vanished from `effectiveStats` in silence, which
@@ -595,7 +595,7 @@ their own.
 **Eighteen weapons have a `DamagePerSecond` a capture states outright.** They are the only external readings of an
 **unmodified** weapon's folded figure: in-game verification reads the stored inputs one
 at a time, and the one product it does hold — a decorative flak launcher's panel DPS, in
-`fixtures/ships/engineering.json` — is a modified weapon read to one decimal. On a beam
+`fixtures/ships/engineering.jsonc` — is a modified weapon read to one decimal. On a beam
 laser the fold is trivial, because a beam's damage is already per second, and
 `inGameVerifiedValues` pins that figure for six beams; the huge and medium gimballed
 beams are the two a capture reads that it does not, so on those this is the only check
@@ -801,7 +801,7 @@ Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
     already-absent `cost` _means_, and `cost` is `undefined` to a consumer either way.
     Using an unpinned page to add a price or a module would need the pin first.
   - **A capture reporting a `Value` was checked and rejected.**
-    `fixtures/ships/slef-inara-cutter-antixeno.json` fits five of these racks. Its two
+    `fixtures/ships/slef-inara-cutter-antixeno.jsonc` fits five of these racks. Its two
     size-6 records carry **no `Value` at all**; its size-5 carries `Value: 318174`. That
     is not a list price, and the same export is what proves it: the two size-4 racks in it
     read **82 774** and **91 970** against the one list price of 94 330 — about 12.25% and
@@ -855,10 +855,10 @@ Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
     - **Sources.** EDSY refuses a reserved `icr` outside a slot named `CARGO*`, and
       coriolis-data carries `"restriction": "Cargo"` on the module; the same shape holds
       for the Mk II Mining Multi-Limpet Controller against `LIMPETCONTROLLER*`.
-      `fixtures/ships/slef-inara-panther-mkii.json` shows the game agreeing: its two Mk II
+      `fixtures/ships/slef-inara-panther-mkii.jsonc` shows the game agreeing: its two Mk II
       racks sit in `cargo01` and `cargo02` while its _unrestricted_ `slot01_size8` and
       `slot02_size7` carry ordinary racks — a build that could not exist if the
-      reservation were about size. `fixtures/ships/slef-inara-type-11.json` does the same
+      reservation were about size. `fixtures/ships/slef-inara-type-11.jsonc` does the same
       for the controller, in `limpetcontroller01`.
     - **The field is deliberately narrow.** It says a module fits _only_ mounts with that
       restriction, so it is wrong on anything the game also sells for an ordinary
@@ -1236,7 +1236,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   journal's own values take precedence over the effect catalogue. The nested label
   mapping treats an absent base share as 0%.
 
-  `journal-federation-corvette.json` independently settles High Yield Shell, stating
+  `journal-federation-corvette.jsonc` independently settles High Yield Shell, stating
   `$Kinetic;` 100 → 50 and `$Explosive;` 0 → 50 for its large gimballed cannon. The
   shared `capturedBaseStats.convertedDamageDistributions` fixture pins that import through
   effective stats and weapon metrics. Three remains a lower bound rather than a count:
@@ -1600,7 +1600,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   - **The clip leg stops at the multi-cannon, and Frontier says so.** The 26 clip-bearing
     modules the other groups hold — 12 cannons, 10 fragment cannons and four plasma
     accelerators — fold no clip change, and the game agrees on all three groups.
-    `fixtures/ships/journal-federation-corvette.json` carries a **large gimballed cannon
+    `fixtures/ships/journal-federation-corvette.jsonc` carries a **large gimballed cannon
     under `Weapon_Overcharged` at grade 5, quality 1**, with High Yield Shell. Its eight
     `Modifiers` are `DamagePerSecond`, `Damage`, `DistributorDraw`, `ThermalLoad`,
     `RateOfFire` and the experimental's three-part damage-type split — and **no
@@ -1617,7 +1617,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
       `DamagePerSecond` is the product of the two, as it is before the roll. Every number
       in the block is accounted for and none of them is a clip.
     - **A fragment cannon says the same, at a different grade and an interpolated
-      quality.** `fixtures/ships/journal-federation-corvette-plasma.json` carries a
+      quality.** `fixtures/ships/journal-federation-corvette-plasma.jsonc` carries a
       **medium fixed fragment cannon under `Weapon_Overcharged` at grade 4, quality
       0.826**, with Corrosive Shell. Its five `Modifiers` are `DamagePerSecond`,
       `Damage`, `DistributorDraw`, `ThermalLoad` and the experimental's `AmmoMaximum`
@@ -1638,7 +1638,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
       endpoints, which says the roll was a genuine interpolated one rather than a
       full-quality craft.
     - **A plasma accelerator closes the third group, at a third grade.**
-      `fixtures/ships/journal-caspian-explorer.json` carries a **medium fixed plasma
+      `fixtures/ships/journal-caspian-explorer.jsonc` carries a **medium fixed plasma
       accelerator under `Weapon_Overcharged` at grade 1, quality 1**, with no
       experimental. Its four
       `Modifiers` are `DamagePerSecond`, `Damage`, `DistributorDraw` and `ThermalLoad` —
@@ -1965,7 +1965,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     Worth stating plainly, because the blueprint name invites the opposite reading: the
     Shard's `MaximumRange` ×1.7647 with `FalloffRange` ×0.88235 is **not** a Long Range
     roll of any grade. It is a bespoke stat block, as every reward variant's is.
-    Frontier's `journal-anaconda-slapaconda.json` capture directly reads the medium
+    Frontier's `journal-anaconda-slapaconda.jsonc` capture directly reads the medium
     variant's projectile speed as 6299.208984 m/s. The stored overwrite is the authored
     decimal **6299.209 m/s**, with the journal residue treated as float noise, and supersedes
     EDSY's 3568.6 m/s preset-derived result for that one field. The current fixed-medium

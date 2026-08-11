@@ -1,0 +1,39 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "federation-dropship-mining-2",
+  "ship": "Federation_Dropship",
+  "role": "mining",
+  "modules": [
+    { "slot": "Armour", "item": "Federation_Dropship_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size6_Class1" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class1" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class1" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size5_Class1" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size6_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class1" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_MiningLaser_Fixed_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_MiningLaser_Fixed_Medium" },
+    { "slot": "Slot01_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot02_Size5", "item": "Int_DroneControl_Collection_Size5_Class5" },
+    { "slot": "Slot03_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot04_Size4", "item": "Int_CargoRack_Size4_Class1" },
+    { "slot": "Slot05_Size3", "item": "Int_DroneControl_Collection_Size3_Class5" },
+    { "slot": "Slot06_Size3", "item": "Int_Refinery_Size3_Class5" },
+    { "slot": "Slot09_Size2", "item": "Int_DroneControl_Prospector_Size1_Class5" }
+  ],
+  "metrics": {
+    "unladenMass": 795.3,
+    "cargoCapacity": 112,
+    "fuelCapacity": 16,
+    "maxJumpRange": 7.193307,
+    "power": { "available": 16.8, "retracted": 8.96, "deployed": 10.46, "withinBudget": true },
+    "shields": null,
+    "armour": { "hitPoints": 540, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 2, "damagePerSecond": 8, "sustainedDamagePerSecond": 8 }
+  }
+}

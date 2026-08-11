@@ -1,0 +1,153 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Expected ShipLoadout jump/fuel outputs. The flat keys below cover
+ * fixtures/ships/slef-the-deep-black.json and match EDSY's own MaxJumpRange; `builds` adds further
+ * hulls, each naming the artifact it reads and the figure its source asserts. Cross-language
+ * validation target.
+ */
+{
+  "ship": "explorer_nx",
+  "frameShiftDrive": {
+    "symbol": "int_hyperdrive_overcharge_size8_class5_overchargebooster_mkii",
+    "optMass": 7528.04,
+    "maxFuel": 6.8,
+    "fuelMul": 0.011,
+    "fuelPower": 2.5025,
+    "jumpBoost": 10.5
+  },
+  "unladenMass": 1237.3,
+  "mainFuel": 128,
+  "cargoCapacity": 16,
+  "maxJumpRange": 89.414678,
+  "edsyMaxJumpRange": 89.414678,
+  "unladenJumpRange": 82.409288,
+  "ladenJumpRange": 81.576342,
+  "totalRange": 1625.166,
+  "fuelPerJump50Ly": 1.9474,
+  "invalidInputs": [
+    {
+      "function": "singleJumpRange",
+      "field": "mass",
+      "value": -1
+    },
+    {
+      "function": "singleJumpRange",
+      "field": "fuel",
+      "value": "NaN"
+    },
+    {
+      "function": "singleJumpRange",
+      "field": "optMass",
+      "value": 0
+    },
+    {
+      "function": "fuelPerJump",
+      "field": "distance",
+      "value": "Infinity"
+    },
+    {
+      "function": "fuelPerJump",
+      "field": "fuelPower",
+      "value": 0
+    },
+    {
+      "function": "totalRange",
+      "field": "fuel",
+      "value": -1
+    },
+    {
+      "function": "totalRange",
+      "field": "jumpBoost",
+      "value": -1
+    }
+  ],
+  "excessiveJumpCount": {
+    "mass": 1000,
+    "fuel": 100001,
+    "maxFuel": 1,
+    "error": "workload-limit"
+  },
+  "tinyFuel": {
+    "mass": 1000,
+    "fuel": 5e-324,
+    "minimumRange": 10.5
+  },
+  "overflowingTotal": {
+    "mass": 0,
+    "fuel": 2,
+    "frameShiftDrive": {
+      "optMass": 1.3e308,
+      "maxFuel": 1,
+      "fuelMul": 1,
+      "fuelPower": 1,
+      "jumpBoost": 0
+    },
+    "error": "non-finite-result"
+  },
+  "builds": {
+    "kraitPhantom": {
+      "build": "fixtures/ships/journal-krait-phantom.json",
+      "note": "A real journal capture, so `sourceMaxJumpRange` is Frontier's own figure rather than a third-party calculator's. Engineered Long Range drive plus a Guardian FSD Booster.",
+      "ship": "krait_light",
+      "frameShiftDrive": {
+        "optMass": 1618.259888,
+        "maxFuel": 5.5,
+        "fuelMul": 0.012,
+        "fuelPower": 2.45,
+        "jumpBoost": 10.5
+      },
+      "unladenMass": 388.830017,
+      "mainFuel": 32,
+      "cargoCapacity": 32,
+      "sourceMaxJumpRange": 60.547791,
+      "maxJumpRange": 60.547794,
+      "unladenJumpRange": 57.396245,
+      "ladenJumpRange": 54.082242,
+      "totalUnladenRange": 350.090753,
+      "totalLadenRange": 329.156774
+    },
+    "viperMkIV": {
+      "build": "fixtures/ships/journal-viper-mkiv.json",
+      "note": "A real journal capture of a wholly UNENGINEERED build, so `sourceMaxJumpRange` is Frontier's own figure for a drive that performs exactly as the catalogue sells it. The Krait Phantom above agrees with the game only after Long Range and a Guardian booster are folded in; this one agrees with nothing folded in, which is what checks the base FSD stats and module masses themselves.",
+      "ship": "viper_mkiv",
+      "frameShiftDrive": {
+        "optMass": 525,
+        "maxFuel": 3,
+        "fuelMul": 0.012,
+        "fuelPower": 2.3,
+        "jumpBoost": 0
+      },
+      "unladenMass": 260.799988,
+      "mainFuel": 16,
+      "cargoCapacity": 0,
+      "sourceMaxJumpRange": 21.951651,
+      "maxJumpRange": 21.951649,
+      "unladenJumpRange": 20.920683,
+      "ladenJumpRange": 20.920683,
+      "totalUnladenRange": 120.666505,
+      "totalLadenRange": 120.666505
+    },
+    "pythonMkII": {
+      "build": "fixtures/ships/journal-python-mkii-antixeno.json",
+      "note": "A second wholly UNENGINEERED journal capture, on a hull and a drive class the Viper MkIV does not reach: a size-5 class-3 SCO drive in a 699t anti-xeno Python MkII. `sourceMaxJumpRange` is Frontier's own figure for a drive performing exactly as the catalogue sells it, so agreement here checks the SCO drive constants and the module masses with nothing folded in. Unlike the Viper this build carries cargo, so laden and unladen are different jumps.",
+      "ship": "python_nx",
+      "frameShiftDrive": {
+        "optMass": 1050,
+        "maxFuel": 5,
+        "fuelMul": 0.012,
+        "fuelPower": 2.45,
+        "jumpBoost": 0
+      },
+      "unladenMass": 699.0,
+      "mainFuel": 16,
+      "cargoCapacity": 8,
+      "sourceMaxJumpRange": 17.495169,
+      "maxJumpRange": 17.49517,
+      "unladenJumpRange": 17.226014,
+      "ladenJumpRange": 17.035408,
+      "totalUnladenRange": 61.165878,
+      "totalLadenRange": 60.482891
+    }
+  }
+}

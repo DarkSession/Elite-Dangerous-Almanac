@@ -1,0 +1,555 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Ground truth for the engineering catalogues (data/ships/blueprints.jsonc,
+ * experimental-effects.jsonc and decorative-modifications.jsonc): the per-grade modifier legs and
+ * material recipes a blueprint applies, each experimental effect's modifiers and one-application
+ * cost, the three decorative transformations, the journal spellings that collide, and the
+ * engineered results those fold to.
+ */
+{
+  "anchor": {
+    "blueprint": "FSD_LongRange",
+    "grade": 5,
+    "quality": 1,
+    "experimental": "special_fsd_heavy",
+    "base": {
+      "FSDOptimalMass": 4670,
+      "Mass": 160,
+      "Integrity": 188,
+      "PowerDraw": 1.05
+    },
+    "expected": {
+      "FSDOptimalMass": 7528.04,
+      "Mass": 208,
+      "Integrity": 147.016,
+      "PowerDraw": 1.2075
+    }
+  },
+  "preEngineeredClimb": {
+    "description": "A module bought already engineered can be taken further at an engineer, and `applyBlueprint` accepts its Operations id on the module that is sold carrying it even though no engineering menu lists one. The Mercenary Module Reinforcement Package is the case that proves the route: it has no menu at all. It arrives at grade 1, so its recipe defines grades 2-5 only — asking for grade 1 is asking to recreate the purchase, which no recipe can do.",
+    "symbol": "Int_ModuleReinforcement_Size5_Class2",
+    "blueprint": "ModuleReinforcement_HeavyDuty",
+    "soldAtGrade": 1,
+    "gradeUnavailable": 1,
+    "grade": 2,
+    "quality": 1,
+    "base": { "DamageProtection": 60, "Integrity": 350, "Mass": 16 },
+    "expected": {
+      "DamageProtection": 64.98,
+      "Integrity": 379.05,
+      "Mass": 21.328
+    }
+  },
+  "scannerIdCollision": {
+    "description": "One journal `BlueprintName`, two recipes. The game writes `Sensor_LongRange` and `Sensor_WideAngle` for both the internal sensor suite's modification and the KWS/manifest/wake scanners', and the two roll different stats in opposite directions — Long Range costs the suite mass and the scanner power draw, Wide Angle the reverse. `blueprints.jsonc` keys the scanner side under `Scanner_LongRange` / `Scanner_WideAngle`, the spelling the scanner menus list, so which numbers apply is a fact about the fitted module and not about the id. The top-level `journalNames` pins the blueprint side of this and of every other id of the shape. Resolution is those facts read against a module's menu, so an implementation needs no third list. Each case pins the same id on both families at the same grade and quality: `resolved` is the `BLUEPRINTS` key the module rolls, `modifiers` the exact `Engineering.Modifiers` block that follows. The corpus entry this comes from is a wake scanner declaring `Sensor_LongRange` at grade 3 (`type9-military-combat-3`, an EDSY-authored build). `refused` pins the direction the resolution does not run: a sensor suite is not thereby offered the scanner's id.",
+    "grade": 3,
+    "quality": 1,
+    "cases": [
+      {
+        "symbol": "Int_Sensors_Size4_Class5",
+        "blueprint": "Sensor_LongRange",
+        "resolved": "Sensor_LongRange",
+        "base": {
+          "Mass": 10,
+          "PowerDraw": 1.02,
+          "ScannerRange": 6720,
+          "SensorTargetScanAngle": 30
+        },
+        "modifiers": [
+          { "Label": "Mass", "Value": 16, "OriginalValue": 10 },
+          {
+            "Label": "SensorTargetScanAngle",
+            "Value": 24,
+            "OriginalValue": 30
+          },
+          { "Label": "ScannerRange", "Value": 9744, "OriginalValue": 6720 }
+        ]
+      },
+      {
+        "symbol": "Hpt_CloudScanner_Size0_Class5",
+        "blueprint": "Sensor_LongRange",
+        "resolved": "Scanner_LongRange",
+        "base": {
+          "Mass": 1.3,
+          "PowerDraw": 3.2,
+          "ScannerRange": 4000,
+          "SensorTargetScanAngle": 15,
+          "ScannerTimeToScan": 10
+        },
+        "modifiers": [
+          { "Label": "PowerDraw", "Value": 4.16, "OriginalValue": 3.2 },
+          {
+            "Label": "SensorTargetScanAngle",
+            "Value": 12,
+            "OriginalValue": 15
+          },
+          { "Label": "ScannerRange", "Value": 6880, "OriginalValue": 4000 }
+        ]
+      },
+      {
+        "symbol": "Int_Sensors_Size4_Class5",
+        "blueprint": "Sensor_WideAngle",
+        "resolved": "Sensor_WideAngle",
+        "base": {
+          "Mass": 10,
+          "PowerDraw": 1.02,
+          "ScannerRange": 6720,
+          "SensorTargetScanAngle": 30
+        },
+        "modifiers": [
+          { "Label": "PowerDraw", "Value": 1.326, "OriginalValue": 1.02 },
+          {
+            "Label": "SensorTargetScanAngle",
+            "Value": 66,
+            "OriginalValue": 30
+          },
+          { "Label": "ScannerRange", "Value": 5913.6, "OriginalValue": 6720 }
+        ]
+      },
+      {
+        "symbol": "Hpt_CloudScanner_Size0_Class5",
+        "blueprint": "Sensor_WideAngle",
+        "resolved": "Scanner_WideAngle",
+        "base": {
+          "Mass": 1.3,
+          "PowerDraw": 3.2,
+          "ScannerRange": 4000,
+          "SensorTargetScanAngle": 15,
+          "ScannerTimeToScan": 10
+        },
+        "modifiers": [
+          { "Label": "Mass", "Value": 2.08, "OriginalValue": 1.3 },
+          {
+            "Label": "SensorTargetScanAngle",
+            "Value": 33,
+            "OriginalValue": 15
+          },
+          { "Label": "ScannerTimeToScan", "Value": 13, "OriginalValue": 10 }
+        ]
+      }
+    ],
+    "refused": [
+      {
+        "symbol": "Int_Sensors_Size4_Class5",
+        "blueprint": "Scanner_LongRange"
+      },
+      {
+        "symbol": "Int_Sensors_Size4_Class5",
+        "blueprint": "Scanner_WideAngle"
+      },
+      {
+        "symbol": "Hpt_CloudScanner_Size0_Class5",
+        "blueprint": "Sensor_LightWeight"
+      }
+    ]
+  },
+  "overchargedIdCollision": {
+    "description": "The same shape as `scannerIdCollision` and by far the commoner case: the game writes `Weapon_Overcharged` for every weapon's Overcharged, but a multi-cannon's also cuts the clip 3-15% and a cannon's does not, so `blueprints.jsonc` keys the clip-carrying side under `MC_Overcharged` — the spelling the multi-cannon menus list. 70 of the build corpus's 1902 declared entries need this resolution, against one for the scanners. Each case pins the id as a journal writes it, the `BLUEPRINTS` key the fitted module actually rolls, and the exact `Engineering.Modifiers` block that follows at the pinned grade and quality. The anti-xeno multi-cannon is the case that rests on one registry: coriolis-data carries no blueprint list for an anti-xeno group, EDSY's single Overcharged carries the clip leg wherever it is offered, and following the sole covering registry is what puts this module on the clip-carrying record. The cannon, the fragment cannon and the plasma accelerator are the controls: same id, same three legs, and no `AmmoClipSize`, on the three clip-carrying groups that take this recipe. Frontier's own reading backs each — `journal-federation-corvette.json` carries a large gimballed cannon rolled to grade 5 under this id with no `AmmoClipSize` modifier and its stock magazine of 5 still loaded, where a 15% cut would have left four rounds; `journal-federation-corvette-plasma.json` carries a medium fragment cannon rolled to grade 4 whose modifier block likewise has none; and `journal-caspian-explorer.json` carries a medium fixed plasma accelerator rolled to grade 1 at quality 1, whose three recipe legs this library reproduces to the digit and which carries none either. On those two the magazine is too small for the loaded count to corroborate the absent leg — a −12% cut leaves 3 × 0.88 = 2.64 and a −3% cut leaves 5 × 0.97 = 4.85, and both round back — so there it is the modifier list that carries the case. EDSY holds that a cannon's clip should drop here; coriolis-data and EDEngineer, which key a recipe per weapon type rather than per recipe id, stop the leg at the multi-cannon, and all three captures agree with them.",
+    "grade": 5,
+    "quality": 1,
+    "cases": [
+      {
+        "symbol": "Hpt_MultiCannon_Fixed_Medium",
+        "blueprint": "Weapon_Overcharged",
+        "resolved": "MC_Overcharged",
+        "base": {
+          "Damage": 2.19,
+          "AmmoClipSize": 100,
+          "DistributorDraw": 0.11,
+          "ThermalLoad": 0.18
+        },
+        "modifiers": [
+          { "Label": "AmmoClipSize", "Value": 85, "OriginalValue": 100 },
+          { "Label": "Damage", "Value": 3.723, "OriginalValue": 2.19 },
+          {
+            "Label": "DistributorDraw",
+            "Value": 0.1485,
+            "OriginalValue": 0.11
+          },
+          { "Label": "ThermalLoad", "Value": 0.207, "OriginalValue": 0.18 }
+        ]
+      },
+      {
+        "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
+        "blueprint": "Weapon_Overcharged",
+        "resolved": "MC_Overcharged",
+        "base": {
+          "Damage": 1.12,
+          "AmmoClipSize": 100,
+          "DistributorDraw": 0.11,
+          "ThermalLoad": 0.18
+        },
+        "modifiers": [
+          { "Label": "AmmoClipSize", "Value": 85, "OriginalValue": 100 },
+          { "Label": "Damage", "Value": 1.904, "OriginalValue": 1.12 },
+          {
+            "Label": "DistributorDraw",
+            "Value": 0.1485,
+            "OriginalValue": 0.11
+          },
+          { "Label": "ThermalLoad", "Value": 0.207, "OriginalValue": 0.18 }
+        ]
+      },
+      {
+        "symbol": "Hpt_Cannon_Fixed_Medium",
+        "blueprint": "Weapon_Overcharged",
+        "resolved": "Weapon_Overcharged",
+        "base": {
+          "Damage": 36.875,
+          "AmmoClipSize": 6,
+          "DistributorDraw": 0.7,
+          "ThermalLoad": 2.11
+        },
+        "modifiers": [
+          { "Label": "Damage", "Value": 62.6875, "OriginalValue": 36.875 },
+          { "Label": "DistributorDraw", "Value": 0.945, "OriginalValue": 0.7 },
+          { "Label": "ThermalLoad", "Value": 2.4265, "OriginalValue": 2.11 }
+        ]
+      },
+      {
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "blueprint": "Weapon_Overcharged",
+        "resolved": "Weapon_Overcharged",
+        "base": {
+          "Damage": 2.985,
+          "AmmoClipSize": 3,
+          "DistributorDraw": 0.37,
+          "ThermalLoad": 0.74
+        },
+        "modifiers": [
+          { "Label": "Damage", "Value": 5.0745, "OriginalValue": 2.985 },
+          { "Label": "DistributorDraw", "Value": 0.4995, "OriginalValue": 0.37 },
+          { "Label": "ThermalLoad", "Value": 0.851, "OriginalValue": 0.74 }
+        ]
+      },
+      {
+        "symbol": "Hpt_PlasmaAccelerator_Fixed_Medium",
+        "blueprint": "Weapon_Overcharged",
+        "resolved": "Weapon_Overcharged",
+        "base": {
+          "Damage": 54.3,
+          "AmmoClipSize": 5,
+          "DistributorDraw": 8.65,
+          "ThermalLoad": 15.58
+        },
+        "modifiers": [
+          { "Label": "Damage", "Value": 92.31, "OriginalValue": 54.3 },
+          { "Label": "DistributorDraw", "Value": 11.6775, "OriginalValue": 8.65 },
+          { "Label": "ThermalLoad", "Value": 17.917, "OriginalValue": 15.58 }
+        ]
+      }
+    ],
+    "refused": [
+      { "symbol": "Hpt_Cannon_Fixed_Medium", "blueprint": "MC_Overcharged" },
+      { "symbol": "Hpt_Slugshot_Fixed_Medium", "blueprint": "MC_Overcharged" },
+      { "symbol": "Hpt_PlasmaAccelerator_Fixed_Medium", "blueprint": "MC_Overcharged" },
+      { "symbol": "Hpt_BeamLaser_Fixed_Small", "blueprint": "MC_Overcharged" }
+    ]
+  },
+  "clipRounding": {
+    "description": "A magazine holds whole rounds, and a weapon that fires in bursts holds whole bursts, so a computed clip is rounded up to a multiple of the burst size. That is EDSY's rule (`ceil(ammoclip / bstsize) * bstsize`, applied where the blueprint roll is stored), and it reduces to Coriolis's plain round-up (`Module.getClip`, \"Clip size is always rounded up\") wherever a weapon fires one round at a time. It belongs where the roll is computed rather than where a stat is read, because a journal states the engineered clip itself and that figure is the game's own. A computed reserve rounds to the nearest whole round after all contributions are applied, matching Frontier's stated ammunition values.",
+    "cases": [
+      {
+        "note": "A weapon that fires one round at a time: the burst step is inert and the clip simply rounds up.",
+        "symbol": "Hpt_Cannon_Fixed_Small",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 3,
+        "quality": 1,
+        "baseAmmoClipSize": 6,
+        "unroundedAmmoClipSize": 10.08,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 11,
+        "AmmoMaximum": 202
+      },
+      {
+        "note": "Double Shot scales the clip and gives the weapon a two-round burst in the same roll, so 4.02 rounds to a whole burst — 6, where a bare round-up would say 5. The burst is the recipe's own.",
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "blueprint": "Weapon_DoubleShot",
+        "grade": 1,
+        "quality": 1,
+        "baseAmmoClipSize": 3,
+        "unroundedAmmoClipSize": 4.02,
+        "burstSize": 2,
+        "burstFrom": "recipe",
+        "AmmoClipSize": 6
+      },
+      {
+        "note": "A Concord Cannon already fires three-round bursts and no recipe names them, so the burst comes from the weapon's own record: High Capacity's 12.24 becomes 15, where a bare round-up would say 13. This is the case that separates EDSY's rule from Coriolis's.",
+        "symbol": "Hpt_Cannon_Gimbal_Medium_Burst",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 1,
+        "quality": 1,
+        "baseAmmoClipSize": 9,
+        "unroundedAmmoClipSize": 12.24,
+        "burstSize": 3,
+        "burstFrom": "module",
+        "AmmoClipSize": 15,
+        "AmmoMaximum": 408
+      },
+      {
+        "note": "The same fragment cannon under High Capacity: the clip rounds up and the reserve rounds to the nearest whole round.",
+        "symbol": "Hpt_Slugshot_Fixed_Medium",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 3,
+        "quality": 1,
+        "baseAmmoClipSize": 3,
+        "unroundedAmmoClipSize": 5.04,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 6,
+        "AmmoMaximum": 302
+      },
+      {
+        "note": "The registries state their multipliers to three decimals, so Drag Munitions' +66.7% computes 10.002 on a 6-round rack where the recipe means 10. A figure within that precision of a whole magazine is snapped to it before the round-up, or the transcription noise buys a whole extra round. The reserve's 30.006 rounds normally to 30.",
+        "symbol": "Hpt_BasicMissileRack_Fixed_Medium",
+        "blueprint": "SeekerMissileRack_Drag",
+        "grade": 2,
+        "quality": 1,
+        "baseAmmoClipSize": 6,
+        "unroundedAmmoClipSize": 10.002,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 10,
+        "AmmoMaximum": 30
+      },
+      {
+        "note": "A quality roll between two published legs is a real number with no whole magazine behind it, so nothing is snapped and the round-up stands: 185.12 rounds load as 186. This is the case that separates recovering a published figure from swallowing a fraction the recipe means — the snap applies to a stated multiplier only.",
+        "symbol": "Hpt_MultiCannon_Fixed_Small",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 5,
+        "quality": 0.07,
+        "baseAmmoClipSize": 100,
+        "unroundedAmmoClipSize": 185.12,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 186
+      },
+      {
+        "note": "The round-up runs in one direction, not in the recipe's: a multi-cannon's Overcharged cuts the clip, and 76.5 rounds to 77 rather than to 76.",
+        "symbol": "Hpt_MultiCannon_Gimbal_Medium",
+        "blueprint": "MC_Overcharged",
+        "grade": 5,
+        "quality": 1,
+        "baseAmmoClipSize": 90,
+        "unroundedAmmoClipSize": 76.5,
+        "burstSize": 1,
+        "burstFrom": "none",
+        "AmmoClipSize": 77
+      },
+      {
+        "note": "A roll that moves the clip nowhere leaves it alone, even when the stock figure is not a whole number of bursts. High Capacity's grade-1 leg starts at +0%, and this accelerator's 18 rounds are 4.5 of its 4-round bursts; they stay 18. Reachable through `computeModifiers` only — no engineering menu offers this weapon anything, so `applyBlueprint` refuses it.",
+        "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
+        "blueprint": "Weapon_HighCapacity",
+        "grade": 1,
+        "quality": 0,
+        "baseAmmoClipSize": 18,
+        "unroundedAmmoClipSize": 18,
+        "burstSize": 4,
+        "burstFrom": "module",
+        "AmmoClipSize": 18
+      }
+    ]
+  },
+  "journalSpellings": {
+    "description": "Journal `EngineerModifications` spellings read off a real `StoredModules` capture (521 stored modules, contributed by the repository owner 2026-08-07 UTC; scrubbed of the commander, carrier and market it came from, which say nothing about the game). Of the 46 distinct spellings in that capture, 43 resolve against `BLUEPRINTS` and the other three are the `Decorative_*` liveries, which name no recipe at all and are pinned in \u00a7decorativeModifications. These are the cases worth pinning: an id whose key is not what the game writes, and one whose journal spelling the catalogue had missed entirely. `resolved` is what `resolveBlueprintForModule` answers \u2014 the `BLUEPRINTS` key the fitted module actually rolls, returned in the caller\u2019s own casing, since every lookup downstream matches case-insensitively.",
+    "cases": [
+      {
+        "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
+        "blueprint": "GuardianModule_Sturdy",
+        "resolved": "GuardianModule_Sturdy",
+        "note": "The game writes the module spelling on a Guardian *weapon*. Both registry spellings resolve to the same recipe."
+      },
+      {
+        "symbol": "Hpt_MultiCannon_Gimbal_Huge",
+        "blueprint": "Weapon_Overcharged",
+        "resolved": "MC_Overcharged"
+      },
+      {
+        "symbol": "Hpt_CrimeScanner_Size0_Class5",
+        "blueprint": "Sensor_WideAngle",
+        "resolved": "Scanner_WideAngle"
+      },
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "blueprint": "weapon_longrange",
+        "resolved": "weapon_longrange",
+        "note": "The game writes this one lower-case. Every lookup matches case-insensitively, so it resolves to `Weapon_LongRange` without being rewritten."
+      }
+    ],
+    "alsoResolve": [
+      "recipe_guardianmodule_sturdy",
+      "recipe_guardianweapon_sturdy"
+    ],
+    "operationsKeys": {
+      "description": "Operations blueprints are keyed as the registry publishes them minus Inara\u2019s `recipe_` prefix \u2014 neither coriolis (81 keys, none prefixed) nor EDSY (no `recipe_` string at all) uses it, and no observed build does either. `prefixed` is the whole of the exception: two declared Inara aliases for a recipe whose real name, `GuardianModule_Sturdy`, is a key in its own right. `observed` records a spelling read off a real Inara SLEF export contributed by the repository owner \u2014 a Mercenary Module Reinforcement Package taken to grade 5. The export writes it `modulereinforcement_heavyduty`; `blueprint` below is the catalogue key that id resolves to, whose casing comes from a raw journal rather than from Inara, which lower-cases everything it exports. Every lookup matches case-insensitively, so both forms reach the same record.",
+      "prefixed": [
+        "recipe_guardianmodule_sturdy",
+        "recipe_guardianweapon_sturdy"
+      ],
+      "observed": [
+        {
+          "symbol": "Int_ModuleReinforcement_Size5_Class2",
+          "blueprint": "ModuleReinforcement_HeavyDuty",
+          "grade": 5,
+          "soldAtGrade": 1
+        }
+      ]
+    }
+  },
+  "decorativeModifications": {
+    "description": "The festive transformations the game writes in the same journal field as an engineering blueprint, read off the same `StoredModules` capture as §journalSpellings — it holds three medium turreted Remote Release Flak Launchers, one per colour. They are not engineering: no grade, no materials, and no engineer offers one. So they are absent from `BLUEPRINTS` and from every menu in `engineering-options`, and `DECORATIVE_MODIFICATIONS` is what makes the id resolve to something rather than to nothing — the distinction between \"this id is real and names no recipe\" and \"this id is unknown\", which is the whole reason the catalogue exists. They are not cosmetic-only either: a festive launcher fires fireworks rather than flak, and every one of them carries a single `Damage` modifier of -99%, so no record here may be read as \"this module is unmodified\". `module` is the only module observed carrying one, and the catalogue groups it nowhere: a Remote Release Flak Launcher takes no engineering, and being awarded one already transformed does not make it engineerable. `name` pairs the festive naming with the id's colour; no registry publishes the outfitting panel's own string.",
+    "module": "Hpt_FlakMortar_Turret_Medium",
+    "ids": [
+      { "id": "Decorative_Green", "name": "Festive Green" },
+      { "id": "Decorative_Red", "name": "Festive Red" },
+      { "id": "Decorative_Yellow", "name": "Festive Yellow" }
+    ],
+    "modifiers": [{ "label": "Damage", "method": "multiplicative", "value": -0.99 }],
+    "resolved": {
+      "description": "What the stored modifier makes of the medium turreted Remote Release Flak Launcher, and the outfitting-panel reading it was derived from. The panel is rounded to one decimal, so it does not pin the modifier on its own — but the three figures together do: -99.0% of the 34 base damage is 0.34, which displays as 0.3, and 0.34 x the 0.5 rate of fire is 0.17, which displays as 0.2/s. An overwrite to a flat 0.3 would read -99.1% and 0.1/s, so the modifier is multiplicative and the panel's 0.3 is a rounding. Recomputing these is what would catch the modifier being re-entered as the displayed value.",
+      "baseDamage": 34,
+      "damage": 0.34,
+      "damagePerSecond": 0.17,
+      "panel": { "percent": -99, "damage": 0.3, "damagePerSecond": 0.2 }
+    }
+  },
+  "journalNames": {
+    "description": "Every `BLUEPRINTS` record whose key is NOT the `BlueprintName` the game writes, mapped to the id it is written as. Three of the 109; of the rest, 79 are already the journal id and 27 are Operations keys for which no journal spelling has been observed, which is why the field is absent from them. Each of the three shares its journal id with another record that rolls different numbers, so reading the id alone would fold the wrong recipe: the two scanner ids are §scannerIdCollision, and `MC_Overcharged` is the multi-cannon Overcharged, which cuts the clip by 3-15% where the `Weapon_Overcharged` every other weapon menu lists leaves it alone. `resolveBlueprintForModule` settles each by asking which recipe the fitted module's own menu offers.",
+    "map": {
+      "MC_Overcharged": "Weapon_Overcharged",
+      "Scanner_LongRange": "Sensor_LongRange",
+      "Scanner_WideAngle": "Sensor_WideAngle"
+    }
+  },
+  "reachability": {
+    "description": "Which ids `applyBlueprint` accepts on at least one module, swept over every id in `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS` against all 1199 module symbols. Every blueprint and experimental effect reaches a module; `unreachableBlueprints` and `unreachableExperimentals` pin that empty residue. `reachable` pins the six blueprints whose route to a module is narrow enough to lose by accident: each on a module that accepts it, one that must refuse it, and the exact count that takes it.",
+    "reachable": [
+      {
+        "id": "MC_Overcharged",
+        "accepts": "Hpt_MultiCannon_Fixed_Small",
+        "refuses": "Hpt_BeamLaser_Fixed_Small",
+        "modules": 16
+      },
+      {
+        "id": "FuelScoop_Efficiency",
+        "accepts": "Int_FuelScoop_Size6_Class5",
+        "refuses": "Int_Hyperdrive_Size6_Class5",
+        "modules": 40
+      },
+      {
+        "id": "BeamLaser_ThermalPlasmaConversion",
+        "accepts": "Hpt_BeamLaser_Fixed_Small",
+        "refuses": "Hpt_PulseLaser_Fixed_Small",
+        "modules": 12
+      },
+      {
+        "id": "BurstLaser_ThermalPlasmaConversion",
+        "accepts": "Hpt_PulseLaserBurst_Fixed_Small",
+        "refuses": "Hpt_BeamLaser_Fixed_Small",
+        "modules": 12
+      },
+      {
+        "id": "PulseLaser_ThermalPlasmaConversion",
+        "accepts": "Hpt_PulseLaser_Fixed_Small",
+        "refuses": "Hpt_PulseLaserBurst_Fixed_Small",
+        "modules": 12
+      },
+      {
+        "id": "SeekerMissileRackLarge_Lockdown",
+        "accepts": "Hpt_BasicMissileRack_Fixed_Large",
+        "refuses": "Hpt_BasicMissileRack_Fixed_Medium",
+        "modules": 1
+      }
+    ],
+    "unreachableBlueprints": [],
+    "unreachableExperimentals": []
+  },
+  "guardianZoneResistanceCapability": {
+    "description": "Anti-Guardian Zone Resistance is a boolean capability rather than a numeric stat. The two Guardian Nanite Torpedo Pylons carry it inherently; other stock records omit the flag. Applying either registry spelling emits the same non-numeric journal modifier and makes the fitted module's effective `guardianZoneResistance` strictly true. Imports also grant it by label presence when a producer uses the numeric display value. The ordinary power plant case pins the compatibility boundary separately.",
+    "field": "guardianZoneResistance",
+    "offeredAs": "GuardianModule_Sturdy",
+    "grade": 1,
+    "modifier": {
+      "Label": "GuardianModuleResistance",
+      "ValueStr": "Active"
+    },
+    "numericImportedModifier": {
+      "Label": "GuardianModuleResistance",
+      "Value": 1,
+      "OriginalValue": 0
+    },
+    "cases": [
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_GuardianPowerplant_Size7",
+        "blueprint": "recipe_guardianmodule_sturdy"
+      },
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
+        "blueprint": "recipe_guardianweapon_sturdy"
+      }
+    ],
+    "refused": {
+      "slot": "PowerPlant",
+      "symbol": "Int_Powerplant_Size7_Class5",
+      "blueprint": "recipe_guardianmodule_sturdy"
+    }
+  },
+  "blueprintOnlyModifications": {
+    "description": "These two modification families are rollable blueprints, not experimental effects. The `special_*` keys are speculative identifiers and remain absent from every experimental-effect catalogue; the listed blueprint keys catalogue the corresponding modification families.",
+    "excludedExperimentalIds": {
+      "special_guardian_module_resistance": {
+        "blueprints": {
+          "GuardianModule_Sturdy": "Anti-Guardian Zone Resistance",
+          "recipe_guardianmodule_sturdy": "Anti-Guardian Zone Resistance",
+          "recipe_guardianweapon_sturdy": "Anti-Guardian Zone Resistance"
+        }
+      },
+      "special_plasma_rounds": {
+        "blueprints": {
+          "BeamLaser_ThermalPlasmaConversion": "Beam Laser — Plasma conversion",
+          "BurstLaser_ThermalPlasmaConversion": "Burst Laser — Plasma conversion",
+          "PulseLaser_ThermalPlasmaConversion": "Pulse Laser — Plasma conversion"
+        }
+      }
+    }
+  },
+  "experimentalNames": {
+    "description": "Current English in-game display names for the five effects whose exact casing, hyphenation or library-only qualifier is easy to normalize incorrectly.",
+    "map": {
+      "special_weapon_rateoffire": "Multi-servos",
+      "special_shield_efficient": "Lo-draw",
+      "special_shield_resistive": "Multi-weave",
+      "special_shiftlock_canister": "Shift-lock Canister",
+      "special_super_penetrator": "Super Penetrator"
+    }
+  },
+  "experimentalDamageDistributions": {
+    "description": "The fixed post-effect damage splits stated by the three converting experimental effects. Shares are fractions of conventional damage and sum to 1. High Yield Shell is also independently pinned by the Frontier Loadout capture in `module-stats.json`; the other two are pinned to the effects' in-game descriptions until a capture carrying either one is available.",
+    "map": {
+      "special_high_yield_shell": { "kinetic": 0.5, "explosive": 0.5 },
+      "special_distortion_field": { "kinetic": 0.5, "thermal": 0.5 },
+      "special_overload_munitions": { "thermal": 0.5, "explosive": 0.5 }
+    }
+  },
+  "thermalPlasmaConversions": {
+    "description": "The three laser-family Plasma conversion blueprints share the same fixed per-grade shift from thermal damage to absolute plasma damage. Shares are fractions of conventional damage and sum to 1.",
+    "blueprints": {
+      "BeamLaser_ThermalPlasmaConversion": "Hpt_BeamLaser_Fixed_Small",
+      "BurstLaser_ThermalPlasmaConversion": "Hpt_PulseLaserBurst_Fixed_Small",
+      "PulseLaser_ThermalPlasmaConversion": "Hpt_PulseLaser_Fixed_Small"
+    },
+    "grades": {
+      "1": { "thermal": 0.961, "absolute": 0.039 },
+      "2": { "thermal": 0.934, "absolute": 0.066 },
+      "3": { "thermal": 0.906, "absolute": 0.094 },
+      "4": { "thermal": 0.876, "absolute": 0.124 },
+      "5": { "thermal": 0.845, "absolute": 0.155 }
+    }
+  },
+  "blueprintCount": 109,
+  "experimentalCount": 86
+}

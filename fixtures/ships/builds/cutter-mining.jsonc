@@ -1,0 +1,57 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "cutter-mining",
+  "ship": "Cutter",
+  "role": "mining",
+  "modules": [
+    { "slot": "Armour", "item": "Cutter_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5 } },
+    { "slot": "PowerPlant", "item": "Int_GuardianPowerplant_Size8", "priority": 1 },
+    { "slot": "MainEngines", "item": "Int_Engine_Size8_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5 } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size7_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size7_Class2", "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class5", "engineering": { "blueprint": "PowerDistributor_HighCapacity", "grade": 3, "experimental": "special_powerdistributor_capacity" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size7_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 3 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size6_Class3" },
+    { "slot": "HugeHardpoint1", "item": "Hpt_MultiCannon_Gimbal_Huge", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5 } },
+    { "slot": "LargeHardpoint1", "item": "Hpt_Mining_AbrBlstr_Fixed_Small" },
+    { "slot": "LargeHardpoint2", "item": "Hpt_Mining_SubSurfDispMisle_Fixed_Medium" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_MiningLaser_Fixed_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_MiningLaser_Fixed_Medium" },
+    { "slot": "MediumHardpoint3", "item": "Hpt_Mining_SubSurfDispMisle_Fixed_Medium" },
+    { "slot": "MediumHardpoint4", "item": "Hpt_Mining_SeismChrgWarhd_Turret_Medium" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_MRAScanner_Size0_Class5" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 4 } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_PlasmaPointDefence_Turret_Tiny", "engineering": { "blueprint": "Misc_PointDefenseCapacity", "grade": 1 } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_PlasmaPointDefence_Turret_Tiny", "engineering": { "blueprint": "Misc_PointDefenseCapacity", "grade": 1 } },
+    { "slot": "TinyHardpoint5", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "TinyHardpoint6", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 4 } },
+    { "slot": "TinyHardpoint7", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 4 } },
+    { "slot": "TinyHardpoint8", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 4 } },
+    { "slot": "Slot01_Size8", "item": "Int_CargoRack_Size8_Class1", "priority": 1 },
+    { "slot": "Slot02_Size8", "item": "Int_DroneControl_Collection_Size7_Class5" },
+    { "slot": "Slot03_Size6", "item": "Int_ShieldGenerator_Size6_Class5_Strong", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5 } },
+    { "slot": "Slot04_Size6", "item": "Int_FuelScoop_Size6_Class5" },
+    { "slot": "Slot05_Size6", "item": "Int_DroneControl_Collection_Size5_Class5" },
+    { "slot": "Slot06_Size5", "item": "Int_GuardianFSDBooster_Size5" },
+    { "slot": "Slot07_Size5", "item": "Int_DroneControl_Prospector_Size5_Class5" },
+    { "slot": "Military01", "item": "Int_GuardianShieldReinforcement_Size5_Class2" },
+    { "slot": "Military02", "item": "Int_GuardianShieldReinforcement_Size5_Class2" },
+    { "slot": "Slot08_Size4", "item": "Int_Refinery_Size4_Class5" },
+    { "slot": "Slot09_Size3", "item": "Int_DetailedSurfaceScanner_Tiny", "engineering": { "blueprint": "Sensor_Expanded", "grade": 5 } },
+    { "slot": "Slot10_Size1", "item": "Int_DockingComputer_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 1922.5,
+    "cargoCapacity": 256,
+    "fuelCapacity": 64,
+    "maxJumpRange": 28.108275,
+    "power": { "available": 47.5, "retracted": 34.62, "deployed": 44.1, "withinBudget": true },
+    "shields": { "strength": 1541.788935, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 720, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 7, "damagePerSecond": 71.299661, "sustainedDamagePerSecond": 67.81357 }
+  }
+}

@@ -9,26 +9,26 @@ import { ALL_MODULES } from './modules-all.js';
 import { ShipLoadout } from './ship-loadout.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats } from './pre-engineered-stats.js';
-import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
-import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
-import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
-import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
-import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
-import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.json' with { type: 'json' };
-import corsairJournal from '../../../fixtures/ships/journal-corsair.json' with { type: 'json' };
-import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
-import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.json' with { type: 'json' };
-import corvetteMultiroleJournal from '../../../fixtures/ships/journal-federation-corvette-multirole.json' with { type: 'json' };
-import corvetteMixedJournal from '../../../fixtures/ships/journal-federation-corvette-mixed.json' with { type: 'json' };
-import corvettePlasmaJournal from '../../../fixtures/ships/journal-federation-corvette-plasma.json' with { type: 'json' };
-import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.json' with { type: 'json' };
-import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.json' with { type: 'json' };
-import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.json' with { type: 'json' };
-import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.json' with { type: 'json' };
-import lynxCurrentJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue01-current.json' with { type: 'json' };
-import pantherJournal from '../../../fixtures/ships/journal-panther-mkii-fat-arse.json' with { type: 'json' };
-import deepBlackJournal from '../../../fixtures/ships/journal-the-deep-black.json' with { type: 'json' };
-import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
+import fixture from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
+import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.jsonc' with { type: 'json' };
+import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.jsonc' with { type: 'json' };
+import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.jsonc' with { type: 'json' };
+import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.jsonc' with { type: 'json' };
+import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.jsonc' with { type: 'json' };
+import corsairJournal from '../../../fixtures/ships/journal-corsair.jsonc' with { type: 'json' };
+import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.jsonc' with { type: 'json' };
+import corvetteBeamsJournal from '../../../fixtures/ships/journal-federation-corvette-beams.jsonc' with { type: 'json' };
+import corvetteMultiroleJournal from '../../../fixtures/ships/journal-federation-corvette-multirole.jsonc' with { type: 'json' };
+import corvetteMixedJournal from '../../../fixtures/ships/journal-federation-corvette-mixed.jsonc' with { type: 'json' };
+import corvettePlasmaJournal from '../../../fixtures/ships/journal-federation-corvette-plasma.jsonc' with { type: 'json' };
+import cobraJournal from '../../../fixtures/ships/journal-cobra-mkv.jsonc' with { type: 'json' };
+import kestrelJournal from '../../../fixtures/ships/journal-kestrel-mkii.jsonc' with { type: 'json' };
+import lynxRescueJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue.jsonc' with { type: 'json' };
+import lynxJournal from '../../../fixtures/ships/journal-lynx-highliner.jsonc' with { type: 'json' };
+import lynxCurrentJournal from '../../../fixtures/ships/journal-lynx-highliner-rescue01-current.jsonc' with { type: 'json' };
+import pantherJournal from '../../../fixtures/ships/journal-panther-mkii-fat-arse.jsonc' with { type: 'json' };
+import deepBlackJournal from '../../../fixtures/ships/journal-the-deep-black.jsonc' with { type: 'json' };
+import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.jsonc' with { type: 'json' };
 
 /** The shape this file reads off a capture — a journal states more than the library models. */
 interface JournalAmmoModule {
@@ -47,25 +47,25 @@ interface JournalAmmoModule {
 
 /** Every journal capture in the fixtures, by file name. */
 const JOURNALS = [
-    ['journal-anaconda-slapaconda.json', slapacondaJournal],
-    ['journal-krait-phantom.json', kraitJournal],
-    ['journal-viper-mkiv.json', viperJournal],
-    ['journal-python-mkii-antixeno.json', pythonJournal],
-    ['journal-python-mkii-spire-ops.json', spireOpsJournal],
-    ['journal-corsair.json', corsairJournal],
-    ['journal-federation-corvette.json', corvetteJournal],
-    ['journal-federation-corvette-beams.json', corvetteBeamsJournal],
-    ['journal-federation-corvette-multirole.json', corvetteMultiroleJournal],
-    ['journal-federation-corvette-mixed.json', corvetteMixedJournal],
-    ['journal-federation-corvette-plasma.json', corvettePlasmaJournal],
-    ['journal-cobra-mkv.json', cobraJournal],
-    ['journal-kestrel-mkii.json', kestrelJournal],
-    ['journal-lynx-highliner-rescue.json', lynxRescueJournal],
-    ['journal-lynx-highliner.json', lynxJournal],
-    ['journal-lynx-highliner-rescue01-current.json', lynxCurrentJournal],
-    ['journal-panther-mkii-fat-arse.json', pantherJournal],
-    ['journal-the-deep-black.json', deepBlackJournal],
-    ['journal-caspian-explorer.json', caspianJournal],
+    ['journal-anaconda-slapaconda.jsonc', slapacondaJournal],
+    ['journal-krait-phantom.jsonc', kraitJournal],
+    ['journal-viper-mkiv.jsonc', viperJournal],
+    ['journal-python-mkii-antixeno.jsonc', pythonJournal],
+    ['journal-python-mkii-spire-ops.jsonc', spireOpsJournal],
+    ['journal-corsair.jsonc', corsairJournal],
+    ['journal-federation-corvette.jsonc', corvetteJournal],
+    ['journal-federation-corvette-beams.jsonc', corvetteBeamsJournal],
+    ['journal-federation-corvette-multirole.jsonc', corvetteMultiroleJournal],
+    ['journal-federation-corvette-mixed.jsonc', corvetteMixedJournal],
+    ['journal-federation-corvette-plasma.jsonc', corvettePlasmaJournal],
+    ['journal-cobra-mkv.jsonc', cobraJournal],
+    ['journal-kestrel-mkii.jsonc', kestrelJournal],
+    ['journal-lynx-highliner-rescue.jsonc', lynxRescueJournal],
+    ['journal-lynx-highliner.jsonc', lynxJournal],
+    ['journal-lynx-highliner-rescue01-current.jsonc', lynxCurrentJournal],
+    ['journal-panther-mkii-fat-arse.jsonc', pantherJournal],
+    ['journal-the-deep-black.jsonc', deepBlackJournal],
+    ['journal-caspian-explorer.jsonc', caspianJournal],
 ] as const;
 
 const module = (symbol: string) => {
@@ -399,7 +399,7 @@ test('every journal capture in the fixtures is read for its ammunition', () => {
     // external readings of what a module had loaded, so a capture missing from it is ground
     // truth the repository holds and never looks at.
     const onDisk = readdirSync(fileURLToPath(new URL('../../../fixtures/ships/', import.meta.url)))
-        .filter((file) => file.startsWith('journal-') && file.endsWith('.json'))
+        .filter((file) => file.startsWith('journal-') && file.endsWith('.jsonc'))
         .sort();
     assert.deepEqual(
         JOURNALS.map(([file]) => file)

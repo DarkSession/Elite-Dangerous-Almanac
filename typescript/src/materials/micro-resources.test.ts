@@ -13,7 +13,7 @@ import { CONSUMABLE_MICRO_RESOURCES } from './micro-resources-consumable.js';
 import { DATA_MICRO_RESOURCES } from './micro-resources-data.js';
 import { ITEM_MICRO_RESOURCES } from './micro-resources-item.js';
 import { ALL_MICRO_RESOURCES } from './micro-resources-all.js';
-import microResourcesFixture from '../../../fixtures/materials/micro-resources.json' with { type: 'json' };
+import microResourcesFixture from '../../../fixtures/materials/micro-resources.jsonc' with { type: 'json' };
 
 const CATALOGUES: Record<string, readonly MicroResource[]> = {
     component: COMPONENT_MICRO_RESOURCES,

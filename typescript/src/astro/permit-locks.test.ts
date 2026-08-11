@@ -10,7 +10,7 @@ import {
 } from './permit-locks.js';
 import { findHandAuthoredRegionAt, HAND_AUTHORED_REGIONS } from './hand-authored-regions.js';
 import { ProceduralSystem } from './procedural-system.js';
-import permitFixture from '../../../fixtures/astro/permit-locks.json' with { type: 'json' };
+import permitFixture from '../../../fixtures/astro/permit-locks.jsonc' with { type: 'json' };
 
 for (const c of permitFixture.cases) {
     const expected = c.lock ? `${c.lock.kind}:${c.lock.name}` : 'null';

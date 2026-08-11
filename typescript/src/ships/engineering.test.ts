@@ -16,10 +16,10 @@ import {
 } from './engineering-options.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
-import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
-import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
-import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.json' with { type: 'json' };
-import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
+import fixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
+import optionsFixture from '../../../fixtures/ships/engineering-options.jsonc' with { type: 'json' };
+import corvetteJournal from '../../../fixtures/ships/journal-federation-corvette.jsonc' with { type: 'json' };
+import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.jsonc' with { type: 'json' };
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { baseStats } from './internal/module-stat-labels.js';
@@ -812,7 +812,7 @@ test('Overcharged leaves a cannon’s clip alone, as a real journal reports', ()
         1,
     );
     // 90 × 0.85 is 76.5, and a magazine holds whole rounds — the figure
-    // `fixtures/ships/engineering.json` pins for this same module and grade.
+    // `fixtures/ships/engineering.jsonc` pins for this same module and grade.
     assert.equal(multi.clipSize, 90);
     assert.equal(modFor(multiMods, 'AmmoClipSize'), 77);
 });
@@ -879,7 +879,7 @@ test('Overcharged leaves a plasma accelerator’s clip alone, as a real journal 
 });
 
 test('a heat-rate recipe reproduces the heat a real journal reports', () => {
-    // Ground truth: the Krait Phantom capture in fixtures/ships/journal-krait-phantom.json
+    // Ground truth: the Krait Phantom capture in fixtures/ships/journal-krait-phantom.jsonc
     // carries `EngineHeatRate` 1.3 -> 1.95 for grade 4 Dirty Drive Tuning on a 6D thruster.
     const thrusters = getModuleBySymbol('Int_Engine_Size6_Class2', ALL_MODULES)!;
     const heat = computeModifiers(

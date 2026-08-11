@@ -1,0 +1,224 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * A real Frontier journal `Loadout` event for a wholly unengineered anti-xeno Python Mk II (22
+ * `Modules` entries).
+ *
+ * Contributed 2026-08-08 UTC by the repository owner from their own fleet, with no upstream
+ * project. Stored SHA-256 `92e01bb62f1aede9c2cd28f5a789a8db1509f3a87c667077aa8402dcbab43b9c`; held
+ * byte-for-byte as received apart from re-indenting.
+ *
+ * It is a second unengineered ground truth, on a hull and an SCO drive class the Viper Mk IV does
+ * not reach, and it reads two anti-xeno weapons' ammunition directly.
+ *
+ * `ShipName`, `ShipIdent`, `ShipID` and `timestamp` are kept — they describe a ship, and nothing
+ * in the event names a person.
+ *
+ * The capture is Elite Dangerous game output and remains the property of Frontier Developments
+ * plc, redistributed under Frontier's media-usage terms; see ATTRIBUTIONS.md.
+ */
+{
+  "timestamp": "2026-08-08T07:32:35Z",
+  "event": "Loadout",
+  "Ship": "python_nx",
+  "ShipID": 212,
+  "ShipName": "",
+  "ShipIdent": "DA-08P",
+  "HullValue": 56801651,
+  "ModulesValue": 8577094,
+  "HullHealth": 1.0,
+  "UnladenMass": 699.0,
+  "CargoCapacity": 8,
+  "MaxJumpRange": 17.495169,
+  "FuelCapacity": {
+    "Main": 16.0,
+    "Reserve": 0.83
+  },
+  "Rebuy": 3268938,
+  "Modules": [
+    {
+      "Slot": "LargeHardpoint1",
+      "Item": "hpt_atdumbfiremissile_fixed_large_v2",
+      "On": true,
+      "Priority": 0,
+      "AmmoInClip": 0,
+      "AmmoInHopper": 0,
+      "Health": 1.0,
+      "Value": 1495116
+    },
+    {
+      "Slot": "LargeHardpoint2",
+      "Item": "hpt_atmulticannon_fixed_large_v2",
+      "On": true,
+      "Priority": 0,
+      "AmmoInClip": 100,
+      "AmmoInHopper": 2100,
+      "Health": 1.0,
+      "Value": 1193683
+    },
+    {
+      "Slot": "LargeHardpoint3",
+      "Item": "hpt_guardian_shardcannon_fixed_large",
+      "On": true,
+      "Priority": 0,
+      "AmmoInClip": 5,
+      "AmmoInHopper": 180,
+      "Health": 1.0,
+      "Value": 1282335
+    },
+    {
+      "Slot": "LargeHardpoint4",
+      "Item": "hpt_atdumbfiremissile_fixed_large",
+      "On": true,
+      "Priority": 0,
+      "AmmoInClip": 0,
+      "AmmoInHopper": 0,
+      "Health": 1.0,
+      "Value": 1186600
+    },
+    {
+      "Slot": "MediumHardpoint1",
+      "Item": "hpt_atventdisruptorpylon_fixed_medium",
+      "On": true,
+      "Priority": 0,
+      "AmmoInClip": 0,
+      "AmmoInHopper": 0,
+      "Health": 1.0,
+      "Value": 739882
+    },
+    {
+      "Slot": "MediumHardpoint2",
+      "Item": "hpt_flakmortar_fixed_medium",
+      "On": true,
+      "Priority": 0,
+      "AmmoInClip": 0,
+      "AmmoInHopper": 0,
+      "Health": 1.0,
+      "Value": 229730
+    },
+    {
+      "Slot": "Armour",
+      "Item": "python_nx_armour_grade1",
+      "On": true,
+      "Priority": 1,
+      "Health": 1.0
+    },
+    {
+      "Slot": "PowerPlant",
+      "Item": "int_powerplant_size6_class1",
+      "On": true,
+      "Priority": 1,
+      "Health": 1.0,
+      "Value": 140520
+    },
+    {
+      "Slot": "MainEngines",
+      "Item": "int_engine_size6_class1",
+      "On": true,
+      "Priority": 2,
+      "Health": 1.0,
+      "Value": 175277
+    },
+    {
+      "Slot": "FrameShiftDrive",
+      "Item": "int_hyperdrive_overcharge_size5_class3",
+      "On": true,
+      "Priority": 2,
+      "Health": 1.0,
+      "Value": 1791487
+    },
+    {
+      "Slot": "LifeSupport",
+      "Item": "int_lifesupport_size4_class1",
+      "On": true,
+      "Priority": 2,
+      "Health": 1.0,
+      "Value": 9958
+    },
+    {
+      "Slot": "PowerDistributor",
+      "Item": "int_powerdistributor_size6_class1",
+      "On": true,
+      "Priority": 2,
+      "Health": 1.0,
+      "Value": 78078
+    },
+    {
+      "Slot": "Radar",
+      "Item": "int_sensors_size5_class1",
+      "On": true,
+      "Priority": 2,
+      "Health": 1.0,
+      "Value": 27885
+    },
+    {
+      "Slot": "FuelTank",
+      "Item": "int_fueltank_size4_class3",
+      "On": true,
+      "Priority": 1,
+      "Health": 1.0,
+      "Value": 21704
+    },
+    {
+      "Slot": "Slot01_Size6",
+      "Item": "int_shieldgenerator_size6_class1",
+      "On": true,
+      "Priority": 2,
+      "Health": 1.0,
+      "Value": 175277
+    },
+    {
+      "Slot": "Slot02_Size4",
+      "Item": "int_cargorack_size3_class1",
+      "On": true,
+      "Priority": 1,
+      "Health": 1.0,
+      "Value": 9269
+    },
+    {
+      "Slot": "Slot05_Size1",
+      "Item": "int_supercruiseassist",
+      "On": true,
+      "Priority": 2,
+      "Health": 1.0,
+      "Value": 8003
+    },
+    {
+      "Slot": "Slot06_Size1",
+      "Item": "int_dockingcomputer_advanced",
+      "On": true,
+      "Priority": 2,
+      "Health": 1.0,
+      "Value": 11852
+    },
+    {
+      "Slot": "PlanetaryApproachSuite",
+      "Item": "int_planetapproachsuite_advanced",
+      "On": true,
+      "Priority": 1,
+      "Health": 1.0,
+      "Value": 438
+    },
+    {
+      "Slot": "VesselVoice",
+      "Item": "voicepack_verity",
+      "On": true,
+      "Priority": 1,
+      "Health": 1.0
+    },
+    {
+      "Slot": "ShipCockpit",
+      "Item": "python_nx_cockpit",
+      "On": true,
+      "Priority": 1,
+      "Health": 1.0
+    },
+    {
+      "Slot": "CargoHatch",
+      "Item": "modularcargobaydoor",
+      "On": true,
+      "Priority": 2,
+      "Health": 1.0
+    }
+  ]
+}

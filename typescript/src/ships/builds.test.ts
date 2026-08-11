@@ -4,6 +4,8 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { stripJsonComments } from '../../scripts/jsonc.mjs';
+
 import { ShipLoadout } from './ship-loadout.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
@@ -12,8 +14,8 @@ import { getBlueprintGrade } from './blueprints.js';
 import { getExperimentalEffect } from './experimental-effects.js';
 import { baseStats, missingBaseLabels } from './internal/loadout-engineering.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
-import index from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
-import optionsFixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
+import index from '../../../fixtures/ships/builds/index.jsonc' with { type: 'json' };
+import optionsFixture from '../../../fixtures/ships/engineering-options.jsonc' with { type: 'json' };
 
 /** One module as the corpus records it. */
 interface CorpusModule {
@@ -50,11 +52,15 @@ interface CorpusBuild {
 /**
  * The corpus is one file per build, so it is read from disk rather than imported the way
  * every other fixture is — 181 static `with { type: 'json' }` imports is not a fixture,
- * it is a wall. `index.json` names the builds; the files themselves are the fixture.
+ * it is a wall. `index.jsonc` names the builds; the files themselves are the fixture. Each
+ * carries a header comment, so the text is stripped before parsing, exactly as the loader
+ * does for an imported fixture.
  */
 const CORPUS_DIR = fileURLToPath(new URL('../../../fixtures/ships/builds/', import.meta.url));
 const readBuild = (id: string): CorpusBuild =>
-    JSON.parse(readFileSync(join(CORPUS_DIR, `${id}.json`), 'utf8')) as CorpusBuild;
+    JSON.parse(
+        stripJsonComments(readFileSync(join(CORPUS_DIR, `${id}.jsonc`), 'utf8')),
+    ) as CorpusBuild;
 
 const builds: CorpusBuild[] = index.builds.map((entry) => readBuild(entry.id));
 const ROLES = new Set([
@@ -82,7 +88,7 @@ function assemble(build: CorpusBuild): ShipLoadout {
 
 /**
  * The corpus rounds to 6 dp, so `1e-5` leaves 20× headroom over rounding while still
- * catching any real change in the maths. `index.json` states the same tolerance, so a
+ * catching any real change in the maths. `index.jsonc` states the same tolerance, so a
  * port compares the same way.
  */
 const TOLERANCE = 1e-5;
@@ -95,13 +101,13 @@ const close = (actual: number, expected: number, what: string): void => {
 
 test('the index names every build file, and only those', () => {
     const onDisk = readdirSync(CORPUS_DIR)
-        .filter((file) => file.endsWith('.json') && file !== 'index.json')
-        .map((file) => file.replace(/\.json$/, ''))
+        .filter((file) => file.endsWith('.jsonc') && file !== 'index.jsonc')
+        .map((file) => file.replace(/\.jsonc$/, ''))
         .sort();
     assert.deepEqual(
         index.builds.map((entry) => entry.id).sort(),
         onDisk,
-        'index.json and the build files must list the same ids',
+        'index.jsonc and the build files must list the same ids',
     );
     for (const entry of index.builds) {
         const build = readBuild(entry.id);

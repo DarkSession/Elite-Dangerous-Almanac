@@ -1,0 +1,40 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "vulture-combat",
+  "ship": "Vulture",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Vulture_Armour_Reactive", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5 } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size4_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 4 } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size5_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 3 } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size4_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 4 } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size3_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size5_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size3_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_Slugshot_Fixed_Large_Range", "engineering": { "blueprint": "Weapon_DoubleShot", "grade": 5, "experimental": "special_weapon_damage" } },
+    { "slot": "LargeHardpoint2", "item": "Hpt_Slugshot_Fixed_Large_Range", "engineering": { "blueprint": "Weapon_DoubleShot", "grade": 5, "experimental": "special_weapon_damage" } },
+    { "slot": "Slot01_Size5", "item": "Int_ShieldGenerator_Size5_Class5", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 3 } },
+    { "slot": "Military01", "item": "Int_GuardianShieldReinforcement_Size5_Class2" },
+    { "slot": "Slot02_Size4", "item": "Int_FuelScoop_Size4_Class5", "priority": 1 },
+    { "slot": "Slot03_Size2", "item": "Int_GuardianFSDBooster_Size2" },
+    { "slot": "Slot05_Size1", "item": "Int_GuardianShieldReinforcement_Size1_Class1" },
+    { "slot": "Slot06_Size1", "item": "Int_DockingComputer_Advanced", "priority": 1 },
+    { "slot": "Slot07_Size1", "item": "Int_GuardianShieldReinforcement_Size1_Class2" },
+    { "slot": "Slot08_Size1", "item": "Int_SupercruiseAssist" }
+  ],
+  "metrics": {
+    "unladenMass": 382.3,
+    "cargoCapacity": 0,
+    "fuelCapacity": 8,
+    "maxJumpRange": 21.029444,
+    "power": { "available": 15.6, "retracted": 16.11, "deployed": 18.15, "withinBudget": false },
+    "shields": { "strength": 709.123541, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 560, "resistances": { "kinetic": 0.25, "thermal": -0.4, "explosive": 0.2 } },
+    "weapons": { "count": 2, "damagePerSecond": 432.000043, "sustainedDamagePerSecond": 52.411765 }
+  }
+}

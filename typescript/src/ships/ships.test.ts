@@ -2,9 +2,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { SHIPS, getShipBySymbol, getShipByName, getShipSlots } from './ships.js';
-import shipsFixture from '../../../fixtures/ships/ships.json' with { type: 'json' };
-import statsFixture from '../../../fixtures/ships/ship-stats.json' with { type: 'json' };
-import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
+import shipsFixture from '../../../fixtures/ships/ships.jsonc' with { type: 'json' };
+import statsFixture from '../../../fixtures/ships/ship-stats.jsonc' with { type: 'json' };
+import slotsFixture from '../../../fixtures/ships/ship-slots.jsonc' with { type: 'json' };
 
 /** A merged Ship record projected onto just the keys a subset fixture carries. */
 const project = (obj: object, ref: object): Record<string, unknown> => {

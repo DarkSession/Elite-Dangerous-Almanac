@@ -7,7 +7,7 @@ import {
     totalRange,
     type FrameShiftDriveParams,
 } from './jump-range.js';
-import expected from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
+import expected from '../../../fixtures/ships/jump-range.jsonc' with { type: 'json' };
 
 const fsd: FrameShiftDriveParams = expected.frameShiftDrive;
 

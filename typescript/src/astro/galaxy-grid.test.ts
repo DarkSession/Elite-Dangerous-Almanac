@@ -20,8 +20,8 @@ import {
 import { SECTOR_INTERNAL_SIZE } from './naming-region-origins.js';
 import { REAL_NEBULAE } from './nebulae-real.js';
 import { PROCGEN_NEBULAE } from './nebulae-procgen.js';
-import addresses from '../../../fixtures/astro/system-addresses.json' with { type: 'json' };
-import nebulae from '../../../fixtures/astro/nebulae.json' with { type: 'json' };
+import addresses from '../../../fixtures/astro/system-addresses.jsonc' with { type: 'json' };
+import nebulae from '../../../fixtures/astro/nebulae.jsonc' with { type: 'json' };
 
 test('the galaxy origin matches the region map projection', () => {
     // `GALAXY_ORIGIN` is a plain constant so a coordinate conversion never pulls in

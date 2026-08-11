@@ -9,7 +9,7 @@ import {
 } from './system-address.js';
 import { sectorGridPositionFromName } from './sector-name.js';
 import { massCodeToSizeClass } from './mass-code.js';
-import fixture from '../../../fixtures/astro/system-addresses.json' with { type: 'json' };
+import fixture from '../../../fixtures/astro/system-addresses.jsonc' with { type: 'json' };
 
 const letter = (c: string) => c.charCodeAt(0) - 'A'.charCodeAt(0);
 

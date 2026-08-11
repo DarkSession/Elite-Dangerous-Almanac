@@ -20,7 +20,7 @@ import { ALL_MODULES } from './modules-all.js';
 import { computeModifiers } from './engineering.js';
 import { damagePerSecond } from './weapons.js';
 import { ShipLoadout } from './ship-loadout.js';
-import fixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
+import fixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 
 const decorative = fixture.decorativeModifications;
 const ids = decorative.ids.map((row) => row.id);

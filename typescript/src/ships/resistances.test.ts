@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { stackShieldResistance, stackArmourResistance, systemsResistance } from './resistances.js';
-import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
+import fixture from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
 
 const near = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) < eps;
 

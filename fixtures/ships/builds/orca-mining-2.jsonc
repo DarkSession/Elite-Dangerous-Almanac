@@ -1,0 +1,45 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "orca-mining-2",
+  "ship": "Orca",
+  "role": "mining",
+  "modules": [
+    { "slot": "Armour", "item": "Orca_Armour_Grade3", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size5_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size6_Class5" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size5_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class1", "priority": 1 },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_BeamLaser_Turret_Large" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_MiningLaser_Fixed_Medium", "priority": 1 },
+    { "slot": "MediumHardpoint2", "item": "Hpt_MiningLaser_Fixed_Medium", "priority": 1 },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ChaffLauncher_Tiny", "priority": 1, "on": false },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "on": false },
+    { "slot": "TinyHardpoint3", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "Slot01_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot02_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot03_Size5", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "Slot04_Size5", "item": "Int_ShieldGenerator_Size5_Class5" },
+    { "slot": "Slot05_Size4", "item": "Int_Refinery_Size4_Class5", "priority": 1 },
+    { "slot": "Slot06_Size3", "item": "Int_DroneControl_Collection_Size3_Class5", "priority": 1 },
+    { "slot": "Slot07_Size2", "item": "Int_DroneControl_Prospector_Size1_Class5", "priority": 1 },
+    { "slot": "Slot08_Size2", "item": "Int_DockingComputer_Standard", "priority": 1 }
+  ],
+  "metrics": {
+    "unladenMass": 565.7,
+    "cargoCapacity": 96,
+    "fuelCapacity": 48,
+    "maxJumpRange": 21.581566,
+    "power": { "available": 20.4, "retracted": 15.89, "deployed": 18.9, "withinBudget": true },
+    "shields": { "strength": 321.180133, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 770, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 3, "damagePerSecond": 22.36, "sustainedDamagePerSecond": 22.36 }
+  }
+}

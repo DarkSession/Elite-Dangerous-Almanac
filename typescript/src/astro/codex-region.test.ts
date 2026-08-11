@@ -8,7 +8,7 @@ import {
     CODEX_REGION_MAP_LY_PER_CELL,
 } from './codex-region-lookup.js';
 import type { GalacticPosition } from './galactic-position.js';
-import fixture from '../../../fixtures/astro/galactic-region.json' with { type: 'json' };
+import fixture from '../../../fixtures/astro/galactic-region.jsonc' with { type: 'json' };
 
 test('there are exactly 42 galactic regions with contiguous ids 1..42', () => {
     assert.equal(CODEX_REGIONS.length, 42);

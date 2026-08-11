@@ -1,0 +1,48 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "krait-mkii-combat-2",
+  "ship": "Krait_MkII",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Krait_MkII_Armour_Reactive", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5 } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size7_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 3 } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 4, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class5", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5 } },
+    { "slot": "Radar", "item": "Int_Sensors_Size6_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced", "engineering": { "blueprint": "Weapon_Efficient", "grade": 4, "experimental": "special_weapon_damage" } },
+    { "slot": "LargeHardpoint2", "item": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced", "engineering": { "blueprint": "Weapon_Efficient", "grade": 4, "experimental": "special_phasing_sequence" } },
+    { "slot": "LargeHardpoint3", "item": "Hpt_PlasmaAccelerator_Fixed_Large_Advanced", "engineering": { "blueprint": "Weapon_Efficient", "grade": 4, "experimental": "special_weapon_rateoffire" } },
+    { "slot": "MediumHardpoint1", "item": "Hpt_BeamLaser_Gimbal_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_MultiCannon_Gimbal_Medium", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_incendiary_rounds" } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 2 } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 4, "experimental": "special_shieldbooster_thermic" } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 4, "experimental": "special_shieldbooster_explosive" } },
+    { "slot": "Slot01_Size6", "item": "Int_ShieldGenerator_Size6_Class3_Fast", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 4 } },
+    { "slot": "Slot02_Size6", "item": "Int_FuelScoop_Size6_Class5" },
+    { "slot": "Slot03_Size5", "item": "Int_GuardianFSDBooster_Size5" },
+    { "slot": "Slot04_Size5", "item": "Int_DroneControl_ResourceSiphon_Size5_Class5" },
+    { "slot": "Slot05_Size4", "item": "Int_CorrosionProofCargoRack_Size4_Class1", "priority": 1 },
+    { "slot": "Slot06_Size3", "item": "Int_DroneControl_Collection_Size3_Class5", "engineering": { "blueprint": "Misc_Shielded", "grade": 4 } },
+    { "slot": "Slot07_Size3", "item": "Int_FSDInterdictor_Size3_Class5" },
+    { "slot": "Slot08_Size2", "item": "Int_DockingComputer_Advanced" },
+    { "slot": "Slot09_Size1", "item": "Int_SupercruiseAssist", "priority": 2 }
+  ],
+  "metrics": {
+    "unladenMass": 705.1,
+    "cargoCapacity": 16,
+    "fuelCapacity": 32,
+    "maxJumpRange": 27.844881,
+    "power": { "available": 30, "retracted": 22.34, "deployed": 29.89, "withinBudget": true },
+    "shields": { "strength": 454.808242, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 770, "resistances": { "kinetic": 0.25, "thermal": -0.4, "explosive": 0.2 } },
+    "weapons": { "count": 5, "damagePerSecond": 111.135351, "sustainedDamagePerSecond": 93.094309 }
+  }
+}

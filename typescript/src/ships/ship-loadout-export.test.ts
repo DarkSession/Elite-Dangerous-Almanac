@@ -7,13 +7,13 @@ import { enumerateSlots, parseSlotName } from './slots.js';
 import { getShipSlots, SHIPS } from './ships.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
-import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
-import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
-import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
-import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.json' with { type: 'json' };
-import fixture from '../../../fixtures/ships/slef-export.json' with { type: 'json' };
-import jumpFixture from '../../../fixtures/ships/jump-range.json' with { type: 'json' };
-import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.json' with { type: 'json' };
+import slefFixture from '../../../fixtures/ships/slef-the-deep-black.jsonc' with { type: 'json' };
+import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.jsonc' with { type: 'json' };
+import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.jsonc' with { type: 'json' };
+import pythonJournal from '../../../fixtures/ships/journal-python-mkii-antixeno.jsonc' with { type: 'json' };
+import fixture from '../../../fixtures/ships/slef-export.jsonc' with { type: 'json' };
+import jumpFixture from '../../../fixtures/ships/jump-range.jsonc' with { type: 'json' };
+import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.jsonc' with { type: 'json' };
 
 const slefString = JSON.stringify(slefFixture);
 const source = slefFixture[0]!.data as unknown as LoadoutEvent;
@@ -774,7 +774,7 @@ test('a real capture carrying a Community Goal rack exports no module total or r
     // Cutter fitting five corrosion-resistant racks. Two size-6 and one size-5 are the
     // Community Goal rewards this catalogue leaves unpriced, so a total cannot be built.
     const { default: capture } = await import(
-        '../../../fixtures/ships/slef-inara-cutter-antixeno.json',
+        '../../../fixtures/ships/slef-inara-cutter-antixeno.jsonc',
         { with: { type: 'json' } }
     );
     const source = capture[0]!.data as unknown as LoadoutEvent;
@@ -1114,7 +1114,7 @@ test('a SLEF producer with generic Type-11 mount names still imports', () => {
 test("a real Inara export confirms the Type-11's journal slot vocabulary", async () => {
     // External ground truth: Inara wrote these slot names, not this library. It is the
     // only source in the corpus that exercises the restricted mounts end to end.
-    const { default: inara } = await import('../../../fixtures/ships/slef-inara-type-11.json', {
+    const { default: inara } = await import('../../../fixtures/ships/slef-inara-type-11.jsonc', {
         with: { type: 'json' },
     });
     const exported = inara[0]!.data.Modules.map((m) => m.Slot);

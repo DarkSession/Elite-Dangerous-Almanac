@@ -1,0 +1,40 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "belugaliner-exploration",
+  "ship": "BelugaLiner",
+  "role": "exploration",
+  "modules": [
+    { "slot": "Armour", "item": "BelugaLiner_Armour_Grade1" },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size6_Class5", "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 1, "experimental": "special_powerplant_lightweight" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size7_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 3, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size7_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size8_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size6_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size5_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size7_Class3" },
+    { "slot": "Slot01_Size6", "item": "Int_ShieldGenerator_Size6_Class5" },
+    { "slot": "Slot02_Size6", "item": "Int_FuelScoop_Size6_Class5" },
+    { "slot": "Slot03_Size6", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot04_Size6", "item": "Int_GuardianFSDBooster_Size5" },
+    { "slot": "Slot05_Size5", "item": "Int_BuggyBay_Size4_Class2" },
+    { "slot": "Slot06_Size5", "item": "Int_ShieldCellBank_Size3_Class5" },
+    { "slot": "Slot07_Size4", "item": "Int_ShieldCellBank_Size3_Class5" },
+    { "slot": "Slot08_Size3", "item": "Int_CargoRack_Size3_Class1" },
+    { "slot": "Slot09_Size3", "item": "Int_DetailedSurfaceScanner_Tiny" },
+    { "slot": "Slot10_Size3", "item": "Int_DockingComputer_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 1303.3,
+    "cargoCapacity": 40,
+    "fuelCapacity": 128,
+    "maxJumpRange": 38.674267,
+    "power": { "available": 25.2, "retracted": 23.93, "deployed": 23.93, "withinBudget": true },
+    "shields": { "strength": 221.575327, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 504, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

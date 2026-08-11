@@ -1,0 +1,955 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Parity fixture for the source purchase record -- the credit figures a captured build arrived
+ * with, preserved verbatim and kept apart from the catalogue retail prices the library computes.
+ * `captures` holds, per real capture, the record a build must report and the credit figures a
+ * source-record export must write back. `syntheticCaptures` holds hand-written events for shapes
+ * the corpus does not contain. `editedExports` pins what an edit does to a source-record export,
+ * per capture: a captured figure is pinned to the article it was paid for, so a swapped or removed
+ * module exports unpriced and takes the module totals with it, while engineering one or filling an
+ * empty mount leaves them standing. The record itself never changes -- no entry here edits it.
+ * Cross-language validation.
+ */
+{
+  "captures": {
+    "deepBlack": {
+      "build": "fixtures/ships/slef-the-deep-black.json",
+      "note": "Fully priced and uniformly discounted: every one of the 20 priced modules sits at 0.8775 of its catalogue list price -- a 12.25% outfitting discount -- while the hull is at full price. Nothing in the export says so, which is why the record is preserved as stated rather than reduced to one discount figure.",
+      "record": {
+        "hullValue": 189326510,
+        "modulesValue": 192625195,
+        "rebuy": 19097585,
+        "moduleCount": 21,
+        "pricedModulesValue": 192625195,
+        "moduleValues": [
+          {
+            "slot": "TinyHardpoint5",
+            "item": "hpt_heatsinklauncher_turret_tiny",
+            "value": 3071
+          },
+          {
+            "slot": "TinyHardpoint6",
+            "item": "hpt_heatsinklauncher_turret_tiny",
+            "value": 3071
+          },
+          {
+            "slot": "Armour",
+            "item": "explorer_nx_armour_grade1_default",
+            "value": 0
+          },
+          {
+            "slot": "PowerPlant",
+            "item": "int_powerplant_size5_class5",
+            "value": 3794047
+          },
+          {
+            "slot": "MainEngines",
+            "item": "int_engine_size6_class2",
+            "value": 525833
+          },
+          {
+            "slot": "FrameShiftDrive",
+            "item": "int_hyperdrive_overcharge_size8_class5_overchargebooster_mkii",
+            "value": 71991908
+          },
+          {
+            "slot": "LifeSupport",
+            "item": "int_lifesupport_size5_class2",
+            "value": 69709
+          },
+          {
+            "slot": "PowerDistributor",
+            "item": "int_powerdistributor_size6_class2",
+            "value": 195191
+          },
+          {
+            "slot": "Radar",
+            "item": "int_sensors_size8_class2",
+            "value": 1530325
+          },
+          {
+            "slot": "FuelTank",
+            "item": "int_fueltank_size7_class3",
+            "value": 1562749
+          },
+          {
+            "slot": "Slot01_Size7",
+            "item": "int_fuelscoop_size7_class5",
+            "value": 80011012
+          },
+          {
+            "slot": "Slot02_Size6",
+            "item": "int_repairer_size6_class5",
+            "value": 13430576
+          },
+          {
+            "slot": "Slot03_Size6",
+            "item": "int_repairer_size6_class5",
+            "value": 13430576
+          },
+          {
+            "slot": "Slot06_Size5",
+            "item": "int_shieldgenerator_size5_class2",
+            "value": 165883
+          },
+          {
+            "slot": "Slot07_Size5",
+            "item": "int_guardianfsdbooster_size5",
+            "value": 5688920
+          },
+          {
+            "slot": "Slot08_Size4",
+            "item": "int_buggybay_size4_class2",
+            "value": 75816
+          },
+          {
+            "slot": "Slot09_Size4",
+            "item": "int_corrosionproofcargorack_size4_class1",
+            "value": 82775
+          },
+          {
+            "slot": "Slot10_Size3",
+            "item": "int_multidronecontrol_operations_size3_class3",
+            "value": 43875
+          },
+          {
+            "slot": "Slot13_Size1",
+            "item": "int_supercruiseassist",
+            "value": 8003
+          },
+          {
+            "slot": "Slot14_Size1",
+            "item": "int_dockingcomputer_advanced",
+            "value": 11855
+          }
+        ]
+      },
+      "sourceExport": {
+        "note": "An unedited capture re-exports its own credits unchanged.",
+        "topLevelCredits": {
+          "HullValue": 189326510,
+          "ModulesValue": 192625195,
+          "Rebuy": 19097585
+        },
+        "pricedSlots": {
+          "TinyHardpoint5": 3071,
+          "TinyHardpoint6": 3071,
+          "Armour": 0,
+          "PowerPlant": 3794047,
+          "MainEngines": 525833,
+          "FrameShiftDrive": 71991908,
+          "LifeSupport": 69709,
+          "PowerDistributor": 195191,
+          "Radar": 1530325,
+          "FuelTank": 1562749,
+          "Slot01_Size7": 80011012,
+          "Slot02_Size6": 13430576,
+          "Slot03_Size6": 13430576,
+          "Slot06_Size5": 165883,
+          "Slot07_Size5": 5688920,
+          "Slot08_Size4": 75816,
+          "Slot09_Size4": 82775,
+          "Slot10_Size3": 43875,
+          "Slot13_Size1": 8003,
+          "Slot14_Size1": 11855
+        }
+      }
+    },
+    "viperMkIV": {
+      "build": "fixtures/ships/journal-viper-mkiv.json",
+      "note": "Discounted differently: the 20 priced modules sit at exactly 0.85 of list, and the hull at neither its bare nor its retail price. Seven of the 27 listed entries carry no Value.",
+      "record": {
+        "hullValue": 246650,
+        "modulesValue": 4957276,
+        "rebuy": 260198,
+        "moduleCount": 27,
+        "pricedModulesValue": 4957276,
+        "moduleValues": [
+          {
+            "slot": "MediumHardpoint1",
+            "item": "hpt_beamlaser_gimbal_medium",
+            "value": 425510
+          },
+          {
+            "slot": "MediumHardpoint2",
+            "item": "hpt_multicannon_gimbal_medium",
+            "value": 48450
+          },
+          {
+            "slot": "SmallHardpoint1",
+            "item": "hpt_beamlaser_gimbal_small",
+            "value": 63453
+          },
+          {
+            "slot": "SmallHardpoint2",
+            "item": "hpt_multicannon_gimbal_small",
+            "value": 12113
+          },
+          {
+            "slot": "TinyHardpoint1",
+            "item": "hpt_heatsinklauncher_turret_tiny",
+            "value": 2975
+          },
+          {
+            "slot": "TinyHardpoint2",
+            "item": "hpt_shieldbooster_size0_class4",
+            "value": 103700
+          },
+          {
+            "slot": "PowerPlant",
+            "item": "int_powerplant_size4_class5",
+            "value": 1225049
+          },
+          {
+            "slot": "MainEngines",
+            "item": "int_engine_size4_class5",
+            "value": 1368568
+          },
+          {
+            "slot": "FrameShiftDrive",
+            "item": "int_hyperdrive_size4_class5",
+            "value": 1368568
+          },
+          {
+            "slot": "LifeSupport",
+            "item": "int_lifesupport_size2_class1",
+            "value": 1230
+          },
+          {
+            "slot": "PowerDistributor",
+            "item": "int_powerdistributor_size3_class5",
+            "value": 134582
+          },
+          {
+            "slot": "Radar",
+            "item": "int_sensors_size3_class1",
+            "value": 3445
+          },
+          {
+            "slot": "FuelTank",
+            "item": "int_fueltank_size4_class3",
+            "value": 21023
+          },
+          {
+            "slot": "Slot01_Size4",
+            "item": "int_shieldgenerator_size4_class1",
+            "value": 16897
+          },
+          {
+            "slot": "Slot02_Size4",
+            "item": "int_fuelscoop_size4_class2",
+            "value": 38016
+          },
+          {
+            "slot": "Slot03_Size3",
+            "item": "int_buggybay_size2_class2",
+            "value": 18360
+          },
+          {
+            "slot": "Slot04_Size2",
+            "item": "int_fsdinterdictor_size2_class2",
+            "value": 85680
+          },
+          {
+            "slot": "Slot07_Size1",
+            "item": "int_supercruiseassist",
+            "value": 7752
+          },
+          {
+            "slot": "Slot08_Size1",
+            "item": "int_dockingcomputer_advanced",
+            "value": 11480
+          },
+          {
+            "slot": "PlanetaryApproachSuite",
+            "item": "int_planetapproachsuite_advanced",
+            "value": 425
+          }
+        ]
+      },
+      "sourceExport": {
+        "note": "An unedited capture re-exports its own credits unchanged.",
+        "topLevelCredits": {
+          "HullValue": 246650,
+          "ModulesValue": 4957276,
+          "Rebuy": 260198
+        },
+        "pricedSlots": {
+          "MediumHardpoint1": 425510,
+          "MediumHardpoint2": 48450,
+          "SmallHardpoint1": 63453,
+          "SmallHardpoint2": 12113,
+          "TinyHardpoint1": 2975,
+          "TinyHardpoint2": 103700,
+          "PowerPlant": 1225049,
+          "MainEngines": 1368568,
+          "FrameShiftDrive": 1368568,
+          "LifeSupport": 1230,
+          "PowerDistributor": 134582,
+          "Radar": 3445,
+          "FuelTank": 21023,
+          "Slot01_Size4": 16897,
+          "Slot02_Size4": 38016,
+          "Slot03_Size3": 18360,
+          "Slot04_Size2": 85680,
+          "Slot07_Size1": 7752,
+          "Slot08_Size1": 11480,
+          "PlanetaryApproachSuite": 425
+        }
+      }
+    },
+    "caspianExplorer": {
+      "build": "fixtures/ships/journal-caspian-explorer.json",
+      "note": "The partially priced case: an EDSY export stating no HullValue at all, with only 19 of its 35 listed entries priced. A null total and a partial slot list is a normal record, not a defect.",
+      "record": {
+        "hullValue": null,
+        "modulesValue": 193019839,
+        "rebuy": 9650994,
+        "moduleCount": 35,
+        "pricedModulesValue": 193019839,
+        "moduleValues": [
+          {
+            "slot": "MediumHardpoint6",
+            "item": "hpt_plasmaaccelerator_fixed_medium",
+            "value": 813345
+          },
+          {
+            "slot": "TinyHardpoint1",
+            "item": "hpt_heatsinklauncher_turret_tiny",
+            "value": 3072
+          },
+          {
+            "slot": "TinyHardpoint2",
+            "item": "hpt_heatsinklauncher_turret_tiny",
+            "value": 3072
+          },
+          {
+            "slot": "PowerPlant",
+            "item": "int_powerplant_size5_class5",
+            "value": 3794047
+          },
+          {
+            "slot": "MainEngines",
+            "item": "int_engine_size6_class2",
+            "value": 584261
+          },
+          {
+            "slot": "FrameShiftDrive",
+            "item": "int_hyperdrive_overcharge_size8_class5_overchargebooster_mkii",
+            "value": 71991912
+          },
+          {
+            "slot": "LifeSupport",
+            "item": "int_lifesupport_size5_class2",
+            "value": 69713
+          },
+          {
+            "slot": "PowerDistributor",
+            "item": "int_powerdistributor_size6_class2",
+            "value": 195195
+          },
+          {
+            "slot": "Radar",
+            "item": "int_sensors_size8_class2",
+            "value": 1530326
+          },
+          {
+            "slot": "Slot01_Size7",
+            "item": "int_fuelscoop_size7_class5",
+            "value": 80011016
+          },
+          {
+            "slot": "Slot02_Size6",
+            "item": "int_repairer_size6_class5",
+            "value": 13430578
+          },
+          {
+            "slot": "Slot03_Size6",
+            "item": "int_repairer_size6_class5",
+            "value": 13430578
+          },
+          {
+            "slot": "Slot04_Size5",
+            "item": "int_shieldgenerator_size5_class2",
+            "value": 184310
+          },
+          {
+            "slot": "Slot05_Size5",
+            "item": "int_guardianfsdbooster_size5",
+            "value": 5688921
+          },
+          {
+            "slot": "Slot06_Size5",
+            "item": "int_fighterbaymk2_size5_class1",
+            "value": 774528
+          },
+          {
+            "slot": "Slot08_Size4",
+            "item": "int_buggybay_size4_class2",
+            "value": 75816
+          },
+          {
+            "slot": "Slot09_Size4",
+            "item": "int_corrosionproofcargorack_size4_class1",
+            "value": 82774
+          },
+          {
+            "slot": "Slot10_Size3",
+            "item": "int_multidronecontrol_operations_size3_class3",
+            "value": 43875
+          },
+          {
+            "slot": "Slot12_Size1",
+            "item": "int_detailedsurfacescanner_tiny",
+            "value": 312500
+          }
+        ]
+      },
+      "sourceExport": {
+        "note": "An unedited capture re-exports its own credits unchanged.",
+        "topLevelCredits": {
+          "ModulesValue": 193019839,
+          "Rebuy": 9650994
+        },
+        "pricedSlots": {
+          "MediumHardpoint6": 813345,
+          "TinyHardpoint1": 3072,
+          "TinyHardpoint2": 3072,
+          "PowerPlant": 3794047,
+          "MainEngines": 584261,
+          "FrameShiftDrive": 71991912,
+          "LifeSupport": 69713,
+          "PowerDistributor": 195195,
+          "Radar": 1530326,
+          "Slot01_Size7": 80011016,
+          "Slot02_Size6": 13430578,
+          "Slot03_Size6": 13430578,
+          "Slot04_Size5": 184310,
+          "Slot05_Size5": 5688921,
+          "Slot06_Size5": 774528,
+          "Slot08_Size4": 75816,
+          "Slot09_Size4": 82774,
+          "Slot10_Size3": 43875,
+          "Slot12_Size1": 312500
+        }
+      }
+    },
+    "kraitPhantom": {
+      "build": "fixtures/ships/journal-krait-phantom.json",
+      "note": "A game capture, where HullValue counts the hull with its stock fittings. The five modules that came with the hull carry no Value, because their cost already sits inside that total.",
+      "record": {
+        "hullValue": 37472252,
+        "modulesValue": 50785509,
+        "rebuy": 4412891,
+        "moduleCount": 40,
+        "pricedModulesValue": 50785509,
+        "moduleValues": [
+          {
+            "slot": "MediumHardpoint1",
+            "item": "hpt_flakmortar_fixed_medium",
+            "value": 255255
+          },
+          {
+            "slot": "MediumHardpoint2",
+            "item": "hpt_flakmortar_fixed_medium",
+            "value": 255255
+          },
+          {
+            "slot": "TinyHardpoint1",
+            "item": "hpt_plasmapointdefence_turret_tiny",
+            "value": 18083
+          },
+          {
+            "slot": "TinyHardpoint2",
+            "item": "hpt_plasmapointdefence_turret_tiny",
+            "value": 18083
+          },
+          {
+            "slot": "TinyHardpoint3",
+            "item": "hpt_shieldbooster_size0_class5",
+            "value": 273975
+          },
+          {
+            "slot": "TinyHardpoint4",
+            "item": "hpt_shieldbooster_size0_class5",
+            "value": 273975
+          },
+          {
+            "slot": "PowerPlant",
+            "item": "int_guardianpowerplant_size5",
+            "value": 4552857
+          },
+          {
+            "slot": "MainEngines",
+            "item": "int_engine_size6_class2",
+            "value": 584261
+          },
+          {
+            "slot": "FrameShiftDrive",
+            "item": "int_hyperdrive_size5_class5",
+            "value": 4976355
+          },
+          {
+            "slot": "LifeSupport",
+            "item": "int_lifesupport_size4_class5",
+            "value": 389022
+          },
+          {
+            "slot": "PowerDistributor",
+            "item": "int_guardianpowerdistributor_size3",
+            "value": 273223
+          },
+          {
+            "slot": "Radar",
+            "item": "int_sensors_size6_class2",
+            "value": 195195
+          },
+          {
+            "slot": "Slot01_Size6",
+            "item": "int_fuelscoop_size6_class5",
+            "value": 25240068
+          },
+          {
+            "slot": "Slot02_Size5",
+            "item": "int_guardianfsdbooster_size5",
+            "value": 5688921
+          },
+          {
+            "slot": "Slot03_Size5",
+            "item": "int_shieldgenerator_size5_class5",
+            "value": 5103953
+          },
+          {
+            "slot": "Slot04_Size5",
+            "item": "int_cargorack_size5_class1",
+            "value": 108777
+          },
+          {
+            "slot": "Slot05_Size3",
+            "item": "int_dronecontrol_collection_size3_class2",
+            "value": 10530
+          },
+          {
+            "slot": "Slot06_Size3",
+            "item": "int_buggybay_size2_class2",
+            "value": 21060
+          },
+          {
+            "slot": "Slot07_Size3",
+            "item": "int_repairer_size3_class5",
+            "value": 2302911
+          },
+          {
+            "slot": "Slot08_Size2",
+            "item": "int_detailedsurfacescanner_tiny",
+            "value": 243750
+          }
+        ]
+      },
+      "sourceExport": {
+        "note": "An unedited capture re-exports its own credits unchanged.",
+        "topLevelCredits": {
+          "HullValue": 37472252,
+          "ModulesValue": 50785509,
+          "Rebuy": 4412891
+        },
+        "pricedSlots": {
+          "MediumHardpoint1": 255255,
+          "MediumHardpoint2": 255255,
+          "TinyHardpoint1": 18083,
+          "TinyHardpoint2": 18083,
+          "TinyHardpoint3": 273975,
+          "TinyHardpoint4": 273975,
+          "PowerPlant": 4552857,
+          "MainEngines": 584261,
+          "FrameShiftDrive": 4976355,
+          "LifeSupport": 389022,
+          "PowerDistributor": 273223,
+          "Radar": 195195,
+          "Slot01_Size6": 25240068,
+          "Slot02_Size5": 5688921,
+          "Slot03_Size5": 5103953,
+          "Slot04_Size5": 108777,
+          "Slot05_Size3": 10530,
+          "Slot06_Size3": 21060,
+          "Slot07_Size3": 2302911,
+          "Slot08_Size2": 243750
+        }
+      }
+    }
+  },
+  "syntheticCaptures": {
+    "noCredits": {
+      "note": "A capture stating no credit figure at all has no purchase record to keep. A record of nulls would read as a source that priced the build at nothing.",
+      "event": {
+        "Ship": "sidewinder",
+        "Modules": [
+          {
+            "Slot": "PowerPlant",
+            "Item": "int_powerplant_size2_class1"
+          }
+        ]
+      },
+      "record": null
+    },
+    "rebuyOnly": {
+      "note": "One stated figure is enough for a record; the rest stay null.",
+      "event": {
+        "Ship": "sidewinder",
+        "Rebuy": 12345,
+        "Modules": [
+          {
+            "Slot": "PowerPlant",
+            "Item": "int_powerplant_size2_class1"
+          }
+        ]
+      },
+      "record": {
+        "hullValue": null,
+        "modulesValue": null,
+        "rebuy": 12345,
+        "moduleCount": 1,
+        "pricedModulesValue": 0,
+        "moduleValues": []
+      }
+    },
+    "partsDoNotAddUp": {
+      "note": "A journal omits Value on a module that was nonetheless paid for. Earlier Loadout events in the Viper Mk IV log declare ModulesValue 4940956 while their per-module figures sum to 3942898 -- the FSD interdictor was bought minutes before and is not yet priced. Both figures are reported, so the disagreement stays visible instead of being averaged away.",
+      "event": {
+        "Ship": "viper_mkiv",
+        "ModulesValue": 4940956,
+        "Modules": [
+          {
+            "Slot": "PowerPlant",
+            "Item": "int_powerplant_size4_class5",
+            "Value": 3942898
+          },
+          {
+            "Slot": "Slot01_Size4",
+            "Item": "int_fsdinterdictor_size4_class3"
+          }
+        ]
+      },
+      "record": {
+        "hullValue": null,
+        "modulesValue": 4940956,
+        "rebuy": null,
+        "moduleCount": 2,
+        "pricedModulesValue": 3942898,
+        "moduleValues": [
+          {
+            "slot": "PowerPlant",
+            "item": "int_powerplant_size4_class5",
+            "value": 3942898
+          }
+        ]
+      }
+    },
+    "repeatedSlotKey": {
+      "note": "A malformed capture naming one mount twice. The build keeps the last entry, so the record does too -- pricing the module that is not there would be worse than not pricing it.",
+      "event": {
+        "Ship": "sidewinder",
+        "Modules": [
+          {
+            "Slot": "PowerPlant",
+            "Item": "int_powerplant_size2_class1",
+            "Value": 10
+          },
+          {
+            "Slot": "PowerPlant",
+            "Item": "int_powerplant_size2_class3",
+            "Value": 30
+          }
+        ]
+      },
+      "record": {
+        "hullValue": null,
+        "modulesValue": null,
+        "rebuy": null,
+        "moduleCount": 2,
+        "pricedModulesValue": 30,
+        "moduleValues": [
+          {
+            "slot": "PowerPlant",
+            "item": "int_powerplant_size2_class3",
+            "value": 30
+          }
+        ]
+      }
+    }
+  },
+  "editedExports": {
+    "note": "Each group starts from the capture its key names -- a real one from `captures`, or a hand-written one from `syntheticCaptures` -- applies its edits, then exports with the source-record credits. `unpricedSlots` lists the slots the capture priced that the export does not; every other priced slot carries the capture's own figure, and nothing else is priced at all.",
+    "groups": {
+      "deepBlack": {
+        "note": "Fully priced and uniformly discounted, so every kind of edit is visible against a total its own parts account for exactly.",
+        "scenarios": {
+          "swapAPricedModule": {
+            "edits": [
+              {
+                "setModule": {
+                  "slot": "Slot13_Size1",
+                  "symbol": "Int_DockingComputer_Standard"
+                }
+              }
+            ],
+            "why": "The captured figure was paid for the supercruise assist that was fitted, not for the docking computer now in the mount. The module totals cover an article no longer aboard, so they go too; HullValue stands, because a captured hull figure names no slot and no edit narrows it.",
+            "topLevelCredits": {
+              "HullValue": 189326510
+            },
+            "unpricedSlots": [
+              "Slot13_Size1"
+            ]
+          },
+          "removeAPricedModule": {
+            "edits": [
+              {
+                "removeModule": {
+                  "slot": "Slot13_Size1"
+                }
+              }
+            ],
+            "why": "Same reason as a swap: what the total counted is no longer fitted.",
+            "topLevelCredits": {
+              "HullValue": 189326510
+            },
+            "unpricedSlots": [
+              "Slot13_Size1"
+            ]
+          },
+          "refitTheSameArticle": {
+            "edits": [
+              {
+                "setModule": {
+                  "slot": "Slot13_Size1",
+                  "symbol": "Int_DockingComputer_Standard"
+                }
+              },
+              {
+                "setModule": {
+                  "slot": "Slot13_Size1",
+                  "symbol": "Int_SupercruiseAssist"
+                }
+              }
+            ],
+            "why": "The article the capture priced is back in the mount it was priced in, so its figure applies again and the totals hold.",
+            "topLevelCredits": {
+              "HullValue": 189326510,
+              "ModulesValue": 192625195,
+              "Rebuy": 19097585
+            },
+            "unpricedSlots": []
+          },
+          "engineerAPricedModule": {
+            "edits": [
+              {
+                "applyBlueprint": {
+                  "slot": "MainEngines",
+                  "blueprint": "Engine_Dirty",
+                  "grade": 3
+                }
+              }
+            ],
+            "why": "Engineering a module does not change what was paid for it, so nothing is dropped.",
+            "topLevelCredits": {
+              "HullValue": 189326510,
+              "ModulesValue": 192625195,
+              "Rebuy": 19097585
+            },
+            "unpricedSlots": []
+          },
+          "fillAnEmptyMount": {
+            "edits": [
+              {
+                "setModule": {
+                  "slot": "Slot11_Size2",
+                  "symbol": "Int_CargoRack_Size2_Class1"
+                }
+              }
+            ],
+            "why": "The capture priced nothing in this mount and everything it did price is still fitted. The new module exports unpriced, which is the shape a partially priced capture has anyway.",
+            "topLevelCredits": {
+              "HullValue": 189326510,
+              "ModulesValue": 192625195,
+              "Rebuy": 19097585
+            },
+            "unpricedSlots": [],
+            "unpricedNewSlots": [
+              "Slot11_Size2"
+            ]
+          },
+          "stripEveryPricedModule": {
+            "edits": [
+              {
+                "removeModule": {
+                  "slot": "TinyHardpoint5"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "TinyHardpoint6"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Armour"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "PowerPlant"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "MainEngines"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "FrameShiftDrive"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "LifeSupport"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "PowerDistributor"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Radar"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "FuelTank"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot01_Size7"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot02_Size6"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot03_Size6"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot06_Size5"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot07_Size5"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot08_Size4"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot09_Size4"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot10_Size3"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot13_Size1"
+                }
+              },
+              {
+                "removeModule": {
+                  "slot": "Slot14_Size1"
+                }
+              }
+            ],
+            "why": "Nothing the capture priced is left. Emitting its totals over the remaining cargo hatch would state a purchase for a build that no longer exists.",
+            "topLevelCredits": {
+              "HullValue": 189326510
+            },
+            "unpricedSlots": [
+              "TinyHardpoint5",
+              "TinyHardpoint6",
+              "Armour",
+              "PowerPlant",
+              "MainEngines",
+              "FrameShiftDrive",
+              "LifeSupport",
+              "PowerDistributor",
+              "Radar",
+              "FuelTank",
+              "Slot01_Size7",
+              "Slot02_Size6",
+              "Slot03_Size6",
+              "Slot06_Size5",
+              "Slot07_Size5",
+              "Slot08_Size4",
+              "Slot09_Size4",
+              "Slot10_Size3",
+              "Slot13_Size1",
+              "Slot14_Size1"
+            ]
+          }
+        }
+      },
+      "caspianExplorer": {
+        "note": "A capture that states no HullValue: once an edit drops the module totals there is no credit figure left to write, and the export says nothing about credits while still pricing every surviving article.",
+        "scenarios": {
+          "swapAPricedModule": {
+            "edits": [
+              {
+                "setModule": {
+                  "slot": "Slot12_Size1",
+                  "symbol": "Int_SupercruiseAssist"
+                }
+              }
+            ],
+            "why": "The surface scanner the capture priced is gone, so its figure and the module totals go with it. Nothing remains to state, this capture having quoted no HullValue.",
+            "topLevelCredits": {},
+            "unpricedSlots": [
+              "Slot12_Size1"
+            ]
+          }
+        }
+      },
+      "partsDoNotAddUp": {
+        "note": "The residual case the rule cannot catch. This capture's total counted a module it never priced, so removing that module leaves the total covering an article no longer aboard -- and the record has no way to know. The total still stands, and the exported document's parts still fall short of it, exactly as the capture's own did.",
+        "scenarios": {
+          "removeAnUnpricedModule": {
+            "edits": [
+              {
+                "removeModule": {
+                  "slot": "Slot01_Size4"
+                }
+              }
+            ],
+            "why": "Every priced article is still fitted, so the totals hold -- correctly, by the only test available, and yet the parts no longer account for the whole. See the note above.",
+            "topLevelCredits": {
+              "ModulesValue": 4940956
+            },
+            "unpricedSlots": []
+          }
+        }
+      }
+    }
+  }
+}

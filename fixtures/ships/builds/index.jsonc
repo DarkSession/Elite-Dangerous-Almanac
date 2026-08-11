@@ -1,0 +1,232 @@
+/*
+ * Index of the shared community build corpus — 181 real builds published by Elite Dangerous
+ * players, one file per build in this directory, named by `id`. A test fixture; not shipped in any
+ * package.
+ *
+ * Acquisition (2026-08-02 UTC): public Coriolis (`coriolis.io/outfit`, `s.orbis.zone`) and EDSY
+ * (`edsy.org`) build links were collected from community build libraries, forum and Steam threads,
+ * video descriptions and squadron documents, then decoded locally to Frontier slot keys and module
+ * symbols using each tool's own published serialisation and id tables. The decoders were throwaway
+ * scripts run outside the working tree; this repository stores only the decoded data. A loadout is
+ * Elite Dangerous game output assembled by a player — see ATTRIBUTIONS.md.
+ *
+ * What is deliberately not kept, and what that costs: a build's own name, author and source link
+ * are not stored, on the maintainer's instruction that the sources need not be credited. So no
+ * individual build can be traced back to the page it came from, or re-derived from this
+ * repository; re-collecting the corpus means harvesting links afresh. What remains auditable is
+ * everything that makes it a fixture — every build re-checks against the catalogues on every run.
+ *
+ * Validation: every stored build resolves all modules in the catalogues, fits each module into a
+ * compatible slot on its hull, and fills all seven core internals. Near-duplicates (>85% identical
+ * fit) are excluded, and each hull's selections span the roles represented by the corpus. The
+ * corpus covers every hull in the shipyard with 2 to 5 builds; 4271 fitted modules over 558
+ * distinct module symbols, and 64 of the 1294 non-cargo-hatch slots are never occupied.
+ *
+ * What a build file records: what is fitted where (journal slot key + module symbol), the module's
+ * power priority when it is not 0, `on: false` when the author left a module unpowered, and the
+ * engineering the author declared (blueprint + grade, and the experimental effect where one is
+ * fitted). The fixed cargo hatch is omitted. `metrics` is what this library derives from the build
+ * as fitted, with the declared engineering NOT applied — every figure comes from stock module
+ * stats, so a build designed around an engineered power plant reads `withinBudget: false`. That is
+ * the contract, not a defect: it keeps the pinned numbers a pure function of the catalogues, and
+ * one that is cheap for a port to reach.
+ *
+ * An implementation passes by fitting the same modules into the same slots and reproducing every
+ * figure to within 1e-5 (figures are rounded to 6 decimal places; `cargoCapacity` and
+ * `weapons.count` are integers and must match exactly). `role` is derived from what is fitted and
+ * is only a label. `declaredEngineering` counts the declared entries: eighteen describe final
+ * pre-engineered Guardian weapons rather than recipes a player may apply, and two put Efficient on
+ * the Mk II Plasma Shock Accelerator, which cannot be engineered; `engineering-options.jsonc` pins
+ * both sets. Every other entry survives `applyBlueprint`.
+ *
+ * Layout: one file per build, `<id>.jsonc`, named by the `id` it carries. One file per build keeps
+ * a change to one build a one-file diff, and lets a port load a single build without parsing the
+ * other 180 — this is the one fixture a test reads from disk rather than importing.
+ */
+{
+  "count": 181,
+  "declaredEngineering": 1902,
+  "builds": [
+    { "id": "adder-exploration", "ship": "Adder", "role": "exploration" },
+    { "id": "adder-exploration-2", "ship": "Adder", "role": "exploration" },
+    { "id": "adder-trade", "ship": "Adder", "role": "trade" },
+    { "id": "anaconda-antixeno", "ship": "Anaconda", "role": "antiXeno" },
+    { "id": "anaconda-combat", "ship": "Anaconda", "role": "combat" },
+    { "id": "anaconda-exploration", "ship": "Anaconda", "role": "exploration" },
+    { "id": "anaconda-mining", "ship": "Anaconda", "role": "mining" },
+    { "id": "anaconda-trade", "ship": "Anaconda", "role": "trade" },
+    { "id": "asp-combat", "ship": "Asp", "role": "combat" },
+    { "id": "asp-exploration", "ship": "Asp", "role": "exploration" },
+    { "id": "asp-mining", "ship": "Asp", "role": "mining" },
+    { "id": "asp-passenger", "ship": "Asp", "role": "passenger" },
+    { "id": "asp-scout-combat", "ship": "Asp_Scout", "role": "combat" },
+    { "id": "asp-scout-combat-2", "ship": "Asp_Scout", "role": "combat" },
+    { "id": "asp-trade", "ship": "Asp", "role": "trade" },
+    { "id": "belugaliner-exploration", "ship": "BelugaLiner", "role": "exploration" },
+    { "id": "belugaliner-passenger", "ship": "BelugaLiner", "role": "passenger" },
+    { "id": "belugaliner-passenger-2", "ship": "BelugaLiner", "role": "passenger" },
+    { "id": "cobramkiii-combat", "ship": "CobraMkIII", "role": "combat" },
+    { "id": "cobramkiii-combat-2", "ship": "CobraMkIII", "role": "combat" },
+    { "id": "cobramkiii-exploration", "ship": "CobraMkIII", "role": "exploration" },
+    { "id": "cobramkiii-mining", "ship": "CobraMkIII", "role": "mining" },
+    { "id": "cobramkiii-mining-2", "ship": "CobraMkIII", "role": "mining" },
+    { "id": "cobramkiv-combat", "ship": "CobraMkIV", "role": "combat" },
+    { "id": "cobramkiv-mining", "ship": "CobraMkIV", "role": "mining" },
+    { "id": "cobramkiv-mining-2", "ship": "CobraMkIV", "role": "mining" },
+    { "id": "cobramkiv-mining-3", "ship": "CobraMkIV", "role": "mining" },
+    { "id": "cobramkiv-trade", "ship": "CobraMkIV", "role": "trade" },
+    { "id": "cobramkv-antixeno", "ship": "CobraMkV", "role": "antiXeno" },
+    { "id": "cobramkv-combat", "ship": "CobraMkV", "role": "combat" },
+    { "id": "cobramkv-combat-2", "ship": "CobraMkV", "role": "combat" },
+    { "id": "cobramkv-multipurpose", "ship": "CobraMkV", "role": "multipurpose" },
+    { "id": "cobramkv-passenger", "ship": "CobraMkV", "role": "passenger" },
+    { "id": "corsair-antixeno", "ship": "Corsair", "role": "antiXeno" },
+    { "id": "corsair-antixeno-2", "ship": "Corsair", "role": "antiXeno" },
+    { "id": "cutter-antixeno", "ship": "Cutter", "role": "antiXeno" },
+    { "id": "cutter-combat", "ship": "Cutter", "role": "combat" },
+    { "id": "cutter-combat-2", "ship": "Cutter", "role": "combat" },
+    { "id": "cutter-mining", "ship": "Cutter", "role": "mining" },
+    { "id": "cutter-trade", "ship": "Cutter", "role": "trade" },
+    { "id": "diamondback-antixeno", "ship": "DiamondBack", "role": "antiXeno" },
+    { "id": "diamondback-combat", "ship": "DiamondBack", "role": "combat" },
+    { "id": "diamondbackxl-antixeno", "ship": "DiamondBackXL", "role": "antiXeno" },
+    { "id": "diamondbackxl-combat", "ship": "DiamondBackXL", "role": "combat" },
+    { "id": "diamondbackxl-combat-2", "ship": "DiamondBackXL", "role": "combat" },
+    { "id": "diamondbackxl-exploration", "ship": "DiamondBackXL", "role": "exploration" },
+    { "id": "diamondbackxl-mining", "ship": "DiamondBackXL", "role": "mining" },
+    { "id": "dolphin-combat", "ship": "Dolphin", "role": "combat" },
+    { "id": "dolphin-exploration", "ship": "Dolphin", "role": "exploration" },
+    { "id": "eagle-combat", "ship": "Eagle", "role": "combat" },
+    { "id": "eagle-combat-2", "ship": "Eagle", "role": "combat" },
+    { "id": "eagle-combat-3", "ship": "Eagle", "role": "combat" },
+    { "id": "eagle-combat-4", "ship": "Eagle", "role": "combat" },
+    { "id": "empire-courier-antixeno", "ship": "Empire_Courier", "role": "antiXeno" },
+    { "id": "empire-courier-combat", "ship": "Empire_Courier", "role": "combat" },
+    { "id": "empire-courier-combat-2", "ship": "Empire_Courier", "role": "combat" },
+    { "id": "empire-courier-exploration", "ship": "Empire_Courier", "role": "exploration" },
+    { "id": "empire-courier-exploration-2", "ship": "Empire_Courier", "role": "exploration" },
+    { "id": "empire-eagle-combat", "ship": "Empire_Eagle", "role": "combat" },
+    { "id": "empire-eagle-combat-2", "ship": "Empire_Eagle", "role": "combat" },
+    { "id": "empire-eagle-combat-3", "ship": "Empire_Eagle", "role": "combat" },
+    { "id": "empire-eagle-exploration", "ship": "Empire_Eagle", "role": "exploration" },
+    { "id": "empire-trader-combat", "ship": "Empire_Trader", "role": "combat" },
+    { "id": "empire-trader-mining", "ship": "Empire_Trader", "role": "mining" },
+    { "id": "empire-trader-mining-2", "ship": "Empire_Trader", "role": "mining" },
+    { "id": "empire-trader-trade", "ship": "Empire_Trader", "role": "trade" },
+    { "id": "empire-trader-trade-2", "ship": "Empire_Trader", "role": "trade" },
+    { "id": "explorer-nx-combat", "ship": "Explorer_NX", "role": "combat" },
+    { "id": "explorer-nx-combat-2", "ship": "Explorer_NX", "role": "combat" },
+    { "id": "explorer-nx-exploration", "ship": "Explorer_NX", "role": "exploration" },
+    { "id": "federation-corvette-combat", "ship": "Federation_Corvette", "role": "combat" },
+    { "id": "federation-corvette-combat-2", "ship": "Federation_Corvette", "role": "combat" },
+    { "id": "federation-corvette-combat-3", "ship": "Federation_Corvette", "role": "combat" },
+    { "id": "federation-corvette-combat-4", "ship": "Federation_Corvette", "role": "combat" },
+    { "id": "federation-corvette-mining", "ship": "Federation_Corvette", "role": "mining" },
+    { "id": "federation-dropship-combat", "ship": "Federation_Dropship", "role": "combat" },
+    { "id": "federation-dropship-combat-2", "ship": "Federation_Dropship", "role": "combat" },
+    { "id": "federation-dropship-exploration", "ship": "Federation_Dropship", "role": "exploration" },
+    { "id": "federation-dropship-mining", "ship": "Federation_Dropship", "role": "mining" },
+    { "id": "federation-dropship-mining-2", "ship": "Federation_Dropship", "role": "mining" },
+    { "id": "federation-dropship-mkii-combat", "ship": "Federation_Dropship_MkII", "role": "combat" },
+    { "id": "federation-dropship-mkii-combat-2", "ship": "Federation_Dropship_MkII", "role": "combat" },
+    { "id": "federation-dropship-mkii-multipurpose", "ship": "Federation_Dropship_MkII", "role": "multipurpose" },
+    { "id": "federation-gunship-combat", "ship": "Federation_Gunship", "role": "combat" },
+    { "id": "federation-gunship-combat-2", "ship": "Federation_Gunship", "role": "combat" },
+    { "id": "ferdelance-combat", "ship": "FerDeLance", "role": "combat" },
+    { "id": "ferdelance-combat-2", "ship": "FerDeLance", "role": "combat" },
+    { "id": "ferdelance-combat-3", "ship": "FerDeLance", "role": "combat" },
+    { "id": "ferdelance-combat-4", "ship": "FerDeLance", "role": "combat" },
+    { "id": "ferdelance-combat-5", "ship": "FerDeLance", "role": "combat" },
+    { "id": "hauler-exploration", "ship": "Hauler", "role": "exploration" },
+    { "id": "hauler-exploration-2", "ship": "Hauler", "role": "exploration" },
+    { "id": "independant-trader-combat", "ship": "Independant_Trader", "role": "combat" },
+    { "id": "independant-trader-mining", "ship": "Independant_Trader", "role": "mining" },
+    { "id": "krait-light-antixeno", "ship": "Krait_Light", "role": "antiXeno" },
+    { "id": "krait-light-combat", "ship": "Krait_Light", "role": "combat" },
+    { "id": "krait-light-exploration", "ship": "Krait_Light", "role": "exploration" },
+    { "id": "krait-light-mining", "ship": "Krait_Light", "role": "mining" },
+    { "id": "krait-light-trade", "ship": "Krait_Light", "role": "trade" },
+    { "id": "krait-mkii-antixeno", "ship": "Krait_MkII", "role": "antiXeno" },
+    { "id": "krait-mkii-antixeno-2", "ship": "Krait_MkII", "role": "antiXeno" },
+    { "id": "krait-mkii-combat", "ship": "Krait_MkII", "role": "combat" },
+    { "id": "krait-mkii-combat-2", "ship": "Krait_MkII", "role": "combat" },
+    { "id": "krait-mkii-combat-3", "ship": "Krait_MkII", "role": "combat" },
+    { "id": "lakonminer-mining", "ship": "LakonMiner", "role": "mining" },
+    { "id": "lakonminer-mining-2", "ship": "LakonMiner", "role": "mining" },
+    { "id": "lakonminer-mining-3", "ship": "LakonMiner", "role": "mining" },
+    { "id": "lakonminer-mining-4", "ship": "LakonMiner", "role": "mining" },
+    { "id": "mamba-antixeno", "ship": "Mamba", "role": "antiXeno" },
+    { "id": "mamba-combat", "ship": "Mamba", "role": "combat" },
+    { "id": "mamba-combat-2", "ship": "Mamba", "role": "combat" },
+    { "id": "mamba-combat-3", "ship": "Mamba", "role": "combat" },
+    { "id": "mamba-combat-4", "ship": "Mamba", "role": "combat" },
+    { "id": "mandalay-antixeno", "ship": "Mandalay", "role": "antiXeno" },
+    { "id": "mandalay-combat", "ship": "Mandalay", "role": "combat" },
+    { "id": "mandalay-exploration", "ship": "Mandalay", "role": "exploration" },
+    { "id": "mandalay-exploration-2", "ship": "Mandalay", "role": "exploration" },
+    { "id": "mandalay-exploration-3", "ship": "Mandalay", "role": "exploration" },
+    { "id": "mediumtransport01-passenger", "ship": "MediumTransport01", "role": "passenger" },
+    { "id": "mediumtransport01-passenger-2", "ship": "MediumTransport01", "role": "passenger" },
+    { "id": "mediumtransport01-passenger-3", "ship": "MediumTransport01", "role": "passenger" },
+    { "id": "orca-mining", "ship": "Orca", "role": "mining" },
+    { "id": "orca-mining-2", "ship": "Orca", "role": "mining" },
+    { "id": "panthermkii-trade", "ship": "PantherMkII", "role": "trade" },
+    { "id": "panthermkii-trade-2", "ship": "PantherMkII", "role": "trade" },
+    { "id": "python-combat", "ship": "Python", "role": "combat" },
+    { "id": "python-mining", "ship": "Python", "role": "mining" },
+    { "id": "python-mining-2", "ship": "Python", "role": "mining" },
+    { "id": "python-nx-combat", "ship": "Python_NX", "role": "combat" },
+    { "id": "python-nx-combat-2", "ship": "Python_NX", "role": "combat" },
+    { "id": "python-nx-combat-3", "ship": "Python_NX", "role": "combat" },
+    { "id": "python-nx-combat-4", "ship": "Python_NX", "role": "combat" },
+    { "id": "python-passenger", "ship": "Python", "role": "passenger" },
+    { "id": "python-trade", "ship": "Python", "role": "trade" },
+    { "id": "sidewinder-combat", "ship": "SideWinder", "role": "combat" },
+    { "id": "sidewinder-exploration", "ship": "SideWinder", "role": "exploration" },
+    { "id": "sidewinder-mining", "ship": "SideWinder", "role": "mining" },
+    { "id": "sidewinder-passenger", "ship": "SideWinder", "role": "passenger" },
+    { "id": "smallcombat01-nx-combat", "ship": "SmallCombat01_NX", "role": "combat" },
+    { "id": "smallcombat01-nx-combat-2", "ship": "SmallCombat01_NX", "role": "combat" },
+    { "id": "type6-mining", "ship": "Type6", "role": "mining" },
+    { "id": "type6-trade", "ship": "Type6", "role": "trade" },
+    { "id": "type7-mining", "ship": "Type7", "role": "mining" },
+    { "id": "type7-passenger", "ship": "Type7", "role": "passenger" },
+    { "id": "type7-trade", "ship": "Type7", "role": "trade" },
+    { "id": "type8-trade", "ship": "Type8", "role": "trade" },
+    { "id": "type8-trade-2", "ship": "Type8", "role": "trade" },
+    { "id": "type9-military-antixeno", "ship": "Type9_Military", "role": "antiXeno" },
+    { "id": "type9-military-combat", "ship": "Type9_Military", "role": "combat" },
+    { "id": "type9-military-combat-2", "ship": "Type9_Military", "role": "combat" },
+    { "id": "type9-military-combat-3", "ship": "Type9_Military", "role": "combat" },
+    { "id": "type9-military-mining", "ship": "Type9_Military", "role": "mining" },
+    { "id": "type9-mining", "ship": "Type9", "role": "mining" },
+    { "id": "type9-trade", "ship": "Type9", "role": "trade" },
+    { "id": "type9-trade-2", "ship": "Type9", "role": "trade" },
+    { "id": "type9-trade-3", "ship": "Type9", "role": "trade" },
+    { "id": "type9-trade-4", "ship": "Type9", "role": "trade" },
+    { "id": "typex-2-antixeno", "ship": "TypeX_2", "role": "antiXeno" },
+    { "id": "typex-2-combat", "ship": "TypeX_2", "role": "combat" },
+    { "id": "typex-3-combat", "ship": "TypeX_3", "role": "combat" },
+    { "id": "typex-3-combat-2", "ship": "TypeX_3", "role": "combat" },
+    { "id": "typex-3-combat-3", "ship": "TypeX_3", "role": "combat" },
+    { "id": "typex-3-combat-4", "ship": "TypeX_3", "role": "combat" },
+    { "id": "typex-3-combat-5", "ship": "TypeX_3", "role": "combat" },
+    { "id": "typex-antixeno", "ship": "TypeX", "role": "antiXeno" },
+    { "id": "typex-combat", "ship": "TypeX", "role": "combat" },
+    { "id": "typex-combat-2", "ship": "TypeX", "role": "combat" },
+    { "id": "typex-combat-3", "ship": "TypeX", "role": "combat" },
+    { "id": "typex-combat-4", "ship": "TypeX", "role": "combat" },
+    { "id": "viper-combat", "ship": "Viper", "role": "combat" },
+    { "id": "viper-combat-2", "ship": "Viper", "role": "combat" },
+    { "id": "viper-combat-3", "ship": "Viper", "role": "combat" },
+    { "id": "viper-combat-4", "ship": "Viper", "role": "combat" },
+    { "id": "viper-exploration", "ship": "Viper", "role": "exploration" },
+    { "id": "viper-mkiv-combat", "ship": "Viper_MkIV", "role": "combat" },
+    { "id": "viper-mkiv-combat-2", "ship": "Viper_MkIV", "role": "combat" },
+    { "id": "viper-mkiv-mining", "ship": "Viper_MkIV", "role": "mining" },
+    { "id": "vulture-combat", "ship": "Vulture", "role": "combat" },
+    { "id": "vulture-combat-2", "ship": "Vulture", "role": "combat" },
+    { "id": "vulture-combat-3", "ship": "Vulture", "role": "combat" },
+    { "id": "vulture-combat-4", "ship": "Vulture", "role": "combat" }
+  ]
+}

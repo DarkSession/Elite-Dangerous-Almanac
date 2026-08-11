@@ -1,0 +1,43 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "python-trade",
+  "ship": "Python",
+  "role": "trade",
+  "modules": [
+    { "slot": "Armour", "item": "Python_Armour_Reactive", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size4_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size5_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size6_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "TinyHardpoint3", "item": "Hpt_PlasmaPointDefence_Turret_Tiny" },
+    { "slot": "Slot01_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot02_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot03_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot04_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot05_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot06_Size4", "item": "Int_CargoRack_Size4_Class1" },
+    { "slot": "Slot07_Size3", "item": "Int_CargoRack_Size3_Class1" },
+    { "slot": "Slot08_Size3", "item": "Int_CargoRack_Size3_Class1" },
+    { "slot": "Slot09_Size2", "item": "Int_DockingComputer_Advanced" },
+    { "slot": "Slot10_Size1", "item": "Int_SupercruiseAssist" }
+  ],
+  "metrics": {
+    "unladenMass": 571.1,
+    "cargoCapacity": 288,
+    "fuelCapacity": 32,
+    "maxJumpRange": 23.520933,
+    "power": { "available": 15.6, "retracted": 11.41, "deployed": 11.41, "withinBudget": true },
+    "shields": null,
+    "armour": { "hitPoints": 910, "resistances": { "kinetic": 0.25, "thermal": -0.4, "explosive": 0.2 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

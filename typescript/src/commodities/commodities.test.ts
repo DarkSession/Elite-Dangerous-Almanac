@@ -11,7 +11,7 @@ import {
 import { COMMODITIES } from './commodities-standard.js';
 import { RARE_COMMODITIES } from './commodities-rare.js';
 import { ALL_COMMODITIES } from './commodities-all.js';
-import commoditiesFixture from '../../../fixtures/commodities/commodities.json' with { type: 'json' };
+import commoditiesFixture from '../../../fixtures/commodities/commodities.jsonc' with { type: 'json' };
 
 const CATALOGUES: Record<string, readonly Commodity[]> = {
     standard: COMMODITIES,

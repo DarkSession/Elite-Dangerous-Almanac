@@ -5,7 +5,7 @@ import { ProceduralSystem } from './procedural-system.js';
 import { findHandAuthoredRegionAt, HAND_AUTHORED_REGIONS } from './hand-authored-regions.js';
 import { getHandAuthoredRegionOrigin } from './naming-region-origins.js';
 import { isPermitLockedRegionName } from './permit-locked-regions.js';
-import handAuthoredFixture from '../../../fixtures/astro/hand-authored-regions.json' with { type: 'json' };
+import handAuthoredFixture from '../../../fixtures/astro/hand-authored-regions.jsonc' with { type: 'json' };
 
 for (const s of handAuthoredFixture.systems) {
     const id64 = BigInt(s.id64);

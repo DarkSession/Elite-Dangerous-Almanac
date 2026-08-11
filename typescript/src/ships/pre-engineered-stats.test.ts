@@ -16,12 +16,12 @@ import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
 import { combinedRateOfFire, weaponMetrics } from './weapons.js';
 import { fieldForLabel, scaleForLabel } from './internal/module-stat-labels.js';
-import fixture from '../../../fixtures/ships/pre-engineered.json' with { type: 'json' };
-import slapaconda from '../../../fixtures/ships/journal-anaconda-slapaconda.json' with { type: 'json' };
-import corvette from '../../../fixtures/ships/journal-federation-corvette-mixed.json' with { type: 'json' };
-import panther from '../../../fixtures/ships/journal-panther-mkii-fat-arse.json' with { type: 'json' };
-import spireOps from '../../../fixtures/ships/journal-python-mkii-spire-ops.json' with { type: 'json' };
-import krait from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
+import fixture from '../../../fixtures/ships/pre-engineered.jsonc' with { type: 'json' };
+import slapaconda from '../../../fixtures/ships/journal-anaconda-slapaconda.jsonc' with { type: 'json' };
+import corvette from '../../../fixtures/ships/journal-federation-corvette-mixed.jsonc' with { type: 'json' };
+import panther from '../../../fixtures/ships/journal-panther-mkii-fat-arse.jsonc' with { type: 'json' };
+import spireOps from '../../../fixtures/ships/journal-python-mkii-spire-ops.jsonc' with { type: 'json' };
+import krait from '../../../fixtures/ships/journal-krait-phantom.jsonc' with { type: 'json' };
 import type { LoadoutEvent, LoadoutModule } from './slef.js';
 
 /** The rounding `computeModifiers` applies, so a pin means the same thing to a port. */
@@ -37,11 +37,11 @@ function only(match: Partial<PreEngineeredVariant>): PreEngineeredVariant {
 }
 
 const captures: Readonly<Record<string, LoadoutEvent>> = {
-    'journal-anaconda-slapaconda.json': slapaconda as LoadoutEvent,
-    'journal-federation-corvette-mixed.json': corvette as LoadoutEvent,
-    'journal-panther-mkii-fat-arse.json': panther as LoadoutEvent,
-    'journal-python-mkii-spire-ops.json': spireOps as LoadoutEvent,
-    'journal-krait-phantom.json': krait as LoadoutEvent,
+    'journal-anaconda-slapaconda.jsonc': slapaconda as LoadoutEvent,
+    'journal-federation-corvette-mixed.jsonc': corvette as LoadoutEvent,
+    'journal-panther-mkii-fat-arse.jsonc': panther as LoadoutEvent,
+    'journal-python-mkii-spire-ops.jsonc': spireOps as LoadoutEvent,
+    'journal-krait-phantom.jsonc': krait as LoadoutEvent,
 };
 
 const capturedModule = (source: string, slot: string): LoadoutModule => {
@@ -74,7 +74,7 @@ test('ordinary and under-specified engineering is not guessed to be pre-engineer
         );
     }
 
-    const matched = capturedModule('journal-panther-mkii-fat-arse.json', 'FrameShiftDrive');
+    const matched = capturedModule('journal-panther-mkii-fat-arse.jsonc', 'FrameShiftDrive');
     const modifiers = matched.Engineering!.Modifiers!;
     assert.equal(
         identifyPreEngineeredVariant({

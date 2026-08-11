@@ -1,0 +1,43 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "federation-dropship-mkii-multipurpose",
+  "ship": "Federation_Dropship_MkII",
+  "role": "multipurpose",
+  "modules": [
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "engineering": { "blueprint": "Misc_HeatSinkCapacity", "grade": 1 } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "engineering": { "blueprint": "Misc_HeatSinkCapacity", "grade": 1 } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "engineering": { "blueprint": "Misc_HeatSinkCapacity", "grade": 1 } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "engineering": { "blueprint": "Misc_HeatSinkCapacity", "grade": 1 } },
+    { "slot": "Armour", "item": "Federation_Dropship_MkII_Armour_Mirrored", "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size6_Class5", "engineering": { "blueprint": "PowerPlant_Armoured", "grade": 4, "experimental": "special_powerplant_highcharge" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size5_Class5" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size6_Class5", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5, "experimental": "special_powerdistributor_capacity" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class2", "engineering": { "blueprint": "Sensor_WideAngle", "grade": 1 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "Military01", "item": "Int_ModuleReinforcement_Size4_Class2" },
+    { "slot": "Military02", "item": "Int_HullReinforcement_Size4_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot01_Size5", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot02_Size5", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot03_Size4", "item": "Int_HullReinforcement_Size4_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot04_Size3", "item": "Int_HullReinforcement_Size3_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot05_Size2", "item": "Int_HullReinforcement_Size2_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot06_Size2", "item": "Int_HullReinforcement_Size2_Class2", "engineering": { "blueprint": "HullReinforcement_Kinetic", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot07_Size1", "item": "Int_HullReinforcement_Size1_Class2", "engineering": { "blueprint": "HullReinforcement_Kinetic", "grade": 5, "experimental": "special_hullreinforcement_chunky" } }
+  ],
+  "metrics": {
+    "unladenMass": 781.2,
+    "cargoCapacity": 0,
+    "fuelCapacity": 16,
+    "maxJumpRange": 17.23692,
+    "power": { "available": 25.2, "retracted": 10.94, "deployed": 10.94, "withinBudget": true },
+    "shields": null,
+    "armour": { "hitPoints": 3240, "resistances": { "kinetic": -0.53472, "thermal": 0.518453, "explosive": -0.315474 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

@@ -11,7 +11,7 @@ import {
     type ShipSlots,
 } from './slots.js';
 import { getShipSlots, SHIPS } from './ships.js';
-import slotsFixture from '../../../fixtures/ships/ship-slots.json' with { type: 'json' };
+import slotsFixture from '../../../fixtures/ships/ship-slots.jsonc' with { type: 'json' };
 
 test('parseSlotName classifies every journal slot-name form', () => {
     assert.deepEqual(parseSlotName('PowerPlant'), { kind: 'core', size: null, core: 'powerPlant' });
@@ -269,7 +269,7 @@ test('enumerated optional keys are journal-compatible and size-tagged', () => {
 });
 
 test('every SLEF slot name in a real export classifies', async () => {
-    const { default: slef } = await import('../../../fixtures/ships/slef-the-deep-black.json', {
+    const { default: slef } = await import('../../../fixtures/ships/slef-the-deep-black.jsonc', {
         with: { type: 'json' },
     });
     for (const m of slef[0]!.data.Modules) {
@@ -289,7 +289,7 @@ test('the slot keys real captures use are mounts the hull actually has', async (
         [
             'the-deep-black',
             (
-                await import('../../../fixtures/ships/slef-the-deep-black.json', {
+                await import('../../../fixtures/ships/slef-the-deep-black.jsonc', {
                     with: { type: 'json' },
                 })
             ).default[0]!.data,
@@ -297,7 +297,7 @@ test('the slot keys real captures use are mounts the hull actually has', async (
         [
             'inara-type-11',
             (
-                await import('../../../fixtures/ships/slef-inara-type-11.json', {
+                await import('../../../fixtures/ships/slef-inara-type-11.jsonc', {
                     with: { type: 'json' },
                 })
             ).default[0]!.data,
@@ -305,7 +305,7 @@ test('the slot keys real captures use are mounts the hull actually has', async (
         [
             'inara-lynx-highliner',
             (
-                await import('../../../fixtures/ships/slef-inara-lynx-highliner.json', {
+                await import('../../../fixtures/ships/slef-inara-lynx-highliner.jsonc', {
                     with: { type: 'json' },
                 })
             ).default[0]!.data,
@@ -313,7 +313,7 @@ test('the slot keys real captures use are mounts the hull actually has', async (
         [
             'inara-panther-mkii',
             (
-                await import('../../../fixtures/ships/slef-inara-panther-mkii.json', {
+                await import('../../../fixtures/ships/slef-inara-panther-mkii.jsonc', {
                     with: { type: 'json' },
                 })
             ).default[0]!.data,
@@ -321,7 +321,7 @@ test('the slot keys real captures use are mounts the hull actually has', async (
         [
             'inara-cutter-antixeno',
             (
-                await import('../../../fixtures/ships/slef-inara-cutter-antixeno.json', {
+                await import('../../../fixtures/ships/slef-inara-cutter-antixeno.jsonc', {
                     with: { type: 'json' },
                 })
             ).default[0]!.data,

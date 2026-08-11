@@ -1,0 +1,41 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "asp-scout-combat-2",
+  "ship": "Asp_Scout",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Asp_Scout_Armour_Grade3", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size4_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class5" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size4_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size3_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size4_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_PulseLaser_Gimbal_Medium" },
+    { "slot": "SmallHardpoint1", "item": "Hpt_MultiCannon_Gimbal_Small" },
+    { "slot": "SmallHardpoint2", "item": "Hpt_MultiCannon_Gimbal_Small" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ChaffLauncher_Tiny" },
+    { "slot": "Slot01_Size4", "item": "Int_ShieldGenerator_Size4_Class5" },
+    { "slot": "Slot02_Size4", "item": "Int_ShieldCellBank_Size4_Class4", "priority": 2 },
+    { "slot": "Slot03_Size3", "item": "Int_HullReinforcement_Size3_Class2" },
+    { "slot": "Slot04_Size3", "item": "Int_FuelScoop_Size3_Class4", "priority": 3 },
+    { "slot": "Slot05_Size2", "item": "Int_FSDInterdictor_Size2_Class3", "priority": 3 }
+  ],
+  "metrics": {
+    "unladenMass": 282.3,
+    "cargoCapacity": 0,
+    "fuelCapacity": 16,
+    "maxJumpRange": 20.297388,
+    "power": { "available": 15.6, "retracted": 13.48, "deployed": 15.42, "withinBudget": true },
+    "shields": { "strength": 240.558966, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 890, "resistances": { "kinetic": -0.182, "thermal": 0.015, "explosive": -0.379 } },
+    "weapons": { "count": 4, "damagePerSecond": 32.809526, "sustainedDamagePerSecond": 28.556124 }
+  }
+}

@@ -1,0 +1,2047 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Parity fixture for the ship-build metrics: externally observed in-game totals, the power budget
+ * and its priority groups, the shield and armour metrics with their stacked resistances, weapon
+ * DPS, and ammunition capacity. Covers fixtures/ships/journal-anaconda-slapaconda.json,
+ * fixtures/ships/journal-federation-corvette-beams.json, fixtures/ships/journal-cobra-mkv.json,
+ * fixtures/ships/journal-corsair.json, fixtures/ships/journal-kestrel-mkii.json,
+ * fixtures/ships/journal-lynx-highliner-rescue01-current.json,
+ * fixtures/ships/journal-lynx-highliner-rescue.json,
+ * fixtures/ships/journal-panther-mkii-fat-arse.json,
+ * fixtures/ships/journal-python-mkii-spire-ops.json, fixtures/ships/journal-the-deep-black.json,
+ * fixtures/ships/slef-the-deep-black.json, fixtures/ships/slef-inara-panther-mkii.json and an
+ * Anaconda assembled from the catalogues, plus the pure functions each metric is built from.
+ * Cross-language validation.
+ */
+{
+  "inGame": {
+    "federalCorvetteBeams": {
+      "build": "fixtures/ships/journal-federation-corvette-beams.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state; the stored Loadout event marks the 0.6 MW cargo hatch off, so its active-state budget is 0.6 MW lower. `mass.current` is the ship with both fuel tanks full and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 14.73
+      },
+      "speed": {
+        "top": 281,
+        "boost": 366,
+        "pitch": 39.4,
+        "roll": 105.55,
+        "yaw": 11.26
+      },
+      "power": {
+        "available": 50.4,
+        "retracted": 39.76,
+        "deployed": 47.46,
+        "includesDisabledModules": true
+      },
+      "shields": {
+        "strength": 3940.4,
+        "resistances": {
+          "kinetic": 0.556,
+          "thermal": 0.425,
+          "explosive": 0.63
+        },
+        "regeneration": {
+          "standard": 5.1,
+          "broken": 11.4
+        }
+      },
+      "mass": {
+        "current": 2402.3,
+        "maximum": 2835
+      },
+      "armour": {
+        "hitPoints": 5062.6,
+        "resistances": {
+          "kinetic": 0.391,
+          "thermal": 0.434,
+          "explosive": 0.348
+        }
+      }
+    },
+    "cobraMkV": {
+      "build": "fixtures/ships/journal-cobra-mkv.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state. The displayed full-tank jump range counts the 0.49 t reserve tank as ship mass even though that fuel is unavailable to the FSD; the library's physical full-tank range excludes it from both sides and is therefore slightly longer. `offense.distributorDraw` and `offense.thermalLoad` are the display's sums of the fitted weapons' per-shot values (already per-second on continuous-fire beams), not the library's rate-scaled `energyPerSecond` and `heatPerSecond`. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 44.75
+      },
+      "speed": {
+        "top": 443,
+        "boost": 627,
+        "pitch": 68.77,
+        "roll": 183.38,
+        "yaw": 50.43
+      },
+      "power": {
+        "available": 21.84,
+        "retracted": 18.87,
+        "deployed": 21.44,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 62.2,
+        "distributorDraw": 5.15,
+        "thermalLoad": 6
+      },
+      "shields": {
+        "strength": 698.2,
+        "resistances": {
+          "kinetic": 0.534,
+          "thermal": 0.317,
+          "explosive": 0.612
+        },
+        "regeneration": {
+          "standard": 2.6,
+          "broken": 5.8
+        }
+      },
+      "mass": {
+        "current": 291.7,
+        "maximum": 551.2
+      },
+      "armour": {
+        "hitPoints": 427.7,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    },
+    "kestrelMkII": {
+      "build": "fixtures/ships/journal-kestrel-mkii.json",
+      "observedShipName": "[KDF] Slippery Fudge",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The earlier immutable Loadout capture has a blank `ShipName`; the observed name records the ship's later name without rewriting that capture. The power figures include every fitted module regardless of its powered-on state. The displayed full-tank jump range counts the 0.61 t reserve tank as ship mass even though that fuel is unavailable to the FSD. `offense.distributorDraw` and `offense.thermalLoad` are the display's sums of the fitted weapons' per-shot values, not the library's rate-scaled `energyPerSecond` and `heatPerSecond`. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 23.16
+      },
+      "speed": {
+        "top": 438,
+        "boost": 584,
+        "pitch": 81.07,
+        "roll": 194.57,
+        "yaw": 38.91
+      },
+      "power": {
+        "available": 27.13,
+        "retracted": 21.92,
+        "deployed": 28.13,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 424.1,
+        "distributorDraw": 3.6,
+        "thermalLoad": 5.6
+      },
+      "shields": {
+        "strength": 1486,
+        "resistances": {
+          "kinetic": 0.428,
+          "thermal": 0.196,
+          "explosive": 0.523
+        },
+        "regeneration": {
+          "standard": 2.6,
+          "broken": 5.8
+        }
+      },
+      "mass": {
+        "current": 447.1,
+        "maximum": 1102.5
+      },
+      "armour": {
+        "hitPoints": 1200.7,
+        "resistances": {
+          "kinetic": 0.139,
+          "thermal": 0.282,
+          "explosive": -0.005
+        }
+      }
+    },
+    "deepBlack": {
+      "build": "fixtures/ships/journal-the-deep-black.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state; the 24.0014 MW installed draw is displayed to the nearest whole MW. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: this weaponless fit's two heat-sink launchers account for its 4 MW distributor draw. The displayed full-tank jump range counts the 1.14 t reserve tank as ship mass even though that fuel is unavailable to the FSD. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass. All calculated metrics reproduce at displayed precision.",
+      "jumpRange": {
+        "fullTank": 81.83
+      },
+      "speed": {
+        "top": 238,
+        "boost": 328,
+        "pitch": 33.98,
+        "roll": 84.95,
+        "yaw": 15.86
+      },
+      "power": {
+        "available": 22.85,
+        "retracted": 24,
+        "deployed": 24,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 0,
+        "distributorDraw": 4,
+        "thermalLoad": 0
+      },
+      "shields": {
+        "strength": 230.7,
+        "resistances": {
+          "kinetic": 0.4,
+          "thermal": -0.2,
+          "explosive": 0.5
+        },
+        "regeneration": {
+          "standard": 1,
+          "broken": 3.7
+        }
+      },
+      "mass": {
+        "current": 1376.4,
+        "maximum": 1490.4
+      },
+      "armour": {
+        "hitPoints": 819.7,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    },
+    "rescue": {
+      "build": "fixtures/ships/journal-lynx-highliner-rescue.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. This is a separate Lynx Highliner from `[KPV] Rescue 01`, with a different ShipID and a weaponless passenger fit. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW `ModularCargoBayDoorFDL`. The displayed full-tank jump range counts the 0.75 t reserve tank as ship mass even though that fuel is unavailable to the FSD. All calculated metrics reproduce at displayed precision. The unusual observed top speed exceeds the observed boost speed; both readings are preserved without correction because speed is not calculated by the library. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 30.16
+      },
+      "speed": {
+        "top": 579,
+        "boost": 472,
+        "pitch": 43.03,
+        "roll": 99.29,
+        "yaw": 31.44
+      },
+      "power": {
+        "available": 25.51,
+        "retracted": 22.25,
+        "deployed": 22.25,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 0,
+        "distributorDraw": 0,
+        "thermalLoad": 0
+      },
+      "shields": {
+        "strength": 1380,
+        "resistances": {
+          "kinetic": 0.532,
+          "thermal": 0.321,
+          "explosive": 0.61
+        },
+        "regeneration": {
+          "standard": 1,
+          "broken": 1.5
+        }
+      },
+      "mass": {
+        "current": 696.5,
+        "maximum": 1890
+      },
+      "armour": {
+        "hitPoints": 1617,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    },
+    "rescue01": {
+      "build": "fixtures/ships/journal-lynx-highliner-rescue01-current.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW `ModularCargoBayDoorFDL`. The displayed full-tank jump range counts the 0.75 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the five multicannons contribute 0.81 MW and the heat-sink launcher contributes 2 MW, reproducing the displayed 2.81 MW. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass. All calculated metrics reproduce at displayed precision.",
+      "jumpRange": {
+        "fullTank": 29.38
+      },
+      "speed": {
+        "top": 465,
+        "boost": 571,
+        "pitch": 42.43,
+        "roll": 97.92,
+        "yaw": 31.01
+      },
+      "power": {
+        "available": 29.99,
+        "retracted": 22.44,
+        "deployed": 26.68,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 77.1,
+        "distributorDraw": 2.81,
+        "thermalLoad": 1.3
+      },
+      "shields": {
+        "strength": 1472.4,
+        "resistances": {
+          "kinetic": 0.447,
+          "thermal": 0.224,
+          "explosive": 0.539
+        },
+        "regeneration": {
+          "standard": 1,
+          "broken": 2.1
+        }
+      },
+      "mass": {
+        "current": 743.6,
+        "maximum": 1890
+      },
+      "armour": {
+        "hitPoints": 1617,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    },
+    "fatArse": {
+      "build": "fixtures/ships/journal-panther-mkii-fat-arse.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside a fresh complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state. The offense totals include utility mounts: this fit's two point-defence turrets account for its 4 damage/s and 0.1/s thermal load, while its heat-sink launcher accounts for the 2 MW distributor draw. The displayed full-tank jump range counts the 1.11 t reserve tank as ship mass even though that fuel is unavailable to the FSD. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass. All calculated metrics reproduce at displayed precision. The older same-named SLEF capture remains separately preserved.",
+      "jumpRange": {
+        "fullTank": 39.29
+      },
+      "speed": {
+        "top": 296,
+        "boost": 411,
+        "pitch": 29.62,
+        "roll": 32.91,
+        "yaw": 16.45
+      },
+      "power": {
+        "available": 25.2,
+        "retracted": 21.83,
+        "deployed": 21.83,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 4,
+        "distributorDraw": 2,
+        "thermalLoad": 0.1
+      },
+      "shields": {
+        "strength": 403.1,
+        "resistances": {
+          "kinetic": 0.469,
+          "thermal": 0.269,
+          "explosive": 0.557
+        },
+        "regeneration": {
+          "standard": 1.3,
+          "broken": 4.8
+        }
+      },
+      "mass": {
+        "current": 1669,
+        "maximum": 4410
+      },
+      "armour": {
+        "hitPoints": 1473.1,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    },
+    "theFixer": {
+      "build": "fixtures/ships/journal-corsair.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.3 MW supercruise assist. The displayed full-tank jump range counts the 0.41 t reserve tank as ship mass even though that fuel is unavailable to the FSD. `offense.distributorDraw` and `offense.thermalLoad` are the display's sums of the fitted weapons' per-shot values, not the library's rate-scaled `energyPerSecond` and `heatPerSecond`. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 39.94
+      },
+      "speed": {
+        "top": 473,
+        "boost": 600,
+        "pitch": 43.91,
+        "roll": 135.12,
+        "yaw": 16.89
+      },
+      "power": {
+        "available": 33.6,
+        "retracted": 24.48,
+        "deployed": 34.18,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 118.3,
+        "distributorDraw": 17.1,
+        "thermalLoad": 33.6
+      },
+      "shields": {
+        "strength": 1242.9,
+        "resistances": {
+          "kinetic": 0.447,
+          "thermal": 0.224,
+          "explosive": 0.539
+        },
+        "regeneration": {
+          "standard": 3.2,
+          "broken": 7.2
+        }
+      },
+      "mass": {
+        "current": 674.3,
+        "maximum": 2835
+      },
+      "armour": {
+        "hitPoints": 641.5,
+        "resistances": {
+          "kinetic": -0.14,
+          "thermal": 0.05,
+          "explosive": -0.33
+        }
+      }
+    },
+    "spireOps": {
+      "build": "fixtures/ships/journal-python-mkii-spire-ops.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 0.83 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Shield, armour, mass, jump, offense, distributor draw, thermal load and power all reproduce. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the six Guardian shard cannons contribute 6.9 MW and the two caustic-sink launchers plus heat-sink launcher contribute 6 MW, reproducing the displayed 12.9 MW. The individual class-2 and class-3 fixed Shard Cannon panels support the uniform 10% correction applied to the older registry damage inputs; their one-decimal displays do not uniquely expose the underlying decimals. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 25.14
+      },
+      "speed": {
+        "top": 412,
+        "boost": 556,
+        "pitch": 59.59,
+        "roll": 146.57,
+        "yaw": 20.13
+      },
+      "power": {
+        "available": 29.64,
+        "retracted": 16.69,
+        "deployed": 26.63,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 566.9,
+        "distributorDraw": 12.9,
+        "thermalLoad": 11.2
+      },
+      "shields": {
+        "strength": 445.3,
+        "resistances": {
+          "kinetic": 0.481,
+          "thermal": -0.037,
+          "explosive": 0.568
+        },
+        "regeneration": {
+          "standard": 2.1,
+          "broken": 3.9
+        }
+      },
+      "mass": {
+        "current": 789.8,
+        "maximum": 1890
+      },
+      "armour": {
+        "hitPoints": 2248.5,
+        "resistances": {
+          "kinetic": 0.139,
+          "thermal": 0.283,
+          "explosive": -0.004
+        }
+      }
+    },
+    "slapaconda": {
+      "build": "fixtures/ships/journal-anaconda-slapaconda.json",
+      "note": "Calculated values read from Elite Dangerous's ship statistics display alongside the complete Loadout capture, at the precision the game shows. These are external ground truth rather than this library's output. The power figures include every fitted module regardless of its powered-on state, including the disabled 0.6 MW cargo hatch. The displayed full-tank jump range counts the 1.07 t reserve tank as ship mass even though that fuel is unavailable to the FSD. Armour, mass, jump, offense and power all reproduce, and the zero shield follows from having no generator fitted. Damage comes from the hardpoints, while distributor draw and thermal load sum both hardpoints and utility mounts: the weapons contribute 24.8 MW and the caustic-sink plus five heat-sink launchers contribute 12 MW, reproducing the displayed 36.8 MW. Each tech-broker Modified Guardian Shard Cannon independently displays 74.5 damage/s from 3.7 displayed damage at 1.7 shots/s, consistent with the corrected 3.7235 stock base and requiring no separate damage modifier. `mass.current` includes both fuel tanks and no cargo; `mass.maximum` is the engineered thrusters' maximum supported mass.",
+      "jumpRange": {
+        "fullTank": 27.63
+      },
+      "speed": {
+        "top": 285,
+        "boost": 380,
+        "pitch": 39.58,
+        "roll": 94.98,
+        "yaw": 15.83
+      },
+      "power": {
+        "available": 40.32,
+        "retracted": 18.06,
+        "deployed": 36.94,
+        "includesDisabledModules": true
+      },
+      "offense": {
+        "damagePerSecond": 462.2,
+        "distributorDraw": 36.8,
+        "thermalLoad": 126.1
+      },
+      "shields": {
+        "strength": 0
+      },
+      "mass": {
+        "current": 1280.6,
+        "maximum": 2835
+      },
+      "armour": {
+        "hitPoints": 8125.3,
+        "resistances": {
+          "kinetic": 0.515,
+          "thermal": 0.537,
+          "explosive": 0.492
+        }
+      }
+    }
+  },
+  "deepBlack": {
+    "build": "fixtures/ships/slef-the-deep-black.json",
+    "power": {
+      "available": 22.848,
+      "retracted": 19.4959,
+      "deployed": 19.4959,
+      "headroom": 3.3521,
+      "withinBudget": true
+    },
+    "shields": {
+      "strength": 230.652918,
+      "massCurveMultiplier": 0.461306,
+      "resistances": {
+        "kinetic": 0.4,
+        "thermal": -0.2,
+        "explosive": 0.5,
+        "caustic": 0
+      },
+      "effectiveHitPoints": {
+        "kinetic": 384.42153,
+        "thermal": 192.210765,
+        "explosive": 461.305836,
+        "caustic": 230.652918
+      }
+    },
+    "armour": {
+      "hitPoints": 819.72,
+      "bulkheads": 819.72,
+      "reinforcement": 0,
+      "resistances": {
+        "kinetic": -0.14,
+        "thermal": 0.05,
+        "explosive": -0.33,
+        "caustic": 0
+      },
+      "effectiveHitPoints": {
+        "kinetic": 719.052632,
+        "thermal": 862.863158,
+        "explosive": 616.330827,
+        "caustic": 819.72
+      }
+    },
+    "weaponCount": 0
+  },
+  "anaconda": {
+    "modules": {
+      "PowerPlant": "Int_Powerplant_Size8_Class5",
+      "Armour": "Anaconda_Armour_Reactive",
+      "Slot01_Size7": "Int_ShieldGenerator_Size7_Class5",
+      "TinyHardpoint1": "Hpt_ShieldBooster_Size0_Class5",
+      "TinyHardpoint2": "Hpt_ShieldBooster_Size0_Class5",
+      "Military01": "Int_HullReinforcement_Size5_Class2",
+      "Slot02_Size6": "Int_ModuleReinforcement_Size5_Class2",
+      "HugeHardpoint1": "Hpt_BeamLaser_Fixed_Huge",
+      "LargeHardpoint1": "Hpt_MultiCannon_Gimbal_Large"
+    },
+    "power": {
+      "available": 36,
+      "retracted": 7.3,
+      "deployed": 10.88,
+      "bands": [
+        {
+          "priority": 1,
+          "retracted": 7.3,
+          "deployed": 10.88,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 2,
+          "retracted": 0,
+          "deployed": 0,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 3,
+          "retracted": 0,
+          "deployed": 0,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 4,
+          "retracted": 0,
+          "deployed": 0,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 5,
+          "retracted": 0,
+          "deployed": 0,
+          "deployedTotal": 10.88,
+          "poweredDeployed": true
+        }
+      ]
+    },
+    "shields": {
+      "strength": 833,
+      "generator": 595,
+      "boosters": 238,
+      "boostMultiplier": 1.4,
+      "massCurveMultiplier": 1.7,
+      "resistances": {
+        "kinetic": 0.4,
+        "thermal": -0.2,
+        "explosive": 0.5,
+        "caustic": 0
+      },
+      "resistancesAtFourPips": {
+        "kinetic": 0.76,
+        "thermal": 0.52,
+        "explosive": 0.8,
+        "caustic": 0.6
+      },
+      "effectiveHitPoints": {
+        "kinetic": 1388.333333,
+        "thermal": 694.166667,
+        "explosive": 1666,
+        "caustic": 833
+      }
+    },
+    "armour": {
+      "hitPoints": 2227.5,
+      "bulkheads": 1837.5,
+      "reinforcement": 390,
+      "resistances": {
+        "kinetic": 0.26875,
+        "thermal": -0.365,
+        "explosive": 0.22,
+        "caustic": 0
+      },
+      "effectiveHitPoints": {
+        "kinetic": 3046.153846,
+        "thermal": 1631.868132,
+        "explosive": 2855.769231,
+        "caustic": 2227.5
+      },
+      "moduleArmour": 350,
+      "moduleProtection": 0.6
+    },
+    "weapons": {
+      "damagePerSecond": 60.313334,
+      "sustainedDamagePerSecond": 55.309156,
+      "energyPerSecond": 9.856667,
+      "heatPerSecond": 12.196667,
+      "powerDraw": 3.58,
+      "kineticDamagePerSecond": 18.933334,
+      "thermalDamagePerSecond": 41.38
+    }
+  },
+  "weapons": [
+    {
+      "symbol": "Hpt_PulseLaser_Fixed_Small",
+      "damagePerSecond": 7.884616,
+      "sustainedDamagePerSecond": 7.884616,
+      "sustainedFireFactor": 1,
+      "energyPerSecond": 1.153846,
+      "heatPerSecond": 1.269231,
+      "continuous": false
+    },
+    {
+      "symbol": "Hpt_BeamLaser_Fixed_Small",
+      "damagePerSecond": 9.82,
+      "sustainedDamagePerSecond": 9.82,
+      "sustainedFireFactor": 1,
+      "energyPerSecond": 1.94,
+      "heatPerSecond": 3.53,
+      "continuous": true
+    },
+    {
+      "symbol": "Hpt_MultiCannon_Fixed_Small",
+      "damagePerSecond": 8.615385,
+      "sustainedDamagePerSecond": 6.639004,
+      "sustainedFireFactor": 0.770599,
+      "energyPerSecond": 0.461538,
+      "heatPerSecond": 0.692308,
+      "continuous": false
+    },
+    {
+      "symbol": "Hpt_Railgun_Fixed_Small",
+      "damagePerSecond": 37.047629,
+      "sustainedDamagePerSecond": 23.34,
+      "sustainedFireFactor": 0.63,
+      "energyPerSecond": 4.269842,
+      "heatPerSecond": 19.047624,
+      "continuous": false
+    },
+    {
+      "symbol": "Hpt_Slugshot_Fixed_Medium",
+      "damagePerSecond": 179.1,
+      "sustainedDamagePerSecond": 19.9,
+      "sustainedFireFactor": 0.111111,
+      "energyPerSecond": 1.85,
+      "heatPerSecond": 3.7,
+      "continuous": false
+    },
+    {
+      "symbol": "Hpt_PulseLaserBurst_Fixed_Small",
+      "damagePerSecond": 8.147368,
+      "sustainedDamagePerSecond": 8.147368,
+      "sustainedFireFactor": 1,
+      "energyPerSecond": 1.184211,
+      "heatPerSecond": 1.8,
+      "continuous": false
+    }
+  ],
+  "observedGuardianShardCannons": {
+    "note": "Current individual outfitting-panel readings observed on the Spire Ops build with grade-1 Anti-Guardian Zone Resistance active. The one-decimal displays do not uniquely reveal the underlying inputs. The catalogue values apply a uniform 10% correction to the older registry figures, a derivation consistent with both individual readings and the mixed build's 566.9 damage/s.",
+    "blueprint": "Anti-Guardian Zone Resistance",
+    "grade": 1,
+    "active": true,
+    "records": [
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Medium",
+        "class": 2,
+        "mass": 4,
+        "integrity": 42,
+        "powerDraw": 1.21,
+        "damagePerSecond": 74.5,
+        "damage": 3.7,
+        "distributorDraw": 0.65,
+        "thermalLoad": 1.2,
+        "armourPiercing": 45,
+        "maximumRange": 1700,
+        "shotSpeed": 1133,
+        "rateOfFire": 1.7,
+        "clipSize": 5,
+        "ammoMaximum": 180,
+        "damageType": "Thermal",
+        "falloffRange": 1700
+      },
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Large",
+        "class": 3,
+        "mass": 8,
+        "integrity": 51,
+        "powerDraw": 1.68,
+        "damagePerSecond": 104.5,
+        "damage": 5.2,
+        "distributorDraw": 1.4,
+        "thermalLoad": 2.2,
+        "armourPiercing": 60,
+        "maximumRange": 1700,
+        "shotSpeed": 1133,
+        "rateOfFire": 1.7,
+        "clipSize": 5,
+        "ammoMaximum": 180,
+        "damageType": "Thermal",
+        "falloffRange": 1700
+      }
+    ]
+  },
+  "ammunition": {
+    "note": "What a module holds when fully rearmed — a capacity, not a rearm state. `hopper` is the reserve behind the magazine and excludes it, exactly as a journal's AmmoInHopper does, so `total` is the two added. JSON cannot write infinity: an unlimited reserve is `null` here and `unlimited` is true, and an implementation reports its own infinity for it — JavaScript's `JSON.stringify` writes that back as `null`, Python's `json.dumps` writes the non-standard token `Infinity`, so the two agree on the value and not on its serialization. A reserve of zero is a different answer and is written as zero. It is not only weapons — a launcher, a point defence turret, a shield cell bank and an AFMU all carry a reserve and are read the same way.",
+    "catalogue": [
+      {
+        "symbol": "Hpt_MultiCannon_Fixed_Small",
+        "clipSize": 100,
+        "hopper": 2100,
+        "total": 2200,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_ATMultiCannon_Fixed_Large_V2",
+        "clipSize": 100,
+        "hopper": 2100,
+        "total": 2200,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_Guardian_ShardCannon_Fixed_Large",
+        "clipSize": 5,
+        "hopper": 180,
+        "total": 185,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_ChaffLauncher_Tiny",
+        "clipSize": 1,
+        "hopper": 10,
+        "total": 11,
+        "unlimited": false
+      },
+      {
+        "symbol": "Hpt_PlasmaPointDefence_Turret_Tiny",
+        "clipSize": 12,
+        "hopper": 10000,
+        "total": 10012,
+        "unlimited": false
+      },
+      {
+        "symbol": "Int_ShieldCellBank_Size3_Class3",
+        "clipSize": 1,
+        "hopper": 3,
+        "total": 4,
+        "unlimited": false
+      },
+      {
+        "symbol": "Int_Repairer_Size3_Class1",
+        "clipSize": 0,
+        "hopper": 3600,
+        "total": 3600,
+        "unlimited": false
+      },
+      {
+        "note": "A magazine the record states no reserve for. Both Abrasion Blasters are in this position and no other module is.",
+        "symbol": "Hpt_Mining_AbrBlstr_Fixed_Small",
+        "clipSize": 1,
+        "hopper": null,
+        "total": null,
+        "unlimited": true
+      },
+      {
+        "symbol": "Hpt_Mining_AbrBlstr_Turret_Small",
+        "clipSize": 1,
+        "hopper": null,
+        "total": null,
+        "unlimited": true
+      },
+      {
+        "note": "A reserve of zero, which is not an unlimited one: this accelerator fires its magazine and has nothing to reload from. Its 18 rounds are also not a whole number of its 4-round bursts, and stay 18 — only an engineered clip is rounded.",
+        "symbol": "Hpt_MkIIPlasmaShockAutocannon_Fixed_Large",
+        "clipSize": 18,
+        "hopper": 0,
+        "total": 18,
+        "unlimited": false
+      },
+      {
+        "symbol": "Int_ShieldCellBank_Size1_Class2",
+        "clipSize": 1,
+        "hopper": 1,
+        "total": 2,
+        "unlimited": false
+      }
+    ],
+    "noAmmunition": [
+      "Hpt_BeamLaser_Fixed_Small",
+      "Hpt_PulseLaser_Gimbal_Medium",
+      "Hpt_MiningLaser_Fixed_Small",
+      "Int_DroneControl_Collection_Size3_Class3"
+    ],
+    "journalReadings": {
+      "note": "Every non-zero AmmoInClip / AmmoInHopper across the nineteen journal captures — the only external readings of what a module had *loaded* that this repository holds. They are not the only external check on `clipSize` and `ammoMaximum`: the `AmmoClipSize` and `AmmoMaximum` modifiers a capture states on an engineered module are a second and stronger one, joined by `fixtures/ships/module-stats.json` `capturedBaseStats`, and in-game verification does not reach a *hardpoint's* reserve ammo. All ninety-two sit exactly at capacity, on twenty-six distinct modules, several of which appear in more than one capture. A reading is still only a lower bound on what a module holds and must never be read straight back as a catalogue figure: a journal's ammunition is the ship's rearm state at the instant of capture, so a partly spent launcher would report less than its capacity and say nothing about the catalogue. What does settle a capacity is the `AmmoMaximum` modifier a capture states on an engineered module, which gives the base and the engineered figure together — the Lynx Highliner's heat-sink launcher reports 3 in reserve under a grade-1 Heat Sink Capacity against a base of 2, so the reading alone would have been the engineered value. Spire Ops and Slapaconda add three Caustic Sink launcher readings at 1/7 and six pre-engineered Heat Sink launcher readings at 1/4, all with their base and fitted reserves stated. On the Corsair the capacity is likewise the engineered one, since three of its five ammunition-bearing weapons carry an `AmmoClipSize` or `AmmoMaximum` modifier; the two plasma accelerators take Long Range, which charges neither. The Corvette's large gimballed cannon sits at capacity under a grade-5 Overcharged, which is Frontier's own reading that the recipe does not cut a cannon's clip — a 15% penalty would have loaded four rounds. The plasma Corvette's medium fragment cannon sits at its magazine of 3 under a grade-4 Overcharged, which is consistent with that group's absent clip leg without being evidence of it: a −12% cut leaves 3 × 0.88 = 2.64, which rounds back to 3, so there the modifier list is what says the leg is absent and the loaded count says nothing. The Caspian Explorer's medium plasma accelerator says the same again at grade 1, where the cut would be −3% and 5 × 0.97 = 4.85 rounds back to 5. That reading is evidence and not a guard: a build parsed from a journal folds the modifiers the journal states, so adding a clip leg to the recipe would not move these counts. What fails on such a change is the engineering suite, which folds the recipe itself.",
+      "readings": 92,
+      "distinctModules": 26,
+      "atCapacity": 92,
+      "belowCapacity": []
+    },
+    "engineered": {
+      "note": "Every roll here is at full quality on an empty Viper, refitted per roll. An engineered clip is rounded up to a whole burst where the roll is computed; the reserve is rounded to the nearest whole round after every contribution is applied.",
+      "rolls": [
+        {
+          "note": "A small fixed cannon under High Capacity. Grade 5 doubles both figures exactly.",
+          "slot": "SmallHardpoint1",
+          "module": "Hpt_Cannon_Fixed_Small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "stock": {
+            "clipSize": 6,
+            "hopper": 120,
+            "total": 126
+          },
+          "clipSize": 12,
+          "hopper": 240,
+          "total": 252
+        },
+        {
+          "note": "The same cannon at grade 3: the clip reaches 10.08 and loads 11, while the 201.6-round reserve rounds to 202.",
+          "slot": "SmallHardpoint1",
+          "module": "Hpt_Cannon_Fixed_Small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 3,
+          "stock": {
+            "clipSize": 6,
+            "hopper": 120,
+            "total": 126
+          },
+          "clipSize": 11,
+          "hopper": 202,
+          "total": 213
+        },
+        {
+          "note": "Double Shot gives a fragment cannon a two-round burst and scales the clip by the same roll: 3 rounds become 4.02, and a whole burst makes it 6 rather than the 5 a bare round-up would give.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_Slugshot_Fixed_Medium",
+          "blueprint": "Weapon_DoubleShot",
+          "grade": 1,
+          "stock": {
+            "clipSize": 3,
+            "hopper": 180,
+            "total": 183
+          },
+          "burstRounds": 2,
+          "clipSize": 6,
+          "hopper": 180,
+          "total": 186
+        },
+        {
+          "note": "A Concord Cannon fires three-round bursts of its own, with no recipe naming them: High Capacity takes its 9 rounds to 12.24, and a whole burst makes that 15 rather than the 13 a bare round-up would give.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_Cannon_Gimbal_Medium_Burst",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 1,
+          "stock": {
+            "clipSize": 9,
+            "hopper": 300,
+            "total": 309
+          },
+          "burstRounds": 3,
+          "clipSize": 15,
+          "hopper": 408,
+          "total": 423
+        },
+        {
+          "note": "Ammo capacity on a chaff launcher: a utility module carries a reserve and is engineered like any other.",
+          "slot": "TinyHardpoint1",
+          "module": "Hpt_ChaffLauncher_Tiny",
+          "blueprint": "Misc_ChaffCapacity",
+          "grade": 1,
+          "stock": {
+            "clipSize": 1,
+            "hopper": 10,
+            "total": 11
+          },
+          "clipSize": 1,
+          "hopper": 15,
+          "total": 16
+        },
+        {
+          "note": "Plasma Slug empties the reserve because the weapon then reloads from ship fuel — a tank this does not model, which is why the answer is a reserve of zero and not an unlimited one.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_RailGun_Fixed_Medium",
+          "blueprint": "RailGun_LongShot",
+          "grade": 5,
+          "experimental": "special_plasma_slug_cooled",
+          "stock": {
+            "clipSize": 1,
+            "hopper": 80,
+            "total": 81
+          },
+          "clipSize": 1,
+          "hopper": 0,
+          "total": 1
+        },
+        {
+          "note": "Corrosive Shell costs a fifth of the reserve, after High Capacity has doubled it.",
+          "slot": "MediumHardpoint1",
+          "module": "Hpt_MultiCannon_Fixed_Medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "experimental": "special_corrosive_shell",
+          "stock": {
+            "clipSize": 100,
+            "hopper": 2100,
+            "total": 2200
+          },
+          "clipSize": 200,
+          "hopper": 3360,
+          "total": 3560
+        }
+      ]
+    },
+    "engineeredGroundTruth": {
+      "note": "Every engineered clip or reserve Frontier states across the nineteen journal captures — thirty-seven readings on eleven of them. `game` is the modifier the journal states and what the weapon had loaded; `simulated` is what `computeModifiers` produces for the same recipe, grade and corrected quality, or what the fixed pre-engineered variant supplies when `preEngineered` is true; an imported build uses the stated modifier verbatim and therefore always equals `game`. Thirty-six agree exactly, including a fragment cannon's Corrosive Shell reserve at quality 0.826, where the leg is the experimental's flat −20% rather than a quality-rolled one, and the Spire Ops and Slapaconda Caustic Sink rolls and tech-broker Heat Sink variants. The two multi-cannon captures report stale fractional qualities even though the modules are fully engineered, so `reportedQuality` preserves the verbatim journal value while `quality` records the manually verified value used for simulation. Nearest-integer reserve rounding reproduces the Corsair's 87 rounds and the Lynx Highliners' and Panther's 3 heat sinks. The Corsair dumbfire rack is the deliberate exception: it was engineered under the legacy system, where attributes advanced independently, so its one reported `Quality` cannot reproduce both per-leg values through the current shared-quality model. `clipSize` is omitted from `game` and `simulated` where the recipe carries no clip leg and the magazine stands at its catalogue figure.",
+      "cases": [
+        {
+          "capture": "journal-anaconda-slapaconda.jsonc",
+          "ship": "anaconda",
+          "slot": "TinyHardpoint3",
+          "symbol": "hpt_causticsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 5
+          },
+          "game": {
+            "ammoMaximum": 7,
+            "loadedClip": 1,
+            "loadedHopper": 7
+          },
+          "simulated": {
+            "ammoMaximum": 7
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-anaconda-slapaconda.jsonc",
+          "ship": "anaconda",
+          "slot": "TinyHardpoint4",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "preEngineered": true,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 2
+          },
+          "game": {
+            "ammoMaximum": 4,
+            "loadedClip": 1,
+            "loadedHopper": 4
+          },
+          "simulated": {
+            "ammoMaximum": 4
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-anaconda-slapaconda.jsonc",
+          "ship": "anaconda",
+          "slot": "TinyHardpoint5",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "preEngineered": true,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 2
+          },
+          "game": {
+            "ammoMaximum": 4,
+            "loadedClip": 1,
+            "loadedHopper": 4
+          },
+          "simulated": {
+            "ammoMaximum": 4
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-anaconda-slapaconda.jsonc",
+          "ship": "anaconda",
+          "slot": "TinyHardpoint6",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "preEngineered": true,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 2
+          },
+          "game": {
+            "ammoMaximum": 4,
+            "loadedClip": 1,
+            "loadedHopper": 4
+          },
+          "simulated": {
+            "ammoMaximum": 4
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-anaconda-slapaconda.jsonc",
+          "ship": "anaconda",
+          "slot": "TinyHardpoint7",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "preEngineered": true,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 2
+          },
+          "game": {
+            "ammoMaximum": 4,
+            "loadedClip": 1,
+            "loadedHopper": 4
+          },
+          "simulated": {
+            "ammoMaximum": 4
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-anaconda-slapaconda.jsonc",
+          "ship": "anaconda",
+          "slot": "TinyHardpoint8",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "preEngineered": true,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 2
+          },
+          "game": {
+            "ammoMaximum": 4,
+            "loadedClip": 1,
+            "loadedHopper": 4
+          },
+          "simulated": {
+            "ammoMaximum": 4
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-cobra-mkv.jsonc",
+          "ship": "cobramkv",
+          "slot": "MediumHardpoint3",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "reportedQuality": 0.9844,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true,
+          "note": "The journal reports quality 0.9844, but the module is manually verified as fully engineered. Simulation therefore applies the corrected quality 1 and reproduces 4200."
+        },
+        {
+          "capture": "journal-cobra-mkv.jsonc",
+          "ship": "cobramkv",
+          "slot": "SmallHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-corsair.jsonc",
+          "ship": "corsair",
+          "slot": "MediumHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true,
+          "note": "Corrosive Shell's −20% compounding after High Capacity's doubling: 2100 × 2 × 0.8, which five captures state and all five agree on."
+        },
+        {
+          "capture": "journal-corsair.jsonc",
+          "ship": "corsair",
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true,
+          "note": "The same recipe without an ammunition-moving experimental: a clean doubling of both legs."
+        },
+        {
+          "capture": "journal-corsair.jsonc",
+          "ship": "corsair",
+          "slot": "MediumHardpoint3",
+          "symbol": "hpt_dumbfiremissilerack_fixed_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 4,
+          "quality": 0.8931,
+          "experimental": "special_fsd_interrupt",
+          "base": {
+            "clipSize": 12,
+            "ammoMaximum": 48
+          },
+          "game": {
+            "clipSize": 23,
+            "ammoMaximum": 87,
+            "loadedClip": 23,
+            "loadedHopper": 87
+          },
+          "simulated": {
+            "clipSize": 22,
+            "ammoMaximum": 87
+          },
+          "agrees": false,
+          "legacyEngineering": true,
+          "note": "This module was engineered under the legacy system, where attributes advanced independently. Its single reported quality therefore cannot reproduce both per-leg values through the current shared-quality model: the computed reserve of 87.499008 rounds to Frontier's 87 whole missiles, while the clip rounds up to 22 rather than the stated 23. Importing the build is exact because the stated modifiers are used verbatim."
+        },
+        {
+          "capture": "journal-federation-corvette-beams.jsonc",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-beams.jsonc",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_emissive_munitions",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-multirole.jsonc",
+          "ship": "federation_corvette",
+          "slot": "LargeHardpoint1",
+          "symbol": "hpt_drunkmissilerack_fixed_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_drag_munitions",
+          "base": {
+            "clipSize": 12,
+            "ammoMaximum": 120
+          },
+          "game": {
+            "clipSize": 24,
+            "ammoMaximum": 240,
+            "loadedClip": 24,
+            "loadedHopper": 240
+          },
+          "simulated": {
+            "clipSize": 24,
+            "ammoMaximum": 240
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-multirole.jsonc",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-multirole.jsonc",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "reportedQuality": 0.9438,
+          "experimental": "special_emissive_munitions",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true,
+          "note": "The journal reports quality 0.9438, but the module is manually verified as fully engineered. Simulation therefore applies the corrected quality 1 and reproduces 4200."
+        },
+        {
+          "capture": "journal-federation-corvette-mixed.jsonc",
+          "ship": "federation_corvette",
+          "slot": "MediumHardpoint1",
+          "symbol": "hpt_railgun_fixed_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_feedback_cascade_cooled",
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 80
+          },
+          "game": {
+            "clipSize": 2,
+            "ammoMaximum": 160,
+            "loadedClip": 2,
+            "loadedHopper": 160
+          },
+          "simulated": {
+            "clipSize": 2,
+            "ammoMaximum": 160
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-mixed.jsonc",
+          "ship": "federation_corvette",
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_railgun_fixed_small",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_weapon_damage",
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 80
+          },
+          "game": {
+            "clipSize": 2,
+            "ammoMaximum": 160,
+            "loadedClip": 2,
+            "loadedHopper": 160
+          },
+          "simulated": {
+            "clipSize": 2,
+            "ammoMaximum": 160
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-mixed.jsonc",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint2",
+          "symbol": "hpt_railgun_fixed_small",
+          "blueprint": "Weapon_LightWeight",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_plasma_slug_cooled",
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 80
+          },
+          "game": {
+            "ammoMaximum": 0,
+            "loadedClip": 1,
+            "loadedHopper": 0
+          },
+          "simulated": {
+            "ammoMaximum": 0
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-federation-corvette-plasma.jsonc",
+          "ship": "federation_corvette",
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_slugshot_fixed_medium",
+          "blueprint": "Weapon_Overcharged",
+          "grade": 4,
+          "quality": 0.826,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 3,
+            "ammoMaximum": 180
+          },
+          "game": {
+            "ammoMaximum": 144,
+            "loadedClip": 3,
+            "loadedHopper": 144
+          },
+          "simulated": {
+            "ammoMaximum": 144
+          },
+          "agrees": true,
+          "note": "The reserve alone, and the reading that settles Overcharged's clip leg at the fragment cannon: the recipe carries no clip leg, so the magazine stands at 3 and the weapon is loaded with 3. The −20% reserve is Corrosive Shell's, flat rather than quality-rolled, so it lands exactly at an interpolated quality where a rolled leg would not."
+        },
+        {
+          "capture": "journal-federation-corvette-plasma.jsonc",
+          "ship": "federation_corvette",
+          "slot": "SmallHardpoint2",
+          "symbol": "hpt_railgun_fixed_small",
+          "blueprint": "Weapon_LightWeight",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_plasma_slug_cooled",
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 80
+          },
+          "game": {
+            "ammoMaximum": 0,
+            "loadedClip": 1,
+            "loadedHopper": 0
+          },
+          "simulated": {
+            "ammoMaximum": 0
+          },
+          "agrees": true,
+          "note": "A reserve emptied outright: Plasma Slug feeds the rail gun from the fuel tank, so the reserve is 0 rather than reduced, and the weapon is loaded with a magazine and nothing behind it. This repeats the `journal-federation-corvette-mixed.json` case above digit for digit — the same ship, slot and roll an hour and twenty minutes apart — so it is a check on the two stored texts rather than a second reading of the recipe."
+        },
+        {
+          "capture": "journal-lynx-highliner.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint3",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 3360
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint4",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_emissive_munitions",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "LargeHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_large",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": {
+            "clipSize": 90,
+            "ammoMaximum": 2100
+          },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": {
+            "clipSize": 180,
+            "ammoMaximum": 4200
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "TinyHardpoint2",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 2
+          },
+          "game": {
+            "ammoMaximum": 3,
+            "loadedClip": 1,
+            "loadedHopper": 3
+          },
+          "simulated": {
+            "ammoMaximum": 3
+          },
+          "agrees": true,
+          "note": "The reserve alone: the recipe carries no clip leg, so the magazine stands at 1. The computed 2.98 reserve rounds to Frontier's 3 whole heat sinks."
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 4200 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint2",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 4200 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint3",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_corrosive_shell",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 3360,
+            "loadedClip": 180,
+            "loadedHopper": 3360
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 3360 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "MediumHardpoint4",
+          "symbol": "hpt_multicannon_gimbal_medium",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_emissive_munitions",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 4200 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "LargeHardpoint1",
+          "symbol": "hpt_multicannon_gimbal_large",
+          "blueprint": "Weapon_HighCapacity",
+          "grade": 5,
+          "quality": 1,
+          "experimental": "special_auto_loader",
+          "base": { "clipSize": 90, "ammoMaximum": 2100 },
+          "game": {
+            "clipSize": 180,
+            "ammoMaximum": 4200,
+            "loadedClip": 180,
+            "loadedHopper": 4200
+          },
+          "simulated": { "clipSize": 180, "ammoMaximum": 4200 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-lynx-highliner-rescue01-current.jsonc",
+          "ship": "mediumtransport01",
+          "slot": "TinyHardpoint2",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "base": { "clipSize": 1, "ammoMaximum": 2 },
+          "game": { "ammoMaximum": 3, "loadedClip": 1, "loadedHopper": 3 },
+          "simulated": { "ammoMaximum": 3 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-panther-mkii-fat-arse.jsonc",
+          "ship": "panthermkii",
+          "slot": "TinyHardpoint1",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "base": { "clipSize": 1, "ammoMaximum": 2 },
+          "game": { "ammoMaximum": 3, "loadedClip": 1, "loadedHopper": 3 },
+          "simulated": { "ammoMaximum": 3 },
+          "agrees": true
+        },
+        {
+          "capture": "journal-python-mkii-spire-ops.jsonc",
+          "ship": "python_nx",
+          "slot": "TinyHardpoint1",
+          "symbol": "hpt_causticsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 5
+          },
+          "game": {
+            "ammoMaximum": 7,
+            "loadedClip": 1,
+            "loadedHopper": 7
+          },
+          "simulated": {
+            "ammoMaximum": 7
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-python-mkii-spire-ops.jsonc",
+          "ship": "python_nx",
+          "slot": "TinyHardpoint2",
+          "symbol": "hpt_causticsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 5
+          },
+          "game": {
+            "ammoMaximum": 7,
+            "loadedClip": 1,
+            "loadedHopper": 7
+          },
+          "simulated": {
+            "ammoMaximum": 7
+          },
+          "agrees": true
+        },
+        {
+          "capture": "journal-python-mkii-spire-ops.jsonc",
+          "ship": "python_nx",
+          "slot": "TinyHardpoint3",
+          "symbol": "hpt_heatsinklauncher_turret_tiny",
+          "blueprint": "Misc_HeatSinkCapacity",
+          "grade": 1,
+          "quality": 1,
+          "experimental": null,
+          "preEngineered": true,
+          "base": {
+            "clipSize": 1,
+            "ammoMaximum": 2
+          },
+          "game": {
+            "ammoMaximum": 4,
+            "loadedClip": 1,
+            "loadedHopper": 4
+          },
+          "simulated": {
+            "ammoMaximum": 4
+          },
+          "agrees": true,
+          "note": "The tech-broker pre-engineered variant doubles reserve capacity; this is not the ordinary grade-1 recipe's +49% roll."
+        }
+      ],
+      "recomputed": {
+        "note": "The Corsair with its own aggregates stripped, so nothing can be echoed back. Its recomputed figures agree with Frontier's, which is the check no stock capture can make, and it exercises an engineered overcharge drive under FSD_LongRange g5 with Mass Manager.",
+        "unladenMass": 641.9,
+        "journalUnladenMass": 641.900024,
+        "maxJumpRange": 41.191542,
+        "journalMaxJumpRange": 41.191536,
+        "cargoCapacity": 144
+      }
+    }
+  },
+  "functions": {
+    "powerBudget": {
+      "available": 6,
+      "consumers": [
+        {
+          "draw": 4,
+          "priority": 1
+        },
+        {
+          "draw": 1,
+          "priority": 2
+        },
+        {
+          "draw": 3,
+          "priority": 3,
+          "deployedOnly": true
+        },
+        {
+          "draw": 1,
+          "priority": 4
+        }
+      ],
+      "retracted": 6,
+      "deployed": 9,
+      "bands": [
+        {
+          "priority": 1,
+          "retracted": 4,
+          "deployed": 4,
+          "retractedTotal": 4,
+          "deployedTotal": 4,
+          "poweredRetracted": true,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 2,
+          "retracted": 1,
+          "deployed": 1,
+          "retractedTotal": 5,
+          "deployedTotal": 5,
+          "poweredRetracted": true,
+          "poweredDeployed": true
+        },
+        {
+          "priority": 3,
+          "retracted": 0,
+          "deployed": 3,
+          "retractedTotal": 5,
+          "deployedTotal": 8,
+          "poweredRetracted": true,
+          "poweredDeployed": false
+        },
+        {
+          "priority": 4,
+          "retracted": 1,
+          "deployed": 1,
+          "retractedTotal": 6,
+          "deployedTotal": 9,
+          "poweredRetracted": true,
+          "poweredDeployed": false
+        },
+        {
+          "priority": 5,
+          "retracted": 0,
+          "deployed": 0,
+          "retractedTotal": 6,
+          "deployedTotal": 9,
+          "poweredRetracted": true,
+          "poweredDeployed": false
+        }
+      ]
+    },
+    "powerBudgetUnknownDraw": {
+      "note": "A consumer whose draw the caller cannot supply is left out of every total and reported in unknownDraws. The same consumer object is returned unmodified, so an implementation must not normalize it or fill in defaults. Every total is a lower bound while the list is non-empty: this case reads 6 MW of 10 with 4 MW spare, and the true draw is 6 MW plus the unknown module's draw.",
+      "available": 10,
+      "consumers": [
+        {
+          "draw": 4,
+          "priority": 1,
+          "label": "MainEngines"
+        },
+        {
+          "draw": 0,
+          "drawUnknown": true,
+          "priority": 1,
+          "label": "Slot05_Size3"
+        },
+        {
+          "draw": 2,
+          "priority": 2,
+          "label": "Slot06_Size2"
+        }
+      ],
+      "retracted": 6,
+      "deployed": 6,
+      "headroom": 4,
+      "withinBudget": true,
+      "unknownDraws": [
+        {
+          "draw": 0,
+          "drawUnknown": true,
+          "priority": 1,
+          "label": "Slot05_Size3"
+        }
+      ]
+    },
+    "stackShieldResistance": [
+      {
+        "generator": 0.4,
+        "boosters": [],
+        "expected": 0.4
+      },
+      {
+        "generator": 0,
+        "boosters": [0.1, 0.1],
+        "expected": 0.19
+      },
+      {
+        "generator": 0.4,
+        "boosters": [0.2, 0.2, 0.2, 0.2],
+        "expected": 0.66712
+      }
+    ],
+    "stackArmourResistance": [
+      {
+        "bulkhead": 0.25,
+        "reinforcements": [0.025],
+        "expected": 0.26875
+      },
+      {
+        "bulkhead": 0.25,
+        "reinforcements": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
+        "expected": 0.374341
+      },
+      {
+        "bulkhead": -0.2,
+        "reinforcements": [0.005],
+        "expected": -0.194
+      }
+    ],
+    "systemsResistance": [
+      {
+        "pips": 0,
+        "expected": 0
+      },
+      {
+        "pips": 1,
+        "expected": 0.184672
+      },
+      {
+        "pips": 2,
+        "expected": 0.332871
+      },
+      {
+        "pips": 3,
+        "expected": 0.469844
+      },
+      {
+        "pips": 4,
+        "expected": 0.6
+      }
+    ],
+    "damageFalloff": [
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 0,
+        "expected": 1
+      },
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 2000,
+        "expected": 1
+      },
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 3000,
+        "expected": 0.5
+      },
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 4000,
+        "expected": 0
+      },
+      {
+        "maximumRange": 4000,
+        "falloffRange": 2000,
+        "metres": 5000,
+        "expected": 0
+      }
+    ],
+    "armourPiercingFactor": [
+      {
+        "armourPiercing": 22,
+        "hardness": 65,
+        "expected": 0.338462
+      },
+      {
+        "armourPiercing": 100,
+        "hardness": 65,
+        "expected": 1
+      }
+    ]
+  }
+}

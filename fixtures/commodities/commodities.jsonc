@@ -1,0 +1,81 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Ground truth for the commodity catalogues (data/commodities/commodities.jsonc and
+ * rare-commodities.jsonc, from EDCD FDevIDs, plus `curatedcommodity` from a player journal
+ * observation). `counts` pins the size of each catalogue; `records` pins individual entries with
+ * their catalogue-derived `rare` flag; `categoryCounts` pins how many commodities each market
+ * group holds across ALL_COMMODITIES; `categories` lists every market group present. `symbol` is
+ * Frontier's internal id (matched case-insensitively, like ships/modules/materials), `name` is the
+ * display name, `category` is the market group. `rare` is derived from which catalogue a record
+ * lives in; the CSV numeric id (and rares' market_id) are dropped.
+ */
+{
+  "counts": {
+    "standard": 257,
+    "rare": 142,
+    "all": 399
+  },
+  "categories": [
+    "Chemicals",
+    "Consumer Items",
+    "Foods",
+    "Industrial Materials",
+    "Legal Drugs",
+    "Machinery",
+    "Medicines",
+    "Metals",
+    "Minerals",
+    "NonMarketable",
+    "Salvage",
+    "Slavery",
+    "Technology",
+    "Textiles",
+    "Waste",
+    "Weapons"
+  ],
+  "records": [
+    {
+      "symbol": "Platinum",
+      "name": "Platinum",
+      "category": "Metals",
+      "rare": false
+    },
+    {
+      "symbol": "Water",
+      "name": "Water",
+      "category": "Chemicals",
+      "rare": false
+    },
+    {
+      "symbol": "Drones",
+      "name": "Limpets",
+      "category": "NonMarketable",
+      "rare": false
+    },
+    {
+      "symbol": "curatedcommodity",
+      "name": "Curated Commodity Package",
+      "category": "Industrial Materials",
+      "rare": false
+    },
+    {
+      "symbol": "LavianBrandy",
+      "name": "Lavian Brandy",
+      "category": "Legal Drugs",
+      "rare": true
+    },
+    {
+      "symbol": "OnionHead",
+      "name": "Onionhead",
+      "category": "Legal Drugs",
+      "rare": true
+    }
+  ],
+  "categoryCounts": {
+    "Metals": 28,
+    "Foods": 51,
+    "Salvage": 99,
+    "Legal Drugs": 36
+  }
+}
