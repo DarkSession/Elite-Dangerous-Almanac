@@ -1,5 +1,6 @@
 /** Serialization policy for the mutable loadout facade. @internal */
 
+import { normalizeKey } from '../../internal/registry-index.js';
 import type { OutfittingModule } from '../modules.js';
 import type { SourcePurchaseRecord } from '../source-purchase.js';
 import type { LoadoutEvent, LoadoutModule } from '../slef.js';
@@ -160,7 +161,7 @@ function sourceModuleValue(
 ): number | 'unknown' {
     const entry = source?.entryForSlot(module.Slot) ?? null;
     if (entry === null) return 'unknown';
-    return normalized(entry.item) === normalized(module.Item) ? entry.value : 'unknown';
+    return normalizeKey(entry.item) === normalizeKey(module.Item) ? entry.value : 'unknown';
 }
 
 function sourceTotalsHold(
@@ -172,11 +173,7 @@ function sourceTotalsHold(
             ? entry.slot
             : firstKeyMatchingCase(modules.keys(), entry.slot);
         const fitted = key === null ? undefined : modules.get(key);
-        if (!fitted || normalized(fitted.Item) !== normalized(entry.item)) return false;
+        if (!fitted || normalizeKey(fitted.Item) !== normalizeKey(entry.item)) return false;
     }
     return true;
-}
-
-function normalized(value: string): string {
-    return value.trim().toLowerCase();
 }

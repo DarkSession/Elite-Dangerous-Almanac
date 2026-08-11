@@ -5,6 +5,7 @@ import {
     createKeyIndex,
     filterByKey,
     findByKey,
+    findByRawKey,
     findInKeyIndex,
     normalizeKey,
 } from './registry-index.js';
@@ -47,6 +48,19 @@ test('filterByKey always returns a fresh array', () => {
     const first = filterByKey(catalogue, 'symbol', 'a');
     first.length = 0;
     assert.equal(filterByKey(catalogue, 'symbol', 'a').length, 2);
+});
+
+test('a raw-keyed lookup answers the exact key before folding case', () => {
+    const catalogue = { FSD_LongRange: 'exact', fsd_longrange: 'folded' };
+    assert.equal(findByRawKey(catalogue, 'FSD_LongRange'), 'exact');
+    assert.equal(findByRawKey(catalogue, 'fsd_longrange'), 'folded');
+    assert.equal(findByRawKey(catalogue, ' FSD_LONGRANGE '), 'exact');
+    assert.equal(findByRawKey(catalogue, 'NoSuchBlueprint'), null);
+});
+
+test('a raw-keyed lookup ignores inherited properties', () => {
+    assert.equal(findByRawKey<unknown>({}, 'toString'), null);
+    assert.equal(findByRawKey<unknown>({}, 'constructor'), null);
 });
 
 test('a fixed index is immutable and keeps the first duplicate', () => {

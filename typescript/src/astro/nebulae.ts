@@ -39,6 +39,7 @@
  * @packageDocumentation
  */
 
+import { findByKey } from '../internal/registry-index.js';
 import type { GalacticPosition } from './galactic-position.js';
 
 /**
@@ -267,6 +268,5 @@ export function nebulaeWithin(
  * ```
  */
 export function getNebulaByName(name: string, nebulae: readonly Nebula[]): Nebula | null {
-    const wanted = name.trim().toLowerCase();
-    return nebulae.find((nebula) => nebula.name.toLowerCase() === wanted) ?? null;
+    return findByKey(nebulae, 'name', name);
 }

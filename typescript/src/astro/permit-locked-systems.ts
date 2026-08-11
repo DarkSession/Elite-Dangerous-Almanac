@@ -8,6 +8,7 @@
  */
 
 import systemsData from '../../../data/astro/permit-locked-systems.jsonc' with { type: 'json' };
+import { normalizeKey } from '../internal/registry-index.js';
 import { tryToSystemAddress, type SystemAddressInput } from './system-address-input.js';
 
 export type { SystemAddressInput };
@@ -54,13 +55,8 @@ export const PERMIT_LOCKED_SYSTEMS: readonly PermitLockedSystem[] = Object.freez
     ),
 );
 
-/** Lookup key: lower-cased and trimmed, so matching ignores case and padding. */
-function normalizeName(name: string): string {
-    return name.trim().toLowerCase();
-}
-
 const SYSTEM_BY_NAME: ReadonlyMap<string, PermitLockedSystem> = new Map(
-    PERMIT_LOCKED_SYSTEMS.map((system) => [normalizeName(system.name), system]),
+    PERMIT_LOCKED_SYSTEMS.map((system) => [normalizeKey(system.name), system]),
 );
 
 const SYSTEM_BY_ADDRESS: ReadonlyMap<bigint, PermitLockedSystem> = new Map(
@@ -75,7 +71,7 @@ const SYSTEM_BY_ADDRESS: ReadonlyMap<bigint, PermitLockedSystem> = new Map(
  * permit-locked. Region prefixes are not checked.
  */
 export function permitLockedSystemForName(name: string): PermitLockedSystem | null {
-    return SYSTEM_BY_NAME.get(normalizeName(name)) ?? null;
+    return SYSTEM_BY_NAME.get(normalizeKey(name)) ?? null;
 }
 
 /**

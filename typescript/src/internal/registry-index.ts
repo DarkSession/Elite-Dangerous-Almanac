@@ -42,6 +42,26 @@ export function findInKeyIndex<T>(index: KeyIndex<T>, wanted: string): T | null 
     return index[normalizeKey(wanted)] ?? null;
 }
 
+/**
+ * Look up a raw-keyed catalogue: exact key first, then a case-insensitive scan.
+ *
+ * @remarks
+ * This is the counterpart to {@link findInKeyIndex} for a `Record` that keeps its
+ * source's own casing — a Frontier `fdname` catalogue, say — rather than one built by
+ * {@link createKeyIndex}. The own-property hit is both the fast path and the tie-break:
+ * a catalogue holding two keys differing only in case answers the exact spelling first,
+ * and only a miss pays for the scan. Prototype keys never match, so `'toString'` is a
+ * miss unless the catalogue really holds it.
+ */
+export function findByRawKey<T>(catalogue: Readonly<Record<string, T>>, wanted: string): T | null {
+    if (Object.hasOwn(catalogue, wanted)) return catalogue[wanted]!;
+    const key = normalizeKey(wanted);
+    for (const candidate of Object.keys(catalogue)) {
+        if (normalizeKey(candidate) === key) return catalogue[candidate]!;
+    }
+    return null;
+}
+
 /** Find the first matching record by scanning the supplied catalogue. */
 export function findByKey<T extends object>(
     catalogue: readonly T[],
