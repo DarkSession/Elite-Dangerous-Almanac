@@ -627,7 +627,11 @@ export interface OutfittingModuleStats {
     readonly damage?: number;
     /** How `damage` splits across the damage types. */
     readonly damageDistribution?: DamageDistribution;
-    /** Exact damage amounts when in-game verification exposes distinct components. */
+    /**
+     * Exact damage amounts when in-game verification exposes distinct components.
+     * On effective fitted stats these scale with engineered total damage, and are absent
+     * when engineering converts the weapon to a new fractional damage distribution.
+     */
     readonly damageComponents?: DamageComponents;
     /**
      * Rounds fired per shot, for the weapons that fire several at once (fragment

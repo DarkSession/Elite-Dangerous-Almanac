@@ -534,6 +534,46 @@
       "special_overload_munitions": { "thermal": 0.5, "explosive": 0.5 }
     }
   },
+  "damageComponentScaling": {
+    "description": "Exact per-type damage amounts follow the same post-engineering ratio as total damage. Real Anti-Xeno, caustic and Guardian weapons cover every component field, increases, a reduction and a zero result. Anti-Xeno damage remains an overlay rather than part of the conventional total.",
+    "cases": [
+      {
+        "symbol": "Hpt_ATDumbfireMissile_Fixed_Medium",
+        "baseDamage": 27,
+        "effectiveDamage": 54,
+        "baseComponents": { "explosive": 27, "antiXeno": 43 },
+        "expectedComponents": { "explosive": 54, "antiXeno": 86 }
+      },
+      {
+        "symbol": "Hpt_CausticMissile_Fixed_Medium",
+        "baseDamage": 5,
+        "effectiveDamage": 2.5,
+        "baseComponents": { "explosive": 4, "unclassified": [1] },
+        "expectedComponents": { "explosive": 2, "unclassified": [0.5] }
+      },
+      {
+        "symbol": "Hpt_ATMultiCannon_Gimbal_Medium",
+        "baseDamage": 1.12,
+        "effectiveDamage": 0,
+        "baseComponents": { "kinetic": 1.12, "antiXeno": 2.19 },
+        "expectedComponents": { "kinetic": 0, "antiXeno": 0 }
+      },
+      {
+        "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
+        "baseDamage": 35,
+        "effectiveDamage": 52.5,
+        "baseComponents": { "thermal": 35, "antiXeno": 35 },
+        "expectedComponents": { "thermal": 52.5, "antiXeno": 52.5 }
+      },
+      {
+        "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
+        "baseDamage": 2.5,
+        "effectiveDamage": 1,
+        "baseComponents": { "absolute": 2.5, "antiXeno": 2.5 },
+        "expectedComponents": { "absolute": 1, "antiXeno": 1 }
+      }
+    ]
+  },
   "thermalPlasmaConversions": {
     "description": "The three laser-family Plasma conversion blueprints share the same fixed per-grade shift from thermal damage to absolute plasma damage. Shares are fractions of conventional damage and sum to 1.",
     "blueprints": {

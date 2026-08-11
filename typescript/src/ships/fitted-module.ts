@@ -49,7 +49,11 @@ export interface FittedModule {
     readonly raw: LoadoutModule;
     /** Snapshotted base module stats, or `null` when unresolved. */
     readonly stats: OutfittingModule | null;
-    /** Post-engineering module stats, or `null` when unresolved. */
+    /**
+     * Post-engineering module stats, or `null` when unresolved. Exact weapon damage
+     * components follow the engineered total and disappear when a damage conversion
+     * replaces them with a fractional distribution.
+     */
     readonly effectiveStats: OutfittingModule | null;
     /** Fully rearmed ammunition capacity, or `null` for modules without ammunition. */
     readonly ammunition: AmmunitionCapacity | null;

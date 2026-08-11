@@ -1358,6 +1358,35 @@ test('a damage conversion supersedes exact stock damage components', () => {
     assert.ok(near(metrics.damageByType.explosive, metrics.damagePerSecond / 2, 1e-6));
 });
 
+test('effective fitted stats scale exact components with engineered damage', () => {
+    const expected = engineeringFixture.damageComponentScaling.cases[0]!;
+    const build = ShipLoadout.fromLoadout({
+        Ship: 'CobraMkIII',
+        Modules: [
+            {
+                Slot: 'MediumHardpoint1',
+                Item: expected.symbol,
+                Engineering: {
+                    BlueprintName: 'Test',
+                    Level: 1,
+                    Quality: 1,
+                    Modifiers: [
+                        {
+                            Label: 'Damage',
+                            OriginalValue: expected.baseDamage,
+                            Value: expected.effectiveDamage,
+                        },
+                    ],
+                },
+            },
+        ],
+    });
+
+    const effective = build.fittedModuleAt('MediumHardpoint1')!.effectiveStats!;
+    assert.equal(effective.damage, expected.effectiveDamage);
+    assert.deepEqual(effective.damageComponents, expected.expectedComponents);
+});
+
 test('a hull reinforcement package engineers a hull boost it never had', () => {
     // A reinforcement package carries no base hull boost, and unlike an ordinary stat
     // that absence is not "nothing to scale": a percentage-of-a-multiplier stat has a
