@@ -52,23 +52,21 @@ value you captured earlier.
 
 ## Offer only what fits
 
-`modulesForSlot` filters a catalogue down to the modules that mount will actually accept,
-by size and by restriction.
+`modulesForSlot` filters the complete module catalogue down to the modules that mount
+will actually accept, by size and by restriction.
 
 ```ts
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
 
 const build = ShipLoadout.empty('Anaconda');
 
-const drives = build.modulesForSlot('FrameShiftDrive', CORE_MODULES);
+const drives = build.modulesForSlot('FrameShiftDrive');
 drives.map((m) => m.symbol); // every drive that fits, largest class included
 ```
 
-Pass the narrowest catalogue you can: it bounds both the result and what your bundle
-carries. `ALL_MODULES` searches all 1199 across every category, at 310.8 KiB;
-`CORE_MODULES` is 521 records. A fuel tank is a core module that also fits optional
-mounts, so use `ALL_MODULES` when a mount can take more than one category.
+The method searches all 1199 modules because some mounts accept modules from more than
+one outfitting category: a fuel tank is a core module that also fits optional mounts.
+`ShipLoadout` already carries the complete catalogue for whole-build operations.
 
 ## Fit, remove, engineer
 

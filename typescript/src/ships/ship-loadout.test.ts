@@ -747,7 +747,7 @@ test("the Type-11's mining hardpoints only take mining tools", () => {
         miner.setModule('MediumHardpoint3', mod('Hpt_MiningLaser_Fixed_Medium', HARDPOINT_MODULES)),
     );
     // The mounts are listable, so an outfitting UI can answer "what fits here?".
-    const forMining = miner.modulesForSlot('MediumMiningHardpoint1', HARDPOINT_MODULES);
+    const forMining = miner.modulesForSlot('MediumMiningHardpoint1');
     assert.ok(forMining.length > 0);
     assert.ok(
         forMining.every((m) => /^hpt_(mining|human_extraction)/.test(m.symbol.toLowerCase())),
@@ -844,14 +844,8 @@ test('a module reserved to one kind of mount fits no other mount on its own hull
     assert.doesNotThrow(() => miner.setModule('LimpetController01', plain));
 
     // An outfitting UI must not offer what the fit check would refuse.
-    assert.ok(
-        !panther
-            .modulesForSlot('Slot01_Size8', INTERNAL_MODULES)
-            .some((m) => m.symbol === rack.symbol),
-    );
-    assert.ok(
-        panther.modulesForSlot('Cargo01', INTERNAL_MODULES).some((m) => m.symbol === rack.symbol),
-    );
+    assert.ok(!panther.modulesForSlot('Slot01_Size8').some((m) => m.symbol === rack.symbol));
+    assert.ok(panther.modulesForSlot('Cargo01').some((m) => m.symbol === rack.symbol));
 });
 
 test('the planetary approach suite states its own mount instead of being special-cased', () => {
@@ -988,7 +982,7 @@ test('every restricted mount accepts and refuses what the fixture pins', () => {
         }
         // `modulesForSlot` and `setModule` must agree, or an outfitting UI offers a
         // module the fit check then refuses.
-        const offered = new Set(build.modulesForSlot(rule.slot, ALL_MODULES).map((m) => m.symbol));
+        const offered = new Set(build.modulesForSlot(rule.slot).map((m) => m.symbol));
         for (const symbol of rule.accepts) assert.ok(offered.has(symbol), `not offered: ${symbol}`);
         for (const symbol of rule.rejects) assert.ok(!offered.has(symbol), `offered: ${symbol}`);
     }
@@ -1070,11 +1064,11 @@ test('setModule throws a clear error when handed an undefined module', () => {
 
 test('modulesForSlot lists only fitting modules', () => {
     const conda = ShipLoadout.empty('Anaconda');
-    const drives = conda.modulesForSlot('FrameShiftDrive', CORE_MODULES);
+    const drives = conda.modulesForSlot('FrameShiftDrive');
     assert.ok(drives.length > 0);
     assert.ok(drives.every((m) => m.symbol.toLowerCase().startsWith('int_hyperdrive')));
     assert.ok(drives.every((m) => m.class <= 6));
-    assert.throws(() => conda.modulesForSlot('NoSuchSlot', CORE_MODULES), RangeError);
+    assert.throws(() => conda.modulesForSlot('NoSuchSlot'), RangeError);
 });
 
 test('fit checks use restrictions carried by caller-supplied module records', () => {
@@ -1095,7 +1089,7 @@ test('fit checks use restrictions carried by caller-supplied module records', ()
 
 test('armour is hull-specific while the cargo hatch remains fixed', () => {
     const conda = ShipLoadout.empty('Anaconda');
-    const armour = conda.modulesForSlot('Armour', CORE_MODULES);
+    const armour = conda.modulesForSlot('Armour');
     assert.equal(armour.length, 5);
     assert.ok(armour.every((module) => module.ship === 'Anaconda'));
     conda.setModule(
@@ -1831,7 +1825,7 @@ test('slot views are immutable point-in-time values', () => {
     assert.ok(drive);
     assert.equal(drive.module, null);
 
-    const drives = conda.modulesForSlot(drive.key, CORE_MODULES);
+    const drives = conda.modulesForSlot(drive.key);
     assert.ok(drives.length > 0 && drives.every((m) => m.class <= 6));
 
     conda.setModule(drive.key, mod('Int_Hyperdrive_Size6_Class5'));
@@ -2999,7 +2993,7 @@ test('every editor and reader on the facade takes a lower-cased key', () => {
     assert.equal(build.fittedModuleAt('frameshiftdrive')?.engineering, undefined);
 
     // ...and so does a slot the build has not filled, whose key comes from the layout.
-    assert.ok(build.modulesForSlot('tinyhardpoint2', UTILITY_MODULES).length > 0);
+    assert.ok(build.modulesForSlot('tinyhardpoint2').length > 0);
     assert.equal(build.fittedModuleAt('TinyHardpoint2'), null);
     build.setModule('tinyhardpoint2', mod('Hpt_ShieldBooster_Size0_Class5', UTILITY_MODULES));
     // A fresh fit takes the layout's canonical key, having no existing one to keep.
@@ -3058,11 +3052,11 @@ test("a core mount's function name reaches its slot only where casing is the dif
     );
     assert.equal(build.fittedModuleAt('frameShiftDrive')?.symbol, 'Int_Hyperdrive_Size6_Class5');
     for (const core of ['powerPlant', 'lifeSupport', 'powerDistributor', 'fuelTank'] as const) {
-        assert.doesNotThrow(() => build.modulesForSlot(core, CORE_MODULES), core);
+        assert.doesNotThrow(() => build.modulesForSlot(core), core);
     }
     for (const core of ['thrusters', 'sensors'] as const) {
         assert.equal(build.fittedModuleAt(core), null, core);
-        assert.throws(() => build.modulesForSlot(core, CORE_MODULES), RangeError, core);
+        assert.throws(() => build.modulesForSlot(core), RangeError, core);
         assert.throws(
             () => build.setModule(core, mod('Int_Engine_Size6_Class5')),
             RangeError,
@@ -3091,7 +3085,7 @@ const derivedViews = (build: ShipLoadout) => ({
 const anaconda = (): ShipLoadout => {
     const build = ShipLoadout.empty('Anaconda');
     for (const key of ['PowerPlant', 'FrameShiftDrive', 'FuelTank']) {
-        build.setModule(key, build.modulesForSlot(key, ALL_MODULES)[0]!);
+        build.setModule(key, build.modulesForSlot(key)[0]!);
     }
     return build;
 };
@@ -3110,10 +3104,7 @@ const importedAnaconda = (): ShipLoadout => ShipLoadout.fromLoadout(anaconda().t
  */
 const cargoRack = (build: ShipLoadout): OutfittingModule =>
     build
-        .modulesForSlot(
-            build.slots('optional').find((slot) => !slot.restriction)!.key,
-            INTERNAL_MODULES,
-        )
+        .modulesForSlot(build.slots('optional').find((slot) => !slot.restriction)!.key)
         .find((module) => module.cargoCapacity !== undefined)!;
 
 test('a derived view never survives the edit that invalidates it', () => {
@@ -3128,7 +3119,7 @@ test('a derived view never survives the edit that invalidates it', () => {
             'setModule replacing an occupied slot',
             (build) => {
                 const fits = build
-                    .modulesForSlot(cargoSlot, INTERNAL_MODULES)
+                    .modulesForSlot(cargoSlot)
                     .filter((module) => module.cargoCapacity !== undefined);
                 build.setModule(cargoSlot, fits[0]!).setModule(cargoSlot, fits[1]!);
             },
@@ -3145,11 +3136,7 @@ test('a derived view never survives the edit that invalidates it', () => {
             // cargo-slot edits above leave `valid`, `complete` and the issue list
             // untouched, so on their own they cannot catch a stale validation cache.
             'setModule filling a required core mount',
-            (build) =>
-                void build.setModule(
-                    'MainEngines',
-                    build.modulesForSlot('MainEngines', ALL_MODULES)[0]!,
-                ),
+            (build) => void build.setModule('MainEngines', build.modulesForSlot('MainEngines')[0]!),
         ],
         [
             'removeModule emptying a required core mount',

@@ -90,7 +90,7 @@ export type SlotRestriction = HardpointRestriction | OptionalRestriction;
  * This is the same wording `ShipLoadout.setModule` uses when it refuses a module, so
  * a label you show and the error a consumer sees cannot drift apart. It describes the
  * module *families* a mount takes; for the actual fitting records, call
- * `ShipLoadout.modulesForSlot` with the catalogue you care about.
+ * `ShipLoadout.modulesForSlot`.
  * @example
  * ```ts
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
