@@ -50,8 +50,9 @@ export function findInKeyIndex<T>(index: KeyIndex<T>, wanted: string): T | null 
  * source's own casing — a Frontier `fdname` catalogue, say — rather than one built by
  * {@link createKeyIndex}. The own-property hit is both the fast path and the tie-break:
  * a catalogue holding two keys differing only in case answers the exact spelling first,
- * and only a miss pays for the scan. Prototype keys never match, so `'toString'` is a
- * miss unless the catalogue really holds it.
+ * and only a miss pays for the scan. Inherited keys never match, so `'toString'` is a
+ * miss unless the catalogue really holds it; the scan reads own *enumerable* keys, so a
+ * hidden own key is reachable by its exact spelling only.
  */
 export function findByRawKey<T>(catalogue: Readonly<Record<string, T>>, wanted: string): T | null {
     if (Object.hasOwn(catalogue, wanted)) return catalogue[wanted]!;

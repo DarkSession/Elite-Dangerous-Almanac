@@ -16,6 +16,7 @@
 
 import blueprintCostsData from '../../../data/ships/blueprint-costs.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { findByRawKey } from '../internal/registry-index.js';
 import { rollsForGrade, sumMaterials } from './engineering.js';
 import type { EngineeringMaterial } from './engineering.js';
 
@@ -69,12 +70,7 @@ export const BLUEPRINT_COSTS: Readonly<Record<string, BlueprintGradeCosts>> = de
  * ```
  */
 export function getBlueprintCosts(fdname: string): BlueprintGradeCosts | null {
-    if (Object.hasOwn(BLUEPRINT_COSTS, fdname)) return BLUEPRINT_COSTS[fdname]!;
-    const wanted = fdname.trim().toLowerCase();
-    for (const key of Object.keys(BLUEPRINT_COSTS)) {
-        if (key.toLowerCase() === wanted) return BLUEPRINT_COSTS[key]!;
-    }
-    return null;
+    return findByRawKey(BLUEPRINT_COSTS, fdname);
 }
 
 /**

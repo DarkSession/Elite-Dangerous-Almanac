@@ -14,6 +14,7 @@
 
 import experimentalEffectCostsData from '../../../data/ships/experimental-effect-costs.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { findByRawKey } from '../internal/registry-index.js';
 import type { EngineeringMaterial } from './engineering.js';
 
 /**
@@ -50,12 +51,5 @@ export const EXPERIMENTAL_EFFECT_COSTS: Readonly<Record<string, readonly Enginee
  * ```
  */
 export function getExperimentalEffectCost(fdname: string): readonly EngineeringMaterial[] | null {
-    if (Object.hasOwn(EXPERIMENTAL_EFFECT_COSTS, fdname)) {
-        return EXPERIMENTAL_EFFECT_COSTS[fdname]!;
-    }
-    const wanted = fdname.trim().toLowerCase();
-    for (const key of Object.keys(EXPERIMENTAL_EFFECT_COSTS)) {
-        if (key.toLowerCase() === wanted) return EXPERIMENTAL_EFFECT_COSTS[key]!;
-    }
-    return null;
+    return findByRawKey(EXPERIMENTAL_EFFECT_COSTS, fdname);
 }
