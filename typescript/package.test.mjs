@@ -106,6 +106,22 @@ test('ProceduralSystem excludes individually locked systems from its package gra
     assert.match(graph, /Col 70 Sector/);
 });
 
+test('system-address consumers exclude the named-region origin catalogue', async () => {
+    const address = await readReachableJs(
+        new URL('./dist/astro/system-address.js', import.meta.url),
+    );
+    assert.ok(
+        address.length < 32 * 1024,
+        `expected data-free address calculations, got ${address.length} bytes`,
+    );
+    assert.doesNotMatch(address, /Alrai Sector/);
+
+    const codex = await readReachableJs(
+        new URL('./dist/astro/codex-region-lookup.js', import.meta.url),
+    );
+    assert.doesNotMatch(codex, /Alrai Sector/);
+});
+
 test('fine-grained package subpaths resolve', () => {
     assert.equal(massCodeToSizeClass('d'), 3);
     assert.equal(

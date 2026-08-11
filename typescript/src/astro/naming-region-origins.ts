@@ -21,8 +21,11 @@
  */
 
 import { sectorGridPositionFromName, sectorNameFromGridPosition } from './sector-name.js';
+import { SECTOR_INTERNAL_SIZE } from './system-address.js';
 import originsData from '../../../data/astro/named-region-origins.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+
+export { SECTOR_INTERNAL_SIZE } from './system-address.js';
 
 /**
  * A region's origin and extent, in internal units (32 per light-year, measured
@@ -55,9 +58,6 @@ export interface NamingRegionOrigin {
     /** Extent along Z in internal units. */
     readonly sizeZ: number;
 }
-
-/** Internal units per procedural-sector edge (1280 ly × 32 units/ly). */
-export const SECTOR_INTERNAL_SIZE = 40960;
 
 const CATALOGUE: ReadonlyMap<string, NamingRegionOrigin> = new Map(
     deepFreeze(originsData as readonly NamingRegionOrigin[]).map((r) => [r.name.toLowerCase(), r]),
