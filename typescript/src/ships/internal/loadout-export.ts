@@ -2,7 +2,7 @@
 
 import { normalizeKey } from '../../internal/registry-index.js';
 import type { OutfittingModule } from '../modules.js';
-import type { SourcePurchaseRecord } from '../source-purchase.js';
+import { getSourceModuleValue, type SourcePurchaseRecord } from '../source-purchase.js';
 import type { LoadoutEvent, LoadoutModule } from '../slef.js';
 import type { BuildSlot } from '../slots.js';
 import {
@@ -157,7 +157,7 @@ function sourceModuleValue(
     module: LoadoutModule,
     source: SourcePurchaseRecord | null,
 ): number | 'unknown' {
-    const entry = source?.entryForSlot(module.Slot) ?? null;
+    const entry = source === null ? null : getSourceModuleValue(source, module.Slot);
     if (entry === null) return 'unknown';
     return normalizeKey(entry.item) === normalizeKey(module.Item) ? entry.value : 'unknown';
 }

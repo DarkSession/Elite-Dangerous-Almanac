@@ -123,9 +123,11 @@ of the build — so it is preserved as supplied in a read-only source purchase r
 no edit changes, and it is exported only when asked for by name:
 
 ```ts
+import { getSourceModuleValue } from "@elite-dangerous-almanac/core/ships/source-purchase";
+
 const paid = build.sourcePurchase; // null for a build assembled here
 paid?.modulesValue; // as the capture stated it
-paid?.valueForSlot("PowerPlant"); // null where the capture priced nothing
+paid && getSourceModuleValue(paid, "PowerPlant")?.value; // undefined when unpriced
 
 build.toLoadoutEvent(); // retail: hull cost plus every module's list price
 build.toLoadoutEvent({ credits: "source" }); // the capture's own figures

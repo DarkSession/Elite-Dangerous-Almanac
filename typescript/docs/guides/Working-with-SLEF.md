@@ -111,13 +111,14 @@ The captured figures live on a read-only record that no edit changes:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+import { getSourceModuleValue } from '@elite-dangerous-almanac/core/ships/source-purchase';
 
 declare const build: ShipLoadout;
 
 const paid = build.sourcePurchase; // null for a build you assembled yourself
 paid?.hullValue; // -> 37472252   as the capture stated it
-paid?.valueForSlot('FrameShiftDrive'); // -> 4976355
-paid?.valueForSlot('ShipCockpit'); // -> null — priced nothing, which is not "free"
+paid && getSourceModuleValue(paid, 'FrameShiftDrive')?.value; // -> 4976355
+paid && getSourceModuleValue(paid, 'ShipCockpit'); // -> null — unpriced is not "free"
 ```
 
 Each captured figure stays pinned to the article it was paid for, so **editing narrows

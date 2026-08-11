@@ -2,7 +2,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { ShipLoadout } from './ship-loadout.js';
-import { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
+import {
+    getSourceModuleValue,
+    sourcePurchaseFromLoadout,
+    sumSourceModuleValues,
+    type SourceModuleValue,
+    type SourcePurchaseRecord,
+} from './source-purchase.js';
 import type { LoadoutEvent } from './slef.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
@@ -90,7 +96,7 @@ const shapeOf = (record: SourcePurchaseRecord) => ({
     modulesValue: record.modulesValue,
     rebuy: record.rebuy,
     moduleCount: record.moduleCount,
-    pricedModulesValue: record.pricedModulesValue,
+    pricedModulesValue: sumSourceModuleValues(record),
     moduleValues: record.moduleValues.map((entry) => ({ ...entry })),
 });
 
@@ -134,7 +140,7 @@ for (const [name, event] of Object.entries(CAPTURES)) {
 
 for (const [name, { event, record }] of Object.entries(fixture.syntheticCaptures)) {
     test(`${name}: a hand-written capture records what it states and nothing more`, () => {
-        const captured = SourcePurchaseRecord.fromLoadout(event);
+        const captured = sourcePurchaseFromLoadout(event);
         if (record === null) {
             assert.equal(captured, null);
             // …and a build loading the same event reports none either.
@@ -206,10 +212,10 @@ test('a build assembled from the catalogues has no source to record', () => {
 test('a slot is priced by either spelling of its key', () => {
     const record = ShipLoadout.fromLoadout(kraitEvent).sourcePurchase!;
     const stated = kraitEvent.Modules.find((m) => m.Value !== undefined)!;
-    assert.equal(record.valueForSlot(stated.Slot), stated.Value);
-    assert.equal(record.valueForSlot(stated.Slot.toLowerCase()), stated.Value);
-    assert.equal(record.valueForSlot(stated.Slot.toUpperCase()), stated.Value);
-    assert.equal(record.entryForSlot(stated.Slot)?.item, stated.Item);
+    assert.equal(getSourceModuleValue(record, stated.Slot)?.value, stated.Value);
+    assert.equal(getSourceModuleValue(record, stated.Slot.toLowerCase())?.value, stated.Value);
+    assert.equal(getSourceModuleValue(record, stated.Slot.toUpperCase())?.value, stated.Value);
+    assert.equal(getSourceModuleValue(record, stated.Slot)?.item, stated.Item);
 });
 
 test('a slot the source left unpriced is null, and so is a slot it never named', () => {
@@ -217,9 +223,8 @@ test('a slot the source left unpriced is null, and so is a slot it never named',
     const unpriced = caspianEvent.Modules.find((m) => m.Value === undefined)!;
     // Unpriced is not free: a decoration never costs credits, but a journal also omits
     // `Value` on modules that came with the hull and on some that were bought.
-    assert.equal(record.valueForSlot(unpriced.Slot), null);
-    assert.equal(record.entryForSlot(unpriced.Slot), null);
-    assert.equal(record.valueForSlot('NoSuchSlot42'), null);
+    assert.equal(getSourceModuleValue(record, unpriced.Slot), null);
+    assert.equal(getSourceModuleValue(record, 'NoSuchSlot42'), null);
 });
 
 test('a capture spelling one mount two ways is rejected before prices become ambiguous', () => {
@@ -251,7 +256,10 @@ test('editing a build leaves its source purchase record untouched', () => {
     assert.equal(build.rebuy, null);
     assert.equal(build.sourcePurchase, record);
     assert.deepEqual(shapeOf(build.sourcePurchase!), before);
-    assert.equal(build.sourcePurchase!.valueForSlot(pricedSlot), before.moduleValues[0]!.value);
+    assert.equal(
+        getSourceModuleValue(build.sourcePurchase!, pricedSlot)?.value,
+        before.moduleValues[0]!.value,
+    );
 });
 
 test('the record and everything in it is frozen', () => {
@@ -273,9 +281,9 @@ test('the record does not alias the event it was captured from', () => {
         HullValue: 32000,
         Modules: [{ Slot: 'PowerPlant', Item: 'int_powerplant_size2_class1', Value: 1234 }],
     };
-    const record = SourcePurchaseRecord.fromLoadout(event)!;
+    const record = sourcePurchaseFromLoadout(event)!;
     (event.Modules as unknown as { Value?: number }[])[0]!.Value = 9999;
-    assert.equal(record.valueForSlot('PowerPlant'), 1234);
+    assert.equal(getSourceModuleValue(record, 'PowerPlant')?.value, 1234);
 });
 
 // ── Exporting the record instead of retail ──────────────────────────────────
@@ -312,7 +320,7 @@ test('a discounted capture exports what it paid, not what the catalogue charges'
     const slot = build.sourcePurchase!.moduleValues[0]!.slot;
     const paidValue = paid.Modules.find((m) => m.Slot === slot)!.Value!;
     const retailValue = retail.Modules.find((m) => m.Slot === slot)!.Value!;
-    assert.equal(paidValue, build.sourcePurchase!.valueForSlot(slot));
+    assert.equal(paidValue, getSourceModuleValue(build.sourcePurchase!, slot)?.value);
     assert.ok(paidValue < retailValue);
 });
 
@@ -367,7 +375,7 @@ test('a total the capture built from an unpriced module outlives that module', (
     assert.equal(exported.ModulesValue, 4940956);
     const reimported = ShipLoadout.fromLoadout(exported).sourcePurchase!;
     assert.equal(reimported.modulesValue, 4940956);
-    assert.equal(reimported.pricedModulesValue, 3942898);
+    assert.equal(sumSourceModuleValues(reimported), 3942898);
 });
 
 test('a build with no source record exports no credits rather than falling back', () => {
@@ -450,5 +458,8 @@ test('an edited build re-exports a record whose parts still add up', () => {
     assert.equal(record.modulesValue, null);
     assert.equal(record.rebuy, null);
     assert.equal(record.hullValue, deepBlackEvent.HullValue);
-    assert.equal(record.pricedModulesValue, build.sourcePurchase!.pricedModulesValue - 8003);
+    assert.equal(
+        sumSourceModuleValues(record),
+        sumSourceModuleValues(build.sourcePurchase!) - 8003,
+    );
 });

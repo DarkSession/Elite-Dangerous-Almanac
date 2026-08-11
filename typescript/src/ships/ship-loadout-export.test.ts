@@ -156,7 +156,7 @@ test('the physical figures are the exporter’s own, not our invention', () => {
 
 test('credits are quoted at retail, so a discounted source does not match', () => {
     // The source paid 12.25% under list for its modules. That is one commander's
-    // purchase at one station, not a property of the build, so the export quotes list.
+    // purchase history, not a property of the build, so the export quotes list.
     const { discount, recomputed } = fixture.deepBlack;
     assert.equal(discount.sourceHullValue, source.HullValue);
     assert.equal(discount.sourceModulesValue, source.ModulesValue);

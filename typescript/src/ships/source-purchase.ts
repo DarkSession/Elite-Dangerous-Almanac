@@ -1,40 +1,10 @@
 /**
- * {@link SourcePurchaseRecord} — the credit figures a captured build arrived with,
- * kept verbatim and apart from what the build is worth at retail.
+ * Frozen purchase snapshots and pure queries for credit figures carried by a journal
+ * `Loadout` event or SLEF export.
  *
- * A `Loadout` event or SLEF export states what one commander paid at one station:
- * `HullValue`, `ModulesValue`, `Rebuy` and a per-module `Value`. Those figures are
- * **provenance about the capture**, not properties of the fit — they carry station
- * discounts, they can omit a module that was nonetheless bought, and the two producers
- * do not even agree on whether `HullValue` counts the hull's stock fittings. This record
- * preserves them exactly as supplied so an app can show, attribute or re-export them,
- * while every live figure the library computes stays at catalogue retail.
- *
- * @remarks
- * **No single discount is inferred, and none ever will be.** It is tempting to divide
- * the supplied total by the retail total and call the quotient "the station discount":
- * on the Deep Black every priced module sits at 0.8775 of list, and on the Viper Mk IV
- * capture at 0.85, so the quotient looks meaningful. It is not one number. A capture can
- * omit `Value` on a module that was paid for, mix modules bought at different stations
- * with different discounts, and disagree with its own parts — one Viper Mk IV event
- * declares `ModulesValue` 4 940 956 while its per-module figures sum to 3 942 898. A
- * derived percentage would read as a fact about the build and be wrong for most of them,
- * so what a source stated is offered as stated and nothing is computed from it.
- *
- * @example
- * ```ts
- * declare const slefJson: string;
- *
- * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
- *
- * const build = ShipLoadout.fromSlef(slefJson);
- * const paid = build.sourcePurchase;          // -> SourcePurchaseRecord | null
- * paid?.hullValue;                            // -> 189326510  (as captured)
- * paid?.valueForSlot('PowerPlant');           // -> 20692437   (as captured)
- *
- * build.removeModule('Slot05_Size4');         // edit freely…
- * paid === build.sourcePurchase;              // -> true  (…the record is unchanged)
- * ```
+ * A capture preserves figures from one commander's purchase history. They can combine
+ * station discounts, omit bought modules, and disagree with their own totals, so they
+ * remain separate from the catalogue-retail figures calculated for a live build.
  *
  * @packageDocumentation
  */
@@ -44,240 +14,161 @@ import type { LoadoutEvent } from './slef.js';
 
 /** One slot's captured purchase price, exactly as the source stated it. */
 export interface SourceModuleValue {
-    /** The slot key, in the **source's own spelling** (a SLEF producer may lower-case it). */
+    /** The slot key, in the source's own spelling. */
     readonly slot: string;
-    /** The module symbol the source priced, in the source's own casing. */
+    /** The module symbol, in the source's own casing. */
     readonly item: string;
     /** What the source says was paid for that module, in credits. */
     readonly value: number;
 }
 
 /**
- * The credit figures one capture arrived with — a read-only purchase record, distinct
- * from the retail prices the library computes.
+ * An immutable snapshot of the credit figures carried by one captured loadout.
  *
- * Obtained from {@link ShipLoadout.sourcePurchase}, or from a raw event with
- * {@link SourcePurchaseRecord.fromLoadout}. The record is **frozen and never edited**:
- * fitting, removing or engineering a module leaves it exactly as the source wrote it,
- * because it describes the capture rather than the build in hand. That is the opposite
- * of `ShipLoadout.hullValue` / `modulesValue` / `rebuy`, which track the live build and
- * are dropped as soon as an edit invalidates them.
- *
- * Every figure is optional in a capture, so every one can be `null` or absent here. A
- * slot missing from {@link moduleValues} was not priced by the source; that is not the
- * same as free — decorations never carry a price, and a journal also omits `Value` on
- * modules that came with the hull and on some that were genuinely bought.
+ * Every top-level figure can be `null`: absence means the source stated no value, not
+ * that the hull or modules were free. Likewise, {@link moduleValues} contains only
+ * individually priced slots. The snapshot remains unchanged when its owning
+ * {@link ShipLoadout} is edited because it describes the source capture, not the live
+ * fit.
  *
  * @example
- * What a capture *paid* and what the build is *worth* are different questions, and
- * editing the build only answers the second one differently.
- *
  * ```ts
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
- * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+ * import {
+ *     getSourceModuleValue,
+ *     sumSourceModuleValues,
+ * } from '@elite-dangerous-almanac/core/ships/source-purchase';
  *
- * declare const event: LoadoutEvent;
+ * declare const slefJson: string;
  *
- * const build = ShipLoadout.fromLoadout(event);
- * const paid = build.sourcePurchase; // null for a build assembled here
- *
- * paid?.hullValue; // -> 37472252   as the capture stated it
- * paid?.modulesValue; // -> 50785509
- * paid?.moduleCount; // -> 40
- * paid?.valueForSlot('FrameShiftDrive'); // -> 4976355
- *
- * // Removing a module makes the live figure unknowable, and leaves the capture alone.
- * build.removeModule('Slot01_Size6');
- * build.modulesValue; // -> null
- * paid?.modulesValue; // -> 50785509, still what the capture said
- * ```
- *
- * @example
- * A slot the capture never priced reads `null`, which does not mean it was free.
- *
- * ```ts
- * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
- *
- * declare const paid: SourcePurchaseRecord;
- *
- * paid.valueForSlot('ShipCockpit'); // -> null, the journal priced no cockpit
- * paid.entryForSlot('ShipCockpit'); // -> null, so nothing to attribute either
+ * const build = ShipLoadout.fromSlef(slefJson);
+ * const paid = build.sourcePurchase;
+ * if (paid) {
+ *     paid.hullValue; // captured hull price, or null
+ *     getSourceModuleValue(paid, 'PowerPlant')?.value; // captured slot price
+ *     sumSourceModuleValues(paid); // sum of individually priced modules
+ * }
  * ```
  */
-export class SourcePurchaseRecord {
+export interface SourcePurchaseRecord {
     /** Hull cost in credits as the source stated it, or `null` if it stated none. */
     readonly hullValue: number | null;
-    /** Fitted-modules cost in credits as the source stated it, or `null` if it stated none. */
+    /** Fitted-module cost in credits as the source stated it, or `null` if absent. */
     readonly modulesValue: number | null;
-    /** Insurance rebuy in credits as the source stated it, or `null` if it stated none. */
+    /** Insurance rebuy in credits as the source stated it, or `null` if absent. */
     readonly rebuy: number | null;
-    /**
-     * Every slot the source priced, in the order the capture listed them. Slots the
-     * source left unpriced are absent rather than present with a zero.
-     */
+    /** Individually priced slots, in capture order; unpriced slots are absent. */
     readonly moduleValues: readonly SourceModuleValue[];
-    /**
-     * How many modules the capture listed in total, priced or not. It is the denominator
-     * when comparing individually priced entries; `moduleValues.length` is the numerator.
-     * A capture lists decorations, the cockpit and the cargo hatch alongside outfitting
-     * modules, so a partially priced record is the normal case rather than a defect.
-     */
+    /** Total modules listed by the capture, including entries with no price. */
     readonly moduleCount: number;
+}
 
-    /** @internal Constructed by {@link SourcePurchaseRecord.fromLoadout}. */
-    private constructor(
-        hullValue: number | null,
-        modulesValue: number | null,
-        rebuy: number | null,
-        moduleValues: readonly SourceModuleValue[],
-        moduleCount: number,
+/**
+ * Capture the purchase figures from a journal `Loadout` event or SLEF data object.
+ *
+ * @param event - Source event to snapshot. No object in it is retained by reference.
+ * @returns A deeply frozen record, or `null` when the source states no credit figure at
+ * all.
+ * @remarks
+ * A malformed event that repeats an exactly spelled slot keeps the last entry, matching
+ * the historical extraction rule. {@link ShipLoadout.fromLoadout} independently rejects
+ * duplicate mounts before constructing a usable build.
+ *
+ * No discount is inferred. One capture can mix purchases from several stations, omit
+ * module values, or state a total that differs from its priced parts. The snapshot keeps
+ * those facts visible instead of inventing one misleading percentage.
+ * @example
+ * ```ts
+ * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+ * import { sourcePurchaseFromLoadout } from '@elite-dangerous-almanac/core/ships/source-purchase';
+ *
+ * declare const event: LoadoutEvent;
+ * const paid = sourcePurchaseFromLoadout(event);
+ * paid?.rebuy; // captured rebuy, or null
+ * ```
+ */
+export function sourcePurchaseFromLoadout(event: LoadoutEvent): SourcePurchaseRecord | null {
+    const bySlot = new Map<string, SourceModuleValue>();
+    for (const module of event.Modules) {
+        if (module.Value === undefined) continue;
+        bySlot.set(module.Slot, {
+            slot: module.Slot,
+            item: module.Item,
+            value: module.Value,
+        });
+    }
+    if (
+        event.HullValue === undefined &&
+        event.ModulesValue === undefined &&
+        event.Rebuy === undefined &&
+        bySlot.size === 0
     ) {
-        this.hullValue = hullValue;
-        this.modulesValue = modulesValue;
-        this.rebuy = rebuy;
-        this.moduleValues = deepFreeze(moduleValues.map((entry) => ({ ...entry })));
-        this.moduleCount = moduleCount;
-        Object.freeze(this);
-    }
-
-    /**
-     * Capture the credit figures of a journal `Loadout` event (or the `data` half of a
-     * SLEF entry).
-     *
-     * @param event - The event to read. Nothing in it is retained by reference.
-     * @returns The record, or `null` when the capture states no credit figure at all —
-     * no `HullValue`, no `ModulesValue`, no `Rebuy` and no module `Value`. There is then
-     * no purchase record to preserve, and a record of four nulls would suggest a source
-     * that priced the build at nothing.
-     * @remarks
-     * A malformed capture that lists one slot key twice keeps the **last** entry, exactly
-     * as the build itself does when it loads the same event: a record disagreeing with
-     * the build about which module occupies a slot would price the one that is not there.
-     * @example
-     * ```ts
-     * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
-     * import { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
-     *
-     * declare const event: LoadoutEvent;
-     *
-     * SourcePurchaseRecord.fromLoadout(event)?.rebuy; // -> 19097585
-     * ```
-     */
-    static fromLoadout(event: LoadoutEvent): SourcePurchaseRecord | null {
-        // Keyed exactly as `ShipLoadout.fromLoadout` keys its own module map, so the two
-        // resolve a repeated slot key to the same entry. A `Map` keeps the first
-        // appearance's position while taking the last appearance's value.
-        const bySlot = new Map<string, SourceModuleValue>();
-        for (const module of event.Modules) {
-            if (module.Value === undefined) continue;
-            bySlot.set(module.Slot, {
-                slot: module.Slot,
-                item: module.Item,
-                value: module.Value,
-            });
-        }
-        if (
-            event.HullValue === undefined &&
-            event.ModulesValue === undefined &&
-            event.Rebuy === undefined &&
-            bySlot.size === 0
-        ) {
-            return null;
-        }
-        return new SourcePurchaseRecord(
-            event.HullValue ?? null,
-            event.ModulesValue ?? null,
-            event.Rebuy ?? null,
-            [...bySlot.values()],
-            event.Modules.length,
-        );
-    }
-
-    /**
-     * The sum of the per-slot figures the source did state, in credits.
-     *
-     * @returns `0` when the source priced no module individually.
-     * @remarks
-     * Deliberately **not** a replacement for {@link modulesValue}: the two disagree
-     * whenever the capture omitted a `Value` on a module that was paid for. Comparing
-     * them is the point — an app that needs the totals to add up can see that they do
-     * not, rather than being handed one number that hides it.
-     * @example
-     * ```ts
-     * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
-     *
-     * declare const paid: SourcePurchaseRecord;
-     *
-     * // Do this capture's parts add up to the total it declares?
-     * paid.modulesValue !== null && paid.modulesValue !== paid.pricedModulesValue;
-     * // -> true on a capture that priced fewer modules than its total counted
-     * ```
-     */
-    get pricedModulesValue(): number {
-        let sum = 0;
-        for (const entry of this.moduleValues) sum += entry.value;
-        return sum;
-    }
-
-    /**
-     * What the source paid for the module in one slot.
-     *
-     * @param slotKey - The slot key, e.g. `"PowerPlant"`. Matched as everywhere else in
-     * the library — an exactly spelled key first, then case-insensitively — so a
-     * lower-casing producer's capture answers to the journal's spelling and vice versa.
-     * @returns The captured price in credits, or `null` when the source priced no module
-     * in that slot (or named no such slot). `null` is not `0`: an unpriced slot is one
-     * the capture said nothing about, not one that cost nothing.
-     * @example
-     * ```ts
-     * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
-     *
-     * declare const paid: SourcePurchaseRecord;
-     *
-     * paid.valueForSlot('PowerPlant'); // -> 20692437
-     * paid.valueForSlot('frameshiftdrive'); // the same mount, either spelling
-     * ```
-     */
-    valueForSlot(slotKey: string): number | null {
-        return this.entryForSlot(slotKey)?.value ?? null;
-    }
-
-    /**
-     * The whole captured entry for one slot — its price *and* the module symbol that
-     * price was paid for.
-     *
-     * @param slotKey - The slot key. An exactly spelled key wins; failing that, the first
-     * key naming the same mount whatever its casing — the rule `ShipLoadout` resolves its
-     * own slot keys by, so the record and the build always agree on which entry a key
-     * names.
-     * @returns The entry, or `null` when the source priced no module in that slot.
-     * @remarks
-     * The symbol is what makes the record safe to use after an edit: a price captured
-     * for the drive that *was* in a slot says nothing about the one there now, and
-     * comparing {@link SourceModuleValue.item} against the fitted module is how a caller
-     * tells the two apart. {@link ShipLoadout.toLoadoutEvent}'s source-record export does
-     * exactly that.
-     * @example
-     * ```ts
-     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-     * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
-     *
-     * declare const build: ShipLoadout;
-     * declare const paid: SourcePurchaseRecord;
-     *
-     * const entry = paid.entryForSlot('FrameShiftDrive');
-     * entry?.item === build.fittedModuleAt('FrameShiftDrive')?.symbol.toLowerCase();
-     * // -> false once the drive has been swapped: the price is the old drive's
-     * ```
-     */
-    entryForSlot(slotKey: string): SourceModuleValue | null {
-        for (const entry of this.moduleValues) {
-            if (entry.slot === slotKey) return entry;
-        }
-        const wanted = slotKey.toLowerCase();
-        for (const entry of this.moduleValues) {
-            if (entry.slot.toLowerCase() === wanted) return entry;
-        }
         return null;
     }
+    return deepFreeze({
+        hullValue: event.HullValue ?? null,
+        modulesValue: event.ModulesValue ?? null,
+        rebuy: event.Rebuy ?? null,
+        moduleValues: [...bySlot.values()],
+        moduleCount: event.Modules.length,
+    });
+}
+
+/**
+ * Find the captured purchase entry for one slot.
+ *
+ * @param record - Purchase snapshot to query.
+ * @param slotKey - Slot key such as `"PowerPlant"`. An exact spelling wins; otherwise
+ * matching is case-insensitive so journal and lower-cased SLEF keys interoperate.
+ * @returns The frozen entry, or `null` when the source priced no module in that slot.
+ * `null` never means the module was free.
+ * @example
+ * ```ts
+ * import {
+ *     getSourceModuleValue,
+ *     type SourcePurchaseRecord,
+ * } from '@elite-dangerous-almanac/core/ships/source-purchase';
+ *
+ * declare const paid: SourcePurchaseRecord;
+ * getSourceModuleValue(paid, 'FrameShiftDrive')?.value; // captured credits
+ * ```
+ */
+export function getSourceModuleValue(
+    record: SourcePurchaseRecord,
+    slotKey: string,
+): SourceModuleValue | null {
+    for (const entry of record.moduleValues) {
+        if (entry.slot === slotKey) return entry;
+    }
+    const wanted = slotKey.toLowerCase();
+    for (const entry of record.moduleValues) {
+        if (entry.slot.toLowerCase() === wanted) return entry;
+    }
+    return null;
+}
+
+/**
+ * Sum every per-slot price that the source stated.
+ *
+ * @param record - Purchase snapshot whose individually priced entries to add.
+ * @returns The stated total in credits, or `0` when no module was individually priced.
+ * @remarks
+ * This is deliberately not a replacement for {@link SourcePurchaseRecord.modulesValue}.
+ * A capture may omit individual prices or publish an inconsistent total; comparing the
+ * two is useful precisely because this function does not hide that discrepancy.
+ * @example
+ * ```ts
+ * import {
+ *     sumSourceModuleValues,
+ *     type SourcePurchaseRecord,
+ * } from '@elite-dangerous-almanac/core/ships/source-purchase';
+ *
+ * declare const paid: SourcePurchaseRecord;
+ * const partsAgree = paid.modulesValue === sumSourceModuleValues(paid);
+ * ```
+ */
+export function sumSourceModuleValues(record: SourcePurchaseRecord): number {
+    let sum = 0;
+    for (const entry of record.moduleValues) sum += entry.value;
+    return sum;
 }
