@@ -177,11 +177,12 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * the id the game writes on Guardian weapons as well as modules, the nine groups offering
  * the recipe list it, and `BLUEPRINTS` keys it under nothing else.
  *
- * Everything else is excluded by the signature, by not being a generic spelling, or by
- * not being sold on that module. `Weapon_LightWeight` fails the signature — a weapon's Lightweight cuts distributor draw,
- * which the generic one does not touch — and `Armour_Explosive`, which rolls exactly like
- * `ShieldBooster_Explosive`, is a menu id in its own right and generic in neither spelling,
- * so it never stands in for one.
+ * Everything else is excluded by not being a generic spelling, by the signature, or by
+ * not being sold on that module. `Armour_Explosive` rolls exactly like
+ * `ShieldBooster_Explosive` and still never stands in for it, because it is a family's own
+ * id rather than a generic one; `Misc_LightWeight` is generic and fails on the signature
+ * instead where the family id is a weapon's `Weapon_LightWeight`, which cuts distributor
+ * draw where the generic one does not touch it.
  *
  * @internal
  */

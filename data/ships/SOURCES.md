@@ -1185,8 +1185,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   menu lists. It defines grade 1 only, exposes the `GuardianModuleResistance` activation
   Inara displays as +100%, and costs 2×`TG_Abrasion03`, 1×`TG_CausticCrystal`. Inara's
   `recipe_guardianmodule_sturdy` and `recipe_guardianweapon_sturdy` are that registry's
-  spellings of this same recipe and are **not** stored beside it: they carried an identical
-  record three times over, which is a roll that can drift from the one the game names.
+  spellings of this same recipe and are not stored beside it — see "No key keeps the
+  `recipe_` prefix" above.
   - **The journal writes `GuardianModule_Sturdy`, on weapons as well as modules.** A
     `StoredModules` capture contributed by the repository owner (2026-08-07 UTC) carries a
     **Guardian Gauss Cannon** — a weapon — with `"EngineerModifications":
@@ -1739,8 +1739,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     weapon-reward recipe begins at grade 2 because the bought module already contains the
     grade-1 pre-engineering; a recipe defining a grade 1 has nothing pre-applied and is
     rolled at an engineer from stock. All 21 recipes bound to a pre-engineered row run 2–5;
-    these four run 1–5 and are the only Operations keys that do, apart from the grade-1-only
-    Anti-Guardian pair.
+    these four run 1–5 and are the only Operations keys that do.
   - **The module family is a field this file already carries.** The Inara registry that
     supplied these recipes supplied their display names, and the name states the family:
     "Fuel Scoop — Scoop rate enhanced", "Beam Laser — Plasma conversion", and so on. That is

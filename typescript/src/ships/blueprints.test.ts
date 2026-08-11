@@ -28,9 +28,10 @@ test('Anti-Guardian Zone Resistance is keyed once, under the id the game writes'
     assert.deepEqual(getBlueprintGrade('GuardianModule_Sturdy', 1)?.features, [
         { label: 'GuardianModuleResistance', method: 'additive', min: 1, max: 1 },
     ]);
-    assert.equal(
-        Object.keys(BLUEPRINTS).filter((key) => getBlueprint(key)?.name === bp.name).length,
-        1,
+    assert.deepEqual(
+        Object.keys(BLUEPRINTS).filter((key) => BLUEPRINTS[key]!.name === bp.name),
+        ['GuardianModule_Sturdy'],
+        'the recipe is stored under more than one key',
     );
 });
 

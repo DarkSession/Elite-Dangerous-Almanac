@@ -459,7 +459,7 @@
     "unreachableExperimentals": []
   },
   "guardianZoneResistanceCapability": {
-    "description": "Anti-Guardian Zone Resistance is a boolean capability rather than a numeric stat. The two Guardian Nanite Torpedo Pylons carry it inherently; other stock records omit the flag. Applying the recipe — on a Guardian module or on a Guardian weapon, which the game spells the same way — emits the same non-numeric journal modifier and makes the fitted module's effective `guardianZoneResistance` strictly true. The weapon case carries the lower-case spelling an Inara export writes, which reaches the same record. Imports also grant it by label presence when a producer uses the numeric display value. The ordinary power plant case pins the compatibility boundary separately.",
+    "description": "Anti-Guardian Zone Resistance is a boolean capability rather than a numeric stat. The two Guardian Nanite Torpedo Pylons carry it inherently; other stock records omit the flag. Applying the recipe — on a Guardian module or on a Guardian weapon, which the game spells the same way — emits the same non-numeric journal modifier and makes the fitted module's effective `guardianZoneResistance` strictly true. The weapon case carries a different casing of that id, pinning that a lookup matches case-insensitively. Imports also grant it by label presence when a producer uses the numeric display value. The ordinary power plant case pins the compatibility boundary separately.",
     "field": "guardianZoneResistance",
     "offeredAs": "GuardianModule_Sturdy",
     "grade": 1,

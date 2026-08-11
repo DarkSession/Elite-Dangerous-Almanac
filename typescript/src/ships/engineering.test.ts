@@ -126,6 +126,8 @@ test('a build that spells a modification generically is still engineered', () =>
             'LifeSupport_LightWeight',
         ),
     );
+    // A generic spelling of no recipe at all is refused rather than compared to anything.
+    assert.ok(!blueprintAvailableFor('Int_LifeSupport_Size4_Class2', 'Misc_Nonsense'));
 });
 
 test('the gate accepts what the menu omits only by a pinned alias or a non-final sale', () => {
@@ -303,11 +305,12 @@ test('the spellings a real journal writes all resolve to a recipe', () => {
             `${row.symbol}: ${row.blueprint}`,
         );
     }
-    // A Guardian weapon takes the recipe under that one spelling, whatever its casing, and
-    // the menu answers with the id the game writes.
-    const guardian = 'Hpt_Guardian_GaussCannon_Fixed_Medium';
-    assert.ok(blueprintAvailableFor(guardian, 'guardianmodule_sturdy'));
-    assert.ok(getBlueprintsForModule(guardian).includes('GuardianModule_Sturdy'));
+    // The Guardian weapon's menu answers with that same id — the recipe's one key.
+    assert.ok(
+        getBlueprintsForModule('Hpt_Guardian_GaussCannon_Fixed_Medium').includes(
+            'GuardianModule_Sturdy',
+        ),
+    );
 });
 
 test('no key carries the registry prefix no game data uses', () => {
