@@ -127,7 +127,8 @@ pool of your own converts the same way:
 ```ts
 import { effectiveHitPoints } from '@elite-dangerous-almanac/core/ships/resistances';
 
-// 945 hull points behind lightweight alloy, which is kinetically weak (-20%).
+// 945 hull points behind lightweight alloy, which is weak to kinetic (-20%) and
+// explosive (-40%) damage alike.
 effectiveHitPoints(945, { kinetic: -0.2, thermal: 0, explosive: -0.4, caustic: 0 }).kinetic;
 // -> 787.5, fewer than the hull holds
 ```

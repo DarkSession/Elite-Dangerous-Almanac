@@ -85,14 +85,16 @@ test('systemsResistance rejects pips outside 0-4', () => {
     assert.throws(() => systemsResistance(Number.NaN), RangeError);
 });
 
-test('mapDamageTypes visits each damage type exactly once', () => {
+test('mapDamageTypes visits each damage type exactly once, under its own key', () => {
     const seen: string[] = [];
+    // First letters, which are distinct across the four types — so a record built with
+    // its keys crossed over would not match.
     const values = mapDamageTypes((type) => {
         seen.push(type);
-        return type.length;
+        return type.charCodeAt(0);
     });
     assert.deepEqual(seen, ['kinetic', 'thermal', 'explosive', 'caustic']);
-    assert.deepEqual(values, { kinetic: 7, thermal: 7, explosive: 9, caustic: 7 });
+    assert.deepEqual(values, { kinetic: 107, thermal: 116, explosive: 101, caustic: 99 });
 });
 
 test('effective hit points divide the pool by what gets through', () => {

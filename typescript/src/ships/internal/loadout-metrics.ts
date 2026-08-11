@@ -299,9 +299,10 @@ export function powerAvailable(
 type ModuleResistances = { readonly [Type in DamageType as `${Type}Resistance`]: number };
 
 /**
- * Build the four resistance fields by calling `read` once per field — the counterpart of
- * `mapDamageTypes` for the `<type>Resistance` names a module record carries. A field the
- * source does not carry reads as `0` — no resistance and no weakness.
+ * Build the four resistance fields by calling `read` once per field — the same fan-out
+ * `mapDamageTypes` does, over the `<type>Resistance` names a module record carries rather
+ * than the bare types. A field the source does not carry reads as `0` — no resistance and
+ * no weakness.
  */
 function mapResistanceFields(
     read: (field: keyof ModuleResistances) => number | undefined,
@@ -314,7 +315,10 @@ function mapResistanceFields(
     };
 }
 
-/** Read the four resistances off a fitted module, post-engineering. */
+/**
+ * Read the four resistances off a fitted module, post-engineering. A resistance the
+ * module does not carry reads as `0` — no resistance and no weakness.
+ */
 function resistancesOf(module: LoadoutModule, stats: OutfittingModule | null): ModuleResistances {
     return mapResistanceFields((field) => effectiveStat(module, field, stats));
 }

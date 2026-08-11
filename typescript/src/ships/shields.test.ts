@@ -71,6 +71,13 @@ test('a build with no generator reports zero shields but well-defined figures', 
     assert.equal(metrics.massCurveMultiplier, 0);
     assert.equal(metrics.boostMultiplier, 1);
     assert.deepEqual(metrics.resistances, { kinetic: 0, thermal: 0, explosive: 0, caustic: 0 });
+    // No shield soaks nothing, whatever the resistances say — not Infinity, not NaN.
+    assert.deepEqual(metrics.effectiveHitPoints, {
+        kinetic: 0,
+        thermal: 0,
+        explosive: 0,
+        caustic: 0,
+    });
 });
 
 test('resistances come from the generator, the boosters and the pips', () => {

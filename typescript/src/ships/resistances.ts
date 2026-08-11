@@ -65,7 +65,15 @@ export interface DamageTypeValues {
  */
 export type DamageResistances = DamageTypeValues;
 
-/** One of the four damage types a {@link DamageTypeValues} carries a figure for. */
+/**
+ * One of the four damage types a {@link DamageTypeValues} carries a figure for.
+ *
+ * @remarks
+ * This is the **defensive** set — what a shield or a hull resists. Absolute damage is
+ * absent because nothing resists it. A weapon's *output* is broken down over a different
+ * set, {@link DamageDistribution} in `./modules`, which carries `absolute` and `antiXeno`
+ * and no `caustic`; the two are not interchangeable.
+ */
 export type DamageType = keyof DamageTypeValues;
 
 /**
@@ -74,17 +82,22 @@ export type DamageType = keyof DamageTypeValues;
  * @param value - Called with each damage type in turn; returns that type's figure.
  * @returns The four figures in one record.
  * @remarks
- * Every per-type record this library returns is assembled here, so the four type names
- * are written out once rather than at each site that fans out over them.
+ * Every {@link DamageTypeValues} this module, `./shields` and `./armour` return is
+ * assembled here, so the four names are written out once rather than at each site that
+ * fans out over them.
  * @example
  * ```ts
  * import { mapDamageTypes } from '@elite-dangerous-almanac/core/ships/resistances';
- * import type { DamageResistances } from '@elite-dangerous-almanac/core/ships/resistances';
+ * import type {
+ *     DamageResistances,
+ *     DamageTypeValues,
+ * } from '@elite-dangerous-almanac/core/ships/resistances';
  *
+ * declare const incoming: DamageTypeValues; // raw damage aimed at the ship
  * declare const shields: DamageResistances;
  *
- * // Half of every resistance — say, to model a partly collapsed stack.
- * mapDamageTypes((type) => shields[type] / 2);
+ * // What each type actually lands, the resistances having taken their share.
+ * mapDamageTypes((type) => incoming[type] * (1 - shields[type]));
  * ```
  */
 export function mapDamageTypes(value: (type: DamageType) => number): DamageTypeValues {
@@ -104,7 +117,8 @@ export function mapDamageTypes(value: (type: DamageType) => number): DamageTypeV
  * megajoules for shields.
  * @param resistances - The effective resistances the pool sits behind, already stacked.
  * @returns The effective hit points per damage type, in the same unit as `total`, and
- * `Infinity` where a resistance reaches 100% — nothing of that type gets through.
+ * `Infinity` at or above 100% — nothing of that type gets through, and a resistance past
+ * the documented `(-∞, 1]` range never reports a negative pool.
  * @remarks
  * A *negative* resistance is a weakness and reports **fewer** effective hit points than
  * the pool holds, which is the point: lightweight alloy soaks less kinetic damage than
