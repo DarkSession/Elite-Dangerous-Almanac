@@ -1,0 +1,1610 @@
+/*
+ * Engineering **experimental-effect material costs** — the materials one application
+ * consumes, keyed by the effect's Frontier `fdname`.
+ *
+ * Sources: EDSY eddb.js `expeffect`; combat-effect costs from the Inara registry.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
+ *
+ * Each effect id maps directly to a non-empty material list. Every material is
+ * { symbol, name, count }; join `symbol` to the materials domain for its own grade and
+ * category. Effect ids exactly match `experimental-effects.jsonc`, which carries the
+ * mechanics without pulling this shopping data into build calculations. A Merc-Coin
+ * amount may also be charged for combat effects; currency is not a material and is not
+ * stored here.
+ */
+{
+  "special_concordant_sequence": [
+    {
+      "symbol": "FocusCrystals",
+      "name": "Focus Crystals",
+      "count": 5
+    },
+    {
+      "symbol": "EmbeddedFirmware",
+      "name": "Modified Embedded Firmware",
+      "count": 3
+    },
+    {
+      "symbol": "Zirconium",
+      "name": "Zirconium",
+      "count": 1
+    }
+  ],
+  "special_weapon_toughened": [
+    {
+      "symbol": "MechanicalScrap",
+      "name": "Mechanical Scrap",
+      "count": 5
+    },
+    {
+      "symbol": "CompactComposites",
+      "name": "Compact Composites",
+      "count": 5
+    },
+    {
+      "symbol": "Vanadium",
+      "name": "Vanadium",
+      "count": 3
+    }
+  ],
+  "special_emissive_munitions": [
+    {
+      "symbol": "MechanicalEquipment",
+      "name": "Mechanical Equipment",
+      "count": 4
+    },
+    {
+      "symbol": "EmissionData",
+      "name": "Unexpected Emission Data",
+      "count": 3
+    },
+    {
+      "symbol": "HeatExchangers",
+      "name": "Heat Exchangers",
+      "count": 3
+    },
+    {
+      "symbol": "Manganese",
+      "name": "Manganese",
+      "count": 3
+    }
+  ],
+  "special_feedback_cascade_cooled": [
+    {
+      "symbol": "SymmetricKeys",
+      "name": "Open Symmetric Keys",
+      "count": 5
+    },
+    {
+      "symbol": "ShieldEmitters",
+      "name": "Shield Emitters",
+      "count": 5
+    },
+    {
+      "symbol": "FilamentComposites",
+      "name": "Filament Composites",
+      "count": 5
+    }
+  ],
+  "special_weapon_efficient": [
+    {
+      "symbol": "MechanicalScrap",
+      "name": "Mechanical Scrap",
+      "count": 5
+    },
+    {
+      "symbol": "HybridCapacitors",
+      "name": "Hybrid Capacitors",
+      "count": 3
+    },
+    {
+      "symbol": "EmbeddedFirmware",
+      "name": "Modified Embedded Firmware",
+      "count": 1
+    }
+  ],
+  "special_incendiary_rounds": [
+    {
+      "symbol": "HeatConductionWiring",
+      "name": "Heat Conduction Wiring",
+      "count": 5
+    },
+    {
+      "symbol": "Phosphorus",
+      "name": "Phosphorus",
+      "count": 5
+    },
+    {
+      "symbol": "Sulphur",
+      "name": "Sulphur",
+      "count": 5
+    },
+    {
+      "symbol": "PhaseAlloys",
+      "name": "Phase Alloys",
+      "count": 3
+    }
+  ],
+  "special_weapon_rateoffire": [
+    {
+      "symbol": "MechanicalScrap",
+      "name": "Mechanical Scrap",
+      "count": 5
+    },
+    {
+      "symbol": "FocusCrystals",
+      "name": "Focus Crystals",
+      "count": 4
+    },
+    {
+      "symbol": "ConductivePolymers",
+      "name": "Conductive Polymers",
+      "count": 2
+    },
+    {
+      "symbol": "ConfigurableComponents",
+      "name": "Configurable Components",
+      "count": 2
+    }
+  ],
+  "special_weapon_damage": [
+    {
+      "symbol": "MechanicalScrap",
+      "name": "Mechanical Scrap",
+      "count": 5
+    },
+    {
+      "symbol": "MechanicalComponents",
+      "name": "Mechanical Components",
+      "count": 3
+    },
+    {
+      "symbol": "Ruthenium",
+      "name": "Ruthenium",
+      "count": 1
+    }
+  ],
+  "special_plasma_slug_cooled": [
+    {
+      "symbol": "HeatExchangers",
+      "name": "Heat Exchangers",
+      "count": 3
+    },
+    {
+      "symbol": "EmbeddedFirmware",
+      "name": "Modified Embedded Firmware",
+      "count": 2
+    },
+    {
+      "symbol": "RefinedFocusCrystals",
+      "name": "Refined Focus Crystals",
+      "count": 2
+    },
+    {
+      "symbol": "Mercury",
+      "name": "Mercury",
+      "count": 4
+    }
+  ],
+  "special_weapon_lightweight": [
+    {
+      "symbol": "SalvagedAlloys",
+      "name": "Salvaged Alloys",
+      "count": 5
+    },
+    {
+      "symbol": "Carbon",
+      "name": "Carbon",
+      "count": 5
+    },
+    {
+      "symbol": "Tin",
+      "name": "Tin",
+      "count": 1
+    }
+  ],
+  "special_super_penetrator_cooled": [
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "RefinedFocusCrystals",
+      "name": "Refined Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "Zirconium",
+      "name": "Zirconium",
+      "count": 3
+    },
+    {
+      "symbol": "ShieldDensityReports",
+      "name": "Untypical Shield Scans",
+      "count": 5
+    }
+  ],
+  "special_shieldbooster_explosive": [
+    {
+      "symbol": "ShieldSoakAnalysis",
+      "name": "Inconsistent Shield Soak Analysis",
+      "count": 5
+    },
+    {
+      "symbol": "HeatResistantCeramics",
+      "name": "Heat Resistant Ceramics",
+      "count": 3
+    },
+    {
+      "symbol": "HeatDispersionPlate",
+      "name": "Heat Dispersion Plate",
+      "count": 3
+    },
+    {
+      "symbol": "Selenium",
+      "name": "Selenium",
+      "count": 2
+    }
+  ],
+  "special_shieldbooster_toughened": [
+    {
+      "symbol": "ShieldCycleRecordings",
+      "name": "Distorted Shield Cycle Recordings",
+      "count": 5
+    },
+    {
+      "symbol": "GalvanisingAlloys",
+      "name": "Galvanising Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "ShieldEmitters",
+      "name": "Shield Emitters",
+      "count": 3
+    }
+  ],
+  "special_shieldbooster_efficient": [
+    {
+      "symbol": "ShieldSoakAnalysis",
+      "name": "Inconsistent Shield Soak Analysis",
+      "count": 5
+    },
+    {
+      "symbol": "SecurityFirmware",
+      "name": "Security Firmware Patch",
+      "count": 3
+    },
+    {
+      "symbol": "FocusCrystals",
+      "name": "Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "Niobium",
+      "name": "Niobium",
+      "count": 3
+    }
+  ],
+  "special_shieldbooster_kinetic": [
+    {
+      "symbol": "ScanArchives",
+      "name": "Unidentified Scan Archives",
+      "count": 5
+    },
+    {
+      "symbol": "ShieldingSensors",
+      "name": "Shielding Sensors",
+      "count": 3
+    },
+    {
+      "symbol": "ShieldPatternAnalysis",
+      "name": "Aberrant Shield Pattern Analysis",
+      "count": 2
+    }
+  ],
+  "special_shieldbooster_chunky": [
+    {
+      "symbol": "ShieldDensityReports",
+      "name": "Untypical Shield Scans",
+      "count": 3
+    },
+    {
+      "symbol": "CompactComposites",
+      "name": "Compact Composites",
+      "count": 5
+    },
+    {
+      "symbol": "Cadmium",
+      "name": "Cadmium",
+      "count": 2
+    }
+  ],
+  "special_shieldbooster_thermic": [
+    {
+      "symbol": "BulkScanData",
+      "name": "Anomalous Bulk Scan Data",
+      "count": 5
+    },
+    {
+      "symbol": "ConductiveCeramics",
+      "name": "Conductive Ceramics",
+      "count": 3
+    },
+    {
+      "symbol": "HeatVanes",
+      "name": "Heat Vanes",
+      "count": 3
+    }
+  ],
+  "special_armour_kinetic": [
+    {
+      "symbol": "CompactComposites",
+      "name": "Compact Composites",
+      "count": 5
+    },
+    {
+      "symbol": "HighDensityComposites",
+      "name": "High Density Composites",
+      "count": 3
+    },
+    {
+      "symbol": "Zirconium",
+      "name": "Zirconium",
+      "count": 3
+    }
+  ],
+  "special_armour_chunky": [
+    {
+      "symbol": "CompactComposites",
+      "name": "Compact Composites",
+      "count": 5
+    },
+    {
+      "symbol": "MechanicalEquipment",
+      "name": "Mechanical Equipment",
+      "count": 3
+    },
+    {
+      "symbol": "Molybdenum",
+      "name": "Molybdenum",
+      "count": 2
+    }
+  ],
+  "special_armour_explosive": [
+    {
+      "symbol": "HeatConductionWiring",
+      "name": "Heat Conduction Wiring",
+      "count": 5
+    },
+    {
+      "symbol": "HighDensityComposites",
+      "name": "High Density Composites",
+      "count": 3
+    },
+    {
+      "symbol": "Niobium",
+      "name": "Niobium",
+      "count": 1
+    }
+  ],
+  "special_armour_thermic": [
+    {
+      "symbol": "CompactComposites",
+      "name": "Compact Composites",
+      "count": 5
+    },
+    {
+      "symbol": "HeatDispersionPlate",
+      "name": "Heat Dispersion Plate",
+      "count": 3
+    },
+    {
+      "symbol": "ThermicAlloys",
+      "name": "Thermic Alloys",
+      "count": 2
+    }
+  ],
+  "special_powerplant_toughened": [
+    {
+      "symbol": "GridResistors",
+      "name": "Grid Resistors",
+      "count": 5
+    },
+    {
+      "symbol": "Vanadium",
+      "name": "Vanadium",
+      "count": 3
+    },
+    {
+      "symbol": "FedProprietaryComposites",
+      "name": "Proprietary Composites",
+      "count": 1
+    }
+  ],
+  "special_powerplant_highcharge": [
+    {
+      "symbol": "GridResistors",
+      "name": "Grid Resistors",
+      "count": 5
+    },
+    {
+      "symbol": "Vanadium",
+      "name": "Vanadium",
+      "count": 3
+    },
+    {
+      "symbol": "PolymerCapacitors",
+      "name": "Polymer Capacitors",
+      "count": 1
+    }
+  ],
+  "special_powerplant_lightweight": [
+    {
+      "symbol": "GridResistors",
+      "name": "Grid Resistors",
+      "count": 5
+    },
+    {
+      "symbol": "Vanadium",
+      "name": "Vanadium",
+      "count": 3
+    },
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 1
+    }
+  ],
+  "special_powerplant_cooled": [
+    {
+      "symbol": "GridResistors",
+      "name": "Grid Resistors",
+      "count": 5
+    },
+    {
+      "symbol": "Vanadium",
+      "name": "Vanadium",
+      "count": 3
+    },
+    {
+      "symbol": "HeatVanes",
+      "name": "Heat Vanes",
+      "count": 1
+    }
+  ],
+  "special_engine_toughened": [
+    {
+      "symbol": "Iron",
+      "name": "Iron",
+      "count": 5
+    },
+    {
+      "symbol": "HybridCapacitors",
+      "name": "Hybrid Capacitors",
+      "count": 3
+    },
+    {
+      "symbol": "FedProprietaryComposites",
+      "name": "Proprietary Composites",
+      "count": 1
+    }
+  ],
+  "special_engine_overloaded": [
+    {
+      "symbol": "Iron",
+      "name": "Iron",
+      "count": 5
+    },
+    {
+      "symbol": "HybridCapacitors",
+      "name": "Hybrid Capacitors",
+      "count": 3
+    },
+    {
+      "symbol": "SecurityFirmware",
+      "name": "Security Firmware Patch",
+      "count": 1
+    }
+  ],
+  "special_engine_haulage": [
+    {
+      "symbol": "Iron",
+      "name": "Iron",
+      "count": 5
+    },
+    {
+      "symbol": "HybridCapacitors",
+      "name": "Hybrid Capacitors",
+      "count": 3
+    },
+    {
+      "symbol": "SecurityFirmware",
+      "name": "Security Firmware Patch",
+      "count": 1
+    }
+  ],
+  "special_engine_lightweight": [
+    {
+      "symbol": "Iron",
+      "name": "Iron",
+      "count": 5
+    },
+    {
+      "symbol": "HybridCapacitors",
+      "name": "Hybrid Capacitors",
+      "count": 3
+    },
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 1
+    }
+  ],
+  "special_engine_cooled": [
+    {
+      "symbol": "Iron",
+      "name": "Iron",
+      "count": 5
+    },
+    {
+      "symbol": "HybridCapacitors",
+      "name": "Hybrid Capacitors",
+      "count": 3
+    },
+    {
+      "symbol": "HeatVanes",
+      "name": "Heat Vanes",
+      "count": 1
+    }
+  ],
+  "special_fsd_fuelcapacity": [
+    {
+      "symbol": "DisruptedWakeEchoes",
+      "name": "Atypical Disrupted Wake Echoes",
+      "count": 5
+    },
+    {
+      "symbol": "GalvanisingAlloys",
+      "name": "Galvanising Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "HyperspaceTrajectories",
+      "name": "Eccentric Hyperspace Trajectories",
+      "count": 1
+    }
+  ],
+  "special_fsd_toughened": [
+    {
+      "symbol": "DisruptedWakeEchoes",
+      "name": "Atypical Disrupted Wake Echoes",
+      "count": 5
+    },
+    {
+      "symbol": "GalvanisingAlloys",
+      "name": "Galvanising Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "ConfigurableComponents",
+      "name": "Configurable Components",
+      "count": 1
+    }
+  ],
+  "special_fsd_heavy": [
+    {
+      "symbol": "DisruptedWakeEchoes",
+      "name": "Atypical Disrupted Wake Echoes",
+      "count": 5
+    },
+    {
+      "symbol": "GalvanisingAlloys",
+      "name": "Galvanising Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "HyperspaceTrajectories",
+      "name": "Eccentric Hyperspace Trajectories",
+      "count": 1
+    }
+  ],
+  "special_fsd_lightweight": [
+    {
+      "symbol": "DisruptedWakeEchoes",
+      "name": "Atypical Disrupted Wake Echoes",
+      "count": 5
+    },
+    {
+      "symbol": "GalvanisingAlloys",
+      "name": "Galvanising Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 1
+    }
+  ],
+  "special_fsd_cooled": [
+    {
+      "symbol": "DisruptedWakeEchoes",
+      "name": "Atypical Disrupted Wake Echoes",
+      "count": 5
+    },
+    {
+      "symbol": "GalvanisingAlloys",
+      "name": "Galvanising Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "HeatVanes",
+      "name": "Heat Vanes",
+      "count": 1
+    },
+    {
+      "symbol": "GridResistors",
+      "name": "Grid Resistors",
+      "count": 3
+    }
+  ],
+  "special_powerdistributor_capacity": [
+    {
+      "symbol": "Phosphorus",
+      "name": "Phosphorus",
+      "count": 5
+    },
+    {
+      "symbol": "HeatResistantCeramics",
+      "name": "Heat Resistant Ceramics",
+      "count": 3
+    },
+    {
+      "symbol": "Cadmium",
+      "name": "Cadmium",
+      "count": 1
+    }
+  ],
+  "special_powerdistributor_toughened": [
+    {
+      "symbol": "Phosphorus",
+      "name": "Phosphorus",
+      "count": 5
+    },
+    {
+      "symbol": "HeatResistantCeramics",
+      "name": "Heat Resistant Ceramics",
+      "count": 3
+    },
+    {
+      "symbol": "FedProprietaryComposites",
+      "name": "Proprietary Composites",
+      "count": 1
+    }
+  ],
+  "special_powerdistributor_efficient": [
+    {
+      "symbol": "Phosphorus",
+      "name": "Phosphorus",
+      "count": 5
+    },
+    {
+      "symbol": "HeatResistantCeramics",
+      "name": "Heat Resistant Ceramics",
+      "count": 3
+    },
+    {
+      "symbol": "ConductivePolymers",
+      "name": "Conductive Polymers",
+      "count": 1
+    }
+  ],
+  "special_powerdistributor_lightweight": [
+    {
+      "symbol": "Phosphorus",
+      "name": "Phosphorus",
+      "count": 5
+    },
+    {
+      "symbol": "HeatResistantCeramics",
+      "name": "Heat Resistant Ceramics",
+      "count": 3
+    },
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 1
+    }
+  ],
+  "special_powerdistributor_fast": [
+    {
+      "symbol": "Phosphorus",
+      "name": "Phosphorus",
+      "count": 5
+    },
+    {
+      "symbol": "HeatResistantCeramics",
+      "name": "Heat Resistant Ceramics",
+      "count": 3
+    },
+    {
+      "symbol": "SecurityFirmware",
+      "name": "Security Firmware Patch",
+      "count": 1
+    }
+  ],
+  "special_hullreinforcement_kinetic": [
+    {
+      "symbol": "TemperedAlloys",
+      "name": "Tempered Alloys",
+      "count": 5
+    },
+    {
+      "symbol": "Zirconium",
+      "name": "Zirconium",
+      "count": 3
+    },
+    {
+      "symbol": "Carbon",
+      "name": "Carbon",
+      "count": 5
+    },
+    {
+      "symbol": "HighDensityComposites",
+      "name": "High Density Composites",
+      "count": 3
+    }
+  ],
+  "special_hullreinforcement_chunky": [
+    {
+      "symbol": "CompactComposites",
+      "name": "Compact Composites",
+      "count": 5
+    },
+    {
+      "symbol": "Molybdenum",
+      "name": "Molybdenum",
+      "count": 3
+    },
+    {
+      "symbol": "Ruthenium",
+      "name": "Ruthenium",
+      "count": 2
+    }
+  ],
+  "special_hullreinforcement_explosive": [
+    {
+      "symbol": "HeatConductionWiring",
+      "name": "Heat Conduction Wiring",
+      "count": 5
+    },
+    {
+      "symbol": "ShieldingSensors",
+      "name": "Shielding Sensors",
+      "count": 3
+    },
+    {
+      "symbol": "Tungsten",
+      "name": "Tungsten",
+      "count": 3
+    }
+  ],
+  "special_hullreinforcement_thermic": [
+    {
+      "symbol": "HeatConductionWiring",
+      "name": "Heat Conduction Wiring",
+      "count": 5
+    },
+    {
+      "symbol": "HeatDispersionPlate",
+      "name": "Heat Dispersion Plate",
+      "count": 3
+    },
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 1
+    },
+    {
+      "symbol": "Zinc",
+      "name": "Zinc",
+      "count": 4
+    }
+  ],
+  "special_shieldcell_oversized": [
+    {
+      "symbol": "ChemicalStorageUnits",
+      "name": "Chemical Storage Units",
+      "count": 5
+    },
+    {
+      "symbol": "Chromium",
+      "name": "Chromium",
+      "count": 3
+    },
+    {
+      "symbol": "PolymerCapacitors",
+      "name": "Polymer Capacitors",
+      "count": 1
+    }
+  ],
+  "special_shieldcell_toughened": [
+    {
+      "symbol": "ChemicalStorageUnits",
+      "name": "Chemical Storage Units",
+      "count": 5
+    },
+    {
+      "symbol": "Chromium",
+      "name": "Chromium",
+      "count": 3
+    },
+    {
+      "symbol": "Yttrium",
+      "name": "Yttrium",
+      "count": 1
+    }
+  ],
+  "special_shieldcell_efficient": [
+    {
+      "symbol": "ChemicalStorageUnits",
+      "name": "Chemical Storage Units",
+      "count": 5
+    },
+    {
+      "symbol": "Chromium",
+      "name": "Chromium",
+      "count": 3
+    },
+    {
+      "symbol": "ConductivePolymers",
+      "name": "Conductive Polymers",
+      "count": 1
+    }
+  ],
+  "special_shieldcell_gradual": [
+    {
+      "symbol": "ChemicalStorageUnits",
+      "name": "Chemical Storage Units",
+      "count": 5
+    },
+    {
+      "symbol": "Chromium",
+      "name": "Chromium",
+      "count": 3
+    },
+    {
+      "symbol": "ConfigurableComponents",
+      "name": "Configurable Components",
+      "count": 1
+    }
+  ],
+  "special_shieldcell_lightweight": [
+    {
+      "symbol": "ChemicalStorageUnits",
+      "name": "Chemical Storage Units",
+      "count": 5
+    },
+    {
+      "symbol": "Chromium",
+      "name": "Chromium",
+      "count": 3
+    },
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 1
+    }
+  ],
+  "special_shield_toughened": [
+    {
+      "symbol": "WornShieldEmitters",
+      "name": "Worn Shield Emitters",
+      "count": 5
+    },
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "ConfigurableComponents",
+      "name": "Configurable Components",
+      "count": 1
+    }
+  ],
+  "special_shield_regenerative": [
+    {
+      "symbol": "WornShieldEmitters",
+      "name": "Worn Shield Emitters",
+      "count": 5
+    },
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "CompoundShielding",
+      "name": "Compound Shielding",
+      "count": 1
+    }
+  ],
+  "special_shield_kinetic": [
+    {
+      "symbol": "WornShieldEmitters",
+      "name": "Worn Shield Emitters",
+      "count": 5
+    },
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "DecodedEmissionData",
+      "name": "Decoded Emission Data",
+      "count": 1
+    }
+  ],
+  "special_shield_health": [
+    {
+      "symbol": "WornShieldEmitters",
+      "name": "Worn Shield Emitters",
+      "count": 5
+    },
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "ConductivePolymers",
+      "name": "Conductive Polymers",
+      "count": 1
+    }
+  ],
+  "special_shield_efficient": [
+    {
+      "symbol": "WornShieldEmitters",
+      "name": "Worn Shield Emitters",
+      "count": 5
+    },
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "ConductivePolymers",
+      "name": "Conductive Polymers",
+      "count": 1
+    }
+  ],
+  "special_shield_resistive": [
+    {
+      "symbol": "WornShieldEmitters",
+      "name": "Worn Shield Emitters",
+      "count": 5
+    },
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "ShieldPatternAnalysis",
+      "name": "Aberrant Shield Pattern Analysis",
+      "count": 1
+    }
+  ],
+  "special_shield_lightweight": [
+    {
+      "symbol": "WornShieldEmitters",
+      "name": "Worn Shield Emitters",
+      "count": 5
+    },
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 1
+    }
+  ],
+  "special_shield_thermic": [
+    {
+      "symbol": "WornShieldEmitters",
+      "name": "Worn Shield Emitters",
+      "count": 5
+    },
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "HeatVanes",
+      "name": "Heat Vanes",
+      "count": 1
+    }
+  ],
+  "special_auto_loader": [
+    {
+      "symbol": "MechanicalEquipment",
+      "name": "Mechanical Equipment",
+      "count": 4
+    },
+    {
+      "symbol": "MechanicalComponents",
+      "name": "Mechanical Components",
+      "count": 3
+    },
+    {
+      "symbol": "HighDensityComposites",
+      "name": "High Density Composites",
+      "count": 3
+    }
+  ],
+  "special_corrosive_shell": [
+    {
+      "symbol": "ChemicalStorageUnits",
+      "name": "Chemical Storage Units",
+      "count": 5
+    },
+    {
+      "symbol": "PrecipitatedAlloys",
+      "name": "Precipitated Alloys",
+      "count": 4
+    },
+    {
+      "symbol": "Arsenic",
+      "name": "Arsenic",
+      "count": 3
+    }
+  ],
+  "special_blinding_shell": [
+    {
+      "symbol": "MechanicalScrap",
+      "name": "Mechanical Scrap",
+      "count": 5
+    },
+    {
+      "symbol": "Manganese",
+      "name": "Manganese",
+      "count": 4
+    },
+    {
+      "symbol": "HybridCapacitors",
+      "name": "Hybrid Capacitors",
+      "count": 5
+    },
+    {
+      "symbol": "MechanicalComponents",
+      "name": "Mechanical Components",
+      "count": 5
+    }
+  ],
+  "special_dispersal_field": [
+    {
+      "symbol": "ConductiveComponents",
+      "name": "Conductive Components",
+      "count": 5
+    },
+    {
+      "symbol": "HybridCapacitors",
+      "name": "Hybrid Capacitors",
+      "count": 5
+    },
+    {
+      "symbol": "ArchivedEmissionData",
+      "name": "Irregular Emission Data",
+      "count": 5
+    },
+    {
+      "symbol": "WornShieldEmitters",
+      "name": "Worn Shield Emitters",
+      "count": 5
+    }
+  ],
+  "special_drag_munitions": [
+    {
+      "symbol": "Carbon",
+      "name": "Carbon",
+      "count": 5
+    },
+    {
+      "symbol": "GridResistors",
+      "name": "Grid Resistors",
+      "count": 5
+    },
+    {
+      "symbol": "Molybdenum",
+      "name": "Molybdenum",
+      "count": 2
+    }
+  ],
+  "special_force_shell": [
+    {
+      "symbol": "MechanicalScrap",
+      "name": "Mechanical Scrap",
+      "count": 5
+    },
+    {
+      "symbol": "Zinc",
+      "name": "Zinc",
+      "count": 5
+    },
+    {
+      "symbol": "PhaseAlloys",
+      "name": "Phase Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "HeatConductionWiring",
+      "name": "Heat Conduction Wiring",
+      "count": 3
+    }
+  ],
+  "special_fsd_interrupt": [
+    {
+      "symbol": "WakeSolutions",
+      "name": "Strange Wake Solutions",
+      "count": 3
+    },
+    {
+      "symbol": "FSDTelemetry",
+      "name": "Anomalous FSD Telemetry",
+      "count": 5
+    },
+    {
+      "symbol": "MechanicalEquipment",
+      "name": "Mechanical Equipment",
+      "count": 5
+    },
+    {
+      "symbol": "ConfigurableComponents",
+      "name": "Configurable Components",
+      "count": 3
+    }
+  ],
+  "special_high_yield_shell": [
+    {
+      "symbol": "MechanicalScrap",
+      "name": "Mechanical Scrap",
+      "count": 5
+    },
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "ChemicalManipulators",
+      "name": "Chemical Manipulators",
+      "count": 3
+    },
+    {
+      "symbol": "Nickel",
+      "name": "Nickel",
+      "count": 5
+    }
+  ],
+  "special_distortion_field": [
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 5
+    },
+    {
+      "symbol": "ShieldCycleRecordings",
+      "name": "Distorted Shield Cycle Recordings",
+      "count": 5
+    },
+    {
+      "symbol": "DisruptedWakeEchoes",
+      "name": "Atypical Disrupted Wake Echoes",
+      "count": 5
+    }
+  ],
+  "special_choke_canister": [
+    {
+      "symbol": "Sulphur",
+      "name": "Sulphur",
+      "count": 5
+    },
+    {
+      "symbol": "Phosphorus",
+      "name": "Phosphorus",
+      "count": 5
+    },
+    {
+      "symbol": "ChemicalDistillery",
+      "name": "Chemical Distillery",
+      "count": 3
+    },
+    {
+      "symbol": "ElectrochemicalArrays",
+      "name": "Electrochemical Arrays",
+      "count": 3
+    }
+  ],
+  "special_mass_lock": [
+    {
+      "symbol": "MechanicalEquipment",
+      "name": "Mechanical Equipment",
+      "count": 5
+    },
+    {
+      "symbol": "HighDensityComposites",
+      "name": "High Density Composites",
+      "count": 3
+    },
+    {
+      "symbol": "ShieldPatternAnalysis",
+      "name": "Aberrant Shield Pattern Analysis",
+      "count": 3
+    }
+  ],
+  "special_overload_munitions": [
+    {
+      "symbol": "FilamentComposites",
+      "name": "Filament Composites",
+      "count": 5
+    },
+    {
+      "symbol": "EncryptionCodes",
+      "name": "Tagged Encryption Codes",
+      "count": 4
+    },
+    {
+      "symbol": "ShieldPatternAnalysis",
+      "name": "Aberrant Shield Pattern Analysis",
+      "count": 2
+    },
+    {
+      "symbol": "Germanium",
+      "name": "Germanium",
+      "count": 3
+    }
+  ],
+  "special_penetrator_munitions": [
+    {
+      "symbol": "GalvanisingAlloys",
+      "name": "Galvanising Alloys",
+      "count": 5
+    },
+    {
+      "symbol": "ElectrochemicalArrays",
+      "name": "Electrochemical Arrays",
+      "count": 3
+    },
+    {
+      "symbol": "Zirconium",
+      "name": "Zirconium",
+      "count": 3
+    }
+  ],
+  "special_deep_cut_payload": [
+    {
+      "symbol": "MechanicalComponents",
+      "name": "Mechanical Components",
+      "count": 3
+    },
+    {
+      "symbol": "Tungsten",
+      "name": "Tungsten",
+      "count": 3
+    },
+    {
+      "symbol": "BulkScanData",
+      "name": "Anomalous Bulk Scan Data",
+      "count": 5
+    },
+    {
+      "symbol": "Selenium",
+      "name": "Selenium",
+      "count": 3
+    }
+  ],
+  "special_phasing_sequence": [
+    {
+      "symbol": "FocusCrystals",
+      "name": "Focus Crystals",
+      "count": 5
+    },
+    {
+      "symbol": "ShieldPatternAnalysis",
+      "name": "Aberrant Shield Pattern Analysis",
+      "count": 3
+    },
+    {
+      "symbol": "Niobium",
+      "name": "Niobium",
+      "count": 3
+    },
+    {
+      "symbol": "ConfigurableComponents",
+      "name": "Configurable Components",
+      "count": 3
+    }
+  ],
+  "special_plasma_slug": [
+    {
+      "symbol": "HeatExchangers",
+      "name": "Heat Exchangers",
+      "count": 3
+    },
+    {
+      "symbol": "EmbeddedFirmware",
+      "name": "Modified Embedded Firmware",
+      "count": 2
+    },
+    {
+      "symbol": "RefinedFocusCrystals",
+      "name": "Refined Focus Crystals",
+      "count": 2
+    },
+    {
+      "symbol": "Mercury",
+      "name": "Mercury",
+      "count": 4
+    }
+  ],
+  "special_radiant_canister": [
+    {
+      "symbol": "Polonium",
+      "name": "Polonium",
+      "count": 1
+    },
+    {
+      "symbol": "PhaseAlloys",
+      "name": "Phase Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "HeatDispersionPlate",
+      "name": "Heat Dispersion Plate",
+      "count": 4
+    }
+  ],
+  "special_regeneration_sequence": [
+    {
+      "symbol": "RefinedFocusCrystals",
+      "name": "Refined Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "ShieldingSensors",
+      "name": "Shielding Sensors",
+      "count": 4
+    },
+    {
+      "symbol": "ShieldFrequencyData",
+      "name": "Peculiar Shield Frequency Data",
+      "count": 1
+    }
+  ],
+  "special_reverberating_cascade": [
+    {
+      "symbol": "ConfigurableComponents",
+      "name": "Configurable Components",
+      "count": 2
+    },
+    {
+      "symbol": "ScanDatabanks",
+      "name": "Classified Scan Databanks",
+      "count": 3
+    },
+    {
+      "symbol": "FilamentComposites",
+      "name": "Filament Composites",
+      "count": 4
+    },
+    {
+      "symbol": "Chromium",
+      "name": "Chromium",
+      "count": 4
+    }
+  ],
+  "special_scramble_spectrum": [
+    {
+      "symbol": "CrystalShards",
+      "name": "Crystal Shards",
+      "count": 5
+    },
+    {
+      "symbol": "ShieldDensityReports",
+      "name": "Untypical Shield Scans",
+      "count": 3
+    },
+    {
+      "symbol": "ScrambledEmissionData",
+      "name": "Exceptional Scrambled Emission Data",
+      "count": 5
+    }
+  ],
+  "special_screening_shell": [
+    {
+      "symbol": "MechanicalScrap",
+      "name": "Mechanical Scrap",
+      "count": 5
+    },
+    {
+      "symbol": "ShieldCycleRecordings",
+      "name": "Distorted Shield Cycle Recordings",
+      "count": 5
+    },
+    {
+      "symbol": "ConsumerFirmware",
+      "name": "Modified Consumer Firmware",
+      "count": 5
+    },
+    {
+      "symbol": "Niobium",
+      "name": "Niobium",
+      "count": 3
+    }
+  ],
+  "special_shiftlock_canister": [
+    {
+      "symbol": "TemperedAlloys",
+      "name": "Tempered Alloys",
+      "count": 5
+    },
+    {
+      "symbol": "WakeSolutions",
+      "name": "Strange Wake Solutions",
+      "count": 3
+    },
+    {
+      "symbol": "SalvagedAlloys",
+      "name": "Salvaged Alloys",
+      "count": 5
+    }
+  ],
+  "special_smart_rounds": [
+    {
+      "symbol": "MechanicalScrap",
+      "name": "Mechanical Scrap",
+      "count": 5
+    },
+    {
+      "symbol": "SecurityFirmware",
+      "name": "Security Firmware Patch",
+      "count": 3
+    },
+    {
+      "symbol": "DecodedEmissionData",
+      "name": "Decoded Emission Data",
+      "count": 3
+    },
+    {
+      "symbol": "ScanDatabanks",
+      "name": "Classified Scan Databanks",
+      "count": 3
+    }
+  ],
+  "special_super_penetrator": [
+    {
+      "symbol": "ProtoLightAlloys",
+      "name": "Proto Light Alloys",
+      "count": 3
+    },
+    {
+      "symbol": "RefinedFocusCrystals",
+      "name": "Refined Focus Crystals",
+      "count": 3
+    },
+    {
+      "symbol": "Zirconium",
+      "name": "Zirconium",
+      "count": 3
+    },
+    {
+      "symbol": "ShieldDensityReports",
+      "name": "Untypical Shield Scans",
+      "count": 5
+    }
+  ],
+  "special_lock_breaker": [
+    {
+      "symbol": "Selenium",
+      "name": "Selenium",
+      "count": 5
+    },
+    {
+      "symbol": "SecurityFirmware",
+      "name": "Security Firmware Patch",
+      "count": 3
+    },
+    {
+      "symbol": "AdaptiveEncryptors",
+      "name": "Adaptive Encryptors Capture",
+      "count": 1
+    }
+  ],
+  "special_thermal_cascade": [
+    {
+      "symbol": "HeatConductionWiring",
+      "name": "Heat Conduction Wiring",
+      "count": 5
+    },
+    {
+      "symbol": "HybridCapacitors",
+      "name": "Hybrid Capacitors",
+      "count": 4
+    },
+    {
+      "symbol": "HighDensityComposites",
+      "name": "High Density Composites",
+      "count": 3
+    },
+    {
+      "symbol": "Phosphorus",
+      "name": "Phosphorus",
+      "count": 5
+    }
+  ],
+  "special_thermal_conduit": [
+    {
+      "symbol": "HeatDispersionPlate",
+      "name": "Heat Dispersion Plate",
+      "count": 5
+    },
+    {
+      "symbol": "Sulphur",
+      "name": "Sulphur",
+      "count": 5
+    },
+    {
+      "symbol": "TemperedAlloys",
+      "name": "Tempered Alloys",
+      "count": 5
+    }
+  ],
+  "special_thermalshock": [
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 5
+    },
+    {
+      "symbol": "HeatResistantCeramics",
+      "name": "Heat Resistant Ceramics",
+      "count": 3
+    },
+    {
+      "symbol": "ConductiveComponents",
+      "name": "Conductive Components",
+      "count": 3
+    },
+    {
+      "symbol": "Tungsten",
+      "name": "Tungsten",
+      "count": 3
+    }
+  ],
+  "special_thermal_vent": [
+    {
+      "symbol": "UncutFocusCrystals",
+      "name": "Flawed Focus Crystals",
+      "count": 5
+    },
+    {
+      "symbol": "ConductivePolymers",
+      "name": "Conductive Polymers",
+      "count": 3
+    },
+    {
+      "symbol": "PrecipitatedAlloys",
+      "name": "Precipitated Alloys",
+      "count": 3
+    }
+  ]
+}

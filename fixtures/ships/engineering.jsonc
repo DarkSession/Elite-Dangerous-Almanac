@@ -1,11 +1,10 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * Ground truth for the engineering catalogues (data/ships/blueprints.jsonc,
- * experimental-effects.jsonc and decorative-modifications.jsonc): the per-grade modifier legs and
- * material recipes a blueprint applies, each experimental effect's modifiers and one-application
- * cost, the three decorative transformations, the journal spellings that collide, and the
- * engineered results those fold to.
+ * Ground truth for the engineering mechanics, cost, journal-collision and decorative
+ * catalogues under data/ships/: the per-grade modifier legs and material recipes a blueprint
+ * applies, each experimental effect's modifiers and one-application cost, the three decorative
+ * transformations, the journal spellings that collide, and the engineered results those fold to.
  */
 {
   "anchor": {
@@ -42,7 +41,7 @@
     }
   },
   "scannerIdCollision": {
-    "description": "One journal `BlueprintName`, two recipes. The game writes `Sensor_LongRange` and `Sensor_WideAngle` for both the internal sensor suite's modification and the KWS/manifest/wake scanners', and the two roll different stats in opposite directions — Long Range costs the suite mass and the scanner power draw, Wide Angle the reverse. `blueprints.jsonc` keys the scanner side under `Scanner_LongRange` / `Scanner_WideAngle`, the spelling the scanner menus list, so which numbers apply is a fact about the fitted module and not about the id. The top-level `journalNames` pins the blueprint side of this and of every other id of the shape. Resolution is those facts read against a module's menu, so an implementation needs no third list. Each case pins the same id on both families at the same grade and quality: `resolved` is the `BLUEPRINTS` key the module rolls, `modifiers` the exact `Engineering.Modifiers` block that follows. The corpus entry this comes from is a wake scanner declaring `Sensor_LongRange` at grade 3 (`type9-military-combat-3`, an EDSY-authored build). `refused` pins the direction the resolution does not run: a sensor suite is not thereby offered the scanner's id.",
+    "description": "One journal `BlueprintName`, two recipes. The game writes `Sensor_LongRange` and `Sensor_WideAngle` for both the internal sensor suite's modification and the KWS/manifest/wake scanners', and the two roll different stats in opposite directions — Long Range costs the suite mass and the scanner power draw, Wide Angle the reverse. `blueprints.jsonc` keys the scanner side under `Scanner_LongRange` / `Scanner_WideAngle`, the spelling the scanner menus list, so which numbers apply is a fact about the fitted module and not about the id. The top-level `journalNames` pins the collision catalogue that supplies the journal spelling. Resolution reads that fact against a module's menu. Each case pins the same id on both families at the same grade and quality: `resolved` is the `BLUEPRINTS` key the module rolls, `modifiers` the exact `Engineering.Modifiers` block that follows. The corpus entry this comes from is a wake scanner declaring `Sensor_LongRange` at grade 3 (`type9-military-combat-3`, an EDSY-authored build). `refused` pins the direction the resolution does not run: a sensor suite is not thereby offered the scanner's id.",
     "grade": 3,
     "quality": 1,
     "cases": [

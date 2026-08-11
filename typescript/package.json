@@ -221,6 +221,10 @@
             "types": "./dist/ships/armour.d.ts",
             "import": "./dist/ships/armour.js"
         },
+        "./ships/blueprint-costs": {
+            "types": "./dist/ships/blueprint-costs.d.ts",
+            "import": "./dist/ships/blueprint-costs.js"
+        },
         "./ships/blueprint-journal": {
             "types": "./dist/ships/blueprint-journal.d.ts",
             "import": "./dist/ships/blueprint-journal.js"
@@ -240,6 +244,10 @@
         "./ships/engineering": {
             "types": "./dist/ships/engineering.d.ts",
             "import": "./dist/ships/engineering.js"
+        },
+        "./ships/experimental-effect-costs": {
+            "types": "./dist/ships/experimental-effect-costs.d.ts",
+            "import": "./dist/ships/experimental-effect-costs.js"
         },
         "./ships/experimental-effects": {
             "types": "./dist/ships/experimental-effects.d.ts",

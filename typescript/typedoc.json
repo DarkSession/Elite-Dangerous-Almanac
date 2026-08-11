@@ -7,6 +7,8 @@
         "src/commodities/index.ts",
         "src/materials/index.ts",
         "src/ships/index.ts",
+        "src/ships/blueprint-costs.ts",
+        "src/ships/experimental-effect-costs.ts",
         "src/ships/modules-all.ts",
         "src/ships/modules-core.ts",
         "src/ships/modules-hardpoint.ts",

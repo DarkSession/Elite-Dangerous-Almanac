@@ -16,7 +16,7 @@
  * `blueprint` to `BLUEPRINTS`, and `grade` is the grade already applied at purchase.
  * Because grade 1 is what the bought module already contains, these blueprints' own
  * recipes start at grade 2 — price the remaining upgrade with
- * `getBlueprintCost(blueprint, target, grade)`.
+ * `getBlueprintCost(blueprint, target, grade)` from `ships/blueprint-costs`.
  *
  * Note that one base module can appear more than once: the medium Seeker Missile Rack is
  * sold or awarded in six different pre-engineered flavours, so

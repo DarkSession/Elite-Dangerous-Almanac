@@ -7,7 +7,8 @@ import {
     getPreEngineeredByBlueprint,
     isPreEngineered,
 } from './pre-engineered.js';
-import { BLUEPRINTS, getBlueprint, getBlueprintCost } from './blueprints.js';
+import { getBlueprintCost } from './blueprint-costs.js';
+import { BLUEPRINTS, getBlueprint } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import { getBlueprintsForModule, getExperimentalsForModule } from './engineering-options.js';
 import { blueprintAvailableFor } from './internal/loadout-engineering.js';

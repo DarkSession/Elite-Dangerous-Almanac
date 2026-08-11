@@ -2,17 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { EXPERIMENTAL_EFFECTS, getExperimentalEffect } from './experimental-effects.js';
-import { getMaterialBySymbol } from '../materials/materials.js';
-import { ALL_MATERIALS } from '../materials/materials-all.js';
 import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 
-test('every effect carries a display name, a recipe, and modifiers/materials arrays', () => {
+test('every effect carries a display name and modifier array', () => {
     for (const [fdname, effect] of Object.entries(EXPERIMENTAL_EFFECTS)) {
         assert.ok(typeof effect.name === 'string' && effect.name.length > 0, `${fdname} name`);
         assert.ok(Array.isArray(effect.modifiers), `${fdname} modifiers`);
-        assert.ok(Array.isArray(effect.materials), `${fdname} materials`);
-        // Every effect ships with a real recipe (its one-application cost).
-        assert.ok(effect.materials.length > 0, `${fdname} has no materials`);
     }
 });
 
@@ -155,38 +150,16 @@ test('the power-distributor effects move all three banks, capacity and recharge 
     }
 });
 
-test('getExperimentalEffect returns the complete effect record', () => {
+test('getExperimentalEffect returns the complete mechanics record', () => {
     const effect = getExperimentalEffect('special_fsd_heavy');
     assert.ok(effect?.modifiers.some((modifier) => modifier.label === 'FSDOptimalMass'));
-    assert.deepEqual(effect?.materials, [
-        { symbol: 'DisruptedWakeEchoes', name: 'Atypical Disrupted Wake Echoes', count: 5 },
-        { symbol: 'GalvanisingAlloys', name: 'Galvanising Alloys', count: 3 },
-        { symbol: 'HyperspaceTrajectories', name: 'Eccentric Hyperspace Trajectories', count: 1 },
-    ]);
+    assert.equal('materials' in effect!, false);
 });
 
-test('the complete record resolves case-insensitively and misses cleanly', () => {
+test('the mechanics record resolves case-insensitively and misses cleanly', () => {
     assert.deepEqual(
         getExperimentalEffect('SPECIAL_FSD_HEAVY'),
         getExperimentalEffect('special_fsd_heavy'),
     );
     assert.equal(getExperimentalEffect('nope'), null);
-});
-
-test('every material requirement joins to a real material in the materials domain', () => {
-    for (const { materials } of Object.values(EXPERIMENTAL_EFFECTS)) {
-        for (const req of materials) {
-            const material = getMaterialBySymbol(req.symbol, ALL_MATERIALS);
-            assert.ok(material, `unknown material symbol: ${req.symbol}`);
-            assert.equal(material.name, req.name, `name mismatch for ${req.symbol}`);
-            assert.ok(req.count > 0 && Number.isInteger(req.count), `bad count for ${req.symbol}`);
-        }
-    }
-});
-
-test('no effect lists a material twice', () => {
-    for (const [fdname, { materials }] of Object.entries(EXPERIMENTAL_EFFECTS)) {
-        const symbols = materials.map((r) => r.symbol.toLowerCase());
-        assert.equal(new Set(symbols).size, symbols.length, `${fdname} duplicate material`);
-    }
 });

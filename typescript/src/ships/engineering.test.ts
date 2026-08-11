@@ -2,7 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { computeModifiers, rollsForGrade, sumMaterials } from './engineering.js';
-import { getBlueprint, getBlueprintCost, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
+import { getBlueprintCost } from './blueprint-costs.js';
+import { getBlueprint, getBlueprintGrade, BLUEPRINTS } from './blueprints.js';
 import { getExperimentalEffect, EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
 import {
     blueprintAvailableFor,
