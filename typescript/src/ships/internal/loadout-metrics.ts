@@ -236,6 +236,7 @@ export function effectiveModule(
     }
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) merged.damageDistribution = damageDistribution;
+    if (stats.category === 'hardpoint') normalizeEffectiveWeapon(module, merged);
     // Exact components follow the effective total damage. Once engineering converts
     // them, the resulting fractional split is authoritative instead.
     if (convertsDamage(module)) {
@@ -247,10 +248,6 @@ export function effectiveModule(
             typeof merged.damage === 'number' ? merged.damage : undefined,
         );
     }
-    // The rate of fire is derived from the firing cycle, so an engineered burst pattern
-    // moves it even when nothing names it — same rule the weapon metrics use.
-    const rate = burstAdjustedRateOfFire(module, merged);
-    if (rate !== undefined) merged.rateOfFire = rate;
     return merged as unknown as OutfittingModule;
 }
 
@@ -506,19 +503,7 @@ export function weaponStatsFor(
         if (value !== undefined) weapon[field] = value;
     }
 
-    const rate = burstAdjustedRateOfFire(module, weapon);
-    if (rate !== undefined) weapon.rateOfFire = rate;
-
-    const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
-    const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
-    if (statedDamagePerSecond !== null && firingFactor > 0) {
-        weapon.damage = statedDamagePerSecond / firingFactor;
-    }
-
-    const { maximumRange, falloffRange } = weapon as WeaponStats;
-    if (maximumRange !== undefined && falloffRange !== undefined && falloffRange > maximumRange) {
-        weapon.falloffRange = maximumRange;
-    }
+    normalizeEffectiveWeapon(module, weapon);
 
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) weapon.damageDistribution = damageDistribution;
@@ -551,4 +536,29 @@ function burstAdjustedRateOfFire(
     );
     if (!touched) return undefined;
     return combinedRateOfFire(weapon as WeaponStats);
+}
+
+/**
+ * Apply the derived rules shared by every post-engineering view of a fitted weapon.
+ *
+ * The journal can state damage only as the derived `DamagePerSecond`, burst engineering
+ * can change the effective firing cycle without stating a new rate, and short-range
+ * engineering can leave the stock falloff beyond the reduced maximum range. Keeping the
+ * three corrections together prevents a fitted module snapshot and its metrics from
+ * describing different weapons.
+ */
+function normalizeEffectiveWeapon(module: LoadoutModule, weapon: Record<string, unknown>): void {
+    const rate = burstAdjustedRateOfFire(module, weapon);
+    if (rate !== undefined) weapon.rateOfFire = rate;
+
+    const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
+    const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
+    if (statedDamagePerSecond !== null && firingFactor > 0) {
+        weapon.damage = statedDamagePerSecond / firingFactor;
+    }
+
+    const { maximumRange, falloffRange } = weapon as WeaponStats;
+    if (maximumRange !== undefined && falloffRange !== undefined && falloffRange > maximumRange) {
+        weapon.falloffRange = maximumRange;
+    }
 }

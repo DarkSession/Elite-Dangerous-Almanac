@@ -7,6 +7,7 @@ import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
 import { getModuleBySymbol, type OutfittingModule } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
+import { effectiveModule, weaponStatsFor } from './internal/loadout-metrics.js';
 import {
     baseStats,
     damageTypeForLabel,
@@ -83,6 +84,7 @@ const {
     floatNoiseTolerance,
     captures: expected,
     weapons: capturedWeapons,
+    effectiveWeapons,
     convertedDamageDistributions,
     rebuildTolerance,
     rebuilds,
@@ -265,6 +267,51 @@ test('the captures reproduce this library’s damage per second, weapon for weap
             `${symbol}: computed ${damagePerSecond(weapon)}, capture ${captured}`,
         );
     }
+});
+
+test('the fitted weapon fixture pins derived damage and bounded falloff', () => {
+    for (const expected of effectiveWeapons) {
+        const capture = CAPTURES.find((entry) => entry.file === expected.file);
+        assert.ok(capture?.loadouts[0], `${expected.file} is pinned but not read`);
+        const raw = capture.loadouts[0].Modules.find((module) => module.Slot === expected.slot);
+        assert.ok(raw, `${expected.file}: no module in ${expected.slot}`);
+        const stock = getModuleBySymbol(raw.Item, ALL_MODULES);
+        assert.ok(stock, `${expected.file}: no catalogue record for ${raw.Item}`);
+        assert.equal(stock.symbol.toLowerCase(), expected.symbol.toLowerCase());
+
+        const effective = effectiveModule(raw, stock);
+        assert.ok(effective, `${expected.file}: no effective stats for ${expected.slot}`);
+        assert.equal(effective.damage, expected.damage);
+        if (expected.maximumRange !== undefined) {
+            assert.equal(effective.maximumRange, expected.maximumRange);
+        }
+        if (expected.falloffRange !== undefined) {
+            assert.equal(effective.falloffRange, expected.falloffRange);
+        }
+    }
+});
+
+test('every captured hardpoint has one consistent post-engineering stat view', () => {
+    let checked = 0;
+    for (const { file, loadouts } of CAPTURES) {
+        for (const loadout of loadouts) {
+            for (const raw of loadout.Modules) {
+                const stock = getModuleBySymbol(raw.Item, ALL_MODULES);
+                if (stock?.category !== 'hardpoint') continue;
+                const effective = effectiveModule(raw, stock);
+                const weapon = weaponStatsFor(raw, stock);
+                assert.ok(effective && weapon, `${file}: unresolved ${raw.Item}`);
+                assert.equal(effective.damage, weapon.damage, `${file} ${raw.Slot}: damage`);
+                assert.equal(
+                    effective.falloffRange,
+                    weapon.falloffRange,
+                    `${file} ${raw.Slot}: falloffRange`,
+                );
+                checked++;
+            }
+        }
+    }
+    assert.ok(checked > 0);
 });
 
 test('every capture in the fixtures that states a base value is joined here', () => {
