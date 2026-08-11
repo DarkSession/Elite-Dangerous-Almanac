@@ -123,7 +123,8 @@ export interface ShieldInput {
      * This addition is not multiplied by the generator's curve or the boosters — it is
      * a flat top-up, and it stands alone when the generator's curve contributes nothing,
      * as it does for a hull past the generator's maximum mass. With **no** generator
-     * fitted it is dropped entirely, and the reported `reinforcement` is `0`.
+     * fitted it is dropped entirely, and the reported
+     * {@link ShieldMetrics.reinforcement} is `0`.
      */
     readonly reinforcement?: number;
     /**
@@ -143,7 +144,11 @@ export interface ShieldMetrics {
     readonly generator: number;
     /** What the boosters add on top of the generator, in megajoules. */
     readonly boosters: number;
-    /** What Guardian shield reinforcement packages add, in megajoules. */
+    /**
+     * What Guardian shield reinforcement packages add, in megajoules. `0` with no
+     * generator, whatever `reinforcement` was passed — a package has no shield to
+     * reinforce.
+     */
     readonly reinforcement: number;
     /** The generator's strength multiplier at this hull mass. `0` with no generator. */
     readonly massCurveMultiplier: number;
