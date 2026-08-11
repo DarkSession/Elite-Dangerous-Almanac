@@ -36,8 +36,11 @@
  */
 
 import {
+    effectiveHitPoints,
+    mapDamageTypes,
     stackArmourResistance,
     type DamageResistances,
+    type DamageType,
     type DamageTypeValues,
 } from './resistances.js';
 
@@ -135,14 +138,11 @@ export interface ArmourMetrics {
     readonly moduleProtection: number;
 }
 
-/** Collect one resistance field from a list of sources, defaulting absent ones to `0`. */
-const resistancesOf = <T extends HullReinforcementParams>(
-    sources: readonly T[],
-    field: keyof DamageResistances,
-): number[] => {
-    const key = `${field}Resistance` as keyof T;
-    return sources.map((source) => (source[key] as number | undefined) ?? 0);
-};
+/** Each package's resistance to one damage type, reading an absent field as `0`. */
+const reinforcementResistances = (
+    sources: readonly HullReinforcementParams[],
+    type: DamageType,
+): number[] => sources.map((source) => source[`${type}Resistance`] ?? 0);
 
 /**
  * Everything an outfitting screen shows about a build's armour.
@@ -164,7 +164,7 @@ const resistancesOf = <T extends HullReinforcementParams>(
  * ```
  */
 export function armourMetrics(input: ArmourInput): ArmourMetrics {
-    const bulkhead = input.bulkhead ?? {};
+    const bulkhead: BulkheadParams = input.bulkhead ?? {};
     const reinforcements = input.reinforcements ?? [];
     const moduleReinforcements = input.moduleReinforcements ?? [];
 
@@ -176,31 +176,19 @@ export function armourMetrics(input: ArmourInput): ArmourMetrics {
     );
     const hitPoints = bulkheads + reinforcement;
 
-    const stack = (field: keyof DamageResistances): number =>
+    const resistances: DamageResistances = mapDamageTypes((type) =>
         stackArmourResistance(
-            (bulkhead[`${field}Resistance` as keyof BulkheadParams] as number | undefined) ?? 0,
-            resistancesOf(reinforcements, field),
-        );
-    const resistances: DamageResistances = {
-        kinetic: stack('kinetic'),
-        thermal: stack('thermal'),
-        explosive: stack('explosive'),
-        caustic: stack('caustic'),
-    };
-    const effective = (resistance: number): number =>
-        resistance >= 1 ? Infinity : hitPoints / (1 - resistance);
+            bulkhead[`${type}Resistance`] ?? 0,
+            reinforcementResistances(reinforcements, type),
+        ),
+    );
 
     return {
         hitPoints,
         bulkheads,
         reinforcement,
         resistances,
-        effectiveHitPoints: {
-            kinetic: effective(resistances.kinetic),
-            thermal: effective(resistances.thermal),
-            explosive: effective(resistances.explosive),
-            caustic: effective(resistances.caustic),
-        },
+        effectiveHitPoints: effectiveHitPoints(hitPoints, resistances),
         moduleArmour: moduleReinforcements.reduce((sum, pack) => sum + (pack.integrity ?? 0), 0),
         moduleProtection:
             1 -

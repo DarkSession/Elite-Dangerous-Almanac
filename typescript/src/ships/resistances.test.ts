@@ -1,7 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { stackShieldResistance, stackArmourResistance, systemsResistance } from './resistances.js';
+import {
+    effectiveHitPoints,
+    mapDamageTypes,
+    stackShieldResistance,
+    stackArmourResistance,
+    systemsResistance,
+} from './resistances.js';
 import fixture from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
 
 const near = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) < eps;
@@ -77,6 +83,49 @@ test('systemsResistance rejects pips outside 0-4', () => {
     assert.throws(() => systemsResistance(-1), RangeError);
     assert.throws(() => systemsResistance(5), RangeError);
     assert.throws(() => systemsResistance(Number.NaN), RangeError);
+});
+
+test('mapDamageTypes visits each damage type exactly once, under its own key', () => {
+    const seen: string[] = [];
+    // First letters, which are distinct across the four types — so a record built with
+    // its keys crossed over would not match.
+    const values = mapDamageTypes((type) => {
+        seen.push(type);
+        return type.charCodeAt(0);
+    });
+    assert.deepEqual(seen, ['kinetic', 'thermal', 'explosive', 'caustic']);
+    assert.deepEqual(values, { kinetic: 107, thermal: 116, explosive: 101, caustic: 99 });
+});
+
+test('effective hit points divide the pool by what gets through', () => {
+    // 945 hull points behind lightweight alloy: kinetically and explosively weak.
+    const hull = effectiveHitPoints(945, {
+        kinetic: -0.2,
+        thermal: 0,
+        explosive: -0.4,
+        caustic: 0,
+    });
+    assert.ok(near(hull.kinetic, 787.5));
+    assert.equal(hull.thermal, 945); // no resistance, no weakness
+    assert.ok(near(hull.explosive, 675));
+    // A weakness must report *fewer* effective hit points than the pool holds.
+    assert.ok(hull.kinetic < 945 && hull.explosive < hull.kinetic);
+});
+
+test('a resistance of 100% or more soaks unlimited damage of that type', () => {
+    const pool = effectiveHitPoints(350, { kinetic: 1, thermal: 1.5, explosive: 0.5, caustic: 0 });
+    assert.equal(pool.kinetic, Infinity);
+    assert.equal(pool.thermal, Infinity); // never negative, however far past 100%
+    assert.equal(pool.explosive, 700);
+    assert.equal(pool.caustic, 350);
+});
+
+test('an empty pool stays empty behind any resistance short of 100%', () => {
+    const none = effectiveHitPoints(
+        0,
+        mapDamageTypes(() => 0),
+    );
+    assert.deepEqual(none, { kinetic: 0, thermal: 0, explosive: 0, caustic: 0 });
 });
 
 test('the shared fixture pins the resistance stacking and the pip curve', () => {

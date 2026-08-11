@@ -31,6 +31,7 @@ import type {
     HullReinforcementParams,
     ModuleReinforcementParams,
 } from '../armour.js';
+import type { DamageType } from '../resistances.js';
 import { combinedRateOfFire, type WeaponStats } from '../weapons.js';
 import { scaleDamageComponents } from './damage-components.js';
 
@@ -295,11 +296,23 @@ export function powerAvailable(
 }
 
 /** The four resistances a defensive module can carry, as the calculations name them. */
-interface ModuleResistances {
-    readonly kineticResistance: number;
-    readonly thermalResistance: number;
-    readonly explosiveResistance: number;
-    readonly causticResistance: number;
+type ModuleResistances = { readonly [Type in DamageType as `${Type}Resistance`]: number };
+
+/**
+ * Build the four resistance fields by calling `read` once per field — the same fan-out
+ * `mapDamageTypes` does, over the `<type>Resistance` names a module record carries rather
+ * than the bare types. A field the source does not carry reads as `0` — no resistance and
+ * no weakness.
+ */
+function mapResistanceFields(
+    read: (field: keyof ModuleResistances) => number | undefined,
+): ModuleResistances {
+    return {
+        kineticResistance: read('kineticResistance') ?? 0,
+        thermalResistance: read('thermalResistance') ?? 0,
+        explosiveResistance: read('explosiveResistance') ?? 0,
+        causticResistance: read('causticResistance') ?? 0,
+    };
 }
 
 /**
@@ -307,12 +320,7 @@ interface ModuleResistances {
  * module does not carry reads as `0` — no resistance and no weakness.
  */
 function resistancesOf(module: LoadoutModule, stats: OutfittingModule | null): ModuleResistances {
-    return {
-        kineticResistance: effectiveStat(module, 'kineticResistance', stats) ?? 0,
-        thermalResistance: effectiveStat(module, 'thermalResistance', stats) ?? 0,
-        explosiveResistance: effectiveStat(module, 'explosiveResistance', stats) ?? 0,
-        causticResistance: effectiveStat(module, 'causticResistance', stats) ?? 0,
-    };
+    return mapResistanceFields((field) => effectiveStat(module, field, stats));
 }
 
 /** Gather a build's shield generator, boosters and Guardian reinforcement. */
@@ -435,10 +443,7 @@ export function armourInputFor(
         bulkhead = stock
             ? {
                   hullBoost: stock.hullBoost ?? 0,
-                  kineticResistance: stock.kineticResistance ?? 0,
-                  thermalResistance: stock.thermalResistance ?? 0,
-                  explosiveResistance: stock.explosiveResistance ?? 0,
-                  causticResistance: stock.causticResistance ?? 0,
+                  ...mapResistanceFields((field) => stock[field]),
               }
             : null;
     }

@@ -246,7 +246,10 @@ export {
     stackShieldResistance,
     stackArmourResistance,
     systemsResistance,
+    effectiveHitPoints,
+    mapDamageTypes,
     type DamageResistances,
+    type DamageType,
     type DamageTypeValues,
 } from './resistances.js';
 export {
