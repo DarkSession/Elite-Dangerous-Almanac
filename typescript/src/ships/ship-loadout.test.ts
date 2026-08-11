@@ -124,7 +124,7 @@ test('caller-supplied capacity fields classify custom modules', () => {
     const build = ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', {
         ...rack,
         symbol: 'CustomHold',
-        kind: null,
+        engineeringGroup: null,
         cargoCapacity: 42,
     });
     assert.deepEqual(build.cargoCapacityResult, { value: 42, complete: true, issues: [] });
@@ -133,7 +133,7 @@ test('caller-supplied capacity fields classify custom modules', () => {
         name: 'Custom tank',
         symbol: 'CustomTank',
         category: 'internal',
-        kind: null,
+        engineeringGroup: null,
         class: 2,
         rating: 'E',
         fuelCapacity: 7,
@@ -167,8 +167,8 @@ test('a figure an import stated is handed back in the same shape as a calculated
         name: 'Mystery tank',
         symbol: 'Int_MysteryTank',
         category: tank.category,
-        kind: tank.kind,
-        // `slot` is what marks it as a fuel tank; `kind` is null on the real record too.
+        engineeringGroup: tank.engineeringGroup,
+        // `slot` is what marks it as a fuel tank; its engineering group is null too.
         ...(tank.slot === undefined ? {} : { slot: tank.slot }),
         class: tank.class,
         rating: tank.rating,
@@ -617,7 +617,7 @@ test('a core mount takes the module whose record names it, not one that looks th
     const handRolled: OutfittingModule = {
         symbol: drive.symbol,
         category: 'core',
-        kind: null,
+        engineeringGroup: null,
         name: drive.name,
         class: drive.class,
         rating: drive.rating,
@@ -638,7 +638,7 @@ test('the armour mount reads `slot`, not the category the record claims', () => 
     const unnamed: OutfittingModule = {
         symbol: armour.symbol,
         category: 'core',
-        kind: null,
+        engineeringGroup: null,
         name: armour.name,
         ship: 'Anaconda',
         class: armour.class,
@@ -667,7 +667,7 @@ test('an optional mount takes a fuel tank because its record says so, not its sy
     const unnamed: OutfittingModule = {
         symbol: tank.symbol,
         category: 'core',
-        kind: null,
+        engineeringGroup: null,
         name: tank.name,
         class: tank.class,
         rating: tank.rating,
@@ -696,7 +696,7 @@ test('an optional mount turns away a core module because its record names a moun
     const unnamed: OutfittingModule = {
         symbol: plant.symbol,
         category: 'internal',
-        kind: null,
+        engineeringGroup: null,
         name: plant.name,
         class: plant.class,
         rating: plant.rating,
@@ -1075,7 +1075,7 @@ test('fit checks use restrictions carried by caller-supplied module records', ()
     const restricted: OutfittingModule = {
         symbol: 'CustomRestrictedLaser',
         category: 'hardpoint',
-        kind: null,
+        engineeringGroup: null,
         name: 'Custom Restricted Laser',
         class: 1,
         rating: 'A',

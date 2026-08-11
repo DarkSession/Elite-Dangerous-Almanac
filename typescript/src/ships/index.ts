@@ -152,8 +152,9 @@ export {
     getModulesByName,
     getBulkheadsForShip,
     type OutfittingModule,
+    type OutfittingModuleIdentity,
+    type OutfittingModuleStats,
     type ModuleCategory,
-    type ModuleKind,
     type ModuleMount,
     type ModuleGuidance,
     type ModuleRating,
@@ -329,6 +330,7 @@ export {
     getExperimentalsForModule,
     getExperimentalsForBlueprint,
     type EngineeringOptionGroup,
+    type EngineeringGroupId,
 } from './engineering-options.js';
 export { resolveBlueprintForModule } from './blueprint-journal.js';
 export {

@@ -1679,7 +1679,7 @@ export class ShipLoadout {
                 stats === null && !isNonOutfittingSlot(module.Slot) && !isBuiltInHullModule(module);
             const isCargoRack =
                 stats?.cargoCapacity !== undefined ||
-                stats?.kind === 'cargoRacks' ||
+                stats?.engineeringGroup === 'cargoRacks' ||
                 symbol.includes('cargorack');
             const isFuelTank =
                 stats?.fuelCapacity !== undefined ||
@@ -1879,7 +1879,10 @@ export class ShipLoadout {
     #resolveJumpBoost(): number {
         for (const m of this.#modules.values()) {
             const stats = this.#statsFor(m);
-            if (stats?.kind !== 'fsdBoosters' && !m.Item.toLowerCase().startsWith(BOOSTER_PREFIX)) {
+            if (
+                stats?.engineeringGroup !== 'fsdBoosters' &&
+                !m.Item.toLowerCase().startsWith(BOOSTER_PREFIX)
+            ) {
                 continue;
             }
             if (m.On === false) continue; // an unpowered booster gives no bonus

@@ -62,7 +62,81 @@
 
 import optionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
-import type { ModuleKind } from './modules.js';
+
+/**
+ * A stable identifier for an engineerable module's gameplay family.
+ *
+ * @remarks
+ * These are the keys of {@link ENGINEERING_OPTION_GROUPS}. They are more precise than
+ * an outfitting category: a category says which store tab a module appears under, while
+ * an engineering-group id identifies the family whose stats and engineering menu it
+ * shares. Guardian variants use separate ids when their menus differ.
+ *
+ * An outfitting module with no published engineering family carries
+ * `engineeringGroup: null`; do not infer a group from its symbol. This explicit absence
+ * distinguishes an unclassified module from a misspelled or newly introduced id.
+ *
+ * @example
+ * ```ts
+ * import type { EngineeringGroupId } from '@elite-dangerous-almanac/core/ships/engineering-options';
+ *
+ * const family: EngineeringGroupId = 'frameShiftDrives';
+ * ```
+ */
+export type EngineeringGroupId =
+    | 'powerPlants'
+    | 'guardianPowerPlants'
+    | 'thrusters'
+    | 'frameShiftDrives'
+    | 'powerDistributors'
+    | 'guardianPowerDistributors'
+    | 'frameShiftDrivesSCO'
+    | 'shieldGenerators'
+    | 'shieldCellBanks'
+    | 'hullReinforcements'
+    | 'guardianHullReinforcements'
+    | 'pulseLasers'
+    | 'burstLasers'
+    | 'beamLasers'
+    | 'cannons'
+    | 'fragmentCannons'
+    | 'multiCannons'
+    | 'plasmaAccelerators'
+    | 'railGuns'
+    | 'missiles'
+    | 'mines'
+    | 'torpedoes'
+    | 'miningToolsLasers'
+    | 'antiXenoMultiCannons'
+    | 'shieldBoosters'
+    | 'bulkheads'
+    | 'lifeSupports'
+    | 'sensors'
+    | 'autoFieldMaintenanceUnits'
+    | 'cargoRacks'
+    | 'collectionLimpets'
+    | 'fsdBoosters'
+    | 'fsdInterdictors'
+    | 'fuelScoops'
+    | 'fuelTransferLimpets'
+    | 'hatchBreakerLimpets'
+    | 'moduleReinforcements'
+    | 'prospectingLimpets'
+    | 'refineries'
+    | 'shieldReinforcements'
+    | 'surfaceScanners'
+    | 'chaffLaunchers'
+    | 'ecms'
+    | 'heatSinkLaunchers'
+    | 'killWarrantScanners'
+    | 'manifestScanners'
+    | 'pointDefence'
+    | 'wakeScanners'
+    | 'experimentalWeapons'
+    | 'antiXenoMissileRacks'
+    | 'guardianGauss'
+    | 'guardianPlasma'
+    | 'guardianShard';
 
 /** What one group of modules can be engineered with. */
 export interface EngineeringOptionGroup {
@@ -75,8 +149,8 @@ export interface EngineeringOptionGroup {
 }
 
 interface EngineeringOptionData {
-    readonly groups: Readonly<Record<ModuleKind, EngineeringOptionGroup>>;
-    readonly modules: Readonly<Record<string, ModuleKind>>;
+    readonly groups: Readonly<Record<EngineeringGroupId, EngineeringOptionGroup>>;
+    readonly modules: Readonly<Record<string, EngineeringGroupId>>;
     readonly exclusions: Readonly<Record<string, readonly string[]>>;
 }
 
@@ -94,8 +168,9 @@ const DATA: EngineeringOptionData = deepFreeze(optionsData as EngineeringOptionD
  * ENGINEERING_OPTION_GROUPS['beamLasers'].experimentals.length; // -> 9
  * ```
  */
-export const ENGINEERING_OPTION_GROUPS: Readonly<Record<ModuleKind, EngineeringOptionGroup>> =
-    DATA.groups;
+export const ENGINEERING_OPTION_GROUPS: Readonly<
+    Record<EngineeringGroupId, EngineeringOptionGroup>
+> = DATA.groups;
 
 const moduleGroup = new Map(
     Object.entries(DATA.modules).map(([symbol, group]) => [symbol.toLowerCase(), group]),
@@ -133,7 +208,7 @@ const moduleExclusions = new Map(
  * getEngineeringGroup('Int_FuelTank_Size3_Class3'); // -> null
  * ```
  */
-export function getEngineeringGroup(symbol: string): ModuleKind | null {
+export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
     return moduleGroup.get(symbol.trim().toLowerCase()) ?? null;
 }
 

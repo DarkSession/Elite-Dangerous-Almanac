@@ -4,10 +4,18 @@
  * {@link OutfittingModule} represents every outfitting family, so its performance
  * fields are optional. These guards narrow only the stat group a calculation needs;
  * they do not infer identity from a symbol or require an unrelated family label.
+ * Each exported stat interface contains only its required numeric fields, so consumers
+ * can also accept the smallest useful calculation input without fabricating module
+ * identity. A successful guard narrows a catalogue record to the intersection of that
+ * record and the stat interface.
  *
  * @example
  * ```ts
- * import { hasFrameShiftDriveJumpStats, hasWeaponDamageStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
+ * import {
+ *   hasFrameShiftDriveJumpStats,
+ *   hasWeaponDamageStats,
+ *   type FrameShiftDriveJumpStats,
+ * } from '@elite-dangerous-almanac/core/ships/module-capabilities';
  * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
  * import { weaponMetrics } from '@elite-dangerous-almanac/core/ships/weapons';
  *
@@ -16,15 +24,22 @@
  * const module = getModuleBySymbol(journalItem);
  * if (hasFrameShiftDriveJumpStats(module)) module.maxFuel; // required, in tonnes
  * if (hasWeaponDamageStats(module)) weaponMetrics(module);
+ *
+ * const customDrive: FrameShiftDriveJumpStats = {
+ *   optMass: 1050,
+ *   maxFuel: 5,
+ *   fuelMul: 0.012,
+ *   fuelPower: 2.45,
+ * }; // no identity fields required
  * ```
  *
  * @packageDocumentation
  */
 
-import type { OutfittingModule } from './modules.js';
+import type { OutfittingModuleStats } from './modules.js';
 
 /** Complete frame-shift-drive constants required by jump and fuel calculations. */
-export interface FrameShiftDriveJumpStats extends OutfittingModule {
+export interface FrameShiftDriveJumpStats {
     /** Optimised mass, in tonnes. Positive for every catalogued drive. */
     readonly optMass: number;
     /** Maximum fuel consumed by one jump, in tonnes. Positive. */
@@ -36,7 +51,7 @@ export interface FrameShiftDriveJumpStats extends OutfittingModule {
 }
 
 /** Complete power-plant output and heat-efficiency capability. */
-export interface PowerGenerationStats extends OutfittingModule {
+export interface PowerGenerationStats {
     /** Power generated, in megawatts. Non-negative. */
     readonly powerCapacity: number;
     /** Dimensionless heat-efficiency factor; positive, and lower runs cooler. */
@@ -44,7 +59,7 @@ export interface PowerGenerationStats extends OutfittingModule {
 }
 
 /** All three power-distributor capacitor capacities and recharge rates. */
-export interface PowerDistributorStats extends OutfittingModule {
+export interface PowerDistributorStats {
     /** WEP capacitor capacity, in megajoules. Non-negative. */
     readonly weaponsCapacity: number;
     /** WEP recharge rate, in megajoules per second. Non-negative. */
@@ -60,7 +75,7 @@ export interface PowerDistributorStats extends OutfittingModule {
 }
 
 /** A complete three-point performance curve over hull mass. */
-export interface MassCurveStats extends OutfittingModule {
+export interface MassCurveStats {
     /** Optimised hull mass, in tonnes. Positive. */
     readonly optMass: number;
     /** Minimum curve mass, in tonnes. Positive. */
@@ -76,7 +91,7 @@ export interface MassCurveStats extends OutfittingModule {
 }
 
 /** Both shield regeneration rates exposed by a generator. */
-export interface ShieldRegenerationStats extends OutfittingModule {
+export interface ShieldRegenerationStats {
     /** Normal regeneration rate, in megajoules per second. Non-negative. */
     readonly shieldRegenRate: number;
     /** Broken-shield regeneration rate, in megajoules per second. Non-negative. */
@@ -84,13 +99,13 @@ export interface ShieldRegenerationStats extends OutfittingModule {
 }
 
 /** The concrete damage capability shared by hardpoint weapons and tools. */
-export interface WeaponDamageStats extends OutfittingModule {
+export interface WeaponDamageStats {
     /** Damage per round, or per second for continuous-fire weapons. Non-negative. */
     readonly damage: number;
 }
 
-function hasNumberStats<K extends keyof OutfittingModule>(
-    module: OutfittingModule,
+function hasNumberStats<K extends keyof OutfittingModuleStats>(
+    module: OutfittingModuleStats,
     fields: readonly K[],
 ): boolean {
     return fields.every((field) => typeof module[field] === 'number');
@@ -103,18 +118,18 @@ function hasNumberStats<K extends keyof OutfittingModule>(
  * @returns Whether all fields in {@link FrameShiftDriveJumpStats} are numeric.
  * @example
  * ```ts
- * import type { OutfittingModule } from '@elite-dangerous-almanac/core/ships/modules';
+ * import type { OutfittingModuleStats } from '@elite-dangerous-almanac/core/ships/modules';
  * import { singleJumpRange } from '@elite-dangerous-almanac/core/ships/jump-range';
  * import { hasFrameShiftDriveJumpStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
  *
- * declare const record: OutfittingModule | null;
+ * declare const record: OutfittingModuleStats | null;
  *
  * if (hasFrameShiftDriveJumpStats(record)) singleJumpRange(500, record.maxFuel, record);
  * ```
  */
-export function hasFrameShiftDriveJumpStats(
-    module: OutfittingModule | null | undefined,
-): module is FrameShiftDriveJumpStats {
+export function hasFrameShiftDriveJumpStats<T extends OutfittingModuleStats>(
+    module: T | null | undefined,
+): module is T & FrameShiftDriveJumpStats {
     return !!module && hasNumberStats(module, ['optMass', 'maxFuel', 'fuelMul', 'fuelPower']);
 }
 
@@ -133,9 +148,9 @@ export function hasFrameShiftDriveJumpStats(
  * if (hasPowerGenerationStats(record)) record.powerCapacity; // MW
  * ```
  */
-export function hasPowerGenerationStats(
-    module: OutfittingModule | null | undefined,
-): module is PowerGenerationStats {
+export function hasPowerGenerationStats<T extends OutfittingModuleStats>(
+    module: T | null | undefined,
+): module is T & PowerGenerationStats {
     return !!module && hasNumberStats(module, ['powerCapacity', 'heatEfficiency']);
 }
 
@@ -154,9 +169,9 @@ export function hasPowerGenerationStats(
  * if (hasPowerDistributorStats(record)) record.weaponsRecharge; // MJ/s
  * ```
  */
-export function hasPowerDistributorStats(
-    module: OutfittingModule | null | undefined,
-): module is PowerDistributorStats {
+export function hasPowerDistributorStats<T extends OutfittingModuleStats>(
+    module: T | null | undefined,
+): module is T & PowerDistributorStats {
     return (
         !!module &&
         hasNumberStats(module, [
@@ -186,9 +201,9 @@ export function hasPowerDistributorStats(
  * if (hasMassCurveStats(record)) record.optMultiplier; // dimensionless
  * ```
  */
-export function hasMassCurveStats(
-    module: OutfittingModule | null | undefined,
-): module is MassCurveStats {
+export function hasMassCurveStats<T extends OutfittingModuleStats>(
+    module: T | null | undefined,
+): module is T & MassCurveStats {
     return (
         !!module &&
         hasNumberStats(module, [
@@ -217,9 +232,9 @@ export function hasMassCurveStats(
  * if (hasShieldRegenerationStats(record)) record.shieldRegenRate; // MJ/s
  * ```
  */
-export function hasShieldRegenerationStats(
-    module: OutfittingModule | null | undefined,
-): module is ShieldRegenerationStats {
+export function hasShieldRegenerationStats<T extends OutfittingModuleStats>(
+    module: T | null | undefined,
+): module is T & ShieldRegenerationStats {
     return !!module && hasNumberStats(module, ['shieldRegenRate', 'shieldBrokenRegenRate']);
 }
 
@@ -241,8 +256,8 @@ export function hasShieldRegenerationStats(
  * if (hasWeaponDamageStats(record)) weaponMetrics(record);
  * ```
  */
-export function hasWeaponDamageStats(
-    module: OutfittingModule | null | undefined,
-): module is WeaponDamageStats {
+export function hasWeaponDamageStats<T extends OutfittingModuleStats>(
+    module: T | null | undefined,
+): module is T & WeaponDamageStats {
     return !!module && typeof module.damage === 'number';
 }
