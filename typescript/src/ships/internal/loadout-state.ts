@@ -60,10 +60,12 @@ export function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
  * The key a slot-keyed map actually holds for a mount, or `null` when it holds none.
  *
  * @remarks
- * A build's own spelling is authoritative and is never rewritten, so every read and every
- * mutation resolves the caller's key through here first. The own-key hit is both the fast
- * path and the tie-break: a build holding two spellings that differ only in case answers
- * the exact one, and only a miss pays for the scan.
+ * A build's own spelling is authoritative and is never rewritten — Frontier writes
+ * `FrameShiftDrive` where a SLEF producer may write `frameshiftdrive`, and both name the
+ * same mount — so every read and every mutation resolves the caller's key through here
+ * first. The own-key hit is a fast path: only a miss pays for the scan. It never has to
+ * break a tie, because a build cannot hold two keys differing only in case (`fromLoadout`
+ * throws on one, and every edit writes through this).
  */
 export function matchingKeyIn(keyed: ReadonlyMap<string, unknown>, slotKey: string): string | null {
     if (keyed.has(slotKey)) return slotKey;

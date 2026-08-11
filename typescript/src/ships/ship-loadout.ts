@@ -1615,8 +1615,7 @@ export class ShipLoadout {
 
     /**
      * The key this build stores the module in `slotKey` under, or `null` when the slot
-     * is empty — every read and every mutation goes through it. {@link matchingKeyIn} is
-     * where the matching rule and its reasons live.
+     * is empty. {@link matchingKeyIn} is where the matching rule and its reasons live.
      */
     #fittedKey(slotKey: string): string | null {
         return matchingKeyIn(this.#modules, slotKey);
