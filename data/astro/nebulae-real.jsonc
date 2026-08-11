@@ -2,12 +2,10 @@
  * Catalogued real-world nebulae and dark regions that Elite Dangerous models by
  * name (Horsehead, Witch Head, Barnard's Loop, ...).
  *
- * Source:      EDAstro nebulae coordinates (nebulae-coordinates.csv)
- * Author:      CMDR Orvidius (EDAstro)
- * URL:         https://edastro.com/mapcharts/
- * Obtained via: canonn-science/canonn-signals src/assets/nebulae.json
- *               (MIT, (c) 2023 Canonn Research Group)
- *               https://github.com/canonn-science/canonn-signals
+ * Source: the EDAstro nebulae coordinates dataset, obtained via canonn-signals.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/astro/SOURCES.md.
  *
  * EDAstro publishes no explicit licence for the file; consult the site's terms
  * before redistributing it.
@@ -16,8 +14,6 @@
  * the galactic codex region id (see galactic-regions.jsonc) and is carried from the
  * upstream CSV; all 5835 values were verified against this project's own region
  * lookup.
- *
- * Full provenance and derivation notes: data/astro/SOURCES.md.
  */
 [
   {"name": "Aquila Dark Region", "system": "Aquila Dark Region PD-S b4-4", "x": -713.188, "y": -17.0938, "z": 691.906, "type": "real", "regionId": 18},

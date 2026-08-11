@@ -2,15 +2,12 @@
  * The Elite Dangerous ship catalogue — every player-flyable hull's identity, its
  * per-hull stats, and its outfitting slot layout, in one record per hull.
  *
- * Sources: EDCD FDevIDs, shipyard.csv (identity: symbol, name, entitlement?)
- *          https://github.com/EDCD/FDevIDs
- *          EDCD/coriolis-data, ships/*.json (stats + slot layout)
- *          https://github.com/EDCD/coriolis-data
- *          EDSY, eddb.js `ship[…].slotnames` (the per-mount `name` journal keys)
- *          https://github.com/taleden/EDSY
- *          The stat/slot values are Elite Dangerous game data, property of Frontier
- *          Developments plc, redistributed under Frontier's media-usage terms:
- *          https://forums.frontier.co.uk/threads/510879/
+ * Sources: EDCD FDevIDs (identity), EDCD/coriolis-data (stats and slot layout), EDSY
+ * (journal slot names, and the Lynx Highliner coriolis-data does not carry), and
+ * in-game verification.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
  *
  * `symbol` is the internal identifier (e.g. `Empire_Trader`); `name` the display
  * name; `entitlement` the DLC/grant token on gated hulls. Stats (hullMass in
@@ -42,8 +39,6 @@
  * (`MediumTransport01`) instead uses EDSY and Frontier update-note values documented
  * in `SOURCES.md`. `hullCost` is the bare hull's standard price in credits and
  * `retailCost` the hull with its default modules; both are present for every hull.
- *
- * Full provenance: data/ships/SOURCES.md.
  */
 [
   {

@@ -2,10 +2,10 @@
  * Rare market commodities in Elite Dangerous — the location-specific luxury goods,
  * each produced at a single station and valued higher the further it is carried.
  *
- * Source:       EDCD FDevIDs, rare_commodity.csv
- *               https://github.com/EDCD/FDevIDs
- *               Community-maintained Frontier id/name registry. No explicit
- *               licence is stated; consult the repository terms.
+ * Source: EDCD FDevIDs, rare_commodity.csv.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/commodities/SOURCES.md.
  *
  * Each record is { symbol, name, category }. `symbol` is Frontier's internal id
  * (matched case-insensitively, as the market/journal reports it); `name` is the
@@ -14,8 +14,6 @@
  * `symbol`, and the library carries no station registry to resolve a market id
  * against. The `rare` flag is not stored here: everything in this file is a rare
  * commodity (the standard goods live in commodities.jsonc).
- *
- * Full provenance: data/commodities/SOURCES.md.
  */
 [
   {

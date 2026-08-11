@@ -1,11 +1,12 @@
 /*
  * Whole regions whose star systems are permit-locked.
  *
- * Source:       Elite Dangerous Permit Database (community-maintained spreadsheet)
- * Author:       Elite Dangerous community
- * Obtained via: canonn-science/canonn-signals src/app/data/permit-locked-systems.ts
- *               (MIT, (c) 2023 Canonn Research Group)
- *               https://github.com/canonn-science/canonn-signals
+ * Source: the community-maintained "Elite Dangerous Permit Database" spreadsheet,
+ * obtained via canonn-signals. Permit locks are published in no game data file or API,
+ * so the list is hand-maintained and best-effort.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/astro/SOURCES.md.
  *
  * Permit locks are published in no game data file or API, so this is a
  * hand-maintained community list and is best-effort.
@@ -13,8 +14,6 @@
  * Each entry is a region name in hand-authored-regions.jsonc and also the
  * whole-token prefix of every system name inside that region. Permit-locked
  * bodies inside otherwise-open systems (e.g. Diso 5 C, Lave 2) are out of scope.
- *
- * Full provenance and derivation notes: data/astro/SOURCES.md.
  */
 [
   "Bleia1",

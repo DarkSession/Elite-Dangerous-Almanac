@@ -2,28 +2,12 @@
  * **Engineering options** — which blueprints and which experimental effects each
  * outfitting module can actually take.
  *
- * Sources: EDSY (github.com/taleden/EDSY) eddb.js — its module-group tables carry the
- *          `blueprints` and `expeffects` a group offers and which modules belong to it,
- *          and its module records carry the per-module `noblueprints` / `noexpeffects`
- *          denials that narrow either list. EDSY is (c) taleden under a CC BY-NC 4.0
- *          License (http://creativecommons.org/licenses/by-nc/4.0/). coriolis-data
- *          (github.com/EDCD/coriolis-data) modifications/modules.json — the same per-group
- *          lists keyed by the journal `BlueprintName`s this catalogue joins on, which is
- *          what settles the families EDSY records under one generic id, and which of the
- *          two Overcharged recipes the ordinary multi-cannons take. coriolis-data is (c)
- *          EDCD under the MIT License. Four rows come from neither registry: the
- *          Operations Merc-Coin blueprints `FuelScoop_Efficiency` and the three lasers'
- *          `PulseLaser_ThermalPlasmaConversion`, `BurstLaser_ThermalPlasmaConversion`
- *          and `BeamLaser_ThermalPlasmaConversion`, whose module family comes from the
- *          Inara blueprint registry
- *          (https://inara.cz/elite/blueprints/) — the same source the recipes themselves
- *          came from. Neither EDSY nor coriolis-data publishes the Operations family at
- *          all. See SOURCES.md for how that read was obtained and what it was corroborated
- *          against. One further row comes from both registries rather than from neither —
- *          the anti-xeno multi-cannons' Overcharged, EDSY's coverage under coriolis-data's
- *          key, described below. The underlying game logic is Elite Dangerous data,
- *          property of Frontier Developments plc, under Frontier's media-usage terms:
- *          https://forums.frontier.co.uk/threads/510879/
+ * Sources: EDSY eddb.js (the module-group menus and the per-module denials that narrow
+ * them), keyed and cross-checked against EDCD/coriolis-data modifications/modules.json,
+ * with four Operations rows from the Inara blueprint registry.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
  *
  * Availability is a property of the **module**, not of the blueprint: a Pulse Laser and
  * a Rail Gun share the Efficient blueprint but offer different experimental effects. So
@@ -32,55 +16,27 @@
  * straight to `blueprints.jsonc` and `experimental-effects.jsonc`.
  *
  * **A group is one menu, so modules of the same kind with different menus are different
- * groups.** Upstream denies blueprints per module, and where those denials split a family
- * in two the split is stored as two groups rather than as an exception: a Guardian Power
- * Plant takes Anti-Guardian Zone Resistance and none of the ordinary power-plant
- * blueprints, an ordinary one the reverse, so `powerPlants` and `guardianPowerPlants` are
- * separate — as are the distributors and the hull reinforcement packages. The Guardian
- * half of each pair also takes **no experimental effect**: Anti-Guardian Zone Resistance
- * is its whole menu and that recipe has no experimental slot, so its `experimentals` are
- * empty where its ordinary twin's are not. The same holds for the other Guardian module
- * families — FSD boosters, module and shield reinforcement — whose menus are empty.
- * Guardian *weapons* are the same shape: `guardianGauss`, `guardianPlasma` and
- * `guardianShard` list that one recipe too. An ordinary weapon recipe on a Guardian weapon
- * identifies a final **purchase**, never an engineer roll — see §Engineering options in
- * SOURCES.md — so `pre-engineered.jsonc` carries it and no menu here does. Those final
- * articles accept no further engineering, including Anti-Guardian Zone Resistance. An engineered
- * Guardian module that does carry an experimental was obtained already engineered — a
- * community-goal or tech-broker reward — rather than rolled at an engineer; no registry
- * publishes those variants and `pre-engineered.jsonc` does not carry them, so this
- * catalogue's answer is about the engineering menu only. Neither registry publishes the
- * distinction either (`expeffects` is per module group, with no per-module denial on any
- * of them), so SOURCES.md records where it came from.
+ * groups.** Where upstream's per-module denials split a family in two, the split is stored
+ * as two groups rather than as an exception: a Guardian Power Plant takes Anti-Guardian
+ * Zone Resistance and none of the ordinary power-plant blueprints, an ordinary one the
+ * reverse, so `powerPlants` and `guardianPowerPlants` are separate — as are the
+ * distributors and the hull reinforcement packages. The Guardian half of each pair takes
+ * no experimental effect, so its `experimentals` are empty where its ordinary twin's are
+ * not.
  *
  * **A menu lists the id of the recipe it rolls, which is not always the id the game
- * writes.** The three utility-scanner menus list `Scanner_LongRange` / `Scanner_WideAngle`,
- * but the game writes `Sensor_LongRange` / `Sensor_WideAngle` on a scanner — the same ids
- * it writes on a sensor suite, whose Long Range and Wide Angle are different recipes
- * rolling different stats in different directions (Long Range costs the suite mass and
- * the scanner power draw; Wide Angle the reverse). Nothing is stored here for that: the
- * journal spelling belongs to the recipe, so it lives on the blueprint record as
- * `journalName` in `blueprints.jsonc`. What this file contributes is the half only it
- * knows — which of the two recipes a given module is offered. `resolveBlueprintForModule`
- * reads a menu against those journal names, so resolution needs no second list to drift
- * from this one. The third id of that shape is coriolis-data's `MC_Overcharged`, the
- * Overcharged that also cuts the clip by 3–15% where the game writes the
- * `Weapon_Overcharged` every other weapon menu lists; `multiCannons` and
- * `antiXenoMultiCannons` list it. The anti-xeno menu takes it on EDSY's word rather than
- * coriolis's, which carries no blueprint list for an anti-xeno group — see §Multi-cannon
- * Overcharged in SOURCES.md.
+ * writes.** The three utility-scanner menus list `Scanner_LongRange` /
+ * `Scanner_WideAngle`, and `multiCannons` / `antiXenoMultiCannons` list `MC_Overcharged`;
+ * the journal spelling of each belongs to the recipe, so it is carried as `journalName` on
+ * the blueprint record. What this file contributes is which of the two recipes sharing an
+ * id a given module is offered.
  *
  * **A menu may list an Operations recipe.** Most Operations ids belong to modules bought
- * already engineered and no menu names them, but four are recipes a player applies: the
- * Merc-Coin blueprints published with a full grade 1–5 — `FuelScoop_Efficiency` on the
- * fuel scoops and the three lasers' `PulseLaser_ThermalPlasmaConversion`,
- * `BurstLaser_ThermalPlasmaConversion` and
- * `BeamLaser_ThermalPlasmaConversion`. (Anti-Guardian Zone Resistance is a fifth recipe of
- * that kind, listed by the nine Guardian groups under the journal id
- * `GuardianModule_Sturdy` rather than under an Operations key.) A purchased
- * pre-engineered module's recipe starts at grade 2 because grade 1 is what the purchase
- * contains; these four start at grade 1, so nothing is pre-applied and the whole recipe is
- * rolled at an engineer. See "Four Operations recipes are listed by a menu" in SOURCES.md.
+ * already engineered and no menu names them, but four are recipes a player applies from
+ * grade 1: `FuelScoop_Efficiency` on the fuel scoops and the three lasers'
+ * `PulseLaser_ThermalPlasmaConversion`, `BurstLaser_ThermalPlasmaConversion` and
+ * `BeamLaser_ThermalPlasmaConversion`. Anti-Guardian Zone Resistance is a fifth of that
+ * kind, listed by the nine Guardian groups under the journal id `GuardianModule_Sturdy`.
  *
  * `exclusions` handles what is left: the modules that take their group's blueprints but
  * not all of its experimental effects — a Multi-cannon cannot take Phasing Sequence, and
@@ -88,24 +44,12 @@
  * module cannot take, already expanded — subtract it from the group's `experimentals` to
  * get the exact set. Modules absent from `exclusions` take their whole group's list.
  *
- * Only modules the game lets you engineer appear at all; everything else is absent. That
- * is 1028 of the 1199 modules. The other 171 are the families no blueprint reaches — fuel
- * tanks, passenger cabins, the repair, recon, research, decontamination and multi-limpet
- * controllers, meta-alloy hull reinforcement, the plain module reinforcement packages,
- * the Pulse Wave Analyser, the mining launchers, Shock Cannons, Nanite Torpedo Pylons,
- * fighter and vehicle hangars, docking computers and Supercruise Assist, the module
- * stabilisers, the planetary approach suites, the cargo hatch and
- * the AX utility modules — plus the individual modules upstream denies every blueprint:
- * every anti-xeno multi-cannon but the two gimballed, both Enhanced anti-xeno missile
- * racks and every turreted plain one, five of the seven mining tools, the remote-release
- * launchers (three denied outright, the fourth left with only Decorative entries, which
- * name no recipe — see SOURCES.md §Decorative modifications) and the
- * Mk II Plasma Shock Accelerator.
+ * Only modules the game lets you engineer appear at all, 1028 of the 1199; the other 171
+ * are the families no blueprint reaches, plus the individual modules upstream denies every
+ * blueprint. SOURCES.md lists both sets.
  *
  * `modules` is ordered by group, in the order `groups` declares them, and within a group
  * in module-catalogue order.
- *
- * Full provenance: data/ships/SOURCES.md.
  */{
   "groups": {
     "powerPlants": {

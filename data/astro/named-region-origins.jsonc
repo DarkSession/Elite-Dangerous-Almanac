@@ -2,17 +2,16 @@
  * Origins and extents of the game's named regions, in Elite Dangerous's internal
  * coordinate frame (32 units per light-year, measured from the galaxy corner).
  *
- * Source: the EDTS reference implementation (edtslib/pgdata.py) by Andy Martin
- *         (Esvandiary), based on community reverse-engineering of Elite
- *         Dangerous's procedural generator.
- * Author/License: Andy Martin (Esvandiary), https://bitbucket.org/Esvandiary/edts,
- *         BSD 3-Clause License, (c) 2016 Andy Martin. Full text in
- *         ATTRIBUTIONS.md.
+ * Source: the EDTS reference implementation (edtslib/pgdata.py), from the community
+ * reverse-engineering of Elite Dangerous's procedural generator. Where a region is
+ * defined by a single sphere, its origin and extent are that sphere's axis-aligned
+ * bounds in the internal frame.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/astro/SOURCES.md.
  *
  * Where a region is defined by a single sphere, its origin and extent are that
  * sphere's axis-aligned bounds in the internal frame.
- *
- * Full provenance and derivation notes: data/astro/SOURCES.md.
  */
 [
   {

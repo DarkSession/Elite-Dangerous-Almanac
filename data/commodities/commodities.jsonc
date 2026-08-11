@@ -2,15 +2,12 @@
  * Standard market commodities in Elite Dangerous — the goods traded at station
  * commodity markets, as Frontier's internal registry.
  *
- * Source:       EDCD FDevIDs, commodity.csv
- *               https://github.com/EDCD/FDevIDs
- *               Community-maintained Frontier id/name registry. No explicit
- *               licence is stated; consult the repository terms.
- * Secondary:    Player journal observation for `curatedcommodity` (Curated
- *               Commodity Package), a market good not yet in FDevIDs. Its
- *               symbol and name come from a MarketBuy event; its category is
- *               a maintainer assignment, not an upstream value. Appended after
- *               the registry order rather than inserted into it.
+ * Source: EDCD FDevIDs, commodity.csv. One record (`curatedcommodity`) comes instead
+ * from a player-journal MarketBuy observation; its category is a maintainer assignment,
+ * not an upstream value, and it is appended after the registry order.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/commodities/SOURCES.md.
  *
  * Each record is { symbol, name, category }. `symbol` is Frontier's internal id
  * (matched case-insensitively, as the market/journal reports it); `name` is the
@@ -18,8 +15,6 @@
  * CSV's numeric `id` column is dropped — commodities are keyed by `symbol`. The
  * `rare` flag is not stored here: everything in this file is a standard commodity
  * (the rare goods live in rare-commodities.jsonc).
- *
- * Full provenance: data/commodities/SOURCES.md.
  */
 [
   {

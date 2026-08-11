@@ -3,17 +3,15 @@
  *
  * Consumables — the deployable field tools (medkits, energy cells, grenades, E-Breach) carried on foot.
  *
- * Source:  EDCD FDevIDs, microresources.csv
- *          https://github.com/EDCD/FDevIDs
- *          Community-maintained Frontier id/name registry. No explicit licence
- *          is stated; consult the repository terms.
+ * Source: EDCD FDevIDs, microresources.csv.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/materials/SOURCES.md.
  *
  * Each record is { symbol, category, name }. `symbol` is Frontier's internal id
  * (e.g. `graphene`) — what the player journal reports, matched case-insensitively;
  * `name` is the display name. `category` is one of component / consumable / data /
  * item. Frontier's numeric micro-resource id from the CSV is not carried.
- *
- * Full provenance: data/materials/SOURCES.md.
  */
 [
   {

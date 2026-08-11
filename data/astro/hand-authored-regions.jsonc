@@ -3,14 +3,13 @@
  * light-years with Sol at the origin. Names and spheres only — whether a region
  * is permit-locked is recorded once, in permit-locked-regions.jsonc.
  *
- * Sources: EDSM (https://www.edsm.net) and Spansh (https://spansh.co.uk),
- *          maintained by their respective community contributors. These are
- *          factual system names, coordinates and region bounds; consult each
- *          service's published terms for use of its API/data.
- *
+ * Sources: EDSM and Spansh — factual system names, coordinates and region bounds.
  * Sphere membership is cross-checked across both services.
  *
- * Full provenance and derivation notes: data/astro/SOURCES.md.
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/astro/SOURCES.md.
+ *
+ * Sphere membership is cross-checked across both services.
  */
 [
   {

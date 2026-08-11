@@ -4,25 +4,12 @@
  * The `internal` slice of Frontier's outfitting catalogue: each module's identity
  * AND its engineering/mechanical stats, joined on the Frontier `symbol`.
  *
- * Sources: EDCD FDevIDs, outfitting.csv (identity: symbol, name, class, rating,
- *          mount?, guidance?, ship?, entitlement?)
- *          https://github.com/EDCD/FDevIDs
- *          EDCD/coriolis-data, modules/** (stats: mass, power, performance, …)
- *          https://github.com/EDCD/coriolis-data
- *          EDSY eddb.js (taleden, CC BY-NC 4.0): https://github.com/taleden/EDSY
- *          — mass, integrity, powerDraw and bootTime where coriolis-data carries
- *          none, and corrections where its value is a duplicated or mis-copied row.
- *          Odyssey Materials Helper CAPI fixture (Jixxed, MIT):
- *          https://github.com/jixxed/ed-odyssey-materials-helper
- *          — the six bundle-granted Vessel Hangar identities and their grant tokens.
- *          In-game verification covers 1193 identities and the numeric values on 952
- *          non-armour modules; the six bundle-granted Vessel Hangar identities above
- *          are registry/CAPI-sourced. Exact corrections are pinned in
- *          fixtures/ships/module-stats.json. The 241 ship-armour modules retain their
- *          separately sourced numeric values.
- *          The stat values are Elite Dangerous game data, property of Frontier
- *          Developments plc, redistributed under Frontier's media-usage terms:
- *          https://forums.frontier.co.uk/threads/510879/
+ * Sources: EDCD FDevIDs (identity), EDCD/coriolis-data and EDSY (stats), the Odyssey
+ * Materials Helper CAPI fixture (the six bundle-granted Vessel Hangar identities), and
+ * in-game verification, which governs where a registry disagrees with it.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
  *
  * `symbol` is the internal identifier (e.g. `Hpt_PulseLaser_Fixed_Small`); `name`
  * the stable descriptive English name (not byte-exact localized UI text); `class`
@@ -70,7 +57,6 @@
  * regeneration, the stat a journal labels `EnergyPerRegen`.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
- * Full provenance: data/ships/SOURCES.md.
  */
 [
   {
