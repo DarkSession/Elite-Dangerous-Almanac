@@ -1,8 +1,8 @@
 # Shared data schemas
 
 These plain JSON Schema draft-07 files describe the language-neutral payloads in
-`data/`. Every language implementation should validate the same schemas before
-building or publishing its package.
+`data/` and `fixtures/`. Every language implementation should validate the same
+schemas before building or publishing its package.
 
 Each data domain has one schema whose definitions cover every catalogue in the
 matching directory:
@@ -15,3 +15,10 @@ matching directory:
 The TypeScript data-file tests map each catalogue filename to its corresponding
 definition and reject unknown fields, missing fields, invalid ranges, and invalid
 enum values.
+
+`fixtures.schema.json` is generated from the shared fixtures. Captures with the same
+wire format — journal loadouts, SLEF envelopes and community builds — share one family
+definition; all other fixtures have a definition of their own. Its
+`x-fixture-families` list maps every file to exactly one definition. From `typescript/`,
+run `npm run generate:fixtures` after changing a fixture. The same command generates
+`src/fixtures.generated.d.ts`, and `npm run check:fixtures` rejects stale artefacts.
