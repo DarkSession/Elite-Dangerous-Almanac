@@ -10,18 +10,18 @@ every entry has to record.
 
 Referred to throughout by source name; the pin is here, once.
 
-| Source                                                                                                                                                   | Pin                                                                                                                                                                         | Acquired       |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| EDCD FDevIDs — `shipyard.csv`, `outfitting.csv`                                                                       | no immutable revision recorded                                                                                                                                              | 2026-07-24 UTC |
-| EDCD/coriolis-data — `ships/*.json`, `modules/**`, `modifications/*`                                            | commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`                                                                                                                           | 2026-07-24 UTC |
-| coriolis-data `modifications/modules.json`                                                                                                               | SHA-256 `09b6427c86bc3cfb578a246f7c6be1791429bb67009b7adaa7909e30aadc160f` — read from the branch tip, so pinned by digest                                                  | 2026-08-05 UTC |
-| EDSY `eddb.js`                                                                                                        | commit `cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, internal `db 20260428` / `version 423039901` | 2026-08-02 UTC |
-| EDSY `eddb.js` — Vessel Hangar variants                                                                                                                  | commit `510468167e0ef3b895e39391a8c56b5cdd5c3282`, SHA-256 `0574db06f796cdf7dfbe20a5f89f8a378e692873ae49133e9b49557fe8d8cba3`                                               | 2026-08-09 UTC |
-| EDSY `edsy.js`                                                                                                        | SHA-256 `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5` — read from the branch tip, so pinned by digest                                                  | 2026-08-06 UTC |
+| Source                                                                                          | Pin                                                                                                                                                                         | Acquired       |
+| ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| EDCD FDevIDs — `shipyard.csv`, `outfitting.csv`                                                 | no immutable revision recorded                                                                                                                                              | 2026-07-24 UTC |
+| EDCD/coriolis-data — `ships/*.json`, `modules/**`, `modifications/*`                            | commit `0db9234b5b9ce8c939ea84133d7ce336eea88e27`                                                                                                                           | 2026-07-24 UTC |
+| coriolis-data `modifications/modules.json`                                                      | SHA-256 `09b6427c86bc3cfb578a246f7c6be1791429bb67009b7adaa7909e30aadc160f` — read from the branch tip, so pinned by digest                                                  | 2026-08-05 UTC |
+| EDSY `eddb.js`                                                                                  | commit `cd68edfba665719958ce038b6e5d9eb02d0d2b02`, SHA-256 `967834d65a75ab1dea4bbaa7e1d6674cbe4083dca03f770d058497e9f7693071`, internal `db 20260428` / `version 423039901` | 2026-08-02 UTC |
+| EDSY `eddb.js` — Vessel Hangar variants                                                         | commit `510468167e0ef3b895e39391a8c56b5cdd5c3282`, SHA-256 `0574db06f796cdf7dfbe20a5f89f8a378e692873ae49133e9b49557fe8d8cba3`                                               | 2026-08-09 UTC |
+| EDSY `edsy.js`                                                                                  | SHA-256 `a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5` — read from the branch tip, so pinned by digest                                                  | 2026-08-06 UTC |
 | Odyssey Materials Helper CAPI fixture `application/src/test/resources/parser/capifc/test9.json` | commit `2c652a2349b754f1dde1a58b6daaac5a04e421a6`                                                                                                                           | 2026-08-09 UTC |
-| EDCD/Coriolis — the application, for its formulas                                                                    | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
-| msarilar/EDEngineer `EDEngineer/Resources/Data/blueprints.json`                                                | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
-| Elite Dangerous in-game verification                                                                                                                     | observed in-game                                                                                                                                                            | 2026-08-10 UTC |
+| EDCD/Coriolis — the application, for its formulas                                               | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
+| msarilar/EDEngineer `EDEngineer/Resources/Data/blueprints.json`                                 | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
+| Elite Dangerous in-game verification                                                            | observed in-game                                                                                                                                                            | 2026-08-10 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
 the Vessel Hangar snapshot.
@@ -218,7 +218,7 @@ and targeted fit assertions.
   itself `restrictedToShips: ["LakonMiner"]` and so unfittable on the only hull that may
   carry it. Stored as `[3, 2, 2, 2, 1, 1, 1, 1]`, which three sources agree on:
   coriolis-data, EDSY `eddb.js` (`ship[…].slots.hardpoint = [3,2,2,2,1,1,1,1]`) and
-  Inara's ship page, read 2026-08-02 UTC, listing
+  Inara's ship page 68, read 2026-08-02 UTC, listing
   1 Large Mining, 1 Medium, 2 Medium Mining, 3 Small and 1 Small Mining. The four
   unrestricted mounts are exactly the `[2, 1, 1, 1]` the record already had.
 - **Lynx Highliner (`MediumTransport01`) — from EDSY, Frontier's Lynx update notes and
@@ -487,7 +487,8 @@ all 1902 declared engineering entries in the build corpus resolve.
 ### Deliberately absent fields
 
 - **`integrity` is absent on 82 non-armour records** because no registry publishes one
-  for those families and the game's module panel shows none. Guardian hull reinforcement packages are in that set and do draw power,
+  for those families and the game's module panel shows none. Guardian hull reinforcement
+  packages are in that set and do draw power,
   so "no integrity" is not a shorthand for "inert".
 - **`cost` is absent** when no published price exists; `undefined` never means free.
 
@@ -592,7 +593,8 @@ is visible on the **66** weapons an engineer offers Rapid Fire, its multi-cannon
 spelling or Inertial Impact (`special_distortion_field`) and which hold no jitter of
 their own.
 
-**Eighteen weapons have a `DamagePerSecond` a capture states outright.** They are the only external readings of an
+**Eighteen weapons have a `DamagePerSecond` a capture states outright.** They are the only
+external readings of an
 **unmodified** weapon's folded figure: in-game verification reads the stored inputs one
 at a time, and the one product it does hold — a decorative flak launcher's panel DPS, in
 `fixtures/ships/engineering.jsonc` — is a modified weapon read to one decimal. On a beam
@@ -602,7 +604,8 @@ beams are the two a capture reads that it does not, so on those this is the only
 `damage` has at all — no journal states `Damage` for a beam laser.
 
 Every value supplied outside the primary registry is pinned individually in the shared
-fixtures, so all implementations validate against the same numbers. Derived size-8 drive and `*_free` values also follow their family's curve.
+fixtures, so all implementations validate against the same numbers. Derived size-8 drive and
+`*_free` values also follow their family's curve.
 
 **Every module in every catalogue carries at least one stat** (1199/1199), and no
 record holds only a lone `mass`. 244 of the 833 `bootTime` values are `0` (every hardpoint
@@ -706,7 +709,8 @@ heuristic does not keep rediscovering them:
   distributor integrity otherwise tracks 0.80× the A-rated standard ladder, which would
   put size 5 near 85; EDSY states 99 for both sizes. The duplicate is in the game data.
 - **`Int_DroneControl_Recon_Size5_Class1` `bootTime` really is 9.85** — the only
-  non-integer boot time in all 1199 records, where its three family siblings are exactly 10. EDSY gives `boottime:9.85`.
+  non-integer boot time in all 1199 records, where its three family siblings are exactly 10.
+  EDSY gives `boottime:9.85`.
 
 ### Prices — `cost` on modules, `hullCost` / `retailCost` on hulls
 
@@ -791,11 +795,8 @@ Ship-specific **armour** is priced from each hull's `bulkheads` upstream, joined
   rewards and were sold nowhere. Frontier's own announcement of the **Rhea Disaster** CG
   states that "all participating commanders will now receive the Size 6 Corrosion
   Resistant Cargo Rack whilst the top 50% will now receive 2"
-  (Frontier's own announcement, pinned by its post id `1812792503776489745`; the CG
-  itself ran on the [Frontier
-  forums, thread `626528`).
-  The [Elite Dangerous
-  Wiki's Corrosion Resistant Cargo Rack page records
+  (post id `1812792503776489745`; the CG itself ran on the Frontier forums, thread
+  `626528`). The Elite Dangerous Wiki's Corrosion Resistant Cargo Rack page records
   that the class 5 and 6 modules "exist in limited numbers among CMDRs who received them
   as a Community Goal reward, but they are otherwise neither purchasable nor
   unlockable" — size 4 is the largest one obtainable, through a Human Technology Broker.
@@ -1091,8 +1092,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   one journal id, two recipes".
 - **Blueprint source:** EDCD/coriolis-data,
   `modifications/blueprints.json` (grade `features` + `components`) + `modifications.json`
-  (apply method), same commit and Frontier media-usage terms as above. Each grade's
-  `features` is a list of `{ label, method, min, max }`; the modifier value is bounded
+  (apply method), same commit as above. Each grade's `features` is a list of
+  `{ label, method, min, max }`; the modifier value is bounded
   by the engineering quality roll (`v = min + (max − min)·quality`).
 - **Material requirements** live on the same grade (`materials`), from that grade's
   `components` map. Coriolis keys components by material **display name**; a join script
@@ -1152,9 +1153,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   the resistance-ignoring ship-damage member as `absolute`, matching EDSY's `abswgt`
   **Absolute Damage** member; the contemporary community description credited in
   `ATTRIBUTIONS.md` likewise identifies this specific conversion's Plasma share as absolute
-  damage, and is read as corroboration only — none of its text or media is redistributed. Because every eligible laser
-  is 100% thermal before conversion, each grade stores the resulting
-  `damageDistribution`: from 96.1/3.9 thermal/absolute at grade 1 through 84.5/15.5 at
+  damage, and is read as corroboration only — none of its text or media is redistributed.
+  Because every eligible laser is 100% thermal before conversion, each grade stores the
+  resulting `damageDistribution`: from 96.1/3.9 thermal/absolute at grade 1 through 84.5/15.5 at
   grade 5. `$Thermal;` and `$Absolute;` are the journal labels synthesized from that
   distribution by the TypeScript implementation; Inara does not publish those spellings,
   and no raw `Loadout` capture of this blueprint is currently in the repository.
@@ -1199,8 +1200,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   `special_guardian_module_resistance` and `special_plasma_rounds` are not incomplete
   effect identities: neither belongs in `experimental-effects.jsonc`. The shared
   `blueprintOnlyModifications` fixture pins both absences and the corresponding blueprint
-  records. Frontier's update notes were acquired 2026-08-09 UTC from
-  Frontier's Operations update notes, thread `648012`; the page exposes no immutable revision.
+  records. Frontier's Operations update-notes thread `648012` was acquired 2026-08-09 UTC;
+  the page exposes no immutable revision.
 - **Experimental-effect source:** EDSY `eddb.js`
   `expeffect` is the primary source — one table holding each effect's modifiers and its
   recipe together, keyed the way this file is. Each effect is `{ modifiers, materials }`:
@@ -1313,9 +1314,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
   for convenience and returns the **union** across every group offering that blueprint —
   deliberately looser than the per-module answer, and a test pins that it is never
   narrower.
-- **Source:** EDSY `eddb.js`, whose module-group tables
-  carry each group's `blueprints` and `expeffects` lists and which modules belong to each
-  group, and whose module records carry the per-module `noblueprints` / `noexpeffects`
+- **Source:** EDSY `eddb.js`, whose module-group tables carry each group's `blueprints`
+  and `expeffects` lists and which modules belong to each group, and whose module records
+  carry the per-module `noblueprints` / `noexpeffects`
   denials that narrow either list. Second registry: coriolis-data
   `modifications/modules.json`, which carries the same per-group lists keyed by the
   journal `BlueprintName`s this catalogue joins on.
@@ -1347,7 +1348,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   - **14 modules are absent because upstream denies them every blueprint:** eight AX
     multi-cannons (all but the two gimballed), five of the seven mining tools, and the
     Mk II Plasma Shock Accelerator — which is why `antiXenoMultiCannons` holds 2 of that
-    family's 10 modules, `miningToolsLasers` 2 of its 7 and `plasmaAccelerators` 4 of its 5. The ten plain Module Reinforcement Packages are denied their family's only recipe
+    family's 10 modules, `miningToolsLasers` 2 of its 7 and `plasmaAccelerators` 4 of its 5.
+    The ten plain Module Reinforcement Packages are denied their family's only recipe
     and are absent too, which leaves `moduleReinforcements` holding the ten Guardian
     packages.
   - **The 171 modules absent take no engineering.** Whole families first, both registries
@@ -1469,7 +1471,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   — rather than in the `eddb.js` tables the rest of this section reads, which is why both
   EDSY files are pinned at the head of this document.
 
-- **Checked against the build corpus.** Of its 1902 declared engineering entries, 1900 sit on a module this catalogue groups, and 1882 are
+- - **Checked against the build corpus.** Of its 1902 declared engineering entries, 1900 sit
+    on a module this catalogue groups, and 1882 are
   applicable end to end: the module is grouped, its group offers the blueprint, and where
   an experimental is declared the module can take it. 70 of the 1882 declare the generic
   spelling of a family-specific recipe (`Misc_LightWeight` on a life support, and so on)
@@ -1867,9 +1870,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **`acquisition` says where a variant comes from.** 73 records: 22 `mercenary`,
   30 `communityGoal` and 21 `techBroker`.
   - **`mercenary`** — the Merc-Coin shop rows. Source: the in-game outfitting and
-    blueprint registries, cross-checked against the current
-    Inara outfitting and blueprint registries and Frontier's update
-    notes. All 22 are grade 1, and that is the point: the purchased module already
+    blueprint registries, cross-checked against the current Inara outfitting and blueprint
+    registries and Frontier's update notes. All 22 are grade 1, and that is the point: the
+    purchased module already
     contains the grade-1 pre-engineering, which is exactly why these blueprints' own
     recipes start at grade 2 (see the Operations section above). The two facts are
     consistent by construction and a test asserts it —
@@ -1891,11 +1894,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
       medium is 2B and its Lockdown row is 800 MC — and that corroboration is what carries
       the weight.
   - **`communityGoal`** — modules awarded for taking part in a community goal. Source:
-    EDSY's stored-module presets, which record each
-    reward as an encoded module state; the blueprint, grade and experimental effect were
+    EDSY's stored-module presets, which record each reward as an encoded module state; the
+    blueprint, grade and experimental effect were
     decoded from that state rather than inferred from its display label, and every
-    resulting id is asserted to join to `blueprints.jsonc`,
-    `experimental-effects.jsonc` and the module catalogues. 28 of the 30 are grade 5;
+    resulting id is asserted to join to `blueprints.jsonc`, `experimental-effects.jsonc`
+    and the module catalogues. 28 of the 30 are grade 5;
     8 carry an experimental effect. Acquired 2026-08-01 UTC.
   - **`techBroker`** — modules unlocked at a tech broker, from the same EDSY presets and
     decoded the same way. Human brokers stock the "V1" drives, the SCO drives and a

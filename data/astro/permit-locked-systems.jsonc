@@ -10,9 +10,9 @@
  * corrections: data/astro/SOURCES.md.
  *
  * Each system address is a decimal string so every language can parse it without
- * IEEE-754 loss. Addresses come from Spansh, cross-checked against EDSM
- * for the 38 systems EDSM holds; no disagreement. Plaa Ain HA-Z d46 is absent from both and is encoded from its
- * procedural name by this project.
+ * IEEE-754 loss. Addresses come from Spansh, cross-checked against EDSM for the 38
+ * systems EDSM holds; no disagreement. Plaa Ain HA-Z d46 is absent from both and is
+ * encoded from its procedural name by this project.
  */
 [
   { "name": "4 Sextantis", "id64": "663329196387" },

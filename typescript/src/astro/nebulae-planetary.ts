@@ -8,7 +8,7 @@
  * real-world nebulae use `./nebulae-real` instead (~19 KiB). Because each catalogue
  * is its own module, importing that one never pulls this one in.
  *
- * Data from EDAstro (CMDR Orvidius); see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).
+ * Data from EDAstro; see [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
  *
  * @packageDocumentation
  */

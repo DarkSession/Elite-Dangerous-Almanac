@@ -8,7 +8,8 @@ this file and `LICENSE` before redistributing the data or using it commercially.
 **This is the one place a source is described.** Each source is described in one of the
 sections below — its author, its link and its licence position — and where an entry names
 a source another section covers, it does so as a cross-reference rather than a second
-description. Nothing else in the repository repeats that: a data file's comment header names the source and points here, and each
+description. Nothing else in the repository repeats that: a data file's comment header
+names the source and points here, and each
 `data/<domain>/SOURCES.md` records what was taken from it — the acquisition date, the
 pinned revision, the derivation and every manual correction — referring to it by name
 alone. Test fixtures carry their own provenance in their file header.
@@ -23,27 +24,23 @@ a verbatim copy produced at build time — edit this file, never the copy.
   `edtslib/pgnames.py`) by **Andy Martin** (Esvandiary),
   <https://bitbucket.org/Esvandiary/edts>, **BSD 3-Clause, © 2016 Andy Martin** —
   reproduced in full at the end of this file, as its terms require. The TypeScript port
-  passed through
-  [canonn-science/canonn-signals](https://github.com/canonn-science/canonn-signals)
-  (**MIT**, © 2023 Canonn Research Group) before being restructured here. (EDTS lives on
-  Bitbucket, not GitHub.)
-- **Build-metric algorithms** — the power budget and its priority groups, shield strength
-  and its mass curve, armour hit points, resistance stacking with its diminishing
-  returns, and weapon DPS / capacitor draw / heat. Ported as fact (our own
-  implementation) from [EDCD/Coriolis](https://github.com/EDCD/coriolis) by the
-  **Coriolis contributors**, whose application code is **MIT**-licensed, and
-  cross-checked against [EDSY](https://github.com/taleden/EDSY) by **taleden**
-  (**CC BY-NC 4.0**). Both credit the original Frontier-forum research the formulas come
-  from.
-- **Jump-range and fuel algorithm**, and the **engineered ammunition rounding** rule —
-  ported as fact from [EDSY](https://github.com/taleden/EDSY) by **taleden**
-  (**CC BY-NC 4.0**), derived from Frontier's "mass effect on hyperspace range"
-  description, and cross-checked against
-  [EDCD/Coriolis](https://github.com/EDCD/coriolis) (**MIT**).
+  passed through canonn-signals (credited under Data below) before being restructured
+  here. (EDTS lives on Bitbucket, not GitHub.)
+- **[EDCD/Coriolis](https://github.com/EDCD/coriolis)** — the Coriolis _application_, by
+  the **Coriolis contributors**, whose code is **MIT**-licensed. (Its data repository is a
+  separate credit, under Data below.) The **build-metric algorithms** are ported as fact
+  (our own implementation) from it: the power budget and its priority groups, shield
+  strength and its mass curve, armour hit points, resistance stacking with its diminishing
+  returns, and weapon DPS / capacitor draw / heat. It credits the original Frontier-forum
+  research the formulas come from.
+- **The jump-range and fuel algorithm**, the **engineered ammunition rounding** rule and
+  the **build metrics above** are cross-checked against, or ported as fact from, EDSY
+  (credited under Data below). The jump-range model derives from Frontier's "mass effect on
+  hyperspace range" description; Coriolis carries the same maths for the metrics and the
+  clip rounding.
 - **Galactic codex region lookup** — resolving a region from galactic coordinates or from a
   boxel, ported as fact (our own implementation) from `RegionMap.js` in
-  [EliteDangerousRegionMap](https://github.com/klightspeed/EliteDangerousRegionMap) by
-  **Ben Peddell** (**MIT**), whose region tables are credited under Data below.
+  EliteDangerousRegionMap, whose region tables are credited under Data below.
 - **SLEF parsing and writing** — both follow the
   [Inara Ship Loadout Export Format specification](https://inara.cz/elite/inara-impexp-slef/)
   published by **Inara** (Artie).
@@ -75,17 +72,17 @@ a verbatim copy produced at build time — edit this file, never the copy.
   galactic codex regions, their ids and their lookup geometry. Original region-boundary
   research on the
   [Frontier forums](https://forums.frontier.co.uk/threads/determining-the-region-of-a-system.537845/).
+- **[canonn-science/canonn-signals](https://github.com/canonn-science/canonn-signals)** by
+  the **Canonn Research Group**, **MIT**, © 2023 — the route by which two of the sources
+  below were obtained, and the TypeScript port the procedural-naming algorithm passed
+  through.
 - **EDAstro nebulae coordinates** published by **CMDR Orvidius**
   ([EDAstro](https://edastro.com/mapcharts/)) — nebula names, catalogued systems,
-  coordinates, classes and region ids, obtained via
-  [canonn-science/canonn-signals](https://github.com/canonn-science/canonn-signals)
-  (**MIT**, © 2023 Canonn Research Group). EDAstro states no explicit licence for the
-  dataset; consult the site's terms before redistributing it.
+  coordinates, classes and region ids, obtained via canonn-signals. EDAstro states no
+  explicit licence for the dataset; consult the site's terms before redistributing it.
 - **"Elite Dangerous Permit Database"** — the community-maintained spreadsheet behind the
-  permit-locked systems and regions, obtained via
-  [canonn-science/canonn-signals](https://github.com/canonn-science/canonn-signals)
-  (**MIT**, © 2023 Canonn Research Group). Permit status is published in no game file or
-  API, so the list is hand-maintained and best-effort.
+  permit-locked systems and regions, obtained via canonn-signals. Permit status is
+  published in no game file or API, so the list is hand-maintained and best-effort.
 - **[EDSM](https://www.edsm.net)** and **[Spansh](https://spansh.co.uk)**, maintained by
   their respective community contributors — factual system names, coordinates and
   addresses, used for the hand-authored region spheres, the named-region origins and the

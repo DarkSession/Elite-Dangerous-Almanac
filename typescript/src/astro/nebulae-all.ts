@@ -9,7 +9,7 @@
  * (`./nebulae-real`, `./nebulae-planetary`, `./nebulae-procgen`) and nothing else
  * gets bundled.
  *
- * Data from EDAstro (CMDR Orvidius); see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).
+ * Data from EDAstro; see [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
  *
  * @packageDocumentation
  */
