@@ -10,7 +10,7 @@ covers the `id64` round trip that most tools need first.
 
 ## Names and addresses
 
-{@link astro!ProceduralSystem} is the handle that ties a procedural name to its `id64`
+{@link astro!ProceduralSystem | ProceduralSystem} is the handle that ties a procedural name to its `id64`
 and back.
 
 ```ts

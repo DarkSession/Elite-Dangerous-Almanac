@@ -24,7 +24,7 @@ entry?.header.appName; // which tool wrote it
 `Loadout` event — a journal line pasted straight in is a valid input, not a special case.
 
 To go from a payload to something you can ask questions of, hand it to
-{@link ships!ShipLoadout} instead:
+{@link ships!ShipLoadout | ShipLoadout} instead:
 
 ```ts
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

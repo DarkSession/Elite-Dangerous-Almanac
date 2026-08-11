@@ -78,7 +78,19 @@ export interface PreEngineeredVariant {
     readonly symbol: string;
     /** The base module's display name, e.g. `"Rail Gun"`. */
     readonly name: string;
-    /** The blueprint baked in at purchase, e.g. `"RailGun_LongShot"`. Joins to `BLUEPRINTS`. */
+    /**
+     * The blueprint baked in at purchase, e.g. `"RailGun_LongShot"`. Joins to `BLUEPRINTS`.
+     *
+     * @remarks
+     * On a reward variant this **identifies** the article rather than reproducing it.
+     * Alongside its blueprint and effect, a reward carries hand-set modifier overrides no
+     * blueprint grants — that is what makes it a reward rather than a shortcut — so
+     * rolling this recipe to this {@link PreEngineeredVariant.grade | grade} does not
+     * arrive at the same module, and `getBlueprintCost` (in `ships/blueprint-costs`)
+     * against it prices ordinary engineering rather than the reward. Read
+     * {@link PreEngineeredVariant.modifiers | modifiers} for what the article actually
+     * carries.
+     */
     readonly blueprint: string;
     /** The blueprint grade already applied (1–5). */
     readonly grade: number;
