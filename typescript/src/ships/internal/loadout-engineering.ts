@@ -178,11 +178,11 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  * the recipe list it, and `BLUEPRINTS` keys it under nothing else.
  *
  * Everything else is excluded by not being a generic spelling, by the signature, or by
- * not being sold on that module. `Armour_Explosive` rolls exactly like
- * `ShieldBooster_Explosive` and still never stands in for it, because it is a family's own
- * id rather than a generic one; `Misc_LightWeight` is generic and fails on the signature
- * instead where the family id is a weapon's `Weapon_LightWeight`, which cuts distributor
- * draw where the generic one does not touch it.
+ * not being sold on that module. `Armour_Explosive` shares `ShieldBooster_Explosive`'s
+ * signature and still never stands in for it, because it is a family's own id rather than
+ * a generic one. `Misc_LightWeight` is generic, so the signature is what stops it: a
+ * weapon's Lightweight is `Weapon_LightWeight`, which cuts distributor draw where the
+ * generic recipe touches only integrity and mass.
  *
  * @internal
  */
