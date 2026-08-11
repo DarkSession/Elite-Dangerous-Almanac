@@ -215,8 +215,7 @@ test('fine-grained package subpaths resolve', () => {
 });
 
 test('heavy catalogues stay on explicit subpaths', async () => {
-    const [root, astro, ships, planetary, nebulae, modules] = await Promise.all([
-        import('@elite-dangerous-almanac/core'),
+    const [astro, ships, planetary, nebulae, modules] = await Promise.all([
         import('@elite-dangerous-almanac/core/astro'),
         import('@elite-dangerous-almanac/core/ships'),
         import('@elite-dangerous-almanac/core/astro/nebulae-planetary'),
@@ -225,7 +224,6 @@ test('heavy catalogues stay on explicit subpaths', async () => {
     ]);
 
     for (const catalogue of ['PLANETARY_NEBULAE', 'ALL_NEBULAE']) {
-        assert.ok(!(catalogue in root), `${catalogue} leaked into the root barrel`);
         assert.ok(!(catalogue in astro), `${catalogue} leaked into the astro barrel`);
     }
     for (const catalogue of [
@@ -235,7 +233,6 @@ test('heavy catalogues stay on explicit subpaths', async () => {
         'UTILITY_MODULES',
         'ALL_MODULES',
     ]) {
-        assert.ok(!(catalogue in root), `${catalogue} leaked into the root barrel`);
         assert.ok(!(catalogue in ships), `${catalogue} leaked into the ships barrel`);
     }
     for (const costSymbol of [
@@ -246,7 +243,6 @@ test('heavy catalogues stay on explicit subpaths', async () => {
         'EXPERIMENTAL_EFFECT_COSTS',
         'getExperimentalEffectCost',
     ]) {
-        assert.ok(!(costSymbol in root), `${costSymbol} leaked into the root barrel`);
         assert.ok(!(costSymbol in ships), `${costSymbol} leaked into the ships barrel`);
     }
 
@@ -256,8 +252,7 @@ test('heavy catalogues stay on explicit subpaths', async () => {
 });
 
 test('codex-region geometry stays on its explicit lookup subpath', async () => {
-    const [root, astro, lookup] = await Promise.all([
-        import('@elite-dangerous-almanac/core'),
+    const [astro, lookup] = await Promise.all([
         import('@elite-dangerous-almanac/core/astro'),
         import('@elite-dangerous-almanac/core/astro/codex-region-lookup'),
     ]);
@@ -270,7 +265,6 @@ test('codex-region geometry stays on its explicit lookup subpath', async () => {
         'CODEX_REGION_MAP_LY_PER_CELL',
     ];
     for (const symbol of runtimeSymbols) {
-        assert.ok(!(symbol in root), `${symbol} leaked into the root barrel`);
         assert.ok(!(symbol in astro), `${symbol} leaked into the astro barrel`);
         assert.ok(symbol in lookup, `${symbol} is missing from the direct lookup leaf`);
     }
@@ -280,19 +274,13 @@ test('codex-region geometry stays on its explicit lookup subpath', async () => {
         'Inner Orion Spur',
     );
 
-    const [rootTypes, astroTypes, lookupTypes] = await Promise.all([
-        readFile(new URL('./dist/index.d.ts', import.meta.url), 'utf8'),
+    const [astroTypes, lookupTypes] = await Promise.all([
         readFile(new URL('./dist/astro/index.d.ts', import.meta.url), 'utf8'),
         readFile(new URL('./dist/astro/codex-region-lookup.d.ts', import.meta.url), 'utf8'),
     ]);
     const declarationsOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, '');
     for (const symbol of [...runtimeSymbols, 'CodexRegionPoint', 'BoxelCodexRegionLookup']) {
         const name = new RegExp(`\\b${symbol}\\b`);
-        assert.doesNotMatch(
-            declarationsOnly(rootTypes),
-            name,
-            `${symbol} leaked into root declarations`,
-        );
         assert.doesNotMatch(
             declarationsOnly(astroTypes),
             name,
@@ -305,15 +293,12 @@ test('codex-region geometry stays on its explicit lookup subpath', async () => {
         );
     }
 
-    const [rootGraph, astroGraph, lookupGraph] = await Promise.all([
-        readReachableJs(new URL('./dist/index.js', import.meta.url)),
+    const [astroGraph, lookupGraph] = await Promise.all([
         readReachableJs(new URL('./dist/astro/index.js', import.meta.url)),
         readReachableJs(new URL('./dist/astro/codex-region-lookup.js', import.meta.url)),
     ]);
-    assert.ok(rootGraph.length < 1.5 * 1024 * 1024, `root graph is ${rootGraph.length} bytes`);
     assert.ok(astroGraph.length < 256 * 1024, `astro graph is ${astroGraph.length} bytes`);
     assert.ok(lookupGraph.length > 400 * 1024, 'lookup traversal missed its geometry');
-    assert.doesNotMatch(rootGraph, /scaleNumerator/);
     assert.doesNotMatch(astroGraph, /scaleNumerator/);
     assert.match(lookupGraph, /scaleNumerator/);
 
@@ -525,13 +510,23 @@ test('every runtime entry has one explicit public subpath', async () => {
     const builtSpecifiers = (await publicEntries()).map(({ specifier }) => specifier).sort();
     const exportedSpecifiers = publicExports
         .filter(([, target]) => 'import' in target)
-        .map(([subpath]) =>
-            subpath === '.'
-                ? '@elite-dangerous-almanac/core'
-                : `@elite-dangerous-almanac/core/${subpath.slice(2)}`,
-        )
+        .map(([subpath]) => `@elite-dangerous-almanac/core/${subpath.slice(2)}`)
         .sort();
     assert.deepEqual(exportedSpecifiers, builtSpecifiers);
+});
+
+test('the package has no root entry', async () => {
+    const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
+    assert.ok(!Object.hasOwn(pkg.exports, '.'));
+    for (const field of ['main', 'module', 'types']) assert.ok(!Object.hasOwn(pkg, field));
+    await assert.rejects(import('@elite-dangerous-almanac/core'), {
+        code: 'ERR_PACKAGE_PATH_NOT_EXPORTED',
+    });
+    for (const file of ['index.js', 'index.d.ts']) {
+        await assert.rejects(readFile(new URL(`./dist/${file}`, import.meta.url)), {
+            code: 'ENOENT',
+        });
+    }
 });
 
 test('the build does not emit entry artifacts for inaccessible internal modules', async () => {
@@ -565,7 +560,6 @@ test('each barrel ships its orientation documentation in the declarations', asyn
     // they just imported finds a bare export list, and the guidance that orients the
     // feature area ships only to the repository.
     const barrels = [
-        'index.d.ts',
         'astro/index.d.ts',
         'ships/index.d.ts',
         'materials/index.d.ts',
@@ -582,10 +576,8 @@ test('each barrel ships its orientation documentation in the declarations', asyn
             `dist/${file} has no @packageDocumentation`,
         );
         // Match on size, not on prose: a reworded intro is fine, a lost one is not.
-        // The floor only has to separate "the guide" from "a stub" — the root barrel
-        // is the shortest real block at ~320 chars (it only points at the subpaths),
-        // the feature-area barrels run from ~980 to ~3100. Kept well clear of 320 so
-        // that trimming a sentence does not trip it with a misleading message.
+        // The floor only has to separate "the guide" from "a stub". Feature-area
+        // barrels run from ~980 to ~3100 characters, so this stays deliberately low.
         const block = text.slice(0, text.indexOf('*/'));
         assert.ok(
             block.length > 150,

@@ -34,8 +34,8 @@ import { ProceduralSystem } from "@elite-dangerous-almanac/core/astro/procedural
 import { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
 ```
 
-The root entry point re-exports every feature area and is intended for consumers
-whose bundler performs tree shaking.
+There is no package-wide root entry. Choose a feature area when a bundler will tree
+shake it, or a leaf subpath when the import graph must be explicit.
 
 ## Quick start
 
@@ -78,7 +78,7 @@ catalogues are not exported by the general barrels.
 
 The codex-region coordinate lookup likewise stays on its explicit
 `astro/codex-region-lookup` subpath because its map geometry is large. Lightweight codex
-metadata and id/name lookups remain on the general astro and root barrels.
+metadata and id/name lookups remain on the general astro barrel.
 
 ### Ships and loadouts
 
