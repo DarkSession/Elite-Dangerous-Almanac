@@ -174,7 +174,7 @@ test('getNebulaByName returns null for an unknown name or the wrong catalogue', 
     assert.equal(getNebulaByName('Witch Head Nebula', PLANETARY_NEBULAE), null);
 });
 
-test('getNebulaByName normalizes a caller-supplied catalogue as well as the argument', () => {
+test('getNebulaByName normalizes a caller-supplied catalogue and skips a non-string name', () => {
     const padded = { ...REAL_NEBULAE[0]!, name: `  ${REAL_NEBULAE[0]!.name}  ` };
     assert.equal(getNebulaByName(REAL_NEBULAE[0]!.name, [padded]), padded);
     const untyped = [{ ...REAL_NEBULAE[0]!, name: undefined }] as unknown as Nebula[];
