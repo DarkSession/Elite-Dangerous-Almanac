@@ -129,7 +129,6 @@
  *
  * ```ts
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
- * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
  *
  * const build = ShipLoadout.empty('Anaconda');
  *
@@ -137,7 +136,7 @@
  * build.slots()[0]?.key; // -> the key setModule takes
  *
  * // Only the modules this mount will accept, by size and restriction.
- * build.modulesForSlot('FrameShiftDrive', CORE_MODULES);
+ * build.modulesForSlot('FrameShiftDrive');
  * ```
  *
  * @packageDocumentation

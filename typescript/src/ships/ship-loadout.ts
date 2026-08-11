@@ -116,6 +116,7 @@ import { armourMetrics, type ArmourMetrics } from './armour.js';
 import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.js';
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
+import { ALL_MODULES } from './modules-all.js';
 import type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
@@ -853,13 +854,11 @@ export class ShipLoadout {
     }
 
     /**
-     * The modules from a catalogue that fit a given slot — its size, kind and any
-     * restriction all satisfied.
+     * The modules that fit a given slot — its size, kind and any restriction all
+     * satisfied.
      *
      * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
-     * @param catalogue - A module catalogue to filter (e.g. `INTERNAL_MODULES`); pass
-     * only the category you need so bundlers keep the rest out.
-     * @returns The fitting modules, in catalogue order.
+     * @returns The fitting modules, in complete-catalogue order.
      * @throws {RangeError} If the hull has no slot with that key.
      * @throws {TypeError} If the hull has no known slot layout (a SLEF build on an
      * unrecognised hull).
@@ -867,15 +866,12 @@ export class ShipLoadout {
      * ```ts
      * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
      *
-     * import { ALL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-all';
-     * // Pass ALL_MODULES to search every category (a fuel tank, say, is a STANDARD
-     * // module yet fits optional slots); pass one category to narrow the bundle.
-     * ShipLoadout.empty('Anaconda').modulesForSlot('FrameShiftDrive', ALL_MODULES);
+     * ShipLoadout.empty('Anaconda').modulesForSlot('FrameShiftDrive');
      * ```
      */
-    modulesForSlot(slotKey: string, catalogue: readonly OutfittingModule[]): OutfittingModule[] {
+    modulesForSlot(slotKey: string): OutfittingModule[] {
         const slot = this.#requireSlot(slotKey);
-        return catalogue.filter(
+        return ALL_MODULES.filter(
             (module) => moduleFitError(this.#shipSymbol, slot, module) === null,
         );
     }
