@@ -1,15 +1,13 @@
 /**
  * Guards the shared `data/ships/*.jsonc` files themselves, independently of the
  * modules that consume them. The sibling `src/astro/data-files.test.ts` explains the
- * portability invariants in full; the same ones apply here. This domain also has a
- * language-neutral JSON Schema because the payloads drive public calculations:
+ * shared invariants in full — portable strict JSON, attribution kept out of the payload,
+ * and schema conformance — and the same ones apply here, against
+ * `schemas/ships/catalogues.schema.json`.
  *
- * 1. Every file is still strict JSON once comments are blanked (no trailing commas,
- *    so any language's standard parser accepts it).
- * 2. Attribution stays in the comment header, never in the parsed payload — every
- *    payload byte is inlined into consumers' bundles.
- * 3. Every record matches `schemas/ships/catalogues.schema.json`.
- * 4. Symbol-keyed catalogues contain no duplicate symbols.
+ * This domain adds rules of its own, each argued where it is asserted below: a module
+ * file states its category once, in its name; a module record belongs to the file it
+ * sits in; and a symbol-keyed catalogue holds no duplicate symbols.
  */
 
 import { test } from 'node:test';
