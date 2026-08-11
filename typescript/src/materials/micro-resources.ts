@@ -44,7 +44,12 @@
  */
 
 import { ALL_MICRO_RESOURCES } from './micro-resources-all.js';
-import { findByKey, filterByKey } from '../internal/registry-index.js';
+import {
+    createKeyIndex,
+    filterByKey,
+    findByKey,
+    findInKeyIndex,
+} from '../internal/registry-index.js';
 
 /**
  * Frontier's micro-resource category — which on-foot inventory a micro resource
@@ -79,6 +84,9 @@ export interface MicroResource {
     readonly name: string;
 }
 
+const MICRO_RESOURCES_BY_SYMBOL = /* @__PURE__ */ createKeyIndex(ALL_MICRO_RESOURCES, 'symbol');
+const MICRO_RESOURCES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_MICRO_RESOURCES, 'name');
+
 /**
  * Look up a micro resource by its Frontier symbol / journal id (case-insensitive).
  *
@@ -104,7 +112,9 @@ export function getMicroResourceBySymbol(
     symbol: string,
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource | null {
-    return findByKey(microResources, 'symbol', symbol);
+    return microResources === ALL_MICRO_RESOURCES
+        ? findInKeyIndex(MICRO_RESOURCES_BY_SYMBOL, symbol)
+        : findByKey(microResources, 'symbol', symbol);
 }
 
 /**
@@ -126,7 +136,9 @@ export function getMicroResourceByName(
     name: string,
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource | null {
-    return findByKey(microResources, 'name', name);
+    return microResources === ALL_MICRO_RESOURCES
+        ? findInKeyIndex(MICRO_RESOURCES_BY_NAME, name)
+        : findByKey(microResources, 'name', name);
 }
 
 /**

@@ -15,16 +15,11 @@ import { resolveBlueprintForModule } from '../blueprint-journal.js';
 import { EXPERIMENTAL_EFFECTS } from '../experimental-effects.js';
 import { getPreEngineeredVariants } from '../pre-engineered.js';
 import { baseStats, fieldForLabel } from './module-stat-labels.js';
-import { ALL_MODULES } from '../modules-all.js';
 import type { OutfittingModule } from '../modules.js';
 import type { AvailableBlueprint } from '../ship-loadout.js';
+import { builtInModuleBySymbol } from './module-symbol-index.js';
 
 export { baseStats };
-
-/** The complete catalogue is already part of the loadout facade; index it once. */
-const MODULE_BY_SYMBOL: ReadonlyMap<string, OutfittingModule> = new Map(
-    ALL_MODULES.map((module) => [module.symbol.toLowerCase(), module]),
-);
 
 /** Engineering groups whose non-menu recipes identify final bought articles. */
 const GUARDIAN_WEAPON_GROUPS: ReadonlySet<string> = new Set([
@@ -35,7 +30,7 @@ const GUARDIAN_WEAPON_GROUPS: ReadonlySet<string> = new Set([
 
 /** Resolve a module's complete catalogue record across every category. @internal */
 export function statFor(item: string): OutfittingModule | null {
-    return MODULE_BY_SYMBOL.get(item.trim().toLowerCase()) ?? null;
+    return builtInModuleBySymbol(item);
 }
 
 /**
