@@ -1060,9 +1060,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Display names:** each blueprint and experimental effect carries its `name`.
   Effect names are the English strings observed in-game. Blueprint names are coriolis
   `blueprint.name` for the 81 blueprints coriolis carries, and the Operations dossier's
-  display label for the other 28 — the 27 Operations keys and `GuardianModule_Sturdy`,
-  which is journal-keyed but absent from coriolis, so its name comes from the same registry
-  as its two `recipe_`-prefixed Inara aliases. Read them from
+  display label for the other 26 — the 25 Operations keys and `GuardianModule_Sturdy`,
+  which is journal-keyed but absent from coriolis, so its name comes from the Inara
+  registry like the Operations keys' own. Read them from
   `getBlueprint(fdname)?.name` / `getExperimentalEffect(fdname)?.name`.
   - **These are the short modifier labels, not the full outfitting-panel
     strings — deliberately.** The panel calls `Weapon_LongRange` "Long-Range Weapon",
@@ -1077,14 +1077,13 @@ up straight through with no disambiguation at all. Both paths are evidence that
     and `special_choke_canister` **"Ion Disruption"** (not "Ion Disruptor").
 - **Blueprint journal names — three collisions, stored separately from mechanics.**
   `blueprint-journal-names.jsonc` maps a recipe id only when the id the game writes for it
-  is a key some _other_ record already answers to. The other 106 need no entry for two
+  is a key some _other_ record already answers to. The other 104 need no entry for two
   different reasons — 79
   because their key already is the id a journal writes (including Anti-Guardian Zone
-  Resistance as `GuardianModule_Sturdy`), and 27 because they are Operations ids for
+  Resistance as `GuardianModule_Sturdy`), and 25 because they are Operations ids for
   which no journal spelling has been observed — 21 of them recipes a module is sold
-  already carrying, four recipes a player rolls at an engineer, and two the community
-  spellings of Anti-Guardian Zone Resistance, whose journal id is a key here in its own
-  right. The three that do are `Scanner_LongRange` and `Scanner_WideAngle`, coriolis keys
+  already carrying and four recipes a player rolls at an engineer. The three that do are
+  `Scanner_LongRange` and `Scanner_WideAngle`, coriolis keys
   for recipes the game writes as `Sensor_LongRange` / `Sensor_WideAngle` — the same ids it
   writes for the sensor suites' own Long Range and Wide Angle, which are different recipes
   — and `MC_Overcharged`, its key for the multi-cannon Overcharged, which the game writes
@@ -1144,11 +1143,16 @@ up straight through with no disambiguation at all. Both paths are evidence that
     consistent with their neighbours; it does not make them right, and no observation
     covers them either way. A consumer matching a journal `BlueprintName` should not expect
     these seven to be what it carries.
-  - **The two Anti-Guardian aliases keep their `recipe_` prefix**, and are the only keys
-    that do. For that recipe the real name _is_ known — `GuardianModule_Sturdy` — so they
-    are not best guesses at a journal id but declared Inara-only spellings, kept so a build
-    carrying either still resolves; stripping `recipe_guardianmodule_sturdy` would also
-    collide with the real key.
+  - **No key keeps the `recipe_` prefix, including the Anti-Guardian ones.** Inara
+    publishes that recipe twice — `recipe_guardianmodule_sturdy` and
+    `recipe_guardianweapon_sturdy` — but its real name _is_ known,
+    `GuardianModule_Sturdy`, so neither is a best guess at a journal id the way the other
+    Operations keys are. Stripping the prefix makes the first of the two the real key
+    itself (every lookup matches case-insensitively) and the second a weapon-side spelling
+    of a recipe the game writes the module way on weapons too. Storing either as a second
+    record of the same recipe is rejected: it is a copy that can drift from the one the
+    game names, no observed journal, SLEF export or corpus build carries a prefixed id
+    (see above), and nothing else in this catalogue keys one recipe twice.
 
   The registry exposes **one displayed total per grade**, not a roll-bounded range, so each
   feature stores that total as a fixed value (`min == max`).
@@ -1175,17 +1179,14 @@ up straight through with no disambiguation at all. Both paths are evidence that
   pre-engineering; the general/core/optional recipes (fuel scoop, laser plasma-conversion)
   span grades 1–5, and the Anti-Guardian recipe is grade 1 only.
 
-- **Anti-Guardian Zone Resistance is keyed three times: once as the game spells it, twice
-  as the registries do.** `blueprints.jsonc` stores the one player-facing blueprint under
+- **Anti-Guardian Zone Resistance is keyed once, as the game spells it.**
+  `blueprints.jsonc` stores the one player-facing blueprint under
   **`GuardianModule_Sturdy`** — the id a journal writes, and the only one any engineering
-  menu lists — and again under the registry's `recipe_guardianmodule_sturdy` and
-  `recipe_guardianweapon_sturdy`, so a journal or saved build referencing any of the three
-  resolves. All three carry the same display name, define grade 1 only, expose the
-  `GuardianModuleResistance` activation Inara displays as +100%, and carry the same recipe
-  (2×`TG_Abrasion03`,
-  1×`TG_CausticCrystal`); the two registry spellings are the journal id's other names.
-  They are intentional duplicates,
-  not a copy-paste slip — do not dedupe them.
+  menu lists. It defines grade 1 only, exposes the `GuardianModuleResistance` activation
+  Inara displays as +100%, and costs 2×`TG_Abrasion03`, 1×`TG_CausticCrystal`. Inara's
+  `recipe_guardianmodule_sturdy` and `recipe_guardianweapon_sturdy` are that registry's
+  spellings of this same recipe and are **not** stored beside it: they carried an identical
+  record three times over, which is a roll that can drift from the one the game names.
   - **The journal writes `GuardianModule_Sturdy`, on weapons as well as modules.** A
     `StoredModules` capture contributed by the repository owner (2026-08-07 UTC) carries a
     **Guardian Gauss Cannon** — a weapon — with `"EngineerModifications":
@@ -1193,9 +1194,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
     whichever kind of module the recipe sits on, and there is no evidence the game ever
     writes a weapon spelling: `recipe_guardianweapon_sturdy` is a registry key, not an
     observed journal one. EDSY names the blueprint `GuardianModule_Sturdy` for the same
-    reason. **So `GuardianModule_Sturdy` is the key all nine offering menus list**, and
-    the two registry spellings are stored beside it as aliases that resolve to the same
-    recipe. The observed journal name is the identity and the community names are aliases.
+    reason. **So `GuardianModule_Sturdy` is the key all nine offering menus list**, and it
+    is the recipe's identity: the community spellings name the same thing and add nothing
+    a consumer can be handed by the game.
 - **Anti-Guardian Zone Resistance and Plasma conversion are blueprints, not experimental
   effects.** The Anti-Guardian journal observation puts `GuardianModule_Sturdy` in the
   module's `EngineerModifications` / blueprint position with `Level` 1, and Inara publishes
@@ -1407,12 +1408,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     for that reason — coriolis carries no blueprint list for an anti-xeno group, so it is
     EDSY being followed into coriolis's spelling. See "Multi-cannon Overcharged: one
     journal id, two recipes" below for the evidence and for what the split costs.
-  - **The groups name 86 of the 109 blueprints.** The other 23 are accounted for: 21 are
-    Operations keys of modules sold already engineered rather than offered in a menu, and
-    the other two are the registry's spellings of Anti-Guardian Zone Resistance, which every
-    group lists under the journal id `GuardianModule_Sturdy`. Four Operations keys _are_
-    named by a group, because they are recipes a player applies — see "Four Operations
-    recipes are listed by a menu" below.
+  - **The groups name 86 of the 107 blueprints.** The other 21 are accounted for: they are
+    Operations keys of modules sold already engineered rather than offered in a menu. Four
+    Operations keys _are_ named by a group, because they are recipes a player applies — see
+    "Four Operations recipes are listed by a menu" below.
   - **14 modules are bound by the family rule, not by a source row.** EDSY has no live
     entry for `Int_Hyperdrive_Size8_Class{1..5}` or `Int_ShieldGenerator_Size1_Class4`
     (both present but commented out, and both naming their `mtype` — `cfsd` and `isg`),
@@ -1518,9 +1517,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   offer no experimental at all, so 388 of the 1028 grouped modules answer `[]` while still
   having blueprints.
 - **Key form:** the Anti-Guardian blueprint is listed under `GuardianModule_Sturdy`, the id
-  a Loadout writes and the one EDSY uses. The registry's `recipe_guardianmodule_sturdy` and
-  `recipe_guardianweapon_sturdy` are stored in `blueprints.jsonc` beside it so a build
-  carrying either still resolves, but a menu lists the journal spelling.
+  a Loadout writes and the one EDSY uses — the same and only spelling `blueprints.jsonc`
+  keys it under.
 - **A Guardian module has no experimental slot.** This is a rule about the recipe rather
   than about any one module: **Anti-Guardian Zone Resistance carries no experimental
   effect, and on a Guardian _module_ — power plant, power distributor, hull/module/shield

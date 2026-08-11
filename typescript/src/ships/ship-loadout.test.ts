@@ -1516,7 +1516,7 @@ test('Anti-Guardian Zone Resistance grants a capability to modules and weapons',
             ShipLoadout.empty('Anaconda')
                 .setModule(refused.slot, mod(refused.symbol))
                 .applyBlueprint(refused.slot, refused.blueprint, { grade: capability.grade }),
-        /is not offered blueprint "recipe_guardianmodule_sturdy"/,
+        /is not offered blueprint "GuardianModule_Sturdy"/,
     );
 
     // A Guardian module still has no experimental slot. Its ordinary twin takes an
@@ -1527,7 +1527,7 @@ test('Anti-Guardian Zone Resistance grants a capability to modules and weapons',
     );
     assert.throws(
         () =>
-            plant.applyBlueprint('PowerPlant', 'recipe_guardianmodule_sturdy', {
+            plant.applyBlueprint('PowerPlant', 'GuardianModule_Sturdy', {
                 grade: 1,
                 experimental: 'special_powerplant_lightweight',
             }),

@@ -7638,33 +7638,5 @@
         "count": 1
       }
     ]
-  },
-  "recipe_guardianmodule_sturdy": {
-    "1": [
-      {
-        "symbol": "tg_abrasion03",
-        "name": "Hardened Surface Fragments",
-        "count": 2
-      },
-      {
-        "symbol": "tg_causticcrystal",
-        "name": "Caustic Crystal",
-        "count": 1
-      }
-    ]
-  },
-  "recipe_guardianweapon_sturdy": {
-    "1": [
-      {
-        "symbol": "tg_abrasion03",
-        "name": "Hardened Surface Fragments",
-        "count": 2
-      },
-      {
-        "symbol": "tg_causticcrystal",
-        "name": "Caustic Crystal",
-        "count": 1
-      }
-    ]
   }
 }

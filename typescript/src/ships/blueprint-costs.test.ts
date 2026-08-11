@@ -76,13 +76,10 @@ test('the one empty per-roll recipe is preserved as [] rather than null', () => 
     assert.deepEqual(empty, ['CargoRack_IncreasedCapacity:5']);
 });
 
-test('duplicate recipe spellings retain identical material costs', () => {
+test('a colliding journal spelling bills the same materials as the recipe it names', () => {
     for (const [fdname, journalName] of Object.entries(engineeringFixture.journalNames.map)) {
         assert.deepEqual(BLUEPRINT_COSTS[fdname], BLUEPRINT_COSTS[journalName], fdname);
     }
-    const guardian = BLUEPRINT_COSTS['GuardianModule_Sturdy'];
-    assert.deepEqual(BLUEPRINT_COSTS['recipe_guardianmodule_sturdy'], guardian);
-    assert.deepEqual(BLUEPRINT_COSTS['recipe_guardianweapon_sturdy'], guardian);
 });
 
 test('getBlueprintCost for grade 1 is one roll of its grade-1 recipe', () => {
