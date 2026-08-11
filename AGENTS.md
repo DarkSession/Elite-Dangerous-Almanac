@@ -84,7 +84,7 @@ Keep historical facts only when they explain the current state:
 
 A provenance file answers "where did this value come from, and what was done to it". How the library computes, accepts or refuses something is documented on the symbol that does it — its TSDoc — and never in `SOURCES.md`: two homes for one explanation is how the last one grew to three thousand lines and buried the provenance inside it. The same goes for narrating the test suite ("`x.test.ts` asserts …", "pinned in `fixtures/…` under `counts`") and for listing a module's API. Naming the *evidence* for a value is provenance and belongs there; explaining the code that consumes it does not.
 
-Where an explanation spans several symbols and has nowhere obvious to live, `BEHAVIOUR-DOCS-PROPOSAL.md` sets out the options and the recommendation; settle it there rather than parking the prose in a provenance file.
+Where an explanation spans several symbols and has nowhere obvious to live, it becomes a guide page under `typescript/docs/guides/`, which `typedoc.json` already publishes to the wiki — `Build-metrics.md` and `Engineering.md` are the two the ships domain needed. Put it there rather than parking it in a provenance file or bloating one symbol's page with an argument that is not about it.
 
 ### Doc-generation toolchain
 

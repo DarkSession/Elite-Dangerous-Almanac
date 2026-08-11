@@ -6,7 +6,7 @@ title: Building an outfitting screen
 
 Everything a shipyard screen shows, end to end: enumerate the hull's mounts, offer only
 what fits, fit it, and report what the build now does. All of it hangs off
-{@link ships!ShipLoadout}.
+{@link ships!ShipLoadout | ShipLoadout}.
 
 ## Start from a hull, or from a capture
 

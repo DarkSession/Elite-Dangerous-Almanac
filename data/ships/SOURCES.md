@@ -167,9 +167,9 @@ differs from coriolis's.**
 - **Lynx Highliner** `Slot01_Size6`, **`Passenger01`–`03`**, `Slot02_Size5`, …
 - **Panther Clipper Mk II** and **Type-11 Prospector** are carried too, though the
   numbering rules derive them exactly. They are kept so the stored table matches EDSY's
-  13 entries one for one and re-deriving it is a straight comparison; a test asserts the
-  rules still produce those two unaided, so neither the rule nor its coverage is
-  weakened by the override sitting on top.
+  13 entries one for one and re-deriving it is a straight comparison. The numbering rules
+  still produce those two unaided, so neither the rule nor its coverage is weakened by the
+  override sitting on top.
 
 **The `_SizeN` suffix is Frontier's, and on three hulls it is wrong.** The Keelback, Asp
 Scout and Type-7 name mounts with a class the hull does not have there. That is the
@@ -194,8 +194,8 @@ EDSY's journal import map lists `HUGEMININGHARDPOINT`, `LARGEMININGHARDPOINT`,
 `FIGHTERBAY` as slot-name prefixes it must recognise, which is the other half of the
 evidence that these are the game's strings.
 
-**Checked against real captures.** Five exports are asserted key by key against the
-hull's enumerated layout in `slots.test.ts`: `slef-the-deep-black.jsonc` (Caspian
+**Checked against real captures.** Five exports were compared key by key against the
+hull's enumerated layout: `slef-the-deep-black.jsonc` (Caspian
 Explorer), `slef-inara-type-11.jsonc`, `slef-inara-lynx-highliner.jsonc`,
 `slef-inara-panther-mkii.jsonc` and `slef-inara-cutter-antixeno.jsonc`. The Caspian
 capture is the load-bearing one: its internals read `Slot01_Size7`…`Slot10_Size3`,
@@ -717,7 +717,7 @@ heuristic does not keep rediscovering them:
 `cost` is the module's standard list price in credits, before any station discount or
 markup — the figure an outfitting screen quotes at 0% discount. On hulls, `hullCost` is
 the bare hull and `retailCost` the hull with its default module loadout (`retailCost` is
-never below `hullCost`, and a test asserts it). Sources are coriolis-data's `cost` per
+never below `hullCost`). Sources are coriolis-data's `cost` per
 module and `properties.hullCost` / `retailCost` per ship, with EDSY filling the records
 coriolis does not price (the newer hulls' armour and Operations additions) and supplying
 the Lynx Highliner, which has no coriolis entry.
@@ -1462,11 +1462,6 @@ up straight through with no disambiguation at all. Both paths are evidence that
   offered `Scanner_LongRange` — and it is only well defined while no menu offers two
   blueprints written the same way, which holds for all 53.
 
-  **The join lives in a module of its own so a menu-only consumer does not import the
-  recipes.** `ships/blueprint-journal` depends on both catalogues;
-  `engineering-options` carries no recipe data in its graph. `package.test.mjs` asserts
-  that separation and bounds the menu graph at 96 KB.
-
   The evidence for the collision is in `edsy.js` — the file carrying `Build.fromJournal`
   — rather than in the `eddb.js` tables the rest of this section reads, which is why both
   EDSY files are pinned at the head of this document.
@@ -1563,12 +1558,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     Guardian power plant, distributor or hull reinforcement package at all. Its
     Guardian-weapon entries are final pre-engineered articles, a separate case recorded
     below.
-  - **What a consumer sees:** `getExperimentalsForModule` answers `[]` for the 25 modules
-    in the three split families above (`guardianPowerPlants`, `guardianPowerDistributors`
-    and `guardianHullReinforcements`), `ShipLoadout.applyBlueprint` refuses an
-    `experimental` on them, and `getExperimentalsForBlueprint('GuardianModule_Sturdy')`
-    answers `[]` rather than a union across the nine groups that offer the recipe.
-    Blueprints are unaffected on every module.
+  - The 25 modules in the three split families above (`guardianPowerPlants`,
+    `guardianPowerDistributors` and `guardianHullReinforcements`) therefore carry no
+    experimental effects in the catalogue at all. Blueprints are unaffected on every
+    module.
 - **Multi-cannon Overcharged: one journal id, two recipes.** `multiCannons` and
   `antiXenoMultiCannons` list **`MC_Overcharged`** where every other weapon menu lists
   `Weapon_Overcharged`, and the collision map pairs those two ids. Same
@@ -1771,8 +1764,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
     **plus a Merc-Coin amount** — the shape of a blueprint rolled at an engineer, not of a
     module bought ready-made. The Burst and Beam pages are `/elite/blueprint/202/` and
     `/elite/blueprint/203/`; the Pulse page exposes the same five damage-share totals.
-  - **What a consumer sees:** one more id on 40 fuel scoops and on 12 modules in each laser
-    group. No experimental list moves.
+  - **Scope of the addition:** one more id on 40 fuel scoops and on 12 modules in each
+    laser group. No experimental list moves.
 
 ## Decorative modifications
 
@@ -1838,17 +1831,6 @@ up straight through with no disambiguation at all. Both paths are evidence that
   repository owner's, recorded because it is what the transformation is known as and is
   more use to a UI than a bare colour; if the panel wording is ever read off the game, it
   replaces this verbatim.
-- **What a consumer gets.** `getBlueprint('Decorative_Green')` answers `null`, because it
-  is not a blueprint; `isDecorativeModification` is what tells that apart
-  from an id the library has never heard of. `ShipLoadout.applyBlueprint` refuses a
-  decorative id with a `TypeError` naming the transformation, not with the `RangeError` a
-  missing grade earns: the id is real, and the refusal has to read that way. Importing a
-  build is unaffected either way — `fromLoadout` stores the `Engineering` block as the
-  journal wrote it and never looks the id up. A build assembled by hand carries the cut
-  only if the consumer folds `modifiers` in themselves, which `computeModifiers` does in
-  three lines; a build imported from a journal already has it, the game's own
-  `Engineering.Modifiers` being exact.
-
 ## Pre-engineered modules
 
 - **File:** `pre-engineered.jsonc`.

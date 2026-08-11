@@ -36,6 +36,10 @@ function jumpRangeOf(journalLine: string) {
   — turning `Loadout` and `FSDJump` events into library objects.
 - **[Building an outfitting screen](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Building-an-outfitting-screen)**
   — mounts, what fits, fitting it, and every metric a shipyard shows.
+- **[Build metrics](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Build-metrics)**
+  — how power, shields, armour, weapons, ammunition and range are computed.
+- **[Engineering](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Engineering)**
+  — what a recipe may go on, what it rolls, and what a roll costs.
 - **[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)**
   — reading and writing loadout exports, and retail against captured credits.
 - **[Systems and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Systems-and-regions)**
