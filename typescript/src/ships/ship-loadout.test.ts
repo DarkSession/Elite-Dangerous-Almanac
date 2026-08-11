@@ -2782,17 +2782,18 @@ test('a fitted module reports its stats before and after engineering', () => {
     assert.equal(after.effectiveStats!.symbol, after.stats!.symbol);
 });
 
-test('a module the catalogues do not carry reports no stats', () => {
-    const build = ShipLoadout.fromLoadout({
-        Ship: 'anaconda',
-        UnladenMass: 500,
-        Modules: [{ Slot: 'Slot01_Size7', Item: 'int_future_module_without_stats' }],
-    });
+test('modules the catalogues do not carry report no stats and unknown power draws', () => {
+    const expected = metrics.unknownPowerDraw;
+    const build = ShipLoadout.fromLoadout(expected.loadout);
     const unknown = build.fittedModuleAt('Slot01_Size7')!;
     assert.equal(unknown.stats, null);
     assert.equal(unknown.effectiveStats, null);
-    // It cannot claim any power either.
-    assert.equal(build.powerBudget().deployed, 0);
+
+    const budget = build.powerBudget();
+    assert.equal(budget.available, expected.available);
+    assert.equal(budget.retracted, expected.retracted);
+    assert.equal(budget.deployed, expected.deployed);
+    assert.deepEqual(budget.unknownDraws, expected.unknownDraws);
 });
 
 test('a fitted zero-mass module contributes zero to unladen mass', () => {
