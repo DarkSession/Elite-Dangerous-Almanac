@@ -238,7 +238,13 @@ export {
     type LoadoutValidationInput,
     type ValidationModule,
 } from './loadout-validation.js';
-export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
+export {
+    getSourceModuleValue,
+    sourcePurchaseFromLoadout,
+    sumSourceModuleValues,
+    type SourceModuleValue,
+    type SourcePurchaseRecord,
+} from './source-purchase.js';
 
 // ── Build metrics: power, shields, armour and weapons (all data-free) ────────
 export { powerBudget, type PowerConsumer, type PowerBand, type PowerBudget } from './power.js';

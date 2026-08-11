@@ -156,7 +156,13 @@ import {
 // type missing from here still reaches consumers.
 export type { FittedModule } from './fitted-module.js';
 export type { LoadoutSlot } from './loadout-slot.js';
-export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.js';
+export {
+    getSourceModuleValue,
+    sourcePurchaseFromLoadout,
+    sumSourceModuleValues,
+    type SourceModuleValue,
+    type SourcePurchaseRecord,
+} from './source-purchase.js';
 export {
     calculateCargoCapacity,
     calculateFuelCapacity,
@@ -668,21 +674,24 @@ export class ShipLoadout {
      * describe the build in hand, so an edit that invalidates one drops it.
      *
      * The two answer different questions and neither substitutes for the other. A
-     * captured price is one commander's purchase at one station, discounts and history
-     * included; the library's own figures are catalogue retail. Export picks between them
+     * captured price belongs to one commander's purchase history, discounts included;
+     * the library's own figures are catalogue retail. Export picks between them
      * explicitly, and quotes retail unless asked otherwise — see
      * {@link LoadoutExportOptions.credits}.
      *
      * @example
      * ```ts
-     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     * import {
+     *     getSourceModuleValue,
+     *     ShipLoadout,
+     * } from '@elite-dangerous-almanac/core/ships/ship-loadout';
      *
      * declare const slefJson: string;
      *
      * const build = ShipLoadout.fromSlef(slefJson);
      * const paid = build.sourcePurchase!;
-     * paid.hullValue;                     // -> 189326510, as captured
-     * paid.valueForSlot('powerplant');    // -> what that plant cost its owner
+     * paid.hullValue; // -> 189326510, as captured
+     * getSourceModuleValue(paid, 'powerplant')?.value; // -> what that plant cost its owner
      *
      * build.removeModule('Slot05_Size4');
      * build.modulesValue;                 // -> null   (the live figure is now unknowable)
@@ -1212,9 +1221,9 @@ export class ShipLoadout {
      * Credits are quoted at **retail** by default: the bare hull's `hullCost` plus every
      * fitted module's catalogue list price, with `Rebuy` 5% of the two. A source's own
      * `HullValue` / `ModulesValue` / `Value` figures are deliberately not quoted here,
-     * because they record one commander's purchase at one station — the Deep Black's
-     * modules are all 12.25% off list — and a station discount is not a property of the
-     * build. They are not lost either: pass `credits: 'source'` to export the
+     * because they record one commander's purchase history — the Deep Black's modules
+     * are all 12.25% off list — and purchase discounts are not a property of the build.
+     * They are not lost either: pass `credits: 'source'` to export the
      * {@link sourcePurchase} record instead, as provenance rather than as a price.
      * @example
      * ```ts

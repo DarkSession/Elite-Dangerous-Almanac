@@ -2,7 +2,7 @@
 
 import { getPreEngineeredVariants } from '../pre-engineered.js';
 import { getPreEngineeredStats, identifyPreEngineeredVariant } from '../pre-engineered-stats.js';
-import { SourcePurchaseRecord } from '../source-purchase.js';
+import { sourcePurchaseFromLoadout, type SourcePurchaseRecord } from '../source-purchase.js';
 import type { OutfittingModule } from '../modules.js';
 import type { LoadoutEvent, LoadoutModule } from '../slef.js';
 import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
@@ -91,6 +91,6 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
         modules,
         moduleStats,
         top,
-        sourcePurchase: SourcePurchaseRecord.fromLoadout(event),
+        sourcePurchase: sourcePurchaseFromLoadout(event),
     };
 }
