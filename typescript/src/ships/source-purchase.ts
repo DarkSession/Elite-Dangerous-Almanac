@@ -117,10 +117,10 @@ export class SourcePurchaseRecord {
      */
     readonly moduleValues: readonly SourceModuleValue[];
     /**
-     * How many modules the capture listed in total, priced or not — the denominator
-     * `moduleValues.length` is the numerator of. A capture lists decorations, the
-     * cockpit and the cargo hatch alongside outfitting modules, so a partially priced
-     * record is the normal case rather than a defect.
+     * How many modules the capture listed in total, priced or not. It is the denominator
+     * when comparing individually priced entries; `moduleValues.length` is the numerator.
+     * A capture lists decorations, the cockpit and the cargo hatch alongside outfitting
+     * modules, so a partially priced record is the normal case rather than a defect.
      */
     readonly moduleCount: number;
 
