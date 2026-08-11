@@ -172,8 +172,8 @@ them, so write the consumer to expect gaps rather than to assume completeness.
 
 A lookup that finds nothing returns `null` — check it. An aggregate that depends on a
 module the catalogue cannot classify is `null` too, with the matching `…Result` property
-naming what was missing, and `build.validation` tells a fit the game could not hold apart
-from one the library could not finish reading:
+naming what was missing, and `build.validation` separates a fit the game would reject
+from one that is merely not ready to fly:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -187,10 +187,10 @@ build.validation.issues; // -> each with a stable code and a severity
 sets both patterns out in full — including why an `incomplete` issue should read
 differently in your UI from an `error`.
 
-For a mixed SLEF file, `inspectSlef` returns the valid entries plus indexed diagnostics,
-where `parseSlef` rejects the whole input on any malformed entry. Both parse the JSON
-first, so both throw `SyntaxError` on input that is not JSON at all — catch that
-separately when the bytes come from somewhere you do not control.
+A journal line is one `Loadout` event, so it parses or it does not. A SLEF *file* can
+hold several builds and be part-good, which is its own question —
+[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)
+covers `parseSlef` against `inspectSlef` and what each does with a bad entry.
 
 ## Next
 

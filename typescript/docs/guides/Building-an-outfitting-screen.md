@@ -137,7 +137,8 @@ running total — its own draw plus every higher-priority group's — fits in `a
 
 ## Tell the user what is wrong
 
-Two different questions, deliberately kept apart:
+Two different questions, deliberately kept apart, and both worth their own place on the
+screen:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -149,22 +150,12 @@ build.validation.complete; // does it have every operational mount, fully classi
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
-An issue carries `severity: 'error' | 'incomplete'` — an error is a fit the game would
-reject, while *incomplete* means the library could not classify something, usually a
-module newer than the catalogue. Render them differently: the first is the user's
-problem, the second is ours.
-
-Aggregate figures that depend on unclassified modules follow the same split — a nullable
-convenience property, and a result that names what was missing:
-
-```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-
-declare const build: ShipLoadout;
-
-build.cargoCapacity; // number | null
-build.cargoCapacityResult; // names every rack it could not classify
-```
+Each issue's `severity` decides how it should read: an `error` is the user's problem and
+belongs on the offending mount, while an `incomplete` is ours and should not be dressed
+up as a mistake they made — the build may be perfectly fine in game.
+[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+sets out what falls under each, and the nullable/`…Result` pairs the aggregate figures
+above come in.
 
 ## Next
 
