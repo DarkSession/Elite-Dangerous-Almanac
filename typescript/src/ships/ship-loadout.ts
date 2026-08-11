@@ -148,39 +148,6 @@ import {
     type ValidationModule,
 } from './loadout-validation.js';
 
-// The calculation and validation companions, re-exported so that reaching for
-// `ShipLoadout` on its own subpath can still name what its results are made of. It is
-// not the whole of its signatures — the metrics and catalogue types come from their own
-// modules — so use the `ships` barrel to name everything from one import. That barrel
-// does not read this list; it names each symbol at the module that declares it, so a
-// type missing from here still reaches consumers.
-export type { FittedModule } from './fitted-module.js';
-export type { LoadoutSlot } from './loadout-slot.js';
-export {
-    getSourceModuleValue,
-    sourcePurchaseFromLoadout,
-    sumSourceModuleValues,
-    type SourceModuleValue,
-    type SourcePurchaseRecord,
-} from './source-purchase.js';
-export {
-    calculateCargoCapacity,
-    calculateFuelCapacity,
-    calculateUnladenMass,
-    type CalculationIssue,
-    type CalculationResult,
-    type FuelCapacity,
-    type LoadoutCalculationModule,
-} from './loadout-calculations.js';
-export {
-    validateLoadout,
-    type LoadoutIssue,
-    type LoadoutIssueCode,
-    type LoadoutValidation,
-    type LoadoutValidationInput,
-    type ValidationModule,
-} from './loadout-validation.js';
-
 /** Optional mass overrides for a single calculation. */
 export interface JumpOptions {
     /** Fuel in the tank for the jump, in tonnes. Defaults to the full main tank. */
@@ -681,10 +648,8 @@ export class ShipLoadout {
      *
      * @example
      * ```ts
-     * import {
-     *     getSourceModuleValue,
-     *     ShipLoadout,
-     * } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     * import { getSourceModuleValue } from '@elite-dangerous-almanac/core/ships/source-purchase';
      *
      * declare const slefJson: string;
      *
