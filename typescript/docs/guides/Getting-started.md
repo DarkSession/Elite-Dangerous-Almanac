@@ -109,9 +109,10 @@ own files on disk are larger. The heaviest imports are all deliberate:
   about 9 KiB. The geometry-backed lookup therefore stays off the root and astro barrels.
 
 `ships/modules` is 311.9 KiB and `ships/modules-all` 310.8 KiB — heavier than the codex
-geometry above, which is why the module documents its own weight. The catalogues a
-lookup falls back to when you pass no argument are all small: materials 16.9 KiB, micro
-resources 14.9 KiB, commodities 29.5 KiB.
+geometry above. It is also the one fallback that costs real weight: of the four
+catalogues a lookup searches when you pass no argument, the other three are small —
+materials 16.9 KiB, micro resources 14.9 KiB, commodities 29.5 KiB — which is why
+`ships/modules` documents its own weight and they do not.
 
 ## First calls
 
