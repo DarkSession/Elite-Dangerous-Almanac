@@ -84,24 +84,23 @@ import { getBlueprintsForModule, getExperimentalsForModule } from './engineering
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
-import { labelsForDamageType, scaleForLabel } from './internal/module-stat-labels.js';
+import { baseStats, labelsForDamageType, scaleForLabel } from './internal/module-stat-labels.js';
 import {
     cloneLoadoutModule,
     cloneModuleStats,
-    firstKeyMatchingCase,
     isBuiltInHullModule,
     isNonOutfittingSlot,
+    matchingKeyIn,
 } from './internal/loadout-state.js';
 import {
     availableBlueprintsFor,
     availableExperimentalsFor,
-    baseStats,
     blueprintAvailableFor,
     experimentalAvailableFor,
     isEngineerable,
     missingBaseLabels,
-    statFor,
 } from './internal/loadout-engineering.js';
+import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
 import {
     armourInputFor,
     effectiveModule,
@@ -547,22 +546,20 @@ export class ShipLoadout {
      * module fields that prevented the calculation.
      */
     get unladenMassResult(): CalculationResult<number> {
-        if (this.#top.UnladenMass !== undefined) return completeResult(this.#top.UnladenMass);
-        return calculateUnladenMass(
-            getShipBySymbol(this.#shipSymbol)?.hullMass ?? null,
-            this.#calculationModules(),
-        );
+        return this.#top.UnladenMass === undefined
+            ? this.#computedUnladenMass()
+            : completeResult(this.#top.UnladenMass);
     }
 
     /**
      * Unladen mass worked out from the hull and the fitted modules, ignoring any figure
-     * an import supplied. `null` when the hull's mass or any module's is unknown.
+     * an import supplied — incomplete when the hull's mass or any module's is unknown.
      */
-    #computedUnladenMass(): number | null {
+    #computedUnladenMass(): CalculationResult<number> {
         return calculateUnladenMass(
             getShipBySymbol(this.#shipSymbol)?.hullMass ?? null,
             this.#calculationModules(),
-        ).value;
+        );
     }
 
     /**
@@ -581,10 +578,7 @@ export class ShipLoadout {
         if (cap?.Main !== undefined && cap.Reserve !== undefined) {
             return completeResult(Object.freeze({ main: cap.Main, reserve: cap.Reserve }));
         }
-        const computed = calculateFuelCapacity(
-            getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity ?? null,
-            this.#calculationModules(),
-        );
+        const computed = this.#computedFuelCapacity();
         if (computed.value === null) return computed;
         return completeResult(
             Object.freeze({
@@ -605,28 +599,29 @@ export class ShipLoadout {
 
     /** Cargo capacity with diagnostics instead of unknown racks collapsing to zero. */
     get cargoCapacityResult(): CalculationResult<number> {
-        if (this.#top.CargoCapacity !== undefined) return completeResult(this.#top.CargoCapacity);
+        return this.#top.CargoCapacity === undefined
+            ? this.#computedCargoCapacity()
+            : completeResult(this.#top.CargoCapacity);
+    }
+
+    /**
+     * Cargo capacity summed from the fitted racks, ignoring any imported figure —
+     * incomplete if a fitted rack's capacity is unknown, since reporting the rest as the
+     * total would understate it.
+     */
+    #computedCargoCapacity(): CalculationResult<number> {
         return calculateCargoCapacity(this.#calculationModules());
     }
 
     /**
-     * Cargo capacity summed from the fitted racks, ignoring any imported figure, or
-     * `null` if a fitted rack's capacity is unknown — reporting the rest as the total
-     * would understate it.
-     */
-    #computedCargoCapacity(): number | null {
-        return calculateCargoCapacity(this.#calculationModules()).value;
-    }
-
-    /**
-     * Fuel capacity from the fitted tanks and the hull, ignoring any import, or `null`
+     * Fuel capacity from the fitted tanks and the hull, ignoring any import — incomplete
      * if a tank is unknown or the hull's reserve is (an unrecognised hull).
      */
-    #computedFuelCapacity(): FuelCapacity | null {
+    #computedFuelCapacity(): CalculationResult<FuelCapacity> {
         return calculateFuelCapacity(
             getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity ?? null,
             this.#calculationModules(),
-        ).value;
+        );
     }
 
     /**
@@ -1236,9 +1231,9 @@ export class ShipLoadout {
      */
     toLoadoutEvent(options: LoadoutExportOptions = {}): LoadoutEvent {
         const hull = getShipBySymbol(this.#shipSymbol);
-        const unladenMass = this.#computedUnladenMass();
-        const cargoCapacity = this.#computedCargoCapacity();
-        const fuel = this.#computedFuelCapacity();
+        const unladenMass = this.#computedUnladenMass().value;
+        const cargoCapacity = this.#computedCargoCapacity().value;
+        const fuel = this.#computedFuelCapacity().value;
         const maxJumpRange = this.#exportableJumpRange(unladenMass);
         return exportLoadoutEvent(
             {
@@ -1301,7 +1296,7 @@ export class ShipLoadout {
         if (drive === null) return null;
         // Mirrors maxJumpRange(): one jump's fuel, no cargo — but off the recomputed
         // mass and tank rather than anything an import supplied.
-        const tank = this.#computedFuelCapacity();
+        const tank = this.#computedFuelCapacity().value;
         if (tank === null) return null;
         return singleJumpRange(unladenMass, Math.min(tank.main, drive.maxFuel), drive);
     }
@@ -1621,17 +1616,10 @@ export class ShipLoadout {
 
     /**
      * The key this build stores the module in `slotKey` under, or `null` when the slot
-     * is empty.
-     *
-     * @remarks
-     * The build's own spelling is authoritative and is never rewritten, so this is the
-     * key every mutation must write through. An exactly spelled key is taken as given;
-     * anything else goes to {@link firstKeyMatchingCase}, which is where the matching
-     * rule and its reasons live.
+     * is empty. {@link matchingKeyIn} is where the matching rule and its reasons live.
      */
     #fittedKey(slotKey: string): string | null {
-        if (this.#modules.has(slotKey)) return slotKey;
-        return firstKeyMatchingCase(this.#modules.keys(), slotKey);
+        return matchingKeyIn(this.#modules, slotKey);
     }
 
     /** Unladen mass plus the given cargo, or throw if the mass is unknown. */
@@ -1905,11 +1893,11 @@ export class ShipLoadout {
     /** Resolve the snapshotted fitted record, or fall back to the built-in catalogue. */
     #statsFor(module: LoadoutModule | null): OutfittingModule | null {
         if (module === null) return null;
-        const stats = this.#moduleStats.get(module.Slot) ?? statFor(module.Item);
+        const stats = this.#moduleStats.get(module.Slot) ?? builtInModuleBySymbol(module.Item);
         if (stats) return stats;
         // Frontier gives some hull families their own cargo-hatch symbol even though the
         // fitted article has the standard hatch's stats. Resolve that family here so its
         // power draw is available as well as its already-known zero mass and price.
-        return isBuiltInHullModule(module) ? statFor('ModularCargoBayDoor') : null;
+        return isBuiltInHullModule(module) ? builtInModuleBySymbol('ModularCargoBayDoor') : null;
     }
 }

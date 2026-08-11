@@ -19,19 +19,12 @@ import type { AvailableBlueprint } from '../ship-loadout.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { normalizeKey } from '../../internal/registry-index.js';
 
-export { baseStats };
-
 /** Engineering groups whose non-menu recipes identify final bought articles. */
 const GUARDIAN_WEAPON_GROUPS: ReadonlySet<string> = new Set([
     'guardianGauss',
     'guardianPlasma',
     'guardianShard',
 ]);
-
-/** Resolve a module's complete catalogue record across every category. @internal */
-export function statFor(item: string): OutfittingModule | null {
-    return builtInModuleBySymbol(item);
-}
 
 /**
  * Modifier labels a recipe changes that **cannot be answered** for a module — the ones
@@ -240,15 +233,28 @@ export function isFinalGuardianWeaponEngineering(item: string, blueprint: string
     return getBlueprint(resolved) !== null && !blueprintAvailableFor(item, blueprint);
 }
 
+/**
+ * The record a menu check reads, with its journal-label base values — or `null` when
+ * there is nothing to offer: an unresolvable symbol, or an article sold in a final state
+ * that accepts no further engineering.
+ */
+function engineerableBase(
+    item: string,
+    statsOverride?: OutfittingModule | null,
+): { stats: OutfittingModule; base: Readonly<Record<string, number>> } | null {
+    const stats = statsOverride ?? builtInModuleBySymbol(item);
+    if (!stats || stats.engineeringLocked) return null;
+    return { stats, base: baseStats(stats) };
+}
+
 /** Blueprints the fitted article's menu offers whose modifiers can also be computed. @internal */
 export function availableBlueprintsFor(
     item: string,
     statsOverride?: OutfittingModule | null,
 ): AvailableBlueprint[] {
-    const stats = statsOverride ?? statFor(item);
-    if (!stats) return [];
-    if (stats.engineeringLocked) return [];
-    const base = baseStats(stats);
+    const engineerable = engineerableBase(item, statsOverride);
+    if (!engineerable) return [];
+    const { stats, base } = engineerable;
     const available: AvailableBlueprint[] = [];
     for (const fdname of getBlueprintsForModule(item)) {
         const blueprint = BLUEPRINTS[fdname];
@@ -268,10 +274,9 @@ export function availableExperimentalsFor(
     item: string,
     statsOverride?: OutfittingModule | null,
 ): string[] {
-    const stats = statsOverride ?? statFor(item);
-    if (!stats) return [];
-    if (stats.engineeringLocked) return [];
-    const base = baseStats(stats);
+    const engineerable = engineerableBase(item, statsOverride);
+    if (!engineerable) return [];
+    const { stats, base } = engineerable;
     return getExperimentalsForModule(item).filter((fdname) => {
         const effect = EXPERIMENTAL_EFFECTS[fdname];
         return (

@@ -7,9 +7,9 @@ import type { LoadoutEvent, LoadoutModule } from '../slef.js';
 import type { BuildSlot } from '../slots.js';
 import {
     cloneLoadoutModule,
-    firstKeyMatchingCase,
     isBuiltInHullModule,
     isNonOutfittingSlot,
+    matchingKeyIn,
 } from './loadout-state.js';
 
 /** The public export options consumed by the serializer. */
@@ -121,9 +121,7 @@ function slotOrderedModules(
     const remaining = new Map(modules);
     const ordered: LoadoutModule[] = [];
     for (const slot of layout) {
-        const key = remaining.has(slot.key)
-            ? slot.key
-            : firstKeyMatchingCase(remaining.keys(), slot.key);
+        const key = matchingKeyIn(remaining, slot.key);
         const module = key === null ? undefined : remaining.get(key);
         if (module && key !== null) {
             ordered.push(module);
@@ -169,9 +167,7 @@ function sourceTotalsHold(
     source: SourcePurchaseRecord,
 ): boolean {
     for (const entry of source.moduleValues) {
-        const key = modules.has(entry.slot)
-            ? entry.slot
-            : firstKeyMatchingCase(modules.keys(), entry.slot);
+        const key = matchingKeyIn(modules, entry.slot);
         const fitted = key === null ? undefined : modules.get(key);
         if (!fitted || normalizeKey(fitted.Item) !== normalizeKey(entry.item)) return false;
     }

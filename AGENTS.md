@@ -207,7 +207,7 @@ All TypeScript commands run from `typescript/`:
 | `npm run check:examples` | type-checks every documented snippet; fails on any that stops compiling |
 | `npm run lint`           | ESLint                                                              |
 | `npm run audit`          | `npm audit --audit-level=low`                                       |
-| `npm run format`         | Prettier over the package, root README, schemas and workflows       |
+| `npm run format`         | Prettier over the package, root `README`/`CONTRIBUTING`/`SECURITY`, schemas and `.github` |
 | `npm run build`          | `copy-notices` → `tsup` → `prune-barrel-imports` → `attach-barrel-docs` → `dist/` (JSON catalogues inlined; **not** minified — see below) |
 | `npm run test:package`   | imports the **built** `dist/` and checks every export subpath        |
 | `npm run docs`           | TypeDoc → `docs/wiki`, then `scripts/build-wiki-sidebar.mjs` and `scripts/postprocess-wiki.mjs` |

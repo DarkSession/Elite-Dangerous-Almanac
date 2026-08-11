@@ -98,7 +98,8 @@ individual module that broke the budget.
 
 A module whose draw the library cannot determine is named in
 {@link ships!PowerBudget.unknownDraws | unknownDraws} rather than counted as zero, so a
-budget is never quietly optimistic about a module newer than the catalogue.
+budget is never quietly optimistic about a module newer than the catalogue. While that
+list is non-empty every other figure is a lower bound, so show it alongside them.
 
 ## Shields and armour share a resistance model
 
@@ -227,21 +228,22 @@ the drive's own engineering are already folded in by the time `ShipLoadout` call
 ## When a metric cannot be computed
 
 A build can contain a module the catalogue cannot classify — usually one newer than the
-data. Metrics that depend on it follow the library's standard split rather than guessing:
-a nullable convenience property, and a result that names what was missing.
+data — and what each metric does about it differs, so do not assume a figure is
+load-bearing:
 
-```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+- `powerBudget()` names it, in the `unknownDraws` the Power section above describes.
+- `unladenMass`, `fuelCapacity` and `cargoCapacity` are the three that come in
+  nullable/`…Result` pairs: the property is `null` and the result names what was missing.
+  [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+  covers that split, and how it differs from the errors a malformed input raises.
+- `shieldMetrics()` and `armourMetrics()` take an unresolved module's contribution as
+  zero and report a figure anyway, and `weaponMetrics()` omits a hardpoint it cannot
+  resolve from `weapons` and from the totals. None of the three carries a diagnostic.
+- `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
+  answer, because the mass they need is unknown.
 
-declare const build: ShipLoadout;
-
-build.cargoCapacity; // number | null
-build.cargoCapacityResult; // names every rack it could not classify
-```
-
-[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-covers that pattern in full, including how it differs from the errors a malformed input
-raises.
+Check `build.validation.issues` for `unknownModule` before trusting any of the above on a
+build you did not assemble yourself.
 
 ## Next
 

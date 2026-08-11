@@ -56,10 +56,21 @@ export function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
     };
 }
 
-/** Find the first key naming a mount case-insensitively. */
-export function firstKeyMatchingCase(keys: Iterable<string>, slotKey: string): string | null {
+/**
+ * The key a slot-keyed map actually holds for a mount, or `null` when it holds none.
+ *
+ * @remarks
+ * A build's own spelling is authoritative and is never rewritten — Frontier writes
+ * `FrameShiftDrive` where a SLEF producer may write `frameshiftdrive`, and both name the
+ * same mount — so every read and every mutation resolves the caller's key through here
+ * first. The own-key hit is a fast path: only a miss pays for the scan. It never has to
+ * break a tie, because a build cannot hold two keys differing only in case (`fromLoadout`
+ * throws on one, and every edit writes through this).
+ */
+export function matchingKeyIn(keyed: ReadonlyMap<string, unknown>, slotKey: string): string | null {
+    if (keyed.has(slotKey)) return slotKey;
     const wanted = slotKey.toLowerCase();
-    for (const key of keys) {
+    for (const key of keyed.keys()) {
         if (key.toLowerCase() === wanted) return key;
     }
     return null;

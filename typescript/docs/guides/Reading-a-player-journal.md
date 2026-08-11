@@ -61,11 +61,11 @@ build.shieldMetrics()?.strength; // -> 743.12     MJ
 build.armourMetrics().hitPoints; // -> 307.8
 ```
 
-Figures the event already stated — `UnladenMass`, `FuelCapacity` — are trusted verbatim
-rather than recomputed, so what you read back matches what the player sees in game.
-`MaxJumpRange` is the exception: it is recomputed from the drive rather than taken from
-the event, so it may differ in the last decimal places from the number the capture
-carried.
+Figures the event already stated — `UnladenMass`, `CargoCapacity`, `FuelCapacity` — are
+trusted verbatim rather than recomputed, so what you read back matches what the player
+sees in game. `MaxJumpRange` is the exception: it is recomputed from the drive rather than
+taken from the event, so it may differ in the last decimal places from the number the
+capture carried.
 
 ### Walking the modules
 
@@ -170,28 +170,38 @@ permitLockForSystemName('Synuefe EN-H d11-96'); // -> null
 Journals outlive catalogues. A game update ships modules before this package knows about
 them, so write the consumer to expect gaps rather than to assume completeness.
 
-- A lookup that finds nothing returns `null`. Check it.
-- Aggregate figures that depend on unclassified modules are `null` too, and the matching
-  `…Result` property names what was missing:
+A lookup that finds nothing returns `null` — check it. On a build imported from a journal,
+though, **`validation` is the signal to read, not the aggregate figures.** Because the
+event stated `UnladenMass`, `CargoCapacity` and `FuelCapacity`, those are trusted verbatim
+and come back complete even when a fitted module is one the catalogue cannot classify —
+the `…Result` diagnostics that would name it never fire here. What does fire is
+`build.validation`, which reports a fit the game would reject as an `error`, against an
+`incomplete` for a build that does not add up: an empty core or armour mount, or a hull or
+module newer than the catalogue. Only the second of those is the library's own gap, so
+branch on the issue's `code` rather than its `severity`:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from above
 
-build.cargoCapacity; // -> null when a fitted optional module is unclassifiable
-build.cargoCapacityResult; // -> names every rack it could not classify
+build.validation.issues; // -> each with a stable code and a severity
+build.cargoCapacityResult; // -> complete here: the event's own figure, not recomputed
 ```
 
-- `build.validation` separates a structurally invalid fit from an operationally
-  incomplete one, and `build.complete` is true only when the build is valid, has every
-  operational mount, and is fully classified.
+[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+sets both patterns out in full — including which codes are the user's to fix and which
+are the library's own gaps.
 
-For a mixed SLEF file, `inspectSlef` returns the valid entries plus indexed diagnostics,
-where `parseSlef` rejects the whole input on any malformed entry. Both parse the JSON
-first, so both throw `SyntaxError` on input that is not JSON at all — catch that
-separately when the bytes come from somewhere you do not control.
+A journal line is one `Loadout` event, and it is taken whole or refused: bad JSON throws
+`SyntaxError`, and a structurally impossible event — two slot keys differing only in
+case, say — throws `TypeError` from `fromLoadout`. Catch both when the bytes come from
+somewhere you do not control. A SLEF *file* holds several builds and can be part-good,
+which is its own question —
+[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF)
+covers `parseSlef` against `inspectSlef` and what each does with a bad entry.
 
 ## Next
 
 - [Getting started](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Getting-started)
+- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 - [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)

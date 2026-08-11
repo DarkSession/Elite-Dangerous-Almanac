@@ -66,6 +66,33 @@ export interface DamageTypeValues {
 export type DamageResistances = DamageTypeValues;
 
 /**
+ * The four resistances one **fitted module** contributes, each an optional fraction of
+ * that damage type removed: `0.4` is 40% resisted, and a negative value is a weakness. A
+ * field the record does not carry counts as `0` — no resistance and no weakness.
+ *
+ * @remarks
+ * The four fittings that carry resistances inherit these fields rather than restating
+ * them — {@link ShieldGeneratorParams}, {@link ShieldBoosterParams},
+ * {@link BulkheadParams} and {@link HullReinforcementParams} — so an
+ * {@link OutfittingModule} record, which spells them the same way, satisfies each of
+ * them as it comes. A module reinforcement package carries none of these four: what it
+ * absorbs is `moduleProtection`, one type-agnostic figure over module damage.
+ *
+ * This is the *input* shape, one module at a time. {@link DamageResistances} is the
+ * *output*: four required figures for a whole stack, keyed by bare damage type.
+ */
+export interface DamageResistanceParams {
+    /** Kinetic resistance, as a fraction (negative is a weakness). Defaults to `0`. */
+    readonly kineticResistance?: number;
+    /** Thermal resistance, as a fraction (negative is a weakness). Defaults to `0`. */
+    readonly thermalResistance?: number;
+    /** Explosive resistance, as a fraction (negative is a weakness). Defaults to `0`. */
+    readonly explosiveResistance?: number;
+    /** Caustic resistance, as a fraction (negative is a weakness). Defaults to `0`. */
+    readonly causticResistance?: number;
+}
+
+/**
  * One of the four damage types a {@link DamageTypeValues} carries a figure for.
  *
  * @remarks

@@ -124,14 +124,7 @@ export function boxelCodeToAbsoluteBoxel(
     const by = (boxelCode >> 7) & 0x7f;
     const bz = (boxelCode >> 14) & 0x7f;
 
-    // Boxel codes count from the region origin snapped DOWN to the boxel grid,
-    // so a region whose origin is not boxel-aligned reaches one boxel further than
-    // size/boxelSize — the bound must include the origin's offset within its boxel.
-    if (
-        bx * boxelSize >= (origin.x0 % boxelSize) + origin.sizeX ||
-        by * boxelSize >= (origin.y0 % boxelSize) + origin.sizeY ||
-        bz * boxelSize >= (origin.z0 % boxelSize) + origin.sizeZ
-    ) {
+    if (!boxelIsWithinRegion(bx, by, bz, boxelSize, origin)) {
         throw new RangeError(
             `Boxel code out of range for size class ${sizeClass} in ${origin.name}`,
         );
@@ -197,14 +190,29 @@ export function absoluteBoxelToBoxelCode(
     const by = absoluteBoxel.y - Math.floor(origin.y0 / boxelSize);
     const bz = absoluteBoxel.z - Math.floor(origin.z0 / boxelSize);
     if (bx < 0 || bx > 0x7f || by < 0 || by > 0x7f || bz < 0 || bz > 0x7f) return null;
-    if (
-        bx * boxelSize >= (origin.x0 % boxelSize) + origin.sizeX ||
-        by * boxelSize >= (origin.y0 % boxelSize) + origin.sizeY ||
-        bz * boxelSize >= (origin.z0 % boxelSize) + origin.sizeZ
-    ) {
-        return null;
-    }
+    if (!boxelIsWithinRegion(bx, by, bz, boxelSize, origin)) return null;
     return bx | (by << 7) | (bz << 14);
+}
+
+/**
+ * Whether a boxel's per-region indices still fall inside that region.
+ *
+ * Boxel codes count from the region origin snapped DOWN to the boxel grid, so a region
+ * whose origin is not boxel-aligned reaches one boxel further than `size / boxelSize` —
+ * the bound must include the origin's offset within its own boxel.
+ */
+function boxelIsWithinRegion(
+    bx: number,
+    by: number,
+    bz: number,
+    boxelSize: number,
+    origin: NamingRegionOrigin,
+): boolean {
+    return (
+        bx * boxelSize < (origin.x0 % boxelSize) + origin.sizeX &&
+        by * boxelSize < (origin.y0 % boxelSize) + origin.sizeY &&
+        bz * boxelSize < (origin.z0 % boxelSize) + origin.sizeZ
+    );
 }
 
 /** Reject addresses outside the unsigned 64-bit range before decoding. */

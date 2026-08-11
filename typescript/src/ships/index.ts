@@ -248,6 +248,7 @@ export {
     systemsResistance,
     effectiveHitPoints,
     mapDamageTypes,
+    type DamageResistanceParams,
     type DamageResistances,
     type DamageType,
     type DamageTypeValues,

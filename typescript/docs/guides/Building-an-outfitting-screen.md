@@ -137,7 +137,8 @@ running total — its own draw plus every higher-priority group's — fits in `a
 
 ## Tell the user what is wrong
 
-Two different questions, deliberately kept apart:
+Two different questions, deliberately kept apart, and both worth their own place on the
+screen:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -149,22 +150,22 @@ build.validation.complete; // does it have every operational mount, fully classi
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
-An issue carries `severity: 'error' | 'incomplete'` — an error is a fit the game would
-reject, while *incomplete* means the library could not classify something, usually a
-module newer than the catalogue. Render them differently: the first is the user's
-problem, the second is ours.
+Branch on each issue's `code`, not on its `severity` — on this screen more than anywhere,
+because the severities do not divide along "whose problem is it".
+[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+says which codes are the user's to fix and which are the library's own gaps, and covers
+the nullable/`…Result` pairs that `unladenMass`, `fuelCapacity` and `cargoCapacity` come
+in.
 
-Aggregate figures that depend on unclassified modules follow the same split — a nullable
-convenience property, and a result that names what was missing:
-
-```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-
-declare const build: ShipLoadout;
-
-build.cargoCapacity; // number | null
-build.cargoCapacityResult; // names every rack it could not classify
-```
+Two things follow for the panel itself. **An issue's `slot` is not a promise that the
+mount exists**, so drive the placement off your own layout rather than off the code: look
+the key up among the slots you are rendering, mark it there if it resolves, and fall
+through to an off-panel list if it does not. That list is not an edge case — `unknownHull`
+carries no `slot` at all, `unknownSlot` carries a key that is by definition no mount on
+this hull, and `unknownModule` reports whatever key the build used, which for a module in
+a slot the hull does not have is the same unrenderable one. And an empty core or armour
+mount arrives as an ordinary issue rather than as a special case — it is what your screen
+exists to get filled, so render it as work to do, not as a fault.
 
 ## Next
 
