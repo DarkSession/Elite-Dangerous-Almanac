@@ -1046,8 +1046,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
 `special_plasma_slug` at damage −10% / ammo −100%, plus the `_cooled` rail-gun variant.
 
 - **Files:** `blueprints.jsonc` (per-blueprint, per-grade stat modifiers **and**
-  material requirements) and `experimental-effects.jsonc` (per special-effect stat
-  modifiers **and** material cost).
+  material requirements), `blueprint-journal-names.jsonc` (the three recipe ids whose
+  journal spelling collides with another recipe), and `experimental-effects.jsonc` (per
+  special-effect stat modifiers **and** material cost).
   Modifiers are resolved to journal Modifier **Labels** so the computed modifiers read
   back like a real `Engineering.Modifiers` block. Each blueprint is `{ name, grades }`
   (each grade `{ features, damageDistribution?, materials }`); each experimental effect is
@@ -1070,9 +1071,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     their own right rather than short by convention, and take EDSY's spelling —
     `CargoRack_IncreasedCapacity` is **"Expanded Cargo Rack"** (not "Expanded Capacity")
     and `special_choke_canister` **"Ion Disruption"** (not "Ion Disruptor").
-- **`journalName` — on three records, and only three.** It marks a **collision**, not a
-  rename: a key carries one only when the id the game writes for it is a key some _other_
-  record already answers to. The other 106 go without for two different reasons — 79
+- **Blueprint journal names — three collisions, stored separately from mechanics.**
+  `blueprint-journal-names.jsonc` maps a recipe id only when the id the game writes for it
+  is a key some _other_ record already answers to. The other 106 need no entry for two
+  different reasons — 79
   because their key already is the id a journal writes (including Anti-Guardian Zone
   Resistance as `GuardianModule_Sturdy`), and 27 because they are Operations ids for
   which no journal spelling has been observed — 21 of them recipes a module is sold
@@ -1082,12 +1084,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
   for recipes the game writes as `Sensor_LongRange` / `Sensor_WideAngle` — the same ids it
   writes for the sensor suites' own Long Range and Wide Angle, which are different recipes
   — and `MC_Overcharged`, its key for the multi-cannon Overcharged, which the game writes
-  as `Weapon_Overcharged` like every other weapon's. Each of the three names its journal
-  spelling in `journalName`, so a reader holding one of these records can get back to the
-  id a journal carries, and `resolveBlueprintForModule` can go the other way given a
-  module. The field is deliberately **not** a general alias mechanism: it says "the game
-  writes this recipe as X", nothing about equivalence, and it is held to exactly these
-  three records. Evidence, and why the split keys are kept at all, under §Engineering options → "Scanner
+  as `Weapon_Overcharged` like every other weapon's. The map is deliberately **not** a
+  general alias mechanism: it says "the game writes this recipe as X", nothing about
+  equivalence, and it is held to exactly these three records. Keeping that small identity
+  fact apart from every grade and material lets a journal resolver read it without loading
+  the full mechanics catalogue. Evidence, and why the split keys are kept at all, under
+  §Engineering options → "Scanner
   Long Range and Wide Angle: one journal id, two recipes" and "Multi-cannon Overcharged:
   one journal id, two recipes".
 - **Blueprint source:** EDCD/coriolis-data,
@@ -1285,7 +1287,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     `MC_Overcharged`, its split of the one the game writes as `Weapon_Overcharged`. They
     are kept because each rolls different numbers from the record it shares a journal id
     with — the scanner side against the suite side, the multi-cannon's clip penalty against
-    no penalty at all — and each carries a `journalName` saying so. See the next bullet,
+    no penalty at all — and each has its journal spelling in the collision map. See the next bullet,
     and §Scanner Long Range and Wide Angle and §Multi-cannon Overcharged under Engineering
     options.
   - **Generic community-goal and tech-broker wrappers** ("Unique Modification", "Unique
@@ -1437,14 +1439,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
   Both keep their `SensorTargetScanAngle` leg. The catalogue keeps coriolis's split keys,
   because two recipes need two records and the menus have to name the one they roll.
 
-  **The fix is two stored facts and no third list.** What the game writes for a recipe is a
-  property of the recipe, so it is stored on the recipe: `blueprints.jsonc` gives
-  `Scanner_LongRange` and `Scanner_WideAngle` a **`journalName`** naming the id a journal
-  carries. They are two of the three records that carry the field out of 109 —
-  `MC_Overcharged`, below, is the third. Every other key either already _is_ the id a
-  journal writes or is an Operations spelling, which is why the field is absent everywhere
-  else. Which of the two colliding recipes a given module rolls is a property of the module,
-  and `engineering-options.jsonc` already carries it — the
+  **The fix is two stored facts with no per-group alias duplication.** What the game writes
+  for each of the three colliding recipes is stored once in
+  `blueprint-journal-names.jsonc`; it is global rather than repeated on every scanner or
+  multi-cannon group. Which of the two colliding recipes a given module rolls is a
+  property of the module, and `engineering-options.jsonc` already carries it — the
   menu. `resolveBlueprintForModule` is the join: it asks which blueprint _this module is
   offered_ answers to the incoming id. `ShipLoadout.applyBlueprint` resolves before it
   folds, so an EDSY-authored build declaring `Sensor_LongRange` on a wake scanner
@@ -1478,7 +1477,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   spelling of a family-specific recipe (`Misc_LightWeight` on a life support, and so on)
   and count as offered; the shape of that judgement is pinned in the fixture as
   `corpus.blueprintAliases`. A further **71** are a journal spelling resolved against
-  `journalName` above, counted separately as `corpus.journalSpellingsAccepted` because it
+  the collision map above, counted separately as `corpus.journalSpellingsAccepted` because it
   is a different mechanism — 70 of them `Weapon_Overcharged` on a multi-cannon, which
   rolls `MC_Overcharged`, and the 71st `Sensor_LongRange` on a wake scanner in
   `type9-military-combat-3`. Another **18** describe final pre-engineered Guardian
@@ -1571,7 +1570,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     Blueprints are unaffected on every module.
 - **Multi-cannon Overcharged: one journal id, two recipes.** `multiCannons` and
   `antiXenoMultiCannons` list **`MC_Overcharged`** where every other weapon menu lists
-  `Weapon_Overcharged`, and the record carries `journalName: "Weapon_Overcharged"`. Same
+  `Weapon_Overcharged`, and the collision map pairs those two ids. Same
   shape as the scanner ids above, in the family far more consumers touch: 70 of the
   corpus's 1902 declared entries resolve through it, against one for the scanners.
   - **Source: coriolis-data, which states it twice.** `modifications/modules.json` lists
@@ -2032,4 +2031,3 @@ up straight through with no disambiguation at all. Both paths are evidence that
   than a repeatable outfitting row. Those arrive in a build as their base symbol plus an
   `Engineering.Modifiers` block, which `ShipLoadout` already applies directly; there is no
   stable catalogue row to point at.
-

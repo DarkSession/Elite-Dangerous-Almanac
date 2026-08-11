@@ -23,13 +23,12 @@
  * (CargoRack_IncreasedCapacity G5). A `damageDistribution` is the by-type split a grade
  * results in, carried by the three Operations Plasma conversion recipes.
  *
- * A key is the Frontier `fdname` a Loadout event's `Engineering.BlueprintName` carries,
- * for 79 of the 109. `journalName` is present on the three whose key is not what the game
- * writes AND whose journal spelling another record already answers to — it marks a
- * collision, not a rename, and is absent from the other 106. The remaining 27 keys are the
- * Operations ones, for which no journal spelling has been observed; two of those are
- * Anti-Guardian Zone Resistance aliases stored beside the `GuardianModule_Sturdy` the game
- * does write, so a build carrying either still resolves.
+ * A key is the Frontier `fdname` a Loadout event's `Engineering.BlueprintName` carries
+ * for 79 of the 109. Three recipe ids whose journal spelling collides with another recipe
+ * live in `blueprint-journal-names.jsonc`, so resolving that spelling does not load every
+ * grade and material here. The remaining 27 keys are Operations ids for which no journal
+ * spelling has been observed; two are Anti-Guardian Zone Resistance aliases stored beside
+ * the `GuardianModule_Sturdy` the game does write.
  */
 {
   "AFM_Shielded": {
@@ -9604,7 +9603,6 @@
   },
   "Scanner_LongRange": {
     "name": "Long range",
-    "journalName": "Sensor_LongRange",
     "grades": {
       "1": {
         "features": [
@@ -9790,7 +9788,6 @@
   },
   "Scanner_WideAngle": {
     "name": "Wide angle",
-    "journalName": "Sensor_WideAngle",
     "grades": {
       "1": {
         "features": [
@@ -14311,7 +14308,6 @@
   },
   "MC_Overcharged": {
     "name": "Overcharged",
-    "journalName": "Weapon_Overcharged",
     "grades": {
       "1": {
         "features": [

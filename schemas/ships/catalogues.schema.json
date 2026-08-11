@@ -558,11 +558,6 @@
       "required": ["name", "grades"],
       "properties": {
         "name": { "$ref": "#/definitions/nonEmptyString" },
-        "journalName": {
-          "description": "The `BlueprintName` a journal writes for this recipe, when that is not the key it is stored under. Present only where the game spells one id for two different recipes, which the fitted module disambiguates.",
-          "type": "string",
-          "minLength": 1
-        },
         "grades": { "$ref": "#/definitions/blueprintGrades" }
       }
     },
@@ -572,6 +567,12 @@
       "additionalProperties": {
         "$ref": "#/definitions/blueprint"
       }
+    },
+    "blueprintJournalNameCatalogue": {
+      "description": "Recipe ids keyed to the colliding `BlueprintName` a journal writes for them.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
     },
     "experimentalContribution": {
       "type": "object",

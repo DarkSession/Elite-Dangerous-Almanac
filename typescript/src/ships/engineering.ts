@@ -171,37 +171,12 @@ export type BlueprintGrades = Readonly<Record<string, BlueprintGrade>>;
  * A blueprint is keyed in {@link BLUEPRINTS} by its Frontier `fdname`; this is the record
  * that key maps to. `grades` carries the modifier `features`, optional converted damage
  * distribution, and material cost of each grade the blueprint defines (a blueprint need
- * not define every grade `1`–`5`).
+ * not define every grade `1`–`5`). A journal id shared by two recipes is resolved against
+ * the fitted module by `resolveBlueprintForModule` in `ships/blueprint-journal`.
  */
 export interface Blueprint {
     /** The in-game display name, e.g. `"Increased range"`, `"Fuel Scoop — Scoop rate enhanced"`. */
     readonly name: string;
-    /**
-     * The `BlueprintName` a journal `Loadout` event writes for this recipe, when that is
-     * **not** the key it is stored under.
-     *
-     * Absent on 106 of the 109 blueprints, for two different reasons. It marks a
-     * **collision** rather than a rename: a key carries one only when the id the game
-     * writes for it is a key some *other* record already answers to. Where the game
-     * publishes a spelling nothing else uses, that spelling is simply the key — and where
-     * a key is an Operations id, no journal spelling has been observed for it,
-     * so there is none to name.
-     *
-     * It is present on `Scanner_LongRange` and `Scanner_WideAngle`, which the game
-     * writes as `Sensor_LongRange` and `Sensor_WideAngle` — the same ids it writes for the
-     * sensor suites' own Long Range and Wide Angle, which are different recipes rolling
-     * different stats. Two recipes need two records, so the scanner side keeps coriolis's
-     * distinct keys and names its journal spelling here. `MC_Overcharged` is the third and
-     * the same shape: a multi-cannon's Overcharged also cuts the clip by 3–15%, so coriolis
-     * keys it apart from the `Weapon_Overcharged` every other weapon takes, and the game
-     * writes `Weapon_Overcharged` for both.
-     *
-     * **This does not make the id unambiguous on its own** — that is the point of it being
-     * shared. `resolveBlueprintForModule` in `ships/blueprint-journal` reads this against
-     * a module's menu, which is the only thing that can say which of the two a journal
-     * meant.
-     */
-    readonly journalName?: string;
     /** The blueprint's grades, keyed by grade number as a string (`"1"`–`"5"`). */
     readonly grades: BlueprintGrades;
 }

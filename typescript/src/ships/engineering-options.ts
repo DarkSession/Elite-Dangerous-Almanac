@@ -38,8 +38,8 @@
  * nothing else.
  * Everything returned joins straight to `BLUEPRINTS` and `EXPERIMENTAL_EFFECTS`, neither
  * of which this module pulls in. That is why reading a journal `BlueprintName` against a
- * module — `resolveBlueprintForModule`, which needs a menu *and* the recipes to see their
- * journal spellings — lives in `ships/blueprint-journal` rather than here.
+ * module — `resolveBlueprintForModule`, which needs a menu and the small journal-collision
+ * catalogue — lives in `ships/blueprint-journal` rather than here.
  *
  * **This catalogue is also the gate.** {@link ShipLoadout.applyBlueprint} refuses a recipe
  * this module does not offer for that module, so "what can I put on this?" and "may I put
@@ -49,7 +49,7 @@
  * drift. The gate makes three accommodations beyond the menu, in the
  * order it applies them: a journal id
  * the game writes for two different recipes, which `ships/blueprint-journal` settles by
- * reading this menu against `Blueprint.journalName`; an Operations key belonging to a
+ * reading this menu against the journal-collision catalogue; an Operations key belonging to a
  * non-final module sold already engineered, which no menu lists, and
  * `ships/pre-engineered` resolves per module; and a build that spells a modification
  * generically — `Misc_LightWeight` where the menu lists `LifeSupport_LightWeight`, which
