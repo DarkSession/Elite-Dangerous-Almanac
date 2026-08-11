@@ -277,6 +277,7 @@ export {
     splitDamage,
     type WeaponStats,
     type WeaponMetrics,
+    type WeaponTotals,
     type DamageSplit,
 } from './weapons.js';
 export { ammunitionCapacity, type AmmunitionStats, type AmmunitionCapacity } from './ammunition.js';

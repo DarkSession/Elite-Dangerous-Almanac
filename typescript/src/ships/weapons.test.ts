@@ -13,6 +13,7 @@ import {
     sustainedDamagePerSecond,
     sustainedFireFactor,
     weaponMetrics,
+    type WeaponMetrics,
 } from './weapons.js';
 import { getModuleBySymbol } from './modules.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
@@ -282,11 +283,119 @@ test("sumWeaponMetrics totals a build's hardpoints", () => {
     assert.ok(near(total.damageByType.thermal, beam.damageByType.thermal));
     assert.ok(near(total.damageByType.kinetic, mc.damageByType.kinetic));
     assert.ok(near(total.powerDraw, beam.powerDraw + mc.powerDraw));
-    // Mixed armament, so the total is not a continuous-fire one.
-    assert.equal(total.continuous, false);
-    assert.equal(sumWeaponMetrics([beam]).continuous, true);
-    assert.equal(sumWeaponMetrics([]).continuous, false);
-    assert.equal(sumWeaponMetrics([]).damagePerSecond, 0);
+    assert.deepEqual(Object.keys(total).sort(), [
+        'damageByType',
+        'damagePerSecond',
+        'energyPerSecond',
+        'heatPerSecond',
+        'powerDraw',
+        'sustainedDamageByType',
+        'sustainedDamagePerSecond',
+        'sustainedEnergyPerSecond',
+        'sustainedHeatPerSecond',
+    ]);
+});
+
+test('sumWeaponMetrics adds every totals field and has a complete zero value', () => {
+    const metrics: readonly WeaponMetrics[] = [
+        {
+            damagePerShot: 101,
+            rateOfFire: 102,
+            sustainedRateOfFire: 103,
+            damagePerSecond: 1,
+            sustainedDamagePerSecond: 2,
+            energyPerSecond: 3,
+            sustainedEnergyPerSecond: 4,
+            heatPerSecond: 5,
+            sustainedHeatPerSecond: 6,
+            powerDraw: 7,
+            damageByType: {
+                kinetic: 8,
+                thermal: 9,
+                explosive: 10,
+                absolute: 11,
+                unclassified: 12,
+                antiXeno: 13,
+            },
+            sustainedDamageByType: {
+                kinetic: 14,
+                thermal: 15,
+                explosive: 16,
+                absolute: 17,
+                unclassified: 18,
+                antiXeno: 19,
+            },
+            continuous: true,
+        },
+        {
+            damagePerShot: 201,
+            rateOfFire: 202,
+            sustainedRateOfFire: 203,
+            damagePerSecond: 20,
+            sustainedDamagePerSecond: 30,
+            energyPerSecond: 40,
+            sustainedEnergyPerSecond: 50,
+            heatPerSecond: 60,
+            sustainedHeatPerSecond: 70,
+            powerDraw: 80,
+            damageByType: {
+                kinetic: 90,
+                thermal: 100,
+                explosive: 110,
+                absolute: 120,
+                unclassified: 130,
+                antiXeno: 140,
+            },
+            sustainedDamageByType: {
+                kinetic: 150,
+                thermal: 160,
+                explosive: 170,
+                absolute: 180,
+                unclassified: 190,
+                antiXeno: 200,
+            },
+            continuous: false,
+        },
+    ];
+
+    assert.deepEqual(sumWeaponMetrics(metrics), {
+        damagePerSecond: 21,
+        sustainedDamagePerSecond: 32,
+        energyPerSecond: 43,
+        sustainedEnergyPerSecond: 54,
+        heatPerSecond: 65,
+        sustainedHeatPerSecond: 76,
+        powerDraw: 87,
+        damageByType: {
+            kinetic: 98,
+            thermal: 109,
+            explosive: 120,
+            absolute: 131,
+            unclassified: 142,
+            antiXeno: 153,
+        },
+        sustainedDamageByType: {
+            kinetic: 164,
+            thermal: 175,
+            explosive: 186,
+            absolute: 197,
+            unclassified: 208,
+            antiXeno: 219,
+        },
+    });
+
+    const zeroSplit = { kinetic: 0, thermal: 0, explosive: 0, absolute: 0, antiXeno: 0 };
+    assert.deepEqual(sumWeaponMetrics([]), {
+        damagePerSecond: 0,
+        sustainedDamagePerSecond: 0,
+        energyPerSecond: 0,
+        sustainedEnergyPerSecond: 0,
+        heatPerSecond: 0,
+        sustainedHeatPerSecond: 0,
+        powerDraw: 0,
+        damageByType: zeroSplit,
+        sustainedDamageByType: zeroSplit,
+    });
 });
 
 test('the shared fixture pins falloff, piercing and the sustained factor', () => {

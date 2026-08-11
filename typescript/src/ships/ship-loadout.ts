@@ -113,7 +113,12 @@ import {
 import { powerBudget, type PowerBudget, type PowerConsumer } from './power.js';
 import { shieldMetrics, type ShieldMetrics } from './shields.js';
 import { armourMetrics, type ArmourMetrics } from './armour.js';
-import { sumWeaponMetrics, weaponMetrics, type WeaponMetrics } from './weapons.js';
+import {
+    sumWeaponMetrics,
+    weaponMetrics,
+    type WeaponMetrics,
+    type WeaponTotals,
+} from './weapons.js';
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
 import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
 import { ALL_MODULES } from './modules-all.js';
@@ -224,8 +229,8 @@ export interface FittedWeaponMetrics {
 export interface BuildWeaponMetrics {
     /** Every fitted weapon, in slot order. */
     readonly weapons: readonly FittedWeaponMetrics[];
-    /** The totals across the **enabled** weapons. */
-    readonly total: WeaponMetrics;
+    /** The additive totals across the **enabled** weapons. */
+    readonly total: WeaponTotals;
 }
 
 /** A build's jump ranges at the loads that matter, in light-years. */

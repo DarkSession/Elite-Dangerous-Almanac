@@ -169,6 +169,36 @@ export interface WeaponMetrics {
 }
 
 /**
+ * The additive firepower totals across several weapons.
+ *
+ * @remarks
+ * Per-shot damage, rate of fire and continuous-fire state belong to one weapon and
+ * therefore do not appear here: adding a beam laser's cadence to a multi-cannon's does
+ * not describe either weapon or the build. Use the individual {@link WeaponMetrics}
+ * when those figures matter.
+ */
+export interface WeaponTotals {
+    /** Damage per second while firing, summed across the weapons. */
+    readonly damagePerSecond: number;
+    /** Damage per second averaged over reloads, summed across the weapons. */
+    readonly sustainedDamagePerSecond: number;
+    /** Weapons-capacitor draw per second, in MW, summed across the weapons. */
+    readonly energyPerSecond: number;
+    /** Weapons-capacitor draw per second averaged over reloads, in MW. */
+    readonly sustainedEnergyPerSecond: number;
+    /** Heat generated per second while firing, summed across the weapons. */
+    readonly heatPerSecond: number;
+    /** Heat generated per second averaged over reloads, summed across the weapons. */
+    readonly sustainedHeatPerSecond: number;
+    /** Deployed power draw, in MW, summed across the weapons. */
+    readonly powerDraw: number;
+    /** {@link damagePerSecond} split by damage type. */
+    readonly damageByType: DamageSplit;
+    /** {@link sustainedDamagePerSecond} split by damage type. */
+    readonly sustainedDamageByType: DamageSplit;
+}
+
+/**
  * The combined rate of fire a weapon's firing cycle implies — the journal's own
  * `RateOfFire`, rebuilt from its parts.
  *
@@ -462,9 +492,7 @@ export function weaponMetrics(weapon: WeaponStats): WeaponMetrics {
  * Add several weapons' metrics together — a build's total firepower.
  *
  * @param metrics - The per-weapon metrics to sum.
- * @returns One {@link WeaponMetrics} carrying the totals. The per-shot and rate-of-fire
- * fields are summed too, which is meaningful only per weapon; read them off the
- * individual entries instead. `continuous` is `true` only when *every* weapon is.
+ * @returns The additive {@link WeaponTotals}. An empty list returns zeroes.
  * @example
  * ```ts
  * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -475,34 +503,65 @@ export function weaponMetrics(weapon: WeaponStats): WeaponMetrics {
  * sumWeaponMetrics(build.weaponMetrics().weapons.map((w) => w.metrics)).damagePerSecond;
  * ```
  */
-export function sumWeaponMetrics(metrics: readonly WeaponMetrics[]): WeaponMetrics {
-    const total = (pick: (m: WeaponMetrics) => number): number =>
-        metrics.reduce((sum, m) => sum + pick(m), 0);
-    const totalSplit = (pick: (m: WeaponMetrics) => DamageSplit): DamageSplit => {
-        const unclassified = metrics.reduce((sum, m) => sum + (pick(m).unclassified ?? 0), 0);
-        return {
-            kinetic: metrics.reduce((sum, m) => sum + pick(m).kinetic, 0),
-            thermal: metrics.reduce((sum, m) => sum + pick(m).thermal, 0),
-            explosive: metrics.reduce((sum, m) => sum + pick(m).explosive, 0),
-            absolute: metrics.reduce((sum, m) => sum + pick(m).absolute, 0),
-            ...(unclassified === 0 ? {} : { unclassified }),
-            antiXeno: metrics.reduce((sum, m) => sum + pick(m).antiXeno, 0),
-        };
-    };
+export function sumWeaponMetrics(metrics: readonly WeaponMetrics[]): WeaponTotals {
+    const damageByType = emptyDamageSplitAccumulator();
+    const sustainedDamageByType = emptyDamageSplitAccumulator();
+    let damagePerSecond = 0;
+    let sustainedDamagePerSecond = 0;
+    let energyPerSecond = 0;
+    let sustainedEnergyPerSecond = 0;
+    let heatPerSecond = 0;
+    let sustainedHeatPerSecond = 0;
+    let powerDraw = 0;
+
+    for (const metric of metrics) {
+        damagePerSecond += metric.damagePerSecond;
+        sustainedDamagePerSecond += metric.sustainedDamagePerSecond;
+        energyPerSecond += metric.energyPerSecond;
+        sustainedEnergyPerSecond += metric.sustainedEnergyPerSecond;
+        heatPerSecond += metric.heatPerSecond;
+        sustainedHeatPerSecond += metric.sustainedHeatPerSecond;
+        powerDraw += metric.powerDraw;
+        addDamageSplit(damageByType, metric.damageByType);
+        addDamageSplit(sustainedDamageByType, metric.sustainedDamageByType);
+    }
 
     return {
-        damagePerShot: total((m) => m.damagePerShot),
-        rateOfFire: total((m) => m.rateOfFire),
-        sustainedRateOfFire: total((m) => m.sustainedRateOfFire),
-        damagePerSecond: total((m) => m.damagePerSecond),
-        sustainedDamagePerSecond: total((m) => m.sustainedDamagePerSecond),
-        energyPerSecond: total((m) => m.energyPerSecond),
-        sustainedEnergyPerSecond: total((m) => m.sustainedEnergyPerSecond),
-        heatPerSecond: total((m) => m.heatPerSecond),
-        sustainedHeatPerSecond: total((m) => m.sustainedHeatPerSecond),
-        powerDraw: total((m) => m.powerDraw),
-        damageByType: totalSplit((m) => m.damageByType),
-        sustainedDamageByType: totalSplit((m) => m.sustainedDamageByType),
-        continuous: metrics.length > 0 && metrics.every((m) => m.continuous),
+        damagePerSecond,
+        sustainedDamagePerSecond,
+        energyPerSecond,
+        sustainedEnergyPerSecond,
+        heatPerSecond,
+        sustainedHeatPerSecond,
+        powerDraw,
+        damageByType: finishDamageSplit(damageByType),
+        sustainedDamageByType: finishDamageSplit(sustainedDamageByType),
     };
+}
+
+interface DamageSplitAccumulator {
+    kinetic: number;
+    thermal: number;
+    explosive: number;
+    absolute: number;
+    unclassified: number;
+    antiXeno: number;
+}
+
+function emptyDamageSplitAccumulator(): DamageSplitAccumulator {
+    return { kinetic: 0, thermal: 0, explosive: 0, absolute: 0, unclassified: 0, antiXeno: 0 };
+}
+
+function addDamageSplit(total: DamageSplitAccumulator, split: DamageSplit): void {
+    total.kinetic += split.kinetic;
+    total.thermal += split.thermal;
+    total.explosive += split.explosive;
+    total.absolute += split.absolute;
+    total.unclassified += split.unclassified ?? 0;
+    total.antiXeno += split.antiXeno;
+}
+
+function finishDamageSplit(total: DamageSplitAccumulator): DamageSplit {
+    const { unclassified, ...classified } = total;
+    return unclassified === 0 ? classified : { ...classified, unclassified };
 }
