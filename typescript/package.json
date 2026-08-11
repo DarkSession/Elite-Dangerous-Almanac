@@ -53,6 +53,7 @@
             "types": "./dist/astro/index.d.ts",
             "import": "./dist/astro/index.js"
         },
+        "./astro/internal/*": null,
         "./astro/galactic-position": {
             "types": "./dist/astro/galactic-position.d.ts"
         },

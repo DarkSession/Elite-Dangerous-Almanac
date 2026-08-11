@@ -17,11 +17,14 @@
  * @packageDocumentation
  */
 
-import { lettersToBoxelCode, type SystemNameParts } from './system-name.js';
+import type { SystemNameParts } from './system-name.js';
 import type { NamingRegionOrigin } from './naming-region-origins.js';
-export { SECTOR_INTERNAL_SIZE } from './naming-region-origins.js';
+import { packBoxelCode } from './internal/system-name-code.js';
 import type { SectorGridPosition } from './sector-name.js';
 import { toSystemAddress, type SystemAddressInput } from './system-address-input.js';
+
+/** The edge of one procedural sector in internal units (1280 ly × 32 units/ly). */
+export const SECTOR_INTERNAL_SIZE = 40960;
 
 /**
  * Return the boxel edge for a size class in internal units (32 units per ly).
@@ -42,7 +45,7 @@ export function boxelInternalSize(sizeClass: number): number {
     if (!Number.isInteger(sizeClass) || sizeClass < 0 || sizeClass > 7) {
         throw new RangeError(`Invalid size class: ${sizeClass}`);
     }
-    return 320 << sizeClass;
+    return SECTOR_INTERNAL_SIZE >> (7 - sizeClass);
 }
 
 /**
@@ -334,7 +337,7 @@ export function decodeModSystemAddress(id64: SystemAddressInput): DecodedAddress
  */
 export function encodeSystemAddress(parts: SystemNameParts, origin: NamingRegionOrigin): bigint {
     const sc = parts.massCode;
-    const boxelCode = lettersToBoxelCode(parts.l1, parts.l2, parts.l3, parts.n1);
+    const boxelCode = packBoxelCode(parts.l1, parts.l2, parts.l3, parts.n1);
     const { x, y, z } = boxelCodeToAbsoluteBoxel(sc, boxelCode, origin);
 
     // The sequence spans bits [44 - 3·sc, 55); the 9 bits above it are the body ID.
@@ -381,7 +384,7 @@ export function encodeModSystemAddress(parts: SystemNameParts, origin: NamingReg
     const sc = parts.massCode;
     const bps = 7 - sc;
     const boxelMask = 0x7f >> sc;
-    const boxelCode = lettersToBoxelCode(parts.l1, parts.l2, parts.l3, parts.n1);
+    const boxelCode = packBoxelCode(parts.l1, parts.l2, parts.l3, parts.n1);
     const { x, y, z } = boxelCodeToAbsoluteBoxel(sc, boxelCode, origin);
 
     if (!Number.isInteger(parts.n2) || parts.n2 < 0 || parts.n2 > 0x7fff) {

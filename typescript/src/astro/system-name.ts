@@ -20,6 +20,7 @@
 
 import { canonicalizeSectorName, sectorGridPositionFromName } from './sector-name.js';
 import { getHandAuthoredRegionOrigin } from './naming-region-origins.js';
+import { packBoxelCode } from './internal/system-name-code.js';
 
 /**
  * The parsed parts of a procedural system name. Letters and mass code are stored
@@ -63,7 +64,7 @@ const CODE_A_LOWER = 'a'.charCodeAt(0);
  * ```
  */
 export function lettersToBoxelCode(l1: number, l2: number, l3: number, n1: number): number {
-    return ((n1 * 26 + l3) * 26 + l2) * 26 + l1;
+    return packBoxelCode(l1, l2, l3, n1);
 }
 
 /**
