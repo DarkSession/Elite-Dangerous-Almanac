@@ -202,9 +202,9 @@ npm run test:package
 npm run docs
 ```
 
-`npm run check` runs linting, formatting checks, type checking and the coverage-gated
-test suite. Changes to exports or consumer-facing modules also require the build and
-package tests.
+`npm run check` runs linting, formatting checks, type checking, the documented-example
+compile and the coverage-gated test suite. Changes to exports or consumer-facing modules
+also require the build and package tests.
 
 API documentation is generated from TSDoc. Catalogue provenance belongs in the
 matching `data/<domain>/SOURCES.md`; open data gaps are tracked in

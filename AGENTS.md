@@ -196,16 +196,18 @@ Two related habits, for the same reason:
 
 All TypeScript commands run from `typescript/`:
 
-| Command                | What it does                                                       |
-| ---------------------- | ------------------------------------------------------------------ |
-| `npm run check`        | lint → format:check → typecheck → test. **Run this before finishing.** |
-| `npm test`             | full suite with the coverage thresholds                             |
-| `npm run typecheck`    | `tsc --noEmit`                                                      |
-| `npm run lint`         | ESLint                                                              |
-| `npm run format`       | Prettier over the package, root README, schemas and workflows       |
-| `npm run build`        | `tsup` → `dist/` (minified, JSON catalogues inlined)                |
-| `npm run test:package` | imports the **built** `dist/` and checks every export subpath        |
-| `npm run docs`         | TypeDoc → `docs/wiki`, then `scripts/build-wiki-sidebar.mjs` and `scripts/postprocess-wiki.mjs` |
+| Command                  | What it does                                                       |
+| ------------------------ | ------------------------------------------------------------------ |
+| `npm run check`          | lint → format:check → typecheck → check:examples → test. **Run this before finishing.** |
+| `npm test`               | full suite with the coverage thresholds                             |
+| `npm run typecheck`      | `tsc --noEmit`                                                      |
+| `npm run check:examples` | type-checks every documented snippet; fails on any that stops compiling |
+| `npm run lint`           | ESLint                                                              |
+| `npm run audit`          | `npm audit --audit-level=low`                                       |
+| `npm run format`         | Prettier over the package, root README, schemas and workflows       |
+| `npm run build`          | `tsup` → `dist/` (minified, JSON catalogues inlined)                |
+| `npm run test:package`   | imports the **built** `dist/` and checks every export subpath        |
+| `npm run docs`           | TypeDoc → `docs/wiki`, then `scripts/build-wiki-sidebar.mjs` and `scripts/postprocess-wiki.mjs` |
 
 Run one test file with the same loaders the suite uses — plain `node --test` cannot resolve `.ts` or `.jsonc`:
 
@@ -228,7 +230,7 @@ A tag in neither form leaves the job **unstarted**, rather than failing it. That
 
 What the workflow does with that:
 
-- **Reruns everything.** `npm run audit`, then `npm run check && npm run build && npm run test:package` — lint, formatting, types, the coverage-gated suite, the tsup build and the built-`dist/` entry-point suite, all against the tagged commit. The release does not trust the CI run on the branch it came from.
+- **Reruns everything.** `npm run audit`, then `npm run check && npm run build && npm run test:package` — lint, formatting, types, the documented-example compile, the coverage-gated suite, the tsup build and the built-`dist/` entry-point suite, all against the tagged commit. The release does not trust the CI run on the branch it came from.
 - **Publishes only from a tag.** A release event names its tag; a manual run has to be sitting on one. A version number is permanent, so it is only ever taken from a ref that cannot move.
 - **Refuses a version that already exists.** npm versions are immutable, so the check happens before the build rather than as a failed upload at the end. A registry that cannot be reached is not treated as a version that is free — only npm's own "no such package or version" passes.
 - **Picks the dist-tag from the version.** A SemVer prerelease suffix (`1.2.3-rc.1`) publishes under `next`; everything else under `latest`. A prerelease must never be what `npm install` hands someone by default. The corollary, if the first release of a *new* package is ever a prerelease: it publishes under `next` only, and a bare `npm install` of it fails until a non-prerelease follows.
