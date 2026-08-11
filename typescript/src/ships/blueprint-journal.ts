@@ -69,9 +69,9 @@ import { BLUEPRINT_JOURNAL_NAMES } from './internal/blueprint-journal-names.js';
  * still says a suite does not take it.
  *
  * **Only the numbers differ, not the price.** All three pairs cost the same materials at
- * every grade, so `getBlueprintCost` needs no module and either spelling bills correctly;
- * `engineering.test.ts` holds upstream to that for the scanners. It is the stat block that
- * has to be resolved.
+ * every grade, so `getBlueprintCost` from `ships/blueprint-costs` needs no module and
+ * either spelling bills correctly; cross-catalogue tests hold upstream to that. It is the
+ * stat block that has to be resolved.
  *
  * **Not a generic-spelling resolver.** A generic `Misc_*` id — `Misc_Shielded` where a
  * life support's menu says `LifeSupport_Shielded` — comes back as it went in. That pair is

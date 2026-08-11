@@ -1,33 +1,22 @@
 /*
- * Engineering **experimental effects** (special effects) — per effect, the stat
- * modifiers it applies AND the materials one application costs. Keyed by the effect's
- * Frontier `fdname` (as it appears in `Engineering.ExperimentalEffect`).
+ * Engineering **experimental-effect mechanics** — the stat modifiers each special
+ * effect applies, keyed by its Frontier `fdname`.
  *
- * Sources: EDSY eddb.js `expeffect` (each effect's modifiers and its recipe together),
- * cross-checked against EDCD/coriolis-data; display names observed in-game; the combat
- * effects' material costs from the Inara registry.
+ * Sources: EDSY eddb.js `expeffect`, cross-checked against EDCD/coriolis-data; display
+ * names observed in-game.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/ships/SOURCES.md.
  *
- * Each effect is { name, modifiers, damageDistribution?, materials, description? }.
+ * Each effect is { name, modifiers, damageDistribution?, description? }.
  * `damageDistribution` is the fixed fractional split produced by a damage-converting
- * effect; the three stored conversions come from the effects' in-game descriptions,
- * with High Yield Shell independently pinned by a Frontier `Loadout` capture.
- * `name` is the effect's
- * current English in-game display name. `special_choke_canister` is "Ion Disruption",
- * not the easily-mistranscribed "Ion Disruptor".
- * A modifier is { label, method, value }:
- * `label` the journal Modifier Label, `method` how it applies, `value` the fixed
- * contribution (a fraction for percentage modifiers). A material is { symbol, name,
- * count }: join `symbol` to the materials domain for its own grade and category,
- * `count` how many one application consumes. An experimental effect is a single
- * application (one roll). Weapon-combat effects are included for completeness; a
- * purely-qualitative one (a gameplay flag with no numeric magnitude, e.g. Auto Loader)
- * carries an empty `modifiers` list and a human-readable `description` instead. The
- * combat effects' one-application material costs are sourced from the pinned Inara
- * registry described in SOURCES.md (a Merc-Coin amount is also charged but is a
- * currency, not a material, so it is not stored).
+ * effect. A modifier is { label, method, value }: `label` is the journal Modifier Label,
+ * `method` controls how it applies, and `value` is the fixed contribution. A purely
+ * qualitative effect carries an empty `modifiers` list and a human-readable
+ * `description` instead.
+ *
+ * One-application material requirements live in `experimental-effect-costs.jsonc` so
+ * calculating or editing a build does not bundle shopping data.
  */
 {
   "special_concordant_sequence": {
@@ -37,23 +26,6 @@
         "label": "ThermalLoad",
         "method": "multiplicative",
         "value": 0.5
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "FocusCrystals",
-        "name": "Focus Crystals",
-        "count": 5
-      },
-      {
-        "symbol": "EmbeddedFirmware",
-        "name": "Modified Embedded Firmware",
-        "count": 3
-      },
-      {
-        "symbol": "Zirconium",
-        "name": "Zirconium",
-        "count": 1
       }
     ]
   },
@@ -65,23 +37,6 @@
         "method": "multiplicative",
         "value": 0.15
       }
-    ],
-    "materials": [
-      {
-        "symbol": "MechanicalScrap",
-        "name": "Mechanical Scrap",
-        "count": 5
-      },
-      {
-        "symbol": "CompactComposites",
-        "name": "Compact Composites",
-        "count": 5
-      },
-      {
-        "symbol": "Vanadium",
-        "name": "Vanadium",
-        "count": 3
-      }
     ]
   },
   "special_emissive_munitions": {
@@ -91,28 +46,6 @@
         "label": "ThermalLoad",
         "method": "multiplicative",
         "value": 1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "MechanicalEquipment",
-        "name": "Mechanical Equipment",
-        "count": 4
-      },
-      {
-        "symbol": "EmissionData",
-        "name": "Unexpected Emission Data",
-        "count": 3
-      },
-      {
-        "symbol": "HeatExchangers",
-        "name": "Heat Exchangers",
-        "count": 3
-      },
-      {
-        "symbol": "Manganese",
-        "name": "Manganese",
-        "count": 3
       }
     ]
   },
@@ -129,23 +62,6 @@
         "method": "multiplicative",
         "value": -0.4
       }
-    ],
-    "materials": [
-      {
-        "symbol": "SymmetricKeys",
-        "name": "Open Symmetric Keys",
-        "count": 5
-      },
-      {
-        "symbol": "ShieldEmitters",
-        "name": "Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "FilamentComposites",
-        "name": "Filament Composites",
-        "count": 5
-      }
     ]
   },
   "special_weapon_efficient": {
@@ -155,23 +71,6 @@
         "label": "PowerDraw",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "MechanicalScrap",
-        "name": "Mechanical Scrap",
-        "count": 5
-      },
-      {
-        "symbol": "HybridCapacitors",
-        "name": "Hybrid Capacitors",
-        "count": 3
-      },
-      {
-        "symbol": "EmbeddedFirmware",
-        "name": "Modified Embedded Firmware",
-        "count": 1
       }
     ]
   },
@@ -188,28 +87,6 @@
         "method": "multiplicative",
         "value": 0.052632
       }
-    ],
-    "materials": [
-      {
-        "symbol": "HeatConductionWiring",
-        "name": "Heat Conduction Wiring",
-        "count": 5
-      },
-      {
-        "symbol": "Phosphorus",
-        "name": "Phosphorus",
-        "count": 5
-      },
-      {
-        "symbol": "Sulphur",
-        "name": "Sulphur",
-        "count": 5
-      },
-      {
-        "symbol": "PhaseAlloys",
-        "name": "Phase Alloys",
-        "count": 3
-      }
     ]
   },
   "special_weapon_rateoffire": {
@@ -225,28 +102,6 @@
         "method": "multiplicative",
         "value": -0.029126
       }
-    ],
-    "materials": [
-      {
-        "symbol": "MechanicalScrap",
-        "name": "Mechanical Scrap",
-        "count": 5
-      },
-      {
-        "symbol": "FocusCrystals",
-        "name": "Focus Crystals",
-        "count": 4
-      },
-      {
-        "symbol": "ConductivePolymers",
-        "name": "Conductive Polymers",
-        "count": 2
-      },
-      {
-        "symbol": "ConfigurableComponents",
-        "name": "Configurable Components",
-        "count": 2
-      }
     ]
   },
   "special_weapon_damage": {
@@ -261,23 +116,6 @@
         "label": "Damage",
         "method": "multiplicative",
         "value": 0.03
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "MechanicalScrap",
-        "name": "Mechanical Scrap",
-        "count": 5
-      },
-      {
-        "symbol": "MechanicalComponents",
-        "name": "Mechanical Components",
-        "count": 3
-      },
-      {
-        "symbol": "Ruthenium",
-        "name": "Ruthenium",
-        "count": 1
       }
     ]
   },
@@ -299,28 +137,6 @@
         "method": "multiplicative",
         "value": -1
       }
-    ],
-    "materials": [
-      {
-        "symbol": "HeatExchangers",
-        "name": "Heat Exchangers",
-        "count": 3
-      },
-      {
-        "symbol": "EmbeddedFirmware",
-        "name": "Modified Embedded Firmware",
-        "count": 2
-      },
-      {
-        "symbol": "RefinedFocusCrystals",
-        "name": "Refined Focus Crystals",
-        "count": 2
-      },
-      {
-        "symbol": "Mercury",
-        "name": "Mercury",
-        "count": 4
-      }
     ]
   },
   "special_weapon_lightweight": {
@@ -330,23 +146,6 @@
         "label": "Mass",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "SalvagedAlloys",
-        "name": "Salvaged Alloys",
-        "count": 5
-      },
-      {
-        "symbol": "Carbon",
-        "name": "Carbon",
-        "count": 5
-      },
-      {
-        "symbol": "Tin",
-        "name": "Tin",
-        "count": 1
       }
     ]
   },
@@ -363,28 +162,6 @@
         "method": "multiplicative",
         "value": 0.5
       }
-    ],
-    "materials": [
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "RefinedFocusCrystals",
-        "name": "Refined Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "Zirconium",
-        "name": "Zirconium",
-        "count": 3
-      },
-      {
-        "symbol": "ShieldDensityReports",
-        "name": "Untypical Shield Scans",
-        "count": 5
-      }
     ]
   },
   "special_shieldbooster_explosive": {
@@ -400,28 +177,6 @@
         "method": "additive",
         "value": 0.02
       }
-    ],
-    "materials": [
-      {
-        "symbol": "ShieldSoakAnalysis",
-        "name": "Inconsistent Shield Soak Analysis",
-        "count": 5
-      },
-      {
-        "symbol": "HeatResistantCeramics",
-        "name": "Heat Resistant Ceramics",
-        "count": 3
-      },
-      {
-        "symbol": "HeatDispersionPlate",
-        "name": "Heat Dispersion Plate",
-        "count": 3
-      },
-      {
-        "symbol": "Selenium",
-        "name": "Selenium",
-        "count": 2
-      }
     ]
   },
   "special_shieldbooster_toughened": {
@@ -432,23 +187,6 @@
         "method": "multiplicative",
         "value": 0.15
       }
-    ],
-    "materials": [
-      {
-        "symbol": "ShieldCycleRecordings",
-        "name": "Distorted Shield Cycle Recordings",
-        "count": 5
-      },
-      {
-        "symbol": "GalvanisingAlloys",
-        "name": "Galvanising Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "ShieldEmitters",
-        "name": "Shield Emitters",
-        "count": 3
-      }
     ]
   },
   "special_shieldbooster_efficient": {
@@ -458,28 +196,6 @@
         "label": "PowerDraw",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "ShieldSoakAnalysis",
-        "name": "Inconsistent Shield Soak Analysis",
-        "count": 5
-      },
-      {
-        "symbol": "SecurityFirmware",
-        "name": "Security Firmware Patch",
-        "count": 3
-      },
-      {
-        "symbol": "FocusCrystals",
-        "name": "Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "Niobium",
-        "name": "Niobium",
-        "count": 3
       }
     ]
   },
@@ -495,23 +211,6 @@
         "label": "KineticResistance",
         "method": "additive",
         "value": 0.02
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "ScanArchives",
-        "name": "Unidentified Scan Archives",
-        "count": 5
-      },
-      {
-        "symbol": "ShieldingSensors",
-        "name": "Shielding Sensors",
-        "count": 3
-      },
-      {
-        "symbol": "ShieldPatternAnalysis",
-        "name": "Aberrant Shield Pattern Analysis",
-        "count": 2
       }
     ]
   },
@@ -538,23 +237,6 @@
         "method": "additive",
         "value": -0.02
       }
-    ],
-    "materials": [
-      {
-        "symbol": "ShieldDensityReports",
-        "name": "Untypical Shield Scans",
-        "count": 3
-      },
-      {
-        "symbol": "CompactComposites",
-        "name": "Compact Composites",
-        "count": 5
-      },
-      {
-        "symbol": "Cadmium",
-        "name": "Cadmium",
-        "count": 2
-      }
     ]
   },
   "special_shieldbooster_thermic": {
@@ -570,23 +252,6 @@
         "method": "additive",
         "value": 0.02
       }
-    ],
-    "materials": [
-      {
-        "symbol": "BulkScanData",
-        "name": "Anomalous Bulk Scan Data",
-        "count": 5
-      },
-      {
-        "symbol": "ConductiveCeramics",
-        "name": "Conductive Ceramics",
-        "count": 3
-      },
-      {
-        "symbol": "HeatVanes",
-        "name": "Heat Vanes",
-        "count": 3
-      }
     ]
   },
   "special_armour_kinetic": {
@@ -601,23 +266,6 @@
         "label": "KineticResistance",
         "method": "additive",
         "value": 0.08
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "CompactComposites",
-        "name": "Compact Composites",
-        "count": 5
-      },
-      {
-        "symbol": "HighDensityComposites",
-        "name": "High Density Composites",
-        "count": 3
-      },
-      {
-        "symbol": "Zirconium",
-        "name": "Zirconium",
-        "count": 3
       }
     ]
   },
@@ -644,23 +292,6 @@
         "method": "additive",
         "value": -0.03
       }
-    ],
-    "materials": [
-      {
-        "symbol": "CompactComposites",
-        "name": "Compact Composites",
-        "count": 5
-      },
-      {
-        "symbol": "MechanicalEquipment",
-        "name": "Mechanical Equipment",
-        "count": 3
-      },
-      {
-        "symbol": "Molybdenum",
-        "name": "Molybdenum",
-        "count": 2
-      }
     ]
   },
   "special_armour_explosive": {
@@ -675,23 +306,6 @@
         "label": "ExplosiveResistance",
         "method": "additive",
         "value": 0.08
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "HeatConductionWiring",
-        "name": "Heat Conduction Wiring",
-        "count": 5
-      },
-      {
-        "symbol": "HighDensityComposites",
-        "name": "High Density Composites",
-        "count": 3
-      },
-      {
-        "symbol": "Niobium",
-        "name": "Niobium",
-        "count": 1
       }
     ]
   },
@@ -708,23 +322,6 @@
         "method": "additive",
         "value": 0.08
       }
-    ],
-    "materials": [
-      {
-        "symbol": "CompactComposites",
-        "name": "Compact Composites",
-        "count": 5
-      },
-      {
-        "symbol": "HeatDispersionPlate",
-        "name": "Heat Dispersion Plate",
-        "count": 3
-      },
-      {
-        "symbol": "ThermicAlloys",
-        "name": "Thermic Alloys",
-        "count": 2
-      }
     ]
   },
   "special_powerplant_toughened": {
@@ -734,23 +331,6 @@
         "label": "Integrity",
         "method": "multiplicative",
         "value": 0.15
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "GridResistors",
-        "name": "Grid Resistors",
-        "count": 5
-      },
-      {
-        "symbol": "Vanadium",
-        "name": "Vanadium",
-        "count": 3
-      },
-      {
-        "symbol": "FedProprietaryComposites",
-        "name": "Proprietary Composites",
-        "count": 1
       }
     ]
   },
@@ -767,23 +347,6 @@
         "method": "multiplicative",
         "value": 0.05
       }
-    ],
-    "materials": [
-      {
-        "symbol": "GridResistors",
-        "name": "Grid Resistors",
-        "count": 5
-      },
-      {
-        "symbol": "Vanadium",
-        "name": "Vanadium",
-        "count": 3
-      },
-      {
-        "symbol": "PolymerCapacitors",
-        "name": "Polymer Capacitors",
-        "count": 1
-      }
     ]
   },
   "special_powerplant_lightweight": {
@@ -793,23 +356,6 @@
         "label": "Mass",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "GridResistors",
-        "name": "Grid Resistors",
-        "count": 5
-      },
-      {
-        "symbol": "Vanadium",
-        "name": "Vanadium",
-        "count": 3
-      },
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 1
       }
     ]
   },
@@ -821,23 +367,6 @@
         "method": "multiplicative",
         "value": -0.1
       }
-    ],
-    "materials": [
-      {
-        "symbol": "GridResistors",
-        "name": "Grid Resistors",
-        "count": 5
-      },
-      {
-        "symbol": "Vanadium",
-        "name": "Vanadium",
-        "count": 3
-      },
-      {
-        "symbol": "HeatVanes",
-        "name": "Heat Vanes",
-        "count": 1
-      }
     ]
   },
   "special_engine_toughened": {
@@ -847,23 +376,6 @@
         "label": "Integrity",
         "method": "multiplicative",
         "value": 0.15
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "Iron",
-        "name": "Iron",
-        "count": 5
-      },
-      {
-        "symbol": "HybridCapacitors",
-        "name": "Hybrid Capacitors",
-        "count": 3
-      },
-      {
-        "symbol": "FedProprietaryComposites",
-        "name": "Proprietary Composites",
-        "count": 1
       }
     ]
   },
@@ -880,23 +392,6 @@
         "method": "multiplicative",
         "value": 0.1
       }
-    ],
-    "materials": [
-      {
-        "symbol": "Iron",
-        "name": "Iron",
-        "count": 5
-      },
-      {
-        "symbol": "HybridCapacitors",
-        "name": "Hybrid Capacitors",
-        "count": 3
-      },
-      {
-        "symbol": "SecurityFirmware",
-        "name": "Security Firmware Patch",
-        "count": 1
-      }
     ]
   },
   "special_engine_haulage": {
@@ -907,23 +402,6 @@
         "method": "multiplicative",
         "value": 0.1
       }
-    ],
-    "materials": [
-      {
-        "symbol": "Iron",
-        "name": "Iron",
-        "count": 5
-      },
-      {
-        "symbol": "HybridCapacitors",
-        "name": "Hybrid Capacitors",
-        "count": 3
-      },
-      {
-        "symbol": "SecurityFirmware",
-        "name": "Security Firmware Patch",
-        "count": 1
-      }
     ]
   },
   "special_engine_lightweight": {
@@ -933,23 +411,6 @@
         "label": "Mass",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "Iron",
-        "name": "Iron",
-        "count": 5
-      },
-      {
-        "symbol": "HybridCapacitors",
-        "name": "Hybrid Capacitors",
-        "count": 3
-      },
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 1
       }
     ]
   },
@@ -966,23 +427,6 @@
         "method": "multiplicative",
         "value": -0.1
       }
-    ],
-    "materials": [
-      {
-        "symbol": "Iron",
-        "name": "Iron",
-        "count": 5
-      },
-      {
-        "symbol": "HybridCapacitors",
-        "name": "Hybrid Capacitors",
-        "count": 3
-      },
-      {
-        "symbol": "HeatVanes",
-        "name": "Heat Vanes",
-        "count": 1
-      }
     ]
   },
   "special_fsd_fuelcapacity": {
@@ -998,23 +442,6 @@
         "method": "multiplicative",
         "value": 0.1
       }
-    ],
-    "materials": [
-      {
-        "symbol": "DisruptedWakeEchoes",
-        "name": "Atypical Disrupted Wake Echoes",
-        "count": 5
-      },
-      {
-        "symbol": "GalvanisingAlloys",
-        "name": "Galvanising Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "HyperspaceTrajectories",
-        "name": "Eccentric Hyperspace Trajectories",
-        "count": 1
-      }
     ]
   },
   "special_fsd_toughened": {
@@ -1024,23 +451,6 @@
         "label": "Integrity",
         "method": "multiplicative",
         "value": 0.25
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "DisruptedWakeEchoes",
-        "name": "Atypical Disrupted Wake Echoes",
-        "count": 5
-      },
-      {
-        "symbol": "GalvanisingAlloys",
-        "name": "Galvanising Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "ConfigurableComponents",
-        "name": "Configurable Components",
-        "count": 1
       }
     ]
   },
@@ -1057,23 +467,6 @@
         "method": "multiplicative",
         "value": 0.04
       }
-    ],
-    "materials": [
-      {
-        "symbol": "DisruptedWakeEchoes",
-        "name": "Atypical Disrupted Wake Echoes",
-        "count": 5
-      },
-      {
-        "symbol": "GalvanisingAlloys",
-        "name": "Galvanising Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "HyperspaceTrajectories",
-        "name": "Eccentric Hyperspace Trajectories",
-        "count": 1
-      }
     ]
   },
   "special_fsd_lightweight": {
@@ -1084,23 +477,6 @@
         "method": "multiplicative",
         "value": -0.1
       }
-    ],
-    "materials": [
-      {
-        "symbol": "DisruptedWakeEchoes",
-        "name": "Atypical Disrupted Wake Echoes",
-        "count": 5
-      },
-      {
-        "symbol": "GalvanisingAlloys",
-        "name": "Galvanising Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 1
-      }
     ]
   },
   "special_fsd_cooled": {
@@ -1110,28 +486,6 @@
         "label": "FSDHeatRate",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "DisruptedWakeEchoes",
-        "name": "Atypical Disrupted Wake Echoes",
-        "count": 5
-      },
-      {
-        "symbol": "GalvanisingAlloys",
-        "name": "Galvanising Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "HeatVanes",
-        "name": "Heat Vanes",
-        "count": 1
-      },
-      {
-        "symbol": "GridResistors",
-        "name": "Grid Resistors",
-        "count": 3
       }
     ]
   },
@@ -1168,23 +522,6 @@
         "method": "multiplicative",
         "value": -0.02
       }
-    ],
-    "materials": [
-      {
-        "symbol": "Phosphorus",
-        "name": "Phosphorus",
-        "count": 5
-      },
-      {
-        "symbol": "HeatResistantCeramics",
-        "name": "Heat Resistant Ceramics",
-        "count": 3
-      },
-      {
-        "symbol": "Cadmium",
-        "name": "Cadmium",
-        "count": 1
-      }
     ]
   },
   "special_powerdistributor_toughened": {
@@ -1194,23 +531,6 @@
         "label": "Integrity",
         "method": "multiplicative",
         "value": 0.15
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "Phosphorus",
-        "name": "Phosphorus",
-        "count": 5
-      },
-      {
-        "symbol": "HeatResistantCeramics",
-        "name": "Heat Resistant Ceramics",
-        "count": 3
-      },
-      {
-        "symbol": "FedProprietaryComposites",
-        "name": "Proprietary Composites",
-        "count": 1
       }
     ]
   },
@@ -1222,23 +542,6 @@
         "method": "multiplicative",
         "value": -0.1
       }
-    ],
-    "materials": [
-      {
-        "symbol": "Phosphorus",
-        "name": "Phosphorus",
-        "count": 5
-      },
-      {
-        "symbol": "HeatResistantCeramics",
-        "name": "Heat Resistant Ceramics",
-        "count": 3
-      },
-      {
-        "symbol": "ConductivePolymers",
-        "name": "Conductive Polymers",
-        "count": 1
-      }
     ]
   },
   "special_powerdistributor_lightweight": {
@@ -1248,23 +551,6 @@
         "label": "Mass",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "Phosphorus",
-        "name": "Phosphorus",
-        "count": 5
-      },
-      {
-        "symbol": "HeatResistantCeramics",
-        "name": "Heat Resistant Ceramics",
-        "count": 3
-      },
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 1
       }
     ]
   },
@@ -1301,23 +587,6 @@
         "method": "multiplicative",
         "value": 0.04
       }
-    ],
-    "materials": [
-      {
-        "symbol": "Phosphorus",
-        "name": "Phosphorus",
-        "count": 5
-      },
-      {
-        "symbol": "HeatResistantCeramics",
-        "name": "Heat Resistant Ceramics",
-        "count": 3
-      },
-      {
-        "symbol": "SecurityFirmware",
-        "name": "Security Firmware Patch",
-        "count": 1
-      }
     ]
   },
   "special_hullreinforcement_kinetic": {
@@ -1332,28 +601,6 @@
         "label": "KineticResistance",
         "method": "additive",
         "value": 0.02
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "TemperedAlloys",
-        "name": "Tempered Alloys",
-        "count": 5
-      },
-      {
-        "symbol": "Zirconium",
-        "name": "Zirconium",
-        "count": 3
-      },
-      {
-        "symbol": "Carbon",
-        "name": "Carbon",
-        "count": 5
-      },
-      {
-        "symbol": "HighDensityComposites",
-        "name": "High Density Composites",
-        "count": 3
       }
     ]
   },
@@ -1380,23 +627,6 @@
         "method": "additive",
         "value": -0.02
       }
-    ],
-    "materials": [
-      {
-        "symbol": "CompactComposites",
-        "name": "Compact Composites",
-        "count": 5
-      },
-      {
-        "symbol": "Molybdenum",
-        "name": "Molybdenum",
-        "count": 3
-      },
-      {
-        "symbol": "Ruthenium",
-        "name": "Ruthenium",
-        "count": 2
-      }
     ]
   },
   "special_hullreinforcement_explosive": {
@@ -1411,23 +641,6 @@
         "label": "ExplosiveResistance",
         "method": "additive",
         "value": 0.02
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "HeatConductionWiring",
-        "name": "Heat Conduction Wiring",
-        "count": 5
-      },
-      {
-        "symbol": "ShieldingSensors",
-        "name": "Shielding Sensors",
-        "count": 3
-      },
-      {
-        "symbol": "Tungsten",
-        "name": "Tungsten",
-        "count": 3
       }
     ]
   },
@@ -1444,28 +657,6 @@
         "method": "additive",
         "value": 0.02
       }
-    ],
-    "materials": [
-      {
-        "symbol": "HeatConductionWiring",
-        "name": "Heat Conduction Wiring",
-        "count": 5
-      },
-      {
-        "symbol": "HeatDispersionPlate",
-        "name": "Heat Dispersion Plate",
-        "count": 3
-      },
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 1
-      },
-      {
-        "symbol": "Zinc",
-        "name": "Zinc",
-        "count": 4
-      }
     ]
   },
   "special_shieldcell_oversized": {
@@ -1481,23 +672,6 @@
         "method": "multiplicative",
         "value": 0.05
       }
-    ],
-    "materials": [
-      {
-        "symbol": "ChemicalStorageUnits",
-        "name": "Chemical Storage Units",
-        "count": 5
-      },
-      {
-        "symbol": "Chromium",
-        "name": "Chromium",
-        "count": 3
-      },
-      {
-        "symbol": "PolymerCapacitors",
-        "name": "Polymer Capacitors",
-        "count": 1
-      }
     ]
   },
   "special_shieldcell_toughened": {
@@ -1508,23 +682,6 @@
         "method": "multiplicative",
         "value": 0.15
       }
-    ],
-    "materials": [
-      {
-        "symbol": "ChemicalStorageUnits",
-        "name": "Chemical Storage Units",
-        "count": 5
-      },
-      {
-        "symbol": "Chromium",
-        "name": "Chromium",
-        "count": 3
-      },
-      {
-        "symbol": "Yttrium",
-        "name": "Yttrium",
-        "count": 1
-      }
     ]
   },
   "special_shieldcell_efficient": {
@@ -1534,23 +691,6 @@
         "label": "PowerDraw",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "ChemicalStorageUnits",
-        "name": "Chemical Storage Units",
-        "count": 5
-      },
-      {
-        "symbol": "Chromium",
-        "name": "Chromium",
-        "count": 3
-      },
-      {
-        "symbol": "ConductivePolymers",
-        "name": "Conductive Polymers",
-        "count": 1
       }
     ]
   },
@@ -1567,23 +707,6 @@
         "method": "multiplicative",
         "value": -0.05
       }
-    ],
-    "materials": [
-      {
-        "symbol": "ChemicalStorageUnits",
-        "name": "Chemical Storage Units",
-        "count": 5
-      },
-      {
-        "symbol": "Chromium",
-        "name": "Chromium",
-        "count": 3
-      },
-      {
-        "symbol": "ConfigurableComponents",
-        "name": "Configurable Components",
-        "count": 1
-      }
     ]
   },
   "special_shieldcell_lightweight": {
@@ -1594,23 +717,6 @@
         "method": "multiplicative",
         "value": -0.1
       }
-    ],
-    "materials": [
-      {
-        "symbol": "ChemicalStorageUnits",
-        "name": "Chemical Storage Units",
-        "count": 5
-      },
-      {
-        "symbol": "Chromium",
-        "name": "Chromium",
-        "count": 3
-      },
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 1
-      }
     ]
   },
   "special_shield_toughened": {
@@ -1620,23 +726,6 @@
         "label": "Integrity",
         "method": "multiplicative",
         "value": 0.15
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "WornShieldEmitters",
-        "name": "Worn Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "ConfigurableComponents",
-        "name": "Configurable Components",
-        "count": 1
       }
     ]
   },
@@ -1668,23 +757,6 @@
         "method": "additive",
         "value": -0.015
       }
-    ],
-    "materials": [
-      {
-        "symbol": "WornShieldEmitters",
-        "name": "Worn Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "CompoundShielding",
-        "name": "Compound Shielding",
-        "count": 1
-      }
     ]
   },
   "special_shield_kinetic": {
@@ -1699,23 +771,6 @@
         "label": "KineticResistance",
         "method": "additive",
         "value": 0.08
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "WornShieldEmitters",
-        "name": "Worn Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "DecodedEmissionData",
-        "name": "Decoded Emission Data",
-        "count": 1
       }
     ]
   },
@@ -1736,23 +791,6 @@
         "label": "EnergyPerRegen",
         "method": "multiplicative",
         "value": 0.25
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "WornShieldEmitters",
-        "name": "Worn Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "ConductivePolymers",
-        "name": "Conductive Polymers",
-        "count": 1
       }
     ]
   },
@@ -1789,23 +827,6 @@
         "method": "additive",
         "value": -0.01
       }
-    ],
-    "materials": [
-      {
-        "symbol": "WornShieldEmitters",
-        "name": "Worn Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "ConductivePolymers",
-        "name": "Conductive Polymers",
-        "count": 1
-      }
     ]
   },
   "special_shield_resistive": {
@@ -1836,23 +857,6 @@
         "method": "additive",
         "value": 0.03
       }
-    ],
-    "materials": [
-      {
-        "symbol": "WornShieldEmitters",
-        "name": "Worn Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "ShieldPatternAnalysis",
-        "name": "Aberrant Shield Pattern Analysis",
-        "count": 1
-      }
     ]
   },
   "special_shield_lightweight": {
@@ -1862,23 +866,6 @@
         "label": "Mass",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "WornShieldEmitters",
-        "name": "Worn Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 1
       }
     ]
   },
@@ -1895,45 +882,11 @@
         "method": "additive",
         "value": 0.08
       }
-    ],
-    "materials": [
-      {
-        "symbol": "WornShieldEmitters",
-        "name": "Worn Shield Emitters",
-        "count": 5
-      },
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "HeatVanes",
-        "name": "Heat Vanes",
-        "count": 1
-      }
     ]
   },
   "special_auto_loader": {
     "name": "Auto Loader",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "MechanicalEquipment",
-        "name": "Mechanical Equipment",
-        "count": 4
-      },
-      {
-        "symbol": "MechanicalComponents",
-        "name": "Mechanical Components",
-        "count": 3
-      },
-      {
-        "symbol": "HighDensityComposites",
-        "name": "High Density Composites",
-        "count": 3
-      }
-    ],
     "description": "Reloads the weapon while it continues firing."
   },
   "special_corrosive_shell": {
@@ -1945,99 +898,21 @@
         "value": -0.2
       }
     ],
-    "materials": [
-      {
-        "symbol": "ChemicalStorageUnits",
-        "name": "Chemical Storage Units",
-        "count": 5
-      },
-      {
-        "symbol": "PrecipitatedAlloys",
-        "name": "Precipitated Alloys",
-        "count": 4
-      },
-      {
-        "symbol": "Arsenic",
-        "name": "Arsenic",
-        "count": 3
-      }
-    ],
     "description": "Reduces the target armour hardness; costs 20% maximum ammo."
   },
   "special_blinding_shell": {
     "name": "Dazzle Shell",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "MechanicalScrap",
-        "name": "Mechanical Scrap",
-        "count": 5
-      },
-      {
-        "symbol": "Manganese",
-        "name": "Manganese",
-        "count": 4
-      },
-      {
-        "symbol": "HybridCapacitors",
-        "name": "Hybrid Capacitors",
-        "count": 5
-      },
-      {
-        "symbol": "MechanicalComponents",
-        "name": "Mechanical Components",
-        "count": 5
-      }
-    ],
     "description": "Reduces the target's sensor acuity."
   },
   "special_dispersal_field": {
     "name": "Dispersal Field",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "ConductiveComponents",
-        "name": "Conductive Components",
-        "count": 5
-      },
-      {
-        "symbol": "HybridCapacitors",
-        "name": "Hybrid Capacitors",
-        "count": 5
-      },
-      {
-        "symbol": "ArchivedEmissionData",
-        "name": "Irregular Emission Data",
-        "count": 5
-      },
-      {
-        "symbol": "WornShieldEmitters",
-        "name": "Worn Shield Emitters",
-        "count": 5
-      }
-    ],
     "description": "Reduces the target's gimbal and turret tracking."
   },
   "special_drag_munitions": {
     "name": "Drag Munitions",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "Carbon",
-        "name": "Carbon",
-        "count": 5
-      },
-      {
-        "symbol": "GridResistors",
-        "name": "Grid Resistors",
-        "count": 5
-      },
-      {
-        "symbol": "Molybdenum",
-        "name": "Molybdenum",
-        "count": 2
-      }
-    ],
     "description": "Reduces the target's speed and prevents it from boosting engine thrust."
   },
   "special_force_shell": {
@@ -2047,28 +922,6 @@
         "label": "ShotSpeed",
         "method": "multiplicative",
         "value": -0.166667
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "MechanicalScrap",
-        "name": "Mechanical Scrap",
-        "count": 5
-      },
-      {
-        "symbol": "Zinc",
-        "name": "Zinc",
-        "count": 5
-      },
-      {
-        "symbol": "PhaseAlloys",
-        "name": "Phase Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "HeatConductionWiring",
-        "name": "Heat Conduction Wiring",
-        "count": 3
       }
     ],
     "description": "Pushes the target off course."
@@ -2085,28 +938,6 @@
         "label": "BurstInterval",
         "method": "multiplicative",
         "value": 0.5
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "WakeSolutions",
-        "name": "Strange Wake Solutions",
-        "count": 3
-      },
-      {
-        "symbol": "FSDTelemetry",
-        "name": "Anomalous FSD Telemetry",
-        "count": 5
-      },
-      {
-        "symbol": "MechanicalEquipment",
-        "name": "Mechanical Equipment",
-        "count": 5
-      },
-      {
-        "symbol": "ConfigurableComponents",
-        "name": "Configurable Components",
-        "count": 3
       }
     ],
     "description": "Reboots the target's frame shift drive."
@@ -2129,28 +960,6 @@
       "kinetic": 0.5,
       "explosive": 0.5
     },
-    "materials": [
-      {
-        "symbol": "MechanicalScrap",
-        "name": "Mechanical Scrap",
-        "count": 5
-      },
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "ChemicalManipulators",
-        "name": "Chemical Manipulators",
-        "count": 3
-      },
-      {
-        "symbol": "Nickel",
-        "name": "Nickel",
-        "count": 5
-      }
-    ],
     "description": "Deals 50/50 kinetic/explosive damage with module splash damage."
   },
   "special_distortion_field": {
@@ -2171,72 +980,16 @@
       "kinetic": 0.5,
       "thermal": 0.5
     },
-    "materials": [
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 5
-      },
-      {
-        "symbol": "ShieldCycleRecordings",
-        "name": "Distorted Shield Cycle Recordings",
-        "count": 5
-      },
-      {
-        "symbol": "DisruptedWakeEchoes",
-        "name": "Atypical Disrupted Wake Echoes",
-        "count": 5
-      }
-    ],
     "description": "Deals 50/50 kinetic/thermal damage."
   },
   "special_choke_canister": {
     "name": "Ion Disruption",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "Sulphur",
-        "name": "Sulphur",
-        "count": 5
-      },
-      {
-        "symbol": "Phosphorus",
-        "name": "Phosphorus",
-        "count": 5
-      },
-      {
-        "symbol": "ChemicalDistillery",
-        "name": "Chemical Distillery",
-        "count": 3
-      },
-      {
-        "symbol": "ElectrochemicalArrays",
-        "name": "Electrochemical Arrays",
-        "count": 3
-      }
-    ],
     "description": "Reboots the target's thrusters."
   },
   "special_mass_lock": {
     "name": "Mass Lock Munition",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "MechanicalEquipment",
-        "name": "Mechanical Equipment",
-        "count": 5
-      },
-      {
-        "symbol": "HighDensityComposites",
-        "name": "High Density Composites",
-        "count": 3
-      },
-      {
-        "symbol": "ShieldPatternAnalysis",
-        "name": "Aberrant Shield Pattern Analysis",
-        "count": 3
-      }
-    ],
     "description": "Inhibits the target's frame shift drive."
   },
   "special_overload_munitions": {
@@ -2246,77 +999,16 @@
       "thermal": 0.5,
       "explosive": 0.5
     },
-    "materials": [
-      {
-        "symbol": "FilamentComposites",
-        "name": "Filament Composites",
-        "count": 5
-      },
-      {
-        "symbol": "EncryptionCodes",
-        "name": "Tagged Encryption Codes",
-        "count": 4
-      },
-      {
-        "symbol": "ShieldPatternAnalysis",
-        "name": "Aberrant Shield Pattern Analysis",
-        "count": 2
-      },
-      {
-        "symbol": "Germanium",
-        "name": "Germanium",
-        "count": 3
-      }
-    ],
     "description": "Converts damage to 50/50 explosive/thermal."
   },
   "special_penetrator_munitions": {
     "name": "Penetrator Munitions",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "GalvanisingAlloys",
-        "name": "Galvanising Alloys",
-        "count": 5
-      },
-      {
-        "symbol": "ElectrochemicalArrays",
-        "name": "Electrochemical Arrays",
-        "count": 3
-      },
-      {
-        "symbol": "Zirconium",
-        "name": "Zirconium",
-        "count": 3
-      }
-    ],
     "description": "Deals damage to the target's modules."
   },
   "special_deep_cut_payload": {
     "name": "Penetrator Payload",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "MechanicalComponents",
-        "name": "Mechanical Components",
-        "count": 3
-      },
-      {
-        "symbol": "Tungsten",
-        "name": "Tungsten",
-        "count": 3
-      },
-      {
-        "symbol": "BulkScanData",
-        "name": "Anomalous Bulk Scan Data",
-        "count": 5
-      },
-      {
-        "symbol": "Selenium",
-        "name": "Selenium",
-        "count": 3
-      }
-    ],
     "description": "Deals damage to the target's modules."
   },
   "special_phasing_sequence": {
@@ -2326,28 +1018,6 @@
         "label": "Damage",
         "method": "multiplicative",
         "value": -0.1
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "FocusCrystals",
-        "name": "Focus Crystals",
-        "count": 5
-      },
-      {
-        "symbol": "ShieldPatternAnalysis",
-        "name": "Aberrant Shield Pattern Analysis",
-        "count": 3
-      },
-      {
-        "symbol": "Niobium",
-        "name": "Niobium",
-        "count": 3
-      },
-      {
-        "symbol": "ConfigurableComponents",
-        "name": "Configurable Components",
-        "count": 3
       }
     ],
     "description": "10% of damage bypasses shields."
@@ -2366,50 +1036,11 @@
         "value": -1
       }
     ],
-    "materials": [
-      {
-        "symbol": "HeatExchangers",
-        "name": "Heat Exchangers",
-        "count": 3
-      },
-      {
-        "symbol": "EmbeddedFirmware",
-        "name": "Modified Embedded Firmware",
-        "count": 2
-      },
-      {
-        "symbol": "RefinedFocusCrystals",
-        "name": "Refined Focus Crystals",
-        "count": 2
-      },
-      {
-        "symbol": "Mercury",
-        "name": "Mercury",
-        "count": 4
-      }
-    ],
     "description": "Reloads from ship fuel instead of ammunition."
   },
   "special_radiant_canister": {
     "name": "Radiant Canister",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "Polonium",
-        "name": "Polonium",
-        "count": 1
-      },
-      {
-        "symbol": "PhaseAlloys",
-        "name": "Phase Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "HeatDispersionPlate",
-        "name": "Heat Dispersion Plate",
-        "count": 4
-      }
-    ],
     "description": "Emits an area of heat and sensor disruption."
   },
   "special_regeneration_sequence": {
@@ -2421,50 +1052,11 @@
         "value": -0.1
       }
     ],
-    "materials": [
-      {
-        "symbol": "RefinedFocusCrystals",
-        "name": "Refined Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "ShieldingSensors",
-        "name": "Shielding Sensors",
-        "count": 4
-      },
-      {
-        "symbol": "ShieldFrequencyData",
-        "name": "Peculiar Shield Frequency Data",
-        "count": 1
-      }
-    ],
     "description": "Regenerates wingmates’ shields on hits."
   },
   "special_reverberating_cascade": {
     "name": "Reverberating Cascade",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "ConfigurableComponents",
-        "name": "Configurable Components",
-        "count": 2
-      },
-      {
-        "symbol": "ScanDatabanks",
-        "name": "Classified Scan Databanks",
-        "count": 3
-      },
-      {
-        "symbol": "FilamentComposites",
-        "name": "Filament Composites",
-        "count": 4
-      },
-      {
-        "symbol": "Chromium",
-        "name": "Chromium",
-        "count": 4
-      }
-    ],
     "description": "Damages the target's shield generator."
   },
   "special_scramble_spectrum": {
@@ -2474,23 +1066,6 @@
         "label": "BurstInterval",
         "method": "multiplicative",
         "value": 0.111111
-      }
-    ],
-    "materials": [
-      {
-        "symbol": "CrystalShards",
-        "name": "Crystal Shards",
-        "count": 5
-      },
-      {
-        "symbol": "ShieldDensityReports",
-        "name": "Untypical Shield Scans",
-        "count": 3
-      },
-      {
-        "symbol": "ScrambledEmissionData",
-        "name": "Exceptional Scrambled Emission Data",
-        "count": 5
       }
     ],
     "description": "Causes the target's modules to malfunction."
@@ -2504,77 +1079,16 @@
         "value": -0.5
       }
     ],
-    "materials": [
-      {
-        "symbol": "MechanicalScrap",
-        "name": "Mechanical Scrap",
-        "count": 5
-      },
-      {
-        "symbol": "ShieldCycleRecordings",
-        "name": "Distorted Shield Cycle Recordings",
-        "count": 5
-      },
-      {
-        "symbol": "ConsumerFirmware",
-        "name": "Modified Consumer Firmware",
-        "count": 5
-      },
-      {
-        "symbol": "Niobium",
-        "name": "Niobium",
-        "count": 3
-      }
-    ],
     "description": "Effective against munitions (e.g. missiles)."
   },
   "special_shiftlock_canister": {
     "name": "Shift-lock Canister",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "TemperedAlloys",
-        "name": "Tempered Alloys",
-        "count": 5
-      },
-      {
-        "symbol": "WakeSolutions",
-        "name": "Strange Wake Solutions",
-        "count": 3
-      },
-      {
-        "symbol": "SalvagedAlloys",
-        "name": "Salvaged Alloys",
-        "count": 5
-      }
-    ],
     "description": "Reboots the frame shift drives of ships in the area."
   },
   "special_smart_rounds": {
     "name": "Smart Rounds",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "MechanicalScrap",
-        "name": "Mechanical Scrap",
-        "count": 5
-      },
-      {
-        "symbol": "SecurityFirmware",
-        "name": "Security Firmware Patch",
-        "count": 3
-      },
-      {
-        "symbol": "DecodedEmissionData",
-        "name": "Decoded Emission Data",
-        "count": 3
-      },
-      {
-        "symbol": "ScanDatabanks",
-        "name": "Classified Scan Databanks",
-        "count": 3
-      }
-    ],
     "description": "Deals no damage to ships that are not the current target."
   },
   "special_super_penetrator": {
@@ -2586,99 +1100,21 @@
         "value": 0.5
       }
     ],
-    "materials": [
-      {
-        "symbol": "ProtoLightAlloys",
-        "name": "Proto Light Alloys",
-        "count": 3
-      },
-      {
-        "symbol": "RefinedFocusCrystals",
-        "name": "Refined Focus Crystals",
-        "count": 3
-      },
-      {
-        "symbol": "Zirconium",
-        "name": "Zirconium",
-        "count": 3
-      },
-      {
-        "symbol": "ShieldDensityReports",
-        "name": "Untypical Shield Scans",
-        "count": 5
-      }
-    ],
     "description": "Deals damage to the target's modules."
   },
   "special_lock_breaker": {
     "name": "Target Lock Breaker",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "Selenium",
-        "name": "Selenium",
-        "count": 5
-      },
-      {
-        "symbol": "SecurityFirmware",
-        "name": "Security Firmware Patch",
-        "count": 3
-      },
-      {
-        "symbol": "AdaptiveEncryptors",
-        "name": "Adaptive Encryptors Capture",
-        "count": 1
-      }
-    ],
     "description": "Causes the target to lose its lock."
   },
   "special_thermal_cascade": {
     "name": "Thermal Cascade",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "HeatConductionWiring",
-        "name": "Heat Conduction Wiring",
-        "count": 5
-      },
-      {
-        "symbol": "HybridCapacitors",
-        "name": "Hybrid Capacitors",
-        "count": 4
-      },
-      {
-        "symbol": "HighDensityComposites",
-        "name": "High Density Composites",
-        "count": 3
-      },
-      {
-        "symbol": "Phosphorus",
-        "name": "Phosphorus",
-        "count": 5
-      }
-    ],
     "description": "Increases heat on a shielded target."
   },
   "special_thermal_conduit": {
     "name": "Thermal Conduit",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "HeatDispersionPlate",
-        "name": "Heat Dispersion Plate",
-        "count": 5
-      },
-      {
-        "symbol": "Sulphur",
-        "name": "Sulphur",
-        "count": 5
-      },
-      {
-        "symbol": "TemperedAlloys",
-        "name": "Tempered Alloys",
-        "count": 5
-      }
-    ],
     "description": "Damage scales with the attacker's heat level."
   },
   "special_thermalshock": {
@@ -2690,50 +1126,11 @@
         "value": -0.1
       }
     ],
-    "materials": [
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 5
-      },
-      {
-        "symbol": "HeatResistantCeramics",
-        "name": "Heat Resistant Ceramics",
-        "count": 3
-      },
-      {
-        "symbol": "ConductiveComponents",
-        "name": "Conductive Components",
-        "count": 3
-      },
-      {
-        "symbol": "Tungsten",
-        "name": "Tungsten",
-        "count": 3
-      }
-    ],
     "description": "Increases the target's heat."
   },
   "special_thermal_vent": {
     "name": "Thermal Vent",
     "modifiers": [],
-    "materials": [
-      {
-        "symbol": "UncutFocusCrystals",
-        "name": "Flawed Focus Crystals",
-        "count": 5
-      },
-      {
-        "symbol": "ConductivePolymers",
-        "name": "Conductive Polymers",
-        "count": 3
-      },
-      {
-        "symbol": "PrecipitatedAlloys",
-        "name": "Precipitated Alloys",
-        "count": 3
-      }
-    ],
     "description": "Reduces the attacker's heat when hitting a target."
   }
 }

@@ -53,7 +53,10 @@
  *   the fixed-roll modules you cannot craft. {@link DECORATIVE_MODIFICATIONS} is the
  *   odd one out and the one to reach for when an id resolves to no recipe: the game
  *   writes a handful of festive transformations in the same field, and no engineer
- *   applies one.
+ *   applies one. Material shopping data stays on the explicit
+ *   {@link ships/blueprint-costs!BLUEPRINT_COSTS | blueprint-costs} and
+ *   {@link ships/experimental-effect-costs!EXPERIMENTAL_EFFECT_COSTS | experimental-effect-costs}
+ *   subpaths, so build calculations do not pull it in.
  *
  * Note that a hull's derived figures split by cost: cheap stored values are properties
  * ({@link ShipLoadout.unladenMass}), while anything that recomputes or takes options is
@@ -320,7 +323,7 @@ export {
     type BlueprintGrades,
     type Blueprint,
 } from './engineering.js';
-export { BLUEPRINTS, getBlueprint, getBlueprintGrade, getBlueprintCost } from './blueprints.js';
+export { BLUEPRINTS, getBlueprint, getBlueprintGrade } from './blueprints.js';
 export { EXPERIMENTAL_EFFECTS, getExperimentalEffect } from './experimental-effects.js';
 export {
     ENGINEERING_OPTION_GROUPS,

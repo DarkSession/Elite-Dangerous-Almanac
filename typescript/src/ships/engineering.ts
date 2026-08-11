@@ -106,7 +106,7 @@ export interface EngineeringMaterial {
     readonly count: number;
 }
 
-/** One grade of a blueprint — the modifiers it applies and the materials it costs. */
+/** One grade of a blueprint — the modifiers it applies to a module. */
 export interface BlueprintGrade {
     /** The stat modifiers this grade applies (feed to {@link computeModifiers}). */
     readonly features: readonly BlueprintFeature[];
@@ -116,18 +116,12 @@ export interface BlueprintGrade {
      * damage after conversion.
      */
     readonly damageDistribution?: DamageDistribution;
-    /**
-     * The materials one roll at this grade consumes — possibly empty (a known recipe
-     * that costs nothing). Join each `symbol` to the `materials` domain for its grade
-     * and category.
-     */
-    readonly materials: readonly EngineeringMaterial[];
 }
 
 /**
- * One experimental (special) effect — the stat modifiers it applies and the materials a
- * single application costs. An experimental effect is applied in one step (one roll),
- * unlike a blueprint whose grades are rolled up to.
+ * One experimental (special) effect — the stat modifiers and qualitative behavior it
+ * applies. An experimental effect is applied in one step, unlike a blueprint whose
+ * grades are rolled up to.
  */
 export interface ExperimentalEffect {
     /** The in-game display name, e.g. `"Mass Manager"`, `"Auto Loader"`. */
@@ -151,8 +145,6 @@ export interface ExperimentalEffect {
      * Shares are fractions (`0.5` = 50%); absent types deal no damage after conversion.
      */
     readonly damageDistribution?: DamageDistribution;
-    /** The materials one application of this effect consumes. */
-    readonly materials: readonly EngineeringMaterial[];
     /**
      * A short human-readable note on what the effect does in game — present on effects
      * whose behaviour is not fully captured by {@link ExperimentalEffect.modifiers}
@@ -169,10 +161,10 @@ export type BlueprintGrades = Readonly<Record<string, BlueprintGrade>>;
  *
  * @remarks
  * A blueprint is keyed in {@link BLUEPRINTS} by its Frontier `fdname`; this is the record
- * that key maps to. `grades` carries the modifier `features`, optional converted damage
- * distribution, and material cost of each grade the blueprint defines (a blueprint need
- * not define every grade `1`–`5`). A journal id shared by two recipes is resolved against
- * the fitted module by `resolveBlueprintForModule` in `ships/blueprint-journal`.
+ * that key maps to. Each member of `grades` carries modifier `features` and an optional
+ * converted damage distribution (a blueprint need not define every grade `1`–`5`). A
+ * journal id shared by two recipes is resolved against the fitted module by
+ * `resolveBlueprintForModule` in `ships/blueprint-journal`.
  */
 export interface Blueprint {
     /** The in-game display name, e.g. `"Increased range"`, `"Fuel Scoop — Scoop rate enhanced"`. */
@@ -427,7 +419,8 @@ function resolveFalloffFromRange(
  * `N` rolls (grade 1 → 1 roll, grade 2 → 2 rolls, … grade 5 → 5 rolls). Each roll at a
  * grade consumes that grade's materials, so the total to engineer a module *up to* a
  * grade is the running sum of `rollsForGrade(g) ·` (grade `g`'s materials) for every
- * grade `g` up to the target — what {@link getBlueprintCost} computes.
+ * grade `g` up to the target — what
+ * {@link ships/blueprint-costs!getBlueprintCost | getBlueprintCost} computes.
  *
  * @param grade - The blueprint grade, `1`–`5`.
  * @returns The rolls to complete that grade (equal to the grade number).
@@ -448,13 +441,13 @@ export function rollsForGrade(grade: number): number {
  *
  * @example
  * ```ts
- * import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprints';
+ * import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
  * import { sumMaterials } from '@elite-dangerous-almanac/core/ships/engineering';
- * import { getExperimentalEffect } from '@elite-dangerous-almanac/core/ships/experimental-effects';
+ * import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
  *
  * sumMaterials(
  *   getBlueprintCost('FSD_LongRange', 5)!,
- *   getExperimentalEffect('special_fsd_heavy')!.materials,
+ *   getExperimentalEffectCost('special_fsd_heavy')!,
  * );
  * ```
  *

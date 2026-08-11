@@ -26,6 +26,11 @@ import { RARE_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/comm
 import { toSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address-input';
 import { sectorNameFromGalacticPosition } from '@elite-dangerous-almanac/core/astro/galaxy-grid';
 import { parseSlef, toSlef, stringifySlef } from '@elite-dangerous-almanac/core/ships/slef';
+import {
+    getBlueprintCost,
+    getBlueprintGradeCost,
+} from '@elite-dangerous-almanac/core/ships/blueprint-costs';
+import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
 
 async function readReachableJs(entry, seen = new Set()) {
     if (seen.has(entry.href)) return '';
@@ -164,6 +169,24 @@ test('fine-grained package subpaths resolve', () => {
         ),
     );
     assert.equal(parseSlef(slef)[0]?.data.Ship, 'sidewinder');
+    assert.equal(
+        getBlueprintGradeCost('FSD_LongRange', 5)?.find(
+            (material) => material.symbol === 'DataminedWake',
+        )?.count,
+        1,
+    );
+    assert.equal(
+        getBlueprintCost('FSD_LongRange', 5)?.find(
+            (material) => material.symbol === 'DataminedWake',
+        )?.count,
+        5,
+    );
+    assert.equal(
+        getExperimentalEffectCost('special_fsd_heavy')?.find(
+            (material) => material.symbol === 'HyperspaceTrajectories',
+        )?.count,
+        1,
+    );
 });
 
 test('heavy catalogues stay on explicit subpaths', async () => {
@@ -189,6 +212,17 @@ test('heavy catalogues stay on explicit subpaths', async () => {
     ]) {
         assert.ok(!(catalogue in root), `${catalogue} leaked into the root barrel`);
         assert.ok(!(catalogue in ships), `${catalogue} leaked into the ships barrel`);
+    }
+    for (const costSymbol of [
+        'BLUEPRINT_COSTS',
+        'getBlueprintCosts',
+        'getBlueprintGradeCost',
+        'getBlueprintCost',
+        'EXPERIMENTAL_EFFECT_COSTS',
+        'getExperimentalEffectCost',
+    ]) {
+        assert.ok(!(costSymbol in root), `${costSymbol} leaked into the root barrel`);
+        assert.ok(!(costSymbol in ships), `${costSymbol} leaked into the ships barrel`);
     }
 
     assert.equal(planetary.PLANETARY_NEBULAE.length, 5489);
@@ -303,6 +337,49 @@ test('engineering menus and journal resolution do not bundle blueprint mechanics
     for (const marker of [/FSDOptimalMass/, /Increased range/, /multiplicative/]) {
         assert.doesNotMatch(join, marker);
     }
+});
+
+test('engineering mechanics and shopping costs stay in separate package graphs', async () => {
+    const [loadout, blueprints, blueprintCosts, effects, effectCosts] = await Promise.all([
+        readReachableJs(new URL('./dist/ships/ship-loadout.js', import.meta.url)),
+        readReachableJs(new URL('./dist/ships/blueprints.js', import.meta.url)),
+        readReachableJs(new URL('./dist/ships/blueprint-costs.js', import.meta.url)),
+        readReachableJs(new URL('./dist/ships/experimental-effects.js', import.meta.url)),
+        readReachableJs(new URL('./dist/ships/experimental-effect-costs.js', import.meta.url)),
+    ]);
+
+    // The unified load/edit/calculate facade needs mechanics, not material shopping lists.
+    assert.ok(
+        loadout.length < 1.2 * 1024 * 1024,
+        `expected a cost-free loadout graph, got ${loadout.length} bytes`,
+    );
+    assert.match(loadout, /FSDOptimalMass/);
+    assert.doesNotMatch(loadout, /DataminedWake/);
+    assert.doesNotMatch(loadout, /HyperspaceTrajectories/);
+
+    assert.ok(
+        blueprints.length < 384 * 1024,
+        `expected mechanics-only blueprints, got ${blueprints.length} bytes`,
+    );
+    assert.match(blueprints, /FSDOptimalMass/);
+    assert.match(blueprints, /Increased range/);
+    assert.doesNotMatch(blueprints, /DataminedWake/);
+
+    assert.match(blueprintCosts, /DataminedWake/);
+    // The cost calculator shares data-free roll/summing helpers with `engineering`, whose
+    // calculation vocabulary includes FSDOptimalMass. The blueprint display name is the
+    // catalogue-only sentinel that proves the mechanics payload itself is absent.
+    assert.doesNotMatch(blueprintCosts, /Increased range/);
+
+    assert.ok(
+        effects.length < 40 * 1024,
+        `expected mechanics-only experimental effects, got ${effects.length} bytes`,
+    );
+    assert.match(effects, /Mass Manager/);
+    assert.doesNotMatch(effects, /HyperspaceTrajectories/);
+
+    assert.match(effectCosts, /HyperspaceTrajectories/);
+    assert.doesNotMatch(effectCosts, /Mass Manager/);
 });
 
 test('a single module catalogue does not bundle the others', async () => {
@@ -452,6 +529,34 @@ test('the package ships source maps with embedded original sources', async () =>
     assert.equal(implementationMap.version, 3);
     assert.equal(implementationMap.sources.length, implementationMap.sourcesContent.length);
     assert.ok(implementationMap.sourcesContent.every((source) => typeof source === 'string'));
+});
+
+test('engineering cost source maps embed their TypeScript and JSONC sources', async () => {
+    for (const [entry, expected] of [
+        ['blueprint-costs', ['src/ships/blueprint-costs.ts', 'data/ships/blueprint-costs.jsonc']],
+        [
+            'experimental-effect-costs',
+            [
+                'src/ships/experimental-effect-costs.ts',
+                'data/ships/experimental-effect-costs.jsonc',
+            ],
+        ],
+    ]) {
+        const files = await reachableJsFiles(new URL(`./dist/ships/${entry}.js`, import.meta.url));
+        const maps = await Promise.all(
+            [...files.values()].map(async (file) =>
+                JSON.parse(await readFile(new URL(`${file.pathname}.map`, 'file:'), 'utf8')),
+            ),
+        );
+        for (const suffix of expected) {
+            const map = maps.find((candidate) =>
+                candidate.sources.some((source) => source.endsWith(suffix)),
+            );
+            assert.ok(map, `${entry} has no source map entry for ${suffix}`);
+            const index = map.sources.findIndex((source) => source.endsWith(suffix));
+            assert.equal(typeof map.sourcesContent[index], 'string', suffix);
+        }
+    }
 });
 
 test('the build omits JavaScript artifacts with no runtime API', async () => {

@@ -78,6 +78,7 @@ symbols you are most likely to reach for first:
 | `singleJumpRange`, `fuelPerJump`, `totalRange` | `core/ships/jump-range` |
 | `powerBudget` / `shieldMetrics` / `armourMetrics` / `weaponMetrics` | `core/ships/power` / `shields` / `armour` / `weapons` |
 | `computeModifiers`, `BLUEPRINTS`, `EXPERIMENTAL_EFFECTS` | `core/ships/engineering` / `blueprints` / `experimental-effects` |
+| `getBlueprintCost`, `getExperimentalEffectCost` | `core/ships/blueprint-costs` / `experimental-effect-costs` |
 | `getMaterialByName`, `MaterialGrade` | `core/materials/materials` |
 | `getMicroResourceByName` | `core/materials/micro-resources` |
 | `getCommodityByName` | `core/commodities/commodities` |
@@ -87,9 +88,10 @@ symbols you are most likely to reach for first:
 Two imports dominate everything else, and both are deliberate:
 
 - `ships/ship-loadout` is the batteries-included facade. Resolving arbitrary journal
-  module ids and engineering recipes needs the complete ship, module, blueprint and
-  experimental-effect catalogues, so it pulls them all in. Import a data-free
-  calculation module instead when you need one answer rather than a whole ship.
+  module ids and engineering recipes needs the complete ship, module, blueprint-mechanics
+  and experimental-effect-mechanics catalogues. Material shopping lists stay on the
+  explicit `ships/blueprint-costs` and `ships/experimental-effect-costs` subpaths. Import a
+  data-free calculation module instead when you need one answer rather than a whole ship.
 - `astro/nebulae-all` is 682.3 KiB. That is why the nebula query functions take an
   explicit catalogue argument rather than defaulting to the complete one — importing
   all 5835 records has to be your decision, not a default you did not notice.

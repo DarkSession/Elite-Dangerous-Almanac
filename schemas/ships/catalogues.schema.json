@@ -517,7 +517,7 @@
         "max": { "type": "number" }
       }
     },
-    "blueprintMaterial": {
+    "engineeringMaterial": {
       "type": "object",
       "additionalProperties": false,
       "required": ["symbol", "name", "count"],
@@ -530,18 +530,14 @@
     "blueprintGrade": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["features", "materials"],
+      "required": ["features"],
       "properties": {
         "features": {
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "#/definitions/blueprintFeature" }
         },
-        "damageDistribution": { "$ref": "#/definitions/damageDistribution" },
-        "materials": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/blueprintMaterial" }
-        }
+        "damageDistribution": { "$ref": "#/definitions/damageDistribution" }
       }
     },
     "blueprintGrades": {
@@ -568,6 +564,24 @@
         "$ref": "#/definitions/blueprint"
       }
     },
+    "blueprintCostGrades": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[1-5]$": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/engineeringMaterial" }
+        }
+      }
+    },
+    "blueprintCostCatalogue": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/definitions/blueprintCostGrades"
+      }
+    },
     "blueprintJournalNameCatalogue": {
       "description": "Recipe ids keyed to the colliding `BlueprintName` a journal writes for them.",
       "type": "object",
@@ -589,7 +603,7 @@
     "experimentalEffect": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "modifiers", "materials"],
+      "required": ["name", "modifiers"],
       "properties": {
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "modifiers": {
@@ -597,10 +611,6 @@
           "items": { "$ref": "#/definitions/experimentalContribution" }
         },
         "damageDistribution": { "$ref": "#/definitions/damageDistribution" },
-        "materials": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/blueprintMaterial" }
-        },
         "description": { "$ref": "#/definitions/nonEmptyString" }
       }
     },
@@ -609,6 +619,15 @@
       "minProperties": 1,
       "additionalProperties": {
         "$ref": "#/definitions/experimentalEffect"
+      }
+    },
+    "experimentalEffectCostCatalogue": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "$ref": "#/definitions/engineeringMaterial" }
       }
     },
     "preEngineeredModifier": {

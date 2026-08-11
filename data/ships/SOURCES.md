@@ -1045,14 +1045,18 @@ up straight through with no disambiguation at all. Both paths are evidence that
 `special_plasma_slug` is the id the game writes. This repo follows EDSY: one
 `special_plasma_slug` at damage −10% / ammo −100%, plus the `_cooled` rail-gun variant.
 
-- **Files:** `blueprints.jsonc` (per-blueprint, per-grade stat modifiers **and**
-  material requirements), `blueprint-journal-names.jsonc` (the three recipe ids whose
-  journal spelling collides with another recipe), and `experimental-effects.jsonc` (per
-  special-effect stat modifiers **and** material cost).
+- **Files:** `blueprints.jsonc` (per-blueprint, per-grade stat modifiers),
+  `blueprint-costs.jsonc` (the matching per-grade material requirements),
+  `blueprint-journal-names.jsonc` (the three recipe ids whose journal spelling collides
+  with another recipe), `experimental-effects.jsonc` (special-effect stat modifiers and
+  qualitative descriptions), and `experimental-effect-costs.jsonc` (the matching
+  one-application material costs).
   Modifiers are resolved to journal Modifier **Labels** so the computed modifiers read
   back like a real `Engineering.Modifiers` block. Each blueprint is `{ name, grades }`
-  (each grade `{ features, damageDistribution?, materials }`); each experimental effect is
-  `{ name, modifiers, damageDistribution?, materials, description? }`.
+  (each grade `{ features, damageDistribution? }`), with its cost file keyed by the same
+  blueprint and grade ids. Each experimental effect is
+  `{ name, modifiers, damageDistribution?, description? }`, with its cost file keyed by
+  the same effect ids.
 - **Display names:** each blueprint and experimental effect carries its `name`.
   Effect names are the English strings observed in-game. Blueprint names are coriolis
   `blueprint.name` for the 81 blueprints coriolis carries, and the Operations dossier's
@@ -1206,11 +1210,11 @@ up straight through with no disambiguation at all. Both paths are evidence that
   the page exposes no immutable revision.
 - **Experimental-effect source:** EDSY `eddb.js`
   `expeffect` is the primary source — one table holding each effect's modifiers and its
-  recipe together, keyed the way this file is. Each effect is `{ modifiers, materials }`:
-  `modifiers` a list of `{ label, method, value }`, `materials` its `mats` map resolved
-  from EDSY's material short-codes to Frontier material `symbol`s against the `materials`
-  domain, emitting `{ symbol, name, count }` per requirement. An experimental effect is a
-  single application (one roll), so its `materials` is the whole cost.
+  recipe together, keyed the way the two local files are. `experimental-effects.jsonc`
+  takes its `{ label, method, value }` modifiers; `experimental-effect-costs.jsonc` takes
+  its `mats` map, resolved from EDSY's material short-codes to Frontier material `symbol`s
+  against the `materials` domain and emitted as `{ symbol, name, count }`. An experimental
+  effect is a single application, so that list is the whole material cost.
   - **Cross-checked against coriolis-data** (commit
     `0db9234b5b9ce8c939ea84133d7ce336eea88e27`, acquired 2026-08-01 UTC), which holds the
     same facts split across `modifications/modifierActions.json` (modifiers) and
@@ -1297,13 +1301,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
     qualitative effect _is_ published with a recipe it is carried with an empty `modifiers`
     list and a `description`, as described above; where neither a magnitude nor a recipe is
     published, it is left out entirely.
-- **Cost:** `getBlueprintCost(fdname, grade, currentGrade = 0)` (in `blueprints.ts`)
-  totals the materials to engineer a module up to a grade: grade `g` takes `g` rolls
-  (`rollsForGrade`), so the total is `Σ g ·` (grade `g`'s recipe) over every grade from
-  `currentGrade + 1` to the target. `currentGrade` defaults to 0 (unengineered); set it to
-  `grade − 1` to price a single grade alone. Fold in an experimental effect's
-  `getExperimentalEffect(fdname).materials` with `sumMaterials` for the grand total; the
-  two data modules stay decoupled so neither pulls the other into a bundle.
+- **Material costs:** `blueprint-costs.jsonc` preserves coriolis's material components per
+  roll and grade; `experimental-effect-costs.jsonc` preserves EDSY's one-application
+  recipes. Material display names are resolved against the materials domain while retaining
+  the upstream Frontier symbols and counts.
 
 ## Engineering options (what each module can take)
 
@@ -1788,9 +1789,8 @@ up straight through with no disambiguation at all. Both paths are evidence that
   and is not one, which is what this catalogue exists to say.
 - **Why they are not in `blueprints.jsonc`.** There is no recipe to store: no grade, no
   material cost, and no engineer who applies one. Giving them an empty grade 1 so the key
-  would exist would state a recipe the game does not have, and would make
-  `getBlueprintCost` price a roll nobody can make. A separate catalogue costs a few hundred
-  bytes and claims only what is known.
+  would exist would state a recipe the game does not have. The separate catalogue claims
+  only the transformation facts that are known.
 - **They are not cosmetic-only: each carries a −99% `Damage` modifier.** A festive launcher
   fires fireworks rather than flak, and the cut is what makes that true. It is the only
   stat any of the three moves, and it is stored, so no record here may be read as "this
@@ -1874,8 +1874,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
     purchased module already
     contains the grade-1 pre-engineering, which is exactly why these blueprints' own
     recipes start at grade 2 (see the Operations section above). The two facts are
-    consistent by construction and a test asserts it —
-    `getBlueprintCost(bp, target, 1)` prices taking a bought variant the rest of the way.
+    consistent by construction: material costs for further engineering begin at grade 2.
     - **The large Seeker Missile Rack's Lockdown** is a `mercenary` row on
       `Hpt_BasicMissileRack_Fixed_Large` at **900 MC**, taking the shop total to 13 900 MC.
       Four things agree, none of them a guess about a module symbol: the registry keys
@@ -1922,8 +1921,7 @@ up straight through with no disambiguation at all. Both paths are evidence that
   its blueprint and effect, each reward carries hand-set modifier overrides no blueprint
   grants — that is what makes it a reward rather than a shortcut. The `blueprint` /
   `grade` / `experimental` recorded here **identify** the variant; they are not a recipe
-  that recreates it. `getBlueprintCost` on a reward row prices ordinary engineering, not
-  the reward.
+  that recreates it. The ordinary blueprint material recipe does not price the reward.
 - **Two community-goal rewards are not stored:** the size-5 and size-6 Corrosion
   Resistant Cargo Racks carry no engineering at all. They already exist as ordinary
   module records (`Int_CorrosionProofCargoRack_Size{5,6}_Class1`), so there is no pairing
