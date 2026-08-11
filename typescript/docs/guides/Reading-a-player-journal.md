@@ -183,8 +183,9 @@ build.cargoCapacityResult; // -> names every rack it could not classify
 ```
 
 - `build.validation` separates a structurally invalid fit from an operationally
-  incomplete one, and `build.complete` is true only when the build is valid, has every
-  operational mount, and is fully classified.
+  incomplete one: `validation.valid` is false only for a fit the game could not hold,
+  while `validation.complete` also requires every operational mount to be filled and
+  every fitted module to be classified.
 
 For a mixed SLEF file, `inspectSlef` returns the valid entries plus indexed diagnostics,
 where `parseSlef` rejects the whole input on any malformed entry. Both parse the JSON

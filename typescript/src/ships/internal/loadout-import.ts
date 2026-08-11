@@ -5,7 +5,8 @@ import { getPreEngineeredStats, identifyPreEngineeredVariant } from '../pre-engi
 import { SourcePurchaseRecord } from '../source-purchase.js';
 import type { OutfittingModule } from '../modules.js';
 import type { LoadoutEvent, LoadoutModule } from '../slef.js';
-import { isFinalGuardianWeaponEngineering, statFor } from './loadout-engineering.js';
+import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
+import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { cloneLoadoutModule, cloneModuleStats } from './loadout-state.js';
 
 /** Top-level figures an import carries, trusted over computed fallbacks. */
@@ -78,7 +79,7 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
                 candidate.grade === engineering.Level &&
                 candidate.experimental?.toLowerCase() === normalizedExperimental,
         );
-        const stats = exact ? getPreEngineeredStats(exact) : statFor(module.Item);
+        const stats = exact ? getPreEngineeredStats(exact) : builtInModuleBySymbol(module.Item);
         if (stats) {
             moduleStats.set(module.Slot, cloneModuleStats({ ...stats, engineeringLocked: true }));
         }

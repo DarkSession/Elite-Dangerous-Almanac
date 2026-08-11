@@ -138,28 +138,18 @@ line works without normalising it first.
 
 ## What happens when something is wrong
 
-The library distinguishes four outcomes, and the distinction is deliberate:
+The one thing to know before your first call: **`null` is an ordinary answer, not an
+error.** A lookup that finds nothing returns it, and journals outlive catalogues — a game
+update ships modules before this package knows about them — so a consumer that treats
+`null` as a crash will break on every game update. Malformed and out-of-range input throw
+instead.
 
-- **`null`** — a lookup found no match, or a parse did not recognise the input. This is
-  an ordinary answer, not an error.
-- **`TypeError`** — the input was malformed.
-- **`RangeError`** — the input was well-formed but outside a supported range.
-- **`SyntaxError`** — the text was not JSON. `parseSlef` and `inspectSlef` call
-  `JSON.parse` on the string you hand them, so this is what a bad file yields first.
-
-Aggregate figures that may depend on missing catalogue data come in pairs: a nullable
-convenience property, and a result object that names what was missing.
-
-```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-
-declare const build: ShipLoadout;
-
-build.cargoCapacity; // number | null
-build.cargoCapacityResult; // names every rack it could not classify
-```
+[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+sets out all four outcomes, the `try…` variants that convert a throw into a `null`, and
+the nullable/diagnostic-result pairs the aggregate figures come in.
 
 ## Next
 
 - [Reading a player journal](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Reading-a-player-journal)
+- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 - [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)

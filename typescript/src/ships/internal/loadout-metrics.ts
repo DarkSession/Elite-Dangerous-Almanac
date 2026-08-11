@@ -22,7 +22,7 @@ import { getBulkheadsForShip } from '../modules.js';
 import { getExperimentalEffect } from '../experimental-effects.js';
 import { CORE_MODULES } from '../modules-core.js';
 import { getShipBySymbol } from '../ships.js';
-import { statFor } from './loadout-engineering.js';
+import { builtInModuleBySymbol } from './module-symbol-index.js';
 import type { PowerConsumer } from '../power.js';
 import type { ShieldBoosterParams, ShieldGeneratorParams, ShieldInput } from '../shields.js';
 import type {
@@ -31,7 +31,7 @@ import type {
     HullReinforcementParams,
     ModuleReinforcementParams,
 } from '../armour.js';
-import type { DamageType } from '../resistances.js';
+import type { DamageResistanceParams } from '../resistances.js';
 import { combinedRateOfFire, type WeaponStats } from '../weapons.js';
 import { scaleDamageComponents } from './damage-components.js';
 
@@ -89,17 +89,28 @@ function priorityOf(module: LoadoutModule): number {
 export function effectiveStat(
     module: LoadoutModule,
     field: keyof OutfittingModule,
-    stats: OutfittingModule | null = statFor(module.Item),
+    stats: OutfittingModule | null = builtInModuleBySymbol(module.Item),
 ): number | undefined {
+    const stated = statedModifier(module, field);
+    if (stated !== undefined) return stated;
+    const base = stats?.[field];
+    return typeof base === 'number' ? base : undefined;
+}
+
+/**
+ * The build's own journal modifier for one catalogue field, in the catalogue's units, or
+ * `undefined` when it carries none.
+ *
+ * Capability labels share the modifier collection but never represent numbers, even when
+ * an importer serializes the UI's displayed +100% as `Value: 1`, so they are skipped.
+ */
+function statedModifier(module: LoadoutModule, field: keyof OutfittingModule): number | undefined {
     for (const label of labelsForField(field)) {
-        // Capability labels share the modifier collection but never represent numbers,
-        // even when an importer serializes the UI's displayed +100% as `Value: 1`.
         if (capabilityValueForLabel(label) !== null) continue;
         const modified = getLoadoutModifier(module, label);
         if (modified !== null) return modified / scaleForLabel(label);
     }
-    const base = stats?.[field];
-    return typeof base === 'number' ? base : undefined;
+    return undefined;
 }
 
 /** A fitted module's effective boolean capability, when `field` is capability-backed. */
@@ -189,10 +200,8 @@ function relatedStat(
     field: keyof OutfittingModule,
     ratio: number,
 ): number | undefined {
-    for (const label of labelsForField(field)) {
-        const modified = getLoadoutModifier(module, label);
-        if (modified !== null) return modified / scaleForLabel(label);
-    }
+    const stated = statedModifier(module, field);
+    if (stated !== undefined) return stated;
     const base = stats?.[field];
     return typeof base === 'number' ? base * ratio : undefined;
 }
@@ -203,7 +212,7 @@ function relatedStat(
  */
 export function effectiveModule(
     module: LoadoutModule,
-    stats: OutfittingModule | null = statFor(module.Item),
+    stats: OutfittingModule | null = builtInModuleBySymbol(module.Item),
 ): OutfittingModule | null {
     if (!stats || !module.Engineering) return stats;
     const merged: Record<string, unknown> = { ...stats };
@@ -257,7 +266,7 @@ export function effectiveModule(
 /** One fitted module's claim on the power plant, or `null` when it makes none. */
 export function powerConsumerFor(
     module: LoadoutModule,
-    stats: OutfittingModule | null = statFor(module.Item),
+    stats: OutfittingModule | null = builtInModuleBySymbol(module.Item),
 ): PowerConsumer | null {
     const draw = effectiveStat(module, 'powerDraw', stats);
     // Weapons and most utility fittings only draw while the hardpoints are out; the
@@ -277,7 +286,8 @@ export function powerConsumerFor(
 /** The build's power-plant capacity, post-engineering, or `0` when none is fitted. */
 export function powerAvailable(
     modules: readonly LoadoutModule[],
-    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) => statFor(module.Item),
+    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) =>
+        builtInModuleBySymbol(module.Item),
 ): number {
     for (const module of modules) {
         const stats = statsFor(module);
@@ -295,8 +305,8 @@ export function powerAvailable(
     return 0;
 }
 
-/** The four resistances a defensive module can carry, as the calculations name them. */
-type ModuleResistances = { readonly [Type in DamageType as `${Type}Resistance`]: number };
+/** The four resistances a defensive module can carry, every one of them answered. */
+type ModuleResistances = Required<DamageResistanceParams>;
 
 /**
  * Build the four resistance fields by calling `read` once per field — the same fan-out
@@ -328,7 +338,8 @@ export function shieldInputFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
     systemsPips: number,
-    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) => statFor(module.Item),
+    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) =>
+        builtInModuleBySymbol(module.Item),
 ): ShieldInput {
     const hull = getShipBySymbol(shipSymbol);
     let generator: ShieldGeneratorParams | null = null;
@@ -402,7 +413,8 @@ function stockBulkhead(shipSymbol: string): OutfittingModule | null {
 export function armourInputFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
-    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) => statFor(module.Item),
+    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) =>
+        builtInModuleBySymbol(module.Item),
 ): ArmourInput {
     const hull = getShipBySymbol(shipSymbol);
     const reinforcements: HullReinforcementParams[] = [];
@@ -497,7 +509,7 @@ const WEAPON_FIELDS = [
  */
 export function weaponStatsFor(
     module: LoadoutModule,
-    stats: OutfittingModule | null = statFor(module.Item),
+    stats: OutfittingModule | null = builtInModuleBySymbol(module.Item),
 ): WeaponStats | null {
     if (!stats || stats.category !== 'hardpoint') return null;
     const weapon: Record<string, unknown> = {};

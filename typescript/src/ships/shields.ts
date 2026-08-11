@@ -50,6 +50,7 @@ import {
     stackShieldResistance,
     systemsResistance,
     type DamageResistances,
+    type DamageResistanceParams,
     type DamageType,
     type DamageTypeValues,
 } from './resistances.js';
@@ -65,7 +66,7 @@ import {
  * **missing** any of the six curve fields cannot be placed on the curve at all, and
  * raises no shield ({@link shieldMassCurveMultiplier} returns `0`).
  */
-export interface ShieldGeneratorParams {
+export interface ShieldGeneratorParams extends DamageResistanceParams {
     /** Hull mass at which the generator performs at `maxMultiplier`, in tonnes. */
     readonly minMass?: number;
     /** Hull mass at which the generator performs to spec, in tonnes. */
@@ -78,28 +79,12 @@ export interface ShieldGeneratorParams {
     readonly optMultiplier?: number;
     /** Maximum strength multiplier, reached at `minMass` (the lightest hull). */
     readonly maxMultiplier?: number;
-    /** Kinetic resistance, as a fraction. Defaults to `0`. */
-    readonly kineticResistance?: number;
-    /** Thermal resistance, as a fraction. Defaults to `0`. */
-    readonly thermalResistance?: number;
-    /** Explosive resistance, as a fraction. Defaults to `0`. */
-    readonly explosiveResistance?: number;
-    /** Caustic resistance, as a fraction. Defaults to `0`. */
-    readonly causticResistance?: number;
 }
 
 /** One fitted, powered shield booster's contribution. */
-export interface ShieldBoosterParams {
+export interface ShieldBoosterParams extends DamageResistanceParams {
     /** Strength bonus, as a fraction (`0.2` = +20%). Defaults to `0`. */
     readonly shieldBoost?: number;
-    /** Kinetic resistance, as a fraction. Defaults to `0`. */
-    readonly kineticResistance?: number;
-    /** Thermal resistance, as a fraction. Defaults to `0`. */
-    readonly thermalResistance?: number;
-    /** Explosive resistance, as a fraction. Defaults to `0`. */
-    readonly explosiveResistance?: number;
-    /** Caustic resistance, as a fraction. Defaults to `0`. */
-    readonly causticResistance?: number;
 }
 
 /** Everything {@link shieldMetrics} needs about a build. */

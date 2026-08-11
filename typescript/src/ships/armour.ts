@@ -40,29 +40,22 @@ import {
     mapDamageTypes,
     stackArmourResistance,
     type DamageResistances,
+    type DamageResistanceParams,
     type DamageType,
     type DamageTypeValues,
 } from './resistances.js';
 
 /** The fitted bulkhead's contribution — read straight off its armour module record. */
-export interface BulkheadParams {
+export interface BulkheadParams extends DamageResistanceParams {
     /**
      * Armour bonus as a fraction of the hull's base armour added on top of it: `0.8`
      * (lightweight alloy) means `baseArmour × 1.8`. Defaults to `0`.
      */
     readonly hullBoost?: number;
-    /** Kinetic resistance, as a fraction (negative is a weakness). Defaults to `0`. */
-    readonly kineticResistance?: number;
-    /** Thermal resistance, as a fraction. Defaults to `0`. */
-    readonly thermalResistance?: number;
-    /** Explosive resistance, as a fraction. Defaults to `0`. */
-    readonly explosiveResistance?: number;
-    /** Caustic resistance, as a fraction. Defaults to `0`. */
-    readonly causticResistance?: number;
 }
 
 /** One fitted hull reinforcement package (including the Guardian and meta-alloy ones). */
-export interface HullReinforcementParams {
+export interface HullReinforcementParams extends DamageResistanceParams {
     /** Hull hit points added. Defaults to `0`. */
     readonly hullReinforcement?: number;
     /**
@@ -75,14 +68,6 @@ export interface HullReinforcementParams {
      * carries a `DefenceModifierHealthMultiplier` modifier for the package.
      */
     readonly hullBoost?: number;
-    /** Kinetic resistance, as a fraction. Defaults to `0`. */
-    readonly kineticResistance?: number;
-    /** Thermal resistance, as a fraction. Defaults to `0`. */
-    readonly thermalResistance?: number;
-    /** Explosive resistance, as a fraction. Defaults to `0`. */
-    readonly explosiveResistance?: number;
-    /** Caustic resistance, as a fraction. Defaults to `0`. */
-    readonly causticResistance?: number;
 }
 
 /** One fitted module reinforcement package. */

@@ -56,10 +56,19 @@ export function cloneLoadoutModule(module: LoadoutModule): LoadoutModule {
     };
 }
 
-/** Find the first key naming a mount case-insensitively. */
-export function firstKeyMatchingCase(keys: Iterable<string>, slotKey: string): string | null {
+/**
+ * The key a slot-keyed map actually holds for a mount, or `null` when it holds none.
+ *
+ * @remarks
+ * A build's own spelling is authoritative and is never rewritten, so every read and every
+ * mutation resolves the caller's key through here first. The own-key hit is both the fast
+ * path and the tie-break: a build holding two spellings that differ only in case answers
+ * the exact one, and only a miss pays for the scan.
+ */
+export function matchingKeyIn(keyed: ReadonlyMap<string, unknown>, slotKey: string): string | null {
+    if (keyed.has(slotKey)) return slotKey;
     const wanted = slotKey.toLowerCase();
-    for (const key of keys) {
+    for (const key of keyed.keys()) {
         if (key.toLowerCase() === wanted) return key;
     }
     return null;
