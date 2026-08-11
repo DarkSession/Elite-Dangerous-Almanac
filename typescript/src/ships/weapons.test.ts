@@ -17,8 +17,9 @@ import {
 } from './weapons.js';
 import { getModuleBySymbol } from './modules.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
-import { weaponStatsFor } from './internal/loadout-metrics.js';
+import { effectiveModule, weaponStatsFor } from './internal/loadout-metrics.js';
 import fixture from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
+import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 
 const near = (a: number, b: number, eps = 1e-6) => Math.abs(a - b) < eps;
 const weapon = (symbol: string) => getModuleBySymbol(symbol, HARDPOINT_MODULES)!;
@@ -172,39 +173,39 @@ test('exact components preserve Guardian and unclassified damage without double-
     assert.ok(near(mkII.damageByType.unclassified ?? 0, mkII.damagePerSecond));
 });
 
-test('fitted engineering scales exact damage components with effective damage', () => {
-    const stock = weapon('Hpt_ATMultiCannon_Gimbal_Medium');
-    const stats = weaponStatsFor(
-        {
-            Slot: 'MediumHardpoint1',
-            Item: stock.symbol,
-            Engineering: {
-                BlueprintName: 'MC_Overcharged',
-                Level: 5,
-                Quality: 1,
-                Modifiers: [{ Label: 'Damage', OriginalValue: stock.damage!, Value: 1.232 }],
-            },
-        },
-        stock,
-    )!;
-    assert.equal(stats.damage, 1.232);
-    assert.deepEqual(stats.damageComponents, { kinetic: 1.232, antiXeno: 2.409 });
-
-    const zero = weaponStatsFor(
-        {
+test('every fitted-stat view scales exact damage components with effective damage', () => {
+    for (const expected of engineeringFixture.damageComponentScaling.cases) {
+        const stock = weapon(expected.symbol);
+        assert.equal(stock.damage, expected.baseDamage, expected.symbol);
+        assert.deepEqual(stock.damageComponents, expected.baseComponents, expected.symbol);
+        const fitted = {
             Slot: 'MediumHardpoint1',
             Item: stock.symbol,
             Engineering: {
                 BlueprintName: 'Test',
                 Level: 1,
                 Quality: 1,
-                Modifiers: [{ Label: 'Damage', OriginalValue: stock.damage!, Value: 0 }],
+                Modifiers: [
+                    {
+                        Label: 'Damage',
+                        OriginalValue: expected.baseDamage,
+                        Value: expected.effectiveDamage,
+                    },
+                ],
             },
-        },
-        stock,
-    )!;
-    assert.equal(zero.damage, 0);
-    assert.deepEqual(zero.damageComponents, { kinetic: 0, antiXeno: 0 });
+        };
+
+        const effective = effectiveModule(fitted, stock)!;
+        const weaponStats = weaponStatsFor(fitted, stock)!;
+        assert.equal(effective.damage, expected.effectiveDamage, expected.symbol);
+        assert.equal(weaponStats.damage, expected.effectiveDamage, expected.symbol);
+        assert.deepEqual(effective.damageComponents, expected.expectedComponents, expected.symbol);
+        assert.deepEqual(
+            weaponStats.damageComponents,
+            expected.expectedComponents,
+            expected.symbol,
+        );
+    }
 });
 
 test('splitDamage treats an unknown distribution as absolute damage', () => {

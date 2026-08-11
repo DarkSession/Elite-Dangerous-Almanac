@@ -1396,6 +1396,30 @@ declare module '*/fixtures/ships/engineering.jsonc' {
                 };
             };
         };
+        damageComponentScaling: {
+            description: string;
+            cases: {
+                symbol: string;
+                baseDamage: number;
+                effectiveDamage: number;
+                baseComponents: {
+                    kinetic?: number;
+                    thermal?: number;
+                    explosive?: number;
+                    absolute?: number;
+                    antiXeno?: number;
+                    unclassified?: number[];
+                };
+                expectedComponents: {
+                    kinetic?: number;
+                    thermal?: number;
+                    explosive?: number;
+                    absolute?: number;
+                    antiXeno?: number;
+                    unclassified?: number[];
+                };
+            }[];
+        };
         thermalPlasmaConversions: {
             description: string;
             blueprints: {

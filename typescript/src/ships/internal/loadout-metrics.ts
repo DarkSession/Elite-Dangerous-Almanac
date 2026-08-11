@@ -32,6 +32,7 @@ import type {
     ModuleReinforcementParams,
 } from '../armour.js';
 import { combinedRateOfFire, type WeaponStats } from '../weapons.js';
+import { scaleDamageComponents } from './damage-components.js';
 
 /**
  * Symbol prefixes that identify a module group, lower-cased.
@@ -234,9 +235,17 @@ export function effectiveModule(
     }
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) merged.damageDistribution = damageDistribution;
-    // Exact components describe the stock types. Once engineering converts them, the
-    // resulting fractional split is authoritative instead.
-    if (convertsDamage(module)) delete merged.damageComponents;
+    // Exact components follow the effective total damage. Once engineering converts
+    // them, the resulting fractional split is authoritative instead.
+    if (convertsDamage(module)) {
+        delete merged.damageComponents;
+    } else if (stats.damageComponents) {
+        merged.damageComponents = scaleDamageComponents(
+            stats.damageComponents,
+            stats.damage,
+            typeof merged.damage === 'number' ? merged.damage : undefined,
+        );
+    }
     // The rate of fire is derived from the firing cycle, so an engineered burst pattern
     // moves it even when nothing names it — same rule the weapon metrics use.
     const rate = burstAdjustedRateOfFire(module, merged);
@@ -509,30 +518,14 @@ export function weaponStatsFor(
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) weapon.damageDistribution = damageDistribution;
     if (stats.damageComponents && !convertsDamage(module)) {
-        const scale =
-            stats.damage !== undefined && stats.damage !== 0 && weapon.damage !== undefined
-                ? Number(weapon.damage) / stats.damage
-                : 1;
-        weapon.damageComponents = scaleDamageComponents(stats.damageComponents, scale);
+        weapon.damageComponents = scaleDamageComponents(
+            stats.damageComponents,
+            stats.damage,
+            typeof weapon.damage === 'number' ? weapon.damage : undefined,
+        );
     }
     if (stats.projectileRange) weapon.projectileRange = { ...stats.projectileRange };
     return weapon as WeaponStats;
-}
-
-function scaleDamageComponents(
-    components: NonNullable<OutfittingModule['damageComponents']>,
-    scale: number,
-): NonNullable<OutfittingModule['damageComponents']> {
-    return {
-        ...(components.kinetic === undefined ? {} : { kinetic: components.kinetic * scale }),
-        ...(components.thermal === undefined ? {} : { thermal: components.thermal * scale }),
-        ...(components.explosive === undefined ? {} : { explosive: components.explosive * scale }),
-        ...(components.absolute === undefined ? {} : { absolute: components.absolute * scale }),
-        ...(components.antiXeno === undefined ? {} : { antiXeno: components.antiXeno * scale }),
-        ...(components.unclassified === undefined
-            ? {}
-            : { unclassified: components.unclassified.map((value) => value * scale) }),
-    };
 }
 
 /**

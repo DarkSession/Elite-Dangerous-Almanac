@@ -42,6 +42,7 @@ import {
 } from './pre-engineered.js';
 import type { EngineeringModifier, LoadoutModule } from './slef.js';
 import { combinedRateOfFire } from './weapons.js';
+import { scaleDamageComponents } from './internal/damage-components.js';
 
 /** A pre-engineered modifier is a fixed article, so its min and max are the same value. */
 function asFeatures(modifiers: readonly PreEngineeredModifier[]): BlueprintFeature[] {
@@ -294,34 +295,11 @@ export function getPreEngineeredStats(variant: PreEngineeredVariant): Outfitting
         if (rate !== undefined) resolved.rateOfFire = rate;
     }
     if (module.damageComponents && !experimentalDamageDistribution) {
-        const scale =
-            module.damage !== undefined && module.damage !== 0 && resolved.damage !== undefined
-                ? resolved.damage / module.damage
-                : 1;
-        resolved.damageComponents = {
-            ...(module.damageComponents.kinetic === undefined
-                ? {}
-                : { kinetic: module.damageComponents.kinetic * scale }),
-            ...(module.damageComponents.thermal === undefined
-                ? {}
-                : { thermal: module.damageComponents.thermal * scale }),
-            ...(module.damageComponents.explosive === undefined
-                ? {}
-                : { explosive: module.damageComponents.explosive * scale }),
-            ...(module.damageComponents.absolute === undefined
-                ? {}
-                : { absolute: module.damageComponents.absolute * scale }),
-            ...(module.damageComponents.antiXeno === undefined
-                ? {}
-                : { antiXeno: module.damageComponents.antiXeno * scale }),
-            ...(module.damageComponents.unclassified === undefined
-                ? {}
-                : {
-                      unclassified: module.damageComponents.unclassified.map(
-                          (value) => value * scale,
-                      ),
-                  }),
-        };
+        resolved.damageComponents = scaleDamageComponents(
+            module.damageComponents,
+            module.damage,
+            resolved.damage,
+        );
     }
     return resolved;
 }
