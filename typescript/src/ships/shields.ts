@@ -45,9 +45,12 @@
  */
 
 import {
+    effectiveHitPoints,
+    mapDamageTypes,
     stackShieldResistance,
     systemsResistance,
     type DamageResistances,
+    type DamageType,
     type DamageTypeValues,
 } from './resistances.js';
 
@@ -232,11 +235,9 @@ export function shieldStrength(
     return baseShieldStrength * shieldMassCurveMultiplier(hullMass, generator) * boostMultiplier;
 }
 
-/** Sum a resistance field across the boosters, skipping the ones that do not carry it. */
-const boosterResistances = (
-    boosters: readonly ShieldBoosterParams[],
-    field: keyof ShieldBoosterParams,
-): number[] => boosters.map((booster) => booster[field] ?? 0);
+/** Each booster's resistance to one damage type, reading an absent field as `0`. */
+const boosterResistances = (boosters: readonly ShieldBoosterParams[], type: DamageType): number[] =>
+    boosters.map((booster) => booster[`${type}Resistance`] ?? 0);
 
 /**
  * Everything an outfitting screen shows about a build's shields: strength, where it
@@ -273,7 +274,7 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
     const generator = input.generator ?? null;
 
     if (!generator) {
-        const none = { kinetic: 0, thermal: 0, explosive: 0, caustic: 0 } as const;
+        const none = mapDamageTypes(() => 0);
         return {
             strength: 0,
             generator: 0,
@@ -281,8 +282,8 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
             reinforcement: 0,
             massCurveMultiplier: 0,
             boostMultiplier: 1,
-            resistances: { ...none },
-            effectiveHitPoints: { ...none },
+            resistances: none,
+            effectiveHitPoints: effectiveHitPoints(0, none),
             systemsResistance: sysResistance,
         };
     }
@@ -296,35 +297,14 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
 
     // The SYS pips multiply with the stacked shield resistance rather than adding to it.
     const withPips = (resistance: number): number => 1 - (1 - resistance) * (1 - sysResistance);
-    const resistances: DamageResistances = {
-        kinetic: withPips(
+    const resistances: DamageResistances = mapDamageTypes((type) =>
+        withPips(
             stackShieldResistance(
-                generator.kineticResistance ?? 0,
-                boosterResistances(boosters, 'kineticResistance'),
+                generator[`${type}Resistance`] ?? 0,
+                boosterResistances(boosters, type),
             ),
         ),
-        thermal: withPips(
-            stackShieldResistance(
-                generator.thermalResistance ?? 0,
-                boosterResistances(boosters, 'thermalResistance'),
-            ),
-        ),
-        explosive: withPips(
-            stackShieldResistance(
-                generator.explosiveResistance ?? 0,
-                boosterResistances(boosters, 'explosiveResistance'),
-            ),
-        ),
-        caustic: withPips(
-            stackShieldResistance(
-                generator.causticResistance ?? 0,
-                boosterResistances(boosters, 'causticResistance'),
-            ),
-        ),
-    };
-
-    const effective = (resistance: number): number =>
-        resistance >= 1 ? Infinity : strength / (1 - resistance);
+    );
 
     return {
         strength,
@@ -334,12 +314,7 @@ export function shieldMetrics(input: ShieldInput): ShieldMetrics {
         massCurveMultiplier,
         boostMultiplier,
         resistances,
-        effectiveHitPoints: {
-            kinetic: effective(resistances.kinetic),
-            thermal: effective(resistances.thermal),
-            explosive: effective(resistances.explosive),
-            caustic: effective(resistances.caustic),
-        },
+        effectiveHitPoints: effectiveHitPoints(strength, resistances),
         systemsResistance: sysResistance,
     };
 }

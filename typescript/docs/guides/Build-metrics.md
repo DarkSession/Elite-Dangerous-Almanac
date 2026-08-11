@@ -119,6 +119,19 @@ import { stackShieldResistance } from '@elite-dangerous-almanac/core/ships/resis
 stackShieldResistance(0.4, [0.2, 0.2, 0.2, 0.2]); // -> 0.667…, not 0.4 + 4 × 0.2
 ```
 
+What a resistance is worth is the **effective hit points** it buys — the pool divided by
+what still gets through. Both metrics report that per damage type, and
+{@link ships!effectiveHitPoints | effectiveHitPoints} is the same function they use, so a
+pool of your own converts the same way:
+
+```ts
+import { effectiveHitPoints } from '@elite-dangerous-almanac/core/ships/resistances';
+
+// 945 hull points behind lightweight alloy, which is kinetically weak (-20%).
+effectiveHitPoints(945, { kinetic: -0.2, thermal: 0, explosive: -0.4, caustic: 0 }).kinetic;
+// -> 787.5, fewer than the hull holds
+```
+
 Two things about shields catch people out. A generator's strength multiplier is read off a
 curve against the **bare hull mass**, not the loaded ship — so fitting more modules never
 weakens your shields. And past the generator's `maxMass` it will not raise a shield at
