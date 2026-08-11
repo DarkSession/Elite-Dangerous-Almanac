@@ -170,22 +170,22 @@ permitLockForSystemName('Synuefe EN-H d11-96'); // -> null
 Journals outlive catalogues. A game update ships modules before this package knows about
 them, so write the consumer to expect gaps rather than to assume completeness.
 
-- A lookup that finds nothing returns `null`. Check it.
-- Aggregate figures that depend on unclassified modules are `null` too, and the matching
-  `…Result` property names what was missing:
+A lookup that finds nothing returns `null` — check it. An aggregate that depends on a
+module the catalogue cannot classify is `null` too, with the matching `…Result` property
+naming what was missing, and `build.validation` tells a fit the game could not hold apart
+from one the library could not finish reading:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from above
 
-build.cargoCapacity; // -> null when a fitted optional module is unclassifiable
 build.cargoCapacityResult; // -> names every rack it could not classify
+build.validation.issues; // -> each with a stable code and a severity
 ```
 
-- `build.validation` separates a structurally invalid fit from an operationally
-  incomplete one: `validation.valid` is false only for a fit the game could not hold,
-  while `validation.complete` also requires every operational mount to be filled and
-  every fitted module to be classified.
+[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+sets both patterns out in full — including why an `incomplete` issue should read
+differently in your UI from an `error`.
 
 For a mixed SLEF file, `inspectSlef` returns the valid entries plus indexed diagnostics,
 where `parseSlef` rejects the whole input on any malformed entry. Both parse the JSON
@@ -195,4 +195,5 @@ separately when the bytes come from somewhere you do not control.
 ## Next
 
 - [Getting started](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Getting-started)
+- [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 - [Complete API reference](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/modules)

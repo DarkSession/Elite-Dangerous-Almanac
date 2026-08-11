@@ -75,8 +75,8 @@ export type DamageResistances = DamageTypeValues;
  * them — {@link ShieldGeneratorParams}, {@link ShieldBoosterParams},
  * {@link BulkheadParams} and {@link HullReinforcementParams} — so an
  * {@link OutfittingModule} record, which spells them the same way, satisfies each of
- * them as it comes. A module reinforcement package resists nothing and carries none of
- * them.
+ * them as it comes. A module reinforcement package carries none of these four: what it
+ * absorbs is `moduleProtection`, one type-agnostic figure over module damage.
  *
  * This is the *input* shape, one module at a time. {@link DamageResistances} is the
  * *output*: four required figures for a whole stack, keyed by bare damage type.
