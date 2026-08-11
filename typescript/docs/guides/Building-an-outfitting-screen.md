@@ -157,11 +157,14 @@ says which codes are the user's to fix and which are the library's own gaps, and
 the nullable/`…Result` pairs that `unladenMass`, `fuelCapacity` and `cargoCapacity` come
 in.
 
-Two things follow for the panel itself. Most issues carry a `slot` you can mark against
-the mount it names; `unknownSlot` is the exception, because its whole point is that the
-key is not a mount on this hull, so keep a line somewhere off-panel for it. And an empty
-core or armour mount arrives as an ordinary issue rather than as a special case — it is
-what your screen exists to get filled, so render it as work to do, not as a fault.
+Two things follow for the panel itself. **Not every issue can be drawn against a mount,**
+so keep a place off-panel for the two that cannot: `unknownHull` carries no `slot` at all
+— and when the hull layout is unknown there are no mounts to draw anyway — while
+`unknownSlot` does carry one, but names a key that is not a mount on this hull, which is
+the whole point of the code. Every other issue's `slot` marks a mount you are already
+rendering. And an empty core or armour mount arrives as an ordinary issue rather than as
+a special case — it is what your screen exists to get filled, so render it as work to do,
+not as a fault.
 
 ## Next
 
