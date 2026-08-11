@@ -61,11 +61,3 @@ jobs:
 
       - name: Test package entry points
         run: npm run test:package
-
-      - name: Setup minimum supported Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 18
-
-      - name: Test package on minimum supported Node.js
-        run: npm run test:package

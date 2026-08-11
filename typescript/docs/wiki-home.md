@@ -12,7 +12,7 @@ outfitting with build metrics, engineering materials, and market commodities.
 npm install @elite-dangerous-almanac/core
 ```
 
-ESM-only, Node.js 18+ and modern browser bundlers, every module side-effect free.
+ESM-only, Node.js 22+ and modern browser bundlers, every module side-effect free.
 
 ```ts
 import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';

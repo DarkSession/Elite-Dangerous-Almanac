@@ -9,7 +9,7 @@ JavaScript applications.
 npm install @elite-dangerous-almanac/core
 ```
 
-The package is ESM-only, supports Node.js 18+ and targets modern browser bundlers.
+The package is ESM-only, supports Node.js 22+ and targets modern browser bundlers.
 It is marked side-effect free.
 
 The package includes game and community data under source-specific terms. Review
