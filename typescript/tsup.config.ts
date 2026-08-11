@@ -53,8 +53,10 @@ export default defineConfig({
     // bundles, while stack traces and files opened from node_modules retain useful
     // function names and line numbers during development.
     minify: false,
-    // External maps retain mappings and original source paths for stack traces, but
-    // do not duplicate the TypeScript and large JSONC catalogues in the package.
+    // Publish external maps deliberately: Node, browser devtools and downstream
+    // bundlers can trace failures back to the TypeScript or JSONC source path instead
+    // of stopping at generated JavaScript. Omitting sourcesContent keeps that debugging
+    // value without duplicating the source and large catalogues in the package.
     sourcemap: true,
     esbuildOptions(options) {
         options.sourcesContent = false;
