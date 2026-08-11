@@ -96,9 +96,13 @@ total** — its own draw plus every higher-priority group's — fits in `availab
 shuts off the first group that would go over and everything below it, rather than the
 individual module that broke the budget.
 
-A module whose draw the library cannot determine is named in
-{@link ships!PowerBudget.unknownDraws | unknownDraws} rather than counted as zero, so a
-budget is never quietly optimistic about a module newer than the catalogue.
+{@link ships!PowerBudget.unknownDraws | unknownDraws} is where a module whose draw the
+library cannot determine is meant to be named rather than counted as zero. A budget built
+by `ShipLoadout` does not yet fill it — such a module is left out of the consumer list
+altogether, so the budget reads as though it drew nothing:
+[#161](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/161). Until that
+closes, treat a build carrying a module newer than the catalogue as unbudgeted rather
+than as within budget.
 
 ## Shields and armour share a resistance model
 
@@ -227,11 +231,21 @@ the drive's own engineering are already folded in by the time `ShipLoadout` call
 ## When a metric cannot be computed
 
 A build can contain a module the catalogue cannot classify — usually one newer than the
-data. No metric guesses past it: each names what it could not read, in the shape its own
-section above describes.
-[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-covers the nullable-property-beside-a-diagnostic-result split the aggregate figures use,
-including how it differs from the errors a malformed input raises.
+data — and what each metric does about it differs, so do not assume a figure is
+load-bearing:
+
+- `unladenMass`, `fuelCapacity` and `cargoCapacity` are the three that come in
+  nullable/`…Result` pairs: the property is `null` and the result names what was missing.
+  [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
+  covers that split, and how it differs from the errors a malformed input raises.
+- `shieldMetrics()` and `armourMetrics()` take an unresolved module's contribution as
+  zero and report a figure anyway, and `weaponMetrics()` omits a hardpoint it cannot
+  resolve from `weapons` and from the totals. None of the three carries a diagnostic.
+- `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
+  answer, because the mass they need is unknown.
+
+Check `build.validation.issues` for `unknownModule` before trusting any of the above on a
+build you did not assemble yourself.
 
 ## Next
 

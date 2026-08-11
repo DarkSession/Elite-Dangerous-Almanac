@@ -1433,9 +1433,14 @@ export class ShipLoadout {
      * towards the deployed total.
      *
      * @returns The {@link PowerBudget}. With no power plant fitted, `available` is `0`
-     * and nothing is powered. A fitted module whose draw the catalogue cannot supply is
-     * named in {@link PowerBudget.unknownDraws} rather than counted as drawing nothing,
-     * which makes every total a lower bound while that list is non-empty.
+     * and nothing is powered.
+     * @remarks
+     * A fitted module whose draw the catalogue cannot supply is currently **left out of
+     * the budget entirely** rather than named in {@link PowerBudget.unknownDraws}, so the
+     * totals read as though it drew nothing and `unknownDraws` stays empty. Check
+     * `validation` for an `unknownModule` issue before trusting `withinBudget` on a build
+     * you did not assemble yourself:
+     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/161
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';

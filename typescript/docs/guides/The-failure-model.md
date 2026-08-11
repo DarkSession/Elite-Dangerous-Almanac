@@ -95,13 +95,24 @@ build.validation.issues; // what specifically
 
 Each issue carries a stable `code` and a `severity`:
 
-- **`error`** — the fit is wrong. A module in a mount that cannot take it. This is the
-  user's problem, and you should say so.
-- **`incomplete`** — the library could not finish the job, usually because a module is
-  newer than the catalogue. This is *our* problem, and it should read differently in
-  your UI: the build may be perfectly fine in game.
+- **`error`** — the fit is wrong: a module in a mount that cannot take it
+  (`incompatibleModule`), a mount the hull does not have (`unknownSlot`), or one slot
+  claimed twice (`duplicateSlot`). This is the user's problem, and you should say so.
+- **`incomplete`** — the build does not add up to a finished answer, for one of two
+  quite different reasons.
 
-Because the codes are stable, you can branch on them rather than on message text.
+**Branch on the code, not on the severity**, because the two `incomplete` reasons belong
+in different places in your UI:
+
+- `missingRequiredSlot` is the **user's** problem — a core or armour mount is empty. A
+  hull straight from `ShipLoadout.empty()` reports eight of these, and "you have not
+  fitted a power plant" is exactly what an outfitting screen must show as actionable.
+- `unknownHull` and `unknownModule` are **ours** — the catalogue is behind the game.
+  This should read differently: the build may be flying perfectly well, and a consumer
+  that presents it as a mistake will be wrong on every game update.
+
+That is why the codes are stable: the severity alone does not tell you whose problem an
+issue is.
 
 ## Strict about input, forgiving about spelling
 

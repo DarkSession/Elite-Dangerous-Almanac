@@ -150,13 +150,16 @@ build.validation.complete; // does it have every operational mount, fully classi
 build.validation.issues; // what specifically, with a stable code per issue
 ```
 
-Each issue's `severity` decides how it should read: an `error` is the user's problem, and
-every one of them names a `slot` you can mark — except `unknownSlot`, whose whole point
-is that the key is not a mount on this hull, so keep somewhere off-panel to say so. An
-`incomplete` is ours and should not be dressed up as a mistake they made: the build may
-be flying perfectly well in game, with only the catalogue behind.
+Branch on each issue's `code`, not on its `severity` — on this screen more than anywhere,
+because the severities do not divide along "whose problem is it". An `error` is always
+the user's, and every one names a `slot` you can mark, except `unknownSlot`, whose whole
+point is that the key is not a mount on this hull; keep a line somewhere off-panel for
+that one. Of the `incomplete` codes, `missingRequiredSlot` is *also* the user's — it is
+the empty power-plant mount your screen exists to get filled, and a fresh
+`ShipLoadout.empty()` hull reports eight of them — while `unknownHull` and
+`unknownModule` are ours, and should not be dressed up as a mistake they made.
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-sets out what falls under each, and the nullable/`…Result` pairs that `unladenMass`,
+sets out every code, and the nullable/`…Result` pairs that `unladenMass`,
 `fuelCapacity` and `cargoCapacity` come in.
 
 ## Next

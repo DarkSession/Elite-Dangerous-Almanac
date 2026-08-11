@@ -172,9 +172,10 @@ them, so write the consumer to expect gaps rather than to assume completeness.
 
 A lookup that finds nothing returns `null` — check it. An aggregate that depends on a
 module the catalogue cannot classify is `null` too, with the matching `…Result` property
-naming what was missing, and `build.validation` separates a fit the game would reject
-from one the library cannot fully account for — an empty core or armour mount, or a hull
-or module newer than the catalogue:
+naming what was missing, and `build.validation` reports a fit the game would reject as an
+`error`, against an `incomplete` for a build that does not add up — an empty core or
+armour mount, or a hull or module newer than the catalogue. Only the second of those is
+the library's own gap, so branch on the issue's `code` rather than its `severity`:
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
