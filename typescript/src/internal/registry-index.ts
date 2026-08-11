@@ -10,8 +10,11 @@ type StringField<T extends object> = {
 export type KeyIndex<T> = Readonly<Record<string, T>>;
 
 /** Normalize catalogue and consumer keys by trimming and folding case. */
-export function normalizeKey(value: string): string {
-    return value.trim().toLowerCase();
+export function normalizeKey(value: string): string;
+/** Preserve an absent optional key while normalizing a present one. */
+export function normalizeKey(value: string | undefined): string | undefined;
+export function normalizeKey(value: string | undefined): string | undefined {
+    return value?.trim().toLowerCase();
 }
 
 /**

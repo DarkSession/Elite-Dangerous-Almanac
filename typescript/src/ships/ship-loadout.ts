@@ -132,6 +132,7 @@ import {
 } from './internal/loadout-import.js';
 import type { SourcePurchaseRecord } from './source-purchase.js';
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { normalizeKey } from '../internal/registry-index.js';
 import { completeResult } from './internal/calculation-result.js';
 import {
     calculateCargoCapacity,
@@ -1770,7 +1771,7 @@ export class ShipLoadout {
 
         // Re-fitting the same article does not change its purchase price, even when the
         // supplied stats replace or remove its engineering details.
-        if (previous?.Item.trim().toLowerCase() === next?.Item.trim().toLowerCase()) return;
+        if (normalizeKey(previous?.Item) === normalizeKey(next?.Item)) return;
 
         // No catalogue carries post-purchase module value or rebuy changes.
         delete this.#top.ModulesValue;

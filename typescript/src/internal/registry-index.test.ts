@@ -17,6 +17,7 @@ interface Record_ {
 
 test('normalizeKey ignores case and surrounding whitespace', () => {
     assert.equal(normalizeKey('  Int_Hyperdrive_Size6  '), 'int_hyperdrive_size6');
+    assert.equal(normalizeKey(undefined), undefined);
 });
 
 test('scan lookups normalize both sides and retain catalogue order', () => {

@@ -8,6 +8,7 @@
  */
 
 import regionsData from '../../../data/astro/permit-locked-regions.jsonc' with { type: 'json' };
+import { normalizeKey } from '../internal/registry-index.js';
 
 /**
  * The 28 permit-locked regions, sorted by name.
@@ -41,7 +42,7 @@ const REGION_INDEX: ReadonlyMap<string, string> = new Map(
  * region does not count as an exact region-name match.
  */
 export function isPermitLockedRegionName(name: string): boolean {
-    return REGION_INDEX.has(name.trim().toLowerCase());
+    return REGION_INDEX.has(normalizeKey(name));
 }
 
 /**
@@ -60,7 +61,7 @@ export function isPermitLockedRegionName(name: string): boolean {
  * ```
  */
 export function permitLockedRegionForSystemName(systemName: string): string | null {
-    const normalized = systemName.trim().toLowerCase();
+    const normalized = normalizeKey(systemName);
     if (!normalized) return null;
 
     for (const [key, region] of REGION_INDEX) {

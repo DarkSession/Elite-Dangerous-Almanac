@@ -8,6 +8,7 @@ import type { LoadoutEvent, LoadoutModule } from '../slef.js';
 import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { cloneLoadoutModule, cloneModuleStats } from './loadout-state.js';
+import { normalizeKey } from '../../internal/registry-index.js';
 
 /** Top-level figures an import carries, trusted over computed fallbacks. */
 export interface ImportedTopFigures {
@@ -71,8 +72,8 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
             continue;
         }
 
-        const normalizedBlueprint = engineering.BlueprintName.trim().toLowerCase();
-        const normalizedExperimental = engineering.ExperimentalEffect?.trim().toLowerCase();
+        const normalizedBlueprint = normalizeKey(engineering.BlueprintName);
+        const normalizedExperimental = normalizeKey(engineering.ExperimentalEffect);
         const exact = getPreEngineeredVariants(module.Item).find(
             (candidate) =>
                 candidate.blueprint.toLowerCase() === normalizedBlueprint &&

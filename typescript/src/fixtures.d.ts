@@ -825,6 +825,28 @@ declare module '*/fixtures/ships/build-metrics.jsonc' {
                 thermalDamagePerSecond: number;
             };
         };
+        unknownPowerDraw: {
+            loadout: {
+                Ship: string;
+                UnladenMass: number;
+                Modules: {
+                    Slot: string;
+                    Item: string;
+                    On?: boolean;
+                    Priority?: number;
+                }[];
+            };
+            available: number;
+            retracted: number;
+            deployed: number;
+            unknownDraws: {
+                drawUnknown: boolean;
+                priority: number;
+                enabled: boolean;
+                deployedOnly?: boolean;
+                label: string;
+            }[];
+        };
         weapons: {
             symbol: string;
             damagePerSecond: number;
@@ -2688,6 +2710,14 @@ declare module '*/fixtures/ships/module-stats.jsonc' {
             weapons: {
                 symbol: string;
                 damagePerSecond: number;
+            }[];
+            effectiveWeapons: {
+                file: string;
+                slot: string;
+                symbol: string;
+                damage: number;
+                maximumRange?: number;
+                falloffRange?: number;
             }[];
             rebuildNote: string;
             rebuildTolerance: number;

@@ -24,6 +24,7 @@ import { sectorGridPositionFromName, sectorNameFromGridPosition } from './sector
 import { SECTOR_INTERNAL_SIZE } from './system-address.js';
 import originsData from '../../../data/astro/named-region-origins.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { normalizeKey } from '../internal/registry-index.js';
 
 export { SECTOR_INTERNAL_SIZE } from './system-address.js';
 
@@ -77,7 +78,7 @@ const CATALOGUE: ReadonlyMap<string, NamingRegionOrigin> = new Map(
  * ```
  */
 export function getHandAuthoredRegionOrigin(name: string): NamingRegionOrigin | null {
-    return CATALOGUE.get(name.trim().toLowerCase()) ?? null;
+    return CATALOGUE.get(normalizeKey(name)) ?? null;
 }
 
 /**

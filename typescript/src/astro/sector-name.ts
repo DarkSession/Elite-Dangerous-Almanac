@@ -22,6 +22,8 @@
  * @packageDocumentation
  */
 
+import { normalizeKey } from '../internal/registry-index.js';
+
 /**
  * Integer position of a sector on the galaxy's sector grid.
  *
@@ -794,7 +796,7 @@ function splitFragmentCandidates(name: string): FragmentInfo[][] {
         }
     };
 
-    visit(name.toLowerCase().trim(), []);
+    visit(normalizeKey(name), []);
     return candidates;
 }
 
@@ -879,7 +881,7 @@ function c1SectorGridPosition4(f: FragmentInfo[]): SectorGridPosition | null {
  */
 export function sectorGridPositionFromName(name: string): SectorGridPosition | null {
     const candidates = splitFragmentCandidates(name);
-    const normalizedName = name.trim().toLowerCase().replace(/\s+/g, ' ');
+    const normalizedName = normalizeKey(name).replace(/\s+/g, ' ');
     for (const f of candidates) {
         let coords: SectorGridPosition | null = null;
         if (

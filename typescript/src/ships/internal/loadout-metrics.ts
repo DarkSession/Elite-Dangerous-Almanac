@@ -34,6 +34,8 @@ import type {
 import type { DamageResistanceParams } from '../resistances.js';
 import { combinedRateOfFire, type WeaponStats } from '../weapons.js';
 import { scaleDamageComponents } from './damage-components.js';
+import { isNonOutfittingSlot } from './loadout-state.js';
+import { parseSlotName } from '../slots.js';
 
 /**
  * Symbol prefixes that identify a module group, lower-cased.
@@ -249,6 +251,7 @@ export function effectiveModule(
     }
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) merged.damageDistribution = damageDistribution;
+    if (stats.category === 'hardpoint') normalizeEffectiveWeapon(module, merged);
     // Exact components follow the effective total damage. Once engineering converts
     // them, the resulting fractional split is authoritative instead.
     if (convertsDamage(module)) {
@@ -260,29 +263,45 @@ export function effectiveModule(
             typeof merged.damage === 'number' ? merged.damage : undefined,
         );
     }
-    // The rate of fire is derived from the firing cycle, so an engineered burst pattern
-    // moves it even when nothing names it — same rule the weapon metrics use.
-    const rate = burstAdjustedRateOfFire(module, merged);
-    if (rate !== undefined) merged.rateOfFire = rate;
     return merged as unknown as OutfittingModule;
 }
 
-/** One fitted module's claim on the power plant, or `null` when it makes none. */
+/** One fitted module's claim on the power plant, or `null` when it legitimately makes none. */
 export function powerConsumerFor(
     module: LoadoutModule,
     stats: OutfittingModule | null = builtInModuleBySymbol(module.Item),
 ): PowerConsumer | null {
     const draw = effectiveStat(module, 'powerDraw', stats);
+    const parsedSlot = parseSlotName(module.Slot);
     // Weapons and most utility fittings only draw while the hardpoints are out; the
     // ones flagged `alwaysPowered` (shield boosters, chaff, heat sinks, …) always draw.
     const mounted = stats?.category === 'hardpoint' || stats?.category === 'utility';
+    const deployedOnly =
+        stats !== null
+            ? mounted && stats.alwaysPowered !== true
+            : parsedSlot?.kind === 'hardpoint'
+              ? true
+              : parsedSlot?.kind === 'utility'
+                ? undefined
+                : false;
     const common = {
         priority: priorityOf(module),
         enabled: isEnabled(module),
-        deployedOnly: mounted && stats?.alwaysPowered !== true,
+        ...(deployedOnly === undefined ? {} : { deployedOnly }),
         label: module.Slot,
     };
-    if (draw === undefined) return null;
+    if (draw === undefined) {
+        // A known record without a draw is a passive fitting (bulkheads, cargo racks,
+        // cabins, reinforcement packages, …). Unknown modules in recognised powered
+        // mounts are different: omitting them would make the budget quietly optimistic.
+        const inherentlyPassiveSlot =
+            parsedSlot?.kind === 'armour' ||
+            (parsedSlot?.kind === 'core' &&
+                (parsedSlot.core === 'powerPlant' || parsedSlot.core === 'fuelTank'));
+        if (stats !== null || inherentlyPassiveSlot || isNonOutfittingSlot(module.Slot))
+            return null;
+        return { drawUnknown: true, ...common };
+    }
     if (draw === 0) return null;
     return { draw, ...common };
 }
@@ -522,19 +541,7 @@ export function weaponStatsFor(
         if (value !== undefined) weapon[field] = value;
     }
 
-    const rate = burstAdjustedRateOfFire(module, weapon);
-    if (rate !== undefined) weapon.rateOfFire = rate;
-
-    const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
-    const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
-    if (statedDamagePerSecond !== null && firingFactor > 0) {
-        weapon.damage = statedDamagePerSecond / firingFactor;
-    }
-
-    const { maximumRange, falloffRange } = weapon as WeaponStats;
-    if (maximumRange !== undefined && falloffRange !== undefined && falloffRange > maximumRange) {
-        weapon.falloffRange = maximumRange;
-    }
+    normalizeEffectiveWeapon(module, weapon);
 
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) weapon.damageDistribution = damageDistribution;
@@ -567,4 +574,29 @@ function burstAdjustedRateOfFire(
     );
     if (!touched) return undefined;
     return combinedRateOfFire(weapon as WeaponStats);
+}
+
+/**
+ * Apply the derived rules shared by every post-engineering view of a fitted weapon.
+ *
+ * The journal can state damage only as the derived `DamagePerSecond`, burst engineering
+ * can change the effective firing cycle without stating a new rate, and short-range
+ * engineering can leave the stock falloff beyond the reduced maximum range. Keeping the
+ * three corrections together prevents a fitted module snapshot and its metrics from
+ * describing different weapons.
+ */
+function normalizeEffectiveWeapon(module: LoadoutModule, weapon: Record<string, unknown>): void {
+    const rate = burstAdjustedRateOfFire(module, weapon);
+    if (rate !== undefined) weapon.rateOfFire = rate;
+
+    const statedDamagePerSecond = getLoadoutModifier(module, 'DamagePerSecond');
+    const firingFactor = Number(weapon.roundsPerShot ?? 1) * Number(weapon.rateOfFire ?? 1);
+    if (statedDamagePerSecond !== null && firingFactor > 0) {
+        weapon.damage = statedDamagePerSecond / firingFactor;
+    }
+
+    const { maximumRange, falloffRange } = weapon as WeaponStats;
+    if (maximumRange !== undefined && falloffRange !== undefined && falloffRange > maximumRange) {
+        weapon.falloffRange = maximumRange;
+    }
 }

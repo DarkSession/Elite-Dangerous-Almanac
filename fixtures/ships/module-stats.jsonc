@@ -3,7 +3,7 @@
  *
  * Parity fixture for the stat fields merged into data/ships/modules-*.jsonc
  * (engineering/mechanical stats, the defence stats — resistances, hull boost and reinforcement —
- * and the weapon stats). Cross-language validation.
+ * and the weapon stats), including fitted-weapon normalization. Cross-language validation.
  */
 {
   "countsNote": "Every module in every catalogue carries at least one stat, so these equal the catalogue sizes and assert that no record regresses to identity-only. No row holds only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. Zero masses are explicit, including the in-game value for `Int_DroneControl_ResourceSiphon`; its sized siblings retain their non-zero masses. The `spot` entries below pin the backfilled and corrected values.",
@@ -2179,6 +2179,22 @@
       {
         "symbol": "Hpt_Slugshot_Fixed_Medium",
         "damagePerSecond": 179.099991
+      }
+    ],
+    "effectiveWeapons": [
+      {
+        "file": "journal-federation-corvette-beams.jsonc",
+        "slot": "HugeHardpoint1",
+        "symbol": "Hpt_BeamLaser_Gimbal_Huge",
+        "damage": 40.523201
+      },
+      {
+        "file": "journal-federation-corvette-plasma.jsonc",
+        "slot": "HugeHardpoint2",
+        "symbol": "Hpt_PlasmaAccelerator_Fixed_Huge",
+        "damage": 219.1875,
+        "maximumRange": 1750,
+        "falloffRange": 1750
       }
     ],
     "rebuildNote": "Each journal capture states its own `UnladenMass` and `MaxJumpRange`. Dropping both and rebuilding the loadout from its modules alone recomputes them, which is what says a stored capture is faithful: every module mass, every engineered mass modifier and the drive's whole fuel curve have to be right for the two figures to land. The tolerance is the game's own float32 arithmetic — the widest residue across the nineteen is 1.22e-4 t of mass and 1.98e-5 ly — and not a margin for disagreement.",
