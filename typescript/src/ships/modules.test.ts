@@ -5,6 +5,8 @@ import {
     getModuleBySymbol,
     getModulesByName,
     getBulkheadsForShip,
+    type OutfittingModuleIdentity,
+    type OutfittingModuleStats,
     type OutfittingModule,
 } from './modules.js';
 import {
@@ -14,6 +16,7 @@ import {
     hasMassCurveStats,
     hasShieldRegenerationStats,
     hasWeaponDamageStats,
+    type FrameShiftDriveJumpStats,
 } from './module-capabilities.js';
 import { CORE_MODULES } from './modules-core.js';
 import { INTERNAL_MODULES } from './modules-internal.js';
@@ -38,7 +41,7 @@ const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
 const IDENTITY_KEYS = new Set([
     'symbol',
     'category',
-    'kind',
+    'engineeringGroup',
     // Which mount the module fills is identity, not performance: armour names one and
     // still carries no stats at all.
     'slot',
@@ -88,11 +91,38 @@ test('module symbols are unique across all four catalogues', () => {
     assert.equal(new Set(symbols).size, symbols.length);
 });
 
-test('kind is the stable engineering family already carried by the shared data', () => {
+test('engineeringGroup exposes the stable family carried by the shared data', () => {
     for (const module of ALL_MODULES) {
-        assert.equal(module.kind, getEngineeringGroup(module.symbol), module.symbol);
+        assert.equal(module.engineeringGroup, getEngineeringGroup(module.symbol), module.symbol);
+        assert.equal(Object.hasOwn(module, 'kind'), false, module.symbol);
     }
-    assert.equal(ALL_MODULES.filter((module) => module.kind !== null).length, 1028);
+    assert.equal(ALL_MODULES.filter((module) => module.engineeringGroup !== null).length, 1028);
+});
+
+test('identity, sparse stats, and required capabilities are independent contracts', () => {
+    const identity: OutfittingModuleIdentity = {
+        symbol: 'CustomDrive',
+        category: 'core',
+        engineeringGroup: 'frameShiftDrives',
+        name: 'Custom drive',
+        class: 5,
+        rating: 'A',
+    };
+    const stats: OutfittingModuleStats = { mass: 20, powerDraw: 0.6 };
+    const jump: FrameShiftDriveJumpStats = {
+        optMass: 1050,
+        maxFuel: 5,
+        fuelMul: 0.012,
+        fuelPower: 2.45,
+    };
+    const sparse: OutfittingModuleStats = { ...stats, ...jump };
+    const module: OutfittingModule = { ...identity, ...stats, ...jump };
+
+    assert.ok(hasFrameShiftDriveJumpStats(sparse));
+    const maxFuel: number = sparse.maxFuel;
+    assert.equal(maxFuel, 5);
+    assert.equal(module.symbol, 'CustomDrive');
+    assert.ok(hasFrameShiftDriveJumpStats(module));
 });
 
 test('every module lands in the catalogue named by its own category', () => {
@@ -604,32 +634,36 @@ test('capabilities map cleanly to the current catalogue groups', () => {
     for (const module of ALL_MODULES) {
         assert.equal(
             hasFrameShiftDriveJumpStats(module),
-            module.kind === 'frameShiftDrives' || module.kind === 'frameShiftDrivesSCO',
+            module.engineeringGroup === 'frameShiftDrives' ||
+                module.engineeringGroup === 'frameShiftDrivesSCO',
             module.symbol,
         );
         assert.equal(
             hasPowerGenerationStats(module),
-            module.kind === 'powerPlants' || module.kind === 'guardianPowerPlants',
+            module.engineeringGroup === 'powerPlants' ||
+                module.engineeringGroup === 'guardianPowerPlants',
             module.symbol,
         );
         assert.equal(
             hasPowerDistributorStats(module),
-            module.kind === 'powerDistributors' || module.kind === 'guardianPowerDistributors',
+            module.engineeringGroup === 'powerDistributors' ||
+                module.engineeringGroup === 'guardianPowerDistributors',
             module.symbol,
         );
         assert.equal(
             hasMassCurveStats(module),
-            module.kind === 'thrusters' || module.kind === 'shieldGenerators',
+            module.engineeringGroup === 'thrusters' ||
+                module.engineeringGroup === 'shieldGenerators',
             module.symbol,
         );
         assert.equal(
             hasShieldRegenerationStats(module),
-            module.kind === 'shieldGenerators',
+            module.engineeringGroup === 'shieldGenerators',
             module.symbol,
         );
         assert.equal(
             hasWeaponDamageStats(module),
-            module.category === 'hardpoint' || module.kind === 'pointDefence',
+            module.category === 'hardpoint' || module.engineeringGroup === 'pointDefence',
             module.symbol,
         );
     }
@@ -693,7 +727,7 @@ test('capability guards require every field in the stat group', () => {
     for (const { sample, guard, fields } of cases) {
         assert.equal(guard(null), false);
         assert.equal(guard(rack), false);
-        assert.equal(guard({ ...sample, kind: null }), true);
+        assert.equal(guard({ ...sample, engineeringGroup: null }), true);
         for (const field of fields) {
             assert.equal(
                 guard({ ...sample, [field]: undefined } as unknown as OutfittingModule),

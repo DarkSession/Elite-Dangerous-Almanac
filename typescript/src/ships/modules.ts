@@ -64,6 +64,7 @@
 import { ALL_MODULES } from './modules-all.js';
 import { filterByKey, findByKey } from '../internal/registry-index.js';
 import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
+import type { EngineeringGroupId } from './engineering-options.js';
 import type { ModuleSlot, SlotRestriction } from './slots.js';
 
 /**
@@ -81,74 +82,6 @@ import type { ModuleSlot, SlotRestriction } from './slots.js';
  *   shield boosters, scanners).
  */
 export type ModuleCategory = 'core' | 'internal' | 'hardpoint' | 'utility';
-
-/**
- * A stable gameplay family for an engineerable module.
- *
- * @remarks
- * These ids are the keys used by the shared engineering-options catalogue. They are
- * more precise than {@link ModuleCategory}: a category says which outfitting tab a
- * module appears under, while a kind identifies the family whose stats and engineering
- * menu it shares. Guardian variants are separate kinds when their menus differ.
- *
- * A module with no published engineering family carries `kind: null`; do not infer a
- * kind from its symbol. This explicit absence distinguishes an unclassified module from
- * a misspelled or newly introduced id.
- */
-export type ModuleKind =
-    | 'powerPlants'
-    | 'guardianPowerPlants'
-    | 'thrusters'
-    | 'frameShiftDrives'
-    | 'powerDistributors'
-    | 'guardianPowerDistributors'
-    | 'frameShiftDrivesSCO'
-    | 'shieldGenerators'
-    | 'shieldCellBanks'
-    | 'hullReinforcements'
-    | 'guardianHullReinforcements'
-    | 'pulseLasers'
-    | 'burstLasers'
-    | 'beamLasers'
-    | 'cannons'
-    | 'fragmentCannons'
-    | 'multiCannons'
-    | 'plasmaAccelerators'
-    | 'railGuns'
-    | 'missiles'
-    | 'mines'
-    | 'torpedoes'
-    | 'miningToolsLasers'
-    | 'antiXenoMultiCannons'
-    | 'shieldBoosters'
-    | 'bulkheads'
-    | 'lifeSupports'
-    | 'sensors'
-    | 'autoFieldMaintenanceUnits'
-    | 'cargoRacks'
-    | 'collectionLimpets'
-    | 'fsdBoosters'
-    | 'fsdInterdictors'
-    | 'fuelScoops'
-    | 'fuelTransferLimpets'
-    | 'hatchBreakerLimpets'
-    | 'moduleReinforcements'
-    | 'prospectingLimpets'
-    | 'refineries'
-    | 'shieldReinforcements'
-    | 'surfaceScanners'
-    | 'chaffLaunchers'
-    | 'ecms'
-    | 'heatSinkLaunchers'
-    | 'killWarrantScanners'
-    | 'manifestScanners'
-    | 'pointDefence'
-    | 'wakeScanners'
-    | 'experimentalWeapons'
-    | 'antiXenoMissileRacks'
-    | 'guardianGauss'
-    | 'guardianPlasma'
-    | 'guardianShard';
 
 /** How a hardpoint weapon is aimed. Only hardpoint modules carry a mount. */
 export type ModuleMount = 'Fixed' | 'Gimballed' | 'Turreted';
@@ -254,17 +187,29 @@ export interface ProjectileRangeBoundaries {
 }
 
 /**
- * One fittable outfitting module — its **identity and its stats** in one record.
+ * Identity, classification, fit constraints, and price for one outfitting module.
  *
  * @remarks
- * The identity fields (`symbol`, `name`, `category`, `class`, `rating`, …) come from
- * Frontier's outfitting registry and are always present. The stats fields (`mass`,
- * `powerDraw`, the FSD constants, per-group performance, the defence and weapon
- * stats, …) come from coriolis-data and are **sparse** — a module carries only the
- * stats that apply to it. Masses are tonnes, power is megawatts, jump ranges are
- * light-years and weapon ranges are metres.
+ * The core identity fields (`symbol`, `name`, `category`, `class`, and `rating`) are
+ * always present. Optional fields describe fit restrictions, purchase entitlement, and
+ * price. Performance data belongs to {@link OutfittingModuleStats}; the complete flat
+ * catalogue record is {@link OutfittingModule}.
+ *
+ * @example
+ * ```ts
+ * import type { OutfittingModuleIdentity } from '@elite-dangerous-almanac/core/ships/modules';
+ *
+ * const identity: OutfittingModuleIdentity = {
+ *   symbol: 'CustomCargoRack',
+ *   category: 'internal',
+ *   engineeringGroup: 'cargoRacks',
+ *   name: 'Custom Cargo Rack',
+ *   class: 2,
+ *   rating: 'E',
+ * };
+ * ```
  */
-export interface OutfittingModule {
+export interface OutfittingModuleIdentity {
     /** Internal identifier, e.g. `"Hpt_PulseLaser_Fixed_Small"`. Unique — the module's key. */
     readonly symbol: string;
     /**
@@ -280,10 +225,10 @@ export interface OutfittingModule {
      */
     readonly category: ModuleCategory;
     /**
-     * Stable gameplay family, or `null` when no source classifies this module in an
-     * engineering family. See {@link ModuleKind}.
+     * Stable engineering-menu family, or `null` when no source classifies this module.
+     * See {@link EngineeringGroupId}.
      */
-    readonly kind: ModuleKind | null;
+    readonly engineeringGroup: EngineeringGroupId | null;
     /**
      * The one fixed mount this module fills, when it fills one: `'armour'` or one of
      * the seven {@link CoreSlotType} core functions.
@@ -366,10 +311,6 @@ export interface OutfittingModule {
      */
     readonly entitlement?: string;
 
-    // ── Stats (from coriolis-data) — sparse: only the fields the module's group
-    //    uses are present. The three `*Multiplier` fields are group-dependent (a
-    //    thruster's speed multiplier, a shield generator's strength multiplier). ──
-
     /**
      * The hull symbol(s) a module is restricted to, when it is ship-specific — e.g.
      * `["Explorer_NX"]` for the Python Mk II's MkII Gravity Optimised thrusters.
@@ -427,6 +368,41 @@ export interface OutfittingModule {
      * ```
      */
     readonly restrictedToSlot?: SlotRestriction;
+    /**
+     * Standard purchase price, in credits — the base list price before any station
+     * discount or markup, which is what an outfitting screen quotes at 0% discount.
+     *
+     * @remarks
+     * Absent on the handful of records no registry prices: the starter `*_free`
+     * variants, the size-8 frame shift drives, and a few internals no outfitting
+     * registry carries a figure for — among them the two Corrosion Resistant Cargo
+     * Racks no station sells, which are not free. Treat `undefined` as "unknown", never
+     * as free — see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+     */
+    readonly cost?: number;
+}
+
+/**
+ * Sparse performance and capability fields carried by an outfitting module.
+ *
+ * @remarks
+ * Every field is optional because no module family uses every stat. Use the guards in
+ * `./module-capabilities` when a calculation needs a complete group. The interface is
+ * also useful for functions that accept or return engineered stat snapshots without
+ * requiring a module's identity fields. Masses are tonnes, power is megawatts, jump
+ * ranges are light-years, and weapon ranges are metres.
+ *
+ * @example
+ * ```ts
+ * import type { OutfittingModuleStats } from '@elite-dangerous-almanac/core/ships/modules';
+ *
+ * const engineered: OutfittingModuleStats = { mass: 18.4, powerDraw: 0.69 };
+ * ```
+ */
+export interface OutfittingModuleStats {
+    // The three `*Multiplier` fields are group-dependent: a thruster's speed
+    // multiplier or a shield generator's strength multiplier.
+
     /** Mass, in tonnes. */
     readonly mass?: number;
     /** Integrity (hit points against module damage). */
@@ -731,19 +707,26 @@ export interface OutfittingModule {
     readonly shotSpeed?: number;
     /** Maximum aim deviation, in degrees. */
     readonly jitter?: number;
-
-    /**
-     * Standard purchase price, in credits — the base list price before any station
-     * discount or markup, which is what an outfitting screen quotes at 0% discount.
-     *
-     * Absent on the handful of records no registry prices: the starter `*_free`
-     * variants, the size-8 frame shift drives, and a few internals no outfitting
-     * registry carries a figure for — among them the two Corrosion Resistant Cargo
-     * Racks no station sells, which are not free. Treat `undefined` as "unknown", never
-     * as free — see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
-     */
-    readonly cost?: number;
 }
+
+/**
+ * One fittable outfitting module: its identity and sparse stats in one flat record.
+ *
+ * @remarks
+ * Keeping the runtime record flat lets engineering modifiers address stat keys directly.
+ * Consumers that need a smaller contract can accept {@link OutfittingModuleIdentity},
+ * {@link OutfittingModuleStats}, or one of the required groups in
+ * `./module-capabilities`.
+ *
+ * @example
+ * ```ts
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ *
+ * getModuleBySymbol('Int_Hyperdrive_Size5_Class5')?.engineeringGroup;
+ * // -> 'frameShiftDrives'
+ * ```
+ */
+export interface OutfittingModule extends OutfittingModuleIdentity, OutfittingModuleStats {}
 
 /**
  * Look up a module by its internal symbol, case-insensitively.

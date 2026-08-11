@@ -123,6 +123,10 @@ test('fine-grained package subpaths resolve', () => {
         'FrameShiftDrive',
         getModuleBySymbol('Int_Hyperdrive_Size2_Class5'),
     );
+    const moduleRecord = getModuleBySymbol('Int_Hyperdrive_Size2_Class5');
+    assert.ok(moduleRecord);
+    assert.equal(moduleRecord.engineeringGroup, 'frameShiftDrives');
+    assert.equal('kind' in moduleRecord, false);
     const drive = loadout.fittedModuleAt('FrameShiftDrive');
     assert.equal(drive?.symbol, 'Int_Hyperdrive_Size2_Class5');
     assert.equal(

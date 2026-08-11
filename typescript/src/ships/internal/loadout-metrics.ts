@@ -225,7 +225,7 @@ export function effectiveModule(
         const value = effectiveStat(module, key, stats);
         if (value !== undefined) merged[key] = value;
     }
-    if (stats.kind === 'thrusters') {
+    if (stats.engineeringGroup === 'thrusters') {
         const massRatio = modifierRatio(module, stats, 'optMass');
         const minMass = relatedStat(module, stats, 'minMass', massRatio);
         const maxMass = relatedStat(module, stats, 'maxMass', massRatio);

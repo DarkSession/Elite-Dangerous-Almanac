@@ -4,16 +4,18 @@ import type { ModuleCategory, OutfittingModule } from '../modules.js';
 import { deepFreeze } from '../../internal/deep-freeze.js';
 
 /**
- * The on-disk module shape: an {@link OutfittingModule} minus the one field the data
- * files do not carry.
+ * The on-disk module shape. Data files call the engineering group `kind` and omit the
+ * category; public records expose the clearer `engineeringGroup` name.
  *
  * @remarks
  * A record's outfitting category is which `data/ships/modules-*.jsonc` file it was
  * read from, so the payload states it nowhere and {@link buildModuleCatalogue} adds
- * it back. Every other field is on the record.
+ * it back. {@link buildModuleCatalogue} also renames `kind` at this internal boundary,
+ * keeping the shared JSONC compact without leaking its ambiguous source name into the
+ * consumer API.
  */
-export type ModuleRecord = Omit<OutfittingModule, 'category' | 'kind'> & {
-    readonly kind?: OutfittingModule['kind'];
+export type ModuleRecord = Omit<OutfittingModule, 'category' | 'engineeringGroup'> & {
+    readonly kind?: OutfittingModule['engineeringGroup'];
 };
 
 /**
@@ -35,6 +37,10 @@ export function buildModuleCatalogue(
     // naming every field explicitly; a module record has some sixty, so it spreads
     // instead.)
     return deepFreeze(
-        records.map((record) => ({ ...record, kind: record.kind ?? null, category })),
+        records.map(({ kind, ...record }) => ({
+            ...record,
+            engineeringGroup: kind ?? null,
+            category,
+        })),
     );
 }

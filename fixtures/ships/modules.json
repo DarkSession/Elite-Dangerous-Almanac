@@ -1,5 +1,5 @@
 {
-  "description": "Ground truth for the outfitting catalogues (data/ships/modules-*.jsonc, primarily from EDCD FDevIDs outfitting.csv, with supplemental identities documented in data/ships/SOURCES.md). `counts` pins the size of each category catalogue; `slotCounts` pins how many records name each fixed mount in `slot`, and how many name none, across all four catalogues — a record's `category` is the file it was read from, its `slot` is the one mount it fills. `records` pins individual modules across every category, including DLC- and grant-gated modules; `shipArmour` pins that getBulkheadsForShip returns a hull's five bulkhead variants. `class` is the module size (0-8) and `rating` the grade letter (A-I).",
+  "description": "Ground truth for the outfitting catalogues (data/ships/modules-*.jsonc, primarily from EDCD FDevIDs outfitting.csv, with supplemental identities documented in data/ships/SOURCES.md). `counts` pins the size of each category catalogue; `slotCounts` pins how many records name each fixed mount in `slot`, and how many name none, across all four catalogues — a record's `category` is the file it was read from, its `slot` is the one mount it fills, and its `engineeringGroup` is the engineering-menu family or null. `records` pins individual modules across every category, including DLC- and grant-gated modules; `shipArmour` pins that getBulkheadsForShip returns a hull's five bulkhead variants. `class` is the module size (0-8) and `rating` the grade letter (A-I).",
   "counts": {
     "core": 521,
     "internal": 484,
@@ -22,6 +22,7 @@
     {
       "symbol": "Anaconda_Armour_Grade1",
       "category": "core",
+      "engineeringGroup": "bulkheads",
       "slot": "armour",
       "name": "Lightweight Alloy",
       "class": 1,
@@ -31,6 +32,7 @@
     {
       "symbol": "Hpt_PulseLaser_Fixed_Small",
       "category": "hardpoint",
+      "engineeringGroup": "pulseLasers",
       "name": "Pulse Laser",
       "class": 1,
       "rating": "F",
@@ -48,6 +50,7 @@
     {
       "symbol": "Hpt_ChaffLauncher_Tiny",
       "category": "utility",
+      "engineeringGroup": "chaffLaunchers",
       "name": "Chaff Launcher",
       "class": 0,
       "rating": "I"
@@ -55,6 +58,7 @@
     {
       "symbol": "Int_HullReinforcement_Size1_Class1",
       "category": "internal",
+      "engineeringGroup": "hullReinforcements",
       "name": "Hull Reinforcement Package",
       "class": 1,
       "rating": "E"
@@ -62,6 +66,7 @@
     {
       "symbol": "Int_GuardianFSDBooster_Size1",
       "category": "internal",
+      "engineeringGroup": "fsdBoosters",
       "name": "Guardian FSD Booster",
       "class": 1,
       "rating": "H",
@@ -77,6 +82,7 @@
     {
       "symbol": "Int_FighterBay_Size5_Class1_Free",
       "category": "internal",
+      "engineeringGroup": null,
       "name": "Mk I Vessel Hangar",
       "class": 5,
       "rating": "D",

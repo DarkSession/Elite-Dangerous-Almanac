@@ -17,7 +17,8 @@ import {
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { BLUEPRINTS } from './blueprints.js';
 import { EXPERIMENTAL_EFFECTS } from './experimental-effects.js';
-import { getModuleBySymbol, type ModuleKind } from './modules.js';
+import { getModuleBySymbol } from './modules.js';
+import type { EngineeringGroupId } from './engineering-options.js';
 import { ALL_MODULES } from './modules-all.js';
 import { isFinalGuardianWeaponEngineering } from './internal/loadout-engineering.js';
 import fixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
@@ -26,7 +27,7 @@ import buildIndex from '../../../fixtures/ships/builds/index.json' with { type: 
 
 function optionGroup(id: string): EngineeringOptionGroup {
     assert.ok(Object.hasOwn(ENGINEERING_OPTION_GROUPS, id), `unknown group ${id}`);
-    return ENGINEERING_OPTION_GROUPS[id as ModuleKind];
+    return ENGINEERING_OPTION_GROUPS[id as EngineeringGroupId];
 }
 
 test('the catalogue holds the expected groups, modules and exclusions', () => {
@@ -210,7 +211,10 @@ test('every module in the catalogue is a real module in a real group', () => {
                 'utf8',
             ),
         ),
-    ) as { modules: Record<string, ModuleKind>; exclusions: Record<string, readonly string[]> };
+    ) as {
+        modules: Record<string, EngineeringGroupId>;
+        exclusions: Record<string, readonly string[]>;
+    };
     for (const [symbol, group] of Object.entries(payload.modules)) {
         assert.ok(getModuleBySymbol(symbol, ALL_MODULES), `${symbol} is not a module`);
         assert.equal(optionGroup(group), ENGINEERING_OPTION_GROUPS[group], symbol);

@@ -13,8 +13,8 @@ the checked-in ship and module catalogues. It keeps identity order and identity
 fields authoritative, joins case-insensitively on `symbol`, rejects duplicate or
 unmatched records, and preserves each output JSONC file's attribution header.
 It also projects the engineering-options module-group map into each grouped module's
-`kind` field; ungrouped modules omit the field and the TypeScript loader exposes it as
-`null`.
+on-disk `kind` field; ungrouped modules omit the field. Public library loaders expose
+that value as `engineeringGroup` and normalize the deliberate absence to `null`.
 
 Every input is an array of objects carrying a string `symbol`, and nothing else is
 required of them. The identity array fixes the output order, and each stat or slot
@@ -40,7 +40,8 @@ stat record whose symbol no identity carries, is an error rather than a silent d
 - engineering options (`--engineering-options`): the checked-in
   `data/ships/engineering-options.jsonc`; every `modules` value must name a `groups`
   key, and every mapped symbol must match one module identity. Its group id becomes
-  that module's `kind`.
+  that module's on-disk `kind`; language implementations expose it as
+  `engineeringGroup`.
 
 `data/ships/SOURCES.md` records where each field came from and how it was normalized;
 this file describes only the join.

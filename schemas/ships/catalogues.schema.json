@@ -193,7 +193,7 @@
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
         "kind": {
-          "description": "Stable gameplay family copied from the engineering-options module map. Absent only when no source classifies the module in an engineering family; TypeScript exposes that absence as null.",
+          "description": "On-disk stable gameplay family copied from the engineering-options module map. Public library records expose this as `engineeringGroup`. Absent only when no source classifies the module in an engineering family; loaders normalize that deliberate absence to null.",
           "enum": [
             "powerPlants",
             "guardianPowerPlants",

@@ -328,17 +328,19 @@ FDevIDs, stats from coriolis-data and EDSY, joined on `symbol`.
     `fixtures/ships/modules.json` (`slotCounts`).
   - **A fuel tank is the one module built for two kinds of mount:** it is `fuelTank`
     and also fits any optional slot large enough, exactly as the game sells it.
-- **`kind` — the stable engineering family already present in the shared data.** The
-  1028 records mapped by `engineering-options.jsonc` repeat that map's group key on the
-  module itself, so consumers can discriminate module families without importing a
-  second catalogue or maintaining symbol-prefix tables. The remaining 171 records carry
-  no `kind` in JSON because the pinned sources publish no engineering family for them;
-  language loaders expose that deliberate absence as `null`. The group source,
-  derivation, split Guardian families and coverage are documented under Engineering
-  options below; this field is a byte-for-byte projection of that existing map, not a
-  new classification source. The final merge tool reads that catalogue through its
-  required `--engineering-options` input, validates every mapped symbol and group, and
-  performs the projection while joining the normalized identities and stats.
+- **`kind` on disk / `engineeringGroup` in the public API — the stable engineering
+  family already present in the shared data.** The 1028 records mapped by
+  `engineering-options.jsonc` repeat that map's group key in the compact on-disk `kind`
+  field, so consumers can discriminate module families without importing a second
+  catalogue or maintaining symbol-prefix tables. Language loaders rename it to the
+  explicit `engineeringGroup`. The remaining 171 records carry no `kind` in JSON because
+  the pinned sources publish no engineering family for them; loaders expose that
+  deliberate absence as `engineeringGroup: null`. The group source, derivation, split
+  Guardian families and coverage are documented under Engineering options below; this
+  field is a byte-for-byte projection of that existing map, not a new classification
+  source. The final merge tool reads that catalogue through its required
+  `--engineering-options` input, validates every mapped symbol and group, and performs
+  the projection while joining the normalized identities and stats.
 - **Stats source:** coriolis-data `modules/**` for the mechanical, defence, power and
   weapon stats; EDSY `eddb.js` for mass, integrity, power draw, boot time and the
   engineering base stats coriolis does not carry; and in-game verification for the
