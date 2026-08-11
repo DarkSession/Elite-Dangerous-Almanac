@@ -90,6 +90,7 @@ export function getBlueprint(fdname: string): Blueprint | null {
  * @returns The grade record — its modifier `features` and optional converted
  * `damageDistribution` — or `null` if the catalogue holds no such blueprint or grade.
  * See {@link getBlueprint} for what an absent blueprint can mean besides "unknown".
+ * @throws {RangeError} If `grade` is not an integer from 1 through 5.
  * @example
  * ```ts
  * import { getBlueprintGrade } from '@elite-dangerous-almanac/core/ships/blueprints';
@@ -99,5 +100,8 @@ export function getBlueprint(fdname: string): Blueprint | null {
  * ```
  */
 export function getBlueprintGrade(fdname: string, grade: number): BlueprintGrade | null {
+    if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
+        throw new RangeError(`getBlueprintGrade: grade must be an integer in [1, 5]`);
+    }
     return getBlueprint(fdname)?.grades[String(grade)] ?? null;
 }

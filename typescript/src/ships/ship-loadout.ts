@@ -1034,6 +1034,11 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; no engineer applies one, and the stat changes it arrives with are in DECORATIVE_MODIFICATIONS`,
             );
         }
+        if (!Number.isInteger(options.grade) || options.grade < 1 || options.grade > 5) {
+            throw new RangeError(
+                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${options.grade}`,
+            );
+        }
         const grade = getBlueprintGrade(recipe, options.grade);
         if (!grade) {
             throw new RangeError(

@@ -533,7 +533,7 @@ test('sumMaterials folds lists together, combining by symbol case-insensitively'
 test('lookups are case-insensitive and miss cleanly', () => {
     assert.ok(getBlueprint('fsd_longrange'));
     assert.equal(getBlueprint('nope'), null);
-    assert.equal(getBlueprintGrade('FSD_LongRange', 9), null);
+    assert.throws(() => getBlueprintGrade('FSD_LongRange', 9), RangeError);
     assert.ok(getExperimentalEffect('SPECIAL_FSD_HEAVY'));
     assert.equal(getExperimentalEffect('nope'), null);
 });
