@@ -8,7 +8,7 @@ title: Getting started
 npm install @elite-dangerous-almanac/core
 ```
 
-The package is ESM-only and supports Node.js 18+ and modern browser bundlers. Every
+The package is ESM-only and supports Node.js 22+ and modern browser bundlers. Every
 module is marked side-effect free, so a bundler can drop whatever you do not use.
 
 ## Which import should I use?

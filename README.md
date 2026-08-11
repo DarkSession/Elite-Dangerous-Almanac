@@ -10,7 +10,7 @@ shared JSONC data and fixtures, and JSON Schemas.
 npm install @elite-dangerous-almanac/core
 ```
 
-The package supports Node.js 18+ and modern browser bundlers. It is ESM-only and
+The package supports Node.js 22+ and modern browser bundlers. It is ESM-only and
 marks every module as side-effect free.
 
 The bundled game and community data has source-specific licensing, including
