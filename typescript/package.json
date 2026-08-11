@@ -54,9 +54,6 @@
             "import": "./dist/astro/index.js"
         },
         "./astro/internal/*": null,
-        "./astro/galactic-position": {
-            "types": "./dist/astro/galactic-position.d.ts"
-        },
         "./astro/codex-region-lookup": {
             "types": "./dist/astro/codex-region-lookup.d.ts",
             "import": "./dist/astro/codex-region-lookup.js"
@@ -206,12 +203,6 @@
         "./ships": {
             "types": "./dist/ships/index.d.ts",
             "import": "./dist/ships/index.js"
-        },
-        "./ships/fitted-module": {
-            "types": "./dist/ships/fitted-module.d.ts"
-        },
-        "./ships/loadout-slot": {
-            "types": "./dist/ships/loadout-slot.d.ts"
         },
         "./ships/ammunition": {
             "types": "./dist/ships/ammunition.d.ts",

@@ -14,7 +14,7 @@
  *
  * @example
  * ```ts
- * import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro/galactic-position';
+ * import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro';
  *
  * const position: GalacticPosition = { x: 751, y: -179, z: -91 };
  * ```

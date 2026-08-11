@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { readdir, readFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
@@ -489,6 +490,8 @@ test('every runtime entry has one explicit public subpath', async () => {
     const publicExports = Object.entries(pkg.exports).filter(([, target]) => target !== null);
     for (const [subpath, target] of publicExports) {
         assert.ok(!subpath.includes('*'), `public export ${subpath} is a wildcard`);
+        assert.ok('types' in target, `public export ${subpath} has no declarations`);
+        assert.ok('import' in target, `public export ${subpath} has no runtime entry`);
         assert.ok(
             !Object.values(target).some((path) => path.includes('*')),
             `public export ${subpath} has a wildcard target`,
@@ -642,19 +645,18 @@ test('engineering cost source maps embed their TypeScript and JSONC sources', as
     }
 });
 
-test('the build omits JavaScript artifacts with no runtime API', async () => {
+test('types are exposed by owning runtime entries, not type-only subpaths', async () => {
     for (const file of [
         'astro/galactic-position.js',
         'ships/fitted-module.js',
         'ships/loadout-slot.js',
     ]) {
-        await assert.rejects(readFile(new URL(`./dist/${file}`, import.meta.url)), {
-            code: 'ENOENT',
-        });
-        assert.ok(
-            (await readFile(new URL(`./dist/${file.replace(/\.js$/, '.d.ts')}`, import.meta.url)))
-                .length > 0,
-        );
+        for (const extension of ['.js', '.d.ts']) {
+            await assert.rejects(
+                readFile(new URL(`./dist/${file.replace(/\.js$/, extension)}`, import.meta.url)),
+                { code: 'ENOENT' },
+            );
+        }
     }
 
     const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
@@ -663,9 +665,70 @@ test('the build omits JavaScript artifacts with no runtime API', async () => {
         './ships/fitted-module',
         './ships/loadout-slot',
     ]) {
-        assert.ok(pkg.exports[subpath].types);
-        assert.ok(!('import' in pkg.exports[subpath]));
+        assert.ok(!Object.hasOwn(pkg.exports, subpath));
     }
+
+    for (const [subpath, target] of Object.entries(pkg.exports)) {
+        if (target === null) continue;
+        await assert.doesNotReject(
+            readFile(new URL(target.types, import.meta.url)),
+            `${subpath} has no declaration artifact at ${target.types}`,
+        );
+    }
+
+    const scratch = await mkdtemp(fileURLToPath(new URL('./.package-consumer-', import.meta.url)));
+    try {
+        const consumer = `${scratch}/consumer.ts`;
+        await writeFile(
+            consumer,
+            [
+                "import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro';",
+                "import type { FittedModule, LoadoutSlot } from '@elite-dangerous-almanac/core/ships';",
+                "import type { FittedModule as LeafModule, LoadoutSlot as LeafSlot } from '@elite-dangerous-almanac/core/ships/ship-loadout';",
+                'declare const values: [GalacticPosition, FittedModule, LoadoutSlot, LeafModule, LeafSlot];',
+                'void values;',
+            ].join('\n'),
+        );
+        const tsc = fileURLToPath(new URL('./node_modules/typescript/bin/tsc', import.meta.url));
+        const result = spawnSync(
+            process.execPath,
+            [
+                tsc,
+                '--noEmit',
+                '--strict',
+                '--skipLibCheck',
+                '--module',
+                'NodeNext',
+                '--moduleResolution',
+                'NodeNext',
+                '--target',
+                'ES2022',
+                consumer,
+            ],
+            { encoding: 'utf8', cwd: fileURLToPath(new URL('.', import.meta.url)) },
+        );
+        assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+    } finally {
+        await rm(scratch, { recursive: true, force: true });
+    }
+
+    const sourceMapComments = /^\s*\/\/# sourceMappingURL=[^\r\n]+\s*$/gm;
+    async function assertNoEmptyJavaScript(directory) {
+        for (const entry of await readdir(directory, { withFileTypes: true })) {
+            const file = new URL(entry.name, directory);
+            if (entry.isDirectory()) {
+                await assertNoEmptyJavaScript(new URL(`${entry.name}/`, directory));
+            } else if (entry.name.endsWith('.js')) {
+                const source = await readFile(file, 'utf8');
+                assert.notEqual(
+                    source.replace(sourceMapComments, '').trim(),
+                    '',
+                    `${file.pathname} has no runtime code`,
+                );
+            }
+        }
+    }
+    await assertNoEmptyJavaScript(new URL('./dist/', import.meta.url));
 });
 
 test('the publication manifest includes consumer documentation and notices', async () => {

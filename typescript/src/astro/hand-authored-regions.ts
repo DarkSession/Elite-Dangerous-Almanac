@@ -112,7 +112,7 @@ export const HAND_AUTHORED_REGIONS: readonly HandAuthoredRegion[] = deepFreeze(
  * Resolving a permit lock from a position — the exact route, since it does not
  * depend on how the system is named:
  * ```ts
- * import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro/galactic-position';
+ * import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro';
  * import { findHandAuthoredRegionAt } from '@elite-dangerous-almanac/core/astro/hand-authored-regions';
  *
  * declare const position: GalacticPosition;

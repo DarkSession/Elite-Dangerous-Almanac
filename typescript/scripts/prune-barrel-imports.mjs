@@ -26,9 +26,9 @@ for (const entry of files.filter((path) => !path.split('/').at(-1)?.startsWith('
     if (cleaned !== source) await writeFile(entry, cleaned);
 }
 
-// Type-only public modules need declarations but have no JavaScript API. tsup emits
-// zero-code entry files for them, plus zero-code shared chunks imported only by the
-// bare declarations removed above. Do not publish those misleading runtime files.
+// Declaration-only dependencies can still make esbuild emit zero-code shared chunks.
+// Once the entry files' redundant bare imports are blanked above, those chunks are
+// unreachable implementation artifacts; do not publish them or their source maps.
 const sourceMapComments = /^\s*\/\/# sourceMappingURL=[^\r\n]+\s*$/gm;
 for (const file of files) {
     const source = await readFile(file, 'utf8');
