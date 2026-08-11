@@ -6,12 +6,12 @@ import { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.
 import type { LoadoutEvent } from './slef.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
-import expected from '../../../fixtures/ships/source-purchase.json' with { type: 'json' };
-import exportFixture from '../../../fixtures/ships/slef-export.json' with { type: 'json' };
-import deepBlackSlef from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
-import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.json' with { type: 'json' };
-import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.json' with { type: 'json' };
-import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.json' with { type: 'json' };
+import expected from '../../../fixtures/ships/source-purchase.jsonc' with { type: 'json' };
+import exportFixture from '../../../fixtures/ships/slef-export.jsonc' with { type: 'json' };
+import deepBlackSlef from '../../../fixtures/ships/slef-the-deep-black.jsonc' with { type: 'json' };
+import viperJournal from '../../../fixtures/ships/journal-viper-mkiv.jsonc' with { type: 'json' };
+import caspianJournal from '../../../fixtures/ships/journal-caspian-explorer.jsonc' with { type: 'json' };
+import kraitJournal from '../../../fixtures/ships/journal-krait-phantom.jsonc' with { type: 'json' };
 
 const module = (symbol: string) => getModuleBySymbol(symbol, ALL_MODULES)!;
 
@@ -154,8 +154,8 @@ for (const [name, { event, record }] of Object.entries(fixture.syntheticCaptures
 }
 
 test("the two fixtures that hold a capture's source totals agree", () => {
-    // `slef-export.json` states them to show how far retail is from what was paid;
-    // `source-purchase.json` states them as the record itself. Nothing else stops the
+    // `slef-export.jsonc` states them to show how far retail is from what was paid;
+    // `source-purchase.jsonc` states them as the record itself. Nothing else stops the
     // pair drifting apart.
     const discounts = exportFixture as unknown as Record<
         string,

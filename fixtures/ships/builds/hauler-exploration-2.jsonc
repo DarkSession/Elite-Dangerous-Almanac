@@ -1,0 +1,37 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "hauler-exploration-2",
+  "ship": "Hauler",
+  "role": "exploration",
+  "modules": [
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "Armour", "item": "Hauler_Armour_Grade1" },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class2" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size2_Class2" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size2_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size1_Class2" },
+    { "slot": "Radar", "item": "Int_Sensors_Size1_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size2_Class3" },
+    { "slot": "Slot01_Size3", "item": "Int_FuelScoop_Size3_Class2", "priority": 2 },
+    { "slot": "Slot02_Size3", "item": "Int_Repairer_Size3_Class2", "on": false },
+    { "slot": "Slot03_Size2", "item": "Int_BuggyBay_Size2_Class2", "priority": 2, "on": false },
+    { "slot": "Slot04_Size1", "item": "Int_ShieldGenerator_Size1_Class2", "priority": 1 },
+    { "slot": "Slot05_Size1", "item": "Int_SupercruiseAssist", "priority": 4 },
+    { "slot": "Slot06_Size1", "item": "Int_DockingComputer_Advanced", "priority": 4 }
+  ],
+  "metrics": {
+    "unladenMass": 27.8,
+    "cargoCapacity": 0,
+    "fuelCapacity": 4,
+    "maxJumpRange": 30.453403,
+    "power": { "available": 7.2, "retracted": 5.63, "deployed": 5.63, "withinBudget": true },
+    "shields": { "strength": 67.512692, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 180, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

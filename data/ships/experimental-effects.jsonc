@@ -3,28 +3,12 @@
  * modifiers it applies AND the materials one application costs. Keyed by the effect's
  * Frontier `fdname` (as it appears in `Engineering.ExperimentalEffect`).
  *
- * Sources: EDSY (github.com/taleden/EDSY) eddb.js `expeffect` is the primary source —
- *          one table holding each effect's modifiers and its recipe together.
- *          `modifiers` are the effect's stat contributions; `materials` its `mats` map,
- *          resolved from EDSY's material short-codes to Frontier material `symbol`s
- *          against the materials domain. EDSY is (c) taleden under a CC BY-NC 4.0
- *          License (http://creativecommons.org/licenses/by-nc/4.0/).
- *          Every value is cross-checked against EDCD/coriolis-data
- *          (github.com/EDCD/coriolis-data, commit 0db9234b5b9ce8c939ea84133d7ce336
- *          eea88e27, acquired 2026-08-01 UTC), which holds the same facts split across
- *          `modifications/modifierActions.json` and `modifications/specials.json`.
- *          Where the two disagree, a magnitude only one of them carries is not stored:
- *          the effect keeps the empty `modifiers` list and `description` this file uses
- *          for every qualitative effect.
- *          English display names were observed in-game. Anti-Guardian Zone Resistance
- *          and the three laser-family Plasma conversion modifications are blueprints,
- *          not experimental effects; they live in blueprints.jsonc and never under the
- *          speculative `special_guardian_module_resistance` or `special_plasma_rounds`
- *          keys. See SOURCES.md for the classification evidence.
- *          coriolis-data's MIT licence covers its *code* only — its JSON, like EDSY's
- *          tables, is Elite Dangerous data, the property of Frontier Developments plc,
- *          used under Frontier's media-usage terms:
- *          https://forums.frontier.co.uk/threads/510879/
+ * Sources: EDSY eddb.js `expeffect` (each effect's modifiers and its recipe together),
+ * cross-checked against EDCD/coriolis-data; display names observed in-game; the combat
+ * effects' material costs from the Inara registry.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
  *
  * Each effect is { name, modifiers, damageDistribution?, materials, description? }.
  * `damageDistribution` is the fixed fractional split produced by a damage-converting
@@ -44,8 +28,6 @@
  * combat effects' one-application material costs are sourced from the pinned Inara
  * registry described in SOURCES.md (a Merc-Coin amount is also charged but is a
  * currency, not a material, so it is not stored).
- *
- * Full provenance: data/ships/SOURCES.md.
  */
 {
   "special_concordant_sequence": {

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { EXPERIMENTAL_EFFECTS, getExperimentalEffect } from './experimental-effects.js';
 import { getMaterialBySymbol } from '../materials/materials.js';
 import { ALL_MATERIALS } from '../materials/materials-all.js';
-import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
+import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 
 test('every effect carries a display name, a recipe, and modifiers/materials arrays', () => {
     for (const [fdname, effect] of Object.entries(EXPERIMENTAL_EFFECTS)) {

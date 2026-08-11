@@ -74,7 +74,7 @@ test('the final catalogue join projects engineering groups into module kinds', (
             '--utility-stats',
             empty,
             '--engineering-options',
-            input('engineering.json', {
+            input('engineering.jsonc', {
                 groups: { testKind: { name: 'Test', blueprints: [], experimentals: [] } },
                 modules: { Int_Grouped: 'testKind' },
             }),

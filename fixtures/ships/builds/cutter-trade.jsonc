@@ -1,0 +1,44 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "cutter-trade",
+  "ship": "Cutter",
+  "role": "trade",
+  "modules": [
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "Armour", "item": "Cutter_Armour_Grade1" },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size5_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size8_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size7_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size7_Class2", "engineering": { "blueprint": "Misc_LightWeight", "grade": 3 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class5", "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size7_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 3 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size6_Class3" },
+    { "slot": "Military01", "item": "Int_HullReinforcement_Size5_Class2" },
+    { "slot": "Military02", "item": "Int_HullReinforcement_Size5_Class2" },
+    { "slot": "Slot01_Size8", "item": "Int_CargoRack_Size8_Class1" },
+    { "slot": "Slot02_Size8", "item": "Int_CargoRack_Size8_Class1" },
+    { "slot": "Slot03_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot04_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot05_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot06_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot07_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot08_Size4", "item": "Int_CargoRack_Size4_Class1" },
+    { "slot": "Slot09_Size3", "item": "Int_DockingComputer_Advanced" },
+    { "slot": "Slot10_Size1", "item": "Int_SupercruiseAssist" }
+  ],
+  "metrics": {
+    "unladenMass": 1528.6,
+    "cargoCapacity": 784,
+    "fuelCapacity": 64,
+    "maxJumpRange": 24.056954,
+    "power": { "available": 20.4, "retracted": 15.08, "deployed": 15.08, "withinBudget": true },
+    "shields": null,
+    "armour": { "hitPoints": 1500, "resistances": { "kinetic": -0.14075, "thermal": 0.049375, "explosive": -0.330875 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

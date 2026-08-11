@@ -1,0 +1,44 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "krait-light-exploration",
+  "ship": "Krait_Light",
+  "role": "exploration",
+  "modules": [
+    { "slot": "Armour", "item": "Krait_Light_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_Advanced", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_GuardianPowerplant_Size2" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class2", "engineering": { "blueprint": "Engine_Tuned", "grade": 5, "experimental": "special_engine_lightweight" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size3_Class2", "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_lightweight" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size6_Class2", "priority": 1, "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_CloudScanner_Size0_Class5", "priority": 2, "on": false, "engineering": { "blueprint": "Scanner_LongRange", "grade": 5 } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 3, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 3, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 3, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "Slot01_Size6", "item": "Int_FuelScoop_Size6_Class5", "priority": 4 },
+    { "slot": "Slot02_Size5", "item": "Int_CargoRack_Size5_Class1" },
+    { "slot": "Slot03_Size5", "item": "Int_Repairer_Size5_Class5", "priority": 3, "on": false },
+    { "slot": "Slot04_Size5", "item": "Int_GuardianFSDBooster_Size5", "priority": 4 },
+    { "slot": "Slot05_Size3", "item": "Int_ShieldGenerator_Size3_Class2", "priority": 1, "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot06_Size3", "item": "Int_DroneControl_Collection_Size3_Class5", "priority": 3, "on": false, "engineering": { "blueprint": "CollectionLimpet_LightWeight", "grade": 5 } },
+    { "slot": "Slot07_Size3", "item": "Int_DockingComputer_Advanced", "priority": 4 },
+    { "slot": "Slot08_Size2", "item": "Int_SupercruiseAssist", "priority": 4 },
+    { "slot": "Slot09_Size1", "item": "Int_DetailedSurfaceScanner_Tiny", "engineering": { "blueprint": "Sensor_Expanded", "grade": 5 } },
+    { "slot": "PlanetaryApproachSuite", "item": "Int_PlanetApproachSuite_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 334,
+    "cargoCapacity": 32,
+    "fuelCapacity": 32,
+    "maxJumpRange": 50.46201,
+    "power": { "available": 12.7, "retracted": 11.51, "deployed": 11.51, "withinBudget": true },
+    "shields": { "strength": 106.290541, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 324, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

@@ -1,69 +1,18 @@
 /*
  * Engineering **blueprints** — per grade, the stat modifiers a blueprint applies AND
- * the materials one roll costs. Keyed by the blueprint's Frontier `fdname` — the string a
- * Loadout event's `Engineering.BlueprintName` carries, for 79 of the 109. The three that
- * share a journal id with another record carry a `journalName` saying so; the other 27 are
- * the Operations keys, for which no journal spelling has been observed. See the
- * note below.
+ * the materials one roll costs, keyed by the blueprint's Frontier `fdname`.
  *
- * Sources: EDCD/coriolis-data, modifications/blueprints.json (commit 0db9234b5b9ce8c939ea84133d7ce336eea88e27)
- *          https://github.com/EDCD/coriolis-data `features` from the blueprint grade +
- *          modifications.json apply method; journal Labels resolved via EDSY
- *          (github.com/taleden/EDSY, CC BY-NC 4.0). `materials` from the grade's
- *          `components`, display names resolved to material `symbol`s against the
- *          materials domain. The two scanner `journalName` fields rest on EDSY edsy.js,
- *          whose `Build.fromJournal` resolves a journal `BlueprintName` through a
- *          per-module-type map (`fdevmap.mtypeBlueprint[mtypeid][fdname]`) — the evidence
- *          that one id can name two recipes, read alongside eddb.js's own `cs_lr` /
- *          `scan_lr` rows sharing the fdname `Sensor_LongRange`. Acquired 2026-08-06 UTC
- *          from raw.githubusercontent.com/taleden/EDSY/master/edsy.js, SHA-256
- *          a40e9bbe65d482a029527d6dc2abdbd1819672e5a5d4a3a4d88ea411f02575f5; the eddb.js
- *          read with it is byte-identical to the snapshot the other passes pin (967834d6…,
- *          internal `db 20260428`). Same CC BY-NC 4.0 terms. The game logic is Elite
- *          Dangerous data, property of Frontier Developments plc, under Frontier's
- *          media-usage terms: https://forums.frontier.co.uk/threads/510879/
- *          Frontier's Operations update notes classify Thermal Plasma Conversion under
- *          "Blueprints"; acquired 2026-08-09 UTC from
- *          https://forums.frontier.co.uk/threads/648012/ (no immutable revision exposed).
+ * Sources: EDCD/coriolis-data (grade features, apply method and material components),
+ * EDSY (the journal Modifier Labels, and the two scanner journal spellings), and the
+ * Inara blueprint registry with Frontier's Operations update notes (the Operations and
+ * Anti-Guardian recipes, which coriolis-data does not carry).
  *
- * Each blueprint is { name, grades }. `name` is the blueprint's short modifier label
- * (coriolis `blueprint.name` for the journal-keyed ones; the Operations dossier's
- * display label for the Operations ones), deliberately NOT the full outfitting-panel
- * string — the panel says "Long-Range Weapon" where this says "Long range", because
- * the name is read next to the module it applies to. `CargoRack_IncreasedCapacity` is
- * the one name that is short-by-nothing rather than short by convention: it reads
- * "Expanded Cargo Rack", EDSY's spelling. See the "Display names" note in SOURCES.md.
- * `journalName` is present on the three blueprints whose key is not what the game writes
- * **and whose journal spelling another record already uses** — it marks a collision, not
- * merely a rename. It is absent from the other 106 records.
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
  *
- * **The journal spelling is the key wherever the game publishes one.** A registry name is
- * kept only as an alias that still resolves: `GuardianModule_Sturdy` is what a Loadout
- * writes for Anti-Guardian Zone Resistance — on Guardian weapons as well as modules — so
- * that is the key all nine offering menus list, and the registry's
- * `recipe_guardianmodule_sturdy` and `recipe_guardianweapon_sturdy` are stored beside it
- * so a build carrying either still looks up. Of the remaining 25 Operations keys, 21
- * belong to modules sold already engineered and four are Operations recipes a player rolls
- * at an engineer ("Four Operations recipes are listed by a menu" in SOURCES.md); no
- * journal spelling has been observed for any of them, which is not the same as knowing the
- * game writes none. Two of the exceptions are `Scanner_LongRange` and `Scanner_WideAngle`:
- * the game writes `Sensor_LongRange` / `Sensor_WideAngle` for the utility scanners' Long
- * Range and Wide Angle *and* for the sensor suites' own, which are different recipes
- * rolling different stats — EDSY's `scan_lr` and `cs_lr` are two rows under one fdname,
- * and its journal importer disambiguates by module type. coriolis splits the scanner side
- * out under these keys and this file follows it, because two recipes need two records;
- * `journalName` is how a reader gets back to the id a journal actually carries. Which of
- * the two a given id means is a question only the fitted module can answer — see
- * `resolveBlueprintForModule` in `ships/blueprint-journal`, and §Scanner Long Range and
- * Wide Angle in SOURCES.md. The third is `MC_Overcharged`, the same shape on the
- * multi-cannons: coriolis-data splits Overcharged into a multi-cannon key carrying an
- * `AmmoClipSize` leg and the `Weapon_Overcharged` every other weapon takes, gives both the
- * fdname `Weapon_Overcharged`, and lists the multi-cannon one on its `mc` and `advmc`
- * groups alone. A journal capture holds the clip-less side down: a large gimballed cannon
- * rolled to grade 5 under this id reports no `AmmoClipSize` modifier and a full magazine,
- * where a recipe that charges a clip states the leg. EDSY's single Overcharged carries the
- * clip leg on every weapon, and is the reading not followed here. See §Multi-cannon
- * Overcharged in SOURCES.md.
+ * Each blueprint is { name, grades }. `name` is the blueprint's short modifier label,
+ * deliberately NOT the full outfitting-panel string — the panel says "Long-Range Weapon"
+ * where this says "Long range", because the name is read next to the module it applies to.
  *
  * `grades` maps grade "1".."5" to { features, damageDistribution?, materials }.
  * A feature is { label, method, min, max }: `label` the journal Modifier Label, `method`
@@ -71,30 +20,16 @@
  * [min, max] bounding the value by the quality roll (v = min + (max-min)*quality). A
  * material is { symbol, name, count }: join `symbol` to the materials domain for the
  * material's own grade and category. A grade may have an empty `materials` list
- * (CargoRack_IncreasedCapacity G5).
+ * (CargoRack_IncreasedCapacity G5). A `damageDistribution` is the by-type split a grade
+ * results in, carried by the three Operations Plasma conversion recipes.
  *
- * The Operations pre-engineered blueprints (Merc weapon rewards, plus
- * general/core/optional ones like `FuelScoop_Efficiency`) and all three Anti-Guardian
- * records (`GuardianModule_Sturdy` and its two `recipe_`-prefixed Inara aliases, which
- * coriolis does not carry under any spelling) come from the pinned Inara blueprint
- * registry described in SOURCES.md, which exposes one displayed total per grade rather
- * than a roll-bounded range: each such feature stores that total as a fixed value
- * (min == max).
- * The three Plasma conversion recipes project the registry's player-facing Thermal /
- * Plasma percentage-point legs into each grade's resulting `damageDistribution`, with
- * Plasma represented by this library's `absolute` damage member. Scalar damage and power
- * changes remain features.
- * Anti-Guardian Zone Resistance is the non-numeric exception: the registry displays its
- * activation as +100%, while EDSY stores it as the `agzresist` flag with the enumerated
- * value `Active`. The TypeScript calculator therefore emits a string-valued
- * `GuardianModuleResistance` modifier and exposes `guardianZoneResistance: true` on the
- * fitted module's effective stats instead of adding one to a fictitious base number.
- * Their per-roll `materials` are from the same registry (a Merc-Coin amount is also
- * charged but is a currency, not a material, so it is not stored). Some of their totals
- * are non-monotonic (pre-engineered UI values, not primitive weights) and are preserved as
- * published, not "corrected".
- *
- * Full provenance: data/ships/SOURCES.md.
+ * A key is the Frontier `fdname` a Loadout event's `Engineering.BlueprintName` carries,
+ * for 79 of the 109. `journalName` is present on the three whose key is not what the game
+ * writes AND whose journal spelling another record already answers to — it marks a
+ * collision, not a rename, and is absent from the other 106. The remaining 27 keys are the
+ * Operations ones, for which no journal spelling has been observed; two of those are
+ * Anti-Guardian Zone Resistance aliases stored beside the `GuardianModule_Sturdy` the game
+ * does write, so a build carrying either still resolves.
  */
 {
   "AFM_Shielded": {

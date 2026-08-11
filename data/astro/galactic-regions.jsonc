@@ -3,15 +3,15 @@
  * computed footprint). The lookup geometry lives in galactic-region-cells.jsonc
  * so metadata-only consumers never bundle the grid.
  *
- * Source:  EliteDangerousRegionMap
- * Author:  Ben Peddell (klightspeed)
- * URL:     https://github.com/klightspeed/EliteDangerousRegionMap
- * License: MIT
+ * Source: EliteDangerousRegionMap. Region ids/names from RegionMap.png; the footprint
+ * fields are computed by this project and are approximate.
  *
- * Region ids/names and per-region cell geometry derived from RegionMap.png.
- * 42 Elite Dangerous codex regions on a 4096/83 ly (~49.3494 ly) grid.
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/astro/SOURCES.md.
  *
- * Full provenance and derivation notes: data/astro/SOURCES.md.
+ * The 42 regions sit on a 4096/83 ly (~49.3494 ly) grid; the footprint fields
+ * (cellCount, areaLy2, bounds, centroid) are computed from that grid, so they are
+ * approximate and their coordinates are quantised to 1/64 ly.
  */
 [
   {

@@ -1,0 +1,49 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "python-mining",
+  "ship": "Python",
+  "role": "mining",
+  "modules": [
+    { "slot": "Armour", "item": "Python_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size6_Class5", "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 5, "experimental": "special_powerplant_cooled" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2", "engineering": { "blueprint": "LifeSupport_LightWeight", "grade": 5 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class5", "engineering": { "blueprint": "PowerDistributor_PriorityWeapons", "grade": 5, "experimental": "special_powerdistributor_capacity" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size6_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_MiningLaser_Fixed_Medium" },
+    { "slot": "LargeHardpoint2", "item": "Hpt_MiningLaser_Fixed_Medium" },
+    { "slot": "LargeHardpoint3", "item": "Hpt_MiningLaser_Fixed_Medium" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_Mining_SeismChrgWarhd_Fixed_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_Mining_AbrBlstr_Fixed_Small" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_MRAScanner_Size0_Class5" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_kinetic" } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_kinetic" } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_kinetic" } },
+    { "slot": "Slot01_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot02_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot03_Size6", "item": "Int_CargoRack_Size6_Class1" },
+    { "slot": "Slot04_Size5", "item": "Int_DroneControl_Collection_Size5_Class5", "engineering": { "blueprint": "CollectionLimpet_LightWeight", "grade": 5 } },
+    { "slot": "Slot05_Size5", "item": "Int_DroneControl_Collection_Size5_Class5", "engineering": { "blueprint": "CollectionLimpet_LightWeight", "grade": 5 } },
+    { "slot": "Slot06_Size4", "item": "Int_FuelScoop_Size4_Class5" },
+    { "slot": "Slot07_Size3", "item": "Int_ShieldGenerator_Size3_Class5_Strong", "engineering": { "blueprint": "ShieldGenerator_Thermic", "grade": 5, "experimental": "special_shield_kinetic" } },
+    { "slot": "Slot08_Size3", "item": "Int_DroneControl_Prospector_Size3_Class5", "engineering": { "blueprint": "ProspectingLimpet_LightWeight", "grade": 5 } },
+    { "slot": "Slot09_Size2", "item": "Int_Refinery_Size2_Class5" },
+    { "slot": "Slot10_Size1", "item": "Int_DetailedSurfaceScanner_Tiny" }
+  ],
+  "metrics": {
+    "unladenMass": 632.8,
+    "cargoCapacity": 192,
+    "fuelCapacity": 32,
+    "maxJumpRange": 19.311069,
+    "power": { "available": 25.2, "retracted": 20.21, "deployed": 27.2, "withinBudget": false },
+    "shields": { "strength": 423.482731, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 468, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 5, "damagePerSecond": 47, "sustainedDamagePerSecond": 47 }
+  }
+}

@@ -10,8 +10,7 @@
  * procedural sector whose origin is simply its grid position times the sector
  * size.
  *
- * The catalogue derives from EDTS by Andy Martin (Esvandiary), BSD 3-Clause
- * © 2016 (https://bitbucket.org/Esvandiary/edts), and community procedural-naming
+ * The catalogue derives from the EDTS reference implementation and community procedural-naming
  * research, cross-checked against EDSM/Spansh; see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md) for
  * provenance.
  *

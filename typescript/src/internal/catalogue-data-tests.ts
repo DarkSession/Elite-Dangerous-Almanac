@@ -14,7 +14,7 @@ import type { Ajv } from 'ajv';
 
 import { stripJsonComments } from '../../scripts/jsonc.mjs';
 
-const BANNED_PAYLOAD_KEYS = ['attribution', 'description'] as const;
+const BANNED_PAYLOAD_KEYS = ['attribution', 'description', 'comment'] as const;
 
 /** Configuration for one domain's shared catalogue validation suite. */
 export interface CatalogueDataTestOptions {

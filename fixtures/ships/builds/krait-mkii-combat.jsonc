@@ -1,0 +1,49 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "krait-mkii-combat",
+  "ship": "Krait_MkII",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Krait_MkII_Armour_Grade3", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_GuardianPowerplant_Size7" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Tuned", "grade": 5 } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5 } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class5" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class5", "engineering": { "blueprint": "PowerDistributor_PriorityWeapons", "grade": 5 } },
+    { "slot": "Radar", "item": "Int_Sensors_Size6_Class5", "engineering": { "blueprint": "Sensor_LongRange", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_BeamLaser_Gimbal_Large", "engineering": { "blueprint": "Weapon_Efficient", "grade": 5 } },
+    { "slot": "LargeHardpoint2", "item": "Hpt_BasicMissileRack_Fixed_Large", "engineering": { "blueprint": "Weapon_Sturdy", "grade": 5 } },
+    { "slot": "LargeHardpoint3", "item": "Hpt_MultiCannon_Gimbal_Large", "engineering": { "blueprint": "Weapon_Sturdy", "grade": 5 } },
+    { "slot": "MediumHardpoint1", "item": "Hpt_MultiCannon_Gimbal_Medium", "engineering": { "blueprint": "Weapon_Sturdy", "grade": 5 } },
+    { "slot": "MediumHardpoint2", "item": "Hpt_PulseLaserBurst_Gimbal_Medium", "engineering": { "blueprint": "Weapon_Focused", "grade": 5 } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_CloudScanner_Size0_Class4", "engineering": { "blueprint": "Sensor_FastScan", "grade": 5 } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_CrimeScanner_Size0_Class3", "engineering": { "blueprint": "Sensor_FastScan", "grade": 5 } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "engineering": { "blueprint": "Misc_HeatSinkCapacity", "grade": 1 } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ChaffLauncher_Tiny", "engineering": { "blueprint": "Misc_ChaffCapacity", "grade": 1 } },
+    { "slot": "Slot01_Size6", "item": "Int_ShieldGenerator_Size6_Class5" },
+    { "slot": "Slot02_Size6", "item": "Int_FighterBay_Size6_Class1" },
+    { "slot": "Slot03_Size5", "item": "Int_ShieldCellBank_Size5_Class5" },
+    { "slot": "Slot04_Size5", "item": "Int_GuardianShieldReinforcement_Size5_Class2" },
+    { "slot": "Slot05_Size4", "item": "Int_ModuleReinforcement_Size4_Class2" },
+    { "slot": "Slot06_Size3", "item": "Int_FuelScoop_Size3_Class5" },
+    { "slot": "Slot07_Size3", "item": "Int_ModuleReinforcement_Size3_Class2" },
+    { "slot": "Slot08_Size2", "item": "Int_DetailedSurfaceScanner_Tiny" },
+    { "slot": "Slot09_Size1", "item": "Int_SupercruiseAssist" },
+    { "slot": "PlanetaryApproachSuite", "item": "Int_PlanetApproachSuite_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 789,
+    "cargoCapacity": 0,
+    "fuelCapacity": 32,
+    "maxJumpRange": 15.512091,
+    "power": { "available": 39.6, "retracted": 20.52, "deployed": 28.79, "withinBudget": true },
+    "shields": { "strength": 565.255151, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 770, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 5, "damagePerSecond": 75.478375, "sustainedDamagePerSecond": 62.32204 }
+  }
+}

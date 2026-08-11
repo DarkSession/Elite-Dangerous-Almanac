@@ -13,8 +13,8 @@
  * `MaxJumpRange` of 89.414678 LY.
  *
  * @remarks
- * Reference implementation: EDSY by taleden (CC BY-NC 4.0),
- * <https://github.com/taleden/EDSY> — the algorithm is ported as fact, not code.
+ * Reference implementation: EDSY. The algorithm is ported as fact, not code; credit and
+ * licence terms are in [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
  *
  * @packageDocumentation
  */

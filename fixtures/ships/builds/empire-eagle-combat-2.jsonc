@@ -1,0 +1,37 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "empire-eagle-combat-2",
+  "ship": "Empire_Eagle",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Empire_Eagle_Armour_Reactive", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size3_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size3_Class5" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size3_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size1_Class1" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size2_Class5" },
+    { "slot": "Radar", "item": "Int_Sensors_Size2_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size2_Class3" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_Railgun_Fixed_Medium" },
+    { "slot": "SmallHardpoint1", "item": "Hpt_PulseLaser_Gimbal_Small" },
+    { "slot": "SmallHardpoint2", "item": "Hpt_PulseLaser_Gimbal_Small" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5" },
+    { "slot": "Slot01_Size3", "item": "Int_ShieldGenerator_Size3_Class5" },
+    { "slot": "Slot02_Size2", "item": "Int_FuelScoop_Size2_Class5", "priority": 1, "on": false },
+    { "slot": "Slot03_Size1", "item": "Int_DockingComputer_Standard", "priority": 1 }
+  ],
+  "metrics": {
+    "unladenMass": 91.8,
+    "cargoCapacity": 0,
+    "fuelCapacity": 4,
+    "maxJumpRange": 16.47976,
+    "power": { "available": 12, "retracted": 9.35, "deployed": 11.76, "withinBudget": true },
+    "shields": { "strength": 163.2, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 210, "resistances": { "kinetic": 0.25, "thermal": -0.4, "explosive": 0.2 } },
+    "weapons": { "count": 3, "damagePerSecond": 62.516133, "sustainedDamagePerSecond": 54.01 }
+  }
+}

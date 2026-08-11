@@ -1,0 +1,323 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * A real Inara SLEF export of an engineered passenger Lynx Highliner (27 `Modules` entries).
+ *
+ * Contributed 2026-08-05 UTC by the repository owner from their own commander's fleet. Manual
+ * correction: the header was reduced to `appName` and `appVersion`, dropping the `appURL`
+ * commander-fleet link and the `appCustomProperties` Inara commander and ship ids — a person's
+ * account. Nothing under `data` was touched, and the build is otherwise stored as received apart
+ * from re-indenting. Stored-form SHA-256
+ * `a213d4219fa9531224aafc185d399b08896f7c7ed0a7461b0c8dd0a822767651` (of the scrubbed file, since
+ * that is what a port must reproduce).
+ *
+ * It is the ground truth for the passenger restriction: `passenger01`–`passenger03` hold Mk II
+ * passenger cabins, which EDSY's reservation alone could not confirm, and three more cabins sit in
+ * unrestricted mounts, so the restriction runs one way only.
+ *
+ * The capture is Elite Dangerous game output and remains the property of Frontier Developments
+ * plc, redistributed under Frontier's media-usage terms; see ATTRIBUTIONS.md.
+ *
+ * A stored checksum here is of the payload alone, taken with this header comment removed; a source
+ * checksum is of the upstream file as it was received.
+ */
+[
+  {
+    "header": {
+      "appName": "Inara",
+      "appVersion": "1.0"
+    },
+    "data": {
+      "Ship": "mediumtransport01",
+      "ShipID": 205,
+      "ShipName": "",
+      "ShipIdent": "DA-03M",
+      "ModulesValue": 90449742,
+      "Rebuy": 4522491,
+      "Modules": [
+        {
+          "Slot": "largehardpoint1",
+          "Item": "hpt_multicannon_gimbal_large",
+          "On": true,
+          "Priority": 2,
+          "Value": 507579,
+          "Engineering": {
+            "BlueprintName": "weapon_highcapacity",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_auto_loader"
+          }
+        },
+        {
+          "Slot": "mediumhardpoint1",
+          "Item": "hpt_multicannon_gimbal_medium",
+          "On": true,
+          "Priority": 2,
+          "Value": 50018,
+          "Engineering": {
+            "BlueprintName": "weapon_highcapacity",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_auto_loader"
+          }
+        },
+        {
+          "Slot": "mediumhardpoint2",
+          "Item": "hpt_multicannon_gimbal_medium",
+          "On": true,
+          "Priority": 2,
+          "Value": 50018,
+          "Engineering": {
+            "BlueprintName": "weapon_highcapacity",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_auto_loader"
+          }
+        },
+        {
+          "Slot": "mediumhardpoint3",
+          "Item": "hpt_multicannon_gimbal_medium",
+          "On": true,
+          "Priority": 2,
+          "Value": 55575,
+          "Engineering": {
+            "BlueprintName": "weapon_highcapacity",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_corrosive_shell"
+          }
+        },
+        {
+          "Slot": "mediumhardpoint4",
+          "Item": "hpt_multicannon_gimbal_medium",
+          "On": true,
+          "Priority": 2,
+          "Value": 50018,
+          "Engineering": {
+            "BlueprintName": "weapon_highcapacity",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_emissive_munitions"
+          }
+        },
+        {
+          "Slot": "tinyhardpoint1",
+          "Item": "hpt_shieldbooster_size0_class5",
+          "On": true,
+          "Priority": 3,
+          "Value": 246578,
+          "Engineering": {
+            "BlueprintName": "shieldbooster_thermic",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_shieldbooster_chunky"
+          }
+        },
+        {
+          "Slot": "tinyhardpoint2",
+          "Item": "hpt_heatsinklauncher_turret_tiny",
+          "On": true,
+          "Value": 3500,
+          "Engineering": {
+            "BlueprintName": "misc_heatsinkcapacity",
+            "Level": 1,
+            "Quality": 1
+          }
+        },
+        {
+          "Slot": "tinyhardpoint3",
+          "Item": "hpt_shieldbooster_size0_class5",
+          "On": true,
+          "Priority": 3,
+          "Value": 246578,
+          "Engineering": {
+            "BlueprintName": "shieldbooster_heavyduty",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_shieldbooster_chunky"
+          }
+        },
+        {
+          "Slot": "tinyhardpoint4",
+          "Item": "hpt_shieldbooster_size0_class5",
+          "On": true,
+          "Priority": 3,
+          "Value": 246578,
+          "Engineering": {
+            "BlueprintName": "shieldbooster_heavyduty",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_shieldbooster_chunky"
+          }
+        },
+        {
+          "Slot": "slot01_size6",
+          "Item": "int_mkii_passengercabin_size6_class1",
+          "On": true,
+          "Priority": 1,
+          "Value": 71850
+        },
+        {
+          "Slot": "passenger02",
+          "Item": "int_mkii_passengercabin_size6_class1",
+          "On": true,
+          "Priority": 1,
+          "Value": 71850
+        },
+        {
+          "Slot": "passenger03",
+          "Item": "int_mkii_passengercabin_size5_class1",
+          "On": true,
+          "Priority": 1,
+          "Value": 40897
+        },
+        {
+          "Slot": "slot02_size5",
+          "Item": "int_shieldgenerator_size5_class5_strong",
+          "On": true,
+          "Priority": 1,
+          "Value": 7464532,
+          "Engineering": {
+            "BlueprintName": "shieldgenerator_reinforced",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_shield_health"
+          }
+        },
+        {
+          "Slot": "passenger01",
+          "Item": "int_mkii_passengercabin_size6_class1",
+          "On": true,
+          "Priority": 1,
+          "Value": 77439
+        },
+        {
+          "Slot": "slot03_size4",
+          "Item": "int_mkii_passengercabin_size4_class1",
+          "On": true,
+          "Priority": 1,
+          "Value": 22177
+        },
+        {
+          "Slot": "slot04_size4",
+          "Item": "int_mkii_passengercabin_size4_class1",
+          "On": true,
+          "Priority": 1,
+          "Value": 23901
+        },
+        {
+          "Slot": "slot05_size3",
+          "Item": "int_cargorack_size3_class1",
+          "On": true,
+          "Priority": 1,
+          "Value": 9990
+        },
+        {
+          "Slot": "slot06_size2",
+          "Item": "int_fuelscoop_size2_class5",
+          "On": true,
+          "Priority": 4,
+          "Value": 249951
+        },
+        {
+          "Slot": "slot07_size1",
+          "Item": "int_dronecontrol_recon_size1_class1",
+          "On": true,
+          "Value": 2459
+        },
+        {
+          "Slot": "powerplant",
+          "Item": "int_powerplant_size5_class5",
+          "On": true,
+          "Priority": 1,
+          "Value": 3794047,
+          "Engineering": {
+            "BlueprintName": "powerplant_boosted",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_powerplant_highcharge"
+          }
+        },
+        {
+          "Slot": "mainengines",
+          "Item": "int_engine_size6_class5",
+          "On": true,
+          "Value": 15775043,
+          "Engineering": {
+            "BlueprintName": "engine_dirty",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_engine_overloaded"
+          }
+        },
+        {
+          "Slot": "frameshiftdrive",
+          "Item": "int_hyperdrive_overcharge_size5_class5",
+          "On": true,
+          "Value": 5374463,
+          "Engineering": {
+            "BlueprintName": "fsd_longrange",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_fsd_heavy"
+          }
+        },
+        {
+          "Slot": "lifesupport",
+          "Item": "int_lifesupport_size6_class2",
+          "On": true,
+          "Priority": 1,
+          "Value": 195195,
+          "Engineering": {
+            "BlueprintName": "misc_lightweight",
+            "Level": 2,
+            "Quality": 1
+          }
+        },
+        {
+          "Slot": "powerdistributor",
+          "Item": "int_powerdistributor_size5_class5",
+          "On": true,
+          "Priority": 1,
+          "Value": 1089257,
+          "Engineering": {
+            "BlueprintName": "powerdistributor_highfrequency",
+            "Level": 5,
+            "Quality": 1,
+            "ExperimentalEffect": "special_powerdistributor_fast"
+          }
+        },
+        {
+          "Slot": "radar",
+          "Item": "int_sensors_size3_class2",
+          "On": true,
+          "Priority": 1,
+          "Value": 8892,
+          "Engineering": {
+            "BlueprintName": "sensor_longrange",
+            "Level": 5,
+            "Quality": 1
+          }
+        },
+        {
+          "Slot": "fueltank",
+          "Item": "int_fueltank_size5_class3",
+          "On": true,
+          "Priority": 1
+        },
+        {
+          "Slot": "armour",
+          "Item": "mediumtransport01_armour_grade3",
+          "On": true,
+          "Priority": 1,
+          "Value": 54721357,
+          "Engineering": {
+            "BlueprintName": "armour_heavyduty",
+            "Level": 5,
+            "Quality": 1
+          }
+        }
+      ]
+    }
+  }
+]

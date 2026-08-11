@@ -1,18 +1,16 @@
 /*
  * Raw engineering materials (the 28 elements, grades 1-4).
  *
- * Source:       EDCD FDevIDs, material.csv
- *               https://github.com/EDCD/FDevIDs
- *               Community-maintained Frontier id/name registry. No explicit
- *               licence is stated; consult the repository terms.
+ * Source: EDCD FDevIDs, material.csv.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/materials/SOURCES.md.
  *
  * Each record is { symbol, name, elementSymbol, grade, line }. `symbol` is
  * Frontier's internal id (matched case-insensitively, as the journal reports
  * it); `name` is the display name. `grade` is 1-4 for raw materials and is itself
  * the rarity. `line` is the in-game group (the grade-1 element family).
  * `elementSymbol` is the chemical element symbol (Fe, C, …).
- *
- * Full provenance: data/materials/SOURCES.md.
  */
 [
   {

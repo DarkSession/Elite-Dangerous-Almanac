@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { powerBudget } from './power.js';
-import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
+import fixture from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
 
 test('a build inside its budget powers every group', () => {
     const budget = powerBudget(20, [

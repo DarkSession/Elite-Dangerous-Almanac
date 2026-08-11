@@ -1,0 +1,39 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "cobramkiii-exploration",
+  "ship": "CobraMkIII",
+  "role": "exploration",
+  "modules": [
+    { "slot": "Armour", "item": "CobraMkIII_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size2_Class5" },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class2" },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size4_Class5" },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size3_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size1_Class2" },
+    { "slot": "Radar", "item": "Int_Sensors_Size3_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "Slot01_Size4", "item": "Int_FuelScoop_Size4_Class5" },
+    { "slot": "Slot02_Size4", "item": "Int_GuardianFSDBooster_Size4" },
+    { "slot": "Slot03_Size4", "item": "Int_ShieldGenerator_Size3_Class2" },
+    { "slot": "Slot04_Size2", "item": "Int_BuggyBay_Size2_Class2", "on": false },
+    { "slot": "Slot05_Size2", "item": "Int_Repairer_Size2_Class2", "on": false },
+    { "slot": "Slot06_Size2", "item": "Int_Repairer_Size2_Class2", "on": false },
+    { "slot": "Slot07_Size1", "item": "Int_DetailedSurfaceScanner_Tiny" },
+    { "slot": "Slot08_Size1", "item": "Int_DockingComputer_Advanced", "on": false }
+  ],
+  "metrics": {
+    "unladenMass": 210.4,
+    "cargoCapacity": 0,
+    "fuelCapacity": 16,
+    "maxJumpRange": 36.386104,
+    "power": { "available": 9.6, "retracted": 9.09, "deployed": 9.09, "withinBudget": true },
+    "shields": { "strength": 66.380618, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 216, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

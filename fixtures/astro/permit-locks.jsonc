@@ -1,0 +1,69 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Permit-lock resolution from a system name alone. Every implementation must map `name` to `lock`:
+ * null for open space, {kind:'system'} when the exact system is permit-locked, {kind:'region'}
+ * when the name starts with a permit-locked region name (whole-token prefix). Matching ignores
+ * case and surrounding whitespace. System locks carry the system's `id64` as a decimal string.
+ * Where a case carries `coords` (galactic light-years, Sol at origin, real systems from EDSM), the
+ * geometric route must agree: the hand-authored region containing those coordinates is the region
+ * named in `lock`, or no permit-locked region at all when `lock` is null. `counts` pins the size
+ * of the shipped lists.
+ */
+{
+  "counts": { "systems": 54, "regions": 28 },
+  "cases": [
+    { "name": "Sol", "lock": { "kind": "system", "name": "Sol", "id64": "10477373803" } },
+    { "name": "Shinrarta Dezhra", "lock": { "kind": "system", "name": "Shinrarta Dezhra", "id64": "3932277478106" } },
+    { "name": "Achenar", "lock": { "kind": "system", "name": "Achenar", "id64": "164098653" } },
+    { "name": "Alioth", "lock": { "kind": "system", "name": "Alioth", "id64": "1109989017963" } },
+    { "name": "Sirius", "lock": { "kind": "system", "name": "Sirius", "id64": "121569805492" } },
+    { "name": "van Maanen's Star", "lock": { "kind": "system", "name": "van Maanen's Star", "id64": "670685996457" } },
+    { "name": "Witch's Reach", "lock": { "kind": "system", "name": "Witch's Reach", "id64": "1659761592683" } },
+    { "name": "Plaa Ain HA-Z d46", "lock": { "kind": "system", "name": "Plaa Ain HA-Z d46", "id64": "1591209954571" } },
+    { "name": "  sOl  ", "lock": { "kind": "system", "name": "Sol", "id64": "10477373803" } },
+    { "name": "BETA HYDRI", "lock": { "kind": "system", "name": "Beta Hydri", "id64": "10494151019" } },
+    { "name": "shinrarta dezhra", "lock": { "kind": "system", "name": "Shinrarta Dezhra", "id64": "3932277478106" } },
+
+    { "name": "Bleia1 DL-Y f26", "lock": { "kind": "region", "name": "Bleia1" }, "coords": { "x": -83.125, "y": -255.6875, "z": 37324.9375 } },
+    { "name": "Bleia2 AA-A h55", "lock": { "kind": "region", "name": "Bleia2" }, "coords": { "x": -98.28125, "y": -67.25, "z": 37066.09375 } },
+    { "name": "Bleia3 ZE-A f4", "lock": { "kind": "region", "name": "Bleia3" }, "coords": { "x": -80.90625, "y": -28.84375, "z": 36035.4375 } },
+    { "name": "Bleia4 AA-A h35", "lock": { "kind": "region", "name": "Bleia4" }, "coords": { "x": 494.90625, "y": -115.59375, "z": 37324.84375 } },
+    { "name": "Bleia5 AA-A h6", "lock": { "kind": "region", "name": "Bleia5" }, "coords": { "x": -625.8125, "y": -148.90625, "z": 36877.4375 } },
+    { "name": "Praei1 NL-K b39-7", "lock": { "kind": "region", "name": "Praei1" }, "coords": { "x": -652.8125, "y": 4.40625, "z": 54324.71875 } },
+    { "name": "Praei3 MJ-D b43-8", "lock": { "kind": "region", "name": "Praei3" }, "coords": { "x": -1000.375, "y": 12.5625, "z": 54000.46875 } },
+    { "name": "Hyponia AA-A g2", "lock": { "kind": "region", "name": "Hyponia" }, "coords": { "x": -23174.875, "y": -206.90625, "z": 23643.0625 } },
+    { "name": "Dryman WE-M b9-6", "lock": { "kind": "region", "name": "Dryman" }, "coords": { "x": 19016.84375, "y": -102.8125, "z": 20847.53125 } },
+    { "name": "Froadik UJ-P d6-13", "lock": { "kind": "region", "name": "Froadik" }, "coords": { "x": -18585.34375, "y": 7.4375, "z": 14297.0625 } },
+    { "name": "Bovomit WY-R d4-16", "lock": { "kind": "region", "name": "Bovomit" }, "coords": { "x": -19778.03125, "y": -34.03125, "z": -7031.40625 } },
+    { "name": "Sidgoir AA-A e3", "lock": { "kind": "region", "name": "Sidgoir" }, "coords": { "x": -24140.0625, "y": -75.90625, "z": -1238.15625 } },
+    { "name": "Horsehead Dark Region IR-V c2-9", "lock": { "kind": "region", "name": "Horsehead Dark Region" } },
+    { "name": "Cone Sector GW-W c1-5", "lock": { "kind": "region", "name": "Cone Sector" } },
+    { "name": "Col 70 Sector AA-D b17-0", "lock": { "kind": "region", "name": "Col 70 Sector" } },
+    { "name": "Col 121 Sector AB-C d1-2", "lock": { "kind": "region", "name": "Col 121 Sector" } },
+    { "name": "Col 97 Sector CQ-Y d38", "lock": { "kind": "region", "name": "Col 97 Sector" } },
+    { "name": "NGC 1647 Sector ST-U b3-1", "lock": { "kind": "region", "name": "NGC 1647 Sector" } },
+    { "name": "IC 4673 Sector GB-X b1-1", "lock": { "kind": "region", "name": "IC 4673 Sector" } },
+    { "name": "M41 Sector LC-V b2-0", "lock": { "kind": "region", "name": "M41 Sector" } },
+    { "name": "Regor Sector CQ-Y d5", "lock": { "kind": "region", "name": "Regor Sector" } },
+    { "name": "bleia3 ze-a f4", "lock": { "kind": "region", "name": "Bleia3" } },
+    { "name": "Sidgoir", "lock": { "kind": "region", "name": "Sidgoir" } },
+
+    { "name": "Maia", "lock": null},
+    { "name": "Colonia", "lock": null},
+    { "name": "Sagittarius A*", "lock": null},
+    { "name": "Pleiades Sector HR-W d1-79", "lock": null},
+    { "name": "Synuefe EN-H d11-96", "lock": null},
+    { "name": "", "lock": null},
+    { "name": "   ", "lock": null},
+    { "comment": "A procedural sector sharing the word 'Bleia' with the permit regions but ~6800 ly outside every Bleia sphere: the bare stem is not a permit prefix, only 'Bleia1'-'Bleia5' are.", "name": "Bleia Flyuae DH-U e3-26", "lock": null, "coords": { "x": -3676.53125, "y": -181.65625, "z": 43236.09375 } },
+    { "comment": "'Praea' is an ordinary procedural sector stem near the core, ~46 kly from the permit regions 'Praei1'-'Praei6'.", "name": "Praea Aec AA-A b1-1", "lock": null, "coords": { "x": 8434.9375, "y": 162.375, "z": 7928.34375 } },
+    { "name": "Col 285 Sector IX-T d3-31", "lock": null},
+    { "name": "Col 1219 Sector AB-C d1-2", "lock": null},
+    { "name": "Col 700 Sector AB-C d1-2", "lock": null},
+    { "name": "Horsehead Sector AB-C d1-2", "lock": null},
+    { "name": "Bleia6 AA-A h0", "lock": null},
+    { "name": "Solaris", "lock": null},
+    { "name": "Vegapulse", "lock": null}
+  ]
+}

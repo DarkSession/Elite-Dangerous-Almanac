@@ -22,12 +22,10 @@
  * reads a build's hardpoints, applies their engineering, and totals them for you.
  *
  * @remarks
- * Reference implementation: EDCD/Coriolis by the Coriolis contributors (MIT),
- * <https://github.com/EDCD/coriolis> — `src/app/shipyard/Module.js` (`getDps`,
+ * Reference implementation: EDCD/Coriolis, `src/app/shipyard/Module.js` (`getDps`,
  * `getSustainedFactor`, `getEps`, `getHps`), commit
- * `68c042ca6e3db62372cbbb2077cf972345511712`; cross-checked against EDSY by taleden
- * (CC BY-NC 4.0), <https://github.com/taleden/EDSY>. The algorithm is ported as fact,
- * not code.
+ * `68c042ca6e3db62372cbbb2077cf972345511712`; cross-checked against EDSY. The algorithm is
+ * ported as fact, not code; credit and licence terms are in [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
  *
  * @example
  * ```ts
@@ -300,9 +298,8 @@ function splitComponents(damage: number, components: DamageComponents): DamageSp
  * a weapon whose clip runs dry. A fractional clip is held to whole rounds, rounding **up**
  * — which only a hand-built or journal-stated figure can be, since an engineered clip is
  * rounded to a whole *burst* where the roll is computed (`./engineering`). On a burst
- * weapon the two rules can differ by a round; the reasoning is recorded under
- * §Build-metric algorithms in
- * [the ships provenance notes](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * weapon the two rules can differ by a round: a reload cycle follows Coriolis's own
+ * `getClip` end to end, so taking half of EDSY's rule into it would agree with neither.
  * @remarks
  * A clip's worth of fire takes `(clip − burst) / rateOfFire` seconds plus the time to
  * finish the last burst, then the reload; the sustained rate is the clip divided by

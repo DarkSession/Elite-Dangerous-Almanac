@@ -1,12 +1,10 @@
 /*
  * Procedurally generated nebulae, catalogued at a nearby system.
  *
- * Source:      EDAstro nebulae coordinates (nebulae-coordinates.csv)
- * Author:      CMDR Orvidius (EDAstro)
- * URL:         https://edastro.com/mapcharts/
- * Obtained via: canonn-science/canonn-signals src/assets/nebulae.json
- *               (MIT, (c) 2023 Canonn Research Group)
- *               https://github.com/canonn-science/canonn-signals
+ * Source: the EDAstro nebulae coordinates dataset, obtained via canonn-signals.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/astro/SOURCES.md.
  *
  * EDAstro publishes no explicit licence for the file; consult the site's terms
  * before redistributing it.
@@ -15,8 +13,6 @@
  * the galactic codex region id (see galactic-regions.jsonc) and is carried from the
  * upstream CSV; all 5835 values were verified against this project's own region
  * lookup.
- *
- * Full provenance and derivation notes: data/astro/SOURCES.md.
  */
 [
   {"name": "Agnairt AA-A h36", "system": "Agnairt TA-U d4-360", "x": -10010.4, "y": -33.7188, "z": 22444.2, "type": "procgen", "regionId": 4},

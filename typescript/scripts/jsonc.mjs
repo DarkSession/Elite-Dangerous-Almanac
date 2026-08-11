@@ -1,11 +1,11 @@
 /**
- * JSONC support for the shared `data/` files.
+ * JSONC support for the shared `data/` and `fixtures/` files.
  *
- * The data files carry their attribution as a comment header rather than an
- * `attribution` object, so the credit sits where a reader meets the data but
- * never reaches a consumer's bundle. That makes them JSONC, which neither
- * `JSON.parse` nor esbuild's `json` loader accepts, so both the test runner and
- * the build strip comments through this module first.
+ * Both carry their prose as a comment header rather than as a payload key — a
+ * catalogue's attribution, a fixture's provenance — so the words sit where a
+ * reader meets the data and never reach a consumer's bundle. That makes them
+ * JSONC, which neither `JSON.parse` nor esbuild's `json` loader accepts, so the
+ * test runner and the build strip comments through this module first.
  *
  * Consumed by:
  * - `scripts/register-jsonc.mjs` — synchronous Node module hook, used by `npm test`.

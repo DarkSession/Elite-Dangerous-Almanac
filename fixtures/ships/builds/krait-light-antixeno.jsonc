@@ -1,0 +1,47 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "krait-light-antixeno",
+  "ship": "Krait_Light",
+  "role": "antiXeno",
+  "modules": [
+    { "slot": "LargeHardpoint1", "item": "Hpt_BeamLaser_Turret_Large", "engineering": { "blueprint": "Weapon_LongRange", "grade": 5, "experimental": "special_thermal_vent" } },
+    { "slot": "LargeHardpoint2", "item": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium", "priority": 2, "engineering": { "blueprint": "Weapon_Overcharged", "grade": 1 } },
+    { "slot": "MediumHardpoint1", "item": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium", "priority": 2, "engineering": { "blueprint": "Weapon_Overcharged", "grade": 1 } },
+    { "slot": "MediumHardpoint2", "item": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium", "priority": 2, "engineering": { "blueprint": "Weapon_Overcharged", "grade": 1 } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "priority": 1, "engineering": { "blueprint": "Misc_HeatSinkCapacity", "grade": 1 } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_CausticSinkLauncher_Turret_Tiny", "engineering": { "blueprint": "Misc_HeatSinkCapacity", "grade": 1 } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_XenoScannerMk2_Basic_Tiny", "priority": 1 },
+    { "slot": "TinyHardpoint4", "item": "Hpt_AntiUnknownShutdown_Tiny", "priority": 1 },
+    { "slot": "Armour", "item": "Krait_Light_Armour_Grade2", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size7_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Stealth", "grade": 5, "experimental": "special_powerplant_highcharge" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "priority": 2, "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size5_Class5", "priority": 3, "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class5", "engineering": { "blueprint": "Misc_LightWeight", "grade": 4 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size7_Class5", "engineering": { "blueprint": "PowerDistributor_PriorityWeapons", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size6_Class2", "engineering": { "blueprint": "Sensor_LongRange", "grade": 4 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3", "priority": 1 },
+    { "slot": "Slot01_Size6", "item": "Int_CargoRack_Size6_Class1", "priority": 1 },
+    { "slot": "Slot02_Size5", "item": "Int_DroneControl_Repair_Size5_Class2" },
+    { "slot": "Slot03_Size5", "item": "Int_HullReinforcement_Size5_Class2", "priority": 1, "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot04_Size5", "item": "Int_HullReinforcement_Size5_Class2", "priority": 1, "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot05_Size3", "item": "Int_Repairer_Size3_Class5", "priority": 4 },
+    { "slot": "Slot06_Size3", "item": "Int_Repairer_Size3_Class5" },
+    { "slot": "Slot07_Size3", "item": "Int_GuardianModuleReinforcement_Size3_Class2" },
+    { "slot": "Slot08_Size2", "item": "Int_HullReinforcement_Size2_Class2", "priority": 1, "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot09_Size1", "item": "Int_ModuleReinforcement_Size1_Class2", "priority": 1 }
+  ],
+  "metrics": {
+    "unladenMass": 574.6,
+    "cargoCapacity": 64,
+    "fuelCapacity": 16,
+    "maxJumpRange": 23.378948,
+    "power": { "available": 30, "retracted": 15.93, "deployed": 24.63, "withinBudget": true },
+    "shields": null,
+    "armour": { "hitPoints": 1423.6, "resistances": { "kinetic": -0.129342, "thermal": 0.058881, "explosive": -0.317566 } },
+    "weapons": { "count": 4, "damagePerSecond": 51.86, "sustainedDamagePerSecond": 33.756552 }
+  }
+}

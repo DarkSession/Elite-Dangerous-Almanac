@@ -4,26 +4,12 @@
  * The `hardpoint` slice of Frontier's outfitting catalogue: each module's identity
  * AND its engineering/mechanical stats, joined on the Frontier `symbol`.
  *
- * Sources: EDCD FDevIDs, outfitting.csv (identity: symbol, name, class, rating,
- *          mount?, guidance?, ship?, entitlement?)
- *          https://github.com/EDCD/FDevIDs
- *          EDCD/coriolis-data, modules/** (stats: mass, power, performance, …)
- *          https://github.com/EDCD/coriolis-data
- *          EDSY eddb.js (taleden, CC BY-NC 4.0): https://github.com/taleden/EDSY
- *          — mass, integrity, powerDraw and bootTime where coriolis-data carries
- *          none, and corrections where its value is a duplicated or mis-copied row.
- *          In-game verification covers 1193 identities and the numeric values on 952
- *          non-armour modules; six bundle-granted Vessel Hangar identities are
- *          registry/CAPI-sourced. Exact corrections are pinned in
- *          fixtures/ships/module-stats.json. Frontier journal captures there also state
- *          otherwise-unreached base stats, including the medium fixed Guardian Shard
- *          Cannon's projectile speed and the current fixed medium/large Shard Cannon
- *          damage. Distinct damage amounts observed in-game are
- *          retained in `damageComponents`; projectile boundary parameters observed in-game
- *          that are not effective ranges are retained in `projectileRange`.
- *          The stat values are Elite Dangerous game data, property of Frontier
- *          Developments plc, redistributed under Frontier's media-usage terms:
- *          https://forums.frontier.co.uk/threads/510879/
+ * Sources: EDCD FDevIDs (identity), EDCD/coriolis-data and EDSY (stats), Frontier journal
+ * captures (base stats neither registry nor the in-game audit reaches), and in-game
+ * verification, which governs where a registry disagrees with it.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
  *
  * `symbol` is the internal identifier (e.g. `Hpt_PulseLaser_Fixed_Small`); `name`
  * the stable descriptive English name (not byte-exact localized UI text); `class`
@@ -73,7 +59,6 @@
  * regeneration, the stat a journal labels `EnergyPerRegen`.
  * `cost` is the standard purchase price in credits before any station discount;
  * it is omitted, never zeroed, where no registry publishes one (0 is a real price).
- * Full provenance: data/ships/SOURCES.md.
  */
 [
   {

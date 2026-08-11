@@ -24,8 +24,9 @@
  * worth falling back to silently.
  *
  * Positions are galactic light-years with Sol at the origin — the same frame the
- * journal, EDSM and Spansh use. Catalogue data originates from EDAstro
- * (CMDR Orvidius); see [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md).
+ * journal, EDSM and Spansh use. Catalogue data originates from EDAstro; see
+ * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md)
+ * for credit and licence terms.
  *
  * @example
  * ```ts

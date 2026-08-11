@@ -1,0 +1,123 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Ground truth for the engineering-material catalogues (data/materials/materials-*.jsonc, from
+ * EDCD FDevIDs with Thargoid materials absent there sourced from INARA). `counts` pins the size of
+ * each catalogue; `records` pins individual entries; `lineGrades` pins that a line holds exactly
+ * the listed grades; `notInFdevIds` lists the Thargoid materials absent from the pinned FDevIDs
+ * source (grade from INARA, symbol from the journal). `symbol` is Frontier's internal id (journal
+ * id, like ships/modules), `name` is the display name, `elementSymbol` is the chemical element
+ * symbol for raw materials (null otherwise). Grade is 1-5 (raw tops out at 4) and is itself the
+ * rarity; there is no separate rarity field.
+ */
+{
+  "counts": {
+    "raw": 28,
+    "manufactured": 71,
+    "encoded": 47,
+    "all": 146
+  },
+  "records": [
+    {
+      "category": "raw",
+      "symbol": "Iron",
+      "name": "Iron",
+      "elementSymbol": "Fe",
+      "grade": 1,
+      "line": "Iron"
+    },
+    {
+      "category": "raw",
+      "symbol": "Antimony",
+      "name": "Antimony",
+      "elementSymbol": "Sb",
+      "grade": 4,
+      "line": "Lead"
+    },
+    {
+      "category": "manufactured",
+      "symbol": "GridResistors",
+      "name": "Grid Resistors",
+      "elementSymbol": null,
+      "grade": 1,
+      "line": "Capacitors"
+    },
+    {
+      "category": "manufactured",
+      "symbol": "ImperialShielding",
+      "name": "Imperial Shielding",
+      "elementSymbol": null,
+      "grade": 5,
+      "line": "Shielding"
+    },
+    {
+      "category": "manufactured",
+      "symbol": "Guardian_PowerCell",
+      "name": "Guardian Power Cell",
+      "elementSymbol": null,
+      "grade": 1,
+      "line": "Guardian"
+    },
+    {
+      "category": "encoded",
+      "symbol": "DataminedWake",
+      "name": "Datamined Wake Exceptions",
+      "elementSymbol": null,
+      "grade": 5,
+      "line": "Wake Scans"
+    },
+    {
+      "category": "encoded",
+      "symbol": "AncientBiologicalData",
+      "name": "Pattern Alpha Obelisk Data",
+      "elementSymbol": null,
+      "grade": 4,
+      "line": "Guardian"
+    }
+  ],
+  "lineGrades": [
+    {
+      "catalogue": "manufactured",
+      "line": "Chemical",
+      "grades": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "catalogue": "encoded",
+      "line": "Emission Data",
+      "grades": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "catalogue": "raw",
+      "line": "Carbon",
+      "grades": [
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  ],
+  "notInFdevIds": [
+    "Hardened Surface Fragments",
+    "Caustic Shard",
+    "Tactical Core Chip",
+    "Corrosive Mechanisms",
+    "Phasing Membrane Residue",
+    "Caustic Crystal",
+    "Heat Exposure Specimen",
+    "Massive Energy Surge Analytics",
+    "Thargoid Interdiction Telemetry"
+  ]
+}

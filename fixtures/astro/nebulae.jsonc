@@ -1,0 +1,314 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Ground truth for the nebula catalogues (data/astro/nebulae-*.jsonc, from the EDAstro
+ * nebulae-coordinates dataset). `counts` pins the size of each catalogue;
+ * `records` pins individual entries; `nearest` and `within` pin the proximity queries. Coordinates
+ * and distances are galactic light-years with Sol at the origin; distances are rounded to 6
+ * decimal places, so compare with a small tolerance. `regionId` is the galactic codex region id
+ * and must agree with this library's own region lookup for every record.
+ */
+{
+  "counts": {
+    "real": 180,
+    "planetary": 5489,
+    "procgen": 166,
+    "all": 5835
+  },
+  "records": [
+    {
+      "catalogue": "real",
+      "name": "Witch Head Nebula",
+      "system": "Witch Head Sector RY-R b4-0",
+      "x": 365.062,
+      "y": -413.812,
+      "z": -711.188,
+      "type": "real",
+      "regionId": 18
+    },
+    {
+      "catalogue": "real",
+      "name": "Horsehead Nebula",
+      "system": "Horsehead Dark Region IR-V c2-9",
+      "x": 649.625,
+      "y": -423.531,
+      "z": -1281.19,
+      "type": "real",
+      "regionId": 18
+    },
+    {
+      "catalogue": "real",
+      "name": "Barnard's Loop",
+      "system": "Trapezium Sector AF-Z c0",
+      "x": 617.031,
+      "y": -421.625,
+      "z": -1224.56,
+      "type": "real",
+      "regionId": 18
+    },
+    {
+      "catalogue": "real",
+      "name": "NGC 2392",
+      "system": "GCRV 4981",
+      "x": 234.625,
+      "y": 239.219,
+      "z": -726.469,
+      "type": "real",
+      "regionId": 18
+    },
+    {
+      "catalogue": "real",
+      "name": "Coalsack",
+      "system": "Musca Dark Region HM-V c2-37",
+      "x": 417.719,
+      "y": -1.96875,
+      "z": 275.375,
+      "type": "real",
+      "regionId": 18
+    },
+    {
+      "catalogue": "procgen",
+      "name": "Agnairt AA-A h36",
+      "system": "Agnairt TA-U d4-360",
+      "x": -10010.4,
+      "y": -33.7188,
+      "z": 22444.2,
+      "type": "procgen",
+      "regionId": 4
+    },
+    {
+      "catalogue": "planetary",
+      "name": "Aemonz WZ-Y e6771 (Lazurite Nebula)",
+      "system": "Aemonz WZ-Y e6771",
+      "x": 3886.78,
+      "y": -660.688,
+      "z": 33718.8,
+      "type": "planetary",
+      "regionId": 3
+    }
+  ],
+  "nearest": [
+    {
+      "origin": "Sol",
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "catalogue": "real",
+      "count": 3,
+      "expect": [
+        {
+          "name": "Pleiades",
+          "system": "Maia",
+          "distanceLy": 383.309628
+        },
+        {
+          "name": "R Cra",
+          "system": "BRSO 14",
+          "distanceLy": 419.985853
+        },
+        {
+          "name": "Lupus Dark Region B",
+          "system": "Lupus Dark Region B Sector PD-S b4-4",
+          "distanceLy": 462.521236
+        }
+      ]
+    },
+    {
+      "origin": "Sol",
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "catalogue": "all",
+      "count": 3,
+      "expect": [
+        {
+          "name": "Pleiades",
+          "system": "Maia",
+          "distanceLy": 383.309628
+        },
+        {
+          "name": "R Cra",
+          "system": "BRSO 14",
+          "distanceLy": 419.985853
+        },
+        {
+          "name": "Lupus Dark Region B",
+          "system": "Lupus Dark Region B Sector PD-S b4-4",
+          "distanceLy": 462.521236
+        }
+      ]
+    },
+    {
+      "origin": "Colonia",
+      "from": {
+        "x": -9530.5,
+        "y": -910.28125,
+        "z": 19808.125
+      },
+      "catalogue": "real",
+      "count": 1,
+      "expect": [
+        {
+          "name": "IC 4673",
+          "system": "Hen 2-333",
+          "distanceLy": 10825.450715
+        }
+      ]
+    },
+    {
+      "origin": "Sagittarius A*",
+      "from": {
+        "x": 25.21875,
+        "y": -20.90625,
+        "z": 25899.96875
+      },
+      "catalogue": "planetary",
+      "count": 2,
+      "expect": [
+        {
+          "name": "Myriesly HR-N e6-4354 (Blink Of An Eye Remnant)",
+          "system": "Myriesly HR-N e6-4354",
+          "distanceLy": 585.044168
+        },
+        {
+          "name": "Myriesly CL-P e5-7383 (Fenrisulfur)",
+          "system": "Myriesly CL-P e5-7383",
+          "distanceLy": 753.099125
+        }
+      ]
+    },
+    {
+      "origin": "Beagle Point",
+      "from": {
+        "x": -1111.5625,
+        "y": -134.21875,
+        "z": 65269.75
+      },
+      "catalogue": "all",
+      "count": 2,
+      "expect": [
+        {
+          "name": "Pyrie Eurk QX-U e2-0 (Distant View in Blue)",
+          "system": "Pyrie Eurk QX-U e2-0",
+          "distanceLy": 3176.22603
+        },
+        {
+          "name": "Byua Chraei TD-T e3-10",
+          "system": "Byua Chraei TD-T e3-10",
+          "distanceLy": 10710.528624
+        }
+      ]
+    },
+    {
+      "origin": "Merope",
+      "from": {
+        "x": -78.59375,
+        "y": -149.625,
+        "z": -340.53125
+      },
+      "catalogue": "procgen",
+      "count": 1,
+      "expect": [
+        {
+          "name": "Traikaae AA-A h2",
+          "system": "Traikaae KT-P d6-4",
+          "distanceLy": 5149.985497
+        }
+      ]
+    }
+  ],
+  "within": [
+    {
+      "origin": "Sol",
+      "from": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "radiusLy": 500,
+      "catalogue": "real",
+      "expect": [
+        {
+          "name": "Pleiades",
+          "distanceLy": 383.309628
+        },
+        {
+          "name": "R Cra",
+          "distanceLy": 419.985853
+        },
+        {
+          "name": "Lupus Dark Region B",
+          "distanceLy": 462.521236
+        },
+        {
+          "name": "Lupus Dark Region",
+          "distanceLy": 463.970942
+        },
+        {
+          "name": "Taurus Dark Region",
+          "distanceLy": 466.731382
+        },
+        {
+          "name": "Rho Ophiuchi",
+          "distanceLy": 491.173979
+        },
+        {
+          "name": "Musca Dark Region",
+          "distanceLy": 491.774387
+        },
+        {
+          "name": "Scorpius Dark Region",
+          "distanceLy": 491.844582
+        },
+        {
+          "name": "Pipe (Stem)",
+          "distanceLy": 492.938318
+        },
+        {
+          "name": "Struve's Lost Nebula",
+          "distanceLy": 498.741944
+        },
+        {
+          "name": "Pipe (Bowl)",
+          "distanceLy": 499.018471
+        }
+      ]
+    },
+    {
+      "origin": "Merope",
+      "from": {
+        "x": -78.59375,
+        "y": -149.625,
+        "z": -340.53125
+      },
+      "radiusLy": 60,
+      "catalogue": "all",
+      "expect": [
+        {
+          "name": "Pleiades",
+          "distanceLy": 4.275713
+        }
+      ]
+    },
+    {
+      "origin": "Colonia",
+      "from": {
+        "x": -9530.5,
+        "y": -910.28125,
+        "z": 19808.125
+      },
+      "radiusLy": 100,
+      "catalogue": "all",
+      "expect": [
+        {
+          "name": "Eol Prou AA-A h89",
+          "distanceLy": 20.434856
+        }
+      ]
+    }
+  ]
+}

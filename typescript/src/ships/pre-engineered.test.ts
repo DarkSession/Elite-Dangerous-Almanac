@@ -14,7 +14,7 @@ import { blueprintAvailableFor } from './internal/loadout-engineering.js';
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import { getModuleBySymbol } from './modules.js';
 import { ALL_MODULES } from './modules-all.js';
-import fixture from '../../../fixtures/ships/pre-engineered.json' with { type: 'json' };
+import fixture from '../../../fixtures/ships/pre-engineered.jsonc' with { type: 'json' };
 
 test(`the catalogue holds ${fixture.count} pre-engineered variants`, () => {
     assert.equal(PRE_ENGINEERED_MODULES.length, fixture.count);

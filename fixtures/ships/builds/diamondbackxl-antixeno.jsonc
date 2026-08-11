@@ -1,0 +1,42 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "diamondbackxl-antixeno",
+  "ship": "DiamondBackXL",
+  "role": "antiXeno",
+  "modules": [
+    { "slot": "Armour", "item": "DiamondBackXL_Armour_Grade1", "priority": 1 },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size4_Class5", "engineering": { "blueprint": "PowerPlant_Stealth", "grade": 1, "experimental": "special_powerplant_cooled" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size4_Class2", "engineering": { "blueprint": "Engine_Dirty", "grade": 3, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size3_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size2_Class5", "engineering": { "blueprint": "PowerDistributor_PriorityEngines", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size3_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "TinyHardpoint1", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_XenoScanner_Basic_Tiny" },
+    { "slot": "TinyHardpoint3", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "TinyHardpoint4", "item": "Hpt_HeatSinkLauncher_Turret_Tiny" },
+    { "slot": "Slot01_Size4", "item": "Int_GuardianFSDBooster_Size4" },
+    { "slot": "Slot02_Size4", "item": "Int_FuelScoop_Size4_Class5" },
+    { "slot": "Slot03_Size3", "item": "Int_ShieldGenerator_Size3_Class2", "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_efficient" } },
+    { "slot": "Slot04_Size3", "item": "Int_Repairer_Size3_Class5" },
+    { "slot": "Slot05_Size2", "item": "Int_BuggyBay_Size2_Class2" },
+    { "slot": "Slot06_Size2", "item": "Int_DetailedSurfaceScanner_Tiny", "engineering": { "blueprint": "Sensor_Expanded", "grade": 5 } },
+    { "slot": "Slot07_Size1", "item": "Int_SupercruiseAssist" },
+    { "slot": "Slot08_Size1", "item": "Int_DockingComputer_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 310,
+    "cargoCapacity": 0,
+    "fuelCapacity": 32,
+    "maxJumpRange": 48.350317,
+    "power": { "available": 15.6, "retracted": 13.21, "deployed": 13.41, "withinBudget": true },
+    "shields": { "strength": 83.232181, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 270, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

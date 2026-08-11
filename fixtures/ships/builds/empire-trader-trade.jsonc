@@ -1,0 +1,40 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "empire-trader-trade",
+  "ship": "Empire_Trader",
+  "role": "trade",
+  "modules": [
+    { "slot": "TinyHardpoint2", "item": "Hpt_HeatSinkLauncher_Turret_Tiny", "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "Armour", "item": "Empire_Trader_Armour_Grade1", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size4_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 2 } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size6_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Overcharge_Size5_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size5_Class2", "engineering": { "blueprint": "Misc_LightWeight", "grade": 4 } },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size6_Class5", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size5_Class2", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size4_Class3", "priority": 1 },
+    { "slot": "Slot01_Size7", "item": "Int_CargoRack_Size7_Class1", "priority": 1 },
+    { "slot": "Slot02_Size6", "item": "Int_GuardianFSDBooster_Size5", "priority": 4 },
+    { "slot": "Slot03_Size4", "item": "Int_FuelScoop_Size4_Class5", "priority": 4 },
+    { "slot": "Slot04_Size4", "item": "Int_ShieldGenerator_Size4_Class5", "priority": 1, "engineering": { "blueprint": "ShieldGenerator_Optimised", "grade": 5, "experimental": "special_shield_lightweight" } },
+    { "slot": "Slot05_Size3", "item": "Int_DroneControl_Collection_Size3_Class3", "priority": 3, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "Slot06_Size3", "item": "Int_DroneControl_Collection_Size3_Class3", "priority": 3, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "Slot07_Size2", "item": "Int_DroneControl_Collection_Size1_Class3", "priority": 3, "engineering": { "blueprint": "Misc_LightWeight", "grade": 5 } },
+    { "slot": "Slot08_Size2", "item": "Int_DockingComputer_Advanced", "priority": 4 },
+    { "slot": "Slot09_Size1", "item": "Int_SupercruiseAssist", "priority": 4 }
+  ],
+  "metrics": {
+    "unladenMass": 544.9,
+    "cargoCapacity": 128,
+    "fuelCapacity": 16,
+    "maxJumpRange": 35.141181,
+    "power": { "available": 15.6, "retracted": 17.64, "deployed": 17.64, "withinBudget": false },
+    "shields": { "strength": 168.215089, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 486, "resistances": { "kinetic": -0.2, "thermal": 0, "explosive": -0.4 } },
+    "weapons": { "count": 0, "damagePerSecond": 0, "sustainedDamagePerSecond": 0 }
+  }
+}

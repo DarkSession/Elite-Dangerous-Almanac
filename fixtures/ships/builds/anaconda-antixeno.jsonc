@@ -1,0 +1,59 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "anaconda-antixeno",
+  "ship": "Anaconda",
+  "role": "antiXeno",
+  "modules": [
+    { "slot": "Armour", "item": "Anaconda_Armour_Grade3", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size8_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 5, "experimental": "special_powerplant_lightweight" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size7_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size6_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size5_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size8_Class5", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5, "experimental": "special_powerdistributor_capacity" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size8_Class5", "engineering": { "blueprint": "Sensor_LightWeight", "grade": 5 } },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "HugeHardpoint1", "item": "Hpt_Guardian_GaussCannon_Fixed_Medium" },
+    { "slot": "LargeHardpoint1", "item": "Hpt_Guardian_GaussCannon_Fixed_Medium" },
+    { "slot": "LargeHardpoint2", "item": "Hpt_Guardian_ShardCannon_Fixed_Large" },
+    { "slot": "LargeHardpoint3", "item": "Hpt_Guardian_ShardCannon_Fixed_Large" },
+    { "slot": "MediumHardpoint1", "item": "Hpt_FlakMortar_Fixed_Medium" },
+    { "slot": "MediumHardpoint2", "item": "Hpt_FlakMortar_Fixed_Medium" },
+    { "slot": "SmallHardpoint1", "item": "Hpt_MultiCannon_Turret_Small", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_corrosive_shell" } },
+    { "slot": "SmallHardpoint2", "item": "Hpt_MultiCannon_Turret_Small", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_incendiary_rounds" } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_XenoScanner_Basic_Tiny" },
+    { "slot": "TinyHardpoint2", "item": "Hpt_AntiUnknownShutdown_Tiny" },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5", "priority": 1, "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint5", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint6", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint7", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint8", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "Slot01_Size7", "item": "Int_ShieldGenerator_Size7_Class5_Strong", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5, "experimental": "special_shield_resistive" } },
+    { "slot": "Slot02_Size6", "item": "Int_GuardianFSDBooster_Size5" },
+    { "slot": "Slot03_Size6", "item": "Int_GuardianModuleReinforcement_Size5_Class2" },
+    { "slot": "Slot04_Size6", "item": "Int_GuardianHullReinforcement_Size5_Class2" },
+    { "slot": "Slot05_Size5", "item": "Int_FuelScoop_Size5_Class5", "priority": 1, "engineering": { "blueprint": "Misc_Shielded", "grade": 1 } },
+    { "slot": "Slot06_Size5", "item": "Int_GuardianHullReinforcement_Size5_Class2" },
+    { "slot": "Slot07_Size5", "item": "Int_HullReinforcement_Size5_Class2", "priority": 1, "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Military01", "item": "Int_HullReinforcement_Size5_Class2", "priority": 1, "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot08_Size4", "item": "Int_DroneControl_Decontamination_Size3_Class1", "priority": 1 },
+    { "slot": "Slot09_Size4", "item": "Int_GuardianHullReinforcement_Size4_Class2" },
+    { "slot": "Slot10_Size4", "item": "Int_CorrosionProofCargoRack_Size4_Class1", "priority": 1 },
+    { "slot": "Slot13_Size2", "item": "Int_Repairer_Size2_Class5", "engineering": { "blueprint": "Misc_Shielded", "grade": 3 } },
+    { "slot": "Slot14_Size1", "item": "Int_DroneControl_Collection_Size1_Class2", "priority": 1 }
+  ],
+  "metrics": {
+    "unladenMass": 1299.4,
+    "cargoCapacity": 16,
+    "fuelCapacity": 32,
+    "maxJumpRange": 27.287374,
+    "power": { "available": 36, "retracted": 38.13, "deployed": 49.83, "withinBudget": false },
+    "shields": { "strength": 1540, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 4006.5, "resistances": { "kinetic": -0.14075, "thermal": 0.105279, "explosive": -0.330875 } },
+    "weapons": { "count": 8, "damagePerSecond": 335.337372, "sustainedDamagePerSecond": 194.853672 }
+  }
+}

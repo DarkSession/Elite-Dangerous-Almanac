@@ -46,9 +46,7 @@
  * this on it?" cannot answer differently — they read the same menu. A `ShipLoadout`
  * therefore carries this module's weight whether or not the consumer calls it. This is a
  * deliberate tradeoff: the editor and the menu use one catalogue, so their answers cannot
- * drift. §Engineering compatibility in
- * [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
- * records the validation. The gate makes three accommodations beyond the menu, in the
+ * drift. The gate makes three accommodations beyond the menu, in the
  * order it applies them: a journal id
  * the game writes for two different recipes, which `ships/blueprint-journal` settles by
  * reading this menu against `Blueprint.journalName`; an Operations key belonging to a

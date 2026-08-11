@@ -1,0 +1,47 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "mamba-combat-3",
+  "ship": "Mamba",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Mamba_Armour_Reactive", "priority": 1, "engineering": { "blueprint": "Armour_Thermic", "grade": 4 } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size6_Class5", "priority": 1, "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 4 } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size5_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size4_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5 } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size4_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size6_Class5", "engineering": { "blueprint": "PowerDistributor_HighFrequency", "grade": 5 } },
+    { "slot": "Radar", "item": "Int_Sensors_Size4_Class5" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size3_Class3" },
+    { "slot": "HugeHardpoint1", "item": "Hpt_Cannon_Gimbal_Huge", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5, "experimental": "special_force_shell" } },
+    { "slot": "LargeHardpoint1", "item": "Hpt_Cannon_Gimbal_Large", "engineering": { "blueprint": "Weapon_Sturdy", "grade": 5, "experimental": "special_high_yield_shell" } },
+    { "slot": "LargeHardpoint2", "item": "Hpt_Cannon_Gimbal_Large", "engineering": { "blueprint": "Weapon_Sturdy", "grade": 5, "experimental": "special_thermal_cascade" } },
+    { "slot": "SmallHardpoint1", "item": "Hpt_Railgun_Fixed_Small", "engineering": { "blueprint": "Weapon_LongRange", "grade": 5, "experimental": "special_super_penetrator_cooled" } },
+    { "slot": "SmallHardpoint2", "item": "Hpt_Railgun_Fixed_Small", "engineering": { "blueprint": "Weapon_Sturdy", "grade": 5, "experimental": "special_super_penetrator_cooled" } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 3 } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 3 } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_thermic" } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 3, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint5", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 2 } },
+    { "slot": "TinyHardpoint6", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 2 } },
+    { "slot": "Slot01_Size5", "item": "Int_ShieldGenerator_Size5_Class5_Strong", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5 } },
+    { "slot": "Slot02_Size4", "item": "Int_GuardianFSDBooster_Size4" },
+    { "slot": "Slot03_Size3", "item": "Int_ShieldCellBank_Size3_Class3", "engineering": { "blueprint": "ShieldCellBank_Rapid", "grade": 4, "experimental": "special_shieldcell_oversized" } },
+    { "slot": "Slot04_Size2", "item": "Int_FuelScoop_Size2_Class5" },
+    { "slot": "Slot05_Size2", "item": "Int_DockingComputer_Advanced", "priority": 4 },
+    { "slot": "Slot06_Size1", "item": "Int_SupercruiseAssist", "priority": 4 }
+  ],
+  "metrics": {
+    "unladenMass": 495.3,
+    "cargoCapacity": 0,
+    "fuelCapacity": 8,
+    "maxJumpRange": 20.871201,
+    "power": { "available": 25.2, "retracted": 25.44, "deployed": 30.27, "withinBudget": false },
+    "shields": { "strength": 1108.111513, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 805, "resistances": { "kinetic": 0.25, "thermal": -0.4, "explosive": 0.2 } },
+    "weapons": { "count": 5, "damagePerSecond": 129.70133, "sustainedDamagePerSecond": 95.500059 }
+  }
+}

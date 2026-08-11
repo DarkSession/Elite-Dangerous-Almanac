@@ -493,8 +493,18 @@ test('the publication manifest includes consumer documentation and notices', asy
         canonical,
         'THIRD_PARTY_NOTICES.md is stale — run `npm run build` (it copies ATTRIBUTIONS.md)',
     );
-    assert.match(notices, /Odyssey micro resources/);
-    assert.match(notices, /Market commodities/);
+    // Every source the library takes something from has to be named in the shipped
+    // notice, with its terms: the file is the one place a source is described.
+    for (const source of [
+        'EDCD FDevIDs',
+        'EDCD/coriolis-data',
+        'EDSY',
+        'EliteDangerousRegionMap',
+        'EDAstro',
+        'Frontier Developments plc',
+    ]) {
+        assert.ok(notices.includes(source), `THIRD_PARTY_NOTICES.md must credit ${source}`);
+    }
     assert.match(notices, /CC BY-NC 4\.0/);
     // The BSD 3-Clause text must ship in full, as EDTS's terms require.
     assert.match(notices, /Copyright \(c\) 2016, Andy Martin/);

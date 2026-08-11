@@ -1,22 +1,18 @@
 /*
  * Individually permit-locked star systems.
  *
- * Source:       Elite Dangerous Permit Database (community-maintained spreadsheet)
- * Author:       Elite Dangerous community
- * Obtained via: canonn-science/canonn-signals src/app/data/permit-locked-systems.ts
- *               (MIT, (c) 2023 Canonn Research Group)
- *               https://github.com/canonn-science/canonn-signals
+ * Source: the community-maintained "Elite Dangerous Permit Database" spreadsheet,
+ * obtained via canonn-signals, with system addresses from Spansh cross-checked against
+ * EDSM. Permit locks are published in no game data file or API, so the list is
+ * hand-maintained and best-effort.
  *
- * Permit locks are published in no game data file or API, so this is a
- * hand-maintained community list and is best-effort.
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/astro/SOURCES.md.
  *
  * Each system address is a decimal string so every language can parse it without
- * IEEE-754 loss. Addresses come from Spansh (https://spansh.co.uk), cross-checked
- * against EDSM (https://www.edsm.net) for the 38 systems EDSM holds; no
- * disagreement. Plaa Ain HA-Z d46 is absent from both and is encoded from its
- * procedural name by this project.
- *
- * Full provenance and derivation notes: data/astro/SOURCES.md.
+ * IEEE-754 loss. Addresses come from Spansh, cross-checked against EDSM for the 38
+ * systems EDSM holds; no disagreement. Plaa Ain HA-Z d46 is absent from both and is
+ * encoded from its procedural name by this project.
  */
 [
   { "name": "4 Sextantis", "id64": "663329196387" },

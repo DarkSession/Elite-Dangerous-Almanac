@@ -22,11 +22,11 @@
  * (`./ship-loadout`), `./shields` and `./armour` gather the numbers for you.
  *
  * @remarks
- * Reference implementation: EDCD/Coriolis by the Coriolis contributors (MIT),
- * <https://github.com/EDCD/coriolis> —
+ * Reference implementation: EDCD/Coriolis,
  * `src/app/shipyard/Calculations.js` (`diminishingReturnsShields`,
  * `diminishingReturnsArmour`, `mapIntoDiminishingRange`, `sysResistance`), commit
- * `68c042ca6e3db62372cbbb2077cf972345511712`. The algorithm is ported as fact, not code.
+ * `68c042ca6e3db62372cbbb2077cf972345511712`. The algorithm is ported as fact, not code;
+ * credit and licence terms are in [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
  *
  * @example
  * ```ts

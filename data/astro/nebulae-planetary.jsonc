@@ -1,12 +1,10 @@
 /*
  * Planetary nebulae, catalogued at the procedurally-named system they surround.
  *
- * Source:      EDAstro nebulae coordinates (nebulae-coordinates.csv)
- * Author:      CMDR Orvidius (EDAstro)
- * URL:         https://edastro.com/mapcharts/
- * Obtained via: canonn-science/canonn-signals src/assets/nebulae.json
- *               (MIT, (c) 2023 Canonn Research Group)
- *               https://github.com/canonn-science/canonn-signals
+ * Source: the EDAstro nebulae coordinates dataset, obtained via canonn-signals.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/astro/SOURCES.md.
  *
  * EDAstro publishes no explicit licence for the file; consult the site's terms
  * before redistributing it.
@@ -15,8 +13,6 @@
  * the galactic codex region id (see galactic-regions.jsonc) and is carried from the
  * upstream CSV; all 5835 values were verified against this project's own region
  * lookup.
- *
- * Full provenance and derivation notes: data/astro/SOURCES.md.
  */
 [
   {"name": "Aemonz EQ-Y e1899", "system": "Aemonz EQ-Y e1899", "x": 4549.97, "y": -850.562, "z": 33732.4, "type": "planetary", "regionId": 3},

@@ -1,0 +1,245 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Ground truth for the outfitting catalogues (data/ships/modules-*.jsonc, primarily from EDCD
+ * FDevIDs outfitting.csv, with supplemental identities documented in data/ships/SOURCES.md).
+ * `counts` pins the size of each category catalogue; `slotCounts` pins how many records name each
+ * fixed mount in `slot`, and how many name none, across all four catalogues — a record's
+ * `category` is the file it was read from, its `slot` is the one mount it fills, and its
+ * `engineeringGroup` is the engineering-menu family or null. `records` pins
+ * individual modules across every category, including DLC- and grant-gated modules; `shipArmour`
+ * pins that getBulkheadsForShip returns a hull's five bulkhead variants. `class` is the module
+ * size (0-8) and `rating` the grade letter (A-I).
+ */
+{
+  "counts": {
+    "core": 521,
+    "internal": 484,
+    "hardpoint": 159,
+    "utility": 35,
+    "all": 1199
+  },
+  "slotCounts": {
+    "armour": 241,
+    "powerPlant": 43,
+    "thrusters": 40,
+    "frameShiftDrive": 72,
+    "lifeSupport": 41,
+    "powerDistributor": 49,
+    "sensors": 41,
+    "fuelTank": 9,
+    "none": 663
+  },
+  "records": [
+    {
+      "symbol": "Anaconda_Armour_Grade1",
+      "category": "core",
+      "engineeringGroup": "bulkheads",
+      "slot": "armour",
+      "name": "Lightweight Alloy",
+      "class": 1,
+      "rating": "I",
+      "ship": "Anaconda"
+    },
+    {
+      "symbol": "Hpt_PulseLaser_Fixed_Small",
+      "category": "hardpoint",
+      "engineeringGroup": "pulseLasers",
+      "name": "Pulse Laser",
+      "class": 1,
+      "rating": "F",
+      "mount": "Fixed"
+    },
+    {
+      "symbol": "Hpt_DumbfireMissileRack_Fixed_Medium",
+      "category": "hardpoint",
+      "name": "Missile Rack",
+      "class": 2,
+      "rating": "B",
+      "mount": "Fixed",
+      "guidance": "Dumbfire"
+    },
+    {
+      "symbol": "Hpt_ChaffLauncher_Tiny",
+      "category": "utility",
+      "engineeringGroup": "chaffLaunchers",
+      "name": "Chaff Launcher",
+      "class": 0,
+      "rating": "I"
+    },
+    {
+      "symbol": "Int_HullReinforcement_Size1_Class1",
+      "category": "internal",
+      "engineeringGroup": "hullReinforcements",
+      "name": "Hull Reinforcement Package",
+      "class": 1,
+      "rating": "E"
+    },
+    {
+      "symbol": "Int_GuardianFSDBooster_Size1",
+      "category": "internal",
+      "engineeringGroup": "fsdBoosters",
+      "name": "Guardian FSD Booster",
+      "class": 1,
+      "rating": "H",
+      "entitlement": "ELITE_HORIZONS_V_GUARDIAN_FSDBOOSTER"
+    },
+    {
+      "symbol": "Int_ShieldGenerator_Size1_Class4",
+      "category": "internal",
+      "name": "Shield Generator",
+      "class": 1,
+      "rating": "B"
+    },
+    {
+      "symbol": "Int_FighterBay_Size5_Class1_Free",
+      "category": "internal",
+      "engineeringGroup": null,
+      "name": "Mk I Vessel Hangar",
+      "class": 5,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIFIGHTERBAY_FREE"
+    },
+    {
+      "symbol": "Int_FighterBay_Size6_Class1_Free",
+      "category": "internal",
+      "name": "Mk I Vessel Hangar",
+      "class": 6,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIFIGHTERBAY_FREE"
+    },
+    {
+      "symbol": "Int_FighterBay_Size7_Class1_Free",
+      "category": "internal",
+      "name": "Mk I Vessel Hangar",
+      "class": 7,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIFIGHTERBAY_FREE"
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size5_Class1_Free",
+      "category": "internal",
+      "name": "Mk II Vessel Hangar",
+      "class": 5,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIIFIGHTERBAY_FREE",
+      "restrictedToShips": [
+        "Explorer_NX",
+        "PantherMkII",
+        "LakonMiner"
+      ]
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size6_Class1_Free",
+      "category": "internal",
+      "name": "Mk II Vessel Hangar",
+      "class": 6,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIIFIGHTERBAY_FREE",
+      "restrictedToShips": [
+        "Explorer_NX",
+        "PantherMkII",
+        "LakonMiner"
+      ]
+    },
+    {
+      "symbol": "Int_FighterBayMk2_Size7_Class1_Free",
+      "category": "internal",
+      "name": "Mk II Vessel Hangar",
+      "class": 7,
+      "rating": "D",
+      "entitlement": "ELITE_V_MKIIFIGHTERBAY_FREE",
+      "restrictedToShips": [
+        "Explorer_NX",
+        "PantherMkII",
+        "LakonMiner"
+      ]
+    },
+    {
+      "symbol": "Int_LargeCargoRack_Size8_class1",
+      "category": "internal",
+      "name": "Mk II Cargo Rack",
+      "class": 8,
+      "rating": "D",
+      "restrictedToShips": [
+        "PantherMkII"
+      ],
+      "restrictedToSlot": "cargo"
+    },
+    {
+      "symbol": "Int_MultiDroneControl_MiningV2_Size5_Class5",
+      "category": "internal",
+      "name": "Mk II Mining Multi-Limpet Controller",
+      "class": 5,
+      "rating": "A",
+      "restrictedToShips": [
+        "LakonMiner"
+      ],
+      "restrictedToSlot": "limpetController"
+    },
+    {
+      "symbol": "Int_PlanetApproachSuite",
+      "category": "internal",
+      "name": "Planetary Approach Suite",
+      "class": 1,
+      "rating": "I",
+      "restrictedToSlot": "planetaryApproachSuite"
+    },
+    {
+      "symbol": "Int_Hyperdrive_Size5_Class5",
+      "category": "core",
+      "slot": "frameShiftDrive",
+      "name": "Frame Shift Drive",
+      "class": 5,
+      "rating": "A"
+    },
+    {
+      "symbol": "Int_FuelTank_Size3_Class3",
+      "category": "core",
+      "slot": "fuelTank",
+      "name": "Fuel Tank",
+      "class": 3,
+      "rating": "C"
+    },
+    {
+      "symbol": "Int_MkIIAgileBoost_Engine_Size5_Class5",
+      "category": "core",
+      "slot": "thrusters",
+      "name": "Mk II Agile Boost Thrusters",
+      "class": 5,
+      "rating": "A",
+      "restrictedToShips": [
+        "SmallCombat01_NX"
+      ]
+    },
+    {
+      "symbol": "Int_GuardianPowerplant_Size5",
+      "category": "internal",
+      "slot": "powerPlant",
+      "name": "Guardian Hybrid Power Plant",
+      "class": 5,
+      "rating": "A",
+      "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERPLANT"
+    },
+    {
+      "symbol": "Int_GuardianPowerDistributor_Size5",
+      "category": "internal",
+      "slot": "powerDistributor",
+      "name": "Guardian Hybrid Power Distributor",
+      "class": 5,
+      "rating": "A",
+      "entitlement": "ELITE_HORIZONS_V_GUARDIAN_POWERDISTRIBUTOR"
+    }
+  ],
+  "shipArmour": {
+    "ship": "Anaconda",
+    "count": 5,
+    "names": [
+      "Lightweight Alloy",
+      "Reinforced Alloy",
+      "Military Grade Composite",
+      "Mirrored Surface Composite",
+      "Reactive Surface Composite"
+    ]
+  }
+}

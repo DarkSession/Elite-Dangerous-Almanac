@@ -8,7 +8,7 @@ import { PROCGEN_NEBULAE } from './nebulae-procgen.js';
 import { ALL_NEBULAE } from './nebulae-all.js';
 import { findCodexRegionAt } from './codex-region-lookup.js';
 import { getCodexRegion } from './codex-region.js';
-import nebulaeFixture from '../../../fixtures/astro/nebulae.json' with { type: 'json' };
+import nebulaeFixture from '../../../fixtures/astro/nebulae.jsonc' with { type: 'json' };
 
 const CATALOGUES: Record<string, readonly Nebula[]> = {
     real: REAL_NEBULAE,

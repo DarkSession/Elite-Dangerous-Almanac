@@ -21,10 +21,10 @@
  * post-engineering, and calls {@link shieldMetrics} for you.
  *
  * @remarks
- * Reference implementation: EDCD/Coriolis by the Coriolis contributors (MIT),
- * <https://github.com/EDCD/coriolis> — `src/app/shipyard/Calculations.js`
+ * Reference implementation: EDCD/Coriolis, `src/app/shipyard/Calculations.js`
  * (`shieldStrength`, `shieldMetrics`), commit
- * `68c042ca6e3db62372cbbb2077cf972345511712`. The algorithm is ported as fact, not code.
+ * `68c042ca6e3db62372cbbb2077cf972345511712`. The algorithm is ported as fact, not code;
+ * credit and licence terms are in [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
  *
  * @example
  * ```ts

@@ -16,7 +16,7 @@ import { RAW_MATERIALS } from './materials-raw.js';
 import { MANUFACTURED_MATERIALS } from './materials-manufactured.js';
 import { ENCODED_MATERIALS } from './materials-encoded.js';
 import { ALL_MATERIALS } from './materials-all.js';
-import materialsFixture from '../../../fixtures/materials/materials.json' with { type: 'json' };
+import materialsFixture from '../../../fixtures/materials/materials.jsonc' with { type: 'json' };
 
 const CATALOGUES: Record<string, readonly Material[]> = {
     raw: RAW_MATERIALS,

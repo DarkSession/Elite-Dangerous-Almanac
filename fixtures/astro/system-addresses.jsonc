@@ -1,0 +1,24 @@
+/*
+ * Shared test fixture — not shipped in any package.
+ *
+ * Verified (system address, procedural name) pairs. id64 values are decimal strings (64-bit).
+ * Ground truth from the EDTS reference implementation (calculate_id64 + pgnames), one per mass
+ * code in the Blae Eock sector plus the in-game-verified 10577693187, and two systems in
+ * hand-authored regions whose origins are not boxel-aligned. These anchor the absolute bit layout,
+ * not merely encode/decode symmetry.
+ */
+{
+  "systems": [
+    { "id64": "10577693187", "name": "Blae Eock KC-C d0", "region": "Blae Eock", "l1": "K", "l2": "C", "l3": "C", "massCode": "d", "n1": 0, "n2": 0 },
+    { "id64": "216480817500680", "name": "Blae Eock HX-U a60-12", "region": "Blae Eock", "l1": "H", "l2": "X", "l3": "U", "massCode": "a", "n1": 60, "n2": 12 },
+    { "id64": "7268822034689", "name": "Blae Eock CG-Y b29-3", "region": "Blae Eock", "l1": "C", "l2": "G", "l3": "Y", "massCode": "b", "n1": 29, "n2": 3 },
+    { "id64": "38841769759874", "name": "Blae Eock BD-Z c14-141", "region": "Blae Eock", "l1": "B", "l2": "D", "l3": "Z", "massCode": "c", "n1": 14, "n2": 141 },
+    { "id64": "319731321411", "name": "Blae Eock BM-M d7-9", "region": "Blae Eock", "l1": "B", "l2": "M", "l3": "M", "massCode": "d", "n1": 7, "n2": 9 },
+    { "id64": "9900533028", "name": "Blae Eock OD-T e3-2", "region": "Blae Eock", "l1": "O", "l2": "D", "l3": "T", "massCode": "e", "n1": 3, "n2": 2 },
+    { "id64": "700940949", "name": "Blae Eock IM-W f1-1", "region": "Blae Eock", "l1": "I", "l2": "M", "l3": "W", "massCode": "f", "n1": 1, "n2": 1 },
+    { "id64": "20570446", "name": "Blae Eock EG-Y g0", "region": "Blae Eock", "l1": "E", "l2": "G", "l3": "Y", "massCode": "g", "n1": 0, "n2": 0 },
+    { "id64": "36141223", "name": "Blae Eock AA-A h4", "region": "Blae Eock", "l1": "A", "l2": "A", "l3": "A", "massCode": "h", "n1": 0, "n2": 4 },
+    { "id64": "669612516897", "name": "Col 285 Sector IB-X b30-0", "region": "Col 285 Sector", "l1": "I", "l2": "B", "l3": "X", "massCode": "b", "n1": 30, "n2": 0 },
+    { "id64": "659412493657", "name": "Cepheus Dark Region B Sector AF-Q b5-0", "region": "Cepheus Dark Region B Sector", "l1": "A", "l2": "F", "l3": "Q", "massCode": "b", "n1": 5, "n2": 0 }
+  ]
+}

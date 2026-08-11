@@ -2,21 +2,13 @@
  * **Pre-engineered module variants** — the outfitting rows you buy already engineered,
  * each mapped to the base module symbol it fits as and the blueprint baked into it.
  *
- * Sources: the in-game outfitting and blueprint registries, cross-checked against
- *          Inara (https://inara.cz/elite/outfitting/, https://inara.cz/elite/blueprints/)
- *          and Frontier's update notes for the release that introduced each variant.
- *          The community-goal and tech-broker rewards come from EDSY's stored-module
- *          presets (github.com/taleden/EDSY), (c) taleden under a CC BY-NC 4.0 License
- *          (http://creativecommons.org/licenses/by-nc/4.0/).
- *          The final-engineering restriction on the seven Guardian-weapon rows is an
- *          in-game report from the repository maintainer, observed 2026-08-09 UTC.
- *          Frontier's journal-anaconda-slapaconda.json capture directly states the
- *          tech-broker medium Guardian Shard Cannon's projectile speed; current
- *          outfitting-panel readings for its base module supply the damage input
- *          (observed 2026-08-10 UTC).
- *          The underlying values are Elite Dangerous game data, property of Frontier
- *          Developments plc, redistributed under Frontier's media-usage terms:
- *          https://forums.frontier.co.uk/threads/510879/
+ * Sources: the in-game outfitting and blueprint registries cross-checked against Inara
+ * and Frontier's update notes; EDSY's stored-module presets for the community-goal and
+ * tech-broker rewards; in-game observation for the Guardian rows' final-engineering
+ * restriction; a Frontier journal capture for the tech-broker shard cannon.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
  *
  * A pre-engineered module has **no symbol of its own**: the game sells or awards an
  * ordinary module with engineering already applied, and a journal `Loadout` reports it
@@ -50,16 +42,8 @@
  * module. The 22 `mercenary` rows carry none — no registry publishes the grade-1
  * pre-engineering they arrive with, and a guess is worse than an omission.
  *
- * Modifier values are the **authored decimals, recovered — not rounded by eye.** The
- * source encodes them in a custom 20-bit float, which carries about fifteen significant
- * bits, so decoding a change the game states as `+20%` yields `0.199997`. Each value
- * stored here is the *shortest decimal that re-encodes to the identical bits*, so it is
- * the figure the encoder was given, and every EDSY-derived value in the 51 stat blocks
- * recovers exactly. The medium tech-broker shard cannon's projectile speed instead
- * recovers the authored 6299.209 m/s from Frontier's direct 6299.208984 float reading.
- * Nothing is approximated: an EDSY value with no short form would have been left as
- * decoded, and none needed it. The recovery is why the 5A "FSD V1" resolves to a whole
- * 1785 optimal mass from `+0.7` rather than to 1785.0126 from `0.699988`.
+ * Modifier values are the authored decimals recovered from the source's own encoding,
+ * not figures rounded by eye; SOURCES.md records how.
  *
  * One modifier is deliberately dropped: burst interval, which 13 variants carry and
  * which Frontier's journal has no Modifier Label for. It drives rate of fire, and
@@ -67,8 +51,7 @@
  * do not hold — so it is omitted rather than approximated.
  *
  * The Merc recipes start at grade 2 precisely because grade 1 is what the purchased
- * module already contains; `getBlueprintCost(bp, target, 1)` prices taking one of those
- * the rest of the way. Community-goal and tech-broker rewards are mostly already at
+ * module already contains. Community-goal and tech-broker rewards are mostly already at
  * grade 5 — but not always: the Guardian weapon rows record grade 1, and there the
  * blueprint's own grade 1 exists, so the grade is a real grade of a real recipe. That
  * identity does not make the final Guardian articles engineerable.
@@ -84,8 +67,6 @@
  * carries Long Range with no experimental *twice* — once at grade 1 from the Salvation
  * broker and once at grade 5 as a community-goal reward. The identity of a variant is
  * the (`symbol`, `blueprint`, `grade`, `experimental`) quadruple.
- *
- * Full provenance: data/ships/SOURCES.md.
  */
 [
   {

@@ -11,7 +11,7 @@ import {
     type LoadoutModule,
     type SlefHeader,
 } from './slef.js';
-import slefFixture from '../../../fixtures/ships/slef-the-deep-black.json' with { type: 'json' };
+import slefFixture from '../../../fixtures/ships/slef-the-deep-black.jsonc' with { type: 'json' };
 
 const slefString = JSON.stringify(slefFixture);
 const TEST_HEADER: SlefHeader = { appName: 'Test', appVersion: '1.0.0' };

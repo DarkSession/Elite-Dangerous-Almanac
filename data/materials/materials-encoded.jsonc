@@ -1,12 +1,11 @@
 /*
  * Encoded engineering materials / data (incl. Guardian & Thargoid).
  *
- * Source:       EDCD FDevIDs, material.csv
- *               https://github.com/EDCD/FDevIDs
- *               Community-maintained Frontier id/name registry. No explicit
- *               licence is stated; consult the repository terms.
- * Secondary:    INARA (https://inara.cz/elite/components/) for the caustic /
- *               Titan Thargoid materials absent from the pinned FDevIDs source.
+ * Sources: EDCD FDevIDs, material.csv; Inara for the caustic / Titan Thargoid materials
+ * absent from the pinned FDevIDs snapshot.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/materials/SOURCES.md.
  *
  * Each record is { symbol, name, elementSymbol, grade, line }. `symbol` is
  * Frontier's internal id (matched case-insensitively, as the journal reports
@@ -15,8 +14,6 @@
  * `elementSymbol` is null — only raw materials (elements) have one.
  * The caustic / Titan Thargoid materials absent from FDevIDs have grades that
  * comes from INARA (see data/materials/SOURCES.md).
- *
- * Full provenance: data/materials/SOURCES.md.
  */
 [
   {

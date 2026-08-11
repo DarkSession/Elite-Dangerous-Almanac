@@ -26,8 +26,8 @@ import { ALL_MODULES } from './modules-all.js';
 import { getEngineeringGroup } from './engineering-options.js';
 import { combinedRateOfFire } from './weapons.js';
 import { SHIPS, getShipSlots } from './ships.js';
-import modulesFixture from '../../../fixtures/ships/modules.json' with { type: 'json' };
-import statsFixture from '../../../fixtures/ships/module-stats.json' with { type: 'json' };
+import modulesFixture from '../../../fixtures/ships/modules.jsonc' with { type: 'json' };
+import statsFixture from '../../../fixtures/ships/module-stats.jsonc' with { type: 'json' };
 
 const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
     core: CORE_MODULES,

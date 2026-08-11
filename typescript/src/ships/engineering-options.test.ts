@@ -21,9 +21,9 @@ import { getModuleBySymbol } from './modules.js';
 import type { EngineeringGroupId } from './engineering-options.js';
 import { ALL_MODULES } from './modules-all.js';
 import { isFinalGuardianWeaponEngineering } from './internal/loadout-engineering.js';
-import fixture from '../../../fixtures/ships/engineering-options.json' with { type: 'json' };
-import engineeringFixture from '../../../fixtures/ships/engineering.json' with { type: 'json' };
-import buildIndex from '../../../fixtures/ships/builds/index.json' with { type: 'json' };
+import fixture from '../../../fixtures/ships/engineering-options.jsonc' with { type: 'json' };
+import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
+import buildIndex from '../../../fixtures/ships/builds/index.jsonc' with { type: 'json' };
 
 function optionGroup(id: string): EngineeringOptionGroup {
     assert.ok(Object.hasOwn(ENGINEERING_OPTION_GROUPS, id), `unknown group ${id}`);
@@ -329,7 +329,7 @@ test('the blueprint union is a superset of each of its modules', () => {
 });
 
 /**
- * The community build corpus, read the way `builds.test.ts` reads it: `index.json` names
+ * The community build corpus, read the way `builds.test.ts` reads it: `index.jsonc` names
  * the builds, one file each. Only the fitted symbol and the declared engineering matter
  * here, so the rest of a build is left untyped.
  */
@@ -339,7 +339,9 @@ interface CorpusEngineering {
 const CORPUS_DIR = fileURLToPath(new URL('../../../fixtures/ships/builds/', import.meta.url));
 const corpus: CorpusEngineering[] = buildIndex.builds.map(
     (entry) =>
-        JSON.parse(readFileSync(join(CORPUS_DIR, `${entry.id}.json`), 'utf8')) as CorpusEngineering,
+        JSON.parse(
+            stripJsonComments(readFileSync(join(CORPUS_DIR, `${entry.id}.jsonc`), 'utf8')),
+        ) as CorpusEngineering,
 );
 const declared = corpus.flatMap((build) =>
     build.modules

@@ -1,0 +1,58 @@
+/*
+ * One build from the shared community build corpus — a test fixture, not shipped in any package.
+ *
+ * The corpus's provenance, acquisition and validation are in the header of `index.jsonc`.
+ */
+{
+  "id": "federation-corvette-combat-2",
+  "ship": "Federation_Corvette",
+  "role": "combat",
+  "modules": [
+    { "slot": "Armour", "item": "Federation_Corvette_Armour_Grade3", "priority": 1, "engineering": { "blueprint": "Armour_HeavyDuty", "grade": 5, "experimental": "special_armour_chunky" } },
+    { "slot": "PowerPlant", "item": "Int_Powerplant_Size8_Class5", "engineering": { "blueprint": "PowerPlant_Boosted", "grade": 5, "experimental": "special_powerplant_highcharge" } },
+    { "slot": "MainEngines", "item": "Int_Engine_Size7_Class5", "engineering": { "blueprint": "Engine_Dirty", "grade": 5, "experimental": "special_engine_overloaded" } },
+    { "slot": "FrameShiftDrive", "item": "Int_Hyperdrive_Size6_Class5", "engineering": { "blueprint": "FSD_LongRange", "grade": 5, "experimental": "special_fsd_heavy" } },
+    { "slot": "LifeSupport", "item": "Int_LifeSupport_Size5_Class2" },
+    { "slot": "PowerDistributor", "item": "Int_PowerDistributor_Size8_Class5", "engineering": { "blueprint": "PowerDistributor_PriorityWeapons", "grade": 5, "experimental": "special_powerdistributor_fast" } },
+    { "slot": "Radar", "item": "Int_Sensors_Size8_Class2" },
+    { "slot": "FuelTank", "item": "Int_FuelTank_Size5_Class3" },
+    { "slot": "HugeHardpoint1", "item": "Hpt_MultiCannon_Gimbal_Huge", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5 } },
+    { "slot": "HugeHardpoint2", "item": "Hpt_MultiCannon_Gimbal_Huge", "engineering": { "blueprint": "Weapon_Overcharged", "grade": 5 } },
+    { "slot": "LargeHardpoint1", "item": "Hpt_BeamLaser_Fixed_Large", "engineering": { "blueprint": "Weapon_LongRange", "grade": 5, "experimental": "special_thermal_vent" } },
+    { "slot": "MediumHardpoint1", "item": "Hpt_BeamLaser_Fixed_Medium", "engineering": { "blueprint": "Weapon_LongRange", "grade": 5, "experimental": "special_thermal_vent" } },
+    { "slot": "MediumHardpoint2", "item": "Hpt_BeamLaser_Fixed_Medium", "engineering": { "blueprint": "Weapon_LongRange", "grade": 5, "experimental": "special_thermal_vent" } },
+    { "slot": "SmallHardpoint1", "item": "Hpt_MultiCannon_Gimbal_Small", "engineering": { "blueprint": "Weapon_HighCapacity", "grade": 5, "experimental": "special_corrosive_shell" } },
+    { "slot": "SmallHardpoint2", "item": "Hpt_MultiCannon_Gimbal_Small", "engineering": { "blueprint": "Weapon_HighCapacity", "grade": 5, "experimental": "special_emissive_munitions" } },
+    { "slot": "TinyHardpoint1", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint2", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint3", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint4", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_HeavyDuty", "grade": 5, "experimental": "special_shieldbooster_chunky" } },
+    { "slot": "TinyHardpoint5", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_thermic" } },
+    { "slot": "TinyHardpoint6", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_thermic" } },
+    { "slot": "TinyHardpoint7", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_Resistive", "grade": 5, "experimental": "special_shieldbooster_thermic" } },
+    { "slot": "TinyHardpoint8", "item": "Hpt_ShieldBooster_Size0_Class5", "engineering": { "blueprint": "ShieldBooster_Thermic", "grade": 5, "experimental": "special_shieldbooster_kinetic" } },
+    { "slot": "Slot01_Size7", "item": "Int_ShieldGenerator_Size7_Class3_Fast", "engineering": { "blueprint": "ShieldGenerator_Reinforced", "grade": 5, "experimental": "special_shield_regenerative" } },
+    { "slot": "Slot02_Size7", "item": "Int_FighterBay_Size7_Class1" },
+    { "slot": "Slot03_Size7", "item": "Int_GuardianShieldReinforcement_Size5_Class2" },
+    { "slot": "Slot04_Size6", "item": "Int_GuardianShieldReinforcement_Size5_Class2" },
+    { "slot": "Slot05_Size6", "item": "Int_HullReinforcement_Size5_Class2" },
+    { "slot": "Slot06_Size5", "item": "Int_GuardianFSDBooster_Size5" },
+    { "slot": "Slot07_Size5", "item": "Int_ModuleReinforcement_Size5_Class2" },
+    { "slot": "Military01", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Military02", "item": "Int_HullReinforcement_Size5_Class2", "engineering": { "blueprint": "HullReinforcement_HeavyDuty", "grade": 5, "experimental": "special_hullreinforcement_chunky" } },
+    { "slot": "Slot08_Size4", "item": "Int_CargoRack_Size4_Class1" },
+    { "slot": "Slot09_Size4", "item": "Int_Repairer_Size4_Class5" },
+    { "slot": "Slot10_Size3", "item": "Int_DroneControl_Repair_Size3_Class5" },
+    { "slot": "Slot11_Size1", "item": "Int_DockingComputer_Advanced" }
+  ],
+  "metrics": {
+    "unladenMass": 1714.3,
+    "cargoCapacity": 16,
+    "fuelCapacity": 32,
+    "maxJumpRange": 23.243316,
+    "power": { "available": 36, "retracted": 33.37, "deployed": 40.19, "withinBudget": false },
+    "shields": { "strength": 1916.206202, "resistances": { "kinetic": 0.4, "thermal": -0.2, "explosive": 0.5 } },
+    "armour": { "hitPoints": 2465, "resistances": { "kinetic": -0.112231, "thermal": 0.073141, "explosive": -0.297603 } },
+    "weapons": { "count": 7, "damagePerSecond": 117.965988, "sustainedDamagePerSecond": 106.740405 }
+  }
+}
