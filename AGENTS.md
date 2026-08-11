@@ -187,10 +187,13 @@ git log --format='%an <%ae> | %cn <%ce>' origin/<default-branch>..HEAD | sort -u
 
 The same rule covers everything else you author. Commit messages, PR titles and bodies, code comments, data files, fixtures and `SOURCES.md` entries carry **no personal data** — no email addresses, no real names, no handles, no machine or account names, and nothing identifying a private individual. This does **not** restrict §Attribution: crediting an upstream project and its published author is required, and a licence that must be reproduced is reproduced in full. The line is between citing work someone published under their own name and copying a person's contact details into a payload or a commit trailer.
 
-Two related habits, for the same reason:
+A related habit, for the same reason:
 
 - **A captured source is scrubbed of the person, not of the game.** A journal capture, a SLEF export or a community build reaches you attached to whoever produced it — a commander name, an account id, an uploader, a home directory in a path, the link the build was shared from. That goes; the game data stays. `fixtures/ships/builds/` stores its 181 builds without author, name or link (the corpus index's own header records the choice and what it costs), while the Krait Phantom capture deliberately keeps its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` — those describe a ship, they are what makes it ground truth, and none of them names a person.
-- **Keep the model out of the repository.** The model identifier you run as belongs in chat, never in a commit message, PR body, code comment or data file.
+
+## Pull requests
+
+**Before opening any PR, have a subagent re-review the complete change.** Address every actionable finding, then ask a subagent to review the updated change again. Repeat this review-and-fix cycle until the subagent reports no actionable findings; only then may the PR be opened.
 
 ## Commands
 
