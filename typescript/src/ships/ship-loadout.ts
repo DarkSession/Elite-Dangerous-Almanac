@@ -39,6 +39,8 @@
  *
  * @example
  * ```ts
+ * declare const slefJsonString: string;
+ *
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
  *
  * // Read a build:
@@ -321,6 +323,64 @@ const FUEL_TANK_PREFIX = 'int_fueltank';
  * `FSDOptimalMass`, for instance). For a SLEF build, mass comes from the export's
  * `UnladenMass`; for an assembled build it is the hull mass plus every fitted module's
  * mass (armour defaults to the zero-mass lightweight alloy).
+ *
+ * @example
+ * Read a build a player already flies, and ask it what an outfitting screen shows.
+ * Every figure below is one build's — a Krait Phantom explorer. Figures the capture
+ * already stated — `unladenMass` here — are trusted verbatim; the rest are computed
+ * from the fit.
+ *
+ * ```ts
+ * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * // A `Loadout` line lifted from a player journal, parsed.
+ * declare const event: LoadoutEvent;
+ *
+ * const build = ShipLoadout.fromLoadout(event);
+ *
+ * build.shipSymbol; // -> 'krait_light'
+ * build.shipName; // -> 'Jenny Longuet'
+ * build.unladenMass; // -> 388.830017   (tonnes)
+ *
+ * build.maxJumpRange(); // -> 60.5478   (ly, best single jump)
+ * build.powerBudget().withinBudget; // -> true
+ * build.shieldMetrics()?.strength; // -> 743.12  (MJ)
+ * build.armourMetrics().hitPoints; // -> 307.8
+ * ```
+ *
+ * @example
+ * Assemble a hull instead. `empty` starts from the shipyard layout, `slots` enumerates
+ * the mounts, and `setModule` fits one — chainable, because the build is mutable.
+ *
+ * ```ts
+ * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+ *
+ * const conda = ShipLoadout.empty('Anaconda');
+ * conda.slots().length; // -> 39   (every mount, occupied or not)
+ * conda.slots('optional').length; // -> 14
+ * conda.validation.complete; // -> false  (nothing fitted yet)
+ *
+ * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES);
+ * if (fsd) conda.setModule('FrameShiftDrive', fsd);
+ * ```
+ *
+ * @example
+ * Write a build back out. Retail credits are what the catalogue prices the fit at; pass
+ * `credits: 'source'` to export the figures a capture stated it paid instead — see
+ * {@link ShipLoadout.sourcePurchase}.
+ *
+ * ```ts
+ * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ *
+ * declare const build: ShipLoadout;
+ *
+ * build.toLoadoutEvent(); // retail: hull cost plus every module's list price
+ * build.toLoadoutEvent({ credits: 'source' }); // the capture's own figures
+ * build.toSlefString({ header: { appName: 'MyApp', appVersion: '1.0.0' } });
+ * ```
  */
 export class ShipLoadout {
     readonly #shipSymbol: string;
@@ -433,6 +493,8 @@ export class ShipLoadout {
      * @throws {TypeError} If no hull with that symbol has a known slot layout.
      * @example
      * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
      * ShipLoadout.empty('Sidewinder').slots('hardpoint').length; // -> 2
      * ```
      */
@@ -613,6 +675,10 @@ export class ShipLoadout {
      *
      * @example
      * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const slefJson: string;
+     *
      * const build = ShipLoadout.fromSlef(slefJson);
      * const paid = build.sourcePurchase!;
      * paid.hullValue;                     // -> 189326510, as captured
@@ -669,6 +735,8 @@ export class ShipLoadout {
      * @throws {TypeError} If the hull has no known slot layout.
      * @example
      * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
      * const emptyHardpoints = ShipLoadout.empty('Sidewinder').slots('hardpoint');
      * emptyHardpoints.every((slot) => slot.module === null); // true
      * ```
@@ -721,6 +789,10 @@ export class ShipLoadout {
      * and every nested record are frozen; query again after an edit for current state.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * build.fittedModules().map((module) => `${module.slot}: ${module.symbol}`);
      * ```
      */
@@ -741,6 +813,10 @@ export class ShipLoadout {
      * array when the slot is empty, unresolved, final, or has no engineering menu.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * build.availableBlueprints('FrameShiftDrive').map(({ fdname }) => fdname);
      * ```
      */
@@ -760,6 +836,10 @@ export class ShipLoadout {
      * when the slot is empty, unresolved, final, or has no experimental menu.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * build.availableExperimentalEffects('FrameShiftDrive');
      * // -> ['special_fsd_heavy', ...]
      * ```
@@ -785,6 +865,8 @@ export class ShipLoadout {
      * unrecognised hull).
      * @example
      * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
      * import { ALL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-all';
      * // Pass ALL_MODULES to search every category (a fuel tank, say, is a STANDARD
      * // module yet fits optional slots); pass one category to narrow the bundle.
@@ -815,6 +897,10 @@ export class ShipLoadout {
      * on an unrecognised hull).
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
      * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
      * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
@@ -896,6 +982,14 @@ export class ShipLoadout {
      * modifier block.
      * @example
      * ```ts
+     * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+     * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
+     * const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
+     *
      * build.setModule('FrameShiftDrive', fsd)
      *      .applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
      *          grade: 5,
@@ -1060,6 +1154,10 @@ export class ShipLoadout {
      * @throws {RangeError} If the slot is empty.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * build.setModuleEnabled('TinyHardpoint6', false); // an unpowered heat sink
      * ```
      */
@@ -1125,6 +1223,10 @@ export class ShipLoadout {
      * {@link sourcePurchase} record instead, as provenance rather than as a price.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * const event = build.toLoadoutEvent();
      * event.MaxJumpRange; // recomputed, not the exporter's claim
      * event.HullValue;    // the catalogue's list price
@@ -1200,6 +1302,10 @@ export class ShipLoadout {
      * @param options - As {@link toSlef}, plus `indent` (compact by default).
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * build.toSlefString({ header: { appName: 'MyApp', appVersion: '1.0.0' } });
      * ```
      */
@@ -1483,6 +1589,10 @@ export class ShipLoadout {
      * fuel capacity or cargo capacity cannot be determined.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * const jumps = build.jumpRangeSummary();
      * jumps.max;    // -> 89.41  (one jump's fuel, empty hold)
      * jumps.laden;  // -> the range with the hold full
@@ -1516,6 +1626,10 @@ export class ShipLoadout {
      * which makes every total a lower bound while that list is non-empty.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * const power = build.powerBudget();
      * power.available;                  // -> 20.4 MW generated
      * power.deployed;                   // -> 19.02 MW drawn, hardpoints out
@@ -1551,6 +1665,10 @@ export class ShipLoadout {
      * generator fitted (or has one switched off).
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * const shields = build.shieldMetrics();
      * shields?.strength;              // -> MJ
      * shields?.resistances.thermal;   // -> negative on a stock generator
@@ -1577,6 +1695,10 @@ export class ShipLoadout {
      * is what the game does.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * const hull = build.armourMetrics();
      * hull.hitPoints;                  // -> total hull points
      * hull.resistances.explosive;      // -> lightweight alloy is explosively weak
@@ -1601,6 +1723,10 @@ export class ShipLoadout {
      * @returns The {@link BuildWeaponMetrics}.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     *
      * const guns = build.weaponMetrics();
      * guns.total.damagePerSecond;          // -> burst DPS across the hardpoints
      * guns.total.sustainedDamagePerSecond; // -> with reloads folded in

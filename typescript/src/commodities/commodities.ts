@@ -120,6 +120,8 @@ export interface Commodity {
  * @returns The matching {@link Commodity}, or `null` if no commodity has that symbol.
  * @example
  * ```ts
+ * import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities/commodities';
+ *
  * getCommodityBySymbol('lavianbrandy')?.name; // -> 'Lavian Brandy'
  * ```
  */
@@ -139,6 +141,8 @@ export function getCommodityBySymbol(
  * @returns The matching {@link Commodity}, or `null` if no commodity has that name.
  * @example
  * ```ts
+ * import { getCommodityByName } from '@elite-dangerous-almanac/core/commodities/commodities';
+ *
  * getCommodityByName('platinum')?.category; // -> 'Metals'
  * ```
  */
@@ -160,6 +164,9 @@ export function getCommodityByName(
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
+ * import { commoditiesInCategory } from '@elite-dangerous-almanac/core/commodities/commodities';
+ * import { COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-standard';
+ *
  * commoditiesInCategory('Metals').length;            // -> every metal, standard and rare
  * commoditiesInCategory('metals', COMMODITIES).length; // -> the standard ones only
  * ```

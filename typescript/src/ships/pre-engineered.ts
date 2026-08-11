@@ -119,6 +119,8 @@ export interface PreEngineeredVariant {
  *
  * @example
  * ```ts
+ * import { PRE_ENGINEERED_MODULES } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+ *
  * PRE_ENGINEERED_MODULES.length; // -> 73
  * PRE_ENGINEERED_MODULES[0];
  * // -> { symbol: 'Hpt_Mining_AbrBlstr_Fixed_Small', name: 'Abrasion Blaster',
@@ -142,6 +144,8 @@ export const PRE_ENGINEERED_MODULES: readonly PreEngineeredVariant[] = deepFreez
  *
  * @example
  * ```ts
+ * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+ *
  * getPreEngineeredVariants('Hpt_BasicMissileRack_Fixed_Medium').map((v) => v.blueprint);
  * // -> ['SeekerMissileRack_Drag',
  * //     'SeekerMissileRack_LightWeightThermal',
@@ -169,6 +173,8 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
  *
  * @example
  * ```ts
+ * import { getPreEngineeredByBlueprint } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+ *
  * getPreEngineeredByBlueprint('RailGun_LongShot').map((v) => v.symbol);
  * // -> ['Hpt_Railgun_Fixed_Medium']
  *
@@ -191,6 +197,8 @@ export function getPreEngineeredByBlueprint(blueprint: string): readonly PreEngi
  *
  * @example
  * ```ts
+ * import { isPreEngineered } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+ *
  * isPreEngineered('Hpt_Railgun_Fixed_Medium'); // -> true
  * isPreEngineered('Int_Hyperdrive_Size2_Class1'); // -> false
  * ```

@@ -19,6 +19,8 @@ import { ENCODED_MATERIALS } from './materials-encoded.js';
  *
  * @example
  * ```ts
+ * import { ALL_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-all';
+ *
  * ALL_MATERIALS.length; // -> 146
  * ```
  */

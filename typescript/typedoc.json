@@ -13,10 +13,12 @@
         "src/ships/modules-internal.ts",
         "src/ships/modules-utility.ts"
     ],
+    "projectDocuments": ["docs/guides/*.md"],
     "out": "docs/wiki",
     "plugin": ["typedoc-plugin-markdown", "typedoc-github-wiki-theme"],
     "excludePrivate": true,
     "excludeInternal": true,
     "includeVersion": true,
-    "readme": "none"
+    "treatWarningsAsErrors": true,
+    "readme": "docs/wiki-home.md"
 }

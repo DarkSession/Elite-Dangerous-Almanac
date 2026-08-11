@@ -21,6 +21,8 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  *
  * @example
  * ```ts
+ * import { ITEM_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-item';
+ *
  * ITEM_MICRO_RESOURCES.length; // -> 43
  * ```
  */

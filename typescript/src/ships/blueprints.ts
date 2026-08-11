@@ -48,10 +48,12 @@ import type { Blueprint, BlueprintGrade, EngineeringMaterial } from './engineeri
  *
  * @example
  * ```ts
- * BLUEPRINTS['FSD_LongRange'].name;               // -> 'Increased range'
- * BLUEPRINTS['FSD_LongRange'].grades['5'].features;  // -> [{ label: 'Integrity', ... }, ...]
- * BLUEPRINTS['FSD_LongRange'].grades['5'].materials; // -> [{ symbol: 'Arsenic', name: 'Arsenic', count: 1 }, ...]
- * BLUEPRINTS['BeamLaser_ThermalPlasmaConversion'].grades['5'].damageDistribution;
+ * import { BLUEPRINTS } from '@elite-dangerous-almanac/core/ships/blueprints';
+ *
+ * BLUEPRINTS['FSD_LongRange']?.name;               // -> 'Increased range'
+ * BLUEPRINTS['FSD_LongRange']?.grades['5']?.features;  // -> [{ label: 'Integrity', ... }, ...]
+ * BLUEPRINTS['FSD_LongRange']?.grades['5']?.materials; // -> [{ symbol: 'Arsenic', name: 'Arsenic', count: 1 }, ...]
+ * BLUEPRINTS['BeamLaser_ThermalPlasmaConversion']?.grades['5']?.damageDistribution;
  * // -> { thermal: 0.845, absolute: 0.155 }
  * ```
  */
@@ -94,6 +96,8 @@ export function getBlueprint(fdname: string): Blueprint | null {
  * besides "unknown".
  * @example
  * ```ts
+ * import { getBlueprintGrade } from '@elite-dangerous-almanac/core/ships/blueprints';
+ *
  * const grade = getBlueprintGrade('FSD_LongRange', 5);
  * grade?.features;  // -> [{ label: 'Integrity', ... }, ...]
  * grade?.materials; // -> [{ symbol: 'Arsenic', ... }, ...]
@@ -139,6 +143,8 @@ export function getBlueprintGrade(fdname: string, grade: number): BlueprintGrade
  * nothing.
  * @example
  * ```ts
+ * import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprints';
+ *
  * getBlueprintCost('FSD_LongRange', 5);
  * // grades 1–5, 1+2+3+4+5 rolls — e.g. Datamined Wake Exceptions ×5 (grade-5 only, 5 rolls)
  * getBlueprintCost('FSD_LongRange', 5, 3);

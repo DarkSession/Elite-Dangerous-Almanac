@@ -3,7 +3,7 @@
  * Elite Dangerous models under their catalogue name (Horsehead, Witch Head,
  * Barnard's Loop, the Coalsack and Aquila dark regions, …).
  *
- * This is the small, human-recognisable slice of the nebula catalogue (~19 KB
+ * This is the small, human-recognisable slice of the nebula catalogue (~19 KiB
  * bundled) and the one most apps want. The much larger planetary and procedurally
  * generated classes live in `./nebulae-planetary` and `./nebulae-procgen`, so
  * importing this module never bundles them.
@@ -26,6 +26,8 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  *
  * @example
  * ```ts
+ * import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
+ *
  * REAL_NEBULAE.length; // -> 180
  * REAL_NEBULAE.find((n) => n.name === 'Horsehead Nebula')?.system;
  * // -> 'Horsehead Dark Region IR-V c2-9'

@@ -174,6 +174,8 @@ export interface ShieldMetrics {
  * interpolate between `minMultiplier` and `maxMultiplier`.
  * @example
  * ```ts
+ * import { shieldMassCurveMultiplier } from '@elite-dangerous-almanac/core/ships/shields';
+ *
  * // A 6A generator (opt 540 t) on a 400 t Anaconda performs slightly above spec
  * shieldMassCurveMultiplier(400, {
  *   minMass: 270, optMass: 540, maxMass: 1350,
@@ -247,6 +249,11 @@ const boosterResistances = (
  * benefit from them, but the numbers stay well-defined.
  * @example
  * ```ts
+ * import { shieldMetrics } from '@elite-dangerous-almanac/core/ships/shields';
+ * import type { ShieldGeneratorParams } from '@elite-dangerous-almanac/core/ships/shields';
+ *
+ * declare const gen: ShieldGeneratorParams;
+ *
  * const shields = shieldMetrics({
  *   hullMass: 400,
  *   baseShieldStrength: 350,

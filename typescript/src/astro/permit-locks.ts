@@ -38,6 +38,8 @@
  *
  * @example
  * ```ts
+ * declare const event: { SystemAddress: number }; // an `FSDJump` line, parsed
+ *
  * import {
  *     permitLockForSystemName,
  *     permitLockedSystemForAddress,
@@ -104,6 +106,8 @@ export type PermitLock =
  * when nothing on the list matches.
  * @example
  * ```ts
+ * import { permitLockForSystemName } from '@elite-dangerous-almanac/core/astro/permit-locks';
+ *
  * permitLockForSystemName('sol');
  * // -> { kind: 'system', name: 'Sol', id64: 10477373803n }
  *
@@ -132,6 +136,8 @@ export function permitLockForSystemName(name: string): PermitLock | null {
  * @returns `true` if the name matches a permit-locked system or region.
  * @example
  * ```ts
+ * import { isPermitLockedSystemName } from '@elite-dangerous-almanac/core/astro/permit-locks';
+ *
  * isPermitLockedSystemName('Sirius');                 // -> true  (system lock)
  * isPermitLockedSystemName('Cone Sector GW-W c1-5');  // -> true  (region lock)
  * isPermitLockedSystemName('Colonia');                // -> false

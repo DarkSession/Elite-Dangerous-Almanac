@@ -23,6 +23,8 @@
  *
  * @example
  * ```ts
+ * declare const slefJson: string;
+ *
  * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
  *
  * const build = ShipLoadout.fromSlef(slefJson);
@@ -65,6 +67,42 @@ export interface SourceModuleValue {
  * slot missing from {@link moduleValues} was not priced by the source; that is not the
  * same as free — decorations never carry a price, and a journal also omits `Value` on
  * modules that came with the hull and on some that were genuinely bought.
+ *
+ * @example
+ * What a capture *paid* and what the build is *worth* are different questions, and
+ * editing the build only answers the second one differently.
+ *
+ * ```ts
+ * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * declare const event: LoadoutEvent;
+ *
+ * const build = ShipLoadout.fromLoadout(event);
+ * const paid = build.sourcePurchase; // null for a build assembled here
+ *
+ * paid?.hullValue; // -> 37472252   as the capture stated it
+ * paid?.modulesValue; // -> 50785509
+ * paid?.moduleCount; // -> 40
+ * paid?.valueForSlot('FrameShiftDrive'); // -> 4976355
+ *
+ * // Removing a module makes the live figure unknowable, and leaves the capture alone.
+ * build.removeModule('Slot01_Size6');
+ * build.modulesValue; // -> null
+ * paid?.modulesValue; // -> 50785509, still what the capture said
+ * ```
+ *
+ * @example
+ * A slot the capture never priced reads `null`, which does not mean it was free.
+ *
+ * ```ts
+ * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+ *
+ * declare const paid: SourcePurchaseRecord;
+ *
+ * paid.valueForSlot('ShipCockpit'); // -> null, the journal priced no cockpit
+ * paid.entryForSlot('ShipCockpit'); // -> null, so nothing to attribute either
+ * ```
  */
 export class SourcePurchaseRecord {
     /** Hull cost in credits as the source stated it, or `null` if it stated none. */
@@ -117,6 +155,11 @@ export class SourcePurchaseRecord {
      * the build about which module occupies a slot would price the one that is not there.
      * @example
      * ```ts
+     * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+     * import { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+     *
+     * declare const event: LoadoutEvent;
+     *
      * SourcePurchaseRecord.fromLoadout(event)?.rebuy; // -> 19097585
      * ```
      */
@@ -161,6 +204,10 @@ export class SourcePurchaseRecord {
      * not, rather than being handed one number that hides it.
      * @example
      * ```ts
+     * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+     *
+     * declare const paid: SourcePurchaseRecord;
+     *
      * // Do this capture's parts add up to the total it declares?
      * paid.modulesValue !== null && paid.modulesValue !== paid.pricedModulesValue;
      * // -> true on a capture that priced fewer modules than its total counted
@@ -183,6 +230,10 @@ export class SourcePurchaseRecord {
      * the capture said nothing about, not one that cost nothing.
      * @example
      * ```ts
+     * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+     *
+     * declare const paid: SourcePurchaseRecord;
+     *
      * paid.valueForSlot('PowerPlant'); // -> 20692437
      * paid.valueForSlot('frameshiftdrive'); // the same mount, either spelling
      * ```
@@ -208,6 +259,12 @@ export class SourcePurchaseRecord {
      * exactly that.
      * @example
      * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     * import type { SourcePurchaseRecord } from '@elite-dangerous-almanac/core/ships/source-purchase';
+     *
+     * declare const build: ShipLoadout;
+     * declare const paid: SourcePurchaseRecord;
+     *
      * const entry = paid.entryForSlot('FrameShiftDrive');
      * entry?.item === build.fittedModuleAt('FrameShiftDrive')?.symbol.toLowerCase();
      * // -> false once the drive has been swapped: the price is the old drive's

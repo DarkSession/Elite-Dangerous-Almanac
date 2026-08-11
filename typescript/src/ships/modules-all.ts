@@ -34,6 +34,8 @@ import { UTILITY_MODULES } from './modules-utility.js';
  *
  * @example
  * ```ts
+ * import { ALL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-all';
+ *
  * ALL_MODULES.length;                                          // -> 1199
  * ALL_MODULES.filter((m) => m.category === 'utility').length;  // -> 35
  * ```

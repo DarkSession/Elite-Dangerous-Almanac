@@ -30,6 +30,8 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  *
  * @example
  * ```ts
+ * import type { GalacticPlanePosition } from '@elite-dangerous-almanac/core/astro/codex-region';
+ *
  * const point: GalacticPlanePosition = { x: 0, z: 0 };
  * ```
  */
@@ -49,6 +51,8 @@ export interface GalacticPlanePosition {
  *
  * @example
  * ```ts
+ * import type { CodexRegionBounds } from '@elite-dangerous-almanac/core/astro/codex-region';
+ *
  * const bounds: CodexRegionBounds = {
  *   minX: -100, maxX: 100, minZ: -200, maxZ: 200,
  * };
@@ -75,6 +79,9 @@ export interface CodexRegionBounds {
  *
  * @example
  * ```ts
+ * import { getCodexRegionByName } from '@elite-dangerous-almanac/core/astro/codex-region';
+ * import type { CodexRegion } from '@elite-dangerous-almanac/core/astro/codex-region';
+ *
  * const innerOrionSpur: CodexRegion | null = getCodexRegionByName('Inner Orion Spur');
  * ```
  */
@@ -108,8 +115,10 @@ export interface CodexRegion {
  *
  * @example
  * ```ts
+ * import { CODEX_REGIONS } from '@elite-dangerous-almanac/core/astro/codex-region';
+ *
  * CODEX_REGIONS.length; // -> 42
- * CODEX_REGIONS[0].name; // -> 'Galactic Centre'
+ * CODEX_REGIONS[0]?.name; // -> 'Galactic Centre'
  * ```
  */
 export const CODEX_REGIONS: readonly CodexRegion[] = deepFreeze(
@@ -130,6 +139,8 @@ const BY_NAME: ReadonlyMap<string, CodexRegion> = new Map(
  * or otherwise unknown.
  * @example
  * ```ts
+ * import { getCodexRegion } from '@elite-dangerous-almanac/core/astro/codex-region';
+ *
  * getCodexRegion(18)?.name; // -> 'Inner Orion Spur'
  * ```
  */
@@ -145,6 +156,8 @@ export function getCodexRegion(id: number): CodexRegion | null {
  * @returns The {@link CodexRegion}, or `null` if no region has that name.
  * @example
  * ```ts
+ * import { getCodexRegionByName } from '@elite-dangerous-almanac/core/astro/codex-region';
+ *
  * getCodexRegionByName('the void')?.id; // -> 42
  * ```
  */

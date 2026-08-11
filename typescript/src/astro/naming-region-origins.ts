@@ -31,6 +31,8 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  *
  * @example
  * ```ts
+ * import type { NamingRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
+ *
  * const origin: NamingRegionOrigin = {
  *   name: 'Example Sector',
  *   x0: 0, y0: 0, z0: 0,
@@ -69,6 +71,8 @@ const CATALOGUE: ReadonlyMap<string, NamingRegionOrigin> = new Map(
  * @returns Its canonical origin record, or `null` when it is not catalogued.
  * @example
  * ```ts
+ * import { getHandAuthoredRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
+ *
  * getHandAuthoredRegionOrigin('  PLEIADES SECTOR ')?.name; // -> 'Pleiades Sector'
  * getHandAuthoredRegionOrigin('Synuefe');                  // -> null
  * ```
@@ -88,6 +92,8 @@ export function getHandAuthoredRegionOrigin(name: string): NamingRegionOrigin | 
  * @returns The region origin, or `null` if the name cannot be resolved.
  * @example
  * ```ts
+ * import { resolveNamingRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
+ *
  * resolveNamingRegionOrigin('Pleiades Sector'); // catalogued, hand-authored origin
  * resolveNamingRegionOrigin('Synuefe');         // origin derived from its grid position
  * resolveNamingRegionOrigin('not a region');    // -> null

@@ -83,6 +83,8 @@ const ROW_INDEX: ReadonlyMap<number, readonly [number, number, number][]> = (() 
  *
  * @example
  * ```ts
+ * import { CODEX_REGION_MAP_X0 } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ *
  * CODEX_REGION_MAP_X0; // -> -49985
  * ```
  */
@@ -92,6 +94,8 @@ export const CODEX_REGION_MAP_X0 = projection.x0;
  *
  * @example
  * ```ts
+ * import { CODEX_REGION_MAP_Y0 } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ *
  * CODEX_REGION_MAP_Y0; // -> -40985
  * ```
  */
@@ -101,6 +105,8 @@ export const CODEX_REGION_MAP_Y0 = projection.y0;
  *
  * @example
  * ```ts
+ * import { CODEX_REGION_MAP_Z0 } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ *
  * CODEX_REGION_MAP_Z0; // -> -24105
  * ```
  */
@@ -110,6 +116,8 @@ export const CODEX_REGION_MAP_Z0 = projection.z0;
  *
  * @example
  * ```ts
+ * import { CODEX_REGION_MAP_LY_PER_CELL } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ *
  * CODEX_REGION_MAP_LY_PER_CELL; // -> approximately 49.3494
  * ```
  */
@@ -122,6 +130,8 @@ export const CODEX_REGION_MAP_LY_PER_CELL = projection.lyPerCell;
  *
  * @example
  * ```ts
+ * import { findCodexRegionAt } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ *
  * findCodexRegionAt({ x: 0, z: 0 });        // the plane position the map is indexed by
  * findCodexRegionAt({ x: 0, y: 0, z: 0 });  // a full position, `y` and all
  * ```
@@ -140,6 +150,9 @@ export interface CodexRegionPoint extends GalacticPlanePosition {
  *
  * @example
  * ```ts
+ * import { findCodexRegionForBoxel } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ * import type { BoxelCodexRegionLookup } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ *
  * const result: BoxelCodexRegionLookup = findCodexRegionForBoxel(3309179996515n);
  * ```
  */
@@ -180,6 +193,8 @@ function regionIdAtCell(px: number, pz: number): number {
  * lies outside the mapped region grid.
  * @example
  * ```ts
+ * import { findCodexRegionAt } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ *
  * findCodexRegionAt({ x: 0, z: 0 })?.name;      // -> 'Inner Orion Spur' (near Sol)
  * findCodexRegionAt({ x: 0, z: 25900 })?.name;  // -> 'Galactic Centre'
  *
@@ -216,6 +231,8 @@ export function findCodexRegionAt(point: CodexRegionPoint): CodexRegion | null {
  * @throws {RangeError} If the address is outside 64 bits.
  * @example
  * ```ts
+ * import { findCodexRegionForBoxel } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ *
  * findCodexRegionForBoxel(5306097239922n).region?.name; // -> the codex region
  *
  * // Approximate position from an id64 alone (boxel corner, in light-years):

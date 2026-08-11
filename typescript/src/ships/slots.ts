@@ -93,6 +93,9 @@ export type SlotRestriction = HardpointRestriction | OptionalRestriction;
  * `ShipLoadout.modulesForSlot` with the catalogue you care about.
  * @example
  * ```ts
+ * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import { SLOT_RESTRICTION_LABELS } from '@elite-dangerous-almanac/core/ships/slots';
+ *
  * const slot = ShipLoadout.empty('LakonMiner').slots('hardpoint')[0]!;
  * slot.restriction && SLOT_RESTRICTION_LABELS[slot.restriction]; // -> 'mining tools'
  * ```
@@ -243,6 +246,9 @@ export interface SimpleBuildSlot extends BuildSlotBase {
  *
  * @example
  * ```ts
+ * import { getShipSlots } from '@elite-dangerous-almanac/core/ships/ships';
+ * import { enumerateSlots } from '@elite-dangerous-almanac/core/ships/slots';
+ *
  * const slot = enumerateSlots(getShipSlots('Anaconda')!)[0]!;
  * if (slot.kind === 'hardpoint') {
  *   slot.restriction; // HardpointRestriction | undefined
@@ -464,6 +470,9 @@ const pad2 = (n: number): string => String(n).padStart(2, '0');
  * never compete for the same string.
  * @example
  * ```ts
+ * import { getShipSlots } from '@elite-dangerous-almanac/core/ships/ships';
+ * import { enumerateSlots } from '@elite-dangerous-almanac/core/ships/slots';
+ *
  * enumerateSlots(getShipSlots('Anaconda')!).filter((s) => s.kind === 'hardpoint');
  * // -> [{ key: 'HugeHardpoint1', size: 4, ... }, { key: 'LargeHardpoint1', size: 3, ... }, ...]
  * enumerateSlots(getShipSlots('Anaconda')!)
@@ -569,6 +578,8 @@ export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
  * layout ({@link enumerateSlots}) rather than trusting the number returned here.
  * @example
  * ```ts
+ * import { parseSlotName } from '@elite-dangerous-almanac/core/ships/slots';
+ *
  * parseSlotName('Slot03_Size5'); // -> { kind: 'optional', size: 5 }
  * parseSlotName('HugeHardpoint1'); // -> { kind: 'hardpoint', size: 4 }
  * parseSlotName('LargeMiningHardpoint1');

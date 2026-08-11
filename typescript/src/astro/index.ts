@@ -16,8 +16,10 @@
  * - *galactic codex region* — {@link findCodexRegionAt} (one of the 42 codex zones).
  *
  * None of those is the **nebula catalogue** — the nebulae themselves, and where
- * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE} and the catalogues
- * on the `./nebulae-*` subpaths.
+ * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE},
+ * {@link PROCGEN_NEBULAE}, and — on their own subpaths, so importing one never bundles
+ * the rest — {@link astro/nebulae-planetary!PLANETARY_NEBULAE | PLANETARY_NEBULAE} and
+ * {@link astro/nebulae-all!ALL_NEBULAE | ALL_NEBULAE}.
  *
  * **Coordinate spaces have different shapes.**
  * {@link GalacticPosition} is `{x, y, z}` in light-years with Sol at the origin — what the journal,
@@ -34,6 +36,85 @@
  *
  * **Permit locks** are six similarly-named lookups; {@link permitLockForSystemName}
  * is the one to start from (it answers for both kinds of lock, from a name alone).
+ *
+ * @example
+ * Start here: a name in, an `id64` out, and back again.
+ *
+ * ```ts
+ * import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
+ *
+ * const system = ProceduralSystem.fromName('Synuefe EN-H d11-96');
+ * system?.systemAddress; // -> 3309179996515n
+ * system?.namingRegionName; // -> 'Synuefe'
+ * system?.massCode; // -> 'd'
+ *
+ * ProceduralSystem.fromSystemAddress(3309179996515n).name; // -> 'Synuefe EN-H d11-96'
+ * ```
+ *
+ * `fromName` returns `null` for a string that is not a procedural name — Sol and the
+ * other hand-named systems are deliberately outside this type.
+ *
+ * @example
+ * The four meanings of "region", all answered for one position — the Pleiades. They
+ * disagree, which is the point: each names a different thing.
+ *
+ * ```ts
+ * import { sectorNameFromGalacticPosition } from '@elite-dangerous-almanac/core/astro/galaxy-grid';
+ * import { resolveNamingRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
+ * import { findHandAuthoredRegionAt } from '@elite-dangerous-almanac/core/astro/hand-authored-regions';
+ * import { findCodexRegionAt } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
+ *
+ * const position = { x: -81.625, y: -151.3125, z: -376.0625 };
+ *
+ * sectorNameFromGalacticPosition(position); // -> 'Synuefai'          procedural sector
+ * findHandAuthoredRegionAt(position)?.name; // -> 'Pleiades Sector'   hand-authored region
+ * findCodexRegionAt(position)?.name; // -> 'Inner Orion Spur'  codex region
+ * resolveNamingRegionOrigin('Synuefai')?.x0; // -> 1556480            naming-region origin
+ * ```
+ *
+ * And the nebula catalogue, which is none of those — it answers "what is *near* here":
+ *
+ * ```ts
+ * import { nearestNebulae } from '@elite-dangerous-almanac/core/astro/nebulae';
+ * import { REAL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-real';
+ *
+ * const position = { x: -81.625, y: -151.3125, z: -376.0625 };
+ *
+ * nearestNebulae(position, REAL_NEBULAE, 2).map((n) => [n.name, n.distanceLy]);
+ * // -> [['Pleiades', 32.74…], ['Taurus Dark Region', 91.07…]]
+ * ```
+ *
+ * The catalogue argument is required here rather than defaulted: `ALL_NEBULAE` is
+ * 682.3 KiB, so importing it must be your decision.
+ *
+ * @example
+ * The two coordinate spaces, side by side. Light-years and sector indices are both
+ * three numbers, so the axis names are what stop you mixing them up.
+ *
+ * ```ts
+ * import { sectorGridPositionFromGalacticPosition } from '@elite-dangerous-almanac/core/astro/galaxy-grid';
+ * import { sectorNameFromGridPosition } from '@elite-dangerous-almanac/core/astro/sector-name';
+ *
+ * // GalacticPosition: light-years from Sol — what a journal or EDSM gives you.
+ * const position = { x: -81.625, y: -151.3125, z: -376.0625 };
+ *
+ * // SectorGridPosition: integer indices on the 1280 ly naming grid.
+ * const grid = sectorGridPositionFromGalacticPosition(position);
+ * grid; // -> { sectorX: 38, sectorY: 31, sectorZ: 18 }
+ *
+ * sectorNameFromGridPosition(grid); // -> 'Synuefai'
+ * ```
+ *
+ * @example
+ * Permit locks come in two kinds, and one lookup answers for both from a name alone.
+ *
+ * ```ts
+ * import { permitLockForSystemName } from '@elite-dangerous-almanac/core/astro/permit-locks';
+ *
+ * permitLockForSystemName('Sol')?.kind; // -> 'system'   individually locked
+ * permitLockForSystemName('Col 70 Sector AB-C d1-23')?.kind; // -> 'region'   the whole region is locked
+ * permitLockForSystemName('Synuefe EN-H d11-96'); // -> null       not locked at all
+ * ```
  *
  * @packageDocumentation
  */

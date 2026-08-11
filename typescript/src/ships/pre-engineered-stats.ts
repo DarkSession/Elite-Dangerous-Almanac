@@ -85,8 +85,11 @@ function modifiersWithExperimental(
  *
  * @example
  * ```ts
+ * import { getPreEngineeredByBlueprint } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+ * import { getPreEngineeredModifiers } from '@elite-dangerous-almanac/core/ships/pre-engineered-stats';
+ *
  * const [railgun] = getPreEngineeredByBlueprint('Weapon_HighCapacity');
- * getPreEngineeredModifiers(railgun);
+ * if (railgun) getPreEngineeredModifiers(railgun);
  * // -> [{ Label: 'Mass', Value: 2.85, OriginalValue: 1.5 }, ...]
  * ```
  */
@@ -135,6 +138,11 @@ function sameModifier(actual: EngineeringModifier, expected: EngineeringModifier
  *
  * @example
  * ```ts
+ * import { identifyPreEngineeredVariant } from '@elite-dangerous-almanac/core/ships/pre-engineered-stats';
+ * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * declare const loadoutEvent: LoadoutEvent;
+ *
  * const fitted = loadoutEvent.Modules.find((m) => m.Slot === 'FrameShiftDrive')!;
  * identifyPreEngineeredVariant(fitted)?.acquisition; // -> 'techBroker', or null
  * ```
@@ -190,6 +198,11 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
  *
  * @example
  * ```ts
+ * import type { PreEngineeredVariant } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+ * import { unresolvedModifiers } from '@elite-dangerous-almanac/core/ships/pre-engineered-stats';
+ *
+ * declare const railgun: PreEngineeredVariant;
+ *
  * unresolvedModifiers(railgun); // -> []  (every label it changes resolves)
  * ```
  */
@@ -222,7 +235,11 @@ export function unresolvedModifiers(variant: PreEngineeredVariant): string[] {
  *
  * @example
  * ```ts
- * const [shard] = getPreEngineeredVariants('Hpt_Guardian_ShardCannon_Fixed_Medium');
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
+ * import { getPreEngineeredStats } from '@elite-dangerous-almanac/core/ships/pre-engineered-stats';
+ *
+ * const shard = getPreEngineeredVariants('Hpt_Guardian_ShardCannon_Fixed_Medium')[0]!;
  * const stock = getModuleBySymbol(shard.symbol)!;
  * const fitted = getPreEngineeredStats(shard)!;
  * stock.mass;  // -> 4

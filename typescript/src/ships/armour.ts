@@ -153,6 +153,8 @@ const resistancesOf = <T extends HullReinforcementParams>(
  * @returns The {@link ArmourMetrics}.
  * @example
  * ```ts
+ * import { armourMetrics } from '@elite-dangerous-almanac/core/ships/armour';
+ *
  * const hull = armourMetrics({
  *   baseArmour: 525,
  *   bulkhead: { hullBoost: 0.8, kineticResistance: -0.2, explosiveResistance: -0.4 },

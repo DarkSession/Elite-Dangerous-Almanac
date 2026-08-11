@@ -38,6 +38,8 @@ export type SystemAddressInput = bigint | number | string;
  * address layout is the decoder's `RangeError` to raise, not a conversion failure.
  * @example
  * ```ts
+ * import { tryToSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address-input';
+ *
  * tryToSystemAddress(10477373803);   // -> 10477373803n
  * tryToSystemAddress('10477373803'); // -> 10477373803n
  * tryToSystemAddress(1.5);           // -> null
@@ -73,6 +75,9 @@ export function tryToSystemAddress(address: SystemAddressInput): bigint | null {
  * `RangeError`.
  * @example
  * ```ts
+ * import { toSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address-input';
+ * declare const event: { SystemAddress: number }; // an `FSDJump` line, parsed
+ *
  * toSystemAddress(event.SystemAddress); // journal number -> bigint
  * toSystemAddress('3309179996515');     // -> 3309179996515n
  * ```

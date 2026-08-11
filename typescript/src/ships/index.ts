@@ -28,9 +28,13 @@
  *   them a narrower set. Capability guards such as {@link hasFrameShiftDriveJumpStats}
  *   and {@link hasWeaponDamageStats} narrow the sparse record before stat access. The
  *   catalogues live on explicit subpaths split by Frontier's
- *   four outfitting categories (`./modules-core`, `./modules-internal`,
- *   `./modules-hardpoint`, `./modules-utility`, and `./modules-all`); each record
- *   carries the module's identity and its stats.
+ *   four outfitting categories — {@link ships/modules-core!CORE_MODULES | CORE_MODULES},
+ *   {@link ships/modules-internal!INTERNAL_MODULES | INTERNAL_MODULES},
+ *   {@link ships/modules-hardpoint!HARDPOINT_MODULES | HARDPOINT_MODULES},
+ *   {@link ships/modules-utility!UTILITY_MODULES | UTILITY_MODULES} and
+ *   {@link ships/modules-all!ALL_MODULES | ALL_MODULES}; each record carries the
+ *   module's identity and its stats. They are reachable only by their own subpath, so
+ *   importing one never bundles the rest.
  * - **Jump range & SLEF** — {@link singleJumpRange}, {@link fuelPerJump} and
  *   {@link totalRange} are pure maths over {@link FrameShiftDriveParams} and cost
  *   nothing but the function; {@link parseSlef} reads an Inara SLEF export — or a bare
@@ -58,6 +62,83 @@
  * Identity primarily from EDCD FDevIDs (`shipyard.csv`, `outfitting.csv`), with
  * supplemental module identities documented in the source record; stats and slot
  * layouts from EDCD/coriolis-data and EDSY. See [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ *
+ * @example
+ * **The whole-build layer.** {@link ShipLoadout} reads a capture and answers the
+ * questions an outfitting screen asks. This is the one to start from, and the one that
+ * pulls in every catalogue.
+ *
+ * ```ts
+ * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import type { LoadoutEvent } from '@elite-dangerous-almanac/core/ships/slef';
+ *
+ * declare const event: LoadoutEvent;
+ *
+ * // Figures below are one build's — a Krait Phantom explorer.
+ * const build = ShipLoadout.fromLoadout(event);
+ * build.maxJumpRange(); // -> 60.5478  (ly)
+ * build.powerBudget().withinBudget; // -> true
+ * build.shieldMetrics()?.strength; // -> 743.12   (MJ)
+ * build.weaponMetrics().total.damagePerSecond; // -> 34
+ * ```
+ *
+ * @example
+ * **The lookup layer.** One small hull catalogue, and 1199 modules split by Frontier's
+ * four outfitting categories. Lookups ignore case and surrounding whitespace.
+ *
+ * ```ts
+ * import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+ *
+ * getShipBySymbol('empire_trader')?.name; // -> 'Imperial Clipper'
+ *
+ * // Pass a category to bound what you bundle; omit it to search all 1199.
+ * CORE_MODULES.length; // -> 521
+ * getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)?.name;
+ * // -> 'Frame Shift Drive'
+ * ```
+ *
+ * The catalogues live on their own subpaths (`./modules-core`, `./modules-internal`,
+ * `./modules-hardpoint`, `./modules-utility`, `./modules-all`) precisely so importing
+ * one does not bundle the rest — `./modules-all` is 310.8 KiB.
+ *
+ * @example
+ * **The data-free layer.** Each calculation is its own module over plain constants, so
+ * it costs nothing but the function — no catalogue, no build.
+ *
+ * ```ts
+ * import { singleJumpRange } from '@elite-dangerous-almanac/core/ships/jump-range';
+ *
+ * singleJumpRange(1237.3, 6.8, {
+ *     optMass: 7528.04,
+ *     maxFuel: 6.8,
+ *     fuelMul: 0.011,
+ *     fuelPower: 2.5025,
+ *     jumpBoost: 10.5, // Guardian FSD Booster
+ * }); // -> 89.4147  (ly)
+ * ```
+ *
+ * `./power`, `./shields`, `./armour`, `./weapons`, `./ammunition` and `./resistances`
+ * are the same shape: pass the constants, get the number.
+ *
+ * @example
+ * **The slot layer.** Slot keys come from the game and are not derivable from position,
+ * so read them rather than composing them — and let {@link ShipLoadout.modulesForSlot}
+ * tell you what actually fits.
+ *
+ * ```ts
+ * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import { CORE_MODULES } from '@elite-dangerous-almanac/core/ships/modules-core';
+ *
+ * const build = ShipLoadout.empty('Anaconda');
+ *
+ * build.slots('optional').length; // -> 14
+ * build.slots()[0]?.key; // -> the key setModule takes
+ *
+ * // Only the modules this mount will accept, by size and restriction.
+ * build.modulesForSlot('FrameShiftDrive', CORE_MODULES);
+ * ```
  *
  * @packageDocumentation
  */

@@ -93,6 +93,11 @@ export interface AmmunitionCapacity {
  * engineered figures themselves, so imported values pass through untouched.
  * @example
  * ```ts
+ * import { ammunitionCapacity } from '@elite-dangerous-almanac/core/ships/ammunition';
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
+ * import { UTILITY_MODULES } from '@elite-dangerous-almanac/core/ships/modules-utility';
+ *
  * ammunitionCapacity(getModuleBySymbol('Hpt_ChaffLauncher_Tiny', UTILITY_MODULES)!);
  * // -> { clipSize: 1, hopper: 10, total: 11, unlimited: false }
  *

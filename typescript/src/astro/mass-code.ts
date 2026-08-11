@@ -26,6 +26,8 @@ const CODE_A = 'a'.charCodeAt(0);
  * @throws {RangeError} If `code` is not a single letter in `a`–`h`.
  * @example
  * ```ts
+ * import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-code';
+ *
  * massCodeToSizeClass('d'); // -> 3
  * ```
  */
@@ -45,6 +47,8 @@ export function massCodeToSizeClass(code: string): number {
  * @throws {RangeError} If `sizeClass` is outside 0–7.
  * @example
  * ```ts
+ * import { sizeClassToMassCode } from '@elite-dangerous-almanac/core/astro/mass-code';
+ *
  * sizeClassToMassCode(3); // -> 'd'
  * ```
  */

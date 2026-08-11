@@ -18,6 +18,8 @@ import regionsData from '../../../data/astro/permit-locked-regions.jsonc' with {
  *
  * @example
  * ```ts
+ * import { PERMIT_LOCKED_REGIONS } from '@elite-dangerous-almanac/core/astro/permit-locked-regions';
+ *
  * PERMIT_LOCKED_REGIONS.slice(0, 3); // -> [ 'Bleia1', 'Bleia2', 'Bleia3' ]
  * ```
  */
@@ -51,6 +53,8 @@ export function isPermitLockedRegionName(name: string): boolean {
  * prefix applies.
  * @example
  * ```ts
+ * import { permitLockedRegionForSystemName } from '@elite-dangerous-almanac/core/astro/permit-locked-regions';
+ *
  * permitLockedRegionForSystemName('Col 70 Sector AA-D b17-0');
  * // -> 'Col 70 Sector'
  * ```

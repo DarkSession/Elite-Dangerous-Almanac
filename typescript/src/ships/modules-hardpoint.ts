@@ -31,6 +31,8 @@ import { buildModuleCatalogue, type ModuleRecord } from './internal/module-catal
  *
  * @example
  * ```ts
+ * import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
+ *
  * HARDPOINT_MODULES.length; // -> 159
  * HARDPOINT_MODULES.filter((m) => m.mount === 'Turreted').length; // turreted variants
  * ```

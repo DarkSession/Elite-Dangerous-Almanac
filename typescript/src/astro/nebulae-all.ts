@@ -3,7 +3,7 @@
  * nebulae in one array.
  *
  * @remarks
- * **This module pulls in every nebula catalogue (~682 KB bundled)** — it exists for
+ * **This module pulls in every nebula catalogue (~682 KiB bundled)** — it exists for
  * consumers that really do want to search all 5835 records (a "nearest nebula to my
  * position" tool, say). If you only need one class, import that catalogue's module
  * (`./nebulae-real`, `./nebulae-planetary`, `./nebulae-procgen`) and nothing else
@@ -31,6 +31,8 @@ import { PROCGEN_NEBULAE } from './nebulae-procgen.js';
  *
  * @example
  * ```ts
+ * import { ALL_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-all';
+ *
  * ALL_NEBULAE.length;                                        // -> 5835
  * ALL_NEBULAE.filter((n) => n.type === 'procgen').length;    // -> 166
  * ```

@@ -23,6 +23,8 @@ import encodedData from '../../../data/materials/materials-encoded.jsonc' with {
  *
  * @example
  * ```ts
+ * import { ENCODED_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials-encoded';
+ *
  * ENCODED_MATERIALS.find((m) => m.name === 'Datamined Wake Exceptions')?.grade; // -> 5
  * ```
  */

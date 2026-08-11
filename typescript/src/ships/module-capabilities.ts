@@ -7,6 +7,12 @@
  *
  * @example
  * ```ts
+ * import { hasFrameShiftDriveJumpStats, hasWeaponDamageStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { weaponMetrics } from '@elite-dangerous-almanac/core/ships/weapons';
+ *
+ * declare const journalItem: string;
+ *
  * const module = getModuleBySymbol(journalItem);
  * if (hasFrameShiftDriveJumpStats(module)) module.maxFuel; // required, in tonnes
  * if (hasWeaponDamageStats(module)) weaponMetrics(module);
@@ -97,7 +103,13 @@ function hasNumberStats<K extends keyof OutfittingModule>(
  * @returns Whether all fields in {@link FrameShiftDriveJumpStats} are numeric.
  * @example
  * ```ts
- * if (hasFrameShiftDriveJumpStats(module)) singleJumpRange(500, module.maxFuel, module);
+ * import type { OutfittingModule } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { singleJumpRange } from '@elite-dangerous-almanac/core/ships/jump-range';
+ * import { hasFrameShiftDriveJumpStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
+ *
+ * declare const record: OutfittingModule | null;
+ *
+ * if (hasFrameShiftDriveJumpStats(record)) singleJumpRange(500, record.maxFuel, record);
  * ```
  */
 export function hasFrameShiftDriveJumpStats(
@@ -113,7 +125,12 @@ export function hasFrameShiftDriveJumpStats(
  * @returns Whether both fields in {@link PowerGenerationStats} are numeric.
  * @example
  * ```ts
- * if (hasPowerGenerationStats(module)) module.powerCapacity; // MW
+ * import type { OutfittingModule } from '@elite-dangerous-almanac/core/ships/modules';
+ * declare const record: OutfittingModule | null;
+ *
+ * import { hasPowerGenerationStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
+ *
+ * if (hasPowerGenerationStats(record)) record.powerCapacity; // MW
  * ```
  */
 export function hasPowerGenerationStats(
@@ -129,7 +146,12 @@ export function hasPowerGenerationStats(
  * @returns Whether every field in {@link PowerDistributorStats} is numeric.
  * @example
  * ```ts
- * if (hasPowerDistributorStats(module)) module.weaponsRecharge; // MJ/s
+ * import type { OutfittingModule } from '@elite-dangerous-almanac/core/ships/modules';
+ * declare const record: OutfittingModule | null;
+ *
+ * import { hasPowerDistributorStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
+ *
+ * if (hasPowerDistributorStats(record)) record.weaponsRecharge; // MJ/s
  * ```
  */
 export function hasPowerDistributorStats(
@@ -156,7 +178,12 @@ export function hasPowerDistributorStats(
  * and shield generators satisfy this capability.
  * @example
  * ```ts
- * if (hasMassCurveStats(module)) module.optMultiplier; // dimensionless
+ * import type { OutfittingModule } from '@elite-dangerous-almanac/core/ships/modules';
+ * declare const record: OutfittingModule | null;
+ *
+ * import { hasMassCurveStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
+ *
+ * if (hasMassCurveStats(record)) record.optMultiplier; // dimensionless
  * ```
  */
 export function hasMassCurveStats(
@@ -182,7 +209,12 @@ export function hasMassCurveStats(
  * @returns Whether both fields in {@link ShieldRegenerationStats} are numeric.
  * @example
  * ```ts
- * if (hasShieldRegenerationStats(module)) module.shieldRegenRate; // MJ/s
+ * import type { OutfittingModule } from '@elite-dangerous-almanac/core/ships/modules';
+ * declare const record: OutfittingModule | null;
+ *
+ * import { hasShieldRegenerationStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
+ *
+ * if (hasShieldRegenerationStats(record)) record.shieldRegenRate; // MJ/s
  * ```
  */
 export function hasShieldRegenerationStats(
@@ -200,7 +232,13 @@ export function hasShieldRegenerationStats(
  * weapons legitimately omit different stats.
  * @example
  * ```ts
- * if (hasWeaponDamageStats(module)) weaponMetrics(module);
+ * import type { OutfittingModule } from '@elite-dangerous-almanac/core/ships/modules';
+ * declare const record: OutfittingModule | null;
+ *
+ * import { hasWeaponDamageStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
+ * import { weaponMetrics } from '@elite-dangerous-almanac/core/ships/weapons';
+ *
+ * if (hasWeaponDamageStats(record)) weaponMetrics(record);
  * ```
  */
 export function hasWeaponDamageStats(

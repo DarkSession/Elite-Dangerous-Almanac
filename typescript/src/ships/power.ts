@@ -166,6 +166,8 @@ function bandIndex(priority: number | undefined): number {
  * lower bound rather than silently adding the module up as drawing nothing.
  * @example
  * ```ts
+ * import { powerBudget } from '@elite-dangerous-almanac/core/ships/power';
+ *
  * const budget = powerBudget(4.8, [
  *   { draw: 3.0, priority: 1 },
  *   { draw: 2.0, priority: 4 },  // over budget: this group goes dark

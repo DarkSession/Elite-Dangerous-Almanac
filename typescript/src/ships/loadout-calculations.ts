@@ -107,6 +107,8 @@ function result<T>(
  * @returns Mass in tonnes, or a result listing every missing dependency.
  * @example
  * ```ts
+ * import { calculateUnladenMass } from '@elite-dangerous-almanac/core/ships/loadout-calculations';
+ *
  * const result = calculateUnladenMass(25, [{ slot: 'Radar', symbol: 'sensors', mass: 2 }]);
  * if (result.complete) result.value; // -> 27 tonnes; narrowed to number
  * ```
@@ -137,6 +139,8 @@ export function calculateUnladenMass(
  * @returns Cargo capacity in tonnes. A build with no rack is the complete value `0`.
  * @example
  * ```ts
+ * import { calculateCargoCapacity } from '@elite-dangerous-almanac/core/ships/loadout-calculations';
+ *
  * calculateCargoCapacity([]).value; // -> 0, a complete result
  * ```
  */
@@ -160,6 +164,8 @@ export function calculateCargoCapacity(
  * @returns Main and reserve capacity. No fitted tank is the complete main value `0`.
  * @example
  * ```ts
+ * import { calculateFuelCapacity } from '@elite-dangerous-almanac/core/ships/loadout-calculations';
+ *
  * const result = calculateFuelCapacity(0.3, [
  *   { slot: 'FuelTank', symbol: 'tank', mass: 2, fuelCapacity: 4 },
  * ]);

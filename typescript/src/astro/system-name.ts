@@ -57,6 +57,8 @@ const CODE_A_LOWER = 'a'.charCodeAt(0);
  * @returns The packed base-26 boxel code.
  * @example
  * ```ts
+ * import { lettersToBoxelCode } from '@elite-dangerous-almanac/core/astro/system-name';
+ *
  * lettersToBoxelCode(4, 13, 7, 11); // the 'EN-H …11' boxel of a d-class sector
  * ```
  */
@@ -73,6 +75,9 @@ export function lettersToBoxelCode(l1: number, l2: number, l3: number, n1: numbe
  *
  * @example
  * ```ts
+ * import { boxelCodeToLetters } from '@elite-dangerous-almanac/core/astro/system-name';
+ * import type { BoxelLetters } from '@elite-dangerous-almanac/core/astro/system-name';
+ *
  * const code: BoxelLetters = boxelCodeToLetters(198_410);
  * // -> { l1: 4, l2: 13, l3: 7, n1: 11 }, the 'EN-H …11' boxel
  * ```
@@ -96,6 +101,8 @@ export interface BoxelLetters {
  * @returns The three letter indices (`0`–`25` each) and the boxel number `n1`.
  * @example
  * ```ts
+ * import { boxelCodeToLetters, lettersToBoxelCode } from '@elite-dangerous-almanac/core/astro/system-name';
+ *
  * boxelCodeToLetters(lettersToBoxelCode(4, 13, 7, 11)); // -> { l1: 4, l2: 13, l3: 7, n1: 11 }
  * ```
  */
@@ -245,6 +252,8 @@ export interface IsProceduralSystemNameOptions {
  * system (`Sol`, `Maia`) is `false`: it is a real system, just not a procedural name.
  * @example
  * ```ts
+ * import { isProceduralSystemName } from '@elite-dangerous-almanac/core/astro/system-name';
+ *
  * isProceduralSystemName('Blae Eock KC-C d0');                    // -> true
  * isProceduralSystemName('Pleiades Sector HR-W d1-79');           // -> true
  * isProceduralSystemName('Pleiades Sector HR-W d1-79', { strict: true }); // -> false

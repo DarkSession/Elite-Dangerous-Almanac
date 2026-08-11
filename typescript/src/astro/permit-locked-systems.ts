@@ -42,6 +42,8 @@ interface PermitLockedSystemData {
  *
  * @example
  * ```ts
+ * import { PERMIT_LOCKED_SYSTEMS } from '@elite-dangerous-almanac/core/astro/permit-locked-systems';
+ *
  * PERMIT_LOCKED_SYSTEMS.find((system) => system.name === 'Sol')?.id64;
  * // -> 10477373803n
  * ```
@@ -87,6 +89,10 @@ export function permitLockedSystemForName(name: string): PermitLockedSystem | nu
  * not individually permit-locked.
  * @example
  * ```ts
+ * import { permitLockedSystemForAddress } from '@elite-dangerous-almanac/core/astro/permit-locked-systems';
+ *
+ * declare const event: { SystemAddress: number }; // an `FSDJump` line, parsed
+ *
  * permitLockedSystemForAddress(event.SystemAddress)?.name; // -> 'Sol'
  * permitLockedSystemForAddress('10477373803')?.name;       // -> 'Sol'
  * ```

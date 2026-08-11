@@ -86,6 +86,8 @@ import { getBlueprintsForModule } from './engineering-options.js';
  *
  * @example
  * ```ts
+ * import { resolveBlueprintForModule } from '@elite-dangerous-almanac/core/ships/blueprint-journal';
+ *
  * // A wake scanner's Long Range is the scanner recipe, whichever way the build spells it.
  * resolveBlueprintForModule('Hpt_CloudScanner_Size0_Class5', 'Sensor_LongRange');
  * // -> 'Scanner_LongRange'

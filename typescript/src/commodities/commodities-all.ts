@@ -17,6 +17,8 @@ import { RARE_COMMODITIES } from './commodities-rare.js';
  *
  * @example
  * ```ts
+ * import { ALL_COMMODITIES } from '@elite-dangerous-almanac/core/commodities/commodities-all';
+ *
  * ALL_COMMODITIES.length; // -> 399
  * ```
  */

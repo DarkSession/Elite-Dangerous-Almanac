@@ -95,6 +95,8 @@ export interface MicroResource {
  * that symbol.
  * @example
  * ```ts
+ * import { getMicroResourceBySymbol } from '@elite-dangerous-almanac/core/materials/micro-resources';
+ *
  * getMicroResourceBySymbol('circuitboard')?.name; // -> 'Circuit Board'
  * ```
  */
@@ -115,6 +117,8 @@ export function getMicroResourceBySymbol(
  * that name.
  * @example
  * ```ts
+ * import { getMicroResourceByName } from '@elite-dangerous-almanac/core/materials/micro-resources';
+ *
  * getMicroResourceByName('circuit board')?.symbol; // -> 'circuitboard'
  * ```
  */
@@ -134,6 +138,8 @@ export function getMicroResourceByName(
  * @returns A new array of matches (possibly empty). The input is not modified.
  * @example
  * ```ts
+ * import { microResourcesInCategory } from '@elite-dangerous-almanac/core/materials/micro-resources';
+ *
  * microResourcesInCategory('consumable').length; // -> 6
  * microResourcesInCategory('Consumable').length; // -> 6; case is ignored
  * ```

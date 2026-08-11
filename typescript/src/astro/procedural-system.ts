@@ -120,6 +120,13 @@ function applyHaOverride(
  *
  * @example
  * ```ts
+ * import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
+ *
+ * declare const id64: bigint;
+ * declare const x: number;
+ * declare const y: number;
+ * declare const z: number;
+ *
  * // Name -> id64
  * const sys = ProceduralSystem.fromName('Synuefe EN-H d11-96');
  * if (sys) sys.systemAddress; // bigint
@@ -183,6 +190,8 @@ export class ProceduralSystem {
      * origin, or a name field cannot fit the normal system-address layout.
      * @example
      * ```ts
+     * import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
+     *
      * ProceduralSystem.fromName('blae eock kc-c d0')?.name; // -> 'Blae Eock KC-C d0'
      * ProceduralSystem.fromName('Sol');                     // -> null (hand-named system)
      * ```
@@ -235,6 +244,8 @@ export class ProceduralSystem {
      * assigned procedural name.
      * @example
      * ```ts
+     * import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
+     *
      * ProceduralSystem.fromSystemAddress(3309179996515n).name;
      * // -> 'Synuefe EN-H d11-96'
      * ```
@@ -263,6 +274,10 @@ export class ProceduralSystem {
      * layout that every `ProceduralSystem` exposes.
      * @example
      * ```ts
+     * import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
+     *
+     * declare const modulatedAddress: bigint;
+     *
      * const normal = ProceduralSystem.fromModSystemAddress(modulatedAddress);
      * normal.systemAddress; // normal-layout id64
      * ```
@@ -364,6 +379,8 @@ export class ProceduralSystem {
      *
      * @example
      * ```ts
+     * import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
+     *
      * ProceduralSystem.fromName('Synuefe EN-H d11-96')!.parts;
      * // { regionName: 'Synuefe', l1: 4, l2: 13, l3: 7, massCode: 3, n1: 11, n2: 96 }
      * ```

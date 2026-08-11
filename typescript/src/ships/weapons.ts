@@ -185,6 +185,8 @@ export interface WeaponMetrics {
  * `rateOfFire` as given, so recompute it first if you have changed the parts.
  * @example
  * ```ts
+ * import { combinedRateOfFire } from '@elite-dangerous-almanac/core/ships/weapons';
+ *
  * // A small burst laser: three shots at 15/s, then half a second's wait
  * combinedRateOfFire({ burstInterval: 0.5, burstRounds: 3, burstRateOfFire: 15 }); // -> 4.74
  * ```
@@ -220,6 +222,8 @@ const ZERO_SPLIT: DamageSplit = {
  * rather than partitioning it; the other returned amounts sum back to `damage`.
  * @example
  * ```ts
+ * import { splitDamage } from '@elite-dangerous-almanac/core/ships/weapons';
+ *
  * splitDamage(60, { kinetic: 1 / 3, thermal: 2 / 3 }); // -> { kinetic: 20, thermal: 40, ... }
  * ```
  */
@@ -275,6 +279,8 @@ function splitComponents(damage: number, components: DamageComponents): DamageSp
  * that whole cycle.
  * @example
  * ```ts
+ * import { sustainedFireFactor } from '@elite-dangerous-almanac/core/ships/weapons';
+ *
  * // A small multi-cannon: 100 rounds at 7.69/s, then a 4 s reload
  * sustainedFireFactor({ rateOfFire: 7.692308, clipSize: 100, reloadTime: 4 }); // -> 0.77…
  * ```
@@ -353,6 +359,8 @@ export function heatPerSecond(weapon: WeaponStats): number {
  * ignored: this function calculates attenuation, not projectile reach.
  * @example
  * ```ts
+ * import { damageFalloff } from '@elite-dangerous-almanac/core/ships/weapons';
+ *
  * const mc = { maximumRange: 4000, falloffRange: 2000 };
  * damageFalloff(mc, 1500); // -> 1
  * damageFalloff(mc, 3000); // -> 0.5
@@ -382,6 +390,8 @@ export function damageFalloff(weapon: WeaponStats, metres: number): number {
  * @throws {RangeError} If either argument is not a finite non-negative number.
  * @example
  * ```ts
+ * import { armourPiercingFactor } from '@elite-dangerous-almanac/core/ships/weapons';
+ *
  * armourPiercingFactor(22, 65); // -> 0.338…  a small multi-cannon against an Anaconda
  * armourPiercingFactor(100, 65); // -> 1      a rail gun goes straight through
  * ```
@@ -407,6 +417,10 @@ export function armourPiercingFactor(armourPiercing: number, hardness: number): 
  * @returns The {@link WeaponMetrics}.
  * @example
  * ```ts
+ * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
+ * import { HARDPOINT_MODULES } from '@elite-dangerous-almanac/core/ships/modules-hardpoint';
+ * import { weaponMetrics } from '@elite-dangerous-almanac/core/ships/weapons';
+ *
  * const beam = weaponMetrics(getModuleBySymbol('Hpt_BeamLaser_Fixed_Small', HARDPOINT_MODULES)!);
  * beam.continuous;                    // -> true
  * beam.damagePerSecond;               // -> 9.8 (its `damage` is already per second)
@@ -453,6 +467,11 @@ export function weaponMetrics(weapon: WeaponStats): WeaponMetrics {
  * individual entries instead. `continuous` is `true` only when *every* weapon is.
  * @example
  * ```ts
+ * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+ * import { sumWeaponMetrics } from '@elite-dangerous-almanac/core/ships/weapons';
+ *
+ * declare const build: ShipLoadout;
+ *
  * sumWeaponMetrics(build.weaponMetrics().weapons.map((w) => w.metrics)).damagePerSecond;
  * ```
  */

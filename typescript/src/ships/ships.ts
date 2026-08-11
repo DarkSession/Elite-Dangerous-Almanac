@@ -122,6 +122,8 @@ export interface Ship {
  *
  * @example
  * ```ts
+ * import { SHIPS } from '@elite-dangerous-almanac/core/ships/ships';
+ *
  * SHIPS.length;                                  // -> 48
  * SHIPS.find((s) => s.symbol === 'Anaconda')?.name; // -> 'Anaconda'
  * ```
@@ -137,6 +139,8 @@ export const SHIPS: readonly Ship[] = deepFreeze(shipsData as readonly Ship[]);
  * @returns The matching {@link Ship}, or `null` if no hull has that symbol.
  * @example
  * ```ts
+ * import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
+ *
  * getShipBySymbol('empire_trader')?.name; // -> 'Imperial Clipper'
  * ```
  */
@@ -153,6 +157,8 @@ export function getShipBySymbol(symbol: string): Ship | null {
  * @returns The matching {@link Ship}, or `null` if no hull has that name.
  * @example
  * ```ts
+ * import { getShipByName } from '@elite-dangerous-almanac/core/ships/ships';
+ *
  * getShipByName('imperial clipper')?.symbol; // -> 'Empire_Trader'
  * ```
  */
@@ -175,6 +181,8 @@ export function getShipByName(name: string): Ship | null {
  * `slots()` / `slots('core')` views.
  * @example
  * ```ts
+ * import { getShipSlots } from '@elite-dangerous-almanac/core/ships/ships';
+ *
  * getShipSlots('anaconda')?.hardpoints;
  * // -> [{ size: 4 }, { size: 3 }, { size: 3 }, { size: 3 }, { size: 2 }, ...]
  * getShipSlots('LakonMiner')?.hardpoints[0];
