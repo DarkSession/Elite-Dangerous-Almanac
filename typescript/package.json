@@ -56,26 +56,150 @@
         "./astro/galactic-position": {
             "types": "./dist/astro/galactic-position.d.ts"
         },
-        "./astro/*": {
-            "types": "./dist/astro/*.d.ts",
-            "import": "./dist/astro/*.js"
+        "./astro/codex-region-lookup": {
+            "types": "./dist/astro/codex-region-lookup.d.ts",
+            "import": "./dist/astro/codex-region-lookup.js"
+        },
+        "./astro/codex-region": {
+            "types": "./dist/astro/codex-region.d.ts",
+            "import": "./dist/astro/codex-region.js"
+        },
+        "./astro/galaxy-grid": {
+            "types": "./dist/astro/galaxy-grid.d.ts",
+            "import": "./dist/astro/galaxy-grid.js"
+        },
+        "./astro/hand-authored-regions": {
+            "types": "./dist/astro/hand-authored-regions.d.ts",
+            "import": "./dist/astro/hand-authored-regions.js"
+        },
+        "./astro/mass-code": {
+            "types": "./dist/astro/mass-code.d.ts",
+            "import": "./dist/astro/mass-code.js"
+        },
+        "./astro/naming-region-origins": {
+            "types": "./dist/astro/naming-region-origins.d.ts",
+            "import": "./dist/astro/naming-region-origins.js"
+        },
+        "./astro/nebulae-all": {
+            "types": "./dist/astro/nebulae-all.d.ts",
+            "import": "./dist/astro/nebulae-all.js"
+        },
+        "./astro/nebulae-planetary": {
+            "types": "./dist/astro/nebulae-planetary.d.ts",
+            "import": "./dist/astro/nebulae-planetary.js"
+        },
+        "./astro/nebulae-procgen": {
+            "types": "./dist/astro/nebulae-procgen.d.ts",
+            "import": "./dist/astro/nebulae-procgen.js"
+        },
+        "./astro/nebulae-real": {
+            "types": "./dist/astro/nebulae-real.d.ts",
+            "import": "./dist/astro/nebulae-real.js"
+        },
+        "./astro/nebulae": {
+            "types": "./dist/astro/nebulae.d.ts",
+            "import": "./dist/astro/nebulae.js"
+        },
+        "./astro/permit-locked-regions": {
+            "types": "./dist/astro/permit-locked-regions.d.ts",
+            "import": "./dist/astro/permit-locked-regions.js"
+        },
+        "./astro/permit-locked-systems": {
+            "types": "./dist/astro/permit-locked-systems.d.ts",
+            "import": "./dist/astro/permit-locked-systems.js"
+        },
+        "./astro/permit-locks": {
+            "types": "./dist/astro/permit-locks.d.ts",
+            "import": "./dist/astro/permit-locks.js"
+        },
+        "./astro/procedural-system": {
+            "types": "./dist/astro/procedural-system.d.ts",
+            "import": "./dist/astro/procedural-system.js"
+        },
+        "./astro/sector-name": {
+            "types": "./dist/astro/sector-name.d.ts",
+            "import": "./dist/astro/sector-name.js"
+        },
+        "./astro/system-address-input": {
+            "types": "./dist/astro/system-address-input.d.ts",
+            "import": "./dist/astro/system-address-input.js"
+        },
+        "./astro/system-address": {
+            "types": "./dist/astro/system-address.d.ts",
+            "import": "./dist/astro/system-address.js"
+        },
+        "./astro/system-name": {
+            "types": "./dist/astro/system-name.d.ts",
+            "import": "./dist/astro/system-name.js"
         },
         "./commodities": {
             "types": "./dist/commodities/index.d.ts",
             "import": "./dist/commodities/index.js"
         },
-        "./commodities/*": {
-            "types": "./dist/commodities/*.d.ts",
-            "import": "./dist/commodities/*.js"
+        "./commodities/commodities-all": {
+            "types": "./dist/commodities/commodities-all.d.ts",
+            "import": "./dist/commodities/commodities-all.js"
+        },
+        "./commodities/commodities-rare": {
+            "types": "./dist/commodities/commodities-rare.d.ts",
+            "import": "./dist/commodities/commodities-rare.js"
+        },
+        "./commodities/commodities-standard": {
+            "types": "./dist/commodities/commodities-standard.d.ts",
+            "import": "./dist/commodities/commodities-standard.js"
+        },
+        "./commodities/commodities": {
+            "types": "./dist/commodities/commodities.d.ts",
+            "import": "./dist/commodities/commodities.js"
         },
         "./commodities/internal/*": null,
         "./materials": {
             "types": "./dist/materials/index.d.ts",
             "import": "./dist/materials/index.js"
         },
-        "./materials/*": {
-            "types": "./dist/materials/*.d.ts",
-            "import": "./dist/materials/*.js"
+        "./materials/materials-all": {
+            "types": "./dist/materials/materials-all.d.ts",
+            "import": "./dist/materials/materials-all.js"
+        },
+        "./materials/materials-encoded": {
+            "types": "./dist/materials/materials-encoded.d.ts",
+            "import": "./dist/materials/materials-encoded.js"
+        },
+        "./materials/materials-manufactured": {
+            "types": "./dist/materials/materials-manufactured.d.ts",
+            "import": "./dist/materials/materials-manufactured.js"
+        },
+        "./materials/materials-raw": {
+            "types": "./dist/materials/materials-raw.d.ts",
+            "import": "./dist/materials/materials-raw.js"
+        },
+        "./materials/materials": {
+            "types": "./dist/materials/materials.d.ts",
+            "import": "./dist/materials/materials.js"
+        },
+        "./materials/micro-resources-all": {
+            "types": "./dist/materials/micro-resources-all.d.ts",
+            "import": "./dist/materials/micro-resources-all.js"
+        },
+        "./materials/micro-resources-component": {
+            "types": "./dist/materials/micro-resources-component.d.ts",
+            "import": "./dist/materials/micro-resources-component.js"
+        },
+        "./materials/micro-resources-consumable": {
+            "types": "./dist/materials/micro-resources-consumable.d.ts",
+            "import": "./dist/materials/micro-resources-consumable.js"
+        },
+        "./materials/micro-resources-data": {
+            "types": "./dist/materials/micro-resources-data.d.ts",
+            "import": "./dist/materials/micro-resources-data.js"
+        },
+        "./materials/micro-resources-item": {
+            "types": "./dist/materials/micro-resources-item.d.ts",
+            "import": "./dist/materials/micro-resources-item.js"
+        },
+        "./materials/micro-resources": {
+            "types": "./dist/materials/micro-resources.d.ts",
+            "import": "./dist/materials/micro-resources.js"
         },
         "./materials/internal/*": null,
         "./ships": {
@@ -88,9 +212,121 @@
         "./ships/loadout-slot": {
             "types": "./dist/ships/loadout-slot.d.ts"
         },
-        "./ships/*": {
-            "types": "./dist/ships/*.d.ts",
-            "import": "./dist/ships/*.js"
+        "./ships/ammunition": {
+            "types": "./dist/ships/ammunition.d.ts",
+            "import": "./dist/ships/ammunition.js"
+        },
+        "./ships/armour": {
+            "types": "./dist/ships/armour.d.ts",
+            "import": "./dist/ships/armour.js"
+        },
+        "./ships/blueprint-journal": {
+            "types": "./dist/ships/blueprint-journal.d.ts",
+            "import": "./dist/ships/blueprint-journal.js"
+        },
+        "./ships/blueprints": {
+            "types": "./dist/ships/blueprints.d.ts",
+            "import": "./dist/ships/blueprints.js"
+        },
+        "./ships/decorative-modifications": {
+            "types": "./dist/ships/decorative-modifications.d.ts",
+            "import": "./dist/ships/decorative-modifications.js"
+        },
+        "./ships/engineering-options": {
+            "types": "./dist/ships/engineering-options.d.ts",
+            "import": "./dist/ships/engineering-options.js"
+        },
+        "./ships/engineering": {
+            "types": "./dist/ships/engineering.d.ts",
+            "import": "./dist/ships/engineering.js"
+        },
+        "./ships/experimental-effects": {
+            "types": "./dist/ships/experimental-effects.d.ts",
+            "import": "./dist/ships/experimental-effects.js"
+        },
+        "./ships/jump-range": {
+            "types": "./dist/ships/jump-range.d.ts",
+            "import": "./dist/ships/jump-range.js"
+        },
+        "./ships/loadout-calculations": {
+            "types": "./dist/ships/loadout-calculations.d.ts",
+            "import": "./dist/ships/loadout-calculations.js"
+        },
+        "./ships/loadout-validation": {
+            "types": "./dist/ships/loadout-validation.d.ts",
+            "import": "./dist/ships/loadout-validation.js"
+        },
+        "./ships/module-capabilities": {
+            "types": "./dist/ships/module-capabilities.d.ts",
+            "import": "./dist/ships/module-capabilities.js"
+        },
+        "./ships/modules-all": {
+            "types": "./dist/ships/modules-all.d.ts",
+            "import": "./dist/ships/modules-all.js"
+        },
+        "./ships/modules-core": {
+            "types": "./dist/ships/modules-core.d.ts",
+            "import": "./dist/ships/modules-core.js"
+        },
+        "./ships/modules-hardpoint": {
+            "types": "./dist/ships/modules-hardpoint.d.ts",
+            "import": "./dist/ships/modules-hardpoint.js"
+        },
+        "./ships/modules-internal": {
+            "types": "./dist/ships/modules-internal.d.ts",
+            "import": "./dist/ships/modules-internal.js"
+        },
+        "./ships/modules-utility": {
+            "types": "./dist/ships/modules-utility.d.ts",
+            "import": "./dist/ships/modules-utility.js"
+        },
+        "./ships/modules": {
+            "types": "./dist/ships/modules.d.ts",
+            "import": "./dist/ships/modules.js"
+        },
+        "./ships/power": {
+            "types": "./dist/ships/power.d.ts",
+            "import": "./dist/ships/power.js"
+        },
+        "./ships/pre-engineered-stats": {
+            "types": "./dist/ships/pre-engineered-stats.d.ts",
+            "import": "./dist/ships/pre-engineered-stats.js"
+        },
+        "./ships/pre-engineered": {
+            "types": "./dist/ships/pre-engineered.d.ts",
+            "import": "./dist/ships/pre-engineered.js"
+        },
+        "./ships/resistances": {
+            "types": "./dist/ships/resistances.d.ts",
+            "import": "./dist/ships/resistances.js"
+        },
+        "./ships/shields": {
+            "types": "./dist/ships/shields.d.ts",
+            "import": "./dist/ships/shields.js"
+        },
+        "./ships/ship-loadout": {
+            "types": "./dist/ships/ship-loadout.d.ts",
+            "import": "./dist/ships/ship-loadout.js"
+        },
+        "./ships/ships": {
+            "types": "./dist/ships/ships.d.ts",
+            "import": "./dist/ships/ships.js"
+        },
+        "./ships/slef": {
+            "types": "./dist/ships/slef.d.ts",
+            "import": "./dist/ships/slef.js"
+        },
+        "./ships/slots": {
+            "types": "./dist/ships/slots.d.ts",
+            "import": "./dist/ships/slots.js"
+        },
+        "./ships/source-purchase": {
+            "types": "./dist/ships/source-purchase.d.ts",
+            "import": "./dist/ships/source-purchase.js"
+        },
+        "./ships/weapons": {
+            "types": "./dist/ships/weapons.d.ts",
+            "import": "./dist/ships/weapons.js"
         },
         "./ships/internal/*": null
     },

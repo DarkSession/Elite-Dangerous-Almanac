@@ -302,6 +302,29 @@ test('every internal source module is outside the package export map', async () 
     }
 });
 
+test('every runtime entry has one explicit public subpath', async () => {
+    const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
+    const publicExports = Object.entries(pkg.exports).filter(([, target]) => target !== null);
+    for (const [subpath, target] of publicExports) {
+        assert.ok(!subpath.includes('*'), `public export ${subpath} is a wildcard`);
+        assert.ok(
+            !Object.values(target).some((path) => path.includes('*')),
+            `public export ${subpath} has a wildcard target`,
+        );
+    }
+
+    const builtSpecifiers = (await publicEntries()).map(({ specifier }) => specifier).sort();
+    const exportedSpecifiers = publicExports
+        .filter(([, target]) => 'import' in target)
+        .map(([subpath]) =>
+            subpath === '.'
+                ? '@elite-dangerous-almanac/core'
+                : `@elite-dangerous-almanac/core/${subpath.slice(2)}`,
+        )
+        .sort();
+    assert.deepEqual(exportedSpecifiers, builtSpecifiers);
+});
+
 test('the build does not emit entry artifacts for inaccessible internal modules', async () => {
     for (const entry of await internalSourceEntries()) {
         for (const extension of ['js', 'd.ts']) {

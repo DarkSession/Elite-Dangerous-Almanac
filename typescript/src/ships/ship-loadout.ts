@@ -121,6 +121,7 @@ import type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
 import { moduleFitError } from './internal/loadout-fitting.js';
+import { exportLoadoutEvent } from './internal/loadout-export.js';
 import {
     normalizeLoadoutEvent,
     type ImportedTopFigures as TopFigures,
@@ -307,9 +308,6 @@ export interface SlefExportOptions extends LoadoutExportOptions {
     /** Spaces per indent for {@link ShipLoadout.toSlefString}. `0` (the default) is compact. */
     readonly indent?: number;
 }
-
-/** Insurance rebuy is a flat 5% of the hull-plus-modules value, truncated. */
-const REBUY_FRACTION = 0.05;
 
 const FSD_PREFIX = 'int_hyperdrive';
 const BOOSTER_PREFIX = 'int_guardianfsdbooster';
@@ -1235,49 +1233,24 @@ export class ShipLoadout {
         const unladenMass = this.#computedUnladenMass();
         const cargoCapacity = this.#computedCargoCapacity();
         const fuel = this.#computedFuelCapacity();
-        // Credits are quoted at **retail** — the bare hull plus every fitted module at
-        // the catalogue's list price. What a build reports instead is what one commander
-        // paid at one station: the Deep Black's modules all sit at 0.8775 of list, a
-        // 12.25% outfitting discount, and the game and EDSY do not even agree on whether
-        // `HullValue` means the bare hull or the hull with its stock fittings. None of
-        // that is a property of the build, so it is quoted only when the caller names it.
-        const fromSource = options.credits === 'source';
-        const source = fromSource ? this.#sourcePurchase : null;
-        // A captured `HullValue` names no slot, so no edit narrows it and it stands for as
-        // long as the record does. The module totals do name slots, and once they stop
-        // describing the fit they are dropped rather than emitted over a module list they
-        // no longer match — see `#sourceTotalsHold`.
-        const totals = source !== null && this.#sourceTotalsHold(source) ? source : null;
-        const hullValue = fromSource ? (source?.hullValue ?? null) : (hull?.hullCost ?? null);
-        const modulesValue = fromSource
-            ? (totals?.modulesValue ?? null)
-            : this.#computedModulesValue();
-        const modules = this.#exportModules(options, fromSource);
         const maxJumpRange = this.#exportableJumpRange(unladenMass);
-        // A captured rebuy is quoted as captured, not rebuilt: it is one more thing the
-        // source said, and recomputing 5% of two figures it may not even agree with would
-        // make it this library's claim rather than the capture's. It covers the modules,
-        // so it goes when they no longer add up to what was captured.
-        const rebuy = fromSource
-            ? (totals?.rebuy ?? null)
-            : hullValue === null || modulesValue === null
-              ? null
-              : Math.trunc((hullValue + modulesValue) * REBUY_FRACTION);
-
-        return {
-            event: 'Loadout',
-            Ship: this.#shipSymbol.toLowerCase(),
-            ...(this.#top.ShipName === undefined ? {} : { ShipName: this.#top.ShipName }),
-            ...(this.#top.ShipIdent === undefined ? {} : { ShipIdent: this.#top.ShipIdent }),
-            ...(hullValue === null ? {} : { HullValue: hullValue }),
-            ...(modulesValue === null ? {} : { ModulesValue: modulesValue }),
-            ...(unladenMass === null ? {} : { UnladenMass: unladenMass }),
-            ...(cargoCapacity === null ? {} : { CargoCapacity: cargoCapacity }),
-            ...(maxJumpRange === null ? {} : { MaxJumpRange: maxJumpRange }),
-            ...(fuel === null ? {} : { FuelCapacity: { Main: fuel.main, Reserve: fuel.reserve } }),
-            ...(rebuy === null ? {} : { Rebuy: rebuy }),
-            Modules: modules,
-        };
+        return exportLoadoutEvent(
+            {
+                shipSymbol: this.#shipSymbol,
+                ...(this.#top.ShipName === undefined ? {} : { shipName: this.#top.ShipName }),
+                ...(this.#top.ShipIdent === undefined ? {} : { shipIdent: this.#top.ShipIdent }),
+                modules: this.#modules,
+                ...(options.moduleOrder === 'slots' ? { layout: this.#layoutOrNull() } : {}),
+                sourcePurchase: this.#sourcePurchase,
+                retailHullValue: hull?.hullCost ?? null,
+                unladenMass,
+                cargoCapacity,
+                fuelCapacity: fuel,
+                maxJumpRange,
+                statsFor: (module) => this.#statsFor(module),
+            },
+            options,
+        );
     }
 
     /**
@@ -1307,163 +1280,6 @@ export class ShipLoadout {
      */
     toSlefString(options: SlefExportOptions): string {
         return stringifySlef(this.toSlef(options), { indent: options.indent ?? 0 });
-    }
-
-    /**
-     * The fitted modules as journal records, in the requested order.
-     *
-     * @param fromSource - Quote each module's captured purchase price rather than its
-     * list price — see {@link LoadoutExportOptions.credits}.
-     */
-    #exportModules(options: LoadoutExportOptions, fromSource: boolean): LoadoutModule[] {
-        const ordered =
-            options.moduleOrder === 'slots'
-                ? this.#slotOrderedModules()
-                : [...this.#modules.values()];
-        return ordered.map((m) => {
-            const on = m.On ?? (options.explicitPower ? true : undefined);
-            const priority = m.Priority ?? (options.explicitPower ? 0 : undefined);
-            // The module's list price, so the parts add up to the build's `ModulesValue`.
-            // Something with no price of its own — a decal, the cockpit — keeps no
-            // `Value`, exactly as the game writes it.
-            const value = fromSource ? this.#sourceModuleValue(m) : this.#moduleValue(m);
-            return {
-                Slot: m.Slot,
-                // The journal and every SLEF producer write lower-case ids; a build
-                // assembled here carries catalogue casing, so normalise on the way out.
-                Item: m.Item.toLowerCase(),
-                ...(on === undefined ? {} : { On: on }),
-                ...(priority === undefined ? {} : { Priority: priority }),
-                ...(m.Health === undefined ? {} : { Health: m.Health }),
-                ...(typeof value === 'number' ? { Value: value } : {}),
-                ...(m.Engineering === undefined
-                    ? {}
-                    : { Engineering: cloneLoadoutModule(m).Engineering! }),
-            };
-        });
-    }
-
-    /**
-     * The fitted modules in outfitting-panel order. Anything in a slot the hull's
-     * layout does not describe keeps its relative order at the end — never dropped.
-     */
-    #slotOrderedModules(): LoadoutModule[] {
-        const layout = this.#layoutOrNull();
-        if (!layout) {
-            throw new TypeError(
-                `ShipLoadout.toLoadoutEvent: no slot layout for hull "${this.#shipSymbol}", so modules cannot be ordered by slot`,
-            );
-        }
-        const remaining = new Map(this.#modules);
-        const ordered: LoadoutModule[] = [];
-        for (const slot of layout) {
-            // Resolved exactly as `#fittedKey` resolves it, so the entry this orders is
-            // the one `fittedModuleAt` and `setModule` bind to — a lower-casing producer's
-            // build orders by slot exactly as a journal's does.
-            const key = remaining.has(slot.key)
-                ? slot.key
-                : firstKeyMatchingCase(remaining.keys(), slot.key);
-            const module = key === null ? undefined : remaining.get(key);
-            if (module && key !== null) {
-                ordered.push(module);
-                remaining.delete(key);
-            }
-        }
-        return [...ordered, ...remaining.values()];
-    }
-
-    /**
-     * Fitted-modules value in credits at **list price**, summed from the catalogue.
-     *
-     * @remarks
-     * `null` when any fitted module has no published price, so the caller omits the
-     * figure rather than under-reporting it.
-     */
-    #computedModulesValue(): number | null {
-        let sum = 0;
-        for (const m of this.#modules.values()) {
-            const value = this.#moduleValue(m);
-            if (value === 'unknown') return null;
-            if (value !== 'free') sum += value;
-        }
-        return sum;
-    }
-
-    /**
-     * What one fitted module costs at list price — or why it costs nothing.
-     *
-     * @returns The price in credits; `'free'` when the slot is no outfitting mount at
-     * all, so nothing there was ever bought as a module; `'unknown'` when it should have
-     * a price and the catalogue has none.
-     * @remarks
-     * Deliberately ignores the module's own `Value`. That figure records what a
-     * particular commander paid at a particular station, discount and all, which is not
-     * a property of the build — see {@link toLoadoutEvent}.
-     *
-     * The catalogue has the first say: an article it can identify is priced whatever its
-     * slot is called. The slot is consulted only when the article is unidentifiable, and
-     * then only to ask whether it is a mount at all — see {@link isNonOutfittingSlot}.
-     */
-    #moduleValue(module: LoadoutModule): number | 'free' | 'unknown' {
-        // Prefers the snapshot taken when the module was fitted, so a caller-supplied
-        // record prices as the article that was actually fitted.
-        const stats = this.#statsFor(module);
-        if (stats !== null) return stats.cost ?? 'unknown';
-        return isNonOutfittingSlot(module.Slot) || isBuiltInHullModule(module) ? 'free' : 'unknown';
-    }
-
-    /**
-     * What the capture said was paid for the module now in this slot, or `'unknown'`
-     * when it said nothing about it.
-     *
-     * @remarks
-     * The captured figure is pinned to the article it was paid for, not to the mount:
-     * swap the drive and the old drive's price no longer describes anything, so the slot
-     * exports unpriced rather than carrying the previous fitting's cost forward. Refit
-     * the same article and the price applies again, which is also what makes an
-     * unedited build re-export its capture's figures unchanged.
-     */
-    #sourceModuleValue(module: LoadoutModule): number | 'unknown' {
-        const entry = this.#sourcePurchase?.entryForSlot(module.Slot) ?? null;
-        if (entry === null) return 'unknown';
-        return entry.item.trim().toLowerCase() === module.Item.trim().toLowerCase()
-            ? entry.value
-            : 'unknown';
-    }
-
-    /**
-     * Whether a capture's `ModulesValue` and `Rebuy` still describe the modules this
-     * build would export.
-     *
-     * @remarks
-     * They do for as long as every module the capture priced is still fitted, unchanged,
-     * in the slot it was priced in — engineering one does not change what was paid for
-     * it, and fitting something into a slot the capture never priced adds an unpriced
-     * module, which is what a partial capture looks like anyway. Swap or remove a priced
-     * module, though, and the stated total covers an article that is no longer aboard.
-     *
-     * Emitting it regardless would forge the very signal the record exists to expose:
-     * re-import such a document and its `ModulesValue` disagrees with the sum of its
-     * parts, exactly as a genuinely partial capture's does, except that this library
-     * would have manufactured the disagreement. So the total goes and the per-slot
-     * figures — each still true of the article it was paid for — stay.
-     *
-     * **One case this cannot catch.** A capture whose total exceeds its priced parts
-     * counted a module it never priced — the Viper Mk IV log's freshly bought FSD
-     * interdictor, in the corpus. Remove *that* module and the total again covers
-     * something no longer aboard, but nothing here can tell: the record knows which
-     * modules were priced, and only the capture ever knew which ones the total counted.
-     * The test is the sharpest one the record supports, not a guarantee that an exported
-     * total adds up.
-     */
-    #sourceTotalsHold(source: SourcePurchaseRecord): boolean {
-        for (const entry of source.moduleValues) {
-            const key = this.#fittedKey(entry.slot);
-            const fitted = key === null ? undefined : this.#modules.get(key);
-            if (!fitted) return false;
-            if (fitted.Item.trim().toLowerCase() !== entry.item.trim().toLowerCase()) return false;
-        }
-        return true;
     }
 
     /** `maxJumpRange()` when the build can answer it, else `null` — never throws. */
