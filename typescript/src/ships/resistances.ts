@@ -93,7 +93,7 @@ export type DamageType = keyof DamageTypeValues;
  *     DamageTypeValues,
  * } from '@elite-dangerous-almanac/core/ships/resistances';
  *
- * declare const incoming: DamageTypeValues; // raw damage aimed at the ship
+ * declare const incoming: DamageTypeValues; // the resistible share of incoming damage
  * declare const shields: DamageResistances;
  *
  * // What each type actually lands, the resistances having taken their share.
