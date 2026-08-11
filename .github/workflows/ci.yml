@@ -47,6 +47,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Check documented examples
+        run: npm run check:examples
+
       - name: Generate API documentation
         run: npm run docs
 
