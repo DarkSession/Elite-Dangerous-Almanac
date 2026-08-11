@@ -186,8 +186,8 @@ build.validation.issues; // -> each with a stable code and a severity
 ```
 
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
-sets both patterns out in full — including why an `incomplete` issue should read
-differently in your UI from an `error`.
+sets both patterns out in full — including which codes are the user's to fix and which
+are the library's own gaps.
 
 A journal line is one `Loadout` event, and it is taken whole or refused: bad JSON throws
 `SyntaxError`, and a structurally impossible event — two slot keys differing only in

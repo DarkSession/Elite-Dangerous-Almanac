@@ -96,8 +96,11 @@ build.validation.issues; // what specifically
 Each issue carries a stable `code` and a `severity`:
 
 - **`error`** — the fit is wrong: a module in a mount that cannot take it
-  (`incompatibleModule`), a mount the hull does not have (`unknownSlot`), or one slot
-  claimed twice (`duplicateSlot`). This is the user's problem, and you should say so.
+  (`incompatibleModule`), or a mount the hull does not have (`unknownSlot`). This is the
+  user's problem, and you should say so. (A fourth code, `duplicateSlot`, only reaches
+  you from `validateLoadout` on a module list you assembled yourself — a `ShipLoadout`
+  throws `TypeError` on a duplicate rather than reporting one, so do not write a UI
+  branch for it on a build.)
 - **`incomplete`** — the build does not add up to a finished answer, for one of two
   quite different reasons.
 
