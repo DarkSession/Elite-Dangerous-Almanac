@@ -1,13 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-    stackShieldMultiplier,
-    stackShieldResistance,
-    stackArmourMultiplier,
-    stackArmourResistance,
-    systemsResistance,
-} from './resistances.js';
+import { stackShieldResistance, stackArmourResistance, systemsResistance } from './resistances.js';
 import fixture from '../../../fixtures/ships/build-metrics.json' with { type: 'json' };
 
 const near = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) < eps;
@@ -22,8 +16,8 @@ test('a lone source stacks to itself', () => {
 test('shield boosters stack multiplicatively below the diminishing threshold', () => {
     // Two 10% boosters on a generator with no kinetic resistance: 1 - 0.9 * 0.9.
     assert.ok(near(stackShieldResistance(0, [0.1, 0.1]), 0.19));
-    // The damage multiplier is the complement.
-    assert.ok(near(stackShieldMultiplier(0, [0.1, 0.1]), 0.81));
+    // The damage multiplier is the resistance's complement.
+    assert.ok(near(1 - stackShieldResistance(0, [0.1, 0.1]), 0.81));
 });
 
 test('shields take half credit once the boosters pass 30% of the generator', () => {
@@ -41,10 +35,10 @@ test('the shield stack approaches, but never passes, half the generator threshol
     // The squeeze maps [0, threshold] onto [threshold/2, threshold], so the multiplier
     // tends to 0.35 x the generator's own however many boosters pile on.
     const floor = 0.6 * 0.35;
-    const many = stackShieldMultiplier(0.4, Array<number>(10).fill(0.5));
+    const many = 1 - stackShieldResistance(0.4, Array<number>(10).fill(0.5));
     assert.ok(many > floor, `got ${many}`);
     assert.ok(many - floor < 1e-3, `got ${many}`);
-    assert.ok(stackShieldMultiplier(0.4, Array<number>(20).fill(0.5)) < many);
+    assert.ok(1 - stackShieldResistance(0.4, Array<number>(20).fill(0.5)) < many);
 });
 
 test('hull reinforcement stacks onto the bulkhead', () => {
@@ -59,14 +53,14 @@ test('hull resistance takes half credit past the best single source', () => {
     // squeeze maps [0, 0.7] into [0.35, 0.7].
     const raw = 0.75 * Math.pow(0.95, 6);
     const expected = 0.35 + (0.7 - 0.35) * (raw / 0.7);
-    assert.ok(near(stackArmourMultiplier(0.25, Array<number>(6).fill(0.05)), expected, 1e-9));
+    assert.ok(near(1 - stackArmourResistance(0.25, Array<number>(6).fill(0.05)), expected, 1e-9));
 });
 
 test('a hull stack that never reaches the threshold keeps its plain product', () => {
     // A lightweight alloy (-20%) with one small package cannot reach 30% resisted, so
     // the raw product stands rather than being remapped upwards.
     const raw = 1.2 * 0.995;
-    assert.ok(near(stackArmourMultiplier(-0.2, [0.005]), raw, 1e-9));
+    assert.ok(near(1 - stackArmourResistance(-0.2, [0.005]), raw, 1e-9));
 });
 
 test('systems pips add resistance on their own curve', () => {

@@ -75,20 +75,8 @@ const multiplierOf = (resistance: number): number => 1 - resistance;
 const mapIntoDiminishingRange = (min: number, max: number, now: number): number =>
     max === 0 ? min : min + (max - min) * (now / max);
 
-/**
- * The damage multiplier of a shield stack — the fraction of incoming damage that
- * still lands.
- *
- * @param generator - The shield generator's resistance to this damage type, as a
- * fraction.
- * @param boosters - Each fitted shield booster's resistance to the same type, as
- * fractions. Only powered boosters count; pass an empty array for none.
- * @returns The fraction of damage that gets through, after diminishing returns.
- * @remarks
- * The complement of {@link stackShieldResistance}; use whichever you need — this one
- * is what you multiply incoming damage by.
- */
-export function stackShieldMultiplier(generator: number, boosters: readonly number[] = []): number {
+/** The damage multiplier left by a shield stack after diminishing returns. */
+function shieldMultiplier(generator: number, boosters: readonly number[]): number {
     const generatorMultiplier = multiplierOf(generator);
     const combined = boosters.reduce(
         (product, resistance) => product * multiplierOf(resistance),
@@ -119,22 +107,11 @@ export function stackShieldMultiplier(generator: number, boosters: readonly numb
  * ```
  */
 export function stackShieldResistance(generator: number, boosters: readonly number[] = []): number {
-    return 1 - stackShieldMultiplier(generator, boosters);
+    return 1 - shieldMultiplier(generator, boosters);
 }
 
-/**
- * The damage multiplier of a hull stack — the fraction of incoming damage that still
- * lands.
- *
- * @param bulkhead - The fitted armour's resistance to this damage type, as a fraction.
- * @param reinforcements - Each hull reinforcement package's resistance to the same
- * type, as fractions. Only powered/fitted packages count.
- * @returns The fraction of damage that gets through, after diminishing returns.
- */
-export function stackArmourMultiplier(
-    bulkhead: number,
-    reinforcements: readonly number[] = [],
-): number {
+/** The damage multiplier left by a hull stack after diminishing returns. */
+function armourMultiplier(bulkhead: number, reinforcements: readonly number[]): number {
     const multipliers = [bulkhead, ...reinforcements].map(multiplierOf);
     const combined = multipliers.reduce((product, multiplier) => product * multiplier, 1);
     // The floor is the best single source, and never worse than 70% resisted.
@@ -165,7 +142,7 @@ export function stackArmourResistance(
     bulkhead: number,
     reinforcements: readonly number[] = [],
 ): number {
-    return 1 - stackArmourMultiplier(bulkhead, reinforcements);
+    return 1 - armourMultiplier(bulkhead, reinforcements);
 }
 
 /**

@@ -241,9 +241,7 @@ export { SourcePurchaseRecord, type SourceModuleValue } from './source-purchase.
 export { powerBudget, type PowerConsumer, type PowerBand, type PowerBudget } from './power.js';
 export {
     stackShieldResistance,
-    stackShieldMultiplier,
     stackArmourResistance,
-    stackArmourMultiplier,
     systemsResistance,
     type DamageResistances,
     type DamageTypeValues,
