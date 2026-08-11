@@ -245,9 +245,12 @@ const boosterResistances = (boosters: readonly ShieldBoosterParams[], type: Dama
  *
  * @param input - The hull's mass and base shield strength, the fitted generator, and
  * any powered boosters, Guardian reinforcement and SYS pips.
- * @returns The {@link ShieldMetrics}. With no generator fitted every figure is `0`
- * and the resistances are the SYS pips alone — a hull with no shields still gets no
- * benefit from them, but the numbers stay well-defined.
+ * @returns The {@link ShieldMetrics}. With no generator fitted there is no shield for
+ * a resistance to apply to: every strength figure is `0`, and `resistances` and
+ * `effectiveHitPoints` are `0` for every damage type — a hull with no shields gets no
+ * benefit from the SYS pips. The pips are still reported on their own, as
+ * `systemsResistance`. `boostMultiplier` is `1`, whatever boosters are fitted, since
+ * there is no generator strength for them to multiply.
  * @example
  * ```ts
  * import { shieldMetrics } from '@elite-dangerous-almanac/core/ships/shields';
