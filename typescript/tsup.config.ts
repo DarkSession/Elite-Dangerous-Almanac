@@ -49,10 +49,19 @@ export default defineConfig({
     splitting: true, // dedupe shared modules into chunks; keeps per-module entries independent
     treeshake: true,
     clean: true,
-    // Keep the library output readable. Applications can still minify their final
-    // bundles, while stack traces and files opened from node_modules retain useful
-    // function names and line numbers during development.
+    // Keep the library output readable: identifiers and syntax stay exactly as written,
+    // so applications can still minify their final bundles while stack traces and files
+    // opened from node_modules retain useful function names during development.
     minify: false,
+    minifyIdentifiers: false,
+    minifySyntax: false,
+    // Whitespace is the exception. The inlined JSONC catalogues dominate the output and
+    // nobody reads them: indentation and newlines alone were a quarter of the shipped
+    // JavaScript (47.6% of `astro/codex-region-lookup.js`), and dropping them takes
+    // `dist` from 2.85 MB to 1.92 MB without touching a single name. Line numbers are
+    // the one thing this costs, and the published source maps already answer those —
+    // `--enable-source-maps` still resolves a throw to its `src/**/*.ts` line and column.
+    minifyWhitespace: true,
     // Publish external maps deliberately: Node, browser devtools and downstream
     // bundlers can trace failures back to the TypeScript or JSONC source path instead
     // of stopping at generated JavaScript. Omitting sourcesContent keeps that debugging
