@@ -81,6 +81,7 @@ export function getBlueprintCosts(fdname: string): BlueprintGradeCosts | null {
  * @param grade - The grade, `1`–`5`.
  * @returns The frozen per-roll material list, or `null` if the blueprint or grade is
  * unknown. A known recipe that costs no materials returns `[]`.
+ * @throws {RangeError} If `grade` is not an integer from 1 through 5.
  * @example
  * ```ts
  * import { getBlueprintGradeCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
@@ -93,6 +94,9 @@ export function getBlueprintGradeCost(
     fdname: string,
     grade: number,
 ): readonly EngineeringMaterial[] | null {
+    if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
+        throw new RangeError(`getBlueprintGradeCost: grade must be an integer in [1, 5]`);
+    }
     return getBlueprintCosts(fdname)?.[String(grade)] ?? null;
 }
 
@@ -116,11 +120,14 @@ export function getBlueprintGradeCost(
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`, matched
  * case-insensitively after trimming surrounding whitespace.
  * @param grade - The target grade, `1`–`5`.
- * @param currentGrade - The completed grade, default `0` for an unengineered module.
+ * @param currentGrade - The completed grade, `0`–`5`; defaults to `0` for an
+ * unengineered module.
  * Only grades above it are charged; `currentGrade >= grade` costs nothing (`[]`).
  * @returns One entry per distinct material with its summed `count`, or `null` if the
- * catalogue holds no such blueprint or target grade, or `currentGrade` is negative or not
- * an integer. A blueprint that starts above grade 1 charges only the grades it defines.
+ * catalogue holds no such blueprint or target grade. A blueprint that starts above grade
+ * 1 charges only the grades it defines.
+ * @throws {RangeError} If `grade` is not an integer from 1 through 5, or `currentGrade`
+ * is not an integer from 0 through 5.
  * @example
  * ```ts
  * import { getBlueprintCost } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
@@ -135,9 +142,15 @@ export function getBlueprintCost(
     grade: number,
     currentGrade = 0,
 ): EngineeringMaterial[] | null {
+    if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
+        throw new RangeError(`getBlueprintCost: grade must be an integer in [1, 5]`);
+    }
+    if (!Number.isInteger(currentGrade) || currentGrade < 0 || currentGrade > 5) {
+        throw new RangeError(`getBlueprintCost: currentGrade must be an integer in [0, 5]`);
+    }
+
     const costs = getBlueprintCosts(fdname);
-    if (!costs || !Number.isInteger(grade) || grade < 1) return null;
-    if (!Number.isInteger(currentGrade) || currentGrade < 0) return null;
+    if (!costs) return null;
     if (!costs[String(grade)]) return null;
 
     const perGrade: EngineeringMaterial[][] = [];

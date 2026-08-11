@@ -50,15 +50,21 @@ test('getBlueprintGrade returns the complete mechanics record', () => {
     assert.deepEqual(Object.keys(grade ?? {}), ['features']);
 });
 
-test('getBlueprintGrade resolves case-insensitively and misses cleanly', () => {
+test('getBlueprintGrade resolves case-insensitively and misses unknown requests cleanly', () => {
     assert.deepEqual(getBlueprintGrade('fsd_longrange', 5), getBlueprintGrade('FSD_LongRange', 5));
     assert.equal(getBlueprintGrade('nope', 5), null);
-    assert.equal(getBlueprintGrade('FSD_LongRange', 9), null);
     assert.deepEqual(
         getBlueprintGrade('beamlaser_thermalplasmaconversion', 5)?.damageDistribution,
         { thermal: 0.845, absolute: 0.155 },
     );
     assert.equal(getBlueprintGrade('FSD_LongRange', 5)?.damageDistribution, undefined);
+});
+
+test('getBlueprintGrade rejects grades outside the supported range', () => {
+    for (const grade of [0, 6, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => getBlueprintGrade('FSD_LongRange', grade), RangeError);
+        assert.throws(() => getBlueprintGrade('nope', grade), RangeError);
+    }
 });
 
 test('getBlueprint returns the name and complete per-grade mechanics', () => {

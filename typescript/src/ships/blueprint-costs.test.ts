@@ -33,15 +33,21 @@ test('getBlueprintCosts normalises ids and returns frozen catalogue records', ()
     assert.ok(exact['5']!.every((material) => Object.isFrozen(material)));
 });
 
-test('getBlueprintGradeCost returns one roll and misses unknown grades cleanly', () => {
+test('getBlueprintGradeCost returns one roll and misses unavailable supported grades cleanly', () => {
     assert.deepEqual(getBlueprintGradeCost(' FSD_LONGrange ', 5), [
         { symbol: 'Arsenic', name: 'Arsenic', count: 1 },
         { symbol: 'ChemicalManipulators', name: 'Chemical Manipulators', count: 1 },
         { symbol: 'DataminedWake', name: 'Datamined Wake Exceptions', count: 1 },
     ]);
-    assert.equal(getBlueprintGradeCost('FSD_LongRange', 9), null);
-    assert.equal(getBlueprintGradeCost('FSD_LongRange', 1.5), null);
+    assert.equal(getBlueprintGradeCost('ModuleReinforcement_HeavyDuty', 1), null);
     assert.equal(getBlueprintGradeCost('nope', 1), null);
+});
+
+test('getBlueprintGradeCost rejects grades outside the supported range', () => {
+    for (const grade of [0, 6, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => getBlueprintGradeCost('FSD_LongRange', grade), RangeError);
+        assert.throws(() => getBlueprintGradeCost('nope', grade), RangeError);
+    }
 });
 
 test('every material requirement joins to a real material and occurs once per grade', () => {
@@ -112,7 +118,6 @@ test('getBlueprintCost charges only grades above currentGrade and skips absent g
     assert.equal(countFor(from3, 'DataminedWake'), 5);
     assert.deepEqual(getBlueprintCost('FSD_LongRange', 5, 0), getBlueprintCost('FSD_LongRange', 5));
     assert.deepEqual(getBlueprintCost('FSD_LongRange', 5, 5), []);
-    assert.deepEqual(getBlueprintCost('FSD_LongRange', 5, 9), []);
 
     // This bought pre-engineered recipe starts at grade 2; the absent grade 1 is skipped.
     assert.deepEqual(
@@ -133,7 +138,7 @@ test('getBlueprintCost normalises ids and returns a fresh summed list', () => {
     assert.notEqual(first?.[0], second?.[0]);
 });
 
-test('getBlueprintCost combines each material once and rejects invalid requests', () => {
+test('getBlueprintCost combines each material once and misses unknown requests', () => {
     for (const fdname of Object.keys(BLUEPRINT_COSTS)) {
         const cost = getBlueprintCost(fdname, 5);
         if (!cost) continue;
@@ -142,10 +147,17 @@ test('getBlueprintCost combines each material once and rejects invalid requests'
     }
 
     assert.equal(getBlueprintCost('nope', 5), null);
-    assert.equal(getBlueprintCost('FSD_LongRange', 9), null);
-    assert.equal(getBlueprintCost('FSD_LongRange', 0), null);
-    assert.equal(getBlueprintCost('FSD_LongRange', 1.5), null);
-    assert.equal(getBlueprintCost('FSD_LongRange', 5, -1), null);
-    assert.equal(getBlueprintCost('FSD_LongRange', 5, 2.5), null);
+    assert.equal(getBlueprintCost('ModuleReinforcement_HeavyDuty', 1), null);
     assert.deepEqual(getBlueprintCost('CargoRack_IncreasedCapacity', 5), []);
+});
+
+test('getBlueprintCost rejects target and current grades outside their supported ranges', () => {
+    for (const grade of [0, 6, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => getBlueprintCost('FSD_LongRange', grade), RangeError);
+        assert.throws(() => getBlueprintCost('nope', grade), RangeError);
+    }
+    for (const currentGrade of [-1, 6, 2.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => getBlueprintCost('FSD_LongRange', 5, currentGrade), RangeError);
+        assert.throws(() => getBlueprintCost('nope', 5, currentGrade), RangeError);
+    }
 });
