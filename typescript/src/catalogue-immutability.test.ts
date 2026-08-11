@@ -2,9 +2,15 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { CODEX_REGIONS } from './astro/codex-region.js';
+import { GALAXY_ORIGIN } from './astro/galaxy-grid.js';
 import { HAND_AUTHORED_REGIONS } from './astro/hand-authored-regions.js';
 import { getHandAuthoredRegionOrigin } from './astro/naming-region-origins.js';
 import { ALL_NEBULAE } from './astro/nebulae-all.js';
+import { PLANETARY_NEBULAE } from './astro/nebulae-planetary.js';
+import { PROCGEN_NEBULAE } from './astro/nebulae-procgen.js';
+import { REAL_NEBULAE } from './astro/nebulae-real.js';
+import { PERMIT_LOCKED_REGIONS } from './astro/permit-locked-regions.js';
+import { PERMIT_LOCKED_SYSTEMS } from './astro/permit-locked-systems.js';
 import { ALL_MATERIALS } from './materials/materials-all.js';
 import { RAW_MATERIALS } from './materials/materials-raw.js';
 import { MANUFACTURED_MATERIALS } from './materials/materials-manufactured.js';
@@ -20,44 +26,71 @@ import { INTERNAL_MODULES } from './ships/modules-internal.js';
 import { HARDPOINT_MODULES } from './ships/modules-hardpoint.js';
 import { UTILITY_MODULES } from './ships/modules-utility.js';
 import { SHIPS } from './ships/ships.js';
+import { BLUEPRINT_COSTS } from './ships/blueprint-costs.js';
+import { BLUEPRINTS } from './ships/blueprints.js';
+import { DECORATIVE_MODIFICATIONS } from './ships/decorative-modifications.js';
+import { ENGINEERING_OPTION_GROUPS } from './ships/engineering-options.js';
+import { EXPERIMENTAL_EFFECT_COSTS } from './ships/experimental-effect-costs.js';
+import { EXPERIMENTAL_EFFECTS } from './ships/experimental-effects.js';
+import { PRE_ENGINEERED_MODULES } from './ships/pre-engineered.js';
 import { SLOT_RESTRICTION_LABELS } from './ships/slots.js';
 import { ALL_COMMODITIES } from './commodities/commodities-all.js';
 import { COMMODITIES } from './commodities/commodities-standard.js';
 import { RARE_COMMODITIES } from './commodities/commodities-rare.js';
 
-test('every exported object catalogue and all of its records are frozen', () => {
-    // Every published catalogue, not only the combined ones: a lookup indexes a
-    // catalogue exactly when the array and all of its records are frozen, so a subset
-    // that stopped being frozen would quietly drop to a linear scan, and one that was
-    // frozen only shallowly would be indexed on keys its records could still change.
-    const catalogues: readonly (readonly object[])[] = [
-        CODEX_REGIONS,
-        HAND_AUTHORED_REGIONS,
-        ALL_NEBULAE,
-        ALL_MATERIALS,
-        RAW_MATERIALS,
-        MANUFACTURED_MATERIALS,
-        ENCODED_MATERIALS,
-        ALL_MICRO_RESOURCES,
-        COMPONENT_MICRO_RESOURCES,
-        CONSUMABLE_MICRO_RESOURCES,
-        DATA_MICRO_RESOURCES,
-        ITEM_MICRO_RESOURCES,
-        ALL_MODULES,
-        CORE_MODULES,
-        INTERNAL_MODULES,
-        HARDPOINT_MODULES,
-        UTILITY_MODULES,
-        SHIPS,
-        ALL_COMMODITIES,
-        COMMODITIES,
-        RARE_COMMODITIES,
+function assertDeeplyFrozen(value: unknown, path: string, seen = new Set<object>()): void {
+    if (typeof value !== 'object' || value === null || seen.has(value)) return;
+
+    seen.add(value);
+    assert.equal(Object.isFrozen(value), true, `${path} is not frozen`);
+    for (const [key, child] of Object.entries(value)) {
+        assertDeeplyFrozen(child, `${path}.${key}`, seen);
+    }
+}
+
+test('every published catalogue and all of its nested records are frozen', () => {
+    // Keep every public catalogue here, including split catalogues and keyed records.
+    // These module singletons are shared by every consumer. Mutating a record would
+    // affect later callers and could leave a lookup's prebuilt key index inconsistent.
+    const catalogues: readonly (readonly [name: string, value: object])[] = [
+        ['CODEX_REGIONS', CODEX_REGIONS],
+        ['GALAXY_ORIGIN', GALAXY_ORIGIN],
+        ['HAND_AUTHORED_REGIONS', HAND_AUTHORED_REGIONS],
+        ['ALL_NEBULAE', ALL_NEBULAE],
+        ['PLANETARY_NEBULAE', PLANETARY_NEBULAE],
+        ['PROCGEN_NEBULAE', PROCGEN_NEBULAE],
+        ['REAL_NEBULAE', REAL_NEBULAE],
+        ['PERMIT_LOCKED_REGIONS', PERMIT_LOCKED_REGIONS],
+        ['PERMIT_LOCKED_SYSTEMS', PERMIT_LOCKED_SYSTEMS],
+        ['ALL_MATERIALS', ALL_MATERIALS],
+        ['RAW_MATERIALS', RAW_MATERIALS],
+        ['MANUFACTURED_MATERIALS', MANUFACTURED_MATERIALS],
+        ['ENCODED_MATERIALS', ENCODED_MATERIALS],
+        ['ALL_MICRO_RESOURCES', ALL_MICRO_RESOURCES],
+        ['COMPONENT_MICRO_RESOURCES', COMPONENT_MICRO_RESOURCES],
+        ['CONSUMABLE_MICRO_RESOURCES', CONSUMABLE_MICRO_RESOURCES],
+        ['DATA_MICRO_RESOURCES', DATA_MICRO_RESOURCES],
+        ['ITEM_MICRO_RESOURCES', ITEM_MICRO_RESOURCES],
+        ['ALL_MODULES', ALL_MODULES],
+        ['CORE_MODULES', CORE_MODULES],
+        ['INTERNAL_MODULES', INTERNAL_MODULES],
+        ['HARDPOINT_MODULES', HARDPOINT_MODULES],
+        ['UTILITY_MODULES', UTILITY_MODULES],
+        ['SHIPS', SHIPS],
+        ['BLUEPRINT_COSTS', BLUEPRINT_COSTS],
+        ['BLUEPRINTS', BLUEPRINTS],
+        ['DECORATIVE_MODIFICATIONS', DECORATIVE_MODIFICATIONS],
+        ['ENGINEERING_OPTION_GROUPS', ENGINEERING_OPTION_GROUPS],
+        ['EXPERIMENTAL_EFFECT_COSTS', EXPERIMENTAL_EFFECT_COSTS],
+        ['EXPERIMENTAL_EFFECTS', EXPERIMENTAL_EFFECTS],
+        ['PRE_ENGINEERED_MODULES', PRE_ENGINEERED_MODULES],
+        ['SLOT_RESTRICTION_LABELS', SLOT_RESTRICTION_LABELS],
+        ['ALL_COMMODITIES', ALL_COMMODITIES],
+        ['COMMODITIES', COMMODITIES],
+        ['RARE_COMMODITIES', RARE_COMMODITIES],
     ];
 
-    for (const catalogue of catalogues) {
-        assert.equal(Object.isFrozen(catalogue), true);
-        assert.ok(catalogue.every((record) => Object.isFrozen(record)));
-    }
+    for (const [name, catalogue] of catalogues) assertDeeplyFrozen(catalogue, name);
 });
 
 test('exported lookup records are frozen too, not only the array catalogues', () => {
@@ -71,15 +104,7 @@ test('exported lookup records are frozen too, not only the array catalogues', ()
     assert.equal(SLOT_RESTRICTION_LABELS.mining, 'mining tools');
 });
 
-test('nested records and named origins are frozen', () => {
-    const region = CODEX_REGIONS[0]!;
-    assert.equal(Object.isFrozen(region.bounds), true);
-    assert.equal(Object.isFrozen(region.centroid), true);
-
-    const handAuthored = HAND_AUTHORED_REGIONS[0]!;
-    assert.equal(Object.isFrozen(handAuthored.spheres), true);
-    assert.ok(handAuthored.spheres.every((sphere) => Object.isFrozen(sphere)));
-
+test('computed named origins are frozen', () => {
     const origin = getHandAuthoredRegionOrigin('Pleiades Sector');
     assert.ok(origin);
     assert.equal(Object.isFrozen(origin), true);
