@@ -36,8 +36,8 @@ a verbatim copy produced at build time — edit this file, never the copy.
 - **The jump-range and fuel algorithm**, the **engineered ammunition rounding** rule and
   the **build metrics above** are cross-checked against, or ported as fact from, EDSY
   (credited under Data below). The jump-range model derives from Frontier's "mass effect on
-  hyperspace range" description; Coriolis carries the same maths for the metrics and the
-  clip rounding.
+  hyperspace range" description; Coriolis carries the same maths for the metrics, and a clip
+  round-up that omits EDSY's burst step, where EDSY is followed.
 - **Galactic codex region lookup** — resolving a region from galactic coordinates or from a
   boxel, ported as fact (our own implementation) from `RegionMap.js` in
   EliteDangerousRegionMap, whose region tables are credited under Data below.

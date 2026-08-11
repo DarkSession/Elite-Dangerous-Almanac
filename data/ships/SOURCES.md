@@ -1471,10 +1471,10 @@ up straight through with no disambiguation at all. Both paths are evidence that
   — rather than in the `eddb.js` tables the rest of this section reads, which is why both
   EDSY files are pinned at the head of this document.
 
-- - **Checked against the build corpus.** Of its 1902 declared engineering entries, 1900 sit
-    on a module this catalogue groups, and 1882 are
-  applicable end to end: the module is grouped, its group offers the blueprint, and where
-  an experimental is declared the module can take it. 70 of the 1882 declare the generic
+- **Checked against the build corpus.** Of its 1902 declared engineering entries, 1900 sit
+  on a module this catalogue groups, and 1882 are applicable end to end: the module is
+  grouped, its group offers the blueprint, and where an experimental is declared the module
+  can take it. 70 of the 1882 declare the generic
   spelling of a family-specific recipe (`Misc_LightWeight` on a life support, and so on)
   and count as offered; the shape of that judgement is pinned in the fixture as
   `corpus.blueprintAliases`. A further **71** are a journal spelling resolved against
