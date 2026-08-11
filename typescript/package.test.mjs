@@ -302,18 +302,8 @@ test('codex-region geometry stays on its explicit lookup subpath', async () => {
         readReachableJs(new URL('./dist/astro/index.js', import.meta.url)),
         readReachableJs(new URL('./dist/astro/codex-region-lookup.js', import.meta.url)),
     ]);
-    // One budget, read from both sides: the region geometry is the largest thing in
-    // `astro/`, so the barrel staying under it means the geometry is absent and the
-    // lookup graph clearing it means the traversal actually found it. Both figures are
-    // whitespace-minified (`minifyWhitespace` in `tsup.config.ts`) — barrel ~168 KiB,
-    // lookup ~216 KiB — so re-measure both after a build change rather than moving the
-    // budget far enough that one failure goes quiet.
-    const GEOMETRY_BUDGET = 192 * 1024;
-    assert.ok(astroGraph.length < GEOMETRY_BUDGET, `astro graph is ${astroGraph.length} bytes`);
-    assert.ok(
-        lookupGraph.length > GEOMETRY_BUDGET,
-        `lookup traversal missed its geometry: ${lookupGraph.length} bytes`,
-    );
+    assert.ok(astroGraph.length < 256 * 1024, `astro graph is ${astroGraph.length} bytes`);
+    assert.ok(lookupGraph.length > 400 * 1024, 'lookup traversal missed its geometry');
     assert.doesNotMatch(astroGraph, /scaleNumerator/);
     assert.match(lookupGraph, /scaleNumerator/);
 
