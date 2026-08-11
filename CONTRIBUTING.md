@@ -29,10 +29,11 @@ remain language-neutral so future implementations can prove the same behavior.
 
 ## Making a change
 
-- Put reusable game data in `data/` as portable JSONC and behavioral expectations in
-  `fixtures/` as plain JSON. Do not copy shared assets into `typescript/`.
-- Update the matching `data/<domain>/SOURCES.md` and `ATTRIBUTIONS.md` when data,
-  algorithms or dependencies require attribution.
+- Put reusable game data in `data/` and behavioral expectations in `fixtures/`, both as
+  portable JSONC with a comment header. Do not copy shared assets into `typescript/`.
+- Credit a new source once, in `ATTRIBUTIONS.md`, and record what was taken from it in
+  the matching `data/<domain>/SOURCES.md`. A fixture's provenance goes in its own header
+  comment, not in a `SOURCES.md`.
 - Add or update shared fixtures for game behavior. Keep line, branch and function
   coverage at or above 80%.
 - Document every public API with its inputs, result, units, failure behavior and an

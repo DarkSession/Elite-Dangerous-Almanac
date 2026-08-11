@@ -22,16 +22,16 @@ When adding features or data, keep them portable: prefer language-neutral format
 
 Every data update must also follow `data/SNAPSHOTS.md`: record its acquisition date, immutable upstream revision when available, derivation method, and any manual corrections.
 
-### Data file format: JSONC in `data/`, plain JSON in `fixtures/`
+### Data file format: JSONC in `data/` and in `fixtures/`
 
-Files in **`data/`** are **JSONC** (`.jsonc`): JSON preceded by a comment header carrying the file's attribution (see §Attribution). Files in **`fixtures/`** stay plain `.json` — they are test-only, never bundled, so there is nothing to keep out of a payload.
+Every shared file — a `data/` catalogue and a `fixtures/` fixture alike — is **JSONC** (`.jsonc`): JSON preceded by a comment header. What the header carries differs by directory: a catalogue's names its source and points at the credits (see §Attribution); a fixture's says what it pins and, for a capture, where it came from (see §Fixtures carry their own provenance).
 
-Two rules keep `.jsonc` portable, and both are enforced by `typescript/src/astro/data-files.test.ts`:
+Two rules keep `.jsonc` portable. Catalogues are checked by `typescript/src/<domain>/data-files.test.ts`, fixtures by `typescript/src/fixtures.test.ts`:
 
 1. **Comments are the only JSONC extension used.** No trailing commas, no unquoted keys, no single quotes. Strip the comments and what remains must be strict JSON that any language's standard parser accepts — Python's `json`, Go's `encoding/json`, and so on. A trailing comma is portable only in JSON5, which is a different format.
-2. **Attribution lives in the header comment, never in the payload.** No top-level `attribution` or `description` key. Every payload byte is inlined into consumers' bundles; comment bytes are not.
+2. **Prose lives in the header comment, never in the payload.** No top-level `attribution`, `description` or `comment` key. In `data/` that is also a bundle-size rule — every payload byte is inlined into consumers' bundles, and comment bytes are not — but it holds in `fixtures/` too, so a port's parser never has to skip fields that are not data.
 
-Each implementation strips comments in its own loader — never by generating `.json` copies, which would break `data/`'s single-source-of-truth rule. TypeScript does it in `typescript/scripts/jsonc.mjs`, wired into the test runner (`scripts/register-jsonc.mjs`, via `--import` *after* tsx) and into the build (an esbuild `onLoad` plugin in `tsup.config.ts`), with `src/jsonc.d.ts` typing the import as `unknown` so each consumer casts to its own interface. Python would use the same one-function approach before `json.loads`.
+Each implementation strips comments in its own loader — never by generating `.json` copies, which would break the single-source-of-truth rule. TypeScript does it in `typescript/scripts/jsonc.mjs`, wired into the test runner (`scripts/register-jsonc.mjs`, via `--import` *after* tsx) and into the build (an esbuild `onLoad` plugin in `tsup.config.ts`). `src/jsonc.d.ts` types a `data/` import as `unknown`, so each catalogue module casts to its own interface; `src/fixtures.d.ts` declares each fixture's payload shape instead, so a test reads a typed value — update it in the same change that changes a fixture's shape.
 
 > **Editors reformat `.jsonc`.** Some formatters treat the extension as JSON5 and add trailing commas, silently breaking rule 1. If a data file starts failing to parse, check what your editor did to it before suspecting the loader.
 
@@ -80,6 +80,12 @@ Keep historical facts only when they explain the current state:
 - **A rejected alternative**, where writing it down stops it being rediscovered and reapplied — "these three values look wrong and are not", "storing it as a per-group alias map is worse, because …". State the standing conclusion, not the episode that produced it.
 - **A deliberate absence**, what it means, and what would fill it — with a link to its issue (§Tracking known gaps).
 
+### `SOURCES.md` documents the data, not the library
+
+A provenance file answers "where did this value come from, and what was done to it". How the library computes, accepts or refuses something is documented on the symbol that does it — its TSDoc — and never in `SOURCES.md`: two homes for one explanation is how the last one grew to three thousand lines and buried the provenance inside it. The same goes for narrating the test suite ("`x.test.ts` asserts …", "pinned in `fixtures/…` under `counts`") and for listing a module's API. Naming the *evidence* for a value is provenance and belongs there; explaining the code that consumes it does not.
+
+Where an explanation spans several symbols and has nowhere obvious to live, `BEHAVIOUR-DOCS-PROPOSAL.md` sets out the options and the recommendation; settle it there rather than parking the prose in a provenance file.
+
 ### Doc-generation toolchain
 
 - **TypeScript**: TypeDoc + `typedoc-plugin-markdown` + `typedoc-github-wiki-theme`. The wiki theme produces wiki-friendly file names, wiki-compatible internal links, and a `_Sidebar.md` for navigation. `typedoc.json` lists **one entry point per feature area** (`src/astro/index.ts`, `src/commodities/index.ts`, `src/materials/index.ts`, `src/ships/index.ts`) rather than the root barrel, **plus any leaf module the barrels deliberately do not re-export** — currently the split catalogues moved off the barrels for bundle size (`src/astro/nebulae-all.ts`, `src/astro/nebulae-planetary.ts`, `src/ships/modules-{all,core,hardpoint,internal,utility}.ts`). This gives the wiki one section per entry point: `Home` links to each, every one has its own index page (carrying its `@packageDocumentation` intro), and symbol pages are namespaced (e.g. `astro.Function.decodeSystemAddress`). Add a feature area here when you add one under `src/`; add a leaf only under the rule below.
@@ -89,14 +95,21 @@ Keep historical facts only when they explain the current state:
 
 ## Attribution Requirements
 
-Much of the static data and many calculations derive from the Elite Dangerous community (e.g. EDCD, EDDN, EDSM, Spansh, forum research, individual authors) as well as third-party libraries. Proper credit is mandatory and must appear in **both** places:
+Much of the static data and many calculations derive from the Elite Dangerous community (e.g. EDCD, EDDN, EDSM, Spansh, forum research, individual authors) as well as third-party libraries. Proper credit is mandatory — and **a source is described in exactly one place**, so a licence position cannot drift between copies of it.
 
-- **In the source code**, next to the thing being attributed. Put the credit where a reader encounters the data or algorithm:
-  - Data files (`data/`): open the file with a **comment header** giving origin, author, license/terms, and any derivation caveats, then point at the sibling `SOURCES.md` for the long form. Put it in a comment, not in an `attribution` field — see §Data file format for why, and copy the header of any existing `data/astro/*.jsonc` for the shape.
-  - Code (calculations, ported algorithms): a doc comment on the function/module citing the original source, author, and license, with a link where possible.
-- **In `ATTRIBUTIONS.md`** at the repository root: the single canonical list of every external data source, algorithm and library, with author, link and licence — including any licence text an upstream requires be reproduced in full. It lives at the root because it is language-neutral, exactly like `data/` and `fixtures/`.
+- **`ATTRIBUTIONS.md`** at the repository root is that place: every external data source, algorithm and library, with its author, link, licence position and what the project uses it for — including any licence text an upstream requires be reproduced in full. It lives at the root because it is language-neutral, exactly like `data/` and `fixtures/`, and it ships to npm consumers as `THIRD_PARTY_NOTICES.md`.
+- **Everywhere else names the source and points there.** Nothing repeats an author, a URL or a licence:
+  - Data files (`data/`): open the file with a **comment header** saying what the file holds, naming the source in a line or two, and pointing at `ATTRIBUTIONS.md` for credit and at the sibling `SOURCES.md` for provenance. Put it in a comment, not in an `attribution` field — see §Data file format for why, and copy the header of any existing `data/astro/*.jsonc` for the shape.
+  - `data/<domain>/SOURCES.md`: what was taken from a source, when, from which revision, how it was derived and every manual correction — referring to the source by name. Not who to credit, not the licence, and not how the library works (see §Documentation).
+  - Code (calculations, ported algorithms): a doc comment on the function/module naming the original source and pointing at `ATTRIBUTIONS.md`.
 
-Whenever you add or change data, port an algorithm, or introduce a dependency that warrants credit, update **both** the in-source attribution and `ATTRIBUTIONS.md` in the same change. Respect each source's license terms (attribution text, share-alike, etc.).
+Whenever you add or change data, port an algorithm, or introduce a dependency that warrants credit, add the source to `ATTRIBUTIONS.md` and record the provenance where the data lives, in the same change. Respect each source's license terms (attribution text, share-alike, etc.).
+
+### Fixtures carry their own provenance
+
+A fixture in `fixtures/` is documented **in its own header comment and nowhere else** — it gets no entry in any `SOURCES.md`. The header says what the fixture pins; a capture's also says where it came from, when it was acquired, its checksum, and anything scrubbed or corrected. The projects that published a capture are credited in `ATTRIBUTIONS.md` like any other source. `typescript/src/fixtures.test.ts` enforces that every fixture has a header, parses as strict JSON without it, and keeps prose out of its payload.
+
+A `SOURCES.md` entry may still *name* a fixture as the evidence for a value ("a capture states the base reserve as 2"); what it must not do is document the fixture.
 
 ### A captured ship build is an exception to the redistribution test
 
@@ -104,7 +117,7 @@ A `Loadout` event, a SLEF export or a decoded share link is **Frontier game outp
 
 What still applies, every time:
 
-- **Credit the source if we have one.** Name the project, the file and its licence position in `data/ships/SOURCES.md` and `ATTRIBUTIONS.md`, exactly as for any other source. Where a build reaches us with no traceable origin — the 181 in `fixtures/ships/builds/` — that is fine and already recorded; it is not a reason to leave the build out.
+- **Credit the source if we have one.** Name the project and its licence position in `ATTRIBUTIONS.md`, exactly as for any other source, and record the file, the revision and the checksum in the fixture's own header. Where a build reaches us with no traceable origin — the 181 in `fixtures/ships/builds/` — that is fine and already recorded; it is not a reason to leave the build out.
 - **Scrub the person, keep the game** (see §Commit Identity), and store the capture verbatim otherwise, with its source checksum.
 - **Builds only.** Code, stat tables and derived catalogues are held to the licence they ship under, unchanged.
 
@@ -116,7 +129,7 @@ Monorepo with one subfolder per language implementation and shared, language-neu
 
 ```
 data/          # shared static data (JSONC), one folder per domain, each with a SOURCES.md
-fixtures/      # shared test fixtures (JSON) — every implementation validates against these
+fixtures/      # shared test fixtures (JSONC) — every implementation validates against these
 schemas/       # shared JSON Schemas — language-neutral validation for data payloads
 scripts/       # repository tooling for deriving data; never shipped in any package
 typescript/    # TypeScript library (package.json, src/, tests, typedoc.json)
@@ -176,7 +189,7 @@ The same rule covers everything else you author. Commit messages, PR titles and 
 
 Two related habits, for the same reason:
 
-- **A captured source is scrubbed of the person, not of the game.** A journal capture, a SLEF export or a community build reaches you attached to whoever produced it — a commander name, an account id, an uploader, a home directory in a path, the link the build was shared from. That goes; the game data stays. `fixtures/ships/builds/` stores its 181 builds without author, name or link (`data/ships/SOURCES.md` records the choice and what it costs), while the Krait Phantom capture deliberately keeps its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` — those describe a ship, they are what makes it ground truth, and none of them names a person.
+- **A captured source is scrubbed of the person, not of the game.** A journal capture, a SLEF export or a community build reaches you attached to whoever produced it — a commander name, an account id, an uploader, a home directory in a path, the link the build was shared from. That goes; the game data stays. `fixtures/ships/builds/` stores its 181 builds without author, name or link (the corpus index's own header records the choice and what it costs), while the Krait Phantom capture deliberately keeps its `ShipName`, `ShipIdent`, `ShipID` and `timestamp` — those describe a ship, they are what makes it ground truth, and none of them names a person.
 - **Keep the model out of the repository.** The model identifier you run as belongs in chat, never in a commit message, PR body, code comment or data file.
 
 ## Commands
@@ -235,9 +248,9 @@ Setup this needs once, in repository settings, **before the first release**:
 
 ```
 data/<domain>/*.jsonc ──(strip comments)──> src/<area>/<catalogue>.ts ──> deepFreeze ──> exported constant
-fixtures/<domain>/*.json ────────────────────────────────────────────> src/<area>/*.test.ts
+fixtures/<domain>/*.jsonc ──(strip comments)──────────────────────────> src/<area>/*.test.ts
 ```
 
 - A catalogue module imports its `.jsonc` directly. Comments are stripped by `scripts/jsonc.mjs`, wired into the test runner via `scripts/register-jsonc.mjs` (`--import` **after** tsx) and into the build by an esbuild `onLoad` plugin in `tsup.config.ts`. `src/jsonc.d.ts` types the import as `unknown`, so each catalogue casts to its own interface — that cast is the only place the data's shape is asserted, so keep the interface honest.
-- Fixtures are imported by tests with `with { type: 'json' }` and hold the *expected* values. They are the parity contract: a fixture pins behaviour for every future language implementation, so prefer adding a fixture entry over an inline literal whenever the value is a fact about the game rather than a fact about TypeScript.
+- Fixtures are imported by tests with `with { type: 'json' }` — the same loader strips their header comments — and hold the *expected* values, with `src/fixtures.d.ts` declaring each payload's shape. They are the parity contract: a fixture pins behaviour for every future language implementation, so prefer adding a fixture entry over an inline literal whenever the value is a fact about the game rather than a fact about TypeScript. The build corpus is the one fixture a test reads from disk rather than importing.
 - `typedoc.json` lists **one entry point per feature area**, plus any leaf module the barrels do not re-export (see the doc-generation toolchain section for the rule). Add a new area there, to the `exports` map, to the coverage globs, and to `src/index.ts`.

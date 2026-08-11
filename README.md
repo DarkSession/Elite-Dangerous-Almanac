@@ -2,7 +2,7 @@
 
 Static Elite Dangerous data and calculations for community applications and
 research. The repository currently provides an ESM TypeScript package backed by
-shared JSONC data, JSON fixtures and JSON Schemas.
+shared JSONC data and fixtures, and JSON Schemas.
 
 ## Install
 
@@ -181,7 +181,7 @@ contains the complete API reference from source documentation.
 
 ```text
 data/        shared JSONC catalogues and per-domain provenance
-fixtures/    shared plain-JSON behavioral fixtures
+fixtures/    shared JSONC behavioral fixtures, each carrying its own provenance
 schemas/     shared JSON Schemas for catalogue payloads
 scripts/     repository-only data tooling
 typescript/  @elite-dangerous-almanac/core
@@ -215,17 +215,19 @@ guide. Report suspected vulnerabilities privately as described in
 
 ## Data provenance and licensing
 
-Each data file starts with a short attribution comment. Detailed sources, acquisition
-dates, immutable revisions or checksums, derivation and manual corrections live in:
+[ATTRIBUTIONS.md](ATTRIBUTIONS.md) describes every third-party source once — author,
+link, licence terms and what the project uses it for. Each data file names its source in
+a comment header and points there. Acquisition dates, immutable revisions or checksums,
+derivation and manual corrections live with the data:
 
 - [Astro sources](data/astro/SOURCES.md)
 - [Ship sources](data/ships/SOURCES.md)
 - [Material sources](data/materials/SOURCES.md)
 - [Commodity sources](data/commodities/SOURCES.md)
 
-[data/SNAPSHOTS.md](data/SNAPSHOTS.md) defines the required provenance metadata.
-[ATTRIBUTIONS.md](ATTRIBUTIONS.md) is the canonical list of third-party credits and
-licence terms.
+[data/SNAPSHOTS.md](data/SNAPSHOTS.md) defines the required provenance metadata. A test
+fixture is documented in its own header comment instead, which is where a captured build
+records its origin, checksum and any scrubbing.
 
 The project's code and documentation are MIT-licensed. Bundled game and third-party
 data remains under its source-specific terms; it is not relicensed under MIT.
