@@ -125,7 +125,8 @@ export const CODEX_REGION_MAP_LY_PER_CELL = projection.lyPerCell;
 
 /**
  * A point to resolve a region at: a {@link GalacticPlanePosition}, or a full
- * {@link GalacticPosition} — from the journal, EDSM, Spansh or `ProceduralSystem.position`
+ * {@link astro!GalacticPosition | GalacticPosition} — from the journal, EDSM, Spansh or
+ * `ProceduralSystem.position`
  * — passed straight through, whether it comes from a variable or is written out inline.
  *
  * @example

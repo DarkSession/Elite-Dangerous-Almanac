@@ -2,6 +2,7 @@
     "$schema": "https://typedoc.org/schema.json",
     "entryPoints": [
         "src/astro/index.ts",
+        "src/astro/codex-region-lookup.ts",
         "src/astro/nebulae-all.ts",
         "src/astro/nebulae-planetary.ts",
         "src/commodities/index.ts",

@@ -1,8 +1,10 @@
 /**
  * Astrophysical data and calculations for the Elite Dangerous galaxy.
  *
- * This entry point re-exports the astro feature area. Every symbol is also
- * reachable from its own module, so bundlers can drop anything you do not use.
+ * This entry point re-exports the astro feature area's general API. Every symbol here
+ * is also reachable from its own module, so bundlers can drop anything you do not use.
+ * The 42-region coordinate lookup stays on `./codex-region-lookup`: its map geometry is
+ * large enough that native ESM and namespace consumers must opt into it explicitly.
  *
  * **Start with {@link ProceduralSystem}** — it composes the pieces below into one
  * immutable handle (name ⇄ `id64`, sector, mass code, hand-authored regions). Drop
@@ -13,7 +15,8 @@
  * - *procedural sector* — {@link sectorNameFromGridPosition} & co. (the boxel grid name).
  * - *naming-region origin* — {@link resolveNamingRegionOrigin} (a sector's corner, for `id64`).
  * - *hand-authored region* — {@link findHandAuthoredRegionAt} (Pleiades, Coalsack, …).
- * - *galactic codex region* — {@link findCodexRegionAt} (one of the 42 codex zones).
+ * - *galactic codex region* —
+ *   {@link astro/codex-region-lookup!findCodexRegionAt | findCodexRegionAt} (one of the 42 codex zones).
  *
  * None of those is the **nebula catalogue** — the nebulae themselves, and where
  * they are: {@link nearestNebulae} & co. over {@link REAL_NEBULAE},
@@ -31,8 +34,9 @@
  * Convert a real position with {@link sectorGridPositionFromGalacticPosition} (or go
  * straight to {@link sectorNameFromGalacticPosition}).
  *
- * {@link findCodexRegionAt} reads only `{x, z}`, because the region map is an X/Z
- * projection; it takes a `GalacticPosition` as it comes and ignores the `y`.
+ * {@link astro/codex-region-lookup!findCodexRegionAt | findCodexRegionAt} reads only
+ * `{x, z}`, because the region map is an X/Z projection; it takes a `GalacticPosition`
+ * as it comes and ignores the `y`.
  *
  * **Permit locks** are six similarly-named lookups; {@link permitLockForSystemName}
  * is the one to start from (it answers for both kinds of lock, from a name alone).
@@ -228,19 +232,9 @@ export {
     type GalacticPlanePosition,
 } from './codex-region.js';
 
-// The two lookups return different shapes on purpose: `findCodexRegionAt` answers with the
-// region alone (`CodexRegion | null`), while `findCodexRegionForBoxel` also hands back
-// the boxel-corner coordinates it had to derive, so its region sits at `.region`.
-export {
-    findCodexRegionAt,
-    findCodexRegionForBoxel,
-    CODEX_REGION_MAP_X0,
-    CODEX_REGION_MAP_Y0,
-    CODEX_REGION_MAP_Z0,
-    CODEX_REGION_MAP_LY_PER_CELL,
-    type CodexRegionPoint,
-    type BoxelCodexRegionLookup,
-} from './codex-region-lookup.js';
+// Coordinate and id64 lookups stay on `./codex-region-lookup`. Their 42-region cell
+// geometry is deliberately not a dependency of this general barrel; the lightweight
+// region metadata and id/name lookups above remain here.
 
 // ── Nebulae (where the catalogued nebulae are) ──────────────────────────────
 // Not the same thing as a hand-authored region: these are the nebulae themselves.
