@@ -60,6 +60,7 @@
 
 import optionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { normalizeKey } from '../internal/registry-index.js';
 
 /**
  * A stable identifier for an engineerable module's gameplay family.
@@ -207,7 +208,7 @@ const moduleExclusions = new Map(
  * ```
  */
 export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
-    return moduleGroup.get(symbol.trim().toLowerCase()) ?? null;
+    return moduleGroup.get(normalizeKey(symbol)) ?? null;
 }
 
 /**
@@ -289,7 +290,7 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * ```
  */
 export function getExperimentalsForModule(symbol: string): readonly string[] {
-    const normalized = symbol.trim().toLowerCase();
+    const normalized = normalizeKey(symbol);
     const group = moduleGroup.get(normalized);
     if (group === undefined) return [];
     const all = ENGINEERING_OPTION_GROUPS[group]!.experimentals;
@@ -332,7 +333,7 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * ```
  */
 export function getExperimentalsForBlueprint(blueprint: string): readonly string[] {
-    const normalized = blueprint.trim().toLowerCase();
+    const normalized = normalizeKey(blueprint);
     const out = new Set<string>();
     for (const group of Object.values(ENGINEERING_OPTION_GROUPS)) {
         if (!group.blueprints.some((b) => b.toLowerCase() === normalized)) continue;

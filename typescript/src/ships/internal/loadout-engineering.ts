@@ -17,6 +17,7 @@ import { baseStats, fieldForLabel } from './module-stat-labels.js';
 import type { OutfittingModule } from '../modules.js';
 import type { AvailableBlueprint } from '../ship-loadout.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
+import { normalizeKey } from '../../internal/registry-index.js';
 
 export { baseStats };
 
@@ -188,7 +189,7 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  */
 export function blueprintAvailableFor(item: string, fdname: string): boolean {
     const offered = getBlueprintsForModule(item);
-    const asWritten = fdname.trim().toLowerCase();
+    const asWritten = normalizeKey(fdname);
     const resolved = resolveBlueprintForModule(item, fdname).trim();
     const wanted = resolved.toLowerCase();
     if (offered.some((id) => id.toLowerCase() === wanted)) return true;
@@ -213,7 +214,7 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
  * @internal
  */
 export function experimentalAvailableFor(item: string, fdname: string): boolean {
-    const wanted = fdname.trim().toLowerCase();
+    const wanted = normalizeKey(fdname);
     return getExperimentalsForModule(item).some((id) => id.toLowerCase() === wanted);
 }
 

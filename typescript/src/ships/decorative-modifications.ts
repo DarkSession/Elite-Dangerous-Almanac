@@ -41,7 +41,7 @@
 
 import decorativeData from '../../../data/ships/decorative-modifications.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
-import { findByRawKey } from '../internal/registry-index.js';
+import { findByRawKey, normalizeKey } from '../internal/registry-index.js';
 
 /**
  * One hand-set stat change a decorative modification arrives with.
@@ -181,7 +181,7 @@ export function isDecorativeModification(fdname: string): boolean {
  * ```
  */
 export function getDecorativeModificationsForModule(symbol: string): readonly string[] {
-    const wanted = symbol.trim().toLowerCase();
+    const wanted = normalizeKey(symbol);
     return Object.entries(DECORATIVE_MODIFICATIONS)
         .filter(([, record]) => record.modules.some((m) => m.toLowerCase() === wanted))
         .map(([id]) => id);

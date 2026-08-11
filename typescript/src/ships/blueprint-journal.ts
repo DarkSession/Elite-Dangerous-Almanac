@@ -19,6 +19,7 @@
 
 import { getBlueprintsForModule } from './engineering-options.js';
 import { BLUEPRINT_JOURNAL_NAMES } from './internal/blueprint-journal-names.js';
+import { normalizeKey } from '../internal/registry-index.js';
 
 /**
  * The blueprint whose numbers a module actually rolls when a journal names `blueprint` on
@@ -111,7 +112,7 @@ import { BLUEPRINT_JOURNAL_NAMES } from './internal/blueprint-journal-names.js';
  * ```
  */
 export function resolveBlueprintForModule(symbol: string, blueprint: string): string {
-    const wanted = blueprint.trim().toLowerCase();
+    const wanted = normalizeKey(blueprint);
     const offered = getBlueprintsForModule(symbol);
     // An id the menu already lists is the recipe it names; hand back what the caller wrote,
     // so a caller who never meets the collision never sees their own spelling rewritten.
