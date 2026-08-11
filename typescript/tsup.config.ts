@@ -2,10 +2,28 @@ import { readFile } from 'node:fs/promises';
 import { defineConfig } from 'tsup';
 import { stripJsonComments } from './scripts/jsonc.mjs';
 
+interface PackageExportTarget {
+    readonly types: string;
+    readonly import: string;
+}
+
+const manifest = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8')) as {
+    readonly exports: Readonly<Record<string, PackageExportTarget | null>>;
+};
+
+const entries = Object.entries(manifest.exports).flatMap(([subpath, target]) => {
+    if (target === null) return [];
+    const match = /^\.\/dist\/(.+)\.js$/.exec(target.import);
+    if (!match?.[1]) {
+        throw new Error(`Public export ${subpath} has an invalid import target: ${target.import}`);
+    }
+    return [`src/${match[1]}.ts`];
+});
+
 /**
  * Builds the library to `dist/` as tree-shakeable ESM with type declarations.
  *
- * **One entry per public source module**, not just per subpath barrel. This is what makes
+ * **One entry per public runtime subpath**, not just per feature-area barrel. This is what makes
  * the tree-shaking promise real: if the root barrel and the four feature-area barrels
  * were the only entries, `splitting` would fuse every module and its inlined JSON into
  * one shared chunk, so a consumer importing a single leaf function (e.g.
@@ -21,21 +39,11 @@ import { stripJsonComments } from './scripts/jsonc.mjs';
  * esbuild's `json` loader rejects comments, hence the `jsonc` plugin below.
  */
 export default defineConfig({
-    // Each public module is its own entry. Tests are excluded, while implementation
-    // details live below `src/**/internal/`; the top-level globs therefore cannot emit
-    // misleading standalone JavaScript/declaration artifacts for them. They are still
-    // bundled into the public modules that use them.
-    entry: [
-        'src/index.ts',
-        'src/astro/*.ts',
-        '!src/astro/*.test.ts',
-        'src/materials/*.ts',
-        '!src/materials/*.test.ts',
-        'src/ships/*.ts',
-        '!src/ships/*.test.ts',
-        'src/commodities/*.ts',
-        '!src/commodities/*.test.ts',
-    ],
+    // package.json is the public API manifest. Deriving entries from its explicit
+    // runtime targets prevents a new source file from becoming a build artifact until
+    // its public subpath is deliberately added. Type-only implementation modules are
+    // rolled into the declarations of the runtime entries that expose their types.
+    entry: entries,
     format: ['esm'],
     dts: true,
     splitting: true, // dedupe shared modules into chunks; keeps per-module entries independent

@@ -181,9 +181,7 @@ function resolveExport(specifier) {
 
     const entry = best.target;
     if (entry === null) return null;
-    // A type-only entry point publishes `types` with no `import`; a consumer reaches it
-    // with `import type`, so it is resolvable here even though it ships no runtime code.
-    const dist = typeof entry === 'string' ? entry : (entry.import ?? entry.types);
+    const dist = typeof entry === 'string' ? entry : entry.import;
     if (typeof dist !== 'string') return null;
 
     // Node expands **every** `*` in the target, not just the first — verified against
