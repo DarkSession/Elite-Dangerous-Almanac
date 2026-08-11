@@ -186,7 +186,10 @@ function resolveExport(specifier) {
     const dist = typeof entry === 'string' ? entry : (entry.import ?? entry.types);
     if (typeof dist !== 'string') return null;
 
-    const filled = best.fill === null ? dist : dist.replace('*', best.fill);
+    // Node expands **every** `*` in the target, not just the first — verified against
+    // `import.meta.resolve` with a target of `./d/*/*.js`, which resolves to `./d/a/a.js`.
+    // The replacement is a callback so a `$` in the subpath cannot be read as `$&` & co.
+    const filled = best.fill === null ? dist : dist.replaceAll('*', () => best.fill);
     // `./dist/ships/index.js` → `<src>/ships/index.ts`
     const relativeToSrc = filled.replace(/^\.\/dist\//, '').replace(/\.d\.ts$|\.js$/, '');
     const asFile = join(sourceRoot, `${relativeToSrc}.ts`);
