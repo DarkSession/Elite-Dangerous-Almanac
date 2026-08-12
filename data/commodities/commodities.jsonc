@@ -2,9 +2,9 @@
  * Standard market commodities in Elite Dangerous — the goods traded at station
  * commodity markets, as Frontier's internal registry.
  *
- * Source: EDCD FDevIDs, commodity.csv. One record (`curatedcommodity`) comes instead
- * from a player-journal MarketBuy observation; its category is a maintainer assignment,
- * not an upstream value, and it is appended after the registry order.
+ * Source: EDCD FDevIDs, commodity.csv. One record (`curatedcommodity`) takes its symbol
+ * and name from a player-journal MarketBuy observation and its category from in-game
+ * verification; it is appended after the registry order.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/commodities/SOURCES.md.
