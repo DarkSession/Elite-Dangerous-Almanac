@@ -18,7 +18,7 @@
  * block is available through go-to-definition on an import or by reading the generated
  * `dist/<area>/index.d.ts`; per-symbol hover is unaffected.
  *
- * `npm run build` runs this after tsup. `package.test.mjs` asserts the shipped
+ * `pnpm run build` runs this after tsup. `package.test.mjs` asserts the shipped
  * declarations carry the blocks, so a build that silently stops emitting them fails
  * before publication.
  */
@@ -54,7 +54,7 @@ for (const barrel of BARRELS) {
     }
 
     const declarations = await readFile(to, 'utf8').catch((cause) => {
-        throw new Error(`${fileURLToPath(to)} is missing — run \`npm run build\``, { cause });
+        throw new Error(`${fileURLToPath(to)} is missing — run \`pnpm run build\``, { cause });
     });
     // Idempotent: a rebuild over a clean dist starts from tsup's output, but do not
     // double-prepend if this ever runs twice against the same file.

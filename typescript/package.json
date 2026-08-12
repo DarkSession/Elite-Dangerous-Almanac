@@ -7,6 +7,7 @@
     "engines": {
         "node": ">=22"
     },
+    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
@@ -334,42 +335,38 @@
         "PROVENANCE"
     ],
     "scripts": {
-        "audit": "npm audit --audit-level=low",
+        "audit": "pnpm audit --audit-level=low",
         "build": "node scripts/copy-notices.mjs && tsup && node scripts/prune-sourcemap-sources.mjs && node scripts/prune-barrel-imports.mjs && node scripts/attach-barrel-docs.mjs",
-        "check": "npm run check:fixtures && npm run lint && npm run format:check && npm run typecheck && npm run check:examples && npm test",
+        "check": "pnpm run check:fixtures && pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run check:examples && pnpm test",
         "check:fixtures": "node ../scripts/fixtures/generate-schema-and-types.mjs --check",
         "format": "prettier --write . ../README.md ../CONTRIBUTING.md ../SECURITY.md ../schemas/**/*.{json,md} ../scripts/**/*.mjs ../.github/*.{md,yml} ../.github/workflows/*.yml ../.github/ISSUE_TEMPLATE/*.yml",
         "format:check": "prettier --check . ../README.md ../CONTRIBUTING.md ../SECURITY.md ../schemas/**/*.{json,md} ../scripts/**/*.mjs ../.github/*.{md,yml} ../.github/workflows/*.yml ../.github/ISSUE_TEMPLATE/*.yml",
         "generate:fixtures": "node ../scripts/fixtures/generate-schema-and-types.mjs",
         "lint": "eslint .",
-        "prepublishOnly": "npm run check && npm run build && npm run test:package",
+        "prepublishOnly": "pnpm run check && pnpm run build && pnpm run test:package",
         "test": "node --experimental-test-coverage --test-coverage-include=\"src/internal/**/*.ts\" --test-coverage-include=\"src/astro/**/*.ts\" --test-coverage-include=\"src/materials/**/*.ts\" --test-coverage-include=\"src/ships/**/*.ts\" --test-coverage-include=\"src/commodities/**/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
         "typecheck": "tsc --noEmit",
         "docs": "typedoc && node scripts/build-wiki-sidebar.mjs && node scripts/postprocess-wiki.mjs",
         "check:examples": "node --test scripts/example-claims.test.mjs scripts/example-runtime.test.mjs && node scripts/check-examples.mjs --strict --min-executable-claims 259 --max-compile-only-claims 123",
         "test:package": "node --test package.test.mjs"
     },
-    "overrides": {
-        "brace-expansion": "5.0.9",
-        "esbuild": "0.28.1"
-    },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@jridgewell/sourcemap-codec": "^1.5.5",
         "@types/node": "^26.1.2",
         "ajv": "^8.20.0",
-        "esbuild": "0.28.1",
         "es-module-lexer": "2.3.1",
+        "esbuild": "0.28.1",
         "eslint": "^10.8.0",
         "globals": "^17.9.0",
         "prettier": "^3.9.6",
-        "terser": "^5.50.0",
+        "terser": "^5.49.2",
         "tsup": "^8.5.1",
-        "tsx": "^4.23.10",
-        "typedoc": "^0.28.1",
+        "tsx": "^4.23.8",
+        "typedoc": "^0.28.20",
         "typedoc-github-wiki-theme": "^2.1.0",
-        "typedoc-plugin-markdown": "^4.4.1",
-        "typescript": "^5.7.2",
+        "typedoc-plugin-markdown": "^4.12.0",
+        "typescript": "^5.9.3",
         "typescript-eslint": "^8.66.0"
     }
 }

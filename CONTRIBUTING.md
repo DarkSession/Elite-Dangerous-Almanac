@@ -19,10 +19,23 @@ The repository devcontainer supplies Node.js 22 and Python 3.12. To work without
 container, install Node.js 22 and run:
 
 ```bash
+corepack enable pnpm
 cd typescript
-npm ci
-npm run check
+pnpm install --frozen-lockfile
+pnpm run check
 ```
+
+The package is managed with [pnpm](https://pnpm.io); `corepack enable pnpm` installs
+the exact version pinned by the `packageManager` field in `typescript/package.json`, so
+no global pnpm install is needed and everyone runs the same one. `--frozen-lockfile` is
+the equivalent of `npm ci`: it installs what `pnpm-lock.yaml` pins and fails if the
+lockfile and the manifest disagree.
+
+New dependency versions serve a seven-day cooldown before they can be resolved
+(`minimumReleaseAge` in `typescript/pnpm-workspace.yaml`), which keeps a release that
+is withdrawn in its first week out of the tree. Adding a dependency whose newest
+version is younger than that fails with `ERR_PNPM_NO_MATURE_MATCHING_VERSION`; ask for
+a version that has already served the cooldown rather than disabling the setting.
 
 The TypeScript package consumes language-neutral shared catalogues and fixtures so
 each language implementation can prove the same behavior.
@@ -46,10 +59,10 @@ Run the complete local gate before submitting:
 
 ```bash
 cd typescript
-npm run check
-npm run build
-npm run test:package
-npm run docs
+pnpm run check
+pnpm run build
+pnpm run test:package
+pnpm run docs
 ```
 
 Changes to only prose outside the package may not exercise every command, but data,

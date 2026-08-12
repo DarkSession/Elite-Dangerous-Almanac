@@ -34,5 +34,8 @@
   },
 
   "remoteUser": "node",
-  "postCreateCommand": "node --version && python3 --version"
+  // Corepack installs a pnpm shim; it resolves the version pinned by
+  // typescript/package.json when invoked from inside that directory, which is where
+  // CONTRIBUTING.md runs every pnpm command from.
+  "postCreateCommand": "corepack enable pnpm && node --version && python3 --version"
 }

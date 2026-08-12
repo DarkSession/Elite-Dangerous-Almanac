@@ -1,7 +1,7 @@
 /**
  * Generated fixture import types. Do not edit by hand.
  *
- * Run `npm run generate:fixtures` from `typescript/` after changing a fixture.
+ * Run `pnpm run generate:fixtures` from `typescript/` after changing a fixture.
  */
 
 type FixtureAstroGalacticRegion = {

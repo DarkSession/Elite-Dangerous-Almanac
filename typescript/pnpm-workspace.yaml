@@ -1,0 +1,37 @@
+# pnpm settings for the TypeScript package. This is where pnpm 11 wants them, so the
+# file is here even though the repository has a single package and no workspace members
+# to list. It is now the only place they can go: pnpm 11 stopped reading settings from a
+# `pnpm` key in `package.json`, and reads only authentication and registry settings from
+# `.npmrc`. Everything below is outside that subset, so no user- or machine-level
+# `.npmrc` can weaken it — such a setting is not overridden, it is never read.
+
+# Seven days, in minutes. A version published less than this long ago is invisible to
+# resolution, so a compromised or broken release cannot enter the tree on the day it
+# appears — which is the window in which such a release is usually caught and pulled.
+#
+# It applies in two places. Resolution will not pick a version younger than the window,
+# and a dependency range whose lowest allowed version is younger than it cannot resolve
+# at all (`ERR_PNPM_NO_MATURE_MATCHING_VERSION`) — which is why every range floor in
+# `package.json` is a version that has already served the cooldown. Every install also
+# audits the entries `pnpm-lock.yaml` already pins and fails on one that was too young
+# when it was written (`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`), `--frozen-lockfile`
+# included, so a lockfile edited by hand to smuggle a fresh version past resolution is
+# caught rather than installed. That audit reads publish dates from the metadata cache
+# and needs no network on a warm store, and entries only get older, so a lockfile that
+# passes today keeps passing.
+minimumReleaseAge: 10080
+
+# npm's `overrides` field lives here for pnpm. `brace-expansion` is deduplicated onto
+# one advisory-free line; `esbuild` is held at the version `tsup` is pinned against so
+# the bundler that produces `dist/` is a single known build rather than whatever each
+# dependent asks for.
+overrides:
+    brace-expansion: 5.0.9
+    esbuild: 0.28.1
+
+# pnpm runs no dependency install script unless it is allowed here, so a postinstall
+# added anywhere in the tree fails the install instead of executing unnoticed.
+# esbuild's postinstall is what puts the platform binary in place, and `tsup` cannot
+# bundle without it.
+allowBuilds:
+    esbuild: true

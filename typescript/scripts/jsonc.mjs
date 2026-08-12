@@ -8,8 +8,8 @@
  * test runner and the build strip comments through this module first.
  *
  * Consumed by:
- * - `scripts/register-jsonc.mjs` — synchronous Node module hook, used by `npm test`.
- * - `tsup.config.ts` — esbuild `onLoad` plugin, used by `npm run build`.
+ * - `scripts/register-jsonc.mjs` — synchronous Node module hook, used by `pnpm test`.
+ * - `tsup.config.ts` — esbuild `onLoad` plugin, used by `pnpm run build`.
  */
 
 import { readFileSync } from 'node:fs';
