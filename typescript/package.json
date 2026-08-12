@@ -1,6 +1,6 @@
 {
     "name": "@elite-dangerous-almanac/core",
-    "version": "0.1.0",
+    "version": "0.1.0-beta.1",
     "description": "Elite Dangerous static data and calculations: procedural system naming and id64 addresses, galactic regions, nebulae, ships and outfitting with build metrics (jump range, power, shields, armour, weapon DPS), engineering materials, and market commodities.",
     "type": "module",
     "sideEffects": false,
