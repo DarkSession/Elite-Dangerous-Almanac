@@ -68,6 +68,20 @@
  * therefore take an `fdname`, while functions that ask which engineering is available
  * *for a module* take that module's `symbol`.
  *
+ * Catalogue containers follow those jobs rather than one universal shape. Entity
+ * catalogues — {@link SHIPS}, the module catalogues and {@link PRE_ENGINEERED_MODULES}
+ * — are readonly arrays: each value carries its own identity and consumers commonly
+ * enumerate or filter the records. {@link BLUEPRINTS}, {@link EXPERIMENTAL_EFFECTS},
+ * {@link DECORATIVE_MODIFICATIONS}, {@link ENGINEERING_OPTION_GROUPS},
+ * {@link ships/blueprint-costs!BLUEPRINT_COSTS | BLUEPRINT_COSTS},
+ * {@link ships/experimental-effect-costs!EXPERIMENTAL_EFFECT_COSTS | EXPERIMENTAL_EFFECT_COSTS}
+ * and {@link SLOT_RESTRICTION_LABELS} are keyed readonly maps instead: their keys are
+ * recipe/effect ids, join keys or labels and are not necessarily repeated in the value.
+ * These maps are not a second shape of entity catalogue. Use the provided lookup
+ * functions for a caller- or journal-supplied id — they handle case and surrounding
+ * whitespace — rather than indexing a map directly; when you do need to enumerate a
+ * map, use `Object.values()` or `Object.entries()`.
+ *
  * Note that a hull's derived figures split by cost: cheap stored values are properties
  * ({@link ShipLoadout.unladenMass}), while anything that recomputes or takes options is
  * a method ({@link ShipLoadout.maxJumpRange}).
