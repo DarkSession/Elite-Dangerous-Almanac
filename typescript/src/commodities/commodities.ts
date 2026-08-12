@@ -15,7 +15,7 @@
  * getCommodityByName('lavian brandy')?.rare; // -> true
  * ```
  *
- * Each lookup still takes an optional second argument to **narrow** the search to a
+ * Each lookup takes an optional second argument to **narrow** the search to a
  * subset — one registry's catalogue, or any array you have filtered yourself:
  *
  * | Module | Export | Entries |
@@ -27,11 +27,6 @@
  * It narrows *results*, not bundle size: importing a lookup pulls both catalogues,
  * since that is what it falls back to — 29.5 KiB minified for all 399. Every record
  * carries a {@link Commodity.rare} flag, so a subset is one `.filter()` away.
- *
- * Data from EDCD FDevIDs (`commodity.csv`, `rare_commodity.csv`), plus one standard
- * record observed in a player journal and not yet in FDevIDs (its market category is
- * a maintainer assignment); see
- * [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
  *
  * @example
  * ```ts

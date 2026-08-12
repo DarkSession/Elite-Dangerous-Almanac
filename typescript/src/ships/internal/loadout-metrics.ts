@@ -105,9 +105,7 @@ function effectiveStat(
  * Capability labels share the modifier collection but never represent numbers, even when
  * an importer serializes the UI's displayed +100% as `Value: 1`, so they are skipped —
  * for {@link relatedStat}'s fields as much as for {@link effectiveStat}'s. A capability
- * is not a magnitude whichever stat asks, so there is nothing for either to read; today
- * the only capability label maps to `guardianZoneResistance`, which is a related stat of
- * nothing, so the skip decides no current call either way.
+ * is not a magnitude, so neither function can use it as a numeric value.
  */
 function statedModifier(module: LoadoutModule, field: keyof OutfittingModule): number | undefined {
     for (const label of labelsForField(field)) {

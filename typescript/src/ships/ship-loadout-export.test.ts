@@ -837,7 +837,7 @@ test('a real capture carrying a Community Goal rack exports no module total or r
 });
 
 test('an import whose own prices disagree with its total is corrected to retail', () => {
-    // Older journals omit `Value` on modules that were paid for, so a source's parts can
+    // Some journals omit `Value` on modules that were paid for, so a source's parts can
     // fall short of the total it declares. Neither figure is carried through, so the
     // inconsistency simply does not propagate.
     let kept = 0;

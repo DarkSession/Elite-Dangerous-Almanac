@@ -170,7 +170,7 @@ export interface ShieldMetrics {
  * missing part of its curve.
  * @remarks
  * The curve is a power law fitted through the generator's three declared points:
- * normalise the mass into `[0, 1]` between `maxMass` and `minMass`, raise it to the
+ * normalize the mass into `[0, 1]` between `maxMass` and `minMass`, raise it to the
  * exponent that makes the curve pass through `(optMass, optMultiplier)`, then
  * interpolate between `minMultiplier` and `maxMultiplier`.
  * @example

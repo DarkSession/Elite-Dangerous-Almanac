@@ -74,12 +74,11 @@ export type OptionalRestriction =
  * {@link HardpointRestriction}, an `optional` only an {@link OptionalRestriction}, and
  * a `core` carries no restriction. Checking `slot.kind` narrows these fields.
  *
- * The list is complete. No hardpoint takes only one *mount* (fixed, gimballed or
- * turret), and no utility mount is restricted — which is why neither ever had a
- * source saying what to store.
+ * The list is complete. No hardpoint is restricted to one *mount* (fixed, gimballed or
+ * turret), and no utility mount is restricted.
  *
  * The journal spells two of these differently from the value: `vesselHangar` mounts
- * are named `FighterBay01` (the game renamed the modules but not the slots), and
+ * are named `FighterBay01`, and
  * `planetaryApproachSuite` is the only one whose key carries no number.
  */
 export type SlotRestriction = HardpointRestriction | OptionalRestriction;
@@ -463,10 +462,10 @@ const pad2 = (n: number): string => String(n).padStart(2, '0');
  * | Type-8 Transporter | `SmallHardpoint2` then `SmallHardpoint4` |
  * | Caspian Explorer | mediums run `6, 5, 1, 2, 3, 4` — out of order, not just gapped |
  *
- * The Panther Clipper Mk II, Type-11 Prospector and Lynx Highliner carry names too,
- * pinning what the rules already derive. The Lynx is the one that had to be *earned*:
- * its `Slot02_Size5` follows three `PassengerNN` mounts, which only comes out right
- * because a `passenger` mount is a restricted one and so consumes no `SlotNN` number.
+ * The Panther Clipper Mk II, Type-11 Prospector and Lynx Highliner also carry explicit
+ * names that match the derived keys. The Lynx's `Slot02_Size5` follows three
+ * `PassengerNN` mounts because a restricted `passenger` mount consumes no `SlotNN`
+ * number.
  * A hull that names any mount of a kind names all of them, so a derived key and a name
  * never compete for the same string.
  * @example

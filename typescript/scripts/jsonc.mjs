@@ -84,8 +84,8 @@ export function stripJsonComments(source) {
  * Synchronous module-customization `load` hook that serves `.jsonc` files as
  * JSON modules.
  *
- * Registered through `module.registerHooks` (not `module.register`) so it shares
- * the in-thread hook chain that tsx now uses on newer Node — see
+ * Registered through `module.registerHooks` (not `module.register`) to share
+ * tsx's in-thread hook chain — see
  * `scripts/register-jsonc.mjs` for why that matters. Being synchronous, it reads
  * the file with `readFileSync`.
  *

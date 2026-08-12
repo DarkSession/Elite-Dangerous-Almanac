@@ -90,31 +90,13 @@ These views are snapshots, not live handles. After `setModule` or `removeModule`
 
 ### What a capture paid, and what the build is worth
 
-A journal preserves figures from one commander's purchase history — including discounts,
-and sometimes pricing only part of the build. That is provenance about the capture, not
-a property of the fit, so it is kept separate and never edited.
-
-```ts
-import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-import { getSourceModuleValue } from '@elite-dangerous-almanac/core/ships/source-purchase';
-declare const build: ShipLoadout; // the `ShipLoadout.fromLoadout(event)` from above
-
-const paid = build.sourcePurchase; // null for a build you assembled yourself
-
-paid?.hullValue; // -> 37472252   as the capture stated it
-paid && getSourceModuleValue(paid, 'FrameShiftDrive')?.value; // -> 4976355
-paid && getSourceModuleValue(paid, 'ShipCockpit'); // -> null — unpriced is not "free"
-
-build.toLoadoutEvent(); // retail: catalogue list prices
-build.toLoadoutEvent({ credits: 'source' }); // the capture's own figures
-```
-
-Editing the build narrows the source export rather than staling it: a removed module
-exports unpriced and takes `ModulesValue` and `Rebuy` with it, while `HullValue` stands.
+A journal's purchase figures remain separate from catalogue retail. For the source record,
+export options and edit behavior, see
+[Working with SLEF](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Working-with-SLEF#credits-retail-against-what-a-capture-paid).
 
 ## `FSDJump` → a system
 
-`StarSystem` and `SystemAddress` come straight off the event.
+`StarSystem` and `SystemAddress` come straight from the event.
 
 ```ts
 import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
@@ -158,20 +140,13 @@ nearestNebulae(position, REAL_NEBULAE, 1)[0]?.name; // -> 'Pleiades'
 
 ### Permit locks
 
-One lookup answers for both kinds of lock, from a name alone.
-
-```ts
-import { permitLockForSystemName } from '@elite-dangerous-almanac/core/astro/permit-locks';
-
-permitLockForSystemName('Sol')?.kind; // -> 'system'
-permitLockForSystemName('Col 70 Sector AB-C d1-23')?.kind; // -> 'region'
-permitLockForSystemName('Synuefe EN-H d11-96'); // -> null
-```
+Pass `StarSystem` to the permit-lock lookup described in
+[Systems, sectors and regions](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.Systems-and-regions#permit-locks).
 
 ## When the game hands you something unknown
 
-Journals outlive catalogues. A game update ships modules before this package knows about
-them, so write the consumer to expect gaps rather than to assume completeness.
+Journals can contain hulls or modules absent from the catalogues, so consumers must handle
+gaps.
 
 A lookup that finds nothing returns `null` — check it. On a build imported from a journal,
 though, **`validation` is the signal to read, not the aggregate figures.** Because the
@@ -180,7 +155,7 @@ and come back complete even when a fitted module is one the catalogue cannot cla
 the `…Result` diagnostics that would name it never fire here. What does fire is
 `build.validation`, which reports a fit the game would reject as an `error`, against an
 `incomplete` for a build that does not add up: an empty core or armour mount, or a hull or
-module newer than the catalogue. Only the second of those is the library's own gap, so
+module absent from the catalogue. Only the second of those is the library's own gap, so
 branch on the issue's `code` rather than its `severity`:
 
 ```ts

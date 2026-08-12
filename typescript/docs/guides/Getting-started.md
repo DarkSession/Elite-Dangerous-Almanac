@@ -29,13 +29,12 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 
 Both give you the same object. Prefer the leaf import when you know what you want: it is
 unambiguous about what gets bundled and never depends on tree-shaking. There is no
-package-wide root entry because importing it in native ESM loaded about 1.4 MiB even
-after the heaviest optional data was excluded.
+package-wide root entry because it would load about 1.4 MiB in native ESM even without
+the heaviest optional data.
 
-**Heavy data-backed modules are reachable only by leaf import.** They were deliberately
-taken off the barrels, because a barrel that re-exported them would pull hundreds of
-kilobytes into native ESM and namespace consumers. None of the following is on its
-feature-area barrel:
+**Heavy data-backed modules are reachable only by leaf import.** Exporting them from a
+feature barrel would pull hundreds of kilobytes into native ESM and namespace consumers.
+None of the following is on its feature-area barrel:
 
 ```ts
 import { ALL_MODULES } from '@elite-dangerous-almanac/core/ships/modules-all';
@@ -48,8 +47,8 @@ import { PLANETARY_NEBULAE } from '@elite-dangerous-almanac/core/astro/nebulae-p
 import { findCodexRegionAt } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';
 ```
 
-`REAL_NEBULAE` and `PROCGEN_NEBULAE` are the exception among the nebula catalogues — both
-are still on the `astro` barrel.
+`REAL_NEBULAE` and `PROCGEN_NEBULAE` are the nebula catalogues exported from the `astro`
+barrel.
 
 ## Where does a symbol live?
 
@@ -86,7 +85,7 @@ symbols you are most likely to reach for first:
 Sizes below are what a module's import graph weighs once your bundler has minified it,
 before any transport compression. The published package strips whitespace but does not
 compress syntax or rename identifiers, so its own files on disk are larger. The heaviest
-imports are all deliberate:
+imports are:
 
 - `ships/ship-loadout` is about 632 KiB, the batteries-included facade. Resolving
   arbitrary journal module ids and engineering recipes needs the complete ship, module,
@@ -149,15 +148,13 @@ getCommodityByName('lavian brandy')?.rare; // -> true
 ```
 
 Lookups ignore case and surrounding whitespace, so a symbol straight out of a journal
-line works without normalising it first.
+line works without normalizing it first.
 
 ## What happens when something is wrong
 
 The one thing to know before your first call: **`null` is an ordinary answer, not an
-error.** A lookup that finds nothing returns it, and journals outlive catalogues — a game
-update ships modules before this package knows about them — so a consumer that treats
-`null` as a crash will break on every game update. Malformed and out-of-range input throw
-instead.
+error.** A lookup returns it when nothing matches, including a journal symbol absent from
+the catalogues. Malformed and out-of-range input throw instead.
 
 [The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)
 sets out all four outcomes, the `try…` variants that convert a throw into a `null`, and

@@ -2,9 +2,8 @@
 
 ## Supported versions
 
-Security fixes are made on the latest code on `main`. Once package releases begin, only
-the latest published version is supported; older commits and pre-1.0 versions are not
-maintained as separate support lines.
+The latest code on `main` is the supported version. Older commits and pre-1.0 versions
+are not maintained as separate support lines.
 
 ## Reporting a vulnerability
 

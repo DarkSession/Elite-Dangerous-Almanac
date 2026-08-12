@@ -71,9 +71,9 @@ export interface SourcePurchaseRecord {
  * @returns A deeply frozen record, or `null` when the source states no credit figure at
  * all.
  * @remarks
- * A malformed event that repeats an exactly spelled slot keeps the last entry, matching
- * the historical extraction rule. {@link ShipLoadout.fromLoadout} independently rejects
- * duplicate mounts before constructing a usable build.
+ * A malformed event that repeats an exactly spelled slot keeps the last entry.
+ * {@link ShipLoadout.fromLoadout} independently rejects duplicate mounts before
+ * constructing a usable build.
  *
  * No discount is inferred. One capture can mix purchases from several stations, omit
  * module values, or state a total that differs from its priced parts. The snapshot keeps

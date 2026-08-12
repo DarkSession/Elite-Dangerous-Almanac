@@ -4,10 +4,8 @@
  * Check every documented TypeScript snippet: each `@example` in the public source and
  * each fenced block in the Markdown pages and READMEs consumers see.
  *
- * A doc example is a promise that the code in it works. TypeDoc copies it into the wiki
- * verbatim and no other check ever reads it, so a snippet that names a symbol the API
- * dropped, or omits the import a reader needs, stays wrong indefinitely and is only
- * discovered by the consumer who pastes it.
+ * A doc example is a promise that the code works. This check catches invalid symbols,
+ * private imports and missing imports before TypeDoc copies a snippet into the wiki.
  *
  * This extracts each ` ```ts ` fence into its own scratch file, resolves every
  * `@elite-dangerous-almanac/core/<subpath>` specifier through the package's own
@@ -19,9 +17,8 @@
  * rounded to their documented precision, and `0.667…` is a decimal-prefix assertion.
  * Prose and abbreviated values remain compile-only and are counted explicitly.
  *
- * Every documented snippet compiles today, so `npm run check` runs this with `--strict`
- * and a snippet that stops compiling fails the build. `--max-failures <n>` remains as a
- * ratchet for the case where a batch of new documentation lands mid-rewrite: it fails
+ * `npm run check` uses `--strict`, so every documented snippet must compile.
+ * `--max-failures <n>` sets an explicit failure ceiling and fails
  * only when the count rises above the agreed number.
  *
  * Usage:

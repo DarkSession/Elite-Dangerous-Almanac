@@ -15,7 +15,7 @@
  * getMicroResourceBySymbol('graphene')?.category; // -> 'component'
  * ```
  *
- * Each lookup still takes an optional second argument to **narrow** the search to a
+ * Each lookup takes an optional second argument to **narrow** the search to a
  * subset — one category's catalogue, or any array you have filtered yourself:
  *
  * | Module | Export | Entries |

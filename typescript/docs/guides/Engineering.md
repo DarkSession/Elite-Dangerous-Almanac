@@ -4,10 +4,9 @@ title: Engineering
 
 # Engineering
 
-Two questions, and this library keeps them deliberately joined: **what can I put on this
-module**, and **what does it do to the stats**. The first is a menu, the second is a
-calculator, and the menu is also the gate — so an editor and its own menu cannot give
-different answers.
+The engineering API answers two questions: **what can I put on this module**, and **what
+does it do to the stats**. The menu is also the validation gate, so an editor and its menu
+cannot give different answers.
 
 ## The menu is the gate
 
@@ -31,9 +30,8 @@ refuses a recipe it does not list for that module. That is the point: "what can 
 this?" and "may I put this on it?" are answered from one source, so a menu that offers a
 recipe the editor would reject is not a state this library can reach.
 
-The cost is that a `ShipLoadout` carries the menu catalogue whether or not you call it.
-That is a deliberate trade — one catalogue that cannot drift, against a smaller bundle for
-consumers who never engineer.
+`ShipLoadout` includes the menu catalogue whether or not a consumer calls these methods.
+Using one catalogue keeps the editor and menu consistent.
 
 **Not every module engineers.** The catalogue groups 1028 of the 1199 modules; the rest
 take nothing — whole families like fuel tanks, passenger cabins and limpet controllers,
@@ -42,14 +40,14 @@ in the data.
 
 ### Why there is no family map
 
-Inferring a module's family and a blueprint's family from their symbols, then comparing
-the two, is the obvious alternative to a per-module menu. It was measured and it is worse:
-that inference refused recipes on 52 modules and disagreed with 76 of a 1902-entry build
-corpus. Both failures were in the inference rather than in any data — the Hatch Breaker
+Inferring and comparing families from module and blueprint symbols refuses recipes on 52
+modules and disagrees with 76 entries in a 1902-entry build corpus. The failures come from
+the inference rather than the data — the Hatch Breaker
 Limpet Controller's symbol is `Int_DroneControl_ResourceSiphon`, which no "hatchbreaker"
 prefix rule matches, and the Caustic Sink Launcher's symbol says `causticsink` where its
 group is the heat sink launchers'. A per-module menu has nothing to infer, and two
-hand-maintained answers to one question drift. Please do not reintroduce one.
+hand-maintained answers to one question can drift. The API therefore uses only the
+per-module menu.
 
 ## Rolling a recipe
 
@@ -74,7 +72,7 @@ const mods = computeModifiers(
 
 Each contribution names a journal Label and an apply method — `multiplicative` (the
 percentages compound), `additive` (flat reinforcement) or `overwrite` (the value replaces
-the base). Two behaviours ride on top of those and are easy to trip over:
+the base). Two behaviors apply on top of those methods:
 
 - **Percentages of a multiplier.** Hull boost, shield boost and the four resistances
   compound on their multiplier rather than on the stat, whichever method the recipe names.
@@ -124,16 +122,15 @@ everywhere. `ships/pre-engineered` names which module each arrives on, and the g
 such a recipe on the non-final module sold carrying it and nowhere else — `RailGun_LongShot`
 resolves on the medium rail gun, not on the small one.
 
-What that buys is the **climb, not the purchase**. A Mercenary module arrives at grade 1 and
+This route covers the **climb, not the purchase**. A Mercenary module arrives at grade 1 and
 its recipe publishes grades 2–5, the grades an engineer can still add; the grade it was sold
 at cannot be reproduced through this route, and a variant marked `engineeringLocked` never
 takes it at all.
 
 ## Pre-engineered modules
 
-A pre-engineered module has **no symbol of its own**. The game sells an ordinary module with
-engineering already applied, so a journal reports the base symbol plus an `Engineering`
-block. `ships/pre-engineered` supplies the link that would otherwise be missing.
+Use `ships/pre-engineered` to find a variant and `ships/pre-engineered-stats` to resolve
+its fitted stats.
 
 ```ts
 import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
@@ -144,10 +141,10 @@ const resolved = variants[0] ? getPreEngineeredStats(variants[0]) : null;
 resolved?.symbol;
 ```
 
-Look variants up with the **plural** function and do not assume one: the medium Seeker
-Missile Rack is sold or awarded in six flavours. A variant's stats come from its own
-`modifiers` block rather than from re-rolling its blueprint, because a reward article is a
-published set of numbers rather than a roll anyone can reproduce.
+The API documentation owns the record and resolution semantics: see
+{@link ships!PreEngineeredVariant | PreEngineeredVariant},
+{@link ships!getPreEngineeredVariants | getPreEngineeredVariants}, and
+{@link ships!getPreEngineeredStats | getPreEngineeredStats}.
 
 ## What a roll costs
 

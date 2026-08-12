@@ -130,7 +130,7 @@ export interface ExperimentalEffect {
      * The stat contributions this effect applies (feed to {@link computeModifiers}).
      *
      * @remarks
-     * May be **empty** for a purely qualitative effect — one whose game behaviour is a
+     * May be **empty** for a purely qualitative effect — one whose game behavior is a
      * gameplay flag with no numeric magnitude the data exposes (e.g. Auto Loader
      * reloading while firing, Smart Rounds sparing untargeted ships). Such an effect
      * still carries a human-readable {@link ExperimentalEffect.description}.
@@ -147,7 +147,7 @@ export interface ExperimentalEffect {
     readonly damageDistribution?: DamageDistribution;
     /**
      * A short human-readable note on what the effect does in game — present on effects
-     * whose behaviour is not fully captured by {@link ExperimentalEffect.modifiers}
+     * whose behavior is not fully captured by {@link ExperimentalEffect.modifiers}
      * (chiefly the qualitative weapon-combat effects with no numeric magnitude).
      */
     readonly description?: string;
@@ -188,7 +188,7 @@ const round6 = (n: number): number => Math.round(n * 1e6) / 1e6;
  * @param grade - A complete blueprint grade (from {@link getBlueprintGrade}). A raw
  * feature list is also accepted for callers synthesising modifiers without a catalogue
  * record.
- * @param quality - The current engineering system's shared quality roll, `0`–`1`. Defaults
+ * @param quality - The engineering system's shared quality roll, `0`–`1`. Defaults
  * to `1` (best roll). Legacy-engineered modules advanced each attribute independently and
  * cannot be reconstructed from their single reported quality; import their journal-stated
  * modifiers instead.

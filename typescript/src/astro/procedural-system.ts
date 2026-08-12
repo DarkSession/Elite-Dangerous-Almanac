@@ -324,7 +324,7 @@ export class ProceduralSystem {
         const origin = resolveNamingRegionOrigin(overridden.parts.regionName);
         // Defensive: every name `sectorNameFromGridPosition` emits resolves, and an
         // override name is proven resolvable before it is applied, so no decoded
-        // address reaches this. It stands so a future grid change fails loudly.
+        // address reaches this. Keep the guard so unsupported decoded positions fail loudly.
         if (!origin) {
             throw new RangeError(`Unknown sector: ${truncate(overridden.parts.regionName)}`);
         }

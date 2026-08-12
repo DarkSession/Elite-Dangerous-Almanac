@@ -323,7 +323,7 @@ test("Frontier's own engineered ammunition figures, against what this library co
         );
 
         // Simulating the corrected roll from the catalogue is the part that can disagree,
-        // and the fixture pins what it currently produces — including where that is wrong.
+        // and the fixture pins its output, including known limitations.
         const record = module(pinned.symbol);
         assert.equal(record.clipSize, pinned.base.clipSize, `${label}: base clip`);
         assert.equal(record.ammoMaximum, pinned.base.ammoMaximum, `${label}: base reserve`);
