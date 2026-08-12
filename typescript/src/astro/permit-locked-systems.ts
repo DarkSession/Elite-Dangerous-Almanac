@@ -56,7 +56,7 @@ export const PERMIT_LOCKED_SYSTEMS: readonly PermitLockedSystem[] = Object.freez
 );
 
 const SYSTEM_BY_NAME: ReadonlyMap<string, PermitLockedSystem> = new Map(
-    PERMIT_LOCKED_SYSTEMS.map((system) => [normalizeKey(system.name), system]),
+    PERMIT_LOCKED_SYSTEMS.map((system) => [normalizeKey(system.name, 'catalogue key'), system]),
 );
 
 const SYSTEM_BY_ADDRESS: ReadonlyMap<bigint, PermitLockedSystem> = new Map(
@@ -69,9 +69,11 @@ const SYSTEM_BY_ADDRESS: ReadonlyMap<bigint, PermitLockedSystem> = new Map(
  * @param name - A system name in any casing, with optional surrounding whitespace.
  * @returns The frozen catalogue record, or `null` when the name is not individually
  * permit-locked. Region prefixes are not checked.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  */
 export function permitLockedSystemForName(name: string): PermitLockedSystem | null {
-    return SYSTEM_BY_NAME.get(normalizeKey(name)) ?? null;
+    return SYSTEM_BY_NAME.get(normalizeKey(name, 'permitLockedSystemForName: name')) ?? null;
 }
 
 /**

@@ -106,7 +106,10 @@ function sameJournalNumber(actual: number, expected: number): boolean {
 
 /** One stable comparison key for recipe and journal spellings of the same stat. */
 function modifierKey(modifier: EngineeringModifier, module: OutfittingModule): string {
-    return fieldForLabel(modifier.Label, module) ?? `label:${normalizeKey(modifier.Label)}`;
+    return (
+        fieldForLabel(modifier.Label, module) ??
+        `label:${normalizeKey(modifier.Label, 'ShipLoadout.fromLoadout: module.Engineering.Modifiers[].Label')}`
+    );
 }
 
 /** Whether a captured modifier agrees with the value a candidate article predicts. */
@@ -159,7 +162,10 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
     for (const modifier of engineering.Modifiers) {
         actualByKey.set(modifierKey(modifier, stock), modifier);
     }
-    const capturedExperimental = normalizeKey(engineering.ExperimentalEffect);
+    const capturedExperimental = normalizeKey(
+        engineering.ExperimentalEffect,
+        'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect',
+    );
     const matches: PreEngineeredVariant[] = [];
     for (const candidate of getPreEngineeredVariants(module.Item)) {
         if (!candidate.modifiers?.length) continue;

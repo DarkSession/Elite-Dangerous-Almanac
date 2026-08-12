@@ -77,9 +77,11 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
  * of those apart from an id this library has never heard of. Note that such an id is not a
  * claim that the module is unmodified: read a fitted one's stats from the journal's own
  * `Engineering.Modifiers`.
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  */
 export function getBlueprint(fdname: string): Blueprint | null {
-    return findByRawKey(BLUEPRINTS, fdname);
+    return findByRawKey(BLUEPRINTS, fdname, 'getBlueprint: fdname');
 }
 
 /**

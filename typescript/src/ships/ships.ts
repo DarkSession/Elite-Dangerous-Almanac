@@ -16,6 +16,7 @@
 import shipsData from '../../../data/ships/ships.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { createKeyIndex, findInKeyIndex } from '../internal/registry-index.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from './slots.js';
 
 /**
@@ -143,6 +144,8 @@ const SHIPS_BY_NAME = /* @__PURE__ */ createKeyIndex(SHIPS, 'name');
  * @remarks
  * The hulls form one small, unsplit catalogue, so unlike module, material,
  * micro-resource and commodity lookups there is no useful subset argument to narrow.
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
@@ -151,7 +154,7 @@ const SHIPS_BY_NAME = /* @__PURE__ */ createKeyIndex(SHIPS, 'name');
  * ```
  */
 export function getShipBySymbol(symbol: string): Ship | null {
-    return findInKeyIndex(SHIPS_BY_SYMBOL, symbol);
+    return findInKeyIndex(SHIPS_BY_SYMBOL, symbol, 'getShipBySymbol: symbol');
 }
 
 /**
@@ -164,6 +167,8 @@ export function getShipBySymbol(symbol: string): Ship | null {
  * @remarks
  * The hulls form one small, unsplit catalogue, so unlike module, material,
  * micro-resource and commodity lookups there is no useful subset argument to narrow.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getShipByName } from '@elite-dangerous-almanac/core/ships/ships';
@@ -172,7 +177,7 @@ export function getShipBySymbol(symbol: string): Ship | null {
  * ```
  */
 export function getShipByName(name: string): Ship | null {
-    return findInKeyIndex(SHIPS_BY_NAME, name);
+    return findInKeyIndex(SHIPS_BY_NAME, name, 'getShipByName: name');
 }
 
 /**
@@ -188,6 +193,8 @@ export function getShipByName(name: string): Ship | null {
  * `enumerateSlots`). To assemble and edit an actual build — fit modules, engineer
  * them, read jump range — start a `ShipLoadout` instead and use its live
  * `slots()` / `slots('core')` views.
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getShipSlots } from '@elite-dangerous-almanac/core/ships/ships';
@@ -201,6 +208,9 @@ export function getShipByName(name: string): Ship | null {
  * ```
  */
 export function getShipSlots(symbol: string): ShipSlots | null {
+    // Named here rather than left to the lookup below, so a wrong type reports the
+    // function the caller reached for instead of the one it delegates to.
+    requireStringIfPresent(symbol, 'getShipSlots: symbol');
     const ship = getShipBySymbol(symbol);
     if (!ship) return null;
     return {

@@ -1137,8 +1137,8 @@ test('empty names a non-string hull argument instead of failing inside the looku
 test('an unrecognised hull is reported by validation, not thrown at', () => {
     // `validation` is the reporting path for an import, and stays one: an oversized or
     // absent `Ship` is a hull the catalogue does not know, not a failure on the way to
-    // saying so. (A `Ship` of some other type still fails inside the symbol lookup —
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201.)
+    // saying so. A `Ship` of some other type is a different thing entirely, and
+    // `fromLoadout` names it before the build exists.
     for (const ship of ['x'.repeat(20_000), null]) {
         const build = ShipLoadout.fromLoadout({
             Ship: ship,
@@ -3367,4 +3367,98 @@ test('a memoised validation cannot be edited through by one consumer', () => {
     const issue = build.validation.issues[0]!;
     assert.throws(() => Object.assign(issue, { message: 'rewritten' }), TypeError);
     assert.notEqual(build.validation.issues[0]!.message, 'rewritten');
+});
+
+test('every slot-key method names a wrong-typed key rather than failing inside the build', () => {
+    const build = ShipLoadout.empty('Anaconda');
+    const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
+    build.setModule('FrameShiftDrive', fsd);
+    // The two private paths a slot key takes cover all ten methods between them, so this
+    // list is the check that no method reaches the build around them.
+    const calls: readonly ((key: string) => unknown)[] = [
+        (key) => build.setModule(key, fsd),
+        (key) => build.removeModule(key),
+        (key) => build.setModuleEnabled(key, true),
+        (key) => build.setModulePriority(key, 1),
+        (key) => build.applyBlueprint(key, 'FSD_LongRange', { grade: 5 }),
+        (key) => build.clearEngineering(key),
+        (key) => build.fittedModuleAt(key),
+        (key) => build.modulesForSlot(key),
+        (key) => build.availableBlueprints(key),
+        (key) => build.availableExperimentalEffects(key),
+    ];
+    for (const call of calls) {
+        assert.throws(() => call(42 as unknown as string), {
+            name: 'TypeError',
+            message: 'ShipLoadout: slotKey must be a string, received number 42',
+        });
+    }
+    // A string that is not a slot still reports the miss, not a type error.
+    assert.throws(() => build.modulesForSlot('NoSuchSlot'), RangeError);
+});
+
+test('applyBlueprint names a wrong-typed recipe id before it asks about the slot', () => {
+    const build = ShipLoadout.empty('Anaconda');
+    const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
+    build.setModule('FrameShiftDrive', fsd);
+    assert.throws(
+        () => build.applyBlueprint('FrameShiftDrive', 42 as unknown as string, { grade: 5 }),
+        {
+            name: 'TypeError',
+            message:
+                'ShipLoadout.applyBlueprint: blueprintName must be a string, received number 42',
+        },
+    );
+    assert.throws(
+        () =>
+            build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+                grade: 5,
+                experimental: 42 as unknown as string,
+            }),
+        {
+            name: 'TypeError',
+            message:
+                'ShipLoadout.applyBlueprint: options.experimental must be a string, received number 42',
+        },
+    );
+    assert.throws(
+        () =>
+            build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', 5 as unknown as { grade: 5 }),
+        {
+            name: 'TypeError',
+            message:
+                'ShipLoadout.applyBlueprint: options must be an object with a grade, received number 5',
+        },
+    );
+    // An empty slot is a state question, so the recipe id is named ahead of it.
+    assert.throws(
+        () => build.applyBlueprint('Slot01_Size7', 42 as unknown as string, { grade: 5 }),
+        {
+            message: /blueprintName must be a string/,
+        },
+    );
+    // An absent experimental effect is not one of these — it is simply no effect.
+    assert.ok(build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 }));
+});
+
+test('fromLoadout names the two fields it needs instead of failing inside the walk', () => {
+    for (const bad of [42, 'a Loadout event', null, undefined]) {
+        assert.throws(() => ShipLoadout.fromLoadout(bad as unknown as LoadoutEvent), {
+            name: 'TypeError',
+            message: /^ShipLoadout\.fromLoadout: event must be a Loadout event, received /,
+        });
+    }
+    assert.throws(
+        () => ShipLoadout.fromLoadout({ Ship: 42, Modules: [] } as unknown as LoadoutEvent),
+        {
+            name: 'TypeError',
+            message: 'ShipLoadout.fromLoadout: event.Ship must be a string, received number 42',
+        },
+    );
+    assert.throws(() => ShipLoadout.fromLoadout({ Ship: 'Anaconda' } as unknown as LoadoutEvent), {
+        name: 'TypeError',
+        message: 'ShipLoadout.fromLoadout: event.Modules must be an array, received undefined',
+    });
+    // A module list of the wrong shape is still the import's to report, field by field.
+    assert.equal(ShipLoadout.fromLoadout({ Ship: 'Anaconda', Modules: [] }).shipSymbol, 'Anaconda');
 });

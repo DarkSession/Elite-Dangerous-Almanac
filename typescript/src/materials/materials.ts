@@ -190,6 +190,8 @@ const MATERIALS_BY_ELEMENT = /* @__PURE__ */ createKeyIndex(ALL_MATERIALS, 'elem
  * `RAW_MATERIALS`, `MANUFACTURED_MATERIALS`, `ENCODED_MATERIALS`, or any array you
  * have filtered yourself. Omit it unless you specifically want to exclude the rest.
  * @returns The matching {@link Material}, or `null` if no material has that symbol.
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getMaterialBySymbol } from '@elite-dangerous-almanac/core/materials/materials';
@@ -202,8 +204,8 @@ export function getMaterialBySymbol(
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
     return materials === ALL_MATERIALS
-        ? findInKeyIndex(MATERIALS_BY_SYMBOL, symbol)
-        : findByKey(materials, 'symbol', symbol);
+        ? findInKeyIndex(MATERIALS_BY_SYMBOL, symbol, 'getMaterialBySymbol: symbol')
+        : findByKey(materials, 'symbol', symbol, 'getMaterialBySymbol: symbol');
 }
 
 /**
@@ -212,6 +214,8 @@ export function getMaterialBySymbol(
  * @param name - The display name as the catalogue spells it, e.g. `"Grid Resistors"`.
  * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
  * @returns The matching {@link Material}, or `null` if no material has that name.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getMaterialByName } from '@elite-dangerous-almanac/core/materials/materials';
@@ -224,8 +228,8 @@ export function getMaterialByName(
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
     return materials === ALL_MATERIALS
-        ? findInKeyIndex(MATERIALS_BY_NAME, name)
-        : findByKey(materials, 'name', name);
+        ? findInKeyIndex(MATERIALS_BY_NAME, name, 'getMaterialByName: name')
+        : findByKey(materials, 'name', name, 'getMaterialByName: name');
 }
 
 /**
@@ -235,6 +239,8 @@ export function getMaterialByName(
  * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
  * @returns The matching {@link Material}, or `null`. Only raw materials carry an
  * element symbol, so a manufactured or encoded subset never matches.
+ * @throws {TypeError} If `elementSymbol` is present and not a string. A nullish
+ * `elementSymbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getMaterialByElementSymbol } from '@elite-dangerous-almanac/core/materials/materials';
@@ -247,8 +253,17 @@ export function getMaterialByElementSymbol(
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material | null {
     return materials === ALL_MATERIALS
-        ? findInKeyIndex(MATERIALS_BY_ELEMENT, elementSymbol)
-        : findByKey(materials, 'elementSymbol', elementSymbol);
+        ? findInKeyIndex(
+              MATERIALS_BY_ELEMENT,
+              elementSymbol,
+              'getMaterialByElementSymbol: elementSymbol',
+          )
+        : findByKey(
+              materials,
+              'elementSymbol',
+              elementSymbol,
+              'getMaterialByElementSymbol: elementSymbol',
+          );
 }
 
 /**
@@ -281,6 +296,8 @@ export function materialsByGrade(
  * every other lookup here.
  * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
  * @returns A new array of matches (possibly empty). The input is not modified.
+ * @throws {TypeError} If `line` is present and not a string. A nullish
+ * `line` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { MaterialLine, materialsInLine } from '@elite-dangerous-almanac/core/materials/materials';
@@ -292,7 +309,7 @@ export function materialsInLine(
     line: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material[] {
-    return filterByKey(materials, 'line', line);
+    return filterByKey(materials, 'line', line, 'materialsInLine: line');
 }
 
 /**
@@ -307,6 +324,8 @@ export function materialsInLine(
  * Leading/trailing whitespace and case are ignored, like every other lookup here.
  * @param materials - Optional subset to search (see {@link getMaterialBySymbol}).
  * @returns A new array of matches (possibly empty). The input is not modified.
+ * @throws {TypeError} If `category` is present and not a string. A nullish
+ * `category` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { materialsInCategory } from '@elite-dangerous-almanac/core/materials/materials';
@@ -319,5 +338,5 @@ export function materialsInCategory(
     category: string,
     materials: readonly Material[] = ALL_MATERIALS,
 ): Material[] {
-    return filterByKey(materials, 'category', category);
+    return filterByKey(materials, 'category', category, 'materialsInCategory: category');
 }

@@ -17,6 +17,7 @@ import { baseStats, fieldForLabel } from './module-stat-labels.js';
 import type { OutfittingModule } from '../modules.js';
 import type { AvailableBlueprint } from '../ship-loadout.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
+import { FITTED_ITEM } from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
 
 /** Engineering groups whose non-menu recipes identify final bought articles. */
@@ -182,7 +183,7 @@ function isSoldWithBlueprint(item: string, wanted: string): boolean {
  */
 export function blueprintAvailableFor(item: string, fdname: string): boolean {
     const offered = getBlueprintsForModule(item);
-    const asWritten = normalizeKey(fdname);
+    const asWritten = normalizeKey(fdname, 'ShipLoadout.applyBlueprint: fdname');
     const resolved = resolveBlueprintForModule(item, fdname).trim();
     const wanted = resolved.toLowerCase();
     if (offered.some((id) => id.toLowerCase() === wanted)) return true;
@@ -207,7 +208,7 @@ export function blueprintAvailableFor(item: string, fdname: string): boolean {
  * @internal
  */
 export function experimentalAvailableFor(item: string, fdname: string): boolean {
-    const wanted = normalizeKey(fdname);
+    const wanted = normalizeKey(fdname, 'ShipLoadout.applyBlueprint: options.experimental');
     return getExperimentalsForModule(item).some((id) => id.toLowerCase() === wanted);
 }
 
@@ -242,7 +243,7 @@ function engineerableBase(
     item: string,
     statsOverride?: OutfittingModule | null,
 ): { stats: OutfittingModule; base: Readonly<Record<string, number>> } | null {
-    const stats = statsOverride ?? builtInModuleBySymbol(item);
+    const stats = statsOverride ?? builtInModuleBySymbol(item, FITTED_ITEM);
     if (!stats || stats.engineeringLocked) return null;
     return { stats, base: baseStats(stats) };
 }

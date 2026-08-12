@@ -23,7 +23,7 @@
  */
 
 import { normalizeKey } from '../internal/registry-index.js';
-import { describeValue } from '../internal/argument-guards.js';
+import { describeValue, requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * Integer position of a sector on the galaxy's sector grid.
@@ -761,7 +761,7 @@ export function sectorNameFromGridPosition(position: SectorGridPosition): string
  * strings overlap, so the inverse must consider each parse instead of committing
  * greedily. Fragments are copied so the shared table is never mutated.
  */
-function splitFragmentCandidates(name: string): FragmentInfo[][] {
+function splitFragmentCandidates(normalizedName: string): FragmentInfo[][] {
     const candidates: FragmentInfo[][] = [];
 
     const visit = (remaining: string, out: readonly FragmentInfo[]): void => {
@@ -797,7 +797,7 @@ function splitFragmentCandidates(name: string): FragmentInfo[][] {
         }
     };
 
-    visit(normalizeKey(name), []);
+    visit(normalizedName, []);
     return candidates;
 }
 
@@ -878,11 +878,15 @@ function c1SectorGridPosition4(f: FragmentInfo[]): SectorGridPosition | null {
  * its coordinates is rejected.
  *
  * @param name - A procedural sector name in any casing (e.g. `blae eock`).
- * @returns The sector grid position, or `null` when the name is not procedural.
+ * @returns The sector grid position, or `null` when the name is not procedural —
+ * including a nullish `name`, which the name parsers tolerate on this path too.
+ * @throws {TypeError} If `name` is present and not a string.
  */
 export function sectorGridPositionFromName(name: string): SectorGridPosition | null {
-    const candidates = splitFragmentCandidates(name);
-    const normalizedName = normalizeKey(name).replace(/\s+/g, ' ');
+    if (name == null) return null;
+    const normalized = normalizeKey(name, 'sectorGridPositionFromName: name');
+    const candidates = splitFragmentCandidates(normalized);
+    const normalizedName = normalized.replace(/\s+/g, ' ');
     for (const f of candidates) {
         let coords: SectorGridPosition | null = null;
         if (
@@ -922,9 +926,14 @@ export function sectorGridPositionFromName(name: string): SectorGridPosition | n
  * Re-derive a sector name's canonical casing by round-tripping it through the
  * grid, e.g. `blae eock` → `Blae Eock`. Returns `null` for non-procedural names.
  *
- * @param name - A procedural sector name in any casing.
+ * @param name - A procedural sector name in any casing. A nullish one answers `null`,
+ * matching {@link sectorGridPositionFromName}.
+ * @throws {TypeError} If `name` is present and not a string.
  */
 export function canonicalizeSectorName(name: string): string | null {
+    // Named here rather than left to the round-trip below, so a wrong type reports the
+    // function the caller reached for instead of the one it delegates to.
+    requireStringIfPresent(name, 'canonicalizeSectorName: name');
     const position = sectorGridPositionFromName(name);
     return position ? sectorNameFromGridPosition(position) : null;
 }

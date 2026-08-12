@@ -42,6 +42,8 @@ export const EXPERIMENTAL_EFFECT_COSTS: Readonly<Record<string, readonly Enginee
  * @param fdname - The effect id, e.g. `"special_fsd_heavy"`, matched
  * case-insensitively after trimming surrounding whitespace.
  * @returns The frozen material list, or `null` if the effect is unknown.
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getExperimentalEffectCost } from '@elite-dangerous-almanac/core/ships/experimental-effect-costs';
@@ -51,5 +53,5 @@ export const EXPERIMENTAL_EFFECT_COSTS: Readonly<Record<string, readonly Enginee
  * ```
  */
 export function getExperimentalEffectCost(fdname: string): readonly EngineeringMaterial[] | null {
-    return findByRawKey(EXPERIMENTAL_EFFECT_COSTS, fdname);
+    return findByRawKey(EXPERIMENTAL_EFFECT_COSTS, fdname, 'getExperimentalEffectCost: fdname');
 }

@@ -1,5 +1,7 @@
 /** Small, case-insensitive catalogue lookup helpers. @internal */
 
+import { requireString } from './argument-guards.js';
+
 /** Keys whose non-null values are strings. */
 type StringField<T extends object> = {
     [K in keyof T]-?: Exclude<T[K], null | undefined> extends string ? K : never;
@@ -9,12 +11,39 @@ type StringField<T extends object> = {
 /** An immutable first-record-by-key index. */
 export type KeyIndex<T> = Readonly<Record<string, T>>;
 
-/** Normalize catalogue and consumer keys by trimming and folding case. */
-export function normalizeKey(value: string): string;
+/**
+ * The label for the catalogue's own side of a comparison. A catalogue value reaches
+ * {@link normalizeKey} only once `stringField` has established it is a string, so this
+ * names a failure a malformed data file would have to cause, never a caller.
+ */
+const CATALOGUE_KEY = 'catalogue key';
+
+/**
+ * Normalize catalogue and consumer keys by trimming and folding case.
+ *
+ * Every case-insensitive lookup in the library funnels through here, so this is also
+ * where a wrong-typed key is caught. The alternative is the internal `value?.trim is
+ * not a function` a lookup used to fail with, which names neither the parameter nor
+ * what arrived.
+ *
+ * **A nullish key is not a wrong type.** It stays a miss, which is what the whole
+ * lookup family answers for a key no record carries, and what an optional field an
+ * import did not carry has to keep meaning — an engineering block with no
+ * `ExperimentalEffect` must compare equal to a catalogue entry that has none. The
+ * strict factories (`ProceduralSystem.fromName`, `ShipLoadout.empty`) are where a
+ * missing argument is loud; a search is not.
+ *
+ * @param value - The key to normalize.
+ * @param label - How to name it in a failure, `"function: parameter"` — see
+ * {@link requireString}. Callers pass the *public* parameter they received, so a lookup
+ * reached through a facade still names the function the consumer called.
+ * @throws {TypeError} If `value` is present and not a string.
+ */
+export function normalizeKey(value: string, label: string): string;
 /** Preserve an absent optional key while normalizing a present one. */
-export function normalizeKey(value: string | undefined): string | undefined;
-export function normalizeKey(value: string | undefined): string | undefined {
-    return value?.trim().toLowerCase();
+export function normalizeKey(value: string | undefined, label: string): string | undefined;
+export function normalizeKey(value: string | undefined, label: string): string | undefined {
+    return value == null ? undefined : requireString(value, label).trim().toLowerCase();
 }
 
 /**
@@ -34,15 +63,19 @@ export function createKeyIndex<T extends object>(
     for (const record of catalogue) {
         const raw = stringField(record, field);
         if (raw === null) continue;
-        const key = normalizeKey(raw);
+        const key = normalizeKey(raw, CATALOGUE_KEY);
         if (!Object.hasOwn(index, key)) index[key] = record;
     }
     return Object.freeze(index);
 }
 
-/** Look up a normalized key in an immutable index. */
-export function findInKeyIndex<T>(index: KeyIndex<T>, wanted: string): T | null {
-    return index[normalizeKey(wanted)] ?? null;
+/**
+ * Look up a normalized key in an immutable index.
+ *
+ * @param label - How to name `wanted` in a failure — see {@link normalizeKey}.
+ */
+export function findInKeyIndex<T>(index: KeyIndex<T>, wanted: string, label: string): T | null {
+    return index[normalizeKey(wanted, label)] ?? null;
 }
 
 /**
@@ -56,33 +89,51 @@ export function findInKeyIndex<T>(index: KeyIndex<T>, wanted: string): T | null 
  * and only a miss pays for the scan. Inherited keys never match, so `'toString'` is a
  * miss unless the catalogue really holds it; the scan reads own *enumerable* keys, so a
  * hidden own key is reachable by its exact spelling only.
+ *
+ * @param label - How to name `wanted` in a failure — see {@link normalizeKey}. The key
+ * is normalized before the own-property hit is tried, so a wrong-typed key fails here
+ * rather than reaching the catalogue as a property name.
  */
-export function findByRawKey<T>(catalogue: Readonly<Record<string, T>>, wanted: string): T | null {
+export function findByRawKey<T>(
+    catalogue: Readonly<Record<string, T>>,
+    wanted: string,
+    label: string,
+): T | null {
+    const key = normalizeKey(wanted, label);
     if (Object.hasOwn(catalogue, wanted)) return catalogue[wanted]!;
-    const key = normalizeKey(wanted);
     for (const candidate of Object.keys(catalogue)) {
-        if (normalizeKey(candidate) === key) return catalogue[candidate]!;
+        if (normalizeKey(candidate, CATALOGUE_KEY) === key) return catalogue[candidate]!;
     }
     return null;
 }
 
-/** Find the first matching record by scanning the supplied catalogue. */
+/**
+ * Find the first matching record by scanning the supplied catalogue.
+ *
+ * @param label - How to name `wanted` in a failure — see {@link normalizeKey}.
+ */
 export function findByKey<T extends object>(
     catalogue: readonly T[],
     field: StringField<T>,
     wanted: string,
+    label: string,
 ): T | null {
-    const key = normalizeKey(wanted);
+    const key = normalizeKey(wanted, label);
     return catalogue.find((record) => matches(stringField(record, field), key)) ?? null;
 }
 
-/** Find every matching record by scanning the supplied catalogue. */
+/**
+ * Find every matching record by scanning the supplied catalogue.
+ *
+ * @param label - How to name `wanted` in a failure — see {@link normalizeKey}.
+ */
 export function filterByKey<T extends object>(
     catalogue: readonly T[],
     field: StringField<T>,
     wanted: string,
+    label: string,
 ): T[] {
-    const key = normalizeKey(wanted);
+    const key = normalizeKey(wanted, label);
     return catalogue.filter((record) => matches(stringField(record, field), key));
 }
 
@@ -92,5 +143,5 @@ function stringField<T extends object>(record: T, field: StringField<T>): string
 }
 
 function matches(raw: string | null, key: string): boolean {
-    return raw !== null && normalizeKey(raw) === key;
+    return raw !== null && normalizeKey(raw, CATALOGUE_KEY) === key;
 }

@@ -58,22 +58,36 @@ capture field with an ellipsis. They identify the bad value without copying a wh
 payload into a log or UI; structured diagnostic fields such as `slot` and `symbol` keep
 the original value for programmatic handling.
 
-How completely that is enforced varies, which is worth knowing before you write a `catch`:
+Which half of your call the message names depends on what you handed over, and that is
+worth knowing before you write a `catch`:
 
-- `ProceduralSystem.fromName`, `ShipLoadout.empty` and the module argument of
-  `ShipLoadout.setModule` name the parameter and the value. `toSystemAddress` prints the
-  value it rejected. `parseSlef` and `ShipLoadout.fromSlef` name the offending **field**
-  instead (`parseSlef: entries[0].data.Modules[0].Priority must be an integer from 0 to
-  4`) — the more useful half when the argument is a whole export, and the same text
-  `inspectSlef` reports as that entry's diagnostic.
-- At the entry points
-  [issue 201](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201) lists, a
-  wrong type still throws `TypeError` — but the message is the internal property access
-  that failed rather than one naming your value.
-- `parseSystemName`, `canonicalizeSystemName` and `isProceduralSystemName` answer `null`
-  and `false` for a nullish name instead of throwing. The low-level parsers tolerate what
-  the factory above them rejects, so reach for `ProceduralSystem.fromName` when you want a
-  missing name to be loud.
+- **Most entry points name the parameter and the value** — every catalogue lookup, every
+  method that takes a slot key, `ProceduralSystem.fromName`, `ShipLoadout.empty`, and the
+  module argument of `ShipLoadout.setModule`. `toSystemAddress` prints the value it
+  rejected without a parameter to name, having only the one.
+- `parseSlef` and `ShipLoadout.fromSlef` name the offending **field** instead
+  (`parseSlef: entries[0].data.Modules[0].Priority must be an integer from 0 to 4`) — the
+  more useful half when the argument is a whole export, and the same text `inspectSlef`
+  reports as that entry's diagnostic. `ShipLoadout.fromLoadout` names the two fields it
+  checks, `event.Ship` and `event.Modules`, and trusts the rest; use `fromSlef` for an
+  event you did not produce.
+
+**A missing argument is not a wrong-typed one**, and the two get different answers:
+
+```ts
+import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
+
+getShipBySymbol(undefined as unknown as string); // -> null, the answer an unknown symbol gets
+getShipBySymbol(42 as unknown as string);
+// throws TypeError: getShipBySymbol: symbol must be a string, received number 42
+```
+
+A lookup that answers `null` for a symbol no record carries answers `null` for no symbol
+at all — asking for nothing found nothing. So do `parseSystemName`,
+`canonicalizeSystemName` and `isProceduralSystemName`, which answer `null` and `false`
+for a nullish name. The strict factories are where a missing argument is loud:
+`ProceduralSystem.fromName(undefined)` and `ShipLoadout.empty(undefined)` throw, because
+they exist to hand you an object and there is nothing to build one from.
 
 **`null` is not an error.** A lookup that finds nothing has answered you. Journals
 outlive catalogues — a game update ships modules before this package knows about them —

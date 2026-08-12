@@ -604,6 +604,8 @@ export function stringifySlef(slef: Slef, options: SlefStringifyOptions = {}): s
  * @returns The modifier's numeric `Value`, or `null` if the module is not
  * engineered, states no modifiers at all, carries no such modifier, or the modifier is
  * non-numeric.
+ * @throws {TypeError} If `label` is present and not a string. A nullish
+ * `label` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getLoadoutModifier } from '@elite-dangerous-almanac/core/ships/slef';
@@ -615,7 +617,7 @@ export function stringifySlef(slef: Slef, options: SlefStringifyOptions = {}): s
  * ```
  */
 export function getLoadoutModifier(module: LoadoutModule, label: string): number | null {
-    const wanted = normalizeKey(label);
+    const wanted = normalizeKey(label, 'getLoadoutModifier: label');
     const mod = module.Engineering?.Modifiers?.find((m) => m.Label.toLowerCase() === wanted);
     return typeof mod?.Value === 'number' ? mod.Value : null;
 }

@@ -125,6 +125,8 @@ export const DECORATIVE_MODIFICATIONS: Readonly<Record<string, DecorativeModific
  * @param fdname - The modification id, e.g. `"Decorative_Green"`.
  * @returns The modification — its `name`, the `modules` observed carrying it and the
  * `modifiers` it arrives with — or `null` if the id is not a decorative modification.
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getDecorativeModification } from '@elite-dangerous-almanac/core/ships/decorative-modifications';
@@ -134,7 +136,7 @@ export const DECORATIVE_MODIFICATIONS: Readonly<Record<string, DecorativeModific
  * ```
  */
 export function getDecorativeModification(fdname: string): DecorativeModification | null {
-    return findByRawKey(DECORATIVE_MODIFICATIONS, fdname);
+    return findByRawKey(DECORATIVE_MODIFICATIONS, fdname, 'getDecorativeModification: fdname');
 }
 
 /**
@@ -171,6 +173,8 @@ export function isDecorativeModification(fdname: string): boolean {
  * @param symbol - A module symbol, e.g. `"Hpt_FlakMortar_Turret_Medium"`.
  * @returns The modification ids, in catalogue order. Join to
  * {@link DECORATIVE_MODIFICATIONS}.
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getDecorativeModificationsForModule } from '@elite-dangerous-almanac/core/ships/decorative-modifications';
@@ -181,7 +185,7 @@ export function isDecorativeModification(fdname: string): boolean {
  * ```
  */
 export function getDecorativeModificationsForModule(symbol: string): readonly string[] {
-    const wanted = normalizeKey(symbol);
+    const wanted = normalizeKey(symbol, 'getDecorativeModificationsForModule: symbol');
     return Object.entries(DECORATIVE_MODIFICATIONS)
         .filter(([, record]) => record.modules.some((m) => m.toLowerCase() === wanted))
         .map(([id]) => id);

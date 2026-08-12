@@ -69,6 +69,8 @@ const CATALOGUE: ReadonlyMap<string, NamingRegionOrigin> = new Map(
  *
  * @param name - A named region in any casing, with optional surrounding whitespace.
  * @returns Its canonical origin record, or `null` when it is not catalogued.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getHandAuthoredRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
@@ -78,7 +80,7 @@ const CATALOGUE: ReadonlyMap<string, NamingRegionOrigin> = new Map(
  * ```
  */
 export function getHandAuthoredRegionOrigin(name: string): NamingRegionOrigin | null {
-    return CATALOGUE.get(normalizeKey(name)) ?? null;
+    return CATALOGUE.get(normalizeKey(name, 'getHandAuthoredRegionOrigin: name')) ?? null;
 }
 
 /**

@@ -21,6 +21,7 @@
 import { canonicalizeSectorName, sectorGridPositionFromName } from './sector-name.js';
 import { getHandAuthoredRegionOrigin } from './naming-region-origins.js';
 import { assertBoxelCode, packBoxelCode } from './internal/system-name-code.js';
+import { requireString, requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * The parsed parts of a procedural system name. Letters and mass code are stored
@@ -144,10 +145,13 @@ export function boxelCodeToLetters(boxelCode: number): BoxelLetters {
  * answers `null` too: this parser tolerates an absent name, deliberately, so a caller
  * can hand it a field that may not be there. `ProceduralSystem.fromName` is the stricter
  * factory over the same grammar — it throws `TypeError` for anything but a string.
+ * @throws {TypeError} If `name` is present and not a string. Tolerating an absent name is
+ * not tolerating any value at all: a number where a name belongs is a caller bug, and it
+ * is named rather than left to fail on a method it does not have.
  */
 export function parseSystemName(name: string): SystemNameParts | null {
     if (name == null) return null;
-    const s = name;
+    const s = requireString(name, 'parseSystemName: name');
     const lower = s.toLowerCase();
     let i = s.length - 1;
 
@@ -234,8 +238,10 @@ export function formatSystemName(parts: SystemNameParts): string {
  * @param name - A system name in any casing.
  * @returns The canonically-cased name, or `null` if it is not a system name — including
  * a nullish `name`, which {@link parseSystemName} tolerates on this path too.
+ * @throws {TypeError} If `name` is present and not a string.
  */
 export function canonicalizeSystemName(name: string): string | null {
+    requireStringIfPresent(name, 'canonicalizeSystemName: name');
     const parts = parseSystemName(name);
     if (!parts) return null;
     return formatSystemName({
@@ -265,6 +271,7 @@ export interface IsProceduralSystemNameOptions {
  * @returns `true` when the name parses as a procedural system name. A hand-named
  * system (`Sol`, `Maia`) is `false`: it is a real system, just not a procedural name. A
  * nullish `name` is `false` as well, matching {@link parseSystemName}'s tolerance.
+ * @throws {TypeError} If `name` is present and not a string.
  * @example
  * ```ts
  * import { isProceduralSystemName } from '@elite-dangerous-almanac/core/astro/system-name';
@@ -278,6 +285,7 @@ export function isProceduralSystemName(
     name: string,
     options: IsProceduralSystemNameOptions = {},
 ): boolean {
+    requireStringIfPresent(name, 'isProceduralSystemName: name');
     const parts = parseSystemName(name?.trim());
     if (!parts) return false;
     return options.strict ? sectorGridPositionFromName(parts.regionName) !== null : true;

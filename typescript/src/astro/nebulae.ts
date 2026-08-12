@@ -260,6 +260,8 @@ export function nebulaeWithin(
  * @returns The matching {@link Nebula}, or `null` if the catalogue holds no nebula
  * of that name. Only the catalogue you pass is searched — a real nebula will not
  * be found in `PLANETARY_NEBULAE`.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getNebulaByName } from '@elite-dangerous-almanac/core/astro/nebulae';
@@ -270,5 +272,5 @@ export function nebulaeWithin(
  * ```
  */
 export function getNebulaByName(name: string, nebulae: readonly Nebula[]): Nebula | null {
-    return findByKey(nebulae, 'name', name);
+    return findByKey(nebulae, 'name', name, 'getNebulaByName: name');
 }

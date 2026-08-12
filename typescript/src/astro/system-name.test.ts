@@ -150,3 +150,23 @@ test('rejects a boxel code no packing could produce', () => {
         });
     }
 });
+
+test('the name parsers name a wrong-typed name while still tolerating an absent one', () => {
+    // Tolerating an absent name is not tolerating any value at all: the three answer
+    // `null`/`false` for nullish (asserted above) and name anything else.
+    for (const [call, label] of [
+        [() => parseSystemName(42 as unknown as string), 'parseSystemName: name'],
+        [() => canonicalizeSystemName(42 as unknown as string), 'canonicalizeSystemName: name'],
+        [() => isProceduralSystemName(42 as unknown as string), 'isProceduralSystemName: name'],
+    ] as const) {
+        assert.throws(call, {
+            name: 'TypeError',
+            message: `${label} must be a string, received number 42`,
+        });
+    }
+    // A parsed journal field handed straight in is the case this exists for.
+    assert.throws(() => parseSystemName({ StarSystem: 'Sol' } as unknown as string), {
+        name: 'TypeError',
+        message: 'parseSystemName: name must be a string, received object {"StarSystem":"Sol"}',
+    });
+});

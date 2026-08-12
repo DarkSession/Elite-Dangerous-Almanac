@@ -75,15 +75,23 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
             continue;
         }
 
-        const normalizedBlueprint = normalizeKey(engineering.BlueprintName);
-        const normalizedExperimental = normalizeKey(engineering.ExperimentalEffect);
+        const normalizedBlueprint = normalizeKey(
+            engineering.BlueprintName,
+            'ShipLoadout.fromLoadout: module.Engineering.BlueprintName',
+        );
+        const normalizedExperimental = normalizeKey(
+            engineering.ExperimentalEffect,
+            'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect',
+        );
         const exact = getPreEngineeredVariants(module.Item).find(
             (candidate) =>
                 candidate.blueprint.toLowerCase() === normalizedBlueprint &&
                 candidate.grade === engineering.Level &&
                 candidate.experimental?.toLowerCase() === normalizedExperimental,
         );
-        const stats = exact ? getPreEngineeredStats(exact) : builtInModuleBySymbol(module.Item);
+        const stats = exact
+            ? getPreEngineeredStats(exact)
+            : builtInModuleBySymbol(module.Item, 'ShipLoadout.fromLoadout: module.Item');
         if (stats) {
             moduleStats.set(module.Slot, cloneModuleStats({ ...stats, engineeringLocked: true }));
         }

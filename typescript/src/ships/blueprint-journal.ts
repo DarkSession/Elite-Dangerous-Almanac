@@ -87,6 +87,9 @@ import { normalizeKey } from '../internal/registry-index.js';
  * name resolved, and otherwise `fdname` exactly as it was passed — byte for byte, so a
  * caller who never meets the collision never sees their own spelling rewritten.
  *
+ * @throws {TypeError} If `symbol` or `fdname` is present and not a string. A nullish
+ * one is a miss, answered the way an unrecognised one is — `fdname` comes back exactly
+ * as it was passed.
  * @example
  * ```ts
  * import { resolveBlueprintForModule } from '@elite-dangerous-almanac/core/ships/blueprint-journal';
@@ -113,7 +116,7 @@ import { normalizeKey } from '../internal/registry-index.js';
  * ```
  */
 export function resolveBlueprintForModule(symbol: string, fdname: string): string {
-    const wanted = normalizeKey(fdname);
+    const wanted = normalizeKey(fdname, 'resolveBlueprintForModule: fdname');
     const offered = getBlueprintsForModule(symbol);
     // An id the menu already lists is the recipe it names; hand back what the caller wrote,
     // so a caller who never meets the collision never sees their own spelling rewritten.
