@@ -45,6 +45,19 @@ number outside its documented journal range — a module `Priority` of 5, a `Hea
 violation: `parseSlef` and `ShipLoadout.fromSlef` throw `TypeError` naming the field, and
 `inspectSlef` records it as that entry's diagnostic.
 
+**A wrong-typed argument is malformed input**, not a miss. Passing a number where a
+symbol belongs is the same kind of failure as passing an unusable address, and an entry
+point that guards it names the parameter and what arrived —
+`ShipLoadout.empty(42)` throws `TypeError: ShipLoadout.empty: shipSymbol must be a
+string, received number 42`. So does a missing one: `ProceduralSystem.fromName(undefined)`
+throws rather than answering `null`, because "you passed me nothing" is not "the naming
+scheme does not cover that system". Three entry points enforce this today —
+`ProceduralSystem.fromName`, `ShipLoadout.empty`, and the module argument of
+`ShipLoadout.setModule`. Everywhere else the class is still `TypeError`, but the message
+is the internal property access that failed rather than one naming your value; see
+[issue 201](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201) for which
+entry points those are.
+
 **`null` is not an error.** A lookup that finds nothing has answered you. Journals
 outlive catalogues — a game update ships modules before this package knows about them —
 so `null` from a symbol lookup usually means "newer than the catalogue", and a consumer

@@ -1055,22 +1055,30 @@ test('a restricted mount labels an odd key without scanning it quadratically', (
 
 test('setModule throws a clear error when handed an undefined module', () => {
     const conda = ShipLoadout.empty('Anaconda');
-    // The classic `getModuleBySymbol('typo', CAT)!` miss.
-    assert.throws(
-        () => conda.setModule('FrameShiftDrive', undefined as unknown as OutfittingModule),
-        /no module supplied/,
-    );
+    // The classic `getModuleBySymbol('typo', CAT)!` miss. Only a nullish module is
+    // reported as one, so no other value gets sent looking at the lookup.
+    for (const missing of [undefined, null]) {
+        assert.throws(
+            () => conda.setModule('FrameShiftDrive', missing as unknown as OutfittingModule),
+            /no module supplied/,
+        );
+    }
 });
 
 test('setModule names a module argument that is not an outfitting module', () => {
     const conda = ShipLoadout.empty('Anaconda');
     // A journal fragment, a bare symbol or a number, rather than a catalogue record:
-    // every fit rule reads `symbol`, so the value is named here instead.
+    // every fit rule reads `symbol`, so the value is named here instead. The falsy
+    // values belong here too — none of them is a lookup that returned nothing.
     for (const bad of [
         {},
         42,
         'Int_Hyperdrive_Size6_Class5',
         { Item: 'int_hyperdrive_size6_class5' },
+        0,
+        '',
+        false,
+        Number.NaN,
     ]) {
         assert.throws(
             () => conda.setModule('FrameShiftDrive', bad as unknown as OutfittingModule),

@@ -878,8 +878,10 @@ export class ShipLoadout {
      */
     setModule(slotKey: string, module: OutfittingModule): this {
         const slot = this.#requireSlot(slotKey);
-        if (!module) {
+        if (module === null || module === undefined) {
             // Guards the common `getModuleBySymbol('typo', CAT)!` miss, whose `!` lies.
+            // Nothing else takes this branch: another falsy value is not a lookup miss,
+            // and claiming it was would send the caller looking in the wrong place.
             throw new TypeError(
                 `ShipLoadout.setModule: no module supplied for "${slotKey}" (did the module lookup return undefined?)`,
             );

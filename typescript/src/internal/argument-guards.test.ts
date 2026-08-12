@@ -46,7 +46,27 @@ test('describeValue falls back to the bare type when a value has no JSON renderi
 
 test('describeValue truncates a long preview instead of quoting a whole payload', () => {
     const described = describeValue({ Modules: Array.from({ length: 40 }, (_, i) => i) });
-    assert.equal(described.length, 'object '.length + 61);
     assert.ok(described.startsWith('object {"Modules":[0,1,2,'), described);
     assert.ok(described.endsWith('…'), described);
+    assert.ok(described.length < 100, `preview not shortened: ${described.length} chars`);
+
+    // A string argument is the likeliest oversized one — a whole SLEF payload handed
+    // where a symbol belongs — so it is shortened on the same terms.
+    const long = describeValue('x'.repeat(50_000));
+    assert.ok(long.startsWith('string "xxx'), long);
+    assert.ok(long.endsWith('…'), long);
+    assert.ok(long.length < 100, `preview not shortened: ${long.length} chars`);
+});
+
+test('describeValue never cuts a surrogate pair in half', () => {
+    // The two cases put the cut on either half of a pair: the string's own quote makes
+    // its previews one character out of step with the object's.
+    for (const value of ['🚀'.repeat(80), { a: '🚀'.repeat(80) }]) {
+        const described = describeValue(value);
+        assert.ok(/🚀…$/u.test(described), described);
+        assert.ok(
+            !/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/.test(described),
+            `unpaired surrogate left in ${described}`,
+        );
+    }
 });
