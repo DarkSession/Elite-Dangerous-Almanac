@@ -466,19 +466,26 @@ export class ShipLoadout {
      * `modulesValue` / `rebuy`, which an edit may invalidate, and as the immutable
      * {@link sourcePurchase} record, which no edit touches.
      *
-     * @throws {TypeError} If `event` is not an object, its `Ship` is present and not a
-     * string, its `Modules` is not an array, or two modules claim the same slot. Only
-     * those are checked here — the rest of the event is trusted, so use
-     * {@link ShipLoadout.fromSlef} (or {@link parseSlef}) for input you did not produce.
+     * @throws {TypeError} If the event is not shaped like one. What is checked is the
+     * structure a build is assembled from, and the types of the fields naming things in
+     * it: `event` must be an object with an array of module objects in `Modules`; each
+     * module needs a string `Slot` and `Item`, and no two may claim the same slot; and
+     * `event.Ship`, a module's `Engineering` block, and that block's `BlueprintName` and
+     * `ExperimentalEffect` must be of their own type **when present**. Every remaining
+     * field — every number, every flag — is trusted, so use {@link ShipLoadout.fromSlef}
+     * (or {@link parseSlef}) for input you did not produce, which reports all of them.
+     *
      * An **absent** `Ship` is not a failure: it is a hull nothing can name, which
-     * {@link validation} reports as `unknownHull`.
+     * {@link validation} reports as `unknownHull`. A partial `Engineering` block is not
+     * one either — a capture may state modifiers without naming the recipe.
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
-        // The two fields SLEF requires, checked before the import walks them: everything
-        // this method builds hangs off `Ship` and `Modules`, so a caller who handed over
-        // the wrong thing entirely learns that here instead of from `event.Modules is
-        // not iterable`. The rest of the event stays unvalidated on this path —
-        // `fromSlef` is the entry point that reports every bad field.
+        // The event's own shape, checked before the walk in `normalizeLoadoutEvent`
+        // checks each module's: a caller who handed over the wrong thing entirely learns
+        // that here instead of from `event.Modules is not iterable`. Only the structure
+        // and the fields that name things are checked, on this path and in that walk;
+        // every value in them is trusted, and `fromSlef` is the entry point that reports
+        // a bad one.
         //
         // An absent `Ship` is deliberately not one of these: it is a hull the catalogue
         // cannot name, which `validation` reports as `unknownHull` rather than throwing.

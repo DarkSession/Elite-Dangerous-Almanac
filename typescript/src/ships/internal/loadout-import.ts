@@ -54,10 +54,18 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
         }
         requireString(module.Slot, 'ShipLoadout.fromLoadout: module.Slot');
         requireString(module.Item, 'ShipLoadout.fromLoadout: module.Item');
-        if (module.Engineering) {
-            // Present-and-wrong-typed only: this path accepts a partial block, and a
+        if (module.Engineering !== undefined) {
+            // A relay that writes `null` for an absent block reaches the clone below,
+            // which tests only for `undefined` and dereferences whatever else it finds.
+            // The block itself is therefore checked, and its two id fields
+            // present-and-wrong-typed only: this path accepts a partial block, and a
             // capture that states modifiers without naming the recipe is one this
             // library already reads.
+            if (module.Engineering === null || typeof module.Engineering !== 'object') {
+                throw new TypeError(
+                    `ShipLoadout.fromLoadout: module.Engineering must be an object, received ${describeValue(module.Engineering)}`,
+                );
+            }
             requireStringIfPresent(
                 module.Engineering.BlueprintName,
                 'ShipLoadout.fromLoadout: module.Engineering.BlueprintName',
@@ -99,7 +107,9 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
         if (variantStats) moduleStats.set(module.Slot, cloneModuleStats(variantStats));
         if (
             variantStats?.engineeringLocked ||
-            !engineering ||
+            // A partial block naming no recipe identifies no final article, and the
+            // resolver below requires one rather than handing a nullish id back.
+            typeof engineering?.BlueprintName !== 'string' ||
             !isFinalGuardianWeaponEngineering(module.Item, engineering.BlueprintName)
         ) {
             continue;

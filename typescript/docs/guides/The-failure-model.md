@@ -70,10 +70,11 @@ worth knowing before you write a `catch`:
   `ShipLoadout.fromSlef` check every one of them
   (`parseSlef: entries[0].data.Modules[0].Priority must be an integer from 0 to 4`) — the
   more useful half when the argument is a whole export, and the same text `inspectSlef`
-  reports as that entry's diagnostic. `ShipLoadout.fromLoadout` checks only the fields a
-  loadout cannot be built without — `event.Ship`, `event.Modules`, and each module's
-  `Slot` and `Item` — and trusts the rest, so use `fromSlef` for an event you did not
-  produce yourself.
+  reports as that entry's diagnostic. `ShipLoadout.fromLoadout` checks the structure a
+  build is assembled from — an object, an array of module objects, a `Slot` and `Item` on
+  each — plus the type of anything present that names something (`Ship`, an `Engineering`
+  block and its two ids). It trusts every value inside, so use `fromSlef` for an event
+  you did not produce yourself.
 
 **A missing argument is not a wrong-typed one**, and the two get different answers:
 
@@ -88,9 +89,16 @@ getShipBySymbol(42 as unknown as string);
 A lookup that answers `null` for a symbol no record carries answers `null` for no symbol
 at all — asking for nothing found nothing. So do `parseSystemName`,
 `canonicalizeSystemName` and `isProceduralSystemName`, which answer `null` and `false`
-for a nullish name. The strict factories are where a missing argument is loud:
-`ProceduralSystem.fromName(undefined)` and `ShipLoadout.empty(undefined)` throw, because
-they exist to hand you an object and there is nothing to build one from.
+for a nullish name.
+
+**Where a missing argument is loud instead: everything that is not a search.** A function
+that hands you back a value has no "no such thing" answer to give, so there is nothing for
+a missing argument to mean — `ProceduralSystem.fromName(undefined)` and
+`ShipLoadout.empty(undefined)` throw rather than answering `null`, and so do
+`toSystemAddress`, `massCodeToSizeClass` and `resolveBlueprintForModule`'s `blueprint`,
+which convert or resolve what you pass rather than looking it up. The rule is what the
+function does with the argument, not what it returns: `massCodeToSizeClass` hands back a
+number and is still strict.
 
 **`null` is not an error.** A lookup that finds nothing has answered you. Journals
 outlive catalogues — a game update ships modules before this package knows about them —

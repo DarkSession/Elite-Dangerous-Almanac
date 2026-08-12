@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { BLUEPRINTS, getBlueprint, getBlueprintGrade } from './blueprints.js';
+import { resolveBlueprintForModule } from './blueprint-journal.js';
 
 test('every blueprint carries a display name and grades', () => {
     for (const [fdname, bp] of Object.entries(BLUEPRINTS)) {
@@ -87,4 +88,28 @@ test('a blueprint lookup names itself, and its grade facade names itself too', (
     // The id is checked before the grade range, so a bad id is not reported as a bad grade.
     assert.throws(() => getBlueprintGrade(42 as unknown as string, 9), /fdname must be a string/);
     assert.equal(getBlueprintGrade(null as unknown as string, 5), null);
+});
+
+test('resolving a recipe id is strict about the id, and a miss about the module', () => {
+    // It hands an id back rather than reporting whether one is known, so a nullish
+    // `blueprint` would be a `string` return that is not one.
+    for (const bad of [42, null, undefined]) {
+        assert.throws(
+            () =>
+                resolveBlueprintForModule('Int_Hyperdrive_Size6_Class5', bad as unknown as string),
+            {
+                name: 'TypeError',
+                message: /^resolveBlueprintForModule: blueprint must be a string, received /,
+            },
+        );
+    }
+    assert.throws(() => resolveBlueprintForModule(42 as unknown as string, 'FSD_LongRange'), {
+        name: 'TypeError',
+        message: 'resolveBlueprintForModule: symbol must be a string, received number 42',
+    });
+    // An unknown module offers no menu, so the id comes back unchanged.
+    assert.equal(
+        resolveBlueprintForModule(null as unknown as string, 'FSD_LongRange'),
+        'FSD_LongRange',
+    );
 });

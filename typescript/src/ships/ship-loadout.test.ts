@@ -3442,7 +3442,7 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
     assert.ok(build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 }));
 });
 
-test('fromLoadout names the two fields it needs instead of failing inside the walk', () => {
+test('fromLoadout names the structure it needs instead of failing inside the walk', () => {
     for (const bad of [42, 'a Loadout event', null, undefined]) {
         assert.throws(() => ShipLoadout.fromLoadout(bad as unknown as LoadoutEvent), {
             name: 'TypeError',
@@ -3502,6 +3502,28 @@ test('fromLoadout names the two fields it needs instead of failing inside the wa
                     Modules: modules,
                 } as unknown as LoadoutEvent),
             { name: 'TypeError', message: expected },
+        );
+    }
+    // A relay that writes `null` for an absent block is named, not dereferenced: the
+    // clone downstream tests only for `undefined`.
+    for (const engineering of [null, 42]) {
+        assert.throws(
+            () =>
+                ShipLoadout.fromLoadout({
+                    Ship: 'Anaconda',
+                    Modules: [
+                        {
+                            Slot: 'FrameShiftDrive',
+                            Item: 'Int_Hyperdrive_Size6_Class5',
+                            Engineering: engineering,
+                        },
+                    ],
+                } as unknown as LoadoutEvent),
+            {
+                name: 'TypeError',
+                message:
+                    /^ShipLoadout\.fromLoadout: module\.Engineering must be an object, received /,
+            },
         );
     }
     // A partial engineering block is still read, not rejected: a capture may state
