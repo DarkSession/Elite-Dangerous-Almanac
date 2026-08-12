@@ -209,7 +209,7 @@ All TypeScript commands run from `typescript/`:
 | `npm run lint`           | ESLint                                                              |
 | `npm run audit`          | `npm audit --audit-level=low`                                       |
 | `npm run format`         | Prettier over the package, root `README`/`CONTRIBUTING`/`SECURITY`, schemas and `.github` |
-| `npm run build`          | `copy-notices` → `tsup` → `prune-barrel-imports` → `attach-barrel-docs` → `dist/` (JSON catalogues inlined; whitespace compacted, syntax and identifiers **not** minified — see below) |
+| `npm run build`          | `copy-notices` → `tsup` → source-map cleanup → `prune-barrel-imports` → `attach-barrel-docs` → `dist/` (JSON catalogues inlined; whitespace compacted, syntax and identifiers **not** minified — see below) |
 | `npm run test:package`   | imports the **built** `dist/` and checks every export subpath        |
 | `npm run docs`           | TypeDoc → `docs/wiki`, then `scripts/build-wiki-sidebar.mjs` and `scripts/postprocess-wiki.mjs` |
 
@@ -223,12 +223,13 @@ node --import tsx --import ./scripts/register-jsonc.mjs --test src/ships/weapons
 
 ### What `npm run build` runs
 
-Four steps, not just `tsup`. A change to any of them is a change to what consumers receive, so `package.test.mjs` checks each one's result against the built package — run it (`npm run test:package`) after touching any of them:
+Five steps, not just `tsup`. A change to any of them is a change to what consumers receive, so `package.test.mjs` checks each one's result against the built package — run it (`npm run test:package`) after touching any of them:
 
 1. **`scripts/copy-notices.mjs`** writes the generated, git-ignored `THIRD_PARTY_NOTICES.md` and `LICENSE` copies that npm packs (see §Attribution).
 2. **`tsup`** bundles ESM to `dist/` — one entry per public module, declarations, source maps, and the shared `data/` JSONC inlined through the `jsonc` esbuild plugin. Terser then strips whitespace with compression and mangling disabled: real minification stays the consuming application's bundler's job, and that is why the size figures above are measured as §Build & Tree-Shaking Requirements describes rather than by reading `dist/` byte counts. Whitespace is compacted because esbuild's pretty-printed catalogue literals dominated the package: this takes `dist/` JavaScript from about 2.85 MB to 1.91 MB while leaving function names intact. `format.preserve_annotations` keeps every `/* @__PURE__ */` marker for downstream tree-shaking, and Terser's generated map is chained onto esbuild's map so `--enable-source-maps` still resolves compact output to its `src/**/*.ts` or `data/**/*.jsonc` source.
-3. **`scripts/prune-barrel-imports.mjs`** blanks the redundant bare imports esbuild leaves in per-module entry files — the package is side-effect-free, so downstream bundlers discard them but warn while doing so — and removes the now-unreachable zero-code shared chunks that declaration-only dependencies can produce. It blanks rather than deletes entry imports so tsup's source maps stay valid, using **`scripts/strip-bare-imports.mjs`**, the same helper `package.test.mjs` imports to assert the shipped entries carry no bare imports.
-4. **`scripts/attach-barrel-docs.mjs`** re-attaches each barrel's `@packageDocumentation` block to its generated `.d.ts`, which tsup's declaration rollup drops when it flattens a file of pure re-exports. Without it, go-to-definition on an import lands on a bare export list instead of the feature area's orientation docs.
+3. **`scripts/prune-generated-sourcemap-sources.mjs`** removes the generated-code fallback segments that Terser's map names with tsup's absolute output path. The remaining mappings point only at portable `src/**/*.ts` and `data/**/*.jsonc` paths; package artifacts therefore do not disclose their build workspace or vary with its location.
+4. **`scripts/prune-barrel-imports.mjs`** blanks the redundant bare imports esbuild leaves in per-module entry files — the package is side-effect-free, so downstream bundlers discard them but warn while doing so — and removes the now-unreachable zero-code shared chunks that declaration-only dependencies can produce. It blanks rather than deletes entry imports so tsup's source maps stay valid, using **`scripts/strip-bare-imports.mjs`**, the same helper `package.test.mjs` imports to assert the shipped entries carry no bare imports.
+5. **`scripts/attach-barrel-docs.mjs`** re-attaches each barrel's `@packageDocumentation` block to its generated `.d.ts`, which tsup's declaration rollup drops when it flattens a file of pure re-exports. Without it, go-to-definition on an import lands on a bare export list instead of the feature area's orientation docs.
 
 ## Releasing to npm
 

@@ -334,7 +334,7 @@
     ],
     "scripts": {
         "audit": "npm audit --audit-level=low",
-        "build": "node scripts/copy-notices.mjs && tsup && node scripts/prune-barrel-imports.mjs && node scripts/attach-barrel-docs.mjs",
+        "build": "node scripts/copy-notices.mjs && tsup && node scripts/prune-generated-sourcemap-sources.mjs && node scripts/prune-barrel-imports.mjs && node scripts/attach-barrel-docs.mjs",
         "check": "npm run check:fixtures && npm run lint && npm run format:check && npm run typecheck && npm run check:examples && npm test",
         "check:fixtures": "node ../scripts/fixtures/generate-schema-and-types.mjs --check",
         "format": "prettier --write . ../README.md ../CONTRIBUTING.md ../SECURITY.md ../schemas/**/*.{json,md} ../scripts/**/*.mjs ../.github/*.{md,yml} ../.github/workflows/*.yml",

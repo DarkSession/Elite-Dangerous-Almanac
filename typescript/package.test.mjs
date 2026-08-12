@@ -686,6 +686,13 @@ test('every JavaScript artifact references a source map without embedded sources
         );
         assert.equal(map.version, 3, mapFile.pathname);
         assert.ok(!Object.hasOwn(map, 'sourcesContent'), `${mapFile.pathname} embeds sources`);
+        for (const source of map.sources) {
+            assert.match(
+                source.replaceAll('\\', '/'),
+                /(?:^|\/)(?:src|data)\/.+\.(?:ts|jsonc)$/,
+                `${mapFile.pathname} maps generated or non-portable source ${source}`,
+            );
+        }
         assert.ok(
             decode(map.mappings).length <= javascript.split('\n').length,
             `${mapFile.pathname} contains mappings for lines absent from its JavaScript`,

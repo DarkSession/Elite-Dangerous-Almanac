@@ -56,7 +56,9 @@ export default defineConfig({
     // /* @__PURE__ */ calls downstream bundlers need to discard unused catalogue indexes.
     // sourceMap asks Terser for the generated-to-esbuild map that tsup then chains onto
     // esbuild's TypeScript/JSONC map; without it, reformatted code would ship with the
-    // stale pre-formatting line and column positions.
+    // stale pre-formatting line and column positions. Terser's unmapped fallback segments
+    // name tsup's absolute output path, so the post-build source-map pass removes those
+    // generated sources and leaves only stable original-source mappings.
     minify: 'terser',
     terserOptions: {
         compress: false,
