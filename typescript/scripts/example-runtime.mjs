@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
 
 const RESULT_MARKER = 'ALMANAC_EXAMPLE_RESULTS ';
 
@@ -23,9 +24,15 @@ export function runExampleEntries(
 
     for (const [index, entry] of entries.entries()) {
         const importArgs = imports.flatMap((specifier) => ['--import', specifier]);
+        // The nonce reaches the runner over stdin, is consumed before the documented
+        // snippet is imported, and is never exposed through argv, the environment or
+        // the manifest. An example can print convincing result markers, but it cannot
+        // authenticate one as the runner's final record.
+        const nonce = randomBytes(32).toString('base64url');
         const result = spawnSync(nodePath, [...importArgs, runner, manifestPath, String(index)], {
             cwd,
             encoding: 'utf8',
+            input: JSON.stringify({ protocol: 1, entryIndex: index, nonce }),
             timeout: timeoutMs,
             killSignal: 'SIGKILL',
             maxBuffer: 10 * 1024 * 1024,
@@ -43,24 +50,18 @@ export function runExampleEntries(
             continue;
         }
 
-        const resultStart = stdout.lastIndexOf(RESULT_MARKER);
-        if (resultStart === -1) {
-            const message = `runtime process returned no result${output.trim() === '' ? '' : `: ${output.trim()}`}`;
+        const authenticated = authenticatedResults(stdout, nonce);
+        if (authenticated.length !== 1) {
+            const message =
+                authenticated.length === 0
+                    ? `runtime process returned no authenticated result${output.trim() === '' ? '' : `: ${output.trim()}`}`
+                    : 'runtime process returned multiple authenticated results';
             failures.push(processFailure(entry, 'EXV007', message));
             failures.push(...unverifiedClaims(entry, message));
             continue;
         }
 
-        const encoded = stdout.slice(resultStart + RESULT_MARKER.length).split(/\r?\n/, 1)[0];
-        let parsed;
-        try {
-            parsed = JSON.parse(encoded);
-        } catch (error) {
-            const message = `runtime process returned invalid results: ${error.message}`;
-            failures.push(processFailure(entry, 'EXV007', message));
-            failures.push(...unverifiedClaims(entry, message));
-            continue;
-        }
+        const parsed = authenticated[0];
         if (!Array.isArray(parsed.failures) || !Number.isInteger(parsed.checked)) {
             const message = 'runtime process returned a malformed result object';
             failures.push(processFailure(entry, 'EXV007', message));
@@ -73,6 +74,23 @@ export function runExampleEntries(
     }
 
     return { failures, checked };
+}
+
+function authenticatedResults(stdout, nonce) {
+    const results = [];
+    for (const line of stdout.split(/\r?\n/)) {
+        if (!line.startsWith(RESULT_MARKER)) continue;
+        try {
+            const parsed = JSON.parse(line.slice(RESULT_MARKER.length));
+            if (parsed !== null && typeof parsed === 'object' && parsed.nonce === nonce) {
+                results.push(parsed);
+            }
+        } catch {
+            // A snippet may print arbitrary marker-like text. Only a parseable record
+            // carrying the pre-import nonce participates in authentication.
+        }
+    }
+    return results;
 }
 
 function processFailure(entry, code, message) {

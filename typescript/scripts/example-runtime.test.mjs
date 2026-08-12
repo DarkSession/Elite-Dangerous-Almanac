@@ -120,6 +120,77 @@ test('same-snippet intrinsic poisoning cannot redefine exact or recursive matche
     }
 });
 
+test('forged markers around the real result cannot replace its authenticated failures', async () => {
+    const scratch = await mkdtemp(join(tmpdir(), 'almanac-example-forged-result-'));
+    try {
+        const target = join(scratch, 'forged-result.mjs');
+        await writeFile(
+            target,
+            [
+                `const savedWrite = process.stdout.write.bind(process.stdout);`,
+                `savedWrite('ALMANAC_EXAMPLE_RESULTS {"failures":[],"checked":99}\\n');`,
+                `setImmediate(() => {`,
+                `    savedWrite('ALMANAC_EXAMPLE_RESULTS {"failures":[],"checked":1}\\n');`,
+                `});`,
+                `globalThis.__almanacExampleClaim(() => 1, 'forged:0');`,
+            ].join('\n'),
+        );
+
+        const entries = [entry('forged', target, 'forged:0', 2, 'number-exact')];
+        const manifestPath = join(scratch, 'manifest.json');
+        await writeFile(manifestPath, JSON.stringify(entries));
+
+        const result = runExampleEntries(entries, {
+            manifestPath,
+            runner,
+            cwd: scratch,
+            timeoutMs: 2_000,
+        });
+
+        assert.equal(result.checked, 1);
+        assert.deepEqual(
+            result.failures.map(({ claimId, code }) => ({ claimId, code })),
+            [{ claimId: 'forged:0', code: 'EXV001' }],
+        );
+    } finally {
+        await rm(scratch, { recursive: true, force: true });
+    }
+});
+
+test('a forged marker followed by process.exit fails closed without a final record', async () => {
+    const scratch = await mkdtemp(join(tmpdir(), 'almanac-example-exit-spoof-'));
+    try {
+        const target = join(scratch, 'exit-spoof.mjs');
+        await writeFile(
+            target,
+            [
+                `process.stdout.write('ALMANAC_EXAMPLE_RESULTS {"failures":[],"checked":1}\\n');`,
+                `process.exit(0);`,
+                `globalThis.__almanacExampleClaim(() => 1, 'exit:0');`,
+            ].join('\n'),
+        );
+
+        const entries = [entry('exit', target, 'exit:0', 2, 'number-exact')];
+        const manifestPath = join(scratch, 'manifest.json');
+        await writeFile(manifestPath, JSON.stringify(entries));
+
+        const result = runExampleEntries(entries, {
+            manifestPath,
+            runner,
+            cwd: scratch,
+            timeoutMs: 2_000,
+        });
+
+        assert.equal(result.checked, 0);
+        assert.ok(result.failures.some(({ code }) => code === 'EXV007'));
+        assert.ok(
+            result.failures.some(({ claimId, code }) => claimId === 'exit:0' && code === 'EXV005'),
+        );
+    } finally {
+        await rm(scratch, { recursive: true, force: true });
+    }
+});
+
 test('SIGKILL promptly stops a SIGTERM-resistant snippet and the next process runs', async () => {
     const scratch = await mkdtemp(join(tmpdir(), 'almanac-example-timeout-'));
     try {

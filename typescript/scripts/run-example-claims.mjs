@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { inspect } from 'node:util';
 import { pathToFileURL } from 'node:url';
@@ -21,6 +22,17 @@ const entryIndex = Number(process.argv[3]);
 if (!Number.isInteger(entryIndex) || entryIndex < 0) {
     throw new TypeError('run-example-claims: expected a non-negative manifest index');
 }
+
+const handshake = JSON.parse(readFileSync(0, 'utf8'));
+if (
+    handshake?.protocol !== 1 ||
+    handshake.entryIndex !== entryIndex ||
+    typeof handshake.nonce !== 'string' ||
+    !/^[A-Za-z0-9_-]{43}$/.test(handshake.nonce)
+) {
+    throw new TypeError('run-example-claims: invalid parent handshake');
+}
+const nonce = handshake.nonce;
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const entry = manifest[entryIndex];
@@ -102,7 +114,9 @@ try {
     delete globalThis.__almanacExampleClaim;
 }
 
-apply(stdoutWrite, stdout, [`${RESULT_MARKER}${encodeResult(failures, countChecked(checked))}\n`]);
+apply(stdoutWrite, stdout, [
+    `\n${RESULT_MARKER}${encodeResult(nonce, failures, countChecked(checked))}\n`,
+]);
 
 function findClaim(claims, id) {
     for (let index = 0; index < claims.length; index += 1) {
@@ -123,8 +137,8 @@ function countChecked(values) {
     return count;
 }
 
-function encodeResult(records, checkedCount) {
-    let encoded = '{"failures":[';
+function encodeResult(resultNonce, records, checkedCount) {
+    let encoded = `{"nonce":${encode(resultNonce)},"failures":[`;
     for (let index = 0; index < records.length; index += 1) {
         if (index > 0) encoded += ',';
         const record = records[index];
