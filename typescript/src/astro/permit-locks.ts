@@ -55,6 +55,7 @@
 
 import { permitLockedSystemForName } from './permit-locked-systems.js';
 import { permitLockedRegionForSystemName } from './permit-locked-regions.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 export {
     PERMIT_LOCKED_SYSTEMS,
@@ -104,6 +105,8 @@ export type PermitLock =
  * whitespace, e.g. `"  shinrarta dezhra "`. An empty or blank string yields `null`.
  * @returns A {@link PermitLock} naming the system or region responsible, or `null`
  * when nothing on the list matches.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { permitLockForSystemName } from '@elite-dangerous-almanac/core/astro/permit-locks';
@@ -118,6 +121,7 @@ export type PermitLock =
  * ```
  */
 export function permitLockForSystemName(name: string): PermitLock | null {
+    requireStringIfPresent(name, 'permitLockForSystemName: name');
     const system = permitLockedSystemForName(name);
     if (system !== null) return { kind: 'system', name: system.name, id64: system.id64 };
 
@@ -134,6 +138,8 @@ export function permitLockForSystemName(name: string): PermitLock | null {
  *
  * @param name - A system name in any casing, e.g. `"vega"`.
  * @returns `true` if the name matches a permit-locked system or region.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { isPermitLockedSystemName } from '@elite-dangerous-almanac/core/astro/permit-locks';
@@ -144,5 +150,6 @@ export function permitLockForSystemName(name: string): PermitLock | null {
  * ```
  */
 export function isPermitLockedSystemName(name: string): boolean {
+    requireStringIfPresent(name, 'isPermitLockedSystemName: name');
     return permitLockForSystemName(name) !== null;
 }

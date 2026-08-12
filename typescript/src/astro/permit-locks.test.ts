@@ -130,3 +130,18 @@ test('no permit-locked system is shadowed by a region name', () => {
         assert.equal(permitLockForSystemName(name)?.kind, 'system', `${name} hit a region lock`);
     }
 });
+
+test('the permit-lock facades name themselves, not the lookups beneath them', () => {
+    for (const [call, label] of [
+        [() => permitLockForSystemName(42 as unknown as string), 'permitLockForSystemName'],
+        [() => isPermitLockedSystemName(42 as unknown as string), 'isPermitLockedSystemName'],
+        [() => isPermitLockedRegionName(42 as unknown as string), 'isPermitLockedRegionName'],
+    ] as const) {
+        assert.throws(call, {
+            name: 'TypeError',
+            message: `${label}: name must be a string, received number 42`,
+        });
+    }
+    assert.equal(permitLockForSystemName(null as unknown as string), null);
+    assert.equal(isPermitLockedSystemName(undefined as unknown as string), false);
+});

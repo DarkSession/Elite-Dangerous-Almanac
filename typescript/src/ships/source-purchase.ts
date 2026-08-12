@@ -10,6 +10,7 @@
  */
 
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 import type { LoadoutEvent } from './slef.js';
 
 /** One slot's captured purchase price, exactly as the source stated it. */
@@ -122,6 +123,8 @@ export function sourcePurchaseFromLoadout(event: LoadoutEvent): SourcePurchaseRe
  * matching is case-insensitive so journal and lower-cased SLEF keys interoperate.
  * @returns The frozen entry, or `null` when the source priced no module in that slot.
  * `null` never means the module was free.
+ * @throws {TypeError} If `slotKey` is present and not a string. A nullish `slotKey` is a
+ * miss, answered the way a slot the source did not price is.
  * @example
  * ```ts
  * import {
@@ -137,10 +140,11 @@ export function getSourceModuleValue(
     record: SourcePurchaseRecord,
     slotKey: string,
 ): SourceModuleValue | null {
+    requireStringIfPresent(slotKey, 'getSourceModuleValue: slotKey');
     for (const entry of record.moduleValues) {
         if (entry.slot === slotKey) return entry;
     }
-    const wanted = slotKey.toLowerCase();
+    const wanted = slotKey?.toLowerCase();
     for (const entry of record.moduleValues) {
         if (entry.slot.toLowerCase() === wanted) return entry;
     }

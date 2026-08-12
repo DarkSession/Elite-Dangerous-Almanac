@@ -125,6 +125,8 @@ const COMMODITIES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_COMMODITIES, 'nam
  * `COMMODITIES` (standard only), `RARE_COMMODITIES`, or any array you have filtered
  * yourself. Omit it unless you specifically want to exclude the other registry.
  * @returns The matching {@link Commodity}, or `null` if no commodity has that symbol.
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getCommodityBySymbol } from '@elite-dangerous-almanac/core/commodities/commodities';
@@ -137,8 +139,8 @@ export function getCommodityBySymbol(
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
     return commodities === ALL_COMMODITIES
-        ? findInKeyIndex(COMMODITIES_BY_SYMBOL, symbol)
-        : findByKey(commodities, 'symbol', symbol);
+        ? findInKeyIndex(COMMODITIES_BY_SYMBOL, symbol, 'getCommodityBySymbol: symbol')
+        : findByKey(commodities, 'symbol', symbol, 'getCommodityBySymbol: symbol');
 }
 
 /**
@@ -148,6 +150,8 @@ export function getCommodityBySymbol(
  * Leading/trailing whitespace and case are ignored, but matching is otherwise exact.
  * @param commodities - Optional subset to search (see {@link getCommodityBySymbol}).
  * @returns The matching {@link Commodity}, or `null` if no commodity has that name.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getCommodityByName } from '@elite-dangerous-almanac/core/commodities/commodities';
@@ -160,8 +164,8 @@ export function getCommodityByName(
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity | null {
     return commodities === ALL_COMMODITIES
-        ? findInKeyIndex(COMMODITIES_BY_NAME, name)
-        : findByKey(commodities, 'name', name);
+        ? findInKeyIndex(COMMODITIES_BY_NAME, name, 'getCommodityByName: name')
+        : findByKey(commodities, 'name', name, 'getCommodityByName: name');
 }
 
 /**
@@ -173,6 +177,8 @@ export function getCommodityByName(
  * re-casing it first.
  * @param commodities - Optional subset to search (see {@link getCommodityBySymbol}).
  * @returns A new array of matches (possibly empty). The input is not modified.
+ * @throws {TypeError} If `category` is present and not a string. A nullish
+ * `category` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { commoditiesInCategory } from '@elite-dangerous-almanac/core/commodities/commodities';
@@ -186,5 +192,5 @@ export function commoditiesInCategory(
     category: string,
     commodities: readonly Commodity[] = ALL_COMMODITIES,
 ): Commodity[] {
-    return filterByKey(commodities, 'category', category);
+    return filterByKey(commodities, 'category', category, 'commoditiesInCategory: category');
 }

@@ -38,6 +38,7 @@
 import preEngineeredData from '../../../data/ships/pre-engineered.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { filterByKey } from '../internal/registry-index.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * Where a pre-engineered variant is obtained.
@@ -157,6 +158,8 @@ export const PRE_ENGINEERED_MODULES: readonly PreEngineeredVariant[] = deepFreez
  * @param symbol - A module symbol, e.g. `"Hpt_BasicMissileRack_Fixed_Medium"`.
  * @returns Every pre-engineered variant of that module, in catalogue order.
  *
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getPreEngineeredVariants } from '@elite-dangerous-almanac/core/ships/pre-engineered';
@@ -171,7 +174,12 @@ export const PRE_ENGINEERED_MODULES: readonly PreEngineeredVariant[] = deepFreez
  * ```
  */
 export function getPreEngineeredVariants(symbol: string): readonly PreEngineeredVariant[] {
-    return filterByKey(PRE_ENGINEERED_MODULES, 'symbol', symbol);
+    return filterByKey(
+        PRE_ENGINEERED_MODULES,
+        'symbol',
+        symbol,
+        'getPreEngineeredVariants: symbol',
+    );
 }
 
 /**
@@ -185,6 +193,8 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
  * @param fdname - A blueprint recipe `fdname`, e.g. `"RailGun_LongShot"`.
  * @returns Every variant sold with that blueprint, in catalogue order.
  *
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getPreEngineeredByBlueprint } from '@elite-dangerous-almanac/core/ships/pre-engineered';
@@ -199,7 +209,12 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
  * ```
  */
 export function getPreEngineeredByBlueprint(fdname: string): readonly PreEngineeredVariant[] {
-    return filterByKey(PRE_ENGINEERED_MODULES, 'blueprint', fdname);
+    return filterByKey(
+        PRE_ENGINEERED_MODULES,
+        'blueprint',
+        fdname,
+        'getPreEngineeredByBlueprint: fdname',
+    );
 }
 
 /**
@@ -208,6 +223,8 @@ export function getPreEngineeredByBlueprint(fdname: string): readonly PreEnginee
  * @param symbol - A module symbol.
  * @returns `true` when {@link getPreEngineeredVariants} would return anything.
  *
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { isPreEngineered } from '@elite-dangerous-almanac/core/ships/pre-engineered';
@@ -217,5 +234,6 @@ export function getPreEngineeredByBlueprint(fdname: string): readonly PreEnginee
  * ```
  */
 export function isPreEngineered(symbol: string): boolean {
+    requireStringIfPresent(symbol, 'isPreEngineered: symbol');
     return getPreEngineeredVariants(symbol).length > 0;
 }

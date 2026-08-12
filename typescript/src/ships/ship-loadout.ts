@@ -88,6 +88,7 @@ import { baseStats, labelsForDamageType, scaleForLabel } from './internal/module
 import {
     cloneLoadoutModule,
     cloneModuleStats,
+    FITTED_ITEM,
     isBuiltInHullModule,
     isNonOutfittingSlot,
     matchingKeyIn,
@@ -133,7 +134,12 @@ import {
 import type { SourcePurchaseRecord } from './source-purchase.js';
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { normalizeKey } from '../internal/registry-index.js';
-import { describeValue, requireString, truncate } from '../internal/argument-guards.js';
+import {
+    describeValue,
+    requireString,
+    requireStringIfPresent,
+    truncate,
+} from '../internal/argument-guards.js';
 import { completeResult } from './internal/calculation-result.js';
 import {
     calculateCargoCapacity,
@@ -148,6 +154,16 @@ import {
     type LoadoutValidation,
     type ValidationModule,
 } from './loadout-validation.js';
+
+/**
+ * How a slot key is named when it is not a string.
+ *
+ * Every method that takes one reaches the build through `#requireSlot` or `#fittedKey`,
+ * so the two of them guard for all ten rather than each method repeating the check. That
+ * costs the method's own name in the message, which is why this reads like the
+ * neighbouring throws (`ShipLoadout: slot "…" is empty`) rather than like `empty`'s.
+ */
+const SLOT_KEY = 'ShipLoadout: slotKey';
 
 /** Optional mass overrides for a single calculation. */
 export interface JumpOptions {
@@ -449,8 +465,45 @@ export class ShipLoadout {
      * The event's credit figures are kept twice over: as the live `hullValue` /
      * `modulesValue` / `rebuy`, which an edit may invalidate, and as the immutable
      * {@link sourcePurchase} record, which no edit touches.
+     *
+     * @throws {TypeError} If the event is not shaped like one. What is checked is the
+     * structure a build is assembled from, and the types of the fields naming things in
+     * it: `event` must be an object with an array of module objects in `Modules`; each
+     * module needs a string `Slot` and `Item`, and no two may claim the same slot; a
+     * module's `Engineering` must be an object, and that block's `Modifiers` an array of
+     * objects each carrying a string `Label`, whenever their key is there **at all**;
+     * and `event.Ship`, the block's `BlueprintName` and its `ExperimentalEffect` must be
+     * strings **when they carry a value**. Every remaining field — every number, every
+     * flag, a modifier's value beside its label — is trusted, so use
+     * {@link ShipLoadout.fromSlef} (or {@link parseSlef}) for input you did not produce,
+     * which reports all of them.
+     *
+     * A modifier's `Label` is required rather than checked-when-present because it is
+     * the only thing saying which stat moved: {@link fittedModuleAt} and the
+     * pre-engineered identification both read it unconditionally, so an entry without
+     * one would import cleanly and then break the build it produced.
+     *
+     * `Engineering` and its `Modifiers` are the fields where a `null` is not the same as
+     * an omission, because a relay writing `null` for a block or list it does not have
+     * would otherwise be read as one. An **absent** `Ship` *is* an omission, and not a
+     * failure: it is a hull nothing can name, which {@link validation} reports as
+     * `unknownHull`. Nor is a partial `Engineering` block — a capture may state
+     * modifiers without naming the recipe.
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
+        // Is it an object at all? Everything past that is `normalizeLoadoutEvent`'s,
+        // which takes one reading of every field before checking any of it — a caller's
+        // accessor cannot answer the check and the use differently. Only the structure
+        // and the fields that name things are checked there; every value in them is
+        // trusted, and `fromSlef` is the entry point that reports a bad one.
+        //
+        // An absent `Ship` is deliberately not one of these: it is a hull the catalogue
+        // cannot name, which `validation` reports as `unknownHull` rather than throwing.
+        if (event === null || typeof event !== 'object') {
+            throw new TypeError(
+                `ShipLoadout.fromLoadout: event must be a Loadout event, received ${describeValue(event)}`,
+            );
+        }
         const imported = normalizeLoadoutEvent(event);
         return new ShipLoadout(
             imported.shipSymbol,
@@ -740,6 +793,7 @@ export class ShipLoadout {
      *
      * @param slotKey - Slot key, matched case-insensitively.
      * @returns A detached view, or `null` when the slot is empty or unknown.
+     * @throws {TypeError} If `slotKey` is not a string.
      */
     fittedModuleAt(slotKey: string): FittedModule | null {
         const module = this.#fittedModuleFor(slotKey);
@@ -792,6 +846,7 @@ export class ShipLoadout {
      * @param slotKey - Slot key, matched case-insensitively.
      * @returns Frozen blueprint descriptors in engineering-menu order, or an empty
      * array when the slot is empty, unresolved, final, or has no engineering menu.
+     * @throws {TypeError} If `slotKey` is not a string.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -814,6 +869,7 @@ export class ShipLoadout {
      * @param slotKey - Slot key, matched case-insensitively.
      * @returns Frozen Frontier effect ids in engineering-menu order, or an empty array
      * when the slot is empty, unresolved, final, or has no experimental menu.
+     * @throws {TypeError} If `slotKey` is not a string.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -838,8 +894,8 @@ export class ShipLoadout {
      * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
      * @returns The fitting modules, in complete-catalogue order.
      * @throws {RangeError} If the hull has no slot with that key.
-     * @throws {TypeError} If the hull has no known slot layout (a SLEF build on an
-     * unrecognised hull).
+     * @throws {TypeError} If `slotKey` is not a string, or the hull has no known slot
+     * layout (a SLEF build on an unrecognised hull).
      * @example
      * ```ts
      * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -865,10 +921,10 @@ export class ShipLoadout {
      * `getPreEngineeredStats` or a caller-supplied catalogue keeps its resolved stats.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the hull has no slot with that key.
-     * @throws {TypeError} If `module` is null/undefined (e.g. a `getModuleBySymbol`
-     * miss) or is not an outfitting module at all, the module does not fit the slot
-     * (wrong kind, too large, or a restriction the module does not satisfy), or the hull
-     * has no known slot layout (a SLEF build on an unrecognised hull).
+     * @throws {TypeError} If `slotKey` is not a string; `module` is null/undefined (e.g. a
+     * `getModuleBySymbol` miss) or is not an outfitting module at all; the module does not
+     * fit the slot (wrong kind, too large, or a restriction the module does not satisfy);
+     * or the hull has no known slot layout (a SLEF build on an unrecognised hull).
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -918,11 +974,12 @@ export class ShipLoadout {
      * @param slotKey - The slot key to clear, matched case-insensitively (journal
      * spelling).
      * @returns `this`, for chaining. Clearing an already-empty slot is a no-op.
-     * @throws {TypeError} If `slotKey` is the built-in cargo hatch, which cannot be
-     * removed or replaced.
+     * @throws {TypeError} If `slotKey` is not a string, or names the built-in cargo
+     * hatch, which cannot be removed or replaced.
      */
     removeModule(slotKey: string): this {
-        if (slotKey.toLowerCase() === 'cargohatch') {
+        // Read before `#fittedKey` does, so this one method guards for itself.
+        if (requireString(slotKey, SLOT_KEY).toLowerCase() === 'cargohatch') {
             throw new TypeError('ShipLoadout.removeModule: the cargoHatch slot cannot be changed');
         }
         const key = this.#fittedKey(slotKey);
@@ -951,11 +1008,16 @@ export class ShipLoadout {
      * (journal spelling).
      * @param fdname - The blueprint recipe's Frontier `fdname`, e.g. `"FSD_LongRange"`.
      * @param options - {@link ApplyBlueprintOptions}: `grade` (1–5), optional `quality`
-     * (0–1, default 1), and optional `experimental` effect `fdname`.
+     * (0–1, default 1), and optional `experimental` effect `fdname`. A nullish
+     * `experimental` means no effect, the same as leaving it out. Each is read once,
+     * before anything is checked, so an accessor cannot answer the check and the use
+     * differently.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
-     * @throws {TypeError} If the fitted module has no stats to engineer; or the id names a
+     * @throws {TypeError} If `slotKey` or `fdname` is not a string, `options` is not an
+     * object, or `options.experimental` carries a value that is not a string — a nullish
+     * one is no effect, not a wrong type; the fitted module has no stats to engineer; or the id names a
      * decorative modification, which names no recipe (see
      * {@link DECORATIVE_MODIFICATIONS}); or the module is not offered the blueprint — by
      * its engineering menu, by the journal spelling of an entry on that menu, by the
@@ -984,6 +1046,31 @@ export class ShipLoadout {
      * ```
      */
     applyBlueprint(slotKey: string, fdname: string, options: ApplyBlueprintOptions): this {
+        // Both ids are checked before the build's state, so a wrong-typed one is named
+        // rather than reported as whatever the slot happened to hold — and named here
+        // rather than by whichever catalogue lookup reaches it first.
+        requireString(fdname, 'ShipLoadout.applyBlueprint: fdname');
+        if (options === null || typeof options !== 'object') {
+            throw new TypeError(
+                `ShipLoadout.applyBlueprint: options must be an object with a grade, received ${describeValue(options)}`,
+            );
+        }
+        // Read each option exactly once, before any of it is checked. `options` is a
+        // caller's object, so a property can be an accessor that answers differently
+        // every time: validating one read and using another would let a checked value be
+        // swapped for an unchecked one between the two — into a message naming the
+        // catalogue lookup it reached, or into the build itself as a stored grade no
+        // check ever saw.
+        const wantedGrade = options.grade;
+        const wantedQuality = options.quality;
+        // Nullish is absent here as it is everywhere else, so the guard's reading of a
+        // `null` effect and the three readers below cannot disagree — they used to, and
+        // `experimental: null` reached the catalogue as the string "null".
+        const wantedExperimental = options.experimental ?? undefined;
+        requireStringIfPresent(
+            wantedExperimental,
+            'ShipLoadout.applyBlueprint: options.experimental',
+        );
         const module = this.#fittedModuleFor(slotKey);
         if (!module) {
             throw new RangeError(
@@ -1018,27 +1105,27 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; no engineer applies one, and the stat changes it arrives with are in DECORATIVE_MODIFICATIONS`,
             );
         }
-        if (!Number.isInteger(options.grade) || options.grade < 1 || options.grade > 5) {
+        if (!Number.isInteger(wantedGrade) || wantedGrade < 1 || wantedGrade > 5) {
             throw new RangeError(
-                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(options.grade)}`,
+                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(wantedGrade)}`,
             );
         }
-        const grade = getBlueprintGrade(recipe, options.grade);
+        const grade = getBlueprintGrade(recipe, wantedGrade);
         if (!grade) {
             throw new RangeError(
-                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(options.grade)}`,
+                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(wantedGrade)}`,
             );
         }
         let experimental;
-        if (options.experimental !== undefined) {
-            experimental = getExperimentalEffect(options.experimental);
+        if (wantedExperimental !== undefined) {
+            experimental = getExperimentalEffect(wantedExperimental);
             if (!experimental) {
                 throw new RangeError(
-                    `ShipLoadout.applyBlueprint: unknown experimental effect "${truncate(options.experimental)}"`,
+                    `ShipLoadout.applyBlueprint: unknown experimental effect "${truncate(wantedExperimental)}"`,
                 );
             }
         }
-        const quality = options.quality ?? 1;
+        const quality = wantedQuality ?? 1;
         if (!Number.isFinite(quality) || quality < 0 || quality > 1) {
             throw new RangeError(
                 `ShipLoadout.applyBlueprint: quality must be a finite number in [0, 1]`,
@@ -1061,12 +1148,12 @@ export class ShipLoadout {
             );
         }
         if (
-            options.experimental !== undefined &&
-            !experimentalAvailableFor(module.Item, options.experimental)
+            wantedExperimental !== undefined &&
+            !experimentalAvailableFor(module.Item, wantedExperimental)
         ) {
             const offered = getExperimentalsForModule(module.Item);
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered experimental effect "${truncate(options.experimental)}"; it takes ${offered.length > 0 ? offered.join(', ') : 'no experimental effect'}`,
+                `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered experimental effect "${truncate(wantedExperimental)}"; it takes ${offered.length > 0 ? offered.join(', ') : 'no experimental effect'}`,
             );
         }
         const base = baseStats(stats);
@@ -1096,11 +1183,9 @@ export class ShipLoadout {
         }
         const engineering: ModuleEngineering = {
             BlueprintName: fdname,
-            Level: options.grade,
+            Level: wantedGrade,
             Quality: quality,
-            ...(options.experimental !== undefined
-                ? { ExperimentalEffect: options.experimental }
-                : {}),
+            ...(wantedExperimental !== undefined ? { ExperimentalEffect: wantedExperimental } : {}),
             Modifiers: modifiers,
         };
         this.#replaceModule(module.Slot, { ...module, Engineering: engineering });
@@ -1113,8 +1198,8 @@ export class ShipLoadout {
      * @param slotKey - The slot to de-engineer, matched case-insensitively (journal
      * spelling).
      * @returns `this`, for chaining. A no-op if the slot is empty or un-engineered.
-     * @throws {TypeError} If the fitted article is final pre-engineered and its baked
-     * engineering cannot be removed.
+     * @throws {TypeError} If `slotKey` is not a string, or the fitted article is final
+     * pre-engineered and its baked engineering cannot be removed.
      */
     clearEngineering(slotKey: string): this {
         const module = this.#fittedModuleFor(slotKey);
@@ -1144,6 +1229,7 @@ export class ShipLoadout {
      * @param on - `true` to power it, `false` to switch it off.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty.
+     * @throws {TypeError} If `slotKey` is not a string.
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1167,6 +1253,7 @@ export class ShipLoadout {
      * five groups `1`–`5`.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty, or `priority` is not an integer in `[0, 4]`.
+     * @throws {TypeError} If `slotKey` is not a string.
      */
     setModulePriority(slotKey: string, priority: number): this {
         if (!Number.isInteger(priority) || priority < 0 || priority > 4) {
@@ -1602,7 +1689,7 @@ export class ShipLoadout {
     }
 
     #requireSlot(slotKey: string): BuildSlot {
-        const wanted = slotKey.toLowerCase();
+        const wanted = requireString(slotKey, SLOT_KEY).toLowerCase();
         const slot = this.#layout().find((s) => s.key.toLowerCase() === wanted);
         if (!slot) {
             throw new RangeError(
@@ -1617,7 +1704,7 @@ export class ShipLoadout {
      * is empty. {@link matchingKeyIn} is where the matching rule and its reasons live.
      */
     #fittedKey(slotKey: string): string | null {
-        return matchingKeyIn(this.#modules, slotKey);
+        return matchingKeyIn(this.#modules, requireString(slotKey, SLOT_KEY));
     }
 
     /** The module fitted in `slotKey`, or `undefined` when the slot is empty. */
@@ -1762,7 +1849,9 @@ export class ShipLoadout {
 
         // Re-fitting the same article does not change its purchase price, even when the
         // supplied stats replace or remove its engineering details.
-        if (normalizeKey(previous?.Item) === normalizeKey(next?.Item)) return;
+        if (normalizeKey(previous?.Item, FITTED_ITEM) === normalizeKey(next?.Item, FITTED_ITEM)) {
+            return;
+        }
 
         // No catalogue carries post-purchase module value or rebuy changes.
         delete this.#top.ModulesValue;
@@ -1889,11 +1978,14 @@ export class ShipLoadout {
     /** Resolve the snapshotted fitted record, or fall back to the built-in catalogue. */
     #statsFor(module: LoadoutModule | null): OutfittingModule | null {
         if (module === null) return null;
-        const stats = this.#moduleStats.get(module.Slot) ?? builtInModuleBySymbol(module.Item);
+        const stats =
+            this.#moduleStats.get(module.Slot) ?? builtInModuleBySymbol(module.Item, FITTED_ITEM);
         if (stats) return stats;
         // Frontier gives some hull families their own cargo-hatch symbol even though the
         // fitted article has the standard hatch's stats. Resolve that family here so its
         // power draw is available as well as its already-known zero mass and price.
-        return isBuiltInHullModule(module) ? builtInModuleBySymbol('ModularCargoBayDoor') : null;
+        return isBuiltInHullModule(module)
+            ? builtInModuleBySymbol('ModularCargoBayDoor', 'ShipLoadout: built-in module')
+            : null;
     }
 }

@@ -89,3 +89,23 @@ test('rejects non-procedural sector names', () => {
     assert.equal(sectorGridPositionFromName('Sol'), null);
     assert.equal(canonicalizeSectorName('Sol'), null);
 });
+
+test('the sector-name parsers name a wrong-typed name and answer a missing one', () => {
+    // A nullish name is the one the callers above may not have: `canonicalizeSystemName`
+    // hands this its parsed region, and a journal field may simply be absent.
+    assert.equal(sectorGridPositionFromName(null as unknown as string), null);
+    assert.equal(sectorGridPositionFromName(undefined as unknown as string), null);
+    assert.equal(canonicalizeSectorName(null as unknown as string), null);
+    assert.equal(canonicalizeSectorName(undefined as unknown as string), null);
+
+    for (const [call, label] of [
+        [() => sectorGridPositionFromName(42 as unknown as string), 'sectorGridPositionFromName'],
+        // The facade names itself rather than the round-trip it delegates to.
+        [() => canonicalizeSectorName(42 as unknown as string), 'canonicalizeSectorName'],
+    ] as const) {
+        assert.throws(call, {
+            name: 'TypeError',
+            message: `${label}: name must be a string, received number 42`,
+        });
+    }
+});

@@ -457,3 +457,27 @@ test('two variants of one module resolve differently', () => {
     assert.equal(a.falloffRange, longRange.falloffRange);
     assert.equal(a.shotSpeed, longRange.shotSpeed);
 });
+
+test('identification names its own fields, not the catalogue lookup beneath it', () => {
+    for (const [module, field] of [
+        [
+            { Slot: 'a', Item: 42, Engineering: { Modifiers: [{ Label: 'x', Value: 1 }] } },
+            'module.Item',
+        ],
+        [
+            {
+                Slot: 'a',
+                Item: 'Int_Hyperdrive_Size6_Class5',
+                Engineering: { Modifiers: [{ Label: 42, Value: 1 }] },
+            },
+            'module.Engineering.Modifiers[].Label',
+        ],
+    ] as const) {
+        assert.throws(() => identifyPreEngineeredVariant(module as never), {
+            name: 'TypeError',
+            message: `identifyPreEngineeredVariant: ${field} must be a string, received number 42`,
+        });
+    }
+    // An unengineered module answers before any field is read.
+    assert.equal(identifyPreEngineeredVariant({ Slot: 'a', Item: 42 } as never), null);
+});

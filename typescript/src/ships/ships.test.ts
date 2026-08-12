@@ -121,3 +121,22 @@ test('ship-slots spot checks reproduce the full layout', () => {
         assert.deepEqual(getShipSlots(expected.symbol), expected);
     }
 });
+
+test('a hull lookup names a wrong-typed key and answers a missing one', () => {
+    for (const [call, label] of [
+        [() => getShipBySymbol(42 as unknown as string), 'getShipBySymbol: symbol'],
+        [() => getShipByName(42 as unknown as string), 'getShipByName: name'],
+        // The slot facade delegates to the symbol lookup and still names itself.
+        [() => getShipSlots(42 as unknown as string), 'getShipSlots: symbol'],
+    ] as const) {
+        assert.throws(call, {
+            name: 'TypeError',
+            message: `${label} must be a string, received number 42`,
+        });
+    }
+    for (const missing of [null, undefined]) {
+        assert.equal(getShipBySymbol(missing as unknown as string), null);
+        assert.equal(getShipByName(missing as unknown as string), null);
+        assert.equal(getShipSlots(missing as unknown as string), null);
+    }
+});

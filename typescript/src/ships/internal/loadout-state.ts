@@ -4,6 +4,14 @@ import { deepFreeze } from '../../internal/deep-freeze.js';
 import type { OutfittingModule } from '../modules.js';
 import type { LoadoutModule } from '../slef.js';
 
+/**
+ * How a fitted module's `Item` is named when a catalogue lookup rejects it as a wrong
+ * type. A build assembled through `setModule` carries a symbol the guard there checked;
+ * one read from a `Loadout` event carries whatever the event held, so the failure has to
+ * say which field of the build it came from.
+ */
+export const FITTED_ITEM = 'ShipLoadout: fitted module Item';
+
 /** Whether a journal key names a known cosmetic or hull-geometry entry. */
 export function isNonOutfittingSlot(slotKey: string): boolean {
     return /^(paintjob|shipname\d+|shipid\d+|bobble\d+|decal\d+|shipkit.+|weaponcolour|enginecolour|vesselvoice|shipcockpit|stringlights)$/i.test(

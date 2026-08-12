@@ -6,7 +6,13 @@ import type { OutfittingModule } from '../modules.js';
 
 const MODULES_BY_SYMBOL = /* @__PURE__ */ createKeyIndex(ALL_MODULES, 'symbol');
 
-/** Resolve a module from the complete built-in catalogue. */
-export function builtInModuleBySymbol(symbol: string): OutfittingModule | null {
-    return findInKeyIndex(MODULES_BY_SYMBOL, symbol);
+/**
+ * Resolve a module from the complete built-in catalogue.
+ *
+ * @param label - How to name `symbol` in a failure — see `normalizeKey`. Each caller
+ * passes the public parameter or imported field it holds, so a wrong-typed symbol names
+ * where it came from rather than this shared index.
+ */
+export function builtInModuleBySymbol(symbol: string, label: string): OutfittingModule | null {
+    return findInKeyIndex(MODULES_BY_SYMBOL, symbol, label);
 }

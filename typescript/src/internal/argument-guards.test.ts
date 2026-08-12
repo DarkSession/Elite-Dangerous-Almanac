@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { describeValue, requireString, truncate } from './argument-guards.js';
+import {
+    describeValue,
+    requireString,
+    requireStringIfPresent,
+    truncate,
+} from './argument-guards.js';
 
 test('requireString passes a string through', () => {
     assert.equal(requireString('Anaconda', 'X.y: z'), 'Anaconda');
@@ -15,6 +20,18 @@ test('requireString names the parameter and the value it received', () => {
     });
     assert.throws(() => requireString(undefined, 'X.y: z'), {
         message: 'X.y: z must be a string, received undefined',
+    });
+});
+
+test('requireStringIfPresent lets an absent argument through and names any other', () => {
+    // For the entry points where a nullish argument is an answer — a parser that takes a
+    // field which may be missing, a lookup that reads it as a miss.
+    requireStringIfPresent(null, 'X.y: z');
+    requireStringIfPresent(undefined, 'X.y: z');
+    requireStringIfPresent('Anaconda', 'X.y: z');
+    assert.throws(() => requireStringIfPresent(42, 'X.y: z'), {
+        name: 'TypeError',
+        message: 'X.y: z must be a string, received number 42',
     });
 });
 
