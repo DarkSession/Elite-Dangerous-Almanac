@@ -655,6 +655,17 @@
           },
           "required": ["all", "component", "consumable", "data", "item"]
         },
+        "membershipSha256": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "component": { "type": "string" },
+            "consumable": { "type": "string" },
+            "data": { "type": "string" },
+            "item": { "type": "string" }
+          },
+          "required": ["component", "consumable", "data", "item"]
+        },
         "records": {
           "type": "array",
           "items": {
@@ -669,7 +680,7 @@
           }
         }
       },
-      "required": ["counts", "records"]
+      "required": ["counts", "membershipSha256", "records"]
     },
     "shipsBuild": {
       "type": "object",

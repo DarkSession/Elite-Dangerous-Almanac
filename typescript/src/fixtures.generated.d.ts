@@ -221,6 +221,12 @@ type FixtureMaterialsMicroResources = {
         data: number;
         item: number;
     };
+    membershipSha256: {
+        component: string;
+        consumable: string;
+        data: string;
+        item: string;
+    };
     records: {
         category: string;
         name: string;
