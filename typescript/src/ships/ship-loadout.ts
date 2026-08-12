@@ -470,15 +470,16 @@ export class ShipLoadout {
      * structure a build is assembled from, and the types of the fields naming things in
      * it: `event` must be an object with an array of module objects in `Modules`; each
      * module needs a string `Slot` and `Item`, and no two may claim the same slot; a
-     * module's `Engineering` must be an object whenever the key is there **at all**; and
-     * `event.Ship` and that block's `BlueprintName` and `ExperimentalEffect` must be
-     * strings **when they carry a value**. Every remaining field — every number, every
+     * module's `Engineering` must be an object, and that block's `Modifiers` an array,
+     * whenever their key is there **at all**; and `event.Ship` and the block's
+     * `BlueprintName` and `ExperimentalEffect` must be strings **when they carry a
+     * value**. Every remaining field — every number, every
      * flag — is trusted, so use {@link ShipLoadout.fromSlef} (or {@link parseSlef}) for
      * input you did not produce, which reports all of them.
      *
-     * `Engineering` is the one field where a `null` is not the same as an omission,
-     * because a relay writing `null` for a block it does not have would otherwise be
-     * read as one. An **absent** `Ship` *is* an omission, and not a failure: it is a hull
+     * `Engineering` and its `Modifiers` are the fields where a `null` is not the same as
+     * an omission, because a relay writing `null` for a block or list it does not have
+     * would otherwise be read as one. An **absent** `Ship` *is* an omission, and not a failure: it is a hull
      * nothing can name, which {@link validation} reports as `unknownHull`. Nor is a
      * partial `Engineering` block — a capture may state modifiers without naming the
      * recipe.

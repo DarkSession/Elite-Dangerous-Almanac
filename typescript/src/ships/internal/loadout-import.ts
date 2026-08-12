@@ -74,6 +74,18 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
                 module.Engineering.ExperimentalEffect,
                 'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect',
             );
+            // `Modifiers` is the same hazard as the block itself: the clone guards it on
+            // `undefined` and then maps it, so anything else reaches `.map is not a
+            // function`. Its elements are not checked — a modifier's own fields are
+            // values this path trusts, and `fromSlef` is where each one is reported.
+            if (
+                module.Engineering.Modifiers !== undefined &&
+                !Array.isArray(module.Engineering.Modifiers)
+            ) {
+                throw new TypeError(
+                    `ShipLoadout.fromLoadout: module.Engineering.Modifiers must be an array, received ${describeValue(module.Engineering.Modifiers)}`,
+                );
+            }
         }
         const normalizedSlot = module.Slot.toLowerCase();
         if (slots.has(normalizedSlot)) {

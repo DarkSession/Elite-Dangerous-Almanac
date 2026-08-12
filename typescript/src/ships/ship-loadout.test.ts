@@ -3526,6 +3526,27 @@ test('fromLoadout names the structure it needs instead of failing inside the wal
             },
         );
     }
+    // Its `Modifiers` is the same hazard as the block: the clone maps whatever is there.
+    for (const modifiers of [null, 42, 'FSDOptimalMass']) {
+        assert.throws(
+            () =>
+                ShipLoadout.fromLoadout({
+                    Ship: 'Anaconda',
+                    Modules: [
+                        {
+                            Slot: 'FrameShiftDrive',
+                            Item: 'Int_Hyperdrive_Size6_Class5',
+                            Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: modifiers },
+                        },
+                    ],
+                } as unknown as LoadoutEvent),
+            {
+                name: 'TypeError',
+                message:
+                    /^ShipLoadout\.fromLoadout: module\.Engineering\.Modifiers must be an array, received /,
+            },
+        );
+    }
     // `Engineering` is the one field where `null` is not an omission — the asymmetry
     // above is deliberate, so pin both halves of it against a future tidy-up.
     assert.ok(
