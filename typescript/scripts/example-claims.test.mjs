@@ -40,8 +40,11 @@ test('instruments same-line and following-line expression claims without reading
         ],
     );
     assert.equal(result.skipped.length, 0);
-    assert.match(result.code, /__almanacExampleClaim\(\(\) => \(Math\.max\(1, 2\)\)/);
-    assert.match(result.code, /__almanacExampleClaim\(\(\) => \(error instanceof TypeError\)/);
+    assert.match(result.code, /__almanacCapturedExampleClaim\(\(\) => \(Math\.max\(1, 2\)\)/);
+    assert.match(
+        result.code,
+        /__almanacCapturedExampleClaim\(\(\) => \(error instanceof TypeError\)/,
+    );
     assert.match(result.code, /const marker = '\/\/ -> not a claim'/);
 });
 
@@ -67,7 +70,7 @@ test('instruments a variable initializer and rejects a claim without an executab
     const result = transformExampleClaims(['const answer = 42; // -> 42', '// -> true'].join('\n'));
 
     assert.equal(result.claims.length, 1);
-    assert.match(result.code, /const answer = globalThis\.__almanacExampleClaim/);
+    assert.match(result.code, /const answer = __almanacCapturedExampleClaim/);
     assert.equal(result.skipped[0]?.reason, 'not attached to an executable expression');
 });
 

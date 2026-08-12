@@ -13,6 +13,7 @@ const RESULT_MARKER = 'ALMANAC_EXAMPLE_RESULTS ';
 const apply = Reflect.apply;
 const arrayPush = Array.prototype.push;
 const jsonStringify = JSON.stringify;
+const objectDefineProperty = Object.defineProperty;
 const resultFd = process.stdout.fd;
 const resultWrite = writeSync;
 const manifestPath = process.argv[2];
@@ -40,7 +41,7 @@ if (entry === undefined) throw new RangeError(`run-example-claims: no entry ${en
 const failures = [];
 const checked = new Array(entry.claims.length).fill(false);
 
-globalThis.__almanacExampleClaim = (evaluate, id) => {
+const exampleClaim = (evaluate, id) => {
     const claimIndex = findClaim(entry.claims, id);
     if (claimIndex === -1) {
         append(failures, {
@@ -84,34 +85,40 @@ globalThis.__almanacExampleClaim = (evaluate, id) => {
     return actual;
 };
 
-try {
-    try {
-        await import(pathToFileURL(entry.target).href);
-    } catch (error) {
-        append(failures, {
-            name: entry.name,
-            claimId: null,
-            file: entry.file,
-            line: entry.line,
-            code: 'EXV004',
-            message: `snippet threw outside a value claim: ${formatError(error)}`,
-        });
-    }
+// Every snippet has its own process, so the hook lives until that process exits. Keeping
+// it non-writable and non-configurable prevents a snippet from saving the real function,
+// replacing the property with a wrapper and making a false value appear to pass.
+objectDefineProperty(globalThis, '__almanacExampleClaim', {
+    value: exampleClaim,
+    writable: false,
+    configurable: false,
+    enumerable: false,
+});
 
-    for (let index = 0; index < entry.claims.length; index += 1) {
-        if (checked[index]) continue;
-        const claim = entry.claims[index];
-        append(failures, {
-            name: entry.name,
-            claimId: claim.id,
-            file: claim.file,
-            line: claim.line,
-            code: 'EXV005',
-            message: 'documented expression did not execute',
-        });
-    }
-} finally {
-    delete globalThis.__almanacExampleClaim;
+try {
+    await import(pathToFileURL(entry.target).href);
+} catch (error) {
+    append(failures, {
+        name: entry.name,
+        claimId: null,
+        file: entry.file,
+        line: entry.line,
+        code: 'EXV004',
+        message: `snippet threw outside a value claim: ${formatError(error)}`,
+    });
+}
+
+for (let index = 0; index < entry.claims.length; index += 1) {
+    if (checked[index]) continue;
+    const claim = entry.claims[index];
+    append(failures, {
+        name: entry.name,
+        claimId: claim.id,
+        file: claim.file,
+        line: claim.line,
+        code: 'EXV005',
+        message: 'documented expression did not execute',
+    });
 }
 
 resultWrite(

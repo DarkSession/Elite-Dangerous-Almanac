@@ -32,9 +32,11 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
         ts.ScriptKind.TS,
     );
     const targets = [];
+    const identifiers = new Set();
     let ambient = false;
 
     function visit(node) {
+        if (ts.isIdentifier(node)) identifiers.add(node.text);
         if (ts.isExpressionStatement(node)) {
             targets.push({ statement: node, expression: node.expression });
         } else if (ts.isVariableStatement(node) && node.declarationList.declarations.length === 1) {
@@ -57,6 +59,7 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
     const claims = [];
     const skipped = [];
     const replacements = [];
+    const claimBinding = unusedClaimBinding(identifiers);
 
     for (const [index, comment] of comments.entries()) {
         const parsed = parseExpectedClaim(comment.expected);
@@ -90,7 +93,7 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
         replacements.push({
             start,
             end,
-            text: `globalThis.__almanacExampleClaim(() => (${expression}), ${JSON.stringify(id)})`,
+            text: `${claimBinding}(() => (${expression}), ${JSON.stringify(id)})`,
         });
         claims.push({ id, line: comment.line, expected: comment.expected, spec: parsed.spec });
     }
@@ -102,8 +105,26 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
             replacement.text +
             transformed.slice(replacement.end);
     }
+    if (claims.length > 0) {
+        // Indirect eval resolves in the real global environment, so a snippet-level
+        // `globalThis` binding cannot redirect this capture. The fresh local name cannot
+        // be shadowed anywhere in the original AST, and captures the immutable hook
+        // before the snippet can rebind the globalThis property itself.
+        transformed =
+            `const ${claimBinding} = (0, eval)('globalThis').__almanacExampleClaim;\n` +
+            transformed;
+    }
 
     return { code: transformed, claims, skipped, ambient };
+}
+
+function unusedClaimBinding(identifiers) {
+    const base = '__almanacCapturedExampleClaim';
+    let suffix = '';
+    while (identifiers.has(`${base}${suffix}`)) {
+        suffix = suffix === '' ? 1 : suffix + 1;
+    }
+    return `${base}${suffix}`;
 }
 
 /**

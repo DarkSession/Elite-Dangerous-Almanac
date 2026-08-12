@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { transformExampleClaims } from './example-claims.mjs';
 import { runExampleEntries } from './example-runtime.mjs';
 
 const runner = fileURLToPath(new URL('./run-example-claims.mjs', import.meta.url));
@@ -203,6 +204,82 @@ test('a replaced stdout _write cannot copy the result nonce into a false-green r
     }
 });
 
+test('hook replacement and globalThis redirection cannot turn wrong claims green', async () => {
+    const scratch = await mkdtemp(join(tmpdir(), 'almanac-example-hook-'));
+    try {
+        const entries = [];
+        entries.push(
+            await transformedEntry(
+                scratch,
+                'replaced-hook',
+                [
+                    `const savedClaim = globalThis.__almanacExampleClaim;`,
+                    `try {`,
+                    `    globalThis.__almanacExampleClaim = (evaluate, id) => savedClaim(() => 2, id);`,
+                    `} catch {}`,
+                    `1; // -> 2`,
+                ].join('\n'),
+            ),
+        );
+        entries.push(
+            await transformedEntry(
+                scratch,
+                'shadowed-global',
+                [
+                    `const globalThis = {`,
+                    `    __almanacExampleClaim: (evaluate, id) => evaluate() + 1,`,
+                    `};`,
+                    `1; // -> 2`,
+                ].join('\n'),
+            ),
+        );
+        entries.push(
+            await transformedEntry(
+                scratch,
+                'rebound-global',
+                [
+                    `globalThis.globalThis = {`,
+                    `    __almanacExampleClaim: (evaluate, id) => evaluate() + 1,`,
+                    `};`,
+                    `1; // -> 2`,
+                ].join('\n'),
+            ),
+        );
+        entries.push(
+            await transformedEntry(
+                scratch,
+                'shadowed-capture',
+                [
+                    `const __almanacCapturedExampleClaim = (evaluate, id) => evaluate() + 1;`,
+                    `1; // -> 2`,
+                ].join('\n'),
+            ),
+        );
+
+        const manifestPath = join(scratch, 'manifest.json');
+        await writeFile(manifestPath, JSON.stringify(entries));
+
+        const result = runExampleEntries(entries, {
+            manifestPath,
+            runner,
+            cwd: scratch,
+            timeoutMs: 2_000,
+        });
+
+        assert.equal(result.checked, entries.length);
+        assert.deepEqual(
+            result.failures.map(({ name, claimId, code }) => ({ name, claimId, code })),
+            entries.map(({ name, claims }) => ({
+                name,
+                claimId: claims[0].id,
+                code: 'EXV001',
+            })),
+        );
+    } finally {
+        await rm(scratch, { recursive: true, force: true });
+    }
+});
+
 test('a forged marker followed by process.exit fails closed without a final record', async () => {
     const scratch = await mkdtemp(join(tmpdir(), 'almanac-example-exit-spoof-'));
     try {
@@ -287,6 +364,15 @@ test('SIGKILL promptly stops a SIGTERM-resistant snippet and the next process ru
 
 function entry(name, target, claimId, value, kind = 'boolean') {
     return entryWithClaims(name, target, [claim(claimId, String(value), { kind, value })]);
+}
+
+async function transformedEntry(scratch, name, source) {
+    const transformed = transformExampleClaims(source, { idPrefix: name });
+    assert.equal(transformed.claims.length, 1);
+    assert.equal(transformed.skipped.length, 0);
+    const target = join(scratch, `${name}.mjs`);
+    await writeFile(target, `export {};\n${transformed.code}\n`);
+    return entryWithClaims(name, target, transformed.claims);
 }
 
 function entryWithClaims(name, target, claims) {
