@@ -5,6 +5,7 @@
  */
 
 import type { BuildSlot } from './slots.js';
+import { truncate } from '../internal/argument-guards.js';
 
 /**
  * Stable machine-readable reason a loadout is invalid or incomplete.
@@ -98,7 +99,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                 severity: 'error',
                 slot: module.slot,
                 symbol: module.symbol,
-                message: `Slot ${module.slot} occurs more than once (also ${previous})`,
+                message: `Slot ${truncate(module.slot)} occurs more than once (also ${truncate(previous)})`,
             });
         } else {
             seen.set(normalized, module.slot);
@@ -109,7 +110,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
         issues.push({
             code: 'unknownHull',
             severity: 'incomplete',
-            message: `No slot layout is known for hull ${input.shipSymbol}`,
+            message: `No slot layout is known for hull ${truncate(input.shipSymbol)}`,
         });
     } else {
         const knownSlots = new Map(input.slots.map((slot) => [slot.key.toLowerCase(), slot]));
@@ -120,7 +121,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                     severity: 'error',
                     slot: module.slot,
                     symbol: module.symbol,
-                    message: `${module.slot} is not a slot on ${input.shipSymbol}`,
+                    message: `${truncate(module.slot)} is not a slot on ${truncate(input.shipSymbol)}`,
                 });
             }
         }
@@ -133,7 +134,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                     code: 'missingRequiredSlot',
                     severity: 'incomplete',
                     slot: slot.key,
-                    message: `${slot.key} is required for an operational build`,
+                    message: `${truncate(slot.key)} is required for an operational build`,
                 });
             }
         }
@@ -146,7 +147,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                 severity: 'incomplete',
                 slot: module.slot,
                 symbol: module.symbol,
-                message: `${module.slot}: ${module.symbol} is not in the module catalogue`,
+                message: `${truncate(module.slot)}: ${truncate(module.symbol)} is not in the module catalogue`,
             });
         } else if (module.fitError !== null) {
             issues.push({
@@ -154,7 +155,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
                 severity: 'error',
                 slot: module.slot,
                 symbol: module.symbol,
-                message: `${module.slot}: ${module.symbol} ${module.fitError}`,
+                message: `${truncate(module.slot)}: ${truncate(module.symbol)} ${truncate(module.fitError)}`,
             });
         }
     }

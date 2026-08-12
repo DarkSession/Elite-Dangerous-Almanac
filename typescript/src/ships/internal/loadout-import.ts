@@ -9,6 +9,7 @@ import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { cloneLoadoutModule, cloneModuleStats } from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
+import { truncate } from '../../internal/argument-guards.js';
 
 /** Top-level figures an import carries, trusted over computed fallbacks. */
 export interface ImportedTopFigures {
@@ -38,7 +39,9 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
     for (const module of event.Modules) {
         const normalizedSlot = module.Slot.toLowerCase();
         if (slots.has(normalizedSlot)) {
-            throw new TypeError(`ShipLoadout.fromLoadout: duplicate slot "${module.Slot}"`);
+            throw new TypeError(
+                `ShipLoadout.fromLoadout: duplicate slot "${truncate(module.Slot)}"`,
+            );
         }
         slots.add(normalizedSlot);
         modules.set(module.Slot, cloneLoadoutModule(module));

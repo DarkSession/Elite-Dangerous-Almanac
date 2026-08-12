@@ -11,6 +11,7 @@
  */
 
 import { completeResult } from './internal/calculation-result.js';
+import { truncate } from '../internal/argument-guards.js';
 
 /** A dependency that prevented a loadout calculation from producing a complete value. */
 export interface CalculationIssue {
@@ -77,7 +78,7 @@ function moduleIssue(
         field,
         slot: module.slot,
         symbol: module.symbol,
-        message: `${module.slot}: ${module.symbol} has no known ${field}`,
+        message: `${truncate(module.slot)}: ${truncate(module.symbol)} has no known ${field}`,
     };
 }
 

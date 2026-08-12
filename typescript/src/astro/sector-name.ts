@@ -23,6 +23,7 @@
  */
 
 import { normalizeKey } from '../internal/registry-index.js';
+import { describeValue } from '../internal/argument-guards.js';
 
 /**
  * Integer position of a sector on the galaxy's sector grid.
@@ -739,7 +740,7 @@ export function sectorNameFromGridPosition(position: SectorGridPosition): string
     for (const v of [position.sectorX, position.sectorY, position.sectorZ]) {
         if (!Number.isInteger(v) || v < 0 || v > 127) {
             throw new RangeError(
-                `Sector grid position out of range (expected integer 0–127): ${JSON.stringify(position)}`,
+                `Sector grid position out of range (expected integer 0–127): ${describeValue(position)}`,
             );
         }
     }
@@ -747,7 +748,7 @@ export function sectorNameFromGridPosition(position: SectorGridPosition): string
     const name = isC1Sector(offset) ? c1Name(offset) : c2Name(offset);
     if (name === null) {
         throw new RangeError(
-            `Sector grid position has no procedural name: ${JSON.stringify(position)}`,
+            `Sector grid position has no procedural name: ${describeValue(position)}`,
         );
     }
     return name;

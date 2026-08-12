@@ -3,6 +3,7 @@
 import type { OutfittingModule } from '../modules.js';
 import { getShipBySymbol } from '../ships.js';
 import { SLOT_RESTRICTION_LABELS, type BuildSlot, type SlotRestriction } from '../slots.js';
+import { truncate } from '../../internal/argument-guards.js';
 
 /** Optional-internal groups a military slot accepts (symbol prefixes). */
 const MILITARY_PREFIXES: readonly string[] = [
@@ -99,7 +100,7 @@ export function moduleFitError(
             return 'not a ship armour module';
         }
         if (!hull || module.ship.toLowerCase() !== hull.name.toLowerCase()) {
-            return `armour belongs to ${module.ship}, not ${hull?.name ?? shipSymbol}`;
+            return `armour belongs to ${truncate(module.ship)}, not ${truncate(hull?.name ?? shipSymbol)}`;
         }
         return null;
     }
@@ -116,7 +117,7 @@ export function moduleFitError(
             const hull = getShipBySymbol(symbol);
             return hull ? `${hull.name} (${symbol})` : symbol;
         });
-        return `module is restricted to ${hulls.join(', ')}`;
+        return `module is restricted to ${truncate(hulls.join(', '))}`;
     }
 
     // Check the article's reserved mount before general kind rules: this remains true
@@ -154,6 +155,6 @@ export function moduleFitError(
     }
 
     return module.class > slot.size
-        ? `module size ${module.class} exceeds slot size ${slot.size}`
+        ? `module size ${truncate(module.class)} exceeds slot size ${slot.size}`
         : null;
 }

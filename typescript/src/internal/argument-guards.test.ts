@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { describeValue, requireString } from './argument-guards.js';
+import { describeValue, requireString, truncate } from './argument-guards.js';
 
 test('requireString passes a string through', () => {
     assert.equal(requireString('Anaconda', 'X.y: z'), 'Anaconda');
@@ -69,4 +69,18 @@ test('describeValue never cuts a surrogate pair in half', () => {
             `unpaired surrogate left in ${described}`,
         );
     }
+});
+
+test('truncate accepts unknown values without letting their rendering replace the diagnostic', () => {
+    assert.equal(truncate(42), '42');
+    assert.equal(truncate(Symbol('slot')), 'Symbol(slot)');
+    assert.equal(truncate('x'.repeat(20_000)), `${'x'.repeat(60)}…`);
+    assert.equal(
+        truncate({
+            toString() {
+                throw new Error('conversion failed');
+            },
+        }),
+        '<unprintable>',
+    );
 });

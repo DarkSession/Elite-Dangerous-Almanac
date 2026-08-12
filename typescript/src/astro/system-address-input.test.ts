@@ -36,6 +36,15 @@ test('refuses values that cannot be a trustworthy address', () => {
 test('names the offending value so the failure is diagnosable', () => {
     assert.throws(() => toSystemAddress(1.5), /1\.5/);
     assert.throws(() => toSystemAddress('nope'), /"nope"/);
+
+    assert.throws(
+        () => toSystemAddress('x'.repeat(20_000)),
+        ({ message }: Error) => {
+            assert.ok(message.length < 200, `address message not shortened: ${message.length}`);
+            assert.match(message, /"x+…$/);
+            return true;
+        },
+    );
 });
 
 test('every address entry point takes a journal number', () => {
