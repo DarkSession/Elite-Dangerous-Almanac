@@ -45,11 +45,11 @@ shake it, or a leaf subpath when the import graph must be explicit.
 import { ProceduralSystem } from "@elite-dangerous-almanac/core/astro/procedural-system";
 
 const system = ProceduralSystem.fromName("Synuefe EN-H d11-96");
-system?.systemAddress; // 3309179996515n
-system?.namingRegionName; // "Synuefe"
+system?.systemAddress; // -> 3309179996515n
+system?.namingRegionName; // -> "Synuefe"
 
 ProceduralSystem.fromSystemAddress(3309179996515n).name;
-// "Synuefe EN-H d11-96"
+// -> "Synuefe EN-H d11-96"
 ```
 
 Address inputs accept `bigint`, a safe integer `number`, or a decimal string.
@@ -84,6 +84,8 @@ metadata and id/name lookups remain on the general astro barrel.
 
 ```ts
 import { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
+
+declare const slefJsonString: string;
 
 const build = ShipLoadout.fromSlef(slefJsonString);
 
@@ -124,6 +126,9 @@ no edit changes, and it is exported only when asked for by name:
 
 ```ts
 import { getSourceModuleValue } from "@elite-dangerous-almanac/core/ships/source-purchase";
+import type { ShipLoadout } from "@elite-dangerous-almanac/core/ships/ship-loadout";
+
+declare const build: ShipLoadout;
 
 const paid = build.sourcePurchase; // null for a build assembled here
 paid?.modulesValue; // as the capture stated it
@@ -148,7 +153,7 @@ import {
   getShipBySymbol,
 } from "@elite-dangerous-almanac/core/ships";
 
-getShipBySymbol("empire_trader")?.name; // "Imperial Clipper"
+getShipBySymbol("empire_trader")?.name; // -> "Imperial Clipper"
 getModuleBySymbol("Int_Hyperdrive_Size6_Class5")?.name;
 ```
 
@@ -168,7 +173,7 @@ import { getMaterialByName } from "@elite-dangerous-almanac/core/materials/mater
 import { getCommodityByName } from "@elite-dangerous-almanac/core/commodities/commodities";
 
 getMaterialByName("iron")?.grade;
-getCommodityByName("lavian brandy")?.rare; // true
+getCommodityByName("lavian brandy")?.rare; // -> true
 ```
 
 These lookups search their complete registry by default and accept an optional
@@ -222,9 +227,9 @@ npm run test:package
 npm run docs
 ```
 
-`npm run check` runs linting, formatting checks, type checking, the documented-example
-compile and the coverage-gated test suite. Changes to exports or consumer-facing modules
-also require the build and package tests.
+`npm run check` runs linting, formatting checks, type checking, documented-example
+compilation and value checks, and the coverage-gated test suite. Changes to exports or
+consumer-facing modules also require the build and package tests.
 
 API documentation is generated from TSDoc. Catalogue provenance belongs in the
 matching `data/<domain>/SOURCES.md`; open data gaps are tracked in

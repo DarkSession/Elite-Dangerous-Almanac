@@ -49,9 +49,9 @@ The package has four feature areas:
 import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';
 
 const system = ProceduralSystem.fromName('Synuefe EN-H d11-96');
-system?.systemAddress; // 3309179996515n
+system?.systemAddress; // -> 3309179996515n
 ProceduralSystem.fromSystemAddress(3309179996515n).name;
-// "Synuefe EN-H d11-96"
+// -> "Synuefe EN-H d11-96"
 ```
 
 Address inputs accept `bigint`, safe integer `number` values and decimal strings.
@@ -59,6 +59,8 @@ Addresses are returned as `bigint`.
 
 ```ts
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+
+declare const slefJsonString: string;
 
 const build = ShipLoadout.fromSlef(slefJsonString);
 build.maxJumpRange();
@@ -88,9 +90,9 @@ import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
 import { getMaterialByName } from '@elite-dangerous-almanac/core/materials/materials';
 import { getCommodityByName } from '@elite-dangerous-almanac/core/commodities/commodities';
 
-getShipBySymbol('empire_trader')?.name; // "Imperial Clipper"
+getShipBySymbol('empire_trader')?.name; // -> "Imperial Clipper"
 getMaterialByName('iron')?.grade;
-getCommodityByName('lavian brandy')?.rare; // true
+getCommodityByName('lavian brandy')?.rare; // -> true
 ```
 
 Registry lookups ignore case and surrounding whitespace. Material, commodity and
