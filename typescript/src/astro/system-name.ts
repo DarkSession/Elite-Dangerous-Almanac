@@ -140,7 +140,10 @@ export function boxelCodeToLetters(boxelCode: number): BoxelLetters {
  * {@link ProceduralSystem} via `ProceduralSystem.fromName`) if you need the region re-cased too.
  *
  * @param name - A system name in any casing, e.g. `blae eock kc-c d0`.
- * @returns The parsed parts, or `null` if the name is malformed.
+ * @returns The parsed parts, or `null` if the name is malformed. A nullish `name`
+ * answers `null` too: this parser tolerates an absent name, deliberately, so a caller
+ * can hand it a field that may not be there. `ProceduralSystem.fromName` is the stricter
+ * factory over the same grammar — it throws `TypeError` for anything but a string.
  */
 export function parseSystemName(name: string): SystemNameParts | null {
     if (name == null) return null;
@@ -229,7 +232,8 @@ export function formatSystemName(parts: SystemNameParts): string {
  * from address encodability.
  *
  * @param name - A system name in any casing.
- * @returns The canonically-cased name, or `null` if it is not a system name.
+ * @returns The canonically-cased name, or `null` if it is not a system name — including
+ * a nullish `name`, which {@link parseSystemName} tolerates on this path too.
  */
 export function canonicalizeSystemName(name: string): string | null {
     const parts = parseSystemName(name);
@@ -259,7 +263,8 @@ export interface IsProceduralSystemNameOptions {
  * @param name - The candidate name.
  * @param options - See {@link IsProceduralSystemNameOptions}.
  * @returns `true` when the name parses as a procedural system name. A hand-named
- * system (`Sol`, `Maia`) is `false`: it is a real system, just not a procedural name.
+ * system (`Sol`, `Maia`) is `false`: it is a real system, just not a procedural name. A
+ * nullish `name` is `false` as well, matching {@link parseSystemName}'s tolerance.
  * @example
  * ```ts
  * import { isProceduralSystemName } from '@elite-dangerous-almanac/core/astro/system-name';

@@ -133,6 +133,7 @@ import {
 import type { SourcePurchaseRecord } from './source-purchase.js';
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { normalizeKey } from '../internal/registry-index.js';
+import { describeValue, requireString, truncate } from '../internal/argument-guards.js';
 import { completeResult } from './internal/calculation-result.js';
 import {
     calculateCargoCapacity,
@@ -467,7 +468,8 @@ export class ShipLoadout {
      * (case-insensitive).
      * @returns An empty loadout whose {@link slots} come from the hull's declared
      * layout.
-     * @throws {TypeError} If no hull with that symbol has a known slot layout.
+     * @throws {TypeError} If `shipSymbol` is not a string, or no hull with that symbol
+     * has a known slot layout.
      * @example
      * ```ts
      * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -476,9 +478,15 @@ export class ShipLoadout {
      * ```
      */
     static empty(shipSymbol: string): ShipLoadout {
-        const layout = getShipSlots(shipSymbol);
+        const layout = getShipSlots(requireString(shipSymbol, 'ShipLoadout.empty: shipSymbol'));
         if (!layout) {
-            throw new TypeError(`ShipLoadout.empty: no slot layout for hull "${shipSymbol}"`);
+            // Shortened so this method's two failures agree: the guard above describes an
+            // oversized argument in bounded form, and quoting one back in full here would
+            // undo that. Messages elsewhere still reproduce a caller's string in full —
+            // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/213.
+            throw new TypeError(
+                `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
+            );
         }
         return new ShipLoadout(layout.symbol, new Map(), {});
     }
@@ -858,9 +866,9 @@ export class ShipLoadout {
      * @returns `this`, for chaining.
      * @throws {RangeError} If the hull has no slot with that key.
      * @throws {TypeError} If `module` is null/undefined (e.g. a `getModuleBySymbol`
-     * miss), the module does not fit the slot (wrong kind, too large, or a restriction
-     * the module does not satisfy), or the hull has no known slot layout (a SLEF build
-     * on an unrecognised hull).
+     * miss) or is not an outfitting module at all, the module does not fit the slot
+     * (wrong kind, too large, or a restriction the module does not satisfy), or the hull
+     * has no known slot layout (a SLEF build on an unrecognised hull).
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -876,10 +884,19 @@ export class ShipLoadout {
      */
     setModule(slotKey: string, module: OutfittingModule): this {
         const slot = this.#requireSlot(slotKey);
-        if (!module) {
+        if (module === null || module === undefined) {
             // Guards the common `getModuleBySymbol('typo', CAT)!` miss, whose `!` lies.
+            // Nothing else takes this branch: another falsy value is not a lookup miss,
+            // and claiming it was would send the caller looking in the wrong place.
             throw new TypeError(
                 `ShipLoadout.setModule: no module supplied for "${slotKey}" (did the module lookup return undefined?)`,
+            );
+        }
+        // Every fit rule reads the record's symbol, so anything else — a bare id, a
+        // journal fragment — must be named here rather than failing inside the rules.
+        if (typeof (module as { symbol?: unknown }).symbol !== 'string') {
+            throw new TypeError(
+                `ShipLoadout.setModule: module for "${slotKey}" must be an outfitting module, received ${describeValue(module)}`,
             );
         }
         const problem = moduleFitError(this.#shipSymbol, slot, module);

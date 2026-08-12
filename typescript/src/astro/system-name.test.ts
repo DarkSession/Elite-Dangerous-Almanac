@@ -59,6 +59,9 @@ test('canonicalises a full system name', () => {
         'Pleiades Sector HR-W d1-79',
     );
     assert.equal(canonicalizeSystemName('Sol'), null);
+    // The parsers tolerate an absent name where `ProceduralSystem.fromName` rejects it.
+    assert.equal(canonicalizeSystemName(null as unknown as string), null);
+    assert.equal(canonicalizeSystemName(undefined as unknown as string), null);
 });
 
 test('recognises procedural system names', () => {
@@ -66,6 +69,10 @@ test('recognises procedural system names', () => {
     assert.equal(isProceduralSystemName('Sol'), false);
     assert.equal(isProceduralSystemName('Pleiades Sector HR-W d1-79', { strict: true }), false); // named region
     assert.equal(isProceduralSystemName('Blae Eock KC-C d0', { strict: true }), true);
+    // Nullish is `false` on both paths that could answer it: the `trim` here, and the
+    // parser's own tolerance behind it.
+    assert.equal(isProceduralSystemName(null as unknown as string), false);
+    assert.equal(isProceduralSystemName(undefined as unknown as string, { strict: true }), false);
 });
 
 test('boxel code <-> letters is a bijection', () => {
