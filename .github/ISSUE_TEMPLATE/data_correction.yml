@@ -1,0 +1,98 @@
+name: Data correction or addition
+description: A bundled catalogue value is wrong, missing or out of date.
+labels: ["data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for the shared catalogues in `data/`. A correction is only actionable
+        with provenance: `data/SNAPSHOTS.md` defines what every data change must record.
+
+        Remove commander names, account identifiers and unrelated personal data from
+        captures, and preserve attribution to the published author of a source.
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Data domain
+      options:
+        - data/astro
+        - data/commodities
+        - data/materials
+        - data/ships
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: entry
+    attributes:
+      label: Catalogue and entry
+      description: The file and the specific entry or field affected.
+      placeholder: "data/ships/hulls.jsonc — python_mk_ii, hullMass"
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current value
+      description: What the repository ships today.
+    validations:
+      required: true
+  - type: textarea
+    id: corrected
+    attributes:
+      label: Corrected value
+      description:
+        What it should be, with units. For an addition, give the complete entry you are
+        proposing.
+    validations:
+      required: true
+  - type: textarea
+    id: provenance
+    attributes:
+      label: Source and provenance
+      description: |
+        Identify the upstream source and its immutable revision, release, dataset
+        version, response timestamp or checksum, plus the UTC acquisition date and how
+        the value was derived. If the source publishes no immutable version, say so
+        explicitly rather than inferring one.
+      placeholder: |
+        Source: <name as recorded in ATTRIBUTIONS.md, or a link if it is new>
+        Revision/checksum: <commit, release, dataset version or SHA-256>
+        Acquired (UTC): 2026-08-12
+        Derivation: <import, transform or manual reading>
+    validations:
+      required: true
+  - type: dropdown
+    id: game-version
+    attributes:
+      label: Does this change with a game update?
+      description:
+        Say whether the value is tied to a specific game build, so reviewers know what
+        the correction pins.
+      options:
+        - "Yes — the value changed in a game update"
+        - "No — the shipped value was always wrong"
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: game-build
+    attributes:
+      label: Game build
+      description: The Elite Dangerous version the corrected value was observed in, if applicable.
+      placeholder: "Odyssey 4.1.2.0"
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched open and closed issues for this gap.
+          required: true
+        - label:
+            The source permits redistribution of this value, or I have noted the terms
+            that apply to it.
+          required: true
+        - label:
+            Nothing here contains commander names, account identifiers or other private
+            data.
+          required: true
