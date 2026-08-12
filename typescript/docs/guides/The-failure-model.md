@@ -17,6 +17,13 @@ can write a consumer that never guesses.
 | `RangeError` | Well-formed, but outside a supported range | `massCodeToSizeClass('z')` |
 | `SyntaxError` | The text was not JSON | `parseSlef('{')` |
 
+The last two rows meet on the SLEF entry points that accept a string — `parseSlef`,
+`inspectSlef` and `ShipLoadout.fromSlef`. `SyntaxError` comes from `JSON.parse`, before
+any validation runs. Past that point a payload number outside its documented journal
+range — a module `Priority` of 5, a `Health` of `-0.1` — is reported as `TypeError`
+alongside every other malformed field, not as `RangeError`: one bad entry rejects the
+payload, and which field was wrong is what the message says.
+
 ```ts
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
 import { toSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address-input';
