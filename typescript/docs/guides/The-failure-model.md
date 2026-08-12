@@ -37,6 +37,14 @@ try {
 }
 ```
 
+**Two of those rows need qualifying on the SLEF entry points that accept a string** —
+`parseSlef`, `inspectSlef` and `ShipLoadout.fromSlef`. All three throw `SyntaxError`,
+which comes from `JSON.parse` before any validation runs. Past that point a payload
+number outside its documented journal range — a module `Priority` of 5, a `Health` of
+`-0.1` — counts as malformed alongside every other bad field rather than as a range
+violation: `parseSlef` and `ShipLoadout.fromSlef` throw `TypeError` naming the field, and
+`inspectSlef` records it as that entry's diagnostic.
+
 **`null` is not an error.** A lookup that finds nothing has answered you. Journals
 outlive catalogues — a game update ships modules before this package knows about them —
 so `null` from a symbol lookup usually means "newer than the catalogue", and a consumer

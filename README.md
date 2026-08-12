@@ -178,6 +178,11 @@ and use ordinary array operations when bundle size is the priority.
   provenance records unresolved data gaps.
 - Lookups return `null` when no record matches. Malformed inputs throw `TypeError`, and
   values outside a supported range throw `RangeError`.
+- The SLEF entry points that accept a string — `parseSlef`, `inspectSlef` and
+  `ShipLoadout.fromSlef` — throw `SyntaxError` when the text is not valid JSON. Past
+  that, a payload number outside its documented journal range counts as malformed rather
+  than out of range: `parseSlef` and `ShipLoadout.fromSlef` throw `TypeError`, not
+  `RangeError`, and `inspectSlef` reports it as a diagnostic on that entry.
 - Shared fixtures in `fixtures/` define language-neutral expected behavior.
 
 The generated [GitHub Wiki](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki)

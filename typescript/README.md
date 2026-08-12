@@ -111,6 +111,11 @@ large combined dataset is never an implicit dependency.
   provenance records unresolved data gaps.
 - Lookups return `null`; malformed inputs throw `TypeError`; unsupported ranges throw
   `RangeError`.
+- `parseSlef`, `inspectSlef` and `ShipLoadout.fromSlef` throw `SyntaxError` when handed a
+  string that is not valid JSON. Past that, a payload number outside its documented
+  journal range counts as malformed rather than out of range: `parseSlef` and
+  `ShipLoadout.fromSlef` throw `TypeError`, not `RangeError`, and `inspectSlef` reports it
+  as a diagnostic.
 
 The [repository README](https://github.com/DarkSession/Elite-Dangerous-Almanac#readme)
 contains the project guide. The generated
