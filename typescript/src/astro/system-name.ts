@@ -103,10 +103,11 @@ export interface BoxelLetters {
  * of {@link lettersToBoxelCode}.
  *
  * @param boxelCode - The packed base-26 boxel code, as `decodeSystemAddress` returns.
- *   Must be a non-negative safe integer.
+ *   Must be a non-negative integer {@link lettersToBoxelCode} could have packed.
  * @returns The three letter indices (`0`–`25` each) and the boxel number `n1`.
- * @throws {RangeError} If `boxelCode` is not a non-negative safe integer — no such
- * code can be packed, and unpacking one would yield letters outside `0`–`25`.
+ * @throws {RangeError} If `boxelCode` is negative, fractional, or beyond the largest
+ * exactly packable code — no such code can be packed, and a negative one would yield
+ * letters outside `0`–`25`.
  * @example
  * ```ts
  * import { boxelCodeToLetters, lettersToBoxelCode } from '@elite-dangerous-almanac/core/astro/system-name';

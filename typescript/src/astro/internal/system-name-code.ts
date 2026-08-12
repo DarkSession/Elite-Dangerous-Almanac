@@ -1,8 +1,15 @@
 /** The stride one step of `n1` adds to a boxel code: the three letters below it. */
 const N1_STRIDE = 26 * 26 * 26;
 
-/** The largest `n1` whose packed code is still an exact integer. */
-const MAX_N1 = Math.floor(Number.MAX_SAFE_INTEGER / N1_STRIDE);
+/**
+ * The largest `n1` whose packed code is exact *for every letter triple* — the letters
+ * add up to `N1_STRIDE - 1` on top of it, so that headroom has to be reserved rather
+ * than dividing the safe range by the stride alone.
+ */
+const MAX_N1 = Math.floor((Number.MAX_SAFE_INTEGER - (N1_STRIDE - 1)) / N1_STRIDE);
+
+/** The largest code `packBoxelCode` can return: `MAX_N1` with every letter at 25. */
+const MAX_BOXEL_CODE = MAX_N1 * N1_STRIDE + (N1_STRIDE - 1);
 
 /**
  * Pack the four numeric boxel-name fields into their base-26 index.
@@ -29,12 +36,14 @@ export function packBoxelCode(l1: number, l2: number, l3: number, n1: number): n
 /**
  * Assert a packed base-26 boxel code is one {@link packBoxelCode} could have produced.
  *
- * @throws {RangeError} If `boxelCode` is not a non-negative safe integer.
+ * @throws {RangeError} If `boxelCode` is not an integer in 0–`MAX_BOXEL_CODE`. The
+ * upper bound keeps the two exact inverses: a larger code unpacks cleanly enough, but
+ * to an `n1` that could never have been packed.
  */
 export function assertBoxelCode(boxelCode: number): void {
-    if (!Number.isSafeInteger(boxelCode) || boxelCode < 0) {
+    if (!Number.isInteger(boxelCode) || boxelCode < 0 || boxelCode > MAX_BOXEL_CODE) {
         throw new RangeError(
-            `Boxel code out of range (expected non-negative safe integer): ${boxelCode}`,
+            `Boxel code out of range (expected integer 0–${MAX_BOXEL_CODE}): ${boxelCode}`,
         );
     }
 }

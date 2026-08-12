@@ -134,7 +134,7 @@ test('factories reject encoding immediately instead of creating a partially usab
     assert.throws(() => ProceduralSystem.fromName('Pyruetchoo AA-A d0'), /does not fit/);
 });
 
-test('encoding refuses hand-built parts whose letters are outside 0-25', () => {
+test('encoding refuses hand-built parts whose letters or N1 are out of range', () => {
     // Parsed parts are always in range, so only a caller assembling parts itself can
     // get here. Encoding a letter of 26 silently addressed a different system before.
     const parts = parseSystemName('Blae Eock KC-C d0-0');

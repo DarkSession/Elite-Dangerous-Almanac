@@ -105,18 +105,34 @@ test('rejects a letter that is not an index 0-25', () => {
     }
 });
 
+// The largest N1 that packs exactly whatever the letters are. Pinned as a literal
+// rather than recomputed: re-deriving it with the implementation's own formula would
+// let a wrong formula agree with itself and pass.
+const MAX_N1 = 512_471_509_713;
+
 test('rejects an N1 that is negative, fractional, or too large to pack exactly', () => {
-    // 2**53 / 26**3 is the first N1 whose packed code would round; N1 never exceeds
-    // ~119 in an encodable address, so this only catches a caller inventing values.
-    for (const n1 of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, 2 ** 53]) {
+    // The bound is a floating-point limit, not an in-game one: a real N1 is ≤ ~119,
+    // so only a caller inventing values reaches it.
+    for (const n1 of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, MAX_N1 + 1, 2 ** 53]) {
         assert.throws(() => lettersToBoxelCode(0, 0, 0, n1), {
             name: 'RangeError',
             message: /Boxel number N1 out of range/,
         });
     }
-    // The bound is the packing limit, not an in-game one: the largest exact N1 packs.
-    const maxN1 = Math.floor(Number.MAX_SAFE_INTEGER / 26 ** 3);
-    assert.equal(boxelCodeToLetters(lettersToBoxelCode(0, 0, 0, maxN1)).n1, maxN1);
+});
+
+test('the largest accepted N1 packs exactly under the worst-case letters', () => {
+    // Letters carry up to 26³-1 on top of N1, so the bound has to hold at ZZ-Z, not
+    // just at AA-A where nothing is added.
+    const code = lettersToBoxelCode(25, 25, 25, MAX_N1);
+    assert.ok(Number.isSafeInteger(code));
+    assert.deepEqual(boxelCodeToLetters(code), { l1: 25, l2: 25, l3: 25, n1: MAX_N1 });
+
+    // And that code is the largest one unpacking accepts, so the two stay inverses.
+    assert.throws(() => boxelCodeToLetters(code + 1), {
+        name: 'RangeError',
+        message: /Boxel code out of range/,
+    });
 });
 
 test('rejects a boxel code no packing could produce', () => {
