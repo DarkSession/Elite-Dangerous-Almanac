@@ -8,11 +8,14 @@
  * takes an address therefore accepts {@link SystemAddressInput} and funnels it
  * through {@link toSystemAddress}.
  *
- * This module deliberately has no dependencies, so importing it (or any of the
- * address entry points that use it) costs nothing but the conversion itself.
+ * This module depends only on the shared argument-preview helper, so importing it (or
+ * any of the address entry points that use it) costs nothing but conversion and bounded
+ * error reporting.
  *
  * @packageDocumentation
  */
+
+import { truncate } from '../internal/argument-guards.js';
 
 /**
  * A system address as a caller is likely to hold it.
@@ -86,7 +89,7 @@ export function toSystemAddress(address: SystemAddressInput): bigint {
     const id64 = tryToSystemAddress(address);
     if (id64 === null) {
         throw new TypeError(
-            `Not a usable system address (expected a bigint, a non-negative safe integer, or a decimal string): ${typeof address === 'string' ? JSON.stringify(address) : String(address)}`,
+            `Not a usable system address (expected a bigint, a non-negative safe integer, or a decimal string): ${truncate(typeof address === 'string' ? JSON.stringify(address) : address)}`,
         );
     }
     return id64;

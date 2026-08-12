@@ -10,6 +10,8 @@
  * @packageDocumentation
  */
 
+import { truncate } from '../internal/argument-guards.js';
+
 /** Number of mass codes (`a`–`h`) / distinct size classes. */
 export const MASS_CODE_COUNT = 8;
 
@@ -34,7 +36,7 @@ const CODE_A = 'a'.charCodeAt(0);
 export function massCodeToSizeClass(code: string): number {
     const sizeClass = code.toLowerCase().charCodeAt(0) - CODE_A;
     if (code.length !== 1 || sizeClass < 0 || sizeClass >= MASS_CODE_COUNT) {
-        throw new RangeError(`Invalid mass code: ${JSON.stringify(code)}`);
+        throw new RangeError(`Invalid mass code: ${truncate(JSON.stringify(code))}`);
     }
     return sizeClass;
 }
@@ -54,7 +56,7 @@ export function massCodeToSizeClass(code: string): number {
  */
 export function sizeClassToMassCode(sizeClass: number): string {
     if (!Number.isInteger(sizeClass) || sizeClass < 0 || sizeClass >= MASS_CODE_COUNT) {
-        throw new RangeError(`Invalid size class: ${sizeClass}`);
+        throw new RangeError(`Invalid size class: ${truncate(sizeClass)}`);
     }
     return String.fromCharCode(CODE_A + sizeClass);
 }

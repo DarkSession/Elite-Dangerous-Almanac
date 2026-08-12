@@ -34,7 +34,7 @@ import { findHandAuthoredRegionAt } from './hand-authored-regions.js';
 import { isPermitLockedRegionName } from './permit-locked-regions.js';
 import type { GalacticPosition } from './galactic-position.js';
 import { toSystemAddress, type SystemAddressInput } from './system-address-input.js';
-import { requireString } from '../internal/argument-guards.js';
+import { requireString, truncate } from '../internal/argument-guards.js';
 
 export type { SystemAddressInput } from './system-address-input.js';
 
@@ -217,7 +217,7 @@ export class ProceduralSystem {
             : (namedOrigin?.name ?? parts.regionName);
         const canonicalParts = { ...parts, regionName };
         const origin = resolveNamingRegionOrigin(regionName);
-        if (!origin) throw new RangeError(`Unknown sector: ${regionName}`);
+        if (!origin) throw new RangeError(`Unknown sector: ${truncate(regionName)}`);
         return new ProceduralSystem(canonicalParts, {
             id64: encodeSystemAddress(canonicalParts, origin),
             modId64: tryEncodeModAddress(canonicalParts),
@@ -325,7 +325,9 @@ export class ProceduralSystem {
         // Defensive: every name `sectorNameFromGridPosition` emits resolves, and an
         // override name is proven resolvable before it is applied, so no decoded
         // address reaches this. It stands so a future grid change fails loudly.
-        if (!origin) throw new RangeError(`Unknown sector: ${overridden.parts.regionName}`);
+        if (!origin) {
+            throw new RangeError(`Unknown sector: ${truncate(overridden.parts.regionName)}`);
+        }
         const normalAddress = id64 ?? encodeSystemAddress(overridden.parts, origin);
         const opts = {
             id64: normalAddress,

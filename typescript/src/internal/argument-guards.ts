@@ -39,7 +39,7 @@ export function describeValue(value: unknown): string {
         const preview = previewOf(value);
         return preview === null ? type : `${type} ${preview}`;
     }
-    return `${type} ${truncate(String(value))}`;
+    return `${type} ${truncate(value)}`;
 }
 
 /**
@@ -72,18 +72,25 @@ function previewOf(value: unknown): string | null {
 }
 
 /**
- * Shorten a rendering to {@link PREVIEW_LIMIT}, marking that it was shortened.
+ * Shorten a caller-controlled value to {@link PREVIEW_LIMIT}, marking that it was
+ * shortened.
  *
- * Exported for `ShipLoadout.empty`'s unknown-hull message, the one throw that quotes a
- * whole argument these guards have already checked, so that method does not bound an
- * oversized argument on one branch and reproduce it on the next. It is not a general rule
- * for the library's messages, which quote a caller's string in full — bounding those is
- * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/213, and each site has to
- * be checked for a value that is not a string before it can use this.
+ * Every exception or validation message that reproduces a caller-supplied argument or
+ * capture field uses this preview policy. The original value remains intact in any
+ * structured diagnostic field. `unknown` is intentional: reporting loosely typed JSON
+ * must not fail merely because a value did not have its declared TypeScript type.
  *
  * @internal
  */
-export function truncate(text: string): string {
+export function truncate(value: unknown): string {
+    let text: string;
+    try {
+        text = String(value);
+    } catch {
+        // A JavaScript caller can supply an object whose conversion hook throws. The
+        // diagnostic still has to report the original failure instead of replacing it.
+        text = '<unprintable>';
+    }
     if (text.length <= PREVIEW_LIMIT) return text;
     // Never end on the leading half of a surrogate pair the cut split in two.
     const cut = /[\uD800-\uDBFF]$/.test(text.slice(0, PREVIEW_LIMIT))

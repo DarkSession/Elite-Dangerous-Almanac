@@ -160,6 +160,36 @@ test('duplicate slot keys are rejected case-insensitively', () => {
     });
 });
 
+test('duplicate-slot diagnostics abbreviate the slot copied from a capture', () => {
+    const slot = 's'.repeat(20_000);
+    const duplicate = {
+        Ship: 'sidewinder',
+        Modules: [
+            { Slot: slot, Item: 'a' },
+            { Slot: slot, Item: 'b' },
+        ],
+    };
+    const diagnostic = inspectSlef(duplicate).diagnostics[0]!;
+    assert.ok(diagnostic.message.length < 200);
+    assert.match(diagnostic.message, /duplicate slot "s+…"$/);
+    assert.throws(
+        () => parseSlef(duplicate),
+        ({ message }: Error) => {
+            assert.ok(message.length < 200);
+            assert.match(message, /duplicate slot "s+…"$/);
+            return true;
+        },
+    );
+    assert.throws(
+        () => toSlef(duplicate, TEST_HEADER),
+        ({ message }: Error) => {
+            assert.ok(message.length < 200);
+            assert.match(message, /duplicate slot "s+…"$/);
+            return true;
+        },
+    );
+});
+
 test('parseSlef rejects envelopes and modules that violate its returned types', () => {
     assert.throws(
         () =>

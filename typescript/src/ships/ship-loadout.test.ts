@@ -231,6 +231,23 @@ test('fromLoadout rejects duplicate slot keys before its map can overwrite one',
             }),
         /duplicate slot "powerplant"/,
     );
+
+    const oversized = 'PowerPlant'.padEnd(20_000, 'x');
+    assert.throws(
+        () =>
+            ShipLoadout.fromLoadout({
+                Ship: 'sidewinder',
+                Modules: [
+                    { Slot: oversized, Item: 'a' },
+                    { Slot: oversized, Item: 'b' },
+                ],
+            }),
+        ({ message }: Error) => {
+            assert.ok(message.length < 200, `duplicate message not shortened: ${message.length}`);
+            assert.match(message, /duplicate slot "PowerPlantx+…"$/);
+            return true;
+        },
+    );
 });
 
 test('maxJumpRange reproduces the EDSY-exported MaxJumpRange', () => {
@@ -948,7 +965,7 @@ test('the Mk II Vessel Hangars fit only the three hulls that carry them', () => 
     assert.doesNotThrow(() => ShipLoadout.empty('PantherMkII').setModule('Slot06_Size5', bay));
     assert.throws(
         () => ShipLoadout.empty('Anaconda').setModule('Slot05_Size5', bay),
-        /restricted to Caspian Explorer \(Explorer_NX\), Panther Clipper MkII \(PantherMkII\), Type-11 Prospector \(LakonMiner\)/,
+        /restricted to Caspian Explorer \(Explorer_NX\), Panther Clipper MkII \(Panthe…/,
     );
 });
 
@@ -1129,7 +1146,36 @@ test('an unrecognised hull is reported by validation, not thrown at', () => {
         } as unknown as LoadoutEvent);
         const codes = build.validation.issues.map((issue) => issue.code);
         assert.ok(codes.includes('unknownHull'), `${String(ship).slice(0, 20)}: ${codes.join()}`);
+        assert.ok(
+            build.validation.issues.every((issue) => issue.message.length < 200),
+            'validation message not shortened',
+        );
     }
+});
+
+test('unknown hull and slot errors abbreviate their caller-controlled values', () => {
+    const longHull = `FutureHull${'h'.repeat(20_000)}`;
+    const unknown = ShipLoadout.fromLoadout({ Ship: longHull, Modules: [] });
+    for (const operation of [
+        () => unknown.modulesForSlot('PowerPlant'),
+        () => unknown.toLoadoutEvent({ moduleOrder: 'slots' }),
+    ]) {
+        assert.throws(operation, ({ message }: Error) => {
+            assert.ok(message.length < 200, `hull message not shortened: ${message.length}`);
+            assert.match(message, /FutureHullh+…/);
+            return true;
+        });
+    }
+
+    const longSlot = `FutureSlot${'s'.repeat(20_000)}`;
+    assert.throws(
+        () => ShipLoadout.empty('Anaconda').modulesForSlot(longSlot),
+        ({ message }: Error) => {
+            assert.ok(message.length < 200, `slot message not shortened: ${message.length}`);
+            assert.match(message, /FutureSlots+…"$/);
+            return true;
+        },
+    );
 });
 
 test('modulesForSlot lists only fitting modules', () => {
@@ -1271,6 +1317,21 @@ test('applyBlueprint validates the slot, blueprint and experimental', () => {
             }),
         /quality/,
     );
+
+    for (const operation of [
+        () => build.applyBlueprint('FrameShiftDrive', 'b'.repeat(20_000), { grade: 5 }),
+        () =>
+            build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+                grade: 5,
+                experimental: 'e'.repeat(20_000),
+            }),
+    ]) {
+        assert.throws(operation, ({ message }: Error) => {
+            assert.ok(message.length < 200, `engineering message not shortened: ${message.length}`);
+            assert.match(message, /…/);
+            return true;
+        });
+    }
 });
 
 test('weapon and armour recipes engineer the stats the catalogue carries', () => {

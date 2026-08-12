@@ -53,6 +53,11 @@ string, received number 42`. So does a missing one: `ProceduralSystem.fromName(u
 throws rather than answering `null`, because "you passed me nothing" is not "the naming
 scheme does not cover that system".
 
+Human-readable errors and validation messages abbreviate an oversized argument or
+capture field with an ellipsis. They identify the bad value without copying a whole
+payload into a log or UI; structured diagnostic fields such as `slot` and `symbol` keep
+the original value for programmatic handling.
+
 How completely that is enforced varies, which is worth knowing before you write a `catch`:
 
 - `ProceduralSystem.fromName`, `ShipLoadout.empty` and the module argument of

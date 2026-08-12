@@ -76,3 +76,23 @@ test('known non-outfitting entries do not have to name a hull mount', () => {
         false,
     );
 });
+
+test('validation abbreviates message previews without changing structured values', () => {
+    const longHull = `FutureShip${'x'.repeat(20_000)}`;
+    const longSlot = `FutureSlot${'y'.repeat(20_000)}`;
+    const longSymbol = `FutureModule${'z'.repeat(20_000)}`;
+    const result = validateLoadout({
+        shipSymbol: longHull,
+        slots: null,
+        modules: [
+            { slot: longSlot, symbol: longSymbol, known: false, fitError: null },
+            { slot: longSlot, symbol: longSymbol, known: true, fitError: 'q'.repeat(20_000) },
+        ],
+    });
+
+    assert.ok(result.issues.length >= 4);
+    assert.ok(result.issues.every((issue) => issue.message.length < 300));
+    assert.ok(result.issues.every((issue) => issue.message.includes('…')));
+    assert.ok(result.issues.some((issue) => issue.slot === longSlot));
+    assert.ok(result.issues.some((issue) => issue.symbol === longSymbol));
+});

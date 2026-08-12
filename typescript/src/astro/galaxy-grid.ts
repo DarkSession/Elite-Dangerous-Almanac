@@ -21,6 +21,7 @@
 
 import type { GalacticPosition } from './galactic-position.js';
 import { sectorNameFromGridPosition, type SectorGridPosition } from './sector-name.js';
+import { describeValue } from '../internal/argument-guards.js';
 
 /**
  * The galaxy's origin corner in galactic light-years — the point sector index
@@ -72,7 +73,7 @@ export function sectorGridPositionFromGalacticPosition(
     for (const v of [sector.sectorX, sector.sectorY, sector.sectorZ]) {
         if (!Number.isInteger(v) || v < 0 || v > 127) {
             throw new RangeError(
-                `Galactic position outside the sector grid: ${JSON.stringify(position)}`,
+                `Galactic position outside the sector grid: ${describeValue(position)}`,
             );
         }
     }
