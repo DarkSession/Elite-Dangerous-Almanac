@@ -70,6 +70,14 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
             skipped.push({ ...comment, reason: 'not attached to an executable expression' });
             continue;
         }
+        const context = contextSensitiveExpression(target.expression);
+        if (context !== null) {
+            skipped.push({
+                ...comment,
+                reason: `${context} expression needs its original context`,
+            });
+            continue;
+        }
         if (ambient) {
             skipped.push({ ...comment, reason: 'snippet needs an ambient runtime value' });
             continue;
@@ -213,6 +221,30 @@ function precedingTarget(targets, code, commentStart) {
         if (best === null || target.statement.end > best.statement.end) best = target;
     }
     return best;
+}
+
+function contextSensitiveExpression(expression) {
+    let context = null;
+
+    function visit(node) {
+        if (context !== null) return;
+        // An await/yield inside its own nested function keeps that function's context
+        // when the outer expression is wrapped. Only one belonging to the expression we
+        // are moving into a plain arrow would become invalid.
+        if (node !== expression && ts.isFunctionLike(node)) return;
+        if (node.kind === ts.SyntaxKind.AwaitExpression) {
+            context = 'await';
+            return;
+        }
+        if (node.kind === ts.SyntaxKind.YieldExpression) {
+            context = 'yield';
+            return;
+        }
+        ts.forEachChild(node, visit);
+    }
+
+    if (!ts.isFunctionLike(expression)) visit(expression);
+    return context;
 }
 
 function literalPrefix(text) {
@@ -365,8 +397,13 @@ function decodeLiteralNode(node) {
         return /(?:\.\.\.|…)/.test(node.text) ? null : { kind: 'string', value: node.text };
     }
     if (ts.isNumericLiteral(node)) {
-        const value = Number(node.text.replaceAll('_', ''));
-        return Number.isFinite(value) ? { kind: 'number-exact', value } : null;
+        const text = node.text.replaceAll('_', '');
+        const value = Number(text);
+        if (!Number.isFinite(value)) return null;
+        const decimalPlaces = decimalPlacesIn(text);
+        return decimalPlaces === null
+            ? { kind: 'number-exact', value }
+            : { kind: 'number-rounded', value, text, decimalPlaces };
     }
     if (ts.isBigIntLiteral(node)) {
         return { kind: 'bigint', value: node.text.replaceAll('_', '').slice(0, -1) };
@@ -390,6 +427,14 @@ function decodeLiteralNode(node) {
             return {
                 kind: 'number-exact',
                 value: node.operator === ts.SyntaxKind.MinusToken ? -decoded.value : decoded.value,
+            };
+        }
+        if (decoded?.kind === 'number-rounded') {
+            const negative = node.operator === ts.SyntaxKind.MinusToken;
+            return {
+                ...decoded,
+                value: negative ? -decoded.value : decoded.value,
+                text: `${negative ? '-' : '+'}${decoded.text}`,
             };
         }
         if (decoded?.kind === 'bigint') {

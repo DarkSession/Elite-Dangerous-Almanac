@@ -67,6 +67,20 @@ test('instruments a variable initializer and rejects a claim without an executab
     assert.equal(result.skipped[0]?.reason, 'not attached to an executable expression');
 });
 
+test('keeps await and yield claims in their original context instead of emitting invalid arrows', () => {
+    const awaited = transformExampleClaims('await Promise.resolve(3); // -> 3');
+    const yielded = transformExampleClaims(
+        ['function* values() {', '    yield 3; // -> 3', '}'].join('\n'),
+    );
+
+    assert.equal(awaited.claims.length, 0);
+    assert.equal(awaited.skipped[0]?.reason, 'await expression needs its original context');
+    assert.equal(awaited.code, 'await Promise.resolve(3); // -> 3');
+    assert.equal(yielded.claims.length, 0);
+    assert.equal(yielded.skipped[0]?.reason, 'yield expression needs its original context');
+    assert.doesNotMatch(yielded.code, /__almanacExampleClaim/);
+});
+
 test('parses exact primitive and structured values', () => {
     for (const [text, actual] of [
         [`'Pleiades'`, 'Pleiades'],
@@ -97,6 +111,25 @@ test('rounds finite decimals to documented precision and preserves exact integer
     assert.deepEqual(compareExampleValue(49.34939, matchingSpec('approximately 49.3494')), {
         pass: true,
     });
+});
+
+test('applies decimal rounding recursively while keeping nested integers exact', () => {
+    const spec = matchingSpec(`[{ ratio: 0.2, nested: { value: -1.25, count: 3 } }]`);
+
+    assert.deepEqual(
+        compareExampleValue(
+            [{ ratio: 0.19999999999999996, nested: { value: -1.249, count: 3 } }],
+            spec,
+        ),
+        { pass: true },
+    );
+    assert.match(
+        compareExampleValue(
+            [{ ratio: 0.19999999999999996, nested: { value: -1.249, count: 3.1 } }],
+            spec,
+        ).message,
+        /value\[0\]\.nested\.count: expected 3, received 3\.1/,
+    );
 });
 
 test('treats an ellipsis after a decimal as a prefix assertion', () => {

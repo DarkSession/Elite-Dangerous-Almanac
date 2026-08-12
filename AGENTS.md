@@ -216,10 +216,12 @@ All TypeScript commands run from `typescript/`:
 `check:examples` reads public `@example` fences, the guide pages and both READMEs. A
 trailing `expression; // -> value` is executed when the snippet needs no ambient
 `declare` input: literals compare exactly, a finite decimal is rounded to the number of
-places shown, and `0.667…` asserts a decimal prefix. Prose and abbreviated values remain
-compile-only and are counted against a ratchet, so a claim cannot silently stop running.
-Keep every fence self-contained; use `declare const input: Type` only for a value the
-reader supplies.
+places shown recursively through arrays and objects, and `0.667…` asserts a decimal
+prefix. Every executable fence runs in a fresh, time-limited Node process so examples
+cannot share global, intrinsic or imported-module state. Prose, abbreviated values and
+context-sensitive `await` or `yield` expressions remain compile-only and are counted
+against a ratchet, so a claim cannot silently stop running. Keep every fence
+self-contained; use `declare const input: Type` only for a value the reader supplies.
 
 Run one test file with the same loaders the suite uses — plain `node --test` cannot resolve `.ts` or `.jsonc`:
 

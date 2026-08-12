@@ -41,6 +41,7 @@ import { spawnSync } from 'node:child_process';
 import ts from 'typescript';
 
 import { transformExampleClaims } from './example-claims.mjs';
+import { runExampleEntries } from './example-runtime.mjs';
 
 const packageRoot = fileURLToPath(new URL('../', import.meta.url));
 const repositoryRoot = resolve(packageRoot, '..');
@@ -445,38 +446,12 @@ async function main() {
     if (runtimeManifest.length > 0) {
         const manifest = join(scratch, 'runtime-manifest.json');
         await writeFile(manifest, JSON.stringify(runtimeManifest));
-        const runner = join(packageRoot, 'scripts', 'run-example-claims.mjs');
-        const registerJsonc = join(packageRoot, 'scripts', 'register-jsonc.mjs');
-        const result = spawnSync(
-            process.execPath,
-            ['--import', 'tsx', '--import', registerJsonc, runner, manifest],
-            {
-                cwd: packageRoot,
-                encoding: 'utf8',
-                timeout: 60_000,
-                maxBuffer: 10 * 1024 * 1024,
-            },
-        );
-        const output = `${result.stdout}${result.stderr}`;
-        if (result.error !== undefined || result.status !== 0) {
-            console.error('check-examples: the runtime claim process failed:\n');
-            console.error(result.error?.message ?? (output.trim() || `(exit ${result.status})`));
-            return 1;
-        }
-        const marker = 'ALMANAC_EXAMPLE_RESULTS ';
-        const resultStart = result.stdout.lastIndexOf(marker);
-        if (resultStart === -1) {
-            console.error('check-examples: the runtime claim process returned no result:\n');
-            console.error(output.trim() || '(no output)');
-            return 1;
-        }
-        const encoded = result.stdout.slice(resultStart + marker.length).split(/\r?\n/, 1)[0];
-        try {
-            runtimeResult = JSON.parse(encoded);
-        } catch (error) {
-            console.error(`check-examples: could not parse runtime results: ${error.message}`);
-            return 1;
-        }
+        runtimeResult = runExampleEntries(runtimeManifest, {
+            manifestPath: manifest,
+            runner: join(packageRoot, 'scripts', 'run-example-claims.mjs'),
+            cwd: packageRoot,
+            imports: ['tsx', join(packageRoot, 'scripts', 'register-jsonc.mjs')],
+        });
         for (const problem of runtimeResult.failures) {
             failures.set(problem.name, [
                 ...(failures.get(problem.name) ?? []),
