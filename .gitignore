@@ -6,3 +6,4 @@ dist/
 # `npm run build`), so npm can pack them. Edit the root files, not the copies.
 typescript/LICENSE
 typescript/THIRD_PARTY_NOTICES.md
+typescript/PROVENANCE/
