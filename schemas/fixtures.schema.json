@@ -2012,7 +2012,7 @@
                       "antiXeno": { "type": "number" },
                       "explosive": { "type": "integer" },
                       "kinetic": { "type": "number" },
-                      "thermal": { "type": "integer" },
+                      "thermal": { "type": "number" },
                       "unclassified": {
                         "type": "array",
                         "items": { "type": "integer" }

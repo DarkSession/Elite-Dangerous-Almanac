@@ -551,10 +551,10 @@
       },
       {
         "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
-        "baseDamage": 35,
-        "effectiveDamage": 52.5,
-        "baseComponents": { "thermal": 35, "antiXeno": 35 },
-        "expectedComponents": { "thermal": 52.5, "antiXeno": 52.5 }
+        "baseDamage": 38.5,
+        "effectiveDamage": 57.75,
+        "baseComponents": { "thermal": 38.5, "antiXeno": 38.5 },
+        "expectedComponents": { "thermal": 57.75, "antiXeno": 57.75 }
       },
       {
         "symbol": "Hpt_Guardian_PlasmaLauncher_Fixed_Medium",
