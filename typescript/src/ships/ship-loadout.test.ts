@@ -1055,11 +1055,81 @@ test('a restricted mount labels an odd key without scanning it quadratically', (
 
 test('setModule throws a clear error when handed an undefined module', () => {
     const conda = ShipLoadout.empty('Anaconda');
-    // The classic `getModuleBySymbol('typo', CAT)!` miss.
+    // The classic `getModuleBySymbol('typo', CAT)!` miss. Only a nullish module is
+    // reported as one, so no other value gets sent looking at the lookup.
+    for (const missing of [undefined, null]) {
+        assert.throws(
+            () => conda.setModule('FrameShiftDrive', missing as unknown as OutfittingModule),
+            /no module supplied/,
+        );
+    }
+});
+
+test('setModule names a module argument that is not an outfitting module', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    // A journal fragment, a bare symbol or a number, rather than a catalogue record:
+    // every fit rule reads `symbol`, so the value is named here instead. The falsy
+    // values belong here too — none of them is a lookup that returned nothing.
+    for (const bad of [
+        {},
+        42,
+        'Int_Hyperdrive_Size6_Class5',
+        { Item: 'int_hyperdrive_size6_class5' },
+        0,
+        '',
+        false,
+        Number.NaN,
+    ]) {
+        assert.throws(
+            () => conda.setModule('FrameShiftDrive', bad as unknown as OutfittingModule),
+            {
+                name: 'TypeError',
+                message:
+                    /^ShipLoadout\.setModule: module for "FrameShiftDrive" must be an outfitting module, received /,
+            },
+        );
+    }
     assert.throws(
-        () => conda.setModule('FrameShiftDrive', undefined as unknown as OutfittingModule),
-        /no module supplied/,
+        () => conda.setModule('FrameShiftDrive', {} as unknown as OutfittingModule),
+        /received object \{\}$/,
     );
+});
+
+test('empty names a non-string hull argument instead of failing inside the lookup', () => {
+    for (const bad of [42, null, undefined, { Ship: 'Anaconda' }]) {
+        assert.throws(() => ShipLoadout.empty(bad as unknown as string), {
+            name: 'TypeError',
+            message: /^ShipLoadout\.empty: shipSymbol must be a string, received /,
+        });
+    }
+    // A string that is not a hull still reports the layout miss, not a type error.
+    assert.throws(() => ShipLoadout.empty('NotAShip'), /no slot layout for hull "NotAShip"/);
+
+    // …and an oversized one is identified rather than quoted back in full: a caller who
+    // passes a whole payload where a symbol belongs gets a message they can read.
+    assert.throws(
+        () => ShipLoadout.empty('x'.repeat(20_000)),
+        ({ message }: Error) => {
+            assert.ok(message.length < 200, `hull message not shortened: ${message.length}`);
+            assert.match(message, /no slot layout for hull "x+…"$/);
+            return true;
+        },
+    );
+});
+
+test('an unrecognised hull is reported by validation, not thrown at', () => {
+    // `validation` is the reporting path for an import, and stays one: an oversized or
+    // absent `Ship` is a hull the catalogue does not know, not a failure on the way to
+    // saying so. (A `Ship` of some other type still fails inside the symbol lookup —
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201.)
+    for (const ship of ['x'.repeat(20_000), null]) {
+        const build = ShipLoadout.fromLoadout({
+            Ship: ship,
+            Modules: [],
+        } as unknown as LoadoutEvent);
+        const codes = build.validation.issues.map((issue) => issue.code);
+        assert.ok(codes.includes('unknownHull'), `${String(ship).slice(0, 20)}: ${codes.join()}`);
+    }
 });
 
 test('modulesForSlot lists only fitting modules', () => {

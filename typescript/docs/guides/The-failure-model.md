@@ -45,6 +45,31 @@ number outside its documented journal range — a module `Priority` of 5, a `Hea
 violation: `parseSlef` and `ShipLoadout.fromSlef` throw `TypeError` naming the field, and
 `inspectSlef` records it as that entry's diagnostic.
 
+**A wrong-typed argument is malformed input**, not a miss. Passing a number where a
+symbol belongs is the same kind of failure as passing an unusable address, and an entry
+point that guards it names the parameter and what arrived —
+`ShipLoadout.empty(42)` throws `TypeError: ShipLoadout.empty: shipSymbol must be a
+string, received number 42`. So does a missing one: `ProceduralSystem.fromName(undefined)`
+throws rather than answering `null`, because "you passed me nothing" is not "the naming
+scheme does not cover that system".
+
+How completely that is enforced varies, which is worth knowing before you write a `catch`:
+
+- `ProceduralSystem.fromName`, `ShipLoadout.empty` and the module argument of
+  `ShipLoadout.setModule` name the parameter and the value. `toSystemAddress` prints the
+  value it rejected. `parseSlef` and `ShipLoadout.fromSlef` name the offending **field**
+  instead (`parseSlef: entries[0].data.Modules[0].Priority must be an integer from 0 to
+  4`) — the more useful half when the argument is a whole export, and the same text
+  `inspectSlef` reports as that entry's diagnostic.
+- At the entry points
+  [issue 201](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201) lists, a
+  wrong type still throws `TypeError` — but the message is the internal property access
+  that failed rather than one naming your value.
+- `parseSystemName`, `canonicalizeSystemName` and `isProceduralSystemName` answer `null`
+  and `false` for a nullish name instead of throwing. The low-level parsers tolerate what
+  the factory above them rejects, so reach for `ProceduralSystem.fromName` when you want a
+  missing name to be loud.
+
 **`null` is not an error.** A lookup that finds nothing has answered you. Journals
 outlive catalogues — a game update ships modules before this package knows about them —
 so `null` from a symbol lookup usually means "newer than the catalogue", and a consumer
