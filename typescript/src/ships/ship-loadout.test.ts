@@ -1104,6 +1104,17 @@ test('empty names a non-string hull argument instead of failing inside the looku
     }
     // A string that is not a hull still reports the layout miss, not a type error.
     assert.throws(() => ShipLoadout.empty('NotAShip'), /no slot layout for hull "NotAShip"/);
+
+    // …and an oversized one is identified rather than quoted back in full: a caller who
+    // passes a whole payload where a symbol belongs gets a message they can read.
+    assert.throws(
+        () => ShipLoadout.empty('x'.repeat(20_000)),
+        ({ message }: Error) => {
+            assert.ok(message.length < 200, `hull message not shortened: ${message.length}`);
+            assert.match(message, /no slot layout for hull "x+…"$/);
+            return true;
+        },
+    );
 });
 
 test('modulesForSlot lists only fitting modules', () => {

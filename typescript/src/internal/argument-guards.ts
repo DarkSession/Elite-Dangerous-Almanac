@@ -70,8 +70,16 @@ function previewOf(value: unknown): string | null {
     return truncate(json);
 }
 
-/** Shorten a rendering to {@link PREVIEW_LIMIT}, marking that it was shortened. */
-function truncate(text: string): string {
+/**
+ * Shorten a rendering to {@link PREVIEW_LIMIT}, marking that it was shortened.
+ *
+ * Exported for the throws that quote a caller's own string rather than describing it —
+ * `ShipLoadout.empty`'s unknown-hull message, say — so an oversized argument is bounded
+ * there on the same terms as it is here.
+ *
+ * @internal
+ */
+export function truncate(text: string): string {
     if (text.length <= PREVIEW_LIMIT) return text;
     // Never end on the leading half of a surrogate pair the cut split in two.
     const cut = /[\uD800-\uDBFF]$/.test(text.slice(0, PREVIEW_LIMIT))

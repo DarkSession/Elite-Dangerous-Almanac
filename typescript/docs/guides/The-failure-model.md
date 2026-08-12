@@ -51,12 +51,21 @@ point that guards it names the parameter and what arrived —
 `ShipLoadout.empty(42)` throws `TypeError: ShipLoadout.empty: shipSymbol must be a
 string, received number 42`. So does a missing one: `ProceduralSystem.fromName(undefined)`
 throws rather than answering `null`, because "you passed me nothing" is not "the naming
-scheme does not cover that system". Three entry points enforce this today —
-`ProceduralSystem.fromName`, `ShipLoadout.empty`, and the module argument of
-`ShipLoadout.setModule`. Everywhere else the class is still `TypeError`, but the message
-is the internal property access that failed rather than one naming your value; see
-[issue 201](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201) for which
-entry points those are.
+scheme does not cover that system".
+
+How completely that is enforced varies, which is worth knowing before you write a `catch`:
+
+- `ProceduralSystem.fromName`, `ShipLoadout.empty` and the module argument of
+  `ShipLoadout.setModule` name the parameter and the value. `toSystemAddress` and the SLEF
+  entry points name the value in their own words.
+- At the entry points
+  [issue 201](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201) lists, a
+  wrong type still throws `TypeError` — but the message is the internal property access
+  that failed rather than one naming your value.
+- `parseSystemName`, `canonicalizeSystemName` and `isProceduralSystemName` answer `null`
+  and `false` for a nullish name instead of throwing. The low-level parsers tolerate what
+  the factory above them rejects, so reach for `ProceduralSystem.fromName` when you want a
+  missing name to be loud.
 
 **`null` is not an error.** A lookup that finds nothing has answered you. Journals
 outlive catalogues — a game update ships modules before this package knows about them —

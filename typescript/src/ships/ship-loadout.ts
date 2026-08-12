@@ -133,7 +133,7 @@ import {
 import type { SourcePurchaseRecord } from './source-purchase.js';
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { normalizeKey } from '../internal/registry-index.js';
-import { describeValue, requireString } from '../internal/argument-guards.js';
+import { describeValue, requireString, truncate } from '../internal/argument-guards.js';
 import { completeResult } from './internal/calculation-result.js';
 import {
     calculateCargoCapacity,
@@ -480,7 +480,11 @@ export class ShipLoadout {
     static empty(shipSymbol: string): ShipLoadout {
         const layout = getShipSlots(requireString(shipSymbol, 'ShipLoadout.empty: shipSymbol'));
         if (!layout) {
-            throw new TypeError(`ShipLoadout.empty: no slot layout for hull "${shipSymbol}"`);
+            // Quoted through `truncate` because the symbol is unvalidated caller input: a
+            // whole payload passed by mistake is identified, not reproduced.
+            throw new TypeError(
+                `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
+            );
         }
         return new ShipLoadout(layout.symbol, new Map(), {});
     }
