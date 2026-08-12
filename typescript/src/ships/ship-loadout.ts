@@ -491,24 +491,17 @@ export class ShipLoadout {
      * modifiers without naming the recipe.
      */
     static fromLoadout(event: LoadoutEvent): ShipLoadout {
-        // The event's own shape, checked before the walk in `normalizeLoadoutEvent`
-        // checks each module's: a caller who handed over the wrong thing entirely learns
-        // that here instead of from `event.Modules is not iterable`. Only the structure
-        // and the fields that name things are checked, on this path and in that walk;
-        // every value in them is trusted, and `fromSlef` is the entry point that reports
-        // a bad one.
+        // Is it an object at all? Everything past that is `normalizeLoadoutEvent`'s,
+        // which takes one reading of every field before checking any of it — a caller's
+        // accessor cannot answer the check and the use differently. Only the structure
+        // and the fields that name things are checked there; every value in them is
+        // trusted, and `fromSlef` is the entry point that reports a bad one.
         //
         // An absent `Ship` is deliberately not one of these: it is a hull the catalogue
         // cannot name, which `validation` reports as `unknownHull` rather than throwing.
         if (event === null || typeof event !== 'object') {
             throw new TypeError(
                 `ShipLoadout.fromLoadout: event must be a Loadout event, received ${describeValue(event)}`,
-            );
-        }
-        requireStringIfPresent(event.Ship, 'ShipLoadout.fromLoadout: event.Ship');
-        if (!Array.isArray(event.Modules)) {
-            throw new TypeError(
-                `ShipLoadout.fromLoadout: event.Modules must be an array, received ${describeValue(event.Modules)}`,
             );
         }
         const imported = normalizeLoadoutEvent(event);

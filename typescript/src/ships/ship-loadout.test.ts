@@ -3545,6 +3545,84 @@ test('fromLoadout names the structure it needs instead of failing inside the wal
             { name: 'TypeError', message: expected },
         );
     }
+    // A journal event is usually `JSON.parse` output, but nothing says it has to be.
+    // Every field is read once, before any of it is checked, so an accessor cannot pass
+    // the check on one read and poison the build on the next — at any depth.
+    const vary = <T>(...values: readonly T[]) => {
+        let reads = 0;
+        return () => values[Math.min(reads++, values.length - 1)]!;
+    };
+    const fsd = () => ({ Slot: 'FrameShiftDrive', Item: 'Int_Hyperdrive_Size6_Class5' });
+    const swapped: readonly (readonly [string, () => unknown])[] = [
+        [
+            'event.Modules',
+            () => ({
+                Ship: 'Anaconda',
+                get Modules() {
+                    return swapModules();
+                },
+            }),
+        ],
+        [
+            'event.Ship',
+            () => ({
+                get Ship() {
+                    return swapShip();
+                },
+                Modules: [fsd()],
+            }),
+        ],
+        [
+            'module.Slot',
+            () => ({
+                Ship: 'Anaconda',
+                Modules: [
+                    {
+                        get Slot() {
+                            return swapSlot();
+                        },
+                        Item: fsd().Item,
+                    },
+                ],
+            }),
+        ],
+        [
+            'module.Engineering.Modifiers[].Label',
+            () => ({
+                Ship: 'Anaconda',
+                Modules: [
+                    {
+                        ...fsd(),
+                        Engineering: {
+                            BlueprintName: 'FSD_LongRange',
+                            Modifiers: [
+                                {
+                                    get Label() {
+                                        return swapLabel();
+                                    },
+                                    Value: 1,
+                                },
+                            ],
+                        },
+                    },
+                ],
+            }),
+        ],
+    ];
+    const swapModules = vary<unknown>([fsd()], 42);
+    const swapShip = vary<unknown>('Anaconda', 42);
+    const swapSlot = vary<unknown>('FrameShiftDrive', 42);
+    const swapLabel = vary<unknown>('FSDOptimalMass', 42);
+    for (const [field, make] of swapped) {
+        const swappedBuild = ShipLoadout.fromLoadout(make() as LoadoutEvent);
+        // The build survives being read, which is what the single reading buys: a second
+        // reading's `42` would surface as an internal message from whichever reader
+        // reached it, a step away from the call that accepted it.
+        assert.ok(swappedBuild.fittedModuleAt('FrameShiftDrive'), field);
+        assert.ok(swappedBuild.validation, field);
+        assert.ok(swappedBuild.toLoadoutEvent(), field);
+    }
+
     // A relay that writes `null` for an absent block is named, not dereferenced: the
     // clone downstream tests only for `undefined`.
     for (const engineering of [null, 42]) {
