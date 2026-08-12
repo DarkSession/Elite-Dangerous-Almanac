@@ -58,7 +58,9 @@ export default defineConfig({
     // esbuild's TypeScript/JSONC map; without it, reformatted code would ship with the
     // stale pre-formatting line and column positions. Terser's unmapped fallback segments
     // name tsup's absolute output path, so the post-build source-map pass removes those
-    // generated sources and leaves only stable original-source mappings.
+    // generated sources. That same pass drops mappings into inlined JSONC literals:
+    // they cannot produce consumer stack frames and otherwise dominate map size. The
+    // remaining mappings point only at stable TypeScript sources.
     minify: 'terser',
     terserOptions: {
         compress: false,
@@ -69,7 +71,7 @@ export default defineConfig({
         sourceMap: {},
     },
     // Publish external maps deliberately: Node, browser devtools and downstream
-    // bundlers can trace failures back to the TypeScript or JSONC source path instead
+    // bundlers can trace failures back to the TypeScript source path instead
     // of stopping at generated JavaScript. Omitting sourcesContent keeps that debugging
     // value without duplicating the source and large catalogues in the package.
     sourcemap: true,

@@ -344,10 +344,7 @@ test('codex-region geometry stays on its explicit lookup subpath', async () => {
             JSON.parse(await readFile(new URL(`${file.pathname}.map`, 'file:'), 'utf8')),
         ),
     );
-    for (const suffix of [
-        'src/astro/codex-region-lookup.ts',
-        'data/astro/galactic-region-cells.jsonc',
-    ]) {
+    for (const suffix of ['src/astro/codex-region-lookup.ts']) {
         const map = maps.find((candidate) =>
             candidate.sources.some((source) => source.endsWith(suffix)),
         );
@@ -672,14 +669,17 @@ test('every JavaScript artifact references a source map without embedded sources
     assert.equal(mapFiles.length, javascriptFiles.length);
 
     const mapUrls = new Set(mapFiles.map((file) => file.href));
+    let sourceMapBytes = 0;
     for (const javascriptFile of javascriptFiles) {
         const mapFile = new URL(`${javascriptFile.href}.map`);
         assert.ok(mapUrls.has(mapFile.href), `${javascriptFile.pathname} has no source map`);
 
-        const [javascript, map] = await Promise.all([
+        const [javascript, mapText] = await Promise.all([
             readFile(javascriptFile, 'utf8'),
-            readFile(mapFile, 'utf8').then(JSON.parse),
+            readFile(mapFile, 'utf8'),
         ]);
+        sourceMapBytes += Buffer.byteLength(mapText);
+        const map = JSON.parse(mapText);
         const mapName = mapFile.pathname.split('/').at(-1);
         assert.deepEqual(
             javascript.match(/\/\/# sourceMappingURL=[^\r\n]*/g),
@@ -705,34 +705,69 @@ test('every JavaScript artifact references a source map without embedded sources
             );
             assert.match(
                 source.replaceAll('\\', '/'),
-                /(?:^|\/)(?:src|data)\/.+\.(?:ts|jsonc)$/,
+                /(?:^|\/)src\/.+\.ts$/,
                 `${mapFile.pathname} maps generated or non-portable source ${source}`,
             );
         }
+        const decoded = decode(map.mappings);
+        const sourceIndexes = new Set();
+        const nameIndexes = new Set();
+        for (const line of decoded) {
+            for (const [index, segment] of line.entries()) {
+                assert.ok(
+                    segment.length === 1 || segment.length === 4 || segment.length === 5,
+                    `${mapFile.pathname} contains an invalid mapping segment`,
+                );
+                if (segment.length === 1) {
+                    assert.notEqual(
+                        line[index - 1]?.length,
+                        1,
+                        `${mapFile.pathname} contains adjacent unmapped segments`,
+                    );
+                    continue;
+                }
+                assert.ok(
+                    segment[1] >= 0 && segment[1] < map.sources.length,
+                    `${mapFile.pathname} references missing source ${segment[1]}`,
+                );
+                sourceIndexes.add(segment[1]);
+                if (segment.length === 5) {
+                    assert.ok(
+                        segment[4] >= 0 && segment[4] < map.names.length,
+                        `${mapFile.pathname} references missing name ${segment[4]}`,
+                    );
+                    nameIndexes.add(segment[4]);
+                }
+            }
+        }
         assert.ok(
-            decode(map.mappings).length <= javascript.split('\n').length,
+            decoded.length <= javascript.split('\n').length,
             `${mapFile.pathname} contains mappings for lines absent from its JavaScript`,
         );
         if (map.sources.length > 0) {
             assert.ok(map.mappings.length > 0, `${mapFile.pathname} has no mappings`);
-            assert.ok(
-                referencedSourceIndexes(map).size > 0,
-                `${mapFile.pathname} maps no original source`,
+            assert.equal(
+                sourceIndexes.size,
+                map.sources.length,
+                `${mapFile.pathname} retains an unused source`,
             );
         }
+        assert.equal(
+            nameIndexes.size,
+            map.names.length,
+            `${mapFile.pathname} retains an unused name`,
+        );
     }
+    assert.ok(
+        sourceMapBytes < 256 * 1024,
+        `TypeScript source maps are ${sourceMapBytes} bytes; expected less than 256 KiB`,
+    );
 });
 
-test('engineering cost source maps retain TypeScript and JSONC source paths', async () => {
+test('engineering cost source maps retain their TypeScript source paths', async () => {
     for (const [entry, expected] of [
-        ['blueprint-costs', ['src/ships/blueprint-costs.ts', 'data/ships/blueprint-costs.jsonc']],
-        [
-            'experimental-effect-costs',
-            [
-                'src/ships/experimental-effect-costs.ts',
-                'data/ships/experimental-effect-costs.jsonc',
-            ],
-        ],
+        ['blueprint-costs', ['src/ships/blueprint-costs.ts']],
+        ['experimental-effect-costs', ['src/ships/experimental-effect-costs.ts']],
     ]) {
         const files = await reachableJsFiles(new URL(`./dist/ships/${entry}.js`, import.meta.url));
         const maps = await Promise.all(
