@@ -80,7 +80,8 @@ export interface PreEngineeredVariant {
     /** The base module's display name, e.g. `"Rail Gun"`. */
     readonly name: string;
     /**
-     * The blueprint baked in at purchase, e.g. `"RailGun_LongShot"`. Joins to `BLUEPRINTS`.
+     * The blueprint recipe's Frontier `fdname`, e.g. `"RailGun_LongShot"`. Joins to
+     * `BLUEPRINTS`.
      *
      * @remarks
      * On a reward variant this **identifies** the article rather than reproducing it.
@@ -96,8 +97,9 @@ export interface PreEngineeredVariant {
     /** The blueprint grade already applied (1–5). */
     readonly grade: number;
     /**
-     * The experimental effect already applied, e.g. `"special_feedback_cascade_cooled"`.
-     * Joins to `EXPERIMENTAL_EFFECTS`. Absent when the variant carries none.
+     * The experimental effect's Frontier `fdname`, e.g.
+     * `"special_feedback_cascade_cooled"`. Joins to `EXPERIMENTAL_EFFECTS`. Absent when
+     * the variant carries none.
      */
     readonly experimental?: string;
     /** Where the variant comes from. */
@@ -180,7 +182,7 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
  * rack — so this returns an array. Matching is case-insensitive and trims whitespace,
  * and a miss is an empty array rather than `null`.
  *
- * @param blueprint - A blueprint id, e.g. `"RailGun_LongShot"`.
+ * @param fdname - A blueprint recipe `fdname`, e.g. `"RailGun_LongShot"`.
  * @returns Every variant sold with that blueprint, in catalogue order.
  *
  * @example
@@ -196,8 +198,8 @@ export function getPreEngineeredVariants(symbol: string): readonly PreEngineered
  * getPreEngineeredByBlueprint('NoSuchBlueprint'); // -> []
  * ```
  */
-export function getPreEngineeredByBlueprint(blueprint: string): readonly PreEngineeredVariant[] {
-    return filterByKey(PRE_ENGINEERED_MODULES, 'blueprint', blueprint);
+export function getPreEngineeredByBlueprint(fdname: string): readonly PreEngineeredVariant[] {
+    return filterByKey(PRE_ENGINEERED_MODULES, 'blueprint', fdname);
 }
 
 /**

@@ -947,7 +947,7 @@ export class ShipLoadout {
      *
      * @param slotKey - The slot whose module to engineer, matched case-insensitively
      * (journal spelling).
-     * @param blueprintName - The blueprint's Frontier `fdname`, e.g. `"FSD_LongRange"`.
+     * @param fdname - The blueprint recipe's Frontier `fdname`, e.g. `"FSD_LongRange"`.
      * @param options - {@link ApplyBlueprintOptions}: `grade` (1–5), optional `quality`
      * (0–1, default 1), and optional `experimental` effect `fdname`.
      * @returns `this`, for chaining.
@@ -981,7 +981,7 @@ export class ShipLoadout {
      * build.maxJumpRange(); // now reflects the engineered optimal mass
      * ```
      */
-    applyBlueprint(slotKey: string, blueprintName: string, options: ApplyBlueprintOptions): this {
+    applyBlueprint(slotKey: string, fdname: string, options: ApplyBlueprintOptions): this {
         const module = this.#fittedModuleFor(slotKey);
         if (!module) {
             throw new RangeError(`ShipLoadout.applyBlueprint: slot "${slotKey}" is empty`);
@@ -994,13 +994,10 @@ export class ShipLoadout {
         // writes `Sensor_LongRange` on a utility scanner and on a sensor suite, and the two
         // roll different stats. Resolve before reading the grade, so the numbers folded are
         // the ones this module rolls rather than the other family's.
-        const recipe = resolveBlueprintForModule(module.Item, blueprintName);
+        const recipe = resolveBlueprintForModule(module.Item, fdname);
         // Name both spellings once they differ, so an error about the recipe this module
         // rolls cannot read as an error about the id the caller passed.
-        const named =
-            recipe === blueprintName
-                ? `"${blueprintName}"`
-                : `"${blueprintName}" (${recipe} on this module)`;
+        const named = recipe === fdname ? `"${fdname}"` : `"${fdname}" (${recipe} on this module)`;
         // A decorative transformation reaches this method as a real id that names no
         // recipe: the game writes it in the same field, but it has no grade, costs nothing
         // and no engineer applies one. Say that, rather than letting the grade lookup below
@@ -1047,7 +1044,7 @@ export class ShipLoadout {
         // catalogue answers `getBlueprintsForModule` and this gate. A module with no menu
         // is not necessarily unengineerable: some are sold already carrying a recipe, and
         // `blueprintAvailableFor` knows that, so ask it before blaming the module.
-        if (!blueprintAvailableFor(module.Item, blueprintName)) {
+        if (!blueprintAvailableFor(module.Item, fdname)) {
             throw new TypeError(
                 isEngineerable(module.Item)
                     ? `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered blueprint ${named}; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
@@ -1089,7 +1086,7 @@ export class ShipLoadout {
             }
         }
         const engineering: ModuleEngineering = {
-            BlueprintName: blueprintName,
+            BlueprintName: fdname,
             Level: options.grade,
             Quality: quality,
             ...(options.experimental !== undefined
