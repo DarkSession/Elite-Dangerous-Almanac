@@ -266,7 +266,7 @@ export function stackArmourResistance(
  * import { systemsResistance } from '@elite-dangerous-almanac/core/ships/resistances';
  *
  * systemsResistance(0); // -> 0
- * systemsResistance(2); // -> 0.333…
+ * systemsResistance(2); // -> 0.333
  * systemsResistance(4); // -> 0.6
  * ```
  */

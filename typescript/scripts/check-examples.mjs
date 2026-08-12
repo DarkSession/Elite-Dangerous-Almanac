@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Type-check every documented code snippet: each `@example` in the public source, and
- * each fenced block in the Markdown pages published to the wiki.
+ * Check every documented TypeScript snippet: each `@example` in the public source and
+ * each fenced block in the Markdown pages and READMEs consumers see.
  *
  * A doc example is a promise that the code in it works. TypeDoc copies it into the wiki
  * verbatim and no other check ever reads it, so a snippet that names a symbol the API
@@ -12,10 +12,12 @@
  * This extracts each ` ```ts ` fence into its own scratch file, resolves every
  * `@elite-dangerous-almanac/core/<subpath>` specifier through the package's own
  * `exports` map — so a snippet importing a private path fails rather than passing — and
- * runs `tsc --noEmit` over the set. Each snippet compiles as an isolated module, so
- * it must declare what it uses — that is the point, since a reader pastes it into an
- * empty file too. Use `declare const x: T` for an input the snippet receives rather than
- * builds, and a `// ->` comment for the value an expression evaluates to.
+ * runs `tsc --noEmit` over the set. Each snippet compiles as an isolated module, so it
+ * must declare what it uses — that is the point, since a reader pastes it into an empty
+ * file too. It then executes every machine-readable `expression; // -> value` claim that
+ * needs no ambient `declare` input. Exact literals compare exactly, finite decimals are
+ * rounded to their documented precision, and `0.667…` is a decimal-prefix assertion.
+ * Prose and abbreviated values remain compile-only and are counted explicitly.
  *
  * Every documented snippet compiles today, so `npm run check` runs this with `--strict`
  * and a snippet that stops compiling fails the build. `--max-failures <n>` remains as a
@@ -26,6 +28,7 @@
  *   node scripts/check-examples.mjs                    # report, always exit 0
  *   node scripts/check-examples.mjs --max-failures 189 # exit 1 if it gets worse
  *   node scripts/check-examples.mjs --strict           # exit 1 on any failure
+ *   node scripts/check-examples.mjs --verbose          # list compile-only claims
  */
 
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
@@ -35,12 +38,18 @@ import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import ts from 'typescript';
+
+import { transformExampleClaims } from './example-claims.mjs';
 
 const packageRoot = fileURLToPath(new URL('../', import.meta.url));
+const repositoryRoot = resolve(packageRoot, '..');
 const sourceRoot = join(packageRoot, 'src');
 const strict = process.argv.includes('--strict');
-const maxFailuresFlag = process.argv.indexOf('--max-failures');
-const maxFailures = maxFailuresFlag === -1 ? null : Number(process.argv[maxFailuresFlag + 1]);
+const verbose = process.argv.includes('--verbose');
+const maxFailures = numericFlag('--max-failures');
+const minimumExecutableClaims = numericFlag('--min-executable-claims');
+const maximumCompileOnlyClaims = numericFlag('--max-compile-only-claims');
 
 /** The package's published entry points, as a consumer's resolver sees them. */
 const exportsMap = JSON.parse(await readFile(join(packageRoot, 'package.json'), 'utf8')).exports;
@@ -198,7 +207,8 @@ function resolveExport(specifier) {
 }
 
 /**
- * Every Markdown page published to the wiki: the `Home` readme and the guides.
+ * Every Markdown page consumers see: the repository and package READMEs, the wiki Home
+ * page and the guides.
  *
  * These become wiki pages exactly as the generated API pages do, so their snippets are
  * the same promise to a reader and get the same check. Their fences are plain Markdown,
@@ -208,7 +218,7 @@ function resolveExport(specifier) {
  */
 async function documentFiles() {
     const roots = [join(packageRoot, 'docs'), join(packageRoot, 'docs', 'guides')];
-    const found = [];
+    const found = [join(repositoryRoot, 'README.md'), join(packageRoot, 'README.md')];
     for (const root of roots) {
         if (!existsSync(root)) continue;
         for (const entry of await readdir(root, { withFileTypes: true })) {
@@ -255,17 +265,37 @@ async function main() {
     const documents = await documentFiles();
 
     await mkdir(join(scratch, 'snippets'), { recursive: true });
+    await mkdir(join(scratch, 'runtime'), { recursive: true });
 
     for (const file of [...files, ...documents]) {
         const source = await readFile(file, 'utf8');
         const relativePath = relative(packageRoot, file);
+        const scratchPath = relative(repositoryRoot, file);
         const found = file.endsWith('.md') ? markdownSnippets(source) : exampleSnippets(source);
         for (const [index, snippet] of found.entries()) {
-            const name = `${relativePath.replaceAll('/', '__').replace(/\.(ts|md)$/, '')}__${index}.ts`;
+            const name = `${scratchPath.replaceAll('/', '__').replace(/\.(ts|md)$/, '')}__${index}.ts`;
             const target = join(scratch, 'snippets', name);
             const { code, problems } = localiseImports(snippet.code);
+            const runtime = transformExampleClaims(code, { idPrefix: name });
             await writeFile(target, `export {};\n${code}\n`);
-            cases.push({ file: relativePath, line: snippet.line, target, name, problems });
+            cases.push({
+                file: relativePath,
+                line: snippet.line,
+                target,
+                name,
+                problems,
+                runtimeCode: runtime.code,
+                claims: runtime.claims.map((claim) => ({
+                    ...claim,
+                    file: relativePath,
+                    line: snippet.line + claim.line,
+                })),
+                skipped: runtime.skipped.map((claim) => ({
+                    ...claim,
+                    file: relativePath,
+                    line: snippet.line + claim.line,
+                })),
+            });
         }
     }
 
@@ -384,6 +414,127 @@ async function main() {
         return 1;
     }
 
+    const compileFailed = cases.filter((entry) => failures.has(entry.name));
+    const compiled = cases.length - compileFailed.length;
+    console.log(
+        `\ncheck-examples: ${compiled}/${cases.length} snippets compile` +
+            (compileFailed.length > 0 ? ` — ${compileFailed.length} failing` : ''),
+    );
+
+    const executable = cases.filter(
+        (entry) => !failures.has(entry.name) && entry.claims.length > 0,
+    );
+    const runtimeManifest = [];
+    for (const entry of executable) {
+        const target = join(scratch, 'runtime', entry.name.replace(/\.ts$/, '.mjs'));
+        const emitted = ts.transpileModule(`export {};\n${entry.runtimeCode}\n`, {
+            compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+            fileName: entry.name,
+        }).outputText;
+        await writeFile(target, emitted);
+        runtimeManifest.push({
+            name: entry.name,
+            file: entry.file,
+            line: entry.line,
+            target,
+            claims: entry.claims,
+        });
+    }
+
+    let runtimeResult = { failures: [], checked: 0 };
+    if (runtimeManifest.length > 0) {
+        const manifest = join(scratch, 'runtime-manifest.json');
+        await writeFile(manifest, JSON.stringify(runtimeManifest));
+        const runner = join(packageRoot, 'scripts', 'run-example-claims.mjs');
+        const registerJsonc = join(packageRoot, 'scripts', 'register-jsonc.mjs');
+        const result = spawnSync(
+            process.execPath,
+            ['--import', 'tsx', '--import', registerJsonc, runner, manifest],
+            {
+                cwd: packageRoot,
+                encoding: 'utf8',
+                timeout: 60_000,
+                maxBuffer: 10 * 1024 * 1024,
+            },
+        );
+        const output = `${result.stdout}${result.stderr}`;
+        if (result.error !== undefined || result.status !== 0) {
+            console.error('check-examples: the runtime claim process failed:\n');
+            console.error(result.error?.message ?? (output.trim() || `(exit ${result.status})`));
+            return 1;
+        }
+        const marker = 'ALMANAC_EXAMPLE_RESULTS ';
+        const resultStart = result.stdout.lastIndexOf(marker);
+        if (resultStart === -1) {
+            console.error('check-examples: the runtime claim process returned no result:\n');
+            console.error(output.trim() || '(no output)');
+            return 1;
+        }
+        const encoded = result.stdout.slice(resultStart + marker.length).split(/\r?\n/, 1)[0];
+        try {
+            runtimeResult = JSON.parse(encoded);
+        } catch (error) {
+            console.error(`check-examples: could not parse runtime results: ${error.message}`);
+            return 1;
+        }
+        for (const problem of runtimeResult.failures) {
+            failures.set(problem.name, [
+                ...(failures.get(problem.name) ?? []),
+                {
+                    code: problem.code,
+                    message: `${problem.file}:${problem.line}: ${problem.message}`,
+                },
+            ]);
+        }
+    }
+
+    const executableClaims = runtimeManifest.flatMap((entry) => entry.claims);
+    const failedClaimIds = new Set(
+        runtimeResult.failures.map((failure) => failure.claimId).filter(Boolean),
+    );
+    const matchedClaims = executableClaims.length - failedClaimIds.size;
+    console.log(
+        `check-examples: ${matchedClaims}/${executableClaims.length} executable value claims match` +
+            (runtimeResult.checked < executableClaims.length
+                ? ` — ${runtimeResult.checked} reached at runtime`
+                : ''),
+    );
+
+    const skippedClaims = cases.flatMap((entry) => entry.skipped);
+    const skippedByReason = new Map();
+    for (const claim of skippedClaims) {
+        skippedByReason.set(claim.reason, (skippedByReason.get(claim.reason) ?? 0) + 1);
+    }
+    const skipSummary = [...skippedByReason]
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([reason, count]) => `${count} ${reason}`)
+        .join('; ');
+    console.log(
+        `check-examples: ${skippedClaims.length} value claims remain compile-only` +
+            (skipSummary === '' ? '' : ` — ${skipSummary}`),
+    );
+    if (verbose) {
+        for (const claim of skippedClaims) {
+            console.log(`  ${claim.file}:${claim.line}: ${claim.reason} (${claim.expected})`);
+        }
+    }
+
+    let claimRatchetFailed = false;
+    if (minimumExecutableClaims !== null && executableClaims.length < minimumExecutableClaims) {
+        console.error(
+            `check-examples: ${executableClaims.length} executable claims is below the required ` +
+                `minimum of ${minimumExecutableClaims}`,
+        );
+        claimRatchetFailed = true;
+    }
+    if (maximumCompileOnlyClaims !== null && skippedClaims.length > maximumCompileOnlyClaims) {
+        console.error(
+            `check-examples: ${skippedClaims.length} compile-only claims is above the allowed ` +
+                `maximum of ${maximumCompileOnlyClaims}`,
+        );
+        claimRatchetFailed = true;
+    }
+
     const failed = cases.filter((entry) => failures.has(entry.name));
     for (const entry of failed) {
         console.log(`\n${entry.file}:${entry.line}`);
@@ -393,18 +544,13 @@ async function main() {
     }
 
     const passed = cases.length - failed.length;
-    console.log(
-        `\ncheck-examples: ${passed}/${cases.length} snippets compile` +
-            (failed.length > 0 ? ` — ${failed.length} failing` : ''),
-    );
+    console.log(`\ncheck-examples: ${passed}/${cases.length} snippets pass all applicable checks`);
 
-    if (strict) return failed.length > 0 ? 1 : 0;
+    if (strict) return failed.length > 0 || claimRatchetFailed ? 1 : 0;
+
+    if (claimRatchetFailed) return 1;
 
     if (maxFailures !== null) {
-        if (!Number.isInteger(maxFailures) || maxFailures < 0) {
-            console.error('check-examples: --max-failures needs a non-negative integer');
-            return 1;
-        }
         if (failed.length > maxFailures) {
             console.error(
                 `\ncheck-examples: ${failed.length} failing snippets, above the agreed ` +
@@ -421,6 +567,16 @@ async function main() {
         }
     }
     return 0;
+}
+
+function numericFlag(name) {
+    const index = process.argv.indexOf(name);
+    if (index === -1) return null;
+    const value = Number(process.argv[index + 1]);
+    if (!Number.isInteger(value) || value < 0) {
+        throw new TypeError(`check-examples: ${name} needs a non-negative integer`);
+    }
+    return value;
 }
 
 try {
