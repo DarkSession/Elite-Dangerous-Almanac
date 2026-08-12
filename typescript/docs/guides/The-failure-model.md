@@ -72,9 +72,10 @@ worth knowing before you write a `catch`:
   more useful half when the argument is a whole export, and the same text `inspectSlef`
   reports as that entry's diagnostic. `ShipLoadout.fromLoadout` checks the structure a
   build is assembled from — an object, an array of module objects, a `Slot` and `Item` on
-  each — plus the type of anything present that names something (`Ship`, an `Engineering`
-  block and its two ids). It trusts every value inside, so use `fromSlef` for an event
-  you did not produce yourself.
+  each, no two modules claiming one slot, and an `Engineering` that is an object whenever
+  the key is there at all — plus the type of `Ship` and of that block's two ids when they
+  carry a value. It trusts every value inside, so use `fromSlef` for an event you did not
+  produce yourself.
 
 **A missing argument is not a wrong-typed one**, and the two get different answers:
 
@@ -99,6 +100,15 @@ a missing argument to mean — `ProceduralSystem.fromName(undefined)` and
 which convert or resolve what you pass rather than looking it up. The rule is what the
 function does with the argument, not what it returns: `massCodeToSizeClass` hands back a
 number and is still strict.
+
+**A build's slot key is loud too**, across all ten methods that take one, and it is the
+exception worth knowing because several of them do look like searches —
+`fittedModuleAt('NoSuchMount')` answers `null` the way a catalogue miss does. The
+difference is that the key names a mount on *this* build rather than a record to find:
+`removeModule(undefined)` is not "empty the slot that is not there", it is a caller who
+has not said which slot. So `build.fittedModuleAt(undefined)` throws
+`ShipLoadout: slotKey must be a string, received undefined`, where
+`getShipBySymbol(undefined)` would answer `null`.
 
 **`null` is not an error.** A lookup that finds nothing has answered you. Journals
 outlive catalogues — a game update ships modules before this package knows about them —

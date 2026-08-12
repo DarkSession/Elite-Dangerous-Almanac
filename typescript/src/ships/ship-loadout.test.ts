@@ -3526,6 +3526,20 @@ test('fromLoadout names the structure it needs instead of failing inside the wal
             },
         );
     }
+    // `Engineering` is the one field where `null` is not an omission — the asymmetry
+    // above is deliberate, so pin both halves of it against a future tidy-up.
+    assert.ok(
+        ShipLoadout.fromLoadout({
+            Ship: null,
+            Modules: [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { BlueprintName: null, ExperimentalEffect: null },
+                },
+            ],
+        } as unknown as LoadoutEvent),
+    );
     // A partial engineering block is still read, not rejected: a capture may state
     // modifiers without naming the recipe.
     assert.ok(
