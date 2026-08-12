@@ -84,3 +84,30 @@ test('boxel code <-> letters is a bijection', () => {
     assert.equal(lettersToBoxelCode(4, 13, 7, 11), 198_410);
     assert.deepEqual(boxelCodeToLetters(198_410), { l1: 4, l2: 13, l3: 7, n1: 11 });
 });
+
+test('rejects boxel letters outside 0-25', () => {
+    for (const [l1, l2, l3] of [
+        [-1, 0, 0],
+        [26, 0, 0],
+        [1.5, 0, 0],
+        [0, -1, 0],
+        [0, 26, 0],
+        [0, 0, -1],
+        [0, 0, 26],
+        [Number.NaN, 0, 0],
+    ]) {
+        assert.throws(() => lettersToBoxelCode(l1!, l2!, l3!, 0), RangeError, `${l1},${l2},${l3}`);
+    }
+});
+
+test('rejects a negative or fractional N1', () => {
+    for (const n1 of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+        assert.throws(() => lettersToBoxelCode(0, 0, 0, n1), RangeError, `${n1}`);
+    }
+});
+
+test('rejects boxel codes no packing could produce', () => {
+    for (const code of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, 2 ** 53]) {
+        assert.throws(() => boxelCodeToLetters(code), RangeError, `${code}`);
+    }
+});

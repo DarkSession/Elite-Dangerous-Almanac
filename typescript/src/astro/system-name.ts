@@ -20,7 +20,7 @@
 
 import { canonicalizeSectorName, sectorGridPositionFromName } from './sector-name.js';
 import { getHandAuthoredRegionOrigin } from './naming-region-origins.js';
-import { packBoxelCode } from './internal/system-name-code.js';
+import { assertBoxelCode, packBoxelCode } from './internal/system-name-code.js';
 
 /**
  * The parsed parts of a procedural system name. Letters and mass code are stored
@@ -54,8 +54,12 @@ const CODE_A_LOWER = 'a'.charCodeAt(0);
  * @param l1 - First letter as a zero-based index, `0`–`25` (`A`–`Z`).
  * @param l2 - Second letter as a zero-based index, `0`–`25`.
  * @param l3 - Third letter as a zero-based index, `0`–`25`.
- * @param n1 - The boxel number that follows the letters (`d11-96` → `11`).
+ * @param n1 - The boxel number that follows the letters (`d11-96` → `11`), a
+ *   non-negative integer.
  * @returns The packed base-26 boxel code.
+ * @throws {RangeError} If any letter is not an integer in 0–25, or `n1` is not a
+ * non-negative integer. Such a field would carry into the next base-26 digit and
+ * pack as a different boxel rather than the one asked for.
  * @example
  * ```ts
  * import { lettersToBoxelCode } from '@elite-dangerous-almanac/core/astro/system-name';
@@ -99,7 +103,10 @@ export interface BoxelLetters {
  * of {@link lettersToBoxelCode}.
  *
  * @param boxelCode - The packed base-26 boxel code, as `decodeSystemAddress` returns.
+ *   Must be a non-negative integer.
  * @returns The three letter indices (`0`–`25` each) and the boxel number `n1`.
+ * @throws {RangeError} If `boxelCode` is not a non-negative integer — no such code
+ * can be packed, and unpacking one would yield letters outside `0`–`25`.
  * @example
  * ```ts
  * import { boxelCodeToLetters, lettersToBoxelCode } from '@elite-dangerous-almanac/core/astro/system-name';
@@ -108,6 +115,7 @@ export interface BoxelLetters {
  * ```
  */
 export function boxelCodeToLetters(boxelCode: number): BoxelLetters {
+    assertBoxelCode(boxelCode);
     return {
         l1: boxelCode % 26,
         l2: Math.trunc(boxelCode / 26) % 26,
