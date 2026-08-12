@@ -98,7 +98,8 @@ a verbatim copy produced at build time — edit this file, never the copy.
 - **[Elite Dangerous Wiki](https://elite-dangerous.fandom.com/)** (Fandom,
   **CC BY-SA 3.0**) — how the Corrosion Resistant Cargo Racks are obtained, which is why
   two of them carry no list price.
-- **Frontier Developments plc** — the game itself, and its published statements:
+- **Frontier Developments plc** — the game itself, the ship models represented by the
+  shared vector illustrations, and its published statements:
   the [media-usage rules](https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/)
   quoted below, the Operations and Lynx
   [update notes](https://forums.frontier.co.uk/threads/648012/), and the
@@ -134,10 +135,10 @@ from are credited here:
 Every capture is Elite Dangerous game output and remains the property of Frontier
 Developments plc — see the notice below.
 
-## Elite Dangerous game data (Frontier media-usage notice)
+## Elite Dangerous game data and imagery (Frontier media-usage notice)
 
-The ship and module stat values are the property of **Frontier Developments plc**
-and are used under Frontier's
+The ship and module stat values and the ship illustrations are the property of
+**Frontier Developments plc** and are used under Frontier's
 [media-usage rules](https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/):
 
 > Elite Dangerous Almanac was created using assets and imagery from Elite

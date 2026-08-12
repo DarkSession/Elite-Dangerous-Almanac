@@ -205,6 +205,7 @@ contains the complete API reference from source documentation.
 ## Repository layout
 
 ```text
+assets/      shared visual assets, keyed by catalogue symbol
 data/        shared JSONC catalogues and per-domain provenance
 fixtures/    shared JSONC behavioral fixtures, each carrying its own provenance
 schemas/     shared JSON Schemas for catalogue payloads
@@ -214,6 +215,10 @@ typescript/  @elite-dangerous-almanac/core
 
 `data/` is the single source of truth. Implementations strip comments while loading
 JSONC; they do not generate or commit duplicate JSON files.
+
+Ship illustrations live at `assets/ships/<symbol>/illustration.svg`, where `<symbol>` is
+the exact Frontier ship symbol from the shared catalogue. The assets remain outside the
+language packages so every implementation can consume the same files.
 
 ## Development
 
