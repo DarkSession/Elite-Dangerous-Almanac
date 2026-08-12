@@ -14,8 +14,9 @@ import {
     sustainedFireFactor,
     weaponMetrics,
     type WeaponMetrics,
+    type WeaponStats,
 } from './weapons.js';
-import { getModuleBySymbol } from './modules.js';
+import { getModuleBySymbol, type OutfittingModuleStats } from './modules.js';
 import { HARDPOINT_MODULES } from './modules-hardpoint.js';
 import { effectiveModule, weaponStatsFor } from './internal/loadout-metrics.js';
 import fixture from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
@@ -24,6 +25,43 @@ import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with 
 const near = (a: number, b: number, eps = 1e-6) => Math.abs(a - b) < eps;
 const weapon = (symbol: string) => getModuleBySymbol(symbol, HARDPOINT_MODULES)!;
 const displayed = (value: number, decimals: number) => Number(value.toFixed(decimals));
+
+const weaponStatKeys = [
+    'damage',
+    'damageDistribution',
+    'damageComponents',
+    'roundsPerShot',
+    'rateOfFire',
+    'burstInterval',
+    'burstRounds',
+    'burstRateOfFire',
+    'chargeTime',
+    'clipSize',
+    'ammoMaximum',
+    'reloadTime',
+    'distributorDraw',
+    'thermalLoad',
+    'powerDraw',
+    'maximumRange',
+    'falloffRange',
+    'projectileRange',
+    'armourPiercing',
+] as const;
+
+type WeaponStatKey = (typeof weaponStatKeys)[number];
+type Equal<A, B> =
+    (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
+type Assert<T extends true> = T;
+
+const weaponStatsTypeContract: readonly [
+    Assert<Equal<keyof WeaponStats, WeaponStatKey>>,
+    Assert<Equal<WeaponStats, Pick<OutfittingModuleStats, WeaponStatKey>>>,
+] = [true, true];
+
+test('WeaponStats stays aligned with the shared outfitting weapon fields', () => {
+    assert.equal(weaponStatKeys.length, 19);
+    assert.deepEqual(weaponStatsTypeContract, [true, true]);
+});
 
 test("catalogue weapons reproduce the fixture's DPS, EPS and heat", () => {
     for (const expected of fixture.weapons) {
