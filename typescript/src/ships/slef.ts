@@ -422,7 +422,7 @@ export interface SlefInspection {
  * import { inspectSlef } from '@elite-dangerous-almanac/core/ships/slef';
  *
  * const result = inspectSlef([{ Ship: 'sidewinder', Modules: [{ Slot: 'PowerPlant' }] }]);
- * result.diagnostics[0]?.path; // -> 'entries[0]?.Modules[0]?.Item'
+ * result.diagnostics[0]?.path; // -> 'entries[0].Modules[0].Item'
  * ```
  */
 export function inspectSlef(input: unknown): SlefInspection {
