@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { posix, win32 } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { decode } from '@jridgewell/sourcemap-codec';
@@ -687,6 +688,16 @@ test('every JavaScript artifact references a source map without embedded sources
         assert.equal(map.version, 3, mapFile.pathname);
         assert.ok(!Object.hasOwn(map, 'sourcesContent'), `${mapFile.pathname} embeds sources`);
         for (const source of map.sources) {
+            assert.equal(
+                posix.isAbsolute(source) || win32.isAbsolute(source),
+                false,
+                `${mapFile.pathname} contains absolute source ${source}`,
+            );
+            assert.doesNotMatch(
+                source,
+                /^[A-Za-z][A-Za-z\d+.-]*:/,
+                `${mapFile.pathname} contains source URL ${source}`,
+            );
             assert.match(
                 source.replaceAll('\\', '/'),
                 /(?:^|\/)(?:src|data)\/.+\.(?:ts|jsonc)$/,

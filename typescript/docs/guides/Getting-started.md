@@ -122,7 +122,7 @@ identifies the frame that threw; run Node with `--enable-source-maps` to resolve
 indexes instead of retaining their data.
 
 The maps cost about 1.6 MiB installed — roughly two fifths of the 4.0 MiB unpacked
-package — while the complete compressed npm archive remains about 614 KiB. They contain
+package — while the complete compressed npm archive remains about 598 KiB. They contain
 mappings and original source paths but omit `sourcesContent`, so the package does not
 carry a second copy of its TypeScript and large catalogues. This keeps useful library
 stack traces without paying the substantially larger cost of embedding original source
