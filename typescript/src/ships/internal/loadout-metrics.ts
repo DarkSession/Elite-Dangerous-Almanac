@@ -22,7 +22,6 @@ import { getBulkheadsForShip } from '../modules.js';
 import { getExperimentalEffect } from '../experimental-effects.js';
 import { CORE_MODULES } from '../modules-core.js';
 import { getShipBySymbol } from '../ships.js';
-import { builtInModuleBySymbol } from './module-symbol-index.js';
 import type { PowerConsumer } from '../power.js';
 import type { ShieldBoosterParams, ShieldGeneratorParams, ShieldInput } from '../shields.js';
 import type {
@@ -88,10 +87,10 @@ function priorityOf(module: LoadoutModule): number {
  * Journal modifiers come back in the journal's units — a resistance as `40`, not
  * `0.4` — so each is scaled into the catalogue's before it is returned.
  */
-export function effectiveStat(
+function effectiveStat(
     module: LoadoutModule,
     field: keyof OutfittingModule,
-    stats: OutfittingModule | null = builtInModuleBySymbol(module.Item),
+    stats: OutfittingModule | null,
 ): number | undefined {
     const stated = statedModifier(module, field);
     if (stated !== undefined) return stated;
@@ -218,7 +217,7 @@ function relatedStat(
  */
 export function effectiveModule(
     module: LoadoutModule,
-    stats: OutfittingModule | null = builtInModuleBySymbol(module.Item),
+    stats: OutfittingModule | null,
 ): OutfittingModule | null {
     if (!stats || !module.Engineering) return stats;
     const merged: Record<string, unknown> = { ...stats };
@@ -269,7 +268,7 @@ export function effectiveModule(
 /** One fitted module's claim on the power plant, or `null` when it legitimately makes none. */
 export function powerConsumerFor(
     module: LoadoutModule,
-    stats: OutfittingModule | null = builtInModuleBySymbol(module.Item),
+    stats: OutfittingModule | null,
 ): PowerConsumer | null {
     const draw = effectiveStat(module, 'powerDraw', stats);
     const parsedSlot = parseSlotName(module.Slot);
@@ -309,8 +308,7 @@ export function powerConsumerFor(
 /** The build's power-plant capacity, post-engineering, or `0` when none is fitted. */
 export function powerAvailable(
     modules: readonly LoadoutModule[],
-    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) =>
-        builtInModuleBySymbol(module.Item),
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): number {
     for (const module of modules) {
         const stats = statsFor(module);
@@ -361,8 +359,7 @@ export function shieldInputFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
     systemsPips: number,
-    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) =>
-        builtInModuleBySymbol(module.Item),
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): ShieldInput {
     const hull = getShipBySymbol(shipSymbol);
     let generator: ShieldGeneratorParams | null = null;
@@ -436,8 +433,7 @@ function stockBulkhead(shipSymbol: string): OutfittingModule | null {
 export function armourInputFor(
     shipSymbol: string,
     modules: readonly LoadoutModule[],
-    statsFor: (module: LoadoutModule) => OutfittingModule | null = (module) =>
-        builtInModuleBySymbol(module.Item),
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): ArmourInput {
     const hull = getShipBySymbol(shipSymbol);
     const reinforcements: HullReinforcementParams[] = [];
@@ -532,7 +528,7 @@ const WEAPON_FIELDS = [
  */
 export function weaponStatsFor(
     module: LoadoutModule,
-    stats: OutfittingModule | null = builtInModuleBySymbol(module.Item),
+    stats: OutfittingModule | null,
 ): WeaponStats | null {
     if (!stats || stats.category !== 'hardpoint') return null;
     const weapon: Record<string, unknown> = {};
