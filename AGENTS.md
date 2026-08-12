@@ -221,7 +221,9 @@ prefix. Every executable fence runs in a fresh, time-limited Node process so exa
 cannot share global, intrinsic or imported-module state. Prose, abbreviated values and
 context-sensitive `await` or `yield` expressions remain compile-only and are counted
 against a ratchet, so a claim cannot silently stop running. Keep every fence
-self-contained; use `declare const input: Type` only for a value the reader supplies.
+self-contained and do not start subprocesses: the timeout hard-kills the snippet runner,
+not an operating-system process tree. Use `declare const input: Type` only for a value
+the reader supplies.
 
 Run one test file with the same loaders the suite uses — plain `node --test` cannot resolve `.ts` or `.jsonc`:
 

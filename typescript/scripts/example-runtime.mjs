@@ -27,6 +27,7 @@ export function runExampleEntries(
             cwd,
             encoding: 'utf8',
             timeout: timeoutMs,
+            killSignal: 'SIGKILL',
             maxBuffer: 10 * 1024 * 1024,
         });
         const stdout = result.stdout ?? '';

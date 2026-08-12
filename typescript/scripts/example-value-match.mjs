@@ -1,5 +1,19 @@
 import { inspect } from 'node:util';
 
+// Documented snippets run in this realm and can legitimately assign to globals or
+// prototypes. Capture every intrinsic operation used for assertion before a snippet is
+// imported so the value being checked cannot redefine what "matches" means.
+const apply = Reflect.apply;
+const arrayIsArray = Array.isArray;
+const bigintFrom = BigInt;
+const numberFrom = Number;
+const numberIsFinite = Number.isFinite;
+const numberToFixed = Number.prototype.toFixed;
+const objectIs = Object.is;
+const objectKeys = Object.keys;
+const stringFrom = String;
+const stringStartsWith = String.prototype.startsWith;
+
 /**
  * Compare a runtime value with a parsed documented-value claim.
  *
@@ -25,65 +39,74 @@ function compareEncoded(actual, spec, path) {
         case 'boolean':
         case 'string':
         case 'number-exact':
-            return Object.is(actual, spec.value)
+            return objectIs(actual, spec.value)
                 ? null
                 : expectedMessage(path, inspect(spec.value), actual);
         case 'bigint': {
-            const expected = BigInt(spec.value);
+            const expected = bigintFrom(spec.value);
             return actual === expected ? null : expectedMessage(path, `${expected}n`, actual);
         }
         case 'number-special': {
-            const expected = Number(spec.value);
-            return Object.is(actual, expected) ? null : expectedMessage(path, spec.value, actual);
+            const expected = numberFrom(spec.value);
+            return objectIs(actual, expected) ? null : expectedMessage(path, spec.value, actual);
         }
         case 'number-rounded': {
-            if (typeof actual !== 'number' || !Number.isFinite(actual)) {
+            if (typeof actual !== 'number' || !numberIsFinite(actual)) {
                 return expectedMessage(
                     path,
                     `${spec.text} at ${spec.decimalPlaces} decimal places`,
                     actual,
                 );
             }
-            const expected = spec.value.toFixed(spec.decimalPlaces);
-            const received = actual.toFixed(spec.decimalPlaces);
+            const expected = apply(numberToFixed, spec.value, [spec.decimalPlaces]);
+            const received = apply(numberToFixed, actual, [spec.decimalPlaces]);
             return received === expected
                 ? null
                 : `${path}: expected ${expected} when rounded to ${spec.decimalPlaces} decimal places, received ${inspect(actual)}`;
         }
         case 'number-prefix': {
-            if (typeof actual !== 'number' || !Number.isFinite(actual)) {
+            if (typeof actual !== 'number' || !numberIsFinite(actual)) {
                 return expectedMessage(path, `a finite number beginning ${spec.prefix}`, actual);
             }
-            const received = String(actual);
-            return received.startsWith(spec.prefix)
+            const received = stringFrom(actual);
+            return apply(stringStartsWith, received, [spec.prefix])
                 ? null
                 : `${path}: expected a decimal beginning ${spec.prefix}, received ${received}`;
         }
         case 'array': {
-            if (!Array.isArray(actual)) return expectedMessage(path, 'an array', actual);
+            if (!arrayIsArray(actual)) return expectedMessage(path, 'an array', actual);
             if (actual.length !== spec.items.length) {
                 return `${path}: expected an array of length ${spec.items.length}, received length ${actual.length}`;
             }
-            for (const [index, item] of spec.items.entries()) {
-                const mismatch = compareEncoded(actual[index], item, `${path}[${index}]`);
+            for (let index = 0; index < spec.items.length; index += 1) {
+                const mismatch = compareEncoded(
+                    actual[index],
+                    spec.items[index],
+                    `${path}[${index}]`,
+                );
                 if (mismatch !== null) return mismatch;
             }
             return null;
         }
         case 'object': {
-            if (actual === null || typeof actual !== 'object' || Array.isArray(actual)) {
+            if (actual === null || typeof actual !== 'object' || arrayIsArray(actual)) {
                 return expectedMessage(path, 'an object', actual);
             }
-            const expectedKeys = spec.entries.map(([key]) => key).sort();
-            const actualKeys = Object.keys(actual).sort();
-            if (
-                expectedKeys.length !== actualKeys.length ||
-                expectedKeys.some((key, index) => key !== actualKeys[index])
-            ) {
+            const actualKeys = objectKeys(actual);
+            if (!sameObjectKeys(spec.entries, actualKeys)) {
+                const expectedKeys = [];
+                for (let index = 0; index < spec.entries.length; index += 1) {
+                    expectedKeys[index] = spec.entries[index][0];
+                }
                 return `${path}: expected keys ${inspect(expectedKeys)}, received ${inspect(actualKeys)}`;
             }
-            for (const [key, value] of spec.entries) {
-                const mismatch = compareEncoded(actual[key], value, `${path}.${key}`);
+            for (let index = 0; index < spec.entries.length; index += 1) {
+                const key = spec.entries[index][0];
+                const mismatch = compareEncoded(
+                    actual[key],
+                    spec.entries[index][1],
+                    `${path}.${key}`,
+                );
                 if (mismatch !== null) return mismatch;
             }
             return null;
@@ -91,6 +114,22 @@ function compareEncoded(actual, spec, path) {
         default:
             return `${path}: unsupported claim kind ${inspect(spec.kind)}`;
     }
+}
+
+function sameObjectKeys(expectedEntries, actualKeys) {
+    if (expectedEntries.length !== actualKeys.length) return false;
+    for (let expectedIndex = 0; expectedIndex < expectedEntries.length; expectedIndex += 1) {
+        const expected = expectedEntries[expectedIndex][0];
+        let found = false;
+        for (let actualIndex = 0; actualIndex < actualKeys.length; actualIndex += 1) {
+            if (actualKeys[actualIndex] === expected) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) return false;
+    }
+    return true;
 }
 
 function expectedMessage(path, expected, actual) {

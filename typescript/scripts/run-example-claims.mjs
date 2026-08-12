@@ -7,6 +7,13 @@ import { pathToFileURL } from 'node:url';
 import { compareExampleValue } from './example-value-match.mjs';
 
 const RESULT_MARKER = 'ALMANAC_EXAMPLE_RESULTS ';
+// The imported snippet shares this realm. Keep the runner's bookkeeping and result
+// protocol independent of any globals or prototypes it changes while executing.
+const apply = Reflect.apply;
+const arrayPush = Array.prototype.push;
+const jsonStringify = JSON.stringify;
+const stdout = process.stdout;
+const stdoutWrite = stdout.write;
 const manifestPath = process.argv[2];
 if (manifestPath === undefined) throw new TypeError('run-example-claims: expected a manifest path');
 
@@ -18,32 +25,31 @@ if (!Number.isInteger(entryIndex) || entryIndex < 0) {
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const entry = manifest[entryIndex];
 if (entry === undefined) throw new RangeError(`run-example-claims: no entry ${entryIndex}`);
-const claims = new Map();
-for (const claim of entry.claims) claims.set(claim.id, { ...claim, entry });
-
 const failures = [];
-const checked = new Set();
+const checked = new Array(entry.claims.length).fill(false);
 
 globalThis.__almanacExampleClaim = (evaluate, id) => {
-    const claim = claims.get(id);
-    if (claim === undefined) {
-        failures.push({
+    const claimIndex = findClaim(entry.claims, id);
+    if (claimIndex === -1) {
+        append(failures, {
             name: entry.name,
+            claimId: null,
             file: entry.file,
             line: entry.line,
             code: 'EXV003',
-            message: `runtime emitted unknown claim id ${JSON.stringify(id)}`,
+            message: `runtime emitted unknown claim id ${encode(id)}`,
         });
         return;
     }
 
-    checked.add(id);
+    const claim = entry.claims[claimIndex];
+    checked[claimIndex] = true;
     let actual;
     try {
         actual = evaluate();
     } catch (error) {
-        failures.push({
-            name: claim.entry.name,
+        append(failures, {
+            name: entry.name,
             claimId: id,
             file: claim.file,
             line: claim.line,
@@ -55,13 +61,13 @@ globalThis.__almanacExampleClaim = (evaluate, id) => {
 
     const comparison = compareExampleValue(actual, claim.spec);
     if (comparison.pass) return actual;
-    failures.push({
-        name: claim.entry.name,
+    append(failures, {
+        name: entry.name,
         claimId: id,
         file: claim.file,
         line: claim.line,
         code: 'EXV001',
-        message: `${comparison.message}; documented as ${JSON.stringify(claim.expected)}`,
+        message: `${comparison.message}; documented as ${encode(claim.expected)}`,
     });
     return actual;
 };
@@ -70,8 +76,9 @@ try {
     try {
         await import(pathToFileURL(entry.target).href);
     } catch (error) {
-        failures.push({
+        append(failures, {
             name: entry.name,
+            claimId: null,
             file: entry.file,
             line: entry.line,
             code: 'EXV004',
@@ -79,9 +86,10 @@ try {
         });
     }
 
-    for (const claim of entry.claims) {
-        if (checked.has(claim.id)) continue;
-        failures.push({
+    for (let index = 0; index < entry.claims.length; index += 1) {
+        if (checked[index]) continue;
+        const claim = entry.claims[index];
+        append(failures, {
             name: entry.name,
             claimId: claim.id,
             file: claim.file,
@@ -94,8 +102,44 @@ try {
     delete globalThis.__almanacExampleClaim;
 }
 
-process.stdout.write(`${RESULT_MARKER}${JSON.stringify({ failures, checked: checked.size })}\n`);
+apply(stdoutWrite, stdout, [`${RESULT_MARKER}${encodeResult(failures, countChecked(checked))}\n`]);
+
+function findClaim(claims, id) {
+    for (let index = 0; index < claims.length; index += 1) {
+        if (claims[index].id === id) return index;
+    }
+    return -1;
+}
+
+function append(array, value) {
+    apply(arrayPush, array, [value]);
+}
+
+function countChecked(values) {
+    let count = 0;
+    for (let index = 0; index < values.length; index += 1) {
+        if (values[index]) count += 1;
+    }
+    return count;
+}
+
+function encodeResult(records, checkedCount) {
+    let encoded = '{"failures":[';
+    for (let index = 0; index < records.length; index += 1) {
+        if (index > 0) encoded += ',';
+        const record = records[index];
+        encoded +=
+            `{"name":${encode(record.name)},"claimId":${encode(record.claimId)},` +
+            `"file":${encode(record.file)},"line":${record.line},` +
+            `"code":${encode(record.code)},"message":${encode(record.message)}}`;
+    }
+    return `${encoded}],"checked":${checkedCount}}`;
+}
+
+function encode(value) {
+    return apply(jsonStringify, null, [value]);
+}
 
 function formatError(error) {
-    return error instanceof Error ? `${error.name}: ${error.message}` : inspect(error);
+    return inspect(error);
 }
