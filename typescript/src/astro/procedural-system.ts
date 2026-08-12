@@ -34,6 +34,7 @@ import { findHandAuthoredRegionAt } from './hand-authored-regions.js';
 import { isPermitLockedRegionName } from './permit-locked-regions.js';
 import type { GalacticPosition } from './galactic-position.js';
 import { toSystemAddress, type SystemAddressInput } from './system-address-input.js';
+import { requireString } from '../internal/argument-guards.js';
 
 export type { SystemAddressInput } from './system-address-input.js';
 
@@ -188,6 +189,9 @@ export class ProceduralSystem {
      * system. Hand-named systems (`Sol`, `Maia`, `Shinrarta Dezhra`) have no
      * algorithmic address and so yield `null` too — that is a "not covered by the
      * scheme" answer, not "your string was malformed".
+     * @throws {TypeError} If `name` is not a string. A missing or wrong-typed argument
+     * is a caller bug, not a name the scheme does not cover, so it is not reported as
+     * `null`.
      * @throws {RangeError} If a syntactically valid name has no known naming-region
      * origin, or a name field cannot fit the normal system-address layout.
      * @example
@@ -199,7 +203,7 @@ export class ProceduralSystem {
      * ```
      */
     static fromName(name: string): ProceduralSystem | null {
-        const parts = parseSystemName(name);
+        const parts = parseSystemName(requireString(name, 'ProceduralSystem.fromName: name'));
         if (!parts) return null;
 
         const sectorPosition = sectorGridPositionFromName(parts.regionName);

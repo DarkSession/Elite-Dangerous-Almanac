@@ -1062,6 +1062,42 @@ test('setModule throws a clear error when handed an undefined module', () => {
     );
 });
 
+test('setModule names a module argument that is not an outfitting module', () => {
+    const conda = ShipLoadout.empty('Anaconda');
+    // A journal fragment, a bare symbol or a number, rather than a catalogue record:
+    // every fit rule reads `symbol`, so the value is named here instead.
+    for (const bad of [
+        {},
+        42,
+        'Int_Hyperdrive_Size6_Class5',
+        { Item: 'int_hyperdrive_size6_class5' },
+    ]) {
+        assert.throws(
+            () => conda.setModule('FrameShiftDrive', bad as unknown as OutfittingModule),
+            {
+                name: 'TypeError',
+                message:
+                    /^ShipLoadout\.setModule: module for "FrameShiftDrive" must be an outfitting module, received /,
+            },
+        );
+    }
+    assert.throws(
+        () => conda.setModule('FrameShiftDrive', {} as unknown as OutfittingModule),
+        /received object \{\}$/,
+    );
+});
+
+test('empty names a non-string hull argument instead of failing inside the lookup', () => {
+    for (const bad of [42, null, undefined, { Ship: 'Anaconda' }]) {
+        assert.throws(() => ShipLoadout.empty(bad as unknown as string), {
+            name: 'TypeError',
+            message: /^ShipLoadout\.empty: shipSymbol must be a string, received /,
+        });
+    }
+    // A string that is not a hull still reports the layout miss, not a type error.
+    assert.throws(() => ShipLoadout.empty('NotAShip'), /no slot layout for hull "NotAShip"/);
+});
+
 test('modulesForSlot lists only fitting modules', () => {
     const conda = ShipLoadout.empty('Anaconda');
     const drives = conda.modulesForSlot('FrameShiftDrive');

@@ -153,3 +153,15 @@ test('encoding refuses hand-built parts whose letters or N1 are out of range', (
         });
     }
 });
+
+test('fromName names a non-string argument instead of failing inside the parser', () => {
+    // A JavaScript caller, or parsed journal data handed straight in. `null` is not a
+    // name the scheme fails to cover, so it is a TypeError rather than a `null` answer.
+    for (const bad of [42, null, undefined, { name: 'Sol' }]) {
+        assert.throws(() => ProceduralSystem.fromName(bad as unknown as string), {
+            name: 'TypeError',
+            message: /^ProceduralSystem\.fromName: name must be a string, received /,
+        });
+    }
+    assert.throws(() => ProceduralSystem.fromName(42 as unknown as string), /received number 42/);
+});
