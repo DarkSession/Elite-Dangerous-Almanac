@@ -60,11 +60,13 @@
  *
  * The registries use two distinct Frontier identity spaces. `symbol` identifies an
  * item — a hull, module, material, micro-resource or commodity — and is what item and
- * journal `Item` lookups accept. Engineering catalogue entries instead use `fdname`:
- * the recipe or effect id written in `Engineering.BlueprintName` or
- * `Engineering.ExperimentalEffect`. Functions that look up a blueprint, experimental
- * effect or decorative modification therefore take an `fdname`, while functions that
- * ask which engineering is available *for a module* take that module's `symbol`.
+ * journal `Item` lookups accept. Engineering catalogue entries instead use `fdname` to
+ * identify a recipe, effect or decorative modification. The journal normally writes
+ * that id in `Engineering.BlueprintName` or `Engineering.ExperimentalEffect`; the few
+ * colliding blueprint aliases are resolved for their module by
+ * {@link resolveBlueprintForModule}. Functions that look up an engineering entry
+ * therefore take an `fdname`, while functions that ask which engineering is available
+ * *for a module* take that module's `symbol`.
  *
  * Note that a hull's derived figures split by cost: cheap stored values are properties
  * ({@link ShipLoadout.unladenMass}), while anything that recomputes or takes options is

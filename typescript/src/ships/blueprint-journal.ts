@@ -81,7 +81,8 @@ import { normalizeKey } from '../internal/registry-index.js';
  * recipe the module has: the game never rolls a sensor suite's Long Range on a scanner.
  *
  * @param symbol - A module symbol, e.g. `"Hpt_CloudScanner_Size0_Class5"`.
- * @param fdname - A blueprint recipe `fdname`, matched case-insensitively and trimmed.
+ * @param fdname - A blueprint catalogue or journal id, matched case-insensitively and
+ * trimmed. Colliding journal spellings are resolved against `symbol`.
  * @returns The id to join to `BLUEPRINTS`, in that catalogue's spelling when a journal
  * name resolved, and otherwise `fdname` exactly as it was passed — byte for byte, so a
  * caller who never meets the collision never sees their own spelling rewritten.

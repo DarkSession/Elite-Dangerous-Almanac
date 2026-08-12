@@ -153,10 +153,12 @@ getModuleBySymbol("Int_Hyperdrive_Size6_Class5")?.name;
 ```
 
 `symbol` is Frontier's item id for a hull, module, material, micro-resource or
-commodity. Engineering uses a separate identity space: `fdname` is the blueprint
-recipe or experimental-effect id written in the journal's `Engineering` block.
-Functions that ask what engineering a module accepts therefore take the module's
-`symbol`; functions that look up a recipe or effect take its `fdname`.
+commodity. Engineering uses a separate identity space: `fdname` identifies a
+blueprint recipe or experimental effect. The journal normally writes that id in its
+`Engineering` block, but a few blueprint aliases collide across module families;
+`resolveBlueprintForModule` resolves those journal spellings. Functions that ask what
+engineering a module accepts therefore take the module's `symbol`; functions that
+look up a recipe or effect take its `fdname`.
 
 ### Materials and commodities
 
