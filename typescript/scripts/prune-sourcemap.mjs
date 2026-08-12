@@ -45,7 +45,10 @@ export function pruneSourceMap(map, mapPath, distRoot) {
             line.map((segment) => {
                 if (segment.length < 4) return segment;
                 const replacement = sourceIndexAfterPruning.get(segment[1]);
-                if (replacement === undefined) return [segment[0]];
+                if (replacement === undefined) {
+                    if (prunedSourceIndexes.has(segment[1])) return [segment[0]];
+                    throw new Error(`missing source ${segment[1]}`);
+                }
                 return [segment[0], replacement, segment[2], segment[3], ...segment.slice(4)];
             }),
         ),

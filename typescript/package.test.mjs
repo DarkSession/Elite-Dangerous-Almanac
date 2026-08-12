@@ -790,6 +790,14 @@ test('source map pruning keeps one boundary around removed data mappings', () =>
     assert.deepEqual(map.sourcesContent, ['first', 'last']);
     assert.deepEqual(map.names, ['firstName', 'lastName']);
     assert.deepEqual(decode(map.mappings), [[[0, 0, 1, 2, 0], [5], [11, 1, 9, 10, 1]]]);
+
+    const malformed = {
+        version: 3,
+        sources: ['../data/catalogue.jsonc'],
+        names: [],
+        mappings: encode([[[0, 99, 1, 2]]]),
+    };
+    assert.throws(() => pruneSourceMap(malformed, mapPath, distRoot), /missing source 99/);
 });
 
 test('engineering cost source maps retain their TypeScript source paths', async () => {
