@@ -87,6 +87,24 @@ function referencedSourceIndexes(map) {
     );
 }
 
+async function consumerBundle(contents) {
+    const result = await build({
+        stdin: {
+            contents,
+            resolveDir: process.cwd(),
+        },
+        bundle: true,
+        write: false,
+        minify: true,
+        format: 'esm',
+        platform: 'browser',
+        logLevel: 'silent',
+    });
+    assert.deepEqual(result.warnings, []);
+    assert.equal(result.outputFiles.length, 1);
+    return result.outputFiles[0].text;
+}
+
 async function publicEntries(directory = new URL('./dist/', import.meta.url), subpath = '') {
     const entries = [];
     for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -302,8 +320,18 @@ test('codex-region geometry stays on its explicit lookup subpath', async () => {
         readReachableJs(new URL('./dist/astro/index.js', import.meta.url)),
         readReachableJs(new URL('./dist/astro/codex-region-lookup.js', import.meta.url)),
     ]);
-    assert.ok(astroGraph.length < 256 * 1024, `astro graph is ${astroGraph.length} bytes`);
-    assert.ok(lookupGraph.length > 400 * 1024, 'lookup traversal missed its geometry');
+    // One budget, read from both sides: the region geometry is the largest thing in
+    // `astro/`, so the barrel staying under it means the geometry is absent and the
+    // lookup graph clearing it means the traversal actually found it. Both figures are
+    // whitespace-compacted (`minify: 'terser'` in `tsup.config.ts`), so re-measure both
+    // after a build change rather than moving the budget far enough that one failure
+    // goes quiet.
+    const GEOMETRY_BUDGET = 192 * 1024;
+    assert.ok(astroGraph.length < GEOMETRY_BUDGET, `astro graph is ${astroGraph.length} bytes`);
+    assert.ok(
+        lookupGraph.length > GEOMETRY_BUDGET,
+        `lookup traversal missed its geometry: ${lookupGraph.length} bytes`,
+    );
     assert.doesNotMatch(astroGraph, /scaleNumerator/);
     assert.match(lookupGraph, /scaleNumerator/);
 
@@ -349,19 +377,31 @@ test('a consumer bundle of every public entry produces no warnings', async () =>
     const contents = entries
         .map(({ specifier }, index) => `import * as entry${index} from '${specifier}';`)
         .join('\n');
-    const result = await build({
-        stdin: {
-            contents: `${contents}\nconsole.log(${entries.map((_, index) => `entry${index}`).join(',')});`,
-            resolveDir: process.cwd(),
-        },
-        bundle: true,
-        write: false,
-        minify: true,
-        format: 'esm',
-        platform: 'browser',
-        logLevel: 'silent',
-    });
-    assert.deepEqual(result.warnings, []);
+    await consumerBundle(
+        `${contents}\nconsole.log(${entries.map((_, index) => `entry${index}`).join(',')});`,
+    );
+});
+
+test('published pure annotations keep unused catalogue indexes tree-shakeable', async () => {
+    const [sourceFiles, builtFiles] = await Promise.all([
+        builtFilesEndingWith('.ts', new URL('./src/', import.meta.url)),
+        builtFilesEndingWith('.js'),
+    ]);
+    const pureIndex = /\/\*\s*[@#]__PURE__\s*\*\/\s*createKeyIndex\(/g;
+    const count = async (files) =>
+        (await Promise.all(files.map((file) => readFile(file, 'utf8'))))
+            .map((source) => [...source.matchAll(pureIndex)].length)
+            .reduce((sum, matches) => sum + matches, 0);
+    assert.equal(await count(builtFiles), await count(sourceFiles));
+
+    // MaterialGrade shares a module with all 146 material records and three indexes.
+    // Its tiny consumer bundle proves those initialisers remain removable instead of
+    // merely proving that annotation-looking comments occur somewhere in `dist/`.
+    const gradeBundle = await consumerBundle(
+        "import { MaterialGrade } from '@elite-dangerous-almanac/core/materials/materials'; console.log(MaterialGrade.VeryRare);",
+    );
+    assert.ok(gradeBundle.length < 1024, `MaterialGrade bundle is ${gradeBundle.length} bytes`);
+    assert.doesNotMatch(gradeBundle, /AdaptiveEncryptorsCapture|AbnormalCompactEmissionsData/);
 });
 
 test('a journal address reaches every id64 entry point without conversion', async () => {
@@ -646,6 +686,10 @@ test('every JavaScript artifact references a source map without embedded sources
         );
         assert.equal(map.version, 3, mapFile.pathname);
         assert.ok(!Object.hasOwn(map, 'sourcesContent'), `${mapFile.pathname} embeds sources`);
+        assert.ok(
+            decode(map.mappings).length <= javascript.split('\n').length,
+            `${mapFile.pathname} contains mappings for lines absent from its JavaScript`,
+        );
         if (map.sources.length > 0) {
             assert.ok(map.mappings.length > 0, `${mapFile.pathname} has no mappings`);
             assert.ok(
@@ -682,6 +726,35 @@ test('engineering cost source maps retain TypeScript and JSONC source paths', as
             assert.ok(referencedSourceIndexes(map).has(index), `${suffix} has no mapped segment`);
         }
     }
+});
+
+test('published source maps resolve compact output to its TypeScript throw site', async () => {
+    const source = await readFile(new URL('./src/ships/ship-loadout.ts', import.meta.url), 'utf8');
+    const sourceLines = source.split('\n');
+    const throwLine =
+        sourceLines.findIndex(
+            (line, index) =>
+                line.includes('throw new RangeError(') &&
+                sourceLines[index - 1]?.includes('if (!slot)'),
+        ) + 1;
+    assert.ok(throwLine > 0, 'could not find #requireSlot throw site');
+    const mappedColumn = (sourceLines[throwLine - 1]?.indexOf('new RangeError') ?? -1) + 1;
+    assert.ok(mappedColumn > 0, 'could not find #requireSlot mapped expression');
+
+    const failure = spawnSync(
+        process.execPath,
+        [
+            '--enable-source-maps',
+            '--input-type=module',
+            '--eval',
+            "import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout'; import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules'; ShipLoadout.empty('Sidewinder').setModule('NotASlot', getModuleBySymbol('Int_Hyperdrive_Size2_Class5'));",
+        ],
+        { cwd: process.cwd(), encoding: 'utf8' },
+    );
+    assert.notEqual(failure.status, 0);
+    const stack = failure.stderr.replaceAll('\\', '/');
+    assert.match(stack, /at #?requireSlot/);
+    assert.match(stack, new RegExp(`src/ships/ship-loadout\\.ts:${throwLine}:${mappedColumn}`));
 });
 
 test('types are exposed by owning runtime entries, not type-only subpaths', async () => {

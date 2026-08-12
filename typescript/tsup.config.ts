@@ -49,10 +49,23 @@ export default defineConfig({
     splitting: true, // dedupe shared modules into chunks; keeps per-module entries independent
     treeshake: true,
     clean: true,
-    // Keep the library output readable. Applications can still minify their final
-    // bundles, while stack traces and files opened from node_modules retain useful
-    // function names and line numbers during development.
-    minify: false,
+    // The inlined JSONC catalogues dominate the output, and their pretty-printed
+    // indentation and newlines cost hundreds of kilobytes that nobody reads. Terser
+    // is used only as a compact printer: disabling compression and mangling prevents
+    // syntax optimization and identifier renaming, while preserve_annotations keeps the
+    // /* @__PURE__ */ calls downstream bundlers need to discard unused catalogue indexes.
+    // sourceMap asks Terser for the generated-to-esbuild map that tsup then chains onto
+    // esbuild's TypeScript/JSONC map; without it, reformatted code would ship with the
+    // stale pre-formatting line and column positions.
+    minify: 'terser',
+    terserOptions: {
+        compress: false,
+        mangle: false,
+        format: {
+            preserve_annotations: true,
+        },
+        sourceMap: {},
+    },
     // Publish external maps deliberately: Node, browser devtools and downstream
     // bundlers can trace failures back to the TypeScript or JSONC source path instead
     // of stopping at generated JavaScript. Omitting sourcesContent keeps that debugging

@@ -84,8 +84,9 @@ symbols you are most likely to reach for first:
 ## What it costs to import
 
 Sizes below are what a module's import graph weighs once your bundler has minified it,
-before any transport compression — the published package is not minified itself, so its
-own files on disk are larger. The heaviest imports are all deliberate:
+before any transport compression. The published package strips whitespace but does not
+compress syntax or rename identifiers, so its own files on disk are larger. The heaviest
+imports are all deliberate:
 
 - `ships/ship-loadout` is about 632 KiB, the batteries-included facade. Resolving
   arbitrary journal module ids and engineering recipes needs the complete ship, module,
@@ -114,11 +115,18 @@ devtools and downstream bundlers can therefore trace a failure in generated Java
 back to the TypeScript module or JSONC catalogue that produced it. The maps are part of
 the published package by design; they do not enter an application's import graph.
 
-The maps cost about 3.0 MiB installed — roughly half of the unpacked package — while the
-complete compressed npm archive remains about 615 KiB. They contain mappings and original
-source paths but omit `sourcesContent`, so the package does not carry a second copy of its
-TypeScript and large catalogues. This keeps useful library stack traces without paying
-the substantially larger cost of embedding original source contents in the maps.
+Whitespace compaction keeps function and variable names, so an unmapped stack trace still
+identifies the frame that threw; run Node with `--enable-source-maps` to resolve its original
+`src/**/*.ts` line and column. The compactor also preserves the package's
+`/* @__PURE__ */` annotations, which let a downstream bundler discard unused catalogue
+indexes instead of retaining their data.
+
+The maps cost about 1.6 MiB installed — roughly two fifths of the 4.0 MiB unpacked
+package — while the complete compressed npm archive remains about 614 KiB. They contain
+mappings and original source paths but omit `sourcesContent`, so the package does not
+carry a second copy of its TypeScript and large catalogues. This keeps useful library
+stack traces without paying the substantially larger cost of embedding original source
+contents in the maps.
 
 ## First calls
 
