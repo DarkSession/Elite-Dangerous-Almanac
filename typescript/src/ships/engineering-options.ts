@@ -61,6 +61,7 @@
 import optionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { normalizeKey } from '../internal/registry-index.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * A stable identifier for an engineerable module's gameplay family.
@@ -242,6 +243,8 @@ export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
  * @param symbol - A module symbol.
  * @returns Blueprint ids, sorted. Join to `BLUEPRINTS`.
  *
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getBlueprintsForModule } from '@elite-dangerous-almanac/core/ships/engineering-options';
@@ -254,6 +257,7 @@ export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
  * ```
  */
 export function getBlueprintsForModule(symbol: string): readonly string[] {
+    requireStringIfPresent(symbol, 'getBlueprintsForModule: symbol');
     const group = getEngineeringGroup(symbol);
     return group === null ? [] : ENGINEERING_OPTION_GROUPS[group]!.blueprints;
 }

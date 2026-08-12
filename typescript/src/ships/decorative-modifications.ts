@@ -42,6 +42,7 @@
 import decorativeData from '../../../data/ships/decorative-modifications.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { findByRawKey, normalizeKey } from '../internal/registry-index.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * One hand-set stat change a decorative modification arrives with.
@@ -150,6 +151,8 @@ export function getDecorativeModification(fdname: string): DecorativeModificatio
  *
  * @param fdname - The id to test, matched case-insensitively and trimmed.
  * @returns `true` when {@link getDecorativeModification} would find it.
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { isDecorativeModification } from '@elite-dangerous-almanac/core/ships/decorative-modifications';
@@ -159,6 +162,7 @@ export function getDecorativeModification(fdname: string): DecorativeModificatio
  * ```
  */
 export function isDecorativeModification(fdname: string): boolean {
+    requireStringIfPresent(fdname, 'isDecorativeModification: fdname');
     return getDecorativeModification(fdname) !== null;
 }
 

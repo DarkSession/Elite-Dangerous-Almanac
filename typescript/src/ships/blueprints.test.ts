@@ -73,3 +73,18 @@ test('getBlueprint returns the name and complete per-grade mechanics', () => {
     assert.ok(bp?.grades['5']?.features);
     assert.equal('materials' in bp!.grades['5']!, false);
 });
+
+test('a blueprint lookup names itself, and its grade facade names itself too', () => {
+    for (const [call, label] of [
+        [() => getBlueprint(42 as unknown as string), 'getBlueprint: fdname'],
+        [() => getBlueprintGrade(42 as unknown as string, 5), 'getBlueprintGrade: fdname'],
+    ] as const) {
+        assert.throws(call, {
+            name: 'TypeError',
+            message: `${label} must be a string, received number 42`,
+        });
+    }
+    // The id is checked before the grade range, so a bad id is not reported as a bad grade.
+    assert.throws(() => getBlueprintGrade(42 as unknown as string, 9), /fdname must be a string/);
+    assert.equal(getBlueprintGrade(null as unknown as string, 5), null);
+});

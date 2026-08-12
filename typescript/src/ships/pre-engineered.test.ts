@@ -340,3 +340,24 @@ test('the modifier labels are the pinned set', () => {
     ].sort();
     assert.deepEqual(labels, fixture.modifierLabels);
 });
+
+test('the pre-engineered lookups name a wrong-typed symbol', () => {
+    for (const [call, label] of [
+        [
+            () => getPreEngineeredVariants(42 as unknown as string),
+            'getPreEngineeredVariants: symbol',
+        ],
+        [
+            () => getPreEngineeredByBlueprint(42 as unknown as string),
+            'getPreEngineeredByBlueprint: blueprint',
+        ],
+        // A facade over the variants lookup, naming its own parameter.
+        [() => isPreEngineered(42 as unknown as string), 'isPreEngineered: symbol'],
+    ] as const) {
+        assert.throws(call, {
+            name: 'TypeError',
+            message: `${label} must be a string, received number 42`,
+        });
+    }
+    assert.equal(isPreEngineered(null as unknown as string), false);
+});

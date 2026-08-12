@@ -463,3 +463,26 @@ test('getExperimentalsForBlueprint normalises input and misses cleanly', () => {
     );
     assert.deepEqual(getExperimentalsForBlueprint('NoSuchBlueprint'), []);
 });
+
+test('the engineering-menu lookups name themselves for a wrong-typed argument', () => {
+    for (const [call, label] of [
+        [() => getEngineeringGroup(42 as unknown as string), 'getEngineeringGroup: symbol'],
+        // A facade over the group lookup, naming its own parameter rather than that one's.
+        [() => getBlueprintsForModule(42 as unknown as string), 'getBlueprintsForModule: symbol'],
+        [
+            () => getExperimentalsForModule(42 as unknown as string),
+            'getExperimentalsForModule: symbol',
+        ],
+        [
+            () => getExperimentalsForBlueprint(42 as unknown as string),
+            'getExperimentalsForBlueprint: blueprint',
+        ],
+    ] as const) {
+        assert.throws(call, {
+            name: 'TypeError',
+            message: `${label} must be a string, received number 42`,
+        });
+    }
+    assert.equal(getEngineeringGroup(null as unknown as string), null);
+    assert.deepEqual(getBlueprintsForModule(undefined as unknown as string), []);
+});

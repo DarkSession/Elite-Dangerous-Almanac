@@ -61,16 +61,19 @@ the original value for programmatic handling.
 Which half of your call the message names depends on what you handed over, and that is
 worth knowing before you write a `catch`:
 
-- **Most entry points name the parameter and the value** — every catalogue lookup, every
-  method that takes a slot key, `ProceduralSystem.fromName`, `ShipLoadout.empty`, and the
-  module argument of `ShipLoadout.setModule`. `toSystemAddress` prints the value it
-  rejected without a parameter to name, having only the one.
-- `parseSlef` and `ShipLoadout.fromSlef` name the offending **field** instead
+- **An entry point that takes a value names the parameter and the value**, and names
+  _itself_ — a lookup you reach through a facade reports the function you called, not the
+  one it delegates to, so `getShipSlots(42)` says `getShipSlots: symbol`, never
+  `getShipBySymbol: symbol`. `toSystemAddress` prints the value it rejected without a
+  parameter to name, having only the one.
+- **An entry point that takes a structure names the offending field.** `parseSlef` and
+  `ShipLoadout.fromSlef` check every one of them
   (`parseSlef: entries[0].data.Modules[0].Priority must be an integer from 0 to 4`) — the
   more useful half when the argument is a whole export, and the same text `inspectSlef`
-  reports as that entry's diagnostic. `ShipLoadout.fromLoadout` names the two fields it
-  checks, `event.Ship` and `event.Modules`, and trusts the rest; use `fromSlef` for an
-  event you did not produce.
+  reports as that entry's diagnostic. `ShipLoadout.fromLoadout` checks only the fields a
+  loadout cannot be built without — `event.Ship`, `event.Modules`, and each module's
+  `Slot` and `Item` — and trusts the rest, so use `fromSlef` for an event you did not
+  produce yourself.
 
 **A missing argument is not a wrong-typed one**, and the two get different answers:
 

@@ -9,7 +9,12 @@ import { isFinalGuardianWeaponEngineering } from './loadout-engineering.js';
 import { builtInModuleBySymbol } from './module-symbol-index.js';
 import { cloneLoadoutModule, cloneModuleStats } from './loadout-state.js';
 import { normalizeKey } from '../../internal/registry-index.js';
-import { truncate } from '../../internal/argument-guards.js';
+import {
+    describeValue,
+    requireString,
+    requireStringIfPresent,
+    truncate,
+} from '../../internal/argument-guards.js';
 
 /** Top-level figures an import carries, trusted over computed fallbacks. */
 export interface ImportedTopFigures {
@@ -37,6 +42,31 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
     const modules = new Map<string, LoadoutModule>();
     const slots = new Set<string>();
     for (const module of event.Modules) {
+        // The fields every module must carry, named here rather than wherever the walk
+        // below first dereferences them: an `Item` reaching a catalogue lookup as a
+        // number would otherwise report the lookup's own parameter to a caller who only
+        // ever called `fromLoadout`. The optional blocks stay unchecked, as the rest of
+        // the event does — `fromSlef` is the entry point that reports every bad field.
+        if (module === null || typeof module !== 'object') {
+            throw new TypeError(
+                `ShipLoadout.fromLoadout: event.Modules[] must hold module objects, received ${describeValue(module)}`,
+            );
+        }
+        requireString(module.Slot, 'ShipLoadout.fromLoadout: module.Slot');
+        requireString(module.Item, 'ShipLoadout.fromLoadout: module.Item');
+        if (module.Engineering) {
+            // Present-and-wrong-typed only: this path accepts a partial block, and a
+            // capture that states modifiers without naming the recipe is one this
+            // library already reads.
+            requireStringIfPresent(
+                module.Engineering.BlueprintName,
+                'ShipLoadout.fromLoadout: module.Engineering.BlueprintName',
+            );
+            requireStringIfPresent(
+                module.Engineering.ExperimentalEffect,
+                'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect',
+            );
+        }
         const normalizedSlot = module.Slot.toLowerCase();
         if (slots.has(normalizedSlot)) {
             throw new TypeError(

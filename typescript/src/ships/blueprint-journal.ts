@@ -20,6 +20,7 @@
 import { getBlueprintsForModule } from './engineering-options.js';
 import { BLUEPRINT_JOURNAL_NAMES } from './internal/blueprint-journal-names.js';
 import { normalizeKey } from '../internal/registry-index.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * The blueprint whose numbers a module actually rolls when a journal names `blueprint` on
@@ -88,8 +89,7 @@ import { normalizeKey } from '../internal/registry-index.js';
  * caller who never meets the collision never sees their own spelling rewritten.
  *
  * @throws {TypeError} If `symbol` or `fdname` is present and not a string. A nullish
- * one is a miss, answered the way an unrecognised one is — `fdname` comes back exactly
- * as it was passed.
+ * one is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { resolveBlueprintForModule } from '@elite-dangerous-almanac/core/ships/blueprint-journal';
@@ -116,6 +116,7 @@ import { normalizeKey } from '../internal/registry-index.js';
  * ```
  */
 export function resolveBlueprintForModule(symbol: string, fdname: string): string {
+    requireStringIfPresent(symbol, 'resolveBlueprintForModule: symbol');
     const wanted = normalizeKey(fdname, 'resolveBlueprintForModule: fdname');
     const offered = getBlueprintsForModule(symbol);
     // An id the menu already lists is the recipe it names; hand back what the caller wrote,

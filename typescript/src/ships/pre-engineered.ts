@@ -38,6 +38,7 @@
 import preEngineeredData from '../../../data/ships/pre-engineered.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { filterByKey } from '../internal/registry-index.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * Where a pre-engineered variant is obtained.
@@ -222,6 +223,8 @@ export function getPreEngineeredByBlueprint(fdname: string): readonly PreEnginee
  * @param symbol - A module symbol.
  * @returns `true` when {@link getPreEngineeredVariants} would return anything.
  *
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { isPreEngineered } from '@elite-dangerous-almanac/core/ships/pre-engineered';
@@ -231,5 +234,6 @@ export function getPreEngineeredByBlueprint(fdname: string): readonly PreEnginee
  * ```
  */
 export function isPreEngineered(symbol: string): boolean {
+    requireStringIfPresent(symbol, 'isPreEngineered: symbol');
     return getPreEngineeredVariants(symbol).length > 0;
 }

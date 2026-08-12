@@ -12,11 +12,14 @@ type StringField<T extends object> = {
 export type KeyIndex<T> = Readonly<Record<string, T>>;
 
 /**
- * The label for the catalogue's own side of a comparison. A catalogue value reaches
- * {@link normalizeKey} only once `stringField` has established it is a string, so this
- * names a failure a malformed data file would have to cause, never a caller.
+ * The label for the catalogue's own side of a comparison, and for a catalogue index built
+ * from bundled data. It names a failure a malformed data file would have to cause, never
+ * a caller: the comparison paths reach {@link normalizeKey} only once `stringField` or
+ * `Object.keys` has established a string, and the index builders read a `data/` payload.
+ *
+ * @internal
  */
-const CATALOGUE_KEY = 'catalogue key';
+export const CATALOGUE_KEY = 'catalogue key';
 
 /**
  * Normalize catalogue and consumer keys by trimming and folding case.

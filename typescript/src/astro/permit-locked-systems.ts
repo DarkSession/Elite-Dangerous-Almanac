@@ -8,7 +8,7 @@
  */
 
 import systemsData from '../../../data/astro/permit-locked-systems.jsonc' with { type: 'json' };
-import { normalizeKey } from '../internal/registry-index.js';
+import { CATALOGUE_KEY, normalizeKey } from '../internal/registry-index.js';
 import { tryToSystemAddress, type SystemAddressInput } from './system-address-input.js';
 
 export type { SystemAddressInput };
@@ -56,7 +56,7 @@ export const PERMIT_LOCKED_SYSTEMS: readonly PermitLockedSystem[] = Object.freez
 );
 
 const SYSTEM_BY_NAME: ReadonlyMap<string, PermitLockedSystem> = new Map(
-    PERMIT_LOCKED_SYSTEMS.map((system) => [normalizeKey(system.name, 'catalogue key'), system]),
+    PERMIT_LOCKED_SYSTEMS.map((system) => [normalizeKey(system.name, CATALOGUE_KEY), system]),
 );
 
 const SYSTEM_BY_ADDRESS: ReadonlyMap<bigint, PermitLockedSystem> = new Map(

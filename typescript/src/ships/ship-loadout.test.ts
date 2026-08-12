@@ -3373,8 +3373,9 @@ test('every slot-key method names a wrong-typed key rather than failing inside t
     const build = ShipLoadout.empty('Anaconda');
     const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
     build.setModule('FrameShiftDrive', fsd);
-    // The two private paths a slot key takes cover all ten methods between them, so this
-    // list is the check that no method reaches the build around them.
+    // `#requireSlot` and `#fittedKey` cover nine of these between them, and
+    // `removeModule` guards itself ahead of both. This list is the check that no method
+    // reaches the build around all three — an eleventh has to appear here too.
     const calls: readonly ((key: string) => unknown)[] = [
         (key) => build.setModule(key, fsd),
         (key) => build.removeModule(key),
@@ -3459,6 +3460,63 @@ test('fromLoadout names the two fields it needs instead of failing inside the wa
         name: 'TypeError',
         message: 'ShipLoadout.fromLoadout: event.Modules must be an array, received undefined',
     });
-    // A module list of the wrong shape is still the import's to report, field by field.
+    // Past the two top-level fields, the walk names the ones every module must carry.
+    for (const [modules, expected] of [
+        [
+            [42],
+            'ShipLoadout.fromLoadout: event.Modules[] must hold module objects, received number 42',
+        ],
+        [
+            [{ Slot: 42, Item: 'x' }],
+            'ShipLoadout.fromLoadout: module.Slot must be a string, received number 42',
+        ],
+        [
+            [{ Slot: 'FrameShiftDrive', Item: 42 }],
+            'ShipLoadout.fromLoadout: module.Item must be a string, received number 42',
+        ],
+        [
+            [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { BlueprintName: 42 },
+                },
+            ],
+            'ShipLoadout.fromLoadout: module.Engineering.BlueprintName must be a string, received number 42',
+        ],
+        [
+            [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { BlueprintName: 'FSD_LongRange', ExperimentalEffect: 42 },
+                },
+            ],
+            'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect must be a string, received number 42',
+        ],
+    ] as const) {
+        assert.throws(
+            () =>
+                ShipLoadout.fromLoadout({
+                    Ship: 'Anaconda',
+                    Modules: modules,
+                } as unknown as LoadoutEvent),
+            { name: 'TypeError', message: expected },
+        );
+    }
+    // A partial engineering block is still read, not rejected: a capture may state
+    // modifiers without naming the recipe.
+    assert.ok(
+        ShipLoadout.fromLoadout({
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { Modifiers: [{ Label: 'FSDOptimalMass', Value: 1 }] },
+                },
+            ],
+        } as unknown as LoadoutEvent),
+    );
     assert.equal(ShipLoadout.fromLoadout({ Ship: 'Anaconda', Modules: [] }).shipSymbol, 'Anaconda');
 });

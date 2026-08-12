@@ -44,6 +44,7 @@ import type { EngineeringModifier, LoadoutModule } from './slef.js';
 import { combinedRateOfFire } from './weapons.js';
 import { scaleDamageComponents } from './internal/damage-components.js';
 import { normalizeKey } from '../internal/registry-index.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /** A pre-engineered modifier is a fixed article, so its min and max are the same value. */
 function asFeatures(modifiers: readonly PreEngineeredModifier[]): BlueprintFeature[] {
@@ -108,7 +109,7 @@ function sameJournalNumber(actual: number, expected: number): boolean {
 function modifierKey(modifier: EngineeringModifier, module: OutfittingModule): string {
     return (
         fieldForLabel(modifier.Label, module) ??
-        `label:${normalizeKey(modifier.Label, 'ShipLoadout.fromLoadout: module.Engineering.Modifiers[].Label')}`
+        `label:${normalizeKey(modifier.Label, 'identifyPreEngineeredVariant: module.Engineering.Modifiers[].Label')}`
     );
 }
 
@@ -140,6 +141,9 @@ function sameModifier(actual: EngineeringModifier, expected: EngineeringModifier
  * @param module - A module from a journal `Loadout` event or SLEF export.
  * @returns The uniquely matching catalogue variant, or `null` when the stats do not
  * identify one.
+ * @throws {TypeError} If a field it reads is present and not a string — `module.Item`,
+ * or a modifier's `Label` or the block's `ExperimentalEffect`. A module with no
+ * engineering block answers `null` before any of them is read.
  *
  * @example
  * ```ts
@@ -155,6 +159,9 @@ function sameModifier(actual: EngineeringModifier, expected: EngineeringModifier
 export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineeredVariant | null {
     const engineering = module.Engineering;
     if (!engineering?.Modifiers?.length) return null;
+    // Named here rather than left to the catalogue lookup below, so a wrong-typed field
+    // reports the function the caller reached for instead of the one it delegates to.
+    requireStringIfPresent(module.Item, 'identifyPreEngineeredVariant: module.Item');
     const stock = getModuleBySymbol(module.Item, ALL_MODULES);
     if (!stock) return null;
 
@@ -164,7 +171,7 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
     }
     const capturedExperimental = normalizeKey(
         engineering.ExperimentalEffect,
-        'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect',
+        'identifyPreEngineeredVariant: module.Engineering.ExperimentalEffect',
     );
     const matches: PreEngineeredVariant[] = [];
     for (const candidate of getPreEngineeredVariants(module.Item)) {
