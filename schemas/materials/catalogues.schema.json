@@ -111,70 +111,31 @@
     "microResource": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["symbol", "category", "name"],
+      "required": ["symbol", "name"],
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
-        "category": {
-          "enum": ["component", "consumable", "data", "item"]
-        },
         "name": { "$ref": "#/definitions/nonEmptyString" }
       }
     },
     "componentMicroResourceCatalogue": {
       "type": "array",
       "minItems": 1,
-      "items": {
-        "allOf": [
-          { "$ref": "#/definitions/microResource" },
-          {
-            "properties": {
-              "category": { "const": "component" }
-            }
-          }
-        ]
-      }
+      "items": { "$ref": "#/definitions/microResource" }
     },
     "consumableMicroResourceCatalogue": {
       "type": "array",
       "minItems": 1,
-      "items": {
-        "allOf": [
-          { "$ref": "#/definitions/microResource" },
-          {
-            "properties": {
-              "category": { "const": "consumable" }
-            }
-          }
-        ]
-      }
+      "items": { "$ref": "#/definitions/microResource" }
     },
     "dataMicroResourceCatalogue": {
       "type": "array",
       "minItems": 1,
-      "items": {
-        "allOf": [
-          { "$ref": "#/definitions/microResource" },
-          {
-            "properties": {
-              "category": { "const": "data" }
-            }
-          }
-        ]
-      }
+      "items": { "$ref": "#/definitions/microResource" }
     },
     "itemMicroResourceCatalogue": {
       "type": "array",
       "minItems": 1,
-      "items": {
-        "allOf": [
-          { "$ref": "#/definitions/microResource" },
-          {
-            "properties": {
-              "category": { "const": "item" }
-            }
-          }
-        ]
-      }
+      "items": { "$ref": "#/definitions/microResource" }
     }
   }
 }

@@ -10,8 +10,11 @@
  */
 
 import type { MicroResource } from './micro-resources.js';
+import {
+    buildMicroResourceCatalogue,
+    type MicroResourceRecord,
+} from './internal/micro-resource-catalogue.js';
 import dataData from '../../../data/materials/micro-resources-data.jsonc' with { type: 'json' };
-import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * All 114 data micro resources, in Frontier's registry order.
@@ -26,6 +29,7 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  * DATA_MICRO_RESOURCES.length; // -> 114
  * ```
  */
-export const DATA_MICRO_RESOURCES: readonly MicroResource[] = deepFreeze(
-    dataData as readonly MicroResource[],
+export const DATA_MICRO_RESOURCES: readonly MicroResource[] = buildMicroResourceCatalogue(
+    dataData as readonly MicroResourceRecord[],
+    'data',
 );

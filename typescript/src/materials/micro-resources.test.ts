@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 
 import {
     getMicroResourceBySymbol,
@@ -28,6 +29,13 @@ const CATEGORIES: readonly MicroResourceCategory[] = ['component', 'consumable',
 for (const [name, expected] of Object.entries(microResourcesFixture.counts)) {
     test(`the ${name} micro-resource catalogue holds ${expected} entries`, () => {
         assert.equal(CATALOGUES[name]!.length, expected);
+    });
+}
+
+for (const [name, expected] of Object.entries(microResourcesFixture.membershipSha256)) {
+    test(`the ${name} micro-resource catalogue retains its acquired membership`, () => {
+        const symbols = CATALOGUES[name]!.map((resource) => resource.symbol).join('\n') + '\n';
+        assert.equal(createHash('sha256').update(symbols, 'utf8').digest('hex'), expected);
     });
 }
 

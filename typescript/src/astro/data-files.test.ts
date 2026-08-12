@@ -28,7 +28,11 @@
  *    in TypeScript types.
  */
 
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
 import { registerCatalogueDataTests } from '../internal/catalogue-data-tests.js';
+import planetaryNebulaeData from '../../../data/astro/nebulae-planetary.jsonc' with { type: 'json' };
 
 const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'galactic-region-cells.jsonc': 'regionCellCatalogue',
@@ -45,4 +49,16 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
 registerCatalogueDataTests({
     domain: 'astro',
     definitions: DEFINITION_BY_FILE,
+});
+
+test('planetary nebula data carries only systems that differ from their names', () => {
+    const records = planetaryNebulaeData as readonly {
+        readonly name: string;
+        readonly system?: string;
+    }[];
+    const explicitSystems = records.filter((record) => record.system !== undefined);
+    assert.equal(explicitSystems.length, 279);
+    for (const record of explicitSystems) {
+        assert.notEqual(record.system, record.name, record.name);
+    }
 });

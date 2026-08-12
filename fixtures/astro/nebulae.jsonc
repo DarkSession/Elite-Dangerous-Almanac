@@ -3,6 +3,8 @@
  *
  * Ground truth for the nebula catalogues (data/astro/nebulae-*.jsonc, from the EDAstro
  * nebulae-coordinates dataset). `counts` pins the size of each catalogue;
+ * `membershipSha256` pins each file's ordered names encoded as UTF-8, joined by LF (`U+000A`)
+ * and terminated by one final LF;
  * `records` pins individual entries; `nearest` and `within` pin the proximity queries. Coordinates
  * and distances are galactic light-years with Sol at the origin; distances are rounded to 6
  * decimal places, so compare with a small tolerance. `regionId` is the galactic codex region id
@@ -14,6 +16,11 @@
     "planetary": 5489,
     "procgen": 166,
     "all": 5835
+  },
+  "membershipSha256": {
+    "real": "9f18fb5e03957a65eff60e91aac8e56741130bd55062ada2a8b52a717dc7d195",
+    "planetary": "6a014c53be42af79a20383647c03d8b9a9e1e7aa3b694d5c0683350dac203c81",
+    "procgen": "e3083ef10b7d6fc71c6eca324d8f1ce42423759758cd79a2d61b18fa5ca64650"
   },
   "records": [
     {
@@ -75,6 +82,16 @@
       "z": 22444.2,
       "type": "procgen",
       "regionId": 4
+    },
+    {
+      "catalogue": "planetary",
+      "name": "Aemonz EQ-Y e1899",
+      "system": "Aemonz EQ-Y e1899",
+      "x": 4549.97,
+      "y": -850.562,
+      "z": 33732.4,
+      "type": "planetary",
+      "regionId": 3
     },
     {
       "catalogue": "planetary",

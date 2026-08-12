@@ -106,14 +106,13 @@
     "nebula": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "system", "x", "y", "z", "type", "regionId"],
+      "required": ["name", "x", "y", "z", "regionId"],
       "properties": {
         "name": { "$ref": "#/definitions/nonEmptyString" },
         "system": { "$ref": "#/definitions/nonEmptyString" },
         "x": { "type": "number" },
         "y": { "type": "number" },
         "z": { "type": "number" },
-        "type": { "enum": ["real", "planetary", "procgen"] },
         "regionId": { "type": "integer", "minimum": 1, "maximum": 42 }
       }
     },
@@ -123,27 +122,14 @@
       "items": {
         "allOf": [
           { "$ref": "#/definitions/nebula" },
-          {
-            "properties": {
-              "type": { "const": "real" }
-            }
-          }
+          { "required": ["system"] }
         ]
       }
     },
     "planetaryNebulaCatalogue": {
       "type": "array",
       "minItems": 1,
-      "items": {
-        "allOf": [
-          { "$ref": "#/definitions/nebula" },
-          {
-            "properties": {
-              "type": { "const": "planetary" }
-            }
-          }
-        ]
-      }
+      "items": { "$ref": "#/definitions/nebula" }
     },
     "procgenNebulaCatalogue": {
       "type": "array",
@@ -151,11 +137,7 @@
       "items": {
         "allOf": [
           { "$ref": "#/definitions/nebula" },
-          {
-            "properties": {
-              "type": { "const": "procgen" }
-            }
-          }
+          { "required": ["system"] }
         ]
       }
     },

@@ -8,225 +8,182 @@
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/materials/SOURCES.md.
  *
- * Each record is { symbol, category, name }. `symbol` is Frontier's internal id
+ * Each record is { symbol, name }. `symbol` is Frontier's internal id
  * (e.g. `graphene`) — what the player journal reports, matched case-insensitively;
- * `name` is the display name. `category` is one of component / consumable / data /
- * item. Frontier's numeric micro-resource id from the CSV is not carried.
+ * `name` is the display name. The file determines the `item` category, so it is not
+ * repeated on every record. Frontier's numeric micro-resource id is not carried.
  */
 [
   {
     "symbol": "chemicalsample",
-    "category": "item",
     "name": "Chemical Sample"
   },
   {
     "symbol": "biochemicalagent",
-    "category": "item",
     "name": "Biochemical Agent"
   },
   {
     "symbol": "californium",
-    "category": "item",
     "name": "Californium"
   },
   {
     "symbol": "castfossil",
-    "category": "item",
     "name": "Cast Fossil"
   },
   {
     "symbol": "geneticsample",
-    "category": "item",
     "name": "Biological Sample"
   },
   {
     "symbol": "gmeds",
-    "category": "item",
     "name": "G-Meds"
   },
   {
     "symbol": "healthmonitor",
-    "category": "item",
     "name": "Health Monitor"
   },
   {
     "symbol": "inertiacanister",
-    "category": "item",
     "name": "Inertia Canister"
   },
   {
     "symbol": "insight",
-    "category": "item",
     "name": "Insight"
   },
   {
     "symbol": "insightdatabank",
-    "category": "item",
     "name": "Insight Data Bank"
   },
   {
     "symbol": "ionisedgas",
-    "category": "item",
     "name": "Ionised Gas"
   },
   {
     "symbol": "mutageniccatalyst",
-    "category": "item",
     "name": "Mutagenic Catalyst"
   },
   {
     "symbol": "personalcomputer",
-    "category": "item",
     "name": "Personal Computer"
   },
   {
     "symbol": "petrifiedfossil",
-    "category": "item",
     "name": "Petrified Fossil"
   },
   {
     "symbol": "syntheticgenome",
-    "category": "item",
     "name": "Synthetic Genome"
   },
   {
     "symbol": "trueformfossil",
-    "category": "item",
     "name": "True Form Fossil"
   },
   {
     "symbol": "geneticrepairmeds",
-    "category": "item",
     "name": "Genetic Repair Meds"
   },
   {
     "symbol": "buildingschematic",
-    "category": "item",
     "name": "Building Schematic"
   },
   {
     "symbol": "compactlibrary",
-    "category": "item",
     "name": "Compact Library"
   },
   {
     "symbol": "deepmantlesample",
-    "category": "item",
     "name": "Deep Mantle Sample"
   },
   {
     "symbol": "hush",
-    "category": "item",
     "name": "Hush"
   },
   {
     "symbol": "infinity",
-    "category": "item",
     "name": "Infinity"
   },
   {
     "symbol": "insightentertainmentsuite",
-    "category": "item",
     "name": "Insight Entertainment Suite"
   },
   {
     "symbol": "lazarus",
-    "category": "item",
     "name": "Lazarus"
   },
   {
     "symbol": "microbialinhibitor",
-    "category": "item",
     "name": "Microbial Inhibitor"
   },
   {
     "symbol": "nutritionalconcentrate",
-    "category": "item",
     "name": "Nutritional Concentrate"
   },
   {
     "symbol": "personaldocuments",
-    "category": "item",
     "name": "Personal Documents"
   },
   {
     "symbol": "push",
-    "category": "item",
     "name": "Push"
   },
   {
     "symbol": "shipschematic",
-    "category": "item",
     "name": "Ship Schematic"
   },
   {
     "symbol": "suitschematic",
-    "category": "item",
     "name": "Suit Schematic"
   },
   {
     "symbol": "surveillanceequipment",
-    "category": "item",
     "name": "Surveillance Equipment"
   },
   {
     "symbol": "syntheticpathogen",
-    "category": "item",
     "name": "Synthetic Pathogen"
   },
   {
     "symbol": "universaltranslator",
-    "category": "item",
     "name": "Universal Translator"
   },
   {
     "symbol": "vehicleschematic",
-    "category": "item",
     "name": "Vehicle Schematic"
   },
   {
     "symbol": "weaponschematic",
-    "category": "item",
     "name": "Weapon Schematic"
   },
   {
     "symbol": "pyrolyticcatalyst",
-    "category": "item",
     "name": "Pyrolytic Catalyst"
   },
   {
     "symbol": "inorganiccontaminant",
-    "category": "item",
     "name": "Inorganic Contaminant"
   },
   {
     "symbol": "agriculturalprocesssample",
-    "category": "item",
     "name": "Agricultural Process Sample"
   },
   {
     "symbol": "chemicalprocesssample",
-    "category": "item",
     "name": "Chemical Process Sample"
   },
   {
     "symbol": "refinementprocesssample",
-    "category": "item",
     "name": "Refinement Process Sample"
   },
   {
     "symbol": "compressionliquefiedgas",
-    "category": "item",
     "name": "Compression-Liquefied Gas"
   },
   {
     "symbol": "degradedpowerregulator",
-    "category": "item",
     "name": "Degraded Power Regulator"
   },
   {
     "symbol": "largecapacitypowerregulator",
-    "category": "item",
     "name": "Power Regulator"
   }
 ]
