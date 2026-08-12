@@ -3,7 +3,8 @@
  *
  * Ground truth for the nebula catalogues (data/astro/nebulae-*.jsonc, from the EDAstro
  * nebulae-coordinates dataset). `counts` pins the size of each catalogue;
- * `membershipSha256` pins each file's ordered names as UTF-8, one per line with a final newline;
+ * `membershipSha256` pins each file's ordered names encoded as UTF-8, joined by LF (`U+000A`)
+ * and terminated by one final LF;
  * `records` pins individual entries; `nearest` and `within` pin the proximity queries. Coordinates
  * and distances are galactic light-years with Sol at the origin; distances are rounded to 6
  * decimal places, so compare with a small tolerance. `regionId` is the galactic codex region id
