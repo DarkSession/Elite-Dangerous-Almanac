@@ -821,7 +821,12 @@ test('types are exposed by owning runtime entries, not type-only subpaths', asyn
             [
                 "import type { GalacticPosition } from '@elite-dangerous-almanac/core/astro';",
                 "import type { FittedModule, LoadoutSlot } from '@elite-dangerous-almanac/core/ships';",
-                'declare const values: [GalacticPosition, FittedModule, LoadoutSlot];',
+                "import type { SystemAddressInput as AddressFromSystemAddress } from '@elite-dangerous-almanac/core/astro/system-address';",
+                "import type { SystemAddressInput as AddressFromProceduralSystem } from '@elite-dangerous-almanac/core/astro/procedural-system';",
+                "import type { SystemAddressInput as AddressFromCodexLookup } from '@elite-dangerous-almanac/core/astro/codex-region-lookup';",
+                "import type { SystemAddressInput as AddressFromLockedSystems } from '@elite-dangerous-almanac/core/astro/permit-locked-systems';",
+                "import type { SystemAddressInput as AddressFromPermitLocks } from '@elite-dangerous-almanac/core/astro/permit-locks';",
+                'declare const values: [GalacticPosition, FittedModule, LoadoutSlot, AddressFromSystemAddress, AddressFromProceduralSystem, AddressFromCodexLookup, AddressFromLockedSystems, AddressFromPermitLocks];',
                 'void values;',
             ].join('\n'),
         );

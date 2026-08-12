@@ -23,6 +23,8 @@ import { packBoxelCode } from './internal/system-name-code.js';
 import type { SectorGridPosition } from './sector-name.js';
 import { toSystemAddress, type SystemAddressInput } from './system-address-input.js';
 
+export type { SystemAddressInput } from './system-address-input.js';
+
 /** The edge of one procedural sector in internal units (1280 ly × 32 units/ly). */
 export const SECTOR_INTERNAL_SIZE = 40960;
 
