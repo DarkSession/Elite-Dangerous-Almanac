@@ -13,6 +13,10 @@ function matchingSpec(text) {
     return parsed.spec;
 }
 
+function manifestRoundTripSpec(text) {
+    return JSON.parse(JSON.stringify(matchingSpec(text)));
+}
+
 test('instruments same-line and following-line expression claims without reading strings', () => {
     const source = [
         `const marker = '// -> not a claim';`,
@@ -96,6 +100,30 @@ test('parses exact primitive and structured values', () => {
     ]) {
         assert.deepEqual(compareExampleValue(actual, matchingSpec(text)), { pass: true }, text);
     }
+});
+
+test('preserves exact negative zero through the JSON runtime manifest', () => {
+    const scalar = manifestRoundTripSpec('-0');
+
+    assert.deepEqual(scalar, { kind: 'number-special', value: '-0' });
+    assert.deepEqual(compareExampleValue(-0, scalar), { pass: true });
+    assert.equal(compareExampleValue(0, scalar).pass, false);
+
+    const structured = manifestRoundTripSpec('[-0, { nested: -0 }]');
+
+    assert.deepEqual(structured, {
+        kind: 'array',
+        items: [
+            { kind: 'number-special', value: '-0' },
+            {
+                kind: 'object',
+                entries: [['nested', { kind: 'number-special', value: '-0' }]],
+            },
+        ],
+    });
+    assert.deepEqual(compareExampleValue([-0, { nested: -0 }], structured), { pass: true });
+    assert.equal(compareExampleValue([0, { nested: -0 }], structured).pass, false);
+    assert.equal(compareExampleValue([-0, { nested: 0 }], structured).pass, false);
 });
 
 test('rounds finite decimals to documented precision and preserves exact integers', () => {

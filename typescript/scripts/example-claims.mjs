@@ -175,7 +175,7 @@ export function parseExpectedClaim(expected) {
                 },
             };
         }
-        return { status: 'match', spec: { kind: 'number-exact', value: prefix.value } };
+        return { status: 'match', spec: exactNumberSpec(prefix.value) };
     }
 
     if (decimalPrefix) {
@@ -402,7 +402,7 @@ function decodeLiteralNode(node) {
         if (!Number.isFinite(value)) return null;
         const decimalPlaces = decimalPlacesIn(text);
         return decimalPlaces === null
-            ? { kind: 'number-exact', value }
+            ? exactNumberSpec(value)
             : { kind: 'number-rounded', value, text, decimalPlaces };
     }
     if (ts.isBigIntLiteral(node)) {
@@ -424,10 +424,9 @@ function decodeLiteralNode(node) {
             return null;
         const decoded = decodeLiteralNode(node.operand);
         if (decoded?.kind === 'number-exact') {
-            return {
-                kind: 'number-exact',
-                value: node.operator === ts.SyntaxKind.MinusToken ? -decoded.value : decoded.value,
-            };
+            const value =
+                node.operator === ts.SyntaxKind.MinusToken ? -decoded.value : decoded.value;
+            return exactNumberSpec(value);
         }
         if (decoded?.kind === 'number-rounded') {
             const negative = node.operator === ts.SyntaxKind.MinusToken;
@@ -475,6 +474,15 @@ function decodeLiteralNode(node) {
         return { kind: 'object', entries };
     }
     return null;
+}
+
+function exactNumberSpec(value) {
+    // JSON.stringify normalises -0 to 0. The runtime manifest crosses a JSON boundary,
+    // so use the string-backed special-number representation to retain Object.is
+    // semantics for scalar and recursively decoded structured claims.
+    return Object.is(value, -0)
+        ? { kind: 'number-special', value: '-0' }
+        : { kind: 'number-exact', value };
 }
 
 function propertyName(node) {
