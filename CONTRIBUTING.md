@@ -31,7 +31,10 @@ the exact version pinned by the `packageManager` field in `typescript/package.js
 no global pnpm install is needed and everyone runs the same one. Corepack writes its
 shim next to the `node` binary, so that first command needs `sudo` wherever Node itself
 was installed as root — which is why the devcontainer does it at image build time
-instead. `--frozen-lockfile` is
+instead. Uninstall any pnpm you already have installed globally before enabling
+Corepack: if it comes earlier on `PATH` it keeps winning, and although it honours the
+pinned version it does not verify the integrity hash pinned with it. `command -v pnpm`
+should name the Corepack shim, next to `node`. `--frozen-lockfile` is
 the equivalent of `npm ci`: it installs what `pnpm-lock.yaml` pins and fails if the
 lockfile and the manifest disagree.
 
