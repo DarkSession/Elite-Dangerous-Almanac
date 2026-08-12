@@ -30,6 +30,8 @@ import type { SystemAddressInput } from './system-address-input.js';
 import { boxelEdgeLy } from './mass-code.js';
 import cellData from '../../../data/astro/galactic-region-cells.jsonc' with { type: 'json' };
 
+export type { SystemAddressInput } from './system-address-input.js';
+
 const { projection, regions } = cellData as {
     projection: {
         x0: number;

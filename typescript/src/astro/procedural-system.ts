@@ -35,6 +35,8 @@ import { isPermitLockedRegionName } from './permit-locked-regions.js';
 import type { GalacticPosition } from './galactic-position.js';
 import { toSystemAddress, type SystemAddressInput } from './system-address-input.js';
 
+export type { SystemAddressInput } from './system-address-input.js';
+
 /** Attributes a hand-authored region contributes to a decoded system. */
 interface HaOverride {
     parts: SystemNameParts;
