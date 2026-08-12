@@ -1117,6 +1117,27 @@ test('empty names a non-string hull argument instead of failing inside the looku
     );
 });
 
+test('an unrecognised hull symbol is bounded everywhere it reaches a message', () => {
+    // An import carries whatever `Ship` the capture held, so every sentence that names an
+    // unknown hull — not just the one `empty` throws — has to survive an oversized one.
+    const build = ShipLoadout.fromLoadout({ Ship: 'x'.repeat(20_000), Modules: [] });
+    const bounded =
+        (label: string) =>
+        ({ message }: Error) => {
+            assert.ok(message.length < 200, `${label} message not shortened: ${message.length}`);
+            assert.match(message, /hull "x+…"/);
+            return true;
+        };
+
+    assert.throws(() => build.slots(), bounded('slots'));
+    assert.throws(() => build.toLoadoutEvent({ moduleOrder: 'slots' }), bounded('toLoadoutEvent'));
+
+    const unknownHull = build.validation.issues.find((issue) => issue.code === 'unknownHull');
+    assert.ok(unknownHull, 'an unknown hull must be reported');
+    assert.ok(unknownHull.message.length < 200, `validation: ${unknownHull.message.length}`);
+    assert.match(unknownHull.message, /hull x+…$/);
+});
+
 test('modulesForSlot lists only fitting modules', () => {
     const conda = ShipLoadout.empty('Anaconda');
     const drives = conda.modulesForSlot('FrameShiftDrive');

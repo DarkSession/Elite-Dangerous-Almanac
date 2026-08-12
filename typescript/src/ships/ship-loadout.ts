@@ -480,8 +480,9 @@ export class ShipLoadout {
     static empty(shipSymbol: string): ShipLoadout {
         const layout = getShipSlots(requireString(shipSymbol, 'ShipLoadout.empty: shipSymbol'));
         if (!layout) {
-            // Quoted through `truncate` because the symbol is unvalidated caller input: a
-            // whole payload passed by mistake is identified, not reproduced.
+            // Quoted through `truncate` because the symbol is unvalidated caller input,
+            // as everywhere a hull symbol reaches a message: a whole payload passed by
+            // mistake is identified, not reproduced.
             throw new TypeError(
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
@@ -1586,7 +1587,9 @@ export class ShipLoadout {
     #layout(): readonly BuildSlot[] {
         const layout = this.#layoutOrNull();
         if (!layout) {
-            throw new TypeError(`ShipLoadout: no slot layout for hull "${this.#shipSymbol}"`);
+            throw new TypeError(
+                `ShipLoadout: no slot layout for hull "${truncate(this.#shipSymbol)}"`,
+            );
         }
         return layout;
     }

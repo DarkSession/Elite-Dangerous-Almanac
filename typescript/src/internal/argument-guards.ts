@@ -10,7 +10,7 @@
  */
 
 /**
- * Longest value preview {@link describeValue} embeds, in characters.
+ * Longest value preview {@link describeValue} embeds, in UTF-16 code units.
  *
  * An error message identifies the argument; it does not reproduce it. A caller who
  * hands a whole SLEF payload where a symbol belongs gets enough of it to recognise
@@ -25,7 +25,8 @@ const PREVIEW_LIMIT = 60;
  * Strings are quoted, primitives are printed, and an object or function is described by
  * its type followed by a JSON preview. Either rendering of a value is truncated past
  * {@link PREVIEW_LIMIT}; an object's is omitted entirely when the value cannot be
- * serialized (a cycle, a `bigint` inside, a function).
+ * serialized (a cycle, a `bigint` inside, a function). `null` and `undefined` are
+ * rendered bare — naming their type as well would say the same thing twice.
  *
  * @internal
  */
@@ -73,9 +74,9 @@ function previewOf(value: unknown): string | null {
 /**
  * Shorten a rendering to {@link PREVIEW_LIMIT}, marking that it was shortened.
  *
- * Exported for the throws that quote a caller's own string rather than describing it —
- * `ShipLoadout.empty`'s unknown-hull message, say — so an oversized argument is bounded
- * there on the same terms as it is here.
+ * Exported for the throws that quote a caller's own string rather than describing it — the
+ * four messages that name an unrecognised hull symbol — so an oversized argument is
+ * bounded there on the same terms as it is here.
  *
  * @internal
  */

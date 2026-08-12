@@ -56,8 +56,11 @@ scheme does not cover that system".
 How completely that is enforced varies, which is worth knowing before you write a `catch`:
 
 - `ProceduralSystem.fromName`, `ShipLoadout.empty` and the module argument of
-  `ShipLoadout.setModule` name the parameter and the value. `toSystemAddress` and the SLEF
-  entry points name the value in their own words.
+  `ShipLoadout.setModule` name the parameter and the value. `toSystemAddress` prints the
+  value it rejected. `parseSlef` and `ShipLoadout.fromSlef` name the offending **field**
+  instead (`parseSlef: entries[0].data.Modules[0].Priority must be an integer from 0 to
+  4`) — the more useful half when the argument is a whole export, and the same text
+  `inspectSlef` reports as that entry's diagnostic.
 - At the entry points
   [issue 201](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201) lists, a
   wrong type still throws `TypeError` — but the message is the internal property access
