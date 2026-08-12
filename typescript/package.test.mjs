@@ -876,7 +876,7 @@ test('the publication manifest includes consumer documentation and notices', asy
     );
     assert.equal(pkg.homepage, 'https://github.com/DarkSession/Elite-Dangerous-Almanac#readme');
     assert.deepEqual(
-        ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md'].map((name) => [
+        ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'PROVENANCE'].map((name) => [
             name,
             pkg.files.includes(name),
         ]),
@@ -884,8 +884,56 @@ test('the publication manifest includes consumer documentation and notices', asy
             ['README.md', true],
             ['LICENSE', true],
             ['THIRD_PARTY_NOTICES.md', true],
+            ['PROVENANCE', true],
         ],
     );
+    const readme = await readFile(new URL('./README.md', import.meta.url), 'utf8');
+    assert.match(
+        readme,
+        /\]\(\.\/PROVENANCE\/SNAPSHOTS\.md\)/,
+        'the packaged README must link to its local provenance record',
+    );
+
+    // Provenance is separate from the legal notice so THIRD_PARTY_NOTICES can stay
+    // byte-identical to the canonical ATTRIBUTIONS.md. The generated directory must
+    // contain the snapshot policy and exactly one source record for every data domain:
+    // a hard-coded list would silently omit the next feature area.
+    const dataRoot = new URL('../data/', import.meta.url);
+    const provenanceRoot = new URL('./PROVENANCE/', import.meta.url);
+    const snapshots = await readFile(new URL('SNAPSHOTS.md', provenanceRoot), 'utf8');
+    const canonicalSnapshots = await readFile(new URL('SNAPSHOTS.md', dataRoot), 'utf8');
+    assert.equal(
+        snapshots,
+        canonicalSnapshots,
+        'PROVENANCE/SNAPSHOTS.md is stale — run `npm run build`',
+    );
+
+    const canonicalDomains = (await readdir(dataRoot, { withFileTypes: true }))
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name)
+        .sort();
+    const packagedEntries = await readdir(provenanceRoot, { withFileTypes: true });
+    const packagedDomains = packagedEntries
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name)
+        .sort();
+    const packagedFiles = packagedEntries
+        .filter((entry) => entry.isFile())
+        .map((entry) => entry.name)
+        .sort();
+    assert.deepEqual(packagedDomains, canonicalDomains);
+    assert.deepEqual(packagedFiles, ['SNAPSHOTS.md']);
+
+    for (const domain of canonicalDomains) {
+        const packaged = await readFile(new URL(`${domain}/SOURCES.md`, provenanceRoot), 'utf8');
+        const canonical = await readFile(new URL(`${domain}/SOURCES.md`, dataRoot), 'utf8');
+        assert.equal(
+            packaged,
+            canonical,
+            `PROVENANCE/${domain}/SOURCES.md is stale — run \`npm run build\``,
+        );
+        assert.deepEqual(await readdir(new URL(`${domain}/`, provenanceRoot)), ['SOURCES.md']);
+    }
 
     // The packaged notice is a generated copy of the repository's canonical
     // ATTRIBUTIONS.md. Assert it exists and is byte-identical: a missing or stale
