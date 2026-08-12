@@ -81,9 +81,9 @@ import { normalizeKey } from '../internal/registry-index.js';
  * recipe the module has: the game never rolls a sensor suite's Long Range on a scanner.
  *
  * @param symbol - A module symbol, e.g. `"Hpt_CloudScanner_Size0_Class5"`.
- * @param blueprint - A blueprint id, matched case-insensitively and trimmed.
+ * @param fdname - A blueprint recipe `fdname`, matched case-insensitively and trimmed.
  * @returns The id to join to `BLUEPRINTS`, in that catalogue's spelling when a journal
- * name resolved, and otherwise `blueprint` exactly as it was passed — byte for byte, so a
+ * name resolved, and otherwise `fdname` exactly as it was passed — byte for byte, so a
  * caller who never meets the collision never sees their own spelling rewritten.
  *
  * @example
@@ -111,15 +111,15 @@ import { normalizeKey } from '../internal/registry-index.js';
  * // -> 'Weapon_Overcharged'
  * ```
  */
-export function resolveBlueprintForModule(symbol: string, blueprint: string): string {
-    const wanted = normalizeKey(blueprint);
+export function resolveBlueprintForModule(symbol: string, fdname: string): string {
+    const wanted = normalizeKey(fdname);
     const offered = getBlueprintsForModule(symbol);
     // An id the menu already lists is the recipe it names; hand back what the caller wrote,
     // so a caller who never meets the collision never sees their own spelling rewritten.
-    if (offered.some((id) => id.toLowerCase() === wanted)) return blueprint;
+    if (offered.some((id) => id.toLowerCase() === wanted)) return fdname;
     for (const id of offered) {
         const journalName = BLUEPRINT_JOURNAL_NAMES[id];
         if (journalName !== undefined && journalName.toLowerCase() === wanted) return id;
     }
-    return blueprint;
+    return fdname;
 }

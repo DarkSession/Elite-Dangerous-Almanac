@@ -152,6 +152,12 @@ getShipBySymbol("empire_trader")?.name; // "Imperial Clipper"
 getModuleBySymbol("Int_Hyperdrive_Size6_Class5")?.name;
 ```
 
+`symbol` is Frontier's item id for a hull, module, material, micro-resource or
+commodity. Engineering uses a separate identity space: `fdname` is the blueprint
+recipe or experimental-effect id written in the journal's `Engineering` block.
+Functions that ask what engineering a module accepts therefore take the module's
+`symbol`; functions that look up a recipe or effect take its `fdname`.
+
 ### Materials and commodities
 
 ```ts

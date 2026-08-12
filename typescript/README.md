@@ -98,6 +98,12 @@ module lookups search their complete registry by default and accept an optional
 catalogue to narrow the results. Nebula queries require an explicit catalogue so the
 large combined dataset is never an implicit dependency.
 
+`symbol` is Frontier's item id for a hull, module, material, micro-resource or
+commodity. Engineering uses a separate identity space: `fdname` is the blueprint
+recipe or experimental-effect id written in the journal's `Engineering` block.
+Functions that ask what engineering a module accepts therefore take the module's
+`symbol`; functions that look up a recipe or effect take its `fdname`.
+
 ## Important behavior
 
 - Exported catalogues are deeply frozen.
