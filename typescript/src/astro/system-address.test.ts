@@ -6,7 +6,11 @@ import {
     absoluteBoxelToBoxelCode,
     boxelCodeToAbsoluteBoxel,
     decodeModSystemAddress,
+    encodeModSystemAddress,
+    encodeSystemAddress,
 } from './system-address.js';
+import { resolveNamingRegionOrigin } from './naming-region-origins.js';
+import { parseSystemName } from './system-name.js';
 import { sectorGridPositionFromName } from './sector-name.js';
 import { massCodeToSizeClass } from './mass-code.js';
 import fixture from '../../../fixtures/astro/system-addresses.jsonc' with { type: 'json' };
@@ -128,4 +132,24 @@ test('factories reject encoding immediately instead of creating a partially usab
 
     // Fragment-valid sector that resolves outside the galaxy's 6-bit y range.
     assert.throws(() => ProceduralSystem.fromName('Pyruetchoo AA-A d0'), /does not fit/);
+});
+
+test('encoding refuses hand-built parts whose letters are outside 0-25', () => {
+    // Parsed parts are always in range, so only a caller assembling parts itself can
+    // get here. Encoding a letter of 26 silently addressed a different system before.
+    const parts = parseSystemName('Blae Eock KC-C d0-0');
+    assert.ok(parts);
+    const origin = resolveNamingRegionOrigin(parts.regionName);
+    assert.ok(origin);
+
+    for (const encode of [encodeSystemAddress, encodeModSystemAddress]) {
+        assert.throws(() => encode({ ...parts, l1: 26 }, origin), {
+            name: 'RangeError',
+            message: /Boxel letters out of range/,
+        });
+        assert.throws(() => encode({ ...parts, n1: -1 }, origin), {
+            name: 'RangeError',
+            message: /Boxel number N1 out of range/,
+        });
+    }
 });

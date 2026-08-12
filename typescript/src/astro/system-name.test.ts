@@ -85,7 +85,9 @@ test('boxel code <-> letters is a bijection', () => {
     assert.deepEqual(boxelCodeToLetters(198_410), { l1: 4, l2: 13, l3: 7, n1: 11 });
 });
 
-test('rejects boxel letters outside 0-25', () => {
+test('rejects a letter that is not an index 0-25', () => {
+    // Each of these would carry into the next base-26 digit and pack as a different
+    // boxel, so the message names all three letters rather than just the class.
     for (const [l1, l2, l3] of [
         [-1, 0, 0],
         [26, 0, 0],
@@ -96,18 +98,32 @@ test('rejects boxel letters outside 0-25', () => {
         [0, 0, 26],
         [Number.NaN, 0, 0],
     ]) {
-        assert.throws(() => lettersToBoxelCode(l1!, l2!, l3!, 0), RangeError, `${l1},${l2},${l3}`);
+        assert.throws(() => lettersToBoxelCode(l1!, l2!, l3!, 0), {
+            name: 'RangeError',
+            message: /Boxel letters out of range/,
+        });
     }
 });
 
-test('rejects a negative or fractional N1', () => {
-    for (const n1 of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
-        assert.throws(() => lettersToBoxelCode(0, 0, 0, n1), RangeError, `${n1}`);
+test('rejects an N1 that is negative, fractional, or too large to pack exactly', () => {
+    // 2**53 / 26**3 is the first N1 whose packed code would round; N1 never exceeds
+    // ~119 in an encodable address, so this only catches a caller inventing values.
+    for (const n1 of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, 2 ** 53]) {
+        assert.throws(() => lettersToBoxelCode(0, 0, 0, n1), {
+            name: 'RangeError',
+            message: /Boxel number N1 out of range/,
+        });
     }
+    // The bound is the packing limit, not an in-game one: the largest exact N1 packs.
+    const maxN1 = Math.floor(Number.MAX_SAFE_INTEGER / 26 ** 3);
+    assert.equal(boxelCodeToLetters(lettersToBoxelCode(0, 0, 0, maxN1)).n1, maxN1);
 });
 
-test('rejects boxel codes no packing could produce', () => {
+test('rejects a boxel code no packing could produce', () => {
     for (const code of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, 2 ** 53]) {
-        assert.throws(() => boxelCodeToLetters(code), RangeError, `${code}`);
+        assert.throws(() => boxelCodeToLetters(code), {
+            name: 'RangeError',
+            message: /Boxel code out of range/,
+        });
     }
 });
