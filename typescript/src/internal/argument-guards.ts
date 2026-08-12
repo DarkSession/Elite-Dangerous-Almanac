@@ -74,8 +74,8 @@ function previewOf(value: unknown): string | null {
 /**
  * Shorten a rendering to {@link PREVIEW_LIMIT}, marking that it was shortened.
  *
- * Exported for `ShipLoadout.empty`'s unknown-hull message, the one throw that quotes an
- * argument these guards have already checked is a string, so that method does not bound an
+ * Exported for `ShipLoadout.empty`'s unknown-hull message, the one throw that quotes a
+ * whole argument these guards have already checked, so that method does not bound an
  * oversized argument on one branch and reproduce it on the next. It is not a general rule
  * for the library's messages, which quote a caller's string in full — bounding those is
  * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/213, and each site has to

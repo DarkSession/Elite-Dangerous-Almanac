@@ -116,6 +116,9 @@ function applyHaOverride(
  * - {@link ProceduralSystem.fromName} throws `RangeError` immediately when a
  *   syntactically valid name cannot be encoded (unknown naming region, or an address
  *   field out of range).
+ * - {@link ProceduralSystem.fromName} throws `TypeError` when `name` is not a string at
+ *   all, a missing one included — that is a caller bug, not a name the scheme does not
+ *   cover, so it is not reported as `null`.
  *
  * For the galactic codex region of a system, pass its address to the standalone
  * `findCodexRegionForBoxel` (from `./codex-region-lookup`) — kept off this facade so
