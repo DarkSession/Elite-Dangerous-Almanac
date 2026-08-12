@@ -1,7 +1,8 @@
 # Data sources — `data/commodities/`
 
-**Acquired:** 2026-07-24. **Upstream revision:** unavailable. One record comes from a
-player-journal observation, documented under Standard commodities.
+**Acquired:** FDevIDs 2026-07-24 UTC; player-journal record 2026-08-02 UTC; in-game
+category verification 2026-08-12 UTC. **Upstream revision:** unavailable. One record
+combines the latter two sources, documented under Standard commodities.
 
 ## Standard commodities
 
@@ -19,13 +20,12 @@ player-journal observation, documented under Standard commodities.
   "Curated Commodity Package". Acquired from a player-journal `MarketBuy` event timestamped
   `2026-08-01T16:12:01Z` (`MarketID` 128667761, `BuyPrice` 347), which supplies the
   `symbol` (`Type`) and `name` (`Type_Localised`) verbatim. A `MarketBuy` carries **no
-  category**, so `Industrial Materials` is a maintainer assignment rather than an observed
-  value ([#226](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/226)). The
-  record is appended after the registry order rather than inserted into it,
-  so FDevIDs order is still recoverable by dropping the tail. Standard rather than rare: a
-  `MarketBuy` of 388 units far exceeds any rare's per-station allocation. The event's
-  `Count`, `BuyPrice`, `TotalCost` and `MarketID` are dropped — this is an
-  id/name/category registry, not a price sheet.
+  category**; `Industrial Materials` is separately observed in the running game's commodity
+  market (2026-08-12 UTC; no immutable revision). The record is appended after the registry
+  order rather than inserted into it, so FDevIDs order is still recoverable by dropping the
+  tail. Standard rather than rare: a `MarketBuy` of 388 units far exceeds any rare's
+  per-station allocation. The event's `Count`, `BuyPrice`, `TotalCost` and `MarketID` are
+  dropped — this is an id/name/category registry, not a price sheet.
 
 ## Rare commodities
 
