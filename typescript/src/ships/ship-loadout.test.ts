@@ -3437,6 +3437,19 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
             message: /fdname must be a string/,
         },
     );
+    // Nullish is absent, so the guard and the readers below it agree: `null` used to
+    // pass the guard as "absent" and then reach the catalogue as the string "null",
+    // answering `RangeError: unknown experimental effect "null"`.
+    assert.ok(
+        build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+            grade: 5,
+            experimental: null as unknown as string,
+        }),
+    );
+    assert.equal(
+        build.fittedModuleAt('FrameShiftDrive')?.engineering?.ExperimentalEffect,
+        undefined,
+    );
     // An absent experimental effect is not one of these — it is simply no effect.
     assert.ok(build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 }));
 });
@@ -3546,41 +3559,51 @@ test('fromLoadout names the structure it needs instead of failing inside the wal
             },
         );
     }
-    // A modifier's `Label` names a stat, so it is checked — under this method's name,
-    // not that of whichever function reads it first. The rest of a modifier is not, and
-    // an element that is not an object at all is left to `fromSlef` to report.
-    assert.throws(
-        () =>
-            ShipLoadout.fromLoadout({
-                Ship: 'Anaconda',
-                Modules: [
-                    {
-                        Slot: 'FrameShiftDrive',
-                        Item: 'Int_Hyperdrive_Size6_Class5',
-                        Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: [{ Label: 42 }] },
-                    },
-                ],
-            } as unknown as LoadoutEvent),
-        {
+    // A modifier is a labelled object, and the label is required rather than
+    // checked-when-present: an entry without one imports fine and then breaks the build
+    // it produced, because every reader of a modifier reads its label unconditionally.
+    const withModifiers = (modifiers: unknown): LoadoutEvent =>
+        ({
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: modifiers },
+                },
+            ],
+        }) as unknown as LoadoutEvent;
+    for (const [modifiers, expected] of [
+        [[42], 'module.Engineering.Modifiers[0] must be an object, received number 42'],
+        [[null], 'module.Engineering.Modifiers[0] must be an object, received null'],
+        [
+            [{ Label: 42 }],
+            'module.Engineering.Modifiers[0].Label must be a string, received number 42',
+        ],
+        [
+            [{ Value: 1 }],
+            'module.Engineering.Modifiers[0].Label must be a string, received undefined',
+        ],
+        [
+            [{ Label: null }],
+            'module.Engineering.Modifiers[0].Label must be a string, received null',
+        ],
+        [
+            [{ Label: 'FSDOptimalMass', Value: 1 }, { Label: 42 }],
+            'module.Engineering.Modifiers[1].Label must be a string, received number 42',
+        ],
+    ] as const) {
+        assert.throws(() => ShipLoadout.fromLoadout(withModifiers(modifiers)), {
             name: 'TypeError',
-            message:
-                'ShipLoadout.fromLoadout: module.Engineering.Modifiers[].Label must be a string, received number 42',
-        },
-    );
-    for (const modifiers of [[42], [{ Label: 'FSDOptimalMass', Value: 'lots' }], [{ Value: 1 }]]) {
-        assert.ok(
-            ShipLoadout.fromLoadout({
-                Ship: 'Anaconda',
-                Modules: [
-                    {
-                        Slot: 'FrameShiftDrive',
-                        Item: 'Int_Hyperdrive_Size6_Class5',
-                        Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: modifiers },
-                    },
-                ],
-            } as unknown as LoadoutEvent),
-        );
+            message: `ShipLoadout.fromLoadout: ${expected}`,
+        });
     }
+    // The value beside the label is a value, and values on this path are trusted — but
+    // the build it produces has to survive being read, which is what the label buys.
+    const loose = ShipLoadout.fromLoadout(
+        withModifiers([{ Label: 'FSDOptimalMass', Value: 'lots' }]),
+    );
+    assert.ok(loose.fittedModuleAt('FrameShiftDrive'));
     // `Engineering` is the one field where `null` is not an omission — the asymmetry
     // above is deliberate, so pin both halves of it against a future tidy-up.
     assert.ok(

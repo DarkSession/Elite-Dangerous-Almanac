@@ -470,13 +470,18 @@ export class ShipLoadout {
      * structure a build is assembled from, and the types of the fields naming things in
      * it: `event` must be an object with an array of module objects in `Modules`; each
      * module needs a string `Slot` and `Item`, and no two may claim the same slot; a
-     * module's `Engineering` must be an object, and that block's `Modifiers` an array,
-     * whenever their key is there **at all**; and the fields naming something must be
-     * strings **when they carry a value** — `event.Ship`, the block's `BlueprintName`
-     * and `ExperimentalEffect`, and a modifier's `Label`. Every remaining field — every
-     * number, every flag, the rest of a modifier — is trusted, so use
+     * module's `Engineering` must be an object, and that block's `Modifiers` an array of
+     * objects each carrying a string `Label`, whenever their key is there **at all**;
+     * and `event.Ship`, the block's `BlueprintName` and its `ExperimentalEffect` must be
+     * strings **when they carry a value**. Every remaining field — every number, every
+     * flag, a modifier's value beside its label — is trusted, so use
      * {@link ShipLoadout.fromSlef} (or {@link parseSlef}) for input you did not produce,
      * which reports all of them.
+     *
+     * A modifier's `Label` is required rather than checked-when-present because it is
+     * the only thing saying which stat moved: {@link fittedModuleAt} and the
+     * pre-engineered identification both read it unconditionally, so an entry without
+     * one would import cleanly and then break the build it produced.
      *
      * `Engineering` and its `Modifiers` are the fields where a `null` is not the same as
      * an omission, because a relay writing `null` for a block or list it does not have
@@ -1053,10 +1058,14 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: options must be an object with a grade, received ${describeValue(options)}`,
             );
         }
+        // Nullish is absent here as it is everywhere else, so the guard's reading of a
+        // `null` effect and the three readers below cannot disagree — they used to, and
+        // `experimental: null` reached the catalogue as the string "null".
         requireStringIfPresent(
             options.experimental,
             'ShipLoadout.applyBlueprint: options.experimental',
         );
+        const wantedExperimental = options.experimental ?? undefined;
         const module = this.#fittedModuleFor(slotKey);
         if (!module) {
             throw new RangeError(
@@ -1103,11 +1112,11 @@ export class ShipLoadout {
             );
         }
         let experimental;
-        if (options.experimental !== undefined) {
-            experimental = getExperimentalEffect(options.experimental);
+        if (wantedExperimental !== undefined) {
+            experimental = getExperimentalEffect(wantedExperimental);
             if (!experimental) {
                 throw new RangeError(
-                    `ShipLoadout.applyBlueprint: unknown experimental effect "${truncate(options.experimental)}"`,
+                    `ShipLoadout.applyBlueprint: unknown experimental effect "${truncate(wantedExperimental)}"`,
                 );
             }
         }
@@ -1134,12 +1143,12 @@ export class ShipLoadout {
             );
         }
         if (
-            options.experimental !== undefined &&
-            !experimentalAvailableFor(module.Item, options.experimental)
+            wantedExperimental !== undefined &&
+            !experimentalAvailableFor(module.Item, wantedExperimental)
         ) {
             const offered = getExperimentalsForModule(module.Item);
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered experimental effect "${truncate(options.experimental)}"; it takes ${offered.length > 0 ? offered.join(', ') : 'no experimental effect'}`,
+                `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered experimental effect "${truncate(wantedExperimental)}"; it takes ${offered.length > 0 ? offered.join(', ') : 'no experimental effect'}`,
             );
         }
         const base = baseStats(stats);
@@ -1171,9 +1180,7 @@ export class ShipLoadout {
             BlueprintName: fdname,
             Level: options.grade,
             Quality: quality,
-            ...(options.experimental !== undefined
-                ? { ExperimentalEffect: options.experimental }
-                : {}),
+            ...(wantedExperimental !== undefined ? { ExperimentalEffect: wantedExperimental } : {}),
             Modifiers: modifiers,
         };
         this.#replaceModule(module.Slot, { ...module, Engineering: engineering });

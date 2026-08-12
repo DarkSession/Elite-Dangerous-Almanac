@@ -85,17 +85,23 @@ export function normalizeLoadoutEvent(event: LoadoutEvent): ImportedLoadoutState
                     `ShipLoadout.fromLoadout: module.Engineering.Modifiers must be an array, received ${describeValue(module.Engineering.Modifiers)}`,
                 );
             }
-            // A modifier's `Label` names a stat, and identification below reads it — so
-            // it is checked here rather than reported under the name of the function
-            // that happens to reach it first, which a `fromLoadout` caller never called.
-            // The rest of a modifier is values, and values on this path are trusted.
-            for (const modifier of module.Engineering.Modifiers ?? []) {
-                if (modifier !== null && typeof modifier === 'object') {
-                    requireStringIfPresent(
-                        (modifier as { Label?: unknown }).Label,
-                        'ShipLoadout.fromLoadout: module.Engineering.Modifiers[].Label',
+            // A modifier is its `Label` and a value, and the label is not optional: it
+            // is the only thing that says which stat moved, so `getLoadoutModifier` and
+            // identification both read it unconditionally. An entry without one imports
+            // fine and then breaks the build it produced, which is worse than a refusal
+            // — so this is the same rule `parseSlef` applies, checked here rather than
+            // reported under the name of whichever reader reaches it first. The value
+            // beside it is a value, and values on this path are trusted.
+            for (const [index, modifier] of (module.Engineering.Modifiers ?? []).entries()) {
+                if (modifier === null || typeof modifier !== 'object') {
+                    throw new TypeError(
+                        `ShipLoadout.fromLoadout: module.Engineering.Modifiers[${index}] must be an object, received ${describeValue(modifier)}`,
                     );
                 }
+                requireString(
+                    (modifier as { Label?: unknown }).Label,
+                    `ShipLoadout.fromLoadout: module.Engineering.Modifiers[${index}].Label`,
+                );
             }
         }
         const normalizedSlot = module.Slot.toLowerCase();

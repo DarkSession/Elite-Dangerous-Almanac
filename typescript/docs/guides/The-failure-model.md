@@ -72,11 +72,10 @@ worth knowing before you write a `catch`:
   more useful half when the argument is a whole export, and the same text `inspectSlef`
   reports as that entry's diagnostic. `ShipLoadout.fromLoadout` checks the structure a
   build is assembled from — an object, an array of module objects, a `Slot` and `Item` on
-  each, no two modules claiming one slot, and an `Engineering` that is an object with an
-  array of `Modifiers` whenever their key is there at all — plus the fields naming
-  something, when they carry a value: `Ship`, the block's two ids, and a modifier's
-  `Label`. It trusts every value inside, so use `fromSlef` for an event you did not
-  produce yourself.
+  each, no two modules claiming one slot, and an `Engineering` that is an object holding
+  an array of `Modifiers`, each a labelled object, whenever their key is there at all —
+  plus `Ship` and the block's two ids when they carry a value. It trusts every value
+  inside, so use `fromSlef` for an event you did not produce yourself.
 
 **A missing argument is not a wrong-typed one**, and the two get different answers:
 
@@ -102,7 +101,7 @@ for a nullish name.
 that hands you back a value has no "no such thing" answer to give, so there is nothing for
 a missing argument to mean — `ProceduralSystem.fromName(undefined)` and
 `ShipLoadout.empty(undefined)` throw rather than answering `null`, and so do
-`toSystemAddress`, `massCodeToSizeClass` and `resolveBlueprintForModule`'s `blueprint`,
+`toSystemAddress`, `massCodeToSizeClass` and `resolveBlueprintForModule`'s `fdname`,
 which convert or resolve what you pass rather than looking it up. The rule is what the
 function does with the argument, not what it returns: `massCodeToSizeClass` hands back a
 number and is still strict.
