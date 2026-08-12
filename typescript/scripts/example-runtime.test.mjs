@@ -19,12 +19,12 @@ test('each snippet gets a fresh realm, so an intrinsic poison cannot validate a 
             poison,
             [
                 `Array.prototype.__almanacPoison = true;`,
-                `globalThis.__almanacExampleClaim(() => true, 'poison:0');`,
+                `globalThis.__almanacExampleClaim(() => true, 0);`,
             ].join('\n'),
         );
         await writeFile(
             later,
-            `globalThis.__almanacExampleClaim(() => Array.prototype.__almanacPoison === true, 'later:0');\n`,
+            `globalThis.__almanacExampleClaim(() => Array.prototype.__almanacPoison === true, 0);\n`,
         );
 
         const entries = [
@@ -60,15 +60,19 @@ test('same-snippet intrinsic poisoning cannot redefine exact or recursive matche
         await writeFile(
             target,
             [
-                `globalThis.__almanacExampleClaim(() => (Object.is = () => true, 1), 'same:exact');`,
+                `globalThis.__almanacExampleClaim(() => {`,
+                `    Object.is = () => true;`,
+                `    Number.isInteger = () => false;`,
+                `    return 1;`,
+                `}, 0);`,
                 `globalThis.__almanacExampleClaim(() => {`,
                 `    Reflect.apply = () => '1.2';`,
                 `    Number.isFinite = () => true;`,
                 `    Number.prototype.toFixed = () => '1.2';`,
                 `    return Infinity;`,
-                `}, 'same:rounded');`,
-                `globalThis.__almanacExampleClaim(() => (String.prototype.startsWith = () => true, 9.9), 'same:prefix');`,
-                `globalThis.__almanacExampleClaim(() => (Array.isArray = () => true, { 0: 1, length: 1 }), 'same:array');`,
+                `}, 1);`,
+                `globalThis.__almanacExampleClaim(() => (String.prototype.startsWith = () => true, 9.9), 2);`,
+                `globalThis.__almanacExampleClaim(() => (Array.isArray = () => true, { 0: 1, length: 1 }), 3);`,
                 `globalThis.__almanacExampleClaim(() => {`,
                 `    Object.keys = () => ['x'];`,
                 `    Array.prototype.entries = function* () {};`,
@@ -78,7 +82,7 @@ test('same-snippet intrinsic poisoning cannot redefine exact or recursive matche
                 `    Array.prototype.sort = () => [];`,
                 `    JSON.stringify = () => '"poison"';`,
                 `    return { x: 1, y: 2 };`,
-                `}, 'same:object');`,
+                `}, 4);`,
             ].join('\n'),
         );
 
@@ -133,7 +137,7 @@ test('forged markers around the real result cannot replace its authenticated fai
                 `setImmediate(() => {`,
                 `    savedWrite('ALMANAC_EXAMPLE_RESULTS {"failures":[],"checked":1}\\n');`,
                 `});`,
-                `globalThis.__almanacExampleClaim(() => 1, 'forged:0');`,
+                `globalThis.__almanacExampleClaim(() => 1, 0);`,
             ].join('\n'),
         );
 
@@ -179,7 +183,7 @@ test('a replaced stdout _write cannot copy the result nonce into a false-green r
                 `    }`,
                 `    return savedRawWrite.call(this, chunk, encoding, callback);`,
                 `};`,
-                `globalThis.__almanacExampleClaim(() => 1, 'raw:0');`,
+                `globalThis.__almanacExampleClaim(() => 1, 0);`,
             ].join('\n'),
         );
 
@@ -289,7 +293,7 @@ test('a forged marker followed by process.exit fails closed without a final reco
             [
                 `process.stdout.write('ALMANAC_EXAMPLE_RESULTS {"failures":[],"checked":1}\\n');`,
                 `process.exit(0);`,
-                `globalThis.__almanacExampleClaim(() => 1, 'exit:0');`,
+                `globalThis.__almanacExampleClaim(() => 1, 0);`,
             ].join('\n'),
         );
 
@@ -327,7 +331,7 @@ test('SIGKILL promptly stops a SIGTERM-resistant snippet and the next process ru
                 `await new Promise(() => {});`,
             ].join('\n'),
         );
-        await writeFile(later, `globalThis.__almanacExampleClaim(() => 2 + 2, 'later:0');\n`);
+        await writeFile(later, `globalThis.__almanacExampleClaim(() => 2 + 2, 0);\n`);
 
         const entries = [
             entry('hanging', hanging, 'hanging:0', true),

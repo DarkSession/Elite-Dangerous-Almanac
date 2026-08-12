@@ -48,6 +48,15 @@ test('instruments same-line and following-line expression claims without reading
     assert.match(result.code, /const marker = '\/\/ -> not a claim'/);
 });
 
+test('keeps descriptive claim ids out of generated JavaScript', () => {
+    const idPrefix = `hostile'); throw new Error('injected') //`;
+    const result = transformExampleClaims('1; // -> 1', { idPrefix });
+
+    assert.equal(result.claims[0]?.id, `${idPrefix}:0`);
+    assert.doesNotMatch(result.code, /hostile|injected/);
+    assert.match(result.code, /__almanacCapturedExampleClaim\(\(\) => \(1\), 0\)/);
+});
+
 test('keeps ambient and prose claims compile-only with explicit reasons', () => {
     const source = [
         'declare const event: { value: number };',

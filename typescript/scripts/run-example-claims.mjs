@@ -13,6 +13,7 @@ const RESULT_MARKER = 'ALMANAC_EXAMPLE_RESULTS ';
 const apply = Reflect.apply;
 const arrayPush = Array.prototype.push;
 const jsonStringify = JSON.stringify;
+const numberIsInteger = Number.isInteger;
 const objectDefineProperty = Object.defineProperty;
 const resultFd = process.stdout.fd;
 const resultWrite = writeSync;
@@ -41,16 +42,15 @@ if (entry === undefined) throw new RangeError(`run-example-claims: no entry ${en
 const failures = [];
 const checked = new Array(entry.claims.length).fill(false);
 
-const exampleClaim = (evaluate, id) => {
-    const claimIndex = findClaim(entry.claims, id);
-    if (claimIndex === -1) {
+const exampleClaim = (evaluate, claimIndex) => {
+    if (!numberIsInteger(claimIndex) || claimIndex < 0 || claimIndex >= entry.claims.length) {
         append(failures, {
             name: entry.name,
             claimId: null,
             file: entry.file,
             line: entry.line,
             code: 'EXV003',
-            message: `runtime emitted unknown claim id ${encode(id)}`,
+            message: `runtime emitted unknown claim index ${encode(claimIndex)}`,
         });
         return;
     }
@@ -63,7 +63,7 @@ const exampleClaim = (evaluate, id) => {
     } catch (error) {
         append(failures, {
             name: entry.name,
-            claimId: id,
+            claimId: claim.id,
             file: claim.file,
             line: claim.line,
             code: 'EXV002',
@@ -76,7 +76,7 @@ const exampleClaim = (evaluate, id) => {
     if (comparison.pass) return actual;
     append(failures, {
         name: entry.name,
-        claimId: id,
+        claimId: claim.id,
         file: claim.file,
         line: claim.line,
         code: 'EXV001',
@@ -125,13 +125,6 @@ resultWrite(
     resultFd,
     `\n${RESULT_MARKER}${encodeResult(nonce, failures, countChecked(checked))}\n`,
 );
-
-function findClaim(claims, id) {
-    for (let index = 0; index < claims.length; index += 1) {
-        if (claims[index].id === id) return index;
-    }
-    return -1;
-}
 
 function append(array, value) {
     apply(arrayPush, array, [value]);

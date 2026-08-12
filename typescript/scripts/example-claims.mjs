@@ -86,6 +86,7 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
             continue;
         }
 
+        const claimIndex = claims.length;
         const id = `${idPrefix}:${index}`;
         const start = target.expression.getStart(source);
         const end = target.expression.end;
@@ -93,7 +94,10 @@ export function transformExampleClaims(code, { idPrefix = 'claim' } = {}) {
         replacements.push({
             start,
             end,
-            text: `${claimBinding}(() => (${expression}), ${JSON.stringify(id)})`,
+            // Generated code receives only a transformer-owned integer. The descriptive
+            // id remains in the data-only manifest, so no string needs to be embedded in
+            // JavaScript source.
+            text: `${claimBinding}(() => (${expression}), ${claimIndex})`,
         });
         claims.push({ id, line: comment.line, expected: comment.expected, spec: parsed.spec });
     }
