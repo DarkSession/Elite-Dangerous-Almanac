@@ -4,9 +4,9 @@
  *
  * Four invariants, all easy to break by accident:
  *
- * 1. **Every file is still strict JSON once comments are blanked.** JSONC's other
+ * 1. **Every file is strict JSON once comments are blanked.** JSONC's other
  *    extension — trailing commas — is deliberately *not* accepted by
- *    `stripJsonComments`, because `data/` is shared with future language
+ *    `stripJsonComments`, because `data/` is shared with other language
  *    implementations whose standard parsers (Python's `json`, for one) reject
  *    them too. An editor that reformats a `.jsonc` file as JSON5 will introduce
  *    them silently; this test names the offending file instead of failing later
@@ -14,9 +14,8 @@
  *
  * 2. **Every file opens with a comment header, and attribution stays in it.**
  *    Attribution belongs next to the data (AGENTS.md §Attribution) but not in the
- *    parsed payload, where every byte is inlined into consumers' bundles. A re-added
- *    `attribution`, `description` or `comment` key would rebuild exactly the bloat the
- *    comment header exists to avoid.
+ *    parsed payload, where every byte is inlined into consumers' bundles. An
+ *    `attribution`, `description` or `comment` key would add prose to every bundle.
  *
  * 3. **Every catalogue in the directory is mapped to a schema definition.** The
  *    directory listing is compared against this file's `DEFINITION_BY_FILE` map, so a

@@ -1,9 +1,5 @@
 # Data sources — `data/materials/`
 
-What each catalogue in this directory was taken from, when, and how it was derived.
-Sources are named here; who to credit for them, with links and licence terms, is in
-`ATTRIBUTIONS.md`. `../SNAPSHOTS.md` states what every entry has to record.
-
 **Acquired:** 2026-07-24. **Upstream revision:** unavailable for both sources below.
 
 ## Materials — raw, manufactured, encoded
@@ -15,7 +11,7 @@ Sources are named here; who to credit for them, with links and licence terms, is
   in-game group.
 - **Derivation:**
   - `symbol` is FDevIDs' internal id (e.g. `GridResistors`) — what the player journal
-    reports (case-insensitively), the same field and meaning as on a ship or module.
+    reports, with the same field and meaning as on a ship or module.
     Frontier's numeric material id from the CSV is not carried. `name` is the human
     display name (`Grid Resistors`). For raw materials `elementSymbol` is the chemical
     element symbol (Fe, C, …); manufactured and encoded materials have none (`null`).
@@ -35,8 +31,7 @@ Sources are named here; who to credit for them, with links and licence terms, is
 Several Thargoid caustic and Titan materials are absent from the pinned FDevIDs
 `material.csv`. Their grade comes from Inara's component pages (rarity tier mapped Very
 common → 1 … Very rare → 5); their `symbol` is the identifier the player journal reports
-(e.g. `tg_causticshard`, `unknowncorechip`), matched case-insensitively like every other
-material.
+(e.g. `tg_causticshard`, `unknowncorechip`).
 
 | Material                        | Category     | Grade | Symbol (journal)           |
 | ------------------------------- | ------------ | ----- | -------------------------- |
@@ -62,7 +57,7 @@ grade 3), which is why it is used to fill the gap.
   name.
 - **Derivation:**
   - `symbol` is FDevIDs' internal id (e.g. `graphene`) — what the player journal reports
-    (case-insensitively), the same field and meaning as on a ship, module or material.
+    with the same field and meaning as on a ship, module or material.
     Frontier's numeric micro-resource id from the CSV is **not** carried.
   - `name` is the English display name (`Graphene`).
   - FDevIDs' category is lower-cased to `component` / `consumable` / `data` / `item`

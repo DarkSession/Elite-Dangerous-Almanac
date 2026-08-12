@@ -397,7 +397,7 @@ test('toSlef rejects an empty export, which would not parse back', () => {
 });
 
 test('toSlef names the duplicate slot in its refusal', () => {
-    // The two spellings differ from each other *and* from the normalised key, so the
+    // The two spellings differ from each other *and* from the normalized key, so the
     // assertion pins which string reaches the message: the second module's own
     // casing. A lower-cased fixture would pass whether the refusal reported the raw
     // slot or the comparison key, and reporting the record whole would say

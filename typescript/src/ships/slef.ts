@@ -59,7 +59,7 @@ export interface SlefHeader {
 export interface EngineeringModifier {
     /** The stat's journal name, e.g. `"FSDOptimalMass"`, `"Mass"`, `"PowerDraw"`. */
     readonly Label: string;
-    /** The modified (current) value, when the stat is numeric. */
+    /** The modified value, when the stat is numeric. */
     readonly Value?: number;
     /** The stock value before engineering, when the stat is numeric. */
     readonly OriginalValue?: number;

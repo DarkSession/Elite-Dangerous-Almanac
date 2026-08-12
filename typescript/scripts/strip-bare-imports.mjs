@@ -5,9 +5,8 @@ await init;
 /**
  * Blank static bare-import declarations without changing generated positions.
  *
- * Keeping every newline and character position intact means a source map emitted
- * before this cleanup remains valid for the imports, exports and code around the
- * removed declaration.
+ * Keeping every newline and character position intact preserves source-map positions
+ * for the surrounding imports, exports and code.
  */
 export function stripBareImports(source) {
     const [imports] = parse(source);

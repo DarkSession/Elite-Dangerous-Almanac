@@ -5,8 +5,7 @@
  * parsed payload and therefore out of consumers' bundles), so TypeScript cannot
  * infer their shape the way `resolveJsonModule` does for `.json`. The default
  * export is `unknown`, which forces each consuming module to state the shape it
- * expects with an explicit cast next to its own interfaces — the same casts the
- * astro modules already carried when these were `.json`.
+ * expects with an explicit cast next to its own interfaces.
  *
  * Comment stripping happens at load time: `scripts/jsonc.mjs`, wired into the
  * test runner via `scripts/register-jsonc.mjs` and into the build via an esbuild

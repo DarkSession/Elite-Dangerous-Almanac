@@ -9,22 +9,14 @@
  * with, and the domain traps a consumer walks into otherwise (the four meanings of
  * "region", the two `{x, y, z}` conventions, what `ShipLoadout` costs to import).
  *
- * A barrel is a file of pure re-exports, so tsup's declaration rollup emits it as a
- * flat list of `export { … } from './leaf.js'` lines and drops the file-level
- * comment — the per-symbol TSDoc on the leaf modules survives, but the guide that
- * ties them together does not. The result is that the docs a consumer most needs
- * when they first type `from '@elite-dangerous-almanac/core/ships'` are the exact
- * docs the published package omits; they exist only in the repository and the
- * generated wiki. This script copies them back.
+ * A barrel is a file of pure re-exports, so tsup's declaration rollup emits a flat list
+ * of `export { … } from './leaf.js'` lines without the file-level comment. This script
+ * copies that comment to the generated declaration file; per-symbol TSDoc remains on
+ * the leaf declarations.
  *
- * What this does and does not buy: TypeScript does not surface
- * `@packageDocumentation` on module hover (measured — the language service returns
- * empty documentation for a module specifier, here and for leaf modules that have
- * always carried the block), so this is not about hover text. It is about the
- * declaration file a consumer actually opens: go-to-definition on the import, or
- * reading `node_modules/@elite-dangerous-almanac/core/dist/ships/index.d.ts`, now
- * lands on the area's guide instead of a bare export list. Per-symbol hover is
- * unaffected either way.
+ * TypeScript does not display `@packageDocumentation` on module hover. The attached
+ * block is available through go-to-definition on an import or by reading the generated
+ * `dist/<area>/index.d.ts`; per-symbol hover is unaffected.
  *
  * `npm run build` runs this after tsup. `package.test.mjs` asserts the shipped
  * declarations carry the blocks, so a build that silently stops emitting them fails

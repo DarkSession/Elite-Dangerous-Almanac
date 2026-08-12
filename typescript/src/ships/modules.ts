@@ -6,15 +6,14 @@
  * together — and the functions that find one ({@link getModuleBySymbol},
  * {@link getModulesByName}, {@link getBulkheadsForShip}).
  *
- * **Every lookup searches all 1199 modules by default.** A journal `Item` string
- * does not tell you which outfitting category it belongs to, so needing to know that
- * before you could look it up was backwards:
+ * **Every lookup searches all 1199 modules by default.** A journal `Item` string does
+ * not identify its outfitting category, so callers need no category for lookup:
  *
  * ```ts
  * getModuleBySymbol('Hpt_PulseLaser_Fixed_Small')?.name; // -> 'Pulse Laser'
  * ```
  *
- * Each lookup still takes an optional second argument to **narrow** the search to a
+ * Each lookup takes an optional second argument to **narrow** the search to a
  * subset — any array you have filtered yourself. The catalogue is also exported split
  * by Frontier's four outfitting categories:
  *
@@ -120,7 +119,7 @@ export interface DamageDistribution {
     readonly explosive?: number;
     /** Absolute share — damage no resistance reduces — of one shot's damage, `0`–`1`. */
     readonly absolute?: number;
-    /** Share whose in-game damage type is not yet established, `0`–`1`. */
+    /** Share unclassified by in-game verification, `0`–`1`. */
     readonly unclassified?: number;
     /**
      * Anti-xeno ratio: the amount effective against Thargoids divided by conventional
@@ -157,7 +156,7 @@ export interface DamageComponents {
     readonly absolute?: number;
     /** Non-negative damage effective against Thargoid targets, overlaid on conventional damage. */
     readonly antiXeno?: number;
-    /** Non-negative damage amounts observed in-game whose type is not yet established. */
+    /** Non-negative damage amounts unclassified by in-game verification. */
     readonly unclassified?: readonly number[];
 }
 
@@ -167,7 +166,7 @@ export interface DamageComponents {
  * @remarks
  * Values are non-negative boundary parameters. They are deliberately not stated in
  * metres and must not be passed to a range attenuation calculation: projectile reach
- * depends on projectile behaviour not represented by these two numbers.
+ * depends on projectile behavior not represented by these two numbers.
  *
  * @example
  * ```ts
@@ -269,7 +268,7 @@ export interface OutfittingModuleIdentity {
      * Stable, descriptive English name, e.g. `"Pulse Laser"`.
      *
      * @remarks
-     * This is a canonical library label, not a byte-exact copy of the game's current
+     * This is a canonical library label, not a byte-exact copy of the game's
      * localized UI text: abbreviations such as FSD and AFM are expanded for readability.
      * It is not localized and is not suitable as a localization key.
      *
@@ -626,7 +625,14 @@ export interface OutfittingModuleStats {
     // lasers, which carry no `rateOfFire`, all three are already per second. `./weapons`
     // turns them into DPS, capacitor draw per second and heat per second.
 
-    /** Damage per round — or per second on a continuous-fire (beam) weapon. */
+    /**
+     * Damage per round — or per second on a continuous-fire (beam) weapon.
+     *
+     * @remarks
+     * The stock Guardian Gauss Cannon value differs between the pinned registries. The
+     * catalogue follows coriolis-data while direct in-game evidence is sought; see
+     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/225.
+     */
     readonly damage?: number;
     /** How `damage` splits across the damage types. */
     readonly damageDistribution?: DamageDistribution;

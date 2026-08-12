@@ -1058,10 +1058,8 @@ test('a restricted mount labels an odd key without scanning it quadratically', (
     assert.equal(label('Slot02_Size5'), 'Military Slot 5');
     assert.equal(label('MilitaryReserve'), 'MilitaryReserve');
     assert.equal(label('42'), 'Military Slot 42'); // digits all the way to the start
-    // A long run of digits that does not reach the end of the key used to be retried
-    // from every start position, costing seconds; both this and the all-digit key it
-    // scans end to end are linear, so they stay well under a second. Compared with
-    // `ok` rather than `equal` to keep a failure from printing an 80k-char diff.
+    // Both long inputs are scanned linearly and must finish well under a second. Use
+    // `ok` to keep a failure from printing an 80k-character diff.
     const trailing = `${'9'.repeat(80_000)}x`;
     const digits = '9'.repeat(80_000);
     const started = performance.now();
@@ -1990,7 +1988,7 @@ test('slot views are immutable point-in-time values', () => {
 
     conda.setModule(drive.key, mod('Int_Hyperdrive_Size6_Class5'));
     const fitted = conda.fittedModuleAt(drive.key)!;
-    assert.equal(drive.module, null, 'the old snapshot does not change');
+    assert.equal(drive.module, null, 'the earlier snapshot does not change');
     assert.equal(
         conda.slots('core').find((slot) => slot.key === drive.key)?.module?.symbol,
         'Int_Hyperdrive_Size6_Class5',
@@ -1999,7 +1997,11 @@ test('slot views are immutable point-in-time values', () => {
     assert.equal(fitted.slot, 'FrameShiftDrive');
 
     conda.removeModule(drive.key);
-    assert.equal(fitted.symbol, 'Int_Hyperdrive_Size6_Class5', 'the old module stays readable');
+    assert.equal(
+        fitted.symbol,
+        'Int_Hyperdrive_Size6_Class5',
+        'the earlier module snapshot stays readable',
+    );
     assert.equal(conda.fittedModules().length, 0);
     assert.throws(() => Object.assign(drive, { name: 'changed' }), TypeError);
     assert.throws(() => Object.assign(fitted.raw, { Item: 'changed' }), TypeError);
@@ -2054,7 +2056,7 @@ test('fittedModuleAt returns null for empty slots and fittedModules lists snapsh
     assert.equal(snapshot.symbol, 'Int_Hyperdrive_Size6_Class5');
 });
 
-test('a fitted-module snapshot remains historical after replacement', () => {
+test('a fitted-module snapshot remains unchanged after replacement', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'FrameShiftDrive',
         mod('Int_Hyperdrive_Size6_Class5'),
@@ -3384,8 +3386,8 @@ test('slot and fitted-module snapshots are frozen and reused until the build cha
 });
 
 test('a memoised validation cannot be edited through by one consumer', () => {
-    // The result is now shared between reads, so a mutable issue would let one caller
-    // rewrite what every later reader of the same build sees.
+    // The result is shared between reads, so mutation by one caller must not affect
+    // another reader of the same build.
     const build = ShipLoadout.empty('Anaconda');
     const issue = build.validation.issues[0]!;
     assert.throws(() => Object.assign(issue, { message: 'rewritten' }), TypeError);
@@ -3475,8 +3477,8 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
             return swapExperimental() as string;
         },
     });
-    // The checked read is the one applied: the `42` a second read would have returned
-    // never reaches the catalogue lookup that used to report it under its own name.
+    // The checked read is the one applied; the `42` returned by a second read never
+    // reaches the catalogue lookup.
     assert.equal(
         build.fittedModuleAt('FrameShiftDrive')?.engineering?.ExperimentalEffect,
         'special_fsd_heavy',
@@ -3489,9 +3491,7 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
     });
     assert.equal(build.fittedModuleAt('FrameShiftDrive')?.engineering?.Level, 5);
 
-    // Nullish is absent, so the guard and the readers below it agree: `null` used to
-    // pass the guard as "absent" and then reach the catalogue as the string "null",
-    // answering `RangeError: unknown experimental effect "null"`.
+    // Nullish consistently means that no experimental effect is present.
     assert.ok(
         build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
             grade: 5,
@@ -3763,7 +3763,7 @@ test('fromLoadout names the structure it needs instead of failing inside the wal
     );
     assert.ok(loose.fittedModuleAt('FrameShiftDrive'));
     // `Engineering` is the one field where `null` is not an omission — the asymmetry
-    // above is deliberate, so pin both halves of it against a future tidy-up.
+    // above is deliberate, so pin both behaviors.
     assert.ok(
         ShipLoadout.fromLoadout({
             Ship: null,

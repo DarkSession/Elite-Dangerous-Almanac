@@ -98,7 +98,7 @@ individual module that broke the budget.
 
 A module whose draw the library cannot determine is named in
 {@link ships!PowerBudget.unknownDraws | unknownDraws} rather than counted as zero, so a
-budget is never quietly optimistic about a module newer than the catalogue. While that
+budget is never quietly optimistic about a module absent from the catalogue. While that
 list is non-empty every other figure is a lower bound, so show it alongside them.
 
 ## Shields and armour share a resistance model
@@ -227,8 +227,8 @@ the drive's own engineering are already folded in by the time `ShipLoadout` call
 
 ## When a metric cannot be computed
 
-A build can contain a module the catalogue cannot classify — usually one newer than the
-data — and what each metric does about it differs, so do not assume a figure is
+A build can contain a module the catalogue cannot classify. Each metric handles that
+differently, so do not assume a figure is
 load-bearing:
 
 - `powerBudget()` names it, in the `unknownDraws` the Power section above describes.

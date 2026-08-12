@@ -178,7 +178,7 @@ export interface ApplyBlueprintOptions {
     /** The blueprint grade, `1`–`5`. */
     readonly grade: number;
     /**
-     * The current engineering system's shared quality roll, `0`–`1`. Defaults to `1`
+     * The engineering system's shared quality roll, `0`–`1`. Defaults to `1`
      * (best roll). A legacy-engineered module's independently advanced attributes cannot be
      * reconstructed from its single reported quality; import its stated modifiers instead.
      */
@@ -664,7 +664,7 @@ export class ShipLoadout {
     }
 
     /**
-     * Hull cost in credits as the build currently states it, or `null` if unknown.
+     * Hull cost in credits represented by the build, or `null` if unknown.
      *
      * @remarks
      * This is the live figure, kept coherent with edits: an import's own `HullValue`
@@ -676,7 +676,7 @@ export class ShipLoadout {
     }
 
     /**
-     * Fitted-modules cost in credits as the build currently states it, or `null` if
+     * Fitted-modules cost in credits represented by the build, or `null` if
      * unknown — including after an edit discarded an import's figure, since no catalogue
      * records what a replaced module was bought for. {@link sourcePurchase} keeps the
      * captured figure regardless.
@@ -686,7 +686,7 @@ export class ShipLoadout {
     }
 
     /**
-     * Insurance rebuy cost in credits as the build currently states it, or `null` if
+     * Insurance rebuy cost in credits represented by the build, or `null` if
      * unknown. Discarded by an edit for the same reason as {@link modulesValue}, and
      * likewise preserved by {@link sourcePurchase}.
      */
@@ -725,8 +725,8 @@ export class ShipLoadout {
      * getSourceModuleValue(paid, 'powerplant')?.value; // -> what that plant cost its owner
      *
      * build.removeModule('Slot05_Size4');
-     * build.modulesValue;                 // -> null   (the live figure is now unknowable)
-     * paid.modulesValue;                  // -> 192625195, still what the capture said
+     * build.modulesValue;                 // -> null   unavailable after the edit
+     * paid.modulesValue;                  // -> 192625195, the captured figure
      * ```
      */
     get sourcePurchase(): SourcePurchaseRecord | null {
@@ -1072,7 +1072,7 @@ export class ShipLoadout {
      *          grade: 5,
      *          experimental: 'special_fsd_heavy',
      *      });
-     * build.maxJumpRange(); // now reflects the engineered optimal mass
+     * build.maxJumpRange(); // uses the engineered optimal mass
      * ```
      */
     applyBlueprint(slotKey: string, fdname: string, options: ApplyBlueprintOptions): this {
@@ -1093,9 +1093,8 @@ export class ShipLoadout {
         // check ever saw.
         const wantedGrade = options.grade;
         const wantedQuality = options.quality;
-        // Nullish is absent here as it is everywhere else, so the guard's reading of a
-        // `null` effect and the three readers below cannot disagree — they used to, and
-        // `experimental: null` reached the catalogue as the string "null".
+        // Nullish means no effect. Normalize it once so validation and all consumers read
+        // the same value.
         const wantedExperimental = options.experimental ?? undefined;
         requireStringIfPresent(
             wantedExperimental,
@@ -1687,14 +1686,11 @@ export class ShipLoadout {
     }
 
     /**
-     * The hull's mounts, or `null` when its layout is unknown. Expanded once per build:
-     * `#requireSlot` alone asks for it on every `setModule`, so assembling a 38-module
-     * ship re-derived all 39 mounts 38 times over.
+     * The hull's mounts, or `null` when its layout is unknown. Expanded and cached once
+     * per build because fitting methods query the layout repeatedly.
      *
-     * The array is frozen because it is now shared between callers rather than built
-     * fresh for each. That is a tripwire against a future caller sorting or splicing it
-     * in place, not a consumer guarantee: no element and no reference to this array
-     * escapes the class, so nothing outside can observe the freeze.
+     * The cached array is frozen to prevent internal callers from sorting or splicing it
+     * in place. No reference to the array or its elements escapes the class.
      */
     #layoutOrNull(): readonly BuildSlot[] | null {
         if (this.#layoutCache === undefined) {

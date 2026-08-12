@@ -46,8 +46,7 @@ import { requireStringIfPresent } from '../internal/argument-guards.js';
  * - `mercenary` — bought from the Merc-Coin shop; always arrives at grade 1.
  * - `communityGoal` — awarded for taking part in a community goal; mostly grade 5, and
  *   often carrying an experimental effect the shop rows do not.
- * - `techBroker` — unlocked at a tech broker. Records the one route the source states;
- *   several of these were also community-goal rewards at some point.
+ * - `techBroker` — unlocked at a tech broker. Records the route stated by the source.
  */
 export type PreEngineeredAcquisition = 'mercenary' | 'communityGoal' | 'techBroker';
 
@@ -132,6 +131,11 @@ export interface PreEngineeredVariant {
 
 /**
  * Every purchasable pre-engineered module variant.
+ *
+ * @remarks
+ * This catalogue omits pre-engineered Guardian module rewards whose variant details have
+ * no traceable source. The gap is tracked at
+ * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/224.
  *
  * @example
  * ```ts

@@ -150,7 +150,7 @@ test('every variant names the recipe its own module rolls, not a colliding spell
     // the journal spelling would be accepted by `blueprintAvailableFor` through the sale
     // route while `applyBlueprint` folded the *other* recipe, which
     // `loadout-engineering.ts` calls out as reachable and otherwise uncatchable. Asserted
-    // over the whole catalogue rather than on the rows that meet it today, because the
+    // over the whole catalogue rather than only the rows that meet it, because the
     // hazard arrives with the next row somebody transcribes from a journal.
     for (const variant of PRE_ENGINEERED_MODULES) {
         assert.equal(

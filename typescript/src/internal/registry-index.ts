@@ -27,9 +27,8 @@ export const CATALOGUE_KEY = 'catalogue key';
  * The catalogue lookup helpers in this module funnel consumer keys through here, so
  * this is also where those lookups catch a wrong-typed key. Other case-insensitive
  * comparisons — such as structural parsing and exact game slot identifiers — define
- * their own normalization rules at their public entry points. The alternative for a
- * catalogue lookup is the internal `value?.trim is not a function` it used to fail
- * with, which names neither the parameter nor what arrived.
+ * their own normalization rules at their public entry points. Invalid catalogue keys
+ * fail with a message that names the public parameter and received value.
  *
  * **A nullish key is not a wrong type.** It stays a miss, which is what the whole
  * lookup family answers for a key no record carries, and what an optional field an

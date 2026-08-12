@@ -8,7 +8,7 @@ assets/ships/<symbol>/illustration.svg
 ```
 
 `illustration.svg` is a coloured, three-quarter vector view on a `1200 × 800` canvas.
-The current set covers all 48 hulls in the ship catalogue. The SVG content is preserved
+The set covers all 48 hulls in the ship catalogue. The SVG content is preserved
 as supplied; only the generic source filename is exposed as `illustration.svg`.
 
 These assets and imagery remain the property of Frontier Developments plc and are used

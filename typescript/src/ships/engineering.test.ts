@@ -352,16 +352,9 @@ test('no key carries the registry prefix no game data uses', () => {
 });
 
 test('a shared journal id costs the same whichever of its two recipes is priced', () => {
-    // Why `getBlueprintCost` takes an id and no module: pricing the wrong one of a
-    // collided pair still bills correctly. If upstream ever splits the recipes' costs,
-    // this fails and the cost API needs the module too. Driven off the fixture's whole
-    // `journalNames` map rather than a hand-listed pair or two, so a fourth collision is
-    // covered the day it is recorded — the multi-cannon pair went uncovered for exactly
-    // that reason.
-    //
-    // Each mapped journal id is a record in its own right and the pair defines the same
-    // grades. Both are properties of these collisions; a future spelling that names no
-    // twin belongs outside this loop rather than weakening the assertions.
+    // `getBlueprintCost` needs no module because both recipes under a shared journal id
+    // define the same grades and costs. Check the complete collision map so every stored
+    // pair enforces that invariant.
     for (const [fdname, journalName] of Object.entries(fixture.journalNames.map)) {
         const shared = BLUEPRINTS[journalName];
         assert.ok(shared, `${fdname}: ${journalName} is not a blueprint`);

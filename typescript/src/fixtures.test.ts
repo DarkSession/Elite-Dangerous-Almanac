@@ -2,23 +2,23 @@
  * Guards the shared `fixtures/**` files themselves, independently of the tests that read
  * them.
  *
- * Three invariants, all easy to break by accident:
+ * Four invariants, all easy to break by accident:
  *
  * 1. **Every fixture opens with a comment header.** A fixture's provenance lives in that
  *    header and nowhere else (AGENTS.md §Attribution), so a fixture without one is a
  *    capture whose origin, checksum and scrubbing are unrecorded, or a parity fixture that
  *    never says what it pins.
  *
- * 2. **Every fixture is still strict JSON once comments are blanked.** JSONC's other
+ * 2. **Every fixture is strict JSON once comments are blanked.** JSONC's other
  *    extension — trailing commas — is deliberately not accepted, because `fixtures/` is
- *    shared with future language implementations whose standard parsers reject them too.
+ *    shared with other language implementations whose standard parsers reject them too.
  *
- * 3. **The prose stays in the header, out of the payload.** A top-level `description` key
- *    is what these files used to carry; it is a comment now, and a re-added one would put
- *    a port's parser back in the position of skipping fields that are not data.
+ * 3. **Prose stays in the header, out of the payload.** A top-level `description`,
+ *    `attribution` or `comment` key would force each implementation to skip non-data
+ *    fields.
  *
  * 4. **Every fixture matches its generated family schema.** The schema is shared with
- *    future language implementations, while the generated TypeScript declarations type
+ *    all language implementations, while the generated TypeScript declarations type
  *    imports in this implementation. `npm run check:fixtures` ensures both artefacts
  *    exactly describe the checked-in payloads.
  */

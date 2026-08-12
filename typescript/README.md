@@ -138,8 +138,8 @@ complete API reference.
 The package's [provenance record](./PROVENANCE/SNAPSHOTS.md) includes every domain's
 canonical `SOURCES.md` verbatim, recording each catalogue's source, acquisition date,
 immutable revision or checksum, derivation and manual corrections. It travels with the
-installed version, so its data currency can be checked offline and remains pinned even
-after the repository advances. Unknown values are omitted rather than guessed.
+installed version, so its pinned data currency can be checked offline. Unknown values
+are omitted rather than guessed.
 
 Third-party credits and licence terms ship with the package in
 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).

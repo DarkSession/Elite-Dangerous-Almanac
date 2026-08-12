@@ -115,10 +115,8 @@ has not said which slot. So `build.fittedModuleAt(undefined)` throws
 `ShipLoadout: slotKey must be a string, received undefined`, where
 `getShipBySymbol(undefined)` would answer `null`.
 
-**`null` is not an error.** A lookup that finds nothing has answered you. Journals
-outlive catalogues — a game update ships modules before this package knows about them —
-so `null` from a symbol lookup usually means "newer than the catalogue", and a consumer
-that treats it as a crash will break on every game update.
+**`null` is not an error.** A lookup that finds nothing has answered you. Journal symbols
+may be absent from the catalogues, so consumers must handle `null` as an ordinary miss.
 
 For input you do not control, prefer the `try…` form where one exists, which converts a
 throw into a `null`:
@@ -195,9 +193,8 @@ in different places in your UI:
 - `missingRequiredSlot` is the **user's** problem — a core or armour mount is empty. A
   hull straight from `ShipLoadout.empty()` reports eight of these, and "you have not
   fitted a power plant" is exactly what an outfitting screen must show as actionable.
-- `unknownHull` and `unknownModule` are **ours** — the catalogue is behind the game.
-  This should read differently: the build may be flying perfectly well, and a consumer
-  that presents it as a mistake will be wrong on every game update.
+- `unknownHull` and `unknownModule` are **ours** — the catalogue cannot classify the
+  record. The build may be valid in game, so do not present this as a user mistake.
 
 That is why the codes are stable: the severity alone does not tell you whose problem an
 issue is.
@@ -207,7 +204,7 @@ issue is.
 Two rules that look like they conflict and do not:
 
 - **Identifiers are matched case-insensitively, with surrounding whitespace ignored.** A
-  symbol straight off a journal line works without normalising it, and slot keys match
+  symbol straight off a journal line works without normalizing it, and slot keys match
   whether the producer wrote `FrameShiftDrive` or `frameshiftdrive`.
 - **Structure is checked strictly.** A malformed entry is rejected rather than
   half-read, and `parseSlef` rejects the whole payload on any bad entry. Use

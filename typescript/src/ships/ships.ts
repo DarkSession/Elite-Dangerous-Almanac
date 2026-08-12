@@ -27,7 +27,7 @@ import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from '
  * shipyard registry and are always present. The stats fields (`hullMass`, `speed`,
  * …) and the slot-layout fields (`core`, `hardpoints`, `optional`, …) come from
  * coriolis-data and are present for every hull it covers. The Lynx Highliner
- * (`MediumTransport01`), which is not yet present there, carries equivalent fields
+ * (`MediumTransport01`), which is absent from the pinned coriolis-data revision, carries equivalent fields
  * sourced from EDSY and Frontier's update notes. Masses are tonnes, `speed`/`boost`
  * are metres per second at 4 pips to engines, rotation rates are degrees per second.
  */
@@ -119,7 +119,7 @@ export interface Ship {
 
 /**
  * Every player-flyable ship hull, in Frontier's shipyard order (roughly the order
- * the hulls were introduced, Sidewinder first).
+ * the registry order, beginning with Sidewinder).
  *
  * @example
  * ```ts

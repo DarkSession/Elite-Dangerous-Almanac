@@ -74,7 +74,7 @@ import { requireStringIfPresent } from '../internal/argument-guards.js';
  *
  * An outfitting module with no published engineering family carries
  * `engineeringGroup: null`; do not infer a group from its symbol. This explicit absence
- * distinguishes an unclassified module from a misspelled or newly introduced id.
+ * distinguishes an unclassified module from an unknown id.
  *
  * @example
  * ```ts
@@ -188,11 +188,10 @@ const moduleExclusions = new Map(
  *
  * `null` means **"no source gives this module a recipe"**, which for the 171 ungrouped
  * modules is the same as "cannot be engineered" — the families and the individually
- * denied modules listed in the module overview above. It stays worded as the catalogue's
- * answer rather than the game's because that is what it can honestly claim: a module
- * Frontier adds engineering for later reads `null` until a registry says so, and the
- * build corpus already has one such case (the Mk II Plasma Shock Accelerator, denied every
- * blueprint upstream and engineered on both of a community build's large hardpoints).
+ * denied modules listed in the module overview above. This is the catalogue's answer,
+ * not a claim that the game forbids engineering. The build corpus contains one contrary
+ * case: the Mk II Plasma Shock Accelerator is denied every blueprint upstream but appears
+ * engineered on both large hardpoints of a community build.
  *
  * @param symbol - A module symbol, e.g. `"Hpt_BeamLaser_Fixed_Small"`.
  * @returns The group id, or `null` when the module is not in the catalogue.
