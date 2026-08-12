@@ -73,8 +73,9 @@ worth knowing before you write a `catch`:
   reports as that entry's diagnostic. `ShipLoadout.fromLoadout` checks the structure a
   build is assembled from — an object, an array of module objects, a `Slot` and `Item` on
   each, no two modules claiming one slot, and an `Engineering` that is an object with an
-  array of `Modifiers` whenever their key is there at all — plus the type of `Ship` and of
-  that block's two ids when they carry a value. It trusts every value inside, so use `fromSlef` for an event you did not
+  array of `Modifiers` whenever their key is there at all — plus the fields naming
+  something, when they carry a value: `Ship`, the block's two ids, and a modifier's
+  `Label`. It trusts every value inside, so use `fromSlef` for an event you did not
   produce yourself.
 
 **A missing argument is not a wrong-typed one**, and the two get different answers:

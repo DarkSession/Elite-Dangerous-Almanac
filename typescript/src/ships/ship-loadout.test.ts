@@ -3547,6 +3547,41 @@ test('fromLoadout names the structure it needs instead of failing inside the wal
             },
         );
     }
+    // A modifier's `Label` names a stat, so it is checked — under this method's name,
+    // not that of whichever function reads it first. The rest of a modifier is not, and
+    // an element that is not an object at all is left to `fromSlef` to report.
+    assert.throws(
+        () =>
+            ShipLoadout.fromLoadout({
+                Ship: 'Anaconda',
+                Modules: [
+                    {
+                        Slot: 'FrameShiftDrive',
+                        Item: 'Int_Hyperdrive_Size6_Class5',
+                        Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: [{ Label: 42 }] },
+                    },
+                ],
+            } as unknown as LoadoutEvent),
+        {
+            name: 'TypeError',
+            message:
+                'ShipLoadout.fromLoadout: module.Engineering.Modifiers[].Label must be a string, received number 42',
+        },
+    );
+    for (const modifiers of [[42], [{ Label: 'FSDOptimalMass', Value: 'lots' }], [{ Value: 1 }]]) {
+        assert.ok(
+            ShipLoadout.fromLoadout({
+                Ship: 'Anaconda',
+                Modules: [
+                    {
+                        Slot: 'FrameShiftDrive',
+                        Item: 'Int_Hyperdrive_Size6_Class5',
+                        Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: modifiers },
+                    },
+                ],
+            } as unknown as LoadoutEvent),
+        );
+    }
     // `Engineering` is the one field where `null` is not an omission — the asymmetry
     // above is deliberate, so pin both halves of it against a future tidy-up.
     assert.ok(
