@@ -32,7 +32,7 @@ and are verified in §4. `slots()` is now ~200× faster on repeat reads. One cle
 (un-exporting four file-local types) and one deliberate feature question (whether slot
 identifiers should tolerate whitespace) remain open.
 
-The surface *is* large — 307 public symbols across 69 subpaths — but that is a stated
+The surface _is_ large — 307 public symbols across 69 subpaths — but that is a stated
 design requirement (`AGENTS.md:45`: "The public half of the map is enumerated, one subpath
 per runtime module"), enforced by `npm run test:package`, and mirrored deliberately into
 future language implementations. It is a cost the project has chosen with its eyes open,
@@ -49,14 +49,14 @@ record is emitted twice. Many data packages get this wrong and ship both.
 
 **Bundle costs match the documented claims.** Measured minified ESM from `dist/`:
 
-| Subpath | Measured | Doc claim |
-| --- | --- | --- |
-| `./ships` | 640.1 KiB | "pulls in every catalogue" ✓ |
-| `./astro/nebulae-all` | 431.7 KiB | "~432 KiB bundled" ✓ |
-| `./ships/modules-all` | 309.9 KiB | "310.8 KiB" ✓ |
-| `./astro/codex-region-lookup` | 208.1 KiB | "map geometry is large" ✓ |
-| `./ships/jump-range` | 1.5 KiB | "costs nothing but the function" ✓ |
-| `./materials/materials` | 17.1 KiB | "16.9 KiB minified" ✓ |
+| Subpath                       | Measured  | Doc claim                          |
+| ----------------------------- | --------- | ---------------------------------- |
+| `./ships`                     | 640.1 KiB | "pulls in every catalogue" ✓       |
+| `./astro/nebulae-all`         | 431.7 KiB | "~432 KiB bundled" ✓               |
+| `./ships/modules-all`         | 309.9 KiB | "310.8 KiB" ✓                      |
+| `./astro/codex-region-lookup` | 208.1 KiB | "map geometry is large" ✓          |
+| `./ships/jump-range`          | 1.5 KiB   | "costs nothing but the function" ✓ |
+| `./materials/materials`       | 17.1 KiB  | "16.9 KiB minified" ✓              |
 
 `AGENTS.md:48` already carries these figures, including `ALL_NEBULAE`'s 431.7 KiB, with
 the rule that neither the default-catalogue nor the required-catalogue decision may be
@@ -90,8 +90,8 @@ alongside `cargoCapacityResult` naming every unresolved rack
 (`typescript/src/ships/ship-loadout.ts:630-636`) lets a consumer choose between a quick
 number and an explainable one.
 
-**Retail vs. source credits.** Keeping what a capture *paid* separate from what the build
-is worth at *retail*, pinning each captured figure to the article it was paid for, and
+**Retail vs. source credits.** Keeping what a capture _paid_ separate from what the build
+is worth at _retail_, pinning each captured figure to the article it was paid for, and
 exporting the capture's own figures only under `{ credits: 'source' }` is careful domain
 modelling with its limits documented rather than hidden.
 
@@ -128,7 +128,7 @@ same version is observationally identical.
 introduced a separate `#viewVersion` alongside new `#fittedModuleCache` and `#slotCache`
 (the latter keyed by `SlotKind`, so `slots('optional')` caches independently of `slots()`).
 That separation matters: `#version` deliberately ignores `#patchModule`, but a
-`LoadoutSlot` snapshot *does* expose `priority` and `on`, so a view cache keyed on
+`LoadoutSlot` snapshot _does_ expose `priority` and `on`, so a view cache keyed on
 `#version` would have gone stale after `setModulePriority`. Verified below that it does
 not.
 
@@ -137,7 +137,7 @@ not.
 **F3 — an internal comment overclaimed.** `typescript/src/internal/registry-index.ts:24`
 says "Every case-insensitive lookup in the library funnels through here". 71 ad-hoc
 `.toLowerCase()` code sites outside that file do not (55 setting aside `sector-name.ts`'s
-16 procedural-naming internals). *This is a documentation defect, not a broken contract* —
+16 procedural-naming internals). _This is a documentation defect, not a broken contract_ —
 the README promises trimming for **registry lookups**, and the slot APIs document
 case-insensitivity only. Behaviour, for the record:
 
@@ -210,14 +210,14 @@ Not worth changing without a benchmark showing it matters.
 
 ## 4. Recommendations and status
 
-| # | Recommendation | Status |
-| --- | --- | --- |
-| 1 | Cache `slots()` / `fittedModuleAt` per build version | **Landed — #220**, verified |
-| 2 | Narrow the `registry-index.ts:24` comment to what it governs | **Landed — #221**, verified |
-| 3 | Decide separately whether slot identifiers should trim | **Open by design** — a feature call, correctly left out of #221 |
-| 4 | Add a `procedural-system.test.ts` covering `massCode` | **Landed — #222**, verified |
-| 5 | Un-export the four safely un-exportable file-local types | **Open** — all six still carry `export` |
-| 6 | Quote the bundle figure in `pre-engineered-stats`'s header | **Landed — #223**, verified |
+| #   | Recommendation                                               | Status                                                          |
+| --- | ------------------------------------------------------------ | --------------------------------------------------------------- |
+| 1   | Cache `slots()` / `fittedModuleAt` per build version         | **Landed — #220**, verified                                     |
+| 2   | Narrow the `registry-index.ts:24` comment to what it governs | **Landed — #221**, verified                                     |
+| 3   | Decide separately whether slot identifiers should trim       | **Open by design** — a feature call, correctly left out of #221 |
+| 4   | Add a `procedural-system.test.ts` covering `massCode`        | **Landed — #222**, verified                                     |
+| 5   | Un-export the four safely un-exportable file-local types     | **Open** — all six still carry `export`                         |
+| 6   | Quote the bundle figure in `pre-engineered-stats`'s header   | **Landed — #223**, verified                                     |
 
 ### Verification at `542590d`
 
@@ -226,15 +226,15 @@ Fresh `npm ci` and `npm run build`, same method as the original measurements.
 **#220 — slot snapshot caching.** Repeat reads are ~200× faster, and every correctness
 property I would want holds:
 
-| Check | Before (`8d26a51`) | After (`542590d`) |
-| --- | --- | --- |
-| `slots()` × 1000 | 18.7 – 34.4 ms | 1.4 ms cold, **0.1 ms warm** |
-| `slots('optional')` × 1000 | — | 0.3 ms (cached independently) |
-| `fittedModules()` × 1000 | 3.6 – 4.3 ms | 0.7 ms |
-| `slots() === slots()` | `false` | `true` |
-| `Object.isFrozen` on array and records | `true` | `true` — guarantee intact |
-| New array after `setModule` | n/a | `true` — invalidates correctly |
-| New array after `setModulePriority` | n/a | `true` — the `#viewVersion` split works |
+| Check                                  | Before (`8d26a51`) | After (`542590d`)                       |
+| -------------------------------------- | ------------------ | --------------------------------------- |
+| `slots()` × 1000                       | 18.7 – 34.4 ms     | 1.4 ms cold, **0.1 ms warm**            |
+| `slots('optional')` × 1000             | —                  | 0.3 ms (cached independently)           |
+| `fittedModules()` × 1000               | 3.6 – 4.3 ms       | 0.7 ms                                  |
+| `slots() === slots()`                  | `false`            | `true`                                  |
+| `Object.isFrozen` on array and records | `true`             | `true` — guarantee intact               |
+| New array after `setModule`            | n/a                | `true` — invalidates correctly          |
+| New array after `setModulePriority`    | n/a                | `true` — the `#viewVersion` split works |
 
 That last row is the one worth calling out: had the cache been keyed on `#version` as I
 originally suggested, a priority change would have served a stale snapshot, because
@@ -270,17 +270,17 @@ kept. Lowest-value item on the list, and the only one with no consumer-visible e
 
 Recorded so the errors are auditable rather than silently deleted.
 
-| Withdrawn | Why it was wrong |
-| --- | --- |
-| "No map of which symbol lives where" | False. `Getting-started.md:54` has a "Where does a symbol live?" table; the wiki `_Sidebar.md` adds hierarchical navigation. I never opened `typescript/docs/guides/`. |
-| "`Mod` is never expanded for the consumer" | False. `system-address.ts:8` calls it the "modulated" layout and `:278` explains what it is, who emits it, and when to prefer `decodeSystemAddress`. |
-| "npm consumers cannot see data currency" | False. `PROVENANCE/SNAPSHOTS.md` and all four domain `SOURCES.md` ship in the tarball (`copy-notices.mjs:43`), linked from `README.md:136`. Confirmed via `npm pack --dry-run`. |
-| "`SystemAddressInput` documented seven times" | Overstated. Seven subpaths re-export it, but TypeDoc owns it once — one wiki page. Re-exporting a parameter type beside the function that consumes it is good ergonomics, not duplication. |
-| "Cut the surface to ~180 symbols / ~25 subpaths" | Conflicts with a documented requirement. `AGENTS.md:45` mandates one enumerated subpath per runtime module, enforced by `test:package` and mirrored into future languages. |
-| "Rewrite the import guidance" | The guidance is already correct. `Getting-started.md:15` distinguishes bundler from native-ESM. My ≤2-byte result confirms bundlers work; it says nothing about whether native-ESM boundaries should exist. |
-| "Drop the three `is*` predicates" | Boolean predicates are ergonomic API. Derivability is not redundancy. |
+| Withdrawn                                                  | Why it was wrong                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "No map of which symbol lives where"                       | False. `Getting-started.md:54` has a "Where does a symbol live?" table; the wiki `_Sidebar.md` adds hierarchical navigation. I never opened `typescript/docs/guides/`.                                                                                                                                                                                                                                                                        |
+| "`Mod` is never expanded for the consumer"                 | False. `system-address.ts:8` calls it the "modulated" layout and `:278` explains what it is, who emits it, and when to prefer `decodeSystemAddress`.                                                                                                                                                                                                                                                                                          |
+| "npm consumers cannot see data currency"                   | False. `PROVENANCE/SNAPSHOTS.md` and all four domain `SOURCES.md` ship in the tarball (`copy-notices.mjs:43`), linked from `README.md:136`. Confirmed via `npm pack --dry-run`.                                                                                                                                                                                                                                                               |
+| "`SystemAddressInput` documented seven times"              | Overstated. Seven subpaths re-export it, but TypeDoc owns it once — one wiki page. Re-exporting a parameter type beside the function that consumes it is good ergonomics, not duplication.                                                                                                                                                                                                                                                    |
+| "Cut the surface to ~180 symbols / ~25 subpaths"           | Conflicts with a documented requirement. `AGENTS.md:45` mandates one enumerated subpath per runtime module, enforced by `test:package` and mirrored into future languages.                                                                                                                                                                                                                                                                    |
+| "Rewrite the import guidance"                              | The guidance is already correct. `Getting-started.md:15` distinguishes bundler from native-ESM. My ≤2-byte result confirms bundlers work; it says nothing about whether native-ESM boundaries should exist.                                                                                                                                                                                                                                   |
+| "Drop the three `is*` predicates"                          | Boolean predicates are ergonomic API. Derivability is not redundancy.                                                                                                                                                                                                                                                                                                                                                                         |
 | "Eight weapon primitives duplicate `WeaponMetrics` fields" | Substantially false. `damageFalloff`, `armourPiercingFactor` and `splitDamage` are not fields at all — they take arguments (distance, hardness) the metrics object has no place for. The four DPS/energy/heat functions **are** the primitives `weaponMetrics` composes at `weapons.ts:473-496`. My "no internal callers" claim was an artifact of excluding the declaring file from the grep — which is exactly where the composition lives. |
-| "Six permit-lock lookups where two would do" | They answer different input/output questions: exact system name, address, exact region name, region prefix. A decision table documenting a real distinction is not evidence of redundancy. |
-| "Reduce the 20 exports on `./ships/slots`" | Type-only exports have no runtime cost, and named union members make narrowing and custom layouts easier than forcing `Extract<>` reconstruction. |
-| "`getNebulaByName`'s required catalogue is inconsistent" | Intentional and mandated. `AGENTS.md:48` names `astro/nebulae` as the explicit counter-example to the default-catalogue rule, at the 431.7 KiB I independently measured. |
-| "Weaken eager deep-freezing" | Not supported by the evidence I had. The cold-import figure (~51 ms for `./ships`) bundles parsing, module evaluation, index construction and freezing; it does not isolate `deepFreeze`. Catalogue immutability is an explicit guarantee (`AGENTS.md:167`) with `catalogue-immutability.test.ts` asserting it. An A/B profile is the prerequisite for reopening this. |
+| "Six permit-lock lookups where two would do"               | They answer different input/output questions: exact system name, address, exact region name, region prefix. A decision table documenting a real distinction is not evidence of redundancy.                                                                                                                                                                                                                                                    |
+| "Reduce the 20 exports on `./ships/slots`"                 | Type-only exports have no runtime cost, and named union members make narrowing and custom layouts easier than forcing `Extract<>` reconstruction.                                                                                                                                                                                                                                                                                             |
+| "`getNebulaByName`'s required catalogue is inconsistent"   | Intentional and mandated. `AGENTS.md:48` names `astro/nebulae` as the explicit counter-example to the default-catalogue rule, at the 431.7 KiB I independently measured.                                                                                                                                                                                                                                                                      |
+| "Weaken eager deep-freezing"                               | Not supported by the evidence I had. The cold-import figure (~51 ms for `./ships`) bundles parsing, module evaluation, index construction and freezing; it does not isolate `deepFreeze`. Catalogue immutability is an explicit guarantee (`AGENTS.md:167`) with `catalogue-immutability.test.ts` asserting it. An A/B profile is the prerequisite for reopening this.                                                                        |
