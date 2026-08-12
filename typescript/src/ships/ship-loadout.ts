@@ -734,14 +734,13 @@ export class ShipLoadout {
      * @returns A detached view, or `null` when the slot is empty or unknown.
      */
     fittedModuleAt(slotKey: string): FittedModule | null {
-        const key = this.#fittedKey(slotKey);
-        const module = key === null ? undefined : this.#modules.get(key);
-        if (!module || key === null) return null;
+        const module = this.#fittedModuleFor(slotKey);
+        if (!module) return null;
         const raw = cloneLoadoutModule(module);
         const stats = this.#statsFor(module);
         const effective = effectiveModule(raw, stats);
         return deepFreeze({
-            slot: key,
+            slot: module.Slot,
             symbol: raw.Item,
             on: raw.On,
             priority: raw.Priority,
@@ -795,8 +794,7 @@ export class ShipLoadout {
      * ```
      */
     availableBlueprints(slotKey: string): readonly AvailableBlueprint[] {
-        const key = this.#fittedKey(slotKey);
-        const module = key === null ? undefined : this.#modules.get(key);
+        const module = this.#fittedModuleFor(slotKey);
         return deepFreeze(
             module ? availableBlueprintsFor(module.Item, this.#statsFor(module)) : [],
         );
@@ -819,8 +817,7 @@ export class ShipLoadout {
      * ```
      */
     availableExperimentalEffects(slotKey: string): readonly string[] {
-        const key = this.#fittedKey(slotKey);
-        const module = key === null ? undefined : this.#modules.get(key);
+        const module = this.#fittedModuleFor(slotKey);
         return deepFreeze(
             module ? availableExperimentalsFor(module.Item, this.#statsFor(module)) : [],
         );
@@ -968,9 +965,8 @@ export class ShipLoadout {
      * ```
      */
     applyBlueprint(slotKey: string, blueprintName: string, options: ApplyBlueprintOptions): this {
-        const key = this.#fittedKey(slotKey);
-        const module = key === null ? undefined : this.#modules.get(key);
-        if (!module || key === null) {
+        const module = this.#fittedModuleFor(slotKey);
+        if (!module) {
             throw new RangeError(`ShipLoadout.applyBlueprint: slot "${slotKey}" is empty`);
         }
         const stats = this.#statsFor(module);
@@ -1084,7 +1080,7 @@ export class ShipLoadout {
                 : {}),
             Modifiers: modifiers,
         };
-        this.#replaceModule(key, { ...module, Engineering: engineering });
+        this.#replaceModule(module.Slot, { ...module, Engineering: engineering });
         return this;
     }
 
@@ -1098,14 +1094,13 @@ export class ShipLoadout {
      * engineering cannot be removed.
      */
     clearEngineering(slotKey: string): this {
-        const key = this.#fittedKey(slotKey);
-        const module = key === null ? undefined : this.#modules.get(key);
+        const module = this.#fittedModuleFor(slotKey);
         if (module && this.#statsFor(module)?.engineeringLocked) {
             throw new TypeError(
                 `ShipLoadout.clearEngineering: module "${module.Item}" is a final pre-engineered article and its engineering cannot be removed`,
             );
         }
-        if (key !== null && module?.Engineering) {
+        if (module?.Engineering) {
             const bare: LoadoutModule = { Slot: module.Slot, Item: module.Item };
             if (module.On !== undefined) (bare as { On?: boolean }).On = module.On;
             if (module.Priority !== undefined) {
@@ -1113,7 +1108,7 @@ export class ShipLoadout {
             }
             if (module.Health !== undefined) (bare as { Health?: number }).Health = module.Health;
             if (module.Value !== undefined) (bare as { Value?: number }).Value = module.Value;
-            this.#replaceModule(key, bare);
+            this.#replaceModule(module.Slot, bare);
         }
         return this;
     }
@@ -1170,12 +1165,11 @@ export class ShipLoadout {
      * intentionally keep their earlier power state; a fresh query observes the patch.
      */
     #patchModule(slotKey: string, patch: Pick<Partial<LoadoutModule>, 'On' | 'Priority'>): void {
-        const key = this.#fittedKey(slotKey);
-        const module = key === null ? undefined : this.#modules.get(key);
-        if (!module || key === null) {
+        const module = this.#fittedModuleFor(slotKey);
+        if (!module) {
             throw new RangeError(`ShipLoadout: slot "${slotKey}" is empty`);
         }
-        this.#modules.set(key, cloneLoadoutModule({ ...module, ...patch }));
+        this.#modules.set(module.Slot, cloneLoadoutModule({ ...module, ...patch }));
     }
 
     /**
@@ -1601,37 +1595,35 @@ export class ShipLoadout {
         return matchingKeyIn(this.#modules, slotKey);
     }
 
-    /** Unladen mass plus the given cargo, or throw if the mass is unknown. */
-    #requireMass(cargo: number): number {
-        const result = this.unladenMassResult;
+    /** The module fitted in `slotKey`, or `undefined` when the slot is empty. */
+    #fittedModuleFor(slotKey: string): LoadoutModule | undefined {
+        const key = this.#fittedKey(slotKey);
+        return key === null ? undefined : this.#modules.get(key);
+    }
+
+    /** Unwrap a calculation result required by a public convenience calculation. */
+    #require<T>(result: CalculationResult<T>, what: string): T {
         if (result.value === null) {
             throw new TypeError(
-                `ShipLoadout: cannot determine mass (${result.issues.map((i) => i.message).join('; ')})`,
+                `ShipLoadout: cannot determine ${what} (${result.issues.map((i) => i.message).join('; ')})`,
             );
         }
-        return result.value + cargo;
+        return result.value;
+    }
+
+    /** Unladen mass plus the given cargo, or throw if the mass is unknown. */
+    #requireMass(cargo: number): number {
+        return this.#require(this.unladenMassResult, 'mass') + cargo;
     }
 
     /** Require the complete fuel capacity for a calculation that cannot omit it. */
     #requireFuelCapacity(): FuelCapacity {
-        const result = this.fuelCapacityResult;
-        if (result.value === null) {
-            throw new TypeError(
-                `ShipLoadout: cannot determine fuel capacity (${result.issues.map((i) => i.message).join('; ')})`,
-            );
-        }
-        return result.value;
+        return this.#require(this.fuelCapacityResult, 'fuel capacity');
     }
 
     /** Require the complete cargo capacity for a calculation that cannot omit it. */
     #requireCargoCapacity(): number {
-        const result = this.cargoCapacityResult;
-        if (result.value === null) {
-            throw new TypeError(
-                `ShipLoadout: cannot determine cargo capacity (${result.issues.map((i) => i.message).join('; ')})`,
-            );
-        }
-        return result.value;
+        return this.#require(this.cargoCapacityResult, 'cargo capacity');
     }
 
     /** Resolve fitted modules once into the data-free aggregate-calculation shape. */
