@@ -771,7 +771,9 @@ test('published source maps resolve compact output to its TypeScript throw site'
     );
     assert.notEqual(failure.status, 0);
     const stack = failure.stderr.replaceAll('\\', '/');
-    assert.match(stack, /at #?requireSlot/);
+    // V8 renders a private method either as `#requireSlot` or as the transpiled
+    // `_ShipLoadout.requireSlot`, depending on the Node.js patch release.
+    assert.match(stack, /\bat (?:[\w$]+\.)?#?requireSlot\b/);
     assert.match(stack, new RegExp(`src/ships/ship-loadout\\.ts:${throwLine}:${mappedColumn}`));
 });
 
