@@ -349,7 +349,7 @@ test('the pre-engineered lookups name a wrong-typed symbol', () => {
         ],
         [
             () => getPreEngineeredByBlueprint(42 as unknown as string),
-            'getPreEngineeredByBlueprint: blueprint',
+            'getPreEngineeredByBlueprint: fdname',
         ],
         // A facade over the variants lookup, naming its own parameter.
         [() => isPreEngineered(42 as unknown as string), 'isPreEngineered: symbol'],

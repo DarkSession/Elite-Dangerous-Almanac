@@ -84,8 +84,13 @@ worth knowing before you write a `catch`:
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
 
 getShipBySymbol(undefined as unknown as string); // -> null, the answer an unknown symbol gets
-getShipBySymbol(42 as unknown as string);
-// throws TypeError: getShipBySymbol: symbol must be a string, received number 42
+
+try {
+    getShipBySymbol(42 as unknown as string);
+} catch (error) {
+    (error as Error).message;
+    // -> 'getShipBySymbol: symbol must be a string, received number 42'
+}
 ```
 
 A lookup that answers `null` for a symbol no record carries answers `null` for no symbol

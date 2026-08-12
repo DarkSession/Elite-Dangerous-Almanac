@@ -475,7 +475,7 @@ test('the engineering-menu lookups name themselves for a wrong-typed argument', 
         ],
         [
             () => getExperimentalsForBlueprint(42 as unknown as string),
-            'getExperimentalsForBlueprint: blueprint',
+            'getExperimentalsForBlueprint: fdname',
         ],
     ] as const) {
         assert.throws(call, {

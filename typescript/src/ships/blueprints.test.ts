@@ -99,7 +99,7 @@ test('resolving a recipe id is strict about the id, and a miss about the module'
                 resolveBlueprintForModule('Int_Hyperdrive_Size6_Class5', bad as unknown as string),
             {
                 name: 'TypeError',
-                message: /^resolveBlueprintForModule: blueprint must be a string, received /,
+                message: /^resolveBlueprintForModule: fdname must be a string, received /,
             },
         );
     }

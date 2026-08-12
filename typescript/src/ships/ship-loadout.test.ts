@@ -3406,8 +3406,7 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
         () => build.applyBlueprint('FrameShiftDrive', 42 as unknown as string, { grade: 5 }),
         {
             name: 'TypeError',
-            message:
-                'ShipLoadout.applyBlueprint: blueprintName must be a string, received number 42',
+            message: 'ShipLoadout.applyBlueprint: fdname must be a string, received number 42',
         },
     );
     assert.throws(
@@ -3435,7 +3434,7 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
     assert.throws(
         () => build.applyBlueprint('Slot01_Size7', 42 as unknown as string, { grade: 5 }),
         {
-            message: /blueprintName must be a string/,
+            message: /fdname must be a string/,
         },
     );
     // An absent experimental effect is not one of these — it is simply no effect.
