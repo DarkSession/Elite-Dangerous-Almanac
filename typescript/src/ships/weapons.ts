@@ -49,7 +49,8 @@ import type { DamageComponents, DamageDistribution, ProjectileRangeBoundaries } 
  * @remarks
  * An {@link OutfittingModule} record satisfies this as-is, so you can pass a catalogue
  * entry straight in. Every field is optional: a weapon carries only the ones that
- * apply to it, and a missing field takes the neutral default noted below.
+ * apply to it. Fields used directly by these calculations state their omitted
+ * behaviour below; informational fields remain absent when unknown or inapplicable.
  */
 export interface WeaponStats {
     /** Damage per round — or per second on a continuous-fire weapon. Defaults to `0`. */
@@ -75,7 +76,10 @@ export interface WeaponStats {
     readonly burstRounds?: number;
     /** Shots per second within a burst. Defaults to `1`. */
     readonly burstRateOfFire?: number;
-    /** Seconds spent charging before a shot (rail guns); not part of `rateOfFire`. */
+    /**
+     * Seconds spent charging before a shot (rail guns). Absent means no charge delay is
+     * recorded; these calculations do not fold charge time into `rateOfFire` or DPS.
+     */
     readonly chargeTime?: number;
     /** Rounds in a clip. Absent means the weapon never stops to reload. */
     readonly clipSize?: number;
@@ -96,13 +100,22 @@ export interface WeaponStats {
     readonly thermalLoad?: number;
     /** Power draw, in megawatts — echoed through to the metrics. Defaults to `0`. */
     readonly powerDraw?: number;
-    /** Maximum range, in metres. */
+    /** Maximum range, in metres. Absent means {@link damageFalloff} imposes no range cap. */
     readonly maximumRange?: number;
-    /** Range at which damage begins to drop off, in metres. */
+    /**
+     * Range at which damage begins to drop off, in metres. Absent means full damage
+     * through `maximumRange`, then zero beyond it.
+     */
     readonly falloffRange?: number;
-    /** Projectile boundary parameters, which are not effective distances. */
+    /**
+     * Projectile boundary parameters, which are not effective distances. Absent means
+     * no boundary metadata is known; {@link damageFalloff} ignores it either way.
+     */
     readonly projectileRange?: ProjectileRangeBoundaries;
-    /** Armour piercing rating, against a hull's hardness. */
+    /**
+     * Armour piercing rating, against a hull's hardness. Absent means the rating is
+     * unknown; callers of {@link armourPiercingFactor} must supply an explicit value.
+     */
     readonly armourPiercing?: number;
 }
 
