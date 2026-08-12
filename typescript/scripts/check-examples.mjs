@@ -17,7 +17,7 @@
  * rounded to their documented precision, and `0.667…` is a decimal-prefix assertion.
  * Prose and abbreviated values remain compile-only and are counted explicitly.
  *
- * `npm run check` uses `--strict`, so every documented snippet must compile.
+ * `pnpm run check` uses `--strict`, so every documented snippet must compile.
  * `--max-failures <n>` sets an explicit failure ceiling and fails
  * only when the count rises above the agreed number.
  *

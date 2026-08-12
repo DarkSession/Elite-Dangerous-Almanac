@@ -636,7 +636,7 @@ test('each barrel ships its orientation documentation in the declarations', asyn
         const text = await readFile(new URL(`./dist/${file}`, import.meta.url), 'utf8');
         assert.ok(
             text.startsWith('/**'),
-            `dist/${file} lost its @packageDocumentation block — run \`npm run build\``,
+            `dist/${file} lost its @packageDocumentation block — run \`pnpm run build\``,
         );
         assert.ok(
             text.includes('@packageDocumentation'),
@@ -1004,7 +1004,7 @@ test('the publication manifest includes consumer documentation and notices', asy
     assert.equal(
         snapshots,
         canonicalSnapshots,
-        'PROVENANCE/SNAPSHOTS.md is stale — run `npm run build`',
+        'PROVENANCE/SNAPSHOTS.md is stale — run `pnpm run build`',
     );
 
     const canonicalDomains = (await readdir(dataRoot, { withFileTypes: true }))
@@ -1029,7 +1029,7 @@ test('the publication manifest includes consumer documentation and notices', asy
         assert.equal(
             packaged,
             canonical,
-            `PROVENANCE/${domain}/SOURCES.md is stale — run \`npm run build\``,
+            `PROVENANCE/${domain}/SOURCES.md is stale — run \`pnpm run build\``,
         );
         assert.deepEqual(await readdir(new URL(`${domain}/`, provenanceRoot)), ['SOURCES.md']);
     }
@@ -1043,7 +1043,7 @@ test('the publication manifest includes consumer documentation and notices', asy
     assert.equal(
         notices,
         canonical,
-        'THIRD_PARTY_NOTICES.md is stale — run `npm run build` (it copies ATTRIBUTIONS.md)',
+        'THIRD_PARTY_NOTICES.md is stale — run `pnpm run build` (it copies ATTRIBUTIONS.md)',
     );
     // Every source the library takes something from has to be named in the shipped
     // notice, with its terms: the file is the one place a source is described.
@@ -1071,7 +1071,7 @@ test('the publication manifest includes consumer documentation and notices', asy
     assert.equal(
         license,
         canonicalLicense,
-        'LICENSE is stale — run `npm run build` (it copies the root LICENSE)',
+        'LICENSE is stale — run `pnpm run build` (it copies the root LICENSE)',
     );
     // Match on collapsed whitespace so line wrapping does not affect the assertion.
     const licenseProse = license.replace(/\s+/g, ' ');

@@ -268,7 +268,7 @@ function generatedTypes(families) {
     "/**",
     " * Generated fixture import types. Do not edit by hand.",
     " *",
-    " * Run `npm run generate:fixtures` from `typescript/` after changing a fixture.",
+    " * Run `pnpm run generate:fixtures` from `typescript/` after changing a fixture.",
     " */",
     "",
   ];
@@ -353,7 +353,7 @@ async function checkFile(path, expected) {
   assert.equal(
     actual,
     expected,
-    `${relative(REPOSITORY_ROOT, path)} is stale; run npm run generate:fixtures`,
+    `${relative(REPOSITORY_ROOT, path)} is stale; run pnpm run generate:fixtures`,
   );
 }
 

@@ -50,17 +50,24 @@ language packages so every implementation can consume the same files.
 
 ## Development
 
+The package is managed with [pnpm](https://pnpm.io). Node 22 ships Corepack, which
+installs the exact pnpm version pinned in `typescript/package.json`:
+
+```bash
+corepack enable pnpm
+```
+
 Run TypeScript commands from `typescript/`:
 
 ```bash
-npm ci
-npm run check
-npm run build
-npm run test:package
-npm run docs
+pnpm install --frozen-lockfile
+pnpm run check
+pnpm run build
+pnpm run test:package
+pnpm run docs
 ```
 
-`npm run check` runs linting, formatting checks, type checking, documented-example
+`pnpm run check` runs linting, formatting checks, type checking, documented-example
 compilation and value checks, and the coverage-gated test suite. Changes to exports or
 consumer-facing modules also require the build and package tests.
 
