@@ -681,6 +681,11 @@ test('every JavaScript artifact references a source map without embedded sources
             readFile(mapFile, 'utf8').then(JSON.parse),
         ]);
         const mapName = mapFile.pathname.split('/').at(-1);
+        assert.deepEqual(
+            javascript.match(/\/\/# sourceMappingURL=[^\r\n]*/g),
+            [`//# sourceMappingURL=${mapName}`],
+            `${javascriptFile.pathname} must reference its source map exactly once`,
+        );
         assert.ok(
             javascript.trimEnd().endsWith(`//# sourceMappingURL=${mapName}`),
             `${javascriptFile.pathname} does not reference its source map`,
