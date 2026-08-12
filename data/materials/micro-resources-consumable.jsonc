@@ -8,40 +8,34 @@
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/materials/SOURCES.md.
  *
- * Each record is { symbol, category, name }. `symbol` is Frontier's internal id
+ * Each record is { symbol, name }. `symbol` is Frontier's internal id
  * (e.g. `graphene`) — what the player journal reports, matched case-insensitively;
- * `name` is the display name. `category` is one of component / consumable / data /
- * item. Frontier's numeric micro-resource id from the CSV is not carried.
+ * `name` is the display name. The file determines the `consumable` category, so it is
+ * not repeated on every record. Frontier's numeric micro-resource id is not carried.
  */
 [
   {
     "symbol": "healthpack",
-    "category": "consumable",
     "name": "Medkit"
   },
   {
     "symbol": "energycell",
-    "category": "consumable",
     "name": "Energy Cell"
   },
   {
     "symbol": "amm_grenade_emp",
-    "category": "consumable",
     "name": "Shield Disruptor"
   },
   {
     "symbol": "amm_grenade_frag",
-    "category": "consumable",
     "name": "Frag Grenade"
   },
   {
     "symbol": "amm_grenade_shield",
-    "category": "consumable",
     "name": "Shield Projector"
   },
   {
     "symbol": "bypass",
-    "category": "consumable",
     "name": "E-Breach"
   }
 ]

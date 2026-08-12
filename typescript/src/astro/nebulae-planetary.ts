@@ -3,9 +3,9 @@
  * catalogue, each catalogued at the procedurally-named system it surrounds.
  *
  * @remarks
- * **This is the heaviest data module in the library (~645 KiB bundled).** Import it
+ * **This is the heaviest data module in the library (~399 KiB bundled).** Import it
  * only when you genuinely need every planetary nebula; for the 180 recognisable
- * real-world nebulae use `./nebulae-real` instead (~19 KiB). Because each catalogue
+ * real-world nebulae use `./nebulae-real` instead (~16 KiB). Because each catalogue
  * is its own module, importing that one never pulls this one in.
  *
  * Data from EDAstro; see [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md) for credit and licence terms.
@@ -14,8 +14,8 @@
  */
 
 import type { Nebula } from './nebulae.js';
+import { buildNebulaCatalogue, type PlanetaryNebulaRecord } from './internal/nebula-catalogue.js';
 import planetaryNebulaeData from '../../../data/astro/nebulae-planetary.jsonc' with { type: 'json' };
-import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * All 5489 planetary nebulae, sorted by name.
@@ -33,6 +33,7 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  * PLANETARY_NEBULAE[0]?.name; // -> 'Aemonz EQ-Y e1899'
  * ```
  */
-export const PLANETARY_NEBULAE: readonly Nebula[] = deepFreeze(
-    planetaryNebulaeData as readonly Nebula[],
+export const PLANETARY_NEBULAE: readonly Nebula[] = buildNebulaCatalogue(
+    planetaryNebulaeData as readonly PlanetaryNebulaRecord[],
+    'planetary',
 );

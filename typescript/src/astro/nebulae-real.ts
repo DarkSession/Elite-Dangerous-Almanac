@@ -3,7 +3,7 @@
  * Elite Dangerous models under their catalogue name (Horsehead, Witch Head,
  * Barnard's Loop, the Coalsack and Aquila dark regions, …).
  *
- * This is the small, human-recognisable slice of the nebula catalogue (~19 KiB
+ * This is the small, human-recognisable slice of the nebula catalogue (~16 KiB
  * bundled) and the one most apps want. The much larger planetary and procedurally
  * generated classes live in `./nebulae-planetary` and `./nebulae-procgen`, so
  * importing this module never bundles them.
@@ -14,8 +14,8 @@
  */
 
 import type { Nebula } from './nebulae.js';
+import { buildNebulaCatalogue, type NamedNebulaRecord } from './internal/nebula-catalogue.js';
 import realNebulaeData from '../../../data/astro/nebulae-real.jsonc' with { type: 'json' };
-import { deepFreeze } from '../internal/deep-freeze.js';
 
 /**
  * All 180 real-world nebulae and dark regions, sorted by name.
@@ -33,4 +33,7 @@ import { deepFreeze } from '../internal/deep-freeze.js';
  * // -> 'Horsehead Dark Region IR-V c2-9'
  * ```
  */
-export const REAL_NEBULAE: readonly Nebula[] = deepFreeze(realNebulaeData as readonly Nebula[]);
+export const REAL_NEBULAE: readonly Nebula[] = buildNebulaCatalogue(
+    realNebulaeData as readonly NamedNebulaRecord[],
+    'real',
+);

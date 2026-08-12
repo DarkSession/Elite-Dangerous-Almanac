@@ -2,8 +2,10 @@
  * Shared test fixture — not shipped in any package.
  *
  * Ground truth for the Odyssey micro-resource catalogues (data/materials/micro-resources-*.jsonc,
- * from EDCD FDevIDs microresources.csv). `counts` pins the size of each catalogue; `records` pins
- * individual entries. `symbol` is Frontier's internal id (the journal id, like
+ * from EDCD FDevIDs microresources.csv). `counts` pins the size of each catalogue;
+ * `membershipSha256` pins each file's ordered symbols encoded as UTF-8, joined by LF
+ * (`U+000A`) and terminated by one final LF; `records` pins individual entries.
+ * `symbol` is Frontier's internal id (the journal id, like
  * ships/modules/materials), `name` is the display name, `category` is one of component /
  * consumable / data / item. Micro resources have no grade or line — they are on-foot resources,
  * not ship-side engineering materials.
@@ -15,6 +17,12 @@
     "data": 114,
     "item": 43,
     "all": 196
+  },
+  "membershipSha256": {
+    "component": "3c6534fe1868e78d70898760120802a1bdd5b404049939647223d7ee41ec9566",
+    "consumable": "64c689e283c7a8019fdd519688069eb65ff960103eef971ffceae75686630526",
+    "data": "044ffdb2b4fcd93c945206c02a8b6a06c5a464a958cfe43461c2c355490640c0",
+    "item": "60747eea7f4d9adc96f49f70bd4e4fca30757b9a2b6fc0bbd5126e90f61c1453"
   },
   "records": [
     {

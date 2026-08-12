@@ -63,6 +63,11 @@ type FixtureAstroNebulae = {
         procgen: number;
         real: number;
     };
+    membershipSha256: {
+        planetary: string;
+        procgen: string;
+        real: string;
+    };
     nearest: {
         catalogue: string;
         count: number;
@@ -215,6 +220,12 @@ type FixtureMaterialsMicroResources = {
         consumable: number;
         data: number;
         item: number;
+    };
+    membershipSha256: {
+        component: string;
+        consumable: string;
+        data: string;
+        item: string;
     };
     records: {
         category: string;

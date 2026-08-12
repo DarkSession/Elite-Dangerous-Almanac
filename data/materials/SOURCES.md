@@ -65,9 +65,10 @@ grade 3), which is why it is used to fill the gap.
     (case-insensitively), the same field and meaning as on a ship, module or material.
     Frontier's numeric micro-resource id from the CSV is **not** carried.
   - `name` is the English display name (`Graphene`).
-  - `category` is FDevIDs' category, lower-cased to `component` / `consumable` / `data` /
-    `item` (matching how ship modules and materials spell their category). Each of the four
-    data files holds exactly one category.
+  - FDevIDs' category is lower-cased to `component` / `consumable` / `data` / `item`
+    (matching how ship modules and materials spell their category). Each data file holds
+    exactly one category, so the category is represented by the file rather than repeated
+    on every record.
   - Micro resources have **no grade and no line** — those belong to the ship-side
-    engineering materials above; a micro resource is a plain `{ symbol, category, name }`
+    engineering materials above; each data-file record is a plain `{ symbol, name }`
     registry record.
