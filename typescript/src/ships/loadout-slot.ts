@@ -10,10 +10,11 @@ import type { BuildSlot } from './slots.js';
 /**
  * A point-in-time, deeply frozen view of one hull mount.
  *
- * The view is detached from its {@link ShipLoadout}; after fitting or removing a
- * module, call {@link ShipLoadout.slots} again for the current view. Mutations and
- * candidate filtering stay on `ShipLoadout` and take the slot `key`, leaving this value
- * serializable and free of lifecycle rules.
+ * The view is detached from its {@link ShipLoadout}; after an edit that changes the
+ * build, call {@link ShipLoadout.slots} again for the current view. Reads made without an
+ * intervening state change reuse the same frozen snapshots. Mutations and candidate
+ * filtering stay on `ShipLoadout` and take the slot `key`, leaving this value serializable
+ * and free of lifecycle rules.
  *
  * @example
  * Walking a build's mounts. Slot keys come from the game and are not derivable from
