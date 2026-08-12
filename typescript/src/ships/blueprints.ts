@@ -43,6 +43,7 @@ import blueprintsData from '../../../data/ships/blueprints.jsonc' with { type: '
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { findByRawKey } from '../internal/registry-index.js';
 import type { Blueprint, BlueprintGrade } from './engineering.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * Every blueprint, keyed by Frontier `fdname` (e.g. `"FSD_LongRange"`). Each is a
@@ -77,9 +78,11 @@ export const BLUEPRINTS: Readonly<Record<string, Blueprint>> = deepFreeze(
  * of those apart from an id this library has never heard of. Note that such an id is not a
  * claim that the module is unmodified: read a fitted one's stats from the journal's own
  * `Engineering.Modifiers`.
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  */
 export function getBlueprint(fdname: string): Blueprint | null {
-    return findByRawKey(BLUEPRINTS, fdname);
+    return findByRawKey(BLUEPRINTS, fdname, 'getBlueprint: fdname');
 }
 
 /**
@@ -91,6 +94,8 @@ export function getBlueprint(fdname: string): Blueprint | null {
  * `damageDistribution` — or `null` if the catalogue holds no such blueprint or grade.
  * See {@link getBlueprint} for what an absent blueprint can mean besides "unknown".
  * @throws {RangeError} If `grade` is not an integer from 1 through 5.
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getBlueprintGrade } from '@elite-dangerous-almanac/core/ships/blueprints';
@@ -100,6 +105,7 @@ export function getBlueprint(fdname: string): Blueprint | null {
  * ```
  */
 export function getBlueprintGrade(fdname: string, grade: number): BlueprintGrade | null {
+    requireStringIfPresent(fdname, 'getBlueprintGrade: fdname');
     if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
         throw new RangeError(`getBlueprintGrade: grade must be an integer in [1, 5]`);
     }

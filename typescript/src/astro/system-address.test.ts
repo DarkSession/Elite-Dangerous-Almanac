@@ -165,3 +165,15 @@ test('fromName names a non-string argument instead of failing inside the parser'
     }
     assert.throws(() => ProceduralSystem.fromName(42 as unknown as string), /received number 42/);
 });
+
+test('a mass code is a required argument, so any non-string is named', () => {
+    // Unlike a catalogue key, this is a value to convert rather than one to search for:
+    // there is no "no such mass code" answer for a missing one to be.
+    for (const bad of [42, null, undefined]) {
+        assert.throws(() => massCodeToSizeClass(bad as unknown as string), {
+            name: 'TypeError',
+            message: /^massCodeToSizeClass: code must be a string, received /,
+        });
+    }
+    assert.throws(() => massCodeToSizeClass('z'), RangeError);
+});

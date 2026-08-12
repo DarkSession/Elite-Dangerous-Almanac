@@ -556,3 +556,12 @@ test('every restriction a hull can carry has a label to show for it', () => {
         'vesselHangar',
     ]);
 });
+
+test('parseSlotName names a wrong-typed key and answers a missing one', () => {
+    assert.throws(() => parseSlotName(42 as unknown as string), {
+        name: 'TypeError',
+        message: 'parseSlotName: slot must be a string, received number 42',
+    });
+    assert.equal(parseSlotName(null as unknown as string), null);
+    assert.equal(parseSlotName('NoSuchMount'), null);
+});

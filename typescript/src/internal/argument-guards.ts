@@ -59,6 +59,23 @@ export function requireString(value: unknown, label: string): string {
     return value;
 }
 
+/**
+ * Require a string argument at an entry point where a nullish one is an answer rather
+ * than a failure.
+ *
+ * A parser that tolerates an absent field, and a lookup that reads a missing key as a
+ * miss, both have to keep saying so; what neither should do is let a *present* value of
+ * the wrong type through to fail on a property it does not have.
+ *
+ * @param value - The argument as received.
+ * @param label - How to name it in the message, `"function: parameter"`.
+ * @throws {TypeError} If `value` is present and not a string.
+ * @internal
+ */
+export function requireStringIfPresent(value: unknown, label: string): void {
+    if (value !== null && value !== undefined) requireString(value, label);
+}
+
 /** A short JSON rendering of a value, or `null` when it has none. */
 function previewOf(value: unknown): string | null {
     let json;

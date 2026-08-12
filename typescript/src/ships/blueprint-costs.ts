@@ -61,6 +61,8 @@ export const BLUEPRINT_COSTS: Readonly<Record<string, BlueprintGradeCosts>> = de
  * @param fdname - The blueprint id, e.g. `"FSD_LongRange"`, matched
  * case-insensitively after trimming surrounding whitespace.
  * @returns The frozen grade-to-material-list record, or `null` if unknown.
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getBlueprintCosts } from '@elite-dangerous-almanac/core/ships/blueprint-costs';
@@ -70,7 +72,7 @@ export const BLUEPRINT_COSTS: Readonly<Record<string, BlueprintGradeCosts>> = de
  * ```
  */
 export function getBlueprintCosts(fdname: string): BlueprintGradeCosts | null {
-    return findByRawKey(BLUEPRINT_COSTS, fdname);
+    return findByRawKey(BLUEPRINT_COSTS, fdname, 'getBlueprintCosts: fdname');
 }
 
 /**

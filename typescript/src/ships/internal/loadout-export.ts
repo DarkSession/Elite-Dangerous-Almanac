@@ -8,6 +8,7 @@ import type { LoadoutEvent, LoadoutModule } from '../slef.js';
 import type { BuildSlot } from '../slots.js';
 import {
     cloneLoadoutModule,
+    FITTED_ITEM,
     isBuiltInHullModule,
     isNonOutfittingSlot,
     matchingKeyIn,
@@ -154,13 +155,18 @@ function moduleValue(
     return isNonOutfittingSlot(module.Slot) || isBuiltInHullModule(module) ? 'free' : 'unknown';
 }
 
+/** How a capture's own record of what a slot held is named when it is not a string. */
+const SOURCE_ITEM = 'ShipLoadout: sourcePurchase moduleValues[].item';
+
 function sourceModuleValue(
     module: LoadoutModule,
     source: SourcePurchaseRecord | null,
 ): number | 'unknown' {
     const entry = source === null ? null : getSourceModuleValue(source, module.Slot);
     if (entry === null) return 'unknown';
-    return normalizeKey(entry.item) === normalizeKey(module.Item) ? entry.value : 'unknown';
+    return normalizeKey(entry.item, SOURCE_ITEM) === normalizeKey(module.Item, FITTED_ITEM)
+        ? entry.value
+        : 'unknown';
 }
 
 function sourceTotalsHold(
@@ -170,7 +176,12 @@ function sourceTotalsHold(
     for (const entry of source.moduleValues) {
         const key = matchingKeyIn(modules, entry.slot);
         const fitted = key === null ? undefined : modules.get(key);
-        if (!fitted || normalizeKey(fitted.Item) !== normalizeKey(entry.item)) return false;
+        if (
+            !fitted ||
+            normalizeKey(fitted.Item, FITTED_ITEM) !== normalizeKey(entry.item, SOURCE_ITEM)
+        ) {
+            return false;
+        }
     }
     return true;
 }

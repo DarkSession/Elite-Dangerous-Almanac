@@ -34,9 +34,15 @@ test('refuses values that cannot be a trustworthy address', () => {
 });
 
 test('names the offending value so the failure is diagnosable', () => {
-    assert.throws(() => toSystemAddress(1.5), /1\.5/);
-    assert.throws(() => toSystemAddress('nope'), /"nope"/);
+    assert.throws(() => toSystemAddress(1.5), /number 1\.5$/);
+    assert.throws(() => toSystemAddress('nope'), /string "nope"$/);
 
+    // Rendered the way every other guard renders a value, so an object is identified
+    // rather than stringified to `[object Object]`, and an oversized one is shortened.
+    assert.throws(() => toSystemAddress({ SystemAddress: 1 } as never), {
+        message: /object \{"SystemAddress":1\}$/,
+    });
+    assert.throws(() => toSystemAddress(undefined as never), /: undefined$/);
     assert.throws(
         () => toSystemAddress('x'.repeat(20_000)),
         ({ message }: Error) => {

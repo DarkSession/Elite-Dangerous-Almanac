@@ -20,6 +20,7 @@
 import { getBlueprintsForModule } from './engineering-options.js';
 import { BLUEPRINT_JOURNAL_NAMES } from './internal/blueprint-journal-names.js';
 import { normalizeKey } from '../internal/registry-index.js';
+import { requireString, requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * The blueprint whose numbers a module actually rolls when a journal names `blueprint` on
@@ -87,6 +88,10 @@ import { normalizeKey } from '../internal/registry-index.js';
  * name resolved, and otherwise `fdname` exactly as it was passed — byte for byte, so a
  * caller who never meets the collision never sees their own spelling rewritten.
  *
+ * @throws {TypeError} If `fdname` is not a string, including when it is missing — this
+ * returns an id rather than reporting whether one is known, so there is no miss for a
+ * nullish one to be. A nullish `symbol` *is* a miss: an unknown module offers no menu,
+ * and `fdname` comes back unchanged.
  * @example
  * ```ts
  * import { resolveBlueprintForModule } from '@elite-dangerous-almanac/core/ships/blueprint-journal';
@@ -113,7 +118,14 @@ import { normalizeKey } from '../internal/registry-index.js';
  * ```
  */
 export function resolveBlueprintForModule(symbol: string, fdname: string): string {
-    const wanted = normalizeKey(fdname);
+    requireStringIfPresent(symbol, 'resolveBlueprintForModule: symbol');
+    // Strict, unlike the catalogue lookups: this hands an id back rather than answering
+    // whether one is known, so a nullish `fdname` would be a `string` return that is not
+    // one. `massCodeToSizeClass` is the same shape for the same reason.
+    const wanted = normalizeKey(
+        requireString(fdname, 'resolveBlueprintForModule: fdname'),
+        'resolveBlueprintForModule: fdname',
+    );
     const offered = getBlueprintsForModule(symbol);
     // An id the menu already lists is the recipe it names; hand back what the caller wrote,
     // so a caller who never meets the collision never sees their own spelling rewritten.

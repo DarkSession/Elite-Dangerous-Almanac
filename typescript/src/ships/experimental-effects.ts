@@ -48,6 +48,8 @@ export const EXPERIMENTAL_EFFECTS: Readonly<Record<string, ExperimentalEffect>> 
  * @param fdname - The effect id, e.g. `"special_fsd_heavy"`.
  * @returns The effect record — its display `name`, modifier contributions, optional
  * `damageDistribution`, and optional qualitative description — or `null` if unknown.
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getExperimentalEffect } from '@elite-dangerous-almanac/core/ships/experimental-effects';
@@ -58,5 +60,5 @@ export const EXPERIMENTAL_EFFECTS: Readonly<Record<string, ExperimentalEffect>> 
  * ```
  */
 export function getExperimentalEffect(fdname: string): ExperimentalEffect | null {
-    return findByRawKey(EXPERIMENTAL_EFFECTS, fdname);
+    return findByRawKey(EXPERIMENTAL_EFFECTS, fdname, 'getExperimentalEffect: fdname');
 }

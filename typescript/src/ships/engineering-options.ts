@@ -61,6 +61,7 @@
 import optionsData from '../../../data/ships/engineering-options.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { normalizeKey } from '../internal/registry-index.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /**
  * A stable identifier for an engineerable module's gameplay family.
@@ -196,6 +197,8 @@ const moduleExclusions = new Map(
  * @param symbol - A module symbol, e.g. `"Hpt_BeamLaser_Fixed_Small"`.
  * @returns The group id, or `null` when the module is not in the catalogue.
  *
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getEngineeringGroup } from '@elite-dangerous-almanac/core/ships/engineering-options';
@@ -208,7 +211,7 @@ const moduleExclusions = new Map(
  * ```
  */
 export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
-    return moduleGroup.get(normalizeKey(symbol)) ?? null;
+    return moduleGroup.get(normalizeKey(symbol, 'getEngineeringGroup: symbol')) ?? null;
 }
 
 /**
@@ -240,6 +243,8 @@ export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
  * @param symbol - A module symbol.
  * @returns Blueprint ids, sorted. Join to `BLUEPRINTS`.
  *
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getBlueprintsForModule } from '@elite-dangerous-almanac/core/ships/engineering-options';
@@ -252,6 +257,7 @@ export function getEngineeringGroup(symbol: string): EngineeringGroupId | null {
  * ```
  */
 export function getBlueprintsForModule(symbol: string): readonly string[] {
+    requireStringIfPresent(symbol, 'getBlueprintsForModule: symbol');
     const group = getEngineeringGroup(symbol);
     return group === null ? [] : ENGINEERING_OPTION_GROUPS[group]!.blueprints;
 }
@@ -276,6 +282,8 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * @param symbol - A module symbol.
  * @returns Experimental-effect ids. Join to `EXPERIMENTAL_EFFECTS`.
  *
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getExperimentalsForModule } from '@elite-dangerous-almanac/core/ships/engineering-options';
@@ -290,7 +298,7 @@ export function getBlueprintsForModule(symbol: string): readonly string[] {
  * ```
  */
 export function getExperimentalsForModule(symbol: string): readonly string[] {
-    const normalized = normalizeKey(symbol);
+    const normalized = normalizeKey(symbol, 'getExperimentalsForModule: symbol');
     const group = moduleGroup.get(normalized);
     if (group === undefined) return [];
     const all = ENGINEERING_OPTION_GROUPS[group]!.experimentals;
@@ -324,6 +332,8 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * @returns Experimental-effect ids, sorted and de-duplicated; empty when no group names
  * the blueprint, or when its groups take no experimental.
  *
+ * @throws {TypeError} If `fdname` is present and not a string. A nullish
+ * `fdname` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getExperimentalsForBlueprint } from '@elite-dangerous-almanac/core/ships/engineering-options';
@@ -333,7 +343,7 @@ export function getExperimentalsForModule(symbol: string): readonly string[] {
  * ```
  */
 export function getExperimentalsForBlueprint(fdname: string): readonly string[] {
-    const normalized = normalizeKey(fdname);
+    const normalized = normalizeKey(fdname, 'getExperimentalsForBlueprint: fdname');
     const out = new Set<string>();
     for (const group of Object.values(ENGINEERING_OPTION_GROUPS)) {
         if (!group.blueprints.some((b) => b.toLowerCase() === normalized)) continue;

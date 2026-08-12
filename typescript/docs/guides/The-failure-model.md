@@ -58,22 +58,62 @@ capture field with an ellipsis. They identify the bad value without copying a wh
 payload into a log or UI; structured diagnostic fields such as `slot` and `symbol` keep
 the original value for programmatic handling.
 
-How completely that is enforced varies, which is worth knowing before you write a `catch`:
+Which half of your call the message names depends on what you handed over, and that is
+worth knowing before you write a `catch`:
 
-- `ProceduralSystem.fromName`, `ShipLoadout.empty` and the module argument of
-  `ShipLoadout.setModule` name the parameter and the value. `toSystemAddress` prints the
-  value it rejected. `parseSlef` and `ShipLoadout.fromSlef` name the offending **field**
-  instead (`parseSlef: entries[0].data.Modules[0].Priority must be an integer from 0 to
-  4`) — the more useful half when the argument is a whole export, and the same text
-  `inspectSlef` reports as that entry's diagnostic.
-- At the entry points
-  [issue 201](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201) lists, a
-  wrong type still throws `TypeError` — but the message is the internal property access
-  that failed rather than one naming your value.
-- `parseSystemName`, `canonicalizeSystemName` and `isProceduralSystemName` answer `null`
-  and `false` for a nullish name instead of throwing. The low-level parsers tolerate what
-  the factory above them rejects, so reach for `ProceduralSystem.fromName` when you want a
-  missing name to be loud.
+- **An entry point that takes a value names the parameter and the value**, and names
+  _itself_ — a lookup you reach through a facade reports the function you called, not the
+  one it delegates to, so `getShipSlots(42)` says `getShipSlots: symbol`, never
+  `getShipBySymbol: symbol`. `toSystemAddress` prints the value it rejected without a
+  parameter to name, having only the one.
+- **An entry point that takes a structure names the offending field.** `parseSlef` and
+  `ShipLoadout.fromSlef` check every one of them
+  (`parseSlef: entries[0].data.Modules[0].Priority must be an integer from 0 to 4`) — the
+  more useful half when the argument is a whole export, and the same text `inspectSlef`
+  reports as that entry's diagnostic. `ShipLoadout.fromLoadout` checks the structure a
+  build is assembled from — an object, an array of module objects, a `Slot` and `Item` on
+  each, no two modules claiming one slot, and an `Engineering` that is an object holding
+  an array of `Modifiers`, each a labelled object, whenever their key is there at all —
+  plus `Ship` and the block's two ids when they carry a value. It trusts every value
+  inside, so use `fromSlef` for an event you did not produce yourself.
+
+**A missing argument is not a wrong-typed one**, and the two get different answers:
+
+```ts
+import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
+
+getShipBySymbol(undefined as unknown as string); // -> null, the answer an unknown symbol gets
+
+try {
+    getShipBySymbol(42 as unknown as string);
+} catch (error) {
+    (error as Error).message;
+    // -> 'getShipBySymbol: symbol must be a string, received number 42'
+}
+```
+
+A lookup that answers `null` for a symbol no record carries answers `null` for no symbol
+at all — asking for nothing found nothing. So do `parseSystemName`,
+`canonicalizeSystemName` and `isProceduralSystemName`, which answer `null` and `false`
+for a nullish name.
+
+**Where a missing argument is loud instead: everything that is not a search.** A function
+that hands you back a value has no "no such thing" answer to give, so there is nothing for
+a missing argument to mean — `ProceduralSystem.fromName(undefined)` and
+`ShipLoadout.empty(undefined)` throw rather than answering `null`, and so do
+`toSystemAddress`, `massCodeToSizeClass` and `resolveBlueprintForModule`'s `fdname`,
+which convert or resolve what you pass rather than looking it up. The rule is what the
+function does with the argument, not what it returns: `massCodeToSizeClass` hands back a
+number and is still strict.
+
+**A build's slot key is loud too**, across all ten methods that take one, and it is the
+exception worth knowing because several of them do look like searches —
+`fittedModuleAt('NoSuchMount')` answers `null` the way a catalogue miss does. The
+difference is that the key names a mount on *this* build rather than a record to find:
+`removeModule(undefined)` is not "empty the slot that is not there", it is a caller who
+has not said which slot. So `build.fittedModuleAt(undefined)` throws
+`ShipLoadout: slotKey must be a string, received undefined`, where
+`getShipBySymbol(undefined)` would answer `null`.
 
 **`null` is not an error.** A lookup that finds nothing has answered you. Journals
 outlive catalogues — a game update ships modules before this package knows about them —

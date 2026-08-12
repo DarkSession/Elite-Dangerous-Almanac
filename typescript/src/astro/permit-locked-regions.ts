@@ -40,9 +40,11 @@ const REGION_INDEX: ReadonlyMap<string, string> = new Map(
  * surrounding whitespace.
  * @returns `true` when the exact region is permit-locked. A system name inside the
  * region does not count as an exact region-name match.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  */
 export function isPermitLockedRegionName(name: string): boolean {
-    return REGION_INDEX.has(normalizeKey(name));
+    return REGION_INDEX.has(normalizeKey(name, 'isPermitLockedRegionName: name'));
 }
 
 /**
@@ -52,6 +54,8 @@ export function isPermitLockedRegionName(name: string): boolean {
  * whitespace.
  * @returns The canonically-cased region name, or `null` when no locked region
  * prefix applies.
+ * @throws {TypeError} If `systemName` is present and not a string. A nullish
+ * `systemName` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { permitLockedRegionForSystemName } from '@elite-dangerous-almanac/core/astro/permit-locked-regions';
@@ -61,7 +65,7 @@ export function isPermitLockedRegionName(name: string): boolean {
  * ```
  */
 export function permitLockedRegionForSystemName(systemName: string): string | null {
-    const normalized = normalizeKey(systemName);
+    const normalized = normalizeKey(systemName, 'permitLockedRegionForSystemName: systemName');
     if (!normalized) return null;
 
     for (const [key, region] of REGION_INDEX) {

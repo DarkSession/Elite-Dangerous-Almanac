@@ -100,6 +100,8 @@ const MICRO_RESOURCES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_MICRO_RESOURC
  * yourself. Omit it unless you specifically want to exclude the rest.
  * @returns The matching {@link MicroResource}, or `null` if no micro resource has
  * that symbol.
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getMicroResourceBySymbol } from '@elite-dangerous-almanac/core/materials/micro-resources';
@@ -112,8 +114,8 @@ export function getMicroResourceBySymbol(
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource | null {
     return microResources === ALL_MICRO_RESOURCES
-        ? findInKeyIndex(MICRO_RESOURCES_BY_SYMBOL, symbol)
-        : findByKey(microResources, 'symbol', symbol);
+        ? findInKeyIndex(MICRO_RESOURCES_BY_SYMBOL, symbol, 'getMicroResourceBySymbol: symbol')
+        : findByKey(microResources, 'symbol', symbol, 'getMicroResourceBySymbol: symbol');
 }
 
 /**
@@ -124,6 +126,8 @@ export function getMicroResourceBySymbol(
  * @param microResources - Optional subset to search (see {@link getMicroResourceBySymbol}).
  * @returns The matching {@link MicroResource}, or `null` if no micro resource has
  * that name.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getMicroResourceByName } from '@elite-dangerous-almanac/core/materials/micro-resources';
@@ -136,8 +140,8 @@ export function getMicroResourceByName(
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource | null {
     return microResources === ALL_MICRO_RESOURCES
-        ? findInKeyIndex(MICRO_RESOURCES_BY_NAME, name)
-        : findByKey(microResources, 'name', name);
+        ? findInKeyIndex(MICRO_RESOURCES_BY_NAME, name, 'getMicroResourceByName: name')
+        : findByKey(microResources, 'name', name, 'getMicroResourceByName: name');
 }
 
 /**
@@ -147,6 +151,8 @@ export function getMicroResourceByName(
  * whitespace and case are ignored, like every other lookup here.
  * @param microResources - Optional subset to search (see {@link getMicroResourceBySymbol}).
  * @returns A new array of matches (possibly empty). The input is not modified.
+ * @throws {TypeError} If `category` is present and not a string. A nullish
+ * `category` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { microResourcesInCategory } from '@elite-dangerous-almanac/core/materials/micro-resources';
@@ -159,5 +165,5 @@ export function microResourcesInCategory(
     category: string,
     microResources: readonly MicroResource[] = ALL_MICRO_RESOURCES,
 ): MicroResource[] {
-    return filterByKey(microResources, 'category', category);
+    return filterByKey(microResources, 'category', category, 'microResourcesInCategory: category');
 }

@@ -22,6 +22,7 @@
  */
 
 import { deepFreeze } from '../internal/deep-freeze.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 /** The kind of mount a slot is. */
 export type SlotKind = 'core' | 'hardpoint' | 'utility' | 'optional' | 'armour' | 'cargoHatch';
@@ -576,6 +577,8 @@ export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
  * `Slot03_Size3` is a size-4 mount, the Asp Scout's `Slot01_Size4` a size-5 one, and
  * five of the Type-7 Transporter's ten are off. To size a mount, find it in the hull's
  * layout ({@link enumerateSlots}) rather than trusting the number returned here.
+ * @throws {TypeError} If `slot` is present and not a string. A nullish `slot` is a miss,
+ * answered the way an unrecognised key is.
  * @example
  * ```ts
  * import { parseSlotName } from '@elite-dangerous-almanac/core/ships/slots';
@@ -591,7 +594,8 @@ export function enumerateSlots(layout: ShipSlots): BuildSlot[] {
 export function parseSlotName(slot: string): ParsedSlot | null {
     // Every comparison below is against the lower-cased key, so a producer's casing
     // never decides whether a mount is recognised.
-    const key = slot.toLowerCase();
+    requireStringIfPresent(slot, 'parseSlotName: slot');
+    const key = slot?.toLowerCase();
     const core = CORE_TYPE.get(key);
     if (core) return { kind: 'core', size: null, core };
     if (key === 'armour') return { kind: 'armour', size: 0 };

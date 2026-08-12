@@ -152,3 +152,27 @@ test('the catalogue and its records are frozen', () => {
         TypeError,
     );
 });
+
+test('the decorative lookups name a wrong-typed id', () => {
+    for (const [call, label] of [
+        [
+            () => getDecorativeModification(42 as unknown as string),
+            'getDecorativeModification: fdname',
+        ],
+        // A facade over that lookup, naming its own parameter.
+        [
+            () => isDecorativeModification(42 as unknown as string),
+            'isDecorativeModification: fdname',
+        ],
+        [
+            () => getDecorativeModificationsForModule(42 as unknown as string),
+            'getDecorativeModificationsForModule: symbol',
+        ],
+    ] as const) {
+        assert.throws(call, {
+            name: 'TypeError',
+            message: `${label} must be a string, received number 42`,
+        });
+    }
+    assert.equal(isDecorativeModification(null as unknown as string), false);
+});

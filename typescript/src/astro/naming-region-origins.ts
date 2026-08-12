@@ -25,6 +25,7 @@ import { SECTOR_INTERNAL_SIZE } from './system-address.js';
 import originsData from '../../../data/astro/named-region-origins.jsonc' with { type: 'json' };
 import { deepFreeze } from '../internal/deep-freeze.js';
 import { normalizeKey } from '../internal/registry-index.js';
+import { requireStringIfPresent } from '../internal/argument-guards.js';
 
 export { SECTOR_INTERNAL_SIZE } from './system-address.js';
 
@@ -69,6 +70,8 @@ const CATALOGUE: ReadonlyMap<string, NamingRegionOrigin> = new Map(
  *
  * @param name - A named region in any casing, with optional surrounding whitespace.
  * @returns Its canonical origin record, or `null` when it is not catalogued.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getHandAuthoredRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
@@ -78,7 +81,7 @@ const CATALOGUE: ReadonlyMap<string, NamingRegionOrigin> = new Map(
  * ```
  */
 export function getHandAuthoredRegionOrigin(name: string): NamingRegionOrigin | null {
-    return CATALOGUE.get(normalizeKey(name)) ?? null;
+    return CATALOGUE.get(normalizeKey(name, 'getHandAuthoredRegionOrigin: name')) ?? null;
 }
 
 /**
@@ -90,6 +93,8 @@ export function getHandAuthoredRegionOrigin(name: string): NamingRegionOrigin | 
  *
  * @param name - A region (sector) name in any casing.
  * @returns The region origin, or `null` if the name cannot be resolved.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { resolveNamingRegionOrigin } from '@elite-dangerous-almanac/core/astro/naming-region-origins';
@@ -100,6 +105,7 @@ export function getHandAuthoredRegionOrigin(name: string): NamingRegionOrigin | 
  * ```
  */
 export function resolveNamingRegionOrigin(name: string): NamingRegionOrigin | null {
+    requireStringIfPresent(name, 'resolveNamingRegionOrigin: name');
     const namedOrigin = getHandAuthoredRegionOrigin(name);
     if (namedOrigin) return namedOrigin;
 

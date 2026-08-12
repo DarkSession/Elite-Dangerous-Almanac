@@ -747,6 +747,8 @@ export interface OutfittingModule extends OutfittingModuleIdentity, OutfittingMo
  * the other categories; a symbol is unique across all four.
  * @returns The matching {@link OutfittingModule}, or `null` if no module has that
  * symbol.
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish
+ * `symbol` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
@@ -759,8 +761,8 @@ export function getModuleBySymbol(
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule | null {
     return modules === ALL_MODULES
-        ? builtInModuleBySymbol(symbol)
-        : findByKey(modules, 'symbol', symbol);
+        ? builtInModuleBySymbol(symbol, 'getModuleBySymbol: symbol')
+        : findByKey(modules, 'symbol', symbol, 'getModuleBySymbol: symbol');
 }
 
 /**
@@ -772,6 +774,8 @@ export function getModuleBySymbol(
  * @returns All matching modules — the name is shared across sizes, ratings and (for
  * armour) hulls, so this returns an array. Empty if none match. The input array is
  * not modified.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getModulesByName } from '@elite-dangerous-almanac/core/ships/modules';
@@ -783,7 +787,7 @@ export function getModulesByName(
     name: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule[] {
-    return filterByKey(modules, 'name', name);
+    return filterByKey(modules, 'name', name, 'getModulesByName: name');
 }
 
 /**
@@ -803,6 +807,8 @@ export function getModulesByName(
  * display name as this function; {@link getShipSlots} is the same layout keyed by
  * {@link Ship.symbol} instead, and the two differ for most hulls (`"Viper MkIII"` is the
  * record `"Viper"`).
+ * @throws {TypeError} If `ship` is present and not a string. A nullish
+ * `ship` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getBulkheadsForShip } from '@elite-dangerous-almanac/core/ships/modules';
@@ -816,5 +822,5 @@ export function getBulkheadsForShip(
     ship: string,
     modules: readonly OutfittingModule[] = ALL_MODULES,
 ): OutfittingModule[] {
-    return filterByKey(modules, 'ship', ship);
+    return filterByKey(modules, 'ship', ship, 'getBulkheadsForShip: ship');
 }

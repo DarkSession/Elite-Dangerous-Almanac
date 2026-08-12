@@ -10,7 +10,7 @@
  * @packageDocumentation
  */
 
-import { truncate } from '../internal/argument-guards.js';
+import { requireString, truncate } from '../internal/argument-guards.js';
 
 /** Number of mass codes (`a`–`h`) / distinct size classes. */
 export const MASS_CODE_COUNT = 8;
@@ -25,7 +25,9 @@ const CODE_A = 'a'.charCodeAt(0);
  *
  * @param code - A single letter `a`–`h` (case-insensitive).
  * @returns The size class 0–7.
- * @throws {RangeError} If `code` is not a single letter in `a`–`h`.
+ * @throws {TypeError} If `code` is not a string. A mass code is a required argument
+ * rather than a key to search for, so a missing one is loud too.
+ * @throws {RangeError} If `code` is a string but not a single letter in `a`–`h`.
  * @example
  * ```ts
  * import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-code';
@@ -34,6 +36,7 @@ const CODE_A = 'a'.charCodeAt(0);
  * ```
  */
 export function massCodeToSizeClass(code: string): number {
+    requireString(code, 'massCodeToSizeClass: code');
     const sizeClass = code.toLowerCase().charCodeAt(0) - CODE_A;
     if (code.length !== 1 || sizeClass < 0 || sizeClass >= MASS_CODE_COUNT) {
         throw new RangeError(`Invalid mass code: ${truncate(JSON.stringify(code))}`);

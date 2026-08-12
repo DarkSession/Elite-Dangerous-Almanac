@@ -155,6 +155,8 @@ export function getCodexRegion(id: number): CodexRegion | null {
  * @param name - The region name, e.g. `"Inner Orion Spur"`. Matching ignores case
  * and surrounding whitespace.
  * @returns The {@link CodexRegion}, or `null` if no region has that name.
+ * @throws {TypeError} If `name` is present and not a string. A nullish
+ * `name` is a miss, answered the way an unrecognised one is.
  * @example
  * ```ts
  * import { getCodexRegionByName } from '@elite-dangerous-almanac/core/astro/codex-region';
@@ -163,5 +165,5 @@ export function getCodexRegion(id: number): CodexRegion | null {
  * ```
  */
 export function getCodexRegionByName(name: string): CodexRegion | null {
-    return BY_NAME.get(normalizeKey(name)) ?? null;
+    return BY_NAME.get(normalizeKey(name, 'getCodexRegionByName: name')) ?? null;
 }

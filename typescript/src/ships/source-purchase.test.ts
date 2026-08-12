@@ -463,3 +463,16 @@ test('an edited build re-exports a record whose parts still add up', () => {
         sumSourceModuleValues(build.sourcePurchase!) - 8003,
     );
 });
+
+test('a purchase query names a wrong-typed slot key and answers a missing one', () => {
+    const record = sourcePurchaseFromLoadout({
+        Ship: 'Anaconda',
+        Modules: [{ Slot: 'PowerPlant', Item: 'Int_Powerplant_Size8_Class5', Value: 100 }],
+    } as unknown as LoadoutEvent)!;
+    assert.throws(() => getSourceModuleValue(record, 42 as unknown as string), {
+        name: 'TypeError',
+        message: 'getSourceModuleValue: slotKey must be a string, received number 42',
+    });
+    assert.equal(getSourceModuleValue(record, undefined as unknown as string), null);
+    assert.equal(getSourceModuleValue(record, 'powerplant')?.value, 100);
+});

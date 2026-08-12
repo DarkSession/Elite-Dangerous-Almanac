@@ -1137,8 +1137,8 @@ test('empty names a non-string hull argument instead of failing inside the looku
 test('an unrecognised hull is reported by validation, not thrown at', () => {
     // `validation` is the reporting path for an import, and stays one: an oversized or
     // absent `Ship` is a hull the catalogue does not know, not a failure on the way to
-    // saying so. (A `Ship` of some other type still fails inside the symbol lookup —
-    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201.)
+    // saying so. A `Ship` of some other type is a different thing entirely, and
+    // `fromLoadout` names it before the build exists.
     for (const ship of ['x'.repeat(20_000), null]) {
         const build = ShipLoadout.fromLoadout({
             Ship: ship,
@@ -3367,4 +3367,405 @@ test('a memoised validation cannot be edited through by one consumer', () => {
     const issue = build.validation.issues[0]!;
     assert.throws(() => Object.assign(issue, { message: 'rewritten' }), TypeError);
     assert.notEqual(build.validation.issues[0]!.message, 'rewritten');
+});
+
+test('every slot-key method names a wrong-typed key rather than failing inside the build', () => {
+    const build = ShipLoadout.empty('Anaconda');
+    const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
+    build.setModule('FrameShiftDrive', fsd);
+    // `#requireSlot` and `#fittedKey` cover nine of these between them, and
+    // `removeModule` guards itself ahead of both. This list is the check that no method
+    // reaches the build around all three — an eleventh has to appear here too.
+    const calls: readonly ((key: string) => unknown)[] = [
+        (key) => build.setModule(key, fsd),
+        (key) => build.removeModule(key),
+        (key) => build.setModuleEnabled(key, true),
+        (key) => build.setModulePriority(key, 1),
+        (key) => build.applyBlueprint(key, 'FSD_LongRange', { grade: 5 }),
+        (key) => build.clearEngineering(key),
+        (key) => build.fittedModuleAt(key),
+        (key) => build.modulesForSlot(key),
+        (key) => build.availableBlueprints(key),
+        (key) => build.availableExperimentalEffects(key),
+    ];
+    for (const call of calls) {
+        assert.throws(() => call(42 as unknown as string), {
+            name: 'TypeError',
+            message: 'ShipLoadout: slotKey must be a string, received number 42',
+        });
+    }
+    // A string that is not a slot still reports the miss, not a type error.
+    assert.throws(() => build.modulesForSlot('NoSuchSlot'), RangeError);
+});
+
+test('applyBlueprint names a wrong-typed recipe id before it asks about the slot', () => {
+    const build = ShipLoadout.empty('Anaconda');
+    const fsd = getModuleBySymbol('Int_Hyperdrive_Size6_Class5', CORE_MODULES)!;
+    build.setModule('FrameShiftDrive', fsd);
+    assert.throws(
+        () => build.applyBlueprint('FrameShiftDrive', 42 as unknown as string, { grade: 5 }),
+        {
+            name: 'TypeError',
+            message: 'ShipLoadout.applyBlueprint: fdname must be a string, received number 42',
+        },
+    );
+    assert.throws(
+        () =>
+            build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+                grade: 5,
+                experimental: 42 as unknown as string,
+            }),
+        {
+            name: 'TypeError',
+            message:
+                'ShipLoadout.applyBlueprint: options.experimental must be a string, received number 42',
+        },
+    );
+    assert.throws(
+        () =>
+            build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', 5 as unknown as { grade: 5 }),
+        {
+            name: 'TypeError',
+            message:
+                'ShipLoadout.applyBlueprint: options must be an object with a grade, received number 5',
+        },
+    );
+    // An empty slot is a state question, so the recipe id is named ahead of it.
+    assert.throws(
+        () => build.applyBlueprint('Slot01_Size7', 42 as unknown as string, { grade: 5 }),
+        {
+            message: /fdname must be a string/,
+        },
+    );
+    // `options` belongs to the caller, so a property can answer differently on each
+    // read. Each is taken once, before anything is checked, so a checked value cannot be
+    // swapped for an unchecked one — into a message naming the catalogue lookup that
+    // reached it, or into the build as a grade no check ever saw.
+    const varying = <T>(...values: readonly T[]) => {
+        let reads = 0;
+        return () => values[Math.min(reads++, values.length - 1)]!;
+    };
+    const swapExperimental = varying<unknown>('special_fsd_heavy', 42);
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+        grade: 5,
+        get experimental() {
+            return swapExperimental() as string;
+        },
+    });
+    // The checked read is the one applied: the `42` a second read would have returned
+    // never reaches the catalogue lookup that used to report it under its own name.
+    assert.equal(
+        build.fittedModuleAt('FrameShiftDrive')?.engineering?.ExperimentalEffect,
+        'special_fsd_heavy',
+    );
+    const swapGrade = varying(5, 5, 5, 5, 99);
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+        get grade() {
+            return swapGrade();
+        },
+    });
+    assert.equal(build.fittedModuleAt('FrameShiftDrive')?.engineering?.Level, 5);
+
+    // Nullish is absent, so the guard and the readers below it agree: `null` used to
+    // pass the guard as "absent" and then reach the catalogue as the string "null",
+    // answering `RangeError: unknown experimental effect "null"`.
+    assert.ok(
+        build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+            grade: 5,
+            experimental: null as unknown as string,
+        }),
+    );
+    assert.equal(
+        build.fittedModuleAt('FrameShiftDrive')?.engineering?.ExperimentalEffect,
+        undefined,
+    );
+    // An absent experimental effect is not one of these — it is simply no effect.
+    assert.ok(build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', { grade: 5 }));
+});
+
+test('fromLoadout names the structure it needs instead of failing inside the walk', () => {
+    for (const bad of [42, 'a Loadout event', null, undefined]) {
+        assert.throws(() => ShipLoadout.fromLoadout(bad as unknown as LoadoutEvent), {
+            name: 'TypeError',
+            message: /^ShipLoadout\.fromLoadout: event must be a Loadout event, received /,
+        });
+    }
+    assert.throws(
+        () => ShipLoadout.fromLoadout({ Ship: 42, Modules: [] } as unknown as LoadoutEvent),
+        {
+            name: 'TypeError',
+            message: 'ShipLoadout.fromLoadout: event.Ship must be a string, received number 42',
+        },
+    );
+    assert.throws(() => ShipLoadout.fromLoadout({ Ship: 'Anaconda' } as unknown as LoadoutEvent), {
+        name: 'TypeError',
+        message: 'ShipLoadout.fromLoadout: event.Modules must be an array, received undefined',
+    });
+    // Past the two top-level fields, the walk names the ones every module must carry.
+    for (const [modules, expected] of [
+        [
+            [42],
+            'ShipLoadout.fromLoadout: event.Modules[] must hold module objects, received number 42',
+        ],
+        [
+            [{ Slot: 42, Item: 'x' }],
+            'ShipLoadout.fromLoadout: module.Slot must be a string, received number 42',
+        ],
+        [
+            [{ Slot: 'FrameShiftDrive', Item: 42 }],
+            'ShipLoadout.fromLoadout: module.Item must be a string, received number 42',
+        ],
+        [
+            [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { BlueprintName: 42 },
+                },
+            ],
+            'ShipLoadout.fromLoadout: module.Engineering.BlueprintName must be a string, received number 42',
+        ],
+        [
+            [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { BlueprintName: 'FSD_LongRange', ExperimentalEffect: 42 },
+                },
+            ],
+            'ShipLoadout.fromLoadout: module.Engineering.ExperimentalEffect must be a string, received number 42',
+        ],
+    ] as const) {
+        assert.throws(
+            () =>
+                ShipLoadout.fromLoadout({
+                    Ship: 'Anaconda',
+                    Modules: modules,
+                } as unknown as LoadoutEvent),
+            { name: 'TypeError', message: expected },
+        );
+    }
+    // A journal event is usually `JSON.parse` output, but nothing says it has to be.
+    // Every field is read once, before any of it is checked, so an accessor cannot pass
+    // the check on one read and poison the build on the next — at any depth.
+    const vary = <T>(...values: readonly T[]) => {
+        let reads = 0;
+        return () => values[Math.min(reads++, values.length - 1)]!;
+    };
+    const fsd = () => ({ Slot: 'FrameShiftDrive', Item: 'Int_Hyperdrive_Size6_Class5' });
+    const swapped: readonly (readonly [string, () => unknown])[] = [
+        [
+            'event.Modules',
+            () => ({
+                Ship: 'Anaconda',
+                get Modules() {
+                    return swapModules();
+                },
+            }),
+        ],
+        [
+            'event.Ship',
+            () => ({
+                get Ship() {
+                    return swapShip();
+                },
+                Modules: [fsd()],
+            }),
+        ],
+        [
+            'module.Slot',
+            () => ({
+                Ship: 'Anaconda',
+                Modules: [
+                    {
+                        get Slot() {
+                            return swapSlot();
+                        },
+                        Item: fsd().Item,
+                    },
+                ],
+            }),
+        ],
+        [
+            'module.Engineering.Modifiers[].Label',
+            () => ({
+                Ship: 'Anaconda',
+                Modules: [
+                    {
+                        ...fsd(),
+                        Engineering: {
+                            BlueprintName: 'FSD_LongRange',
+                            Modifiers: [
+                                {
+                                    get Label() {
+                                        return swapLabel();
+                                    },
+                                    Value: 1,
+                                },
+                            ],
+                        },
+                    },
+                ],
+            }),
+        ],
+    ];
+    const swapModules = vary<unknown>([fsd()], 42);
+    const swapShip = vary<unknown>('Anaconda', 42);
+    const swapSlot = vary<unknown>('FrameShiftDrive', 42);
+    const swapLabel = vary<unknown>('FSDOptimalMass', 42);
+    for (const [field, make] of swapped) {
+        const swappedBuild = ShipLoadout.fromLoadout(make() as LoadoutEvent);
+        // The build survives being read, which is what the single reading buys: a second
+        // reading's `42` would surface as an internal message from whichever reader
+        // reached it, a step away from the call that accepted it.
+        assert.ok(swappedBuild.fittedModuleAt('FrameShiftDrive'), field);
+        assert.ok(swappedBuild.validation, field);
+        assert.ok(swappedBuild.toLoadoutEvent(), field);
+    }
+
+    // `Array.isArray` proves the exotic object, not the methods on it. The capture
+    // copies by index, so a shadowed `map`, `entries` or iterator cannot put
+    // `modules.map is not a function` in front of a caller either.
+    const shadowedModules: unknown[] = [fsd()];
+    const shadowedModifiers: unknown[] = [{ Label: 'FSDOptimalMass', Value: 1 }];
+    for (const array of [shadowedModules, shadowedModifiers]) {
+        const shadowed = array as unknown as Record<PropertyKey, unknown>;
+        shadowed['map'] = 42;
+        shadowed['entries'] = 42;
+        shadowed[Symbol.iterator] = 42;
+    }
+    for (const event of [
+        { Ship: 'Anaconda', Modules: shadowedModules },
+        {
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    ...fsd(),
+                    Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: shadowedModifiers },
+                },
+            ],
+        },
+    ]) {
+        const shadowedBuild = ShipLoadout.fromLoadout(event as unknown as LoadoutEvent);
+        assert.ok(shadowedBuild.fittedModuleAt('FrameShiftDrive'));
+        assert.ok(shadowedBuild.toLoadoutEvent());
+    }
+
+    // A relay that writes `null` for an absent block is named, not dereferenced: the
+    // clone downstream tests only for `undefined`.
+    for (const engineering of [null, 42]) {
+        assert.throws(
+            () =>
+                ShipLoadout.fromLoadout({
+                    Ship: 'Anaconda',
+                    Modules: [
+                        {
+                            Slot: 'FrameShiftDrive',
+                            Item: 'Int_Hyperdrive_Size6_Class5',
+                            Engineering: engineering,
+                        },
+                    ],
+                } as unknown as LoadoutEvent),
+            {
+                name: 'TypeError',
+                message:
+                    /^ShipLoadout\.fromLoadout: module\.Engineering must be an object, received /,
+            },
+        );
+    }
+    // Its `Modifiers` is the same hazard as the block: the clone maps whatever is there.
+    for (const modifiers of [null, 42, 'FSDOptimalMass']) {
+        assert.throws(
+            () =>
+                ShipLoadout.fromLoadout({
+                    Ship: 'Anaconda',
+                    Modules: [
+                        {
+                            Slot: 'FrameShiftDrive',
+                            Item: 'Int_Hyperdrive_Size6_Class5',
+                            Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: modifiers },
+                        },
+                    ],
+                } as unknown as LoadoutEvent),
+            {
+                name: 'TypeError',
+                message:
+                    /^ShipLoadout\.fromLoadout: module\.Engineering\.Modifiers must be an array, received /,
+            },
+        );
+    }
+    // A modifier is a labelled object, and the label is required rather than
+    // checked-when-present: an entry without one imports fine and then breaks the build
+    // it produced, because every reader of a modifier reads its label unconditionally.
+    const withModifiers = (modifiers: unknown): LoadoutEvent =>
+        ({
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: modifiers },
+                },
+            ],
+        }) as unknown as LoadoutEvent;
+    for (const [modifiers, expected] of [
+        [[42], 'module.Engineering.Modifiers[0] must be an object, received number 42'],
+        [[null], 'module.Engineering.Modifiers[0] must be an object, received null'],
+        [
+            [{ Label: 42 }],
+            'module.Engineering.Modifiers[0].Label must be a string, received number 42',
+        ],
+        [
+            [{ Value: 1 }],
+            'module.Engineering.Modifiers[0].Label must be a string, received undefined',
+        ],
+        [
+            [{ Label: null }],
+            'module.Engineering.Modifiers[0].Label must be a string, received null',
+        ],
+        [
+            [{ Label: 'FSDOptimalMass', Value: 1 }, { Label: 42 }],
+            'module.Engineering.Modifiers[1].Label must be a string, received number 42',
+        ],
+    ] as const) {
+        assert.throws(() => ShipLoadout.fromLoadout(withModifiers(modifiers)), {
+            name: 'TypeError',
+            message: `ShipLoadout.fromLoadout: ${expected}`,
+        });
+    }
+    // The value beside the label is a value, and values on this path are trusted — but
+    // the build it produces has to survive being read, which is what the label buys.
+    const loose = ShipLoadout.fromLoadout(
+        withModifiers([{ Label: 'FSDOptimalMass', Value: 'lots' }]),
+    );
+    assert.ok(loose.fittedModuleAt('FrameShiftDrive'));
+    // `Engineering` is the one field where `null` is not an omission — the asymmetry
+    // above is deliberate, so pin both halves of it against a future tidy-up.
+    assert.ok(
+        ShipLoadout.fromLoadout({
+            Ship: null,
+            Modules: [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { BlueprintName: null, ExperimentalEffect: null },
+                },
+            ],
+        } as unknown as LoadoutEvent),
+    );
+    // A partial engineering block is still read, not rejected: a capture may state
+    // modifiers without naming the recipe.
+    assert.ok(
+        ShipLoadout.fromLoadout({
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    Slot: 'FrameShiftDrive',
+                    Item: 'Int_Hyperdrive_Size6_Class5',
+                    Engineering: { Modifiers: [{ Label: 'FSDOptimalMass', Value: 1 }] },
+                },
+            ],
+        } as unknown as LoadoutEvent),
+    );
+    assert.equal(ShipLoadout.fromLoadout({ Ship: 'Anaconda', Modules: [] }).shipSymbol, 'Anaconda');
 });
