@@ -265,9 +265,8 @@ test('a Guardian variant and its ordinary twin are different groups, not one mer
 
 test('the one recipe a Guardian module takes offers no experimental effect', () => {
     // A Guardian module is engineered with Anti-Guardian Zone Resistance and nothing else,
-    // and that recipe has no experimental slot. Engineered Guardian modules that do carry
-    // one are pre-engineered rewards, sold already applied rather than rolled at an
-    // engineer.
+    // and that recipe has no experimental slot. There are no pre-engineered Guardian module
+    // reward variants that add an ordinary blueprint or experimental effect.
     const { blueprint, experimentals, groups, modules } = fixture.antiGuardianZoneResistance;
     const offering = Object.entries(ENGINEERING_OPTION_GROUPS)
         .filter(([, group]) => group.blueprints.includes(blueprint))

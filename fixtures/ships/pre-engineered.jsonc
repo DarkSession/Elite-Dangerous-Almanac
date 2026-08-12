@@ -6,8 +6,9 @@
  * a tech broker. A pre-engineered module has no symbol of its own, so each record pairs a base
  * module `symbol` (joins to the module catalogues) with the `blueprint` baked in, the `grade`
  * already applied, and an optional `experimental`. `engineeringLocked` marks the seven
- * Guardian-weapon articles that are final and accept no further engineering. No narrower key than
- * the (symbol, blueprint, grade, experimental) quadruple is unique — the medium Guardian Shard
+ * Guardian-weapon articles — the catalogue's only Guardian variants — that are final and accept
+ * no further engineering. No narrower key than the (symbol, blueprint, grade, experimental)
+ * quadruple is unique — the medium Guardian Shard
  * Cannon carries Long Range with no experimental twice, at two different grades. `counts` pins the
  * catalogue size and its split by acquisition; `records` pins individual pairings;
  * `modifierCounts` and `modifierLabels` pin the hand-set stat blocks that make a variant fittable;
