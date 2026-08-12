@@ -4,8 +4,9 @@ import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { posix, win32 } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { decode } from '@jridgewell/sourcemap-codec';
+import { decode, encode } from '@jridgewell/sourcemap-codec';
 import { build } from 'esbuild';
+import { pruneSourceMap } from './scripts/prune-sourcemap.mjs';
 import { stripBareImports } from './scripts/strip-bare-imports.mjs';
 
 import { massCodeToSizeClass } from '@elite-dangerous-almanac/core/astro/mass-code';
@@ -691,6 +692,7 @@ test('every JavaScript artifact references a source map without embedded sources
             `${javascriptFile.pathname} does not reference its source map`,
         );
         assert.equal(map.version, 3, mapFile.pathname);
+        assert.ok(!Object.hasOwn(map, 'sourceRoot'), `${mapFile.pathname} sets sourceRoot`);
         assert.ok(!Object.hasOwn(map, 'sourcesContent'), `${mapFile.pathname} embeds sources`);
         for (const source of map.sources) {
             assert.equal(
@@ -762,6 +764,32 @@ test('every JavaScript artifact references a source map without embedded sources
         sourceMapBytes < 256 * 1024,
         `TypeScript source maps are ${sourceMapBytes} bytes; expected less than 256 KiB`,
     );
+});
+
+test('source map pruning keeps one boundary around removed data mappings', () => {
+    const map = {
+        version: 3,
+        sources: ['../src/first.ts', '../data/catalogue.jsonc', './generated.js', '../src/last.ts'],
+        sourcesContent: ['first', 'catalogue', 'generated', 'last'],
+        names: ['firstName', 'dataName', 'generatedName', 'lastName'],
+        mappings: encode([
+            [
+                [0, 0, 1, 2, 0],
+                [5, 1, 3, 4, 1],
+                [7, 1, 5, 6, 1],
+                [9, 2, 7, 8, 2],
+                [11, 3, 9, 10, 3],
+            ],
+        ]),
+    };
+    const mapPath = fileURLToPath(new URL('./dist/example.js.map', import.meta.url));
+    const distRoot = fileURLToPath(new URL('./dist/', import.meta.url));
+
+    assert.equal(pruneSourceMap(map, mapPath, distRoot), 2);
+    assert.deepEqual(map.sources, ['../src/first.ts', '../src/last.ts']);
+    assert.deepEqual(map.sourcesContent, ['first', 'last']);
+    assert.deepEqual(map.names, ['firstName', 'lastName']);
+    assert.deepEqual(decode(map.mappings), [[[0, 0, 1, 2, 0], [5], [11, 1, 9, 10, 1]]]);
 });
 
 test('engineering cost source maps retain their TypeScript source paths', async () => {
