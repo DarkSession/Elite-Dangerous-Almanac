@@ -112,8 +112,8 @@ materials 16.9 KiB, micro resources 14.9 KiB, commodities 29.5 KiB.
 
 Every JavaScript file in the npm package has an external source map. Node, browser
 devtools and downstream bundlers can therefore trace a failure in generated JavaScript
-back to the TypeScript module or JSONC catalogue that produced it. The maps are part of
-the published package by design; they do not enter an application's import graph.
+back to the TypeScript module that produced it. The maps are part of the published
+package by design; they do not enter an application's import graph.
 
 Whitespace compaction keeps function and variable names, so an unmapped stack trace still
 identifies the frame that threw; run Node with `--enable-source-maps` to resolve its original
@@ -121,12 +121,12 @@ identifies the frame that threw; run Node with `--enable-source-maps` to resolve
 `/* @__PURE__ */` annotations, which let a downstream bundler discard unused catalogue
 indexes instead of retaining their data.
 
-The maps cost about 1.6 MiB installed — roughly two fifths of the 4.0 MiB unpacked
-package — while the complete compressed npm archive remains about 598 KiB. They contain
-mappings and original source paths but omit `sourcesContent`, so the package does not
-carry a second copy of its TypeScript and large catalogues. This keeps useful library
-stack traces without paying the substantially larger cost of embedding original source
-contents in the maps.
+Mappings into inlined JSONC data literals are omitted because a literal cannot produce a
+consumer stack frame. The remaining TypeScript mappings cost about 140 KiB installed;
+they contain original source paths but omit `sourcesContent`, so the package does not
+carry a second copy of its source. This keeps useful library stack traces while the
+complete package remains about 2.5 MB unpacked and about 529 KiB as a compressed npm
+archive.
 
 ## First calls
 
