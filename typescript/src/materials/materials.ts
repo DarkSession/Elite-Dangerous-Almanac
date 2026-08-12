@@ -182,9 +182,7 @@ const MATERIALS_BY_ELEMENT = /* @__PURE__ */ createKeyIndex(ALL_MATERIALS, 'elem
 /**
  * Look up a material by its Frontier symbol / journal id (case-insensitive).
  *
- * This is the same lookup as `getShipBySymbol` / `getModuleBySymbol` in the `ships`
- * feature — `symbol` means Frontier's internal item id throughout the ship, module,
- * material, micro-resource and commodity catalogues.
+ * Here, `symbol` is Frontier's internal item id for the material.
  *
  * @param symbol - The internal symbol, e.g. `"GridResistors"`, or the lower-cased
  * form the player journal reports (`"gridresistors"`).

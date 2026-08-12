@@ -90,9 +90,7 @@ const MICRO_RESOURCES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_MICRO_RESOURC
 /**
  * Look up a micro resource by its Frontier symbol / journal id (case-insensitive).
  *
- * This is the same lookup as `getMaterialBySymbol` / `getModuleBySymbol` — `symbol`
- * means Frontier's internal item id throughout the ship, module, material,
- * micro-resource and commodity catalogues.
+ * Here, `symbol` is Frontier's internal item id for the micro resource.
  *
  * @param symbol - The internal symbol, e.g. `"graphene"`, or the lower-cased form the
  * player journal reports. Leading/trailing whitespace and case are ignored.

@@ -117,9 +117,7 @@ const COMMODITIES_BY_NAME = /* @__PURE__ */ createKeyIndex(ALL_COMMODITIES, 'nam
 /**
  * Look up a commodity by its Frontier symbol / journal id (case-insensitive).
  *
- * This is the same lookup as `getShipBySymbol` / `getMaterialBySymbol` — `symbol`
- * means Frontier's internal item id throughout the ship, module, material,
- * micro-resource and commodity catalogues.
+ * Here, `symbol` is Frontier's internal item id for the commodity.
  *
  * @param symbol - The internal symbol, e.g. `"Platinum"`, or the lower-cased form the
  * market/journal reports (`"platinum"`). Leading/trailing whitespace is ignored.
