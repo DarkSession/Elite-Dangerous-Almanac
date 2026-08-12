@@ -14,8 +14,9 @@ import type { LoadoutModule, ModuleEngineering } from './slef.js';
  *
  * The view is detached from its {@link ShipLoadout}: later edits do not change it, and
  * mutating it throws. Fetch a new view with {@link ShipLoadout.fittedModuleAt} after an
- * edit. All mutations live on `ShipLoadout`, keyed by {@link slot}; this avoids the
- * stale-handle lifecycle that a live proxy would otherwise need.
+ * state-changing edit; reads made without an intervening state change reuse the same
+ * frozen snapshot. All mutations live on `ShipLoadout`, keyed by {@link slot}; this
+ * avoids the stale-handle lifecycle that a live proxy would otherwise need.
  *
  * @example
  * ```ts

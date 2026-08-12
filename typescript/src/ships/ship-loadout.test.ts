@@ -3351,13 +3351,36 @@ test('powering a module up or down leaves the cached views alone and still moves
     assert.equal(build.powerBudget().deployed, deployedBefore);
 });
 
-test('slots() returns deeply frozen snapshots', () => {
+test('slot and fitted-module snapshots are frozen and reused until the build changes', () => {
     const build = anaconda();
     const first = build.slots();
+    const hardpoints = build.slots('hardpoint');
+    const core = build.slots('core');
+    const drive = build.fittedModuleAt('FrameShiftDrive')!;
     assert.throws(() => (first as LoadoutSlot[]).pop(), TypeError);
     assert.throws(() => Object.assign(first[0]!, { name: 'changed' }), TypeError);
-    assert.ok(build.slots().length > 0);
-    assert.notEqual(build.slots()[0], build.slots()[0]);
+    assert.equal(build.slots(), first);
+    assert.equal(build.slots()[0], first[0]);
+    assert.equal(build.slots('hardpoint'), hardpoints);
+    assert.equal(
+        core.find((slot) => slot.key === 'FrameShiftDrive')?.module,
+        first.find((slot) => slot.key === 'FrameShiftDrive')?.module,
+    );
+    assert.equal(build.fittedModuleAt('frameshiftdrive'), drive);
+
+    const empty = ShipLoadout.empty('Anaconda');
+    const unchanged = empty.slots();
+    empty.removeModule('Slot01_Size7');
+    assert.equal(empty.slots(), unchanged);
+
+    build.setModuleEnabled('FrameShiftDrive', !drive.on);
+    const second = build.slots();
+    const changedDrive = build.fittedModuleAt('FrameShiftDrive')!;
+    assert.notEqual(second, first);
+    assert.notEqual(second[0], first[0]);
+    assert.notEqual(changedDrive, drive);
+    assert.equal(changedDrive.on, !drive.on);
+    assert.equal(drive.on, first.find((slot) => slot.key === 'FrameShiftDrive')?.module?.on);
 });
 
 test('a memoised validation cannot be edited through by one consumer', () => {

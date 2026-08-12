@@ -384,17 +384,17 @@ export class ShipLoadout {
     readonly #sourcePurchase: SourcePurchaseRecord | null;
     /**
      * Bumped by every edit that changes what a fitted module *is* — which slots are
-     * filled, by which article, with which engineering. The derived views below are
-     * rebuilt when it moves and reused when it does not.
+     * filled, by which article, with which engineering. Calculation and validation
+     * results are rebuilt when it moves and reused when it does not.
      *
      * @remarks
      * `#patchModule` deliberately does not bump it. Powering a module up or down, or
-     * moving it between priority groups, changes no slot key, symbol or modifier, and
-     * neither view keyed on this reads `On` or `Priority` — `powerBudget` and
-     * `toLoadoutEvent`, which do, read `#modules` directly and are not cached. (The
-     * layout cache is not a view of module state at all and hangs off nothing.)
+     * moving it between priority groups, changes no calculation or validation input —
+     * `powerBudget` and `toLoadoutEvent`, which do read that state, are not cached.
      */
     #version = 0;
+    /** Bumped by every edit reflected in a public slot or fitted-module snapshot. */
+    #viewVersion = 0;
     /**
      * The hull's expanded mounts: `undefined` until first asked, `null` for a hull
      * with no known layout. Needs no version — `#shipSymbol` is `readonly`, so a
@@ -404,6 +404,11 @@ export class ShipLoadout {
     #calculationCache: { version: number; value: readonly LoadoutCalculationModule[] } | null =
         null;
     #validationCache: { version: number; value: LoadoutValidation } | null = null;
+    #fittedModuleCache: { version: number; value: Map<string, FittedModule> } | null = null;
+    #slotCache: {
+        version: number;
+        value: Map<SlotKind | undefined, readonly LoadoutSlot[]>;
+    } | null = null;
 
     private constructor(
         shipSymbol: string,
@@ -766,7 +771,9 @@ export class ShipLoadout {
      * Frozen point-in-time views of the hull's mounts in outfitting-panel order.
      *
      * @param kind - Optionally keep only one mount kind. Omit it for every mount.
-     * @returns Detached slot views. Fetch again after an edit to observe new state.
+     * @returns Detached slot views. Repeated reads at the same build version reuse the
+     * same frozen array and records; every state-changing edit makes the next read produce
+     * new snapshots.
      * @throws {TypeError} If the hull has no known slot layout.
      * @example
      * ```ts
@@ -777,31 +784,52 @@ export class ShipLoadout {
      * ```
      */
     slots(kind?: SlotKind): readonly LoadoutSlot[] {
+        let cached = this.#slotCache;
+        if (cached === null || cached.version !== this.#viewVersion) {
+            cached = { version: this.#viewVersion, value: new Map() };
+            this.#slotCache = cached;
+        }
+        const existing = cached.value.get(kind);
+        if (existing !== undefined) return existing;
+
         const slots =
-            kind === undefined ? this.#layout() : this.#layout().filter((s) => s.kind === kind);
-        return deepFreeze(
+            kind === undefined
+                ? this.#layout()
+                : this.#layout().filter((slot) => slot.kind === kind);
+        const value = deepFreeze(
             slots.map((slot) => ({
                 ...slot,
                 name: loadoutSlotName(slot),
                 module: this.fittedModuleAt(slot.key),
             })),
         );
+        cached.value.set(kind, value);
+        return value;
     }
 
     /**
      * A deeply frozen, point-in-time view of the module in a slot.
      *
      * @param slotKey - Slot key, matched case-insensitively.
-     * @returns A detached view, or `null` when the slot is empty or unknown.
+     * @returns A detached view, or `null` when the slot is empty or unknown. Repeated
+     * reads at the same build version reuse the same frozen record; every state-changing
+     * edit makes the next read produce a new snapshot.
      * @throws {TypeError} If `slotKey` is not a string.
      */
     fittedModuleAt(slotKey: string): FittedModule | null {
         const module = this.#fittedModuleFor(slotKey);
         if (!module) return null;
+        let cached = this.#fittedModuleCache;
+        if (cached === null || cached.version !== this.#viewVersion) {
+            cached = { version: this.#viewVersion, value: new Map() };
+            this.#fittedModuleCache = cached;
+        }
+        const existing = cached.value.get(module.Slot);
+        if (existing !== undefined) return existing;
         const raw = cloneLoadoutModule(module);
         const stats = this.#statsFor(module);
         const effective = effectiveModule(raw, stats);
-        return deepFreeze({
+        const value = deepFreeze({
             slot: module.Slot,
             symbol: raw.Item,
             on: raw.On,
@@ -815,6 +843,8 @@ export class ShipLoadout {
             ammunition: ammunitionCapacity(effective),
             preEngineeredVariant: identifyPreEngineeredVariant(raw),
         });
+        cached.value.set(module.Slot, value);
+        return value;
     }
 
     /**
@@ -1280,6 +1310,7 @@ export class ShipLoadout {
             throw new RangeError(`ShipLoadout: slot "${truncate(slotKey)}" is empty`);
         }
         this.#modules.set(module.Slot, cloneLoadoutModule({ ...module, ...patch }));
+        this.#viewVersion++;
     }
 
     /**
@@ -1676,6 +1707,7 @@ export class ShipLoadout {
     /** Discard the derived views: something a fitted module *is* has changed. */
     #invalidate(): void {
         this.#version++;
+        this.#viewVersion++;
     }
 
     #layout(): readonly BuildSlot[] {
