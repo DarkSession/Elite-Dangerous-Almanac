@@ -240,7 +240,7 @@ export function findCodexRegionAt(point: CodexRegionPoint): CodexRegion | null {
  *
  * // Approximate position from an id64 alone (boxel corner, in light-years):
  * const { x, y, z } = findCodexRegionForBoxel(3309179996515n);
- * // -> { x: 735, y: -185, z: -105 }
+ * ({ x, y, z }); // -> { x: 735, y: -185, z: -105 }
  * ```
  */
 export function findCodexRegionForBoxel(id64: SystemAddressInput): BoxelCodexRegionLookup {

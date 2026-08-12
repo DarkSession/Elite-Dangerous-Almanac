@@ -362,9 +362,12 @@ export interface OutfittingModuleIdentity {
      * const rack = getModuleBySymbol('Int_LargeCargoRack_Size8_class1', INTERNAL_MODULES)!;
      * rack.restrictedToSlot; // -> 'cargo'
      * ShipLoadout.empty('PantherMkII').setModule('Cargo01', rack); // fits
-     * ShipLoadout.empty('PantherMkII').setModule('Slot01_Size8', rack);
-     * // TypeError: ShipLoadout.setModule: Int_LargeCargoRack_Size8_class1 → Slot01_Size8:
-     * //   module only fits a mount that takes cargo racks and fuel tanks
+     * try {
+     *     ShipLoadout.empty('PantherMkII').setModule('Slot01_Size8', rack);
+     * } catch (error) {
+     *     if (error instanceof TypeError) error.message;
+     *     // -> 'ShipLoadout.setModule: Int_LargeCargoRack_Size8_class1 → Slot01_Size8: module only fits a mount that takes cargo racks and fuel tanks'
+     * }
      * ```
      */
     readonly restrictedToSlot?: SlotRestriction;
