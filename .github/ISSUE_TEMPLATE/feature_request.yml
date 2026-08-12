@@ -1,0 +1,81 @@
+name: Feature or API request
+description: Propose new data, a new calculation, or a change to the public surface.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the consumer-visible capability you need. Proposals that keep named
+        exports, side-effect-free ESM and fine-grained subpath imports intact are easier
+        to accept — see CONTRIBUTING.md.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature area
+      options:
+        - astro
+        - ships
+        - materials
+        - commodities
+        - Shared data or schemas
+        - Package build, exports or subpaths
+        - New feature area
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description:
+        What are you trying to build, and what does the library make impossible or
+        awkward today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      description:
+        Required. Sketch the import path, signature, units and failure behavior.
+        Attached as TypeScript, so no backticks are needed.
+      render: typescript
+      placeholder: |
+        import { jumpRange } from "@elite-dangerous-almanac/core/ships/jump-range";
+
+        // returns light-years; throws RangeError when fuel exceeds tank capacity
+        jumpRange(loadout, { fuel: 8 });
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Game behavior and sources
+      description:
+        How is the correct result established — in-game observation, a published
+        formula, or an upstream dataset? Name the source and its revision where one
+        exists. New shared data must be able to carry the provenance that
+        `data/SNAPSHOTS.md` requires.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description:
+        Existing APIs you tried, or workarounds in your own application, and why they
+        fall short.
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Is this a breaking change?
+      options:
+        - "No — purely additive"
+        - "Yes — it changes or removes existing exports or results"
+        - Not sure
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched open and closed issues for this proposal.
+          required: true

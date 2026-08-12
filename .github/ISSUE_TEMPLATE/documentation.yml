@@ -1,0 +1,60 @@
+name: Documentation problem
+description: Documented behavior is wrong, missing or hard to follow.
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every public API is meant to document its inputs, result, units, failure
+        behavior and an example. Use this form when documentation and reality disagree,
+        or when one of those pieces is missing.
+
+        If the code is what is wrong, use the bug report instead.
+  - type: input
+    id: location
+    attributes:
+      label: Where
+      description: The file, README section or documented symbol.
+      placeholder: "README.md — Quick start, or ships/ship-loadout.ts — ShipLoadout.powerBudget"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      options:
+        - Documented behavior does not match the code
+        - Example does not run or gives a different value
+        - Units, defaults or failure behavior are unstated
+        - Missing documentation for a public API
+        - Unclear or hard to follow
+    validations:
+      required: true
+  - type: textarea
+    id: says
+    attributes:
+      label: What the documentation says
+      description: Quote the passage or example.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What is actually true
+      description:
+        The real behavior or value, and how you confirmed it. Paste the output if you
+        ran the example.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested wording
+      description: Optional. A replacement passage, if you have one in mind.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched open and closed issues for this gap.
+          required: true
