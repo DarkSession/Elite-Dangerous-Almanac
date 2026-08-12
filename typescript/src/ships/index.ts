@@ -68,19 +68,30 @@
  * therefore take an `fdname`, while functions that ask which engineering is available
  * *for a module* take that module's `symbol`.
  *
- * Catalogue containers follow those jobs rather than one universal shape. Entity
- * catalogues — {@link SHIPS}, the module catalogues and {@link PRE_ENGINEERED_MODULES}
- * — are readonly arrays: each value carries its own identity and consumers commonly
- * enumerate or filter the records. {@link BLUEPRINTS}, {@link EXPERIMENTAL_EFFECTS},
- * {@link DECORATIVE_MODIFICATIONS}, {@link ENGINEERING_OPTION_GROUPS},
- * {@link ships/blueprint-costs!BLUEPRINT_COSTS | BLUEPRINT_COSTS},
+ * Catalogue containers follow those jobs rather than one universal shape. The
+ * identity-bearing entity catalogues — {@link SHIPS} and the module catalogues — are
+ * readonly arrays because every value carries its own `symbol` and consumers commonly
+ * enumerate or filter them. {@link PRE_ENGINEERED_MODULES} is also an array, but it is
+ * an enumerable relation: each row joins a base module to engineering and acquisition
+ * data rather than identifying a new module with a symbol of its own.
+ *
+ * Engineering entities and groups are keyed catalogues: {@link BLUEPRINTS},
+ * {@link EXPERIMENTAL_EFFECTS}, {@link DECORATIVE_MODIFICATIONS} and
+ * {@link ENGINEERING_OPTION_GROUPS} carry the recipe, effect or group identity in the
+ * key rather than repeating it in each value. The separate
+ * {@link ships/blueprint-costs!BLUEPRINT_COSTS | BLUEPRINT_COSTS} and
  * {@link ships/experimental-effect-costs!EXPERIMENTAL_EFFECT_COSTS | EXPERIMENTAL_EFFECT_COSTS}
- * and {@link SLOT_RESTRICTION_LABELS} are keyed readonly maps instead: their keys are
- * recipe/effect ids, join keys or labels and are not necessarily repeated in the value.
- * These maps are not a second shape of entity catalogue. Use the provided lookup
- * functions for a caller- or journal-supplied id — they handle case and surrounding
- * whitespace — rather than indexing a map directly; when you do need to enumerate a
- * map, use `Object.values()` or `Object.entries()`.
+ * records map those ids to costs; {@link SLOT_RESTRICTION_LABELS} maps typed restriction
+ * codes to display labels. Use `Object.values()` or `Object.entries()` to enumerate any
+ * of these keyed structures.
+ *
+ * Five `fdname` maps have public case-insensitive, whitespace-trimming lookups for a
+ * caller- or journal-supplied id: {@link getBlueprint}, {@link getExperimentalEffect},
+ * {@link getDecorativeModification},
+ * {@link ships/blueprint-costs!getBlueprintCosts | getBlueprintCosts} and
+ * {@link ships/experimental-effect-costs!getExperimentalEffectCost | getExperimentalEffectCost}.
+ * Prefer those helpers to direct indexing for external text. Engineering group ids and
+ * slot restriction codes are typed keys, so index their maps directly.
  *
  * Note that a hull's derived figures split by cost: cheap stored values are properties
  * ({@link ShipLoadout.unladenMass}), while anything that recomputes or takes options is
