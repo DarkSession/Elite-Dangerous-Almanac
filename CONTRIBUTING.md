@@ -15,8 +15,9 @@ documentation fixes and implementation changes are welcome.
 
 ## Development setup
 
-The repository devcontainer supplies Node.js 22 and Python 3.12. To work without the
-container, install Node.js 22 and run:
+The repository devcontainer supplies Node.js 22, Python 3.12 and pnpm, so inside it only
+the last two commands below are needed. To work without the container, install Node.js 22
+and run:
 
 ```bash
 corepack enable pnpm
@@ -27,7 +28,10 @@ pnpm run check
 
 The package is managed with [pnpm](https://pnpm.io); `corepack enable pnpm` installs
 the exact version pinned by the `packageManager` field in `typescript/package.json`, so
-no global pnpm install is needed and everyone runs the same one. `--frozen-lockfile` is
+no global pnpm install is needed and everyone runs the same one. Corepack writes its
+shim next to the `node` binary, so that first command needs `sudo` wherever Node itself
+was installed as root — which is why the devcontainer does it at image build time
+instead. `--frozen-lockfile` is
 the equivalent of `npm ci`: it installs what `pnpm-lock.yaml` pins and fails if the
 lockfile and the manifest disagree.
 

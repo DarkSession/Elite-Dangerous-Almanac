@@ -8,6 +8,17 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends bubblewrap \
     && rm -rf /var/lib/apt/lists/*
 
+# pnpm, through the Corepack that ships with Node. This belongs here rather than in
+# `postCreateCommand` because `corepack enable` writes its shims next to the `node`
+# binary, which the container's `node` user cannot write to — run after creation it
+# fails with EACCES and reports a broken postCreateCommand on every fresh container.
+# Build steps run as root, so the shim is created once, at build time.
+#
+# The shim carries no version of its own: it resolves whatever `packageManager` in
+# typescript/package.json names, at the moment pnpm is called from that directory.
+# Repinning pnpm therefore needs no change here and no image rebuild.
+RUN corepack enable pnpm
+
 RUN (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
 	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
 	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
