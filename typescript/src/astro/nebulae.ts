@@ -14,10 +14,10 @@
  *
  * | Module | Export | Entries | Minified | Gzipped |
  * | --- | --- | --- | --- | --- |
- * | `./nebulae-real` | `REAL_NEBULAE` | 180 | 18.5 KiB | 5.4 KiB |
- * | `./nebulae-procgen` | `PROCGEN_NEBULAE` | 166 | 18.8 KiB | 5.7 KiB |
- * | `./nebulae-planetary` | `PLANETARY_NEBULAE` | 5489 | 645.2 KiB | 137.8 KiB |
- * | `./nebulae-all` | `ALL_NEBULAE` | 5835 | 682.3 KiB | 148.6 KiB |
+ * | `./nebulae-real` | `REAL_NEBULAE` | 180 | 16.4 KiB | 5.3 KiB |
+ * | `./nebulae-procgen` | `PROCGEN_NEBULAE` | 166 | 16.4 KiB | 5.7 KiB |
+ * | `./nebulae-planetary` | `PLANETARY_NEBULAE` | 5489 | 399.3 KiB | 116.0 KiB |
+ * | `./nebulae-all` | `ALL_NEBULAE` | 5835 | 431.7 KiB | 126.5 KiB |
  *
  * Importing a query function from here costs nothing but the function: pass in
  * whichever catalogue you imported. The catalogue argument is **required** — 94% of

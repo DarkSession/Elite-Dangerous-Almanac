@@ -94,11 +94,11 @@ imports are all deliberate:
   lists stay on the explicit `ships/blueprint-costs` and `ships/experimental-effect-costs`
   subpaths. Import a data-free calculation module instead when you need one answer rather
   than a whole ship.
-- `astro/nebulae-all` is 682.3 KiB. That is why the nebula query functions take an
+- `astro/nebulae-all` is 431.7 KiB. That is why the nebula query functions take an
   explicit catalogue argument rather than defaulting to the complete one — importing
   all 5835 records has to be your decision, not a default you did not notice. Almost all
-  of that weight is `astro/nebulae-planetary` (645.2 KiB); the sibling catalogues are
-  small, `astro/nebulae-real` being 18.5 KiB, so pick the one that answers your question.
+  of that weight is `astro/nebulae-planetary` (399.3 KiB); the sibling catalogues are
+  small, `astro/nebulae-real` being 16.4 KiB, so pick the one that answers your question.
 - `astro/codex-region-lookup` is about 208 KiB. Its 42-region cell geometry answers
   coordinate and id64 lookups, while the separate `astro/codex-region` metadata module is
   about 9 KiB. The geometry-backed lookup therefore stays off the astro barrel.
@@ -106,7 +106,7 @@ imports are all deliberate:
 `ships/modules` is 311.9 KiB and `ships/modules-all` 310.8 KiB — heavier than the codex
 geometry above. It is also the one fallback that costs real weight: of the four
 catalogues a lookup searches when you pass no argument, the other three are small —
-materials 16.9 KiB, micro resources 14.9 KiB, commodities 29.5 KiB.
+materials 16.9 KiB, micro resources 10.7 KiB, commodities 29.5 KiB.
 
 ## Published source maps
 
@@ -122,10 +122,10 @@ identifies the frame that threw; run Node with `--enable-source-maps` to resolve
 indexes instead of retaining their data.
 
 Mappings into inlined JSONC data literals are omitted because a literal cannot produce a
-consumer stack frame. The remaining TypeScript mappings cost about 140 KiB installed;
+consumer stack frame. The remaining TypeScript mappings cost about 143 KiB installed;
 they contain original source paths but omit `sourcesContent`, so the package does not
 carry a second copy of its source. This keeps useful library stack traces while the
-complete package remains about 2.5 MB unpacked and about 529 KiB as a compressed npm
+complete package remains about 2.5 MB unpacked and about 567 KiB as a compressed npm
 archive.
 
 ## First calls

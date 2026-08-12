@@ -124,10 +124,10 @@ nearestNebulae(position, REAL_NEBULAE, 2).map((n) => [n.name, n.distanceLy]);
 nebulaeWithin(position, REAL_NEBULAE, 100).length;
 ```
 
-**The catalogue argument is required, not defaulted.** `ALL_NEBULAE` is ~682 KiB, so
+**The catalogue argument is required, not defaulted.** `ALL_NEBULAE` is ~432 KiB, so
 importing all 5835 records has to be your decision. Pick the narrowest catalogue that
 answers your question: `REAL_NEBULAE` (~19 KiB) is the small, human-recognisable slice;
-`PLANETARY_NEBULAE` is the heavy one at ~645 KiB.
+`PLANETARY_NEBULAE` is the heavy one at ~399 KiB.
 
 ## Permit locks
 

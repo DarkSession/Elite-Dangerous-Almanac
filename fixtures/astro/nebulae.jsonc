@@ -78,6 +78,16 @@
     },
     {
       "catalogue": "planetary",
+      "name": "Aemonz EQ-Y e1899",
+      "system": "Aemonz EQ-Y e1899",
+      "x": 4549.97,
+      "y": -850.562,
+      "z": 33732.4,
+      "type": "planetary",
+      "regionId": 3
+    },
+    {
+      "catalogue": "planetary",
       "name": "Aemonz WZ-Y e6771 (Lazurite Nebula)",
       "system": "Aemonz WZ-Y e6771",
       "x": 3886.78,

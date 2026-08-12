@@ -38,11 +38,14 @@ Sources are named here; who to credit for them, with links and licence terms, is
 - **Obtained via:** canonn-signals, `src/assets/nebulae.json`, which converts the CSV to
   JSON verbatim. The records here were checked against both and are identical
   field-for-field.
-- **Derivation:** records are carried over unchanged (name, catalogued system, galactic
-  X/Y/Z in light-years with Sol at the origin, class, region id), grouped by `type` into
-  one file per class and sorted by name. `regionId` is the galactic codex region id from
-  the source CSV — a column the canonn-signals JSON drops — and all 5835 values were
-  verified to agree with this project's own codex-region lookup.
+- **Derivation:** records retain their name, catalogued system, galactic X/Y/Z in
+  light-years with Sol at the origin, class and region id. They are grouped by `type`
+  into one file per class and sorted by name; the class is represented by that file and
+  is not repeated on every record. In the planetary file, `system` is omitted for the
+  5210 records where it is identical to `name`; all 279 differing systems remain.
+  `regionId` is the galactic codex region id from the source CSV — a column the
+  canonn-signals JSON drops — and all 5835 values were verified to agree with this
+  project's own codex-region lookup.
 - **Caveat:** a nebula is a volume, but the dataset records a single point — the position
   of the system it is catalogued at.
 

@@ -403,6 +403,29 @@ test('published pure annotations keep unused catalogue indexes tree-shakeable', 
     assert.doesNotMatch(gradeBundle, /AdaptiveEncryptorsCapture|AbnormalCompactEmissionsData/);
 });
 
+test('catalogue-derived fields stay compact in consumer bundles', async () => {
+    const [planetary, allNebulae, microResources] = await Promise.all([
+        consumerBundle(
+            "import { PLANETARY_NEBULAE as value } from '@elite-dangerous-almanac/core/astro/nebulae-planetary'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { ALL_NEBULAE as value } from '@elite-dangerous-almanac/core/astro/nebulae-all'; console.log(value);",
+        ),
+        consumerBundle(
+            "import { getMicroResourceByName as value } from '@elite-dangerous-almanac/core/materials/micro-resources'; console.log(value);",
+        ),
+    ]);
+    assert.ok(
+        planetary.length < 416 * 1024,
+        `planetary nebulae bundle is ${planetary.length} bytes`,
+    );
+    assert.ok(allNebulae.length < 448 * 1024, `all nebulae bundle is ${allNebulae.length} bytes`);
+    assert.ok(
+        microResources.length < 12 * 1024,
+        `micro-resource bundle is ${microResources.length} bytes`,
+    );
+});
+
 test('a journal address reaches every id64 entry point without conversion', async () => {
     // JSON.parse of a journal event yields a plain number, not a bigint.
     const { ProceduralSystem: PS } =
