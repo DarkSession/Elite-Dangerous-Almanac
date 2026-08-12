@@ -125,7 +125,7 @@ export function singleJumpRange(mass: number, fuel: number, fsd: FrameShiftDrive
 /**
  * The fuel a single jump of a given distance costs, in tonnes.
  *
- * @param distance - The jump distance, in light-years. Distances beyond the current
+ * @param distance - The jump distance, in light-years. Distances beyond the
  * {@link singleJumpRange} cost more than the tank holds — the result is capped at
  * the drive's `maxFuel`.
  * @param mass - Total ship mass excluding fuel, in tonnes (see

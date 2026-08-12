@@ -24,8 +24,8 @@ npm ci
 npm run check
 ```
 
-The TypeScript package is the current implementation. Shared catalogues and fixtures
-remain language-neutral so future implementations can prove the same behavior.
+The TypeScript package consumes language-neutral shared catalogues and fixtures so
+each language implementation can prove the same behavior.
 
 ## Making a change
 

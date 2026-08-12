@@ -463,8 +463,8 @@ test('the numbering rules still derive the three hulls whose names they already 
 });
 
 test('exactly ten hulls need a name the numbering rules cannot derive', () => {
-    // The other three named hulls are pins. If a future data change makes the rules
-    // right (or wrong) for a hull, this is what says so out loud.
+    // Three other hulls carry explicit names that agree with the derived keys; only these
+    // ten diverge from the numbering rules.
     const diverging = SHIPS.filter((ship) => {
         const layout = getShipSlots(ship.symbol);
         if (!layout) return false;

@@ -1,9 +1,5 @@
 # Data sources — `data/astro/`
 
-What each catalogue in this directory was taken from, when, and how it was derived.
-Sources are named here; who to credit for them, with links and licence terms, is in
-`ATTRIBUTIONS.md`. `../SNAPSHOTS.md` states what every entry has to record.
-
 **Acquired:** 2026-07-24. **Upstream revision:** unavailable for every source below.
 
 ## Procedural naming and named-region origins
@@ -30,8 +26,7 @@ Sources are named here; who to credit for them, with links and licence terms, is
 
 - **Files:** `nebulae-real.jsonc` (180 catalogued real-world nebulae and dark regions),
   `nebulae-procgen.jsonc` (166 procedurally generated nebulae) and
-  `nebulae-planetary.jsonc` (5489 planetary nebulae). The class split lets consumers
-  import recognisable named nebulae without bundling the planetary catalogue.
+  `nebulae-planetary.jsonc` (5489 planetary nebulae), split by class.
 - **Source:** the EDAstro nebulae coordinates dataset (`nebulae-coordinates.csv`, columns
   `Name,System,X,Y,Z,Type,RegionID`). Original observations are community exploration
   data.
@@ -58,8 +53,8 @@ Sources are named here; who to credit for them, with links and licence terms, is
 - **Obtained via:** canonn-signals, `src/app/data/permit-locked-systems.ts`, which
   transcribes the sheet into two arrays.
 - **Derivation:** the 54 exact system names are carried over unchanged and sorted
-  case-insensitively. Permit state is split by lookup domain so region-only consumers do
-  not load the individual-system catalogue. The 28 region entries are names of regions in
+  case-insensitively. Permit state is split by lookup domain. The 28 region entries are
+  names of regions in
   `hand-authored-regions.jsonc`, which stores their spheres and nothing about permits.
   Each name doubles as the matching prefix, because the game names every system in a
   region after it (`Col 70 Sector AA-D b17-0`). The upstream list matches 19 lower-cased
@@ -76,20 +71,19 @@ Sources are named here; who to credit for them, with links and licence terms, is
 - **`Bleia1`–`Bleia5` and `Praei1`–`Praei6` are in-game region names**, not groupings:
   EDSM holds `Bleia1 DL-Y f26`, `Bleia2 AA-A h55` and `Praei3 MJ-D b43-8`, each inside the
   same-named sphere of `hand-authored-regions.jsonc`. The bare stems `Bleia` and `Praea`
-  name _unrelated_ procedural sectors far outside the permit spheres — `Bleia Flyuae DH-U
-  e3-26` sits ≈6800 ly beyond every Bleia sphere and `Praea Aec AA-A b1-1` ≈46 kly from the
-  Praei ones — so neither is a permit prefix.
+  name unrelated procedural sectors far outside the permit spheres. `Bleia Flyuae DH-U
+e3-26` sits ≈6800 ly beyond every Bleia sphere, and `Praea Aec AA-A b1-1` sits ≈46 kly
+  from the Praei spheres, so neither bare stem is a permit prefix.
 - **Caveat:** region membership is inferred from the system name, since no per-system
-  region-permit flag is published; resolving a permit from coordinates is exact and should
-  be preferred where coordinates are available. Permit-locked _bodies_ inside otherwise-open
+  region-permit flag is published. Permit-locked _bodies_ inside otherwise-open
   systems (Diso 5 C, Lave 2, Sol's Moon and Triton) are out of scope — a system-level flag
   would misreport their systems.
 
 ## Galactic codex regions
 
 - **Files:** `galactic-regions.jsonc` (per-region metadata),
-  `galactic-region-cells.jsonc` (per-region lookup geometry + projection). Split along the
-  metadata-vs-geometry axis so metadata-only consumers do not bundle the grid.
+  `galactic-region-cells.jsonc` (per-region lookup geometry + projection), split along the
+  metadata-versus-geometry axis.
 - **Source:** EliteDangerousRegionMap.
 - **Derivation:** the 42 region ids/names and each region's run-length cell geometry
   (`cells`) are taken from the upstream `RegionMapData.json` (itself generated from

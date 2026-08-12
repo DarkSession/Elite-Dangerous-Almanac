@@ -50,7 +50,7 @@ import type { DamageComponents, DamageDistribution, ProjectileRangeBoundaries } 
  * An {@link OutfittingModule} record satisfies this as-is, so you can pass a catalogue
  * entry straight in. Every field is optional: a weapon carries only the ones that
  * apply to it. Fields used directly by these calculations state their omitted
- * behaviour below; informational fields remain absent when unknown or inapplicable.
+ * behavior below; informational fields remain absent when unknown or inapplicable.
  */
 export interface WeaponStats {
     /** Damage per round — or per second on a continuous-fire weapon. Defaults to `0`. */
@@ -132,7 +132,7 @@ export interface DamageSplit {
     readonly explosive: number;
     /** Absolute share — the part no resistance reduces. */
     readonly absolute: number;
-    /** Damage whose in-game type is not yet established. Absent when zero. */
+    /** Damage unclassified by in-game verification. Absent when zero. */
     readonly unclassified?: number;
     /**
      * The part effective against Thargoids. Overlays conventional damage rather than

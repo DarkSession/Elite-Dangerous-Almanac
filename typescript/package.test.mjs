@@ -1073,8 +1073,7 @@ test('the publication manifest includes consumer documentation and notices', asy
         canonicalLicense,
         'LICENSE is stale — run `npm run build` (it copies the root LICENSE)',
     );
-    // Match on collapsed whitespace: the assertion is that the licence still states
-    // these terms, not that it is wrapped at any particular column.
+    // Match on collapsed whitespace so line wrapping does not affect the assertion.
     const licenseProse = license.replace(/\s+/g, ' ');
     assert.match(licenseProse, /does not relicense bundled third-party/);
     assert.match(licenseProse, /before redistributing the data or using it commercially/);

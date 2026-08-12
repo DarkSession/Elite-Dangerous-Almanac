@@ -8,21 +8,18 @@
  * arrives, not as the stock module leaves the shipyard. That is what
  * {@link getPreEngineeredStats} returns.
  *
- * Split from `./pre-engineered.js` on purpose: reading the catalogue costs one small
- * data file, while resolving stats pulls in every module record. Consumers who only list
- * variants should not pay for the module catalogues. The resolver alone is 334.4 KiB
- * minified in a consumer bundle; this subpath's complete runtime API is 362.9 KiB
- * (38.0 KiB gzipped).
+ * This module imports every module record to resolve stats. Its resolver is 334.4 KiB
+ * minified in a consumer bundle; the complete runtime API is 362.9 KiB (38.0 KiB
+ * gzipped). Consumers that only list variants can import `./pre-engineered.js` without
+ * these module catalogues.
  * A journal or SLEF module can instead be classified with
  * {@link identifyPreEngineeredVariant}: it matches the article's reported stat signature
  * and composes an experimental effect added after purchase before comparing values.
  *
  * **What is resolved, and what is not.** The module catalogues carry the mechanical
- * stats (mass, integrity, power, capacities, optimal mass), the defence stats and the
- * weapon stats, so almost every variant resolves in full — a pre-engineered rail gun
- * gets its damage, ranges and clip as well as its mass and power draw. Every variant in
- * the catalogue resolves today; a label that stopped resolving would be reported by
- * {@link unresolvedModifiers} rather than silently dropped.
+ * stats (mass, integrity, power, capacities, optimal mass), defence stats and weapon
+ * stats. {@link unresolvedModifiers} reports any unresolvable label instead of dropping
+ * it.
  *
  * @packageDocumentation
  */
@@ -134,10 +131,10 @@ function sameModifier(actual: EngineeringModifier, expected: EngineeringModifier
  * with each candidate before comparison, because some fixed articles accept an effect
  * after purchase (the V1 frame-shift drives are the common example).
  *
- * Frontier journals omit some derived modifiers and older captures can predate a newly
- * established stat, so one predicted value may be absent. Every predicted value the
- * capture *does* state must agree within journal float noise, and all but at most one must
- * be present. Ambiguous or incomplete evidence returns `null` rather than guessing.
+ * Frontier journals and captures may omit a derived modifier, so one predicted value may
+ * be absent. Every stated predicted value must agree within journal float noise, and all
+ * but at most one must be present. Ambiguous or incomplete evidence returns `null` rather
+ * than guessing.
  * Variants without a published stat block cannot be identified this way.
  *
  * @param module - A module from a journal `Loadout` event or SLEF export.
@@ -206,9 +203,9 @@ export function identifyPreEngineeredVariant(module: LoadoutModule): PreEngineer
  * The labels a variant modifies that cannot be computed for its particular base module.
  *
  * This includes labels the catalogues do not model at all and known fields whose base
- * value is absent from this particular module. Reported rather than dropped so a consumer
- * can distinguish "this variant changes nothing else" from "this catalogue cannot say".
- * Empty for every variant in the catalogue today.
+ * value is absent from this particular module. Reporting these labels lets a consumer
+ * distinguish "this variant changes nothing else" from "this catalogue cannot say".
+ * Every catalogue variant returns an empty array.
  *
  * @param variant - A pre-engineered variant.
  * @returns The unresolvable labels, in the variant's own order.

@@ -102,7 +102,7 @@ const isGenericSpelling = (fdname: string): boolean => fdname.toLowerCase().star
  * by a menu, and it is narrower than a family: `RailGun_LongShot` resolves on the
  * rail gun that ships with it and nowhere else.
  *
- * What it buys is the **climb**, not the purchase. A Mercenary module arrives at grade 1
+ * This route covers the **climb**, not the purchase. A Mercenary module arrives at grade 1
  * and its recipe publishes grades 2–5 — the grades an engineer can still add — so folding
  * one is how a caller takes a bought module further. It cannot reproduce the grade the
  * module was sold at: all 22 Mercenary rows are grade 1, none of those recipes defines a

@@ -6,8 +6,10 @@
  * `./commodities-rare`. Search it with the query functions in `./commodities`.
  *
  * Data from EDCD FDevIDs (`commodity.csv`), plus one record observed in a player
- * journal and not yet in FDevIDs (its market category is a maintainer assignment);
- * see [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
+ * journal and absent from the pinned FDevIDs snapshot. Its market category is a
+ * maintainer assignment; see
+ * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/226 and
+ * [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md).
  *
  * @packageDocumentation
  */
