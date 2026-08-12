@@ -3437,6 +3437,35 @@ test('applyBlueprint names a wrong-typed recipe id before it asks about the slot
             message: /fdname must be a string/,
         },
     );
+    // `options` belongs to the caller, so a property can answer differently on each
+    // read. Each is taken once, before anything is checked, so a checked value cannot be
+    // swapped for an unchecked one — into a message naming the catalogue lookup that
+    // reached it, or into the build as a grade no check ever saw.
+    const varying = <T>(...values: readonly T[]) => {
+        let reads = 0;
+        return () => values[Math.min(reads++, values.length - 1)]!;
+    };
+    const swapExperimental = varying<unknown>('special_fsd_heavy', 42);
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+        grade: 5,
+        get experimental() {
+            return swapExperimental() as string;
+        },
+    });
+    // The checked read is the one applied: the `42` a second read would have returned
+    // never reaches the catalogue lookup that used to report it under its own name.
+    assert.equal(
+        build.fittedModuleAt('FrameShiftDrive')?.engineering?.ExperimentalEffect,
+        'special_fsd_heavy',
+    );
+    const swapGrade = varying(5, 5, 5, 5, 99);
+    build.applyBlueprint('FrameShiftDrive', 'FSD_LongRange', {
+        get grade() {
+            return swapGrade();
+        },
+    });
+    assert.equal(build.fittedModuleAt('FrameShiftDrive')?.engineering?.Level, 5);
+
     // Nullish is absent, so the guard and the readers below it agree: `null` used to
     // pass the guard as "absent" and then reach the catalogue as the string "null",
     // answering `RangeError: unknown experimental effect "null"`.

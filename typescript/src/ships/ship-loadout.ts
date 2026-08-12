@@ -1015,12 +1015,16 @@ export class ShipLoadout {
      * (journal spelling).
      * @param fdname - The blueprint recipe's Frontier `fdname`, e.g. `"FSD_LongRange"`.
      * @param options - {@link ApplyBlueprintOptions}: `grade` (1–5), optional `quality`
-     * (0–1, default 1), and optional `experimental` effect `fdname`.
+     * (0–1, default 1), and optional `experimental` effect `fdname`. A nullish
+     * `experimental` means no effect, the same as leaving it out. Each is read once,
+     * before anything is checked, so an accessor cannot answer the check and the use
+     * differently.
      * @returns `this`, for chaining.
      * @throws {RangeError} If the slot is empty, or the blueprint/grade/experimental is
      * unknown, or `quality` is outside `[0, 1]`.
-     * @throws {TypeError} If `slotKey`, `fdname` or `options.experimental` is not a
-     * string, or `options` is not an object; the fitted module has no stats to engineer; or the id names a
+     * @throws {TypeError} If `slotKey` or `fdname` is not a string, `options` is not an
+     * object, or `options.experimental` carries a value that is not a string — a nullish
+     * one is no effect, not a wrong type; the fitted module has no stats to engineer; or the id names a
      * decorative modification, which names no recipe (see
      * {@link DECORATIVE_MODIFICATIONS}); or the module is not offered the blueprint — by
      * its engineering menu, by the journal spelling of an entry on that menu, by the
@@ -1058,14 +1062,22 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: options must be an object with a grade, received ${describeValue(options)}`,
             );
         }
+        // Read each option exactly once, before any of it is checked. `options` is a
+        // caller's object, so a property can be an accessor that answers differently
+        // every time: validating one read and using another would let a checked value be
+        // swapped for an unchecked one between the two — into a message naming the
+        // catalogue lookup it reached, or into the build itself as a stored grade no
+        // check ever saw.
+        const wantedGrade = options.grade;
+        const wantedQuality = options.quality;
         // Nullish is absent here as it is everywhere else, so the guard's reading of a
         // `null` effect and the three readers below cannot disagree — they used to, and
         // `experimental: null` reached the catalogue as the string "null".
+        const wantedExperimental = options.experimental ?? undefined;
         requireStringIfPresent(
-            options.experimental,
+            wantedExperimental,
             'ShipLoadout.applyBlueprint: options.experimental',
         );
-        const wantedExperimental = options.experimental ?? undefined;
         const module = this.#fittedModuleFor(slotKey);
         if (!module) {
             throw new RangeError(
@@ -1100,15 +1112,15 @@ export class ShipLoadout {
                 `ShipLoadout.applyBlueprint: ${named} is a decorative modification, not a blueprint; no engineer applies one, and the stat changes it arrives with are in DECORATIVE_MODIFICATIONS`,
             );
         }
-        if (!Number.isInteger(options.grade) || options.grade < 1 || options.grade > 5) {
+        if (!Number.isInteger(wantedGrade) || wantedGrade < 1 || wantedGrade > 5) {
             throw new RangeError(
-                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(options.grade)}`,
+                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(wantedGrade)}`,
             );
         }
-        const grade = getBlueprintGrade(recipe, options.grade);
+        const grade = getBlueprintGrade(recipe, wantedGrade);
         if (!grade) {
             throw new RangeError(
-                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(options.grade)}`,
+                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(wantedGrade)}`,
             );
         }
         let experimental;
@@ -1120,7 +1132,7 @@ export class ShipLoadout {
                 );
             }
         }
-        const quality = options.quality ?? 1;
+        const quality = wantedQuality ?? 1;
         if (!Number.isFinite(quality) || quality < 0 || quality > 1) {
             throw new RangeError(
                 `ShipLoadout.applyBlueprint: quality must be a finite number in [0, 1]`,
@@ -1178,7 +1190,7 @@ export class ShipLoadout {
         }
         const engineering: ModuleEngineering = {
             BlueprintName: fdname,
-            Level: options.grade,
+            Level: wantedGrade,
             Quality: quality,
             ...(wantedExperimental !== undefined ? { ExperimentalEffect: wantedExperimental } : {}),
             Modifiers: modifiers,
