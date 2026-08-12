@@ -15,7 +15,7 @@ Referred to throughout by source name; the pin is here, once.
 | Odyssey Materials Helper CAPI fixture `application/src/test/resources/parser/capifc/test9.json` | commit `2c652a2349b754f1dde1a58b6daaac5a04e421a6`                                                                                                                           | 2026-08-09 UTC |
 | EDCD/Coriolis — the application, for its formulas                                               | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
 | msarilar/EDEngineer `EDEngineer/Resources/Data/blueprints.json`                                 | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
-| Elite Dangerous in-game verification                                                            | observed in-game                                                                                                                                                            | 2026-08-10 UTC |
+| Elite Dangerous in-game verification                                                            | observed in-game                                                                                                                                                            | 2026-08-12 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
 the Vessel Hangar snapshot.
@@ -599,6 +599,15 @@ those panels state agree with the catalogue as stored (8/4 t mass, 51/42 integri
 1.68/1.21 MW power, 1.4/0.65 MW distributor draw, 2.2/1.2 thermal load, 60/45 armour
 piercing, 1700 m maximum and falloff ranges, 5/180 ammunition, 1133/1133.333374 m/s
 projectile speed). A panel reading has no upstream immutable revision.
+
+**The two fixed Guardian Gauss Cannons' damage comes directly from stock module-panel
+readings.** Individual outfitting panels observed **2026-08-12 UTC** display **22.0**
+damage for the small 1D cannon and **38.5** for the medium 2B cannon. Those readings
+settle the registry disagreement in favour of coriolis-data's 22 / 38.5 rather than
+EDSY's 40 / 70. The catalogue stores the displayed values without further derivation and
+applies the same correction to their exact thermal and anti-xeno components. The two
+records are pinned in `fixtures/ships/module-stats.jsonc`. A panel reading has no upstream
+immutable revision.
 
 **Values that look wrong and are not.** Three records break the pattern their family
 follows and are confirmed outright by EDSY. Recorded so the "breaks its family's curve"
@@ -1533,14 +1542,14 @@ up straight through with no disambiguation at all. Both paths are evidence that
     modifier: it displays as 3.7, and its 12 projectiles at 1.666667 shots/s display as
     74.5 damage/s.
     - **The guard that matters:** an `overwrite` is absolute, so it is only applied where
-      _this repo's_ base agrees with the one the stat was inverted against. One candidate
-      failed that check and was left as a multiplier — the medium Guardian Gauss Cannon's
-      damage, where EDSY's stock figure is 70 and coriolis's (and therefore this
-      catalogue's) is 38.5. Converting it would have silently imported EDSY's stock value
-      under cover of a rounding fix. The two sources differ on the gauss cannons' stock
-      damage by a constant factor (40 vs 22 small, 70 vs 38.5 medium); which is right is
-      unresolved in the module catalogue
-      ([#225](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/225)).
+      _this repo's_ base agrees with the one the stat was inverted against. The Guardian
+      Gauss Cannon's damage fails that check and stays multiplicative. EDSY's preset uses
+      stock damage 40 / 70 for the small / medium cannons; current in-game module panels
+      read 22 / 38.5, which the module catalogue now stores. Converting EDSY's resulting
+      stat to an overwrite would therefore import its disproved stock value under cover of
+      a rounding fix. The relative quarter-damage transformation remains usable without
+      doing that; an absolute value would require a reading of the pre-engineered article
+      itself.
   - **Burst interval has to be added to the decoder's output by hand.** EDSY carries no
     journal Label for `bstint` — the journal reports the resulting `RateOfFire`, never the
     interval it comes from — so a straight decode drops it, leaving the 13 variants that

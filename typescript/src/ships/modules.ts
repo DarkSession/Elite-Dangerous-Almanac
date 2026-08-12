@@ -625,14 +625,7 @@ export interface OutfittingModuleStats {
     // lasers, which carry no `rateOfFire`, all three are already per second. `./weapons`
     // turns them into DPS, capacitor draw per second and heat per second.
 
-    /**
-     * Damage per round — or per second on a continuous-fire (beam) weapon.
-     *
-     * @remarks
-     * The stock Guardian Gauss Cannon value differs between the pinned registries. The
-     * catalogue follows coriolis-data while direct in-game evidence is sought; see
-     * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/225.
-     */
+    /** Damage per round — or per second on a continuous-fire (beam) weapon. */
     readonly damage?: number;
     /** How `damage` splits across the damage types. */
     readonly damageDistribution?: DamageDistribution;

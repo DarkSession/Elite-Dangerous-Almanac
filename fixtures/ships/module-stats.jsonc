@@ -4,6 +4,10 @@
  * Parity fixture for the stat fields merged into data/ships/modules-*.jsonc
  * (engineering/mechanical stats, the defence stats — resistances, hull boost and reinforcement —
  * and the weapon stats), including fitted-weapon normalization. Cross-language validation.
+ *
+ * The fixed Guardian Gauss Cannon damage rows pin stock outfitting-panel readings transcribed
+ * 2026-08-12 UTC: 22.0 for the small 1D cannon and 38.5 for the medium 2B cannon. A live panel has
+ * no immutable revision or export; the displayed values are stored without correction.
  */
 {
   "countsNote": "Every module in every catalogue carries at least one stat, so these equal the catalogue sizes and assert that no record regresses to identity-only. No row holds only a lone `mass`: the free fuel tank, cargo rack and shield generator carry their capacities and resistances, filled by the same size/rating uniformity used for `Int_ShieldGenerator_Size1_Class4`. Zero masses are explicit, including the in-game value for `Int_DroneControl_ResourceSiphon`; its sized siblings retain their non-zero masses. The `spot` entries below pin the backfilled and corrected values.",
@@ -1676,26 +1680,26 @@
     },
     {
       "symbol": "Hpt_Guardian_GaussCannon_Fixed_Medium",
-      "damage": 35,
+      "damage": 38.5,
       "damageDistribution": {
         "thermal": 1,
         "antiXeno": 1
       },
       "damageComponents": {
-        "thermal": 35,
-        "antiXeno": 35
+        "thermal": 38.5,
+        "antiXeno": 38.5
       }
     },
     {
       "symbol": "Hpt_Guardian_GaussCannon_Fixed_Small",
-      "damage": 20,
+      "damage": 22,
       "damageDistribution": {
         "thermal": 1,
         "antiXeno": 1
       },
       "damageComponents": {
-        "thermal": 20,
-        "antiXeno": 20
+        "thermal": 22,
+        "antiXeno": 22
       }
     },
     {
