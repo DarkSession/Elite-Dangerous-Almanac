@@ -44,6 +44,6 @@
     "power": { "available": 30, "retracted": 13.05, "deployed": 22.29, "withinBudget": true },
     "shields": null,
     "armour": { "hitPoints": 1376, "resistances": { "kinetic": -0.129401, "thermal": 0.058832, "explosive": -0.317634 } },
-    "weapons": { "count": 5, "damagePerSecond": 253.57736, "sustainedDamagePerSecond": 150.681085 }
+    "weapons": { "count": 5, "damagePerSecond": 262.011093, "sustainedDamagePerSecond": 157.681085 }
   }
 }

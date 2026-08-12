@@ -2892,7 +2892,7 @@
     "integrity": 42,
     "powerDraw": 2.61,
     "bootTime": 0,
-    "damage": 35,
+    "damage": 38.5,
     "damageDistribution": {
       "thermal": 1,
       "antiXeno": 1
@@ -2910,8 +2910,8 @@
     "falloffRange": 1500,
     "cost": 543801,
     "damageComponents": {
-      "thermal": 35,
-      "antiXeno": 35
+      "thermal": 38.5,
+      "antiXeno": 38.5
     }
   },
   {
@@ -3715,7 +3715,7 @@
     "integrity": 40,
     "powerDraw": 1.91,
     "bootTime": 0,
-    "damage": 20,
+    "damage": 22,
     "damageDistribution": {
       "thermal": 1,
       "antiXeno": 1
@@ -3732,8 +3732,8 @@
     "falloffRange": 1500,
     "cost": 167250,
     "damageComponents": {
-      "thermal": 20,
-      "antiXeno": 20
+      "thermal": 22,
+      "antiXeno": 22
     }
   },
   {
