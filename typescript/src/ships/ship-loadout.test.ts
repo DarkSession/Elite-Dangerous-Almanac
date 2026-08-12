@@ -3623,6 +3623,34 @@ test('fromLoadout names the structure it needs instead of failing inside the wal
         assert.ok(swappedBuild.toLoadoutEvent(), field);
     }
 
+    // `Array.isArray` proves the exotic object, not the methods on it. The capture
+    // copies by index, so a shadowed `map`, `entries` or iterator cannot put
+    // `modules.map is not a function` in front of a caller either.
+    const shadowedModules: unknown[] = [fsd()];
+    const shadowedModifiers: unknown[] = [{ Label: 'FSDOptimalMass', Value: 1 }];
+    for (const array of [shadowedModules, shadowedModifiers]) {
+        const shadowed = array as unknown as Record<PropertyKey, unknown>;
+        shadowed['map'] = 42;
+        shadowed['entries'] = 42;
+        shadowed[Symbol.iterator] = 42;
+    }
+    for (const event of [
+        { Ship: 'Anaconda', Modules: shadowedModules },
+        {
+            Ship: 'Anaconda',
+            Modules: [
+                {
+                    ...fsd(),
+                    Engineering: { BlueprintName: 'FSD_LongRange', Modifiers: shadowedModifiers },
+                },
+            ],
+        },
+    ]) {
+        const shadowedBuild = ShipLoadout.fromLoadout(event as unknown as LoadoutEvent);
+        assert.ok(shadowedBuild.fittedModuleAt('FrameShiftDrive'));
+        assert.ok(shadowedBuild.toLoadoutEvent());
+    }
+
     // A relay that writes `null` for an absent block is named, not dereferenced: the
     // clone downstream tests only for `undefined`.
     for (const engineering of [null, 42]) {

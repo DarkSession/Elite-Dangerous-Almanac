@@ -63,7 +63,7 @@ function captureLoadoutEvent(event: LoadoutEvent): LoadoutEvent {
     const fuelCapacity = event.FuelCapacity;
     return {
         Ship: event.Ship,
-        Modules: Array.isArray(modules) ? modules.map(captureModule) : modules,
+        Modules: Array.isArray(modules) ? captureEach(modules, captureModule) : modules,
         ...(shipName === undefined ? {} : { ShipName: shipName }),
         ...(shipIdent === undefined ? {} : { ShipIdent: shipIdent }),
         ...(hullValue === undefined ? {} : { HullValue: hullValue }),
@@ -73,6 +73,21 @@ function captureLoadoutEvent(event: LoadoutEvent): LoadoutEvent {
         ...(cargoCapacity === undefined ? {} : { CargoCapacity: cargoCapacity }),
         ...(fuelCapacity === undefined ? {} : { FuelCapacity: { ...fuelCapacity } }),
     };
+}
+
+/**
+ * Copy an array by index, reading each element exactly once.
+ *
+ * `Array.isArray` proves the exotic object, not the methods on it: an own `map` shadows
+ * the intrinsic, and calling it would put `modules.map is not a function` in front of a
+ * caller instead of a message naming their field. Indexing reaches no caller-supplied
+ * method, and `length` on a real array is a data property rather than an accessor.
+ */
+function captureEach<T, U>(values: readonly T[], capture: (value: T) => U): U[] {
+    const captured: U[] = [];
+    const { length } = values;
+    for (let index = 0; index < length; index++) captured.push(capture(values[index] as T));
+    return captured;
 }
 
 /** One reading of a module's fields — see {@link captureLoadoutEvent}. */
@@ -112,7 +127,7 @@ function captureEngineering(engineering: ModuleEngineering): ModuleEngineering {
             ? {}
             : {
                   Modifiers: Array.isArray(modifiers)
-                      ? modifiers.map((modifier) =>
+                      ? captureEach(modifiers, (modifier) =>
                             modifier !== null && typeof modifier === 'object'
                                 ? { ...modifier }
                                 : modifier,
