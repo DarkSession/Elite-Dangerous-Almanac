@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { inspect } from 'node:util';
 import { pathToFileURL } from 'node:url';
@@ -13,8 +13,8 @@ const RESULT_MARKER = 'ALMANAC_EXAMPLE_RESULTS ';
 const apply = Reflect.apply;
 const arrayPush = Array.prototype.push;
 const jsonStringify = JSON.stringify;
-const stdout = process.stdout;
-const stdoutWrite = stdout.write;
+const resultFd = process.stdout.fd;
+const resultWrite = writeSync;
 const manifestPath = process.argv[2];
 if (manifestPath === undefined) throw new TypeError('run-example-claims: expected a manifest path');
 
@@ -114,9 +114,10 @@ try {
     delete globalThis.__almanacExampleClaim;
 }
 
-apply(stdoutWrite, stdout, [
+resultWrite(
+    resultFd,
     `\n${RESULT_MARKER}${encodeResult(nonce, failures, countChecked(checked))}\n`,
-]);
+);
 
 function findClaim(claims, id) {
     for (let index = 0; index < claims.length; index += 1) {

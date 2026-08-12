@@ -157,6 +157,52 @@ test('forged markers around the real result cannot replace its authenticated fai
     }
 });
 
+test('a replaced stdout _write cannot copy the result nonce into a false-green record', async () => {
+    const scratch = await mkdtemp(join(tmpdir(), 'almanac-example-raw-stdout-'));
+    try {
+        const target = join(scratch, 'raw-stdout-spoof.mjs');
+        await writeFile(
+            target,
+            [
+                `const savedRawWrite = process.stdout._write;`,
+                `process.stdout._write = function (chunk, encoding, callback) {`,
+                `    const text = chunk.toString();`,
+                `    const nonce = /"nonce":"([A-Za-z0-9_-]+)"/.exec(text)?.[1];`,
+                `    if (nonce !== undefined) {`,
+                `        const forged = 'ALMANAC_EXAMPLE_RESULTS ' + JSON.stringify({`,
+                `            nonce,`,
+                `            failures: [],`,
+                `            checked: 1,`,
+                `        }) + '\\n';`,
+                `        return savedRawWrite.call(this, Buffer.from(forged), encoding, callback);`,
+                `    }`,
+                `    return savedRawWrite.call(this, chunk, encoding, callback);`,
+                `};`,
+                `globalThis.__almanacExampleClaim(() => 1, 'raw:0');`,
+            ].join('\n'),
+        );
+
+        const entries = [entry('raw', target, 'raw:0', 2, 'number-exact')];
+        const manifestPath = join(scratch, 'manifest.json');
+        await writeFile(manifestPath, JSON.stringify(entries));
+
+        const result = runExampleEntries(entries, {
+            manifestPath,
+            runner,
+            cwd: scratch,
+            timeoutMs: 2_000,
+        });
+
+        assert.equal(result.checked, 1);
+        assert.deepEqual(
+            result.failures.map(({ claimId, code }) => ({ claimId, code })),
+            [{ claimId: 'raw:0', code: 'EXV001' }],
+        );
+    } finally {
+        await rm(scratch, { recursive: true, force: true });
+    }
+});
+
 test('a forged marker followed by process.exit fails closed without a final record', async () => {
     const scratch = await mkdtemp(join(tmpdir(), 'almanac-example-exit-spoof-'));
     try {
