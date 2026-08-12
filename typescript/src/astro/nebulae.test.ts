@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 
 import { nearestNebulae, nebulaeWithin, getNebulaByName, type Nebula } from './nebulae.js';
 import { REAL_NEBULAE } from './nebulae-real.js';
@@ -23,6 +24,13 @@ const TOLERANCE_LY = 1e-5;
 for (const [name, expected] of Object.entries(nebulaeFixture.counts)) {
     test(`the ${name} catalogue holds ${expected} nebulae`, () => {
         assert.equal(CATALOGUES[name]!.length, expected);
+    });
+}
+
+for (const [name, expected] of Object.entries(nebulaeFixture.membershipSha256)) {
+    test(`the ${name} catalogue retains its acquired membership`, () => {
+        const names = CATALOGUES[name]!.map((nebula) => nebula.name).join('\n') + '\n';
+        assert.equal(createHash('sha256').update(names, 'utf8').digest('hex'), expected);
     });
 }
 

@@ -63,6 +63,11 @@ type FixtureAstroNebulae = {
         procgen: number;
         real: number;
     };
+    membershipSha256: {
+        planetary: string;
+        procgen: string;
+        real: string;
+    };
     nearest: {
         catalogue: string;
         count: number;

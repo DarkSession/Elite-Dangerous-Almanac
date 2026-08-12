@@ -366,6 +366,16 @@
           },
           "required": ["all", "planetary", "procgen", "real"]
         },
+        "membershipSha256": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "planetary": { "type": "string" },
+            "procgen": { "type": "string" },
+            "real": { "type": "string" }
+          },
+          "required": ["planetary", "procgen", "real"]
+        },
         "nearest": {
           "type": "array",
           "items": {
@@ -447,7 +457,7 @@
           }
         }
       },
-      "required": ["counts", "nearest", "records", "within"]
+      "required": ["counts", "membershipSha256", "nearest", "records", "within"]
     },
     "astroPermitLocks": {
       "type": "object",
