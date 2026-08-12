@@ -1,0 +1,89 @@
+name: Bug report
+description: A published API returns a wrong result, throws unexpectedly, or fails to load.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report behavior that is wrong for the code, not a value that is merely out of
+        date in the bundled data — use **Data correction** for that.
+
+        Remove commander names, account identifiers, local paths and other personal
+        details from every capture you paste here.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature area
+      description: Which import does the bug come from?
+      options:
+        - astro
+        - ships
+        - materials
+        - commodities
+        - Package build, exports or subpaths
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: entry-point
+    attributes:
+      label: Import path
+      description: The exact subpath and symbol involved.
+      placeholder: "@elite-dangerous-almanac/core/astro/procedural-system — ProceduralSystem.fromName"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description:
+        Required. The smallest input that reproduces the bug, as runnable code. It is
+        attached as TypeScript, so no backticks are needed.
+      render: typescript
+      placeholder: |
+        import { ProceduralSystem } from "@elite-dangerous-almanac/core/astro/procedural-system";
+
+        ProceduralSystem.fromName("Synuefe EN-H d11-96")?.systemAddress;
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed result
+      description: What happened, including the full error and stack trace if one was thrown.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description:
+        What you expected instead, and what that expectation is based on — documented
+        behavior, in-game observation or an upstream source.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package version or commit
+      description: The `@elite-dangerous-almanac/core` version, or the commit if you build from source.
+      placeholder: "0.1.0, or commit 4be0133"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Runtime
+      description: Node.js version, or the browser and bundler.
+      placeholder: "Node.js 22.11.0 / Vite 5 + Chrome 130"
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched open and closed issues for this gap.
+          required: true
+        - label:
+            The reproduction and any pasted output contain no commander names, account
+            identifiers or other private data.
+          required: true

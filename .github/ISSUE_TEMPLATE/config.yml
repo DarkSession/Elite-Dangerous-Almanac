@@ -1,0 +1,16 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/DarkSession/Elite-Dangerous-Almanac/security/advisories/new
+    about: Do not open a public issue for a suspected vulnerability. Use private
+      vulnerability reporting, as described in SECURITY.md.
+  - name: Contributing guide
+    url: https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/CONTRIBUTING.md
+    about:
+      How data, fixtures, provenance and the local verification gate are expected to
+      work before you open a change.
+  - name: Search existing issues
+    url: https://github.com/DarkSession/Elite-Dangerous-Almanac/issues?q=is%3Aissue
+    about:
+      Gaps are tracked one issue per gap. Add evidence to an existing issue instead of
+      opening a duplicate.
