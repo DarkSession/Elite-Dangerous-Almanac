@@ -28,9 +28,10 @@
  * computed. Resolve them against the base module with `getPreEngineeredStats` from
  * `./pre-engineered-stats.js`; it lives in its own module so that consumers who only
  * want the catalogue do not bundle the module and engineering tables.
- * The seven pre-engineered Guardian-weapon records are final articles and carry
- * {@link PreEngineeredVariant.engineeringLocked}; their stock counterparts can take
- * Anti-Guardian Zone Resistance, but the resolved pre-engineered articles cannot.
+ * The only pre-engineered Guardian variants are seven Guardian-weapon records. They are
+ * final articles and carry {@link PreEngineeredVariant.engineeringLocked}; their stock
+ * counterparts can take Anti-Guardian Zone Resistance, but the resolved pre-engineered
+ * articles cannot.
  *
  * @packageDocumentation
  */

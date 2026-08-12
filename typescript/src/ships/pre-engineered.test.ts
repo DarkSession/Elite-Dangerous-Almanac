@@ -93,8 +93,12 @@ test('pre-engineered variants distinguish menu compatibility from final articles
     }
 });
 
-test('the pinned pre-engineered Guardian weapons are final', () => {
+test('the only pre-engineered Guardian variants are the pinned final weapons', () => {
+    const guardian = PRE_ENGINEERED_MODULES.filter((variant) =>
+        variant.symbol.toLowerCase().includes('guardian'),
+    );
     const locked = PRE_ENGINEERED_MODULES.filter((variant) => variant.engineeringLocked);
+    assert.deepEqual(guardian, locked);
     assert.equal(locked.length, fixture.engineeringLocked.count);
     assert.deepEqual(
         [...new Set(locked.map((variant) => variant.symbol))].sort(),
