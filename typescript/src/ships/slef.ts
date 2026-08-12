@@ -30,6 +30,7 @@
  */
 
 import { normalizeKey } from '../internal/registry-index.js';
+import { truncate } from '../internal/argument-guards.js';
 
 /** The envelope header — which app produced the export. */
 export interface SlefHeader {
@@ -465,7 +466,7 @@ export function inspectSlef(input: unknown): SlefInspection {
                 index,
                 code: 'duplicateSlot',
                 path: `${entryPath}${isLoadout(raw) ? '' : '.data'}.Modules[${duplicate.moduleIndex}].Slot`,
-                message: `Entry ${index} contains duplicate slot "${duplicate.slot}"`,
+                message: `Entry ${index} contains duplicate slot "${truncate(duplicate.slot)}"`,
             });
             return;
         }
@@ -567,7 +568,7 @@ export function toSlef(data: LoadoutEvent | readonly LoadoutEvent[], header: Sle
         const duplicate = duplicateSlot(event);
         if (duplicate !== null) {
             throw new TypeError(
-                `toSlef: entry ${index} contains duplicate slot "${duplicate.slot}"`,
+                `toSlef: entry ${index} contains duplicate slot "${truncate(duplicate.slot)}"`,
             );
         }
         return { header, data: event };

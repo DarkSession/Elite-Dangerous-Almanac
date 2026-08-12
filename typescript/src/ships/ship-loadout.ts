@@ -420,7 +420,7 @@ export class ShipLoadout {
         const entry = entries[index];
         if (!entry) {
             throw new TypeError(
-                `ShipLoadout.fromSlef: no entry at index ${index} (have ${entries.length})`,
+                `ShipLoadout.fromSlef: no entry at index ${truncate(index)} (have ${entries.length})`,
             );
         }
         return ShipLoadout.fromLoadout(entry.data);
@@ -889,19 +889,21 @@ export class ShipLoadout {
             // Nothing else takes this branch: another falsy value is not a lookup miss,
             // and claiming it was would send the caller looking in the wrong place.
             throw new TypeError(
-                `ShipLoadout.setModule: no module supplied for "${slotKey}" (did the module lookup return undefined?)`,
+                `ShipLoadout.setModule: no module supplied for "${truncate(slotKey)}" (did the module lookup return undefined?)`,
             );
         }
         // Every fit rule reads the record's symbol, so anything else — a bare id, a
         // journal fragment — must be named here rather than failing inside the rules.
         if (typeof (module as { symbol?: unknown }).symbol !== 'string') {
             throw new TypeError(
-                `ShipLoadout.setModule: module for "${slotKey}" must be an outfitting module, received ${describeValue(module)}`,
+                `ShipLoadout.setModule: module for "${truncate(slotKey)}" must be an outfitting module, received ${describeValue(module)}`,
             );
         }
         const problem = moduleFitError(this.#shipSymbol, slot, module);
         if (problem) {
-            throw new TypeError(`ShipLoadout.setModule: ${module.symbol} → ${slotKey}: ${problem}`);
+            throw new TypeError(
+                `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${problem}`,
+            );
         }
         // Replacing keeps the key the build already uses; a fresh fit takes the hull
         // layout's canonical spelling rather than whatever casing the caller typed.
@@ -984,11 +986,15 @@ export class ShipLoadout {
     applyBlueprint(slotKey: string, fdname: string, options: ApplyBlueprintOptions): this {
         const module = this.#fittedModuleFor(slotKey);
         if (!module) {
-            throw new RangeError(`ShipLoadout.applyBlueprint: slot "${slotKey}" is empty`);
+            throw new RangeError(
+                `ShipLoadout.applyBlueprint: slot "${truncate(slotKey)}" is empty`,
+            );
         }
         const stats = this.#statsFor(module);
         if (!stats) {
-            throw new TypeError(`ShipLoadout.applyBlueprint: no stats for module "${module.Item}"`);
+            throw new TypeError(
+                `ShipLoadout.applyBlueprint: no stats for module "${truncate(module.Item)}"`,
+            );
         }
         // Which recipe an id names can depend on the module it is named for: the game
         // writes `Sensor_LongRange` on a utility scanner and on a sensor suite, and the two
@@ -997,7 +1003,10 @@ export class ShipLoadout {
         const recipe = resolveBlueprintForModule(module.Item, fdname);
         // Name both spellings once they differ, so an error about the recipe this module
         // rolls cannot read as an error about the id the caller passed.
-        const named = recipe === fdname ? `"${fdname}"` : `"${fdname}" (${recipe} on this module)`;
+        const named =
+            recipe === fdname
+                ? `"${truncate(fdname)}"`
+                : `"${truncate(fdname)}" (${truncate(recipe)} on this module)`;
         // A decorative transformation reaches this method as a real id that names no
         // recipe: the game writes it in the same field, but it has no grade, costs nothing
         // and no engineer applies one. Say that, rather than letting the grade lookup below
@@ -1011,13 +1020,13 @@ export class ShipLoadout {
         }
         if (!Number.isInteger(options.grade) || options.grade < 1 || options.grade > 5) {
             throw new RangeError(
-                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${options.grade}`,
+                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(options.grade)}`,
             );
         }
         const grade = getBlueprintGrade(recipe, options.grade);
         if (!grade) {
             throw new RangeError(
-                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${options.grade}`,
+                `ShipLoadout.applyBlueprint: no blueprint ${named} grade ${truncate(options.grade)}`,
             );
         }
         let experimental;
@@ -1025,7 +1034,7 @@ export class ShipLoadout {
             experimental = getExperimentalEffect(options.experimental);
             if (!experimental) {
                 throw new RangeError(
-                    `ShipLoadout.applyBlueprint: unknown experimental effect "${options.experimental}"`,
+                    `ShipLoadout.applyBlueprint: unknown experimental effect "${truncate(options.experimental)}"`,
                 );
             }
         }
@@ -1037,7 +1046,7 @@ export class ShipLoadout {
         }
         if (stats.engineeringLocked) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: module "${module.Item}" is a final pre-engineered article and accepts no further engineering`,
+                `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is a final pre-engineered article and accepts no further engineering`,
             );
         }
         // The engineering menu is the authority on what a module accepts, so the same
@@ -1047,8 +1056,8 @@ export class ShipLoadout {
         if (!blueprintAvailableFor(module.Item, fdname)) {
             throw new TypeError(
                 isEngineerable(module.Item)
-                    ? `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered blueprint ${named}; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
-                    : `ShipLoadout.applyBlueprint: no registry lists an engineering menu for module "${module.Item}"`,
+                    ? `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered blueprint ${named}; it takes ${getBlueprintsForModule(module.Item).join(', ')}`
+                    : `ShipLoadout.applyBlueprint: no registry lists an engineering menu for module "${truncate(module.Item)}"`,
             );
         }
         if (
@@ -1057,14 +1066,14 @@ export class ShipLoadout {
         ) {
             const offered = getExperimentalsForModule(module.Item);
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: module "${module.Item}" is not offered experimental effect "${options.experimental}"; it takes ${offered.length > 0 ? offered.join(', ') : 'no experimental effect'}`,
+                `ShipLoadout.applyBlueprint: module "${truncate(module.Item)}" is not offered experimental effect "${truncate(options.experimental)}"; it takes ${offered.length > 0 ? offered.join(', ') : 'no experimental effect'}`,
             );
         }
         const base = baseStats(stats);
         const missing = missingBaseLabels(stats, base, grade.features, experimental?.modifiers);
         if (missing.length > 0) {
             throw new TypeError(
-                `ShipLoadout.applyBlueprint: cannot compute ${named} for module "${module.Item}"; missing base stats for ${missing.join(', ')}`,
+                `ShipLoadout.applyBlueprint: cannot compute ${named} for module "${truncate(module.Item)}"; missing base stats for ${missing.join(', ')}`,
             );
         }
         // A converting experimental supersedes a blueprint conversion, just as it
@@ -1111,7 +1120,7 @@ export class ShipLoadout {
         const module = this.#fittedModuleFor(slotKey);
         if (module && this.#statsFor(module)?.engineeringLocked) {
             throw new TypeError(
-                `ShipLoadout.clearEngineering: module "${module.Item}" is a final pre-engineered article and its engineering cannot be removed`,
+                `ShipLoadout.clearEngineering: module "${truncate(module.Item)}" is a final pre-engineered article and its engineering cannot be removed`,
             );
         }
         if (module?.Engineering) {
@@ -1162,7 +1171,7 @@ export class ShipLoadout {
     setModulePriority(slotKey: string, priority: number): this {
         if (!Number.isInteger(priority) || priority < 0 || priority > 4) {
             throw new RangeError(
-                `ShipLoadout: power priority must be an integer 0-4, got ${priority}`,
+                `ShipLoadout: power priority must be an integer 0-4, got ${truncate(priority)}`,
             );
         }
         this.#patchModule(slotKey, { Priority: priority });
@@ -1181,7 +1190,7 @@ export class ShipLoadout {
     #patchModule(slotKey: string, patch: Pick<Partial<LoadoutModule>, 'On' | 'Priority'>): void {
         const module = this.#fittedModuleFor(slotKey);
         if (!module) {
-            throw new RangeError(`ShipLoadout: slot "${slotKey}" is empty`);
+            throw new RangeError(`ShipLoadout: slot "${truncate(slotKey)}" is empty`);
         }
         this.#modules.set(module.Slot, cloneLoadoutModule({ ...module, ...patch }));
     }
@@ -1585,7 +1594,9 @@ export class ShipLoadout {
     #layout(): readonly BuildSlot[] {
         const layout = this.#layoutOrNull();
         if (!layout) {
-            throw new TypeError(`ShipLoadout: no slot layout for hull "${this.#shipSymbol}"`);
+            throw new TypeError(
+                `ShipLoadout: no slot layout for hull "${truncate(this.#shipSymbol)}"`,
+            );
         }
         return layout;
     }
@@ -1595,7 +1606,7 @@ export class ShipLoadout {
         const slot = this.#layout().find((s) => s.key.toLowerCase() === wanted);
         if (!slot) {
             throw new RangeError(
-                `ShipLoadout: hull "${this.#shipSymbol}" has no slot "${slotKey}"`,
+                `ShipLoadout: hull "${truncate(this.#shipSymbol)}" has no slot "${truncate(slotKey)}"`,
             );
         }
         return slot;
@@ -1829,7 +1840,7 @@ export class ShipLoadout {
             // unrecognised id. Fail with a diagnosable message
             // rather than the "no frame shift drive" one the caller would otherwise get.
             throw new TypeError(
-                `ShipLoadout: no jump constants in the stats catalogue for frame shift drive "${fsdModule.Item}"`,
+                `ShipLoadout: no jump constants in the stats catalogue for frame shift drive "${truncate(fsdModule.Item)}"`,
             );
         }
 
@@ -1841,7 +1852,7 @@ export class ShipLoadout {
                 ...(maxFuel === undefined ? ['maxFuel'] : []),
             ];
             throw new TypeError(
-                `ShipLoadout: frame shift drive "${fsdModule.Item}" has no ${missing.join(' or ')} in the stats catalogue`,
+                `ShipLoadout: frame shift drive "${truncate(fsdModule.Item)}" has no ${missing.join(' or ')} in the stats catalogue`,
             );
         }
 
@@ -1867,7 +1878,7 @@ export class ShipLoadout {
             if (m.On === false) continue; // an unpowered booster gives no bonus
             if (stats?.jumpBoost === undefined) {
                 throw new TypeError(
-                    `ShipLoadout: FSD booster "${m.Item}" has no jumpBoost in the stats catalogue`,
+                    `ShipLoadout: FSD booster "${truncate(m.Item)}" has no jumpBoost in the stats catalogue`,
                 );
             }
             return stats.jumpBoost;

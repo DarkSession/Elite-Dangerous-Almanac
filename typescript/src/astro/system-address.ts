@@ -22,6 +22,7 @@ import type { NamingRegionOrigin } from './naming-region-origins.js';
 import { packBoxelCode } from './internal/system-name-code.js';
 import type { SectorGridPosition } from './sector-name.js';
 import { toSystemAddress, type SystemAddressInput } from './system-address-input.js';
+import { truncate } from '../internal/argument-guards.js';
 
 export type { SystemAddressInput } from './system-address-input.js';
 
@@ -45,7 +46,7 @@ export const SECTOR_INTERNAL_SIZE = 40960;
  */
 export function boxelInternalSize(sizeClass: number): number {
     if (!Number.isInteger(sizeClass) || sizeClass < 0 || sizeClass > 7) {
-        throw new RangeError(`Invalid size class: ${sizeClass}`);
+        throw new RangeError(`Invalid size class: ${truncate(sizeClass)}`);
     }
     return SECTOR_INTERNAL_SIZE >> (7 - sizeClass);
 }
@@ -116,10 +117,10 @@ export function boxelCodeToAbsoluteBoxel(
         // An origin from the catalogue never has a negative coordinate, so reaching
         // this means the caller built the origin; the message names the coordinate so
         // they check the origin rather than the region catalogue.
-        throw new RangeError(`Region origin "${origin.name}" has a negative coordinate`);
+        throw new RangeError(`Region origin "${truncate(origin.name)}" has a negative coordinate`);
     }
     if (!Number.isInteger(boxelCode) || boxelCode < 0 || boxelCode > 0x1fffff) {
-        throw new RangeError(`System index N1 out of range in ${origin.name}`);
+        throw new RangeError(`System index N1 out of range in ${truncate(origin.name)}`);
     }
 
     const bx = boxelCode & 0x7f;
@@ -128,7 +129,7 @@ export function boxelCodeToAbsoluteBoxel(
 
     if (!boxelIsWithinRegion(bx, by, bz, boxelSize, origin)) {
         throw new RangeError(
-            `Boxel code out of range for size class ${sizeClass} in ${origin.name}`,
+            `Boxel code out of range for size class ${truncate(sizeClass)} in ${truncate(origin.name)}`,
         );
     }
 
@@ -139,7 +140,9 @@ export function boxelCodeToAbsoluteBoxel(
     // The address has 7 sector bits for x/z but only 6 for y; a parseable name can
     // still resolve outside that space, and packing it would corrupt other fields.
     if (x >= 1 << (14 - sizeClass) || y >= 1 << (13 - sizeClass) || z >= 1 << (14 - sizeClass)) {
-        throw new RangeError(`Sector position of ${origin.name} does not fit a system address`);
+        throw new RangeError(
+            `Sector position of ${truncate(origin.name)} does not fit a system address`,
+        );
     }
 
     return { x, y, z };
@@ -220,7 +223,9 @@ function boxelIsWithinRegion(
 /** Reject addresses outside the unsigned 64-bit range before decoding. */
 function assertAddressRange(id64: bigint): void {
     if (id64 < 0n || id64 >= 1n << 64n) {
-        throw new RangeError(`System address out of range (expected unsigned 64-bit): ${id64}`);
+        throw new RangeError(
+            `System address out of range (expected unsigned 64-bit): ${truncate(id64)}`,
+        );
     }
 }
 
@@ -353,7 +358,7 @@ export function encodeSystemAddress(parts: SystemNameParts, origin: NamingRegion
     // The sequence spans bits [44 - 3·sc, 55); the 9 bits above it are the body ID.
     const seqWidth = 11 + sc * 3;
     if (!Number.isInteger(parts.n2) || parts.n2 < 0 || parts.n2 >= 2 ** seqWidth) {
-        throw new RangeError(`Sequence ${parts.n2} does not fit in ${seqWidth} bits`);
+        throw new RangeError(`Sequence ${truncate(parts.n2)} does not fit in ${seqWidth} bits`);
     }
 
     return (
@@ -398,7 +403,9 @@ export function encodeModSystemAddress(parts: SystemNameParts, origin: NamingReg
     const { x, y, z } = boxelCodeToAbsoluteBoxel(sc, boxelCode, origin);
 
     if (!Number.isInteger(parts.n2) || parts.n2 < 0 || parts.n2 > 0x7fff) {
-        throw new RangeError(`Sequence ${parts.n2} does not fit in the 15-bit modulated field`);
+        throw new RangeError(
+            `Sequence ${truncate(parts.n2)} does not fit in the 15-bit modulated field`,
+        );
     }
 
     const packedBoxel = (x & boxelMask) | ((y & boxelMask) << 7) | ((z & boxelMask) << 14);

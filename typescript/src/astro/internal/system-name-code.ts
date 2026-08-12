@@ -1,3 +1,5 @@
+import { describeValue, truncate } from '../../internal/argument-guards.js';
+
 /** The stride one step of `n1` adds to a boxel code: the three letters below it. */
 const N1_STRIDE = 26 * 26 * 26;
 
@@ -23,12 +25,14 @@ export function packBoxelCode(l1: number, l2: number, l3: number, n1: number): n
     for (const v of [l1, l2, l3]) {
         if (!Number.isInteger(v) || v < 0 || v > 25) {
             throw new RangeError(
-                `Boxel letters out of range (expected integer 0–25): ${JSON.stringify({ l1, l2, l3 })}`,
+                `Boxel letters out of range (expected integer 0–25): ${describeValue({ l1, l2, l3 })}`,
             );
         }
     }
     if (!Number.isInteger(n1) || n1 < 0 || n1 > MAX_N1) {
-        throw new RangeError(`Boxel number N1 out of range (expected integer 0–${MAX_N1}): ${n1}`);
+        throw new RangeError(
+            `Boxel number N1 out of range (expected integer 0–${MAX_N1}): ${truncate(n1)}`,
+        );
     }
     return ((n1 * 26 + l3) * 26 + l2) * 26 + l1;
 }
@@ -43,7 +47,7 @@ export function packBoxelCode(l1: number, l2: number, l3: number, n1: number): n
 export function assertBoxelCode(boxelCode: number): void {
     if (!Number.isInteger(boxelCode) || boxelCode < 0 || boxelCode > MAX_BOXEL_CODE) {
         throw new RangeError(
-            `Boxel code out of range (expected integer 0–${MAX_BOXEL_CODE}): ${boxelCode}`,
+            `Boxel code out of range (expected integer 0–${MAX_BOXEL_CODE}): ${truncate(boxelCode)}`,
         );
     }
 }

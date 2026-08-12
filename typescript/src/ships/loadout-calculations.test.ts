@@ -31,6 +31,17 @@ test('pure loadout calculations preserve genuine zeroes', () => {
     assert.equal(Object.isFrozen(fuel.value), true);
 });
 
+test('calculation issues abbreviate caller-supplied slot and module symbols', () => {
+    const longSlot = 's'.repeat(20_000);
+    const longSymbol = 'm'.repeat(20_000);
+    const result = calculateUnladenMass(10, [{ slot: longSlot, symbol: longSymbol, mass: null }]);
+    assert.equal(result.complete, false);
+    assert.equal(result.issues[0]?.slot, longSlot);
+    assert.equal(result.issues[0]?.symbol, longSymbol);
+    assert.ok(result.issues[0]!.message.length < 200);
+    assert.match(result.issues[0]!.message, /….*…/);
+});
+
 test('mass reports every missing dependency instead of returning a partial sum', () => {
     const result = calculateUnladenMass(null, [
         known,
