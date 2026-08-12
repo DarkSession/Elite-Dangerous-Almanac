@@ -2,7 +2,7 @@
  * Registers the synchronous `.jsonc` load hook from `./jsonc.mjs`, which serves
  * both the shared `data/` catalogues and the shared `fixtures/`.
  *
- * Used by `npm test` as `node --import tsx --import ./scripts/register-jsonc.mjs`.
+ * Used by `pnpm test` as `node --import tsx --import ./scripts/register-jsonc.mjs`.
  *
  * Registered through `module.registerHooks` (synchronous, in-thread), *not*
  * `module.register`. tsx installs its own load hook synchronously via

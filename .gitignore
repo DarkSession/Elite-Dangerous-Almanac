@@ -3,7 +3,7 @@ dist/
 **/docs/wiki/
 
 # Copied from the repository root by typescript/scripts/copy-notices.mjs (part of
-# `npm run build`), so npm can pack them. Edit the root files, not the copies.
+# `pnpm run build`), so npm can pack them. Edit the root files, not the copies.
 typescript/LICENSE
 typescript/THIRD_PARTY_NOTICES.md
 typescript/PROVENANCE/

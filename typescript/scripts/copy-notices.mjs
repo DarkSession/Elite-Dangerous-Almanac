@@ -14,7 +14,7 @@
  * needs its own copies under the filenames consumers and licence scanners look for.
  *
  * The copies are generated and git-ignored: edit the root files, never the copies.
- * `npm run build` runs this, and `prepublishOnly` runs the build, so a published
+ * `pnpm run build` runs this, and `prepublishOnly` runs the build, so a published
  * tarball always carries current terms and the exact provenance of its data.
  * `package.test.mjs` asserts each copy is byte-identical to its source and that
  * every data domain is represented.

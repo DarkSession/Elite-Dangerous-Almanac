@@ -29,38 +29,65 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: typescript/package-lock.json
 
+      # Corepack ships with Node, so pnpm arrives without trusting a third-party
+      # action to supply it. It installs the exact version named by `packageManager`
+      # in typescript/package.json and rejects a download whose hash does not match
+      # the one pinned there. Named rather than a bare `corepack enable` so only pnpm
+      # is ever shimmed — the release workflow calls `npm publish` directly, and
+      # nothing should sit between that call and npm.
+      - name: Enable Corepack
+        run: corepack enable pnpm
+
+      # `setup-node`'s own pnpm cache is not used: it asks pnpm for the store path
+      # from the repository root, where there is no manifest naming a pnpm version.
+      # Asking from the package directory is what makes the answer the store this
+      # project actually installs into.
+      - name: Locate the pnpm store
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >>"$GITHUB_OUTPUT"
+
+      - name: Cache the pnpm store
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('typescript/pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
+
+      # `--frozen-lockfile` is pnpm's `npm ci`: it fails rather than resolving when
+      # the lockfile and the manifest disagree. Resolution is what the cooldown in
+      # pnpm-workspace.yaml normally constrains, so it has nothing to hold up here —
+      # but pnpm still audits the pinned entries against it, which is what would catch
+      # a lockfile edited by hand to smuggle a version past the cooldown locally.
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Audit dependencies
-        run: npm run audit
+        run: pnpm run audit
 
       - name: Check generated fixture contracts
-        run: npm run check:fixtures
+        run: pnpm run check:fixtures
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Check formatting
-        run: npm run format:check
+        run: pnpm run format:check
 
       - name: Typecheck
-        run: npm run typecheck
+        run: pnpm run typecheck
 
       - name: Check documented examples
-        run: npm run check:examples
+        run: pnpm run check:examples
 
       - name: Generate API documentation
-        run: npm run docs
+        run: pnpm run docs
 
       - name: Test with coverage thresholds
-        run: npm test
+        run: pnpm test
 
       - name: Build package
-        run: npm run build
+        run: pnpm run build
 
       - name: Test package entry points
-        run: npm run test:package
+        run: pnpm run test:package

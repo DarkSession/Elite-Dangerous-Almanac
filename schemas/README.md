@@ -20,5 +20,5 @@ enum values.
 wire format — journal loadouts, SLEF envelopes and community builds — share one family
 definition; all other fixtures have a definition of their own. Its
 `x-fixture-families` list maps every file to exactly one definition. From `typescript/`,
-run `npm run generate:fixtures` after changing a fixture. The same command generates
-`src/fixtures.generated.d.ts`, and `npm run check:fixtures` rejects stale artefacts.
+run `pnpm run generate:fixtures` after changing a fixture. The same command generates
+`src/fixtures.generated.d.ts`, and `pnpm run check:fixtures` rejects stale artefacts.

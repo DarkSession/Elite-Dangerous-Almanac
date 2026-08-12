@@ -19,7 +19,7 @@
  *
  * 4. **Every fixture matches its generated family schema.** The schema is shared with
  *    all language implementations, while the generated TypeScript declarations type
- *    imports in this implementation. `npm run check:fixtures` ensures both artefacts
+ *    imports in this implementation. `pnpm run check:fixtures` ensures both artefacts
  *    exactly describe the checked-in payloads.
  */
 

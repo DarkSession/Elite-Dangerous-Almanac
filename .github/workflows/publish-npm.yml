@@ -60,11 +60,25 @@ jobs:
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org # writes the .npmrc that reads NODE_AUTH_TOKEN
-          cache: npm
-          cache-dependency-path: typescript/package-lock.json
+
+      # pnpm installs the dependency tree; the publish itself stays on npm, which is
+      # the client that mints the provenance attestation. See the publish step below.
+      - name: Enable Corepack
+        run: corepack enable pnpm
+
+      - name: Locate the pnpm store
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >>"$GITHUB_OUTPUT"
+
+      - name: Cache the pnpm store
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('typescript/pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Resolve what to publish
         id: package
@@ -169,7 +183,7 @@ jobs:
           fi
 
       - name: Audit dependencies
-        run: npm run audit
+        run: pnpm run audit
 
       # Deliberately its own step, with no token in the environment. These scripts
       # run ESLint, tsc, the test suite and esbuild, so every devDependency in the
@@ -178,13 +192,19 @@ jobs:
       # step below passes `--ignore-scripts`: `prepublishOnly` would otherwise run
       # this same work again, that time with the token exported.
       - name: Check, build and verify the package
-        run: npm run check && npm run build && npm run test:package
+        run: pnpm run check && pnpm run build && pnpm run test:package
 
       - name: Publish
         if: env.REAL_PUBLISH == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DIST_TAG: ${{ steps.package.outputs.dist-tag }}
+        # `npm`, not `pnpm`, and deliberately so: `--provenance` is npm's own
+        # feature, `pnpm publish` does not document the flag, and a client that
+        # quietly ignored it would publish a tarball with no attestation and no
+        # error to say so. Everything else in this workflow runs under pnpm; only
+        # the upload stays with the client that mints the signature.
+        #
         # `--access public` because the package is scoped and scoped packages
         # default to restricted; `--provenance` links the tarball to this commit
         # and this workflow run, which npm shows as a verified badge. Packing is
