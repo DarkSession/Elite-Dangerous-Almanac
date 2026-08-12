@@ -1320,12 +1320,9 @@ up straight through with no disambiguation at all. Both paths are evidence that
 - **Anti-Guardian Zone Resistance carries no experimental effect.** All nine groups
   offering `GuardianModule_Sturdy` store `"experimentals": []`, including
   `guardianGauss`, `guardianPlasma` and `guardianShard`.
-  - **Guardian-module reward variants are not catalogued**
-    ([#224](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/224)).
-    `pre-engineered.jsonc` carries seven Guardian rows and all seven are **weapons**
-    (Gauss, Plasma, Shard), each with a `blueprint` and no `experimental`; there is no
-    `Int_Guardian*` row at all. No registry publishes the reward variants, so their
-    missing records are not invented.
+  - There are no pre-engineered Guardian module reward variants. The seven Guardian
+    variants are weapons, whose ordinary recipes identify final purchases rather than
+    engineer rolls.
   - **Neither registry publishes this, and a re-derivation will not reproduce it.**
     `expeffects` is published **per module group** by both — EDSY has no per-blueprint
     field and coriolis-data's `specials` sits beside `blueprints` rather than inside one —
@@ -1435,6 +1432,12 @@ up straight through with no disambiguation at all. Both paths are evidence that
 ## Pre-engineered modules
 
 - **File:** `pre-engineered.jsonc`.
+- **Guardian coverage is complete.** There are no pre-engineered Guardian power plant,
+  distributor, hull-reinforcement, module-reinforcement, shield-reinforcement or
+  FSD-booster reward variants, so the absence of an `Int_Guardian*` row is deliberate. The
+  catalogue's seven Guardian rows are all weapons (Gauss, Plasma and Shard), each with a
+  `blueprint` and no `experimental`. Source: maintainer confirmation recorded 2026-08-12
+  UTC; there is no immutable upstream revision.
 - **Records:** pair a base module `symbol` with its published pre-engineered identity:
   `{ symbol, name, blueprint, grade, acquisition }`, plus any sourced stat block and
   price. The game reports these articles under the base module symbol rather than a

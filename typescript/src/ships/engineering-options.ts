@@ -27,12 +27,10 @@
  * reinforcement packages. The Guardian half of each pair takes **no experimental effect**:
  * Anti-Guardian Zone Resistance is the whole menu, and it has no experimental slot. The
  * other Guardian module families — FSD boosters, module and shield reinforcement — are the
- * same. A Guardian module carrying an experimental was obtained already engineered, as a
- * community-goal or tech-broker reward, rather than rolled at an engineer; this menu
- * answers what a player may apply, so it does not list those. (Guardian **weapons** are
- * the same shape: their menus are that one recipe too, because an ordinary weapon recipe
- * on a Guardian weapon identifies a final purchase rather than an engineer roll —
- * `ships/pre-engineered` carries those, and they accept no further engineering.)
+ * same. There are no pre-engineered Guardian module reward variants. Guardian **weapons**
+ * are different: their menus are that one recipe too, but an ordinary weapon recipe on a
+ * Guardian weapon identifies a final purchase rather than an engineer roll —
+ * `ships/pre-engineered` carries those, and they accept no further engineering.
  *
  * It has its own module and data file so a consumer who only reads menus pays for
  * nothing else.
