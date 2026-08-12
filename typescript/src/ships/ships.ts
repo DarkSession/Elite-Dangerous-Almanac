@@ -140,6 +140,9 @@ const SHIPS_BY_NAME = /* @__PURE__ */ createKeyIndex(SHIPS, 'name');
  * whitespace and case are ignored, so the journal's lower-cased form
  * (`"empire_trader"`) resolves too.
  * @returns The matching {@link Ship}, or `null` if no hull has that symbol.
+ * @remarks
+ * The hulls form one small, unsplit catalogue, so unlike module, material,
+ * micro-resource and commodity lookups there is no useful subset argument to narrow.
  * @example
  * ```ts
  * import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
@@ -158,6 +161,9 @@ export function getShipBySymbol(symbol: string): Ship | null {
  * `"Imperial Clipper"`. Leading/trailing whitespace and case are ignored, but
  * matching is otherwise exact.
  * @returns The matching {@link Ship}, or `null` if no hull has that name.
+ * @remarks
+ * The hulls form one small, unsplit catalogue, so unlike module, material,
+ * micro-resource and commodity lookups there is no useful subset argument to narrow.
  * @example
  * ```ts
  * import { getShipByName } from '@elite-dangerous-almanac/core/ships/ships';
