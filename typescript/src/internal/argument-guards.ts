@@ -74,9 +74,12 @@ function previewOf(value: unknown): string | null {
 /**
  * Shorten a rendering to {@link PREVIEW_LIMIT}, marking that it was shortened.
  *
- * Exported for the throws that quote a caller's own string rather than describing it — the
- * four messages that name an unrecognised hull symbol — so an oversized argument is
- * bounded there on the same terms as it is here.
+ * Exported for `ShipLoadout.empty`'s unknown-hull message, the one throw that quotes an
+ * argument these guards have already checked is a string, so that method does not bound an
+ * oversized argument on one branch and reproduce it on the next. It is not a general rule
+ * for the library's messages, which quote a caller's string in full — bounding those is
+ * https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/213, and each site has to
+ * be checked for a value that is not a string before it can use this.
  *
  * @internal
  */

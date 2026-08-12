@@ -1117,25 +1117,19 @@ test('empty names a non-string hull argument instead of failing inside the looku
     );
 });
 
-test('an unrecognised hull symbol is bounded everywhere it reaches a message', () => {
-    // An import carries whatever `Ship` the capture held, so every sentence that names an
-    // unknown hull — not just the one `empty` throws — has to survive an oversized one.
-    const build = ShipLoadout.fromLoadout({ Ship: 'x'.repeat(20_000), Modules: [] });
-    const bounded =
-        (label: string) =>
-        ({ message }: Error) => {
-            assert.ok(message.length < 200, `${label} message not shortened: ${message.length}`);
-            assert.match(message, /hull "x+…"/);
-            return true;
-        };
-
-    assert.throws(() => build.slots(), bounded('slots'));
-    assert.throws(() => build.toLoadoutEvent({ moduleOrder: 'slots' }), bounded('toLoadoutEvent'));
-
-    const unknownHull = build.validation.issues.find((issue) => issue.code === 'unknownHull');
-    assert.ok(unknownHull, 'an unknown hull must be reported');
-    assert.ok(unknownHull.message.length < 200, `validation: ${unknownHull.message.length}`);
-    assert.match(unknownHull.message, /hull x+…$/);
+test('an unrecognised hull is reported by validation, not thrown at', () => {
+    // `validation` is the reporting path for an import, and stays one: an oversized or
+    // absent `Ship` is a hull the catalogue does not know, not a failure on the way to
+    // saying so. (A `Ship` of some other type still fails inside the symbol lookup —
+    // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/201.)
+    for (const ship of ['x'.repeat(20_000), null]) {
+        const build = ShipLoadout.fromLoadout({
+            Ship: ship,
+            Modules: [],
+        } as unknown as LoadoutEvent);
+        const codes = build.validation.issues.map((issue) => issue.code);
+        assert.ok(codes.includes('unknownHull'), `${String(ship).slice(0, 20)}: ${codes.join()}`);
+    }
 });
 
 test('modulesForSlot lists only fitting modules', () => {

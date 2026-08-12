@@ -5,7 +5,6 @@
  */
 
 import type { BuildSlot } from './slots.js';
-import { truncate } from '../internal/argument-guards.js';
 
 /**
  * Stable machine-readable reason a loadout is invalid or incomplete.
@@ -110,7 +109,7 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
         issues.push({
             code: 'unknownHull',
             severity: 'incomplete',
-            message: `No slot layout is known for hull ${truncate(input.shipSymbol)}`,
+            message: `No slot layout is known for hull ${input.shipSymbol}`,
         });
     } else {
         const knownSlots = new Map(input.slots.map((slot) => [slot.key.toLowerCase(), slot]));

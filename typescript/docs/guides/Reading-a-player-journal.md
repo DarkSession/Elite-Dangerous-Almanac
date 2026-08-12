@@ -126,7 +126,9 @@ system?.namingRegionName; // -> 'Synuefe'
 
 `fromName` returns `null` rather than throwing when the name is not procedural — which
 is the normal case for Sol, Shinrarta Dezhra and every other hand-named system. Treat
-`null` as "this is a hand-named system", not as a failure.
+`null` as "this is a hand-named system", not as a failure. A *missing* name is different:
+pass a field that was not there and it throws `TypeError` naming the argument, so a
+`StarSystem` your parser never found does not read back as a hand-named system.
 
 Addresses accept a `bigint`, a safe-integer `number`, or a decimal string, and are
 always returned as `bigint`. A journal parsed with `JSON.parse` yields a `number`, which

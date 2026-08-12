@@ -1,7 +1,6 @@
 /** Serialization policy for the mutable loadout facade. @internal */
 
 import { normalizeKey } from '../../internal/registry-index.js';
-import { truncate } from '../../internal/argument-guards.js';
 import type { OutfittingModule } from '../modules.js';
 import { getSourceModuleValue, type SourcePurchaseRecord } from '../source-purchase.js';
 import type { LoadoutEvent, LoadoutModule } from '../slef.js';
@@ -116,7 +115,7 @@ function slotOrderedModules(
 ): LoadoutModule[] {
     if (!layout) {
         throw new TypeError(
-            `ShipLoadout.toLoadoutEvent: no slot layout for hull "${truncate(shipSymbol)}", so modules cannot be ordered by slot`,
+            `ShipLoadout.toLoadoutEvent: no slot layout for hull "${shipSymbol}", so modules cannot be ordered by slot`,
         );
     }
     const remaining = new Map(modules);

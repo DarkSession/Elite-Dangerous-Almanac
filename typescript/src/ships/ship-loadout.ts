@@ -480,9 +480,10 @@ export class ShipLoadout {
     static empty(shipSymbol: string): ShipLoadout {
         const layout = getShipSlots(requireString(shipSymbol, 'ShipLoadout.empty: shipSymbol'));
         if (!layout) {
-            // Quoted through `truncate` because the symbol is unvalidated caller input,
-            // as everywhere a hull symbol reaches a message: a whole payload passed by
-            // mistake is identified, not reproduced.
+            // Shortened so this method's two failures agree: the guard above describes an
+            // oversized argument in bounded form, and quoting one back in full here would
+            // undo that. Messages elsewhere still reproduce a caller's string in full —
+            // https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/213.
             throw new TypeError(
                 `ShipLoadout.empty: no slot layout for hull "${truncate(shipSymbol)}"`,
             );
@@ -1587,9 +1588,7 @@ export class ShipLoadout {
     #layout(): readonly BuildSlot[] {
         const layout = this.#layoutOrNull();
         if (!layout) {
-            throw new TypeError(
-                `ShipLoadout: no slot layout for hull "${truncate(this.#shipSymbol)}"`,
-            );
+            throw new TypeError(`ShipLoadout: no slot layout for hull "${this.#shipSymbol}"`);
         }
         return layout;
     }
