@@ -84,3 +84,62 @@ test('boxel code <-> letters is a bijection', () => {
     assert.equal(lettersToBoxelCode(4, 13, 7, 11), 198_410);
     assert.deepEqual(boxelCodeToLetters(198_410), { l1: 4, l2: 13, l3: 7, n1: 11 });
 });
+
+test('rejects a letter that is not an index 0-25', () => {
+    // Each of these would carry into the next base-26 digit and pack as a different
+    // boxel, so the message names all three letters rather than just the class.
+    for (const [l1, l2, l3] of [
+        [-1, 0, 0],
+        [26, 0, 0],
+        [1.5, 0, 0],
+        [0, -1, 0],
+        [0, 26, 0],
+        [0, 0, -1],
+        [0, 0, 26],
+        [Number.NaN, 0, 0],
+    ]) {
+        assert.throws(() => lettersToBoxelCode(l1!, l2!, l3!, 0), {
+            name: 'RangeError',
+            message: /Boxel letters out of range/,
+        });
+    }
+});
+
+// The largest N1 that packs exactly whatever the letters are. Pinned as a literal
+// rather than recomputed: re-deriving it with the implementation's own formula would
+// let a wrong formula agree with itself and pass.
+const MAX_N1 = 512_471_509_713;
+
+test('rejects an N1 that is negative, fractional, or too large to pack exactly', () => {
+    // The bound is a floating-point limit, not an in-game one: a real N1 is ≤ ~119,
+    // so only a caller inventing values reaches it.
+    for (const n1 of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, MAX_N1 + 1, 2 ** 53]) {
+        assert.throws(() => lettersToBoxelCode(0, 0, 0, n1), {
+            name: 'RangeError',
+            message: /Boxel number N1 out of range/,
+        });
+    }
+});
+
+test('the largest accepted N1 packs exactly under the worst-case letters', () => {
+    // Letters carry up to 26³-1 on top of N1, so the bound has to hold at ZZ-Z, not
+    // just at AA-A where nothing is added.
+    const code = lettersToBoxelCode(25, 25, 25, MAX_N1);
+    assert.ok(Number.isSafeInteger(code));
+    assert.deepEqual(boxelCodeToLetters(code), { l1: 25, l2: 25, l3: 25, n1: MAX_N1 });
+
+    // And that code is the largest one unpacking accepts, so the two stay inverses.
+    assert.throws(() => boxelCodeToLetters(code + 1), {
+        name: 'RangeError',
+        message: /Boxel code out of range/,
+    });
+});
+
+test('rejects a boxel code no packing could produce', () => {
+    for (const code of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, 2 ** 53]) {
+        assert.throws(() => boxelCodeToLetters(code), {
+            name: 'RangeError',
+            message: /Boxel code out of range/,
+        });
+    }
+});
