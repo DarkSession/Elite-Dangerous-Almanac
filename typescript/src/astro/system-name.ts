@@ -57,9 +57,9 @@ const CODE_A_LOWER = 'a'.charCodeAt(0);
  * @param n1 - The boxel number that follows the letters (`d11-96` → `11`), a
  *   non-negative integer small enough that the packed code stays exact.
  * @returns The packed base-26 boxel code.
- * @throws {RangeError} If any letter is not an integer in 0–25, or `n1` is negative,
- * fractional, or large enough that the packed code would be rounded. Such a field
- * packs as a different boxel than the one asked for rather than failing.
+ * @throws {RangeError} If any letter is not an integer in 0–25, or `n1` is not an
+ * integer between 0 and the largest value that still packs exactly. Such a field packs
+ * as a different boxel than the one asked for rather than failing.
  * @example
  * ```ts
  * import { lettersToBoxelCode } from '@elite-dangerous-almanac/core/astro/system-name';
@@ -105,7 +105,7 @@ export interface BoxelLetters {
  * @param boxelCode - The packed base-26 boxel code, as `decodeSystemAddress` returns.
  *   Must be a non-negative integer {@link lettersToBoxelCode} could have packed.
  * @returns The three letter indices (`0`–`25` each) and the boxel number `n1`.
- * @throws {RangeError} If `boxelCode` is negative, fractional, or beyond the largest
+ * @throws {RangeError} If `boxelCode` is not an integer between 0 and the largest
  * exactly packable code — no such code can be packed, and a negative one would yield
  * letters outside `0`–`25`.
  * @example
