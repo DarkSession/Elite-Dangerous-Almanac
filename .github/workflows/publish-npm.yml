@@ -279,14 +279,14 @@ jobs:
           node-version: 24.19.0
           registry-url: https://registry.npmjs.org
 
-      - name: Verify the Trusted Publishing client
-        run: test "$(npm --version)" = 11.17.0
-
       - name: Download verified package
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: npm-package
           path: typescript
+
+      - name: Verify the Trusted Publishing client
+        run: test "$(npm --version)" = 11.17.0
 
       - name: Verify package digest
         env:
