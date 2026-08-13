@@ -119,6 +119,36 @@ test('loadout validation makes empty and unknown builds explicit', () => {
     assert.ok(disguised.validation.issues.some((issue) => issue.code === 'unknownSlot'));
 });
 
+test('default builds fit every stock module and remain independently editable', () => {
+    for (const ship of SHIPS) {
+        const build = ShipLoadout.default(ship.symbol);
+        assert.equal(build.shipSymbol, ship.symbol);
+        assert.deepEqual(build.validation, { valid: true, complete: true, issues: [] });
+        assert.ok(build.unladenMass !== null, `${ship.symbol}: mass`);
+        assert.ok(build.fuelCapacity !== null, `${ship.symbol}: fuel`);
+        assert.ok(build.maxJumpRange() !== null, `${ship.symbol}: jump range`);
+        assert.equal(build.powerBudget().withinBudget, true, `${ship.symbol}: power`);
+    }
+
+    const first = ShipLoadout.default(' sidewinder ');
+    const second = ShipLoadout.default('SideWinder');
+    assert.equal(first.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size2_Class1');
+    first.removeModule('FrameShiftDrive');
+    assert.equal(first.fittedModuleAt('FrameShiftDrive'), null);
+    assert.equal(second.fittedModuleAt('FrameShiftDrive')?.symbol, 'Int_Hyperdrive_Size2_Class1');
+});
+
+test('default build factory names invalid arguments and unknown hulls', () => {
+    assert.throws(() => ShipLoadout.default(42 as unknown as string), {
+        name: 'TypeError',
+        message: 'ShipLoadout.default: shipSymbol must be a string, received number 42',
+    });
+    assert.throws(() => ShipLoadout.default('NotAShip'), {
+        name: 'TypeError',
+        message: 'ShipLoadout.default: no default loadout for hull "NotAShip"',
+    });
+});
+
 test('caller-supplied capacity fields classify custom modules', () => {
     const rack = getModuleBySymbol('Int_CargoRack_Size2_Class1', INTERNAL_MODULES)!;
     const build = ShipLoadout.empty('SideWinder').setModule('Slot01_Size2', {

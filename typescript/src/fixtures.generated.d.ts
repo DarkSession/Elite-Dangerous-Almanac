@@ -1120,6 +1120,24 @@ declare module '*/fixtures/ships/builds/index.jsonc' {
     export default value;
 }
 
+type FixtureShipsDefaultLoadouts = {
+    moduleCount: number;
+    shipCount: number;
+    spot: {
+        empty: string[];
+        modules: {
+            slot: string;
+            symbol: string;
+        }[];
+        ship: string;
+    }[];
+};
+
+declare module '*/fixtures/ships/default-loadouts.jsonc' {
+    const value: FixtureShipsDefaultLoadouts;
+    export default value;
+}
+
 type FixtureShipsEngineering = {
     anchor: {
         base: {

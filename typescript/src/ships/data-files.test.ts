@@ -36,6 +36,7 @@ const DEFINITION_BY_FILE: Readonly<Record<string, string>> = {
     'modules-hardpoint.jsonc': 'hardpointModuleCatalogue',
     'modules-utility.jsonc': 'utilityModuleCatalogue',
     'ships.jsonc': 'shipCatalogue',
+    'default-loadouts.jsonc': 'defaultLoadoutCatalogue',
     'blueprints.jsonc': 'blueprintCatalogue',
     'blueprint-costs.jsonc': 'blueprintCostCatalogue',
     'blueprint-journal-names.jsonc': 'blueprintJournalNameCatalogue',

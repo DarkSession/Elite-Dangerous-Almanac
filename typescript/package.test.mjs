@@ -21,6 +21,7 @@ import { RAW_MATERIALS } from '@elite-dangerous-almanac/core/materials/materials
 import { getMicroResourceBySymbol } from '@elite-dangerous-almanac/core/materials';
 import { COMPONENT_MICRO_RESOURCES } from '@elite-dangerous-almanac/core/materials/micro-resources-component';
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
+import { getDefaultLoadout } from '@elite-dangerous-almanac/core/ships/default-loadouts';
 import { getModuleBySymbol } from '@elite-dangerous-almanac/core/ships/modules';
 import { hasWeaponDamageStats } from '@elite-dangerous-almanac/core/ships/module-capabilities';
 import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -185,6 +186,11 @@ test('fine-grained package subpaths resolve', () => {
     assert.equal(getMaterialByName('iron', RAW_MATERIALS)?.name, 'Iron');
     assert.equal(getMicroResourceBySymbol('graphene', COMPONENT_MICRO_RESOURCES)?.name, 'Graphene');
     assert.equal(getShipBySymbol('empire_trader')?.name, 'Imperial Clipper');
+    assert.equal(
+        getDefaultLoadout('sidewinder')?.modules.find((module) => module.slot === 'FrameShiftDrive')
+            ?.symbol,
+        'Int_Hyperdrive_Size2_Class1',
+    );
     const loadout = ShipLoadout.empty('Sidewinder').setModule(
         'FrameShiftDrive',
         getModuleBySymbol('Int_Hyperdrive_Size2_Class5'),
@@ -549,6 +555,15 @@ test('a single module catalogue does not bundle the others', async () => {
     // The utility catalogue must not drag in the standard-category armour data.
     assert.doesNotMatch(graph, /Anaconda_Armour/);
     assert.match(graph, /Chaff Launcher/);
+});
+
+test('default-loadout identities do not bundle outfitting stats', async () => {
+    const graph = await readReachableJs(
+        new URL('./dist/ships/default-loadouts.js', import.meta.url),
+    );
+    assert.ok(graph.length < 64 * 1024, `default loadouts graph is ${graph.length} bytes`);
+    assert.match(graph, /Int_Hyperdrive_Size2_Class1/);
+    assert.doesNotMatch(graph, /FSD_LongRange/);
 });
 
 test('every internal source module is outside the package export map', async () => {

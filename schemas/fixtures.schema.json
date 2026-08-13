@@ -225,6 +225,10 @@
       "files": ["ships/build-metrics.jsonc"]
     },
     { "definition": "shipsBuildsIndex", "files": ["ships/builds/index.jsonc"] },
+    {
+      "definition": "shipsDefaultLoadouts",
+      "files": ["ships/default-loadouts.jsonc"]
+    },
     { "definition": "shipsEngineering", "files": ["ships/engineering.jsonc"] },
     {
       "definition": "shipsEngineeringOptions",
@@ -1988,6 +1992,31 @@
         "declaredEngineering": { "type": "integer" }
       },
       "required": ["builds", "count", "declaredEngineering"]
+    },
+    "shipsDefaultLoadouts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "moduleCount": { "type": "integer" },
+        "shipCount": { "type": "integer" },
+        "spot": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "empty": { "type": "array", "items": { "type": "string" } },
+              "modules": {
+                "type": "array",
+                "items": { "$ref": "#/definitions/sharedf570f3651544" }
+              },
+              "ship": { "type": "string" }
+            },
+            "required": ["empty", "modules", "ship"]
+          }
+        }
+      },
+      "required": ["moduleCount", "shipCount", "spot"]
     },
     "shipsEngineering": {
       "type": "object",

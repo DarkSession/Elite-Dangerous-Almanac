@@ -27,6 +27,9 @@ stat record whose symbol no identity carries, is an error rather than a silent d
 - ship stats (`--ship-stats`): `{ symbol, hullMass, speed, baseArmour, … }`, the
   whitelisted coriolis-data `properties`;
 - ship slots (`--ship-slots`): `{ symbol, core, hardpoints, utility, optional }`;
+- default loadouts are maintained separately in `data/ships/default-loadouts.jsonc`.
+  They are keyed by hull `symbol` and journal slot key and are not an input to this
+  identity/stat/slot join;
 - module identities (`--<category>-identities`):
   `{ symbol, slot?, name, class, rating, mount?, guidance?, ship?, entitlement? }`,
   the FDevIDs `outfitting.csv` fields. **No `category`** — the CSV column of that name

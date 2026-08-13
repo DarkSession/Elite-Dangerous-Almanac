@@ -1,0 +1,69 @@
+/*
+ * Shared parity fixture for the stock ship-loadout catalogue.
+ *
+ * Pins complete coverage of the 48 hulls, the total number of fitted stock modules,
+ * representative classic and current ship fits, omission of empty mounts, and the
+ * Lynx Highliner's captured hull-specific cargo-hatch symbol. Source values are the
+ * checked-in data/ships/default-loadouts.jsonc catalogue; its upstream provenance is
+ * recorded in that catalogue's header and data/ships/SOURCES.md.
+ */
+{
+  "shipCount": 48,
+  "moduleCount": 831,
+  "spot": [
+    {
+      "ship": "SideWinder",
+      "modules": [
+        {
+          "slot": "SmallHardpoint1",
+          "symbol": "Hpt_PulseLaser_Gimbal_Small"
+        },
+        {
+          "slot": "FrameShiftDrive",
+          "symbol": "Int_Hyperdrive_Size2_Class1"
+        },
+        {
+          "slot": "Slot01_Size2",
+          "symbol": "Int_ShieldGenerator_Size2_Class1"
+        },
+        {
+          "slot": "PlanetaryApproachSuite",
+          "symbol": "int_planetapproachsuite_advanced"
+        }
+      ],
+      "empty": ["TinyHardpoint1", "Slot03_Size1"]
+    },
+    {
+      "ship": "Python_NX",
+      "modules": [
+        {
+          "slot": "FrameShiftDrive",
+          "symbol": "Int_Hyperdrive_Overcharge_Size5_Class3"
+        },
+        {
+          "slot": "CargoHatch",
+          "symbol": "ModularCargoBayDoor"
+        }
+      ],
+      "empty": ["TinyHardpoint1"]
+    },
+    {
+      "ship": "MediumTransport01",
+      "modules": [
+        {
+          "slot": "Passenger01",
+          "symbol": "Int_PassengerCabin_Size5_Class1"
+        },
+        {
+          "slot": "Passenger03",
+          "symbol": "Int_PassengerCabin_Size4_Class1"
+        },
+        {
+          "slot": "CargoHatch",
+          "symbol": "ModularCargoBayDoorFDL"
+        }
+      ],
+      "empty": ["LargeHardpoint1", "TinyHardpoint1"]
+    }
+  ]
+}
