@@ -24,7 +24,7 @@ Use a feature barrel when a bundler will tree-shake it:
 import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro';
 ```
 
-There is no package-wide root entry; choose one of the four feature areas or a leaf.
+There is no package-wide root entry; choose one of the five feature areas or a leaf.
 
 Use leaf subpaths to avoid evaluating unrelated data modules in native ESM:
 
@@ -36,10 +36,11 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 The heavyweight module registries, planetary/combined nebula catalogues and codex-region
 coordinate lookup are only exported from their leaf subpaths, not the feature barrels.
 
-The package has four feature areas:
+The package has five feature areas:
 
 - `astro`: procedural names, id64 addresses, regions, nebulae and permit locks;
 - `ships`: ships, modules, SLEF loadouts, engineering and build metrics;
+- `equipment`: Odyssey suits, handheld weapons, grade upgrades and modifications;
 - `materials`: ship engineering materials and Odyssey micro resources;
 - `commodities`: standard and rare market goods.
 
@@ -89,10 +90,12 @@ dropping entries.
 import { getShipBySymbol } from '@elite-dangerous-almanac/core/ships/ships';
 import { getMaterialByName } from '@elite-dangerous-almanac/core/materials/materials';
 import { getCommodityByName } from '@elite-dangerous-almanac/core/commodities/commodities';
+import { getPersonalWeaponByName } from '@elite-dangerous-almanac/core/equipment/weapons';
 
 getShipBySymbol('empire_trader')?.name; // -> "Imperial Clipper"
 getMaterialByName('iron')?.grade;
 getCommodityByName('lavian brandy')?.rare; // -> true
+getPersonalWeaponByName('Karma AR-50')?.grades['5'].damage; // -> 2.8
 ```
 
 Registry lookups ignore case and surrounding whitespace. Material, commodity and
@@ -100,14 +103,22 @@ module lookups search their complete registry by default and accept an optional
 catalogue to narrow the results. Nebula queries require an explicit catalogue so the
 large combined dataset is never an implicit dependency.
 
-`symbol` is Frontier's item id for a hull, module, material, micro-resource or
-commodity. Engineering uses a separate identity space: `fdname` identifies a
+`symbol` is Frontier's item id for a hull, module, suit, handheld weapon, material,
+micro-resource or commodity. Ship engineering uses a separate identity space: `fdname` identifies a
 blueprint recipe, experimental effect or decorative modification. The journal
 normally writes that id in its `Engineering` block, but a few blueprint aliases
 collide across module families; `resolveBlueprintForModule` resolves those journal
 spellings. Functions that ask what engineering a module accepts therefore take the
 module's `symbol`; functions that look up a recipe, effect or modification take its
 `fdname`.
+
+Personal-equipment modifications are keyed by their recipe symbol, just as ship
+blueprints and experimental effects are keyed by `fdname`; there is no second synthetic
+id. The journal omits the technology suffix from three weapon modification families, so
+`resolvePersonalModificationForWeapon` resolves those spellings against the weapon before
+joining to `PERSONAL_MODIFICATIONS` or `PERSONAL_MODIFICATION_COSTS`. Material shopping
+lists live on the separate `equipment/modification-costs` subpath and consume the
+micro-resource symbols from the `materials` feature area.
 
 ## Important behavior
 

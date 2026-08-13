@@ -185,6 +185,62 @@ declare module '*/fixtures/commodities/commodities.jsonc' {
     export default value;
 }
 
+type FixtureEquipmentEquipment = {
+    counts: {
+        modificationNames: number;
+        modificationRecipes: number;
+        suits: number;
+        weapons: number;
+    };
+    modification: {
+        journalSymbol: string;
+        kineticFirstIngredient: {
+            count: number;
+            symbol: string;
+        };
+        kineticRecipeSymbol: string;
+        laserFirstIngredient: {
+            count: number;
+            symbol: string;
+        };
+        laserRecipeSymbol: string;
+    };
+    suits: {
+        family: string;
+        grade: number;
+        kineticResistance?: number;
+        modificationSlots: number;
+        name: string;
+        primarySlots: number;
+        secondarySlots: number;
+        shieldStrength: number;
+        symbol: string;
+    }[];
+    upgradeCosts: {
+        ar50Grade5WeaponComponents: number;
+        maverickGrade1To3Graphene: number;
+        maverickGrade2: {
+            count: number;
+            symbol: string;
+        }[];
+    };
+    weapons: {
+        damage: number;
+        effectiveRange: number;
+        grade: number;
+        magazineSize: number;
+        modificationSlots: number;
+        name: string;
+        rateOfFire: number;
+        symbol: string;
+    }[];
+};
+
+declare module '*/fixtures/equipment/equipment.jsonc' {
+    const value: FixtureEquipmentEquipment;
+    export default value;
+}
+
 type FixtureMaterialsMaterials = {
     counts: {
         all: number;

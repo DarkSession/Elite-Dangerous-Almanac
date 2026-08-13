@@ -1,0 +1,646 @@
+/*
+ * One-application material costs for personal-equipment modifications, keyed by recipe symbol.
+ *
+ * Source: Odyssey Materials Helper. See ../../ATTRIBUTIONS.md for credit and SOURCES.md
+ * for the pinned revision and derivation. Keys exactly match modifications.jsonc.
+ */
+{
+  "suit_increasedmeleedamage": [
+    {
+      "symbol": "combattrainingmaterial",
+      "count": 5
+    },
+    {
+      "symbol": "combatantperformance",
+      "count": 5
+    },
+    {
+      "symbol": "epinephrine",
+      "count": 5
+    },
+    {
+      "symbol": "microthrusters",
+      "count": 8
+    }
+  ],
+  "suit_adsmovementspeed": [
+    {
+      "symbol": "evacuationprotocols",
+      "count": 5
+    },
+    {
+      "symbol": "geneticresearch",
+      "count": 3
+    },
+    {
+      "symbol": "epinephrine",
+      "count": 5
+    },
+    {
+      "symbol": "phneutraliser",
+      "count": 8
+    }
+  ],
+  "suit_improvedarmourrating": [
+    {
+      "symbol": "weaponinventory",
+      "count": 5
+    },
+    {
+      "symbol": "ballisticsdata",
+      "count": 5
+    },
+    {
+      "symbol": "titaniumplating",
+      "count": 3
+    },
+    {
+      "symbol": "epoxyadhesive",
+      "count": 8
+    },
+    {
+      "symbol": "carbonfibreplating",
+      "count": 3
+    }
+  ],
+  "suit_improvedradar": [
+    {
+      "symbol": "topographicalsurveys",
+      "count": 5
+    },
+    {
+      "symbol": "stellaractivitylogs",
+      "count": 5
+    },
+    {
+      "symbol": "spectralanalysisdata",
+      "count": 5
+    },
+    {
+      "symbol": "transmitter",
+      "count": 3
+    },
+    {
+      "symbol": "circuitboard",
+      "count": 3
+    }
+  ],
+  "suit_increasedammoreserves": [
+    {
+      "symbol": "recyclinglogs",
+      "count": 8
+    },
+    {
+      "symbol": "weapontestdata",
+      "count": 5
+    },
+    {
+      "symbol": "productionreports",
+      "count": 5
+    },
+    {
+      "symbol": "weaponcomponent",
+      "count": 3
+    }
+  ],
+  "suit_backpackcapacity": [
+    {
+      "symbol": "weaponinventory",
+      "count": 5
+    },
+    {
+      "symbol": "chemicalinventory",
+      "count": 5
+    },
+    {
+      "symbol": "digitaldesigns",
+      "count": 5
+    },
+    {
+      "symbol": "epoxyadhesive",
+      "count": 5
+    },
+    {
+      "symbol": "memorychip",
+      "count": 3
+    }
+  ],
+  "suit_increasedshieldregen": [
+    {
+      "symbol": "reactoroutputreview",
+      "count": 5
+    },
+    {
+      "symbol": "ionbattery",
+      "count": 3
+    },
+    {
+      "symbol": "microtransformer",
+      "count": 8
+    },
+    {
+      "symbol": "electricalwiring",
+      "count": 8
+    }
+  ],
+  "suit_increasedbatterycapacity": [
+    {
+      "symbol": "reactoroutputreview",
+      "count": 5
+    },
+    {
+      "symbol": "maintenancelogs",
+      "count": 8
+    },
+    {
+      "symbol": "ionbattery",
+      "count": 3
+    },
+    {
+      "symbol": "microsupercapacitor",
+      "count": 5
+    },
+    {
+      "symbol": "electricalwiring",
+      "count": 5
+    }
+  ],
+  "suit_improvedjumpassist": [
+    {
+      "symbol": "gmeds",
+      "count": 5
+    },
+    {
+      "symbol": "topographicalsurveys",
+      "count": 5
+    },
+    {
+      "symbol": "microthrusters",
+      "count": 3
+    },
+    {
+      "symbol": "motor",
+      "count": 5
+    }
+  ],
+  "suit_increasedo2capacity": [
+    {
+      "symbol": "pharmaceuticalpatents",
+      "count": 3
+    },
+    {
+      "symbol": "airqualityreports",
+      "count": 8
+    },
+    {
+      "symbol": "oxygenicbacteria",
+      "count": 5
+    },
+    {
+      "symbol": "phneutraliser",
+      "count": 8
+    }
+  ],
+  "suit_increasedsprintduration": [
+    {
+      "symbol": "troopdeploymentrecords",
+      "count": 3
+    },
+    {
+      "symbol": "genesequencingdata",
+      "count": 3
+    },
+    {
+      "symbol": "medicaltrialrecords",
+      "count": 3
+    },
+    {
+      "symbol": "oxygenicbacteria",
+      "count": 5
+    },
+    {
+      "symbol": "chemicalcatalyst",
+      "count": 8
+    }
+  ],
+  "suit_nightvision": [
+    {
+      "symbol": "surveillanceequipment",
+      "count": 5
+    },
+    {
+      "symbol": "surveilleancelogs",
+      "count": 3
+    },
+    {
+      "symbol": "nocdata",
+      "count": 3
+    },
+    {
+      "symbol": "radioactivitydata",
+      "count": 3
+    },
+    {
+      "symbol": "circuitswitch",
+      "count": 5
+    }
+  ],
+  "suit_quieterfootsteps": [
+    {
+      "symbol": "settlementassaultplans",
+      "count": 3
+    },
+    {
+      "symbol": "tacticalplans",
+      "count": 5
+    },
+    {
+      "symbol": "patrolroutes",
+      "count": 5
+    },
+    {
+      "symbol": "microhydraulics",
+      "count": 3
+    },
+    {
+      "symbol": "viscoelasticpolymer",
+      "count": 8
+    }
+  ],
+  "suit_reducedtoolbatteryconsumption": [
+    {
+      "symbol": "reactoroutputreview",
+      "count": 5
+    },
+    {
+      "symbol": "electricalwiring",
+      "count": 8
+    },
+    {
+      "symbol": "electricalfuse",
+      "count": 3
+    },
+    {
+      "symbol": "microtransformer",
+      "count": 5
+    }
+  ],
+  "weapon_suppression_unpressurised": [
+    {
+      "symbol": "audiologs",
+      "count": 3
+    },
+    {
+      "symbol": "patrolroutes",
+      "count": 5
+    },
+    {
+      "symbol": "scrambler",
+      "count": 5
+    },
+    {
+      "symbol": "transmitter",
+      "count": 8
+    },
+    {
+      "symbol": "circuitboard",
+      "count": 3
+    }
+  ],
+  "weapon_handling": [
+    {
+      "symbol": "operationalmanual",
+      "count": 5
+    },
+    {
+      "symbol": "combatantperformance",
+      "count": 5
+    },
+    {
+      "symbol": "combattrainingmaterial",
+      "count": 5
+    },
+    {
+      "symbol": "viscoelasticpolymer",
+      "count": 3
+    }
+  ],
+  "weapon_range_kinetic": [
+    {
+      "symbol": "ballisticsdata",
+      "count": 10
+    },
+    {
+      "symbol": "topographicalsurveys",
+      "count": 10
+    },
+    {
+      "symbol": "metalcoil",
+      "count": 10
+    },
+    {
+      "symbol": "rdx",
+      "count": 10
+    },
+    {
+      "symbol": "weaponcomponent",
+      "count": 5
+    }
+  ],
+  "weapon_range_laser": [
+    {
+      "symbol": "stellaractivitylogs",
+      "count": 5
+    },
+    {
+      "symbol": "riskassessments",
+      "count": 8
+    },
+    {
+      "symbol": "opticallens",
+      "count": 3
+    },
+    {
+      "symbol": "microtransformer",
+      "count": 8
+    },
+    {
+      "symbol": "circuitboard",
+      "count": 3
+    }
+  ],
+  "weapon_range_plasma": [
+    {
+      "symbol": "chemicalformulae",
+      "count": 10
+    },
+    {
+      "symbol": "mineralsurvey",
+      "count": 15
+    },
+    {
+      "symbol": "electromagnet",
+      "count": 10
+    },
+    {
+      "symbol": "motor",
+      "count": 5
+    },
+    {
+      "symbol": "electricalfuse",
+      "count": 5
+    }
+  ],
+  "weapon_headshotdamage_kinetic": [
+    {
+      "symbol": "weapontestdata",
+      "count": 10
+    },
+    {
+      "symbol": "medicalrecords",
+      "count": 5
+    },
+    {
+      "symbol": "chemicalcatalyst",
+      "count": 10
+    },
+    {
+      "symbol": "rdx",
+      "count": 15
+    },
+    {
+      "symbol": "weaponcomponent",
+      "count": 5
+    }
+  ],
+  "weapon_headshotdamage_laser": [
+    {
+      "symbol": "spectralanalysisdata",
+      "count": 5
+    },
+    {
+      "symbol": "biometricdata",
+      "count": 3
+    },
+    {
+      "symbol": "ionbattery",
+      "count": 5
+    },
+    {
+      "symbol": "opticallens",
+      "count": 3
+    },
+    {
+      "symbol": "scrambler",
+      "count": 5
+    }
+  ],
+  "weapon_headshotdamage_plasma": [
+    {
+      "symbol": "chemicalexperimentdata",
+      "count": 10
+    },
+    {
+      "symbol": "bloodtestresults",
+      "count": 5
+    },
+    {
+      "symbol": "ionbattery",
+      "count": 10
+    },
+    {
+      "symbol": "electromagnet",
+      "count": 10
+    },
+    {
+      "symbol": "microsupercapacitor",
+      "count": 15
+    }
+  ],
+  "weapon_accuracy_kinetic": [
+    {
+      "symbol": "extractionyielddata",
+      "count": 10
+    },
+    {
+      "symbol": "biometricdata",
+      "count": 5
+    },
+    {
+      "symbol": "combatantperformance",
+      "count": 10
+    },
+    {
+      "symbol": "rdx",
+      "count": 10
+    },
+    {
+      "symbol": "viscoelasticpolymer",
+      "count": 10
+    }
+  ],
+  "weapon_accuracy_laser": [
+    {
+      "symbol": "radioactivitydata",
+      "count": 3
+    },
+    {
+      "symbol": "combatantperformance",
+      "count": 5
+    },
+    {
+      "symbol": "opticallens",
+      "count": 3
+    },
+    {
+      "symbol": "electricalwiring",
+      "count": 8
+    },
+    {
+      "symbol": "metalcoil",
+      "count": 5
+    }
+  ],
+  "weapon_accuracy_plasma": [
+    {
+      "symbol": "chemicalpatents",
+      "count": 5
+    },
+    {
+      "symbol": "combatantperformance",
+      "count": 10
+    },
+    {
+      "symbol": "chemicalcatalyst",
+      "count": 10
+    },
+    {
+      "symbol": "electromagnet",
+      "count": 10
+    },
+    {
+      "symbol": "metalcoil",
+      "count": 10
+    }
+  ],
+  "weapon_clipsize": [
+    {
+      "symbol": "weapontestdata",
+      "count": 5
+    },
+    {
+      "symbol": "securityexpenses",
+      "count": 3
+    },
+    {
+      "symbol": "weaponcomponent",
+      "count": 3
+    },
+    {
+      "symbol": "tungstencarbide",
+      "count": 3
+    },
+    {
+      "symbol": "metalcoil",
+      "count": 5
+    }
+  ],
+  "weapon_suppression_pressurised": [
+    {
+      "symbol": "atmosphericdata",
+      "count": 5
+    },
+    {
+      "symbol": "mininganalytics",
+      "count": 5
+    },
+    {
+      "symbol": "viscoelasticpolymer",
+      "count": 8
+    },
+    {
+      "symbol": "weaponcomponent",
+      "count": 3
+    }
+  ],
+  "weapon_reloadspeed": [
+    {
+      "symbol": "operationalmanual",
+      "count": 5
+    },
+    {
+      "symbol": "productionreports",
+      "count": 5
+    },
+    {
+      "symbol": "combattrainingmaterial",
+      "count": 5
+    },
+    {
+      "symbol": "microhydraulics",
+      "count": 5
+    },
+    {
+      "symbol": "electromagnet",
+      "count": 5
+    }
+  ],
+  "weapon_scope": [
+    {
+      "symbol": "spectralanalysisdata",
+      "count": 5
+    },
+    {
+      "symbol": "biometricdata",
+      "count": 3
+    },
+    {
+      "symbol": "opticallens",
+      "count": 5
+    },
+    {
+      "symbol": "opticalfibre",
+      "count": 3
+    }
+  ],
+  "weapon_stability": [
+    {
+      "symbol": "mininganalytics",
+      "count": 5
+    },
+    {
+      "symbol": "riskassessments",
+      "count": 8
+    },
+    {
+      "symbol": "viscoelasticpolymer",
+      "count": 5
+    },
+    {
+      "symbol": "microhydraulics",
+      "count": 5
+    }
+  ],
+  "weapon_backpackreloading": [
+    {
+      "symbol": "digitaldesigns",
+      "count": 5
+    },
+    {
+      "symbol": "operationalmanual",
+      "count": 5
+    },
+    {
+      "symbol": "productionschedule",
+      "count": 5
+    },
+    {
+      "symbol": "circuitboard",
+      "count": 3
+    },
+    {
+      "symbol": "encryptedmemorychip",
+      "count": 8
+    }
+  ]
+}

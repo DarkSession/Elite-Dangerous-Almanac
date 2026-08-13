@@ -1,0 +1,416 @@
+/*
+ * Personal weapon catalogue: journal symbols, weapon families and grade-dependent damage.
+ *
+ * Sources: Odyssey Materials Helper and Frontier Elite Dangerous Gamestore. See
+ * ../../ATTRIBUTIONS.md for credit and SOURCES.md
+ * for the pinned revision, derivation and units.
+ */
+[
+  {
+    "symbol": "wpn_s_pistol_kinetic_sauto",
+    "name": "Karma P-15",
+    "upgradeGroup": "karma",
+    "class": "pistol",
+    "slot": "secondary",
+    "damageType": "kinetic",
+    "fireMode": "semi-automatic",
+    "rateOfFire": 10,
+    "magazineSize": 24,
+    "reserveAmmo": 120,
+    "headshotMultiplier": 2,
+    "effectiveRange": 25,
+    "grades": {
+      "1": {
+        "damage": 1.4,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 1.8,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 2.4,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 3.8,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 4.1,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "kinetic"
+  },
+  {
+    "symbol": "wpn_m_assaultrifle_kinetic_fauto",
+    "name": "Karma AR-50",
+    "upgradeGroup": "karma",
+    "class": "rifle",
+    "slot": "primary",
+    "damageType": "kinetic",
+    "fireMode": "automatic",
+    "rateOfFire": 9.5,
+    "magazineSize": 50,
+    "reserveAmmo": 200,
+    "headshotMultiplier": 2,
+    "effectiveRange": 50,
+    "grades": {
+      "1": {
+        "damage": 1,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 1.2,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 1.6,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 2.2,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 2.8,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "kinetic"
+  },
+  {
+    "symbol": "wpn_m_submachinegun_kinetic_fauto",
+    "name": "Karma C-44",
+    "upgradeGroup": "karma",
+    "class": "carbine",
+    "slot": "primary",
+    "damageType": "kinetic",
+    "fireMode": "automatic",
+    "rateOfFire": 13.3,
+    "magazineSize": 45,
+    "reserveAmmo": 360,
+    "headshotMultiplier": 2,
+    "effectiveRange": 25,
+    "grades": {
+      "1": {
+        "damage": 0.6,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 0.9,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 1.1,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 1.5,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 1.9,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "kinetic"
+  },
+  {
+    "symbol": "wpn_m_launcher_rocket_sauto",
+    "name": "Karma L-6",
+    "upgradeGroup": "karma",
+    "class": "launcher",
+    "slot": "primary",
+    "damageType": "explosive",
+    "fireMode": "automatic",
+    "rateOfFire": 1,
+    "magazineSize": 2,
+    "reserveAmmo": 8,
+    "headshotMultiplier": 1,
+    "effectiveRange": 300,
+    "grades": {
+      "1": {
+        "damage": 40,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 52.4,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 69.2,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 90,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 119.2,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "kinetic"
+  },
+  {
+    "symbol": "wpn_m_assaultrifle_laser_fauto",
+    "name": "TK Aphelion",
+    "upgradeGroup": "takada",
+    "class": "rifle",
+    "slot": "primary",
+    "damageType": "thermal",
+    "fireMode": "automatic",
+    "rateOfFire": 5.7,
+    "magazineSize": 25,
+    "reserveAmmo": 150,
+    "headshotMultiplier": 1,
+    "effectiveRange": 70,
+    "grades": {
+      "1": {
+        "damage": 1.6,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 2.1,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 2.7,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 3.6,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 4.7,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "laser"
+  },
+  {
+    "symbol": "wpn_m_submachinegun_laser_fauto",
+    "name": "TK Eclipse",
+    "upgradeGroup": "takada",
+    "class": "carbine",
+    "slot": "primary",
+    "damageType": "thermal",
+    "fireMode": "automatic",
+    "rateOfFire": 10,
+    "magazineSize": 45,
+    "reserveAmmo": 280,
+    "headshotMultiplier": 1,
+    "effectiveRange": 25,
+    "grades": {
+      "1": {
+        "damage": 0.9,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 1.1,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 1.5,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 1.9,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 2.5,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "laser"
+  },
+  {
+    "symbol": "wpn_s_pistol_laser_sauto",
+    "name": "TK Zenith",
+    "upgradeGroup": "takada",
+    "class": "pistol",
+    "slot": "secondary",
+    "damageType": "thermal",
+    "fireMode": "burst",
+    "rateOfFire": 5.7,
+    "magazineSize": 18,
+    "reserveAmmo": 90,
+    "headshotMultiplier": 1,
+    "effectiveRange": 35,
+    "grades": {
+      "1": {
+        "damage": 1.7,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 2.2,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 2.9,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 3.8,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 5,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "laser"
+  },
+  {
+    "symbol": "wpn_m_sniper_plasma_charged",
+    "name": "Manticore Executioner",
+    "upgradeGroup": "manticore",
+    "class": "sniper",
+    "slot": "primary",
+    "damageType": "plasma",
+    "fireMode": "semi-automatic",
+    "rateOfFire": 0.8,
+    "magazineSize": 3,
+    "reserveAmmo": 30,
+    "headshotMultiplier": 3,
+    "effectiveRange": 100,
+    "grades": {
+      "1": {
+        "damage": 15,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 19.6,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 26,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 34,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 44.7,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "plasma"
+  },
+  {
+    "symbol": "wpn_s_pistol_plasma_charged",
+    "name": "Manticore Tormentor",
+    "upgradeGroup": "manticore",
+    "class": "pistol",
+    "slot": "secondary",
+    "damageType": "plasma",
+    "fireMode": "semi-automatic",
+    "rateOfFire": 1.7,
+    "magazineSize": 6,
+    "reserveAmmo": 72,
+    "headshotMultiplier": 2,
+    "effectiveRange": 15,
+    "grades": {
+      "1": {
+        "damage": 7.5,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 9.8,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 13,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 17,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 22.4,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "plasma"
+  },
+  {
+    "symbol": "wpn_m_shotgun_plasma_doublebarrel",
+    "name": "Manticore Intimidator",
+    "upgradeGroup": "manticore",
+    "class": "shotgun",
+    "slot": "primary",
+    "damageType": "plasma",
+    "fireMode": "semi-automatic",
+    "rateOfFire": 1.3,
+    "magazineSize": 2,
+    "reserveAmmo": 24,
+    "headshotMultiplier": 1.5,
+    "effectiveRange": 7,
+    "grades": {
+      "1": {
+        "damage": 1.8,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 2.3,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 3,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 4,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 5.2,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "plasma"
+  },
+  {
+    "symbol": "wpn_m_assaultrifle_plasma_fauto",
+    "name": "Manticore Oppressor",
+    "upgradeGroup": "manticore",
+    "class": "rifle",
+    "slot": "primary",
+    "damageType": "plasma",
+    "fireMode": "automatic",
+    "rateOfFire": 6.7,
+    "magazineSize": 50,
+    "reserveAmmo": 300,
+    "headshotMultiplier": 1.5,
+    "effectiveRange": 35,
+    "grades": {
+      "1": {
+        "damage": 1.1,
+        "modificationSlots": 0
+      },
+      "2": {
+        "damage": 1.4,
+        "modificationSlots": 1
+      },
+      "3": {
+        "damage": 1.9,
+        "modificationSlots": 2
+      },
+      "4": {
+        "damage": 2.5,
+        "modificationSlots": 3
+      },
+      "5": {
+        "damage": 3.275,
+        "modificationSlots": 4
+      }
+    },
+    "engineeringType": "plasma"
+  }
+]

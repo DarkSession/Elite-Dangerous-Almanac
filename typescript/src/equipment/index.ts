@@ -1,0 +1,51 @@
+/**
+ * Elite Dangerous personal equipment: Odyssey suits, handheld weapons, Pioneer Supplies
+ * grade progression and engineer-applied modifications.
+ *
+ * Material shopping lists are deliberately leaf-only: import grade-upgrade costs from
+ * `equipment/upgrade-costs` and modification costs from
+ * `equipment/modification-costs`. Keeping them off this barrel lets identity and stat
+ * lookups avoid bundling recipe ingredients.
+ *
+ * @packageDocumentation
+ */
+
+export {
+    SUITS,
+    getSuitByFamily,
+    getSuitByName,
+    getSuitBySymbol,
+    getSuitGrade,
+    type EquipmentGrade,
+    type Suit,
+    type SuitGrade,
+} from './suits.js';
+
+export {
+    PERSONAL_WEAPONS,
+    getPersonalWeaponByName,
+    getPersonalWeaponBySymbol,
+    getPersonalWeaponGrade,
+    type PersonalDamageType,
+    type PersonalFireMode,
+    type PersonalWeapon,
+    type PersonalWeaponClass,
+    type PersonalWeaponEngineeringType,
+    type PersonalWeaponGrade,
+    type PersonalWeaponSlot,
+    type WeaponUpgradeGroup,
+} from './weapons.js';
+
+export {
+    sumPersonalEngineeringIngredients,
+    type PersonalEngineeringIngredient,
+} from './engineering.js';
+
+export {
+    PERSONAL_MODIFICATIONS,
+    getPersonalModification,
+    type PersonalModification,
+    type PersonalModificationTarget,
+} from './modifications.js';
+
+export { resolvePersonalModificationForWeapon } from './modification-journal.js';

@@ -1,0 +1,200 @@
+/*
+ * Personal suit catalogue: journal symbols, slot counts and grade-dependent defensive stats.
+ *
+ * Source: Odyssey Materials Helper. See ../../ATTRIBUTIONS.md for credit and SOURCES.md
+ * for the pinned revision, derivation and units.
+ */
+[
+  {
+    "family": "utilitysuit",
+    "name": "Maverick Suit",
+    "primarySlots": 1,
+    "secondarySlots": 1,
+    "grades": {
+      "1": {
+        "symbol": "utilitysuit_class1",
+        "modificationSlots": 0,
+        "shieldStrength": 13.5,
+        "shieldRegeneration": 0.99,
+        "kineticResistance": -0.6,
+        "thermalResistance": 0.5,
+        "plasmaResistance": -0.1,
+        "explosiveResistance": 0
+      },
+      "2": {
+        "symbol": "utilitysuit_class2",
+        "modificationSlots": 1,
+        "shieldStrength": 16.5,
+        "shieldRegeneration": 1.21,
+        "kineticResistance": -0.34,
+        "thermalResistance": 0.58,
+        "plasmaResistance": 0.07,
+        "explosiveResistance": 0.16
+      },
+      "3": {
+        "symbol": "utilitysuit_class3",
+        "modificationSlots": 2,
+        "shieldStrength": 20.3,
+        "shieldRegeneration": 1.49,
+        "kineticResistance": -0.13,
+        "thermalResistance": 0.64,
+        "plasmaResistance": 0.22,
+        "explosiveResistance": 0.29
+      },
+      "4": {
+        "symbol": "utilitysuit_class4",
+        "modificationSlots": 3,
+        "shieldStrength": 24.9,
+        "shieldRegeneration": 1.82,
+        "kineticResistance": 0.06,
+        "thermalResistance": 0.7,
+        "plasmaResistance": 0.35,
+        "explosiveResistance": 0.41
+      },
+      "5": {
+        "symbol": "utilitysuit_class5",
+        "modificationSlots": 4,
+        "shieldStrength": 30.4,
+        "shieldRegeneration": 2.23,
+        "kineticResistance": 0.19,
+        "thermalResistance": 0.75,
+        "plasmaResistance": 0.45,
+        "explosiveResistance": 0.5
+      }
+    }
+  },
+  {
+    "family": "tacticalsuit",
+    "name": "Dominator Suit",
+    "primarySlots": 2,
+    "secondarySlots": 1,
+    "grades": {
+      "1": {
+        "symbol": "tacticalsuit_class1",
+        "modificationSlots": 0,
+        "shieldStrength": 15,
+        "shieldRegeneration": 1.1,
+        "kineticResistance": -0.5,
+        "thermalResistance": 0.6,
+        "plasmaResistance": 0,
+        "explosiveResistance": 0
+      },
+      "2": {
+        "symbol": "tacticalsuit_class2",
+        "modificationSlots": 1,
+        "shieldStrength": 18.3,
+        "shieldRegeneration": 1.34,
+        "kineticResistance": -0.26,
+        "thermalResistance": 0.66,
+        "plasmaResistance": 0.16,
+        "explosiveResistance": 0.16
+      },
+      "3": {
+        "symbol": "tacticalsuit_class3",
+        "modificationSlots": 2,
+        "shieldStrength": 22.5,
+        "shieldRegeneration": 1.65,
+        "kineticResistance": -0.07,
+        "thermalResistance": 0.72,
+        "plasmaResistance": 0.29,
+        "explosiveResistance": 0.29
+      },
+      "4": {
+        "symbol": "tacticalsuit_class4",
+        "modificationSlots": 3,
+        "shieldStrength": 27.6,
+        "shieldRegeneration": 2.02,
+        "kineticResistance": 0.19,
+        "thermalResistance": 0.78,
+        "plasmaResistance": 0.46,
+        "explosiveResistance": 0.46
+      },
+      "5": {
+        "symbol": "tacticalsuit_class5",
+        "modificationSlots": 4,
+        "shieldStrength": 33.8,
+        "shieldRegeneration": 2.48,
+        "kineticResistance": 0.25,
+        "thermalResistance": 0.8,
+        "plasmaResistance": 0.5,
+        "explosiveResistance": 0.5
+      }
+    }
+  },
+  {
+    "family": "explorationsuit",
+    "name": "Artemis Suit",
+    "primarySlots": 1,
+    "secondarySlots": 1,
+    "grades": {
+      "1": {
+        "symbol": "explorationsuit_class1",
+        "modificationSlots": 0,
+        "shieldStrength": 12,
+        "shieldRegeneration": 0.88,
+        "kineticResistance": -0.7,
+        "thermalResistance": 0.39,
+        "plasmaResistance": -0.2,
+        "explosiveResistance": 0
+      },
+      "2": {
+        "symbol": "explorationsuit_class2",
+        "modificationSlots": 1,
+        "shieldStrength": 14.7,
+        "shieldRegeneration": 1.07,
+        "kineticResistance": -0.42,
+        "thermalResistance": 0.5,
+        "plasmaResistance": 0,
+        "explosiveResistance": 0.16
+      },
+      "3": {
+        "symbol": "explorationsuit_class3",
+        "modificationSlots": 2,
+        "shieldStrength": 18,
+        "shieldRegeneration": 1.32,
+        "kineticResistance": -0.21,
+        "thermalResistance": 0.57,
+        "plasmaResistance": 0.14,
+        "explosiveResistance": 0.29
+      },
+      "4": {
+        "symbol": "explorationsuit_class4",
+        "modificationSlots": 3,
+        "shieldStrength": 22.1,
+        "shieldRegeneration": 1.62,
+        "kineticResistance": 0,
+        "thermalResistance": 0.65,
+        "plasmaResistance": 0.29,
+        "explosiveResistance": 0.41
+      },
+      "5": {
+        "symbol": "explorationsuit_class5",
+        "modificationSlots": 4,
+        "shieldStrength": 27,
+        "shieldRegeneration": 1.98,
+        "kineticResistance": 0.14,
+        "thermalResistance": 0.7,
+        "plasmaResistance": 0.39,
+        "explosiveResistance": 0.5
+      }
+    }
+  },
+  {
+    "family": "flightsuit",
+    "name": "Flight Suit",
+    "primarySlots": 0,
+    "secondarySlots": 1,
+    "grades": {
+      "1": {
+        "symbol": "flightsuit",
+        "modificationSlots": 0,
+        "shieldStrength": 7.5,
+        "shieldRegeneration": 0.55,
+        "kineticResistance": -0.7,
+        "thermalResistance": 0.39,
+        "plasmaResistance": -0.2,
+        "explosiveResistance": 0
+      }
+    }
+  }
+]
