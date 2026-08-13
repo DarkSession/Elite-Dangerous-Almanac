@@ -1,0 +1,18 @@
+/*
+ * Personal weapon recipe symbols whose technology suffix is absent from journal loadouts.
+ *
+ * Source: Odyssey Materials Helper. See ../../ATTRIBUTIONS.md for credit and SOURCES.md
+ * for the pinned revision and derivation. Each key joins to modifications.jsonc; its value
+ * is the symbol the journal writes. A weapon's engineering type selects the exact recipe.
+ */
+{
+  "weapon_range_kinetic": "weapon_range",
+  "weapon_range_laser": "weapon_range",
+  "weapon_range_plasma": "weapon_range",
+  "weapon_headshotdamage_kinetic": "weapon_headshotdamage",
+  "weapon_headshotdamage_laser": "weapon_headshotdamage",
+  "weapon_headshotdamage_plasma": "weapon_headshotdamage",
+  "weapon_accuracy_kinetic": "weapon_accuracy",
+  "weapon_accuracy_laser": "weapon_accuracy",
+  "weapon_accuracy_plasma": "weapon_accuracy"
+}

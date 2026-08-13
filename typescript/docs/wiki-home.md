@@ -6,7 +6,7 @@ title: Home
 
 Static Elite Dangerous data and calculations for community applications and research —
 procedural system names and `id64` addresses, galactic regions and nebulae, ships and
-outfitting with build metrics, engineering materials, and market commodities.
+outfitting with build metrics, personal equipment and engineering materials, and market commodities.
 
 ```bash
 npm install @elite-dangerous-almanac/core
@@ -47,12 +47,13 @@ function jumpRangeOf(journalLine: string) {
 - **[The failure model](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/Document.The-failure-model)**
   — `null` against the three errors, and the diagnostic-result pairs.
 
-## The four feature areas
+## The five feature areas
 
 | Area | Import | Provides |
 | --- | --- | --- |
 | [astro](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/astro) | `@elite-dangerous-almanac/core/astro` | Procedural system names, `id64` addresses, sectors, galactic regions, nebulae, permit locks |
 | [ships](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/ships) | `@elite-dangerous-almanac/core/ships` | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour, weapons |
+| [equipment](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/equipment) | `@elite-dangerous-almanac/core/equipment` | Odyssey suits, handheld weapons, grade upgrades and engineer modifications |
 | [materials](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/materials) | `@elite-dangerous-almanac/core/materials` | Ship engineering materials and Odyssey micro resources |
 | [commodities](https://github.com/DarkSession/Elite-Dangerous-Almanac/wiki/commodities) | `@elite-dangerous-almanac/core/commodities` | Standard and rare market commodities |
 

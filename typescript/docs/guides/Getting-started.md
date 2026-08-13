@@ -76,6 +76,12 @@ symbols you are most likely to reach for first:
 | `powerBudget` / `shieldMetrics` / `armourMetrics` / `weaponMetrics` | `core/ships/power` / `shields` / `armour` / `weapons` |
 | `computeModifiers`, `BLUEPRINTS`, `EXPERIMENTAL_EFFECTS` | `core/ships/engineering` / `blueprints` / `experimental-effects` |
 | `getBlueprintCost`, `getExperimentalEffectCost` | `core/ships/blueprint-costs` / `experimental-effect-costs` |
+| `getSuitBySymbol`, `getSuitByFamily`, `SUITS` | `core/equipment/suits` |
+| `getPersonalWeaponBySymbol`, `PERSONAL_WEAPONS` | `core/equipment/weapons` |
+| `getSuitUpgradeCost`, `getPersonalWeaponUpgradeCost` | `core/equipment/upgrade-costs` |
+| `getPersonalModification`, `PERSONAL_MODIFICATIONS` | `core/equipment/modifications` |
+| `getPersonalModificationCost` | `core/equipment/modification-costs` |
+| `resolvePersonalModificationForWeapon` | `core/equipment/modification-journal` |
 | `getMaterialByName`, `MaterialGrade` | `core/materials/materials` |
 | `getMicroResourceByName` | `core/materials/micro-resources` |
 | `getCommodityByName` | `core/commodities/commodities` |
@@ -145,6 +151,14 @@ import { getCommodityByName } from '@elite-dangerous-almanac/core/commodities/co
 
 getMaterialByName('iron')?.grade;
 getCommodityByName('lavian brandy')?.rare; // -> true
+```
+
+```ts
+import { getSuitBySymbol } from '@elite-dangerous-almanac/core/equipment/suits';
+import { getPersonalModificationCost } from '@elite-dangerous-almanac/core/equipment/modification-costs';
+
+getSuitBySymbol('utilitysuit_class3')?.grade; // -> 3
+getPersonalModificationCost('suit_nightvision')?.[0]?.symbol; // -> 'surveillanceequipment'
 ```
 
 Lookups ignore case and surrounding whitespace, so a symbol straight out of a journal

@@ -1,0 +1,553 @@
+/*
+ * Pioneer Supplies material costs for upgrading personal equipment by one grade.
+ *
+ * Source: Odyssey Materials Helper. See ../../ATTRIBUTIONS.md for credit and SOURCES.md
+ * for the pinned revision and derivation. Keys are target grades; each recipe upgrades
+ * the preceding grade to that target.
+ */
+{
+  "suits": {
+    "utilitysuit": {
+      "2": [
+        {
+          "symbol": "suitschematic",
+          "count": 1
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 1
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 1
+        },
+        {
+          "symbol": "carbonfibreplating",
+          "count": 2
+        },
+        {
+          "symbol": "graphene",
+          "count": 2
+        }
+      ],
+      "3": [
+        {
+          "symbol": "suitschematic",
+          "count": 2
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 2
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 2
+        },
+        {
+          "symbol": "carbonfibreplating",
+          "count": 5
+        },
+        {
+          "symbol": "graphene",
+          "count": 5
+        }
+      ],
+      "4": [
+        {
+          "symbol": "suitschematic",
+          "count": 4
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 4
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 4
+        },
+        {
+          "symbol": "carbonfibreplating",
+          "count": 9
+        },
+        {
+          "symbol": "graphene",
+          "count": 9
+        }
+      ],
+      "5": [
+        {
+          "symbol": "suitschematic",
+          "count": 5
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 5
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 5
+        },
+        {
+          "symbol": "carbonfibreplating",
+          "count": 12
+        },
+        {
+          "symbol": "graphene",
+          "count": 12
+        }
+      ]
+    },
+    "tacticalsuit": {
+      "2": [
+        {
+          "symbol": "suitschematic",
+          "count": 1
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 1
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 1
+        },
+        {
+          "symbol": "titaniumplating",
+          "count": 2
+        },
+        {
+          "symbol": "graphene",
+          "count": 2
+        }
+      ],
+      "3": [
+        {
+          "symbol": "suitschematic",
+          "count": 2
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 2
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 2
+        },
+        {
+          "symbol": "titaniumplating",
+          "count": 5
+        },
+        {
+          "symbol": "graphene",
+          "count": 5
+        }
+      ],
+      "4": [
+        {
+          "symbol": "suitschematic",
+          "count": 4
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 4
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 4
+        },
+        {
+          "symbol": "titaniumplating",
+          "count": 9
+        },
+        {
+          "symbol": "graphene",
+          "count": 9
+        }
+      ],
+      "5": [
+        {
+          "symbol": "suitschematic",
+          "count": 5
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 5
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 5
+        },
+        {
+          "symbol": "titaniumplating",
+          "count": 12
+        },
+        {
+          "symbol": "graphene",
+          "count": 12
+        }
+      ]
+    },
+    "explorationsuit": {
+      "2": [
+        {
+          "symbol": "suitschematic",
+          "count": 1
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 1
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 1
+        },
+        {
+          "symbol": "aerogel",
+          "count": 2
+        },
+        {
+          "symbol": "graphene",
+          "count": 2
+        }
+      ],
+      "3": [
+        {
+          "symbol": "suitschematic",
+          "count": 2
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 2
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 2
+        },
+        {
+          "symbol": "aerogel",
+          "count": 5
+        },
+        {
+          "symbol": "graphene",
+          "count": 5
+        }
+      ],
+      "4": [
+        {
+          "symbol": "suitschematic",
+          "count": 4
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 4
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 4
+        },
+        {
+          "symbol": "aerogel",
+          "count": 9
+        },
+        {
+          "symbol": "graphene",
+          "count": 9
+        }
+      ],
+      "5": [
+        {
+          "symbol": "suitschematic",
+          "count": 5
+        },
+        {
+          "symbol": "healthmonitor",
+          "count": 5
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 5
+        },
+        {
+          "symbol": "aerogel",
+          "count": 12
+        },
+        {
+          "symbol": "graphene",
+          "count": 12
+        }
+      ]
+    }
+  },
+  "weaponGroups": {
+    "takada": {
+      "2": [
+        {
+          "symbol": "weaponschematic",
+          "count": 1
+        },
+        {
+          "symbol": "ionisedgas",
+          "count": 1
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 1
+        },
+        {
+          "symbol": "microelectrode",
+          "count": 2
+        },
+        {
+          "symbol": "opticalfibre",
+          "count": 2
+        }
+      ],
+      "3": [
+        {
+          "symbol": "weaponschematic",
+          "count": 2
+        },
+        {
+          "symbol": "ionisedgas",
+          "count": 2
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 2
+        },
+        {
+          "symbol": "microelectrode",
+          "count": 5
+        },
+        {
+          "symbol": "opticalfibre",
+          "count": 5
+        }
+      ],
+      "4": [
+        {
+          "symbol": "weaponschematic",
+          "count": 4
+        },
+        {
+          "symbol": "ionisedgas",
+          "count": 4
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 4
+        },
+        {
+          "symbol": "microelectrode",
+          "count": 9
+        },
+        {
+          "symbol": "opticalfibre",
+          "count": 9
+        }
+      ],
+      "5": [
+        {
+          "symbol": "weaponschematic",
+          "count": 5
+        },
+        {
+          "symbol": "ionisedgas",
+          "count": 5
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 5
+        },
+        {
+          "symbol": "microelectrode",
+          "count": 12
+        },
+        {
+          "symbol": "opticalfibre",
+          "count": 12
+        }
+      ]
+    },
+    "manticore": {
+      "2": [
+        {
+          "symbol": "weaponschematic",
+          "count": 1
+        },
+        {
+          "symbol": "ionisedgas",
+          "count": 1
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 1
+        },
+        {
+          "symbol": "microelectrode",
+          "count": 2
+        },
+        {
+          "symbol": "chemicalsuperbase",
+          "count": 2
+        }
+      ],
+      "3": [
+        {
+          "symbol": "weaponschematic",
+          "count": 2
+        },
+        {
+          "symbol": "ionisedgas",
+          "count": 2
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 2
+        },
+        {
+          "symbol": "microelectrode",
+          "count": 5
+        },
+        {
+          "symbol": "chemicalsuperbase",
+          "count": 5
+        }
+      ],
+      "4": [
+        {
+          "symbol": "weaponschematic",
+          "count": 4
+        },
+        {
+          "symbol": "ionisedgas",
+          "count": 4
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 4
+        },
+        {
+          "symbol": "microelectrode",
+          "count": 9
+        },
+        {
+          "symbol": "chemicalsuperbase",
+          "count": 9
+        }
+      ],
+      "5": [
+        {
+          "symbol": "weaponschematic",
+          "count": 5
+        },
+        {
+          "symbol": "ionisedgas",
+          "count": 5
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 5
+        },
+        {
+          "symbol": "microelectrode",
+          "count": 12
+        },
+        {
+          "symbol": "chemicalsuperbase",
+          "count": 12
+        }
+      ]
+    },
+    "karma": {
+      "2": [
+        {
+          "symbol": "weaponschematic",
+          "count": 1
+        },
+        {
+          "symbol": "compressionliquefiedgas",
+          "count": 1
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 1
+        },
+        {
+          "symbol": "weaponcomponent",
+          "count": 2
+        },
+        {
+          "symbol": "tungstencarbide",
+          "count": 2
+        }
+      ],
+      "3": [
+        {
+          "symbol": "weaponschematic",
+          "count": 2
+        },
+        {
+          "symbol": "compressionliquefiedgas",
+          "count": 2
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 2
+        },
+        {
+          "symbol": "weaponcomponent",
+          "count": 5
+        },
+        {
+          "symbol": "tungstencarbide",
+          "count": 5
+        }
+      ],
+      "4": [
+        {
+          "symbol": "weaponschematic",
+          "count": 4
+        },
+        {
+          "symbol": "compressionliquefiedgas",
+          "count": 4
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 4
+        },
+        {
+          "symbol": "weaponcomponent",
+          "count": 9
+        },
+        {
+          "symbol": "tungstencarbide",
+          "count": 9
+        }
+      ],
+      "5": [
+        {
+          "symbol": "weaponschematic",
+          "count": 5
+        },
+        {
+          "symbol": "compressionliquefiedgas",
+          "count": 5
+        },
+        {
+          "symbol": "manufacturinginstructions",
+          "count": 5
+        },
+        {
+          "symbol": "weaponcomponent",
+          "count": 12
+        },
+        {
+          "symbol": "tungstencarbide",
+          "count": 12
+        }
+      ]
+    }
+  }
+}

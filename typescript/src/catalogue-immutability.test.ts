@@ -20,6 +20,11 @@ import { COMPONENT_MICRO_RESOURCES } from './materials/micro-resources-component
 import { CONSUMABLE_MICRO_RESOURCES } from './materials/micro-resources-consumable.js';
 import { DATA_MICRO_RESOURCES } from './materials/micro-resources-data.js';
 import { ITEM_MICRO_RESOURCES } from './materials/micro-resources-item.js';
+import { SUITS } from './equipment/suits.js';
+import { PERSONAL_WEAPONS } from './equipment/weapons.js';
+import { PERSONAL_UPGRADE_COSTS } from './equipment/upgrade-costs.js';
+import { PERSONAL_MODIFICATIONS } from './equipment/modifications.js';
+import { PERSONAL_MODIFICATION_COSTS } from './equipment/modification-costs.js';
 import { ALL_MODULES } from './ships/modules-all.js';
 import { CORE_MODULES } from './ships/modules-core.js';
 import { INTERNAL_MODULES } from './ships/modules-internal.js';
@@ -71,6 +76,11 @@ test('every published catalogue and all of its nested records are frozen', () =>
         ['CONSUMABLE_MICRO_RESOURCES', CONSUMABLE_MICRO_RESOURCES],
         ['DATA_MICRO_RESOURCES', DATA_MICRO_RESOURCES],
         ['ITEM_MICRO_RESOURCES', ITEM_MICRO_RESOURCES],
+        ['SUITS', SUITS],
+        ['PERSONAL_WEAPONS', PERSONAL_WEAPONS],
+        ['PERSONAL_UPGRADE_COSTS', PERSONAL_UPGRADE_COSTS],
+        ['PERSONAL_MODIFICATIONS', PERSONAL_MODIFICATIONS],
+        ['PERSONAL_MODIFICATION_COSTS', PERSONAL_MODIFICATION_COSTS],
         ['ALL_MODULES', ALL_MODULES],
         ['CORE_MODULES', CORE_MODULES],
         ['INTERNAL_MODULES', INTERNAL_MODULES],

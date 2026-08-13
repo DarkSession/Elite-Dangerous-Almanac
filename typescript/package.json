@@ -1,7 +1,7 @@
 {
     "name": "@elite-dangerous-almanac/core",
     "version": "0.1.0-beta.1",
-    "description": "Elite Dangerous static data and calculations: procedural system naming and id64 addresses, galactic regions, nebulae, ships and outfitting with build metrics (jump range, power, shields, armour, weapon DPS), engineering materials, and market commodities.",
+    "description": "Elite Dangerous static data and calculations: astronomy, ships and outfitting, personal equipment and engineering, materials, and market commodities.",
     "type": "module",
     "sideEffects": false,
     "engines": {
@@ -28,6 +28,8 @@
         "nebulae",
         "ships",
         "outfitting",
+        "personal-equipment",
+        "odyssey",
         "engineering",
         "materials",
         "commodities",
@@ -148,6 +150,39 @@
             "import": "./dist/commodities/commodities.js"
         },
         "./commodities/internal/*": null,
+        "./equipment": {
+            "types": "./dist/equipment/index.d.ts",
+            "import": "./dist/equipment/index.js"
+        },
+        "./equipment/engineering": {
+            "types": "./dist/equipment/engineering.d.ts",
+            "import": "./dist/equipment/engineering.js"
+        },
+        "./equipment/modification-costs": {
+            "types": "./dist/equipment/modification-costs.d.ts",
+            "import": "./dist/equipment/modification-costs.js"
+        },
+        "./equipment/modification-journal": {
+            "types": "./dist/equipment/modification-journal.d.ts",
+            "import": "./dist/equipment/modification-journal.js"
+        },
+        "./equipment/modifications": {
+            "types": "./dist/equipment/modifications.d.ts",
+            "import": "./dist/equipment/modifications.js"
+        },
+        "./equipment/suits": {
+            "types": "./dist/equipment/suits.d.ts",
+            "import": "./dist/equipment/suits.js"
+        },
+        "./equipment/upgrade-costs": {
+            "types": "./dist/equipment/upgrade-costs.d.ts",
+            "import": "./dist/equipment/upgrade-costs.js"
+        },
+        "./equipment/weapons": {
+            "types": "./dist/equipment/weapons.d.ts",
+            "import": "./dist/equipment/weapons.js"
+        },
+        "./equipment/internal/*": null,
         "./materials": {
             "types": "./dist/materials/index.d.ts",
             "import": "./dist/materials/index.js"
@@ -344,10 +379,10 @@
         "generate:fixtures": "node ../scripts/fixtures/generate-schema-and-types.mjs",
         "lint": "eslint .",
         "prepublishOnly": "pnpm run check && pnpm run build && pnpm run test:package",
-        "test": "node --experimental-test-coverage --test-coverage-include=\"src/internal/**/*.ts\" --test-coverage-include=\"src/astro/**/*.ts\" --test-coverage-include=\"src/materials/**/*.ts\" --test-coverage-include=\"src/ships/**/*.ts\" --test-coverage-include=\"src/commodities/**/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
+        "test": "node --experimental-test-coverage --test-coverage-include=\"src/internal/**/*.ts\" --test-coverage-include=\"src/astro/**/*.ts\" --test-coverage-include=\"src/materials/**/*.ts\" --test-coverage-include=\"src/equipment/**/*.ts\" --test-coverage-include=\"src/ships/**/*.ts\" --test-coverage-include=\"src/commodities/**/*.ts\" --test-coverage-exclude=\"src/**/*.test.ts\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 --import tsx --import ./scripts/register-jsonc.mjs --test \"src/**/*.test.ts\"",
         "typecheck": "tsc --noEmit",
         "docs": "typedoc && node scripts/build-wiki-sidebar.mjs && node scripts/postprocess-wiki.mjs",
-        "check:examples": "node --test scripts/example-claims.test.mjs scripts/example-runtime.test.mjs && node scripts/check-examples.mjs --strict --min-executable-claims 259 --max-compile-only-claims 123",
+        "check:examples": "node --test scripts/example-claims.test.mjs scripts/example-runtime.test.mjs && node scripts/check-examples.mjs --strict --min-executable-claims 284 --max-compile-only-claims 123",
         "test:package": "node --test package.test.mjs"
     },
     "devDependencies": {
