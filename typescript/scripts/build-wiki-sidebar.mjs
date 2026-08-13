@@ -1,17 +1,18 @@
 // Rebuilds `docs/wiki/_Sidebar.md` as a collapsible tree.
 //
-// The wiki theme's own sidebar is one flat list of the guides and the four feature
+// The wiki theme's own sidebar is one flat list of the guides and feature
 // areas, which leaves 300-odd symbol pages reachable only by walking a module index.
 // This rewrites it as nested `<details>` blocks — feature area, then member kind,
-// then a class's own accessors and methods — so every page in the wiki is visible in
-// its navigation context and each level can still be collapsed independently.
+// then a class's own accessors and methods — and places pages in directories carrying
+// context-specific sidebars. Gollum uses the nearest `_Sidebar.md`, so only the path to
+// the current page starts open and each level can still be collapsed independently.
 //
 // It reads the pages TypeDoc has already written rather than the reflection tree, so
 // the titles, link targets and ordering are by construction the ones the module index
 // pages show. Run it after `typedoc` and before `postprocess-wiki.mjs`, whose link
 // check then covers the sidebar too.
 
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -49,6 +50,24 @@ const memberSections = new Set(['Constructors', 'Properties', 'Accessors', 'Meth
 const notLinkTargets = new Set(['_Sidebar']);
 
 const pages = new Map();
+
+/** Navigation ancestry for each generated page that belongs below an API area. */
+const pageContexts = new Map();
+
+function contextNode(key, title) {
+    return { key, title: unescape(title) };
+}
+
+function rememberContext(target, context) {
+    const previous = pageContexts.get(target);
+    if (
+        previous &&
+        previous.map((node) => node.key).join('\0') !== context.map((node) => node.key).join('\0')
+    ) {
+        throw new Error(`_Sidebar: "${target}" appears in more than one navigation context`);
+    }
+    pageContexts.set(target, context);
+}
 
 async function page(name) {
     if (!pages.has(name)) pages.set(name, readFile(join(wikiDir, `${name}.md`), 'utf8'));
@@ -202,7 +221,10 @@ function examplesLink(target, pageHeadings) {
 }
 
 /** A class expands in place: its own page, then its properties, accessors and methods. */
-async function classBlock({ title, target }) {
+async function classBlock({ title, target }, opened, context) {
+    const node = contextNode(target, title);
+    const within = [...context, node];
+    rememberContext(target, within);
     const pageHeadings = headings(await page(target));
     const body = [[`- [Overview](../wiki/${target})`, ...examplesLink(target, pageHeadings)]];
 
@@ -234,7 +256,7 @@ async function classBlock({ title, target }) {
     }
     close(members);
 
-    return details(summaryText(title), stack(body), { open: true });
+    return details(summaryText(title), stack(body), { open: opened.has(node.key) });
 }
 
 /**
@@ -248,15 +270,18 @@ const nestedSections = new Set(['Modules', 'Namespaces']);
  * A namespace, or a module nested under another module, is a module page in miniature —
  * its own index sections, and a page per symbol inside it — so it expands the same way.
  */
-async function subtreeBlock({ title, target }, seen) {
+async function subtreeBlock({ title, target }, seen, opened, context) {
+    const node = contextNode(target, title);
+    const within = [...context, node];
+    rememberContext(target, within);
     const overview = [
         `- [Overview](../wiki/${target})`,
         ...examplesLink(target, headings(await page(target))),
     ];
     return details(
         summaryText(title),
-        stack([overview, indent(stack(await symbolGroups(target, seen)))]),
-        { open: true },
+        stack([overview, indent(stack(await symbolGroups(target, seen, opened, within)))]),
+        { open: opened.has(node.key) },
     );
 }
 
@@ -277,21 +302,36 @@ async function indexSections(target) {
 }
 
 /** The collapsible member-kind groups of a page that carries index sections. */
-async function symbolGroups(target, seen = new Set()) {
+async function symbolGroups(target, seen = new Set(), opened = new Set(), context = []) {
     if (seen.has(target)) return [];
     const within = new Set(seen).add(target);
     const groups = [];
 
     for (const { title, symbols } of await indexSections(target)) {
+        const node = contextNode(`${target}:${title}`, title);
+        const groupContext = [...context, node];
         let inner;
         if (title === 'Classes') {
-            inner = indent(stack(await Promise.all(symbols.map((symbol) => classBlock(symbol)))));
+            inner = indent(
+                stack(
+                    await Promise.all(
+                        symbols.map((symbol) => classBlock(symbol, opened, groupContext)),
+                    ),
+                ),
+            );
         } else if (nestedSections.has(title)) {
             inner = indent(
-                stack(await Promise.all(symbols.map((symbol) => subtreeBlock(symbol, within)))),
+                stack(
+                    await Promise.all(
+                        symbols.map((symbol) => subtreeBlock(symbol, within, opened, groupContext)),
+                    ),
+                ),
             );
-        } else inner = bullets(symbols);
-        groups.push(details(`${title} (${symbols.length})`, inner, { open: true }));
+        } else {
+            for (const symbol of symbols) rememberContext(symbol.target, groupContext);
+            inner = bullets(symbols);
+        }
+        groups.push(details(`${title} (${symbols.length})`, inner, { open: opened.has(node.key) }));
     }
 
     return groups;
@@ -302,7 +342,9 @@ async function symbolGroups(target, seen = new Set()) {
  * flattened to a bullet and its symbols than as a disclosure per module. One that turns
  * out to hold a subtree gets the full treatment instead of losing it.
  */
-async function subpathBlock(submodules) {
+async function subpathBlock(parentTarget, submodules, opened, context) {
+    const node = contextNode(`${parentTarget}:Subpath modules`, 'Subpath modules');
+    const groupContext = [...context, node];
     const blocks = [];
     let flat = null;
 
@@ -312,36 +354,41 @@ async function subpathBlock(submodules) {
             (section) => section.title === 'Classes' || nestedSections.has(section.title),
         );
         if (nested) {
-            blocks.push(await subtreeBlock(submodule, new Set()));
+            blocks.push(await subtreeBlock(submodule, new Set(), opened, groupContext));
             flat = null;
             continue;
         }
+        rememberContext(submodule.target, groupContext);
         // Consecutive flat entries share one list; a subtree between them starts a new one.
         if (!flat) blocks.push((flat = []));
         flat.push(`- [${submodule.title}](../wiki/${submodule.target})`);
         for (const { symbols } of index) {
+            for (const symbol of symbols) rememberContext(symbol.target, groupContext);
             flat.push(...bullets(symbols).map((bullet) => `    ${bullet}`));
         }
     }
 
-    return details(`Subpath modules (${submodules.length})`, stack(blocks), { open: true });
+    return details(`Subpath modules (${submodules.length})`, stack(blocks), {
+        open: opened.has(node.key),
+    });
 }
 
-async function moduleBlock(module, submodules) {
+async function moduleBlock(module, submodules, opened) {
+    const node = contextNode(module.target, module.title);
+    const context = [node];
+    rememberContext(module.target, context);
     const overview = [
         `- [Overview](../wiki/${module.target})`,
         ...examplesLink(module.target, headings(await page(module.target))),
     ];
-    const kinds = await symbolGroups(module.target);
+    const kinds = await symbolGroups(module.target, new Set(), opened, context);
 
-    if (submodules.length > 0) kinds.push(await subpathBlock(submodules));
+    if (submodules.length > 0) {
+        kinds.push(await subpathBlock(module.target, submodules, opened, context));
+    }
 
-    // `_Sidebar.md` is shared by every GitHub Wiki page, so it cannot mark only the
-    // current page's feature area as open. Keep each disclosure open instead: after
-    // following an Overview or symbol link the reader retains the complete navigation
-    // context, while every level can still be collapsed manually.
     return details(`<b>${summaryText(module.title)}</b>`, stack([overview, indent(stack(kinds))]), {
-        open: true,
+        open: opened.has(node.key),
     });
 }
 
@@ -373,22 +420,43 @@ const section = (title) => index.find((candidate) => candidate.title === title)?
 const documents = section('Documents');
 const modules = section('Modules');
 
-const blocks = [['## API', '', '- [Home](../wiki/Home)', '- [API reference](../wiki/modules)']];
+async function renderSidebar(opened) {
+    const blocks = [['## API', '', '- [Home](../wiki/Home)', '- [API reference](../wiki/modules)']];
 
-if (documents.length > 0) {
-    blocks.push(details('<b>Guides</b>', bullets(await guideOrder(documents)), { open: true }));
+    if (documents.length > 0) {
+        const node = contextNode('modules:Documents', 'Guides');
+        for (const document of documents) rememberContext(document.target, [node]);
+        blocks.push(
+            details('<b>Guides</b>', bullets(await guideOrder(documents)), {
+                open: opened.has(node.key),
+            }),
+        );
+    }
+
+    // `astro/nebulae-all` belongs under `astro`: it is the same feature area on a
+    // subpath the barrel deliberately does not re-export, not a new top-level area.
+    for (const module of modules.filter((module) => !module.title.includes('/'))) {
+        const submodules = modules.filter((candidate) =>
+            candidate.title.startsWith(`${module.title}/`),
+        );
+        blocks.push(await moduleBlock(module, submodules, opened));
+    }
+
+    return `${stack(blocks).join('\n')}\n`;
 }
 
-// `astro/nebulae-all` belongs under `astro`: it is the same feature area on a subpath
-// the barrel deliberately does not re-export, not a fifth thing to scan past.
-for (const module of modules.filter((module) => !module.title.includes('/'))) {
-    const submodules = modules.filter((candidate) =>
-        candidate.title.startsWith(`${module.title}/`),
-    );
-    blocks.push(await moduleBlock(module, submodules));
+const sidebar = await renderSidebar(new Set());
+
+function assertOpenDisclosureCount(markdown, expected, location) {
+    const actual = [...markdown.matchAll(/<details open>/g)].length;
+    if (actual !== expected) {
+        throw new Error(
+            `_Sidebar: "${location}" opens ${actual} disclosure(s), expected ${expected}`,
+        );
+    }
 }
 
-const sidebar = `${stack(blocks).join('\n')}\n`;
+assertOpenDisclosureCount(sidebar, 0, '/');
 
 // Every assumption this script makes about TypeDoc's output — the index section names,
 // the bullet shape, which sections hold symbols — is a "find it, or quietly render less"
@@ -409,6 +477,53 @@ if (orphans.length > 0) {
         `_Sidebar: ${orphans.length} generated page(s) unreachable from the sidebar, ` +
             `starting with "${orphans[0]}" — ${hint}`,
     );
+}
+
+/** A readable, stable directory component for one disclosure in the tree. */
+function directorySegment(title) {
+    const segment = title
+        .replace(/([\p{Ll}\p{N}])(\p{Lu})/gu, '$1-$2')
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, '-')
+        .replace(/^-|-$/g, '');
+    if (!segment) throw new Error(`_Sidebar: cannot derive a directory from "${title}"`);
+    return segment;
+}
+
+const contexts = new Map();
+const directoryContexts = new Map();
+for (const context of pageContexts.values()) {
+    const signature = context.map((node) => node.key).join('\0');
+    contexts.set(signature, context);
+
+    const directory = context.map((node) => directorySegment(node.title)).join('/');
+    const previous = directoryContexts.get(directory);
+    if (previous && previous !== signature) {
+        throw new Error(`_Sidebar: more than one navigation context maps to "${directory}"`);
+    }
+    directoryContexts.set(directory, signature);
+}
+
+// GitHub Wiki keeps page names global even when their files live in directories, while
+// Gollum chooses the nearest `_Sidebar.md`. Give every distinct disclosure ancestry its
+// own directory and sidebar without changing any public page target.
+const sidebarVariants = new Map();
+for (const [directory, signature] of directoryContexts) {
+    const context = contexts.get(signature);
+    const variant = await renderSidebar(new Set(context.map((node) => node.key)));
+    assertOpenDisclosureCount(variant, context.length, directory);
+    sidebarVariants.set(directory, variant);
+}
+
+for (const [directory, variant] of sidebarVariants) {
+    const path = join(wikiDir, directory);
+    await mkdir(path, { recursive: true });
+    await writeFile(join(path, '_Sidebar.md'), variant);
+}
+
+for (const [target, context] of pageContexts) {
+    const directory = context.map((node) => directorySegment(node.title)).join('/');
+    await rename(join(wikiDir, `${target}.md`), join(wikiDir, directory, `${target}.md`));
 }
 
 await writeFile(join(wikiDir, '_Sidebar.md'), sidebar);
