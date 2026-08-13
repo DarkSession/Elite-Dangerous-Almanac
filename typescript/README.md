@@ -44,6 +44,20 @@ The package has five feature areas:
 - `materials`: ship engineering materials and Odyssey micro resources;
 - `commodities`: standard and rare market goods.
 
+## Ship assets
+
+Every catalogued hull includes three `1200 × 800` SVG files in the installed package:
+
+```text
+assets/ships/<symbol>/illustration.svg
+assets/ships/<symbol>/schematic-top.svg
+assets/ships/<symbol>/schematic-bottom.svg
+```
+
+`<symbol>` is the exact ship symbol returned by the ships catalogue. These are static
+package files rather than JavaScript subpath exports, so applications can copy them from
+the installed package into their own public or bundled asset directory.
+
 ## Examples
 
 ```ts

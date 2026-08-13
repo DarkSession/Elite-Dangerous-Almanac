@@ -82,6 +82,24 @@ async function builtFilesEndingWith(
     return files;
 }
 
+async function relativeFiles(directory, prefix = '') {
+    const files = [];
+    const entries = await readdir(directory, { withFileTypes: true });
+    for (const entry of entries.sort((left, right) =>
+        left.name < right.name ? -1 : left.name > right.name ? 1 : 0,
+    )) {
+        const relative = `${prefix}${entry.name}`;
+        if (entry.isDirectory()) {
+            files.push(
+                ...(await relativeFiles(new URL(`${entry.name}/`, directory), `${relative}/`)),
+            );
+        } else if (entry.isFile()) {
+            files.push(relative);
+        }
+    }
+    return files;
+}
+
 function referencedSourceIndexes(map) {
     return new Set(
         decode(map.mappings).flatMap((line) =>
@@ -981,7 +999,7 @@ test('types are exposed by owning runtime entries, not type-only subpaths', asyn
     await assertNoEmptyJavaScript(new URL('./dist/', import.meta.url));
 });
 
-test('the publication manifest includes consumer documentation and notices', async () => {
+test('the publication manifest includes consumer assets, documentation and notices', async () => {
     const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url), 'utf8'));
     assert.equal(pkg.license, 'SEE LICENSE IN LICENSE');
     assert.equal(
@@ -990,7 +1008,7 @@ test('the publication manifest includes consumer documentation and notices', asy
     );
     assert.equal(pkg.homepage, 'https://github.com/DarkSession/Elite-Dangerous-Almanac#readme');
     assert.deepEqual(
-        ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'PROVENANCE'].map((name) => [
+        ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'PROVENANCE', 'assets'].map((name) => [
             name,
             pkg.files.includes(name),
         ]),
@@ -999,6 +1017,7 @@ test('the publication manifest includes consumer documentation and notices', asy
             ['LICENSE', true],
             ['THIRD_PARTY_NOTICES.md', true],
             ['PROVENANCE', true],
+            ['assets', true],
         ],
     );
     const readme = await readFile(new URL('./README.md', import.meta.url), 'utf8');
@@ -1092,4 +1111,37 @@ test('the publication manifest includes consumer documentation and notices', asy
     const licenseProse = license.replace(/\s+/g, ' ');
     assert.match(licenseProse, /does not relicense bundled third-party/);
     assert.match(licenseProse, /before redistributing the data or using it commercially/);
+});
+
+test('the npm package contains byte-identical ship assets', async () => {
+    const canonicalRoot = new URL('../assets/ships/', import.meta.url);
+    const packagedRoot = new URL('./assets/ships/', import.meta.url);
+    const canonicalFiles = await relativeFiles(canonicalRoot);
+    const packagedFiles = await relativeFiles(packagedRoot);
+
+    assert.equal(canonicalFiles.length, 48 * 3);
+    assert.deepEqual(packagedFiles, canonicalFiles);
+    for (const relative of canonicalFiles) {
+        const [canonical, packaged] = await Promise.all([
+            readFile(new URL(relative, canonicalRoot)),
+            readFile(new URL(relative, packagedRoot)),
+        ]);
+        assert.deepEqual(packaged, canonical, `assets/ships/${relative} is stale`);
+    }
+
+    const packed = spawnSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], {
+        cwd: fileURLToPath(new URL('.', import.meta.url)),
+        encoding: 'utf8',
+    });
+    assert.equal(packed.status, 0, `${packed.stdout}${packed.stderr}`);
+    const report = JSON.parse(packed.stdout);
+    assert.equal(report.length, 1);
+    const tarballAssets = report[0].files
+        .map((file) => file.path)
+        .filter((path) => path.startsWith('assets/ships/'))
+        .sort();
+    assert.deepEqual(
+        tarballAssets,
+        canonicalFiles.map((relative) => `assets/ships/${relative}`),
+    );
 });

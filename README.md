@@ -45,9 +45,10 @@ typescript/  @elite-dangerous-almanac/core
 `data/` is the single source of truth. Implementations strip comments while loading
 JSONC; they do not generate or commit duplicate JSON files.
 
-Ship illustrations live at `assets/ships/<symbol>/illustration.svg`, where `<symbol>` is
-the exact Frontier ship symbol from the shared catalogue. The assets remain outside the
-language packages so every implementation can consume the same files.
+Ship illustrations and schematics live under `assets/ships/<symbol>/`, where `<symbol>`
+is the exact Frontier ship symbol from the shared catalogue. The shared directory is the
+single source of truth; the TypeScript build copies it into the npm package under the
+same `assets/ships/` path.
 
 ## Development
 
