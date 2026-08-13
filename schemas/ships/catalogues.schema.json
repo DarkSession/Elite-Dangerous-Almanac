@@ -185,6 +185,33 @@
       "minItems": 1,
       "items": { "$ref": "#/definitions/ship" }
     },
+    "defaultLoadoutModule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot", "symbol"],
+      "properties": {
+        "slot": { "$ref": "#/definitions/nonEmptyString" },
+        "symbol": { "$ref": "#/definitions/nonEmptyString" }
+      }
+    },
+    "defaultLoadout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "modules"],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "modules": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/defaultLoadoutModule" }
+        }
+      }
+    },
+    "defaultLoadoutCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/defaultLoadout" }
+    },
     "module": {
       "description": "One outfitting module. The record carries no `category`: which of the four it is, is which modules-*.jsonc file it was read from, so a loader adds the category from the file rather than every record repeating it. The four `*ModuleCatalogue` definitions below say what each file additionally requires.",
       "type": "object",

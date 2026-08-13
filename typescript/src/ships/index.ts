@@ -22,7 +22,9 @@
  *
  * - **Ships** — {@link SHIPS} and the {@link getShipBySymbol} / {@link getShipByName}
  *   lookups. One small catalogue; each {@link Ship} carries the
- *   hull's identity, stats and slot layout together.
+ *   hull's identity, stats and slot layout together. The split
+ *   {@link ships/default-loadouts!DEFAULT_LOADOUTS | default-loadouts} subpath separately
+ *   carries the stock modules, and {@link ShipLoadout.default} turns one into a live build.
  * - **Modules** — the {@link OutfittingModule} type and the lookups
  *   ({@link getModuleBySymbol} & co.), which search all 1199 modules unless you hand
  *   them a narrower set. Capability guards such as {@link hasFrameShiftDriveJumpStats}

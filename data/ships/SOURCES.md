@@ -58,6 +58,38 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   (`FrameShiftDrive`, `HugeHardpoint1`, `TinyHardpoint2`, `Slot01_Size6`, `Military01`,
   `PlanetaryApproachSuite`).
 
+### Default loadouts
+
+- **File:** `default-loadouts.jsonc` (48 hulls, 831 fitted modules).
+- **Primary source:** EDSY `eddb.js` `ship[*].stock`, from the baseline pinned snapshot.
+  It carries all 48 current hulls, including the Lynx Highliner absent from the pinned
+  coriolis-data revision, and distinguishes current stock modules such as SCO frame
+  shift drives, Supercruise Assist and Advanced Docking Computer.
+- **Derivation:** the source ship is joined to `ships.jsonc` by case-insensitive Frontier
+  `fdname` / `symbol`. EDSY's `hardpoint`, `utility`, `component`, `military` and
+  `internal` stock arrays are walked against the stored hull layout in their published
+  order. Numeric module ids resolve first through a ship's own `module` overrides and
+  then through EDSY's global module table; the resulting Frontier `fdname` becomes the
+  stored module `symbol`. Zero entries are empty optional, hardpoint or utility mounts
+  and are omitted. The output stores the layout's canonical journal slot key, not the
+  source array position. All 831 fitted symbols and mounts resolve against the checked-in
+  ship and module catalogues and pass the same compatibility rules as `ShipLoadout`.
+- **Planetary approach suite:** EDSY treats the approach suite as a built-in outside its
+  stock arrays. `int_planetapproachsuite_advanced` is added to every hull's dedicated
+  `PlanetaryApproachSuite` mount. Coriolis-data stores id `4F` (the advanced suite) on 46
+  of its 47 hulls; the Python Mk II is its lone empty entry. Captured Frontier loadouts
+  independently show the advanced suite on the Python Mk II and on every other captured
+  hull, including the Lynx Highliner.
+- **Cargo hatch:** the built-in hatch is added to every hull after the EDSY arrays. EDSY
+  exports `ModularCargoBayDoorFDL` for the Fer-de-Lance family; captured Frontier Lynx
+  Highliner loadouts show the same symbol, so those two hulls carry it and every other
+  hull carries `ModularCargoBayDoor`. The hull-specific variant resolves through the
+  standard hatch's known stats in `ShipLoadout`.
+- **Source disagreement:** coriolis-data's `defaults` arrays are not used as the primary
+  source. They stop at 47 hulls, omit several current stock assists, and predate some SCO
+  stock fits. They corroborate the older core, weapon and internal identities where both
+  sources cover the same ship.
+
 ### `restriction` — a mount that takes one family of modules
 
 Seven values: `mining` on a hardpoint, and `military`, `planetaryApproachSuite`,
