@@ -3041,6 +3041,40 @@ type FixtureShipsOperations = {
             yaw: number;
         };
     };
+    moduleLimits: {
+        catalogue: {
+            increases: {
+                amount: number;
+                symbol: string;
+            }[];
+            limitedCount: number;
+            weapon: string;
+        };
+        expectedIssue: {
+            code: string;
+            params: {
+                count: number;
+                group: string;
+                limit: number;
+            };
+        };
+        expectedUsage: {
+            baseLimit: number;
+            count: number;
+            excess: number;
+            group: string;
+            increase: number;
+            limit: number;
+        };
+        group: string;
+        input: {
+            limitGroup?: string;
+            limitIncrease?: {
+                amount: number;
+                group: string;
+            };
+        }[];
+    };
     retailCredits: {
         expected: {
             hull: number;

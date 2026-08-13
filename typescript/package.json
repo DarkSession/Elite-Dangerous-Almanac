@@ -296,6 +296,10 @@
             "types": "./dist/ships/module-capabilities.d.ts",
             "import": "./dist/ships/module-capabilities.js"
         },
+        "./ships/module-limits": {
+            "types": "./dist/ships/module-limits.d.ts",
+            "import": "./dist/ships/module-limits.js"
+        },
         "./ships/mobility": {
             "types": "./dist/ships/mobility.d.ts",
             "import": "./dist/ships/mobility.js"

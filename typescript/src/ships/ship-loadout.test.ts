@@ -14,6 +14,7 @@ import slefFixture from '../../../fixtures/ships/slef-the-deep-black.jsonc' with
 import expected from '../../../fixtures/ships/jump-range.jsonc' with { type: 'json' };
 import metrics from '../../../fixtures/ships/build-metrics.jsonc' with { type: 'json' };
 import slotsFixture from '../../../fixtures/ships/ship-slots.jsonc' with { type: 'json' };
+import operationsFixture from '../../../fixtures/ships/operations.jsonc' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 import preEngineeredFixture from '../../../fixtures/ships/pre-engineered.jsonc' with { type: 'json' };
 import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.jsonc' with { type: 'json' };
@@ -94,6 +95,63 @@ test('one-per-ship modules are filtered, rejected on edit and diagnosed on impor
     assert.ok(
         imported.validation.issues.some((issue) => issue.code === 'duplicateExclusiveModule'),
     );
+});
+
+test('experimental-weapon limits are filtered, enforced, increased and diagnosed', () => {
+    const { catalogue } = operationsFixture.moduleLimits;
+    const weapon = mod(catalogue.weapon, HARDPOINT_MODULES);
+    const stabiliser3 = mod(catalogue.increases[0]!.symbol, INTERNAL_MODULES);
+    const stabiliser5 = mod(catalogue.increases[1]!.symbol, INTERNAL_MODULES);
+    const build = ShipLoadout.empty('Anaconda')
+        .setModule('HugeHardpoint1', weapon)
+        .setModule('LargeHardpoint1', weapon)
+        .setModule('LargeHardpoint2', weapon)
+        .setModule('LargeHardpoint3', weapon);
+
+    assert.ok(
+        build
+            .modulesForSlot('MediumHardpoint1')
+            .every((candidate) => candidate.limitGroup !== operationsFixture.moduleLimits.group),
+    );
+    assert.throws(
+        () => build.setModule('MediumHardpoint1', weapon),
+        /experimentalWeapon would have 5 modules but the ship allows 4/,
+    );
+
+    build.setModule('Slot05_Size5', stabiliser3).setModule('MediumHardpoint1', weapon);
+    assert.throws(
+        () => build.setModule('MediumHardpoint2', weapon),
+        /experimentalWeapon would have 6 modules but the ship allows 5/,
+    );
+    build.setModule('Slot05_Size5', stabiliser5).setModule('MediumHardpoint2', weapon);
+    assert.throws(
+        () => build.setModule('Slot05_Size5', stabiliser3),
+        /experimentalWeapon would have 6 modules but the ship allows 5/,
+    );
+    assert.throws(
+        () => build.removeModule('Slot05_Size5'),
+        /experimentalWeapon would have 6 modules but the ship allows 4/,
+    );
+    assert.equal(
+        build.validation.issues.some((issue) => issue.code === 'moduleLimitExceeded'),
+        false,
+    );
+
+    const imported = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: [
+            'HugeHardpoint1',
+            'LargeHardpoint1',
+            'LargeHardpoint2',
+            'LargeHardpoint3',
+            'MediumHardpoint1',
+        ].map((Slot) => ({ Slot, Item: weapon.symbol })),
+    });
+    assert.deepEqual(
+        imported.validation.issues.find((issue) => issue.code === 'moduleLimitExceeded')?.params,
+        { group: operationsFixture.moduleLimits.group, count: 5, limit: 4 },
+    );
+    assert.doesNotThrow(() => imported.removeModule('MediumHardpoint1'));
 });
 
 test('the facade reports loaded mobility, shield recovery and cell-bank pools', () => {
@@ -2166,6 +2224,7 @@ test('fitting a caller-supplied record leaves the caller its own arrays', () => 
     const supplied: OutfittingModule = {
         ...mod('Int_CargoRack_Size7_Class1', INTERNAL_MODULES),
         restrictedToShips: ['Anaconda'],
+        limitIncrease: { group: 'experimentalWeapon', amount: 1 },
         damageComponents: { explosive: 4, unclassified: [1] },
         projectileRange: { maximumBoundary: 0, falloffBoundary: 100000 },
     };
@@ -2173,6 +2232,7 @@ test('fitting a caller-supplied record leaves the caller its own arrays', () => 
 
     assert.equal(Object.isFrozen(supplied), false);
     assert.equal(Object.isFrozen(supplied.restrictedToShips), false);
+    assert.equal(Object.isFrozen(supplied.limitIncrease), false);
     assert.equal(Object.isFrozen(supplied.damageComponents), false);
     assert.equal(Object.isFrozen(supplied.damageComponents?.unclassified), false);
     assert.equal(Object.isFrozen(supplied.projectileRange), false);

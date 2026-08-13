@@ -61,8 +61,9 @@ a verbatim copy produced at build time — edit this file, never the copy.
   `eddb.js` and `edsy.js`. Supplies the values coriolis-data leaves blank or carries
   wrongly (module mass, integrity, power draw, boot time, the base stats engineering
   recipes scale), the experimental-effect modifiers and their recipes, the module-group
-  engineering menus, the journal slot names, and the attribute-to-journal-Label mapping.
-  The values are Elite Dangerous game data — see the Frontier notice below.
+  engineering menus, per-ship module-count limits and fitted stabiliser increases, the
+  journal slot names, and the attribute-to-journal-Label mapping. The values are Elite
+  Dangerous game data — see the Frontier notice below.
 - **[Inara](https://inara.cz/)** — the blueprint and outfitting registries behind the
   Operations pre-engineered blueprints and shop rows, the ship pages used to corroborate
   hull layouts, and the component pages that grade the Thargoid caustic / Titan materials

@@ -29,6 +29,8 @@
  * hull restriction is its `ship` field.
  * `exclusionGroup` marks a one-per-ship family; two modules sharing its value cannot
  * be fitted to one hull at once.
+ * `limitIncrease` records the additional modules a fitted stabiliser permits in one
+ * per-ship count family.
  *
  * Defence stats: `kineticResistance`, `thermalResistance`, `explosiveResistance` and
  * `causticResistance` are fractions of damage removed (negative = a weakness);
@@ -7060,6 +7062,7 @@
     "class": 3,
     "rating": "F",
     "exclusionGroup": "experimentalModuleStabiliser",
+    "limitIncrease": { "group": "experimentalWeapon", "amount": 1 },
     "mass": 8,
     "powerDraw": 0,
     "cost": 2000000
@@ -7070,6 +7073,7 @@
     "class": 5,
     "rating": "F",
     "exclusionGroup": "experimentalModuleStabiliser",
+    "limitIncrease": { "group": "experimentalWeapon", "amount": 2 },
     "entitlement": "ELITE_HORIZONS_V_EXPERIMENTALSTABILISER_SIZE5",
     "mass": 20,
     "powerDraw": 0,

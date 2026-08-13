@@ -115,6 +115,24 @@ export type ModuleExclusionGroup =
     | 'supercruiseAssist';
 
 /**
+ * A game-enforced per-ship module-count family.
+ *
+ * @remarks
+ * Unlike {@link ModuleExclusionGroup}, a limit group may allow more than one fitted
+ * module and another module may raise its allowance. The only current family is the
+ * experimental-weapon limit shared by AX and Guardian weapons.
+ */
+export type ModuleLimitGroup = 'experimentalWeapon';
+
+/** A fitted module's increase to one {@link ModuleLimitGroup} allowance. */
+export interface ModuleLimitIncrease {
+    /** Limit family whose allowance is increased. */
+    readonly group: ModuleLimitGroup;
+    /** Additional modules allowed, as a positive whole-module count (`1` or greater). */
+    readonly amount: number;
+}
+
+/**
  * How a weapon's damage splits across the damage types, as fractions of one shot.
  *
  * @remarks
@@ -398,6 +416,21 @@ export interface OutfittingModuleIdentity {
      * Two fitted modules sharing this id are structurally invalid.
      */
     readonly exclusionGroup?: ModuleExclusionGroup;
+    /**
+     * Per-ship count limit this fitted module consumes, absent when it consumes none.
+     * Read the base allowance and current usage with `calculateModuleLimits` from
+     * `ships/module-limits` rather than inferring the family from a symbol or name.
+     */
+    readonly limitGroup?: ModuleLimitGroup;
+    /**
+     * Increase this fitted module grants to a per-ship count allowance.
+     *
+     * @remarks
+     * The Experimental Weapon Stabiliser grants one additional experimental weapon at
+     * class 3 and two at class 5. The grant comes from the fitted article; module power
+     * state does not change structural fitting validity.
+     */
+    readonly limitIncrease?: ModuleLimitIncrease;
     /**
      * Standard purchase price, in credits — the base list price before any station
      * discount or markup, which is what an outfitting screen quotes at 0% discount.

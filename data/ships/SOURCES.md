@@ -835,14 +835,24 @@ and bulkhead name because those records carry no symbol upstream.
     share one group), fuel scoops, refineries, frame-shift-drive interdictors, Guardian
     FSD boosters, vessel hangars, docking computers, supercruise assist, multi-limpet
     controllers, the two scanner families, experimental module stabilisers, and the five
-    one-per-ship utility families. EDSY sets every one of those limits to `1`; its
-    experimental-weapon limit is `4` and is deliberately not represented by this
-    one-per-ship field. EDSY's three legacy discovery scanners are absent because they
+    one-per-ship utility families. EDSY sets every one of those limits to `1`. EDSY's
+    three legacy discovery scanners are absent because they
     are not current outfitting records; `Int_SupercruiseAssist` matches EDSY's
     `Int_SuperCruiseAssist` case-insensitively, as Frontier symbols are matched elsewhere.
     The three Mk I bundle-granted and all six Mk II Vessel Hangars are absent from the
     baseline table; they join to the separately pinned Vessel Hangar snapshot, where all
     nine carry the same `limit:'ifh'` as the ordinary Mk I records.
+  - **`limitGroup` / `limitIncrease` preserve EDSY's non-exclusive fitting limit.** All
+    33 current hardpoint records whose EDSY module carries `limit:'hex'` store
+    `limitGroup:'experimentalWeapon'`; the source's `eddb.limit.hex` is `4`. This is the
+    shared AX/Guardian experimental-weapon allowance, not a name-based classification:
+    the marked set is exactly the source set, including the Caustic Missile Rack and
+    excluding the two Guardian Nanite Torpedo Pylons, which EDSY does not limit. The
+    class-3 and class-5 Experimental Weapon Stabilisers carry EDSY's
+    `unlimit:'hex'` / `unlimitcount:1` and `2` as `limitIncrease`. EDSY's fitting logic
+    adds those increases to the base allowance and counts every fitted stabiliser; both
+    source records have effective `powerDraw:0`, so power state does not alter the
+    structural allowance.
   - **Pre-engineered/duplicate drives share a `symbol`** in coriolis (e.g. the V1
     FSDs); the first (primary) occurrence wins, and any baked engineering is expected
     to arrive as SLEF `Engineering.Modifiers` instead.

@@ -6,7 +6,9 @@ import { mobilityMetrics } from './mobility.js';
 import { calculateCargoCapacity } from './loadout-calculations.js';
 import { cellBankSummary, shieldRecovery } from './shield-recovery.js';
 import { validateLoadout } from './loadout-validation.js';
-import type { ModuleExclusionGroup } from './modules.js';
+import { calculateModuleLimits, type ModuleLimitEntry } from './module-limits.js';
+import { getModuleBySymbol, type ModuleExclusionGroup } from './modules.js';
+import { ALL_MODULES } from './modules-all.js';
 import { ShipLoadout } from './ship-loadout.js';
 import { inspectSlef } from './slef.js';
 import { sumWeaponMetrics, weaponMetrics } from './weapons.js';
@@ -55,6 +57,44 @@ test('shared catalogue-backed operation cases reproduce', () => {
         ],
     });
     assert.ok(validation.issues.some((issue) => issue.code === fixture.exclusivity.expectedCode));
+
+    const limits = fixture.moduleLimits.catalogue;
+    assert.equal(
+        ALL_MODULES.filter((module) => module.limitGroup === fixture.moduleLimits.group).length,
+        limits.limitedCount,
+    );
+    assert.equal(getModuleBySymbol(limits.weapon)?.limitGroup, fixture.moduleLimits.group);
+    for (const expected of limits.increases) {
+        assert.deepEqual(getModuleBySymbol(expected.symbol)?.limitIncrease, {
+            group: fixture.moduleLimits.group,
+            amount: expected.amount,
+        });
+    }
+});
+
+test('shared module-count limits resolve allowances and structural diagnostics', () => {
+    const input = fixture.moduleLimits.input as readonly ModuleLimitEntry[];
+    const usage = calculateModuleLimits(input);
+    assert.deepEqual(usage[0], fixture.moduleLimits.expectedUsage);
+    assert.ok(Object.isFrozen(usage));
+    assert.ok(Object.isFrozen(usage[0]));
+
+    const validation = validateLoadout({
+        shipSymbol: 'FutureShip',
+        slots: null,
+        modules: input.map((metadata, index) => ({
+            slot: `Slot${index}`,
+            symbol: `Module${index}`,
+            known: true,
+            fitError: null,
+            ...metadata,
+        })),
+    });
+    const issue = validation.issues.find(
+        (candidate) => candidate.code === fixture.moduleLimits.expectedIssue.code,
+    );
+    assert.ok(issue);
+    assert.deepEqual(issue.params, fixture.moduleLimits.expectedIssue.params);
 });
 
 test('shared diagnostic cases expose stable localization keys', () => {

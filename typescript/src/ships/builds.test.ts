@@ -77,9 +77,19 @@ const ROLES = new Set([
 /** Assemble a build the way the corpus describes it: fit, power, but do not engineer. */
 function assemble(build: CorpusBuild): ShipLoadout {
     const loadout = ShipLoadout.empty(build.ship);
-    for (const entry of build.modules) {
+    const resolved = build.modules.map((entry) => {
         const module = getModuleBySymbol(entry.item, ALL_MODULES);
         assert.ok(module, `${build.id}: no module "${entry.item}"`);
+        return { entry, module };
+    });
+    // A count-increasing internal can follow the weapons it permits in the fixture's
+    // canonical slot order. Fit grants first so each intermediate editor state is valid;
+    // calculations and keyed occupancy do not depend on insertion order.
+    resolved.sort(
+        ({ module: left }, { module: right }) =>
+            Number(right.limitIncrease !== undefined) - Number(left.limitIncrease !== undefined),
+    );
+    for (const { entry, module } of resolved) {
         loadout.setModule(entry.slot, module);
         loadout.setModuleEnabled(entry.slot, entry.on ?? true);
         loadout.setModulePriority(entry.slot, entry.priority ?? 0);

@@ -5,7 +5,8 @@
  */
 
 import type { BuildSlot } from './slots.js';
-import type { ModuleExclusionGroup } from './modules.js';
+import type { ModuleExclusionGroup, ModuleLimitGroup, ModuleLimitIncrease } from './modules.js';
+import { calculateModuleLimits } from './module-limits.js';
 import { truncate } from '../internal/argument-guards.js';
 
 /**
@@ -25,7 +26,8 @@ export type LoadoutIssueCode =
     | 'missingRequiredSlot'
     | 'unknownModule'
     | 'incompatibleModule'
-    | 'duplicateExclusiveModule';
+    | 'duplicateExclusiveModule'
+    | 'moduleLimitExceeded';
 
 /** Stable machine-readable constraint behind an `incompatibleModule` issue. */
 export type ModuleFitConstraint =
@@ -86,6 +88,10 @@ export interface ValidationModule {
     readonly fitParams?: Readonly<Record<string, string | number>>;
     /** One-per-ship family, when the resolved module belongs to one. */
     readonly exclusionGroup?: ModuleExclusionGroup;
+    /** Per-ship count family this resolved module consumes, when any. */
+    readonly limitGroup?: ModuleLimitGroup;
+    /** Per-ship count allowance increase this resolved module grants, when any. */
+    readonly limitIncrease?: ModuleLimitIncrease;
 }
 
 /** Input to {@link validateLoadout}. */
@@ -154,6 +160,16 @@ export function validateLoadout(input: LoadoutValidationInput): LoadoutValidatio
         } else {
             exclusive.set(module.exclusionGroup, module);
         }
+    }
+
+    for (const usage of calculateModuleLimits(input.modules)) {
+        if (usage.excess === 0) continue;
+        issues.push({
+            code: 'moduleLimitExceeded',
+            severity: 'error',
+            params: { group: usage.group, count: usage.count, limit: usage.limit },
+            message: `${usage.group} has ${usage.count} fitted modules but the ship allows ${usage.limit}`,
+        });
     }
 
     if (input.slots === null) {

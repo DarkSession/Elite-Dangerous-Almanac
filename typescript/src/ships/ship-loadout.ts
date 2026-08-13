@@ -86,6 +86,7 @@ import { getBlueprintsForModule, getExperimentalsForModule } from './engineering
 import { resolveBlueprintForModule } from './blueprint-journal.js';
 import type { ModuleEngineering } from './slef.js';
 import type { OutfittingModule } from './modules.js';
+import { calculateModuleLimits, type ModuleLimitUsage } from './module-limits.js';
 import { baseStats, labelsForDamageType, scaleForLabel } from './internal/module-stat-labels.js';
 import {
     cloneLoadoutModule,
@@ -813,7 +814,8 @@ export class ShipLoadout {
      * @remarks
      * Optional, hardpoint and utility mounts may be empty. Armour and all seven core
      * mounts must be filled for `complete` to be true. An unknown hull or module is
-     * incomplete; a module in a nonexistent or incompatible slot is invalid.
+     * incomplete; a module in a nonexistent or incompatible slot is invalid. Exclusive
+     * families and per-ship module-count allowances must also be satisfied.
      */
     get validation(): LoadoutValidation {
         const cached = this.#validationCache;
@@ -838,6 +840,10 @@ export class ShipLoadout {
                 ...(stats?.exclusionGroup === undefined
                     ? {}
                     : { exclusionGroup: stats.exclusionGroup }),
+                ...(stats?.limitGroup === undefined ? {} : { limitGroup: stats.limitGroup }),
+                ...(stats?.limitIncrease === undefined
+                    ? {}
+                    : { limitIncrease: stats.limitIncrease }),
             };
         });
         const value = validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
@@ -1001,7 +1007,8 @@ export class ShipLoadout {
 
     /**
      * The modules that fit a given slot — its size, kind and any restriction all
-     * satisfied, with one-per-ship families already occupied elsewhere omitted.
+     * satisfied, with candidates that would worsen a one-per-ship or module-count limit
+     * omitted.
      *
      * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
      * @returns The fitting modules, in complete-catalogue order.
@@ -1024,10 +1031,12 @@ export class ShipLoadout {
                 return group === undefined ? [] : [group];
             }),
         );
+        const currentLimits = this.#moduleLimits();
         return ALL_MODULES.filter(
             (module) =>
                 moduleFitError(this.#shipSymbol, slot, module) === null &&
-                (module.exclusionGroup === undefined || !occupied.has(module.exclusionGroup)),
+                (module.exclusionGroup === undefined || !occupied.has(module.exclusionGroup)) &&
+                this.#moduleLimitRegression(slot.key, module, currentLimits) === null,
         );
     }
 
@@ -1045,8 +1054,9 @@ export class ShipLoadout {
      * @throws {TypeError} If `slotKey` is not a string; `module` is null/undefined (e.g. a
      * `getModuleBySymbol` miss) or is not an outfitting module at all; the module does not
      * fit the slot (wrong kind, too large, or a restriction the module does not satisfy),
-     * conflicts with a one-per-ship family already fitted elsewhere, or the hull has no
-     * known slot layout (a SLEF build on an unrecognised hull).
+     * conflicts with a one-per-ship family already fitted elsewhere, worsens a per-ship
+     * module-count excess, or the hull has no known slot layout (a SLEF build on an
+     * unrecognised hull).
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1095,6 +1105,12 @@ export class ShipLoadout {
                 );
             }
         }
+        const limitProblem = this.#moduleLimitRegression(slot.key, module);
+        if (limitProblem !== null) {
+            throw new TypeError(
+                `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${limitProblem.group} would have ${limitProblem.count} modules but the ship allows ${limitProblem.limit}`,
+            );
+        }
         // Replacing keeps the key the build already uses; a fresh fit takes the hull
         // layout's canonical spelling rather than whatever casing the caller typed.
         const key = this.#fittedKey(slotKey) ?? slot.key;
@@ -1108,8 +1124,9 @@ export class ShipLoadout {
      * @param slotKey - The slot key to clear, matched case-insensitively (journal
      * spelling).
      * @returns `this`, for chaining. Clearing an already-empty slot is a no-op.
-     * @throws {TypeError} If `slotKey` is not a string, or names the built-in cargo
-     * hatch, which cannot be removed or replaced.
+     * @throws {TypeError} If `slotKey` is not a string, names the built-in cargo hatch,
+     * which cannot be removed or replaced, or removing the module would worsen a
+     * per-ship module-count excess.
      */
     removeModule(slotKey: string): this {
         // Read before `#fittedKey` does, so this one method guards for itself.
@@ -1117,7 +1134,15 @@ export class ShipLoadout {
             throw new TypeError('ShipLoadout.removeModule: the cargoHatch slot cannot be changed');
         }
         const key = this.#fittedKey(slotKey);
-        if (key !== null) this.#replaceModule(key, null);
+        if (key !== null) {
+            const limitProblem = this.#moduleLimitRegression(key, null);
+            if (limitProblem !== null) {
+                throw new TypeError(
+                    `ShipLoadout.removeModule: ${truncate(slotKey)}: ${limitProblem.group} would have ${limitProblem.count} modules but the ship allows ${limitProblem.limit}`,
+                );
+            }
+            this.#replaceModule(key, null);
+        }
         return this;
     }
 
@@ -2057,6 +2082,35 @@ export class ShipLoadout {
                     : {}),
             };
         });
+    }
+
+    /** Resolve the current or proposed fit's per-ship module-count usage. */
+    #moduleLimits(
+        replacementSlot?: string,
+        replacement?: OutfittingModule | null,
+    ): readonly ModuleLimitUsage[] {
+        const replaced = replacementSlot?.toLowerCase();
+        const entries = [...this.#modules.values()].flatMap((module) => {
+            if (module.Slot.toLowerCase() === replaced) return [];
+            const stats = this.#statsFor(module);
+            return stats === null ? [] : [stats];
+        });
+        if (replacement !== undefined && replacement !== null) entries.push(replacement);
+        return calculateModuleLimits(entries);
+    }
+
+    /** A proposed edit's newly increased limit excess, or `null` when it worsens none. */
+    #moduleLimitRegression(
+        slotKey: string,
+        replacement: OutfittingModule | null,
+        current = this.#moduleLimits(),
+    ): ModuleLimitUsage | null {
+        const before = new Map(current.map((usage) => [usage.group, usage.excess]));
+        return (
+            this.#moduleLimits(slotKey, replacement).find(
+                (usage) => usage.excess > (before.get(usage.group) ?? 0),
+            ) ?? null
+        );
     }
 
     /** Replace one fitted module and keep imported aggregate figures coherent. */

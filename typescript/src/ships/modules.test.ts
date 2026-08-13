@@ -84,6 +84,8 @@ const IDENTITY_KEYS = new Set([
     'rating',
     'entitlement',
     'exclusionGroup',
+    'limitGroup',
+    'limitIncrease',
     // Price is commercial data, not a stat: ship-specific armour is priced but carries
     // no mass/integrity/power, and must still count as identity-only here.
     'cost',

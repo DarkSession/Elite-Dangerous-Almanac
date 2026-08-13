@@ -647,10 +647,13 @@ test('the data-free build calculations are importable on their own', async () =>
         await import('@elite-dangerous-almanac/core/ships/resistances');
     const { weaponMetrics } = await import('@elite-dangerous-almanac/core/ships/weapons');
     const { ammunitionCapacity } = await import('@elite-dangerous-almanac/core/ships/ammunition');
+    const { calculateModuleLimits } =
+        await import('@elite-dangerous-almanac/core/ships/module-limits');
     assert.equal(powerBudget(10, [{ draw: 4, priority: 1 }]).headroom, 6);
     assert.ok(Math.abs(stackShieldResistance(0, [0.1, 0.1]) - 0.19) < 1e-9);
     assert.equal(weaponMetrics({ damage: 2, rateOfFire: 3 }).damagePerSecond, 6);
     assert.equal(ammunitionCapacity({ clipSize: 6, ammoMaximum: 120 }).total, 126);
+    assert.equal(calculateModuleLimits([{ limitGroup: 'experimentalWeapon' }])[0].limit, 4);
 });
 
 test('each barrel ships its orientation documentation in the declarations', async () => {

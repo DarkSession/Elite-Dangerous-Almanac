@@ -4098,6 +4098,98 @@
           },
           "required": ["expected", "input"]
         },
+        "moduleLimits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "catalogue": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "increases": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "amount": { "type": "integer" },
+                      "symbol": { "type": "string" }
+                    },
+                    "required": ["amount", "symbol"]
+                  }
+                },
+                "limitedCount": { "type": "integer" },
+                "weapon": { "type": "string" }
+              },
+              "required": ["increases", "limitedCount", "weapon"]
+            },
+            "expectedIssue": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "code": { "type": "string" },
+                "params": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "count": { "type": "integer" },
+                    "group": { "type": "string" },
+                    "limit": { "type": "integer" }
+                  },
+                  "required": ["count", "group", "limit"]
+                }
+              },
+              "required": ["code", "params"]
+            },
+            "expectedUsage": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "baseLimit": { "type": "integer" },
+                "count": { "type": "integer" },
+                "excess": { "type": "integer" },
+                "group": { "type": "string" },
+                "increase": { "type": "integer" },
+                "limit": { "type": "integer" }
+              },
+              "required": [
+                "baseLimit",
+                "count",
+                "excess",
+                "group",
+                "increase",
+                "limit"
+              ]
+            },
+            "group": { "type": "string" },
+            "input": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "limitGroup": { "type": "string" },
+                  "limitIncrease": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "amount": { "type": "integer" },
+                      "group": { "type": "string" }
+                    },
+                    "required": ["amount", "group"]
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "catalogue",
+            "expectedIssue",
+            "expectedUsage",
+            "group",
+            "input"
+          ]
+        },
         "retailCredits": {
           "type": "object",
           "additionalProperties": false,
@@ -4208,6 +4300,7 @@
         "diagnostics",
         "exclusivity",
         "mobility",
+        "moduleLimits",
         "retailCredits",
         "shieldRecovery",
         "slotRemoval",

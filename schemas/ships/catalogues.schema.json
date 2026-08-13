@@ -351,6 +351,20 @@
             "supercruiseAssist"
           ]
         },
+        "limitGroup": {
+          "description": "Per-ship count-limit family this fitted module consumes.",
+          "enum": ["experimentalWeapon"]
+        },
+        "limitIncrease": {
+          "description": "Increase this fitted module grants to a per-ship count allowance.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["group", "amount"],
+          "properties": {
+            "group": { "enum": ["experimentalWeapon"] },
+            "amount": { "type": "integer", "minimum": 1 }
+          }
+        },
         "mass": { "type": "number", "minimum": 0 },
         "integrity": { "type": "number", "minimum": 0 },
         "powerDraw": { "type": "number", "minimum": 0 },

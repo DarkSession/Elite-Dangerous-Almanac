@@ -2,9 +2,9 @@
  * Shared test fixture — not shipped in any package.
  *
  * Cross-language parity cases for loaded mobility, shield recovery, shield-cell pools,
- * one-per-ship validation, direct retail pricing, alpha-strike thermal load and
- * structured SLEF diagnostics. Inputs pin the public data-free contracts; catalogue-
- * backed expectations pin the shared ship and module snapshots.
+ * one-per-ship and counted-module validation, direct retail pricing, alpha-strike
+ * thermal load and structured SLEF diagnostics. Inputs pin the public data-free
+ * contracts; catalogue-backed expectations pin the shared ship and module snapshots.
  */
 {
   "mobility": {
@@ -93,6 +93,38 @@
   "exclusivity": {
     "group": "shieldGenerator",
     "expectedCode": "duplicateExclusiveModule"
+  },
+  "moduleLimits": {
+    "group": "experimentalWeapon",
+    "input": [
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitGroup": "experimentalWeapon" },
+      { "limitIncrease": { "group": "experimentalWeapon", "amount": 1 } }
+    ],
+    "expectedUsage": {
+      "group": "experimentalWeapon",
+      "baseLimit": 4,
+      "increase": 1,
+      "limit": 5,
+      "count": 6,
+      "excess": 1
+    },
+    "expectedIssue": {
+      "code": "moduleLimitExceeded",
+      "params": { "group": "experimentalWeapon", "count": 6, "limit": 5 }
+    },
+    "catalogue": {
+      "limitedCount": 33,
+      "weapon": "Hpt_Guardian_GaussCannon_Fixed_Small",
+      "increases": [
+        { "symbol": "Int_ExpModuleStabiliser_Size3_Class3", "amount": 1 },
+        { "symbol": "Int_ExpModuleStabiliser_Size5_Class3", "amount": 2 }
+      ]
+    }
   },
   "retailCredits": {
     "ship": "Anaconda",

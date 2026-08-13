@@ -199,10 +199,19 @@ export {
     type ModuleGuidance,
     type ModuleRating,
     type ModuleExclusionGroup,
+    type ModuleLimitGroup,
+    type ModuleLimitIncrease,
     type DamageDistribution,
     type DamageComponents,
     type ProjectileRangeBoundaries,
 } from './modules.js';
+
+export {
+    SHIP_MODULE_LIMITS,
+    calculateModuleLimits,
+    type ModuleLimitEntry,
+    type ModuleLimitUsage,
+} from './module-limits.js';
 
 export {
     hasFrameShiftDriveJumpStats,
