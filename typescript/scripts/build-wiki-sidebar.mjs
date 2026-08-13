@@ -3,8 +3,8 @@
 // The wiki theme's own sidebar is one flat list of the guides and the four feature
 // areas, which leaves 300-odd symbol pages reachable only by walking a module index.
 // This rewrites it as nested `<details>` blocks — feature area, then member kind,
-// then a class's own accessors and methods — so every page in the wiki is one or two
-// disclosure clicks away from wherever the reader currently is.
+// then a class's own accessors and methods — so every page in the wiki is visible in
+// its navigation context and each level can still be collapsed independently.
 //
 // It reads the pages TypeDoc has already written rather than the reflection tree, so
 // the titles, link targets and ordering are by construction the ones the module index
@@ -234,7 +234,7 @@ async function classBlock({ title, target }) {
     }
     close(members);
 
-    return details(summaryText(title), stack(body));
+    return details(summaryText(title), stack(body), { open: true });
 }
 
 /**
@@ -256,6 +256,7 @@ async function subtreeBlock({ title, target }, seen) {
     return details(
         summaryText(title),
         stack([overview, indent(stack(await symbolGroups(target, seen)))]),
+        { open: true },
     );
 }
 
@@ -290,7 +291,7 @@ async function symbolGroups(target, seen = new Set()) {
                 stack(await Promise.all(symbols.map((symbol) => subtreeBlock(symbol, within)))),
             );
         } else inner = bullets(symbols);
-        groups.push(details(`${title} (${symbols.length})`, inner));
+        groups.push(details(`${title} (${symbols.length})`, inner, { open: true }));
     }
 
     return groups;
@@ -323,7 +324,7 @@ async function subpathBlock(submodules) {
         }
     }
 
-    return details(`Subpath modules (${submodules.length})`, stack(blocks));
+    return details(`Subpath modules (${submodules.length})`, stack(blocks), { open: true });
 }
 
 async function moduleBlock(module, submodules) {
@@ -335,7 +336,13 @@ async function moduleBlock(module, submodules) {
 
     if (submodules.length > 0) kinds.push(await subpathBlock(submodules));
 
-    return details(`<b>${summaryText(module.title)}</b>`, stack([overview, indent(stack(kinds))]));
+    // `_Sidebar.md` is shared by every GitHub Wiki page, so it cannot mark only the
+    // current page's feature area as open. Keep each disclosure open instead: after
+    // following an Overview or symbol link the reader retains the complete navigation
+    // context, while every level can still be collapsed manually.
+    return details(`<b>${summaryText(module.title)}</b>`, stack([overview, indent(stack(kinds))]), {
+        open: true,
+    });
 }
 
 /**
