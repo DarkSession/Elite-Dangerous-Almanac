@@ -89,9 +89,11 @@ a verbatim copy produced at build time — edit this file, never the copy.
   permit-locked systems' `id64` values. Consult each service's published terms for use of
   its API or data.
 - **[Odyssey Materials Helper](https://github.com/jixxed/ed-odyssey-materials-helper)** by
-  **Jixxed**, **MIT** — a CAPI response in its test resources corroborates the six
-  bundle-granted Vessel Hangar variants. The response itself is factual Elite Dangerous
-  game output; only the module identities, bundle flags and grant tokens are used.
+  **Jixxed**, **MIT** — supplies the personal suit and handheld-weapon identities, stats,
+  journal symbols, grade-upgrade recipes and engineer-applied modification recipes. A
+  CAPI response in its test resources also corroborates the six bundle-granted Vessel
+  Hangar variants. The values and response are factual Elite Dangerous game data. Its
+  MIT notice is reproduced below.
 - **[msarilar/EDEngineer](https://github.com/msarilar/EDEngineer)**, **MIT** for its code
   — its `blueprints.json` corroborates which weapons the Overcharged recipe gives a clip
   penalty to. The values are game data.
@@ -99,7 +101,9 @@ a verbatim copy produced at build time — edit this file, never the copy.
   **CC BY-SA 3.0**) — how the Corrosion Resistant Cargo Racks are obtained, which is why
   two of them carry no list price.
 - **Frontier Developments plc** — the game itself, the ship models represented by the
-  shared vector illustrations, and its published statements:
+  shared vector illustrations, the official
+  [Elite Dangerous Gamestore](https://www.elitedangerous.com/store/) product names used
+  to correct the four Karma and three TK handheld weapons, and its published statements:
   the [media-usage rules](https://forums.frontier.co.uk/threads/elite-dangerous-media-usage-rules.510879/)
   quoted below, the Operations and Lynx
   [update notes](https://forums.frontier.co.uk/threads/648012/), and the
@@ -155,6 +159,7 @@ This file credits. What was taken from each source, when, from which revision, h
 derived and every manual correction are recorded with the data itself, in
 [`data/astro/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/astro/SOURCES.md),
 [`data/materials/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/materials/SOURCES.md),
+[`data/equipment/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/equipment/SOURCES.md),
 [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md)
 and
 [`data/commodities/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/commodities/SOURCES.md),
@@ -165,6 +170,33 @@ package, where they are not present, so the links are absolute.
 
 If you add or change data, port an algorithm, or add a dependency that warrants credit,
 add it here and record the provenance where the data lives.
+
+---
+
+## Odyssey Materials Helper license
+
+The personal-equipment data is derived from Odyssey Materials Helper, whose MIT notice
+is reproduced as required:
+
+```
+Copyright (c) 2026 Jixxed
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+```
 
 ---
 

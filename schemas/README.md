@@ -9,6 +9,7 @@ matching directory:
 
 - `astro/catalogues.schema.json`
 - `commodities/catalogues.schema.json`
+- `equipment/catalogues.schema.json`
 - `materials/catalogues.schema.json`
 - `ships/catalogues.schema.json`
 

@@ -1,0 +1,225 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://elite-dangerous-almanac.dev/schemas/equipment/catalogues.schema.json",
+  "title": "Elite Dangerous Almanac personal-equipment catalogue schemas",
+  "description": "Language-neutral schemas for every JSONC payload in data/equipment.",
+  "definitions": {
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "nonNegativeInteger": { "type": "integer", "minimum": 0 },
+    "positiveNumber": { "type": "number", "exclusiveMinimum": 0 },
+    "ingredient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symbol", "count"],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "ingredients": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/ingredient" }
+    },
+    "suitGrade": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "symbol",
+        "modificationSlots",
+        "shieldStrength",
+        "shieldRegeneration",
+        "kineticResistance",
+        "thermalResistance",
+        "plasmaResistance",
+        "explosiveResistance"
+      ],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "modificationSlots": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "shieldStrength": { "$ref": "#/definitions/positiveNumber" },
+        "shieldRegeneration": { "$ref": "#/definitions/positiveNumber" },
+        "kineticResistance": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1
+        },
+        "thermalResistance": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1
+        },
+        "plasmaResistance": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1
+        },
+        "explosiveResistance": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1
+        }
+      }
+    },
+    "suit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "family",
+        "name",
+        "primarySlots",
+        "secondarySlots",
+        "grades"
+      ],
+      "properties": {
+        "family": { "$ref": "#/definitions/nonEmptyString" },
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "primarySlots": { "$ref": "#/definitions/nonNegativeInteger" },
+        "secondarySlots": { "$ref": "#/definitions/nonNegativeInteger" },
+        "grades": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[1-5]$": { "$ref": "#/definitions/suitGrade" }
+          }
+        }
+      }
+    },
+    "suitCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/suit" }
+    },
+    "weaponGrade": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["damage", "modificationSlots"],
+      "properties": {
+        "damage": { "$ref": "#/definitions/positiveNumber" },
+        "modificationSlots": { "type": "integer", "minimum": 0, "maximum": 4 }
+      }
+    },
+    "weapon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "symbol",
+        "name",
+        "upgradeGroup",
+        "engineeringType",
+        "class",
+        "slot",
+        "damageType",
+        "fireMode",
+        "rateOfFire",
+        "magazineSize",
+        "reserveAmmo",
+        "headshotMultiplier",
+        "effectiveRange",
+        "grades"
+      ],
+      "properties": {
+        "symbol": { "$ref": "#/definitions/nonEmptyString" },
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "upgradeGroup": { "enum": ["karma", "takada", "manticore"] },
+        "engineeringType": { "enum": ["kinetic", "laser", "plasma"] },
+        "class": {
+          "enum": [
+            "pistol",
+            "carbine",
+            "rifle",
+            "shotgun",
+            "sniper",
+            "launcher"
+          ]
+        },
+        "slot": { "enum": ["primary", "secondary"] },
+        "damageType": { "enum": ["kinetic", "thermal", "plasma", "explosive"] },
+        "fireMode": { "enum": ["automatic", "semi-automatic", "burst"] },
+        "rateOfFire": { "$ref": "#/definitions/positiveNumber" },
+        "magazineSize": { "type": "integer", "minimum": 1 },
+        "reserveAmmo": { "type": "integer", "minimum": 1 },
+        "headshotMultiplier": { "$ref": "#/definitions/positiveNumber" },
+        "effectiveRange": { "$ref": "#/definitions/positiveNumber" },
+        "grades": {
+          "type": "object",
+          "required": ["1", "2", "3", "4", "5"],
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[1-5]$": { "$ref": "#/definitions/weaponGrade" }
+          }
+        }
+      }
+    },
+    "weaponCatalogue": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/weapon" }
+    },
+    "gradeCosts": {
+      "type": "object",
+      "required": ["2", "3", "4", "5"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[2-5]$": { "$ref": "#/definitions/ingredients" }
+      }
+    },
+    "upgradeCostCatalogue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["suits", "weaponGroups"],
+      "properties": {
+        "suits": {
+          "type": "object",
+          "required": ["utilitysuit", "tacticalsuit", "explorationsuit"],
+          "additionalProperties": false,
+          "properties": {
+            "utilitysuit": { "$ref": "#/definitions/gradeCosts" },
+            "tacticalsuit": { "$ref": "#/definitions/gradeCosts" },
+            "explorationsuit": { "$ref": "#/definitions/gradeCosts" }
+          }
+        },
+        "weaponGroups": {
+          "type": "object",
+          "required": ["karma", "takada", "manticore"],
+          "additionalProperties": false,
+          "properties": {
+            "karma": { "$ref": "#/definitions/gradeCosts" },
+            "takada": { "$ref": "#/definitions/gradeCosts" },
+            "manticore": { "$ref": "#/definitions/gradeCosts" }
+          }
+        }
+      }
+    },
+    "modification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "target", "engineers"],
+      "properties": {
+        "name": { "$ref": "#/definitions/nonEmptyString" },
+        "target": { "enum": ["suit", "weapon"] },
+        "engineers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/nonEmptyString" }
+        }
+      }
+    },
+    "modificationCatalogue": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/definitions/modification" }
+    },
+    "modificationCostCatalogue": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/definitions/ingredients" }
+    },
+    "modificationJournalNameCatalogue": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
+    }
+  }
+}

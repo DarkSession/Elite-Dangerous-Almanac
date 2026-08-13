@@ -1,0 +1,284 @@
+/*
+ * Engineer-applied personal-equipment recipes, keyed by recipe symbol.
+ *
+ * Source: Odyssey Materials Helper. See ../../ATTRIBUTIONS.md for credit and SOURCES.md
+ * for the pinned revision and derivation. Most keys are the exact journal symbol. The
+ * nine technology-specific weapon recipes use the source's disambiguated recipe symbol;
+ * modification-journal-names.jsonc maps those back to the three symbols the journal writes.
+ * Material shopping lists live separately in modification-costs.jsonc.
+ */
+{
+  "suit_increasedmeleedamage": {
+    "name": "Added Melee Damage",
+    "target": "suit",
+    "engineers": [
+      "Jude Navarro",
+      "Kit Fowler",
+      "Eleanor Bresa"
+    ]
+  },
+  "suit_adsmovementspeed": {
+    "name": "Combat Movement Speed",
+    "target": "suit",
+    "engineers": [
+      "Terra Velasquez",
+      "Yarden Bond",
+      "Baltanos"
+    ]
+  },
+  "suit_improvedarmourrating": {
+    "name": "Damage Resistance",
+    "target": "suit",
+    "engineers": [
+      "Jude Navarro",
+      "Uma Laszlo",
+      "Eleanor Bresa"
+    ]
+  },
+  "suit_improvedradar": {
+    "name": "Enhanced Tracking",
+    "target": "suit",
+    "engineers": [
+      "Domino Green",
+      "Oden Geiger",
+      "Rosa Dayette"
+    ]
+  },
+  "suit_increasedammoreserves": {
+    "name": "Extra Ammo Capacity",
+    "target": "suit",
+    "engineers": [
+      "Jude Navarro",
+      "Kit Fowler",
+      "Eleanor Bresa"
+    ]
+  },
+  "suit_backpackcapacity": {
+    "name": "Extra Backpack Capacity",
+    "target": "suit",
+    "engineers": [
+      "Domino Green",
+      "Wellington Beck",
+      "Rosa Dayette"
+    ]
+  },
+  "suit_increasedshieldregen": {
+    "name": "Faster Shield Regeneration",
+    "target": "suit",
+    "engineers": [
+      "Kit Fowler",
+      "Uma Laszlo",
+      "Eleanor Bresa"
+    ]
+  },
+  "suit_increasedbatterycapacity": {
+    "name": "Improved Battery Capacity",
+    "target": "suit",
+    "engineers": [
+      "Oden Geiger",
+      "Wellington Beck",
+      "Rosa Dayette"
+    ]
+  },
+  "suit_improvedjumpassist": {
+    "name": "Improved Jump Assist",
+    "target": "suit",
+    "engineers": [
+      "Hero Ferrari",
+      "Yarden Bond",
+      "Baltanos"
+    ]
+  },
+  "suit_increasedo2capacity": {
+    "name": "Increased Air Reserves",
+    "target": "suit",
+    "engineers": [
+      "Hero Ferrari",
+      "Terra Velasquez",
+      "Baltanos"
+    ]
+  },
+  "suit_increasedsprintduration": {
+    "name": "Increased Sprint Duration",
+    "target": "suit",
+    "engineers": [
+      "Hero Ferrari",
+      "Terra Velasquez",
+      "Baltanos"
+    ]
+  },
+  "suit_nightvision": {
+    "name": "Night Vision",
+    "target": "suit",
+    "engineers": [
+      "Oden Geiger",
+      "Yi Shen"
+    ]
+  },
+  "suit_quieterfootsteps": {
+    "name": "Quieter Footsteps",
+    "target": "suit",
+    "engineers": [
+      "Yarden Bond",
+      "Yi Shen"
+    ]
+  },
+  "suit_reducedtoolbatteryconsumption": {
+    "name": "Reduced Tool Battery Consumption",
+    "target": "suit",
+    "engineers": [
+      "Domino Green",
+      "Wellington Beck",
+      "Rosa Dayette"
+    ]
+  },
+  "weapon_suppression_unpressurised": {
+    "name": "Audio Masking",
+    "target": "weapon",
+    "engineers": [
+      "Yarden Bond",
+      "Yi Shen"
+    ]
+  },
+  "weapon_handling": {
+    "name": "Faster Handling",
+    "target": "weapon",
+    "engineers": [
+      "Hero Ferrari",
+      "Yarden Bond",
+      "Baltanos"
+    ]
+  },
+  "weapon_range_kinetic": {
+    "name": "Greater Range",
+    "target": "weapon",
+    "engineers": [
+      "Domino Green",
+      "Wellington Beck",
+      "Rosa Dayette"
+    ]
+  },
+  "weapon_range_laser": {
+    "name": "Greater Range",
+    "target": "weapon",
+    "engineers": [
+      "Domino Green",
+      "Wellington Beck",
+      "Rosa Dayette"
+    ]
+  },
+  "weapon_range_plasma": {
+    "name": "Greater Range",
+    "target": "weapon",
+    "engineers": [
+      "Domino Green",
+      "Wellington Beck",
+      "Rosa Dayette"
+    ]
+  },
+  "weapon_headshotdamage_kinetic": {
+    "name": "Headshot Damage",
+    "target": "weapon",
+    "engineers": [
+      "Uma Laszlo",
+      "Yi Shen"
+    ]
+  },
+  "weapon_headshotdamage_laser": {
+    "name": "Headshot Damage",
+    "target": "weapon",
+    "engineers": [
+      "Uma Laszlo",
+      "Yi Shen"
+    ]
+  },
+  "weapon_headshotdamage_plasma": {
+    "name": "Headshot Damage",
+    "target": "weapon",
+    "engineers": [
+      "Uma Laszlo",
+      "Yi Shen"
+    ]
+  },
+  "weapon_accuracy_kinetic": {
+    "name": "Higher Accuracy",
+    "target": "weapon",
+    "engineers": [
+      "Yarden Bond",
+      "Terra Velasquez",
+      "Baltanos"
+    ]
+  },
+  "weapon_accuracy_laser": {
+    "name": "Higher Accuracy",
+    "target": "weapon",
+    "engineers": [
+      "Yarden Bond",
+      "Terra Velasquez",
+      "Baltanos"
+    ]
+  },
+  "weapon_accuracy_plasma": {
+    "name": "Higher Accuracy",
+    "target": "weapon",
+    "engineers": [
+      "Yarden Bond",
+      "Terra Velasquez",
+      "Baltanos"
+    ]
+  },
+  "weapon_clipsize": {
+    "name": "Magazine Size",
+    "target": "weapon",
+    "engineers": [
+      "Jude Navarro",
+      "Kit Fowler",
+      "Eleanor Bresa"
+    ]
+  },
+  "weapon_suppression_pressurised": {
+    "name": "Noise Suppressor",
+    "target": "weapon",
+    "engineers": [
+      "Hero Ferrari",
+      "Terra Velasquez",
+      "Baltanos"
+    ]
+  },
+  "weapon_reloadspeed": {
+    "name": "Reload Speed",
+    "target": "weapon",
+    "engineers": [
+      "Jude Navarro",
+      "Uma Laszlo",
+      "Eleanor Bresa"
+    ]
+  },
+  "weapon_scope": {
+    "name": "Scope",
+    "target": "weapon",
+    "engineers": [
+      "Oden Geiger",
+      "Wellington Beck",
+      "Rosa Dayette"
+    ]
+  },
+  "weapon_stability": {
+    "name": "Stability",
+    "target": "weapon",
+    "engineers": [
+      "Domino Green",
+      "Oden Geiger",
+      "Rosa Dayette"
+    ]
+  },
+  "weapon_backpackreloading": {
+    "name": "Stowed Reloading",
+    "target": "weapon",
+    "engineers": [
+      "Kit Fowler",
+      "Uma Laszlo",
+      "Eleanor Bresa"
+    ]
+  }
+}

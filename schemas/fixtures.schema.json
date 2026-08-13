@@ -23,6 +23,10 @@
       "files": ["commodities/commodities.jsonc"]
     },
     {
+      "definition": "equipmentEquipment",
+      "files": ["equipment/equipment.jsonc"]
+    },
+    {
       "definition": "materialsMaterials",
       "files": ["materials/materials.jsonc"]
     },
@@ -581,6 +585,123 @@
         }
       },
       "required": ["categories", "categoryCounts", "counts", "records"]
+    },
+    "equipmentEquipment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "modificationNames": { "type": "integer" },
+            "modificationRecipes": { "type": "integer" },
+            "suits": { "type": "integer" },
+            "weapons": { "type": "integer" }
+          },
+          "required": [
+            "modificationNames",
+            "modificationRecipes",
+            "suits",
+            "weapons"
+          ]
+        },
+        "modification": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "journalSymbol": { "type": "string" },
+            "kineticFirstIngredient": {
+              "$ref": "#/definitions/sharedf05bf89298b5"
+            },
+            "kineticRecipeSymbol": { "type": "string" },
+            "laserFirstIngredient": {
+              "$ref": "#/definitions/sharedf05bf89298b5"
+            },
+            "laserRecipeSymbol": { "type": "string" }
+          },
+          "required": [
+            "journalSymbol",
+            "kineticFirstIngredient",
+            "kineticRecipeSymbol",
+            "laserFirstIngredient",
+            "laserRecipeSymbol"
+          ]
+        },
+        "suits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "family": { "type": "string" },
+              "grade": { "type": "integer" },
+              "kineticResistance": { "type": "number" },
+              "modificationSlots": { "type": "integer" },
+              "name": { "type": "string" },
+              "primarySlots": { "type": "integer" },
+              "secondarySlots": { "type": "integer" },
+              "shieldStrength": { "type": "number" },
+              "symbol": { "type": "string" }
+            },
+            "required": [
+              "family",
+              "grade",
+              "modificationSlots",
+              "name",
+              "primarySlots",
+              "secondarySlots",
+              "shieldStrength",
+              "symbol"
+            ]
+          }
+        },
+        "upgradeCosts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ar50Grade5WeaponComponents": { "type": "integer" },
+            "maverickGrade1To3Graphene": { "type": "integer" },
+            "maverickGrade2": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/sharedf05bf89298b5" }
+            }
+          },
+          "required": [
+            "ar50Grade5WeaponComponents",
+            "maverickGrade1To3Graphene",
+            "maverickGrade2"
+          ]
+        },
+        "weapons": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "damage": { "type": "number" },
+              "effectiveRange": { "type": "integer" },
+              "grade": { "type": "integer" },
+              "magazineSize": { "type": "integer" },
+              "modificationSlots": { "type": "integer" },
+              "name": { "type": "string" },
+              "rateOfFire": { "type": "number" },
+              "symbol": { "type": "string" }
+            },
+            "required": [
+              "damage",
+              "effectiveRange",
+              "grade",
+              "magazineSize",
+              "modificationSlots",
+              "name",
+              "rateOfFire",
+              "symbol"
+            ]
+          }
+        }
+      },
+      "required": ["counts", "modification", "suits", "upgradeCosts", "weapons"]
     },
     "materialsMaterials": {
       "type": "object",
@@ -6075,6 +6196,15 @@
     "sharede953dd8e8f23": {
       "type": "array",
       "items": { "$ref": "#/definitions/shared806e2e6c79d6" }
+    },
+    "sharedf05bf89298b5": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "count": { "type": "integer" },
+        "symbol": { "type": "string" }
+      },
+      "required": ["count", "symbol"]
     },
     "sharedf1ce456c98ce": {
       "type": "object",

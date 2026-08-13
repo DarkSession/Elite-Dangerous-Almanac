@@ -1,0 +1,76 @@
+/*
+ * Pins representative personal-equipment identities, grade stats and engineering costs.
+ * Values are selected from the shared equipment catalogues whose source snapshot and
+ * weapon-name corrections are documented in their own headers; no player capture is used.
+ */
+{
+  "counts": {
+    "suits": 4,
+    "weapons": 11,
+    "modificationRecipes": 31,
+    "modificationNames": 25
+  },
+  "suits": [
+    {
+      "family": "utilitysuit",
+      "name": "Maverick Suit",
+      "symbol": "utilitysuit_class3",
+      "grade": 3,
+      "primarySlots": 1,
+      "secondarySlots": 1,
+      "shieldStrength": 20.3,
+      "kineticResistance": -0.13,
+      "modificationSlots": 2
+    },
+    {
+      "family": "flightsuit",
+      "name": "Flight Suit",
+      "symbol": "flightsuit",
+      "grade": 1,
+      "primarySlots": 0,
+      "secondarySlots": 1,
+      "shieldStrength": 7.5,
+      "modificationSlots": 0
+    }
+  ],
+  "weapons": [
+    {
+      "symbol": "wpn_m_assaultrifle_kinetic_fauto",
+      "name": "Karma AR-50",
+      "grade": 5,
+      "damage": 2.8,
+      "rateOfFire": 9.5,
+      "magazineSize": 50,
+      "effectiveRange": 50,
+      "modificationSlots": 4
+    },
+    {
+      "symbol": "wpn_m_sniper_plasma_charged",
+      "name": "Manticore Executioner",
+      "grade": 1,
+      "damage": 15,
+      "rateOfFire": 0.8,
+      "magazineSize": 3,
+      "effectiveRange": 100,
+      "modificationSlots": 0
+    }
+  ],
+  "upgradeCosts": {
+    "maverickGrade2": [
+      { "symbol": "suitschematic", "count": 1 },
+      { "symbol": "healthmonitor", "count": 1 },
+      { "symbol": "manufacturinginstructions", "count": 1 },
+      { "symbol": "carbonfibreplating", "count": 2 },
+      { "symbol": "graphene", "count": 2 }
+    ],
+    "maverickGrade1To3Graphene": 7,
+    "ar50Grade5WeaponComponents": 12
+  },
+  "modification": {
+    "journalSymbol": "weapon_range",
+    "kineticRecipeSymbol": "weapon_range_kinetic",
+    "laserRecipeSymbol": "weapon_range_laser",
+    "kineticFirstIngredient": { "symbol": "ballisticsdata", "count": 10 },
+    "laserFirstIngredient": { "symbol": "stellaractivitylogs", "count": 5 }
+  }
+}

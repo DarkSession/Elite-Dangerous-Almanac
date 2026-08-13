@@ -1,0 +1,135 @@
+/**
+ * Odyssey handheld weapons, their journal identifiers and grade-dependent damage.
+ *
+ * @packageDocumentation
+ */
+
+import weaponsData from '../../../data/equipment/weapons.jsonc' with { type: 'json' };
+import { deepFreeze } from '../internal/deep-freeze.js';
+import { createKeyIndex, findInKeyIndex } from '../internal/registry-index.js';
+import type { EquipmentGrade } from './suits.js';
+
+/** A weapon manufacturer's shared Pioneer grade-upgrade recipe. */
+export type WeaponUpgradeGroup = 'karma' | 'takada' | 'manticore';
+/** Technology suffix used to disambiguate personal-weapon modification recipes. */
+export type PersonalWeaponEngineeringType = 'kinetic' | 'laser' | 'plasma';
+/** A handheld weapon's form factor. */
+export type PersonalWeaponClass =
+    'pistol' | 'carbine' | 'rifle' | 'shotgun' | 'sniper' | 'launcher';
+/** Which suit weapon slot accepts the weapon. */
+export type PersonalWeaponSlot = 'primary' | 'secondary';
+/** The damage family relevant to resistances and some modification recipes. */
+export type PersonalDamageType = 'kinetic' | 'thermal' | 'plasma' | 'explosive';
+/** A handheld weapon firing cycle. */
+export type PersonalFireMode = 'automatic' | 'semi-automatic' | 'burst';
+
+/** Grade-dependent stats for one handheld weapon. */
+export interface PersonalWeaponGrade {
+    /** Damage per projectile or pellet. */
+    readonly damage: number;
+    /** Permanent engineering-modification slots available, from `0` through `4`. */
+    readonly modificationSlots: number;
+}
+
+/** One handheld weapon sold by Pioneer Supplies. */
+export interface PersonalWeapon {
+    /** Frontier item id reported by journal loadout events. */
+    readonly symbol: string;
+    /** English display name. */
+    readonly name: string;
+    /** Manufacturer recipe family used for grade upgrades. */
+    readonly upgradeGroup: WeaponUpgradeGroup;
+    /** Recipe suffix used when the journal omits a modification's weapon technology. */
+    readonly engineeringType: PersonalWeaponEngineeringType;
+    /** Weapon form factor. */
+    readonly class: PersonalWeaponClass;
+    /** Suit slot this weapon occupies. */
+    readonly slot: PersonalWeaponSlot;
+    /** Base damage family. */
+    readonly damageType: PersonalDamageType;
+    /** Firing cycle. */
+    readonly fireMode: PersonalFireMode;
+    /** Shots per second. */
+    readonly rateOfFire: number;
+    /** Rounds loaded in one magazine. */
+    readonly magazineSize: number;
+    /** Spare rounds carried before suit-capacity changes. */
+    readonly reserveAmmo: number;
+    /** Headshot damage multiplier (`2` means 200%). */
+    readonly headshotMultiplier: number;
+    /** Nominal effective range in metres. */
+    readonly effectiveRange: number;
+    /** Grade records keyed by `"1"` through `"5"`. */
+    readonly grades: Readonly<Record<`${EquipmentGrade}`, PersonalWeaponGrade>>;
+}
+
+/**
+ * All eleven handheld weapons in catalogue order.
+ *
+ * @example
+ * ```ts
+ * import { PERSONAL_WEAPONS } from '@elite-dangerous-almanac/core/equipment/weapons';
+ * PERSONAL_WEAPONS.length; // -> 11
+ * ```
+ */
+export const PERSONAL_WEAPONS: readonly PersonalWeapon[] = deepFreeze(
+    weaponsData as unknown as readonly PersonalWeapon[],
+);
+
+const BY_SYMBOL = /* @__PURE__ */ createKeyIndex(PERSONAL_WEAPONS, 'symbol');
+const BY_NAME = /* @__PURE__ */ createKeyIndex(PERSONAL_WEAPONS, 'name');
+
+/**
+ * Look up a handheld weapon by its Frontier journal symbol, case-insensitively.
+ *
+ * @param symbol - Journal item id such as `"wpn_m_assaultrifle_kinetic_fauto"`.
+ * @returns The frozen weapon record, or `null` when unknown.
+ * @throws {TypeError} If `symbol` is present and not a string. A nullish symbol is a
+ * miss, answered like an unrecognised one.
+ * @example
+ * ```ts
+ * import { getPersonalWeaponBySymbol } from '@elite-dangerous-almanac/core/equipment/weapons';
+ * getPersonalWeaponBySymbol('wpn_m_assaultrifle_kinetic_fauto')?.name; // -> 'Karma AR-50'
+ * ```
+ */
+export function getPersonalWeaponBySymbol(symbol: string): PersonalWeapon | null {
+    return findInKeyIndex(BY_SYMBOL, symbol, 'getPersonalWeaponBySymbol: symbol');
+}
+
+/**
+ * Look up a handheld weapon by display name, case-insensitively.
+ *
+ * @param name - English display name such as `"Karma AR-50"`; surrounding
+ * whitespace is ignored.
+ * @returns The frozen weapon record, or `null` when unknown.
+ * @throws {TypeError} If `name` is present and not a string. A nullish name is a miss,
+ * answered like an unrecognised one.
+ * @example
+ * ```ts
+ * import { getPersonalWeaponByName } from '@elite-dangerous-almanac/core/equipment/weapons';
+ * getPersonalWeaponByName('Karma AR-50')?.symbol; // -> 'wpn_m_assaultrifle_kinetic_fauto'
+ * ```
+ */
+export function getPersonalWeaponByName(name: string): PersonalWeapon | null {
+    return findInKeyIndex(BY_NAME, name, 'getPersonalWeaponByName: name');
+}
+
+/**
+ * Read one handheld weapon's stats at a grade.
+ *
+ * @param weapon - A catalogue weapon record.
+ * @param grade - Integer grade `1`–`5`.
+ * @returns The frozen grade record.
+ * @throws {RangeError} If `grade` is not an integer from 1 through 5.
+ * @example
+ * ```ts
+ * import { PERSONAL_WEAPONS, getPersonalWeaponGrade } from '@elite-dangerous-almanac/core/equipment/weapons';
+ * getPersonalWeaponGrade(PERSONAL_WEAPONS[0]!, 5).modificationSlots; // -> 4
+ * ```
+ */
+export function getPersonalWeaponGrade(weapon: PersonalWeapon, grade: number): PersonalWeaponGrade {
+    if (!Number.isInteger(grade) || grade < 1 || grade > 5) {
+        throw new RangeError(`getPersonalWeaponGrade: grade must be an integer in [1, 5]`);
+    }
+    return weapon.grades[String(grade) as `${EquipmentGrade}`];
+}
