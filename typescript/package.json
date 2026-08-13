@@ -371,11 +371,12 @@
         "README.md",
         "LICENSE",
         "THIRD_PARTY_NOTICES.md",
-        "PROVENANCE"
+        "PROVENANCE",
+        "assets"
     ],
     "scripts": {
         "audit": "pnpm audit --audit-level=low",
-        "build": "node scripts/copy-notices.mjs && tsup && node scripts/prune-sourcemap-sources.mjs && node scripts/prune-barrel-imports.mjs && node scripts/attach-barrel-docs.mjs",
+        "build": "node scripts/copy-notices.mjs && node scripts/copy-assets.mjs && tsup && node scripts/prune-sourcemap-sources.mjs && node scripts/prune-barrel-imports.mjs && node scripts/attach-barrel-docs.mjs",
         "check": "pnpm run check:fixtures && pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run check:examples && pnpm test",
         "check:fixtures": "node ../scripts/fixtures/generate-schema-and-types.mjs --check",
         "format": "prettier --write . ../README.md ../CONTRIBUTING.md ../SECURITY.md ../schemas/**/*.{json,md} ../scripts/**/*.mjs ../.github/*.{md,yml} ../.github/workflows/*.yml ../.github/ISSUE_TEMPLATE/*.yml",

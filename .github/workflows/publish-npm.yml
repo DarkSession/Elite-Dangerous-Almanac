@@ -18,8 +18,8 @@ permissions:
   contents: read
 
 jobs:
-  publish:
-    name: Publish to npm
+  prepare:
+    name: Check and pack npm package
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # Not every release in this repository is a release of this package. A tag
@@ -30,12 +30,10 @@ jobs:
       github.event_name != 'release'
       || startsWith(github.event.release.tag_name, 'v')
       || startsWith(github.event.release.tag_name, 'typescript-v')
-    environment:
-      name: npm
-      url: https://www.npmjs.com/package/@elite-dangerous-almanac/core
-    permissions:
-      contents: read
-      id-token: write # mints the OIDC token npm signs the provenance attestation with
+    outputs:
+      dist-tag: ${{ steps.package.outputs.dist-tag }}
+      tarball: ${{ steps.pack.outputs.tarball }}
+      tarball-sha256: ${{ steps.pack.outputs.tarball-sha256 }}
     defaults:
       run:
         working-directory: typescript
@@ -54,12 +52,20 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-tags: true
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org # writes the .npmrc that reads NODE_AUTH_TOKEN
+
+      # Normalize the tag and pack with a pinned npm 11 client rather than
+      # whichever npm release happens to ship with Node 22.
+      - name: Install the packing npm client
+        run: |
+          set -euo pipefail
+          npm install --global npm@11.19.0 --ignore-scripts
+          test "$(npm --version)" = 11.19.0
 
       # pnpm installs the dependency tree; the publish itself stays on npm, which is
       # the client that mints the provenance attestation. See the publish step below.
@@ -86,16 +92,19 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           REF_TYPE: ${{ github.ref_type }}
           REF_NAME: ${{ github.ref_name }}
+          EVENT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
 
           name=$(node -p 'require("./package.json").name')
           version=$(node -p 'require("./package.json").version')
 
-          # A release event names its tag directly; a manual run has to be sitting
-          # on one. Nothing takes a version number off a branch: a real publish is
-          # permanent and has to be reproducible from a ref that cannot move.
+          # A release event names its tag directly; a manual run has to use a tag
+          # as its workflow ref. Nothing takes a version number off a branch: a
+          # real publish is permanent, and npm provenance records the event ref
+          # and SHA rather than a different commit checked out afterward.
           tag=$RELEASE_TAG
+          expected_sha=$EVENT_SHA
           if [ -z "$tag" ] && [ "$REF_TYPE" = tag ]; then
             tag=$REF_NAME
           fi
@@ -104,15 +113,49 @@ jobs:
             exit 1
           fi
 
-          # The tag and the manifest have to agree, or the GitHub release and the
-          # npm version drift apart and neither one tells you what shipped. Both
+          # A release tag is the version's single source of truth. Stamp that
+          # version into the package built from the immutable tag so creating a
+          # release does not require a separate manifest-only commit first. Both
           # `v1.2.3` and `typescript-v1.2.3` name version 1.2.3; the prefixed form
           # is there for the day a second language implementation releases too.
           if [ -n "$tag" ]; then
+            case "$tag" in
+              v*|typescript-v*) ;;
+              *)
+                echo "::error::TypeScript release tag $tag must start with v or typescript-v"
+                exit 1
+                ;;
+            esac
+
+            if ! git show-ref --verify --quiet "refs/tags/$tag"; then
+              echo "::error::$tag is not a tag in the checked-out repository"
+              exit 1
+            fi
+            if ! [[ "$expected_sha" =~ ^[0-9a-fA-F]{40}$ ]]; then
+              echo "::error::release commit must be a full 40-character SHA"
+              exit 1
+            fi
+
+            expected_commit=$(git rev-parse "$expected_sha^{commit}")
+            tagged_commit=$(git rev-list -n 1 "refs/tags/$tag")
+            if [ "$tagged_commit" != "$expected_commit" ]; then
+              echo "::error::tag $tag does not match release commit $expected_commit"
+              exit 1
+            fi
+            if [ "$(git rev-parse HEAD)" != "$expected_commit" ]; then
+              echo "::error::checked-out commit does not match release commit $expected_commit"
+              exit 1
+            fi
+
             tagged=${tag#typescript-}
             tagged=${tagged#v}
-            if [ "$tagged" != "$version" ]; then
-              echo "::error::tag $tag does not name typescript/package.json version $version"
+            npm version "$tagged" \
+              --no-git-tag-version \
+              --allow-same-version \
+              --ignore-scripts >/dev/null
+            version=$(node -p 'require("./package.json").version')
+            if [ "$version" != "$tagged" ]; then
+              echo "::error::tag $tag does not contain a canonical npm version (npm normalized it to $version)"
               exit 1
             fi
           fi
@@ -134,34 +177,18 @@ jobs:
 
           echo "$name@$version -> dist-tag $dist_tag" >>"$GITHUB_STEP_SUMMARY"
 
-      # This runs before the registry lookup below, because that lookup wants the
-      # real token: `setup-node` writes an `.npmrc` reading `NODE_AUTH_TOKEN` and
-      # exports a placeholder value, so an npm command that does not pass the
-      # secret talks to the registry as nobody in particular.
-      - name: Check the npm token is configured
-        if: env.REAL_PUBLISH == 'true'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
-            echo "::error::secret NPM_TOKEN is not set on the npm environment — add an npm automation token"
-            exit 1
-          fi
-
       - name: Check the version is still unpublished
         if: env.REAL_PUBLISH == 'true'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           SPEC: ${{ steps.package.outputs.name }}@${{ steps.package.outputs.version }}
         run: |
           set -euo pipefail
 
           # npm versions are immutable, so a repeat publish fails after a full
-          # build rather than at the start. A registry that cannot be asked is
-          # not the same answer as a version that is free, so the two are told
-          # apart: only npm's own "no such package or version" is a pass.
+          # build rather than at the start. Public package metadata needs no
+          # credential. A registry that cannot be asked is not the same answer
+          # as a version that is free, so the two are told apart: only npm's own
+          # "no such package or version" is a pass.
           #
           # `--json` puts everything needed on stdout — the version when there is
           # one, an error object when there is not — so stderr is discarded
@@ -169,7 +196,7 @@ jobs:
           # a version that already exists.
           if answer=$(npm view --json "$SPEC" version 2>/dev/null); then
             if [ -n "$answer" ] && [ "$answer" != null ]; then
-              echo "::error::$SPEC is already on the registry — bump the version in typescript/package.json"
+              echo "::error::$SPEC is already on the registry — create a release with a new version tag"
               exit 1
             fi
           else
@@ -185,40 +212,126 @@ jobs:
       - name: Audit dependencies
         run: pnpm run audit
 
-      # Deliberately its own step, with no token in the environment. These scripts
-      # run ESLint, tsc, the test suite and esbuild, so every devDependency in the
-      # tree gets to execute here — and none of them should be doing so alongside
-      # a credential that can publish to the scope. That is also why the publish
-      # step below passes `--ignore-scripts`: `prepublishOnly` would otherwise run
-      # this same work again, that time with the token exported.
+      # This job has no `id-token` permission. ESLint, tsc, the test suite and
+      # esbuild execute the installed dependency tree, but none of it can request
+      # the identity npm trusts for publishing.
       - name: Check, build and verify the package
         run: pnpm run check && pnpm run build && pnpm run test:package
 
-      - name: Publish
+      - name: Pack for publishing
         if: env.REAL_PUBLISH == 'true'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          DIST_TAG: ${{ steps.package.outputs.dist-tag }}
-        # `npm`, not `pnpm`, and deliberately so: `--provenance` is npm's own
-        # feature, `pnpm publish` does not document the flag, and a client that
-        # quietly ignored it would publish a tarball with no attestation and no
-        # error to say so. Everything else in this workflow runs under pnpm; only
-        # the upload stays with the client that mints the signature.
-        #
-        # `--access public` because the package is scoped and scoped packages
-        # default to restricted; `--provenance` links the tarball to this commit
-        # and this workflow run, which npm shows as a verified badge. Packing is
-        # `--ignore-scripts` on purpose — see the step above — so `dist/` and the
-        # generated legal files come from the build that just ran. A `prepack` or
-        # `prepare` script added to the package later would need adding there too.
-        run: npm publish --access public --tag "$DIST_TAG" --provenance --ignore-scripts
+        id: pack
+        run: |
+          set -euo pipefail
+
+          tarball=$(npm pack --ignore-scripts)
+          if [ ! -f "$tarball" ]; then
+            echo "::error::npm pack did not create $tarball"
+            exit 1
+          fi
+
+          {
+            echo "tarball=$tarball"
+            echo "tarball-sha256=$(sha256sum "$tarball" | cut -d ' ' -f 1)"
+          } >>"$GITHUB_OUTPUT"
+
+      - name: Upload package for the OIDC job
+        if: env.REAL_PUBLISH == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: npm-package
+          path: typescript/${{ steps.pack.outputs.tarball }}
+          if-no-files-found: error
+          retention-days: 1
 
       - name: Pack without publishing
         if: env.REAL_PUBLISH != 'true'
         env:
           DIST_TAG: ${{ steps.package.outputs.dist-tag }}
-        # No token: a dry run never authenticates. It also never exercises
-        # provenance — npm only generates an attestation on a real publish — so
-        # this rehearses the checks, the build and the tarball contents, and
-        # nothing about the upload.
+        # A dry run never authenticates or exercises Trusted Publishing. It also
+        # produces no registry provenance, so this rehearses the checks, build and
+        # tarball contents, and nothing about the upload.
         run: npm publish --access public --tag "$DIST_TAG" --dry-run --ignore-scripts
+
+  publish:
+    name: Publish to npm with OIDC
+    needs: prepare
+    if: >-
+      github.event_name == 'release'
+      || format('{0}', inputs.dry-run) != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/@elite-dangerous-almanac/core
+    permissions:
+      contents: read
+      id-token: write # lets npm exchange GitHub's OIDC identity for publish access
+    defaults:
+      run:
+        working-directory: typescript
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          # This exact Node release includes npm 11.17.0, which supports Trusted
+          # Publishing without installing new code in the OIDC-enabled job.
+          node-version: 24.19.0
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify the Trusted Publishing client
+        run: test "$(npm --version)" = 11.17.0
+
+      - name: Download verified package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: npm-package
+          path: typescript
+
+      - name: Verify package digest
+        env:
+          TARBALL: ${{ needs.prepare.outputs.tarball }}
+          TARBALL_SHA256: ${{ needs.prepare.outputs.tarball-sha256 }}
+        run: |
+          set -euo pipefail
+
+          case "$TARBALL" in
+            *.tgz) ;;
+            *)
+              echo "::error::unexpected package filename: $TARBALL"
+              exit 1
+              ;;
+          esac
+          if [[ "$TARBALL" = */* || "$TARBALL" = .* || "$TARBALL" = -* ]]; then
+            echo "::error::package filename must be a plain basename: $TARBALL"
+            exit 1
+          fi
+          if ! [[ "$TARBALL_SHA256" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "::error::package digest is not a SHA-256 value"
+            exit 1
+          fi
+
+          echo "$TARBALL_SHA256  $TARBALL" | sha256sum --check --strict
+
+      - name: Publish
+        env:
+          DIST_TAG: ${{ needs.prepare.outputs.dist-tag }}
+          TARBALL: ${{ needs.prepare.outputs.tarball }}
+        # `npm`, not `pnpm`, and deliberately so: npm exchanges the job's OIDC
+        # identity for short-lived publish access and automatically attaches its
+        # provenance attestation. The package was built in the unprivileged job;
+        # this job only verifies its digest and uploads it.
+        #
+        # `--access public` because the package is scoped and scoped packages
+        # default to restricted. The CLI-level registry cannot be overridden by
+        # `publishConfig` inside the tarball. Explicit `--provenance` makes a
+        # missing attestation fatal instead of relying on npm's best-effort OIDC
+        # auto-detection. `--ignore-scripts` prevents any lifecycle script there
+        # from running beside the OIDC permission.
+        run: >-
+          npm publish "./$TARBALL"
+          --registry=https://registry.npmjs.org
+          --access public
+          --tag "$DIST_TAG"
+          --provenance
+          --ignore-scripts
