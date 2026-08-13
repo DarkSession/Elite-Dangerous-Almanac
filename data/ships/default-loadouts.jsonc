@@ -1,0 +1,3582 @@
+/*
+ * Default module loadouts for every player-flyable ship, as slot/module-symbol pairs.
+ *
+ * Source: EDSY stock ship builds, with EDCD/coriolis-data and captured Frontier
+ * journal loadouts supplying or corroborating the advanced planetary approach suite
+ * that EDSY does not model and the cargo-hatch symbols.
+ *
+ * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
+ * corrections: data/ships/SOURCES.md.
+ *
+ * Records use the hull's Frontier `symbol`; each fitted module uses the journal's
+ * canonical `slot` key and the module's Frontier `symbol`. Empty optional,
+ * hardpoint and utility mounts are omitted. Armour, all seven core internals, the
+ * advanced planetary approach suite and the built-in cargo hatch are present on every
+ * hull.
+ */
+[
+  {
+    "symbol": "SideWinder",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Gimbal_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Gimbal_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "SideWinder_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size2_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size2_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size2_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size1_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size1_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size1_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size1_Class3"
+      },
+      {
+        "slot": "Slot01_Size2",
+        "symbol": "Int_ShieldGenerator_Size2_Class1"
+      },
+      {
+        "slot": "Slot02_Size2",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot05_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Eagle",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Eagle_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size2_Class2"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size3_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size3_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size1_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size2_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size2_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size2_Class3"
+      },
+      {
+        "slot": "Slot01_Size3",
+        "symbol": "Int_ShieldGenerator_Size3_Class1"
+      },
+      {
+        "slot": "Slot02_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot05_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Hauler",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Hauler_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size2_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size2_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size2_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size1_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size1_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size1_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size2_Class3"
+      },
+      {
+        "slot": "Slot01_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot02_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot03_Size2",
+        "symbol": "Int_ShieldGenerator_Size2_Class1"
+      },
+      {
+        "slot": "Slot05_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Adder",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Adder_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size3_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size3_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size3_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size1_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size2_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size3_Class3"
+      },
+      {
+        "slot": "Slot01_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot02_Size3",
+        "symbol": "Int_ShieldGenerator_Size3_Class1"
+      },
+      {
+        "slot": "Slot03_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Viper",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Viper_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size3_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size3_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size3_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size2_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size2_Class3"
+      },
+      {
+        "slot": "Slot01_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot02_Size3",
+        "symbol": "Int_ShieldGenerator_Size3_Class1"
+      },
+      {
+        "slot": "Slot05_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "CobraMkIII",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "CobraMkIII_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size3_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_ShieldGenerator_Size4_Class1"
+      },
+      {
+        "slot": "Slot04_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot08_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Type6",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Type6_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size3_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size2_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size2_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot04_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot05_Size3",
+        "symbol": "Int_ShieldGenerator_Size3_Class1"
+      },
+      {
+        "slot": "Slot06_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot08_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Dolphin",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Dolphin_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size5",
+        "symbol": "Int_PassengerCabin_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_ShieldGenerator_Size4_Class1"
+      },
+      {
+        "slot": "Slot04_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot05_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot08_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Type7",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Type7_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size5",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot04_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot05_Size4",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot06_Size4",
+        "symbol": "Int_ShieldGenerator_Size4_Class1"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Asp",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Asp_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size5_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size4_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size5_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot06_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot08_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Vulture",
+    "modules": [
+      {
+        "slot": "LargeHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "LargeHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Vulture_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size3_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size5_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size3_Class3"
+      },
+      {
+        "slot": "Slot01_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot08_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Empire_Trader",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Empire_Trader_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size5_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size7",
+        "symbol": "Int_CargoRack_Size6_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot07_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Federation_Dropship",
+    "modules": [
+      {
+        "slot": "MediumHardpoint3",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint4",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Federation_Dropship_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot03_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot04_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot10_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Orca",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Orca_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size5_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size6_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size5_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_PassengerCabin_Size6_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_PassengerCabin_Size4_Class1"
+      },
+      {
+        "slot": "Slot03_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot04_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot05_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Type9",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Type9_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size7_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size6_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size6_Class3"
+      },
+      {
+        "slot": "Slot00_Size8",
+        "symbol": "Int_CargoRack_Size7_Class1"
+      },
+      {
+        "slot": "Slot01_Size8",
+        "symbol": "Int_CargoRack_Size7_Class1"
+      },
+      {
+        "slot": "Slot02_Size7",
+        "symbol": "Int_CargoRack_Size6_Class1"
+      },
+      {
+        "slot": "Slot03_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot04_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot05_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot07_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot12_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Python",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Python_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size7_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size7_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size6_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot04_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot09_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot10_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "BelugaLiner",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "BelugaLiner_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size7_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size7_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size8_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size5_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size7_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size6",
+        "symbol": "Int_PassengerCabin_Size6_Class2"
+      },
+      {
+        "slot": "Slot04_Size6",
+        "symbol": "Int_PassengerCabin_Size6_Class2"
+      },
+      {
+        "slot": "Slot05_Size5",
+        "symbol": "Int_PassengerCabin_Size4_Class2"
+      },
+      {
+        "slot": "Slot06_Size5",
+        "symbol": "Int_PassengerCabin_Size4_Class2"
+      },
+      {
+        "slot": "Slot07_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot08_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot12_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "FerDeLance",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "FerDeLance_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size3_Class3"
+      },
+      {
+        "slot": "Slot01_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_ShieldGenerator_Size4_Class1"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoorFDL"
+      }
+    ]
+  },
+  {
+    "symbol": "Anaconda",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Anaconda_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size8_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size7_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size6_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size8_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size8_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size7",
+        "symbol": "Int_CargoRack_Size6_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot05_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot13_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot14_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Federation_Corvette",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Federation_Corvette_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size8_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size7_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size6_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size8_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size8_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size7",
+        "symbol": "Int_ShieldGenerator_Size7_Class1"
+      },
+      {
+        "slot": "Slot02_Size7",
+        "symbol": "Int_CargoRack_Size6_Class1"
+      },
+      {
+        "slot": "Slot08_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot10_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot11_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Cutter",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Cutter_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size8_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size8_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size7_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size7_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size7_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size7_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size6_Class3"
+      },
+      {
+        "slot": "Slot01_Size8",
+        "symbol": "Int_ShieldGenerator_Size8_Class1"
+      },
+      {
+        "slot": "Slot02_Size8",
+        "symbol": "Int_CargoRack_Size7_Class1"
+      },
+      {
+        "slot": "Slot03_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot09_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot10_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "DiamondBack",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "DiamondBack_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size2_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size2_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size3",
+        "symbol": "Int_ShieldGenerator_Size3_Class1"
+      },
+      {
+        "slot": "Slot05_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Empire_Courier",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Empire_Courier_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size3_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size3_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size1_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size2_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size3_Class3"
+      },
+      {
+        "slot": "Slot01_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot02_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot03_Size2",
+        "symbol": "Int_ShieldGenerator_Size2_Class1"
+      },
+      {
+        "slot": "Slot04_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot05_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot08_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "DiamondBackXL",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "DiamondBackXL_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size3_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size4_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size4",
+        "symbol": "Int_ShieldGenerator_Size4_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot03_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot08_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Empire_Eagle",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Empire_Eagle_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size3_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size3_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size3_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size1_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size2_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size2_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size2_Class3"
+      },
+      {
+        "slot": "Slot01_Size3",
+        "symbol": "Int_ShieldGenerator_Size3_Class1"
+      },
+      {
+        "slot": "Slot02_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot05_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Federation_Dropship_MkII",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Federation_Dropship_MkII_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot04_Size3",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Federation_Gunship",
+    "modules": [
+      {
+        "slot": "MediumHardpoint3",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint4",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Federation_Gunship_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size7_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size5_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot03_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Viper_MkIV",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Viper_MkIV_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size2_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot03_Size3",
+        "symbol": "Int_ShieldGenerator_Size3_Class1"
+      },
+      {
+        "slot": "Slot04_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot08_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "CobraMkIV",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "CobraMkIV_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size3_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size4",
+        "symbol": "Int_ShieldGenerator_Size4_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot04_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot05_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot06_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot07_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot10_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Independant_Trader",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Independant_Trader_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size1_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size3_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size2_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot03_Size3",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot04_Size3",
+        "symbol": "Int_ShieldGenerator_Size3_Class1"
+      },
+      {
+        "slot": "Slot05_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Asp_Scout",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Asp_Scout_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size3_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size4_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot03_Size3",
+        "symbol": "Int_ShieldGenerator_Size3_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Type9_Military",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Type9_Military_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size7_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size6_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size6_Class3"
+      },
+      {
+        "slot": "Slot01_Size8",
+        "symbol": "Int_CargoRack_Size7_Class1"
+      },
+      {
+        "slot": "Slot02_Size7",
+        "symbol": "Int_CargoRack_Size6_Class1"
+      },
+      {
+        "slot": "Slot03_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot04_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot05_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot07_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot12_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Krait_MkII",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Krait_MkII_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size7_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size7_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size6_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size5",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot04_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot08_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "TypeX",
+    "modules": [
+      {
+        "slot": "LargeHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "TypeX_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "TypeX_2",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "TypeX_2_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot04_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "TypeX_3",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "TypeX_3_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot03_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot04_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Krait_Light",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Krait_Light_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size7_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size7_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size6_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size5",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot04_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot08_Size2",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Mamba",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Mamba_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size4_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size3_Class3"
+      },
+      {
+        "slot": "Slot01_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_ShieldGenerator_Size4_Class1"
+      },
+      {
+        "slot": "Slot03_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Python_NX",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Python_NX_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size5_Class3"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size6_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size5_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot02_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot05_Size1",
+        "symbol": "Int_CargoRack_Size1_Class1"
+      },
+      {
+        "slot": "Slot06_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Type8",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Type8_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size5_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size5_Class3"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size3_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size4_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size7",
+        "symbol": "Int_CargoRack_Size7_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot05_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot06_Size5",
+        "symbol": "Int_ShieldGenerator_Size4_Class1"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Mandalay",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Mandalay_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size5_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size5_Class3"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size5_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size5_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot10_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "CobraMkV",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "CobraMkV_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size4_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size4_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size3_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size4_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size5",
+        "symbol": "Int_ShieldGenerator_Size4_Class3"
+      },
+      {
+        "slot": "Slot03_Size4",
+        "symbol": "Int_CargoRack_Size3_Class1"
+      },
+      {
+        "slot": "Slot05_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot08_Size2",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Corsair",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Corsair_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size7_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size7_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size4_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size7_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size6_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot04_Size5",
+        "symbol": "Int_CargoRack_Size4_Class1"
+      },
+      {
+        "slot": "Slot09_Size2",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot10_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "PantherMkII",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "PantherMkII_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size8_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size8_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size7_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size7_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size5_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size7_Class3"
+      },
+      {
+        "slot": "Cargo01",
+        "symbol": "Int_CargoRack_Size7_Class1"
+      },
+      {
+        "slot": "Slot01_Size8",
+        "symbol": "Int_ShieldGenerator_Size7_Class1"
+      },
+      {
+        "slot": "Slot04_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot05_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot09_Size2",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "Slot10_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "LakonMiner",
+    "modules": [
+      {
+        "slot": "SmallHardpoint3",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint4",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "LakonMiner_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size6_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size3_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size7_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size6",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot09_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "Slot10_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "Explorer_NX",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "Explorer_NX_Armour_Grade1_Default"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size8_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size7_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size8_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size5_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size7_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size8_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size7_Class3"
+      },
+      {
+        "slot": "Slot01_Size7",
+        "symbol": "Int_CargoRack_Size6_Class1"
+      },
+      {
+        "slot": "Slot02_Size6",
+        "symbol": "Int_ShieldGenerator_Size6_Class1"
+      },
+      {
+        "slot": "Slot03_Size6",
+        "symbol": "Int_CargoRack_Size5_Class1"
+      },
+      {
+        "slot": "Slot13_Size1",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot14_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "SmallCombat01_NX",
+    "modules": [
+      {
+        "slot": "SmallHardpoint1",
+        "symbol": "Hpt_MultiCannon_Fixed_Small"
+      },
+      {
+        "slot": "SmallHardpoint2",
+        "symbol": "Hpt_MultiCannon_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "SmallCombat01_NX_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size5_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size5_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size4_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size1_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size5_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size2_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size4_Class3"
+      },
+      {
+        "slot": "Slot01_Size5",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Slot03_Size3",
+        "symbol": "Int_CargoRack_Size2_Class1"
+      },
+      {
+        "slot": "Slot06_Size2",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoor"
+      }
+    ]
+  },
+  {
+    "symbol": "MediumTransport01",
+    "modules": [
+      {
+        "slot": "MediumHardpoint1",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "MediumHardpoint2",
+        "symbol": "Hpt_PulseLaser_Fixed_Small"
+      },
+      {
+        "slot": "Armour",
+        "symbol": "MediumTransport01_Armour_Grade1"
+      },
+      {
+        "slot": "PowerPlant",
+        "symbol": "Int_Powerplant_Size5_Class1"
+      },
+      {
+        "slot": "MainEngines",
+        "symbol": "Int_Engine_Size6_Class1"
+      },
+      {
+        "slot": "FrameShiftDrive",
+        "symbol": "Int_Hyperdrive_Overcharge_Size5_Class1"
+      },
+      {
+        "slot": "LifeSupport",
+        "symbol": "Int_LifeSupport_Size6_Class1"
+      },
+      {
+        "slot": "PowerDistributor",
+        "symbol": "Int_PowerDistributor_Size5_Class1"
+      },
+      {
+        "slot": "Radar",
+        "symbol": "Int_Sensors_Size3_Class1"
+      },
+      {
+        "slot": "FuelTank",
+        "symbol": "Int_FuelTank_Size5_Class3"
+      },
+      {
+        "slot": "Slot01_Size6",
+        "symbol": "Int_ShieldGenerator_Size5_Class1"
+      },
+      {
+        "slot": "Passenger01",
+        "symbol": "Int_PassengerCabin_Size5_Class1"
+      },
+      {
+        "slot": "Passenger02",
+        "symbol": "Int_PassengerCabin_Size5_Class1"
+      },
+      {
+        "slot": "Passenger03",
+        "symbol": "Int_PassengerCabin_Size4_Class1"
+      },
+      {
+        "slot": "Slot02_Size5",
+        "symbol": "Int_PassengerCabin_Size4_Class1"
+      },
+      {
+        "slot": "Slot06_Size2",
+        "symbol": "Int_SuperCruiseAssist"
+      },
+      {
+        "slot": "Slot07_Size1",
+        "symbol": "Int_DockingComputer_Advanced"
+      },
+      {
+        "slot": "PlanetaryApproachSuite",
+        "symbol": "int_planetapproachsuite_advanced"
+      },
+      {
+        "slot": "CargoHatch",
+        "symbol": "ModularCargoBayDoorFDL"
+      }
+    ]
+  }
+]

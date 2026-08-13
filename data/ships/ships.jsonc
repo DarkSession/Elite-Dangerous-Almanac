@@ -39,6 +39,8 @@
  * (`MediumTransport01`) instead uses EDSY and Frontier update-note values documented
  * in `SOURCES.md`. `hullCost` is the bare hull's standard price in credits and
  * `retailCost` the hull with its default modules; both are present for every hull.
+ * The modules behind that retail fit live separately in `default-loadouts.jsonc`, so a
+ * consumer importing hull identity and geometry does not bundle fitted-module rows.
  */
 [
   {

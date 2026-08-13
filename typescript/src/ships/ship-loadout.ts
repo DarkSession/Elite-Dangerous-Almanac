@@ -4,8 +4,9 @@
  *
  * Load one from a SLEF export (or a journal `Loadout` event) to read back the ship's
  * identity, mass and fuel and ask for jump range and per-jump fuel; or start an
- * {@link ShipLoadout.empty | empty} hull, enumerate its {@link ShipLoadout.slots | slots},
- * and {@link ShipLoadout.setModule | fit} and {@link ShipLoadout.removeModule | remove}
+ * {@link ShipLoadout.default | default} or {@link ShipLoadout.empty | empty} hull,
+ * enumerate its {@link ShipLoadout.slots | slots}, and
+ * {@link ShipLoadout.setModule | fit} and {@link ShipLoadout.removeModule | remove}
  * modules. It composes the data-free pieces of this folder — the SLEF parser
  * (`./slef`), the jump-range maths (`./jump-range`), the slot model (`./slots`), and
  * the module and ship catalogues (each record carrying its own stats).
@@ -75,6 +76,7 @@ import {
     type FrameShiftDriveParams,
 } from './jump-range.js';
 import { getShipBySymbol, getShipSlots } from './ships.js';
+import { getDefaultLoadout } from './default-loadouts.js';
 import { enumerateSlots, parseSlotName, type BuildSlot, type SlotKind } from './slots.js';
 import { computeModifiers } from './engineering.js';
 import { getBlueprintGrade } from './blueprints.js';
@@ -547,6 +549,49 @@ export class ShipLoadout {
             );
         }
         return new ShipLoadout(layout.symbol, new Map(), {});
+    }
+
+    /**
+     * Start a new build with the modules supplied on a stock ship.
+     *
+     * @param shipSymbol - The hull's internal symbol, e.g. `"SideWinder"`
+     * (case-insensitive).
+     * @returns A complete, ready-to-edit stock loadout. The build is independent of the
+     * frozen shared catalogue: edits affect this instance only.
+     * @throws {TypeError} If `shipSymbol` is not a string, or no default loadout exists
+     * for that hull.
+     * @remarks
+     * This batteries-included factory resolves calculations through the complete module
+     * catalogue already used by `ShipLoadout`. If only the stock slot/module identities
+     * are needed, `getDefaultLoadout` from `./default-loadouts` avoids that cost.
+     * @example
+     * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * const stock = ShipLoadout.default('SideWinder');
+     * stock.validation.complete; // -> true
+     * stock.fittedModuleAt('FrameShiftDrive')?.symbol;
+     * // -> 'Int_Hyperdrive_Size2_Class1'
+     * ```
+     */
+    static default(shipSymbol: string): ShipLoadout {
+        const requested = requireString(shipSymbol, 'ShipLoadout.default: shipSymbol');
+        const loadout = getDefaultLoadout(requested);
+        if (!loadout) {
+            throw new TypeError(
+                `ShipLoadout.default: no default loadout for hull "${truncate(shipSymbol)}"`,
+            );
+        }
+        return new ShipLoadout(
+            loadout.symbol,
+            new Map(
+                loadout.modules.map((module) => [
+                    module.slot,
+                    { Slot: module.slot, Item: module.symbol },
+                ]),
+            ),
+            {},
+        );
     }
 
     /** The hull's internal id, e.g. `"explorer_nx"`. */

@@ -5,7 +5,8 @@
  *
  * There is only one list of ships and it is tiny (48 records), so the lookups here
  * take no catalogue argument at all — they always search {@link SHIPS}. Importing one
- * bundles the whole ship list, which is what you wanted anyway.
+ * bundles the whole ship list, which is what you wanted anyway. Stock module identities
+ * live in `./default-loadouts`, keeping this small hull catalogue independent of them.
  *
  * Identity from EDCD FDevIDs (`shipyard.csv`); stats and slot layout from
  * EDCD/coriolis-data, joined on `symbol`; see [`data/ships/SOURCES.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).

@@ -260,6 +260,10 @@
             "types": "./dist/ships/decorative-modifications.d.ts",
             "import": "./dist/ships/decorative-modifications.js"
         },
+        "./ships/default-loadouts": {
+            "types": "./dist/ships/default-loadouts.d.ts",
+            "import": "./dist/ships/default-loadouts.js"
+        },
         "./ships/engineering-options": {
             "types": "./dist/ships/engineering-options.d.ts",
             "import": "./dist/ships/engineering-options.js"
