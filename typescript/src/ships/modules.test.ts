@@ -37,6 +37,37 @@ const CATALOGUES: Record<string, readonly OutfittingModule[]> = {
     all: ALL_MODULES,
 };
 
+test('one-per-ship module families are carried on every limited catalogue record', () => {
+    const exclusive = ALL_MODULES.filter((module) => module.exclusionGroup !== undefined);
+    assert.equal(exclusive.length, 194);
+    assert.equal(
+        getModuleBySymbol('Int_ShieldGenerator_Size6_Class3', INTERNAL_MODULES)?.exclusionGroup,
+        'shieldGenerator',
+    );
+    assert.equal(
+        getModuleBySymbol('Int_SupercruiseAssist', INTERNAL_MODULES)?.exclusionGroup,
+        'supercruiseAssist',
+    );
+    assert.equal(
+        getModuleBySymbol('Hpt_CrimeScanner_Size0_Class1', UTILITY_MODULES)?.exclusionGroup,
+        'killWarrantScanner',
+    );
+    assert.ok(
+        INTERNAL_MODULES.filter((module) => /FighterBay/.test(module.symbol)).every(
+            (module) => module.exclusionGroup === 'fighterHangar',
+        ),
+    );
+});
+
+test('enhanced-performance thrusters carry separate mobility curves', () => {
+    const enhanced = getModuleBySymbol('Int_Engine_Size3_Class5_Fast', CORE_MODULES);
+    assert.equal(enhanced?.optMultiplier, 1.1);
+    assert.equal(enhanced?.optSpeedMultiplier, 1.25);
+    assert.equal(enhanced?.maxSpeedMultiplier, 1.6);
+    assert.equal(enhanced?.optRotationMultiplier, 1.1);
+    assert.equal(enhanced?.maxRotationMultiplier, 1.3);
+});
+
 /** Identity fields — everything else on a merged record is a stat. */
 const IDENTITY_KEYS = new Set([
     'symbol',
@@ -52,6 +83,7 @@ const IDENTITY_KEYS = new Set([
     'class',
     'rating',
     'entitlement',
+    'exclusionGroup',
     // Price is commercial data, not a stat: ship-specific armour is priced but carries
     // no mass/integrity/power, and must still count as identity-only here.
     'cost',

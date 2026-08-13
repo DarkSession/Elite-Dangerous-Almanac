@@ -92,6 +92,29 @@ export type ModuleGuidance = 'Dumbfire' | 'Seeker' | 'Swarm';
 export type ModuleRating = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I';
 
 /**
+ * A game-enforced one-per-ship family. Two modules with the same value cannot be
+ * fitted to one hull at the same time, even when they occupy different slots.
+ */
+export type ModuleExclusionGroup =
+    | 'cargoScanner'
+    | 'detailedSurfaceScanner'
+    | 'discoveryScanner'
+    | 'dockingComputer'
+    | 'experimentalModuleStabiliser'
+    | 'experimentalUtility'
+    | 'fighterHangar'
+    | 'frameShiftDriveInterdictor'
+    | 'frameShiftWakeScanner'
+    | 'fuelScoop'
+    | 'guardianFsdBooster'
+    | 'killWarrantScanner'
+    | 'multiLimpetController'
+    | 'pulseWaveAnalyser'
+    | 'refinery'
+    | 'shieldGenerator'
+    | 'supercruiseAssist';
+
+/**
  * How a weapon's damage splits across the damage types, as fractions of one shot.
  *
  * @remarks
@@ -371,6 +394,11 @@ export interface OutfittingModuleIdentity {
      */
     readonly restrictedToSlot?: SlotRestriction;
     /**
+     * One-per-ship family, absent when the module has no exclusive fitting rule.
+     * Two fitted modules sharing this id are structurally invalid.
+     */
+    readonly exclusionGroup?: ModuleExclusionGroup;
+    /**
      * Standard purchase price, in credits — the base list price before any station
      * discount or markup, which is what an outfitting screen quotes at 0% discount.
      *
@@ -426,6 +454,18 @@ export interface OutfittingModuleStats {
     readonly minMultiplier?: number;
     /** Maximum performance multiplier, reached at `minMass`. */
     readonly maxMultiplier?: number;
+    /** Thruster top-speed multiplier at `optMass`, when distinct from acceleration. */
+    readonly optSpeedMultiplier?: number;
+    /** Thruster minimum top-speed multiplier, reached at `maxMass`. */
+    readonly minSpeedMultiplier?: number;
+    /** Thruster maximum top-speed multiplier, reached at `minMass`. */
+    readonly maxSpeedMultiplier?: number;
+    /** Thruster rotation multiplier at `optMass`, when distinct from acceleration. */
+    readonly optRotationMultiplier?: number;
+    /** Thruster minimum rotation multiplier, reached at `maxMass`. */
+    readonly minRotationMultiplier?: number;
+    /** Thruster maximum rotation multiplier, reached at `minMass`. */
+    readonly maxRotationMultiplier?: number;
 
     /**
      * Thrusters: waste heat generated per second at top speed.

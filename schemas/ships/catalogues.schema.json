@@ -125,6 +125,8 @@
       "required": [
         "symbol",
         "name",
+        "manufacturer",
+        "size",
         "hullCost",
         "retailCost",
         "hullMass",
@@ -147,6 +149,8 @@
       "properties": {
         "symbol": { "$ref": "#/definitions/nonEmptyString" },
         "name": { "$ref": "#/definitions/nonEmptyString" },
+        "manufacturer": { "$ref": "#/definitions/nonEmptyString" },
+        "size": { "enum": ["small", "medium", "large"] },
         "entitlement": { "$ref": "#/definitions/nonEmptyString" },
 
         "hullCost": { "type": "integer", "minimum": 0 },
@@ -326,6 +330,27 @@
             "passenger"
           ]
         },
+        "exclusionGroup": {
+          "enum": [
+            "cargoScanner",
+            "detailedSurfaceScanner",
+            "discoveryScanner",
+            "dockingComputer",
+            "experimentalModuleStabiliser",
+            "experimentalUtility",
+            "fighterHangar",
+            "frameShiftDriveInterdictor",
+            "frameShiftWakeScanner",
+            "fuelScoop",
+            "guardianFsdBooster",
+            "killWarrantScanner",
+            "multiLimpetController",
+            "pulseWaveAnalyser",
+            "refinery",
+            "shieldGenerator",
+            "supercruiseAssist"
+          ]
+        },
         "mass": { "type": "number", "minimum": 0 },
         "integrity": { "type": "number", "minimum": 0 },
         "powerDraw": { "type": "number", "minimum": 0 },
@@ -336,6 +361,12 @@
         "optMultiplier": { "type": "number" },
         "minMultiplier": { "type": "number" },
         "maxMultiplier": { "type": "number" },
+        "optSpeedMultiplier": { "type": "number" },
+        "minSpeedMultiplier": { "type": "number" },
+        "maxSpeedMultiplier": { "type": "number" },
+        "optRotationMultiplier": { "type": "number" },
+        "minRotationMultiplier": { "type": "number" },
+        "maxRotationMultiplier": { "type": "number" },
         "engineHeatRate": { "type": "number", "minimum": 0 },
         "maxFuel": { "type": "number", "minimum": 0 },
         "fuelMul": { "type": "number", "exclusiveMinimum": 0 },

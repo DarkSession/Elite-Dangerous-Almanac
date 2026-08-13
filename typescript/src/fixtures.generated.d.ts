@@ -2926,6 +2926,168 @@ declare module '*/fixtures/ships/module-stats.jsonc' {
     export default value;
 }
 
+type FixtureShipsOperations = {
+    cellBanks: {
+        expected: {
+            totalCells: number;
+            totalRestorable: number;
+        };
+        input: {
+            cells: number;
+            duration: number;
+            heat: number;
+            reinforcementRate: number;
+            slot: string;
+            spinUp: number;
+            symbol: string;
+        }[];
+    };
+    diagnostics: {
+        calculation: {
+            expected: {
+                field: string;
+                params: {
+                    field: string;
+                    slot: string;
+                    symbol: string;
+                };
+                slot: string;
+                symbol: string;
+            };
+            input: {
+                mass: number;
+                slot: string;
+                symbol: string;
+            };
+        };
+        loadout: {
+            expected: {
+                code: string;
+                params: {
+                    constraint: string;
+                    moduleClass: number;
+                    slot: string;
+                    slotSize: number;
+                    symbol: string;
+                };
+            };
+            input: {
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+        slef: {
+            expected: {
+                code: string;
+                constraint: string;
+                path: string;
+            };
+            input: {
+                Modules: {
+                    Slot: string;
+                }[];
+                Ship: string;
+            };
+        };
+    };
+    exclusivity: {
+        expectedCode: string;
+        group: string;
+    };
+    mobility: {
+        expected: {
+            boost: number;
+            massCurveMultiplier: number;
+            pitch: number;
+            roll: number;
+            rotationMassCurveMultiplier: number;
+            speed: number;
+            yaw: number;
+        };
+        input: {
+            boost: number;
+            mass: number;
+            minThrust: number;
+            pitch: number;
+            roll: number;
+            speed: number;
+            thrusters: {
+                maxMass: number;
+                maxMultiplier: number;
+                minMass: number;
+                minMultiplier: number;
+                optMass: number;
+                optMultiplier: number;
+                rotationCurve: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+                speedCurve: {
+                    maxMass: number;
+                    maxMultiplier: number;
+                    minMass: number;
+                    minMultiplier: number;
+                    optMass: number;
+                    optMultiplier: number;
+                };
+            };
+            yaw: number;
+        };
+    };
+    retailCredits: {
+        expected: {
+            hull: number;
+            modules: number;
+            rebuy: number;
+        };
+        ship: string;
+    };
+    shieldRecovery: {
+        expected: {
+            brokenRegenRate: number;
+            recoveryTime: number;
+            regenRate: number;
+            regenTime: number;
+        };
+        input: {
+            brokenRegenRate: number;
+            distributorDraw: number;
+            regenRate: number;
+            strength: number;
+            systemsCapacity: number;
+            systemsRecharge: number;
+        };
+    };
+    slotRemoval: {
+        expected: {
+            immovableReason: string;
+            key: string;
+            kind: string;
+            removable: boolean;
+            size: number;
+        };
+        ship: string;
+    };
+    weapons: {
+        expectedThermalLoad: number;
+        input: {
+            thermalLoad: number;
+        }[];
+    };
+};
+
+declare module '*/fixtures/ships/operations.jsonc' {
+    const value: FixtureShipsOperations;
+    export default value;
+}
+
 type FixtureShipsPreEngineered = {
     authoredStats: {
         count: number;
@@ -3165,7 +3327,9 @@ type FixtureShipsShips = {
     }[];
     records: {
         entitlement?: string;
+        manufacturer: string;
         name: string;
+        size: string;
         symbol: string;
     }[];
 };

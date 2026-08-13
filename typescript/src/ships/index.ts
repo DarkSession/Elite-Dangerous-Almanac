@@ -198,6 +198,7 @@ export {
     type ModuleMount,
     type ModuleGuidance,
     type ModuleRating,
+    type ModuleExclusionGroup,
     type DamageDistribution,
     type DamageComponents,
     type ProjectileRangeBoundaries,
@@ -230,6 +231,7 @@ export {
     type SlefStringifyOptions,
     type SlefDiagnostic,
     type SlefDiagnosticCode,
+    type SlefConstraint,
     type SlefInspection,
     type LoadoutEvent,
     type LoadoutModule,
@@ -249,6 +251,8 @@ export {
     type JumpOptions,
     type JumpRangeSummary,
     type DefenceOptions,
+    type MobilityOptions,
+    type RetailCredits,
     type FittedWeaponMetrics,
     type BuildWeaponMetrics,
     type AvailableBlueprint,
@@ -257,7 +261,7 @@ export {
     type SlefExportOptions,
 } from './ship-loadout.js';
 export type { FittedModule } from './fitted-module.js';
-export type { LoadoutSlot } from './loadout-slot.js';
+export type { LoadoutSlot, ImmovableReason } from './loadout-slot.js';
 export {
     calculateCargoCapacity,
     calculateFuelCapacity,
@@ -274,6 +278,7 @@ export {
     type LoadoutValidation,
     type LoadoutValidationInput,
     type ValidationModule,
+    type ModuleFitConstraint,
 } from './loadout-validation.js';
 export {
     getSourceModuleValue,
@@ -305,6 +310,23 @@ export {
     type ShieldInput,
     type ShieldMetrics,
 } from './shields.js';
+export {
+    mobilityMetrics,
+    thrusterMassCurveMultiplier,
+    type MobilityInput,
+    type MobilityMetrics,
+    type ThrusterParams,
+    type ThrusterCurveParams,
+} from './mobility.js';
+export {
+    shieldRecovery,
+    cellBankSummary,
+    type ShieldRecoveryInput,
+    type ShieldRecovery,
+    type CellBankInput,
+    type CellBankMetrics,
+    type CellBankSummary,
+} from './shield-recovery.js';
 export {
     armourMetrics,
     type BulkheadParams,

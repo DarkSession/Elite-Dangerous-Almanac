@@ -10,7 +10,8 @@
  * corrections: data/ships/SOURCES.md.
  *
  * `symbol` is the internal identifier (e.g. `Empire_Trader`); `name` the display
- * name; `entitlement` the DLC/grant token on gated hulls. Stats (hullMass in
+ * name; `manufacturer` the shipyard manufacturer; `size` the small/medium/large
+ * landing-pad class; `entitlement` the DLC/grant token on gated hulls. Stats (hullMass in
  * tonnes, speed/boost in m/s, rotation rates in deg/s, …) and the slot layout
  * (`core` sizes, `hardpoints`, `utility` count, `optional` mounts) are present for
  * every hull. A `hardpoints` or `optional` mount is `{ size }`, plus a
@@ -46,6 +47,8 @@
   {
     "symbol": "SideWinder",
     "name": "Sidewinder",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "small",
     "hullMass": 25,
     "speed": 220,
     "boost": 320,
@@ -109,6 +112,8 @@
   {
     "symbol": "Eagle",
     "name": "Eagle",
+    "manufacturer": "Core Dynamics",
+    "size": "small",
     "hullMass": 50,
     "speed": 240,
     "boost": 350,
@@ -179,6 +184,8 @@
   {
     "symbol": "Hauler",
     "name": "Hauler",
+    "manufacturer": "Zorgon Peterson",
+    "size": "small",
     "hullMass": 14,
     "speed": 200,
     "boost": 300,
@@ -239,6 +246,8 @@
   {
     "symbol": "Adder",
     "name": "Adder",
+    "manufacturer": "Zorgon Peterson",
+    "size": "small",
     "hullMass": 35,
     "speed": 220,
     "boost": 320,
@@ -308,6 +317,8 @@
   {
     "symbol": "Viper",
     "name": "Viper MkIII",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "small",
     "hullMass": 50,
     "speed": 320,
     "boost": 400,
@@ -381,6 +392,8 @@
   {
     "symbol": "CobraMkIII",
     "name": "Cobra MkIII",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "small",
     "hullMass": 180,
     "speed": 280,
     "boost": 400,
@@ -456,6 +469,8 @@
   {
     "symbol": "Type6",
     "name": "Type-6 Transporter",
+    "manufacturer": "Lakon Spaceways",
+    "size": "medium",
     "hullMass": 155,
     "speed": 220,
     "boost": 350,
@@ -525,6 +540,8 @@
   {
     "symbol": "Dolphin",
     "name": "Dolphin",
+    "manufacturer": "Saud Kruger",
+    "size": "small",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "hullMass": 140,
     "speed": 250,
@@ -598,6 +615,8 @@
   {
     "symbol": "Type7",
     "name": "Type-7 Transporter",
+    "manufacturer": "Lakon Spaceways",
+    "size": "large",
     "hullMass": 350,
     "speed": 180,
     "boost": 300,
@@ -690,6 +709,8 @@
   {
     "symbol": "Asp",
     "name": "Asp Explorer",
+    "manufacturer": "Lakon Spaceways",
+    "size": "medium",
     "hullMass": 280,
     "speed": 250,
     "boost": 340,
@@ -771,6 +792,8 @@
   {
     "symbol": "Vulture",
     "name": "Vulture",
+    "manufacturer": "Core Dynamics",
+    "size": "small",
     "hullMass": 230,
     "speed": 210,
     "boost": 340,
@@ -850,6 +873,8 @@
   {
     "symbol": "Empire_Trader",
     "name": "Imperial Clipper",
+    "manufacturer": "Gutamaya",
+    "size": "large",
     "hullMass": 400,
     "speed": 300,
     "boost": 380,
@@ -928,6 +953,8 @@
   {
     "symbol": "Federation_Dropship",
     "name": "Federal Dropship",
+    "manufacturer": "Core Dynamics",
+    "size": "medium",
     "hullMass": 580,
     "speed": 180,
     "boost": 300,
@@ -1025,6 +1052,8 @@
   {
     "symbol": "Orca",
     "name": "Orca",
+    "manufacturer": "Saud Kruger",
+    "size": "large",
     "hullMass": 290,
     "speed": 300,
     "boost": 380,
@@ -1100,6 +1129,8 @@
   {
     "symbol": "Type9",
     "name": "Type-9 Heavy",
+    "manufacturer": "Lakon Spaceways",
+    "size": "large",
     "hullMass": 850,
     "speed": 130,
     "boost": 200,
@@ -1199,6 +1230,8 @@
   {
     "symbol": "Python",
     "name": "Python",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "medium",
     "hullMass": 350,
     "speed": 230,
     "boost": 300,
@@ -1283,6 +1316,8 @@
   {
     "symbol": "BelugaLiner",
     "name": "Beluga Liner",
+    "manufacturer": "Saud Kruger",
+    "size": "large",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "hullMass": 950,
     "speed": 200,
@@ -1374,6 +1409,8 @@
   {
     "symbol": "FerDeLance",
     "name": "Fer-de-Lance",
+    "manufacturer": "Zorgon Peterson",
+    "size": "medium",
     "hullMass": 250,
     "speed": 260,
     "boost": 350,
@@ -1446,6 +1483,8 @@
   {
     "symbol": "Anaconda",
     "name": "Anaconda",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "large",
     "hullMass": 400,
     "speed": 180,
     "boost": 240,
@@ -1563,6 +1602,8 @@
   {
     "symbol": "Federation_Corvette",
     "name": "Federal Corvette",
+    "manufacturer": "Core Dynamics",
+    "size": "large",
     "hullMass": 900,
     "speed": 200,
     "boost": 260,
@@ -1664,6 +1705,8 @@
   {
     "symbol": "Cutter",
     "name": "Imperial Cutter",
+    "manufacturer": "Gutamaya",
+    "size": "large",
     "hullMass": 1100,
     "speed": 200,
     "boost": 320,
@@ -1762,6 +1805,8 @@
   {
     "symbol": "DiamondBack",
     "name": "Diamondback Scout",
+    "manufacturer": "Lakon Spaceways",
+    "size": "small",
     "hullMass": 170,
     "speed": 280,
     "boost": 380,
@@ -1831,6 +1876,8 @@
   {
     "symbol": "Empire_Courier",
     "name": "Imperial Courier",
+    "manufacturer": "Gutamaya",
+    "size": "small",
     "hullMass": 35,
     "speed": 280,
     "boost": 380,
@@ -1903,6 +1950,8 @@
   {
     "symbol": "DiamondBackXL",
     "name": "Diamondback Explorer",
+    "manufacturer": "Lakon Spaceways",
+    "size": "small",
     "hullMass": 260,
     "speed": 260,
     "boost": 340,
@@ -1975,6 +2024,8 @@
   {
     "symbol": "Empire_Eagle",
     "name": "Imperial Eagle",
+    "manufacturer": "Gutamaya",
+    "size": "small",
     "hullMass": 50,
     "speed": 300,
     "boost": 400,
@@ -2045,6 +2096,8 @@
   {
     "symbol": "Federation_Dropship_MkII",
     "name": "Federal Assault Ship",
+    "manufacturer": "Core Dynamics",
+    "size": "medium",
     "hullMass": 480,
     "speed": 210,
     "boost": 350,
@@ -2125,6 +2178,8 @@
   {
     "symbol": "Federation_Gunship",
     "name": "Federal Gunship",
+    "manufacturer": "Core Dynamics",
+    "size": "medium",
     "hullMass": 580,
     "speed": 170,
     "boost": 280,
@@ -2215,6 +2270,8 @@
   {
     "symbol": "Viper_MkIV",
     "name": "Viper MkIV",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "small",
     "hullMass": 190,
     "speed": 270,
     "boost": 340,
@@ -2294,6 +2351,8 @@
   {
     "symbol": "CobraMkIV",
     "name": "Cobra MkIV",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "small",
     "entitlement": "ELITE_HORIZONS_V_COBRA_MK_IV_1000",
     "hullMass": 210,
     "speed": 200,
@@ -2379,6 +2438,8 @@
   {
     "symbol": "Independant_Trader",
     "name": "Keelback",
+    "manufacturer": "Lakon Spaceways",
+    "size": "medium",
     "hullMass": 180,
     "speed": 200,
     "boost": 300,
@@ -2459,6 +2520,8 @@
   {
     "symbol": "Asp_Scout",
     "name": "Asp Scout",
+    "manufacturer": "Lakon Spaceways",
+    "size": "medium",
     "hullMass": 150,
     "speed": 220,
     "boost": 300,
@@ -2539,6 +2602,8 @@
   {
     "symbol": "Type9_Military",
     "name": "Type-10 Defender",
+    "manufacturer": "Lakon Spaceways",
+    "size": "large",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "hullMass": 1200,
     "speed": 179,
@@ -2657,6 +2722,8 @@
   {
     "symbol": "Krait_MkII",
     "name": "Krait MkII",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "medium",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "hullMass": 320,
     "speed": 240,
@@ -2739,6 +2806,8 @@
   {
     "symbol": "TypeX",
     "name": "Alliance Chieftain",
+    "manufacturer": "Lakon Spaceways",
+    "size": "medium",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "hullMass": 400,
     "speed": 230,
@@ -2827,6 +2896,8 @@
   {
     "symbol": "TypeX_2",
     "name": "Alliance Crusader",
+    "manufacturer": "Lakon Spaceways",
+    "size": "medium",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "hullMass": 500,
     "speed": 180,
@@ -2918,6 +2989,8 @@
   {
     "symbol": "TypeX_3",
     "name": "Alliance Challenger",
+    "manufacturer": "Lakon Spaceways",
+    "size": "medium",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "hullMass": 450,
     "speed": 204,
@@ -3012,6 +3085,8 @@
   {
     "symbol": "Krait_Light",
     "name": "Krait Phantom",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "medium",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "hullMass": 270,
     "speed": 250,
@@ -3091,6 +3166,8 @@
   {
     "symbol": "Mamba",
     "name": "Mamba",
+    "manufacturer": "Zorgon Peterson",
+    "size": "medium",
     "entitlement": "ELITE_HORIZONS_V_PLANETARY_LANDINGS",
     "hullMass": 250,
     "speed": 310,
@@ -3164,6 +3241,8 @@
   {
     "symbol": "Python_NX",
     "name": "Python MkII",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "medium",
     "entitlement": "ELITE_V_PYTHON_NX",
     "hullMass": 450,
     "speed": 256,
@@ -3240,6 +3319,8 @@
   {
     "symbol": "Type8",
     "name": "Type-8 Transporter",
+    "manufacturer": "Lakon Spaceways",
+    "size": "medium",
     "entitlement": "ELITE_V_TYPE8",
     "hullMass": 400,
     "speed": 200,
@@ -3331,6 +3412,8 @@
   {
     "symbol": "Mandalay",
     "name": "Mandalay",
+    "manufacturer": "Zorgon Peterson",
+    "size": "medium",
     "entitlement": "ELITE_V_MANDALAY",
     "hullMass": 230,
     "speed": 280,
@@ -3419,6 +3502,8 @@
   {
     "symbol": "CobraMkV",
     "name": "Cobra MkV",
+    "manufacturer": "Faulcon DeLacy",
+    "size": "small",
     "entitlement": "ELITE_V_COBRA_MKV",
     "hullMass": 150,
     "speed": 291,
@@ -3501,6 +3586,8 @@
   {
     "symbol": "Corsair",
     "name": "Corsair",
+    "manufacturer": "Gutamaya",
+    "size": "medium",
     "entitlement": "ELITE_V_CORSAIR",
     "hullMass": 265,
     "speed": 280,
@@ -3589,6 +3676,8 @@
   {
     "symbol": "PantherMkII",
     "name": "Panther Clipper MkII",
+    "manufacturer": "Zorgon Peterson",
+    "size": "large",
     "entitlement": "ELITE_V_PANTHER_MKII",
     "hullMass": 1200,
     "speed": 181,
@@ -3710,6 +3799,8 @@
   {
     "symbol": "LakonMiner",
     "name": "Type-11 Prospector",
+    "manufacturer": "Lakon Spaceways",
+    "size": "medium",
     "entitlement": "ELITE_V_LAKON_MINER",
     "hullMass": 320,
     "speed": 272,
@@ -3837,6 +3928,8 @@
   {
     "symbol": "Explorer_NX",
     "name": "Caspian Explorer",
+    "manufacturer": "Zorgon Peterson",
+    "size": "large",
     "entitlement": "ELITE_V_EXPLORER_NX",
     "hullMass": 950,
     "speed": 210,
@@ -3947,6 +4040,8 @@
   {
     "symbol": "SmallCombat01_NX",
     "name": "Kestrel Mk II",
+    "manufacturer": "Core Dynamics",
+    "size": "small",
     "entitlement": "ELITE_V_SMALL_COMBAT_01",
     "hullMass": 190,
     "speed": 271,
@@ -4027,6 +4122,8 @@
   {
     "symbol": "MediumTransport01",
     "name": "Lynx Highliner",
+    "manufacturer": "Zorgon Peterson",
+    "size": "medium",
     "entitlement": "ELITE_V_MEDIUM_TRANSPORT_01",
     "hullMass": 260,
     "speed": 285,

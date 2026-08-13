@@ -106,10 +106,13 @@ import {
 import { builtInModuleBySymbol } from './internal/module-symbol-index.js';
 import {
     armourInputFor,
+    cellBankInputsFor,
     effectiveModule,
+    mobilityInputFor,
     powerAvailable,
     powerConsumerFor,
     shieldInputFor,
+    shieldRecoveryInputFor,
     weaponStatsFor,
 } from './internal/loadout-metrics.js';
 import { powerBudget, type PowerBudget, type PowerConsumer } from './power.js';
@@ -122,12 +125,19 @@ import {
     type WeaponTotals,
 } from './weapons.js';
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
+import { mobilityMetrics, type MobilityMetrics } from './mobility.js';
+import {
+    cellBankSummary,
+    shieldRecovery,
+    type CellBankSummary,
+    type ShieldRecovery,
+} from './shield-recovery.js';
 import { identifyPreEngineeredVariant } from './pre-engineered-stats.js';
 import { ALL_MODULES } from './modules-all.js';
 import type { FittedModule } from './fitted-module.js';
 import type { LoadoutSlot } from './loadout-slot.js';
 import { loadoutSlotName } from './internal/loadout-views.js';
-import { moduleFitError } from './internal/loadout-fitting.js';
+import { moduleFitError, moduleFitProblem } from './internal/loadout-fitting.js';
 import { exportLoadoutEvent } from './internal/loadout-export.js';
 import {
     normalizeLoadoutEvent,
@@ -193,9 +203,28 @@ export interface ApplyBlueprintOptions {
 export interface DefenceOptions {
     /**
      * Pips to the systems capacitor, `0`–`4`, folded into the shield resistances.
-     * Defaults to `0` — the bare shield, as an outfitting screen shows it.
+     * Defaults to `0` for {@link ShipLoadout.shieldMetrics} and `4` for
+     * {@link ShipLoadout.shieldRecovery}.
      */
     readonly systemsPips?: number;
+}
+
+/** Optional load and ENG allocation for {@link ShipLoadout.mobilityMetrics}. */
+export interface MobilityOptions extends JumpOptions {
+    /** Pips assigned to the engines capacitor, `0`–`4`. Defaults to `4`. */
+    readonly enginesPips?: number;
+}
+
+/** Retail catalogue credits for an assembled build. */
+export interface RetailCredits {
+    /** Bare hull list price in credits, or `null` for an unknown hull. */
+    readonly hull: number | null;
+    /** Sum of every priced fitted module, in credits. A lower bound when `unpriced` is non-empty. */
+    readonly modules: number;
+    /** Five percent of the priced hull and modules, truncated to credits, or `null` for an unknown hull. */
+    readonly rebuy: number | null;
+    /** Fitted modules that could not be priced from the catalogue. */
+    readonly unpriced: readonly { readonly slot: string; readonly symbol: string }[];
 }
 
 /** One fitted weapon and what it does, as {@link ShipLoadout.weaponMetrics} reports it. */
@@ -796,15 +825,19 @@ export class ShipLoadout {
             const slot = byKey.get(module.Slot.toLowerCase());
             const builtIn =
                 (stats === null && isNonOutfittingSlot(module.Slot)) || isBuiltInHullModule(module);
+            const fitProblem =
+                stats && slot && !builtIn ? moduleFitProblem(this.#shipSymbol, slot, stats) : null;
             return {
                 slot: module.Slot,
                 symbol: module.Item,
                 known: stats !== null || builtIn,
                 requiresKnownSlot: !builtIn,
-                fitError:
-                    stats && slot && !builtIn
-                        ? moduleFitError(this.#shipSymbol, slot, stats)
-                        : null,
+                fitError: fitProblem?.message ?? null,
+                ...(fitProblem === null ? {} : { fitConstraint: fitProblem.constraint }),
+                ...(fitProblem?.params === undefined ? {} : { fitParams: fitProblem.params }),
+                ...(stats?.exclusionGroup === undefined
+                    ? {}
+                    : { exclusionGroup: stats.exclusionGroup }),
             };
         });
         const value = validateLoadout({ shipSymbol: this.#shipSymbol, slots, modules });
@@ -846,6 +879,10 @@ export class ShipLoadout {
                 ...slot,
                 name: loadoutSlotName(slot),
                 module: this.fittedModuleAt(slot.key),
+                removable: slot.key.toLowerCase() !== 'cargohatch',
+                ...(slot.key.toLowerCase() === 'cargohatch'
+                    ? { immovableReason: 'cargoHatch' as const }
+                    : {}),
             })),
         );
         cached.value.set(kind, value);
@@ -964,7 +1001,7 @@ export class ShipLoadout {
 
     /**
      * The modules that fit a given slot — its size, kind and any restriction all
-     * satisfied.
+     * satisfied, with one-per-ship families already occupied elsewhere omitted.
      *
      * @param slotKey - The slot key to fit, matched case-insensitively (journal spelling).
      * @returns The fitting modules, in complete-catalogue order.
@@ -980,8 +1017,17 @@ export class ShipLoadout {
      */
     modulesForSlot(slotKey: string): OutfittingModule[] {
         const slot = this.#requireSlot(slotKey);
+        const occupied = new Set(
+            [...this.#modules.values()].flatMap((fitted) => {
+                if (fitted.Slot.toLowerCase() === slot.key.toLowerCase()) return [];
+                const group = this.#statsFor(fitted)?.exclusionGroup;
+                return group === undefined ? [] : [group];
+            }),
+        );
         return ALL_MODULES.filter(
-            (module) => moduleFitError(this.#shipSymbol, slot, module) === null,
+            (module) =>
+                moduleFitError(this.#shipSymbol, slot, module) === null &&
+                (module.exclusionGroup === undefined || !occupied.has(module.exclusionGroup)),
         );
     }
 
@@ -998,8 +1044,9 @@ export class ShipLoadout {
      * @throws {RangeError} If the hull has no slot with that key.
      * @throws {TypeError} If `slotKey` is not a string; `module` is null/undefined (e.g. a
      * `getModuleBySymbol` miss) or is not an outfitting module at all; the module does not
-     * fit the slot (wrong kind, too large, or a restriction the module does not satisfy);
-     * or the hull has no known slot layout (a SLEF build on an unrecognised hull).
+     * fit the slot (wrong kind, too large, or a restriction the module does not satisfy),
+     * conflicts with a one-per-ship family already fitted elsewhere, or the hull has no
+     * known slot layout (a SLEF build on an unrecognised hull).
      * @example
      * ```ts
      * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -1035,6 +1082,18 @@ export class ShipLoadout {
             throw new TypeError(
                 `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${problem}`,
             );
+        }
+        if (module.exclusionGroup !== undefined) {
+            const conflict = [...this.#modules.values()].find(
+                (fitted) =>
+                    fitted.Slot.toLowerCase() !== slot.key.toLowerCase() &&
+                    this.#statsFor(fitted)?.exclusionGroup === module.exclusionGroup,
+            );
+            if (conflict) {
+                throw new TypeError(
+                    `ShipLoadout.setModule: ${truncate(module.symbol)} → ${truncate(slotKey)}: ${module.exclusionGroup} is limited to one per ship (already fitted in ${truncate(conflict.Slot)})`,
+                );
+            }
         }
         // Replacing keeps the key the build already uses; a fresh fit takes the hull
         // layout's canonical spelling rather than whatever casing the caller typed.
@@ -1622,6 +1681,46 @@ export class ShipLoadout {
     }
 
     /**
+     * The build's speed, boost and rotation rates at a chosen load and ENG allocation.
+     *
+     * @param options - Fuel defaults to a full main tank, cargo to `0`, and ENG pips to `4`.
+     * @returns Loaded {@link MobilityMetrics}, or `null` when no powered, fully described
+     * thrusters are fitted.
+     * @throws {TypeError} If mass or an omitted fuel load cannot be determined.
+     * @throws {RangeError} If `enginesPips` is outside `[0, 4]`.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.mobilityMetrics({ cargo: 32, fuel: 8, enginesPips: 2 })?.speed; // -> m/s
+     * ```
+     */
+    mobilityMetrics(options: MobilityOptions = {}): MobilityMetrics | null {
+        const enginesPips = options.enginesPips ?? 4;
+        if (!Number.isFinite(enginesPips) || enginesPips < 0 || enginesPips > 4) {
+            throw new RangeError(
+                'ShipLoadout.mobilityMetrics: enginesPips must be a finite number from 0 to 4',
+            );
+        }
+        const input = mobilityInputFor(
+            this.#shipSymbol,
+            [...this.#modules.values()],
+            () => {
+                const fuel = this.#requireFuelCapacity();
+                return (
+                    this.#requireMass(options.cargo ?? 0) +
+                    (options.fuel ?? fuel.main) +
+                    fuel.reserve
+                );
+            },
+            enginesPips,
+            (module) => this.#statsFor(module),
+        );
+        return input ? mobilityMetrics(input) : null;
+    }
+
+    /**
      * The build's shields: strength in megajoules, where it comes from, and the
      * effective resistances.
      *
@@ -1655,6 +1754,102 @@ export class ShipLoadout {
         );
         if (!input.generator) return null;
         return shieldMetrics(input);
+    }
+
+    /**
+     * Time for this build's shield to rise after collapse and then regenerate to full.
+     *
+     * @param options - SYS pips in `[0, 4]`, defaulting to `4`.
+     * @returns Recovery rates and seconds, or `null` with no powered shield generator.
+     * A missing distributor or insufficient zero-pip recharge produces `Infinity`.
+     * @throws {RangeError} If `systemsPips` is outside `[0, 4]` or not finite.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.shieldRecovery({ systemsPips: 4 })?.recoveryTime; // -> seconds from collapse to 50%
+     * ```
+     */
+    shieldRecovery(options: DefenceOptions = {}): ShieldRecovery | null {
+        const systemsPips = options.systemsPips ?? 4;
+        if (!Number.isFinite(systemsPips) || systemsPips < 0 || systemsPips > 4) {
+            throw new RangeError(
+                'ShipLoadout.shieldRecovery: systemsPips must be a finite number from 0 to 4',
+            );
+        }
+        const input = shieldRecoveryInputFor(
+            this.#shipSymbol,
+            [...this.#modules.values()],
+            systemsPips,
+            (module) => this.#statsFor(module),
+        );
+        return input ? shieldRecovery(input) : null;
+    }
+
+    /**
+     * Every fitted shield cell bank and the complete rearmed reinforcement pool.
+     *
+     * @returns A frozen {@link CellBankSummary}; no banks is an empty list and zero totals.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.cellBanks().totalRestorable; // -> MJ across every fitted cell
+     * ```
+     */
+    cellBanks(): CellBankSummary {
+        const banks = cellBankInputsFor([...this.#modules.values()], (module) =>
+            this.#statsFor(module),
+        );
+        const layout = this.#layoutOrNull();
+        if (layout) {
+            const order = new Map(
+                layout.map((slot, index) => [slot.key.toLowerCase(), index] as const),
+            );
+            banks.sort(
+                (left, right) =>
+                    (order.get(left.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER) -
+                    (order.get(right.slot.toLowerCase()) ?? Number.MAX_SAFE_INTEGER),
+            );
+        }
+        return cellBankSummary(banks);
+    }
+
+    /**
+     * Price this build from current catalogue list prices without creating a journal event.
+     *
+     * @returns Hull, module and five-percent rebuy credits. `modules` and `rebuy` remain
+     * lower bounds when {@link RetailCredits.unpriced} is non-empty; built-in hull fittings are free.
+     * @example
+     * ```ts
+     * import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * ShipLoadout.default('Anaconda').retailCredits().hull; // -> 142456440
+     * ```
+     */
+    retailCredits(): RetailCredits {
+        const hull = getShipBySymbol(this.#shipSymbol)?.hullCost ?? null;
+        let modules = 0;
+        const unpriced: { slot: string; symbol: string }[] = [];
+        for (const module of this.#modules.values()) {
+            const stats = this.#statsFor(module);
+            if (stats?.cost !== undefined) {
+                modules += stats.cost;
+            } else if (
+                stats !== null ||
+                (!isNonOutfittingSlot(module.Slot) && !isBuiltInHullModule(module))
+            ) {
+                unpriced.push({ slot: module.Slot, symbol: module.Item });
+            }
+        }
+        return deepFreeze({
+            hull,
+            modules,
+            rebuy: hull === null ? null : Math.trunc((hull + modules) * 0.05),
+            unpriced,
+        });
     }
 
     /**

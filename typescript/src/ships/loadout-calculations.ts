@@ -23,6 +23,8 @@ export interface CalculationIssue {
     readonly symbol?: string;
     /** Human-readable diagnostic suitable for a log or validation panel. */
     readonly message: string;
+    /** Values interpolated into `message`, for consumers composing localized text. */
+    readonly params?: Readonly<Record<string, string | number>>;
 }
 
 /**
@@ -78,6 +80,7 @@ function moduleIssue(
         field,
         slot: module.slot,
         symbol: module.symbol,
+        params: { field, slot: module.slot, symbol: module.symbol },
         message: `${truncate(module.slot)}: ${truncate(module.symbol)} has no known ${field}`,
     };
 }
@@ -87,7 +90,12 @@ function result<T>(
     issues: readonly CalculationIssue[],
 ): CalculationResult<T> {
     const frozenIssues = Object.freeze(
-        issues.map((issue) => Object.freeze({ ...issue })),
+        issues.map((issue) =>
+            Object.freeze({
+                ...issue,
+                ...(issue.params ? { params: Object.freeze({ ...issue.params }) } : {}),
+            }),
+        ),
     ) as readonly CalculationIssue[];
     if (value !== null && frozenIssues.length === 0) return completeResult(value);
     if (frozenIssues.length === 0) {
@@ -123,6 +131,7 @@ export function calculateUnladenMass(
     if (hullMass === null) {
         issues.push({
             field: 'hullMass',
+            params: { field: 'hullMass' },
             message: 'The hull has no known hullMass',
         });
     }
@@ -182,6 +191,7 @@ export function calculateFuelCapacity(
     if (reserveFuelCapacity === null) {
         issues.push({
             field: 'reserveFuelCapacity',
+            params: { field: 'reserveFuelCapacity' },
             message: 'The hull has no known reserveFuelCapacity',
         });
     }

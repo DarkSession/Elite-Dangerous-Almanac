@@ -37,8 +37,14 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   numeric ship-type `id` column is dropped — hulls are keyed by `symbol`.
   `entitlement` is FDevIDs' DLC/grant token, kept only where the CSV gives one (28 of
   the 48 hulls carry no entitlement, so the field is omitted rather than stored empty).
-- **Stats + slots source:** coriolis-data `ships/*.json` — `properties` for stats,
+- **Stats + slots source:** coriolis-data `ships/*.json` — `properties` for manufacturer,
+  numeric size class and stats,
   `slots` + `bulkheads` for the layout.
+- **Manufacturer and size derivation:** `properties.manufacturer` is copied, with
+  coriolis-data's abbreviated `Lakon` normalized to the shipyard name `Lakon Spaceways`;
+  numeric `properties.class` maps `1`/`2`/`3` to `small`/`medium`/`large`, the game's
+  landing-pad classes. The Lynx Highliner instead takes Zorgon Peterson and class 2
+  (`medium`) from Frontier's update notes and EDSY's `class:2` record.
 - **Stats derivation:** acquisition normalization looks up each hull's coriolis
   record by display name (normalized; coriolis "Viper" ⇒ registry "Viper MkIII") and
   copies a fixed whitelist of `properties` fields (`hullMass`, `speed`, `boost`,
@@ -603,7 +609,7 @@ account for 300 fields on 135 modules in addition to the Resource Siphon:
 | Records                                                                                                                 | Fields                                                            | Stored in-game values                                              |
 | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------ |
 | `Int_Engine_Size4_Class{2,4}`, `Int_Hyperdrive_Size4_Class4`                                                            | thruster min/max mass; FSD optimal mass                           | 158/473, 193/578 and 438 t                                         |
-| `Int_Engine_Size{2,3}_Class5_Fast`                                                                                      | optimal/maximum multiplier                                        | 1.1 / 1.2 on both                                                  |
+| `Int_Engine_Size{2,3}_Class5_Fast`                                                                                      | acceleration optimal/maximum multiplier                           | 1.1 / 1.2 on both                                                  |
 | `Int_GuardianShieldReinforcement_Size{1..5}_Class{1,2}`                                                                 | integrity                                                         | 36/42, 40/48, 45/55, 51/63, 58/72                                  |
 | `Int_MetaAlloyHullReinforcement_Size{1..5}_Class{1,2}`                                                                  | caustic resistance                                                | 0.02 on all ten                                                    |
 | shield generators                                                                                                       | regeneration / broken regeneration                                | observed 1.06–5.76 values per symbol                               |
@@ -615,8 +621,11 @@ account for 300 fields on 135 modules in addition to the Resource Siphon:
 | AX missiles, subsurface displacement missiles and seismic charge launchers                                              | projectile boundary parameters; misleading ordinary ranges absent | ten records and 16 absences                                        |
 
 In-game verification gives the integer thruster/FSD masses, 1.1/1.2 enhanced-thruster
-multipliers and the rising Guardian Shield Reinforcement integrity ladder. These values
-take precedence over family-shaped inference and registry agreement.
+acceleration multipliers and the rising Guardian Shield Reinforcement integrity ladder.
+The enhanced thrusters additionally retain Coriolis's separately sourced 0.9/1.25/1.6
+speed curve and 0.9/1.1/1.3 rotation curve; its mobility calculation applies those
+curves instead of treating the outfitting panel's acceleration curve as all three.
+These values take precedence over family-shaped inference and registry agreement.
 
 **The two fixed Guardian Shard Cannons' damage is derived from a panel reading, not read
 off one.** Individual outfitting panels observed **2026-08-10 UTC**, with grade-1
@@ -819,6 +828,21 @@ and bulkhead name because those records carry no symbol upstream.
       restriction, so it is wrong on anything the game also sells for an ordinary
       optional: a plain cargo rack fits a `cargo` mount _and_ every unrestricted one, and
       does not carry it. The set of five is pinned, so widening it is a deliberate act.
+  - **`exclusionGroup`** carries EDSY's one-per-ship `limit` families, renamed from its
+    compact ids to stable descriptive values. EDSY has 17 one-per-ship source families;
+    the stored set covers 194 internal and utility records in 16 of them: shield
+    generators (standard, bi-weave and prismatic
+    share one group), fuel scoops, refineries, frame-shift-drive interdictors, Guardian
+    FSD boosters, vessel hangars, docking computers, supercruise assist, multi-limpet
+    controllers, the two scanner families, experimental module stabilisers, and the five
+    one-per-ship utility families. EDSY sets every one of those limits to `1`; its
+    experimental-weapon limit is `4` and is deliberately not represented by this
+    one-per-ship field. EDSY's three legacy discovery scanners are absent because they
+    are not current outfitting records; `Int_SupercruiseAssist` matches EDSY's
+    `Int_SuperCruiseAssist` case-insensitively, as Frontier symbols are matched elsewhere.
+    The three Mk I bundle-granted and all six Mk II Vessel Hangars are absent from the
+    baseline table; they join to the separately pinned Vessel Hangar snapshot, where all
+    nine carry the same `limit:'ifh'` as the ordinary Mk I records.
   - **Pre-engineered/duplicate drives share a `symbol`** in coriolis (e.g. the V1
     FSDs); the first (primary) occurrence wins, and any baked engineering is expected
     to arrive as SLEF `Engineering.Modifiers` instead.

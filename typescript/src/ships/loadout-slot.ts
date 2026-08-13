@@ -7,6 +7,9 @@
 import type { FittedModule } from './fitted-module.js';
 import type { BuildSlot } from './slots.js';
 
+/** Stable reason a hull mount cannot be emptied through {@link ShipLoadout.removeModule}. */
+export type ImmovableReason = 'cargoHatch';
+
 /**
  * A point-in-time, deeply frozen view of one hull mount.
  *
@@ -64,4 +67,8 @@ export type LoadoutSlot = BuildSlot & {
     readonly name: string;
     /** Frozen fitted-module snapshot, or `null` when this mount is empty. */
     readonly module: FittedModule | null;
+    /** Whether {@link ShipLoadout.removeModule} may empty this mount. */
+    readonly removable: boolean;
+    /** Machine-readable reason the mount is fixed; absent when {@link removable} is true. */
+    readonly immovableReason?: ImmovableReason;
 };

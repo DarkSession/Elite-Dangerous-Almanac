@@ -35,6 +35,7 @@ import { ALL_MODULES } from './modules-all.js';
 import { SHIPS } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff, damagePerSecond } from './weapons.js';
+import { thrusterMassCurveMultiplier } from './mobility.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats } from './pre-engineered-stats.js';
 
@@ -50,6 +51,163 @@ const rounded = (r: DamageTypeValues) => ({
     thermal: Math.round(r.thermal * 1e6) / 1e6,
     explosive: Math.round(r.explosive * 1e6) / 1e6,
     caustic: Math.round(r.caustic * 1e6) / 1e6,
+});
+
+test('slot views state whether a mount can be emptied', () => {
+    const slots = ShipLoadout.default('SideWinder').slots();
+    assert.deepEqual(
+        slots.find((slot) => slot.kind === 'cargoHatch'),
+        {
+            key: 'CargoHatch',
+            kind: 'cargoHatch',
+            size: 1,
+            name: 'Cargo Hatch',
+            module: slots.find((slot) => slot.kind === 'cargoHatch')?.module ?? null,
+            removable: false,
+            immovableReason: 'cargoHatch',
+        },
+    );
+    assert.ok(slots.filter((slot) => slot.kind !== 'cargoHatch').every((slot) => slot.removable));
+});
+
+test('one-per-ship modules are filtered, rejected on edit and diagnosed on import', () => {
+    const generator = mod('Int_ShieldGenerator_Size6_Class3', INTERNAL_MODULES);
+    const build = ShipLoadout.empty('Anaconda').setModule('Slot01_Size7', generator);
+    assert.ok(
+        build
+            .modulesForSlot('Slot02_Size6')
+            .every((candidate) => candidate.exclusionGroup !== 'shieldGenerator'),
+    );
+    assert.throws(
+        () => build.setModule('Slot02_Size6', generator),
+        /shieldGenerator is limited to one per ship/,
+    );
+
+    const imported = ShipLoadout.fromLoadout({
+        Ship: 'anaconda',
+        Modules: [
+            { Slot: 'Slot01_Size7', Item: generator.symbol },
+            { Slot: 'Slot02_Size6', Item: generator.symbol },
+        ],
+    });
+    assert.equal(imported.validation.valid, false);
+    assert.ok(
+        imported.validation.issues.some((issue) => issue.code === 'duplicateExclusiveModule'),
+    );
+});
+
+test('the facade reports loaded mobility, shield recovery and cell-bank pools', () => {
+    const stock = ShipLoadout.default('SideWinder');
+    const mobility = stock.mobilityMetrics();
+    assert.ok(mobility);
+    assert.ok(mobility.speed > 0);
+    assert.ok(mobility.boost > mobility.speed);
+    assert.ok(stock.mobilityMetrics({ enginesPips: 2 })!.speed < mobility.speed);
+
+    const enhanced = ShipLoadout.default('SideWinder').setModule(
+        'MainEngines',
+        mod('Int_Engine_Size2_Class5_Fast', CORE_MODULES),
+    );
+    const enhancedMobility = enhanced.mobilityMetrics()!;
+    assert.notEqual(
+        enhancedMobility.massCurveMultiplier,
+        enhancedMobility.rotationMassCurveMultiplier,
+    );
+    const baseEnhanced = enhanced.fittedModuleAt('MainEngines')!.effectiveStats!;
+    enhanced.applyBlueprint('MainEngines', 'Engine_Dirty', { grade: 1 });
+    const engineeredEnhanced = enhanced.fittedModuleAt('MainEngines')!.effectiveStats!;
+    const enhancedPerformanceRatio =
+        engineeredEnhanced.optMultiplier! / baseEnhanced.optMultiplier!;
+    assert.ok(
+        near(
+            engineeredEnhanced.optSpeedMultiplier!,
+            baseEnhanced.optSpeedMultiplier! * enhancedPerformanceRatio,
+        ),
+    );
+    assert.ok(
+        near(
+            engineeredEnhanced.maxRotationMultiplier!,
+            baseEnhanced.maxRotationMultiplier! * enhancedPerformanceRatio,
+        ),
+    );
+    assert.notEqual(enhanced.mobilityMetrics()!.speed, enhancedMobility.speed);
+
+    const tuned = ShipLoadout.fromSlef(slefString);
+    const fittedThrusters = tuned.fittedModuleAt('MainEngines')!;
+    const effectiveThrusters = fittedThrusters.effectiveStats!;
+    const baseThrusters = getModuleBySymbol(fittedThrusters.symbol, ALL_MODULES)!;
+    const performanceRatio = effectiveThrusters.optMultiplier! / baseThrusters.optMultiplier!;
+    assert.ok(
+        near(effectiveThrusters.minMultiplier!, baseThrusters.minMultiplier! * performanceRatio),
+    );
+    assert.ok(
+        near(effectiveThrusters.maxMultiplier!, baseThrusters.maxMultiplier! * performanceRatio),
+    );
+    const tunedFuel = tuned.fuelCapacity!;
+    assert.ok(
+        near(
+            tuned.mobilityMetrics()!.massCurveMultiplier,
+            thrusterMassCurveMultiplier(tuned.unladenMass! + tunedFuel.main + tunedFuel.reserve, {
+                minMass: effectiveThrusters.minMass!,
+                optMass: effectiveThrusters.optMass!,
+                maxMass: effectiveThrusters.maxMass!,
+                minMultiplier: effectiveThrusters.minMultiplier!,
+                optMultiplier: effectiveThrusters.optMultiplier!,
+                maxMultiplier: effectiveThrusters.maxMultiplier!,
+            }),
+        ),
+    );
+
+    const recovery = stock.shieldRecovery();
+    assert.ok(recovery);
+    assert.ok(recovery.recoveryTime >= 16);
+    assert.ok(recovery.regenTime > 0);
+
+    const bank = mod('Int_ShieldCellBank_Size6_Class3', INTERNAL_MODULES);
+    const banked = ShipLoadout.empty('Anaconda')
+        .setModule('Slot02_Size6', bank)
+        .setModule('Slot01_Size7', bank);
+    const cells = banked.cellBanks();
+    assert.equal(cells.banks.length, 2);
+    assert.deepEqual(
+        cells.banks.map(({ slot }) => slot),
+        ['Slot01_Size7', 'Slot02_Size6'],
+    );
+    assert.ok(cells.totalCells > 0);
+    assert.ok(cells.totalRestorable > 0);
+});
+
+test('mobility returns null before requiring mass when no thrusters are fitted', () => {
+    const empty = ShipLoadout.empty('SideWinder');
+    assert.equal(empty.mobilityMetrics(), null);
+    assert.throws(() => empty.mobilityMetrics({ enginesPips: 5 }), RangeError);
+});
+
+test('shield recovery validates SYS pips even without a generator', () => {
+    const empty = ShipLoadout.empty('SideWinder');
+    assert.equal(empty.shieldRecovery(), null);
+    assert.throws(() => empty.shieldRecovery({ systemsPips: 5 }), RangeError);
+});
+
+test('retailCredits prices assembled builds directly and qualifies missing module prices', () => {
+    const stock = ShipLoadout.default('Anaconda');
+    const credits = stock.retailCredits();
+    const event = stock.toLoadoutEvent();
+    assert.equal(credits.hull, 142456440);
+    assert.ok(credits.modules > 0);
+    assert.equal(credits.rebuy, Math.trunc((credits.hull + credits.modules) * 0.05));
+    assert.deepEqual(
+        { hull: credits.hull, modules: credits.modules, rebuy: credits.rebuy },
+        { hull: event.HullValue, modules: event.ModulesValue, rebuy: event.Rebuy },
+    );
+    assert.ok(Object.isFrozen(credits));
+    assert.ok(Object.isFrozen(credits.unpriced));
+
+    const unknown = ShipLoadout.empty('Anaconda').setModule(
+        'Slot01_Size7',
+        mod('Int_CorrosionProofCargoRack_Size5_Class1', INTERNAL_MODULES),
+    );
+    assert.ok(unknown.retailCredits().unpriced.length > 0);
 });
 
 test('fromSlef reads the ship identity and top-level figures', () => {
@@ -630,6 +788,37 @@ test('setModule rejects the wrong module kind, oversize, and hull-restricted fit
         () => conda.setModule('MainEngines', mod('Int_Engine_Size7_Class5_GravityOptimised_MkII')),
         /restricted to Caspian Explorer \(Explorer_NX\)/,
     );
+});
+
+test('incompatible-module diagnostics carry every dynamic fitting value', () => {
+    const imported = ShipLoadout.fromLoadout({
+        Ship: 'Anaconda',
+        Modules: [
+            { Slot: 'FrameShiftDrive', Item: 'Int_Hyperdrive_Size8_Class5' },
+            {
+                Slot: 'MainEngines',
+                Item: 'Int_Engine_Size7_Class5_GravityOptimised_MkII',
+            },
+        ],
+    });
+    const issues = imported.validation.issues.filter(
+        (issue) => issue.code === 'incompatibleModule',
+    );
+    assert.deepEqual(issues[0]?.params, {
+        slot: 'FrameShiftDrive',
+        symbol: 'Int_Hyperdrive_Size8_Class5',
+        constraint: 'oversized',
+        moduleClass: 8,
+        slotSize: 6,
+    });
+    assert.deepEqual(issues[1]?.params, {
+        slot: 'MainEngines',
+        symbol: 'Int_Engine_Size7_Class5_GravityOptimised_MkII',
+        constraint: 'restrictedHull',
+        allowedHulls: 'Caspian Explorer (Explorer_NX)',
+        allowedShipSymbols: 'Explorer_NX',
+        shipSymbol: 'Anaconda',
+    });
 });
 
 test('Guardian core modules fit their core slot and are barred from optional slots', () => {
@@ -2199,6 +2388,7 @@ test('the Cobra Mk V reproduces the externally observed in-game build totals', (
 
     const weapons = installedBuild.weaponMetrics();
     assert.equal(displayed(weapons.total.damagePerSecond, 1), expected.offense.damagePerSecond);
+    assert.equal(displayed(weapons.total.thermalLoad, 1), expected.offense.thermalLoad);
     const panel = offensePanelTotals(installedBuild);
     assert.equal(displayed(panel.distributorDraw, 2), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 1), expected.offense.thermalLoad);
@@ -2320,6 +2510,13 @@ test('The Deep Black reproduces every observed calculated total', () => {
     assert.equal(displayed(panel.damagePerSecond, 0), expected.offense.damagePerSecond);
     assert.equal(displayed(panel.distributorDraw, 0), expected.offense.distributorDraw);
     assert.equal(displayed(panel.thermalLoad, 0), expected.offense.thermalLoad);
+
+    const mobility = build.mobilityMetrics()!;
+    assert.equal(displayed(mobility.speed, 0), expected.speed.top);
+    assert.equal(displayed(mobility.boost, 0), expected.speed.boost);
+    assert.ok(Math.abs(mobility.pitch - expected.speed.pitch) <= 0.05);
+    assert.ok(Math.abs(mobility.roll - expected.speed.roll) <= 0.05);
+    assert.ok(Math.abs(mobility.yaw - expected.speed.yaw) <= 0.05);
 
     const shields = build.shieldMetrics()!;
     assert.equal(displayed(shields.strength, 1), expected.shields.strength);
@@ -2855,6 +3052,10 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
     );
     assert.ok(near(weapons.total.energyPerSecond, expectedBuild.weapons.energyPerSecond));
     assert.ok(near(weapons.total.heatPerSecond, expectedBuild.weapons.heatPerSecond));
+    assert.equal(
+        weapons.total.thermalLoad,
+        weapons.weapons.reduce((sum, weapon) => sum + weapon.metrics.thermalLoad, 0),
+    );
     assert.ok(near(weapons.total.powerDraw, expectedBuild.weapons.powerDraw));
     assert.ok(
         near(weapons.total.damageByType.kinetic, expectedBuild.weapons.kineticDamagePerSecond),

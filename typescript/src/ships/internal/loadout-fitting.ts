@@ -4,6 +4,7 @@ import type { OutfittingModule } from '../modules.js';
 import { getShipBySymbol } from '../ships.js';
 import { SLOT_RESTRICTION_LABELS, type BuildSlot, type SlotRestriction } from '../slots.js';
 import { truncate } from '../../internal/argument-guards.js';
+import type { ModuleFitConstraint } from '../loadout-validation.js';
 
 /** Optional-internal groups a military slot accepts (symbol prefixes). */
 const MILITARY_PREFIXES: readonly string[] = [
@@ -64,19 +65,38 @@ const RESTRICTED_SLOT_PREFIXES: Record<SlotRestriction, readonly string[]> = {
     planetaryApproachSuite: ['int_planetapproachsuite'],
 };
 
-function restrictionError(slot: BuildSlot, symbol: string): string | null {
+/** A fitting failure's stable code and English fallback. */
+export interface ModuleFitProblem {
+    readonly constraint: ModuleFitConstraint;
+    readonly message: string;
+    readonly params?: Readonly<Record<string, string | number>>;
+}
+
+const problem = (
+    constraint: ModuleFitConstraint,
+    message: string,
+    params?: Readonly<Record<string, string | number>>,
+): ModuleFitProblem => ({ constraint, message, ...(params === undefined ? {} : { params }) });
+
+function restrictionProblem(slot: BuildSlot, symbol: string): ModuleFitProblem | null {
     const restriction = slot.restriction;
     if (!restriction) return null;
     if (RESTRICTED_SLOT_PREFIXES[restriction].some((prefix) => symbol.startsWith(prefix))) {
         return null;
     }
-    return `slot only takes ${SLOT_RESTRICTION_LABELS[restriction]}`;
+    return problem('restrictedMount', `slot only takes ${SLOT_RESTRICTION_LABELS[restriction]}`, {
+        restriction,
+    });
 }
 
-function moduleSlotError(slot: BuildSlot, module: OutfittingModule): string | null {
+function moduleSlotProblem(slot: BuildSlot, module: OutfittingModule): ModuleFitProblem | null {
     const required = module.restrictedToSlot;
     if (!required || slot.restriction === required) return null;
-    return `module only fits a mount that takes ${SLOT_RESTRICTION_LABELS[required]}`;
+    return problem(
+        'restrictedMount',
+        `module only fits a mount that takes ${SLOT_RESTRICTION_LABELS[required]}`,
+        { restriction: required },
+    );
 }
 
 /**
@@ -86,21 +106,25 @@ function moduleSlotError(slot: BuildSlot, module: OutfittingModule): string | nu
  * mount constraints, slot kind and finally size so callers receive the most specific
  * useful failure.
  */
-export function moduleFitError(
+export function moduleFitProblem(
     shipSymbol: string,
     slot: BuildSlot,
     module: OutfittingModule,
-): string | null {
+): ModuleFitProblem | null {
     if (slot.kind === 'cargoHatch') {
-        return 'the cargoHatch slot cannot be changed';
+        return problem('immutableSlot', 'the cargoHatch slot cannot be changed');
     }
     if (slot.kind === 'armour') {
         const hull = getShipBySymbol(shipSymbol);
         if (module.slot !== 'armour' || module.ship === undefined) {
-            return 'not a ship armour module';
+            return problem('armourRequired', 'not a ship armour module');
         }
         if (!hull || module.ship.toLowerCase() !== hull.name.toLowerCase()) {
-            return `armour belongs to ${truncate(module.ship)}, not ${truncate(hull?.name ?? shipSymbol)}`;
+            return problem(
+                'wrongHullArmour',
+                `armour belongs to ${truncate(module.ship)}, not ${truncate(hull?.name ?? shipSymbol)}`,
+                { armourShip: module.ship, ship: hull?.name ?? shipSymbol },
+            );
         }
         return null;
     }
@@ -117,12 +141,16 @@ export function moduleFitError(
             const hull = getShipBySymbol(symbol);
             return hull ? `${hull.name} (${symbol})` : symbol;
         });
-        return `module is restricted to ${truncate(hulls.join(', '))}`;
+        return problem('restrictedHull', `module is restricted to ${truncate(hulls.join(', '))}`, {
+            allowedHulls: hulls.join(', '),
+            allowedShipSymbols: restricted.join(','),
+            shipSymbol,
+        });
     }
 
     // Check the article's reserved mount before general kind rules: this remains true
     // even when the mount offered by the caller is otherwise unrestricted.
-    const wrongMount = moduleSlotError(slot, module);
+    const wrongMount = moduleSlotProblem(slot, module);
     if (wrongMount) return wrongMount;
     const symbol = module.symbol.toLowerCase();
     // The normalized slot field handles Guardian core modules filed as `internal` and
@@ -131,30 +159,54 @@ export function moduleFitError(
 
     switch (slot.kind) {
         case 'core':
-            if (moduleSlot !== slot.core) return `not a ${slot.core} module`;
+            if (moduleSlot !== slot.core) {
+                return problem('wrongCoreType', `not a ${slot.core} module`, {
+                    requiredCore: slot.core,
+                    moduleSlot: moduleSlot ?? 'none',
+                });
+            }
             break;
         case 'hardpoint': {
-            if (module.category !== 'hardpoint') return 'not a hardpoint weapon';
-            const problem = restrictionError(slot, symbol);
-            if (problem) return problem;
+            if (module.category !== 'hardpoint') {
+                return problem('hardpointRequired', 'not a hardpoint weapon');
+            }
+            const restricted = restrictionProblem(slot, symbol);
+            if (restricted) return restricted;
             break;
         }
         case 'utility':
-            if (module.category !== 'utility') return 'not a utility module';
+            if (module.category !== 'utility') {
+                return problem('utilityRequired', 'not a utility module');
+            }
             return null;
         case 'optional': {
             const isFuelTank = moduleSlot === 'fuelTank';
             if (module.category !== 'internal' && !isFuelTank) {
-                return 'not an optional-internal module';
+                return problem('optionalInternalRequired', 'not an optional-internal module');
             }
-            if (moduleSlot && !isFuelTank) return 'a core module only fits its core slot';
-            const problem = restrictionError(slot, symbol);
-            if (problem) return problem;
+            if (moduleSlot && !isFuelTank) {
+                return problem('coreModuleInOptionalSlot', 'a core module only fits its core slot');
+            }
+            const restricted = restrictionProblem(slot, symbol);
+            if (restricted) return restricted;
             break;
         }
     }
 
     return module.class > slot.size
-        ? `module size ${truncate(module.class)} exceeds slot size ${slot.size}`
+        ? problem(
+              'oversized',
+              `module size ${truncate(module.class)} exceeds slot size ${slot.size}`,
+              { moduleClass: module.class, slotSize: slot.size },
+          )
         : null;
+}
+
+/** Explain why `module` cannot fit `slot`, or return `null` when it fits. */
+export function moduleFitError(
+    shipSymbol: string,
+    slot: BuildSlot,
+    module: OutfittingModule,
+): string | null {
+    return moduleFitProblem(shipSymbol, slot, module)?.message ?? null;
 }

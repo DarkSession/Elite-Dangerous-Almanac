@@ -23,7 +23,12 @@ import { getExperimentalEffect } from '../experimental-effects.js';
 import { CORE_MODULES } from '../modules-core.js';
 import { getShipBySymbol } from '../ships.js';
 import type { PowerConsumer } from '../power.js';
-import type { ShieldBoosterParams, ShieldGeneratorParams, ShieldInput } from '../shields.js';
+import {
+    shieldMetrics,
+    type ShieldBoosterParams,
+    type ShieldGeneratorParams,
+    type ShieldInput,
+} from '../shields.js';
 import type {
     ArmourInput,
     BulkheadParams,
@@ -35,6 +40,9 @@ import { combinedRateOfFire, type WeaponStats } from '../weapons.js';
 import { scaleDamageComponents } from './damage-components.js';
 import { isNonOutfittingSlot } from './loadout-state.js';
 import { parseSlotName } from '../slots.js';
+import type { MobilityInput, ThrusterParams } from '../mobility.js';
+import type { CellBankInput, ShieldRecoveryInput } from '../shield-recovery.js';
+import { ammunitionCapacity } from '../ammunition.js';
 
 /**
  * Symbol prefixes that identify a module group, lower-cased.
@@ -55,7 +63,10 @@ import { parseSlotName } from '../slots.js';
  */
 const PREFIX = {
     powerPlant: ['int_powerplant', 'int_guardianpowerplant'],
+    thrusters: ['int_engine', 'int_mkiiagileboost_engine'],
+    powerDistributor: ['int_powerdistributor', 'int_guardianpowerdistributor'],
     shieldGenerator: ['int_shieldgenerator'],
+    shieldCellBank: ['int_shieldcellbank'],
     shieldBooster: ['hpt_shieldbooster'],
     shieldReinforcement: ['int_guardianshieldreinforcement'],
     hullReinforcement: [
@@ -246,6 +257,26 @@ export function effectiveModule(
         if (minMass !== undefined) merged.minMass = minMass;
         if (maxMass !== undefined) merged.maxMass = maxMass;
     }
+    if (stats.engineeringGroup === 'thrusters' || stats.engineeringGroup === 'shieldGenerators') {
+        const performanceRatio = modifierRatio(module, stats, 'optMultiplier');
+        const minMultiplier = relatedStat(module, stats, 'minMultiplier', performanceRatio);
+        const maxMultiplier = relatedStat(module, stats, 'maxMultiplier', performanceRatio);
+        if (minMultiplier !== undefined) merged.minMultiplier = minMultiplier;
+        if (maxMultiplier !== undefined) merged.maxMultiplier = maxMultiplier;
+        if (stats.engineeringGroup === 'thrusters') {
+            for (const field of [
+                'minSpeedMultiplier',
+                'optSpeedMultiplier',
+                'maxSpeedMultiplier',
+                'minRotationMultiplier',
+                'optRotationMultiplier',
+                'maxRotationMultiplier',
+            ] as const) {
+                const value = stats[field];
+                if (value !== undefined) merged[field] = value * performanceRatio;
+            }
+        }
+    }
     const damageDistribution = effectiveDamageDistribution(module, stats);
     if (damageDistribution) merged.damageDistribution = damageDistribution;
     if (stats.category === 'hardpoint') normalizeEffectiveWeapon(module, merged);
@@ -407,6 +438,152 @@ export function shieldInputFor(
         reinforcement,
         systemsPips,
     };
+}
+
+/** Gather a loaded hull and its fitted thruster curve. */
+export function mobilityInputFor(
+    shipSymbol: string,
+    modules: readonly LoadoutModule[],
+    mass: number | (() => number),
+    enginesPips: number,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): MobilityInput | null {
+    const hull = getShipBySymbol(shipSymbol);
+    if (!hull) return null;
+    let thrusters: ThrusterParams | null = null;
+    for (const module of modules) {
+        const stats = statsFor(module);
+        const isThruster = stats?.slot
+            ? stats.slot === 'thrusters'
+            : startsWithAny(module.Item, PREFIX.thrusters);
+        if (!isThruster) continue;
+        if (!isEnabled(module)) return null;
+        const effective = effectiveModule(module, stats);
+        const minMass = effective?.minMass;
+        const optMass = effective?.optMass;
+        const maxMass = effective?.maxMass;
+        const minMultiplier = effective?.minMultiplier;
+        const optMultiplier = effective?.optMultiplier;
+        const maxMultiplier = effective?.maxMultiplier;
+        if (
+            minMass === undefined ||
+            optMass === undefined ||
+            maxMass === undefined ||
+            minMultiplier === undefined ||
+            optMultiplier === undefined ||
+            maxMultiplier === undefined
+        ) {
+            return null;
+        }
+        thrusters = {
+            minMass,
+            optMass,
+            maxMass,
+            minMultiplier,
+            optMultiplier,
+            maxMultiplier,
+            ...(effective?.optSpeedMultiplier === undefined
+                ? {}
+                : {
+                      speedCurve: {
+                          minMass,
+                          optMass,
+                          maxMass,
+                          minMultiplier: effective.minSpeedMultiplier ?? minMultiplier,
+                          optMultiplier: effective.optSpeedMultiplier,
+                          maxMultiplier: effective.maxSpeedMultiplier ?? maxMultiplier,
+                      },
+                  }),
+            ...(effective?.optRotationMultiplier === undefined
+                ? {}
+                : {
+                      rotationCurve: {
+                          minMass,
+                          optMass,
+                          maxMass,
+                          minMultiplier: effective.minRotationMultiplier ?? minMultiplier,
+                          optMultiplier: effective.optRotationMultiplier,
+                          maxMultiplier: effective.maxRotationMultiplier ?? maxMultiplier,
+                      },
+                  }),
+        };
+        break;
+    }
+    if (!thrusters) return null;
+    return {
+        speed: hull.speed,
+        boost: hull.boost,
+        pitch: hull.pitch,
+        roll: hull.roll,
+        yaw: hull.yaw,
+        minThrust: hull.minThrust,
+        ...(hull.pipSpeed === undefined ? {} : { pipSpeed: hull.pipSpeed }),
+        mass: typeof mass === 'function' ? mass() : mass,
+        thrusters,
+        enginesPips,
+    };
+}
+
+/** Gather shield recovery rates and the fitted SYS capacitor. */
+export function shieldRecoveryInputFor(
+    shipSymbol: string,
+    modules: readonly LoadoutModule[],
+    systemsPips: number,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): ShieldRecoveryInput | null {
+    let generator: LoadoutModule | null = null;
+    let distributor: LoadoutModule | null = null;
+    for (const module of modules) {
+        const stats = statsFor(module);
+        if (!generator && startsWithAny(module.Item, PREFIX.shieldGenerator)) {
+            if (!isEnabled(module)) return null;
+            generator = module;
+        }
+        const isDistributor = stats?.slot
+            ? stats.slot === 'powerDistributor'
+            : startsWithAny(module.Item, PREFIX.powerDistributor);
+        if (isDistributor && isEnabled(module)) distributor = module;
+    }
+    if (!generator) return null;
+    const generatorStats = statsFor(generator);
+    const distributorStats = distributor ? statsFor(distributor) : null;
+    const strength = shieldMetrics(shieldInputFor(shipSymbol, modules, 0, statsFor)).strength;
+    return {
+        strength,
+        regenRate: effectiveStat(generator, 'shieldRegenRate', generatorStats) ?? 0,
+        brokenRegenRate: effectiveStat(generator, 'shieldBrokenRegenRate', generatorStats) ?? 0,
+        distributorDraw: effectiveStat(generator, 'distributorDraw', generatorStats) ?? 0.6,
+        systemsCapacity: distributor
+            ? (effectiveStat(distributor, 'systemsCapacity', distributorStats) ?? 0)
+            : 0,
+        systemsRecharge: distributor
+            ? (effectiveStat(distributor, 'systemsRecharge', distributorStats) ?? 0)
+            : 0,
+        systemsPips,
+    };
+}
+
+/** Gather fitted cell banks without treating their normal powered-off state as absence. */
+export function cellBankInputsFor(
+    modules: readonly LoadoutModule[],
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): CellBankInput[] {
+    const banks: CellBankInput[] = [];
+    for (const module of modules) {
+        if (!startsWithAny(module.Item, PREFIX.shieldCellBank)) continue;
+        const effective = effectiveModule(module, statsFor(module));
+        const ammunition = effective ? ammunitionCapacity(effective) : null;
+        banks.push({
+            slot: module.Slot,
+            symbol: module.Item,
+            reinforcementRate: effective?.shieldBankReinforcement ?? 0,
+            cells: ammunition?.total ?? 0,
+            spinUp: effective?.shieldBankSpinUp ?? 0,
+            duration: effective?.shieldBankDuration ?? 0,
+            heat: effective?.shieldBankHeat ?? 0,
+        });
+    }
+    return banks;
 }
 
 /**

@@ -451,7 +451,7 @@ test('an edited build re-exports a record whose parts still add up', () => {
     // wrote must not claim a `ModulesValue` its own parts contradict, because on re-import
     // that reads exactly like a capture whose owner bought a module the journal missed.
     const build = ShipLoadout.fromLoadout(deepBlackEvent);
-    build.setModule('Slot13_Size1', module('Int_DockingComputer_Standard'));
+    build.setModule('Slot13_Size1', module('Int_CargoRack_Size1_Class1'));
     const reimported = ShipLoadout.fromLoadout(build.toLoadoutEvent({ credits: 'source' }));
     const record = reimported.sourcePurchase!;
 
