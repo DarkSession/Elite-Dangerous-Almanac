@@ -32,8 +32,9 @@ a verbatim copy produced at build time — edit this file, never the copy.
   (our own implementation) from it: the power budget and its priority groups; loaded speed,
   boost and rotation through the thruster-mass and ENG-pip curves; shield strength and its
   mass curve; shield collapse delay, regeneration and SYS-capacitor recovery timing; armour
-  hit points; resistance stacking with its diminishing returns; and weapon DPS / capacitor
-  draw / heat. It credits the original Frontier-forum research the formulas come from.
+  hit points; resistance stacking with its diminishing returns; weapon DPS / capacitor
+  draw / heat; and WEP-pip recharge with weapons-capacitor endurance. It credits the
+  original Frontier-forum research the formulas come from.
 - **The heat model** — the equilibrium heat level a thermal load settles at, how heat
   moves towards it over time, and the multiplier a drained weapons capacitor puts on a
   weapon's thermal load — is ported as fact from EDSY's `edsy.js`

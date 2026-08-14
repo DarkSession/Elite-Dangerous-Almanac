@@ -3376,6 +3376,7 @@
                 "note": { "type": "string" },
                 "ship": { "type": "string" },
                 "sourceMaxJumpRange": { "type": "number" },
+                "totalJumps": { "type": "integer" },
                 "totalLadenRange": { "type": "number" },
                 "totalUnladenRange": { "type": "number" },
                 "unladenJumpRange": { "type": "number" },
@@ -3391,6 +3392,7 @@
                 "note",
                 "ship",
                 "sourceMaxJumpRange",
+                "totalJumps",
                 "totalLadenRange",
                 "totalUnladenRange",
                 "unladenJumpRange",
@@ -3412,6 +3414,7 @@
                 "note": { "type": "string" },
                 "ship": { "type": "string" },
                 "sourceMaxJumpRange": { "type": "number" },
+                "totalJumps": { "type": "integer" },
                 "totalLadenRange": { "type": "number" },
                 "totalUnladenRange": { "type": "number" },
                 "unladenJumpRange": { "type": "number" },
@@ -3427,6 +3430,7 @@
                 "note",
                 "ship",
                 "sourceMaxJumpRange",
+                "totalJumps",
                 "totalLadenRange",
                 "totalUnladenRange",
                 "unladenJumpRange",
@@ -3448,6 +3452,7 @@
                 "note": { "type": "string" },
                 "ship": { "type": "string" },
                 "sourceMaxJumpRange": { "type": "number" },
+                "totalJumps": { "type": "integer" },
                 "totalLadenRange": { "type": "number" },
                 "totalUnladenRange": { "type": "number" },
                 "unladenJumpRange": { "type": "number" },
@@ -3463,6 +3468,7 @@
                 "note",
                 "ship",
                 "sourceMaxJumpRange",
+                "totalJumps",
                 "totalLadenRange",
                 "totalUnladenRange",
                 "unladenJumpRange",
@@ -3523,6 +3529,7 @@
         },
         "ladenJumpRange": { "type": "number" },
         "mainFuel": { "type": "integer" },
+        "massFactor": { "type": "number" },
         "maxJumpRange": { "type": "number" },
         "overflowingTotal": {
           "type": "object",
@@ -3563,6 +3570,7 @@
           },
           "required": ["fuel", "mass", "minimumRange"]
         },
+        "totalJumps": { "type": "integer" },
         "totalRange": { "type": "number" },
         "unladenJumpRange": { "type": "number" },
         "unladenMass": { "type": "number" }
@@ -3577,10 +3585,12 @@
         "invalidInputs",
         "ladenJumpRange",
         "mainFuel",
+        "massFactor",
         "maxJumpRange",
         "overflowingTotal",
         "ship",
         "tinyFuel",
+        "totalJumps",
         "totalRange",
         "unladenJumpRange",
         "unladenMass"
@@ -5032,6 +5042,49 @@
             }
           },
           "required": ["expectedThermalLoad", "input"]
+        },
+        "weaponsCapacitor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expected": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "capacity": { "type": "integer" },
+                "netDrainRate": { "type": "number" },
+                "rechargeRate": { "type": "number" },
+                "sustainedEnergyPerSecond": { "type": "integer" },
+                "timeToDrain": { "type": "number" },
+                "weaponsPips": { "type": "integer" }
+              },
+              "required": [
+                "capacity",
+                "netDrainRate",
+                "rechargeRate",
+                "sustainedEnergyPerSecond",
+                "timeToDrain",
+                "weaponsPips"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "sustainedEnergyPerSecond": { "type": "integer" },
+                "weaponsCapacity": { "type": "integer" },
+                "weaponsPips": { "type": "integer" },
+                "weaponsRecharge": { "type": "integer" }
+              },
+              "required": [
+                "sustainedEnergyPerSecond",
+                "weaponsCapacity",
+                "weaponsPips",
+                "weaponsRecharge"
+              ]
+            }
+          },
+          "required": ["expected", "input"]
         }
       },
       "required": [
@@ -5044,7 +5097,8 @@
         "retailCredits",
         "shieldRecovery",
         "slotRemoval",
-        "weapons"
+        "weapons",
+        "weaponsCapacitor"
       ]
     },
     "shipsPreEngineered": {

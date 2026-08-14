@@ -2661,6 +2661,7 @@ type FixtureShipsJumpRange = {
             note: string;
             ship: string;
             sourceMaxJumpRange: number;
+            totalJumps: number;
             totalLadenRange: number;
             totalUnladenRange: number;
             unladenJumpRange: number;
@@ -2682,6 +2683,7 @@ type FixtureShipsJumpRange = {
             note: string;
             ship: string;
             sourceMaxJumpRange: number;
+            totalJumps: number;
             totalLadenRange: number;
             totalUnladenRange: number;
             unladenJumpRange: number;
@@ -2703,6 +2705,7 @@ type FixtureShipsJumpRange = {
             note: string;
             ship: string;
             sourceMaxJumpRange: number;
+            totalJumps: number;
             totalLadenRange: number;
             totalUnladenRange: number;
             unladenJumpRange: number;
@@ -2733,6 +2736,7 @@ type FixtureShipsJumpRange = {
     }[];
     ladenJumpRange: number;
     mainFuel: number;
+    massFactor: number;
     maxJumpRange: number;
     overflowingTotal: {
         error: string;
@@ -2752,6 +2756,7 @@ type FixtureShipsJumpRange = {
         mass: number;
         minimumRange: number;
     };
+    totalJumps: number;
     totalRange: number;
     unladenJumpRange: number;
     unladenMass: number;
@@ -3531,6 +3536,22 @@ type FixtureShipsOperations = {
         input: {
             thermalLoad: number;
         }[];
+    };
+    weaponsCapacitor: {
+        expected: {
+            capacity: number;
+            netDrainRate: number;
+            rechargeRate: number;
+            sustainedEnergyPerSecond: number;
+            timeToDrain: number;
+            weaponsPips: number;
+        };
+        input: {
+            sustainedEnergyPerSecond: number;
+            weaponsCapacity: number;
+            weaponsPips: number;
+            weaponsRecharge: number;
+        };
     };
 };
 

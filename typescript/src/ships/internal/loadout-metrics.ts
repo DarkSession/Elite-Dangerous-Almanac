@@ -43,6 +43,7 @@ import { isNonOutfittingSlot } from './loadout-state.js';
 import { parseSlotName } from '../slots.js';
 import type { MobilityInput, ThrusterParams } from '../mobility.js';
 import type { CellBankInput, ShieldRecoveryInput } from '../shield-recovery.js';
+import type { WeaponsCapacitorInput } from '../weapons-capacitor.js';
 import { ammunitionCapacity } from '../ammunition.js';
 
 /**
@@ -81,6 +82,13 @@ const PREFIX = {
 
 const startsWithAny = (symbol: string, prefixes: readonly string[]): boolean =>
     prefixes.some((prefix) => symbol.toLowerCase().startsWith(prefix));
+
+/** Whether a fitted module is a power distributor, by record or symbol fallback. */
+function isPowerDistributor(module: LoadoutModule, stats: OutfittingModule | null): boolean {
+    return stats?.slot
+        ? stats.slot === 'powerDistributor'
+        : startsWithAny(module.Item, PREFIX.powerDistributor);
+}
 
 /** Whether a fitted module is switched on (the journal's `On`, defaulting to `true`). */
 function isEnabled(module: LoadoutModule): boolean {
@@ -543,10 +551,7 @@ export function shieldRecoveryInputFor(
             if (!isEnabled(module)) return null;
             generator = module;
         }
-        const isDistributor = stats?.slot
-            ? stats.slot === 'powerDistributor'
-            : startsWithAny(module.Item, PREFIX.powerDistributor);
-        if (isDistributor && isEnabled(module)) distributor = module;
+        if (isPowerDistributor(module, stats) && isEnabled(module)) distributor = module;
     }
     if (!generator) return null;
     const generatorStats = statsFor(generator);
@@ -565,6 +570,32 @@ export function shieldRecoveryInputFor(
             : 0,
         systemsPips,
     };
+}
+
+/** Gather the powered WEP capacitor and weapons under the deployed power budget. */
+export function weaponsCapacitorInputFor(
+    modules: readonly LoadoutModule[],
+    weaponsPips: number,
+    budget: PowerBudget,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): WeaponsCapacitorInput {
+    let weaponsCapacity = 0;
+    let weaponsRecharge = 0;
+    let sustainedEnergyPerSecond = 0;
+    for (const module of modules) {
+        if (!isEnabled(module)) continue;
+        const stats = statsFor(module);
+        if (!poweredStates(module, stats, budget).deployed) continue;
+        if (isPowerDistributor(module, stats)) {
+            weaponsCapacity = effectiveStat(module, 'weaponsCapacity', stats) ?? 0;
+            weaponsRecharge = effectiveStat(module, 'weaponsRecharge', stats) ?? 0;
+        }
+        const weapon = weaponStatsFor(module, stats);
+        if (weapon) {
+            sustainedEnergyPerSecond += weaponMetrics(weapon).sustainedEnergyPerSecond;
+        }
+    }
+    return { weaponsCapacity, weaponsRecharge, sustainedEnergyPerSecond, weaponsPips };
 }
 
 /**
@@ -619,11 +650,7 @@ export function heatInputFor(
         ) {
             // Charging a jump is something a ship does with its hardpoints stowed.
             if (running.retracted) fsdHeatRate += effectiveStat(module, 'fsdHeatRate', stats) ?? 0;
-        } else if (
-            stats?.slot
-                ? stats.slot === 'powerDistributor'
-                : startsWithAny(module.Item, PREFIX.powerDistributor)
-        ) {
+        } else if (isPowerDistributor(module, stats)) {
             // An unfed distributor holds no charge, so its weapons all fire on empty.
             if (running.deployed) {
                 weaponsCapacity = effectiveStat(module, 'weaponsCapacity', stats) ?? 0;

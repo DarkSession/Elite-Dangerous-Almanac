@@ -401,6 +401,10 @@
             "types": "./dist/ships/weapons.d.ts",
             "import": "./dist/ships/weapons.js"
         },
+        "./ships/weapons-capacitor": {
+            "types": "./dist/ships/weapons-capacitor.d.ts",
+            "import": "./dist/ships/weapons-capacitor.js"
+        },
         "./ships/internal/*": null
     },
     "files": [

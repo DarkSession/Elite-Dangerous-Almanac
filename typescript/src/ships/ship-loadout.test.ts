@@ -568,7 +568,13 @@ test('unladen / laden / total range and per-jump fuel match the fixture', () => 
         near(build.ladenJumpRange(), expected.ladenJumpRange),
         `laden ${build.ladenJumpRange()}`,
     );
-    assert.ok(near(build.totalRange(), expected.totalRange, 1e-2), `total ${build.totalRange()}`);
+    const total = build.totalRange();
+    assert.ok(near(total.range, expected.totalRange, 1e-2), `total ${total.range}`);
+    assert.equal(total.jumps, expected.totalJumps);
+    assert.ok(
+        near(build.frameShiftDriveMassFactor(), expected.massFactor, 1e-12),
+        `factor ${build.frameShiftDriveMassFactor()}`,
+    );
     assert.ok(
         near(build.fuelPerJump(50), expected.fuelPerJump50Ly),
         `fuel50 ${build.fuelPerJump(50)}`,
@@ -3216,6 +3222,43 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
     );
 });
 
+test('weaponsCapacitorMetrics scales fitted distributor recharge by WEP pips', () => {
+    const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
+    const rated = build.weaponsCapacitorMetrics();
+    const halfPips = build.weaponsCapacitorMetrics({ weaponsPips: 2 });
+    const distributor = build.fittedModuleAt('PowerDistributor')!.effectiveStats!;
+
+    assert.equal(rated.capacity, distributor.weaponsCapacity);
+    assert.equal(rated.rechargeRate, distributor.weaponsRecharge);
+    assert.equal(
+        rated.sustainedEnergyPerSecond,
+        build.weaponMetrics().total.sustainedEnergyPerSecond,
+    );
+    assert.ok(halfPips.rechargeRate < rated.rechargeRate);
+    assert.ok(halfPips.netDrainRate >= rated.netDrainRate);
+    assert.throws(() => build.weaponsCapacitorMetrics({ weaponsPips: 5 }), {
+        name: 'RangeError',
+        message:
+            'ShipLoadout.weaponsCapacitorMetrics: weaponsPips must be a finite number from 0 to 4',
+    });
+});
+
+test('weaponsCapacitorMetrics excludes modules shed with hardpoints deployed', () => {
+    const starved = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent).setModule(
+        'PowerPlant',
+        getModuleBySymbol(heatFixture.unpowered.powerPlant, CORE_MODULES)!,
+    );
+    assert.ok(starved.powerBudget().bands.every((band) => !band.poweredDeployed));
+    assert.deepEqual(starved.weaponsCapacitorMetrics(), {
+        weaponsPips: 4,
+        capacity: 0,
+        rechargeRate: 0,
+        sustainedEnergyPerSecond: 0,
+        netDrainRate: 0,
+        timeToDrain: Infinity,
+    });
+});
+
 test('a hull with no shield generator reports no shields', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'PowerPlant',
@@ -3238,6 +3281,9 @@ test('switched-off modules drop out of every metric', () => {
     assert.equal(off.shieldMetrics(), null); // the generator is off
     assert.equal(off.powerBudget().available, 0); // so is the plant
     assert.equal(off.weaponMetrics().total.damagePerSecond, 0);
+    assert.equal(off.weaponsCapacitorMetrics().capacity, 0);
+    assert.equal(off.weaponsCapacitorMetrics().rechargeRate, 0);
+    assert.equal(off.weaponsCapacitorMetrics().timeToDrain, Infinity);
     // The weapons are still listed, with their own figures intact.
     assert.equal(off.weaponMetrics().weapons.length, 2);
     assert.ok(off.weaponMetrics().weapons.every((w) => !w.enabled));
@@ -3271,12 +3317,12 @@ test('jumpRangeSummary gathers the loads that matter', () => {
     assert.ok(near(summary.max, build.maxJumpRange()));
     assert.ok(near(summary.unladen, build.jumpRange()));
     assert.ok(near(summary.laden, build.ladenJumpRange()));
-    assert.ok(near(summary.totalUnladen, build.totalRange()));
-    assert.ok(near(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity! })));
+    assert.deepEqual(summary.totalUnladen, build.totalRange());
+    assert.deepEqual(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity! }));
     // Best single jump beats a full tank, which beats a full tank and a full hold.
     assert.ok(summary.max > summary.unladen);
     assert.ok(summary.unladen > summary.laden);
-    assert.ok(summary.totalUnladen > summary.totalLaden);
+    assert.ok(summary.totalUnladen.range > summary.totalLaden.range);
     // A partial load sits between the two.
     const partial = build.jumpRange({ cargo: build.cargoCapacity! / 2 });
     assert.ok(partial < summary.unladen && partial > summary.laden);

@@ -1,7 +1,7 @@
 /*
  * Shared test fixture — not shipped in any package.
  *
- * Expected ShipLoadout jump/fuel outputs. The flat keys below cover
+ * Expected ShipLoadout jump/fuel outputs, FSD mass factor and tank jump count. The flat keys below cover
  * fixtures/ships/slef-the-deep-black.jsonc and match EDSY's own MaxJumpRange; `builds` adds further
  * hulls, each naming the artifact it reads and the figure its source asserts. Cross-language
  * validation target.
@@ -23,7 +23,9 @@
   "edsyMaxJumpRange": 89.414678,
   "unladenJumpRange": 82.409288,
   "ladenJumpRange": 81.576342,
+  "massFactor": 5.513835787006519,
   "totalRange": 1625.166,
+  "totalJumps": 19,
   "fuelPerJump50Ly": 1.9474,
   "invalidInputs": [
     {
@@ -105,7 +107,8 @@
       "unladenJumpRange": 57.396245,
       "ladenJumpRange": 54.082242,
       "totalUnladenRange": 350.090753,
-      "totalLadenRange": 329.156774
+      "totalLadenRange": 329.156774,
+      "totalJumps": 6
     },
     "viperMkIV": {
       "build": "fixtures/ships/journal-viper-mkiv.jsonc",
@@ -126,7 +129,8 @@
       "unladenJumpRange": 20.920683,
       "ladenJumpRange": 20.920683,
       "totalUnladenRange": 120.666505,
-      "totalLadenRange": 120.666505
+      "totalLadenRange": 120.666505,
+      "totalJumps": 6
     },
     "pythonMkII": {
       "build": "fixtures/ships/journal-python-mkii-antixeno.jsonc",
@@ -147,7 +151,8 @@
       "unladenJumpRange": 17.226014,
       "ladenJumpRange": 17.035408,
       "totalUnladenRange": 61.165878,
-      "totalLadenRange": 60.482891
+      "totalLadenRange": 60.482891,
+      "totalJumps": 4
     }
   }
 }

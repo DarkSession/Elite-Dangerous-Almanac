@@ -8,6 +8,8 @@
  * @packageDocumentation
  */
 
+import { capacitorRechargeAtPips } from './internal/capacitor-recharge.js';
+
 /** Everything {@link shieldRecovery} needs about a powered shield and SYS capacitor. */
 export interface ShieldRecoveryInput {
     /** Finite non-negative total shield strength, including reinforcement, in megajoules. */
@@ -141,7 +143,7 @@ export function shieldRecovery(input: ShieldRecoveryInput): ShieldRecovery {
     ] as const) {
         requireFiniteNonNegative(field, input[field]);
     }
-    const recharge = input.systemsRecharge * Math.pow(pips / 4, 1.1);
+    const recharge = capacitorRechargeAtPips(input.systemsRecharge, pips);
     const half = input.strength / 2;
     return {
         regenRate: input.regenRate,

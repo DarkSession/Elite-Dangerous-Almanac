@@ -45,6 +45,14 @@ export interface FrameShiftDriveParams {
     readonly jumpBoost?: number;
 }
 
+/** A multi-jump tank-range result and the number of jumps that produce it. */
+export interface TotalRangeDetails {
+    /** Sum of the successive jumps as the tank drains, in light-years. */
+    readonly range: number;
+    /** Jumps made before the available fuel is exhausted. */
+    readonly jumps: number;
+}
+
 /** Maximum work accepted by {@link totalRange} in one call. */
 const MAX_TOTAL_RANGE_JUMPS = 100_000;
 
@@ -73,6 +81,15 @@ function validateFsd(scope: string, fsd: FrameShiftDriveParams): void {
     }
 }
 
+/** The FSD mass term after its public caller has validated the inputs. */
+function frameShiftDriveMassFactorUnchecked(
+    mass: number,
+    fuel: number,
+    fsd: Pick<FrameShiftDriveParams, 'optMass'>,
+): number {
+    return fsd.optMass / (mass + fuel);
+}
+
 /** The jump equation after its public caller has validated every input. */
 function singleJumpRangeUnchecked(
     mass: number,
@@ -82,12 +99,55 @@ function singleJumpRangeUnchecked(
 ): number {
     const burn = Math.min(fuel, fsd.maxFuel);
     if (burn <= 0 || mass + fuel <= 0) return 0;
-    const base = Math.pow(burn / fsd.fuelMul, 1 / fsd.fuelPower) * (fsd.optMass / (mass + fuel));
+    const base =
+        Math.pow(burn / fsd.fuelMul, 1 / fsd.fuelPower) *
+        frameShiftDriveMassFactorUnchecked(mass, fuel, fsd);
     const range = base + (fsd.jumpBoost ?? 0);
     if (!Number.isFinite(range)) {
         throw new RangeError(`${scope}: parameters produce a non-finite range`);
     }
     return range;
+}
+
+/**
+ * Resolve the frame shift drive's mass factor at one loaded mass.
+ *
+ * @param mass - Ship mass excluding the fuel being modelled, in tonnes — finite and
+ * non-negative.
+ * @param fuel - Fuel aboard for this calculation, in tonnes — finite and non-negative.
+ * The full amount contributes to loaded mass, even when one jump burns less.
+ * @param fsd - A drive's post-engineering optimised mass. A complete
+ * {@link FrameShiftDriveParams} object is accepted structurally.
+ * @returns The dimensionless `optMass / (mass + fuel)` factor used by
+ * {@link singleJumpRange}: `1` at the drive's optimised mass, below `1` above it and
+ * above `1` below it.
+ * @remarks
+ * An FSD does not use the three-point min/optimal/max curve that thrusters and shield
+ * generators do. Its mass contribution to jump range is this direct inverse ratio.
+ * Guardian FSD Booster range is added after the base jump equation and is therefore
+ * not part of this factor.
+ * @throws {RangeError} If an input is negative or non-finite, `optMass` is not
+ * positive, or the loaded mass is zero.
+ * @example
+ * ```ts
+ * import { frameShiftDriveMassFactor } from '@elite-dangerous-almanac/core/ships/jump-range';
+ *
+ * frameShiftDriveMassFactor(990, 10, { optMass: 1000 }); // -> 1
+ * ```
+ */
+export function frameShiftDriveMassFactor(
+    mass: number,
+    fuel: number,
+    fsd: Pick<FrameShiftDriveParams, 'optMass'>,
+): number {
+    const scope = 'frameShiftDriveMassFactor';
+    requireNonNegative(scope, 'mass', mass);
+    requireNonNegative(scope, 'fuel', fuel);
+    requirePositive(scope, 'optMass', fsd.optMass);
+    if (mass + fuel <= 0) {
+        throw new RangeError(`${scope}: mass plus fuel must be positive`);
+    }
+    return frameShiftDriveMassFactorUnchecked(mass, fuel, fsd);
 }
 
 /**
@@ -166,28 +226,41 @@ export function fuelPerJump(
 }
 
 /**
- * The total multi-jump range on a full tank, in light-years.
+ * The total multi-jump range and jump count on one tank.
  *
  * @param mass - Total ship mass excluding fuel, in tonnes (unladen mass plus cargo).
- * @param fuel - Fuel available to spend, in tonnes — normally the main tank's
- * capacity.
+ * @param fuel - Fuel available to spend, in tonnes — normally the main tank's capacity.
  * @param fsd - The drive constants.
- * @returns The sum of successive jumps as the tank drains, in light-years.
+ * @returns The summed range in light-years and the number of jumps evaluated. Zero
+ * fuel or a drive with zero `maxFuel` returns `{ range: 0, jumps: 0 }`; a final partial
+ * fuel load still counts as one jump.
  * @remarks
  * Each jump burns up to `maxFuel`; the sum runs until the tank is empty. `mass`
  * (hull + modules + cargo) stays fixed, while the decreasing `remaining` fuel is
  * included by {@link singleJumpRange}, so the ship becomes lighter after each jump.
  * At most 100,000 jumps are evaluated; larger workloads throw instead of returning a
- * silently truncated range.
+ * silently truncated result.
  * @throws {RangeError} If a quantity is negative or non-finite, a required drive
  * constant is not positive, or the tank would require more than 100,000 jumps.
+ * @example
+ * ```ts
+ * import { totalRange } from '@elite-dangerous-almanac/core/ships/jump-range';
+ *
+ * totalRange(500, 12, {
+ *   optMass: 1050, maxFuel: 5, fuelMul: 0.012, fuelPower: 2.45,
+ * }).jumps; // -> 3
+ * ```
  */
-export function totalRange(mass: number, fuel: number, fsd: FrameShiftDriveParams): number {
+export function totalRange(
+    mass: number,
+    fuel: number,
+    fsd: FrameShiftDriveParams,
+): TotalRangeDetails {
     const scope = 'totalRange';
     requireNonNegative(scope, 'mass', mass);
     requireNonNegative(scope, 'fuel', fuel);
     validateFsd(scope, fsd);
-    if (fsd.maxFuel <= 0) return 0;
+    if (fsd.maxFuel <= 0) return { range: 0, jumps: 0 };
     const jumps = fuel > 0 ? Math.max(1, Math.ceil(fuel / fsd.maxFuel)) : 0;
     if (!Number.isFinite(jumps) || jumps > MAX_TOTAL_RANGE_JUMPS) {
         throw new RangeError(
@@ -203,5 +276,5 @@ export function totalRange(mass: number, fuel: number, fsd: FrameShiftDriveParam
         }
         remaining = Math.max(0, remaining - fsd.maxFuel);
     }
-    return range;
+    return { range, jumps };
 }
