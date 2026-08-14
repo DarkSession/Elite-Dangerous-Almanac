@@ -526,7 +526,7 @@ test('an anti-xeno journal Loadout event reproduces every figure the game report
 });
 
 test('a stock anti-xeno build agrees with Frontier on a hull the other captures do not reach', () => {
-    // The second unengineered capture, and the only one on a Python MkII or an SCO drive.
+    // The second unengineered capture, and the only one on a Python Mk II or an SCO drive.
     // Nothing is folded in, so the agreement reads the base module masses and the drive
     // constants themselves — on a 699t hull rather than the Viper's 261t.
     assert.deepEqual(

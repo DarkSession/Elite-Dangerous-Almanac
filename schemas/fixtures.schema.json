@@ -5370,6 +5370,18 @@
       "additionalProperties": false,
       "properties": {
         "count": { "type": "integer" },
+        "displayNameCorrections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "symbol": { "type": "string" }
+            },
+            "required": ["name", "symbol"]
+          }
+        },
         "lookups": {
           "type": "array",
           "items": {
@@ -5400,7 +5412,7 @@
           }
         }
       },
-      "required": ["count", "lookups", "records"]
+      "required": ["count", "displayNameCorrections", "lookups", "records"]
     },
     "shipsShipSlots": {
       "type": "object",
@@ -5521,6 +5533,28 @@
       "additionalProperties": false,
       "properties": {
         "count": { "type": "integer" },
+        "inGameCorrections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "baseShieldStrength": { "type": "integer" },
+              "boost": { "type": "integer" },
+              "heatCapacity": { "type": "integer" },
+              "masslock": { "type": "integer" },
+              "minThrust": { "type": "number" },
+              "pipSpeed": { "type": "number" },
+              "pitch": { "type": "integer" },
+              "reserveFuelCapacity": { "type": "number" },
+              "roll": { "type": "integer" },
+              "speed": { "type": "integer" },
+              "symbol": { "type": "string" },
+              "yaw": { "type": "number" }
+            },
+            "required": ["symbol"]
+          }
+        },
         "minimumRotation": {
           "type": "object",
           "additionalProperties": false,
@@ -5604,6 +5638,7 @@
       },
       "required": [
         "count",
+        "inGameCorrections",
         "minimumRotation",
         "pipSpeedCorrections",
         "pricedCount",
