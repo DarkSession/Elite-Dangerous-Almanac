@@ -1623,12 +1623,24 @@ type FixtureShipsHeat = {
         heatCapacity: number;
         heatDissipation: number;
         heatLevel?: number;
-        note: string;
         seconds: number | null;
         startLevel: number;
         targetLevel?: number;
         thermalLoad: number;
     }[];
+    unknownDraws: {
+        fixture: string;
+        idleThermalLoad: number;
+        labels: string[];
+        overheats: boolean;
+    };
+    unpowered: {
+        fixture: string;
+        heatLevel: number;
+        overheats: boolean;
+        powerPlant: string;
+        thermalLoad: number;
+    };
     weaponThermalLoad: {
         capacitorLevel: number;
         distributorDraw: number;

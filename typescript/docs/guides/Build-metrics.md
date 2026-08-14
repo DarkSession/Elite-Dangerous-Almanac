@@ -206,9 +206,9 @@ whole magazine behind it.
 ## Heat
 
 What the build runs at, and whether firing everything cooks it. Heat is the one metric
-here that no Frontier figure underwrites: the game publishes no formula, so the model —
-and the per-hull `heatDissipation` it reads — is community measurement, ported from EDSY
-and credited in `ATTRIBUTIONS.md`.
+here that no stated Frontier figure underwrites: the game publishes no formula and shows
+no dissipation figure, so the model — and the per-hull `heatDissipation` it reads — is
+community measurement of the game, ported from EDSY and credited in `ATTRIBUTIONS.md`.
 
 ```ts
 import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
@@ -228,6 +228,12 @@ heat level 1 and never overheats, however long it fires; one that goes over neve
 at all. **Capacity** is only inertia — it sets how long the climb takes, which is why a
 build that cooks itself in eight seconds and one that cooks itself in two are the same
 kind of broken.
+
+Heat follows what the plant **actually feeds**. A module switched off makes no heat, and
+neither does one in a priority group the plant cannot keep lit — including the thrusters
+and the guns. That check is state-dependent, so a build whose thrusters survive with the
+hardpoints stowed but get shed once they are out reports thruster heat in `thrusters` and
+none in the firing scenarios.
 
 Each scenario is cumulative, and each reports both a settled level and a countdown:
 `gauge` is the level as a fraction of the in-game readout, `overheats` says whether it
@@ -280,7 +286,11 @@ load-bearing:
   answer, because the mass they need is unknown.
 - `heatMetrics()` returns `null` outright when the build has no powered plant, or when
   the hull publishes no heat figures — the Lynx Highliner is the one hull for which no
-  source carries a dissipation figure at all.
+  source carries a dissipation figure at all. When it does answer, it names unresolved
+  modules in its own `unknownDraws`, mirroring the power budget: a module the catalogue
+  cannot resolve draws power the model cannot see and makes heat it cannot count, so
+  while that list is non-empty every figure is a lower bound and `overheats: false`
+  answers only for the modules that did resolve.
 
 Check `build.validation.issues` for `unknownModule` before trusting any of the above on a
 build you did not assemble yourself.

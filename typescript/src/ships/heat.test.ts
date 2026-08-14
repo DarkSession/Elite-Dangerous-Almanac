@@ -80,7 +80,8 @@ test('effectiveWeaponThermalLoad rejects impossible capacitor states', () => {
 });
 
 test('heat follows the model through time, in both directions', () => {
-    for (const expected of fixture.transient) {
+    for (const [index, expected] of fixture.transient.entries()) {
+        const where = `transient case ${index}`;
         const params = {
             heatCapacity: expected.heatCapacity,
             heatDissipation: expected.heatDissipation,
@@ -91,13 +92,13 @@ test('heat follows the model through time, in both directions', () => {
             close(
                 heatLevelAtTime({ ...params, seconds: expected.seconds ?? 0 }),
                 expected.heatLevel,
-                expected.note,
+                where,
             );
         }
         if ('targetLevel' in expected && expected.targetLevel !== undefined) {
             const seconds = secondsToHeatLevel({ ...params, targetLevel: expected.targetLevel });
-            if (expected.seconds === null) assert.equal(seconds, Infinity, expected.note);
-            else close(seconds, expected.seconds ?? 0, expected.note);
+            if (expected.seconds === null) assert.equal(seconds, Infinity, where);
+            else close(seconds, expected.seconds ?? 0, where);
         }
     }
 });
@@ -296,6 +297,25 @@ test('the optional parts of a build default to contributing nothing', () => {
     );
 });
 
+test('thrusters the plant stops feeding once the hardpoints are out make no heat', () => {
+    const shed = heatMetrics({ ...INPUT, deployedThrusterHeatRate: 0 });
+    // Stowed is unaffected; deploying drops the thrusters' contribution from the base.
+    assert.equal(shed.thrusters.thermalLoad, heatMetrics(INPUT).thrusters.thermalLoad);
+    close(
+        heatMetrics(INPUT).firingSustained.thermalLoad - shed.firingSustained.thermalLoad,
+        1.5,
+        'the thrusters drop out of the firing scenarios',
+    );
+});
+
+test('unresolved modules are named, and make every figure a lower bound', () => {
+    assert.deepEqual(heatMetrics(INPUT).unknownDraws, []);
+    const incomplete = heatMetrics({ ...INPUT, unknownDraws: ['Slot01_Size7', 'HugeHardpoint1'] });
+    assert.deepEqual(incomplete.unknownDraws, ['Slot01_Size7', 'HugeHardpoint1']);
+    // Naming them changes no figure — it is the caveat that is reported, not a correction.
+    assert.equal(incomplete.idle.thermalLoad, heatMetrics(INPUT).idle.thermalLoad);
+});
+
 test('weapons with no capacitor behind them all fire on empty', () => {
     const heat = heatMetrics({ ...INPUT, weaponsCapacity: 0 });
     close(heat.firingSustained.thermalLoad, heat.firingDrained.thermalLoad, 'no distributor');
@@ -308,6 +328,7 @@ test('heatMetrics rejects figures that are not finite and non-negative', () => {
     assert.throws(() => heatMetrics({ ...INPUT, retractedPowerDraw: -1 }), RangeError);
     assert.throws(() => heatMetrics({ ...INPUT, deployedPowerDraw: Infinity }), RangeError);
     assert.throws(() => heatMetrics({ ...INPUT, thrusterHeatRate: -1 }), RangeError);
+    assert.throws(() => heatMetrics({ ...INPUT, deployedThrusterHeatRate: -1 }), RangeError);
     assert.throws(() => heatMetrics({ ...INPUT, fsdHeatRate: -1 }), RangeError);
     assert.throws(() => heatMetrics({ ...INPUT, weaponsCapacity: -1 }), RangeError);
 });

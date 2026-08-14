@@ -41,9 +41,12 @@ a verbatim copy produced at build time — edit this file, never the copy.
   `getEffectiveWeaponThermalLoad`, `updateUIStatsThm`), which credits the Frontier-forum
   research thread
   [Research: detailed heat mechanics](https://forums.frontier.co.uk/threads/research-detailed-heat-mechanics.286628/)
-  the mechanics were reverse-engineered in. Frontier publishes no heat formula, and
-  coriolis-data models none, so both the model and the per-hull dissipation figures it
-  reads are community measurement rather than game data.
+  the mechanics were reverse-engineered in. Frontier publishes no heat formula and
+  coriolis-data models none, so the model is community reverse-engineering, and the
+  per-hull dissipation figures it reads (credited with EDSY's other data below) are
+  community _measurements_ of the game rather than stats the game displays. Both
+  describe Frontier's game and fall under the same Frontier notice as every other stat
+  here; what differs is how they were arrived at, not who owns them.
 - **The jump-range and fuel algorithm**, **per-axis ENG-pip handling**, the **engineered
   ammunition rounding** rule and the **build metrics above** are cross-checked against, or
   ported as fact from, EDSY (credited under Data below). The jump-range model derives from
@@ -76,7 +79,9 @@ a verbatim copy produced at build time — edit this file, never the copy.
   per-hull maximum heat dissipation no other source carries, the
   Lynx Highliner's hull/slot figures and zero-pip minimum pitch, the journal slot names,
   and the attribute-to-journal-Label mapping. The values are Elite Dangerous game data —
-  see the Frontier notice below.
+  see the Frontier notice below. Heat dissipation is the one entry the game never shows
+  a player: it is community measurement of Frontier's game, described under Algorithms
+  above, and carried here on the same terms as the rest.
 - **[Inara](https://inara.cz/)** — the blueprint and outfitting registries behind the
   Operations pre-engineered blueprints and shop rows, the ship pages used to corroborate
   hull layouts, and the component pages that grade the Thargoid caustic / Titan materials

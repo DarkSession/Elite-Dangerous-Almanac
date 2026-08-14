@@ -26,19 +26,27 @@
  * `./ship-loadout`) reads all of that off a build, post-engineering, for you.
  *
  * Two heat sources stand outside the scenarios reported here, both of them momentary
- * rather than sustained: a shield cell bank's {@link OutfittingModule.shieldBankHeat}
- * while a cell runs, and the negative load a heat sink dumps. Feed either into
- * {@link heatLevelAtTime} or {@link secondsToHeatLevel} with the rest of the build's
- * load to answer for a build mid-fight.
+ * rather than sustained, and they are not interchangeable with the figures above:
+ *
+ * - A **shield cell bank** states {@link OutfittingModule.shieldBankHeat} per
+ *   *activation*, not per second. Divide it by the bank's
+ *   {@link OutfittingModule.shieldBankSpinUp} to get a load these functions accept, add
+ *   that to the build's own load, and run it for the spin-up's duration — which is what
+ *   an outfitting screen means by a cell bank's heat spike.
+ * - A **heat sink** removes heat rather than making it, and every load here is
+ *   non-negative, so it cannot be expressed as one. Nothing in this module models a
+ *   sink; the level a sink drops the ship to is the starting level of whatever comes
+ *   after it.
  *
  * @remarks
  * Reference implementation: EDSY, `edsy.js` (`getEquilibriumHeatLevel`,
  * `getTimeUntilHeatLevel`, `getHeatLevelAtTime`, `getEffectiveWeaponThermalLoad`,
  * `updateUIStatsThm`), which cites the Frontier-forum research thread
  * [Research: detailed heat mechanics](https://forums.frontier.co.uk/threads/research-detailed-heat-mechanics.286628/)
- * the model was reverse-engineered in. Frontier publishes no heat formula, so both the
- * model and the per-hull `heatDissipation` it reads are community measurements rather
- * than game data — see [data/ships/SOURCES.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
+ * the model was reverse-engineered in. Frontier publishes no heat formula and shows a
+ * player no dissipation figure, so both the model and the per-hull `heatDissipation` it
+ * reads are community measurements of the game rather than stats the game states — see
+ * [data/ships/SOURCES.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/data/ships/SOURCES.md).
  * The algorithm is ported as fact, not code; credit and licence terms are in
  * [ATTRIBUTIONS.md](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
  *
@@ -130,9 +138,20 @@ export interface HeatInput {
     readonly deployedPowerDraw?: number;
     /**
      * Waste heat the thrusters make per second at top speed
-     * ({@link OutfittingModule.engineHeatRate}). Defaults to `0`.
+     * ({@link OutfittingModule.engineHeatRate}), with the hardpoints stowed. Defaults
+     * to `0`.
      */
     readonly thrusterHeatRate?: number;
+    /**
+     * The same with the hardpoints **deployed**. Defaults to {@link thrusterHeatRate}.
+     *
+     * @remarks
+     * The two differ only on a build whose plant cannot feed everything: deploying the
+     * hardpoints adds the weapons' draw, which can shed the priority group the thrusters
+     * sit in. Thrusters the plant no longer feeds make no heat, so this is `0` there
+     * while {@link thrusterHeatRate} is not.
+     */
+    readonly deployedThrusterHeatRate?: number;
     /**
      * Waste heat the frame shift drive makes per second while charging a jump
      * ({@link OutfittingModule.fsdHeatRate}). Defaults to `0`.
@@ -147,6 +166,17 @@ export interface HeatInput {
      * drained multiplier in both firing scenarios.
      */
     readonly weaponsCapacity?: number;
+    /**
+     * Modules whose power draw could not be determined, named — the labels
+     * {@link PowerBudget.unknownDraws} carries. Defaults to none.
+     *
+     * @remarks
+     * Passing them does not change a single figure; it is how
+     * {@link HeatMetrics.unknownDraws} comes to report that the figures are a lower
+     * bound. A module missing from the catalogue draws power this calculation cannot
+     * see, and therefore makes heat it cannot count.
+     */
+    readonly unknownDraws?: readonly string[];
 }
 
 /** A build's heat under one set of circumstances. */
@@ -211,6 +241,17 @@ export interface HeatMetrics {
      * weapon makes five times its thermal load.
      */
     readonly firingDrained: HeatState;
+    /**
+     * Modules whose power draw could not be determined, named. Normally empty.
+     *
+     * **While it is not empty, every figure here is a lower bound.** An unresolved
+     * module draws power this calculation cannot see and makes heat it cannot count, so
+     * each scenario's thermal load and heat level read too low, and an `overheats` of
+     * `false` means only that the *known* modules do not overheat the build. A caller
+     * showing these figures should say so — the same caveat
+     * {@link PowerBudget.unknownDraws} carries, for the same reason.
+     */
+    readonly unknownDraws: readonly string[];
 }
 
 /**
@@ -464,6 +505,11 @@ export function heatMetrics(input: HeatInput): HeatMetrics {
         'thruster heat rate',
         input.thrusterHeatRate ?? 0,
     );
+    const deployedThrusterHeat = requireNonNegative(
+        'heatMetrics',
+        'deployed thruster heat rate',
+        input.deployedThrusterHeatRate ?? thrusterHeat,
+    );
     const fsdHeat = requireNonNegative('heatMetrics', 'FSD heat rate', input.fsdHeatRate ?? 0);
     const weaponsCapacity = requireNonNegative(
         'heatMetrics',
@@ -487,7 +533,7 @@ export function heatMetrics(input: HeatInput): HeatMetrics {
         );
     // Hardpoints are out and the ship is manoeuvring in both firing scenarios, so the
     // thrusters' heat is part of what the guns are added to.
-    const firingBase = deployedLoad + thrusterHeat;
+    const firingBase = deployedLoad + deployedThrusterHeat;
     const state = (load: number, base: number): HeatState =>
         heatState(heatCapacity, heatDissipation, load, base);
 
@@ -500,6 +546,7 @@ export function heatMetrics(input: HeatInput): HeatMetrics {
         fsdCharging: state(idleLoad + thrusterHeat + fsdHeat, idleLoad + thrusterHeat),
         firingSustained: state(firingBase + weaponHeat(1), firingBase),
         firingDrained: state(firingBase + weaponHeat(0), firingBase),
+        unknownDraws: [...(input.unknownDraws ?? [])],
     };
 }
 

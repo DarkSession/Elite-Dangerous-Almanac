@@ -101,7 +101,9 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   | `pipSpeed`            | `DiamondBack` 0.096153846153846→0.098214285714286; `DiamondBackXL` 0.098214285714286→0.096153846153846; `TypeX_2` 0.15833333333333→0.097222222222222; `TypeX_3` 0.088709677419355→0.0875; `Python_NX` 0.097826086956522→0.03515625; `Type8` 0.16666666666667→0.1375; `Mandalay` 0.16666666666667→0.071428571428571; `CobraMkV` 0.125→0.051724137931034; `Corsair` 0.053571428571429→0.089285714285714; `LakonMiner` 0.17307692307692→0.074074074074074; `Explorer_NX` 0.16666666666667→0.05952380952381; `SmallCombat01_NX` 0.023809523809524→0.027777777777778; `MediumTransport01` absent→0.065789473684211 |
 
 - **`heatDissipation` comes from EDSY, not coriolis-data.** Coriolis-data carries no
-  dissipation figure at all, and Frontier publishes none: it is community-measured. The
+  dissipation figure at all, and the game shows a player none: unlike every other stat
+  here it is a community *measurement* of Frontier's game rather than a figure the game
+  states, and ATTRIBUTIONS.md records it as such under both Algorithms and Data. The
   values are EDSY `eddb.js` `ship[…].heatdismax` from the baseline pinned snapshot,
   joined by case-insensitive `fdname` / `symbol`, and are the load in thermal-load units
   per second a hull sheds at heat level 1 — the ceiling a build's thermal load has to

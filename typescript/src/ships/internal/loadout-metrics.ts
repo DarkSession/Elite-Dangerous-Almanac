@@ -571,9 +571,12 @@ export function shieldRecoveryInputFor(
 /**
  * Gather the hull's heat stats, the plant's efficiency and everything that makes heat.
  *
- * The two power-draw figures come from the build's own {@link PowerBudget} rather than
- * being re-totalled here, so a priority group the plant cannot feed makes no heat — it
- * is not running.
+ * Nothing here is read from the fitted module alone: every heat source is checked
+ * against the build's own {@link PowerBudget} first, because a module the plant cannot
+ * feed is not running and therefore makes no heat. That check is state-dependent — the
+ * thrusters may be in a group the plant keeps lit with the hardpoints stowed and sheds
+ * once they are out — so the thrusters are gathered twice, and weapons are gathered
+ * against the deployed state they fire in.
  */
 export function heatInputFor(
     shipSymbol: string,
@@ -586,6 +589,7 @@ export function heatInputFor(
 
     let heatEfficiency: number | undefined;
     let thrusterHeatRate = 0;
+    let deployedThrusterHeatRate = 0;
     let fsdHeatRate = 0;
     let weaponsCapacity = 0;
     const weapons: HeatWeapon[] = [];
@@ -602,25 +606,33 @@ export function heatInputFor(
             continue;
         }
         if (!isEnabled(module)) continue;
+        const running = poweredStates(module, stats, budget);
         if (
             stats?.slot ? stats.slot === 'thrusters' : startsWithAny(module.Item, PREFIX.thrusters)
         ) {
-            thrusterHeatRate += effectiveStat(module, 'engineHeatRate', stats) ?? 0;
+            const heat = effectiveStat(module, 'engineHeatRate', stats) ?? 0;
+            if (running.retracted) thrusterHeatRate += heat;
+            if (running.deployed) deployedThrusterHeatRate += heat;
         } else if (
             stats?.slot
                 ? stats.slot === 'frameShiftDrive'
                 : startsWithAny(module.Item, PREFIX.frameShiftDrive)
         ) {
-            fsdHeatRate += effectiveStat(module, 'fsdHeatRate', stats) ?? 0;
+            // Charging a jump is something a ship does with its hardpoints stowed.
+            if (running.retracted) fsdHeatRate += effectiveStat(module, 'fsdHeatRate', stats) ?? 0;
         } else if (
             stats?.slot
                 ? stats.slot === 'powerDistributor'
                 : startsWithAny(module.Item, PREFIX.powerDistributor)
         ) {
-            weaponsCapacity = effectiveStat(module, 'weaponsCapacity', stats) ?? 0;
+            // An unfed distributor holds no charge, so its weapons all fire on empty.
+            if (running.deployed) {
+                weaponsCapacity = effectiveStat(module, 'weaponsCapacity', stats) ?? 0;
+            }
         }
         const weapon = weaponStatsFor(module, stats);
-        if (!weapon) continue;
+        // A weapon in a group the plant sheds once the hardpoints are out cannot fire.
+        if (!weapon || !running.deployed) continue;
         weapons.push({
             heatPerSecond: weaponMetrics(weapon).sustainedHeatPerSecond,
             distributorDraw: weapon.distributorDraw ?? 0,
@@ -635,9 +647,11 @@ export function heatInputFor(
         retractedPowerDraw: poweredDraw(budget, 'retracted'),
         deployedPowerDraw: poweredDraw(budget, 'deployed'),
         thrusterHeatRate,
+        deployedThrusterHeatRate,
         fsdHeatRate,
         weaponsCapacity,
         weapons,
+        unknownDraws: budget.unknownDraws.map((consumer) => consumer.label ?? '(unnamed module)'),
     };
 }
 
@@ -645,6 +659,27 @@ export function heatInputFor(
 function poweredDraw(budget: PowerBudget, state: 'retracted' | 'deployed'): number {
     const powered = state === 'retracted' ? 'poweredRetracted' : 'poweredDeployed';
     return budget.bands.reduce((total, band) => (band[powered] ? total + band[state] : total), 0);
+}
+
+/**
+ * Whether the plant keeps one fitted module running, with the hardpoints stowed and
+ * with them out.
+ *
+ * A module that asks for no power depends on no priority group and always runs. One
+ * whose draw the catalogue cannot supply is taken as running too: it is named in
+ * {@link PowerBudget.unknownDraws}, and dropping its heat silently would be the
+ * opposite of the lower bound that list promises.
+ */
+function poweredStates(
+    module: LoadoutModule,
+    stats: OutfittingModule | null,
+    budget: PowerBudget,
+): { retracted: boolean; deployed: boolean } {
+    const draw = effectiveStat(module, 'powerDraw', stats);
+    if (draw === undefined || draw === 0) return { retracted: true, deployed: true };
+    const band = budget.bands[Math.min(budget.bands.length, Math.max(1, priorityOf(module))) - 1];
+    if (!band) return { retracted: true, deployed: true };
+    return { retracted: band.poweredRetracted, deployed: band.poweredDeployed };
 }
 
 /** Gather fitted cell banks without treating their normal powered-off state as absence. */

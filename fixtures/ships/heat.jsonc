@@ -6,7 +6,7 @@
  * `getEffectiveWeaponThermalLoad`, `updateUIStatsThm`), which cites the Frontier-forum
  * research thread it was reverse-engineered in; see ATTRIBUTIONS.md and
  * data/ships/SOURCES.md. Frontier publishes no heat formula, so these are expectations
- * of a community model rather than readings taken from the game.
+ * of a community model rather than readings taken from the game's own display.
  *
  * `equilibrium`, `weaponThermalLoad` and `transient` are algebraic checkpoints — each
  * one is worked out from the stated formula rather than captured, and the round figures
@@ -82,8 +82,8 @@
   // At and above level 1 dissipation is capped and the level moves at
   // (load − dissipation) / capacity per second.
   "transient": [
+    // settled level exactly 1: level(t) = tanh(t / 2), so two seconds reaches tanh(1)
     {
-      "note": "settled level exactly 1: level(t) = tanh(t / 2), so two seconds reaches tanh(1)",
       "heatCapacity": 100,
       "heatDissipation": 50,
       "thermalLoad": 50,
@@ -91,8 +91,8 @@
       "seconds": 2,
       "heatLevel": 0.7615941559557649
     },
+    // the same case backwards — the time to reach that level
     {
-      "note": "the same case backwards — the time to reach that level",
       "heatCapacity": 100,
       "heatDissipation": 50,
       "thermalLoad": 50,
@@ -100,8 +100,8 @@
       "targetLevel": 0.7615941559557649,
       "seconds": 2
     },
+    // a load the hull cannot shed: curved to level 1, then straight to 1.5 at 0.5/s
     {
-      "note": "a load the hull cannot shed: curved to level 1, then straight to 1.5 at 0.5/s",
       "heatCapacity": 100,
       "heatDissipation": 50,
       "thermalLoad": 100,
@@ -109,8 +109,8 @@
       "targetLevel": 1.5,
       "seconds": 2.2464504802804608
     },
+    // a level the load settles below is never reached
     {
-      "note": "a level the load settles below is never reached",
       "heatCapacity": 100,
       "heatDissipation": 50,
       "thermalLoad": 50,
@@ -118,8 +118,8 @@
       "targetLevel": 1,
       "seconds": null
     },
+    // cooling from a heat sink's aftermath with the guns quiet
     {
-      "note": "cooling from a heat sink's aftermath with the guns quiet",
       "heatCapacity": 100,
       "heatDissipation": 50,
       "thermalLoad": 0,
@@ -175,6 +175,28 @@
       }
     }
   ],
+
+  // A plant too small to feed the build sheds priority groups from the bottom, and a
+  // module the plant does not feed is not running: it makes no heat, whatever its own
+  // stats say. With every group shed, no scenario generates anything at all.
+  "unpowered": {
+    "fixture": "journal-federation-corvette-beams.jsonc",
+    "powerPlant": "Int_PowerPlant_Size2_Class1",
+    "thermalLoad": 0,
+    "heatLevel": 0,
+    "overheats": false
+  },
+
+  // A module the catalogue cannot resolve draws power the model cannot see, and makes
+  // heat it cannot count. The named modules are reported rather than the profile being
+  // withheld: every figure is then a lower bound, and `overheats: false` answers only
+  // for the modules that did resolve.
+  "unknownDraws": {
+    "fixture": "build-metrics.jsonc unknownPowerDraw",
+    "labels": ["Slot01_Size7", "HugeHardpoint1", "TinyHardpoint1", "CargoHatch"],
+    "idleThermalLoad": 0,
+    "overheats": false
+  },
 
   // Hulls with no heat figures, and builds with nothing to model.
   "absent": {

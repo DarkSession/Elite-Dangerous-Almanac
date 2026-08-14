@@ -4258,3 +4258,47 @@ test('heat follows what the plant actually feeds, not what is fitted', () => {
         powered * weakPlant.heatMetrics()!.heatEfficiency,
     );
 });
+
+test('a build the plant cannot feed at all generates no heat anywhere', () => {
+    // Every priority group unpowered: nothing is running, so nothing — thrusters, drive
+    // or guns — has anything to make heat with, and the build cannot cook itself.
+    const expected = heatFixture.unpowered;
+    assert.equal(expected.fixture, 'journal-federation-corvette-beams.jsonc');
+    const starved = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent).setModule(
+        'PowerPlant',
+        getModuleBySymbol(expected.powerPlant, CORE_MODULES)!,
+    );
+    const bands = starved.powerBudget().bands;
+    assert.ok(
+        bands.every((band) => !band.poweredRetracted && !band.poweredDeployed),
+        'the reproduction needs every band unpowered',
+    );
+    const heat = starved.heatMetrics();
+    assert.ok(heat);
+    for (const scenario of HEAT_SCENARIOS) {
+        assert.equal(heat[scenario].thermalLoad, expected.thermalLoad, scenario);
+        assert.equal(heat[scenario].overheats, expected.overheats, scenario);
+        assert.equal(heat[scenario].heatLevel, expected.heatLevel, scenario);
+    }
+});
+
+test('heat names the unresolved modules that make its figures a lower bound', () => {
+    const expected = heatFixture.unknownDraws;
+    const heat = ShipLoadout.fromLoadout(metrics.unknownPowerDraw.loadout).heatMetrics();
+    assert.ok(heat);
+    assert.deepEqual(heat.unknownDraws, expected.labels);
+    assert.deepEqual(
+        heat.unknownDraws,
+        metrics.unknownPowerDraw.unknownDraws.map((consumer) => consumer.label),
+        'the same modules the power budget names',
+    );
+    // The figures themselves stay as they are — a lower bound, not a refusal — and the
+    // list is what tells a caller not to read `overheats: false` as an all-clear.
+    assert.equal(heat.idle.thermalLoad, expected.idleThermalLoad);
+    assert.equal(heat.firingDrained.overheats, expected.overheats);
+    // A build with nothing unresolved says so with an empty list.
+    assert.deepEqual(
+        ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent).heatMetrics()!.unknownDraws,
+        [],
+    );
+});

@@ -3079,7 +3079,6 @@
               "heatCapacity": { "type": "integer" },
               "heatDissipation": { "type": "integer" },
               "heatLevel": { "type": "number" },
-              "note": { "type": "string" },
               "seconds": {
                 "anyOf": [{ "type": "number" }, { "type": "null" }]
               },
@@ -3090,12 +3089,40 @@
             "required": [
               "heatCapacity",
               "heatDissipation",
-              "note",
               "seconds",
               "startLevel",
               "thermalLoad"
             ]
           }
+        },
+        "unknownDraws": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fixture": { "type": "string" },
+            "idleThermalLoad": { "type": "integer" },
+            "labels": { "type": "array", "items": { "type": "string" } },
+            "overheats": { "type": "boolean" }
+          },
+          "required": ["fixture", "idleThermalLoad", "labels", "overheats"]
+        },
+        "unpowered": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fixture": { "type": "string" },
+            "heatLevel": { "type": "integer" },
+            "overheats": { "type": "boolean" },
+            "powerPlant": { "type": "string" },
+            "thermalLoad": { "type": "integer" }
+          },
+          "required": [
+            "fixture",
+            "heatLevel",
+            "overheats",
+            "powerPlant",
+            "thermalLoad"
+          ]
         },
         "weaponThermalLoad": {
           "type": "array",
@@ -3126,6 +3153,8 @@
         "equilibrium",
         "overheatHeatLevel",
         "transient",
+        "unknownDraws",
+        "unpowered",
         "weaponThermalLoad"
       ]
     },
