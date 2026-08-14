@@ -23,6 +23,7 @@
  * - **Ships** — {@link SHIPS} and the {@link getShipBySymbol} / {@link getShipByName}
  *   lookups. One small catalogue; each {@link Ship} carries the
  *   hull's identity, stats and slot layout together. The split
+ *   {@link SHIP_GUNSIGHTS} map projects its fixed weapon mounts at any range. The split
  *   {@link ships/default-loadouts!DEFAULT_LOADOUTS | default-loadouts} subpath separately
  *   carries the stock modules, and {@link ShipLoadout.default} turns one into a live build.
  * - **Modules** — the {@link OutfittingModule} type and the lookups
@@ -185,6 +186,15 @@
 
 // ── Ships (identity + stats + slot layout, one record per hull) ─────────────
 export { SHIPS, getShipBySymbol, getShipByName, getShipSlots, type Ship } from './ships.js';
+export {
+    SHIP_GUNSIGHTS,
+    getShipGunsight,
+    projectGunsight,
+    type GunsightOffset,
+    type ShipGunsight,
+    type GunsightPoint,
+    type ShipGunsightCatalogue,
+} from './gunsights.js';
 
 // ── Modules: types + lookups (each record carries identity + stats) ──────────
 // The lookups search every module unless you pass a narrower catalogue.

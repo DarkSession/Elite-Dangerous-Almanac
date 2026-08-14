@@ -1,0 +1,40 @@
+/*
+ * Shared parity fixture for the fixed-weapon gunsight catalogue and projection.
+ *
+ * Pins complete coverage, hardpoint ordering, representative compact and large hull
+ * offsets, and projection at two target ranges. Source values are the checked-in
+ * data/ships/gunsights.jsonc catalogue; its upstream provenance is recorded in that
+ * catalogue's header and data/ships/SOURCES.md.
+ */
+{
+  "shipCount": 48,
+  "hardpointCount": 234,
+  "cases": [
+    {
+      "ship": "SideWinder",
+      "rangeMetres": 1000,
+      "offsets": [
+        [-2.1956754475, -1.166162014],
+        [2.1971644611, -1.166162014]
+      ],
+      "points": [
+        [-0.0021956754475, -0.001166162014],
+        [0.0021971644611, -0.001166162014]
+      ]
+    },
+    {
+      "ship": "Anaconda",
+      "rangeMetres": 500,
+      "offsets": [
+        [-0.0500994027, -20.8516497612],
+        [-0.0676546022, -16.4927697182],
+        [-6.3956546709, -6.0129098892]
+      ],
+      "points": [
+        [-0.0001001988054, -0.0417032995224],
+        [-0.0001353092044, -0.0329855394364],
+        [-0.0127913093418, -0.0120258197784]
+      ]
+    }
+  ]
+}

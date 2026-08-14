@@ -1586,6 +1586,22 @@ declare module '*/fixtures/ships/engineering-options.jsonc' {
     export default value;
 }
 
+type FixtureShipsGunsights = {
+    cases: {
+        offsets: number[][];
+        points: number[][];
+        rangeMetres: number;
+        ship: string;
+    }[];
+    hardpointCount: number;
+    shipCount: number;
+};
+
+declare module '*/fixtures/ships/gunsights.jsonc' {
+    const value: FixtureShipsGunsights;
+    export default value;
+}
+
 type FixtureShipsHeat = {
     builds: {
         deployedPowerDraw: number;
