@@ -1573,10 +1573,6 @@ declare module '*/fixtures/ships/engineering-options.jsonc' {
 }
 
 type FixtureShipsHeat = {
-    absent: {
-        hullWithoutDissipation: string;
-        unknownHull: string;
-    };
     builds: {
         deployedPowerDraw: number;
         firingDrained: {
@@ -1628,6 +1624,9 @@ type FixtureShipsHeat = {
         targetLevel?: number;
         thermalLoad: number;
     }[];
+    unavailable: {
+        unknownHull: string;
+    };
     unknownDraws: {
         fixture: string;
         idleThermalLoad: number;
@@ -3818,9 +3817,16 @@ declare module '*/fixtures/ships/ship-slots.jsonc' {
 type FixtureShipsShipStats = {
     count: number;
     heatDissipation: {
-        absent: string[];
         count: number;
-        spot: {
+        maximum: {
+            heatDissipation: number;
+            symbol: string;
+        };
+        minimum: {
+            heatDissipation: number;
+            symbol: string;
+        };
+        values: {
             heatDissipation: number;
             symbol: string;
         }[];

@@ -9,8 +9,7 @@
  *
  * ```text
  * thermal load = powered draw × plant heat efficiency + thrusters + FSD + weapons
- * dissipation  = heatDissipation × heatLevel²         (heat level ≤ 1)
- *              = heatDissipation                      (heat level > 1)
+ * dissipation  = heatDissipation × clamp(heatLevel, 0, 1)²
  * settles at     heatLevel = √(thermal load / heatDissipation)
  * ```
  *

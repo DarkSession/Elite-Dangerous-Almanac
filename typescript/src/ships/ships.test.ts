@@ -72,6 +72,8 @@ test('symbols and names are unique across the catalogue', () => {
 
 test(`${statsFixture.count} hulls carry stats; getShipBySymbol reads them`, () => {
     assert.equal(SHIPS.filter((s) => s.hullMass !== undefined).length, statsFixture.count);
+    assert.ok(SHIPS.every((ship) => ship.masslock > 0));
+    assert.ok(SHIPS.every((ship) => ship.heatCapacity > 0));
     assert.equal(getShipBySymbol('anaconda')?.hullMass, 400);
     assert.equal(getShipBySymbol('anaconda')?.hullMass, getShipBySymbol('ANACONDA')?.hullMass);
 });
@@ -92,26 +94,32 @@ test('ship stats carry the in-game audit corrections at their observed precision
     }
 });
 
-test('47 of the 48 hulls carry a heat-dissipation figure', () => {
+test('every hull carries the pinned maximum heat-dissipation figure', () => {
     const expected = statsFixture.heatDissipation;
-    const carried = SHIPS.filter((ship) => ship.heatDissipation !== undefined);
-    assert.equal(carried.length, expected.count);
-    assert.deepEqual(
-        SHIPS.filter((ship) => ship.heatDissipation === undefined).map((ship) => ship.symbol),
-        expected.absent,
-        'only the hulls no source publishes a figure for may omit it',
-    );
+    assert.equal(SHIPS.length, expected.count);
     assert.ok(
-        carried.every((ship) => ship.heatDissipation! > 0),
-        'a hull that carries the figure sheds something',
+        SHIPS.every((ship) => ship.heatDissipation > 0),
+        'every hull sheds something',
     );
-    for (const hull of expected.spot) {
+    assert.deepEqual(
+        SHIPS.map(({ symbol, heatDissipation }) => ({ symbol, heatDissipation })),
+        expected.values,
+    );
+    for (const bound of [expected.minimum, expected.maximum]) {
         assert.equal(
-            getShipBySymbol(hull.symbol)?.heatDissipation,
-            hull.heatDissipation,
-            hull.symbol,
+            getShipBySymbol(bound.symbol)?.heatDissipation,
+            bound.heatDissipation,
+            bound.symbol,
         );
     }
+    assert.equal(
+        Math.min(...SHIPS.map((ship) => ship.heatDissipation)),
+        expected.minimum.heatDissipation,
+    );
+    assert.equal(
+        Math.max(...SHIPS.map((ship) => ship.heatDissipation)),
+        expected.maximum.heatDissipation,
+    );
 });
 
 test('every hull carries its installed minimum and maximum speed endpoints', () => {

@@ -77,7 +77,8 @@
     }
   ],
 
-  // Below heat level 1 the hull sheds dissipation × level², so the level follows
+  // The base cooling law is D(level) = Dmax × clamp(level, 0, 1)². Below level 1
+  // the hull therefore sheds dissipation × level², so the level follows
   // level(t) = settled × tanh(t × sqrt(dissipation × load) / capacity + atanh(start / settled)).
   // At and above level 1 dissipation is capped and the level moves at
   // (load − dissipation) / capacity per second.
@@ -212,9 +213,8 @@
     }
   },
 
-  // Hulls with no heat figures, and builds with nothing to model.
-  "absent": {
-    "hullWithoutDissipation": "MediumTransport01",
+  // A build whose hull is unknown has no hull heat figures to model.
+  "unavailable": {
     "unknownHull": "NoSuchShip"
   }
 }
