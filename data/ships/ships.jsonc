@@ -3,8 +3,8 @@
  * per-hull stats, and its outfitting slot layout, in one record per hull.
  *
  * Sources: EDCD FDevIDs (identity), EDCD/coriolis-data (stats and slot layout), EDSY
- * (journal slot names, `heatDissipation`, and the Lynx Highliner coriolis-data does
- * not carry), and in-game verification.
+ * (journal slot names, baseline `heatDissipation`, and the Lynx Highliner coriolis-data
+ * does not carry), and in-game verification.
  *
  * Credit and licence terms: ATTRIBUTIONS.md. Acquisition, revisions, derivation and
  * corrections: data/ships/SOURCES.md.
@@ -15,8 +15,9 @@
  * in tonnes, `minimumSpeed`/`maximumSpeed`/`boost` in m/s, rotation rates in deg/s, …)
  * and the slot layout
  * (`core` sizes, `hardpoints`, `utility` count, `optional` mounts) are present for
- * every hull, bar `heatDissipation` — thermal-load units shed per second at heat
- * level 1 — which 47 of the 48 carry, the Lynx Highliner having no published figure. A `hardpoints` or `optional` mount is `{ size }`, plus a
+ * every hull. `heatDissipation` is the maximum cooling rate, in thermal-load units shed
+ * per second at heat level 1. A `hardpoints` or `optional` mount is
+ * `{ size }`, plus a
  * `restriction` when the mount only takes one family of modules — the Type-11
  * Prospector's four mining hardpoints and its limpet-controller and vessel-hangar
  * optionals, the Panther Clipper Mk II's two cargo-only optionals, the Lynx
@@ -3370,7 +3371,7 @@
     "masslock": 17,
     "crew": 2,
     "heatCapacity": 260,
-    "heatDissipation": 52,
+    "heatDissipation": 52.05,
     "reserveFuelCapacity": 0.83,
     "minPitch": 30,
     "pitch": 37,
@@ -3451,7 +3452,7 @@
     "masslock": 18,
     "crew": 1,
     "heatCapacity": 236,
-    "heatDissipation": 36.5,
+    "heatDissipation": 36.45,
     "reserveFuelCapacity": 0.52,
     "minPitch": 18,
     "pitch": 28,
@@ -3640,7 +3641,7 @@
     "masslock": 8,
     "crew": 3,
     "heatCapacity": 245,
-    "heatDissipation": 40.5,
+    "heatDissipation": 40.63,
     "reserveFuelCapacity": 0.49,
     "minPitch": 40,
     "pitch": 45,
@@ -3727,7 +3728,7 @@
     "masslock": 17,
     "crew": 2,
     "heatCapacity": 280,
-    "heatDissipation": 52,
+    "heatDissipation": 52.05,
     "reserveFuelCapacity": 0.41,
     "minPitch": 23,
     "pitch": 26,
@@ -3820,7 +3821,7 @@
     "masslock": 25,
     "crew": 4,
     "heatCapacity": 329,
-    "heatDissipation": 62.5,
+    "heatDissipation": 62.45,
     "reserveFuelCapacity": 1.11,
     "minPitch": 14,
     "pitch": 18,
@@ -3946,7 +3947,7 @@
     "masslock": 15,
     "crew": 3,
     "heatCapacity": 300,
-    "heatDissipation": 52.15,
+    "heatDissipation": 52.05,
     "reserveFuelCapacity": 0.6,
     "minPitch": 22,
     "pitch": 25,
@@ -4078,7 +4079,7 @@
     "masslock": 21,
     "crew": 4,
     "heatCapacity": 341,
-    "heatDissipation": 72.1,
+    "heatDissipation": 71.93,
     "reserveFuelCapacity": 1.14,
     "minPitch": 23,
     "pitch": 30,
@@ -4193,7 +4194,7 @@
     "masslock": 11,
     "crew": 1,
     "heatCapacity": 263,
-    "heatDissipation": 39.85,
+    "heatDissipation": 37.93,
     "reserveFuelCapacity": 0.61,
     "minPitch": 40,
     "pitch": 50,
@@ -4278,6 +4279,7 @@
     "masslock": 16,
     "crew": 2,
     "heatCapacity": 279,
+    "heatDissipation": 49.35,
     "reserveFuelCapacity": 0.75,
     "minPitch": 23,
     "pitch": 26,

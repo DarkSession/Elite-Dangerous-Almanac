@@ -4,9 +4,9 @@
  * Ground truth for the ship catalogue (data/ships/ships.jsonc, from EDCD FDevIDs and
  * EDCD/coriolis-data). `count` pins the catalogue size; `records` pins identity,
  * manufacturer and landing-pad size (with `entitlement` present only on gated hulls);
- * `displayNameCorrections` pins installed English localisation readings recorded
- * 2026-08-14 UTC (no retained capture or immutable game revision is available), and
- * `lookups` pins the case-insensitive symbol/name resolution the journal relies on.
+ * `displayNameCorrections` pins installed English localisation readings from Elite
+ * Dangerous 4.4.0.3, recorded 2026-08-14 UTC, and `lookups` pins the case-insensitive
+ * symbol/name resolution the journal relies on.
  */
 {
   "count": 48,

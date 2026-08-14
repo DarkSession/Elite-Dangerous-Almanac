@@ -43,8 +43,9 @@ a verbatim copy produced at build time — edit this file, never the copy.
   [Research: detailed heat mechanics](https://forums.frontier.co.uk/threads/research-detailed-heat-mechanics.286628/)
   the mechanics were reverse-engineered in. Frontier publishes no heat formula and
   coriolis-data models none, so the model is community reverse-engineering, and the
-  per-hull dissipation figures it reads (credited with EDSY's other data below) are
-  community _measurements_ of the game rather than stats the game displays. Both
+  per-hull dissipation figures it reads (credited with EDSY's other data and the
+  running-game audits below) are community _measurements_ of the game rather than stats
+  the game displays. Both
   describe Frontier's game and fall under the same Frontier notice as every other stat
   here; what differs is how they were arrived at, not who owns them.
 - **The jump-range and fuel algorithm**, **per-axis ENG-pip handling**, the **engineered
@@ -76,7 +77,7 @@ a verbatim copy produced at build time — edit this file, never the copy.
   wrongly (module mass, integrity, power draw, boot time, the base stats engineering
   recipes scale), the experimental-effect modifiers and their recipes, the module-group
   engineering menus, per-ship module-count limits and fitted stabiliser increases, the
-  per-hull maximum heat dissipation no other source carries, the
+  baseline per-hull maximum heat dissipation, the
   Lynx Highliner's hull/slot figures and zero-pip minimum pitch, the journal slot names,
   and the attribute-to-journal-Label mapping. The values are Elite Dangerous game data —
   see the Frontier notice below. Heat dissipation is the one entry the game never shows

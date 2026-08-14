@@ -2990,15 +2990,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "absent": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "hullWithoutDissipation": { "type": "string" },
-            "unknownHull": { "type": "string" }
-          },
-          "required": ["hullWithoutDissipation", "unknownHull"]
-        },
         "builds": {
           "type": "array",
           "items": {
@@ -3069,6 +3060,14 @@
             "required": ["dissipation", "heatLevel", "thermalLoad"]
           }
         },
+        "hulls": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "lynx": { "$ref": "#/definitions/sharedaa5cf1cc328e" }
+          },
+          "required": ["lynx"]
+        },
         "overheatHeatLevel": { "type": "number" },
         "transient": {
           "type": "array",
@@ -3136,6 +3135,7 @@
             "projection"
           ]
         },
+        "unknownHull": { "type": "string" },
         "unpowered": {
           "type": "object",
           "additionalProperties": false,
@@ -3177,13 +3177,14 @@
         }
       },
       "required": [
-        "absent",
         "builds",
         "drainedCapacitorMultiplier",
         "equilibrium",
+        "hulls",
         "overheatHeatLevel",
         "transient",
         "unknownDraws",
+        "unknownHull",
         "unpowered",
         "weaponThermalLoad"
       ]
@@ -5682,22 +5683,14 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "absent": { "type": "array", "items": { "type": "string" } },
-            "count": { "type": "integer" },
-            "spot": {
+            "maximum": { "$ref": "#/definitions/sharedaa5cf1cc328e" },
+            "minimum": { "$ref": "#/definitions/sharedaa5cf1cc328e" },
+            "values": {
               "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "heatDissipation": { "type": "number" },
-                  "symbol": { "type": "string" }
-                },
-                "required": ["heatDissipation", "symbol"]
-              }
+              "items": { "$ref": "#/definitions/sharedaa5cf1cc328e" }
             }
           },
-          "required": ["absent", "count", "spot"]
+          "required": ["maximum", "minimum", "values"]
         },
         "inGameCorrections": {
           "type": "array",
@@ -7510,6 +7503,15 @@
         "maximum": { "type": "number" }
       },
       "required": ["current", "maximum"]
+    },
+    "sharedaa5cf1cc328e": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "heatDissipation": { "type": "number" },
+        "symbol": { "type": "string" }
+      },
+      "required": ["heatDissipation", "symbol"]
     },
     "sharedac4e5a0d50b6": {
       "type": "object",

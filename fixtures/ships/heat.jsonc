@@ -212,9 +212,10 @@
     }
   },
 
-  // Hulls with no heat figures, and builds with nothing to model.
-  "absent": {
-    "hullWithoutDissipation": "MediumTransport01",
-    "unknownHull": "NoSuchShip"
-  }
+  "hulls": {
+    "lynx": { "symbol": "MediumTransport01", "heatDissipation": 49.35 }
+  },
+
+  // A build whose hull is unknown has no hull heat figures to model.
+  "unknownHull": "NoSuchShip"
 }

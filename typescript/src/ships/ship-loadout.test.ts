@@ -4282,18 +4282,18 @@ test('an unknown draw can make the projection overstate heat, not only understat
     assert.ok(unresolved.thrusters.thermalLoad > resolved.thrusters.thermalLoad);
 });
 
-test('a hull with no published dissipation reports no heat at all', () => {
+test('the Lynx uses its pinned maximum dissipation in build heat metrics', () => {
     const build = ShipLoadout.fromLoadout(lynxJournal as LoadoutEvent);
-    assert.equal(
-        build.shipSymbol.toLowerCase(),
-        heatFixture.absent.hullWithoutDissipation.toLowerCase(),
-    );
-    assert.equal(getShipBySymbol(build.shipSymbol)?.heatDissipation, undefined);
-    assert.equal(build.heatMetrics(), null);
-    // An unknown hull is the same answer for the same reason: no hull stats to read.
+    const expected = heatFixture.hulls.lynx;
+    assert.equal(build.shipSymbol.toLowerCase(), expected.symbol.toLowerCase());
+    assert.equal(getShipBySymbol(build.shipSymbol)?.heatDissipation, expected.heatDissipation);
+    assert.equal(build.heatMetrics()?.hullHeatDissipation, expected.heatDissipation);
+});
+
+test('an unknown hull has no heat profile', () => {
     assert.equal(
         ShipLoadout.fromLoadout({
-            Ship: heatFixture.absent.unknownHull,
+            Ship: heatFixture.unknownHull,
             Modules: [],
         } as unknown as LoadoutEvent).heatMetrics(),
         null,

@@ -82,11 +82,11 @@ export interface Ship {
     /** Hull hardness — resistance to armour piercing. */
     readonly hardness: number;
     /** Mass-lock factor — how strongly the hull impedes a smaller ship's FSD. */
-    readonly masslock?: number;
+    readonly masslock: number;
     /** Number of crew seats (SLF/multicrew). */
     readonly crew: number;
     /** Heat capacity — how much heat the hull absorbs before taking damage. */
-    readonly heatCapacity?: number;
+    readonly heatCapacity: number;
     /**
      * Maximum heat dissipation, in thermal-load units per second — the heat the hull
      * sheds at heat level `1`, and the load a build can carry indefinitely.
@@ -96,11 +96,10 @@ export interface Ship {
      * dissipation balance, and {@link heatCapacity} only decides how long the ship
      * takes to get there. See `./heat`.
      *
-     * Community-measured rather than published by Frontier, and absent for the Lynx
-     * Highliner, the one hull no source carries a figure for; a build on that hull
-     * therefore has no {@link ShipLoadout.heatMetrics}.
+     * Community-measured rather than published by Frontier. Every player-flyable hull
+     * carries a value, from the Hauler's `16.2` through the Cutter's `72.58`.
      */
-    readonly heatDissipation?: number;
+    readonly heatDissipation: number;
     /** Reserve tank capacity, in tonnes (feeds the main tank from empty). */
     readonly reserveFuelCapacity: number;
     /**

@@ -284,9 +284,8 @@ load-bearing:
   resolve from `weapons` and from the totals. None of the three carries a diagnostic.
 - `jumpRangeSummary()` and the other jump methods **throw** `TypeError` rather than
   answer, because the mass they need is unknown.
-- `heatMetrics()` returns `null` outright when the build has no powered plant, or when
-  the hull publishes no heat figures — the Lynx Highliner is the one hull for which no
-  source carries a dissipation figure at all. When it does answer, it names unresolved
+- `heatMetrics()` returns `null` outright when the build has no powered plant or its
+  hull is unknown. When it does answer, it names unresolved
   modules in its own `unknownDraws`, mirroring the power budget: a module the catalogue
   cannot resolve draws power the model cannot see and makes heat it cannot count — and,
   because an unknown draw is left out of the priority-group totals, it also leaves the
