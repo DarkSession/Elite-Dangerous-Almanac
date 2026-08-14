@@ -17,6 +17,13 @@ The TypeScript data-file tests map each catalogue filename to its corresponding
 definition and reject unknown fields, missing fields, invalid ranges, and invalid
 enum values.
 
+JSON Schema draft-07 cannot express an inequality between two sibling properties.
+Every language implementation must therefore enforce the semantic relationships that
+the relevant schema's `$comment` identifies after schema validation. For ship records
+these are `minimumSpeed <= maximumSpeed`, `minPitch <= pitch`, `minRoll <= roll`, and
+`minYaw <= yaw`. Keeping this check in each implementation is portable; non-standard
+validator extensions such as Ajv's `$data` are not.
+
 `fixtures.schema.json` is generated from the shared fixtures. Captures with the same
 wire format — journal loadouts, SLEF envelopes and community builds — share one family
 definition; all other fixtures have a definition of their own. Its

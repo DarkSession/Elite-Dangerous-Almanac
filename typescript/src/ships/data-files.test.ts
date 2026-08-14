@@ -52,6 +52,31 @@ const DATA_FILES = registerCatalogueDataTests({
     definitions: DEFINITION_BY_FILE,
 });
 
+test('ships.jsonc keeps every installed minimum endpoint no greater than its full endpoint', () => {
+    const shipsFile = DATA_FILES.find(({ name }) => name === 'ships.jsonc');
+    assert.ok(shipsFile);
+    const records = shipsFile.readPayload();
+    assert.ok(Array.isArray(records));
+    for (const record of records as readonly Record<string, unknown>[]) {
+        const symbol = String(record.symbol);
+        for (const [minimumField, maximumField] of [
+            ['minimumSpeed', 'maximumSpeed'],
+            ['minPitch', 'pitch'],
+            ['minRoll', 'roll'],
+            ['minYaw', 'yaw'],
+        ] as const) {
+            const minimum = record[minimumField];
+            const maximum = record[maximumField];
+            assert.equal(typeof minimum, 'number', `${symbol}: ${minimumField}`);
+            assert.equal(typeof maximum, 'number', `${symbol}: ${maximumField}`);
+            assert.ok(
+                (minimum as number) <= (maximum as number),
+                `${symbol}: ${minimumField} exceeds ${maximumField}`,
+            );
+        }
+    }
+});
+
 for (const { name, readPayload } of DATA_FILES) {
     if (name.startsWith('modules-')) {
         test(`${name} states its category once, in its name`, () => {

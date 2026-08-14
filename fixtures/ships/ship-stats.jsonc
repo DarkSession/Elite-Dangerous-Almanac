@@ -2,9 +2,9 @@
  * Shared test fixture — not shipped in any package.
  *
  * Parity fixture for the stat fields merged into data/ships/ships.jsonc. The in-game
- * corrections pin readings recorded 2026-08-14 UTC, normalized to the catalogue's
- * established numeric precision; no retained capture or immutable game revision is
- * available. Cross-language validation.
+ * corrections and installed speed/angular-rate endpoints pin readings recorded
+ * 2026-08-14 UTC; no retained capture or immutable game revision is available.
+ * Cross-language validation.
  */
 {
   "count": 48,
@@ -22,7 +22,6 @@
     {
       "symbol": "Anaconda",
       "hullMass": 400,
-      "speed": 180,
       "boost": 240,
       "baseShieldStrength": 350,
       "baseArmour": 525,
@@ -34,13 +33,15 @@
       "pitch": 25,
       "roll": 60,
       "yaw": 10,
-      "minThrust": 44.444,
-      "pipSpeed": 0.13888888888889
+      "minimumSpeed": 80,
+      "maximumSpeed": 180,
+      "minPitch": 20,
+      "minRoll": 60,
+      "minYaw": 10
     },
     {
       "symbol": "Explorer_NX",
       "hullMass": 950,
-      "speed": 210,
       "boost": 290,
       "baseShieldStrength": 500,
       "baseArmour": 345,
@@ -52,8 +53,11 @@
       "pitch": 30,
       "roll": 75,
       "yaw": 14,
-      "minThrust": 76.19,
-      "pipSpeed": 0.05952380952381
+      "minimumSpeed": 160,
+      "maximumSpeed": 210,
+      "minPitch": 23,
+      "minRoll": 75,
+      "minYaw": 14
     }
   ],
   "inGameCorrections": [
@@ -61,114 +65,132 @@
     { "symbol": "Dolphin", "heatCapacity": 245 },
     { "symbol": "Orca", "masslock": 15 },
     { "symbol": "Cutter", "masslock": 26 },
-    { "symbol": "DiamondBack", "pipSpeed": 0.098214285714286 },
-    { "symbol": "DiamondBackXL", "pipSpeed": 0.096153846153846 },
     { "symbol": "Viper_MkIV", "masslock": 8 },
     { "symbol": "Asp_Scout", "masslock": 9 },
-    {
-      "symbol": "Type9_Military",
-      "speed": 180,
-      "boost": 220,
-      "pitch": 22,
-      "roll": 40
-    },
-    { "symbol": "Krait_MkII", "pitch": 31, "minThrust": 62.5 },
+    { "symbol": "Type9_Military", "boost": 220, "pitch": 22, "roll": 40, "maximumSpeed": 180 },
+    { "symbol": "Krait_MkII", "pitch": 31 },
     { "symbol": "TypeX", "pitch": 38, "roll": 90 },
-    {
-      "symbol": "TypeX_2",
-      "minThrust": 61.111,
-      "pipSpeed": 0.097222222222222
-    },
-    { "symbol": "TypeX_3", "speed": 200, "pitch": 35, "pipSpeed": 0.0875 },
+    { "symbol": "TypeX_3", "pitch": 35, "maximumSpeed": 200 },
     { "symbol": "Krait_Light", "pitch": 31 },
     { "symbol": "Mamba", "pitch": 30, "roll": 75 },
-    {
-      "symbol": "Python_NX",
-      "heatCapacity": 260,
-      "pitch": 37,
-      "roll": 91,
-      "yaw": 12.5,
-      "minThrust": 85.938,
-      "pipSpeed": 0.03515625
-    },
-    { "symbol": "Type8", "heatCapacity": 236, "pipSpeed": 0.1375 },
-    {
-      "symbol": "Mandalay",
-      "masslock": 12,
-      "heatCapacity": 245,
-      "reserveFuelCapacity": 0.5,
-      "minThrust": 71.429,
-      "pipSpeed": 0.071428571428571
-    },
-    {
-      "symbol": "CobraMkV",
-      "speed": 290,
-      "boost": 410,
-      "pitch": 45,
-      "roll": 120,
-      "yaw": 33,
-      "minThrust": 79.31,
-      "pipSpeed": 0.051724137931034
-    },
-    {
-      "symbol": "Corsair",
-      "heatCapacity": 280,
-      "minThrust": 64.286,
-      "pipSpeed": 0.089285714285714
-    },
-    {
-      "symbol": "PantherMkII",
-      "speed": 180,
-      "masslock": 25,
-      "heatCapacity": 329,
-      "reserveFuelCapacity": 1.11,
-      "minThrust": 33.333
-    },
-    {
-      "symbol": "LakonMiner",
-      "speed": 270,
-      "boost": 365,
-      "masslock": 15,
-      "heatCapacity": 300,
-      "reserveFuelCapacity": 0.6,
-      "minThrust": 70.37,
-      "pipSpeed": 0.074074074074074
-    },
-    {
-      "symbol": "Explorer_NX",
-      "masslock": 21,
-      "heatCapacity": 341,
-      "minThrust": 76.19,
-      "pipSpeed": 0.05952380952381
-    },
+    { "symbol": "Python_NX", "heatCapacity": 260, "pitch": 37, "roll": 91, "yaw": 12.5 },
+    { "symbol": "Type8", "heatCapacity": 236 },
+    { "symbol": "Mandalay", "masslock": 12, "heatCapacity": 245, "reserveFuelCapacity": 0.5 },
+    { "symbol": "CobraMkV", "boost": 410, "pitch": 45, "roll": 120, "yaw": 33, "maximumSpeed": 290 },
+    { "symbol": "Corsair", "heatCapacity": 280 },
+    { "symbol": "PantherMkII", "masslock": 25, "heatCapacity": 329, "reserveFuelCapacity": 1.11, "maximumSpeed": 180 },
+    { "symbol": "LakonMiner", "boost": 365, "masslock": 15, "heatCapacity": 300, "reserveFuelCapacity": 0.6, "maximumSpeed": 270 },
+    { "symbol": "Explorer_NX", "masslock": 21, "heatCapacity": 341 },
     {
       "symbol": "SmallCombat01_NX",
-      "speed": 270,
       "masslock": 11,
       "heatCapacity": 263,
       "reserveFuelCapacity": 0.61,
       "pitch": 50,
       "roll": 120,
       "yaw": 24,
-      "minThrust": 88.889,
-      "pipSpeed": 0.027777777777778
+      "maximumSpeed": 270
     },
-    {
-      "symbol": "MediumTransport01",
-      "masslock": 16,
-      "heatCapacity": 279,
-      "minThrust": 73.684,
-      "pipSpeed": 0.065789473684211
-    }
+    { "symbol": "MediumTransport01", "masslock": 16, "heatCapacity": 279 }
   ],
-  "minimumRotation": {
-    "symbol": "MediumTransport01",
-    "pitch": 26,
-    "minPitch": 23,
-    "pipSpeed": 0.065789473684211
-  },
-  "pipSpeedCorrections": [
-    { "symbol": "DiamondBack", "pipSpeed": 0.098214285714286 },
-    { "symbol": "DiamondBackXL", "pipSpeed": 0.096153846153846 }
+  "speedEndpoints": [
+    { "symbol": "SideWinder", "minimumSpeed": 100, "maximumSpeed": 220 },
+    { "symbol": "Eagle", "minimumSpeed": 180, "maximumSpeed": 240 },
+    { "symbol": "Hauler", "minimumSpeed": 70, "maximumSpeed": 200 },
+    { "symbol": "Adder", "minimumSpeed": 100, "maximumSpeed": 220 },
+    { "symbol": "Viper", "minimumSpeed": 200, "maximumSpeed": 320 },
+    { "symbol": "CobraMkIII", "minimumSpeed": 140, "maximumSpeed": 280 },
+    { "symbol": "Type6", "minimumSpeed": 90, "maximumSpeed": 220 },
+    { "symbol": "Dolphin", "minimumSpeed": 120, "maximumSpeed": 250 },
+    { "symbol": "Type7", "minimumSpeed": 60, "maximumSpeed": 180 },
+    { "symbol": "Asp", "minimumSpeed": 120, "maximumSpeed": 250 },
+    { "symbol": "Vulture", "minimumSpeed": 190, "maximumSpeed": 210 },
+    { "symbol": "Empire_Trader", "minimumSpeed": 180, "maximumSpeed": 300 },
+    { "symbol": "Federation_Dropship", "minimumSpeed": 100, "maximumSpeed": 180 },
+    { "symbol": "Orca", "minimumSpeed": 200, "maximumSpeed": 300 },
+    { "symbol": "Type9", "minimumSpeed": 40, "maximumSpeed": 130 },
+    { "symbol": "Python", "minimumSpeed": 140, "maximumSpeed": 230 },
+    { "symbol": "BelugaLiner", "minimumSpeed": 110, "maximumSpeed": 200 },
+    { "symbol": "FerDeLance", "minimumSpeed": 220, "maximumSpeed": 260 },
+    { "symbol": "Anaconda", "minimumSpeed": 80, "maximumSpeed": 180 },
+    { "symbol": "Federation_Corvette", "minimumSpeed": 100, "maximumSpeed": 200 },
+    { "symbol": "Cutter", "minimumSpeed": 160, "maximumSpeed": 200 },
+    { "symbol": "DiamondBack", "minimumSpeed": 170, "maximumSpeed": 280 },
+    { "symbol": "Empire_Courier", "minimumSpeed": 220, "maximumSpeed": 280 },
+    { "symbol": "DiamondBackXL", "minimumSpeed": 160, "maximumSpeed": 260 },
+    { "symbol": "Empire_Eagle", "minimumSpeed": 210, "maximumSpeed": 300 },
+    { "symbol": "Federation_Dropship_MkII", "minimumSpeed": 150, "maximumSpeed": 210 },
+    { "symbol": "Federation_Gunship", "minimumSpeed": 100, "maximumSpeed": 170 },
+    { "symbol": "Viper_MkIV", "minimumSpeed": 175, "maximumSpeed": 270 },
+    { "symbol": "CobraMkIV", "minimumSpeed": 100, "maximumSpeed": 200 },
+    { "symbol": "Independant_Trader", "minimumSpeed": 90, "maximumSpeed": 200 },
+    { "symbol": "Asp_Scout", "minimumSpeed": 110, "maximumSpeed": 220 },
+    { "symbol": "Type9_Military", "minimumSpeed": 150, "maximumSpeed": 180 },
+    { "symbol": "Krait_MkII", "minimumSpeed": 150, "maximumSpeed": 240 },
+    { "symbol": "TypeX", "minimumSpeed": 150, "maximumSpeed": 230 },
+    { "symbol": "TypeX_2", "minimumSpeed": 110, "maximumSpeed": 180 },
+    { "symbol": "TypeX_3", "minimumSpeed": 130, "maximumSpeed": 200 },
+    { "symbol": "Krait_Light", "minimumSpeed": 160, "maximumSpeed": 250 },
+    { "symbol": "Mamba", "minimumSpeed": 240, "maximumSpeed": 310 },
+    { "symbol": "Python_NX", "minimumSpeed": 220, "maximumSpeed": 256 },
+    { "symbol": "Type8", "minimumSpeed": 90, "maximumSpeed": 200 },
+    { "symbol": "Mandalay", "minimumSpeed": 200, "maximumSpeed": 280 },
+    { "symbol": "CobraMkV", "minimumSpeed": 230, "maximumSpeed": 290 },
+    { "symbol": "Corsair", "minimumSpeed": 180, "maximumSpeed": 280 },
+    { "symbol": "PantherMkII", "minimumSpeed": 60, "maximumSpeed": 180 },
+    { "symbol": "LakonMiner", "minimumSpeed": 190, "maximumSpeed": 270 },
+    { "symbol": "Explorer_NX", "minimumSpeed": 160, "maximumSpeed": 210 },
+    { "symbol": "SmallCombat01_NX", "minimumSpeed": 240, "maximumSpeed": 270 },
+    { "symbol": "MediumTransport01", "minimumSpeed": 210, "maximumSpeed": 285 }
+  ],
+  "rotationEndpoints": [
+    { "symbol": "SideWinder", "minPitch": 34, "pitch": 42, "minRoll": 110, "roll": 110, "minYaw": 16, "yaw": 16 },
+    { "symbol": "Eagle", "minPitch": 40, "pitch": 50, "minRoll": 120, "roll": 120, "minYaw": 18, "yaw": 18 },
+    { "symbol": "Hauler", "minPitch": 30, "pitch": 36, "minRoll": 100, "roll": 100, "minYaw": 14, "yaw": 14 },
+    { "symbol": "Adder", "minPitch": 30, "pitch": 38, "minRoll": 100, "roll": 100, "minYaw": 14, "yaw": 14 },
+    { "symbol": "Viper", "minPitch": 30, "pitch": 35, "minRoll": 90, "roll": 90, "minYaw": 15, "yaw": 15 },
+    { "symbol": "CobraMkIII", "minPitch": 30, "pitch": 40, "minRoll": 100, "roll": 100, "minYaw": 10, "yaw": 10 },
+    { "symbol": "Type6", "minPitch": 23, "pitch": 30, "minRoll": 100, "roll": 100, "minYaw": 17, "yaw": 17 },
+    { "symbol": "Dolphin", "minPitch": 23, "pitch": 30, "minRoll": 100, "roll": 100, "minYaw": 20, "yaw": 20 },
+    { "symbol": "Type7", "minPitch": 16, "pitch": 22, "minRoll": 60, "roll": 60, "minYaw": 16, "yaw": 22 },
+    { "symbol": "Asp", "minPitch": 30, "pitch": 38, "minRoll": 100, "roll": 100, "minYaw": 10, "yaw": 10 },
+    { "symbol": "Vulture", "minPitch": 35, "pitch": 42, "minRoll": 110, "roll": 110, "minYaw": 17, "yaw": 17 },
+    { "symbol": "Empire_Trader", "minPitch": 30, "pitch": 40, "minRoll": 80, "roll": 80, "minYaw": 18, "yaw": 18 },
+    { "symbol": "Federation_Dropship", "minPitch": 20, "pitch": 30, "minRoll": 80, "roll": 80, "minYaw": 14, "yaw": 14 },
+    { "symbol": "Orca", "minPitch": 20, "pitch": 25, "minRoll": 55, "roll": 55, "minYaw": 18, "yaw": 18 },
+    { "symbol": "Type9", "minPitch": 15, "pitch": 20, "minRoll": 20, "roll": 20, "minYaw": 8, "yaw": 8 },
+    { "symbol": "Python", "minPitch": 24, "pitch": 29, "minRoll": 90, "roll": 90, "minYaw": 10, "yaw": 10 },
+    { "symbol": "BelugaLiner", "minPitch": 20, "pitch": 25, "minRoll": 60, "roll": 60, "minYaw": 17, "yaw": 17 },
+    { "symbol": "FerDeLance", "minPitch": 30, "pitch": 38, "minRoll": 90, "roll": 90, "minYaw": 12, "yaw": 12 },
+    { "symbol": "Anaconda", "minPitch": 20, "pitch": 25, "minRoll": 60, "roll": 60, "minYaw": 10, "yaw": 10 },
+    { "symbol": "Federation_Corvette", "minPitch": 22, "pitch": 28, "minRoll": 75, "roll": 75, "minYaw": 8, "yaw": 8 },
+    { "symbol": "Cutter", "minPitch": 14, "pitch": 18, "minRoll": 45, "roll": 45, "minYaw": 8, "yaw": 8 },
+    { "symbol": "DiamondBack", "minPitch": 35, "pitch": 42, "minRoll": 100, "roll": 100, "minYaw": 15, "yaw": 15 },
+    { "symbol": "Empire_Courier", "minPitch": 32, "pitch": 38, "minRoll": 90, "roll": 90, "minYaw": 16, "yaw": 16 },
+    { "symbol": "DiamondBackXL", "minPitch": 28, "pitch": 35, "minRoll": 90, "roll": 90, "minYaw": 13, "yaw": 13 },
+    { "symbol": "Empire_Eagle", "minPitch": 30, "pitch": 40, "minRoll": 100, "roll": 100, "minYaw": 15, "yaw": 15 },
+    { "symbol": "Federation_Dropship_MkII", "minPitch": 30, "pitch": 38, "minRoll": 90, "roll": 90, "minYaw": 19, "yaw": 19 },
+    { "symbol": "Federation_Gunship", "minPitch": 20, "pitch": 25, "minRoll": 80, "roll": 80, "minYaw": 18, "yaw": 18 },
+    { "symbol": "Viper_MkIV", "minPitch": 25, "pitch": 30, "minRoll": 90, "roll": 90, "minYaw": 12, "yaw": 12 },
+    { "symbol": "CobraMkIV", "minPitch": 25, "pitch": 30, "minRoll": 90, "roll": 90, "minYaw": 10, "yaw": 10 },
+    { "symbol": "Independant_Trader", "minPitch": 20, "pitch": 27, "minRoll": 100, "roll": 100, "minYaw": 15, "yaw": 15 },
+    { "symbol": "Asp_Scout", "minPitch": 35, "pitch": 40, "minRoll": 110, "roll": 110, "minYaw": 15, "yaw": 15 },
+    { "symbol": "Type9_Military", "minPitch": 18, "pitch": 22, "minRoll": 40, "roll": 40, "minYaw": 8, "yaw": 8 },
+    { "symbol": "Krait_MkII", "minPitch": 26, "pitch": 31, "minRoll": 90, "roll": 90, "minYaw": 10, "yaw": 10 },
+    { "symbol": "TypeX", "minPitch": 32, "pitch": 38, "minRoll": 90, "roll": 90, "minYaw": 16, "yaw": 16 },
+    { "symbol": "TypeX_2", "minPitch": 30, "pitch": 32, "minRoll": 80, "roll": 80, "minYaw": 16, "yaw": 16 },
+    { "symbol": "TypeX_3", "minPitch": 32, "pitch": 35, "minRoll": 90, "roll": 90, "minYaw": 16, "yaw": 16 },
+    { "symbol": "Krait_Light", "minPitch": 26, "pitch": 31, "minRoll": 90, "roll": 90, "minYaw": 10, "yaw": 10 },
+    { "symbol": "Mamba", "minPitch": 27, "pitch": 30, "minRoll": 75, "roll": 75, "minYaw": 10, "yaw": 10 },
+    { "symbol": "Python_NX", "minPitch": 30, "pitch": 37, "minRoll": 91, "roll": 91, "minYaw": 12.5, "yaw": 12.5 },
+    { "symbol": "Type8", "minPitch": 18, "pitch": 28, "minRoll": 60, "roll": 60, "minYaw": 16, "yaw": 18 },
+    { "symbol": "Mandalay", "minPitch": 27, "pitch": 35, "minRoll": 96, "roll": 96, "minYaw": 28, "yaw": 28 },
+    { "symbol": "CobraMkV", "minPitch": 40, "pitch": 45, "minRoll": 110, "roll": 120, "minYaw": 29, "yaw": 33 },
+    { "symbol": "Corsair", "minPitch": 23, "pitch": 26, "minRoll": 80, "roll": 80, "minYaw": 9, "yaw": 10 },
+    { "symbol": "PantherMkII", "minPitch": 14, "pitch": 18, "minRoll": 20, "roll": 20, "minYaw": 8, "yaw": 10 },
+    { "symbol": "LakonMiner", "minPitch": 22, "pitch": 25, "minRoll": 37.5, "roll": 37.5, "minYaw": 22, "yaw": 22 },
+    { "symbol": "Explorer_NX", "minPitch": 23, "pitch": 30, "minRoll": 75, "roll": 75, "minYaw": 14, "yaw": 14 },
+    { "symbol": "SmallCombat01_NX", "minPitch": 40, "pitch": 50, "minRoll": 120, "roll": 120, "minYaw": 19, "yaw": 24 },
+    { "symbol": "MediumTransport01", "minPitch": 23, "pitch": 26, "minRoll": 60, "roll": 60, "minYaw": 19, "yaw": 19 }
   ]
 }

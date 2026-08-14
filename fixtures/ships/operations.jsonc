@@ -10,12 +10,15 @@
 {
   "mobility": {
     "input": {
-      "speed": 200,
+      "minimumSpeed": 80,
+      "maximumSpeed": 200,
       "boost": 300,
+      "minPitch": 16,
       "pitch": 40,
+      "minRoll": 40,
       "roll": 100,
+      "minYaw": 8,
       "yaw": 20,
-      "minThrust": 40,
       "mass": 90,
       "thrusters": {
         "minMass": 70,
@@ -53,14 +56,15 @@
     },
     "zeroPipRotation": {
       "input": {
-        "speed": 200,
-        "boost": 300,
-        "pitch": 26,
+        "minimumSpeed": 210,
+        "maximumSpeed": 285,
+        "boost": 350,
         "minPitch": 23,
+        "pitch": 26,
+        "minRoll": 60,
         "roll": 60,
+        "minYaw": 19,
         "yaw": 19,
-        "minThrust": 73.75,
-        "pipSpeed": 0.065789473684211,
         "mass": 100,
         "thrusters": {
           "minMass": 50,
@@ -73,24 +77,28 @@
         "enginesPips": 0
       },
       "expected": {
-        "speed": 147.5,
-        "boost": 300,
+        "speed": 210,
+        "boost": 350,
         "pitch": 23,
-        "roll": 44.21052631578936,
-        "yaw": 13.999999999999963,
+        "roll": 60,
+        "yaw": 19,
         "massCurveMultiplier": 1,
         "rotationMassCurveMultiplier": 1
-      }
+      },
+      "speedSequence": [210, 228.75, 247.5, 266.25, 285],
+      "pitchSequence": [23, 23.75, 24.5, 25.25, 26]
     },
     "pipAllocation": {
       "input": {
-        "speed": 200,
+        "minimumSpeed": 80,
+        "maximumSpeed": 200,
         "boost": 300,
+        "minPitch": 24,
         "pitch": 40,
+        "minRoll": 60,
         "roll": 100,
+        "minYaw": 12,
         "yaw": 20,
-        "minThrust": 40,
-        "pipSpeed": 0.1,
         "mass": 100,
         "thrusters": {
           "minMass": 50,
@@ -115,7 +123,16 @@
     "facadeExplicitFuel": {
       "loadout": {
         "Ship": "SideWinder",
-        "UnladenMass": 25,
+        "UnladenMass": 26,
+        "Modules": [
+          { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
+          { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
+        ]
+      },
+      "partialCapacityLoadout": {
+        "Ship": "SideWinder",
+        "UnladenMass": 26,
+        "FuelCapacity": { "Main": 2 },
         "Modules": [
           { "Slot": "MainEngines", "Item": "Int_Engine_Size2_Class2" },
           { "Slot": "FuelTank", "Item": "Unknown_Fuel_Tank" }
@@ -123,13 +140,13 @@
       },
       "options": { "fuel": 2 },
       "expected": {
-        "speed": 233.07404536958677,
-        "boost": 339.0167932648535,
-        "pitch": 44.49595411601202,
-        "roll": 116.53702268479338,
-        "yaw": 16.950839663242675,
-        "massCurveMultiplier": 1.0594274789526672,
-        "rotationMassCurveMultiplier": 1.0594274789526672
+        "speed": 232.77881613098572,
+        "boost": 338.58736891779745,
+        "pitch": 44.43959217046091,
+        "roll": 116.38940806549286,
+        "yaw": 16.92936844588987,
+        "massCurveMultiplier": 1.058085527868117,
+        "rotationMassCurveMultiplier": 1.058085527868117
       },
       "omittedFuelFails": true,
       "invalidLoads": [
@@ -137,15 +154,17 @@
         { "options": { "cargo": -1 }, "expectedError": "RangeError" }
       ]
     },
-    "invalidPipSpeed": {
+    "invalidSpeedEndpoints": {
       "input": {
-        "speed": 1,
+        "minimumSpeed": 2,
+        "maximumSpeed": 1,
         "boost": 1,
+        "minPitch": 1,
         "pitch": 1,
+        "minRoll": 1,
         "roll": 1,
+        "minYaw": 1,
         "yaw": 1,
-        "minThrust": 50,
-        "pipSpeed": 0.3,
         "mass": 1,
         "thrusters": {
           "minMass": 1,
