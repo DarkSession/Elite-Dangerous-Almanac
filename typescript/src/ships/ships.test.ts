@@ -75,7 +75,7 @@ test('ship-stats spot checks: each merged hull carries the expected stat values'
     }
 });
 
-test('the Lynx carries its independently sourced minimum pitch rate', () => {
+test('the Lynx carries its independently sourced ENG-pip handling values', () => {
     const expected = statsFixture.minimumRotation;
     const ship = getShipBySymbol(expected.symbol);
     assert.ok(ship);

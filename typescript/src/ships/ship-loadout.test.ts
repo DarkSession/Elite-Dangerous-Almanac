@@ -208,8 +208,10 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     const lynxZeroPips = lynx.mobilityMetrics({ enginesPips: 0 })!;
     assert.ok(lynxZeroPips.pitch < lynxFourPips.pitch);
     assert.ok(near(lynxZeroPips.pitch / lynxFourPips.pitch, 23 / 26));
-    assert.ok(near(lynxZeroPips.roll, lynxFourPips.roll));
-    assert.ok(near(lynxZeroPips.yaw, lynxFourPips.yaw));
+    const lynxPipSpeed = SHIPS.find((ship) => ship.symbol === 'MediumTransport01')!.pipSpeed!;
+    const lynxZeroPipRatio = 1 - 4 * lynxPipSpeed;
+    assert.ok(near(lynxZeroPips.roll / lynxFourPips.roll, lynxZeroPipRatio));
+    assert.ok(near(lynxZeroPips.yaw / lynxFourPips.yaw, lynxZeroPipRatio));
 
     const tuned = ShipLoadout.fromSlef(slefString);
     const fittedThrusters = tuned.fittedModuleAt('MainEngines')!;

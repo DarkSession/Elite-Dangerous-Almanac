@@ -3249,6 +3249,7 @@ type FixtureShipsOperations = {
                 mass: number;
                 minPitch: number;
                 minThrust: number;
+                pipSpeed: number;
                 pitch: number;
                 roll: number;
                 speed: number;
@@ -3694,6 +3695,7 @@ type FixtureShipsShipStats = {
     count: number;
     minimumRotation: {
         minPitch: number;
+        pipSpeed: number;
         pitch: number;
         symbol: string;
     };

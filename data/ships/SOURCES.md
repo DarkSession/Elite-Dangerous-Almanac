@@ -238,8 +238,8 @@ slots are outside the hull layout.
   Inara's ship page 68, read 2026-08-02 UTC, listing
   1 Large Mining, 1 Medium, 2 Medium Mining, 3 Small and 1 Small Mining. The four
   unrestricted mounts are exactly the `[2, 1, 1, 1]` the record already had.
-- **Lynx Highliner (`MediumTransport01`) — from EDSY, Frontier's Lynx update notes and
-  a Frontier journal capture:**
+- **Lynx Highliner (`MediumTransport01`) — from EDSY, Frontier's Lynx update notes,
+  a Frontier journal capture and maintainer confirmation:**
   the Lynx has no coriolis hull entry, so its stats and slot layout are sourced instead
   from EDSY's ship data and Frontier's Lynx update notes (hull mass 260 t, 285/350 m/s,
   200/350 base shield/armour, hardness 55, 2 crew, rotation 26/60/19 deg/s, min thrust
@@ -247,9 +247,14 @@ slots are outside the hull layout.
   4 utilities; unrestricted/passenger optionals 6/6/6/5/5/4/4/3/2/1; its five armour
   options at 0/26/53/53/53 t, carried on the `MediumTransport01_Armour_*` module
   records). EDSY's zero-ENG-pip pitch rate of 23 deg/s is stored as `minPitch`; its
-  source record does not independently specify minimum roll or yaw. Values the static
-  catalogue does not expose are omitted rather than invented: `masslock`,
-  `heatCapacity`, `pipSpeed`, acceleration, and the boost-energy figures.
+  source record does not independently specify minimum roll or yaw. A maintainer
+  confirmation recorded 2026-08-14 UTC supplies `pipSpeed: 0.065789473684211`. This
+  field is not sourced from EDSY: no immutable upstream revision or capture is available,
+  and the supplied scalar is copied without derivation, verbatim at catalogue precision.
+  The explicit pitch minimum takes precedence for that axis, while `pipSpeed` supplies
+  roll and yaw handling below four pips. Values the static catalogue does not expose are
+  omitted rather than invented: `masslock`, `heatCapacity`, acceleration, and the
+  boost-energy figures.
   Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
   the names `Passenger01`–`Passenger03`, sourced above. A final size-1
   `planetaryApproachSuite` mount named `PlanetaryApproachSuite` comes directly from

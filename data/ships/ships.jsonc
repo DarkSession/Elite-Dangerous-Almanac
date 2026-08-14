@@ -4138,6 +4138,7 @@
     "roll": 60,
     "yaw": 19,
     "minThrust": 73.75,
+    "pipSpeed": 0.065789473684211,
     "core": {
       "powerPlant": 5,
       "thrusters": 6,

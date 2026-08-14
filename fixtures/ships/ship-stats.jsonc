@@ -53,7 +53,8 @@
   "minimumRotation": {
     "symbol": "MediumTransport01",
     "pitch": 26,
-    "minPitch": 23
+    "minPitch": 23,
+    "pipSpeed": 0.065789473684211
   },
   "pipSpeedCorrections": [
     { "symbol": "DiamondBack", "pipSpeed": 0.098214285714286 },

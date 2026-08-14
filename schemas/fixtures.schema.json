@@ -4474,10 +4474,10 @@
                     "boost": { "type": "integer" },
                     "massCurveMultiplier": { "type": "integer" },
                     "pitch": { "type": "integer" },
-                    "roll": { "type": "integer" },
+                    "roll": { "type": "number" },
                     "rotationMassCurveMultiplier": { "type": "integer" },
                     "speed": { "type": "number" },
-                    "yaw": { "type": "integer" }
+                    "yaw": { "type": "number" }
                   },
                   "required": [
                     "boost",
@@ -4498,6 +4498,7 @@
                     "mass": { "type": "integer" },
                     "minPitch": { "type": "integer" },
                     "minThrust": { "type": "number" },
+                    "pipSpeed": { "type": "number" },
                     "pitch": { "type": "integer" },
                     "roll": { "type": "integer" },
                     "speed": { "type": "integer" },
@@ -4510,6 +4511,7 @@
                     "mass",
                     "minPitch",
                     "minThrust",
+                    "pipSpeed",
                     "pitch",
                     "roll",
                     "speed",
@@ -5524,10 +5526,11 @@
           "additionalProperties": false,
           "properties": {
             "minPitch": { "type": "integer" },
+            "pipSpeed": { "type": "number" },
             "pitch": { "type": "integer" },
             "symbol": { "type": "string" }
           },
-          "required": ["minPitch", "pitch", "symbol"]
+          "required": ["minPitch", "pipSpeed", "pitch", "symbol"]
         },
         "pipSpeedCorrections": {
           "type": "array",
