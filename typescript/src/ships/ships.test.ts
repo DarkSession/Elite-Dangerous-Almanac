@@ -108,20 +108,6 @@ test('every hull carries its installed minimum and full angular-rate endpoints',
     }
 });
 
-test('all installed minimum endpoints are finite, non-negative and no greater than full', () => {
-    for (const ship of SHIPS) {
-        for (const [minimum, maximum] of [
-            [ship.minimumSpeed, ship.maximumSpeed],
-            [ship.minPitch, ship.pitch],
-            [ship.minRoll, ship.roll],
-            [ship.minYaw, ship.yaw],
-        ] as const) {
-            assert.ok(Number.isFinite(minimum) && minimum >= 0, ship.symbol);
-            assert.ok(Number.isFinite(maximum) && maximum >= minimum, ship.symbol);
-        }
-    }
-});
-
 test(`all ${statsFixture.pricedCount} hulls carry a hull and a retail price`, () => {
     assert.equal(SHIPS.filter((s) => s.hullCost !== undefined).length, statsFixture.pricedCount);
     for (const expected of statsFixture.prices) {

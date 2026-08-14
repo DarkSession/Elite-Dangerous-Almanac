@@ -120,6 +120,7 @@
       }
     },
     "ship": {
+      "$comment": "JSON Schema draft-07 cannot compare sibling numeric properties. Every language implementation must enforce minimumSpeed <= maximumSpeed, minPitch <= pitch, minRoll <= roll, and minYaw <= yaw as semantic catalogue invariants; see schemas/README.md.",
       "type": "object",
       "additionalProperties": false,
       "required": [

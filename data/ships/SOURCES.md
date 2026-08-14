@@ -15,7 +15,7 @@ Referred to throughout by source name; the pin is here, once.
 | Odyssey Materials Helper CAPI fixture `application/src/test/resources/parser/capifc/test9.json` | commit `2c652a2349b754f1dde1a58b6daaac5a04e421a6`                                                                                                                           | 2026-08-09 UTC |
 | EDCD/Coriolis — the application, for its formulas                                               | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
 | msarilar/EDEngineer `EDEngineer/Resources/Data/blueprints.json`                                 | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
-| Elite Dangerous in-game verification                                                            | observed in-game; no immutable game revision or retained capture is available                                                                                               | 2026-08-14 UTC |
+| Elite Dangerous in-game verification                                                            | observed in-game; no immutable game revision or retained capture is available; reproducible evidence is tracked in [#253](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/253)                                                | 2026-08-14 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
 the Vessel Hangar snapshot.
@@ -87,7 +87,8 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
 - **In-game hull-stat audit corrections.** Live game readings recorded 2026-08-14 UTC
   govern the following registry disagreements and omissions. No immutable game revision
   or retained capture is available; values are copied directly, subject only to the
-  established numeric precision described above.
+  established numeric precision described above. Retaining reproducible evidence is
+  tracked in [#253](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/253).
 
   | Field                 | Registry value → stored game value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
   | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -290,7 +291,9 @@ slots are outside the hull layout.
   game audit recorded 2026-08-14 UTC supplies `masslock: 16`,
   `heatCapacity: 279`, the installed `minimumSpeed: 210` / `maximumSpeed: 285` pair,
   and the complete angular endpoints `23/26` pitch, `60/60` roll and `19/19` yaw. These
-  game readings have no immutable game revision or retained capture. Values the
+  game readings have no immutable game revision or retained capture; reproducible
+  evidence is tracked in
+  [#253](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/253). Values the
   static catalogue does not expose are omitted rather than invented: acceleration and
   the boost-energy figures.
   Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
