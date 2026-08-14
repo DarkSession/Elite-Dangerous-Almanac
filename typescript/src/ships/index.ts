@@ -39,8 +39,9 @@
  *   {@link ships/modules-all!ALL_MODULES | ALL_MODULES}; each record carries the
  *   module's identity and its stats. They are reachable only by their own subpath, so
  *   importing one never bundles the rest.
- * - **Jump range & SLEF** — {@link singleJumpRange}, {@link fuelPerJump} and
- *   {@link totalRange} are pure maths over {@link FrameShiftDriveParams} and cost
+ * - **Jump range & SLEF** — {@link frameShiftDriveMassFactor},
+ *   {@link singleJumpRange}, {@link fuelPerJump}, {@link totalRange} and
+ *   {@link totalRangeDetails} are pure maths over {@link FrameShiftDriveParams} and cost
  *   nothing but the function; {@link parseSlef} reads an Inara SLEF export — or a bare
  *   journal `Loadout` event — on its own, and {@link toSlef} / {@link stringifySlef}
  *   write one back out.
@@ -49,7 +50,8 @@
  *   draws, by priority group), {@link shieldMetrics} and {@link armourMetrics} (strength,
  *   hit points and the resistances behind them, stacked by {@link stackShieldResistance}
  *   / {@link stackArmourResistance}), {@link weaponMetrics} (DPS, sustained DPS,
- *   capacitor draw and heat), {@link ammunitionCapacity} (the magazine and the reserve
+ *   capacitor draw and heat), {@link weaponsCapacitorMetrics} (WEP-pip recharge and
+ *   firing endurance), {@link ammunitionCapacity} (the magazine and the reserve
  *   behind it, for anything that carries rounds) and {@link heatMetrics} (what the build
  *   runs at idle and firing, and whether it cooks itself).
  * - **Engineering** — {@link computeModifiers} applies a {@link BLUEPRINTS} recipe and
@@ -260,10 +262,13 @@ export {
     type EngineeringModifier,
 } from './slef.js';
 export {
+    frameShiftDriveMassFactor,
     singleJumpRange,
     fuelPerJump,
     totalRange,
+    totalRangeDetails,
     type FrameShiftDriveParams,
+    type TotalRangeDetails,
 } from './jump-range.js';
 
 // ── The build facade and the modules it composes, each named at its source ──
@@ -275,6 +280,7 @@ export {
     type JumpRangeSummary,
     type DefenceOptions,
     type MobilityOptions,
+    type WeaponsOptions,
     type RetailCredits,
     type FittedWeaponMetrics,
     type BuildWeaponMetrics,
@@ -377,6 +383,11 @@ export {
     type WeaponTotals,
     type DamageSplit,
 } from './weapons.js';
+export {
+    weaponsCapacitorMetrics,
+    type WeaponsCapacitorInput,
+    type WeaponsCapacitorMetrics,
+} from './weapons-capacitor.js';
 export { ammunitionCapacity, type AmmunitionStats, type AmmunitionCapacity } from './ammunition.js';
 export {
     heatMetrics,

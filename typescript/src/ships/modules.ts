@@ -538,15 +538,15 @@ export interface OutfittingModuleStats {
 
     /** Power distributor: WEP capacitor capacity. */
     readonly weaponsCapacity?: number;
-    /** Power distributor: WEP recharge rate, per second. */
+    /** Power distributor: maximum WEP recharge at four pips, in megajoules per second. */
     readonly weaponsRecharge?: number;
     /** Power distributor: ENG capacitor capacity. */
     readonly enginesCapacity?: number;
-    /** Power distributor: ENG recharge rate, per second. */
+    /** Power distributor: maximum ENG recharge at four pips, in megajoules per second. */
     readonly enginesRecharge?: number;
     /** Power distributor: SYS capacitor capacity. */
     readonly systemsCapacity?: number;
-    /** Power distributor: SYS recharge rate, per second. */
+    /** Power distributor: maximum SYS recharge at four pips, in megajoules per second. */
     readonly systemsRecharge?: number;
 
     /** Fuel scoop: scoop rate, in tonnes per second. */

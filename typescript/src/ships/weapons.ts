@@ -381,8 +381,9 @@ export function sustainedDamagePerSecond(weapon: WeaponStats): number {
  * Weapons-capacitor draw per second, in megawatts.
  *
  * @param weapon - The weapon's stats.
- * @returns Capacitor draw per second, reloads ignored. Compare against the power
- * distributor's `weaponsRecharge` to see whether the build can fire indefinitely.
+ * @returns Capacitor draw per second, reloads ignored. For firing endurance, use
+ * {@link weaponsCapacitorMetrics}: it compares pip-scaled recharge with the sustained
+ * draw after reloads rather than this burst rate.
  */
 export function energyPerSecond(weapon: WeaponStats): number {
     return (weapon.distributorDraw ?? 0) * (weapon.rateOfFire ?? 1);

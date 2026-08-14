@@ -70,10 +70,13 @@ import {
     type SlefHeader,
 } from './slef.js';
 import {
+    frameShiftDriveMassFactor,
     singleJumpRange,
     fuelPerJump,
     totalRange,
+    totalRangeDetails,
     type FrameShiftDriveParams,
+    type TotalRangeDetails,
 } from './jump-range.js';
 import { getShipBySymbol, getShipSlots } from './ships.js';
 import { getDefaultLoadout } from './default-loadouts.js';
@@ -115,6 +118,7 @@ import {
     powerConsumerFor,
     shieldInputFor,
     shieldRecoveryInputFor,
+    weaponsCapacitorInputFor,
     weaponStatsFor,
 } from './internal/loadout-metrics.js';
 import { powerBudget, type PowerBudget, type PowerConsumer } from './power.js';
@@ -128,6 +132,7 @@ import {
     type WeaponTotals,
 } from './weapons.js';
 import { ammunitionCapacity, type AmmunitionCapacity } from './ammunition.js';
+import { weaponsCapacitorMetrics, type WeaponsCapacitorMetrics } from './weapons-capacitor.js';
 import { mobilityMetrics, type MobilityMetrics } from './mobility.js';
 import {
     cellBankSummary,
@@ -299,6 +304,12 @@ export interface DefenceOptions {
 export interface MobilityOptions extends JumpOptions {
     /** Pips assigned to the engines capacitor, `0`–`4`. Defaults to `4`. */
     readonly enginesPips?: number;
+}
+
+/** Optional WEP allocation for {@link ShipLoadout.weaponsCapacitorMetrics}. */
+export interface WeaponsOptions {
+    /** Pips assigned to the weapons capacitor, `0`–`4`. Defaults to `4`. */
+    readonly weaponsPips?: number;
 }
 
 /** Retail catalogue credits for an assembled build. */
@@ -1709,6 +1720,41 @@ export class ShipLoadout {
     }
 
     /**
+     * The fitted frame shift drive's dimensionless mass factor at a chosen load.
+     *
+     * @param options - {@link JumpOptions}. `fuel` defaults to a full main tank and
+     * `cargo` to `0`.
+     * @returns `optMass / loadedMass`: `1` at the drive's optimised mass, below `1`
+     * above it and above `1` below it.
+     * @remarks
+     * This is the mass term used by the jump equation, not the three-point performance
+     * curve used by thrusters and shield generators. Main-tank fuel contributes to the
+     * loaded mass; the Guardian FSD Booster's additive range does not contribute to the
+     * factor.
+     * @throws {TypeError} If the build has no usable frame shift drive or its mass
+     * cannot be determined; also if fuel capacity is unknown and `options.fuel` is
+     * omitted.
+     * @throws {RangeError} If fuel or cargo is not finite and non-negative, or loaded
+     * mass is zero.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.frameShiftDriveMassFactor({ fuel: 8, cargo: 32 }); // dimensionless
+     * ```
+     */
+    frameShiftDriveMassFactor(options: JumpOptions = {}): number {
+        requireLoadOptions('ShipLoadout.frameShiftDriveMassFactor', options);
+        const fuel = options.fuel ?? this.#requireFuelCapacity().main;
+        return frameShiftDriveMassFactor(
+            this.#requireMass(options.cargo ?? 0),
+            fuel,
+            this.frameShiftDrive,
+        );
+    }
+
+    /**
      * Best single-jump range, in light-years — no cargo, and exactly one jump's fuel
      * aboard (the lightest the ship jumps). This is the figure the game and EDSY label
      * "maximum jump range".
@@ -1787,6 +1833,32 @@ export class ShipLoadout {
     totalRange(options: { readonly cargo?: number } = {}): number {
         requireLoadOptions('ShipLoadout.totalRange', options);
         return totalRange(
+            this.#requireMass(options.cargo ?? 0),
+            this.#requireFuelCapacity().main,
+            this.frameShiftDrive,
+        );
+    }
+
+    /**
+     * Total multi-jump range and jump count on a full main tank.
+     *
+     * @param options - `cargo` aboard, in tonnes; defaults to `0`.
+     * @returns Summed range in light-years and the jumps made before the tank is empty.
+     * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
+     * fuel capacity cannot be determined.
+     * @throws {RangeError} If cargo is not finite and non-negative, or the tank would
+     * require more than 100,000 jumps.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.totalRangeDetails().jumps; // jumps available from one full main tank
+     * ```
+     */
+    totalRangeDetails(options: { readonly cargo?: number } = {}): TotalRangeDetails {
+        requireLoadOptions('ShipLoadout.totalRangeDetails', options);
+        return totalRangeDetails(
             this.#requireMass(options.cargo ?? 0),
             this.#requireFuelCapacity().main,
             this.frameShiftDrive,
@@ -2149,6 +2221,35 @@ export class ShipLoadout {
                 weapons.filter((weapon) => weapon.enabled).map((weapon) => weapon.metrics),
             ),
         };
+    }
+
+    /**
+     * WEP-capacitor recharge and endurance while every enabled weapon fires.
+     *
+     * @param options - WEP pips in `[0, 4]`, defaulting to `4`.
+     * @returns Actual recharge, sustained draw, net drain and seconds from full to
+     * empty. With no enabled distributor its capacity and recharge are zero; a load
+     * that draws no more than recharge reports `Infinity` for `timeToDrain`.
+     * @throws {RangeError} If `weaponsPips` is outside `[0, 4]` or not finite.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.weaponsCapacitorMetrics({ weaponsPips: 2 }).timeToDrain; // seconds
+     * ```
+     */
+    weaponsCapacitorMetrics(options: WeaponsOptions = {}): WeaponsCapacitorMetrics {
+        const weaponsPips = options.weaponsPips ?? 4;
+        const total = this.weaponMetrics().total;
+        return weaponsCapacitorMetrics(
+            weaponsCapacitorInputFor(
+                [...this.#modules.values()],
+                total.sustainedEnergyPerSecond,
+                weaponsPips,
+                (module) => this.#statsFor(module),
+            ),
+        );
     }
 
     /**

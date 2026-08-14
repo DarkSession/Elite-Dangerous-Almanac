@@ -569,6 +569,14 @@ test('unladen / laden / total range and per-jump fuel match the fixture', () => 
         `laden ${build.ladenJumpRange()}`,
     );
     assert.ok(near(build.totalRange(), expected.totalRange, 1e-2), `total ${build.totalRange()}`);
+    assert.deepEqual(build.totalRangeDetails(), {
+        range: build.totalRange(),
+        jumps: expected.totalJumps,
+    });
+    assert.ok(
+        near(build.frameShiftDriveMassFactor(), expected.massFactor, 1e-12),
+        `factor ${build.frameShiftDriveMassFactor()}`,
+    );
     assert.ok(
         near(build.fuelPerJump(50), expected.fuelPerJump50Ly),
         `fuel50 ${build.fuelPerJump(50)}`,
@@ -3216,6 +3224,23 @@ test('an assembled Anaconda reproduces the fixture metrics', () => {
     );
 });
 
+test('weaponsCapacitorMetrics scales fitted distributor recharge by WEP pips', () => {
+    const build = ShipLoadout.fromLoadout(corvetteBeamsJournal as LoadoutEvent);
+    const rated = build.weaponsCapacitorMetrics();
+    const halfPips = build.weaponsCapacitorMetrics({ weaponsPips: 2 });
+    const distributor = build.fittedModuleAt('PowerDistributor')!.effectiveStats!;
+
+    assert.equal(rated.capacity, distributor.weaponsCapacity);
+    assert.equal(rated.rechargeRate, distributor.weaponsRecharge);
+    assert.equal(
+        rated.sustainedEnergyPerSecond,
+        build.weaponMetrics().total.sustainedEnergyPerSecond,
+    );
+    assert.ok(halfPips.rechargeRate < rated.rechargeRate);
+    assert.ok(halfPips.netDrainRate >= rated.netDrainRate);
+    assert.throws(() => build.weaponsCapacitorMetrics({ weaponsPips: 5 }), RangeError);
+});
+
 test('a hull with no shield generator reports no shields', () => {
     const build = ShipLoadout.empty('Anaconda').setModule(
         'PowerPlant',
@@ -3238,6 +3263,9 @@ test('switched-off modules drop out of every metric', () => {
     assert.equal(off.shieldMetrics(), null); // the generator is off
     assert.equal(off.powerBudget().available, 0); // so is the plant
     assert.equal(off.weaponMetrics().total.damagePerSecond, 0);
+    assert.equal(off.weaponsCapacitorMetrics().capacity, 0);
+    assert.equal(off.weaponsCapacitorMetrics().rechargeRate, 0);
+    assert.equal(off.weaponsCapacitorMetrics().timeToDrain, Infinity);
     // The weapons are still listed, with their own figures intact.
     assert.equal(off.weaponMetrics().weapons.length, 2);
     assert.ok(off.weaponMetrics().weapons.every((w) => !w.enabled));

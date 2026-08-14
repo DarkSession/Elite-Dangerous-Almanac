@@ -43,6 +43,7 @@ import { isNonOutfittingSlot } from './loadout-state.js';
 import { parseSlotName } from '../slots.js';
 import type { MobilityInput, ThrusterParams } from '../mobility.js';
 import type { CellBankInput, ShieldRecoveryInput } from '../shield-recovery.js';
+import type { WeaponsCapacitorInput } from '../weapons-capacitor.js';
 import { ammunitionCapacity } from '../ammunition.js';
 
 /**
@@ -565,6 +566,27 @@ export function shieldRecoveryInputFor(
             : 0,
         systemsPips,
     };
+}
+
+/** Gather the fitted WEP capacitor and the sustained draw it must feed. */
+export function weaponsCapacitorInputFor(
+    modules: readonly LoadoutModule[],
+    sustainedEnergyPerSecond: number,
+    weaponsPips: number,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): WeaponsCapacitorInput {
+    let weaponsCapacity = 0;
+    let weaponsRecharge = 0;
+    for (const module of modules) {
+        const stats = statsFor(module);
+        const isDistributor = stats?.slot
+            ? stats.slot === 'powerDistributor'
+            : startsWithAny(module.Item, PREFIX.powerDistributor);
+        if (!isDistributor || !isEnabled(module)) continue;
+        weaponsCapacity = effectiveStat(module, 'weaponsCapacity', stats) ?? 0;
+        weaponsRecharge = effectiveStat(module, 'weaponsRecharge', stats) ?? 0;
+    }
+    return { weaponsCapacity, weaponsRecharge, sustainedEnergyPerSecond, weaponsPips };
 }
 
 /**

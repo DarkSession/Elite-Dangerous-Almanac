@@ -2,9 +2,11 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+    frameShiftDriveMassFactor,
     singleJumpRange,
     fuelPerJump,
     totalRange,
+    totalRangeDetails,
     type FrameShiftDriveParams,
 } from './jump-range.js';
 import expected from '../../../fixtures/ships/jump-range.jsonc' with { type: 'json' };
@@ -23,6 +25,21 @@ test('singleJumpRange reproduces EDSY MaxJumpRange for the Deep Black', () => {
 test('singleJumpRange returns 0 when the drive cannot jump', () => {
     assert.equal(singleJumpRange(1000, 0, fsd), 0);
     assert.equal(singleJumpRange(1000, 5, { ...fsd, maxFuel: 0 }), 0);
+});
+
+test('frameShiftDriveMassFactor exposes the inverse loaded-mass term', () => {
+    assert.ok(
+        Math.abs(
+            frameShiftDriveMassFactor(expected.unladenMass, expected.mainFuel, fsd) -
+                expected.massFactor,
+        ) < 1e-12,
+    );
+    assert.equal(frameShiftDriveMassFactor(990, 10, { optMass: 1000 }), 1);
+    assert.ok(frameShiftDriveMassFactor(490, 10, { optMass: 1000 }) > 1);
+    assert.ok(frameShiftDriveMassFactor(1990, 10, { optMass: 1000 }) < 1);
+    assert.throws(() => frameShiftDriveMassFactor(0, 0, { optMass: 1000 }), RangeError);
+    assert.throws(() => frameShiftDriveMassFactor(-1, 1, { optMass: 1000 }), RangeError);
+    assert.throws(() => frameShiftDriveMassFactor(1, 0, { optMass: 0 }), RangeError);
 });
 
 test('jumpBoost defaults to 0 when omitted', () => {
@@ -74,12 +91,20 @@ test('fuelPerJump for a 50 LY jump matches the fixture', () => {
 
 test('totalRange matches the fixture and exceeds a single jump', () => {
     const total = totalRange(expected.unladenMass, expected.mainFuel, fsd);
+    const details = totalRangeDetails(expected.unladenMass, expected.mainFuel, fsd);
     assert.ok(Math.abs(total - expected.totalRange) < 1e-2, `got ${total}`);
+    assert.equal(details.range, total);
+    assert.equal(details.jumps, expected.totalJumps);
     assert.ok(total > singleJumpRange(expected.unladenMass, expected.mainFuel, fsd));
 });
 
 test('totalRange returns 0 for a drive with no fuel per jump', () => {
     assert.equal(totalRange(1000, 32, { ...fsd, maxFuel: 0 }), 0);
+    assert.deepEqual(totalRangeDetails(1000, 32, { ...fsd, maxFuel: 0 }), {
+        range: 0,
+        jumps: 0,
+    });
+    assert.deepEqual(totalRangeDetails(1000, 0, fsd), { range: 0, jumps: 0 });
 });
 
 test('jump calculations reject the shared invalid-input cases', () => {
@@ -129,6 +154,7 @@ test('totalRange rejects an excessive workload instead of returning a partial ra
 test('totalRange spends even the smallest positive fuel amount', () => {
     const row = expected.tinyFuel;
     assert.ok(totalRange(row.mass, row.fuel, fsd) >= row.minimumRange);
+    assert.equal(totalRangeDetails(row.mass, row.fuel, fsd).jumps, 1);
 });
 
 test('totalRange rejects a non-finite accumulated result', () => {
