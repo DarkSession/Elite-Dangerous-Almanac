@@ -199,6 +199,25 @@
       "minItems": 1,
       "items": { "$ref": "#/definitions/ship" }
     },
+    "gunsightOffset": {
+      "description": "Camera-relative [horizontal, vertical] fixed-weapon offsets in metres.",
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "number" }
+    },
+    "shipGunsight": {
+      "description": "One hull's fixed-weapon offsets, ordered like that hull's hardpoints array.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/gunsightOffset" }
+    },
+    "shipGunsightCatalogue": {
+      "description": "Fixed-weapon offsets keyed by hull symbol.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/definitions/shipGunsight" }
+    },
     "defaultLoadoutModule": {
       "type": "object",
       "additionalProperties": false,
