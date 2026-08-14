@@ -1572,6 +1572,77 @@ declare module '*/fixtures/ships/engineering-options.jsonc' {
     export default value;
 }
 
+type FixtureShipsHeat = {
+    absent: {
+        hullWithoutDissipation: string;
+        unknownHull: string;
+    };
+    builds: {
+        deployedPowerDraw: number;
+        firingDrained: {
+            overheats: boolean;
+            secondsToOverheat: number;
+            thermalLoad: number;
+        };
+        firingSustained: {
+            gauge?: number;
+            overheats: boolean;
+            secondsToOverheat?: number;
+            thermalLoad: number;
+        };
+        fixture: string;
+        fsdCharging: {
+            gauge: number;
+            overheats: boolean;
+            thermalLoad: number;
+        };
+        heatEfficiency: number;
+        hullHeatCapacity: number;
+        hullHeatDissipation: number;
+        idle: {
+            gauge: number;
+            overheats: boolean;
+            thermalLoad: number;
+        };
+        retractedPowerDraw: number;
+        ship: string;
+        thrusters: {
+            gauge: number;
+            overheats: boolean;
+            thermalLoad: number;
+        };
+    }[];
+    drainedCapacitorMultiplier: number;
+    equilibrium: {
+        dissipation: number;
+        heatLevel: number | null;
+        thermalLoad: number;
+    }[];
+    overheatHeatLevel: number;
+    transient: {
+        heatCapacity: number;
+        heatDissipation: number;
+        heatLevel?: number;
+        note: string;
+        seconds: number | null;
+        startLevel: number;
+        targetLevel?: number;
+        thermalLoad: number;
+    }[];
+    weaponThermalLoad: {
+        capacitorLevel: number;
+        distributorDraw: number;
+        effective: number;
+        thermalLoad: number;
+        weaponsCapacity: number;
+    }[];
+};
+
+declare module '*/fixtures/ships/heat.jsonc' {
+    const value: FixtureShipsHeat;
+    export default value;
+}
+
 type FixtureShipsJournalAnacondaSlapaconda = {
     CargoCapacity: number;
     FuelCapacity: {
@@ -3697,6 +3768,14 @@ declare module '*/fixtures/ships/ship-slots.jsonc' {
 
 type FixtureShipsShipStats = {
     count: number;
+    heatDissipation: {
+        absent: string[];
+        count: number;
+        spot: {
+            heatDissipation: number;
+            symbol: string;
+        }[];
+    };
     inGameCorrections: {
         baseShieldStrength?: number;
         boost?: number;
@@ -3734,6 +3813,7 @@ type FixtureShipsShipStats = {
         crew: number;
         hardness: number;
         heatCapacity: number;
+        heatDissipation: number;
         hullMass: number;
         masslock: number;
         minThrust: number;

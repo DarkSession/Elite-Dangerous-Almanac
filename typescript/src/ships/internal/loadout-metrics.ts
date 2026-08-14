@@ -22,7 +22,8 @@ import { getBulkheadsForShip } from '../modules.js';
 import { getExperimentalEffect } from '../experimental-effects.js';
 import { CORE_MODULES } from '../modules-core.js';
 import { getShipBySymbol } from '../ships.js';
-import type { PowerConsumer } from '../power.js';
+import type { PowerBudget, PowerConsumer } from '../power.js';
+import type { HeatInput, HeatWeapon } from '../heat.js';
 import {
     shieldMetrics,
     type ShieldBoosterParams,
@@ -36,7 +37,7 @@ import type {
     ModuleReinforcementParams,
 } from '../armour.js';
 import type { DamageResistanceParams } from '../resistances.js';
-import { combinedRateOfFire, type WeaponStats } from '../weapons.js';
+import { combinedRateOfFire, weaponMetrics, type WeaponStats } from '../weapons.js';
 import { scaleDamageComponents } from './damage-components.js';
 import { isNonOutfittingSlot } from './loadout-state.js';
 import { parseSlotName } from '../slots.js';
@@ -64,6 +65,7 @@ import { ammunitionCapacity } from '../ammunition.js';
 const PREFIX = {
     powerPlant: ['int_powerplant', 'int_guardianpowerplant'],
     thrusters: ['int_engine', 'int_mkiiagileboost_engine'],
+    frameShiftDrive: ['int_hyperdrive'],
     powerDistributor: ['int_powerdistributor', 'int_guardianpowerdistributor'],
     shieldGenerator: ['int_shieldgenerator'],
     shieldCellBank: ['int_shieldcellbank'],
@@ -564,6 +566,85 @@ export function shieldRecoveryInputFor(
             : 0,
         systemsPips,
     };
+}
+
+/**
+ * Gather the hull's heat stats, the plant's efficiency and everything that makes heat.
+ *
+ * The two power-draw figures come from the build's own {@link PowerBudget} rather than
+ * being re-totalled here, so a priority group the plant cannot feed makes no heat — it
+ * is not running.
+ */
+export function heatInputFor(
+    shipSymbol: string,
+    modules: readonly LoadoutModule[],
+    budget: PowerBudget,
+    statsFor: (module: LoadoutModule) => OutfittingModule | null,
+): HeatInput | null {
+    const hull = getShipBySymbol(shipSymbol);
+    if (hull?.heatCapacity === undefined || hull.heatDissipation === undefined) return null;
+
+    let heatEfficiency: number | undefined;
+    let thrusterHeatRate = 0;
+    let fsdHeatRate = 0;
+    let weaponsCapacity = 0;
+    const weapons: HeatWeapon[] = [];
+
+    for (const module of modules) {
+        const stats = statsFor(module);
+        const isPlant = stats?.slot
+            ? stats.slot === 'powerPlant'
+            : startsWithAny(module.Item, PREFIX.powerPlant);
+        if (isPlant) {
+            // A plant that is switched off feeds nothing, so there is no build to model.
+            if (!isEnabled(module)) return null;
+            heatEfficiency = effectiveStat(module, 'heatEfficiency', stats);
+            continue;
+        }
+        if (!isEnabled(module)) continue;
+        if (
+            stats?.slot ? stats.slot === 'thrusters' : startsWithAny(module.Item, PREFIX.thrusters)
+        ) {
+            thrusterHeatRate += effectiveStat(module, 'engineHeatRate', stats) ?? 0;
+        } else if (
+            stats?.slot
+                ? stats.slot === 'frameShiftDrive'
+                : startsWithAny(module.Item, PREFIX.frameShiftDrive)
+        ) {
+            fsdHeatRate += effectiveStat(module, 'fsdHeatRate', stats) ?? 0;
+        } else if (
+            stats?.slot
+                ? stats.slot === 'powerDistributor'
+                : startsWithAny(module.Item, PREFIX.powerDistributor)
+        ) {
+            weaponsCapacity = effectiveStat(module, 'weaponsCapacity', stats) ?? 0;
+        }
+        const weapon = weaponStatsFor(module, stats);
+        if (!weapon) continue;
+        weapons.push({
+            heatPerSecond: weaponMetrics(weapon).sustainedHeatPerSecond,
+            distributorDraw: weapon.distributorDraw ?? 0,
+        });
+    }
+    if (heatEfficiency === undefined) return null;
+
+    return {
+        heatCapacity: hull.heatCapacity,
+        heatDissipation: hull.heatDissipation,
+        heatEfficiency,
+        retractedPowerDraw: poweredDraw(budget, 'retracted'),
+        deployedPowerDraw: poweredDraw(budget, 'deployed'),
+        thrusterHeatRate,
+        fsdHeatRate,
+        weaponsCapacity,
+        weapons,
+    };
+}
+
+/** What the plant actually feeds — the priority groups it keeps lit, and nothing below. */
+function poweredDraw(budget: PowerBudget, state: 'retracted' | 'deployed'): number {
+    const powered = state === 'retracted' ? 'poweredRetracted' : 'poweredDeployed';
+    return budget.bands.reduce((total, band) => (band[powered] ? total + band[state] : total), 0);
 }
 
 /** Gather fitted cell banks without treating their normal powered-off state as absence. */

@@ -34,6 +34,16 @@ a verbatim copy produced at build time — edit this file, never the copy.
   mass curve; shield collapse delay, regeneration and SYS-capacitor recovery timing; armour
   hit points; resistance stacking with its diminishing returns; and weapon DPS / capacitor
   draw / heat. It credits the original Frontier-forum research the formulas come from.
+- **The heat model** — the equilibrium heat level a thermal load settles at, how heat
+  moves towards it over time, and the multiplier a drained weapons capacitor puts on a
+  weapon's thermal load — is ported as fact from EDSY's `edsy.js`
+  (`getEquilibriumHeatLevel`, `getTimeUntilHeatLevel`, `getHeatLevelAtTime`,
+  `getEffectiveWeaponThermalLoad`, `updateUIStatsThm`), which credits the Frontier-forum
+  research thread
+  [Research: detailed heat mechanics](https://forums.frontier.co.uk/threads/research-detailed-heat-mechanics.286628/)
+  the mechanics were reverse-engineered in. Frontier publishes no heat formula, and
+  coriolis-data models none, so both the model and the per-hull dissipation figures it
+  reads are community measurement rather than game data.
 - **The jump-range and fuel algorithm**, **per-axis ENG-pip handling**, the **engineered
   ammunition rounding** rule and the **build metrics above** are cross-checked against, or
   ported as fact from, EDSY (credited under Data below). The jump-range model derives from
@@ -63,6 +73,7 @@ a verbatim copy produced at build time — edit this file, never the copy.
   wrongly (module mass, integrity, power draw, boot time, the base stats engineering
   recipes scale), the experimental-effect modifiers and their recipes, the module-group
   engineering menus, per-ship module-count limits and fitted stabiliser increases, the
+  per-hull maximum heat dissipation no other source carries, the
   Lynx Highliner's hull/slot figures and zero-pip minimum pitch, the journal slot names,
   and the attribute-to-journal-Label mapping. The values are Elite Dangerous game data —
   see the Frontier notice below.

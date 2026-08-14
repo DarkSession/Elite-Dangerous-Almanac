@@ -92,7 +92,7 @@ build.toSlefString({
 `ShipLoadout` imports every ship and module catalogue so it can resolve any build.
 When only one calculation is required, use the data-free leaf modules under
 `ships/jump-range`, `ships/power`, `ships/shields`, `ships/armour`, `ships/weapons`,
-`ships/ammunition` or `ships/resistances`.
+`ships/ammunition`, `ships/heat` or `ships/resistances`.
 
 `build.validation` reports validity and operational completeness. Potentially incomplete
 aggregates are nullable and have a diagnostic counterpart (`cargoCapacityResult`,

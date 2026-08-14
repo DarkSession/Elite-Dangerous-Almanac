@@ -17,6 +17,7 @@ import slotsFixture from '../../../fixtures/ships/ship-slots.jsonc' with { type:
 import operationsFixture from '../../../fixtures/ships/operations.jsonc' with { type: 'json' };
 import engineeringFixture from '../../../fixtures/ships/engineering.jsonc' with { type: 'json' };
 import preEngineeredFixture from '../../../fixtures/ships/pre-engineered.jsonc' with { type: 'json' };
+import heatFixture from '../../../fixtures/ships/heat.jsonc' with { type: 'json' };
 import slapacondaJournal from '../../../fixtures/ships/journal-anaconda-slapaconda.jsonc' with { type: 'json' };
 import inaraFixture from '../../../fixtures/ships/slef-inara-type-11.jsonc' with { type: 'json' };
 import lynxCapture from '../../../fixtures/ships/slef-inara-lynx-highliner.jsonc' with { type: 'json' };
@@ -33,9 +34,10 @@ import deepBlackJournal from '../../../fixtures/ships/journal-the-deep-black.jso
 import spireOpsJournal from '../../../fixtures/ships/journal-python-mkii-spire-ops.jsonc' with { type: 'json' };
 import cutterCapture from '../../../fixtures/ships/slef-inara-cutter-antixeno.jsonc' with { type: 'json' };
 import { ALL_MODULES } from './modules-all.js';
-import { SHIPS } from './ships.js';
+import { SHIPS, getShipBySymbol } from './ships.js';
 import type { DamageTypeValues } from './resistances.js';
 import { damageFalloff, damagePerSecond } from './weapons.js';
+import type { HeatState } from './heat.js';
 import { thrusterMassCurveMultiplier } from './mobility.js';
 import { getPreEngineeredVariants } from './pre-engineered.js';
 import { getPreEngineeredStats } from './pre-engineered-stats.js';
@@ -4135,4 +4137,124 @@ test('fromLoadout names the structure it needs instead of failing inside the wal
         } as unknown as LoadoutEvent),
     );
     assert.equal(ShipLoadout.fromLoadout({ Ship: 'Anaconda', Modules: [] }).shipSymbol, 'Anaconda');
+});
+
+// ── Build metrics: heat ─────────────────────────────────────────────────────
+
+const HEAT_BUILDS: Record<string, LoadoutEvent> = {
+    'journal-federation-corvette-beams.jsonc': corvetteBeamsJournal as LoadoutEvent,
+    'journal-anaconda-slapaconda.jsonc': slapacondaJournal as LoadoutEvent,
+};
+
+const HEAT_SCENARIOS = [
+    'idle',
+    'thrusters',
+    'fsdCharging',
+    'firingSustained',
+    'firingDrained',
+] as const;
+
+test('heatMetrics reproduces the pinned heat profile of each captured build', () => {
+    for (const expected of heatFixture.builds) {
+        const event = HEAT_BUILDS[expected.fixture];
+        assert.ok(event, `no journal for ${expected.fixture}`);
+        const build = ShipLoadout.fromLoadout(event);
+        assert.equal(build.shipSymbol.toLowerCase(), expected.ship);
+        const heat = build.heatMetrics();
+        assert.ok(heat, expected.fixture);
+        assert.equal(heat.heatEfficiency, expected.heatEfficiency);
+        assert.equal(heat.hullHeatCapacity, expected.hullHeatCapacity);
+        assert.equal(heat.hullHeatDissipation, expected.hullHeatDissipation);
+
+        const power = build.powerBudget();
+        assert.equal(displayed(power.retracted, 4), expected.retractedPowerDraw);
+        assert.equal(displayed(power.deployed, 4), expected.deployedPowerDraw);
+
+        for (const scenario of HEAT_SCENARIOS) {
+            const want: {
+                thermalLoad: number;
+                overheats: boolean;
+                gauge?: number;
+                secondsToOverheat?: number;
+            } = expected[scenario];
+            const got: HeatState = heat[scenario];
+            const where = `${expected.fixture} ${scenario}`;
+            assert.ok(Math.abs(got.thermalLoad - want.thermalLoad) < 1e-9, where);
+            assert.equal(got.overheats, want.overheats, where);
+            if (want.gauge !== undefined) {
+                assert.ok(Math.abs(got.gauge - want.gauge) < 1e-9, `${where} gauge`);
+                assert.equal(got.secondsToOverheat, null, where);
+            }
+            if (want.secondsToOverheat !== undefined) {
+                assert.equal(got.gauge, Infinity, `${where} gauge`);
+                assert.ok(
+                    Math.abs(got.secondsToOverheat! - want.secondsToOverheat) < 1e-9,
+                    `${where} seconds`,
+                );
+            }
+        }
+    }
+});
+
+test('a hull with no published dissipation reports no heat at all', () => {
+    const build = ShipLoadout.fromLoadout(lynxJournal as LoadoutEvent);
+    assert.equal(
+        build.shipSymbol.toLowerCase(),
+        heatFixture.absent.hullWithoutDissipation.toLowerCase(),
+    );
+    assert.equal(getShipBySymbol(build.shipSymbol)?.heatDissipation, undefined);
+    assert.equal(build.heatMetrics(), null);
+    // An unknown hull is the same answer for the same reason: no hull stats to read.
+    assert.equal(
+        ShipLoadout.fromLoadout({
+            Ship: heatFixture.absent.unknownHull,
+            Modules: [],
+        } as unknown as LoadoutEvent).heatMetrics(),
+        null,
+    );
+});
+
+test('a build with no powered power plant has no heat profile', () => {
+    assert.equal(ShipLoadout.empty('Anaconda').heatMetrics(), null, 'no plant fitted');
+    const event = corvetteBeamsJournal as LoadoutEvent;
+    const plantOff = ShipLoadout.fromLoadout({
+        ...event,
+        Modules: event.Modules.map((module) =>
+            module.Slot === 'PowerPlant' ? { ...module, On: false } : module,
+        ),
+    });
+    assert.equal(plantOff.heatMetrics(), null, 'plant switched off');
+});
+
+test('heat follows what the plant actually feeds, not what is fitted', () => {
+    const event = corvetteBeamsJournal as LoadoutEvent;
+    const build = ShipLoadout.fromLoadout(event);
+    const idle = build.heatMetrics()!.idle.thermalLoad;
+
+    // Switching a drawing module off takes its heat with it.
+    const boosterOff = ShipLoadout.fromLoadout({
+        ...event,
+        Modules: event.Modules.map((module) =>
+            module.Slot === 'Slot01_Size7' ? { ...module, On: false } : module,
+        ),
+    });
+    assert.ok(boosterOff.heatMetrics()!.idle.thermalLoad < idle);
+
+    // And a group the plant cannot keep lit makes no heat either: dropping the plant to
+    // its smallest rating unpowers the lower priorities rather than heating the hull.
+    const weakPlant = build.setModule(
+        'PowerPlant',
+        getModuleBySymbol('Int_PowerPlant_Size2_Class1', CORE_MODULES)!,
+    );
+    const budget = weakPlant.powerBudget();
+    assert.ok(!budget.withinBudget, 'the small plant must leave a group unpowered');
+    const powered = budget.bands.reduce(
+        (total, band) => (band.poweredRetracted ? total + band.retracted : total),
+        0,
+    );
+    assert.ok(powered < budget.retracted, 'and some retracted draw must go unfed');
+    assert.equal(
+        weakPlant.heatMetrics()!.idle.thermalLoad,
+        powered * weakPlant.heatMetrics()!.heatEfficiency,
+    );
 });

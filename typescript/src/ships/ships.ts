@@ -84,6 +84,20 @@ export interface Ship {
     readonly crew: number;
     /** Heat capacity — how much heat the hull absorbs before taking damage. */
     readonly heatCapacity?: number;
+    /**
+     * Maximum heat dissipation, in thermal-load units per second — the heat the hull
+     * sheds at heat level `1`, and the load a build can carry indefinitely.
+     *
+     * @remarks
+     * The stat a heat calculation reads: heat settles where thermal load and
+     * dissipation balance, and {@link heatCapacity} only decides how long the ship
+     * takes to get there. See `./heat`.
+     *
+     * Community-measured rather than published by Frontier, and absent for the Lynx
+     * Highliner, the one hull no source carries a figure for; a build on that hull
+     * therefore has no {@link ShipLoadout.heatMetrics}.
+     */
+    readonly heatDissipation?: number;
     /** Reserve tank capacity, in tonnes (feeds the main tank from empty). */
     readonly reserveFuelCapacity: number;
     /**

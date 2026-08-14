@@ -100,6 +100,19 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   | `minThrust`           | `Krait_MkII` 62.3→62.5; `TypeX_2` 61.11→61.111; `Python_NX` 85.75→85.938; `Mandalay` 71.5→71.429; `CobraMkV` 79→79.31; `Corsair` 65→64.286; `PantherMkII` 33.3→33.333; `LakonMiner` 70.5→70.37; `Explorer_NX` 76→76.19; `SmallCombat01_NX` 89→88.889; `MediumTransport01` 73.75→73.684                                                                                                                                                                                                                                                                                                                        |
   | `pipSpeed`            | `DiamondBack` 0.096153846153846→0.098214285714286; `DiamondBackXL` 0.098214285714286→0.096153846153846; `TypeX_2` 0.15833333333333→0.097222222222222; `TypeX_3` 0.088709677419355→0.0875; `Python_NX` 0.097826086956522→0.03515625; `Type8` 0.16666666666667→0.1375; `Mandalay` 0.16666666666667→0.071428571428571; `CobraMkV` 0.125→0.051724137931034; `Corsair` 0.053571428571429→0.089285714285714; `LakonMiner` 0.17307692307692→0.074074074074074; `Explorer_NX` 0.16666666666667→0.05952380952381; `SmallCombat01_NX` 0.023809523809524→0.027777777777778; `MediumTransport01` absent→0.065789473684211 |
 
+- **`heatDissipation` comes from EDSY, not coriolis-data.** Coriolis-data carries no
+  dissipation figure at all, and Frontier publishes none: it is community-measured. The
+  values are EDSY `eddb.js` `ship[…].heatdismax` from the baseline pinned snapshot,
+  joined by case-insensitive `fdname` / `symbol`, and are the load in thermal-load units
+  per second a hull sheds at heat level 1 — the ceiling a build's thermal load has to
+  stay under. 47 of the 48 hulls carry one; EDSY leaves `heatdismax` unset on the Lynx
+  Highliner (`MediumTransport01`), as it does that hull's `heatcap`, so the field is
+  omitted there rather than guessed, and `heatMetrics` reports nothing for that hull.
+  EDSY's companion `heatdismin` is not stored: `edsy.js` never reads it, and no
+  calculation here needs it. The stored figures are unaffected by the in-game
+  `heatCapacity` corrections above — capacity and dissipation are separate stats, and
+  no in-game reading of dissipation is available to audit against.
+
 - **Slots derivation:** coriolis's fixed-order `slots.standard` seven-array becomes
   the seven named `core` sizes (power plant, thrusters, frame shift drive, life
   support, power distributor, sensors, fuel tank); `slots.hardpoints` splits into
