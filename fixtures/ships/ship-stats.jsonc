@@ -96,7 +96,6 @@
     { "symbol": "MediumTransport01", "masslock": 16, "heatCapacity": 279 }
   ],
   "heatDissipation": {
-    "count": 48,
     "minimum": { "symbol": "Hauler", "heatDissipation": 16.2 },
     "maximum": { "symbol": "Cutter", "heatDissipation": 72.58 },
     "values": [

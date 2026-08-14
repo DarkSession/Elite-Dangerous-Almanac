@@ -96,7 +96,7 @@ test('ship stats carry the in-game audit corrections at their observed precision
 
 test('every hull carries the pinned maximum heat-dissipation figure', () => {
     const expected = statsFixture.heatDissipation;
-    assert.equal(SHIPS.length, expected.count);
+    assert.equal(SHIPS.length, expected.values.length);
     assert.ok(
         SHIPS.every((ship) => ship.heatDissipation > 0),
         'every hull sheds something',

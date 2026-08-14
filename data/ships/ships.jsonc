@@ -15,8 +15,8 @@
  * in tonnes, `minimumSpeed`/`maximumSpeed`/`boost` in m/s, rotation rates in deg/s, …)
  * and the slot layout
  * (`core` sizes, `hardpoints`, `utility` count, `optional` mounts) are present for
- * every hull. `heatDissipation` is the maximum cooling rate (`Dmax`), in thermal-load
- * units shed per second at heat level 1. A `hardpoints` or `optional` mount is
+ * every hull. `heatDissipation` is the maximum cooling rate, in thermal-load units shed
+ * per second at heat level 1. A `hardpoints` or `optional` mount is
  * `{ size }`, plus a
  * `restriction` when the mount only takes one family of modules — the Type-11
  * Prospector's four mining hardpoints and its limpet-controller and vessel-hangar

@@ -1614,6 +1614,12 @@ type FixtureShipsHeat = {
         heatLevel: number | null;
         thermalLoad: number;
     }[];
+    hulls: {
+        lynx: {
+            heatDissipation: number;
+            symbol: string;
+        };
+    };
     overheatHeatLevel: number;
     transient: {
         heatCapacity: number;
@@ -1624,9 +1630,6 @@ type FixtureShipsHeat = {
         targetLevel?: number;
         thermalLoad: number;
     }[];
-    unavailable: {
-        unknownHull: string;
-    };
     unknownDraws: {
         fixture: string;
         idleThermalLoad: number;
@@ -1649,6 +1652,7 @@ type FixtureShipsHeat = {
             unresolvedItem: string;
         };
     };
+    unknownHull: string;
     unpowered: {
         fixture: string;
         heatLevel: number;
@@ -3817,7 +3821,6 @@ declare module '*/fixtures/ships/ship-slots.jsonc' {
 type FixtureShipsShipStats = {
     count: number;
     heatDissipation: {
-        count: number;
         maximum: {
             heatDissipation: number;
             symbol: string;

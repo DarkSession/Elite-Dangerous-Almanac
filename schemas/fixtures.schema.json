@@ -3060,6 +3060,14 @@
             "required": ["dissipation", "heatLevel", "thermalLoad"]
           }
         },
+        "hulls": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "lynx": { "$ref": "#/definitions/sharedaa5cf1cc328e" }
+          },
+          "required": ["lynx"]
+        },
         "overheatHeatLevel": { "type": "number" },
         "transient": {
           "type": "array",
@@ -3085,12 +3093,6 @@
               "thermalLoad"
             ]
           }
-        },
-        "unavailable": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": { "unknownHull": { "type": "string" } },
-          "required": ["unknownHull"]
         },
         "unknownDraws": {
           "type": "object",
@@ -3133,6 +3135,7 @@
             "projection"
           ]
         },
+        "unknownHull": { "type": "string" },
         "unpowered": {
           "type": "object",
           "additionalProperties": false,
@@ -3177,10 +3180,11 @@
         "builds",
         "drainedCapacitorMultiplier",
         "equilibrium",
+        "hulls",
         "overheatHeatLevel",
         "transient",
-        "unavailable",
         "unknownDraws",
+        "unknownHull",
         "unpowered",
         "weaponThermalLoad"
       ]
@@ -5679,7 +5683,6 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "count": { "type": "integer" },
             "maximum": { "$ref": "#/definitions/sharedaa5cf1cc328e" },
             "minimum": { "$ref": "#/definitions/sharedaa5cf1cc328e" },
             "values": {
@@ -5687,7 +5690,7 @@
               "items": { "$ref": "#/definitions/sharedaa5cf1cc328e" }
             }
           },
-          "required": ["count", "maximum", "minimum", "values"]
+          "required": ["maximum", "minimum", "values"]
         },
         "inGameCorrections": {
           "type": "array",

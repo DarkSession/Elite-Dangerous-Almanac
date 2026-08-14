@@ -103,7 +103,7 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   | `roll`                | `Type9_Military` 20→40; `TypeX` 92→90; `Mamba` 80→75; `Python_NX` 92.76→91; `CobraMkV` 121.62→120; `SmallCombat01_NX` 123.36→120                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
   | `yaw`                 | `Python_NX` 12.74→12.5; `CobraMkV` 33.45→33; `SmallCombat01_NX` 24.67→24                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
-- **`heatDissipation` is the hull's audited `Dmax`.** Coriolis-data carries no
+- **`heatDissipation` is the hull's audited maximum cooling rate.** Coriolis-data carries no
   dissipation figure at all, and the game shows a player none: it is a community
   measurement of Frontier's game rather than a stat the game displays. The baseline is
   EDSY `eddb.js` `ship[…].heatdismax` from the pinned snapshot, joined by
@@ -111,10 +111,8 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   recorded 2026-08-14 UTC governs all 48 values and supplies the nine corrections and
   omissions listed above; it has no immutable game revision or retained capture, with
   reproducible evidence tracked in #254. The other 39 values agree with EDSY exactly.
-  `Dmax` is the load in thermal-load units per second shed at heat level 1 and is applied
-  by the base cooling curve `D(h) = Dmax × clamp(h, 0, 1)²`; the stored catalogue range
-  is Hauler `16.2` through Cutter `72.58`. Heat capacity remains a separate stat and
-  does not alter `Dmax`.
+  Each value is the load in thermal-load units per second shed at heat level 1. The
+  stored catalogue range is Hauler `16.2` through Cutter `72.58`.
 
 - **Slots derivation:** coriolis's fixed-order `slots.standard` seven-array becomes
   the seven named `core` sizes (power plant, thrusters, frame shift drive, life
@@ -302,9 +300,9 @@ slots are outside the hull layout.
   4 utilities; unrestricted/passenger optionals 6/6/6/5/5/4/4/3/2/1; its five armour
   options at 0/26/53/53/53 t, carried on the `MediumTransport01_Armour_*` module
   records). EDSY independently gives the 23 deg/s zero-ENG-PIP pitch rate. A maintainer's
-  game audit recorded 2026-08-14 UTC supplies `masslock: 16`,
-  `heatCapacity: 279`, the installed `minimumSpeed: 210` / `maximumSpeed: 285` pair,
-  and the complete angular endpoints `23/26` pitch, `60/60` roll and `19/19` yaw. These
+  game audit recorded 2026-08-14 UTC supplies `masslock: 16`, `heatCapacity: 279`,
+  `heatDissipation: 49.35`, the installed `minimumSpeed: 210` / `maximumSpeed: 285`
+  pair, and the complete angular endpoints `23/26` pitch, `60/60` roll and `19/19` yaw. These
   game readings have no immutable game revision or retained capture; reproducible
   evidence is tracked in
   [#254](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/254). Values the
