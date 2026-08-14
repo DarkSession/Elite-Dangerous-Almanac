@@ -82,6 +82,9 @@ symbols you are most likely to reach for first:
 | `getPersonalModification`, `PERSONAL_MODIFICATIONS` | `core/equipment/modifications` |
 | `getPersonalModificationCost` | `core/equipment/modification-costs` |
 | `resolvePersonalModificationForWeapon` | `core/equipment/modification-journal` |
+| `getModuleName` | `core/i18n/modules` |
+| `getBlueprintName` | `core/i18n/blueprints` |
+| `getExperimentalEffectName` | `core/i18n/experimental-effects` |
 | `getMaterialByName`, `MaterialGrade` | `core/materials/materials` |
 | `getMicroResourceByName` | `core/materials/micro-resources` |
 | `getCommodityByName` | `core/commodities/commodities` |

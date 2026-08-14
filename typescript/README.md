@@ -24,7 +24,7 @@ Use a feature barrel when a bundler will tree-shake it:
 import { ProceduralSystem } from '@elite-dangerous-almanac/core/astro';
 ```
 
-There is no package-wide root entry; choose one of the five feature areas or a leaf.
+There is no package-wide root entry; choose one of the six feature areas or a leaf.
 
 Use leaf subpaths to avoid evaluating unrelated data modules in native ESM:
 
@@ -36,11 +36,12 @@ import { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
 The heavyweight module registries, planetary/combined nebula catalogues and codex-region
 coordinate lookup are only exported from their leaf subpaths, not the feature barrels.
 
-The package has five feature areas:
+The package has six feature areas:
 
 - `astro`: procedural names, id64 addresses, regions, nebulae and permit locks;
 - `ships`: ships, modules, SLEF loadouts, engineering and build metrics;
 - `equipment`: Odyssey suits, handheld weapons, grade upgrades and modifications;
+- `i18n`: sparse localized module, blueprint and experimental-effect names;
 - `materials`: ship engineering materials and Odyssey micro resources;
 - `commodities`: standard and rare market goods.
 
@@ -111,6 +112,21 @@ getMaterialByName('iron')?.grade;
 getCommodityByName('lavian brandy')?.rare; // -> true
 getPersonalWeaponByName('Karma AR-50')?.grades['5'].damage; // -> 2.8
 ```
+
+Localized game names live on their own subpath, so applications that use only English
+do not bundle them. English names are complete; other locales return `null` where the
+pinned sources carry no translation instead of silently substituting English:
+
+```ts
+import { getBlueprintName, getModuleName } from '@elite-dangerous-almanac/core/i18n';
+
+getModuleName('Int_Hyperdrive_Size6_Class5', 'de-DE'); // -> "Frameshiftantrieb"
+getBlueprintName('FSD_LongRange', 'fr-FR'); // -> "Portée FSD améliorée"
+```
+
+Unqualified `zh` selects the source's Simplified Chinese (`zh-CN`) module names.
+Explicitly different Chinese scripts or regions such as `zh-TW` do not fall back to
+Simplified Chinese and return `null` unless a matching source is added.
 
 Registry lookups ignore case and surrounding whitespace. Material, commodity and
 module lookups search their complete registry by default and accept an optional

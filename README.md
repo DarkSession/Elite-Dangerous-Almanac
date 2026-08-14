@@ -18,6 +18,7 @@ every module as side-effect free.
 | `astro`       | Procedural system names, id64 addresses, sectors, galactic regions, nebulae and permit locks       |
 | `ships`       | Hulls, modules, loadouts, SLEF, engineering, jump range, power, shields, armour and weapon metrics |
 | `equipment`   | Odyssey personal suits, handheld weapons, grade upgrades and engineer modifications                |
+| `i18n`        | Sparse localized names for ships, modules, blueprints and experimental effects                     |
 | `materials`   | Ship engineering materials and Odyssey micro resources                                             |
 | `commodities` | Standard and rare market commodities                                                               |
 
@@ -90,6 +91,7 @@ derivation and manual corrections live with the data:
 - [Astro sources](data/astro/SOURCES.md)
 - [Ship sources](data/ships/SOURCES.md)
 - [Personal-equipment sources](data/equipment/SOURCES.md)
+- [Localized-name sources](data/i18n/SOURCES.md)
 - [Material sources](data/materials/SOURCES.md)
 - [Commodity sources](data/commodities/SOURCES.md)
 
