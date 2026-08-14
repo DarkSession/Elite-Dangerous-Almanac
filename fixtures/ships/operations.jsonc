@@ -135,17 +135,34 @@
           }
         ]
       },
+      "partialCapacityLoadout": {
+        "Ship": "SideWinder",
+        "UnladenMass": 25,
+        "FuelCapacity": {
+          "Main": 2
+        },
+        "Modules": [
+          {
+            "Slot": "MainEngines",
+            "Item": "Int_Engine_Size2_Class2"
+          },
+          {
+            "Slot": "FuelTank",
+            "Item": "Unknown_Fuel_Tank"
+          }
+        ]
+      },
       "options": {
         "fuel": 2
       },
       "expected": {
-        "speed": 233.07404536958677,
-        "boost": 339.0167932648535,
-        "pitch": 44.49595411601202,
-        "roll": 116.53702268479338,
-        "yaw": 16.950839663242675,
-        "massCurveMultiplier": 1.0594274789526672,
-        "rotationMassCurveMultiplier": 1.0594274789526672
+        "speed": 233.2,
+        "boost": 339.2,
+        "pitch": 44.52,
+        "roll": 116.6,
+        "yaw": 16.96,
+        "massCurveMultiplier": 1.06,
+        "rotationMassCurveMultiplier": 1.06
       },
       "omittedFuelFails": true,
       "invalidLoads": [

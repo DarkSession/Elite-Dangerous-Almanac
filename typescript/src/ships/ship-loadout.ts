@@ -1864,11 +1864,16 @@ export class ShipLoadout {
     /**
      * The build's speed, boost and rotation rates at a chosen load and ENG allocation.
      *
+     * @remarks
+     * Main-tank fuel contributes to the flight model's loaded mass. Reserve-tank fuel
+     * does not: although the statistics panel includes it in the displayed current
+     * mass, ten observed builds reproduce their angular rates only when the reserve is
+     * excluded from the thruster mass curve.
+     *
      * @param options - Fuel defaults to a full main tank, cargo to `0`, and ENG pips to `4`.
      * @returns Loaded {@link MobilityMetrics}, or `null` when no powered, fully described
      * thrusters are fitted.
-     * @throws {TypeError} If mass, reserve fuel, or an omitted main-tank fuel load cannot
-     * be determined.
+     * @throws {TypeError} If mass or an omitted main-tank fuel load cannot be determined.
      * @throws {RangeError} If fuel or cargo is not finite and non-negative, or
      * `enginesPips` is outside `[0, 4]`.
      * @example
@@ -1891,23 +1896,11 @@ export class ShipLoadout {
             this.#shipSymbol,
             [...this.#modules.values()],
             () => {
-                const capacity = options.fuel === undefined ? this.#requireFuelCapacity() : null;
-                const reserve =
-                    capacity?.reserve ??
-                    this.#top.FuelCapacity?.Reserve ??
-                    getShipBySymbol(this.#shipSymbol)?.reserveFuelCapacity;
-                if (reserve === undefined) {
-                    throw new TypeError(
-                        'ShipLoadout: cannot determine reserve fuel capacity for mobility',
-                    );
-                }
-                const main = options.fuel ?? capacity?.main;
-                if (main === undefined) {
-                    throw new TypeError(
-                        'ShipLoadout: cannot determine main-tank fuel load for mobility',
-                    );
-                }
-                return this.#requireMass(options.cargo ?? 0) + main + reserve;
+                const main =
+                    options.fuel ??
+                    this.#top.FuelCapacity?.Main ??
+                    this.#requireFuelCapacity().main;
+                return this.#requireMass(options.cargo ?? 0) + main;
             },
             enginesPips,
             (module) => this.#statsFor(module),

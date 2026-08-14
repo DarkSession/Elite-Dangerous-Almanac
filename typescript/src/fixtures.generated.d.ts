@@ -3148,6 +3148,17 @@ type FixtureShipsOperations = {
             options: {
                 fuel: number;
             };
+            partialCapacityLoadout: {
+                FuelCapacity: {
+                    Main: number;
+                };
+                Modules: {
+                    Item: string;
+                    Slot: string;
+                }[];
+                Ship: string;
+                UnladenMass: number;
+            };
         };
         input: {
             boost: number;

@@ -222,19 +222,17 @@ test('the facade reports loaded mobility, shield recovery and cell-bank pools', 
     assert.ok(
         near(effectiveThrusters.maxMultiplier!, baseThrusters.maxMultiplier! * performanceRatio),
     );
-    const tunedFuel = tuned.fuelCapacity!;
-    assert.ok(
-        near(
-            tuned.mobilityMetrics()!.massCurveMultiplier,
-            thrusterMassCurveMultiplier(tuned.unladenMass! + tunedFuel.main + tunedFuel.reserve, {
-                minMass: effectiveThrusters.minMass!,
-                optMass: effectiveThrusters.optMass!,
-                maxMass: effectiveThrusters.maxMass!,
-                minMultiplier: effectiveThrusters.minMultiplier!,
-                optMultiplier: effectiveThrusters.optMultiplier!,
-                maxMultiplier: effectiveThrusters.maxMultiplier!,
-            }),
-        ),
+    const tunedMainFuel = tuned.fuelCapacity!.main;
+    assert.equal(
+        tuned.mobilityMetrics()!.massCurveMultiplier,
+        thrusterMassCurveMultiplier(tuned.unladenMass! + tunedMainFuel, {
+            minMass: effectiveThrusters.minMass!,
+            optMass: effectiveThrusters.optMass!,
+            maxMass: effectiveThrusters.maxMass!,
+            minMultiplier: effectiveThrusters.minMultiplier!,
+            optMultiplier: effectiveThrusters.optMultiplier!,
+            maxMultiplier: effectiveThrusters.maxMultiplier!,
+        }),
     );
 
     const recovery = stock.shieldRecovery();
@@ -262,7 +260,7 @@ test('mobility returns null before requiring mass when no thrusters are fitted',
     assert.throws(() => empty.mobilityMetrics({ enginesPips: 5 }), RangeError);
 });
 
-test('explicit mobility fuel does not require an unknown main-tank capacity', () => {
+test('explicit mobility fuel needs no tank capacity and excludes reserve mass', () => {
     const fixture = operationsFixture.mobility.facadeExplicitFuel;
     const build = ShipLoadout.fromLoadout(fixture.loadout);
     assert.equal(build.fuelCapacity, null);
@@ -277,6 +275,15 @@ test('explicit mobility fuel does not require an unknown main-tank capacity', ()
         assert.throws(() => build.mobilityMetrics(invalid.options), {
             name: invalid.expectedError,
         });
+    }
+
+    const partial = ShipLoadout.fromLoadout(
+        fixture.partialCapacityLoadout as unknown as LoadoutEvent,
+    );
+    assert.equal(partial.fuelCapacity, null);
+    const partialMetrics = partial.mobilityMetrics()!;
+    for (const [field, expected] of Object.entries(fixture.expected)) {
+        assert.ok(near(partialMetrics[field as keyof typeof partialMetrics], expected), field);
     }
 });
 
@@ -2443,12 +2450,10 @@ test('all ten panel-audited builds reproduce their observed angular rates', () =
         ['Slapaconda', slapacondaJournal, metrics.inGame.slapaconda],
     ] as const;
 
-    // The panel reports hundredths of a degree per second, while the journal and
-    // catalogue inputs carry their own rounded/float precision. The largest observed
-    // residuals in this corpus are Cobra Mk V roll 183.3165 calculated versus 183.38
-    // observed (−0.0635°/s), and Kestrel Mk II roll 194.5110 versus 194.57
-    // (−0.0590°/s). Keep the allowance below one tenth until those can be rechecked.
-    const tolerance = 0.07;
+    // The panel reports hundredths of a degree per second. With reserve fuel correctly
+    // excluded from flight mass, every residual fits within its half-hundredth rounding
+    // interval; including reserve made Cobra and Kestrel roll miss by 0.0635/0.0590°/s.
+    const tolerance = 0.005;
     for (const [name, event, expected] of cases) {
         const actual = ShipLoadout.fromLoadout(event as LoadoutEvent).mobilityMetrics();
         assert.ok(actual, `${name}: missing mobility metrics`);

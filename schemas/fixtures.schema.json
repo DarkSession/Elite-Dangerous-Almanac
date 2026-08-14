@@ -4313,6 +4313,22 @@
                   "additionalProperties": false,
                   "properties": { "fuel": { "type": "integer" } },
                   "required": ["fuel"]
+                },
+                "partialCapacityLoadout": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "FuelCapacity": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": { "Main": { "type": "integer" } },
+                      "required": ["Main"]
+                    },
+                    "Modules": { "$ref": "#/definitions/sharede953dd8e8f23" },
+                    "Ship": { "type": "string" },
+                    "UnladenMass": { "type": "integer" }
+                  },
+                  "required": ["FuelCapacity", "Modules", "Ship", "UnladenMass"]
                 }
               },
               "required": [
@@ -4320,7 +4336,8 @@
                 "invalidLoads",
                 "loadout",
                 "omittedFuelFails",
-                "options"
+                "options",
+                "partialCapacityLoadout"
               ]
             },
             "input": {
