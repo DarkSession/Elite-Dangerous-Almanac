@@ -15,7 +15,7 @@ Referred to throughout by source name; the pin is here, once.
 | Odyssey Materials Helper CAPI fixture `application/src/test/resources/parser/capifc/test9.json` | commit `2c652a2349b754f1dde1a58b6daaac5a04e421a6`                                                                                                                           | 2026-08-09 UTC |
 | EDCD/Coriolis — the application, for its formulas                                               | commit `68c042ca6e3db62372cbbb2077cf972345511712`                                                                                                                           | 2026-08-01 UTC |
 | msarilar/EDEngineer `EDEngineer/Resources/Data/blueprints.json`                                 | SHA-256 `787e6bd0579264d7b4615a281318792cb212285786f4ae07f61ec1cc464cdec0` — read from the branch tip, so pinned by digest                                                  | 2026-08-08 UTC |
-| Elite Dangerous in-game verification                                                            | observed in-game; no immutable game revision or retained capture is available; reproducible evidence is tracked in [#253](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/253)                                                | 2026-08-14 UTC |
+| Elite Dangerous in-game verification                                                            | game version `4.4.0.3`; direct in-game observation                                                                                                                         | 2026-08-14 UTC |
 
 Every `eddb.js` derivation uses the baseline snapshot unless its catalogue note names
 the Vessel Hangar snapshot.
@@ -53,8 +53,9 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   symbol join, preserving registry order and rejecting duplicate or unmatched input.
   Masses are tonnes, speeds m/s, rotation rates deg/s. The in-game hull audit below
   overrides registry values where they disagree.
-- **Speed is stored as installed endpoints.** A game hull audit recorded
-  2026-08-14 UTC supplies `minimumSpeed` and `maximumSpeed` directly for all 48 hulls.
+- **Speed is stored as installed endpoints.** An Elite Dangerous `4.4.0.3` hull audit
+  recorded 2026-08-14 UTC supplies `minimumSpeed` and `maximumSpeed` directly for all 48
+  hulls.
   The game's ratio values carry no independent information:
   `minThrust = 100 * minimumSpeed / maximumSpeed` and
   `pipSpeed = (maximumSpeed - minimumSpeed) / (4 * maximumSpeed)`. The ratios are
@@ -67,8 +68,9 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   sentinel selects the corresponding flight-default word. This structure holds for all
   48 player hulls. EDSY's public handling implementation independently identifies these
   minima as zero-ENG-PIP values and linearly interpolates each axis to its full rate.
-- **Installed English display names are taken verbatim from the game.** The in-game
-  localisation audit recorded 2026-08-14 UTC replaces eight compact registry spellings:
+- **Installed English display names are taken verbatim from the game.** The Elite
+  Dangerous `4.4.0.3` localisation audit recorded 2026-08-14 UTC replaces eight compact
+  registry spellings:
 
   | Symbol        | Registry name          | Stored game name        |
   | ------------- | ---------------------- | ----------------------- |
@@ -84,11 +86,10 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   The same display-name corrections are propagated to the matching armour-module
   `ship` foreign keys in `modules-core.jsonc`.
 
-- **In-game hull-stat audit corrections.** Live game readings recorded 2026-08-14 UTC
-  govern the following registry disagreements and omissions. No immutable game revision
-  or retained capture is available; values are copied directly, subject only to the
-  established numeric precision described above. Retaining reproducible evidence is
-  tracked in [#253](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/253).
+- **In-game hull-stat audit corrections.** Live game readings from Elite Dangerous
+  `4.4.0.3`, recorded 2026-08-14 UTC, govern the following registry disagreements and
+  omissions. Values are transcribed directly, subject only to the established numeric
+  precision described above.
 
   | Field                 | Registry value → stored game value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
   | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -96,26 +97,23 @@ identity from FDevIDs, stats and slots from coriolis-data, joined on `symbol`.
   | `masslock`            | `Orca` 16→15; `Cutter` 27→26; `Viper_MkIV` 7→8; `Asp_Scout` 8→9; `Mandalay` 11→12; `PantherMkII` 27→25; `LakonMiner` 16→15; `Explorer_NX` 19→21; `SmallCombat01_NX` 10→11; `MediumTransport01` absent→16                                                                                                                                                                                                                                                                                                                                                                                                      |
   | `reserveFuelCapacity` | `Mandalay` 0.52→0.5; `PantherMkII` 1.16→1.11; `LakonMiner` 0.77→0.6; `SmallCombat01_NX` 0.57→0.61                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
   | `heatCapacity`        | `Dolphin` 165→245; `Python_NX` 316→260; `Type8` 226→236; `Mandalay` 250→245; `Corsair` 230→280; `PantherMkII` 250→329; `LakonMiner` 289→300; `Explorer_NX` 250→341; `SmallCombat01_NX` 237→263; `MediumTransport01` absent→279                                                                                                                                                                                                                                                                                                                                                                                |
+  | `heatDissipation`     | `Python_NX` 52→52.05; `Type8` 36.5→36.45; `CobraMkV` 40.5→40.63; `Corsair` 52→52.05; `PantherMkII` 62.5→62.45; `LakonMiner` 52.15→52.05; `Explorer_NX` 72.1→71.93; `SmallCombat01_NX` 39.85→37.93; `MediumTransport01` absent→49.35                                                                                                                                                                                                                                                                                                                                                     |
   | `maximumSpeed`        | `Type9_Military` 179→180; `TypeX_3` 204→200; `CobraMkV` 291→290; `PantherMkII` 181→180; `LakonMiner` 272→270; `SmallCombat01_NX` 271→270                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
   | `boost`               | `Type9_Military` 219→220; `CobraMkV` 412→410; `LakonMiner` 367→365                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
   | `pitch`               | `Type9_Military` 20→22; `Krait_MkII` 26→31; `TypeX` 39→38; `TypeX_3` 32→35; `Krait_Light` 26→31; `Mamba` 27→30; `Python_NX` 37.72→37; `CobraMkV` 45.61→45; `SmallCombat01_NX` 51.4→50                                                                                                                                                                                                                                                                                                                                                                                                                         |
   | `roll`                | `Type9_Military` 20→40; `TypeX` 92→90; `Mamba` 80→75; `Python_NX` 92.76→91; `CobraMkV` 121.62→120; `SmallCombat01_NX` 123.36→120                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
   | `yaw`                 | `Python_NX` 12.74→12.5; `CobraMkV` 33.45→33; `SmallCombat01_NX` 24.67→24                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
-- **`heatDissipation` comes from EDSY, not coriolis-data.** Coriolis-data carries no
-  dissipation figure at all, and the game shows a player none: unlike every other stat
-  here it is a community *measurement* of Frontier's game rather than a figure the game
-  states, and ATTRIBUTIONS.md records it as such under both Algorithms and Data. The
-  values are EDSY `eddb.js` `ship[…].heatdismax` from the baseline pinned snapshot,
-  joined by case-insensitive `fdname` / `symbol`, and are the load in thermal-load units
-  per second a hull sheds at heat level 1 — the ceiling a build's thermal load has to
-  stay under. 47 of the 48 hulls carry one; EDSY leaves `heatdismax` unset on the Lynx
-  Highliner (`MediumTransport01`), as it does that hull's `heatcap`, so the field is
-  omitted there rather than guessed, and `heatMetrics` reports nothing for that hull.
-  EDSY's companion `heatdismin` is not stored: `edsy.js` never reads it, and no
-  calculation here needs it. The stored figures are unaffected by the in-game
-  `heatCapacity` corrections above — capacity and dissipation are separate stats, and
-  no in-game reading of dissipation is available to audit against.
+- **`heatDissipation` is the hull's audited maximum cooling rate.** Coriolis-data carries no
+  dissipation figure at all, and the game shows a player none: it is a community
+  measurement of Frontier's game rather than a stat the game displays. The baseline is
+  EDSY `eddb.js` `ship[…].heatdismax` from the pinned snapshot, joined by
+  case-insensitive `fdname` / `symbol`. A complete maintainer-supplied thermal audit
+  from Elite Dangerous `4.4.0.3`, recorded 2026-08-14 UTC, governs all 48 values and
+  supplies the nine corrections and omissions listed above. The other 39 values agree
+  with EDSY exactly.
+  Each value is the load in thermal-load units per second shed at heat level 1. The
+  stored catalogue range is Hauler `16.2` through Cutter `72.58`.
 
 - **Slots derivation:** coriolis's fixed-order `slots.standard` seven-array becomes
   the seven named `core` sizes (power plant, thrusters, frame shift drive, life
@@ -303,14 +301,11 @@ slots are outside the hull layout.
   4 utilities; unrestricted/passenger optionals 6/6/6/5/5/4/4/3/2/1; its five armour
   options at 0/26/53/53/53 t, carried on the `MediumTransport01_Armour_*` module
   records). EDSY independently gives the 23 deg/s zero-ENG-PIP pitch rate. A maintainer's
-  game audit recorded 2026-08-14 UTC supplies `masslock: 16`,
-  `heatCapacity: 279`, the installed `minimumSpeed: 210` / `maximumSpeed: 285` pair,
-  and the complete angular endpoints `23/26` pitch, `60/60` roll and `19/19` yaw. These
-  game readings have no immutable game revision or retained capture; reproducible
-  evidence is tracked in
-  [#253](https://github.com/DarkSession/Elite-Dangerous-Almanac/issues/253). Values the
-  static catalogue does not expose are omitted rather than invented: acceleration and
-  the boost-energy figures.
+  Elite Dangerous `4.4.0.3` game audit recorded 2026-08-14 UTC supplies `masslock: 16`,
+  `heatCapacity: 279`, `heatDissipation: 49.35`, the installed `minimumSpeed: 210` /
+  `maximumSpeed: 285` pair, and the complete angular endpoints `23/26` pitch, `60/60`
+  roll and `19/19` yaw. Values the static catalogue does not expose are omitted rather
+  than invented: acceleration and the boost-energy figures.
   Its two size-6 and one size-5 passenger mounts carry `"restriction": "passenger"` and
   the names `Passenger01`–`Passenger03`, sourced above. A final size-1
   `planetaryApproachSuite` mount named `PlanetaryApproachSuite` comes directly from

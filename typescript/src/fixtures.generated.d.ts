@@ -1573,10 +1573,6 @@ declare module '*/fixtures/ships/engineering-options.jsonc' {
 }
 
 type FixtureShipsHeat = {
-    absent: {
-        hullWithoutDissipation: string;
-        unknownHull: string;
-    };
     builds: {
         deployedPowerDraw: number;
         firingDrained: {
@@ -1618,6 +1614,12 @@ type FixtureShipsHeat = {
         heatLevel: number | null;
         thermalLoad: number;
     }[];
+    hulls: {
+        lynx: {
+            heatDissipation: number;
+            symbol: string;
+        };
+    };
     overheatHeatLevel: number;
     transient: {
         heatCapacity: number;
@@ -1650,6 +1652,7 @@ type FixtureShipsHeat = {
             unresolvedItem: string;
         };
     };
+    unknownHull: string;
     unpowered: {
         fixture: string;
         heatLevel: number;
@@ -3818,9 +3821,15 @@ declare module '*/fixtures/ships/ship-slots.jsonc' {
 type FixtureShipsShipStats = {
     count: number;
     heatDissipation: {
-        absent: string[];
-        count: number;
-        spot: {
+        maximum: {
+            heatDissipation: number;
+            symbol: string;
+        };
+        minimum: {
+            heatDissipation: number;
+            symbol: string;
+        };
+        values: {
             heatDissipation: number;
             symbol: string;
         }[];

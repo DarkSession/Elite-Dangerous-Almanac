@@ -584,7 +584,7 @@ export function heatInputFor(
     statsFor: (module: LoadoutModule) => OutfittingModule | null,
 ): HeatInput | null {
     const hull = getShipBySymbol(shipSymbol);
-    if (hull?.heatCapacity === undefined || hull.heatDissipation === undefined) return null;
+    if (!hull) return null;
 
     let heatEfficiency: number | undefined;
     let thrusterHeatRate = 0;
