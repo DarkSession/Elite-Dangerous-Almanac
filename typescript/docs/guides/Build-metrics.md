@@ -270,11 +270,12 @@ const jumps = build.jumpRangeSummary();
 jumps.max; // best single jump: one jump's fuel, empty hold
 jumps.unladen; // full tank, empty hold
 jumps.laden; // full tank, full hold
-jumps.totalUnladen; // every jump on one tank, empty
-jumps.totalLaden; // every jump on one tank, full
+jumps.totalUnladen.range; // every jump on one tank, empty
+jumps.totalUnladen.jumps; // number of jumps, including the final partial one
+jumps.totalLaden.range; // every jump on one tank, full
 
-const tank = build.totalRangeDetails();
-tank.range; // same answer as build.totalRange()
+const tank = build.totalRange();
+tank.range; // summed distance as the tank drains
 tank.jumps; // full and final-partial jumps before the tank is empty
 
 build.frameShiftDriveMassFactor(); // optMass / loadedMass, dimensionless

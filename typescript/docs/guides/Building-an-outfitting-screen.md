@@ -128,8 +128,9 @@ const jumps = build.jumpRangeSummary();
 jumps.max; // best single jump: one jump's fuel, empty hold
 jumps.unladen; // full tank, empty hold
 jumps.laden; // full tank, full hold
-jumps.totalUnladen; // every jump on one tank, empty
-jumps.totalLaden; // every jump on one tank, full
+jumps.totalUnladen.range; // every jump on one tank, empty
+jumps.totalUnladen.jumps; // number of jumps on that tank
+jumps.totalLaden.range; // every jump on one tank, full
 ```
 
 `powerBudget().bands` is what drives a priority-group table: a group is powered when its

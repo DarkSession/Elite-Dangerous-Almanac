@@ -40,9 +40,9 @@
  *   module's identity and its stats. They are reachable only by their own subpath, so
  *   importing one never bundles the rest.
  * - **Jump range & SLEF** — {@link frameShiftDriveMassFactor},
- *   {@link singleJumpRange}, {@link fuelPerJump}, {@link totalRange} and
- *   {@link totalRangeDetails} are pure maths over {@link FrameShiftDriveParams} and cost
- *   nothing but the function; {@link parseSlef} reads an Inara SLEF export — or a bare
+ *   {@link singleJumpRange}, {@link fuelPerJump} and {@link totalRange} are pure maths
+ *   over {@link FrameShiftDriveParams} and cost nothing but the function;
+ *   {@link parseSlef} reads an Inara SLEF export — or a bare
  *   journal `Loadout` event — on its own, and {@link toSlef} / {@link stringifySlef}
  *   write one back out.
  * - **Build metrics** — the rest of what an outfitting screen shows, each its own
@@ -266,7 +266,6 @@ export {
     singleJumpRange,
     fuelPerJump,
     totalRange,
-    totalRangeDetails,
     type FrameShiftDriveParams,
     type TotalRangeDetails,
 } from './jump-range.js';

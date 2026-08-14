@@ -225,13 +225,38 @@ export function fuelPerJump(
     return Math.min(cost, burn);
 }
 
-/** Run the shared multi-jump calculation under one public caller's error scope. */
-function calculateTotalRange(
-    scope: string,
+/**
+ * The total multi-jump range and jump count on one tank.
+ *
+ * @param mass - Total ship mass excluding fuel, in tonnes (unladen mass plus cargo).
+ * @param fuel - Fuel available to spend, in tonnes — normally the main tank's capacity.
+ * @param fsd - The drive constants.
+ * @returns The summed range in light-years and the number of jumps evaluated. Zero
+ * fuel or a drive with zero `maxFuel` returns `{ range: 0, jumps: 0 }`; a final partial
+ * fuel load still counts as one jump.
+ * @remarks
+ * Each jump burns up to `maxFuel`; the sum runs until the tank is empty. `mass`
+ * (hull + modules + cargo) stays fixed, while the decreasing `remaining` fuel is
+ * included by {@link singleJumpRange}, so the ship becomes lighter after each jump.
+ * At most 100,000 jumps are evaluated; larger workloads throw instead of returning a
+ * silently truncated result.
+ * @throws {RangeError} If a quantity is negative or non-finite, a required drive
+ * constant is not positive, or the tank would require more than 100,000 jumps.
+ * @example
+ * ```ts
+ * import { totalRange } from '@elite-dangerous-almanac/core/ships/jump-range';
+ *
+ * totalRange(500, 12, {
+ *   optMass: 1050, maxFuel: 5, fuelMul: 0.012, fuelPower: 2.45,
+ * }).jumps; // -> 3
+ * ```
+ */
+export function totalRange(
     mass: number,
     fuel: number,
     fsd: FrameShiftDriveParams,
 ): TotalRangeDetails {
+    const scope = 'totalRange';
     requireNonNegative(scope, 'mass', mass);
     requireNonNegative(scope, 'fuel', fuel);
     validateFsd(scope, fsd);
@@ -252,57 +277,4 @@ function calculateTotalRange(
         remaining = Math.max(0, remaining - fsd.maxFuel);
     }
     return { range, jumps };
-}
-
-/**
- * The total multi-jump range and jump count on one tank.
- *
- * @param mass - Total ship mass excluding fuel, in tonnes (unladen mass plus cargo).
- * @param fuel - Fuel available to spend, in tonnes — normally the main tank's capacity.
- * @param fsd - The drive constants.
- * @returns The summed range in light-years and the number of jumps evaluated. Zero
- * fuel or a drive with zero `maxFuel` returns `{ range: 0, jumps: 0 }`; a final partial
- * fuel load still counts as one jump.
- * @remarks
- * This is the detailed form of {@link totalRange}. Both functions use the same
- * calculation, validation and 100,000-jump workload limit.
- * @throws {RangeError} If a quantity is negative or non-finite, a required drive
- * constant is not positive, or the tank would require more than 100,000 jumps.
- * @example
- * ```ts
- * import { totalRangeDetails } from '@elite-dangerous-almanac/core/ships/jump-range';
- *
- * totalRangeDetails(500, 12, {
- *   optMass: 1050, maxFuel: 5, fuelMul: 0.012, fuelPower: 2.45,
- * }).jumps; // -> 3
- * ```
- */
-export function totalRangeDetails(
-    mass: number,
-    fuel: number,
-    fsd: FrameShiftDriveParams,
-): TotalRangeDetails {
-    return calculateTotalRange('totalRangeDetails', mass, fuel, fsd);
-}
-
-/**
- * The total multi-jump range on a full tank, in light-years.
- *
- * @param mass - Total ship mass excluding fuel, in tonnes (unladen mass plus cargo).
- * @param fuel - Fuel available to spend, in tonnes — normally the main tank's
- * capacity.
- * @param fsd - The drive constants.
- * @returns The sum of successive jumps as the tank drains, in light-years.
- * @remarks
- * Each jump burns up to `maxFuel`; the sum runs until the tank is empty. `mass`
- * (hull + modules + cargo) stays fixed, while the decreasing `remaining` fuel is
- * included by {@link singleJumpRange}, so the ship becomes lighter after each jump.
- * At most 100,000 jumps are evaluated; larger workloads throw instead of returning a
- * silently truncated range. Use {@link totalRangeDetails} when the jump count is also
- * needed.
- * @throws {RangeError} If a quantity is negative or non-finite, a required drive
- * constant is not positive, or the tank would require more than 100,000 jumps.
- */
-export function totalRange(mass: number, fuel: number, fsd: FrameShiftDriveParams): number {
-    return calculateTotalRange('totalRange', mass, fuel, fsd).range;
 }

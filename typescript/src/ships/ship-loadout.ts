@@ -74,7 +74,6 @@ import {
     singleJumpRange,
     fuelPerJump,
     totalRange,
-    totalRangeDetails,
     type FrameShiftDriveParams,
     type TotalRangeDetails,
 } from './jump-range.js';
@@ -351,7 +350,10 @@ export interface BuildWeaponMetrics {
     readonly total: WeaponTotals;
 }
 
-/** A build's jump ranges at the loads that matter, in light-years. */
+/**
+ * A build's jump ranges at the loads that matter. The three single-jump values and
+ * each multi-jump result's `range` are in light-years.
+ */
 export interface JumpRangeSummary {
     /**
      * Best single jump: no cargo, and only one jump's fuel aboard — the figure the game
@@ -362,10 +364,10 @@ export interface JumpRangeSummary {
     readonly unladen: number;
     /** Single jump on a full tank with a full hold. */
     readonly laden: number;
-    /** Summed range of every jump on one full tank, empty hold. */
-    readonly totalUnladen: number;
-    /** Summed range of every jump on one full tank, full hold. */
-    readonly totalLaden: number;
+    /** Summed range and jump count on one full tank, empty hold. */
+    readonly totalUnladen: TotalRangeDetails;
+    /** Summed range and jump count on one full tank, full hold. */
+    readonly totalLaden: TotalRangeDetails;
 }
 
 /** A blueprint that can engineer a module, with the grades it offers. */
@@ -1821,16 +1823,22 @@ export class ShipLoadout {
     }
 
     /**
-     * Total multi-jump range on a full main tank, in light-years — the sum of
-     * successive jumps as the tank drains.
+     * Total multi-jump range and jump count on a full main tank.
      *
      * @param options - `cargo` aboard, in tonnes; defaults to `0`.
-     * @returns The summed range of every jump on one full tank, in light-years.
+     * @returns Summed range in light-years and the jumps made before the tank is empty.
      * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
      * fuel capacity cannot be determined.
      * @throws {RangeError} If cargo is not finite and non-negative.
+     * @example
+     * ```ts
+     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
+     *
+     * declare const build: ShipLoadout;
+     * build.totalRange().jumps; // jumps available from one full main tank
+     * ```
      */
-    totalRange(options: { readonly cargo?: number } = {}): number {
+    totalRange(options: { readonly cargo?: number } = {}): TotalRangeDetails {
         requireLoadOptions('ShipLoadout.totalRange', options);
         return totalRange(
             this.#requireMass(options.cargo ?? 0),
@@ -1840,36 +1848,11 @@ export class ShipLoadout {
     }
 
     /**
-     * Total multi-jump range and jump count on a full main tank.
-     *
-     * @param options - `cargo` aboard, in tonnes; defaults to `0`.
-     * @returns Summed range in light-years and the jumps made before the tank is empty.
-     * @throws {TypeError} If the build has no usable frame shift drive, or its mass or
-     * fuel capacity cannot be determined.
-     * @throws {RangeError} If cargo is not finite and non-negative, or the tank would
-     * require more than 100,000 jumps.
-     * @example
-     * ```ts
-     * import type { ShipLoadout } from '@elite-dangerous-almanac/core/ships/ship-loadout';
-     *
-     * declare const build: ShipLoadout;
-     * build.totalRangeDetails().jumps; // jumps available from one full main tank
-     * ```
-     */
-    totalRangeDetails(options: { readonly cargo?: number } = {}): TotalRangeDetails {
-        requireLoadOptions('ShipLoadout.totalRangeDetails', options);
-        return totalRangeDetails(
-            this.#requireMass(options.cargo ?? 0),
-            this.#requireFuelCapacity().main,
-            this.frameShiftDrive,
-        );
-    }
-
-    /**
      * Every jump figure at once — best, unladen, laden, and the multi-jump totals.
      *
-     * @returns The {@link JumpRangeSummary}, in light-years. For a partial load, call
-     * {@link jumpRange} with the `fuel` and `cargo` you actually have.
+     * @returns The {@link JumpRangeSummary}. Single-jump figures and each total's
+     * `range` are in light-years. For a partial load, call {@link jumpRange} with the
+     * `fuel` and `cargo` you actually have.
      * @throws {TypeError} If the build has no usable frame shift drive, or its mass,
      * fuel capacity or cargo capacity cannot be determined.
      * @example

@@ -72,7 +72,7 @@ symbols you are most likely to reach for first:
 | `getShipBySymbol`, `getShipSlots`, `SHIPS` | `core/ships/ships` |
 | `getModuleBySymbol`, `OutfittingModule` | `core/ships/modules` |
 | `CORE_MODULES` / `INTERNAL_MODULES` / `HARDPOINT_MODULES` / `UTILITY_MODULES` / `ALL_MODULES` | `core/ships/modules-core` / `-internal` / `-hardpoint` / `-utility` / `-all` |
-| `frameShiftDriveMassFactor`, `singleJumpRange`, `fuelPerJump`, `totalRange`, `totalRangeDetails` | `core/ships/jump-range` |
+| `frameShiftDriveMassFactor`, `singleJumpRange`, `fuelPerJump`, `totalRange` | `core/ships/jump-range` |
 | `powerBudget` / `shieldMetrics` / `armourMetrics` / `weaponMetrics` / `weaponsCapacitorMetrics` | `core/ships/power` / `shields` / `armour` / `weapons` / `weapons-capacitor` |
 | `computeModifiers`, `BLUEPRINTS`, `EXPERIMENTAL_EFFECTS` | `core/ships/engineering` / `blueprints` / `experimental-effects` |
 | `getBlueprintCost`, `getExperimentalEffectCost` | `core/ships/blueprint-costs` / `experimental-effect-costs` |

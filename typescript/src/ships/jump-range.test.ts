@@ -6,7 +6,6 @@ import {
     singleJumpRange,
     fuelPerJump,
     totalRange,
-    totalRangeDetails,
     type FrameShiftDriveParams,
 } from './jump-range.js';
 import expected from '../../../fixtures/ships/jump-range.jsonc' with { type: 'json' };
@@ -91,20 +90,17 @@ test('fuelPerJump for a 50 LY jump matches the fixture', () => {
 
 test('totalRange matches the fixture and exceeds a single jump', () => {
     const total = totalRange(expected.unladenMass, expected.mainFuel, fsd);
-    const details = totalRangeDetails(expected.unladenMass, expected.mainFuel, fsd);
-    assert.ok(Math.abs(total - expected.totalRange) < 1e-2, `got ${total}`);
-    assert.equal(details.range, total);
-    assert.equal(details.jumps, expected.totalJumps);
-    assert.ok(total > singleJumpRange(expected.unladenMass, expected.mainFuel, fsd));
+    assert.ok(Math.abs(total.range - expected.totalRange) < 1e-2, `got ${total.range}`);
+    assert.equal(total.jumps, expected.totalJumps);
+    assert.ok(total.range > singleJumpRange(expected.unladenMass, expected.mainFuel, fsd));
 });
 
-test('totalRange returns 0 for a drive with no fuel per jump', () => {
-    assert.equal(totalRange(1000, 32, { ...fsd, maxFuel: 0 }), 0);
-    assert.deepEqual(totalRangeDetails(1000, 32, { ...fsd, maxFuel: 0 }), {
+test('totalRange returns zero range and jumps when no jump can be made', () => {
+    assert.deepEqual(totalRange(1000, 32, { ...fsd, maxFuel: 0 }), {
         range: 0,
         jumps: 0,
     });
-    assert.deepEqual(totalRangeDetails(1000, 0, fsd), { range: 0, jumps: 0 });
+    assert.deepEqual(totalRange(1000, 0, fsd), { range: 0, jumps: 0 });
 });
 
 test('jump calculations reject the shared invalid-input cases', () => {
@@ -153,8 +149,9 @@ test('totalRange rejects an excessive workload instead of returning a partial ra
 
 test('totalRange spends even the smallest positive fuel amount', () => {
     const row = expected.tinyFuel;
-    assert.ok(totalRange(row.mass, row.fuel, fsd) >= row.minimumRange);
-    assert.equal(totalRangeDetails(row.mass, row.fuel, fsd).jumps, 1);
+    const total = totalRange(row.mass, row.fuel, fsd);
+    assert.ok(total.range >= row.minimumRange);
+    assert.equal(total.jumps, 1);
 });
 
 test('totalRange rejects a non-finite accumulated result', () => {

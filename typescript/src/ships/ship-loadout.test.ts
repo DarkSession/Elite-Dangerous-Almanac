@@ -568,11 +568,9 @@ test('unladen / laden / total range and per-jump fuel match the fixture', () => 
         near(build.ladenJumpRange(), expected.ladenJumpRange),
         `laden ${build.ladenJumpRange()}`,
     );
-    assert.ok(near(build.totalRange(), expected.totalRange, 1e-2), `total ${build.totalRange()}`);
-    assert.deepEqual(build.totalRangeDetails(), {
-        range: build.totalRange(),
-        jumps: expected.totalJumps,
-    });
+    const total = build.totalRange();
+    assert.ok(near(total.range, expected.totalRange, 1e-2), `total ${total.range}`);
+    assert.equal(total.jumps, expected.totalJumps);
     assert.ok(
         near(build.frameShiftDriveMassFactor(), expected.massFactor, 1e-12),
         `factor ${build.frameShiftDriveMassFactor()}`,
@@ -3299,12 +3297,12 @@ test('jumpRangeSummary gathers the loads that matter', () => {
     assert.ok(near(summary.max, build.maxJumpRange()));
     assert.ok(near(summary.unladen, build.jumpRange()));
     assert.ok(near(summary.laden, build.ladenJumpRange()));
-    assert.ok(near(summary.totalUnladen, build.totalRange()));
-    assert.ok(near(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity! })));
+    assert.deepEqual(summary.totalUnladen, build.totalRange());
+    assert.deepEqual(summary.totalLaden, build.totalRange({ cargo: build.cargoCapacity! }));
     // Best single jump beats a full tank, which beats a full tank and a full hold.
     assert.ok(summary.max > summary.unladen);
     assert.ok(summary.unladen > summary.laden);
-    assert.ok(summary.totalUnladen > summary.totalLaden);
+    assert.ok(summary.totalUnladen.range > summary.totalLaden.range);
     // A partial load sits between the two.
     const partial = build.jumpRange({ cargo: build.cargoCapacity! / 2 });
     assert.ok(partial < summary.unladen && partial > summary.laden);
