@@ -28,15 +28,16 @@ import type { CoreSlots, HardpointSlotSpec, OptionalSlotSpec, ShipSlots } from '
  * @remarks
  * `symbol` and any `entitlement` come from Frontier's shipyard registry. `name` is the
  * installed English localisation string where in-game verification differs from that
- * registry. `manufacturer`, `size`, the stats fields (`hullMass`, `speed`, …), and the
+ * registry. `manufacturer`, `size`, the stats fields (`hullMass`, `maximumSpeed`, …), and the
  * slot-layout fields (`core`, `hardpoints`, `optional`, …) come primarily from
  * coriolis-data, with verified in-game readings governing stat disagreements and
  * omissions. `manufacturer` and `size` are present for every hull; fields documented
  * as optional below remain absent where their source carries no value. The Lynx
  * Highliner (`MediumTransport01`), which is absent from the pinned coriolis-data
  * revision, carries equivalent fields sourced from EDSY, Frontier's update notes and
- * in-game verification. Masses are tonnes, `speed`/`boost` are metres per second at 4
- * pips to engines, rotation rates are degrees per second.
+ * in-game verification. Masses are tonnes, speed/boost fields are metres per second,
+ * and rotation rates are degrees per second. Minimum/full endpoint pairs are the
+ * installed values at zero/four ENG pips.
  */
 export interface Ship {
     /**
@@ -68,8 +69,10 @@ export interface Ship {
 
     /** Empty-hull mass, in tonnes. A build's unladen mass is this plus every fitted module. */
     readonly hullMass: number;
-    /** Top speed at 4 pips to engines, in metres per second. */
-    readonly speed: number;
+    /** Speed at zero ENG pips, in metres per second. */
+    readonly minimumSpeed: number;
+    /** Speed at four ENG pips, in metres per second. */
+    readonly maximumSpeed: number;
     /** Boost speed, in metres per second. */
     readonly boost: number;
     /** Base shield strength, in megajoules, before generator and boosters. */
@@ -96,25 +99,18 @@ export interface Ship {
      * "retail" price a shipyard shows for a ready-to-fly ship. Always ≥ {@link hullCost}.
      */
     readonly retailCost: number;
-    /** Pitch rate, in degrees per second. */
-    readonly pitch: number;
     /** Pitch rate at zero ENG pips, in degrees per second from `0` through {@link pitch}. */
-    readonly minPitch?: number;
-    /** Roll rate, in degrees per second. */
-    readonly roll: number;
+    readonly minPitch: number;
+    /** Pitch rate at four ENG pips, in degrees per second. */
+    readonly pitch: number;
     /** Roll rate at zero ENG pips, in degrees per second from `0` through {@link roll}. */
-    readonly minRoll?: number;
-    /** Yaw rate, in degrees per second. */
-    readonly yaw: number;
+    readonly minRoll: number;
+    /** Roll rate at four ENG pips, in degrees per second. */
+    readonly roll: number;
     /** Yaw rate at zero ENG pips, in degrees per second from `0` through {@link yaw}. */
-    readonly minYaw?: number;
-    /** Minimum thrust as a percentage — the throttle floor. */
-    readonly minThrust: number;
-    /**
-     * Fraction of four-pip rotation lost for each missing ENG pip, in `[0, 0.25]`.
-     * A per-axis minimum rotation rate takes precedence when present.
-     */
-    readonly pipSpeed?: number;
+    readonly minYaw: number;
+    /** Yaw rate at four ENG pips, in degrees per second. */
+    readonly yaw: number;
 
     // ── Slot layout (from coriolis-data) — present alongside the stats. ──
 

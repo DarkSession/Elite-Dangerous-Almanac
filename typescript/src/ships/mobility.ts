@@ -1,5 +1,7 @@
 /**
- * Data-free speed and handling calculations for a loaded ship.
+ * Data-free speed and handling calculations for a loaded ship. Speed and angular-rate
+ * endpoints interpolate linearly by the ENG-PIP fraction before thruster mass curves
+ * are applied.
  *
  * Ported from EDCD/Coriolis and cross-checked against EDSY's mass-curve calculation;
  * see [`ATTRIBUTIONS.md`](https://github.com/DarkSession/Elite-Dangerous-Almanac/blob/main/ATTRIBUTIONS.md).
@@ -40,30 +42,24 @@ export interface ThrusterParams extends ThrusterCurveParams {
 
 /** Everything {@link mobilityMetrics} needs about one loaded ship. */
 export interface MobilityInput {
-    /** Finite non-negative hull top speed at multiplier `1` and four ENG pips, in m/s. */
-    readonly speed: number;
+    /** Finite non-negative hull speed at multiplier `1` and zero ENG pips, in m/s. */
+    readonly minimumSpeed: number;
+    /** Finite hull speed at multiplier `1` and four ENG pips, in m/s, at least {@link minimumSpeed}. */
+    readonly maximumSpeed: number;
     /** Finite non-negative hull boost speed at the thruster curve's `1` multiplier, in m/s. */
     readonly boost: number;
     /** Finite non-negative pitch rate at multiplier `1` and four ENG pips, in °/s. */
     readonly pitch: number;
     /** Finite hull pitch rate at zero ENG pips, in °/s from `0` through {@link pitch}. */
-    readonly minPitch?: number;
+    readonly minPitch: number;
     /** Finite non-negative roll rate at multiplier `1` and four ENG pips, in °/s. */
     readonly roll: number;
     /** Finite hull roll rate at zero ENG pips, in °/s from `0` through {@link roll}. */
-    readonly minRoll?: number;
+    readonly minRoll: number;
     /** Finite non-negative yaw rate at multiplier `1` and four ENG pips, in °/s. */
     readonly yaw: number;
     /** Finite hull yaw rate at zero ENG pips, in °/s from `0` through {@link yaw}. */
-    readonly minYaw?: number;
-    /** Finite minimum thrust at zero ENG pips, as a percentage in `[0, 100]`. */
-    readonly minThrust: number;
-    /**
-     * Finite fraction of four-pip rotation lost for each missing ENG pip, in
-     * `[0, 0.25]`. Defaults to `0` and is overridden per axis by a corresponding
-     * `minPitch`, `minRoll` or `minYaw`.
-     */
-    readonly pipSpeed?: number;
+    readonly minYaw: number;
     /** Finite non-negative loaded mass — hull, modules, fuel and cargo — in tonnes. */
     readonly mass: number;
     /** The fitted thrusters' post-engineering curve, or no curve when none are fitted. */
@@ -187,6 +183,12 @@ export function thrusterMassCurveMultiplier(mass: number, thrusters: ThrusterCur
 /**
  * Calculate a loaded ship's top speed, boost speed and rotation rates.
  *
+ * @remarks
+ * Speed, pitch, roll and yaw interpolate linearly from their installed zero-ENG-PIP
+ * endpoints to their four-PIP endpoints. The fitted thruster's speed and rotation
+ * mass-curve multipliers are then applied to those interpolated hull values. Boost is
+ * independent of ENG allocation and uses the speed curve at the loaded mass.
+ *
  * @param input - Hull figures, loaded mass, fitted thrusters and ENG pips.
  * @returns The build's {@link MobilityMetrics}, or `null` without thrusters. A mass above
  * the thrusters' maximum returns zero performance rather than a fabricated curve value.
@@ -198,8 +200,9 @@ export function thrusterMassCurveMultiplier(mass: number, thrusters: ThrusterCur
  * import { mobilityMetrics } from '@elite-dangerous-almanac/core/ships/mobility';
  *
  * mobilityMetrics({
- *   speed: 220, boost: 320, pitch: 42, roll: 110, yaw: 16,
- *   minThrust: 45.454, mass: 48,
+ *   minimumSpeed: 100, maximumSpeed: 220, boost: 320,
+ *   minPitch: 34, pitch: 42, minRoll: 110, roll: 110, minYaw: 16, yaw: 16,
+ *   mass: 48,
  *   thrusters: {
  *     minMass: 24, optMass: 48, maxMass: 72,
  *     minMultiplier: 0.83, optMultiplier: 1, maxMultiplier: 1.03,
@@ -214,22 +217,26 @@ export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null;
 export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null {
     const pips = input.enginesPips ?? 4;
     requireFiniteRange('mobilityMetrics', 'enginesPips', pips, 0, 4);
-    for (const field of ['speed', 'boost', 'pitch', 'roll', 'yaw', 'mass'] as const) {
+    for (const field of [
+        'minimumSpeed',
+        'maximumSpeed',
+        'boost',
+        'pitch',
+        'roll',
+        'yaw',
+        'mass',
+    ] as const) {
         requireFiniteNonNegative('mobilityMetrics', field, input[field]);
     }
-    requireFiniteRange('mobilityMetrics', 'minThrust', input.minThrust, 0, 100);
-    if (input.pipSpeed !== undefined) {
-        requireFiniteRange('mobilityMetrics', 'pipSpeed', input.pipSpeed, 0, 0.25);
+    if (input.minimumSpeed > input.maximumSpeed) {
+        throw new RangeError('mobilityMetrics: minimumSpeed must not exceed maximumSpeed');
     }
     for (const [minimum, maximum] of [
         ['minPitch', 'pitch'],
         ['minRoll', 'roll'],
         ['minYaw', 'yaw'],
     ] as const) {
-        const value = input[minimum];
-        if (value !== undefined) {
-            requireFiniteRange('mobilityMetrics', minimum, value, 0, input[maximum]);
-        }
+        requireFiniteRange('mobilityMetrics', minimum, input[minimum], 0, input[maximum]);
     }
     if (!input.thrusters) return null;
     validateCurve('mobilityMetrics: thrusters', input.thrusters);
@@ -244,14 +251,12 @@ export function mobilityMetrics(input: MobilityInput): MobilityMetrics | null {
         input.thrusters.rotationCurve ?? input.thrusters,
     );
     const pipMultiplier = pips / 4;
-    const minimum = input.minThrust / 100;
-    const speedMultiplier = pipMultiplier + minimum * (1 - pipMultiplier);
-    const handlingAtPips = (maximum: number, minimum: number | undefined): number =>
-        minimum === undefined
-            ? maximum * (1 - (input.pipSpeed ?? 0) * (4 - pips))
-            : minimum + (maximum - minimum) * pipMultiplier;
+    const speedAtPips =
+        input.minimumSpeed + (input.maximumSpeed - input.minimumSpeed) * pipMultiplier;
+    const handlingAtPips = (maximum: number, minimum: number): number =>
+        minimum + (maximum - minimum) * pipMultiplier;
     return {
-        speed: input.speed * massCurveMultiplier * speedMultiplier,
+        speed: speedAtPips * massCurveMultiplier,
         boost: input.boost * massCurveMultiplier,
         pitch: handlingAtPips(input.pitch, input.minPitch) * rotationMassCurveMultiplier,
         roll: handlingAtPips(input.roll, input.minRoll) * rotationMassCurveMultiplier,

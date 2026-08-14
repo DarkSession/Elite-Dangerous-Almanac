@@ -511,16 +511,15 @@ export function mobilityInputFor(
     }
     if (!thrusters) return null;
     return {
-        speed: hull.speed,
+        minimumSpeed: hull.minimumSpeed,
+        maximumSpeed: hull.maximumSpeed,
         boost: hull.boost,
+        minPitch: hull.minPitch,
         pitch: hull.pitch,
-        ...(hull.minPitch === undefined ? {} : { minPitch: hull.minPitch }),
+        minRoll: hull.minRoll,
         roll: hull.roll,
-        ...(hull.minRoll === undefined ? {} : { minRoll: hull.minRoll }),
+        minYaw: hull.minYaw,
         yaw: hull.yaw,
-        ...(hull.minYaw === undefined ? {} : { minYaw: hull.minYaw }),
-        minThrust: hull.minThrust,
-        ...(hull.pipSpeed === undefined ? {} : { pipSpeed: hull.pipSpeed }),
         mass: typeof mass === 'function' ? mass() : mass,
         thrusters,
         enginesPips,

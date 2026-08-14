@@ -24,8 +24,9 @@ stat record whose symbol no identity carries, is an error rather than a silent d
 
 - ship identities (`--ship-identities`): `{ symbol, name, entitlement? }`, the
   FDevIDs `shipyard.csv` fields;
-- ship stats (`--ship-stats`): `{ symbol, hullMass, speed, baseArmour, … }`, the
-  whitelisted coriolis-data `properties`;
+- ship stats (`--ship-stats`):
+  `{ symbol, hullMass, minimumSpeed, maximumSpeed, baseArmour, … }`, the whitelisted
+  coriolis-data properties plus installed endpoint readings;
 - ship slots (`--ship-slots`): `{ symbol, core, hardpoints, utility, optional }`;
 - default loadouts are maintained separately in `data/ships/default-loadouts.jsonc`.
   They are keyed by hull `symbol` and journal slot key and are not an input to this
