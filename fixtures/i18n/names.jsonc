@@ -1,0 +1,68 @@
+/*
+ * Pins locale normalization, sparse misses and representative module, blueprint and
+ * experimental-effect localized-name lookups for every language implementation.
+ */
+{
+  "lookups": [
+    {
+      "kind": "module",
+      "identifier": "Int_Hyperdrive_Size6_Class5",
+      "locale": "de-DE",
+      "expected": "Frameshiftantrieb"
+    },
+    {
+      "kind": "module",
+      "identifier": "Hpt_PulseLaser_Fixed_Small",
+      "locale": "fr-FR",
+      "expected": "Laser à impulsion"
+    },
+    {
+      "kind": "module",
+      "identifier": "Int_Hyperdrive_Size6_Class5",
+      "locale": "zh",
+      "expected": "超空间折叠引擎"
+    },
+    {
+      "kind": "module",
+      "identifier": "Int_Hyperdrive_Size6_Class5",
+      "locale": "zh-TW",
+      "expected": null
+    },
+    {
+      "kind": "module",
+      "identifier": "Int_LargeCargoRack_Size8_class1",
+      "locale": "de",
+      "expected": null
+    },
+    {
+      "kind": "blueprint",
+      "identifier": "fsd_longrange",
+      "locale": "de-DE",
+      "expected": "Erhöhte FSA-Reichweite"
+    },
+    {
+      "kind": "blueprint",
+      "identifier": "AbrasionBlaster_FarReaching",
+      "locale": "fr",
+      "expected": null
+    },
+    {
+      "kind": "experimentalEffect",
+      "identifier": "special_concordant_sequence",
+      "locale": "de",
+      "expected": "Konkordante Sequenz"
+    },
+    {
+      "kind": "experimentalEffect",
+      "identifier": "special_concordant_sequence",
+      "locale": "ja-JP",
+      "expected": null
+    },
+    {
+      "kind": "module",
+      "identifier": "not_a_module",
+      "locale": "en-GB",
+      "expected": null
+    }
+  ]
+}

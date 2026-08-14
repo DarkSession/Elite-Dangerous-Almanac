@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://elite-dangerous-almanac.dev/schemas/i18n/catalogues.schema.json",
+  "title": "Elite Dangerous Almanac localized-name catalogue schemas",
+  "description": "Language-neutral schemas for every JSONC payload in data/i18n.",
+  "definitions": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^\\S(?:.*\\S)?$"
+    },
+    "localizedName": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["en"],
+      "properties": {
+        "en": { "$ref": "#/definitions/nonEmptyString" },
+        "de": { "$ref": "#/definitions/nonEmptyString" },
+        "es": { "$ref": "#/definitions/nonEmptyString" },
+        "fr": { "$ref": "#/definitions/nonEmptyString" },
+        "hu": { "$ref": "#/definitions/nonEmptyString" },
+        "it": { "$ref": "#/definitions/nonEmptyString" },
+        "pt": { "$ref": "#/definitions/nonEmptyString" },
+        "pt-BR": { "$ref": "#/definitions/nonEmptyString" },
+        "ru": { "$ref": "#/definitions/nonEmptyString" },
+        "zh-CN": { "$ref": "#/definitions/nonEmptyString" }
+      }
+    },
+    "localizedNameMap": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/definitions/localizedName" }
+    },
+    "localizedNameCatalogue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nameKeys", "names"],
+      "properties": {
+        "nameKeys": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/definitions/nonEmptyString" }
+        },
+        "names": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/definitions/localizedName" }
+        }
+      }
+    }
+  }
+}
